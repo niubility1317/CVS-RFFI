@@ -1,0 +1,1682 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261025-phase1-PAMF-ChannelPL-source-m33-r01",
+  "group_id": "phase1-pamf-channel-pl-20261025",
+  "display_name": "PAMF 信道伪标签分配：33 个冻结前缀的源域质量证伪",
+  "description": "普通 PL 保持阈值0.95和U权重1；原物理半批中同预测且信道置信度0.95的样本，将0.2 CE份额分配给原T1 As视图，原始CE保留0.8；其余精确退回原PL。只诊断全部源V，不训练、不测目标。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "ChannelPL-source"
+  ],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "source-only",
+    "three-seed",
+    "dose-conservation"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-25 用户要求继续深入分析 REPL 的整体负收益并优化半监督；既有三GPU、三个seed授权。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261025-phase1-PAMF-ChannelPL-source-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig / ManyRx, eleven unchanged VALIDATED_ONCE source contracts",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "first two IQ for real-checkpoint smoke only",
+      "U_s": "not opened by diagnostic; truth always hidden",
+      "V": "complete source V, labels for precision diagnosis, zero updates"
+    },
+    "train_ratio": "unchanged per existing contract; no new training",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-V pseudo-label precision proxy; not U truth correctness, target accuracy, significance or new blind generalization."
+  },
+  "checkpoint": {
+    "initialization": "frozen same-contract ordinary-PL E20 scratch prefix; explicit PL was already active E14-E20",
+    "sources": [
+      "33 exact ordinary-PL E20 prefixes from original fixed matrices"
+    ],
+    "contract_check_ref": "source_quality.validate_prefix_headers, source SourceDataset physical-ID binding",
+    "provenance_verdict": "ACTUAL_PAYLOAD_CHECKED_BEFORE_MODEL_LOADING; reject native U/EMA/teacher/inheritance/target",
+    "selection_rule": "all eleven fixed contracts x three seeds; no accuracy ranking, no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-channel-pl-source-20261025",
+    "gpu_policy": "physical5/6/7 map to seeds2026092701/02/03; <=2 own/card, <=3 total CUDA/pending/card including foreign; >=10000MiB free",
+    "remote_run_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01",
+    "remote_log_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/channel_pl_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.source_runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-ChannelPL-source-release-r01/runtime.json",
+    "stop_rule": "Any technical failure stops new admissions; already healthy children finish, outputs preserved. No retries or target-result stopping. Scientific fail is a completed negative diagnostic."
+  },
+  "expected_artifacts": [
+    "per-row actual-checkpoint L_s no-query smoke PASS",
+    "33 full source V completion/correctness counts",
+    "fixed scientific-rule verdicts and per RX/day/class source counts",
+    "source simulator coverage",
+    "model/head/buffer updates=0; U-truth/query/target/G reads=0",
+    "PID/CWD/argv/GPU/log-growth post-state",
+    "same-run report and registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "candidate precision",
+      "transfer precision",
+      "precision drop pp",
+      "transfer fraction",
+      "source coverage"
+    ],
+    "dimensions": [
+      "protocol",
+      "F seed",
+      "source RX",
+      "source day",
+      "class"
+    ],
+    "prediction_ref": "source-only aggregate counts; no target prediction",
+    "scorer_ref": "source_quality.scientific_rule; no independent target scorer needed for this no-target diagnostic"
+  },
+  "rows": [
+    {
+      "row_id": "F0-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/F0-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "source_reference_row": "F0-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/F0-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/F0-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/F0-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "source_reference_row": "F0-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/F0-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/F0-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/F0-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "source_reference_row": "F0-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/F0-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/F0-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/F1_rx_repartition_r01-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "source_reference_row": "F1_rx_repartition_r01-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/F1_rx_repartition_r01-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/F1_rx_repartition_r01-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/F1_rx_repartition_r01-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "source_reference_row": "F1_rx_repartition_r01-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/F1_rx_repartition_r01-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/F1_rx_repartition_r01-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/F1_rx_repartition_r01-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "source_reference_row": "F1_rx_repartition_r01-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/F1_rx_repartition_r01-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/F1_rx_repartition_r01-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/F2_rx_repartition_r01-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "source_reference_row": "F2_rx_repartition_r01-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/F2_rx_repartition_r01-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/F2_rx_repartition_r01-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/F2_rx_repartition_r01-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "source_reference_row": "F2_rx_repartition_r01-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/F2_rx_repartition_r01-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/F2_rx_repartition_r01-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/F2_rx_repartition_r01-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "source_reference_row": "F2_rx_repartition_r01-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/F2_rx_repartition_r01-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/F2_rx_repartition_r01-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/ManyRx-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "ManyRx",
+        "source_reference_row": "ManyRx-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/ManyRx-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/ManyRx-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/ManyRx-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "ManyRx",
+        "source_reference_row": "ManyRx-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/ManyRx-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/ManyRx-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/ManyRx-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "ManyRx",
+        "source_reference_row": "ManyRx-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/ManyRx-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/ManyRx-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "label01-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/label01-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "source_reference_row": "label01-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/label01-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/label01-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "label01-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/label01-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "source_reference_row": "label01-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/label01-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/label01-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "label01-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/label01-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "label01",
+        "source_reference_row": "label01-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/label01-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/label01-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "label05-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/label05-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "source_reference_row": "label05-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/label05-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/label05-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "label05-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/label05-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "source_reference_row": "label05-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/label05-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/label05-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "label05-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/label05-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "label05",
+        "source_reference_row": "label05-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/label05-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/label05-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m1-natural-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m1-natural-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "source_reference_row": "m1-natural-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m1-natural-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m1-natural-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m1-natural-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m1-natural-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "source_reference_row": "m1-natural-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m1-natural-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m1-natural-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m1-natural-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m1-natural-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m1-natural",
+        "source_reference_row": "m1-natural-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m1-natural-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m1-natural-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m2-natural-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m2-natural-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "source_reference_row": "m2-natural-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m2-natural-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m2-natural-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m2-natural-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m2-natural-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "source_reference_row": "m2-natural-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m2-natural-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m2-natural-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m2-natural-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m2-natural-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m2-natural",
+        "source_reference_row": "m2-natural-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m2-natural-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m2-natural-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m3-natural-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m3-natural-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m3-natural",
+        "source_reference_row": "m3-natural-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m3-natural-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m3-natural-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m3-natural-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m3-natural-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m3-natural",
+        "source_reference_row": "m3-natural-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m3-natural-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m3-natural-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m3-natural-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m3-natural-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m3-natural",
+        "source_reference_row": "m3-natural-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m3-natural-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m3-natural-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m4-natural-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m4-natural-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m4-natural",
+        "source_reference_row": "m4-natural-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m4-natural-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m4-natural-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m4-natural-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m4-natural-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m4-natural",
+        "source_reference_row": "m4-natural-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m4-natural-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m4-natural-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m4-natural-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m4-natural-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m4-natural",
+        "source_reference_row": "m4-natural-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m4-natural-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m4-natural-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m6-natural-ChannelPL-source-s2026092701",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m6-natural-ChannelPL-source-s2026092701.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m6-natural",
+        "source_reference_row": "m6-natural-ordinary_PL-s2026092701"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m6-natural-ChannelPL-source-s2026092701",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m6-natural-ChannelPL-source-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m6-natural-ChannelPL-source-s2026092702",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m6-natural-ChannelPL-source-s2026092702.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m6-natural",
+        "source_reference_row": "m6-natural-ordinary_PL-s2026092702"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m6-natural-ChannelPL-source-s2026092702",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m6-natural-ChannelPL-source-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "m6-natural-ChannelPL-source-s2026092703",
+      "method": "fixed ChannelPL source proxy",
+      "purpose": "source falsification",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/configs/m6-natural-ChannelPL-source-s2026092703.json",
+      "resolved_config_ref": "same per-row config",
+      "data_overrides": {
+        "protocol_id": "m6-natural",
+        "source_reference_row": "m6-natural-ordinary_PL-s2026092703"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects exact E20; original physical split392005; source simulator stable seed20261016421 and RX session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "all source V; native source training three As scenarios only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20 frozen checkpoint; two L_s smoke packets + all source V once; zero updates",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/rows/m6-natural-ChannelPL-source-s2026092703",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-source-m33-r01/logs/m6-natural-ChannelPL-source-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.source_runner worker --config CONFIG",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "REPL and ordinary PL target results were exposed; this is adaptive method development and cannot be called a new blind study.",
+    "Fixed recipe uses original T1 L physics share, not a target-tuned new satellite simulator.",
+    "All 33 diagnostics run even on scientific failure; source failures do not count as technical failures.",
+    "No existing REPL/PL artifacts, final PAMF T1 or DURA v1 defaults are modified. Follow-up training/testing requires its own frozen run registration."
+  ],
+  "matrix": {
+    "rows": [
+      {
+        "row_id": "F0-ChannelPL-source-s2026092701",
+        "protocol": "F0",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "F0-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "F0-ChannelPL-source-s2026092702",
+        "protocol": "F0",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "F0-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "F0-ChannelPL-source-s2026092703",
+        "protocol": "F0",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "F0-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "F1_rx_repartition_r01-ChannelPL-source-s2026092701",
+        "protocol": "F1_rx_repartition_r01",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "F1_rx_repartition_r01-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "F1_rx_repartition_r01-ChannelPL-source-s2026092702",
+        "protocol": "F1_rx_repartition_r01",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "F1_rx_repartition_r01-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "F1_rx_repartition_r01-ChannelPL-source-s2026092703",
+        "protocol": "F1_rx_repartition_r01",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "F1_rx_repartition_r01-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "F2_rx_repartition_r01-ChannelPL-source-s2026092701",
+        "protocol": "F2_rx_repartition_r01",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "F2_rx_repartition_r01-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "F2_rx_repartition_r01-ChannelPL-source-s2026092702",
+        "protocol": "F2_rx_repartition_r01",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "F2_rx_repartition_r01-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "F2_rx_repartition_r01-ChannelPL-source-s2026092703",
+        "protocol": "F2_rx_repartition_r01",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "F2_rx_repartition_r01-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "ManyRx-ChannelPL-source-s2026092701",
+        "protocol": "ManyRx",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "ManyRx-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "ManyRx-ChannelPL-source-s2026092702",
+        "protocol": "ManyRx",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "ManyRx-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "ManyRx-ChannelPL-source-s2026092703",
+        "protocol": "ManyRx",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "ManyRx-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "label01-ChannelPL-source-s2026092701",
+        "protocol": "label01",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "label01-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "label01-ChannelPL-source-s2026092702",
+        "protocol": "label01",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "label01-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "label01-ChannelPL-source-s2026092703",
+        "protocol": "label01",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "label01-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "label05-ChannelPL-source-s2026092701",
+        "protocol": "label05",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "label05-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "label05-ChannelPL-source-s2026092702",
+        "protocol": "label05",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "label05-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "label05-ChannelPL-source-s2026092703",
+        "protocol": "label05",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "label05-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m1-natural-ChannelPL-source-s2026092701",
+        "protocol": "m1-natural",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "m1-natural-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m1-natural-ChannelPL-source-s2026092702",
+        "protocol": "m1-natural",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "m1-natural-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m1-natural-ChannelPL-source-s2026092703",
+        "protocol": "m1-natural",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "m1-natural-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m2-natural-ChannelPL-source-s2026092701",
+        "protocol": "m2-natural",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "m2-natural-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m2-natural-ChannelPL-source-s2026092702",
+        "protocol": "m2-natural",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "m2-natural-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m2-natural-ChannelPL-source-s2026092703",
+        "protocol": "m2-natural",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "m2-natural-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m3-natural-ChannelPL-source-s2026092701",
+        "protocol": "m3-natural",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "m3-natural-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m3-natural-ChannelPL-source-s2026092702",
+        "protocol": "m3-natural",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "m3-natural-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m3-natural-ChannelPL-source-s2026092703",
+        "protocol": "m3-natural",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "m3-natural-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m4-natural-ChannelPL-source-s2026092701",
+        "protocol": "m4-natural",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "m4-natural-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m4-natural-ChannelPL-source-s2026092702",
+        "protocol": "m4-natural",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "m4-natural-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m4-natural-ChannelPL-source-s2026092703",
+        "protocol": "m4-natural",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "m4-natural-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m6-natural-ChannelPL-source-s2026092701",
+        "protocol": "m6-natural",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "source_reference_row": "m6-natural-ordinary_PL-s2026092701",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m6-natural-ChannelPL-source-s2026092702",
+        "protocol": "m6-natural",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "source_reference_row": "m6-natural-ordinary_PL-s2026092702",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      },
+      {
+        "row_id": "m6-natural-ChannelPL-source-s2026092703",
+        "protocol": "m6-natural",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "source_reference_row": "m6-natural-ordinary_PL-s2026092703",
+        "epoch": 20,
+        "source_only": true,
+        "new_training_updates": 0,
+        "target_reads": 0
+      }
+    ],
+    "recipe": {
+      "raw_threshold": 0.95,
+      "channel_threshold": 0.95,
+      "channel_to_raw_CE_ratio": 0.25,
+      "U_weight": 1.0,
+      "physical_half": "alternating_native_T1_half",
+      "generator": "separate_original_T1_Practical",
+      "channel_gate": "raw_accepted_and_same_argmax_and_channel_confident",
+      "invalid_channel": "exact_original_raw_PL",
+      "normalizer": "per_sample_1_plus_channel_ratio",
+      "U_pair_KL": 0.0,
+      "EMA_teacher": false,
+      "new_head": false,
+      "new_inference_parameters": 0
+    },
+    "scientific_rule": {
+      "min_transfer_precision_percent": 99.0,
+      "max_precision_drop_pp": 0.1,
+      "min_transfer_fraction": 0.1,
+      "zero_transfer_fails": true
+    },
+    "seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "allowed_gpus": [
+      5,
+      6,
+      7
+    ],
+    "max_own_workers_per_GPU": 2,
+    "max_total_compute_processes_per_GPU": 3,
+    "minimum_free_MiB": 10000,
+    "source_V": "all existing source V; no model/head/buffer updates",
+    "checkpoint": "same-contract ordinary-PL E20 scratch prefix; actual payload flags checked",
+    "no_U_truth": true,
+    "no_target_access": true,
+    "no_G_training": true
+  },
+  "registered_at": "2026-10-25T07:44:07+00:00"
+}
