@@ -35,7 +35,7 @@ def build_references(features,labels,receivers,source_rxs,classes,role):
     return torch.stack(means).detach(),torch.tensor(counts,dtype=torch.long)
 
 
-def relation_loss(features,references,receivers,source_rxs,target,accepted):
+def relation_terms(features,references,receivers,source_rxs,target,accepted):
     rxs=tuple(source_rxs);n=len(features)
     if (features.ndim!=2 or features.shape[1]!=160 or references.ndim!=3 or references.shape[1:]!=(len(rxs),160)
             or target.shape!=(n,len(references)) or accepted.shape!=(n,) or receivers.shape!=(n,)
@@ -48,8 +48,11 @@ def relation_loss(features,references,receivers,source_rxs,target,accepted):
     keep=receivers[:,None]!=torch.tensor(rxs,device=receivers.device)[None,:]
     similarity=torch.einsum('nd,crd->ncr',F.normalize(features,dim=1),references)
     score=(similarity*keep[:,None,:]).sum(2)/keep.sum(1)[:,None]
-    per_packet=-(target*F.log_softmax(score/TEMPERATURE,dim=1)).sum(1)
-    return (per_packet*accepted).mean()
+    return -(target*F.log_softmax(score/TEMPERATURE,dim=1)).sum(1)
+
+
+def relation_loss(features,references,receivers,source_rxs,target,accepted):
+    return (relation_terms(features,references,receivers,source_rxs,target,accepted)*accepted).mean()
 
 
 def decide_shared_dose(rows):

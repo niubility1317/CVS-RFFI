@@ -1,0 +1,49 @@
+{
+  "status": "SOURCE_FEATURE_ALIGNMENT_COMPLETE",
+  "code_commit": "481f3cb1618b1242db5f8c8b4479d823489460c6",
+  "models": [
+    "E30",
+    "PLControl",
+    "RawReference",
+    "RestoredReference",
+    "PairedReference"
+  ],
+  "model_seeds": [
+    2026092701
+  ],
+  "L_exposures": 1536,
+  "U_exposures": 3072,
+  "F_packet_forwards": 38400,
+  "feature_gradient_calls": 540,
+  "source_L_smoke_packets": 2,
+  "reference_role": "L_s",
+  "reference_updates": 0,
+  "G_packet_forwards": 0,
+  "optimizer_updates": 0,
+  "model_parameter_updates": 0,
+  "model_parameter_gradients": 0,
+  "head_fit_updates": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "U_truth_read": false,
+  "all_model_parameters_and_registered_buffers_unchanged": true,
+  "seconds": 9.74181836983189,
+  "scope": "Frozen source L/U feature-gradient associations;U agreement is not truth accuracy;not full parameter/AdamW updates or target benefit;no automatic method expansion",
+  "independent_completion_readback": "VERIFIED",
+  "actual_checkpoint_smoke": {
+    "status": "PASS",
+    "source_role": "L_s",
+    "physical_packets": 2,
+    "frozen_F": 5,
+    "actual_default_heads": true,
+    "feature_gradients_finite": true,
+    "model_parameter_updates": 0,
+    "optimizer_updates": 0,
+    "target_reads": 0
+  },
+  "live_PID_CWD_GPU_window": "NOT_CAPTURED:run completed before first observer;no scientific rerun",
+  "terminal_PID_absent": true,
+  "complete_source_cells": 360,
+  "complete_source_batch_model_view_records": 180,
+  "normalization": "Stored gradient norms differentiate batch-mean loss;CSV also rescales by L128/U256 for per-packet loss derivatives;cosines/ratios unchanged"
+}
