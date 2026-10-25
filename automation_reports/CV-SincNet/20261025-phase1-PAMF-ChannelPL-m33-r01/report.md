@@ -3,7 +3,7 @@
 - run_id：`20261025-phase1-PAMF-ChannelPL-m33-r01`
 - group_id：`phase1-pamf-channel-pl-20261025`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING；六条实际训练进程已核实，新的目标结果尚未返回。
+- 当前登记状态：PARTIAL；首批 F0/F1 六条已完成全部测试，第二批六条训练健康运行。
 
 ## 固定方法与比较
 
@@ -58,7 +58,7 @@
 
 逐人群、逐景、对照均值／SD、seed内配对差／配对SD分别见 [F0三seed完整已评分汇总](interim_F0_three_seed.csv) 与 [F1三seed完整已评分汇总](interim_F1_rx_repartition_r01_three_seed.csv)。这里每张表均已完整三个 seed；整轮11设置矩阵仍未完成，其他健康训练与固定测试按原计划继续。源域99%以上伪标签正确率没有自动转化为目标提升，既有单纯As置信度筛选与固定小剂量CE不足以支撑性能目标。
 
-汇总阶段发现两个历史 F0 监督 score 在原 m201 的 CPU 技术恢复目录，不能从统一 readouts 路径推断。读取其实际登记 job／config／completion 解析到了正确同 row、同 seed 的历史产物，没有重新测试、重选 checkpoint 或替换比较方法。当前正在修复仅供报告使用的引用路径；训练／预测／独立评分的科学执行 commit 仍为1fa92，不受此路径修复影响。
+汇总阶段发现两个历史 F0 监督 score 在原 m201 的 CPU 技术恢复目录，不能从统一 readouts 路径推断。读取其实际登记 job／config／completion 解析到了正确同 row、同 seed 的历史产物，没有重新测试、重选 checkpoint 或替换比较方法。**VERIFIED：已修复仅供报告使用的两个引用路径**，原99项引用映射另存备份；独立新连接读回确认当前99份引用全部正确，只有该两项位置改变。报告修复执行 commit 为 `ebfa2c5aea4540ee01fbc4d37414005e1d7d7223`，五项聚焦检查覆盖历史恢复目录、缺失／错误 seed、重复完成记录拒绝及幂等备份。训练／预测／独立评分的科学执行 commit 仍为1fa92；模型、数据、prediction、score及运行中的科学配置均未改写。
 
 测试完整保留逐 RX/day/TX、confusion、G 相对 raw 的净纠错、三 seed 样本 SD 和 seed 内配对差。F监督＋G-LU 使用同一无标签恢复器，不称为全系统 L-only。
 
