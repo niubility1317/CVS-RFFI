@@ -1,0 +1,226 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-RXReference-alignment-m1-r01",
+  "group_id": "phase1-pamf-receiver-reference-20261025",
+  "display_name": "冻结模型的身份参照与默认头特征梯度一致性诊断",
+  "description": "同seed E30/PLControl及三参照F50全部冻结，在12批可见L/隐藏U上比较参照目标与真实默认头soft/hard身份目标的特征梯度；不训练、不读V/target。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-RXReference-alignment"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "source-only",
+    "frozen-F",
+    "feature-gradient",
+    "defaulthead"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-RXReference-sourceHold-m3-r01",
+    "20261025-diagnostic-PAMF-RXReference-dose-m1-r01"
+  ],
+  "authorization": "持续优化原PAMF SSL目标；source参照三变体未过预定条件，继续按已公开计划只在合法L/U上冻结诊断辅助目标与默认头关系。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-diagnostic-PAMF-RXReference-alignment-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "12x128 visible-L raw only,plusL2 real-weight smoke;references reusefixed6300L",
+      "U_s": "12x256 hidden-label source packets,raw andcachedGviews;softq fromfrozenrawE30ensemble",
+      "V": "not opened"
+    },
+    "train_ratio": "original L6300/U56700/V27000 preserved;no model training or optimizer",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "feature-gradient associations only;not U truth accuracy,full-model optimizer effect,causality,target gain"
+  },
+  "checkpoint": {
+    "initialization": "five frozen active readers same seed01:E30,PLControlF50,RawReferenceF50,RestoredReferenceF50,PairedReferenceF50",
+    "sources": [
+      "original ownE20+10 E30",
+      "original PLControl ownE30+20",
+      "three current sourceHold ownE30+20",
+      "same fixedLrefs/Ucache"
+    ],
+    "contract_check_ref": "load_sources original ownE20/E30;load_reader PLControl;current parents andactualfinal50 headers;refs/cache exact sourcecontract andG",
+    "provenance_verdict": "all sameoriginalF0 source-only ancestry/defaulthead;modelparameters frozen",
+    "selection_rule": "all five readers andstrata retained;no training/checkpoint or target selection;no automatic method expansion"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-restored-source-20261025",
+    "gpu_policy": "GPU0 only,one own worker,global CUDA+pending<2 at admission,free>=10000MiB,CPU2threads;preserve others",
+    "remote_run_root": "PROJECT/runs/20261026-diagnostic-PAMF-RXReference-alignment-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261026-diagnostic-PAMF-RXReference-alignment-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/receiver_alignment",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_alignment_source dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-RXReference-alignment-release-r01/runtime.json",
+    "stop_rule": "First provenance/role/actualhead-smoke/nonfinite/modelstatechange/technical error stops only thisdiagnostic;preservepartials;no automaticretry/foreignprocessintervention."
+  },
+  "expected_artifacts": [
+    "actual L2 five-defaulthead featuregradient smoke",
+    "12xL128/U256 fullsourcegradient batches",
+    "all360 source aggregate cells includingempties/zero-gradientvalidcounts",
+    "allregisteredbuffers/parameters unchanged andnoparametergradients",
+    "zerooptimizer/V/target/Utruth/newhead/Gforwards",
+    "PID/CWD/argv/GPU/loggrowth",
+    "same-run public source associations andlimitations"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "featuregradient cosine reference-vs-defaultheadsoft/hard",
+      "perpacketfeaturegradientnorms",
+      "head target probability",
+      "agreement with visibleLlabel/frozenrawpseudo",
+      "finite-gradient samplecounts"
+    ],
+    "dimensions": [
+      "five frozen readers",
+      "studentseed01 only",
+      "Lraw/Uraw/3cachedGviews/pooledG",
+      "all/accepted/acceptedheld/acceptedtrainedRX",
+      "headagreement/disagreement"
+    ],
+    "prediction_ref": "no target orV predictions;only aggregatedsource gradientmetrics",
+    "scorer_ref": "visibleL actuallabels;U onlycachedrawpseudo,noUtruth"
+  },
+  "rows": [
+    {
+      "row_id": "F0-feature-alignment-s2026092701",
+      "method": "frozen source identity-gradient comparison",
+      "purpose": "diagnose dose versus objectivealignment",
+      "config_ref": "receiver_alignment_source.py fixedmatrix andminimalsourcecontext",
+      "resolved_config_ref": "runtime/contextarchive",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only frozen seed01 active readers;cachedpseudo usesoriginal threeE30 teacherseeds2026092701/02/03;loadersseed01.",
+      "k": null,
+      "scenario": "Lraw,Uraw,UthreecachedGsourceviews only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "12xL128/U256;fiveF*(1536+2*3072)=38400packetforwards,540featureautogradcalls;L2smoke separate;Gforwards0",
+      "output_root": "PROJECT/runs/20261026-diagnostic-PAMF-RXReference-alignment-m1-r01",
+      "log_path": "PROJECT/releases/20261026-diagnostic-PAMF-RXReference-alignment-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_alignment_source dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-RXReference-alignment-release-r01/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-screen threevariants allfailed+.3pp;thefailedmatrix isnotexpandedorre-ranked.",
+    "Thisrun measures frozen feature gradients,not fullencoder gradient directions orAdamW updates.",
+    "U hardtargets comeonlyfromfrozenrawpseudo,nevertrueUlabels;agreement cannotbe calledaccuracy.",
+    "Allreaders useactualdefaulthead;no fitted/probe head,newprojection,parameterupdate,Vprototype ornewG.",
+    "Lsmoke metadata usesprojecttolist-to-long route,not unsupportedN607NumPybridge.",
+    "Source-only associations guide future independentpreregistration;no target-derived parameters orclaim ofgoalachievement."
+  ],
+  "matrix": {
+    "protocol": "F0",
+    "active_frozen_models": [
+      "E30",
+      "PLControl",
+      "RawReference",
+      "RestoredReference",
+      "PairedReference"
+    ],
+    "student_model_seeds": [
+      2026092701
+    ],
+    "reference_teacher_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "L_batch": 128,
+    "U_batch": 256,
+    "batches": 12,
+    "L_exposures": 1536,
+    "U_exposures": 3072,
+    "F_packet_forwards": 38400,
+    "feature_autograd_calls": 540,
+    "source_L_reference_run": "20261025-diagnostic-PAMF-RXReference-dose-m1-r01",
+    "U_cache_run": "20261025-phase1-PAMF-RestoredPL-m9-r01",
+    "L_target": "visibletrueonehot",
+    "U_target_soft": "samefrozenrawconsensusq",
+    "U_target_hard": "argmaxq,nottruth",
+    "gradients": "sourcefeaturezleaf only;allmodelparametersfrozen;soft/hardrealdefaultheadvsreferenceCE",
+    "views": [
+      "L_raw",
+      "U_raw",
+      "U_G_practical_low_suburban",
+      "U_G_practical_mid_urban",
+      "U_G_practical_low_urban"
+    ],
+    "pooled_G": "aggregateonly,noadditionalforward",
+    "groups": [
+      "all_seen",
+      "accepted",
+      "accepted_held_RX",
+      "accepted_trained_RX"
+    ],
+    "decisions": [
+      "all",
+      "agrees",
+      "disagrees"
+    ],
+    "temperature": 0.1,
+    "reference_own_RX_excluded": true,
+    "norm_valid_epsilon": 1e-12,
+    "zero_sample_policy": "n0andNone,neverfabricatemean",
+    "reference_updates": 0,
+    "model_parameter_updates": 0,
+    "model_parameter_gradients": 0,
+    "optimizer_updates": 0,
+    "V_reads": 0,
+    "U_truth": false,
+    "target": false,
+    "G_packet_forwards": 0,
+    "allowed_gpus": [
+      0
+    ]
+  },
+  "registered_at": "2026-10-25T17:21:28+00:00"
+}
