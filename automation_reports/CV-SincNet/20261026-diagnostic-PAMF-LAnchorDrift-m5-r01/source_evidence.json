@@ -1,0 +1,307 @@
+{
+  "status": "SOURCE_L_ANCHOR_DRIFT_COMPLETE",
+  "code_commit": "6b0f286fda7ceb7e32b84bb6dcd7bc564166ebce",
+  "L_records": 6300,
+  "query_models": [
+    {
+      "name": "E30",
+      "epoch": 30,
+      "model_seed": 2026092701
+    },
+    {
+      "name": "PLControlF50",
+      "run_id": "20261025-phase1-PAMF-RestoredPL-m9-r01",
+      "row_id": "F0-PLControl-s2026092701",
+      "epoch": 50,
+      "model_seed": 2026092701
+    },
+    {
+      "name": "GTask1xF50",
+      "run_id": "20261026-phase1-PAMF-TaskScaledRef-sourceHold-m3-r01",
+      "row_id": "F0-GTaskScaled-sourceHold-s2026092701",
+      "epoch": 50,
+      "model_seed": 2026092701
+    },
+    {
+      "name": "GTask2xF50",
+      "run_id": "20261026-phase1-PAMF-TaskRefDose-sourceHold-m4-r01",
+      "row_id": "F0-GTask2x-sourceHold-s2026092701",
+      "epoch": 50,
+      "model_seed": 2026092701
+    },
+    {
+      "name": "GTask3xF50",
+      "run_id": "20261026-phase1-PAMF-TaskRefDose-sourceHold-m4-r01",
+      "row_id": "F0-GTask3x-sourceHold-s2026092701",
+      "epoch": 50,
+      "model_seed": 2026092701
+    }
+  ],
+  "query_model_seeds": [
+    2026092701
+  ],
+  "anchors": [
+    "FixedE30",
+    "CurrentL"
+  ],
+  "views": [
+    "raw",
+    "G_raw",
+    "practical_low_suburban",
+    "G_practical_low_suburban",
+    "practical_mid_urban",
+    "G_practical_mid_urban",
+    "practical_low_urban",
+    "G_practical_low_urban"
+  ],
+  "source_channel_namespace": "PAMF/set_reference/L/fixed",
+  "zero_drift_control_max_abs_difference": 0.0,
+  "zero_drift_predictions_and_gradients_match": true,
+  "all_model_parameters_and_registered_buffers_unchanged": true,
+  "all_model_parameter_gradients_none": true,
+  "reference_F_packet_forwards": 31500,
+  "diagnostic_F_packet_forwards": 252000,
+  "G_packet_forwards": 25200,
+  "feature_gradient_calls": 3000,
+  "optimizer_updates": 0,
+  "U_reads": 0,
+  "U_truth_read": false,
+  "V_reads": 0,
+  "target_reads": 0,
+  "head_fit_updates": 0,
+  "seconds": 51.95989869395271,
+  "scope": "Frozen visible-L anchor geometry only;five checkpoints ofone modelseed,not five seeds;defaultheads unchanged;not new F training or target benefit",
+  "artifact_audit": {
+    "status": "VERIFIED",
+    "fixed_shape": [
+      6,
+      5,
+      160
+    ],
+    "current_shape": [
+      5,
+      6,
+      5,
+      160
+    ],
+    "normalization_max_error": 1.1920928955078125e-07,
+    "packet_array_shape": [
+      5,
+      8,
+      2,
+      6300
+    ],
+    "all1500_aggregate_counts_and_metrics_recomputed": true,
+    "all150_center_cells_recomputed": true,
+    "unique_L_records": 6300,
+    "source_only": true,
+    "new_model_forward": 0,
+    "observer_optimizer_updates": 0,
+    "new_target_reads": 0
+  },
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "source_role": "L_s",
+    "physical_packets": 2,
+    "query_models": [
+      "E30",
+      "PLControlF50",
+      "GTask1xF50",
+      "GTask2xF50",
+      "GTask3xF50"
+    ],
+    "default_head": true,
+    "full_F50_ancestry": true,
+    "optimizer_updates": 0,
+    "U_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "live_PID_CWD_argv_GPU_log_growth_verified": true,
+  "current_process_terminal": true,
+  "independent_post_state": "VERIFIED",
+  "architecture_inventory": {
+    "status": "READ_ONLY_ARCHITECTURE",
+    "normalizers": [
+      {
+        "name": "core.id_backbone.time_fuse.1",
+        "type": "GroupNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.t1.norm",
+        "type": "GroupNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.t2.norm",
+        "type": "GroupNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.t3.norm",
+        "type": "GroupNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.f1.norm",
+        "type": "GroupNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.f2.norm",
+        "type": "GroupNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.f3.norm",
+        "type": "GroupNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.pa_b1.norm",
+        "type": "GroupNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.pa_b2.norm",
+        "type": "GroupNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.pa_b3.norm",
+        "type": "GroupNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.cls_head.base_norm",
+        "type": "LayerNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "core.id_backbone.cls_head.pa_norm",
+        "type": "LayerNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "response_projection.3",
+        "type": "LayerNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      },
+      {
+        "name": "sequence_pool.output_norm",
+        "type": "LayerNorm",
+        "track_running_stats": null,
+        "buffers": {}
+      }
+    ],
+    "head_type": "ResidualPhysicalHead",
+    "head_repr": "ResidualPhysicalHead(\n  (base_norm): LayerNorm((160,), eps=1e-05, elementwise_affine=True)\n  (pa_norm): LayerNorm((160,), eps=1e-05, elementwise_affine=True)\n)",
+    "head_parameters": {
+      "gain": [
+        160
+      ],
+      "weight": [
+        6,
+        160
+      ],
+      "base_norm.weight": [
+        160
+      ],
+      "base_norm.bias": [
+        160
+      ],
+      "pa_norm.weight": [
+        160
+      ],
+      "pa_norm.bias": [
+        160
+      ]
+    },
+    "classifier_functions": {
+      "encoder_classify": "    def classify_features(self,features):return self.core.id_backbone.cls_head.classify(features)\n"
+    },
+    "registered_buffers": {
+      "core.id_backbone.sinc.low_origin_hz": [
+        24,
+        1
+      ],
+      "core.id_backbone.sinc.band_origin_hz": [
+        24,
+        1
+      ],
+      "core.id_backbone.sinc.t_": [
+        1,
+        79
+      ],
+      "core.id_backbone.sinc.window_": [
+        1,
+        79
+      ],
+      "core.id_backbone.hf.k1": [
+        1,
+        1,
+        2
+      ],
+      "core.id_backbone.hf.k2": [
+        1,
+        1,
+        3
+      ],
+      "response.bank_real": [
+        320,
+        20
+      ],
+      "response.bank_imag": [
+        320,
+        20
+      ],
+      "response.tone_bins": [
+        12
+      ],
+      "sequence_pool.views.0.omega": [
+        14,
+        6
+      ],
+      "sequence_pool.views.0.descriptor_lift": [
+        28,
+        28
+      ],
+      "sequence_pool.views.1.omega": [
+        14,
+        6
+      ],
+      "sequence_pool.views.1.descriptor_lift": [
+        28,
+        28
+      ],
+      "sequence_pool.views.2.omega": [
+        14,
+        6
+      ],
+      "sequence_pool.views.2.descriptor_lift": [
+        28,
+        28
+      ]
+    },
+    "new_model_forward": 0,
+    "new_IQ_reads": 0,
+    "new_optimizer_updates": 0,
+    "new_target_reads": 0
+  }
+}
