@@ -1,1 +1,2 @@
 {"at": "2026-10-25T18:24:59+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-25T18:29:57+00:00", "status": "RUNNING", "note": "实际smoke通过；控制器/三训练PID CWD argv GPU和日志增长独立核实，所有完整前缀合法，只有一个student seed；没有目标结果。", "evidence": ["launch_evidence.json", "available_source_execution.csv"], "row_id": null}
