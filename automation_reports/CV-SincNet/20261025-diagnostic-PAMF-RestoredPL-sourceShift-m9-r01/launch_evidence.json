@@ -1,0 +1,16 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "code_commit": "b6260ca62520fa455fac36b3e7fa285389713ce2",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "post_launch_PID_CWD_cmdline_GPU": "VERIFIED",
+  "post_launch_log_growth": "VERIFIED",
+  "real_checkpoint_smoke": "PASS",
+  "smoke_source_L_packets": 2,
+  "frozen_F_models": 9,
+  "frozen_G_models": 1,
+  "smoke_optimizer_updates": 0,
+  "smoke_target_reads": 0,
+  "scope": "Frozen source diagnostic only; no new training or target evaluation",
+  "transport_recovery": "Local connection-config path failed before remote transfer; existing archive reused after remote run/release absence check"
+}
