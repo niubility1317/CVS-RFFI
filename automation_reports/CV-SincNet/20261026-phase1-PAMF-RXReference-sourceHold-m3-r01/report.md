@@ -3,7 +3,7 @@
 - run_id：`20261026-phase1-PAMF-RXReference-sourceHold-m3-r01`
 - group_id：`phase1-pamf-receiver-reference-20261025`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（独立核实三个源训练worker已实际更新；不代表目标达成）
 
 ## 目的与对照
 
@@ -31,3 +31,7 @@
 ## 发布前范围
 
 详见 [最小预登记](preregistration.md)。三个方法变体仅有一个student seed2026092701；不是三种子测试。固定原E30+20、共同源剂量0.07145844915553692及默认头联合训练，完整源V八视图逐行自动评估；源条件通过后未来三种子矩阵另行登记。本run不访问目标数据，不替换默认模型。两项新检查与compile通过，一次独立P0/P1审查PASS；真实权重联合backward smoke为launcher第一步。
+
+## 三条源验证训练已实际更新
+
+VERIFIED_RUNNING，科学代码 `37dc44e3dd52854a415ca5f7663669b417171691`。三个变体均已进入真实更新，实际物理GPU为0/0/1，只有student seed2026092701。真实E30/defaulthead/L128-U256联合backward smoke通过；独立PID/CWD/argv/GPU和step日志增长核实。当前可用完整新增step记录分别为[261, 262, 278]，不是E50完成或新目标结果。原L768包、AsKL0、隐藏U、共同升温权重和零G/参照更新的最新记录符合配置。见 [启动证据](launch_evidence.json) 和 [启动源进度](startup_source_progress.csv)。逐行训练后自动完成完整源V八视图；本run不包含目标访问或三种子扩展。

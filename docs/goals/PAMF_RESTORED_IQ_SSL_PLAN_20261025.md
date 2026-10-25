@@ -162,3 +162,9 @@ V仍是原单一27000条角色；只按RX标注结果，不另建V_cal/V_select�
 先冻结这套科学阈值与源比较规则，再实现/发布。若不能在未参与新增监督的源RX保持增益，就先停止该机制的扩展，不能用已参与RX的漂亮结果替代。若通过，再固定正式三种子矩阵与所有参数，沿相同原父独立训练20轮；逐行完成 raw/同G-LU、三类泛化、七视图固定预测后独立truth-last。三个最终目标仍对同一个候选联合验收，保留已曝光基准的研发背景，不承诺源阈值能保证clean+1 pp或星地+1.5 pp。
 
 该计划响应“先分析可行计划”的当前要求；本次交付仅完成源诊断和方案，没有发布上述新训练。资源沿用户所有GPU可用的授权，实际启动时仍核实每卡总容量、最多两worker并保护其他owner。后续实验按最小工作流登记、一次审查和真实checkpoint smoke执行，不增加新的审批或文档门槛。
+
+## 2026-10-26 源剂量完成与单种子训练启动
+
+无更新源诊断已在真实E30/G上完成12批与60次梯度计算，L参照仅由6300条可见源L建立；全部模型参数/注册buffers不变，V/目标/U真值读取和optimizer更新均为0。预定共同剂量为0.07145844915553692，三个分支加权中位梯度比为10%/9.850660%/9.537315%，仅是源梯度代理。完整证据见 [源剂量报告](../../automation_reports/CV-SincNet/20261025-diagnostic-PAMF-RXReference-dose-m1-r01/report.md)。
+
+后续源验证run `20261026-phase1-PAMF-RXReference-sourceHold-m3-r01` 已VERIFIED_RUNNING，RawReference/RestoredReference/PairedReference只用一个student seed2026092701，均原E30独立+20到E50。代码commit `37dc44e3dd52854a415ca5f7663669b417171691`；真实joint backward smoke和独立进程/GPU/源step日志增长均已核实，实际GPU0两条、GPU1一条。排除RX1的新增监督、完整V八视图、+0.3pp/-0.1pp源科学规则及源选择均按前述计划固定；没有新目标结果或默认模型替换。三个历史教师前缀90轮共享、三个新尾60轮，合计150唯一F轮，own E30不重复计算。详见 [新源验证run](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-RXReference-sourceHold-m3-r01/report.md)。该运行状态不代表三种子性能或目标达成。

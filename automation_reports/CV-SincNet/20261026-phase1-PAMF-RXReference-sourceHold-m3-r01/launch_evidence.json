@@ -1,0 +1,43 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "code_commit": "37dc44e3dd52854a415ca5f7663669b417171691",
+  "methods": [
+    "RawReference",
+    "RestoredReference",
+    "PairedReference"
+  ],
+  "student_seeds": [
+    2026092701
+  ],
+  "physical_GPUs": [
+    0,
+    0,
+    1
+  ],
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "independent_controller_and_children_PID_CWD_argv_GPU": "VERIFIED",
+  "independent_source_step_log_growth": "VERIFIED",
+  "actual_joint_backward_smoke": {
+    "status": "PASS",
+    "model_seed": 2026092701,
+    "L_forward_packets": 768,
+    "U_seen": 256,
+    "extra_accepted": 185,
+    "head_finite_nonzero": true,
+    "optimizer_updates": 0,
+    "query_reads": 0,
+    "U_truth_read": false,
+    "method": "PairedReference"
+  },
+  "source_step_records_available": [
+    261,
+    262,
+    278
+  ],
+  "new_epoch_budget_per_student": 20,
+  "final_epoch": 50,
+  "source_selection_not_yet_complete": true,
+  "target_reads": 0,
+  "scope": "Startup/post-launch evidence,not complete training,not three studentseeds or new target benefit"
+}
