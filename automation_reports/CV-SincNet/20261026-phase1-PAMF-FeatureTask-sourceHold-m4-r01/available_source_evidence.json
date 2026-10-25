@@ -4,41 +4,41 @@
     {
       "method_a": "GFeatureHard",
       "method_b": "GJointHard",
-      "common_available_steps": 156,
+      "common_available_steps": 2174,
       "all_cumulative_extra_acceptances_equal": true
     },
     {
       "method_a": "GFeatureHard",
       "method_b": "HFeatureHard",
-      "common_available_steps": 156,
+      "common_available_steps": 2174,
       "all_cumulative_extra_acceptances_equal": true
     },
     {
       "method_a": "GFeatureHard",
       "method_b": "HGFeatureHard",
-      "common_available_steps": 142,
+      "common_available_steps": 2174,
       "all_cumulative_extra_acceptances_equal": true
     },
     {
       "method_a": "GJointHard",
       "method_b": "HFeatureHard",
-      "common_available_steps": 156,
+      "common_available_steps": 2175,
       "all_cumulative_extra_acceptances_equal": true
     },
     {
       "method_a": "GJointHard",
       "method_b": "HGFeatureHard",
-      "common_available_steps": 142,
+      "common_available_steps": 2194,
       "all_cumulative_extra_acceptances_equal": true
     },
     {
       "method_a": "HFeatureHard",
       "method_b": "HGFeatureHard",
-      "common_available_steps": 142,
+      "common_available_steps": 2175,
       "all_cumulative_extra_acceptances_equal": true
     }
   ],
-  "total_available_records": 612,
+  "total_available_records": 8772,
   "expected_extra_per_epoch": 41939,
   "source_weights": {
     "G": 0.05941532657537612,
@@ -73,6 +73,6 @@
   },
   "observer_optimizer_updates": 0,
   "new_target_reads": 0,
-  "observed_at_UTC": "2026-10-25T22:04:19.607858+00:00",
+  "observed_at_UTC": "2026-10-25T22:19:18.407740+00:00",
   "scope": "Every currently complete record,not full E50 or target benefit;live gzip tail may remain buffered;no parameter or queue changes"
 }
