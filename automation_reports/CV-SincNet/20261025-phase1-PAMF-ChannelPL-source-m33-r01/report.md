@@ -62,6 +62,16 @@ F0 两法的 U 曝光均为 6293700 次，普通 PL 接受率 94.8482%，REPL 94
 
 本 run 无训练、无目标测试，不标作 SSL 研发完成。后续独立 run `20261025-phase1-PAMF-ChannelPL-m33-r01` 已固定同一个配方，执行匹配的 E20＋own10＋own20、raw／同契约 G-LU 的 clean＋六景及三类人群评测，保留匹配普通 PL 和监督参照。原 clean≥+1 pp、六景>+1.5 pp 目标仍未达成。
 
+## 门控误差与类别集中诊断
+
+进一步分解同一份既有计数，不新增 IQ、模型、U 真值或目标读取。以 raw 已接受的物理半批为候选集，信道门控接受／拒绝两组严格相加还原候选数及正确数；逐行和 480 个源 RX/day/真实类别分组分别保存于 [source_gate_excluded_quality.csv](source_gate_excluded_quality.csv) 与 [source_gate_strata_quality.csv](source_gate_strata_quality.csv)。
+
+33 项中有 32 项的被拒伪标签正确率仍至少 99%；F0 三个 seed 的被拒组正确率分别为 99.9080%、99.8707%、99.8814%。因此，As 自身预测置信度／同类门控排除了不少 raw 标签正确的源观测。该证据提示门控可能同时减少较难物理视图的利用；当前计数没有保存全部 As 预测及逐视图可辨识性，不能据此证明 IQ 身份完全保真、所有被拒样本都适合训练，或宣布取消门控必有目标收益。
+
+总体高正确率也掩盖了错误集中。1% 标注、seed2026092701 的真实类别3：候选 1654 条，raw 伪标签正确率 95.1028%；转移 623 条、正确率 96.3082%；被拒 1031 条、正确率 94.3744%。同 row 的整体转移正确率为 99.5291%，二者口径不同。这里的类别按源 V 真值分组，**不能据此给隐藏真值的 U 样本按真实类别设阈值**；要使用可观察的预测类别或其他可靠性证据，必须另做来源合法、独立固定的诊断。
+
+下一步研究应区分“raw 伪标签错误”与“As 视图当前难识别”，同时检查低标注错误的集中性。当前固定候选仍按原矩阵完成，不因这些诊断热改权重／门控或取消测试。该后验源域分解不改变原 33/33 的全局科学条件，也不能替代目标集验证。
+
 ## 交接
 
 源表：[完整冻结总体汇总](../../../exports/unified_figures/20261025-PAMF-REPL-complete-paper-r01/source_data/summary_overall.csv)、[完整配对效应](../../../exports/unified_figures/20261025-PAMF-REPL-complete-paper-r01/source_data/paired_effects.csv)、[逐设置主公平性](../20261024-phase1-PAMF-REPL-completion-m201-r01/main_fairness.csv)。逐步日志统计与原始诊断保留在私有 local_artifacts；公共数值摘要见本目录 CSV。
