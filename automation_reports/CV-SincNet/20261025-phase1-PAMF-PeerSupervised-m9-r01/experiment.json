@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求继续优化SSL；明确保留健康6条训练、暂缓未开始21条、优先新方案三种子；随后授权全部显卡可用并增加并行方案。",
   "code": {
-    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "commit": "b5ac494c71e70873ba0c6f141f604b78d86daea4",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
     "cwd": "PROJECT/releases/20261025-phase1-PAMF-PeerSupervised-release-r01"

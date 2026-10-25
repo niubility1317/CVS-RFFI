@@ -1,0 +1,14 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "scientific_code_changes": false,
+  "fix": "mandatory existing reference score job handle before publication/prepare",
+  "regression": "missing-handle rejected before release PASS",
+  "independent_targeted_P0P1": "PASS",
+  "unchanged_source_objective_checks": 45,
+  "new_regression_checks": 1,
+  "total_distinct_relevant_checks": 46,
+  "source_configs": 9,
+  "source_config_validation": "PASS",
+  "previous_failure_preserved": true,
+  "first_step": "same real-checkpoint no-query smoke before controller-only handoff"
+}

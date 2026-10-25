@@ -1,0 +1,17 @@
+{
+  "status": "FAILED",
+  "performance_status": "NO_PERFORMANCE_RESULT",
+  "failed_layer": "runtime_prepare_missing_existing_reference_job_handle",
+  "fingerprint": "KeyError: 'reference_score_jobs'",
+  "code_commit": "b5ac494c71e70873ba0c6f141f604b78d86daea4",
+  "controller_exited": true,
+  "new_GPU_workers": 0,
+  "new_model_updates": 0,
+  "new_target_reads": 0,
+  "smoke_started": false,
+  "handoff_started": false,
+  "old_controller_alive": true,
+  "old_healthy_workers": 6,
+  "replacement_run": "20261025-phase1-PAMF-PeerSupervised-m9-r02",
+  "outputs_preserved": true
+}

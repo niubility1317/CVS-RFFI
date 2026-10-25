@@ -5,7 +5,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from experiments.pamf_channel_pl.plan import PROTOCOLS,SEEDS
-from experiments.pamf_peer_supervised.plan import rows,make_config,validate_config
+from experiments.pamf_peer_supervised.plan import rows,make_config,validate_config,validate_runtime_context
 from experiments.pamf_peer_supervised.objective import consensus_mask,PeerObjective,installed
 from experiments.pamf_peer_supervised.priority import owner_matches,worker_item,defer
 
@@ -24,6 +24,14 @@ def context():
 
 def config(method='PeerT1U2'):
     return make_config(context(),next(r for r in rows() if r['method']==method),'PROJECT','commit')
+
+
+def test_missing_historical_score_job_handle_is_rejected_before_release():
+    c=dict(context(),reference={'handles':{}},consensus_source_root='/source',previous_runtime='/old/runtime.json',
+        queue_priority_authorization='human_defer_unstarted_21_preserve_healthy_and_all_GPU')
+    with pytest.raises(ValueError,match='reference_score_jobs'):validate_runtime_context(c)
+    c['reference_score_jobs']='/actual_previous_owner/jobs.json'
+    assert validate_runtime_context(c) is c
 
 
 def test_three_variants_have_three_students_and_unmodified_original_prefixes():

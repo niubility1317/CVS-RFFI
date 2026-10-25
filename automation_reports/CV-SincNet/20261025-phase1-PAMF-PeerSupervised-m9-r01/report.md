@@ -53,3 +53,7 @@ F0 三方案×三学生种子：冻结其他两seed同契约E20确认自身.95�
 本地相关协议负测和训练算术/默认头/冻结教师/精确接管身份检查已通过（45 项）。尚无本轮新学生 target 结果，目标尚未达成。
 
 独立 P0/P1 审查已完成：PASS，未发现会使本次实际运行跑错、越权、覆盖、误杀、无法启动或无法产生合法 prediction 的缺陷。尚未启动任何新训练。
+
+## 实际发布状态：FAILED／NO_PERFORMANCE_RESULT
+
+r01 controller 在 prepare 阶段读取历史对照索引时发现缺少 `reference_score_jobs`，已退出。未启动 smoke、新 GPU worker、新模型更新或新 target 读取；也未接管或停止旧 ChannelPL controller。独立读回旧 controller 和 6 个健康 worker 继续运行。该失败目录和产物保留，修复仅补齐已有历史 jobs 句柄与发布前必要输入校验；使用独立 r02 替代，科学配方、种子、预算不变。证据见 [prepare_failure.json](prepare_failure.json)。

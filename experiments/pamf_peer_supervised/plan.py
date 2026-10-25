@@ -3,7 +3,7 @@ from copy import deepcopy
 from experiments.pamf_channel_pl.plan import SEEDS,validate_context
 from experiments.pamf_channel_pl.training_plan import make_config as scaffold
 
-RUN='20261025-phase1-PAMF-PeerSupervised-m9-r01'
+RUN='20261025-phase1-PAMF-PeerSupervised-m9-r02'
 METHODS=('PeerT1U2','PeerPL2','PeerT1U1')
 RECIPE=dict(threshold=.95,peer_epoch=20,peer_count=2,peer_policy='all_agree_with_own_label',
     replace_own_label=False,peer_gradients=False,peer_updates=0,EMA=False,start_epoch=21,
@@ -11,6 +11,18 @@ RECIPE=dict(threshold=.95,peer_epoch=20,peer_count=2,peer_policy='all_agree_with
     contrast_weight=.1,contrast_levels=['time_down','t2.pool'],CE_normalizer=1.25,
     As_confidence_gate=False,U_truth=False,new_head=False)
 GPUS={'PeerT1U2':(0,3,4),'PeerPL2':(0,3,4),'PeerT1U1':(1,2,7)}
+
+
+def validate_runtime_context(context):
+    validate_context(context)
+    required=('reference','reference_score_jobs','consensus_source_root','previous_runtime','queue_priority_authorization')
+    missing=[k for k in required if not context.get(k)]
+    if missing:raise ValueError('Missing existing runtime input handles: '+','.join(missing))
+    if (not isinstance(context['reference_score_jobs'],str) or not context['reference_score_jobs'].endswith('/jobs.json')
+        or not context['previous_runtime'].endswith('/runtime.json')
+        or context['queue_priority_authorization']!='human_defer_unstarted_21_preserve_healthy_and_all_GPU'):
+        raise ValueError('Recorded reference jobs and authorized previous runtime required')
+    return context
 
 
 def rows():

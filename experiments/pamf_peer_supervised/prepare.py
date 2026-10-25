@@ -4,7 +4,7 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
 from experiments.practical_full_2x2.plan import TASKS
 from experiments.pamf_channel_pl.references import resolve_reference_score_paths
-from .plan import RUN,rows,make_config
+from .plan import RUN,rows,make_config,validate_runtime_context
 
 
 def source_admitted(proof):
@@ -20,7 +20,7 @@ def source_admitted(proof):
 
 
 def prepare(rt):
-    context=read(rt['context']);source_admitted(read(Path(context['consensus_source_root'])/'complete.json'))
+    context=validate_runtime_context(read(rt['context']));source_admitted(read(Path(context['consensus_source_root'])/'complete.json'))
     reference=context['reference'];root=Path(rt['run_root']);jobs=[];sources={};refs={}
     wanted={'F0-'+m+'-s'+str(s) for r in rows() for s in (r['model_seed'],) for m in ('supervised','ordinary_PL','REPL')}
     reference_paths=resolve_reference_score_paths(context['reference_score_jobs'],wanted)

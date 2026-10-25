@@ -1,1 +1,3 @@
 {"at": "2026-10-25T10:29:02+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-25T10:33:35+00:00", "status": "LOCAL_VERIFIED", "note": "45 focused checks and one independent P0P1 PASS; all-GPU priority preregistered; first release step actual E20 no-query smoke", "evidence": ["automation_reports/CV-SincNet/20261025-phase1-PAMF-PeerSupervised-m9-r01/local_verification.json"], "row_id": null}
+{"at": "2026-10-25T10:37:43+00:00", "status": "FAILED", "note": "Prepare KeyError missing reference_score_jobs; no smoke,new GPU/model/target work or old-owner stop; fixed input-only r02 replaces", "evidence": ["automation_reports/CV-SincNet/20261025-phase1-PAMF-PeerSupervised-m9-r01/prepare_failure.json"], "row_id": null}
