@@ -29,3 +29,7 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 具体源梯度/后噪声矩阵、停止规则和发布见 [预登记](preregistration.md)。无 optimizer、无新的 F/G 更新。
+
+## 首批技术失败
+
+FAILED。真实冻结F/G L2 smoke通过，首个源L/U批的梯度计算后，在恢复固定非持久滤波bank时KeyError；原state_dict快照遗漏persistent=False缓冲区。没有完整梯度矩阵或V噪声结果，不据此确定剂量；未创建optimizer、未更新参数、未访问target。旧release/run/log保持。新r02仅修全buffer快照并使用独立root，科学矩阵和阈值保持。

@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "持续PAMF SSL目标和用户先分析可行计划的范围；本次不创建optimizer、不更新F/G、不访问target。",
   "code": {
-    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "commit": "60e3dfca6cc106dbf0853bb6f270fa62a2ef6e5c",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
     "cwd": "PROJECT/releases/20261025-diagnostic-PAMF-DURA-dose-noise-release-r01"

@@ -1,0 +1,17 @@
+{
+  "status": "FAILED",
+  "external_action_status": "FAILED",
+  "failed_layer": "first-gradient-batch buffer restoration",
+  "failure": "state_dict omitted nonpersistent fixed response.bank_real buffer;KeyError after first gradients",
+  "code_commit": "60e3dfca6cc106dbf0853bb6f270fa62a2ef6e5c",
+  "real_checkpoint_source_smoke": "PASS",
+  "gradient_matrix_complete": false,
+  "source_V_noise_complete": false,
+  "source_results_valid": false,
+  "optimizer_constructed": false,
+  "parameter_updates": 0,
+  "target_reads": 0,
+  "old_outputs_preserved": true,
+  "replacement": "20261025-diagnostic-PAMF-DURA-dose-noise-m1-r02",
+  "fix": "snapshot all named buffers including nonpersistent ones;scientific matrix/thresholds unchanged"
+}

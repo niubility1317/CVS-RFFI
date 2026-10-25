@@ -106,13 +106,16 @@ def policies(logits, y):
 
 
 def snapshot(model):
-    return {k:v.detach().clone() for k,v in model.state_dict().items()}
+    values={k:v.detach().clone() for k,v in model.state_dict().items()}
+    values.update({k:v.detach().clone() for k,v in model.named_buffers()})
+    return values
 
 
 def unchanged(model, before):
     import torch
+    current=dict(model.state_dict());current.update(dict(model.named_buffers()))
     return (not model.training and all(not p.requires_grad and p.grad is None for p in model.parameters())
-        and all(torch.equal(v, before[k]) for k,v in model.state_dict().items()))
+        and set(current)==set(before) and all(torch.equal(v, before[k]) for k,v in current.items()))
 
 
 def run(rt):

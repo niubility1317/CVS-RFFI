@@ -10,7 +10,7 @@ from experiments.cric_dura_comparison.io import read,write
 from .restored_source import (SEEDS,SCENES,VIEWS,validate_context,validate_e30,source_channel,
     snapshot,unchanged,validate_prefix_headers)
 
-RUN='20261025-diagnostic-PAMF-DURA-dose-noise-m1-r01'
+RUN='20261025-diagnostic-PAMF-DURA-dose-noise-m1-r02'
 BASELINE_RUN='20261025-diagnostic-PAMF-DURA-paired-source-m3-r01'
 BATCHES=12
 RECIPE=dict(raw_threshold=.95,extra_teacher='three_frozen_E30_unanimous_raw_mean_probability',
@@ -165,7 +165,9 @@ def gradient_probe(models,cfg,payload,g,engine,contract,root):
             with torch.no_grad():
                 for name,value in student.named_buffers():value.copy_(before[name])
             print('SOURCE_DOSE',step,BATCHES,flush=True)
-    if any(p.grad is not None for p in student.parameters()) or any(not torch.equal(v,before[k]) for k,v in student.state_dict().items()):
+    current=dict(student.state_dict());current.update(dict(student.named_buffers()))
+    if (any(p.grad is not None for p in student.parameters()) or set(current)!=set(before)
+            or any(not torch.equal(v,before[k]) for k,v in current.items())):
         raise ValueError('Source gradient probe changed parameters or retained buffer updates')
     result=dict(rows=rows,decision=decide_dose(rows),L_exposures=BATCHES*128,U_exposures=BATCHES*256,
         model_seed=SEEDS[0],backward_calls=BATCHES*4,optimizer_updates=0,persistent_buffer_updates=0,

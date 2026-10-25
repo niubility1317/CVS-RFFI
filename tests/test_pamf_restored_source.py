@@ -1,7 +1,7 @@
 import copy
 import unittest
 import numpy as np
-from experiments.pamf_channel_pl.restored_source import validate_context, validate_e30, paired_counts, policies, SEEDS
+from experiments.pamf_channel_pl.restored_source import validate_context, validate_e30, paired_counts, policies, SEEDS,snapshot,unchanged
 
 
 def context():
@@ -11,6 +11,15 @@ def context():
 
 
 class SourceBoundaryTests(unittest.TestCase):
+    def test_nonpersistent_registered_buffers_are_snapshotted(self):
+        import torch
+        model=torch.nn.Linear(2,2).eval().requires_grad_(False)
+        model.register_buffer('fixed_bank',torch.ones(2),persistent=False)
+        before=snapshot(model)
+        self.assertTrue(unchanged(model,before))
+        model.fixed_bank.add_(1)
+        self.assertFalse(unchanged(model,before))
+
     def test_no_target_or_other_contract_or_duplicate_seed(self):
         validate_context(context())
         c=context();c['target_inputs']='target'
