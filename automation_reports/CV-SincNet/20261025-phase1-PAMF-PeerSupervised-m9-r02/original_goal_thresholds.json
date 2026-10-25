@@ -1,0 +1,45 @@
+{
+  "status": "VERIFIED_ORIGINAL_TARGET_THRESHOLDS",
+  "protocol": "F0",
+  "readout": "raw",
+  "physical_samples_per_seed": 168000,
+  "student_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "population": "cross_rx126000+cross_both42000,all targetRX dates;cross_date separate",
+  "baselines": {
+    "supervised": {
+      "clean_correct": 427318,
+      "six_correct": 2134829,
+      "clean_percent": 84.78531746031746,
+      "six_mean_percent": 70.5961970899471
+    },
+    "ordinary_PL": {
+      "clean_correct": 428308,
+      "six_correct": 2127667,
+      "clean_percent": 84.98174603174603,
+      "six_mean_percent": 70.35935846560847
+    }
+  },
+  "clean": {
+    "rule": ">=1 percentage point above both control three-seed means",
+    "total_decisions": 504000,
+    "minimum_total_correct": 433348,
+    "exact_minimum_percent": "108337/1260",
+    "minimum_percent": 85.98174603174603
+  },
+  "six": {
+    "rule": ">1.5 percentage points above both control three-seed six-scene means",
+    "total_decisions": 3024000,
+    "minimum_total_correct": 2180190,
+    "exact_strict_boundary_percent": "2180189/30240",
+    "strict_boundary_percent": 72.0961970899471,
+    "attainable_minimum_percent": 72.09623015873017
+  },
+  "DURA": "mandatory same-contract fixed G-LU reference,reported separately",
+  "new_target_reads": 0,
+  "new_predictions": 0,
+  "no_feedback_to_training": true
+}

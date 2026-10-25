@@ -1,0 +1,27 @@
+{
+  "status": "VERIFIED_USER_ADDED_PAIRED_DURA_REQUIREMENT",
+  "protocol": "F0",
+  "restorer": "same-contract fixed G-LU",
+  "baseline": {
+    "supervised": {
+      "correct": 2354332,
+      "decisions": 3024000,
+      "six_mean_percent": 77.85489417989417
+    },
+    "ordinary_PL": {
+      "correct": 2360977,
+      "decisions": 3024000,
+      "six_mean_percent": 78.07463624338624
+    }
+  },
+  "rule": "new three-seed six-scene mean strictly exceeds both matching restored controls",
+  "exact_strict_boundary_percent": "2360977/30240",
+  "strict_boundary_percent": 78.07463624338624,
+  "minimum_total_correct": 2360978,
+  "total_decisions": 3024000,
+  "raw_original_targets_unchanged": true,
+  "DURA_clean": "report separately,no new numeric target requested",
+  "new_training": 0,
+  "new_G": 0,
+  "new_prediction": 0
+}

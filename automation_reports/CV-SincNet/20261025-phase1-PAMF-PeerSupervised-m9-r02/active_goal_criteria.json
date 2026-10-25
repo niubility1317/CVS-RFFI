@@ -1,0 +1,24 @@
+{
+  "status": "ACTIVE_GOAL_CRITERIA_UPDATED_BY_HUMAN",
+  "protocol": "F0",
+  "physical_samples_per_seed": 168000,
+  "student_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "raw_clean_minimum_percent": 85.98174603174603,
+  "raw_clean_gain_vs_both_minimum_pp": 1.0,
+  "raw_six_strict_boundary_percent": 72.0961970899471,
+  "raw_six_gain_vs_both_strictly_greater_than_pp": 1.5,
+  "paired_DURA_six_strict_boundary_percent": 78.07463624338624,
+  "paired_DURA_six_gain_vs_both_strictly_greater_than_pp": 0.0,
+  "paired_restorer": "same-contract fixed G-LU,unchanged weights and restored IQ",
+  "all_three_conditions_required": true,
+  "DURA_clean": "report separately,not a new numeric requirement",
+  "new_restored_IQ_method_status": "ANALYSIS_PLAN_ONLY_THIS_TURN",
+  "new_restored_IQ_training_started": false,
+  "plan_ref": "docs/goals/PAMF_RESTORED_IQ_SSL_PLAN_20261025.md",
+  "existing_authorized_training_and_test": "continues unchanged",
+  "new_model_or_data_permissions": false
+}

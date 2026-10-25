@@ -79,3 +79,11 @@ F0 三方案×三学生种子：冻结其他两seed同契约E20确认自身.95�
 九行均已闭合自身 E20+10；读取全部 9×2220=19980 条结构化记录，检查实际 loss、U 曝光与接受计数、固定权重、冻结 peer 更新数、L768 包、As KL0 和非有限跳步，并与每段 peer_supervised_state.json 逐行对应。每行 U_seen=567000、peer_eval_views=1134000。未发现 EMA/peer 更新、U 真值、V 训练、G 训练或非有限跳步。
 
 已读取各自 segment50/initial_smoke.pt 中实际原生初始化配置，确认 parent_source 指向同 seed、同方法自身 E30，offset30/6660、再训练20轮，原两名 E20 peer、源合同和固定机制不变。原默认头保持6×160，九个原生源域无 query smoke 均 PASS。该核对只分析已有源域产物，没有新优化器更新、target 读取或选择 E30 作为最终 checkpoint；仍固定 final E50 后自动完整测试。明细见 [source_E30_and_resume.csv](source_E30_and_resume.csv)，证据见 [all_nine_E30_resume_evidence.json](all_nine_E30_resume_evidence.json)。
+
+## 最新用户要求：DURA 配对六景也须正收益；先分析恢复 IQ 方案
+
+用户明确要求 DURA 配对星地性能也提高。本次目标判断增加必需条件：同一 G-LU＋新 F 的 F0 原168000目标 RX 六景三 seed 均值，必须严格超过同 G-LU＋监督版及普通PL两个对照，即>78.07463624338624%。raw clean≥85.98174603174603%、raw六景>72.0961970899471%保持。三项同时满足才能通过原目标；历史“G仅参考”的条款由本段覆盖。原阶段分析器的raw-only布尔值不作为最终完成依据，独立分数复算器已按新增条件判定，不修改正在运行的科学release。
+
+用户随后要求先分析可行计划，并提醒既有 DURA IQ 增强负结果。已核对历史全部替换、32/32混合和跨RX扩展的报告/实际代码，制定 [原始与恢复 IQ 配对半监督计划](../../../docs/goals/PAMF_RESTORED_IQ_SSL_PLAN_20261025.md)。本轮未启动新的DURA-aware训练，也不改现有12学生。计划以保持原As压力、高质量raw身份锚点监督恢复域U、等剂量原IQ对照和后增强单独消融为主；并明确固定G输出不等于新独立样本。具体新矩阵仍须在源域诊断后冻结，不能将本文当成已启动或已获增益的实验。
+
+精确历史计数复算见 [原raw目标](original_goal_thresholds.json)、[新增DURA门槛](paired_DURA_goal_threshold.json) 和 [当前验收条件](active_goal_criteria.json)。
