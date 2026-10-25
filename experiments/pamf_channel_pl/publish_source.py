@@ -26,7 +26,7 @@ with tarfile.open(p['archive_remote']) as archive:
  archive.extractall(release)
 Path(rt['runtime_file']).write_text(json.dumps(rt,indent=2)+'\n')
 env=dict(os.environ,PYTHONPATH=str(release),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
-subprocess.run([rt['python'],'-m','compileall','-q',str(release/'experiments/pamf_channel_pl')],cwd=release,env=env,check=True)
+subprocess.run([rt['python'],'-m','compileall','-q',str(release.joinpath(*rt['entrypoint'].split('.')[:-1]))],cwd=release,env=env,check=True)
 probe='import json,importlib;from experiments.pamf_repl_completion.runner import activate;activate(json.load(open('+repr(rt['runtime_file'])+')));importlib.import_module('+repr(rt['entrypoint'])+');from experiments.cric_dura_comparison.frozen_inference import reader_from_payload;print("ENTRYPOINT_IMPORT_PASS")'
 result=subprocess.run([rt['python'],'-c',probe],cwd=release,env=env,capture_output=True,text=True)
 if result.returncode:raise RuntimeError(result.stderr)

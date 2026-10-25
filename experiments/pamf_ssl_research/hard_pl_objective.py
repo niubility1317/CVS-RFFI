@@ -40,6 +40,12 @@ class HardPLObjective:
     def unlabeled_student_forward(self,student,x,domain,pseudo,accepted,metadata):
         return student.forward_identity_only(x,domain_labels=domain)['tx_logits']
 
+    def validate_unlabeled_batch(self,batch):
+        if not bool((batch[1]==-1).all()):raise ValueError('U truth exposed')
+
+    def accept_pseudo(self,student,x,confidence,pseudo):
+        return confidence>=self.settings['threshold']
+
     def mixed_view(self,student,x,ordinary,physical,metadata,epoch,step,pseudo,accepted):
         mixed=ordinary.clone()
         selected={k:v[physical] if torch.is_tensor(v) and v.ndim and len(v)==len(x) else v for k,v in metadata.items()}
@@ -50,14 +56,14 @@ class HardPLObjective:
         try:batch=next(student._cd_U_iter)
         except StopIteration:
             student._cd_U_iter=iter(student._cd_U_loader);batch=next(student._cd_U_iter)
-        if not bool((batch[1]==-1).all()):raise ValueError('U truth exposed')
+        self.validate_unlabeled_batch(batch)
         x=batch[0].to(device);domain=batch[2].to(device);n=len(x)
         was=student.training
         try:
             student.eval()
             with torch.no_grad():confidence,pseudo=student(x).softmax(1).max(1)
         finally:student.train(was)
-        accepted=confidence>=self.settings['threshold'];detail={}
+        accepted=self.accept_pseudo(student,x,confidence,pseudo);detail={}
         if self.settings['method']=='HPL2':
             logits=self.unlabeled_student_forward(student,x,domain,pseudo,accepted,batch[3])
             smoothing=self.c.get('hard_pl_label_smoothing',0.)
