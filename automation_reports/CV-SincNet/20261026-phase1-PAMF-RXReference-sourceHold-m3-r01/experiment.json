@@ -1,0 +1,298 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-RXReference-sourceHold-m3-r01",
+  "group_id": "phase1-pamf-receiver-reference-20261025",
+  "display_name": "跨接收机身份参照三变体单种子源留出验证",
+  "description": "同seed01原E30+20至E50，raw/同G/双G身份参照三变体；新增分支排除RX1，完整源V八视图与既有PLControl配对，源阈值选择后另行扩种子。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-RXReference-sourceHold"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "source-only",
+    "single-seed",
+    "cross-RX",
+    "holdout",
+    "matched-SSL"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261025-diagnostic-PAMF-RXReference-dose-m1-r01",
+    "20261025-phase1-PAMF-RestoredPL-m9-r01"
+  ],
+  "authorization": "持续PAMF SSL性能目标，按已交付计划先检验单种子的源新增分支跨RX迁移，保持原父/预算/默认头，无新目标访问。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-RXReference-sourceHold-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300 fullT1;fixed references fromvisibleL only",
+      "U_s": "original56700 hiddenTX labels;primary usesallRX;extra mask excludesRX1",
+      "V": "originalsingle27000;nativehealthdiagnostics and postfreeze8view sourceassessment;no gradients/stateupdates"
+    },
+    "train_ratio": "original L6300/U56700/V27000;10percent labeled amongL+U;no physical rolechange",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "one studentseed,source-extra-branch transfer only;not target benefit,not true unseen-base-RX"
+  },
+  "checkpoint": {
+    "initialization": "three independent method tails from same own ordinaryPL E30 seed2026092701,not fromtarget-pickedF50",
+    "sources": [
+      "own original F0 ordinaryPL E20+10",
+      "fixed same sourceL reference/cache teachers E30x3",
+      "same original G-LU sourcecache"
+    ],
+    "contract_check_ref": "full E20/own10 headers and exact L/U/V contracts;source refs/cache samecontract;source inference defaulthead ownE30+20",
+    "provenance_verdict": "must match original F0 data and known source-only ancestry",
+    "selection_rule": "fixed final E50 allthree;eligible ifheldRXGthree-scene gain>=.3pp andoverallrawclean delta>=-.1pp vsownPLControl;maxeligible gain,exactties alphabeticmethod;future3seed independent registration"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-rx-reference-source-20261026",
+    "gpu_policy": "all physicalGPU0..7;eachcard CUDA+pending<2/free>=10000MiB;up to3 train/eval children;CPU2threads each;protect otherowners",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-RXReference-sourceHold-m3-r01",
+    "remote_log_root": "PROJECT/runs/20261026-phase1-PAMF-RXReference-sourceHold-m3-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/receiver_reference_training",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_reference_training dispatch --config PROJECT/releases/20261026-phase1-PAMF-RXReference-sourceHold-release-r01/runtime.json",
+    "stop_rule": "First technical/protocol/smoke/nonfinite/budget error stopsnewlaunches inthisrun;healthyownchildrenfinish;preserveoutputs;no automaticretry/foreignprocessintervention.Scientificnegative completesallrows."
+  },
+  "expected_artifacts": [
+    "actual E30/LU joint backward noquerysmoke",
+    "three E50 defaulthead checkpoints withfullownchain",
+    "full4440updatesperrow/actualmechanismstates",
+    "rowwise immediate completeV27000x8sourcepredictions",
+    "source same-row paired metrics andpredefined pass/fail",
+    "all3sourcecomparison andfixedsourcechoice",
+    "zeroUtruth/target/newhead/G/referenceupdates",
+    "PID/CWD/argv/GPU/loggrowth",
+    "same-run public one-seed report,not three-seed claim"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "sourceV defaulthead accuracy",
+      "paired correction/breakage vsownPLControl",
+      "heldRX G three-scene mean gain",
+      "overallrawclean delta",
+      "actual U acceptance/exposure andstate"
+    ],
+    "dimensions": [
+      "three variants",
+      "studentseed2026092701 only",
+      "8sourceviews",
+      "held/trainedsourceRX",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "perrow private source_validation/source_V_predictions.npz",
+    "scorer_ref": "source-only frozen predictions then visibleV labels;no targettruthscorer"
+  },
+  "rows": [
+    {
+      "row_id": "F0-RawReference-sourceHold-s2026092701",
+      "method": "RawReference",
+      "purpose": "single-seed sourcefalsification only",
+      "config_ref": "generated configs/RawReference.json",
+      "resolved_config_ref": "perrow source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "extra_branch_holdout_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only one studentseed;three raw E30 teacher/reference seeds2026092701/02/03 shared;notthree studentseeds.",
+      "k": null,
+      "scenario": "sourceV raw/Graw/lowSub/midUrban/lowUrban andrestored versions",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownparentE30/6660+independentnew20/4440;eachcumulative50/11100,13L+37LU;three newtails60epochs+three historicalsharedteacherprefixes90epochs=150uniqueFepochs;ownE30includedin90,notdoublecounted",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-RXReference-sourceHold-m3-r01/F/F0-RawReference-sourceHold-s2026092701",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-RXReference-sourceHold-m3-r01/logs/RawReference.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_reference_training dispatch --config PROJECT/releases/20261026-phase1-PAMF-RXReference-sourceHold-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/final_ssdg.pth",
+        "source/segment50/receiver_reference_state.json",
+        "source_validation/complete.json",
+        "source_validation/source_V_predictions.npz"
+      ]
+    },
+    {
+      "row_id": "F0-RestoredReference-sourceHold-s2026092701",
+      "method": "RestoredReference",
+      "purpose": "single-seed sourcefalsification only",
+      "config_ref": "generated configs/RestoredReference.json",
+      "resolved_config_ref": "perrow source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "extra_branch_holdout_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only one studentseed;three raw E30 teacher/reference seeds2026092701/02/03 shared;notthree studentseeds.",
+      "k": null,
+      "scenario": "sourceV raw/Graw/lowSub/midUrban/lowUrban andrestored versions",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownparentE30/6660+independentnew20/4440;eachcumulative50/11100,13L+37LU;three newtails60epochs+three historicalsharedteacherprefixes90epochs=150uniqueFepochs;ownE30includedin90,notdoublecounted",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-RXReference-sourceHold-m3-r01/F/F0-RestoredReference-sourceHold-s2026092701",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-RXReference-sourceHold-m3-r01/logs/RestoredReference.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_reference_training dispatch --config PROJECT/releases/20261026-phase1-PAMF-RXReference-sourceHold-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/final_ssdg.pth",
+        "source/segment50/receiver_reference_state.json",
+        "source_validation/complete.json",
+        "source_validation/source_V_predictions.npz"
+      ]
+    },
+    {
+      "row_id": "F0-PairedReference-sourceHold-s2026092701",
+      "method": "PairedReference",
+      "purpose": "single-seed sourcefalsification only",
+      "config_ref": "generated configs/PairedReference.json",
+      "resolved_config_ref": "perrow source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "extra_branch_holdout_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only one studentseed;three raw E30 teacher/reference seeds2026092701/02/03 shared;notthree studentseeds.",
+      "k": null,
+      "scenario": "sourceV raw/Graw/lowSub/midUrban/lowUrban andrestored versions",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownparentE30/6660+independentnew20/4440;eachcumulative50/11100,13L+37LU;three newtails60epochs+three historicalsharedteacherprefixes90epochs=150uniqueFepochs;ownE30includedin90,notdoublecounted",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-RXReference-sourceHold-m3-r01/F/F0-PairedReference-sourceHold-s2026092701",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-RXReference-sourceHold-m3-r01/logs/PairedReference.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_reference_training dispatch --config PROJECT/releases/20261026-phase1-PAMF-RXReference-sourceHold-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/final_ssdg.pth",
+        "source/segment50/receiver_reference_state.json",
+        "source_validation/complete.json",
+        "source_validation/source_V_predictions.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only candidate screen precedes future targetaccess;allthree variants finish source8views automatically;no sourceVsplit/newrole.",
+    "Native sourceV health inference remains allowed withno gradient/stateupdate;customextraobjectiveVreads0 doesnotmeantrainingprocessneverreadsV.",
+    "Allthree useoriginal L/rawU main andfixedsource dose;nativeU/EMA off;no newGheadCE,noise,projectionhead,teacher/G/referenceupdate.",
+    "Holdout excludes onlyRX1 U extra branch;originalparent/main andvisibleLreferences sawsourceRX1,so nottrueunseen-base-RX.",
+    "Control reuse is same seed,contract,ownE30+20 budget,defaulthead,completephysicalV/scenes;allnegative/failedcellsretained.",
+    "No source result implies goalachievement;fulltest rawclean>=85.98174603174603,rawsix>72.0961970899471,sameG six>78.07463624338624 still required forone3seedcandidate."
+  ],
+  "matrix": {
+    "protocol": "F0",
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "RawReference",
+      "RestoredReference",
+      "PairedReference"
+    ],
+    "original_parent_epoch": 30,
+    "new_epochs": 20,
+    "final_epoch": 50,
+    "new_updates": 4440,
+    "final_updates": 11100,
+    "source_reference_run": "20261025-diagnostic-PAMF-RXReference-dose-m1-r01",
+    "source_cache_run": "20261025-phase1-PAMF-RestoredPL-m9-r01",
+    "source_control_run": "20261025-diagnostic-PAMF-RestoredPL-sourceShift-m9-r01",
+    "control_method": "PLControl",
+    "source_control_student_seed": 2026092701,
+    "shared_weight": 0.07145844915553692,
+    "temperature": 0.1,
+    "ramp_steps": 444,
+    "extra_forwards": 2,
+    "extra_holdout_RX": 1,
+    "extra_forward_inputs": [
+      "raw/raw",
+      "Gscene_k/Gscene_k",
+      "Gscene_k/Gscene_(k+1)"
+    ],
+    "all_primary_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "defaulthead_joint": true,
+    "source_thresholds": {
+      "held_RX_G_three_scene_gain_pp": 0.3,
+      "overall_raw_clean_min_delta_pp": -0.1
+    },
+    "selection": "maxeligible sourceheldGmean gain,tiesalphabetical;allrowsretained;no targetread or automaticexpansionhere",
+    "G": "same originalF0G-LU frozen",
+    "reference_updates": 0,
+    "U_truth": false,
+    "target": false,
+    "new_heads": false,
+    "allowed_gpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "registered_at": "2026-10-25T16:13:37+00:00"
+}
