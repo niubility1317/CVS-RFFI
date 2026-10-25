@@ -232,7 +232,7 @@ def run(rt):
         source_namespace='PAMF/restored_source/V/fixed',source_IQ_secondary_normalization=False,
         seconds=time.perf_counter()-start,scope='Source-V diagnosis only; not new SSL training or target performance.')
     write(root/'complete.json',result)
-    write(root/'pipeline_state.json',dict(status=result['status'],pid=os.getpid(),code_commit=rt['code_commit']))
+    write(root/'pipeline_state.json',dict(status=result['status'],pid=os.getpid(),code_commit=rt['code_commit']),exclusive=False)
     print('SOURCE_PAIRED_COMPLETE',result['seconds'],flush=True)
 
 

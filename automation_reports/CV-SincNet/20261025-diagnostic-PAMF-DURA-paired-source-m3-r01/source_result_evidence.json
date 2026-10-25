@@ -1,0 +1,142 @@
+{
+  "status": "SOURCE_PAIRED_DIAGNOSTIC_COMPLETE",
+  "code_commit": "f75c8fcd039ecce460790ea9092bf443d66e66d6",
+  "source_V_seen": 27000,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "parent_epoch": 30,
+  "G_roles": "LU",
+  "views": [
+    "raw",
+    "G_raw",
+    "practical_low_suburban",
+    "G_practical_low_suburban",
+    "practical_mid_urban",
+    "G_practical_mid_urban",
+    "practical_low_urban",
+    "G_practical_low_urban"
+  ],
+  "F_packet_forwards": 648000,
+  "G_packet_forwards": 108000,
+  "source_V_training_reads": 0,
+  "U_IQ_reads": 0,
+  "U_truth_read": false,
+  "target_reads": 0,
+  "optimizer_updates": 0,
+  "F_updates": 0,
+  "G_updates": 0,
+  "head_fit_updates": 0,
+  "parameters_and_buffers_unchanged": true,
+  "seconds": 159.5995473517105,
+  "external_action_status": "VERIFIED",
+  "smoke": {
+    "status": "PASS",
+    "role": "L_s",
+    "physical_packets": 2,
+    "frozen_F": 3,
+    "frozen_G": 1,
+    "G_eager_graph_close": true,
+    "G_repeat_identical": true,
+    "default_head": true,
+    "optimizer_updates": 0,
+    "target_reads": 0,
+    "U_truth_read": false
+  },
+  "source_pseudo_policies": [
+    {
+      "policy": "single_2026092701",
+      "accepted": 25624,
+      "correct": 25595,
+      "seen": 27000,
+      "precision_percent": 99.88682485170153,
+      "coverage_percent": 94.9037037037037
+    },
+    {
+      "policy": "single_2026092702",
+      "accepted": 25699,
+      "correct": 25657,
+      "seen": 27000,
+      "precision_percent": 99.83656951632359,
+      "coverage_percent": 95.18148148148148
+    },
+    {
+      "policy": "single_2026092703",
+      "accepted": 25685,
+      "correct": 25660,
+      "seen": 27000,
+      "precision_percent": 99.90266692622153,
+      "coverage_percent": 95.12962962962963
+    },
+    {
+      "policy": "unanimous3",
+      "accepted": 25234,
+      "correct": 25226,
+      "seen": 27000,
+      "precision_percent": 99.9682967424903,
+      "coverage_percent": 93.45925925925926,
+      "retention_vs_mean_single_accepted": 0.9830407230417619,
+      "feasibility_pass": true
+    }
+  ],
+  "technical_finalization": {
+    "status": "TERMINAL_METADATA_RECOVERED",
+    "reason": "FileExistsError after complete.json;exclusive terminal write fixed in future code",
+    "original_worker_exited": true,
+    "source_forward_reruns": 0,
+    "F_G_updates": 0,
+    "target_reads": 0,
+    "complete_and_predictions_unchanged": true,
+    "recovered_at": 1792932372.822237,
+    "code_commit": "f75c8fcd039ecce460790ea9092bf443d66e66d6"
+  },
+  "endpoints": [
+    {
+      "before": "raw",
+      "after": "G_raw",
+      "frozen_models": 3,
+      "before_mean": 98.34197530864198,
+      "after_mean": 98.3320987654321,
+      "paired_gain_pp": -0.009876543209879666,
+      "paired_SD_pp": 0.014968340312319132,
+      "corrected_total": 22,
+      "broken_total": 30
+    },
+    {
+      "before": "practical_low_suburban",
+      "after": "G_practical_low_suburban",
+      "frozen_models": 3,
+      "before_mean": 89.05185185185185,
+      "after_mean": 95.46172839506174,
+      "paired_gain_pp": 6.40987654320988,
+      "paired_SD_pp": 0.11766669192538304,
+      "corrected_total": 6163,
+      "broken_total": 971
+    },
+    {
+      "before": "practical_mid_urban",
+      "after": "G_practical_mid_urban",
+      "frozen_models": 3,
+      "before_mean": 72.89999999999999,
+      "after_mean": 90.70617283950617,
+      "paired_gain_pp": 17.80617283950617,
+      "paired_SD_pp": 0.18980653399581945,
+      "corrected_total": 16272,
+      "broken_total": 1849
+    },
+    {
+      "before": "practical_low_urban",
+      "after": "G_practical_low_urban",
+      "frozen_models": 3,
+      "before_mean": 58.6320987654321,
+      "after_mean": 84.26913580246914,
+      "paired_gain_pp": 25.637037037037043,
+      "paired_SD_pp": 0.3175480478425506,
+      "corrected_total": 23670,
+      "broken_total": 2904
+    }
+  ],
+  "scope": "frozen source validation only;not three new trained students or target gain"
+}

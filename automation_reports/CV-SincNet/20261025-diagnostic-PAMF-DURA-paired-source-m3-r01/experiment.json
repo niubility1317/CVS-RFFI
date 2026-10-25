@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求先分析恢复IQ增强为何比无增强更差；实施固定源域配对可行性分析，保留健康实验，不启动DURA-aware F训练。",
   "code": {
-    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "commit": "f75c8fcd039ecce460790ea9092bf443d66e66d6",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
     "cwd": "PROJECT/releases/20261025-diagnostic-PAMF-DURA-paired-source-release-r01"
