@@ -1,0 +1,158 @@
+{
+  "status": "EXISTING_CACHE_PREDICTED_CLASS_MIX",
+  "rows": [
+    {
+      "group": "all_U",
+      "predicted_class": 0,
+      "predicted_records": 9464,
+      "accepted_records": 8975,
+      "acceptance_rate": 0.9483305156382079,
+      "mean_probability_max": 0.9826881885528564
+    },
+    {
+      "group": "all_U",
+      "predicted_class": 1,
+      "predicted_records": 9501,
+      "accepted_records": 8516,
+      "acceptance_rate": 0.8963267024523734,
+      "mean_probability_max": 0.9778938889503479
+    },
+    {
+      "group": "all_U",
+      "predicted_class": 2,
+      "predicted_records": 9477,
+      "accepted_records": 9225,
+      "acceptance_rate": 0.97340930674264,
+      "mean_probability_max": 0.9927904009819031
+    },
+    {
+      "group": "all_U",
+      "predicted_class": 3,
+      "predicted_records": 9293,
+      "accepted_records": 7987,
+      "acceptance_rate": 0.859464112773055,
+      "mean_probability_max": 0.9699440002441406
+    },
+    {
+      "group": "all_U",
+      "predicted_class": 4,
+      "predicted_records": 9500,
+      "accepted_records": 8920,
+      "acceptance_rate": 0.9389473684210526,
+      "mean_probability_max": 0.9817602038383484
+    },
+    {
+      "group": "all_U",
+      "predicted_class": 5,
+      "predicted_records": 9465,
+      "accepted_records": 9323,
+      "acceptance_rate": 0.9849973586899102,
+      "mean_probability_max": 0.9940172433853149
+    },
+    {
+      "group": "extra_participating_RX",
+      "predicted_class": 0,
+      "predicted_records": 7574,
+      "accepted_records": 7117,
+      "acceptance_rate": 0.9396620015843675,
+      "mean_probability_max": 0.9796963930130005
+    },
+    {
+      "group": "extra_participating_RX",
+      "predicted_class": 1,
+      "predicted_records": 7627,
+      "accepted_records": 6848,
+      "acceptance_rate": 0.8978628556444211,
+      "mean_probability_max": 0.9768944978713989
+    },
+    {
+      "group": "extra_participating_RX",
+      "predicted_class": 2,
+      "predicted_records": 7586,
+      "accepted_records": 7336,
+      "acceptance_rate": 0.9670445557606117,
+      "mean_probability_max": 0.9911064505577087
+    },
+    {
+      "group": "extra_participating_RX",
+      "predicted_class": 3,
+      "predicted_records": 7386,
+      "accepted_records": 6170,
+      "acceptance_rate": 0.835364202545356,
+      "mean_probability_max": 0.9656103253364563
+    },
+    {
+      "group": "extra_participating_RX",
+      "predicted_class": 4,
+      "predicted_records": 7610,
+      "accepted_records": 7030,
+      "acceptance_rate": 0.923784494086728,
+      "mean_probability_max": 0.9772402048110962
+    },
+    {
+      "group": "extra_participating_RX",
+      "predicted_class": 5,
+      "predicted_records": 7577,
+      "accepted_records": 7438,
+      "acceptance_rate": 0.9816550085785931,
+      "mean_probability_max": 0.9927600026130676
+    },
+    {
+      "group": "extra_held_RX",
+      "predicted_class": 0,
+      "predicted_records": 1890,
+      "accepted_records": 1858,
+      "acceptance_rate": 0.9830687830687831,
+      "mean_probability_max": 0.9946776032447815
+    },
+    {
+      "group": "extra_held_RX",
+      "predicted_class": 1,
+      "predicted_records": 1874,
+      "accepted_records": 1668,
+      "acceptance_rate": 0.8900747065101388,
+      "mean_probability_max": 0.9819607138633728
+    },
+    {
+      "group": "extra_held_RX",
+      "predicted_class": 2,
+      "predicted_records": 1891,
+      "accepted_records": 1889,
+      "acceptance_rate": 0.9989423585404548,
+      "mean_probability_max": 0.999545693397522
+    },
+    {
+      "group": "extra_held_RX",
+      "predicted_class": 3,
+      "predicted_records": 1907,
+      "accepted_records": 1817,
+      "acceptance_rate": 0.9528054535920294,
+      "mean_probability_max": 0.9867287278175354
+    },
+    {
+      "group": "extra_held_RX",
+      "predicted_class": 4,
+      "predicted_records": 1890,
+      "accepted_records": 1890,
+      "acceptance_rate": 1.0,
+      "mean_probability_max": 0.9999594688415527
+    },
+    {
+      "group": "extra_held_RX",
+      "predicted_class": 5,
+      "predicted_records": 1888,
+      "accepted_records": 1885,
+      "acceptance_rate": 0.9984110169491526,
+      "mean_probability_max": 0.9990627765655518
+    }
+  ],
+  "source_U_seen": 56700,
+  "accepted": 52946,
+  "U_truth_read": false,
+  "new_IQ_reads": 0,
+  "new_model_forward": 0,
+  "new_optimizer_updates": 0,
+  "new_V_reads": 0,
+  "new_target_reads": 0,
+  "scope": "Predicted-class mix only;not true U class coverage,accuracy or causal proof"
+}
