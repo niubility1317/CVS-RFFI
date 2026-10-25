@@ -62,7 +62,10 @@ def publish(repo, output, context_path, release_id,kind='pairs'):
     elif kind=='dose_noise':
         from .restored_dose_source import RUN as run_id
         entrypoint='experiments.pamf_channel_pl.restored_dose_source'
-    else:raise ValueError('Only the two fixed source-only diagnostic matrices allowed')
+    elif kind=='source_shift':
+        from .restored_source_shift import RUN as run_id
+        entrypoint='experiments.pamf_channel_pl.restored_source_shift'
+    else:raise ValueError('Only registered source-only diagnostic matrices allowed')
     project=c['project'];release=project+'/releases/'+release_id
     rt=dict(run_id=run_id,project=project,python=c['python'],release_root=release,run_root=project+'/runs/'+run_id,
         context=release+'/context.json',runtime_file=release+'/runtime.json',code_commit=commit,
@@ -94,5 +97,5 @@ def publish(repo, output, context_path, release_id,kind='pairs'):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--repo',required=True);p.add_argument('--output',required=True)
     p.add_argument('--context',required=True);p.add_argument('--release-id',required=True)
-    p.add_argument('--kind',choices=['pairs','dose_noise'],default='pairs');a=p.parse_args()
+    p.add_argument('--kind',choices=['pairs','dose_noise','source_shift'],default='pairs');a=p.parse_args()
     publish(a.repo,a.output,a.context,a.release_id,kind=a.kind)

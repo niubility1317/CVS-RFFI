@@ -1,0 +1,216 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261025-diagnostic-PAMF-RestoredPL-sourceShift-m9-r01",
+  "group_id": "phase1-pamf-restored-IQ-source-shift-20261025",
+  "display_name": "恢复域软监督退步后的冻结源域表现与接收机几何诊断",
+  "description": "固定PLControl/RawSoft/DURASoft九份F50及同G-LU，完整sourceV比较raw/H/G分类、恢复误差、类内跨RX几何和原头方向变化；只诊断不拟合。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-RestoredPL-sourceShift"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "source-only",
+    "frozen-F50",
+    "receiver-geometry",
+    "no-fit"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261025-phase1-PAMF-RestoredPL-m9-r01",
+    "20261025-diagnostic-PAMF-DURA-paired-source-m3-r01"
+  ],
+  "authorization": "持续优化PAMF SSL目标；九学生目标退步已完整报告，本次仅在合法源数据上定位原因，不创建新F/G或新目标访问。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261025-diagnostic-PAMF-RestoredPL-sourceShift-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "sourceL2 packets only for actual nineF/G noquery smoke",
+      "U_s": "not opened;truth hidden;ancestralUuse disclosed",
+      "V": "all27000,source labels only post-forward diagnostics;no gradient or persistent state updates"
+    },
+    "train_ratio": "no new training;original L6300/U56700/V27000 preserved",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "post-target frozen source associations;not causal proof,not new target benefit"
+  },
+  "checkpoint": {
+    "initialization": "nine existing fixed E50 students,strict own20/10/20;three original E30 weight references for head movement;frozen G-LU",
+    "sources": [
+      "RestoredPL PLControl/RawSoft/DURASoft x seeds2026092701/02/03 final50",
+      "samecontract originalF0G-LU",
+      "own fixed E30 source parent references"
+    ],
+    "contract_check_ref": "existing load_reader full20/10/20 provenance and load_sources originalE20/E30/G checks;reuse VALIDATED_ONCE",
+    "provenance_verdict": "all source-only checkpoint ancestry must match originalF0,defaulthead unchanged",
+    "selection_rule": "all nine fixed models analyzed;no target ranking,source fitting,new checkpoint selection or normalization change"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-restored-source-20261025",
+    "gpu_policy": "GPU0 only,one own worker,global CUDA+pending<2 at admission,free>=10000MiB,CPU2threads;preserve others",
+    "remote_run_root": "PROJECT/runs/20261025-diagnostic-PAMF-RestoredPL-sourceShift-m9-r01",
+    "remote_log_root": "PROJECT/releases/20261025-diagnostic-PAMF-RestoredPL-sourceShift-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/restored_source_shift",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.restored_source_shift dispatch --config PROJECT/releases/20261025-diagnostic-PAMF-RestoredPL-sourceShift-release-r01/runtime.json",
+    "stop_rule": "First checkpoint/role/mask alignment/nonfinite/registeredstate change stops only thisdiagnostic;preservepartials,no automaticretry,no healthy owner intervention."
+  },
+  "expected_artifacts": [
+    "actual L2 nineF/G smoke",
+    "sourceV27000x8x9 logits privately",
+    "full source feature geometry/defaulthead andfidelity strata",
+    "sameview paired predictions vsmatchedPLControl",
+    "all parameters/registeredbuffers unchanged",
+    "zerooptimizer/Utruth/target/fittedhead",
+    "PID/CWD/argv/GPU/loggrowth",
+    "same-run public source aggregates and limitations"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source default-head accuracy/margin",
+      "paired correction/breakage vsPLControl",
+      "phase/gain-aligned NMSE",
+      "raw-to-view feature cosine distance",
+      "sameTX crossRX/differentTX sameRX centroidgeometry",
+      "head direction change fromownE30"
+    ],
+    "dimensions": [
+      "method",
+      "modelseed",
+      "8sourceviews",
+      "sourceTX/RX/day",
+      "fixedsourceE30rawconsensus",
+      "alignedNMSEbins"
+    ],
+    "prediction_ref": "private source_V_predictions.npz only;no target",
+    "scorer_ref": "same source-only process,labels only after frozen inference;no fitted probe"
+  },
+  "rows": [
+    {
+      "row_id": "F0-nine-frozen-F50-sourceShift",
+      "method": "frozen matched source geometry/error diagnosis",
+      "purpose": "source-only mechanism analysis",
+      "config_ref": "immutable source-only context and fixed F_RUN rowpaths",
+      "resolved_config_ref": "runtime/context archive",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Nine alreadytrained F:3methods x seeds2026092701/02/03. No new student RNG/training;source hardwareseed20261016423.",
+      "k": null,
+      "scenario": "sourceV raw/Graw/3H/3GH only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1944000 frozenF packet forwards+108000G;L2 smoke separate;zerooptimizer",
+      "output_root": "PROJECT/runs/20261025-diagnostic-PAMF-RestoredPL-sourceShift-m9-r01",
+      "log_path": "PROJECT/releases/20261025-diagnostic-PAMF-RestoredPL-sourceShift-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.restored_source_shift dispatch --config PROJECT/releases/20261025-diagnostic-PAMF-RestoredPL-sourceShift-release-r01/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "source_V_predictions.npz",
+        "complete.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "The target matrix is already complete/negative;no new target access or target-derived calibration here.",
+    "Input legality requires frozen source checkpoint headers,not previous target pipeline completion;REJECTED_EXTRA_GATE fulltarget completion prerequisite omitted.",
+    "Nine frozen model decisions share27000 physical records,not243000 independent samples;sourceSD not target-significance.",
+    "NMSE cannot alone establishTXinformationretention,andfeature/head geometry cannotaloneproveRXshortcuts orcausality.",
+    "Keep allmethod/source strata;new mechanism requires own future source rule andpreregistration,not selected by thesetargetnumbers."
+  ],
+  "matrix": {
+    "protocol": "F0",
+    "frozen_methods": [
+      "PLControl",
+      "RawSoft",
+      "DURASoft"
+    ],
+    "frozen_model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "F50_models": 9,
+    "parent_head_reference_epoch": 30,
+    "source_V": 27000,
+    "views": 8,
+    "F_packet_forwards": 1944000,
+    "G_packet_forwards": 108000,
+    "source_channel_seed": 20261016421,
+    "hardware_seed": 20261016423,
+    "namespace": "PAMF/restored_source/V/fixed",
+    "scenes": [
+      "practical_low_suburban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "G": {
+      "kind": "original_F0_LU",
+      "roles": "LU",
+      "reuse": true,
+      "graph": true,
+      "native": false,
+      "precision": "FP32/TF32off"
+    },
+    "alignedNMSE": "optimal single complex scalar for error measurement only;prediction input untouched",
+    "fidelity_bins": [
+      0.0,
+      0.01,
+      0.05,
+      0.1,
+      0.2,
+      0.4,
+      1.00001
+    ],
+    "source_E30_consensus": "same original sourceV mask,physicalIDs/labels checked",
+    "fit_updates": 0,
+    "U_IQ_reads": 0,
+    "U_truth": false,
+    "target": false,
+    "allowed_gpus": [
+      0
+    ]
+  },
+  "registered_at": "2026-10-25T15:19:45+00:00"
+}
