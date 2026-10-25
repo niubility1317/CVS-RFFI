@@ -1,0 +1,83 @@
+[
+  {
+    "name": "main_no_channel",
+    "caption": "无星地增强：监督与普通 PL 的 CLEAN 对比",
+    "wide": true,
+    "panels": 1,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": true
+  },
+  {
+    "name": "main_channel_on",
+    "caption": "有星地增强：监督与普通 PL 对比",
+    "wide": true,
+    "panels": 2,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false
+  },
+  {
+    "name": "receiver_splits",
+    "caption": "接收机划分：半监督＋增强",
+    "wide": true,
+    "panels": 3,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false
+  },
+  {
+    "name": "label_fraction",
+    "caption": "标注比例：半监督＋增强",
+    "wide": true,
+    "panels": 3,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false
+  },
+  {
+    "name": "source_count_paired",
+    "caption": "源接收机数量：CLEAN与综合星地",
+    "wide": true,
+    "panels": 6,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false
+  },
+  {
+    "name": "seven_scenes",
+    "caption": "主对比实验：CLEAN与六种星地环境",
+    "wide": true,
+    "panels": 1,
+    "chart_type": "grouped_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false
+  },
+  {
+    "name": "source_count_clean",
+    "caption": "1至6源接收机：CLEAN",
+    "wide": true,
+    "panels": 1,
+    "chart_type": "line",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false
+  },
+  {
+    "name": "source_count_practical",
+    "caption": "1至6源接收机：综合星地",
+    "wide": true,
+    "panels": 1,
+    "chart_type": "line",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false
+  },
+  {
+    "name": "DURA_generality",
+    "caption": "DURA泛用性：五种识别方法均纳入",
+    "wide": true,
+    "panels": 1,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false
+  }
+]

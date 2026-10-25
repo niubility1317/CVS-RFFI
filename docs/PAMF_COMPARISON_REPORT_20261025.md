@@ -1,5 +1,7 @@
 # PAMF 与四种对比方法实验报告（2026-10-25）
 
+> 当前使用 [2026-10-26 重点对比版](PAMF_PRIORITY_COMPARISONS_20261026.md)：按用户五类问题排序，配对监督／半监督、补入 5 源折线、PAMF 纳入 DURA 泛用性，并保留全部补充工作表。下文为 r20 归档说明，原文件与数据保留。
+
 当前报告先区分 **监督学习／普通 PL 半监督**，每组再分训练信道增强、推理恢复链和测试人群。各组均列 RIEI、DRIFT、IB-RFF、SDG、PAMF、DURA+PAMF；前五项直接识别，外部接入 DURA 只在泛用性部分报告。PAMF 当前半监督方案暂用普通 PL。
 
 - [16 页 IEEE 双栏报告：23 幅图、20 张表](reports/pamf_comparison_main_and_dura_20261025/report.pdf)

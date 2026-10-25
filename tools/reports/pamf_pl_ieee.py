@@ -14,6 +14,8 @@ def tex(text):
 def main():
     target=OUT/'ieee';target.mkdir(exist_ok=True)
     lines=(OUT/'PAMF与四种对比方法实验报告.md').read_text(encoding='utf-8').splitlines()
+    import json
+    authored_figures={r['name']:r for r in json.loads((OUT/'figures/manifest.json').read_text(encoding='utf-8'))}
     preamble=r'''\documentclass[10pt,journal]{IEEEtran}
 \usepackage{fontspec,xeCJK}
 \setmainfont{Times New Roman}
@@ -86,7 +88,7 @@ def main():
         if line.startswith('!['):
             flush();m=re.fullmatch(r'!\[(.*)\]\((.*)\)',line);caption=m.group(1);stem=Path(m.group(2)).stem
             fig_no+=1
-            wide=any(stem.endswith('_'+x) for x in ('receivers','labels','sources','ten_class','scenes','population','dura_all_settings'));env='figure*' if wide else 'figure';width=r'\textwidth' if wide else r'\columnwidth'
+            wide=authored_figures.get(stem,{}).get('wide',any(stem.endswith('_'+x) for x in ('receivers','labels','sources','ten_class','scenes','population','dura_all_settings')));env='figure*' if wide else 'figure';width=r'\textwidth' if wide else r'\columnwidth'
             body.extend([r'\begin{'+env+r'}[!tbp]',r'\centering',r'\includegraphics[width='+width+']{../figures/'+stem+'.pdf}',r'\caption{'+tex(caption)+'}',r'\label{fig:grouped-'+str(fig_no)+'}',r'\end{'+env+'}'])
             i+=1
             while i<len(lines) and not lines[i].strip():i+=1

@@ -53,8 +53,8 @@
     "matched_supervised_role": "DURA-L"
   },
   "reports": {
-    "current_comparison": "docs/PAMF_COMPARISON_REPORT_20261025.md",
-    "grouping_rules": "docs/PAMF_COMPARISON_REPORTING_RULES_20261025.md",
+    "current_comparison": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md",
+    "grouping_rules": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md",
     "historical_method_definition": "docs/PAMF_REPL.md"
   },
   "reporting": {
@@ -64,17 +64,17 @@
       "IB-RFF",
       "SDG",
       "PAMF",
-      "DURA+PAMF"
+      "PAMF+DURA"
     ],
     "external_default_readout": "raw",
     "PAMF_display_readouts": {
       "supervised": {
         "PAMF": "raw",
-        "DURA+PAMF": "DURA-L"
+        "PAMF+DURA": "DURA-L"
       },
       "ordinary_PL_semi_supervised": {
         "PAMF": "raw",
-        "DURA+PAMF": "DURA-LU"
+        "PAMF+DURA": "DURA-LU"
       }
     },
     "external_DURA_section": "restorer_generality_only",
@@ -101,7 +101,7 @@
       "source_unseen_date": "separate_diagnostic"
     },
     "historical_predictions_preserved": true,
-    "primary_grouping": "learning_regime",
+    "primary_grouping": "user_priority_experiment_question",
     "main_regimes": [
       "supervised",
       "ordinary_PL_semi_supervised"
@@ -111,7 +111,44 @@
       "ordinary_PL_semi_supervised": "D"
     },
     "performance_chart_type": "vertical_column_single_learning_regime",
-    "restoration_chart_type": "paired_without_DURA_with_DURA"
+    "restoration_chart_type": "paired_without_DURA_with_DURA",
+    "main_learning_comparison": "paired_supervised_vs_ordinary_PL_without_and_with_channel_augmentation",
+    "other_priority_learning_regime": "ordinary_PL_semi_supervised_with_channel_augmentation",
+    "source_count_curve": {
+      "counts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "five_source_models": "same_seed_main_experiment_models",
+      "display_target_receivers": [
+        0,
+        2,
+        5,
+        7,
+        9,
+        10
+      ],
+      "five_source_scoring": "aggregate_already_frozen_receiver_counts; no new predictions",
+      "views": [
+        "clean",
+        "six_practical_mean"
+      ],
+      "chart": "two_separate_line_figures"
+    },
+    "restoration_generality_methods": [
+      "RIEI",
+      "DRIFT",
+      "IB-RFF",
+      "SDG",
+      "PAMF"
+    ],
+    "PAMF_no_channel_ordinary_PL_status": "missing; user selected delivery without new training",
+    "PAMF_color": "#C4364E",
+    "PAMF_with_DURA_color": "#E29525"
   },
   "scientific_execution": {
     "new_60_main_models": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",

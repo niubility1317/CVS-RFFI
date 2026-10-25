@@ -1,0 +1,34 @@
+{
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "common_receiver_names": [
+    "1-1",
+    "14-7",
+    "2-1",
+    "20-1",
+    "7-14",
+    "7-7"
+  ],
+  "common_target_indices": [
+    0,
+    2,
+    5,
+    7,
+    9,
+    10
+  ],
+  "packets_per_receiver_per_scene": 18000,
+  "common_packets_per_scene": 108000,
+  "F0_original_targets": 7,
+  "F0_original_packets": 126000,
+  "m5_origin": "Same-seed F0 main classifiers; six common receivers aggregated from frozen receiver statistics",
+  "individual_truth_read": false,
+  "IQ_read": false,
+  "checkpoint_read": false,
+  "new_training": 0,
+  "new_prediction": 0,
+  "new_scoring": 0
+}
