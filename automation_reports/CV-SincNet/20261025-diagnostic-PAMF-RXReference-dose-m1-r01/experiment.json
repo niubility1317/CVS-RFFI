@@ -1,0 +1,221 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261025-diagnostic-PAMF-RXReference-dose-m1-r01",
+  "group_id": "phase1-pamf-receiver-reference-20261025",
+  "display_name": "跨接收机身份参照的无更新源梯度剂量诊断",
+  "description": "原三E30只读sourceL建立固定身份参照，seed01以12源L/U批测raw/同G/双G关系约束梯度；无optimizer/V/target。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-RXReference-dose"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "source-only",
+    "L-reference",
+    "cross-RX",
+    "no-optimizer"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261025-diagnostic-PAMF-RestoredPL-sourceShift-m9-r01",
+    "20261025-phase1-PAMF-RestoredPL-m9-r01"
+  ],
+  "authorization": "继续用户PAMF SSL性能目标；先以不更新参数的合法源诊断验证已公开跨RX身份参照计划。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261025-diagnostic-PAMF-RXReference-dose-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "all6300 only for frozen references;12x128 original T1 gradients;L2 smoke",
+      "U_s": "12x256 hidden-label source batches for primary ordinaryPL and matched relation gradients",
+      "V": "not opened"
+    },
+    "train_ratio": "original L6300/U56700/V27000 roles unchanged;zero optimizer updates",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "preclip source gradient proxy only;no target benefit or U truth accuracy"
+  },
+  "checkpoint": {
+    "initialization": "three frozen own ordinary-PL E20+10 E30 readers;seed01 disposable strict E30 student;fixed same G-LU",
+    "sources": [
+      "three original F0 ordinaryPL E30",
+      "samecontract original F0 G-LU"
+    ],
+    "contract_check_ref": "load_sources full E20/own10 actual headers,source roles/defaulthead;reuse VALIDATED_ONCE",
+    "provenance_verdict": "existing original F0 ownE20/E30/G provenance checked at load",
+    "selection_rule": "all three fixed teachers;no new checkpoint or target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-restored-source-20261025",
+    "gpu_policy": "GPU0 only,one own worker,global CUDA+pending<2 at admission,free>=10000MiB,CPU2threads;preserve others",
+    "remote_run_root": "PROJECT/runs/20261025-diagnostic-PAMF-RXReference-dose-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261025-diagnostic-PAMF-RXReference-dose-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/receiver_reference_dose",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_reference_source dispatch --config PROJECT/releases/20261025-diagnostic-PAMF-RXReference-dose-release-r01/runtime.json",
+    "stop_rule": "First source provenance/role/feature-smoke/nonfinite/statechange/technical error stops this run only;preserve partials;no automatic retry or healthy owner intervention."
+  },
+  "expected_artifacts": [
+    "real L2 E30/G/defaulthead/feature compatibility smoke",
+    "6300L x threeE30 reference features privately",
+    "12 complete source gradient rows",
+    "one shared fixed dose",
+    "all sourceF/G and student parameters/registeredbuffers unchanged",
+    "zerooptimizer/V/Utruth/target",
+    "PID/CWD/argv/GPU/loggrowth",
+    "same-run public source gradient report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "12 matched source gradient norm/cosines",
+      "fixed L TX/RX reference counts",
+      "one shared physical-gradient dose",
+      "original head gradient and no auxiliary head gradient"
+    ],
+    "dimensions": [
+      "source batch",
+      "RawReference/RestoredReference/PairedReference",
+      "source student seed01",
+      "three reference teacher seeds"
+    ],
+    "prediction_ref": "no target or V predictions;private source-L references.pt",
+    "scorer_ref": "no truth scoring;hidden-U q comes from raw teachers"
+  },
+  "rows": [
+    {
+      "row_id": "F0-RXReference-source-dose-s2026092701",
+      "method": "three matched identity-reference gradient diagnostics",
+      "purpose": "source-only dose;not training",
+      "config_ref": "fixed receiver_reference.py rule and minimal original source context",
+      "resolved_config_ref": "runtime/context archive",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "teacher/reference seeds2026092701/02/03;student01;hardware20261016423;fixed loader seed01",
+      "k": null,
+      "scenario": "sourceL and hiddenU only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "12xL128/U256;60autograd.grad;F gradient33792/reference18900/rawteacher9216;G6144;L2 smoke separate",
+      "output_root": "PROJECT/runs/20261025-diagnostic-PAMF-RXReference-dose-m1-r01",
+      "log_path": "PROJECT/releases/20261025-diagnostic-PAMF-RXReference-dose-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_reference_source dispatch --config PROJECT/releases/20261025-diagnostic-PAMF-RXReference-dose-release-r01/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "references.pt",
+        "progress.json",
+        "gradient_complete.json",
+        "complete.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No sourceV or target reading;no new training or scientific performance claim.",
+    "Reference and teacher coordinates are ownseed;no crossseed feature averaging or pseudo/V reference update.",
+    "One common dose uses maximum median extra norm across three variants,clarifying the published 10percent rule before observing results.",
+    "First sortedRX holdout concerns only extra supervision;E30/main L/raw already saw all sourceRX,not a true unseen-base-RX claim.",
+    "Temporary native train buffers restored after each independent measurement,including nonpersistent registered banks.",
+    "Future source-transfer training requires separate immutable matrix and original plan scientific rule;this run cannot demonstrate goal completion."
+  ],
+  "matrix": {
+    "protocol": "F0",
+    "student_model_seed": 2026092701,
+    "reference_teacher_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "original_parent_epoch": 30,
+    "source_L_reference_count": 6300,
+    "reference_role": "L_s",
+    "reference_features": 160,
+    "reference_rule": "normalize mean normalized ownE30 L features perTX/RX;exclude ownRX;equal RX contribution",
+    "reference_updates": 0,
+    "new_trainable_heads": 0,
+    "temperature": 0.1,
+    "variants": [
+      "RawReference",
+      "RestoredReference",
+      "PairedReference"
+    ],
+    "extra_forward_inputs": [
+      "raw/raw",
+      "Gscene_k/Gscene_k",
+      "Gscene_k/Gscene_(k+1)"
+    ],
+    "extra_forwards_per_variant": 2,
+    "source_batches": 12,
+    "L_batch": 128,
+    "U_batch": 256,
+    "gradient_calls": 60,
+    "source_V_reads": 0,
+    "pseudo": "frozen threeE30 raw mean probability;unanimous class and eachconfidence>=.95",
+    "extra_held_RX": "first sorted sourceRX;excluded only extra mask;primary remains original L/raw ordinaryPL",
+    "loss_normalization": "mask then full U batch mean;average two forwards",
+    "source_channel_seed": 20261016421,
+    "hardware_seed": 20261016423,
+    "namespace": "PAMF/restored_dose/U/fixed",
+    "scenes": [
+      "practical_low_suburban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "dose_rule": "min(.25,.10*median(primary_norm)/max_v median(extra_v_norm))",
+    "dose_scope": "preclip Sinc physicalHz/CENTER_UNITS;not actual AdamW direction",
+    "paired_randomness": "same postprimary RNG and buffers restored before each variant;allbuffers restored afterbatch",
+    "G": {
+      "kind": "original_F0_LU",
+      "roles": "LU",
+      "reuse": true,
+      "graph": true,
+      "native": false,
+      "precision": "FP32/TF32off"
+    },
+    "allowed_gpus": [
+      0
+    ],
+    "U_truth": false,
+    "target": false,
+    "optimizer_updates": 0
+  },
+  "registered_at": "2026-10-25T15:52:35+00:00"
+}
