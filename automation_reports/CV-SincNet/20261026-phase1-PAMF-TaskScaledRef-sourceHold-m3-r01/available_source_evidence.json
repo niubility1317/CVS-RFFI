@@ -4,27 +4,27 @@
     {
       "method_a": "GTaskScaled",
       "method_b": "GUniform",
-      "common_available_steps": 168,
+      "common_available_steps": 878,
       "all_cumulative_extra_acceptances_equal": true
     },
     {
       "method_a": "GTaskScaled",
       "method_b": "RawTaskScaled",
-      "common_available_steps": 168,
+      "common_available_steps": 878,
       "all_cumulative_extra_acceptances_equal": true
     },
     {
       "method_a": "GUniform",
       "method_b": "RawTaskScaled",
-      "common_available_steps": 170,
+      "common_available_steps": 880,
       "all_cumulative_extra_acceptances_equal": true
     }
   ],
-  "total_available_records": 540,
+  "total_available_records": 2699,
   "expected_extra_per_epoch": 41939,
   "source_weight": 0.03257680992215036,
+  "observer_optimizer_updates": 0,
   "new_target_reads": 0,
-  "observed_at_UTC": "2026-10-25T18:28:03.246939+00:00",
-  "scope": "Every currently complete record,not full E50 or target benefit;live gzip tail may remain buffered;no parameter or queue changes",
-  "observer_optimizer_updates": 0
+  "observed_at_UTC": "2026-10-25T18:33:40.146112+00:00",
+  "scope": "Every currently complete record,not full E50 or target benefit;live gzip tail may remain buffered;no parameter or queue changes"
 }

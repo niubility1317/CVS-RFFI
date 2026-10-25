@@ -186,3 +186,13 @@ V仍是原单一27000条角色；只按RX标注结果，不另建V_cal/V_select�
 下一步先做12批不更新参数的真实源剂量诊断，比较同输入普通参照、任务强度归一参照，以及raw匹配控制。以同一最大中位源梯度规则固定共同剂量后，再登记新的单种子源留出矩阵；旧失败的+.3pp/- .1pp条件不放宽，新方案若通过才进入三种子正式raw/同G测试。当前只是明确下一机制与待执行步骤，尚无新模型或新目标结果。
 
 任务缩放函数 `task_scaled_reference.task_scaled_loss` 已实现，旧参照loss提取为完全相同的逐包terms。九项基础/新性质检查通过，包括默认头没有额外参数梯度和逐包特征梯度范数上界。真实源checkpoint/12批整体参数梯度剂量、有效权重/触顶率与训练仍待下一独立run验证，不复用旧0.071458作为新方法的已验证剂量。
+
+## 任务缩放源校准完成，新矩阵正在执行
+
+真实 checkpoint 的 12 批无更新源校准已经完成，见[任务缩放剂量结果](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-TaskScaledRef-dose-m1-r01/report.md)。原默认头重算与真实输出一致，特征梯度图有效，学生与教师参数和全部注册 buffers 保持不变；optimizer、V、目标、U 真值读取及额外头参数梯度均为 0。按预定最大中位全模型梯度规则确定共同系数 **0.03257680992215036**：GTaskScaled 加权范数比为 10%，GUniform 约为 4.49%，RawTaskScaled 约为 0.78%。这只确定本次源剂量，不能证明目标最优或 AdamW 更新上界。
+
+新 run `20261026-phase1-PAMF-TaskScaledRef-sourceHold-m3-r01` 已实际启动，执行代码 `e39bd09e1da2727d3a56465317b4496762d1549c`。GUniform、GTaskScaled、RawTaskScaled 三条均为同一个学生 seed2026092701，分别从原 own E30 独立追加 20 轮。两条 G 方法使用相同恢复输入的两次前向，raw 控制使用相同 raw 输入的两次前向，损失均先平均。原 L/raw PL、默认头联合训练、固定 q 共识、旧可见 L 参照、原三景 U 缓存和新增分支 RX1 留出保持；任务缩放随当前学生计算，G、教师和参照不更新。
+
+一次独立 P0/P1 审查、12 条相关聚焦检查、真实 E30 联合 backward smoke、archive 传输比较和远端 compile 已通过。已独立核实控制器与三个训练进程的完整身份、GPU 和实际指标日志增长；实际 GPU 为 0、2、3。所有当前完整日志前缀的主项、预算、隐藏 U、缩放边界及相同新增接受流符合预定配置，训练和源评估尚未完成。具体状态和完整结果在[本轮报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-TaskScaledRef-sourceHold-m3-r01/report.md)更新。
+
+源判据继续固定为留出 RX 的 G 三景均值差至少 +0.3 pp、完整 V raw clean 差至少 −0.1 pp。三条全部完成后按原规则选择；无通过者不扩展。当前没有三种子或新的目标测试结果，raw clean、raw 六景及同 G-LU 六景的原联合目标均保持未达成。
