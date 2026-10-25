@@ -1,0 +1,134 @@
+{
+  "status": "ANALYZED_FIXED_F0_MATRIX",
+  "read_at_UTC": "2026-10-25T12:23:57.361445+00:00",
+  "completed_students": 9,
+  "planned_students": 9,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "independent_truth_last": true,
+  "physical_count_per_seed": 168000,
+  "source_RX_unseen_date_test_diagnostic": 30000,
+  "all_three_goal_conditions_pass": false,
+  "criteria": "raw clean >= max controls +1pp AND raw six >max controls +1.5pp AND same-G-LU six >both controls",
+  "methods": [
+    {
+      "method": "PeerT1U2",
+      "raw_thresholds_pass": false,
+      "paired_DURA_six_gain_pp": -0.6333002645502646,
+      "goals": [
+        {
+          "route": "raw",
+          "endpoint": "clean",
+          "exact_gain_fraction_pp": "-99/560",
+          "gain_pp": -0.1767857142857143,
+          "threshold_pass": false
+        },
+        {
+          "route": "raw",
+          "endpoint": "six_practical_mean",
+          "exact_gain_fraction_pp": "16969/10080",
+          "gain_pp": 1.6834325396825396,
+          "threshold_pass": true
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "clean",
+          "exact_gain_fraction_pp": "-221/1680",
+          "gain_pp": -0.13154761904761905,
+          "threshold_pass": false
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "six_practical_mean",
+          "exact_gain_fraction_pp": "-19151/30240",
+          "gain_pp": -0.6333002645502646,
+          "threshold_pass": false
+        }
+      ],
+      "original_F0_goal_pass": false
+    },
+    {
+      "method": "PeerPL2",
+      "raw_thresholds_pass": false,
+      "paired_DURA_six_gain_pp": -0.12976190476190477,
+      "goals": [
+        {
+          "route": "raw",
+          "endpoint": "clean",
+          "exact_gain_fraction_pp": "-223/1260",
+          "gain_pp": -0.176984126984127,
+          "threshold_pass": false
+        },
+        {
+          "route": "raw",
+          "endpoint": "six_practical_mean",
+          "exact_gain_fraction_pp": "-275/1008",
+          "gain_pp": -0.2728174603174603,
+          "threshold_pass": false
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "clean",
+          "exact_gain_fraction_pp": "-311/1680",
+          "gain_pp": -0.18511904761904763,
+          "threshold_pass": false
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "six_practical_mean",
+          "exact_gain_fraction_pp": "-109/840",
+          "gain_pp": -0.12976190476190477,
+          "threshold_pass": false
+        }
+      ],
+      "original_F0_goal_pass": false
+    },
+    {
+      "method": "PeerT1U1",
+      "raw_thresholds_pass": false,
+      "paired_DURA_six_gain_pp": -0.3837632275132275,
+      "goals": [
+        {
+          "route": "raw",
+          "endpoint": "clean",
+          "exact_gain_fraction_pp": "-97/504",
+          "gain_pp": -0.19246031746031747,
+          "threshold_pass": false
+        },
+        {
+          "route": "raw",
+          "endpoint": "six_practical_mean",
+          "exact_gain_fraction_pp": "4583/3780",
+          "gain_pp": 1.2124338624338624,
+          "threshold_pass": false
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "clean",
+          "exact_gain_fraction_pp": "-193/1260",
+          "gain_pp": -0.15317460317460319,
+          "threshold_pass": false
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "six_practical_mean",
+          "exact_gain_fraction_pp": "-2321/6048",
+          "gain_pp": -0.3837632275132275,
+          "threshold_pass": false
+        }
+      ],
+      "original_F0_goal_pass": false
+    }
+  ],
+  "complete_new_source_records_read": 59940,
+  "complete_stdout_lines_read": 10872,
+  "U_truth_read": false,
+  "target_training_reads": 0,
+  "G_training_reads": 0,
+  "healthy_label01_extension": "separate unchanged three-student run; not F0 result",
+  "original_deferred_rows": "released to original owner by preregistered completion condition; preserve original configurations",
+  "no_new_DURA_aware_F_training": true
+}
