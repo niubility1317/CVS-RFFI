@@ -1,0 +1,203 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261025-diagnostic-PAMF-DURA-paired-source-m3-r01",
+  "group_id": "phase1-pamf-restored-IQ-ssl-source-20261025",
+  "display_name": "原始与 DURA 恢复 IQ 的冻结源域配对诊断",
+  "description": "三份原普通PL固定E30及同契约G-LU；完整源V比较原始、恢复、三种受损及对应恢复视图。仅诊断，不开展新的F/G优化或目标访问。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-DURA-paired-source"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "source-only",
+    "paired-IQ",
+    "frozen-default-head",
+    "no-target"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261025-phase1-PAMF-PL-consensus-source-m6-r01",
+    "20261024-phase1-PAMF-REPL-completion-m201-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求先分析恢复IQ增强为何比无增强更差；实施固定源域配对可行性分析，保留健康实验，不启动DURA-aware F训练。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261025-diagnostic-PAMF-DURA-paired-source-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig F0 unchanged VALIDATED_ONCE source roles",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "2 physical source IQ for one frozen F/G no-query smoke",
+      "U_s": "not opened;TX truth hidden",
+      "V": "all27000;source labels only diagnose paired correctness and identity geometry;zero persistent updates"
+    },
+    "train_ratio": "zero new training;original F0 L6300/U56700/V27000",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "frozen source paired diagnosis;not target gain or new trained SSL"
+  },
+  "checkpoint": {
+    "initialization": "three fixed original ordinaryPL E30=own scratchE20+own10;no target-selected candidate",
+    "sources": [
+      "F0 ordinaryPL seeds2026092701/02/03 original E20+10",
+      "fixed same-contract DURA v1 original F0 G-LU"
+    ],
+    "contract_check_ref": "validate_prefix_headers + validate_e30 + existing load_G;reuse VALIDATED_ONCE roles",
+    "provenance_verdict": "LOAD_ONLY_AFTER_FULL_E20_E30_CHAIN_AND_G_CONTRACT_CHECK",
+    "selection_rule": "all3 fixed E30 parents;no ranking/threshold fitting;raw confidence.95 and unanimous3 diagnosis"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-restored-source-20261025",
+    "gpu_policy": "GPU0 only,one own worker,global CUDA+pending<2 at admission,free>=10000MiB,CPU2threads;preserve others",
+    "remote_run_root": "PROJECT/runs/20261025-diagnostic-PAMF-DURA-paired-source-m3-r01",
+    "remote_log_root": "PROJECT/releases/20261025-diagnostic-PAMF-DURA-paired-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/restored_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.restored_source dispatch --config PROJECT/releases/20261025-diagnostic-PAMF-DURA-paired-source-release-r01/runtime.json",
+    "stop_rule": "Any technical/protocol/ancestry/nonfinite/state-mutation failure stops this one diagnostic;preserve partial outputs,no automatic retry,no intervention in healthy jobs."
+  },
+  "expected_artifacts": [
+    "actual frozen F/G sourceL smoke",
+    "all27000 eight-view source logits and paired physical IDs privately",
+    "raw/G corrected-broken four-way counts byTX/RX/day and raw consensus subset",
+    "default-head true-class margin and paired cosine distance",
+    "no-probe class/RX centroid geometry and IQ power",
+    "raw unanimous3 precision and retention feasibility",
+    "unchanged F/G parameters and buffers,zerooptimizer/U/target/head updates",
+    "PID/CWD/argv/GPU/loggrowth evidence",
+    "public aggregate report and registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "paired corrected/broken counts",
+      "source accuracy",
+      "default-head class margin",
+      "paired feature cosine distance",
+      "class RX centroid geometry",
+      "raw pseudo precision/coverage",
+      "IQ power"
+    ],
+    "dimensions": [
+      "frozen F seed",
+      "8 source views",
+      "sourceTX/RX/day",
+      "raw unanimous3 accepted subset"
+    ],
+    "prediction_ref": "private source_V_predictions.npz;no target predictions",
+    "scorer_ref": "same source-only frozen forward process reads only V labels;no parameter/stats update"
+  },
+  "rows": [
+    {
+      "row_id": "F0-three-E30-G-LU-paired-source",
+      "method": "frozen F/G source paired diagnostic",
+      "purpose": "source-only counterfactual",
+      "config_ref": "immutable context.json cases/G",
+      "resolved_config_ref": "runtime/context archive",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Three pretrained model seeds2026092701/02/03 form one joint frozen diagnostic;hardware seed20261016423;no new model training.",
+      "k": null,
+      "scenario": "sourceV raw/G(raw)/3H/3G(H)",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "648000 F packet views and108000 G packet views;sourceL smoke separate;zero optimizer",
+      "output_root": "PROJECT/runs/20261025-diagnostic-PAMF-DURA-paired-source-m3-r01",
+      "log_path": "PROJECT/releases/20261025-diagnostic-PAMF-DURA-paired-source-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.restored_source dispatch --config PROJECT/releases/20261025-diagnostic-PAMF-DURA-paired-source-release-r01/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json",
+        "source_V_predictions.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "Frozen sourceV cannot establish target improvement or whether G itself erased TX information.",
+    "Repeated same input/G produces one deterministic view;no independent-label/sample inflation.",
+    "No postG augmentation or gradient optimization;these remain future source diagnostic steps.",
+    "F0 peer matrix completed independently;this plan uses predeclared original E30 parents and no target-based parent selection."
+  ],
+  "matrix": {
+    "protocols": [
+      "F0"
+    ],
+    "parent_model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "parent_epoch": 30,
+    "fixed_G": "original_F0_LU",
+    "G_inference": {
+      "reuse": true,
+      "graph": true,
+      "native": false,
+      "precision": "FP32/TF32off"
+    },
+    "source_V": 27000,
+    "views": 8,
+    "F_packet_views": 648000,
+    "G_packet_views": 108000,
+    "scenes": [
+      "practical_low_suburban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "channel_seed": 20261016421,
+    "hardware_seed": 20261016423,
+    "namespace": "PAMF/restored_source/V/fixed",
+    "no_U_IQ": true,
+    "no_target": true,
+    "F_G_updates": 0,
+    "allowed_gpus": [
+      0
+    ],
+    "threshold": 0.95,
+    "source_pseudo_feasibility": {
+      "precision_percent_min": 99.5,
+      "retention_vs_mean_raw_single_accepted_min": 0.9
+    },
+    "training_candidate_selection": "none in this diagnostic;no gradient-dose/post-G-augmentation experiments yet"
+  },
+  "registered_at": "2026-10-25T12:39:31+00:00"
+}
