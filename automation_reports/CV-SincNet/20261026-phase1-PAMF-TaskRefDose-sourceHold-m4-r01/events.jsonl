@@ -1,2 +1,7 @@
 {"at": "2026-10-25T19:42:01+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-25T19:49:51+00:00", "status": "RUNNING", "note": "实际smoke通过；控制器/四训练PID CWD argv GPU和日志增长独立核实，所有完整前缀合法，只有一个student seed；没有目标结果。", "evidence": ["launch_evidence.json", "available_source_execution.csv"], "row_id": null}
+{"at": "2026-10-25T20:32:10+00:00", "status": "ANALYZED", "note": "完整source E50/11100与八视图完成，全部4440记录核实，原源门槛FAIL，无目标访问。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-GTask2x-sourceHold-s2026092701"}
+{"at": "2026-10-25T20:32:15+00:00", "status": "ANALYZED", "note": "完整source E50/11100与八视图完成，全部4440记录核实，原源门槛FAIL，无目标访问。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-GTask3x-sourceHold-s2026092701"}
+{"at": "2026-10-25T20:32:21+00:00", "status": "ANALYZED", "note": "完整source E50/11100与八视图完成，全部4440记录核实，原源门槛FAIL，无目标访问。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-GUniform3x-sourceHold-s2026092701"}
+{"at": "2026-10-25T20:32:27+00:00", "status": "ANALYZED", "note": "完整source E50/11100与八视图完成，全部4440记录核实，原源门槛FAIL，无目标访问。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-RawTask3x-sourceHold-s2026092701"}
+{"at": "2026-10-25T20:32:33+00:00", "status": "ANALYZED", "note": "四条完整源比较均FAIL；剂量1x/2x/3x留出净增36/34/28，停止全局增权路线，无目标或三种子扩展。", "evidence": ["source_arithmetic_evidence.json", "source_task_dose_ladder.csv"], "row_id": null}
