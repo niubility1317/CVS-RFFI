@@ -1,0 +1,204 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-TaskScaledRef-dose-m1-r01",
+  "group_id": "phase1-pamf-task-scaled-reference-20261026",
+  "display_name": "任务强度缩放参照的无更新整网源剂量校准",
+  "description": "seed01 own E30上保留完整T1 L/rawPL，12源L/U批匹配G普通参照/G任务缩放/raw任务缩放；真实默认头可微分路径，整网物理梯度共同剂量，无optimizer/V/target。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-TaskScaledRef-dose"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "source-only",
+    "whole-model-gradient",
+    "task-scaled",
+    "no-optimizer"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-diagnostic-PAMF-RXReference-alignment-m1-r01",
+    "20261025-diagnostic-PAMF-RXReference-dose-m1-r01"
+  ],
+  "authorization": "继续原PAMF SSL性能目标；冻结梯度诊断支持重新分配纠错强度，本run仅合法源L/U真实E30无更新校准，不扩大旧失败三变体。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-diagnostic-PAMF-TaskScaledRef-dose-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "12x128 original fullT1 primary;L2 actualhead/graph smoke;fixed references reuseoriginalL6300",
+      "U_s": "12x256 hidden-label source,originalrawPL primary,sourceGcache andthreefrozenrawteacherq only",
+      "V": "not opened"
+    },
+    "train_ratio": "original L6300/U56700/V27000 roles unchanged;zerooptimizer updates",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "source whole-model gradient andscale calibration only;not Utruth accuracy,AdamW guarantee or performance"
+  },
+  "checkpoint": {
+    "initialization": "original own E20+10 E30 seed01 disposable student;three frozenE30 source headers/readers",
+    "sources": [
+      "originalF0 own ordinaryPL E30",
+      "same originalL6300 fixedownE30refs",
+      "same rawteacherq/GsourceUcache"
+    ],
+    "contract_check_ref": "load_sources E20/own10 headers andcontracts;reference/sourcecache exactroles/cases/G;actualL2 head feature parity",
+    "provenance_verdict": "sameoriginalF0 source-only ancestry,defaulthead,hiddenU/nativeU-EMA off",
+    "selection_rule": "no checkpointselection;allthree matchedsource gradients reported;one common dose beforeanytraining/target"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-restored-source-20261025",
+    "gpu_policy": "GPU0 only,one own worker,global CUDA+pending<2 at admission,free>=10000MiB,CPU2threads;preserve others",
+    "remote_run_root": "PROJECT/runs/20261026-diagnostic-PAMF-TaskScaledRef-dose-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261026-diagnostic-PAMF-TaskScaledRef-dose-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/task_scaled_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.task_scaled_source dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-TaskScaledRef-dose-release-r01/runtime.json",
+    "stop_rule": "First source/header/headgraph/smoke/nonfinite/persistentstate/technical error stops onlythisrun;preservepartials;no automaticretry orforeignownerchange."
+  },
+  "expected_artifacts": [
+    "actual ownE30/L2 feature/defaulthead graphsmoke",
+    "12 matchedsourcewholemodel gradientrows",
+    "one commonsource dose",
+    "scaleutilization andcapstats",
+    "allstudent/teacher parameters andregisteredbuffers unchanged",
+    "originalL768/AsKL0 andrawPL headprimary preserved",
+    "zerooptimizer/V/Utruth/target/Gforward/newhead",
+    "PID/CWD/argv/GPU/loggrowth",
+    "same-run sourcecalibration report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "12 wholemodel primary/extra norms andcosines",
+      "one shared physical-gradient dose",
+      "taskscale mean/max/sum/capfraction",
+      "zeroauxhead gradient"
+    ],
+    "dimensions": [
+      "sourcebatch",
+      "GUniform/GTaskScaled/RawTaskScaled",
+      "single seed01",
+      "same rawq/accepted/rxholdout"
+    ],
+    "prediction_ref": "none,sourcegradientonly",
+    "scorer_ref": "no scorer;Ulabels remainhidden,rawcachedq only"
+  },
+  "rows": [
+    {
+      "row_id": "F0-task-scaled-dose-s2026092701",
+      "method": "wholemodel task-scaled reference dose",
+      "purpose": "source-only no-update calibration",
+      "config_ref": "task_scaled_source.py fixedmatrix and minimal sourcecontext",
+      "resolved_config_ref": "runtime/contextarchive",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "student01;threeoriginalcachedrawteacher/reference seeds2026092701/02/03;loadersseed01,sourceGcacheunchanged",
+      "k": null,
+      "scenario": "sourceLrawprimary/Uraw andsame3cachedGsourceviews",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "12xL128/U256;60wholeparameterautogradcalls;33792studentpacketforwards;96additionalfeatureautogradcalls;L2smoke separate;Gforwards0",
+      "output_root": "PROJECT/runs/20261026-diagnostic-PAMF-TaskScaledRef-dose-m1-r01",
+      "log_path": "PROJECT/releases/20261026-diagnostic-PAMF-TaskScaledRef-dose-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.task_scaled_source dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-TaskScaledRef-dose-release-r01/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "gradient_complete.json",
+        "complete.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "OriginalsourceH+.3pp/- .1pp scientificconditions remain;oldfailedmodels arenotexpanded.",
+    "Newscale isperpacket featuremagnitude matching withstoppedweights;it doesnotguarantee fullparameter orAdamWnormbounds.",
+    "Actualdefaulthead stillbelongs toprimaryL/rawPL;newweightedreference hasnohead parametergradient.",
+    "Acceptedcount,weightedsum/caprate aredifferentutilizationmeasures;none isUtruth accuracy.",
+    "No V/target read,optimizer,headfit or teacher/G/referenceupdate;sourceprototypecoordinates remainownseed.",
+    "A futurematchedtrainingmatrix andactualcoefficient must be frozen afterthissourcecalibration,not old.071458 reuse."
+  ],
+  "matrix": {
+    "protocol": "F0",
+    "student_model_seed": 2026092701,
+    "teacher_reference_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "original_parent_epoch": 30,
+    "reference_role": "L_s",
+    "source_L_reference_count": 6300,
+    "source_batches": 12,
+    "L_batch": 128,
+    "U_batch": 256,
+    "variants": [
+      "GUniform",
+      "GTaskScaled",
+      "RawTaskScaled"
+    ],
+    "extra_forwards": 2,
+    "normalization": "maskthenfullUmean;twoforwardsaverage",
+    "extra_held_RX": "first sortedsourceRX=1;onlyextra,originalprimaryallRX",
+    "pseudo": "samefrozenrawmeanq,unanimousclassandeachconfidence>=.95",
+    "scale": "stopgrad(min(32,norm(defaultheadhardidentityfeaturegradient)/(norm(referencefeaturegradient)+1e-12)))",
+    "task_identity": "argmaxrawteacherq,neverUtruth",
+    "newhead": false,
+    "extrahead_parameter_gradient": 0,
+    "scale_cap": 32.0,
+    "defaulthead_path": "existing encoder.classify_features onexactsameforwardz;numericparitywithactualtxlogits checked",
+    "dose_rule": "min(.25,.10*median(primary_norm)/max_variantmedian(extra_norm));shared",
+    "gradient_coordinates": "alltrainablepreclip;Sinc twoCENTER_25Kgrads /25000 perCENTER_UNITSglobalclip;othersnative;notAdamW",
+    "paired_randomness": "postprimaryRNG/buffers resetbeforeeachvariant;allregisteredbuffersrestoreafterbatch",
+    "source_cache_run": "20261025-phase1-PAMF-RestoredPL-m9-r01",
+    "source_reference_run": "20261025-diagnostic-PAMF-RXReference-dose-m1-r01",
+    "G": "sameoriginalF0G-LU cachedIQ,noGforward",
+    "optimizer_updates": 0,
+    "V_reads": 0,
+    "target": false,
+    "U_truth": false,
+    "allowed_gpus": [
+      0
+    ]
+  },
+  "registered_at": "2026-10-25T18:03:11+00:00"
+}
