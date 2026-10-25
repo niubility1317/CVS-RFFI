@@ -5,7 +5,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from experiments.pamf_channel_pl.plan import PROTOCOLS,SEEDS
-from experiments.pamf_peer_supervised.plan import rows,make_config,validate_config,validate_runtime_context
+from experiments.pamf_peer_supervised.plan import rows,make_config,validate_config,validate_runtime_context,EXTRA_RUN,matrix_rows
 from experiments.pamf_peer_supervised.objective import consensus_mask,PeerObjective,installed
 from experiments.pamf_peer_supervised.priority import owner_matches,worker_item,defer
 
@@ -42,6 +42,69 @@ def test_three_variants_have_three_students_and_unmodified_original_prefixes():
         assert {p['model_seed'] for p in c['peers']}==set(SEEDS)-{r['model_seed']}
         assert c['hard_pl']['weight']==(1. if r['method']=='PeerT1U1' else 2.)
         assert c['repl_row']['structure']=='full' and not any(c['repl_row']['blocks'].values())
+
+
+def test_low_label_extension_uses_only_own_contract_peers_and_preserves_F0_matrix():
+    assert len(matrix_rows(EXTRA_RUN))==3 and len(rows())==9
+    for row in matrix_rows(EXTRA_RUN):
+        c=make_config(context(),row,'PROJECT','commit');validate_config(c)
+        assert c['run_id']==EXTRA_RUN and c['protocol_id']=='label01'
+        assert c['source_contract']=='label01/contract.json' and c['hard_pl']['weight']==2.
+        assert all(p['protocol']=='label01' for p in c['peers'])
+        assert c['shared_prefix'].endswith('/'+row['row_id'].replace('PeerT1U2','ordinary_PL')+'/segment20')
+        c['peers'][0]['source_config']['source_contract']='F0/contract.json'
+        with pytest.raises(ValueError,match='CONTRACT_MISMATCH'):validate_config(c)
+
+
+def test_low_label_preparation_keeps_target_and_truth_out_of_source_jobs(tmp_path,monkeypatch):
+    import json
+    import experiments.pamf_peer_supervised.prepare as p
+    from experiments.practical_full_2x2.plan import TASKS
+    ctx=dict(context(),reference_score_jobs='/old/jobs.json',consensus_source_root='/source-consensus',
+        previous_runtime='/old/runtime.json',queue_priority_authorization='human_defer_unstarted_21_preserve_healthy_and_all_GPU',
+        reference=dict(handles={'label01':dict(source_contract='label01/contract.json',classes=list(range(6)),
+            tests={t:dict(views_root='/views/'+t,truth='/truth/'+t) for t in TASKS})},caches={'label01':{'LU':{'path':'/same-label01-GLU'}}}))
+    proof=dict(status='SOURCE_CONSENSUS_COMPLETE',model_updates=0,target_reads=0,U_truth_read=False,
+        protocols=[dict(protocol=k,source_V_seen=27000,model_seeds=list(SEEDS),results=[dict(policy='unanimous3',dimension='overall',precision_percent=99.9,coverage_percent=90.)]) for k in ('F0','label01')])
+    def read(path):
+        if str(path)=='context':return ctx
+        if str(path).replace('\\','/')=='/source-consensus/complete.json':return proof
+        return {'same_contract':True}
+    monkeypatch.setattr(p,'read',read)
+    monkeypatch.setattr(p,'resolve_reference_score_paths',lambda path,wanted:{k:'/scores/'+k for k in wanted})
+    rt=dict(context='context',run_root=str(tmp_path),run_id=EXTRA_RUN,project='PROJECT',code_commit='commit',frozen_sources={},release_root='RELEASE',python='PY')
+    jobs=p.prepare(rt);assert len(jobs)==9
+    for job in jobs:
+        c=json.loads(__import__('pathlib').Path(job['config']).read_text())
+        if job['kind']=='train':
+            assert c['protocol_id']=='label01' and not set(c)&{'truth','tests','views_root','target_truth','target_inputs'}
+        elif job['kind']=='predict':
+            assert c['restored_caches']['LU']=='/same-label01-GLU'
+            assert all('truth' not in v for v in c['tests'].values())
+        else:
+            assert all('truth' in v for v in c['tests'].values())
+            assert not set(c)&{'source_output','source_contract','restored_caches','frozen_sources'}
+
+
+def test_secondary_contract_gain_cannot_complete_original_F0_goal(tmp_path):
+    import json
+    from pathlib import Path
+    from experiments.pamf_peer_supervised.results import analyze
+    from experiments.practical_full_2x2.plan import TASKS,VIEWS
+    def put(path,value):path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value),encoding='utf-8')
+    refs={}
+    for row in matrix_rows(EXTRA_RUN):
+        refs[row['row_id']]={}
+        for method in ('supervised','ordinary_PL','REPL','PeerT1U2'):
+            rid=row['row_id'] if method=='PeerT1U2' else 'label01-'+method+'-s'+str(row['model_seed'])
+            score=dict(status='SCORED',truth_last=True,model_seed=row['model_seed'],row_id=rid,run_id=EXTRA_RUN if method=='PeerT1U2' else 'history',
+                results=[dict(test=t,readout=r,view=v,dimension='overall',stratum='ALL',count=100,accuracy=.9 if method=='PeerT1U2' else .8) for t in TASKS for r in ('raw','DURA-LU') for v in VIEWS])
+            path=tmp_path/'readouts'/rid/'scores/scores.json';put(path,score)
+            if method!='PeerT1U2':refs[row['row_id']][method]=str(path)
+    put(tmp_path/'reference_scores.json',refs);analyze(dict(run_root=str(tmp_path),run_id=EXTRA_RUN))
+    result=json.loads((tmp_path/'analysis/complete.json').read_text())
+    assert result['new_students']==3 and not result['original_F0_goal_applicable'] and not result['original_raw_goal_met']
+    assert all(v['goal_pass'] for v in result['all_target_dates_endpoints'])
 
 
 @pytest.mark.parametrize('bad',['truth','EMA','head','budget','AsKL','peer_seed','peer_contract','peer_epoch','class_space','extra_U'])

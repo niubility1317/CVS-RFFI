@@ -4,7 +4,7 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
 from experiments.practical_full_2x2.plan import TASKS
 from experiments.pamf_channel_pl.references import resolve_reference_score_paths
-from .plan import RUN,rows,make_config,validate_runtime_context
+from .plan import matrix_rows,make_config,validate_runtime_context
 
 
 def source_admitted(proof):
@@ -22,28 +22,29 @@ def source_admitted(proof):
 def prepare(rt):
     context=validate_runtime_context(read(rt['context']));source_admitted(read(Path(context['consensus_source_root'])/'complete.json'))
     reference=context['reference'];root=Path(rt['run_root']);jobs=[];sources={};refs={}
-    wanted={'F0-'+m+'-s'+str(s) for r in rows() for s in (r['model_seed'],) for m in ('supervised','ordinary_PL','REPL')}
+    rows=matrix_rows(rt['run_id'])
+    wanted={r['protocol']+'-'+m+'-s'+str(r['model_seed']) for r in rows for m in ('supervised','ordinary_PL','REPL')}
     reference_paths=resolve_reference_score_paths(context['reference_score_jobs'],wanted)
     def add(kind,row,c,completion,status,deps=()):
         path=root/'configs'/(kind+'__'+row['row_id']+'.json');write(path,c)
         jobs.append(dict(id=kind+'__'+row['row_id'],kind=kind,row_id=row['row_id'],model_seed=row['model_seed'],gpu=row['gpu'],
             config=str(path),completion=str(completion),successful_statuses=[status],dependencies=list(deps),
             execution_release=rt['release_root'],entrypoint='experiments.pamf_peer_supervised.runner',execution_python=rt['python'],lane='new'))
-    for row in rows():
+    for row in rows:
         c=make_config(context,row,rt['project'],rt['code_commit']);c['frozen_sources']=rt['frozen_sources']
-        rid=row['row_id'];s=row['model_seed'];h=reference['handles']['F0']
+        rid=row['row_id'];s=row['model_seed'];p=row['protocol'];h=reference['handles'][p]
         if read(c['source_contract'])!=read(h['source_contract']):raise ValueError('Source/evaluation contract differs')
         add('train',row,c,Path(c['output_root'])/'complete.json','SOURCE_FROZEN')
         sources[rid]=c['output_root'];out=root/'readouts'/rid
-        pred=dict(row_id=rid,model_seed=s,protocol_id='F0',run_id=RUN,method=row['method'],
+        pred=dict(row_id=rid,model_seed=s,protocol_id=p,run_id=c['run_id'],method=row['method'],
             source_output=c['output_root'],source_contract=h['source_contract'],classes=h['classes'],source_days=[1,2,3],
             tests={t:dict(views_root=h['tests'][t]['views_root']) for t in TASKS},
-            restored_caches=dict(LU=reference['caches']['F0']['LU']['path']),readouts=['raw','DURA-LU'],
+            restored_caches=dict(LU=reference['caches'][p]['LU']['path']),readouts=['raw','DURA-LU'],
             output_root=str(out/'predictions'),frozen_sources=rt['frozen_sources'])
         add('predict',row,pred,out/'predictions/complete.json','ALL_PREDICTIONS_COMPLETE',[str(Path(c['output_root'])/'complete.json')])
         scorer=deepcopy(pred);scorer.update(prediction_output=pred['output_root'],output_root=str(out/'scores'),tests=h['tests'])
         for key in ('source_output','source_contract','restored_caches','frozen_sources'):scorer.pop(key)
         add('score',row,scorer,out/'scores/complete.json','SCORED_COMPLETE',[str(out/'predictions/complete.json')])
-        refs[rid]={m:reference_paths['F0-'+m+'-s'+str(s)] for m in ('supervised','ordinary_PL','REPL')}
+        refs[rid]={m:reference_paths[p+'-'+m+'-s'+str(s)] for m in ('supervised','ordinary_PL','REPL')}
     write(root/'jobs.json',jobs);write(root/'reference_scores.json',refs);write(root/'sources.json',sources)
     return jobs

@@ -1,0 +1,403 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261025-phase1-PAMF-PeerSupervised-label01-m3-r01",
+  "group_id": "pamf-peer-supervised-source-consensus",
+  "display_name": "PAMF 共识监督机制在1%标注下的三种子验证",
+  "description": "源域证据预选label01：复用同契约ordinaryPL E20，每学生own10+20，固定PeerT1U2主配方；3学生/3GPU独立队列，原9F0健康训练与参数不变。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PeerT1U2-label01"
+  ],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "source-peer-consensus",
+    "three-student-seed",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261025-phase1-PAMF-PL-consensus-source-m6-r01",
+    "20261025-phase1-PAMF-PeerSupervised-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求继续研发SSL、三种子实际测试，并授权更多并行及全部GPU；当前仅用GPU5/6空位与GPU7同seed第二槽，保留原9学生及其他owner。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261025-phase1-PAMF-PeerSupervised-label01-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig / ManyRx, eleven unchanged VALIDATED_ONCE source contracts",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "original label01 source contract,exact role_ids and historical target IDs; never F0 weights",
+    "physical_ids_ref": "same source role_ids and target population IDs; prediction order checked",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original label01 true-label training packets; native128 repeats allowed, no extra labels",
+      "U_s": "original label01 hidden TX; native256/partial batch,own current pseudo confirmed by two same-label01 E20 peers",
+      "V": "existing non-updating source diagnostics only,finalE50 fixed"
+    },
+    "train_ratio": "original label01 counts {'L_s': 630, 'U_s': 62370, 'V': 27000}; L/(L+U)=1.0000%; source V fixed",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test only after fixed E50, all3 populations7views2routes fixed before independent truth scoring",
+    "external_method_exception": null,
+    "claim_scope": "Secondary label01 three-student actual target test,reported separately from original F0 target; cannot complete original goal using this setting"
+  },
+  "checkpoint": {
+    "initialization": "label01 own ordinaryPL E20+own10+own20,original13L+37LU; never F0 inheritance",
+    "sources": [
+      "own label01 ordinaryPL source-only scratch E20",
+      "other two label01 same-contract E20 frozen peers",
+      "same original label01 G-LU recovered IQ cache,reference only"
+    ],
+    "contract_check_ref": "training.prefix/load_peers + validate_prefix_headers + original frozen_inference.load_F + exact target IDs",
+    "provenance_verdict": "original prefixes checked in completed CPU source-consensus m6; recheck actual matching payload before loading; immutable peer E20, not new students",
+    "selection_rule": "label01 chosen from already complete source diagnostic,error reduction and precision/coverage only; fixed PeerT1U2 .95/weight2 recipe before this target access; no new F0 target result exists"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-peer-label01-20261025",
+    "gpu_policy": "physical5/6/7 map to seeds2026092701/02/03; <=2 own/card, <=3 total CUDA/pending/card including foreign; >=10000MiB free",
+    "remote_run_root": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01",
+    "remote_log_root": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/peer_label01",
+    "launch_command": "PYTHON -u -m experiments.pamf_peer_supervised.extension_runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-PeerSupervised-label01-release-r01/runtime.json",
+    "stop_rule": "Any stage technical failure stops new admissions and drains healthy own workers; no performance stop or auto retry",
+    "gpus": [
+      5,
+      6,
+      7
+    ],
+    "resource_policy": "max1 own/card,all CUDA/pending<2 and free>=10000MiB before admission; use5/6/7,keep current9workers and foreign owners",
+    "priority": "independent immutable owner,no handoff/signals/oldqueue changes; current9 F0 workers continue original immutable science7eb8"
+  },
+  "expected_artifacts": [
+    "one real E20 source-only L/U backward smoke before handoff, zero optimizer/query updates",
+    "9 E50 student trajectories,own20+10+20/11100; peer E20 sources and training cost",
+    "18 full per-segment U exposure/peer freeze/acceptance/CE dose states",
+    "9 all3population7view2route frozen predictions + independent truth-last scores",
+    "original F0 168000 physical targetRX endpoint, three populations and perRX/day/TX details",
+    "all3variant paired mean/sampleSD vs same-seed supervised/ordinaryPL/REPL",
+    "exact old controller handoff,healthy PID adoption,deferred21 and original99 scientific jobs unchanged",
+    "postlaunch exact PID/CWD/argv/GPU/log-growth evidence"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "paired pp gain",
+      "sample SD",
+      "peer accepted/raw accepted",
+      "U full mechanism exposure",
+      "G repairs/damage/net",
+      "actual training time and teacher forward cost"
+    ],
+    "dimensions": [
+      "label01",
+      "3studentseeds",
+      "3populations",
+      "7views",
+      "raw/same-label01 G-LU",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/readouts/ROW/predictions",
+    "scorer_ref": "independent CPU cric_dura_comparison.evaluation.score after full same-row prediction preflight"
+  },
+  "rows": [
+    {
+      "row_id": "label01-PeerT1U2-s2026092701",
+      "method": "PeerT1U2",
+      "purpose": "source-selected low-label generalization replication",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/configs/train__label01-PeerT1U2-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/F/label01-PeerT1U2-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own E20; other2 model seeds frozen E20 peers, not shared new student results; original source split/session seeds unchanged",
+      "k": null,
+      "scenario": "native source T1 As; target clean+6 practical across original3 populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS/joint default head",
+      "lr": "original matched per-segment cosine schedules; no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own E20/4440 + E10/2220 + E20/4440 = E50/11100; extra peers two shared20 prefixes and2evalU passes/update disclosed",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/F/label01-PeerT1U2-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/logs/train__label01-PeerT1U2-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_peer_supervised.runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/peer_supervised_state.json",
+        "source/segment50/peer_supervised_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "label01-PeerT1U2-s2026092702",
+      "method": "PeerT1U2",
+      "purpose": "source-selected low-label generalization replication",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/configs/train__label01-PeerT1U2-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/F/label01-PeerT1U2-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own E20; other2 model seeds frozen E20 peers, not shared new student results; original source split/session seeds unchanged",
+      "k": null,
+      "scenario": "native source T1 As; target clean+6 practical across original3 populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS/joint default head",
+      "lr": "original matched per-segment cosine schedules; no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own E20/4440 + E10/2220 + E20/4440 = E50/11100; extra peers two shared20 prefixes and2evalU passes/update disclosed",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/F/label01-PeerT1U2-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/logs/train__label01-PeerT1U2-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_peer_supervised.runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/peer_supervised_state.json",
+        "source/segment50/peer_supervised_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "label01-PeerT1U2-s2026092703",
+      "method": "PeerT1U2",
+      "purpose": "source-selected low-label generalization replication",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/configs/train__label01-PeerT1U2-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/F/label01-PeerT1U2-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own E20; other2 model seeds frozen E20 peers, not shared new student results; original source split/session seeds unchanged",
+      "k": null,
+      "scenario": "native source T1 As; target clean+6 practical across original3 populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS/joint default head",
+      "lr": "original matched per-segment cosine schedules; no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own E20/4440 + E10/2220 + E20/4440 = E50/11100; extra peers two shared20 prefixes and2evalU passes/update disclosed",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/F/label01-PeerT1U2-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/logs/train__label01-PeerT1U2-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_peer_supervised.runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/peer_supervised_state.json",
+        "source/segment50/peer_supervised_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Current9 F0 scientific workers remain in their original immutable release with unchanged configs/seeds/budget.",
+    "This additional source-contract replication has no target-based checkpoint or parameter selection. Original goal still requires F0 raw168000 three-seed result.",
+    "Each own student50 epochs;other2 shared20 peers disclosed;unique 3x20+3x30=150 epochs,incremental90. No new G training.",
+    "One real label01 E20 L/U no-query finite-backward smoke is first;native U/EMA disabled,original default head joint,source roles and both peer origins checked before load."
+  ],
+  "matrix": {
+    "rows": [
+      {
+        "row_id": "label01-PeerT1U2-s2026092701",
+        "protocol": "label01",
+        "model_seed": 2026092701,
+        "method": "PeerT1U2",
+        "gpu": 5,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ]
+      },
+      {
+        "row_id": "label01-PeerT1U2-s2026092702",
+        "protocol": "label01",
+        "model_seed": 2026092702,
+        "method": "PeerT1U2",
+        "gpu": 6,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ]
+      },
+      {
+        "row_id": "label01-PeerT1U2-s2026092703",
+        "protocol": "label01",
+        "model_seed": 2026092703,
+        "method": "PeerT1U2",
+        "gpu": 7,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ]
+      }
+    ],
+    "recipe": {
+      "threshold": 0.95,
+      "peer_epoch": 20,
+      "peer_count": 2,
+      "peer_policy": "all_agree_with_own_label",
+      "replace_own_label": false,
+      "peer_gradients": false,
+      "peer_updates": 0,
+      "EMA": false,
+      "start_epoch": 21,
+      "ordinary_noise_std": 0.015,
+      "physical_fraction": 0.5,
+      "ordinary_raw_KL": 1.0,
+      "As_KL": 0.0,
+      "contrast_weight": 0.1,
+      "contrast_levels": [
+        "time_down",
+        "t2.pool"
+      ],
+      "CE_normalizer": 1.25,
+      "As_confidence_gate": false,
+      "U_truth": false,
+      "new_head": false
+    },
+    "new_F": 3,
+    "new_training_epochs": 90,
+    "reused_unique_E20": 3,
+    "new_G": 0,
+    "new_IQ_cache": 0,
+    "source_contract": {
+      "protocol_id": "label01",
+      "dataset": "ManySig",
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "target_rxs": [
+        0,
+        2,
+        5,
+        7,
+        9,
+        10,
+        11
+      ],
+      "target_days": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "label_per_thousand": 7,
+      "fixed_labels": null,
+      "diagnostic_day": 0,
+      "split_seed": 392005,
+      "equalized": 1,
+      "out_len": 256,
+      "normalize": true,
+      "U_s_use": false,
+      "expected_counts": {
+        "L_s": 630,
+        "U_s": 62370,
+        "V": 27000
+      },
+      "target_count": 168000,
+      "primary_endpoint": "all_target_dates",
+      "fixed_validation": null
+    },
+    "main": "PeerT1U2",
+    "tasks": [
+      "cross_date",
+      "cross_rx",
+      "cross_both"
+    ],
+    "readouts": [
+      "raw",
+      "DURA-LU"
+    ],
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "original_F0_goal_applicable": false,
+    "secondary_thresholds": {
+      "clean_gain_vs_both_pp": 1.0,
+      "six_mean_gain_vs_both_strictly_above_pp": 1.5
+    },
+    "source_evidence": "label01 sourceV consensus99.778176%,coverage86.822222%,errors52 vs singles139-207;no updates/target/Utruth"
+  },
+  "registered_at": "2026-10-25T11:10:15+00:00"
+}
