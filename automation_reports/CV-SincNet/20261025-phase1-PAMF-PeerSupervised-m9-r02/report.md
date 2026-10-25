@@ -65,3 +65,7 @@ F0 三方案×三学生种子：冻结其他两seed同契约E20确认自身.95�
 新矩阵 9 个学生中 8 个已启动且均完成首个新增 epoch（累计 E21/4662）；剩余 PeerT1U1 seed2026092703 等待 GPU7 空位。两次独立读回之间，全部 8 个新学生日志均增长。已读取当前段所有可用完整结构化记录共 3564 条；该快照不等于全程结束分析。每行首个新增 epoch 共 222 步，U_seen=56700、peer_eval_views=113400；full U 方案 student_views=340200、physical_U=28350。实际 U 权重、L 每步 768 前向包、As 独立 KL0、teacher/EMA 零更新、零非有限跳步均与登记一致。主方案实际 U 接受率约 90%，不是 U 标签正确率。源域执行明细见科学 run 的 early_source_execution.csv。
 
 原训练自动测试已继续：完成的旧行直接进入预测队列，不等待整批。新学生也将在固定 E50 后自动完成 raw PAMF 与同一 G-LU＋PAMF、三人群、七视图的预测和独立 truth-last。当前没有本轮新学生 target 指标，性能目标尚未证明。证据见 [launch_evidence.json](launch_evidence.json)。
+
+## 新九学生全部启动
+
+原等待 GPU7 的 PeerT1U1 seed2026092703 已启动，已独立观察到全部 9 个新学生的精确进程身份和实际 GPU：每组均为三个种子。原科学版本、参数和预算不变。目前是源训练进度，没有新学生 target 性能结论。证据见 [all_nine_running.json](all_nine_running.json)。

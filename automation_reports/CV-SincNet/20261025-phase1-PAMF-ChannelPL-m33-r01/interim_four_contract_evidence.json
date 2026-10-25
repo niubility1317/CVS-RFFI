@@ -1,0 +1,45 @@
+{
+  "status": "PARTIAL_4_OF_11_COMPLETE_THREE_SEED_SETTINGS",
+  "settings": [
+    "F0",
+    "F1_rx_repartition_r01",
+    "F2_rx_repartition_r01",
+    "ManyRx"
+  ],
+  "completed_student_models": 12,
+  "planned_student_models": 33,
+  "deferred_unstarted_models": 21,
+  "independent_truth_last": true,
+  "raw_and_same_G_LU": true,
+  "all_three_populations_and_seven_views": true,
+  "sample_counts": {
+    "F0": {
+      "cross_date": 30000,
+      "cross_rx": 126000,
+      "cross_both": 42000,
+      "all_target_dates": 168000
+    },
+    "F1_rx_repartition_r01": {
+      "cross_date": 30000,
+      "cross_rx": 126000,
+      "cross_both": 42000,
+      "all_target_dates": 168000
+    },
+    "F2_rx_repartition_r01": {
+      "cross_date": 30000,
+      "cross_rx": 126000,
+      "cross_both": 42000,
+      "all_target_dates": 168000
+    },
+    "ManyRx": {
+      "cross_date": 31279,
+      "cross_rx": 92597,
+      "cross_both": 30424,
+      "all_target_dates": 123021
+    }
+  },
+  "main_original_F0_goal_pass": false,
+  "no_changes_to_scientific_configs": true,
+  "no_new_target_access": true,
+  "no_target_feedback_to_training": true
+}

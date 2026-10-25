@@ -71,3 +71,20 @@
 ## 用户授权的队列优先级变更
 
 control-r03 已独立核实接管原 6 个健康 worker，保持原 PID、科学 release/config/output/预算和已完成结果；21 个未开始训练及其依赖暂缓，待新 9 学生全部评分后原样续排。完成的旧行继续自动预测/评分。只替换精确所属 controller，未停止训练子进程。新 controller 允许全部 GPU0～7；本 run 原任务仍按原 GPU5/6/7 配置执行。科学执行 commit1fa92a0 未变，历史 F0/F1 负结果保留。证据见 [priority_handoff_evidence.json](priority_handoff_evidence.json)。
+
+## 扩展实际测试：F2／ManyRx 三种子已完成
+
+旧健康六行均已按原 E50/11100 冻结，并完成全部三人群、七视图、raw/同契约 G-LU 决策后独立 truth-last。当前 ChannelPL 为 4/11 设置、12/33 学生完成；21 个未启动学生仍按用户要求暂缓。这些是原计划结果，不影响新九学生的参数、顺序、预算或选模。
+
+| 设置 | 物理样本数 | 路线 | 指标 | ChannelPL 均值±样本 SD | 相对普通 PL（百分点） |
+| --- | ---: | --- | --- | ---: | ---: |
+| F2_rx_repartition_r01 | 168000 | raw | clean | 83.074405±0.389306% | +0.083333 |
+| F2_rx_repartition_r01 | 168000 | raw | six_practical_mean | 69.917824±0.892697% | +0.382804 |
+| F2_rx_repartition_r01 | 168000 | DURA-LU | clean | 83.045238±0.406276% | +0.078571 |
+| F2_rx_repartition_r01 | 168000 | DURA-LU | six_practical_mean | 74.662103±0.134359% | +0.035813 |
+| ManyRx | 123021 | raw | clean | 83.848015±0.239487% | +0.016799 |
+| ManyRx | 123021 | raw | six_practical_mean | 63.310961±0.569790% | +0.015986 |
+| ManyRx | 123021 | DURA-LU | clean | 83.833113±0.229526% | +0.026283 |
+| ManyRx | 123021 | DURA-LU | six_practical_mean | 72.147619±0.253475% | +0.047327 |
+
+本表人群为各契约 cross_rx＋cross_both；F0/F1/F2 各为 168000，ManyRx 为 123021，不能强行套用 F0 数量。各方法/seed/路线/视图的同人群计数均与 confusion 总数一致；源 RX 的 cross_date 单独保留在各 interim CSV。原 F0 目标仍未达到，4/11 结果也不能代表完整 11 设置。见 [端点汇总](interim_four_contract_endpoints.csv) 与 [覆盖证据](interim_four_contract_evidence.json)。
