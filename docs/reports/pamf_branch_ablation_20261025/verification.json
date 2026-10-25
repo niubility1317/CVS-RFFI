@@ -1,0 +1,29 @@
+{
+  "status": "VERIFIED",
+  "scope": "Only classification-loss supervised training; no semi-supervised or retired method panel",
+  "models": 27,
+  "structures": 9,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "overall_summary_rows": 864,
+  "all_strata_seed_rows": 69984,
+  "all_strata_summary_rows": 23328,
+  "all_strata_paired_rows": 20736,
+  "training_epochs": 1350,
+  "unique_training_segments": 81,
+  "timing_case_rounds": 450,
+  "restoration_net_count_checks": 567,
+  "maximum_absolute_numeric_difference": 2.19824158875781e-14,
+  "tolerance": 1e-09,
+  "new_training": 0,
+  "new_predictions": 0,
+  "new_truth_scoring": 0,
+  "PDF_pages": 14,
+  "figures": 7,
+  "visual_review": "All14 pages rendered and visually reviewed; dense tables, scene effects, architecture and provenance appendix enlarged; no clipping or overlaps.",
+  "legacy_codes_in_appendix": true,
+  "original_outputs_preserved": true
+}

@@ -1,0 +1,10 @@
+panel,arm,display_arm,loaded_parameters,removed_parameters,reduction_percent
+supervised_classification,full,完整网络,232993,0,0.0
+supervised_classification,SIG_TIME,单视图路径描述,196001,36992,15.876871837351336
+supervised_classification,NO_TIME,去除显式时间坐标,232993,0,0.0
+supervised_classification,SHUFFLE_TIME,固定打乱局部顺序,232993,0,0.0
+supervised_classification,NO_SIGNATURE,去除路径描述支路,177025,55968,24.02132252900302
+supervised_classification,NO_PA,去除功放相关支路,221953,11040,4.73833977844828
+supervised_classification,NO_REFERENCE,去除参考响应支路,220193,12800,5.493727279360324
+supervised_classification,WRONG_REFERENCE,打乱参考模板相位,232993,0,0.0
+supervised_classification,COV_X3,三视图矩统计替代,232993,0,0.0
