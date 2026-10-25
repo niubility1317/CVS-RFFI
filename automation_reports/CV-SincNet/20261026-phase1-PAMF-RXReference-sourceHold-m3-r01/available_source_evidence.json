@@ -4,27 +4,27 @@
     {
       "method_a": "PairedReference",
       "method_b": "RawReference",
-      "common_available_steps": 3181,
+      "common_available_steps": 4440,
       "all_cumulative_extra_acceptances_equal": true
     },
     {
       "method_a": "PairedReference",
       "method_b": "RestoredReference",
-      "common_available_steps": 3097,
+      "common_available_steps": 4440,
       "all_cumulative_extra_acceptances_equal": true
     },
     {
       "method_a": "RawReference",
       "method_b": "RestoredReference",
-      "common_available_steps": 3097,
+      "common_available_steps": 4440,
       "all_cumulative_extra_acceptances_equal": true
     }
   ],
-  "total_available_records": 9569,
+  "total_available_records": 13320,
   "expected_extra_per_epoch": 41939,
   "source_weight": 0.07145844915553692,
   "new_optimizer_updates": 0,
   "new_target_reads": 0,
-  "observed_at_UTC": "2026-10-25T16:44:16.811895+00:00",
-  "scope": "Every currently complete record,not full E50 or target benefit;live gzip tail may remain buffered;no parameter or queue changes"
+  "observed_at_UTC": "2026-10-25T16:56:22.075785+00:00",
+  "scope": "All 4440 records and final E50 checkpoint per source candidate verified;not target benefit;no parameter or queue changes"
 }

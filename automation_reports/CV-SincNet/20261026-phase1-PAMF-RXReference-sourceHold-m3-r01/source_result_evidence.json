@@ -1,0 +1,29 @@
+{
+  "status": "SOURCE_HOLDOUT_ANALYZED",
+  "independent_readback": "VERIFIED",
+  "code_commit": "37dc44e3dd52854a415ca5f7663669b417171691",
+  "methods": [
+    "RawReference",
+    "RestoredReference",
+    "PairedReference"
+  ],
+  "student_seeds": [
+    2026092701
+  ],
+  "unique_source_V_records": 27000,
+  "new_epochs_per_method": 20,
+  "cumulative_epochs": 50,
+  "new_updates_per_method": 4440,
+  "cumulative_updates_per_method": 11100,
+  "verified_finished_source_records": 13320,
+  "source_only": true,
+  "new_target_reads": 0,
+  "head_fit_updates": 0,
+  "source_selection": null,
+  "source_thresholds": {
+    "held_G_mean_gain_pp": 0.3,
+    "clean_min_delta_pp": -0.1
+  },
+  "all_source_cells_preserved": true,
+  "scope": "Single studentseed source-extra-U-branch holdout screen;not three-seed target performance or goal achievement"
+}
