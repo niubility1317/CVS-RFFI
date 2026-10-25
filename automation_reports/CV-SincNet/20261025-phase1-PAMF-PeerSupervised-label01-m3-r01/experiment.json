@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求继续研发SSL、三种子实际测试，并授权更多并行及全部GPU；当前仅用GPU5/6空位与GPU7同seed第二槽，保留原9学生及其他owner。",
   "code": {
-    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "commit": "0124e275352156a49b27b8a0053d40ae274344a7",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
     "cwd": "PROJECT/releases/20261025-phase1-PAMF-PeerSupervised-label01-release-r01"

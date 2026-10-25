@@ -1,0 +1,41 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261025-phase1-PAMF-PeerSupervised-label01-m3-r01",
+  "scientific_execution_commit": "0124e275352156a49b27b8a0053d40ae274344a7",
+  "read_at_UTC": "2026-10-25T11:14:58.577624+00:00",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_exact_identity": true,
+  "students": 3,
+  "student_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "actual_GPUs": [
+    5,
+    6,
+    7
+  ],
+  "all_worker_exact_identity": true,
+  "all_worker_log_growth_between_independent_reads": true,
+  "maximum_observed_total_CUDA_processes_per_GPU": 2,
+  "real_checkpoint_no_query_smoke": "PASS",
+  "smoke_L_packets": 768,
+  "smoke_U_seen": 256,
+  "smoke_U_accepted": 227,
+  "smoke_peer_eval_views": 512,
+  "smoke_U_student_views": 1536,
+  "optimizer_updates_in_smoke": 0,
+  "query_reads_in_smoke": 0,
+  "peer_parameters_frozen": true,
+  "peer_buffers_unchanged": true,
+  "new_G": 0,
+  "original_F0_workers_modified": 0,
+  "original_F0_students_observed_live": 9,
+  "total_new_students_running": 12,
+  "original_F0_scientific_execution_commit": "7eb8d21752b5fab6f1366e1cb96c2266bd46c2a7",
+  "original_F0_goal_applicable": false,
+  "new_target_results": 0,
+  "original_goal_status": "UNPROVEN"
+}

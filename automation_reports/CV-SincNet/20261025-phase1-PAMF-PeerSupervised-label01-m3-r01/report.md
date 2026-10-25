@@ -43,3 +43,7 @@
 每行 final E50 冻结后自动预测原 cross_date/cross_rx/cross_both、clean+六种 practical、raw PAMF+同一 label01 G-LU＋PAMF。该行所有预测固定后独立 CPU truth-last。监督版/普通PL/REPL 的匹配历史分数按实际完成 job 路径复用。全部 3 学生均报告，不依 target 选择性重跑。
 
 本设置为 secondary，结果无论涨幅多少，均不能替代原 F0 raw168000 的 clean≥1pp、六景>1.5pp 目标。27 项本地相关检查通过，包含同契约 peer、数据句柄隔离及“secondary 大增益不能误报原 F0 目标”的检查。新增协议映射与独立入口的一次 P0/P1 审查 PASS。
+
+## 实际启动：VERIFIED／RUNNING
+
+真实 label01 E20 的 L/U 有限反传、原默认头、冻结 peer 检查 PASS；L 前向包 768、U_seen256、peer_eval512、full U student1536，零优化器更新和 query 读取，peer 参数/缓冲区保持。随后三个学生均已在 GPU5/6/7 启动，controller 和各 worker 的精确身份、实际 GPU、两次独立读回间日志增长均已核实。观察到每卡总 CUDA 进程不超过 2 个，原九学生也继续运行，合计 12 个新学生。未调用终止或接管，无 G 训练。单模型和同契约 G-LU、三人群七景在固定 E50 后自动测试；本轮尚无 target 结果，原 F0 目标仍未证明。证据见 [launch_evidence.json](launch_evidence.json)。

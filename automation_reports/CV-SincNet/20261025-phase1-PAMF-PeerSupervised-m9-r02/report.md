@@ -69,3 +69,7 @@ F0 三方案×三学生种子：冻结其他两seed同契约E20确认自身.95�
 ## 新九学生全部启动
 
 原等待 GPU7 的 PeerT1U1 seed2026092703 已启动，已独立观察到全部 9 个新学生的精确进程身份和实际 GPU：每组均为三个种子。原科学版本、参数和预算不变。目前是源训练进度，没有新学生 target 性能结论。证据见 [all_nine_running.json](all_nine_running.json)。
+
+## 九学生持续执行快照
+
+已读取全部 9 行 segment30 当前可用完整结构化记录，共 18456 条；三条 PeerPL2 已闭合 E30/6660 并健康进入原 E50 段，其余完整机制行继续 E28～E29。U 权重、peer 两次冻结前向、L/U 实际曝光、As KL0、零 EMA/peer 更新、零非有限跳步保持。该快照只覆盖 segment30，不代表 E50 或 target 完成。early_source_execution.csv 已扩展为全部 9 行。另有独立 label01 三学生使用空位运行，原九学生的科学 release 和配方不变。
