@@ -252,3 +252,20 @@ GTaskScaled在16200次留出G判断中纠正78次、弄错42次，净增36次，
 `20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01`完整E50源矩阵已核实：四个单学生seed01方法、17760条训练记录/四最终默认头、27000源V八视图与全部544逐包重算单元，36个方法间配对单元。结果相对同seedPLControl：GJointHard heldG+0.123457pp / clean-0.018519pp；GFeatureHard heldG+0.141975pp / clean-0.014815pp；HFeatureHard heldG+0.086420pp / clean-0.007407pp；HGFeatureHard heldG+0.111111pp / clean-0.014815pp。原+.3pp/−.1pp条件及全四条完成后的固定选择保持，源选择为无候选通过。只有额外分支heldRX，不能称未见baseRX；未访问新目标。
 
 **四条均未通过原源门槛，不扩三种子，不启动本批的新目标测试。** 保留全部负结果和原门槛。下一步依据匹配路由差异及既有主辅梯度冲突证据判断后续机制，不能只凭训练loss下降继续扩大系数，也不能把本批源收益写成目标收益。 原同候选三个学生种子的clean/raw六景/同G目标不变。完整证据见[特征任务CE源结果](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/report.md)。
+
+
+## 下一轮准备：同物理包的恢复残差连续插值
+
+状态：代码原语已实现，3项聚焦测试通过；完整launcher/校准/预登记/一次P0P1检查尚待完成，未发布新GPU试验。当前FeatureTask四条完整源矩阵均失败，保留+.3pp/−.1pp条件，不扩其种子或访问新目标。
+
+历史复核：原HardPLObjective已经在U使用ordinary/raw RDrop、As CE且KL0、LS.01和浅/中层跨RX对比；同伪类跨RX统计混合、joint160对比及多种完整L/双锚/实际AdamW更新保护也已有记录，不能改名为新机制。旧SIG_TIME跨RX多数梯度符号共识只有冻结L诊断，首seed最差RX cos−.026876，随机过滤+.017309，按原规则失败，未训练；这不证明所有U/G设置无效，但不直接重复或宣称它尚未探索。
+
+下一轮改变训练输入支持，而非再次只增权/改头：对源同一物理包的原始IQ x和固定G恢复IQ g，使用 m=(1−α)x+αg，α逐包Uniform[0,1)。两端来自既有同一物理U缓存索引，固定三E30 raw共识95伪标签不变，U真值保持隐藏。只生成训练视图，G、原始主任务、默认头结构及推理输入保持原版本。输入凸组合借鉴[mixup原论文](https://arxiv.org/abs/1710.09412)，这里限定同物理包，不能把其通用文献结果当作PAMF收益。
+
+原语`experiments/pamf_channel_pl/residual_mix.py`保证α=0和1时精确回到raw/G端点；每次两条本地独立随机流采样，MixG路线不用第二个混合视图但仍消费同量随机数，使MixMix与MixG的首混合视图在全批次持续匹配，不扰动原生训练RNG。输入非有限、形状错、超界α、可训练G输入均拒绝。真实源校准还需记录混合RMS、raw/G相干与残差幅度，不能仅凭数学插值保证身份保真。
+
+准备的四条源候选：MixBase/MixDose两次独立M视图；PairBase/PairDose为M与精确G端点。总额外学生前向仍为2/包，附加CE继续现有特征路径/分类weight隔离，原L与raw selfPL保持。Base两条固定λ=0.05941532657537612，来自已完成的source-only FeatureTask校准，复用其GFeatureHard完整结果为相同系数G/G端点控制；不从其F50继续训练。Dose两条分别按新同parent12批源L128/U256全参数CENTER_UNITS梯度冻结min(.25,.10*median(primary_norm)/median(route_extra_norm))，与Base共享同路线、同α流，不根据V或目标分数选择系数。
+
+完整实现后拟登记`20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01`：只有student seed01，各自own原E30+20到E50/11100、13L37LU；三E30 rawq和三G缓存只读复用，不需要新G训练或重建H缓存。额外U分支继续排除RX1，原L/raw主项全部源RX不变，完整源V八视图及TX/RX/day/净纠错核算。四条全部完成后沿用heldG3≥+.3pp与overallrawclean≥−.1pp，只能按固定规则选择源合格者；无通过者不扩三种子或测试。新run发布前仍需合法输入/实际原E30 smoke、代码commit、聚焦负例、一次独立P0P1、最小预登记和独立启动事实，其他不新增门槛。
+
+原三个学生种子、同候选raw clean+1pp、raw六景>1.5pp、同G六景正收益的正式目标不变。本次只有插值原语测试，没有新训练或目标性能，不命名或替换最终方法。
