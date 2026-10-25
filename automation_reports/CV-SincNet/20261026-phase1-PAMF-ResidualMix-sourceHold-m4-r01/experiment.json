@@ -1,0 +1,331 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01",
+  "group_id": "phase1-pamf-residual-mix-source-20261026",
+  "display_name": "同物理包恢复残差连续插值的四路源验证",
+  "description": "同own原E30独立+20到E50；两个随机插值视图或插值加精确G端点；同系数和source-gradient剂量对照。原L/rawPL、伪标签、预算与原晋级条件保持。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-ResidualMix-sourceHold"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "same-packet-IQ",
+    "residual-interpolation",
+    "source-only",
+    "hidden-U",
+    "matched-dose"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01",
+    "20261025-phase1-PAMF-RestoredPL-m9-r01"
+  ],
+  "authorization": "继续既有半监督联合目标与原始/恢复IQ增强方向；四路FeatureTask完整源失败后，检验连续残差幅度是否改善额外分支留出迁移，所有GPU可用，保护其他健康任务。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-ResidualMix-sourceHold-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300 visible L;original full T1 unchanged",
+      "U_s": "original56700 hidden U;unchanged raw selfPL;additional same-packet raw/G interpolation with frozen raw3E30 consensus95;excludeRX1 only from extra branch",
+      "V": "original27000,eval-only native health then frozen defaulthead eight-view source comparison;no objective/state updates"
+    },
+    "train_ratio": "original L6300/U56700/V27000;10percent labeled amongL+U;no physical rolechange",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "one-student-seed source screen and interpolation/dose analysis;not target gain or real unseen-baseRX"
+  },
+  "checkpoint": {
+    "initialization": "four independent own original seed01 E20+10 E30 plus20;no FeatureTask F50 inheritance",
+    "sources": [
+      "same legal original threeE30 raw teachers and fixed originalF0 G-LU",
+      "oldrawq/G-U cache and oldsource no-update coefficient"
+    ],
+    "contract_check_ref": "strict actualE20/E30 source ancestry and sourcecontract;original VALIDATED_ONCE roles;cacheteacher/G/physicalIDs match;actualL2E30/G smoke",
+    "provenance_verdict": "only original same-contract source-trained ownE30 parents;oldF50 as frozen sourcecontrol only,not initialization",
+    "selection_rule": "fixedfinalE50 allfour;heldG3>=+.3pp andoverallrawclean>=-.1pp;maxpassingheldG,tiealphabetical;no target/expansion withinthisrun"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-residual-mix-source-20261026",
+    "gpu_policy": "physicalGPU0..7;globalCUDA+pending<2/free>=10000MiB;leastload then mostfree;up to4 owntrain/eval;2CPUthreads each;preserve otherowners",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-ResidualMix-sourceHold-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/residual_mix_training",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.residual_mix_training dispatch --config PROJECT/releases/20261026-phase1-PAMF-ResidualMix-sourceHold-release-r01/runtime.json",
+    "stop_rule": "firsttechnical/protocol/nonfinite/state/smoke/budgeterror stops newrun-owned dispatch;healthy activechildrenfinish;preserve outputs,no automaticretry/hotedit/foreign intervention;scientificnegative completesallfour"
+  },
+  "expected_artifacts": [
+    "realE30/defaulthead/G L2 exactraw/G endpoint andfeature-graph smoke",
+    "12matchedL128/U256 no-update wholeparameter physicalgradients forMixMix/MixG/GEndpoint;nativeRNG unchanged andfirstmixedviews matched",
+    "source-fixed Base.05941532657537612 androuteDose min(.25,.1P/routeNorm),inputRMS/coherence/distortion records",
+    "integratedPairDose nativeL128/U256 backward smoke beforetraining",
+    "four finalE50/11100 native defaulthead students and17760 actualsteprecords withalpha bins/sums/counts",
+    "allfour fullV27000 eightviews,pairedTX/RX/day/heldtrained andfixedsourcechoice",
+    "independentPID/CWD/argv/GPU/loggrowth andclosed-artifact analysis;no target"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "held extraRX1 G3 gain vs same-seed PLControl",
+      "overallVrawclean delta",
+      "raw/H/G perview pairednetcorrect",
+      "mix/Gendpoint studentexposures,alpha count/sum/square/bins",
+      "fullparameter physicalnorm/sourceweights,classifierweight gradientzero,inputcoherence/RMS"
+    ],
+    "dimensions": [
+      "one studentseed01",
+      "four fixedroute/dose candidates",
+      "sourceeightviews",
+      "overall/held/trained/TX/RX/day"
+    ],
+    "prediction_ref": "private per-row source_validation/source_V_predictions.npz;publicaggregate afterfixedprediction",
+    "scorer_ref": "sourceV labels only afterfrozen inference;no targettruth or targetIQ inthisrun"
+  },
+  "rows": [
+    {
+      "row_id": "F0-MixBase-sourceHold-s2026092701",
+      "method": "MixBase",
+      "purpose": "same-packet residual view diversity withmatched coefficient/dose",
+      "config_ref": "generatedconfigs/MixBase.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/configs/MixBase.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "route": "MixMix",
+        "weight_rule": "Base",
+        "base_weight": 0.05941532657537612,
+        "extra_RX_holdout": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;privatealpha seed2026093612;notthree students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;old3E30teachers90historicalepochs/cache/controlcost retained",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/F/F0-MixBase-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/logs/MixBase.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.residual_mix_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/configs/MixBase.json",
+      "expected_artifacts": [
+        "realE30/defaulthead/G L2 exactraw/G endpoint andfeature-graph smoke",
+        "12matchedL128/U256 no-update wholeparameter physicalgradients forMixMix/MixG/GEndpoint;nativeRNG unchanged andfirstmixedviews matched",
+        "source-fixed Base.05941532657537612 androuteDose min(.25,.1P/routeNorm),inputRMS/coherence/distortion records",
+        "integratedPairDose nativeL128/U256 backward smoke beforetraining",
+        "four finalE50/11100 native defaulthead students and17760 actualsteprecords withalpha bins/sums/counts",
+        "allfour fullV27000 eightviews,pairedTX/RX/day/heldtrained andfixedsourcechoice",
+        "independentPID/CWD/argv/GPU/loggrowth andclosed-artifact analysis;no target"
+      ]
+    },
+    {
+      "row_id": "F0-MixDose-sourceHold-s2026092701",
+      "method": "MixDose",
+      "purpose": "same-packet residual view diversity withmatched coefficient/dose",
+      "config_ref": "generatedconfigs/MixDose.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/configs/MixDose.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "route": "MixMix",
+        "weight_rule": "source_route_10pct",
+        "base_weight": 0.05941532657537612,
+        "extra_RX_holdout": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;privatealpha seed2026093612;notthree students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;old3E30teachers90historicalepochs/cache/controlcost retained",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/F/F0-MixDose-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/logs/MixDose.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.residual_mix_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/configs/MixDose.json",
+      "expected_artifacts": [
+        "realE30/defaulthead/G L2 exactraw/G endpoint andfeature-graph smoke",
+        "12matchedL128/U256 no-update wholeparameter physicalgradients forMixMix/MixG/GEndpoint;nativeRNG unchanged andfirstmixedviews matched",
+        "source-fixed Base.05941532657537612 androuteDose min(.25,.1P/routeNorm),inputRMS/coherence/distortion records",
+        "integratedPairDose nativeL128/U256 backward smoke beforetraining",
+        "four finalE50/11100 native defaulthead students and17760 actualsteprecords withalpha bins/sums/counts",
+        "allfour fullV27000 eightviews,pairedTX/RX/day/heldtrained andfixedsourcechoice",
+        "independentPID/CWD/argv/GPU/loggrowth andclosed-artifact analysis;no target"
+      ]
+    },
+    {
+      "row_id": "F0-PairBase-sourceHold-s2026092701",
+      "method": "PairBase",
+      "purpose": "same-packet residual view diversity withmatched coefficient/dose",
+      "config_ref": "generatedconfigs/PairBase.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/configs/PairBase.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "route": "MixG",
+        "weight_rule": "Base",
+        "base_weight": 0.05941532657537612,
+        "extra_RX_holdout": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;privatealpha seed2026093612;notthree students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;old3E30teachers90historicalepochs/cache/controlcost retained",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/F/F0-PairBase-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/logs/PairBase.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.residual_mix_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/configs/PairBase.json",
+      "expected_artifacts": [
+        "realE30/defaulthead/G L2 exactraw/G endpoint andfeature-graph smoke",
+        "12matchedL128/U256 no-update wholeparameter physicalgradients forMixMix/MixG/GEndpoint;nativeRNG unchanged andfirstmixedviews matched",
+        "source-fixed Base.05941532657537612 androuteDose min(.25,.1P/routeNorm),inputRMS/coherence/distortion records",
+        "integratedPairDose nativeL128/U256 backward smoke beforetraining",
+        "four finalE50/11100 native defaulthead students and17760 actualsteprecords withalpha bins/sums/counts",
+        "allfour fullV27000 eightviews,pairedTX/RX/day/heldtrained andfixedsourcechoice",
+        "independentPID/CWD/argv/GPU/loggrowth andclosed-artifact analysis;no target"
+      ]
+    },
+    {
+      "row_id": "F0-PairDose-sourceHold-s2026092701",
+      "method": "PairDose",
+      "purpose": "same-packet residual view diversity withmatched coefficient/dose",
+      "config_ref": "generatedconfigs/PairDose.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/configs/PairDose.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "route": "MixG",
+        "weight_rule": "source_route_10pct",
+        "base_weight": 0.05941532657537612,
+        "extra_RX_holdout": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;privatealpha seed2026093612;notthree students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;old3E30teachers90historicalepochs/cache/controlcost retained",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/F/F0-PairDose-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/logs/PairDose.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.residual_mix_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/configs/PairDose.json",
+      "expected_artifacts": [
+        "realE30/defaulthead/G L2 exactraw/G endpoint andfeature-graph smoke",
+        "12matchedL128/U256 no-update wholeparameter physicalgradients forMixMix/MixG/GEndpoint;nativeRNG unchanged andfirstmixedviews matched",
+        "source-fixed Base.05941532657537612 androuteDose min(.25,.1P/routeNorm),inputRMS/coherence/distortion records",
+        "integratedPairDose nativeL128/U256 backward smoke beforetraining",
+        "four finalE50/11100 native defaulthead students and17760 actualsteprecords withalpha bins/sums/counts",
+        "allfour fullV27000 eightviews,pairedTX/RX/day/heldtrained andfixedsourcechoice",
+        "independentPID/CWD/argv/GPU/loggrowth andclosed-artifact analysis;no target"
+      ]
+    }
+  ],
+  "notes": [
+    "Samephysicalpacket x andG(H(x)),not arbitrarycrossTX IQ mixing;fixedG/sourcechannel unchanged;onlytrainingviewinterpolates.",
+    "Inputinterpolation isnot a newphysicalchannel/restorer;identityfidelity mustbe checked byactualfinalsource/targetdefaulthead results.",
+    "G/G FeatureTask control iscompleteandfrozen;Baseusesitssourcechosen coefficient,not itsF50 asparent;controlisreusednotretrained.",
+    "Base/Dose eachroute getidenticalprivatealpha streams;MixMix/MixG drawtwoalphas perbatch sofirstM staysmatched overtraining;nativeCPU/CUDA RNGuntouched.",
+    "AlloriginalL/rawPL/nativeheadsettings unchanged;auxiliaryclassifierweightgradientzero,featurefusionnorm/gain stilltrain;nonewhead orG update.",
+    "Uperrow1134000,held226800,extraaccepted838780,extraFW2268000;usedalphacount2268000forMixMix/1134000forMixG;privatealphadraws2268000allroutes.",
+    "Rawclean target>=85.98174603174603%,rawsix>72.0961970899471%,sameG-LUsix>78.07463624338624%,samecandidate3students;sourcepassisnotgoalcomplete.",
+    "PriorU RDrop/ORD/MixStyle/gradientguards/ANDdiagnostics alreadyrecorded;thisisinputsupport/dose comparison,notrebrandingthose mechanisms."
+  ],
+  "matrix": {
+    "methods": [
+      "MixBase",
+      "MixDose",
+      "PairBase",
+      "PairDose"
+    ],
+    "routes": {
+      "MixBase": "MixMix",
+      "MixDose": "MixMix",
+      "PairBase": "MixG",
+      "PairDose": "MixG"
+    },
+    "student_seeds": [
+      2026092701
+    ],
+    "epochs": [
+      20,
+      10,
+      20
+    ],
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "held_extra_RX": 1,
+    "base_weight": 0.05941532657537612,
+    "dose_rule": "perroute min(.25,.1medianPrimary/medianExtra);12sourcebatches,noV/target",
+    "alpha": "perpacket Uniform[0,1)",
+    "mix_seed": 2026093612,
+    "private_draws_per_U": 2,
+    "loss": "unchangedT1L+ordinaryrawPL+weight*ramp444*average(two fullU-mean featureCEs)",
+    "source_criterion": {
+      "held_G3_gain_pp_min": 0.3,
+      "overall_raw_clean_gain_pp_min": -0.1
+    },
+    "selection": "allfourfinish;highestpassingheldG3,exacttiesalphabetical;no target orautomaticthree-seed expansion"
+  },
+  "registered_at": "2026-10-25T23:16:00+00:00"
+}
