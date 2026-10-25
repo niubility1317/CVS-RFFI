@@ -2,7 +2,7 @@
 import argparse,csv,gzip,json,math,statistics
 from collections import defaultdict
 from pathlib import Path
-ROOT=Path('E:/type10-7');OUT=ROOT/'exports/reports/20261025-PAMF-branch-ablation-r19'
+ROOT=Path('E:/type10-7');OUT=ROOT/'exports/reports/20261025-PAMF-branch-ablation-r20'
 FROZEN=ROOT/'exports/unified_figures/20261025-PAMF-REPL-complete-paper-r01/frozen_statistics'
 SEEDS=(2026092701,2026092702,2026092703)
 ARMS=('full','SIG_TIME','NO_TIME','SHUFFLE_TIME','NO_SIGNATURE','NO_PA','NO_REFERENCE','WRONG_REFERENCE','COV_X3')
@@ -142,8 +142,8 @@ def figures():
     import numpy as np
     plt.rcParams.update({'font.family':'Times New Roman','font.size':8,'axes.labelsize':8,'xtick.labelsize':7,'ytick.labelsize':7,'legend.fontsize':7,'svg.fonttype':'none','pdf.fonttype':42,'axes.spines.right':False,'axes.spines.top':False})
     _,get=load();pair=list(rows(OUT/'tables/full_minus_variant.csv'));timing=list(rows(OUT/'tables/timing.csv'));manifest=[]
-    def save(fig,name,caption,data):
-        fig.tight_layout();fig.savefig(OUT/'figures'/(name+'.pdf'));fig.savefig(OUT/'figures'/(name+'.svg'));fig.savefig(OUT/'figures'/(name+'.png'),dpi=240);plt.close(fig);write(OUT/'tables'/(name+'.csv'),data);manifest.append(dict(name=name,caption=caption))
+    def save(fig,name,caption,data,data_name=None):
+        fig.tight_layout();fig.savefig(OUT/'figures'/(name+'.pdf'));fig.savefig(OUT/'figures'/(name+'.svg'));fig.savefig(OUT/'figures'/(name+'.png'),dpi=240);plt.close(fig);write(OUT/'tables'/((data_name or name)+'.csv'),data);manifest.append(dict(name=name,caption=caption,csv='tables/'+(data_name or name)+'.csv'))
     from matplotlib.patches import FancyBboxPatch,FancyArrowPatch
     fig,ax=plt.subplots(figsize=(6.6,3.1));ax.set(xlim=(0,10),ylim=(0,5));ax.axis('off')
     boxes=[(0.1,2.0,1.2,0.75,'Received IQ'),(1.8,2.0,1.65,.75,'Shared encoder'),(4.0,3.8,2.35,.8,'PA-related features'),(4.0,2.0,2.35,.8,'Three path descriptors'),(4.0,.2,2.35,.8,'Public reference response'),(7.05,2.0,1.25,.8,'160-d fusion'),(8.7,2.0,1.2,.8,'Existing head')]
@@ -177,9 +177,9 @@ def figures():
     for off,(field,label,color) in zip((-.13,.13),(('same_TX_cross_RX_distance','Same identity, different receiver','#52769C'),('different_TX_same_RX_distance','Different identity, same receiver','#639A92'))):
         means=[];sds=[]
         for a in ARMS:
-            rr=[r for r in geom if r['method']==method(PANELS[0],a)];data+=rr;vals=[float(r[field]) for r in rr];means.append(statistics.mean(vals));sds.append(statistics.stdev(vals))
+            rr=[r for r in geom if r['method']==method(PANELS[0],a)];vals=[float(r[field]) for r in rr];means.append(statistics.mean(vals));sds.append(statistics.stdev(vals));data.append(dict(method=method(PANELS[0],a),series=field,mean=statistics.mean(vals),sd=statistics.stdev(vals),seed_values=';'.join(map(str,vals))))
         ax.errorbar(np.arange(9)+off,means,yerr=sds,fmt='o',ms=3,capsize=1.3,label=label,color=color)
-    ax.set(xticks=range(9),xticklabels=[EN[a] for a in ARMS],ylabel='Source feature cosine distance');ax.tick_params(axis='x',rotation=55);ax.legend(loc='lower center',bbox_to_anchor=(.5,1.01),ncol=1,frameon=False);ax.grid(alpha=.15);save(fig,'source_geometry','相同720条有标签源数据、90个发射机/接收机/日期单元；仅为冻结表征的几何描述，不是目标域识别贡献证明。',data)
+    ax.set(xticks=range(9),xticklabels=[EN[a] for a in ARMS],ylabel='Source feature cosine distance');ax.tick_params(axis='x',rotation=55);ax.legend(loc='lower center',bbox_to_anchor=(.5,1.01),ncol=1,frameon=False);ax.grid(alpha=.15);save(fig,'source_geometry','相同720条有标签源数据、90个发射机/接收机/日期单元；仅为冻结表征的几何描述，不是目标域识别贡献证明。',data,data_name='source_geometry_figure')
     (OUT/'figures/manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print(json.dumps(dict(figures=len(manifest))),flush=True)
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('phase',choices=['extract','details','figures']);a=p.parse_args();{'extract':extract,'details':details,'figures':figures}[a.phase]()

@@ -3,7 +3,7 @@ import argparse,csv,gzip,json,math,statistics
 from collections import defaultdict
 from pathlib import Path
 
-DEFAULT=Path('E:/type10-7/exports/reports/20261025-PAMF-branch-ablation-r19')
+DEFAULT=Path('E:/type10-7/exports/reports/20261025-PAMF-branch-ablation-r20')
 SEEDS=(2026092701,2026092702,2026092703)
 PARAMS={'full':232993,'SIG_TIME':196001,'NO_TIME':232993,'SHUFFLE_TIME':232993,'NO_SIGNATURE':177025,'NO_PA':221953,'NO_REFERENCE':220193,'WRONG_REFERENCE':232993,'COV_X3':232993}
 
@@ -92,9 +92,21 @@ def verify(root):
             b=groups[r['method'],r['test'],'raw',r['view'],'overall','ALL','accuracy'][int(r['seed'])]
             close(a-b,100*int(r['net'])/int(r['count']));net+=1
     assert net==567
+    geometry=list(rows(root/'tables/source_geometry.csv'))
+    assert len(geometry)==27 and len({(r['method'],r['seed']) for r in geometry})==27
+    assert all(int(r['positive_anchors'])==int(r['negative_anchors'])==720 for r in geometry)
+    figure_geometry=list(rows(root/'tables/source_geometry_figure.csv'))
+    assert len(figure_geometry)==18 and len({(r['method'],r['series']) for r in figure_geometry})==18
+    for method in {'CE_'+a for a in PARAMS}:
+        for field in ('same_TX_cross_RX_distance','different_TX_same_RX_distance'):
+            original=[float(r[field]) for r in geometry if r['method']==method]
+            plotted=next(r for r in figure_geometry if r['method']==method and r['series']==field)
+            assert len(original)==3
+            close(statistics.mean(original),plotted['mean']);close(statistics.stdev(original),plotted['sd'])
+            assert sorted(map(float,plotted['seed_values'].split(';')))==sorted(original)
     for p in (root/'figures').glob('*.svg'):
         text=p.read_text(encoding='utf-8');assert '<text' in text and 'Times New Roman' in text
-    result=dict(status='VERIFIED',scope='Classification-only supervised network branches',models=27,structures=9,model_seeds=list(SEEDS),overall_summary_rows=864,all_strata_seed_rows=n,all_strata_summary_rows=23328,all_strata_paired_rows=20736,training_epochs=1350,unique_training_segments=81,timing_case_rounds=450,restoration_net_count_checks=net,maximum_absolute_numeric_difference=maximum,tolerance=1e-9,new_training=0,new_predictions=0,new_truth_scoring=0)
+    result=dict(status='VERIFIED',scope='Classification-only supervised network branches',models=27,structures=9,model_seeds=list(SEEDS),overall_summary_rows=864,all_strata_seed_rows=n,all_strata_summary_rows=23328,all_strata_paired_rows=20736,training_epochs=1350,unique_training_segments=81,timing_case_rounds=450,restoration_net_count_checks=net,source_geometry_unique_models=27,source_geometry_input_and_figure_files_distinct=True,maximum_absolute_numeric_difference=maximum,tolerance=1e-9,new_training=0,new_predictions=0,new_truth_scoring=0)
     (root/'report_verification.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8');print(json.dumps(result),flush=True);return result
 
 if __name__=='__main__':

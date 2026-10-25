@@ -188,7 +188,7 @@ def main():
         ['source_cost.csv / source_stage_cost.csv / training_epochs.csv','27模型、81唯一阶段及1350轮训练事实'],
         ['source_geometry.csv / source_interventions.csv','源域表征和11种固定输入干预'],
         ['figures/','7幅图的PDF/SVG矢量版与PNG预览，同名CSV记录图中数值']],[226,281])
-    p('新不可覆盖包r19保留原包。解包后可用纯Python标准库运行reproduce/verify_report.py --root .，从逐种子指标重算汇总和配对差，并从原计时数组复核中位数、P95和吞吐；无需IQ、权重、训练环境或目标真值。本次没有重新做目标评分。',True)
+    p('本次交付包r20修正了r19源域诊断图重复写入造成的误差线问题，目标识别、配对差和时延统计保持原结果；r19保留为历史。解包后可用纯Python标准库运行reproduce/verify_report.py --root .，从逐种子指标重算汇总和配对差，并从原计时数组复核中位数、P95和吞吐；无需IQ、权重、训练环境或目标真值。本次没有重新做目标评分。',True)
     def footer(canvas,doc):
         canvas.setStrokeColor(colors.HexColor('#C9D6DF'));canvas.line(44,805,551,805);canvas.setFont('Song',8);canvas.setFillColor(colors.HexColor('#627687'));canvas.drawString(44,814,'PAMF 网络分支消融 · 仅分类损失的监督训练');canvas.drawString(44,25,'2026-10-25 · 香港');canvas.drawRightString(551,25,str(doc.page))
     pdf=OUT/(TITLE+'.pdf')
@@ -209,7 +209,7 @@ def main():
 python -X utf8 -S reproduce/verify_report.py --root .
 ```
 
-复算不访问 IQ、checkpoint 或逐包目标真值，也不重新评分。新包 r19，不覆盖任何旧包。
+复算不访问 IQ、checkpoint 或逐包目标真值，也不重新评分。新包 r20 修正了 r19 源域诊断图在重复生成时累加输入行、影响标准差的问题；主性能、配对差和时延未变。r19 保留历史，不覆盖任何旧包。
 ''',encoding='utf-8')
     print(json.dumps(dict(status='REPORT_WRITTEN',PDF=str(pdf),figures=7),ensure_ascii=False),flush=True)
 
