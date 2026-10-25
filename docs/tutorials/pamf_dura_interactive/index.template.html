@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="从复数 IQ、卷积和梯度开始，逐步掌握 PAMF 与 DURA 的真实结构、公式推导和交互数值例子。">
+  <link rel="icon" href="data:,">
+  <title>PAMF × DURA · 从一段 IQ 到设备身份</title>
+  <style>/* KATEX_CSS */</style>
+  <style>/* COURSE_CSS */</style>
+</head>
+<body>
+  <a class="skip" href="#lesson">跳到正文</a>
+  <aside class="sidebar" id="sidebar" aria-label="章节目录">
+    <a class="brand" href="#f-start"><span class="brand-mark">P<span>×</span>D</span><span>PAMF & DURA<small>交互学习手册 · 源码对应版</small></span></a>
+    <div class="course-progress"><div><span>你的学习进度</span><b id="progressText">0 / 20</b></div><div class="progress-track"><i id="progressFill"></i></div></div>
+    <label class="search"><span>⌕</span><input id="chapterSearch" type="search" placeholder="查章节、术语或公式" aria-label="搜索教程章节"></label>
+    <nav id="chapterNav"></nav>
+    <div class="sidebar-note"><b>先理解，再推导</b><span>所有滑块都是教学算例。<br>真实网络尺寸与简化模型分别标注。</span></div>
+  </aside>
+  <div class="page">
+    <header class="toolbar">
+      <button class="icon-button" id="menuToggle" aria-label="展开或收起目录" aria-expanded="true">☰</button>
+      <div class="breadcrumb" id="breadcrumb">学习路线 / 总览</div>
+      <div class="toolbar-actions">
+        <button id="formulaToggle" title="展开当前章的全部推导" aria-pressed="false">展开推导</button>
+        <button id="glossaryOpen">符号表</button>
+        <button id="presentationToggle" aria-pressed="false">演示模式</button>
+        <button id="themeToggle" aria-label="切换明暗主题">◐</button>
+        <button id="printButton" title="打印全部章节，或由浏览器保存为 PDF">打印</button>
+      </div>
+    </header>
+    <main id="lesson" tabindex="-1"><div id="chapters"></div></main>
+    <footer class="chapter-footer"><button id="previousChapter">← 上一章</button><button id="markRead" class="read-button">标记本章已掌握</button><button id="nextChapter">下一章 →</button></footer>
+    <div class="page-note">单文件 · 离线运行 · 不上传输入 · 2026-10-25 源码与版本说明</div>
+  </div>
+  <dialog id="glossaryDialog" aria-labelledby="glossaryTitle"><div class="dialog-heading"><h2 id="glossaryTitle">随时查一眼的符号表</h2><button id="glossaryClose" aria-label="关闭符号表">×</button></div><div id="glossaryBody"></div></dialog>
+  <script>/* KATEX_JS */</script>
+  <script>/* KATEX_AUTO_JS */</script>
+  <script>window.COURSE_CHAPTERS=[];/* FOUNDATION_CONTENT */</script>
+  <script>/* PAMF_CONTENT */</script>
+  <script>/* DURA_CONTENT */</script>
+  <script>/* REFERENCE_CONTENT */</script>
+  <script>/* LABS_JS */</script>
+  <script>/* APP_JS */</script>
+</body>
+</html>
