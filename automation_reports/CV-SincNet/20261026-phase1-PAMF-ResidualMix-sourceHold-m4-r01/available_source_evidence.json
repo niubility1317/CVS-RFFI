@@ -1,0 +1,73 @@
+{
+  "status": "VERIFIED_AVAILABLE_RESIDUAL_MIX_RECORDS",
+  "total_available_records": 9364,
+  "source_weights": {
+    "MixMix": 0.13833314526398888,
+    "MixG": 0.0888496672647647
+  },
+  "base_weight": 0.05941532657537612,
+  "calibration_arithmetic_verified": true,
+  "calibration_norms": {
+    "MixMix": 0.7070159614086151,
+    "MixG": 1.100777804851532,
+    "GEndpoint": 1.6107887625694275
+  },
+  "primary_median": 0.978037416934967,
+  "private_RNG_controls_verified": true,
+  "matched_acceptance": [
+    {
+      "a": "MixBase",
+      "b": "MixDose",
+      "common_steps": 2304,
+      "extra_acceptance_equal": true
+    },
+    {
+      "a": "MixBase",
+      "b": "PairBase",
+      "common_steps": 2372,
+      "extra_acceptance_equal": true
+    },
+    {
+      "a": "MixBase",
+      "b": "PairDose",
+      "common_steps": 2308,
+      "extra_acceptance_equal": true
+    },
+    {
+      "a": "MixDose",
+      "b": "PairBase",
+      "common_steps": 2304,
+      "extra_acceptance_equal": true
+    },
+    {
+      "a": "MixDose",
+      "b": "PairDose",
+      "common_steps": 2304,
+      "extra_acceptance_equal": true
+    },
+    {
+      "a": "PairBase",
+      "b": "PairDose",
+      "common_steps": 2308,
+      "extra_acceptance_equal": true
+    }
+  ],
+  "matched_alpha": [
+    {
+      "a": "MixBase",
+      "b": "MixDose",
+      "common_steps": 2304,
+      "all_used_alpha_statistics_match": true
+    },
+    {
+      "a": "PairBase",
+      "b": "PairDose",
+      "common_steps": 2308,
+      "all_used_alpha_statistics_match": true
+    }
+  ],
+  "observer_optimizer_updates": 0,
+  "new_target_reads": 0,
+  "observed_at_UTC": "2026-10-25T23:39:33.474456+00:00",
+  "scope": "All currently complete records;live tails may buffer;not fullE50 or target gain"
+}

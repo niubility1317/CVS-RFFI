@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED_SOURCE_IQ_ARTIFACT_GEOMETRY",
+  "code_commit": "e00d055490904c4d89a6953c84d5f0fd92ce9965",
+  "source_U_records": 56700,
+  "raw_q95_accepted": 52946,
+  "extra_eligible": 41939,
+  "physical_key_lookup_bijective": true,
+  "IQ_order_matched_existing_binding": true,
+  "existing12batch_before_forward_statistics_match": true,
+  "max_CPU_GPU_calibration_geometry_difference": 1.7881393432617188e-07,
+  "arithmetic_boundary_examples_pass": true,
+  "model_checkpoint_loads": 0,
+  "F_G_forwards": 0,
+  "optimizer_updates": 0,
+  "U_truth_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "scope": "Posthoc geometry of existing source IQ artifacts;uniform expectation is analytical,not actual observed trainingalpha or TX accuracy;no method/gate/queue changes"
+}

@@ -1,0 +1,74 @@
+{
+  "status": "SOURCE_RESIDUAL_MIX_PREPARED",
+  "code_commit": "e00d055490904c4d89a6953c84d5f0fd92ce9965",
+  "model_seed": 2026092701,
+  "decision": {
+    "weights": {
+      "MixMix": 0.13833314526398888,
+      "MixG": 0.0888496672647647
+    },
+    "base_weight": 0.05941532657537612,
+    "median_primary_norm": 0.978037416934967,
+    "median_extra_norm": {
+      "MixMix": 0.7070159614086151,
+      "MixG": 1.100777804851532,
+      "GEndpoint": 1.6107887625694275
+    },
+    "weighted_median_norm_ratio": {
+      "MixMix": 0.1,
+      "MixG": 0.1
+    },
+    "base_weighted_median_norm_ratio": {
+      "MixMix": 0.042950896881575655,
+      "MixG": 0.06687174910663798,
+      "GEndpoint": 0.097854681952697
+    },
+    "dose_upper_cap_active": {
+      "MixMix": false,
+      "MixG": false
+    },
+    "median_gradient_cosine": {
+      "MixMix": -0.13980039209127426,
+      "MixG": -0.2108970656991005,
+      "GEndpoint": -0.22411291301250458
+    },
+    "gradient_rule": "per_route min(.25,.10*median(primary_norm)/median(route_extra_norm));Base fixed priorG coefficient",
+    "scope": "preclip CENTER_UNITS physical gradient proxy;not AdamW or target guarantee"
+  },
+  "gradient_rule": "per_route min(.25,.10*median(primary_norm)/median(route_extra_norm));Base fixed priorG coefficient",
+  "routes": [
+    "MixMix",
+    "MixG",
+    "GEndpoint"
+  ],
+  "L_exposures": 1536,
+  "U_calibration_exposures": 3072,
+  "full_parameter_gradient_calls": 60,
+  "all_auxiliary_classifier_weight_gradients_zero": true,
+  "private_RNG_routes_matched": true,
+  "native_RNG_unchanged_by_interpolation": true,
+  "student_teacher_G_parameters_and_registered_buffers_unchanged": true,
+  "temporary_buffers_restored": true,
+  "optimizer_updates": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "U_truth_read": false,
+  "G_updates": 0,
+  "teacher_updates": 0,
+  "head_fit_updates": 0,
+  "seconds": 9.602758021093905,
+  "scope": "No-update source residual-view calibration;not target performance",
+  "independent_source_dose_arithmetic": "VERIFIED",
+  "integrated_smoke": {
+    "status": "PASS",
+    "model_seed": 2026092701,
+    "L_forward_packets": 768,
+    "U_seen": 256,
+    "extra_accepted": 185,
+    "head_finite_nonzero": true,
+    "optimizer_updates": 0,
+    "query_reads": 0,
+    "U_truth_read": false,
+    "method": "PairDose"
+  }
+}

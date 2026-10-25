@@ -1,0 +1,47 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "e00d055490904c4d89a6953c84d5f0fd92ce9965",
+  "student_seeds": [
+    2026092701
+  ],
+  "complete_available_records_audited": 9364,
+  "available_records_timestamp": "2026-10-25T23:39:33.474456+00:00",
+  "actual_initial_default_heads_and_own_E30_configs_verified": true,
+  "matched_extra_acceptance_pairs": 6,
+  "matched_used_alpha_pairs": 2,
+  "source_calibration_and_native_RNG_verified": true,
+  "IQ_geometry_before_forward_replay_verified": true,
+  "live_training_jobs": [
+    {
+      "method": "MixBase",
+      "gpu": 0,
+      "PID_CWD_argv_env_GPU_verified": true,
+      "observed_step": 2598,
+      "step_log_growth": true
+    },
+    {
+      "method": "MixDose",
+      "gpu": 2,
+      "PID_CWD_argv_env_GPU_verified": true,
+      "observed_step": 2506,
+      "step_log_growth": true
+    },
+    {
+      "method": "PairBase",
+      "gpu": 3,
+      "PID_CWD_argv_env_GPU_verified": true,
+      "observed_step": 2593,
+      "step_log_growth": true
+    },
+    {
+      "method": "PairDose",
+      "gpu": 4,
+      "PID_CWD_argv_env_GPU_verified": true,
+      "observed_step": 2529,
+      "step_log_growth": true
+    }
+  ],
+  "new_target_reads": 0,
+  "observer_optimizer_updates": 0,
+  "scope": "Live one-student-seed four-candidate source training;not completeE50 or target performance"
+}

@@ -1,7 +1,45 @@
-# 四条恢复残差插值源试验
+# 同包恢复残差插值源试验
 
-RUNNING。四路学生训练已按依赖开始；实际已启动 MixBase, MixDose, PairBase, PairDose。启动经独立PID/CWD/完整命令/GPU/日志增长核实为 VERIFIED；一次archive传输比较与remote compile通过。实际代码`e00d055490904c4d89a6953c84d5f0fd92ce9965`。7项聚焦测试、local compile及唯一一次P0/P1检查PASS。
+RUNNING。真实原E30/defaulthead/G精确端点检查、12批无更新源校准和PairDose原L128/U256联合backward smoke均PASS。四路实际GPU训练经独立PID/CWD/完整命令/环境/GPU与step日志增长核实，7项聚焦测试、local/remote compile、唯一一次独立P0/P1及单archive传输比较通过。实际执行代码`e00d055490904c4d89a6953c84d5f0fd92ce9965`。只有一个学生seed2026092701，无新目标结果。
 
-本run只有一个学生种子2026092701，四个候选，不是三种子结果。无新目标测试结果。原raw clean、raw六景、同G六景联合目标及源+.3pp/−.1pp筛选均保持。真实源插值校准、集成smoke、四条E50训练和逐条八视图V评估串联执行，完整结果返回后更新本报告。
+## 已完成源校准
 
-固定矩阵、数据权限、预算和停止规则见[预登记](preregistration.md)，独立启动事实见[启动证据](launch_evidence.json)。
+校准耗时9.6028秒，无新optimizer/V/目标或U真值读取，F/G参数和全部registered buffers保持不变。原L1536/U3072曝光、60次完整参数梯度求值，CENTER_UNITS/Sinc25000物理坐标保持。实际CUDA验证插值不改变原生CPU/CUDA RNG，MixMix/MixG的首混合视图在12批持续匹配；所有附加分类阶段weight梯度为0，原主任务仍联合训练默认头。
+
+原primary norm中位数0.978037417。Base均为已完成源校准系数0.059415326575376119；Dose按预登记公式得到下表系数，均未触及.25上限，初始加权梯度代理为primary中位数10%。该代理不是后续AdamW更新或性能保证。
+
+| 路线 | extra norm中位数 | Base初始norm比 | Dose系数 | 与主任务cos中位数 |
+| --- | ---: | ---: | ---: | ---: |
+| MixMix | 0.707015961 | 4.295090% | 0.13833314526398888 | -0.139800 |
+| MixG | 1.100777805 | 6.687175% | 0.088849667264764703 | -0.210897 |
+
+本次同G/G校准参考norm中位数1.610788763，Base初始比9.785468%，cos-0.224113。既有GFeatureHard完整源结果作为同系数端点对照复用，不重训或继承其F50。
+
+## 输入几何复核
+
+未筛选12批的极小混合RMS约为原始8.9%，该极小值不在实际附加监督的有效集合中。只读现有sourceU及G缓存的CPU几何分析覆盖56700源U，物理key查找一一对应，U元数据无真标签。按相同seed重放原12批，在模型前向前复算raw/G min/mean余弦及相对改变量，与GPU校准记录的最大差为1.788e-07，支持该尾部已存在于匹配的raw/G数据中，并非观察到的取样随机增强或前向修改错误。
+
+经原raw共识95门控及RX1留出后，各场景有效样本41939条，均无raw/G实数负相关对。低能量尾部很少，不能据未筛选极小值把整个插值分布判为无效，也不能把波形相近当作TX准确率证明。
+
+| 场景 | 有效集合负相关对 | G端点RMS低于raw25%的条数 | α均匀时混合RMS低于raw25%的解析期望 |
+| --- | ---: | ---: | ---: |
+| practical_low_suburban | 0 | 1 / 41939 | 0.00055230% |
+| practical_mid_urban | 0 | 2 / 41939 | 0.00103411% |
+| practical_low_urban | 0 | 10 / 41939 | 0.00325025% |
+
+这是现有源IQ工件的事后几何解释，未新增F/G forward、checkpoint加载、参数更新、V或目标访问；解析期望不是实际训练事件计数或TX识别率。该分析不改变当前四路配方、接受门控、系数或选择规则，未增加幅相拟合、输入回退或新视图。
+
+## 实际训练前缀
+
+截至独立审计时间`2026-10-25T23:39:33.474456+00:00`，全部9364条当前完整训练记录逐条核对通过。四份actual initial checkpoint的六类默认头、own原E30来源、配置与预算匹配，原L768包、AsKL0、ORD.1、rawPL和M/G计数符合配置。六组方法的额外接受共同前缀一致，同路线Base/Dose的所有α统计前缀匹配，无非有限跳步、U真值、G/教师更新。以下不是完整E50结果。
+
+| 方法 | GPU | 完整新增步 | 实际系数 | 使用α数 | 使用α均值 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| MixBase | 0 | 2380 / 4440 | 0.059415327 | 1215920 | 0.499466 |
+| MixDose | 2 | 2304 / 4440 | 0.138333145 | 1177008 | 0.499553 |
+| PairBase | 3 | 2372 / 4440 | 0.059415327 | 605912 | 0.499640 |
+| PairDose | 4 | 2308 / 4440 | 0.088849667 | 589528 | 0.499781 |
+
+训练后自动完整源V27000八视图。全四条完成后仍按heldRX1 G三景≥+.3pp、overallV rawclean≥−.1pp筛选；无通过者不扩种子/目标，合格者按固定最大held增益及字母顺序选择。heldRX只从额外分支留出，原父/L/rawPL/G已见它，不是真正未见baseRX证明。原同候选三学生种子的raw clean/raw六景/同G六景联合目标保持。
+
+参见[预登记](preregistration.md)、[源梯度校准](source_gradient_calibration.csv)、[校准核实](source_gradient_calibration.json)、[输入几何](source_IQ_geometry.csv)、[几何核实](source_IQ_geometry.json)、[全部可用训练前缀](available_source_execution.csv)、[实际运行证据](training_evidence.json)。
