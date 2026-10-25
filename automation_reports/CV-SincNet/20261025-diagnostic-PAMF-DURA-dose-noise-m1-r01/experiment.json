@@ -1,0 +1,203 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261025-diagnostic-PAMF-DURA-dose-noise-m1-r01",
+  "group_id": "phase1-pamf-restored-IQ-ssl-source-20261025",
+  "display_name": "恢复域监督剂量与恢复后轻噪声的源域可行性诊断",
+  "description": "一个E30原普通PL学生在12个L/U源批次求完整原L+普通raw PL和新增raw/G软监督梯度；不更新参数。随后三冻结教师、完整源V检验40dB恢复后复噪声。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-DURA-dose-noise-source"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "source-only",
+    "gradient-dose",
+    "weak-postG-noise",
+    "no-target"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261025-diagnostic-PAMF-DURA-paired-source-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续PAMF SSL目标和用户先分析可行计划的范围；本次不创建optimizer、不更新F/G、不访问target。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261025-diagnostic-PAMF-DURA-dose-noise-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig F0 unchanged VALIDATED_ONCE source roles",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "12 shuffled native128 batches for exact T1-L gradient diagnosis;2IQ for noquery smoke",
+      "U_s": "12 shuffled native256 IQ-only batches;TX truth hidden;frozen3 E30 raw labels only",
+      "V": "all27000,3source scenes x3frozen F,40dB noise identity stability;no gradients or state fitting"
+    },
+    "train_ratio": "zero new training;original F0 L6300/U56700/V27000",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "source-only dose/noise falsification,not trained SSL or target gains"
+  },
+  "checkpoint": {
+    "initialization": "one actual E30 seed2026092701 student with nooptimizer;3frozen originalE30 teachers and fixedG-LU",
+    "sources": [
+      "F0 ordinaryPL seeds2026092701/02/03 original E20+10",
+      "fixed same-contract DURA v1 original F0 G-LU"
+    ],
+    "contract_check_ref": "validate_prefix_headers + validate_e30 + existing load_G;reuse VALIDATED_ONCE roles",
+    "provenance_verdict": "reuse verified E20+own10 exactroles;check complete headers and actualnative flags before loading",
+    "selection_rule": "fixed first seed and12 batches;dose formula and noise thresholds predefined,never target-driven"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-restored-source-20261025",
+    "gpu_policy": "GPU0 only,one own worker,global CUDA+pending<2 at admission,free>=10000MiB,CPU2threads;preserve others",
+    "remote_run_root": "PROJECT/runs/20261025-diagnostic-PAMF-DURA-dose-noise-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261025-diagnostic-PAMF-DURA-dose-noise-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/restored_dose",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.restored_dose_source dispatch --config PROJECT/releases/20261025-diagnostic-PAMF-DURA-dose-noise-release-r01/runtime.json",
+    "stop_rule": "First nonfinite,checkpoint/data/protocol mismatch,state mutation or baseline replay mismatch stops own diagnostic;preserve partials,noautomaticretry,nohealthyjobchanges."
+  },
+  "expected_artifacts": [
+    "actual sourceL frozen F/G smoke",
+    "12 real L128/U256 full supervised+ordinaryrawPL gradient measurements",
+    "exact frozen raw ensemble extra targets and hidden U label checks",
+    "fixed dose decision without target feedback",
+    "fullV27000x3scenesx3frozenF postG40dB noise logits privately and9full aggregate readouts",
+    "baseline source physical order and first-batch deployed replay agreement",
+    "zerooptimizer/F/G/retainedbuffer/Vgradient/target updates",
+    "PID/CWD/argv/GPU/log-growth",
+    "public source-only analysis and registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "primary/extra gradient norms",
+      "gradient cosine",
+      "fixed dose formula",
+      "source postnoise accuracy difference",
+      "prediction change rate"
+    ],
+    "dimensions": [
+      "12 source batches",
+      "source scene",
+      "3frozen models"
+    ],
+    "prediction_ref": "private source_noise_predictions.npz plus reused originalsource logits;not target",
+    "scorer_ref": "frozen V labels onlyafterforward;source L/U gradientprobe withoutoptimizer"
+  },
+  "rows": [
+    {
+      "row_id": "F0-s2026092701-dose-and-three-frozen-noise",
+      "method": "source-only restored dose/noise diagnostic",
+      "purpose": "preregister source feasibility before any new candidate target access",
+      "config_ref": "immutable context.json",
+      "resolved_config_ref": "runtime/context archive",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Gradientstudent seed01;three frozen E30 teachers01/02/03;postGnoise seed20261025301;sourcehardware seed20261016423.",
+      "k": null,
+      "scenario": "L/U12gradient batches + fullV3restoredscenes with40dBnoise",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "L1536+U3072 gradient exposures,48autograd calls withoutoptimizer;V243000noisyF views +2304replayF views,81000V Gviews;smoke separate",
+      "output_root": "PROJECT/runs/20261025-diagnostic-PAMF-DURA-dose-noise-m1-r01",
+      "log_path": "PROJECT/releases/20261025-diagnostic-PAMF-DURA-dose-noise-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.restored_dose_source dispatch --config PROJECT/releases/20261025-diagnostic-PAMF-DURA-dose-noise-release-r01/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "gradient_complete.json",
+        "progress.json",
+        "complete.json",
+        "source_noise_predictions.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "Not a new source training run;no optimizer andno parameter update;temporaryL/U buffers restored.",
+    "V never enters gradient computation;all V models frozen eval and unchanged.",
+    "Dose and D eligibility are source-only predefined decisions;all formal targetconditions unchanged.",
+    "OriginalPL raw main stays unchanged;ensemblelabels apply only toextraB/C/D branches. A canreuse originalfinalonlyafterexactrecipe/provenanceequivalence verified.",
+    "Repeated physical views are not new unique samples;teacher/G source costs separate."
+  ],
+  "matrix": {
+    "protocol": "F0",
+    "gradient_model_seed": 2026092701,
+    "frozen_teacher_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "parent_epoch": 30,
+    "source_batches": 12,
+    "L_batch": 128,
+    "U_batch": 256,
+    "V": 27000,
+    "postG_noise_SNR_dB": 40.0,
+    "noise_seed": 20261025301,
+    "scenes": [
+      "practical_low_suburban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "frozen_G": "original_F0_LU",
+    "G_inference": {
+      "reuse": true,
+      "graph": true,
+      "native": false,
+      "precision": "FP32/TF32off"
+    },
+    "extra_target": "raw three frozen E30 confidence>=.95 andsameargmax;meanprobability;noGconfidencegate",
+    "ordinary_raw_PL_main": "retain original studentown0.95 hardCE atweight1;mean overfullUbatch",
+    "extra_loss": "two student forwards averaged,one softCE,masknormalized byfullbatch;rawandrestoredsame q/mask",
+    "dose_formula": "min(0.25,0.25*median(primary norm)/median(restoredextra norm))",
+    "gradient_cosine_pass_min": -0.25,
+    "noise_all9_pass": {
+      "min_delta_pp": -0.1,
+      "max_prediction_change_percent": 0.5
+    },
+    "U_truth": false,
+    "target": false,
+    "optimizer_updates": 0,
+    "allowed_gpus": [
+      0
+    ],
+    "future_matrix": "A unchanged originalPL main;B extra raw softCE;C extra G(H(U));D C+40dBnoise onlyif sourcepass;not launched here"
+  },
+  "registered_at": "2026-10-25T13:06:41+00:00"
+}

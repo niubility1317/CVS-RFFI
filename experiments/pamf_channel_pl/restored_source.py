@@ -49,7 +49,7 @@ def validate_e30(case, done, cp, contract, expected):
         raise ValueError('CHECKPOINT_PROVENANCE_UNVERIFIED: own ordinary-PL E20+10 required')
 
 
-def source_channel(x, meta, scene, contract):
+def source_channel(x, meta, scene, contract, namespace='PAMF/restored_source/V/fixed'):
     """Same source practical physics; diagnostic seed fixed by physical record."""
     import numpy as np
     import torch
@@ -68,7 +68,7 @@ def source_channel(x, meta, scene, contract):
         session = 'rx%d:day%d:eq1' % (values['rx_i'][i], values['day_i'][i])
         hw = receiver_for_session(cfg, 20261016423, session)
         signal, _ = normalize_input(raw[i,0]+1j*raw[i,1])
-        seed = stable_seed(20261016421, 'PAMF/restored_source/V/fixed', scene, pid)
+        seed = stable_seed(20261016421, namespace, scene, pid)
         signal, info = ResidualChannel(cfg, seed, hw).process(signal)
         if not np.isfinite(signal).all() or info['channel_equalization_applied']:
             raise ValueError('Finite noEQ source view required')
