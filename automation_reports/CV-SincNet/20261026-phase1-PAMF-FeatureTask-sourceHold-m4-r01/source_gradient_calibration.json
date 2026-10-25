@@ -1,0 +1,83 @@
+{
+  "status": "SOURCE_FEATURE_TASK_PREPARED",
+  "code_commit": "1f34b3ac51a355fb5da73591ae43f9c28f73130d",
+  "model_seed": 2026092701,
+  "decision": {
+    "weights": {
+      "G": 0.05941532657537612,
+      "H": 0.1132314280648204
+    },
+    "median_primary_norm": 0.978037416934967,
+    "median_extra_norm": {
+      "GJointHard": 1.6461029052734375,
+      "GFeatureHard": 1.6107888221740723,
+      "HFeatureHard": 0.8637508451938629
+    },
+    "weighted_median_norm_ratio": {
+      "GJointHard": 0.1,
+      "GFeatureHard": 0.09785468557365197,
+      "HFeatureHard": 0.1
+    },
+    "median_gradient_cosine": {
+      "GJointHard": -0.24925216287374496,
+      "GFeatureHard": -0.22411291301250458,
+      "HFeatureHard": -0.14501755684614182
+    },
+    "gradient_rule": "min(.25,.10*median(primary_norm)/max_route_median_extra_norm);GJoint/GFeature shareG;HFeature ownH;HG half each",
+    "scope": "preclip CENTER_UNITS physical whole-parameter norm proxy;not AdamW update guarantee"
+  },
+  "gradient_rule": "min(.25,.10*median(primary_norm)/max_route_median_extra_norm);GJoint/GFeature shareG;HFeature ownH;HG half each",
+  "variants": [
+    "GJointHard",
+    "GFeatureHard",
+    "HFeatureHard",
+    "HGFeatureHard"
+  ],
+  "L_exposures": 1536,
+  "U_calibration_exposures": 3072,
+  "U_cache_records": 56700,
+  "full_parameter_gradient_calls": 60,
+  "all_auxiliary_classifier_weight_gradients_zero": true,
+  "student_teacher_G_parameters_and_registered_buffers_unchanged": true,
+  "temporary_buffers_restored": true,
+  "optimizer_updates": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "U_truth_read": false,
+  "G_updates": 0,
+  "teacher_updates": 0,
+  "head_fit_updates": 0,
+  "seconds": 260.1164955860004,
+  "scope": "Source IQ pairing and no-update task-gradient calibration;not target performance",
+  "independent_rule_arithmetic": "VERIFIED",
+  "whole_H_cache_finite": true,
+  "H_cache_shape": [
+    3,
+    56700,
+    2,
+    256
+  ],
+  "integrated_smoke": {
+    "status": "PASS",
+    "model_seed": 2026092701,
+    "L_forward_packets": 768,
+    "U_seen": 256,
+    "extra_accepted": 185,
+    "head_finite_nonzero": true,
+    "optimizer_updates": 0,
+    "query_reads": 0,
+    "U_truth_read": false,
+    "method": "HGFeatureHard"
+  },
+  "new_target_reads": 0,
+  "classification_gradient_decomposition": {
+    "source_batches": 12,
+    "no_new_model_forward": true,
+    "no_new_optimizer_or_target_access": true,
+    "median_aux_classifier_weight_norm": 0.3033153861761093,
+    "median_classifier_weight_fraction_of_aux_norm": 0.21906369609820783,
+    "max_matched_G_forward_CE_difference": 0.0,
+    "max_gradient_pythagorean_relative_error": 1.0947380416221738e-07,
+    "scope": "Arithmetic on existing12-batch calibration;matchedCE decomposition supports routing implementation,not performance or causal explanation"
+  }
+}

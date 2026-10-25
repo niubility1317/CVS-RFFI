@@ -1,0 +1,41 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "1f34b3ac51a355fb5da73591ae43f9c28f73130d",
+  "student_seeds": [
+    2026092701
+  ],
+  "live_training_jobs": [
+    {
+      "method": "GJointHard",
+      "gpu": 0,
+      "PID_CWD_argv_env_GPU_verified": true,
+      "step_log_growth": true
+    },
+    {
+      "method": "GFeatureHard",
+      "gpu": 2,
+      "PID_CWD_argv_env_GPU_verified": true,
+      "step_log_growth": true
+    },
+    {
+      "method": "HFeatureHard",
+      "gpu": 3,
+      "PID_CWD_argv_env_GPU_verified": true,
+      "step_log_growth": true
+    },
+    {
+      "method": "HGFeatureHard",
+      "gpu": 4,
+      "PID_CWD_argv_env_GPU_verified": true,
+      "step_log_growth": true
+    }
+  ],
+  "source_calibration_and_integrated_smoke_complete": true,
+  "whole_H_cache_finite": true,
+  "complete_available_records_audited": 612,
+  "all_six_matched_acceptance_prefixes_verified": true,
+  "available_records_timestamp": "2026-10-25T22:04:19.607858+00:00",
+  "new_target_reads": 0,
+  "observer_optimizer_updates": 0,
+  "scope": "live four-candidate one-student-seed source training;not completed E50 or target performance"
+}

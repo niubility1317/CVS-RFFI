@@ -1,2 +1,7 @@
 {"at": "2026-10-25T21:53:09+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-25T22:00:54+00:00", "status": "RUNNING", "note": "独立核实实际源GPU任务身份/路径/命令/日志增长；只有seed01四候选，无新目标结果。", "evidence": ["launch_evidence.json"], "row_id": null}
+{"at": "2026-10-25T22:06:33+00:00", "status": "RUNNING", "note": "实际训练PID/路径/命令/GPU与step日志增长独立核实，完整当前前缀通过；非完整E50或目标结果。", "evidence": ["training_evidence.json", "available_source_execution.csv"], "row_id": "F0-GJointHard-sourceHold-s2026092701"}
+{"at": "2026-10-25T22:06:38+00:00", "status": "RUNNING", "note": "实际训练PID/路径/命令/GPU与step日志增长独立核实，完整当前前缀通过；非完整E50或目标结果。", "evidence": ["training_evidence.json", "available_source_execution.csv"], "row_id": "F0-GFeatureHard-sourceHold-s2026092701"}
+{"at": "2026-10-25T22:06:44+00:00", "status": "RUNNING", "note": "实际训练PID/路径/命令/GPU与step日志增长独立核实，完整当前前缀通过；非完整E50或目标结果。", "evidence": ["training_evidence.json", "available_source_execution.csv"], "row_id": "F0-HFeatureHard-sourceHold-s2026092701"}
+{"at": "2026-10-25T22:06:49+00:00", "status": "RUNNING", "note": "实际训练PID/路径/命令/GPU与step日志增长独立核实，完整当前前缀通过；非完整E50或目标结果。", "evidence": ["training_evidence.json", "available_source_execution.csv"], "row_id": "F0-HGFeatureHard-sourceHold-s2026092701"}
+{"at": "2026-10-25T22:06:54+00:00", "status": "RUNNING", "note": "H配对与12批源校准、集成smoke已完成，四路实际训练运行；源公式固定λG/λH，不读目标或U真值。", "evidence": ["source_gradient_calibration.json", "training_evidence.json"], "row_id": null}
