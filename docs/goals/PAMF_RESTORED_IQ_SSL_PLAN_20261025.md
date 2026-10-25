@@ -212,3 +212,12 @@ GTaskScaled在16200次留出G判断中纠正78次、弄错42次，净增36次，
 `20261026-diagnostic-PAMF-LSetGeometry-m1-r01`已完成，真实E30/G与原6300可见L、五视图，所有模型参数/buffers不变，U/V/目标与optimizer读取/更新为0。三G关系判断中Set05比Mean只多11/18900（+0.058201pp），Set10少1次；raw分别多4和3次。旧中心与新bank的同源坐标数值完全一致，270个分层计数均重新核算。当前L的参照/真实任务特征梯度均正向，单中心样本方向也较集中，未观察到足以直接增加多样本参照训练的巨大结构缺陷。
 
 因此后续优先做已有任务缩放系数的匹配剂量对照，保留同系数普通G参照/raw控制，仍从own E30独立到E50、不扩大累计预算、不根据目标选择系数。新的源矩阵在发布前固定，原+.3pp/- .1pp源晋级条件保持；本次没有新目标性能或默认方法变化。完整几何结果见[诊断报告](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-LSetGeometry-m1-r01/report.md)。
+
+
+## 四条匹配源剂量训练已启动
+
+新run `20261026-phase1-PAMF-TaskRefDose-sourceHold-m4-r01` 已实际启动，代码 `122dd2cfb306ed38b882dc0504f01bc7ee3bcfee`。GTask2x使用0.06515361984430072；GTask3x、GUniform3x和RawTask3x共同使用0.09773042976645108，均由已完成源校准base系数按预定2x/3x计算，不声称新probe。四条均同一个学生seed01、从原own E30独立+20到E50，不从旧F50继续，不加训练预算或参照结构。
+
+最高剂量真实E30/L2/联合backward smoke通过，原L768包/AsKL0和有限默认头梯度核实。四个实际训练进程在GPU0/2/3/4运行，PID/CWD/argv/GPU/完整训练指标增长已独立核实；首轮1303条完整训练记录的route、系数、主项、隐藏U、固定接受流和缩放边界检查通过，未见非有限跳步。详见[本轮运行记录](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-TaskRefDose-sourceHold-m4-r01/report.md)。
+
+原+.3pp/- .1pp源筛选条件保持，四条全完成后选择，通过者未来才进入单独冻结的三种子raw/同G正式矩阵。本轮仍在源训练中，没有新目标性能或默认方法变化；原联合目标未达成。

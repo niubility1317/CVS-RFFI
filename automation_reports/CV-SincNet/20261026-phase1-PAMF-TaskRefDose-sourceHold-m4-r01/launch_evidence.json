@@ -1,0 +1,50 @@
+{
+  "status": "VERIFIED_RUNNING_SOURCE_ONLY",
+  "code_commit": "122dd2cfb306ed38b882dc0504f01bc7ee3bcfee",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "real_checkpoint_joint_backward_smoke": {
+    "status": "PASS",
+    "model_seed": 2026092701,
+    "L_forward_packets": 768,
+    "U_seen": 256,
+    "extra_accepted": 185,
+    "head_finite_nonzero": true,
+    "optimizer_updates": 0,
+    "query_reads": 0,
+    "U_truth_read": false,
+    "method": "GTask3x"
+  },
+  "controller_PID_CWD_argv_verified": true,
+  "child_PID_CWD_argv_GPU_verified": {
+    "GTask2x": true,
+    "GTask3x": true,
+    "GUniform3x": true,
+    "RawTask3x": true
+  },
+  "complete_training_metric_log_growth": {
+    "GTask2x": true,
+    "GTask3x": true,
+    "GUniform3x": true,
+    "RawTask3x": true
+  },
+  "GPUs": {
+    "GTask2x": 0,
+    "GTask3x": 2,
+    "GUniform3x": 3,
+    "RawTask3x": 4
+  },
+  "complete_available_records": {
+    "GTask2x": 323,
+    "GTask3x": 335,
+    "GUniform3x": 336,
+    "RawTask3x": 309
+  },
+  "all_available_records_checked": true,
+  "matched_extra_acceptance_prefixes": true,
+  "student_seeds": [
+    2026092701
+  ],
+  "new_target_reads": 0,
+  "scope": "Actual startup only;training and frozen source assessment incomplete;not target benefit"
+}

@@ -1,0 +1,48 @@
+{
+  "status": "VERIFIED_AVAILABLE_SOURCE_RECORDS",
+  "matched_acceptance": [
+    {
+      "method_a": "GTask2x",
+      "method_b": "GTask3x",
+      "common_available_steps": 323,
+      "all_cumulative_extra_acceptances_equal": true
+    },
+    {
+      "method_a": "GTask2x",
+      "method_b": "GUniform3x",
+      "common_available_steps": 323,
+      "all_cumulative_extra_acceptances_equal": true
+    },
+    {
+      "method_a": "GTask2x",
+      "method_b": "RawTask3x",
+      "common_available_steps": 309,
+      "all_cumulative_extra_acceptances_equal": true
+    },
+    {
+      "method_a": "GTask3x",
+      "method_b": "GUniform3x",
+      "common_available_steps": 335,
+      "all_cumulative_extra_acceptances_equal": true
+    },
+    {
+      "method_a": "GTask3x",
+      "method_b": "RawTask3x",
+      "common_available_steps": 309,
+      "all_cumulative_extra_acceptances_equal": true
+    },
+    {
+      "method_a": "GUniform3x",
+      "method_b": "RawTask3x",
+      "common_available_steps": 309,
+      "all_cumulative_extra_acceptances_equal": true
+    }
+  ],
+  "total_available_records": 1303,
+  "expected_extra_per_epoch": 41939,
+  "source_calibration_base_weight": 0.03257680992215036,
+  "observer_optimizer_updates": 0,
+  "new_target_reads": 0,
+  "observed_at_UTC": "2026-10-25T19:47:48.160541+00:00",
+  "scope": "Every currently complete record,not full E50 or target benefit;live gzip tail may remain buffered;no parameter or queue changes"
+}
