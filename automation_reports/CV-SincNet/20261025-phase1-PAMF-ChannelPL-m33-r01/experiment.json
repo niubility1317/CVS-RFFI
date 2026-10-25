@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-25 用户要求继续深入分析 REPL 的整体负收益并优化半监督；既有三GPU、三个seed授权。",
   "code": {
-    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "commit": "1fa92a0b8b61fba7ddca532a12078a8ddae2bdf7",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
     "cwd": "PROJECT/releases/20261025-phase1-PAMF-ChannelPL-training-release-r01"

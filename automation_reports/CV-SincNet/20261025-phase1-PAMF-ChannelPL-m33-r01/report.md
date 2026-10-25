@@ -3,7 +3,7 @@
 - run_id：`20261025-phase1-PAMF-ChannelPL-m33-r01`
 - group_id：`phase1-pamf-channel-pl-20261025`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING；六条实际训练进程已核实，新的目标结果尚未返回。
 
 ## 固定方法与比较
 
@@ -31,7 +31,13 @@
 
 任一实际技术失败停止新启动，已健康的 worker 自然完成并保留输出；不因低准确率停止，不自动重试或覆盖失败 root。新 run 独立于全部历史产物，未授权其他进程停止或配置修改。
 
-本地 55 项聚焦检查已通过，涵盖 CE 剂量、fallback 损失与梯度、U 标签隔离、6/10 类、错误 checkpoint／teacher／query 拒绝、固定训练预算、完整三人群／双读出预测约束、F0 168000 口径及样本 SD。发布前修复了 smoke 提前绑定 loader 导致 U128、以及绑定 hook 与显式 model 关键字冲突两处执行问题，均有修复前失败、修复后通过的聚焦检查。唯一独立 P0/P1 审查发现的 hook 参数冲突已完成一次定向复审并 PASS。执行 commit 与启动后证据在实际返回后记录。
+本地 55 项聚焦检查已通过，涵盖 CE 剂量、fallback 损失与梯度、U 标签隔离、6/10 类、错误 checkpoint／teacher／query 拒绝、固定训练预算、完整三人群／双读出预测约束、F0 168000 口径及样本 SD。发布前修复了 smoke 提前绑定 loader 导致 U128、以及绑定 hook 与显式 model 关键字冲突两处执行问题，均有修复前失败、修复后通过的聚焦检查。唯一独立 P0/P1 审查发现的 hook 参数冲突已完成一次定向复审并 PASS。
+
+**VERIFIED：正式训练已启动。** 实际执行 commit 为 `1fa92a0b8b61fba7ddca532a12078a8ddae2bdf7`，不可变 release 为 `20261025-phase1-PAMF-ChannelPL-training-release-r01`。一次归档传输校验、远端编译与入口导入通过。独立 readback 核对了实际 PID/CWD/argv 与 NVIDIA compute PID 对应的物理 GPU：5/6/7 各两条 worker，F0 与 F1 各三个 seed 正在训练。
+
+真实 E20 L/U 前向、反向 smoke 已 PASS：原 L 前向 768 包、L As64、默认六类头梯度有限且非零；原 U256 中接受 235、生成 As117、转移 51，U CE 剂量 1，query／U 真值／EMA 读取或更新为 0。独立读取各 worker 的首个完整新增 epoch，共 1332 条有序记录，确认每步 L768、As KL=0、U 权重1、实际 ChannelPL 损失等于原 raw PL＋重分配差值，均未发生非有限梯度跳步或 U truth 可用标记。此为首 epoch 快查，不能称为完整训练日志分析。
+
+逐 worker 早期曝光见 [early_source_execution.csv](early_source_execution.csv)，精简启动事实见 [launch_evidence.json](launch_evidence.json)。原始运行细节和日志留在私有 local_artifacts 及 N607 输出，不提交 checkpoint、IQ 或原始日志。
 
 ## 结果与覆盖
 

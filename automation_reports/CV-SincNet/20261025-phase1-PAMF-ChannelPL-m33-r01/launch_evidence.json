@@ -1,0 +1,53 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "execution_commit": "1fa92a0b8b61fba7ddca532a12078a8ddae2bdf7",
+  "release_id": "20261025-phase1-PAMF-ChannelPL-training-release-r01",
+  "source_diagnostic_passed": "33/33",
+  "source_diagnostic_execution_commit": "f02436f53feeb0dad3a6c6feeae7b56afa775974",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "entrypoint_import": "PASS",
+  "no_query_real_E20_L_U_backward_smoke": {
+    "status": "PASS",
+    "L_forward_packets": 768,
+    "L_As_generated": 64,
+    "default_head_classes": 6,
+    "finite_backward": true,
+    "query_reads": 0
+  },
+  "smoke_U_counts": {
+    "calls": 1,
+    "seen": 256,
+    "accepted": 235,
+    "generated": 117,
+    "channel_accepted": 51,
+    "EMA_updates": 0,
+    "U_truth_read": false,
+    "target_reads": 0
+  },
+  "live_source_workers": 6,
+  "physical_GPU_seed_map": {
+    "5": 2026092701,
+    "6": 2026092702,
+    "7": 2026092703
+  },
+  "workers_per_GPU": {
+    "5": 2,
+    "6": 2,
+    "7": 2
+  },
+  "PID_CWD_argv_actual_GPU_matches": true,
+  "first_complete_new_source_epoch_rows": 6,
+  "first_epoch_complete_step_records": 1332,
+  "cumulative_epoch": 21,
+  "new_target_predictions_complete": 0,
+  "new_target_scores_complete": 0,
+  "automatic_stages": {
+    "train": 33,
+    "predict": 33,
+    "independent_CPU_score": 33
+  },
+  "no_G_training": true,
+  "no_new_restored_IQ_cache": true,
+  "scope": "Early source execution evidence only; no new target performance, and no claim that the goal is achieved."
+}
