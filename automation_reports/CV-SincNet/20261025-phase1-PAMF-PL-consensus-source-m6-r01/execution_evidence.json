@@ -1,0 +1,26 @@
+{
+  "status": "VERIFIED_SOURCE_CONSENSUS_COMPLETE",
+  "execution_commit": "d4e9cc42d035b0f59fb7a4a06d2b656b227da987",
+  "frozen_E20_models": 6,
+  "source_protocols": [
+    "F0",
+    "label01"
+  ],
+  "source_V_observations_per_protocol": 27000,
+  "source_checkpoint_smokes": "6/6 PASS",
+  "device": "cpu",
+  "CPU_threads": 2,
+  "allowed_gpus": [],
+  "live_CPU_empty_CUDA_no_GPU_PID_and_log_growth_observed": true,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "model_updates": 0,
+  "new_heads": 0,
+  "buffer_updates": 0,
+  "target_reads": 0,
+  "U_truth_read": false,
+  "G_reads": 0,
+  "source_only": true,
+  "new_SSL_target_performance": false,
+  "ongoing_ChannelPL_release_unchanged": "1fa92a0b8b61fba7ddca532a12078a8ddae2bdf7"
+}

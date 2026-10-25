@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-25 用户要求深入分析和优化SSL。当前已观察源错误集中；本次CPU源诊断不改变六条健康GPU训练。",
   "code": {
-    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "commit": "d4e9cc42d035b0f59fb7a4a06d2b656b227da987",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
     "cwd": "PROJECT/releases/20261025-phase1-PAMF-PL-consensus-source-release-r01"
