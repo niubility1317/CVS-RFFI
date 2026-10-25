@@ -1,0 +1,220 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-LAnchorDrift-m5-r01",
+  "group_id": "phase1-pamf-L-anchor-drift-20261026",
+  "display_name": "同源E30与F50的可见L参照漂移诊断",
+  "description": "五个checkpoint均为query seed01，比较旧E30中心与各冻结模型同L重算中心；原L6300八视图，默认头不变，只对detached features求可见真标签CE梯度。无训练/U/V/目标。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-LAnchorDrift"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "visible-L-only",
+    "anchor-drift",
+    "frozen-default-head",
+    "no-optimizer"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-TaskRefDose-sourceHold-m4-r01",
+    "20261026-phase1-PAMF-TaskScaledRef-sourceHold-m3-r01",
+    "20261025-phase1-PAMF-RestoredPL-m9-r01",
+    "20261025-diagnostic-PAMF-RXReference-dose-m1-r01"
+  ],
+  "authorization": "继续原PAMF SSL目标；剂量源试验均未晋级，先用合法可见L和冻结source checkpoints检验固定参照与当前空间失配，不使用U真值或目标。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-diagnostic-PAMF-LAnchorDrift-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "same F0 default-head six-class mapping;public TX indices are default-head class indices",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "all original6300 visibleL;three ownE30 raw banks;onlyseed01 frozen query5views",
+      "U_s": "not opened",
+      "V": "not opened"
+    },
+    "train_ratio": "original L6300/U56700/V27000 roles unchanged;no training or role reassignment",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "visible-L nonparametric relation geometry and default-head feature-gradient agreement only;not a replacement head,unseen-RX proof,target performance or trained SSL method"
+  },
+  "checkpoint": {
+    "initialization": "frozen E30 seed01 andfour source-only fixedfinalF50 seed01;allnative defaultheads",
+    "sources": [
+      "own originalordinaryPL E20+10 E30",
+      "PLControlF50",
+      "GTask1xF50",
+      "GTask2xF50",
+      "GTask3xF50",
+      "same originalG-LU",
+      "same old visibleL E30 mean refs"
+    ],
+    "contract_check_ref": "E30 standard source ancestry;F50 validate_final andexistingload_reader/load_F complete20/10/20 ancestry/roles/defaulthead;actualL2smoke",
+    "provenance_verdict": "same originalF0 source-only training andfinal-only freezing;PLControl isfixedprior control,not target-selected parent",
+    "selection_rule": "no new training/model selection;allfive checkpoints andboth anchors/eightviews reported"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-restored-source-20261025",
+    "gpu_policy": "physicalGPU0 only;global CUDA+pending<2/free>=10000MiB;CPU2threads;preserve all otherowners",
+    "remote_run_root": "PROJECT/runs/20261026-diagnostic-PAMF-LAnchorDrift-m5-r01",
+    "remote_log_root": "PROJECT/releases/20261026-diagnostic-PAMF-LAnchorDrift-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/anchor_drift_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.anchor_drift_source dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-LAnchorDrift-release-r01/runtime.json",
+    "stop_rule": "any input/protocol/smoke/nonfinite/state-mutation or technical failure ends thisrun;preserveoutputs;no automaticretry/foreign process intervention"
+  },
+  "expected_artifacts": [
+    "real fivecheckpoint defaulthead/G L2smoke",
+    "old/current per-model Lcenters private",
+    "all6300L x8views x5checkpoints x2anchors",
+    "complete1500geometry cells and150center cells",
+    "E30 identical-anchor control",
+    "allmodelparameters/registeredbuffers unchanged andallparameter.grad None",
+    "PID/CWD/argv/GPU/loggrowth thenindependentclosedartifact verification",
+    "same-run source-only interpretation without performanceclaim"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "defaulthead accuracy unchanged acrossanchors",
+      "reference identity accuracy andhead disagreement",
+      "old/current center cosine/maxabs displacement",
+      "featuregradient cosine vsvisible true-label defaulthead CE",
+      "E30 zero-drift control"
+    ],
+    "dimensions": [
+      "five checkpoints ofonequeryseed01",
+      "FixedE30/CurrentL",
+      "eight sourceL views plusH/Gthree means",
+      "TXclassindex/RX/day"
+    ],
+    "prediction_ref": "private source_L_anchor_drift.npz andL_anchor_centers.pt",
+    "scorer_ref": "source L true labels only;no targettruth or optimizer"
+  },
+  "rows": [
+    {
+      "row_id": "F0-LAnchorDrift-fivecheckpoints-s2026092701",
+      "method": "Frozen_L_anchor_drift",
+      "purpose": "source representation/drift diagnosis only",
+      "config_ref": "release/context.json plus fixed module constants",
+      "resolved_config_ref": "release/runtime.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "allfivequery checkpoints same seed01 atE30/F50;notfive seeds;two otherE30readers onlystandard source/G bootstrap",
+      "k": null,
+      "scenario": "raw/Graw/threeH/GH",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero new training;queryweights110uniquehistoricalFepochs(shared30+four20tails);allloadedteacherprefixes+tails170;newF283500/G25200 packets plusL2smoke;3000 featuregradcalls",
+      "output_root": "PROJECT/runs/20261026-diagnostic-PAMF-LAnchorDrift-m5-r01",
+      "log_path": "PROJECT/releases/20261026-diagnostic-PAMF-LAnchorDrift-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.anchor_drift_source dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-LAnchorDrift-release-r01/runtime.json",
+      "expected_artifacts": [
+        "real fivecheckpoint defaulthead/G L2smoke",
+        "old/current per-model Lcenters private",
+        "all6300L x8views x5checkpoints x2anchors",
+        "complete1500geometry cells and150center cells",
+        "E30 identical-anchor control",
+        "allmodelparameters/registeredbuffers unchanged andallparameter.grad None",
+        "PID/CWD/argv/GPU/loggrowth thenindependentclosedartifact verification",
+        "same-run source-only interpretation without performanceclaim"
+      ]
+    }
+  ],
+  "notes": [
+    "Old reference isownseed01 originalE30,CurrentL isrecomputed once fromsamevisibleL per frozenquerymodel;no onlineupdates or newhead fit inthisrun.",
+    "Nonparametric score/featuregradient comparisons arediagnostics,not deployed alternative classifiers or performanceclaims.",
+    "Allquerymodels sawsource Lduringhistoricaltraining;excludingownRXreferences doesnotmake unseen-base-RX validation.",
+    "Native source ancestry/checkpoint legality reused,not newdata revalidation;no sourceplan hash/seal/receipt layer.",
+    "Futuremethodtraining stillsame ownE30-toE50 budget,originalsource+.3/-.1 screen andactualthree-seed raw/sameG goal;no target extension inthisrun."
+  ],
+  "matrix": {
+    "query_models": [
+      "E30",
+      "PLControlF50",
+      "GTask1xF50",
+      "GTask2xF50",
+      "GTask3xF50"
+    ],
+    "query_model_seeds": [
+      2026092701
+    ],
+    "query_epochs": [
+      30,
+      50,
+      50,
+      50,
+      50
+    ],
+    "L_records": 6300,
+    "anchors": [
+      "FixedE30",
+      "CurrentL"
+    ],
+    "source_rxs": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "temperature": 0.1,
+    "exclude_own_RX": true,
+    "RX_weighting": "equal",
+    "views": [
+      "raw",
+      "G_raw",
+      "practical_low_suburban",
+      "G_practical_low_suburban",
+      "practical_mid_urban",
+      "G_practical_mid_urban",
+      "practical_low_urban",
+      "G_practical_low_urban"
+    ],
+    "source_channel_namespace": "PAMF/set_reference/L/fixed",
+    "reference_role": "L_s",
+    "U_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "optimizer_updates": 0,
+    "new_heads": false
+  },
+  "registered_at": "2026-10-25T20:59:19+00:00"
+}
