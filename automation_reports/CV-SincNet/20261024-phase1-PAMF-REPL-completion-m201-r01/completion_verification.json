@@ -1,0 +1,118 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261024-phase1-PAMF-REPL-completion-m201-r01",
+  "effective_jobs": 733,
+  "historical_jobs": 735,
+  "excluded_resolved_score_failures": 2,
+  "logical_F": 201,
+  "new_F": 189,
+  "reused_F": 12,
+  "unique_E20_prefixes": 84,
+  "prediction_rows": 228,
+  "independent_score_rows": 228,
+  "timing_panels": 4,
+  "serialized_CM": 379239,
+  "net_corrections": 247863,
+  "new_DURA_training": 0,
+  "new_IQ_cache": 0,
+  "scientific_GPU_commit": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
+  "controller_CPU_commit": "a79bdf385489cb3822b37434a07e3c43e5ce839a",
+  "package": "exports/phase1_external_dg/20261025-PAMF-REPL-complete-r17.zip",
+  "package_bytes": 161133914,
+  "members": 279,
+  "CRC_all_members": true,
+  "unpacked_stdlib_reproduction": {
+    "CM": {
+      "status": "VERIFIED_SERIALIZED_INPUTS",
+      "logical_rows": 228,
+      "serialized_CM_recomputed": 379239,
+      "net_corrections_recomputed": 247863,
+      "three_actual_F_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "six_scene_within_seed_first": true,
+      "fixed_G_variation_not_three_full_systems": true,
+      "posthoc_historical_clean_based_method_selection_disclosed": true,
+      "no_target_feedback_used": true
+    },
+    "supplement": {
+      "status": "VERIFIED_SUPPLEMENTARY_INPUTS",
+      "new_unique_epochs": 8670,
+      "new_unique_updates": 1924740,
+      "new_unique_shared_worker_hours": 265.95642553749155,
+      "logical_F": 201,
+      "new_F": 189,
+      "reused_F": 12,
+      "source_diagnostic_models": 111,
+      "source_diagnostic_packets_per_model": 720,
+      "source_diagnostic_strata": 90,
+      "source_interventions": 11,
+      "raw_stratified_CM_reuse_checked_rows": 27,
+      "timing_case_rounds": 1175,
+      "timing_GPU_calls": 395975,
+      "external_summary_reused_not_rescored": true,
+      "new_G": 0,
+      "new_IQ_cache": 0
+    },
+    "comparison": {
+      "status": "PASS",
+      "CSV_files": 9,
+      "rows": 1611783,
+      "numeric_values": 4710684,
+      "maximum_absolute_difference": 6.128431095930864e-14,
+      "tolerance": 1e-10,
+      "byte_identical_not_claimed": true
+    },
+    "supplement_comparison": {
+      "status": "PASS",
+      "CSV_files": 8,
+      "rows": 37999,
+      "numeric_values": 137844,
+      "maximum_absolute_difference": 8.526512829121202e-14,
+      "tolerance": 1e-10,
+      "byte_identical_not_claimed": true
+    }
+  },
+  "figure_document_QA": {
+    "status": "VERIFIED",
+    "figures": 27,
+    "PNG_4800dpi": 27,
+    "TIFF_4800dpi": 27,
+    "editable_SVG": 27,
+    "IEEE_pages": 5,
+    "Chinese_guide_pages": 28,
+    "portable_JSON_records": 10145,
+    "external_overall_seed_rows": 50688,
+    "all_main_results_before_appendix": true,
+    "visual_QA": "All 27 preview figures, all 28 guide pages and all five IEEE pages inspected; no clipping or overlapping text.",
+    "LaTeX_no_overfull_or_undefined": true
+  },
+  "crossruntime_statistics": {
+    "status": "PASS",
+    "CSV_files": 9,
+    "rows": 1611783,
+    "numeric_values": 4710684,
+    "maximum_absolute_difference": 6.128431095930864e-14,
+    "tolerance": 1e-10,
+    "byte_identical_not_claimed": true
+  },
+  "crossruntime_supplement": {
+    "status": "PASS",
+    "CSV_files": 8,
+    "rows": 37999,
+    "numeric_values": 137844,
+    "maximum_absolute_difference": 3.552713678800501e-15,
+    "tolerance": 1e-10,
+    "byte_identical_not_claimed": true
+  },
+  "old_packages_preserved": true,
+  "old_incorrect_cleanup_repeated": false,
+  "shared_export": {
+    "status": "VERIFIED",
+    "path": "F:\\AI\\exports\\STRA-RFFI\\phase1_external_dg\\20261025-PAMF-REPL-complete-r17.zip",
+    "bytes": 161133914,
+    "CRC_all_members": true
+  }
+}

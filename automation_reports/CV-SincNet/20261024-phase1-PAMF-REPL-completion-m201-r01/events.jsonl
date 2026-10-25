@@ -1,3 +1,4 @@
 {"at": "2026-10-24T15:09:07+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-24T15:18:36+00:00", "status": "RUNNING", "note": "实际control-r02已独立核实，源烟测PASS、八卡有限并发、同PID日志增长；无DURA新训练。", "evidence": ["launch_verification.json"], "row_id": null}
 {"at": "2026-10-24T16:39:47+00:00", "status": "RUNNING", "note": "CPU评分入口定点恢复闭合，两原冻结预测评分已完成；健康训练保留，r03接管并继续；科学矩阵和DURA不变。", "evidence": ["score_entry_recovery_verification.json"], "row_id": null}
+{"at": "2026-10-25T06:15:15+00:00", "status": "ANALYZED", "note": "733有效阶段全部完成；228独立truth-last评分、27图、5页IEEE和新r17包解包纯stdlib复算通过；DURA训练/缓存新增0。", "evidence": ["completion_verification.json", "results_analysis.md"], "row_id": null}

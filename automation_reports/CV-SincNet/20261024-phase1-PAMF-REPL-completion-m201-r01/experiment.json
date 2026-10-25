@@ -27,7 +27,7 @@
     "commit": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Python/Torch2.1, FP32/TF32off",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-control-r02",
+    "cwd": "PROJECT/releases/20261024-phase1-PAMF-REPL-control-r02",
     "control_and_CPU_commit": "a79bdf385489cb3822b37434a07e3c43e5ce839a",
     "scientific_GPU_commit": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
     "cwd_scope": "unchanged GPU scientific workers"
@@ -86,10 +86,10 @@
     "host": "N607",
     "launch_owner": "codex-pamf-repl-completion-20261024",
     "gpu_policy": "physical0-7, <=3 total/card including foreign, <=24 total; G-heavy<=1/card; free>=12000MiB, CPU<75%, RAM>=64GiB, IOwait<5%; timing naturally empty exclusive",
-    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01",
-    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs",
+    "remote_run_root": "PROJECT/runs/20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "remote_log_root": "PROJECT/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_repl_completion_20261024",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
+    "launch_command": "N607_HOME/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
     "stop_rule": "Two identical unresolved technical fingerprints stop new dispatch; preserve all healthy/foreign workers and immutable artifacts; no target-result stopping or selection.",
     "execution_release": "20261025-phase1-PAMF-REPL-control-r03",
     "control_root": "PROJECT/runs/20261025-phase1-PAMF-REPL-control-r03"
