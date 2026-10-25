@@ -64,3 +64,23 @@ PLControl相对原普通PL的raw clean/raw六景/G六景差分别−0.014683/−
 完整读取8个已完成学生的35520条新增E31–E50结构化记录和6392行stdout；actual final_only、自身E30父、原默认6×160头、native U/EMA关闭、所有新增mask/前向/权重均符合配置。B/C每行额外接受1058920次、每完整epoch52946条，零非有限跳步/U真值/target训练/G或教师更新。尚未完成的行不算入完整训练审计。
 
 [主端点](partial8_primary_endpoints.csv)、[匹配控制差](partial8_matched_control.csv)、[完整已结束源训练](finished_source_execution.csv)、[阶段证据](partial8_result_evidence.json)。这些是阶段性已冻结测试结果，不改变剩余健康运行。
+
+## 九学生完整目标结果
+
+ANALYZED，9/9学生固定E50及全部raw/同G-LU×三人群×七景预测和独立truth-last均完成。主表为原目标RX全部日期168000记录/seed、三seed均值±样本SD。
+
+| 方法 | raw clean | raw六景 | G-LU clean | G-LU六景 |
+| --- | ---: | ---: | ---: | ---: |
+| PLControl | 84.967063±0.224833% | 70.334854±0.956618% | 85.022222±0.223596% | 78.061640±0.146305% |
+| RawSoft | 84.872817±0.254680% | 70.262731±0.832628% | 84.926984±0.257182% | 78.011839±0.173580% |
+| DURASoft | 83.684524±0.309070% | 70.056184±0.816250% | 83.750992±0.358248% | 76.404894±0.320328% |
+
+**DURASoft未达标，且退步明确。** 相对原普通PL：raw clean−1.297222pp、raw六景−0.303175pp、G-LU clean−1.278571pp、G-LU六景−1.669742pp。相对本次匹配PLControl，raw clean−1.282540pp、raw六景−0.278671pp、G-LU六景−1.656746pp；相对同剂量RawSoft，raw clean−1.188294pp、G-LU六景−1.606944pp。各seed和配对SD完整保留，不以单独源指标或部分场景替代这一结论。
+
+source cache和目标readout的G规格已独立读取核对，为同一个original_F0_LU/checkpoint/role；目标G-LU缓存沿用，G本身没有因F训练变化。三组额外分支成本/伪标签/物理索引的匹配已核对；结果不能归因于换G、缺seed、另训头或不完整预算。
+
+完整读取所有39960条新增E31–E50源训练记录、7191行stdout及9份最终checkpoint header：final_only、各自E30父、20增量/50累计、默认6×160头、native U/EMA关闭、教师/G更新0、U真值/target训练0、非有限跳步0。B/C每学生接受1058920次额外监督、2268000次额外student前向；source缓存52946唯一接受样本不是新增独立标签。共享父90epochs+新尾段180=270唯一F epochs，G/缓存成本另列。
+
+本批三个目标条件均未满足，不替换默认PAMF，也不把DURASoft作为成功半监督方法。高质量raw q与广覆盖恢复U监督本身仍不足以获得目标域正收益；下一步仅开展冻结源域raw/H/G表现、恢复误差与类/RX几何对照，区分源适配、信息损失与优化冲突的证据，不从本批目标数值调权重或选择性重跑。
+
+[完整主端点](complete_primary_endpoints.csv)、[匹配三seed差值](complete_matched_pairs.csv)、[全部完整源执行](finished_source_execution.csv)、[精确联合验收与证据](complete_result_evidence.json)、[逐seed全视图](interim_complete_rows.csv)。

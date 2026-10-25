@@ -1,0 +1,164 @@
+{
+  "status": "ANALYZED",
+  "external_action_status": "VERIFIED",
+  "planned_students": 9,
+  "trained_students": 9,
+  "scored_students": 9,
+  "student_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "groups": [
+    {
+      "method": "PLControl",
+      "completed_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "required_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "status": "COMPLETE_THREE_SEED_SCORING",
+      "goal_pass": false,
+      "goals": [
+        {
+          "route": "raw",
+          "endpoint": "clean",
+          "exact_gain_pp": "-37/2520",
+          "gain_pp": -0.014682539682539682,
+          "pass_": false
+        },
+        {
+          "route": "raw",
+          "endpoint": "six_practical_mean",
+          "exact_gain_pp": "-1129/4320",
+          "gain_pp": -0.26134259259259257,
+          "pass_": false
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "six_practical_mean",
+          "exact_gain_pp": "-131/10080",
+          "gain_pp": -0.012996031746031747,
+          "pass_": false
+        }
+      ]
+    },
+    {
+      "method": "RawSoft",
+      "completed_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "required_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "status": "COMPLETE_THREE_SEED_SCORING",
+      "goal_pass": false,
+      "goals": [
+        {
+          "route": "raw",
+          "endpoint": "clean",
+          "exact_gain_pp": "-61/560",
+          "gain_pp": -0.10892857142857143,
+          "pass_": false
+        },
+        {
+          "route": "raw",
+          "endpoint": "six_practical_mean",
+          "exact_gain_pp": "-2521/7560",
+          "gain_pp": -0.33346560846560847,
+          "pass_": false
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "six_practical_mean",
+          "exact_gain_pp": "-211/3360",
+          "gain_pp": -0.06279761904761905,
+          "pass_": false
+        }
+      ]
+    },
+    {
+      "method": "DURASoft",
+      "completed_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "required_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "status": "COMPLETE_THREE_SEED_SCORING",
+      "goal_pass": false,
+      "goals": [
+        {
+          "route": "raw",
+          "endpoint": "clean",
+          "exact_gain_pp": "-467/360",
+          "gain_pp": -1.2972222222222223,
+          "pass_": false
+        },
+        {
+          "route": "raw",
+          "endpoint": "six_practical_mean",
+          "exact_gain_pp": "-1633/3024",
+          "gain_pp": -0.5400132275132276,
+          "pass_": false
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "six_practical_mean",
+          "exact_gain_pp": "-16831/10080",
+          "gain_pp": -1.6697420634920634,
+          "pass_": false
+        }
+      ]
+    }
+  ],
+  "independent_truth_last": true,
+  "goal_met": false,
+  "physical_target_RX_per_seed": 168000,
+  "source_RX_unseen_date_test": 30000,
+  "views": 7,
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "whole_closed_new_source_records_read": 39960,
+  "whole_stdout_lines_read": 7191,
+  "final_only_checkpoints": true,
+  "actual_native_U_EMA": false,
+  "U_truth_read": false,
+  "target_training_reads": 0,
+  "teacher_G_updates": 0,
+  "posthoc_head_fit_updates": 0,
+  "nonfinite_skips": 0,
+  "same_frozen_G_pair": {
+    "status": "VERIFIED",
+    "same_G_spec": true,
+    "same_registered_source_G": true,
+    "G_kind": "original_F0_LU",
+    "G_roles": "LU",
+    "target_cache_status": "DURA_IQ_CACHE_COMPLETE",
+    "target_cache_readout": "DURA-LU",
+    "new_IQ_reads": 0,
+    "new_truth_reads": 0
+  },
+  "new_student_epochs": 180,
+  "shared_prefix_epochs": 90,
+  "total_unique_F_epochs": 270,
+  "inference_ensemble": false,
+  "retained_default_model": true,
+  "all_negatives_retained": true,
+  "scope": "completed fixed F0 matrix;source pseudo quality and source loss decline do not establish target benefit"
+}
