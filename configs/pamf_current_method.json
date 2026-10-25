@@ -45,7 +45,18 @@
   },
   "reports": {
     "current_comparison": "docs/PAMF_COMPARISON_REPORT_20261025.md",
+    "grouping_rules": "docs/PAMF_COMPARISON_REPORTING_RULES_20261025.md",
     "historical_method_definition": "docs/PAMF_REPL.md"
+  },
+  "reporting": {
+    "main_display_columns": ["RIEI", "DRIFT", "IB-RFF", "SDG", "PAMF", "DURA+PAMF"],
+    "external_default_readout": "raw",
+    "PAMF_display_readouts": {"PAMF": "raw", "DURA+PAMF": "DURA-LU"},
+    "external_DURA_section": "restorer_generality_only",
+    "supervised_PAMF_section": "within_PAMF_controls",
+    "no_channel_augmentation": {"views": ["clean"], "populations": ["cross_rx", "cross_both"]},
+    "channel_augmentation_on": {"views": ["clean", "practical_high", "practical_mid", "practical_low_suburban", "practical_high_urban", "practical_mid_urban", "practical_low_urban"], "source_unseen_date": "separate_diagnostic"},
+    "historical_predictions_preserved": true
   },
   "scientific_execution": {
     "new_60_main_models": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
