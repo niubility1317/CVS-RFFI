@@ -101,14 +101,26 @@ def gradient_probe(models,cfg,payload,g,engine,contract,root):
         if a.use_unlabeled or a.use_ema_teacher:raise ValueError('Native U/EMA disabled in probe')
         student=t1_model.install(native.build_baseline_model(a,'cuda:0'),c).to('cuda:0')
     student.load_state_dict(payload['model'],strict=True);before=snapshot(student)
-    params=[p for p in student.parameters() if p.requires_grad]
+    named=[(name,p) for name,p in student.named_parameters() if p.requires_grad]
+    params=[p for _,p in named]
+    sinc=student.get_submodule('id_backbone.encoder.core.id_backbone.sinc')
+    if sinc.scale_hz!=25000. or sinc.mode!='CENTER_25K':raise ValueError('Original CENTER_UNITS physical gradient coordinates required')
     labeled=SourceDataset(c['source_cache'],'L_s',contract);unlabeled=SourceDataset(c['source_cache'],'U_s',contract)
     gen=lambda:torch.Generator().manual_seed(SEEDS[0])
     ll=iter(torch.utils.data.DataLoader(labeled,batch_size=128,shuffle=True,generator=gen(),num_workers=0,drop_last=True))
     ul=iter(torch.utils.data.DataLoader(unlabeled,batch_size=256,shuffle=True,generator=gen(),num_workers=0))
     def grad(loss):
         values=torch.autograd.grad(loss,params,allow_unused=True)
-        result=torch.cat([(torch.zeros_like(p) if v is None else v).reshape(-1) for p,v in zip(params,values)]).detach()
+        # Match f_optimizer.clip_physical: Hz-space Sinc gradients share the
+        # original global clip with all other parameters. This is a pre-clip
+        # gradient proxy, not an AdamW update or momentum-direction estimate.
+        pieces=[]
+        for (name,p),v in zip(named,values):
+            value=torch.zeros_like(p) if v is None else v
+            if name in ('id_backbone.encoder.core.id_backbone.sinc.low_coordinate',
+                        'id_backbone.encoder.core.id_backbone.sinc.band_coordinate'):value=value/25000.
+            pieces.append(value.reshape(-1))
+        result=torch.cat(pieces).detach()
         if not bool(torch.isfinite(result).all()):raise ValueError('Nonfinite source gradient')
         return result
     def cosine(a,b):return float(F.cosine_similarity(a[None],b[None],dim=1)[0])
@@ -157,7 +169,8 @@ def gradient_probe(models,cfg,payload,g,engine,contract,root):
         raise ValueError('Source gradient probe changed parameters or retained buffer updates')
     result=dict(rows=rows,decision=decide_dose(rows),L_exposures=BATCHES*128,U_exposures=BATCHES*256,
         model_seed=SEEDS[0],backward_calls=BATCHES*4,optimizer_updates=0,persistent_buffer_updates=0,
-        U_truth_read=False,target_reads=0,V_gradient_reads=0)
+        U_truth_read=False,target_reads=0,V_gradient_reads=0,
+        gradient_object='all trainable preclip gradients;Sinc in physicalHz as CENTER_UNITS global clip,othersnative;not AdamW update')
     write(root/'gradient_complete.json',result);return result
 
 

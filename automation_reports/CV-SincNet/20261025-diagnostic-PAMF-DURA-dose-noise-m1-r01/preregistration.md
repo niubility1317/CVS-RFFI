@@ -14,6 +14,8 @@ PLANNED。此 run 仅完成既定恢复 IQ 计划的剂量及后扰动可行性�
 
 预定剂量公式：`min(0.25,0.25*median(primary_norm)/median(restored_extra_norm))`。主项/新增梯度有限、非零且12批完整；median cosine≥−0.25 为本源梯度可行性条件。只根据这一固定源规则产生建议剂量，不访问目标分数。
 
+梯度对象明确为全部实际可训练参数的 pre-clip 梯度：Sinc 的 CENTER_25K 两坐标梯度除以25000，与原 CENTER_UNITS 全局物理梯度 clip5 保持相同单位；其他参数保留原单位。这不是 AdamW/momentum 更新方向估计，不以坐标尺度造成的范数优势调整剂量。
+
 ## 完整 V 的恢复后轻噪声
 
 复用上一 paired-source run 的完整 source logits，先核对同一 context、源物理顺序和各场景首批部署恢复/原默认头 logits。对全部 V27000、三个源场景、三冻结 F 测按包功率标定的40 dB复高斯噪声。噪声 seed20261025301，按物理记录/场景稳定生成；不再过 G 或额外归一化。
