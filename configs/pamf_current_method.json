@@ -1,0 +1,55 @@
+{
+  "method_name": "PAMF",
+  "semi_supervised_method": "ordinary_PL",
+  "display_name": "PAMF（普通伪标签）",
+  "status": "PROVISIONAL_BY_USER_20261025",
+  "decision_date": "2026-10-25",
+  "decision": "用户弃用接收机外推伪标签方案，普通置信度伪标签暂代当前PAMF半监督方法。",
+  "scope": "Current paper and future experiment method selection; historical frozen configurations and other owners remain unchanged.",
+  "source_registry_run": "20261024-phase1-PAMF-REPL-completion-m201-r01",
+  "source_matrix_method": "ordinary_PL",
+  "model_seeds": [2026092701, 2026092702, 2026092703],
+  "target_based_single_seed_selection": false,
+  "training": {
+    "epochs": 50,
+    "updates": 11100,
+    "trajectory": [20, 10, 20],
+    "labeled_only_epochs": 13,
+    "joint_LU_epochs": 37,
+    "L_batch": 128,
+    "U_batch": 256,
+    "L_packet_forward_evaluations_per_update": 768,
+    "L_label_smoothing": 0.01,
+    "default_head_joint": true,
+    "posthoc_head_fit": false
+  },
+  "pseudo_labels": {
+    "generator": "current_model_eval_no_grad",
+    "threshold": 0.95,
+    "weight": 1.0,
+    "label_smoothing": 0.0,
+    "reduction": "whole_U_batch_mean",
+    "EMA_teacher": false,
+    "native_complex_gate": false,
+    "U_truth_hidden": true,
+    "style_perturbation": false,
+    "gradient_projection": false,
+    "U_joint_contrast": false,
+    "receiver_extrapolation": false
+  },
+  "restoration": {
+    "display_name": "DURA",
+    "architecture_reference": "experiments/pamf_stage2_inference/frozen_version.json",
+    "matched_semisupervised_role": "DURA-LU",
+    "new_training_in_this_change": 0
+  },
+  "reports": {
+    "current_comparison": "docs/PAMF_COMPARISON_REPORT_20261025.md",
+    "historical_method_definition": "docs/PAMF_REPL.md"
+  },
+  "scientific_execution": {
+    "new_60_main_models": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
+    "F0_ordinary_PL_exact_reuse": "a462b7cf4c12a655e6c7a348ce2170a089f2d1cc",
+    "CPU_score_recovery": "a79bdf385489cb3822b37434a07e3c43e5ce839a"
+  }
+}

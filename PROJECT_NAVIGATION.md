@@ -29,6 +29,10 @@
 
 后续旧产物专项清点（无新增删除）见[归档去重与缓存候选](docs/project_governance/20261012_remaining_audit/REPORT.md)。
 
-## 最新 practical residual 论文资料
+## 当前 PAMF 与外部方法对比（2026-10-25）
+
+当前半监督方案暂用普通伪标签，见[当前方法](docs/PAMF_CURRENT_METHOD_20261025.md)和[14 页实验对比报告](docs/PAMF_COMPARISON_REPORT_20261025.md)。正文统一使用可读模块名，旧代号仅供附录追溯。旧外推方案及旧 T1 包是历史证据，不改名。
+
+## 历史 practical residual 论文资料
 
 使用 `exports/unified_figures/20261024-practical-residual-paper-r03`。旧错误增强外部比较及混合包已隔离，原链接需结合[回收与恢复说明](docs/project_governance/20261024_comparison_retirement/REPORT.md)定位；当前完整冻结结果为 practical-residual r14。

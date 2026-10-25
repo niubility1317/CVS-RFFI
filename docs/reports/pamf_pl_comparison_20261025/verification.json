@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "summary_rows": 20064,
+  "seed_rows": 60192,
+  "paired_rows": 5016,
+  "maximum_absolute_difference": 4.440892098500626e-16,
+  "tolerance": 1e-10,
+  "three_actual_model_seeds": true,
+  "new_training": 0,
+  "new_prediction": 0,
+  "new_truth_scoring": 0,
+  "method_display_names": "RIEI, DRIFT, IB-RFF, SDG, PAMF",
+  "legacy_codes_in_appendix_only": true,
+  "visual_QA": "Numerical verifier does not render PDFs; see separate delivery visual review.",
+  "PDF_pages": 14,
+  "comparison_figures": 9,
+  "visual_review": "All14 final report pages reviewed; enlarged dense results and fairness tables. No clipping or overlaps; legacy codes only in appendix.",
+  "current_method": "PAMF ordinary pseudo-labeling, provisional",
+  "old_results_preserved": true
+}
