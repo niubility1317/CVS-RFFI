@@ -1,0 +1,48 @@
+{
+  "status": "ANALYZED",
+  "independent_readback": "VERIFIED",
+  "code_commit": "1f34b3ac51a355fb5da73591ae43f9c28f73130d",
+  "student_seeds": [
+    2026092701
+  ],
+  "methods": [
+    "GJointHard",
+    "GFeatureHard",
+    "HFeatureHard",
+    "HGFeatureHard"
+  ],
+  "source_selection": null,
+  "source_thresholds": {
+    "held_G_mean_gain_pp": 0.3,
+    "clean_min_delta_pp": -0.1
+  },
+  "source_calibration_weights": {
+    "G": 0.05941532657537612,
+    "H": 0.1132314280648204
+  },
+  "source_records_verified": 17760,
+  "all_four_actual_E50_default_heads_verified": true,
+  "all544_source_cells_recomputed_from_packet_predictions": true,
+  "matched_route_pair_cells": 36,
+  "source_V_records": 27000,
+  "source_views": [
+    "raw",
+    "G_raw",
+    "practical_low_suburban",
+    "G_practical_low_suburban",
+    "practical_mid_urban",
+    "G_practical_mid_urban",
+    "practical_low_urban",
+    "G_practical_low_urban"
+  ],
+  "final_source_model_parameters_and_registered_buffers_unchanged_during_evaluation": true,
+  "source_only": true,
+  "new_target_reads": 0,
+  "U_truth_read": false,
+  "head_fit_updates": 0,
+  "new_epochs_per_method": 20,
+  "cumulative_epochs": 50,
+  "new_steps_per_method": 4440,
+  "cumulative_steps": 11100,
+  "scope": "One-student-seed source screen;not three-seed target performance or goal achieved"
+}

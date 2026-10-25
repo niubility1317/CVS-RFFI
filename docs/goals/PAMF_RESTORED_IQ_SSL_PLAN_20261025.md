@@ -245,3 +245,10 @@ GTaskScaled在16200次留出G判断中纠正78次、弄错42次，净增36次，
 ## 四条任务 CE 对照：分类权重路由与 H/G 覆盖
 
 新源矩阵`20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01`固定GJointHard/GFeatureHard/HFeatureHard/HGFeatureHard，分别G/G联合、G/G特征、H/H特征、H/G特征。原L/rawPL不变，额外相同冻结raw3E30共识95硬标签，原RX1只从附加分支留出；own E30+20到E50。分类weight从额外任务中隔离，特征融合norm/gain仍训练。源12批完整参数梯度冻结共用λG及λH，每类至多10%中位主梯度代理，444步升温、两额外前向平均。原+.3pp/−.1pp筛选及最终三种子同候选联合目标不变。本run不含目标或自动扩种子；完整计划见[四路预登记](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/preregistration.md)。
+
+
+## 四条特征任务 CE 源矩阵完成
+
+`20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01`完整E50源矩阵已核实：四个单学生seed01方法、17760条训练记录/四最终默认头、27000源V八视图与全部544逐包重算单元，36个方法间配对单元。结果相对同seedPLControl：GJointHard heldG+0.123457pp / clean-0.018519pp；GFeatureHard heldG+0.141975pp / clean-0.014815pp；HFeatureHard heldG+0.086420pp / clean-0.007407pp；HGFeatureHard heldG+0.111111pp / clean-0.014815pp。原+.3pp/−.1pp条件及全四条完成后的固定选择保持，源选择为无候选通过。只有额外分支heldRX，不能称未见baseRX；未访问新目标。
+
+**四条均未通过原源门槛，不扩三种子，不启动本批的新目标测试。** 保留全部负结果和原门槛。下一步依据匹配路由差异及既有主辅梯度冲突证据判断后续机制，不能只凭训练loss下降继续扩大系数，也不能把本批源收益写成目标收益。 原同候选三个学生种子的clean/raw六景/同G目标不变。完整证据见[特征任务CE源结果](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/report.md)。
