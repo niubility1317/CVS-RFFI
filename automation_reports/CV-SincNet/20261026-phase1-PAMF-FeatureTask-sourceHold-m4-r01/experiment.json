@@ -1,0 +1,352 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01",
+  "group_id": "phase1-pamf-feature-task-source-20261026",
+  "display_name": "恢复与未恢复 IQ 的特征任务 CE 源留出对照",
+  "description": "同一原 E30 后独立20轮，比较 G 任务 CE 联合分类权重与只回传特征，以及 H/H、H/G 特征路线；同高置信冻结 raw 标签，完整梯度校准和原源晋级条件。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-FeatureTask-sourceHold"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "source-only",
+    "hidden-U",
+    "feature-task-CE",
+    "classifier-weight-shield",
+    "H-G-pairs"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-TaskRefDose-sourceHold-m4-r01",
+    "20261026-diagnostic-PAMF-LAnchorDrift-m5-r01",
+    "20261025-phase1-PAMF-RestoredPL-m9-r01"
+  ],
+  "authorization": "继续既有 PAMF SSL 联合目标与 DURA 恢复 IQ 增强方向；原 G 软 CE 目标退步、固定参照源试验未晋级，先进行这四条匹配源实验。所有 GPU 可用，保护其他健康任务。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-FeatureTask-sourceHold-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300 visible L; original full T1 supervised objective unchanged",
+      "U_s": "original56700 hidden U; unchanged own rawPL; new H/G task CE uses frozen raw3E30 consensus95 hard argmax; extra branch excludes RX1",
+      "V": "original27000; native eval-only health, then frozen full eight-view source comparison; no objective/update use"
+    },
+    "train_ratio": "original L6300/U56700/V27000;10percent labeled amongL+U;no physical rolechange",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "one student seed source screen only; not independent unseen-base-RX test or target improvement"
+  },
+  "checkpoint": {
+    "initialization": "four independent own original seed01 E20+10 E30 prefixes plus20;never initialize from tested F50",
+    "sources": [
+      "original three same-contract source-only E30 teachers; query student seed01",
+      "old original F0 G-LU and frozen rawq/G-U cache"
+    ],
+    "contract_check_ref": "actual E20/ownE30 ancestry, original source-only context/cache headers, fixed same G and physical U pairing; existing VALIDATED_ONCE unchanged",
+    "provenance_verdict": "only legal original source-trained own E30 parents; previous F50 failures are results, not parents",
+    "selection_rule": "all fixedfinal E50; held extra-RX1 G3 delta>=+.3pp and overall V rawclean delta>=-.1pp; select highest passing held gain,exactties alphabetical;no target or expansion within run"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-feature-task-source-20261026",
+    "gpu_policy": "all physical GPU0..7;global CUDA+pending<2/free>=10000MiB;least loaded then most free;up to4 own train/eval;2 CPUthreads each;preserve foreign jobs",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-FeatureTask-sourceHold-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/feature_task_training",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.feature_task_training dispatch --config PROJECT/releases/20261026-phase1-PAMF-FeatureTask-sourceHold-release-r01/runtime.json",
+    "stop_rule": "first technical/protocol/nonfinite/state/smoke/budget failure stops new run-owned launches;healthy children finish,preserve outputs;no retry/hotedit/foreign intervention;scientific negatives complete allfour"
+  },
+  "expected_artifacts": [
+    "real originalE30/defaulthead/G L2 feature graph smoke,then integrated originalL128/U256 backward",
+    "new source H cache paired to old fixed G-U,all56700 hidden U,three unchanged physical scenes",
+    "12 no-update matched L/U whole-parameter gradient batches and frozen lambdaG/lambdaH;all model states restored",
+    "four E50/11100 native default-head students and17760 new actual step records",
+    "allfour sourceV27000 eight-view predictions andpaired TX/RX/day counts withunchanged scientific decision",
+    "independent PID/CWD/argv/GPU/loggrowth andclosed-artifact verification;no target handles"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "held extraRX1 G3 accuracy gain vs originalsame-seed PLControl",
+      "overall V rawclean delta",
+      "all eight source views pairedcorrected/broken/net",
+      "allparameter physicalnorm,classificationweight gradient route,sourceacceptance/exposure"
+    ],
+    "dimensions": [
+      "one student seed01",
+      "four fixed methods",
+      "eight sourceviews",
+      "overall/extraRX held/trained/TX/RX/day"
+    ],
+    "prediction_ref": "private per-row source_validation/source_V_predictions.npz;aggregate public aftercompletion",
+    "scorer_ref": "source V physical labels after fixed E50 sourceinference;no target truth process inthisrun"
+  },
+  "rows": [
+    {
+      "row_id": "F0-GJointHard-sourceHold-s2026092701",
+      "method": "GJointHard",
+      "purpose": "source falsification of classifier-weight routing and H/G coverage",
+      "config_ref": "generated configs/GJointHard.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/configs/GJointHard.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "extra_views": [
+          "G",
+          "G"
+        ],
+        "shield_classifier_weight": false,
+        "extra_RX_holdout": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only one student seed01; three raw E30 teacher seeds2026092701/02/03 share the frozen q cache; no reference bank or three-student result.",
+      "k": null,
+      "scenario": "sourceV raw/Graw/lowSub/midUrban/lowUrban andrestored versions",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30/6660 +20/4440;totalE50/11100,13L37LU;fournewtails80epochs;old threeE30teachers90sharedhistoricalepochs/cache/controlcost separately retained",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/F/F0-GJointHard-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/logs/GJointHard.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.feature_task_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/configs/GJointHard.json",
+      "expected_artifacts": [
+        "real originalE30/defaulthead/G L2 feature graph smoke,then integrated originalL128/U256 backward",
+        "new source H cache paired to old fixed G-U,all56700 hidden U,three unchanged physical scenes",
+        "12 no-update matched L/U whole-parameter gradient batches and frozen lambdaG/lambdaH;all model states restored",
+        "four E50/11100 native default-head students and17760 new actual step records",
+        "allfour sourceV27000 eight-view predictions andpaired TX/RX/day counts withunchanged scientific decision",
+        "independent PID/CWD/argv/GPU/loggrowth andclosed-artifact verification;no target handles"
+      ]
+    },
+    {
+      "row_id": "F0-GFeatureHard-sourceHold-s2026092701",
+      "method": "GFeatureHard",
+      "purpose": "source falsification of classifier-weight routing and H/G coverage",
+      "config_ref": "generated configs/GFeatureHard.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/configs/GFeatureHard.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "extra_views": [
+          "G",
+          "G"
+        ],
+        "shield_classifier_weight": true,
+        "extra_RX_holdout": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only one student seed01; three raw E30 teacher seeds2026092701/02/03 share the frozen q cache; no reference bank or three-student result.",
+      "k": null,
+      "scenario": "sourceV raw/Graw/lowSub/midUrban/lowUrban andrestored versions",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30/6660 +20/4440;totalE50/11100,13L37LU;fournewtails80epochs;old threeE30teachers90sharedhistoricalepochs/cache/controlcost separately retained",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/F/F0-GFeatureHard-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/logs/GFeatureHard.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.feature_task_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/configs/GFeatureHard.json",
+      "expected_artifacts": [
+        "real originalE30/defaulthead/G L2 feature graph smoke,then integrated originalL128/U256 backward",
+        "new source H cache paired to old fixed G-U,all56700 hidden U,three unchanged physical scenes",
+        "12 no-update matched L/U whole-parameter gradient batches and frozen lambdaG/lambdaH;all model states restored",
+        "four E50/11100 native default-head students and17760 new actual step records",
+        "allfour sourceV27000 eight-view predictions andpaired TX/RX/day counts withunchanged scientific decision",
+        "independent PID/CWD/argv/GPU/loggrowth andclosed-artifact verification;no target handles"
+      ]
+    },
+    {
+      "row_id": "F0-HFeatureHard-sourceHold-s2026092701",
+      "method": "HFeatureHard",
+      "purpose": "source falsification of classifier-weight routing and H/G coverage",
+      "config_ref": "generated configs/HFeatureHard.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/configs/HFeatureHard.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "extra_views": [
+          "H",
+          "H"
+        ],
+        "shield_classifier_weight": true,
+        "extra_RX_holdout": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only one student seed01; three raw E30 teacher seeds2026092701/02/03 share the frozen q cache; no reference bank or three-student result.",
+      "k": null,
+      "scenario": "sourceV raw/Graw/lowSub/midUrban/lowUrban andrestored versions",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30/6660 +20/4440;totalE50/11100,13L37LU;fournewtails80epochs;old threeE30teachers90sharedhistoricalepochs/cache/controlcost separately retained",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/F/F0-HFeatureHard-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/logs/HFeatureHard.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.feature_task_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/configs/HFeatureHard.json",
+      "expected_artifacts": [
+        "real originalE30/defaulthead/G L2 feature graph smoke,then integrated originalL128/U256 backward",
+        "new source H cache paired to old fixed G-U,all56700 hidden U,three unchanged physical scenes",
+        "12 no-update matched L/U whole-parameter gradient batches and frozen lambdaG/lambdaH;all model states restored",
+        "four E50/11100 native default-head students and17760 new actual step records",
+        "allfour sourceV27000 eight-view predictions andpaired TX/RX/day counts withunchanged scientific decision",
+        "independent PID/CWD/argv/GPU/loggrowth andclosed-artifact verification;no target handles"
+      ]
+    },
+    {
+      "row_id": "F0-HGFeatureHard-sourceHold-s2026092701",
+      "method": "HGFeatureHard",
+      "purpose": "source falsification of classifier-weight routing and H/G coverage",
+      "config_ref": "generated configs/HGFeatureHard.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/configs/HGFeatureHard.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "extra_views": [
+          "H",
+          "G"
+        ],
+        "shield_classifier_weight": true,
+        "extra_RX_holdout": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only one student seed01; three raw E30 teacher seeds2026092701/02/03 share the frozen q cache; no reference bank or three-student result.",
+      "k": null,
+      "scenario": "sourceV raw/Graw/lowSub/midUrban/lowUrban andrestored versions",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30/6660 +20/4440;totalE50/11100,13L37LU;fournewtails80epochs;old threeE30teachers90sharedhistoricalepochs/cache/controlcost separately retained",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/F/F0-HGFeatureHard-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/logs/HGFeatureHard.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.feature_task_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/configs/HGFeatureHard.json",
+      "expected_artifacts": [
+        "real originalE30/defaulthead/G L2 feature graph smoke,then integrated originalL128/U256 backward",
+        "new source H cache paired to old fixed G-U,all56700 hidden U,three unchanged physical scenes",
+        "12 no-update matched L/U whole-parameter gradient batches and frozen lambdaG/lambdaH;all model states restored",
+        "four E50/11100 native default-head students and17760 new actual step records",
+        "allfour sourceV27000 eight-view predictions andpaired TX/RX/day counts withunchanged scientific decision",
+        "independent PID/CWD/argv/GPU/loggrowth andclosed-artifact verification;no target handles"
+      ]
+    }
+  ],
+  "notes": [
+    "This is one student seed withfour variants,not threeseed performance;all3 teachers belong tosamelegal sourcecontract.",
+    "The actual cosine classifier uses cls_head.weight; base_norm/pa_norm/gain already form z and remain feature parameters. Shield blocks only auxiliary classification-path weight gradient,not entire namedcls_head module.",
+    "Original defaulthead jointly trains on main L/rawPL. No new/fitted/replaced head,online center,G update or target tuning.",
+    "GJoint/GFeature use identical common lambdaG andG/G;hardpseudo labels differ from old failedsoftCE. H/H andH/G isolate unrecovered-channel exposure atfixedtotal2FW,withsourcephysicalgradientbudgetperview.",
+    "Gradient proxy is measured atoriginalE30,not anAdamW/update orlatergradient guarantee;norms preserveCENTER25K/CENTER_UNITS.",
+    "Raw clean target>=85.98174603174603%,rawsix>72.0961970899471%,sameG-LUsix>78.07463624338624%,same candidate/3studentseeds;no targetresult fromthisrun.",
+    "RX1 isheldonly fromextraU branch;parents/L/rawPL/G alreadyseeRX1. It isnot unseen-base-RX evidence.",
+    "Allpriornegative methods/results preserved;failuredoesnotrelax scientificthresholds ortriggerselectivetargettests."
+  ],
+  "matrix": {
+    "methods": [
+      "GJointHard",
+      "GFeatureHard",
+      "HFeatureHard",
+      "HGFeatureHard"
+    ],
+    "routes": {
+      "GJointHard": [
+        "G",
+        "G"
+      ],
+      "GFeatureHard": [
+        "G",
+        "G"
+      ],
+      "HFeatureHard": [
+        "H",
+        "H"
+      ],
+      "HGFeatureHard": [
+        "H",
+        "G"
+      ]
+    },
+    "student_seeds": [
+      2026092701
+    ],
+    "shared_teachers": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "epochs": [
+      20,
+      10,
+      20
+    ],
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "held_extra_RX": 1,
+    "raw_PL_threshold": 0.95,
+    "raw_PL_weight": 1.0,
+    "frozen_q_threshold": 0.95,
+    "frozen_q_rule": "all3 raw E30 predictions agree andconfidence>=.95;hardargmax meanq",
+    "calibration_batches": 12,
+    "calibration_gradient_rule": "lambdaG=min(.25,.1*medianprimary/max(medianGjoint,medianGfeature));lambdaH=min(.25,.1*medianprimary/medianHfeature)",
+    "loss": "unchangedT1L+ordinaryrawPL +ramp444*(lambda(view1)*CE1+lambda(view2)*CE2)/2;fullUmean",
+    "source_criterion": {
+      "held_G3_gain_pp_min": 0.3,
+      "overall_raw_clean_gain_pp_min": -0.1
+    },
+    "selection": "highest passing heldG3,exactties alphabetical,allfour finish;no target or three-seed expansion withinthisrun"
+  },
+  "registered_at": "2026-10-25T21:53:09+00:00"
+}

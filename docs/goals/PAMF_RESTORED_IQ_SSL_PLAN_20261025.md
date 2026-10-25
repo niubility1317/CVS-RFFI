@@ -240,3 +240,8 @@ GTaskScaled在16200次留出G判断中纠正78次、弄错42次，净增36次，
 `20261026-diagnostic-PAMF-LAnchorDrift-m5-r01` 完整诊断已核算：一个 query seed01 的五个 E30/F50 checkpoint、L6300 八视图、两套中心，1500 个指标和 150 个中心单元全部独立重算。E30 零漂移对照为 0。GTask1x/2x/3x 的 G3 参照判对在重算中心后分别提高 1.947090/3.407407/4.105820 pp，H3 却下降 2.481481/1.761905/0.878307 pp；两者与默认头真实任务的特征梯度 cos 中位数均降低。这些是固定模型上的参照几何变化，默认头及模型准确率未因此变化，不是新目标性能。
 
 架构只读检查确认没有 BatchNorm 运行统计，不能以常见 BN 污染解释已有退步。后续优先在同伪标签、同额外曝光和完整参数梯度预算下，控制比较额外任务 CE 联合更新默认头与只更新现有特征，并比较 H/G 配对曝光。该方向仍为待检验假设，不直接刷新参照、改默认方法或宣称头更新是因果。原源晋级与三种子 raw/同 G 目标条件不变。完整证据见[漂移诊断报告](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-LAnchorDrift-m5-r01/report.md)。
+
+
+## 四条任务 CE 对照：分类权重路由与 H/G 覆盖
+
+新源矩阵`20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01`固定GJointHard/GFeatureHard/HFeatureHard/HGFeatureHard，分别G/G联合、G/G特征、H/H特征、H/G特征。原L/rawPL不变，额外相同冻结raw3E30共识95硬标签，原RX1只从附加分支留出；own E30+20到E50。分类weight从额外任务中隔离，特征融合norm/gain仍训练。源12批完整参数梯度冻结共用λG及λH，每类至多10%中位主梯度代理，444步升温、两额外前向平均。原+.3pp/−.1pp筛选及最终三种子同候选联合目标不变。本run不含目标或自动扩种子；完整计划见[四路预登记](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/preregistration.md)。
