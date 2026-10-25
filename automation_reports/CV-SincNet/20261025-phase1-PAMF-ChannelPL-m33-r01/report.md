@@ -39,6 +39,10 @@
 
 逐 worker 早期曝光见 [early_source_execution.csv](early_source_execution.csv)，精简启动事实见 [launch_evidence.json](launch_evidence.json)。原始运行细节和日志留在私有 local_artifacts 及 N607 输出，不提交 checkpoint、IQ 或原始日志。
 
+首批 F0/F1 的六条轨迹已全部完成新增 10 轮，即累计 E30／6660 步。六段闭合日志共 13320 条记录已完整读取，确认 U 权重1、CE 剂量1、原 L768／As KL0、完整 2220 次更新及有限 loss／gradient；检查范围是已完成的 10 轮，不冒充完整 E50 分析。F0 三 seed 的原 U 接受率为 94.4067% 至 94.6305%，各增加 132636 至 136258 次可靠 As 学生视图；接受率仍不是正确率。
+
+六条轨迹的后续 20 轮均已启动。读取实际原生初始化产物内的 config，核对父路径为各自的 segment30、step_offset6660、epoch_offset30、segment_epochs20、原 seed／source RX/day／默认头，真实源 IQ smoke 全部 PASS。未从头重置模型或改用其他父模型。阶段日志摘要见 [stage30_source_execution.csv](stage30_source_execution.csv)，实际初始化来源核对见 [stage50_resume.csv](stage50_resume.csv)。
+
 ## 结果与覆盖
 
 尚无新的目标结果。测试完整报告 clean 与六种 practical 各景，并保留逐 RX/day/TX、confusion、G 相对 raw 的净纠错、三 seed 样本 SD 和 seed 内配对差。
