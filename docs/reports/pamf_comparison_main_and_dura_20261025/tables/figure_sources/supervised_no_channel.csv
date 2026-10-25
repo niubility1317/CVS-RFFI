@@ -1,0 +1,9 @@
+experiment,learning_regime,category,series,mean,sd,unit
+无增强_监督_CLEAN,supervised,RIEI,跨接收机CLEAN,66.92539682539682,0.7074665676330313,Accuracy (%)
+无增强_监督_CLEAN,supervised,DRIFT,跨接收机CLEAN,66.20555555555556,3.295655251602474,Accuracy (%)
+无增强_监督_CLEAN,supervised,IB-RFF,跨接收机CLEAN,66.29497354497354,1.4036957512184585,Accuracy (%)
+无增强_监督_CLEAN,supervised,SDG,跨接收机CLEAN,74.24656084656084,0.8807823135332842,Accuracy (%)
+无增强_监督_CLEAN,supervised,RIEI,双跨CLEAN,64.89444444444445,1.0871057638513988,Accuracy (%)
+无增强_监督_CLEAN,supervised,DRIFT,双跨CLEAN,66.1595238095238,3.341104037661233,Accuracy (%)
+无增强_监督_CLEAN,supervised,IB-RFF,双跨CLEAN,66.60873015873017,2.236146990599602,Accuracy (%)
+无增强_监督_CLEAN,supervised,SDG,双跨CLEAN,72.09920634920636,0.9965624969261463,Accuracy (%)

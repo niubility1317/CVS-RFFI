@@ -1,0 +1,11 @@
+experiment,learning_regime,category,series,mean,sd,unit
+时延效率_监督,supervised,1,PAMF常规执行,7.402940187603235,,Median latency (ms)
+时延效率_监督,supervised,8,PAMF常规执行,7.355908630415797,,Median latency (ms)
+时延效率_监督,supervised,32,PAMF常规执行,7.535189623013139,,Median latency (ms)
+时延效率_监督,supervised,64,PAMF常规执行,7.489041890949011,,Median latency (ms)
+时延效率_监督,supervised,128,PAMF常规执行,7.436519023030996,,Median latency (ms)
+时延效率_监督,supervised,1,DURA+PAMF优化图,4.562893882393837,,Median latency (ms)
+时延效率_监督,supervised,8,DURA+PAMF优化图,13.508109375834465,,Median latency (ms)
+时延效率_监督,supervised,32,DURA+PAMF优化图,26.544598396867514,,Median latency (ms)
+时延效率_监督,supervised,64,DURA+PAMF优化图,13.977533439174294,,Median latency (ms)
+时延效率_监督,supervised,128,DURA+PAMF优化图,14.522891957312822,,Median latency (ms)

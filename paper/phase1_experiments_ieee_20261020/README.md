@@ -1,4 +1,4 @@
-> 2026-10-25 当前状态：PAMF 暂用普通伪标签。当前使用[8 页 IEEE 双栏分组报告及 Excel 周报](../../docs/PAMF_COMPARISON_REPORT_20261025.md)，其 [LaTeX 入口](../../docs/reports/pamf_comparison_main_and_dura_20261025/ieee/main.tex)独立保存。主表外部方法不接 DURA，PAMF 与 DURA+PAMF 分列；无增强只报目标 CLEAN，有增强报 CLEAN 与六种 practical，DURA 泛用性单列。此目录原 `main.pdf` 仍为已退出方案的历史草稿，旧源码、图片和包保留。完整自身消融尚需按新方法匹配，未自动发布训练。
+> 2026-10-25 当前状态：PAMF 暂用普通伪标签。当前使用[16 页 IEEE 双栏报告、23 幅图及 24 个工作表的 Excel 周报](../../docs/PAMF_COMPARISON_REPORT_20261025.md)，其 [LaTeX 入口](../../docs/reports/pamf_comparison_main_and_dura_20261025/ieee/main.tex)独立保存。监督与普通 PL 半监督分别成章成图，所有方法明确学习方式；主表外部方法不接 DURA，PAMF 与 DURA+PAMF 分列；无增强只报目标 CLEAN，有增强报 CLEAN 与六种 practical，DURA 泛用性按学习方式分别使用恢复前后双柱。此目录原 `main.pdf` 仍为已退出方案的历史草稿，旧源码、图片和包保留。完整自身消融尚需按新方法匹配，未自动发布训练。
 
 # 历史 IEEE 实验草稿：已退出的外推伪标签方案
 

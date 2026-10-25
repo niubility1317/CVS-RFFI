@@ -1,0 +1,7 @@
+experiment,learning_regime,category,series,mean,sd,unit
+半监督_标准对比,semi_supervised,RIEI,六景准确率,49.95123456790123,1.5501757096935593,Accuracy (%)
+半监督_标准对比,semi_supervised,DRIFT,六景准确率,56.755379188712524,2.2919538415901544,Accuracy (%)
+半监督_标准对比,semi_supervised,IB-RFF,六景准确率,52.57045855379189,2.1677515289477647,Accuracy (%)
+半监督_标准对比,semi_supervised,SDG,六景准确率,65.30101410934745,1.1439196291851785,Accuracy (%)
+半监督_标准对比,semi_supervised,PAMF,六景准确率,71.05074955908289,0.9111777487373349,Accuracy (%)
+半监督_标准对比,semi_supervised,DURA+PAMF,六景准确率,78.51609347442681,0.12210910135775893,Accuracy (%)

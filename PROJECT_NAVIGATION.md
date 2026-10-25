@@ -33,7 +33,7 @@
 
 [14 页 PAMF 网络分支消融报告](docs/PAMF_BRANCH_ABLATION_REPORT_20261025.md)：仅分类损失监督训练，9 种结构、27 个模型；含逐景结果、同种子配对、参数、实测时延及论文可用结论。
 
-当前半监督方案暂用普通伪标签，见[当前方法](docs/PAMF_CURRENT_METHOD_20261025.md)和[IEEE 双栏实验报告及 Excel 周报](docs/PAMF_COMPARISON_REPORT_20261025.md)。主表外部方法直接识别，PAMF 与 DURA+PAMF 分列；DURA 泛用性单列。无增强只报目标域 CLEAN，有增强报 CLEAN 与六种 practical，见[分组规则](docs/PAMF_COMPARISON_REPORTING_RULES_20261025.md)。旧代号仅供附录追溯，旧包保留。
+当前半监督方案暂用普通伪标签，见[当前方法](docs/PAMF_CURRENT_METHOD_20261025.md)和[IEEE 双栏实验报告及 Excel 周报](docs/PAMF_COMPARISON_REPORT_20261025.md)。先分监督与普通 PL 半监督，每组均明确全部方法的学习方式。外部主成绩直接识别，PAMF 与 DURA+PAMF 分列；DURA 泛用性用恢复前后双柱单列。当前 PDF 16 页、23 幅图，Excel 24 个工作表及 24 个可编辑竖柱图。无增强只报目标域 CLEAN，有增强报 CLEAN 与六种 practical，见[分组规则](docs/PAMF_COMPARISON_REPORTING_RULES_20261025.md)。旧代号仅供附录追溯，旧包保留。
 
 ## 历史 practical residual 论文资料
 

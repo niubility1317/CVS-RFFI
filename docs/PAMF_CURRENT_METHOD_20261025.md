@@ -2,7 +2,7 @@
 
 2026-10-25，按用户最新要求，当前 PAMF 半监督方法采用普通置信度伪标签。接收机外推伪标签方案退出当前主方法，保留原结果作为历史对照。机器可读身份见 [pamf_current_method.json](../configs/pamf_current_method.json)。
 
-主对比统一使用“RIEI、DRIFT、IB-RFF、SDG、PAMF、DURA+PAMF”。前五项直接识别，仅最后一项接入 DURA；PAMF 两列共享同一普通伪标签识别器。其他外部方法接入 DURA 单独用于泛用性验证，PAMF 监督版另列自身控制。方法名不添加版本后缀；原始代码与实验编号只用于追溯。
+主对比统一使用“RIEI、DRIFT、IB-RFF、SDG、PAMF、DURA+PAMF”。前五项直接识别，仅最后一项接入 DURA；报告首先分监督与普通 PL 半监督，每组的 PAMF 两列共享该组同一识别器。监督 PAMF 与监督外部方法同组，半监督 PAMF 与半监督外部方法同组；其他外部方法接入 DURA 单列泛用性。监督主系统的恢复器只用有标签源 IQ。方法名不添加版本后缀；原始代码与实验编号只用于追溯。
 
 按实际训练配置分组：无信道增强仅报告目标接收机测试集 CLEAN；有信道增强报告 CLEAN 与六种 practical。当前监督/普通伪标签主模型均保留有标签信道视图，属于有增强组。完整规则见[实验分组与报告规则](PAMF_COMPARISON_REPORTING_RULES_20261025.md)。已完成的无增强 practical 结果保留为历史，不进入当前统计导出。
 

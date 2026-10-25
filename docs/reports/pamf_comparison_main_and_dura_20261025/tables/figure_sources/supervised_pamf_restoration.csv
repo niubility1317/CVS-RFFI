@@ -1,0 +1,7 @@
+experiment,learning_regime,category,series,mean,sd,unit
+PAMF恢复对照_监督,supervised,源接收机跨日诊断,未接入DURA,81.03444444444445,0.5347423517134736,Accuracy (%)
+PAMF恢复对照_监督,supervised,目标跨接收机,未接入DURA,71.28597883597884,0.899710236987459,Accuracy (%)
+PAMF恢复对照_监督,supervised,目标日期与接收机双跨,未接入DURA,68.52685185185186,1.1323609533316754,Accuracy (%)
+PAMF恢复对照_监督,supervised,源接收机跨日诊断,接入DURA,90.99074074074075,0.22636508622880175,Accuracy (%)
+PAMF恢复对照_监督,supervised,目标跨接收机,接入DURA,77.35974426807759,0.5547661362463813,Accuracy (%)
+PAMF恢复对照_监督,supervised,目标日期与接收机双跨,接入DURA,75.33558201058202,0.709616166769348,Accuracy (%)

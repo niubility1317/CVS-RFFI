@@ -1,0 +1,9 @@
+experiment,learning_regime,category,series,mean,sd,unit
+DURA泛用性_半监督,semi_supervised,RIEI,未接入DURA,49.95123456790123,1.5501757096935593,Accuracy (%)
+DURA泛用性_半监督,semi_supervised,DRIFT,未接入DURA,56.755379188712524,2.2919538415901544,Accuracy (%)
+DURA泛用性_半监督,semi_supervised,IB-RFF,未接入DURA,52.57045855379189,2.1677515289477647,Accuracy (%)
+DURA泛用性_半监督,semi_supervised,SDG,未接入DURA,65.30101410934745,1.1439196291851785,Accuracy (%)
+DURA泛用性_半监督,semi_supervised,RIEI,接入DURA,56.72583774250441,0.9063059662269116,Accuracy (%)
+DURA泛用性_半监督,semi_supervised,DRIFT,接入DURA,60.752601410934744,4.416061321526841,Accuracy (%)
+DURA泛用性_半监督,semi_supervised,IB-RFF,接入DURA,62.209038800705464,2.8589130114809644,Accuracy (%)
+DURA泛用性_半监督,semi_supervised,SDG,接入DURA,67.12142857142858,0.971359900844839,Accuracy (%)

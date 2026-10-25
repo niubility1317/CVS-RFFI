@@ -57,7 +57,7 @@ def main():
 \author{实验结果报告\quad 2026年10月25日}
 \maketitle
 \begin{abstract}
-本报告分析已冻结且经独立评分的PAMF与四种完整对比方法结果。主比较列为RIEI、DRIFT、IB-RFF、SDG、PAMF及DURA+PAMF；前五项直接识别，仅最后一项接入恢复器。其他方法接入DURA单独用于恢复网络泛用性验证。无信道增强训练只报告目标域CLEAN，有信道增强训练报告CLEAN及六种practical场景。标准划分跨接收机六景准确率，PAMF为71.0507\%，DURA+PAMF为78.5161\%；接入恢复器的种子内配对提升为7.4653个百分点。594个逻辑模型按训练与推理条件分组，主比较使用165个独立识别器，并展示198个模型与推理链组合。本次没有新增训练、预测或目标真值访问。
+本报告按监督与普通PL半监督分别分析PAMF和四种完整对比方法。每组均列RIEI、DRIFT、IB-RFF、SDG、PAMF及DURA+PAMF，前五项直接识别。外部方法接入DURA另作泛用性验证，并以同模型接入前后双柱表示准确率变化。无信道增强只报告目标CLEAN，有增强报告CLEAN及六种practical。全部594个逻辑模型中，监督与半监督各297个；每组主比较165个独立识别器，展示198个模型与推理链组合。两组的匹配恢复器使用各自允许的源IQ，不将跨组完整系统差全部归因于伪标签。本次没有新增训练、预测或目标真值访问。
 \end{abstract}
 \begin{IEEEkeywords}
 射频指纹识别，跨接收机泛化，普通伪标签，信道增强，信号恢复，分组评估。
@@ -75,7 +75,8 @@ def main():
         if line.startswith('## '):
             flush();label=line[3:]
             # Do not let main-results floats leak into the following experiment class.
-            if label.startswith('附录'):body.append(r'\FloatBarrier')
+            if label in ('监督实验结果','普通PL半监督实验结果'):body.append(r'\clearpage')
+            elif label.startswith(('附录','成本')):body.append(r'\FloatBarrier')
             if label.startswith('附录'):
                 body.append(r'\appendices');body.append(r'\section{阅读名称与原始记录的对应}')
             elif '（续）' in label:body.append(r'\subsection{'+tex(label.split('  ',1)[-1])+'}')
@@ -85,15 +86,15 @@ def main():
         if line.startswith('!['):
             flush();m=re.fullmatch(r'!\[(.*)\]\((.*)\)',line);caption=m.group(1);stem=Path(m.group(2)).stem
             fig_no+=1
-            body.extend([r'\begin{figure}[!t]',r'\centering',r'\includegraphics[width=\columnwidth]{../figures/'+stem+'.pdf}',r'\caption{'+tex(caption)+'}',r'\label{fig:grouped-'+str(fig_no)+'}',r'\end{figure}'])
+            wide=any(stem.endswith('_'+x) for x in ('receivers','labels','sources','ten_class','scenes','population','dura_all_settings'));env='figure*' if wide else 'figure';width=r'\textwidth' if wide else r'\columnwidth'
+            body.extend([r'\begin{'+env+r'}[!tbp]',r'\centering',r'\includegraphics[width='+width+']{../figures/'+stem+'.pdf}',r'\caption{'+tex(caption)+'}',r'\label{fig:grouped-'+str(fig_no)+'}',r'\end{'+env+'}'])
             i+=1
             while i<len(lines) and not lines[i].strip():i+=1
             if i<len(lines) and lines[i].strip()==caption:i+=1
             continue
         if line.startswith('|'):
             # The immediately preceding standalone paragraph is the authored caption.
-            defaults={1:'识别、恢复及训练模块的定义',2:'按科学问题与信道增强划分的报告范围',3:'11个数据设置的实际源域样本数',4:'三类互斥测试人群及标准划分样本数',5:'完整对比方法及其原生训练预算',6:'四种外部训练组合',20:'PAMF伪标签与监督的种子内配对差',21:'PAMF普通伪标签的实际无标签曝光与接受率',22:'训练阶段去重后的成本与计数边界',23:'当前PAMF推理路径的实测时延与吞吐',24:'当前实验模块的完成范围与缺项',25:'正文模块名称与历史记录代号对应'}
-            caption=pending.pop() if 7<=table_no+1<=19 and pending else defaults.get(table_no+1,'分组实验结果')
+            caption=pending.pop()[2:] if pending and pending[-1].startswith('表：') else '分组实验结果'
             flush();raw=[]
             while i<len(lines) and lines[i].strip().startswith('|'):
                 rr=[x.strip() for x in lines[i].strip().strip('|').split('|')]
@@ -102,7 +103,7 @@ def main():
             heads=raw[0];data=raw[1:];n=len(heads);table_no+=1
             body.append('表~'+r'\ref{tab:grouped-'+str(table_no)+'}~'+tex(caption)+'。\n')
             wide=n>=5 or any(len(c)>22 for r in raw for c in r) or (n==4 and len(data)>3)
-            if table_no>=20:wide=False
+            if n<=3:wide=False
             env='table*' if wide else 'table';width=r'\textwidth' if wide else r'\columnwidth'
             body.extend([r'\begin{'+env+(r'}[!tbp]' if wide else r'}[!htbp]'),r'\caption{'+tex(caption)+'}',r'\label{tab:grouped-'+str(table_no)+'}',r'\centering',r'\small' if wide else r'\footnotesize'])
             if n>=5 and heads[0] in ('测试设置','测试场景','十类数据端点'):

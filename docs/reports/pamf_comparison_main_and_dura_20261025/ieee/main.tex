@@ -41,388 +41,481 @@
 \author{实验结果报告\quad 2026年10月25日}
 \maketitle
 \begin{abstract}
-本报告分析已冻结且经独立评分的PAMF与四种完整对比方法结果。主比较列为RIEI、DRIFT、IB-RFF、SDG、PAMF及DURA+PAMF；前五项直接识别，仅最后一项接入恢复器。其他方法接入DURA单独用于恢复网络泛用性验证。无信道增强训练只报告目标域CLEAN，有信道增强训练报告CLEAN及六种practical场景。标准划分跨接收机六景准确率，PAMF为71.0507\%，DURA+PAMF为78.5161\%；接入恢复器的种子内配对提升为7.4653个百分点。594个逻辑模型按训练与推理条件分组，主比较使用165个独立识别器，并展示198个模型与推理链组合。本次没有新增训练、预测或目标真值访问。
+本报告按监督与普通PL半监督分别分析PAMF和四种完整对比方法。每组均列RIEI、DRIFT、IB-RFF、SDG、PAMF及DURA+PAMF，前五项直接识别。外部方法接入DURA另作泛用性验证，并以同模型接入前后双柱表示准确率变化。无信道增强只报告目标CLEAN，有增强报告CLEAN及六种practical。全部594个逻辑模型中，监督与半监督各297个；每组主比较165个独立识别器，展示198个模型与推理链组合。两组的匹配恢复器使用各自允许的源IQ，不将跨组完整系统差全部归因于伪标签。本次没有新增训练、预测或目标真值访问。
 \end{abstract}
 \begin{IEEEkeywords}
 射频指纹识别，跨接收机泛化，普通伪标签，信道增强，信号恢复，分组评估。
 \end{IEEEkeywords}
-当前方案：PAMF 使用普通置信度伪标签。证据截止：2026 年 10 月 25 日（香港）。本报告按最新口径重排已冻结结果，本次新增训练、预测和真值评分均为 0。
+本报告首先区分监督学习与普通PL半监督，再区分训练信道增强、推理恢复链和测试人群。各方法的训练条件在表题、图题和Excel工作表中明确标注；不把监督PAMF与半监督外部方法混成一张主比较图。证据截止2026年10月25日，本次没有新增训练、预测或真值评分。
 
-主方法对比统一列为 RIEI、DRIFT、IB-RFF、SDG、PAMF、DURA+PAMF。前五项直接识别接收 IQ；只有 DURA+PAMF 先恢复再识别。其他方法接入 DURA 的结果单列为恢复网络泛用性验证，PAMF 监督版另列自身对照。
-
-按训练增强划分：无信道增强实验只报告目标域 CLEAN；有信道增强实验报告目标域 CLEAN 及全部六种 practical 场景。不同训练组、不同推理链、不同泛化人群分开，不把无增强历史星地结果混入当前统计。
-
-标准划分跨接收机六景平均：PAMF 为 71.0507\ensuremath{\pm}0.9112\%；DURA+PAMF 为 78.5161\ensuremath{\pm}0.1221\%。接入同契约 DURA 的配对提升为 7.4653\ensuremath{\pm}0.7901 个百分点。
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{../figures/main_cross_rx.pdf}
-\caption{有信道增强组的主方法对比：只有 DURA+PAMF 接入恢复器。其余五项直接识别，误差线为三个模型种子的样本标准差。}
-\label{fig:grouped-1}
-\end{figure}
-主比较包含 165 个独立识别器模型；PAMF 与 DURA+PAMF 共享 33 个 PAMF 识别器，因此六列共 198 个“模型×推理链”展示项，不是 198 个独立训练模型。PAMF 监督 33 模型属于单独控制组。
-
-\section{实验到底比较什么}
-IQ 指接收信号的同相、正交采样。测试链条只有两种：接收 IQ \ensuremath{\rightarrow} 识别器 \ensuremath{\rightarrow} 发射机类别；或接收 IQ \ensuremath{\rightarrow} DURA 恢复器 \ensuremath{\rightarrow} 识别器 \ensuremath{\rightarrow} 发射机类别。前者在本报告叫“直接识别”，后者叫“恢复后识别”。
-
-表~\ref{tab:grouped-1}~识别、恢复及训练模块的定义。
+\section{实验分组、数据与统计规则}
+表~\ref{tab:grouped-1}~报告矩阵：学习方式是第一层分组。
 
 \begin{table*}[!tbp]
-\caption{识别、恢复及训练模块的定义}
+\caption{报告矩阵：学习方式是第一层分组}
 \label{tab:grouped-1}
-\centering
-\small
-\begin{tabularx}{\textwidth}{YYY}
-\toprule
-\textbf{模块} & \textbf{负责的任务} & \textbf{本次怎样处理} \\
-\midrule
-DURA 恢复器 & 把当前接收 IQ 变为恢复 IQ & 仅在 DURA+PAMF 主系统与单独泛用性实验中接入；本次不重训 \\
-PAMF 识别器 & 从 IQ 预测发射机类别 & 原骨干与原默认分类头联合训练；不另训分类头 \\
-PAMF 监督训练 & 只用有标签源训练数据学习身份表示 & 保留有标签跨接收机对比、配对一致性及原信道视图；不建立无标签训练加载器 \\
-PAMF 普通伪标签 & 在相同有标签配方上利用无标签源 IQ & 当前模型生成硬伪标签；置信度 0.95、权重 1；无教师模型和复杂筛选 \\
-四种外部方法 & 比较完整识别方法的实测表现 & 保留原生损失和分类头；统一增加可开关的信道辅助分类槽与普通伪标签 \\
-\bottomrule
-\end{tabularx}
-\end{table*}
-普通伪标签的实际定义：先把当前模型切到评估模式，在不计算梯度的情况下生成预测；只接受最大类别概率至少 0.95 的样本。再回到训练模式计算硬标签交叉熵，未接受样本贡献 0，损失仍除以整个无标签批次大小。
-
-PAMF 的有标签批量为 128，无标签批量为 256；有标签端标签平滑为 0.01，普通伪标签交叉熵不加标签平滑。每次更新保留 6 个有标签包前向，共 768 个有标签包评估。累计 50 轮、11100 次更新，其中前 13 轮仅有标签，后 37 轮联合使用两类源训练数据；以 20＋10＋20 分段完成。
-
-DURA 默认路径是双阶段展开恢复：两个学习先验调用、四次共轭梯度更新，固定 FP32 及既定优化图执行。它输出完整 256 点 IQ，不因测试场景不同而绕过恢复或额外归一化。恢复器当前有 266951 个唯一参数。
-
-表~\ref{tab:grouped-2}~按科学问题与信道增强划分的报告范围。
-
-\begin{table*}[!tbp]
-\caption{按科学问题与信道增强划分的报告范围}
-\label{tab:grouped-2}
-\centering
-\small
-\begin{tabularx}{\textwidth}{YYY}
-\toprule
-\textbf{实验部分} & \textbf{展示对象} & \textbf{测试范围} \\
-\midrule
-主方法对比 & 四种外部方法直接识别；PAMF；DURA+PAMF & 这些模型均有信道增强：CLEAN＋六种 practical \\
-外部方法无增强控制 & 无信道监督、无信道伪标签，逐格列出 & 仅目标域 CLEAN，不展示历史 practical 结果 \\
-外部方法有增强控制 & 有信道监督、有信道伪标签，逐格列出 & 目标域 CLEAN＋六种 practical \\
-DURA 泛用性 & 同一外部识别器接入 DURA 前后配对 & 本报告采用有增强＋伪标签固定组，CLEAN＋六种 practical \\
-PAMF 自身对照 & 监督与普通伪标签；固定恢复器权限比较 & 当前两组均保留信道视图：CLEAN＋六种 practical \\
-\bottomrule
-\end{tabularx}
-\end{table*}
-CLEAN 大写表示未叠加新增信道的目标域观测，数据文件内仍使用 clean 字段。无增强只指训练中关闭附加信道变换，SDG 原生内部增强及原损失仍保留。所有组沿用相同冻结、独立评分规则。
-
-\section{数据划分与测试任务}
-数据来自 WiSig 的 ManySig 与 ManyRx。除大规模十类数据外，其余设置均为 6 个发射机类别。源训练使用 2021 年 3 月 8、15、23 日；未见日期是更早的 3 月 1 日，不能称为未来日期预测。源和目标的物理记录保持原互斥划分。
-
-表~\ref{tab:grouped-3}~11个数据设置的实际源域样本数。
-
-\begin{table*}[!tbp]
-\caption{11个数据设置的实际源域样本数}
-\label{tab:grouped-3}
-\centering
-\small
-\begin{tabularx}{\textwidth}{YYYYY}
-\toprule
-\textbf{数据设置} & \textbf{源接收机数} & \textbf{有标签训练} & \textbf{无标签训练} & \textbf{源验证} \\
-\midrule
-标准接收机划分 & 5 & 6300 & 56700 & 27000 \\
-接收机划分一 & 5 & 6300 & 56700 & 27000 \\
-接收机划分二 & 5 & 6300 & 56700 & 27000 \\
-大规模十类数据 & 16 & 6533 & 58828 & 28023 \\
-1\% 标注 & 5 & 630 & 62370 & 27000 \\
-5\% 标注 & 5 & 3150 & 59850 & 27000 \\
-1 个源接收机 & 1 & 1260 & 11340 & 5400 \\
-2 个源接收机 & 2 & 2520 & 22680 & 10800 \\
-3 个源接收机 & 3 & 3780 & 34020 & 16200 \\
-4 个源接收机 & 4 & 5040 & 45360 & 21600 \\
-6 个源接收机 & 6 & 7560 & 68040 & 32400 \\
-\bottomrule
-\end{tabularx}
-\end{table*}
-表~\ref{tab:grouped-4}~三类互斥测试人群及标准划分样本数。
-
-\begin{table}[!htbp]
-\caption{三类互斥测试人群及标准划分样本数}
-\label{tab:grouped-4}
-\centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{YYY}
-\toprule
-\textbf{测试任务} & \textbf{接收机与日期组合} & \textbf{标准划分包数/视图} \\
-\midrule
-仅日期变化 & 源接收机，未见的 3 月 1 日 & 30000 \\
-仅接收机变化 & 目标接收机，训练所用的三个日期 & 126000 \\
-日期与接收机同时变化 & 目标接收机，未见的 3 月 1 日 & 42000 \\
-\bottomrule
-\end{tabularx}
-\end{table}
-大规模十类数据实际分别为 31279、92597、30424 包/视图，单元样本数不等。1 至 6 个源接收机的自然预算曲线固定同六个目标接收机；5 源/7 目标的标准划分不插作曲线的 5 源点。源数量改变时，有标签、无标签和验证数据量一起变化。
-
-1\% 与 5\% 表示相对于源训练池的标注比例；另有源验证标签，其数量独立披露。输入采用原均衡 IQ、中央 256 点窗口、信道变换前单位 RMS 归一化。每条物理记录的所有衍生视图保持同一物理身份。
-
-\section{外部方法与训练配方}
-表~\ref{tab:grouped-5}~完整对比方法及其原生训练预算。
-
-\begin{table*}[!tbp]
-\caption{完整对比方法及其原生训练预算}
-\label{tab:grouped-5}
-\centering
-\small
-\begin{tabularx}{\textwidth}{YYY}
-\toprule
-\textbf{方法} & \textbf{保留的完整目标} & \textbf{训练预算与冻结规则} \\
-\midrule
-RIEI & 身份/接收机表征、分类及独立性相关目标；保留交替优化 & 100 轮；批量 64；SGD，学习率 0.0001；最终轮冻结 \\
-DRIFT & 身份与接收机分支、对抗域目标、中心及分离相关目标 & 100 轮；批量 256；Adam，学习率 0.0001；最终轮冻结 \\
-IB-RFF & 两阶段训练；第二阶段保留作者 HSIC 项，系数 0.04 & 每阶段最多 200 轮；批量 128；Adam，学习率 0.001；源验证 NLL 选模，降学习率/早停耐心 5/10 \\
-SDG & 原生双视图、身份对比和域对抗对比目标 & 最多 200 轮；批量 32；Adam，学习率 0.001；源验证 NLL 选择 checkpoint \\
-PAMF & 相同骨干/默认头及原有标签表示学习；按监督/普通伪标签区分 & 50 轮，11100 次更新；原优化器与分段日程；固定最终权重 \\
-\bottomrule
-\end{tabularx}
-\end{table*}
-这里比较的是经过输入长度、类别数及本项目数据接口适配的完整方法实现。RIEI 使用登记的一维短输入 stem；完整损失保留不等于逐字运行作者未适配脚本。各方法原生预算和优化步骤不同，不把相同轮数当作相同算力。
-
-表~\ref{tab:grouped-6}~四种外部训练组合。
-
-\begin{table*}[!tbp]
-\caption{四种外部训练组合}
-\label{tab:grouped-6}
 \centering
 \small
 \begin{tabularx}{\textwidth}{YYYY}
 \toprule
-\textbf{外部训练设置} & \textbf{附加信道增强} & \textbf{普通伪标签} & \textbf{识别器使用的源训练数据} \\
+\textbf{学习方式} & \textbf{训练增强} & \textbf{报告测试} & \textbf{主方法与恢复器处理} \\
 \midrule
-无信道＋监督 & 关闭 & 关闭 & 只有有标签训练集合 \\
-无信道＋伪标签 & 关闭 & 启用 & 有标签与无标签训练集合 \\
-有信道＋监督 & 启用 & 关闭 & 只有有标签训练集合 \\
-有信道＋伪标签（主比较） & 启用 & 启用 & 有标签与无标签训练集合 \\
+监督 & 有信道增强 & 目标CLEAN＋六种practical；源RX未见日另列诊断 & RIEI、DRIFT、IB-RFF、SDG、PAMF、DURA+PAMF；DURA只用有标签源IQ \\
+普通PL半监督 & 有信道增强 & 目标CLEAN＋六种practical；源RX未见日另列诊断 & 同六种主比较项；DURA可用全部允许源训练IQ \\
+监督 & 无信道增强 & 仅目标接收机CLEAN & 四种外部方法单列；当前有增强PAMF不挪入本组 \\
+普通PL半监督 & 无信道增强 & 仅目标接收机CLEAN & 四种外部方法单列；不报告历史practical结果 \\
 \bottomrule
 \end{tabularx}
 \end{table*}
-四种设置都保留权重 0.68 的附加分类槽：无信道或未抽中变换时，槽中使用原始有标签 IQ。因此“无信道”不是删掉辅助损失，也不删除 SDG 自己的原生增强。信道辅助视图从原有标签 IQ 生成。
+每个学习组均有165个独立主比较识别器：四种外部方法各33个，PAMF33个。PAMF和DURA+PAMF复用同一个识别器，故每组展示198个模型与推理链组合，两组共330个独立主比较识别器。含无增强控制时，全部594个逻辑模型由监督297个、半监督297个组成。
 
-外部增强使用真实 practical residual 路径：训练场景为低郊区/中城市/低城市，条件概率 40\%/35\%/25\%；按最大预算前 20\%、20\% 至 45\%、后 55\% 采用 30\%/60\%/80\% 的施加概率。IB-RFF 各阶段重置预算进度。实际早停曝光量以记录为准。
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/coverage.pdf}
+\caption{每种学习条件下均有132个无增强外部模型、132个有增强外部模型和33个PAMF模型。该图只统计覆盖，不比较跨学习条件的混合性能。}
+\label{fig:grouped-1}
+\end{figure}
+数据为WiSig地面代理。源日期为2021年3月8、15、23日，3月1日为更早的未见日期，不能解释为未来日期预测。三类互斥人群为源接收机跨日诊断、目标接收机跨RX、目标接收机与日期双跨。标准划分每景分别为30000、126000、42000包；ManyRx分别为31279、92597、30424包，不等样本单元不强行等权成总准确率。
 
-PAMF 的原有标签信道视图在这三个环境中均匀抽取；普通伪标签与监督控制沿同一有标签配方。它不是外部 0.68 拼接配方的逐项相同复制。外部无标签/有标签批量比例为 1，PAMF 为 2；阈值与损失定义相同，不代表所有曝光剂量相同。
-
-\section{标准划分：主方法对比}
-本节全部为有信道增强的训练组。四种外部方法固定为“有信道增强＋普通伪标签”，不按目标分数选择设置。外部方法直接识别；PAMF 与 DURA+PAMF 使用同一冻结识别器。
-
-表~\ref{tab:grouped-7}~主方法准确率：均值\ensuremath{\pm}样本标准差（\%）。
+表~\ref{tab:grouped-2}~源域划分与数据量；无标签池存在不等于监督组使用它。
 
 \begin{table*}[!tbp]
-\caption{主方法准确率：均值\ensuremath{\pm}样本标准差（\%）}
+\caption{源域划分与数据量；无标签池存在不等于监督组使用它}
+\label{tab:grouped-2}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYYYY}
+\toprule
+\textbf{数据设置} & \textbf{类数} & \textbf{源RX数} & \textbf{有标签训练} & \textbf{无标签池} & \textbf{源验证} \\
+\midrule
+标准接收机划分 & 6 & 5 & 6300 & 56700 & 27000 \\
+接收机划分一 & 6 & 5 & 6300 & 56700 & 27000 \\
+接收机划分二 & 6 & 5 & 6300 & 56700 & 27000 \\
+大规模十类数据 & 10 & 16 & 6533 & 58828 & 28023 \\
+1\%标注 & 6 & 5 & 630 & 62370 & 27000 \\
+5\%标注 & 6 & 5 & 3150 & 59850 & 27000 \\
+1个源接收机 & 6 & 1 & 1260 & 11340 & 5400 \\
+2个源接收机 & 6 & 2 & 2520 & 22680 & 10800 \\
+3个源接收机 & 6 & 3 & 3780 & 34020 & 16200 \\
+4个源接收机 & 6 & 4 & 5040 & 45360 & 21600 \\
+6个源接收机 & 6 & 6 & 7560 & 68040 & 32400 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+监督识别器不读取无标签训练池。监督主系统的DURA也只使用有标签源集合的IQ；DURA不读取这些集合的发射机标签。半监督组的识别器按普通PL使用隐藏TX标签的源IQ，恢复器可使用全部允许源训练IQ。源验证不能更新模型状态；每行全部决策先冻结，再由独立CPU评分连接真值。
+
+所有图均为竖向柱图。恢复网络实验采用双柱：同一方法未接入DURA与接入DURA，保持识别器、样本、场景与种子一致。变化值按种子内配对计算；误差线为三个模型种子的样本标准差，不是置信区间，也不自动表示显著性。三个识别器通常共用一份匹配恢复器，不能称为三套独立完整系统。
+
+表~\ref{tab:grouped-3}~各方法的学习方式均显式区分。
+
+\begin{table*}[!tbp]
+\caption{各方法的学习方式均显式区分}
+\label{tab:grouped-3}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYY}
+\toprule
+\textbf{方法} & \textbf{监督组} & \textbf{普通PL半监督组} & \textbf{原生训练预算} \\
+\midrule
+RIEI & 完整原生目标；关闭U训练 & 相同目标＋普通PL & 100轮，batch64，SGD，lr0.0001 \\
+DRIFT & 完整原生目标；关闭U训练 & 相同目标＋普通PL & 100轮，batch256，Adam，lr0.0001 \\
+IB-RFF & 原两阶段与HSIC0.04；关闭U训练 & 相同两阶段＋普通PL & 每阶段最多200轮，batch128；源NLL选模 \\
+SDG & 原双视图与对比目标；关闭U训练 & 相同目标＋普通PL & 最多200轮，batch32；源NLL选模 \\
+PAMF & 50轮全部仅L，11100更新，无U加载器 & 50轮13L＋37联合L/U，11100更新 & 默认头联合训练；不另训分类头 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+普通PL均采用当前模型eval/no\_grad生成硬标签，阈值0.95、权重1、完整无标签批次平均，无EMA教师或复杂筛选。相同阈值不等于相同曝光剂量。外部有增强组保留0.68辅助分类槽，低郊区/中城市/低城市条件概率40\%/35\%/25\%，施加概率依预算阶段为30\%/60\%/80\%；无增强槽仍用原L。PAMF保留自身多视图有标签目标和三场景均匀抽取配方，监督版不是纯CE。
+
+四种外部方法的主成绩默认直接识别。它们接入DURA后另列泛用性，不能把恢复后的成绩冒充识别方法本身。PAMF与DURA+PAMF在每个学习组均分列；监督组的完整系统不借用无标签源IQ恢复器。
+
+\clearpage
+\section{监督实验结果}
+本节所有方法均属于监督。除单独标注的无增强CLEAN控制外，主比较均启用训练信道增强；RIEI、DRIFT、IB-RFF、SDG与PAMF直接识别，仅DURA+PAMF接入恢复器。
+
+表~\ref{tab:grouped-4}~监督组：标准划分主比较，准确率均值\ensuremath{\pm}标准差（\%）。
+
+\begin{table*}[!tbp]
+\caption{监督组：标准划分主比较，准确率均值\ensuremath{\pm}标准差（\%）}
+\label{tab:grouped-4}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYYYYY}
+\toprule
+\textbf{测试人群/场景} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{DURA+PAMF} \\
+\midrule
+源接收机跨日诊断 / CLEAN & 58.39\ensuremath{\pm}1.83 & 77.36\ensuremath{\pm}6.73 & 93.16\ensuremath{\pm}0.67 & 95.80\ensuremath{\pm}0.69 & 95.18\ensuremath{\pm}0.05 & 95.26\ensuremath{\pm}0.06 \\
+源接收机跨日诊断 / 六景平均 & 47.36\ensuremath{\pm}0.70 & 63.58\ensuremath{\pm}5.23 & 75.03\ensuremath{\pm}0.93 & 83.08\ensuremath{\pm}0.77 & 81.03\ensuremath{\pm}0.53 & 90.99\ensuremath{\pm}0.23 \\
+目标跨接收机 / CLEAN & 62.22\ensuremath{\pm}1.53 & 61.77\ensuremath{\pm}6.73 & 66.74\ensuremath{\pm}2.61 & 73.18\ensuremath{\pm}2.16 & 85.94\ensuremath{\pm}0.84 & 85.93\ensuremath{\pm}0.85 \\
+目标跨接收机 / 六景平均 & 50.08\ensuremath{\pm}1.60 & 55.22\ensuremath{\pm}5.28 & 53.10\ensuremath{\pm}1.83 & 65.16\ensuremath{\pm}2.03 & 71.29\ensuremath{\pm}0.90 & 77.36\ensuremath{\pm}0.55 \\
+目标日期与接收机双跨 / CLEAN & 61.25\ensuremath{\pm}1.51 & 60.70\ensuremath{\pm}8.85 & 66.13\ensuremath{\pm}3.36 & 70.95\ensuremath{\pm}2.19 & 81.33\ensuremath{\pm}1.27 & 81.29\ensuremath{\pm}1.28 \\
+目标日期与接收机双跨 / 六景平均 & 51.21\ensuremath{\pm}1.46 & 56.46\ensuremath{\pm}5.25 & 55.11\ensuremath{\pm}3.37 & 62.37\ensuremath{\pm}1.22 & 68.53\ensuremath{\pm}1.13 & 75.34\ensuremath{\pm}0.71 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/supervised_standard.pdf}
+\caption{监督组有增强主比较：标准划分、目标跨接收机六景准确率。六项均属同一学习条件，外部方法未接入DURA。}
+\label{fig:grouped-2}
+\end{figure}
+表~\ref{tab:grouped-5}~监督组：11个设置的跨接收机六景准确率（\%）。
+
+\begin{table*}[!tbp]
+\caption{监督组：11个设置的跨接收机六景准确率（\%）}
+\label{tab:grouped-5}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYYYYY}
+\toprule
+\textbf{数据设置} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{DURA+PAMF} \\
+\midrule
+标准接收机划分 & 50.08\ensuremath{\pm}1.60 & 55.22\ensuremath{\pm}5.28 & 53.10\ensuremath{\pm}1.83 & 65.16\ensuremath{\pm}2.03 & 71.29\ensuremath{\pm}0.90 & 77.36\ensuremath{\pm}0.55 \\
+接收机划分一 & 48.12\ensuremath{\pm}0.85 & 49.56\ensuremath{\pm}3.91 & 48.93\ensuremath{\pm}5.23 & 55.76\ensuremath{\pm}1.06 & 60.44\ensuremath{\pm}0.64 & 65.84\ensuremath{\pm}0.12 \\
+接收机划分二 & 51.67\ensuremath{\pm}0.36 & 58.54\ensuremath{\pm}1.94 & 57.94\ensuremath{\pm}0.13 & 62.11\ensuremath{\pm}1.36 & 69.72\ensuremath{\pm}0.56 & 74.99\ensuremath{\pm}0.25 \\
+大规模十类数据 & 25.43\ensuremath{\pm}2.16 & 37.20\ensuremath{\pm}2.49 & 49.86\ensuremath{\pm}2.78 & 61.29\ensuremath{\pm}0.78 & 63.39\ensuremath{\pm}0.29 & 71.96\ensuremath{\pm}0.03 \\
+1\%标注 & 26.08\ensuremath{\pm}8.73 & 16.58\ensuremath{\pm}0.10 & 47.12\ensuremath{\pm}1.22 & 60.38\ensuremath{\pm}0.50 & 70.69\ensuremath{\pm}0.03 & 71.13\ensuremath{\pm}0.23 \\
+5\%标注 & 42.83\ensuremath{\pm}4.15 & 38.81\ensuremath{\pm}4.92 & 53.18\ensuremath{\pm}2.29 & 63.16\ensuremath{\pm}1.39 & 71.24\ensuremath{\pm}0.51 & 74.92\ensuremath{\pm}0.76 \\
+1个源接收机 & 45.14\ensuremath{\pm}1.10 & 17.50\ensuremath{\pm}0.23 & 40.91\ensuremath{\pm}3.55 & 50.00\ensuremath{\pm}1.07 & 48.58\ensuremath{\pm}1.11 & 51.22\ensuremath{\pm}1.37 \\
+2个源接收机 & 37.38\ensuremath{\pm}1.82 & 21.46\ensuremath{\pm}9.69 & 41.30\ensuremath{\pm}1.83 & 52.87\ensuremath{\pm}3.53 & 59.39\ensuremath{\pm}0.70 & 63.66\ensuremath{\pm}1.96 \\
+3个源接收机 & 48.88\ensuremath{\pm}2.46 & 47.48\ensuremath{\pm}8.03 & 53.68\ensuremath{\pm}2.56 & 62.84\ensuremath{\pm}1.87 & 70.62\ensuremath{\pm}0.40 & 75.28\ensuremath{\pm}0.94 \\
+4个源接收机 & 50.14\ensuremath{\pm}2.08 & 50.35\ensuremath{\pm}8.73 & 55.13\ensuremath{\pm}2.28 & 61.75\ensuremath{\pm}0.73 & 68.91\ensuremath{\pm}0.29 & 74.28\ensuremath{\pm}0.16 \\
+6个源接收机 & 55.10\ensuremath{\pm}1.25 & 59.97\ensuremath{\pm}1.11 & 53.90\ensuremath{\pm}1.10 & 68.40\ensuremath{\pm}1.14 & 73.89\ensuremath{\pm}0.57 & 77.51\ensuremath{\pm}0.13 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+接收机重划分保持5源、7目标与日期/样本预算，三套源集合两两仅交一个接收机。每套使用自身匹配数据契约的模型与恢复器，不从标准划分初始化；三套划分不合并成九种子重复。
+
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/supervised_receivers.pdf}
+\caption{监督组：标准划分与两套接收机重划分的六景主结果。误差线为各设置内三个模型种子的标准差。}
+\label{fig:grouped-3}
+\end{figure*}
+标注比例是相对源训练池的1\%、5\%、10\%，对应630、3150、6300个有标签包，验证量均27000。源数量曲线只用1/2/3/4/6源并固定六目标，训练量也随源数改变；不插入标准5源/7目标点，不声称固定样本预算下纯接收机多样性的因果效果。
+
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/supervised_labels.pdf}
+\caption{监督组：1\%、5\%、10\%标注比例下的六景准确率，各组均报告全部六种主比较项。}
+\label{fig:grouped-4}
+\end{figure*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/supervised_sources.pdf}
+\caption{监督组：固定六目标的自然源数量结果，保留非单调变化；所有柱均属本学习条件。}
+\label{fig:grouped-5}
+\end{figure*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/supervised_ten_class.pdf}
+\caption{监督组：六类ManySig与十类ManyRx的六景Macro-F1。类别、接收机和样本量同时改变，只作规模条件对照。}
+\label{fig:grouped-6}
+\end{figure*}
+表~\ref{tab:grouped-6}~监督组无增强控制：仅目标CLEAN准确率（\%）。
+
+\begin{table}[!htbp]
+\caption{监督组无增强控制：仅目标CLEAN准确率（\%）}
+\label{tab:grouped-6}
+\centering
+\footnotesize
+\begin{tabularx}{\columnwidth}{YYY}
+\toprule
+\textbf{外部方法} & \textbf{目标跨RX CLEAN} & \textbf{目标双跨CLEAN} \\
+\midrule
+RIEI & 66.93\ensuremath{\pm}0.71 & 64.89\ensuremath{\pm}1.09 \\
+DRIFT & 66.21\ensuremath{\pm}3.30 & 66.16\ensuremath{\pm}3.34 \\
+IB-RFF & 66.29\ensuremath{\pm}1.40 & 66.61\ensuremath{\pm}2.24 \\
+SDG & 74.25\ensuremath{\pm}0.88 & 72.10\ensuremath{\pm}1.00 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+无增强页只展示同条件四种外部方法的CLEAN。当前PAMF主矩阵保留有标签信道视图，不搬入无增强组；缺少同条件项不补零、不用旧方法改名填齐。已冻结的无增强practical产物保留在历史包，本版不报告。
+
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/supervised_no_channel.pdf}
+\caption{监督组无信道增强：只报告目标域CLEAN，跨RX与双跨分别成柱，均不经过DURA。}
+\label{fig:grouped-7}
+\end{figure}
+表~\ref{tab:grouped-7}~监督组有增强逐景主结果：标准划分跨RX准确率（\%）。
+
+\begin{table*}[!tbp]
+\caption{监督组有增强逐景主结果：标准划分跨RX准确率（\%）}
 \label{tab:grouped-7}
 \centering
 \small
-\begin{tabularx}{\textwidth}{>{\hsize=1.4\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y}
+\begin{tabularx}{\textwidth}{YYYYYYY}
 \toprule
-\textbf{测试设置} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{DURA+PAMF} \\
+\textbf{场景} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{DURA+PAMF} \\
 \midrule
-跨日 / CLEAN & 58.47\ensuremath{\pm}1.74 & 71.42\ensuremath{\pm}1.79 & 92.89\ensuremath{\pm}0.58 & 96.10\ensuremath{\pm}0.72 & 95.40\ensuremath{\pm}0.23 & 95.49\ensuremath{\pm}0.23 \\
-跨日 / 六景平均 & 47.57\ensuremath{\pm}0.67 & 59.32\ensuremath{\pm}1.88 & 74.32\ensuremath{\pm}4.69 & 82.99\ensuremath{\pm}0.55 & 81.00\ensuremath{\pm}0.36 & 92.07\ensuremath{\pm}0.13 \\
-跨接收机 / CLEAN & 61.63\ensuremath{\pm}1.89 & 66.12\ensuremath{\pm}3.20 & 66.63\ensuremath{\pm}2.29 & 74.32\ensuremath{\pm}1.52 & 86.04\ensuremath{\pm}0.36 & 86.08\ensuremath{\pm}0.34 \\
-跨接收机 / 六景平均 & 49.95\ensuremath{\pm}1.55 & 56.76\ensuremath{\pm}2.29 & 52.57\ensuremath{\pm}2.17 & 65.30\ensuremath{\pm}1.14 & 71.05\ensuremath{\pm}0.91 & 78.52\ensuremath{\pm}0.12 \\
-跨日＋跨接收机 / CLEAN & 60.88\ensuremath{\pm}1.75 & 64.98\ensuremath{\pm}3.04 & 67.02\ensuremath{\pm}0.50 & 72.86\ensuremath{\pm}0.54 & 81.81\ensuremath{\pm}0.78 & 81.89\ensuremath{\pm}0.79 \\
-跨日＋跨接收机 / 六景平均 & 51.11\ensuremath{\pm}1.45 & 57.00\ensuremath{\pm}2.11 & 56.35\ensuremath{\pm}1.33 & 63.59\ensuremath{\pm}1.63 & 68.29\ensuremath{\pm}1.12 & 76.75\ensuremath{\pm}0.47 \\
+CLEAN & 62.22\ensuremath{\pm}1.53 & 61.77\ensuremath{\pm}6.73 & 66.74\ensuremath{\pm}2.61 & 73.18\ensuremath{\pm}2.16 & 85.94\ensuremath{\pm}0.84 & 85.93\ensuremath{\pm}0.85 \\
+高郊区 & 58.43\ensuremath{\pm}1.99 & 63.44\ensuremath{\pm}6.67 & 59.49\ensuremath{\pm}1.98 & 72.23\ensuremath{\pm}2.18 & 80.85\ensuremath{\pm}1.05 & 82.92\ensuremath{\pm}0.81 \\
+中郊区 & 56.20\ensuremath{\pm}1.99 & 61.12\ensuremath{\pm}6.34 & 58.23\ensuremath{\pm}2.02 & 70.61\ensuremath{\pm}2.11 & 78.34\ensuremath{\pm}1.02 & 81.32\ensuremath{\pm}0.68 \\
+低郊区 & 54.52\ensuremath{\pm}1.88 & 59.03\ensuremath{\pm}6.15 & 56.91\ensuremath{\pm}2.08 & 69.23\ensuremath{\pm}1.89 & 75.78\ensuremath{\pm}0.93 & 79.46\ensuremath{\pm}0.62 \\
+高城市 & 55.03\ensuremath{\pm}1.82 & 60.30\ensuremath{\pm}5.96 & 56.91\ensuremath{\pm}1.94 & 69.53\ensuremath{\pm}2.21 & 77.42\ensuremath{\pm}1.04 & 81.33\ensuremath{\pm}0.74 \\
+中城市 & 42.28\ensuremath{\pm}1.14 & 47.95\ensuremath{\pm}4.07 & 47.11\ensuremath{\pm}1.67 & 58.80\ensuremath{\pm}1.95 & 63.19\ensuremath{\pm}0.89 & 73.26\ensuremath{\pm}0.40 \\
+低城市 & 34.02\ensuremath{\pm}0.76 & 39.48\ensuremath{\pm}3.10 & 39.95\ensuremath{\pm}1.35 & 50.58\ensuremath{\pm}1.91 & 52.13\ensuremath{\pm}0.49 & 65.87\ensuremath{\pm}0.23 \\
 \bottomrule
 \end{tabularx}
 \end{table*}
-跨日六景平均：PAMF 80.9967\ensuremath{\pm}0.3637\%，DURA+PAMF 92.0659\ensuremath{\pm}0.1338\%。
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/supervised_scenes.pdf}
+\caption{监督组有信道增强：CLEAN与全部六种practical逐景结果。只有DURA+PAMF在所有场景均经过恢复器，CLEAN也不旁路。}
+\label{fig:grouped-8}
+\end{figure*}
+本组DURA泛用性固定每个外部识别器，只比较接入恢复器前后。同一输入与种子配对，恢复器仅使用有标签源训练集合IQ。结果不回流训练或参数选择。
 
-跨接收机六景平均：PAMF 71.0507\ensuremath{\pm}0.9112\%，DURA+PAMF 78.5161\ensuremath{\pm}0.1221\%。
-
-跨日＋跨接收机六景平均：PAMF 68.2852\ensuremath{\pm}1.1248\%，DURA+PAMF 76.7503\ensuremath{\pm}0.4657\%。
-
-六景平均先在每个模型种子内等权平均六种 practical 环境，再汇总三个模型种子。CLEAN 单独报告，不与六景混成七景平均。三种泛化人群互斥，目标域跨接收机主测试与源接收机未见日诊断分开。
-
-其他方法接入 DURA 后的数值不进入本节或主图。它们只用于第 9 节的泛用性验证；PAMF 监督版只用于第 10 节自身对照。DURA+PAMF 并非新增半监督算法，PAMF 当前暂用普通伪标签。
-
-\section{全部数据设置：主方法跨接收机结果}
-表~\ref{tab:grouped-8}~有增强组：跨接收机六景准确率，均值\ensuremath{\pm}样本标准差（\%）。
+表~\ref{tab:grouped-8}~监督组DURA泛用性：CLEAN，准确率\%与配对百分点差。
 
 \begin{table*}[!tbp]
-\caption{有增强组：跨接收机六景准确率，均值\ensuremath{\pm}样本标准差（\%）}
+\caption{监督组DURA泛用性：CLEAN，准确率\%与配对百分点差}
 \label{tab:grouped-8}
 \centering
 \small
-\begin{tabularx}{\textwidth}{>{\hsize=1.4\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y}
+\begin{tabularx}{\textwidth}{YYYY}
 \toprule
-\textbf{测试设置} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{DURA+PAMF} \\
+\textbf{外部方法} & \textbf{未接DURA} & \textbf{接入DURA} & \textbf{配对变化（pp）} \\
+\midrule
+RIEI & 62.22\ensuremath{\pm}1.53 & 62.16\ensuremath{\pm}1.49 & -0.06\ensuremath{\pm}0.04 \\
+DRIFT & 61.77\ensuremath{\pm}6.73 & 61.71\ensuremath{\pm}6.71 & -0.06\ensuremath{\pm}0.08 \\
+IB-RFF & 66.74\ensuremath{\pm}2.61 & 66.77\ensuremath{\pm}2.59 & 0.02\ensuremath{\pm}0.03 \\
+SDG & 73.18\ensuremath{\pm}2.16 & 73.25\ensuremath{\pm}2.16 & 0.07\ensuremath{\pm}0.10 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+表~\ref{tab:grouped-9}~监督组DURA泛用性：六种practical平均，准确率\%与配对百分点差。
+
+\begin{table*}[!tbp]
+\caption{监督组DURA泛用性：六种practical平均，准确率\%与配对百分点差}
+\label{tab:grouped-9}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYY}
+\toprule
+\textbf{外部方法} & \textbf{未接DURA} & \textbf{接入DURA} & \textbf{配对变化（pp）} \\
+\midrule
+RIEI & 50.08\ensuremath{\pm}1.60 & 57.59\ensuremath{\pm}0.75 & 7.52\ensuremath{\pm}1.56 \\
+DRIFT & 55.22\ensuremath{\pm}5.28 & 57.05\ensuremath{\pm}4.48 & 1.84\ensuremath{\pm}2.28 \\
+IB-RFF & 53.10\ensuremath{\pm}1.83 & 62.72\ensuremath{\pm}1.74 & 9.62\ensuremath{\pm}0.34 \\
+SDG & 65.16\ensuremath{\pm}2.03 & 66.46\ensuremath{\pm}1.33 & 1.29\ensuremath{\pm}1.43 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/supervised_dura.pdf}
+\caption{监督组DURA泛用性：标准划分、目标跨接收机六景准确率。每个方法左柱未接DURA、右柱接入DURA；柱顶为配对变化，保留负值。}
+\label{fig:grouped-9}
+\end{figure}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/supervised_dura_all_settings.pdf}
+\caption{监督组：11个设置的目标跨接收机六景准确率，四种外部方法分别成面板；每一设置左柱未接DURA、右柱接入DURA。误差线为模型种子标准差，配对变化见数据表。}
+\label{fig:grouped-10}
+\end{figure*}
+表~\ref{tab:grouped-10}~监督组PAMF恢复对照：标准划分六景准确率（\%）。
+
+\begin{table}[!htbp]
+\caption{监督组PAMF恢复对照：标准划分六景准确率（\%）}
+\label{tab:grouped-10}
+\centering
+\footnotesize
+\begin{tabularx}{\columnwidth}{YYYY}
+\toprule
+\textbf{测试人群} & \textbf{未接DURA} & \textbf{接入DURA} & \textbf{配对变化（pp）} \\
+\midrule
+源接收机跨日诊断 & 81.03\ensuremath{\pm}0.53 & 90.99\ensuremath{\pm}0.23 & 9.96\ensuremath{\pm}0.41 \\
+目标跨接收机 & 71.29\ensuremath{\pm}0.90 & 77.36\ensuremath{\pm}0.55 & 6.07\ensuremath{\pm}0.35 \\
+目标日期与接收机双跨 & 68.53\ensuremath{\pm}1.13 & 75.34\ensuremath{\pm}0.71 & 6.81\ensuremath{\pm}0.42 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/supervised_pamf_restoration.pdf}
+\caption{监督组PAMF恢复对照：标准划分、三类互斥人群的六景准确率，固定识别器与种子；变化值按种子配对，不含CLEAN。}
+\label{fig:grouped-11}
+\end{figure}
+表~\ref{tab:grouped-11}~监督识别器的实测时延：独占RTX3090、FP32。
+
+\begin{table*}[!tbp]
+\caption{监督识别器的实测时延：独占RTX3090、FP32}
+\label{tab:grouped-11}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYYY}
+\toprule
+\textbf{执行路径} & \textbf{批量} & \textbf{中位ms} & \textbf{P95 ms} & \textbf{IQ/秒} \\
+\midrule
+常规识别 & 1 & 7.4029 & 7.7351 & 135.1 \\
+常规识别 & 8 & 7.3559 & 7.7475 & 1087.6 \\
+常规识别 & 32 & 7.5352 & 7.9401 & 4246.7 \\
+常规识别 & 64 & 7.4890 & 8.0055 & 8545.8 \\
+常规识别 & 128 & 7.4365 & 7.8096 & 17212.4 \\
+DURA+PAMF优化图 & 1 & 4.5629 & 4.5821 & 219.2 \\
+DURA+PAMF优化图 & 8 & 13.5081 & 13.6138 & 592.2 \\
+DURA+PAMF优化图 & 32 & 26.5446 & 26.7811 & 1205.5 \\
+DURA+PAMF优化图 & 64 & 13.9775 & 14.0779 & 4578.8 \\
+DURA+PAMF优化图 & 128 & 14.5229 & 14.5857 & 8813.7 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/supervised_timing.pdf}
+\caption{监督识别器的批量延迟竖柱图。两条路径分别为常规识别与DURA+PAMF优化图，5轮计时不是5个模型种子，不能把路径差当作恢复器算法加速。}
+\label{fig:grouped-12}
+\end{figure}
+\clearpage
+\section{普通PL半监督实验结果}
+本节所有方法均属于普通PL半监督。除单独标注的无增强CLEAN控制外，主比较均启用训练信道增强；RIEI、DRIFT、IB-RFF、SDG与PAMF直接识别，仅DURA+PAMF接入恢复器。
+
+表~\ref{tab:grouped-12}~普通PL半监督组：标准划分主比较，准确率均值\ensuremath{\pm}标准差（\%）。
+
+\begin{table*}[!tbp]
+\caption{普通PL半监督组：标准划分主比较，准确率均值\ensuremath{\pm}标准差（\%）}
+\label{tab:grouped-12}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYYYYY}
+\toprule
+\textbf{测试人群/场景} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{DURA+PAMF} \\
+\midrule
+源接收机跨日诊断 / CLEAN & 58.47\ensuremath{\pm}1.74 & 71.42\ensuremath{\pm}1.79 & 92.89\ensuremath{\pm}0.58 & 96.10\ensuremath{\pm}0.72 & 95.40\ensuremath{\pm}0.23 & 95.49\ensuremath{\pm}0.23 \\
+源接收机跨日诊断 / 六景平均 & 47.57\ensuremath{\pm}0.67 & 59.32\ensuremath{\pm}1.88 & 74.32\ensuremath{\pm}4.69 & 82.99\ensuremath{\pm}0.55 & 81.00\ensuremath{\pm}0.36 & 92.07\ensuremath{\pm}0.13 \\
+目标跨接收机 / CLEAN & 61.63\ensuremath{\pm}1.89 & 66.12\ensuremath{\pm}3.20 & 66.63\ensuremath{\pm}2.29 & 74.32\ensuremath{\pm}1.52 & 86.04\ensuremath{\pm}0.36 & 86.08\ensuremath{\pm}0.34 \\
+目标跨接收机 / 六景平均 & 49.95\ensuremath{\pm}1.55 & 56.76\ensuremath{\pm}2.29 & 52.57\ensuremath{\pm}2.17 & 65.30\ensuremath{\pm}1.14 & 71.05\ensuremath{\pm}0.91 & 78.52\ensuremath{\pm}0.12 \\
+目标日期与接收机双跨 / CLEAN & 60.88\ensuremath{\pm}1.75 & 64.98\ensuremath{\pm}3.04 & 67.02\ensuremath{\pm}0.50 & 72.86\ensuremath{\pm}0.54 & 81.81\ensuremath{\pm}0.78 & 81.89\ensuremath{\pm}0.79 \\
+目标日期与接收机双跨 / 六景平均 & 51.11\ensuremath{\pm}1.45 & 57.00\ensuremath{\pm}2.11 & 56.35\ensuremath{\pm}1.33 & 63.59\ensuremath{\pm}1.63 & 68.29\ensuremath{\pm}1.12 & 76.75\ensuremath{\pm}0.47 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/semi_supervised_standard.pdf}
+\caption{普通PL半监督组有增强主比较：标准划分、目标跨接收机六景准确率。六项均属同一学习条件，外部方法未接入DURA。}
+\label{fig:grouped-13}
+\end{figure}
+表~\ref{tab:grouped-13}~普通PL半监督组：11个设置的跨接收机六景准确率（\%）。
+
+\begin{table*}[!tbp]
+\caption{普通PL半监督组：11个设置的跨接收机六景准确率（\%）}
+\label{tab:grouped-13}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYYYYY}
+\toprule
+\textbf{数据设置} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{DURA+PAMF} \\
 \midrule
 标准接收机划分 & 49.95\ensuremath{\pm}1.55 & 56.76\ensuremath{\pm}2.29 & 52.57\ensuremath{\pm}2.17 & 65.30\ensuremath{\pm}1.14 & 71.05\ensuremath{\pm}0.91 & 78.52\ensuremath{\pm}0.12 \\
 接收机划分一 & 48.24\ensuremath{\pm}0.77 & 50.25\ensuremath{\pm}2.14 & 49.43\ensuremath{\pm}2.00 & 55.35\ensuremath{\pm}1.16 & 60.72\ensuremath{\pm}0.88 & 67.11\ensuremath{\pm}0.14 \\
 接收机划分二 & 51.75\ensuremath{\pm}0.31 & 54.57\ensuremath{\pm}2.00 & 56.56\ensuremath{\pm}3.01 & 60.66\ensuremath{\pm}0.21 & 69.64\ensuremath{\pm}0.57 & 74.64\ensuremath{\pm}0.23 \\
 大规模十类数据 & 25.58\ensuremath{\pm}1.98 & 34.09\ensuremath{\pm}3.23 & 48.59\ensuremath{\pm}2.74 & 61.40\ensuremath{\pm}0.54 & 63.31\ensuremath{\pm}0.43 & 72.44\ensuremath{\pm}0.18 \\
-1\% 标注 & 26.20\ensuremath{\pm}8.61 & 17.39\ensuremath{\pm}0.62 & 45.27\ensuremath{\pm}3.63 & 62.34\ensuremath{\pm}0.08 & 70.65\ensuremath{\pm}0.26 & 74.60\ensuremath{\pm}0.56 \\
-5\% 标注 & 42.90\ensuremath{\pm}4.07 & 35.73\ensuremath{\pm}1.15 & 51.83\ensuremath{\pm}0.65 & 63.62\ensuremath{\pm}1.48 & 71.00\ensuremath{\pm}0.30 & 76.28\ensuremath{\pm}0.62 \\
-1 个源接收机 & 45.11\ensuremath{\pm}0.96 & 23.20\ensuremath{\pm}1.88 & 40.35\ensuremath{\pm}1.99 & 46.93\ensuremath{\pm}1.14 & 48.48\ensuremath{\pm}0.92 & 54.27\ensuremath{\pm}1.08 \\
-2 个源接收机 & 37.56\ensuremath{\pm}2.13 & 36.05\ensuremath{\pm}4.27 & 40.44\ensuremath{\pm}3.12 & 53.11\ensuremath{\pm}2.01 & 59.25\ensuremath{\pm}0.64 & 63.19\ensuremath{\pm}1.69 \\
-3 个源接收机 & 49.20\ensuremath{\pm}2.74 & 43.50\ensuremath{\pm}9.74 & 52.22\ensuremath{\pm}4.01 & 62.09\ensuremath{\pm}3.38 & 70.50\ensuremath{\pm}0.66 & 73.94\ensuremath{\pm}0.76 \\
-4 个源接收机 & 50.23\ensuremath{\pm}1.96 & 52.59\ensuremath{\pm}1.52 & 54.22\ensuremath{\pm}2.12 & 62.75\ensuremath{\pm}2.54 & 68.97\ensuremath{\pm}0.32 & 74.39\ensuremath{\pm}0.59 \\
-6 个源接收机 & 55.25\ensuremath{\pm}1.07 & 52.96\ensuremath{\pm}1.06 & 56.40\ensuremath{\pm}1.87 & 66.69\ensuremath{\pm}1.28 & 73.69\ensuremath{\pm}0.88 & 75.77\ensuremath{\pm}0.13 \\
+1\%标注 & 26.20\ensuremath{\pm}8.61 & 17.39\ensuremath{\pm}0.62 & 45.27\ensuremath{\pm}3.63 & 62.34\ensuremath{\pm}0.08 & 70.65\ensuremath{\pm}0.26 & 74.60\ensuremath{\pm}0.56 \\
+5\%标注 & 42.90\ensuremath{\pm}4.07 & 35.73\ensuremath{\pm}1.15 & 51.83\ensuremath{\pm}0.65 & 63.62\ensuremath{\pm}1.48 & 71.00\ensuremath{\pm}0.30 & 76.28\ensuremath{\pm}0.62 \\
+1个源接收机 & 45.11\ensuremath{\pm}0.96 & 23.20\ensuremath{\pm}1.88 & 40.35\ensuremath{\pm}1.99 & 46.93\ensuremath{\pm}1.14 & 48.48\ensuremath{\pm}0.92 & 54.27\ensuremath{\pm}1.08 \\
+2个源接收机 & 37.56\ensuremath{\pm}2.13 & 36.05\ensuremath{\pm}4.27 & 40.44\ensuremath{\pm}3.12 & 53.11\ensuremath{\pm}2.01 & 59.25\ensuremath{\pm}0.64 & 63.19\ensuremath{\pm}1.69 \\
+3个源接收机 & 49.20\ensuremath{\pm}2.74 & 43.50\ensuremath{\pm}9.74 & 52.22\ensuremath{\pm}4.01 & 62.09\ensuremath{\pm}3.38 & 70.50\ensuremath{\pm}0.66 & 73.94\ensuremath{\pm}0.76 \\
+4个源接收机 & 50.23\ensuremath{\pm}1.96 & 52.59\ensuremath{\pm}1.52 & 54.22\ensuremath{\pm}2.12 & 62.75\ensuremath{\pm}2.54 & 68.97\ensuremath{\pm}0.32 & 74.39\ensuremath{\pm}0.59 \\
+6个源接收机 & 55.25\ensuremath{\pm}1.07 & 52.96\ensuremath{\pm}1.06 & 56.40\ensuremath{\pm}1.87 & 66.69\ensuremath{\pm}1.28 & 73.69\ensuremath{\pm}0.88 & 75.77\ensuremath{\pm}0.13 \\
 \bottomrule
 \end{tabularx}
 \end{table*}
-表~\ref{tab:grouped-9}~PAMF两条推理链的目标域CLEAN对照（\%）。
+接收机重划分保持5源、7目标与日期/样本预算，三套源集合两两仅交一个接收机。每套使用自身匹配数据契约的模型与恢复器，不从标准划分初始化；三套划分不合并成九种子重复。
+
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/semi_supervised_receivers.pdf}
+\caption{普通PL半监督组：标准划分与两套接收机重划分的六景主结果。误差线为各设置内三个模型种子的标准差。}
+\label{fig:grouped-14}
+\end{figure*}
+标注比例是相对源训练池的1\%、5\%、10\%，对应630、3150、6300个有标签包，验证量均27000。源数量曲线只用1/2/3/4/6源并固定六目标，训练量也随源数改变；不插入标准5源/7目标点，不声称固定样本预算下纯接收机多样性的因果效果。
+
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/semi_supervised_labels.pdf}
+\caption{普通PL半监督组：1\%、5\%、10\%标注比例下的六景准确率，各组均报告全部六种主比较项。}
+\label{fig:grouped-15}
+\end{figure*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/semi_supervised_sources.pdf}
+\caption{普通PL半监督组：固定六目标的自然源数量结果，保留非单调变化；所有柱均属本学习条件。}
+\label{fig:grouped-16}
+\end{figure*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/semi_supervised_ten_class.pdf}
+\caption{普通PL半监督组：六类ManySig与十类ManyRx的六景Macro-F1。类别、接收机和样本量同时改变，只作规模条件对照。}
+\label{fig:grouped-17}
+\end{figure*}
+表~\ref{tab:grouped-14}~普通PL半监督组无增强控制：仅目标CLEAN准确率（\%）。
 
 \begin{table}[!htbp]
-\caption{PAMF两条推理链的目标域CLEAN对照（\%）}
-\label{tab:grouped-9}
-\centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{YYY}
-\toprule
-\textbf{数据设置} & \textbf{PAMF CLEAN} & \textbf{DURA+PAMF CLEAN} \\
-\midrule
-标准接收机划分 & 86.04\ensuremath{\pm}0.36 & 86.08\ensuremath{\pm}0.34 \\
-接收机划分一 & 73.60\ensuremath{\pm}0.72 & 73.57\ensuremath{\pm}0.76 \\
-接收机划分二 & 83.84\ensuremath{\pm}0.19 & 83.80\ensuremath{\pm}0.22 \\
-大规模十类数据 & 83.96\ensuremath{\pm}0.45 & 83.94\ensuremath{\pm}0.44 \\
-1\% 标注 & 83.39\ensuremath{\pm}0.40 & 83.36\ensuremath{\pm}0.43 \\
-5\% 标注 & 85.66\ensuremath{\pm}1.11 & 85.69\ensuremath{\pm}1.08 \\
-1 个源接收机 & 51.68\ensuremath{\pm}1.09 & 51.92\ensuremath{\pm}1.20 \\
-2 个源接收机 & 70.49\ensuremath{\pm}3.30 & 70.56\ensuremath{\pm}3.30 \\
-3 个源接收机 & 84.21\ensuremath{\pm}0.26 & 84.26\ensuremath{\pm}0.23 \\
-4 个源接收机 & 83.32\ensuremath{\pm}0.83 & 83.40\ensuremath{\pm}0.79 \\
-6 个源接收机 & 87.81\ensuremath{\pm}0.10 & 87.84\ensuremath{\pm}0.10 \\
-\bottomrule
-\end{tabularx}
-\end{table}
-不同设置的类数、训练量和目标接收机集合不同。逐设置比较，不把十类与六类样本混成总准确率；完整 CLEAN 六方法表与逐场景表保留于主比较 CSV。
-
-\section{标注数量与源接收机数量}
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{../figures/labels.pdf}
-\caption{1\%、5\%、10\%标注条件；10\%使用标准划分。其余数据角色保持登记约定。}
-\label{fig:grouped-2}
-\end{figure}
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{../figures/sources.pdf}
-\caption{自然预算源数量：1、2、3、4、6个源接收机，固定六个目标接收机。横轴不是只改变多样性，也改变训练量。}
-\label{fig:grouped-3}
-\end{figure}
-两条曲线分别为 PAMF 直接识别和 DURA+PAMF，其他四种方法均直接识别。DURA+PAMF 从 1 源 54.2681\% 到 6 源 75.7687\%；保留 3 源 73.9371\%、4 源 74.3923\% 的小幅变化。自然预算随源数量变化，不能声称固定训练量下增加接收机必然提升。
-
-\section{逐信道场景与大规模十类结果}
-表~\ref{tab:grouped-10}~有增强组的主方法对比：标准划分跨接收机准确率均值（\%），仅最后一列使用DURA。。
-
-\begin{table*}[!tbp]
-\caption{有增强组的主方法对比：标准划分跨接收机准确率均值（\%），仅最后一列使用DURA。}
-\label{tab:grouped-10}
-\centering
-\small
-\begin{tabularx}{\textwidth}{>{\hsize=1.4\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y}
-\toprule
-\textbf{测试场景} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{DURA+PAMF} \\
-\midrule
-clean & 61.63 & 66.12 & 66.63 & 74.32 & 86.04 & 86.08 \\
-高郊区 & 58.26 & 66.04 & 58.50 & 72.22 & 80.58 & 83.46 \\
-中郊区 & 56.06 & 63.08 & 57.41 & 70.60 & 78.05 & 82.03 \\
-低郊区 & 54.41 & 60.56 & 56.17 & 69.08 & 75.53 & 80.32 \\
-高城市 & 54.85 & 62.62 & 56.12 & 69.64 & 77.18 & 82.19 \\
-中城市 & 42.17 & 48.68 & 47.04 & 59.16 & 62.99 & 75.05 \\
-低城市 & 33.96 & 39.55 & 40.17 & 51.11 & 51.98 & 68.05 \\
-\bottomrule
-\end{tabularx}
-\end{table*}
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{../figures/seven_scenes.pdf}
-\caption{同一批冻结样本的逐景表现。高/中/低郊区与高/中/低城市均为物理启发仿真，不是实测卫星链路。}
-\label{fig:grouped-4}
-\end{figure}
-表~\ref{tab:grouped-11}~大规模十类数据的Macro-F1（\%），始终覆盖全部10类。。
-
-\begin{table*}[!tbp]
-\caption{大规模十类数据的Macro-F1（\%），始终覆盖全部10类。}
-\label{tab:grouped-11}
-\centering
-\small
-\begin{tabularx}{\textwidth}{>{\hsize=1.4\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y}
-\toprule
-\textbf{十类数据端点} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{DURA+PAMF} \\
-\midrule
-CLEAN & 21.29\ensuremath{\pm}4.15 & 43.24\ensuremath{\pm}3.45 & 74.18\ensuremath{\pm}1.07 & 74.32\ensuremath{\pm}0.27 & 83.94\ensuremath{\pm}0.45 & 83.92\ensuremath{\pm}0.44 \\
-六景平均 & 19.27\ensuremath{\pm}1.84 & 31.71\ensuremath{\pm}2.82 & 47.66\ensuremath{\pm}3.00 & 61.23\ensuremath{\pm}0.50 & 63.10\ensuremath{\pm}0.45 & 72.44\ensuremath{\pm}0.18 \\
-\bottomrule
-\end{tabularx}
-\end{table*}
-\section{外部训练控制：无增强与有增强分组}
-本节只比较外部识别器本身，均不接入 DURA。无增强两组仅报告目标域 CLEAN；有增强两组同时报告 CLEAN、六景均值和完整逐景来源表。全部固定训练设置保留，不挑最高一格。
-
-表~\ref{tab:grouped-12}~无信道增强组：标准划分跨接收机CLEAN准确率（\%）。
-
-\begin{table}[!htbp]
-\caption{无信道增强组：标准划分跨接收机CLEAN准确率（\%）}
-\label{tab:grouped-12}
-\centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{YYY}
-\toprule
-\textbf{方法} & \textbf{无信道＋监督} & \textbf{无信道＋伪标签} \\
-\midrule
-RIEI & 66.93\ensuremath{\pm}0.71 & 67.28\ensuremath{\pm}0.88 \\
-DRIFT & 66.21\ensuremath{\pm}3.30 & 67.69\ensuremath{\pm}1.71 \\
-IB-RFF & 66.29\ensuremath{\pm}1.40 & 66.44\ensuremath{\pm}2.90 \\
-SDG & 74.25\ensuremath{\pm}0.88 & 74.64\ensuremath{\pm}0.14 \\
-\bottomrule
-\end{tabularx}
-\end{table}
-表~\ref{tab:grouped-13}~有信道增强组：标准划分跨接收机准确率（\%）。
-
-\begin{table*}[!tbp]
-\caption{有信道增强组：标准划分跨接收机准确率（\%）}
-\label{tab:grouped-13}
-\centering
-\small
-\begin{tabularx}{\textwidth}{YYYYY}
-\toprule
-\textbf{方法} & \textbf{监督 CLEAN} & \textbf{伪标签 CLEAN} & \textbf{监督六景} & \textbf{伪标签六景} \\
-\midrule
-RIEI & 62.22\ensuremath{\pm}1.53 & 61.63\ensuremath{\pm}1.89 & 50.08\ensuremath{\pm}1.60 & 49.95\ensuremath{\pm}1.55 \\
-DRIFT & 61.77\ensuremath{\pm}6.73 & 66.12\ensuremath{\pm}3.20 & 55.22\ensuremath{\pm}5.28 & 56.76\ensuremath{\pm}2.29 \\
-IB-RFF & 66.74\ensuremath{\pm}2.61 & 66.63\ensuremath{\pm}2.29 & 53.10\ensuremath{\pm}1.83 & 52.57\ensuremath{\pm}2.17 \\
-SDG & 73.18\ensuremath{\pm}2.16 & 74.32\ensuremath{\pm}1.52 & 65.16\ensuremath{\pm}2.03 & 65.30\ensuremath{\pm}1.14 \\
-\bottomrule
-\end{tabularx}
-\end{table*}
-表~\ref{tab:grouped-14}~先按模型种子配对的均值差\ensuremath{\pm}标准差（百分点）。
-
-\begin{table*}[!tbp]
-\caption{先按模型种子配对的均值差\ensuremath{\pm}标准差（百分点）}
+\caption{普通PL半监督组无增强控制：仅目标CLEAN准确率（\%）}
 \label{tab:grouped-14}
 \centering
-\small
-\begin{tabularx}{\textwidth}{YYYY}
+\footnotesize
+\begin{tabularx}{\columnwidth}{YYY}
 \toprule
-\textbf{方法} & \textbf{无增强：PL 的 CLEAN 差} & \textbf{有增强：PL 的 CLEAN 差} & \textbf{有增强：PL 的六景差} \\
+\textbf{外部方法} & \textbf{目标跨RX CLEAN} & \textbf{目标双跨CLEAN} \\
 \midrule
-RIEI & 0.36\ensuremath{\pm}0.18 & -0.58\ensuremath{\pm}0.60 & -0.13\ensuremath{\pm}0.24 \\
-DRIFT & 1.48\ensuremath{\pm}1.99 & 4.35\ensuremath{\pm}4.01 & 1.54\ensuremath{\pm}7.05 \\
-IB-RFF & 0.14\ensuremath{\pm}3.42 & -0.12\ensuremath{\pm}0.85 & -0.53\ensuremath{\pm}0.34 \\
-SDG & 0.40\ensuremath{\pm}0.98 & 1.14\ensuremath{\pm}2.71 & 0.14\ensuremath{\pm}1.78 \\
+RIEI & 67.28\ensuremath{\pm}0.88 & 65.16\ensuremath{\pm}1.21 \\
+DRIFT & 67.69\ensuremath{\pm}1.71 & 66.70\ensuremath{\pm}1.12 \\
+IB-RFF & 66.44\ensuremath{\pm}2.90 & 65.78\ensuremath{\pm}1.43 \\
+SDG & 74.64\ensuremath{\pm}0.14 & 73.19\ensuremath{\pm}0.73 \\
 \bottomrule
 \end{tabularx}
-\end{table*}
-无增强控制不提供 practical 差值、曲线或交互统计。训练信道开关对 CLEAN 的影响可以配对报告；跨增强开关的 practical 效果本版不计算。历史已冻结数据留存，未删除、覆盖或重测。
+\end{table}
+无增强页只展示同条件四种外部方法的CLEAN。当前PAMF主矩阵保留有标签信道视图，不搬入无增强组；缺少同条件项不补零、不用旧方法改名填齐。已冻结的无增强practical产物保留在历史包，本版不报告。
 
-\section{DURA泛用性：同一外部识别器前后配对}
-本节是独立实验部分。固定每种外部方法“有增强＋普通伪标签”的同一识别器和默认分类头，只切换是否先经过同数据契约的 DURA。DURA 训练未读取发射机标签、识别器权重/输出或目标域数据。
-
-表~\ref{tab:grouped-15}~标准划分跨接收机：目标域CLEAN，准确率\%。
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/semi_supervised_no_channel.pdf}
+\caption{普通PL半监督组无信道增强：只报告目标域CLEAN，跨RX与双跨分别成柱，均不经过DURA。}
+\label{fig:grouped-18}
+\end{figure}
+表~\ref{tab:grouped-15}~普通PL半监督组有增强逐景主结果：标准划分跨RX准确率（\%）。
 
 \begin{table*}[!tbp]
-\caption{标准划分跨接收机：目标域CLEAN，准确率\%}
+\caption{普通PL半监督组有增强逐景主结果：标准划分跨RX准确率（\%）}
 \label{tab:grouped-15}
 \centering
 \small
+\begin{tabularx}{\textwidth}{YYYYYYY}
+\toprule
+\textbf{场景} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{DURA+PAMF} \\
+\midrule
+CLEAN & 61.63\ensuremath{\pm}1.89 & 66.12\ensuremath{\pm}3.20 & 66.63\ensuremath{\pm}2.29 & 74.32\ensuremath{\pm}1.52 & 86.04\ensuremath{\pm}0.36 & 86.08\ensuremath{\pm}0.34 \\
+高郊区 & 58.26\ensuremath{\pm}1.90 & 66.04\ensuremath{\pm}2.55 & 58.50\ensuremath{\pm}2.69 & 72.22\ensuremath{\pm}1.45 & 80.58\ensuremath{\pm}1.14 & 83.46\ensuremath{\pm}0.25 \\
+中郊区 & 56.06\ensuremath{\pm}1.95 & 63.08\ensuremath{\pm}2.42 & 57.41\ensuremath{\pm}2.39 & 70.60\ensuremath{\pm}1.34 & 78.05\ensuremath{\pm}1.04 & 82.03\ensuremath{\pm}0.15 \\
+低郊区 & 54.41\ensuremath{\pm}1.81 & 60.56\ensuremath{\pm}2.38 & 56.17\ensuremath{\pm}2.28 & 69.08\ensuremath{\pm}1.15 & 75.53\ensuremath{\pm}0.94 & 80.32\ensuremath{\pm}0.15 \\
+高城市 & 54.85\ensuremath{\pm}1.78 & 62.62\ensuremath{\pm}2.55 & 56.12\ensuremath{\pm}2.53 & 69.64\ensuremath{\pm}1.33 & 77.18\ensuremath{\pm}1.07 & 82.19\ensuremath{\pm}0.18 \\
+中城市 & 42.17\ensuremath{\pm}1.13 & 48.68\ensuremath{\pm}2.13 & 47.04\ensuremath{\pm}1.80 & 59.16\ensuremath{\pm}0.92 & 62.99\ensuremath{\pm}0.87 & 75.05\ensuremath{\pm}0.18 \\
+低城市 & 33.96\ensuremath{\pm}0.74 & 39.55\ensuremath{\pm}1.80 & 40.17\ensuremath{\pm}1.40 & 51.11\ensuremath{\pm}0.69 & 51.98\ensuremath{\pm}0.46 & 68.05\ensuremath{\pm}0.25 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/semi_supervised_scenes.pdf}
+\caption{普通PL半监督组有信道增强：CLEAN与全部六种practical逐景结果。只有DURA+PAMF在所有场景均经过恢复器，CLEAN也不旁路。}
+\label{fig:grouped-19}
+\end{figure*}
+本组DURA泛用性固定每个外部识别器，只比较接入恢复器前后。同一输入与种子配对，恢复器仅使用全部允许源训练IQ。结果不回流训练或参数选择。
+
+表~\ref{tab:grouped-16}~普通PL半监督组DURA泛用性：CLEAN，准确率\%与配对百分点差。
+
+\begin{table*}[!tbp]
+\caption{普通PL半监督组DURA泛用性：CLEAN，准确率\%与配对百分点差}
+\label{tab:grouped-16}
+\centering
+\small
 \begin{tabularx}{\textwidth}{YYYY}
 \toprule
-\textbf{方法} & \textbf{直接识别} & \textbf{DURA＋该方法} & \textbf{配对提升（百分点）} \\
+\textbf{外部方法} & \textbf{未接DURA} & \textbf{接入DURA} & \textbf{配对变化（pp）} \\
 \midrule
 RIEI & 61.63\ensuremath{\pm}1.89 & 61.68\ensuremath{\pm}1.85 & 0.05\ensuremath{\pm}0.05 \\
 DRIFT & 66.12\ensuremath{\pm}3.20 & 66.11\ensuremath{\pm}3.18 & -0.01\ensuremath{\pm}0.01 \\
@@ -431,16 +524,16 @@ SDG & 74.32\ensuremath{\pm}1.52 & 74.31\ensuremath{\pm}1.50 & -0.01\ensuremath{\
 \bottomrule
 \end{tabularx}
 \end{table*}
-表~\ref{tab:grouped-16}~标准划分跨接收机：目标域六景平均，准确率\%。
+表~\ref{tab:grouped-17}~普通PL半监督组DURA泛用性：六种practical平均，准确率\%与配对百分点差。
 
 \begin{table*}[!tbp]
-\caption{标准划分跨接收机：目标域六景平均，准确率\%}
-\label{tab:grouped-16}
+\caption{普通PL半监督组DURA泛用性：六种practical平均，准确率\%与配对百分点差}
+\label{tab:grouped-17}
 \centering
 \small
 \begin{tabularx}{\textwidth}{YYYY}
 \toprule
-\textbf{方法} & \textbf{直接识别} & \textbf{DURA＋该方法} & \textbf{配对提升（百分点）} \\
+\textbf{外部方法} & \textbf{未接DURA} & \textbf{接入DURA} & \textbf{配对变化（pp）} \\
 \midrule
 RIEI & 49.95\ensuremath{\pm}1.55 & 56.73\ensuremath{\pm}0.91 & 6.77\ensuremath{\pm}0.89 \\
 DRIFT & 56.76\ensuremath{\pm}2.29 & 60.75\ensuremath{\pm}4.42 & 4.00\ensuremath{\pm}4.28 \\
@@ -449,250 +542,111 @@ SDG & 65.30\ensuremath{\pm}1.14 & 67.12\ensuremath{\pm}0.97 & 1.82\ensuremath{\p
 \bottomrule
 \end{tabularx}
 \end{table*}
-\begin{figure}[!t]
+\begin{figure}[!tbp]
 \centering
-\includegraphics[width=\columnwidth]{../figures/DURA_generality_cross_rx.pdf}
-\caption{四种外部方法的DURA接入前后对照，独立于主方法比较。误差线为三个识别器种子的样本标准差。}
-\label{fig:grouped-5}
+\includegraphics[width=\columnwidth]{../figures/semi_supervised_dura.pdf}
+\caption{普通PL半监督组DURA泛用性：标准划分、目标跨接收机六景准确率。每个方法左柱未接DURA、右柱接入DURA；柱顶为配对变化，保留负值。}
+\label{fig:grouped-20}
 \end{figure}
-\subsection{DURA泛用性：11个设置的完整变化}
-表~\ref{tab:grouped-17}~跨接收机六景配对提升：均值\ensuremath{\pm}样本标准差（百分点）。
-
-\begin{table*}[!tbp]
-\caption{跨接收机六景配对提升：均值\ensuremath{\pm}样本标准差（百分点）}
-\label{tab:grouped-17}
+\begin{figure*}[!tbp]
 \centering
-\small
-\begin{tabularx}{\textwidth}{YYYYY}
-\toprule
-\textbf{数据设置} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} \\
-\midrule
-标准接收机划分 & 6.77\ensuremath{\pm}0.89 & 4.00\ensuremath{\pm}4.28 & 9.64\ensuremath{\pm}1.42 & 1.82\ensuremath{\pm}1.87 \\
-接收机划分一 & 9.15\ensuremath{\pm}0.54 & 3.35\ensuremath{\pm}3.05 & 6.25\ensuremath{\pm}2.66 & 3.49\ensuremath{\pm}0.10 \\
-接收机划分二 & 11.21\ensuremath{\pm}1.72 & 2.59\ensuremath{\pm}5.55 & 8.44\ensuremath{\pm}2.43 & 3.68\ensuremath{\pm}1.22 \\
-大规模十类数据 & 3.12\ensuremath{\pm}3.57 & 9.25\ensuremath{\pm}3.42 & 16.40\ensuremath{\pm}3.00 & 4.67\ensuremath{\pm}0.86 \\
-1\% 标注 & 7.79\ensuremath{\pm}10.56 & 4.94\ensuremath{\pm}2.54 & 19.07\ensuremath{\pm}3.21 & 5.97\ensuremath{\pm}1.01 \\
-5\% 标注 & -1.79\ensuremath{\pm}2.60 & 4.53\ensuremath{\pm}8.03 & 9.85\ensuremath{\pm}0.43 & 3.45\ensuremath{\pm}0.72 \\
-1 个源接收机 & 8.66\ensuremath{\pm}5.31 & 17.25\ensuremath{\pm}2.91 & 4.25\ensuremath{\pm}2.38 & 0.78\ensuremath{\pm}0.89 \\
-2 个源接收机 & 2.54\ensuremath{\pm}3.94 & 12.63\ensuremath{\pm}11.63 & 8.01\ensuremath{\pm}3.81 & 1.39\ensuremath{\pm}0.75 \\
-3 个源接收机 & 4.16\ensuremath{\pm}1.08 & 11.44\ensuremath{\pm}11.14 & 6.53\ensuremath{\pm}5.03 & 2.98\ensuremath{\pm}1.76 \\
-4 个源接收机 & 7.92\ensuremath{\pm}2.57 & 5.23\ensuremath{\pm}5.51 & 6.49\ensuremath{\pm}1.77 & 2.86\ensuremath{\pm}1.54 \\
-6 个源接收机 & 8.54\ensuremath{\pm}0.31 & 5.46\ensuremath{\pm}3.58 & 3.90\ensuremath{\pm}3.63 & 2.79\ensuremath{\pm}1.54 \\
-\bottomrule
-\end{tabularx}
-\end{table*}
-表~\ref{tab:grouped-18}~六景平均提升为正的数据设置数；零与负值均保留。
+\includegraphics[width=\textwidth]{../figures/semi_supervised_dura_all_settings.pdf}
+\caption{普通PL半监督组：11个设置的目标跨接收机六景准确率，四种外部方法分别成面板；每一设置左柱未接DURA、右柱接入DURA。误差线为模型种子标准差，配对变化见数据表。}
+\label{fig:grouped-21}
+\end{figure*}
+表~\ref{tab:grouped-18}~普通PL半监督组PAMF恢复对照：标准划分六景准确率（\%）。
 
-\begin{table*}[!tbp]
-\caption{六景平均提升为正的数据设置数；零与负值均保留}
+\begin{table}[!htbp]
+\caption{普通PL半监督组PAMF恢复对照：标准划分六景准确率（\%）}
 \label{tab:grouped-18}
 \centering
+\footnotesize
+\begin{tabularx}{\columnwidth}{YYYY}
+\toprule
+\textbf{测试人群} & \textbf{未接DURA} & \textbf{接入DURA} & \textbf{配对变化（pp）} \\
+\midrule
+源接收机跨日诊断 & 81.00\ensuremath{\pm}0.36 & 92.07\ensuremath{\pm}0.13 & 11.07\ensuremath{\pm}0.25 \\
+目标跨接收机 & 71.05\ensuremath{\pm}0.91 & 78.52\ensuremath{\pm}0.12 & 7.47\ensuremath{\pm}0.79 \\
+目标日期与接收机双跨 & 68.29\ensuremath{\pm}1.12 & 76.75\ensuremath{\pm}0.47 & 8.47\ensuremath{\pm}0.88 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{../figures/semi_supervised_pamf_restoration.pdf}
+\caption{普通PL半监督组PAMF恢复对照：标准划分、三类互斥人群的六景准确率，固定识别器与种子；变化值按种子配对，不含CLEAN。}
+\label{fig:grouped-22}
+\end{figure}
+表~\ref{tab:grouped-19}~普通PL半监督识别器的实测时延：独占RTX3090、FP32。
+
+\begin{table*}[!tbp]
+\caption{普通PL半监督识别器的实测时延：独占RTX3090、FP32}
+\label{tab:grouped-19}
+\centering
 \small
 \begin{tabularx}{\textwidth}{YYYYY}
 \toprule
-\textbf{泛化人群} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} \\
+\textbf{执行路径} & \textbf{批量} & \textbf{中位ms} & \textbf{P95 ms} & \textbf{IQ/秒} \\
 \midrule
-跨日 & 11/11 & 11/11 & 11/11 & 11/11 \\
-跨接收机 & 10/11 & 11/11 & 11/11 & 11/11 \\
-跨日＋跨接收机 & 10/11 & 11/11 & 11/11 & 11/11 \\
+常规识别 & 1 & 7.4310 & 7.7949 & 134.6 \\
+常规识别 & 8 & 7.4652 & 7.9905 & 1071.6 \\
+常规识别 & 32 & 7.5759 & 8.1087 & 4223.9 \\
+常规识别 & 64 & 7.5067 & 7.9802 & 8525.7 \\
+常规识别 & 128 & 7.4950 & 8.1203 & 17078.1 \\
+DURA+PAMF优化图 & 1 & 4.5657 & 4.5854 & 219.0 \\
+DURA+PAMF优化图 & 8 & 13.5019 & 13.5335 & 592.5 \\
+DURA+PAMF优化图 & 32 & 26.5107 & 26.6867 & 1207.1 \\
+DURA+PAMF优化图 & 64 & 13.9635 & 14.0923 & 4583.4 \\
+DURA+PAMF优化图 & 128 & 14.5251 & 14.5516 & 8812.3 \\
 \bottomrule
 \end{tabularx}
 \end{table*}
-泛用性指在固定识别器上观察到恢复增益及其条件，不等于每个方法、每种场景均必然提高。各方法 CLEAN 损伤、逐景负值和逐种子结果保留在 \nolinkurl{DURA_generality.csv} 与相应来源表，不用平均提升掩盖损伤。
-
-通常三个识别器种子共用一份匹配 DURA，误差描述的是在该恢复器条件下的识别器重复，不是三套独立训练完整系统。不同数据设置的 DURA 及其全部祖先按原训练契约匹配，没有因本次分组而重训。
-
-\section{PAMF自身对照：监督、伪标签与恢复}
-表~\ref{tab:grouped-19}~标准划分跨接收机六景准确率（\%）。
-
-\begin{table}[!htbp]
-\caption{标准划分跨接收机六景准确率（\%）}
-\label{tab:grouped-19}
+\begin{figure}[!tbp]
 \centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{YYYY}
-\toprule
-\textbf{识别训练方式} & \textbf{直接识别} & \textbf{恢复器仅用有标签源 IQ} & \textbf{恢复器使用全部允许源 IQ} \\
-\midrule
-PAMF（监督训练） & 71.29\ensuremath{\pm}0.90 & 77.36\ensuremath{\pm}0.55 & 78.37\ensuremath{\pm}0.43 \\
-PAMF（普通伪标签） & 71.05\ensuremath{\pm}0.91 & 77.57\ensuremath{\pm}0.47 & 78.52\ensuremath{\pm}0.12 \\
-\bottomrule
-\end{tabularx}
-\end{table}
-表~\ref{tab:grouped-20}~PAMF伪标签与监督的种子内配对差。
+\includegraphics[width=\columnwidth]{../figures/semi_supervised_timing.pdf}
+\caption{普通PL半监督识别器的批量延迟竖柱图。两条路径分别为常规识别与DURA+PAMF优化图，5轮计时不是5个模型种子，不能把路径差当作恢复器算法加速。}
+\label{fig:grouped-23}
+\end{figure}
+\FloatBarrier
+\section{成本、缺项与可声明范围}
+监督与普通PL半监督分别比较，不把两者完整系统的分差全部归因于伪标签，因为匹配DURA的无标签IQ权限也不同。本版不把仅PAMF的监督/半监督控制混进其他方法未标明学习方式的主图。半监督264个外部模型中61个实际伪标签接受数为0：RIEI56个、DRIFT5个，均保留原结果，不调整阈值重跑。
 
-\begin{table}[!htbp]
-\caption{PAMF伪标签与监督的种子内配对差}
-\label{tab:grouped-20}
-\centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{YY}
-\toprule
-\textbf{比较口径} & \textbf{配对均值差\ensuremath{\pm}标准差（百分点）} \\
-\midrule
-直接识别：只增加普通伪标签 & -0.2352\ensuremath{\pm}0.1066 \\
-同一“仅有标签 IQ”恢复器：增加伪标签 & 0.2056\ensuremath{\pm}0.3186 \\
-同一“全部允许源 IQ”恢复器：增加伪标签 & 0.1422\ensuremath{\pm}0.3601 \\
-完整系统：伪标签识别器＋全部源 IQ 恢复器，对比监督系统 & 1.1563\ensuremath{\pm}0.4333 \\
-\bottomrule
-\end{tabularx}
-\end{table}
-增加普通伪标签、固定恢复器：+0.1422 个百分点；直接识别：-0.2352 个百分点。
+当前PAMF主矩阵66个识别器，其中6个标准划分模型精确复用、60个此前新训。去重后此前新主矩阵成本为3000个模型轮、666000次更新、82.0506共享worker小时。它不是本次报告新训练，也不是独占GPU小时或墙钟时间；不能把先前全套已退出方案的8670轮全部计到普通PL。DURA本次新训练和新缓存均为0，历史祖先成本及缺失计时不能补零。
 
-完整系统比较：+1.1563 个百分点。这里同时改变了恢复器训练数据范围，不能把全部差值归因于半监督。
+PAMF普通PL下的三核心八组合还缺9个训练模型，完整结构层还缺24个；若重建七个有标签细项还需21个。恢复器组件和交叉种子可分别补21、6行冻结读出，不需要重训DURA。这些不是已发布补实验。旧复杂无标签机制与已退出外推方案仅保留历史，不能改名成当前普通PL自身消融。
 
-在 11 个设置中，固定同一使用全部源训练 IQ 的恢复器，普通伪标签对监督识别器的六景均值在跨日为 11 个设置提高、跨接收机为 8 个提高、同时变化为 9 个提高。直接识别的跨接收机六景仅 2 个设置提高。选用普通伪标签作为暂定方法不等于已证明它在所有条件下都有效。
-
-监督版为独立控制组，不占主方法表中的 PAMF 列。主表 PAMF 指当前普通伪标签识别器；DURA+PAMF 在它前面接入 DURA。二者共享同一识别器权重，恢复收益不称为新的分类算法收益。
-
-\section{实际训练曝光与成本}
-表~\ref{tab:grouped-21}~PAMF普通伪标签的实际无标签曝光与接受率。
-
-\begin{table}[!htbp]
-\caption{PAMF普通伪标签的实际无标签曝光与接受率}
-\label{tab:grouped-21}
-\centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{YYYY}
-\toprule
-\textbf{数据设置} & \textbf{单次训练无标签曝光最小值} & \textbf{最大值} & \textbf{三次合计接受率} \\
-\midrule
-标准接收机划分 & 2097900 & 2097900 & 94.85\% \\
-接收机划分一 & 2097900 & 2097900 & 98.28\% \\
-接收机划分二 & 2097900 & 2097900 & 95.95\% \\
-大规模十类数据 & 2102784 & 2102784 & 77.82\% \\
-1\% 标注 & 2102784 & 2102784 & 92.92\% \\
-5\% 标注 & 2102784 & 2102784 & 94.81\% \\
-1 个源接收机 & 2076144 & 2076144 & 99.48\% \\
-2 个源接收机 & 2095088 & 2095088 & 96.05\% \\
-3 个源接收机 & 2101748 & 2101748 & 95.92\% \\
-4 个源接收机 & 2095088 & 2095088 & 95.99\% \\
-6 个源接收机 & 2102784 & 2102784 & 94.95\% \\
-\bottomrule
-\end{tabularx}
-\end{table}
-曝光指加载参与伪标签判定的次数，不是不同物理样本个数；同一物理样本可跨轮重复。接受率按三次训练的接受数/曝光数合计计算，未把低接受率隐藏或把未接受样本从损失分母去掉。监督控制的无标签曝光为 0。
-
-外部 264 个启用伪标签的模型中，61 个模型实际接受数为 0：RIEI 为 56 个，DRIFT 为 5 个，IB-RFF 与 SDG 为 0。它们仍属于启用同一置信度规则的有效负结果，不允许事后降低阈值重跑。
-
-表~\ref{tab:grouped-22}~训练阶段去重后的成本与计数边界。
-
-\begin{table}[!htbp]
-\caption{训练阶段去重后的成本与计数边界}
-\label{tab:grouped-22}
-\centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{YY}
-\toprule
-\textbf{成本口径} & \textbf{核实数值与含义} \\
-\midrule
-当前 PAMF 两类主比较 & 66 个识别器：11 个设置×监督/伪标签×三次训练；其中 6 个标准划分模型精确复用，60 个此前新训 \\
-去重后的新 PAMF 主比较训练 & 3000 个模型轮、666000 次更新、82.0506 共享 worker 小时；不是本次报告新增训练 \\
-四种外部全部设置 & 528 个完整模型；原生双阶段训练与早停按实际记录，不把模型数当作阶段数 \\
-恢复器与缓存 & 本次新增训练 0、新建恢复 IQ 缓存 0；历史同契约恢复器祖先成本不能视为 0 \\
-没有混算的历史工作 & 此前全套 201 个 PAMF 模型的 8670 新模型轮和 265.9564 共享 worker 小时包含已退出方案；不能全记到当前普通伪标签主方法 \\
-\bottomrule
-\end{tabularx}
-\end{table}
-共享 worker 小时来自各实际训练阶段的 elapsed 记录，已按唯一阶段去重。并发时它不是墙钟耗时或独占 GPU 小时。原标准划分一份恢复器的完整祖先计时未全部序列化，原缺失继续保留，不补零；技术失败的部分开销与成功模型成本分开。
-
-\section{现有工程效率证据}
-表~\ref{tab:grouped-23}~当前PAMF推理路径的实测时延与吞吐。
-
-\begin{table}[!htbp]
-\caption{当前PAMF推理路径的实测时延与吞吐}
-\label{tab:grouped-23}
-\centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{YYYYYY}
-\toprule
-\textbf{方法} & \textbf{执行路径} & \textbf{批量} & \textbf{中位延迟 ms} & \textbf{95\% 分位 ms} & \textbf{IQ/秒} \\
-\midrule
-PAMF 监督 & 直接识别／常规执行 & 1 & 7.4029 & 7.7351 & 135.1 \\
-PAMF 监督 & 直接识别／常规执行 & 128 & 7.4365 & 7.8096 & 17212.4 \\
-PAMF 监督 & 恢复后识别／优化图执行 & 1 & 4.5629 & 4.5821 & 219.2 \\
-PAMF 监督 & 恢复后识别／优化图执行 & 128 & 14.5229 & 14.5857 & 8813.7 \\
-PAMF 伪标签 & 直接识别／常规执行 & 1 & 7.4310 & 7.7949 & 134.6 \\
-PAMF 伪标签 & 直接识别／常规执行 & 128 & 7.4950 & 8.1203 & 17078.1 \\
-PAMF 伪标签 & 恢复后识别／优化图执行 & 1 & 4.5657 & 4.5854 & 219.0 \\
-PAMF 伪标签 & 恢复后识别／优化图执行 & 128 & 14.5251 & 14.5516 & 8812.3 \\
-\bottomrule
-\end{tabularx}
-\end{table}
-测量使用独占 RTX3090、FP32、五轮计时重复。单包普通 PAMF 恢复后识别的中位延迟为 4.5657ms、95\% 分位为 4.5854ms；含传输的 CPU 往返中位数为 4.6222ms。五轮是计时重复，不是五个训练模型。
-
-单包“恢复后”比这里“直接识别”快，是因为两行采用不同执行路径：直接识别为常规执行，完整恢复链使用已有优化图。不能据此声称增加恢复器本身带来算法加速。大批量 128 时，恢复后完整链为 14.5251ms，直接识别为 7.4950ms，显示恢复链的实际额外计算。
-
-这些是当前 PAMF 完整模型的实测数据。旧外部模型时延面板有其自己的权重和执行背景，本报告不把它改标成当前正确信道四种训练设置下最终权重的统一实测结果。四种外部最终权重与 PAMF 同卡同路径的直接效率排名仍需单独核对或补测，不能靠参数量推定。
-
-共驻留显存不等于单模型峰值显存；CUDA 图缓冲区复用后的增量显存也不等于完整模型内存。缓存恢复 IQ 后的分类时间不能冒充在线“恢复＋识别”时间。
-
-\section{完成范围、论文安排与待补项目}
-表~\ref{tab:grouped-24}~当前实验模块的完成范围与缺项。
-
-\begin{table}[!htbp]
-\caption{当前实验模块的完成范围与缺项}
-\label{tab:grouped-24}
-\centering
-\footnotesize
-\begin{tabularx}{\columnwidth}{YYY}
-\toprule
-\textbf{实验模块} & \textbf{当前证据} & \textbf{处理建议} \\
-\midrule
-主方法对比 & 165 独立识别器、198 模型×推理链展示项；11 设置、三种泛化 & 外部均直接识别；PAMF 与 DURA+PAMF 分列 \\
-外部无增强／有增强控制 & 528 模型：264 无增强、264 有增强 & 无增强仅 CLEAN；有增强 CLEAN＋六景 \\
-PAMF 自身控制 & 66 模型，监督 33、普通伪标签 33；当前均有信道视图 & 监督版单列；固定恢复器权限讨论 PL 效果 \\
-DURA 泛用性 & 固定有增强＋伪标签外部识别器，接入前后配对 & 单独成节，不计入外部方法主结果 \\
-PAMF 完整模型时延 & 监督与普通伪标签 100 个“设置×重复”计时组合已测 & 可用；说明执行路径、硬件和内存口径 \\
-PAMF 结构与损失细项 & 监督无标签关闭格、严格交叉熵结构部分可沿用；原复杂方案的含无标签格不适用 & 单列自身实验报告；不得把旧方案改名 \\
-恢复器组件组合/交叉种子 & 恢复器训练权重可复用；旧识别器上的读出不是当前普通伪标签读出 & 需要时只补冻结读出，不重训 DURA \\
-\bottomrule
-\end{tabularx}
-\end{table}
-建议主文依次呈现：数据与预算表、独立识别方法主比较（含 PAMF 与 DURA+PAMF）、11 设置与逐景曲线、DURA 泛用性、PAMF 自身对照、效率与限制。无增强 CLEAN 组与有增强 CLEAN＋practical 组分表；完整细目放补充材料。
-
-当前不能声称：提出了一种新的半监督算法；普通伪标签在所有条件下必然有效；DURA 完全分离硬件身份与信道；仿真等于真实在轨验证；三个共用恢复器的识别器重复等于三套独立系统；或者当前暂定方法是从未暴露目标结果的独立盲选。
-
-本次按用户要求先交付主比较报告，未发起补实验。更完整的自身消融梳理中，普通伪标签下三核心八组合还缺 9 个训练模型；完整普通伪标签结构层还缺 24 个训练模型；七个有标签细项若全部重建还需 21 个。恢复器组件与交叉种子可分别补 21、6 行冻结预测评分，不需要新恢复器训练。这些是待讨论的最小缺项，不是已发布队列。
+所有practical结果都是物理启发仿真压力测试，不是实测在轨链路。恢复收益不能证明完全分离硬件身份与信道，也不保证每种方法、每种场景都提高。原生预算、优化目标和曝光不同，不按轮数或参数量推断效率。方法选择已有公开基准背景，不称独立盲选。
 
 \FloatBarrier
 \appendices
 \section{阅读名称与原始记录的对应}
-表~\ref{tab:grouped-25}~正文模块名称与历史记录代号对应。
+表~\ref{tab:grouped-20}~仅用于追溯的原始记录字段。
 
 \begin{table}[!htbp]
-\caption{正文模块名称与历史记录代号对应}
-\label{tab:grouped-25}
+\caption{仅用于追溯的原始记录字段}
+\label{tab:grouped-20}
 \centering
 \footnotesize
 \begin{tabularx}{\columnwidth}{YYY}
 \toprule
-\textbf{正文统一称呼} & \textbf{原始记录中的代号} & \textbf{解释} \\
+\textbf{正文名称} & \textbf{原记录字段} & \textbf{含义} \\
 \midrule
-识别器 & F & 预测发射机身份的网络，当前 PAMF 默认头联合训练 \\
-DURA 恢复器 & G & 先处理接收 IQ，再交给识别器 \\
-只用有标签源 IQ 的恢复器 & G-L / DURA-L & 集合有标签，但恢复器不读取发射机标签 \\
-使用全部允许源训练 IQ 的恢复器 & G-LU / DURA-LU & 使用有标签与无标签训练集合的 IQ，仍不读 TX 标签 \\
-直接识别 & raw & 不经过恢复器 \\
-普通伪标签 PAMF & ordinary\_PL / F21 & 当前暂定半监督方法；F21 是兼容实现编号，不是新的论文方法名 \\
-旧版带教师与复杂筛选的识别器 & T1 & 历史方法；当前普通伪标签不继承其教师和筛选机制 \\
-已退出的外推伪标签方案 & PAMF-REPL & 历史对照，不能当作当前普通伪标签的消融 \\
-标准／接收机划分一／划分二 & F0 / \nolinkurl{F1_rx_repartition_r01} / \nolinkurl{F2_rx_repartition_r01} & 三套接收机成员不同、数量相同的训练数据划分 \\
-四种外部训练设置 & A / B / C / D & 对应无信道监督、无信道伪标签、有信道监督、有信道伪标签 \\
+识别器 & F & 原默认头随骨干联合训练 \\
+DURA恢复器 & G & 恢复接收IQ；不读取TX标签或识别器输出 \\
+监督组匹配恢复器 & G-L / DURA-L & 仅有标签源集合IQ，完整系统不读取U池 \\
+半监督组匹配恢复器 & G-LU / DURA-LU & 可用全部允许源训练IQ，U的TX标签仍隐藏 \\
+监督/半监督外部有增强组 & C / D & 两组性能分别成节、成图 \\
+监督/半监督外部无增强组 & A / B & 只报告目标域CLEAN \\
+普通PL识别器 & ordinary\_PL / F21 & 当前半监督方案，标识不是方法版本名 \\
+历史教师/复杂门控配方 & T1 & 不是当前普通PL，不改名混入 \\
 \bottomrule
 \end{tabularx}
 \end{table}
-标准源接收机索引为 1/3/4/6/8，接收机划分一为 0/1/2/5/7，接收机划分二为 0/3/9/10/11。三套源集合两两只交一个接收机；源日期保持相同。旧同名划分的不同成员不在本报告中冒充新划分。
+科学源记录为\nolinkurl{20261023-phase1-practical-residual-full2x2-m600-r01}及\nolinkurl{20261024-phase1-PAMF-REPL-completion-m201-r01}。后者包含分别登记的监督与ordinary\_PL行，历史run名称不决定每行实际方法。本报告只复用这些已冻结、独立评分统计，没有重新打开IQ、权重或逐样本目标真值。
 
-源记录一：\nolinkurl{20261023-phase1-practical-residual-full2x2-m600-r01}。本报告只取其中四种外部完整方法的 528 模型；旧 PAMF 配方没有混入当前主表。
+PAMF60个新增主模型科学执行为\nolinkurl{dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f}；标准划分普通PL三模型精确复用原\nolinkurl{a462b7cf4c12a655e6c7a348ce2170a089f2d1cc}。CPU评分恢复执行为\nolinkurl{a79bdf385489cb3822b37434a07e3c43e5ce839a}，不是所有GPU训练的执行版本。
 
-源记录二：\nolinkurl{20261024-phase1-PAMF-REPL-completion-m201-r01}。本报告只取其中监督/ordinary\_PL 主比较 66 模型，以及已测 main\_controls 时延；同一历史 run 名不决定其每行实际方法。
-
-冻结统计来源为已交付 r17 包，完整序列化 CM 与净纠错已独立复算。本报告本版按训练组过滤后核对 12320 行汇总、36960 行总体逐次指标的三次覆盖，并从它们计算成对差；未重新打开 IQ、checkpoint 或逐样本目标真值。
-
-表格文件：\nolinkurl{experiment_groups.csv}（594 个模型的增强/PL/章节/允许场景分组）；\nolinkurl{main_comparison.csv}（六列主比较）；\nolinkurl{DURA_generality.csv}（外部恢复前后配对）；\nolinkurl{complete_summary.csv}（按当前场景规则筛选的外部四格及 PAMF 两类读出）；\nolinkurl{per_seed_overall.csv.gz}（逐次指标）；\nolinkurl{paired_effects.csv}（PAMF 监督/伪标签与恢复差）；\nolinkurl{external_factorial.csv}（四格主效应/交互）；\nolinkurl{data_contracts.csv}（原始集合与包数）；实际曝光、唯一训练阶段成本和时延另列。所有原始代号仅用于附录和机器可读追溯。
-
-外部方法训练/接口执行分别沿原发布记录。PAMF 主比较 60 个新增模型的科学执行为 \nolinkurl{dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f}；标准划分精确复用模型沿各自原执行记录，其中普通伪标签三次模型为 \nolinkurl{a462b7cf4c12a655e6c7a348ce2170a089f2d1cc}。独立 CPU 评分恢复执行为 \nolinkurl{a79bdf385489cb3822b37434a07e3c43e5ce839a}，不能把它标成所有模型的训练版本。
+本版Excel按监督与半监督分别组织实验页，每页包含目的与设计、数据划分、竖柱图及双柱恢复对照、图表数据、完整结果。所有图保留PDF/SVG矢量和逐图数据CSV。新包不覆盖旧包，纯标准库核验器可从逐种子汇总复算均值与标准差。
 
 \FloatBarrier
 \end{document}

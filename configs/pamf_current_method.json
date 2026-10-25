@@ -8,12 +8,20 @@
   "scope": "Current paper and future experiment method selection; historical frozen configurations and other owners remain unchanged.",
   "source_registry_run": "20261024-phase1-PAMF-REPL-completion-m201-r01",
   "source_matrix_method": "ordinary_PL",
-  "model_seeds": [2026092701, 2026092702, 2026092703],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
   "target_based_single_seed_selection": false,
   "training": {
     "epochs": 50,
     "updates": 11100,
-    "trajectory": [20, 10, 20],
+    "trajectory": [
+      20,
+      10,
+      20
+    ],
     "labeled_only_epochs": 13,
     "joint_LU_epochs": 37,
     "L_batch": 128,
@@ -41,7 +49,8 @@
     "display_name": "DURA",
     "architecture_reference": "experiments/pamf_stage2_inference/frozen_version.json",
     "matched_semisupervised_role": "DURA-LU",
-    "new_training_in_this_change": 0
+    "new_training_in_this_change": 0,
+    "matched_supervised_role": "DURA-L"
   },
   "reports": {
     "current_comparison": "docs/PAMF_COMPARISON_REPORT_20261025.md",
@@ -49,14 +58,60 @@
     "historical_method_definition": "docs/PAMF_REPL.md"
   },
   "reporting": {
-    "main_display_columns": ["RIEI", "DRIFT", "IB-RFF", "SDG", "PAMF", "DURA+PAMF"],
+    "main_display_columns": [
+      "RIEI",
+      "DRIFT",
+      "IB-RFF",
+      "SDG",
+      "PAMF",
+      "DURA+PAMF"
+    ],
     "external_default_readout": "raw",
-    "PAMF_display_readouts": {"PAMF": "raw", "DURA+PAMF": "DURA-LU"},
+    "PAMF_display_readouts": {
+      "supervised": {
+        "PAMF": "raw",
+        "DURA+PAMF": "DURA-L"
+      },
+      "ordinary_PL_semi_supervised": {
+        "PAMF": "raw",
+        "DURA+PAMF": "DURA-LU"
+      }
+    },
     "external_DURA_section": "restorer_generality_only",
-    "supervised_PAMF_section": "within_PAMF_controls",
-    "no_channel_augmentation": {"views": ["clean"], "populations": ["cross_rx", "cross_both"]},
-    "channel_augmentation_on": {"views": ["clean", "practical_high", "practical_mid", "practical_low_suburban", "practical_high_urban", "practical_mid_urban", "practical_low_urban"], "source_unseen_date": "separate_diagnostic"},
-    "historical_predictions_preserved": true
+    "supervised_PAMF_section": "supervised_main_comparison",
+    "no_channel_augmentation": {
+      "views": [
+        "clean"
+      ],
+      "populations": [
+        "cross_rx",
+        "cross_both"
+      ]
+    },
+    "channel_augmentation_on": {
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_unseen_date": "separate_diagnostic"
+    },
+    "historical_predictions_preserved": true,
+    "primary_grouping": "learning_regime",
+    "main_regimes": [
+      "supervised",
+      "ordinary_PL_semi_supervised"
+    ],
+    "external_main_cells": {
+      "supervised": "C",
+      "ordinary_PL_semi_supervised": "D"
+    },
+    "performance_chart_type": "vertical_column_single_learning_regime",
+    "restoration_chart_type": "paired_without_DURA_with_DURA"
   },
   "scientific_execution": {
     "new_60_main_models": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",

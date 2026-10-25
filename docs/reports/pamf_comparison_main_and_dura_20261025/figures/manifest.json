@@ -1,38 +1,184 @@
 [
   {
-    "name": "main_cross_date",
-    "caption": "跨日主比较：仅DURA+PAMF接入恢复器，其余五项直接识别。全部采用有信道增强训练；误差线为三个模型种子的样本标准差。"
+    "name": "coverage",
+    "caption": "每种学习条件下的逻辑模型覆盖。覆盖统计或5轮计时不冒称模型种子标准差。",
+    "wide": false,
+    "learning_regime": null,
+    "chart_type": "vertical_column"
   },
   {
-    "name": "main_cross_rx",
-    "caption": "跨接收机主比较：仅DURA+PAMF接入恢复器，其余五项直接识别。全部采用有信道增强训练；误差线为三个模型种子的样本标准差。"
+    "name": "supervised_standard",
+    "caption": "监督组：标准划分跨接收机六景。误差线为三个模型种子的样本标准差。",
+    "wide": false,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
   },
   {
-    "name": "main_cross_both",
-    "caption": "跨日＋跨接收机主比较：仅DURA+PAMF接入恢复器，其余五项直接识别。全部采用有信道增强训练；误差线为三个模型种子的样本标准差。"
+    "name": "supervised_receivers",
+    "caption": "监督组：接收机划分六景准确率。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
   },
   {
-    "name": "sources",
-    "caption": "跨接收机六景结果；自然源数量仅1/2/3/4/6且固定六目标。标注率曲线使用1%、5%、10%，保留非单调结果。"
+    "name": "supervised_labels",
+    "caption": "监督组：标注比例六景准确率。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
   },
   {
-    "name": "labels",
-    "caption": "跨接收机六景结果；自然源数量仅1/2/3/4/6且固定六目标。标注率曲线使用1%、5%、10%，保留非单调结果。"
+    "name": "supervised_sources",
+    "caption": "监督组：源接收机数量六景准确率。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
   },
   {
-    "name": "seven_scenes",
-    "caption": "标准划分跨接收机主比较：仅DURA+PAMF的clean和六景均经过恢复器，其余方法直接识别。"
+    "name": "supervised_ten_class",
+    "caption": "监督组：十类规模 Macro-F1。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
   },
   {
-    "name": "DURA_generality_cross_date",
-    "caption": "跨日：DURA泛用性单独验证，同一外部识别器接入恢复器前后配对。仅含有信道增强、普通伪标签开启的固定训练设置。"
+    "name": "supervised_no_channel",
+    "caption": "监督组无增强：仅目标CLEAN。误差线为三个模型种子的样本标准差。",
+    "wide": false,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
   },
   {
-    "name": "DURA_generality_cross_rx",
-    "caption": "跨接收机：DURA泛用性单独验证，同一外部识别器接入恢复器前后配对。仅含有信道增强、普通伪标签开启的固定训练设置。"
+    "name": "supervised_scenes",
+    "caption": "监督组有增强：逐场景主比较。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
   },
   {
-    "name": "DURA_generality_cross_both",
-    "caption": "跨日＋跨接收机：DURA泛用性单独验证，同一外部识别器接入恢复器前后配对。仅含有信道增强、普通伪标签开启的固定训练设置。"
+    "name": "supervised_dura",
+    "caption": "监督组：DURA泛用性。误差线为三个模型种子的样本标准差。",
+    "wide": false,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "supervised_pamf_restoration",
+    "caption": "监督组PAMF：恢复前后。误差线为三个模型种子的样本标准差。",
+    "wide": false,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "supervised_timing",
+    "caption": "监督组：批量与中位延迟。覆盖统计或5轮计时不冒称模型种子标准差。",
+    "wide": false,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "supervised_population",
+    "caption": "本组：三类人群的六景结果。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_standard",
+    "caption": "半监督组：标准划分跨接收机六景。误差线为三个模型种子的样本标准差。",
+    "wide": false,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_receivers",
+    "caption": "半监督组：接收机划分六景准确率。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_labels",
+    "caption": "半监督组：标注比例六景准确率。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_sources",
+    "caption": "半监督组：源接收机数量六景准确率。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_ten_class",
+    "caption": "半监督组：十类规模 Macro-F1。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_no_channel",
+    "caption": "半监督组无增强：仅目标CLEAN。误差线为三个模型种子的样本标准差。",
+    "wide": false,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_scenes",
+    "caption": "半监督组有增强：逐场景主比较。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_dura",
+    "caption": "半监督组：DURA泛用性。误差线为三个模型种子的样本标准差。",
+    "wide": false,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_pamf_restoration",
+    "caption": "半监督组PAMF：恢复前后。误差线为三个模型种子的样本标准差。",
+    "wide": false,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_timing",
+    "caption": "半监督组：批量与中位延迟。覆盖统计或5轮计时不冒称模型种子标准差。",
+    "wide": false,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_population",
+    "caption": "本组：三类人群的六景结果。误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "registry",
+    "caption": "两种学习条件合计的逻辑模型数。覆盖统计或5轮计时不冒称模型种子标准差。",
+    "wide": false,
+    "learning_regime": null,
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "supervised_dura_all_settings",
+    "caption": "监督组：四种外部方法分面，每个设置为未接DURA/接入DURA双柱；保持同一识别器与输入，误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "supervised",
+    "chart_type": "vertical_column"
+  },
+  {
+    "name": "semi_supervised_dura_all_settings",
+    "caption": "普通PL半监督组：四种外部方法分面，每个设置为未接DURA/接入DURA双柱；保持同一识别器与输入，误差线为三个模型种子的样本标准差。",
+    "wide": true,
+    "learning_regime": "semi_supervised",
+    "chart_type": "vertical_column"
   }
 ]

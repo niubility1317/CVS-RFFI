@@ -1,0 +1,13 @@
+experiment,learning_regime,category,series,mean,sd,unit
+半监督_十类规模,semi_supervised,标准接收机划分,RIEI,44.57626112995386,2.772546887796048,Macro-F1 (%)
+半监督_十类规模,semi_supervised,大规模十类数据,RIEI,19.272588264704797,1.83898406079408,Macro-F1 (%)
+半监督_十类规模,semi_supervised,标准接收机划分,DRIFT,55.969490866965415,1.2762244270645167,Macro-F1 (%)
+半监督_十类规模,semi_supervised,大规模十类数据,DRIFT,31.706052329645697,2.8157364827843288,Macro-F1 (%)
+半监督_十类规模,semi_supervised,标准接收机划分,IB-RFF,50.54621086998664,2.0724129867063756,Macro-F1 (%)
+半监督_十类规模,semi_supervised,大规模十类数据,IB-RFF,47.66495886412751,3.001797070234369,Macro-F1 (%)
+半监督_十类规模,semi_supervised,标准接收机划分,SDG,65.11344319497353,0.8529893395557859,Macro-F1 (%)
+半监督_十类规模,semi_supervised,大规模十类数据,SDG,61.23339975668679,0.4962944524191086,Macro-F1 (%)
+半监督_十类规模,semi_supervised,标准接收机划分,PAMF,70.79387625384062,0.8568983014722397,Macro-F1 (%)
+半监督_十类规模,semi_supervised,大规模十类数据,PAMF,63.101386553986835,0.4537648696625991,Macro-F1 (%)
+半监督_十类规模,semi_supervised,标准接收机划分,DURA+PAMF,78.50552154428281,0.08712479260890148,Macro-F1 (%)
+半监督_十类规模,semi_supervised,大规模十类数据,DURA+PAMF,72.4426550620568,0.1799447878861693,Macro-F1 (%)
