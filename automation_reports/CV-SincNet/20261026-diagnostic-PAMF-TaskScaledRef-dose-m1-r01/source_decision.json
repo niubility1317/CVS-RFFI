@@ -1,0 +1,80 @@
+{
+  "status": "SOURCE_TASK_SCALED_DOSE_COMPLETE",
+  "code_commit": "3e7103fdff6992a2c6aafbe5b1464295ac38ae6b",
+  "decision": {
+    "selected_weight": 0.03257680992215036,
+    "median_primary_norm": 0.978037416934967,
+    "median_extra_norm": {
+      "GUniform": 1.3482399582862854,
+      "GTaskScaled": 3.0022504329681396,
+      "RawTaskScaled": 0.23528318107128143
+    },
+    "median_cosine": {
+      "GUniform": -0.05752267874777317,
+      "GTaskScaled": -0.05218441877514124,
+      "RawTaskScaled": -0.07075376994907856
+    },
+    "weighted_median_norm_ratio": {
+      "GUniform": 0.04490764472813695,
+      "GTaskScaled": 0.1,
+      "RawTaskScaled": 0.007836893900908576
+    },
+    "rule": "min(.25,.10*median(primary_norm)/max_variant median(extra_norm));one common dose;no target feedback",
+    "scope": "Whole-model preclip CENTER_UNITS physical gradient proxy;not AdamW update guarantee or target benefit"
+  },
+  "variants": [
+    "GUniform",
+    "GTaskScaled",
+    "RawTaskScaled"
+  ],
+  "model_seed": 2026092701,
+  "L_exposures": 1536,
+  "U_exposures": 3072,
+  "full_parameter_gradient_calls": 60,
+  "task_scale_max": 32.0,
+  "held_extra_RX": 1,
+  "original_L_primary": true,
+  "ordinary_raw_PL_primary": true,
+  "student_and_teacher_parameters_and_registered_buffers_unchanged": true,
+  "temporary_buffers_restored": true,
+  "default_head_auxiliary_parameter_gradients": 0,
+  "optimizer_updates": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "U_truth_read": false,
+  "reference_updates": 0,
+  "G_packet_forwards": 0,
+  "head_fit_updates": 0,
+  "seconds": 11.637732157949358,
+  "scope": "No-update whole-model source dose andscale diagnostics;not training,AdamW guarantee or target benefit",
+  "independent_readback": "VERIFIED",
+  "post_launch_PID_CWD_argv_GPU_loggrowth": "VERIFIED",
+  "smoke": {
+    "status": "PASS",
+    "source_role": "L_s",
+    "physical_packets": 2,
+    "actual_E30": true,
+    "default_head": true,
+    "recomputed_head_matches": true,
+    "task_scaled_feature_graph": true,
+    "optimizer_updates": 0,
+    "target_reads": 0
+  },
+  "scale_summary": {
+    "GUniform": {
+      "task_scale_mean": 1.0,
+      "task_scale_sum": 188.41666666666666,
+      "task_scale_cap_fraction": 0.0
+    },
+    "GTaskScaled": {
+      "task_scale_mean": 1.477860485514005,
+      "task_scale_sum": 281.10122712453204,
+      "task_scale_cap_fraction": 0.0
+    },
+    "RawTaskScaled": {
+      "task_scale_mean": 0.15265765972435474,
+      "task_scale_sum": 28.843923568725586,
+      "task_scale_cap_fraction": 0.0
+    }
+  }
+}
