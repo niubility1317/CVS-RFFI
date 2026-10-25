@@ -67,3 +67,7 @@
 ## 交接
 
 该基准已因 REPL 的历史选择及用户本次诊断而暴露，本次属于自适应研发，不能称为新的盲测或据三 seed SD 声称显著。当前完成源诊断与配方固定，后续以实际训练／全预测／独立评分及同 row 分析推进；原目标保持 active，未达成前不宣布研发完成。
+
+## 用户授权的队列优先级变更
+
+control-r03 已独立核实接管原 6 个健康 worker，保持原 PID、科学 release/config/output/预算和已完成结果；21 个未开始训练及其依赖暂缓，待新 9 学生全部评分后原样续排。完成的旧行继续自动预测/评分。只替换精确所属 controller，未停止训练子进程。新 controller 允许全部 GPU0～7；本 run 原任务仍按原 GPU5/6/7 配置执行。科学执行 commit1fa92a0 未变，历史 F0/F1 负结果保留。证据见 [priority_handoff_evidence.json](priority_handoff_evidence.json)。

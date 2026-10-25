@@ -57,3 +57,11 @@ F0 三方案×三学生种子：冻结其他两seed同契约E20确认自身.95�
 ## 调度器技术状态与恢复
 
 真实同契约 E20 的 L/U 有限反传、默认头、冻结 peer 检查 PASS；零优化器更新、零 query 读取。27 个科学任务已固定，尚未启动 GPU worker。随后旧 controller 精确单 PID 退出时读取 environ 遇到 PermissionError，新 controller 退出；旧 6 个 detached 健康训练继续。修复只调整退出存活检查并由独立 control-r03 接管，复用本 run 原配置、原 release、原输出和 PASS smoke，不重复训练或重新选模。证据见 [handoff_failure.json](handoff_failure.json)。
+
+## 启动独立读回：VERIFIED／RUNNING
+
+新 control 的 PID/CWD/完整参数和实际 GPU 已独立核实，archive 单次传输校验、远端编译 PASS。恢复已接管 6 个原健康 worker，未停止训练子进程；原 21 个未启动扩展已暂缓。科学配置和预算零改动。实际 GPU0～7 均在使用，观察到每卡总 CUDA 进程最多 2 个。
+
+新矩阵 9 个学生中 8 个已启动且均完成首个新增 epoch（累计 E21/4662）；剩余 PeerT1U1 seed2026092703 等待 GPU7 空位。两次独立读回之间，全部 8 个新学生日志均增长。已读取当前段所有可用完整结构化记录共 3564 条；该快照不等于全程结束分析。每行首个新增 epoch 共 222 步，U_seen=56700、peer_eval_views=113400；full U 方案 student_views=340200、physical_U=28350。实际 U 权重、L 每步 768 前向包、As 独立 KL0、teacher/EMA 零更新、零非有限跳步均与登记一致。主方案实际 U 接受率约 90%，不是 U 标签正确率。源域执行明细见科学 run 的 early_source_execution.csv。
+
+原训练自动测试已继续：完成的旧行直接进入预测队列，不等待整批。新学生也将在固定 E50 后自动完成 raw PAMF 与同一 G-LU＋PAMF、三人群、七视图的预测和独立 truth-last。当前没有本轮新学生 target 指标，性能目标尚未证明。证据见 [launch_evidence.json](launch_evidence.json)。
