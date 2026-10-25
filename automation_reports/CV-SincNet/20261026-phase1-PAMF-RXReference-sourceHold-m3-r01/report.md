@@ -35,3 +35,9 @@
 ## 三条源验证训练已实际更新
 
 VERIFIED_RUNNING，科学代码 `37dc44e3dd52854a415ca5f7663669b417171691`。三个变体均已进入真实更新，实际物理GPU为0/0/1，只有student seed2026092701。真实E30/defaulthead/L128-U256联合backward smoke通过；独立PID/CWD/argv/GPU和step日志增长核实。当前可用完整新增step记录分别为[261, 262, 278]，不是E50完成或新目标结果。原L768包、AsKL0、隐藏U、共同升温权重和零G/参照更新的最新记录符合配置。见 [启动证据](launch_evidence.json) 和 [启动源进度](startup_source_progress.csv)。逐行训练后自动完成完整源V八视图；本run不包含目标访问或三种子扩展。
+
+## 运行阶段完整日志前缀核查
+
+独立检查实际initial checkpoint及全部当前完整step记录，核对原默认头6×160、own E30父链配置、L768/AsKL0/CRIC.1、完整U曝光、排除RX1的新增接受计数、共同权重和非有限/真值标志。三个变体在相同步数的新增接受流完全一致，每完整epoch新增接受41939条；全U仍进入原raw PL主项。G与参照未更新，无新目标读取。
+
+完整可用记录数、观测UTC时间与每行进度见 [阶段源执行](available_source_execution.csv) 和 [阶段证据](available_source_evidence.json)，快照可随观察更新。已缓冲而未形成完整JSON行的尾部不计入；这不是全部E50完成或目标收益。loss仅作源训练健康观察，不改变已冻结的源选择规则、训练预算或候选顺序。
