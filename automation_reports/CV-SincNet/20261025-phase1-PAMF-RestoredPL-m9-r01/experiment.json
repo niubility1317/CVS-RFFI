@@ -1,0 +1,555 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261025-phase1-PAMF-RestoredPL-m9-r01",
+  "group_id": "phase1-pamf-restored-IQ-ssl-20261025",
+  "display_name": "保留普通PL主项的恢复域软监督九学生匹配实验",
+  "description": "PLControl/RawSoft/DURASoft各3seed，原ordinaryPL E30+20到E50；源规则定剂量0.12618073797689983，40dB后噪声按预定源负结果排除。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-RestoredPL",
+    "PAMF-restored-U-soft-supervision"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "SSL",
+    "three-seed",
+    "matched-raw-control",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261025-diagnostic-PAMF-DURA-paired-source-m3-r01",
+    "20261025-diagnostic-PAMF-DURA-dose-noise-m1-r02",
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01"
+  ],
+  "replaces_run_id": "20261025-phase1-PAMF-PeerSupervised-m9-r01",
+  "authorization": "用户持续研发目标、全显卡可用、三种子及DURA配对收益要求；先分析计划和源诊断已完成，现落实固定源规则产生的匹配训练矩阵。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01"
+  },
+  "data": {
+    "dataset": "original F0 unchanged VALIDATED_ONCE source/target physical split",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "unchanged F0 source role_ids and all original target physical IDs; all33 context handles retained only for verified prefix lookup",
+    "physical_ids_ref": "same source role_ids and target population IDs; prediction order checked",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "6300 labels,original full supervised T1 mechanism",
+      "U_s": "56700IQ,TX hidden;raw selfPL main+optionalfrozenE30meanprobability soft target",
+      "V": "27000source validation only,no gradient/stat updates,no new checkpoint selection;final fixedE50",
+      "target": "original cross_date30000/cross_rx126000/cross_both42000;only frozen predictions thenindependenttruthlast"
+    },
+    "train_ratio": "L6300/U56700/V27000;L/(L+U)=10%;original sourcepool.07/.63/.30",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_SSL",
+    "query_use": "fixed checkpoint prediction only,truthlast independentCPU",
+    "external_method_exception": null,
+    "claim_scope": "adaptive research on exposed benchmark;no target feedback,not new blind/significance claim"
+  },
+  "checkpoint": {
+    "initialization": "own originalordinaryPL scratchE20+own10 frozenE30,append20nativeepochs;no crosscontract parent",
+    "sources": [
+      "F0 ordinaryPL E30 seeds2026092701/02/03 ownparents",
+      "same3frozen E30 teachers for shared U targets",
+      "fixedsamecontractG-LU forsourceUcache andexisting targetreadouts"
+    ],
+    "contract_check_ref": "validate_prefix_headers+validate_e30,strict samecontractG anddefaulthead,existing frozen evaluationreader",
+    "provenance_verdict": "loadonlymatching actualE20/E30 sourceonly headers,payloadnativeU/EMAfalse;Utruthhidden",
+    "selection_rule": "all9 predeclaredrows,own fixedE30 andfinalE50;no ranking by target/sourceV;dose andnoise eligibility already source-frozen"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-restored-pl-20261025",
+    "gpu_policy": "all8 GPUs;seed01 pool0/1/5,seed02 pool3/2/6,seed03 pool4/7;<=2own/card andglobalCUDA+pending<2 beforeadmission,free>=10000MiB;oneglobalCPUscorer;preserve otherowners",
+    "remote_run_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01",
+    "remote_log_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/restored_training",
+    "launch_command": "PYTHON -u -m experiments.pamf_restored_pl.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01/runtime.json",
+    "stop_rule": "First smoke/protocol/ancestry/cache/nonfinite/stagefailure stops newlaunches;healthyownchildren finish,preservealloutputs/otherowners;noautomaticretry or target-drivenchange.",
+    "gpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "resource_policy": "all physical GPU0-7 authorized, own<=2 and total CUDA/pending<=2 per card, free>=10000MiB before admission; global single independent CPU scorer",
+    "priority": "user-authorized precise controller-only handoff; healthy old workers/automatic tests continue; original 21 unstarted ChannelPL rows deferred until new9 all scored then resumed unchanged"
+  },
+  "expected_artifacts": [
+    "sharedsource U cacheonly,56700x3fixedrestoredviews",
+    "threefrozen E30 meanq/mask,sourcephysicalindex,noUlabels",
+    "actualE30+cacheL/U fullnativebackwardsmoke",
+    "9ownE30+20students,finaldefaulthead,fullstepmetrics/progress/state",
+    "eachrowimmediate3populationx2routesx7viewpredictions andindependenttruthlastscores",
+    "perrowpartialreport,complete3seedpairedsummary,exactjointgoalcheck",
+    "parent/teacher/cache/incrementalcostseparate",
+    "PID/CWD/argv/GPU/loggrowthevidence"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "pairedseedSD",
+      "rawclean+1pp",
+      "rawsix>+1.5pp",
+      "DURA-LUsix>bothcontrols",
+      "Uexposures/acceptance",
+      "extra/raw/restoredforwardcounts",
+      "sourcecache/parent/incrementalcost"
+    ],
+    "dimensions": [
+      "method",
+      "modelseed",
+      "cross_date/cross_rx/cross_both/alltargetRX168000",
+      "raw/DURA-LU",
+      "clean+6practical",
+      "TX/RX/day"
+    ],
+    "prediction_ref": "private row/readouts predictions aftereachfinalE50",
+    "scorer_ref": "independentCPU afterall3popx2routesx7viewsfixed;scoreconfighasnosource/Ghandles"
+  },
+  "rows": [
+    {
+      "row_id": "F0-PLControl-s2026092701",
+      "method": "PLControl",
+      "purpose": "matched sourceSSL tail andautomatic target readout",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/configs/train__F0-PLControl-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-PLControl-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "onlystudentseedvaries;fixedsourcechannel/hardwareseeds;sharedteacher3E30,notinferenceensemble;targetviewsreusedfrozenoriginal",
+      "k": null,
+      "scenario": "raw+DURA-LU clean+6practical;3populations",
+      "optimizer": "originalnativeCENTER_UNITS AdamW segmented entry",
+      "lr": "originalnativecosine/coordinatepolicy;samematched20-epochstage",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownE30+20=50/11100,13L+37LU;new4440steps;U1134000exposures;extraB/C2268000Fviews;other2sharedE30teachercostseparate",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-PLControl-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/logs/train__F0-PLControl-s2026092701.log",
+      "command": "PYTHON -u -m experiments.pamf_restored_pl.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/complete.json",
+        "source/segment50/step_metrics.jsonl.gz",
+        "readouts/F0-PLControl-s2026092701/predictions/complete.json",
+        "readouts/F0-PLControl-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-PLControl-s2026092702",
+      "method": "PLControl",
+      "purpose": "matched sourceSSL tail andautomatic target readout",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/configs/train__F0-PLControl-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-PLControl-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "onlystudentseedvaries;fixedsourcechannel/hardwareseeds;sharedteacher3E30,notinferenceensemble;targetviewsreusedfrozenoriginal",
+      "k": null,
+      "scenario": "raw+DURA-LU clean+6practical;3populations",
+      "optimizer": "originalnativeCENTER_UNITS AdamW segmented entry",
+      "lr": "originalnativecosine/coordinatepolicy;samematched20-epochstage",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownE30+20=50/11100,13L+37LU;new4440steps;U1134000exposures;extraB/C2268000Fviews;other2sharedE30teachercostseparate",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-PLControl-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/logs/train__F0-PLControl-s2026092702.log",
+      "command": "PYTHON -u -m experiments.pamf_restored_pl.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/complete.json",
+        "source/segment50/step_metrics.jsonl.gz",
+        "readouts/F0-PLControl-s2026092702/predictions/complete.json",
+        "readouts/F0-PLControl-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-PLControl-s2026092703",
+      "method": "PLControl",
+      "purpose": "matched sourceSSL tail andautomatic target readout",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/configs/train__F0-PLControl-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-PLControl-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "onlystudentseedvaries;fixedsourcechannel/hardwareseeds;sharedteacher3E30,notinferenceensemble;targetviewsreusedfrozenoriginal",
+      "k": null,
+      "scenario": "raw+DURA-LU clean+6practical;3populations",
+      "optimizer": "originalnativeCENTER_UNITS AdamW segmented entry",
+      "lr": "originalnativecosine/coordinatepolicy;samematched20-epochstage",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownE30+20=50/11100,13L+37LU;new4440steps;U1134000exposures;extraB/C2268000Fviews;other2sharedE30teachercostseparate",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-PLControl-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/logs/train__F0-PLControl-s2026092703.log",
+      "command": "PYTHON -u -m experiments.pamf_restored_pl.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/complete.json",
+        "source/segment50/step_metrics.jsonl.gz",
+        "readouts/F0-PLControl-s2026092703/predictions/complete.json",
+        "readouts/F0-PLControl-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-RawSoft-s2026092701",
+      "method": "RawSoft",
+      "purpose": "matched sourceSSL tail andautomatic target readout",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/configs/train__F0-RawSoft-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-RawSoft-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "onlystudentseedvaries;fixedsourcechannel/hardwareseeds;sharedteacher3E30,notinferenceensemble;targetviewsreusedfrozenoriginal",
+      "k": null,
+      "scenario": "raw+DURA-LU clean+6practical;3populations",
+      "optimizer": "originalnativeCENTER_UNITS AdamW segmented entry",
+      "lr": "originalnativecosine/coordinatepolicy;samematched20-epochstage",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownE30+20=50/11100,13L+37LU;new4440steps;U1134000exposures;extraB/C2268000Fviews;other2sharedE30teachercostseparate",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-RawSoft-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/logs/train__F0-RawSoft-s2026092701.log",
+      "command": "PYTHON -u -m experiments.pamf_restored_pl.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/complete.json",
+        "source/segment50/step_metrics.jsonl.gz",
+        "readouts/F0-RawSoft-s2026092701/predictions/complete.json",
+        "readouts/F0-RawSoft-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-RawSoft-s2026092702",
+      "method": "RawSoft",
+      "purpose": "matched sourceSSL tail andautomatic target readout",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/configs/train__F0-RawSoft-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-RawSoft-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "onlystudentseedvaries;fixedsourcechannel/hardwareseeds;sharedteacher3E30,notinferenceensemble;targetviewsreusedfrozenoriginal",
+      "k": null,
+      "scenario": "raw+DURA-LU clean+6practical;3populations",
+      "optimizer": "originalnativeCENTER_UNITS AdamW segmented entry",
+      "lr": "originalnativecosine/coordinatepolicy;samematched20-epochstage",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownE30+20=50/11100,13L+37LU;new4440steps;U1134000exposures;extraB/C2268000Fviews;other2sharedE30teachercostseparate",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-RawSoft-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/logs/train__F0-RawSoft-s2026092702.log",
+      "command": "PYTHON -u -m experiments.pamf_restored_pl.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/complete.json",
+        "source/segment50/step_metrics.jsonl.gz",
+        "readouts/F0-RawSoft-s2026092702/predictions/complete.json",
+        "readouts/F0-RawSoft-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-RawSoft-s2026092703",
+      "method": "RawSoft",
+      "purpose": "matched sourceSSL tail andautomatic target readout",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/configs/train__F0-RawSoft-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-RawSoft-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "onlystudentseedvaries;fixedsourcechannel/hardwareseeds;sharedteacher3E30,notinferenceensemble;targetviewsreusedfrozenoriginal",
+      "k": null,
+      "scenario": "raw+DURA-LU clean+6practical;3populations",
+      "optimizer": "originalnativeCENTER_UNITS AdamW segmented entry",
+      "lr": "originalnativecosine/coordinatepolicy;samematched20-epochstage",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownE30+20=50/11100,13L+37LU;new4440steps;U1134000exposures;extraB/C2268000Fviews;other2sharedE30teachercostseparate",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-RawSoft-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/logs/train__F0-RawSoft-s2026092703.log",
+      "command": "PYTHON -u -m experiments.pamf_restored_pl.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/complete.json",
+        "source/segment50/step_metrics.jsonl.gz",
+        "readouts/F0-RawSoft-s2026092703/predictions/complete.json",
+        "readouts/F0-RawSoft-s2026092703/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-DURASoft-s2026092701",
+      "method": "DURASoft",
+      "purpose": "matched sourceSSL tail andautomatic target readout",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/configs/train__F0-DURASoft-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-DURASoft-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "onlystudentseedvaries;fixedsourcechannel/hardwareseeds;sharedteacher3E30,notinferenceensemble;targetviewsreusedfrozenoriginal",
+      "k": null,
+      "scenario": "raw+DURA-LU clean+6practical;3populations",
+      "optimizer": "originalnativeCENTER_UNITS AdamW segmented entry",
+      "lr": "originalnativecosine/coordinatepolicy;samematched20-epochstage",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownE30+20=50/11100,13L+37LU;new4440steps;U1134000exposures;extraB/C2268000Fviews;other2sharedE30teachercostseparate",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-DURASoft-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/logs/train__F0-DURASoft-s2026092701.log",
+      "command": "PYTHON -u -m experiments.pamf_restored_pl.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/complete.json",
+        "source/segment50/step_metrics.jsonl.gz",
+        "readouts/F0-DURASoft-s2026092701/predictions/complete.json",
+        "readouts/F0-DURASoft-s2026092701/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-DURASoft-s2026092702",
+      "method": "DURASoft",
+      "purpose": "matched sourceSSL tail andautomatic target readout",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/configs/train__F0-DURASoft-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-DURASoft-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "onlystudentseedvaries;fixedsourcechannel/hardwareseeds;sharedteacher3E30,notinferenceensemble;targetviewsreusedfrozenoriginal",
+      "k": null,
+      "scenario": "raw+DURA-LU clean+6practical;3populations",
+      "optimizer": "originalnativeCENTER_UNITS AdamW segmented entry",
+      "lr": "originalnativecosine/coordinatepolicy;samematched20-epochstage",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownE30+20=50/11100,13L+37LU;new4440steps;U1134000exposures;extraB/C2268000Fviews;other2sharedE30teachercostseparate",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-DURASoft-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/logs/train__F0-DURASoft-s2026092702.log",
+      "command": "PYTHON -u -m experiments.pamf_restored_pl.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/complete.json",
+        "source/segment50/step_metrics.jsonl.gz",
+        "readouts/F0-DURASoft-s2026092702/predictions/complete.json",
+        "readouts/F0-DURASoft-s2026092702/scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-DURASoft-s2026092703",
+      "method": "DURASoft",
+      "purpose": "matched sourceSSL tail andautomatic target readout",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/configs/train__F0-DURASoft-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-DURASoft-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "onlystudentseedvaries;fixedsourcechannel/hardwareseeds;sharedteacher3E30,notinferenceensemble;targetviewsreusedfrozenoriginal",
+      "k": null,
+      "scenario": "raw+DURA-LU clean+6practical;3populations",
+      "optimizer": "originalnativeCENTER_UNITS AdamW segmented entry",
+      "lr": "originalnativecosine/coordinatepolicy;samematched20-epochstage",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownE30+20=50/11100,13L+37LU;new4440steps;U1134000exposures;extraB/C2268000Fviews;other2sharedE30teachercostseparate",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/F/F0-DURASoft-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-RestoredPL-m9-r01/logs/train__F0-DURASoft-s2026092703.log",
+      "command": "PYTHON -u -m experiments.pamf_restored_pl.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-RestoredPL-release-r01/runtime.json",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/complete.json",
+        "source/segment50/step_metrics.jsonl.gz",
+        "readouts/F0-DURASoft-s2026092703/predictions/complete.json",
+        "readouts/F0-DURASoft-s2026092703/scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All9newE30+20tailsincludingPLControlaretrained;originalsup/ordinaryPLstilldefineusergoal,notreplacedbynewA.",
+    "B/Cextraacceptanceandtargetsarefixed/shared;ordinarymainselfPLmasksnaturallyevolvewithstudent,unchangedrule.",
+    "CurrentfullpeerandChannelPL/label01healthyownersnotstopped/hotmodified;thisisindependentowner.",
+    "Sharedteacherparentsadd2otherE30sourcesperstudent;90sharedprefixepochs+180new=270uniqueFepochs,not9independent50epochcost.",
+    "OnlysourceUcacheisnew;existingtargetG-LUcache/viewbytesreused,no targetGtrainingorregeneration.",
+    "Source-doseprobeisonefixedstudentgradientdiagnostic,notproof3seedoptimality;allformalrowscompleteandreportregardlessscores."
+  ],
+  "matrix": {
+    "protocol": "F0",
+    "methods": [
+      "PLControl",
+      "RawSoft",
+      "DURASoft"
+    ],
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "students": 9,
+    "trajectory": [
+      20,
+      10,
+      20
+    ],
+    "parent_epoch": 30,
+    "new_epochs": 20,
+    "new_updates": 4440,
+    "final_epoch": 50,
+    "final_updates": 11100,
+    "main": "unchangedfullT1L+ordinary ownrawhardPL0.95weight1,wholeUbatchmean",
+    "extra_weight": 0.12618073797689983,
+    "extra_ramp_steps": 444,
+    "extra": "Braw/CsamephysicalG(H(U));frozen3E30rawmeanprobability,allagreeandconfidence>=.95,twoforwardsoftCEaverage,wholeUbatchmean",
+    "no_G_confidence_gate": true,
+    "no_postG_noise": true,
+    "no_new_G": true,
+    "no_new_head": true,
+    "source_rule": "fixed sourcegradientdose;postnoiseexcluded6/9stabilityfail;no targetfeedback",
+    "shared_prefix_unique_epochs": 90,
+    "new_student_epochs": 180,
+    "all_unique_F_epochs": 270,
+    "source_U_cache": {
+      "U": 56700,
+      "scenes": 3,
+      "FP32": true,
+      "teacher_F_forwards": 170100,
+      "G_forwards": 170100,
+      "secondary_normalization": false
+    },
+    "target_RX_count_per_seed": 168000,
+    "source_RX_unseen_date_test": 30000,
+    "readouts": [
+      "raw",
+      "DURA-LU"
+    ],
+    "views": 7,
+    "goal": {
+      "raw_clean_gain_pp_min": 1.0,
+      "raw_six_gain_pp_strict_min": 1.5,
+      "DURA_six_gain_pp_strict_min": 0.0,
+      "controls": [
+        "supervised",
+        "ordinary_PL"
+      ]
+    },
+    "GPU_pools": {
+      "2026092701": [
+        0,
+        1,
+        5
+      ],
+      "2026092702": [
+        3,
+        2,
+        6
+      ],
+      "2026092703": [
+        4,
+        7
+      ]
+    },
+    "max_global_GPU_workers_per_card": 2,
+    "independent_CPU_scorers": 1
+  },
+  "registered_at": "2026-10-25T13:41:33+00:00"
+}
