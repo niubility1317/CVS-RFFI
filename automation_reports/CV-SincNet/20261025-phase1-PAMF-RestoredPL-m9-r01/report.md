@@ -49,3 +49,18 @@ RUNNING，外部执行VERIFIED。科学release commit为c8a6efacfde29f8ced1c3bf6
 DURASoft seed01/02的额外源软CE分别从首epoch约0.2616/0.2577降至最近可用222步约0.2114/0.2134；这只说明恢复分支在学习，不能替代目标性能。全部已声明目标仍需E50后固定预测与独立truth-last。
 
 [全部可用源记录汇总](available_source_execution.csv)、[配对及执行证据](available_source_evidence.json)、[九学生进度](current_source_progress.csv)。原目标criteria文件的“仅分析、未启动”状态已按实证更新为正在训练，三项数字门槛和数据权限保持。
+
+## 八行评分完成的阶段结果
+
+PARTIAL：8/9学生完成固定E50及独立raw/G-LU×三人群×七景truth-last，DURASoft尚缺seed03，不计算其三seed均值。以下为原目标RX全部日期168000记录/seed的完整3seed组均值±样本SD。
+
+| 组别 | raw clean | raw六景 | G-LU clean | G-LU六景 |
+| --- | ---: | ---: | ---: | ---: |
+| PLControl | 84.967063±0.224833% | 70.334854±0.956618% | 85.022222±0.223596% | 78.061640±0.146305% |
+| RawSoft | 84.872817±0.254680% | 70.262731±0.832628% | 84.926984±0.257182% | 78.011839±0.173580% |
+
+PLControl相对原普通PL的raw clean/raw六景/G六景差分别−0.014683/−0.024504/−0.012996pp，支持基线复现接近。RawSoft相对本次匹配PLControl的对应差为−0.094246/−0.072123/−0.049802pp；相对原普通PL也未改善。因此额外raw固定软监督尚未达标，不能把源q精度高或源loss下降说成目标增益。恢复域组仍等待原seed03按冻结配置完成，不改参数/换seed/选择性重跑。
+
+完整读取8个已完成学生的35520条新增E31–E50结构化记录和6392行stdout；actual final_only、自身E30父、原默认6×160头、native U/EMA关闭、所有新增mask/前向/权重均符合配置。B/C每行额外接受1058920次、每完整epoch52946条，零非有限跳步/U真值/target训练/G或教师更新。尚未完成的行不算入完整训练审计。
+
+[主端点](partial8_primary_endpoints.csv)、[匹配控制差](partial8_matched_control.csv)、[完整已结束源训练](finished_source_execution.csv)、[阶段证据](partial8_result_evidence.json)。这些是阶段性已冻结测试结果，不改变剩余健康运行。

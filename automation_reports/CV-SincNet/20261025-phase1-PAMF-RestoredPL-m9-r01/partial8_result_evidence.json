@@ -1,0 +1,118 @@
+{
+  "status": "PARTIAL",
+  "scored_students": 8,
+  "planned_students": 9,
+  "complete_three_seed_groups": [
+    "PLControl",
+    "RawSoft"
+  ],
+  "DURASoft_completed_seeds": [
+    2026092701,
+    2026092702
+  ],
+  "DURASoft_three_seed_mean_not_available": true,
+  "groups": [
+    {
+      "method": "PLControl",
+      "completed_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "required_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "status": "COMPLETE_THREE_SEED_SCORING",
+      "goal_pass": false,
+      "goals": [
+        {
+          "route": "raw",
+          "endpoint": "clean",
+          "exact_gain_pp": "-37/2520",
+          "gain_pp": -0.014682539682539682,
+          "pass_": false
+        },
+        {
+          "route": "raw",
+          "endpoint": "six_practical_mean",
+          "exact_gain_pp": "-1129/4320",
+          "gain_pp": -0.26134259259259257,
+          "pass_": false
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "six_practical_mean",
+          "exact_gain_pp": "-131/10080",
+          "gain_pp": -0.012996031746031747,
+          "pass_": false
+        }
+      ]
+    },
+    {
+      "method": "RawSoft",
+      "completed_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "required_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "status": "COMPLETE_THREE_SEED_SCORING",
+      "goal_pass": false,
+      "goals": [
+        {
+          "route": "raw",
+          "endpoint": "clean",
+          "exact_gain_pp": "-61/560",
+          "gain_pp": -0.10892857142857143,
+          "pass_": false
+        },
+        {
+          "route": "raw",
+          "endpoint": "six_practical_mean",
+          "exact_gain_pp": "-2521/7560",
+          "gain_pp": -0.33346560846560847,
+          "pass_": false
+        },
+        {
+          "route": "DURA-LU",
+          "endpoint": "six_practical_mean",
+          "exact_gain_pp": "-211/3360",
+          "gain_pp": -0.06279761904761905,
+          "pass_": false
+        }
+      ]
+    },
+    {
+      "method": "DURASoft",
+      "completed_seeds": [
+        2026092701,
+        2026092702
+      ],
+      "required_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "status": "WAITING_FOR_ALL_THREE_SEEDS",
+      "goal_pass": false
+    }
+  ],
+  "independent_truth_last": true,
+  "physical_target_RX_count_per_seed": 168000,
+  "finished_source_records_read": 35520,
+  "complete_stdout_lines_read": 6392,
+  "source_final_only": true,
+  "actual_native_U_EMA": false,
+  "U_truth_read": false,
+  "target_training_reads": 0,
+  "nonfinite_skips": 0,
+  "all_three_goal_conditions_met": false,
+  "fixed_method_training_not_changed_from_target_results": true,
+  "scope": "two complete3seedgroups and2individualDURASoftscores;not complete matrix"
+}
