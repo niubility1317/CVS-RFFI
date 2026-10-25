@@ -1,0 +1,33 @@
+{
+  "status": "ANALYZED",
+  "external_action_status": "VERIFIED",
+  "code_commit": "38a6391eb8c6d1d0cd89b624eb17c0025dfdaac7",
+  "gradient_decision": {
+    "selected_weight": 0.12618073797689983,
+    "median_primary_norm": 0.9098556935787201,
+    "median_extra_norm": 1.802683413028717,
+    "median_cosine": -0.13024502620100975,
+    "median_weighted_extra_to_primary": 0.27808601780007525,
+    "source_gradient_pass": true,
+    "rule": "min(.25,.25*median(primary_gradient_norm)/median(restored_extra_gradient_norm));no target feedback"
+  },
+  "gradient_object": "all trainable preclip gradients;Sinc in physicalHz as CENTER_UNITS global clip,othersnative;not AdamW update",
+  "gradient_model_seed": 2026092701,
+  "gradient_batches": 12,
+  "L_exposures": 1536,
+  "U_exposures": 3072,
+  "source_V_noise": 27000,
+  "frozen_models": 3,
+  "noise_cells": 9,
+  "noise_feasibility_pass": false,
+  "noise_cells_passed": 3,
+  "optimizer_updates": 0,
+  "source_V_gradient_reads": 0,
+  "U_truth_read": false,
+  "target_reads": 0,
+  "F_G_updates": 0,
+  "parameters_and_all_registered_buffers_unchanged": true,
+  "seconds": 158.29359810287133,
+  "next_matrix": "three methods x three seeds:ordinaryPL control,extra rawsoft,extra restoredsoft;no postG noise",
+  "claim": "Source feasibility only;not target gain or trained three-student result"
+}
