@@ -1,0 +1,2608 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261025-phase1-PAMF-ChannelPL-m33-r01",
+  "group_id": "phase1-pamf-channel-pl-20261025",
+  "display_name": "PAMF-ChannelPL 三种子匹配续训与完整冻结测试",
+  "description": "11 契约×3 seed，同普通PL E20继承后独立10+20轮；U权重1、raw阈值0.95、可靠As的0.2 CE份额，保留原PAMF监督机制。逐row自动3人群×7view×raw及同G-LU预测与独立truth-last。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-ChannelPL-candidate"
+  ],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "source-channel",
+    "three-seed",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261025-phase1-PAMF-ChannelPL-source-m33-r01",
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-25 用户要求继续深入分析 REPL 的整体负收益并优化半监督；既有三GPU、三个seed授权。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261025-phase1-PAMF-ChannelPL-training-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig / ManyRx, eleven unchanged VALIDATED_ONCE source contracts",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "existing source/target handles and restored G-LU cache from complete m201; unchanged",
+    "physical_ids_ref": "same source role_ids and target population IDs; prediction order checked",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original true-label PAMF supervised objective; batch128",
+      "U_s": "hidden TX; original native batch256/partial batches; E14-E20 ordinaryPL, E21-E50 ChannelPL",
+      "V": "original source health only; fixed final checkpoint, no parameter/head updates"
+    },
+    "train_ratio": "original per-contract proportions; no relabeling or enlarged L",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only_after_all_populations_views_routes_of_same_row_are_frozen",
+    "external_method_exception": null,
+    "claim_scope": "Actual three-F-seed raw and fixed same-contract G-LU accuracy; adaptive previously exposed benchmark; no blind/significance claim."
+  },
+  "checkpoint": {
+    "initialization": "same-contract ordinary-PL scratch E20 then own10+own20; cumulative13L+37LU; first7LU ordinaryPL, latter30LU ChannelPL",
+    "sources": [
+      "33 source-checked ordinary-PL E20 prefixes; each actual payload/source lineage verified again before loading",
+      "same original G-LU recovered IQ cache as ordinaryPL/supervised/REPL comparison; no new G or cache"
+    ],
+    "contract_check_ref": "training.prefix + frozen_inference.load_F + same-contract G-LU cache/physical IDs",
+    "provenance_verdict": "33/33 full source diagnostics passed on f02436f53feeb0dad3a6c6feeae7b56afa775974; actual model loading checks remain enforced",
+    "selection_rule": "one fixed recipe; source scientific thresholds passed all33 before any new target; fixed final E50; no ranking by target scores"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-channel-pl-training-20261025",
+    "gpu_policy": "physical5/6/7 map to seeds2026092701/02/03; <=2 own/card, <=3 total CUDA/pending/card including foreign; >=10000MiB free",
+    "remote_run_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01",
+    "remote_log_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/channel_pl_training",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.training_runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-ChannelPL-training-release-r01/runtime.json",
+    "stop_rule": "Any actual technical stage failure stops new admissions and preserves healthy workers/artifacts; source/model/query/contract illegality blocks. No performance-based stop or automatic retry."
+  },
+  "expected_artifacts": [
+    "actual E20 no-query L/U backward smoke PASS",
+    "33 complete E50 trajectories (33 reused20+33 own10+33 own20)",
+    "33 per-segment ChannelPL actual exposure/dose states",
+    "33 full3population7view2route predictions",
+    "33 independent CPU truth-last scores with RX/day/TX/confusions and G-vs-raw corrections",
+    "same-seed paired comparison to 33 reused ordinaryPL/supervised/REPL scores",
+    "per-seed and sample-SD summaries",
+    "all target F0 168000 weighted endpoint plus three separate populations",
+    "actual cumulative/new cost; PID/CWD/GPU/log readback"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "seed-paired delta",
+      "sample SD",
+      "G repairs/damage/net",
+      "U seen/accepted/generated/transferred",
+      "actual per-sample CE dose",
+      "elapsed cumulative/new training time"
+    ],
+    "dimensions": [
+      "11 settings",
+      "F seed",
+      "cross_rx",
+      "cross_date",
+      "cross_both",
+      "all_target_dates=RX+both",
+      "7 views",
+      "raw/G-LU",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/readouts/ROW/predictions",
+    "scorer_ref": "independent CPU cric_dura_comparison.evaluation.score after full same-row prediction preflight"
+  },
+  "rows": [
+    {
+      "row_id": "F0-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__F0-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F0-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F0-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__F0-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "F0-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__F0-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F0-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F0-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__F0-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "F0-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__F0-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F0-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F0-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__F0-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__F1_rx_repartition_r01-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F1_rx_repartition_r01-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F1_rx_repartition_r01-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__F1_rx_repartition_r01-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__F1_rx_repartition_r01-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F1_rx_repartition_r01-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F1_rx_repartition_r01-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__F1_rx_repartition_r01-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__F1_rx_repartition_r01-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F1_rx_repartition_r01-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F1_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F1_rx_repartition_r01-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__F1_rx_repartition_r01-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__F2_rx_repartition_r01-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F2_rx_repartition_r01-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F2_rx_repartition_r01-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__F2_rx_repartition_r01-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__F2_rx_repartition_r01-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F2_rx_repartition_r01-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F2_rx_repartition_r01-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__F2_rx_repartition_r01-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__F2_rx_repartition_r01-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F2_rx_repartition_r01-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "F2_rx_repartition_r01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/F2_rx_repartition_r01-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__F2_rx_repartition_r01-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__ManyRx-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/ManyRx-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/ManyRx-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__ManyRx-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__ManyRx-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/ManyRx-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/ManyRx-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__ManyRx-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__ManyRx-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/ManyRx-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "ManyRx"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/ManyRx-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__ManyRx-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "label01-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__label01-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label01-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label01-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__label01-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "label01-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__label01-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label01-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label01-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__label01-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "label01-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__label01-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label01-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label01-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__label01-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "label05-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__label05-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label05-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label05"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label05-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__label05-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "label05-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__label05-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label05-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label05"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label05-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__label05-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "label05-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__label05-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label05-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "label05"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/label05-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__label05-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m1-natural-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m1-natural-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m1-natural-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m1-natural-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m1-natural-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m1-natural-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m1-natural-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m1-natural-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m1-natural-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m1-natural-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m1-natural-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m1-natural-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m1-natural-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m1-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m1-natural-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m1-natural-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m2-natural-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m2-natural-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m2-natural-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m2-natural-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m2-natural-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m2-natural-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m2-natural-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m2-natural-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m2-natural-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m2-natural-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m2-natural-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m2-natural-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m2-natural-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m2-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m2-natural-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m2-natural-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m3-natural-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m3-natural-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m3-natural-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m3-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m3-natural-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m3-natural-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m3-natural-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m3-natural-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m3-natural-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m3-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m3-natural-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m3-natural-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m3-natural-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m3-natural-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m3-natural-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m3-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m3-natural-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m3-natural-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m4-natural-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m4-natural-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m4-natural-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m4-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m4-natural-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m4-natural-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m4-natural-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m4-natural-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m4-natural-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m4-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m4-natural-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m4-natural-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m4-natural-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m4-natural-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m4-natural-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m4-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m4-natural-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m4-natural-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m6-natural-ChannelPL-s2026092701",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m6-natural-ChannelPL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m6-natural-ChannelPL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m6-natural-ChannelPL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m6-natural-ChannelPL-s2026092701.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m6-natural-ChannelPL-s2026092702",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m6-natural-ChannelPL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m6-natural-ChannelPL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m6-natural-ChannelPL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m6-natural-ChannelPL-s2026092702.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "m6-natural-ChannelPL-s2026092703",
+      "method": "PAMF-ChannelPL fixed candidate",
+      "purpose": "full matched comparison",
+      "config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/configs/train__m6-natural-ChannelPL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m6-natural-ChannelPL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "protocol_id": "m6-natural"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model seed selects own original PL E20; original split392005; native T1 source simulation20261016421/session20261016423; data/support/evaluation RNG not applicable",
+      "k": null,
+      "scenario": "source original T1 threeAs only; frozen clean+six practical in all3 target populations",
+      "optimizer": "unchanged native AdamW/CENTER_UNITS, jointly trained original default head",
+      "lr": "original segment/native cosine schedules from f_train.arguments; same as ordinaryPL comparator, no LR search",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "reusedE20/4440 + ownE10/2220 + ownE20/4440 = E50/11100; new30/6660",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/F/m6-natural-ChannelPL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261025-phase1-PAMF-ChannelPL-m33-r01/logs/train__m6-natural-ChannelPL-s2026092703.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 PYTHON -u -m experiments.pamf_channel_pl.training_runner worker --kind train --config CONFIG",
+      "expected_artifacts": [
+        "source/complete.json",
+        "source/segment30/channel_pl_state.json",
+        "source/segment50/channel_pl_state.json",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All33 source V proxies passed before this fixed target matrix;99.5291%-100% transferred-label precision. U truth remains hidden.",
+    "No training time access to G weights/output or restored IQ; G-LU only frozen inference reference.",
+    "Keep historical PAMF-REPL, final PAMF-T1-E50 and DURA v1 defaults unchanged. Candidate name is provisional.",
+    "Matched original ordinaryPL/supervised/REPL full scores reused without new prediction; no target-result feedback into row order, parameters, seeds or checkpoints.",
+    "All 33 fixed rows start from their own E20 prefixes; no cross-contract/shared-seed checkpoint shortcuts."
+  ],
+  "matrix": {
+    "rows": [
+      {
+        "row_id": "F0-ChannelPL-s2026092701",
+        "protocol": "F0",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "F0-ChannelPL-s2026092702",
+        "protocol": "F0",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "F0-ChannelPL-s2026092703",
+        "protocol": "F0",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "F1_rx_repartition_r01-ChannelPL-s2026092701",
+        "protocol": "F1_rx_repartition_r01",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "F1_rx_repartition_r01-ChannelPL-s2026092702",
+        "protocol": "F1_rx_repartition_r01",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "F1_rx_repartition_r01-ChannelPL-s2026092703",
+        "protocol": "F1_rx_repartition_r01",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "F2_rx_repartition_r01-ChannelPL-s2026092701",
+        "protocol": "F2_rx_repartition_r01",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "F2_rx_repartition_r01-ChannelPL-s2026092702",
+        "protocol": "F2_rx_repartition_r01",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "F2_rx_repartition_r01-ChannelPL-s2026092703",
+        "protocol": "F2_rx_repartition_r01",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "ManyRx-ChannelPL-s2026092701",
+        "protocol": "ManyRx",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "ManyRx-ChannelPL-s2026092702",
+        "protocol": "ManyRx",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "ManyRx-ChannelPL-s2026092703",
+        "protocol": "ManyRx",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "label01-ChannelPL-s2026092701",
+        "protocol": "label01",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "label01-ChannelPL-s2026092702",
+        "protocol": "label01",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "label01-ChannelPL-s2026092703",
+        "protocol": "label01",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "label05-ChannelPL-s2026092701",
+        "protocol": "label05",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "label05-ChannelPL-s2026092702",
+        "protocol": "label05",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "label05-ChannelPL-s2026092703",
+        "protocol": "label05",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m1-natural-ChannelPL-s2026092701",
+        "protocol": "m1-natural",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m1-natural-ChannelPL-s2026092702",
+        "protocol": "m1-natural",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m1-natural-ChannelPL-s2026092703",
+        "protocol": "m1-natural",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m2-natural-ChannelPL-s2026092701",
+        "protocol": "m2-natural",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m2-natural-ChannelPL-s2026092702",
+        "protocol": "m2-natural",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m2-natural-ChannelPL-s2026092703",
+        "protocol": "m2-natural",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m3-natural-ChannelPL-s2026092701",
+        "protocol": "m3-natural",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m3-natural-ChannelPL-s2026092702",
+        "protocol": "m3-natural",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m3-natural-ChannelPL-s2026092703",
+        "protocol": "m3-natural",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m4-natural-ChannelPL-s2026092701",
+        "protocol": "m4-natural",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m4-natural-ChannelPL-s2026092702",
+        "protocol": "m4-natural",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m4-natural-ChannelPL-s2026092703",
+        "protocol": "m4-natural",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m6-natural-ChannelPL-s2026092701",
+        "protocol": "m6-natural",
+        "model_seed": 2026092701,
+        "gpu": 5,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m6-natural-ChannelPL-s2026092702",
+        "protocol": "m6-natural",
+        "model_seed": 2026092702,
+        "gpu": 6,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      },
+      {
+        "row_id": "m6-natural-ChannelPL-s2026092703",
+        "protocol": "m6-natural",
+        "model_seed": 2026092703,
+        "gpu": 7,
+        "method": "ChannelPL",
+        "new_F": true,
+        "epochs": 50,
+        "new_epochs": 30,
+        "updates": 11100,
+        "new_updates": 6660,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "readouts": [
+          "raw",
+          "DURA-LU"
+        ]
+      }
+    ],
+    "recipe": {
+      "raw_threshold": 0.95,
+      "channel_threshold": 0.95,
+      "channel_to_raw_CE_ratio": 0.25,
+      "U_weight": 1.0,
+      "physical_half": "alternating_native_T1_half",
+      "generator": "separate_original_T1_Practical",
+      "channel_gate": "raw_accepted_and_same_argmax_and_channel_confident",
+      "invalid_channel": "exact_original_raw_PL",
+      "normalizer": "per_sample_1_plus_channel_ratio",
+      "U_pair_KL": 0.0,
+      "EMA_teacher": false,
+      "new_head": false,
+      "new_inference_parameters": 0
+    },
+    "protocol_definitions": {
+      "F0": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": 0,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates",
+        "fixed_validation": null
+      },
+      "F1_rx_repartition_r01": {
+        "protocol_id": "F1_rx_repartition_r01",
+        "dataset": "ManySig",
+        "source_rxs": [
+          0,
+          1,
+          2,
+          5,
+          7
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          3,
+          4,
+          6,
+          8,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": 0,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates",
+        "fixed_validation": null
+      },
+      "F2_rx_repartition_r01": {
+        "protocol_id": "F2_rx_repartition_r01",
+        "dataset": "ManySig",
+        "source_rxs": [
+          0,
+          3,
+          9,
+          10,
+          11
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          1,
+          2,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": 0,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates",
+        "fixed_validation": null
+      },
+      "ManyRx": {
+        "protocol_id": "ManyRx",
+        "dataset": "ManyRx",
+        "source_rxs": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          1,
+          3,
+          5,
+          7,
+          9,
+          11,
+          13,
+          15,
+          17,
+          19,
+          21,
+          23,
+          25,
+          27,
+          29,
+          31
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": 0,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6533,
+          "U_s": 58828,
+          "V": 28023
+        },
+        "target_count": 123021,
+        "primary_endpoint": "all_target_dates",
+        "fixed_validation": null
+      },
+      "label01": {
+        "protocol_id": "label01",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 7,
+        "fixed_labels": null,
+        "diagnostic_day": 0,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 630,
+          "U_s": 62370,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates",
+        "fixed_validation": null
+      },
+      "label05": {
+        "protocol_id": "label05",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 35,
+        "fixed_labels": null,
+        "diagnostic_day": 0,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 3150,
+          "U_s": 59850,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates",
+        "fixed_validation": null
+      },
+      "m1-natural": {
+        "protocol_id": "m1-natural",
+        "dataset": "ManySig",
+        "source_count": 1,
+        "source_rxs": [
+          1
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "split_seed": 392005,
+        "expected_counts": {
+          "L_s": 1260,
+          "U_s": 11340,
+          "V": 5400
+        },
+        "target_count": 144000,
+        "primary_endpoint": "all_target_dates",
+        "label_budget": "natural",
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "fixed_labels": null,
+        "fixed_validation": null,
+        "diagnostic_day": 0,
+        "label_per_thousand": 70
+      },
+      "m2-natural": {
+        "protocol_id": "m2-natural",
+        "dataset": "ManySig",
+        "source_count": 2,
+        "source_rxs": [
+          1,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "split_seed": 392005,
+        "expected_counts": {
+          "L_s": 2520,
+          "U_s": 22680,
+          "V": 10800
+        },
+        "target_count": 144000,
+        "primary_endpoint": "all_target_dates",
+        "label_budget": "natural",
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "fixed_labels": null,
+        "fixed_validation": null,
+        "diagnostic_day": 0,
+        "label_per_thousand": 70
+      },
+      "m3-natural": {
+        "protocol_id": "m3-natural",
+        "dataset": "ManySig",
+        "source_count": 3,
+        "source_rxs": [
+          1,
+          3,
+          4
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "split_seed": 392005,
+        "expected_counts": {
+          "L_s": 3780,
+          "U_s": 34020,
+          "V": 16200
+        },
+        "target_count": 144000,
+        "primary_endpoint": "all_target_dates",
+        "label_budget": "natural",
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "fixed_labels": null,
+        "fixed_validation": null,
+        "diagnostic_day": 0,
+        "label_per_thousand": 70
+      },
+      "m4-natural": {
+        "protocol_id": "m4-natural",
+        "dataset": "ManySig",
+        "source_count": 4,
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "split_seed": 392005,
+        "expected_counts": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "target_count": 144000,
+        "primary_endpoint": "all_target_dates",
+        "label_budget": "natural",
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "fixed_labels": null,
+        "fixed_validation": null,
+        "diagnostic_day": 0,
+        "label_per_thousand": 70
+      },
+      "m6-natural": {
+        "protocol_id": "m6-natural",
+        "dataset": "ManySig",
+        "source_count": 6,
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8,
+          11
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "split_seed": 392005,
+        "expected_counts": {
+          "L_s": 7560,
+          "U_s": 68040,
+          "V": 32400
+        },
+        "target_count": 144000,
+        "primary_endpoint": "all_target_dates",
+        "label_budget": "natural",
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "fixed_labels": null,
+        "fixed_validation": null,
+        "diagnostic_day": 0,
+        "label_per_thousand": 70
+      }
+    },
+    "source_diagnostic_run": "20261025-phase1-PAMF-ChannelPL-source-m33-r01",
+    "source_passed": 33,
+    "new_F": 33,
+    "reused_prefixes": 33,
+    "new_G": 0,
+    "new_IQ_cache": 0,
+    "train_jobs": 33,
+    "prediction_jobs": 33,
+    "score_jobs": 33,
+    "readouts": [
+      "raw",
+      "DURA-LU"
+    ],
+    "tasks": [
+      "cross_date",
+      "cross_rx",
+      "cross_both"
+    ],
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "primary_goal": {
+      "population": "F0 all_target_dates 168000 = cross_rx126000 + cross_both42000",
+      "controls": [
+        "supervised",
+        "ordinary_PL"
+      ],
+      "clean_min_gain_pp": 1.0,
+      "six_mean_gain_strictly_greater_than_pp": 1.5,
+      "report_raw_and_same_G_LU_separately": true
+    },
+    "broad_results": "all11 settings equal-weight macro and positive-setting counts for every population/readout, no selective omission"
+  },
+  "registered_at": "2026-10-25T08:03:47+00:00"
+}

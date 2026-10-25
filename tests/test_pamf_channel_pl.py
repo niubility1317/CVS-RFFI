@@ -108,3 +108,20 @@ def test_scope_restores_native_plain_PL_hook_and_loader_on_error():
     with pytest.raises(RuntimeError):
         with installed(c,{}):raise RuntimeError('synthetic failure')
     assert original==(t1_model.plain_pl,t1_model.hook,t1_model.install,f_train.arguments,f_data.context)
+
+
+def test_bound_native_hook_accepts_the_native_explicit_model_keyword(monkeypatch):
+    from types import MethodType,SimpleNamespace
+    from experiments.cric_dura_comparison import t1_model
+    def native(self,*,model):
+        assert self is model
+        return torch.tensor(1.),{'T1_L_packets':768}
+    native._accepts_labeled_inputs=True
+    monkeypatch.setattr(t1_model,'hook',native)
+    c=dict(channel_pl=deepcopy(RECIPE),repl_row={'L_B':True,'group':'main','structure':'full'},U_use=True)
+    owner=object();holder={'objective':SimpleNamespace(metrics={'CPL_seen':256})}
+    with installed(c,holder):
+        bound=MethodType(t1_model.hook,owner)
+        value,metrics=bound(model=owner)
+        assert value==1. and metrics=={'T1_L_packets':768,'CPL_seen':256}
+        assert bound._accepts_labeled_inputs

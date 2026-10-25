@@ -3,7 +3,7 @@
 - run_id：`20261025-phase1-PAMF-ChannelPL-source-m33-r01`
 - group_id：`phase1-pamf-channel-pl-20261025`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED；本源域诊断已完整完成，实际证据见下文及 events.jsonl。
 
 ## 完整负结果与研究判断
 
@@ -54,7 +54,13 @@ F0 两法的 U 曝光均为 6293700 次，普通 PL 接受率 94.8482%，REPL 94
 
 ## 结果与覆盖
 
-当前尚无新的源诊断或目标结果。本 run 无训练、无目标测试，不标作 SSL 研发完成。后续新训练及 raw／同契约 G-LU 的 clean＋六景、三类人群评测另建冻结矩阵，保留匹配普通 PL 和监督参照；在全部对应 prediction 固定后才连接独立 truth scorer。原 clean≥+1 pp、六景>+1.5 pp 目标仍未达成。
+**VERIFIED：33/33 项源诊断全部完成并通过固定条件。** 实际执行 commit 为 `f02436f53feeb0dad3a6c6feeae7b56afa775974`；源 V 共计 748269 次观测，包含跨设置及种子的重复观测，不表示同样数量的唯一物理样本。逐行结果见 [source_quality_results.csv](source_quality_results.csv)。
+
+转移伪标签的源 V 正确率范围为 99.5291% 至 100%；转移比例为 24.9666% 至 65.0972%；相对 raw 接受物理半批的正确率，最大下降仅 0.0203 pp。F0 三 seed 正确率分别为 99.8999%、99.8570%、99.9140%；1% 标注设置为 99.5291%、99.6400%、99.5960%。这些是源 V 代理，不能称为 U 集正确率或目标集准确率。
+
+全部 33 行完成真实 checkpoint smoke、完整源 V 遍历及 buffer 不变检查。模型／分类头更新为 0，target／query／U 真值／G 权重输出读取为 0。一次发布归档传输 SHA 比较、远端编译及入口导入通过。独立 post-state 验证了本 run 的 PID、CWD、完整 argv、GPU 映射、PASS smoke 和持续增长的源诊断 progress 记录；最终 33 个完整结果与控制器终态相互吻合。
+
+本 run 无训练、无目标测试，不标作 SSL 研发完成。后续独立 run `20261025-phase1-PAMF-ChannelPL-m33-r01` 已固定同一个配方，执行匹配的 E20＋own10＋own20、raw／同契约 G-LU 的 clean＋六景及三类人群评测，保留匹配普通 PL 和监督参照。原 clean≥+1 pp、六景>+1.5 pp 目标仍未达成。
 
 ## 交接
 

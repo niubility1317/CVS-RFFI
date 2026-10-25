@@ -27,10 +27,10 @@ with tarfile.open(p['archive_remote']) as archive:
 Path(rt['runtime_file']).write_text(json.dumps(rt,indent=2)+'\n')
 env=dict(os.environ,PYTHONPATH=str(release),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
 subprocess.run([rt['python'],'-m','compileall','-q',str(release/'experiments/pamf_channel_pl')],cwd=release,env=env,check=True)
-probe='import json;from experiments.pamf_repl_completion.runner import activate;activate(json.load(open('+repr(rt['runtime_file'])+')));from experiments.pamf_channel_pl import source_quality,source_runner;from experiments.cric_dura_comparison.frozen_inference import reader_from_payload;print("SOURCE_IMPORT_PASS")'
+probe='import json,importlib;from experiments.pamf_repl_completion.runner import activate;activate(json.load(open('+repr(rt['runtime_file'])+')));importlib.import_module('+repr(rt['entrypoint'])+');from experiments.cric_dura_comparison.frozen_inference import reader_from_payload;print("ENTRYPOINT_IMPORT_PASS")'
 result=subprocess.run([rt['python'],'-c',probe],cwd=release,env=env,capture_output=True,text=True)
 if result.returncode:raise RuntimeError(result.stderr)
-command=[rt['python'],'-u','-m','experiments.pamf_channel_pl.source_runner','dispatch','--config',rt['runtime_file']]
+command=[rt['python'],'-u','-m',rt['entrypoint'],'dispatch','--config',rt['runtime_file']]
 log=release/'controller.log'
 with log.open('x') as stream:
  child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
@@ -40,17 +40,18 @@ value=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),ar
 '''
 
 
-def publish(repo,output,context_path,release_id):
+def publish(repo,output,context_path,release_id,*,run_id=SOURCE_RUN,
+            entrypoint='experiments.pamf_channel_pl.source_runner',launch_owner='codex-channel-pl-source-20261025'):
     repo=Path(repo);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     def git(*a):return subprocess.check_output(['git','-C',str(repo),*a])
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
     if git('ls-remote','origin','refs/heads/'+branch).decode().split()[0]!=commit:raise ValueError('Remote OID not verified')
     context=json.loads(Path(context_path).read_text(encoding='utf-8'));validate_context(context)
     project=context['project'];release=project+'/releases/'+release_id
-    rt=dict(run_id=SOURCE_RUN,project=project,python=context['python'],release_root=release,
-        run_root=project+'/runs/'+SOURCE_RUN,context=release+'/context.json',runtime_file=release+'/runtime.json',
+    rt=dict(run_id=run_id,project=project,python=context['python'],release_root=release,
+        run_root=project+'/runs/'+run_id,context=release+'/context.json',runtime_file=release+'/runtime.json',
         code_commit=commit,frozen_sources=context['frozen_sources'],allowed_gpus=[5,6,7],
-        launch_owner='codex-channel-pl-source-20261025')
+        launch_owner=launch_owner,entrypoint=entrypoint)
     paths=git('ls-files','-z','--','experiments','code','baselines').decode().split('\0')
     paths={p for p in paths if p and Path(p).suffix in ('.py','.json','.txt','.yaml','.yml','.toml')}
     owned=[p for p in paths if p.startswith('experiments/pamf_channel_pl/')]
@@ -64,7 +65,7 @@ def publish(repo,output,context_path,release_id):
             value=previous.extractfile(member).read();item=tarfile.TarInfo(member.name);item.size=len(value);item.mode=0o644
             tar.addfile(item,io.BytesIO(value))
         blobs={'context.json':Path(context_path).read_bytes(),'release_commit.txt':(commit+'\n').encode(),
-            'experiment.json':git('show',commit+':automation_reports/CV-SincNet/'+SOURCE_RUN+'/experiment.json')}
+            'experiment.json':git('show',commit+':automation_reports/CV-SincNet/'+run_id+'/experiment.json')}
         for name,value in blobs.items():
             item=tarfile.TarInfo(name);item.size=len(value);item.mode=0o644;tar.addfile(item,io.BytesIO(value))
     package=dict(runtime=rt,archive_remote=project+'/releases/'+archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())

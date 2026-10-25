@@ -97,8 +97,8 @@ def installed(c,holder):
         if 'objective' not in holder:holder['objective']=ChannelPL(c)
         return holder['objective'].loss(model,device)
     @wraps(original_hook)
-    def hook(model,**kwargs):
-        value,metrics=original_hook(model,**kwargs)
+    def hook(self,**kwargs):
+        value,metrics=original_hook(self,**kwargs)
         if 'objective' in holder:metrics=dict(metrics,**holder['objective'].metrics)
         return value,metrics
     _ACTIVE=True
