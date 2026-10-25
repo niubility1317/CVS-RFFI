@@ -16,9 +16,12 @@
   "paired_restorer": "same-contract fixed G-LU,unchanged weights and restored IQ",
   "all_three_conditions_required": true,
   "DURA_clean": "report separately,not a new numeric requirement",
-  "new_restored_IQ_method_status": "ANALYSIS_PLAN_ONLY_THIS_TURN",
-  "new_restored_IQ_training_started": false,
+  "new_restored_IQ_method_status": "SOURCE_RULE_FROZEN_AND_TRAINING_RUNNING",
+  "new_restored_IQ_training_started": true,
   "plan_ref": "docs/goals/PAMF_RESTORED_IQ_SSL_PLAN_20261025.md",
   "existing_authorized_training_and_test": "continues unchanged",
-  "new_model_or_data_permissions": false
+  "new_model_or_data_permissions": false,
+  "current_restored_IQ_run": "20261025-phase1-PAMF-RestoredPL-m9-r01",
+  "execution_evidence_ref": "automation_reports/CV-SincNet/20261025-phase1-PAMF-RestoredPL-m9-r01/available_source_evidence.json",
+  "execution_scope": "Existing source-only SSL research authorization;unchanged roles,no target training or new data permissions"
 }

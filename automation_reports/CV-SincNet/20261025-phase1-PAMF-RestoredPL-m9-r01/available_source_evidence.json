@@ -1,0 +1,53 @@
+{
+  "status": "VERIFIED_SOURCE_EXECUTION_IN_PROGRESS",
+  "run_id": "20261025-phase1-PAMF-RestoredPL-m9-r01",
+  "audited_at_UTC": "2026-10-25T14:08:53.242101+00:00",
+  "all_available_complete_records": 18995,
+  "students_audited": 9,
+  "student_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "paired_extra_acceptance": [
+    {
+      "model_seed": 2026092701,
+      "common_available_steps": 2274,
+      "all_step_cumulative_extra_acceptance_identical": true
+    },
+    {
+      "model_seed": 2026092702,
+      "common_available_steps": 2169,
+      "all_step_cumulative_extra_acceptance_identical": true
+    },
+    {
+      "model_seed": 2026092703,
+      "common_available_steps": 344,
+      "all_step_cumulative_extra_acceptance_identical": true
+    }
+  ],
+  "actual_head_classes": 6,
+  "L_packets_per_step": 768,
+  "As_KL_weight": 0,
+  "fixed_extra_weight": 0.12618073797689983,
+  "ramp_steps": 444,
+  "all_rows_config_and_counters_match": true,
+  "nonfinite_skips": 0,
+  "U_truth_read": false,
+  "target_training_reads": 0,
+  "all_nine_students_live": true,
+  "running_GPUs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    7
+  ],
+  "source_epoch_min": 33,
+  "source_epoch_max": 43,
+  "new_target_predictions": 0,
+  "original_goal_achieved": false,
+  "scope": "all currently available complete live records;tail may be buffered;not finished E50 or target performance",
+  "source_loss_decline_is_not_target_gain": true
+}

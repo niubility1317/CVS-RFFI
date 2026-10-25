@@ -37,3 +37,15 @@ RUNNING，外部执行VERIFIED。科学release commit为c8a6efacfde29f8ced1c3bf6
 真实ownE30+缓存的L768/U256/恢复学生512前向backward smoke通过，原6类默认头梯度有限，无optimizer/query。随后8个学生已在GPU0/1/2/3/4实际训练至E32/7104，第9条DURASoft seed03按全卡2worker上限等待空位。未停止其他owner。详见 [启动与来源证据](launch_evidence.json)、[实际源训练进度](launch_source_progress.csv)。
 
 尚未产生本run目标测试结果，不能据缓存/源训练或smoke宣布目标达成。所有9条按固定配置到E50，再逐行raw/同G-LU全部视图预测与独立评分；原两对照和三项联合目标保持。
+
+## 九学生实际源执行核对
+
+9个学生均已真实启动，独立PID/CWD/argv和GPU映射核实；本次进度快照PLControl E43、RawSoft E42、DURASoft E42/E41/E33。
+
+读取了当时全部可用完整源记录 **18995** 条（不是抽样；live gzip末尾可继续缓冲，尚非E50全日志）。逐条核对原L768/As KL0/跨RX权重、普通raw主项计数、新增两次前向平均与完整U batch归一、444步升温、实际own E30配置及6×160默认头。无非有限跳步、U真值或target训练。
+
+三个seed的RawSoft/DURASoft在共同可用步数上，新增伪标签累计接受计数逐步完全一致；每完整U epoch均接受固定52946条，说明物理索引缓存与配对控制按预定执行。追加分支完整权重0.12618073797689983；seed03早期快照尚在升温也符合公式。
+
+DURASoft seed01/02的额外源软CE分别从首epoch约0.2616/0.2577降至最近可用222步约0.2114/0.2134；这只说明恢复分支在学习，不能替代目标性能。全部已声明目标仍需E50后固定预测与独立truth-last。
+
+[全部可用源记录汇总](available_source_execution.csv)、[配对及执行证据](available_source_evidence.json)、[九学生进度](current_source_progress.csv)。原目标criteria文件的“仅分析、未启动”状态已按实证更新为正在训练，三项数字门槛和数据权限保持。
