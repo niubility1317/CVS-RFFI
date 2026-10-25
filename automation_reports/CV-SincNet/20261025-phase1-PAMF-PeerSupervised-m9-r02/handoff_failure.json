@@ -1,0 +1,17 @@
+{
+  "status": "PARTIAL",
+  "controller_status": "FAILED_AFTER_SMOKE_BEFORE_SCIENTIFIC_GPU_WORK",
+  "fingerprint": "PermissionError: [Errno 13] Permission denied: '/proc/3632480/environ'",
+  "scientific_execution_commit": "7eb8d21752b5fab6f1366e1cb96c2266bd46c2a7",
+  "real_checkpoint_smoke": "PASS",
+  "new_GPU_workers": 0,
+  "new_training_updates": 0,
+  "new_target_reads": 0,
+  "old_controller_stopped": true,
+  "old_healthy_workers": 6,
+  "scientific_jobs_preserved": 27,
+  "model_parameter_changes": 0,
+  "budget_changes": 0,
+  "recovery_owner": "20261025-phase1-PAMF-PeerSupervised-control-r03",
+  "outputs_preserved": true
+}

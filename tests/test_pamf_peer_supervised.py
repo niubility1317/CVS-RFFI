@@ -155,7 +155,8 @@ def test_only_exact_controller_and_worker_identity_can_be_adopted(monkeypatch):
     assert not defer(dict(lane='old',row_id='later'),True,{'later'})
 
 
-def test_handoff_only_stops_controller_and_preserves_all_99_jobs(tmp_path,monkeypatch):
+@pytest.mark.parametrize('interrupted',[False,True])
+def test_handoff_only_stops_controller_and_preserves_all_99_jobs(tmp_path,monkeypatch,interrupted):
     import json
     from pathlib import Path
     import experiments.pamf_peer_supervised.priority as p
@@ -177,15 +178,55 @@ def test_handoff_only_stops_controller_and_preserves_all_99_jobs(tmp_path,monkey
                 pid=100+i;states[key]=dict(status='RUNNING',pid=pid);(fakeproc/str(pid)).mkdir()
                 infos[pid]=dict(cwd='/oldrelease',gpu=str(job['gpu']),argv=['PY','-u','-m','experiments.pamf_channel_pl.training_runner','worker','--kind',kind,'--config',str(cfg)])
     put(oldroot/'jobs.json',jobs);put(oldroot/'pipeline_state.json',dict(pid=12,status='RUNNING',code_commit=p.OLD_COMMIT,launch_owner=p.OLD_OWNER,jobs=states))
+    if interrupted:
+        interrupted_root=tmp_path/'20261025-phase1-PAMF-PeerSupervised-m9-r02'
+        put(interrupted_root/'previous_pipeline_state.json',dict(pid=12,code_commit=p.OLD_COMMIT,launch_owner=p.OLD_OWNER))
+        rt['interrupted_handoff_root']=str(interrupted_root);del infos[12]
     monkeypatch.setattr(p,'Path',lambda name:fakeproc if str(name)=='/proc' else Path(name))
     monkeypatch.setattr(p,'process_info',lambda pid:infos.get(pid))
+    monkeypatch.setattr(p,'alive',lambda pid:pid in infos)
     kills=[]
     def kill(pid,sig):kills.append(pid);del infos[pid]
     monkeypatch.setattr(p.os,'kill',kill)
     converted,statuses,active,children,deferred,_=p.handoff(rt)
-    assert kills==[12] and len(active)==len(children)==6 and len(deferred)==21 and len(converted)==99
+    assert kills==([] if interrupted else [12]) and len(active)==len(children)==6 and len(deferred)==21 and len(converted)==99
     assert {v['pid'] for v in active.values()}==set(range(106,112))
     assert [j['config'] for j in converted]==[j['config'] for j in jobs]
     assert [j['completion'] for j in converted]==[j['completion'] for j in jobs]
     assert all(j['execution_release']=='/oldrelease' for j in converted)
     assert all(infos[pid] for pid in range(106,112))
+
+
+def test_exiting_process_permission_race_uses_independent_liveness(monkeypatch):
+    import experiments.pamf_peer_supervised.priority as p
+    monkeypatch.setattr(p,'_process_info',lambda pid:(_ for _ in ()).throw(PermissionError('exiting environ')))
+    monkeypatch.setattr(p,'alive',lambda pid:False)
+    assert p.process_info(123) is None and p.AdoptedProcess(123).poll()==0
+    monkeypatch.setattr(p,'alive',lambda pid:True);monkeypatch.setattr(p.time,'sleep',lambda _:None)
+    assert p.AdoptedProcess(123).poll() is None
+    with pytest.raises(PermissionError):p.process_info(123)
+
+
+def test_prepared_recovery_reuses_27_scientific_jobs_and_the_passed_smoke(tmp_path,monkeypatch):
+    import json
+    from pathlib import Path
+    import experiments.pamf_peer_supervised.recovery as r
+    def put(path,value):path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value),encoding='utf-8')
+    source=tmp_path/'source';release=tmp_path/'release';release.mkdir();root=tmp_path/'control';root.mkdir()
+    previous=dict(run_id=r.RUN,run_root=str(source),release_root=str(release),code_commit=r.PREVIOUS_COMMIT)
+    ctx=dict(recover_prepared_runtime=str(tmp_path/'previous.json'),interrupted_handoff_root=str(source))
+    rt=dict(run_id=r.CONTROL,run_root=str(root),code_commit='controllerfix')
+    put(Path(ctx['recover_prepared_runtime']),previous)
+    put(source/'pipeline_state.json',dict(pid=123,status='SMOKE_RUNNING',code_commit=r.PREVIOUS_COMMIT))
+    put(source/'smoke.json',dict(status='PASS',optimizer_updates=0,query_reads=0,peer_parameters_frozen=True,peer_buffers_unchanged=True,U=dict(seen=256,peer_views=512)))
+    (release/'controller.log').write_text(r.FINGERPRINT)
+    jobs=[]
+    for i in range(27):
+        config=source/'configs'/(str(i)+'.json');put(config,dict(run_id=r.RUN,output_root=str(source/('output'+str(i)))))
+        jobs.append(dict(id=str(i),config=str(config),completion=str(source/('output'+str(i))/'complete.json'),execution_release=str(release)))
+    for name,value in [('jobs.json',jobs),('sources.json',{}),('reference_scores.json',{})]:put(source/name,value)
+    monkeypatch.setattr(r,'alive',lambda _:False)
+    reused,scientific_root=r.prepared(rt,ctx)
+    assert reused==jobs and scientific_root==str(source)
+    assert json.loads((root/'smoke.json').read_text())['status']=='PASS'
+    assert all(not Path(json.loads(Path(j['config']).read_text())['output_root']).exists() for j in reused)

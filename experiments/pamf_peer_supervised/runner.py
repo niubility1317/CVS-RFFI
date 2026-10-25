@@ -46,20 +46,27 @@ def dispatch(rt):
     from .priority import handoff,defer,mirror_old
     from experiments.cric_dura_comparison.pipeline import done,ready
     from experiments.pamf_repl_completion.runner import capacity,processes,foreign_CPU_score
-    if rt['run_id']!=RUN or rt['allowed_gpus']!=list(range(8)):raise ValueError('Fixed all-GPU research matrix required')
+    from .recovery import CONTROL
+    if rt['run_id'] not in (RUN,CONTROL) or rt['allowed_gpus']!=list(range(8)):raise ValueError('Fixed all-GPU research matrix required')
     context=read(rt['context']);rt=dict(rt,previous_runtime=context['previous_runtime'],
         queue_priority_authorization=context['queue_priority_authorization'])
     root=Path(rt['run_root']);root.mkdir(parents=True,exist_ok=False)
     state=dict(status='PREPARING',pid=os.getpid(),code_commit=rt['code_commit'],launch_owner=rt['launch_owner'],started_at=time.time(),jobs={})
-    atomic(root/'pipeline_state.json',state);newjobs=prepare(rt)
-    first=next(j for j in newjobs if j['kind']=='train');path=root/'configs/smoke.json'
-    write(path,dict(rt,smoke_train_config=first['config']))
-    smokejob=dict(id='smoke',kind='smoke',config=str(path),execution_release=rt['release_root'],
-        execution_python=rt['python'],entrypoint='experiments.pamf_peer_supervised.runner')
-    child,item=launch(rt,smokejob,None);state.update(status='SMOKE_RUNNING',smoke=item);atomic(root/'pipeline_state.json',state)
-    code=child.wait()
-    if code or not (root/'smoke.json').exists() or read(root/'smoke.json')['status']!='PASS':
-        state.update(status='STOPPED_FOR_SMOKE_FAILURE',ended_at=time.time());atomic(root/'pipeline_state.json',state);return
+    atomic(root/'pipeline_state.json',state)
+    if rt['run_id']==CONTROL:
+        from .recovery import prepared
+        newjobs,scientific_root=prepared(rt,context)
+        rt=dict(rt,interrupted_handoff_root=context['interrupted_handoff_root'])
+    else:
+        newjobs=prepare(rt);scientific_root=rt['run_root']
+        first=next(j for j in newjobs if j['kind']=='train');path=root/'configs/smoke.json'
+        write(path,dict(rt,smoke_train_config=first['config']))
+        smokejob=dict(id='smoke',kind='smoke',config=str(path),execution_release=rt['release_root'],
+            execution_python=rt['python'],entrypoint='experiments.pamf_peer_supervised.runner')
+        child,item=launch(rt,smokejob,None);state.update(status='SMOKE_RUNNING',smoke=item);atomic(root/'pipeline_state.json',state)
+        code=child.wait()
+        if code or not (root/'smoke.json').exists() or read(root/'smoke.json')['status']!='PASS':
+            state.update(status='STOPPED_FOR_SMOKE_FAILURE',ended_at=time.time());atomic(root/'pipeline_state.json',state);return
     oldjobs,oldstates,active,children,deferred_rows,oldrt=handoff(rt)
     jobs=newjobs+oldjobs;by={j['id']:j for j in jobs};write(root/'control_jobs.json',jobs)
     state.update(status='RUNNING',jobs=dict({j['id']:dict(status='QUEUED') for j in newjobs},**oldstates),
@@ -75,7 +82,7 @@ def dispatch(rt):
         allnew=all(state['jobs'][j['id']]['status']=='COMPLETE' for j in newjobs)
         if allnew and not new_analyzed:
             from .results import analyze
-            analyze(rt);new_analyzed=True;state['new_candidate_status']='ANALYZED'
+            analyze(dict(rt,run_root=scientific_root));new_analyzed=True;state['new_candidate_status']='ANALYZED'
         pending=processes()
         candidates=[j for j in jobs if state['jobs'][j['id']]['status']=='QUEUED' and ready(j) and not defer(j,allnew,deferred_rows)]
         candidates.sort(key=lambda j:(dict(score=0,predict=1,train=2)[j['kind']],0 if j['lane']=='new' else 1))

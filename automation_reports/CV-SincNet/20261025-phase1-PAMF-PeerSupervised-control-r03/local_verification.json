@@ -1,0 +1,13 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "fix_scope": "controller exit-liveness only; unchanged scientific workers/configs/outputs",
+  "focused_regression_checks": 4,
+  "focused_regression_status": "PASS",
+  "independent_targeted_P0P1": "PASS",
+  "scientific_execution_commit": "7eb8d21752b5fab6f1366e1cb96c2266bd46c2a7",
+  "original_real_checkpoint_smoke": "PASS_REUSED_ZERO_OPTIMIZER_AND_QUERY_UPDATES",
+  "new_scientific_training_rows": 0,
+  "existing_prepared_scientific_students": 9,
+  "old_healthy_workers_to_adopt": 6,
+  "unstarted_old_rows_to_defer": 21
+}

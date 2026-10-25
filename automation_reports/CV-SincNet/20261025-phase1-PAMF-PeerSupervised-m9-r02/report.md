@@ -53,3 +53,7 @@ F0 三方案×三学生种子：冻结其他两seed同契约E20确认自身.95�
 本地相关协议负测和训练算术/默认头/冻结教师/精确接管身份检查已通过。r01 在 prepare 发现缺少 `reference_score_jobs`，尚未启动 smoke、GPU worker 或旧 controller 接管，保留 NO_PERFORMANCE_RESULT。r02 补齐已核实的最新历史 score jobs 句柄，并在本地发布前和 prepare 入口检查实际消费的输入。新增的缺失字段回归检查通过，科学配方、9 行与预算不变。尚无本轮新学生 target 结果，目标尚未达成。
 
 缺失句柄的定点独立 P0/P1 复审 PASS。原 45 项相关检查加 1 项缺失句柄回归通过，共 46 项已验证检查；未增加第二次全审或额外科学门槛。
+
+## 调度器技术状态与恢复
+
+真实同契约 E20 的 L/U 有限反传、默认头、冻结 peer 检查 PASS；零优化器更新、零 query 读取。27 个科学任务已固定，尚未启动 GPU worker。随后旧 controller 精确单 PID 退出时读取 environ 遇到 PermissionError，新 controller 退出；旧 6 个 detached 健康训练继续。修复只调整退出存活检查并由独立 control-r03 接管，复用本 run 原配置、原 release、原输出和 PASS smoke，不重复训练或重新选模。证据见 [handoff_failure.json](handoff_failure.json)。
