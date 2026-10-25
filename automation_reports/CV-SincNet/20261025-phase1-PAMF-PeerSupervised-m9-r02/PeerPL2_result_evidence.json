@@ -1,0 +1,73 @@
+{
+  "status": "PARTIAL_ONE_COMPLETE_THREE_SEED_METHOD",
+  "method": "PeerPL2",
+  "completed_students": 3,
+  "planned_students": 9,
+  "read_at_UTC": "2026-10-25T12:06:04.236299+00:00",
+  "independent_truth_last": true,
+  "populations": {
+    "cross_date": 30000,
+    "cross_rx": 126000,
+    "cross_both": 42000,
+    "all_target_dates": 168000
+  },
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views": 7,
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "raw_thresholds_pass": false,
+  "paired_DURA_positive_gain_pass": false,
+  "original_all_three_conditions_pass": false,
+  "goals": [
+    {
+      "route": "raw",
+      "endpoint": "clean",
+      "exact_gain_fraction_pp": "-223/1260",
+      "gain_pp": -0.176984126984127,
+      "threshold_pass": false
+    },
+    {
+      "route": "raw",
+      "endpoint": "six_practical_mean",
+      "exact_gain_fraction_pp": "-275/1008",
+      "gain_pp": -0.2728174603174603,
+      "threshold_pass": false
+    },
+    {
+      "route": "DURA-LU",
+      "endpoint": "clean",
+      "exact_gain_fraction_pp": "-311/1680",
+      "gain_pp": -0.18511904761904763,
+      "threshold_pass": false
+    },
+    {
+      "route": "DURA-LU",
+      "endpoint": "six_practical_mean",
+      "exact_gain_fraction_pp": "-109/840",
+      "gain_pp": -0.12976190476190477,
+      "threshold_pass": false
+    }
+  ],
+  "new_source_records_read": 19980,
+  "complete_stdout_lines_read": 3624,
+  "source_actual_U_weight": 2,
+  "new_U_accepted_fractions": {
+    "2026092701": 0.9127777777777778,
+    "2026092702": 0.909400352733686,
+    "2026092703": 0.9109094650205761
+  },
+  "EMA_updates": 0,
+  "peer_updates": 0,
+  "U_truth_read": false,
+  "target_training_reads": 0,
+  "nonfinite_skips": 0,
+  "current_remaining_F0_students": "6 healthy fixed-recipe training/testing rows,not selected or stopped by these scores",
+  "no_new_restored_IQ_training": true,
+  "scope": "one fixed candidate result,not complete comparison or proof that all peer SSL is ineffective"
+}
