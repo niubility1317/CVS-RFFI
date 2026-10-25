@@ -1,0 +1,29 @@
+{
+  "status": "VERIFIED_ALL_NINE_OWN_E30_TO_E50_CONTINUATIONS",
+  "run_id": "20261025-phase1-PAMF-PeerSupervised-m9-r02",
+  "read_at_UTC": "2026-10-25T11:21:39.390728+00:00",
+  "closed_source_segments": 9,
+  "complete_structured_source_records": 19980,
+  "own_E30_parent_matches": true,
+  "original_two_E20_peers_match": true,
+  "cumulative_epoch_at_boundary": 30,
+  "cumulative_updates_at_boundary": 6660,
+  "continuation_epochs": 20,
+  "default_head_classes": 6,
+  "native_source_smokes": "9_PASS",
+  "actual_U_weights": {
+    "PeerT1U2": 2,
+    "PeerPL2": 2,
+    "PeerT1U1": 1
+  },
+  "EMA_updates": 0,
+  "peer_updates": 0,
+  "nonfinite_skips": 0,
+  "U_truth_read": false,
+  "source_V_training_reads": 0,
+  "G_training_reads": 0,
+  "new_target_reads": 0,
+  "scientific_execution_commit": "7eb8d21752b5fab6f1366e1cb96c2266bd46c2a7",
+  "actual_sources": "run-owned source complete.json,full closed step_metrics.jsonl.gz,peer_supervised_state.json,segment50/initial_smoke.pt:config and native smoke.json",
+  "scope": "Closed E20+10 source trajectory and actual ownE30 initialization of next20 only;not finalE50 or target performance."
+}

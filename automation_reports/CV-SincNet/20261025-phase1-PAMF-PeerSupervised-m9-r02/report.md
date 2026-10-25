@@ -73,3 +73,9 @@ F0 三方案×三学生种子：冻结其他两seed同契约E20确认自身.95�
 ## 九学生持续执行快照
 
 已读取全部 9 行 segment30 当前可用完整结构化记录，共 18456 条；三条 PeerPL2 已闭合 E30/6660 并健康进入原 E50 段，其余完整机制行继续 E28～E29。U 权重、peer 两次冻结前向、L/U 实际曝光、As KL0、零 EMA/peer 更新、零非有限跳步保持。该快照只覆盖 segment30，不代表 E50 或 target 完成。early_source_execution.csv 已扩展为全部 9 行。另有独立 label01 三学生使用空位运行，原九学生的科学 release 和配方不变。
+
+## 九行 E30 闭合与实际 E50 续训
+
+九行均已闭合自身 E20+10；读取全部 9×2220=19980 条结构化记录，检查实际 loss、U 曝光与接受计数、固定权重、冻结 peer 更新数、L768 包、As KL0 和非有限跳步，并与每段 peer_supervised_state.json 逐行对应。每行 U_seen=567000、peer_eval_views=1134000。未发现 EMA/peer 更新、U 真值、V 训练、G 训练或非有限跳步。
+
+已读取各自 segment50/initial_smoke.pt 中实际原生初始化配置，确认 parent_source 指向同 seed、同方法自身 E30，offset30/6660、再训练20轮，原两名 E20 peer、源合同和固定机制不变。原默认头保持6×160，九个原生源域无 query smoke 均 PASS。该核对只分析已有源域产物，没有新优化器更新、target 读取或选择 E30 作为最终 checkpoint；仍固定 final E50 后自动完整测试。明细见 [source_E30_and_resume.csv](source_E30_and_resume.csv)，证据见 [all_nine_E30_resume_evidence.json](all_nine_E30_resume_evidence.json)。
