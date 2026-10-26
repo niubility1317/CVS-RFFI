@@ -7,11 +7,12 @@ import time
 from experiments.cric_dura_comparison.publish import CONNECTION, ssh
 from .source import RUN, PREFIX_RUN
 from .vat_source import RUN as VAT_RUN
+from .covariance_source import RUN as COV_RUN
 
 
 def collect(runtime_file, output):
     rt=json.loads(Path(runtime_file).read_text(encoding='utf-8'))
-    if rt['run_id'] not in (RUN,VAT_RUN):raise ValueError('Only these registered source pilots can be collected')
+    if rt['run_id'] not in (RUN,VAT_RUN,COV_RUN):raise ValueError('Only these registered source pilots can be collected')
     remote=r'''
 import json,time
 from pathlib import Path
@@ -28,10 +29,11 @@ for p in run.rglob('*'):
 prefix=project/'runs'/PREFIX/'prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20'
 for p in prefix.iterdir():
  if p.is_file() and p.suffix in ('.json','.jsonl','.csv','.log','.gz'):add(p,'prefix20/'+p.name)
-old=project/'runs/20261025-diagnostic-PAMF-RestoredPL-sourceShift-m9-r01'
-for name in ('complete.json','source_V_predictions.npz'):add(old/name,'existing_PL_source/'+name)
+if rt['run_id']!=COVARIANCE:
+ old=project/'runs/20261025-diagnostic-PAMF-RestoredPL-sourceShift-m9-r01'
+ for name in ('complete.json','source_V_predictions.npz'):add(old/name,'existing_PL_source/'+name)
 print(json.dumps(dict(observed_at=time.time(),files=files)))
-'''.replace('RUNTIME',repr(rt)).replace('PREFIX',repr(PREFIX_RUN))
+'''.replace('RUNTIME',repr(rt)).replace('PREFIX',repr(PREFIX_RUN)).replace('COVARIANCE',repr(COV_RUN))
     manifest=ssh(remote);root=Path(output).resolve();root.mkdir(parents=True,exist_ok=True)
     for row in manifest['files']:
         path=(root/row['local']).resolve()
