@@ -77,3 +77,16 @@ class SIGTimeCVS(ReferenceCVS):
         if set(local) != {'h'}:
             raise ValueError('Actual t2 feature branch bypassed')
         return base+self.sequence_pool(local['h'])
+
+
+class SIGTimeRemovedCVS(SIGTimeCVS):
+    """Matched whole-network control: keep reference/CFO policy, remove SIG-TIME."""
+    def __init__(self, seed):
+        super().__init__(seed)
+        del self.sequence_pool
+        self._architecture = dict(self._architecture, name='SIG_TIME_REMOVED',
+            extra_feature_parameters=0, sequence_path=False,
+            ablation='Only SIG-TIME projection/signature/residual path removed')
+
+    def features(self, x):
+        return ReferenceCVS.features(self, x)

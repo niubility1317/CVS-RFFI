@@ -12,7 +12,7 @@ COMMON = ('resnet18', 'resnet34', 'resnet50', 'vgg16_bn', 'densenet121',
           'convnext_tiny', 'transformer6', 'bilstm3', 'cvresnet18_1d', 'cvresnet18_2d',
           'resnet18_2d', 'resnet50_2d')
 VARIANTS = (*COMMON, 'native', 'residual_fusion')
-SUPPORTED = (*VARIANTS, 'sig_time')
+SUPPORTED = (*VARIANTS, 'sig_time', 'sig_time_removed')
 
 
 def conv(a, b, k=3, stride=1, groups=1):
@@ -231,6 +231,9 @@ def to_complex(module,dimensions):
 
 
 def build(variant, model_seed=None):
+    if variant=='sig_time_removed':
+        from experiments.standard_ce_baselines.sigtime import SIGTimeRemovedCVS
+        return SIGTimeRemovedCVS(model_seed if model_seed is not None else torch.initial_seed())
     if variant=='sig_time':
         from experiments.standard_ce_baselines.sigtime import SIGTimeCVS
         return SIGTimeCVS(model_seed if model_seed is not None else torch.initial_seed())
