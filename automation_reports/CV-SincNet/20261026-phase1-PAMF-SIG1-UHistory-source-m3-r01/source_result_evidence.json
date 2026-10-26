@@ -1,0 +1,486 @@
+{
+  "status": "SOURCE_ANALYSIS_COMPLETE",
+  "segments": [
+    {
+      "method": "shared_PL_prefix",
+      "segment_end": 20,
+      "step_records": 4440,
+      "epoch_records": 20,
+      "segment_complete": true,
+      "gzip_closed": true,
+      "source": "prefix20"
+    },
+    {
+      "method": "PL-Negative",
+      "segment_end": 30,
+      "step_records": 2220,
+      "epoch_records": 10,
+      "segment_complete": true,
+      "gzip_closed": true,
+      "source": "pilot\\F\\F0-PL-Negative-s2026092701\\source\\segment30"
+    },
+    {
+      "method": "PL-Negative",
+      "segment_end": 50,
+      "step_records": 4440,
+      "epoch_records": 20,
+      "segment_complete": true,
+      "gzip_closed": true,
+      "source": "pilot\\F\\F0-PL-Negative-s2026092701\\source\\segment50"
+    },
+    {
+      "method": "PL-Temporal",
+      "segment_end": 30,
+      "step_records": 2220,
+      "epoch_records": 10,
+      "segment_complete": true,
+      "gzip_closed": true,
+      "source": "pilot\\F\\F0-PL-Temporal-s2026092701\\source\\segment30"
+    },
+    {
+      "method": "PL-Temporal",
+      "segment_end": 50,
+      "step_records": 4440,
+      "epoch_records": 20,
+      "segment_complete": true,
+      "gzip_closed": true,
+      "source": "pilot\\F\\F0-PL-Temporal-s2026092701\\source\\segment50"
+    },
+    {
+      "method": "PL-History",
+      "segment_end": 30,
+      "step_records": 2220,
+      "epoch_records": 10,
+      "segment_complete": true,
+      "gzip_closed": true,
+      "source": "pilot\\F\\F0-PL-History-s2026092701\\source\\segment30"
+    },
+    {
+      "method": "PL-History",
+      "segment_end": 50,
+      "step_records": 4440,
+      "epoch_records": 20,
+      "segment_complete": true,
+      "gzip_closed": true,
+      "source": "pilot\\F\\F0-PL-History-s2026092701\\source\\segment50"
+    }
+  ],
+  "history_states": [
+    {
+      "method": "PL-Negative",
+      "segment_end": 30,
+      "calls": 2220,
+      "seen": 567000,
+      "accepted": 529491,
+      "negative_seen": 27861,
+      "temporal_seen": 0,
+      "negative_classes": 97541,
+      "negative_unique": 4653,
+      "temporal_unique": 0,
+      "unique_seen": 56700,
+      "min_visits": 10,
+      "max_visits": 10,
+      "by_source_RX": {
+        "1": {
+          "seen": 113400,
+          "accepted": 110585,
+          "negative": 2006,
+          "temporal": 0
+        },
+        "3": {
+          "seen": 113400,
+          "accepted": 95909,
+          "negative": 13051,
+          "temporal": 0
+        },
+        "4": {
+          "seen": 113400,
+          "accepted": 110508,
+          "negative": 2102,
+          "temporal": 0
+        },
+        "6": {
+          "seen": 113400,
+          "accepted": 111036,
+          "negative": 1780,
+          "temporal": 0
+        },
+        "8": {
+          "seen": 113400,
+          "accepted": 101453,
+          "negative": 8922,
+          "temporal": 0
+        }
+      },
+      "history_tensor_bytes": 3628800,
+      "Python_lookup_memory_not_measured": true,
+      "student_U_packets": 567000,
+      "teacher_U_packets": 567000,
+      "model_EMA_updates": 0,
+      "U_truth_read": false,
+      "target_reads": 0,
+      "new_inference_parameters": 0,
+      "default_head_joint": true
+    },
+    {
+      "method": "PL-Negative",
+      "segment_end": 50,
+      "calls": 6660,
+      "seen": 1701000,
+      "accepted": 1613733,
+      "negative_seen": 76971,
+      "temporal_seen": 0,
+      "negative_classes": 266574,
+      "negative_unique": 4949,
+      "temporal_unique": 0,
+      "unique_seen": 56700,
+      "min_visits": 30,
+      "max_visits": 30,
+      "by_source_RX": {
+        "1": {
+          "seen": 340200,
+          "accepted": 334633,
+          "negative": 4739,
+          "temporal": 0
+        },
+        "3": {
+          "seen": 340200,
+          "accepted": 298414,
+          "negative": 37000,
+          "temporal": 0
+        },
+        "4": {
+          "seen": 340200,
+          "accepted": 332464,
+          "negative": 6733,
+          "temporal": 0
+        },
+        "6": {
+          "seen": 340200,
+          "accepted": 334539,
+          "negative": 5057,
+          "temporal": 0
+        },
+        "8": {
+          "seen": 340200,
+          "accepted": 313683,
+          "negative": 23442,
+          "temporal": 0
+        }
+      },
+      "history_tensor_bytes": 3628800,
+      "Python_lookup_memory_not_measured": true,
+      "student_U_packets": 1701000,
+      "teacher_U_packets": 1701000,
+      "model_EMA_updates": 0,
+      "U_truth_read": false,
+      "target_reads": 0,
+      "new_inference_parameters": 0,
+      "default_head_joint": true
+    },
+    {
+      "method": "PL-Temporal",
+      "segment_end": 30,
+      "calls": 2220,
+      "seen": 567000,
+      "accepted": 528598,
+      "negative_seen": 0,
+      "temporal_seen": 448774,
+      "negative_classes": 0,
+      "negative_unique": 0,
+      "temporal_unique": 56447,
+      "unique_seen": 56700,
+      "min_visits": 10,
+      "max_visits": 10,
+      "by_source_RX": {
+        "1": {
+          "seen": 113400,
+          "accepted": 110620,
+          "negative": 0,
+          "temporal": 90483
+        },
+        "3": {
+          "seen": 113400,
+          "accepted": 95404,
+          "negative": 0,
+          "temporal": 88264
+        },
+        "4": {
+          "seen": 113400,
+          "accepted": 110490,
+          "negative": 0,
+          "temporal": 90051
+        },
+        "6": {
+          "seen": 113400,
+          "accepted": 111028,
+          "negative": 0,
+          "temporal": 90438
+        },
+        "8": {
+          "seen": 113400,
+          "accepted": 101056,
+          "negative": 0,
+          "temporal": 89538
+        }
+      },
+      "history_tensor_bytes": 3628800,
+      "Python_lookup_memory_not_measured": true,
+      "student_U_packets": 567000,
+      "teacher_U_packets": 567000,
+      "model_EMA_updates": 0,
+      "U_truth_read": false,
+      "target_reads": 0,
+      "new_inference_parameters": 0,
+      "default_head_joint": true
+    },
+    {
+      "method": "PL-Temporal",
+      "segment_end": 50,
+      "calls": 6660,
+      "seen": 1701000,
+      "accepted": 1611430,
+      "negative_seen": 0,
+      "temporal_seen": 1572789,
+      "negative_classes": 0,
+      "negative_unique": 0,
+      "temporal_unique": 56555,
+      "unique_seen": 56700,
+      "min_visits": 30,
+      "max_visits": 30,
+      "by_source_RX": {
+        "1": {
+          "seen": 340200,
+          "accepted": 334781,
+          "negative": 0,
+          "temporal": 316881
+        },
+        "3": {
+          "seen": 340200,
+          "accepted": 296924,
+          "negative": 0,
+          "temporal": 309997
+        },
+        "4": {
+          "seen": 340200,
+          "accepted": 332395,
+          "negative": 0,
+          "temporal": 315448
+        },
+        "6": {
+          "seen": 340200,
+          "accepted": 334500,
+          "negative": 0,
+          "temporal": 316642
+        },
+        "8": {
+          "seen": 340200,
+          "accepted": 312830,
+          "negative": 0,
+          "temporal": 313821
+        }
+      },
+      "history_tensor_bytes": 3628800,
+      "Python_lookup_memory_not_measured": true,
+      "student_U_packets": 1701000,
+      "teacher_U_packets": 1701000,
+      "model_EMA_updates": 0,
+      "U_truth_read": false,
+      "target_reads": 0,
+      "new_inference_parameters": 0,
+      "default_head_joint": true
+    },
+    {
+      "method": "PL-History",
+      "segment_end": 30,
+      "calls": 2220,
+      "seen": 567000,
+      "accepted": 529092,
+      "negative_seen": 28190,
+      "temporal_seen": 448886,
+      "negative_classes": 98962,
+      "negative_unique": 4635,
+      "temporal_unique": 56458,
+      "unique_seen": 56700,
+      "min_visits": 10,
+      "max_visits": 10,
+      "by_source_RX": {
+        "1": {
+          "seen": 113400,
+          "accepted": 110632,
+          "negative": 1943,
+          "temporal": 90478
+        },
+        "3": {
+          "seen": 113400,
+          "accepted": 95717,
+          "negative": 13209,
+          "temporal": 88322
+        },
+        "4": {
+          "seen": 113400,
+          "accepted": 110527,
+          "negative": 2075,
+          "temporal": 90075
+        },
+        "6": {
+          "seen": 113400,
+          "accepted": 111093,
+          "negative": 1725,
+          "temporal": 90437
+        },
+        "8": {
+          "seen": 113400,
+          "accepted": 101123,
+          "negative": 9238,
+          "temporal": 89574
+        }
+      },
+      "history_tensor_bytes": 3628800,
+      "Python_lookup_memory_not_measured": true,
+      "student_U_packets": 567000,
+      "teacher_U_packets": 567000,
+      "model_EMA_updates": 0,
+      "U_truth_read": false,
+      "target_reads": 0,
+      "new_inference_parameters": 0,
+      "default_head_joint": true
+    },
+    {
+      "method": "PL-History",
+      "segment_end": 50,
+      "calls": 6660,
+      "seen": 1701000,
+      "accepted": 1613229,
+      "negative_seen": 77420,
+      "temporal_seen": 1573733,
+      "negative_classes": 268924,
+      "negative_unique": 4926,
+      "temporal_unique": 56577,
+      "unique_seen": 56700,
+      "min_visits": 30,
+      "max_visits": 30,
+      "by_source_RX": {
+        "1": {
+          "seen": 340200,
+          "accepted": 334841,
+          "negative": 4513,
+          "temporal": 316921
+        },
+        "3": {
+          "seen": 340200,
+          "accepted": 298003,
+          "negative": 37384,
+          "temporal": 310461
+        },
+        "4": {
+          "seen": 340200,
+          "accepted": 332598,
+          "negative": 6591,
+          "temporal": 315573
+        },
+        "6": {
+          "seen": 340200,
+          "accepted": 334742,
+          "negative": 4865,
+          "temporal": 316727
+        },
+        "8": {
+          "seen": 340200,
+          "accepted": 313045,
+          "negative": 24067,
+          "temporal": 314051
+        }
+      },
+      "history_tensor_bytes": 3628800,
+      "Python_lookup_memory_not_measured": true,
+      "student_U_packets": 1701000,
+      "teacher_U_packets": 1701000,
+      "model_EMA_updates": 0,
+      "U_truth_read": false,
+      "target_reads": 0,
+      "new_inference_parameters": 0,
+      "default_head_joint": true
+    }
+  ],
+  "stdout_full_scan": [
+    {
+      "file": "PL-History.log",
+      "bytes": 163212,
+      "lines": 1208,
+      "fatal_markers": 0
+    },
+    {
+      "file": "PL-Negative.log",
+      "bytes": 163290,
+      "lines": 1208,
+      "fatal_markers": 0
+    },
+    {
+      "file": "PL-Temporal.log",
+      "bytes": 163290,
+      "lines": 1208,
+      "fatal_markers": 0
+    },
+    {
+      "file": "smoke.log",
+      "bytes": 0,
+      "lines": 0,
+      "fatal_markers": 0
+    }
+  ],
+  "fatal_markers": [],
+  "existing_control": {
+    "method": "PLControl",
+    "model_seed": 2026092701,
+    "signature_views": 3,
+    "source_V": 27000,
+    "source": "20261025-diagnostic-PAMF-RestoredPL-sourceShift-m9-r01",
+    "results": [
+      {
+        "view": "raw",
+        "correct": 26575,
+        "accuracy": 98.42592592592592
+      },
+      {
+        "view": "G_raw",
+        "correct": 26573,
+        "accuracy": 98.41851851851851
+      },
+      {
+        "view": "practical_low_suburban",
+        "correct": 24349,
+        "accuracy": 90.18148148148148
+      },
+      {
+        "view": "G_practical_low_suburban",
+        "correct": 25845,
+        "accuracy": 95.72222222222221
+      },
+      {
+        "view": "practical_mid_urban",
+        "correct": 20107,
+        "accuracy": 74.47037037037038
+      },
+      {
+        "view": "G_practical_mid_urban",
+        "correct": 24561,
+        "accuracy": 90.96666666666667
+      },
+      {
+        "view": "practical_low_urban",
+        "correct": 16397,
+        "accuracy": 60.729629629629635
+      },
+      {
+        "view": "G_practical_low_urban",
+        "correct": 22856,
+        "accuracy": 84.65185185185186
+      }
+    ]
+  },
+  "new_final_source_rows": 3,
+  "target_performance": "UNTESTED",
+  "U_label_correctness": "UNKNOWN",
+  "scope": "All complete structured records parsed;live segments explicitly partial;no target or model updates"
+}

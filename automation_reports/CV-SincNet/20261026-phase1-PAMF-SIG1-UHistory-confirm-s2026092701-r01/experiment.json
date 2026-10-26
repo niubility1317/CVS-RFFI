@@ -1,0 +1,167 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-SIG1-UHistory-confirm-s2026092701-r01",
+  "group_id": "pamf-sig1-u-history-independent-20261026",
+  "display_name": "固定PL-History单seed正式七景确认：raw与同DURA、三个测试人群",
+  "description": "沿用源阶段事先固定的组合主候选，其他两行不按源/目标名次替换主方法。零新训练，完整七视图/三人群/raw及同G-LU，所有预测固定后独立CPU truth-last；对照预测与分数直接复用。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "single-SIG_TIME",
+    "PL-History",
+    "frozen-final50",
+    "truth-last",
+    "no-new-training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "本聊天用户要求独立优化PAMF-REPL；完整PAMF保留SIG_TIME单视图；后续明确不影响另一个对话、对照复用已完成、不重复训练。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "existing verified N607 CVS-RFFI Python, FP32/TF32off, two CPU threads, no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-SIG1-UHistory-confirm-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig original F0",
+    "version": "existing validated original physical roles",
+    "representation": "FP32 received IQ [2,256]",
+    "contract_ref": "original F0 source_contract.json, checked private context",
+    "physical_ids_ref": "same existing source contract.role_ids",
+    "label_map_ref": "same original six registered TX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "unchanged original F0 six TX",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": ".07/.63/.30 source pool;training label ratio .10",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "unchanged existing Phase1 validated source handles;Phase2 capsule_id/split_id not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "same practical residual/post_sync/noEQ, source L training and frozen source V diagnostics"
+  },
+  "permissions": {
+    "regime": "frozen_source_model_target_testing",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "single fixed seed confirmation;no three-seed proof or causal matched-architecture claim"
+  },
+  "checkpoint": {
+    "initialization": "fixed final E50 from completed original source pilot",
+    "sources": [
+      "20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/F0-PL-History-s2026092701/source"
+    ],
+    "contract_check_ref": "actual complete.json,source contract equality and real payload state in load_prefix;first-step real checkpoint source L/U smoke",
+    "provenance_verdict": "require same original F0 physical IDs/roles;single SIG_TIME local6x96x1/output160x112/defaulthead6x160;scratch prefix no ancestors/no target selection;fail closed on mismatch",
+    "selection_rule": "PL-History was primary before new source/final results;fixed final E50 only;no reselection of ablations or seed"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-u-history-confirm-20261026",
+    "gpu_policy": "only one fixed inference worker,globally idle GPU with>=10000MiB;then independent CPU scorer,one total scorer;no other tasks changed",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-confirm-s2026092701-r01",
+    "remote_log_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-confirm-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026",
+    "launch_command": "PYTHON -u -m experiments.pamf_u_history.confirm dispatch --config PROJECT/releases/20261026-phase1-PAMF-SIG1-UHistory-confirm-release-r01/runtime.json",
+    "stop_rule": "first technical/protocol/smoke/nonfinite/ancestry/output/budget failure stops NEW jobs;healthy jobs finish;no performance-triggered kill,autoretry,foreign changes"
+  },
+  "expected_artifacts": [
+    "own final E50 source L2 no-query smoke;exact ancestry and single-view/default-head checked",
+    "all3populationsx7viewsxraw/DURA-LU predictions before any scoring",
+    "independent CPU truth-last scores,perTX/RX/day and net fixes vs reused PL predictions",
+    "no new F/G/control training or augmentation tuning",
+    "archive transfer/remote compile/PID CWD argv GPU log growth"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "Macro-F1",
+      "raw/G net corrections",
+      "per-view paired gain over reused PL/Sup",
+      "same-seed confidence and cost"
+    ],
+    "dimensions": [
+      "cross_date",
+      "cross_rx",
+      "cross_both",
+      "7views",
+      "raw",
+      "DURA-LU",
+      "TX",
+      "RX",
+      "day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-confirm-s2026092701-r01/predictions",
+    "scorer_ref": "existing independent CPU scorer",
+    "success": "same method:clean>=+1pp and six-scene mean>+1.5pp vs reused PL/Sup;all six scenes and same-G improve;full goal needs original multi-seed scope,one seed cannot complete it"
+  },
+  "rows": [
+    {
+      "row_id": "F0-PL-History-s2026092701",
+      "method": "PL-History",
+      "purpose": "single prespecified confirmation",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-confirm-s2026092701-r01/configs/predict.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/configs/PL-History.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "signature_views": 1,
+        "default_head_joint": true,
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261016421
+      },
+      "seed_notes": "model seed01 only;split392005 unchanged. No data subsampling/support seed;original source practical seeds namespace retained;native stochastic L/dropout use original model-seeded RNG.",
+      "k": null,
+      "scenario": "clean+all six practical;cross_date/cross_rx/cross_both;raw and same DURA-LU",
+      "optimizer": "none;frozen F/G",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "no new training;inheritedE50/11100 including sourceE20+10+20",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-confirm-s2026092701-r01/predictions",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-confirm-s2026092701-r01/logs/predict.log",
+      "command": "PYTHON -u -m experiments.pamf_u_history.confirm worker --kind predict --config PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-confirm-s2026092701-r01/configs/predict.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "complete.json",
+        "u_history_state.json",
+        "source_validation/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source raw results are mixed and same-G source diagnostics improve;source metrics do not prove target benefit. This one-seed check evaluates the fixed primary;no multi-seed or11-protocol expansion yet.",
+    "Reuse completed ordinaryPL/Sup/REPL F0 prediction artifacts and scores;X3 controls vs SIG1 new network are explicitly marked architecture differs;no new comparator training.",
+    "The source pilot contains no numerical source promotion threshold;this followup records that limitation,uses no model/epoch/seed ranking,and remains a single-seed falsification rather than a successful full promotion.",
+    "No method or hyperparameter changes based on the confirmation scores;all negative outcomes retained;no selective rerun.",
+    "No repeated candidate review:existing one P0/P1 covers this fixed method;new readout uses existing prediction/scoring arithmetic with focused truth-isolation/lineage tests and first actual-checkpoint smoke."
+  ],
+  "registered_at": "2026-10-26T09:20:09+00:00"
+}

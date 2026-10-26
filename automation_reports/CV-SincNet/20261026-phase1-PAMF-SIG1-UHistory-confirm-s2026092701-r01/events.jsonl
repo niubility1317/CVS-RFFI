@@ -1,0 +1,2 @@
+{"at": "2026-10-26T09:20:09+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-26T09:23:14+00:00", "status": "LOCAL_VERIFIED", "note": "13 focused tests PASS;fixed preselected History final50;predictor truth isolation and independent scorer handle separation;zero new training,existing controls reused;actual final checkpoint smoke first", "evidence": ["tests/test_pamf_u_history_confirmation.py"], "row_id": null}

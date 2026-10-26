@@ -1,0 +1,46 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "rows": [
+    {
+      "method": "PL-Negative",
+      "source_raw_clean": 98.37037037037038,
+      "source_raw_delta": -0.05555555555555555,
+      "source_raw_three_mean": 74.71111111111112,
+      "source_raw_three_delta": -0.41604938271604935,
+      "source_G_three_mean": 90.62345679012346,
+      "source_G_three_delta": 0.17654320987654323,
+      "U_exposures": 1701000,
+      "U_acceptance_percent": 94.86966490299824,
+      "negative_unique": 4949,
+      "temporal_unique": 0
+    },
+    {
+      "method": "PL-Temporal",
+      "source_raw_clean": 98.31111111111112,
+      "source_raw_delta": -0.11481481481481481,
+      "source_raw_three_mean": 74.70493827160495,
+      "source_raw_three_delta": -0.4222222222222222,
+      "source_G_three_mean": 90.65061728395062,
+      "source_G_three_delta": 0.20370370370370372,
+      "U_exposures": 1701000,
+      "U_acceptance_percent": 94.73427395649618,
+      "negative_unique": 0,
+      "temporal_unique": 56555
+    },
+    {
+      "method": "PL-History",
+      "source_raw_clean": 98.32222222222222,
+      "source_raw_delta": -0.1037037037037037,
+      "source_raw_three_mean": 74.68395061728394,
+      "source_raw_three_delta": -0.4432098765432098,
+      "source_G_three_mean": 90.60493827160495,
+      "source_G_three_delta": 0.1580246913580247,
+      "U_exposures": 1701000,
+      "U_acceptance_percent": 94.84003527336861,
+      "negative_unique": 4926,
+      "temporal_unique": 56577
+    }
+  ],
+  "comparison": "existing X3 ordinary PL;new SIG1 architecture differs",
+  "target_performance": "UNTESTED"
+}
