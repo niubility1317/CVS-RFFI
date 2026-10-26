@@ -1,0 +1,43 @@
+{
+  "status": "VERIFIED",
+  "models": 18,
+  "structures": 6,
+  "selected_variants": 5,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "test_population": "joint_generalization_primary_plus_pooled_two_disjoint_populations",
+  "reader": "PAMF_direct_only",
+  "packets_per_scene": 42000,
+  "overall_seed_rows": 288,
+  "summary_rows": 96,
+  "paired_rows": 80,
+  "stratum_seed_rows": 6624,
+  "stratum_summary_rows": 2208,
+  "stratum_paired_rows": 1840,
+  "delta_definition": "variant_minus_full",
+  "negative_is_degradation": true,
+  "maximum_absolute_numeric_difference": 2.842170943040401e-14,
+  "tolerance": 1e-10,
+  "figures": 4,
+  "IEEEtran": true,
+  "new_training": 0,
+  "new_prediction": 0,
+  "new_truth_access": 0,
+  "primary_packets_per_scene": 42000,
+  "pooled_packets_per_scene": 168000,
+  "population_counts": {
+    "cross_rx": 126000,
+    "cross_both": 42000
+  },
+  "population_CMs_replayed": 252,
+  "pooled_CMs_replayed": 126,
+  "pooled_seed_rows": 288,
+  "pooled_summary_rows": 96,
+  "pooled_paired_rows": 80,
+  "pooled_macro_f1_recomputed": true,
+  "weighted_F1_average_difference_max_pp": 0.11571212604842174,
+  "aggregation_within_seed_before_three_seed_statistics": true
+}

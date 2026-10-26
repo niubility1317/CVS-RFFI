@@ -10,7 +10,7 @@ SCENES=('clean','practical_high','practical_mid','practical_low_suburban','pract
 def rows(p):
     with (gzip.open if p.suffix=='.gz' else open)(p,'rt',encoding='utf-8-sig',newline='') as f:yield from csv.DictReader(f)
 
-def verify(root):
+def verify(root,expected_figures=3,verbose=True):
     maximum=0.
     def close(a,b):
         nonlocal maximum
@@ -65,7 +65,7 @@ def verify(root):
                 assert r['definition']=='variant_minus_full';a=[groups[key][s]-groups['CE_full',*key[1:]][s] for s in SEEDS]
             moments(r,a)
     manifest=json.loads((root/'figures/manifest.json').read_text(encoding='utf-8'))
-    assert len(manifest)==3
+    assert len(manifest)==expected_figures
     for item in manifest:
         svg=(root/'figures'/(item['name']+'.svg')).read_text(encoding='utf-8')
         assert '<text' in svg and 'Times New Roman' in svg and (root/item['source_csv']).exists()
@@ -73,8 +73,10 @@ def verify(root):
     assert '\\documentclass[10pt,journal]{IEEEtran}' in tex
     assert 'DURA' not in body and '接入' not in body and '时延' not in body and '参数量' not in body
     assert 'cross_rx' not in body and 'cross_date' not in body and 'v2' not in body.lower()
-    result=dict(status='VERIFIED',models=18,structures=6,selected_variants=5,model_seeds=list(SEEDS),test_population='unseen_receiver_and_earlier_unseen_date',reader='PAMF_direct_only',packets_per_scene=42000,overall_seed_rows=288,summary_rows=96,paired_rows=80,stratum_seed_rows=6624,stratum_summary_rows=2208,stratum_paired_rows=1840,delta_definition='variant_minus_full',negative_is_degradation=True,maximum_absolute_numeric_difference=maximum,tolerance=1e-10,figures=3,IEEEtran=True,new_training=0,new_prediction=0,new_truth_access=0)
-    (root/'verification.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8');print(json.dumps(result),flush=True);return result
+    result=dict(status='VERIFIED',models=18,structures=6,selected_variants=5,model_seeds=list(SEEDS),test_population='unseen_receiver_and_earlier_unseen_date',reader='PAMF_direct_only',packets_per_scene=42000,overall_seed_rows=288,summary_rows=96,paired_rows=80,stratum_seed_rows=6624,stratum_summary_rows=2208,stratum_paired_rows=1840,delta_definition='variant_minus_full',negative_is_degradation=True,maximum_absolute_numeric_difference=maximum,tolerance=1e-10,figures=expected_figures,IEEEtran=True,new_training=0,new_prediction=0,new_truth_access=0)
+    (root/'verification.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+    if verbose:print(json.dumps(result),flush=True)
+    return result
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,default=DEFAULT);a=p.parse_args();verify(a.root)
