@@ -1,2 +1,3 @@
 {"at": "2026-10-26T04:50:02+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-26T04:58:48+00:00", "status": "RUNNING", "note": "真实NoSIG/nativeSinc/defaulthead/G smoke及完整L恢复缓存通过；两个L-only专家在GPU0/4实际训练，身份/GPU/日志增长独立核实；标签质量待定，无U标签或学生/target。", "evidence": ["automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01/launch_evidence.json"], "row_id": null}
+{"at": "2026-10-26T05:16:14+00:00", "status": "ANALYZED", "note": "两专家4440全记录/20epoch/实际CP及完整V预测独立核实；共同标签33/33正确但纠正0，科学覆盖及净纠正失败，不生成U或训练学生；新F/G成本核实。", "evidence": ["automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01/complete_evidence.json"], "row_id": null}

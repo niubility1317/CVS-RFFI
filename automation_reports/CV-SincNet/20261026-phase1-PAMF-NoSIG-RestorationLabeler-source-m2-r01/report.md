@@ -1,13 +1,31 @@
 # NoSIG 原始／恢复域标签专家源证伪
 
-状态：**RUNNING，两个专家已实际训练并独立核实**；尚无本轮标签质量或目标性能。不是三个学生种子的结果，原联合目标未达成。
+**ANALYZED：技术执行完整，固定标签质量条件失败，不生成U标签、不启动SSL学生。** 本行只有一个学生seed2026092701的两个匹配标签专家，原三种子目标性能尚未达到。
 
-执行commit `107d092fde1292a66c5c6aef8c547712c524f813`。一次archive传输比对VERIFIED、远端compile PASS；控制器和两个worker的PID/CWD/argv/GPU驻留及训练记录增长已独立核实。RawLabeler在GPU0，GLabeler在GPU4。真实NoSIG E30／原默认头／native Sinc／固定G的原始与恢复L128 backward smoke PASS，头和Sinc梯度有限非零、零optimizer、零U训练／V／target读取。
+执行代码`107d092fde1292a66c5c6aef8c547712c524f813`。从同一NoSIG E30严格分叉，RawLabeler与GLabeler各新增10轮2220步至累计E40。新增适配使用原L中RX3/4/6/8的5040条，RX1新优化曝光0；父和G已经见过RX1，不称真正未见域。只有输入raw／同包G不同，真实L CE、样本顺序、优化设置和预算相同。原default6×160头、骨干及native Sinc共同更新，无新头、U训练、EMA、KL／CL或目标数据。
 
-完整原L6300×12恢复IQ缓存已完成（75,600 G包、154,828,800 float字节），G参数及全部注册buffer不变。两个专家同父E30、同顺序同预算：各新增10轮／2220步L128，新增适配只用RX3/4/6/8的5040条，RX1新优化曝光0。骨干与原默认头及native Sinc联合CE，CENTER_UNITS／物理clip5；RawLabeler只输入raw，GLabeler轮换12份同包G。父和G已见过RX1，不能称真正未见接收机验证。
+## 固定困难池标签质量
 
-每行final自动源V预测，原始专家27,000包、恢复专家12×27,000包。全部预测固定后再计标签质量：原E30 raw confidence<.95困难池中，两专家各confidence≥.95且同类。固定条件为认证≥200、实测precision≥99.5%、相对原E30净纠正≥100；RX/day/TX与单专家质量一并报告。未通过便保留负结果；不调阈值，不生成U标签，不自动训练学生。
+原NoSIG E30 raw confidence<.95的困难V2326条。下表都在同一固定池内，阈值保持.95；CrossLabeler还要求两个专家同类。
 
-RGPL固定双图已失败并归档，本轮不读取其伪标签。7项聚焦检查和唯一独立P0/P1审查完成；审查发现的probe冻结状态检查问题已修复并通过一次定向复查。它们只证明执行条件，不能替代科学结果。
+| 标签来源 | 认证 | 正确 | precision | 纠正 | 引错 | 净纠正 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| RawLabeler | 1329 | 1247 | 93.829947% | 123 | 38 | +85 |
+| GLabeler，12视图平均概率 | 41 | 39 | 95.121951% | 0 | 0 | 0 |
+| CrossLabeler | 33 | 33 | 100.000000% | 0 | 0 | 0 |
 
-[源计划](../../../docs/goals/PAMF_RESTORATION_LABELER_PLAN_20261026.md)、[预登记](preregistration.md)、[实际启动证据](launch_evidence.json)、[图方法负结果](../20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01/report.md)。
+CrossLabeler的33条虽然全正确，却均是原raw教师已经判对、但原置信不足的记录。它未满足认证≥200和净纠正≥100；不能以100%取代两个失败条件，也不放宽阈值。U正确率未知，未做U标签生成。
+
+原始输入适配仍留下可检验信息：固定困难池准确率由原E30 raw的64.832330%升至RawLabeler的78.245916%，对应1508→1820条正确，净增加312；GLabeler在12G均值上的同池准确率为65.606191%（1526条正确）。这是不同输入／不同适配的复合比较，不单独证明G的因果损失。整个V上的原raw／适配raw／适配G均值准确率分别96.740741%／97.700000%／96.322222%。原始专家的高置信困难标签仍有82错，不能直接用1329条全部训练。
+
+## 完整执行证据
+
+完整读取两专家4440条训练记录、20个完整epoch、48行stdout和两个实际final checkpoint。逐步核对L128/U0、native U/EMA关闭、有限loss／梯度、正默认头梯度、LR日程和12视图顺序。每行284160条L曝光、5040唯一L、2220次物理clip；恢复行每视图23680曝光。实际分类头和两份Sinc坐标都发生有限非零改变，native Sinc没有误用冻结Reader过滤器。
+
+原始专家与恢复专家训练分别约72.577和74.127秒；它们是单CE标签专家，不能冒充完整PAMF学生的同成本性能。L6300×12恢复IQ缓存完整，G参数与全部注册buffer不变；所有冻结V预测亦保持F/G状态。实际总新F919582包、新G399732包，与固定预算一致。额外模型、恢复和缓存成本单列，无免费成本或推理时延结论。
+
+独立从冻结logits重算全部认证决定、全V／困难池准确率、RX/day/TX质量与科学规则，逐项一致。预测先固定再作V质量算术；复核新增F/G前向0、IQ读取0、U真值0、target0。控制器和全部worker已消失，完整结束。
+
+本次只保留“raw真实L适配改善部分难样本”这一证据；恢复专家尚不能提供足够的新纠错标签。后续先分析现成完整监督／普通PL锚点能否可靠核对这部分raw标签，作为独立来源假设；不复用失败图输出，不继续本双专家G门控，也不自动启动学生。
+
+[预登记](preregistration.md)、[完整证据](complete_evidence.json)、[20轮训练曲线](source_epoch_curves.csv)、[标签质量](source_label_quality.csv)、[全部分层](source_quality_cells.csv)、[原计划](../../../docs/goals/PAMF_RESTORATION_LABELER_PLAN_20261026.md)。

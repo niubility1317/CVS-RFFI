@@ -1,6 +1,6 @@
 # NoSIG 恢复域标签专家：下一条源证伪路线
 
-状态：**单seed两个匹配标签专家已实际训练，源标签质量尚待冻结后判断**。原三种子联合目标不变。本计划由双图源诊断的真实失败触发，属于独立新候选，不放宽或重跑RGPL。
+状态：**两个匹配标签专家及完整源评估已完成，固定质量条件失败；不生成U标签或启动学生。** 原三种子联合目标不变。下文保留本轮诊断前固定方法，不放宽或重跑RGPL／本轮门槛。
 
 ## 依据和可证伪假设
 
@@ -38,3 +38,9 @@ N607现有普通用户环境，不安装依赖。GPU0至7按全局CUDA＋pending
 ## 实际启动
 
 run `20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01`，执行commit `107d092fde1292a66c5c6aef8c547712c524f813`。7项聚焦检查、独立P0/P1审查及一次定向修复复查、archive比对和远端compile通过。真实native Sinc／默认头／G的raw/G L128反传通过，Sinc与头的梯度有限非零。L6300×12恢复IQ缓存全部完成且G状态不变；两个专家已在GPU0/4训练，PID/CWD/argv/GPU及记录增长已核实。尚未生成U标签、训练SSL学生或访问目标。最新实际状态见[本行报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01/report.md)。
+
+## 完成后的科学判断
+
+全部4440训练记录、20轮曲线、真实checkpoint、12G等曝光和全部源V预测已独立核对。CrossLabeler只认证33条，33条全正确但纠正0／引错0；覆盖≥200、净纠正≥100均失败，不以100%改写结论。GLabeler单独仅认证41条，39正确，仍无原raw错误被纠正。RawLabeler单独认证1329条，1247正确（93.829947%），纠正123／引错38。
+
+固定困难V2326条的原raw正确1508，适配raw正确1820，净增312；高置信新增标签却仍有明显噪声。后续可独立检验现成完整监督／普通PL锚点对raw适配标签的核对，不继续本G专家门控，不从当前V结果调阈值。实际F919582/G399732包、U新训练及标签生成0、target0；所有进程已结束，原目标未达到。详见[完成报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01/report.md)。

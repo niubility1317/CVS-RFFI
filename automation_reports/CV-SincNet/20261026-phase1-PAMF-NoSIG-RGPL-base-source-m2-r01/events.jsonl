@@ -2,3 +2,4 @@
 {"at": "2026-10-26T04:01:39+00:00", "status": "RUNNING", "note": "真实NoSIG/defaulthead/G及L/U smoke PASS，实际训练GPU/身份/step增长核实；源only单seed。", "evidence": ["launch_evidence.json"], "row_id": "F0-NoSIG-PL-s2026092701"}
 {"at": "2026-10-26T04:01:46+00:00", "status": "RUNNING", "note": "真实NoSIG/defaulthead/G及L/U smoke PASS，实际训练GPU/身份/step增长核实；源only单seed。", "evidence": ["launch_evidence.json"], "row_id": "F0-NoSIG-Sup-s2026092701"}
 {"at": "2026-10-26T04:01:54+00:00", "status": "RUNNING", "note": "去SIG完整监督与普通PL控制运行，E30供后续图教师；原联合目标尚未达到。", "evidence": ["launch_evidence.json"], "row_id": null}
+{"at": "2026-10-26T05:08:50+00:00", "status": "ANALYZED", "note": "两个NoSIG E50控制及全部源V八视图完成；17760新增+4440继承全记录、3215stdout、六CP、100epoch和272源评分单元独立核实；仅单seed源控制，无target或新学生。", "evidence": ["automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/complete_evidence.json"], "row_id": null}

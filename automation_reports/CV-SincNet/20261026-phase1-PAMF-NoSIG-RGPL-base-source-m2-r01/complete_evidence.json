@@ -1,0 +1,152 @@
+{
+  "status": "VERIFIED",
+  "read_at": 1792990949.7062387,
+  "run_id": "20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01",
+  "code_commit": "f5eb718af9bf461b6b0b9fa6b422f8794bc19103",
+  "methods": [
+    {
+      "method": "NoSIG-PL",
+      "segments": [
+        {
+          "segment_epochs": 20,
+          "records": 4440,
+          "inherited_prefix": true,
+          "PL_seen": 396900,
+          "PL_accepted": 348183
+        },
+        {
+          "segment_epochs": 10,
+          "records": 2220,
+          "inherited_prefix": false,
+          "PL_seen": 567000,
+          "PL_accepted": 510984
+        },
+        {
+          "segment_epochs": 20,
+          "records": 4440,
+          "inherited_prefix": false,
+          "PL_seen": 1134000,
+          "PL_accepted": 1057793
+        }
+      ],
+      "default_head_changes": [
+        null,
+        0.3077037036418915,
+        0.42101719975471497
+      ],
+      "source_V": [
+        {
+          "population": "ALL",
+          "n": 27000,
+          "raw": 97.56296296296296,
+          "G_raw": 97.53703703703704,
+          "H_three_mean": 73.73333333333333,
+          "G_three_mean": 89.6283950617284
+        },
+        {
+          "population": "held",
+          "n": 5400,
+          "raw": 99.68518518518519,
+          "G_raw": 99.70370370370371,
+          "H_three_mean": 74.58641975308642,
+          "G_three_mean": 92.5679012345679
+        },
+        {
+          "population": "trained",
+          "n": 21600,
+          "raw": 97.0324074074074,
+          "G_raw": 96.99537037037037,
+          "H_three_mean": 73.52006172839506,
+          "G_three_mean": 88.89351851851852
+        }
+      ]
+    },
+    {
+      "method": "NoSIG-Sup",
+      "segments": [
+        {
+          "segment_epochs": 20,
+          "records": 4440,
+          "inherited_prefix": false,
+          "PL_seen": 0,
+          "PL_accepted": 0
+        },
+        {
+          "segment_epochs": 10,
+          "records": 2220,
+          "inherited_prefix": false,
+          "PL_seen": 0,
+          "PL_accepted": 0
+        },
+        {
+          "segment_epochs": 20,
+          "records": 4440,
+          "inherited_prefix": false,
+          "PL_seen": 0,
+          "PL_accepted": 0
+        }
+      ],
+      "default_head_changes": [
+        null,
+        0.31764546036720276,
+        0.4183878004550934
+      ],
+      "source_V": [
+        {
+          "population": "ALL",
+          "n": 27000,
+          "raw": 97.75925925925925,
+          "G_raw": 97.70740740740742,
+          "H_three_mean": 73.67037037037036,
+          "G_three_mean": 89.63703703703703
+        },
+        {
+          "population": "held",
+          "n": 5400,
+          "raw": 99.66666666666667,
+          "G_raw": 99.68518518518519,
+          "H_three_mean": 74.82098765432099,
+          "G_three_mean": 92.49382716049382
+        },
+        {
+          "population": "trained",
+          "n": 21600,
+          "raw": 97.28240740740742,
+          "G_raw": 97.21296296296296,
+          "H_three_mean": 73.38271604938272,
+          "G_three_mean": 88.92283950617285
+        }
+      ]
+    }
+  ],
+  "new_complete_records": 17760,
+  "inherited_complete_records": 4440,
+  "stdout_lines": 3215,
+  "processes": {
+    "controller": {
+      "pid": 91324,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "smoke": {
+      "pid": 91380,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "NoSIG-PL": {
+      "pid": 91916,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "NoSIG-Sup": {
+      "pid": 91954,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    }
+  },
+  "new_IQ_reads": 0,
+  "new_model_forwards": 0,
+  "U_truth_read": false,
+  "target_reads": 0,
+  "scope": "Two single-seed source controls;not target or three-seed SSL performance"
+}

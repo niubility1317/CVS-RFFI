@@ -123,3 +123,7 @@ GraphRaw2与RGPL使用相同图标签／接受集合／额外前向数，CE总�
 ## 完成后的固定科学判断
 
 原L6300/U56700/V27000全部特征与两张63000节点源图均已完成，全部F/G状态不变。U困难池4932，最终认证15；V困难池2326，最终认证17，正确14（82.352941%），纠正0／引错1。raw图单独固定规则135/150正确，恢复图37/62正确；两图一致未带来可靠新增标签。独立完整U/V核算一致，所有进程已结束，新增核算模型前向／IQ／U真值／target均0。本版同时未达到V≥200及precision≥99.5%，因此不启动GraphRaw、GraphRaw2、RGPL；不改变k／阈值，不把准备好的学生CE代码当作已训练方法。保留源内跨RX和两图共同错误这一失败事实。完整结果见[诊断报告](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01/report.md)。
+
+## NoSIG 对照源阶段已闭合
+
+两个匹配控制均完成E50及V27000全部八视图，完整核对17760新增与4440继承训练记录、100轮曲线、六checkpoint和272评分单元。NoSIG-Sup源raw97.759259%、G三景89.637037%；NoSIG-PL源raw97.562963%、G三景89.628395%。本轮没有控制的目标测试或三seed结果，原目标不变。NoSIG-PL源RX1 G三景92.567901%作为后续固定源比较，RX1依然不是基座／G未见域。详见[控制完整报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/report.md)。

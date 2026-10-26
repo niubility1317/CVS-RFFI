@@ -1,0 +1,221 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-analysis-PAMF-NoSIG-RawAnchor-labels-r01",
+  "group_id": "pamf-nosig-raw-label-source-20261026",
+  "display_name": "冻结NoSIG监督与普通PL锚点核对原始IQ适配标签",
+  "description": "仅现成源V原始IQ logits；RawLabeler分别与Sup50/PL50共同认证原E30困难池，固定阈值和质量条件；无新模型、IQ、U真值或target读取。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-NoSIG-RawAnchor-labels"
+  ],
+  "tags": [
+    "PAMF",
+    "NO_SIGNATURE",
+    "source-V-posteriors",
+    "no-new-model",
+    "no-IQ",
+    "two-raw-anchors",
+    "fixed95"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01",
+    "20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01",
+    "20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01"
+  ],
+  "authorization": "用户授权持续分析并研发去SIG_TIME的SSL；完成专家固定规则失败后，先对已冻结源预测检验raw适配与监督/PL锚点错误互补性，不重新训练或访问目标。",
+  "code": {
+    "commit": "RECORDED_AT_ANALYSIS:complete.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "verified local Phase1 Python/NumPy; CPU-only posterior arithmetic; no installs",
+    "cwd": "E:/type10-7"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "not opened",
+      "U_s": "not opened; no U truth",
+      "V": "complete original27000 source V; three frozen raw logits and visible source metadata only"
+    },
+    "train_ratio": "no training, data roles unchanged; reuse frozen source posteriors with exact original role order",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "source posterior label-quality/complementarity analysis only; no successful SSL method, U precision or target performance"
+  },
+  "checkpoint": {
+    "initialization": "none; no model construction or checkpoint reads",
+    "sources": [
+      "stored RawLabeler E40 raw V logits",
+      "stored NoSIG-Sup E50 raw V logits",
+      "stored NoSIG-PL E50 raw V logits",
+      "stored original NoSIG E30 raw V confidence and labels"
+    ],
+    "contract_check_ref": "existing complete source audits; source contract V role IDs and class/domain order matched at collection",
+    "provenance_verdict": "all upstream models source-only known NoSIG/default-head lineage; this analysis reads predictions only",
+    "selection_rule": "both fixed rows always reported; confidence.95/newV>=200/precision>=99.5/netcorrect>=100 fixed before joint outcomes; no automatic student launch"
+  },
+  "execution": {
+    "host": "local",
+    "launch_owner": "codex-pamf-nosig-rawanchor-analysis-20261026",
+    "gpu_policy": "CPU only, zero GPU workers; readonly source-posterior collection from N607",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/raw_anchor",
+    "launch_command": "PYTHON -X utf8 -m experiments.pamf_channel_pl.raw_anchor_analysis --inputs local_artifacts/pamf_ssl_review_20261026/raw_anchor/inputs --output local_artifacts/pamf_ssl_review_20261026/raw_anchor/results --commit COMMIT",
+    "stop_rule": "missing/foreign source role/order/schema/nonfinite ends analysis; preserve upstream artifacts; failed fixed source criteria retained, no threshold sweep or training"
+  },
+  "expected_artifacts": [
+    "two fixed sourceV accepted masks/labels saved before quality arithmetic; no y in prediction output",
+    "single-teacher controls and two-anchor source label counts/precision/corrected/broken/net and RX/day/TX cells",
+    "all-source and original-hard-pool accuracy plus raw-adapt/anchor error overlap counts",
+    "fixed >=200certified AND >=99.5%precision AND >=100netcorrect for each candidate independently; both rows retained",
+    "zero new model forwards/weights/IQ/Utruth/target; no automatic model or U-label generation"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "fixed source V original hard-pool new-label quality and netcorrection"
+    ],
+    "secondary": [
+      "teacher error overlaps and full RX/day/TX cells"
+    ],
+    "target": "none",
+    "selection": "two mechanistic fixed alternatives, source-only feasibility, no parameter scan; any student requires separate fixed code/matrix",
+    "truth_policy": "all upstream predictions frozen; analysis masks fixed before visible source truth arithmetic; no U/target"
+  },
+  "rows": [
+    {
+      "row_id": "SupAnchor-s2026092701",
+      "method": "SupAnchor",
+      "purpose": "frozen raw expert cross-check against a full supervised or full PL source model",
+      "config_ref": "local_artifacts/pamf_ssl_review_20261026/raw_anchor/inputs/input_manifest.json",
+      "resolved_config_ref": "local_artifacts/pamf_ssl_review_20261026/raw_anchor/inputs/input_manifest.json",
+      "data_overrides": {
+        "role": "V",
+        "raw_only": true,
+        "anchor": "NoSIG-Sup50",
+        "confidence": 0.95
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "fixed original NoSIG E30 hard sourceV pool,raw IQ only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero training or model forwards; existing27000source posterior pairs only",
+      "output_root": "local_artifacts/pamf_ssl_review_20261026/raw_anchor/results/SupAnchor",
+      "log_path": null,
+      "command": "PYTHON -X utf8 -m experiments.pamf_channel_pl.raw_anchor_analysis --inputs local_artifacts/pamf_ssl_review_20261026/raw_anchor/inputs --output local_artifacts/pamf_ssl_review_20261026/raw_anchor/results --commit COMMIT",
+      "expected_artifacts": [
+        "two fixed sourceV accepted masks/labels saved before quality arithmetic; no y in prediction output",
+        "single-teacher controls and two-anchor source label counts/precision/corrected/broken/net and RX/day/TX cells",
+        "all-source and original-hard-pool accuracy plus raw-adapt/anchor error overlap counts",
+        "fixed >=200certified AND >=99.5%precision AND >=100netcorrect for each candidate independently; both rows retained",
+        "zero new model forwards/weights/IQ/Utruth/target; no automatic model or U-label generation"
+      ]
+    },
+    {
+      "row_id": "PLAnchor-s2026092701",
+      "method": "PLAnchor",
+      "purpose": "frozen raw expert cross-check against a full supervised or full PL source model",
+      "config_ref": "local_artifacts/pamf_ssl_review_20261026/raw_anchor/inputs/input_manifest.json",
+      "resolved_config_ref": "local_artifacts/pamf_ssl_review_20261026/raw_anchor/inputs/input_manifest.json",
+      "data_overrides": {
+        "role": "V",
+        "raw_only": true,
+        "anchor": "NoSIG-PL50",
+        "confidence": 0.95
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "fixed original NoSIG E30 hard sourceV pool,raw IQ only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero training or model forwards; existing27000source posterior pairs only",
+      "output_root": "local_artifacts/pamf_ssl_review_20261026/raw_anchor/results/PLAnchor",
+      "log_path": null,
+      "command": "PYTHON -X utf8 -m experiments.pamf_channel_pl.raw_anchor_analysis --inputs local_artifacts/pamf_ssl_review_20261026/raw_anchor/inputs --output local_artifacts/pamf_ssl_review_20261026/raw_anchor/results --commit COMMIT",
+      "expected_artifacts": [
+        "two fixed sourceV accepted masks/labels saved before quality arithmetic; no y in prediction output",
+        "single-teacher controls and two-anchor source label counts/precision/corrected/broken/net and RX/day/TX cells",
+        "all-source and original-hard-pool accuracy plus raw-adapt/anchor error overlap counts",
+        "fixed >=200certified AND >=99.5%precision AND >=100netcorrect for each candidate independently; both rows retained",
+        "zero new model forwards/weights/IQ/Utruth/target; no automatic model or U-label generation"
+      ]
+    }
+  ],
+  "notes": [
+    "RawLabeler E40 full-hardV netcorrect312 is known; confidence95alone93.83%precision; G cross-labeler only33oldcorrect/no newcorrection failed.",
+    "This analysis changes label-source corroboration to existing raw supervised/PL anchors, not a retuned G or graph gate.",
+    "All three classifiers use their original jointly trained default heads. No averaging of model weights, new head fitting or runtime ensemble performance claim.",
+    "Common source data/initialization means agreement is correlated; source precision must be measured, never inferred from agreement.",
+    "Existing source V has already informed development; this is not an independent blind benchmark.",
+    "If neither passes, retain both negative outcomes and do not train students with them. Passing here never replaces actual three-seed raw/G target validation."
+  ],
+  "matrix": {
+    "model_seed": 2026092701,
+    "source_V": 27000,
+    "original_hard_pool": 2326,
+    "candidates": [
+      "SupAnchor",
+      "PLAnchor"
+    ],
+    "confidence": 0.95,
+    "minimum_certified": 200,
+    "minimum_precision_percent": 99.5,
+    "minimum_netcorrect": 100,
+    "new_model_forwards": 0,
+    "checkpoint_reads": 0,
+    "IQ_reads": 0,
+    "U_truth_read": false,
+    "target_reads": 0
+  },
+  "registered_at": "2026-10-26T05:26:56+00:00"
+}
