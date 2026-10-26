@@ -16,4 +16,11 @@
 
 一次archive SHA传输比较和远端compile；独立核实PID/CWD/argv/GPU及日志增长。首个技术/输入/来源/shape/非有限/smoke/输出失败停止新派发，健康在跑行完成，保留产物，不自动重复提交或覆盖。科学低分不当技术失败。新基线不热改现有REPL源选择阈值；原clean+1pp、raw星地>1.5pp及同G提升目标保持，源/训练完成不当目标成功。
 
-当前：PLANNED；7项聚焦检查与18个协议子检查PASS，唯一独立P0/P1审查PASS；真实远端smoke尚待执行。
+当前：PLANNED；7项聚焦检查与18个协议子检查PASS，唯一独立P0/P1审查PASS；真实远端smoke现已PASS，见下方启动证据。
+
+
+## 实际启动（VERIFIED）
+
+执行commit `088f8f36a34a9cb750243414de91c084fe1f28d0` 已提交/推送并独立核实远端OID；一次archive传输比较VERIFIED、远端compile PASS。六个真实联合backward smoke全PASS：三个PL各加载自己实际E20并读取U256，三个Sup实际U0；所有L768/AsKL0、单SIG_TIME18976参数、原分类头/单视图梯度非零有限，0optimizer/0U真值/0target；同G+E20源L2推理PASS。
+
+六行已全部运行，独立核实controller/六worker PID、CWD、完整命令、物理GPU与跨两次读取的step日志增长，当前可读1264条记录，仅为启动进度。三个PL从E20后续训、三个Sup从零；每行自动正式预测/评分已实际入队。当前没有完成E50或新的目标准确率；三seed均值、样本SD及seed内配对差待正式矩阵完成。原三个REPL候选继续原计划，不改其配置/门槛，不联系其他对话。[启动证据](launch_evidence.json)。

@@ -1,0 +1,166 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01",
+  "code_commit": "088f8f36a34a9cb750243414de91c084fe1f28d0",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_PID_CWD_argv_verified": true,
+  "controller_pid": 347854,
+  "workers": [
+    {
+      "id": "train__F0-SIG1-PL-s2026092701",
+      "pid": 348112,
+      "gpu": 0,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 221
+    },
+    {
+      "id": "train__F0-SIG1-Sup-s2026092701",
+      "pid": 348148,
+      "gpu": 6,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 217
+    },
+    {
+      "id": "train__F0-SIG1-PL-s2026092702",
+      "pid": 348316,
+      "gpu": 7,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 197
+    },
+    {
+      "id": "train__F0-SIG1-Sup-s2026092702",
+      "pid": 348425,
+      "gpu": 7,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 220
+    },
+    {
+      "id": "train__F0-SIG1-PL-s2026092703",
+      "pid": 348531,
+      "gpu": 2,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 201
+    },
+    {
+      "id": "train__F0-SIG1-Sup-s2026092703",
+      "pid": 348572,
+      "gpu": 6,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 208
+    }
+  ],
+  "actual_smoke": {
+    "status": "PASS",
+    "results": [
+      {
+        "model_seed": 2026092701,
+        "signature_gradient_norm": 0.32027137667455363,
+        "method": "SIG1-PL",
+        "status": "PASS",
+        "actual_U_seen": 256,
+        "L_forward_packets": 768,
+        "head_finite_nonzero": true,
+        "actual_signature_parameters": 18976,
+        "actual_signature_views": 1,
+        "optimizer_updates": 0,
+        "U_truth_read": false,
+        "query_reads": 0
+      },
+      {
+        "model_seed": 2026092701,
+        "signature_gradient_norm": 0.6102162098531233,
+        "method": "SIG1-Sup",
+        "status": "PASS",
+        "actual_U_seen": 0,
+        "L_forward_packets": 768,
+        "head_finite_nonzero": true,
+        "actual_signature_parameters": 18976,
+        "actual_signature_views": 1,
+        "optimizer_updates": 0,
+        "U_truth_read": false,
+        "query_reads": 0
+      },
+      {
+        "model_seed": 2026092702,
+        "signature_gradient_norm": 0.32257633277228526,
+        "method": "SIG1-PL",
+        "status": "PASS",
+        "actual_U_seen": 256,
+        "L_forward_packets": 768,
+        "head_finite_nonzero": true,
+        "actual_signature_parameters": 18976,
+        "actual_signature_views": 1,
+        "optimizer_updates": 0,
+        "U_truth_read": false,
+        "query_reads": 0
+      },
+      {
+        "model_seed": 2026092702,
+        "signature_gradient_norm": 0.8636557218742907,
+        "method": "SIG1-Sup",
+        "status": "PASS",
+        "actual_U_seen": 0,
+        "L_forward_packets": 768,
+        "head_finite_nonzero": true,
+        "actual_signature_parameters": 18976,
+        "actual_signature_views": 1,
+        "optimizer_updates": 0,
+        "U_truth_read": false,
+        "query_reads": 0
+      },
+      {
+        "model_seed": 2026092703,
+        "signature_gradient_norm": 0.315950007040284,
+        "method": "SIG1-PL",
+        "status": "PASS",
+        "actual_U_seen": 256,
+        "L_forward_packets": 768,
+        "head_finite_nonzero": true,
+        "actual_signature_parameters": 18976,
+        "actual_signature_views": 1,
+        "optimizer_updates": 0,
+        "U_truth_read": false,
+        "query_reads": 0
+      },
+      {
+        "model_seed": 2026092703,
+        "signature_gradient_norm": 0.4828544234142727,
+        "method": "SIG1-Sup",
+        "status": "PASS",
+        "actual_U_seen": 0,
+        "L_forward_packets": 768,
+        "head_finite_nonzero": true,
+        "actual_signature_parameters": 18976,
+        "actual_signature_views": 1,
+        "optimizer_updates": 0,
+        "U_truth_read": false,
+        "query_reads": 0
+      }
+    ],
+    "actual_same_contract_SIG1_E20_default_head_and_G": true,
+    "checkpoint_state_verified": true,
+    "optimizer_updates": 0,
+    "target_reads": 0
+  },
+  "formal_prediction_jobs_queued": 6,
+  "independent_CPU_score_jobs_queued": 6,
+  "signature_views": 1,
+  "models": 6,
+  "source_only_training": true,
+  "U_truth_reads": 0,
+  "target_reads_so_far": 0,
+  "limitation": "Training in progress; no final checkpoint or target metric yet. Actual three-seed metrics will be generated after all frozen formal tests."
+}
