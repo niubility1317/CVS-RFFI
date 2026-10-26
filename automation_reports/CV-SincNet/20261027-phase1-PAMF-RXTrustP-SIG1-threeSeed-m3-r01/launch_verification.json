@@ -1,0 +1,24 @@
+{
+  "status": "QUEUED_VERIFIED_NEURAL_NOT_STARTED",
+  "execution_commit": "31d6ecbf8b2da46cfd70e7ca462093eee0e4b4df",
+  "ordinary_account_controller_identity": "VERIFIED_PID_CWD_ARGV_UID",
+  "controller_log_bytes": 248,
+  "pipeline_updated_at": 1793053417.2826266,
+  "jobs": 12,
+  "all_jobs_queued": true,
+  "GPU_workers": 0,
+  "predecessor_complete_present": false,
+  "actual_new_P_checkpoint_smoke": "PENDING_FIRST_GPU_STEP",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "source_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "control_retraining": 0,
+  "scientific_recipe_changed_after_freezing": false,
+  "goal_complete": false,
+  "controller_log_growth_verified": true,
+  "first_controller_log_bytes": 62
+}

@@ -1,6 +1,6 @@
 # RXTrust-P：按 raw 可信度和 H 分歧分配单标签/候选集合监督
 
-状态：PLANNED，尚未发布、真实P-checkpoint smoke或训练，没有性能提升结论。候选在当前 RXMeanMax 任何目标分数尚未读取时固定，不依据其结果决定是否运行。三模型 seed 2026092701/02/03，已有 PL/Sup 和即将完成的 Max 控制全部复用。
+状态：QUEUED_VERIFIED_NEURAL_NOT_STARTED。独立CPU等待控制器已发布并核实，12个job排队、0新GPU worker；实际P-checkpoint smoke与训练尚未开始，没有性能提升结论。候选在当前 RXMeanMax 任何目标分数尚未读取时固定，不依据其结果决定是否运行。三模型 seed 2026092701/02/03，已有 PL/Sup 和即将完成的 Max 控制全部复用。
 
 原完整 PAMF、单 SIG_TIME、默认头、fullT1 L 与普通 raw PL 阈值0.95/权重1保持。每 seed 只从原合法scratch E20独立+10+20至E50/11100、13L37LU；不加载E50教师。训练仅原clean及同包星地H、源U已知RX，0 DURA。推理原始IQ单F，不增参数/头/视图/集成。
 
@@ -19,3 +19,7 @@ H仍按全部U分母求平均，不按接受池大小放大。每seed12训练L/U
 每行E50后自动同V诊断、rawclean＋六practical/cross_rx126000＋cross_both42000，全部14组预测固定后独立truth-last。3模型×168000×7=3528000新正式判决；原默认头冻结读取，逐seed/均值/样本SD/同seed配对/逐景/TX/RX/day完整报告。原绝对rawclean≥85.98174603174603%、六景>72.0961970899471%及全部声明范围严格优于PL/Sup仍是目标，本F0小矩阵或任何源P指标均不构成完成。精确命令、数据/继承、输出根和停止规则见experiment.json。
 
 发布前本地11项数值/梯度/路由/输入负例/三seed管道与原Max5项回归均PASS，5模块编译PASS；本候选唯一一次独立P0/P1审查PASS、无直接缺陷。N607普通账号一次preflight核实新root未存在、3份scratchE20无祖先且源契约/缓存匹配、原fullU bank复用、剩余磁盘充足；新P真实checkpoint梯度smoke仍待首GPU步，不能把本地结果称为训练成功。父完整checkpoint状态将在首步既有load_prefix严格核验，无重复数据hash/receipt/审批。当前Max健康任务和旧远端release均不改动。
+
+执行commit `31d6ecbf8b2da46cfd70e7ca462093eee0e4b4df` 已推送并独立对照上游OID；一个archive传输校验VERIFIED，remote compile PASS。实际控制器PID/CWD/argv/UID与等待状态已核实，当前不占GPU，12job均等待前序Max整体完成。source缓存/均值bank/已有PL-Sup控制继续复用；没有重训对照、停止旧worker或修改Max release。见launch_verification.json。
+
+等待控制器第二次独立观测确认日志由62增长至248 bytes，pipeline时间同步推进；排队状态不是死锁文件或提交返回值代替。GPU worker仍0，真实P-smoke未开始。

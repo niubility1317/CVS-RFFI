@@ -29,3 +29,5 @@
 RXMean 六模型现已全部 ANALYZED：U 的 clean/六景为 84.532341%/70.364649%，LU 为 84.525595%/70.358102%；相对普通 PL clean 分别 −0.161508/−0.168254pp，六景 +0.131415/+0.124868pp，未达全方面目标。详见当前报告。预先固定的 RXMeanMax 三 seed 已从等待转为真实训练；四方法×三 seed 冻结 CPU 源置信度诊断独立运行，0 新训练、0 正式控制重测。原目标与全部三 seed 要求保持 active。
 
 已复用RXMean六份原sourceV raw/H概率完成三seed配对分析：raw高置信子集在low urban约38.8%从raw对变H错，但H高置信子集仍约99.77%正确；新增监督须区分参照证据强弱。这是源代理，0新F/训练/target/U真值，不改变当前Max配方。Max三seed完整E20→E30的6660步/30模型epoch已全部核验，正按原计划继续E50。当前未达标，原目标active。
+
+新候选RXTrust-P三seed已独立固定并发布CPU等待队列（../../automation_reports/CV-SincNet/20261027-phase1-PAMF-RXTrustP-SIG1-threeSeed-m3-r01/report.md）：普通rawPL和全部L不变，H对raw接受者用raw/H argmax并集单标签或partialCE，拒绝者仍softKL；四RX风格Max选择和所有前向预算保持。源E50代理集合包含率约99.883%、RX最低99.565%，不是U/早期/target保证；11项测试、原Max5项和独立P0/P1 PASS。新GPU任务在当前Max全部完成后才启动，不读其指标决定是否运行；三seed同原E20+30至E50，PL/Sup/Max控制复用。实际P-smoke待首GPU步，目标active。

@@ -29,7 +29,7 @@
   ],
   "authorization": "用户持续自主研发/借鉴FastTrust/普通PL上加机制/三种子/不重复对照/不影响其他对话。候选在当前Max任何目标分数读取之前固定；GPU仅在其完整run结束后启动，不读取其分数决定是否运行。",
   "code": {
-    "commit": "runtime.code_commit from committed publisher; actual execution OID recorded after launch",
+    "commit": "31d6ecbf8b2da46cfd70e7ca462093eee0e4b4df",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1,FP32/TF32off/CPU2",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-PAMF-RXTrustP-SIG1-threeSeed-release-r01"
