@@ -1,0 +1,510 @@
+{
+  "status": "VERIFIED",
+  "scientific_verdict": "FAIL_FIXED_QUALITY_RULE",
+  "code_commit": "ba7efad5dee5820a392cdfc241701a228e366b10",
+  "completion": {
+    "status": "SOURCE_RGPL_GRAPH_DIAGNOSTIC_COMPLETE",
+    "run_id": "20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01",
+    "code_commit": "ba7efad5dee5820a392cdfc241701a228e366b10",
+    "model_seed": 2026092701,
+    "teacher_epoch": 30,
+    "graph_quality_pass": false,
+    "quality_rule": {
+      "minimum_new_V_certified": 200,
+      "minimum_precision_percent": 99.5
+    },
+    "graph_stats": [
+      {
+        "graph": "raw",
+        "nodes": 63000,
+        "mutual_edges": 253408,
+        "iterations": 132,
+        "residual": 8.940696716308594e-07,
+        "V_nodes": 0
+      },
+      {
+        "graph": "restored",
+        "nodes": 63000,
+        "mutual_edges": 253376,
+        "iterations": 135,
+        "residual": 9.5367431640625e-07,
+        "V_nodes": 0
+      }
+    ],
+    "U_records": 56700,
+    "U_hard_pool": 4932,
+    "U_certified": 15,
+    "V_records": 27000,
+    "V_certified": 17,
+    "V_correct": 14,
+    "V_precision": 82.3529411764706,
+    "quality_cells": [
+      {
+        "dimension": "overall",
+        "stratum": "ALL",
+        "hard_pool": 2326,
+        "certified": 17,
+        "correct": 14,
+        "precision": 82.3529411764706,
+        "corrected": 0,
+        "broken": 1,
+        "net_correct": -1
+      },
+      {
+        "dimension": "RX",
+        "stratum": "1",
+        "hard_pool": 102,
+        "certified": 0,
+        "correct": 0,
+        "precision": null,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      },
+      {
+        "dimension": "RX",
+        "stratum": "3",
+        "hard_pool": 1125,
+        "certified": 0,
+        "correct": 0,
+        "precision": null,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      },
+      {
+        "dimension": "RX",
+        "stratum": "4",
+        "hard_pool": 151,
+        "certified": 12,
+        "correct": 12,
+        "precision": 100.0,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      },
+      {
+        "dimension": "RX",
+        "stratum": "6",
+        "hard_pool": 50,
+        "certified": 1,
+        "correct": 1,
+        "precision": 100.0,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      },
+      {
+        "dimension": "RX",
+        "stratum": "8",
+        "hard_pool": 898,
+        "certified": 4,
+        "correct": 1,
+        "precision": 25.0,
+        "corrected": 0,
+        "broken": 1,
+        "net_correct": -1
+      },
+      {
+        "dimension": "day",
+        "stratum": "1",
+        "hard_pool": 738,
+        "certified": 0,
+        "correct": 0,
+        "precision": null,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      },
+      {
+        "dimension": "day",
+        "stratum": "2",
+        "hard_pool": 708,
+        "certified": 15,
+        "correct": 12,
+        "precision": 80.0,
+        "corrected": 0,
+        "broken": 1,
+        "net_correct": -1
+      },
+      {
+        "dimension": "day",
+        "stratum": "3",
+        "hard_pool": 880,
+        "certified": 2,
+        "correct": 2,
+        "precision": 100.0,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      },
+      {
+        "dimension": "TX",
+        "stratum": "0",
+        "hard_pool": 103,
+        "certified": 0,
+        "correct": 0,
+        "precision": null,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      },
+      {
+        "dimension": "TX",
+        "stratum": "1",
+        "hard_pool": 436,
+        "certified": 2,
+        "correct": 2,
+        "precision": 100.0,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      },
+      {
+        "dimension": "TX",
+        "stratum": "2",
+        "hard_pool": 67,
+        "certified": 0,
+        "correct": 0,
+        "precision": null,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      },
+      {
+        "dimension": "TX",
+        "stratum": "3",
+        "hard_pool": 1491,
+        "certified": 3,
+        "correct": 0,
+        "precision": 0.0,
+        "corrected": 0,
+        "broken": 1,
+        "net_correct": -1
+      },
+      {
+        "dimension": "TX",
+        "stratum": "4",
+        "hard_pool": 158,
+        "certified": 0,
+        "correct": 0,
+        "precision": null,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      },
+      {
+        "dimension": "TX",
+        "stratum": "5",
+        "hard_pool": 71,
+        "certified": 12,
+        "correct": 12,
+        "precision": 100.0,
+        "corrected": 0,
+        "broken": 0,
+        "net_correct": 0
+      }
+    ],
+    "U_truth_read": false,
+    "V_graph_nodes": 0,
+    "target_reads": 0,
+    "optimizer_updates": 0,
+    "default_head_fit_updates": 0,
+    "new_method_training": false,
+    "source_only": true,
+    "scope": "Single frozen NoSIG E30;U precision unknown;no target result or automatic candidate training"
+  },
+  "independent_recalculation": {
+    "U_s": {
+      "records": 56700,
+      "hard_pool": 4932,
+      "certified": 15,
+      "stages": [
+        {
+          "stage": "raw_graph_fixed_rule",
+          "n": 319
+        },
+        {
+          "stage": "restored_graph_fixed_rule",
+          "n": 133
+        },
+        {
+          "stage": "both_confidence_support",
+          "n": 17
+        },
+        {
+          "stage": "full_double_graph",
+          "n": 15
+        }
+      ]
+    },
+    "V": {
+      "records": 27000,
+      "hard_pool": 2326,
+      "certified": 17,
+      "stages": [
+        {
+          "stage": "raw_graph_fixed_rule",
+          "n": 150,
+          "correct": 135,
+          "precision": 90.0,
+          "corrected": 11,
+          "broken": 6
+        },
+        {
+          "stage": "restored_graph_fixed_rule",
+          "n": 62,
+          "correct": 37,
+          "precision": 59.67741935483871,
+          "corrected": 0,
+          "broken": 14
+        },
+        {
+          "stage": "both_confidence_support",
+          "n": 18,
+          "correct": 15,
+          "precision": 83.33333333333333,
+          "corrected": 0,
+          "broken": 1
+        },
+        {
+          "stage": "full_double_graph",
+          "n": 17,
+          "correct": 14,
+          "precision": 82.3529411764706,
+          "corrected": 0,
+          "broken": 1
+        }
+      ],
+      "raw_teacher": {
+        "correct": 26120,
+        "accuracy": 96.74074074074073,
+        "hard_correct": 1508,
+        "hard_errors": 818
+      },
+      "quality_cells": [
+        {
+          "dimension": "overall",
+          "stratum": "ALL",
+          "certified": 17,
+          "correct": 14,
+          "precision": 82.3529411764706,
+          "corrected": 0,
+          "broken": 1,
+          "net_correct": -1
+        },
+        {
+          "dimension": "RX",
+          "stratum": "1",
+          "certified": 0,
+          "correct": 0,
+          "precision": null,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        },
+        {
+          "dimension": "RX",
+          "stratum": "3",
+          "certified": 0,
+          "correct": 0,
+          "precision": null,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        },
+        {
+          "dimension": "RX",
+          "stratum": "4",
+          "certified": 12,
+          "correct": 12,
+          "precision": 100.0,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        },
+        {
+          "dimension": "RX",
+          "stratum": "6",
+          "certified": 1,
+          "correct": 1,
+          "precision": 100.0,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        },
+        {
+          "dimension": "RX",
+          "stratum": "8",
+          "certified": 4,
+          "correct": 1,
+          "precision": 25.0,
+          "corrected": 0,
+          "broken": 1,
+          "net_correct": -1
+        },
+        {
+          "dimension": "day",
+          "stratum": "1",
+          "certified": 0,
+          "correct": 0,
+          "precision": null,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        },
+        {
+          "dimension": "day",
+          "stratum": "2",
+          "certified": 15,
+          "correct": 12,
+          "precision": 80.0,
+          "corrected": 0,
+          "broken": 1,
+          "net_correct": -1
+        },
+        {
+          "dimension": "day",
+          "stratum": "3",
+          "certified": 2,
+          "correct": 2,
+          "precision": 100.0,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        },
+        {
+          "dimension": "TX",
+          "stratum": "0",
+          "certified": 0,
+          "correct": 0,
+          "precision": null,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        },
+        {
+          "dimension": "TX",
+          "stratum": "1",
+          "certified": 2,
+          "correct": 2,
+          "precision": 100.0,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        },
+        {
+          "dimension": "TX",
+          "stratum": "2",
+          "certified": 0,
+          "correct": 0,
+          "precision": null,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        },
+        {
+          "dimension": "TX",
+          "stratum": "3",
+          "certified": 3,
+          "correct": 0,
+          "precision": 0.0,
+          "corrected": 0,
+          "broken": 1,
+          "net_correct": -1
+        },
+        {
+          "dimension": "TX",
+          "stratum": "4",
+          "certified": 0,
+          "correct": 0,
+          "precision": null,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        },
+        {
+          "dimension": "TX",
+          "stratum": "5",
+          "certified": 12,
+          "correct": 12,
+          "precision": 100.0,
+          "corrected": 0,
+          "broken": 0,
+          "net_correct": 0
+        }
+      ]
+    }
+  },
+  "feature_norm_max_abs_error": {
+    "L_s_raw": 1.1920928955078125e-07,
+    "L_s_restored": 1.1920928955078125e-07,
+    "U_s_raw": 1.1920928955078125e-07,
+    "U_s_restored": 1.1920928955078125e-07,
+    "V_raw": 1.1920928955078125e-07,
+    "V_restored": 1.1920928955078125e-07
+  },
+  "source_feature_cost": {
+    "source_F_logical_packets": 1170000,
+    "new_G_logical_packets": 399600,
+    "smoke_separate": true,
+    "seconds": 666.2361909267493
+  },
+  "feature_role_evidence": [
+    {
+      "status": "SOURCE_RGPL_FEATURES_COMPLETE",
+      "role": "L_s",
+      "records": 6300,
+      "F_logical_packets": 81900,
+      "G_new_logical_packets": 75600,
+      "G_IQ_cache_views_reused": 0,
+      "U_truth_read": false,
+      "target_reads": 0,
+      "optimizer_updates": 0,
+      "parameters_and_registered_buffers_unchanged": true
+    },
+    {
+      "status": "SOURCE_RGPL_FEATURES_COMPLETE",
+      "role": "U_s",
+      "records": 56700,
+      "F_logical_packets": 737100,
+      "G_new_logical_packets": 0,
+      "G_IQ_cache_views_reused": 680400,
+      "U_truth_read": false,
+      "target_reads": 0,
+      "optimizer_updates": 0,
+      "parameters_and_registered_buffers_unchanged": true
+    },
+    {
+      "status": "SOURCE_RGPL_FEATURES_COMPLETE",
+      "role": "V",
+      "records": 27000,
+      "F_logical_packets": 351000,
+      "G_new_logical_packets": 324000,
+      "G_IQ_cache_views_reused": 0,
+      "U_truth_read": false,
+      "target_reads": 0,
+      "optimizer_updates": 0,
+      "parameters_and_registered_buffers_unchanged": true
+    }
+  ],
+  "processes": {
+    "controller": {
+      "pid": 104597,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "worker": {
+      "pid": 104898,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    }
+  },
+  "U_precision": "UNKNOWN",
+  "new_model_forwards_for_audit": 0,
+  "new_IQ_reads_for_audit": 0,
+  "U_truth_read": false,
+  "target_reads": 0,
+  "candidate_training": "NOT_STARTED_BY_FIXED_STOP_RULE",
+  "prepared_student_loss_checks": 5
+}

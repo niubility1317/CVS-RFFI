@@ -1,6 +1,6 @@
 # 去 SIG_TIME 的 PAMF：恢复视图跨接收机图伪标签学习
 
-状态：2026-10-26 用户要求先完整复盘后设计；图方法仍未完成真实数据验证或候选训练；NoSIG匹配基线及E30图教师准备已实现并核实运行，图核心算术已实现并通过4项聚焦检查，尚无新目标结果。工作名 **PAMF-RGPL（Restoration-aware Graph Pseudo-Labeling，恢复视图图伪标签学习）**，不是已验证的最终方法名。依据见[完整复盘](../../automation_reports/CV-SincNet/20261026-analysis-PAMF-SSL-retrospective-r01/report.md)。
+状态：2026-10-26 **真实源诊断已完成，固定图质量条件失败，三条图学生训练不启动**。NoSIG匹配基线继续原预算，尚无新目标结果。工作名 **PAMF-RGPL（Restoration-aware Graph Pseudo-Labeling，恢复视图图伪标签学习）**，不是已验证的最终方法名。下方保留诊断前固定设计，不追溯放宽条件。依据见[完整复盘](../../automation_reports/CV-SincNet/20261026-analysis-PAMF-SSL-retrospective-r01/report.md)。
 
 ## 当前范围与基底
 
@@ -119,3 +119,7 @@ GraphRaw2与RGPL使用相同图标签／接受集合／额外前向数，CE总�
 ## 冻结源图诊断已实际启动
 
 `20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01` 使用已完成的新NoSIG-PL E30，执行commit `ba7efad5dee5820a392cdfc241701a228e366b10`。图核心与源权限边界共5项检查、唯一独立P0/P1审查、一次archive传输比对和远端编译通过。GPU4上的真实NoSIG E30/defaulthead/G L2 smoke PASS，PID/CWD/argv/GPU及进度增长已核实；开始原L/U/V的raw和12恢复视图特征提取。只有L/U建图，V不成为节点；未启动GraphRaw/GraphRaw2/RGPL训练。质量仍待定，不把算术检查或成功启动当作图伪标签正确率。详细状态见[本行报告](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01/report.md)。
+
+## 完成后的固定科学判断
+
+原L6300/U56700/V27000全部特征与两张63000节点源图均已完成，全部F/G状态不变。U困难池4932，最终认证15；V困难池2326，最终认证17，正确14（82.352941%），纠正0／引错1。raw图单独固定规则135/150正确，恢复图37/62正确；两图一致未带来可靠新增标签。独立完整U/V核算一致，所有进程已结束，新增核算模型前向／IQ／U真值／target均0。本版同时未达到V≥200及precision≥99.5%，因此不启动GraphRaw、GraphRaw2、RGPL；不改变k／阈值，不把准备好的学生CE代码当作已训练方法。保留源内跨RX和两图共同错误这一失败事实。完整结果见[诊断报告](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01/report.md)。
