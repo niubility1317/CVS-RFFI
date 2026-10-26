@@ -1,0 +1,88 @@
+{
+  "status": "VERIFIED",
+  "observed_at": "2026-10-26T16:21:21.216159+08:00",
+  "code_commit": "6cbc84538de555dd6104067c0dee2ec81c2c8c77",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "actual_checkpoint_joint_smoke": "PASS",
+  "rows": [
+    {
+      "method": "PL-Negative",
+      "status": "RUNNING",
+      "gpu": 0,
+      "PID_verified": true,
+      "CWD_verified": true,
+      "argv_verified": true,
+      "GPU_process_verified": true,
+      "log_growth_bytes": 4985,
+      "progress": {
+        "segment30": {
+          "epoch": 1,
+          "updates": 222,
+          "cumulative_epoch": 21,
+          "cumulative_updates": 4662,
+          "CRIC_calls": 222,
+          "extra_L": 142080,
+          "PL_seen": 56700,
+          "PL_accepted": 51918,
+          "L_actual": 28416,
+          "U_actual": 56700,
+          "seconds": 81.22437899885699
+        }
+      }
+    },
+    {
+      "method": "PL-Temporal",
+      "status": "RUNNING",
+      "gpu": 3,
+      "PID_verified": true,
+      "CWD_verified": true,
+      "argv_verified": true,
+      "GPU_process_verified": true,
+      "log_growth_bytes": 4985,
+      "progress": {
+        "segment30": {
+          "epoch": 1,
+          "updates": 222,
+          "cumulative_epoch": 21,
+          "cumulative_updates": 4662,
+          "CRIC_calls": 222,
+          "extra_L": 142080,
+          "PL_seen": 56700,
+          "PL_accepted": 51907,
+          "L_actual": 28416,
+          "U_actual": 56700,
+          "seconds": 79.09503851784393
+        }
+      }
+    },
+    {
+      "method": "PL-History",
+      "status": "RUNNING",
+      "gpu": 4,
+      "PID_verified": true,
+      "CWD_verified": true,
+      "argv_verified": true,
+      "GPU_process_verified": true,
+      "log_growth_bytes": 4983,
+      "progress": {
+        "segment30": {
+          "epoch": 1,
+          "updates": 222,
+          "cumulative_epoch": 21,
+          "cumulative_updates": 4662,
+          "CRIC_calls": 222,
+          "extra_L": 142080,
+          "PL_seen": 56700,
+          "PL_accepted": 51909,
+          "L_actual": 28416,
+          "U_actual": 56700,
+          "seconds": 79.44995213579386
+        }
+      }
+    }
+  ],
+  "comparator_training_jobs": 0,
+  "target_reads": 0,
+  "scope": "Running single-seed source pilot;no performance result yet"
+}
