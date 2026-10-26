@@ -110,9 +110,9 @@ def main():
  fig,ax=plt.subplots(figsize=(183/25.4,125/25.4));fig.subplots_adjust(left=.12,right=.96,top=.90,bottom=.29)
  for i,v in enumerate(order):
   rs=[r['accuracy']*100 for r in per_seed if r['scope']=='双跨' and r['variant']==v];p=PARAMS[v]/1e6;x=p/.3*2 if p<.3 else p
-  ax.errorbar(x,st.mean(rs),yerr=st.stdev(rs),fmt='D' if v.startswith('sig_time') else 'o',ms=5,color=COLORS[v],capsize=2,lw=.8,label=f'{i+1} {NAMES[v]}')
+  ax.errorbar(x,st.mean(rs),yerr=st.stdev(rs),fmt='s' if v=='sig_time_removed' else 'D' if v=='sig_time' else 'o',ms=5,color=COLORS[v],capsize=2,lw=.8,label=f'{i+1} {NAMES[v]}')
   text=f'{NAMES[v]}\n{p:.3f} M' if v.startswith('sig_time') else str(i+1)
-  offsets={'sig_time':(8,14),'sig_time_removed':(8,-24),'cvresnet18_1d':(10,17),'resnet34':(7,-17),'densenet121':(-13,12),'resnet18':(-13,-17)}
+  offsets={'sig_time':(8,14),'sig_time_removed':(80,28),'cvresnet18_1d':(10,17),'resnet34':(7,-17),'densenet121':(-13,12),'resnet18':(-13,-17)}
   ax.annotate(text,(x,st.mean(rs)),xytext=offsets.get(v,(8,9)),textcoords='offset points',color=COLORS[v],fontsize=6.5,arrowprops=dict(arrowstyle='-',lw=.5,color=COLORS[v]))
  ax.set_xticks([3,5,10,20,30,40,50]);ax.set_xlim(0,51);ax.set_ylim(0,100);ax.set_xlabel('Total parameters (M); left range compressed, main axis linear');ax.set_ylabel('Accuracy (%)');ax.set_title('Capacity and cross-day + cross-receiver accuracy',loc='left',pad=12);ax.grid(color='#E5E7EB',lw=.5)
  ax.text(1.8,-.05,'//',transform=ax.get_xaxis_transform(),ha='center',fontsize=10)
