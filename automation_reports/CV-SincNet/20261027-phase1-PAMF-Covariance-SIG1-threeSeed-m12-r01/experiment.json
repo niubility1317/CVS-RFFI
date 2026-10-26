@@ -27,7 +27,7 @@
   ],
   "authorization": "用户20261027明确探索须三modelseed避免随机波动，覆盖此前单seed停扩决定；全部四方法一视同仁补齐，不按已见seed01目标分数选方法/seed；只clean及星地衍生IQ训练、脱离DURA，旧对照复用。",
   "code": {
-    "commit": "actual generalized trajectory/config Git commit before release",
+    "commit": "68b6338d20423498c110284c0c40b65a50d37de7",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1,FP32/TF32off/CPU2",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-PAMF-Covariance-SIG1-threeSeed-release-r01"
@@ -138,7 +138,7 @@
       "method": "CovSel-U",
       "purpose": "complete balanced three-seed mechanismcomparison",
       "config_ref": "experiments/pamf_u_history/covariance_three_seed.py:config/prepare",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01/configs/predict__F0-CovSel-U-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01/F/F0-CovSel-U-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -176,7 +176,7 @@
       "method": "CovRandom-U",
       "purpose": "complete balanced three-seed mechanismcomparison",
       "config_ref": "experiments/pamf_u_history/covariance_three_seed.py:config/prepare",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01/configs/predict__F0-CovRandom-U-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01/F/F0-CovRandom-U-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -214,7 +214,7 @@
       "method": "CovFull-U",
       "purpose": "complete balanced three-seed mechanismcomparison",
       "config_ref": "experiments/pamf_u_history/covariance_three_seed.py:config/prepare",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01/configs/predict__F0-CovFull-U-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01/F/F0-CovFull-U-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -252,7 +252,7 @@
       "method": "CovSel-LU",
       "purpose": "complete balanced three-seed mechanismcomparison",
       "config_ref": "experiments/pamf_u_history/covariance_three_seed.py:config/prepare",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01/configs/predict__F0-CovSel-LU-s2026092701.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01/F/F0-CovSel-LU-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,

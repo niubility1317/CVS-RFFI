@@ -1,0 +1,109 @@
+{
+  "status": "RUNNING_VERIFIED",
+  "run_id": "20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01",
+  "execution_commit": "68b6338d20423498c110284c0c40b65a50d37de7",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_identity": "VERIFIED",
+  "logical_models": 12,
+  "new_training": 8,
+  "reused_seed01_models": 4,
+  "reused_seed01_readouts": 3,
+  "calibrations": [
+    {
+      "model_seed": 2026092702,
+      "coefficient": 1.0,
+      "smoke": "PASS",
+      "L_seen": 1152,
+      "U_seen": 2304,
+      "optimizer_updates": 0,
+      "state_unchanged": true
+    },
+    {
+      "model_seed": 2026092703,
+      "coefficient": 0.9949095940590609,
+      "smoke": "PASS",
+      "L_seen": 1152,
+      "U_seen": 2304,
+      "optimizer_updates": 0,
+      "state_unchanged": true
+    }
+  ],
+  "live_training": [
+    {
+      "job": "train__CovSel-U-s2026092702",
+      "GPU": 6,
+      "identity": "VERIFIED",
+      "actual_source_smoke": "PASS",
+      "log_growing": true,
+      "progress": {
+        "epoch": 1,
+        "updates": 222,
+        "cumulative_epoch": 21,
+        "cumulative_updates": 4662,
+        "CRIC_calls": 222,
+        "extra_L": 142080,
+        "PL_seen": 56700,
+        "PL_accepted": 51984,
+        "L_actual": 28416,
+        "U_actual": 56700,
+        "seconds": 85.70303330011666
+      }
+    },
+    {
+      "job": "train__CovRandom-U-s2026092702",
+      "GPU": 7,
+      "identity": "VERIFIED",
+      "actual_source_smoke": "PASS",
+      "log_growing": true,
+      "progress": {
+        "epoch": 1,
+        "updates": 222,
+        "cumulative_epoch": 21,
+        "cumulative_updates": 4662,
+        "CRIC_calls": 222,
+        "extra_L": 142080,
+        "PL_seen": 56700,
+        "PL_accepted": 51993,
+        "L_actual": 28416,
+        "U_actual": 56700,
+        "seconds": 88.18475353205577
+      }
+    },
+    {
+      "job": "train__CovFull-U-s2026092702",
+      "GPU": 4,
+      "identity": "VERIFIED",
+      "actual_source_smoke": "PASS",
+      "log_growing": true,
+      "progress": {
+        "epoch": 1,
+        "updates": 222,
+        "cumulative_epoch": 21,
+        "cumulative_updates": 4662,
+        "CRIC_calls": 222,
+        "extra_L": 142080,
+        "PL_seen": 56700,
+        "PL_accepted": 51957,
+        "L_actual": 28416,
+        "U_actual": 56700,
+        "seconds": 85.8217665143311
+      }
+    },
+    {
+      "job": "train__CovSel-LU-s2026092702",
+      "GPU": 5,
+      "identity": "VERIFIED",
+      "actual_source_smoke": "PASS",
+      "log_growing": true,
+      "progress": null
+    }
+  ],
+  "counts": {
+    "COMPLETE": 4,
+    "RUNNING": 4,
+    "QUEUED": 20,
+    "FAILED": 0
+  },
+  "full_goal_complete": false
+}
