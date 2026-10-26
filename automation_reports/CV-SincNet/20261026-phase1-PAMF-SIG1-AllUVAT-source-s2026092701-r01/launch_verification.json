@@ -1,0 +1,91 @@
+{
+  "status": "VERIFIED",
+  "observed_at": "2026-10-26T17:59:07.545519+08:00",
+  "code_commit": "0c3f681fa82a3df5260685c2065b0d80d927d048",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "actual_PAMF_E20_smoke": "PASS",
+  "PID_CWD_argv_GPU_verified": true,
+  "gpu": 0,
+  "log_growth_bytes": 9982,
+  "smoke_rows": [
+    {
+      "method": "PL-VAT",
+      "status": "PASS",
+      "signature_gradient_norm": 0.35355443491984395,
+      "actual_U_seen": 1024,
+      "history_state": {
+        "calls": 4,
+        "seen": 1024,
+        "accepted": 939,
+        "unique_seen": 510,
+        "min_visits": 0,
+        "max_visits": 4,
+        "VAT_seen": 1024,
+        "nonzero_directions": 1024,
+        "nonzero_direction_fraction": 1.0,
+        "max_relative_radius": 0.030000003054738045,
+        "probe_parameter_grad_and_buffer_checks": 1,
+        "student_U_packets": 2048,
+        "teacher_U_packets": 2048,
+        "input_gradient_probes": 4,
+        "model_EMA_updates": 0,
+        "U_truth_read": false,
+        "target_reads": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true,
+        "by_source_RX": {
+          "1": {
+            "seen": 200,
+            "accepted": 192,
+            "VAT_seen": 200
+          },
+          "3": {
+            "seen": 209,
+            "accepted": 169,
+            "VAT_seen": 209
+          },
+          "4": {
+            "seen": 194,
+            "accepted": 188,
+            "VAT_seen": 194
+          },
+          "6": {
+            "seen": 227,
+            "accepted": 224,
+            "VAT_seen": 227
+          },
+          "8": {
+            "seen": 194,
+            "accepted": 166,
+            "VAT_seen": 194
+          }
+        },
+        "algorithm": "ordinary_PL_plus_all_U_VAT"
+      },
+      "actual_signature_parameters": 18976,
+      "actual_signature_views": 1,
+      "optimizer_updates": 0,
+      "U_truth_read": false,
+      "target_reads": 0
+    }
+  ],
+  "progress": {
+    "segment30": {
+      "epoch": 2,
+      "updates": 444,
+      "cumulative_epoch": 22,
+      "cumulative_updates": 4884,
+      "CRIC_calls": 444,
+      "extra_L": 284160,
+      "PL_seen": 113400,
+      "PL_accepted": 103516,
+      "L_actual": 56832,
+      "U_actual": 113400,
+      "seconds": 178.42466779472306
+    }
+  },
+  "comparator_training_jobs": 0,
+  "target_reads": 0,
+  "initial_transport_failure": "GitHub schannel TLS before archive;remote absence reconciled;process-scoped OpenSSL retry with certificate verification succeeded"
+}
