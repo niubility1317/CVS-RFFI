@@ -1,0 +1,55 @@
+{
+  "status": "EXPLANATORY_MATRIX_CORRECTION_ONLY",
+  "old": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "REPL_H2_U",
+      "REPL_H2_U_Pair",
+      "REPL_H2_LU_Pair"
+    ],
+    "new_model_epochs": 90,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 110,
+    "new_optimizer_updates": 19980,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 4,
+    "restoration_weight_reads": 0,
+    "restoration_IQ_used": 0,
+    "restoration_score_in_selection": false,
+    "new_control_training": 0,
+    "target_reads": 0
+  },
+  "corrected": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "REPL_H2_LU_LAnchorH"
+    ],
+    "new_model_epochs": 30,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 50,
+    "new_optimizer_updates": 6660,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 4,
+    "restoration_weight_reads": 0,
+    "restoration_IQ_used": 0,
+    "restoration_score_in_selection": false,
+    "new_control_training": 0,
+    "target_reads": 0
+  },
+  "actual_registered_rows": 1,
+  "actual_runtime_jobs": [
+    "smoke",
+    "REPL_H2_LU_LAnchorH"
+  ],
+  "model_recipe_or_budget_changed": false,
+  "remote_runtime_or_process_changed": false,
+  "reason": "Copied auxiliary matrix summary retained prior three-method90-new-epoch values; actual row/config/runtime/jobs have always contained one source student,30new/50cumulative epochs."
+}

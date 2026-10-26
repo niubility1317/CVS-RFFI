@@ -1,0 +1,192 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "单视图 REPL：双L/U星地视图关闭低置信同包一致性",
+  "description": "补齐已有源域消融中的单因素：保留H2LU全部L/U双直接信道视图及高置信跨RX，只关闭低置信同包互概率项。单seed源域证伪，复用对照，不修改正在运行的L-anchor试验。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "REPL-H2LU-NoPair-source"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "single-SIG_TIME",
+    "source-only",
+    "dual-LU-H",
+    "no-rejected-peer",
+    "cross-RX",
+    "clean-and-channel-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01",
+    "20261024-phase1-PAMF-REPL-completion-m201-r01"
+  ],
+  "authorization": "用户最新明确脱离DURA配合路线，仅clean IQ及直接叠加星地信道衍生IQ训练；持续goal研发REPL，原完整PAMF单SIG_TIME，复用对照，全GPU可用，不联系其他对话。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2; four F roots only; no G",
+    "cwd": "PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "clean source IQ and direct practical residual/post_sync/noEQ H only",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "6300 trueTX, all original CE/AsKL0 and dual H unchanged",
+      "U_s": "56700 TXhidden/RXdayvisible; raw95 highconf CE/ordinary shallow-middle-joint crossRX unchanged; no lowconf peer objective",
+      "V": "27000 frozen raw/threeH; no state/statistics update"
+    },
+    "train_ratio": "unchanged originalF0 L6300/U56700/V27000;13L37LU cumulativeE50;no extra true labels",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "code/leo_practical; fs25MHz/fc2462MHz/refSNR30; source low suburban/mid urban/low urban; original nativeAs for nondualL"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "one F seed source-only missing-factor ablation; no new target or three-seed superiority evidence"
+  },
+  "checkpoint": {
+    "initialization": "own original m201 seed01 singleSIG_TIME ordinaryPL scratchE20 +10+20; cumulativeE50/11100/13L37LU",
+    "sources": [
+      "m201 ownseed01 SIG1 ordinaryPL scratchE20 weights only",
+      "completed H2LU source config and four-view score metadata only; no H2LU E50 weight initialization"
+    ],
+    "contract_check_ref": "reuse original F0/VALIDATED_ONCE handles; ownE20 actualpayload/emptyancestors/defaulthead load; real joint source smoke first",
+    "provenance_verdict": "same original source-only E20 chain; no restored-trained or target-selected initialization",
+    "selection_rule": "finalE50 only; raw>=26568/27000,H3>=62109/81000 vs fixedH2LU26554/62190; no pass no target/seed expansion; source-only comparison rule in report"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-H2LU-no-pair-source-20261027",
+    "gpu_policy": "GPU0..7; global CUDA+pending<2/free>=10000MiB; one new source student; count all owners; preserve live L-anchor and foreign healthy jobs",
+    "remote_run_root": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/no_pair_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.no_pair_source dispatch --config PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-release-r01/runtime.json",
+    "stop_rule": "first input/ancestry/role/head/hook/finite/budget/sourcefreeze/system technical failure stops new dispatch; no auto-retry or foreign mutation; healthy jobs and all artifacts preserved; scientific FAIL retained"
+  },
+  "expected_artifacts": [
+    "actual own E20 joint L/U backward smoke; dual L/U H distinct, peer disabled; no optimizer/target/Utruth updates",
+    "one student own+10+20 cumulativeE50/11100; L768/U6; ordinary/raw/highconf crossRX preserved; extra F/head/EMA/G=0",
+    "complete 6660 new training records and both segment states; actual peer loss/weight0 with rejected counts diagnostic only",
+    "complete27000x4frozenV logits/classdecisions/RXdayTX; reuseH2LU source summary with0referenceF/training",
+    "predeclared source decision; target tests only under later selected-candidate confirmation registration"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "source rawcorrect/27000>=26568",
+      "sourceH3correct/81000>=62109"
+    ],
+    "dimensions": [
+      "raw and three direct practicalH",
+      "RX",
+      "day",
+      "TX",
+      "actual PL exposure/acceptance",
+      "forward/H/peer/gradientguard counters"
+    ],
+    "selection": "Both independent source pilots complete first; retain only gate passes, highest rawcorrect then H3correct, exact tie NoPair for lower peer-loss cost. No target feedback or intermediate-epoch selection.",
+    "truth_policy": "L trueTX; U TX hidden; V frozen only; no target/G input"
+  },
+  "rows": [
+    {
+      "row_id": "F0-REPL_H2_LU_NoPair-s2026092701",
+      "method": "REPL_H2_LU_NoPair",
+      "purpose": "single missing source factor: dual L/U H without lowconf peer loss",
+      "config_ref": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01/configs/REPL_H2_LU_NoPair.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01/F/F0-REPL_H2_LU_NoPair-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "clean_H": {
+          "dual_L": true,
+          "pair": false,
+          "pair_weight": 0.0,
+          "extra_F": 0
+        },
+        "signature_views": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original physical roles/split and deterministic H ID/epoch/role/a-b unchanged; Phase1 no support seed.",
+      "initialization": "known samecontract ordinaryPL SIG1 scratchE20 only",
+      "budget": {
+        "cumulative_epochs": 50,
+        "cumulative_updates": 11100,
+        "new_epochs": 30,
+        "new_updates": 6660,
+        "L_forward_packets_each_step": 768,
+        "U_student_forwards_each_step": 6,
+        "extra_F": 0
+      },
+      "output_root": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01/F/F0-REPL_H2_LU_NoPair-s2026092701/source",
+      "log_path": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01/logs/REPL_H2_LU_NoPair.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.no_pair_source worker --kind train_eval --config PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01/configs/REPL_H2_LU_NoPair.json",
+      "expected_artifacts": [
+        "actual checkpoint smoke",
+        "ownE30/E50 and full step metrics/repl state",
+        "sourceV4view complete predictions/strata",
+        "frozen source gate decision"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only motivation: completed H2_U→H2_U_Pair raw26549→26547 andH362255→62199; lowconf fixed sourceV includes153/1196 threeH same wrong class. These observations do not prove pair caused errors.",
+    "This missing dual-L/U no-peer factor was not tested previously. L_anchor and all existing model recipes/processes remain unchanged. No new L-anchor objective here.",
+    "The previous main three-seed target results are already exposed; no independent blind-test claim. No target score/class/RX used in loss formula, thresholds, checkpoint or source sorting.",
+    "23 focused checks and compile PASS. One independent P0/P1 review before launch; actual checkpoint smoke first and PASS immediately trains. No separate design approval gate.",
+    "Exact epoch budget matches, training compute does not match ordinary PL: U6 versus U1; two H source generation. This comparison does not silently remove that cost."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "REPL_H2_LU_NoPair"
+    ],
+    "new_model_epochs": 30,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 50,
+    "new_optimizer_updates": 6660,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 4,
+    "restoration_weight_reads": 0,
+    "restoration_IQ_used": 0,
+    "restoration_score_in_selection": false,
+    "new_control_training": 0,
+    "target_reads": 0
+  },
+  "registered_at": "2026-10-26T19:38:56+00:00"
+}

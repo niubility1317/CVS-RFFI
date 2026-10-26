@@ -6,7 +6,8 @@ from . import labeled_h_source as source
 from .publish_clean_h_source import REMOTE
 
 
-def publish(repo,output,context):
+def publish(repo,output,context,source_module=source):
+    source=source_module
     repo=Path(repo);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     def git(*args):return subprocess.check_output(['git','-C',str(repo),*args])
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
@@ -14,7 +15,7 @@ def publish(repo,output,context):
     if git('status','--porcelain','--','experiments/pamf_channel_pl').strip():raise ValueError('Committed source implementation required')
     c=json.loads(Path(context).read_text(encoding='utf-8'));source.validate_context(c);project=c['project'];release=project+'/releases/'+source.RELEASE
     rt=dict(run_id=source.RUN,project=project,python=c['python'],release_root=release,run_root=project+'/runs/'+source.RUN,
-        context=release+'/context.json',runtime_file=release+'/runtime.json',code_commit=commit,frozen_sources=c['frozen_sources'],allowed_gpus=list(range(8)),launch_owner='codex-pamf-L-anchor-H-source-20261027')
+        context=release+'/context.json',runtime_file=release+'/runtime.json',code_commit=commit,frozen_sources=c['frozen_sources'],allowed_gpus=list(range(8)),launch_owner=getattr(source,'OWNER','codex-pamf-L-anchor-H-source-20261027'))
     source.validate_runtime(rt);archive=out/(source.RELEASE+'.tar.gz')
     if archive.exists():raise FileExistsError('Reconcile previous release before retry')
     names={p for p in git('ls-files','-z','--','experiments','code','baselines').decode().split('\0') if p and Path(p).suffix in ('.py','.json','.txt','.yaml','.yml','.toml')}
@@ -32,7 +33,7 @@ def publish(repo,output,context):
     for name,value in [('runtime.json',rt),('package.json',package)]:
         (out/name).write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')
     subprocess.run(['scp',*CONNECTION,str(archive),'N607:'+package['archive_remote']],check=True,timeout=60)
-    script=REMOTE.replace('experiments.pamf_channel_pl.clean_h_source','experiments.pamf_channel_pl.labeled_h_source')
+    script=REMOTE.replace('experiments.pamf_channel_pl.clean_h_source',source.__name__)
     result=ssh(script.replace('PACKAGE',repr(package)));(out/'submit.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({k:result[k] for k in ('status','pid','code_commit','archive_transfer','remote_compile','available_gpus')}))
 

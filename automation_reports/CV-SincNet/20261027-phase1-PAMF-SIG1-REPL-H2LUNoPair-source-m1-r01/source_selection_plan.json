@@ -1,0 +1,28 @@
+{
+  "status": "PREREGISTERED_BEFORE_NEW_SOURCE_OUTCOMES",
+  "methods": [
+    "REPL_H2_LU_LAnchorH",
+    "REPL_H2_LU_NoPair"
+  ],
+  "runs": [
+    "20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01",
+    "20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01"
+  ],
+  "requires_both_source_completions": true,
+  "gate": {
+    "raw_min": 26568,
+    "raw_n": 27000,
+    "H3_min": 62109,
+    "H3_n": 81000
+  },
+  "order": [
+    "highest raw_correct",
+    "highest H3_correct",
+    "REPL_H2_LU_NoPair for exact tie"
+  ],
+  "otherwise": "No passing candidate: retain failures, no target/three-seed expansion.",
+  "initialization": "each own same-contract original SIG1 ordinaryPL scratchE20 +10+20; no cross-pilot weight inheritance",
+  "target_feedback": false,
+  "G_or_restored_input": false,
+  "changes_to_live_training": false
+}

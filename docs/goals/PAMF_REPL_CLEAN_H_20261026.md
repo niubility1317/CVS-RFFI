@@ -62,3 +62,8 @@ clean 损伤主要在占主样本 75% 的 cross_rx：−0.730688pp；cross_both 
 在读取该完整目标结果前已独立登记并启动 REPL_H2_LU_LAnchorH 源域小试验，run `20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01`，实际执行 commit `26876bca7a75e14690f8af038863c3c8988209f2`。只新增真实 L raw 停梯度锚点对高置信 U/H 的同 TX 跨 RX 类别约束；低置信 U 不建立跨包 TX 关系。真实 E20 检查 PASS，GPU7 学生实际训练、日志增长；没有额外 F/推理参数、G 或目标读取。保持原配置和 source raw≥26568/27000、H3≥62109/81000 门槛，完整 E50 源评估完成后才决定是否另登记三种子正式确认；不受本次目标结果反馈。见 [源小试验](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01/report.md)。
 
 持续目标仍 ACTIVE：raw clean≥85.98174603174603%、六景>72.0961970899471%，且较匹配监督及普通 PL 的 clean≥+1pp、六景>+1.5pp。没有因本批严格基线较低而下调门槛；源码、旧模型及负结果保留，后续仅 clean 与直接星地 IQ，不恢复 DURA 配合路线。
+
+
+## 补齐低置信项的单因素源消融（2026-10-27）
+
+新增单 seed 源小试验 REPL_H2_LU_NoPair，只关闭已有 H2LU 整配方的低置信同包互概率项，L/U 双 H、高置信类别和原跨 RX 学习保留；来自已完成源消融和共同错误分析，不使用目标弱类调权。两项独立源试验在结果产生前冻结共同门槛 raw≥26568/H3≥62109，均完成后在通过者中 raw/H3 依次优先、完全同分选 NoPair；未通过不扩种子或目标。L-anchor 已在训练的原配置不变，监督/PL 控制不重复训练。原绝对及相对三种子目标保持。见 [新源消融](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01/report.md) 和其中的源选择计划。

@@ -180,14 +180,12 @@
       2026092701
     ],
     "methods": [
-      "REPL_H2_U",
-      "REPL_H2_U_Pair",
-      "REPL_H2_LU_Pair"
+      "REPL_H2_LU_LAnchorH"
     ],
-    "new_model_epochs": 90,
+    "new_model_epochs": 30,
     "shared_original_prefix_epochs": 20,
-    "total_unique_model_epochs": 110,
-    "new_optimizer_updates": 19980,
+    "total_unique_model_epochs": 50,
+    "new_optimizer_updates": 6660,
     "per_model_cumulative_epochs": 50,
     "per_model_cumulative_updates": 11100,
     "source_V": 27000,
