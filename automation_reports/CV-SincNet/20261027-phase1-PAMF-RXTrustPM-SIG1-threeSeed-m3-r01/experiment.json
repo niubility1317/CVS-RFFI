@@ -1,0 +1,390 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01",
+  "group_id": "pamf-rx-trust-partial-H-modecalibration-20261027",
+  "display_name": "完整PAMF单视图：RXTrust-PM按raw/H中位梯度比例校准三种子",
+  "description": "与RXTrust-P相同损失/输入/原PL/L/父E20/预算，只将系数改成min(1,.1/max_rawH median(aux_norm/primary_norm))。复用原P三seed12批零更新源梯度，不新增校准F前向/权重读取；first训练段真实checkpoint无query smoke后续训。当前P目标未读，固定3seed并等待其整体完成。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-RXTrustPM-3seed"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME",
+    "three-model-seeds",
+    "all-U",
+    "RX-known",
+    "same-packet",
+    "partial-label",
+    "mode-gradient-calibration",
+    "raw-only",
+    "no-DURA"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01",
+    "20261027-phase1-PAMF-RXTrustP-SIG1-threeSeed-m3-r01"
+  ],
+  "authorization": "持续自主研发/普通PL上加机制/三种子/复用已有对照。当前P健康训练保持；本候选由源校准raw/H剂量差提出，在P目标访问前固定，不据P结果决定是否运行；GPU等整个P结束。",
+  "code": {
+    "commit": "runtime.code_commit from committed publisher; execution OID recorded after launch",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1,FP32/TF32off/CPU2",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig original F0",
+    "version": "existing validated original physical roles",
+    "representation": "F0 equalized1 clean +same-packet practical H + bounded RX-mean frequency action; original physical RX unchanged",
+    "contract_ref": "original F0 source_contract.json, checked private context",
+    "physical_ids_ref": "same existing source contract.role_ids",
+    "label_map_ref": "same original six registered TX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "unchanged original F0 six TX",
+    "roles": {
+      "L_s": "6300;fullT1 L768/step unchanged;extra64pairs same randomstyle softKL detached;no additional L identity objective",
+      "U_s": "56700 hiddenTX/knownRX;same ordinaryrawPL.95weight1 andsame P singleton/partial/fallback/allU;15raw15H;only one scalar coefficient changes",
+      "V": "27000 native health andfinal raw+3H diagnostic only,no parameter or coefficient fitting;coefficient reuses original12L/Utrain gradients",
+      "target": "cross_rx126000+cross_both42000,168000x7raw,each row all predictions frozen before independenttruth"
+    },
+    "train_ratio": "original7/63/30 unchanged",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "unchanged existing Phase1 validated source handles;Phase2 capsule_id/split_id not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "unchanged T1 L As andexisting3replicax3scene U channel cache;only raw channel_U.npy read"
+  },
+  "permissions": {
+    "regime": "frozen_source_only_DG",
+    "query_use": "independent per-sample prediction only;no fit/state/selection",
+    "external_method_exception": null,
+    "claim_scope": "F0 three-seed comparison;the frozenE20 raw/H median norm bound is not perbatch/futuretraining/AdamW/target guarantee;P loss unchanged,onlycalibrationrule comparison;originalfullgoalactive"
+  },
+  "checkpoint": {
+    "initialization": "own three same-seed verified scratchSIG1 E20 +independent10+20;no P E50 weights orteacher;P12batch source gradients are scalar reference only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092702/segment20",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092703/segment20"
+    ],
+    "contract_check_ref": "reuse actual same E20/sourcecontract/cache/frozenF andsame P objective;validate originalP config/zerooptimizer/V/target/parameters unchanged;firstnative checkpoint smoke before optimizer",
+    "provenance_verdict": "source-only sameoriginalF0 parents,finalonly;fullprefix chain checked atload,source meansfit U only",
+    "selection_rule": "all3fixedfinalE50/11100,13L37LU;coefficient formula fixed from all12source gradients;no V/target selection orseed dropping"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current independent Codex chat",
+    "gpu_policy": "all ownjobs await entire P complete.json;thenown<=4/oneownpercard/totalCUDA+pending<=2percard/free10000MiB;CPUscore<=1 inclothers;preserve currentP andothers",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026/rx_trust_pm_source",
+    "launch_command": "python -X utf8 -m experiments.pamf_u_history.publish_rx_trust_pm_source --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/rx_trust_pm_source --context local_artifacts/pamf_u_history_20261026/rx_trust_pm_context.json",
+    "stop_rule": "first own technical/nonfinite/reference/provenance/output failure stops newlaunches,healthyactivefinish;keepuniqueoutputs;scientificnegative doesnot stop seeds;predecessor absence waits"
+  },
+  "expected_artifacts": [
+    "calibration/sSEED/calibration.json sourceP12batches reused,sourceparent/mode norm medians/new coefficient,zero newF/weights/optimizer/V/target",
+    "first F/ROW/source/segment30/smoke.json actual E20 checkpoint roundtrip/sourceL2/defaulthead/full863730,noquery,beforeupdates;not copied old PASS",
+    "3 F/ROW/source/segment30+50 weights/fullsteps/complete/rx_mean_state with unchanged P routes/allU counts",
+    "source_validation raw+3H,noG",
+    "3 readouts/ROW full2tasksx7raw frozen thenindependent CPU scores",
+    "reused_controls.json completedPL/Sup/P;no controltraining/prediction",
+    "pipeline_state waitingthenactualPID/CWD/argv/CUDA/loggrowth",
+    "all3seed mean/sampleSD,pairedPL/Sup/P deltas,scene/TX/RX/day andactualcost"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "rawclean andsix mean/sampleSD,pairedsame-seed vsPL andSup",
+      "everypracticalscene anddeclaredstrata,no meanhiding damage"
+    ],
+    "secondary": [
+      "declaredscene/TX/RX/day/RXday accuracy/macroF1/confusion/netcorrect",
+      "raw/H selected norm reference andP routes byknownRX/pseudoclass/allU visits/PLacceptance",
+      "actualtime/trainingFpackets/zero newcalibrationF;no assumed inference/wallclock gain"
+    ],
+    "target": "3modelsx168000x7raw=3528000candidate decisions;reuse PL/Sup/P9reference models",
+    "selection": "all3fixedfinalE50;the one coefficient uses prior sameE20 zero-update L/U train gradients only;no P/V/target metric feedback",
+    "truth_policy": "configuration stage readsonly source P trainconfig/calibration/smoke +own sourcecontract;no P finalweights/logits/scores;allrawpredfixedbeforeindependenttruth"
+  },
+  "rows": [
+    {
+      "row_id": "F0-RXTrust-PM-s2026092701",
+      "method": "RXTrust-PM",
+      "purpose": "single-variable same-P loss comparison:raw/H mode-normalized source coefficient",
+      "config_ref": "experiments/pamf_u_history/rx_trust_pm_source.py:config/mode_coefficient/calibrate/prepare",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/F/F0-RXTrust-PM-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "same model/dropout/nativeaug as ownseedP;source IDs/Hcache/stylechoice/partialsets unchanged;sourcecal reference batchseed2026102741;no new calibrationRNG or eval stochasticity",
+      "k": null,
+      "scenario": "rawclean+sixpractical;trainingraw/H basealternating15/15newUepochs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "sharedownscratch20/4440 +own30/6660;E50/11100;3newrows19980updates/90modelepoch;training18724860Fpackets/model unchanged;zero new calibrationF",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/F/F0-RXTrust-PM-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/logs/train__2026092701.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_rx_trust_pm_source --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/rx_trust_pm_source --context local_artifacts/pamf_u_history_20261026/rx_trust_pm_context.json",
+      "expected_artifacts": [
+        "calibration/sSEED/calibration.json sourceP12batches reused,sourceparent/mode norm medians/new coefficient,zero newF/weights/optimizer/V/target",
+        "first F/ROW/source/segment30/smoke.json actual E20 checkpoint roundtrip/sourceL2/defaulthead/full863730,noquery,beforeupdates;not copied old PASS",
+        "3 F/ROW/source/segment30+50 weights/fullsteps/complete/rx_mean_state with unchanged P routes/allU counts",
+        "source_validation raw+3H,noG",
+        "3 readouts/ROW full2tasksx7raw frozen thenindependent CPU scores",
+        "reused_controls.json completedPL/Sup/P;no controltraining/prediction",
+        "pipeline_state waitingthenactualPID/CWD/argv/CUDA/loggrowth",
+        "all3seed mean/sampleSD,pairedPL/Sup/P deltas,scene/TX/RX/day andactualcost"
+      ]
+    },
+    {
+      "row_id": "F0-RXTrust-PM-s2026092702",
+      "method": "RXTrust-PM",
+      "purpose": "single-variable same-P loss comparison:raw/H mode-normalized source coefficient",
+      "config_ref": "experiments/pamf_u_history/rx_trust_pm_source.py:config/mode_coefficient/calibrate/prepare",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/F/F0-RXTrust-PM-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "same model/dropout/nativeaug as ownseedP;source IDs/Hcache/stylechoice/partialsets unchanged;sourcecal reference batchseed2026102741;no new calibrationRNG or eval stochasticity",
+      "k": null,
+      "scenario": "rawclean+sixpractical;trainingraw/H basealternating15/15newUepochs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "sharedownscratch20/4440 +own30/6660;E50/11100;3newrows19980updates/90modelepoch;training18724860Fpackets/model unchanged;zero new calibrationF",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/F/F0-RXTrust-PM-s2026092702/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/logs/train__2026092702.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_rx_trust_pm_source --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/rx_trust_pm_source --context local_artifacts/pamf_u_history_20261026/rx_trust_pm_context.json",
+      "expected_artifacts": [
+        "calibration/sSEED/calibration.json sourceP12batches reused,sourceparent/mode norm medians/new coefficient,zero newF/weights/optimizer/V/target",
+        "first F/ROW/source/segment30/smoke.json actual E20 checkpoint roundtrip/sourceL2/defaulthead/full863730,noquery,beforeupdates;not copied old PASS",
+        "3 F/ROW/source/segment30+50 weights/fullsteps/complete/rx_mean_state with unchanged P routes/allU counts",
+        "source_validation raw+3H,noG",
+        "3 readouts/ROW full2tasksx7raw frozen thenindependent CPU scores",
+        "reused_controls.json completedPL/Sup/P;no controltraining/prediction",
+        "pipeline_state waitingthenactualPID/CWD/argv/CUDA/loggrowth",
+        "all3seed mean/sampleSD,pairedPL/Sup/P deltas,scene/TX/RX/day andactualcost"
+      ]
+    },
+    {
+      "row_id": "F0-RXTrust-PM-s2026092703",
+      "method": "RXTrust-PM",
+      "purpose": "single-variable same-P loss comparison:raw/H mode-normalized source coefficient",
+      "config_ref": "experiments/pamf_u_history/rx_trust_pm_source.py:config/mode_coefficient/calibrate/prepare",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/F/F0-RXTrust-PM-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "same model/dropout/nativeaug as ownseedP;source IDs/Hcache/stylechoice/partialsets unchanged;sourcecal reference batchseed2026102741;no new calibrationRNG or eval stochasticity",
+      "k": null,
+      "scenario": "rawclean+sixpractical;trainingraw/H basealternating15/15newUepochs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "sharedownscratch20/4440 +own30/6660;E50/11100;3newrows19980updates/90modelepoch;training18724860Fpackets/model unchanged;zero new calibrationF",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/F/F0-RXTrust-PM-s2026092703/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/logs/train__2026092703.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_rx_trust_pm_source --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/rx_trust_pm_source --context local_artifacts/pamf_u_history_20261026/rx_trust_pm_context.json",
+      "expected_artifacts": [
+        "calibration/sSEED/calibration.json sourceP12batches reused,sourceparent/mode norm medians/new coefficient,zero newF/weights/optimizer/V/target",
+        "first F/ROW/source/segment30/smoke.json actual E20 checkpoint roundtrip/sourceL2/defaulthead/full863730,noquery,beforeupdates;not copied old PASS",
+        "3 F/ROW/source/segment30+50 weights/fullsteps/complete/rx_mean_state with unchanged P routes/allU counts",
+        "source_validation raw+3H,noG",
+        "3 readouts/ROW full2tasksx7raw frozen thenindependent CPU scores",
+        "reused_controls.json completedPL/Sup/P;no controltraining/prediction",
+        "pipeline_state waitingthenactualPID/CWD/argv/CUDA/loggrowth",
+        "all3seed mean/sampleSD,pairedPL/Sup/P deltas,scene/TX/RX/day andactualcost"
+      ]
+    }
+  ],
+  "notes": [
+    "User3seed instruction explicitly overridesearlier single-seed expansionstop;old01 values andG-inclusive sourceverdict unchanged. All4x3 fixedbefore02/03covariance target access.",
+    "02masks112/282,03masks91/362,01masks94/294;identicalnatural-support estimator,perseed featurecoordinates bound. No copying01 masks.",
+    "Eachseed fourmethods share its source9batch-calibratedalpha/ramp444;algorithm/formula unchanged,no V/targetweight tuning.",
+    "Reuse reviewed objective/trajectory/frozenreader/scorer;targeted seedbasisP0/P1PASS;11focused generalized/backcompat checksPASS. ActualeachownE20 jointbackward/cal smoke first,immediate continuation.",
+    "Only fixed sourcechannelmath code reused,notG engine/weights/restoredIQ. Physical arrays/roles validatedonce unchanged;no hashes/ledgers beyondsingle releasearchive.",
+    "Snapshotcalibration hasoptimizer0/stateunchanged;doesnot inherit9batch state into training. AllactualtrainingU30visits reported separately fromprefix7U/calibrationexposure.",
+    "Three-model-seed mean±sampleSD isnot independentdatasplit/channel-seed evidence orautomatic significance. Completeallrowsbeforeclaimingstablegain;originalgoalnot lowered."
+  ],
+  "matrix": {
+    "methods": [
+      "CovSel-U",
+      "CovRandom-U",
+      "CovFull-U",
+      "CovSel-LU"
+    ],
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "logical_F_models": 12,
+    "reused_seed01_F": 4,
+    "reused_seed01_raw_rows": 3,
+    "new_F_training": 8,
+    "new_F_epochs": 240,
+    "new_F_updates": 53280,
+    "per_model_total_epochs": 50,
+    "per_model_total_updates": 11100,
+    "per_model_trajectory": "13L37LU",
+    "new_calibrations": 2,
+    "calibration_rule": "min(1,.1*median(primarynorm)/max_method_median(covnorm)),9trainL/U batches,noV",
+    "seed01_alpha_reused": 1.0,
+    "new_prediction_rows": 9,
+    "new_CPU_score_rows": 9,
+    "total_raw_decisions_logical": 14112000,
+    "new_raw_decisions": 10584000,
+    "G_weights": 0,
+    "restored_IQ": 0,
+    "new_PL_Sup_control_training": 0,
+    "new_reference_prediction": 0,
+    "source_score_seed_filtering": false
+  },
+  "analysis_entrypoint": "experiments.pamf_u_history.covariance_three_results:collect/analyze",
+  "mechanism": {
+    "view": {
+      "strength": 0.1,
+      "max_gain_db": 0.5,
+      "max_phase_rad": 0.025,
+      "fit_role": "U_s",
+      "stored_training_statistics": 20,
+      "new_inference_parameters": 0,
+      "inference": "unchanged_raw_F",
+      "per_packet_response_subtraction": false,
+      "quality_gate": false
+    },
+    "positive_threshold": 0.95,
+    "positive_weight": 1.0,
+    "U_scope": "all_hidden_U",
+    "base_schedule": "new_U_epoch_even_raw_odd_H",
+    "H_schedule": "existing_covariance_replica_scene_schedule",
+    "teacher": "current_eval_detached_raw_anchor_and_sameH_probs_no_EMA",
+    "student": "eval_with_gradient_no_dropout",
+    "L_pairs": 64,
+    "L_base": "same_raw_or_As_native_input",
+    "scope_scalar": "(nU*U+nL*L)/sum;detach_L_in_U",
+    "ramp_updates": 444,
+    "coefficient_rule": "min(1,.1/max_base_median(aux_norm/primary_norm));reuse_originalP12train_batches6raw6H,noV",
+    "EMA_updates": 0,
+    "new_inference_parameters": 0,
+    "gradient_calibration_seed": 2026102741,
+    "style_selection": "per_packet_max_teacher_to_candidate_KL_over_other4_sourceRX",
+    "L_gradient_scope": "detached",
+    "candidate_variants": 4,
+    "candidate_teacher_packets_per_U": 4,
+    "candidate_teacher_calls_per_update": 1,
+    "candidate_selection": "current_eval_detached_no_TX_truth_no_batch_reassignment",
+    "H_target": "rawPLaccepted:union(raw_argmax,H_argmax);otherwise_sameH_softKL",
+    "raw_target": "unchanged_samebase_softKL_allU",
+    "H_route_threshold": 0.95,
+    "H_set_size": "one_if_agree_else_two",
+    "H_set_loss": "negative_log_sum_student_probability_in_set",
+    "H_denominator": "all_U_no_selected_count_rescale",
+    "route_label_source": "current_eval_detached_raw_probs_only_no_U_truth",
+    "new_F_forwards_over_RXMeanMax": 0
+  },
+  "additional_cost_per_model": {
+    "new_candidate_U_eval_packets": 6804000,
+    "new_teacher_U_packets": 9355500,
+    "new_student_U_packets": 3402000,
+    "original_L_packets": 5114880,
+    "additional_L_eval_and_student_packets": 852480,
+    "total_new_source_forward_packets": 18724860,
+    "extra_packets_over_random_RXMean_U": 6804000,
+    "new_inference_parameters": 0,
+    "extra_packets_over_RXMeanMax": 0,
+    "extra_packets_over_RXTrustP": 0,
+    "new_calibration_F_packets": 0
+  },
+  "source_coefficient_preview": [
+    {
+      "model_seed": 2026092701,
+      "original_P_coefficient": 0.37245122389054863,
+      "new_coefficient": 0.150512613170486,
+      "unweighted_mode_ratio_medians": {
+        "raw": 0.05263153045821185,
+        "H": 0.6643961452368763
+      },
+      "new_weighted_mode_ratio_medians": {
+        "raw": 0.007921709184427493,
+        "H": 0.09999999999999999
+      }
+    },
+    {
+      "model_seed": 2026092702,
+      "original_P_coefficient": 0.38352031095117256,
+      "new_coefficient": 0.1453399924286534,
+      "unweighted_mode_ratio_medians": {
+        "raw": 0.04330217953074044,
+        "H": 0.6880418687863181
+      },
+      "new_weighted_mode_ratio_medians": {
+        "raw": 0.006293538445142005,
+        "H": 0.1
+      }
+    },
+    {
+      "model_seed": 2026092703,
+      "original_P_coefficient": 0.4053865999870067,
+      "new_coefficient": 0.15037222073226014,
+      "unweighted_mode_ratio_medians": {
+        "raw": 0.0670918013501215,
+        "H": 0.6650164472735387
+      },
+      "new_weighted_mode_ratio_medians": {
+        "raw": 0.010088743161945418,
+        "H": 0.1
+      }
+    }
+  ],
+  "registered_at": "2026-10-26T23:07:19+00:00"
+}
