@@ -51,3 +51,14 @@ run `20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01` 已按上述三行实�
 确认 run `20261027-phase1-PAMF-SIG1-REPL-CleanH-confirm-m3-r01` 复用完成 seed01，只训练 seed02/03 各自同契约单视图普通 PL scratchE20+10+20 到 E50。只有 clean 与直接星地 IQ，无 G 权重/IQ/评分；保持完整 PAMF、单 SIG_TIME、原 jointhead。每 seed 主168000原物理样本 raw clean＋六 practical，cross_date30000另报。复用六个严格监督/普通PL对照的主结果，只补它们缺失的 crossdate 原权重预测，不重训、不重复主预测。矩阵2训练/9预测/9独立评分/1真实源smoke。
 
 目标绝对门槛和配对提升要求不变，方法/seed/预算/测试矩阵在访问目标前固定；目标结果不回流调参或变体选择。当前源通过不是三种子目标成功。精确命令、环境/路径、数据句柄、GPU/owner、停止规则和产物见[确认登记](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-CleanH-confirm-m3-r01/experiment.json)。
+
+
+## 三种子确认失败；独立 L 锚点源试验继续原计划（2026-10-27）
+
+REPL_H2_LU_Pair 三种子主 168000 raw 七景已经全部固定预测并独立 truth-last 评分，21 job 全部完成。clean 为 84.180754±1.087816%，六景为 71.647817±0.474676%；相对单视图普通 PL 分别 −0.513095±1.025406pp / +1.414583±0.842952pp，相对单视图监督分别 +0.063889pp / +1.479762pp。本版未达到双目标，不晋级最终方法，也不因 seed02 正收益单独选取或扩到全 11 设置。两个新增实际 E50 权重及全部 13320 条新训练记录已闭合核算；所有对照主结果复用，没有重训。
+
+clean 损伤主要在占主样本 75% 的 cross_rx：−0.730688pp；cross_both 为 +0.139683pp，独立 cross_date 为 +0.177778pp。信道均值在这些人口分别 +1.222972 / +1.989418 / +1.521481pp。目标侧混淆变化仅用于如实描述失败，不用于弱类重权、调参、候选重排或选择性重跑。源 V 与训练共享源 RX，高精度源通过无法保证未见 RX 泛化。完整表见 [三种子确认结果](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-CleanH-confirm-m3-r01/report.md)。
+
+在读取该完整目标结果前已独立登记并启动 REPL_H2_LU_LAnchorH 源域小试验，run `20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01`，实际执行 commit `26876bca7a75e14690f8af038863c3c8988209f2`。只新增真实 L raw 停梯度锚点对高置信 U/H 的同 TX 跨 RX 类别约束；低置信 U 不建立跨包 TX 关系。真实 E20 检查 PASS，GPU7 学生实际训练、日志增长；没有额外 F/推理参数、G 或目标读取。保持原配置和 source raw≥26568/27000、H3≥62109/81000 门槛，完整 E50 源评估完成后才决定是否另登记三种子正式确认；不受本次目标结果反馈。见 [源小试验](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01/report.md)。
+
+持续目标仍 ACTIVE：raw clean≥85.98174603174603%、六景>72.0961970899471%，且较匹配监督及普通 PL 的 clean≥+1pp、六景>+1.5pp。没有因本批严格基线较低而下调门槛；源码、旧模型及负结果保留，后续仅 clean 与直接星地 IQ，不恢复 DURA 配合路线。

@@ -1,0 +1,327 @@
+{
+  "scope": "Existing raw main168000 clean score confusions summed across3Fseeds; not pairedpacket flip counts",
+  "classes": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "decisions": 504000,
+  "physical_packets_per_seed": 168000,
+  "confusions": {
+    "REPL_H2_LU_Pair": [
+      [
+        81418,
+        262,
+        959,
+        1092,
+        74,
+        195
+      ],
+      [
+        1620,
+        46720,
+        340,
+        34993,
+        135,
+        192
+      ],
+      [
+        858,
+        515,
+        68051,
+        158,
+        393,
+        14025
+      ],
+      [
+        5329,
+        14463,
+        1622,
+        62283,
+        30,
+        273
+      ],
+      [
+        26,
+        31,
+        39,
+        27,
+        83854,
+        23
+      ],
+      [
+        60,
+        48,
+        1150,
+        31,
+        766,
+        81945
+      ]
+    ],
+    "SIG1-PL": [
+      [
+        81249,
+        386,
+        929,
+        1119,
+        152,
+        165
+      ],
+      [
+        1327,
+        50255,
+        270,
+        31809,
+        180,
+        159
+      ],
+      [
+        990,
+        538,
+        68686,
+        126,
+        467,
+        13193
+      ],
+      [
+        5925,
+        15488,
+        1766,
+        60451,
+        30,
+        340
+      ],
+      [
+        27,
+        43,
+        42,
+        21,
+        83849,
+        18
+      ],
+      [
+        48,
+        57,
+        695,
+        29,
+        804,
+        82367
+      ]
+    ]
+  },
+  "error_cell_deltas": [
+    {
+      "true_TX": "14-7",
+      "predicted_TX": "20-19",
+      "new": 34993,
+      "PL": 31809,
+      "delta": 3184
+    },
+    {
+      "true_TX": "20-15",
+      "predicted_TX": "8-20",
+      "new": 14025,
+      "PL": 13193,
+      "delta": 832
+    },
+    {
+      "true_TX": "8-20",
+      "predicted_TX": "20-15",
+      "new": 1150,
+      "PL": 695,
+      "delta": 455
+    },
+    {
+      "true_TX": "14-7",
+      "predicted_TX": "14-10",
+      "new": 1620,
+      "PL": 1327,
+      "delta": 293
+    },
+    {
+      "true_TX": "14-7",
+      "predicted_TX": "20-15",
+      "new": 340,
+      "PL": 270,
+      "delta": 70
+    },
+    {
+      "true_TX": "14-7",
+      "predicted_TX": "8-20",
+      "new": 192,
+      "PL": 159,
+      "delta": 33
+    },
+    {
+      "true_TX": "20-15",
+      "predicted_TX": "20-19",
+      "new": 158,
+      "PL": 126,
+      "delta": 32
+    },
+    {
+      "true_TX": "14-10",
+      "predicted_TX": "20-15",
+      "new": 959,
+      "PL": 929,
+      "delta": 30
+    },
+    {
+      "true_TX": "14-10",
+      "predicted_TX": "8-20",
+      "new": 195,
+      "PL": 165,
+      "delta": 30
+    },
+    {
+      "true_TX": "8-20",
+      "predicted_TX": "14-10",
+      "new": 60,
+      "PL": 48,
+      "delta": 12
+    },
+    {
+      "true_TX": "6-15",
+      "predicted_TX": "20-19",
+      "new": 27,
+      "PL": 21,
+      "delta": 6
+    },
+    {
+      "true_TX": "6-15",
+      "predicted_TX": "8-20",
+      "new": 23,
+      "PL": 18,
+      "delta": 5
+    },
+    {
+      "true_TX": "8-20",
+      "predicted_TX": "20-19",
+      "new": 31,
+      "PL": 29,
+      "delta": 2
+    },
+    {
+      "true_TX": "20-19",
+      "predicted_TX": "6-15",
+      "new": 30,
+      "PL": 30,
+      "delta": 0
+    },
+    {
+      "true_TX": "6-15",
+      "predicted_TX": "14-10",
+      "new": 26,
+      "PL": 27,
+      "delta": -1
+    },
+    {
+      "true_TX": "6-15",
+      "predicted_TX": "20-15",
+      "new": 39,
+      "PL": 42,
+      "delta": -3
+    },
+    {
+      "true_TX": "8-20",
+      "predicted_TX": "14-7",
+      "new": 48,
+      "PL": 57,
+      "delta": -9
+    },
+    {
+      "true_TX": "6-15",
+      "predicted_TX": "14-7",
+      "new": 31,
+      "PL": 43,
+      "delta": -12
+    },
+    {
+      "true_TX": "20-15",
+      "predicted_TX": "14-7",
+      "new": 515,
+      "PL": 538,
+      "delta": -23
+    },
+    {
+      "true_TX": "14-10",
+      "predicted_TX": "20-19",
+      "new": 1092,
+      "PL": 1119,
+      "delta": -27
+    },
+    {
+      "true_TX": "8-20",
+      "predicted_TX": "6-15",
+      "new": 766,
+      "PL": 804,
+      "delta": -38
+    },
+    {
+      "true_TX": "14-7",
+      "predicted_TX": "6-15",
+      "new": 135,
+      "PL": 180,
+      "delta": -45
+    },
+    {
+      "true_TX": "20-19",
+      "predicted_TX": "8-20",
+      "new": 273,
+      "PL": 340,
+      "delta": -67
+    },
+    {
+      "true_TX": "20-15",
+      "predicted_TX": "6-15",
+      "new": 393,
+      "PL": 467,
+      "delta": -74
+    },
+    {
+      "true_TX": "14-10",
+      "predicted_TX": "6-15",
+      "new": 74,
+      "PL": 152,
+      "delta": -78
+    },
+    {
+      "true_TX": "14-10",
+      "predicted_TX": "14-7",
+      "new": 262,
+      "PL": 386,
+      "delta": -124
+    },
+    {
+      "true_TX": "20-15",
+      "predicted_TX": "14-10",
+      "new": 858,
+      "PL": 990,
+      "delta": -132
+    },
+    {
+      "true_TX": "20-19",
+      "predicted_TX": "20-15",
+      "new": 1622,
+      "PL": 1766,
+      "delta": -144
+    },
+    {
+      "true_TX": "20-19",
+      "predicted_TX": "14-10",
+      "new": 5329,
+      "PL": 5925,
+      "delta": -596
+    },
+    {
+      "true_TX": "20-19",
+      "predicted_TX": "14-7",
+      "new": 14463,
+      "PL": 15488,
+      "delta": -1025
+    }
+  ]
+}
