@@ -24,3 +24,6 @@
 执行commit `088f8f36a34a9cb750243414de91c084fe1f28d0` 已提交/推送并独立核实远端OID；一次archive传输比较VERIFIED、远端compile PASS。六个真实联合backward smoke全PASS：三个PL各加载自己实际E20并读取U256，三个Sup实际U0；所有L768/AsKL0、单SIG_TIME18976参数、原分类头/单视图梯度非零有限，0optimizer/0U真值/0target；同G+E20源L2推理PASS。
 
 六行已全部运行，独立核实controller/六worker PID、CWD、完整命令、物理GPU与跨两次读取的step日志增长，当前可读1264条记录，仅为启动进度。三个PL从E20后续训、三个Sup从零；每行自动正式预测/评分已实际入队。当前没有完成E50或新的目标准确率；三seed均值、样本SD及seed内配对差待正式矩阵完成。原三个REPL候选继续原计划，不改其配置/门槛，不联系其他对话。[启动证据](launch_evidence.json)。
+
+
+最新源日志检查：六行当前全部可读前缀L768/AsKL0和非有限跳步0；三个监督U_seen/accepted实际0，三个普通PL约92.4%至92.8%接受，仍是训练中。[九行可读前缀梯度诊断](../20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/available_training_diagnostic.json)。未产生新正式目标结果。
