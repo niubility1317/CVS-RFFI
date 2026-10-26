@@ -23,3 +23,5 @@ H仍按全部U分母求平均，不按接受池大小放大。每seed12训练L/U
 执行commit `31d6ecbf8b2da46cfd70e7ca462093eee0e4b4df` 已推送并独立对照上游OID；一个archive传输校验VERIFIED，remote compile PASS。实际控制器PID/CWD/argv/UID与等待状态已核实，当前不占GPU，12job均等待前序Max整体完成。source缓存/均值bank/已有PL-Sup控制继续复用；没有重训对照、停止旧worker或修改Max release。见launch_verification.json。
 
 等待控制器第二次独立观测确认日志由62增长至248 bytes，pipeline时间同步推进；排队状态不是死锁文件或提交返回值代替。GPU worker仍0，真实P-smoke未开始。
+
+结果工具已就绪：`rx_trust_p_results collect/analyze` 仅在3行/12job完整结束后读取固定预测和既有评分，复用PL/Sup/Max共9参考，核查18组同seed物理顺序、3528000新raw判决。`rx_trust_p_audit` 逐条核算全部完成行step/epoch/stdout、H单标签/集合/fallback累计与当前计数、原raw门控、尾批124及每RX全部H覆盖。4项针对性数值/缺seed/错参考/未完成管道/路由计数检查PASS，见analysis_tool_verification.json。此为本地分析工具补充，不改变远端31d6ecb神经执行、冻结方法或资源依赖，不代表新P真实smoke或性能通过。

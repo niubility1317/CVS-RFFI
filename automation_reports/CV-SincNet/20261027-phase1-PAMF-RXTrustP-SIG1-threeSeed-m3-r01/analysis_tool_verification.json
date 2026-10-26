@@ -1,0 +1,19 @@
+{
+  "status": "LOCAL_ANALYSIS_TOOLS_VERIFIED",
+  "focused_checks": 4,
+  "requires_all_three_final_models_and_12_jobs": true,
+  "compared_completed_references": [
+    "SIG1-PL",
+    "SIG1-Sup",
+    "RXMean-MaxU"
+  ],
+  "score_rows": 12,
+  "same_seed_physical_pairings": 18,
+  "candidate_raw_decisions": 3528000,
+  "audit": "every step/epoch/complete stdout plus H parity, raw acceptance, tail124 and final singleton/pair/fallback RX totals",
+  "new_F_forwards": 0,
+  "new_training_updates": 0,
+  "neural_execution_commit": "31d6ecbf8b2da46cfd70e7ca462093eee0e4b4df",
+  "neural_recipe_changed": false,
+  "goal_complete": false
+}
