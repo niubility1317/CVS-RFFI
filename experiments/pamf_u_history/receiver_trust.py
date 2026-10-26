@@ -8,6 +8,34 @@ import torch
 from torch.nn import functional as F
 
 
+@torch.no_grad()
+def hard_view_trust(probabilities,rx,*,threshold=.95,max_fraction=.25):
+    """Three same-head weak views, class/RX caps, no low-quality identity fill."""
+    if (probabilities.ndim!=3 or probabilities.shape[0]!=3 or probabilities.shape[2]!=6
+            or rx.shape!=(probabilities.shape[1],) or rx.device!=probabilities.device or rx.dtype!=torch.long
+            or not torch.isfinite(probabilities).all() or bool((probabilities<0).any())
+            or not torch.allclose(probabilities.sum(-1),torch.ones_like(probabilities[:,:,0]),atol=1e-5)
+            or not 0<threshold<1 or not 0<=max_fraction<=1):
+        raise ValueError('Three normalized shared-head views and known source RX required')
+    confidence,prediction=probabilities.max(-1);pseudo=prediction[0]
+    eligible=(confidence>=threshold).all(0)&(prediction==pseudo[None]).all(0)
+    score=confidence.min(0).values;limit=int(len(rx)*max_fraction);selected=[]
+    classes=torch.unique(pseudo[eligible],sorted=True).tolist()
+    def rank(mask):
+        return sorted(mask.nonzero().flatten().tolist(),key=lambda i:(-float(score[i]),i))
+    per_class=math.ceil(limit/max(1,len(classes)))
+    for label in classes:
+        mask=eligible&(pseudo==label);receivers=torch.unique(rx[mask],sorted=True).tolist()
+        per_rx=math.ceil(per_class/max(1,len(receivers)));ids=[]
+        for receiver in receivers:ids+=rank(mask&(rx==receiver))[:per_rx]
+        selected+=sorted(ids,key=lambda i:(-float(score[i]),i))[:per_class]
+    selected=sorted(selected,key=lambda i:(-float(score[i]),i))[:limit]
+    weight=torch.zeros_like(score)
+    if selected:weight[selected]=score[selected]
+    return pseudo,weight,dict(eligible=int(eligible.sum()),selected=len(selected),limit=limit,
+        evidence='three weak views of same default head;correlated,not three independent teachers',identity_fill=0)
+
+
 def gaussian_view(x,*,snr_db,generator):
     if (x.ndim!=3 or x.shape[1]!=2 or not x.is_floating_point() or not torch.isfinite(x).all()
             or not math.isfinite(snr_db) or snr_db<0):
@@ -34,8 +62,8 @@ def instance_alignment(student_views,raw_reference):
 def cross_receiver_relation(features,*,rx,source_rxs,labeled,visible_tx,pseudo,trust,temperature=.1,scope='LU'):
     """L truth and certified U pseudo targets; balance positive RX mass per anchor.
 
-    scope U anchors only U and detaches labeled reference features. scope LU
-    trains both; it does not add confidence gates to true labeled identities.
+    Both scopes retain the identical anchors and scalar objective. Scope U
+    detaches labeled features; scope LU trains both. True L is never gated.
     """
     n=len(features);vectors=(rx,labeled,visible_tx,pseudo,trust)
     if (features.ndim!=2 or n<1 or any(v.shape!=(n,) or v.device!=features.device for v in vectors)
@@ -54,7 +82,6 @@ def cross_receiver_relation(features,*,rx,source_rxs,labeled,visible_tx,pseudo,t
     candidates=cross&valid[:,None]&valid[None,:]
     positive=candidates&(y[:,None]==y[None,:]);negative=candidates&~positive
     active=valid&positive.any(1)&negative.any(1)
-    if scope=='U':active&=~labeled
     weights=positive*w[None,:]
     # Equal total positive weight per contributing receiver, not per packet count.
     for receiver in source_rxs:

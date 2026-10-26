@@ -46,7 +46,7 @@ with tarfile.open(p['archive_remote']) as archive:
 Path(rt['runtime_file']).write_text(json.dumps(rt,indent=2)+'\n')
 env=dict(os.environ,PYTHONPATH=str(release),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
 subprocess.run([rt['python'],'-m','compileall','-q',str(release/'experiments/pamf_u_history')],cwd=release,env=env,check=True)
-command=[rt['python'],'-u','-m','experiments.pamf_u_history.vat_source','dispatch','--config',rt['runtime_file']]
+command=[rt['python'],'-u','-m',rt.get('entrypoint','experiments.pamf_u_history.vat_source'),'dispatch','--config',rt['runtime_file']]
 with (release/'controller.log').open('x') as f:
  child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
 result=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),argv=command,log=str(release/'controller.log'),
@@ -55,18 +55,19 @@ result=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),a
 '''
 
 
-def publish(repo,output,context):
+def publish(repo,output,context,*,run_id=RUN,release_id=RELEASE,entrypoint='experiments.pamf_u_history.vat_source',required_relative=(),runtime_extra=None):
     repo=Path(repo);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     def git(*args):return subprocess.check_output(['git','-C',str(repo),*args])
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
     if git('ls-remote','origin','refs/heads/'+branch).decode().split()[0]!=commit:raise ValueError('Upstream differs')
     if git('status','--porcelain','--','experiments/pamf_u_history').strip():raise ValueError('Committed source implementation required')
     c=json.loads(Path(context).read_text(encoding='utf-8'));validate_context(c)
-    project=c['project'];release=project+'/releases/'+RELEASE
-    rt=dict(run_id=RUN,project=project,python=c['python'],release_root=release,run_root=project+'/runs/'+RUN,
+    project=c['project'];release=project+'/releases/'+release_id
+    rt=dict(run_id=run_id,project=project,python=c['python'],release_root=release,run_root=project+'/runs/'+run_id,
         context=release+'/context.json',runtime_file=release+'/runtime.json',code_commit=commit,
-        frozen_sources=c['frozen_sources'],allowed_gpus=list(range(8)),launch_owner='codex-pamf-all-u-vat-source-20261026')
-    archive=out/(RELEASE+'.tar.gz')
+        frozen_sources=c['frozen_sources'],allowed_gpus=list(range(8)),launch_owner='codex-'+run_id,entrypoint=entrypoint)
+    rt.update(runtime_extra or {})
+    archive=out/(release_id+'.tar.gz')
     if archive.exists():raise FileExistsError('Reconcile earlier publication before retry')
     names={p for p in git('ls-files','-z','--','experiments','code','baselines').decode().split('\0') if p and Path(p).suffix in ('.py','.json','.txt','.yaml','.yml','.toml')}
     data=git('archive','--format=tar',commit,'--','experiments','code','baselines')
@@ -76,10 +77,11 @@ def publish(repo,output,context):
             value=source.extractfile(member).read();info=tarfile.TarInfo(member.name);info.size=len(value);info.mode=0o644
             target.addfile(info,io.BytesIO(value))
         for name,value in {'context.json':Path(context).read_bytes(),'release_commit.txt':(commit+'\n').encode(),
-            'experiment.json':git('show',commit+':automation_reports/CV-SincNet/'+RUN+'/experiment.json')}.items():
+            'experiment.json':git('show',commit+':automation_reports/CV-SincNet/'+run_id+'/experiment.json')}.items():
             info=tarfile.TarInfo(name);info.size=len(value);info.mode=0o644;target.addfile(info,io.BytesIO(value))
     case=next(v for v in c['cases'] if v['model_seed']==2026092701)
     required=[*c['frozen_sources'].values(),project+'/runs/'+PREFIX_RUN+'/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20/complete.json',project+'/runs/'+PREFIX_RUN+'/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20/final_ssdg.pth',case['expected_source_contract'],c['G']['checkpoint'],c['G']['source_contract']]
+    required.extend(project+'/'+p for p in required_relative)
     package=dict(runtime=rt,required=required,archive_remote=project+'/releases/'+archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
     for name,value in [('runtime.json',rt),('package.json',package)]:
         (out/name).write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')

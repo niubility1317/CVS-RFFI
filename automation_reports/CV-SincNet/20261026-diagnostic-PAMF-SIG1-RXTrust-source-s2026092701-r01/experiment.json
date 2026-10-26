@@ -1,0 +1,175 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-SIG1-RXTrust-source-s2026092701-r01",
+  "group_id": "pamf-sig1-rxtrust-recovery-20261026",
+  "display_name": "单视图PAMF可靠跨RX关系和多实现恢复视图真实权重诊断",
+  "description": "9批真实同契约E20 L128/U256原T1+普通PL和两类附加关系梯度，无优化器；复用U三实现和冻结G，最后完整V27000只评估可靠硬路由。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "SIG1-RXTrust-real-checkpoint-probe"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME",
+    "FastTrust-inspired",
+    "cross-RX",
+    "DURA",
+    "L-U-scope",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261026-diagnostic-PAMF-URealizations-cache-m3-r01"
+  ],
+  "authorization": "用户要求持续优化完整PAMF单视图SIG_TIME，在普通PL上利用U已有RX标签、同包多实现场景及DURA恢复增强，并探索半监督阶段L/U是否共享优化；不干扰另一对话，不重训对照。",
+  "code": {
+    "commit": "this actual code/config Git commit; runtime records exact identity",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 verified CVS-RFFI Python3.10/Torch2.1;FP32/TF32off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261026-diagnostic-PAMF-SIG1-RXTrust-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "existing validated source L/U IQ and three fixed paired U G(H) caches; full V read only after L/U gradient probe",
+    "contract_ref": "unchanged original F0; other protocol cohorts kept separate; prefix metadata matches original F0",
+    "physical_ids_ref": "same original F0 role_ids and eq_i/rx_i/day_i/sig_i/base_index;cached G(H) physical order must match",
+    "label_map_ref": "original F0 six registered classes; U TX truth absent",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "6300 existing train records;9x128 deterministic shuffled exposure with trueTX",
+      "U_s": "56700 existing records,TX absent;9x256 shuffled exposure;physical ID/RX known",
+      "V": "27000 complete fixed-route evaluation only,no gradient/model-state update"
+    },
+    "train_ratio": "0 optimizer steps;data roles remain .07/.63/.30",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "source route quality,technical execution and actual gradient pressure only;not trained candidate efficacy,target or goal success"
+  },
+  "checkpoint": {
+    "initialization": "read exact original fullPAMF singleviewSIG_TIME ordinaryPL E20",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20"
+    ],
+    "contract_check_ref": "actual cp+complete same data roles and IDs,scratch/noancestors/target/Utruthfalse,defaulthead[6,160],SIG1[160,112]",
+    "provenance_verdict": "required matching actual provenance in existing load_prefix;no fallback",
+    "selection_rule": "fixed existing final E20,no target-driven epoch/seed choice"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current independent Codex chat",
+    "gpu_policy": "oneworker on globally idle CUDA+pendingcard;free>=10000MiB;preserve all other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-diagnostic-PAMF-SIG1-RXTrust-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-diagnostic-PAMF-SIG1-RXTrust-source-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026/receiver_probe",
+    "launch_command": "python -X utf8 -m experiments.pamf_u_history.publish_receiver_probe --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/receiver_probe --context local_artifacts/pamf_ssl_research_20261025/restored_source_context.json",
+    "stop_rule": "first source/provenance/nonfinite/matrix/state/technical error stops thisrun;preserve outputs,no blind restart,no performance stop or other-owner termination"
+  },
+  "expected_artifacts": [
+    "smoke.json real E20 L768/U256 first-pass check",
+    "gradient_steps.jsonl all9 batches",
+    "result.json full source route/gradient evidence",
+    "pipeline_state.json and exact process/log evidence",
+    "report.md analysis and registry updates"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "nonzero finite samepacket and crossRX gradients at both U/LU scopes",
+      "full source V Hroute precision/coverage byRX"
+    ],
+    "secondary": [
+      "baseline gradientcos/norm versus eachcomponent",
+      "common scope coefficients derived only by fixed9batch normformula",
+      "knownRX contribution and physical cache alignment"
+    ],
+    "target": "none",
+    "selection": "fixed existing E20;Hroute source necessary precision>=99.5% eachRX with>=20selected,overall>=200;no training performance claim",
+    "truth_policy": "UtrueTXabsent;Vlabels scoring only;no target"
+  },
+  "rows": [
+    {
+      "row_id": "actual-E20-source-probe",
+      "method": "RXTrust-G-Instance-U-LU",
+      "purpose": "source execution and labeledgradient scope diagnosis",
+      "config_ref": "experiments/pamf_u_history/receiver_probe.py:RECIPE",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-diagnostic-PAMF-SIG1-RXTrust-source-s2026092701-r01/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102609,
+        "augmentation": 2026102611,
+        "support": null,
+        "evaluation": 2026102613
+      },
+      "seed_notes": "modelseed inherited;fixed sourceL/Ushuffle,noise and V batch shuffle seeds;cached namespaces unchanged",
+      "k": null,
+      "scenario": "source3 practical residual scenes x existing3Grealizations;35dBpostGnoise;rawclean Hroute",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "nine L128/U256 fullT1+ordinaryPL gradient probes;nooptimizer;completeV27000 threeweakvieweval",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-diagnostic-PAMF-SIG1-RXTrust-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-diagnostic-PAMF-SIG1-RXTrust-source-s2026092701-r01/logs/probe.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_receiver_probe --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/receiver_probe --context local_artifacts/pamf_ssl_research_20261025/restored_source_context.json",
+      "expected_artifacts": [
+        "smoke.json real E20 L768/U256 first-pass check",
+        "gradient_steps.jsonl all9 batches",
+        "result.json full source route/gradient evidence",
+        "pipeline_state.json and exact process/log evidence",
+        "report.md analysis and registry updates"
+      ]
+    }
+  ],
+  "notes": [
+    "Both scopes keep identical viewvalues and scalar loss;scopeU detaches L only,LU allows L gradients.",
+    "Hroute is three weakview evidence of the SAME defaulthead,not independent teachers or fullRC4.OrdinaryPL unchanged.",
+    "First batch actualcheckpoint smoke PASS immediately continues diagnostics;no extra authorization artifact or repeated review.",
+    "FullV only evaluates fixed route;gradient scaling is from trainL/U only.",
+    "Does not retrain any completed control,modify deployment,or hotpatch oldrun."
+  ],
+  "matrix": {
+    "new_training": 0,
+    "control_training": 0,
+    "optimizer_updates": 0,
+    "model_seed": 2026092701,
+    "L_exposures": 1152,
+    "U_exposures": 2304,
+    "gradient_scopes": [
+      "U",
+      "LU"
+    ],
+    "V_records": 27000,
+    "U_truth_reads": 0,
+    "target_reads": 0,
+    "G_updates": 0,
+    "new_head": false,
+    "new_U_cache": false
+  },
+  "registered_at": "2026-10-26T11:34:15+00:00"
+}

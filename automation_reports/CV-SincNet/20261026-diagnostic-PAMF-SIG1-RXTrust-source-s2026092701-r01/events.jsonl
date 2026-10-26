@@ -1,0 +1,2 @@
+{"at": "2026-10-26T11:34:15+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-26T11:37:23+00:00", "status": "LOCAL_VERIFIED", "note": "10 focused checks+compilePASS;unique independentP0P1PASS after two direct API/runtime fixes;actual checkpoint smoke is first sourcebatch then immediate continuation;zero controltraining/target.", "evidence": ["tests/test_pamf_receiver_probe.py", "tests/test_pamf_receiver_trust.py"], "row_id": null}
