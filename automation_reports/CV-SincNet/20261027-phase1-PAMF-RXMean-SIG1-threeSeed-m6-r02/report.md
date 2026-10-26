@@ -31,3 +31,7 @@ U 与 LU 的标量均为 (nU*KL_U+64*KL_L)/(nU+64)，U 范围 detach KL_L，LU �
 既有三seed36批源校准的新增分析见[calibration_analysis.json](calibration_analysis.json)。按选定alpha在full ramp参考下，raw组辅助/主梯度比中位数约3.57%至5.64%，H组约7.18%至11.51%；最大单批16.55%。原系数规则约束总体中位尺度，并非逐批10%硬上限，实际ramp早期权重更低。U范围10/36批、LU范围9/36批的辅助梯度与原fullL＋PL主梯度余弦为负；这是初始源模型的欧氏梯度局部关系，不能当作AdamW实际方向、泛化损失因果解释或改配方依据。高置信伪标签能支持身份监督，但不能保证额外正则目标每步同向。没有新增F前向/权重/IQ/真值读取，健康训练保持。
 
 完整run结束后按现有runtime执行一次 `rx_mean_audit --runtime ... --output .../completed_source_audit.json`，再用 `rx_mean_results collect --runtime ... --output .../frozen_results_bundle.json` 和 `rx_mean_results analyze --bundle ... --output .../results`。未完成时collector拒绝给出正式汇总；不据中途源指标选种子或停行。
+
+E30节点已经实际核实：[first_segment_audit.json](first_segment_audit.json)。01/02的U与LU四行均完成E20→E30，每行全部2220条step及10条epoch记录已解析，共8880步／40模型epoch，并扫描完整当时stdout，无非有限值或fatal。每行56700个U各10遍，曝光567000，raw/H各283500，20个RX风格对全部使用、各RX曝光113400；实际PL接受率93.3605%至93.6333%。这只是源训练执行证据，不是伪标签真实准确率，也不是目标性能。
+
+四行均已通过E30→E50实际checkpoint smoke，后段已观察187至280个连续step；方法U历史从2221延续、原生段内PL计数按新段重置，5raw/5H已完成状态没有丢失，后段日程也未从第一个新U epoch重启。此处完整核验的是已结束E30段，后段仅为当时已生成的全部可解析日志前缀，不冒充E50完整日志。03两行继续按既定容量排队，无新target访问、无训练重启或配方调整。
