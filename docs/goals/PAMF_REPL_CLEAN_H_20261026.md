@@ -35,3 +35,10 @@ L不套用U的.95置信丢弃规则，全部真标签CE保留；L是否采用双
 最终仍需同一方法三个F种子2026092701/02/03，原F0每seed168000物理包（cross_rx126000+cross_both42000按正确数合并；cross_date30000另报），raw clean和六种practical固定预测后独立truth-last。相对于历史及严格单视图监督/普通PL中较高者，raw clean至少+1pp、raw六景>+1.5pp；绝对下限raw clean≥85.98174603174603%、raw六景>72.0961970899471%保持。三变体不是三种子，源诊断不是目标达成。此前DURA配对分数不再作为研发目标筛选条件。
 
 训练默认N607，用户允许全部GPU，全球CUDA+pending每卡最多2且free≥10000MiB，包含其他owner，保护健康任务；新run独占路径和Git代码身份，实际sourceL2/联合backward smoke先行，逐模型训练后自动冻结/源评测，符合门槛后再登记三seed和正式测试。当前性能目标未完成。
+
+
+## 已实现并启动的新路线
+
+run `20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01` 已按上述三行实现并启动，执行commit `d860ee49a036c599bcb0d7848feed22cc7de8bd7`。新激活器只使用F/AF/BASE/FOLD及当前practical代码；无恢复器root/权重/IQ/分数。10focused测试、compile、一次P0/P1审查和实际E20联合backward smoke均PASS。三学生GPU0/3/4真实运行，独立核实step增长；当时656条可读记录全部检查通过。
+
+固定源门槛为raw≥26547/27000、H3≥61132/81000，复用既有三参照raw/H部分；通过者clean优先，其次H/较低H成本，无通过不扩seed/目标。每行独立+10+20，累计E50/11100；每行训练后自动源4view评测。三行是三变体单Fseed，不是三seed；当前没有新目标结果，原目标保持未完成。详情与当前证据见[新run报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/report.md)。

@@ -37,3 +37,14 @@ Ha/Hb使用相邻不同的三种source景及独立a/b随机实现，按物理ID�
 10项focused数学/标签边界/mask/forward顺序/预算/配置/实际任务入口检查及编译通过，登记VALID，唯一P0/P1审查见[local_verification.json](local_verification.json)。实际原E20权重联合L128/U256 backward smoke为launcher第一步，检查真实双H差异、单视图原头、U总梯度及Pair项对sig/head/body非零有限梯度；PASS立即训练，无新审批token。
 
 N607普通账户，GPU0..7，全球CUDA+pending每卡<2且free≥10000MiB才派发，计入其他owner。独占run/release root、单份archive传输比较、远端compile、独立PID/CWD/argv/GPU/step增长读回。任一系统技术失败停止新派发，保留本run健康已启动子进程和全部产物，不自动重跑，不操作其他owner。每行训练结束自动源冻结/4view预测/分析；候选通过后再登记目标三seed扩展，当前不是目标测试run。实际运行证据随后追加。
+
+
+## 真实发布与训练启动
+
+VERIFIED_RUNNING。实际执行commit `d860ee49a036c599bcb0d7848feed22cc7de8bd7`，发布时上游OID一致；archive传输比较VERIFIED、远端compile PASS。实际runtime四来源F/AF/BASE/FOLD，没有恢复器root/weight/IQ/分数句柄。
+
+三真实E20联合source smoke全部PASS：每行L768/U256×6，原clean门控接受234/256（接受率不是正确率）；U双H256包，差异相对L2=1.074821；LU行L双H128包、相对差1.031408。每Pair行使用原physical半的10个拒绝U包，新项对signature/head/body梯度范数约0.102400/0.135390/0.235053，均有限非零；L全真标签、As KL0和ordinary跨RX保留。smoke无optimizer更新、额外F调用、Utruth/target读取。它证明执行，不证明性能收益。
+
+三个真实学生在GPU0/3/4各一worker，PID/CWD/argv/CVD/onGPU及两次独立step增长均已核实。独立检查当时全部可读656条训练记录（218/223/215），包括部分批次后seen56700+256的边界、H/L/U/guard/门控计数和有限值；第二次进度读取234/236/215条。前两行已完成新增第1轮，实际耗时198.36/195.25秒；不是完整30轮耗时或收敛。0非有限损失/梯度跳步。旧停止任务没有恢复，已完成对照未训练/预测。
+
+这些是三个变体各一个seed，非三seed成绩；当前只有源训练，无新目标预测/准确率，完整目标未达成。后续逐行按原固定计划自动冻结/源4view评测，全部完成后再判断。证据：[实际smoke、进程与完整可读记录检查](launch_evidence.json)。

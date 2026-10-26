@@ -1,0 +1,263 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01",
+  "code_commit": "d860ee49a036c599bcb0d7848feed22cc7de8bd7",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "actual_frozen_code_roots": [
+    "F",
+    "AF",
+    "BASE",
+    "FOLD"
+  ],
+  "controller_PID_CWD_argv_verified": true,
+  "workers": [
+    {
+      "method": "REPL_H2_U",
+      "gpu": 0,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 234
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "gpu": 3,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 236
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "gpu": 4,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 215
+    }
+  ],
+  "actual_smoke": {
+    "status": "PASS",
+    "rows": [
+      {
+        "method": "REPL_H2_U",
+        "status": "PASS",
+        "U_seen": 256,
+        "U_accepted": 234,
+        "U_student_views": 1536,
+        "L_packets": 768,
+        "H2": {
+          "dual_L": false,
+          "L_calls": 1,
+          "H_L_calls": 0,
+          "H_L_packets": 0,
+          "native_shared_L_H_packets": 64,
+          "H_U_calls": 2,
+          "H_U_packets": 256,
+          "scenes": {
+            "U::practical_low_suburban": 128,
+            "U::practical_mid_urban": 128
+          },
+          "pair_enabled": false,
+          "pair_calls": 1,
+          "pair_packets": 128,
+          "pair_rejected": 10,
+          "pair_weight": 0.0,
+          "pair_normalizer": "whole physical half",
+          "pair_targets": "opposite detached H probabilities; no hard TX",
+          "extra_F_forwards": 0,
+          "restoration_weight_reads": 0,
+          "restoration_IQ_used": 0,
+          "L_true_labels_all": true,
+          "L_As_KL_weight": 0.0,
+          "ordinary_cross_RX_preserved": true
+        },
+        "actual_H_pair_relative_differences": {
+          "U": 1.0748209953308105
+        },
+        "actual_U_gradient_norms": {
+          "signature": 0.7277459417220198,
+          "head": 0.6386444688996207,
+          "other": 2.1335735834426712
+        },
+        "actual_rejected_H_pair_gradient_norms": null,
+        "optimizer_updates": 0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      },
+      {
+        "method": "REPL_H2_U_Pair",
+        "status": "PASS",
+        "U_seen": 256,
+        "U_accepted": 234,
+        "U_student_views": 1536,
+        "L_packets": 768,
+        "H2": {
+          "dual_L": false,
+          "L_calls": 1,
+          "H_L_calls": 0,
+          "H_L_packets": 0,
+          "native_shared_L_H_packets": 64,
+          "H_U_calls": 2,
+          "H_U_packets": 256,
+          "scenes": {
+            "U::practical_low_suburban": 128,
+            "U::practical_mid_urban": 128
+          },
+          "pair_enabled": true,
+          "pair_calls": 1,
+          "pair_packets": 128,
+          "pair_rejected": 10,
+          "pair_weight": 1.2,
+          "pair_normalizer": "whole physical half",
+          "pair_targets": "opposite detached H probabilities; no hard TX",
+          "extra_F_forwards": 0,
+          "restoration_weight_reads": 0,
+          "restoration_IQ_used": 0,
+          "L_true_labels_all": true,
+          "L_As_KL_weight": 0.0,
+          "ordinary_cross_RX_preserved": true
+        },
+        "actual_H_pair_relative_differences": {
+          "U": 1.0748209953308105
+        },
+        "actual_U_gradient_norms": {
+          "signature": 0.7235554468137111,
+          "head": 0.6789256738126382,
+          "other": 2.058541622479558
+        },
+        "actual_rejected_H_pair_gradient_norms": {
+          "signature": 0.10239988315488374,
+          "head": 0.13538965621438454,
+          "other": 0.2350534222762648
+        },
+        "optimizer_updates": 0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      },
+      {
+        "method": "REPL_H2_LU_Pair",
+        "status": "PASS",
+        "U_seen": 256,
+        "U_accepted": 234,
+        "U_student_views": 1536,
+        "L_packets": 768,
+        "H2": {
+          "dual_L": true,
+          "L_calls": 1,
+          "H_L_calls": 2,
+          "H_L_packets": 128,
+          "native_shared_L_H_packets": 0,
+          "H_U_calls": 2,
+          "H_U_packets": 256,
+          "scenes": {
+            "L::practical_low_suburban": 64,
+            "L::practical_mid_urban": 64,
+            "U::practical_low_suburban": 128,
+            "U::practical_mid_urban": 128
+          },
+          "pair_enabled": true,
+          "pair_calls": 1,
+          "pair_packets": 128,
+          "pair_rejected": 10,
+          "pair_weight": 1.2,
+          "pair_normalizer": "whole physical half",
+          "pair_targets": "opposite detached H probabilities; no hard TX",
+          "extra_F_forwards": 0,
+          "restoration_weight_reads": 0,
+          "restoration_IQ_used": 0,
+          "L_true_labels_all": true,
+          "L_As_KL_weight": 0.0,
+          "ordinary_cross_RX_preserved": true
+        },
+        "actual_H_pair_relative_differences": {
+          "L": 1.0314080715179443,
+          "U": 1.0748209953308105
+        },
+        "actual_U_gradient_norms": {
+          "signature": 0.7235554496366939,
+          "head": 0.6789256738126382,
+          "other": 2.0585416301933814
+        },
+        "actual_rejected_H_pair_gradient_norms": {
+          "signature": 0.1023998833359656,
+          "head": 0.13538965621438454,
+          "other": 0.23505342216277408
+        },
+        "optimizer_updates": 0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      }
+    ],
+    "actual_completed_SIG1_E20": true,
+    "optimizer_updates": 0,
+    "target_reads": 0
+  },
+  "independent_available_training_records": {
+    "status": "VERIFIED_ALL_AVAILABLE",
+    "run_id": "20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01",
+    "code_commit": "d860ee49a036c599bcb0d7848feed22cc7de8bd7",
+    "all_complete_readable_step_records": 656,
+    "rows": [
+      {
+        "method": "REPL_H2_U",
+        "dual_L": false,
+        "pair_enabled": false,
+        "complete_readable_records": 218,
+        "segments": [
+          {
+            "segment": "segment30",
+            "records": 218,
+            "last_H_U": 55808,
+            "last_H_L": 0,
+            "last_pair_rejected": 2629
+          }
+        ]
+      },
+      {
+        "method": "REPL_H2_U_Pair",
+        "dual_L": false,
+        "pair_enabled": true,
+        "complete_readable_records": 223,
+        "segments": [
+          {
+            "segment": "segment30",
+            "records": 223,
+            "last_H_U": 56956,
+            "last_H_L": 0,
+            "last_pair_rejected": 2788
+          }
+        ]
+      },
+      {
+        "method": "REPL_H2_LU_Pair",
+        "dual_L": true,
+        "pair_enabled": true,
+        "complete_readable_records": 215,
+        "segments": [
+          {
+            "segment": "segment30",
+            "records": 215,
+            "last_H_U": 55040,
+            "last_H_L": 27520,
+            "last_pair_rejected": 2674
+          }
+        ]
+      }
+    ],
+    "actual_frozen_code_roots": [
+      "F",
+      "AF",
+      "BASE",
+      "FOLD"
+    ],
+    "new_IQ_reads": 0,
+    "new_F_forwards": 0,
+    "new_H_generations": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0,
+    "scope": "Independent count/finite check of all currently complete records and source configs; no convergence or target success"
+  },
+  "scope": "Three methods each one F seed01 in source training; no new controls or target; not goal achieved"
+}
