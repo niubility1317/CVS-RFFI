@@ -767,5 +767,26 @@
     "The baseline was nominated after historical exposed scores; this is controlled follow-up,not independent blind confirmation.",
     "All generic design-approval/hash/receipt gates outside8item minimal workflow are REJECTED_EXTRA_GATE; only direct correctness review used."
   ],
-  "registered_at": "2026-10-26T03:10:26+00:00"
+  "registered_at": "2026-10-26T03:10:26+00:00",
+  "result_summary": {
+    "status": "ANALYZED",
+    "verification": "VERIFIED_FINAL_COMPLETE",
+    "models": 15,
+    "new_models": 12,
+    "reused_models": 3,
+    "all_model_seeds_complete": true,
+    "new_epochs": 600,
+    "new_updates": 133200,
+    "stage_tasks_complete": 37,
+    "timing_case_rounds": 250,
+    "observed_at": "2026-10-26T14:33:50.410920+08:00",
+    "pending_artifacts": [],
+    "report_ref": "results/final_20261026/report.md",
+    "absolute_metrics_ref": "results/final_20261026/summary_overall.csv",
+    "paired_metrics_ref": "results/final_20261026/paired_vs_baseline_overall.csv",
+    "per_seed_ref": "results/final_20261026/per_seed_overall.csv",
+    "verification_ref": "results/final_20261026/verification.json",
+    "complete_export": "exports/reports/20261026-PAMF-noSIG-ablation-final.zip",
+    "claim": "Three F seeds conditional on fixed DURA-L; exposed benchmark; no target feedback"
+  }
 }

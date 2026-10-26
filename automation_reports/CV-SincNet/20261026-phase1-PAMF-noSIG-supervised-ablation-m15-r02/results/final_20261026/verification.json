@@ -1,0 +1,43 @@
+{
+  "status": "VERIFIED_FINAL_COMPLETE",
+  "CM_recomputed": 17010,
+  "net_correction_rows_checked": 8505,
+  "source_models_complete": 15,
+  "new_models_complete": 12,
+  "source_models_training": 0,
+  "scored_models": 15,
+  "scored_new_models": 12,
+  "three_seed_complete_arms": [
+    "BASE",
+    "NO_PA",
+    "NO_REFERENCE",
+    "NO_PA_REFERENCE",
+    "WRONG_REFERENCE"
+  ],
+  "partial_arms": [],
+  "pooled_count_per_view": 198000,
+  "incomplete_seeds_excluded": true,
+  "pairing": "Exact completed model-seed intersection with BASE",
+  "target_truth_new_reads": 0,
+  "no_training_or_queue_mutation": true,
+  "observed_at": "2026-10-26T14:33:50.410920+08:00",
+  "run_id": "20261026-phase1-PAMF-noSIG-supervised-ablation-m15-r02",
+  "controller_status": "ANALYZED",
+  "stage_counts": {
+    "COMPLETE": 37
+  },
+  "failures": {},
+  "timing_complete": true,
+  "remote_summary_cells_compared": 1152,
+  "all_15_rows_complete": true,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "new_epochs": 600,
+  "new_updates": 133200,
+  "new_worker_hours": 4.71623822531831,
+  "timing_case_rounds": 250,
+  "automatic_followup_required": false
+}

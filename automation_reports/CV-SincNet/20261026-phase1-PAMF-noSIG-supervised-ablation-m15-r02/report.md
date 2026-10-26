@@ -3,7 +3,7 @@
 - run_id：`20261026-phase1-PAMF-noSIG-supervised-ablation-m15-r02`
 - group_id：`phase1-pamf-noSIG-supervised-structure`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（2026-10-26 12:11 已核实；下文保留启动历史）
+- 当前登记状态：ANALYZED（2026-10-26 14:33 全部完成并独立核实；下文保留历史快照）
 
 ## 目的与对照
 
@@ -41,7 +41,7 @@
 
 物理 GPU1、5、6、7 各最多 1 个本 run worker，计入其他 owner 后每卡最多 2 个 GPU worker，空闲显存至少 12000 MiB；不替换控制器、不停止或热改其他健康任务。单 CPU scorer；计时仅等待自然空卡，5 结构×2 路径×5 batch×5 轮，共 250 case-round。一次源 checkpoint 无 query smoke 和五结构 roundtrip／backward 先执行，PASS 后立即训练，不另设审批。独立 P0/P1 审查未发现阻断项，协议负测与汇总复算测试已通过。
 
-代码／配置实际执行提交由发布包的 release_commit.txt 和 runtime.json 记录，启动读回后补入 experiment.json。命令、不可覆盖路径、数据句柄、种子、预算及停止规则以 experiment.json 为准。默认队列自动衔接训练、预测、评分、分析、参数／成本／时延与结果报告；当前没有新增性能结果。
+代码／配置实际执行提交由发布包的 release_commit.txt 和 runtime.json 记录，启动读回后补入 experiment.json。命令、不可覆盖路径、数据句柄、种子、预算及停止规则以 experiment.json 为准。默认队列自动衔接训练、预测、评分、分析、参数／成本／时延与结果报告；启动时尚无新增性能结果，最终结果见文末。
 
 ## r02 技术恢复
 
@@ -49,7 +49,7 @@
 
 ## 实际启动核实
 
-VERIFIED：执行提交 `f922fc3fce6d1149c2f0c379050b6da3bba62cdd` 已推送并核对远端 OID；发布归档传输与远端编译通过。真实 checkpoint 与五种结构无 query 检查通过，参数量与预登记一致。已核对 4 个训练进程的实际 PID/CWD/argv/GPU；同 PID 日志增长和首轮训练更新已读回，U_actual、PL_seen、PL_accepted 均为 0。详细状态见 launch_verification.json。当前为 RUNNING，尚无新增测试结果。
+VERIFIED：执行提交 `f922fc3fce6d1149c2f0c379050b6da3bba62cdd` 已推送并核对远端 OID；发布归档传输与远端编译通过。真实 checkpoint 与五种结构无 query 检查通过，参数量与预登记一致。已核对 4 个训练进程的实际 PID/CWD/argv/GPU；同 PID 日志增长和首轮训练更新已读回，U_actual、PL_seen、PL_accepted 均为 0。详细状态见 launch_verification.json。启动核实时为 RUNNING，尚无新增测试结果。
 
 ## 2026-10-26 12:11 进度与已完成测试结果
 
@@ -120,3 +120,15 @@ VERIFIED：新增 12 个模型中，8 个已完成 E50／11100 更新、三群�
 本次从已完成独立评分的混淆矩阵复算 12474 个矩阵，并核对 6237 行净纠错；没有读取新的目标真值，没有修改训练、候选排序、预算或队列。三种子统计不作强显著性宣称。
 
 证据：[当前状态](results/progress_20261026_1211/progress.csv)、[所有群体与逐场景汇总](results/progress_20261026_1211/summary_overall.csv)、[同种子配对变化](results/progress_20261026_1211/paired_vs_baseline_overall.csv)、[数值核验](results/progress_20261026_1211/verification.json)。
+
+## 2026-10-26 14:33 全部完成与最终交付
+
+VERIFIED：15/15 个模型单元全部完成 E50／11100、三类测试×七视图×直接／DURA 两读出及独立评分；12 个新模型＋3 个基底复用。37/37 个阶段任务 COMPLETE，无失败；250 个计时 case-round 完成。当前为 ANALYZED，无待补模型、测试、评分或预登记计时项。
+
+完整三种子最终报告：[三类测试及综合统计](results/final_20261026/report.md)。所有表均包含均值±样本 SD、逐 seed 值及对同 seed 基底的配对变化。双删组已更新为三种子，替代上方两个种子阶段性估计。
+
+综合六景准确率相对基底的配对变化依次为：去功放 −7.21±0.46（直接）／−2.98±1.31（DURA）；去参考响应 −0.27±0.23／−0.75±0.41；同时去两支路 −8.37±0.28／−4.08±1.05；参考模板相位打乱 −0.36±0.08／−0.41±0.36 个百分点。跨日、跨 RX、双跨的 clean／六景准确率、宏平均 F1 和逐场景变化见完整报告。
+
+重算 17010 个混淆矩阵、核对 8505 行净纠错及 1152 个远端／本地统计单元，均通过；新增训练 600 个逻辑 epoch、133200 次更新、4.716 worker 小时。未新增读取测试真值、改配方、重排或选择性重跑。全部五组与计时已完成，无需创建后续监控。
+
+[绝对指标](results/final_20261026/summary_overall.csv)｜[配对变化](results/final_20261026/paired_vs_baseline_overall.csv)｜[逐种子指标](results/final_20261026/per_seed_overall.csv)｜[数值核验](results/final_20261026/verification.json)。完整导出包位于 `exports/reports/20261026-PAMF-noSIG-ablation-final.zip`。

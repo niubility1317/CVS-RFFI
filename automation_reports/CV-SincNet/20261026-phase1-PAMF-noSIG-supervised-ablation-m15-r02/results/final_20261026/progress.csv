@@ -1,0 +1,16 @@
+arm,name,seed,reused,source_frozen,predictions_complete,scored,epoch
+BASE,去 SIG-TIME 基底,2026092701,True,True,True,True,50
+BASE,去 SIG-TIME 基底,2026092702,True,True,True,True,50
+BASE,去 SIG-TIME 基底,2026092703,True,True,True,True,50
+NO_PA,再去功放支路,2026092701,False,True,True,True,50
+NO_PA,再去功放支路,2026092702,False,True,True,True,50
+NO_PA,再去功放支路,2026092703,False,True,True,True,50
+NO_REFERENCE,再去参考响应支路,2026092701,False,True,True,True,50
+NO_REFERENCE,再去参考响应支路,2026092702,False,True,True,True,50
+NO_REFERENCE,再去参考响应支路,2026092703,False,True,True,True,50
+NO_PA_REFERENCE,同时去功放和参考响应支路,2026092701,False,True,True,True,50
+NO_PA_REFERENCE,同时去功放和参考响应支路,2026092702,False,True,True,True,50
+NO_PA_REFERENCE,同时去功放和参考响应支路,2026092703,False,True,True,True,50
+WRONG_REFERENCE,打乱参考模板相位,2026092701,False,True,True,True,50
+WRONG_REFERENCE,打乱参考模板相位,2026092702,False,True,True,True,50
+WRONG_REFERENCE,打乱参考模板相位,2026092703,False,True,True,True,50
