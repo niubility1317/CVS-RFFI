@@ -114,11 +114,22 @@ def worker(c,kind):
         evaluation.tasks=lambda _:list(TASKS)
         return evaluation.score(c)
     if kind!='predict':raise ValueError('Only direct-F prediction and independent CPU truth')
-    from experiments.pamf_repl_completion.runner import activate
-    activate(c)
-    import torch
-    torch.set_num_threads(2);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
+    activate_raw(c)
     return predict(c)
+
+
+def activate_raw(c):
+    # F's historical modules are sufficient for frozen classification. Do not
+    # use the combined bootstrap, which also requires G for source simulation.
+    import importlib
+    import sys
+    roots={k:Path(v) for k,v in c['frozen_sources'].items()}
+    if set(roots)!={'F','AF','BASE','FOLD'} or any(not p.is_dir() for p in roots.values()):raise ValueError('Four immutable F dependencies required;G excluded')
+    package=importlib.import_module('experiments');current=Path(__file__).resolve().parents[2]
+    package.__path__=[str(roots[k]/'experiments') for k in ('F','AF','FOLD','BASE')]+[str(current/'experiments')]
+    sys.path[:0]=[str(roots['BASE']),str(roots['BASE']/'code')]
+    from experiments.practical_full_2x2.compat import numerical_policy
+    numerical_policy()
 
 
 def dispatch(rt):

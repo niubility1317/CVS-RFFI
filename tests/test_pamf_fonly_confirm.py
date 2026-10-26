@@ -1,6 +1,9 @@
 import unittest
+import sys
+import tempfile
+from pathlib import Path
 from copy import deepcopy
-from experiments.pamf_u_history.fonly_confirm import RUN,SOURCE_RUN,METHODS,TASKS,config,validate_config,validate_context
+from experiments.pamf_u_history.fonly_confirm import RUN,SOURCE_RUN,METHODS,TASKS,config,validate_config,validate_context,activate_raw
 
 
 def context():
@@ -36,3 +39,15 @@ class FonlyConfirmationTests(unittest.TestCase):
         with self.assertRaises(ValueError):validate_context(c)
         p=config(context(),'test','CovSel-U');p['tests'].pop('cross_both')
         with self.assertRaises(ValueError):validate_config(p)
+
+    def test_raw_bootstrap_needs_no_G_release(self):
+        import experiments
+        old_path=list(sys.path);old_package=list(experiments.__path__)
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                roots={key:str(Path(td)/key) for key in ('F','AF','BASE','FOLD')}
+                for p in roots.values():Path(p).mkdir()
+                activate_raw(dict(frozen_sources=roots))
+                self.assertTrue(all('/G/' not in str(p).replace('\\','/') for p in experiments.__path__))
+                self.assertEqual(len(experiments.__path__),5)
+        finally:sys.path[:]=old_path;experiments.__path__=old_package
