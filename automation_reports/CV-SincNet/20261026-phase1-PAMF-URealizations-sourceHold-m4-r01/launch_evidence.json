@@ -1,0 +1,127 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "abc13af0b1e145e886eab61f2054611774cd0002",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "independent_P0P1": "PASS",
+  "focused_tests": 4,
+  "controller_PID_CWD_argv_env_verified": true,
+  "all_four_train_PID_CWD_argv_GPU_step_growth_verified": true,
+  "jobs": [
+    {
+      "id": "GTaskMulti",
+      "gpu": 0,
+      "actual_new_step": 48,
+      "actual_cumulative_step": 6708
+    },
+    {
+      "id": "GGCLMulti",
+      "gpu": 2,
+      "actual_new_step": 48,
+      "actual_cumulative_step": 6708
+    },
+    {
+      "id": "HGCLMulti",
+      "gpu": 3,
+      "actual_new_step": 50,
+      "actual_cumulative_step": 6710
+    },
+    {
+      "id": "GJointMulti",
+      "gpu": 4,
+      "actual_new_step": 33,
+      "actual_cumulative_step": 6693
+    }
+  ],
+  "shared_actual_fresh_checkpoint_smoke": {
+    "status": "PASS",
+    "results": [
+      {
+        "status": "PASS",
+        "model_seed": 2026092701,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "extra_accepted": 185,
+        "head_finite_nonzero": true,
+        "auxiliary_classifier_weight_gradient_zero": true,
+        "actual_fresh_replica": 3,
+        "optimizer_updates": 0,
+        "query_reads": 0,
+        "U_truth_read": false,
+        "method": "GTaskMulti",
+        "direct_fresh_auxiliary_finite": true,
+        "valid_anchors": 0,
+        "positive_pairs": 0,
+        "negative_pairs": 0
+      },
+      {
+        "status": "PASS",
+        "model_seed": 2026092701,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "extra_accepted": 185,
+        "head_finite_nonzero": true,
+        "auxiliary_classifier_weight_gradient_zero": true,
+        "actual_fresh_replica": 3,
+        "optimizer_updates": 0,
+        "query_reads": 0,
+        "U_truth_read": false,
+        "method": "GGCLMulti",
+        "direct_fresh_auxiliary_finite": true,
+        "valid_anchors": 394,
+        "positive_pairs": 9544,
+        "negative_pairs": 64424
+      },
+      {
+        "status": "PASS",
+        "model_seed": 2026092701,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "extra_accepted": 185,
+        "head_finite_nonzero": true,
+        "auxiliary_classifier_weight_gradient_zero": true,
+        "actual_fresh_replica": 3,
+        "optimizer_updates": 0,
+        "query_reads": 0,
+        "U_truth_read": false,
+        "method": "HGCLMulti",
+        "direct_fresh_auxiliary_finite": true,
+        "valid_anchors": 394,
+        "positive_pairs": 9544,
+        "negative_pairs": 64424
+      },
+      {
+        "status": "PASS",
+        "model_seed": 2026092701,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "extra_accepted": 185,
+        "head_finite_nonzero": true,
+        "auxiliary_classifier_weight_gradient_zero": true,
+        "actual_fresh_replica": 3,
+        "optimizer_updates": 0,
+        "query_reads": 0,
+        "U_truth_read": false,
+        "method": "GJointMulti",
+        "direct_fresh_auxiliary_finite": true,
+        "valid_anchors": 394,
+        "positive_pairs": 9544,
+        "negative_pairs": 64424
+      }
+    ],
+    "optimizer_updates": 0,
+    "target_reads": 0,
+    "U_truth_read": false
+  },
+  "student_seeds": [
+    2026092701
+  ],
+  "G_updates": 0,
+  "U_truth_read": false,
+  "new_target_reads": 0,
+  "source_gate_unchanged": {
+    "held_G_gain_pp": 0.3,
+    "overall_V_raw_min_delta_pp": -0.1
+  },
+  "original_goal_achieved": false
+}

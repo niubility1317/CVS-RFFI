@@ -1,1 +1,6 @@
 {"at": "2026-10-26T02:34:54+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-26T02:41:57+00:00", "status": "RUNNING", "note": "四方法实际fresh E30/defaulthead smoke PASS；真实训练PID/GPU/step增长已核实，源only单学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-GTaskMulti-sourceHold-s2026092701"}
+{"at": "2026-10-26T02:42:05+00:00", "status": "RUNNING", "note": "四方法实际fresh E30/defaulthead smoke PASS；真实训练PID/GPU/step增长已核实，源only单学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-GGCLMulti-sourceHold-s2026092701"}
+{"at": "2026-10-26T02:42:14+00:00", "status": "RUNNING", "note": "四方法实际fresh E30/defaulthead smoke PASS；真实训练PID/GPU/step增长已核实，源only单学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-HGCLMulti-sourceHold-s2026092701"}
+{"at": "2026-10-26T02:42:22+00:00", "status": "RUNNING", "note": "四方法实际fresh E30/defaulthead smoke PASS；真实训练PID/GPU/step增长已核实，源only单学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-GJointMulti-sourceHold-s2026092701"}
+{"at": "2026-10-26T02:42:32+00:00", "status": "RUNNING", "note": "四匹配训练实际运行；固定损失/系数，四实现等量；目标未证明。", "evidence": ["launch_evidence.json"], "row_id": null}
