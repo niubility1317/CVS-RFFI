@@ -137,8 +137,9 @@ def main():
   fig,axes=plt.subplots(1,2,figsize=(183/25.4,90/25.4));fig.subplots_adjust(left=.1,right=.95,top=.86,bottom=.22,wspace=.3)
   for ax,scope in zip(axes,['双跨','综合']):
    rs=[r for r in paired if r['scope']==scope];values=[r['accuracy_difference_pp'] for r in rs]
-   ax.axhline(0,color='#8E949C',ls='--',lw=.8);ax.scatter(range(1,9),values,c=COLORS['sig_time'],s=20);ax.set_xticks(range(1,9));ax.set_xlabel('Paired seed (01–08)');ax.set_ylabel('Full minus w/o SIG-TIME (pp)');ax.set_title('Double holdout' if scope=='双跨' else 'All target dates',loc='left')
-   ax.text(.03,.95,f'Mean {st.mean(values):+.2f} ± {st.stdev(values):.2f} pp',transform=ax.transAxes,va='top',fontsize=7)
+   ax.axhline(0,color='#8E949C',ls='--',lw=.8);ax.scatter(range(1,9),values,c=COLORS['sig_time'],s=20);ax.set_xticks(range(1,9));ax.set_xlabel('Paired seed (01–08)');ax.set_ylabel('Full minus w/o SIG-TIME (pp)')
+   heading='Double holdout' if scope=='双跨' else 'All target dates'
+   ax.set_title(heading+f'\nMean {st.mean(values):+.2f} ± {st.stdev(values):.2f} pp',loc='left',fontsize=8,pad=10)
   fig.text(.5,.035,'Same split, seed, E200 pure CE, default head and shared architecture; all eight differences retained.',ha='center',fontsize=6.5)
   save(fig,'fig05_sigtime_ablation','SIG-TIME严格消融配对差',height=90)
  pdf.close()

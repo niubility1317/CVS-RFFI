@@ -83,3 +83,5 @@ VERIFIED。8/8严格无SIG-TIME消融从零E200、10000更新，全部完成clea
 完整网络196001参数，去除版177025参数。实际执行提交419663af5c2ccf27c7f5a1e6e4f8359388b3e39f；GPU5/6/7健康队列。
 
 交付Excel：E:\type10-7\outputs\01a0fd26-2621-7662-a9bd-9ff19509e812\standard_ce_crossday_crossrx_pamf_20261026.xlsx；图包：E:\type10-7\outputs\01a0fd26-2621-7662-a9bd-9ff19509e812\standard_ce_crossday_crossrx_pamf_20261026_figures及同名ZIP。9个sheet、19张图及19页PDF、2张可编辑图表，所有汇总公式与评分一致，原Excel字节保持。完整独立验证：local_artifacts/pamf_nosigtime_purece_20261026_r01/delivery_verification.json。
+
+最终视觉核验：仅将Fig05统计文字移到绘图区上方，避免与种子数据点相交；PDF/PNG/SVG、Excel嵌入图片与ZIP同步。其余18张PNG、所有Excel数据/公式/格式与对象数量均保持一致；核验见local_artifacts/pamf_nosigtime_purece_20261026_r01/figure_qa_verification.json。
