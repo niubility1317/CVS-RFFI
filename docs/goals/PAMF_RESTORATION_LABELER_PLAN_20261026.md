@@ -1,6 +1,6 @@
 # NoSIG 恢复域标签专家：下一条源证伪路线
 
-状态：未训练／未验证。原三种子联合目标不变。本计划由双图源诊断的真实失败触发，属于独立新候选，不放宽或重跑RGPL。
+状态：**单seed两个匹配标签专家已实际训练，源标签质量尚待冻结后判断**。原三种子联合目标不变。本计划由双图源诊断的真实失败触发，属于独立新候选，不放宽或重跑RGPL。
 
 ## 依据和可证伪假设
 
@@ -34,3 +34,7 @@ RawLabeler单独与GLabeler单独的固定规则质量同时报告，区分额�
 新专家共20模型轮／4440优化步／568320条L前向曝光；父E30共享成本另计。L恢复缓存75,600条G输出／154,828,800 IQ字节。真实checkpoint smoke另计F258/G130包；V预测RawLabeler27000、GLabeler324000包，评估warmup各F2、GLabeler另G2。预计本轮新F919582包、新G399732包；实际记录核算，不能称无额外训练成本。
 
 N607现有普通用户环境，不安装依赖。GPU0至7按全局CUDA＋pending<2且free≥10000MiB取空位，保留所有健康任务。一个cache/smoke任务后两个专家可并行，每行冻结后立即V预测，全部完成后自动源质量算术。独立不可覆盖run/release，唯一owner，一次代码提交／P0P1审查／archive比对／远端编译及独立启动后状态。首个真实checkpoint smoke通过即继续。技术／权限／非有限／覆盖／状态失败停止新派发，其他健康任务继续；科学条件失败完整归档，不自动重跑。
+
+## 实际启动
+
+run `20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01`，执行commit `107d092fde1292a66c5c6aef8c547712c524f813`。7项聚焦检查、独立P0/P1审查及一次定向修复复查、archive比对和远端compile通过。真实native Sinc／默认头／G的raw/G L128反传通过，Sinc与头的梯度有限非零。L6300×12恢复IQ缓存全部完成且G状态不变；两个专家已在GPU0/4训练，PID/CWD/argv/GPU及记录增长已核实。尚未生成U标签、训练SSL学生或访问目标。最新实际状态见[本行报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01/report.md)。

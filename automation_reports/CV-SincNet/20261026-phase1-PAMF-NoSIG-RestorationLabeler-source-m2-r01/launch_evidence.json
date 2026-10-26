@@ -1,0 +1,118 @@
+{
+  "status": "VERIFIED",
+  "read_at": 1792990607.1550405,
+  "code_commit": "107d092fde1292a66c5c6aef8c547712c524f813",
+  "controller_pid": 126074,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "results": [
+      {
+        "method": "RawLabeler",
+        "loss": 0.14207570254802704,
+        "head_gradient_norm": 0.43723955750465393,
+        "Sinc_gradient_norm": 0.0038502293173223734,
+        "optimizer_updates": 0
+      },
+      {
+        "method": "GLabeler",
+        "loss": 0.23857446014881134,
+        "head_gradient_norm": 0.6756228804588318,
+        "Sinc_gradient_norm": 0.008538930676877499,
+        "optimizer_updates": 0
+      }
+    ],
+    "F_logical_packets": 258,
+    "G_logical_packets": 130,
+    "actual_NoSIG_E30_default_head_G": true,
+    "native_Sinc_gradient_enabled": true,
+    "optimizer_updates": 0,
+    "U_training_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "source_L_cache": {
+    "status": "LABELER_SOURCE_L_CACHE_COMPLETE",
+    "shape": [
+      4,
+      3,
+      6300,
+      2,
+      256
+    ],
+    "namespaces": [
+      "PAMF/restored_dose/U/fixed",
+      "PAMF/realization_diversity/U/fresh1",
+      "PAMF/realization_diversity/U/fresh2",
+      "PAMF/realization_diversity/U/fresh3"
+    ],
+    "scenes": [
+      "practical_low_suburban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "new_G_cache_packets": 75600,
+    "IQ_float32_bytes": 154828800,
+    "G_parameters_and_registered_buffers_unchanged": true,
+    "F_weight_updates": 0,
+    "G_updates": 0,
+    "U_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "rows": [
+    {
+      "method": "RawLabeler",
+      "pid": 127375,
+      "gpu": 0,
+      "PID_CWD_argv": true,
+      "on_GPU": true,
+      "log_growth": true,
+      "observed_records": 960,
+      "observed_progress": {
+        "step": 960,
+        "epoch": 5,
+        "loss": 0.09725417196750641,
+        "LR": 0.00012193500642934113,
+        "head_gradient_norm": 0.2401542067527771,
+        "physical_gradient_norm": 0.8488290905952454,
+        "L_packets": 128,
+        "U_packets": 0,
+        "view": "raw",
+        "native_U": false,
+        "EMA": false,
+        "target_reads": 0,
+        "seconds": 30.9051236291416
+      }
+    },
+    {
+      "method": "GLabeler",
+      "pid": 127411,
+      "gpu": 4,
+      "PID_CWD_argv": true,
+      "on_GPU": true,
+      "log_growth": true,
+      "observed_records": 896,
+      "observed_progress": {
+        "step": 896,
+        "epoch": 5,
+        "loss": 0.3590725064277649,
+        "LR": 0.00013060459260816763,
+        "head_gradient_norm": 0.7922074198722839,
+        "physical_gradient_norm": 2.448821783065796,
+        "L_packets": 128,
+        "U_packets": 0,
+        "view": 7,
+        "native_U": false,
+        "EMA": false,
+        "target_reads": 0,
+        "seconds": 30.555870393291116
+      }
+    }
+  ],
+  "label_quality": "PENDING",
+  "SSL_student_training": false,
+  "U_label_generation": false,
+  "target_performance": "NOT_EVALUATED"
+}

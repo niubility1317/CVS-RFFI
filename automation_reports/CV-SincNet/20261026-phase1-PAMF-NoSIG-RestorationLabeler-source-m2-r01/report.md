@@ -1,29 +1,13 @@
-# 去SIG_TIME原始与恢复域标签专家的匹配源证伪
+# NoSIG 原始／恢复域标签专家源证伪
 
-- run_id：`20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01`
-- group_id：`pamf-nosig-restoration-labeler-20261026`；类别：`cvs`；阶段：`Phase1`
-- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+状态：**RUNNING，两个专家已实际训练并独立核实**；尚无本轮标签质量或目标性能。不是三个学生种子的结果，原联合目标未达成。
 
-## 目的与对照
+执行commit `107d092fde1292a66c5c6aef8c547712c524f813`。一次archive传输比对VERIFIED、远端compile PASS；控制器和两个worker的PID/CWD/argv/GPU驻留及训练记录增长已独立核实。RawLabeler在GPU0，GLabeler在GPU4。真实NoSIG E30／原默认头／native Sinc／固定G的原始与恢复L128 backward smoke PASS，头和Sinc梯度有限非零、零optimizer、零U训练／V／target读取。
 
-同一NoSIG E30分叉两个全骨干/默认头专家，新增L-only10轮；raw与G输入匹配，新增适配排除RX1。冻结后自动完整V预测和困难池标签质量判断，不训练SSL学生或访问目标。
+完整原L6300×12恢复IQ缓存已完成（75,600 G包、154,828,800 float字节），G参数及全部注册buffer不变。两个专家同父E30、同顺序同预算：各新增10轮／2220步L128，新增适配只用RX3/4/6/8的5040条，RX1新优化曝光0。骨干与原默认头及native Sinc联合CE，CENTER_UNITS／物理clip5；RawLabeler只输入raw，GLabeler轮换12份同包G。父和G已见过RX1，不能称真正未见接收机验证。
 
-## 数据、seed与模型来源
+每行final自动源V预测，原始专家27,000包、恢复专家12×27,000包。全部预测固定后再计标签质量：原E30 raw confidence<.95困难池中，两专家各confidence≥.95且同类。固定条件为认证≥200、实测precision≥99.5%、相对原E30净纠正≥100；RX/day/TX与单专家质量一并报告。未通过便保留负结果；不调阈值，不生成U标签，不自动训练学生。
 
-实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
-逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+RGPL固定双图已失败并归档，本轮不读取其伪标签。7项聚焦检查和唯一独立P0/P1审查完成；审查发现的probe冻结状态检查问题已修复并通过一次定向复查。它们只证明执行条件，不能替代科学结果。
 
-## 执行与存储
-
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
-
-## 结果与覆盖
-
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
-
-## 交接
-
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+[源计划](../../../docs/goals/PAMF_RESTORATION_LABELER_PLAN_20261026.md)、[预登记](preregistration.md)、[实际启动证据](launch_evidence.json)、[图方法负结果](../20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01/report.md)。
