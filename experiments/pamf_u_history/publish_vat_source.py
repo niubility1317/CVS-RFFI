@@ -31,12 +31,12 @@ for path in Path('/proc').iterdir():
   if gpu in map(str,range(8)):pending[int(path.name)]=int(gpu)
  except (PermissionError,FileNotFoundError,ProcessLookupError):pass
 available=[]
-for gpu in range(8):
+for gpu in ([] if rt.get('cpu_only') else range(8)):
  apps=subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-compute-apps=pid','--format=csv,noheader,nounits'],text=True).splitlines()
  compute={int(x.strip()) for x in apps if x.strip().isdigit()}
  free=int(subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip())
  if not (compute|{pid for pid,g in pending.items() if g==gpu}) and free>=10000:available.append(gpu)
-if not available:raise ValueError('No capacity;preserve other owners')
+if not available and not rt.get('cpu_only'):raise ValueError('No capacity;preserve other owners')
 if hashlib.sha256(Path(p['archive_remote']).read_bytes()).hexdigest()!=p['sha256']:raise ValueError('Archive transfer mismatch')
 release.mkdir()
 with tarfile.open(p['archive_remote']) as archive:

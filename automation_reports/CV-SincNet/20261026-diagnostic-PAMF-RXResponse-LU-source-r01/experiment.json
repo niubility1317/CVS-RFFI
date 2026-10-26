@@ -1,0 +1,218 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-RXResponse-LU-source-r01",
+  "group_id": "pamf-source-bounded-receiver-response-20261026",
+  "display_name": "PAMF低维混合接收响应稳定性与完整无标签配对诊断",
+  "description": "零网络/优化器，只读原L6300拟合固定前导4维低阶混合响应及18跨TX/dayfold，U56700 raw与3同包H测扰动方向；不使用DURA、F权重、U TX真值或V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-RXResponse-LU"
+  ],
+  "tags": [
+    "PAMF",
+    "source-only",
+    "all-U",
+    "known-RX",
+    "physical-response",
+    "CPU",
+    "no-DURA"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01",
+    "20261026-diagnostic-PAMF-URealizations-cache-m3-r01"
+  ],
+  "authorization": "用户持续授权独立优化半监督PAMF，已预列有界接收响应为第二方向；最新明确训练仅clean和星地衍生IQ，脱离DURA；本诊断验证源域必要前提，不训练或访问目标。",
+  "code": {
+    "commit": "actual diagnostic/config implementation Git commit before N607 release",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "verified N607 Python3.10 NumPy/Torch source I/O;CPU2threads/noGPU",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261026-diagnostic-PAMF-RXResponse-LU-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "existing original equalized1 cleanL/U IQ and fresh1/channel_U.npy three physical-aligned practical H arrays only;fixed known L-STF correlator",
+    "contract_ref": "unchanged original F0; other protocol cohorts kept separate; prefix metadata matches original F0",
+    "physical_ids_ref": "original F0 L_s role_ids and eq_i/rx_i/day_i/sig_i/base_index;SourceDataset exact existing physical order",
+    "label_map_ref": "original F0 six registered classes; U TX truth absent",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "all6300 trueTX/RX/day only for balanced4D response statistics;90cells x70;18 crossed leaveTX/day folds within sameL role",
+      "U_s": "all56700 hiddenTX raw and3same-packetH;knownRX/day andphysicalalignment only;no labels/pseudoTX/F outputs",
+      "V": "not opened",
+      "target": "not opened"
+    },
+    "train_ratio": "existing7/63/30 roles unchanged;no network/optimizer training",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "source response-structure prerequisites only;not pureRXhardware/TXprotection/unseenRXestimator or F performance"
+  },
+  "checkpoint": {
+    "initialization": "none;fixed public correlator bank and centered degree1/2 complexresponse polynomial",
+    "sources": [],
+    "contract_check_ref": "existing VALIDATED_ONCE originalF0 source handles from actualfrozen training config;source metadata/physicalID order andHcache alignment consumed directly;no weights",
+    "provenance_verdict": "no checkpoint inheritance;only source IQ/cache provenance reused",
+    "selection_rule": "no model selection;predeclared response necessary conditions median crossedR2>=.25,>=15positiveof18,RXfraction>=.01"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current independent Codex chat",
+    "gpu_policy": "CPU only2threads,CUDA_VISIBLE_DEVICES empty,no GPU capacity dependency/process actions",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-diagnostic-PAMF-RXResponse-LU-source-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-diagnostic-PAMF-RXResponse-LU-source-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026/receiver_response",
+    "launch_command": "python -X utf8 -m experiments.pamf_u_history.publish_receiver_response --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/receiver_response --context local_artifacts/pamf_u_history_20261026/receiver_response_context.json",
+    "stop_rule": "first data/finite/permission/shape/technical failure exits ownworker,artifacts preserved,no overwrite/blindrelaunch;scientific prerequisites FAIL is a complete negative,not technicalfailure"
+  },
+  "expected_artifacts": [
+    "process.json PID/CWD/argv/emptyCUDA",
+    "resolved_config.json andactualL256 physics smoke",
+    "progress.json,steps.jsonl complete222U batches/full56700+170100H",
+    "private source_response_statistics.npz aggregatecellmeans/effects/bases,no deployment",
+    "result.json variance decomposition/18folds/allUphysicaldelta/RXgroups/quality",
+    "pipeline_state.json,fullstdout and public aggregate report"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "balanced mixedresponse RXmainfraction andcrossedTX/day heldout18folds R2/cosine",
+      "allU3H same-packet response changes andRX/TXsubspace projections"
+    ],
+    "secondary": [
+      "raw/H templatequality/coherence/coherentfraction/relativeCFO summaries",
+      "RXtop2 energy andTXenergyoverlap",
+      "sourceL vsUraw RXpatternagreement",
+      "exact6300/56700/170100 exposure,no model/head/optimizer"
+    ],
+    "target": "none",
+    "selection": "source necessaryonly,not performance gate success;no sourceTX-free claim;allfolds/negative reported",
+    "truth_policy": "trueL only;U yabsent;no V/target"
+  },
+  "rows": [
+    {
+      "row_id": "RXResponse-sourceL6300-U56700-3H",
+      "method": "fixed_LSTF_mixed_response_crossed_diagnostic",
+      "purpose": "test boundedreceiver correction prerequisite before creatingnetwork",
+      "config_ref": "experiments/pamf_u_history/receiver_response_probe.py:RECIPE",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-diagnostic-PAMF-RXResponse-LU-source-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "no learnedmodel/randomfit;existingfresh1 namespace,channel20261016421/hardware20261016423 unchanged",
+      "k": null,
+      "scenario": "Lraw andUraw/lowSuburban/midUrban/lowUrban H only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "6300L+56700Uraw+170100H=233100IQviews;zeroF/G oroptimizer/V/target",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-diagnostic-PAMF-RXResponse-LU-source-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-diagnostic-PAMF-RXResponse-LU-source-r01/logs/response.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_receiver_response --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/receiver_response --context local_artifacts/pamf_u_history_20261026/receiver_response_context.json",
+      "expected_artifacts": [
+        "process.json PID/CWD/argv/emptyCUDA",
+        "resolved_config.json andactualL256 physics smoke",
+        "progress.json,steps.jsonl complete222U batches/full56700+170100H",
+        "private source_response_statistics.npz aggregatecellmeans/effects/bases,no deployment",
+        "result.json variance decomposition/18folds/allUphysicaldelta/RXgroups/quality",
+        "pipeline_state.json,fullstdout and public aggregate report"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixeddescriptor matches existing PAMF referencebranch;relative response includesTX/RX/channel/equalizer,CFO relativeonly. No IQ modification.",
+    "Crossedfold train5TXx5RXx2dayx70=3500,held1TXx5RXx1dayx70=350;othercells excluded,sourceRXsame5.Not unseenRXgeneralization.",
+    "TXmeans preserved bybalancedzero-meanRXsubtraction wouldbealgebraic,notidentityprotection;RX/TXprojectionoverlap reported,not hidden.",
+    "Hcache createdhistorically alongsideGbutonlychannel_U.npy opened;no Gweights/restoredarrays. FullU TXlabelsabsent,knownRX isused.",
+    "FourfocusedtestsPASS includingNumPy/Torch referencebranch equivalence,syntheticpositive/interactionnegative,permissions. OneindependentP0/P1PASS. ActualsourceL256 smoke first,immediatefullpass;realcheckpointsmoke inapplicable becausezero modelweights.",
+    "No automaticFtrainingfromdiagnostic;support means only sourcecommonstructure worthfurther boundedidentity-protected test. Otherowners untouched."
+  ],
+  "matrix": {
+    "recipe": {
+      "L_records": 6300,
+      "U_records": 56700,
+      "U_H_views": 170100,
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "window": [
+        80,
+        160
+      ],
+      "period": 20,
+      "delay_count": 320,
+      "delay_step": 0.0625,
+      "relative_ridge": 1e-06,
+      "soft_radius": 4.0,
+      "smooth_complex_degrees": [
+        1,
+        2
+      ],
+      "fit_role": "L_s_only",
+      "crossed_folds": 18,
+      "held_TX": 1,
+      "held_day": 1,
+      "median_r2_min": 0.25,
+      "positive_folds_min": 15,
+      "RX_total_variance_fraction_min": 0.01,
+      "U_cache_replica": 1,
+      "U_TX_labels": "absent",
+      "model_weights": 0,
+      "G_weights": 0,
+      "optimizer_updates": 0,
+      "V_reads": 0,
+      "target_reads": 0
+    },
+    "learned_networks": 0,
+    "classifiers_or_heads_fit": 0,
+    "L_raw": 6300,
+    "U_raw": 56700,
+    "U_H": 170100,
+    "U_TX_truth_reads": 0,
+    "F_G_weight_reads": 0,
+    "G_array_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "workers": 1,
+    "CPU_threads": 2
+  },
+  "registered_at": "2026-10-26T15:43:56+00:00"
+}
