@@ -1,6 +1,6 @@
 import unittest
 import torch
-from experiments.pamf_u_history.selective_covariance import correlation,consistency,MaskStatistics
+from experiments.pamf_u_history.selective_covariance import correlation,consistency,MaskStatistics,InsufficientMaskEvidence
 
 
 class SelectiveCovarianceTest(unittest.TestCase):
@@ -26,6 +26,14 @@ class SelectiveCovarianceTest(unittest.TestCase):
         s=MaskStatistics(3);c=torch.zeros(2,3,3);y=torch.zeros(2,dtype=torch.long);r=torch.ones(2,dtype=torch.long)
         for role in ('U_s','V'):
             with self.assertRaises(ValueError):s.update(c,c[None],y,r,r,role=role)
+
+    def test_no_sensitive_edges_is_scientific_failure_without_relaxing(self):
+        ids=torch.cartesian_prod(torch.arange(6),torch.tensor([1,3,4,6,8]),torch.tensor([1,2,3]))
+        c=torch.zeros(len(ids),3,3);s=MaskStatistics(3)
+        s.update(c,c[None],ids[:,0],ids[:,1],ids[:,2],role='L_s')
+        with self.assertRaises(InsufficientMaskEvidence) as caught:s.masks()
+        self.assertEqual(caught.exception.diagnostic['eligible_edges'],0)
+        self.assertEqual(caught.exception.diagnostic['requested_edges'],1)
 
     def test_fixed_sparse_mask_and_same_size_random(self):
         s=MaskStatistics(5);raw=[];aug=[];ys=[];rs=[];ds=[]

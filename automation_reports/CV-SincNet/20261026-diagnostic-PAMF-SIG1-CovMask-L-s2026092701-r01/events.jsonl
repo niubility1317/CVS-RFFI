@@ -1,0 +1,2 @@
+{"at": "2026-10-26T12:16:58+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-26T12:18:37+00:00", "status": "LOCAL_VERIFIED", "note": "9 focused tests+3modulecompilePASS;unique independentP0/P1PASS;onlyfullL fitting,noU/V/target/Gweights/controltraining;realcheckpointsmoke first thenfullL.", "evidence": ["tests/test_pamf_selective_covariance.py", "tests/test_pamf_covariance_fit.py"], "row_id": null}

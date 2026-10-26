@@ -7,6 +7,12 @@ import math
 import torch
 
 
+class InsufficientMaskEvidence(ValueError):
+    def __init__(self,diagnostic):
+        super().__init__('Insufficient high-sensitivity/low-TX-association edges;do not relax silently')
+        self.diagnostic=diagnostic
+
+
 def correlation(h,ridge=1e-3):
     if (h.ndim!=3 or h.shape[1]<2 or h.shape[2]<2 or not h.is_floating_point()
             or not torch.isfinite(h).all() or not math.isfinite(ridge) or ridge<=0):
@@ -72,7 +78,11 @@ class MaskStatistics:
         by_rx=self.sensitivity/self.rx_count[:,None];sensitive=by_rx.median(0).values
         eligible=(identity<=torch.quantile(identity,.5))&(sensitive>=torch.quantile(sensitive,.75))&(sensitive>1e-12)
         count=max(1,int(self.edges.shape[1]*fraction));pool=eligible.nonzero().flatten()
-        if len(pool)<count:raise ValueError('Insufficient high-sensitivity/low-TX-association edges;do not relax silently')
+        basic=dict(samples=self.samples,paired_views=self.paired_views,channels=self.channels,all_edges=self.edges.shape[1],
+            requested_edges=count,eligible_edges=len(pool),fraction=fraction,random_seed=random_seed,
+            source_cell_min=int(self.count.min()),source_cell_max=int(self.count.max()),
+            identity_association_all_mean=float(identity.mean()),sensitivity_all_mean=float(sensitive.mean()))
+        if len(pool)<count:raise InsufficientMaskEvidence(basic)
         score=sensitive/(identity+1e-6)
         chosen=pool[torch.argsort(score[pool],descending=True,stable=True)[:count]]
         rng=torch.Generator(device=self.device).manual_seed(random_seed)
@@ -81,10 +91,11 @@ class MaskStatistics:
         for name,indices in [('selective',chosen),('random',random),('full',torch.arange(self.edges.shape[1],device=self.device))]:
             mask=torch.zeros(self.channels,self.channels,dtype=torch.bool,device=self.device)
             mask[self.edges[0,indices],self.edges[1,indices]]=True;masks[name]=mask
-        diagnostic=dict(samples=self.samples,paired_views=self.paired_views,channels=self.channels,all_edges=self.edges.shape[1],
-            selected_edges=count,eligible_edges=len(pool),fraction=fraction,random_seed=random_seed,
-            identity_association_selected_mean=float(identity[chosen].mean()),identity_association_all_mean=float(identity.mean()),
-            sensitivity_selected_mean=float(sensitive[chosen].mean()),sensitivity_all_mean=float(sensitive.mean()),
+        diagnostic=dict(**basic,selected_edges=count,
+            identity_association_selected_mean=float(identity[chosen].mean()),
+            sensitivity_selected_mean=float(sensitive[chosen].mean()),
+            identity_association_random_mean=float(identity[random].mean()),sensitivity_random_mean=float(sensitive[random].mean()),
+            random_selective_overlap=int(torch.isin(random,chosen).sum()),
             interpretation='conditional univariate TX association is not proof that selected correlations contain no identity information',
             selection_role='L_s_only',U_TX_labels_used=False,V_used=False,target_used=False)
         return masks,diagnostic
