@@ -1,0 +1,38 @@
+{
+  "status": "RUNNING_CALIBRATION_COMPLETE_F_PENDING",
+  "run_id": "20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01",
+  "execution_commit": "f461a04dc254e5581c4847530ad1b37632f50fa4",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_identity": "VERIFIED",
+  "calibration": {
+    "status": "BOUNDED_SOURCE_CALIBRATED",
+    "U_seen": 56700,
+    "source_RX_counts": {
+      "1": 11340,
+      "3": 11340,
+      "4": 11340,
+      "6": 11340,
+      "8": 11340
+    },
+    "RX_mean_energy_in_top2": 0.9999119571897878,
+    "stored_source_statistics": 12,
+    "neural_parameters": 0,
+    "model_seed": null,
+    "seconds": 2.8375271381810308,
+    "actual_U_smoke": "PASS",
+    "full_batch_records": 222
+  },
+  "F_G_weight_reads_in_calibration": 0,
+  "U_TX_labels_consumed": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "F_source_checkpoint_smokes": "PENDING_PREDECESSOR_COMPLETION",
+  "new_training": 0,
+  "full_goal_complete": false
+}
