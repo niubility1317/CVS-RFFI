@@ -32,3 +32,8 @@
 ## 实现与发布准备
 
 11项机制/协议聚焦检查PASS，唯一P0/P1审查及源门槛精确计数修正的定点复核PASS。真实checkpoint联合smoke及训练尚待执行。只训练三个新候选，两个完成参照只读评估，0新对照训练；单学生seed，不是三seed目标结果。[预登记](preregistration.md)、[本地检查](local_verification.json)。
+
+
+## 实际启动与阶段记录
+
+执行commit `b34f81891bfe379b87f1b93b78ec98dac6139cfc`，真实三个单视图E20/L128/U256联合smoke PASS，U梯度实际到单SIG_TIME/原head/body，style实际0。controller及三个worker PID/CWD/argv/GPU与跨读取记录增长独立核实。三个学生均完成新增+10段，继续自己的+20段；最新完整可读记录合计10031，不是完整训练终点。L768/AsKL0/U六视图/style0/非有限跳步0和RXOffset当前L统计续接均逐可读记录核实。两个已完成参照仅sourceV推理，未训练。无新target结果、无三seed结果。用户最新补齐缺失单视图Sup/PL六模型另记独立run，不改此run配方或源选择门槛。[启动与可用记录证据](launch_evidence.json)。

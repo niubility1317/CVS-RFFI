@@ -1,0 +1,409 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "完整PAMF单SIG_TIME监督/普通PL三种子匹配基线",
+  "description": "按用户最新要求补齐缺失的严格同架构对照：单视图完整PAMF，监督scratch E50三seed，普通PL各自复用已完成单视图ordinaryPL E20+10+20至E50三seed。固定final后自动原F0目标168000/seed raw与同G-LU clean+六practical，独立truth-last。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-SIG1-matched-Sup-PL"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME-single-view",
+    "matched-controls",
+    "three-seeds",
+    "ordinary-PL",
+    "truth-last",
+    "same-DURA"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01"
+  ],
+  "authorization": "用户最新明确“补充单视图的监督，普通PL对比基线”；此项授权补齐缺失六模型，覆盖此前不新增对照对本次范围的限制。原停止run保留不重启；三个新REPL学生健康继续，不向其他对话发信息。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; CPU2 threads; no installation",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-SIG1-matched-baselines-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "originalF0 received IQ FP32[2,256];cached sameDURA IQ",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing VALIDATED_ONCE originalF0 source roles and original cross_rx126000/cross_both42000 handles;exact receiver/day lists in unchanged private manifests",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "6300 legal trueTX source;full matchedL scaffold",
+      "U_s": "56700 hiddenTX;SupUloaderoff;PL.95/weight1,noEMA",
+      "V": "27000 original source telemetry only;no checkpoint selection"
+    },
+    "train_ratio": "originalL6300/U56700/V27000;fullPAMF onlySIG_TIME1;Sup50L;PL13L37LU (LU jointly retainsL);bothE50/11100",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "strict matched single-view supervised F vs ordinary PL F;fixed sameG-LU readout separately;Sup+G-LU is not an entirely L-only system"
+  },
+  "checkpoint": {
+    "initialization": "Sup scratch20+10+20;PL own model-seed completed ordinaryPL singleSIG_TIME E20 +10+20",
+    "sources": [
+      "m201/prefixes/F0-A1B1-SIG_TIME-F21-sSEED/segment20 for2026092701/02/03;actualtensors and full lineage alreadyverified",
+      "same originalF0 DURA-LU frozenIQcache;no newG"
+    ],
+    "contract_check_ref": "original threeE20 realtensor evidence plus ownprefix check/load in actual six-row smoke;Sup never loadsUtrained prefix",
+    "provenance_verdict": "noNoSIG/X3 conversion,no stoppedpartial inheritance,no targetselected weight or newhead",
+    "selection_rule": "all six fixedfinalE50 retained;no checkpoint/seed selection or targetfeedback"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-sig1-matched-baselines-20261026",
+    "gpu_policy": "allGPU0..7;globalCUDA+pending<2/free>=10000MiB;preserve allhealthyforeignworkers;one independentCPUscorer",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-SIG1-matched-baselines-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/sig1_matched",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_matched_baselines dispatch --config PROJECT/releases/20261026-phase1-PAMF-SIG1-matched-baselines-release-r01/runtime.json",
+    "stop_rule": "first technical/protocol/input/ancestry/shape/nonfinite/smoke/output failure stops newlaunches;healthy activefinish;no autoretry/foreignmutation;low score is not technical stop"
+  },
+  "expected_artifacts": [
+    "six actualsingleview/defaulthead backwardsmokes:threePL ownE20 loads andthreeSup Uoff,signature/head nonzerogradients,L768/AsKL0,zerooptimizer;realG+E20 L2 inference",
+    "six immutable finalE50/11100 andown20+10+20 chains;new240modelepochs53280steps plus3inheritedE20/13320steps costseparate",
+    "six originalF0 target168000 physicalIDs x2routes x7views predictions complete beforeindependenttruthCPUscore",
+    "allTX/RX/day/scene confusion,macroF1,repair/damage;three seedmean/sampleSD,pairedPL-Sup differences;missingrows explicitlyretained",
+    "onearchiveSHA comparison/remotecompile andindependentPID/CWD/argv/GPU/loggrowth;allactualL/Uexposure/runtimecounts retained"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "rawclean",
+      "rawsixpractical",
+      "sameG-LU clean/sixpractical"
+    ],
+    "dimensions": [
+      "modelseed",
+      "cross_rx126000",
+      "cross_both42000",
+      "combined168000",
+      "TX",
+      "RX",
+      "day",
+      "scene"
+    ],
+    "prediction_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/readouts/ROW/predictions",
+    "scorer_ref": "experiments.pamf_channel_pl.sig1_matched_baselines.score",
+    "selection": "none;all6fixedfinal;newmatchingcontrols do not alter activeREPLsourcepilotselection thresholds",
+    "truth_policy": "training sourcecontext only;prediction configs no truth;score ownCPU process afterentirerow2task2route7view fixed;no targetfeedback"
+  },
+  "rows": [
+    {
+      "row_id": "F0-SIG1-PL-s2026092701",
+      "method": "SIG1-PL",
+      "purpose": "strict matched single-view baseline",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-PL-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "L_A": true,
+        "L_B": true,
+        "U_use": true,
+        "own_EMA": false,
+        "plain_PL_threshold": 0.95,
+        "plain_PL_weight": 1.0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "three modelseeds;original split/augmentation unchanged;data/support/evaluation randomseed not applicable fixedphysicalID observations",
+      "k": null,
+      "scenario": "originalF0 cross_rx126000 +cross_both42000;clean+sixpractical;raw/sameG-LU",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "cumulativeE50/11100 each;PLreused20+new30=6660newsteps;Supnew50=11100steps;new240epochs/53280steps total",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/logs/train__F0-SIG1-PL-s2026092701.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_matched_baselines worker --kind train --config PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-PL-s2026092701.json",
+      "expected_artifacts": [
+        "six actualsingleview/defaulthead backwardsmokes:threePL ownE20 loads andthreeSup Uoff,signature/head nonzerogradients,L768/AsKL0,zerooptimizer;realG+E20 L2 inference",
+        "six immutable finalE50/11100 andown20+10+20 chains;new240modelepochs53280steps plus3inheritedE20/13320steps costseparate",
+        "six originalF0 target168000 physicalIDs x2routes x7views predictions complete beforeindependenttruthCPUscore",
+        "allTX/RX/day/scene confusion,macroF1,repair/damage;three seedmean/sampleSD,pairedPL-Sup differences;missingrows explicitlyretained",
+        "onearchiveSHA comparison/remotecompile andindependentPID/CWD/argv/GPU/loggrowth;allactualL/Uexposure/runtimecounts retained"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-Sup-s2026092701",
+      "method": "SIG1-Sup",
+      "purpose": "strict matched single-view baseline",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-Sup-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "L_A": true,
+        "L_B": true,
+        "U_use": false,
+        "own_EMA": false,
+        "plain_PL_threshold": null,
+        "plain_PL_weight": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "three modelseeds;original split/augmentation unchanged;data/support/evaluation randomseed not applicable fixedphysicalID observations",
+      "k": null,
+      "scenario": "originalF0 cross_rx126000 +cross_both42000;clean+sixpractical;raw/sameG-LU",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "cumulativeE50/11100 each;PLreused20+new30=6660newsteps;Supnew50=11100steps;new240epochs/53280steps total",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/logs/train__F0-SIG1-Sup-s2026092701.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_matched_baselines worker --kind train --config PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-Sup-s2026092701.json",
+      "expected_artifacts": [
+        "six actualsingleview/defaulthead backwardsmokes:threePL ownE20 loads andthreeSup Uoff,signature/head nonzerogradients,L768/AsKL0,zerooptimizer;realG+E20 L2 inference",
+        "six immutable finalE50/11100 andown20+10+20 chains;new240modelepochs53280steps plus3inheritedE20/13320steps costseparate",
+        "six originalF0 target168000 physicalIDs x2routes x7views predictions complete beforeindependenttruthCPUscore",
+        "allTX/RX/day/scene confusion,macroF1,repair/damage;three seedmean/sampleSD,pairedPL-Sup differences;missingrows explicitlyretained",
+        "onearchiveSHA comparison/remotecompile andindependentPID/CWD/argv/GPU/loggrowth;allactualL/Uexposure/runtimecounts retained"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-PL-s2026092702",
+      "method": "SIG1-PL",
+      "purpose": "strict matched single-view baseline",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-PL-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "L_A": true,
+        "L_B": true,
+        "U_use": true,
+        "own_EMA": false,
+        "plain_PL_threshold": 0.95,
+        "plain_PL_weight": 1.0
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "three modelseeds;original split/augmentation unchanged;data/support/evaluation randomseed not applicable fixedphysicalID observations",
+      "k": null,
+      "scenario": "originalF0 cross_rx126000 +cross_both42000;clean+sixpractical;raw/sameG-LU",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "cumulativeE50/11100 each;PLreused20+new30=6660newsteps;Supnew50=11100steps;new240epochs/53280steps total",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092702/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/logs/train__F0-SIG1-PL-s2026092702.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_matched_baselines worker --kind train --config PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-PL-s2026092702.json",
+      "expected_artifacts": [
+        "six actualsingleview/defaulthead backwardsmokes:threePL ownE20 loads andthreeSup Uoff,signature/head nonzerogradients,L768/AsKL0,zerooptimizer;realG+E20 L2 inference",
+        "six immutable finalE50/11100 andown20+10+20 chains;new240modelepochs53280steps plus3inheritedE20/13320steps costseparate",
+        "six originalF0 target168000 physicalIDs x2routes x7views predictions complete beforeindependenttruthCPUscore",
+        "allTX/RX/day/scene confusion,macroF1,repair/damage;three seedmean/sampleSD,pairedPL-Sup differences;missingrows explicitlyretained",
+        "onearchiveSHA comparison/remotecompile andindependentPID/CWD/argv/GPU/loggrowth;allactualL/Uexposure/runtimecounts retained"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-Sup-s2026092702",
+      "method": "SIG1-Sup",
+      "purpose": "strict matched single-view baseline",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-Sup-s2026092702.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "L_A": true,
+        "L_B": true,
+        "U_use": false,
+        "own_EMA": false,
+        "plain_PL_threshold": null,
+        "plain_PL_weight": 0
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "three modelseeds;original split/augmentation unchanged;data/support/evaluation randomseed not applicable fixedphysicalID observations",
+      "k": null,
+      "scenario": "originalF0 cross_rx126000 +cross_both42000;clean+sixpractical;raw/sameG-LU",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "cumulativeE50/11100 each;PLreused20+new30=6660newsteps;Supnew50=11100steps;new240epochs/53280steps total",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092702/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/logs/train__F0-SIG1-Sup-s2026092702.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_matched_baselines worker --kind train --config PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-Sup-s2026092702.json",
+      "expected_artifacts": [
+        "six actualsingleview/defaulthead backwardsmokes:threePL ownE20 loads andthreeSup Uoff,signature/head nonzerogradients,L768/AsKL0,zerooptimizer;realG+E20 L2 inference",
+        "six immutable finalE50/11100 andown20+10+20 chains;new240modelepochs53280steps plus3inheritedE20/13320steps costseparate",
+        "six originalF0 target168000 physicalIDs x2routes x7views predictions complete beforeindependenttruthCPUscore",
+        "allTX/RX/day/scene confusion,macroF1,repair/damage;three seedmean/sampleSD,pairedPL-Sup differences;missingrows explicitlyretained",
+        "onearchiveSHA comparison/remotecompile andindependentPID/CWD/argv/GPU/loggrowth;allactualL/Uexposure/runtimecounts retained"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-PL-s2026092703",
+      "method": "SIG1-PL",
+      "purpose": "strict matched single-view baseline",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-PL-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "L_A": true,
+        "L_B": true,
+        "U_use": true,
+        "own_EMA": false,
+        "plain_PL_threshold": 0.95,
+        "plain_PL_weight": 1.0
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "three modelseeds;original split/augmentation unchanged;data/support/evaluation randomseed not applicable fixedphysicalID observations",
+      "k": null,
+      "scenario": "originalF0 cross_rx126000 +cross_both42000;clean+sixpractical;raw/sameG-LU",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "cumulativeE50/11100 each;PLreused20+new30=6660newsteps;Supnew50=11100steps;new240epochs/53280steps total",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092703/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/logs/train__F0-SIG1-PL-s2026092703.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_matched_baselines worker --kind train --config PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-PL-s2026092703.json",
+      "expected_artifacts": [
+        "six actualsingleview/defaulthead backwardsmokes:threePL ownE20 loads andthreeSup Uoff,signature/head nonzerogradients,L768/AsKL0,zerooptimizer;realG+E20 L2 inference",
+        "six immutable finalE50/11100 andown20+10+20 chains;new240modelepochs53280steps plus3inheritedE20/13320steps costseparate",
+        "six originalF0 target168000 physicalIDs x2routes x7views predictions complete beforeindependenttruthCPUscore",
+        "allTX/RX/day/scene confusion,macroF1,repair/damage;three seedmean/sampleSD,pairedPL-Sup differences;missingrows explicitlyretained",
+        "onearchiveSHA comparison/remotecompile andindependentPID/CWD/argv/GPU/loggrowth;allactualL/Uexposure/runtimecounts retained"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-Sup-s2026092703",
+      "method": "SIG1-Sup",
+      "purpose": "strict matched single-view baseline",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-Sup-s2026092703.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "L_A": true,
+        "L_B": true,
+        "U_use": false,
+        "own_EMA": false,
+        "plain_PL_threshold": null,
+        "plain_PL_weight": 0
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "three modelseeds;original split/augmentation unchanged;data/support/evaluation randomseed not applicable fixedphysicalID observations",
+      "k": null,
+      "scenario": "originalF0 cross_rx126000 +cross_both42000;clean+sixpractical;raw/sameG-LU",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "cumulativeE50/11100 each;PLreused20+new30=6660newsteps;Supnew50=11100steps;new240epochs/53280steps total",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092703/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/logs/train__F0-SIG1-Sup-s2026092703.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_matched_baselines worker --kind train --config PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/configs/train__F0-SIG1-Sup-s2026092703.json",
+      "expected_artifacts": [
+        "six actualsingleview/defaulthead backwardsmokes:threePL ownE20 loads andthreeSup Uoff,signature/head nonzerogradients,L768/AsKL0,zerooptimizer;realG+E20 L2 inference",
+        "six immutable finalE50/11100 andown20+10+20 chains;new240modelepochs53280steps plus3inheritedE20/13320steps costseparate",
+        "six originalF0 target168000 physicalIDs x2routes x7views predictions complete beforeindependenttruthCPUscore",
+        "allTX/RX/day/scene confusion,macroF1,repair/damage;three seedmean/sampleSD,pairedPL-Sup differences;missingrows explicitlyretained",
+        "onearchiveSHA comparison/remotecompile andindependentPID/CWD/argv/GPU/loggrowth;allactualL/Uexposure/runtimecounts retained"
+      ]
+    }
+  ],
+  "notes": [
+    "Latest user supplement explicitly authorizes these missing matched controls;the old stoppedtwo-row source run remainsstopped/preserved.",
+    "Whole originalPAMF retained,onlySIG_TIME internalviewcount1;thisdoesnot meanonlyoneL/Utrainingforward.",
+    "FullmatchedL includespairedordinary/raw RDrop,As trueCE withAsKL0,LS.01 andshallow/middlecrossRX;unchangedoriginal6x160defaultheadjoint.",
+    "G-LU fixed andusesL/U IQwithoutTX/F training;SupF+G-LU mustnot beclaimedwhole-systemL-only.",
+    "OtherhealthyREPLcandidates rununchanged;theirsourcegate frozenbeforetarget;noexternalconversationmessages.",
+    "Originalabsoluteactualtargetgoalsremain;newbaselinesprovide strictsamemodelcomparison,notloweredgoals."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "SIG1-PL",
+      "SIG1-Sup"
+    ],
+    "new_model_epochs": 80,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 100,
+    "new_optimizer_updates": 17760,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 8,
+    "new_G_training": 0,
+    "target_reads": 0,
+    "graph_training": false
+  },
+  "registered_at": "2026-10-26T10:58:36+00:00"
+}

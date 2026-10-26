@@ -1,3 +1,9 @@
+# 单视图完整 PAMF 匹配基线（最新补充）
+
+用户最新明确要求补充单视图的监督、普通PL对比基线。本次授权覆盖此前不新增对照对这六个缺失匹配项的限制：新run `20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01`，Sup和普通PL各2026092701/02/03，固定E50并自动raw/同G-LU clean+六practical正式truth-last测试。PL复用各自已完成单视图E20；Sup从零。旧停止root和全部历史结果保持，不加载partial，不重复任何已完成的完全匹配E50控制。三个REPL新学生原计划继续，源阈值不热改，不向其他对话发信息。[当前预登记](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/preregistration.md)。
+
+下文为此前共享/停止控制的历史说明，涉及“不另训公共对照”的限制已由上述最新补充覆盖；保留历史证据，不代表当前队列。
+
 # 单视图完整 PAMF 共享基座
 
 2026-10-26 用户在两个协同对话中均指定：原完整 PAMF，保留 SIG_TIME，改为单视图；在普通 PL 上优化，使 clean、星地及同 DURA 配对均提高。此文记录共享控制，避免重复发布，不是额外审批门槛。

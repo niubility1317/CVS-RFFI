@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "focused_tests": 7,
+  "protocol_subtests": 18,
+  "compile": "PASS",
+  "independent_P0P1_review": {
+    "status": "PASS",
+    "reviewer": "ssl_p0p1_review",
+    "scope": "next actual run directly wrong/unauthorized/destructive/unlaunchable"
+  },
+  "actual_real_checkpoint_smoke": "LAUNCH_FIRST_STEP_PENDING",
+  "target_reads": 0
+}
