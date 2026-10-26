@@ -79,7 +79,7 @@ def publish(repo,output,context):
             'experiment.json':git('show',commit+':automation_reports/CV-SincNet/'+RUN+'/experiment.json')}.items():
             info=tarfile.TarInfo(name);info.size=len(value);info.mode=0o644;target.addfile(info,io.BytesIO(value))
     case=next(v for v in c['cases'] if v['model_seed']==2026092701)
-    required=[*c['frozen_sources'].values(),str(Path(case['parent_source']).parent/'segment30/complete.json'),case['expected_source_contract'],c['G']['checkpoint'],c['G']['source_contract']]
+    required=[*c['frozen_sources'].values(),case['parent_source'].rsplit('/',1)[0]+'/segment30/complete.json',case['expected_source_contract'],c['G']['checkpoint'],c['G']['source_contract']]
     package=dict(runtime=rt,required=required,archive_remote=project+'/releases/'+archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
     for name,value in [('runtime.json',rt),('package.json',package)]:
         (out/name).write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')

@@ -1,0 +1,50 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "8f0c94480f8f352189531fb499794763e1006438",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "independent_P0P1": "PASS",
+  "focused_tests": 3,
+  "controller_PID_CWD_argv_env_verified": true,
+  "all_three_worker_PID_CWD_argv_GPU_log_growth_verified": true,
+  "jobs": [
+    {
+      "id": "fresh1",
+      "gpu": 0,
+      "U_seen": 18688
+    },
+    {
+      "id": "fresh2",
+      "gpu": 2,
+      "U_seen": 18688
+    },
+    {
+      "id": "fresh3",
+      "gpu": 3,
+      "U_seen": 18688
+    }
+  ],
+  "smoke": {
+    "status": "PASS",
+    "source_role": "U_s",
+    "physical_packets": 2,
+    "G_logical_packet_calls": 4,
+    "G_eager_graph_close": true,
+    "G_parameters_unchanged": true,
+    "F_weight_reads": 0,
+    "F_output_reads": 0,
+    "F_forward_packets": 0,
+    "U_truth_read": false,
+    "V_reads": 0,
+    "target_reads": 0,
+    "optimizer_updates": 0
+  },
+  "F_weight_reads": 0,
+  "F_output_reads": 0,
+  "F_forward_packets": 0,
+  "U_truth_read": false,
+  "V_reads": 0,
+  "target_reads": 0,
+  "optimizer_updates": 0,
+  "publication_recovery": "Initial preflight failed at local Windows-form required paths before release/run creation; independent post-state confirmed absent. Corrected only required-path separators and reused the same transferred archive; no duplicate run or worker."
+}

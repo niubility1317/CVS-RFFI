@@ -1,0 +1,409 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-URealizations-sourceHold-m4-r01",
+  "group_id": "phase1-pamf-U-realizations-20261026",
+  "display_name": "四种固定半监督损失的多信道恢复视图匹配对照",
+  "description": "只改变旧固定源U H/G缓存为旧加三fresh的等量四实现支持；四条匹配原损失/系数、同原E30独立+20至E50，source-only单学生seed01。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-URealizations-sourceHold"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "hidden-source-U",
+    "equal-realization-exposure",
+    "matched-loss-weight",
+    "default-head-joint",
+    "single-student-seed",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-diagnostic-PAMF-URealizations-cache-m3-r01",
+    "20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01",
+    "20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01",
+    "20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01"
+  ],
+  "authorization": "继续用户已授权的恢复IQ半监督优化及全部GPU研发；按固定多信道实现计划执行四条源匹配对照，健康任务保留。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-URealizations-sourceHold-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300 full T1 supervised skeleton unchanged",
+      "U_s": "original56700 hidden U; rawselfPL plus frozen raw3E30 consensus; H/G r=Uepoch%4; each replica five full Uepochs",
+      "V": "27000 native eval-only health and frozen final eight-view source diagnostic; no objective training/updates"
+    },
+    "train_ratio": "original F0 L6300/U56700/V27000; source RX1 excluded from extra branch only; original L/rawPL/E30/G saw RX1",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-student source falsification of view-support diversity; no target result or promotion within this controller"
+  },
+  "checkpoint": {
+    "initialization": "each row own original ordinaryPL seed01 E20+10 E30 independently adds20; original13L37LU totalE50/11100",
+    "sources": [
+      "original F21 seed01 segment20 and segment30; existing ancestry/full source contract checks",
+      "original frozen raw three E30 consensus95 probability/acceptance reused from RestoredPL source_U_cache; no F50 teacher",
+      "same original F0 G-LU generates source H/G; new cache complete before F release; G not updated",
+      "old fixed F50 source predictions used only for frozen comparison, never initialization"
+    ],
+    "contract_check_ref": "validate_prefix_headers/validate_e30, PairedCache and MultiCache physical alignment; actual own E30 fresh3 joint backward smoke",
+    "provenance_verdict": "same original F0 source data and parents; all U true labels hidden; no target data/selection or changed default-head",
+    "selection_rule": "final-only fixed20 addedepochs; allfour rows complete then heldRX1 G3>=+.3pp and overall V raw>=-.1pp; highest passing heldG, exactties alphabetical; otherwise no expansion/target"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-u-realizations-source-20261026",
+    "gpu_policy": "GPU0..7; global CUDA+pending<2 and free>=10000MiB; maxfour own train_eval; leastload thenmostfree; preserve all other owners",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-URealizations-sourceHold-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/u_realization_training",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.u_realization_training dispatch --config PROJECT/releases/20261026-phase1-PAMF-URealizations-sourceHold-release-r01/runtime.json",
+    "stop_rule": "first systemic technical/protocol/nonfinite/coverage/budget/smoke failure stops new dispatch; active healthy rows complete; no hot edits, automatic retry or foreign-process changes; scientific negative results finish allfour"
+  },
+  "expected_artifacts": [
+    "shared smoke: allfour actual own E30/default-head fresh3 L128/U256 joint backward plus direct auxiliary default classifier weight gradient0; zero optimizer/query",
+    "four E50 default-head final checkpoints, ownE30+20/4440 newupdates; same mainL/rawPL, original frozen q/acceptance",
+    "perrow U1134000/held226800/extraaccepted838780/extraFW2268000; each replicaU283500/extra209695/calls1110",
+    "complete training curves and exact replica/scene/RX exposure, CE/CL validanchors/pairs; GTask has no CL",
+    "four source V27000 eight-view frozen predictions and full TX/RX/day/held/trained corrections vs PL and matchingfixedcontrol",
+    "onearchive comparison, remotecompile and independent process/GPU/stepgrowth; original+.3/-.1 source decision after allfour; no target launch"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "heldextraRX1 Gthree-scene gain vsPLControl",
+      "overall sourceV raw clean delta vsPLControl"
+    ],
+    "secondary": [
+      "samepacket delta vs own matchingfixedcontrol",
+      "allTX/RX/day/H/G/held/trained net corrections",
+      "full20epoch training curves and four equal realization exposure"
+    ],
+    "target": "none; original three-student raw clean/rawsix/sameG goal remainsunmet",
+    "selection": "final-only fixed20 addedepochs; allfour rows complete then heldRX1 G3>=+.3pp and overall V raw>=-.1pp; highest passing heldG, exactties alphabetical; otherwise no expansion/target",
+    "truth_policy": "U labels−1/tx_label_visibleFalse/no true y; V eval-only, no objective V reads/updates; no target inputs or truth"
+  },
+  "rows": [
+    {
+      "row_id": "F0-GTaskMulti-sourceHold-s2026092701",
+      "method": "GTaskMulti",
+      "purpose": "matched fixed-control loss and weight; only channel-realization support changed",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/configs/GTaskMulti.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/F/F0-GTaskMulti-sourceHold-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "replicas": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "replica_schedule": "U_epoch_mod4",
+        "equal_epochs_per_replica": 5,
+        "weight": 0.05941532657537612,
+        "fixed_control": [
+          "20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01",
+          "GFeatureHard"
+        ],
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01; rawteacher cache has three original E30 seeds, not three student results; channel/hardware seeds20261016421/20261016423",
+      "k": null,
+      "scenario": "Phase1 original F0 source only, eight frozen V views",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30+20 to totalE50/11100, 13L37LU; new4440updates; twoextraF forwards perU; sharedhistorical parent andGcache costsseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/F/F0-GTaskMulti-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/logs/GTaskMulti.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.u_realization_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/configs/GTaskMulti.json",
+      "expected_artifacts": [
+        "shared smoke: allfour actual own E30/default-head fresh3 L128/U256 joint backward plus direct auxiliary default classifier weight gradient0; zero optimizer/query",
+        "four E50 default-head final checkpoints, ownE30+20/4440 newupdates; same mainL/rawPL, original frozen q/acceptance",
+        "perrow U1134000/held226800/extraaccepted838780/extraFW2268000; each replicaU283500/extra209695/calls1110",
+        "complete training curves and exact replica/scene/RX exposure, CE/CL validanchors/pairs; GTask has no CL",
+        "four source V27000 eight-view frozen predictions and full TX/RX/day/held/trained corrections vs PL and matchingfixedcontrol",
+        "onearchive comparison, remotecompile and independent process/GPU/stepgrowth; original+.3/-.1 source decision after allfour; no target launch"
+      ]
+    },
+    {
+      "row_id": "F0-GGCLMulti-sourceHold-s2026092701",
+      "method": "GGCLMulti",
+      "purpose": "matched fixed-control loss and weight; only channel-realization support changed",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/configs/GGCLMulti.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/F/F0-GGCLMulti-sourceHold-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "replicas": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "replica_schedule": "U_epoch_mod4",
+        "equal_epochs_per_replica": 5,
+        "weight": 0.04677712061808677,
+        "fixed_control": [
+          "20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01",
+          "BridgeGG"
+        ],
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01; rawteacher cache has three original E30 seeds, not three student results; channel/hardware seeds20261016421/20261016423",
+      "k": null,
+      "scenario": "Phase1 original F0 source only, eight frozen V views",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30+20 to totalE50/11100, 13L37LU; new4440updates; twoextraF forwards perU; sharedhistorical parent andGcache costsseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/F/F0-GGCLMulti-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/logs/GGCLMulti.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.u_realization_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/configs/GGCLMulti.json",
+      "expected_artifacts": [
+        "shared smoke: allfour actual own E30/default-head fresh3 L128/U256 joint backward plus direct auxiliary default classifier weight gradient0; zero optimizer/query",
+        "four E50 default-head final checkpoints, ownE30+20/4440 newupdates; same mainL/rawPL, original frozen q/acceptance",
+        "perrow U1134000/held226800/extraaccepted838780/extraFW2268000; each replicaU283500/extra209695/calls1110",
+        "complete training curves and exact replica/scene/RX exposure, CE/CL validanchors/pairs; GTask has no CL",
+        "four source V27000 eight-view frozen predictions and full TX/RX/day/held/trained corrections vs PL and matchingfixedcontrol",
+        "onearchive comparison, remotecompile and independent process/GPU/stepgrowth; original+.3/-.1 source decision after allfour; no target launch"
+      ]
+    },
+    {
+      "row_id": "F0-HGCLMulti-sourceHold-s2026092701",
+      "method": "HGCLMulti",
+      "purpose": "matched fixed-control loss and weight; only channel-realization support changed",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/configs/HGCLMulti.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/F/F0-HGCLMulti-sourceHold-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "replicas": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "replica_schedule": "U_epoch_mod4",
+        "equal_epochs_per_replica": 5,
+        "weight": 0.04677712061808677,
+        "fixed_control": [
+          "20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01",
+          "BridgeHG"
+        ],
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01; rawteacher cache has three original E30 seeds, not three student results; channel/hardware seeds20261016421/20261016423",
+      "k": null,
+      "scenario": "Phase1 original F0 source only, eight frozen V views",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30+20 to totalE50/11100, 13L37LU; new4440updates; twoextraF forwards perU; sharedhistorical parent andGcache costsseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/F/F0-HGCLMulti-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/logs/HGCLMulti.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.u_realization_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/configs/HGCLMulti.json",
+      "expected_artifacts": [
+        "shared smoke: allfour actual own E30/default-head fresh3 L128/U256 joint backward plus direct auxiliary default classifier weight gradient0; zero optimizer/query",
+        "four E50 default-head final checkpoints, ownE30+20/4440 newupdates; same mainL/rawPL, original frozen q/acceptance",
+        "perrow U1134000/held226800/extraaccepted838780/extraFW2268000; each replicaU283500/extra209695/calls1110",
+        "complete training curves and exact replica/scene/RX exposure, CE/CL validanchors/pairs; GTask has no CL",
+        "four source V27000 eight-view frozen predictions and full TX/RX/day/held/trained corrections vs PL and matchingfixedcontrol",
+        "onearchive comparison, remotecompile and independent process/GPU/stepgrowth; original+.3/-.1 source decision after allfour; no target launch"
+      ]
+    },
+    {
+      "row_id": "F0-GJointMulti-sourceHold-s2026092701",
+      "method": "GJointMulti",
+      "purpose": "matched fixed-control loss and weight; only channel-realization support changed",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/configs/GJointMulti.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/F/F0-GJointMulti-sourceHold-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "replicas": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "replica_schedule": "U_epoch_mod4",
+        "equal_epochs_per_replica": 5,
+        "weight": 0.04221045401136996,
+        "fixed_control": [
+          "20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01",
+          "GJoint"
+        ],
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01; rawteacher cache has three original E30 seeds, not three student results; channel/hardware seeds20261016421/20261016423",
+      "k": null,
+      "scenario": "Phase1 original F0 source only, eight frozen V views",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "own originalE30+20 to totalE50/11100, 13L37LU; new4440updates; twoextraF forwards perU; sharedhistorical parent andGcache costsseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/F/F0-GJointMulti-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/logs/GJointMulti.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.u_realization_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/configs/GJointMulti.json",
+      "expected_artifacts": [
+        "shared smoke: allfour actual own E30/default-head fresh3 L128/U256 joint backward plus direct auxiliary default classifier weight gradient0; zero optimizer/query",
+        "four E50 default-head final checkpoints, ownE30+20/4440 newupdates; same mainL/rawPL, original frozen q/acceptance",
+        "perrow U1134000/held226800/extraaccepted838780/extraFW2268000; each replicaU283500/extra209695/calls1110",
+        "complete training curves and exact replica/scene/RX exposure, CE/CL validanchors/pairs; GTask has no CL",
+        "four source V27000 eight-view frozen predictions and full TX/RX/day/held/trained corrections vs PL and matchingfixedcontrol",
+        "onearchive comparison, remotecompile and independent process/GPU/stepgrowth; original+.3/-.1 source decision after allfour; no target launch"
+      ]
+    }
+  ],
+  "notes": [
+    "No new dose calibration or loss change; exact coefficients fixed from matching original controls, not V/target selection.",
+    "All three fresh streams retained equally with old r0; no best-realization selection or inference G ensemble.",
+    "Native eval-only V health permitted; objective V reads/updates0 does not mean process never opens V.",
+    "GTask uses two averaged CE forwards and noCL; do not assert equal pair counts acrossallfour.",
+    "Only extra branch excludesRX1; not a truly unseen base-network or G receiver.",
+    "Source pass is not target success; no current-method new target data or silent final-method rename."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "GTaskMulti",
+      "GGCLMulti",
+      "HGCLMulti",
+      "GJointMulti"
+    ],
+    "weights": {
+      "GTaskMulti": 0.05941532657537612,
+      "GGCLMulti": 0.04677712061808677,
+      "HGCLMulti": 0.04677712061808677,
+      "GJointMulti": 0.04221045401136996
+    },
+    "fixed_controls": {
+      "GTaskMulti": [
+        "20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01",
+        "GFeatureHard"
+      ],
+      "GGCLMulti": [
+        "20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01",
+        "BridgeGG"
+      ],
+      "HGCLMulti": [
+        "20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01",
+        "BridgeHG"
+      ],
+      "GJointMulti": [
+        "20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01",
+        "GJoint"
+      ]
+    },
+    "replicas": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "replica_epoch_schedule": [
+      0,
+      1,
+      2,
+      3,
+      0,
+      1,
+      2,
+      3,
+      0,
+      1,
+      2,
+      3,
+      0,
+      1,
+      2,
+      3,
+      0,
+      1,
+      2,
+      3
+    ],
+    "added_epochs": 20,
+    "total_epochs": 50,
+    "updates_per_row": 4440,
+    "U_seen_per_row": 1134000,
+    "held_per_row": 226800,
+    "extra_accepted_per_row": 838780,
+    "extra_F_per_row": 2268000,
+    "U_seen_per_replica": 283500,
+    "extra_accepted_per_replica": 209695,
+    "allfour_rows_before_selection": true,
+    "source_thresholds": {
+      "held_G_mean_gain_pp": 0.3,
+      "clean_min_delta_pp": -0.1
+    },
+    "target_reads": 0
+  },
+  "registered_at": "2026-10-26T02:34:54+00:00"
+}
