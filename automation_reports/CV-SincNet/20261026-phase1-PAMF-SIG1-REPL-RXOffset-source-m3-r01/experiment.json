@@ -1,0 +1,355 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "单视图REPL三新候选：去风格、去外推与L-only RX方向外推",
+  "description": "完整PAMF单SIG_TIME，三新学生同seed01/同已完成ordinaryPL E20+10+20到E50。RXOffset只外推当前真实L支持且投影掉L类别均值的RX方向，L统计跨阶段续接；全部已完成对照仅只读评估，不训练。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-SIG1-REPL-RXOffset-source"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME-single-view",
+    "REPL-optimization",
+    "L-only-RX-moments",
+    "no-style",
+    "no-control-retraining",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-m1-r01"
+  ],
+  "authorization": "用户明确优化REPL、完整PAMF单SIG_TIME、对照复用已完成且不重复训练、全部显卡可用；不向另一对话发信息，独立推进本方向。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2;no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300 true source labels; originalfullL unchanged;RXOffset currentL firstjoint160 detached moments only",
+      "U_s": "original56700 hiddenTX;currentstudent .95 hardlabels;originalREPL six U forwards/weight6/joint.05/guard1,style0",
+      "V": "original27000 final source8view evaluation only;never RX moments/gradient/state updates"
+    },
+    "train_ratio": "original7/63/30 unchanged;13L37LU/E50;no new true labels;rawE20L features reuse only RXOffset initialization",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-seed newREPL sourcepilot;oldPL-X3/REPL-SIG1 references inferenceonly;source PASS not target or clean generalization proof"
+  },
+  "checkpoint": {
+    "initialization": "each newcandidate own completedsingleSIG_TIME ordinaryPL scratchE20+new10+20 toE50",
+    "sources": [
+      "m201/F0-A1B1-SIG_TIME-F21-s2026092701/segment20 actualsource-only completedE20/defaulthead",
+      "RXOffset only:known frozenE20 L6300 normalizedfeatures from completedSIG1 RXgeometry run",
+      "completedF0 PL-X3/REPL-SIG1 finalE50 reference models evalonly;not studentinit or teachers",
+      "same originalF0 DURA G-LU sourceeval only;Gnottrained"
+    ],
+    "contract_check_ref": "known threeE20 actualtensors/data-contract proof;actual ownE20/state/roles before joint L128/U256 realsmoke;RXstats ownrow/contract/E30 exactly2220 updates before+20",
+    "provenance_verdict": "no stoppedcontrol partial,noNoSIG/X3 parent conversion,no target-selected F50 inheritance,no newhead",
+    "selection_rule": "fixedfinalE50 all3;allsourceeval complete beforefixedcriteria;no target/epoch/seed ranking"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-sig1-repl-offset-source-20261026",
+    "gpu_policy": "GPU0..7;globalCUDA+pending<2/free>=10000MiB;count allowners;only newcandidate training + frozenreference sourceeval;preserve foreign tasks",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/sig1_offset",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_offset_source dispatch --config PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-release-r01/runtime.json",
+    "stop_rule": "first technical/input/actualsingleview/smoke/finite/roles/statresume/budget/output failure stops newdispatch;healthy activefinish;no automaticretry/foreignchanges;scienceFAIL retained"
+  },
+  "expected_artifacts": [
+    "threeactualcompletedE20/defaulthead singleviewL128/U256 fullbackward smokes,Ugradnonzero tosingleSIG/head/body,actualstyle0,L768/AsKL0,U6,0optimizer",
+    "three newstudent E50/11100 finals;30newepochs6660updateseach;19980newrecords/90epochs;ownE20+10+20 chains",
+    "RXOffset6300Lcachedinit/currentL-only detachedEMA.9 moments,resumeownE30state;6660updates/852480Lstat exposures,noU/Vstats",
+    "oldPL-X3 andREPL-SIG1 sourceV8view inferenceonly;no control training or repeatedtargetprediction",
+    "all5models sourceV27000x8 full logits andTX/RX/day/overall cells;frozenF/Gstate;zero Utruth/target",
+    "sourcecandidate fixedraw/H3>=bothrefs-.1pp,G3>=bothrefs+.3pp;allcompletechooseG3 thenraw/H3 thenearlierlowercost order;not target success",
+    "onearchivecompare/remotecompile and independentPID/CWD/argv/GPU/loggrowth;full actual exposure/cost/nonfinite counters"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "same actualsourceV raw/H3/G3 with completedreferences",
+      "RX direction execution andsource transfer"
+    ],
+    "secondary": [
+      "complete convergence/defaulthead/singleSIG gradients",
+      "actualUacceptance/sixforward/extrapolationhead counts",
+      "currentLmoment updates/counts/norm/rank/segment continuity"
+    ],
+    "target": "none inthis sourcepilot;afterfixedsource pass samecandidate3seed originaltarget168000/seed raw/G clean+sixpractical withindependenttruth-last;oldtargets unchanged",
+    "selection": "all3finish;rawCorrect>=maxRefs-27/H3correct>=maxRefs-81/G3correct>=maxRefs+243;chooseG3correct,rawCorrect,H3correct,thenNoStyleNoRXE/NoStyle/RXOffset",
+    "truth_policy": "U trueTXhidden;Lonly moments;Vfinalinference only;no target handles"
+  },
+  "rows": [
+    {
+      "row_id": "F0-REPL_NoStyle-s2026092701",
+      "method": "REPL_NoStyle",
+      "purpose": "newREPL variant/sourcefalsification;not control retraining",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/configs/REPL_NoStyle.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/F/F0-REPL_NoStyle-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "U_use": true,
+        "L_A": true,
+        "L_B": true,
+        "style_probability": 0,
+        "extrapolation": "full_pair",
+        "RX_stat_decay": null
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "completedownE20+new10+20=E50/11100;new6660updates;prefix/sharedsourcegeometrycostsseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/F/F0-REPL_NoStyle-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/logs/REPL_NoStyle.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_offset_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/configs/REPL_NoStyle.json",
+      "expected_artifacts": [
+        "threeactualcompletedE20/defaulthead singleviewL128/U256 fullbackward smokes,Ugradnonzero tosingleSIG/head/body,actualstyle0,L768/AsKL0,U6,0optimizer",
+        "three newstudent E50/11100 finals;30newepochs6660updateseach;19980newrecords/90epochs;ownE20+10+20 chains",
+        "RXOffset6300Lcachedinit/currentL-only detachedEMA.9 moments,resumeownE30state;6660updates/852480Lstat exposures,noU/Vstats",
+        "oldPL-X3 andREPL-SIG1 sourceV8view inferenceonly;no control training or repeatedtargetprediction",
+        "all5models sourceV27000x8 full logits andTX/RX/day/overall cells;frozenF/Gstate;zero Utruth/target",
+        "sourcecandidate fixedraw/H3>=bothrefs-.1pp,G3>=bothrefs+.3pp;allcompletechooseG3 thenraw/H3 thenearlierlowercost order;not target success",
+        "onearchivecompare/remotecompile and independentPID/CWD/argv/GPU/loggrowth;full actual exposure/cost/nonfinite counters"
+      ]
+    },
+    {
+      "row_id": "F0-REPL_NoStyleNoRXE-s2026092701",
+      "method": "REPL_NoStyleNoRXE",
+      "purpose": "newREPL variant/sourcefalsification;not control retraining",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/configs/REPL_NoStyleNoRXE.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/F/F0-REPL_NoStyleNoRXE-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "U_use": true,
+        "L_A": true,
+        "L_B": true,
+        "style_probability": 0,
+        "extrapolation": "none",
+        "RX_stat_decay": null
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "completedownE20+new10+20=E50/11100;new6660updates;prefix/sharedsourcegeometrycostsseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/F/F0-REPL_NoStyleNoRXE-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/logs/REPL_NoStyleNoRXE.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_offset_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/configs/REPL_NoStyleNoRXE.json",
+      "expected_artifacts": [
+        "threeactualcompletedE20/defaulthead singleviewL128/U256 fullbackward smokes,Ugradnonzero tosingleSIG/head/body,actualstyle0,L768/AsKL0,U6,0optimizer",
+        "three newstudent E50/11100 finals;30newepochs6660updateseach;19980newrecords/90epochs;ownE20+10+20 chains",
+        "RXOffset6300Lcachedinit/currentL-only detachedEMA.9 moments,resumeownE30state;6660updates/852480Lstat exposures,noU/Vstats",
+        "oldPL-X3 andREPL-SIG1 sourceV8view inferenceonly;no control training or repeatedtargetprediction",
+        "all5models sourceV27000x8 full logits andTX/RX/day/overall cells;frozenF/Gstate;zero Utruth/target",
+        "sourcecandidate fixedraw/H3>=bothrefs-.1pp,G3>=bothrefs+.3pp;allcompletechooseG3 thenraw/H3 thenearlierlowercost order;not target success",
+        "onearchivecompare/remotecompile and independentPID/CWD/argv/GPU/loggrowth;full actual exposure/cost/nonfinite counters"
+      ]
+    },
+    {
+      "row_id": "F0-REPL_RXOffset-s2026092701",
+      "method": "REPL_RXOffset",
+      "purpose": "newREPL variant/sourcefalsification;not control retraining",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/configs/REPL_RXOffset.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/F/F0-REPL_RXOffset-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "U_use": true,
+        "L_A": true,
+        "L_B": true,
+        "style_probability": 0,
+        "extrapolation": "L_RX_offset",
+        "RX_stat_decay": 0.9
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "completedownE20+new10+20=E50/11100;new6660updates;prefix/sharedsourcegeometrycostsseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/F/F0-REPL_RXOffset-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/logs/REPL_RXOffset.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_offset_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/configs/REPL_RXOffset.json",
+      "expected_artifacts": [
+        "threeactualcompletedE20/defaulthead singleviewL128/U256 fullbackward smokes,Ugradnonzero tosingleSIG/head/body,actualstyle0,L768/AsKL0,U6,0optimizer",
+        "three newstudent E50/11100 finals;30newepochs6660updateseach;19980newrecords/90epochs;ownE20+10+20 chains",
+        "RXOffset6300Lcachedinit/currentL-only detachedEMA.9 moments,resumeownE30state;6660updates/852480Lstat exposures,noU/Vstats",
+        "oldPL-X3 andREPL-SIG1 sourceV8view inferenceonly;no control training or repeatedtargetprediction",
+        "all5models sourceV27000x8 full logits andTX/RX/day/overall cells;frozenF/Gstate;zero Utruth/target",
+        "sourcecandidate fixedraw/H3>=bothrefs-.1pp,G3>=bothrefs+.3pp;allcompletechooseG3 thenraw/H3 thenearlierlowercost order;not target success",
+        "onearchivecompare/remotecompile and independentPID/CWD/argv/GPU/loggrowth;full actual exposure/cost/nonfinite counters"
+      ]
+    },
+    {
+      "row_id": "Reference_PL_X3-s2026092701",
+      "method": "Reference_PL_X3",
+      "purpose": "completed model frozen sourceevaluation only;zero training",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/configs/Reference_PL_X3.json",
+      "resolved_config_ref": null,
+      "data_overrides": {
+        "signature_views": 3,
+        "training": false,
+        "source_V_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "oldcompletedmodel frozenV27000x8;F216000/G108002,newoptimizer0",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/evaluations/Reference_PL_X3",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/logs/Reference_PL_X3.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_offset_source worker --kind evaluate --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/configs/Reference_PL_X3.json",
+      "expected_artifacts": [
+        "completedmodel immutable;newsourceevaluation only,no controltraining/targetpredictions"
+      ]
+    },
+    {
+      "row_id": "Reference_REPL_SIG1-s2026092701",
+      "method": "Reference_REPL_SIG1",
+      "purpose": "completed model frozen sourceevaluation only;zero training",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/configs/Reference_REPL_SIG1.json",
+      "resolved_config_ref": null,
+      "data_overrides": {
+        "signature_views": 1,
+        "training": false,
+        "source_V_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "oldcompletedmodel frozenV27000x8;F216000/G108002,newoptimizer0",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/evaluations/Reference_REPL_SIG1",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/logs/Reference_REPL_SIG1.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_offset_source worker --kind evaluate --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/configs/Reference_REPL_SIG1.json",
+      "expected_artifacts": [
+        "completedmodel immutable;newsourceevaluation only,no controltraining/targetpredictions"
+      ]
+    }
+  ],
+  "notes": [
+    "No messages tootherconversation;independentnewmodules/run,allforeignhealthy work preserved.",
+    "Completedcontrols only:sourceeval references do not update or trainweights/normalization/statistics.Originaltargetscores reused.",
+    "SourcePL referenceX3 vsnewSIG1 is disclosed architecture difference;no falseclaimstrict SSLonlycausality.",
+    "OldNoSIG andstoppedSIG1control partial never student/teacher inputs.",
+    "ProtectedRX direction L-classmean orthogonality is limitedgeometry,not guaranteedhardware identity separation orGimprovement.",
+    "RXstatistics currentL firstactualfulljoint160 fromexistingforward,notlabeled_output surrogate/newhead;no extraLbackbonepass.",
+    "No labels/physicalID roles moved;no fittedposthochead/EMAteacher/Gtraining.",
+    "MomentEMA is L-onlynonparametricstatistics,notEMAmodel;normalizedfeatureextrap differsoriginalunnormalizedfullpair bydesign.",
+    "One studentseed/sourcepilot,not3seed targetperformance;final3goals remainunmet."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "SIG1-PL",
+      "SIG1-Sup"
+    ],
+    "new_model_epochs": 80,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 100,
+    "new_optimizer_updates": 17760,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 8,
+    "new_G_training": 0,
+    "target_reads": 0,
+    "graph_training": false
+  },
+  "registered_at": "2026-10-26T10:09:53+00:00"
+}

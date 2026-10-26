@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "focused_tests": 11,
+  "tests": [
+    "L-class mean protection/retainedRXenergy",
+    "U donor feature gradient zero/currentfeature gradient finite",
+    "partialcurrentL cell update withoutUimputation",
+    "V/U/hidden labels cannot update moments",
+    "accepted samepseudo crossRX pair requirements",
+    "ownstatistics save/resume andRXcoordinate preservation",
+    "three newcandidate-only configs andfixedbudget",
+    "target/foreignhead/architecture/recipe rejection",
+    "ownE20/E30 parent segments only",
+    "runtime target/foreignroot rejection",
+    "exactsourcecountboundaries/bothrefs/costtie"
+  ],
+  "independent_P0P1_review": {
+    "status": "PASS",
+    "reviewer": "ssl_p0p1_review",
+    "scope": "actual next run wrong/unauthorized/destructive/unlaunchable",
+    "targeted_fix": "PASS:source -.1/+.3pp boundary uses exact27/81/243counts andexplicit lowcost tie order"
+  },
+  "actual_checkpoint_smoke": "LAUNCH_FIRST_STEP_PENDING",
+  "no_control_training": true,
+  "target_reads": 0
+}
