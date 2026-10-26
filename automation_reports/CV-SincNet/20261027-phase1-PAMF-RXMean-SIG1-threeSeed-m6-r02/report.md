@@ -35,3 +35,7 @@ U 与 LU 的标量均为 (nU*KL_U+64*KL_L)/(nU+64)，U 范围 detach KL_L，LU �
 E30节点已经实际核实：[first_segment_audit.json](first_segment_audit.json)。01/02的U与LU四行均完成E20→E30，每行全部2220条step及10条epoch记录已解析，共8880步／40模型epoch，并扫描完整当时stdout，无非有限值或fatal。每行56700个U各10遍，曝光567000，raw/H各283500，20个RX风格对全部使用、各RX曝光113400；实际PL接受率93.3605%至93.6333%。这只是源训练执行证据，不是伪标签真实准确率，也不是目标性能。
 
 四行均已通过E30→E50实际checkpoint smoke，后段已观察187至280个连续step；方法U历史从2221延续、原生段内PL计数按新段重置，5raw/5H已完成状态没有丢失，后段日程也未从第一个新U epoch重启。此处完整核验的是已结束E30段，后段仅为当时已生成的全部可解析日志前缀，不冒充E50完整日志。03两行继续按既定容量排队，无新target访问、无训练重启或配方调整。
+
+两份U范围E50源权重已完成并通过完整日志核验，见first_E50_source_rows_audit.json：01/02合计13320个新增step／60模型epoch，每模型56700U各30遍，1701000曝光、raw/H各850500，原PL和fullL保持，完整stdout无fatal。此处只是最早完成源行的快照；尚未完成六行正式结果，不能据其选seed或定优胜。
+
+独立下一候选RXMeanMax已在当前目标分数尚未读取时固定、审查、提交并发布等待控制器；同幅度下四种源RX风格逐包最大KL选择，只在本run全部完成后才占GPU，不改变本run。新候选三seed/原E20+30；比较本run RXMean-U与已有PL/Sup均复用。矩阵见../20261027-phase1-PAMF-RXMeanMax-SIG1-threeSeed-m3-r01/report.md。原目标保持active。

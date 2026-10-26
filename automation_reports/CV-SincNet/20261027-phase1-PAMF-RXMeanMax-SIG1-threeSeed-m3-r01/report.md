@@ -1,6 +1,6 @@
 # 全U最大预测变化 RX 风格：三种子预登记
 
-状态：PLANNED，尚未发布或训练，效果未知，原目标active。
+状态：QUEUED_VERIFIED_NEURAL_NOT_STARTED，等待控制器已发布并核实，尚无新GPU校准或训练，效果未知，原目标active。
 
 固定完整PAMF／单SIG_TIME／原默认头，在普通PL .95、weight1、fullT1 L机制不变的基础上，只改变训练期U的RX风格选择。每个U取原始IQ或同包H基础（新增30epoch各15），当前F eval/no_grad的同base概率为q。枚举其余四个源RX的固定均值差作用，合为4B前向，逐包选择KL(q||p_style)最大的风格，再仅对选中视图带梯度重算。没有跨包重新指派或TX标签参与选择。
 
@@ -19,3 +19,7 @@ L额外64对仍为原随机风格KL且detach，保留与RXMean-U相同的标量�
 精确矩阵、代码commit、路径、命令、环境/CWD与artifact见experiment.json；一次archive传输SHA／remote compile与首步真实checkpoint smoke按最小流程。没有增加数据重验、签名、审批或报告完整度门槛。
 
 原rawclean≥85.981746%、raw六景>72.096197%及全部声明范围严格超过匹配PL/Sup的目标保持。该固定F0候选未获任何正式性能，三seed也不自动等于显著或完整原目标达成。
+
+执行 commit 05e320bb0c554d9b135cec2e43b0e667617a8375 已推送并独立比较上游OID；单archive传输校验VERIFIED、remote compile PASS。5项focused tests与一次独立P0/P1审查PASS。普通账号一次preflight核实新root不存在、原三份scratchE20合同匹配、R02全U均值bank完整；源数据未重验。
+
+控制器PID/CWD/argv/UID已独立核实，两次观测log126→252bytes且pipeline时间增长，状态WAITING_FOR_PREDECESSOR、12job全QUEUED、GPUworker0，真实新最大选择checkpoint/梯度smoke仍PENDING。当前六行随机风格矩阵保持原进程/预算；前序完整结束后才执行本矩阵，并在首步真实smoke通过后自动继续。当前排队不当作神经训练成功。见launch_verification.json。

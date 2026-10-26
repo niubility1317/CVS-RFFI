@@ -28,7 +28,7 @@
   ],
   "authorization": "持续自主研发/普通PL之上加机制/三种子/既有对照复用/不影响其他对话；本候选在当前随机风格目标分数尚未读取时固定，不依据部分seed或新目标结果选择，GPU等待完整前序run完成。",
   "code": {
-    "commit": "runtime.code_commit from committed publisher; actual execution OID recorded after launch",
+    "commit": "05e320bb0c554d9b135cec2e43b0e667617a8375",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1,FP32/TF32off/CPU2",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-PAMF-RXMeanMax-SIG1-threeSeed-release-r01"

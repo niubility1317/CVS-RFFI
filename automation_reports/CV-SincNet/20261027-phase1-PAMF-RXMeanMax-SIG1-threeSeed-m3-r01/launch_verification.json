@@ -1,0 +1,27 @@
+{
+  "status": "QUEUED_VERIFIED_NEURAL_NOT_STARTED",
+  "execution_commit": "05e320bb0c554d9b135cec2e43b0e667617a8375",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_identity_verified": true,
+  "controller_live": true,
+  "controller_log_growth_verified": true,
+  "initial_log_bytes": 126,
+  "latest_log_bytes": 252,
+  "waiting_jobs": 12,
+  "registered_model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "registered_candidate_models": 3,
+  "running_GPU_workers": 0,
+  "predecessor_complete_present": false,
+  "actual_checkpoint_max_selection_smoke": "PENDING until predecessor completes",
+  "new_control_training": 0,
+  "new_control_predictions": 0,
+  "new_target_reads": 0,
+  "performance_verified": false,
+  "goal_complete": false,
+  "observed_at": 1793047241.449364
+}
