@@ -1,0 +1,467 @@
+{
+  "status": "VERIFIED_COMPLETE",
+  "read_at": 1792998101.7539747,
+  "run_id": "20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01",
+  "code_commit": "b298bbc5afbb734e91c19c4c88ef39622a3ff6e8",
+  "methods": [
+    {
+      "method": "NoisyCE",
+      "records": 4440,
+      "full_epochs": 20,
+      "stdout_lines": 799,
+      "last_metrics": {
+        "NPL_seen": 1134000,
+        "NPL_noisy_seen": 57160,
+        "NPL_self_used": 1035970,
+        "NPL_extra_packets": 0
+      },
+      "training_complete": true,
+      "objective_state": {
+        "method": "NoisyCE",
+        "recipe": {
+          "q": 0.0,
+          "rho": 0.0,
+          "extra": "none",
+          "uniform": false
+        },
+        "U_seen": 1134000,
+        "noisy_exposures": 57160,
+        "self_used": 1035970,
+        "disagreement": 958,
+        "extra_packets": 0,
+        "view_counts": {},
+        "unique_noisy_candidates": 2858,
+        "U_truth_read": false,
+        "target_reads": 0,
+        "teacher_updates": 0,
+        "G_updates": 0,
+        "new_head": false
+      },
+      "checkpoint_verified": true,
+      "evaluation_complete": true,
+      "source_summary": {
+        "method": "NoisyCE",
+        "source_raw": 97.8962962962963,
+        "delta_source_raw": 0.33333333333333337,
+        "delta_held_G_three": -0.29012345679012347,
+        "hard_raw_net": 89,
+        "source_pass": false
+      }
+    },
+    {
+      "method": "NoisyScaledCE",
+      "records": 4440,
+      "full_epochs": 20,
+      "stdout_lines": 799,
+      "last_metrics": {
+        "NPL_seen": 1134000,
+        "NPL_noisy_seen": 57160,
+        "NPL_self_used": 1035791,
+        "NPL_extra_packets": 0
+      },
+      "training_complete": true,
+      "objective_state": {
+        "method": "NoisyScaledCE",
+        "recipe": {
+          "q": 0.0,
+          "rho": 0.0,
+          "extra": "none",
+          "uniform": true
+        },
+        "U_seen": 1134000,
+        "noisy_exposures": 57160,
+        "self_used": 1035791,
+        "disagreement": 1099,
+        "extra_packets": 0,
+        "view_counts": {},
+        "unique_noisy_candidates": 2858,
+        "U_truth_read": false,
+        "target_reads": 0,
+        "teacher_updates": 0,
+        "G_updates": 0,
+        "new_head": false
+      },
+      "checkpoint_verified": true,
+      "evaluation_complete": true,
+      "source_summary": {
+        "method": "NoisyScaledCE",
+        "source_raw": 97.88888888888889,
+        "delta_source_raw": 0.3259259259259259,
+        "delta_held_G_three": -0.23456790123456792,
+        "hard_raw_net": 88,
+        "source_pass": false
+      }
+    },
+    {
+      "method": "NoisyGCE",
+      "records": 4440,
+      "full_epochs": 20,
+      "stdout_lines": 799,
+      "last_metrics": {
+        "NPL_seen": 1134000,
+        "NPL_noisy_seen": 57160,
+        "NPL_self_used": 1035959,
+        "NPL_extra_packets": 0
+      },
+      "training_complete": true,
+      "objective_state": {
+        "method": "NoisyGCE",
+        "recipe": {
+          "q": 0.7,
+          "rho": 0.0,
+          "extra": "none",
+          "uniform": false
+        },
+        "U_seen": 1134000,
+        "noisy_exposures": 57160,
+        "self_used": 1035959,
+        "disagreement": 1160,
+        "extra_packets": 0,
+        "view_counts": {},
+        "unique_noisy_candidates": 2858,
+        "U_truth_read": false,
+        "target_reads": 0,
+        "teacher_updates": 0,
+        "G_updates": 0,
+        "new_head": false
+      },
+      "checkpoint_verified": true,
+      "evaluation_complete": true,
+      "source_summary": {
+        "method": "NoisyGCE",
+        "source_raw": 97.89999999999999,
+        "delta_source_raw": 0.337037037037037,
+        "delta_held_G_three": -0.21604938271604937,
+        "hard_raw_net": 91,
+        "source_pass": false
+      }
+    },
+    {
+      "method": "NoisyGCE2Raw",
+      "records": 4440,
+      "full_epochs": 20,
+      "stdout_lines": 799,
+      "last_metrics": {
+        "NPL_seen": 1134000,
+        "NPL_noisy_seen": 57160,
+        "NPL_self_used": 1035895,
+        "NPL_extra_packets": 57160
+      },
+      "training_complete": true,
+      "objective_state": {
+        "method": "NoisyGCE2Raw",
+        "recipe": {
+          "q": 0.7,
+          "rho": 0.25,
+          "extra": "raw",
+          "uniform": false
+        },
+        "U_seen": 1134000,
+        "noisy_exposures": 57160,
+        "self_used": 1035895,
+        "disagreement": 1196,
+        "extra_packets": 57160,
+        "view_counts": {},
+        "unique_noisy_candidates": 2858,
+        "U_truth_read": false,
+        "target_reads": 0,
+        "teacher_updates": 0,
+        "G_updates": 0,
+        "new_head": false
+      },
+      "checkpoint_verified": true,
+      "evaluation_complete": true,
+      "source_summary": {
+        "method": "NoisyGCE2Raw",
+        "source_raw": 97.86296296296297,
+        "delta_source_raw": 0.3,
+        "delta_held_G_three": -0.20987654320987656,
+        "hard_raw_net": 81,
+        "source_pass": false
+      }
+    },
+    {
+      "method": "NoisyGCEG",
+      "records": 4440,
+      "full_epochs": 20,
+      "stdout_lines": 799,
+      "last_metrics": {
+        "NPL_seen": 1134000,
+        "NPL_noisy_seen": 57160,
+        "NPL_self_used": 1035793,
+        "NPL_extra_packets": 57160
+      },
+      "training_complete": true,
+      "objective_state": {
+        "method": "NoisyGCEG",
+        "recipe": {
+          "q": 0.7,
+          "rho": 0.25,
+          "extra": "G",
+          "uniform": false
+        },
+        "U_seen": 1134000,
+        "noisy_exposures": 57160,
+        "self_used": 1035793,
+        "disagreement": 1206,
+        "extra_packets": 57160,
+        "view_counts": {
+          "G_fresh1_scene0": 6357,
+          "G_fresh1_scene1": 6440,
+          "G_fresh1_scene2": 6394,
+          "G_fresh2_scene0": 6364,
+          "G_fresh2_scene1": 6397,
+          "G_fresh2_scene2": 6238,
+          "G_fresh3_scene0": 6203,
+          "G_fresh3_scene1": 6413,
+          "G_fresh3_scene2": 6354
+        },
+        "unique_noisy_candidates": 2858,
+        "U_truth_read": false,
+        "target_reads": 0,
+        "teacher_updates": 0,
+        "G_updates": 0,
+        "new_head": false
+      },
+      "checkpoint_verified": true,
+      "evaluation_complete": true,
+      "source_summary": {
+        "method": "NoisyGCEG",
+        "source_raw": 97.86296296296297,
+        "delta_source_raw": 0.3,
+        "delta_held_G_three": -0.22222222222222224,
+        "hard_raw_net": 81,
+        "source_pass": false
+      }
+    },
+    {
+      "method": "NoisyGCEHG",
+      "records": 4440,
+      "full_epochs": 20,
+      "stdout_lines": 799,
+      "last_metrics": {
+        "NPL_seen": 1134000,
+        "NPL_noisy_seen": 57160,
+        "NPL_self_used": 1035695,
+        "NPL_extra_packets": 57160
+      },
+      "training_complete": true,
+      "objective_state": {
+        "method": "NoisyGCEHG",
+        "recipe": {
+          "q": 0.7,
+          "rho": 0.25,
+          "extra": "HG",
+          "uniform": false
+        },
+        "U_seen": 1134000,
+        "noisy_exposures": 57160,
+        "self_used": 1035695,
+        "disagreement": 1297,
+        "extra_packets": 57160,
+        "view_counts": {
+          "H_fresh1_scene0": 3163,
+          "G_fresh1_scene0": 3194,
+          "H_fresh1_scene1": 3263,
+          "G_fresh1_scene1": 3177,
+          "H_fresh1_scene2": 3207,
+          "G_fresh1_scene2": 3187,
+          "H_fresh2_scene0": 3202,
+          "G_fresh2_scene0": 3162,
+          "H_fresh2_scene1": 3183,
+          "G_fresh2_scene1": 3214,
+          "H_fresh2_scene2": 3169,
+          "G_fresh2_scene2": 3069,
+          "H_fresh3_scene0": 3097,
+          "G_fresh3_scene0": 3106,
+          "H_fresh3_scene1": 3176,
+          "G_fresh3_scene1": 3237,
+          "H_fresh3_scene2": 3248,
+          "G_fresh3_scene2": 3106
+        },
+        "unique_noisy_candidates": 2858,
+        "U_truth_read": false,
+        "target_reads": 0,
+        "teacher_updates": 0,
+        "G_updates": 0,
+        "new_head": false
+      },
+      "checkpoint_verified": true,
+      "evaluation_complete": true,
+      "source_summary": {
+        "method": "NoisyGCEHG",
+        "source_raw": 97.85925925925926,
+        "delta_source_raw": 0.2962962962962963,
+        "delta_held_G_three": -0.25308641975308643,
+        "hard_raw_net": 80,
+        "source_pass": false
+      }
+    }
+  ],
+  "complete_records": 26640,
+  "stdout_lines": 4794,
+  "common_prefix_steps": 4440,
+  "common_U_noisy_exposure_equal": true,
+  "source_summaries": [
+    {
+      "method": "NoisyCE",
+      "source_raw": 97.8962962962963,
+      "delta_source_raw": 0.33333333333333337,
+      "delta_held_G_three": -0.29012345679012347,
+      "hard_raw_net": 89,
+      "source_pass": false
+    },
+    {
+      "method": "NoisyScaledCE",
+      "source_raw": 97.88888888888889,
+      "delta_source_raw": 0.3259259259259259,
+      "delta_held_G_three": -0.23456790123456792,
+      "hard_raw_net": 88,
+      "source_pass": false
+    },
+    {
+      "method": "NoisyGCE",
+      "source_raw": 97.89999999999999,
+      "delta_source_raw": 0.337037037037037,
+      "delta_held_G_three": -0.21604938271604937,
+      "hard_raw_net": 91,
+      "source_pass": false
+    },
+    {
+      "method": "NoisyGCE2Raw",
+      "source_raw": 97.86296296296297,
+      "delta_source_raw": 0.3,
+      "delta_held_G_three": -0.20987654320987656,
+      "hard_raw_net": 81,
+      "source_pass": false
+    },
+    {
+      "method": "NoisyGCEG",
+      "source_raw": 97.86296296296297,
+      "delta_source_raw": 0.3,
+      "delta_held_G_three": -0.22222222222222224,
+      "hard_raw_net": 81,
+      "source_pass": false
+    },
+    {
+      "method": "NoisyGCEHG",
+      "source_raw": 97.85925925925926,
+      "delta_source_raw": 0.2962962962962963,
+      "delta_held_G_three": -0.25308641975308643,
+      "hard_raw_net": 80,
+      "source_pass": false
+    }
+  ],
+  "completion": {
+    "status": "NOISY_HARD_SOURCE_PILOT_COMPLETE",
+    "run_id": "20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01",
+    "code_commit": "b298bbc5afbb734e91c19c4c88ef39622a3ff6e8",
+    "model_seed": 2026092701,
+    "results": [
+      {
+        "method": "NoisyCE",
+        "source_raw": 97.8962962962963,
+        "delta_source_raw": 0.33333333333333337,
+        "delta_held_G_three": -0.29012345679012347,
+        "hard_raw_net": 89,
+        "source_pass": false
+      },
+      {
+        "method": "NoisyScaledCE",
+        "source_raw": 97.88888888888889,
+        "delta_source_raw": 0.3259259259259259,
+        "delta_held_G_three": -0.23456790123456792,
+        "hard_raw_net": 88,
+        "source_pass": false
+      },
+      {
+        "method": "NoisyGCE",
+        "source_raw": 97.89999999999999,
+        "delta_source_raw": 0.337037037037037,
+        "delta_held_G_three": -0.21604938271604937,
+        "hard_raw_net": 91,
+        "source_pass": false
+      },
+      {
+        "method": "NoisyGCE2Raw",
+        "source_raw": 97.86296296296297,
+        "delta_source_raw": 0.3,
+        "delta_held_G_three": -0.20987654320987656,
+        "hard_raw_net": 81,
+        "source_pass": false
+      },
+      {
+        "method": "NoisyGCEG",
+        "source_raw": 97.86296296296297,
+        "delta_source_raw": 0.3,
+        "delta_held_G_three": -0.22222222222222224,
+        "hard_raw_net": 81,
+        "source_pass": false
+      },
+      {
+        "method": "NoisyGCEHG",
+        "source_raw": 97.85925925925926,
+        "delta_source_raw": 0.2962962962962963,
+        "delta_held_G_three": -0.25308641975308643,
+        "hard_raw_net": 80,
+        "source_pass": false
+      }
+    ],
+    "source_selected": null,
+    "U_truth_read": false,
+    "target_reads": 0,
+    "scope": "Source-only single student seed;not target success or automatic three-seed launch"
+  },
+  "processes": {
+    "controller": {
+      "pid": 175471,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "cache": {
+      "pid": 175527,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "smoke": {
+      "pid": 175648,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "NoisyCE": {
+      "pid": 176213,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "NoisyScaledCE": {
+      "pid": 176313,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "NoisyGCE": {
+      "pid": 176418,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "NoisyGCE2Raw": {
+      "pid": 176517,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "NoisyGCEG": {
+      "pid": 176555,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    },
+    "NoisyGCEHG": {
+      "pid": 176731,
+      "terminal_or_missing": true,
+      "state": "MISSING"
+    }
+  },
+  "new_IQ_reads": 0,
+  "new_model_forwards": 0,
+  "U_truth_read": false,
+  "target_reads": 0,
+  "scope": "Single student source pilot;partial while active;not three-seed or target performance"
+}

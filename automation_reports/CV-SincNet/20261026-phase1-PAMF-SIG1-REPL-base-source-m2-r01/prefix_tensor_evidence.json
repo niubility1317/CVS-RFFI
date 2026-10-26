@@ -1,0 +1,158 @@
+{
+  "status": "VERIFIED",
+  "seeds": [
+    {
+      "model_seed": 2026092701,
+      "status": "VERIFIED",
+      "defects": [],
+      "actual_sequence_state_entries": 7,
+      "actual_local_projection_shape": [
+        6,
+        96,
+        1
+      ],
+      "actual_signature_output_shape": [
+        160,
+        112
+      ],
+      "actual_default_head_shape": [
+        6,
+        160
+      ],
+      "source_counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "source_receivers": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "source_contract_matches_expected": true,
+      "epoch": 20,
+      "updates": 4440,
+      "initialization": "scratch",
+      "ancestors": [],
+      "checkpoint_selection": "final_only",
+      "native_U": false,
+      "native_EMA": false,
+      "custom_plain_PL": true,
+      "U_truth_read": false,
+      "target_access": false,
+      "head_fit_updates": 0,
+      "locator": "runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20"
+    },
+    {
+      "model_seed": 2026092702,
+      "status": "VERIFIED",
+      "defects": [],
+      "actual_sequence_state_entries": 7,
+      "actual_local_projection_shape": [
+        6,
+        96,
+        1
+      ],
+      "actual_signature_output_shape": [
+        160,
+        112
+      ],
+      "actual_default_head_shape": [
+        6,
+        160
+      ],
+      "source_counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "source_receivers": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "source_contract_matches_expected": true,
+      "epoch": 20,
+      "updates": 4440,
+      "initialization": "scratch",
+      "ancestors": [],
+      "checkpoint_selection": "final_only",
+      "native_U": false,
+      "native_EMA": false,
+      "custom_plain_PL": true,
+      "U_truth_read": false,
+      "target_access": false,
+      "head_fit_updates": 0,
+      "locator": "runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092702/segment20"
+    },
+    {
+      "model_seed": 2026092703,
+      "status": "VERIFIED",
+      "defects": [],
+      "actual_sequence_state_entries": 7,
+      "actual_local_projection_shape": [
+        6,
+        96,
+        1
+      ],
+      "actual_signature_output_shape": [
+        160,
+        112
+      ],
+      "actual_default_head_shape": [
+        6,
+        160
+      ],
+      "source_counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "source_receivers": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "source_contract_matches_expected": true,
+      "epoch": 20,
+      "updates": 4440,
+      "initialization": "scratch",
+      "ancestors": [],
+      "checkpoint_selection": "final_only",
+      "native_U": false,
+      "native_EMA": false,
+      "custom_plain_PL": true,
+      "U_truth_read": false,
+      "target_access": false,
+      "head_fit_updates": 0,
+      "locator": "runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092703/segment20"
+    }
+  ],
+  "model_forwards": 0,
+  "optimizer_updates": 0,
+  "IQ_reads": 0,
+  "U_truth_read": false,
+  "target_reads": 0,
+  "scope": "Actual SIG_TIME single-view E20 tensors and source lineage;no real forward smoke or new target result"
+}

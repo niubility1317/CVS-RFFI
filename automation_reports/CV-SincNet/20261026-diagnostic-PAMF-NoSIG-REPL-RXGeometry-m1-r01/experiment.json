@@ -1,0 +1,163 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-NoSIG-REPL-RXGeometry-m1-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "REPL-v2身份保护RX外推方向的完整源几何证伪",
+  "description": "只读既有NoSIG E30的L6300/V27000缓存特征，L-only类别平衡共享RX方向、身份子空间投影、跨类留一与V方向迁移；零训练/模型/IQ/U/target。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [
+    "REPL-v2-RX-geometry"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL-v2",
+    "NO_SIGNATURE",
+    "source-only",
+    "L-only-statistics",
+    "no-new-model"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-26明确后续改为优化REPL，吸收正收益；既有去SIG_TIME和原三目标/三seed要求保持。",
+  "code": {
+    "commit": "RECORDED_AT_ANALYSIS:complete.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "verified local Phase1 Python/NumPy; CPU2 threads; cached feature algebra only",
+    "cwd": "E:/type10-7"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "frozen normalized joint160 source features; raw and normalized average of twelve G views",
+    "contract_ref": "features_complete.json.source_contract of known NoSIG E30 source graph feature extraction",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "6300 frozen features and visible labels only; sole estimator input",
+      "U_s": "not opened; TX hidden",
+      "V": "27000 frozen features/visible source labels; diagnostic only, never forms candidate statistics"
+    },
+    "train_ratio": "no training; original roles unchanged; physical IDs/order checked against existing contract",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "necessary geometry only; not default-head accuracy, actual G scene accuracy, trained student or target success"
+  },
+  "checkpoint": {
+    "initialization": "none; checkpoint/model/IQ reads0",
+    "sources": [
+      "known source-only NoSIG E30 raw/restored_mean12 L/V feature caches"
+    ],
+    "contract_check_ref": "features_complete.json and exact role IDs/order; same original VALIDATED_ONCE source split",
+    "provenance_verdict": "upstream NoSIG E30 default-head source lineage already verified; no weight inheritance in this analysis",
+    "selection_rule": "fixed raw AND restored_mean12 protectedRXfraction>=.05/locoCos>.1/locoPositive>.5/VtransferCos>.1; no automatic student training"
+  },
+  "execution": {
+    "host": "local",
+    "launch_owner": "codex-pamf-repl-v2-geometry-20261026",
+    "gpu_policy": "CPU only; no remote execution or GPU worker",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/rx_geometry",
+    "launch_command": "PYTHON -X utf8 -m experiments.pamf_channel_pl.repl_rx_geometry --input local_artifacts/pamf_ssl_review_20261026/rx_geometry/inputs --output local_artifacts/pamf_ssl_review_20261026/rx_geometry/results --commit COMMIT",
+    "stop_rule": "invalid/missing source role/order/nonfinite/missingcell stops analysis; preserve cached features/upstream and immutable result; no threshold tuning or automatic student"
+  },
+  "expected_artifacts": [
+    "two complete source geometry summaries with exact counts and L-only class/RX statistics",
+    "raw/Gmean12 identity-protected RX energy, six-class leave-one-out and independent V direction transfer",
+    "fixed necessary-condition result, immutable complete.json and public summary; no checkpoint/IQ/U/target/model or student training"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "protected_RX_fraction",
+      "LOCO_mean_cosine",
+      "LOCO_positive_fraction",
+      "V_transfer_mean_cosine"
+    ],
+    "secondary": [
+      "RX/TX interaction energy",
+      "identity-overlap fraction",
+      "alpha25 absolute displacement"
+    ],
+    "target": "none",
+    "selection": "fixed before results; no alpha or threshold scan; failure rules out only shared additive RX formulation",
+    "truth_policy": "L labels fit nonparametric source statistics; V labels only evaluation; U/target closed"
+  },
+  "rows": [
+    {
+      "row_id": "RXGeometry-s2026092701",
+      "method": "L-balanced RX offsets minus L class subspace",
+      "purpose": "necessary source geometry falsification",
+      "config_ref": "automation_reports/CV-SincNet/20261026-diagnostic-PAMF-NoSIG-REPL-RXGeometry-m1-r01/experiment.json",
+      "resolved_config_ref": null,
+      "data_overrides": {
+        "roles": [
+          "L_s",
+          "V"
+        ],
+        "views": [
+          "raw",
+          "restored_mean12"
+        ],
+        "alpha": 0.25
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "upstream student seed01; fixed split/data/augmentation inherited from feature cache; no new randomness, optimizer, support or query; not three seeds",
+      "k": null,
+      "scenario": "source feature geometry only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "L6300/V27000 frozen features in two views; model/IQ/U/target/updates0",
+      "output_root": "local_artifacts/pamf_ssl_review_20261026/rx_geometry/results",
+      "log_path": null,
+      "command": "PYTHON -X utf8 -m experiments.pamf_channel_pl.repl_rx_geometry --input local_artifacts/pamf_ssl_review_20261026/rx_geometry/inputs --output local_artifacts/pamf_ssl_review_20261026/rx_geometry/results --commit COMMIT",
+      "expected_artifacts": [
+        "two complete source geometry summaries with exact counts and L-only class/RX statistics",
+        "raw/Gmean12 identity-protected RX energy, six-class leave-one-out and independent V direction transfer",
+        "fixed necessary-condition result, immutable complete.json and public summary; no checkpoint/IQ/U/target/model or student training"
+      ]
+    }
+  ],
+  "notes": [
+    "No additional real-checkpoint smoke: no model/checkpoint/IQ machinery consumed; cached source feature analysis only.",
+    "restored_mean12 is not an individual restored IQ prediction; never report its geometry as G accuracy.",
+    "Shared additive RX model is an unproven hypothesis; negative outcome retained, no automatic full-feature extrapolation fallback.",
+    "New student matrix requires separate actual objective/smoke/preregistration; not started by this run."
+  ],
+  "registered_at": "2026-10-26T07:32:35+00:00"
+}

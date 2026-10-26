@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "focused_tests": 4,
+  "tests": [
+    "actual canonical one-view pool shape/18976params/backward and same original head object",
+    "NoSIG/X3 checkpoint tensors rejected",
+    "full valid configs reject target/foreignview/Upermission/head/root/EMA changes",
+    "supervised cannot inherit U prefix;PL only own SIG1 prefix and exactsegments"
+  ],
+  "local_native_boundary": "Pool unit test isolates unused native backbone constructor;actual original descriptors used. Full frozen native model checked by launch first real checkpoint source smoke.",
+  "independent_P0P1_review": {
+    "status": "PASS",
+    "reviewer": "ssl_p0p1_review",
+    "scope": "single-view base source runner/model/publisher;next real run wrong/unauthorized/destructive/unlaunchable only"
+  },
+  "prefix_tensor_check": "all3 actualE20 checkpoints verified;7sequence entries,6x96x1,160x112,6x160head,scratch/source-only/same contract;not yet newforward smoke",
+  "actual_forward_smoke": "LAUNCH_FIRST_STEP_PENDING",
+  "target_reads": 0
+}

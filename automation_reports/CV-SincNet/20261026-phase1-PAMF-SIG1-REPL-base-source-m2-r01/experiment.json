@@ -1,0 +1,227 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "完整PAMF单SIG_TIME视图：共享监督/普通PL源控制",
+  "description": "用户新指定完整PAMF保留SIG_TIME单视图。单seed01普通PL复用已核实单视图scratchE20+10+20；监督scratch20+10+20。各final自动完整源V八视图；两个优化方向只共享这一公共控制owner。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-SIG1-REPL-shared-base"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME-single-view",
+    "full-network",
+    "matched-controls",
+    "ordinary-PL",
+    "source-only",
+    "single-student-seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261026-analysis-PAMF-SSL-retrospective-r01"
+  ],
+  "authorization": "用户2026-10-26明确优化REPL并恢复完整PAMF保留SIG_TIME单视图；另一用户授权协同方向共用控制不重复发布。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; CPU2 threads; no installation",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-base-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300; full T1 L mechanisms in both controls",
+      "U_s": "original56700 hidden TX; only ordinaryPL control, source13L37LU; supervised U loader absent",
+      "V": "original27000 eval-only native health and fixed final eight-view source predictions"
+    },
+    "train_ratio": "original L/U/V unchanged; full original PAMF with one learned SIG_TIME view instead of X3; original defaulthead and full L mechanism",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-student single-view matched source controls and common predetermined E30 parent; no new SSL or target performance claim"
+  },
+  "checkpoint": {
+    "initialization": "SIG1-PL own original single-view scratchE20+10+20;SIG1-Sup scratch20+10+20;E50/11100 each",
+    "sources": [
+      "m201/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20, same-contract ordinaryPL prefix",
+      "same fixed originalF0 G-LU only source evaluation; no NoSIG/X3/target-selected weight conversion"
+    ],
+    "contract_check_ref": "three real E20 state dicts/source lineage independently verified;views.0 6x96x1,output160x112,head6x160,finite,scratch/no ancestors/Utruth-target0;realL/U/Gsmoke first",
+    "provenance_verdict": "same originalF0 physical roles/IDs and original single-view default-head lineage; Sup never inherits U-trained prefix",
+    "selection_rule": "each fixed finalE50; commonE30 parent saved before continuingPL; no model ranking,three-seed promotion or target access"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-sig1-repl-base-20261026",
+    "gpu_policy": "GPU0..7;global CUDA+pending<2/free>=10000MiB;at most2 own train_eval;count foreign owners,no static reservation",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-base-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/sig1_base",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_base dispatch --config PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-base-source-release-r01/runtime.json",
+    "stop_rule": "first technical/protocol/actual-singleview/nonfinite/ancestry/budget/smoke failure stops newdispatch;healthy rows finish;no overwrite/autoretry/foreignchanges"
+  },
+  "expected_artifacts": [
+    "real single-view E20/defaulthead/G sourceL2 smoke;PL L128/U256 and Sup U-off jointbackward smoke with nonzero defaulthead/signature gradients",
+    "own single-view ordinaryPL E30/6660 common parent plus two matched E50/11100 finals;actualsignature1view/18976parameters",
+    "new17760records/80model-epochs plus inherited4440;all nativeU/EMA/Utruth/target/newhead off",
+    "each complete V27000 raw/Graw/threeH/threeG logits and all RX/day/TX/source groups;no target",
+    "onearchive transfercompare/remotecompile and independent PID/CWD/argv/GPU/loggrowth;full cost/exposure retained"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "actual completePAMF singleSIG_TIME identity",
+      "fixed sourceV eight-view endpoints"
+    ],
+    "secondary": [
+      "complete training curves/U exposure",
+      "commonE30 readiness"
+    ],
+    "target": "none in this source control;original3seed target goal unchanged",
+    "selection": "none;both controls retained;newREPL/U-history students separately preregister",
+    "truth_policy": "U TX hidden;V eval only;no target handles"
+  },
+  "rows": [
+    {
+      "row_id": "F0-SIG1-PL-s2026092701",
+      "method": "SIG1-PL",
+      "purpose": "shared single-view architecture matched control and E30 parent readiness",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01/configs/SIG1-PL.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01/F/F0-SIG1-PL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "U_use": true,
+        "L_A": true,
+        "L_B": true,
+        "source_seed": 2026092701,
+        "sig_time_views": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "cumulativeE50/11100;PL shared20+new10+20=30new;Sup scratch20+10+20=50new;not identical newcompute",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01/F/F0-SIG1-PL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01/logs/SIG1-PL.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_base worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01/configs/SIG1-PL.json",
+      "expected_artifacts": [
+        "real single-view E20/defaulthead/G sourceL2 smoke;PL L128/U256 and Sup U-off jointbackward smoke with nonzero defaulthead/signature gradients",
+        "own single-view ordinaryPL E30/6660 common parent plus two matched E50/11100 finals;actualsignature1view/18976parameters",
+        "new17760records/80model-epochs plus inherited4440;all nativeU/EMA/Utruth/target/newhead off",
+        "each complete V27000 raw/Graw/threeH/threeG logits and all RX/day/TX/source groups;no target",
+        "onearchive transfercompare/remotecompile and independent PID/CWD/argv/GPU/loggrowth;full cost/exposure retained"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-Sup-s2026092701",
+      "method": "SIG1-Sup",
+      "purpose": "shared single-view architecture matched control and E30 parent readiness",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01/configs/SIG1-Sup.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01/F/F0-SIG1-Sup-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "U_use": false,
+        "L_A": true,
+        "L_B": true,
+        "source_seed": 2026092701,
+        "sig_time_views": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "cumulativeE50/11100;PL shared20+new10+20=30new;Sup scratch20+10+20=50new;not identical newcompute",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01/F/F0-SIG1-Sup-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01/logs/SIG1-Sup.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_base worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01/configs/SIG1-Sup.json",
+      "expected_artifacts": [
+        "real single-view E20/defaulthead/G sourceL2 smoke;PL L128/U256 and Sup U-off jointbackward smoke with nonzero defaulthead/signature gradients",
+        "own single-view ordinaryPL E30/6660 common parent plus two matched E50/11100 finals;actualsignature1view/18976parameters",
+        "new17760records/80model-epochs plus inherited4440;all nativeU/EMA/Utruth/target/newhead off",
+        "each complete V27000 raw/Graw/threeH/threeG logits and all RX/day/TX/source groups;no target",
+        "onearchive transfercompare/remotecompile and independent PID/CWD/argv/GPU/loggrowth;full cost/exposure retained"
+      ]
+    }
+  ],
+  "notes": [
+    "User latest fullPAMF + singleSIG_TIME supersedes earlier NoSIG instruction;oldmodels/results preserved.",
+    "Singleview means one internal learned temporal descriptor;not removing L/U augmentation or pairedforwards.",
+    "Whole original time/frequency/PA/reference andjoint160/defaulthead preserved;no checkpoint slicing/averaging or newhead.",
+    "All three existing SIG1 E20 tensors and contracts verified;initialsourcepilotonly seed01,notthree-seed performance.",
+    "SharedSup/PL exclusively owned by thisrun;otherthreadU-history candidates independent;no duplicatecontroller.",
+    "Actual newstudent families not started by sourcecontrol completion;final targetclean/rawsix/sameG required.",
+    "OldNoSIG RXGeometry cancelled before input/exec duearchitecture change;not scientificFAIL."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "SIG1-PL",
+      "SIG1-Sup"
+    ],
+    "new_model_epochs": 80,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 100,
+    "new_optimizer_updates": 17760,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 8,
+    "new_G_training": 0,
+    "target_reads": 0,
+    "graph_training": false
+  },
+  "registered_at": "2026-10-26T08:01:21+00:00"
+}

@@ -1,0 +1,7 @@
+experiment,control,purpose,source_raw_difference,held_G_difference,hard_raw_net_difference
+NoisyScaledCE,NoisyCE,batch mean attenuation,-0.007407407407413302,0.05555555555555555,-1
+NoisyGCE,NoisyCE,bounded instance loss vs CE,0.0037037037036924403,0.0740740740740741,2
+NoisyGCE,NoisyScaledCE,instance attenuation vs batch-uniform CE,0.011111111111105743,0.018518518518518545,3
+NoisyGCE2Raw,NoisyGCE,second raw forward,-0.03703703703702388,0.006172839506172811,-10
+NoisyGCEG,NoisyGCE2Raw,G replaces second raw,0.0,-0.012345679012345678,0
+NoisyGCEHG,NoisyGCEG,alternating H/G replaces G-only,-0.003703703703706651,-0.030864197530864196,-1

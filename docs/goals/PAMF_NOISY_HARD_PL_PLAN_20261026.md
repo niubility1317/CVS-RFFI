@@ -1,6 +1,6 @@
 # NoSIG 困难样本的有噪声伪标签学习
 
-状态：**六行单seed源学生已实际启动，尚无完整源／目标性能。** 原RGPL、恢复专家及两个raw锚点的固定可信标签规则均已失败，结论保留。本路线不把它们改判通过，也不放宽其门槛。它明确使用有噪声标签，检验鲁棒损失能否利用此前被排除的有效纠错。
+状态：**六行单 seed 源学生与八视图评估全部完成，六行均未通过固定源条件，不扩种子。** 完整核验 26640 条新增记录、120 个 epoch、六个实际 final checkpoint、816 个源评估单元。原 RGPL、恢复专家及两个 raw 锚点的固定可信标签规则均已失败，结论保留。本路线明确使用有噪声标签，不把它们改判通过，也不放宽门槛。
 
 ## 已知事实与新假设
 
@@ -50,3 +50,5 @@ N607现有普通账户，FP32／TF32off、CPU2线程；不安装依赖。GPU0至
 ## 实际运行
 
 run `20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01`，代码`b298bbc5afbb734e91c19c4c88ef39622a3ff6e8`。12项聚焦检查、唯一P0/P1审查、一次archive比较和远端compile通过。实际R40 checkpoint源smoke与U56700缓存完成，得到2858唯一noisy candidates；教师状态不变，U真值／target0。六行真实L128/U256 backward均通过，随后在GPU0/3/4/5/6/7训练到累计E32，PID/CWD/argv/GPU及记录增长独立核实，非有限跳步0。仅一个学生seed，不能称三种子或目标收益。完整状态见[本行报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/report.md)。
+
+2026-10-26 完成更新：六行全部累计 E50/11100。源 raw 较 NoSIG-PL 提高 +0.2963 至 +0.3370 个百分点，原困难 V 净增加 80 至 91 次正确；新增分支留出 RX1 的 G 三景却下降 0.2099 至 0.2901 个百分点。GCE 相对 CE 的差异很小，加入 G/HG 没有修复恢复域退步。所有 run-owned 进程已终止，U 真值／target 读取均为 0。按照既定规则 source_selected=null，不扩三 seed；负结果与全曲线保留。用户随后明确将后续主线转为优化 REPL，并进一步指定原完整 PAMF 保留 SIG_TIME、改为单视图；本 NoSIG 实验保持历史定义，不混入新架构比较。原三项实际目标要求保持。
