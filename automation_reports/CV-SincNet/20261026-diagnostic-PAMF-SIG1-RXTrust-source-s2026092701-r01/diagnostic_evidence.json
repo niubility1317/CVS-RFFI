@@ -1,0 +1,126 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+  "run_id": "20261026-diagnostic-PAMF-SIG1-RXTrust-source-s2026092701-r01",
+  "code_commit": "0a840408f2b35cf77556a2e8e39c4b4ac2dc9445",
+  "recipe": {
+    "batches": 9,
+    "L_batch": 128,
+    "U_batch": 256,
+    "weak_SNR_dB": 35.0,
+    "recovery_noise_SNR_dB": 35.0,
+    "hard_threshold": 0.95,
+    "hard_cap": 0.25,
+    "temperature": 0.1,
+    "scope": [
+      "U",
+      "LU"
+    ],
+    "optimizer_updates": 0,
+    "V_records": 27000,
+    "source_risk_precision": 0.995,
+    "minimum_trusted_V": 200,
+    "gradient_coefficient": "min(.25,.1*median(base_norm)/max(median(U_norm),median(LU_norm))) per component;not a performance guarantee"
+  },
+  "actual_checkpoint_epoch": 20,
+  "actual_checkpoint_updates": 4440,
+  "signature_views": 1,
+  "signature_parameters": 18976,
+  "L_seen": 1152,
+  "U_seen": 2304,
+  "V_seen": 27000,
+  "quality": {
+    "ordinary_PL": {
+      "n": 24661,
+      "correct": 24635,
+      "precision_percent": 99.89457037427518
+    },
+    "extra_hard": {
+      "n": 6750,
+      "correct": 6749,
+      "precision_percent": 99.98518518518519
+    }
+  },
+  "extra_hard_by_RX": {
+    "1": {
+      "n": 1689,
+      "correct": 1689,
+      "precision_percent": 100.0
+    },
+    "3": {
+      "n": 880,
+      "correct": 879,
+      "precision_percent": 99.88636363636364
+    },
+    "4": {
+      "n": 1391,
+      "correct": 1391,
+      "precision_percent": 100.0
+    },
+    "6": {
+      "n": 1665,
+      "correct": 1665,
+      "precision_percent": 100.0
+    },
+    "8": {
+      "n": 1125,
+      "correct": 1125,
+      "precision_percent": 100.0
+    }
+  },
+  "gradient_scale_suggestion": {
+    "instance": 0.09195520357372461,
+    "relation": 0.040436624610533385
+  },
+  "route_source_necessary_pass": true,
+  "all_parameters_and_registered_buffers_unchanged": true,
+  "optimizer_updates": 0,
+  "U_truth_read": false,
+  "target_reads": 0,
+  "G_updates": 0,
+  "seconds": 13.365450490266085,
+  "parsed_step_records": 9,
+  "identical_scalar_objectives": true,
+  "gradient_summary": [
+    {
+      "scope": "U",
+      "component": "instance",
+      "batches": 9,
+      "loss_median": 0.33619779348373413,
+      "norm_median": 0.8026578663735295,
+      "base_norm_median": 1.1121411528419596,
+      "cosine_median": -0.061477238207255765,
+      "negative_dot_batches": 7
+    },
+    {
+      "scope": "U",
+      "component": "relation",
+      "batches": 9,
+      "loss_median": 2.508147716522217,
+      "norm_median": 1.0975045209521719,
+      "base_norm_median": 1.1121411528419596,
+      "cosine_median": -0.06606661428432686,
+      "negative_dot_batches": 5
+    },
+    {
+      "scope": "LU",
+      "component": "instance",
+      "batches": 9,
+      "loss_median": 0.33619779348373413,
+      "norm_median": 1.2094379759056335,
+      "base_norm_median": 1.1121411528419596,
+      "cosine_median": -0.060047565271756455,
+      "negative_dot_batches": 7
+    },
+    {
+      "scope": "LU",
+      "component": "relation",
+      "batches": 9,
+      "loss_median": 2.508147716522217,
+      "norm_median": 2.7503313235305415,
+      "base_norm_median": 1.1121411528419596,
+      "cosine_median": 0.022259887485604427,
+      "negative_dot_batches": 4
+    }
+  ],
+  "scope": "fixed E20 source gradient and route diagnostic;no F/G training,causal efficacy or target claim"
+}
