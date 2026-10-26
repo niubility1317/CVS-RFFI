@@ -1,0 +1,186 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-analysis-PAMF-FastTrust-source-r01",
+  "group_id": "pamf-sig1-fasttrust-source-analysis-20261026",
+  "display_name": "PAMF 高置信PL失配原因与FastTrust源域证伪",
+  "description": "复用已完成三seed控制的全源V输出和完整日志核验；CPU解析高置信易例、附加视图和候选集合风险；不训练、不新增模型前向。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-FastTrust-source-diagnosis"
+  ],
+  "tags": [
+    "PAMF",
+    "FastTrust",
+    "SIG_TIME",
+    "source-only",
+    "negative-result-analysis"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-HardPL-T1U-m6-r01",
+    "20261025-diagnostic-PAMF-RestoredPL-sourceShift-m9-r01",
+    "20261026-phase1-PAMF-SIG1-AllUVAT-source-s2026092701-r01"
+  ],
+  "authorization": "用户要求分析.95高质量PL叠加监督损失未获全面正收益的原因，并借鉴曾用FastTrust。仍保持完整PAMF和单视图SIG_TIME，不干扰其他对话、不重训对照。",
+  "code": {
+    "commit": "this analysis implementation Git commit; historical execution identities preserved",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "verified phase1-cu128 Python/NumPy CPU",
+    "cwd": "E:/type10-7"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "already-saved V27000 logits/y for completed ordinary PL three seeds, fixed8sourceviews",
+    "contract_ref": "unchanged original F0; other protocol cohorts kept separate; prefix metadata matches original F0",
+    "physical_ids_ref": "saved source npz.ids,27000unique; five sourceRX,days1/2/3",
+    "label_map_ref": "original F0 six registered classes; U TX truth absent",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "no access",
+      "U_s": "no access or truth",
+      "V": "saved source outputs only; labels for diagnostic counts; no fitted state"
+    },
+    "train_ratio": "no new training",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "source diagnostic and untested FastTrust adaptation; no efficacy or target-success claim"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [
+      "completed PLControl saved V logits only"
+    ],
+    "contract_check_ref": "original frozen V and no new checkpoint load",
+    "provenance_verdict": "no inherited state/new initialization",
+    "selection_rule": "three original seeds all included; no candidate selection"
+  },
+  "execution": {
+    "host": "local CPU",
+    "launch_owner": "current Codex chat",
+    "gpu_policy": "zero GPU workers; preserve all other owners",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "automation_reports/CV-SincNet/20261026-analysis-PAMF-FastTrust-source-r01",
+    "launch_command": "python -X utf8 -m experiments.pamf_u_history.fasttrust_diagnosis --source local_artifacts/pamf_u_history_20261026/vat_evidence/existing_PL_source/source_V_predictions.npz --output automation_reports/CV-SincNet/20261026-analysis-PAMF-FastTrust-source-r01",
+    "stop_rule": "stop on missing/duplicate sourceID,wrongclass,nonfinite/mixedsource; preserve all seeds and negative results"
+  },
+  "expected_artifacts": [
+    "source_diagnosis.json",
+    "source_view_routes.csv",
+    "source_gradient_diagnosis.csv",
+    "source_PL_strata.csv",
+    "source_partial_sets.csv",
+    "report.md",
+    "risk_diagnosis.json"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "ordinaryPL source quality and residual error concentration",
+      "extra view difficulty despite correct raw label",
+      "fixed mass partial-set false exclusion"
+    ],
+    "secondary": [
+      "class/RX/day acceptance",
+      "hard versus LS logit gradients",
+      "crossRX pair purity"
+    ],
+    "target": "existing historical aggregate results only; no new target access",
+    "selection": "none; fixed .95 mass diagnostic, not calibrated or selected labeler",
+    "truth_policy": "saved V only,no U truth or new target truth",
+    "fixed_risk_extension_before_execution": {
+      "source": ".95 raw rejected; smallest .95 mass candidate sets size2/3 only",
+      "score": "set probability mass",
+      "risk": 0.995,
+      "minimum_calibration_per_RX": 20,
+      "internal_crossfit": "leave one source RX out",
+      "minimum_OOF_selected": 200,
+      "minimum_OOF_each_RX": 20,
+      "requires_each_OOF_RX_precision_percent": 99.5,
+      "ordinary_PL": "unchanged",
+      "model_updates": 0,
+      "threshold_ties": "include all"
+    }
+  },
+  "rows": [
+    {
+      "row_id": "saved-source-V-three-seeds",
+      "method": "FastTrust-style diagnostic",
+      "purpose": "distinguish label quality from extra information and supervision risk",
+      "config_ref": "experiments/pamf_u_history/fasttrust_diagnosis.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "completed model2026092701/02/03 all included; no new seed or training",
+      "k": null,
+      "scenario": "sourceV27000 eightviews",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero training/forwards,newIQ,target",
+      "output_root": "automation_reports/CV-SincNet/20261026-analysis-PAMF-FastTrust-source-r01",
+      "log_path": null,
+      "command": "python -X utf8 -m experiments.pamf_u_history.fasttrust_diagnosis --source local_artifacts/pamf_u_history_20261026/vat_evidence/existing_PL_source/source_V_predictions.npz --output automation_reports/CV-SincNet/20261026-analysis-PAMF-FastTrust-source-r01",
+      "expected_artifacts": [
+        "source_diagnosis.json",
+        "source_view_routes.csv",
+        "source_gradient_diagnosis.csv",
+        "source_PL_strata.csv",
+        "source_partial_sets.csv",
+        "report.md"
+      ]
+    }
+  ],
+  "notes": [
+    "Current fullPAMF singleviewSIG_TIME remains the R&D architecture; oldX3 sourceoutputs only an explicit proxy.",
+    "Do not fit reliability/calibration/head from V; no claim that fixed .95 set mass is .95 trueclass coverage.",
+    "GuardVAT remains unlaunched preparation; latest user steering prioritizes failure analysis and FastTrust first.",
+    "Source threshold calibration is explicitly permitted by PROJECT_PROTOCOL lines53/233; this arithmetic extension freezes scalar thresholds only and never updates classifier,EMA,prototype,normalization. V is one role with internal cross-fitting,not V_cal/V_select."
+  ],
+  "matrix": {
+    "new_students": 0,
+    "new_F_G_forwards": 0,
+    "new_IQ_reads": 0,
+    "U_truth_read": false,
+    "new_target_reads": 0,
+    "optimizer_updates": 0,
+    "saved_source_V_records": 27000,
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ]
+  },
+  "registered_at": "2026-10-26T11:06:33+00:00"
+}

@@ -1,0 +1,177 @@
+{
+  "status": "ANALYZED_SOURCE_CALIBRATION_ONLY",
+  "recipe": {
+    "mass": 0.95,
+    "raw_rejected_only": true,
+    "candidate_size": [
+      2,
+      3
+    ],
+    "score": "probability mass inside proposed set",
+    "risk_target": 0.995,
+    "calibration": "leave one source RX out; worst calibration RX must pass; threshold includes all tied scores",
+    "minimum_calibration_per_RX": 20,
+    "minimum_OOF_total": 200,
+    "minimum_OOF_per_RX": 20
+  },
+  "rows": [
+    {
+      "seed": 2026092701,
+      "OOF": {
+        "n": 0,
+        "truth_in_set": 0,
+        "false_exclusion": 0,
+        "coverage_percent": 0.0,
+        "inclusion_percent": null,
+        "mean_size": null
+      },
+      "folds": [
+        {
+          "held_source_RX": 1,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 3,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 4,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 6,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 8,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        }
+      ],
+      "full_source_frozen_threshold": null,
+      "necessary_rule_passed": false
+    },
+    {
+      "seed": 2026092702,
+      "OOF": {
+        "n": 0,
+        "truth_in_set": 0,
+        "false_exclusion": 0,
+        "coverage_percent": 0.0,
+        "inclusion_percent": null,
+        "mean_size": null
+      },
+      "folds": [
+        {
+          "held_source_RX": 1,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 3,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 4,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 6,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 8,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        }
+      ],
+      "full_source_frozen_threshold": null,
+      "necessary_rule_passed": false
+    },
+    {
+      "seed": 2026092703,
+      "OOF": {
+        "n": 0,
+        "truth_in_set": 0,
+        "false_exclusion": 0,
+        "coverage_percent": 0.0,
+        "inclusion_percent": null,
+        "mean_size": null
+      },
+      "folds": [
+        {
+          "held_source_RX": 1,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 3,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 4,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 6,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        },
+        {
+          "held_source_RX": 8,
+          "threshold": null,
+          "selected": 0,
+          "safe": 0,
+          "precision_percent": null
+        }
+      ],
+      "full_source_frozen_threshold": null,
+      "necessary_rule_passed": false
+    }
+  ],
+  "all_three_passed": false,
+  "new_F_G_training": 0,
+  "new_forward": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "ordinary_PL_changed": false,
+  "interpretation": "source threshold calibration allowed by PROJECT_PROTOCOL; no classifier/EMA/prototype/normalization update; internal cross-fit does not create new V roles",
+  "limitation": "completed X3 PL source outputs; source empirical safety is not target coverage or accuracy guarantee"
+}
