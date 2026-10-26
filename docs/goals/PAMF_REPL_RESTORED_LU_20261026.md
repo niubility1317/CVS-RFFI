@@ -59,3 +59,10 @@ run `20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01` 已实现REPL_G
 
 
 运行更新：三角色学生真实smoke全PASS并已启动，实际F前向不增、G输入差异/角色计数和U到默认部署分支梯度已核实。单视图Sup/PL六模型三Fseed原168000正式矩阵已全部完成且独立核算：rawclean84.116865/84.693849、raw六景70.168056/70.233234、同G六景76.994544/77.432870%。这些不降低原绝对门槛，三角色配方也不回流修改。见[匹配基线完整结果](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/report.md)。
+
+
+## 恢复输入和输出的互补验证
+
+缓存低置信同包分析已完成108包关系/324梯度单元独立核算。L拒绝子集中G均值的损伤多于纠错，不能据其放宽U硬标签；G-G detached概率只支持下一步证伪假设。新run `20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01` 固定两行各seed01：U混合physical半从raw换为原生未恢复H，ordinary半保持Ga/Gb；第二行仅加raw95拒绝同包Ga/Gb互概率KL，权重1.2、whole-G-half平均，合入原guard。L原所有真标签/As/ordinary/raw与跨RX不变，0新F/G前向或噪声，新增H模拟成本披露。已完成对照不重复。
+
+两行全部源评测后用原raw−.1/H3−.1/G3+.3pp门槛；若旧三角色也有通过者，任何新target之前按相同G/raw/H及较低G成本比较全部完成source-pass候选，冻结一个方法再扩三seed与正式target。没有通过则保留负结果，不修改原绝对目标或热改健康学生。具体见[两行预登记](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/report.md)。

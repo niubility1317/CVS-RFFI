@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "focused_tests": 9,
+  "compile": "PASS",
+  "registration": "VALID",
+  "review": {
+    "reviewer": "/root/ssl_p0p1_review",
+    "P0": 0,
+    "P1_found": 1,
+    "P1_fixed": 1,
+    "targeted_recheck": "PASS",
+    "fixed_issue": "Both smoke and training entrypoints now use sig1_gh_source"
+  },
+  "actual_remote_smoke": "launcher first step; immediate training afterPASS; no token"
+}

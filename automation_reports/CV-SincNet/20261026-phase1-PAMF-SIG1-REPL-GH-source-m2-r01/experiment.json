@@ -1,0 +1,239 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "单视图REPL：U星地输入与DURA恢复双域及低置信同包关系",
+  "description": "固定全PAMF单SIG_TIME；L原真标签/As/ordinary/raw不变。U mixed一半为未恢复H、一半为两份G，替换原raw/G结构；第二行仅增加raw95拒绝G同包detached概率一致性。两行单seed源证伪，不重训对照。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-SIG1-REPL-GH-U"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "SIG_TIME-single-view",
+    "DURA",
+    "source-only",
+    "unrestored-and-restored-U",
+    "rejected-physical-pair"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261026-analysis-PAMF-SIG1-rejected-pairs-m1-r01"
+  ],
+  "authorization": "用户最新授权探索DURA多信道恢复视图、U有RX标签且跨RX同TX必要、比较L/U优化；原goal持续授权研发/全部显卡。不联系其他对话。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2;no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-GH-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "unchanged all true-label original As/ordinary/raw and crossRX; no L G replacement",
+      "U_s": "TX hidden; raw95 accepted classCE/crossRX; mixed physical half H, ordinary half Ga/Gb; optional rejected-only G-G pair; RX/day visible",
+      "V": "original27000 finalsource8viewonly;noG/F/state/statupdates"
+    },
+    "train_ratio": "unchanged originalF0 L6300/U56700/V27000;13L37LU cumulativeE50;no extra true labels",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-model-seed role falsification;L-only names mean onlyLhasnewGviews,all3remainsemi-supervisedL/U;not targetperformance"
+  },
+  "checkpoint": {
+    "initialization": "eachnewrow independently sameown completed singleSIG_TIME ordinaryPL scratchE20 +new10+20 toE50/11100",
+    "sources": [
+      "known m201/F0-A1B1-SIG_TIME-F21-s2026092701/segment20 actualsource-onlyE20",
+      "same originalF0 DURA G-LU frozen,nevertrained",
+      "completedPL-X3/REPL-SIG1/NoStyleNoRXE sourceevaluations reusedwithoutforward;not studentinitialization"
+    ],
+    "contract_check_ref": "known threeE20 actualtensors/data-contract proof;actual ownE20/state/roles before joint L128/U256 realsmoke;RXstats ownrow/contract/E30 exactly2220 updates before+20",
+    "provenance_verdict": "same sourcecontract/IDs and scratchE20 lineage;noF50/sourcewinnerweightinit/no stoppedpartial/no targetselected parent",
+    "selection_rule": "original final-only scratch20 + own10 + own20; cumulativeE50/11100. Source gate raw/H3 at worst max3refs minus .1pp; G3 max3refs+.3pp. Within two methods maxG/raw/H then prefer GH noPair. No pass no target/extension. If another registered role family passes, compare all completed source-pass candidates by same G/raw/H and lowerGcost before any new target; freeze one method."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-sig1-gh-source-20261026",
+    "gpu_policy": "GPU0..7;globalCUDA+pending<2/free>=10000MiB;countallowners;oneowncontroller,3newstudents;preserveotherhealthywork",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-GH-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/sig1_gh_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_gh_source dispatch --config PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-GH-source-release-r01/runtime.json",
+    "stop_rule": "first role/input/ancestry/shape/finite/actualview/frozenG/smoke/budget/outputtechnicalfailure stopsnewdispatch;healthyactivefinish;noautoretry/foreignchanges;scientificFAILkept"
+  },
+  "expected_artifacts": [
+    "real E20/current G smoke with originalhead full-L/U backward; U actualH differs fromraw; Ga/Gb differ; pair gradient signature/head/body nonzero in Pair only",
+    "each30newepochs/6660updates fromsameE20; L768/U6 unchanged F forwards; G1701000 and newH850500 per student; warmup4 separate",
+    "UphysicalH850500/twostudentviews1701000; originalraw95 classCE; no Utruth/EMA/newhead/style",
+    "sourceV27000x8 pernewstudent with RX/day/TX; original three source refs reused without new forward",
+    "independent CPU after completion; fixed source gate and terminal state; no target/seedexpansion iffail"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "completefixedV raw/H3/G3",
+      "L-onlyvU-onlyvLUinputintervention"
+    ],
+    "dimensions": [
+      "method",
+      "TX",
+      "RX",
+      "day",
+      "sourceview"
+    ],
+    "selection": "original final-only scratch20 + own10 + own20; cumulativeE50/11100. Source gate raw/H3 at worst max3refs minus .1pp; G3 max3refs+.3pp. Within two methods maxG/raw/H then prefer GH noPair. No pass no target/extension. If another registered role family passes, compare all completed source-pass candidates by same G/raw/H and lowerGcost before any new target; freeze one method.",
+    "truth_policy": "allLtrueTX retained;Uraw95pseudo/noTXtruth;RXmetadatausedinoriginalcrossRX;Vfinalevalonly;0target",
+    "target": "noneinthissourcepilot;passedcandidatefuture3seedraw/sameGclean+sixpractical actualtargetrequired;originalandmatchedbaselinegoalsunchanged"
+  },
+  "rows": [
+    {
+      "row_id": "F0-REPL_GH_U-s2026092701",
+      "method": "REPL_GH_U",
+      "purpose": "G/H complementary U view ablation",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/configs/REPL_GH_U.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/F/F0-REPL_GH_U-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "L_G": false,
+        "U_G": true,
+        "U_H": true,
+        "hard_pl_no_uas": false,
+        "raw95_class_gate": true,
+        "rejected_G_pair": false,
+        "pair_weight": 0.0,
+        "new_F_forwards": 0,
+        "new_G_forwards_for_pair": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one modelseed2026092701 for eachmethod,not3seeds;originalsplit/augmentationretained;newsourcechannelsdeterministicphysicalID+epoch+role+a/b,scenea/bdifferent;no addedAWGN",
+      "k": null,
+      "scenario": "source practical raw/H/G; Ga/Gb adjacent3scenes and independent realizations; physical H nativeT1As",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own30epochs/6660updates; cumulative13L+37LU E50/11100; sameoriginalF forwards; G1701000 pluswarm4; newU H850500",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/F/F0-REPL_GH_U-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/logs/REPL_GH_U.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_gh_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/configs/REPL_GH_U.json",
+      "expected_artifacts": [
+        "real E20/current G smoke with originalhead full-L/U backward; U actualH differs fromraw; Ga/Gb differ; pair gradient signature/head/body nonzero in Pair only",
+        "each30newepochs/6660updates fromsameE20; L768/U6 unchanged F forwards; G1701000 and newH850500 per student; warmup4 separate",
+        "UphysicalH850500/twostudentviews1701000; originalraw95 classCE; no Utruth/EMA/newhead/style",
+        "sourceV27000x8 pernewstudent with RX/day/TX; original three source refs reused without new forward",
+        "independent CPU after completion; fixed source gate and terminal state; no target/seedexpansion iffail"
+      ]
+    },
+    {
+      "row_id": "F0-REPL_GH_U_Pair-s2026092701",
+      "method": "REPL_GH_U_Pair",
+      "purpose": "same G/H plus rejected G pair ablation",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/configs/REPL_GH_U_Pair.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/F/F0-REPL_GH_U_Pair-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "L_G": false,
+        "U_G": true,
+        "U_H": true,
+        "hard_pl_no_uas": false,
+        "raw95_class_gate": true,
+        "rejected_G_pair": true,
+        "pair_weight": 1.2,
+        "new_F_forwards": 0,
+        "new_G_forwards_for_pair": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one modelseed2026092701 for eachmethod,not3seeds;originalsplit/augmentationretained;newsourcechannelsdeterministicphysicalID+epoch+role+a/b,scenea/bdifferent;no addedAWGN",
+      "k": null,
+      "scenario": "source practical raw/H/G; Ga/Gb adjacent3scenes and independent realizations; physical H nativeT1As",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own30epochs/6660updates; cumulative13L+37LU E50/11100; sameoriginalF forwards; G1701000 pluswarm4; newU H850500",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/F/F0-REPL_GH_U_Pair-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/logs/REPL_GH_U_Pair.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_gh_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01/configs/REPL_GH_U_Pair.json",
+      "expected_artifacts": [
+        "real E20/current G smoke with originalhead full-L/U backward; U actualH differs fromraw; Ga/Gb differ; pair gradient signature/head/body nonzero in Pair only",
+        "each30newepochs/6660updates fromsameE20; L768/U6 unchanged F forwards; G1701000 and newH850500 per student; warmup4 separate",
+        "UphysicalH850500/twostudentviews1701000; originalraw95 classCE; no Utruth/EMA/newhead/style",
+        "sourceV27000x8 pernewstudent with RX/day/TX; original three source refs reused without new forward",
+        "independent CPU after completion; fixed source gate and terminal state; no target/seedexpansion iffail"
+      ]
+    }
+  ],
+  "notes": [
+    "Two methods each one F seed01; not two/three seeds.",
+    "L true labels never gated; U RX does not reveal TX.",
+    "U H and G expose complementary inputs; mixed CE dose and all six F forwards unchanged, H simulation cost additional.",
+    "Pair only raw-rejected same-packet G ordinary half; opposite detached soft probabilities; no entropyminimization/new hard label; cannot correct shared wrong mean alone.",
+    "Pair coefficient1.2 matches existing mixed KL coefficient6*.25/1.25; normalized over whole original G half. Combined U/L gradient cap1 unchanged.",
+    "Original three role students and six completed baselines preserved; no communication to other conversations.",
+    "Original full168000 target absolute floors remain; no target score feedback or new target access in this run."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "REPL_GH_U",
+      "REPL_GH_U_Pair"
+    ],
+    "new_model_epochs": 60,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 80,
+    "new_optimizer_updates": 13320,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 8,
+    "new_G_training": 0,
+    "G_training_logical_packets": 3402000,
+    "new_U_H_packets": 1701000,
+    "target_reads": 0,
+    "graph_training": false
+  },
+  "registered_at": "2026-10-26T14:07:57+00:00"
+}
