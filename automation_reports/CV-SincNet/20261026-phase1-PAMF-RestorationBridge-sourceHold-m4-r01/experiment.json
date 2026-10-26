@@ -1,0 +1,349 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01",
+  "group_id": "phase1-pamf-restoration-bridge-source-20261026",
+  "display_name": "PAMF 恢复前后跨接收机身份关系：四路源证伪",
+  "description": "原L/rawPL保留，附加两视图跨RX身份关系替代恢复分支CE；RG同视图/跨视图直接对照及HG/GG覆盖，原ownE30+20与固定源晋级规则。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-RestorationBridge-sourceHold"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "cross-RX",
+    "identity-relations",
+    "source-only",
+    "hidden-U"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01",
+    "20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01",
+    "20261025-phase1-PAMF-RestoredPL-m9-r01"
+  ],
+  "authorization": "继续用户已授权的半监督联合目标、原始/恢复IQ优化方向；四路插值源完整失败后检验跨视图身份关系，全部GPU可用并保护其他owner。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-RestorationBridge-sourceHold-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300 visible L;full original T1 unchanged",
+      "U_s": "original56700 hidden U;unchanged raw selfPL;extra two-view current joint160 relations from frozen raw3E30 consensus95;RX1 excluded from all extra terms and normalization",
+      "V": "original27000;eval-only native health and frozen eight-view source comparison;no state/objective updates"
+    },
+    "train_ratio": "original L6300/U56700/V27000;10percent labeled amongL+U;no physical rolechange",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "one student seed source relations/coverage test,not target performance or genuinely unseen base RX"
+  },
+  "checkpoint": {
+    "initialization": "four independent own original E20+10 E30 plus20,finalE50/11100;no researchF50 inheritance",
+    "sources": [
+      "original same-contract ownE30 student and three frozenE30 raw-q teachers",
+      "same fixed originalF0 G-LU and aligned existing H/G source U cache"
+    ],
+    "contract_check_ref": "strict actualE20/E30 ancestry and same sourcecontract;reuse existing VALIDATED_ONCE roles;actualE30/defaulthead/G sourceL2 and integratedU256 smoke",
+    "provenance_verdict": "source-only original same-contract ownE30 allowed;old researchF50 source comparisons only,not initialization",
+    "selection_rule": "allfour fixed finalE50;heldG3>=+.3pp and overallrawclean>=-.1pp;maxpassingheldG then alphabetical;no target or expansion withinrun"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-restoration-bridge-source-20261026",
+    "gpu_policy": "physicalGPU0..7;globalCUDA+pending<2/free>=10000MiB;leastload then mostfree;up to4 owntrain/eval;2CPUthreads each;preserve otherowners",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-RestorationBridge-sourceHold-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/restoration_bridge_training",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.restoration_bridge_training dispatch --config PROJECT/releases/20261026-phase1-PAMF-RestorationBridge-sourceHold-release-r01/runtime.json",
+    "stop_rule": "firsttechnical/protocol/nonfinite/state/smoke/budgeterror stops newrun-owned dispatch;healthy activechildrenfinish;preserve outputs,no automaticretry/hotedit/foreign intervention;scientificnegative completesallfour"
+  },
+  "expected_artifacts": [
+    "actualE30/defaulthead/G sourceL2 smoke and integratedBridgeGG L128/U256 backward",
+    "12sourceL128/U256 no-update fullparameter gradients forfourroutes;commonfixedsourceweight;allpairs matched andauxclassificationweightgradient0",
+    "fourfinalE50/11100 students;17760 newsteprecords withsourceexposure/view/paircounts",
+    "allfour V27000 eightviews;pairedTX/RX/day/heldtrained;fixedsourcechoice",
+    "independentPID/CWD/argv/GPU/loggrowth andclosed-artifact verification;no target"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "heldRX1 G3 paired accuracy gain vs same-seed PLControl",
+      "overallV rawclean paired gain"
+    ],
+    "secondary": [
+      "raw/Graw/H3/G3 byTX/RX/day",
+      "matchedSeparateRG versusBridgeRG netcorrection",
+      "validanchors/positive/negativepairs andactualexposure",
+      "alltrainingfinite andfixedE50budget"
+    ],
+    "source_rule": "heldG3>=+.3pp andoverallrawclean>=-.1pp,allfourfinishbeforechoice",
+    "target": "none inthisrun;futurepassingcandidate separatelyfrozen three-student raw/sameG seven-view formal test",
+    "truth_policy": "only visibleL and eval-only V labels;Utruth alwayshidden;no targethandle or targetprediction"
+  },
+  "rows": [
+    {
+      "row_id": "F0-SeparateRG-sourceHold-s2026092701",
+      "method": "SeparateRG",
+      "purpose": "two-view identity relation andinputcoverage control",
+      "config_ref": "generatedconfigs/SeparateRG.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/configs/SeparateRG.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "views": [
+          "raw",
+          "G"
+        ],
+        "pair_mode": "separate",
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;not three students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownoriginalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;historicalthreeE30 90epochs/cache costs separate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/F/F0-SeparateRG-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/logs/SeparateRG.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.restoration_bridge_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/configs/SeparateRG.json",
+      "expected_artifacts": [
+        "actualE30/defaulthead/G sourceL2 smoke and integratedBridgeGG L128/U256 backward",
+        "12sourceL128/U256 no-update fullparameter gradients forfourroutes;commonfixedsourceweight;allpairs matched andauxclassificationweightgradient0",
+        "fourfinalE50/11100 students;17760 newsteprecords withsourceexposure/view/paircounts",
+        "allfour V27000 eightviews;pairedTX/RX/day/heldtrained;fixedsourcechoice",
+        "independentPID/CWD/argv/GPU/loggrowth andclosed-artifact verification;no target"
+      ]
+    },
+    {
+      "row_id": "F0-BridgeRG-sourceHold-s2026092701",
+      "method": "BridgeRG",
+      "purpose": "two-view identity relation andinputcoverage control",
+      "config_ref": "generatedconfigs/BridgeRG.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/configs/BridgeRG.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "views": [
+          "raw",
+          "G"
+        ],
+        "pair_mode": "bridge",
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;not three students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownoriginalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;historicalthreeE30 90epochs/cache costs separate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/F/F0-BridgeRG-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/logs/BridgeRG.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.restoration_bridge_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/configs/BridgeRG.json",
+      "expected_artifacts": [
+        "actualE30/defaulthead/G sourceL2 smoke and integratedBridgeGG L128/U256 backward",
+        "12sourceL128/U256 no-update fullparameter gradients forfourroutes;commonfixedsourceweight;allpairs matched andauxclassificationweightgradient0",
+        "fourfinalE50/11100 students;17760 newsteprecords withsourceexposure/view/paircounts",
+        "allfour V27000 eightviews;pairedTX/RX/day/heldtrained;fixedsourcechoice",
+        "independentPID/CWD/argv/GPU/loggrowth andclosed-artifact verification;no target"
+      ]
+    },
+    {
+      "row_id": "F0-BridgeHG-sourceHold-s2026092701",
+      "method": "BridgeHG",
+      "purpose": "two-view identity relation andinputcoverage control",
+      "config_ref": "generatedconfigs/BridgeHG.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/configs/BridgeHG.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "views": [
+          "H",
+          "G"
+        ],
+        "pair_mode": "bridge",
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;not three students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownoriginalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;historicalthreeE30 90epochs/cache costs separate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/F/F0-BridgeHG-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/logs/BridgeHG.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.restoration_bridge_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/configs/BridgeHG.json",
+      "expected_artifacts": [
+        "actualE30/defaulthead/G sourceL2 smoke and integratedBridgeGG L128/U256 backward",
+        "12sourceL128/U256 no-update fullparameter gradients forfourroutes;commonfixedsourceweight;allpairs matched andauxclassificationweightgradient0",
+        "fourfinalE50/11100 students;17760 newsteprecords withsourceexposure/view/paircounts",
+        "allfour V27000 eightviews;pairedTX/RX/day/heldtrained;fixedsourcechoice",
+        "independentPID/CWD/argv/GPU/loggrowth andclosed-artifact verification;no target"
+      ]
+    },
+    {
+      "row_id": "F0-BridgeGG-sourceHold-s2026092701",
+      "method": "BridgeGG",
+      "purpose": "two-view identity relation andinputcoverage control",
+      "config_ref": "generatedconfigs/BridgeGG.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/configs/BridgeGG.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "views": [
+          "G",
+          "G_next"
+        ],
+        "pair_mode": "bridge",
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;not three students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownoriginalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;historicalthreeE30 90epochs/cache costs separate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/F/F0-BridgeGG-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/logs/BridgeGG.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.restoration_bridge_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/configs/BridgeGG.json",
+      "expected_artifacts": [
+        "actualE30/defaulthead/G sourceL2 smoke and integratedBridgeGG L128/U256 backward",
+        "12sourceL128/U256 no-update fullparameter gradients forfourroutes;commonfixedsourceweight;allpairs matched andauxclassificationweightgradient0",
+        "fourfinalE50/11100 students;17760 newsteprecords withsourceexposure/view/paircounts",
+        "allfour V27000 eightviews;pairedTX/RX/day/heldtrained;fixedsourcechoice",
+        "independentPID/CWD/argv/GPU/loggrowth andclosed-artifact verification;no target"
+      ]
+    }
+  ],
+  "notes": [
+    "The previous fourResidualMix variants allfailed sourcegate;preserve original gate and allnegative results.",
+    "Existing nativeU RDrop/As/ORD and REPLrawjoint160 contrast alreadyexplored;new test changes actualraw/H/G input relation,not novelty claimforgeneric contrast.",
+    "The same pseudo class across different physicalRX is positive;different classes negative. Same-packet/sameRX identity pairs areexcluded. No TX-truth fromU.",
+    "SeparateRG andBridgeRG actualtwoinputs,q,acceptance,normalization,parameterdose,schedule,paircounts match;only sameview versuscrossview membership differs.",
+    "Alltwo-view acceptedjoint160 share detachedmean/std floor1e-4 andL2eps1e-4;rejected/held packets excluded fromstats. Temperature.2,full2U normalization.",
+    "Currentstudent feature coordinates,no frozenfeaturebank/EMA/newhead. Auxclassweight gradient0 butfeaturefusionnorm/gain train;mainL/rawPL jointhead remains.",
+    "Gcache andHcache physicalkeys/namespace unchanged;GG usesk and(k+1)%3,not repeatedsamechannel withnewname;no newG weight or randomnoise.",
+    "Rawclean>=85.98174603174603%,rawsix>72.0961970899471%,sameG-LUsix>78.07463624338624%,samecandidate three students remains finalobjective;sourcepass isnot success."
+  ],
+  "matrix": {
+    "methods": [
+      "SeparateRG",
+      "BridgeRG",
+      "BridgeHG",
+      "BridgeGG"
+    ],
+    "routes": {
+      "SeparateRG": [
+        "raw",
+        "G"
+      ],
+      "BridgeRG": [
+        "raw",
+        "G"
+      ],
+      "BridgeHG": [
+        "H",
+        "G"
+      ],
+      "BridgeGG": [
+        "G",
+        "G_next"
+      ]
+    },
+    "pair_modes": {
+      "SeparateRG": "separate",
+      "BridgeRG": "bridge",
+      "BridgeHG": "bridge",
+      "BridgeGG": "bridge"
+    },
+    "student_seeds": [
+      2026092701
+    ],
+    "epochs": [
+      20,
+      10,
+      20
+    ],
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "held_extra_RX": 1,
+    "temperature": 0.2,
+    "normalization": "sum_valid_contrastive_anchor_loss/(2*original_U_batch)",
+    "dose_rule": "12sourcebatches common min(.25,.1medianPrimary/max_method_medianExtra);nooptimizer/V/target",
+    "loss": "unchangedT1L+ordinaryrawPL+commonWeight*ramp444*two_view_identity_relations;noauxCE",
+    "source_criterion": {
+      "held_G3_gain_pp_min": 0.3,
+      "overall_raw_clean_gain_pp_min": -0.1
+    },
+    "selection": "allfourfinish;highestpassingheldG3,exacttiesalphabetical;no target orautomaticthree-seed expansion"
+  },
+  "registered_at": "2026-10-26T00:09:36+00:00"
+}

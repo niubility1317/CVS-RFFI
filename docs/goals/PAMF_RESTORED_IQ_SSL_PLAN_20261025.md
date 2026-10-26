@@ -276,3 +276,22 @@ GTaskScaled在16200次留出G判断中纠正78次、弄错42次，净增36次，
 `20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01`完整核算：一个学生seed01、四E50默认头、17760记录及544源逐包单元、96方法间配对。相对PL：MixBase heldG+0.129630pp/clean-0.018519pp；MixDose heldG+0.080247pp/clean-0.014815pp；PairBase heldG+0.129630pp/clean-0.003704pp；PairDose heldG+0.104938pp/clean-0.022222pp。原+.3pp/−.1pp规则保持，源选择为无候选通过。**四条均未通过原源门槛，不扩种子，不启动本批新目标测试。** 保留所有负结果、原门槛与原联合目标；下一步依据输入/剂量配对结果确定方向。
 
 输入事后复核无取样/前向修改错误证据，有效集合无负相关对，不能据此保证TX保真。原三学生种子raw/同G联合目标保持。完整证据见[插值源报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/report.md)。
+
+
+## 下一候选：当前特征中的跨视图身份关系
+
+ResidualMix四条完整E50/sourceV已核实；MixBase/MixDose/PairBase/PairDose的留出G3差为+.129630/+.080247/+.129630/+.104938pp，均未达原+.3pp。提高剂量扩大参与RX拟合，未扩大留出迁移。同系数G/G控制比较也没有稳定优势。负结果保留，不继续仅靠全局增权。
+
+待检验假设是：恢复分支CE让模型学会判别源恢复输入，却没有明确把恢复前后不同RX的身份关系连接起来。新损失直接作用于当前学生现有joint160，原L与raw普通PL保持；无固定旧特征参照、不更新G或另训头。不将此假设写成已证明原因。原U/REPL已有RDrop、浅中层跨RX和raw joint160对比，本轮只检验不同实际输入的关系结构，不宣称通用对比学习是新机制。
+
+| 方法 | 两个额外学生输入 | 配对范围 |
+| --- | --- | --- |
+| SeparateRG | raw、同包G(H_k(raw)) | 只在各自视图内 |
+| BridgeRG | 与SeparateRG完全相同 | 只在两个视图之间 |
+| BridgeHG | 同包H_k(raw)、G(H_k(raw)) | 只跨视图 |
+| BridgeGG | 同包G(H_k(raw))、G(H_(k+1 mod3)(raw)) | 只跨视图 |
+
+G/H复用原缓存三景lowSuburban/midUrban/lowUrban，k按原step顺序轮换；GG为不同已缓存场景，不是给同一确定IQ重复取新名称。所有记录仍按同一物理key读取，不交换不同包波形。
+
+
+新run `20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01`已登记，当前只有实现/8项聚焦检查/compile，尚未启动。完整配方、共同源剂量、原E50预算、唯一一次P0/P1及原+.3/- .1规则见[预登记](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/preregistration.md)。原三学生种子联合目标保持未达成。
