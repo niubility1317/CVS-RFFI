@@ -1,0 +1,257 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-analysis-PAMF-SIG1-Covariance-Fonly-m4-r01",
+  "group_id": "pamf-sig1-selective-covariance-20261026",
+  "display_name": "用户撤下DURA后单视图PAMF协方差四组直接识别源分析",
+  "description": "按用户20261026最新仅clean及星地衍生物训练的独立F范围，只读现有冻结源域raw计数和U曝光；不使用G列晋级，不改旧run含G判定，不新增IQ、模型或target读取。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-Covariance-Fonly"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME",
+    "raw-only",
+    "source-only",
+    "user-scope-change"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01",
+    "20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01"
+  ],
+  "authorization": "用户明确：脱离DURA配合路线，只使用clean IQ及其叠加星地信道衍生物训练；原单视图完整PAMF/普通PL/无标签权限与不得重训对照保持。",
+  "code": {
+    "commit": "actual F-only analysis/config Git commit before execution",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "verified local Phase1 Python;CPU cached-header analysis",
+    "cwd": "E:/type10-7"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "existing frozen sourceV direct-F raw logits summary counts;four views raw and3H;no IQ arrays opened",
+    "contract_ref": "unchanged original F0; other protocol cohorts kept separate; prefix metadata matches original F0",
+    "physical_ids_ref": "original F0 L_s role_ids and eq_i/rx_i/day_i/sig_i/base_index;SourceDataset exact existing physical order",
+    "label_map_ref": "original F0 six registered classes; U TX truth absent",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "not reopened;original mask fit and fullL training unchanged",
+      "U_s": "only existing all-U exposure counters;TX truth absent",
+      "V": "read existing final frozen raw evaluation integer counts,not new fitting",
+      "target": "no read"
+    },
+    "train_ratio": "unchanged original7/63/30;new training0",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "new user-directed F-only source necessary conditions;no final target or goal success"
+  },
+  "checkpoint": {
+    "initialization": "no model loading;reference four independently inherited same legal SIG1 E20 plus own10+20 final trajectories",
+    "sources": [
+      "20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01"
+    ],
+    "contract_check_ref": "original covariance run actual prefix/segment/source freeze checks and full log analysis;no new checkpoint",
+    "provenance_verdict": "reuse verified same original F0 source contract,no target-trained ancestors",
+    "selection_rule": "fixed finalE50;new scope uses rawclean delta>=-27/27000 and summedraw3delta>=0 only;never inspectG columns or target to choose"
+  },
+  "execution": {
+    "host": "local",
+    "launch_owner": "current independent Codex chat",
+    "gpu_policy": "CPU only,no GPU work/process actions",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026/fonly_source",
+    "launch_command": "python -X utf8 -m experiments.pamf_u_history.fonly_source_analysis --evidence local_artifacts/pamf_u_history_20261026/covariance_source/full_evidence --output local_artifacts/pamf_u_history_20261026/fonly_source",
+    "stop_rule": "missing row remains WAITING_SOURCE_FINAL;malformed/incomplete/foreign raw headers fail analysis;never fabricate or relabel old scientific verdicts"
+  },
+  "expected_artifacts": [
+    "analysis.json raw-only conditions/counts/status for eachrow",
+    "public aggregate report;no IQ/logits/checkpoints committed"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "rawclean correct count delta vs completed matchedSIG1PL",
+      "sumraw3 correct count delta"
+    ],
+    "secondary": [
+      "allU56700 exactly30 newvisits/1701000 exposures;nohead/EMA/Utruth/target updates"
+    ],
+    "target": "none;later formalrawclean+6 matrix keeps original rawgoal floors andseed scope",
+    "selection": "eachrow independently rawclean>=-27 andsumraw3>=0;G forbidden as criterion;allU/legality invariant required",
+    "truth_policy": "cached sourceV aggregate counts only;no new labels/IQ/target"
+  },
+  "rows": [
+    {
+      "row_id": "CovSel-U",
+      "method": "CovSel-U",
+      "purpose": "raw-only independent source eligibility after explicit user scope update",
+      "config_ref": "experiments/pamf_u_history/fonly_source_analysis.py:RAW_VIEWS/rule",
+      "resolved_config_ref": "same actual source run configs/CovSel-U.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "reuse unchanged existing frozen model and source views;zero new randomness",
+      "k": null,
+      "scenario": "source raw+3H only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero training/model/IQ/target reads;cached final counts",
+      "output_root": "local_artifacts/pamf_u_history_20261026/fonly_source/CovSel-U",
+      "log_path": null,
+      "command": "python -X utf8 -m experiments.pamf_u_history.fonly_source_analysis --evidence local_artifacts/pamf_u_history_20261026/covariance_source/full_evidence --output local_artifacts/pamf_u_history_20261026/fonly_source",
+      "expected_artifacts": [
+        "analysis.json raw-only conditions/counts/status for eachrow",
+        "public aggregate report;no IQ/logits/checkpoints committed"
+      ]
+    },
+    {
+      "row_id": "CovRandom-U",
+      "method": "CovRandom-U",
+      "purpose": "raw-only independent source eligibility after explicit user scope update",
+      "config_ref": "experiments/pamf_u_history/fonly_source_analysis.py:RAW_VIEWS/rule",
+      "resolved_config_ref": "same actual source run configs/CovRandom-U.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "reuse unchanged existing frozen model and source views;zero new randomness",
+      "k": null,
+      "scenario": "source raw+3H only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero training/model/IQ/target reads;cached final counts",
+      "output_root": "local_artifacts/pamf_u_history_20261026/fonly_source/CovRandom-U",
+      "log_path": null,
+      "command": "python -X utf8 -m experiments.pamf_u_history.fonly_source_analysis --evidence local_artifacts/pamf_u_history_20261026/covariance_source/full_evidence --output local_artifacts/pamf_u_history_20261026/fonly_source",
+      "expected_artifacts": [
+        "analysis.json raw-only conditions/counts/status for eachrow",
+        "public aggregate report;no IQ/logits/checkpoints committed"
+      ]
+    },
+    {
+      "row_id": "CovFull-U",
+      "method": "CovFull-U",
+      "purpose": "raw-only independent source eligibility after explicit user scope update",
+      "config_ref": "experiments/pamf_u_history/fonly_source_analysis.py:RAW_VIEWS/rule",
+      "resolved_config_ref": "same actual source run configs/CovFull-U.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "reuse unchanged existing frozen model and source views;zero new randomness",
+      "k": null,
+      "scenario": "source raw+3H only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero training/model/IQ/target reads;cached final counts",
+      "output_root": "local_artifacts/pamf_u_history_20261026/fonly_source/CovFull-U",
+      "log_path": null,
+      "command": "python -X utf8 -m experiments.pamf_u_history.fonly_source_analysis --evidence local_artifacts/pamf_u_history_20261026/covariance_source/full_evidence --output local_artifacts/pamf_u_history_20261026/fonly_source",
+      "expected_artifacts": [
+        "analysis.json raw-only conditions/counts/status for eachrow",
+        "public aggregate report;no IQ/logits/checkpoints committed"
+      ]
+    },
+    {
+      "row_id": "CovSel-LU",
+      "method": "CovSel-LU",
+      "purpose": "raw-only independent source eligibility after explicit user scope update",
+      "config_ref": "experiments/pamf_u_history/fonly_source_analysis.py:RAW_VIEWS/rule",
+      "resolved_config_ref": "same actual source run configs/CovSel-LU.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "reuse unchanged existing frozen model and source views;zero new randomness",
+      "k": null,
+      "scenario": "source raw+3H only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero training/model/IQ/target reads;cached final counts",
+      "output_root": "local_artifacts/pamf_u_history_20261026/fonly_source/CovSel-LU",
+      "log_path": null,
+      "command": "python -X utf8 -m experiments.pamf_u_history.fonly_source_analysis --evidence local_artifacts/pamf_u_history_20261026/covariance_source/full_evidence --output local_artifacts/pamf_u_history_20261026/fonly_source",
+      "expected_artifacts": [
+        "analysis.json raw-only conditions/counts/status for eachrow",
+        "public aggregate report;no IQ/logits/checkpoints committed"
+      ]
+    }
+  ],
+  "notes": [
+    "Scope change explicitly requested by user after some source results, before any new covariance target access;not presented as originalpreregistered G-inclusive rule.",
+    "Old run result/criterion unchanged;newFonly analysis doesnot relabel previously failed G conditions as passing.",
+    "All underlying F training already uses clean+H only;legacyG evaluation is history. Otherowner untouched.",
+    "No realmodel or external action launched;focused raw-only isolation/boundary tests apply;no redundant runnerreview or datahash gate.",
+    "Partial matrices remain partial until allfour actual frozen source rows finish;source eligibility is not final performance."
+  ],
+  "matrix": {
+    "methods": [
+      "CovSel-U",
+      "CovRandom-U",
+      "CovFull-U",
+      "CovSel-LU"
+    ],
+    "new_training": 0,
+    "new_model_reads": 0,
+    "new_IQ_reads": 0,
+    "new_target_reads": 0,
+    "G_criteria": false,
+    "model_seed": 2026092701,
+    "rawclean_tolerance_correct": 27,
+    "raw_three_min_net_correct": 0
+  },
+  "registered_at": "2026-10-26T14:54:57+00:00"
+}
