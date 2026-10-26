@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "focused_test_command": "python -X utf8 -m unittest tests.test_pamf_restoration_labeler_policy",
+  "focused_tests_passed": 7,
+  "local_compile": "PASS",
+  "registry_launch_ready_fields": "VALID",
+  "independent_P0P1_review": {
+    "reviewer": "ssl_p0p1_review",
+    "initial_finding": "P1: frozen-state checker would reject the train-mode backward probe with live gradients",
+    "fix": "after gradient witnesses, clear gradients and freeze/eval the disposable probe, then compare all original parameters and registered buffers; do not restore changed buffers",
+    "targeted_re_review": "PASS",
+    "remaining_P0P1": []
+  },
+  "real_checkpoint_smoke": "first GPU worker step; not yet performed for this pilot",
+  "source_label_quality": "not yet measured",
+  "target_performance": "not measured"
+}

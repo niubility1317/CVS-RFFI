@@ -1,0 +1,246 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01",
+  "group_id": "pamf-nosig-restoration-labeler-20261026",
+  "display_name": "去SIG_TIME原始与恢复域标签专家的匹配源证伪",
+  "description": "同一NoSIG E30分叉两个全骨干/默认头专家，新增L-only10轮；raw与G输入匹配，新增适配排除RX1。冻结后自动完整V预测和困难池标签质量判断，不训练SSL学生或访问目标。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-NoSIG-RestorationLabeler-source"
+  ],
+  "tags": [
+    "PAMF",
+    "NO_SIGNATURE",
+    "matched-label-experts",
+    "L-only-new-adaptation",
+    "source-only",
+    "no-new-head",
+    "RX1-extra-adaptation-holdout"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01",
+    "20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01"
+  ],
+  "authorization": "用户授权继续研发、更适合DURA恢复IQ的SSL、后续去SIG_TIME、全部GPU；图固定规则已真实失败，独立新候选先做两标签专家源证伪。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; CPU2 threads; no installation",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300; new optimizer uses5040 fromRX3/4/6/8, RX1excluded; shared fullL6300 G cache and no-update smoke",
+      "U_s": "new IQ/labeler training/label generation reads0; original E30 ancestor did use hiddenU, preserved lineage",
+      "V": "original27000 frozen predictions only; raw or12G; truth quality arithmetic after all predictions fixed"
+    },
+    "train_ratio": "original role split unchanged; new labels not added; two labeler models each10x222 L128 from identical5040 physical records; parent E30 retains original13L17LU",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-seed two-labeler source pilot; no SSL student, U labeling or target performance; source V quality is a proxy"
+  },
+  "checkpoint": {
+    "initialization": "two independent strict loads of own fixed new NoSIG ordinaryPL E30; reset optimizer; each cumulative40 epochs",
+    "sources": [
+      "new NoSIG base own segment30 with actual scratch NoSIG E20+10 lineage; same original F0 G-LU; no old SIG F or graph pseudo-labels"
+    ],
+    "contract_check_ref": "existing actual NoSIG E30/scratch-lineage/G contract checks; native full model strict load; no inference-Reader Sinc override in training; actual L128 raw/G joint backward smoke first",
+    "provenance_verdict": "same source contract and known U-trained E30 ancestor; new10epochs L-only, never describe whole system as L-only",
+    "selection_rule": "fixed final E40 each, no checkpoint ranking; both evaluate automatically; source quality fixed before new teacher output"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-nosig-labeler-20261026",
+    "gpu_policy": "GPU0..7; global CUDA+pending<2/free>=10000MiB; one shared smoke/cache then two own labeler workers; preserve all healthy foreign tasks",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/restoration_labeler",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.restoration_labeler dispatch --config PROJECT/releases/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-release-r01/runtime.json",
+    "stop_rule": "first actual smoke/protocol/nativeSinc/defaulthead/finite/coverage/state/technical failure stops new dispatch; healthy workers finish; no automatic retry or foreign changes; fixed scientific failure archives without student training or threshold relaxation"
+  },
+  "expected_artifacts": [
+    "real NoSIG E30/defaulthead/nativeSinc/G L128 raw/G backward smoke, head and Sinc gradients finite nonzero; no optimizer",
+    "one sourceL6300x12 FP32 G IQ cache,154828800float bytes; original physical IDs; G unchanged; U/V/target cache reads0",
+    "two source final labeler checkpoints each10new epochs2220updates/40cumulative; full Sinc/body/defaulthead joint, no newhead or U iterator",
+    "4440 full training records; each284160L exposures/5040uniqueL; newRX1 exposures0; G input12views each23680exposures",
+    "RawLabeler V27000 raw logits and GLabeler12x27000 G logits, all frozen states unchanged; predictions fixed before visibleV quality",
+    "hard V labels: >=200certified AND >=99.5%precision AND >=100netcorrect vsoriginalE30; complete RX/day/TX quality cells and individual labeler controls",
+    "actual new F919582/G399732 logical packets planned; no U label generation, SSL student training or target access",
+    "onearchive transfer comparison/remotecompile; independent PID-CWD-argv-GPU-loggrowth; immutable output"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "frozen dual-labeler source hard-pool count/precision/netcorrection fixed rule"
+    ],
+    "secondary": [
+      "individual raw/G labeler quality and RX/day/TX corrected/broken",
+      "full logs, original head and nativeSinc joint training, balanced physical and12view exposures"
+    ],
+    "target": "none; original rawclean/rawsix/sameG three-student goals remain unchanged",
+    "selection": "fixed >=200 and >=99.5% and netcorrect>=100; failure retains evidence and does not launch student or adjustthreshold",
+    "truth_policy": "true L only optimizer; no new U IQ/labels; V labels only after prediction fixed; no target"
+  },
+  "rows": [
+    {
+      "row_id": "RawLabeler-s2026092701",
+      "method": "RawLabeler",
+      "purpose": "matched specialist label-source feasibility before SSL student",
+      "config_ref": "PROJECT/releases/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-release-r01/runtime.json",
+      "resolved_config_ref": "PROJECT/releases/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-release-r01/runtime.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "new_L": 5040,
+        "additional_RX1_training": false,
+        "new_U": false,
+        "view": "raw"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "source V raw",
+      "optimizer": "AdamW CENTER_UNITS/reset;betas(.9,.999)/eps1e-8/WD.0001/physicalclip5",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "own sameE30+10 new L-only adaptation=E40;2220newupdates284160L;parent knownUtrained,not a newPAMFfinal",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01/RawLabeler",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01/logs/RawLabeler.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.restoration_labeler worker --kind RawLabeler --config PROJECT/releases/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-release-r01/runtime.json",
+      "expected_artifacts": [
+        "real NoSIG E30/defaulthead/nativeSinc/G L128 raw/G backward smoke, head and Sinc gradients finite nonzero; no optimizer",
+        "one sourceL6300x12 FP32 G IQ cache,154828800float bytes; original physical IDs; G unchanged; U/V/target cache reads0",
+        "two source final labeler checkpoints each10new epochs2220updates/40cumulative; full Sinc/body/defaulthead joint, no newhead or U iterator",
+        "4440 full training records; each284160L exposures/5040uniqueL; newRX1 exposures0; G input12views each23680exposures",
+        "RawLabeler V27000 raw logits and GLabeler12x27000 G logits, all frozen states unchanged; predictions fixed before visibleV quality",
+        "hard V labels: >=200certified AND >=99.5%precision AND >=100netcorrect vsoriginalE30; complete RX/day/TX quality cells and individual labeler controls",
+        "actual new F919582/G399732 logical packets planned; no U label generation, SSL student training or target access",
+        "onearchive transfer comparison/remotecompile; independent PID-CWD-argv-GPU-loggrowth; immutable output"
+      ]
+    },
+    {
+      "row_id": "GLabeler-s2026092701",
+      "method": "GLabeler",
+      "purpose": "matched specialist label-source feasibility before SSL student",
+      "config_ref": "PROJECT/releases/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-release-r01/runtime.json",
+      "resolved_config_ref": "PROJECT/releases/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-release-r01/runtime.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "new_L": 5040,
+        "additional_RX1_training": false,
+        "new_U": false,
+        "view": "12fixedG"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "source V fourrealizations xthreepractical G;no rawlabel imitation in adaptation",
+      "optimizer": "AdamW CENTER_UNITS/reset;betas(.9,.999)/eps1e-8/WD.0001/physicalclip5",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "own sameE30+10 new L-only adaptation=E40;2220newupdates284160L;parent knownUtrained,not a newPAMFfinal",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01/GLabeler",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01/logs/GLabeler.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.restoration_labeler worker --kind GLabeler --config PROJECT/releases/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-release-r01/runtime.json",
+      "expected_artifacts": [
+        "real NoSIG E30/defaulthead/nativeSinc/G L128 raw/G backward smoke, head and Sinc gradients finite nonzero; no optimizer",
+        "one sourceL6300x12 FP32 G IQ cache,154828800float bytes; original physical IDs; G unchanged; U/V/target cache reads0",
+        "two source final labeler checkpoints each10new epochs2220updates/40cumulative; full Sinc/body/defaulthead joint, no newhead or U iterator",
+        "4440 full training records; each284160L exposures/5040uniqueL; newRX1 exposures0; G input12views each23680exposures",
+        "RawLabeler V27000 raw logits and GLabeler12x27000 G logits, all frozen states unchanged; predictions fixed before visibleV quality",
+        "hard V labels: >=200certified AND >=99.5%precision AND >=100netcorrect vsoriginalE30; complete RX/day/TX quality cells and individual labeler controls",
+        "actual new F919582/G399732 logical packets planned; no U label generation, SSL student training or target access",
+        "onearchive transfer comparison/remotecompile; independent PID-CWD-argv-GPU-loggrowth; immutable output"
+      ]
+    }
+  ],
+  "notes": [
+    "Single modelseed01;two matched domain experts are not two/three independent student seeds.",
+    "Default original six-class head and whole backbone are joint; no frozen-encoder classifier fitting, EMA, PL, auxiliary head or target optimization.",
+    "New L-only stage uses5040 otherRX labels; original E30/G sawRX1, so RX1 is additional-adaptation holdout only.",
+    "New exact10epoch expert budget is independent of unchanged E50 student/control budget; teacher costs count separately.",
+    "Raw/G differ only inputs; physical L schedule, seed and CE/optimizer equal. G view=(step-1)%12,each185batches.",
+    "U IQ never opened here; G cache generation reads L IQ without TX labels, expert F training may read L labels.",
+    "No failed graph pseudo-labels, sourceQ or VQ loaded. Original NoSIG E30 V rawconfidence/order comes from completed feature metadata.",
+    "Ifqualitypasses, U labeling and three student matching lines require separate preregistration/code release; no automatic continuation.",
+    "Default deployment/old weights and all foreign healthy work preserved."
+  ],
+  "matrix": {
+    "model_seed": 2026092701,
+    "experts": [
+      "RawLabeler",
+      "GLabeler"
+    ],
+    "teacher_parent_epoch": 30,
+    "new_epochs_each": 10,
+    "cumulative_epochs_each": 40,
+    "new_updates_each": 2220,
+    "new_total_updates": 4440,
+    "new_L_records": 5040,
+    "new_L_exposures_each": 284160,
+    "extra_RX1_training_packets": 0,
+    "new_U_training_reads": 0,
+    "L_cache_records": 6300,
+    "L_cache_G_views": 12,
+    "L_cache_G_packets": 75600,
+    "L_cache_IQ_float32_bytes": 154828800,
+    "V_records": 27000,
+    "G_V_views": 12,
+    "hard_pool_original_E30_confidence_lt": 0.95,
+    "each_adapted_labeler_confidence_gte": 0.95,
+    "quality_minimum_certified": 200,
+    "quality_minimum_precision": 99.5,
+    "quality_minimum_netcorrect": 100,
+    "expected_new_F_logical_packets": 919582,
+    "expected_new_G_logical_packets": 399732,
+    "U_label_generation": false,
+    "SSL_student_training": false,
+    "target_reads": 0
+  },
+  "registered_at": "2026-10-26T04:50:02+00:00"
+}
