@@ -23,3 +23,10 @@ R01 发布在GPU容量预检处因无进程空位退出。已独立核实run目�
 R02使用新的release/archive目录，仅允许不占GPU的CPU控制器先进入队列；每个真实smoke/训练worker仍要求全球CUDA+pending<2且free≥10000MiB才启动，不放宽并发、不停止现有任务。科学配方、源门槛和预算不变，原计划run root从未创建，仍沿用该唯一root。新增无空位场景回归已证明控制器写QUEUED且不launch任何GPU子进程，6项源入口定向检查和编译PASS；累计34项不同focused检查已有通过证据。原P0/P1及定向分类权重问题复核保持记录，没有新增报告审批或重复审查门槛。
 
 当前尚未执行真实E20 smoke或训练。R02提交后需独立核实controller/队列和后续实际GPU状态；队列成功不等于模型运行成功。
+
+
+## R02实际队列发布
+
+VERIFIED_QUEUED。执行控制器commit `26876bca7a75e14690f8af038863c3c8988209f2`，发布时本地与上游OID一致；新archive传输比较VERIFIED、远端compile PASS。独立核实N607普通账户controller的PID/CWD/完整命令身份，controller不在GPU计算进程中，操作系统子进程为空；两job均QUEUED、GPU worker为0。源模型尚未创建，真实E20联合backward smoke和训练均等待空位，不能把队列成功当作smoke或训练成功。
+
+资源guard保持全球CUDA+pending<2且free≥10000MiB，包含其他owner；有空位后自动先smoke，PASS立即启动唯一源学生。原三种子确认的两个健康学生继续原E50计划。没有目标分数反馈、G读取或现有训练变更。证据：[实际队列与零GPU子进程](queue_evidence.json)。
