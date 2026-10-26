@@ -1,0 +1,105 @@
+{
+  "schema": "pamf_paper_names_v1",
+  "effective_date": "2026-10-27",
+  "data_settings": {
+    "F0": {
+      "id": "main_split",
+      "english": "Main split",
+      "chinese": "标准划分"
+    },
+    "F1_rx_repartition_r01": {
+      "id": "receiver_split_1",
+      "english": "Receiver split 1",
+      "chinese": "接收机划分一"
+    },
+    "F2_rx_repartition_r01": {
+      "id": "receiver_split_2",
+      "english": "Receiver split 2",
+      "chinese": "接收机划分二"
+    },
+    "ManyRx": {
+      "id": "ten_class",
+      "english": "10-class setting",
+      "chinese": "十类设置"
+    },
+    "label01": {
+      "id": "labeled_1pct",
+      "english": "1% labeled",
+      "chinese": "1% 标注"
+    },
+    "label05": {
+      "id": "labeled_5pct",
+      "english": "5% labeled",
+      "chinese": "5% 标注"
+    },
+    "m1-natural": {
+      "id": "source_rx_1",
+      "english": "1 source receiver",
+      "chinese": "1 个源接收机"
+    },
+    "m2-natural": {
+      "id": "source_rx_2",
+      "english": "2 source receivers",
+      "chinese": "2 个源接收机"
+    },
+    "m3-natural": {
+      "id": "source_rx_3",
+      "english": "3 source receivers",
+      "chinese": "3 个源接收机"
+    },
+    "m4-natural": {
+      "id": "source_rx_4",
+      "english": "4 source receivers",
+      "chinese": "4 个源接收机"
+    },
+    "m6-natural": {
+      "id": "source_rx_6",
+      "english": "6 source receivers",
+      "chinese": "6 个源接收机"
+    }
+  },
+  "structures": {
+    "full": {
+      "english": "Full PAMF",
+      "chinese": "完整单视图 PAMF"
+    },
+    "no_time": {
+      "english": "w/o Time coordinate",
+      "chinese": "去显式时间坐标"
+    },
+    "no_signature": {
+      "english": "w/o Temporal signature",
+      "chinese": "去路径描述支路"
+    },
+    "no_pa": {
+      "english": "w/o PA branch",
+      "chinese": "去功放相关支路"
+    },
+    "no_reference": {
+      "english": "w/o Reference response",
+      "chinese": "去参考响应支路"
+    },
+    "moment_pooling": {
+      "english": "Moment pooling",
+      "chinese": "矩统计替代"
+    },
+    "shuffled_time": {
+      "english": "Shuffled temporal order",
+      "chinese": "固定打乱局部顺序"
+    },
+    "random_reference_phase": {
+      "english": "Phase-randomized reference",
+      "chinese": "参考模板相位打乱"
+    }
+  },
+  "derived_five_source": "5 source receivers (Main model; common target receivers)",
+  "regimes": {
+    "supervised": "Supervised",
+    "pl": "Semi-supervised (PL)"
+  },
+  "families": {
+    "main": "Main comparison",
+    "branch": "Branch ablation (CE only)"
+  },
+  "policy": "Use semantic names in new tables/figures and registry display fields. Preserve immutable legacy paths/IDs in provenance only. Historical F1/F2 are distinct from Receiver split 1/2."
+}

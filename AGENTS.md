@@ -1,3 +1,10 @@
+## PAMF 单视图默认与论文命名（2026-10-27，用户最新要求）
+
+- 后续未限定的 PAMF 结构默认单视图 SIG-TIME（完整六类识别器 196001 参数），保留时频、PA、参考响应和原联合分类头；半监督保持普通 PL0.95/权重1，无 EMA 或复杂门控。该默认覆盖下方历史 T1／三视图默认；历史权重和成绩保持原身份。
+- 论文主比较只替换为匹配单视图，完整有标签骨架保留；网络分支消融分别跑纯 CE 监督和 CE＋普通 PL，两组无 CRIC/KL/EMA，预算／标签权限匹配。当前矩阵和复用边界见 `docs/PAMF_SINGLE_VIEW_PAPER_20261027.md` 与 `configs/pamf_current_method.json`。
+- 新展示名使用 Main split、Receiver split 1/2、1%/5% labeled、m source receivers 等语义名称；原 F0/F1/F2、F01–F21、T1 仅留追溯。不得移动历史输出目录或将不同历史划分静默改标。
+- 当前论文复现 run 为 `20261027-phase1-pamf-single-view-paper-m120-r01`，108 新 F、12 精确复用；新 G／恢复缓存为0。保留其他 owner 的健康任务，不重复其已完成单视图对照。
+
 ## PAMF最终识别器固定为T1续训E50（2026-10-21，用户最新要求）
 
 - 用户指定“T1：去除As独立KL，原E30续训20至E50”为PAMF最终识别方法，累计日程明确为 **13L＋37U**；37U阶段仍联合使用L/U。标识 `pamf_t1_e50`，定义见 `configs/pamf_final_t1_e50.json`，完整机制见 `docs/PAMF_FINAL_T1_E50.md`。这覆盖本对话此前原F50／33L＋17U作为当前识别器基底的约定；该特定T1配方继续保留旧U门控与自身EMA，不静默替换为普通PL。

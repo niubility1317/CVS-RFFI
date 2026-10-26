@@ -2,12 +2,12 @@
   "method_name": "PAMF",
   "semi_supervised_method": "ordinary_PL",
   "display_name": "PAMF（普通伪标签）",
-  "status": "PROVISIONAL_BY_USER_20261025",
-  "decision_date": "2026-10-25",
-  "decision": "用户弃用接收机外推伪标签方案，普通置信度伪标签暂代当前PAMF半监督方法。",
+  "status": "SINGLE_VIEW_PAPER_REPRODUCTION_PREPARED",
+  "decision_date": "2026-10-27",
+  "decision": "用户指定单视图PAMF为默认结构，普通PL保持；主比较改为匹配单视图，分支纯CE监督/半监督均重做；可读学术命名。",
   "scope": "Current paper and future experiment method selection; historical frozen configurations and other owners remain unchanged.",
-  "source_registry_run": "20261024-phase1-PAMF-REPL-completion-m201-r01",
-  "source_matrix_method": "ordinary_PL",
+  "source_registry_run": "20261027-phase1-pamf-single-view-paper-m120-r01",
+  "source_matrix_method": "main/pl",
   "model_seeds": [
     2026092701,
     2026092702,
@@ -55,7 +55,8 @@
   "reports": {
     "current_comparison": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md",
     "grouping_rules": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md",
-    "historical_method_definition": "docs/PAMF_REPL.md"
+    "historical_method_definition": "docs/PAMF_REPL.md",
+    "current_reproduction": "docs/PAMF_SINGLE_VIEW_PAPER_20261027.md"
   },
   "reporting": {
     "main_display_columns": [
@@ -147,7 +148,7 @@
       "SDG",
       "PAMF"
     ],
-    "PAMF_no_channel_ordinary_PL_status": "missing; user selected delivery without new training",
+    "PAMF_no_channel_ordinary_PL_status": "new matching single-view controls registered; no result until frozen scoring",
     "PAMF_color": "#C4364E",
     "PAMF_with_DURA_color": "#E29525",
     "independent_test_populations": {
@@ -163,5 +164,30 @@
     "new_60_main_models": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
     "F0_ordinary_PL_exact_reuse": "a462b7cf4c12a655e6c7a348ce2170a089f2d1cc",
     "CPU_score_recovery": "a79bdf385489cb3822b37434a07e3c43e5ce839a"
+  },
+  "architecture": {
+    "signature_views": 1,
+    "arm": "SIG_TIME",
+    "six_class_deployment_parameters": 196001,
+    "signature_parameters": 18976,
+    "embedding_dimension": 160,
+    "default_head_joint": true,
+    "reference_and_PA_retained": true
+  },
+  "names_reference": "configs/pamf_paper_names.json",
+  "previous_three_view_results": "Historical frozen results; do not relabel as current single-view results",
+  "branch_ablation": {
+    "signature_views": 1,
+    "objective": "L CE + .68 channel-slot CE; plus ordinary PL CE only in semi-supervised rows",
+    "L_label_smoothing": 0.0,
+    "CRIC": false,
+    "paired_KL": false,
+    "EMA": false,
+    "structures": 8,
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ]
   }
 }
