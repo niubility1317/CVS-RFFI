@@ -21,3 +21,7 @@
 独立下一候选准备：[有界接收响应校正源计划](PAMF_BOUNDED_RESPONSE_SOURCE_PLAN_20261027.md)。仅有本地解析算子／合成检查，尚未发布真实源试验或训练；不依据当前单 seed/部分目标结果选参数，不改变协方差完整矩阵。任何新的 F 验证和训练继续覆盖三模型 seed。
 
 2026-10-27最终更新：协方差四方法×三seed完整12模型/28job已ANALYZED，全部clean均低于匹配PL，六景差−0.0903至+0.1001pp，未达原目标。[完整结果](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01/results.md)。有界固定F源校正的三seed也已完整负结果；后续继续全U/RX训练期物理视图路线，尚无新训练，原目标保持active。
+
+当前进展覆盖上一段“尚无新训练”：独立 `20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02` 已实际开始，RXMean-U／RXMean-LU 各三seed，原始普通PL .95/weight1与完整T1保持，三份真实E20零更新校准全部通过。仅训练期同包RX均值差软一致性，推理原始IQ；无DURA。r01导入次序技术失败0optimizer已保留，r02复用完成全U均值统计，不重训PL/Sup。全部六行固定E50后自动rawclean＋六景／168000包／独立truth-last，不以部分seed或目标结果改配方。源校准与运行记录见[当前报告](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/report.md)。
+
+当前源梯度分析只读取既有36批校准记录；它不代表性能结论，也不触发权重或seed选择。结果工具要求完整三种子/每景/两个人群及同seed对照ID配对，完整训练日志核验另查每步raw/H交替、allU曝光及段间计数。源分数或梯度对齐不能替代原目标验收，原绝对目标与全部声明范围保持active。

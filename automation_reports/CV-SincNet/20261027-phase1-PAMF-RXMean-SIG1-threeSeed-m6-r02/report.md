@@ -23,3 +23,11 @@ U 与 LU 的标量均为 (nU*KL_U+64*KL_L)/(nU+64)，U 范围 detach KL_L，LU �
 发布执行 commit fa758a113f943f35a9da423fb1ca5cd3ff6a071c，archive 单次传输校验 VERIFIED、remote compile PASS。三seed各12批实际父权重联合梯度校准全部通过，参数/持久buffer不变、0optimizer/V/target，三系数均为1.0；这只是预固定剂量规则的结果，不是性能证据。
 
 四份训练worker身份、CWD/argv、实际CUDA卡及步日志增长独立核实，当前01/02的U/LU在GPU1/3/4/5，03两行排队。原fullL768、AsKL0、普通PL及新增损失在已观察步骤实际执行，全观察U作用非零。这里只验证启动前缀，完整训练和正式三seed测试仍未完成。详见launch_verification.json；完成后逐行自动clean+六景预测/独立评分，不修改其他owner。
+
+完成后核算工具已经落实为 `experiments.pamf_u_history.rx_mean_results`：只读取已固定预测与已有独立评分，先要求22job／六候选行全完成，核实24组同seed物理ID配对，再汇总7056000次候选raw决策、12份含对照评分。按混淆计数合并cross_rx／cross_both的3:1人口，报告逐seed、均值/样本SD、同seed配对差、每景及TX/RX/day等分层，不重读truth/IQ/weights。原协方差分析的既有完整结果在参数化共用统计后逐字段完全一致，旧结果不改。
+
+完整日志核验入口为 `experiments.pamf_u_history.rx_mean_audit`，冻结行逐段解析全部step/epoch与完整stdout；查每个尾批124、raw/H各15遍、各RX／20个风格对覆盖、444步ramp及段间PL计数重置。当前六行尚未冻结，不能把启动前缀当完整日志分析。统计工具4项、既有统计回归3项、曝光核验3项测试通过，源训练代码和远端执行commit不变。
+
+既有三seed36批源校准的新增分析见[calibration_analysis.json](calibration_analysis.json)。按选定alpha在full ramp参考下，raw组辅助/主梯度比中位数约3.57%至5.64%，H组约7.18%至11.51%；最大单批16.55%。原系数规则约束总体中位尺度，并非逐批10%硬上限，实际ramp早期权重更低。U范围10/36批、LU范围9/36批的辅助梯度与原fullL＋PL主梯度余弦为负；这是初始源模型的欧氏梯度局部关系，不能当作AdamW实际方向、泛化损失因果解释或改配方依据。高置信伪标签能支持身份监督，但不能保证额外正则目标每步同向。没有新增F前向/权重/IQ/真值读取，健康训练保持。
+
+完整run结束后按现有runtime执行一次 `rx_mean_audit --runtime ... --output .../completed_source_audit.json`，再用 `rx_mean_results collect --runtime ... --output .../frozen_results_bundle.json` 和 `rx_mean_results analyze --bundle ... --output .../results`。未完成时collector拒绝给出正式汇总；不据中途源指标选种子或停行。
