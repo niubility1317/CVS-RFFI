@@ -1,2 +1,3 @@
 {"at": "2026-10-26T06:21:59+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-26T06:35:44+00:00", "status": "RUNNING", "note": "R40真实source smoke/U56700缓存及六行L128-U256反传通过；2858唯一noisy U，六GPU真实E32训练，身份/GPU/记录增长及零非有限独立核实；非三seed或目标结果。", "evidence": ["automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/launch_evidence.json"], "row_id": null}
+{"at": "2026-10-26T06:49:13+00:00", "status": "RUNNING", "note": "全可用12122记录/2097stdout已核，六行共同1879步U/noisy曝光逐步相同；继续健康训练。另核实seed02/03实际NoSIG E20张量和来源，未扩训或访问target。", "evidence": ["automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/available_execution_evidence.json"], "row_id": null}
