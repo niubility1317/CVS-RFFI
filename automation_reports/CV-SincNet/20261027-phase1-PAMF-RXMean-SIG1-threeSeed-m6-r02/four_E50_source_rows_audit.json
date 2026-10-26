@@ -1,0 +1,627 @@
+{
+  "status": "PARTIAL_RX_MEAN_SOURCE_ROWS_AUDITED",
+  "observed_at": 1793047594.615256,
+  "rows": [
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092701,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0004976720257210209,
+          "last_epoch_new_loss_mean": 0.002658299236508036,
+          "first_source_V_correct": 26429,
+          "last_source_V_correct": 26480,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.00042535035161334007,
+          "last_epoch_new_loss_mean": 0.00220028053038871,
+          "first_source_V_correct": 26499,
+          "last_source_V_correct": 26558,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1613220,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 2551500,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 334483,
+            "mean_shift": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 298121,
+            "mean_shift": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 332203,
+            "mean_shift": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 334306,
+            "mean_shift": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 314107,
+            "mean_shift": 340200
+          }
+        },
+        "by_replica": [
+          283500,
+          283500,
+          283500
+        ],
+        "by_scene": [
+          283500,
+          283632,
+          283368
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true,
+        "mean_shift_U_seen": 1701000,
+        "mean_shift_L_pairs": 426240,
+        "raw_base_U": 850500,
+        "H_base_U": 850500,
+        "extra_L_teacher_packets": 426240,
+        "extra_L_student_packets": 426240,
+        "nonzero_shift_U": 1701000,
+        "by_RX_style": {
+          "1->3": 85299,
+          "1->4": 84411,
+          "1->6": 85442,
+          "1->8": 85048,
+          "3->1": 84843,
+          "3->4": 85356,
+          "3->6": 84655,
+          "3->8": 85346,
+          "4->1": 84999,
+          "4->3": 85276,
+          "4->6": 85328,
+          "4->8": 84597,
+          "6->1": 84717,
+          "6->3": 85247,
+          "6->4": 85170,
+          "6->8": 85066,
+          "8->1": 85220,
+          "8->3": 84798,
+          "8->4": 84995,
+          "8->6": 85187
+        },
+        "stored_training_statistics": 20
+      },
+      "PL_acceptance": 0.948395061728395,
+      "coefficient": 1.0,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092701,
+        "method": "RXMean-U",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26558,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24286,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 20004,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16228,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2943.977725386154,
+      "cumulative_training_seconds": 4804.209026967175,
+      "full_stdout_bytes": 163138,
+      "fatal_markers": []
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092702,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0005116073394953042,
+          "last_epoch_new_loss_mean": 0.002648293044625756,
+          "first_source_V_correct": 26438,
+          "last_source_V_correct": 26536,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.00042562244886318475,
+          "last_epoch_new_loss_mean": 0.0023076663282490125,
+          "first_source_V_correct": 26524,
+          "last_source_V_correct": 26581,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1613585,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 2551500,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 333268,
+            "mean_shift": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 302388,
+            "mean_shift": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331489,
+            "mean_shift": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 331937,
+            "mean_shift": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 314503,
+            "mean_shift": 340200
+          }
+        },
+        "by_replica": [
+          283500,
+          283500,
+          283500
+        ],
+        "by_scene": [
+          283500,
+          283632,
+          283368
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true,
+        "mean_shift_U_seen": 1701000,
+        "mean_shift_L_pairs": 426240,
+        "raw_base_U": 850500,
+        "H_base_U": 850500,
+        "extra_L_teacher_packets": 426240,
+        "extra_L_student_packets": 426240,
+        "nonzero_shift_U": 1701000,
+        "by_RX_style": {
+          "1->3": 84547,
+          "1->4": 85169,
+          "1->6": 85252,
+          "1->8": 85232,
+          "3->1": 85003,
+          "3->4": 85186,
+          "3->6": 84880,
+          "3->8": 85131,
+          "4->1": 85052,
+          "4->3": 85264,
+          "4->6": 85025,
+          "4->8": 84859,
+          "6->1": 85000,
+          "6->3": 85338,
+          "6->4": 85095,
+          "6->8": 84767,
+          "8->1": 85114,
+          "8->3": 85396,
+          "8->4": 85294,
+          "8->6": 84396
+        },
+        "stored_training_statistics": 20
+      },
+      "PL_acceptance": 0.9486096413874192,
+      "coefficient": 1.0,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092702,
+        "method": "RXMean-U",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26581,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24316,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 19961,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16088,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2888.143060910981,
+      "cumulative_training_seconds": 4944.635618278757,
+      "full_stdout_bytes": 163136,
+      "fatal_markers": []
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092701,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0004974543397864935,
+          "last_epoch_new_loss_mean": 0.0026372266489685186,
+          "first_source_V_correct": 26436,
+          "last_source_V_correct": 26486,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.00042504391875899364,
+          "last_epoch_new_loss_mean": 0.0021761985973408867,
+          "first_source_V_correct": 26501,
+          "last_source_V_correct": 26557,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1613196,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 2551500,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 334384,
+            "mean_shift": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 298156,
+            "mean_shift": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 332182,
+            "mean_shift": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 334256,
+            "mean_shift": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 314218,
+            "mean_shift": 340200
+          }
+        },
+        "by_replica": [
+          283500,
+          283500,
+          283500
+        ],
+        "by_scene": [
+          283500,
+          283632,
+          283368
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true,
+        "mean_shift_U_seen": 1701000,
+        "mean_shift_L_pairs": 426240,
+        "raw_base_U": 850500,
+        "H_base_U": 850500,
+        "extra_L_teacher_packets": 426240,
+        "extra_L_student_packets": 426240,
+        "nonzero_shift_U": 1701000,
+        "by_RX_style": {
+          "1->3": 85299,
+          "1->4": 84411,
+          "1->6": 85442,
+          "1->8": 85048,
+          "3->1": 84843,
+          "3->4": 85356,
+          "3->6": 84655,
+          "3->8": 85346,
+          "4->1": 84999,
+          "4->3": 85276,
+          "4->6": 85328,
+          "4->8": 84597,
+          "6->1": 84717,
+          "6->3": 85247,
+          "6->4": 85170,
+          "6->8": 85066,
+          "8->1": 85220,
+          "8->3": 84798,
+          "8->4": 84995,
+          "8->6": 85187
+        },
+        "stored_training_statistics": 20
+      },
+      "PL_acceptance": 0.9483809523809524,
+      "coefficient": 1.0,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092701,
+        "method": "RXMean-LU",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26557,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24290,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 20017,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16217,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 3031.2277767672203,
+      "cumulative_training_seconds": 4891.397849140223,
+      "full_stdout_bytes": 163224,
+      "fatal_markers": []
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092702,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0005100841556889685,
+          "last_epoch_new_loss_mean": 0.002625075390726026,
+          "first_source_V_correct": 26452,
+          "last_source_V_correct": 26540,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.0004236206405039411,
+          "last_epoch_new_loss_mean": 0.0022862988541443906,
+          "first_source_V_correct": 26526,
+          "last_source_V_correct": 26586,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1614021,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 2551500,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 333218,
+            "mean_shift": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 302628,
+            "mean_shift": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331480,
+            "mean_shift": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 331920,
+            "mean_shift": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 314775,
+            "mean_shift": 340200
+          }
+        },
+        "by_replica": [
+          283500,
+          283500,
+          283500
+        ],
+        "by_scene": [
+          283500,
+          283632,
+          283368
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true,
+        "mean_shift_U_seen": 1701000,
+        "mean_shift_L_pairs": 426240,
+        "raw_base_U": 850500,
+        "H_base_U": 850500,
+        "extra_L_teacher_packets": 426240,
+        "extra_L_student_packets": 426240,
+        "nonzero_shift_U": 1701000,
+        "by_RX_style": {
+          "1->3": 84547,
+          "1->4": 85169,
+          "1->6": 85252,
+          "1->8": 85232,
+          "3->1": 85003,
+          "3->4": 85186,
+          "3->6": 84880,
+          "3->8": 85131,
+          "4->1": 85052,
+          "4->3": 85264,
+          "4->6": 85025,
+          "4->8": 84859,
+          "6->1": 85000,
+          "6->3": 85338,
+          "6->4": 85095,
+          "6->8": 84767,
+          "8->1": 85114,
+          "8->3": 85396,
+          "8->4": 85294,
+          "8->6": 84396
+        },
+        "stored_training_statistics": 20
+      },
+      "PL_acceptance": 0.9488659611992946,
+      "coefficient": 1.0,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092702,
+        "method": "RXMean-LU",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26586,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24318,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 19957,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16085,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2960.4531204542145,
+      "cumulative_training_seconds": 5016.969044683967,
+      "full_stdout_bytes": 163218,
+      "fatal_markers": []
+    }
+  ],
+  "pending": [
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092703
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092703
+    }
+  ],
+  "total_new_step_records": 26640,
+  "total_new_epoch_records": 120,
+  "target_reads": 0,
+  "IQ_reads": 0,
+  "weight_reads": 0,
+  "new_control_training": 0,
+  "full_goal_complete": false
+}

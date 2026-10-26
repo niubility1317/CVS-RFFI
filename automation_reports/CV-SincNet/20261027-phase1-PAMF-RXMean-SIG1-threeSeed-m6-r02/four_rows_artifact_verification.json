@@ -1,0 +1,76 @@
+{
+  "status": "FOUR_ROWS_ARTIFACTS_COMPLETE_THIRD_SEED_TRAINING",
+  "execution_commit": "fa758a113f943f35a9da423fb1ca5cd3ff6a071c",
+  "formal_rows": [
+    {
+      "row_id": "F0-RXMean-U-s2026092701",
+      "method": "RXMean-U",
+      "model_seed": 2026092701,
+      "prediction_header_complete": true,
+      "independent_score_header_complete": true,
+      "formal_samples": 168000,
+      "raw_views": 7,
+      "truth_last": true,
+      "parameters_unchanged": true,
+      "metric_values_read": false
+    },
+    {
+      "row_id": "F0-RXMean-LU-s2026092701",
+      "method": "RXMean-LU",
+      "model_seed": 2026092701,
+      "prediction_header_complete": true,
+      "independent_score_header_complete": true,
+      "formal_samples": 168000,
+      "raw_views": 7,
+      "truth_last": true,
+      "parameters_unchanged": true,
+      "metric_values_read": false
+    },
+    {
+      "row_id": "F0-RXMean-U-s2026092702",
+      "method": "RXMean-U",
+      "model_seed": 2026092702,
+      "prediction_header_complete": true,
+      "independent_score_header_complete": true,
+      "formal_samples": 168000,
+      "raw_views": 7,
+      "truth_last": true,
+      "parameters_unchanged": true,
+      "metric_values_read": false
+    },
+    {
+      "row_id": "F0-RXMean-LU-s2026092702",
+      "method": "RXMean-LU",
+      "model_seed": 2026092702,
+      "prediction_header_complete": true,
+      "independent_score_header_complete": true,
+      "formal_samples": 168000,
+      "raw_views": 7,
+      "truth_last": true,
+      "parameters_unchanged": true,
+      "metric_values_read": false
+    }
+  ],
+  "third_seed_live": [
+    {
+      "job": "train__RXMean-U-s2026092703",
+      "gpu": 4,
+      "actual_GPU_and_process_verified": true,
+      "observed_new_updates": 435
+    },
+    {
+      "job": "train__RXMean-LU-s2026092703",
+      "gpu": 1,
+      "actual_GPU_and_process_verified": true,
+      "observed_new_updates": 238
+    }
+  ],
+  "total_complete_source_step_records": 26640,
+  "total_complete_source_epoch_records": 120,
+  "metric_values_read": false,
+  "new_control_training": 0,
+  "new_truth_reads": 0,
+  "source_validation_rows_complete": 4,
+  "three_seed_matrix_complete": false,
+  "goal_complete": false
+}

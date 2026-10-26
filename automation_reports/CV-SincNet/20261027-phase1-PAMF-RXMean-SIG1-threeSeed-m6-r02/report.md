@@ -39,3 +39,7 @@ E30节点已经实际核实：[first_segment_audit.json](first_segment_audit.jso
 两份U范围E50源权重已完成并通过完整日志核验，见first_E50_source_rows_audit.json：01/02合计13320个新增step／60模型epoch，每模型56700U各30遍，1701000曝光、raw/H各850500，原PL和fullL保持，完整stdout无fatal。此处只是最早完成源行的快照；尚未完成六行正式结果，不能据其选seed或定优胜。
 
 独立下一候选RXMeanMax已在当前目标分数尚未读取时固定、审查、提交并发布等待控制器；同幅度下四种源RX风格逐包最大KL选择，只在本run全部完成后才占GPU，不改变本run。新候选三seed/原E20+30；比较本run RXMean-U与已有PL/Sup均复用。矩阵见../20261027-phase1-PAMF-RXMeanMax-SIG1-threeSeed-m3-r01/report.md。原目标保持active。
+
+最新节点：01/02的U、LU四行均已完成固定E50、V四视图源诊断、2人口×7raw正式预测及独立评分。四行共26640条新增step／120模型epoch全部解析；每行56700U各30遍，source_validation均已闭合，无fatal。见four_E50_source_rows_audit.json。正式prediction/score完成头和scores文件已另行读回核实，但未读取局部metric值；完整三seed比较仍待03，不能把这四行冒充稳定性能。
+
+03的U/LU两行已真实启动，PID/UID/CWD/argv/CUDA及非零更新已核实，当前不再只是预约。见four_rows_artifact_verification.json。所有seed、目标范围和配置保持，四行已完成读出不重测；新RXMeanMax仍等待本完整矩阵结束，无GPUworker。
