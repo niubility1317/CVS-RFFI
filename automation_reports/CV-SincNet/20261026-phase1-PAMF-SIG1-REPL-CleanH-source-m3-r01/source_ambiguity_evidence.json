@@ -1,0 +1,139 @@
+{
+  "status": "VERIFIED_FROZEN_SOURCE_AMBIGUITY_DIAGNOSTIC",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01",
+  "source_execution_commit": "d860ee49a036c599bcb0d7848feed22cc7de8bd7",
+  "model_seed": 2026092701,
+  "source_physical_records_per_model": 27000,
+  "existing_source_prediction_decisions_read": 324000,
+  "models": [
+    {
+      "method": "REPL_H2_U",
+      "source_V": 27000,
+      "raw95_accepted": 25817,
+      "raw95_rejected": 1183,
+      "rejected_raw_top1_correct": 757,
+      "top2_boundary_ties": 0
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "source_V": 27000,
+      "raw95_accepted": 25789,
+      "raw95_rejected": 1211,
+      "rejected_raw_top1_correct": 779,
+      "top2_boundary_ties": 0
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "source_V": 27000,
+      "raw95_accepted": 25804,
+      "raw95_rejected": 1196,
+      "rejected_raw_top1_correct": 773,
+      "top2_boundary_ties": 0
+    }
+  ],
+  "partial_set_logit_gradient_finite_difference_max_error": 2.5777519008229888e-11,
+  "gradient_scope": "Per-example six-logit derivatives versus source true-CE derivatives; not parameter gradients, full training updates or optimizer movement.",
+  "data_scope": "All completed sourceV logits, raw plus three fixed direct-H scenes; no new F/IQ/UTXtruth/target/G read. V labels only evaluate saved frozen predictions. Different fixed H scenes are not actual randomized training Ha/Hb pairs.",
+  "candidate_policy_scope": "Diagnostic only. All equal boundary probabilities included to avoid label-index tie preferences; no threshold/loss/config/candidate/source-order changes to the two live pilots.",
+  "current_training_changes": 0,
+  "new_model_forwards": 0,
+  "IQ_reads": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "restoration_reads": 0,
+  "quality_cells": 135,
+  "logit_gradient_cells": 126,
+  "selected_historic_method_overall_quality": [
+    {
+      "method": "REPL_H2_LU_Pair",
+      "policy": "raw_top2_ties",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "n": 1196,
+      "raw95_rejected": 1196,
+      "eligible_percent_of_rejected": 100.0,
+      "truth_in_set": 991,
+      "set_coverage_percent": 82.85953177257525,
+      "raw_top1_correct": 773,
+      "set_size_mean": 2.0,
+      "informative_sets": 1196,
+      "set_size_histogram": {
+        "1": 0,
+        "2": 1196,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "raw_probability_mass_median": 0.9512568097641645
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "policy": "raw_top2_mass95_ties",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "n": 602,
+      "raw95_rejected": 1196,
+      "eligible_percent_of_rejected": 50.33444816053512,
+      "truth_in_set": 592,
+      "set_coverage_percent": 98.33887043189368,
+      "raw_top1_correct": 492,
+      "set_size_mean": 2.0,
+      "informative_sets": 602,
+      "set_size_histogram": {
+        "1": 0,
+        "2": 602,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "raw_probability_mass_median": 0.9932274906767751
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "policy": "raw_credible_mass95_ties",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "n": 1196,
+      "raw95_rejected": 1196,
+      "eligible_percent_of_rejected": 100.0,
+      "truth_in_set": 1132,
+      "set_coverage_percent": 94.64882943143813,
+      "raw_top1_correct": 773,
+      "set_size_mean": 3.024247491638796,
+      "informative_sets": 1171,
+      "set_size_histogram": {
+        "1": 0,
+        "2": 602,
+        "3": 188,
+        "4": 206,
+        "5": 175,
+        "6": 25
+      },
+      "raw_probability_mass_median": 0.9819434142189065
+    }
+  ],
+  "selected_mass95_lowurban_candidate_direction": {
+    "method": "REPL_H2_LU_Pair",
+    "policy": "raw_top2_mass95_ties",
+    "view": "practical_low_urban",
+    "loss": "candidate_set",
+    "teacher_view": "raw",
+    "n": 602,
+    "nonzero_gradient_pairs": 602,
+    "small_gradient_pairs": 0,
+    "opposite_true_CE": 103,
+    "opposite_percent_nonzero": 17.109634551495017,
+    "cosine_mean": 0.4318112194795344,
+    "cosine_median": 0.5380062511538377,
+    "cosine_p10": -0.25788744709977146,
+    "cosine_p90": 0.9110248351110367,
+    "loss_gradient_norm_median": 0.4396593024629726
+  },
+  "at_least_in_set_negative_direction": {
+    "n": 93,
+    "reason": "103 negative-cosine examples but only602-592=10 false candidate sets; therefore at least93 have true class inside their set.",
+    "interpretation": "Candidate membership can be correct while its probability-mass loss competes with true-CE in logit space. This is not a parameter-gradient or training-performance result."
+  }
+}
