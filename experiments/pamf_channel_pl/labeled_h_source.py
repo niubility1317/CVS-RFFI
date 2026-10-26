@@ -8,7 +8,7 @@ from . import clean_h_source as base
 from .labeled_h_anchor import RECIPE,LabeledHAnchor
 
 RUN='20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01'
-RELEASE='20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r01'
+RELEASE='20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r02'
 METHOD='REPL_H2_LU_LAnchorH';BASE_METHOD='REPL_H2_LU_Pair';SEED=2026092701
 RAW_MIN=26568;H3_MIN=62109
 

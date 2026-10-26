@@ -29,7 +29,7 @@
     "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2; four F roots only; no G",
-    "cwd": "PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r01"
+    "cwd": "PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r02"
   },
   "data": {
     "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
@@ -86,9 +86,9 @@
     "launch_owner": "codex-pamf-L-anchor-H-source-20261027",
     "gpu_policy": "GPU0..7; global CUDA+pending<2/free>=10000MiB; one new source student; countallowners; preserve current2confirmationstudents andforeignhealthy",
     "remote_run_root": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01",
-    "remote_log_root": "PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r01/controller.log",
-    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/labeled_h_source",
-    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.labeled_h_source dispatch --config PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r01/runtime.json",
+    "remote_log_root": "PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r02/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/labeled_h_source_r02",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.labeled_h_source dispatch --config PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r02/runtime.json",
     "stop_rule": "first input/ancestry/role/head/hook/finite/budget/sourcefreeze/systemtechnicalfailure stopsnewdispatch; no autoretry or foreignmutation; healthytasks/artifacts preserved; scientificFAIL retained"
   },
   "expected_artifacts": [
@@ -172,7 +172,8 @@
     "Loss: L2normalizedUphysicalHq anddetachedtwoLrawjoint160keys, tau.2; pos acceptedraw95samepseudoTXastrueLTX/differentRX, neg trueLTXdiffers; sameTXsameRXexcluded; loss meanwholephysicalhalf, twoHmean, factor6*.05/1.25 addedinsideoriginalUguard.",
     "No G root/weight/restoredIQ/features orscores; no extrahead, no inferenceparams, no extraF or productionautogradpass. Smoke extra derivative probes discarded.",
     "33 focused tests and compile PASS; unique independent P0/P1 review identified one direct smoke classification-weight grouping issue, fixed with one targeted regression and targeted re-review PASS0remainingP0/P1. Realcheckpointsmoke is launcherfirststep. Existing continuous R&D authorization and ExclusiveMinimalWorkflow; no separate designapproval gate.",
-    "Detach Lkey features only blocks this auxiliary path through those tensors; shared backbone still updates jointly from original L and U. Final classweight direct auxiliary derivative0 does not imply final protected classweight update unchanged; original fullL/U guard still applies."
+    "Detach Lkey features only blocks this auxiliary path through those tensors; shared backbone still updates jointly from original L and U. Final classweight direct auxiliary derivative0 does not imply final protected classweight update unchanged; original fullL/U guard still applies.",
+    "ReleaseattemptR01 GPUcapacitypreflightfailed before run/release/controller creation; independentpoststate verified, uploadedarchive retained. R02 uses distinct release/archive and CPU-only queue controller; no immediateGPU requirement, actual worker guard unchanged. Same planned run root never previously created, same method/matrix/data/budget/sourcegate. Added one empty-capacity queue regression PASS; sourceentry6 targetedtestsPASS."
   ],
   "matrix": {
     "student_seeds": [

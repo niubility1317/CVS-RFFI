@@ -37,7 +37,7 @@ for gpu in range(8):
  compute={int(x.strip()) for x in apps if x.strip().isdigit()}
  free=int(subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip())
  if len(compute|{pid for pid,g in pending.items() if g==gpu})<2 and free>=10000:available.append(gpu)
-if not available:raise ValueError('No capacity;preserve other owners')
+if not available and p.get('require_immediate_gpu',True):raise ValueError('No capacity;preserve other owners')
 if hashlib.sha256(Path(p['archive_remote']).read_bytes()).hexdigest()!=p['sha256']:raise ValueError('Archive transfer mismatch')
 release.mkdir()
 with tarfile.open(p['archive_remote']) as archive:

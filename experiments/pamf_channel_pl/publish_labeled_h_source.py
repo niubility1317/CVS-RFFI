@@ -28,7 +28,7 @@ def publish(repo,output,context):
             item=tarfile.TarInfo(name);item.size=len(value);item.mode=0o644;dst.addfile(item,io.BytesIO(value))
     prefix=project+'/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20'
     required=[*c['frozen_sources'].values(),c['template'],c['reference'],c['expected_source_contract'],prefix+'/complete.json',prefix+'/final_ssdg.pth']
-    package=dict(runtime=rt,required=required,archive_remote=project+'/releases/'+archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
+    package=dict(runtime=rt,required=required,archive_remote=project+'/releases/'+archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),require_immediate_gpu=False)
     for name,value in [('runtime.json',rt),('package.json',package)]:
         (out/name).write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')
     subprocess.run(['scp',*CONNECTION,str(archive),'N607:'+package['archive_remote']],check=True,timeout=60)

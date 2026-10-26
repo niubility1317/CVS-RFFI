@@ -60,5 +60,16 @@ class LabeledHSourceTests(unittest.TestCase):
             with self.assertRaises(ValueError):s.worker(c,'train_eval')
         evaluate.assert_not_called()
 
+    def test_controller_queues_without_launching_GPU_workers_when_global_slots_full(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project=tmp.replace('\\','/');Path(tmp,'runs').mkdir();release=project+'/releases/'+s.RELEASE
+            rt=dict(run_id=s.RUN,project=project,python='python',release_root=release,run_root=project+'/runs/'+s.RUN,context=release+'/context.json',runtime_file=release+'/runtime.json',code_commit='commit',frozen_sources={k:k for k in ('F','AF','BASE','FOLD')},allowed_gpus=list(range(8)),launch_owner='codex-pamf-L-anchor-H-source-20261027')
+            jobs=[dict(id='smoke',kind='smoke',dependencies=[],completion='not_complete',successful_statuses=['PASS'],gpu_pool=list(range(8)))]
+            class FirstQueueSnapshot(Exception):pass
+            with patch.object(s,'prepare',return_value=jobs),patch('experiments.pamf_repl_completion.runner.capacity',return_value=({101,102},20000)),patch('experiments.pamf_repl_completion.runner.processes',return_value={}),patch('experiments.pamf_peer_supervised.runner.launch') as launch,patch.object(s.time,'sleep',side_effect=FirstQueueSnapshot):
+                with self.assertRaises(FirstQueueSnapshot):s.dispatch(rt)
+            launch.assert_not_called();state=json.loads((Path(rt['run_root'])/'pipeline_state.json').read_text())
+            self.assertEqual(state['jobs']['smoke']['status'],'QUEUED');self.assertEqual(state['counts'],{'QUEUED':1});self.assertFalse(state['systemic_stop_new_launches'])
+
 
 if __name__=='__main__':unittest.main()

@@ -13,6 +13,11 @@
     "remaining_P0": 0,
     "remaining_P1": 0
   },
-  "actual_checkpoint_smoke": "LAUNCHER_FIRST_STEP_PENDING; PASS continues immediately",
-  "target_access": false
+  "actual_checkpoint_smoke": "LAUNCHER_FIRST_STEP_PENDING",
+  "target_access": false,
+  "total_distinct_focused_tests": 34,
+  "capacity_queue_regression": "PASS",
+  "after_capacity_change_targeted_source_entry_tests": 6,
+  "after_capacity_change_targeted_result": "PASS",
+  "worker_capacity_guard_unchanged": true
 }

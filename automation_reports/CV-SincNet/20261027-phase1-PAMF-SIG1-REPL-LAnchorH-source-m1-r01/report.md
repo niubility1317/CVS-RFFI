@@ -14,3 +14,12 @@
 本地验证完成，见[验证范围](local_verification.json)。初次P0/P1发现原头中的base_norm/pa_norm/gain也是部署特征融合参数，不能要求整段cls_head辅助梯度为0。已将零导数检查限定到最终cls_head.weight，特征融合参数归入other_features，并增加真实可微融合回归；唯一一次定向复核通过。生产损失、标签/mask/forward/预算/源门槛没有改变。
 
 停止Lkey特征梯度只限制新增项通过这些特征张量的回传；原L全部CE和骨干联合训练继续。分类权重不直接参与新增特征loss，不意味着经过原L/U组投影后的实际参数更新与参照完全相同。当前未启动；不能把本地通过写成真实权重检查或源收益已完成。
+
+
+## 首次发布容量检查未通过，改为显卡空位队列
+
+R01 发布在GPU容量预检处因无进程空位退出。已独立核实run目录、release目录和controller提交文件均未创建；没有启动训练或模型检查。已上传R01 archive及本地package/runtime保留，没有重复覆盖或把上传当成执行成功。见[失败层与后态](prelaunch_capacity_evidence.json)。
+
+R02使用新的release/archive目录，仅允许不占GPU的CPU控制器先进入队列；每个真实smoke/训练worker仍要求全球CUDA+pending<2且free≥10000MiB才启动，不放宽并发、不停止现有任务。科学配方、源门槛和预算不变，原计划run root从未创建，仍沿用该唯一root。新增无空位场景回归已证明控制器写QUEUED且不launch任何GPU子进程，6项源入口定向检查和编译PASS；累计34项不同focused检查已有通过证据。原P0/P1及定向分类权重问题复核保持记录，没有新增报告审批或重复审查门槛。
+
+当前尚未执行真实E20 smoke或训练。R02提交后需独立核实controller/队列和后续实际GPU状态；队列成功不等于模型运行成功。
