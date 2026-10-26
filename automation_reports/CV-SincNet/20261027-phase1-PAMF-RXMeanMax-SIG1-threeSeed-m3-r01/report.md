@@ -23,3 +23,9 @@ L额外64对仍为原随机风格KL且detach，保留与RXMean-U相同的标量�
 执行 commit 05e320bb0c554d9b135cec2e43b0e667617a8375 已推送并独立比较上游OID；单archive传输校验VERIFIED、remote compile PASS。5项focused tests与一次独立P0/P1审查PASS。普通账号一次preflight核实新root不存在、原三份scratchE20合同匹配、R02全U均值bank完整；源数据未重验。
 
 控制器PID/CWD/argv/UID已独立核实，两次观测log126→252bytes且pipeline时间增长，状态WAITING_FOR_PREDECESSOR、12job全QUEUED、GPUworker0，真实新最大选择checkpoint/梯度smoke仍PENDING。当前六行随机风格矩阵保持原进程/预算；前序完整结束后才执行本矩阵，并在首步真实smoke通过后自动继续。当前排队不当作神经训练成功。见launch_verification.json。
+
+完整结果与训练核算入口已实现，尚未读取本候选目标结果。`experiments.pamf_u_history.rx_mean_max_results` 在三行及12job全部完成后，只读取冻结预测和已有评分；核实18组同seed ID配对，比较SIG1-PL、SIG1-Sup和随机RXMean-U三类已完成参考，共12份评分／候选3528000次raw决策。按cross_rx／cross_both混淆计数加权，报告逐seed、均值/样本SD、逐景/TX/RX/day及配对差。缺seed、错参考run或不完整pipeline均拒绝正式汇总，不用部分结果选方法。
+
+`experiments.pamf_u_history.rx_mean_max_audit` 对全部完成行的每步／每epoch／完整stdout检查四候选前向成本、最大KL选择、各RX的全U曝光及段间状态。四种风格必须被计算，但最大选择允许只实际选中其中一部分，不强制伪造20个风格对均被选中。完整预算必须是候选eval6804000包、teacherU9355500包／studentU3402000包，source/U真值/target权限保持。当前只做等待状态的只读预检查：0行已冻结，3行pending，不把它当真实梯度smoke通过。
+
+上述分析/核算新增5项测试及原随机风格统计4项、协方差统计3项、曝光核验3项均PASS；既有完整协方差结果在共用统计增加第三参考能力后逐字段不变。仅修改本地分析工具，远端神经执行commit仍为05e320bb0c554d9b135cec2e43b0e667617a8375，训练/选择配方未改。完整结束后分别执行max_audit、max_results collect、max_results analyze，使用已登记runtime；新指标不能反馈到当前已固定矩阵。

@@ -39,7 +39,7 @@ def check_history(h):
     if sum(h['by_replica'])!=850500 or sum(h['by_scene'])!=850500:raise ValueError('Only the fifteen H-base epochs count as H exposure')
 
 
-def audit_remote(rt):
+def audit_remote(rt,methods=('RXMean-U','RXMean-LU')):
     import gzip,json,math,re,statistics,time
     from pathlib import Path
     root=Path(rt['run_root']);rows=[];pending=[]
@@ -49,7 +49,7 @@ def audit_remote(rt):
         if isinstance(x,dict):return all(finite(v) for v in x.values())
         if isinstance(x,list):return all(finite(v) for v in x)
         return True
-    for method in ('RXMean-U','RXMean-LU'):
+    for method in methods:
         for seed in (2026092701,2026092702,2026092703):
             rid='F0-'+method+'-s'+str(seed);source=root/'F'/rid/'source'
             if not (source/'complete.json').exists():pending.append(dict(method=method,model_seed=seed));continue
@@ -80,7 +80,7 @@ def audit_remote(rt):
             rows.append(dict(method=method,model_seed=seed,new_step_records=calls,new_epoch_records=epochs_total,segments=segments,exposure=h,
                 PL_acceptance=h['accepted']/h['seen'],coefficient=c['rx_mean_coefficient'],source_validation=v,actual_training_seconds=done['seconds'],
                 cumulative_training_seconds=done['cumulative_training_seconds'],full_stdout_bytes=log.stat().st_size,fatal_markers=fatal))
-    return dict(status='COMPLETE_RX_MEAN_SOURCE_ROWS_AUDITED' if len(rows)==6 and all(r['source_validation'] for r in rows) else 'PARTIAL_RX_MEAN_SOURCE_ROWS_AUDITED',
+    return dict(status='COMPLETE_RX_MEAN_SOURCE_ROWS_AUDITED' if len(rows)==3*len(methods) and all(r['source_validation'] for r in rows) else 'PARTIAL_RX_MEAN_SOURCE_ROWS_AUDITED',
         observed_at=time.time(),rows=rows,pending=pending,total_new_step_records=sum(r['new_step_records'] for r in rows),total_new_epoch_records=sum(r['new_epoch_records'] for r in rows),
         target_reads=0,IQ_reads=0,weight_reads=0,new_control_training=0,full_goal_complete=False)
 

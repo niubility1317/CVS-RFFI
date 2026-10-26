@@ -21,18 +21,18 @@ def locations(rt):
     return rows
 
 
-def collection_script(rt):
-    if rt['run_id']!=RUN:raise ValueError('One actual RX-mean release runtime only')
+def collection_script(rt,*,run_id=RUN,methods=METHODS,references=REFERENCES,row_locations=None,completion_status='RX_MEAN_THREE_SEED_COMPLETE',models=6,jobs=22):
+    if rt['run_id']!=run_id:raise ValueError('One actual RX-mean release runtime only')
     script=r'''
 import json
 from pathlib import Path
 import numpy as np
 rt=RUNTIME;rows=ROWS;methods=METHODS;seeds=SEEDS;tasks=TASKS;views=VIEWS;counts=COUNTS;references=REFERENCES
 root=Path(rt['run_root']);done=json.loads((root/'complete.json').read_text());state=json.loads((root/'pipeline_state.json').read_text())
-if (done['status']!='RX_MEAN_THREE_SEED_COMPLETE' or done['models']!=6 or done['methods']!=list(methods)
+if (done['status']!=COMPLETION_STATUS or done['models']!=MODEL_COUNT or done['methods']!=list(methods)
  or done['model_seeds']!=list(seeds) or not done['raw_only'] or not done['truth_last']
- or state['status']!='RX_MEAN_THREE_SEED_COMPLETE' or len(state['jobs'])!=22
- or any(v['status']!='COMPLETE' for v in state['jobs'].values())):raise ValueError('All six models and independent scores must finish first')
+ or state['status']!=COMPLETION_STATUS or len(state['jobs'])!=JOB_COUNT
+ or any(v['status']!='COMPLETE' for v in state['jobs'].values())):raise ValueError('All registered models and independent scores must finish first')
 scores=[];physical={};decisions=0
 for row in rows:
  folder=Path(row['root']);prediction=json.loads((folder/'predictions/complete.json').read_text());scored=json.loads((folder/'scores/complete.json').read_text())
@@ -61,7 +61,8 @@ for method in methods:
 print(json.dumps(dict(status='THREE_SEED_FROZEN_RESULTS_COLLECTED',scores=scores,pairing_checks=checks,
  logical_candidate_raw_decisions=decisions,truth_reads=0,IQ_reads=0,weight_reads=0)))
 '''
-    for name,value in [('RUNTIME',rt),('ROWS',locations(rt)),('METHODS',METHODS),('SEEDS',SEEDS),('TASKS',TASKS),('VIEWS',VIEWS),('COUNTS',COUNTS),('REFERENCES',REFERENCES)]:script=script.replace(name,repr(value))
+    for name,value in [('RUNTIME',rt),('ROWS',locations(rt) if row_locations is None else row_locations),('METHODS',methods),('SEEDS',SEEDS),('TASKS',TASKS),('VIEWS',VIEWS),('COUNTS',COUNTS),('REFERENCES',references),
+        ('COMPLETION_STATUS',completion_status),('MODEL_COUNT',models),('JOB_COUNT',jobs)]:script=script.replace(name,repr(value))
     compile(script,'frozen_rx_mean_collection','exec');return script
 
 

@@ -20,7 +20,7 @@ def expected_run(method,seed):
     return OLD_CONFIRM if seed==SEEDS[0] and method!='CovFull-U' else RUN
 
 
-def pairing_keys(methods=METHODS):return set(itertools.product(methods,SEEDS,REFERENCES,TASKS))
+def pairing_keys(methods=METHODS,references=REFERENCES):return set(itertools.product(methods,SEEDS,references,TASKS))
 
 
 def locations(rt):
@@ -82,9 +82,9 @@ def mean_sd(values):
     return float(np.mean(values)),float(np.std(values,ddof=1))
 
 
-def summarize(bundle,*,methods=METHODS,run_id=RUN,row_run=expected_run,status='ANALYZED_COVARIANCE_THREE_SEED_FONLY'):
-    methods=tuple(methods);all_methods=(*methods,*REFERENCES)
-    if not methods or len(set(all_methods))!=len(all_methods):raise ValueError('Unique fixed candidates and two distinct completed references required')
+def summarize(bundle,*,methods=METHODS,references=REFERENCES,run_id=RUN,row_run=expected_run,status='ANALYZED_COVARIANCE_THREE_SEED_FONLY'):
+    methods=tuple(methods);references=tuple(references);all_methods=(*methods,*references)
+    if not methods or not {'SIG1-PL','SIG1-Sup'}.issubset(references) or len(set(all_methods))!=len(all_methods):raise ValueError('Unique fixed candidates and declared completed PL/Sup references required')
     expected_decisions=len(methods)*len(SEEDS)*sum(COUNTS.values())*len(VIEWS)
     if (bundle['status']!='THREE_SEED_FROZEN_RESULTS_COLLECTED' or bundle['logical_candidate_raw_decisions']!=expected_decisions
         or any(bundle[k]!=0 for k in ('truth_reads','IQ_reads','weight_reads'))):raise ValueError('Only completed frozen decision/score readback required')
@@ -93,7 +93,7 @@ def summarize(bundle,*,methods=METHODS,run_id=RUN,row_run=expected_run,status='A
         key=tuple(row[k] for k in ('method','model_seed','reference','task'))
         if key in pairs or not row['exact_ID_order'] or row['count']!=COUNTS.get(row['task']):raise ValueError('Exact full physical pairing required')
         pairs[key]=row
-    if set(pairs)!=pairing_keys(methods):raise ValueError('Complete same-seed candidate/control pairing required')
+    if set(pairs)!=pairing_keys(methods,references):raise ValueError('Complete same-seed candidate/control pairing required')
     values={}
     for item in bundle['scores']:
         method,seed=item['method'],item['model_seed'];key=(method,seed);d=item['score']
@@ -126,13 +126,13 @@ def summarize(bundle,*,methods=METHODS,run_id=RUN,row_run=expected_run,status='A
         for metric in ('accuracy','macro_f1'):
             average,sd=mean_sd([scene_lookup[method,s,population,view][metric] for s in SEEDS]);row[metric+'_mean']=average;row[metric+'_sample_sd']=sd
         scene_mean.append(row)
-    for method,reference,population,view in itertools.product(methods,REFERENCES,POPULATIONS,VIEWS):
+    for method,reference,population,view in itertools.product(methods,references,POPULATIONS,VIEWS):
         row=dict(method=method,reference=reference,population=population,view=view,models=3)
         for metric in ('accuracy','macro_f1'):
             delta=[scene_lookup[method,s,population,view][metric]-scene_lookup[reference,s,population,view][metric] for s in SEEDS]
             average,sd=mean_sd(delta);row[metric+'_delta_mean_pp']=average;row[metric+'_delta_sample_sd_pp']=sd;row[metric+'_worst_seed_delta_pp']=min(delta)
         scene_paired.append(row)
-    for method,reference,seed in itertools.product(methods,REFERENCES,SEEDS):
+    for method,reference,seed in itertools.product(methods,references,SEEDS):
         a,b=values[method,seed],values[reference,seed]
         for key,now in a.items():
             old=b[key]
@@ -148,7 +148,7 @@ def summarize(bundle,*,methods=METHODS,run_id=RUN,row_run=expected_run,status='A
             average,sd=mean_sd([r[metric] for r in rows]);row[metric+'_mean']=average;row[metric+'_sample_sd']=sd
         strata_mean.append(row)
     lookup={(r['method'],r['model_seed'],r['population']):r for r in per_seed}
-    for method,reference,population in itertools.product(methods,REFERENCES,POPULATIONS):
+    for method,reference,population in itertools.product(methods,references,POPULATIONS):
         row=dict(method=method,reference=reference,population=population,models=3)
         for metric in ('raw_clean','raw_six_mean','clean_macro_f1','six_macro_f1_mean'):
             delta=[lookup[method,s,population][metric]-lookup[reference,s,population][metric] for s in SEEDS]

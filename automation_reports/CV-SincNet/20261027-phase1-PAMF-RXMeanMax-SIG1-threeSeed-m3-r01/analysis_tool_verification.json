@@ -1,0 +1,22 @@
+{
+  "status": "ANALYSIS_TOOLS_VERIFIED_BEFORE_TRAINING_COMPLETE",
+  "new_maximum_style_result_and_exposure_tests": 5,
+  "existing_random_style_result_regression_tests": 4,
+  "existing_covariance_result_regression_tests": 3,
+  "existing_exposure_regression_tests": 3,
+  "existing_complete_covariance_analysis_exactly_unchanged": true,
+  "reference_methods": ["SIG1-PL", "SIG1-Sup", "RXMean-U"],
+  "required_model_seeds": [2026092701, 2026092702, 2026092703],
+  "expected_candidate_models": 3,
+  "expected_score_rows_including_references": 12,
+  "expected_physical_pairings": 18,
+  "expected_raw_candidate_decisions": 3528000,
+  "new_F_forwards": 0,
+  "new_control_training": 0,
+  "new_IQ_reads": 0,
+  "new_truth_reads": 0,
+  "training_recipe_changed": false,
+  "actual_new_checkpoint_gradient_smoke": "PENDING after predecessor completes",
+  "performance_verified": false,
+  "goal_complete": false
+}
