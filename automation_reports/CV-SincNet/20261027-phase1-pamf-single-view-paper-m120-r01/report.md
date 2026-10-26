@@ -21,3 +21,13 @@ GPU0-7动态剩余容量，一卡至多一个本run训练/预测、全卡总数�
 唯一独立P0/P1审查PASS。发现并修复两项直接接口缺陷：F15模型ID导致loader误关U；clean-only行误将输入capsule场景契约改为空。两项各一次定点复核通过，无剩余P0/P1；没有额外全量复审。汇总比例统一乘100输出百分数。真实checkpoint和实际单视图/十类/L-U backward在launcher首步执行，不以本地元数据检查冒称通过。
 
 远端真实启动、smoke、PID/CWD/argv/GPU/日志增长和实际执行commit见后续launch_evidence.json；在独立读回前状态为PREPARED，无新性能结果。
+
+## 实际启动 VERIFIED
+
+执行代码 commit `04ad92212f449fb57a024ec9109b385a81a2e45b` 已推送并核实远端 OID；单一发布归档传输比较 VERIFIED、远端编译 PASS。真实已完成单视图 checkpoint 无 query 前向及 20 组实际源 L/U、单视图八结构、十类原头 backward 全部 PASS；smoke优化器更新0、target/U真值读取0。
+
+独立读回 controller 与 8 个 GPU worker 的 PID/CWD/完整命令；5 条相同训练 PID 在 118.8 秒间隔日志持续增长，7 个实际 CUDA PID 与预登记物理 GPU 一致。当前阶段状态 `{'COMPLETE': 6, 'RUNNING': 8, 'QUEUED': 334}`，没有失败。COMPLETE 为预测／评分阶段，不是新增模型训练完成数；没有新增性能结论。
+
+首次本地发布客户端因 Git 工作树未含被忽略的 SSH config 而退出，未连接或创建远端 release/run。核实原远端状态均不存在后，经已验证工作区 direct config 传输同一未改归档并唯一启动；未重复提交或改变科学配置。
+
+自动队列继续108新训练及逐行三群体/匹配恢复器读出/独立评分/可读命名结果。旧成果保留，其他owner进程改动0。实际详细证据保留私有local_artifacts，公开摘要见 launch_evidence.json。

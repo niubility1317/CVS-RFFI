@@ -28,7 +28,7 @@
   "replaces_run_id": null,
   "authorization": "User explicitly requested default single-view PAMF, ordinary PL, rerun affected paper experiments, CE branch ablation with both supervised and semi-supervised groups, and readable academic names on 2026-10-27.",
   "code": {
-    "commit": null,
+    "commit": "04ad92212f449fb57a024ec9109b385a81a2e45b",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "Existing N607 Phase1 Python/Torch, FP32, TF32 off, CPU threads2; no installation",
     "cwd": "PROJECT/releases/20261027-phase1-pamf-single-view-paper-m120-r01-release"

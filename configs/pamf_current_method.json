@@ -2,7 +2,7 @@
   "method_name": "PAMF",
   "semi_supervised_method": "ordinary_PL",
   "display_name": "PAMF（普通伪标签）",
-  "status": "SINGLE_VIEW_PAPER_REPRODUCTION_PREPARED",
+  "status": "SINGLE_VIEW_PAPER_REPRODUCTION_RUNNING",
   "decision_date": "2026-10-27",
   "decision": "用户指定单视图PAMF为默认结构，普通PL保持；主比较改为匹配单视图，分支纯CE监督/半监督均重做；可读学术命名。",
   "scope": "Current paper and future experiment method selection; historical frozen configurations and other owners remain unchanged.",
@@ -53,10 +53,11 @@
     "matched_supervised_role": "DURA-L"
   },
   "reports": {
-    "current_comparison": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md",
+    "current_comparison": "docs/PAMF_SINGLE_VIEW_PAPER_20261027.md",
     "grouping_rules": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md",
     "historical_method_definition": "docs/PAMF_REPL.md",
-    "current_reproduction": "docs/PAMF_SINGLE_VIEW_PAPER_20261027.md"
+    "current_reproduction": "docs/PAMF_SINGLE_VIEW_PAPER_20261027.md",
+    "historical_three_view_comparison": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md"
   },
   "reporting": {
     "main_display_columns": [
@@ -163,7 +164,8 @@
   "scientific_execution": {
     "new_60_main_models": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
     "F0_ordinary_PL_exact_reuse": "a462b7cf4c12a655e6c7a348ce2170a089f2d1cc",
-    "CPU_score_recovery": "a79bdf385489cb3822b37434a07e3c43e5ce839a"
+    "CPU_score_recovery": "a79bdf385489cb3822b37434a07e3c43e5ce839a",
+    "single_view_paper": "04ad92212f449fb57a024ec9109b385a81a2e45b"
   },
   "architecture": {
     "signature_views": 1,

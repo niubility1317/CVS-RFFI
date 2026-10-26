@@ -1,0 +1,173 @@
+{
+  "status": "VERIFIED",
+  "run_status": "RUNNING",
+  "execution_commit": "04ad92212f449fb57a024ec9109b385a81a2e45b",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "real_checkpoint_smoke": "PASS",
+  "source_backward_cases": 20,
+  "source_backward_checks": [
+    {
+      "row_id": "receiver_split_1-main-full-supervised-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 0,
+      "L_forward_packets": 768,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "ten_class-main-full-supervised-channel_aug-s2026092701",
+      "parameters": 196641,
+      "actual_U": 0,
+      "L_forward_packets": 768,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-main-full-supervised-no_channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 0,
+      "L_forward_packets": 768,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-main-full-pl-no_channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 256,
+      "L_forward_packets": 768,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-full-supervised-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 0,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-full-pl-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 256,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-no_time-supervised-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 0,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-no_time-pl-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 256,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-no_signature-supervised-channel_aug-s2026092701",
+      "parameters": 177025,
+      "actual_U": 0,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-no_signature-pl-channel_aug-s2026092701",
+      "parameters": 177025,
+      "actual_U": 256,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-no_pa-supervised-channel_aug-s2026092701",
+      "parameters": 184961,
+      "actual_U": 0,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-no_pa-pl-channel_aug-s2026092701",
+      "parameters": 184961,
+      "actual_U": 256,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-no_reference-supervised-channel_aug-s2026092701",
+      "parameters": 183201,
+      "actual_U": 0,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-no_reference-pl-channel_aug-s2026092701",
+      "parameters": 183201,
+      "actual_U": 256,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-moment_pooling-supervised-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 0,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-moment_pooling-pl-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 256,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-shuffled_time-supervised-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 0,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-shuffled_time-pl-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 256,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-random_reference_phase-supervised-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 0,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    },
+    {
+      "row_id": "main_split-branch-random_reference_phase-pl-channel_aug-s2026092701",
+      "parameters": 196001,
+      "actual_U": 256,
+      "L_forward_packets": 384,
+      "finite_joint_backward": true
+    }
+  ],
+  "optimizer_updates_in_smoke": 0,
+  "query_reads_in_smoke": 0,
+  "U_truth_reads_in_smoke": 0,
+  "controller_identity": "VERIFIED",
+  "worker_identity_and_CWD": "VERIFIED",
+  "same_PID_log_growth": 5,
+  "log_growth_interval_seconds": 118.82255244255066,
+  "worker_GPU_poststate_matches": 7,
+  "active_GPU_workers": 8,
+  "stage_counts": {
+    "COMPLETE": 6,
+    "RUNNING": 8,
+    "QUEUED": 334
+  },
+  "logical_F": 120,
+  "new_F": 108,
+  "reused_F": 12,
+  "new_G": 0,
+  "completed_new_models": 0,
+  "private_detailed_evidence": "local_artifacts/pamf_single_view_paper_20261027",
+  "other_owner_processes_modified": 0,
+  "local_publication_recovery": "Initial client invocation lacked the ignored SSH config in the Git worktree; no remote release/run existed. Reused the same unchanged archive through verified workspace direct config; no duplicate launch."
+}
