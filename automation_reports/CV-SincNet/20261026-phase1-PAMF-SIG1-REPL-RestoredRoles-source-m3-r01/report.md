@@ -30,3 +30,15 @@
 执行commit `ac131ec8cdbd378377a126a62f0e096f2c92bd00`。一次archive传输比较VERIFIED、remotecompile PASS，三个真实E20联合smoke全PASS：U256/六视图1536、L768/AsKL0，角色实际替换L128或0/U256或0；独立a/b恢复IQ相对差L约.211973/U约.193988，实际U梯度到singleSIG/head/body有限非零，G参数与buffers不变，0optimizer。原physical半保持、无新增F骨干前向。
 
 controller及三个worker的PID/CWD/完整命令/物理GPU与跨读step日志增长已独立核实。读取时正在E21起的新30轮，最新全部可读2652条更新逐条验证L768/U6、原crossRX/AsKL0/六权重/style0、角色G包数/调用数、非有限跳步0和U曝光。仅为可读前缀，不是完整训练或三seed结果。六基线正式结果已另行核验，配方未按其target分数改动。[启动与可读记录证据](launch_evidence.json)。
+
+
+## 当前部分源结果（全矩阵尚未结束）
+
+U-only和L-only训练/源V27000×8已完成、原进程退出；LU保持原配方继续。下面为两个单seed源结果；相对三份预登记参照各列最大值，不能作为目标集或三seed成绩。逐行source完整预测/冻结标志已读回，全部家族结束后才运行一次完整独立数组/checkpoint/逐步核算，不提前选中。
+
+| 新学生 | raw clean | 未恢复H三景 | 同G三景 | raw差值pp | H差值pp | G差值pp | 源门槛 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| U-only | 97.788889% | 74.022222% | 91.013580% | −0.633333 | −1.149383 | +0.340741 | 未通过 |
+| L-only | 98.018519% | 73.396296% | 91.206173% | −0.403704 | −1.775309 | +0.533333 | 未通过 |
+
+它们支持“G训练压力和原始IQ保持存在取舍”，不能据此降低门槛。原始L-only/U-only配方不热改、不重训；新GH两行是另行登记的同预算源消融。LU未结束时不把本run标ANALYZED，也不启动本家族三seed或target。见[部分源证据](partial_source_evidence.json)。

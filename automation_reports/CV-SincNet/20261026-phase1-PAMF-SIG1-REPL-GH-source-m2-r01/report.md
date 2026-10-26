@@ -31,3 +31,10 @@ Pair行使用两个已有G logits，同一物理包，无硬TX和新跨RX正对�
 正式目标仍是同一方法三F种子、每seed原F0 168000物理包，raw/同原G clean+六practical，全部prediction固定后独立truth-last。绝对门槛raw clean≥85.981746%、raw六景>72.096197%、同G六景>78.074636%保持，不能将源域验证或两变体当作达标。当前本run仅源证伪；target/seed扩展只在固定源门槛通过后登记。
 
 9项 focused检查和编译通过，唯一独立P0/P1审查发现的smoke/训练入口问题已修复并定点复核PASS，见 [local_verification.json](local_verification.json)。实际发布与运行证据随读回追加，不把提交返回值当作运行成功。
+
+
+## 真实发布和早期执行
+
+VERIFIED_RUNNING。执行commit `78a4edd78f768b15db061a71e3285f60a641ddfa` 与上游OID一致；单份archive传输比较VERIFIED、远端compile PASS。两方法真实E20+同G联合smoke均PASS：L768/U256×6，U接受234/256；H128、G256，H相对原U位移1.420733，Ga/Gb相对差0.193988，G全部参数/buffers不变。Pair使用12个原始低置信G包，其新增loss对singleSIG_TIME/head/body真实梯度范数0.137189/0.120040/0.301387，0optimizer/newforward/Utruth/target。梯度证据证明机制执行，不代表泛化改善。
+
+两学生均已核实PID/CWD/argv/CVD/onGPU及两次独立读取的step增长，目前同物理GPU0各一worker，全球容量政策允许每卡最多2，总容量包含其他owner。独立检查当时全部可读222条训练记录（108/114），H/G/门控/归一化/六视图计数与finite均符合；第二次状态读回为128/114条。只记录读取时刻的进度，不称收敛/三seed/目标成功。健康旧角色LU继续，L/U-only已完成源评测待全家族汇总，没有重训或发消息给其他对话。见[启动及真实smoke证据](launch_evidence.json)。

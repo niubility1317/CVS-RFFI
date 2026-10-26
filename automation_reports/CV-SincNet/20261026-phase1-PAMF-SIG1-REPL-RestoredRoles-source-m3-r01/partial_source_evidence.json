@@ -1,0 +1,40 @@
+{
+  "status": "PARTIAL_SOURCE_RESULTS",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01",
+  "complete_methods": [
+    {
+      "method": "REPL_G_U",
+      "source_V": 27000,
+      "raw_correct": 26403,
+      "H3_correct": 59958,
+      "G3_correct": 73721,
+      "raw_accuracy": 97.78888888888889,
+      "H3_accuracy": 74.02222222222223,
+      "G3_accuracy": 91.01358024691358,
+      "delta_raw": -0.6333333333333333,
+      "delta_H3": -1.1493827160493828,
+      "delta_G3": 0.34074074074074073,
+      "source_pass": false
+    },
+    {
+      "method": "REPL_G_L",
+      "source_V": 27000,
+      "raw_correct": 26465,
+      "H3_correct": 59451,
+      "G3_correct": 73877,
+      "raw_accuracy": 98.01851851851852,
+      "H3_accuracy": 73.3962962962963,
+      "G3_accuracy": 91.20617283950617,
+      "delta_raw": -0.40370370370370373,
+      "delta_H3": -1.7753086419753086,
+      "delta_G3": 0.5333333333333333,
+      "source_pass": false
+    }
+  ],
+  "remaining_method": "REPL_G_LU",
+  "source_selection": "WAIT_ALL_THREE",
+  "full_independent_array_and_checkpoint_audit": "PENDING_ALL_COMPLETE",
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "scope": "Two completed one-seed source evaluations,not full matrix or target success"
+}

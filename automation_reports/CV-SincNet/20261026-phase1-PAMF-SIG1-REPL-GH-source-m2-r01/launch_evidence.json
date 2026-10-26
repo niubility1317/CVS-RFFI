@@ -1,0 +1,199 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01",
+  "code_commit": "78a4edd78f768b15db061a71e3285f60a641ddfa",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_PID_CWD_argv_verified": true,
+  "workers": [
+    {
+      "method": "REPL_GH_U",
+      "gpu": 0,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 128
+    },
+    {
+      "method": "REPL_GH_U_Pair",
+      "gpu": 0,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 114
+    }
+  ],
+  "actual_smoke": {
+    "status": "PASS",
+    "rows": [
+      {
+        "method": "REPL_GH_U",
+        "status": "PASS",
+        "U_seen": 256,
+        "U_accepted": 234,
+        "U_student_views": 1536,
+        "L_packets": 768,
+        "style_applied": {
+          "time_down": 0,
+          "t2.pool": 0
+        },
+        "actual_U_gradient_norms": {
+          "signature": 1.5173093333960066,
+          "head": 1.69937952280483,
+          "other": 4.427312030066064
+        },
+        "restored_roles": {
+          "enable_L": false,
+          "enable_U": true,
+          "L_calls": 1,
+          "L_replaced": 0,
+          "U_replaced": 256,
+          "G_calls": 2,
+          "G_packets": 256,
+          "G_warmup_packets": 2,
+          "extra_F_forwards": 0,
+          "G_updates": 0,
+          "source_G_unchanged": true,
+          "class_CE_labels": "all true L;raw95 pseudo accepted U",
+          "channel_realizations": "a/b fixed per physical packet and cumulative epoch",
+          "scene_schedule": "a:(step-1)%3;b:step%3;independenta/brealizations",
+          "postG_noise": false,
+          "lowconfidence_extra_loss": false,
+          "original_L_As_and_U_H_halves_preserved": true,
+          "U_physical_half": "unrestored source practical H"
+        },
+        "actual_G_pair_relative_differences": {
+          "U": 0.1939881443977356
+        },
+        "GH": {
+          "H_calls": 1,
+          "H_packets": 128,
+          "physical_H_student_views": 256,
+          "pair_calls": 1,
+          "pair_packets": 128,
+          "pair_raw_rejected": 12,
+          "pair_enabled": false,
+          "pair_weight": 0.0,
+          "pair_targets": "detached opposite G probabilities; raw95 rejected only; no hard TX",
+          "pair_normalizer": "whole original G ordinary half, not accepted-only",
+          "pair_extra_F_forwards": 0,
+          "pair_extra_G_forwards": 0,
+          "guard": "combined existing accepted-U plus rejected-G pair under unchanged U/L cap1"
+        },
+        "actual_U_H_relative_difference": 1.420732855796814,
+        "actual_rejected_pair_gradient_norms": null,
+        "optimizer_updates": 0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      },
+      {
+        "method": "REPL_GH_U_Pair",
+        "status": "PASS",
+        "U_seen": 256,
+        "U_accepted": 234,
+        "U_student_views": 1536,
+        "L_packets": 768,
+        "style_applied": {
+          "time_down": 0,
+          "t2.pool": 0
+        },
+        "actual_U_gradient_norms": {
+          "signature": 1.5557287401564324,
+          "head": 1.6939902821575674,
+          "other": 4.441305774792642
+        },
+        "restored_roles": {
+          "enable_L": false,
+          "enable_U": true,
+          "L_calls": 1,
+          "L_replaced": 0,
+          "U_replaced": 256,
+          "G_calls": 2,
+          "G_packets": 256,
+          "G_warmup_packets": 2,
+          "extra_F_forwards": 0,
+          "G_updates": 0,
+          "source_G_unchanged": true,
+          "class_CE_labels": "all true L;raw95 pseudo accepted U",
+          "channel_realizations": "a/b fixed per physical packet and cumulative epoch",
+          "scene_schedule": "a:(step-1)%3;b:step%3;independenta/brealizations",
+          "postG_noise": false,
+          "lowconfidence_extra_loss": true,
+          "original_L_As_and_U_H_halves_preserved": true,
+          "U_physical_half": "unrestored source practical H"
+        },
+        "actual_G_pair_relative_differences": {
+          "U": 0.1939881443977356
+        },
+        "GH": {
+          "H_calls": 1,
+          "H_packets": 128,
+          "physical_H_student_views": 256,
+          "pair_calls": 1,
+          "pair_packets": 128,
+          "pair_raw_rejected": 12,
+          "pair_enabled": true,
+          "pair_weight": 1.2,
+          "pair_targets": "detached opposite G probabilities; raw95 rejected only; no hard TX",
+          "pair_normalizer": "whole original G ordinary half, not accepted-only",
+          "pair_extra_F_forwards": 0,
+          "pair_extra_G_forwards": 0,
+          "guard": "combined existing accepted-U plus rejected-G pair under unchanged U/L cap1"
+        },
+        "actual_U_H_relative_difference": 1.420732855796814,
+        "actual_rejected_pair_gradient_norms": {
+          "signature": 0.13718886449960352,
+          "head": 0.12004013786451152,
+          "other": 0.3013871079343849
+        },
+        "optimizer_updates": 0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      }
+    ],
+    "actual_completed_SIG1_E20": true,
+    "optimizer_updates": 0,
+    "target_reads": 0
+  },
+  "independent_available_training_records": {
+    "status": "VERIFIED_ALL_AVAILABLE",
+    "run_id": "20261026-phase1-PAMF-SIG1-REPL-GH-source-m2-r01",
+    "code_commit": "78a4edd78f768b15db061a71e3285f60a641ddfa",
+    "complete_readable_step_records": 222,
+    "rows": [
+      {
+        "method": "REPL_GH_U",
+        "pair_enabled": false,
+        "all_available_records": 108,
+        "segments": [
+          {
+            "segment": "segment30",
+            "records": 108,
+            "last_H_packets": 13824,
+            "last_rejected_pair_packets": 1615
+          }
+        ]
+      },
+      {
+        "method": "REPL_GH_U_Pair",
+        "pair_enabled": true,
+        "all_available_records": 114,
+        "segments": [
+          {
+            "segment": "segment30",
+            "records": 114,
+            "last_H_packets": 14592,
+            "last_rejected_pair_packets": 1769
+          }
+        ]
+      }
+    ],
+    "new_IQ_reads": 0,
+    "new_F_forwards": 0,
+    "new_G_forwards": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0,
+    "scope": "all complete readable training records, not convergence or target success"
+  },
+  "scope": "Two single-seed source students in progress; no new controls or target predictions; goal not achieved"
+}

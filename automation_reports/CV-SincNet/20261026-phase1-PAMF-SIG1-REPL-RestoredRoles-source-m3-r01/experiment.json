@@ -253,18 +253,20 @@
       2026092701
     ],
     "methods": [
-      "SIG1-PL",
-      "SIG1-Sup"
+      "REPL_G_U",
+      "REPL_G_L",
+      "REPL_G_LU"
     ],
-    "new_model_epochs": 80,
+    "new_model_epochs": 90,
     "shared_original_prefix_epochs": 20,
-    "total_unique_model_epochs": 100,
-    "new_optimizer_updates": 17760,
+    "total_unique_model_epochs": 110,
+    "new_optimizer_updates": 19980,
     "per_model_cumulative_epochs": 50,
     "per_model_cumulative_updates": 11100,
     "source_V": 27000,
     "source_views": 8,
     "new_G_training": 0,
+    "G_training_logical_packets": 5106960,
     "target_reads": 0,
     "graph_training": false
   },
