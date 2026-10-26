@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED_NOSIG_E20_TENSOR_IDENTITY",
+  "model_seed": 2026092701,
+  "epoch": 20,
+  "updates": 4440,
+  "signature_state_entries": 0,
+  "default_head_shape": [
+    6,
+    160
+  ],
+  "initialization": "scratch",
+  "ancestors": [],
+  "native_U": false,
+  "EMA": false,
+  "target_access": false,
+  "U_truth_read": false,
+  "model_forwards": 0,
+  "optimizer_updates": 0
+}

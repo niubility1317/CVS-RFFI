@@ -1,0 +1,226 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01",
+  "group_id": "pamf-nosig-rgpl-20261026",
+  "display_name": "去SIG_TIME的完整监督与普通PL源基线及E30图教师",
+  "description": "单学生seed01的NoSIG匹配控制；PL复用合法从零NoSIG E20+10+20，Sup从零20+10+20；各final自动V八视图。图候选尚不训练。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-NoSIG-RGPL-base"
+  ],
+  "tags": [
+    "PAMF",
+    "NO_SIGNATURE",
+    "matched-controls",
+    "ordinary-PL",
+    "full-L",
+    "source-only",
+    "single-student-seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261026-analysis-PAMF-SSL-retrospective-r01"
+  ],
+  "authorization": "用户要求后续去SIG_TIME，并继续研发达到原联合性能目标；完整复盘和RGPL设计已交付，先建立合法新结构控制及冻结E30图教师。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; CPU2 threads; no installation",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-NoSIG-RGPL-base-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300; full T1 L mechanisms in both controls",
+      "U_s": "original56700 hidden TX; only ordinaryPL control, source13L37LU; supervised U loader absent",
+      "V": "original27000 eval-only native health and fixed final eight-view source predictions"
+    },
+    "train_ratio": "original L/U/V unchanged; only whole SIG_TIME sequence branch removed; no added labels",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-student NoSIG matched source controls and frozen E30 graph teacher, not new-method or target success"
+  },
+  "checkpoint": {
+    "initialization": "NoSIG-PL own original scratch NoSIG E20 plus10 plus20; NoSIG-Sup scratch20 plus10 plus20; each totalE50/11100",
+    "sources": [
+      "m201/prefixes/F0-A1B1-NO_SIGNATURE-F21-s2026092701/segment20, fixed original ordinaryPL prefix before REPL stages",
+      "same fixed originalF0 G-LU only for final source evaluation; no researchF50 or full-SIG parent"
+    ],
+    "contract_check_ref": "actual prefix state inspected: zero sequence_pool entries,6x160 original default head,scratch/no ancestors/nativeU off/EMA off; matching original sourcecontract; real L/U/G smoke first",
+    "provenance_verdict": "actual NoSIG E20 tensor identity verified; source-only scratch ancestry; supervise row never inherits U-trained prefix",
+    "selection_rule": "fixed final E50 percontrol; E30 is predetermined graph teacher; no source/target checkpoint ranking or target access in this run"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-nosig-rgpl-base-20261026",
+    "gpu_policy": "GPU0..7; global CUDA+pending<2/free>=10000MiB; up to2 own train_eval; preserve foreign tasks",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-NoSIG-RGPL-base-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/nosig_base",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.nosig_rgpl_base dispatch --config PROJECT/releases/20261026-phase1-PAMF-NoSIG-RGPL-base-source-release-r01/runtime.json",
+    "stop_rule": "first technical/protocol/noSIGidentity/nonfinite/ancestry/budget/smoke failure stops new dispatch; healthy active rows finish; no automatic retry or output overwrite"
+  },
+  "expected_artifacts": [
+    "shared actual NoSIG E20/defaulthead/G L2 and PL L128/U256 plus Sup exactU-off joint backward smoke",
+    "one own ordinaryPL NoSIG E30/6660 teacher, retained before+20 control continuation",
+    "two NoSIG E50/11100 default-head final controls; ordinaryPL new30epochs6660updates,supervised new50epochs11100updates",
+    "complete allstep logs and actual zero signature parameters; nativeU/EMA/target/Utruth/newhead off",
+    "each completeV27000 eight-view logits,TX/RX/day/held/trained cells; no target evaluation",
+    "onearchive comparison/remotecompile/independent PID-CWD-argv-GPU-log growth; all outputs immutable"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "actual NoSIG identity and matched control full budget",
+      "fixed final sourceV eight-view accuracy"
+    ],
+    "secondary": [
+      "full sourcecurves and actualU exposures",
+      "PL E30 teacher checkpoint readiness"
+    ],
+    "target": "none; formal three-seed original rawclean/rawsix/sameG goal remainsunmet",
+    "selection": "none within controls; original RGPL graph-quality rule applies only to later graph diagnostics",
+    "truth_policy": "U TX hidden; V eval-only; no target handles or truth"
+  },
+  "rows": [
+    {
+      "row_id": "F0-NoSIG-PL-s2026092701",
+      "method": "NoSIG-PL",
+      "purpose": "matched new architecture control and teacher readiness",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/configs/NoSIG-PL.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/F/F0-NoSIG-PL-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "U_use": true,
+        "L_A": true,
+        "L_B": true,
+        "source_seed": 2026092701
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "cumulativeE50/11100; own20+10+20 if PL (new30),scratch20+10+20 if Sup(new50); no graph training",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/F/F0-NoSIG-PL-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/logs/NoSIG-PL.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.nosig_rgpl_base worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/configs/NoSIG-PL.json",
+      "expected_artifacts": [
+        "shared actual NoSIG E20/defaulthead/G L2 and PL L128/U256 plus Sup exactU-off joint backward smoke",
+        "one own ordinaryPL NoSIG E30/6660 teacher, retained before+20 control continuation",
+        "two NoSIG E50/11100 default-head final controls; ordinaryPL new30epochs6660updates,supervised new50epochs11100updates",
+        "complete allstep logs and actual zero signature parameters; nativeU/EMA/target/Utruth/newhead off",
+        "each completeV27000 eight-view logits,TX/RX/day/held/trained cells; no target evaluation",
+        "onearchive comparison/remotecompile/independent PID-CWD-argv-GPU-log growth; all outputs immutable"
+      ]
+    },
+    {
+      "row_id": "F0-NoSIG-Sup-s2026092701",
+      "method": "NoSIG-Sup",
+      "purpose": "matched new architecture control and teacher readiness",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/configs/NoSIG-Sup.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/F/F0-NoSIG-Sup-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "U_use": false,
+        "L_A": true,
+        "L_B": true,
+        "source_seed": 2026092701
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "cumulativeE50/11100; own20+10+20 if PL (new30),scratch20+10+20 if Sup(new50); no graph training",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/F/F0-NoSIG-Sup-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/logs/NoSIG-Sup.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.nosig_rgpl_base worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/configs/NoSIG-Sup.json",
+      "expected_artifacts": [
+        "shared actual NoSIG E20/defaulthead/G L2 and PL L128/U256 plus Sup exactU-off joint backward smoke",
+        "one own ordinaryPL NoSIG E30/6660 teacher, retained before+20 control continuation",
+        "two NoSIG E50/11100 default-head final controls; ordinaryPL new30epochs6660updates,supervised new50epochs11100updates",
+        "complete allstep logs and actual zero signature parameters; nativeU/EMA/target/Utruth/newhead off",
+        "each completeV27000 eight-view logits,TX/RX/day/held/trained cells; no target evaluation",
+        "onearchive comparison/remotecompile/independent PID-CWD-argv-GPU-log growth; all outputs immutable"
+      ]
+    }
+  ],
+  "notes": [
+    "NO_SIGNATURE removes whole sequence_pool,not just explicittime; base time/frequency/PA/reference and original160d defaulthead remain.",
+    "Old CE_NO_SIGNATURE and NoSIGpureCE E200 are not these full-L50 matched controls; preserve all other owners.",
+    "E30 checkpoint is fixed before graph construction,not selected from source/target results; later graph uses only L/U and Ltrue labels.",
+    "Thisrun source-only,not whole goal completion; graph candidate train and formal target matrix require separate fixed release.",
+    "No forceful replacement of deployed model or retrospective relabeling of historical weights/latency."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "NoSIG-PL",
+      "NoSIG-Sup"
+    ],
+    "new_model_epochs": 80,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 100,
+    "new_optimizer_updates": 17760,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 8,
+    "new_G_training": 0,
+    "target_reads": 0,
+    "graph_training": false
+  },
+  "registered_at": "2026-10-26T03:51:24+00:00"
+}
