@@ -1,29 +1,15 @@
-# NoSIG困难有噪声伪标签的CE/GCE与raw/H/G匹配源证伪
+# NoSIG 有噪声困难伪标签：六行匹配源实验
 
-- run_id：`20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01`
-- group_id：`pamf-nosig-noisy-hard-20261026`；类别：`cvs`；阶段：`Phase1`
-- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+**RUNNING，六行真实训练已独立核实。** 仅学生seed2026092701，尚无本批完整源结果或目标性能，原三种子实际目标未达成。
 
-## 目的与对照
+执行代码`b298bbc5afbb734e91c19c4c88ef39622a3ff6e8`；一次archive比对VERIFIED、远端compile PASS。冻结RawLabeler真实源checkpoint L2 smoke及完整U56700预测完成，F56702/G0、零optimizer；教师参数和全部注册buffer不变，U真值／target读取0。
 
-独立新噪声假设：冻结RawLabeler给原困难U生成noisy targets，用CE/缩权CE/GCE及匹配第二raw/G/HG视图；完整PAMF学生各E30+20，单seed源验证，不改旧可信标签失败结论。
+得到2858个唯一noisy candidates，占U的5.0406%，来自原E30confidence<.95、R40confidence≥.95并排除RX1。它们不是真实认证标签；已知93.829947%只是源V代理，实际U precision未知。其余U仍原raw self-PL，候选包替换旧self标签而非重复施加两套监督。
 
-## 数据、seed与模型来源
+六行实际E30/defaulthead/L128/U256联合反传smoke通过，L768/AsKL0、候选32条，三个第二视图行额外32包，默认头梯度有限非零，零optimizer。随后NoisyCE／NoisyScaledCE／NoisyGCE／NoisyGCE2Raw／NoisyGCEG／NoisyGCEHG分别在GPU0/3/4/5/6/7训练；PID/CWD/argv/GPU和训练记录增长独立核实，最近全为累计E32、非有限跳步0。
 
-实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
-逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+所有学生同父E30＋20至E50；同一批标签／mask，完整L及原默认头joint。CE、统一缩权CE与GCE(.7)用于分离标签／剂量／降权；Raw2、G、交替HG用于控制第二前向及物理视图。后两行使用原完成三fresh×三scene同G成对缓存，无新G训练、G后归一化或IQ混合。每模型新增4440步、U1134000曝光、候选57160曝光；第二视图行额外F57160包，实际逐view计数另报。教师与缓存成本单列。
 
-## 执行与存储
+每行final自动源V八视图，全部六行完成后再按固定原条件判断：较NoSIG-PL，RX1 G三景≥+.3pp、overall raw≥−.1pp且原困难池raw净正确>0。通过者先源raw，再heldG，再较低成本排序，在任何新target前冻结。RX1仅附加机制留出，基座/G已见，不称真正未见域。此处不以标签近乎无误作为前提，也不修改此前失败路线的条件。
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
-
-## 结果与覆盖
-
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
-
-## 交接
-
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+[计划](../../../docs/goals/PAMF_NOISY_HARD_PL_PLAN_20261026.md)、[预登记](preregistration.md)、[启动证据](launch_evidence.json)、[独立审查与检查](local_verification.json)。

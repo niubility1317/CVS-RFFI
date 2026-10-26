@@ -1,6 +1,6 @@
 # NoSIG 困难样本的有噪声伪标签学习
 
-状态：独立新方法假设，尚未训练学生或证明性能。原RGPL、恢复专家及两个raw锚点的固定可信标签规则均已失败，结论保留。本路线不把它们改判通过，也不放宽其门槛。它明确使用有噪声标签，检验鲁棒损失能否利用此前被排除的有效纠错。
+状态：**六行单seed源学生已实际启动，尚无完整源／目标性能。** 原RGPL、恢复专家及两个raw锚点的固定可信标签规则均已失败，结论保留。本路线不把它们改判通过，也不放宽其门槛。它明确使用有噪声标签，检验鲁棒损失能否利用此前被排除的有效纠错。
 
 ## 已知事实与新假设
 
@@ -46,3 +46,7 @@
 ## 执行
 
 N607现有普通账户，FP32／TF32off、CPU2线程；不安装依赖。GPU0至7全局CUDA＋pending<2、free≥10000MiB、计入其他owner。先真实RawLabeler checkpoint源无query smoke及完整隐藏U缓存，再六行真实NoSIG E30／L128-U256联合backward smoke，通过立即并行训练。独立不可覆盖run/release、唯一owner、一次代码提交／P0P1审查／archive比较／远端编译及独立PID-CWD-argv-GPU-loggrowth。技术失败停止新派发，健康行继续；保留所有旧任务、模型与负结果。
+
+## 实际运行
+
+run `20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01`，代码`b298bbc5afbb734e91c19c4c88ef39622a3ff6e8`。12项聚焦检查、唯一P0/P1审查、一次archive比较和远端compile通过。实际R40 checkpoint源smoke与U56700缓存完成，得到2858唯一noisy candidates；教师状态不变，U真值／target0。六行真实L128/U256 backward均通过，随后在GPU0/3/4/5/6/7训练到累计E32，PID/CWD/argv/GPU及记录增长独立核实，非有限跳步0。仅一个学生seed，不能称三种子或目标收益。完整状态见[本行报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/report.md)。
