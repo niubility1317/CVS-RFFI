@@ -35,6 +35,17 @@ class SelectiveCovarianceTest(unittest.TestCase):
         self.assertEqual(caught.exception.diagnostic['eligible_edges'],0)
         self.assertEqual(caught.exception.diagnostic['requested_edges'],1)
 
+    def test_natural_support_is_explicit_and_never_fills_ineligible_edges(self):
+        s=MaskStatistics(6);s.count.fill_(70);s.square.fill_(70);s.rx_count.fill_(1260)
+        s.sensitivity[:,0]=5*1260;s.sensitivity[:,1]=4*1260;s.samples=6300;s.paired_views=18900
+        with self.assertRaises(InsufficientMaskEvidence):s.masks(fraction=.25)
+        masks,info=s.masks(fraction=.25,support_limited=True)
+        self.assertEqual(info['selection_mode'],'natural_support_capped')
+        self.assertEqual(info['requested_edges'],3);self.assertEqual(info['selected_edges'],2)
+        self.assertEqual(int(masks['random'].sum()),2);self.assertEqual(int(masks['full'].sum()),15)
+        chosen=masks['selective'][s.edges[0],s.edges[1]].nonzero().flatten().tolist()
+        self.assertEqual(chosen,[0,1])
+
     def test_fixed_sparse_mask_and_same_size_random(self):
         s=MaskStatistics(5);raw=[];aug=[];ys=[];rs=[];ds=[]
         for y in range(6):

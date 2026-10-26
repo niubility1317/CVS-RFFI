@@ -67,7 +67,7 @@ class MaskStatistics:
         self.rx_count.index_add_(0,r,torch.ones(len(v),dtype=torch.float64,device=self.device))
         self.samples+=len(v);self.paired_views+=len(v)*len(a)
 
-    def masks(self,*,fraction=.1,random_seed=2026102623):
+    def masks(self,*,fraction=.1,random_seed=2026102623,support_limited=False):
         if (not 0<fraction<=.25 or bool((self.count<=0).any()) or bool((self.rx_count<=0).any())):
             raise ValueError('All TX/RX/day cells and fixed sparse fraction required')
         mean=(self.total/self.count[:,None]).reshape(6,5,3,-1)
@@ -80,9 +80,11 @@ class MaskStatistics:
         count=max(1,int(self.edges.shape[1]*fraction));pool=eligible.nonzero().flatten()
         basic=dict(samples=self.samples,paired_views=self.paired_views,channels=self.channels,all_edges=self.edges.shape[1],
             requested_edges=count,eligible_edges=len(pool),fraction=fraction,random_seed=random_seed,
+            selection_mode='natural_support_capped' if support_limited else 'fixed_fraction',
             source_cell_min=int(self.count.min()),source_cell_max=int(self.count.max()),
             identity_association_all_mean=float(identity.mean()),sensitivity_all_mean=float(sensitive.mean()))
-        if len(pool)<count:raise InsufficientMaskEvidence(basic)
+        if not len(pool) or (len(pool)<count and not support_limited):raise InsufficientMaskEvidence(basic)
+        if support_limited:count=min(count,len(pool))
         score=sensitive/(identity+1e-6)
         chosen=pool[torch.argsort(score[pool],descending=True,stable=True)[:count]]
         rng=torch.Generator(device=self.device).manual_seed(random_seed)

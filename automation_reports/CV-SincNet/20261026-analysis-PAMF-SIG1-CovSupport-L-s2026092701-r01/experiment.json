@@ -1,0 +1,163 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-analysis-PAMF-SIG1-CovSupport-L-s2026092701-r01",
+  "group_id": "pamf-sig1-selective-covariance-20261026",
+  "display_name": "训练L自然支持集选择性相关掩码源分析",
+  "description": "复用已完成L6300的统计，保持敏感度/TX条件，以合格支持集数量至多10%替代必须填满10%；零新增模型/IQ/目标访问。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-CovSupport-L"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME",
+    "selective-covariance",
+    "L-only-mask",
+    "source-only",
+    "same-packet"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-diagnostic-PAMF-SIG1-CovMask-L-s2026092701-r01"
+  ],
+  "authorization": "用户明确优先探索同包物理扰动驱动的选择性协方差一致性，要求随机同尺寸和全部相关项匹配控制；保留完整PAMF单视图SIG_TIME与普通PL、不影响另一对话、不重复PL/Sup控制训练。",
+  "code": {
+    "commit": "this actual derivation code/config Git commit;local result exactidentity",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "verified local phase1-cu128 Python/Torch CPU;read trusted own Torch2.1 statistic payload",
+    "cwd": "E:/type10-7"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "saved sourceL sufficient statistics only;no new IQ or model forward",
+    "contract_ref": "unchanged original F0; other protocol cohorts kept separate; prefix metadata matches original F0",
+    "physical_ids_ref": "original F0 L_s role_ids and eq_i/rx_i/day_i/sig_i/base_index;SourceDataset exact existing physical order",
+    "label_map_ref": "original F0 six registered classes; U TX truth absent",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "sourcefit6300 sufficient moments grouped90 TX/RX/day cells",
+      "U_s": "no access",
+      "V": "no access",
+      "target": "no access"
+    },
+    "train_ratio": "nooptimizer;data roles unchanged .07/.63/.30",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "explicit new source-support rule,not retroactivepassofstrict10percent,not performance"
+  },
+  "checkpoint": {
+    "initialization": "none;noF/G checkpoint loaded",
+    "sources": [
+      "completed 20261026-diagnostic-PAMF-SIG1-CovMask-L-s2026092701-r01 statistics.pt/result.json"
+    ],
+    "contract_check_ref": "matchsourcefitcode/schema/90cells/counts and originalsourcecontract;unchangedvalidateddata",
+    "provenance_verdict": "sourceLstatisticderivationonly",
+    "selection_rule": "fixed25%/50%conditionsunchanged;n=min(eligible,floor(.1*edges)),noineligiblefill"
+  },
+  "execution": {
+    "host": "local CPU",
+    "launch_owner": "current independent Codex chat",
+    "gpu_policy": "noGPUtask;nootherprocessmutation",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026/covariance_support",
+    "launch_command": "python -X utf8 -m experiments.pamf_u_history.covariance_support --statistics local_artifacts/pamf_u_history_20261026/covariance_fit/evidence/statistics.pt --fit-result local_artifacts/pamf_u_history_20261026/covariance_fit/evidence/result.json --output local_artifacts/pamf_u_history_20261026/covariance_support --code-commit ACTUAL_GIT_HEAD",
+    "stop_rule": "stopwrongsource/schema/nonfinite/emptyeligible/outputcollision,preserveartifacts;noautoquantilerelaxation"
+  },
+  "expected_artifacts": [
+    "private masks.pt fromsameLstatistics",
+    "private result.json andpublicaggregate evidence",
+    "report.md andregistry"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "actualnatural94/294supportmasks;randomsamecount/full"
+    ],
+    "secondary": [
+      "TXassociation andperturbationsensitivityselected/random/all"
+    ],
+    "target": "none",
+    "selection": "unchangedsource-only25/50quantiles,upto10percent;noclassspecificrule",
+    "truth_policy": "savedLgroupedmomentsonly;noU/V/target"
+  },
+  "rows": [
+    {
+      "row_id": "natural-support-two-layers",
+      "method": "CovSupport-L",
+      "purpose": "retaineligibleedgeswithoutfillingarbitrarybudget",
+      "config_ref": "experiments/pamf_u_history/covariance_support.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "inputfitmodelseed;noFforward;randommask2026102623",
+      "k": null,
+      "scenario": "savedsourceLraw/Asstatistics",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero newIQ/model/G/optimizer/target",
+      "output_root": "local_artifacts/pamf_u_history_20261026/covariance_support",
+      "log_path": null,
+      "command": "python -X utf8 -m experiments.pamf_u_history.covariance_support --statistics local_artifacts/pamf_u_history_20261026/covariance_fit/evidence/statistics.pt --fit-result local_artifacts/pamf_u_history_20261026/covariance_fit/evidence/result.json --output local_artifacts/pamf_u_history_20261026/covariance_support --code-commit ACTUAL_GIT_HEAD",
+      "expected_artifacts": [
+        "private masks.pt fromsameLstatistics",
+        "private result.json andpublicaggregate evidence",
+        "report.md andregistry"
+      ]
+    }
+  ],
+  "notes": [
+    "Strict10percentrunremainsFAILEDscientificmaskruleandANALYZED;thisnewcandidateisnotitsfallbackinplace.",
+    "NoadditionalFfit/sourceviews,quantile/scorechanges,targetfeedbackorPL/Supcontroltraining.",
+    "Derivedmaskstateprivate;publishaggregateonly;futuretrainingmustchecksamestatisticcontract/basis."
+  ],
+  "matrix": {
+    "new_F_forwards": 0,
+    "new_IQ_reads": 0,
+    "F_training": 0,
+    "G_reads": 0,
+    "U_truth_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "source_L_records": 6300,
+    "mask_controls": [
+      "natural_support",
+      "random_same_size",
+      "full"
+    ],
+    "model_seed": 2026092701
+  },
+  "registered_at": "2026-10-26T12:31:25+00:00"
+}

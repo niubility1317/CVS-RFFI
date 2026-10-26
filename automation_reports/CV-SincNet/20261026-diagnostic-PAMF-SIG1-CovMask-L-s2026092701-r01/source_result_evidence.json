@@ -1,0 +1,111 @@
+{
+  "status": "SOURCE_MASK_FIT_COMPLETE",
+  "run_id": "20261026-diagnostic-PAMF-SIG1-CovMask-L-s2026092701-r01",
+  "code_commit": "2e70800a486f425ad9301cd107e44827b60e1b68",
+  "recipe": {
+    "source_role": "L_s",
+    "physical_records": 6300,
+    "model_seed": 2026092701,
+    "parent_epoch": 20,
+    "parent_updates": 4440,
+    "levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "batch_size": 128,
+    "views": [
+      "raw",
+      "practical_low_suburban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "ridge": 0.001,
+    "fraction": 0.1,
+    "identity_quantile": 0.5,
+    "sensitivity_quantile": 0.75,
+    "random_mask_seed": 2026102623,
+    "source_rxs": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "fit_updates": 0,
+    "namespace": "PAMF/selective_covariance/L/frozen_E20"
+  },
+  "actual_checkpoint_epoch": 20,
+  "actual_checkpoint_updates": 4440,
+  "source_L_seen": 6300,
+  "As_physical_views": 18900,
+  "actual_feature_shapes": {
+    "time_down": [
+      48,
+      128
+    ],
+    "t2.pool": [
+      96,
+      32
+    ]
+  },
+  "diagnostics": {
+    "time_down": {
+      "samples": 6300,
+      "paired_views": 18900,
+      "channels": 48,
+      "all_edges": 1128,
+      "requested_edges": 112,
+      "eligible_edges": 94,
+      "fraction": 0.1,
+      "random_seed": 2026102623,
+      "source_cell_min": 70,
+      "source_cell_max": 70,
+      "identity_association_all_mean": 0.6231808333228724,
+      "sensitivity_all_mean": 0.03972860868753485,
+      "mask_rule_passed": false,
+      "reason": "Insufficient high-sensitivity/low-TX-association edges;do not relax silently"
+    },
+    "t2.pool": {
+      "samples": 6300,
+      "paired_views": 18900,
+      "channels": 96,
+      "all_edges": 4560,
+      "requested_edges": 456,
+      "eligible_edges": 294,
+      "fraction": 0.1,
+      "random_seed": 2026102623,
+      "source_cell_min": 70,
+      "source_cell_max": 70,
+      "identity_association_all_mean": 0.5541485434737298,
+      "sensitivity_all_mean": 0.055812292611748214,
+      "mask_rule_passed": false,
+      "reason": "Insufficient high-sensitivity/low-TX-association edges;do not relax silently"
+    }
+  },
+  "all_levels_mask_rule_passed": false,
+  "failed_levels": [
+    "time_down",
+    "t2.pool"
+  ],
+  "mask_artifact": null,
+  "parameters_and_registered_buffers_unchanged": true,
+  "F_optimizer_updates": 0,
+  "G_weight_reads": 0,
+  "G_updates": 0,
+  "U_IQ_reads": 0,
+  "U_truth_read": false,
+  "V_reads": 0,
+  "target_reads": 0,
+  "seconds": 33.705874735023826,
+  "scope": "training-L-only mask statistics;no trained SSL candidate or target performance",
+  "analysis_status": "ANALYZED_SOURCE_ONLY",
+  "full_step_records": 50,
+  "full_stdout_bytes": 1595,
+  "fatal_markers": [],
+  "interpretation": "fixed10percent mask-budget rule failed where flagged;not a negative accuracy result or a failure of the full research direction"
+}

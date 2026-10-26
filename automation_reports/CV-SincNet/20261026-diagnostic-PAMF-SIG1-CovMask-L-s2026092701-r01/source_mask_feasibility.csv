@@ -1,0 +1,3 @@
+level,samples,paired_views,channels,all_edges,requested_edges,eligible_edges,fraction,random_seed,source_cell_min,source_cell_max,identity_association_all_mean,sensitivity_all_mean,mask_rule_passed,reason
+time_down,6300,18900,48,1128,112,94,0.1,2026102623,70,70,0.6231808333228724,0.03972860868753485,False,Insufficient high-sensitivity/low-TX-association edges;do not relax silently
+t2.pool,6300,18900,96,4560,456,294,0.1,2026102623,70,70,0.5541485434737298,0.055812292611748214,False,Insufficient high-sensitivity/low-TX-association edges;do not relax silently
