@@ -87,11 +87,11 @@
   "execution": {
     "host": "N607",
     "launch_owner": "codex/root/pamf-nosigtime-e200-20261026",
-    "gpu_policy": "Physical GPUs0,2,3,4,5,6,7; at most one run worker/GPU, free>=12GiB and no foreign compute processes at launch; do not stop or modify other owners",
+    "gpu_policy": "Physical GPUs5,6,7 only; one sequential run worker/GPU; >=12GiB free and no foreign compute processes at launch",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-pamf-nosigtime-purece-e200-manysig-m8-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-pamf-nosigtime-purece-e200-manysig-m8-r01",
     "local_artifact_root": "local_artifacts/pamf_nosigtime_purece_20261026_r01",
-    "launch_command": "python -u -m experiments.standard_ce_baselines.removed_pipeline --gpus 0,2,3,4,5,6,7",
+    "launch_command": "python -u -m experiments.standard_ce_baselines.removed_pipeline --gpus 5,6,7",
     "stop_rule": "First technical error stops its GPU queue; other healthy queues finish; preserve all artifacts; no score-based rerun or stop."
   },
   "expected_artifacts": [

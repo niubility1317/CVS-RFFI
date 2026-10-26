@@ -35,3 +35,5 @@ Scratch matched whole-network ablation: ReferenceCVS/NoExplicitCFO/compensation/
 本次只测clean；同时保留全168000与D0+未见RX42000子集。已有12种常见网络和完整SIG_TIME不重训、不重新预测。全部报告按实际8seed均值/样本SD，退化种子不剔除。新整体模型指此历史纯CE SIG_TIME，不混入后来T1/EMA/X3训练配方。唯一P0/P1审查结果及真实CP smoke随发布记录。
 
 唯一独立P0/P1审查PASS。D0索引和实际日期已从原ManySig metadata核实；原104历史预测与新整体8预测均存在。新主表12常见网络+SIG_TIME完整网络+严格无SIG_TIME，共14×8=112行；先生成已有13×8的双跨结果，8行消融完整后补齐，未完成不冒充112行。原residual_fusion与native不作为当前PAMF主表行。
+
+发布前资源调整：GPU0/2/3/4已被其他健康任务使用。首次预检在任何SCP/远端写入前拒绝，尚未启动本run。实际改用空闲GPU5/6/7，一卡一条本run worker，8seed队列，科学配方不变。
