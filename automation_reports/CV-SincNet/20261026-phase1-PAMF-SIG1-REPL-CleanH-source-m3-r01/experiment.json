@@ -1,0 +1,286 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "单视图REPL：仅clean与直接星地IQ的物理视图半监督",
+  "description": "用户撤回恢复路线后，0恢复权重/IQ/分数；三行各seed01，同F预算比较U双H、低置信U同包项、L双H；复用完成对照，不重训。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-REPL-CleanH"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "single-SIG_TIME",
+    "clean-and-channel-only",
+    "source-only",
+    "physical-U-pair",
+    "all-L-true-labels"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01",
+    "20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01"
+  ],
+  "authorization": "用户最新明确脱离DURA配合路线，仅clean IQ及直接叠加星地信道衍生IQ训练；持续goal研发REPL，原完整PAMF单SIG_TIME，复用对照，全GPU可用，不联系其他对话。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2; four F code sources F/AF/BASE/FOLD; current committed leo_practical; no G root/install",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source original eq1 IQ plus direct practical residual/post_sync/noEQ H; no restoration outputs",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "all6300 trueTX; full originalCE/AsKL0/ordinary/raw/crossRX; optional independent L As views",
+      "U_s": "56700 TXhidden/RXdayvisible; clean95 accepted classCE/crossRX; raw-rejected physicalH pair only in Pair rows",
+      "V": "27000 frozen-only source validation raw+three directH; no state updates"
+    },
+    "train_ratio": "unchanged originalF0 L6300/U56700/V27000;13L37LU cumulativeE50;no extra true labels",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "code/leo_practical; fs25MHz/fc2462MHz/refSNR30; source low suburban/mid urban/low urban; original nativeAs for nondualL"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-model-seed role falsification;L-only names mean onlyLhasnewGviews,all3remainsemi-supervisedL/U;not targetperformance"
+  },
+  "checkpoint": {
+    "initialization": "same-contract original singleSIG_TIME ordinaryPL scratchE20; independently own+10+20; no G-trained student initialization",
+    "sources": [
+      "m201/F0-A1B1-SIG_TIME-F21-s2026092701/segment20, verifiedscratchE20",
+      "NoStyleNoRXE complete.config is recipe metadata only, not its weights"
+    ],
+    "contract_check_ref": "known original E20 status/epoch20/4440/empty ancestors and actualpayload/defaulthead; source_contract equal expected F0; actual joint no-query smoke first",
+    "provenance_verdict": "verified same original source IDs and scratchE20 chain, reused; no target feedback or restoration-trained ancestry",
+    "selection_rule": "source-only: raw>=max3fixedrefs−27/27000, H3>=max3fixedrefs+243/81000; all3 complete then raw first/H second/lowerH cost; no pass no expansion or target; no restoration score in decision"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-clean-h-source-20261026",
+    "gpu_policy": "GPU0..7;globalCUDA+pending<2/free>=10000MiB;countallowners;oneowncontroller,3newstudents;preserveotherhealthywork",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/clean_h_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.clean_h_source dispatch --config PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-release-r01/runtime.json",
+    "stop_rule": "first role/input/ancestry/shape/finite/actualview/frozenG/smoke/budget/outputtechnicalfailure stopsnewdispatch;healthyactivefinish;noautoretry/foreignchanges;scientificFAILkept"
+  },
+  "expected_artifacts": [
+    "actualoriginalE20 singleSIG_TIME joint-head fullL/U backward smoke; three methods, Hviews differ and lowconfidenceH loss actualsig/head/body gradients finite/nonzero",
+    "three independent own30epochs/6660updates, cumulativeE50/11100 13L37LU; L768/U6 and crossRX preserved; no extraF",
+    "each H2U1701000 generatedpackets; Loriginalnative426240 infirst2 or dualL852480 inthird; zero restoration input/root/weight/score",
+    "sourceV27000x4 directviews pernewstudent, RX/day/TX metrics and predictions; existing3raw/H references reused without forwards/training",
+    "exact sourcecounts/gate/clean-priority selection; frozen source states; no target inpilot; later threeFseed original168000 rawclean+six truthlast onlyafterpass"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "source rawcorrect/27000",
+      "source H3correct/81000"
+    ],
+    "dimensions": [
+      "method",
+      "RX",
+      "TX",
+      "day",
+      "source practical"
+    ],
+    "selection": "source-only: raw>=max3fixedrefs−27/27000, H3>=max3fixedrefs+243/81000; all3 complete then raw first/H second/lowerH cost; no pass no expansion or target; no restoration score in decision",
+    "truth_policy": "Ltrue visible; Utruehidden; Vfrozenevalonly; zero target"
+  },
+  "rows": [
+    {
+      "row_id": "F0-REPL_H2_U-s2026092701",
+      "method": "REPL_H2_U",
+      "purpose": "isolate direct physical views, rejected U pair, then trueL view diversity",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/configs/REPL_H2_U.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/F/F0-REPL_H2_U-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "clean_H_only": true,
+        "dual_L": false,
+        "U_H2": true,
+        "U_raw95classgate": true,
+        "rejected_H_pair": false,
+        "pair_weight": 0.0,
+        "pair_normalizer": "whole physical half",
+        "As_KL_L": 0.0,
+        "extra_F_forwards": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one modelseed2026092701 for eachmethod,not3seeds;originalsplit/augmentationretained;newsourcechannelsdeterministicphysicalID+epoch+role+a/b,scenea/bdifferent;no addedAWGN",
+      "k": null,
+      "scenario": "direct source practical Ha/Hb independent adjacent3scenes and realization/physicalID/cumulativeepoch namespaces; no G/no additionalAWGN",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own30epochs/6660updates, originalE20prefixshared; cumulativeE50/11100; L768+U6/studentstep; 1701000U_H plus426240nativeL_H or852480dualL_H; no extraF",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/F/F0-REPL_H2_U-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/logs/REPL_H2_U.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.clean_h_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/configs/REPL_H2_U.json",
+      "expected_artifacts": [
+        "actualoriginalE20 singleSIG_TIME joint-head fullL/U backward smoke; three methods, Hviews differ and lowconfidenceH loss actualsig/head/body gradients finite/nonzero",
+        "three independent own30epochs/6660updates, cumulativeE50/11100 13L37LU; L768/U6 and crossRX preserved; no extraF",
+        "each H2U1701000 generatedpackets; Loriginalnative426240 infirst2 or dualL852480 inthird; zero restoration input/root/weight/score",
+        "sourceV27000x4 directviews pernewstudent, RX/day/TX metrics and predictions; existing3raw/H references reused without forwards/training",
+        "exact sourcecounts/gate/clean-priority selection; frozen source states; no target inpilot; later threeFseed original168000 rawclean+six truthlast onlyafterpass"
+      ]
+    },
+    {
+      "row_id": "F0-REPL_H2_U_Pair-s2026092701",
+      "method": "REPL_H2_U_Pair",
+      "purpose": "isolate direct physical views, rejected U pair, then trueL view diversity",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/configs/REPL_H2_U_Pair.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/F/F0-REPL_H2_U_Pair-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "clean_H_only": true,
+        "dual_L": false,
+        "U_H2": true,
+        "U_raw95classgate": true,
+        "rejected_H_pair": true,
+        "pair_weight": 1.2,
+        "pair_normalizer": "whole physical half",
+        "As_KL_L": 0.0,
+        "extra_F_forwards": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one modelseed2026092701 for eachmethod,not3seeds;originalsplit/augmentationretained;newsourcechannelsdeterministicphysicalID+epoch+role+a/b,scenea/bdifferent;no addedAWGN",
+      "k": null,
+      "scenario": "direct source practical Ha/Hb independent adjacent3scenes and realization/physicalID/cumulativeepoch namespaces; no G/no additionalAWGN",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own30epochs/6660updates, originalE20prefixshared; cumulativeE50/11100; L768+U6/studentstep; 1701000U_H plus426240nativeL_H or852480dualL_H; no extraF",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/F/F0-REPL_H2_U_Pair-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/logs/REPL_H2_U_Pair.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.clean_h_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/configs/REPL_H2_U_Pair.json",
+      "expected_artifacts": [
+        "actualoriginalE20 singleSIG_TIME joint-head fullL/U backward smoke; three methods, Hviews differ and lowconfidenceH loss actualsig/head/body gradients finite/nonzero",
+        "three independent own30epochs/6660updates, cumulativeE50/11100 13L37LU; L768/U6 and crossRX preserved; no extraF",
+        "each H2U1701000 generatedpackets; Loriginalnative426240 infirst2 or dualL852480 inthird; zero restoration input/root/weight/score",
+        "sourceV27000x4 directviews pernewstudent, RX/day/TX metrics and predictions; existing3raw/H references reused without forwards/training",
+        "exact sourcecounts/gate/clean-priority selection; frozen source states; no target inpilot; later threeFseed original168000 rawclean+six truthlast onlyafterpass"
+      ]
+    },
+    {
+      "row_id": "F0-REPL_H2_LU_Pair-s2026092701",
+      "method": "REPL_H2_LU_Pair",
+      "purpose": "isolate direct physical views, rejected U pair, then trueL view diversity",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/configs/REPL_H2_LU_Pair.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/F/F0-REPL_H2_LU_Pair-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "clean_H_only": true,
+        "dual_L": true,
+        "U_H2": true,
+        "U_raw95classgate": true,
+        "rejected_H_pair": true,
+        "pair_weight": 1.2,
+        "pair_normalizer": "whole physical half",
+        "As_KL_L": 0.0,
+        "extra_F_forwards": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one modelseed2026092701 for eachmethod,not3seeds;originalsplit/augmentationretained;newsourcechannelsdeterministicphysicalID+epoch+role+a/b,scenea/bdifferent;no addedAWGN",
+      "k": null,
+      "scenario": "direct source practical Ha/Hb independent adjacent3scenes and realization/physicalID/cumulativeepoch namespaces; no G/no additionalAWGN",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own30epochs/6660updates, originalE20prefixshared; cumulativeE50/11100; L768+U6/studentstep; 1701000U_H plus426240nativeL_H or852480dualL_H; no extraF",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/F/F0-REPL_H2_LU_Pair-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/logs/REPL_H2_LU_Pair.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.clean_h_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/configs/REPL_H2_LU_Pair.json",
+      "expected_artifacts": [
+        "actualoriginalE20 singleSIG_TIME joint-head fullL/U backward smoke; three methods, Hviews differ and lowconfidenceH loss actualsig/head/body gradients finite/nonzero",
+        "three independent own30epochs/6660updates, cumulativeE50/11100 13L37LU; L768/U6 and crossRX preserved; no extraF",
+        "each H2U1701000 generatedpackets; Loriginalnative426240 infirst2 or dualL852480 inthird; zero restoration input/root/weight/score",
+        "sourceV27000x4 directviews pernewstudent, RX/day/TX metrics and predictions; existing3raw/H references reused without forwards/training",
+        "exact sourcecounts/gate/clean-priority selection; frozen source states; no target inpilot; later threeFseed original168000 rawclean+six truthlast onlyafterpass"
+      ]
+    }
+  ],
+  "notes": [
+    "Three methods eachoneFseed01,notthreeFseeds;sourcepilotonly.",
+    "No G release/checkpoint/IQ/score in runtime, training or source ranking. Existing archive contains historical code but not loaded Gweights.",
+    "Current committed practical channel code unchanged from original baseline physics; reuse validateddata, no newdatahash or approval layer.",
+    "Raw source maximum26574/27000,H3maximum60889/81000: passraw>=26547,H3>=61132. These thresholds fixed before new target.",
+    "PL-X3 reference has3signatureviews, otherREPLrefs1; used as declared source guard, not called strictsamearchitecture targetcontrol. Strict SIG1 Sup/PL3seedtargetcontrols alreadycompleted and preserved.",
+    "U RX does not revealTX; rejectedU pair only samephysicalpacket; no new class labels or negatives.",
+    "Lneverconfidencegated; original allLtrueCE/AsKL0 retained; dualLchangesinputindependence only.",
+    "DetachedHpair only raw95rejected physicalhalf, coefficient1.2, wholehalf mean; same existingU/Lcap1; no entropysharpen.",
+    "Old Gdiagnostic is not evidence that Hpair works; actual newHsmoke/sourceperformance required.",
+    "Originaltarget floors rawclean>=85.98174603174603%,rawsix>72.0961970899471%, threeFseeds/original168000 remain; no targetfeedback totraining."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "REPL_H2_U",
+      "REPL_H2_U_Pair",
+      "REPL_H2_LU_Pair"
+    ],
+    "new_model_epochs": 90,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 110,
+    "new_optimizer_updates": 19980,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 4,
+    "restoration_weight_reads": 0,
+    "restoration_IQ_used": 0,
+    "restoration_score_in_selection": false,
+    "new_control_training": 0,
+    "target_reads": 0
+  },
+  "registered_at": "2026-10-26T14:46:06+00:00"
+}

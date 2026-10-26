@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "focused_tests": 10,
+  "compile": "PASS",
+  "registration": "VALID",
+  "review": {
+    "status": "PASS",
+    "reviewer": "/root/ssl_p0p1_review",
+    "P0": 0,
+    "P1": 0,
+    "scope": "One independent direct P0/P1 review of pure four-source activation, no G model/root/IQ/score, source input legality, masks/forward order/guard integration, counts/checkpoint smoke, job entrypoints and immutable publication."
+  },
+  "real_checkpoint_smoke": "launcher first step, then immediately train onPASS",
+  "physical_channel_code_comparison": "git diff 47c264286ca689f060a3f36aafb763fe209a6f06 HEAD -- code/leo_practical/channel.py code/leo_practical/residual.py: empty",
+  "scope": "pure clean/directH implementation; no G code root or weight/IQ/score handle"
+}
