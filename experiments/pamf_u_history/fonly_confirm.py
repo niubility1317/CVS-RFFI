@@ -7,8 +7,8 @@ import time
 from experiments.cric_dura_comparison.io import read,write
 from experiments.practical_full_2x2.plan import VIEWS
 
-RUN='20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r01'
-RELEASE='20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-release-r01'
+RUN='20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02'
+RELEASE='20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-release-r02'
 SOURCE_RUN='20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01'
 BASELINE_RUN='20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01'
 METHODS=('CovSel-U','CovRandom-U','CovSel-LU')

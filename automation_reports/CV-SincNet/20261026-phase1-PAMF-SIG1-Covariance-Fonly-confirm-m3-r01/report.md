@@ -1,6 +1,6 @@
 # 协方差三组 F 直接识别正式确认
 
-状态：PLANNED。按用户最新撤下DURA配合路线，固定CovSel-U、CovRandom-U、CovSel-LU三份已完成E50/11100单视图完整PAMF，直接预测rawclean和六practical。新训练0，不读取G权重/恢复IQ，不新建恢复缓存。全部矩阵/命令/环境/CWD/输出/GPU/停止规则见experiment.json。
+状态：FAILED_BEFORE_TARGET。按用户最新撤下DURA配合路线，固定CovSel-U、CovRandom-U、CovSel-LU三份已完成E50/11100单视图完整PAMF，直接预测rawclean和六practical。新训练0，不读取G权重/恢复IQ，不新建恢复缓存。全部矩阵/命令/环境/CWD/输出/GPU/停止规则见experiment.json。
 
 三候选按独立F-only源必要条件入选，依次rawclean少6/5/6条，raw三景总正确数多58/38/103条；fullmask三景少31条未入选。全部使用冻结final，非按目标排名；不把小源收益称泛化成功。旧含G判定保留，不追认通过。此次范围变更来自用户明确要求，发生在新covariance target访问前。
 
@@ -11,3 +11,11 @@
 候选已完成一次独立P0/P1 source审查PASS；此处复用同一冻结加载和原truth-last评分，新增raw-only配置/权限边界5项测试PASS，不额外添加runner审查或数据hash gate。源码/config由执行Git commit固定，单releasearchive一次传输比较、远端compile和实际PID/CWD/argv/GPU/loggrowth核对。只在全局空闲卡启动，每卡一条ownworker；首个技术失败停止新启动、健康在跑自然完成，其他owner不操作。
 
 最终至少检查rawclean≥85.981746%、raw六景>72.096197%，并按严格同SIG1PL/Sup的逐景和分群配对结果报告；原三seed等目标保持。DURA指标因用户最新范围撤下，不再用于本路线验收。
+
+## 技术失败与保留
+
+执行commit `baea0de436f818754ffd9ab480473fed8f966959`，单archive传输比较VERIFIED/远端compilePASS。controller及三worker已独立核实退出，均在source_check拒绝不一致的source_cache处停止，尚未加载模型/完成sourceL2smoke或读取target IQ/truth；readouts/smoke/prediction没有输出。终态pipeline和三份完整traceback已读回，不以提交成功称发布成功。
+
+预测context从旧确认context继承了full2x2缓存句柄，实际三模型使用的合法source_cache/source_contract来自其已冻结训练配置。修复仅将确认context的这两项指向三行一致的实际配置，保持原物理契约/模型/权重/seed/阈值/目标矩阵，不放宽source_check。新的离线检查直接读取三份实际source完成记录、raw源计数与全U状态，全部PASS，旧错误路径仍拒绝，零IQ/模型/target读取。
+
+本run和release不覆盖、不重启；替代为`20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02`。此失败不产生性能结论。

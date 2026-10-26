@@ -23,4 +23,4 @@
 
 选择性L/U比选择性U的三景多45条正确预测，即+0.055556pp；两者clean相同。选择性U比随机控制三景多20条，即+0.024691pp。只是单seed源结果，不能证明稳定泛化或选择规则的独立因果收益；原梯度压力不同的限制仍保留。
 
-三个PASS行均进入同一固定正式rawclean+六practical矩阵，不按源分数再排一个“最优”；全相关项行停止此轮扩展。正式确认登记`20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r01`，不调用DURA、不重训或重跑已完成对照。原raw绝对门槛、严格SIG1对照与三seed等目标保持，当前goal_complete=false。[完整源计数](source_results.json)。
+三个PASS行均进入同一固定正式rawclean+六practical矩阵，不按源分数再排一个“最优”；全相关项行停止此轮扩展。正式确认登记`20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02`，不调用DURA、不重训或重跑已完成对照。原raw绝对门槛、严格SIG1对照与三seed等目标保持，当前goal_complete=false。[完整源计数](source_results.json)。

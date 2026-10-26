@@ -1,1 +1,2 @@
 {"at": "2026-10-26T15:02:35+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-26T15:10:05+00:00", "status": "FAILED", "note": "VERIFIED controller/3workers terminated in source_check before modelsmoke andtargetIO;no prediction/smoke outputs. Contextsourcecache usedlegacydifferentpath;preservedr01,replacementr02usesactualfrozen sourceconfigs exactcache/contract,no model/data/sciencechanges.", "evidence": ["local_artifacts/pamf_u_history_20261026/fonly_confirm/evidence/pipeline_state.json"], "row_id": null}

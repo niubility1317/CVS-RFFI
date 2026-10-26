@@ -1,0 +1,288 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02",
+  "group_id": "pamf-sig1-selective-covariance-20261026",
+  "display_name": "单视图PAMF协方差三组F直接识别正式确认",
+  "description": "按用户撤下DURA后的直接识别范围，固定3份已完成E50协方差F，rawclean+六practical/168000包，逐row完整预测后独立truth-last；复用完成SIG1PL/Sup对照，不新训练、不读恢复IQ/G。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-Covariance-Fonly-confirm"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME",
+    "raw-only",
+    "formal",
+    "truth-last",
+    "selective-covariance"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01",
+    "20261026-analysis-PAMF-SIG1-Covariance-Fonly-m4-r01",
+    "20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01"
+  ],
+  "replaces_run_id": "20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r01",
+  "authorization": "用户持续授权优化普通PL上的PAMF及自动正式测试，最新明确脱离DURA，训练仅cleanIQ和星地衍生；只读完成对照，不影响其他对话。",
+  "code": {
+    "commit": "actual raw-only implementation/config Git commit before N607 release",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "verified N607 CVS-RFFI Python3.10/Torch2.1 FP32 TF32off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-release-r02"
+  },
+  "data": {
+    "dataset": "ManySig original F0",
+    "version": "existing validated original physical roles",
+    "representation": "existing original F0 VALIDATED_ONCE rawclean and six practical residual IQ; no restored IQ or G handles",
+    "contract_ref": "original F0 source_contract.json, checked private context",
+    "physical_ids_ref": "same existing source contract.role_ids",
+    "label_map_ref": "same original six registered TX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "unchanged original F0 six TX",
+    "roles": {
+      "L_s": "sourceL2 actual frozen checkpoint smoke only;no updates",
+      "U_s": "not opened in confirmation;all original hiddenU training provenance preserved",
+      "V": "existing frozen raw counts only to recheck independent necessary source conditions",
+      "target": "cross_rx126000+cross_both42000=168000 physical records perrow;all7 raw views,independent decisions/no fitting"
+    },
+    "train_ratio": "original7/63/30;confirmation no training",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "unchanged existing Phase1 validated source handles;Phase2 capsule_id/split_id not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "same practical residual/post_sync/noEQ, source L training and frozen source V diagnostics"
+  },
+  "permissions": {
+    "regime": "frozen_source_only_DG",
+    "query_use": "independent per-sample prediction only;no fit/state/selection",
+    "external_method_exception": null,
+    "claim_scope": "single-seed directF clean/six on originalF0 unseenRX;not full original3seed/othercohort goal completion"
+  },
+  "checkpoint": {
+    "initialization": "load three existing independently trained fixedfinalE50 fullPAMF singleviewSIG_TIME/ownjointdefaulthead",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01/F/F0-CovSel-U-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01/F/F0-CovRandom-U-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01/F/F0-CovSel-LU-s2026092701/source"
+    ],
+    "contract_check_ref": "source_check validates actual final/sourcecontract/fullU/ordinaryPL and newFonly sourceconditions;existingload_F verifies legal scratchE20+own10+own20 tensors/ancestry",
+    "provenance_verdict": "same originalF0 source contracts,source-only final selection,no target training or hiddenU truth;no fallback",
+    "selection_rule": "freeze these3 before anynewtarget;all independently pass rawonlysource necessary conditions;fullmask fails and is not tested;no ranking/tuning from target"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current independent Codex chat",
+    "gpu_policy": "GPUs0..7 globally idle CUDA+pending andfree>=10000MiB;oneownworker/card;CPUscorer atmost1 includingotherowners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02/logs",
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026/fonly_confirm_r02",
+    "launch_command": "python -X utf8 -m experiments.pamf_u_history.publish_fonly_confirm --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/fonly_confirm_r02 --context local_artifacts/pamf_u_history_20261026/fonly_confirmation_context_r02.json",
+    "stop_rule": "first own technical/nonfinite/provenance/input/output failure stops newlaunches;healthyactivefinish;preserve output/no overwrite or selective rerun;no actions to otherowners"
+  },
+  "expected_artifacts": [
+    "configs/predict__METHOD.json no truth/G handles",
+    "configs/score__METHOD.json no source/model/G handles",
+    "readouts/ROW/source_checkpoint_smoke.json actualE50/sourceL2/noquery",
+    "readouts/ROW/predictions/cross_rx+cross_both/predictions.npz raw7 frozenID-aligned",
+    "readouts/ROW/predictions/complete.json",
+    "readouts/ROW/scores/scores.json and complete.json independenttruthlast",
+    "pipeline_state.json/logs/complete.json PID/CWD/argv/GPU/loggrowth",
+    "same-row raw metrics/comparison with completedSIG1PL/Sup and originalfloors"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "rawclean accuracy/count",
+      "raw sixpractical mean accuracy/count;eachscene"
+    ],
+    "secondary": [
+      "perTX/RX/day/receiverday accuracy/macroF1/confusion",
+      "pairedcorrectdifference against completedmatchedSIG1PL/Sup",
+      "trainingcost provenance existingE50;newtraining0",
+      "frozenstate andallphysicalIDs/views coverage"
+    ],
+    "target": "168000 perrow weighted126000+42000,rawonly;3 candidates/seed01/clean+6;singlecrossdate30000 not included in this matched confirm",
+    "selection": "none afterprediction;sourcefrozen3fixed;reportall target outcomes without tuning/reordering/retest",
+    "truth_policy": "predict config hasonlyviews_root;all2tasksx7rawviews frozen then independentCPUscorer sees truth;no model/source handles in score"
+  },
+  "rows": [
+    {
+      "row_id": "F0-CovSel-U-s2026092701",
+      "method": "CovSel-U",
+      "purpose": "fixed directF formal confirmation",
+      "config_ref": "experiments/pamf_u_history/fonly_confirm.py:config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02/configs/predict__CovSel-U.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existingfixedsourceF andtargetIQ;no newstochastictraining or scenegeneration",
+      "k": null,
+      "scenario": "rawclean andsixpractical,crossRX andcrossBoth",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "reuse complete50/11100 model;newtraining0,168000x7 rawdecisions;fulloriginal3seed goal remains",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02/readouts/F0-CovSel-U-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02/logs/predict__CovSel-U.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_fonly_confirm --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/fonly_confirm_r02 --context local_artifacts/pamf_u_history_20261026/fonly_confirmation_context_r02.json",
+      "expected_artifacts": [
+        "configs/predict__METHOD.json no truth/G handles",
+        "configs/score__METHOD.json no source/model/G handles",
+        "readouts/ROW/source_checkpoint_smoke.json actualE50/sourceL2/noquery",
+        "readouts/ROW/predictions/cross_rx+cross_both/predictions.npz raw7 frozenID-aligned",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json and complete.json independenttruthlast",
+        "pipeline_state.json/logs/complete.json PID/CWD/argv/GPU/loggrowth",
+        "same-row raw metrics/comparison with completedSIG1PL/Sup and originalfloors"
+      ]
+    },
+    {
+      "row_id": "F0-CovRandom-U-s2026092701",
+      "method": "CovRandom-U",
+      "purpose": "fixed directF formal confirmation",
+      "config_ref": "experiments/pamf_u_history/fonly_confirm.py:config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02/configs/predict__CovRandom-U.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existingfixedsourceF andtargetIQ;no newstochastictraining or scenegeneration",
+      "k": null,
+      "scenario": "rawclean andsixpractical,crossRX andcrossBoth",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "reuse complete50/11100 model;newtraining0,168000x7 rawdecisions;fulloriginal3seed goal remains",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02/readouts/F0-CovRandom-U-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02/logs/predict__CovRandom-U.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_fonly_confirm --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/fonly_confirm_r02 --context local_artifacts/pamf_u_history_20261026/fonly_confirmation_context_r02.json",
+      "expected_artifacts": [
+        "configs/predict__METHOD.json no truth/G handles",
+        "configs/score__METHOD.json no source/model/G handles",
+        "readouts/ROW/source_checkpoint_smoke.json actualE50/sourceL2/noquery",
+        "readouts/ROW/predictions/cross_rx+cross_both/predictions.npz raw7 frozenID-aligned",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json and complete.json independenttruthlast",
+        "pipeline_state.json/logs/complete.json PID/CWD/argv/GPU/loggrowth",
+        "same-row raw metrics/comparison with completedSIG1PL/Sup and originalfloors"
+      ]
+    },
+    {
+      "row_id": "F0-CovSel-LU-s2026092701",
+      "method": "CovSel-LU",
+      "purpose": "fixed directF formal confirmation",
+      "config_ref": "experiments/pamf_u_history/fonly_confirm.py:config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02/configs/predict__CovSel-LU.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existingfixedsourceF andtargetIQ;no newstochastictraining or scenegeneration",
+      "k": null,
+      "scenario": "rawclean andsixpractical,crossRX andcrossBoth",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "reuse complete50/11100 model;newtraining0,168000x7 rawdecisions;fulloriginal3seed goal remains",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02/readouts/F0-CovSel-LU-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02/logs/predict__CovSel-LU.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_fonly_confirm --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/fonly_confirm_r02 --context local_artifacts/pamf_u_history_20261026/fonly_confirmation_context_r02.json",
+      "expected_artifacts": [
+        "configs/predict__METHOD.json no truth/G handles",
+        "configs/score__METHOD.json no source/model/G handles",
+        "readouts/ROW/source_checkpoint_smoke.json actualE50/sourceL2/noquery",
+        "readouts/ROW/predictions/cross_rx+cross_both/predictions.npz raw7 frozenID-aligned",
+        "readouts/ROW/predictions/complete.json",
+        "readouts/ROW/scores/scores.json and complete.json independenttruthlast",
+        "pipeline_state.json/logs/complete.json PID/CWD/argv/GPU/loggrowth",
+        "same-row raw metrics/comparison with completedSIG1PL/Sup and originalfloors"
+      ]
+    }
+  ],
+  "notes": [
+    "User explicitly removedG direction aftersome source results but beforeany newcovariance target;sourceFonly eligibility separatelyregistered,oldG-inclusive source verdictunchanged.",
+    "r01 stopped in sourceconfig check beforemodelsmoke or targetreads:prediction context inherited a different sourcecache path. r02 usesactual threefrozen source configs source_cache/source_contract,withno semantic/data/weight/budget changes;oldrunpreserved.",
+    "CovSelU/raw3 +58correct,RandomU+38,SelLU+103;rawclean -6/-5/-6,fullmask -31raw3fails. All3 independentlypass sourcefloor/rule,not ranked by target.",
+    "Candidate source implementation already received its one independentP0/P1 PASS;frozen load_F andindependenttruth-lastscorer reused. Rawonlyglue focusednegative testsPASS;do not introduce redundantreview/hash/data gates.",
+    "Actual checkpoint/sourceL2 smoke is prediction firststep andimmediately continues onPASS. No target orGreadbeforeit.",
+    "Original rawclean>=85.981746%,rawsix>72.096197%,strictsameSIG1PL/Sup and original3seeds remain;source/one-seed completion cannot finishgoal."
+  ],
+  "matrix": {
+    "methods": [
+      "CovSel-U",
+      "CovRandom-U",
+      "CovSel-LU"
+    ],
+    "model_seed": 2026092701,
+    "new_F_training": 0,
+    "new_G_training": 0,
+    "G_weights": 0,
+    "restored_IQ": 0,
+    "readouts": [
+      "raw"
+    ],
+    "populations": {
+      "cross_rx": 126000,
+      "cross_both": 42000
+    },
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "prediction_rows": 3,
+    "independent_score_rows": 3,
+    "completed_PL_Sup_retraining": 0,
+    "completed_reference_reprediction": 0
+  },
+  "registered_at": "2026-10-26T15:09:42+00:00"
+}
