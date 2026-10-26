@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "focused_tests": 7,
+  "tests": "class-balanced RX offsets,identity projection/norescale,synthetic interaction rejection,LOCO/Vinduction,missingcell/nonfinite,runtimeforeign/target rejection",
+  "independent_P0P1_review": {
+    "status": "PASS",
+    "reviewer": "ssl_p0p1_review",
+    "scope": "next actual sourcegeometry run wrong/unauthorized/destructive/unlaunchable only"
+  },
+  "actual_checkpoint_smoke": "LAUNCH_FIRST_STEP_PENDING",
+  "training_updates": 0,
+  "new_control_or_student_training": false,
+  "source_only": true
+}

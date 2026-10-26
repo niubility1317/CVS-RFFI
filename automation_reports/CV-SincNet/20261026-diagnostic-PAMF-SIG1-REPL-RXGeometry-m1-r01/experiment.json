@@ -1,0 +1,175 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-m1-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "完整PAMF单SIG_TIME：冻结E20的身份保护RX方向源证伪",
+  "description": "仅冻结已完成m201单视图E20和原DURA，提取L6300/V27000 raw及12G均值特征，真实L-only RX方向和跨TX/V迁移诊断；0训练，不重复任何对照，不读U或target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-SIG1-REPL-RXGeometry"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL-v2",
+    "SIG_TIME-single-view",
+    "frozen-source",
+    "L-only-RX-direction",
+    "no-control-retraining"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户持续研发优化REPL；最新完整PAMF单SIG_TIME、只复用已完成对照。当前仅冻结模型源诊断，没有任何控制或学生训练。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2; no installs",
+    "cwd": "PROJECT/releases/20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "frozen full PAMF singleSIG_TIME joint160 normalized features; raw and normalized twelveG feature mean",
+    "contract_ref": "known completed m201/F0-A1B1-SIG_TIME-F21-s2026092701/segment20 complete.config.source_contract",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300 IQ/visible TX; candidate statistics only from this role",
+      "U_s": "not opened; labels hidden",
+      "V": "original27000 IQ/visible source TX; read-only feature/evaluation only,never estimates candidate"
+    },
+    "train_ratio": "no training; same VALIDATED_ONCE originalL/U/V; existing singleviewE20 only; original fixedG-LU frozen",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-seed source necessary geometry; no new trained SSL or deployed accuracy/target claim;Gmean12 not individualGscene"
+  },
+  "checkpoint": {
+    "initialization": "none; frozen inference only; no optimizer,EMA,head or G updates",
+    "sources": [
+      "actual completed single-view m201 ordinaryPL E20 source checkpoint,scratch/known ancestors",
+      "same originalF0 DURA G-LU"
+    ],
+    "contract_check_ref": "all3 singleSIG_TIME prefix tensor evidence verified previously;load_prefix again exactsource/epoch20/scratch/state checks before actual L2/Gsmoke",
+    "provenance_verdict": "source-only matching original physicalroles/defaulthead singleview;no stoppedcontrol partial/NoSIG/X3 conversion",
+    "selection_rule": "fixed geometric rule raw AND Gmean12;source necessity only,no automatic student,alpha .25 no scan"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-sig1-repl-rx-geometry-20261026",
+    "gpu_policy": "one frozenF/G inferenceworker;GPU0..7;globalCUDA+pending<2/free>=10000MiB;count otherowners;no staticreservation",
+    "remote_run_root": "PROJECT/runs/20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/sig1_rx_geometry",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_rx_source dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-release-r01/runtime.json",
+    "stop_rule": "actual checkpoint/singleview/roles/physicalorder/nonfinite/state/output collision failure ends own worker;preserve outputs/no automaticretry/foreign changes;scienceFAIL retained"
+  },
+  "expected_artifacts": [
+    "actual known completeE20/defaulthead/G sourceL2 smoke,4F/2G logicalpackets,zerooptimizer",
+    "full L6300/V27000 frozen raw and12Gmean joint160 featurecache,FP32/finite/norm1,exactphysicalorder;no U data",
+    "frozenF/G allparameters andregisteredbuffers unchanged;432900newF/399600newG packetviews plus smoke;no training",
+    "L-only balanced class/RX means,identity-protected RX energies,LOCO andVtransfer;both representations retained,noGclassification claim",
+    "fixed>=.05 protectedRXfraction,LOCOmean>.1/positive>.5,Vcos>.1 inbothviews;no threshold/alpha tuning/student promotion",
+    "onearchive comparison/remotecompile andindependentPID-CWD-argv-GPU-loggrowth;sourceonly complete/cost/evidence"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "protected_RX_fraction",
+      "LOCO_mean_cosine",
+      "LOCO_positive_fraction",
+      "V_transfer_mean_cosine"
+    ],
+    "secondary": [
+      "RX/TX interaction energy",
+      "identity-overlap fraction",
+      "alpha25 absolute displacement"
+    ],
+    "target": "none",
+    "selection": "fixed necessary conditions inbothrepresentations;not classifierperformance orautomaticnewstudent",
+    "truth_policy": "L truth estimates direction;V truth only read-only source diagnostic;U/target notopened"
+  },
+  "rows": [
+    {
+      "row_id": "SIG1-E20-RXGeometry-s2026092701",
+      "method": "singleSIG_TIME L-balanced identity-protected RX geometry",
+      "purpose": "frozen full-source feature falsification,not training",
+      "config_ref": "PROJECT/releases/20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-release-r01/runtime.json",
+      "resolved_config_ref": "PROJECT/releases/20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-release-r01/runtime.json",
+      "data_overrides": {
+        "teacher_epoch": 20,
+        "signature_views": 1,
+        "roles": [
+          "L_s",
+          "V"
+        ],
+        "views": [
+          "raw",
+          "restored_mean12"
+        ],
+        "alpha": 0.25
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "upstream student seed01; fixed split/data/augmentation inherited from feature cache; no new randomness, optimizer, support or query; not three seeds",
+      "k": null,
+      "scenario": "original fullsource raw andfourrealizations xthreeGscene feature geometry",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero training;F432904/G399602 logicalpacketviews including actualsmoke;sourceunique33300,allcosts retained",
+      "output_root": "PROJECT/runs/20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-m1-r01/results",
+      "log_path": "PROJECT/runs/20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-m1-r01/logs/RXGeometry.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_repl_rx_source worker --kind geometry --config PROJECT/releases/20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-release-r01/runtime.json",
+      "expected_artifacts": [
+        "actual known completeE20/defaulthead/G sourceL2 smoke,4F/2G logicalpackets,zerooptimizer",
+        "full L6300/V27000 frozen raw and12Gmean joint160 featurecache,FP32/finite/norm1,exactphysicalorder;no U data",
+        "frozenF/G allparameters andregisteredbuffers unchanged;432900newF/399600newG packetviews plus smoke;no training",
+        "L-only balanced class/RX means,identity-protected RX energies,LOCO andVtransfer;both representations retained,noGclassification claim",
+        "fixed>=.05 protectedRXfraction,LOCOmean>.1/positive>.5,Vcos>.1 inbothviews;no threshold/alpha tuning/student promotion",
+        "onearchive comparison/remotecompile andindependentPID-CWD-argv-GPU-loggrowth;sourceonly complete/cost/evidence"
+      ]
+    }
+  ],
+  "notes": [
+    "User latest forbids repeat controltraining;thisrun has0 optimizer andneveropensstoppedSIG1controlpartial.",
+    "Old NoSIG RXGeometry was cancelled beforeinput andhasno scienceoutcome;thisis differentactualsingleviewE20 sourcefeaturecollection.",
+    "NAMESPACES retain priorfixed channelRNG names containingU,but applied onlytoL/V records;not Ureads.",
+    "L-only classbalanced moments andprojection;V statistics onlyevaluate andneverformcandidatedirection.",
+    "RX shared additive assumptioncanfail;nearzero directionsnotrescaled;necessarygateprespecified beforefeatureoutcomes.",
+    "Gmean12 is aggregatedrepresentationgeometry,not DURA actualsceneaccuracy or targetidentityproof.",
+    "Finalsamecandidate3seedactual rawclean/rawsix/sameG goal stillunmet;sourcePASS notgoalcompletion."
+  ],
+  "registered_at": "2026-10-26T08:56:25+00:00"
+}
