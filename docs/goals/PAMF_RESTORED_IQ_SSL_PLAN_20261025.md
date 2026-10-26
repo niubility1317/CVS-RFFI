@@ -326,3 +326,8 @@ G/H复用原缓存三景lowSuburban/midUrban/lowUrban，k按原step顺序轮换�
 ## 非对称H/G四路训练实际启动
 
 `20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01`已VERIFIED_RUNNING，代码`f064f495716de7434be99027ae383b2a49c88666`。12批无更新源校准共同系数0.042210454011369962，真实E30/G与原L128/U256集成backward smoke通过；四条GPU/完整身份/实际step增长独立核实。一个学生seed01、四own原E30+20独立到E50；原+.3/−.1源条件及三个学生种子联合目标保持，无新目标结果。详见[运行报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/report.md)。
+
+
+## 并行源L诊断：固定重复与多信道随机实现
+
+`20261026-diagnostic-PAMF-DURARealizations-source-m1-r01`已登记：L6300、一个冻结原E30默认头/同G，三个场景固定H重复G及三fresh channel namespace；25 F视图，0训练/U/V/目标。保留全部随机实现，检验恢复输出多样性及可见L身份代理，不挑seed或直接晋级训练缓存。现有AsymmetricHG健康四路不变。3聚焦检查/compile通过，一次P0/P1进行中，尚未启动。原三学生种子联合目标未达成，见[预登记](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-DURARealizations-source-m1-r01/preregistration.md)。
