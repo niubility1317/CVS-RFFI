@@ -1,0 +1,388 @@
+{
+  "status": "VERIFIED_RUNNING_NOT_PERFORMANCE_SUCCESS",
+  "execution_commit": "a659b861f4f22cc0e43c1c2da6fa7df3fd969b29",
+  "observed_UTC": "2026-10-26 21:58:24 UTC",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller": {
+    "identity_verified": true,
+    "on_GPU": false
+  },
+  "workers": [
+    {
+      "method": "REPL_RB_RX",
+      "gpu": 1,
+      "identity_verified": true,
+      "on_GPU": true,
+      "log_growth": true,
+      "complete_records": 234,
+      "record_growth": true
+    },
+    {
+      "method": "REPL_RB_RXTX",
+      "gpu": 0,
+      "identity_verified": true,
+      "on_GPU": true,
+      "log_growth": true,
+      "complete_records": 229,
+      "record_growth": true
+    }
+  ],
+  "actual_smoke": {
+    "status": "PASS",
+    "rows": [
+      {
+        "method": "REPL_RB_RX",
+        "status": "PASS",
+        "U_seen": 256,
+        "U_accepted": 234,
+        "U_student_views": 1536,
+        "L_packets": 768,
+        "H2": {
+          "dual_L": true,
+          "L_calls": 1,
+          "H_L_calls": 2,
+          "H_L_packets": 128,
+          "native_shared_L_H_packets": 0,
+          "H_U_calls": 2,
+          "H_U_packets": 256,
+          "scenes": {
+            "L::practical_low_suburban": 64,
+            "L::practical_mid_urban": 64,
+            "U::practical_low_suburban": 128,
+            "U::practical_mid_urban": 128
+          },
+          "pair_enabled": false,
+          "pair_calls": 1,
+          "pair_packets": 128,
+          "pair_rejected": 10,
+          "pair_weight": 0.0,
+          "pair_normalizer": "whole physical half",
+          "pair_targets": "opposite detached H probabilities; no hard TX",
+          "extra_F_forwards": 0,
+          "restoration_weight_reads": 0,
+          "restoration_IQ_used": 0,
+          "L_true_labels_all": true,
+          "L_As_KL_weight": 0.0,
+          "ordinary_cross_RX_preserved": true
+        },
+        "actual_H_pair_relative_differences": {
+          "L": 1.0314080715179443,
+          "U": 1.0748209953308105
+        },
+        "actual_U_gradient_norms": {
+          "signature": 0.7282780982332503,
+          "head": 0.6389425595481067,
+          "other": 2.1343815707006657
+        },
+        "actual_rejected_H_pair_gradient_norms": null,
+        "actual_auxiliary_state": null,
+        "actual_auxiliary_gradient_norms": null,
+        "actual_receiver_balance": {
+          "recipe": {
+            "frequency_decay": 0.99,
+            "frequency_floor": 1e-06,
+            "minimum": 0.5,
+            "maximum": 2.0,
+            "prior": "all true L_s label/RX counts",
+            "frequency": "accepted raw95 U pseudo labels and visible RX only",
+            "scope": "CE and RDrop on six existing U logits; original feature contrasts unchanged",
+            "normalize": "accepted mean one",
+            "CE_normalizer": 1.25,
+            "segment_statistics": "reset to L_s prior each segment",
+            "extra_F": 0,
+            "extra_CE_kernels": 6,
+            "extra_KL_kernels": 3,
+            "new_head": false,
+            "mode": "RX"
+          },
+          "statistics": {
+            "mode": "RX",
+            "prior_L_counts": [
+              1260.0,
+              1260.0,
+              1260.0,
+              1260.0,
+              1260.0
+            ],
+            "frequency": [
+              0.20030769230769233,
+              0.1997094017094017,
+              0.20013675213675214,
+              0.20026495726495727,
+              0.19958119658119658
+            ],
+            "accepted_group_counts": [
+              54,
+              40,
+              50,
+              53,
+              37
+            ],
+            "calls": 1,
+            "frequency_updates": 1,
+            "seen": 256,
+            "accepted": 234,
+            "accepted_weight_mass": 234.00000000000136,
+            "minimum_weight": 0.9986832249871451,
+            "maximum_weight": 1.0023185328593525,
+            "max_batch_dose_error": 1.3642420526593924e-12,
+            "initialized_from_V_or_U_truth": false,
+            "frequency_updates_from": "U raw95 accepted pseudo class and true source RX",
+            "model_EMA_updates": 0
+          },
+          "captures": 6,
+          "captured_packet_views": 1536,
+          "max_FP32_accepted_mass_error": 1.1920928955078125e-06,
+          "extra_CE_kernels": 6,
+          "extra_KL_kernels": 3,
+          "extra_F": 0,
+          "new_inference_parameters": 0,
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "L_losses_reweighted": false,
+          "feature_contrasts_reweighted": false
+        },
+        "actual_receiver_balance_gradient_check": {
+          "max_abs_error": 9.313225746154785e-10,
+          "views": 6,
+          "weighted_CE_and_RDrop": true,
+          "feature_contrast_reweighted": false,
+          "extra_model_forwards": 0,
+          "U_truth_reads": 0
+        },
+        "optimizer_updates": 0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      },
+      {
+        "method": "REPL_RB_RXTX",
+        "status": "PASS",
+        "U_seen": 256,
+        "U_accepted": 234,
+        "U_student_views": 1536,
+        "L_packets": 768,
+        "H2": {
+          "dual_L": true,
+          "L_calls": 1,
+          "H_L_calls": 2,
+          "H_L_packets": 128,
+          "native_shared_L_H_packets": 0,
+          "H_U_calls": 2,
+          "H_U_packets": 256,
+          "scenes": {
+            "L::practical_low_suburban": 64,
+            "L::practical_mid_urban": 64,
+            "U::practical_low_suburban": 128,
+            "U::practical_mid_urban": 128
+          },
+          "pair_enabled": false,
+          "pair_calls": 1,
+          "pair_packets": 128,
+          "pair_rejected": 10,
+          "pair_weight": 0.0,
+          "pair_normalizer": "whole physical half",
+          "pair_targets": "opposite detached H probabilities; no hard TX",
+          "extra_F_forwards": 0,
+          "restoration_weight_reads": 0,
+          "restoration_IQ_used": 0,
+          "L_true_labels_all": true,
+          "L_As_KL_weight": 0.0,
+          "ordinary_cross_RX_preserved": true
+        },
+        "actual_H_pair_relative_differences": {
+          "L": 1.0314080715179443,
+          "U": 1.0748209953308105
+        },
+        "actual_U_gradient_norms": {
+          "signature": 0.7272632928940157,
+          "head": 0.637823626047673,
+          "other": 2.1316057093516925
+        },
+        "actual_rejected_H_pair_gradient_norms": null,
+        "actual_auxiliary_state": null,
+        "actual_auxiliary_gradient_norms": null,
+        "actual_receiver_balance": {
+          "recipe": {
+            "frequency_decay": 0.99,
+            "frequency_floor": 1e-06,
+            "minimum": 0.5,
+            "maximum": 2.0,
+            "prior": "all true L_s label/RX counts",
+            "frequency": "accepted raw95 U pseudo labels and visible RX only",
+            "scope": "CE and RDrop on six existing U logits; original feature contrasts unchanged",
+            "normalize": "accepted mean one",
+            "CE_normalizer": 1.25,
+            "segment_statistics": "reset to L_s prior each segment",
+            "extra_F": 0,
+            "extra_CE_kernels": 6,
+            "extra_KL_kernels": 3,
+            "new_head": false,
+            "mode": "RX_TX"
+          },
+          "statistics": {
+            "mode": "RX_TX",
+            "prior_L_counts": [
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0,
+              210.0
+            ],
+            "frequency": [
+              0.03334188034188034,
+              0.033470085470085474,
+              0.03334188034188034,
+              0.0335982905982906,
+              0.0332991452991453,
+              0.03325641025641026,
+              0.033170940170940175,
+              0.03338461538461539,
+              0.0332991452991453,
+              0.033170940170940175,
+              0.03338461538461539,
+              0.0332991452991453,
+              0.03334188034188034,
+              0.033555555555555554,
+              0.03325641025641026,
+              0.03325641025641026,
+              0.03334188034188034,
+              0.03338461538461539,
+              0.033555555555555554,
+              0.03342735042735043,
+              0.0332991452991453,
+              0.0332991452991453,
+              0.03334188034188034,
+              0.03334188034188034,
+              0.033170940170940175,
+              0.03338461538461539,
+              0.03308547008547009,
+              0.033170940170940175,
+              0.03342735042735043,
+              0.03334188034188034
+            ],
+            "accepted_group_counts": [
+              8,
+              11,
+              8,
+              14,
+              7,
+              6,
+              4,
+              9,
+              7,
+              4,
+              9,
+              7,
+              8,
+              13,
+              6,
+              6,
+              8,
+              9,
+              13,
+              10,
+              7,
+              7,
+              8,
+              8,
+              4,
+              9,
+              2,
+              4,
+              10,
+              8
+            ],
+            "calls": 1,
+            "frequency_updates": 1,
+            "seen": 256,
+            "accepted": 234,
+            "accepted_weight_mass": 234.0000000000009,
+            "minimum_weight": 0.9933134036908191,
+            "maximum_weight": 1.0087096331461147,
+            "max_batch_dose_error": 9.094947017729282e-13,
+            "initialized_from_V_or_U_truth": false,
+            "frequency_updates_from": "U raw95 accepted pseudo class and true source RX",
+            "model_EMA_updates": 0
+          },
+          "captures": 6,
+          "captured_packet_views": 1536,
+          "max_FP32_accepted_mass_error": 5.245208740234375e-06,
+          "extra_CE_kernels": 6,
+          "extra_KL_kernels": 3,
+          "extra_F": 0,
+          "new_inference_parameters": 0,
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "L_losses_reweighted": false,
+          "feature_contrasts_reweighted": false
+        },
+        "actual_receiver_balance_gradient_check": {
+          "max_abs_error": 4.656612873077393e-10,
+          "views": 6,
+          "weighted_CE_and_RDrop": true,
+          "feature_contrast_reweighted": false,
+          "extra_model_forwards": 0,
+          "U_truth_reads": 0
+        },
+        "optimizer_updates": 0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      }
+    ],
+    "actual_completed_SIG1_E20": true,
+    "optimizer_updates": 0,
+    "target_reads": 0
+  },
+  "independently_verified_available_records": [
+    {
+      "method": "REPL_RB_RX",
+      "complete_available_training_records": 26,
+      "segments": [
+        {
+          "segment": "segment30",
+          "complete_readable_records": 26
+        }
+      ]
+    },
+    {
+      "method": "REPL_RB_RXTX",
+      "complete_available_training_records": 26,
+      "segments": [
+        {
+          "segment": "segment30",
+          "complete_readable_records": 26
+        }
+      ]
+    }
+  ],
+  "claim_scope": "Two methods one seed each, E20 backward smoke and early real updates only; no E50/source/target or three-seed performance",
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "G_weight_or_IQ_reads": 0
+}
