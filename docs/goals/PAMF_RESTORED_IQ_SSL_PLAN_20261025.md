@@ -321,3 +321,8 @@ G/H复用原缓存三景lowSuburban/midUrban/lowUrban，k按原step顺序轮换�
 ## 非对称H/G源矩阵准备
 
 `20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01`已登记，HJoint/HAnchor/GJoint/BothJoint同H/G两次前向，CE任务路由与G特征参照方向对照；7项聚焦检查/compile通过，一次独立P0/P1进行中，尚未启动。CE1/CL1后新12批共同源梯度冻结总剂量，原L/rawPL、own原E30+20→E50与+.3/−.1条件不变。完整[预登记](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/preregistration.md)。原三学生种子联合目标未达成。
+
+
+## 非对称H/G四路训练实际启动
+
+`20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01`已VERIFIED_RUNNING，代码`f064f495716de7434be99027ae383b2a49c88666`。12批无更新源校准共同系数0.042210454011369962，真实E30/G与原L128/U256集成backward smoke通过；四条GPU/完整身份/实际step增长独立核实。一个学生seed01、四own原E30+20独立到E50；原+.3/−.1源条件及三个学生种子联合目标保持，无新目标结果。详见[运行报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/report.md)。

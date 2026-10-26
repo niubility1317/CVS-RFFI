@@ -1,0 +1,20 @@
+{
+  "status": "RUNNING",
+  "code_commit": "f064f495716de7434be99027ae383b2a49c88666",
+  "independent_readback": "VERIFIED",
+  "student_seeds": [
+    2026092701
+  ],
+  "complete_available_step_records_verified": 850,
+  "all_four_original_E30_initial_checkpoints_verified": true,
+  "calibration_arithmetic_recomputed": true,
+  "source_weight": 0.04221045401136996,
+  "actual_HAnchor_G_feature_gradient_zero_verified": true,
+  "HJoint_HAnchor_values_match": true,
+  "all_six_pair_count_prefixes_match": true,
+  "CE_H_CE_G_exposure_routes_verified": true,
+  "no_nonfinite_skips_in_complete_prefix": true,
+  "new_target_reads": 0,
+  "U_truth_read": false,
+  "scope": "Partial ongoing source execution;not accuracy or fullE50 completion"
+}

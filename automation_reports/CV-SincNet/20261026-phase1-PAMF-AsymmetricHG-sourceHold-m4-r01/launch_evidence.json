@@ -1,0 +1,52 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "f064f495716de7434be99027ae383b2a49c88666",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_PID_CWD_argv_env_verified": true,
+  "all_four_train_PID_CWD_argv_GPU_step_log_growth_verified": true,
+  "live_jobs": [
+    {
+      "id": "HJoint",
+      "gpu": 0,
+      "step_records": 48
+    },
+    {
+      "id": "HAnchor",
+      "gpu": 2,
+      "step_records": 32
+    },
+    {
+      "id": "GJoint",
+      "gpu": 3,
+      "step_records": 32
+    },
+    {
+      "id": "BothJoint",
+      "gpu": 4,
+      "step_records": 31
+    }
+  ],
+  "source_calibration_status": "SOURCE_ASYMMETRIC_HG_PREPARED",
+  "source_weight": 0.04221045401136996,
+  "source_gradient_rule": "common min(.25,.10*median(primary_norm)/max_method_median_CEplusCL_norm);relativeCE1_CL1;12source_batches",
+  "integrated_smoke": {
+    "status": "PASS",
+    "model_seed": 2026092701,
+    "L_forward_packets": 768,
+    "U_seen": 256,
+    "extra_accepted": 185,
+    "head_finite_nonzero": true,
+    "optimizer_updates": 0,
+    "query_reads": 0,
+    "U_truth_read": false,
+    "method": "BothJoint"
+  },
+  "new_target_reads": 0,
+  "student_seeds": [
+    2026092701
+  ],
+  "independent_P0P1": "PASS",
+  "focused_tests": 7,
+  "local_compile": "PASS"
+}

@@ -1,1 +1,6 @@
 {"at": "2026-10-26T01:02:40+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-26T01:09:54+00:00", "status": "RUNNING", "note": "实际train PID/CWD/argv/GPU/step增长已核实，源only一个学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-HJoint-sourceHold-s2026092701"}
+{"at": "2026-10-26T01:10:00+00:00", "status": "RUNNING", "note": "实际train PID/CWD/argv/GPU/step增长已核实，源only一个学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-HAnchor-sourceHold-s2026092701"}
+{"at": "2026-10-26T01:10:05+00:00", "status": "RUNNING", "note": "实际train PID/CWD/argv/GPU/step增长已核实，源only一个学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-GJoint-sourceHold-s2026092701"}
+{"at": "2026-10-26T01:10:10+00:00", "status": "RUNNING", "note": "实际train PID/CWD/argv/GPU/step增长已核实，源only一个学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-BothJoint-sourceHold-s2026092701"}
+{"at": "2026-10-26T01:10:16+00:00", "status": "RUNNING", "note": "真实calibration/smoke通过，四条源训练独立核实；目标未证明。", "evidence": ["launch_evidence.json"], "row_id": null}
