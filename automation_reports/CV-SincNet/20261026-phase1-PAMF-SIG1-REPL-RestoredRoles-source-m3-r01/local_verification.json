@@ -8,7 +8,7 @@
     "reviewer": "ssl_p0p1_review",
     "scope": "actualnextsource run wrong/unauthorized/destructive/unlaunchable"
   },
-  "actual_checkpoint_smoke": "LAUNCH_FIRST_STEP_PENDING",
+  "actual_checkpoint_smoke": "PASS:3 actual L128/U256 jointbackwards,rolecounts/Gdiversity/Ugradients/frozenG",
   "target_reads": 0,
   "U_truth_reads": 0,
   "new_control_training": false

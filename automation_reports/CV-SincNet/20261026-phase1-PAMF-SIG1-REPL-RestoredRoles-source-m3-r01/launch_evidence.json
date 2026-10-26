@@ -1,0 +1,253 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01",
+  "code_commit": "ac131ec8cdbd378377a126a62f0e096f2c92bd00",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_PID_CWD_argv_verified": true,
+  "controller_pid": 394230,
+  "workers": [
+    {
+      "method": "REPL_G_U",
+      "pid": 394415,
+      "gpu": 0,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 436
+    },
+    {
+      "method": "REPL_G_L",
+      "pid": 394514,
+      "gpu": 3,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 536
+    },
+    {
+      "method": "REPL_G_LU",
+      "pid": 394620,
+      "gpu": 4,
+      "PID_CWD_argv_CVD_verified": true,
+      "on_GPU": true,
+      "step_log_growth_between_independent_reads": true,
+      "available_records": 332
+    }
+  ],
+  "actual_smoke": {
+    "status": "PASS",
+    "rows": [
+      {
+        "method": "REPL_G_U",
+        "status": "PASS",
+        "U_seen": 256,
+        "U_accepted": 234,
+        "U_student_views": 1536,
+        "L_packets": 768,
+        "style_applied": {
+          "time_down": 0,
+          "t2.pool": 0
+        },
+        "actual_U_gradient_norms": {
+          "signature": 1.2940251628774488,
+          "head": 1.2807079929441971,
+          "other": 3.9224523841398318
+        },
+        "restored_roles": {
+          "enable_L": false,
+          "enable_U": true,
+          "L_calls": 1,
+          "L_replaced": 0,
+          "U_replaced": 256,
+          "G_calls": 2,
+          "G_packets": 256,
+          "G_warmup_packets": 2,
+          "extra_F_forwards": 0,
+          "G_updates": 0,
+          "As_and_raw_halves_preserved": true,
+          "source_G_unchanged": true,
+          "class_CE_labels": "all true L;raw95 pseudo accepted U",
+          "channel_realizations": "a/b fixed per physical packet and cumulative epoch",
+          "scene_schedule": "a:(step-1)%3;b:step%3;independenta/brealizations",
+          "postG_noise": false,
+          "lowconfidence_extra_loss": false
+        },
+        "actual_G_pair_relative_differences": {
+          "U": 0.1939881443977356
+        },
+        "optimizer_updates": 0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      },
+      {
+        "method": "REPL_G_L",
+        "status": "PASS",
+        "U_seen": 256,
+        "U_accepted": 234,
+        "U_student_views": 1536,
+        "L_packets": 768,
+        "style_applied": {
+          "time_down": 0,
+          "t2.pool": 0
+        },
+        "actual_U_gradient_norms": {
+          "signature": 0.5559221314343739,
+          "head": 0.39688980070674384,
+          "other": 1.6393837852227133
+        },
+        "restored_roles": {
+          "enable_L": true,
+          "enable_U": false,
+          "L_calls": 1,
+          "L_replaced": 128,
+          "U_replaced": 0,
+          "G_calls": 2,
+          "G_packets": 128,
+          "G_warmup_packets": 2,
+          "extra_F_forwards": 0,
+          "G_updates": 0,
+          "As_and_raw_halves_preserved": true,
+          "source_G_unchanged": true,
+          "class_CE_labels": "all true L;raw95 pseudo accepted U",
+          "channel_realizations": "a/b fixed per physical packet and cumulative epoch",
+          "scene_schedule": "a:(step-1)%3;b:step%3;independenta/brealizations",
+          "postG_noise": false,
+          "lowconfidence_extra_loss": false
+        },
+        "actual_G_pair_relative_differences": {
+          "L": 0.2119731903076172
+        },
+        "optimizer_updates": 0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      },
+      {
+        "method": "REPL_G_LU",
+        "status": "PASS",
+        "U_seen": 256,
+        "U_accepted": 234,
+        "U_student_views": 1536,
+        "L_packets": 768,
+        "style_applied": {
+          "time_down": 0,
+          "t2.pool": 0
+        },
+        "actual_U_gradient_norms": {
+          "signature": 1.2940251705772885,
+          "head": 1.2807079929441971,
+          "other": 3.922452368212625
+        },
+        "restored_roles": {
+          "enable_L": true,
+          "enable_U": true,
+          "L_calls": 1,
+          "L_replaced": 128,
+          "U_replaced": 256,
+          "G_calls": 4,
+          "G_packets": 384,
+          "G_warmup_packets": 2,
+          "extra_F_forwards": 0,
+          "G_updates": 0,
+          "As_and_raw_halves_preserved": true,
+          "source_G_unchanged": true,
+          "class_CE_labels": "all true L;raw95 pseudo accepted U",
+          "channel_realizations": "a/b fixed per physical packet and cumulative epoch",
+          "scene_schedule": "a:(step-1)%3;b:step%3;independenta/brealizations",
+          "postG_noise": false,
+          "lowconfidence_extra_loss": false
+        },
+        "actual_G_pair_relative_differences": {
+          "L": 0.2119731903076172,
+          "U": 0.1939881443977356
+        },
+        "optimizer_updates": 0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      }
+    ],
+    "actual_completed_SIG1_E20": true,
+    "optimizer_updates": 0,
+    "target_reads": 0
+  },
+  "full_available_record_audit": {
+    "status": "VERIFIED_ALL_AVAILABLE",
+    "run_id": "20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01",
+    "code_commit": "ac131ec8cdbd378377a126a62f0e096f2c92bd00",
+    "complete_available_step_records": 2652,
+    "rows": [
+      {
+        "method": "REPL_G_U",
+        "enable_restored_L": false,
+        "enable_restored_U": true,
+        "available_records": 859,
+        "segments": [
+          {
+            "segment": "segment30",
+            "complete_available_records": 859,
+            "last_RG": {
+              "RG_L_calls": 859,
+              "RG_L_replaced": 0,
+              "RG_U_replaced": 219508,
+              "RG_G_calls": 1718,
+              "RG_G_packets": 219508,
+              "RG_extra_F_forwards": 0,
+              "RG_G_updates": 0
+            }
+          }
+        ]
+      },
+      {
+        "method": "REPL_G_L",
+        "enable_restored_L": true,
+        "enable_restored_U": false,
+        "available_records": 1100,
+        "segments": [
+          {
+            "segment": "segment30",
+            "complete_available_records": 1100,
+            "last_RG": {
+              "RG_L_calls": 1100,
+              "RG_L_replaced": 140800,
+              "RG_U_replaced": 0,
+              "RG_G_calls": 2200,
+              "RG_G_packets": 140800,
+              "RG_extra_F_forwards": 0,
+              "RG_G_updates": 0
+            }
+          }
+        ]
+      },
+      {
+        "method": "REPL_G_LU",
+        "enable_restored_L": true,
+        "enable_restored_U": true,
+        "available_records": 693,
+        "segments": [
+          {
+            "segment": "segment30",
+            "complete_available_records": 693,
+            "last_RG": {
+              "RG_L_calls": 693,
+              "RG_L_replaced": 88704,
+              "RG_U_replaced": 177012,
+              "RG_G_calls": 2772,
+              "RG_G_packets": 265716,
+              "RG_extra_F_forwards": 0,
+              "RG_G_updates": 0
+            }
+          }
+        ]
+      }
+    ],
+    "new_model_forwards": 0,
+    "IQ_reads": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0,
+    "scope": "All complete readable newstudent updates only;not finalconvergence/three seeds/target results"
+  },
+  "source_only": true,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "limitation": "three methods eachoneFseed,not three seeds;training incomplete;no goalachievement"
+}

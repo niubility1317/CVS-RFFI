@@ -27,3 +27,25 @@
 
 
 最新源日志检查：六行当前全部可读前缀L768/AsKL0和非有限跳步0；三个监督U_seen/accepted实际0，三个普通PL约92.4%至92.8%接受，仍是训练中。[九行可读前缀梯度诊断](../20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01/available_training_diagnostic.json)。未产生新正式目标结果。
+
+
+## 完整三种子正式结果
+
+ANALYZED/VERIFIED。六个模型、全部正式预测与独立truth-last评分完成；controller与全部worker均退出，无重复训练或预测。下表为F模型seed2026092701/02/03的均值±样本SD，原F0 cross_rx126000+cross_both42000按正确数合并为每seed168000包；六景为六个practical平均。G固定同一原F0 DURA G-LU，未另训或更换。不是三个G种子，SD也不是显著性检验。
+
+| 单视图完整PAMF | raw clean | raw六景 | 同G clean | 同G六景 |
+| --- | ---: | ---: | ---: | ---: |
+| SIG1-Sup | 84.1169±0.8876% | 70.1681±1.0352% | 84.1927±0.9115% | 76.9945±1.3371% |
+| SIG1-PL | 84.6938±0.6925% | 70.2332±1.0433% | 84.7746±0.6815% | 77.4329±1.1174% |
+
+seed内配对PL−Sup：rawclean +0.576984±0.219579pp，raw六景+0.065179±0.037350pp，同Gclean+0.581944±0.255139pp，同G六景+0.438327±0.265597pp。普通PL在本单视图设置主要提高clean和恢复后识别，原始星地六景收益很小；不将这些数值当作新REPL方法达标或统计显著性结论。
+
+这是新建严格同架构单SIG_TIME基线。历史Sup/PL的X3结果和单视图其他配方全部保留，不能将架构差异说成半监督效果。单视图基线均值低于相应历史X3结果，也不因此降低原目标：同一新方法仍须rawclean≥85.981746%，raw六景>72.096197%，同G六景>78.074636%。折算相对本单视图PL，分别仍需至少+1.287897pp、超过+1.862963pp和超过+.641766pp。严格单视图比较和历史绝对门槛取更高者，见goal_comparison.json。
+
+独立核验完整53280条新增训练记录、六份实际单视图final/defaulthead与20+10+20祖先链。每行L768/AsKL0/原crossRX日程与finite正确，Sup所有阶段U_seen/accepted=0；PL新30轮实际U曝光/接受完整且U真值隐藏。Sup各50新增轮，PL各30新增轮+各自20继承轮，均累计E50/11100，原前缀耗时另计。
+
+核验全部14112000个冻结类别决策的ID顺序/数目/类别范围和2任务×2读出×7视图完整性；从5208个保存混淆单元重算accuracy/macroF1及恢复repair/damage/net一致性，再独立重算逐seed、三seed均值/样本SD和配对差，与原汇总一致。核验没有新模型前向、IQ或truth读取；原评分仅在每行完整预测后独立CPU执行。该核验不是重新读取truth做第二次评分。
+
+新三角色REPL配方已在读取本次目标分数前固定并发布，控制结果不回流改变候选、权重、epoch或seed。原目标未完成，当前改进学生尚无目标结果。
+
+证据：[完整执行与核验](complete_evidence.json)、[逐seed](per_seed.csv)、[完整分群均值SD](summary.csv)、[seed内配对差](paired_summary.csv)、[实际训练成本](execution_summary.csv)、[目标比较](goal_comparison.json)。

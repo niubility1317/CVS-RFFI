@@ -56,3 +56,6 @@ F/G全部参数与注册buffers冻结，0optimizer/新头/教师更新。L/U完�
 run `20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01` 已实现REPL_G_U/G_L/G_LU三个新学生，各一个seed01、同单SIG_TIME ordinaryPL E20独立+10+20到E50。只交换原mixed pair的ordinary半批；L原As半、U原raw半及第一ordinary对的浅/中/joint跨RX不变。L始终真标签，U继续raw95；无新的F骨干前向或分类剂量。不同G视图取相邻的不同source场景，并有独立a/b随机实现和逐累计epochnamespace。新增G处理成本L852480/U1701000/LU2553480包，stagewarm另计，不能将同F预算写成相同总算力。
 
 复用已完成NoStyleNoRXE、PL-X3和旧REPL-SIG1 source参照，不重新前向或训练。三行完整source8view后，max参照的raw/H3各不低于−.1pp、G3至少+.3pp，使用精确27/81/243正确数。通过者按G/raw/H及G成本L/U/LU选；无通过不扩种子或target。参数已在读取新增匹配基线target分数前固定。原三seed实际目标、严格匹配基线比较与历史绝对目标保持。实现通过10测试/15子检查和唯一P0P1审查，实际smoke/运行状态见[该run](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/report.md)。
+
+
+运行更新：三角色学生真实smoke全PASS并已启动，实际F前向不增、G输入差异/角色计数和U到默认部署分支梯度已核实。单视图Sup/PL六模型三Fseed原168000正式矩阵已全部完成且独立核算：rawclean84.116865/84.693849、raw六景70.168056/70.233234、同G六景76.994544/77.432870%。这些不降低原绝对门槛，三角色配方也不回流修改。见[匹配基线完整结果](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/report.md)。

@@ -23,3 +23,10 @@
 真实E20 L128/U256联合backward smoke作为第一步：检验L768/AsKL0/U1536、实际L替换128或0/U替换256或0、a/b恢复IQ确实不同、原physical半未变、U梯度到单SIG/head/body非零、F梯度有限、G所有参数/buffers未变；0optimizer。PASS即继续。一份archive比较、remotecompile及实际PID/CWD/cmd/GPU/log增长核实。
 
 当前LOCAL_VERIFIED：10项聚焦检查和15协议子检查、compile及唯一P0P1审查PASS；真实checkpoint smoke为发布第一步。该实现的参数在读取新匹配基线的目标分数前固定。
+
+
+## 实际启动VERIFIED
+
+执行commit `ac131ec8cdbd378377a126a62f0e096f2c92bd00`。一次archive传输比较VERIFIED、remotecompile PASS，三个真实E20联合smoke全PASS：U256/六视图1536、L768/AsKL0，角色实际替换L128或0/U256或0；独立a/b恢复IQ相对差L约.211973/U约.193988，实际U梯度到singleSIG/head/body有限非零，G参数与buffers不变，0optimizer。原physical半保持、无新增F骨干前向。
+
+controller及三个worker的PID/CWD/完整命令/物理GPU与跨读step日志增长已独立核实。读取时正在E21起的新30轮，最新全部可读2652条更新逐条验证L768/U6、原crossRX/AsKL0/六权重/style0、角色G包数/调用数、非有限跳步0和U曝光。仅为可读前缀，不是完整训练或三seed结果。六基线正式结果已另行核验，配方未按其target分数改动。[启动与可读记录证据](launch_evidence.json)。

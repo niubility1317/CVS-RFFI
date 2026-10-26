@@ -1,0 +1,11 @@
+{
+  "raw_clean_min_percent": 85.98174603174603,
+  "raw_six_strict_greater_percent": 72.0961970899471,
+  "sameG_six_strict_greater_percent": 78.07463624338624,
+  "rule": "max historical floor and strict single-view matched controls;clean+1pp/rawsix>1.5pp/sameG positive;never lower old goal",
+  "remaining_over_SIG1_PL_pp": {
+    "raw_clean": 1.2878968253968281,
+    "raw_six_strict": 1.8629629629629676,
+    "sameG_six_strict": 0.6417658730158706
+  }
+}
