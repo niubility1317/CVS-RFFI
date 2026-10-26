@@ -1,0 +1,282 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-URealizations-cache-m3-r01",
+  "group_id": "phase1-pamf-U-realizations-20261026",
+  "display_name": "冻结 DURA 构建三份源 U 成对信道与恢复缓存",
+  "description": "固定三条新信道随机 namespace，完整原 U56700×三景 H/G 缓存；无 F 权重或输出、U 真值、V、目标或训练。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-URealizations-cache"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "hidden-source-U",
+    "paired-H-G",
+    "multiple-channel-realizations",
+    "no-F",
+    "no-optimizer"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-diagnostic-PAMF-DURARealizations-source-m1-r01",
+    "20261025-phase1-PAMF-RestoredPL-m9-r01"
+  ],
+  "authorization": "用户要求优化恢复 IQ 的半监督增强，全部 GPU 可用；按已固定多实现匹配计划，先独立构建隐藏源 U 缓存，保留健康任务及旧数据。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-diagnostic-PAMF-URealizations-cache-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "original seed01 segment30/complete.json config.source_contract; metadata-only data handle lookup",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered classes; U TX truth absent",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "not opened",
+      "U_s": "complete original 56700 hidden-label IQ and physical IDs; three scenes per fresh",
+      "V": "not opened"
+    },
+    "train_ratio": "zero model training; original U role unchanged; only source-generated channel realization support differs",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Three source U paired H/G augmentations only; no classifier score, F training, source promotion or target claim"
+  },
+  "checkpoint": {
+    "initialization": "no training; same fixed original F0 G-LU only",
+    "sources": [
+      "original_F0_LU G checkpoint and matching source contract; no F checkpoint or F output"
+    ],
+    "contract_check_ref": "existing load_G same-contract check; actual hidden-U2 eager/graph no-query smoke",
+    "provenance_verdict": "source-only frozen original G-LU; source config metadata locates VALIDATED_ONCE U; no research or target-selected F loaded",
+    "selection_rule": "none; keep all three fixed fresh streams; never score or select U realizations"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-u-realization-cache-20261026",
+    "gpu_policy": "GPU0..7; global CUDA+pending<2 and free>=10000MiB; max three own workers; leastload then mostfree; preserve all other owners",
+    "remote_run_root": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01",
+    "remote_log_root": "PROJECT/releases/20261026-diagnostic-PAMF-URealizations-cache-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/u_realization_cache",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.u_realization_cache dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-URealizations-cache-release-r01/runtime.json",
+    "stop_rule": "first technical/protocol/nonfinite/coverage/state/smoke failure stops new dispatch; active healthy workers finish; preserve outputs, no automatic retry or foreign-process changes"
+  },
+  "expected_artifacts": [
+    "shared actual frozen G hidden-U2 eager/graph smoke PASS; logical G packets4",
+    "three complete paired FP32 H/G caches each [3,56700,2,256]; new IQ float bytes2090188800",
+    "three physical_index.npz with eq_i/rx_i/day_i/sig_i/base_index and original U IDs; no U y",
+    "each G parameters and all registered buffers unchanged after warmup; G cache packets510300 plus worker warmup6",
+    "one archive transfer comparison, remote compile, independent PID/CWD/argv/GPU/log-growth evidence; no F/U truth/V/target reads"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "complete source U coverage and paired H/G shapes/dtypes/finite",
+      "G parameters and all registered buffers unchanged"
+    ],
+    "secondary": [
+      "actual G logical cache and warmup calls",
+      "walltime and saved logical bytes"
+    ],
+    "target": "none",
+    "selection": "none; all three streams retained",
+    "truth_policy": "U labels hidden/absent; no classifier or visible L/V/target reads"
+  },
+  "rows": [
+    {
+      "row_id": "fresh1",
+      "method": "Frozen-DURA-U-realization-cache",
+      "purpose": "complete one preregistered hidden-source-U paired H/G realization",
+      "config_ref": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/configs/fresh1.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/configs/fresh1.json",
+      "data_overrides": {
+        "role": "U_s",
+        "scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "namespace": "PAMF/realization_diversity/U/fresh1"
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No student model seed; fixed G; channelSeed20261016421/hardwareSeed20261016423; three namespaces are data realizations, not three students",
+      "k": null,
+      "scenario": "source U three practical scenes; fixed receiver/day hardware",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "no optimizer; logical G cache packets170100 plus warmup2; shared smoke4 counted once per run",
+      "output_root": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/fresh1",
+      "log_path": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/logs/fresh1.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.u_realization_cache worker --kind cache --config PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/configs/fresh1.json",
+      "expected_artifacts": [
+        "shared actual frozen G hidden-U2 eager/graph smoke PASS; logical G packets4",
+        "three complete paired FP32 H/G caches each [3,56700,2,256]; new IQ float bytes2090188800",
+        "three physical_index.npz with eq_i/rx_i/day_i/sig_i/base_index and original U IDs; no U y",
+        "each G parameters and all registered buffers unchanged after warmup; G cache packets510300 plus worker warmup6",
+        "one archive transfer comparison, remote compile, independent PID/CWD/argv/GPU/log-growth evidence; no F/U truth/V/target reads"
+      ]
+    },
+    {
+      "row_id": "fresh2",
+      "method": "Frozen-DURA-U-realization-cache",
+      "purpose": "complete one preregistered hidden-source-U paired H/G realization",
+      "config_ref": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/configs/fresh2.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/configs/fresh2.json",
+      "data_overrides": {
+        "role": "U_s",
+        "scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "namespace": "PAMF/realization_diversity/U/fresh2"
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No student model seed; fixed G; channelSeed20261016421/hardwareSeed20261016423; three namespaces are data realizations, not three students",
+      "k": null,
+      "scenario": "source U three practical scenes; fixed receiver/day hardware",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "no optimizer; logical G cache packets170100 plus warmup2; shared smoke4 counted once per run",
+      "output_root": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/fresh2",
+      "log_path": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/logs/fresh2.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.u_realization_cache worker --kind cache --config PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/configs/fresh2.json",
+      "expected_artifacts": [
+        "shared actual frozen G hidden-U2 eager/graph smoke PASS; logical G packets4",
+        "three complete paired FP32 H/G caches each [3,56700,2,256]; new IQ float bytes2090188800",
+        "three physical_index.npz with eq_i/rx_i/day_i/sig_i/base_index and original U IDs; no U y",
+        "each G parameters and all registered buffers unchanged after warmup; G cache packets510300 plus worker warmup6",
+        "one archive transfer comparison, remote compile, independent PID/CWD/argv/GPU/log-growth evidence; no F/U truth/V/target reads"
+      ]
+    },
+    {
+      "row_id": "fresh3",
+      "method": "Frozen-DURA-U-realization-cache",
+      "purpose": "complete one preregistered hidden-source-U paired H/G realization",
+      "config_ref": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/configs/fresh3.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/configs/fresh3.json",
+      "data_overrides": {
+        "role": "U_s",
+        "scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "namespace": "PAMF/realization_diversity/U/fresh3"
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No student model seed; fixed G; channelSeed20261016421/hardwareSeed20261016423; three namespaces are data realizations, not three students",
+      "k": null,
+      "scenario": "source U three practical scenes; fixed receiver/day hardware",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "no optimizer; logical G cache packets170100 plus warmup2; shared smoke4 counted once per run",
+      "output_root": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/fresh3",
+      "log_path": "PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/logs/fresh3.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.u_realization_cache worker --kind cache --config PROJECT/runs/20261026-diagnostic-PAMF-URealizations-cache-m3-r01/configs/fresh3.json",
+      "expected_artifacts": [
+        "shared actual frozen G hidden-U2 eager/graph smoke PASS; logical G packets4",
+        "three complete paired FP32 H/G caches each [3,56700,2,256]; new IQ float bytes2090188800",
+        "three physical_index.npz with eq_i/rx_i/day_i/sig_i/base_index and original U IDs; no U y",
+        "each G parameters and all registered buffers unchanged after warmup; G cache packets510300 plus worker warmup6",
+        "one archive transfer comparison, remote compile, independent PID/CWD/argv/GPU/log-growth evidence; no F/U truth/V/target reads"
+      ]
+    }
+  ],
+  "notes": [
+    "Metadata-only original E30 complete.json locates source cache/contract; no F checkpoint or outputs opened.",
+    "Physics remains residual/post_sync/noEQ/reflect/SNR30,fs25e6/fc2462e6,original receiver/day hardware; only channel namespace changes.",
+    "No post-G normalization, extra white noise, IQ interpolation, virtual RX or best-realization selection.",
+    "Old fixed H/G caches preserved and reused later; this run does not overwrite or copy them.",
+    "U cache completion is not F training, three-student result, source scientific pass or original goal achievement."
+  ],
+  "matrix": {
+    "source_role": "U_s",
+    "U_records": 56700,
+    "L_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "F_weight_reads": 0,
+    "F_output_reads": 0,
+    "F_forward_packets": 0,
+    "U_truth_read": false,
+    "optimizer_updates": 0,
+    "replicas": [
+      1,
+      2,
+      3
+    ],
+    "scenes": [
+      "practical_low_suburban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "namespaces": [
+      "PAMF/realization_diversity/U/fresh1",
+      "PAMF/realization_diversity/U/fresh2",
+      "PAMF/realization_diversity/U/fresh3"
+    ],
+    "channel_seed": 20261016421,
+    "hardware_seed": 20261016423,
+    "G_cache_logical_packet_calls": 510300,
+    "G_worker_warmup_logical_packet_calls": 6,
+    "G_shared_smoke_logical_packet_calls": 4,
+    "new_IQ_float32_bytes": 2090188800,
+    "no_selection": true
+  },
+  "registered_at": "2026-10-26T02:22:06+00:00"
+}
