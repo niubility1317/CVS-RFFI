@@ -77,3 +77,13 @@ run `20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01` 单seed源E50完整�
 ## 下一研究方向：平衡已有语义监督而非追加特征聚拢
 
 L-anchor源失败后，完成冻结源RX/伪类覆盖诊断：组合相对L先验的最低覆盖约0.6697，低覆盖组合的已接受源代理预测仍正确；单纯RX覆盖差异仅约8%。下一轮拟比较RX与RX×伪类别的有界语义梯度重加权，保持raw95、接受总权重及原cap1，不从V初始化训练统计。它是待实现并预登记的新探索，不能宣称已启动或有效；健康NoPair不热改、不重训控制，原三种子目标及当前两项源选择计划不变。见 [诊断与边界](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01/source_receiver_coverage_evidence.json)。
+
+
+## 源完成记录：REPL_H2_LU_NoPair
+
+run `20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01` 单seed源E50完整核算完成：raw26552/27000=98.340741%，H362148/81000=76.725926%，未通过固定26568/62109门槛；6660新增训练记录及108000源决策闭合。相对固定H2LU raw-0.007407pp、H3-0.051852pp。仍按两项共同源选择计划，原三seed目标未完成。见 [完整源结果](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01/report.md)。
+
+
+## 两项新源试验的共同选择结果
+
+两项均未通过原源门槛，不扩种子或目标，保留负结果。 目标绝对与相对门槛均保持。完整结果见 [共同源选择](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01/source_selection_result.json)。
