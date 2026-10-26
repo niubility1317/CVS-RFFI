@@ -1,0 +1,343 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01",
+  "group_id": "phase1-pamf-asymmetric-hg-source-20261026",
+  "display_name": "PAMF 非对称H/G任务与关系：四路源证伪",
+  "description": "相同H/G两次学生前向，比较分类任务路由与恢复特征参照方向；CE1+CL1后固定共同源梯度剂量，原L/rawPL、E50及源晋级规则保持。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-AsymmetricHG-sourceHold"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "asymmetric-HG",
+    "task-CE",
+    "cross-RX-relations",
+    "source-only",
+    "hidden-U"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01",
+    "20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01",
+    "20261025-phase1-PAMF-RestoredPL-m9-r01"
+  ],
+  "authorization": "继续用户已授权的半监督联合目标及恢复/原始IQ优化；完整Bridge源失败且CE/CL错误重叠核实后检验非对称任务分工，全部GPU可用并保护其他owner。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-AsymmetricHG-sourceHold-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300 visibleL fullT1 unchanged",
+      "U_s": "original56700 hiddenU;unchangedrawselfPL;extra samephysical H/G task/relation with frozenraw3E30 consensus95;RX1 excluded only fromextra",
+      "V": "original27000;nativeeval-only health thenfrozen eight-view source comparison;noobjective/stateupdates"
+    },
+    "train_ratio": "original L6300/U56700/V27000;10percent labeled amongL+U;no physical rolechange",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "one studentseed source task/gradient routing test,not targetperformance or truly unseenbaseRX"
+  },
+  "checkpoint": {
+    "initialization": "four independent ownoriginalE30+20,finalE50/11100;no researchF50 inheritance",
+    "sources": [
+      "original same-contract ownE30 student and three frozenE30 raw-q teachers",
+      "same fixed originalF0 G-LU and aligned existing H/G source U cache"
+    ],
+    "contract_check_ref": "strict actualE20/E30 ancestry and same sourcecontract;reuse existing VALIDATED_ONCE roles;actualE30/defaulthead/G sourceL2 and integratedU256 smoke",
+    "provenance_verdict": "source-only original same-contract ownE30 allowed;old researchF50 source comparisons only,not initialization",
+    "selection_rule": "allfourfinalE50;heldG3>=+.3pp andoverallrawclean>=-.1pp;highestpassingheldG,exacttiesalphabetical;no target/expansionwithinrun"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-asymmetric-hg-source-20261026",
+    "gpu_policy": "physicalGPU0..7;globalCUDA+pending<2/free>=10000MiB;leastload then mostfree;up to4 owntrain/eval;2CPUthreads each;preserve otherowners",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-AsymmetricHG-sourceHold-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/asymmetric_hg_training",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.asymmetric_hg_training dispatch --config PROJECT/releases/20261026-phase1-PAMF-AsymmetricHG-sourceHold-release-r01/runtime.json",
+    "stop_rule": "firsttechnical/protocol/nonfinite/state/smoke/budgeterror stops newrun-owned dispatch;healthy activechildrenfinish;preserve outputs,no automaticretry/hotedit/foreign intervention;scientificnegative completesallfour"
+  },
+  "expected_artifacts": [
+    "actualE30/defaulthead/G sourceL2 andintegratedBothJoint L128/U256 backward smoke",
+    "12sourceL128/U256 no-update fullparameter jointgradients;commonweight;actualHAnchor Gfeaturegrad0,HJoint/HAnchor valuesmatch,allauxclassweightgrad0",
+    "fourfinalE50/11100 defaultheads and17760steprecords withCE/CL components,CEH/CEG acceptedexposure,H/G relationcounts",
+    "allfourV27000 eightviews withTX/RX/day/heldtrained andfixed sourcechoice",
+    "independentPID/CWD/argv/GPU/stepgrowth andclosed-artifactverification;no target"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "heldRX1 G3 paired accuracy gain vs same-seed PLControl",
+      "overallV rawclean paired gain"
+    ],
+    "secondary": [
+      "raw/Graw/H3/G3 byTX/RX/day andnetcorrection",
+      "HJoint/HAnchor direction andH/G task controls",
+      "allCEH/CEG exposures andrelationcounts",
+      "fullfinite training andnativeE50budget"
+    ],
+    "source_rule": "heldG3>=+.3pp andoverallrawclean>=-.1pp,allfourfinishbeforechoice",
+    "target": "none inthisrun;futurepassingcandidate separatelyfrozen three-student raw/sameG seven-view formal test",
+    "truth_policy": "only visibleL and eval-only V labels;Utruth alwayshidden;no targethandle or targetprediction"
+  },
+  "rows": [
+    {
+      "row_id": "F0-HJoint-sourceHold-s2026092701",
+      "method": "HJoint",
+      "purpose": "sameH/G task-versusrelation gradientrouting control",
+      "config_ref": "generatedconfigs/HJoint.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/configs/HJoint.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "views": [
+          "H",
+          "G"
+        ],
+        "task_view": "H",
+        "restored_feature_detached_in_CL": false,
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;not three students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownoriginalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;historicalthreeE30 90epochs/cache costs separate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/F/F0-HJoint-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/logs/HJoint.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.asymmetric_hg_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/configs/HJoint.json",
+      "expected_artifacts": [
+        "actualE30/defaulthead/G sourceL2 andintegratedBothJoint L128/U256 backward smoke",
+        "12sourceL128/U256 no-update fullparameter jointgradients;commonweight;actualHAnchor Gfeaturegrad0,HJoint/HAnchor valuesmatch,allauxclassweightgrad0",
+        "fourfinalE50/11100 defaultheads and17760steprecords withCE/CL components,CEH/CEG acceptedexposure,H/G relationcounts",
+        "allfourV27000 eightviews withTX/RX/day/heldtrained andfixed sourcechoice",
+        "independentPID/CWD/argv/GPU/stepgrowth andclosed-artifactverification;no target"
+      ]
+    },
+    {
+      "row_id": "F0-HAnchor-sourceHold-s2026092701",
+      "method": "HAnchor",
+      "purpose": "sameH/G task-versusrelation gradientrouting control",
+      "config_ref": "generatedconfigs/HAnchor.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/configs/HAnchor.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "views": [
+          "H",
+          "G"
+        ],
+        "task_view": "H",
+        "restored_feature_detached_in_CL": true,
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;not three students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownoriginalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;historicalthreeE30 90epochs/cache costs separate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/F/F0-HAnchor-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/logs/HAnchor.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.asymmetric_hg_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/configs/HAnchor.json",
+      "expected_artifacts": [
+        "actualE30/defaulthead/G sourceL2 andintegratedBothJoint L128/U256 backward smoke",
+        "12sourceL128/U256 no-update fullparameter jointgradients;commonweight;actualHAnchor Gfeaturegrad0,HJoint/HAnchor valuesmatch,allauxclassweightgrad0",
+        "fourfinalE50/11100 defaultheads and17760steprecords withCE/CL components,CEH/CEG acceptedexposure,H/G relationcounts",
+        "allfourV27000 eightviews withTX/RX/day/heldtrained andfixed sourcechoice",
+        "independentPID/CWD/argv/GPU/stepgrowth andclosed-artifactverification;no target"
+      ]
+    },
+    {
+      "row_id": "F0-GJoint-sourceHold-s2026092701",
+      "method": "GJoint",
+      "purpose": "sameH/G task-versusrelation gradientrouting control",
+      "config_ref": "generatedconfigs/GJoint.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/configs/GJoint.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "views": [
+          "H",
+          "G"
+        ],
+        "task_view": "G",
+        "restored_feature_detached_in_CL": false,
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;not three students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownoriginalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;historicalthreeE30 90epochs/cache costs separate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/F/F0-GJoint-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/logs/GJoint.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.asymmetric_hg_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/configs/GJoint.json",
+      "expected_artifacts": [
+        "actualE30/defaulthead/G sourceL2 andintegratedBothJoint L128/U256 backward smoke",
+        "12sourceL128/U256 no-update fullparameter jointgradients;commonweight;actualHAnchor Gfeaturegrad0,HJoint/HAnchor valuesmatch,allauxclassweightgrad0",
+        "fourfinalE50/11100 defaultheads and17760steprecords withCE/CL components,CEH/CEG acceptedexposure,H/G relationcounts",
+        "allfourV27000 eightviews withTX/RX/day/heldtrained andfixed sourcechoice",
+        "independentPID/CWD/argv/GPU/stepgrowth andclosed-artifactverification;no target"
+      ]
+    },
+    {
+      "row_id": "F0-BothJoint-sourceHold-s2026092701",
+      "method": "BothJoint",
+      "purpose": "sameH/G task-versusrelation gradientrouting control",
+      "config_ref": "generatedconfigs/BothJoint.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/configs/BothJoint.json",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "views": [
+          "H",
+          "G"
+        ],
+        "task_view": "mean_H_G",
+        "restored_feature_detached_in_CL": false,
+        "held_extra_RX": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one studentseed01;three shared frozenrawE30 qteachers;not three students",
+      "k": null,
+      "scenario": "raw/Graw/threeH/G sourceV",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "ownoriginalE30/6660+20/4440,totalE50/11100,13L37LU;fournewtails80Fepochs;historicalthreeE30 90epochs/cache costs separate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/F/F0-BothJoint-sourceHold-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/logs/BothJoint.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.asymmetric_hg_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/configs/BothJoint.json",
+      "expected_artifacts": [
+        "actualE30/defaulthead/G sourceL2 andintegratedBothJoint L128/U256 backward smoke",
+        "12sourceL128/U256 no-update fullparameter jointgradients;commonweight;actualHAnchor Gfeaturegrad0,HJoint/HAnchor valuesmatch,allauxclassweightgrad0",
+        "fourfinalE50/11100 defaultheads and17760steprecords withCE/CL components,CEH/CEG acceptedexposure,H/G relationcounts",
+        "allfourV27000 eightviews withTX/RX/day/heldtrained andfixed sourcechoice",
+        "independentPID/CWD/argv/GPU/stepgrowth andclosed-artifactverification;no target"
+      ]
+    }
+  ],
+  "notes": [
+    "Bridgefourfull sourcefailure andallthresholds preserved;sourcepass isnotgoalcomplete.",
+    "DescriptiveH/G CE-versusCL erroroverlap suggestsdifferentH/G taskroles;itdoesnotprove a cause or thatjoint trainingcombinescorrected sets.",
+    "AllsameH/G physicalinputs,q,heldmask,forwardcounts,normalization,commonlambda,mainobjective andbudget;only CEtasks andCL featuregradients differ.",
+    "HAnchor detaches F joint160 onrestoredIQ onlyinCL;frozenrestorerG wasalready untrained inallmethods;no EMA/referencebank/newhead.",
+    "BothJoint averagesH/G CE;CE1/CL1 fixedrelativeweights areanewhypothesis,notunchanged nativeLlossweights;initialjoint-gradient proxy sets commonlambda.",
+    "AllCEs useexactfirst-order featuresurrogate:auxclassificationweightgrad0,featurefusionnorm/gain stilltrain;originalmainL/rawPL jointlytrain defaulthead.",
+    "Uperrow1134000/held226800/extraaccepted838780/HFW1134000/GFW1134000;CEH/CEG acceptedcounts dependontask,each838780whenused;Both CEterms haveweight.5 each.",
+    "Finalsamecandidate three-student rawclean>=85.98174603174603%,rawsix>72.0961970899471%,sameG-LUsix>78.07463624338624% unchanged."
+  ],
+  "matrix": {
+    "methods": [
+      "HJoint",
+      "HAnchor",
+      "GJoint",
+      "BothJoint"
+    ],
+    "views": [
+      "H",
+      "G"
+    ],
+    "task_views": {
+      "HJoint": "H",
+      "HAnchor": "H",
+      "GJoint": "G",
+      "BothJoint": "mean_H_G"
+    },
+    "restored_feature_detached_in_CL": [
+      "HAnchor"
+    ],
+    "relative_CE_coefficient": 1.0,
+    "relative_CL_coefficient": 1.0,
+    "student_seeds": [
+      2026092701
+    ],
+    "epochs": [
+      20,
+      10,
+      20
+    ],
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "held_extra_RX": 1,
+    "dose_rule": "12sourcebatches common min(.25,.1medianPrimary/max_method_median_CEplusCL);nooptimizer/V/target",
+    "loss": "unchangedT1L+ordinaryrawPL+commonWeight*ramp444*(taskCE+crossRX_CL);BothJoint taskCE averageH/G",
+    "source_criterion": {
+      "held_G3_gain_pp_min": 0.3,
+      "overall_raw_clean_gain_pp_min": -0.1
+    },
+    "selection": "allfourfinish;highestpassingheldG3,exacttiesalphabetical;no target orautomaticthree-seed expansion"
+  },
+  "registered_at": "2026-10-26T01:02:40+00:00"
+}

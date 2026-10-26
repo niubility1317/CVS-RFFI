@@ -316,3 +316,8 @@ G/H复用原缓存三景lowSuburban/midUrban/lowUrban，k按原step顺序轮换�
 因此“CE和CL纠错有互补”不能推出相加有收益；G上的CE独有新增错误更多，H上的CE则提供额外净收益。两旧配方剂量和目标不同，不能将此描述统计写成G分支CE的因果证明。旧G/G CE与新双场景GG CL还存在输入曝光差异，完整18组见[源错误重叠](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/source_objective_overlap.csv)及[证据](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/source_objective_overlap.json)；不构造依赖真值的预测择优或宣称联合训练会达到这些计数。
 
 下一可检验假设是非对称H/G联合目标：H承担硬伪标签分类，G提供跨RX身份关系参照。计划保持相同H/G两次学生前向，比较HCE+双向CL、HCE+仅H梯度CL（G特征detach）、GCE+双向CL、平均H/G CE+双向CL。CE和CL的固定相对系数各1，再通过12批无更新全参数源梯度一次确定四条共同总剂量。它不是原监督损失权重的照搬，也不保证原两类增益叠加。原L/rawPL、q、默认头、own原E30+20、原+.3/−.1源门槛和最终三学生种子联合目标保持；当前仅是下一方向，尚未发布该新矩阵。
+
+
+## 非对称H/G源矩阵准备
+
+`20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01`已登记，HJoint/HAnchor/GJoint/BothJoint同H/G两次前向，CE任务路由与G特征参照方向对照；7项聚焦检查/compile通过，一次独立P0/P1进行中，尚未启动。CE1/CL1后新12批共同源梯度冻结总剂量，原L/rawPL、own原E30+20→E50与+.3/−.1条件不变。完整[预登记](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/preregistration.md)。原三学生种子联合目标未达成。
