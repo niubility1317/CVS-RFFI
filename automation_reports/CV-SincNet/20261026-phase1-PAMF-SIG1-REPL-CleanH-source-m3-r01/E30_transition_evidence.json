@@ -1,0 +1,136 @@
+{
+  "status": "VERIFIED_THREE_TRANSITIONS",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01",
+  "code_commit": "d860ee49a036c599bcb0d7848feed22cc7de8bd7",
+  "completed_cumulative_epoch_per_model": 30,
+  "completed_cumulative_updates_per_model": 6660,
+  "new_completed_updates_across_three": 6660,
+  "rows": [
+    {
+      "method": "REPL_H2_U",
+      "actual_signature_views": 1,
+      "actual_default_head_shape": [
+        6,
+        160
+      ],
+      "own_E30_payload_matches": true,
+      "own_completed_updates": 2220,
+      "actual_E30_parent": "known same-contract ordinaryPL SIG1 scratchE20",
+      "final_segment_complete_readable_records": 1002,
+      "H2": {
+        "dual_L": false,
+        "L_calls": 2220,
+        "H_L_calls": 0,
+        "H_L_packets": 0,
+        "native_shared_L_H_packets": 142080,
+        "H_U_calls": 4440,
+        "H_U_packets": 567000,
+        "scenes": {
+          "U::practical_low_suburban": 188780,
+          "U::practical_mid_urban": 189440,
+          "U::practical_low_urban": 188780
+        },
+        "pair_enabled": false,
+        "pair_calls": 2220,
+        "pair_packets": 283500,
+        "pair_rejected": 21924,
+        "pair_weight": 0.0,
+        "pair_normalizer": "whole physical half",
+        "pair_targets": "opposite detached H probabilities; no hard TX",
+        "extra_F_forwards": 0,
+        "restoration_weight_reads": 0,
+        "restoration_IQ_used": 0,
+        "L_true_labels_all": true,
+        "L_As_KL_weight": 0.0,
+        "ordinary_cross_RX_preserved": true
+      }
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "actual_signature_views": 1,
+      "actual_default_head_shape": [
+        6,
+        160
+      ],
+      "own_E30_payload_matches": true,
+      "own_completed_updates": 2220,
+      "actual_E30_parent": "known same-contract ordinaryPL SIG1 scratchE20",
+      "final_segment_complete_readable_records": 1100,
+      "H2": {
+        "dual_L": false,
+        "L_calls": 2220,
+        "H_L_calls": 0,
+        "H_L_packets": 0,
+        "native_shared_L_H_packets": 142080,
+        "H_U_calls": 4440,
+        "H_U_packets": 567000,
+        "scenes": {
+          "U::practical_low_suburban": 188780,
+          "U::practical_mid_urban": 189440,
+          "U::practical_low_urban": 188780
+        },
+        "pair_enabled": true,
+        "pair_calls": 2220,
+        "pair_packets": 283500,
+        "pair_rejected": 22872,
+        "pair_weight": 1.2,
+        "pair_normalizer": "whole physical half",
+        "pair_targets": "opposite detached H probabilities; no hard TX",
+        "extra_F_forwards": 0,
+        "restoration_weight_reads": 0,
+        "restoration_IQ_used": 0,
+        "L_true_labels_all": true,
+        "L_As_KL_weight": 0.0,
+        "ordinary_cross_RX_preserved": true
+      }
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "actual_signature_views": 1,
+      "actual_default_head_shape": [
+        6,
+        160
+      ],
+      "own_E30_payload_matches": true,
+      "own_completed_updates": 2220,
+      "actual_E30_parent": "known same-contract ordinaryPL SIG1 scratchE20",
+      "final_segment_complete_readable_records": 771,
+      "H2": {
+        "dual_L": true,
+        "L_calls": 2220,
+        "H_L_calls": 4440,
+        "H_L_packets": 284160,
+        "native_shared_L_H_packets": 0,
+        "H_U_calls": 4440,
+        "H_U_packets": 567000,
+        "scenes": {
+          "L::practical_low_suburban": 94720,
+          "L::practical_mid_urban": 94720,
+          "U::practical_low_suburban": 188780,
+          "U::practical_mid_urban": 189440,
+          "L::practical_low_urban": 94720,
+          "U::practical_low_urban": 188780
+        },
+        "pair_enabled": true,
+        "pair_calls": 2220,
+        "pair_packets": 283500,
+        "pair_rejected": 22621,
+        "pair_weight": 1.2,
+        "pair_normalizer": "whole physical half",
+        "pair_targets": "opposite detached H probabilities; no hard TX",
+        "extra_F_forwards": 0,
+        "restoration_weight_reads": 0,
+        "restoration_IQ_used": 0,
+        "L_true_labels_all": true,
+        "L_As_KL_weight": 0.0,
+        "ordinary_cross_RX_preserved": true
+      }
+    }
+  ],
+  "new_model_forwards": 0,
+  "IQ_reads": 0,
+  "V_reads": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "scope": "Three source E30 checkpoints and transition verified, not complete E50 or source/target performance"
+}
