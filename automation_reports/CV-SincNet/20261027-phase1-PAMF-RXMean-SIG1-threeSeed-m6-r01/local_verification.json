@@ -1,0 +1,15 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_test_command": "python -X utf8 -m unittest discover -s tests -p test_pamf_rx_mean.py -v",
+  "focused_tests_passed": 5,
+  "independent_review": "PASS after one targeted direct-P1 fix in original review",
+  "closed_P1": "native context increments counter; calibration initializes4440+step, then actual first4441/call1",
+  "new_candidate_model_seeds": [2026092701, 2026092702, 2026092703],
+  "new_candidate_models": 6,
+  "new_control_training": 0,
+  "new_control_predictions": 0,
+  "preflight": "VERIFIED ordinary account, roots absent, original three E20 source contract matches",
+  "actual_checkpoint_gradient_smoke": "PENDING first launcher step",
+  "performance_verified": false,
+  "goal_complete": false
+}
