@@ -38,3 +38,10 @@ Pair行使用两个已有G logits，同一物理包，无硬TX和新跨RX正对�
 VERIFIED_RUNNING。执行commit `78a4edd78f768b15db061a71e3285f60a641ddfa` 与上游OID一致；单份archive传输比较VERIFIED、远端compile PASS。两方法真实E20+同G联合smoke均PASS：L768/U256×6，U接受234/256；H128、G256，H相对原U位移1.420733，Ga/Gb相对差0.193988，G全部参数/buffers不变。Pair使用12个原始低置信G包，其新增loss对singleSIG_TIME/head/body真实梯度范数0.137189/0.120040/0.301387，0optimizer/newforward/Utruth/target。梯度证据证明机制执行，不代表泛化改善。
 
 两学生均已核实PID/CWD/argv/CVD/onGPU及两次独立读取的step增长，目前同物理GPU0各一worker，全球容量政策允许每卡最多2，总容量包含其他owner。独立检查当时全部可读222条训练记录（108/114），H/G/门控/归一化/六视图计数与finite均符合；第二次状态读回为128/114条。只记录读取时刻的进度，不称收敛/三seed/目标成功。健康旧角色LU继续，L/U-only已完成源评测待全家族汇总，没有重训或发消息给其他对话。见[启动及真实smoke证据](launch_evidence.json)。
+
+
+## 用户最新方向变更：已停止恢复视图训练
+
+用户明确要求“脱离DURA配合路线，这个方向现在不可取，只使用clean IQ以及其叠加星地信道衍生物进行训练”。本run停止继续训练/派发，相关controller和仍在跑的本run worker均按完整PID/CWD/argv/owner/CVD核实后停止；独立/proc及GPU读回确认全部退出。本run现为CANCELLED_BY_USER，已完成部分和所有日志/已有checkpoint保留，0其他owner信号、0产物删除。不是系统技术失败，也不是完整科学实验完成。
+
+新训练不使用DURA/恢复IQ或恢复器权重，DURA分数不再参与方案筛选/扩种子条件；旧G门槛仅保留为历史已执行计划，不再沿此家族扩展。当前后续计划见[clean/H研发目标](../../../docs/goals/PAMF_REPL_CLEAN_H_20261026.md)。见[独立停止证据](user_stop_evidence.json)。

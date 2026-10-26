@@ -42,3 +42,10 @@ U-only和L-only训练/源V27000×8已完成、原进程退出；LU保持原配�
 | L-only | 98.018519% | 73.396296% | 91.206173% | −0.403704 | −1.775309 | +0.533333 | 未通过 |
 
 它们支持“G训练压力和原始IQ保持存在取舍”，不能据此降低门槛。原始L-only/U-only配方不热改、不重训；新GH两行是另行登记的同预算源消融。LU未结束时不把本run标ANALYZED，也不启动本家族三seed或target。见[部分源证据](partial_source_evidence.json)。
+
+
+## 用户最新方向变更：已停止恢复视图训练
+
+用户明确要求“脱离DURA配合路线，这个方向现在不可取，只使用clean IQ以及其叠加星地信道衍生物进行训练”。本run停止继续训练/派发，相关controller和仍在跑的本run worker均按完整PID/CWD/argv/owner/CVD核实后停止；独立/proc及GPU读回确认全部退出。本run现为CANCELLED_BY_USER，已完成部分和所有日志/已有checkpoint保留，0其他owner信号、0产物删除。不是系统技术失败，也不是完整科学实验完成。
+
+新训练不使用DURA/恢复IQ或恢复器权重，DURA分数不再参与方案筛选/扩种子条件；旧G门槛仅保留为历史已执行计划，不再沿此家族扩展。当前后续计划见[clean/H研发目标](../../../docs/goals/PAMF_REPL_CLEAN_H_20261026.md)。见[独立停止证据](user_stop_evidence.json)。
