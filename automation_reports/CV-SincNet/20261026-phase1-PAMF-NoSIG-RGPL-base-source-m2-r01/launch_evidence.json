@@ -1,0 +1,92 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "f5eb718af9bf461b6b0b9fa6b422f8794bc19103",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "independent_P0P1": "PASS",
+  "focused_tests": 3,
+  "actual_NoSIG_prefix_tensor_identity_verified": true,
+  "actual_NoSIG_defaulthead_G_and_joint_backward_smoke": {
+    "status": "PASS",
+    "results": [
+      {
+        "method": "NoSIG-PL",
+        "status": "PASS",
+        "actual_U_seen": 256,
+        "L_forward_packets": 768,
+        "head_finite_nonzero": true,
+        "actual_signature_parameters": 0,
+        "optimizer_updates": 0,
+        "U_truth_read": false,
+        "query_reads": 0
+      },
+      {
+        "method": "NoSIG-Sup",
+        "status": "PASS",
+        "actual_U_seen": 0,
+        "L_forward_packets": 768,
+        "head_finite_nonzero": true,
+        "actual_signature_parameters": 0,
+        "optimizer_updates": 0,
+        "U_truth_read": false,
+        "query_reads": 0
+      }
+    ],
+    "actual_same_contract_NoSIG_E20_default_head_and_G": true,
+    "checkpoint_state_verified": true,
+    "optimizer_updates": 0,
+    "target_reads": 0
+  },
+  "controller_PID_CWD_argv_environment_verified": true,
+  "both_training_PID_CWD_argv_GPU_step_growth_verified": true,
+  "live_jobs": [
+    {
+      "method": "NoSIG-PL",
+      "gpu": 0,
+      "segments": [
+        {
+          "segment": 30,
+          "complete_records": 550,
+          "step_log_growth": true,
+          "complete": false,
+          "metrics": {
+            "T1_L_packets": 768,
+            "T1_As_KL_weight": 0.0,
+            "T1_PL_seen": 140536,
+            "T1_PL_accepted": 124307,
+            "CRIC_supcon_weight": 0.1,
+            "train/skipped_nonfinite_loss": 0,
+            "train/skipped_nonfinite_grad": 0
+          }
+        }
+      ]
+    },
+    {
+      "method": "NoSIG-Sup",
+      "gpu": 3,
+      "segments": [
+        {
+          "segment": 20,
+          "complete_records": 619,
+          "step_log_growth": true,
+          "complete": false,
+          "metrics": {
+            "T1_L_packets": 768,
+            "T1_As_KL_weight": 0.0,
+            "T1_PL_seen": 0,
+            "T1_PL_accepted": 0,
+            "CRIC_supcon_weight": 0.0,
+            "train/skipped_nonfinite_loss": 0,
+            "train/skipped_nonfinite_grad": 0
+          }
+        }
+      ]
+    }
+  ],
+  "student_seeds": [
+    2026092701
+  ],
+  "target_reads": 0,
+  "U_truth_read": false,
+  "new_method_training": false
+}

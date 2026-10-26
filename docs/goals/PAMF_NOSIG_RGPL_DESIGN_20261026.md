@@ -1,6 +1,6 @@
 # 去 SIG_TIME 的 PAMF：恢复视图跨接收机图伪标签学习
 
-状态：2026-10-26 用户要求先完整复盘后设计；本文件是新方法设计，尚未实现、训练或取得新目标结果。工作名 **PAMF-RGPL（Restoration-aware Graph Pseudo-Labeling，恢复视图图伪标签学习）**，不是已验证的最终方法名。依据见[完整复盘](../../automation_reports/CV-SincNet/20261026-analysis-PAMF-SSL-retrospective-r01/report.md)。
+状态：2026-10-26 用户要求先完整复盘后设计；图方法仍未完成真实数据验证或候选训练；NoSIG匹配基线及E30图教师准备已实现并核实运行，图核心算术已实现并通过4项聚焦检查，尚无新目标结果。工作名 **PAMF-RGPL（Restoration-aware Graph Pseudo-Labeling，恢复视图图伪标签学习）**，不是已验证的最终方法名。依据见[完整复盘](../../automation_reports/CV-SincNet/20261026-analysis-PAMF-SSL-retrospective-r01/report.md)。
 
 ## 当前范围与基底
 
@@ -108,3 +108,10 @@ GraphRaw2与RGPL使用相同图标签／接受集合／额外前向数，CE总�
 - 同G-LU六景>max(78.07463624338624%，NoSIG-Sup+G均值，NoSIG-PL+G均值)。
 
 新NoSIG控制尚未完成，因此以上max表达式不是已知新数值。三个seed SD不代表显著性，源V正确率不代表U实测正确率。推理仍为单个NoSIG F／同一固定单次G+F，不保留图或教师，不复用旧架构的延迟数字。
+
+
+## NoSIG 基线已实际启动
+
+`20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01`，执行代码`f5eb718af9bf461b6b0b9fa6b422f8794bc19103`。真实原NoSIG E20张量和scratch链已核实；真实NoSIG/defaulthead/G source smoke、PL L128/U256与Sup L128/U-off联合backward通过。两个worker在GPU0/3，PID/CWD/argv/GPU/step增长独立核实。NoSIG-PL先得到固定E30图教师，再+20作E50控制；Sup从零50完整L、U loader缺席。两者final自动V八视图。
+
+已实现`experiments/pamf_channel_pl/rgpl_graph.py`的精确不同RX mutual邻居、对称归一化、按L种子RX分解的固定点传播、排除自身RX的双图认证和不更新源图的独立V扩展；4项数学／权限检查通过，包含线性解对照、U真值／V节点拒绝、类别置换等变和V批次独立。此为算法核心单元验证，尚未真实L/U建图，不是图标签质量或方法性能。下一步在真实NoSIG E30冻结后为原L/U/V分别提取raw及12个恢复视图特征；仅L/U建图，V只独立扩展与质量评分。
