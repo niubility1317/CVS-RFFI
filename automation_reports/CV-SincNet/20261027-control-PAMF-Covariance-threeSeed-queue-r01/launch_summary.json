@@ -1,0 +1,70 @@
+{
+  "status": "RUNNING_VERIFIED",
+  "queue_run_id": "20261027-control-PAMF-Covariance-threeSeed-queue-r01",
+  "original_scientific_run": "20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01",
+  "queue_commit": "285fd8c2bd485fe7043a788f39e94b72214d5d05",
+  "scientific_commit": "68b6338d20423498c110284c0c40b65a50d37de7",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_identity": "VERIFIED",
+  "original_controller_stopped": true,
+  "training_prediction_score_workers_terminated": 0,
+  "other_owner_actions": 0,
+  "queue_policy": {
+    "max_own_GPU_workers": 4,
+    "max_total_GPU_workers_per_card": 2,
+    "max_own_GPU_workers_per_card": 1,
+    "min_free_MiB": 10000,
+    "CPU_scorers": 1
+  },
+  "scientific_config_changes": 0,
+  "new_scientific_rows": 0,
+  "completed_original_jobs": 16,
+  "original_jobs": 28,
+  "live_seed03_training": [
+    {
+      "job": "train__CovSel-U-s2026092703",
+      "GPU": 4,
+      "actual_worker_checkout": "original scientific release",
+      "actual_source_smoke": "PASS",
+      "epoch": 21,
+      "updates": 4662,
+      "log_bytes": 11765,
+      "live": true
+    },
+    {
+      "job": "train__CovRandom-U-s2026092703",
+      "GPU": 5,
+      "actual_worker_checkout": "original scientific release",
+      "actual_source_smoke": "PASS",
+      "epoch": 21,
+      "updates": 4662,
+      "log_bytes": 11795,
+      "live": true
+    },
+    {
+      "job": "train__CovFull-U-s2026092703",
+      "GPU": 6,
+      "actual_worker_checkout": "original scientific release",
+      "actual_source_smoke": "PASS",
+      "epoch": 21,
+      "updates": 4662,
+      "log_bytes": 11775,
+      "live": true
+    },
+    {
+      "job": "train__CovSel-LU-s2026092703",
+      "GPU": 7,
+      "actual_worker_checkout": "original scientific release",
+      "actual_source_smoke": "PASS",
+      "epoch": 21,
+      "updates": 4662,
+      "log_bytes": 11775,
+      "live": true
+    }
+  ],
+  "seed02_full_raw_prediction_and_score_rows": 4,
+  "original_seed01_readouts_reused": true,
+  "new_control_training": 0,
+  "full_goal_complete": false
+}
