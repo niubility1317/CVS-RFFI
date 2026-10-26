@@ -1,0 +1,45 @@
+{
+  "status": "VERIFIED_TWO_E30_TRANSITIONS",
+  "run_id": "20261027-phase1-PAMF-SIG1-REPL-CleanH-confirm-m3-r01",
+  "execution_commit": "68b6338d20423498c110284c0c40b65a50d37de7",
+  "rows": [
+    {
+      "model_seed": 2026092702,
+      "actual_E30_checkpoint_verified": true,
+      "cumulative_epochs": 30,
+      "cumulative_updates": 6660,
+      "own_seed_E20_parent": true,
+      "actual_final_segment_parent_is_own_E30": true,
+      "actual_final_segment_initial_state_equals_own_E30": true,
+      "signature_views": 1,
+      "default_head": [
+        6,
+        160
+      ],
+      "H_L_packets": 284160,
+      "H_U_packets": 567000
+    },
+    {
+      "model_seed": 2026092703,
+      "actual_E30_checkpoint_verified": true,
+      "cumulative_epochs": 30,
+      "cumulative_updates": 6660,
+      "own_seed_E20_parent": true,
+      "actual_final_segment_parent_is_own_E30": true,
+      "actual_final_segment_initial_state_equals_own_E30": true,
+      "signature_views": 1,
+      "default_head": [
+        6,
+        160
+      ],
+      "H_L_packets": 284160,
+      "H_U_packets": 567000
+    }
+  ],
+  "new_model_forwards": 0,
+  "IQ_reads": 0,
+  "source_V_reads": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "scope": "Two completed own E30 checkpoints and next-segment initial snapshot equal to corresponding E30; nonblocking observation, not completed E50 or three-seed target evidence"
+}

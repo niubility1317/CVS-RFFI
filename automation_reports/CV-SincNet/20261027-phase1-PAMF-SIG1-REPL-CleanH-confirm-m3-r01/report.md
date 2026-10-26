@@ -24,3 +24,14 @@ seed02/03 在 GPU0/3 独立续训，controller 与两个 worker 的 PID/CWD/完�
 复用 seed01 的三个声明人口 raw 七景预测已全部固定并独立评分；六个历史严格对照的缺失 cross_date 七景预测和独立评分全部完成。本次没有对照训练或主168000重复预测。当前共 15 个 job 完成、2 个训练在运行、4 个新种子的预测/评分待训练冻结；目标分数没有回流改变配方、候选、seed或预算。当前没有完整三种子新方法成绩，性能目标未完成。每行训练完成后继续由同一 controller 自动冻结、预测和独立评分，无需另行指令。
 
 独立证据见 [启动与增长核实](launch_evidence.json)。
+
+
+## 两个新增种子的 E30 与实际接续
+
+VERIFIED_TWO_E30_TRANSITIONS。seed02/03 均完成新增10轮/2220步，累计各E30/6660步；本批该阶段实际新增更新合计4440，不能把共享E20父成本重复计入新增成本。两个实际E30权重的run/row/seed、各自E20父来源、epoch/更新数、唯一SIG_TIME分支、原6×160默认头和参数有限值均符合。
+
+两个最后20轮已经实际开始。读取各自 segment50/initial_smoke.pt 中保存的配置和真实初始模型状态，父路径均指向对应seed自身E30，初始状态与自身E30最终状态逐tensor完全相同；epoch_offset30/step_offset6660/segment_epochs20符合。没有使用不存在的中间resolved_config作为证据：该原生trainer在initial_smoke里保存实际配置，最终complete时才写segment完整config。读取检查点所需原冻结依赖通过纯F四来源激活，没有加载G或增加模型前向。
+
+每个新增种子首段实际U见567000、学生视图3402000、L双H284160、U双H567000；原全L真标签/默认头/AsKL0和跨RX约束继续。该非阻断核实只读取已生成的checkpoint/配置/计数，没有新F/IQ/V/U真值/target读取；未暂停、重启或修改健康训练。当前不是E50完成或三种子目标成功。
+
+证据：[实际E30与下一段初始状态](E30_transition_evidence.json)。
