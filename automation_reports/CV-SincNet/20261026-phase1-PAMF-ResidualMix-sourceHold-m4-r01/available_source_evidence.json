@@ -1,6 +1,6 @@
 {
   "status": "VERIFIED_AVAILABLE_RESIDUAL_MIX_RECORDS",
-  "total_available_records": 9364,
+  "total_available_records": 17760,
   "source_weights": {
     "MixMix": 0.13833314526398888,
     "MixG": 0.0888496672647647
@@ -18,37 +18,37 @@
     {
       "a": "MixBase",
       "b": "MixDose",
-      "common_steps": 2304,
+      "common_steps": 4440,
       "extra_acceptance_equal": true
     },
     {
       "a": "MixBase",
       "b": "PairBase",
-      "common_steps": 2372,
+      "common_steps": 4440,
       "extra_acceptance_equal": true
     },
     {
       "a": "MixBase",
       "b": "PairDose",
-      "common_steps": 2308,
+      "common_steps": 4440,
       "extra_acceptance_equal": true
     },
     {
       "a": "MixDose",
       "b": "PairBase",
-      "common_steps": 2304,
+      "common_steps": 4440,
       "extra_acceptance_equal": true
     },
     {
       "a": "MixDose",
       "b": "PairDose",
-      "common_steps": 2304,
+      "common_steps": 4440,
       "extra_acceptance_equal": true
     },
     {
       "a": "PairBase",
       "b": "PairDose",
-      "common_steps": 2308,
+      "common_steps": 4440,
       "extra_acceptance_equal": true
     }
   ],
@@ -56,18 +56,18 @@
     {
       "a": "MixBase",
       "b": "MixDose",
-      "common_steps": 2304,
+      "common_steps": 4440,
       "all_used_alpha_statistics_match": true
     },
     {
       "a": "PairBase",
       "b": "PairDose",
-      "common_steps": 2308,
+      "common_steps": 4440,
       "all_used_alpha_statistics_match": true
     }
   ],
   "observer_optimizer_updates": 0,
   "new_target_reads": 0,
-  "observed_at_UTC": "2026-10-25T23:39:33.474456+00:00",
-  "scope": "All currently complete records;live tails may buffer;not fullE50 or target gain"
+  "observed_at_UTC": "2026-10-25T23:56:14.577974+00:00",
+  "scope": "All17760 records andfour finalE50 checkpoints verified;source assessment maystillpending;not target gain"
 }

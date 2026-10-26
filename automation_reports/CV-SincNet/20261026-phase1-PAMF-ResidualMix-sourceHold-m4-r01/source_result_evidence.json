@@ -1,0 +1,45 @@
+{
+  "status": "ANALYZED",
+  "independent_readback": "VERIFIED",
+  "code_commit": "e00d055490904c4d89a6953c84d5f0fd92ce9965",
+  "student_seeds": [
+    2026092701
+  ],
+  "methods": [
+    "MixBase",
+    "MixDose",
+    "PairBase",
+    "PairDose"
+  ],
+  "source_selection": null,
+  "source_thresholds": {
+    "held_G_mean_gain_pp": 0.3,
+    "clean_min_delta_pp": -0.1
+  },
+  "base_weight": 0.05941532657537612,
+  "source_route_weights": {
+    "MixMix": 0.13833314526398888,
+    "MixG": 0.0888496672647647
+  },
+  "source_records_verified": 17760,
+  "all_four_actual_E50_default_heads_verified": true,
+  "all544_source_cells_recomputed_from_packets": true,
+  "paired_method_cells": 96,
+  "source_V_records": 27000,
+  "source_views": [
+    "raw",
+    "G_raw",
+    "practical_low_suburban",
+    "G_practical_low_suburban",
+    "practical_mid_urban",
+    "G_practical_mid_urban",
+    "practical_low_urban",
+    "G_practical_low_urban"
+  ],
+  "G_endpoint_control_reused": true,
+  "source_only": true,
+  "new_target_reads": 0,
+  "U_truth_read": false,
+  "head_fit_updates": 0,
+  "scope": "One-student-seed source interpolation screen;not three-seed target performance or goal achieved"
+}

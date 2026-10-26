@@ -269,3 +269,10 @@ GTaskScaled在16200次留出G判断中纠正78次、弄错42次，净增36次，
 完整实现后拟登记`20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01`：只有student seed01，各自own原E30+20到E50/11100、13L37LU；三E30 rawq和三G缓存只读复用，不需要新G训练或重建H缓存。额外U分支继续排除RX1，原L/raw主项全部源RX不变，完整源V八视图及TX/RX/day/净纠错核算。四条全部完成后沿用heldG3≥+.3pp与overallrawclean≥−.1pp，只能按固定规则选择源合格者；无通过者不扩三种子或测试。新run发布前仍需合法输入/实际原E30 smoke、代码commit、聚焦负例、一次独立P0P1、最小预登记和独立启动事实，其他不新增门槛。
 
 原三个学生种子、同候选raw clean+1pp、raw六景>1.5pp、同G六景正收益的正式目标不变。本次只有插值原语测试，没有新训练或目标性能，不命名或替换最终方法。
+
+
+## 恢复残差连续插值源矩阵完成
+
+`20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01`完整核算：一个学生seed01、四E50默认头、17760记录及544源逐包单元、96方法间配对。相对PL：MixBase heldG+0.129630pp/clean-0.018519pp；MixDose heldG+0.080247pp/clean-0.014815pp；PairBase heldG+0.129630pp/clean-0.003704pp；PairDose heldG+0.104938pp/clean-0.022222pp。原+.3pp/−.1pp规则保持，源选择为无候选通过。**四条均未通过原源门槛，不扩种子，不启动本批新目标测试。** 保留所有负结果、原门槛与原联合目标；下一步依据输入/剂量配对结果确定方向。
+
+输入事后复核无取样/前向修改错误证据，有效集合无负相关对，不能据此保证TX保真。原三学生种子raw/同G联合目标保持。完整证据见[插值源报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/report.md)。

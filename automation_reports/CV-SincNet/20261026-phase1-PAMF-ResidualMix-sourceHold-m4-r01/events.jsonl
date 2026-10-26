@@ -5,3 +5,8 @@
 {"at": "2026-10-25T23:26:18+00:00", "status": "RUNNING", "note": "实际训练GPU进程已独立核实，非仅队列预约。", "evidence": ["launch_evidence.json"], "row_id": "F0-PairBase-sourceHold-s2026092701"}
 {"at": "2026-10-25T23:26:23+00:00", "status": "RUNNING", "note": "实际训练GPU进程已独立核实，非仅队列预约。", "evidence": ["launch_evidence.json"], "row_id": "F0-PairDose-sourceHold-s2026092701"}
 {"at": "2026-10-25T23:44:29+00:00", "status": "RUNNING", "note": "四路实际训练健康；源插值/剂量/CUDA RNG通过，完整当前9364前缀和同路线alpha统计匹配；IQ尾部在有效集合极少，不改变配方或门槛，无目标结果。", "evidence": ["source_gradient_calibration.json", "training_evidence.json"], "row_id": null}
+{"at": "2026-10-26T00:00:11+00:00", "status": "ANALYZED", "note": "完整源E50/八视图与4440步核实；原源规则FAIL，无目标结果。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-MixBase-sourceHold-s2026092701"}
+{"at": "2026-10-26T00:00:16+00:00", "status": "ANALYZED", "note": "完整源E50/八视图与4440步核实；原源规则FAIL，无目标结果。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-MixDose-sourceHold-s2026092701"}
+{"at": "2026-10-26T00:00:21+00:00", "status": "ANALYZED", "note": "完整源E50/八视图与4440步核实；原源规则FAIL，无目标结果。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-PairBase-sourceHold-s2026092701"}
+{"at": "2026-10-26T00:00:27+00:00", "status": "ANALYZED", "note": "完整源E50/八视图与4440步核实；原源规则FAIL，无目标结果。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-PairDose-sourceHold-s2026092701"}
+{"at": "2026-10-26T00:00:32+00:00", "status": "ANALYZED", "note": "完整插值源矩阵，源选择NONE；一个学生种子，联合目标未证明。", "evidence": ["source_packet_arithmetic.json", "source_result_evidence.json"], "row_id": null}

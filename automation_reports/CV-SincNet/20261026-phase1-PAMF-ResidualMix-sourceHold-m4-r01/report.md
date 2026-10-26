@@ -1,45 +1,70 @@
-# 同包恢复残差插值源试验
+# 同包恢复残差插值的完整源验证
 
-RUNNING。真实原E30/defaulthead/G精确端点检查、12批无更新源校准和PairDose原L128/U256联合backward smoke均PASS。四路实际GPU训练经独立PID/CWD/完整命令/环境/GPU与step日志增长核实，7项聚焦测试、local/remote compile、唯一一次独立P0/P1及单archive传输比较通过。实际执行代码`e00d055490904c4d89a6953c84d5f0fd92ce9965`。只有一个学生seed2026092701，无新目标结果。
+ANALYZED，独立核实VERIFIED。四个方法只有一个学生seed2026092701，全部own原E30+20→E50/11100，四份最终默认头及17760条新增训练记录通过。所有sourceV27000八视图已固定，544个分层单元直接由逐包预测重算；另有96个方法间配对单元，含复用的同系数G/G端点控制。没有新目标访问。
 
-## 已完成源校准
+实际代码`e00d055490904c4d89a6953c84d5f0fd92ce9965`。真实E30/defaulthead/G精确端点、12批源剂量/CUDA RNG隔离、原L128/U256联合backward smoke、7项聚焦测试、local/remote compile及唯一一次P0/P1检查通过。archive传输及实际PID/CWD/argv/GPU/loggrowth核实；未热改健康任务。
 
-校准耗时9.6028秒，无新optimizer/V/目标或U真值读取，F/G参数和全部registered buffers保持不变。原L1536/U3072曝光、60次完整参数梯度求值，CENTER_UNITS/Sinc25000物理坐标保持。实际CUDA验证插值不改变原生CPU/CUDA RNG，MixMix/MixG的首混合视图在12批持续匹配；所有附加分类阶段weight梯度为0，原主任务仍联合训练默认头。
+## 原门槛与完整判断
 
-原primary norm中位数0.978037417。Base均为已完成源校准系数0.059415326575376119；Dose按预登记公式得到下表系数，均未触及.25上限，初始加权梯度代理为primary中位数10%。该代理不是后续AdamW更新或性能保证。
+相对同seed PLControl、相同物理源V与场景，单位百分点。heldRX1 G三景共16200次判断，≥+.3pp等价于净增至少49次；overallV rawclean27000条≥−.1pp等价于净增不少于−27。RX1只从额外分支留出，父模型/L/rawPL/G已见它，不是真正未见baseRX验证。
 
-| 路线 | extra norm中位数 | Base初始norm比 | Dose系数 | 与主任务cos中位数 |
-| --- | ---: | ---: | ---: | ---: |
-| MixMix | 0.707015961 | 4.295090% | 0.13833314526398888 | -0.139800 |
-| MixG | 1.100777805 | 6.687175% | 0.088849667264764703 | -0.210897 |
+| 方法 | heldG三景差 | overallV rawclean差 | held纠正 / 新增错 / 净增 | 原源条件 |
+| --- | ---: | ---: | ---: | --- |
+| MixBase | +0.129630 | -0.018519 | 51 / 30 / 21 | FAIL |
+| MixDose | +0.080247 | -0.014815 | 55 / 42 / 13 | FAIL |
+| PairBase | +0.129630 | -0.003704 | 74 / 53 / 21 | FAIL |
+| PairDose | +0.104938 | -0.022222 | 86 / 69 / 17 | FAIL |
 
-本次同G/G校准参考norm中位数1.610788763，Base初始比9.785468%，cos-0.224113。既有GFeatureHard完整源结果作为同系数端点对照复用，不重训或继承其F50。
+**四条均未通过原源门槛，不扩种子，不启动本批新目标测试。** 保留所有负结果、原门槛与原联合目标；下一步依据输入/剂量配对结果确定方向。
 
-## 输入几何复核
+## 实际训练执行
 
-未筛选12批的极小混合RMS约为原始8.9%，该极小值不在实际附加监督的有效集合中。只读现有sourceU及G缓存的CPU几何分析覆盖56700源U，物理key查找一一对应，U元数据无真标签。按相同seed重放原12批，在模型前向前复算raw/G min/mean余弦及相对改变量，与GPU校准记录的最大差为1.788e-07，支持该尾部已存在于匹配的raw/G数据中，并非观察到的取样随机增强或前向修改错误。
+Mix为同物理包raw/G逐包Uniform[0,1)插值，MixMix用两个独立Mix，MixG为Mix加精确G端点。原L/rawPL不变，额外标签为冻结raw三E30共识95 hardargmax；附加分类weight梯度为0，特征融合norm/gain仍训练。Base系数0.059415326575376119；Dose源公式固定MixMix=0.13833314526398888、MixG=0.088849667264764703，初始全参数物理梯度代理10%，不是后续AdamW或性能保证。
 
-经原raw共识95门控及RX1留出后，各场景有效样本41939条，均无raw/G实数负相关对。低能量尾部很少，不能据未筛选极小值把整个插值分布判为无效，也不能把波形相近当作TX准确率证明。
+每row U1134000、held226800、额外接受838780、额外学生FW2268000、私有α抽样2268000。全步原L768/AsKL0/ORD.1/rawPL/系数/升温/MG计数符合配置，六组接受共同前缀相同，Base/Dose两路线全部α统计前缀匹配，无非有限跳步、U真值、G/教师或另训头。
 
-| 场景 | 有效集合负相关对 | G端点RMS低于raw25%的条数 | α均匀时混合RMS低于raw25%的解析期望 |
-| --- | ---: | ---: | ---: |
-| practical_low_suburban | 0 | 1 / 41939 | 0.00055230% |
-| practical_mid_urban | 0 | 2 / 41939 | 0.00103411% |
-| practical_low_urban | 0 | 10 / 41939 | 0.00325025% |
-
-这是现有源IQ工件的事后几何解释，未新增F/G forward、checkpoint加载、参数更新、V或目标访问；解析期望不是实际训练事件计数或TX识别率。该分析不改变当前四路配方、接受门控、系数或选择规则，未增加幅相拟合、输入回退或新视图。
-
-## 实际训练前缀
-
-截至独立审计时间`2026-10-25T23:39:33.474456+00:00`，全部9364条当前完整训练记录逐条核对通过。四份actual initial checkpoint的六类默认头、own原E30来源、配置与预算匹配，原L768包、AsKL0、ORD.1、rawPL和M/G计数符合配置。六组方法的额外接受共同前缀一致，同路线Base/Dose的所有α统计前缀匹配，无非有限跳步、U真值、G/教师更新。以下不是完整E50结果。
-
-| 方法 | GPU | 完整新增步 | 实际系数 | 使用α数 | 使用α均值 |
+| 方法 | 系数 | Mix学生FW | 精确G学生FW | 使用α数 | α均值 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| MixBase | 0 | 2380 / 4440 | 0.059415327 | 1215920 | 0.499466 |
-| MixDose | 2 | 2304 / 4440 | 0.138333145 | 1177008 | 0.499553 |
-| PairBase | 3 | 2372 / 4440 | 0.059415327 | 605912 | 0.499640 |
-| PairDose | 4 | 2308 / 4440 | 0.088849667 | 589528 | 0.499781 |
+| MixBase | 0.059415327 | 2268000 | 0 | 2268000 | 0.499555 |
+| MixDose | 0.138333145 | 2268000 | 0 | 2268000 | 0.499555 |
+| PairBase | 0.059415327 | 1134000 | 1134000 | 1134000 | 0.499561 |
+| PairDose | 0.088849667 | 1134000 | 1134000 | 1134000 | 0.499561 |
 
-训练后自动完整源V27000八视图。全四条完成后仍按heldRX1 G三景≥+.3pp、overallV rawclean≥−.1pp筛选；无通过者不扩种子/目标，合格者按固定最大held增益及字母顺序选择。heldRX只从额外分支留出，原父/L/rawPL/G已见它，不是真正未见baseRX证明。原同候选三学生种子的raw clean/raw六景/同G六景联合目标保持。
+## 方法间held同包配对
 
-参见[预登记](preregistration.md)、[源梯度校准](source_gradient_calibration.csv)、[校准核实](source_gradient_calibration.json)、[输入几何](source_IQ_geometry.csv)、[几何核实](source_IQ_geometry.json)、[全部可用训练前缀](available_source_execution.csv)、[实际运行证据](training_evidence.json)。
+candidate−control为直接同包差，区别于相对PL增益。Base输入对照匹配系数，Dose输入对照匹配初始梯度代理；同输入Base/Dose比较系数。旧GEndpointControl是已核实的GFeatureHard，不重训或作父权重。H/G仅为源三景，完整参与RX/TX/day分解见CSV。
+
+| candidate − control | 源视图 | 纠正 / 新增错 / 净增 | 差（pp） |
+| --- | --- | ---: | ---: |
+| MixDose − MixBase | raw | 0 / 0 / 0 | +0.000000 |
+| MixDose − MixBase | H_three_mean | 33 / 52 / -19 | -0.117284 |
+| MixDose − MixBase | G_three_mean | 13 / 21 / -8 | -0.049383 |
+| PairBase − MixBase | raw | 1 / 0 / 1 | +0.018519 |
+| PairBase − MixBase | H_three_mean | 31 / 55 / -24 | -0.148148 |
+| PairBase − MixBase | G_three_mean | 28 / 28 / 0 | +0.000000 |
+| PairDose − MixDose | raw | 0 / 0 / 0 | +0.000000 |
+| PairDose − MixDose | H_three_mean | 34 / 30 / 4 | +0.024691 |
+| PairDose − MixDose | G_three_mean | 34 / 30 / 4 | +0.024691 |
+| PairDose − PairBase | raw | 0 / 1 / -1 | -0.018519 |
+| PairDose − PairBase | H_three_mean | 47 / 38 / 9 | +0.055556 |
+| PairDose − PairBase | G_three_mean | 20 / 24 / -4 | -0.024691 |
+| MixBase − GEndpointControl | raw | 0 / 0 / 0 | +0.000000 |
+| MixBase − GEndpointControl | H_three_mean | 55 / 39 / 16 | +0.098765 |
+| MixBase − GEndpointControl | G_three_mean | 52 / 54 / -2 | -0.012346 |
+| MixDose − GEndpointControl | raw | 0 / 0 / 0 | +0.000000 |
+| MixDose − GEndpointControl | H_three_mean | 34 / 37 / -3 | -0.018519 |
+| MixDose − GEndpointControl | G_three_mean | 35 / 45 / -10 | -0.061728 |
+| PairBase − GEndpointControl | raw | 1 / 0 / 1 | +0.018519 |
+| PairBase − GEndpointControl | H_three_mean | 36 / 44 / -8 | -0.049383 |
+| PairBase − GEndpointControl | G_three_mean | 29 / 31 / -2 | -0.012346 |
+| PairDose − GEndpointControl | raw | 0 / 0 / 0 | +0.000000 |
+| PairDose − GEndpointControl | H_three_mean | 40 / 39 / 1 | +0.006173 |
+| PairDose − GEndpointControl | G_three_mean | 9 / 15 / -6 | -0.037037 |
+
+## 输入几何与结论边界
+
+现有56700U的无模型CPU复核中，原12批模型前向前raw/G几何与校准最大差1.788e−7。未筛选低RMS极端值不在附加监督有效集合；有效41939包/景无负相关对，混合RMS低于raw25%的均匀α解析期望仅约.000552%/.001034%/.003250%。这是波形解释，不能替代TX准确率或实际训练事件计数；分析未更改配方、门控或选择规则。
+
+新增80F轮，共享三E30历史90轮及旧缓存/控制成本单列。最终仍要求同一方法三个学生种子的raw clean≥85.98174603174603%、raw六景>72.0961970899471%、同G-LU六景>78.07463624338624%；本源实验不能证明联合目标。
+
+证据：[完整源单元](source_all_strata.csv)、[固定判断](source_candidate_decision.csv)、[方法配对](source_matched_route_pairs.csv)、[源迁移](source_transfer_breakdown.csv)、[逐包核算](source_packet_arithmetic.json)、[完整执行](finished_source_execution.csv)、[结果证据](source_result_evidence.json)、[源校准](source_gradient_calibration.json)、[IQ几何](source_IQ_geometry.json)。
