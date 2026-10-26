@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "focused_tests": 6,
+  "compile": "PASS",
+  "registration": "VALID",
+  "review": {
+    "status": "PASS",
+    "reviewer": "/root/ssl_p0p1_review",
+    "P0": 0,
+    "P1": 0,
+    "scope": "Single independent review limited to direct P0/P1 defects in cached default-head algebra, gradient claims, hidden-U boundary, CPU-only publication and immutable output. No new fit or data access."
+  },
+  "scope": "cached source algebra only; actual originalhead smoke is first remote step"
+}

@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-analysis-PAMF-SIG1-rejected-pairs-m1-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "单视图REPL：低置信样本同包恢复一致性缓存诊断",
+  "description": "比较原始soft、同包G-G概率和cosine分数一致性；读取既有源14视图缓存和原E20默认头，仅代数与L代理真标签梯度分析；不训练、不选择学生。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-SIG1-rejected-pairs"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME-single-view",
+    "source-only",
+    "same-packet-consistency",
+    "cached-analysis"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-diagnostic-PAMF-SIG1-LU-restored-views-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户明确探索多信道DURA恢复IQ+高斯噪声、利用U的RX标签并保留同TX跨RX，分析L/U阶段优化差异；既有goal授权source研发，全GPU可用，不联系其他对话。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1; CPU2 only; no CUDA/IQ/model forward",
+    "cwd": "PROJECT/releases/20261026-analysis-PAMF-SIG1-rejected-pairs-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "existing fourteen-view logits and unit joint160 features; original frozen cosine head 6x160 scale30",
+    "contract_ref": "known completed m201/F0-A1B1-SIG_TIME-F21-s2026092701/segment20 complete.config.source_contract",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "existing all6300 source train true labels for proxy gradient diagnosis",
+      "U_s": "existing RX-balanced6300 subset; no y; true precision unknown",
+      "V": "notread"
+    },
+    "train_ratio": "originalF0 VALIDATED_ONCE unchanged;diagnosticL6300/U6300RXbalanced;no data validation change",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Cached source proxy algebra only; unit-feature gradients not body gradients or optimizer updates; no target benefit claim"
+  },
+  "checkpoint": {
+    "initialization": "read-only original E20 frozen default head weight only; no model instantiation",
+    "sources": [
+      "same E20 scratch singleSIG_TIME seed01 final checkpoint",
+      "completed source role/views cache"
+    ],
+    "contract_check_ref": "same source contract and exact known E20 payload/state; cache IDs/role visibility; reconstruct archived logits via originalhead",
+    "provenance_verdict": "samecontract verifiedE20 chain reused,actualL2 smoke first",
+    "selection_rule": "none; no candidate training or source selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-sig1-rejected-pairs-20261026",
+    "gpu_policy": "CPU only; CUDA_VISIBLE_DEVICES empty; no GPU prerequisite or process mutation",
+    "remote_run_root": "PROJECT/runs/20261026-analysis-PAMF-SIG1-rejected-pairs-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261026-analysis-PAMF-SIG1-rejected-pairs-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/sig1_pair_diagnostic",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_pair_diagnostic --config PROJECT/releases/20261026-analysis-PAMF-SIG1-rejected-pairs-release-r01/runtime.json",
+    "stop_rule": "contract/hiddenU/cache/head parity/finite/algebra identity failure ends own CPU worker; preserve outputs; no retry or other process changes"
+  },
+  "expected_artifacts": [
+    "real E20/defaulthead cachedL2 smoke PASS",
+    "12 role/pairing/scene cases; packet agreement/sharedwrong/repair and gradient aggregates by rawgate/RX",
+    "zero newIQ/F/G/V/target/Utruth/optimizer/headfits",
+    "one release archive compare/compile; independent PID/CWD/argv and terminal artifact readback"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "same-packet G-G gradient versus raw-soft",
+      "L lowconfidence sharedwrong versus genuine identity evidence"
+    ],
+    "dimensions": [
+      "L/U",
+      "scene",
+      "same_scene/cross_scene",
+      "rawaccepted/rejected",
+      "RX"
+    ],
+    "selection": "none; existing three students/gates unchanged; no automatic fourth student",
+    "truth_policy": "L seen-training labels only; Utruth hidden; noV/target"
+  },
+  "rows": [
+    {
+      "row_id": "SIG1-rejected-pairs-s2026092701",
+      "method": "frozen_cached_default_head_pair_analysis",
+      "purpose": "source mechanism diagnosis",
+      "config_ref": "PROJECT/releases/20261026-analysis-PAMF-SIG1-rejected-pairs-release-r01/runtime.json",
+      "resolved_config_ref": "PROJECT/releases/20261026-analysis-PAMF-SIG1-rejected-pairs-release-r01/runtime.json",
+      "data_overrides": {
+        "roles": [
+          "L_s",
+          "U_s"
+        ],
+        "L_records": 6300,
+        "U_records": 6300,
+        "cached_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "fixed original modelseed01/cache/physical source IDs; no new sampling/augmentation/evaluation seeds",
+      "k": null,
+      "scenario": "source3scenes x same/cross scene cachedGa/Gb",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero newIQ/backbone/G passes or optimizer; six class logits plus unitfeatures/head algebra only",
+      "output_root": "PROJECT/runs/20261026-analysis-PAMF-SIG1-rejected-pairs-m1-r01",
+      "log_path": "PROJECT/releases/20261026-analysis-PAMF-SIG1-rejected-pairs-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_pair_diagnostic --config PROJECT/releases/20261026-analysis-PAMF-SIG1-rejected-pairs-release-r01/runtime.json",
+      "expected_artifacts": [
+        "real E20/defaulthead cachedL2 smoke PASS",
+        "12 role/pairing/scene cases; packet agreement/sharedwrong/repair and gradient aggregates by rawgate/RX",
+        "zero newIQ/F/G/V/target/Utruth/optimizer/headfits",
+        "one release archive compare/compile; independent PID/CWD/argv and terminal artifact readback"
+      ]
+    }
+  ],
+  "notes": [
+    "L is seen training data, not U precision or unseenRX proof.",
+    "Same-packet consistency cannot repair shared wrong mean alone.",
+    "Logit gradient identity does not prove body/AdamW alignment.",
+    "Existing three source students and selected-source thresholds remain unchanged."
+  ],
+  "registered_at": "2026-10-26T13:50:52+00:00"
+}
