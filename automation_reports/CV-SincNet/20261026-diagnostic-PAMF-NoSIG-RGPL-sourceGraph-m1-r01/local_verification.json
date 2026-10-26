@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "focused_test_command": "python -X utf8 -m unittest tests.test_pamf_rgpl_graph tests.test_pamf_rgpl_source_graph",
+  "focused_tests_passed": 5,
+  "local_compile": "PASS",
+  "registry_launch_ready_fields": "VALID",
+  "independent_P0P1_review": {
+    "reviewer": "ssl_p0p1_review",
+    "verdict": "PASS",
+    "findings": [],
+    "scope": "Only direct next-run correctness, data permissions, destructive actions, launchability and legal predictions; not scientific effectiveness."
+  },
+  "real_checkpoint_smoke": "first worker step; not yet performed for this diagnostic",
+  "source_graph_quality": "not yet measured",
+  "target_performance": "not measured"
+}

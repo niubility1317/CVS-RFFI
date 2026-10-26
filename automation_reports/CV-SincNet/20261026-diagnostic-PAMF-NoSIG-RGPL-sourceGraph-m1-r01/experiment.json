@@ -1,0 +1,214 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01",
+  "group_id": "pamf-nosig-rgpl-20261026",
+  "display_name": "去SIG_TIME的原始与恢复双图伪标签源质量诊断",
+  "description": "冻结单seed新NoSIG E30与同契约G；只有L/U为图节点且只有L真标签作传播种子。V独立扩展，先固定预测再计质量；不训练候选，不访问目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-NoSIG-RGPL-sourceGraph"
+  ],
+  "tags": [
+    "PAMF",
+    "NO_SIGNATURE",
+    "source-only",
+    "frozen-LU-graph",
+    "cross-RX",
+    "hidden-U",
+    "inductive-V",
+    "no-optimizer"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01",
+    "20261026-diagnostic-PAMF-URealizations-cache-m3-r01",
+    "20261026-analysis-PAMF-SSL-retrospective-r01"
+  ],
+  "authorization": "用户要求全面复盘、使用去SIG_TIME网络、优化DURA恢复IQ相关半监督；按已交付RGPL设计先做源域图标签可行性证伪，全部GPU可用。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; CPU2 threads; no installation",
+    "cwd": "PROJECT/releases/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "6300 original visible-label source records; raw/12-G-view features; only graph label seeds",
+      "U_s": "56700 original hidden-label records; raw/12-G-view features; no U truth or classifier pseudo-label seeds",
+      "V": "27000 original records; frozen inductive queries only, never graph nodes; visible labels used only after predictions fixed"
+    },
+    "train_ratio": "no optimizer; one physical L/U packet per graph node; two graphs share original63000 physical nodes; no new labeled data",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single frozen source diagnostic; source V precision is a proxy, U precision remains unknown; no new method training or target result"
+  },
+  "checkpoint": {
+    "initialization": "frozen own NoSIG-PL source E30; no resume or optimizer",
+    "sources": [
+      "NoSIG base own segment30 derived from actual original scratch same-contract NoSIG ordinaryPL E20; full provenance checked",
+      "same fixed original F0 G-LU and existing matching G IQ caches; never load old SIG F/outputs"
+    ],
+    "contract_check_ref": "load_teacher validates actual NoSIG state, six-class default head, E20 scratch lineage, E30 segment10/2220 offsets20/4440, no nativeU/EMA/target; first L2 F/defaulthead/G real-checkpoint smoke",
+    "provenance_verdict": "new fixed E30 before graph access; source-only teacher ancestry; original source-role/G contracts unchanged",
+    "selection_rule": "fixed E30; no checkpoint ranking; source graph parameters and quality rule fixed before actual graph data; no automatic candidate training"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-nosig-rgpl-graph-20261026",
+    "gpu_policy": "GPU0..7; one own GPU worker; global CUDA+pending<2/free>=10000MiB; least load then most free; preserve all healthy foreign tasks",
+    "remote_run_root": "PROJECT/runs/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/rgpl_graph",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.rgpl_source_graph dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-release-r01/runtime.json",
+    "stop_rule": "first smoke/protocol/identity/nonfinite/coverage/state/graph-convergence/technical failure ends this one worker; preserve outputs; no retry, threshold relaxation or foreign-process modification"
+  },
+  "expected_artifacts": [
+    "real new NoSIG E30/defaulthead/G L2 smoke PASS; logical F4/G2, zero optimizer/target/Utruth",
+    "L6300/U56700/V27000 normalized raw and twelve-G-mean160d features; U metadata and graph seeds have no true labels",
+    "two source L/U-only mutual20NN graphs and per-seedRX propagation; fixed-point residual<=1e-6 within200 iterations",
+    "independent inductive V probabilities; no V graph nodes, degree update, propagation update or query coupling",
+    "frozen U graph pseudo-labels and V predictions before V quality arithmetic; no U true labels in any output",
+    "source V certified count/precision and RX/day/TX corrected/broken/net cells; scientific pass or fail retained",
+    "all frozen F/G parameters and registered buffers unchanged; source F1170000/new G399600 logical packets plus separate smokeF4/G2; U cachedG680400 reused",
+    "one archive comparison, remote compile, PID/CWD/argv/GPU/log-growth evidence; immutable output and no target handles"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "newly certified V count>=200 AND observed precision>=99.5%",
+      "U hard-pool/certified count without U precision claim"
+    ],
+    "secondary": [
+      "RX/day/TX corrected, broken and net relative to frozen NoSIG raw teacher",
+      "graph edge count/convergence/cost and frozen model state"
+    ],
+    "target": "none",
+    "selection": "a failed fixed quality rule ends this candidate before training; never search k/threshold or inspect U truth until pass",
+    "truth_policy": "only L truth seeds; U truth absent; V labels used only after all U/V certification predictions saved; no V graph nodes or target"
+  },
+  "rows": [
+    {
+      "row_id": "F0-NoSIG-E30-RGPL-graph-s2026092701",
+      "method": "Frozen-NoSIG-RGPL-graph",
+      "purpose": "falsify new-label information quality before candidate training",
+      "config_ref": "PROJECT/releases/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-release-r01/runtime.json",
+      "resolved_config_ref": "PROJECT/releases/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-release-r01/runtime.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "L_graph": 6300,
+        "U_graph": 56700,
+        "V_graph": 0,
+        "V_inductive": 27000,
+        "restored_views_per_physical_packet": 12
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "source only; raw and G views from low suburban, mid urban and low urban; four fixed namespaces",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero optimizer; frozen feature forward and two exact graphs only; no candidate training",
+      "output_root": "PROJECT/runs/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01",
+      "log_path": "PROJECT/releases/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-release-r01/worker.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.rgpl_source_graph worker --config PROJECT/releases/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-release-r01/runtime.json",
+      "expected_artifacts": [
+        "real new NoSIG E30/defaulthead/G L2 smoke PASS; logical F4/G2, zero optimizer/target/Utruth",
+        "L6300/U56700/V27000 normalized raw and twelve-G-mean160d features; U metadata and graph seeds have no true labels",
+        "two source L/U-only mutual20NN graphs and per-seedRX propagation; fixed-point residual<=1e-6 within200 iterations",
+        "independent inductive V probabilities; no V graph nodes, degree update, propagation update or query coupling",
+        "frozen U graph pseudo-labels and V predictions before V quality arithmetic; no U true labels in any output",
+        "source V certified count/precision and RX/day/TX corrected/broken/net cells; scientific pass or fail retained",
+        "all frozen F/G parameters and registered buffers unchanged; source F1170000/new G399600 logical packets plus separate smokeF4/G2; U cachedG680400 reused",
+        "one archive comparison, remote compile, PID/CWD/argv/GPU/log-growth evidence; immutable output and no target handles"
+      ]
+    }
+  ],
+  "notes": [
+    "One frozen student seed01; channel realizations are not student seeds or independent votes.",
+    "NoSIG removes the whole SIG_TIME sequence_pool. Original160d default head; zero head fitting.",
+    "Frozen raw confidence<.95 defines hard pool. Both graph class probabilities>=.95, common argmax, at least3 other-RX seed groups support in each graph; ties excluded.",
+    "Cross-RX propagation excludes own-RX label seed contributions; teacher/G have seen source RX, so this is not unseen-receiver training.",
+    "Four source channel namespaces fixed before extraction. For U only matching existing restored IQ is loaded; old F features/logits are not opened.",
+    "L/V G views computed by same source generator/namespaces and G; each normalized then averaged, no IQ mixing or post-G normalization.",
+    "Source graph quality does not prove target performance. Failed scientific criterion is complete evidence, not a technical failure or reason to rerun.",
+    "Control training continues unchanged. Graph success alone never auto-launches candidate training or formal target evaluation."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "frozen_teacher_epoch": 30,
+    "optimizer_updates": 0,
+    "source_L": 6300,
+    "source_U": 56700,
+    "source_V": 27000,
+    "graph_nodes": 63000,
+    "V_graph_nodes": 0,
+    "target_reads": 0,
+    "U_truth_read": false,
+    "raw_graph": true,
+    "restored_graph": true,
+    "restored_views_per_node": 12,
+    "k": 20,
+    "mutual_other_RX": true,
+    "edge_temperature": 0.2,
+    "propagation_alpha": 0.9,
+    "max_iterations": 200,
+    "tolerance": 1e-06,
+    "raw_hard_pool_confidence_lt": 0.95,
+    "each_graph_confidence_gte": 0.95,
+    "minimum_other_RX_support": 3,
+    "minimum_certified_V": 200,
+    "minimum_V_precision_percent": 99.5,
+    "source_F_logical_packets": 1170000,
+    "new_G_logical_packets": 399600,
+    "cached_U_G_packets_reused": 680400,
+    "separate_smoke_F": 4,
+    "separate_smoke_G": 2,
+    "namespaces": [
+      "PAMF/restored_dose/U/fixed",
+      "PAMF/realization_diversity/U/fresh1",
+      "PAMF/realization_diversity/U/fresh2",
+      "PAMF/realization_diversity/U/fresh3"
+    ]
+  },
+  "registered_at": "2026-10-26T04:14:25+00:00"
+}
