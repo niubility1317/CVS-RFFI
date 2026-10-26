@@ -1,0 +1,39 @@
+{
+  "status": "VERIFIED",
+  "scope": "post-launch live identity, GPU, progress and actual checkpoint smoke only",
+  "code_commit": "ba7efad5dee5820a392cdfc241701a228e366b10",
+  "controller_pid": 104597,
+  "worker_pid": 104898,
+  "physical_GPU": 4,
+  "ordinary_account": true,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "PID_CWD_argv": true,
+  "CUDA_admission": true,
+  "log_growth": {
+    "worker.log": true,
+    "progress.json": true
+  },
+  "smoke": {
+    "status": "PASS",
+    "NoSIG_E30": true,
+    "F_logical_packets": 4,
+    "G_logical_packets": 2,
+    "optimizer_updates": 0,
+    "U_truth_read": false,
+    "target_reads": 0
+  },
+  "observed_progress": {
+    "status": "SOURCE_FEATURE_EXTRACTION",
+    "role": "L_s",
+    "seen": 6144,
+    "total": 6300,
+    "F_logical_packets": 79872,
+    "U_truth_read": false,
+    "target_reads": 0
+  },
+  "graph_quality": "PENDING",
+  "candidate_training": false,
+  "target_performance": "NOT_EVALUATED",
+  "read_at": 1792988352.1558013
+}

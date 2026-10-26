@@ -8,7 +8,7 @@
 
 URealizations 四条旧 SIG_TIME 训练已按原配置完成全部源评估，均未通过原源条件；相对各自fixed控制仅+1／+1／+4／−1次净正确，只作独立历史证据。用户本次架构指令覆盖旧计划“通过源条件后扩旧SIG三种子”的后续动作，旧SIG不再新增扩展。既有权重和报告不改名。
 
-找到 m201 中三个原同契约 `F0-A1B1-NO_SIGNATURE-F21-sSEED/segment20` 普通PL E20前缀。已核实三份complete/config、从零来源标记、原F0合同相等及权重文件存在；尚未加载张量。下一次使用前仍须核实实际state_dict无sequence参数、完整来源及真实checkpoint smoke。优先复用合规NoSIG E20，再普通PL续10至新E30；不能把带SIG E30部分加载、删除支路后称作同成本NoSIG父。不能用已曝光的REPL_NO_SIGNATURE F50作父。
+找到 m201 中三个原同契约 `F0-A1B1-NO_SIGNATURE-F21-sSEED/segment20` 普通PL E20前缀。已核实三份complete/config、从零来源标记、原F0合同相等及权重文件存在。seed01 已额外核实实际state_dict无sequence参数、原6×160默认头、scratch来源及真实checkpoint smoke，并完成普通PL续10至固定新E30；seed02/03 仍只到元数据核实，使用前须实际张量／smoke检查。不能把带SIG E30部分加载、删除支路后称作同成本NoSIG父，不能用已曝光的REPL_NO_SIGNATURE F50作父。
 
 旧CE_NO_SIGNATURE仅分类损失，与本轮完整监督骨架不同，不能冒充NoSIG匹配监督控制。历史去SIG在双跨子群有收益、全目标群体并非一致收益；这是用户指定结构后的新研发，不声称结构本身已普遍优越。
 
@@ -115,3 +115,7 @@ GraphRaw2与RGPL使用相同图标签／接受集合／额外前向数，CE总�
 `20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01`，执行代码`f5eb718af9bf461b6b0b9fa6b422f8794bc19103`。真实原NoSIG E20张量和scratch链已核实；真实NoSIG/defaulthead/G source smoke、PL L128/U256与Sup L128/U-off联合backward通过。两个worker在GPU0/3，PID/CWD/argv/GPU/step增长独立核实。NoSIG-PL先得到固定E30图教师，再+20作E50控制；Sup从零50完整L、U loader缺席。两者final自动V八视图。
 
 已实现`experiments/pamf_channel_pl/rgpl_graph.py`的精确不同RX mutual邻居、对称归一化、按L种子RX分解的固定点传播、排除自身RX的双图认证和不更新源图的独立V扩展；4项数学／权限检查通过，包含线性解对照、U真值／V节点拒绝、类别置换等变和V批次独立。此为算法核心单元验证，尚未真实L/U建图，不是图标签质量或方法性能。下一步在真实NoSIG E30冻结后为原L/U/V分别提取raw及12个恢复视图特征；仅L/U建图，V只独立扩展与质量评分。
+
+## 冻结源图诊断已实际启动
+
+`20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01` 使用已完成的新NoSIG-PL E30，执行commit `ba7efad5dee5820a392cdfc241701a228e366b10`。图核心与源权限边界共5项检查、唯一独立P0/P1审查、一次archive传输比对和远端编译通过。GPU4上的真实NoSIG E30/defaulthead/G L2 smoke PASS，PID/CWD/argv/GPU及进度增长已核实；开始原L/U/V的raw和12恢复视图特征提取。只有L/U建图，V不成为节点；未启动GraphRaw/GraphRaw2/RGPL训练。质量仍待定，不把算术检查或成功启动当作图伪标签正确率。详细状态见[本行报告](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01/report.md)。
