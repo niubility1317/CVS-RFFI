@@ -1,0 +1,606 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01",
+  "group_id": "pamf-sig1-source-confidence-E50-20261027",
+  "display_name": "四方法三种子冻结E50源域置信度与logit梯度诊断",
+  "description": "六个完成PL/Sup缺失逐包V概率，统一CPU2线程读取四方法x三seed的既有E50/defaulthead，在原sourceV27000只读推理，0训练/target/G；核算.95覆盖、精度、错误集中、ECE/Brier/NLL及pseudoCE/LS.01解析logit梯度方向。Mean03未sourcefrozen就等，不换seed。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-SIG1-confidence-E50"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME",
+    "three-existing-model-seeds",
+    "source-V-only",
+    "frozen-readout",
+    "CPU",
+    "no-DURA",
+    "zero-training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01",
+    "20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02"
+  ],
+  "authorization": "用户要求解释高置信PL监督扩展未获正收益、持续自主研发/三种子/复用已完成对照；本次仅冻结权重源域诊断，不新训或重测正式控制，既有神经矩阵不变。",
+  "code": {
+    "commit": "runtime.code_commit from committed publisher; actual OID recorded after launch",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1,CPU2 FP32,CUDA_VISIBLE_DEVICES empty",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig original F0",
+    "version": "existing validated original physical roles",
+    "representation": "original F0 equalized1 clean source IQ only;no H simulation/restored IQ",
+    "contract_ref": "original F0 source_contract.json, checked private context",
+    "physical_ids_ref": "same existing source contract.role_ids",
+    "label_map_ref": "same original six registered TX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "unchanged original F0 six TX",
+    "roles": {
+      "L_s": "original6300;first2 actual IQ/model smoke perrow,labels not passed toF",
+      "U_s": "not opened;TXtruth remains hidden",
+      "V": "original27000,visiblelabelsourcevalidation;frozenpredictions thenmetrics only,no optimizer/EMA/headfit/persistentstate updates",
+      "target": "not opened,no query/prediction/truth reads"
+    },
+    "train_ratio": "no newtraining;parentdata original7/63/30 unchanged",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "unchanged existing Phase1 validated source handles;Phase2 capsule_id/split_id not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only_frozen_diagnostic",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "source-V confidence andanalyticlogit-gradient diagnostics only;no Utrueaccuracy or parametergradient/causal/target-generalization claims"
+  },
+  "checkpoint": {
+    "initialization": "read existing fixedfinalE50 weights;constructoriginalreader andstrictload,no training/resume/EMA/teachernewstate",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092703/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092703/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-U-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-U-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-U-s2026092703/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-LU-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-LU-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-LU-s2026092703/source"
+    ],
+    "contract_check_ref": "existing load_F three-segment lineage plus same sourcecontract/cache andfixedfinal50/11100/defaulthead;Sup require_no_unlabeled",
+    "provenance_verdict": "allsourcefrozenrows matched;futureMean03 waits onlysource complete.json,no fallback",
+    "selection_rule": "all4methodsx3seeds existingfinalE50;no source/target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current independent Codex chat",
+    "gpu_policy": "CPU only,two threads,zero GPU workers;one serial process,doesnot consume current GPU quota;other owners untouched",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026/source_confidence_readout",
+    "launch_command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+    "stop_rule": "first source/provenance/nonfinite/immutableoutput technical failure stops diagnostic;keep previousrows;missingfuturefrozenMeanweights wait,no overwrite or blindrestart"
+  },
+  "expected_artifacts": [
+    "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+    "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+    "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+    "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+    "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+    "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "sourceV .95 confidencecoverage/acceptedprecision/rejectedshareoferrors",
+      "accepted/rejected hardpseudoCE logitgradientnorm andLS.01 negative dotfraction"
+    ],
+    "secondary": [
+      "source NLL/Brier/ECE15,accuracy,TX/RX/day/RXday groups",
+      "CPU diagnostics runtime/state immutability/source ID pairing"
+    ],
+    "target": "none",
+    "selection": "frozen all12E50,no tuning",
+    "truth_policy": "visible V labels used only after frozenlogits;no UtrueTX ortargettruth;no separatehead/prototype fit"
+  },
+  "rows": [
+    {
+      "row_id": "F0-SIG1-PL-s2026092701",
+      "method": "SIG1-PL",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-SIG1-PL-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-PL-s2026092702",
+      "method": "SIG1-PL",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-SIG1-PL-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-PL-s2026092703",
+      "method": "SIG1-PL",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-PL-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-SIG1-PL-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-Sup-s2026092701",
+      "method": "SIG1-Sup",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-SIG1-Sup-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-Sup-s2026092702",
+      "method": "SIG1-Sup",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-SIG1-Sup-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-SIG1-Sup-s2026092703",
+      "method": "SIG1-Sup",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/F/F0-SIG1-Sup-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-SIG1-Sup-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-RXMean-U-s2026092701",
+      "method": "RXMean-U",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-U-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-RXMean-U-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-RXMean-U-s2026092702",
+      "method": "RXMean-U",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-U-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-RXMean-U-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-RXMean-U-s2026092703",
+      "method": "RXMean-U",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-U-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-RXMean-U-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-RXMean-LU-s2026092701",
+      "method": "RXMean-LU",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-LU-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-RXMean-LU-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-RXMean-LU-s2026092702",
+      "method": "RXMean-LU",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-LU-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-RXMean-LU-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    },
+    {
+      "row_id": "F0-RXMean-LU-s2026092703",
+      "method": "RXMean-LU",
+      "purpose": "frozenCPUclean sourceV confidence/analyticaldiagnostic",
+      "config_ref": "experiments/pamf_u_history/source_confidence_readout.py:source_folder/evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/F/F0-RXMean-LU-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed identifiesexistingtrainedstate;sourcephysicalsplitfixed;no newrandominitialization,augmentation,support,query or stochastic evaluation",
+      "k": null,
+      "scenario": "sourceVclean only,not formal targettest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training;27000sourceV Fpackets+2Lsmoke per frozenmodel;CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-SIG1-sourceConfidence-m12-r01/rows/F0-RXMean-LU-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-SIG1-sourceConfidence-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_source_confidence_readout --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/source_confidence_readout --context local_artifacts/pamf_u_history_20261026/source_confidence_context.json",
+      "expected_artifacts": [
+        "rows/F0-METHOD-sSEED/smoke.json actualL2,readerparamsrecord,SIG1/defaulthead,noquery",
+        "rows/F0-METHOD-sSEED/source_V_logits.npz private logits/y/ids/RX/day,27000x6",
+        "rows/F0-METHOD-sSEED/complete.json sourceV overall/TX/RX/day/RXday metrics andstate unchanged",
+        "pipeline_state.json all12rows,progress andsourcefrozenwait;controllerPID/CWD/argv/loggrowth",
+        "complete.json models12,324024CPU Fpackets,0optimizer/Utruth/target/G",
+        "all3seed sourceconfidence summary/sampleSD/pairedmethod deltas;targetperformance remains separate"
+      ]
+    }
+  ],
+  "notes": [
+    "User3seed instruction explicitly overridesearlier single-seed expansionstop;old01 values andG-inclusive sourceverdict unchanged. All4x3 fixedbefore02/03covariance target access.",
+    "02masks112/282,03masks91/362,01masks94/294;identicalnatural-support estimator,perseed featurecoordinates bound. No copying01 masks.",
+    "Eachseed fourmethods share its source9batch-calibratedalpha/ramp444;algorithm/formula unchanged,no V/targetweight tuning.",
+    "Reuse reviewed objective/trajectory/frozenreader/scorer;targeted seedbasisP0/P1PASS;11focused generalized/backcompat checksPASS. ActualeachownE20 jointbackward/cal smoke first,immediate continuation.",
+    "Only fixed sourcechannelmath code reused,notG engine/weights/restoredIQ. Physical arrays/roles validatedonce unchanged;no hashes/ledgers beyondsingle releasearchive.",
+    "Snapshotcalibration hasoptimizer0/stateunchanged;doesnot inherit9batch state into training. AllactualtrainingU30visits reported separately fromprefix7U/calibrationexposure.",
+    "Three-model-seed mean±sampleSD isnot independentdatasplit/channel-seed evidence orautomatic significance. Completeallrowsbeforeclaimingstablegain;originalgoalnot lowered."
+  ],
+  "matrix": {
+    "methods": [
+      "CovSel-U",
+      "CovRandom-U",
+      "CovFull-U",
+      "CovSel-LU"
+    ],
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "logical_F_models": 12,
+    "reused_seed01_F": 4,
+    "reused_seed01_raw_rows": 3,
+    "new_F_training": 8,
+    "new_F_epochs": 240,
+    "new_F_updates": 53280,
+    "per_model_total_epochs": 50,
+    "per_model_total_updates": 11100,
+    "per_model_trajectory": "13L37LU",
+    "new_calibrations": 2,
+    "calibration_rule": "min(1,.1*median(primarynorm)/max_method_median(covnorm)),9trainL/U batches,noV",
+    "seed01_alpha_reused": 1.0,
+    "new_prediction_rows": 9,
+    "new_CPU_score_rows": 9,
+    "total_raw_decisions_logical": 14112000,
+    "new_raw_decisions": 10584000,
+    "G_weights": 0,
+    "restored_IQ": 0,
+    "new_PL_Sup_control_training": 0,
+    "new_reference_prediction": 0,
+    "source_score_seed_filtering": false
+  },
+  "analysis_entrypoint": "experiments.pamf_u_history.covariance_three_results:collect/analyze",
+  "registered_at": "2026-10-26T21:28:26+00:00"
+}
