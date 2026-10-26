@@ -7,8 +7,8 @@ import time
 from experiments.cric_dura_comparison.io import read,write
 from experiments.practical_full_2x2.plan import VIEWS
 
-RUN='20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r02'
-RELEASE='20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-release-r02'
+RUN='20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-m3-r03'
+RELEASE='20261026-phase1-PAMF-SIG1-Covariance-Fonly-confirm-release-r03'
 SOURCE_RUN='20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01'
 BASELINE_RUN='20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01'
 METHODS=('CovSel-U','CovRandom-U','CovSel-LU')
@@ -127,7 +127,9 @@ def activate_raw(c):
     if set(roots)!={'F','AF','BASE','FOLD'} or any(not p.is_dir() for p in roots.values()):raise ValueError('Four immutable F dependencies required;G excluded')
     package=importlib.import_module('experiments');current=Path(__file__).resolve().parents[2]
     package.__path__=[str(roots[k]/'experiments') for k in ('F','AF','FOLD','BASE')]+[str(current/'experiments')]
-    sys.path[:0]=[str(roots['BASE']),str(roots['BASE']/'code')]
+    sys.path[:0]=[str(current/'code'),str(roots['BASE']),str(roots['BASE']/'code')]
+    # Original trusted checkpoint metadata (SatViewStage); no channel is run.
+    importlib.import_module('baseline_origin_sat_view')
     from experiments.practical_full_2x2.compat import numerical_policy
     numerical_policy()
 
