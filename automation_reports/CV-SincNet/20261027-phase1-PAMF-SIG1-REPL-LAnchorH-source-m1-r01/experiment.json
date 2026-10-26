@@ -1,0 +1,201 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "单视图 REPL：L真标签raw锚点约束高置信U星地特征",
+  "description": "只增加当前L真标签raw joint160→高置信U物理H特征的跨RX对比；原H2LU整配方/默认头/50轮/前向预算不变。一个seed源域证伪，不变更已在运行的三种子确认。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "REPL-LAnchorH-source"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "single-SIG_TIME",
+    "source-only",
+    "true-L-anchors",
+    "accepted-U",
+    "cross-RX",
+    "clean-and-channel-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01",
+    "20261024-phase1-PAMF-REPL-completion-m201-r01"
+  ],
+  "authorization": "用户最新明确脱离DURA配合路线，仅clean IQ及直接叠加星地信道衍生IQ训练；持续goal研发REPL，原完整PAMF单SIG_TIME，复用对照，全GPU可用，不联系其他对话。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2; four F roots only; no G",
+    "cwd": "PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "clean source IQ and direct practical residual/post_sync/noEQ H only",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "6300 trueTX, all original CE and AsKL0; capture existing two raw L128 joint160 features as detached keys",
+      "U_s": "56700 TXhidden/RXdayvisible; original raw95 gate; accepted physicalH queries get trueLcrossRXcontrast; rejected Hpair unchanged",
+      "V": "27000 frozen-only raw+threeH; no model/buffer/statistics update"
+    },
+    "train_ratio": "unchanged originalF0 L6300/U56700/V27000;13L37LU cumulativeE50;no extra true labels",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "code/leo_practical; fs25MHz/fc2462MHz/refSNR30; source low suburban/mid urban/low urban; original nativeAs for nondualL"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "one F seed source falsification only; source-positive does not establish three-seed or target gains"
+  },
+  "checkpoint": {
+    "initialization": "own original m201 seed01 singleSIG_TIME ordinaryPL scratchE20 +10+20; cumulativeE50/11100/13L37LU",
+    "sources": [
+      "m201 ownseed01 SIG1 ordinaryPL scratchE20 weights only",
+      "completed H2LU source config and4view score metadata only; no completedH2LUweight initialization"
+    ],
+    "contract_check_ref": "existing original F0 contract/physicalroles VALIDATED_ONCE; ownE20 actualpayload/emptyancestors/defaulthead check atload; realjointsource smoke first",
+    "provenance_verdict": "same original source-only E20 chain; no restored-trained or target-selected initialization",
+    "selection_rule": "finalE50 only; newsource raw>=26568/27000 andH3>=62109/81000 vs fixedH2LU26554/62190; raw+14minimum,H3−81maximum; nopass noexpansion/target"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-L-anchor-H-source-20261027",
+    "gpu_policy": "GPU0..7; global CUDA+pending<2/free>=10000MiB; one new source student; countallowners; preserve current2confirmationstudents andforeignhealthy",
+    "remote_run_root": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/labeled_h_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.labeled_h_source dispatch --config PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-release-r01/runtime.json",
+    "stop_rule": "first input/ancestry/role/head/hook/finite/budget/sourcefreeze/systemtechnicalfailure stopsnewdispatch; no autoretry or foreignmutation; healthytasks/artifacts preserved; scientificFAIL retained"
+  },
+  "expected_artifacts": [
+    "real ownE20 jointbackward smoke first; actual Lrawfeaturekeys detach, Hquery gradient toSIG1/body finitepositive, directauxcls_head.weightgradient0;featurefusionnorm/gainmayreceivegradient; original CE/pair headgradientpositive; no optimizer/target/Utruth reads",
+    "one student own+10+20 cumulativeE50/11100; actual L768/U6/first2ordinaryjoint unchanged; production extraF/head/EMA/G=0",
+    "additional rawL featurecaptures2/update=256 featureexposures; Hfeaturecaptures2/update physicalqueries sumoneUbatch; valid accepted-only crossRX classpositive and trueLclassnegative counts",
+    "complete27000x4frozenV logits/classdecisions/RXdayTX metrics; existingH2LU source summary reused with0referenceF/training",
+    "source threshold exactcount result and declaredcost; no automatic target/useof partialconfirmation scores"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "source rawcorrect/27000>=26568",
+      "sourceH3correct/81000>=62109"
+    ],
+    "dimensions": [
+      "raw and3directH",
+      "RX",
+      "day",
+      "TX",
+      "actual accepted/eligible H queries",
+      "capture/forward/gradientguard counters"
+    ],
+    "selection": "predeclared countthresholds; no targetfeedback or new checkpointselection; singlepilot PASS onlyallows later preregistered three-seed confirmation",
+    "truth_policy": "all LtrueTX; UtrueTX hidden; source V only frozen evaluation; targetnone"
+  },
+  "rows": [
+    {
+      "row_id": "F0-REPL_H2_LU_LAnchorH-s2026092701",
+      "method": "REPL_H2_LU_LAnchorH",
+      "purpose": "one source falsification of trueLraw→acceptedU/H contrast",
+      "config_ref": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01/configs/REPL_H2_LU_LAnchorH.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01/F/F0-REPL_H2_LU_LAnchorH-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "labeled_H_anchors": {
+          "weight": 0.05,
+          "CE_normalizer": 1.25,
+          "temperature": 0.2,
+          "normalizer": "whole physical half",
+          "anchors": "two existing true-L raw joint160 forwards,detached",
+          "queries": "two existing U H physical halves",
+          "positives": "accepted raw95 pseudo TX equals true L TX, different physical RX",
+          "negatives": "true L TX differs from accepted U pseudo TX",
+          "same_TX_same_RX": "excluded",
+          "extra_F": 0
+        },
+        "clean_H_only": true,
+        "signature_views": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed original physical roles/split and existing sourceH deterministicID/epoch/role/a-b; source only/Phase1 no support seed.",
+      "initialization": "known samecontract ordinaryPL singleSIG_TIME scratchE20 only",
+      "budget": {
+        "cumulative_epochs": 50,
+        "cumulative_updates": 11100,
+        "new_epochs": 30,
+        "new_updates": 6660,
+        "L_forward_packets_each_step": 768,
+        "U_student_forwards_each_step": 6,
+        "extra_F": 0
+      },
+      "output_root": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01/F/F0-REPL_H2_LU_LAnchorH-s2026092701/source",
+      "log_path": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01/logs/REPL_H2_LU_LAnchorH.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.labeled_h_source worker --kind train_eval --config PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01/configs/REPL_H2_LU_LAnchorH.json",
+      "expected_artifacts": [
+        "actualcheckpointsmoke",
+        "ownE30/E50 andfullstepmetrics/replstate",
+        "sourceV4view completepredictions/strata",
+        "fixedsource decision"
+      ]
+    }
+  ],
+  "notes": [
+    "Current three-seed confirm remains frozen68b6338 and healthy. No change to recipe/seed/budget/processpriority based on target results; root has not read its seed01 scores.",
+    "Loss: L2normalizedUphysicalHq anddetachedtwoLrawjoint160keys, tau.2; pos acceptedraw95samepseudoTXastrueLTX/differentRX, neg trueLTXdiffers; sameTXsameRXexcluded; loss meanwholephysicalhalf, twoHmean, factor6*.05/1.25 addedinsideoriginalUguard.",
+    "No G root/weight/restoredIQ/features orscores; no extrahead, no inferenceparams, no extraF or productionautogradpass. Smoke extra derivative probes discarded.",
+    "33 focused tests and compile PASS; unique independent P0/P1 review identified one direct smoke classification-weight grouping issue, fixed with one targeted regression and targeted re-review PASS0remainingP0/P1. Realcheckpointsmoke is launcherfirststep. Existing continuous R&D authorization and ExclusiveMinimalWorkflow; no separate designapproval gate.",
+    "Detach Lkey features only blocks this auxiliary path through those tensors; shared backbone still updates jointly from original L and U. Final classweight direct auxiliary derivative0 does not imply final protected classweight update unchanged; original fullL/U guard still applies."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "REPL_H2_U",
+      "REPL_H2_U_Pair",
+      "REPL_H2_LU_Pair"
+    ],
+    "new_model_epochs": 90,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 110,
+    "new_optimizer_updates": 19980,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 4,
+    "restoration_weight_reads": 0,
+    "restoration_IQ_used": 0,
+    "restoration_score_in_selection": false,
+    "new_control_training": 0,
+    "target_reads": 0
+  },
+  "registered_at": "2026-10-26T18:08:20+00:00"
+}

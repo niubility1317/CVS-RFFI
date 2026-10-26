@@ -93,13 +93,13 @@ def validate_config(c):
 
 
 @contextmanager
-def installed(c,holder,validate=validate_config):
+def installed(c,holder,validate=validate_config,objective_type=CleanHObjective):
     from experiments.cric_dura_comparison import t1_model
     from experiments.pamf_repl_completion.objectives import loader_scope,portable_scope
     from .sig1_model import install_single_view
     validate(c);original,plain=t1_model.install,t1_model.plain_pl
     def build(model,cfg):
-        validate(cfg);model=install_single_view(original(model,cfg),cfg['model_seed']);obj=CleanHObjective(cfg);holder.update(model=model,objective=obj)
+        validate(cfg);model=install_single_view(original(model,cfg),cfg['model_seed']);obj=objective_type(cfg);holder.update(model=model,objective=obj)
         model._feature_learning_report.update(sig_time_views=1,source_U_IQ_used=True,supervised_architecture='SIG_TIME',clean_H_only=True)
         old_hook=model._source_labeled_feature_hook
         def hook(self,**kwargs):
@@ -126,7 +126,7 @@ def load_parent(c,validate=validate_config):
 
 
 
-def smoke(rt,configs,validate=validate_config):
+def smoke(rt,configs,validate=validate_config,objective_type=CleanHObjective):
     import torch
     from torch.nn import functional as F
     from experiments.cric_dura_comparison import f_train,t1_model
@@ -135,7 +135,7 @@ def smoke(rt,configs,validate=validate_config):
     for c in configs:
         cfg=dict(c,output_root=c['output_root']+'/segment30',segment_epochs=10,epoch_offset=20,step_offset=4440,parent_source=c['shared_SIG1_E20'],candidate_smoke=True)
         holder={}
-        with installed(cfg,holder,validate):
+        with installed(cfg,holder,validate,objective_type):
             ctx=f_train.context(cfg)
             with f_train.class_dimension(cfg),native_installed(f_train.original_config(cfg['model_seed'])) as native:
                 args=f_train.arguments(cfg,'cuda:0');args.input_len=256;args.baseline_ckpt=args.teacher_ckpt='';args.from_scratch=args.a1_scratch_only=True
@@ -156,12 +156,13 @@ def smoke(rt,configs,validate=validate_config):
             if set(obj.last_diversity)!=({'U','L'} if h['dual_L'] else {'U'}):raise ValueError('Actual independent physical H views required')
             rows.append(dict(method=c['paper_method'],status='PASS',U_seen=256,U_accepted=state['accepted'],U_student_views=1536,L_packets=768,
                 H2=h,actual_H_pair_relative_differences=obj.last_diversity,actual_U_gradient_norms=obj.smoke_U_gradient_norms,
-                actual_rejected_H_pair_gradient_norms=getattr(obj,'smoke_pair_gradient_norms',None),optimizer_updates=0,U_truth_reads=0,target_reads=0))
+                actual_rejected_H_pair_gradient_norms=getattr(obj,'smoke_pair_gradient_norms',None),
+                actual_auxiliary_state=state.get('L_anchor_H'),actual_auxiliary_gradient_norms=getattr(obj,'smoke_anchor_gradient_norms',None),optimizer_updates=0,U_truth_reads=0,target_reads=0))
     write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',rows=rows,actual_completed_SIG1_E20=True,optimizer_updates=0,target_reads=0))
 
 
 
-def train(c,validate=validate_config):
+def train(c,validate=validate_config,objective_type=CleanHObjective):
     import shutil
     import torch
     from experiments.cric_dura_comparison.f_train import train as segment
@@ -170,7 +171,7 @@ def train(c,validate=validate_config):
     for epochs,offset in ((10,20),(20,30)):
         folder=root/('segment'+str(offset+epochs));cfg=dict(c,output_root=str(folder),segment_epochs=epochs,epoch_offset=offset,step_offset=offset*222,parent_source=previous)
         holder={}
-        with installed(cfg,holder,validate):segment(cfg)
+        with installed(cfg,holder,validate,objective_type):segment(cfg)
         obj=holder['objective'];state=obj.state_dict();done=read(folder/'complete.json');payload=torch.load(folder/'final_ssdg.pth',map_location='cpu',weights_only=False);check_state(payload)
         if (state['calls']!=epochs*222 or state['seen']!=epochs*56700 or state['student_views']!=6*state['seen'] or state['EMA_updates'] or state['U_truth_read']
                 or any(state['U_style']['applied'].values()) or done['epoch']!=epochs or done['updates']!=epochs*222 or done['target_access'] or done['U_truth_read']

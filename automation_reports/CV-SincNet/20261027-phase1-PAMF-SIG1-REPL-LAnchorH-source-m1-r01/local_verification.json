@@ -1,0 +1,18 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "focused_tests": 33,
+  "focused_result": "PASS",
+  "compile": "PASS",
+  "independent_review": {
+    "status": "PASS_AFTER_TARGETED_P1_FIX",
+    "reviewer": "/root/ssl_p0p1_review",
+    "initial_P0": 0,
+    "initial_P1": 1,
+    "fixed_issue": "Feature-fusion base_norm/pa_norm/gain live inside original cls_head; only final cls_head.weight must have zero direct auxiliary derivative",
+    "targeted_re_review": "PASS",
+    "remaining_P0": 0,
+    "remaining_P1": 0
+  },
+  "actual_checkpoint_smoke": "LAUNCHER_FIRST_STEP_PENDING; PASS continues immediately",
+  "target_access": false
+}
