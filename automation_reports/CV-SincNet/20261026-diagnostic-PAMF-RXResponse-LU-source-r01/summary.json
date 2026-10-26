@@ -1,0 +1,30 @@
+{
+  "run_id": "20261026-diagnostic-PAMF-RXResponse-LU-source-r01",
+  "status": "ANALYZED_SOURCE_ONLY",
+  "model_seed": null,
+  "L_seen": 6300,
+  "U_seen": 56700,
+  "H_seen": 170100,
+  "RX_fraction": 0.6485165623095271,
+  "median_crossed_R2": 0.9834243837910623,
+  "min_crossed_R2": 0.8953471521466432,
+  "positive_folds": 18,
+  "U_L_RX_pattern_R2": 0.9998861284238285,
+  "RX_energy_in_top2": 0.9999199198203679,
+  "TX_energy_in_RX_top2": 0.43544758007253215,
+  "conditions": {
+    "all_folds_defined": true,
+    "median_crossed_r2_atleast_quarter": true,
+    "positive_crossed_folds_atleast15": true,
+    "receiver_fraction_atleast_one_percent": true
+  },
+  "common_component_supported": true,
+  "F_G_weight_reads": 0,
+  "U_truth_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "complete_step_records": 222,
+  "stdout_fatal_markers": 0,
+  "seconds": 5.990208813920617,
+  "performance_claim": false
+}
