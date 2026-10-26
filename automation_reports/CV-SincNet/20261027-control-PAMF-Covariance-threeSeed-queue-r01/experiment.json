@@ -1,0 +1,190 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261027-control-PAMF-Covariance-threeSeed-queue-r01",
+  "group_id": "pamf-covariance-three-seed-queue-20261027",
+  "display_name": "三种子协方差原矩阵共享GPU排队接管",
+  "description": "仅修改本run队列准入；实际GPU4/6/7有约20GB余量及各一外部任务，原全空闲条件阻塞原定测试和seed03。保持28job/12模型矩阵与原冻结执行代码、数据、seed、权重和预算，复用完成产物，不操作其他owner。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-Covariance-3seed-queue"
+  ],
+  "tags": [
+    "PAMF",
+    "queue-control",
+    "three-model-seeds",
+    "no-new-scientific-rows"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01"
+  ],
+  "authorization": "用户授权持续完成原三seed研发/自动测试；本控制仅替换所属run排队控制器并接管原健康worker，不终止或修改训练/预测/评分或其他owner。遵循N607每卡最多2个总worker，本run每卡1个、总GPU4个。",
+  "code": {
+    "commit": "actual queue implementation Git commit at publish",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 ordinary CVS-RFFI Python3.10;CPU-only controller;original workers FP32/TF32off/CPU2 unchanged",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-control-PAMF-Covariance-threeSeed-queue-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig original F0",
+    "version": "existing validated original physical roles",
+    "representation": "originalF0 equalized1 clean andsamepacket fixedH;no restored IQ;same fixed channelmath code/oldHcache reused",
+    "contract_ref": "original F0 source_contract.json, checked private context",
+    "physical_ids_ref": "same existing source contract.role_ids",
+    "label_map_ref": "same original six registered TX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "unchanged original F0 six TX",
+    "roles": {
+      "controller": "only original runtime/jobs/completion/process metadata;no IQ,truth,model weights",
+      "original_workers": "unchanged original L_s/U_s/V and fixed raw target contracts;original job configs consumed verbatim"
+    },
+    "train_ratio": "original7/63/30;confirmation no training",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "unchanged existing Phase1 validated source handles;Phase2 capsule_id/split_id not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "same practical residual/post_sync/noEQ, source L training and frozen source V diagnostics"
+  },
+  "permissions": {
+    "regime": "frozen_source_only_DG",
+    "query_use": "independent per-sample prediction only;no fit/state/selection",
+    "external_method_exception": null,
+    "claim_scope": "Queue continuation only;no new scientific result or checkpoint selection;full original12model/3seed evaluation remains required."
+  },
+  "checkpoint": {
+    "initialization": "controller loads no model;all original scientific worker configs/release/smokes reused verbatim",
+    "sources": [],
+    "contract_check_ref": "original source run contracts/provenance unchanged;no data revalidation",
+    "provenance_verdict": "original actual source68b6338d20423498c110284c0c40b65a50d37de7 retained",
+    "selection_rule": "no new model selection;all original final E50 rows and scores"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current independent Codex chat;one controller replaces exact original own controller",
+    "gpu_policy": "max4 own GPU workers,max1 own/card,max2 total CUDA+pending/card,free>=10000MiB;CPU scorer max1 includingforeign;otherowners untouched",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-control-PAMF-Covariance-threeSeed-queue-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-control-PAMF-Covariance-threeSeed-queue-release-r01",
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026/covariance_queue",
+    "launch_command": "python -X utf8 -m experiments.pamf_u_history.publish_covariance_queue --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/covariance_queue --context local_artifacts/pamf_u_history_20261026/covariance_queue_context.json",
+    "stop_rule": "verify exact original controller PID/CWD/argv/uid before single SIGTERM;adopt healthy own workers;unknown partial/duplicate/identity mismatch preserve/no launch;first scientific technical failure stops newlaunches,healthy workers finish;low scores never stop matrix"
+  },
+  "expected_artifacts": [
+    "process.json",
+    "original_controller_before.json",
+    "original_controller_after.json",
+    "original_pipeline_state.json",
+    "handoff.json",
+    "pipeline_state.json",
+    "complete.json whenall original28jobs complete",
+    "original scientific predictions/scores/weights at originalroot,unchanged paths",
+    "independent livePID/CWD/argv/GPU/loggrowth readback"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "same28jobs eventuallycomplete",
+      "actual max4own/max1own/card/max2total/card atlaunch",
+      "completedoutputs reused,otherownerprocesses unchanged"
+    ],
+    "secondary": [
+      "original scientific full3seed statistics aftercompletion"
+    ],
+    "target": "controller reads no truth/IQ/weights",
+    "selection": "original fixed matrix unchanged"
+  },
+  "rows": [
+    {
+      "row_id": "queue",
+      "method": "original28job-queue-only",
+      "purpose": "continue fixed original matrix withbounded shared GPU admission",
+      "config_ref": "experiments/pamf_u_history/covariance_queue.py:POLICY/dispatch",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-control-PAMF-Covariance-threeSeed-queue-release-r01/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No random training ornew model;controls original2026092701/02/03 matrix unchanged",
+      "k": null,
+      "scenario": "controller only;original scientific rawclean/six practical unaffected",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 new scientific rows/training;complete originallyregistered8 missingmodels and9newreadouts",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-control-PAMF-Covariance-threeSeed-queue-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-control-PAMF-Covariance-threeSeed-queue-release-r01/controller.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_covariance_queue --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/covariance_queue --context local_artifacts/pamf_u_history_20261026/covariance_queue_context.json",
+      "expected_artifacts": [
+        "process.json",
+        "original_controller_before.json",
+        "original_controller_after.json",
+        "original_pipeline_state.json",
+        "handoff.json",
+        "pipeline_state.json",
+        "complete.json whenall original28jobs complete",
+        "original scientific predictions/scores/weights at originalroot,unchanged paths",
+        "independent livePID/CWD/argv/GPU/loggrowth readback"
+      ]
+    }
+  ],
+  "notes": [
+    "Resource policy only;original worker execution_release/Python/entrypoint/config paths reused verbatim.",
+    "Singleown controller PID only;no pkill orchild termination. A rare healthy in-flight ownworker is adopted from exact original jobcommand.",
+    "Alreadycompleted jobs reused;partial/logexisting without liveworker orsuccessful completion cannot be overwritten.",
+    "Original realcheckpoint/noquery smokes andcandidateP0/P1 retained;this resourcecontinuation addsno duplicate data validation,runner review orsource diagnostic gate.",
+    "3focused local safety/resource/reuse checks PASS;old frozenworker inference/training unchanged."
+  ],
+  "matrix": {
+    "original_science_run": "20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01",
+    "original_job_count": 28,
+    "logical_models": 12,
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "new_scientific_rows": 0,
+    "new_training": 0,
+    "new_test_matrix": 0,
+    "queue_policy": {
+      "max_own_GPU_workers": 4,
+      "max_total_GPU_workers_per_card": 2,
+      "max_own_GPU_workers_per_card": 1,
+      "min_free_MiB": 10000,
+      "CPU_scorers": 1
+    }
+  },
+  "analysis_entrypoint": "experiments.pamf_u_history.covariance_three_results:collect/analyze",
+  "registered_at": "2026-10-26T17:56:51+00:00"
+}

@@ -15,3 +15,5 @@
 当前动作：三份对应E20父源句柄已核实；02/03 mask统计已完整完成，分别112/282与91/362项，01的94/294复用。8模型训练及完整12模型raw补齐登记为`20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01`，首步各自9批实际梯度校准和无query联合smoke，PASS后连续训练/测试。没有放宽原性能目标，也不根据已见seed01目标结果改变方法、mask规则、权重公式或预算。
 
 发布后状态：上述 run 已实际运行，02/03 无 query 联合检查与固定校准均 PASS（共同系数分别 1.000000／0.9949095941）。4 个 seed02 模型已启动，seed03 四行排队；全部三种子矩阵保留，完成后再报告稳定性。
+
+本run队列资源更新：原globalidle阻塞已完成行测试/seed03；独立控制run`20261027-control-PAMF-Covariance-threeSeed-queue-r01`改用own≤4、每卡own≤1/总CUDA+pending≤2、free≥10000MiB，保留原全部科学配置与产物，不动其他owner。该变更不新增训练矩阵或数据权限。
