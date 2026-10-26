@@ -1,0 +1,2 @@
+{"at": "2026-10-26T20:34:58+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-26T20:36:56+00:00", "status": "LOCAL_VERIFIED", "note": "Five focused tests and independent P0/P1 review PASS; ordinary CPU waiting controller only, all new GPU stages depend on current complete matrix; actual new checkpoint smoke pending then auto-continue.", "evidence": ["local_verification.json"], "row_id": null}
