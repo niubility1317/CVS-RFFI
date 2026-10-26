@@ -74,5 +74,5 @@ labs.cg=root=>{
  root.querySelector('[data-next]').addEventListener('click',()=>{const input=root.querySelector('[name=cgStep]');input.value=String(Math.min(2,Number(input.value)+1));root._labUpdate();});root.querySelector('[data-zero]').addEventListener('click',()=>{root.querySelector('[name=cgStep]').value='0';root._labUpdate();});
 };
 window.CourseLabUI={mount,slider,select,linePlot,plane,bars,fmt,arr};
-window.CourseLabs={names:Object.keys(labs),mountAll(container){container.querySelectorAll('[data-lab]').forEach(root=>{const name=root.dataset.lab;if(!labs[name])throw new Error('Missing interactive experiment: '+name);labs[name](root);root.dataset.ready='true';});}};
+window.CourseLabs={names:Object.keys(labs),register(name,render){if(labs[name])throw new Error('Duplicate interactive experiment: '+name);labs[name]=render;this.names.push(name);},mountAll(container){container.querySelectorAll('[data-lab]').forEach(root=>{const name=root.dataset.lab;if(!labs[name])throw new Error('Missing interactive experiment: '+name);labs[name](root);root.dataset.ready='true';});}};
 })();

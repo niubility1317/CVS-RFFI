@@ -71,15 +71,20 @@ def bundle(export: Path | None) -> None:
     document = (ROOT / "index.template.html").read_text(encoding="utf-8")
     assets = {
         "KATEX_CSS": inline_fonts((VENDOR / "katex.min.css").read_text(encoding="utf-8")),
-        "COURSE_CSS": (ROOT / "style.css").read_text(encoding="utf-8") + "\n" + (ROOT / "visuals.css").read_text(encoding="utf-8"),
+        "COURSE_CSS": "\n".join((ROOT / name).read_text(encoding="utf-8")
+                                for name in ("style.css", "visuals.css", "branch-detail.css")),
         "KATEX_JS": (VENDOR / "katex.min.js").read_text(encoding="utf-8"),
         "KATEX_AUTO_JS": (VENDOR / "auto-render.min.js").read_text(encoding="utf-8"),
         "FOUNDATION_CONTENT": (ROOT / "foundation-content.js").read_text(encoding="utf-8"),
-        "PAMF_CONTENT": (ROOT / "pamf-content.js").read_text(encoding="utf-8"),
+        "PAMF_CONTENT": "\n".join((ROOT / name).read_text(encoding="utf-8") for name in (
+            "pamf-content.js", "convolution-detail-content.js",
+            "frequency-detail-content.js", "pa-detail-content.js")),
         "DURA_CONTENT": (ROOT / "dura-content.js").read_text(encoding="utf-8"),
         "REFERENCE_CONTENT": (ROOT / "reference-content.js").read_text(encoding="utf-8"),
-        "LABS_JS": (ROOT / "labs.js").read_text(encoding="utf-8"),
-        "VISUALS_JS": (ROOT / "visuals.js").read_text(encoding="utf-8"),
+        "LABS_JS": "\n".join((ROOT / name).read_text(encoding="utf-8")
+                             for name in ("labs.js", "branch-detail-labs.js")),
+        "VISUALS_JS": "\n".join((ROOT / name).read_text(encoding="utf-8")
+                                for name in ("visuals.js", "branch-detail-visuals.js")),
         "APP_JS": (ROOT / "app.js").read_text(encoding="utf-8"),
     }
     for marker, content in assets.items():

@@ -23,6 +23,7 @@ h_{\mathrm{BP}}(t)=h_{\mathrm{LP}}(t;f_2)-h_{\mathrm{LP}}(t;f_1).
 <p>同一组 24 个实核分别滤 \(I,Q\)，得到 48 通道。对滤后复数 \(z_k\) 再计算 \(z_k|z_k|^2\)，增加 48 通道；这一计算先把 \(I,Q\) 各裁到 \([-1.2,1.2]\)。最后拼入原 IQ 的一阶、二阶差分共 4 通道。所以输入 <code>time_fuse</code> 的确是 \(48+48+4=100\)，不是 24 或 96 通道。</p>
 <table class="mini-table"><thead><tr><th>操作</th><th>输出（省略 \(B\)）</th></tr></thead><tbody><tr><td>100 通道拼接 → \(1\times1\) 卷积、归一化、激活</td><td>\(48\times256\)</td></tr><tr><td>平均池化 <code>time_down</code></td><td>\(48\times128\)</td></tr><tr><td><code>t1</code>：深度可分离卷积、最大池化</td><td>\(72\times64\)</td></tr><tr><td><code>t2</code>：深度可分离卷积、最大池化</td><td>\(96\times32\)</td></tr><tr><td><code>t3</code> → 全局平均 → 线性投影</td><td>\(96\times32\to96\to160\)</td></tr></tbody></table>
 <p>深度可分离卷积先逐通道卷积，再用 \(1\times1\) 卷积交换通道信息。忽略偏置时，核长 \(k\) 的参数量由 \(kC_{\mathrm{in}}C_{\mathrm{out}}\) 变成 \(kC_{\mathrm{in}}+C_{\mathrm{in}}C_{\mathrm{out}}\)。它节省计算，但通道混合仍然可以学习。</p>
+<p>如果希望逐项看清每一次乘加，先读<a href="#p-convolution">普通卷积与深度可分离卷积详解</a>：其中可移动窗口、核对通道连接，并计算本表每个 DS 块的参数量。</p>
 <h3>手算：频率坐标和优化单位</h3>
 <p><code>CENTER_25K</code> 保存原点 \(p_0\)，用 \(p=p_0+25000q\) 还原低频／带宽原始参数。例如 \(p_0=100000\,\mathrm{Hz},q=0.4\)，还原为 \(110000\,\mathrm{Hz}\)。随后才施加原生的绝对值、最小 50 Hz 和 Nyquist 截断；所以这个 \(p\) 还不是无条件等于最终截止频率。</p>
 <details class="derivation" data-depth="deep"><summary>逐步推导：为何换坐标还要换学习率、\(\epsilon\) 和衰减</summary>

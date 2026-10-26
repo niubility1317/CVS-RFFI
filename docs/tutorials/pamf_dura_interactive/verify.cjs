@@ -3,14 +3,14 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=__dirname;
 global.window={COURSE_CHAPTERS:[]};
-for(const name of ['foundation-content','pamf-content','dura-content','reference-content','labs']){
+for(const name of ['foundation-content','pamf-content','convolution-detail-content','frequency-detail-content','pa-detail-content','dura-content','reference-content','labs','branch-detail-labs']){
  vm.runInThisContext(fs.readFileSync(path.join(root,name+'.js'),'utf8'),{filename:name+'.js'});
 }
 const math=window.CourseMath,near=(a,b,t=1e-10)=>assert.ok(Math.abs(a-b)<t,`${a} != ${b}`);
-assert.equal(window.COURSE_CHAPTERS.length,20);
-assert.equal(new Set(window.COURSE_CHAPTERS.map(c=>c.id)).size,20);
+assert.equal(window.COURSE_CHAPTERS.length,23);
+assert.equal(new Set(window.COURSE_CHAPTERS.map(c=>c.id)).size,23);
 const slots=window.COURSE_CHAPTERS.flatMap(c=>[...c.html.matchAll(/data-lab="([^"]+)"/g)].map(m=>m[1]));
-assert.equal(slots.length,20);assert.equal(new Set(slots).size,20);
+assert.equal(slots.length,28);assert.equal(new Set(slots).size,28);
 slots.forEach(name=>assert.ok(window.CourseLabs.names.includes(name),name));
 const {formulas,issues}=require('./math-source-check.cjs').checkMath(window.COURSE_CHAPTERS);
 assert.deepEqual(issues,[],'Raw mathematical notation must not bypass the renderer');
@@ -37,7 +37,35 @@ for(const c of [-1.5,0,1,1.5])for(const start of [[0,0],[-.7,-.3],[1,-1]]){
 }
 const N=32,re=Array.from({length:N},(_,n)=>Math.cos(2*Math.PI*3*n/N)),im=Array.from({length:N},(_,n)=>Math.sin(2*Math.PI*3*n/N));
 const spectrum=math.dft(re,im);near(spectrum.r[3],N);near(spectrum.i[3],0);near(spectrum.r[29],0);
-assert.equal(window.COURSE_QUIZ.length,10);window.COURSE_QUIZ.forEach(q=>assert.ok(q.correct>=0&&q.correct<q.options.length));
+const d=window.CourseDetailMath;
+const toyX=[[1,2,3,4,5,6],[2,1,0,-1,-2,-3]],depth=[[1,0,-1],[1,2,1]],point=[[1,2],[-1,1]];
+const separated=d.separated(toyX,depth,point);
+assert.deepEqual(separated.y,[[6,-2,-10,-18],[6,2,-2,-6]]);
+for(const padding of [0,1,2])for(const dilation of [1,2]){
+ const split=d.separated(toyX,depth,point,padding,dilation).y;
+ const dense=d.conv1d(toyX,d.equivalent(depth,point),padding,dilation);
+ assert.deepEqual(split,dense,'Factorized weights must yield the same linear operator');
+}
+const cost=d.cost(48,72,5,128);assert.equal(cost.separable,3696);assert.equal(cost.withNorm,3840);assert.equal(cost.macDS,473088);near(cost.ratio,77/360);
+assert.ok(d.cost(1,1,3,8).ratio>1,'Tiny output width need not save parameters');
+const ramp=Array.from({length:127},(_,i)=>i),pooled=d.pool(ramp,32);
+near(pooled[0],1.5);near(pooled[1],5);near(pooled[31],124.5);
+assert.deepEqual(d.poolRange(0,127,32),[0,4]);assert.deepEqual(d.poolRange(1,127,32),[3,8]);
+assert.deepEqual(d.mirror([0],[0])[0],[0,0,0,0]);
+const mirror=d.mirror([9],[1])[0],mirrorSwap=d.mirror([1],[9])[0];
+near(mirror[0],Math.log(10));near(mirror[3],8/(10+1e-8));near(mirror[2],-mirrorSwap[2]);assert.equal(d.mirror([1e8],[1e-8])[0][2],20);
+const l=d.lift([[.3,.4]],0,3,0).value;near(l[0],.075);near(l[1],.1);
+assert.deepEqual(d.lift([[.3,.4]],1,5,0).value,[0,0]);
+assert.deepEqual(d.lift([[2.8,.5]],0,5,0).value,[36.125,9.03125]);
+assert.deepEqual(d.receptive(),[{afterConv:7,r:8,j:2},{afterConv:32,r:34,j:4},{afterConv:98,r:98,j:4}]);
+const flat=d.stats(Array(32).fill(1));near(flat.pa[0],6/(32+1e-8));near(flat.pa[1],6/(13+1e-8));near(flat.pa[2],0);
+const silent=d.stats(Array(32).fill(0));near(silent.pa[0],6/33);near(silent.pa[1],6/14);near(silent.pa[2],0);
+const edge=d.stats(Array.from({length:32},(_,i)=>i>=26?4:1));assert.equal(edge.total,50);assert.equal(edge.center,13);assert.equal(edge.edge,24);near(edge.pa[0],24/(50+1e-8));
+const twoTone=Array.from({length:16},(_,n)=>[Math.cos(Math.PI*n/4)+.5*Math.cos(-Math.PI*n/4),Math.sin(Math.PI*n/4)+.5*Math.sin(-Math.PI*n/4)]);
+const toneFFT=math.dft(twoTone.map(z=>z[0]),twoTone.map(z=>z[1])),tonePower=toneFFT.r.map((v,i)=>v*v+toneFFT.i[i]**2);
+near(tonePower[2],256);near(tonePower[14],64);
+near(tonePower.reduce((a,b)=>a+b,0),16*twoTone.reduce((a,[r,i])=>a+r*r+i*i,0));
+assert.equal(window.COURSE_QUIZ.length,14);window.COURSE_QUIZ.forEach(q=>assert.ok(q.correct>=0&&q.correct<q.options.length));
 const output=fs.readFileSync(path.join(root,'dist/index.html'),'utf8');
 assert.ok(output.startsWith('<!doctype html>'));assert.ok(!/url\(fonts\//.test(output));assert.ok(!/<(?:script|link|iframe)[^>]+(?:src|href)=["']https?:\/\//.test(output));assert.ok(!/\/\* (?:APP_JS|PAMF_CONTENT|DURA_CONTENT) \*\//.test(output));
-console.log(JSON.stringify({status:'PASS',chapters:20,interactive_examples:slots.length,validated_formulas:formulas,questions:10,math:'FIR, DFT, signed area, stable Softmax, CE/KL, scalar MAP, gradient projection, warm-start CG',offline_bytes:Buffer.byteLength(output)},null,2));
+console.log(JSON.stringify({status:'PASS',chapters:23,interactive_examples:slots.length,validated_formulas:formulas,questions:14,math:'FIR, DFT/Parseval, DS factorization and cost, adaptive pooling, mirrored power, clipped polynomial basis, dilation, PA statistics, signed area, Softmax, CE/KL, MAP, gradient protection, CG',offline_bytes:Buffer.byteLength(output)},null,2));
