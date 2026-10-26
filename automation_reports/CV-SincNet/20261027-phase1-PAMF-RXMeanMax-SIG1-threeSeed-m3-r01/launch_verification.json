@@ -1,27 +1,63 @@
 {
-  "status": "QUEUED_VERIFIED_NEURAL_NOT_STARTED",
+  "status": "VERIFIED_THREE_SEED_NEURAL_TRAINING",
   "execution_commit": "05e320bb0c554d9b135cec2e43b0e667617a8375",
-  "archive_transfer": "VERIFIED",
-  "remote_compile": "PASS",
-  "controller_identity_verified": true,
-  "controller_live": true,
-  "controller_log_growth_verified": true,
-  "initial_log_bytes": 126,
-  "latest_log_bytes": 252,
-  "waiting_jobs": 12,
-  "registered_model_seeds": [
-    2026092701,
-    2026092702,
-    2026092703
+  "actual_live_CUDA_workers": 3,
+  "calibration_smokes": [
+    {
+      "model_seed": 2026092701,
+      "coefficient": 1.0,
+      "steps": 12,
+      "optimizer_updates": 0,
+      "parameters_unchanged": true,
+      "smoke": "PASS",
+      "head_and_signature_gradient_nonzero": true
+    },
+    {
+      "model_seed": 2026092702,
+      "coefficient": 1.0,
+      "steps": 12,
+      "optimizer_updates": 0,
+      "parameters_unchanged": true,
+      "smoke": "PASS",
+      "head_and_signature_gradient_nonzero": true
+    },
+    {
+      "model_seed": 2026092703,
+      "coefficient": 1.0,
+      "steps": 12,
+      "optimizer_updates": 0,
+      "parameters_unchanged": true,
+      "smoke": "PASS",
+      "head_and_signature_gradient_nonzero": true
+    }
   ],
-  "registered_candidate_models": 3,
-  "running_GPU_workers": 0,
-  "predecessor_complete_present": false,
-  "actual_checkpoint_max_selection_smoke": "PENDING until predecessor completes",
-  "new_control_training": 0,
-  "new_control_predictions": 0,
-  "new_target_reads": 0,
-  "performance_verified": false,
-  "goal_complete": false,
-  "observed_at": 1793047241.449364
+  "training": [
+    {
+      "model_seed": 2026092701,
+      "segment": "segment30",
+      "step_records": 584,
+      "last_step": 584,
+      "source_frozen": false
+    },
+    {
+      "model_seed": 2026092702,
+      "segment": "segment30",
+      "step_records": 538,
+      "last_step": 538,
+      "source_frozen": false
+    },
+    {
+      "model_seed": 2026092703,
+      "segment": "segment30",
+      "step_records": 545,
+      "last_step": 545,
+      "source_frozen": false
+    }
+  ],
+  "combined_own_gpu_limit": 4,
+  "each_own_per_GPU": 1,
+  "predecessor_complete": true,
+  "no_control_retraining": true,
+  "all_results_complete": false,
+  "goal_complete": false
 }

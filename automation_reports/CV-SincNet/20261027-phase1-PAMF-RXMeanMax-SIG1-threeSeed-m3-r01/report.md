@@ -1,6 +1,6 @@
 # 全U最大预测变化 RX 风格：三种子预登记
 
-状态：QUEUED_VERIFIED_NEURAL_NOT_STARTED，等待控制器已发布并核实，尚无新GPU校准或训练，效果未知，原目标active。
+状态：RUNNING。三个 seed 的真实 checkpoint/梯度检查和源校准均已通过，三模型正在实际 GPU 训练；尚无完整性能结果，原目标 active。下文的等待记录是发布时的历史状态。
 
 固定完整PAMF／单SIG_TIME／原默认头，在普通PL .95、weight1、fullT1 L机制不变的基础上，只改变训练期U的RX风格选择。每个U取原始IQ或同包H基础（新增30epoch各15），当前F eval/no_grad的同base概率为q。枚举其余四个源RX的固定均值差作用，合为4B前向，逐包选择KL(q||p_style)最大的风格，再仅对选中视图带梯度重算。没有跨包重新指派或TX标签参与选择。
 
@@ -29,3 +29,5 @@ L额外64对仍为原随机风格KL且detach，保留与RXMean-U相同的标量�
 `experiments.pamf_u_history.rx_mean_max_audit` 对全部完成行的每步／每epoch／完整stdout检查四候选前向成本、最大KL选择、各RX的全U曝光及段间状态。四种风格必须被计算，但最大选择允许只实际选中其中一部分，不强制伪造20个风格对均被选中。完整预算必须是候选eval6804000包、teacherU9355500包／studentU3402000包，source/U真值/target权限保持。当前只做等待状态的只读预检查：0行已冻结，3行pending，不把它当真实梯度smoke通过。
 
 上述分析/核算新增5项测试及原随机风格统计4项、协方差统计3项、曝光核验3项均PASS；既有完整协方差结果在共用统计增加第三参考能力后逐字段不变。仅修改本地分析工具，远端神经执行commit仍为05e320bb0c554d9b135cec2e43b0e667617a8375，训练/选择配方未改。完整结束后分别执行max_audit、max_results collect、max_results analyze，使用已登记runtime；新指标不能反馈到当前已固定矩阵。
+
+当前已从等待转为实际三 seed 训练。三份真实 E20 的 fullPAMF/SIG1/defaulthead/source-only 梯度 smoke 与 12 批校准全部 PASS，三 seed alpha=1；各模型参数保持且校准 0 optimizer。三条训练实际 CUDA PID/UID/CWD/argv/显卡映射与日志增长已核实，已观察每行 538 至 584 个非零连续 step，见 launch_verification.json。原 RXMean 随机风格矩阵已全部 ANALYZED；其负结果不会改动本版 seed、物理幅度、Max 选择或预算。本版尚无完整源或正式结果，不能宣布收益。

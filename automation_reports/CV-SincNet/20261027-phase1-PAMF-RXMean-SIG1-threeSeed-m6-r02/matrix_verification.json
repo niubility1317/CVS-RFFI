@@ -1,0 +1,202 @@
+{
+  "status": "VERIFIED_COMPLETE_SIX_MODEL_RAW_MATRIX",
+  "raw_candidate_decisions": 7056000,
+  "score_rows": 12,
+  "physical_pairing_checks": [
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092701,
+      "reference": "SIG1-PL",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092701,
+      "reference": "SIG1-PL",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092701,
+      "reference": "SIG1-Sup",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092701,
+      "reference": "SIG1-Sup",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092702,
+      "reference": "SIG1-PL",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092702,
+      "reference": "SIG1-PL",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092702,
+      "reference": "SIG1-Sup",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092702,
+      "reference": "SIG1-Sup",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092703,
+      "reference": "SIG1-PL",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092703,
+      "reference": "SIG1-PL",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092703,
+      "reference": "SIG1-Sup",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092703,
+      "reference": "SIG1-Sup",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092701,
+      "reference": "SIG1-PL",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092701,
+      "reference": "SIG1-PL",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092701,
+      "reference": "SIG1-Sup",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092701,
+      "reference": "SIG1-Sup",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092702,
+      "reference": "SIG1-PL",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092702,
+      "reference": "SIG1-PL",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092702,
+      "reference": "SIG1-Sup",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092702,
+      "reference": "SIG1-Sup",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092703,
+      "reference": "SIG1-PL",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092703,
+      "reference": "SIG1-PL",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092703,
+      "reference": "SIG1-Sup",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092703,
+      "reference": "SIG1-Sup",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    }
+  ],
+  "source_audit": "COMPLETE_RX_MEAN_SOURCE_ROWS_AUDITED",
+  "new_control_training": 0,
+  "goal_complete": false
+}

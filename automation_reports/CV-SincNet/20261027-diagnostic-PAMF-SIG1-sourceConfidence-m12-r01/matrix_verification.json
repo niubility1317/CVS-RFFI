@@ -1,0 +1,101 @@
+{
+  "status": "VERIFIED_COMPLETE_CPU_SOURCE_DIAGNOSTIC",
+  "execution_commit": "64a34e69f6006300986c992504aac6e863588b01",
+  "models": 12,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "actual_source_checkpoint_smokes": 12,
+  "reader_parameters": [
+    196001
+  ],
+  "signature_views": 1,
+  "signature_parameters": 18976,
+  "source_V_per_model": 27000,
+  "source_forward_packets": 324024,
+  "all_parameters_and_buffers_unchanged": true,
+  "metadata_pairings": [
+    {
+      "method": "SIG1-PL",
+      "model_seed": 2026092701,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "SIG1-PL",
+      "model_seed": 2026092702,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "SIG1-PL",
+      "model_seed": 2026092703,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "SIG1-Sup",
+      "model_seed": 2026092701,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "SIG1-Sup",
+      "model_seed": 2026092702,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "SIG1-Sup",
+      "model_seed": 2026092703,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092701,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092702,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "RXMean-U",
+      "model_seed": 2026092703,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092701,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092702,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    },
+    {
+      "method": "RXMean-LU",
+      "model_seed": 2026092703,
+      "count": 27000,
+      "exact_ID_label_RX_day_order": true
+    }
+  ],
+  "new_training_updates": 0,
+  "GPU_workers": 0,
+  "U_TX_truth_reads": 0,
+  "target_reads": 0,
+  "G_forwards": 0,
+  "controller_log_bytes": 58608,
+  "uniform_CPU_FP32": true,
+  "goal_complete": false
+}

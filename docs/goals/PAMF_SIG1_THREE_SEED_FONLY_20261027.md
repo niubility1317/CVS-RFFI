@@ -25,3 +25,5 @@
 当前进展覆盖上一段“尚无新训练”：独立 `20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02` 已实际开始，RXMean-U／RXMean-LU 各三seed，原始普通PL .95/weight1与完整T1保持，三份真实E20零更新校准全部通过。仅训练期同包RX均值差软一致性，推理原始IQ；无DURA。r01导入次序技术失败0optimizer已保留，r02复用完成全U均值统计，不重训PL/Sup。全部六行固定E50后自动rawclean＋六景／168000包／独立truth-last，不以部分seed或目标结果改配方。源校准与运行记录见[当前报告](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02/report.md)。
 
 当前源梯度分析只读取既有36批校准记录；它不代表性能结论，也不触发权重或seed选择。结果工具要求完整三种子/每景/两个人群及同seed对照ID配对，完整训练日志核验另查每步raw/H交替、allU曝光及段间计数。源分数或梯度对齐不能替代原目标验收，原绝对目标与全部声明范围保持active。
+
+RXMean 六模型现已全部 ANALYZED：U 的 clean/六景为 84.532341%/70.364649%，LU 为 84.525595%/70.358102%；相对普通 PL clean 分别 −0.161508/−0.168254pp，六景 +0.131415/+0.124868pp，未达全方面目标。详见当前报告。预先固定的 RXMeanMax 三 seed 已从等待转为真实训练；四方法×三 seed 冻结 CPU 源置信度诊断独立运行，0 新训练、0 正式控制重测。原目标与全部三 seed 要求保持 active。
