@@ -1,0 +1,61 @@
+{
+  "status": "VERIFIED_STOPPED_USER_REUSE_CONTROLS",
+  "reason": "User latest instruction:reuse completed controls;do not repeat baseline training",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01",
+  "code_commit": "a3173d405f43ece608b65cb1668e19f53ca26678",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "actual_smoke": {
+    "status": "PASS",
+    "results": [
+      {
+        "signature_gradient_norm": 0.32027136504288545,
+        "method": "SIG1-PL",
+        "status": "PASS",
+        "actual_U_seen": 256,
+        "L_forward_packets": 768,
+        "head_finite_nonzero": true,
+        "actual_signature_parameters": 18976,
+        "actual_signature_views": 1,
+        "optimizer_updates": 0,
+        "U_truth_read": false,
+        "query_reads": 0
+      },
+      {
+        "signature_gradient_norm": 0.6102162098531233,
+        "method": "SIG1-Sup",
+        "status": "PASS",
+        "actual_U_seen": 0,
+        "L_forward_packets": 768,
+        "head_finite_nonzero": true,
+        "actual_signature_parameters": 18976,
+        "actual_signature_views": 1,
+        "optimizer_updates": 0,
+        "U_truth_read": false,
+        "query_reads": 0
+      }
+    ],
+    "actual_same_contract_SIG1_E20_default_head_and_G": true,
+    "checkpoint_state_verified": true,
+    "optimizer_updates": 0,
+    "target_reads": 0
+  },
+  "controller_terminal": true,
+  "all_run_workers_terminal": true,
+  "own_PIDs_absent_from_GPU": true,
+  "foreign_processes_signaled": 0,
+  "outputs_preserved": true,
+  "partial_records": {
+    "SIG1-PL": {
+      "available_complete_step_records": 649,
+      "complete_final": false
+    },
+    "SIG1-Sup": {
+      "available_complete_step_records": 696,
+      "complete_final": false
+    }
+  },
+  "pipeline_status": "STOPPED_BY_USER_REUSE_CONTROLS",
+  "new_control_result_complete": false,
+  "target_reads": 0
+}

@@ -1,5 +1,7 @@
 # 完整PAMF单SIG_TIME视图：共享监督/普通PL源控制
 
+**STOPPED，用户要求复用已完成对照，不重复训练。** 已停止本次 controller 与两行新控制，独立核实进程和 GPU 退出，其他 owner 改动为 0；真实单视图模型检查已 PASS，部分训练产物全部保留。没有新的完整控制结果，也没有目标测试结果。
+
 - run_id：`20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01`
 - group_id：`pamf-repl-v2-20261026`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
@@ -32,3 +34,8 @@
 ## 发布准备
 
 单视图4项聚焦检查和唯一P0/P1审查PASS；三seed E20实际张量／来源核实。只有seed01本次两行源控制。真实checkpoint联合smoke、启动和源结果尚待执行，不把本地验证写成运行成功。参见[预登记](preregistration.md)、[本地检查](local_verification.json)、[前缀张量证据](prefix_tensor_evidence.json)、[共享基座](../../../docs/goals/PAMF_SIG1_SHARED_BASELINE_20261026.md)。
+
+
+## 用户最新范围与实际停止
+
+用户在发布后明确要求仅复用已完成对照；因此本次不继续或重启。停止证据见[user_stop_evidence.json](user_stop_evidence.json)。实际包传输及远端编译完成，单视图E20/G与两行完整L/U backward smoke均PASS，默认头和单视图梯度真实非零。Sup/PL训练尚未闭合；不能把partial当E30父或E50对照。后续只训练改进候选，历史控制按原架构和配方标注，不补训匹配控制。
