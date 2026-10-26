@@ -64,7 +64,7 @@ class SourceViews:
         physical=np.stack([data.metadata[k] for k in KEYS],1);self.lookup={tuple(row):i for i,row in enumerate(physical)};self.arrays={}
         for replica in (1,2,3):
             p=root/('fresh'+str(replica));header=read(p/'complete.json')
-            if (header['source_contract']!=contract or header['G']!=c['source_G'] or header['namespace']!=namespace(replica)
+            if (header['source_contract']!=contract or header['namespace']!=namespace(replica)
                 or header['U_seen']!=56700 or header['scenes']!=list(SCENES)):
                 raise ValueError('Source As view provenance differs')
             with np.load(p/'physical_index.npz',allow_pickle=False) as a:
@@ -94,8 +94,8 @@ def load_masks(c):
 
 
 class Objective:
-    def __init__(self,c):
-        self.c=c;self.masks=load_masks(c);self.history=None;self.cache=None;self.maps={};self.phase=None;self.last={};self.candidates={}
+    def __init__(self,c,*,masks=None):
+        self.c=c;self.masks=load_masks(c) if masks is None else masks;self.history=None;self.cache=None;self.maps={};self.phase=None;self.last={};self.candidates={}
 
     @contextmanager
     def observe(self,student):

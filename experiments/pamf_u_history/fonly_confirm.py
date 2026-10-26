@@ -69,7 +69,7 @@ def source_check(c):
     return cfg
 
 
-def predict(c):
+def predict(c,validator=None,source_validator=None):
     import numpy as np
     import torch
     from experiments.cric_dura_comparison.io import tensor
@@ -77,7 +77,7 @@ def predict(c):
     from experiments.pamf_repl_completion.source import load_reader
     from experiments.cric_dura_comparison.f_data import SourceDataset
     from experiments.pamf_channel_pl.restored_source import snapshot,unchanged
-    validate_config(c);cfg=source_check(c);reader,_=load_reader(c['source_output'],read(c['source_contract']),'cuda:0')
+    (validator or validate_config)(c);cfg=(source_validator or source_check)(c);reader,_=load_reader(c['source_output'],read(c['source_contract']),'cuda:0')
     labeled=SourceDataset(c['source_cache'],'L_s',read(c['source_contract']))
     with torch.inference_mode():p=reader(labeled.x[:2].to('cuda:0'))
     if p.shape!=(2,6) or not torch.isfinite(p).all() or len(reader.sequence_pool.views)!=1:raise ValueError('Actual single-view defaulthead no-query smoke failed')
@@ -103,7 +103,7 @@ def predict(c):
         folder=out/task;folder.mkdir();np.savez(folder/'predictions.npz',ids=ids,**values)
         counts_by_task[task]=dict(count=len(ids),views=list(VIEWS),readouts=['raw'])
     if not unchanged(reader,before):raise ValueError('Frozen direct F state changed')
-    write(out/'complete.json',dict(status='ALL_PREDICTIONS_COMPLETE',run_id=RUN,row_id=c['row_id'],tests=counts_by_task,
+    write(out/'complete.json',dict(status='ALL_PREDICTIONS_COMPLETE',run_id=c['run_id'],row_id=c['row_id'],tests=counts_by_task,
         views=list(VIEWS),readouts=['raw'],truth_read=False,query_fit=False,parameters_and_buffers_unchanged=True,seconds=time.monotonic()-started))
 
 

@@ -1,0 +1,41 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "reused_seed01_counts": {
+    "time_down": 94,
+    "t2.pool": 294
+  },
+  "new_fits": [
+    {
+      "model_seed": 2026092702,
+      "L": 6300,
+      "H": 18900,
+      "steps": 50,
+      "masks": {
+        "time_down": 112,
+        "t2.pool": 282
+      },
+      "seconds": 34.423349930904806,
+      "prefix_bound": true,
+      "state_unchanged": true
+    },
+    {
+      "model_seed": 2026092703,
+      "L": 6300,
+      "H": 18900,
+      "steps": 50,
+      "masks": {
+        "time_down": 91,
+        "t2.pool": 362
+      },
+      "seconds": 34.712103775236756,
+      "prefix_bound": true,
+      "state_unchanged": true
+    }
+  ],
+  "new_training": 0
+}

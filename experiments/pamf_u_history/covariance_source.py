@@ -74,14 +74,14 @@ def load_prefix(c):
 
 
 @contextmanager
-def installed(c,holder):
+def installed(c,holder,objective_factory=None):
     from experiments.cric_dura_comparison import t1_model
     from experiments.pamf_repl_completion.objectives import loader_scope
     from .model import install_single_view
     from .covariance_objective import Objective
     original,old_pl=t1_model.install,t1_model.plain_pl
     def build(model,cfg):
-        validate_config(cfg);model=install_single_view(original(model,cfg),cfg['model_seed']);obj=Objective(cfg);model._covariance=obj
+        validate_config(cfg);model=install_single_view(original(model,cfg),cfg['model_seed']);obj=Objective(cfg) if objective_factory is None else objective_factory(cfg);model._covariance=obj
         if 'exposure' in holder:obj.history=holder['exposure']
         if 'cache' in holder:obj.cache=holder['cache']
         old_hook=model._source_labeled_feature_hook
@@ -98,7 +98,7 @@ def installed(c,holder):
     finally:t1_model.install,t1_model.plain_pl=original,old_pl
 
 
-def calibration(rt):
+def calibration(rt,prepared_config=None,prepare_masks=True):
     import torch
     from torch.nn import functional as F
     from .covariance_support import derive
@@ -107,14 +107,14 @@ def calibration(rt):
     from experiments.cvs_phase1_stack.runtime import installed as native_installed
     from experiments.cric_dura_comparison.f_data import SourceDataset,FixedEpochLoader
     root=Path(rt['run_root']);old=Path(rt['project'])/'runs'/FIT_RUN
-    derive(old/'statistics.pt',old/'result.json',root/'mask_preparation',rt['code_commit'])
-    c=config(read(rt['context']),rt['code_commit'],'CovSel-U',0.,True);_,cp=load_prefix(c);holder={}
+    if prepare_masks:derive(old/'statistics.pt',old/'result.json',root/'mask_preparation',rt['code_commit'])
+    c=config(read(rt['context']),rt['code_commit'],'CovSel-U',0.,True) if prepared_config is None else prepared_config;_,cp=load_prefix(c);holder={}
     contract=read(c['source_contract']);l=SourceDataset(c['source_cache'],'L_s',contract);u=SourceDataset(c['source_cache'],'U_s',contract)
     L=iter(FixedEpochLoader(l,128,2026102631,steps=9,drop_last=True));U=FixedEpochLoader(u,256,2026102631,steps=9)
-    torch.manual_seed(SEED);torch.cuda.manual_seed_all(SEED)
+    torch.manual_seed(c['model_seed']);torch.cuda.manual_seed_all(c['model_seed'])
     rows=[]
     with installed(c,holder):
-        with f_train.class_dimension(c),native_installed(f_train.original_config(SEED)) as native:
+        with f_train.class_dimension(c),native_installed(f_train.original_config(c['model_seed'])) as native:
             args=f_train.arguments(c,'cuda:0');args.input_len=256;args.baseline_ckpt=args.teacher_ckpt='';args.from_scratch=args.a1_scratch_only=True
             model=t1_model.install(native.build_baseline_model(args,'cuda:0'),c).to('cuda:0')
         model.load_state_dict(cp['model'],strict=True);del cp;before={k:v.detach().clone() for k,v in model.state_dict().items()}
