@@ -1,6 +1,6 @@
 # RXTrust-PM：只改变 raw/H 的源梯度剂量校准
 
-状态：PLANNED，尚未发布或训练。当前P三seed保持健康运行，未读取其目标结果；本候选固定后不依P分数决定是否执行。仍为三seed2026092701/02/03，控制使用已完成PL/Sup及在本候选启动前完成的P，不重复控制训练/预测。
+状态：QUEUED_VERIFIED_NEURAL_NOT_STARTED。独立CPU控制器已发布并核实、12job等待原P完整结束，0新GPU worker；本版尚未进行实际NN smoke或训练。当前P三seed保持健康运行，未读取其目标结果；本候选固定后不依P分数决定是否执行。仍为三seed2026092701/02/03，控制使用已完成PL/Sup及在本候选启动前完成的P，不重复控制训练/预测。
 
 原P的所有损失、普通rawPL.95/weight1、完整PAMF/单SIG_TIME/原默认头、fullT1 L、H单标签/候选集合/fallback、四源RX最大KL选择、全U分母、444步ramp、物理强度和缓存保持。唯一科学变化是系数公式：对raw/H分别计算原12个训练批的auxnorm/primarynorm中位数，再取较大者r，alpha=min(1,0.1/r)。它只限制冻结E20参考数据的两组中位比例；不是每批、未来epoch或AdamW的10%硬限幅。
 
@@ -21,3 +21,7 @@
 每行固定E50后自动源V诊断、rawclean＋六practical/cross_rx126000＋cross_both42000，全部14组预测固定后独立truth-last。3模型共3528000新raw正式决策，完整三seed/逐景/TX/RX/day配对比较PL/Sup/P。source比值、局部梯度和F0探索均不替代原rawclean≥85.98174603174603%、六景>72.0961970899471%及所有声明范围严格优于PL/Sup的目标。原目标active；精确来源/命令/路径/CWD/停止规则见experiment.json。
 
 6项公式/尺度/缺批与异常数值/原PL与数据约束/三seed队列隔离/禁止权重与F前向的只读配置/非法target参考检查PASS，2模块编译PASS；本候选唯一一次独立P0/P1审查PASS。N607普通账号一次preflight核实唯一新root未存在、三份原scratchE20同契约/无祖先、fullU bank复用和磁盘容量。实际新checkpoint smoke待第一真实训练段，未将旧P PASS复制为本版检查。
+
+执行commit `53c5b84d4914fb3c7fbca8a2ab721e04fe2d6ae7` 已推送并独立核对上游OID；单archive传输校验VERIFIED、remote compile PASS。真实CPU控制器PID/CWD/argv/UID及日志126→441 bytes增长已核实，12job全QUEUED，未停止/热改当前P。PM首真实checkpoint smoke仍在第一训练段等待，不能把排队或复用旧梯度称作PM训练成功。见launch_verification.json。
+
+完整结果工具`rx_trust_pm_results collect/analyze`与源日志工具`rx_trust_pm_audit`已就绪。结果要求3行/12job全部完成，复用PL/Sup/P9参考、核查18组同seed物理顺序和3528000新raw判决；不把排队文件或缺seed当正式结果。沿用已核实的P路由/四候选/PL/fullL每步检查，PM日志按真实train__SEED.log定位。3项加权数值/错参考缺seed/未完成矩阵测试PASS，见analysis_tool_verification.json；只补本地分析，不改变已发布神经代码/规则。

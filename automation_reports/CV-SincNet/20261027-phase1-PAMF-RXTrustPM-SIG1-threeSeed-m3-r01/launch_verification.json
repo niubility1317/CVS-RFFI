@@ -1,0 +1,25 @@
+{
+  "status": "QUEUED_VERIFIED_NEURAL_NOT_STARTED",
+  "execution_commit": "53c5b84d4914fb3c7fbca8a2ab721e04fe2d6ae7",
+  "ordinary_account_controller_PID_CWD_ARGV_UID": "VERIFIED",
+  "controller_log_growth": [
+    126,
+    441
+  ],
+  "jobs": 12,
+  "all_jobs_queued": true,
+  "GPU_workers": 0,
+  "predecessor_complete_present": false,
+  "new_calibration_F_forwards": 0,
+  "new_calibration_weight_reads": 0,
+  "actual_new_checkpoint_smoke": "PENDING_FIRST_NATIVE_TRAINING_SEGMENT",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "source_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "control_retraining": 0,
+  "goal_complete": false
+}

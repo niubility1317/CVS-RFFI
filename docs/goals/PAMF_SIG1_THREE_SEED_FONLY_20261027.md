@@ -33,3 +33,5 @@ RXMean 六模型现已全部 ANALYZED：U 的 clean/六景为 84.532341%/70.3646
 新候选RXTrust-P三seed已独立固定并发布CPU等待队列（../../automation_reports/CV-SincNet/20261027-phase1-PAMF-RXTrustP-SIG1-threeSeed-m3-r01/report.md）：普通rawPL和全部L不变，H对raw接受者用raw/H argmax并集单标签或partialCE，拒绝者仍softKL；四RX风格Max选择和所有前向预算保持。源E50代理集合包含率约99.883%、RX最低99.565%，不是U/早期/target保证；11项测试、原Max5项和独立P0/P1 PASS。新GPU任务在当前Max全部完成后才启动，不读其指标决定是否运行；三seed同原E20+30至E50，PL/Sup/Max控制复用。实际P-smoke待首GPU步，目标active。
 
 Max三seed已完整ANALYZED：rawclean84.544643%、六景70.262070%，相对匹配PL −0.149206/+0.028836pp；相对随机U +0.012302/−0.102579pp，未达原目标。完整19980step/90模型epoch及3528000正式判决通过核验。预先固定的RXTrust-P三seed已真实校准/训练，alpha分别0.372451/0.383520/0.405387，首整H epoch的singleton/pair/fallback全U计数已核实；P无性能结论，原全范围目标active。
+
+P三seed E20→E30完整6660步/30模型epoch及每模型283500H三路计数已核验，原E50轨迹保持。36批同E20配对发现P改变H目标及raw/H剂量（H参考中位24.75%至26.96%，非逐批硬限幅）。独立PM三seed仅改为max_rawH_median(norm_aux/norm_primary)校准，alpha0.150513/0.145340/0.150372，复用同P源梯度，0新校准F/权重，整个P结束后才启动。代码/6tests/独立P0P1通过、CPU等待控制器已VERIFIED，真实PM smoke仍PENDING_FIRST_NATIVE_SEGMENT。原目标active，不读取P目标决定新矩阵。

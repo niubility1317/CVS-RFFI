@@ -1,0 +1,18 @@
+{
+  "status": "LOCAL_ANALYSIS_TOOLS_VERIFIED",
+  "focused_result_tests": 3,
+  "requires_all_three_final_models_and_12_jobs": true,
+  "compared_reused_references": [
+    "SIG1-PL",
+    "SIG1-Sup",
+    "RXTrust-P"
+  ],
+  "score_rows": 12,
+  "same_seed_physical_pairings": 18,
+  "candidate_raw_decisions": 3528000,
+  "source_audit": "all source steps/epochs/stdout and unchanged P H-route/tail/RX/gate counts",
+  "new_F_forwards": 0,
+  "neural_execution_commit": "53c5b84d4914fb3c7fbca8a2ab721e04fe2d6ae7",
+  "neural_recipe_changed": false,
+  "goal_complete": false
+}

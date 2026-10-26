@@ -29,3 +29,5 @@ H仍按全部U分母求平均，不按接受池大小放大。每seed12训练L/U
 当前P三seed均已实际通过校准和有梯度训练；actual PID/CWD/argv/UID/CUDA、非零连续step和H单标签/集合/fallback计数已核实，见launch_verification.json。系数依次0.37245122389054863/0.38352031095117256/0.4053865999870067；每seed6个H校准批共1536U的三路计数完整，0optimizer/参数buffer保持。正式训练已完成至少一整H epoch并继续raw，H三路每行合计56700；前缀约646至657步仅作执行证据，不冒充全E50日志或性能。当前Max目标结果不回流P。
 
 已存在36批校准的同seed/step/raw-H配对分析见paired_calibration_analysis.json；两版实际E20父路径一致，主梯度范数相对误差最大2.93e-9，选择KL差0，raw未加权辅助梯度近乎相同。P full-ramp参考比例raw1.66%至2.72%、H24.75%至26.96%；H反向余弦10/18（Max6/18），raw8/18相同。P同时改变H目标和校准后的raw/H剂量，不是严格同剂量的目标归因实验；只凭本校准不能预测或解释目标表现。原P不修改。独立PM只改变系数规则，三seed固定在本P任何target访问之前，并等待本P完整结束；它复用已有源梯度、0新校准F，无P E50权重或目标指标输入。
+
+三seed E20→E30完整段已全部核验：6660条step/30模型epoch，原普通PL/fullT1 L/四候选最大KL/实际alpha/ramp/尾批124/P的三路H门控逐条符合；每模型56700U各10次，raw/H各283500，H三路合计283500且每源RX各56700，所有原calibration和真实parent smoke保持。见first_segment_audit.json。当前继续各自E30→E50，前段完成不等于完整P性能。PM独立排队只改系数、0新校准F；不热改本P。
