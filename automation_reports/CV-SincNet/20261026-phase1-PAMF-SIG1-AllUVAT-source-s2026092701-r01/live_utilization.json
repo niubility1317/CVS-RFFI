@@ -1,0 +1,36 @@
+{
+  "status": "VERIFIED_PARTIAL_LIVE_UTILIZATION",
+  "segments": [
+    {
+      "segment": "prefix20",
+      "step_records": 4440,
+      "epoch_records": 20,
+      "complete": true,
+      "gzip_closed": true
+    },
+    {
+      "segment": "segment30",
+      "step_records": 1385,
+      "epoch_records": 6,
+      "complete": false,
+      "gzip_closed": false
+    }
+  ],
+  "latest_step": {
+    "cumulative_step": 5825,
+    "segment": "segment30",
+    "VAT_positive_loss": 0.014202293008565903,
+    "VAT_smooth_loss": 0.21891526877880096,
+    "VAT_ramp": 1.0,
+    "VAT_seen": 353768,
+    "VAT_accepted": 323220,
+    "VAT_nonzero_directions": 353768,
+    "VAT_max_relative_radius": 0.030000004917383194
+  },
+  "observed_nonzero_direction_fraction": 1.0,
+  "complete_stdout_error_markers": [],
+  "scientific_source_rule": "INCOMPLETE_NOT_YET_EVALUATED",
+  "target_access": 0,
+  "comparator_training": 0,
+  "scope": "all complete records through latest collected live record;not final convergence or goal success"
+}

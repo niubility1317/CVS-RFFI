@@ -6,11 +6,12 @@ import subprocess
 import time
 from experiments.cric_dura_comparison.publish import CONNECTION, ssh
 from .source import RUN, PREFIX_RUN
+from .vat_source import RUN as VAT_RUN
 
 
 def collect(runtime_file, output):
     rt=json.loads(Path(runtime_file).read_text(encoding='utf-8'))
-    if rt['run_id']!=RUN:raise ValueError('Only this source pilot can be collected')
+    if rt['run_id'] not in (RUN,VAT_RUN):raise ValueError('Only these registered source pilots can be collected')
     remote=r'''
 import json,time
 from pathlib import Path
