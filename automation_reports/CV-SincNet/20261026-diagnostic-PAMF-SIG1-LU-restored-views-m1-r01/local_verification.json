@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "focused_tests": 6,
+  "compile": "PASS",
+  "independent_P0P1_review": {
+    "status": "PASS",
+    "reviewer": "ssl_p0p1_review",
+    "scope": "actual next source run wrong/unauthorized/destructive/unlaunchable"
+  },
+  "actual_real_checkpoint_smoke": "LAUNCH_FIRST_STEP_PENDING",
+  "U_truth_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "optimizer_updates": 0
+}

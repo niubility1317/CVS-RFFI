@@ -1,0 +1,169 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-SIG1-LU-restored-views-m1-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "单视图PAMF：L/U多恢复视图与噪声位置冻结诊断",
+  "description": "直接回应用户最新方向：同包不同practical residual信道经同DURA，比较L真标签、U伪标签/RX关系与噪声前后位置；仅冻结诊断不训练。L全6300/U按RX选6300，14views；0V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-SIG1-LU-restored-views"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME-single-view",
+    "DURA",
+    "source-only",
+    "L-U-role-comparison",
+    "physical-positive-pairs",
+    "noise-placement"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户明确探索多信道DURA恢复IQ+高斯噪声、利用U的RX标签并保留同TX跨RX，分析L/U阶段优化差异；既有goal授权source研发，全GPU可用，不联系其他对话。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2; no installs",
+    "cwd": "PROJECT/releases/20261026-diagnostic-PAMF-SIG1-LU-restored-views-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "frozen full PAMF singleSIG_TIME joint160 normalized features; raw and normalized twelveG feature mean",
+    "contract_ref": "known completed m201/F0-A1B1-SIG_TIME-F21-s2026092701/segment20 complete.config.source_contract",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "all6300 trueTX forfrozen predictions/pairquality/featuregradientdiagnostic;nooptimizer",
+      "U_s": "fixed1260per sourceRX=6300 subset of56700;TXhidden;RX/dayvisible;no precisionclaim",
+      "V": "notread"
+    },
+    "train_ratio": "originalF0 VALIDATED_ONCE unchanged;diagnosticL6300/U6300RXbalanced;no data validation change",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "frozen source role/view mechanism diagnostic,not target accuracy or U trueprecision;L is seen training data"
+  },
+  "checkpoint": {
+    "initialization": "inferenceonly:known completed singleSIG_TIME ordinaryPL E20seed01 +same originalF0G-LU",
+    "sources": [
+      "m201/F0-A1B1-SIG_TIME-F21-s2026092701/segment20 actualsource-only scratchE20/defaulthead",
+      "same originalF0 DURA G-LU frozen"
+    ],
+    "contract_check_ref": "all3 singleSIG_TIME prefix tensor evidence verified previously;load_prefix again exactsource/epoch20/scratch/state checks before actual L2/Gsmoke",
+    "provenance_verdict": "samecontract verifiedE20 chain reused,actualL2 smoke first",
+    "selection_rule": "none;onefixedF/G/no candidate or modelupdates;no partial/currentE50 weights"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-sig1-role-views-20261026",
+    "gpu_policy": "oneworker onGPU0..7;globalCUDA+pending<2/free>=10000MiB;allownerscounted;healthycurrenttasksunchanged",
+    "remote_run_root": "PROJECT/runs/20261026-diagnostic-PAMF-SIG1-LU-restored-views-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261026-diagnostic-PAMF-SIG1-LU-restored-views-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/sig1_role_views",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_role_views dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-SIG1-LU-restored-views-release-r01/runtime.json",
+    "stop_rule": "anyhiddenTX/role/finite/sourcecontract/buffer/smoke/outputfailure endsownworker/controller;preserveartifacts,noautoretry/nootherownerchanges"
+  },
+  "expected_artifacts": [
+    "actualcompletedSIG1E20/defaulthead/sameG sourceL2smokePASS thenimmediatefullsourceprediction",
+    "L6300/U6300x14 frozenlogits/features/metadata;noU y;twochannelimplementationsx3scenes+40dBbeforeG/afterG/rawnoise",
+    "LtrueCE/pseudoCE/softconsistencyfeatureleafgradients;noheadfit/noactualparametergradients",
+    "allRXcoverage/Lpositivepairpurity/Gpairagreementandsharedwrong/geometry/noisenorm;UtruthprecisionUNKNOWN",
+    "allF/Gparametersandregisteredbuffersunchanged;0optimizer/V/target;F176402/G113402logicalpacketcounts;onearchive/compile/PID/CWD/cmd/GPU/loggrowth"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "samephysicalGviewdiversity/identity",
+      "LtruevsUpseudoRXrelationships",
+      "40dBpreGvpostG"
+    ],
+    "dimensions": [
+      "role",
+      "RX",
+      "scene",
+      "view",
+      "rawaccepted/rejected"
+    ],
+    "selection": "none;noautomatedstudentlaunch orchanges toactiveREPLgate",
+    "truth_policy": "Ltruthvisible,Utruthhidden;0V/target"
+  },
+  "rows": [
+    {
+      "row_id": "SIG1-LU-views-s2026092701",
+      "method": "frozen_SIG1_E20_LU_views",
+      "purpose": "source mechanism diagnostic",
+      "config_ref": "PROJECT/releases/20261026-diagnostic-PAMF-SIG1-LU-restored-views-release-r01/runtime.json",
+      "resolved_config_ref": "PROJECT/releases/20261026-diagnostic-PAMF-SIG1-LU-restored-views-release-r01/runtime.json",
+      "data_overrides": {
+        "roles": [
+          "L_s",
+          "U_s"
+        ],
+        "L_records": 6300,
+        "U_records": 6300,
+        "noiseSNR_dB": 40.0,
+        "source_G_frozen": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed01frozen;Usubsetseed20261026311+RX;no support/evaluation sampling;noise20261026317;channelsstablephysicalID namespacesa/b",
+      "k": null,
+      "scenario": "three sourcepractical x2realizations+noisebefore/afterG;14views inclraw/rawNoise",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0optimizer;176402F/113402Glogicalpacketsinclsmoke;14views x12600sourcephysicalrecords",
+      "output_root": "PROJECT/runs/20261026-diagnostic-PAMF-SIG1-LU-restored-views-m1-r01",
+      "log_path": "PROJECT/runs/20261026-diagnostic-PAMF-SIG1-LU-restored-views-m1-r01/logs/LUViews.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_role_views worker --kind views --config PROJECT/releases/20261026-diagnostic-PAMF-SIG1-LU-restored-views-release-r01/runtime.json",
+      "expected_artifacts": [
+        "actualcompletedSIG1E20/defaulthead/sameG sourceL2smokePASS thenimmediatefullsourceprediction",
+        "L6300/U6300x14 frozenlogits/features/metadata;noU y;twochannelimplementationsx3scenes+40dBbeforeG/afterG/rawnoise",
+        "LtrueCE/pseudoCE/softconsistencyfeatureleafgradients;noheadfit/noactualparametergradients",
+        "allRXcoverage/Lpositivepairpurity/Gpairagreementandsharedwrong/geometry/noisenorm;UtruthprecisionUNKNOWN",
+        "allF/Gparametersandregisteredbuffersunchanged;0optimizer/V/target;F176402/G113402logicalpacketcounts;onearchive/compile/PID/CWD/cmd/GPU/loggrowth"
+      ]
+    }
+  ],
+  "notes": [
+    "Do not use differentRX as sameTX proof;U truepairquality remainsunknown.",
+    "L is seen trainingL,not unseenRXvalidation.",
+    "Head featureleafgradient not parameternorm/AdamW direction;softnorm<=1e-7 cosine0 plusnorm/nonzerofraction.",
+    "14views do not create14independentphysicalrecords.",
+    "Current3REPL/6baseline students continueunchanged;diagnostic is not targetsuccess."
+  ],
+  "registered_at": "2026-10-26T11:31:41+00:00"
+}
