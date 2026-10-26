@@ -1,0 +1,28 @@
+{
+  "status": "PREREGISTERED_BEFORE_NEW_SOURCE_OUTCOMES",
+  "methods": [
+    "REPL_RB_RX",
+    "REPL_RB_RXTX"
+  ],
+  "requires_both_source_completions": true,
+  "gate": {
+    "raw_min": 26568,
+    "raw_n": 27000,
+    "H3_min": 62109,
+    "H3_n": 81000
+  },
+  "reference": {
+    "method": "REPL_H2_LU_NoPair",
+    "raw_correct": 26552,
+    "H3_correct": 62148,
+    "weights_loaded": false
+  },
+  "order": [
+    "highest raw_correct",
+    "highest H3_correct",
+    "REPL_RB_RX exact tie"
+  ],
+  "otherwise": "No passing candidate: retain failures, no new seeds/targets.",
+  "target_feedback": false,
+  "G_or_restored_input": false
+}

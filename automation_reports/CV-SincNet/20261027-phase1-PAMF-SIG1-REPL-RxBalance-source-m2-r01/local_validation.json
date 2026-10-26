@@ -1,0 +1,14 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": 38,
+  "focused_test_command": "PYTHON -X utf8 -m unittest tests.test_pamf_receiver_balance_objective tests.test_pamf_receiver_balance_source tests.test_pamf_clean_h_source tests.test_pamf_no_pair_source tests.test_pamf_labeled_h_source",
+  "compile": "PASS",
+  "independent_P0_P1_review": {
+    "reviewer": "/root/ssl_p0p1_review",
+    "verdict": "PASS",
+    "scope": "RX/RXTX weighting and CE/RDrop gradients, source provenance/training, smoke dependencies and publication chain",
+    "direct_defects": []
+  },
+  "real_checkpoint_smoke": "Launcher first step; no claim before actual PASS",
+  "target_or_performance_success": false
+}

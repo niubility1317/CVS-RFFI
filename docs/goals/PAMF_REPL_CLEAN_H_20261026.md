@@ -87,3 +87,8 @@ run `20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01` 单seed源E50完�
 ## 两项新源试验的共同选择结果
 
 两项均未通过原源门槛，不扩种子或目标，保留负结果。 目标绝对与相对门槛均保持。完整结果见 [共同源选择](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01/source_selection_result.json)。
+
+
+## 接收机与伪类别均衡的两项源试验
+
+登记`20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01`：REPL_RB_RX/RXTX两方法、各唯一seed01；只将已有高置信语义CE和RDrop按可见接收机/伪类有界重加权，原L与特征对比不变。L先验和实际U频率，不用V初始化；均保持raw95/weight6/cap1，0.5至2权重及接受总质量守恒。原同契约E20独立+10+20，复用已完成对照，源门槛26568/62109及原三seed目标保持。当前登记而未启动，见[完整方案](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/report.md)。

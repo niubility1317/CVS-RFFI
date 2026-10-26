@@ -1,0 +1,279 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "单视图 REPL：接收机与伪类别均衡语义监督",
+  "description": "保持clean/双直接星地视图与跨RX，按真实L先验和实际高置信U流统计重分配已有CE与RDrop；比较RX与RX乘伪TX两种分组，固定接受总权重，不追加特征聚拢或F前向。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "REPL-RB-RX",
+    "REPL-RB-RXTX"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "single-SIG_TIME",
+    "source-only",
+    "semantic-balance",
+    "dual-LU-H",
+    "cross-RX",
+    "clean-and-channel-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01",
+    "20261024-phase1-PAMF-REPL-completion-m201-r01"
+  ],
+  "authorization": "用户最新明确脱离DURA配合路线，仅clean IQ及直接叠加星地信道衍生IQ训练；持续goal研发REPL，原完整PAMF单SIG_TIME，复用对照，全GPU可用，不联系其他对话。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2; four F roots only; no G",
+    "cwd": "PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "clean source IQ and direct practical residual/post_sync/noEQ H only",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "6300 trueTX; all original L CE/AsKL0 and dual H; initialize balance prior from L_s metadata only",
+      "U_s": "56700 TXhidden/RXdayvisible; unchanged raw95 acceptance, dual H and ordinary shallow-middle-joint crossRX; bounded CE+RDrop weights from accepted U pseudo frequencies",
+      "V": "27000 frozen raw/threeH after finalE50; never initializes or updates training frequency"
+    },
+    "train_ratio": "unchanged originalF0 L6300/U56700/V27000;13L37LU cumulativeE50;no extra true labels",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "code/leo_practical; fs25MHz/fc2462MHz/refSNR30; source low suburban/mid urban/low urban; original nativeAs for nondualL"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "two methods, one F seed source-only falsification; no three-seed or target-gain evidence"
+  },
+  "checkpoint": {
+    "initialization": "own original m201 seed01 singleSIG_TIME ordinaryPL scratchE20 +10+20; cumulativeE50/11100/13L37LU",
+    "sources": [
+      "own original m201 seed01 singleSIG_TIME ordinaryPL scratchE20 weights only",
+      "completed NoPair config and four-view score metadata only; no NoPair/L-anchor E50 weights"
+    ],
+    "contract_check_ref": "reuse original F0/VALIDATED_ONCE handles; ownE20 actualpayload/emptyancestors/defaulthead load; real joint source smoke first",
+    "provenance_verdict": "same original source-only E20 chain; no restored-trained or target-selected initialization",
+    "selection_rule": "finalE50 only; fixed raw>=26568/27000,H3>=62109/81000; same-contract NoPair reference26552/62148 reused; raw then H3 then RX-only exact tie; no pass no seed/target expansion"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-receiver-balance-source-20261027",
+    "gpu_policy": "GPU0..7; global CUDA+pending<2/free>=10000MiB; two new source students, count every owner and preserve healthy jobs",
+    "remote_run_root": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01",
+    "remote_log_root": "PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/receiver_balance_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_balance_source dispatch --config PROJECT/releases/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-release-r01/runtime.json",
+    "stop_rule": "first input/ancestry/role/head/hook/finite/budget/sourcefreeze/system technical failure stops new dispatch; no auto-retry or foreign mutation; healthy jobs and all artifacts preserved; scientific FAIL retained"
+  },
+  "expected_artifacts": [
+    "actual ownE20 jointL/U backward smoke of both modes; weighted semantic logit gradients checked against independent scalar, dual L/U H distinct; optimizer/target/Utruth updates0",
+    "two independent E20+10+20 students cumulativeE50/11100 each; L768/U6; all original L and feature contrasts retained; extraF/head/modelEMA/G0",
+    "13320 complete new training records; prior L group counts, accepted U group counts and frequency states, min/max/mass, original guard counters",
+    "two sets27000x4 frozen source decisions, strata, original NoPair108000 decisions reused; source gate/ranking; no new control train/predictions",
+    "only later independently registered selected-method three-seed formal confirmation may access targets"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "source rawcorrect/27000>=26568",
+      "sourceH3correct/81000>=62109"
+    ],
+    "dimensions": [
+      "raw/three direct practicalH",
+      "RX/day/TX",
+      "accepted U group coverage/weight mass/precision proxy",
+      "per-step exposure and gradient guard",
+      "wall time and extra CE/KL kernels"
+    ],
+    "selection": "Both variants finish; gate passes rank by rawcorrect then H3correct, exact tie REPL_RB_RX for fewer statistics. No intermediate checkpoint, target feedback or selective rerun.",
+    "truth_policy": "true L TX; U TX hidden and source RX visible; frozen V only; no G or target"
+  },
+  "rows": [
+    {
+      "row_id": "F0-REPL_RB_RX-s2026092701",
+      "method": "REPL_RB_RX",
+      "purpose": "bounded accepted semantic supervision balanced by RX",
+      "config_ref": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/configs/REPL_RB_RX.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/F/F0-REPL_RB_RX-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "receiver_balance": {
+          "frequency_decay": 0.99,
+          "frequency_floor": 1e-06,
+          "minimum": 0.5,
+          "maximum": 2.0,
+          "prior": "all true L_s label/RX counts",
+          "frequency": "accepted raw95 U pseudo labels and visible RX only",
+          "scope": "CE and RDrop on six existing U logits; original feature contrasts unchanged",
+          "normalize": "accepted mean one",
+          "CE_normalizer": 1.25,
+          "segment_statistics": "reset to L_s prior each segment",
+          "extra_F": 0,
+          "extra_CE_kernels": 6,
+          "extra_KL_kernels": 3,
+          "new_head": false,
+          "mode": "RX"
+        },
+        "clean_H": {
+          "dual_L": true,
+          "pair": false,
+          "pair_weight": 0.0,
+          "extra_F": 0
+        },
+        "signature_views": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Same original roles and deterministic H namespace; model seed only, Phase1 support not applicable.",
+      "initialization": "own same-contract ordinaryPL SIG1 scratchE20 only; no sibling E50 initialization",
+      "budget": {
+        "cumulative_epochs": 50,
+        "cumulative_updates": 11100,
+        "new_epochs": 30,
+        "new_updates": 6660,
+        "L_forward_packets_each_step": 768,
+        "U_student_forwards_each_step": 6,
+        "extra_F": 0,
+        "extra_CE_kernels_per_step": 6,
+        "extra_KL_kernels_per_step": 3
+      },
+      "output_root": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/F/F0-REPL_RB_RX-s2026092701/source",
+      "log_path": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/logs/REPL_RB_RX.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_balance_source worker --kind train_eval --config PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/configs/REPL_RB_RX.json",
+      "expected_artifacts": [
+        "actual ownE20 jointL/U backward smoke of both modes; weighted semantic logit gradients checked against independent scalar, dual L/U H distinct; optimizer/target/Utruth updates0",
+        "two independent E20+10+20 students cumulativeE50/11100 each; L768/U6; all original L and feature contrasts retained; extraF/head/modelEMA/G0",
+        "13320 complete new training records; prior L group counts, accepted U group counts and frequency states, min/max/mass, original guard counters",
+        "two sets27000x4 frozen source decisions, strata, original NoPair108000 decisions reused; source gate/ranking; no new control train/predictions"
+      ]
+    },
+    {
+      "row_id": "F0-REPL_RB_RXTX-s2026092701",
+      "method": "REPL_RB_RXTX",
+      "purpose": "bounded accepted semantic supervision balanced by RX_TX",
+      "config_ref": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/configs/REPL_RB_RXTX.json",
+      "resolved_config_ref": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/F/F0-REPL_RB_RXTX-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "receiver_balance": {
+          "frequency_decay": 0.99,
+          "frequency_floor": 1e-06,
+          "minimum": 0.5,
+          "maximum": 2.0,
+          "prior": "all true L_s label/RX counts",
+          "frequency": "accepted raw95 U pseudo labels and visible RX only",
+          "scope": "CE and RDrop on six existing U logits; original feature contrasts unchanged",
+          "normalize": "accepted mean one",
+          "CE_normalizer": 1.25,
+          "segment_statistics": "reset to L_s prior each segment",
+          "extra_F": 0,
+          "extra_CE_kernels": 6,
+          "extra_KL_kernels": 3,
+          "new_head": false,
+          "mode": "RX_TX"
+        },
+        "clean_H": {
+          "dual_L": true,
+          "pair": false,
+          "pair_weight": 0.0,
+          "extra_F": 0
+        },
+        "signature_views": 1
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Same original roles and deterministic H namespace; model seed only, Phase1 support not applicable.",
+      "initialization": "own same-contract ordinaryPL SIG1 scratchE20 only; no sibling E50 initialization",
+      "budget": {
+        "cumulative_epochs": 50,
+        "cumulative_updates": 11100,
+        "new_epochs": 30,
+        "new_updates": 6660,
+        "L_forward_packets_each_step": 768,
+        "U_student_forwards_each_step": 6,
+        "extra_F": 0,
+        "extra_CE_kernels_per_step": 6,
+        "extra_KL_kernels_per_step": 3
+      },
+      "output_root": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/F/F0-REPL_RB_RXTX-s2026092701/source",
+      "log_path": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/logs/REPL_RB_RXTX.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.receiver_balance_source worker --kind train_eval --config PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-RxBalance-source-m2-r01/configs/REPL_RB_RXTX.json",
+      "expected_artifacts": [
+        "actual ownE20 jointL/U backward smoke of both modes; weighted semantic logit gradients checked against independent scalar, dual L/U H distinct; optimizer/target/Utruth updates0",
+        "two independent E20+10+20 students cumulativeE50/11100 each; L768/U6; all original L and feature contrasts retained; extraF/head/modelEMA/G0",
+        "13320 complete new training records; prior L group counts, accepted U group counts and frequency states, min/max/mass, original guard counters",
+        "two sets27000x4 frozen source decisions, strata, original NoPair108000 decisions reused; source gate/ranking; no new control train/predictions"
+      ]
+    }
+  ],
+  "notes": [
+    "Coverage diagnostic used saved source V only for motivation; no V counts copied into training state. Every RX/class uses the same symmetric rule; no weak-ID special case.",
+    "L_s prior6300 only. Actual accepted U group histogramEMA0.99 reset to L prior at each segment; modelEMA remains0. Weights clip(lambda*prior/frequency,.5,2), acceptedmean1. Raw gate .95, Uweight6, U/Lgradientcap1 unchanged.",
+    "Co-weight exact CE and RDrop scalar on six existing logits; original L and feature contrast objectives unchanged. Extra scalar CE6/KL3 kernels, no extra F/head/inference weights. Statistics and scalar correction cost must be reported.",
+    "Both previous L-anchor and NoPair source pilots failed; no previous candidate expansion. New method starts originalE20, not their weights. Reusing NoPair reference does not promote its failed result.",
+    "38 focused local checks PASS; one bounded independent P0/P1 review pending. Actual checkpoint smoke is launcher first step and immediately continues on PASS.",
+    "Existing target benchmark has been exposed; no new independent blind-test claim. No target scores/classes/RX used for balance formula, gates, checkpoint or candidate order.",
+    "Per-model epochs match controls, compute differs: U6 vs ordinaryPL U1 and direct H generation; no cost-equivalence claim."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "REPL_RB_RX",
+      "REPL_RB_RXTX"
+    ],
+    "new_model_epochs": 60,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 80,
+    "new_optimizer_updates": 13320,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 4,
+    "new_source_decisions": 216000,
+    "reused_reference_decisions": 108000,
+    "restoration_weight_reads": 0,
+    "restoration_IQ_used": 0,
+    "restoration_score_in_selection": false,
+    "new_control_training": 0,
+    "target_reads": 0
+  },
+  "registered_at": "2026-10-26T21:52:28+00:00"
+}

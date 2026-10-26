@@ -157,7 +157,9 @@ def smoke(rt,configs,validate=validate_config,objective_type=CleanHObjective):
             rows.append(dict(method=c['paper_method'],status='PASS',U_seen=256,U_accepted=state['accepted'],U_student_views=1536,L_packets=768,
                 H2=h,actual_H_pair_relative_differences=obj.last_diversity,actual_U_gradient_norms=obj.smoke_U_gradient_norms,
                 actual_rejected_H_pair_gradient_norms=getattr(obj,'smoke_pair_gradient_norms',None),
-                actual_auxiliary_state=state.get('L_anchor_H'),actual_auxiliary_gradient_norms=getattr(obj,'smoke_anchor_gradient_norms',None),optimizer_updates=0,U_truth_reads=0,target_reads=0))
+                actual_auxiliary_state=state.get('L_anchor_H'),actual_auxiliary_gradient_norms=getattr(obj,'smoke_anchor_gradient_norms',None),
+                actual_receiver_balance=state.get('receiver_balance'),actual_receiver_balance_gradient_check=getattr(obj,'smoke_receiver_balance_gradient_check',None),
+                optimizer_updates=0,U_truth_reads=0,target_reads=0))
     write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',rows=rows,actual_completed_SIG1_E20=True,optimizer_updates=0,target_reads=0))
 
 
