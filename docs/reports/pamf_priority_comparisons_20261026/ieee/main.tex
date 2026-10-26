@@ -41,7 +41,7 @@
 \author{实验结果报告\quad 2026年10月26日}
 \maketitle
 \begin{abstract}
-本报告按五类重点问题整理PAMF与四种完整对比方法的冻结结果。监督与普通PL主比较采用双柱，无增强仅报告CLEAN，有增强分列CLEAN和综合星地；其余主图固定增强半监督。所有适用图纳入单PAMF与PAMF+DURA，恢复网络泛用性也纳入PAMF。源数量以1至6折线表示，5源复用同种子主实验模型并汇总共同6个目标接收机。当前普通PL的无增强PAMF缺项明确标注；原补充图表保留在Excel。本次没有新增训练、预测或目标真值访问。
+本报告按五类重点问题整理PAMF与四种完整对比方法的冻结结果。每个重点实验保留原跨接收机图，并新增跨日且跨接收机独立图和结果表。后者仅使用目标接收机在2021年3月1日的记录，与训练/验证日期分离，也不与原测试人群混合。监督与普通PL采用双柱，无增强仅报告CLEAN，其余重点图固定增强半监督。所有适用图纳入PAMF及PAMF+DURA。1至6源数量完整，5源复用同种子主模型并汇总共同6个目标。普通PL的无增强PAMF缺项保留，原图表及补充资料不删除。本次无新增训练、预测或目标逐样本真值访问。
 \end{abstract}
 \begin{IEEEkeywords}
 射频指纹识别，跨接收机泛化，普通伪标签，信道增强，信号恢复，分组评估。
@@ -72,7 +72,7 @@ DURA 泛用性 & 普通 PL 半监督＋星地增强 & 五种识别器各自未�
 
 普通 PL 采用当前模型 eval/no\_grad 硬标签，阈值 0.95、权重 1、整批无标签损失平均，无 EMA 教师或复杂筛选。PAMF 监督为 50 轮有标签训练，普通 PL 为 13 轮有标签＋37 轮联合训练，均为 11100 次更新。保留 PAMF 自身有标签目标与信道视图，不把监督版称为纯交叉熵。外部方法的三场景概率为 40\%/35\%/25\%，PAMF 主配方为三场景均匀；原生目标和增强剂量差异均保留。
 
-综合星地指先在每个模型种子内平均六种 practical 的准确率，再计算三个模型种子的均值和样本标准差；CLEAN 不参加该平均。柱图和折线误差线均为模型种子样本标准差，不是置信区间或显著性结论。主图测试为目标接收机的已见日期跨接收机泛化；双跨、源接收机跨日诊断、Macro-F1、十类规模与时延等保留在 Excel 补充页。
+综合星地指先在每个模型种子内平均六种 practical 的准确率，再计算三个模型种子的均值和样本标准差；CLEAN 不参加该平均。柱图和折线误差线均为模型种子样本标准差，不是置信区间或显著性结论。每个重点实验均保留目标接收机在已见日期的跨接收机原图，并新增目标接收机未见日期的跨日且跨接收机独立图、表。两组的日期、样本与统计分别报告。源接收机跨日诊断、Macro-F1、十类规模与时延等仍保留在 Excel 补充页。
 
 数据来自 WiSig 地面代理。训练/源验证日期为 2021 年 3 月 8、15、23 日，3 月 1 日为更早的未见日期。仿真星地环境不是实测在轨链路。训练、选模和调度均不使用本次目标成绩反馈。
 
@@ -128,11 +128,38 @@ PAMF & 85.41\ensuremath{\pm}0.74 & 缺项 \\
 \caption{无附加星地增强的监督／普通 PL 双柱比较，仅报告目标 CLEAN。PAMF 监督柱为既有无增强参照，普通 PL 缺项以文字标出，未填零值。}
 \label{fig:grouped-1}
 \end{figure*}
-表~\ref{tab:grouped-4}~启用星地增强的标准主划分准确率（\%）；两类测试各自配对。
+新增独立双跨测试：仅取目标接收机 2021 年 3 月 1 日的记录，与原图分开统计；训练、模型和增强配方保持。
+
+表~\ref{tab:grouped-4}~跨日且跨接收机：无星地增强：监督与普通 PL 的 CLEAN 对比，准确率均值\ensuremath{\pm}样本标准差（\%）。
+
+\begin{table}[!htbp]
+\caption{跨日且跨接收机：无星地增强：监督与普通 PL 的 CLEAN 对比，准确率均值\ensuremath{\pm}样本标准差（\%）}
+\label{tab:grouped-4}
+\centering
+\footnotesize
+\begin{tabularx}{\columnwidth}{YYY}
+\toprule
+\textbf{方法} & \textbf{监督 CLEAN} & \textbf{普通 PL CLEAN} \\
+\midrule
+RIEI & 64.89\ensuremath{\pm}1.09 & 65.16\ensuremath{\pm}1.21 \\
+DRIFT & 66.16\ensuremath{\pm}3.34 & 66.70\ensuremath{\pm}1.12 \\
+IB-RFF & 66.61\ensuremath{\pm}2.24 & 65.78\ensuremath{\pm}1.43 \\
+SDG & 72.10\ensuremath{\pm}1.00 & 73.19\ensuremath{\pm}0.73 \\
+PAMF & 82.21\ensuremath{\pm}1.02 & 缺项 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/main_no_channel_cross_both.pdf}
+\caption{跨日且跨接收机：无星地增强：监督与普通 PL 的 CLEAN 对比。未见目标接收机，D0（2021 年 3 月 1 日）；每景 42000 包。误差线为三模型种子样本标准差。仅 CLEAN；PAMF 普通 PL 缺项。}
+\label{fig:grouped-2}
+\end{figure*}
+表~\ref{tab:grouped-5}~启用星地增强的标准主划分准确率（\%）；两类测试各自配对。
 
 \begin{table*}[!tbp]
 \caption{启用星地增强的标准主划分准确率（\%）；两类测试各自配对}
-\label{tab:grouped-4}
+\label{tab:grouped-5}
 \centering
 \small
 \begin{tabularx}{\textwidth}{YYYYY}
@@ -152,9 +179,37 @@ PAMF+DURA & 85.93\ensuremath{\pm}0.85 & 86.08\ensuremath{\pm}0.34 & 77.36\ensure
 \centering
 \includegraphics[width=\textwidth]{../figures/main_channel_on.pdf}
 \caption{启用星地增强后，监督和普通 PL 半监督按方法配对；(a) CLEAN，(b) 六种 practical 的平均准确率。两幅均列单 PAMF 与 PAMF+DURA。监督恢复器只用有标签源 IQ，半监督恢复器可用全部允许源训练 IQ。}
-\label{fig:grouped-2}
+\label{fig:grouped-3}
 \end{figure*}
-在固定的增强半监督主比较中，PAMF 的综合星地准确率为 71.05\ensuremath{\pm}0.91\%，高于四种直接识别外部方法中的最高均值 65.30\%；接入 DURA 后为 78.52\ensuremath{\pm}0.12\%。普通 PL 相对 PAMF 监督的直接识别均值变化为 -0.24 个百分点，故该结果不支持把 PAMF 的全部优势归因于普通 PL。两种学习组的恢复器源 IQ 权限也不同，不能将完整系统的跨组差全部归因于识别器伪标签。
+新增独立双跨测试：仅取目标接收机 2021 年 3 月 1 日的记录，与原图分开统计；训练、模型和增强配方保持。
+
+表~\ref{tab:grouped-6}~跨日且跨接收机：有星地增强：监督与普通 PL 对比，准确率均值\ensuremath{\pm}样本标准差（\%）。
+
+\begin{table*}[!tbp]
+\caption{跨日且跨接收机：有星地增强：监督与普通 PL 对比，准确率均值\ensuremath{\pm}样本标准差（\%）}
+\label{tab:grouped-6}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYYY}
+\toprule
+\textbf{方法} & \textbf{监督 CLEAN} & \textbf{PL CLEAN} & \textbf{监督综合星地} & \textbf{PL 综合星地} \\
+\midrule
+RIEI & 61.25\ensuremath{\pm}1.51 & 60.88\ensuremath{\pm}1.75 & 51.21\ensuremath{\pm}1.46 & 51.11\ensuremath{\pm}1.45 \\
+DRIFT & 60.70\ensuremath{\pm}8.85 & 64.98\ensuremath{\pm}3.04 & 56.46\ensuremath{\pm}5.25 & 57.00\ensuremath{\pm}2.11 \\
+IB-RFF & 66.13\ensuremath{\pm}3.36 & 67.02\ensuremath{\pm}0.50 & 55.11\ensuremath{\pm}3.37 & 56.35\ensuremath{\pm}1.33 \\
+SDG & 70.95\ensuremath{\pm}2.19 & 72.86\ensuremath{\pm}0.54 & 62.37\ensuremath{\pm}1.22 & 63.59\ensuremath{\pm}1.63 \\
+PAMF & 81.33\ensuremath{\pm}1.27 & 81.81\ensuremath{\pm}0.78 & 68.53\ensuremath{\pm}1.13 & 68.29\ensuremath{\pm}1.12 \\
+PAMF+DURA & 81.29\ensuremath{\pm}1.28 & 81.89\ensuremath{\pm}0.79 & 75.34\ensuremath{\pm}0.71 & 76.75\ensuremath{\pm}0.47 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/main_channel_on_cross_both.pdf}
+\caption{跨日且跨接收机：有星地增强：监督与普通 PL 对比。未见目标接收机，D0（2021 年 3 月 1 日）；每景 42000 包。误差线为三模型种子样本标准差。}
+\label{fig:grouped-4}
+\end{figure*}
+在原目标接收机已见日期的增强半监督主比较中，PAMF 的综合星地准确率为 71.05\ensuremath{\pm}0.91\%，高于四种直接识别外部方法中的最高均值 65.30\%；接入 DURA 后为 78.52\ensuremath{\pm}0.12\%。普通 PL 相对 PAMF 监督的直接识别均值变化为 -0.24 个百分点，故该结果不支持把 PAMF 的全部优势归因于普通 PL。两种学习组的恢复器源 IQ 权限也不同，不能将完整系统的跨组差全部归因于识别器伪标签。
 
 \section{接收机划分、标注比例与源数量}
 本节全部使用普通 PL 半监督＋训练星地增强。每个数据设置均列六个主比较项，以 CLEAN／综合星地双柱展示；PAMF 不再只出现在标准划分图。三个接收机划分都为 5 源/7 目标，三套源集合两两仅交一个接收机；每个模型和恢复器均匹配该划分。标注比例为源训练池的 1\%/5\%/10\%，对应 630/3150/6300 个有标签包。
@@ -163,26 +218,116 @@ PAMF+DURA & 85.93\ensuremath{\pm}0.85 & 86.08\ensuremath{\pm}0.34 & 77.36\ensure
 \centering
 \includegraphics[width=\textwidth]{../figures/receiver_splits.pdf}
 \caption{三套接收机划分的增强半监督结果：每种方法的左、右柱分别为 CLEAN 与综合星地。PAMF 和 PAMF+DURA 在全部面板保留。}
-\label{fig:grouped-3}
+\label{fig:grouped-5}
+\end{figure*}
+新增独立双跨测试：仅取目标接收机 2021 年 3 月 1 日的记录，与原图分开统计；训练、模型和增强配方保持。
+
+表~\ref{tab:grouped-7}~跨日且跨接收机：接收机划分：半监督＋增强，准确率均值\ensuremath{\pm}样本标准差（\%）。
+
+\begin{table*}[!tbp]
+\caption{跨日且跨接收机：接收机划分：半监督＋增强，准确率均值\ensuremath{\pm}样本标准差（\%）}
+\label{tab:grouped-7}
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\hsize=1.4\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y}
+\toprule
+\textbf{测试设置} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{PAMF+DURA} \\
+\midrule
+标准接收机划分 / CLEAN & 60.88\ensuremath{\pm}1.75 & 64.98\ensuremath{\pm}3.04 & 67.02\ensuremath{\pm}0.50 & 72.86\ensuremath{\pm}0.54 & 81.81\ensuremath{\pm}0.78 & 81.89\ensuremath{\pm}0.79 \\
+标准接收机划分 / 综合星地 & 51.11\ensuremath{\pm}1.45 & 57.00\ensuremath{\pm}2.11 & 56.35\ensuremath{\pm}1.33 & 63.59\ensuremath{\pm}1.63 & 68.29\ensuremath{\pm}1.12 & 76.75\ensuremath{\pm}0.47 \\
+接收机划分一 / CLEAN & 58.77\ensuremath{\pm}1.35 & 59.23\ensuremath{\pm}4.15 & 61.36\ensuremath{\pm}1.43 & 62.16\ensuremath{\pm}0.25 & 70.78\ensuremath{\pm}0.71 & 70.68\ensuremath{\pm}0.73 \\
+接收机划分一 / 综合星地 & 50.16\ensuremath{\pm}1.01 & 51.57\ensuremath{\pm}2.25 & 50.33\ensuremath{\pm}2.45 & 54.80\ensuremath{\pm}2.28 & 61.02\ensuremath{\pm}0.77 & 66.18\ensuremath{\pm}0.06 \\
+接收机划分二 / CLEAN & 64.07\ensuremath{\pm}2.42 & 61.30\ensuremath{\pm}4.73 & 68.34\ensuremath{\pm}1.74 & 68.54\ensuremath{\pm}2.67 & 80.44\ensuremath{\pm}1.14 & 80.45\ensuremath{\pm}1.09 \\
+接收机划分二 / 综合星地 & 51.25\ensuremath{\pm}0.28 & 54.05\ensuremath{\pm}0.47 & 55.48\ensuremath{\pm}5.15 & 60.77\ensuremath{\pm}0.83 & 69.21\ensuremath{\pm}2.11 & 74.59\ensuremath{\pm}0.53 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/receiver_splits_cross_both.pdf}
+\caption{跨日且跨接收机：接收机划分：半监督＋增强。未见目标接收机，D0（2021 年 3 月 1 日）；每景 42000 包。误差线为三模型种子样本标准差。}
+\label{fig:grouped-6}
 \end{figure*}
 \begin{figure*}[!tbp]
 \centering
 \includegraphics[width=\textwidth]{../figures/label_fraction.pdf}
 \caption{1\%、5\%、10\% 标注比例的增强半监督结果，以 CLEAN／综合星地双柱比较六个主方法项。源验证量固定；保留非单调变化。}
-\label{fig:grouped-4}
+\label{fig:grouped-7}
+\end{figure*}
+新增独立双跨测试：仅取目标接收机 2021 年 3 月 1 日的记录，与原图分开统计；训练、模型和增强配方保持。
+
+表~\ref{tab:grouped-8}~跨日且跨接收机：标注比例：半监督＋增强，准确率均值\ensuremath{\pm}样本标准差（\%）。
+
+\begin{table*}[!tbp]
+\caption{跨日且跨接收机：标注比例：半监督＋增强，准确率均值\ensuremath{\pm}样本标准差（\%）}
+\label{tab:grouped-8}
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\hsize=1.4\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y}
+\toprule
+\textbf{测试设置} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{PAMF+DURA} \\
+\midrule
+1\%标注 / CLEAN & 34.35\ensuremath{\pm}18.94 & 22.06\ensuremath{\pm}2.37 & 62.63\ensuremath{\pm}6.71 & 73.19\ensuremath{\pm}1.06 & 79.39\ensuremath{\pm}0.66 & 79.32\ensuremath{\pm}0.59 \\
+1\%标注 / 综合星地 & 26.08\ensuremath{\pm}9.01 & 17.72\ensuremath{\pm}0.96 & 48.88\ensuremath{\pm}2.93 & 62.92\ensuremath{\pm}1.77 & 68.24\ensuremath{\pm}0.52 & 72.78\ensuremath{\pm}0.42 \\
+5\%标注 / CLEAN & 45.02\ensuremath{\pm}4.65 & 44.84\ensuremath{\pm}7.68 & 63.64\ensuremath{\pm}0.79 & 72.20\ensuremath{\pm}2.49 & 82.03\ensuremath{\pm}0.83 & 81.96\ensuremath{\pm}0.77 \\
+5\%标注 / 综合星地 & 43.41\ensuremath{\pm}4.69 & 35.57\ensuremath{\pm}1.38 & 54.39\ensuremath{\pm}0.45 & 62.35\ensuremath{\pm}1.58 & 68.01\ensuremath{\pm}0.36 & 75.33\ensuremath{\pm}0.52 \\
+标准接收机划分 / CLEAN & 60.88\ensuremath{\pm}1.75 & 64.98\ensuremath{\pm}3.04 & 67.02\ensuremath{\pm}0.50 & 72.86\ensuremath{\pm}0.54 & 81.81\ensuremath{\pm}0.78 & 81.89\ensuremath{\pm}0.79 \\
+标准接收机划分 / 综合星地 & 51.11\ensuremath{\pm}1.45 & 57.00\ensuremath{\pm}2.11 & 56.35\ensuremath{\pm}1.33 & 63.59\ensuremath{\pm}1.63 & 68.29\ensuremath{\pm}1.12 & 76.75\ensuremath{\pm}0.47 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/label_fraction_cross_both.pdf}
+\caption{跨日且跨接收机：标注比例：半监督＋增强。未见目标接收机，D0（2021 年 3 月 1 日）；每景 42000 包。误差线为三模型种子样本标准差。}
+\label{fig:grouped-8}
 \end{figure*}
 \begin{figure*}[!tbp]
 \centering
 \includegraphics[width=\textwidth]{../figures/source_count_paired.pdf}
 \caption{1 至 6 个源接收机的增强半监督双柱图，每种方法均给 CLEAN 和综合星地。全部面板使用共同 6 个目标接收机；5 源沿用同种子主实验模型，并由冻结逐接收机计数汇总。}
-\label{fig:grouped-5}
+\label{fig:grouped-9}
+\end{figure*}
+新增独立双跨测试：仅取目标接收机 2021 年 3 月 1 日的记录，与原图分开统计；训练、模型和增强配方保持。
+
+表~\ref{tab:grouped-9}~跨日且跨接收机：源接收机数量：CLEAN与综合星地，准确率均值\ensuremath{\pm}样本标准差（\%）。
+
+\begin{table*}[!tbp]
+\caption{跨日且跨接收机：源接收机数量：CLEAN与综合星地，准确率均值\ensuremath{\pm}样本标准差（\%）}
+\label{tab:grouped-9}
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\hsize=1.4\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y}
+\toprule
+\textbf{测试设置} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{PAMF+DURA} \\
+\midrule
+1个源接收机 / CLEAN & 61.79\ensuremath{\pm}4.10 & 37.42\ensuremath{\pm}4.11 & 47.43\ensuremath{\pm}2.51 & 44.13\ensuremath{\pm}2.69 & 44.94\ensuremath{\pm}1.32 & 45.12\ensuremath{\pm}1.33 \\
+1个源接收机 / 综合星地 & 45.67\ensuremath{\pm}2.25 & 22.44\ensuremath{\pm}2.49 & 40.00\ensuremath{\pm}3.13 & 39.29\ensuremath{\pm}0.79 & 46.58\ensuremath{\pm}2.26 & 50.29\ensuremath{\pm}0.56 \\
+2个源接收机 / CLEAN & 45.37\ensuremath{\pm}8.26 & 47.81\ensuremath{\pm}8.19 & 54.29\ensuremath{\pm}3.70 & 59.27\ensuremath{\pm}2.54 & 67.87\ensuremath{\pm}2.08 & 67.97\ensuremath{\pm}2.03 \\
+2个源接收机 / 综合星地 & 36.65\ensuremath{\pm}2.65 & 36.38\ensuremath{\pm}4.93 & 43.33\ensuremath{\pm}3.45 & 48.85\ensuremath{\pm}5.87 & 57.47\ensuremath{\pm}0.53 & 60.42\ensuremath{\pm}0.59 \\
+3个源接收机 / CLEAN & 59.03\ensuremath{\pm}4.08 & 55.93\ensuremath{\pm}3.94 & 63.73\ensuremath{\pm}0.68 & 68.32\ensuremath{\pm}4.88 & 79.50\ensuremath{\pm}2.30 & 79.60\ensuremath{\pm}2.30 \\
+3个源接收机 / 综合星地 & 48.82\ensuremath{\pm}2.92 & 44.23\ensuremath{\pm}10.11 & 55.13\ensuremath{\pm}4.90 & 58.49\ensuremath{\pm}4.36 & 67.83\ensuremath{\pm}0.57 & 69.92\ensuremath{\pm}1.34 \\
+4个源接收机 / CLEAN & 59.20\ensuremath{\pm}2.69 & 61.40\ensuremath{\pm}7.58 & 64.06\ensuremath{\pm}2.43 & 70.38\ensuremath{\pm}2.03 & 79.43\ensuremath{\pm}1.82 & 79.38\ensuremath{\pm}1.84 \\
+4个源接收机 / 综合星地 & 51.10\ensuremath{\pm}1.30 & 51.84\ensuremath{\pm}2.03 & 55.00\ensuremath{\pm}2.49 & 60.10\ensuremath{\pm}1.07 & 67.63\ensuremath{\pm}0.51 & 71.08\ensuremath{\pm}0.62 \\
+5个源接收机 / CLEAN & 59.73\ensuremath{\pm}1.73 & 63.05\ensuremath{\pm}2.82 & 67.35\ensuremath{\pm}0.45 & 72.66\ensuremath{\pm}0.98 & 81.84\ensuremath{\pm}0.45 & 81.91\ensuremath{\pm}0.46 \\
+5个源接收机 / 综合星地 & 50.86\ensuremath{\pm}1.33 & 56.05\ensuremath{\pm}2.25 & 55.35\ensuremath{\pm}1.91 & 62.45\ensuremath{\pm}1.96 & 67.65\ensuremath{\pm}0.87 & 75.98\ensuremath{\pm}0.53 \\
+6个源接收机 / CLEAN & 65.87\ensuremath{\pm}2.19 & 62.21\ensuremath{\pm}8.58 & 66.54\ensuremath{\pm}1.87 & 72.23\ensuremath{\pm}1.82 & 82.61\ensuremath{\pm}0.86 & 82.57\ensuremath{\pm}0.82 \\
+6个源接收机 / 综合星地 & 56.29\ensuremath{\pm}1.39 & 51.98\ensuremath{\pm}0.85 & 59.46\ensuremath{\pm}1.23 & 63.54\ensuremath{\pm}1.99 & 70.30\ensuremath{\pm}0.66 & 72.60\ensuremath{\pm}0.79 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/source_count_paired_cross_both.pdf}
+\caption{跨日且跨接收机：源接收机数量：CLEAN与综合星地。未见目标接收机，D0（2021 年 3 月 1 日）；共同 6 目标，每景 36000 包；5 源复用同种子主模型。误差线为三模型种子样本标准差。}
+\label{fig:grouped-10}
 \end{figure*}
 \section{主实验的 CLEAN 与六种星地环境}
-表~\ref{tab:grouped-5}~增强半监督主实验逐景准确率（\%）。
+表~\ref{tab:grouped-10}~增强半监督主实验逐景准确率（\%）。
 
 \begin{table*}[!tbp]
 \caption{增强半监督主实验逐景准确率（\%）}
-\label{tab:grouped-5}
+\label{tab:grouped-10}
 \centering
 \small
 \begin{tabularx}{\textwidth}{YYYYYYY}
@@ -203,16 +348,45 @@ CLEAN & 61.63\ensuremath{\pm}1.89 & 66.12\ensuremath{\pm}3.20 & 66.63\ensuremath
 \centering
 \includegraphics[width=\textwidth]{../figures/seven_scenes.pdf}
 \caption{标准主划分、普通 PL 半监督＋增强的七场景结果。四种外部方法与单 PAMF 直接识别，PAMF+DURA 为恢复后识别；逐景单列 CLEAN 及六种 practical，不能以综合均值掩盖单景下降。}
-\label{fig:grouped-6}
+\label{fig:grouped-11}
+\end{figure*}
+新增独立双跨测试：仅取目标接收机 2021 年 3 月 1 日的记录，与原图分开统计；训练、模型和增强配方保持。
+
+表~\ref{tab:grouped-11}~跨日且跨接收机：主对比实验：CLEAN与六种星地环境，准确率均值\ensuremath{\pm}样本标准差（\%）。
+
+\begin{table*}[!tbp]
+\caption{跨日且跨接收机：主对比实验：CLEAN与六种星地环境，准确率均值\ensuremath{\pm}样本标准差（\%）}
+\label{tab:grouped-11}
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\hsize=1.4\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y>{\hsize=.933333\hsize}Y}
+\toprule
+\textbf{测试场景} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{PAMF+DURA} \\
+\midrule
+CLEAN & 60.88\ensuremath{\pm}1.75 & 64.98\ensuremath{\pm}3.04 & 67.02\ensuremath{\pm}0.50 & 72.86\ensuremath{\pm}0.54 & 81.81\ensuremath{\pm}0.78 & 81.89\ensuremath{\pm}0.79 \\
+高郊区 & 59.97\ensuremath{\pm}1.84 & 66.47\ensuremath{\pm}2.31 & 63.22\ensuremath{\pm}1.73 & 70.15\ensuremath{\pm}2.04 & 77.36\ensuremath{\pm}1.44 & 80.92\ensuremath{\pm}0.44 \\
+中郊区 & 57.49\ensuremath{\pm}1.78 & 63.50\ensuremath{\pm}2.02 & 61.92\ensuremath{\pm}1.64 & 68.63\ensuremath{\pm}1.89 & 74.98\ensuremath{\pm}1.33 & 79.80\ensuremath{\pm}0.41 \\
+低郊区 & 55.60\ensuremath{\pm}1.68 & 60.82\ensuremath{\pm}2.13 & 60.59\ensuremath{\pm}1.59 & 67.42\ensuremath{\pm}1.78 & 72.76\ensuremath{\pm}1.10 & 78.31\ensuremath{\pm}0.49 \\
+高城市 & 56.21\ensuremath{\pm}1.49 & 62.68\ensuremath{\pm}2.26 & 60.43\ensuremath{\pm}1.47 & 67.46\ensuremath{\pm}1.89 & 73.99\ensuremath{\pm}1.26 & 79.83\ensuremath{\pm}0.52 \\
+中城市 & 42.92\ensuremath{\pm}1.16 & 48.85\ensuremath{\pm}2.15 & 49.99\ensuremath{\pm}1.08 & 57.85\ensuremath{\pm}1.29 & 60.65\ensuremath{\pm}1.01 & 74.04\ensuremath{\pm}0.47 \\
+低城市 & 34.46\ensuremath{\pm}0.80 & 39.65\ensuremath{\pm}1.83 & 41.96\ensuremath{\pm}1.01 & 50.05\ensuremath{\pm}0.93 & 49.98\ensuremath{\pm}0.73 & 67.60\ensuremath{\pm}0.62 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/seven_scenes_cross_both.pdf}
+\caption{跨日且跨接收机：主对比实验：CLEAN与六种星地环境。未见目标接收机，D0（2021 年 3 月 1 日）；每景 42000 包。误差线为三模型种子样本标准差。}
+\label{fig:grouped-12}
 \end{figure*}
 \section{1 至 6 个源接收机的折线}
 5 个源接收机直接使用主对比实验的同种子模型，而不是另训模型。主实验原为 7 个目标接收机；其余源数量设置为共同 6 目标。为避免折线混入目标集合变化，本版从 5 源模型已经冻结的逐接收机统计中取共同 6 目标，按正确包数/总包数汇总：每个场景 108000 包。主表原 7 目标、每景 126000 包的成绩保持不变，也在 Excel 中保留。此操作仅重汇总冻结计数，没有重新预测或读取逐样本真值。
 
-表~\ref{tab:grouped-6}~固定共同 6 目标的 CLEAN 准确率（\%）。
+表~\ref{tab:grouped-12}~固定共同 6 目标的 CLEAN 准确率（\%）。
 
 \begin{table*}[!tbp]
 \caption{固定共同 6 目标的 CLEAN 准确率（\%）}
-\label{tab:grouped-6}
+\label{tab:grouped-12}
 \centering
 \small
 \begin{tabularx}{\textwidth}{YYYYYYY}
@@ -232,13 +406,41 @@ CLEAN & 61.63\ensuremath{\pm}1.89 & 66.12\ensuremath{\pm}3.20 & 66.63\ensuremath
 \centering
 \includegraphics[width=\textwidth]{../figures/source_count_clean.pdf}
 \caption{完整 1、2、3、4、5、6 源接收机折线：CLEAN。全部为增强半监督，固定共同 6 目标；5 源为同种子主实验模型的冻结计数重汇总。误差线为三种子样本标准差，保留非单调变化。}
-\label{fig:grouped-7}
+\label{fig:grouped-13}
 \end{figure*}
-表~\ref{tab:grouped-7}~固定共同 6 目标的 综合星地 准确率（\%）。
+新增独立双跨测试：仅取目标接收机 2021 年 3 月 1 日的记录，与原图分开统计；训练、模型和增强配方保持。
+
+表~\ref{tab:grouped-13}~跨日且跨接收机：1至6源接收机：CLEAN，准确率均值\ensuremath{\pm}样本标准差（\%）。
+
+\begin{table*}[!tbp]
+\caption{跨日且跨接收机：1至6源接收机：CLEAN，准确率均值\ensuremath{\pm}样本标准差（\%）}
+\label{tab:grouped-13}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYYYYY}
+\toprule
+\textbf{源接收机数} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{PAMF+DURA} \\
+\midrule
+1 & 61.79\ensuremath{\pm}4.10 & 37.42\ensuremath{\pm}4.11 & 47.43\ensuremath{\pm}2.51 & 44.13\ensuremath{\pm}2.69 & 44.94\ensuremath{\pm}1.32 & 45.12\ensuremath{\pm}1.33 \\
+2 & 45.37\ensuremath{\pm}8.26 & 47.81\ensuremath{\pm}8.19 & 54.29\ensuremath{\pm}3.70 & 59.27\ensuremath{\pm}2.54 & 67.87\ensuremath{\pm}2.08 & 67.97\ensuremath{\pm}2.03 \\
+3 & 59.03\ensuremath{\pm}4.08 & 55.93\ensuremath{\pm}3.94 & 63.73\ensuremath{\pm}0.68 & 68.32\ensuremath{\pm}4.88 & 79.50\ensuremath{\pm}2.30 & 79.60\ensuremath{\pm}2.30 \\
+4 & 59.20\ensuremath{\pm}2.69 & 61.40\ensuremath{\pm}7.58 & 64.06\ensuremath{\pm}2.43 & 70.38\ensuremath{\pm}2.03 & 79.43\ensuremath{\pm}1.82 & 79.38\ensuremath{\pm}1.84 \\
+5 & 59.73\ensuremath{\pm}1.73 & 63.05\ensuremath{\pm}2.82 & 67.35\ensuremath{\pm}0.45 & 72.66\ensuremath{\pm}0.98 & 81.84\ensuremath{\pm}0.45 & 81.91\ensuremath{\pm}0.46 \\
+6 & 65.87\ensuremath{\pm}2.19 & 62.21\ensuremath{\pm}8.58 & 66.54\ensuremath{\pm}1.87 & 72.23\ensuremath{\pm}1.82 & 82.61\ensuremath{\pm}0.86 & 82.57\ensuremath{\pm}0.82 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/source_count_clean_cross_both.pdf}
+\caption{跨日且跨接收机：1至6源接收机：CLEAN。未见目标接收机，D0（2021 年 3 月 1 日）；共同 6 目标，每景 36000 包；5 源复用同种子主模型。误差线为三模型种子样本标准差。}
+\label{fig:grouped-14}
+\end{figure*}
+表~\ref{tab:grouped-14}~固定共同 6 目标的 综合星地 准确率（\%）。
 
 \begin{table*}[!tbp]
 \caption{固定共同 6 目标的 综合星地 准确率（\%）}
-\label{tab:grouped-7}
+\label{tab:grouped-14}
 \centering
 \small
 \begin{tabularx}{\textwidth}{YYYYYYY}
@@ -258,16 +460,44 @@ CLEAN & 61.63\ensuremath{\pm}1.89 & 66.12\ensuremath{\pm}3.20 & 66.63\ensuremath
 \centering
 \includegraphics[width=\textwidth]{../figures/source_count_practical.pdf}
 \caption{完整 1、2、3、4、5、6 源接收机折线：综合星地。全部为增强半监督，固定共同 6 目标；5 源为同种子主实验模型的冻结计数重汇总。误差线为三种子样本标准差，保留非单调变化。}
-\label{fig:grouped-8}
+\label{fig:grouped-15}
+\end{figure*}
+新增独立双跨测试：仅取目标接收机 2021 年 3 月 1 日的记录，与原图分开统计；训练、模型和增强配方保持。
+
+表~\ref{tab:grouped-15}~跨日且跨接收机：1至6源接收机：综合星地，准确率均值\ensuremath{\pm}样本标准差（\%）。
+
+\begin{table*}[!tbp]
+\caption{跨日且跨接收机：1至6源接收机：综合星地，准确率均值\ensuremath{\pm}样本标准差（\%）}
+\label{tab:grouped-15}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYYYYY}
+\toprule
+\textbf{源接收机数} & \textbf{RIEI} & \textbf{DRIFT} & \textbf{IB-RFF} & \textbf{SDG} & \textbf{PAMF} & \textbf{PAMF+DURA} \\
+\midrule
+1 & 45.67\ensuremath{\pm}2.25 & 22.44\ensuremath{\pm}2.49 & 40.00\ensuremath{\pm}3.13 & 39.29\ensuremath{\pm}0.79 & 46.58\ensuremath{\pm}2.26 & 50.29\ensuremath{\pm}0.56 \\
+2 & 36.65\ensuremath{\pm}2.65 & 36.38\ensuremath{\pm}4.93 & 43.33\ensuremath{\pm}3.45 & 48.85\ensuremath{\pm}5.87 & 57.47\ensuremath{\pm}0.53 & 60.42\ensuremath{\pm}0.59 \\
+3 & 48.82\ensuremath{\pm}2.92 & 44.23\ensuremath{\pm}10.11 & 55.13\ensuremath{\pm}4.90 & 58.49\ensuremath{\pm}4.36 & 67.83\ensuremath{\pm}0.57 & 69.92\ensuremath{\pm}1.34 \\
+4 & 51.10\ensuremath{\pm}1.30 & 51.84\ensuremath{\pm}2.03 & 55.00\ensuremath{\pm}2.49 & 60.10\ensuremath{\pm}1.07 & 67.63\ensuremath{\pm}0.51 & 71.08\ensuremath{\pm}0.62 \\
+5 & 50.86\ensuremath{\pm}1.33 & 56.05\ensuremath{\pm}2.25 & 55.35\ensuremath{\pm}1.91 & 62.45\ensuremath{\pm}1.96 & 67.65\ensuremath{\pm}0.87 & 75.98\ensuremath{\pm}0.53 \\
+6 & 56.29\ensuremath{\pm}1.39 & 51.98\ensuremath{\pm}0.85 & 59.46\ensuremath{\pm}1.23 & 63.54\ensuremath{\pm}1.99 & 70.30\ensuremath{\pm}0.66 & 72.60\ensuremath{\pm}0.79 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/source_count_practical_cross_both.pdf}
+\caption{跨日且跨接收机：1至6源接收机：综合星地。未见目标接收机，D0（2021 年 3 月 1 日）；共同 6 目标，每景 36000 包；5 源复用同种子主模型。误差线为三模型种子样本标准差。}
+\label{fig:grouped-16}
 \end{figure*}
 源训练量随源接收机数量自然增长，因此折线同时反映接收机覆盖与训练记录量变化，不是固定样本预算下仅接收机多样性的因果效应。各设置仍使用原冻结测试的场景配置。
 
 \section{包含 PAMF 的 DURA 泛用性}
-表~\ref{tab:grouped-8}~标准主划分、增强半监督、综合星地的恢复前后配对。
+表~\ref{tab:grouped-16}~标准主划分、增强半监督、综合星地的恢复前后配对。
 
 \begin{table*}[!tbp]
 \caption{标准主划分、增强半监督、综合星地的恢复前后配对}
-\label{tab:grouped-8}
+\label{tab:grouped-16}
 \centering
 \small
 \begin{tabularx}{\textwidth}{YYYY}
@@ -286,19 +516,46 @@ PAMF & 71.05 & 78.52 & +7.47\ensuremath{\pm}0.79 \\
 \centering
 \includegraphics[width=\textwidth]{../figures/DURA_generality.pdf}
 \caption{DURA 泛用性采用双柱，五种识别器均包括在内：RIEI、DRIFT、IB-RFF、SDG、PAMF。每种方法固定同一识别器、样本、场景和种子，只切换是否先恢复；柱顶标种子内配对百分点变化。全部为增强半监督、标准主划分的综合星地测试。}
-\label{fig:grouped-9}
+\label{fig:grouped-17}
+\end{figure*}
+新增独立双跨测试：仅取目标接收机 2021 年 3 月 1 日的记录，与原图分开统计；训练、模型和增强配方保持。
+
+表~\ref{tab:grouped-17}~跨日且跨接收机：DURA泛用性：五种识别方法均纳入，准确率均值\ensuremath{\pm}样本标准差（\%）。
+
+\begin{table*}[!tbp]
+\caption{跨日且跨接收机：DURA泛用性：五种识别方法均纳入，准确率均值\ensuremath{\pm}样本标准差（\%）}
+\label{tab:grouped-17}
+\centering
+\small
+\begin{tabularx}{\textwidth}{YYYY}
+\toprule
+\textbf{方法} & \textbf{未接 DURA（\%）} & \textbf{接入 DURA（\%）} & \textbf{配对变化（百分点）} \\
+\midrule
+RIEI & 51.11\ensuremath{\pm}1.45 & 57.11\ensuremath{\pm}0.72 & +6.00\ensuremath{\pm}1.55 \\
+DRIFT & 57.00\ensuremath{\pm}2.11 & 59.78\ensuremath{\pm}3.53 & +2.79\ensuremath{\pm}4.57 \\
+IB-RFF & 56.35\ensuremath{\pm}1.33 & 62.84\ensuremath{\pm}0.98 & +6.49\ensuremath{\pm}1.38 \\
+SDG & 63.59\ensuremath{\pm}1.63 & 65.66\ensuremath{\pm}0.76 & +2.07\ensuremath{\pm}1.04 \\
+PAMF & 68.29\ensuremath{\pm}1.12 & 76.75\ensuremath{\pm}0.47 & +8.47\ensuremath{\pm}0.88 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{../figures/DURA_generality_cross_both.pdf}
+\caption{跨日且跨接收机：DURA泛用性：五种识别方法均纳入。未见目标接收机，D0（2021 年 3 月 1 日）；每景 42000 包。误差线为三模型种子样本标准差。}
+\label{fig:grouped-18}
 \end{figure*}
 所有恢复后结果都使用匹配同一数据契约的恢复器。三个识别器种子共享一份匹配恢复器，不能称为三套独立完整系统。泛用性收益是识别器接入固定恢复网络的测试收益，不证明恢复器对每个方法、每个场景都提高。
 
 \section{保留资料与明确缺项}
-Excel 前 9 个工作表对应本报告重点图，共 19 个面板；后 26 个补充工作表保留此前的监督分组、半监督分组、十类规模、Macro-F1、双跨/跨日诊断、完整逐景、时延、覆盖与逐模型登记，并补入原两套 11 设置 DURA 面板。工作簿共 35 个工作表、51 个可编辑图表。每个重点实验页都有目的、设置、对应数据划分、图表数据、三种子数值和完整结果。
+PDF 保留原 9 张重点图、19 个面板，并新增 9 张跨日且跨接收机独立图及对应结果表，新增图同样为 19 个面板。Excel 前 9 页对应重点实验，后 26 页保留此前补充资料；共 35 个工作表、98 个可编辑图表。31 个适用的识别性能实验页均有新增双跨图/表；模型覆盖、实验登记和两种学习条件的独占时延共 4 页不按目标日期划分，没有虚构对应指标。
 
 当前普通 PL 配方的无增强 PAMF 仍是缺项，已获用户确认先交付已有证据。没有启动新增训练、预测、真值评分或 DURA 训练。当前方法自身消融的其他缺项仍按原报告记录，不把旧复杂半监督或已退出方法改名为普通 PL。旧报告与不可覆盖导出包均保留。
 
 \FloatBarrier
 \appendices
 \section{阅读名称与原始记录的对应}
-当前主方法来自既有 practical residual 完整对比包及 PAMF 监督/ordinary\_PL 完成矩阵。新增补入的无增强监督 PAMF 来自 \nolinkurl{20261024-practical-residual-full2x2-complete-r14.zip} 的 PAMF 监督 A 组；其当前普通 PL 对照未完成。5 源曲线使用同种子 F0 主模型，仅从冻结的接收机统计中选择预先指定的共同目标集合 [0,2,5,7,9,10] 汇总。没有根据目标成绩筛接收机或挑模型。
+当前主方法来自既有 practical residual 完整对比包及 PAMF 监督/ordinary\_PL 完成矩阵。新增双跨结果直接读取其中已完成的独立评分统计。无增强监督 PAMF 来自完整对比包的既有监督参照；其当前普通 PL 对照未完成。5 源曲线使用同种子主模型，从冻结接收机统计取预先指定的共同目标集合 [0,2,5,7,9,10]：原跨接收机每景 108000 包；新增双跨每景 36000 包。原 7 目标主实验的跨接收机 126000 包和双跨 42000 包均保留。没有根据目标成绩筛接收机或挑模型。
 
 导出包包含逐图来源表、冻结种子统计、共同 6 目标正确/总包计数、IEEE 源码、PDF/SVG/PNG 和纯标准库复核器。先按种子汇总六景和配对差，再计算跨种子样本标准差；缺失结果保持缺失。正文采用识别器、恢复器和数据设置的可读名称，原始编号只在机器可读追溯数据中保留。
 

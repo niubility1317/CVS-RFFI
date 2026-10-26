@@ -110,7 +110,7 @@
       "supervised": "C",
       "ordinary_PL_semi_supervised": "D"
     },
-    "performance_chart_type": "vertical_column_single_learning_regime",
+    "performance_chart_type": "vertical_columns_with_explicit_learning_regime_and_test_population",
     "restoration_chart_type": "paired_without_DURA_with_DURA",
     "main_learning_comparison": "paired_supervised_vs_ordinary_PL_without_and_with_channel_augmentation",
     "other_priority_learning_regime": "ordinary_PL_semi_supervised_with_channel_augmentation",
@@ -137,7 +137,8 @@
         "clean",
         "six_practical_mean"
       ],
-      "chart": "two_separate_line_figures"
+      "chart": "two_separate_line_figures_per_test_population",
+      "joint_common_packets_per_scene": 36000
     },
     "restoration_generality_methods": [
       "RIEI",
@@ -148,7 +149,15 @@
     ],
     "PAMF_no_channel_ordinary_PL_status": "missing; user selected delivery without new training",
     "PAMF_color": "#C4364E",
-    "PAMF_with_DURA_color": "#E29525"
+    "PAMF_with_DURA_color": "#E29525",
+    "independent_test_populations": {
+      "cross_rx": "target receivers; 2021-03-08/15/23",
+      "cross_both": "target receivers; 2021-03-01; earlier unseen date",
+      "separate_figure_and_table_per_experiment": true,
+      "source_unseen_date_is_separate_diagnostic": true,
+      "no_population_pooling": true,
+      "new_training_prediction_or_truth_scoring": 0
+    }
   },
   "scientific_execution": {
     "new_60_main_models": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",

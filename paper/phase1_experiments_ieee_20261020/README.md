@@ -1,4 +1,4 @@
-> 2026-10-26 当前入口：[IEEE 彩色重点实验报告与 35 页 Excel](../../docs/PAMF_PRIORITY_COMPARISONS_20261026.md)。主图按用户五类问题排序，PAMF 以红色突出、PAMF+DURA 以橙色突出；5 源沿用同种子主模型的共同 6 目标统计。无增强普通 PL PAMF 缺项已明确标注，用户选择先交付已有结果；未发布新增训练。旧 r20 报告与全部原图继续保留。
+> 2026-10-26 当前入口：[15 页 IEEE 彩色报告与 35 个工作表、98 图 Excel](../../docs/PAMF_PRIORITY_COMPARISONS_20261026.md)。每个重点实验保留原跨接收机图，新增跨日且跨接收机独立图/表；共 18 张重点图。PAMF 为红色、PAMF+DURA 为橙色；5 源沿用同种子主模型的共同 6 目标统计。无增强普通 PL PAMF 缺项保持，未新增训练或预测。全部旧图表和旧包保留。
 
 > 2026-10-25 当前状态：PAMF 暂用普通伪标签。当前使用[16 页 IEEE 双栏报告、23 幅图及 24 个工作表的 Excel 周报](../../docs/PAMF_COMPARISON_REPORT_20261025.md)，其 [LaTeX 入口](../../docs/reports/pamf_comparison_main_and_dura_20261025/ieee/main.tex)独立保存。监督与普通 PL 半监督分别成章成图，所有方法明确学习方式；主表外部方法不接 DURA，PAMF 与 DURA+PAMF 分列；无增强只报目标 CLEAN，有增强报 CLEAN 与六种 practical，DURA 泛用性按学习方式分别使用恢复前后双柱。此目录原 `main.pdf` 仍为已退出方案的历史草稿，旧源码、图片和包保留。完整自身消融尚需按新方法匹配，未自动发布训练。
 

@@ -30,5 +30,17 @@
   "checkpoint_read": false,
   "new_training": 0,
   "new_prediction": 0,
-  "new_scoring": 0
+  "new_scoring": 0,
+  "joint_test": "cross_both",
+  "joint_test_name": "目标接收机＋未见日期D0",
+  "joint_date": "2021-03-01",
+  "training_and_validation_dates": [
+    "2021-03-08",
+    "2021-03-15",
+    "2021-03-23"
+  ],
+  "joint_packets_per_receiver_per_scene": 6000,
+  "joint_common_packets_per_scene": 36000,
+  "F0_original_joint_packets": 42000,
+  "joint_receiver_count_rows": 756
 }

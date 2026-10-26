@@ -79,5 +79,95 @@
     "chart_type": "paired_column",
     "PAMF_included": true,
     "missing_PL_PAMF": false
+  },
+  {
+    "name": "main_no_channel_cross_both",
+    "caption": "无星地增强：监督与普通 PL 的 CLEAN 对比：跨日且跨接收机",
+    "wide": true,
+    "panels": 1,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": true,
+    "test": "cross_both"
+  },
+  {
+    "name": "main_channel_on_cross_both",
+    "caption": "有星地增强：监督与普通 PL 对比：跨日且跨接收机",
+    "wide": true,
+    "panels": 2,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false,
+    "test": "cross_both"
+  },
+  {
+    "name": "receiver_splits_cross_both",
+    "caption": "接收机划分：半监督＋增强：跨日且跨接收机",
+    "wide": true,
+    "panels": 3,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false,
+    "test": "cross_both"
+  },
+  {
+    "name": "label_fraction_cross_both",
+    "caption": "标注比例：半监督＋增强：跨日且跨接收机",
+    "wide": true,
+    "panels": 3,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false,
+    "test": "cross_both"
+  },
+  {
+    "name": "source_count_paired_cross_both",
+    "caption": "源接收机数量：CLEAN与综合星地：跨日且跨接收机",
+    "wide": true,
+    "panels": 6,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false,
+    "test": "cross_both"
+  },
+  {
+    "name": "seven_scenes_cross_both",
+    "caption": "主对比实验：CLEAN与六种星地环境：跨日且跨接收机",
+    "wide": true,
+    "panels": 1,
+    "chart_type": "grouped_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false,
+    "test": "cross_both"
+  },
+  {
+    "name": "DURA_generality_cross_both",
+    "caption": "DURA泛用性：五种识别方法均纳入：跨日且跨接收机",
+    "wide": true,
+    "panels": 1,
+    "chart_type": "paired_column",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false,
+    "test": "cross_both"
+  },
+  {
+    "name": "source_count_clean_cross_both",
+    "caption": "1至6源接收机：CLEAN：跨日且跨接收机",
+    "wide": true,
+    "panels": 1,
+    "chart_type": "line",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false,
+    "test": "cross_both"
+  },
+  {
+    "name": "source_count_practical_cross_both",
+    "caption": "1至6源接收机：综合星地：跨日且跨接收机",
+    "wide": true,
+    "panels": 1,
+    "chart_type": "line",
+    "PAMF_included": true,
+    "missing_PL_PAMF": false,
+    "test": "cross_both"
   }
 ]

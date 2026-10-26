@@ -4,8 +4,8 @@ from pathlib import Path
 ROOT=Path('E:/type10-7');sys.path.insert(0,str(ROOT))
 from tools.reports.pamf_pl_comparison import PIDS,SHORT,SCENES,SEEDS
 OLD=ROOT/'exports/reports/20261025-PAMF-PL-comparison-r20'
-OUT=ROOT/'exports/reports/20261026-PAMF-priority-comparisons-r22'
-P=ROOT/'local_artifacts/pamf_priority_report_20261026_r21'
+OUT=ROOT/'exports/reports/20261026-PAMF-priority-comparisons-r23'
+P=ROOT/'local_artifacts/pamf_joint_report_20261026_r23'
 FROZEN=ROOT/'exports/unified_figures/20261025-PAMF-REPL-complete-paper-r01/frozen_statistics'
 ARCHIVE=ROOT/'exports/phase1_external_dg/20261024-practical-residual-full2x2-complete-r14.zip'
 LABELS=['RIEI','DRIFT','IB-RFF','SDG','PAMF','PAMF+DURA'];METHODS=('riei','drift','ibrff','sdg')
@@ -67,6 +67,14 @@ class Data:
         for k,rs in grouped.items():
             assert len(rs)==6 and sum(int(r['count']) for r in rs)==108000
             self.m5[k]=100*sum(int(r['correct']) for r in rs)/108000
+        self.m5_joint={}
+        joint_path=OUT/'frozen_inputs/m5_common_receiver_counts_joint.csv'
+        if joint_path.exists():
+            grouped=collections.defaultdict(list)
+            for r in rows(joint_path):grouped[r['method'],r['readout'],r['view'],int(r['seed'])].append(r)
+            for k,rs in grouped.items():
+                assert len(rs)==6 and sum(int(r['count']) for r in rs)==36000
+                self.m5_joint[k]=100*sum(int(r['correct']) for r in rs)/36000
         self.records={}
     def get(self,p,label,reg='semi_supervised',view='six_practical_mean',aug=True,common6=False,test='cross_rx'):
         i=LABELS.index(label);m=METHODS[i] if i<4 else 'supervised' if reg=='supervised' else 'ordinary_PL'
@@ -77,8 +85,9 @@ class Data:
             if reg!='supervised' or i!=4:return None
             a=[self.histor[test,'accuracy',s] for s in SEEDS];scope='existing_matched_supervised_no_channel_recipe'
         elif common6 and p=='F0':
-            assert reg=='semi_supervised' and aug and test=='cross_rx'
-            a=[statistics.mean(self.m5[m,rd,v,s] for v in SCENES[1:]) if view=='six_practical_mean' else self.m5[m,rd,view,s] for s in SEEDS]
+            assert reg=='semi_supervised' and aug and test in ('cross_rx','cross_both')
+            values=self.m5 if test=='cross_rx' else self.m5_joint
+            a=[statistics.mean(values[m,rd,v,s] for v in SCENES[1:]) if view=='six_practical_mean' else values[m,rd,view,s] for s in SEEDS]
         else:
             if i>=4:cell='native'
             a=[self.source[p,m,cell,test,rd,view,'accuracy',str(s)] for s in SEEDS]
