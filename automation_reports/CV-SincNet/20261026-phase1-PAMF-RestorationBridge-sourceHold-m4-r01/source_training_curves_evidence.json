@@ -1,0 +1,46 @@
+{
+  "status": "VERIFIED_COMPLETE_AVAILABLE_LOG_PREFIX",
+  "code_commit": "c0fc6a9a98e1a28669c2c41b59e26d2887311303",
+  "methods": [
+    {
+      "method": "SeparateRG",
+      "complete_step_records": 4440,
+      "complete_new_epochs": 20,
+      "epoch3_relation_loss": 0.361895240641929,
+      "last_complete_relation_loss": 0.3160485848113223,
+      "last_complete_raw_PL_loss": 0.006292690861726868,
+      "last_complete_raw_PL_coverage_percent": 96.19576719576719
+    },
+    {
+      "method": "BridgeRG",
+      "complete_step_records": 4440,
+      "complete_new_epochs": 20,
+      "epoch3_relation_loss": 0.38765683803740925,
+      "last_complete_relation_loss": 0.33971182901311564,
+      "last_complete_raw_PL_loss": 0.006272595802632471,
+      "last_complete_raw_PL_coverage_percent": 96.14814814814815
+    },
+    {
+      "method": "BridgeHG",
+      "complete_step_records": 4440,
+      "complete_new_epochs": 20,
+      "epoch3_relation_loss": 0.8649978743748622,
+      "last_complete_relation_loss": 0.8052879040305679,
+      "last_complete_raw_PL_loss": 0.006503676839365817,
+      "last_complete_raw_PL_coverage_percent": 96.21164021164022
+    },
+    {
+      "method": "BridgeGG",
+      "complete_step_records": 4440,
+      "complete_new_epochs": 20,
+      "epoch3_relation_loss": 0.5066707809497645,
+      "last_complete_relation_loss": 0.46210784136175037,
+      "last_complete_raw_PL_loss": 0.006333919436049958,
+      "last_complete_raw_PL_coverage_percent": 96.09347442680776
+    }
+  ],
+  "target_reads": 0,
+  "U_truth_read": false,
+  "optimizer_updates": 0,
+  "scope": "Complete currently available training prefix;loss/coverage are not accuracy or source selection"
+}

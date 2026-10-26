@@ -1,11 +1,11 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "code_commit": "c0fc6a9a98e1a28669c2c41b59e26d2887311303",
   "independent_readback": "VERIFIED",
   "student_seeds": [
     2026092701
   ],
-  "complete_available_step_records_verified": 895,
+  "complete_available_step_records_verified": 17760,
   "all_four_original_E30_initial_checkpoints_verified": true,
   "calibration_recomputed": true,
   "source_weight": 0.04677712061808677,
@@ -13,5 +13,7 @@
   "no_nonfinite_skips_in_complete_prefix": true,
   "new_target_reads": 0,
   "U_truth_read": false,
-  "scope": "Partial ongoing source execution;not accuracy or fullE50 completion"
+  "scope": "All source training and native default heads verified;one student seed,no target performance",
+  "all_four_actual_final_E50_checkpoints_verified": true,
+  "all80_final_epoch_aggregates_verified": true
 }

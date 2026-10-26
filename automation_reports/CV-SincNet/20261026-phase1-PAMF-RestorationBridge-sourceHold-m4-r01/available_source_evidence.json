@@ -1,6 +1,6 @@
 {
   "status": "VERIFIED_AVAILABLE_RESTORATION_BRIDGE_RECORDS",
-  "total_available_records": 895,
+  "total_available_records": 17760,
   "source_weight": 0.04677712061808677,
   "calibration_arithmetic_verified": true,
   "calibration_norms": {
@@ -14,42 +14,42 @@
     {
       "a": "BridgeGG",
       "b": "BridgeHG",
-      "common_steps": 218,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     },
     {
       "a": "BridgeGG",
       "b": "BridgeRG",
-      "common_steps": 218,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     },
     {
       "a": "BridgeGG",
       "b": "SeparateRG",
-      "common_steps": 218,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     },
     {
       "a": "BridgeHG",
       "b": "BridgeRG",
-      "common_steps": 224,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     },
     {
       "a": "BridgeHG",
       "b": "SeparateRG",
-      "common_steps": 226,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     },
     {
       "a": "BridgeRG",
       "b": "SeparateRG",
-      "common_steps": 224,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     }
   ],
   "observer_optimizer_updates": 0,
   "new_target_reads": 0,
-  "observed_at_UTC": "2026-10-26T00:15:34.961036+00:00",
-  "scope": "All currently complete source records;live tails may buffer;not target gain"
+  "observed_at_UTC": "2026-10-26T00:48:27.297576+00:00",
+  "scope": "All17760 records andfour actualfinal E50 defaultheads verified;source assessment may still pending;not target gain"
 }

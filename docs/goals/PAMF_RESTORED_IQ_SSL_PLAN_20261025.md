@@ -300,3 +300,19 @@ G/H复用原缓存三景lowSuburban/midUrban/lowUrban，k按原step顺序轮换�
 ## 跨视图身份关系四路训练实际启动
 
 `20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01`已VERIFIED_RUNNING，代码`c0fc6a9a98e1a28669c2c41b59e26d2887311303`。12批无更新源校准共同系数0.046777120618086768，真实E30/G与原L128/U256集成backward smoke通过；四条GPU/完整身份/实际step增长独立核实。一个学生seed01、四own原E30+20独立到E50；原+.3/−.1源条件及三个学生种子联合目标保持，无新目标结果。详见[运行报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/report.md)。
+
+
+## 跨视图身份关系完整源矩阵完成
+
+`20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01`一个学生seed01的四份E50默认头、17760新增记录、544源单元与72方法配对均独立核算。相对PL：SeparateRG heldG+0.117284pp/clean+0.000000pp；BridgeRG heldG+0.166667pp/clean+0.000000pp；BridgeHG heldG+0.179012pp/clean+0.000000pp；BridgeGG heldG+0.203704pp/clean-0.003704pp。原+.3pp/−.1pp门槛保持，源选择为无候选通过。**四条均未达到原源门槛，不扩种子，不启动这批方案的新目标测试。** 保留所有负结果和原门槛；后续依据同输入关系对照与H/G覆盖结果确定新机制，不直接继续增权。
+
+原三学生种子raw/同G联合目标保持未达成。完整证据见[身份关系源报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/report.md)。
+
+
+## 源错误重叠与非对称H/G下一假设
+
+只读复用当前冻结预测与旧FeatureTask预测，所有V物理ID/y/场景及来源契约对齐，没有新模型前向、optimizer、U真值或目标读取。相同H/G输入的旧HGFeatureHard（CE）和当前BridgeHG（CL）在held G3中：共同纠正52/共同破坏24；CE独有纠正23/独有破坏33，CL独有纠正11/独有破坏10。在held H3中：共同纠正102/共同破坏75；CE独有纠正61/独有破坏42，CL独有纠正44/独有破坏46。
+
+因此“CE和CL纠错有互补”不能推出相加有收益；G上的CE独有新增错误更多，H上的CE则提供额外净收益。两旧配方剂量和目标不同，不能将此描述统计写成G分支CE的因果证明。旧G/G CE与新双场景GG CL还存在输入曝光差异，完整18组见[源错误重叠](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/source_objective_overlap.csv)及[证据](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/source_objective_overlap.json)；不构造依赖真值的预测择优或宣称联合训练会达到这些计数。
+
+下一可检验假设是非对称H/G联合目标：H承担硬伪标签分类，G提供跨RX身份关系参照。计划保持相同H/G两次学生前向，比较HCE+双向CL、HCE+仅H梯度CL（G特征detach）、GCE+双向CL、平均H/G CE+双向CL。CE和CL的固定相对系数各1，再通过12批无更新全参数源梯度一次确定四条共同总剂量。它不是原监督损失权重的照搬，也不保证原两类增益叠加。原L/rawPL、q、默认头、own原E30+20、原+.3/−.1源门槛和最终三学生种子联合目标保持；当前仅是下一方向，尚未发布该新矩阵。

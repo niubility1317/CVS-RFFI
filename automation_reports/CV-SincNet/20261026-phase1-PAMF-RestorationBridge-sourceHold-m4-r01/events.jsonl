@@ -4,3 +4,8 @@
 {"at": "2026-10-26T00:16:23+00:00", "status": "RUNNING", "note": "实际train PID/CWD/argv/GPU/step增长已核实，源only一个学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-BridgeHG-sourceHold-s2026092701"}
 {"at": "2026-10-26T00:16:29+00:00", "status": "RUNNING", "note": "实际train PID/CWD/argv/GPU/step增长已核实，源only一个学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-BridgeGG-sourceHold-s2026092701"}
 {"at": "2026-10-26T00:16:34+00:00", "status": "RUNNING", "note": "真实calibration/smoke通过，四条源训练独立核实；目标未证明。", "evidence": ["launch_evidence.json"], "row_id": null}
+{"at": "2026-10-26T00:51:09+00:00", "status": "ANALYZED", "note": "完整E50/八视图与4440步核实，原源规则FAIL；无目标结果。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-SeparateRG-sourceHold-s2026092701"}
+{"at": "2026-10-26T00:51:34+00:00", "status": "ANALYZED", "note": "完整E50/八视图与4440步核实，原源规则FAIL；无目标结果。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-BridgeRG-sourceHold-s2026092701"}
+{"at": "2026-10-26T00:51:39+00:00", "status": "ANALYZED", "note": "完整E50/八视图与4440步核实，原源规则FAIL；无目标结果。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-BridgeHG-sourceHold-s2026092701"}
+{"at": "2026-10-26T00:51:44+00:00", "status": "ANALYZED", "note": "完整E50/八视图与4440步核实，原源规则FAIL；无目标结果。", "evidence": ["source_candidate_decision.csv", "finished_source_execution.csv"], "row_id": "F0-BridgeGG-sourceHold-s2026092701"}
+{"at": "2026-10-26T00:51:50+00:00", "status": "ANALYZED", "note": "完整跨视图关系源矩阵，源选择NONE；一个学生种子，联合目标未证明。", "evidence": ["source_packet_arithmetic.json", "source_result_evidence.json"], "row_id": null}
