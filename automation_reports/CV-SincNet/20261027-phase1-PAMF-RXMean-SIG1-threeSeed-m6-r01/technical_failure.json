@@ -1,0 +1,15 @@
+{
+  "status": "FAILED_TECHNICAL",
+  "execution_commit": "a705d02dbb13df21ad869b35215b8eabc0afcff4",
+  "mean_bank_complete": true,
+  "U_seen": 56700,
+  "calibration_jobs_failed": 3,
+  "new_optimizer_updates": 0,
+  "target_reads": 0,
+  "training_jobs_started": 0,
+  "controller_and_workers_exited": true,
+  "error": "CVSincNet.forward unexpected feature_only",
+  "root_cause": "native runtime imported before frozen F activation",
+  "replacement": "20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02",
+  "goal_complete": false
+}

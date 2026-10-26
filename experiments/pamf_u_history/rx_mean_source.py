@@ -12,8 +12,9 @@ from .covariance_seed_masks import SEEDS,activate
 from .rx_mean_objective import METHODS,RECIPE,Objective
 from .rx_mean_views import RECIPE as VIEW_RECIPE
 
-RUN='20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r01'
-RELEASE='20261027-phase1-PAMF-RXMean-SIG1-threeSeed-release-r01'
+RUN='20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02'
+RELEASE='20261027-phase1-PAMF-RXMean-SIG1-threeSeed-release-r02'
+REUSE_BANK_RUN='20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r01'
 BASELINE='20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01'
 TASKS=('cross_rx','cross_both')
 
@@ -99,32 +100,34 @@ def installed(c,holder):
 
 
 def fit_bank(rt):
+    import shutil
     import numpy as np
-    import torch
-    from experiments.cric_dura_comparison.f_data import SourceDataset
-    from .receiver_response import Response,RXS
-    from .rx_mean_views import fit,transfers
-    c=validate_context(read(rt['context']));contract=read(c['source_contract']);data=SourceDataset(c['source_cache'],'U_s',contract)
-    if len(data)!=56700 or 'y' in data.metadata:raise ValueError('Complete hiddenU only')
-    root=Path(rt['run_root'])/'mean_bank';root.mkdir(parents=True,exist_ok=False);response=Response();values=[];torch.set_num_threads(2)
-    for begin in range(0,len(data),256):
-        end=min(begin+256,len(data));coeff,_=response(np.asarray(data.x[begin:end].tolist(),np.float64));values.append(coeff)
-        write(root/'progress.json',dict(U_seen=end,total=56700),exclusive=False);print('RX_MEAN_FIT',end,flush=True)
-    bank,counts=fit(np.concatenate(values),data.metadata['rx_i'],role='U_s');_,bounds=transfers(bank)
-    if set(counts)!=set(map(str,RXS)) or set(counts.values())!={11340}:raise ValueError('Five balanced RX training populations required')
-    with (root/'bank.npz').open('xb') as f:np.savez(f,means=bank.means)
-    write(root/'complete.json',dict(status='RX_MEAN_BANK_FROZEN',recipe=VIEW_RECIPE,source_contract=contract,counts=counts,
-        U_seen=56700,model_seed=None,optimizer_updates=0,F_G_weight_reads=0,V_reads=0,target_reads=0,bounds=bounds))
+    from .receiver_response import RXS
+    from .rx_mean_views import transfers
+    c=validate_context(read(rt['context']));contract=read(c['source_contract'])
+    old=Path(c['project'])/'runs'/REUSE_BANK_RUN/'mean_bank';done=read(old/'complete.json')
+    if (done['status']!='RX_MEAN_BANK_FROZEN' or done['recipe']!=VIEW_RECIPE or done['source_contract']!=contract
+        or done['U_seen']!=56700 or done['model_seed'] is not None or any(done[k] for k in ('optimizer_updates','F_G_weight_reads','V_reads','target_reads'))
+        or set(done['counts'])!=set(map(str,RXS)) or set(done['counts'].values())!={11340}):raise ValueError('Reuse only completed unchanged sourceU means from failed zero-update attempt')
+    from .rx_mean_views import MeanBank
+    with np.load(old/'bank.npz',allow_pickle=False) as a:bank=MeanBank(a['means'])
+    _,bounds=transfers(bank)
+    if bounds!=done['bounds']:raise ValueError('Frozen mean bank action changed')
+    root=Path(rt['run_root'])/'mean_bank';root.mkdir(parents=True,exist_ok=False);shutil.copyfile(old/'bank.npz',root/'bank.npz')
+    write(root/'complete.json',dict(done,reused_from=str(old),new_U_IQ_reads=0));print('RX_MEAN_BANK_REUSED',flush=True)
 
 
 def calibrate(rt):
+    # Activate the exact frozen F dependencies before importing native runtime.
+    # Importing it first can retain an incompatible older backbone class.
+    ctx=validate_context(read(rt['context']));activate(ctx)
     import torch
     from torch.nn import functional as F
     from experiments.cric_dura_comparison import f_train,t1_model
     from experiments.cvs_phase1_stack.runtime import installed as native_installed
     from experiments.cric_dura_comparison.f_data import SourceDataset,FixedEpochLoader
     from .receiver_probe import gradient_summary
-    ctx=validate_context(read(rt['context']));activate(ctx);seed=rt['model_seed'];root=Path(rt['output_root']);root.mkdir(parents=True,exist_ok=False)
+    seed=rt['model_seed'];root=Path(rt['output_root']);root.mkdir(parents=True,exist_ok=False)
     c=config(ctx,rt['code_commit'],METHODS[0],seed,0.,True);parent,cp=load_prefix(c);holder={};contract=read(c['source_contract'])
     l=SourceDataset(c['source_cache'],'L_s',contract);u=SourceDataset(c['source_cache'],'U_s',contract)
     L=iter(FixedEpochLoader(l,128,2026102741,steps=12,drop_last=True));U=FixedEpochLoader(u,256,2026102741,steps=12)

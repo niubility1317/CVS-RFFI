@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 from copy import deepcopy
 import numpy as np
 import torch
@@ -80,6 +81,19 @@ class RXMeanTests(unittest.TestCase):
                 if job['kind']=='score':
                     validate_evaluation(c,True);self.assertNotIn('source_cache',c);self.assertNotIn('source_output',c)
                 if job['kind']=='calibrate':self.assertNotIn('evaluation_context',c)
+
+    def test_native_runtime_import_happens_after_frozen_activation(self):
+        import builtins
+        from experiments.pamf_u_history.rx_mean_source import calibrate
+        active=[];original=builtins.__import__
+        class BoundaryReached(Exception):pass
+        def importing(name,*args,**kwargs):
+            if name=='experiments.cvs_phase1_stack.runtime':
+                self.assertEqual(active,['frozen_F'])
+                raise BoundaryReached()
+            return original(name,*args,**kwargs)
+        with patch('experiments.pamf_u_history.rx_mean_source.read',return_value=self.context()),patch('experiments.pamf_u_history.rx_mean_source.activate',side_effect=lambda c:active.append('frozen_F')):
+            with patch('builtins.__import__',side_effect=importing),self.assertRaises(BoundaryReached):calibrate(dict(context='/source-only'))
 
 
 if __name__=='__main__':unittest.main()

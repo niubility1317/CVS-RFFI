@@ -21,3 +21,7 @@ U 与 LU 的标量均为 (nU*KL_U+64*KL_L)/(nU+64)，U 范围 detach KL_L，LU �
 本地五项测试通过：U-only fit 权限、有限响应作用与同包独立性、两范围相同标量/不同 L 梯度、原 PL/SIG1/来源约束负例、22job 的三种子矩阵与预测/评分隔离。独立 P0/P1 审查 PASS；唯一直接 P1 已定点关闭：native labeled context 会自增步骤计数，校准进入前用4440+step，首批实际4441/call1。未增加额外审查门槛。
 
 一次 N607 预检 VERIFIED：普通账户、新 run/release 根均不存在、三份 scratch E20/4440 的 source-only 元数据与合同匹配，已有其他 owner 作业保留。真实权重/梯度 smoke 仍待发布后的第一步，不用元数据预检代替。
+
+实际状态：FAILED_TECHNICAL，执行 commit a705d02dbb13df21ad869b35215b8eabc0afcff4。全U均值拟合完成，56700包、五RX各11340，无F/G/V/target访问；三份校准均在首批前向失败，0 optimizer、0 target，六训练行未启动。controller及worker均已自然退出，无进程被终止。
+
+错误为 feature_only 参数不兼容。根因为校准先导入原生 runtime，再 activate 固定F依赖，缓存了不匹配旧模型类；CPU架构检查在正确导入顺序下解析到支持该参数的固定BASE模型。修复为先activate，再导入native runtime，新增定点回归。独立新run m6-r02复用本次已完成U均值银行，不热改本release、旧产物全留，科学配方与种子矩阵不变。
