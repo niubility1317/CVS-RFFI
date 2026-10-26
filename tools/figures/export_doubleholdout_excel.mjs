@@ -91,6 +91,9 @@ console.log((await wb.inspect({kind:'match',searchTerm:'#REF!|#DIV/0!|#VALUE!|#N
 for(const [name,range] of [['双跨汇总',`A1:K${6+order.length}`],['综合汇总',`A1:K${6+order.length}`],['消融对比','A1:H30'],['种子结果','A1:H11'],['接收机分层','A1:I11'],['发射机分层','A1:G11'],['混淆矩阵','A1:F11'],['实验说明','A1:B19']]){
  const blob=await wb.render({sheetName:name,range,scale:1.2,format:'png'});await fs.writeFile(path.join(previewDir,name+'.png'),new Uint8Array(await blob.arrayBuffer()));
 }
+for(const name of ['双跨汇总','综合汇总']){
+ const blob=await wb.render({sheetName:name,range:'A23:K51',scale:1,format:'png'});await fs.writeFile(path.join(previewDir,name+'_chart.png'),new Uint8Array(await blob.arrayBuffer()));
+}
 if(mode!=='render-only'){
  try{await fs.access(outputFile);throw Error('Output already exists; preserve final workbook');}catch(e){if(e.code!=='ENOENT')throw e;}
  await (await SpreadsheetFile.exportXlsx(wb)).save(outputFile);console.log('EXPORTED '+outputFile);
