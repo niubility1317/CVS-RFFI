@@ -1,6 +1,6 @@
 # 训练期 RX 均值差软一致性：两范围三种子
 
-状态：PLANNED。新机制尚无训练或有效性结果，原目标 active。
+状态：RUNNING_VERIFIED。训练进行中，尚无正式性能结果，原目标 active。
 
 只在训练期使用全 U 已知 RX 的五组低阶混合响应均值，构造同包的有限频率作用。作用是目标风格均值减原 RX 均值，经固定强度 0.1、幅度 ±0.5 dB、相位 ±0.025 rad 有界渲染；不减去单包响应、不把风格索引冒充真实接收机、不宣称分离纯硬件。原始 IQ 推理与默认头保持，无均值 bank 或新推理参数。
 
@@ -19,3 +19,7 @@ U 与 LU 的标量均为 (nU*KL_U+64*KL_L)/(nU+64)，U 范围 detach KL_L，LU �
 队列最多四条本 run GPU worker，每卡本 run 一条、所有 owner 合计 CUDA+pending 最多两条，空闲显存至少10000MiB；独立 scorer 总并发1。健康其他任务不改动。技术错误停止新提交并保留活动产物；科学负结果不触发停种子。发布普通账号，一份代码 commit、一份 archive SHA 传输比对、remote compile，实际权重 smoke 是启动第一步并自动继续。
 
 本版为独立技术替代 r02，r01 全留且0optimizer/target。修复 native runtime 在冻结依赖激活前导入的问题；六项focused tests PASS。只复用r01已完成全U20统计，新增U IQ读取0。强度、loss、两scope、三seed、+30预算和固定正式测试不变。精确输出目录使用rx_mean_source_r02。
+
+发布执行 commit fa758a113f943f35a9da423fb1ca5cd3ff6a071c，archive 单次传输校验 VERIFIED、remote compile PASS。三seed各12批实际父权重联合梯度校准全部通过，参数/持久buffer不变、0optimizer/V/target，三系数均为1.0；这只是预固定剂量规则的结果，不是性能证据。
+
+四份训练worker身份、CWD/argv、实际CUDA卡及步日志增长独立核实，当前01/02的U/LU在GPU1/3/4/5，03两行排队。原fullL768、AsKL0、普通PL及新增损失在已观察步骤实际执行，全观察U作用非零。这里只验证启动前缀，完整训练和正式三seed测试仍未完成。详见launch_verification.json；完成后逐行自动clean+六景预测/独立评分，不修改其他owner。

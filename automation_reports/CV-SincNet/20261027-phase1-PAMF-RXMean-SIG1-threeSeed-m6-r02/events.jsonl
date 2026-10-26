@@ -1,2 +1,7 @@
 {"at": "2026-10-26T19:50:26+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-26T19:51:19+00:00", "status": "LOCAL_VERIFIED", "note": "Six focused tests PASS; import-order P1 targeted review PASS; deterministic bank reuse; actual checkpoint smoke first launch step.", "evidence": ["local_verification.json"], "row_id": null}
+{"at": "2026-10-26T19:55:05+00:00", "status": "RUNNING", "note": "All three real-checkpoint gradient calibrations PASS; four training workers PID/CWD/argv/CUDA and step-log growth verified, two model rows queued.", "evidence": ["launch_verification.json"], "row_id": null}
+{"at": "2026-10-26T19:55:10+00:00", "status": "RUNNING", "note": "Own live training worker and growing actual step records verified.", "evidence": ["launch_verification.json"], "row_id": "F0-RXMean-U-s2026092701"}
+{"at": "2026-10-26T19:55:15+00:00", "status": "RUNNING", "note": "Own live training worker and growing actual step records verified.", "evidence": ["launch_verification.json"], "row_id": "F0-RXMean-LU-s2026092701"}
+{"at": "2026-10-26T19:55:20+00:00", "status": "RUNNING", "note": "Own live training worker and growing actual step records verified.", "evidence": ["launch_verification.json"], "row_id": "F0-RXMean-U-s2026092702"}
+{"at": "2026-10-26T19:55:25+00:00", "status": "RUNNING", "note": "Own live training worker and growing actual step records verified.", "evidence": ["launch_verification.json"], "row_id": "F0-RXMean-LU-s2026092702"}
