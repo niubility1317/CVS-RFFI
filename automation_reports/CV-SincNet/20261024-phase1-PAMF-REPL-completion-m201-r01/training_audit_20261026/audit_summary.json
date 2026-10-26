@@ -1,0 +1,155 @@
+{
+  "status": "VERIFIED_WITH_DECLARED_COVERAGE",
+  "audit_date": "2026-10-26",
+  "audited_method": "PAMF-REPL / HPL_E20_JOINT_RXE6G",
+  "original_run": "20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01",
+  "original_execution_commit": "02979123053aa2b2d8d6f044ba3a497a3d484cd0",
+  "completion_run": "20261024-phase1-PAMF-REPL-completion-m201-r01",
+  "completion_scientific_commit": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
+  "controller_CPU_recovery_commit": "a79bdf385489cb3822b37434a07e3c43e5ce839a",
+  "coverage": {
+    "logical_model_complete_and_counter_records": 201,
+    "unique_epoch_streams": 558,
+    "full_epoch_records": 9150,
+    "main_REPL_rows_recipe_and_counter_alignment": 33,
+    "REPL_tail_native_segments_lr_and_actual_weight": 66,
+    "original_F0_unique_full_step_streams": 24,
+    "original_F0_full_step_records": 86580,
+    "full_training_stdout_files": 280,
+    "full_training_stdout_lines": 351810,
+    "stdout_technical_error_matches": 0,
+    "stdout_warning_matches": 0
+  },
+  "mechanism_alignment": {
+    "status": "VERIFIED",
+    "F0_same_three_weights_reused": true,
+    "all_main_REPL_rows_match_original_same_seed_recipe": true,
+    "all_share_their_ordinary_PL_same_contract_same_seed_E20": true,
+    "L_and_U_per_stage_exposures_match_PL": true,
+    "both_supervised_mechanisms_active": true,
+    "U_threshold": 0.95,
+    "consumed_REPL_U_weight": 6.0,
+    "U_student_forwards_per_packet": 6,
+    "receiver_extrapolation_alpha": 0.25,
+    "U_to_L_group_gradient_norm_cap": 1.0,
+    "EMA": false,
+    "native_complex_gate": false,
+    "segment_trajectory": [
+      20,
+      10,
+      20
+    ],
+    "updates": 11100,
+    "first_REPL_epoch": 21,
+    "ordinary_PL_prefix_U_start_epoch": 14,
+    "ordinary_PL_U_weight": 1.0,
+    "per_segment_base_lr_start": 0.0002,
+    "per_segment_base_lr_end": 1e-06
+  },
+  "compared_execution_files_identical": [
+    "experiments/cric_dura_comparison/f_train.py",
+    "experiments/cric_dura_comparison/t1_model.py",
+    "experiments/cric_dura_comparison/f_data.py",
+    "experiments/cric_dura_comparison/t1_practical.py",
+    "experiments/cric_dura_comparison/f_optimizer.py",
+    "experiments/pamf_ssl_research/source_receiver_extrapolation.py",
+    "experiments/pamf_ssl_research/hard_pl_joint_objective.py"
+  ],
+  "explicit_compatibility_changes": [
+    "Selected cap1 is passed explicitly; original implementation had implicit cap1.",
+    "Pseudo-label one-hot class count is generalized from six to the registered six or ten; F0 remains six.",
+    "Completion loader adapter preserves the original 256-U iterator and partial batches despite its matched-PL regime name.",
+    "Unused legacy plain_PL_weight and scaffold method_id fields are not the consumed REPL objective."
+  ],
+  "F0_all_target_dates_clean_gain_pp": {
+    "mean": 0.7450396825396837,
+    "sample_sd": 0.808095144559487,
+    "positive_seeds": 2,
+    "seeds": 3
+  },
+  "F0_population_reconciliation": [
+    {
+      "method": "REPL",
+      "view": "clean",
+      "old_all_dates": 85.72678571428571,
+      "reconstructed_all_dates": 85.72678571428573,
+      "difference": 1.4210854715202004e-14
+    },
+    {
+      "method": "REPL",
+      "view": "six_practical_mean",
+      "old_all_dates": 70.08551587301588,
+      "reconstructed_all_dates": 70.08551587301588,
+      "difference": 0.0
+    },
+    {
+      "method": "ordinary_PL",
+      "view": "clean",
+      "old_all_dates": 84.98174603174603,
+      "reconstructed_all_dates": 84.98174603174603,
+      "difference": 0.0
+    },
+    {
+      "method": "ordinary_PL",
+      "view": "six_practical_mean",
+      "old_all_dates": 70.35935846560847,
+      "reconstructed_all_dates": 70.35935846560847,
+      "difference": 0.0
+    },
+    {
+      "method": "supervised",
+      "view": "clean",
+      "old_all_dates": 84.78531746031746,
+      "reconstructed_all_dates": 84.78531746031746,
+      "difference": 0.0
+    },
+    {
+      "method": "supervised",
+      "view": "six_practical_mean",
+      "old_all_dates": 70.5961970899471,
+      "reconstructed_all_dates": 70.5961970899471,
+      "difference": 0.0
+    }
+  ],
+  "main_raw_cross_RX_contracts": {
+    "count": 11,
+    "clean_REPL_minus_PL_positive": 7,
+    "six_environment_REPL_minus_PL_positive": 0
+  },
+  "source_V_fixed_threshold_quality": [
+    {
+      "seed": 2026092701,
+      "source_V_accuracy": 98.5,
+      "accepted_fraction": 0.964037037037037,
+      "accepted_accuracy": 99.93853010104115
+    },
+    {
+      "seed": 2026092702,
+      "source_V_accuracy": 98.41111111111111,
+      "accepted_fraction": 0.9582592592592593,
+      "accepted_accuracy": 99.92656437212538
+    },
+    {
+      "seed": 2026092703,
+      "source_V_accuracy": 98.45185185185186,
+      "accepted_fraction": 0.9604444444444445,
+      "accepted_accuracy": 99.94986888786056
+    }
+  ],
+  "current_method_pointer_observed": "ordinary_PL",
+  "limitations": [
+    "Full per-step parsing covers the original F0 supervised/ordinary-PL/REPL lineages only. Remaining contracts were checked using every preserved epoch record, complete/state/counter records and complete stdout, not every step record.",
+    "The broader read-only step-log scan timed out; its own orphan reader was reconciled and stopped. No scientific worker was stopped or changed.",
+    "No new IQ read, checkpoint training, model prediction or truth-side scoring was performed by this audit.",
+    "Configuration and executed counts do not establish bitwise parity for a hypothetical rerun on another contract.",
+    "Original REPL selection used an already exposed F0 clean benchmark, so its selection advantage is not independent blind evidence.",
+    "Source V pseudo-label precision is not actual U pseudo-label accuracy.",
+    "Raw gradient projection and norm capping do not guarantee the direction of the final adaptive optimizer parameter step.",
+    "Single-source-RX contracts cannot activate cross-RX partner mechanisms."
+  ],
+  "issues_found_in_audited_training_execution": [],
+  "new_training": 0,
+  "new_predictions": 0,
+  "new_truth_side_scoring": 0,
+  "PDF_modified": false
+}
