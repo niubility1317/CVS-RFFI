@@ -1,0 +1,43 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-m1-r01",
+  "code_commit": "22041cdee1a95cac538675e3c16a360cb9a023cf",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_PID_CWD_argv_verified": true,
+  "worker_PID_CWD_argv_CUDA_visible_devices_verified": true,
+  "worker_on_assigned_GPU": true,
+  "initial_log_growth_observed": true,
+  "source_progress_advanced_between_independent_reads": true,
+  "source_L_records_complete": 6300,
+  "source_V_progress": {
+    "status": "SOURCE_SIG1_FEATURES",
+    "role": "V",
+    "seen": 9984,
+    "total": 27000,
+    "U_reads": 0,
+    "target_reads": 0
+  },
+  "actual_smoke": {
+    "status": "PASS",
+    "teacher_epoch": 20,
+    "signature_views": 1,
+    "signature_parameters": 18976,
+    "default_head_shape": [
+      6,
+      160
+    ],
+    "F_logical_packets": 4,
+    "G_logical_packets": 2,
+    "optimizer_updates": 0,
+    "U_reads": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0
+  },
+  "new_control_or_student_training": false,
+  "optimizer_updates": 0,
+  "U_reads": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "limitation": "active frozen source feature extraction only; geometry endpoint and scientific result pending"
+}

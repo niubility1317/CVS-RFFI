@@ -31,6 +31,6 @@
 
 已停止 run root：`PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-base-source-m2-r01`。该 root 仅用于保留停止证据，不能作为后续 E30/E50 来源。
 
-GPU 不做静态占卡。当前本对话没有活动 GPU worker；原 NoSIG 六行全部完成，新增重复控制已停止。新候选仍可用物理卡 0 至 7，每次派发核实全局 CUDA＋pending<2、free≥10000 MiB，计入其他 owner。其他方向发布前独立核实实时进程，不能从本文件推断 GPU 仍然空闲。禁止中止任何其他 owner 的健康任务。
+GPU 不做静态占卡。原 NoSIG 六行全部完成，新增重复控制已停止；后续单视图 RX 几何诊断为独立冻结推理 run，不是对照训练，实时状态以其报告和独立读回为准。新候选仍可用物理卡 0 至 7，每次派发核实全局 CUDA＋pending<2、free≥10000 MiB，计入其他 owner。其他方向发布前独立核实实时进程，不能从本文件推断 GPU 仍然空闲。禁止中止任何其他 owner 的健康任务。
 
 新改进学生另行最小登记、实际 smoke 后启动。最终同一候选三 seed、原目标 168000 包/seed、raw 与同 G clean＋六 practical、全部预测冻结后独立 truth-last；原联合门槛保持，不以源分数或共享控制的完成替代目标达成。

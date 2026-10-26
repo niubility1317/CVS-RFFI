@@ -32,3 +32,8 @@
 ## 本地验证
 
 7项聚焦检查与唯一P0/P1审查PASS。实际单视图checkpoint/G源smoke和完整源特征运行尚待执行。参见[预登记](preregistration.md)、[本地检查](local_verification.json)。不训练任何对照或学生，原三项目标未完成。
+
+
+## 实际启动核实
+
+RUNNING。执行commit `22041cdee1a95cac538675e3c16a360cb9a023cf`，一次archive比较VERIFIED／远端compile PASS。实际单视图E20/defaulthead＋G源L2检查PASS，随后立即全量提取；controller和唯一worker的PID/CWD/argv/GPU以及初次日志增长独立核实。L6300已完成，V先1280后9984/27000，证明推进中；当前没有几何终点。零optimizer、零U、零target、无控制或学生训练。私有缓存/运行细节保留本地，公开证据见[launch_evidence.json](launch_evidence.json)。
