@@ -1,39 +1,32 @@
-# 完整PAMF单SIG_TIME：冻结E20的身份保护RX方向源证伪
+# 单视图 REPL：身份保护 RX 方向的完整源诊断
 
-- run_id：`20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-m1-r01`
-- group_id：`pamf-repl-v2-20261026`；类别：`diagnostic`；阶段：`Phase1`
-- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+ANALYZED。**两类表征均通过预先固定的几何必要条件，可以进入新候选机制实现与学生证伪。** 没有训练对照或学生，没有分类准确率提升结论，原三 seed clean／星地／DURA 联合目标仍未完成。
 
-## 目的与对照
+冻结已完成的 m201 单视图普通 PL E20/4440，seed2026092701，同原 F0 G-LU/DURA；原时频、PA、参考响应、单 SIG_TIME 和默认6×160头保持。执行代码 `22041cdee1a95cac538675e3c16a360cb9a023cf`。真实源L2 raw/G检查通过，单视图18976参数；L6300与V27000两类特征全部提取，F/G参数和全部registered buffers不变，0optimizer、0U、0target。没有读取已停止控制的partial。
 
-仅冻结已完成m201单视图E20和原DURA，提取L6300/V27000 raw及12G均值特征，真实L-only RX方向和跨TX/V迁移诊断；0训练，不重复任何对照，不读U或target。
+## 固定必要条件与结果
 
-## 数据、seed与模型来源
+均匀平均L的六类与五RX均值，先估计跨TX共享RX偏移，再移除L类别均值差张成的5维子空间。下表“保留比例”分母是**同一TX在不同RX的均值差异能量**，不是所有单包方差；不得解释为恢复了相应比例的真实硬件因素。
 
-实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
-逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+| 表征 | 保护后RX能量保留比例 | 留一TX平均余弦 | 留一TX正方向比例 | L方向对V平均余弦 | alpha.25位移中位数 | 固定条件 |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| raw | 17.9593% | 0.204386 | 76.67% | 0.413173 | 0.026040 | PASS |
+| restored_mean12 | 22.0502% | 0.249999 | 71.67% | 0.432721 | 0.027871 | PASS |
 
-## 执行与存储
+两行都满足保留比例≥5%、留一TX平均余弦>.1且正方向>.5、V迁移平均余弦>.1，阈值与alpha.25未改变。raw/Gmean12共享RX偏移分别占类内RX均值差27.08%／31.26%；其中约33.68%／29.46%的能量落在L类别均值子空间，被本设计移除。其余TX×RX交互仍很大，单个共享偏移不足以表示所有接收变化。
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+**源证据支持的推断**：相比直接把同伪类两包的整条特征差作外推，L-only共享RX方向是一个非零、在当前源条件下可迁移的受限扰动。**尚不能证明**它能保全全部身份信息、推广到未见RX或提高真实分类；下一步必须靠真实学生与既有目标对照检验。
 
-## 结果与覆盖
+restored_mean12是四个信道随机实现×三源场景的归一化G特征平均，只作几何。它不是某一恢复IQ的默认头预测，不能写成实际DURA场景准确率。L/V均是训练RX/日期的源角色；留一TX是估计方向的检验，不是新的未见接收机实验。
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+## 完整核验与成本
 
-## 交接
+独立CPU审计读取全部33300条×2表征×160维，共10656000个特征值，验证原物理ID/角色顺序、互斥、finite/norm、全部L/V六类五RX单元，L每单元210条、V每单元900条。用独立最小二乘投影代替原SVD重算能量、60个V方向及留一TX方向、固定判定，最大统计差 2.22e-16。审计新增模型前向／IQ／U／target均0。全部35行stdout已扫描，控制器与worker终止且退出GPU。
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+实际新F包视图432904、G包视图399602，含实际smoke4／2；唯一源物理记录33300，不把视图当独立样本。特征阶段641.572秒；没有任何训练更新或新对照训练。
 
+## 后续新候选
 
-## 本地验证
+复用已有单视图普通PL E20，各候选+10＋20至E50/11100。拟只训练三个改进：去风格混合、去风格且去完整外推、去风格且只沿上述L-only身份均值保护RX方向外推。原监督、普通PL和REPL结果复用，不补训练；不同结构/配方差异如实标注。新方向训练时用当前真实L特征更新统计，V不更新；需明确统计初始化/分段续接、缺失单元、停止梯度、真实U机制和原默认头梯度，再按最小流程发布。当前这些学生尚未启动，源几何PASS不是三seed/目标成功。
 
-7项聚焦检查与唯一P0/P1审查PASS。实际单视图checkpoint/G源smoke和完整源特征运行尚待执行。参见[预登记](preregistration.md)、[本地检查](local_verification.json)。不训练任何对照或学生，原三项目标未完成。
-
-
-## 实际启动核实
-
-RUNNING。执行commit `22041cdee1a95cac538675e3c16a360cb9a023cf`，一次archive比较VERIFIED／远端compile PASS。实际单视图E20/defaulthead＋G源L2检查PASS，随后立即全量提取；controller和唯一worker的PID/CWD/argv/GPU以及初次日志增长独立核实。L6300已完成，V先1280后9984/27000，证明推进中；当前没有几何终点。零optimizer、零U、零target、无控制或学生训练。私有缓存/运行细节保留本地，公开证据见[launch_evidence.json](launch_evidence.json)。
+[预登记](preregistration.md)、[全部统计](source_geometry.csv)、[完成证据](complete_evidence.json)、[REPL路线](../../../docs/goals/PAMF_REPL_V2_20261026.md)。原NoSIG诊断未执行取消，原NoSIG失败学生均保留，不混入本单视图结果。

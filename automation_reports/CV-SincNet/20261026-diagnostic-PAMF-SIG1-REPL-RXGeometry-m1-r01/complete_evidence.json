@@ -1,0 +1,405 @@
+{
+  "independent_audit": {
+    "status": "VERIFIED_COMPLETE",
+    "run_id": "20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-m1-r01",
+    "code_commit": "22041cdee1a95cac538675e3c16a360cb9a023cf",
+    "rows": [
+      {
+        "view": "raw",
+        "within_class_RX_energy": 0.019639884084936683,
+        "shared_RX_energy": 0.005318505452114304,
+        "interaction_energy": 0.014321378632822377,
+        "shared_RX_fraction": 0.2708012648706755,
+        "protected_RX_fraction": 0.17959300313407106,
+        "identity_energy_fraction": 0.3368088468130387,
+        "loco_mean_cosine": 0.20438601814007049,
+        "loco_positive_fraction": 0.7666666666666667,
+        "V_mean_cosine": 0.41317295097091916,
+        "geometry_pass": true,
+        "L_cells": [
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ]
+        ],
+        "V_cells": [
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ]
+        ]
+      },
+      {
+        "view": "restored_mean12",
+        "within_class_RX_energy": 0.01735414591527247,
+        "shared_RX_energy": 0.005424954467562354,
+        "interaction_energy": 0.011929191447710116,
+        "shared_RX_fraction": 0.3126027920963911,
+        "protected_RX_fraction": 0.2205019250098205,
+        "identity_energy_fraction": 0.29462586200500496,
+        "loco_mean_cosine": 0.2499991782072584,
+        "loco_positive_fraction": 0.7166666666666667,
+        "V_mean_cosine": 0.43272145251795996,
+        "geometry_pass": true,
+        "L_cells": [
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ]
+        ],
+        "V_cells": [
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          [
+            900,
+            900,
+            900,
+            900,
+            900
+          ]
+        ]
+      }
+    ],
+    "max_absolute_stat_difference": 2.220446049250313e-16,
+    "source_records_complete": 33300,
+    "representations": 2,
+    "source_feature_values_checked": 10656000,
+    "F_logical_packets": 432904,
+    "G_logical_packets": 399602,
+    "stdout_lines": 35,
+    "new_model_forwards_in_audit": 0,
+    "IQ_reads_in_audit": 0,
+    "U_reads": 0,
+    "target_reads": 0,
+    "frozen_parameters_and_registered_buffers_verified": true,
+    "geometry_pass": true,
+    "source_extraction_seconds": 641.5722162951715
+  },
+  "completion": {
+    "status": "SOURCE_REPL_RX_GEOMETRY_COMPLETE",
+    "views": [
+      {
+        "class_rank": 5,
+        "within_class_RX_energy": 0.019639884084936683,
+        "shared_RX_energy": 0.005318505452114304,
+        "interaction_energy": 0.014321378632822377,
+        "shared_RX_fraction": 0.2708012648706755,
+        "protected_RX_fraction": 0.17959300313407106,
+        "identity_energy_fraction": 0.3368088468130387,
+        "view": "raw",
+        "L_cells": [
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ]
+        ],
+        "loco_mean_cosine": 0.20438601814007037,
+        "loco_positive_fraction": 0.7666666666666666,
+        "V_transfer": {
+          "pairs": 60,
+          "mean_cosine": 0.41317295097091905,
+          "median_cosine": 0.4282500087617297,
+          "positive_fraction": 0.9666666666666667,
+          "median_alpha25_displacement": 0.026040487692235978
+        },
+        "geometry_pass": true
+      },
+      {
+        "class_rank": 5,
+        "within_class_RX_energy": 0.01735414591527247,
+        "shared_RX_energy": 0.005424954467562354,
+        "interaction_energy": 0.011929191447710116,
+        "shared_RX_fraction": 0.3126027920963911,
+        "protected_RX_fraction": 0.2205019250098205,
+        "identity_energy_fraction": 0.29462586200500496,
+        "view": "restored_mean12",
+        "L_cells": [
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ],
+          [
+            210,
+            210,
+            210,
+            210,
+            210
+          ]
+        ],
+        "loco_mean_cosine": 0.2499991782072586,
+        "loco_positive_fraction": 0.7166666666666667,
+        "V_transfer": {
+          "pairs": 60,
+          "mean_cosine": 0.43272145251796007,
+          "median_cosine": 0.5005021952936517,
+          "positive_fraction": 0.95,
+          "median_alpha25_displacement": 0.02787055433774393
+        },
+        "geometry_pass": true
+      }
+    ],
+    "geometry_pass": true,
+    "fixed_rule": {
+      "protected_RX_fraction_min": 0.05,
+      "loco_mean_cosine_gt": 0.1,
+      "loco_positive_fraction_gt": 0.5,
+      "V_transfer_mean_cosine_gt": 0.1
+    },
+    "labels_used_for_estimator": "L only; V only read-only evaluation",
+    "source_training_updates": 0,
+    "U_reads": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0,
+    "limitations": [
+      "Necessary geometry conditions only; no classifier accuracy or student training.",
+      "restored_mean is normalized average of twelve G feature views, not an individual G prediction.",
+      "RX and TX interaction may prevent a shared additive receiver representation.",
+      "Historical target benchmark exposed; no new target predictions or target parameter selection."
+    ],
+    "run_id": "20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-m1-r01",
+    "parent_feature_run": "20261026-diagnostic-PAMF-SIG1-REPL-RXGeometry-m1-r01",
+    "model_seed": 2026092701,
+    "L_records": 6300,
+    "V_records": 27000,
+    "code_commit": "22041cdee1a95cac538675e3c16a360cb9a023cf",
+    "geometry_arithmetic_model_forwards": 0,
+    "frozen_F_G_checkpoint_loading_performed": true,
+    "source_IQ_unique_records": 33300,
+    "F_logical_packets_including_smoke": 432904,
+    "G_logical_packets_including_smoke": 399602
+  },
+  "actual_smoke": {
+    "status": "PASS",
+    "teacher_epoch": 20,
+    "signature_views": 1,
+    "signature_parameters": 18976,
+    "default_head_shape": [
+      6,
+      160
+    ],
+    "F_logical_packets": 4,
+    "G_logical_packets": 2,
+    "optimizer_updates": 0,
+    "U_reads": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0
+  },
+  "controller_terminal": true,
+  "worker_terminal_and_off_GPU": true
+}
