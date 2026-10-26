@@ -71,7 +71,21 @@ def paired(candidate,control,method):
 
 def analyze(evidence,output):
     root=Path(evidence);pilot=root/'pilot';out=Path(output);out.mkdir(parents=True,exist_ok=True)
-    segments=[];curves=[];epoch_steps=[];errors=[];stdout=[];last_steps={};paired_all=[];agreements=[];decisions=[]
+    segments=[];curves=[];epoch_steps=[];errors=[];stdout=[];last_steps={};paired_all=[];agreements=[];decisions=[];prefix_info=None
+    prefix=root/'prefix20'
+    if (prefix/'step_metrics.jsonl.gz').exists():
+        complete=(prefix/'complete.json').exists();logs,closed=records(prefix/'step_metrics.jsonl.gz',complete=complete)
+        epochs,_=records(prefix/'metrics_epoch.jsonl',complete=complete)
+        if [v['step'] for v in logs]!=list(range(1,len(logs)+1)) or complete and (len(logs)!=4440 or len(epochs)!=20):
+            raise ValueError('Complete shared ordinaryPL E20 log budget required')
+        for row in logs:
+            call=max(0,row['step']-13*222);m=row['metrics']
+            if (m['T1_L_packets']!=768 or m['T1_As_KL_weight']!=0 or m.get('T1_PL_seen',0)!=call*256-132*(call//222)):
+                raise ValueError('Shared E20 must retain full L and original13L7LU plainPL exposure')
+        for row in epochs:curves.append(dict(method='shared_PL_E20',cumulative_epoch=row['epoch'],**{k:row.get(k) for k in ('lr','epoch_time_s','train_loss','val_tx_acc')}))
+        segments.append(dict(method='shared_PL_E20',segment_end=20,steps=len(logs),epochs=len(epochs),complete=complete,gzip_closed=closed))
+        prefix_info=dict(cumulative_epochs=20,steps=len(logs),U_seen=logs[-1]['metrics'].get('T1_PL_seen',0),U_accepted=logs[-1]['metrics'].get('T1_PL_accepted',0),
+            scope='shared inherited prefix counted once;not newly trained for this covariance run') if logs else None
     for method in METHODS:
         folder=pilot/'F'/('F0-'+method+'-s'+str(SEED))/'source'
         for end,length,offset in ((30,10,20),(50,20,30)):
@@ -92,9 +106,14 @@ def analyze(evidence,output):
                 for v in batch:
                     m=v['metrics'];call=(offset-20)*222+v['step'];seen=call*256-132*(call//222)
                     if (m['COV_calls']!=call or m['COV_seen']!=seen or m['COV_L_pairs']!=64*call
-                        or m['COV_L_forwards_reused']!=5 or m['COV_extra_U_forwards']!=1):raise ValueError('Actual reused forwards/all-U exposure continuity differs')
+                        or m['COV_L_forwards_reused']!=5 or m['COV_extra_U_forwards']!=1
+                        or m['T1_L_packets']!=768 or m['T1_As_KL_weight']!=0
+                        or m['T1_PL_seen']!=v['step']*256-132*(v['step']//222)):
+                        raise ValueError('Actual original L/PL,reused forwards or all-U continuity differs')
                 row.update({k+'_last':batch[-1]['metrics'][k] for k in ('COV_calls','COV_seen','COV_L_pairs')});epoch_steps.append(row)
-            if steps:last_steps[method]=dict(cumulative_step=offset*222+steps[-1]['step'],**{k:v for k,v in steps[-1]['metrics'].items() if k.startswith('COV_')})
+            if steps:
+                m=steps[-1]['metrics'];last_steps[method]=dict(cumulative_step=offset*222+steps[-1]['step'],
+                    cumulative_U_seen=396900+m['COV_seen'],**{k:v for k,v in m.items() if k.startswith('COV_') or k in ('T1_PL_seen','T1_PL_accepted')})
             segments.append(dict(method=method,segment_end=end,steps=len(steps),epochs=len(epochs),complete=complete,gzip_closed=closed))
     fatal=re.compile(r'Traceback \(most recent call last\)|CUDA out of memory|FloatingPointError:|RuntimeError:|^Killed\s*$',re.I|re.M)
     for p in sorted((pilot/'logs').glob('*.log')):
@@ -114,7 +133,7 @@ def analyze(evidence,output):
                 rule=source_rule(state,[r for r in rows if r['dimension']=='overall']);decisions.append(dict(method=method,**rule))
                 paired_all.extend(rows);agreements.extend(pairs)
     result=dict(status='COVARIANCE_SOURCE_ANALYSIS_COMPLETE' if len(decisions)==4 else 'PARTIAL_LIVE_COVARIANCE_SOURCE_ANALYSIS',run_id=RUN,
-        segments=segments,latest_steps=last_steps,stdout_full_scan=stdout,fatal_markers=errors,source_decisions=decisions,
+        segments=segments,shared_prefix=prefix_info,latest_steps=last_steps,stdout_full_scan=stdout,fatal_markers=errors,source_decisions=decisions,
         comparator=COMPARATOR,comparator_retraining=0,target_performance='UNTESTED',U_TX_correctness='UNKNOWN',
         scope='all available structured records and complete stdout parsed;live segments explicitly partial;no model/IQ/target updates')
     (out/'analysis.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
