@@ -1,0 +1,64 @@
+{
+  "status": "IMPLEMENTATION_ONLY_NOT_REGISTERED_OR_LAUNCHED",
+  "prepared_run_id": "20261027-phase1-PAMF-SIG1-REPL-RxBalance-confirm-m3-r01",
+  "scientific_method_unchanged": true,
+  "source_gate": {
+    "requires_two_completed_source_rows": true,
+    "raw_min": 26568,
+    "raw_n": 27000,
+    "H3_min": 62109,
+    "H3_n": 81000,
+    "order": [
+      "raw_correct",
+      "H3_correct",
+      "REPL_RB_RX exact tie"
+    ]
+  },
+  "prepared_matrix": {
+    "new_train": 2,
+    "new_predict": 3,
+    "new_score": 3,
+    "smoke": 1,
+    "total_jobs": 9,
+    "seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "reused_selected_seed01": 1,
+    "new_baseline_train": 0,
+    "new_baseline_predict": 0
+  },
+  "future_per_model_budget": {
+    "cumulative_epochs": 50,
+    "cumulative_updates": 11100,
+    "new_seed02_03_epochs": 30,
+    "new_seed02_03_updates": 6660,
+    "initialization": "own corresponding original SIG1 ordinaryPL scratchE20"
+  },
+  "future_primary_population": 168000,
+  "future_diagnostic_cross_date": 30000,
+  "future_new_raw_decisions": 4158000,
+  "future_reused_reference_raw_decisions": 8316000,
+  "preserved_goal": {
+    "clean_floor": 85.98174603174603,
+    "six_floor_strict": 72.0961970899471,
+    "clean_gain_at_least_pp": 1.0,
+    "six_gain_strict_pp": 1.5
+  },
+  "focused_tests": 18,
+  "compile": "PASS",
+  "P0_P1_new_plumbing_review": {
+    "verdict": "PASS",
+    "reviewer": "/root/ssl_p0p1_review",
+    "scope": "Only new source-gated confirmation/parent/reuse/prediction/scoring/weighted168000/publication plumbing; no duplicate objective review",
+    "direct_defects": []
+  },
+  "actual_confirmation_GPU_launches": 0,
+  "actual_new_target_reads": 0,
+  "actual_checkpoint_smoke": "Only after source pass and independent registration/publication; not yet executed",
+  "baseline_reuse": {
+    "primary": "PROJECT/runs/20261026-phase1-PAMF-SIG1-matched-baselines-m6-r01/readouts/F0-METHOD-sSEED/scores/scores.json",
+    "cross_date": "PROJECT/runs/20261027-phase1-PAMF-SIG1-REPL-CleanH-confirm-m3-r01/evaluations/F0-METHOD-sSEED/scores/scores.json"
+  }
+}
