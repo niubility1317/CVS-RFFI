@@ -37,3 +37,5 @@ Max三seed已完整ANALYZED：rawclean84.544643%、六景70.262070%，相对匹�
 P三seed E20→E30完整6660步/30模型epoch及每模型283500H三路计数已核验，原E50轨迹保持。36批同E20配对发现P改变H目标及raw/H剂量（H参考中位24.75%至26.96%，非逐批硬限幅）。独立PM三seed仅改为max_rawH_median(norm_aux/norm_primary)校准，alpha0.150513/0.145340/0.150372，复用同P源梯度，0新校准F/权重，整个P结束后才启动。代码/6tests/独立P0P1通过、CPU等待控制器已VERIFIED，真实PM smoke仍PENDING_FIRST_NATIVE_SEGMENT。原目标active，不读取P目标决定新矩阵。
 
 P三seed完整ANALYZED：rawclean84.367857%、六景69.716799%，相对PL −0.325992/−0.516435pp且样本SD增大，失败。19980step/90模型epoch与3528000正式判决完整核验。预先固定PM已三seed接续，自己原E20的真实native checkpoint smoke均PASS、首整H epoch计数完整；校准0新F/权重，alpha0.150513/0.145340/0.150372保持，未参考P目标改变配方。PM尚无性能，原全范围目标active。
+
+PM三seed完整E20→E30的6660步/30模型epoch及H/RX/尾批/原PL计数已核验，继续原E50。只读RX传递表几何诊断表明非自洽增益/相位能量0.033164%/0.281932%，投影变化很小且不能证明身份保护，故不为其新开神经候选；0新IQ/F/权重/UTX/V/target。PM健康且无新训练矩阵，原完整目标active。

@@ -1,0 +1,93 @@
+{
+  "status": "EXISTING_RX_TRANSFER_GEOMETRY_ANALYZED",
+  "source_run_id": "20261027-phase1-PAMF-RXMean-SIG1-threeSeed-m6-r02",
+  "source_U_bank_statistics": 20,
+  "original": {
+    "receiver_nodes": 5,
+    "directed_pairs": 20,
+    "identity_max_complex_error": 0.0,
+    "per_edge_max_abs_gain_db": 0.5000004810800969,
+    "per_edge_max_abs_phase_rad": 0.010189927537969764,
+    "reciprocal": {
+      "paths": 20,
+      "frequency_bins": 256,
+      "max_absolute_gain_error_db": 0.027216845937595116,
+      "max_absolute_phase_error_rad": 0.0017909306072612895,
+      "RMS_complex_error": 0.0011916637276473106,
+      "max_complex_error": 0.0031341679925164867,
+      "absolute_gain_error_db_p95": 0.023602102381769425,
+      "absolute_phase_error_rad_p95": 0.0008395275972132845
+    },
+    "triangles": {
+      "paths": 60,
+      "frequency_bins": 256,
+      "max_absolute_gain_error_db": 0.027396147309058698,
+      "max_absolute_phase_error_rad": 0.001777975611298009,
+      "RMS_complex_error": 0.0014776502127541956,
+      "max_complex_error": 0.0031596256724930453,
+      "absolute_gain_error_db_p95": 0.023996835682049383,
+      "absolute_phase_error_rad_p95": 0.0009606421708981491
+    },
+    "nonconservative_log_gain_energy_fraction": 0.00033163693969716774,
+    "nonconservative_phase_energy_fraction": 0.0028193221002588884,
+    "uniform_frequency_table_only": true,
+    "IQ_or_identity_or_F_performance_claim": false
+  },
+  "potential_projection": {
+    "receiver_nodes": 5,
+    "directed_pairs": 20,
+    "identity_max_complex_error": 0.0,
+    "per_edge_max_abs_gain_db": 0.500000000000002,
+    "per_edge_max_abs_phase_rad": 0.009712654472801145,
+    "reciprocal": {
+      "paths": 20,
+      "frequency_bins": 256,
+      "max_absolute_gain_error_db": 3.857309866213148e-15,
+      "max_absolute_phase_error_rad": 2.926597398971009e-18,
+      "RMS_complex_error": 1.3053654156061739e-16,
+      "max_complex_error": 4.44089214033006e-16,
+      "absolute_gain_error_db_p95": 1.9286549331065743e-15,
+      "absolute_phase_error_rad_p95": 8.052711872621007e-19
+    },
+    "triangles": {
+      "paths": 60,
+      "frequency_bins": 256,
+      "max_absolute_gain_error_db": 4.821637332766436e-15,
+      "max_absolute_phase_error_rad": 4.964270140910266e-18,
+      "RMS_complex_error": 1.5418439396368232e-16,
+      "max_complex_error": 5.551117625065965e-16,
+      "absolute_gain_error_db_p95": 1.9286549331065743e-15,
+      "absolute_phase_error_rad_p95": 1.436135318666603e-18
+    },
+    "nonconservative_log_gain_energy_fraction": 1.2495946996250716e-29,
+    "nonconservative_phase_energy_fraction": 1.95319175772508e-32,
+    "uniform_frequency_table_only": true,
+    "IQ_or_identity_or_F_performance_claim": false
+  },
+  "projection_metadata": {
+    "gain_frequency_range_scaled_fraction": 0.18359375,
+    "phase_frequency_range_scaled_fraction": 0.0,
+    "derived_only_from_existing_table": true,
+    "new_training_statistics": 0,
+    "new_F_forwards": 0,
+    "identity_preservation_guarantee": false
+  },
+  "original_action_bounds": {
+    "max_abs_gain_db": 0.5,
+    "max_abs_phase_rad": 0.010189926926174856,
+    "gain_bound_fraction": 0.0909375,
+    "phase_bound_fraction": 0.0
+  },
+  "edge_RMS_transfer_change": 0.000554479282450534,
+  "new_F_forwards": 0,
+  "new_IQ_reads": 0,
+  "weight_reads": 0,
+  "U_TX_truth_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "new_training_updates": 0,
+  "model_seeds": null,
+  "identity_or_physical_decomposition_or_F_performance_guarantee": false,
+  "new_operator_training_started": false,
+  "goal_complete": false
+}

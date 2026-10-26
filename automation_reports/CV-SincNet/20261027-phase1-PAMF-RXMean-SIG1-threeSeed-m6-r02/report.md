@@ -44,3 +44,5 @@
 固定代码入口 `rx_mean_source`、完整日志 `rx_mean_audit`、固定产物读取/汇总 `rx_mean_results`。原始 IQ、权重、逐包 logits/IDs 和私有路径留在原 run/private artifacts，仅提交公开统计。后续 RXMeanMax 三 seed 已在本结果之前固定并排队，待本 run 完成才占 GPU；本负结果不会改变其配方、预算或 seed。原目标仍 active。
 
 补充已存在源预测分析：[同包 raw/H 参照诊断](source_reference_diagnostics/report.md)。两方法×三 seed、648000 份已有 logits/1620 分层，无新 F/训练/target/U 真值。高置信 raw 的 low urban 参照约 38.8% 从 raw 对变为 H 错；H 高置信子集仍约 99.77% 正确。它提示区分参照证据强弱，不能用一致性替代身份纠错证据，也不作为当前 Max 配方修改依据。
+
+已存20项U/RX统计的附加代数检查见[传递表往返/环路诊断](transfer_geometry_report.md)：非自洽对数增益/相位能量0.033164%/0.281932%，投影表RMS变化0.00055448。0新IQ/F/权重/UTX/V/target/训练，不能认定身份保护或性能退步根因。证据不足以优先另开该投影的神经训练，当前PM保持；旧训练和正式结果不改写。

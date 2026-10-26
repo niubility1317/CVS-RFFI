@@ -27,3 +27,5 @@
 完整结果工具`rx_trust_pm_results collect/analyze`与源日志工具`rx_trust_pm_audit`已就绪。结果要求3行/12job全部完成，复用PL/Sup/P9参考、核查18组同seed物理顺序和3528000新raw判决；不把排队文件或缺seed当正式结果。沿用已核实的P路由/四候选/PL/fullL每步检查，PM日志按真实train__SEED.log定位。3项加权数值/错参考缺seed/未完成矩阵测试PASS，见analysis_tool_verification.json；只补本地分析，不改变已发布神经代码/规则。
 
 实际三条PM CUDA轨迹的PID/CWD/argv/UID/显卡映射及非零连续step已核实，见launch_verification.json。配置阶段确为0新F、0模型权重加载、0optimizer，读取原P12批源统计后系数与预登记逐seed一致。没有复制旧P smoke：每行自己的segment30/smoke.json真实读取E20并检查sourceL2、863730参数和原6类默认头。当前已完成首整H epoch，每行三路合计56700且原门控/ramp/尾批符合；此仅初始轨迹执行证据，非完整E50或性能。P负结果不回流本已冻结PM配方。
+
+三seed E20→E30完整段均已结束并逐条核验：6660step/30模型epoch，每模型56700U各10遍、raw/H各283500、H单标签/集合/fallback合计283500且每RX56700，原PL门控、四候选最大KL、alpha/ramp和尾批124一致。配置阶段三份记录确认复用原P12批源梯度、0新增F/权重，原E20 raw/H中位比例符合固定规则。自己两个训练段的真实checkpoint路径与源IO smoke保持，当前E30→E50已继续；见first_segment_audit.json。该节点不是完整E50或PM性能结论。
