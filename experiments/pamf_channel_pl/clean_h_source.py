@@ -93,13 +93,13 @@ def validate_config(c):
 
 
 @contextmanager
-def installed(c,holder):
+def installed(c,holder,validate=validate_config):
     from experiments.cric_dura_comparison import t1_model
     from experiments.pamf_repl_completion.objectives import loader_scope,portable_scope
     from .sig1_model import install_single_view
-    validate_config(c);original,plain=t1_model.install,t1_model.plain_pl
+    validate(c);original,plain=t1_model.install,t1_model.plain_pl
     def build(model,cfg):
-        validate_config(cfg);model=install_single_view(original(model,cfg),cfg['model_seed']);obj=CleanHObjective(cfg);holder.update(model=model,objective=obj)
+        validate(cfg);model=install_single_view(original(model,cfg),cfg['model_seed']);obj=CleanHObjective(cfg);holder.update(model=model,objective=obj)
         model._feature_learning_report.update(sig_time_views=1,source_U_IQ_used=True,supervised_architecture='SIG_TIME',clean_H_only=True)
         old_hook=model._source_labeled_feature_hook
         def hook(self,**kwargs):
@@ -114,10 +114,10 @@ def installed(c,holder):
     finally:t1_model.install,t1_model.plain_pl=original,plain
 
 
-def load_parent(c):
+def load_parent(c,validate=validate_config):
     import torch
     from experiments.pamf_repl_completion.source import parent
-    validate_config(c);done=parent(c,c['shared_SIG1_E20']);cp=torch.load(Path(done['folder'])/'final_ssdg.pth',map_location='cpu',weights_only=False)
+    validate(c);done=parent(c,c['shared_SIG1_E20']);cp=torch.load(Path(done['folder'])/'final_ssdg.pth',map_location='cpu',weights_only=False)
     check_state(cp)
     if (done['epoch']!=20 or done['updates']!=4440 or done['initialization']!='scratch' or done['ancestors']!=[]
             or read(c['source_contract'])!=read(c['expected_source_contract']) or cp['checkpoint_selection']!='final_only'
@@ -126,18 +126,18 @@ def load_parent(c):
 
 
 
-def smoke(rt,configs):
+def smoke(rt,configs,validate=validate_config):
     import torch
     from torch.nn import functional as F
     from experiments.cric_dura_comparison import f_train,t1_model
     from experiments.cvs_phase1_stack.runtime import installed as native_installed
-    _,cp=load_parent(configs[0]);rows=[]
+    _,cp=load_parent(configs[0],validate);rows=[]
     for c in configs:
         cfg=dict(c,output_root=c['output_root']+'/segment30',segment_epochs=10,epoch_offset=20,step_offset=4440,parent_source=c['shared_SIG1_E20'],candidate_smoke=True)
         holder={}
-        with installed(cfg,holder):
+        with installed(cfg,holder,validate):
             ctx=f_train.context(cfg)
-            with f_train.class_dimension(cfg),native_installed(f_train.original_config(SEED)) as native:
+            with f_train.class_dimension(cfg),native_installed(f_train.original_config(cfg['model_seed'])) as native:
                 args=f_train.arguments(cfg,'cuda:0');args.input_len=256;args.baseline_ckpt=args.teacher_ckpt='';args.from_scratch=args.a1_scratch_only=True
                 model=t1_model.install(native.build_baseline_model(args,'cuda:0'),cfg).to('cuda:0')
             model.load_state_dict(cp['model'],strict=True);model._cd_U_loader=ctx['unlabeled_loader'];model._cd_U_iter=iter(model._cd_U_loader)
@@ -161,16 +161,16 @@ def smoke(rt,configs):
 
 
 
-def train(c):
+def train(c,validate=validate_config):
     import shutil
     import torch
     from experiments.cric_dura_comparison.f_train import train as segment
-    validate_config(c);old,cp=load_parent(c);del cp;root=Path(c['output_root']);root.mkdir(parents=True,exist_ok=False);write(root/'resolved_config.json',c)
+    validate(c);old,cp=load_parent(c,validate);del cp;root=Path(c['output_root']);root.mkdir(parents=True,exist_ok=False);write(root/'resolved_config.json',c)
     chain=[old];previous=c['shared_SIG1_E20'];states=[]
     for epochs,offset in ((10,20),(20,30)):
         folder=root/('segment'+str(offset+epochs));cfg=dict(c,output_root=str(folder),segment_epochs=epochs,epoch_offset=offset,step_offset=offset*222,parent_source=previous)
         holder={}
-        with installed(cfg,holder):segment(cfg)
+        with installed(cfg,holder,validate):segment(cfg)
         obj=holder['objective'];state=obj.state_dict();done=read(folder/'complete.json');payload=torch.load(folder/'final_ssdg.pth',map_location='cpu',weights_only=False);check_state(payload)
         if (state['calls']!=epochs*222 or state['seen']!=epochs*56700 or state['student_views']!=6*state['seen'] or state['EMA_updates'] or state['U_truth_read']
                 or any(state['U_style']['applied'].values()) or done['epoch']!=epochs or done['updates']!=epochs*222 or done['target_access'] or done['U_truth_read']

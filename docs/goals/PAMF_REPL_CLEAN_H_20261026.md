@@ -42,3 +42,12 @@ L不套用U的.95置信丢弃规则，全部真标签CE保留；L是否采用双
 run `20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01` 已按上述三行实现并启动，执行commit `d860ee49a036c599bcb0d7848feed22cc7de8bd7`。新激活器只使用F/AF/BASE/FOLD及当前practical代码；无恢复器root/权重/IQ/分数。10focused测试、compile、一次P0/P1审查和实际E20联合backward smoke均PASS。三学生GPU0/3/4真实运行，独立核实step增长；当时656条可读记录全部检查通过。
 
 固定源门槛为raw≥26547/27000、H3≥61132/81000，复用既有三参照raw/H部分；通过者clean优先，其次H/较低H成本，无通过不扩seed/目标。每行独立+10+20，累计E50/11100；每行训练后自动源4view评测。三行是三变体单Fseed，不是三seed；当前没有新目标结果，原目标保持未完成。详情与当前证据见[新run报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01/report.md)。
+
+
+## 源探索完成，固定胜出方法进入三种子确认（2026-10-27）
+
+`20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01` 三行 E50 已完成，独立核算 19980 条新增训练记录、三个实际最终权重和 324000 个源域决策。三项都过原门槛；按 raw 优先规则选中 REPL_H2_LU_Pair，源 raw26554/27000、H362190/81000，较固定参照 raw−0.074074pp、H3+1.606173pp。U-only 的 H3 略高，仍遵守原 clean 优先顺序，不据目标改选。
+
+确认 run `20261027-phase1-PAMF-SIG1-REPL-CleanH-confirm-m3-r01` 复用完成 seed01，只训练 seed02/03 各自同契约单视图普通 PL scratchE20+10+20 到 E50。只有 clean 与直接星地 IQ，无 G 权重/IQ/评分；保持完整 PAMF、单 SIG_TIME、原 jointhead。每 seed 主168000原物理样本 raw clean＋六 practical，cross_date30000另报。复用六个严格监督/普通PL对照的主结果，只补它们缺失的 crossdate 原权重预测，不重训、不重复主预测。矩阵2训练/9预测/9独立评分/1真实源smoke。
+
+目标绝对门槛和配对提升要求不变，方法/seed/预算/测试矩阵在访问目标前固定；目标结果不回流调参或变体选择。当前源通过不是三种子目标成功。精确命令、环境/路径、数据句柄、GPU/owner、停止规则和产物见[确认登记](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-CleanH-confirm-m3-r01/experiment.json)。
