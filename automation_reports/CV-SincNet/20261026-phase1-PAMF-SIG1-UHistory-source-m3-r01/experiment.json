@@ -1,0 +1,240 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01",
+  "group_id": "pamf-sig1-u-history-independent-20261026",
+  "display_name": "PAMF单SIG_TIME：普通PL叠加U历史与稳定负类，三变体源证伪",
+  "description": "完整PAMF、单SIG_TIME、原默认头；只新增三种优化行，既有监督/普通PL/REPL对照只读复用、不重训。从已完成同契约普通PL单视图E20独立+10+20到E50，机制E21起。与另一对话独立，无RX外推/风格混合。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "SIG_TIME-single-view",
+    "ordinary-PL-plus",
+    "source-U-history",
+    "negative-learning",
+    "source-only",
+    "no-comparator-training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "本聊天用户要求独立优化PAMF-REPL；完整PAMF保留SIG_TIME单视图；后续明确不影响另一个对话、对照复用已完成、不重复训练。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "existing verified N607 CVS-RFFI Python, FP32/TF32off, two CPU threads, no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-SIG1-UHistory-source-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig original F0",
+    "version": "existing validated original physical roles",
+    "representation": "FP32 received IQ [2,256]",
+    "contract_ref": "original F0 source_contract.json, checked private context",
+    "physical_ids_ref": "same existing source contract.role_ids",
+    "label_map_ref": "same original six registered TX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "unchanged original F0 six TX",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": ".07/.63/.30 source pool;training label ratio .10",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "unchanged existing Phase1 validated source handles;Phase2 capsule_id/split_id not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "same practical residual/post_sync/noEQ, source L training and frozen source V diagnostics"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-seed source falsification only;no new target accuracy or completed optimization claim"
+  },
+  "checkpoint": {
+    "initialization": "completed scratch single-view ordinary-PL E20 prefix + own10 + own20",
+    "sources": [
+      "20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20"
+    ],
+    "contract_check_ref": "actual complete.json,source contract equality and real payload state in load_prefix;first-step real checkpoint source L/U smoke",
+    "provenance_verdict": "require same original F0 physical IDs/roles;single SIG_TIME local6x96x1/output160x112/defaulthead6x160;scratch prefix no ancestors/no target selection;fail closed on mismatch",
+    "selection_rule": "fixed E50 only;all three source outcomes retained;no target-based choice;history combined is prespecified primary,other two source ablations"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-u-history-independent-20261026",
+    "gpu_policy": "physical GPU0..7;only globally idle card (CUDA+pending count=0) with >=10000MiB free;one owned worker/card;other tasks untouched",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01",
+    "remote_log_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026",
+    "launch_command": "PYTHON -u -m experiments.pamf_u_history.source dispatch --config PROJECT/releases/20261026-phase1-PAMF-SIG1-UHistory-source-release-r01/runtime.json",
+    "stop_rule": "first technical/protocol/smoke/nonfinite/ancestry/output/budget failure stops NEW jobs;healthy jobs finish;no performance-triggered kill,autoretry,foreign changes"
+  },
+  "expected_artifacts": [
+    "realE20 L128/U256/history joint-backward smoke with signature/defaulthead gradients",
+    "three E50/11100 checkpoints,each30new epochs,zero comparator training",
+    "complete sourceV27000 raw/Graw/threeH/threeG frozen predictions and RX/day/TX metrics",
+    "history6660calls/1701000exposures/56700unique30visits;perRX PL acceptance,negative/temporal utilization",
+    "one release archive transfer comparison,remote compile,PID/CWD/argv/GPU/loggrowth independent readback"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source accuracy",
+      "source perRX/day/TX",
+      "U accepted/negative/temporal exposure",
+      "cost and memory",
+      "source negative-exclusion proxy"
+    ],
+    "dimensions": [
+      "method",
+      "source view",
+      "source RX",
+      "source day",
+      "TX",
+      "model seed"
+    ],
+    "prediction_ref": "own source_validation/source_V_predictions.npz",
+    "scorer_ref": "source V read-only default head;no target/truth-side access in pilot"
+  },
+  "rows": [
+    {
+      "row_id": "F0-PL-Negative-s2026092701",
+      "method": "PL-Negative",
+      "purpose": "source-only component ablation",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/configs/PL-Negative.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/F/F0-PL-Negative-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "signature_views": 1,
+        "default_head_joint": true,
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261016421
+      },
+      "seed_notes": "model seed01 only;split392005 unchanged. No data subsampling/support seed;original source practical seeds namespace retained;native stochastic L/dropout use original model-seeded RNG.",
+      "k": null,
+      "scenario": "source V raw/Graw/low_suburban/mid_urban/low_urban with matched G;not target",
+      "optimizer": "original native Adam/segment optimizer;default head joint",
+      "lr": "original native segmented cosine,actual resolved args retained",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "4440 inherited updates + 2220 own + 4440 own = E50/11100;full 13L+37LU. History active E21-50;shared existing E20 not new training.",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/F/F0-PL-Negative-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/logs/PL-Negative.log",
+      "command": "PYTHON -u -m experiments.pamf_u_history.source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/configs/PL-Negative.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "complete.json",
+        "u_history_state.json",
+        "source_validation/complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-PL-Temporal-s2026092701",
+      "method": "PL-Temporal",
+      "purpose": "source-only component ablation",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/configs/PL-Temporal.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/F/F0-PL-Temporal-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "signature_views": 1,
+        "default_head_joint": true,
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261016421
+      },
+      "seed_notes": "model seed01 only;split392005 unchanged. No data subsampling/support seed;original source practical seeds namespace retained;native stochastic L/dropout use original model-seeded RNG.",
+      "k": null,
+      "scenario": "source V raw/Graw/low_suburban/mid_urban/low_urban with matched G;not target",
+      "optimizer": "original native Adam/segment optimizer;default head joint",
+      "lr": "original native segmented cosine,actual resolved args retained",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "4440 inherited updates + 2220 own + 4440 own = E50/11100;full 13L+37LU. History active E21-50;shared existing E20 not new training.",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/F/F0-PL-Temporal-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/logs/PL-Temporal.log",
+      "command": "PYTHON -u -m experiments.pamf_u_history.source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/configs/PL-Temporal.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "complete.json",
+        "u_history_state.json",
+        "source_validation/complete.json"
+      ]
+    },
+    {
+      "row_id": "F0-PL-History-s2026092701",
+      "method": "PL-History",
+      "purpose": "prespecified primary",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/configs/PL-History.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/F/F0-PL-History-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "signature_views": 1,
+        "default_head_joint": true,
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261016421
+      },
+      "seed_notes": "model seed01 only;split392005 unchanged. No data subsampling/support seed;original source practical seeds namespace retained;native stochastic L/dropout use original model-seeded RNG.",
+      "k": null,
+      "scenario": "source V raw/Graw/low_suburban/mid_urban/low_urban with matched G;not target",
+      "optimizer": "original native Adam/segment optimizer;default head joint",
+      "lr": "original native segmented cosine,actual resolved args retained",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "4440 inherited updates + 2220 own + 4440 own = E50/11100;full 13L+37LU. History active E21-50;shared existing E20 not new training.",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/F/F0-PL-History-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/logs/PL-History.log",
+      "command": "PYTHON -u -m experiments.pamf_u_history.source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-UHistory-source-m3-r01/configs/PL-History.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "complete.json",
+        "u_history_state.json",
+        "source_validation/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No PL/Sup comparator training jobs exist in this run. Historical completed controls are reused only after actual architecture/recipe/contract/seed/budget verification.",
+    "Current verified completed SIG1 REPL50 is a historical comparison;strictCE SIG1 changes supervised losses and originalPL X3 changes architecture. Do not call these matched PL/Sup controls.",
+    "No new target access. Later confirmation must retain clean and each six practical,raw and same DURA,and all declared receiver/day populations with independent truth-last scoring. Performance goal is clean+1pp and six-scene mean>1.5pp vs both valid controls,each scene and DURA must improve;not yet established.",
+    "REJECTED_EXTRA_GATE: generic design approval,extra planning/review/hash artifacts are outside exclusive minimal workflow;no such blocker used.",
+    "Negative-label inspiration: Rizve et al., ICLR2021, https://arxiv.org/abs/2101.06329 ; our two-visit history rule is a new source-only hypothesis,not a replication or guaranteed benefit."
+  ],
+  "registered_at": "2026-10-26T08:15:26+00:00"
+}
