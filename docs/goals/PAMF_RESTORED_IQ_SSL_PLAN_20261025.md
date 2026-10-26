@@ -331,3 +331,23 @@ G/H复用原缓存三景lowSuburban/midUrban/lowUrban，k按原step顺序轮换�
 ## 并行源L诊断：固定重复与多信道随机实现
 
 `20261026-diagnostic-PAMF-DURARealizations-source-m1-r01`已登记：L6300、一个冻结原E30默认头/同G，三个场景固定H重复G及三fresh channel namespace；25 F视图，0训练/U/V/目标。保留全部随机实现，检验恢复输出多样性及可见L身份代理，不挑seed或直接晋级训练缓存。现有AsymmetricHG健康四路不变。3聚焦检查/compile通过，一次P0/P1进行中，尚未启动。原三学生种子联合目标未达成，见[预登记](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-DURARealizations-source-m1-r01/preregistration.md)。
+
+
+## 多信道随机实现源L诊断实际启动
+
+`20261026-diagnostic-PAMF-DURARealizations-source-m1-r01`代码`189e94efaf0fa5c52a8980032c0e27453182d5d7`已VERIFIED_RUNNING，GPU5实际身份/日志增长/L进度核实，真实E30/defaulthead/G L2 smoke通过。固定L6300/25视图、0训练/U/V/目标，当前AsymmetricHG四路不变。完整结果见[诊断报告](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-DURARealizations-source-m1-r01/report.md)，原三学生种子目标未达成。
+
+
+## 随机信道实现源L诊断完成
+
+`20261026-diagnostic-PAMF-DURARealizations-source-m1-r01`完整L6300/25 F视图已核实：同H重复G为18900/18900精确相同、maxerror=0。改变channel namespace后，三scene的G相对L2中位数约9.4%/13.7%/19.5%，四实现间冻结E30预测变化包比例10.8413%/24.9365%/38.7302%。新视图识别有升有降，不能按L挑seed或声称训练/目标收益；波形差异未去除全局复增益/相位。555预测配对单元、45重复单元和810几何分布独立重算，0新训练/U/V/目标。当前AsymmetricHG四路原计划不变；若其仍失败，可登记固定缓存/多实现缓存的独立匹配源训练，尚未自动启动该扩展。完整[诊断报告](../../automation_reports/CV-SincNet/20261026-diagnostic-PAMF-DURARealizations-source-m1-r01/report.md)。原三学生种子联合目标未达成。
+
+
+## 非对称H/G完整源矩阵完成
+
+`20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01`完整四E50、17760step/80epoch、544源单元及72配对核实：HJoint heldG+0.160494pp/clean-0.007407pp；HAnchor heldG+0.135802pp/clean-0.011111pp；GJoint heldG+0.179012pp/clean-0.025926pp；BothJoint heldG+0.166667pp/clean-0.022222pp。源选择NONE，原+.3/−.1条件不变。**四条均未通过原源门槛，不扩种子，不启动本批目标测试。** 非对称分工或CE/CL相加没有扩大到所需留出收益；保留原门槛和全部负结果。下一轮转向匹配的训练视图支持比较，不再只改这一组损失路由。 结合已完成多信道源L诊断，下一轮比较固定与多实现训练缓存，原三学生种子raw/同G联合目标未达成。见[完整报告](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/report.md)。
+
+
+## 下一轮实施入口：多实现源U缓存
+
+两项完整结果返回后，下一轮改为固定／多信道实现缓存的匹配比较。具体缓存三任务、四个既有损失家族／固定系数、20轮实现轮换、原源门槛及正式三学生种子目标见[多实现SSL计划](PAMF_U_REALIZATION_SSL_20261026.md)。目前缓存与新F训练尚未实现／登记／启动；保留全部旧模型与负结果，不加载研究F50作父模型，不把源L多样性视为目标准确率提升。

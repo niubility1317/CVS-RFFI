@@ -1,0 +1,27 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "189e94efaf0fa5c52a8980032c0e27453182d5d7",
+  "gpu": 5,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "PID_CWD_argv_environment_GPU_log_growth_verified": true,
+  "source_L_seen_at_observation": 1792,
+  "source_L_total": 6300,
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "role": "L_s",
+    "physical_packets": 2,
+    "query_seed": 2026092701,
+    "actual_default_head": true,
+    "G_eager_graph_close": true,
+    "optimizer_updates": 0,
+    "U_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "independent_P0P1": "PASS",
+  "focused_tests": 3,
+  "local_compile": "PASS",
+  "training_updates": 0,
+  "new_target_reads": 0
+}

@@ -1,0 +1,5 @@
+method,model_seed,views,task_view,restored_feature_detached_in_CL,weight,complete_available_records,new_complete_epochs,U_seen,held_U_seen,extra_accepted,expected_extra_per_epoch,raw_forwards,H_forwards,G_forwards,CE_H_accepted,CE_G_accepted,valid_anchors,positive_pairs,negative_pairs,L_forward_packets_per_step,As_KL_weight,CRIC_weight,default_head_classes,actual_own_E30_parent,nonfinite_skips,U_truth_read,new_target_reads,finished_E50_checkpoint_verified
+HJoint,2026092701,H+G,H,False,0.04221045401136996,4440,20,1134000,226800,838780,41939,0,1134000,1134000,838780,0,1677560,39544936,263214104,768,0,0.1,6,True,0,False,0,True
+HAnchor,2026092701,H+G,H,True,0.04221045401136996,4440,20,1134000,226800,838780,41939,0,1134000,1134000,838780,0,1677560,39544936,263214104,768,0,0.1,6,True,0,False,0,True
+GJoint,2026092701,H+G,G,False,0.04221045401136996,4440,20,1134000,226800,838780,41939,0,1134000,1134000,0,838780,1677560,39544936,263214104,768,0,0.1,6,True,0,False,0,True
+BothJoint,2026092701,H+G,mean_H_G,False,0.04221045401136996,4440,20,1134000,226800,838780,41939,0,1134000,1134000,838780,838780,1677560,39544936,263214104,768,0,0.1,6,True,0,False,0,True

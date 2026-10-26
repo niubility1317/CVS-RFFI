@@ -1,0 +1,28 @@
+{
+  "status": "ANALYZED",
+  "independent_readback": "VERIFIED",
+  "code_commit": "f064f495716de7434be99027ae383b2a49c88666",
+  "student_seeds": [
+    2026092701
+  ],
+  "source_selection": null,
+  "source_records_verified": 17760,
+  "all_four_actual_E50_checkpoints_verified": true,
+  "all80_final_epoch_aggregates_verified": true,
+  "all544_source_cells_recomputed": true,
+  "matched_method_cells": 72,
+  "all_six_complete_count_prefixes_equal": true,
+  "actual_HAnchor_G_feature_gradient_zero_verified": true,
+  "HJoint_HAnchor_values_match": true,
+  "CE_H_CE_G_exposure_routes_verified": true,
+  "source_weight": 0.04221045401136996,
+  "source_V_records": 27000,
+  "source_thresholds": {
+    "held_G_mean_gain_pp": 0.3,
+    "clean_min_delta_pp": -0.1
+  },
+  "new_target_reads": 0,
+  "U_truth_read": false,
+  "head_fit_updates": 0,
+  "scope": "One-student-seed full source task/relation screen;not three-student target performance"
+}

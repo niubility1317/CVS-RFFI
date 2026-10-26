@@ -1,0 +1,46 @@
+{
+  "status": "VERIFIED_COMPLETE_AVAILABLE_LOG_PREFIX",
+  "code_commit": "f064f495716de7434be99027ae383b2a49c88666",
+  "methods": [
+    {
+      "method": "HJoint",
+      "complete_step_records": 4440,
+      "complete_new_epochs": 20,
+      "epoch3_joint_loss": 1.347200800438185,
+      "last_complete_joint_loss": 1.2450647042678282,
+      "last_complete_raw_PL_loss": 0.006609282162678134,
+      "last_complete_raw_PL_coverage_percent": 96.22927689594356
+    },
+    {
+      "method": "HAnchor",
+      "complete_step_records": 4440,
+      "complete_new_epochs": 20,
+      "epoch3_joint_loss": 1.3617282311121623,
+      "last_complete_joint_loss": 1.2715570110458512,
+      "last_complete_raw_PL_loss": 0.006649888726790344,
+      "last_complete_raw_PL_coverage_percent": 96.2663139329806
+    },
+    {
+      "method": "GJoint",
+      "complete_step_records": 4440,
+      "complete_new_epochs": 20,
+      "epoch3_joint_loss": 1.0686025812819198,
+      "last_complete_joint_loss": 0.9864837707162978,
+      "last_complete_raw_PL_loss": 0.006706509562964375,
+      "last_complete_raw_PL_coverage_percent": 96.10758377425044
+    },
+    {
+      "method": "BothJoint",
+      "complete_step_records": 4440,
+      "complete_new_epochs": 20,
+      "epoch3_joint_loss": 1.2105776348092534,
+      "last_complete_joint_loss": 1.1216078124067805,
+      "last_complete_raw_PL_loss": 0.006666923191415163,
+      "last_complete_raw_PL_coverage_percent": 96.13932980599647
+    }
+  ],
+  "target_reads": 0,
+  "U_truth_read": false,
+  "optimizer_updates": 0,
+  "scope": "Complete currently available training prefix;loss/coverage are not accuracy or source selection"
+}

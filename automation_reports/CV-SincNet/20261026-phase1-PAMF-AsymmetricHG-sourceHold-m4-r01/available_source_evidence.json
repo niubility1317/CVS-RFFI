@@ -1,6 +1,6 @@
 {
   "status": "VERIFIED_AVAILABLE_ASYMMETRIC_HG_RECORDS",
-  "total_available_records": 850,
+  "total_available_records": 17760,
   "source_weight": 0.04221045401136996,
   "calibration_arithmetic_verified": true,
   "calibration_norms": {
@@ -14,42 +14,42 @@
     {
       "a": "BothJoint",
       "b": "GJoint",
-      "common_steps": 210,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     },
     {
       "a": "BothJoint",
       "b": "HAnchor",
-      "common_steps": 214,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     },
     {
       "a": "BothJoint",
       "b": "HJoint",
-      "common_steps": 210,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     },
     {
       "a": "GJoint",
       "b": "HAnchor",
-      "common_steps": 210,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     },
     {
       "a": "GJoint",
       "b": "HJoint",
-      "common_steps": 210,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     },
     {
       "a": "HAnchor",
       "b": "HJoint",
-      "common_steps": 210,
+      "common_steps": 4440,
       "extra_acceptance_held_anchor_and_pair_counts_equal": true
     }
   ],
   "observer_optimizer_updates": 0,
   "new_target_reads": 0,
-  "observed_at_UTC": "2026-10-26T01:09:35.316226+00:00",
-  "scope": "All currently complete source records;live tails may buffer;not target gain"
+  "observed_at_UTC": "2026-10-26T01:45:23.915077+00:00",
+  "scope": "All17760 records andfour actualfinal E50 defaultheads verified;source assessment may still pending;not target gain"
 }

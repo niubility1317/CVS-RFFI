@@ -4,3 +4,8 @@
 {"at": "2026-10-26T01:10:05+00:00", "status": "RUNNING", "note": "实际train PID/CWD/argv/GPU/step增长已核实，源only一个学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-GJoint-sourceHold-s2026092701"}
 {"at": "2026-10-26T01:10:10+00:00", "status": "RUNNING", "note": "实际train PID/CWD/argv/GPU/step增长已核实，源only一个学生seed01。", "evidence": ["launch_evidence.json"], "row_id": "F0-BothJoint-sourceHold-s2026092701"}
 {"at": "2026-10-26T01:10:16+00:00", "status": "RUNNING", "note": "真实calibration/smoke通过，四条源训练独立核实；目标未证明。", "evidence": ["launch_evidence.json"], "row_id": null}
+{"at": "2026-10-26T01:57:26+00:00", "status": "ANALYZED", "note": "完整E50/八视图/4440step核实，源FAIL；无目标性能。", "evidence": ["source_candidate_decision.csv", "source_result_evidence.json"], "row_id": "F0-HJoint-sourceHold-s2026092701"}
+{"at": "2026-10-26T01:57:32+00:00", "status": "ANALYZED", "note": "完整E50/八视图/4440step核实，源FAIL；无目标性能。", "evidence": ["source_candidate_decision.csv", "source_result_evidence.json"], "row_id": "F0-HAnchor-sourceHold-s2026092701"}
+{"at": "2026-10-26T01:57:39+00:00", "status": "ANALYZED", "note": "完整E50/八视图/4440step核实，源FAIL；无目标性能。", "evidence": ["source_candidate_decision.csv", "source_result_evidence.json"], "row_id": "F0-GJoint-sourceHold-s2026092701"}
+{"at": "2026-10-26T01:57:45+00:00", "status": "ANALYZED", "note": "完整E50/八视图/4440step核实，源FAIL；无目标性能。", "evidence": ["source_candidate_decision.csv", "source_result_evidence.json"], "row_id": "F0-BothJoint-sourceHold-s2026092701"}
+{"at": "2026-10-26T01:57:52+00:00", "status": "ANALYZED", "note": "非对称源矩阵完成，源选择NONE；原目标未证明。", "evidence": ["source_packet_arithmetic.json", "report.md"], "row_id": null}
