@@ -67,3 +67,8 @@ clean 损伤主要在占主样本 75% 的 cross_rx：−0.730688pp；cross_both 
 ## 补齐低置信项的单因素源消融（2026-10-27）
 
 新增单 seed 源小试验 REPL_H2_LU_NoPair，只关闭已有 H2LU 整配方的低置信同包互概率项，L/U 双 H、高置信类别和原跨 RX 学习保留；来自已完成源消融和共同错误分析，不使用目标弱类调权。两项独立源试验在结果产生前冻结共同门槛 raw≥26568/H3≥62109，均完成后在通过者中 raw/H3 依次优先、完全同分选 NoPair；未通过不扩种子或目标。L-anchor 已在训练的原配置不变，监督/PL 控制不重复训练。原绝对及相对三种子目标保持。见 [新源消融](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-H2LUNoPair-source-m1-r01/report.md) 和其中的源选择计划。
+
+
+## 源完成记录：REPL_H2_LU_LAnchorH
+
+run `20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01` 单seed源E50完整核算完成：raw26548/27000=98.325926%，H362030/81000=76.580247%，未通过固定26568/62109门槛；6660新增训练记录及108000源决策闭合。相对固定H2LU raw-0.022222pp、H3-0.197531pp。仍按两项共同源选择计划，原三seed目标未完成。见 [完整源结果](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-SIG1-REPL-LAnchorH-source-m1-r01/report.md)。
