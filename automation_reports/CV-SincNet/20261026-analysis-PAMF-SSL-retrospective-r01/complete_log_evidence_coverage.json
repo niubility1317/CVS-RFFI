@@ -1,0 +1,115 @@
+[
+  {
+    "path": "automation_reports/CV-SincNet/20261025-phase1-PAMF-PeerSupervised-label01-m3-r01/complete_result_evidence.json",
+    "status": "ANALYZED",
+    "complete_records_already_audited": 19980,
+    "scope": "reuse existing complete-step audit; not a new raw-log execution"
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261025-phase1-PAMF-PeerSupervised-m9-r02/complete_F0_result_evidence.json",
+    "status": "ANALYZED_FIXED_F0_MATRIX",
+    "complete_records_already_audited": 59940,
+    "scope": "reuse existing complete-step audit; not a new raw-log execution"
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261025-phase1-PAMF-RestoredPL-m9-r01/complete_result_evidence.json",
+    "status": "ANALYZED",
+    "complete_records_already_audited": 39960,
+    "scope": "reuse existing complete-step audit; not a new raw-log execution"
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/source_training_curves_evidence.json",
+    "status": "VERIFIED_COMPLETE_AVAILABLE_LOG_PREFIX",
+    "method": "HJoint",
+    "complete_records_already_audited": 4440,
+    "complete_epochs": 20
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/source_training_curves_evidence.json",
+    "status": "VERIFIED_COMPLETE_AVAILABLE_LOG_PREFIX",
+    "method": "HAnchor",
+    "complete_records_already_audited": 4440,
+    "complete_epochs": 20
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/source_training_curves_evidence.json",
+    "status": "VERIFIED_COMPLETE_AVAILABLE_LOG_PREFIX",
+    "method": "GJoint",
+    "complete_records_already_audited": 4440,
+    "complete_epochs": 20
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/source_training_curves_evidence.json",
+    "status": "VERIFIED_COMPLETE_AVAILABLE_LOG_PREFIX",
+    "method": "BothJoint",
+    "complete_records_already_audited": 4440,
+    "complete_epochs": 20
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/source_result_evidence.json",
+    "status": "ANALYZED",
+    "complete_records_already_audited": 17760,
+    "scope": "reuse existing complete-step audit; not a new raw-log execution"
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-AsymmetricHG-sourceHold-m4-r01/training_evidence.json",
+    "status": "ANALYZED",
+    "complete_records_already_audited": 17760,
+    "scope": "reuse existing complete-step audit; not a new raw-log execution"
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-FeatureTask-sourceHold-m4-r01/source_result_evidence.json",
+    "status": "ANALYZED",
+    "complete_records_already_audited": 17760,
+    "scope": "reuse existing complete-step audit; not a new raw-log execution"
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-ResidualMix-sourceHold-m4-r01/source_result_evidence.json",
+    "status": "ANALYZED",
+    "complete_records_already_audited": 17760,
+    "scope": "reuse existing complete-step audit; not a new raw-log execution"
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/source_training_curves_evidence.json",
+    "status": "VERIFIED_COMPLETE_AVAILABLE_LOG_PREFIX",
+    "method": "SeparateRG",
+    "complete_records_already_audited": 4440,
+    "complete_epochs": 20
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/source_training_curves_evidence.json",
+    "status": "VERIFIED_COMPLETE_AVAILABLE_LOG_PREFIX",
+    "method": "BridgeRG",
+    "complete_records_already_audited": 4440,
+    "complete_epochs": 20
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/source_training_curves_evidence.json",
+    "status": "VERIFIED_COMPLETE_AVAILABLE_LOG_PREFIX",
+    "method": "BridgeHG",
+    "complete_records_already_audited": 4440,
+    "complete_epochs": 20
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/source_training_curves_evidence.json",
+    "status": "VERIFIED_COMPLETE_AVAILABLE_LOG_PREFIX",
+    "method": "BridgeGG",
+    "complete_records_already_audited": 4440,
+    "complete_epochs": 20
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-RestorationBridge-sourceHold-m4-r01/source_result_evidence.json",
+    "status": "ANALYZED",
+    "complete_records_already_audited": 17760,
+    "scope": "reuse existing complete-step audit; not a new raw-log execution"
+  },
+  {
+    "path": "automation_reports/CV-SincNet/20261026-phase1-PAMF-URealizations-sourceHold-m4-r01/training_evidence.json",
+    "status": "VERIFIED_COMPLETE_U_REALIZATION_TRAINING",
+    "complete_records_audited_this_review": 17760,
+    "complete_stdout_lines_scanned_this_review": 3196,
+    "complete_epochs": 80,
+    "actual_checkpoints": 4,
+    "source_cells_independently_recomputed": 544
+  }
+]

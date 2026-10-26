@@ -1,0 +1,162 @@
+[
+  {
+    "method": "CE_full",
+    "readout": "raw",
+    "endpoint": "clean",
+    "physical_records_per_seed": 168000,
+    "mean": 82.66527777777777,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "CE_full",
+    "readout": "raw",
+    "endpoint": "six_practical_mean",
+    "physical_records_per_seed": 168000,
+    "mean": 70.91051587301588,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "CE_full",
+    "readout": "DURA-LU",
+    "endpoint": "clean",
+    "physical_records_per_seed": 168000,
+    "mean": 82.69404761904761,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "CE_full",
+    "readout": "DURA-LU",
+    "endpoint": "six_practical_mean",
+    "physical_records_per_seed": 168000,
+    "mean": 76.27271825396826,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "CE_NO_SIGNATURE",
+    "readout": "raw",
+    "endpoint": "clean",
+    "physical_records_per_seed": 168000,
+    "mean": 82.72380952380952,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "CE_NO_SIGNATURE",
+    "readout": "raw",
+    "endpoint": "six_practical_mean",
+    "physical_records_per_seed": 168000,
+    "mean": 70.461541005291,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "CE_NO_SIGNATURE",
+    "readout": "DURA-LU",
+    "endpoint": "clean",
+    "physical_records_per_seed": 168000,
+    "mean": 82.68908730158729,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "CE_NO_SIGNATURE",
+    "readout": "DURA-LU",
+    "endpoint": "six_practical_mean",
+    "physical_records_per_seed": 168000,
+    "mean": 75.5582671957672,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "REPL",
+    "readout": "raw",
+    "endpoint": "clean",
+    "physical_records_per_seed": 168000,
+    "mean": 85.72678571428573,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "REPL",
+    "readout": "raw",
+    "endpoint": "six_practical_mean",
+    "physical_records_per_seed": 168000,
+    "mean": 70.08551587301588,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "REPL",
+    "readout": "DURA-LU",
+    "endpoint": "clean",
+    "physical_records_per_seed": 168000,
+    "mean": 85.79067460317461,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "REPL",
+    "readout": "DURA-LU",
+    "endpoint": "six_practical_mean",
+    "physical_records_per_seed": 168000,
+    "mean": 77.89771825396825,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "REPL_NO_SIGNATURE",
+    "readout": "raw",
+    "endpoint": "clean",
+    "physical_records_per_seed": 168000,
+    "mean": 81.29404761904762,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "REPL_NO_SIGNATURE",
+    "readout": "raw",
+    "endpoint": "six_practical_mean",
+    "physical_records_per_seed": 168000,
+    "mean": 67.16706349206349,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "REPL_NO_SIGNATURE",
+    "readout": "DURA-LU",
+    "endpoint": "clean",
+    "physical_records_per_seed": 168000,
+    "mean": 81.3906746031746,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  },
+  {
+    "method": "REPL_NO_SIGNATURE",
+    "readout": "DURA-LU",
+    "endpoint": "six_practical_mean",
+    "physical_records_per_seed": 168000,
+    "mean": 72.19169973544973,
+    "SD": null,
+    "SD_note": "Not computed from group SD; requires per-seed pairing",
+    "source": "frozen summary_overall.csv"
+  }
+]

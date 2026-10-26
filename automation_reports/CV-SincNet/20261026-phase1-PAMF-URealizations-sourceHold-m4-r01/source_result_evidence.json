@@ -1,0 +1,52 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "abc13af0b1e145e886eab61f2054611774cd0002",
+  "student_seeds": [
+    2026092701
+  ],
+  "source_records_verified": 17760,
+  "actual_final_E50_checkpoints_verified": 4,
+  "complete_stdout_lines": 3196,
+  "all80_epochs_and_four_equal_replica_exposures_verified": true,
+  "all544_source_cells_independently_recomputed": true,
+  "source_selection": null,
+  "new_target_reads": 0,
+  "U_truth_read": false,
+  "head_fit_updates": 0,
+  "all_candidate_source_gates_failed": true,
+  "matched_support_effects": [
+    {
+      "method": "GTaskMulti",
+      "fixed_control": "GFeatureHard",
+      "fixed_held_G_gain_pp": 0.1419753086419753,
+      "multi_held_G_gain_pp": 0.14814814814814814,
+      "multi_minus_fixed_pp": 0.006172839506172839,
+      "multi_minus_fixed_net_correct": 1
+    },
+    {
+      "method": "GGCLMulti",
+      "fixed_control": "BridgeGG",
+      "fixed_held_G_gain_pp": 0.2037037037037037,
+      "multi_held_G_gain_pp": 0.20987654320987653,
+      "multi_minus_fixed_pp": 0.006172839506172839,
+      "multi_minus_fixed_net_correct": 1
+    },
+    {
+      "method": "HGCLMulti",
+      "fixed_control": "BridgeHG",
+      "fixed_held_G_gain_pp": 0.17901234567901234,
+      "multi_held_G_gain_pp": 0.2037037037037037,
+      "multi_minus_fixed_pp": 0.024691358024691357,
+      "multi_minus_fixed_net_correct": 4
+    },
+    {
+      "method": "GJointMulti",
+      "fixed_control": "GJoint",
+      "fixed_held_G_gain_pp": 0.17901234567901234,
+      "multi_held_G_gain_pp": 0.1728395061728395,
+      "multi_minus_fixed_pp": -0.006172839506172839,
+      "multi_minus_fixed_net_correct": -1
+    }
+  ],
+  "scope": "Single-student source screen;no new target results;future architecture must be NO_SIGNATURE per user"
+}

@@ -1,0 +1,14 @@
+{
+  "status": "VERIFIED_COMPLETE_U_REALIZATION_TRAINING",
+  "code_commit": "abc13af0b1e145e886eab61f2054611774cd0002",
+  "source_records_verified": 17760,
+  "actual_final_checkpoints_verified": 4,
+  "all80_epochs_and_replica_exposures_verified": true,
+  "all_complete_stdout_scanned": true,
+  "common_acceptance_and_replica_streams_equal": true,
+  "observer_model_forwards": 0,
+  "observer_optimizer_updates": 0,
+  "new_IQ_reads": 0,
+  "new_target_reads": 0,
+  "U_truth_read": false
+}

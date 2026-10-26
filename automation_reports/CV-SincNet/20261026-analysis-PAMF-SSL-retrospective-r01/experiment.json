@@ -1,0 +1,178 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-analysis-PAMF-SSL-retrospective-r01",
+  "group_id": "pamf-ssl-retrospective-nosig-20261026",
+  "display_name": "PAMF 半监督完整证据复盘与去SIG_TIME新方法设计",
+  "description": "复用已冻结测试/源结果与既有完整日志核验，完整重读相关结构化汇总；只对保存源V logits作CPU分解，提出去SIG_TIME的恢复视图跨RX图标签方法，不新增训练或预测。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-SSL-retrospective",
+    "PAMF-RGPL-design"
+  ],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "complete-results",
+    "negative-transfer",
+    "NO_SIGNATURE",
+    "design-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261025-phase1-PAMF-PeerSupervised-m9-r02",
+    "20261025-phase1-PAMF-RestoredPL-m9-r01",
+    "20261026-phase1-PAMF-URealizations-sourceHold-m4-r01"
+  ],
+  "authorization": "用户要求先全面深入分析已完成工作和有结果的方法路径，解释退步与小收益后提出新半监督方法，并指定后续去SIG_TIME。",
+  "code": {
+    "commit": "Final report/design Git commit; original run execution commits preserved per evidence",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "verified local Phase1 Python; N607 existing Python/NumPy for read-only saved V-logit arithmetic",
+    "cwd": "E:/type10-7"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "existing aggregate tables, complete-log audit results, saved source V logits; no new IQ access",
+    "contract_ref": "unchanged original F0; other protocol cohorts kept separate; prefix metadata matches original F0",
+    "physical_ids_ref": "original frozen source V and prior scored target cohorts",
+    "label_map_ref": "original F0 six registered classes; U TX truth absent",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "existing aggregate/reference results only",
+      "U_s": "no IQ or truth opened; only prior acceptance/exposure summaries",
+      "V": "already saved original V27000 logits/y, CPU only; no model/state updates"
+    },
+    "train_ratio": "no new training",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "retrospective evidence diagnosis and untested NoSIG method proposal; not new model result or original goal success"
+  },
+  "checkpoint": {
+    "initialization": "none; no checkpoint tensors loaded",
+    "sources": [
+      "existing original source E30 V logits",
+      "metadata-only three original NO_SIGNATURE E20 prefixes"
+    ],
+    "contract_check_ref": "existing completed audits; NoSIG E20 metadata and contract equality checked; tensor identity/smoke remain for future loading",
+    "provenance_verdict": "no new initialization or inherited state; no query labels joined",
+    "selection_rule": "none; retain all completed candidates and negative results; current four healthy source rows not retuned"
+  },
+  "execution": {
+    "host": "local and N607 read-only CPU",
+    "launch_owner": "codex-pamf-ssl-retrospective-20261026",
+    "gpu_policy": "no new GPU tasks; preserve existing four source train_eval workers",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026",
+    "launch_command": "Read complete frozen structured summaries and prior complete-log audits; saved source V NumPy arithmetic only; no training/prediction launcher",
+    "stop_rule": "stop on mixed cohort/duplicate conflict/missing required source role; record limitation without selecting favorable subsets"
+  },
+  "expected_artifacts": [
+    "complete F0 three-seed recipe endpoint table with baseline/replicate deduplication",
+    "all completed source-only fixed decisions kept separate from target outcomes",
+    "existing complete-log audit coverage; no tail sample called full analysis",
+    "saved source V uncertainty/error concentration/top-k-set/G-confidence counterexamples",
+    "NoSIG architecture/metadata context, causal boundaries and new RGPL method design; no new training"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "rawclean/rawsix/sameG six tradeoff across completed F0 recipes",
+      "where residual source V errors occur under original gate"
+    ],
+    "secondary": [
+      "source vs target sign reversals",
+      "dose and gradient/geometry negative controls",
+      "full11setting REPL and architecture scope"
+    ],
+    "target": "only previously scored aggregates; no new prediction/truth access",
+    "selection": "no best-method replacement; new proposal not validated",
+    "truth_policy": "source V labels already in saved outputs; no U truth/new target truth"
+  },
+  "rows": [
+    {
+      "row_id": "complete-evidence-review",
+      "method": "retrospective-plus-NoSIG-RGPL-design",
+      "purpose": "explain completed evidence and specify a genuinely different source information path",
+      "config_ref": "docs/goals/PAMF_NOSIG_RGPL_DESIGN_20261026.md",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "existing formal recipes three student seeds; source-only screens seed01; no new model seed",
+      "k": null,
+      "scenario": "original F0 alltargetdates168000, separate11crossRX and sourceV27000",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "no model/optimizer/new IQ/new target access; read saved artifacts",
+      "output_root": "automation_reports/CV-SincNet/20261026-analysis-PAMF-SSL-retrospective-r01",
+      "log_path": null,
+      "command": "Read complete frozen structured summaries and prior complete-log audits; saved source V NumPy arithmetic only; no training/prediction launcher",
+      "expected_artifacts": [
+        "complete F0 three-seed recipe endpoint table with baseline/replicate deduplication",
+        "all completed source-only fixed decisions kept separate from target outcomes",
+        "existing complete-log audit coverage; no tail sample called full analysis",
+        "saved source V uncertainty/error concentration/top-k-set/G-confidence counterexamples",
+        "NoSIG architecture/metadata context, causal boundaries and new RGPL method design; no new training"
+      ]
+    }
+  ],
+  "notes": [
+    "102 complete related reports and all relevant frozen summaries loaded; reuse prior full-step/full-stdout audits without calling current-tail reads full logs.",
+    "Main F0 group is cross_rx126000 plus cross_both42000; cross_date30000 and 198000 composite reported separately.",
+    "Current old-SIG four-row source matrix continues unchanged; after this user steering no additional old-SIG expansion even if old source gate passes.",
+    "RGPL is an unimplemented design and not a claim of original target success; no teacher/graph head added at deployment.",
+    "Review closure: all four URealizations source candidates completed and failed;17760 complete records/3196stdout/fourCP/80epochs/544cells audited; no old-SIG expansion."
+  ],
+  "matrix": {
+    "new_students": 0,
+    "new_F_G_forwards": 0,
+    "new_IQ_reads": 0,
+    "U_truth_read": false,
+    "new_target_reads": 0,
+    "optimizer_updates": 0,
+    "formal_F0_recipe_rows": 42,
+    "formal_F0_candidate_recipes_excluding_controls": 39,
+    "completed_source_screen_recipes": 30,
+    "saved_source_V_records": 27000,
+    "old_teacher_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "future_network": "NO_SIGNATURE"
+  },
+  "registered_at": "2026-10-26T03:18:27+00:00"
+}
