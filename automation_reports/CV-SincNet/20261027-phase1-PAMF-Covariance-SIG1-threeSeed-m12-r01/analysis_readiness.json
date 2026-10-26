@@ -1,0 +1,115 @@
+{
+  "status": "EXISTING_SCORE_SCHEMA_VERIFIED",
+  "checks": [
+    {
+      "method": "CovSel-U",
+      "model_seed": 2026092701,
+      "status": "PASS",
+      "declared_raw_strata": 434
+    },
+    {
+      "method": "CovRandom-U",
+      "model_seed": 2026092701,
+      "status": "PASS",
+      "declared_raw_strata": 434
+    },
+    {
+      "method": "CovFull-U",
+      "model_seed": 2026092701,
+      "status": "PASS",
+      "declared_raw_strata": 434
+    },
+    {
+      "method": "CovSel-LU",
+      "model_seed": 2026092701,
+      "status": "PASS",
+      "declared_raw_strata": 434
+    },
+    {
+      "method": "SIG1-PL",
+      "model_seed": 2026092701,
+      "status": "PASS",
+      "declared_raw_strata": 434
+    },
+    {
+      "method": "SIG1-PL",
+      "model_seed": 2026092702,
+      "status": "PASS",
+      "declared_raw_strata": 434
+    },
+    {
+      "method": "SIG1-PL",
+      "model_seed": 2026092703,
+      "status": "PASS",
+      "declared_raw_strata": 434
+    },
+    {
+      "method": "SIG1-Sup",
+      "model_seed": 2026092701,
+      "status": "PASS",
+      "declared_raw_strata": 434
+    },
+    {
+      "method": "SIG1-Sup",
+      "model_seed": 2026092702,
+      "status": "PASS",
+      "declared_raw_strata": 434
+    },
+    {
+      "method": "SIG1-Sup",
+      "model_seed": 2026092703,
+      "status": "PASS",
+      "declared_raw_strata": 434
+    }
+  ],
+  "missing_rows": [
+    {
+      "method": "CovSel-U",
+      "model_seed": 2026092702
+    },
+    {
+      "method": "CovSel-U",
+      "model_seed": 2026092703
+    },
+    {
+      "method": "CovRandom-U",
+      "model_seed": 2026092702
+    },
+    {
+      "method": "CovRandom-U",
+      "model_seed": 2026092703
+    },
+    {
+      "method": "CovFull-U",
+      "model_seed": 2026092702
+    },
+    {
+      "method": "CovFull-U",
+      "model_seed": 2026092703
+    },
+    {
+      "method": "CovSel-LU",
+      "model_seed": 2026092702
+    },
+    {
+      "method": "CovSel-LU",
+      "model_seed": 2026092703
+    }
+  ],
+  "full_matrix_complete": false,
+  "truth_reads": 0,
+  "IQ_reads": 0,
+  "weight_reads": 0,
+  "analysis_code": "experiments/pamf_u_history/covariance_three_results.py",
+  "focused_tests": 5,
+  "tests_cover": [
+    "126000/42000 count weighting",
+    "paired within-seed mean/sampleSD",
+    "missing seed/score count/wrong physical pairing rejected",
+    "Windows/remote POSIX path compatibility",
+    "existing single-seed score validation preserved"
+  ],
+  "all_rows_required": 18,
+  "new_candidate_models_still_pending": 8,
+  "goal_complete": false
+}

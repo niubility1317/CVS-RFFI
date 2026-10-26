@@ -49,8 +49,8 @@ def metrics(cm):
     return dict(count=n,correct=int(cm.trace()),accuracy=100*float(cm.trace()/n),macro_f1=100*float(np.divide(2*cm.diagonal(),den,out=np.zeros(6),where=den!=0).mean()))
 
 
-def index(data):
-    if data['status']!='SCORED' or not data['truth_last'] or not data['target_feedback_forbidden'] or data['model_seed']!=SEED:raise ValueError('Complete independent same-seed scores required')
+def index(data,model_seed=SEED):
+    if data['status']!='SCORED' or not data['truth_last'] or not data['target_feedback_forbidden'] or data['model_seed']!=model_seed:raise ValueError('Complete independent same-seed scores required')
     result={}
     for row in data['results']:
         if row['readout']!='raw':continue
