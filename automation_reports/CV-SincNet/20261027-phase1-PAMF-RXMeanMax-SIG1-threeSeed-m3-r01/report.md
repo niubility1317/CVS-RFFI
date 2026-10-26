@@ -1,37 +1,44 @@
-# 全U最大预测变化 RX 风格：三种子预登记
+# 最大 RX 响应变化：完整三种子结果
 
-状态：RUNNING。三个 seed 的真实 checkpoint/梯度检查和源校准均已通过，三模型正在实际 GPU 训练；尚无完整性能结果，原目标 active。下文的等待记录是发布时的历史状态。
+状态：ANALYZED。三模型已完成 E50、源诊断、原始 IQ clean＋六景正式预测及独立评分。**Max 相对普通 PL 的 clean 降低 0.149206 个百分点，六景仅提高 0.028836 个百分点，未达目标；也没有同时优于随机 RX 风格。** 不把最大 KL 或更高训练压力称为泛化收益。
 
-固定完整PAMF／单SIG_TIME／原默认头，在普通PL .95、weight1、fullT1 L机制不变的基础上，只改变训练期U的RX风格选择。每个U取原始IQ或同包H基础（新增30epoch各15），当前F eval/no_grad的同base概率为q。枚举其余四个源RX的固定均值差作用，合为4B前向，逐包选择KL(q||p_style)最大的风格，再仅对选中视图带梯度重算。没有跨包重新指派或TX标签参与选择。
+固定原完整 PAMF、单 SIG_TIME、默认头联合训练，原 fullT1 L 与普通 PL.95/权重1保持。三 seed 2026092701/02/03 各从自身合法原scratch E20独立+10+20至E50/11100、13L37LU；不从随机版E50初始化。L6300、U56700（TX隐藏/RX已知）、V27000和物理划分392005保持。原PL/Sup六模型与随机RXMean-U三模型的全部已完成正式结果直接复用，不重训或重测。
 
-响应作用沿用已完成全U20统计和强度0.1／±0.5dB／±0.025rad，不扩大幅度、不减去单包响应、不把风格当真实接收机。该统计仍是混合响应，最大预测变化可能触及有用指纹，未获身份保护或性能保证。原始IQ推理保持，不加载均值bank，不增参数/头/视图或集成。
+本方法在训练期对每包raw或同包H枚举另四个源RX均值差风格，以当前eval/no_grad同base预测作参照，逐包选KL最大的风格再重算梯度。raw/H各15个新增epoch，全U分母；额外64L随机风格对的损失detach，原L监督不改。强度0.1、幅度/相位限制±0.5dB/±0.025rad；统计为混合接收响应，不是纯硬件或身份保护保证。推理单原始IQ F，无bank、DURA、EMA、新头或增参。
 
-与历史单seed任意IQ方向VAT的差异：本候选的离散扰动集合由已知源RX平均响应定义，无输入梯度探测，student新增分支eval有梯度，H由同包F(H)自身软概率参照；不沿用历史G读出或旧X3对照。旧VAT负结果保留，不扫描其半径。本候选在当前随机RXMean目标结果尚未读取时制定。
+总体为 cross_rx126000＋cross_both42000，按混淆计数3:1加权。每行14组预测全部冻结后独立truth-last。下表三seed均值±样本标准差，单位%。
 
-比较对象固定为已完成SIG1-PL、SIG1-Sup，以及当前已登记RXMean-U三seed；当前run全部完成后复用其权重/预测/评分，不重新训练或预测对照。本候选三seed2026092701/02/03各自从原同seed合法scratch E20独立+10+20到E50/11100、13L37LU，绝不从随机风格优胜模型或F50继续训练。全部三行固定final并自动rawclean+六practical／cross_rx126000+cross_both42000后独立truth-last，不按源或目标成绩选择种子。
+| 方法 | clean | 六景平均 |
+| --- | ---: | ---: |
+| RXMean-MaxU | 84.544643 ± 0.659488 | 70.262070 ± 1.184756 |
+| SIG1-PL | 84.693849 ± 0.692508 | 70.233234 ± 1.043286 |
+| SIG1-Sup | 84.116865 ± 0.887612 | 70.168056 ± 1.035243 |
+| RXMean-U | 84.532341 ± 0.558877 | 70.364649 ± 1.073717 |
 
-L额外64对仍为原随机风格KL且detach，保留与RXMean-U相同的标量归一化(nU*KL_U+64*stopgrad(KL_L))/(nU+64)及L额外前向。每seed12个源训练批6raw6H零更新梯度校准，原defaulthead/SIG1/fullL/ordinaryPL和U-only梯度检查通过后即继续。系数min(1,0.1*median(primary_norm)/median(aux_norm))、444步ramp固定；不是逐批10%硬上限，不是性能选择。
+同seed配对差，均值±样本标准差、单位百分点：
 
-新增三模型共90模型epoch／19980更新，共享父成本单列。每模型新增候选eval包6804000，合计U教师包9355500、U学生包3402000、原L包5114880、额外L包852480，共18724860次训练前向包。相对随机RXMean-U多6804000包，不把一次4B合批称为没有额外计算，也不将包数比例当实测时间比例。
+| 对照 | clean 差 | 六景差 |
+| --- | ---: | ---: |
+| SIG1-PL | -0.149206 ± 0.070654 | +0.028836 ± 0.181557 |
+| SIG1-Sup | +0.427778 ± 0.283773 | +0.094015 ± 0.167055 |
+| RXMean-U | +0.012302 ± 0.101990 | -0.102579 ± 0.111149 |
 
-所有新GPU校准/训练均依赖当前随机风格完整run的complete.json，仅作资源依赖，不读其指标。控制器可先发布为WAITING_FOR_PREDECESSOR；前序全部结束后才按own≤4／每卡own≤1且总CUDA+pending≤2／free≥10000MiB、CPUscorer总≤1执行。这样两个本对话矩阵不会叠加超过当前容量，不停止/热改其他任务。前序缺失只等待；新技术故障停止新派发、保存健康子进程和独占输出；科学负结果不取消其他seed。
+逐seed相对普通PL，单位百分点：
 
-精确矩阵、代码commit、路径、命令、环境/CWD与artifact见experiment.json；一次archive传输SHA／remote compile与首步真实checkpoint smoke按最小流程。没有增加数据重验、签名、审批或报告完整度门槛。
+| seed | clean 差 | 六景差 |
+| --- | ---: | ---: |
+| 2026092701 | -0.195238 | +0.234127 |
+| 2026092702 | -0.067857 | -0.110615 |
+| 2026092703 | -0.184524 | -0.037004 |
 
-原rawclean≥85.981746%、raw六景>72.096197%及全部声明范围严格超过匹配PL/Sup的目标保持。该固定F0候选未获任何正式性能，三seed也不自动等于显著或完整原目标达成。
+原 rawclean≥85.98174603174603%、六景>72.0961970899471% 均未达到，全部声明分层严格优于PL/Sup的条件也不成立。三seed不自动等于统计显著；这一组基准此前已被探索，不称新盲测。候选不能晋级，原完整范围目标仍active。
 
-执行 commit 05e320bb0c554d9b135cec2e43b0e667617a8375 已推送并独立比较上游OID；单archive传输校验VERIFIED、remote compile PASS。5项focused tests与一次独立P0/P1审查PASS。普通账号一次preflight核实新root不存在、原三份scratchE20合同匹配、R02全U均值bank完整；源数据未重验。
+完整证据：[实际矩阵](matrix_verification.json)、[完整源训练审计](complete_source_audit.json)、[逐seed](results/per_seed.csv)、[逐景](results/per_scene_mean.csv)、[配对总体](results/paired_summary.csv)、[逐景配对](results/paired_scene_mean.csv)、[全部声明分层](results/paired_strata_mean.csv)。12份候选/引用score、18组同seed物理ID顺序检查、3528000次候选raw正式判决全部完成。
 
-控制器PID/CWD/argv/UID已独立核实，两次观测log126→252bytes且pipeline时间增长，状态WAITING_FOR_PREDECESSOR、12job全QUEUED、GPUworker0，真实新最大选择checkpoint/梯度smoke仍PENDING。当前六行随机风格矩阵保持原进程/预算；前序完整结束后才执行本矩阵，并在首步真实smoke通过后自动继续。当前排队不当作神经训练成功。见launch_verification.json。
+三个源轨迹全部19980个新增step/90模型epoch逐条检查，完整stdout无fatal；每模型56700U各30次，1701000曝光，raw/H各850500。四候选全部计算，但最大选择不强迫20个源RX风格对全部被选中。每模型候选eval6804000包、teacherU9355500包、studentU3402000包、原L5114880包、额外L852480包，共18724860个训练F包，比随机风格多6804000包；校准/源评估/目标测试成本另计，不把包数比当实测时间比。实际源训练秒数逐模型保存在审计中，不作不同并发环境的因果时延比较。原完整训练网络863730、部署reader196001、单SIG1池18976，不混用参数口径。
 
-完整结果与训练核算入口已实现，尚未读取本候选目标结果。`experiments.pamf_u_history.rx_mean_max_results` 在三行及12job全部完成后，只读取冻结预测和已有评分；核实18组同seed ID配对，比较SIG1-PL、SIG1-Sup和随机RXMean-U三类已完成参考，共12份评分／候选3528000次raw决策。按cross_rx／cross_both混淆计数加权，报告逐seed、均值/样本SD、逐景/TX/RX/day及配对差。缺seed、错参考run或不完整pipeline均拒绝正式汇总，不用部分结果选方法。
+36批零更新源校准及E30节点保留在calibration_analysis.json/first_segment_audit.json。Max的raw辅助/主欧氏梯度比中位数约4.33%至6.71%，H约13.76%至16.33%；14/36批局部梯度余弦为负。总体中位剂量规则不是逐批10%上限，这些值不是实际AdamW方向，也不是性能退步的因果解释。更大的预测变化未解决当前目标；不能据此普遍否定物理扰动或风险分配路线。
 
-`experiments.pamf_u_history.rx_mean_max_audit` 对全部完成行的每步／每epoch／完整stdout检查四候选前向成本、最大KL选择、各RX的全U曝光及段间状态。四种风格必须被计算，但最大选择允许只实际选中其中一部分，不强制伪造20个风格对均被选中。完整预算必须是候选eval6804000包、teacherU9355500包／studentU3402000包，source/U真值/target权限保持。当前只做等待状态的只读预检查：0行已冻结，3行pending，不把它当真实梯度smoke通过。
+完整审计首次因日志文件名沿用随机版而在只读stdout定位处退出；真实Max日志是train__SEED.log。已将共用审计的默认随机命名保留，并为Max/P指定实际命名，随后完整3行审计PASS。没有重训、重启、重新预测或覆盖产物，神经执行commit仍为`05e320bb0c554d9b135cec2e43b0e667617a8375`。
 
-上述分析/核算新增5项测试及原随机风格统计4项、协方差统计3项、曝光核验3项均PASS；既有完整协方差结果在共用统计增加第三参考能力后逐字段不变。仅修改本地分析工具，远端神经执行commit仍为05e320bb0c554d9b135cec2e43b0e667617a8375，训练/选择配方未改。完整结束后分别执行max_audit、max_results collect、max_results analyze，使用已登记runtime；新指标不能反馈到当前已固定矩阵。
-
-当前已从等待转为实际三 seed 训练。三份真实 E20 的 fullPAMF/SIG1/defaulthead/source-only 梯度 smoke 与 12 批校准全部 PASS，三 seed alpha=1；各模型参数保持且校准 0 optimizer。三条训练实际 CUDA PID/UID/CWD/argv/显卡映射与日志增长已核实，已观察每行 538 至 584 个非零连续 step，见 launch_verification.json。原 RXMean 随机风格矩阵已全部 ANALYZED；其负结果不会改动本版 seed、物理幅度、Max 选择或预算。本版尚无完整源或正式结果，不能宣布收益。
-
-三 seed 均已完整完成新增前10轮 E20→E30；first_segment_audit.json 逐条检查全部6660条step/30模型epoch、每行E30真实checkpoint smoke、56700U各10遍、raw/H各283500、4候选2268000包、teacherU3118500包、studentU1134000包、各RX113400曝光和最大KL选择。后20轮已按原日程继续，尚未完成E50/正式结果，不能把E30节点称为实验完成。
-
-已存在36批零更新校准的统计见calibration_analysis.json：每seed raw的辅助/主欧氏梯度比中位数约4.33%至6.71%，H约13.76%至16.33%；总体中位系数规则并不是逐批10%硬上限。最大选择的KL中位数高于随机风格，但这不等价泛化收益；36批中14批梯度余弦为负，不等于实际AdamW反向或已定位clean损伤。未新增前向、更新、target或U真值读取，参数与健康日程保持。
+下一候选RXTrust-P已在本组任何目标分数读取之前固定、独立审查并发布，仅资源上等待本组整体完成。它按raw可信度及raw/H分歧改变新增H监督类型，原PL和物理RX选择不变；本组结果没有反馈到P的配方或seed。P三份真实checkpoint/梯度检查已通过并开始自身E20+30轨迹，尚无完整性能结论。完整方法和当前状态见[RXTrust-P报告](../20261027-phase1-PAMF-RXTrustP-SIG1-threeSeed-m3-r01/report.md)。

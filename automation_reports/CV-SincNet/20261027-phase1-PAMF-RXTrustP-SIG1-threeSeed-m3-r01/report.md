@@ -1,6 +1,6 @@
 # RXTrust-P：按 raw 可信度和 H 分歧分配单标签/候选集合监督
 
-状态：QUEUED_VERIFIED_NEURAL_NOT_STARTED。独立CPU等待控制器已发布并核实，12个job排队、0新GPU worker；实际P-checkpoint smoke与训练尚未开始，没有性能提升结论。候选在当前 RXMeanMax 任何目标分数尚未读取时固定，不依据其结果决定是否运行。三模型 seed 2026092701/02/03，已有 PL/Sup 和即将完成的 Max 控制全部复用。
+状态：RUNNING。三seed真实原E20/fullPAMF/SIG1/defaulthead检查与12批源梯度校准全部PASS，三条CUDA轨迹正在自身E20+30训练。尚无完整P性能结果。下文排队记录为历史发布节点。候选在当前 RXMeanMax 任何目标分数尚未读取时固定，不依据其结果决定是否运行。三模型 seed 2026092701/02/03，已有 PL/Sup 和即将完成的 Max 控制全部复用。
 
 原完整 PAMF、单 SIG_TIME、默认头、fullT1 L 与普通 raw PL 阈值0.95/权重1保持。每 seed 只从原合法scratch E20独立+10+20至E50/11100、13L37LU；不加载E50教师。训练仅原clean及同包星地H、源U已知RX，0 DURA。推理原始IQ单F，不增参数/头/视图/集成。
 
@@ -25,3 +25,5 @@ H仍按全部U分母求平均，不按接受池大小放大。每seed12训练L/U
 等待控制器第二次独立观测确认日志由62增长至248 bytes，pipeline时间同步推进；排队状态不是死锁文件或提交返回值代替。GPU worker仍0，真实P-smoke未开始。
 
 结果工具已就绪：`rx_trust_p_results collect/analyze` 仅在3行/12job完整结束后读取固定预测和既有评分，复用PL/Sup/Max共9参考，核查18组同seed物理顺序、3528000新raw判决。`rx_trust_p_audit` 逐条核算全部完成行step/epoch/stdout、H单标签/集合/fallback累计与当前计数、原raw门控、尾批124及每RX全部H覆盖。4项针对性数值/缺seed/错参考/未完成管道/路由计数检查PASS，见analysis_tool_verification.json。此为本地分析工具补充，不改变远端31d6ecb神经执行、冻结方法或资源依赖，不代表新P真实smoke或性能通过。
+
+当前P三seed均已实际通过校准和有梯度训练；actual PID/CWD/argv/UID/CUDA、非零连续step和H单标签/集合/fallback计数已核实，见launch_verification.json。系数依次0.37245122389054863/0.38352031095117256/0.4053865999870067；每seed6个H校准批共1536U的三路计数完整，0optimizer/参数buffer保持。正式训练已完成至少一整H epoch并继续raw，H三路每行合计56700；前缀约646至657步仅作执行证据，不冒充全E50日志或性能。当前Max目标结果不回流P。

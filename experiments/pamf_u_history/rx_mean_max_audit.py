@@ -42,7 +42,7 @@ def collect(runtime,output):
     if out.exists():raise FileExistsError('Keep prior source audit')
     pieces=[inspect.getsource(expected_U),inspect.getsource(base_check_step).replace('def check_step(', 'def base_check_step(',1),
         inspect.getsource(check_step),inspect.getsource(check_history),inspect.getsource(audit_remote)]
-    script='\n\n'.join(pieces)+'\nimport json\nprint(json.dumps(audit_remote('+repr(rt)+',methods='+repr(METHODS)+')))\n'
+    script='\n\n'.join(pieces)+'\nimport json\nprint(json.dumps(audit_remote('+repr(rt)+',methods='+repr(METHODS)+',train_log_pattern="train__{seed}.log")))\n'
     result=ssh(script);result['status']=result['status'].replace('RX_MEAN_SOURCE','RX_MEAN_MAX_SOURCE')
     out.parent.mkdir(parents=True,exist_ok=True)
     with out.open('x',encoding='utf-8') as f:json.dump(result,f,indent=2);f.write('\n')

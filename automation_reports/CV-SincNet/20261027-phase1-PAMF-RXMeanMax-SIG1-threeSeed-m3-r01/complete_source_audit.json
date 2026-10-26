@@ -1,0 +1,124 @@
+{
+  "status": "COMPLETE_RX_MEAN_MAX_SOURCE_ROWS_AUDITED",
+  "models": 3,
+  "new_step_records": 19980,
+  "new_model_epochs": 90,
+  "new_control_training": 0,
+  "target_reads": 0,
+  "IQ_reads": 0,
+  "weight_reads": 0,
+  "goal_complete": false,
+  "rows": [
+    {
+      "method": "RXMean-MaxU",
+      "model_seed": 2026092701,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0006831722954253515,
+          "last_epoch_new_loss_mean": 0.003845807873887253,
+          "first_source_V_correct": 26431,
+          "last_source_V_correct": 26479,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.0005876409445222265,
+          "last_epoch_new_loss_mean": 0.0030581053925325744,
+          "first_source_V_correct": 26505,
+          "last_source_V_correct": 26555,
+          "source_V_count": 27000
+        }
+      ],
+      "PL_acceptance": 0.9480728982951205,
+      "coefficient": 1.0,
+      "actual_training_seconds": 2943.576210008003,
+      "cumulative_training_seconds": 4803.738982741721,
+      "fatal_markers": []
+    },
+    {
+      "method": "RXMean-MaxU",
+      "model_seed": 2026092702,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.000689016519466243,
+          "last_epoch_new_loss_mean": 0.0037312900667447967,
+          "first_source_V_correct": 26446,
+          "last_source_V_correct": 26539,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.0005811263556326823,
+          "last_epoch_new_loss_mean": 0.0032026626705611546,
+          "first_source_V_correct": 26519,
+          "last_source_V_correct": 26583,
+          "source_V_count": 27000
+        }
+      ],
+      "PL_acceptance": 0.9486067019400353,
+      "coefficient": 1.0,
+      "actual_training_seconds": 2996.288275846746,
+      "cumulative_training_seconds": 5052.8352250573225,
+      "fatal_markers": []
+    },
+    {
+      "method": "RXMean-MaxU",
+      "model_seed": 2026092703,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0007758274996130904,
+          "last_epoch_new_loss_mean": 0.003869309452433676,
+          "first_source_V_correct": 26430,
+          "last_source_V_correct": 26532,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.000650939918561054,
+          "last_epoch_new_loss_mean": 0.0032448611250524787,
+          "first_source_V_correct": 26474,
+          "last_source_V_correct": 26569,
+          "source_V_count": 27000
+        }
+      ],
+      "PL_acceptance": 0.9469635508524398,
+      "coefficient": 1.0,
+      "actual_training_seconds": 3062.8541913591325,
+      "cumulative_training_seconds": 4975.114530404564,
+      "fatal_markers": []
+    }
+  ]
+}

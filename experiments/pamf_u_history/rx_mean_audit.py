@@ -39,7 +39,7 @@ def check_history(h):
     if sum(h['by_replica'])!=850500 or sum(h['by_scene'])!=850500:raise ValueError('Only the fifteen H-base epochs count as H exposure')
 
 
-def audit_remote(rt,methods=('RXMean-U','RXMean-LU')):
+def audit_remote(rt,methods=('RXMean-U','RXMean-LU'),train_log_pattern='train__{method}-s{seed}.log'):
     import gzip,json,math,re,statistics,time
     from pathlib import Path
     root=Path(rt['run_root']);rows=[];pending=[]
@@ -72,7 +72,7 @@ def audit_remote(rt,methods=('RXMean-U','RXMean-LU')):
                     first_epoch_new_loss_mean=statistics.fmean(v['RXM_loss'] for v in values[:222]),last_epoch_new_loss_mean=statistics.fmean(v['RXM_loss'] for v in values[-222:]),
                     first_source_V_correct=ep[0]['val_tx_correct'],last_source_V_correct=ep[-1]['val_tx_correct'],source_V_count=ep[-1]['val_tx_total']))
             if calls!=6660 or seen!=h['seen'] or accepted!=h['accepted']:raise ValueError('Cross-segment history/PL exposure differs')
-            log=root/'logs'/('train__'+method+'-s'+str(seed)+'.log');text=log.read_text(errors='replace')
+            log=root/'logs'/train_log_pattern.format(method=method,seed=seed);text=log.read_text(errors='replace')
             fatal=re.findall(r'Traceback \(most recent call last\)|FloatingPointError:|RuntimeError:|CUDA out of memory|Segmentation fault',text)
             if fatal:raise ValueError('Fatal markers in complete training stdout')
             vpath=source.parent/'source_validation/complete.json';v=read(vpath) if vpath.exists() else None

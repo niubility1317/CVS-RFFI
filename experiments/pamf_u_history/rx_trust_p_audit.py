@@ -42,8 +42,8 @@ def collect(runtime,output):
         inspect.getsource(check_max_step).replace('def check_step(', 'def check_max_step(',1),
         inspect.getsource(check_max_history).replace('def check_history(', 'def check_max_history(',1),
         inspect.getsource(check_step),inspect.getsource(check_history),inspect.getsource(audit_remote)]
-    script='P_RULE='+repr(P_RULE)+'\n'+'\n\n'.join(pieces)+'\nimport json\nprint(json.dumps(audit_remote('+repr(rt)+',methods='+repr(METHODS)+')))\n'
-    compile(script,'full_P_source_audit','exec');r=ssh(script);out.parent.mkdir(parents=True,exist_ok=True)
+    script='P_RULE='+repr(P_RULE)+'\n'+'\n\n'.join(pieces)+'\nimport json\nprint(json.dumps(audit_remote('+repr(rt)+',methods='+repr(METHODS)+',train_log_pattern="train__{seed}.log")))\n'
+    compile(script,'full_P_source_audit','exec');r=ssh(script);r['status']=r['status'].replace('RX_MEAN_SOURCE','RX_TRUST_P_SOURCE');out.parent.mkdir(parents=True,exist_ok=True)
     with out.open('x',encoding='utf-8') as f:json.dump(r,f,indent=2);f.write('\n')
     print(json.dumps(dict(status=r['status'],completed_rows=len(r['rows']),pending=len(r['pending']),step_records=r['total_new_step_records'],epoch_records=r['total_new_epoch_records'])))
 
