@@ -1,0 +1,414 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261026-analysis-PAMF-SIG1-rejected-pairs-m1-r01",
+  "code_commit": "e94881731343964a4f7f96924d6fce8dcfe1b583",
+  "actual_head_smoke": {
+    "status": "PASS",
+    "actual_E20_default_head": true,
+    "cached_source_L_packets": 2,
+    "head_matrix_algebra_only": true,
+    "fitted_parameters": 0,
+    "optimizer_updates": 0,
+    "new_IQ_reads": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0,
+    "max_abs_logit_difference": 3.975763499752816e-06
+  },
+  "independent_audit": {
+    "status": "VERIFIED_COMPLETE",
+    "run_id": "20261026-analysis-PAMF-SIG1-rejected-pairs-m1-r01",
+    "packet_cells": 108,
+    "gradient_cells": 324,
+    "archived_view_decisions": 176400,
+    "archived_feature_values": 28224000,
+    "original_head_max_abs_logit_difference": 3.975763496200102e-06,
+    "role_counts": {
+      "L_s": {
+        "records": 6300,
+        "raw_accepted": 5812,
+        "raw_rejected": 488,
+        "RX_counts": {
+          "1": 1260,
+          "3": 1260,
+          "4": 1260,
+          "6": 1260,
+          "8": 1260
+        },
+        "TX_truth_visible": true
+      },
+      "U_s": {
+        "records": 6300,
+        "raw_accepted": 5756,
+        "raw_rejected": 544,
+        "RX_counts": {
+          "1": 1260,
+          "3": 1260,
+          "4": 1260,
+          "6": 1260,
+          "8": 1260
+        },
+        "TX_truth_visible": false
+      }
+    },
+    "cross_scene_L_rejected_negative_feature_gradient": {
+      "practical_low_suburban::raw_soft": 0.22540983606557377,
+      "practical_low_suburban::G_peer_probability": 0.0020491803278688526,
+      "practical_low_suburban::G_peer_cosine_scores": 0.014344262295081968,
+      "practical_mid_urban::raw_soft": 0.19262295081967212,
+      "practical_mid_urban::G_peer_probability": 0.00819672131147541,
+      "practical_mid_urban::G_peer_cosine_scores": 0.012295081967213115,
+      "practical_low_urban::raw_soft": 0.2192622950819672,
+      "practical_low_urban::G_peer_probability": 0.0020491803278688526,
+      "practical_low_urban::G_peer_cosine_scores": 0.004098360655737705
+    },
+    "lowconfidence_packet_comparisons": [
+      {
+        "role": "L_s",
+        "pairing": "same_scene",
+        "first_scene": "practical_low_suburban",
+        "second_scene": "practical_low_suburban",
+        "group": "raw_rejected",
+        "n": 488,
+        "G_argmax_agreement": 0.7438524590163934,
+        "raw_confidence": {
+          "n": 488,
+          "mean": 0.7613180295013692,
+          "median": 0.8160175516000975,
+          "p10": 0.5103232257101448,
+          "p90": 0.9354345441006907
+        },
+        "raw_entropy": {
+          "n": 488,
+          "mean": 0.6266366701103855,
+          "median": 0.5465457766305889,
+          "p10": 0.25754768979201154,
+          "p90": 1.1659556678306695
+        },
+        "new95_G_consensus": 24,
+        "raw_accuracy": 0.8442622950819673,
+        "G_consensus95_correct": 23,
+        "G_agree_but_wrong": 0.13524590163934427,
+        "GG_mean_repairs": 14,
+        "GG_mean_damage": 60,
+        "all3_mean_repairs": 11,
+        "all3_mean_damage": 32
+      },
+      {
+        "role": "L_s",
+        "pairing": "cross_scene",
+        "first_scene": "practical_low_suburban",
+        "second_scene": "practical_mid_urban",
+        "group": "raw_rejected",
+        "n": 488,
+        "G_argmax_agreement": 0.6762295081967213,
+        "raw_confidence": {
+          "n": 488,
+          "mean": 0.7613180295013692,
+          "median": 0.8160175516000975,
+          "p10": 0.5103232257101448,
+          "p90": 0.9354345441006907
+        },
+        "raw_entropy": {
+          "n": 488,
+          "mean": 0.6266366701103855,
+          "median": 0.5465457766305889,
+          "p10": 0.25754768979201154,
+          "p90": 1.1659556678306695
+        },
+        "new95_G_consensus": 21,
+        "raw_accuracy": 0.8442622950819673,
+        "G_consensus95_correct": 20,
+        "G_agree_but_wrong": 0.12295081967213115,
+        "GG_mean_repairs": 13,
+        "GG_mean_damage": 73,
+        "all3_mean_repairs": 11,
+        "all3_mean_damage": 27
+      },
+      {
+        "role": "L_s",
+        "pairing": "same_scene",
+        "first_scene": "practical_mid_urban",
+        "second_scene": "practical_mid_urban",
+        "group": "raw_rejected",
+        "n": 488,
+        "G_argmax_agreement": 0.6557377049180327,
+        "raw_confidence": {
+          "n": 488,
+          "mean": 0.7613180295013692,
+          "median": 0.8160175516000975,
+          "p10": 0.5103232257101448,
+          "p90": 0.9354345441006907
+        },
+        "raw_entropy": {
+          "n": 488,
+          "mean": 0.6266366701103855,
+          "median": 0.5465457766305889,
+          "p10": 0.25754768979201154,
+          "p90": 1.1659556678306695
+        },
+        "new95_G_consensus": 32,
+        "raw_accuracy": 0.8442622950819673,
+        "G_consensus95_correct": 26,
+        "G_agree_but_wrong": 0.1290983606557377,
+        "GG_mean_repairs": 21,
+        "GG_mean_damage": 86,
+        "all3_mean_repairs": 15,
+        "all3_mean_damage": 43
+      },
+      {
+        "role": "L_s",
+        "pairing": "cross_scene",
+        "first_scene": "practical_mid_urban",
+        "second_scene": "practical_low_urban",
+        "group": "raw_rejected",
+        "n": 488,
+        "G_argmax_agreement": 0.5901639344262295,
+        "raw_confidence": {
+          "n": 488,
+          "mean": 0.7613180295013692,
+          "median": 0.8160175516000975,
+          "p10": 0.5103232257101448,
+          "p90": 0.9354345441006907
+        },
+        "raw_entropy": {
+          "n": 488,
+          "mean": 0.6266366701103855,
+          "median": 0.5465457766305889,
+          "p10": 0.25754768979201154,
+          "p90": 1.1659556678306695
+        },
+        "new95_G_consensus": 22,
+        "raw_accuracy": 0.8442622950819673,
+        "G_consensus95_correct": 18,
+        "G_agree_but_wrong": 0.13319672131147542,
+        "GG_mean_repairs": 15,
+        "GG_mean_damage": 115,
+        "all3_mean_repairs": 10,
+        "all3_mean_damage": 57
+      },
+      {
+        "role": "L_s",
+        "pairing": "same_scene",
+        "first_scene": "practical_low_urban",
+        "second_scene": "practical_low_urban",
+        "group": "raw_rejected",
+        "n": 488,
+        "G_argmax_agreement": 0.5368852459016393,
+        "raw_confidence": {
+          "n": 488,
+          "mean": 0.7613180295013692,
+          "median": 0.8160175516000975,
+          "p10": 0.5103232257101448,
+          "p90": 0.9354345441006907
+        },
+        "raw_entropy": {
+          "n": 488,
+          "mean": 0.6266366701103855,
+          "median": 0.5465457766305889,
+          "p10": 0.25754768979201154,
+          "p90": 1.1659556678306695
+        },
+        "new95_G_consensus": 26,
+        "raw_accuracy": 0.8442622950819673,
+        "G_consensus95_correct": 20,
+        "G_agree_but_wrong": 0.14754098360655737,
+        "GG_mean_repairs": 20,
+        "GG_mean_damage": 138,
+        "all3_mean_repairs": 16,
+        "all3_mean_damage": 69
+      },
+      {
+        "role": "L_s",
+        "pairing": "cross_scene",
+        "first_scene": "practical_low_urban",
+        "second_scene": "practical_low_suburban",
+        "group": "raw_rejected",
+        "n": 488,
+        "G_argmax_agreement": 0.5840163934426229,
+        "raw_confidence": {
+          "n": 488,
+          "mean": 0.7613180295013692,
+          "median": 0.8160175516000975,
+          "p10": 0.5103232257101448,
+          "p90": 0.9354345441006907
+        },
+        "raw_entropy": {
+          "n": 488,
+          "mean": 0.6266366701103855,
+          "median": 0.5465457766305889,
+          "p10": 0.25754768979201154,
+          "p90": 1.1659556678306695
+        },
+        "new95_G_consensus": 23,
+        "raw_accuracy": 0.8442622950819673,
+        "G_consensus95_correct": 22,
+        "G_agree_but_wrong": 0.11270491803278689,
+        "GG_mean_repairs": 17,
+        "GG_mean_damage": 96,
+        "all3_mean_repairs": 11,
+        "all3_mean_damage": 42
+      },
+      {
+        "role": "U_s",
+        "pairing": "same_scene",
+        "first_scene": "practical_low_suburban",
+        "second_scene": "practical_low_suburban",
+        "group": "raw_rejected",
+        "n": 544,
+        "G_argmax_agreement": 0.7242647058823529,
+        "raw_confidence": {
+          "n": 544,
+          "mean": 0.7603448909440279,
+          "median": 0.8108001949700104,
+          "p10": 0.5063854010225263,
+          "p90": 0.9368143875406406
+        },
+        "raw_entropy": {
+          "n": 544,
+          "mean": 0.6228841009717956,
+          "median": 0.5385411628961302,
+          "p10": 0.2643180752157445,
+          "p90": 1.1765475004371833
+        },
+        "new95_G_consensus": 44
+      },
+      {
+        "role": "U_s",
+        "pairing": "cross_scene",
+        "first_scene": "practical_low_suburban",
+        "second_scene": "practical_mid_urban",
+        "group": "raw_rejected",
+        "n": 544,
+        "G_argmax_agreement": 0.6672794117647058,
+        "raw_confidence": {
+          "n": 544,
+          "mean": 0.7603448909440279,
+          "median": 0.8108001949700104,
+          "p10": 0.5063854010225263,
+          "p90": 0.9368143875406406
+        },
+        "raw_entropy": {
+          "n": 544,
+          "mean": 0.6228841009717956,
+          "median": 0.5385411628961302,
+          "p10": 0.2643180752157445,
+          "p90": 1.1765475004371833
+        },
+        "new95_G_consensus": 48
+      },
+      {
+        "role": "U_s",
+        "pairing": "same_scene",
+        "first_scene": "practical_mid_urban",
+        "second_scene": "practical_mid_urban",
+        "group": "raw_rejected",
+        "n": 544,
+        "G_argmax_agreement": 0.6139705882352942,
+        "raw_confidence": {
+          "n": 544,
+          "mean": 0.7603448909440279,
+          "median": 0.8108001949700104,
+          "p10": 0.5063854010225263,
+          "p90": 0.9368143875406406
+        },
+        "raw_entropy": {
+          "n": 544,
+          "mean": 0.6228841009717956,
+          "median": 0.5385411628961302,
+          "p10": 0.2643180752157445,
+          "p90": 1.1765475004371833
+        },
+        "new95_G_consensus": 41
+      },
+      {
+        "role": "U_s",
+        "pairing": "cross_scene",
+        "first_scene": "practical_mid_urban",
+        "second_scene": "practical_low_urban",
+        "group": "raw_rejected",
+        "n": 544,
+        "G_argmax_agreement": 0.6121323529411765,
+        "raw_confidence": {
+          "n": 544,
+          "mean": 0.7603448909440279,
+          "median": 0.8108001949700104,
+          "p10": 0.5063854010225263,
+          "p90": 0.9368143875406406
+        },
+        "raw_entropy": {
+          "n": 544,
+          "mean": 0.6228841009717956,
+          "median": 0.5385411628961302,
+          "p10": 0.2643180752157445,
+          "p90": 1.1765475004371833
+        },
+        "new95_G_consensus": 46
+      },
+      {
+        "role": "U_s",
+        "pairing": "same_scene",
+        "first_scene": "practical_low_urban",
+        "second_scene": "practical_low_urban",
+        "group": "raw_rejected",
+        "n": 544,
+        "G_argmax_agreement": 0.5404411764705882,
+        "raw_confidence": {
+          "n": 544,
+          "mean": 0.7603448909440279,
+          "median": 0.8108001949700104,
+          "p10": 0.5063854010225263,
+          "p90": 0.9368143875406406
+        },
+        "raw_entropy": {
+          "n": 544,
+          "mean": 0.6228841009717956,
+          "median": 0.5385411628961302,
+          "p10": 0.2643180752157445,
+          "p90": 1.1765475004371833
+        },
+        "new95_G_consensus": 46
+      },
+      {
+        "role": "U_s",
+        "pairing": "cross_scene",
+        "first_scene": "practical_low_urban",
+        "second_scene": "practical_low_suburban",
+        "group": "raw_rejected",
+        "n": 544,
+        "G_argmax_agreement": 0.6194852941176471,
+        "raw_confidence": {
+          "n": 544,
+          "mean": 0.7603448909440279,
+          "median": 0.8108001949700104,
+          "p10": 0.5063854010225263,
+          "p90": 0.9368143875406406
+        },
+        "raw_entropy": {
+          "n": 544,
+          "mean": 0.6228841009717956,
+          "median": 0.5385411628961302,
+          "p10": 0.2643180752157445,
+          "p90": 1.1765475004371833
+        },
+        "new95_G_consensus": 45
+      }
+    ],
+    "new_IQ_reads": 0,
+    "new_F_forwards": 0,
+    "new_G_forwards": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0,
+    "scope": "Independent cached array/head algebra recomputation; L seen-training proxy, U precision unknown; no backbone or optimizer guarantee"
+  },
+  "process_terminal_off_GPU": true,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "duration_seconds": 2.841508659068495,
+  "new_optimizer_updates": 0,
+  "new_IQ_reads": 0,
+  "new_F_forwards": 0,
+  "new_G_forwards": 0,
+  "V_reads": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0
+}

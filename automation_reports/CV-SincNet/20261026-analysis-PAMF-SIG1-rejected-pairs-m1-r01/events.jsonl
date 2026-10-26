@@ -1,1 +1,2 @@
 {"at": "2026-10-26T13:50:52+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-26T14:01:04+00:00", "status": "ANALYZED", "note": "VERIFIED:CPU2.84s，108包关系/324梯度单元独立复算；0新IQ/F/G/V/target/Utruth；G一致不能证明伪标签可靠，低置信U同包关系只形成待验证假设", "evidence": ["automation_reports/CV-SincNet/20261026-analysis-PAMF-SIG1-rejected-pairs-m1-r01/complete_evidence.json"], "row_id": null}
