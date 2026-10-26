@@ -17,3 +17,5 @@
 发布后状态：上述 run 已实际运行，02/03 无 query 联合检查与固定校准均 PASS（共同系数分别 1.000000／0.9949095941）。4 个 seed02 模型已启动，seed03 四行排队；全部三种子矩阵保留，完成后再报告稳定性。
 
 本run队列资源更新：原globalidle阻塞已完成行测试/seed03；独立控制run`20261027-control-PAMF-Covariance-threeSeed-queue-r01`改用own≤4、每卡own≤1/总CUDA+pending≤2、free≥10000MiB，保留原全部科学配置与产物，不动其他owner。该变更不新增训练矩阵或数据权限。
+
+独立下一候选准备：[有界接收响应校正源计划](PAMF_BOUNDED_RESPONSE_SOURCE_PLAN_20261027.md)。仅有本地解析算子／合成检查，尚未发布真实源试验或训练；不依据当前单 seed/部分目标结果选参数，不改变协方差完整矩阵。任何新的 F 验证和训练继续覆盖三模型 seed。
