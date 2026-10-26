@@ -1,0 +1,168 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-SIG1-AllUVAT-source-s2026092701-r01",
+  "group_id": "pamf-sig1-all-U-smoothing-20261026",
+  "display_name": "完整PAMF单SIG_TIME：普通PL叠加全U虚拟对抗平滑",
+  "description": "单seed源证伪：保持普通PL .95 CE/权重1，所有U叠加局部分布平滑VAT。仅源L/隐藏TX的U训练，V只评估；原单视图普通PL E20+10+20到E50；不训练对照。候选参数在读取新目标确认分数前由完整源证据固定。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "SIG_TIME-single-view",
+    "ordinary-PL-plus",
+    "all-U",
+    "VAT",
+    "source-only",
+    "no-comparator-training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-26要求继续持续研发半监督方法直到原目标；完整PAMF/SIG_TIME单视图、对照复用、不影响另一方向。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "existing verified N607 CVS-RFFI Python, FP32/TF32off, two CPU threads, no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-SIG1-AllUVAT-source-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig original F0",
+    "version": "existing validated original physical roles",
+    "representation": "FP32 received IQ [2,256]",
+    "contract_ref": "original F0 source_contract.json, checked private context",
+    "physical_ids_ref": "same existing source contract.role_ids",
+    "label_map_ref": "same original six registered TX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "unchanged original F0 six TX",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": ".07/.63/.30 source pool;training label ratio .10",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "unchanged existing Phase1 validated source handles;Phase2 capsule_id/split_id not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "same practical residual/post_sync/noEQ, source L training and frozen source V diagnostics"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-seed source falsification only;no new target accuracy or completed optimization claim"
+  },
+  "checkpoint": {
+    "initialization": "completed scratch single-view ordinary-PL E20 prefix + own10 + own20",
+    "sources": [
+      "20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20"
+    ],
+    "contract_check_ref": "actual complete.json,source contract equality and real payload state in load_prefix;first-step real checkpoint source L/U smoke",
+    "provenance_verdict": "require same original F0 physical IDs/roles;single SIG_TIME local6x96x1/output160x112/defaulthead6x160;scratch prefix no ancestors/no target selection;fail closed on mismatch",
+    "selection_rule": "fixed final50 from completed same-contract single-view E20+own10+own20;no target or source epoch ranking"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-all-u-vat-source-20261026",
+    "gpu_policy": "physical GPU0..7;only globally idle card (CUDA+pending count=0) with >=10000MiB free;one owned worker/card;other tasks untouched",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-AllUVAT-source-s2026092701-r01",
+    "remote_log_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-AllUVAT-source-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026/vat_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_u_history.vat_source dispatch --config PROJECT/releases/20261026-phase1-PAMF-SIG1-AllUVAT-source-release-r01/runtime.json",
+    "stop_rule": "first technical/protocol/smoke/nonfinite/ancestry/output/budget failure stops NEW jobs;healthy jobs finish;no performance-triggered kill,autoretry,foreign changes"
+  },
+  "expected_artifacts": [
+    "real E20 L/U/default-head joint smoke;input-gradient probe leaves parameter gradients/BN buffers unchanged",
+    "one fixed E50/11100 final;30new epochs/6660new steps;no comparator training",
+    "1701000sourceU exposures,56700unique30visits;all U receives VAT;actual nonzero directions/radius/probe and forward counts",
+    "full sourceV27000 eight views,source TX/RX/day and baseline-paired outcomes",
+    "actual native compute/time;no new inference parameters",
+    "single release archive transfer/compile and independent PID CWD argv GPU log growth"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source rawclean",
+      "source three practical mean",
+      "sameG three practical mean",
+      "all-U coverage",
+      "direction norms",
+      "actual training cost"
+    ],
+    "dimensions": [
+      "view",
+      "TX",
+      "RX",
+      "day",
+      "model_seed"
+    ],
+    "scientific_rule": "all budgets/permissions finite;>=99%nonzero directions;all56700U;source clean>=oldPL-.5pp;source raw3mean>=oldPL and G3mean>=oldPL;all conditions before any new VAT target access",
+    "prediction_ref": "own source_validation/source_V_predictions.npz",
+    "scorer_ref": "frozen source V default-head only",
+    "target": "none in this source pilot"
+  },
+  "rows": [
+    {
+      "row_id": "F0-PL-VAT-s2026092701",
+      "method": "PL-VAT",
+      "purpose": "single fixed all-U source candidate",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-AllUVAT-source-s2026092701-r01/configs/PL-VAT.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-AllUVAT-source-s2026092701-r01/F/F0-PL-VAT-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "signature_views": 1,
+        "default_head_joint": true,
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261016421
+      },
+      "seed_notes": "model seed01 only;split392005 unchanged. No data subsampling/support seed;original source practical seeds namespace retained;native stochastic L/dropout use original model-seeded RNG.",
+      "k": null,
+      "scenario": "source V raw/Graw/low_suburban/mid_urban/low_urban with matched G;not target",
+      "optimizer": "original native Adam/segment optimizer;default head joint",
+      "lr": "original native segmented cosine,actual resolved args retained",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "4440 inherited updates + 2220 own + 4440 own = E50/11100;full 13L+37LU. History active E21-50;shared existing E20 not new training.",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-AllUVAT-source-s2026092701-r01/F/F0-PL-VAT-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-AllUVAT-source-s2026092701-r01/logs/PL-VAT.log",
+      "command": "PYTHON -u -m experiments.pamf_u_history.vat_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-AllUVAT-source-s2026092701-r01/configs/PL-VAT.json",
+      "expected_artifacts": [
+        "final_ssdg.pth",
+        "complete.json",
+        "vat_state.json",
+        "source_validation/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Candidate and parameters fixed in docs/goals/PAMF_SIG1_ALLU_SMOOTHING_20261026.md before new History target scores were read;source evidence is raw/G tradeoff of complete three-history variants.",
+    "VAT adds one eval probe plus input-gradient calculation and one adversarial student forward per U batch;ordinaryPL remains unchanged;extra compute is not free and must be measured.",
+    "Recipe: {\"EMA_model\": false, \"VAT_weight\": 0.1, \"all_U\": true, \"extra_student_forwards\": 1, \"extra_teacher_forwards\": 1, \"positive_threshold\": 0.95, \"positive_weight\": 1.0, \"power_iterations\": 1, \"ramp_updates\": 444, \"relative_probe\": 0.001, \"relative_radius\": 0.03, \"start_epoch\": 21}",
+    "No U truth/modelEMA/prototype/head replacement/RX geometry extrapolation;other owner unchanged.",
+    "Source necessary conditions are prespecified scientific falsification,not target efficacy proof. Failure is retained without radius/weight sweep or selective rerun.",
+    "Historical X3 ordinaryPL/sourceV comparator is reused and marked architecture differs;no matching-control retraining."
+  ],
+  "registered_at": "2026-10-26T09:46:57+00:00"
+}
