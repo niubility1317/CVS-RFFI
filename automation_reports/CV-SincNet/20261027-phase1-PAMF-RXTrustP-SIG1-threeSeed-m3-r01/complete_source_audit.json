@@ -1,0 +1,244 @@
+{
+  "status": "COMPLETE_RX_TRUST_P_SOURCE_ROWS_AUDITED",
+  "models": 3,
+  "new_step_records": 19980,
+  "new_model_epochs": 90,
+  "new_control_training": 0,
+  "target_reads": 0,
+  "IQ_reads": 0,
+  "weight_reads": 0,
+  "goal_complete": false,
+  "rows": [
+    {
+      "method": "RXTrust-P",
+      "model_seed": 2026092701,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0006849248639883701,
+          "last_epoch_new_loss_mean": 0.17521231886637104,
+          "first_source_V_correct": 26438,
+          "last_source_V_correct": 26463,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.0006179572638257423,
+          "last_epoch_new_loss_mean": 0.06392630689718702,
+          "first_source_V_correct": 26493,
+          "last_source_V_correct": 26523,
+          "source_V_count": 27000
+        }
+      ],
+      "PL_acceptance": 0.949689594356261,
+      "coefficient": 0.37245122389054863,
+      "actual_training_seconds": 2952.053087099921,
+      "cumulative_training_seconds": 4812.318895044271,
+      "fatal_markers": [],
+      "H_routes": {
+        "P_H_singleton": 597337,
+        "P_H_pair": 211532,
+        "P_H_soft_fallback": 41631,
+        "P_H_by_source_RX": {
+          "1": {
+            "singleton": 124419,
+            "pair": 43083,
+            "fallback": 2598
+          },
+          "3": {
+            "singleton": 109331,
+            "pair": 41154,
+            "fallback": 19615
+          },
+          "4": {
+            "singleton": 121378,
+            "pair": 44895,
+            "fallback": 3827
+          },
+          "6": {
+            "singleton": 124324,
+            "pair": 42877,
+            "fallback": 2899
+          },
+          "8": {
+            "singleton": 117885,
+            "pair": 39523,
+            "fallback": 12692
+          }
+        },
+        "P_H_by_raw_pseudo_class": {
+          "0": 136881,
+          "1": 135099,
+          "2": 140530,
+          "3": 120134,
+          "4": 136162,
+          "5": 140063
+        }
+      }
+    },
+    {
+      "method": "RXTrust-P",
+      "model_seed": 2026092702,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.000688573715698104,
+          "last_epoch_new_loss_mean": 0.18417409100980908,
+          "first_source_V_correct": 26448,
+          "last_source_V_correct": 26527,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.0006170892176980799,
+          "last_epoch_new_loss_mean": 0.035557326466382086,
+          "first_source_V_correct": 26534,
+          "last_source_V_correct": 26533,
+          "source_V_count": 27000
+        }
+      ],
+      "PL_acceptance": 0.951493239271017,
+      "coefficient": 0.38352031095117256,
+      "actual_training_seconds": 3027.7065297178924,
+      "cumulative_training_seconds": 5084.085698786192,
+      "fatal_markers": [],
+      "H_routes": {
+        "P_H_singleton": 589730,
+        "P_H_pair": 220869,
+        "P_H_soft_fallback": 39901,
+        "P_H_by_source_RX": {
+          "1": {
+            "singleton": 123168,
+            "pair": 43868,
+            "fallback": 3064
+          },
+          "3": {
+            "singleton": 109105,
+            "pair": 43680,
+            "fallback": 17315
+          },
+          "4": {
+            "singleton": 119117,
+            "pair": 47101,
+            "fallback": 3882
+          },
+          "6": {
+            "singleton": 121569,
+            "pair": 44714,
+            "fallback": 3817
+          },
+          "8": {
+            "singleton": 116771,
+            "pair": 41506,
+            "fallback": 11823
+          }
+        },
+        "P_H_by_raw_pseudo_class": {
+          "0": 136126,
+          "1": 133065,
+          "2": 141681,
+          "3": 123951,
+          "4": 135737,
+          "5": 140039
+        }
+      }
+    },
+    {
+      "method": "RXTrust-P",
+      "model_seed": 2026092703,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0007799553858202269,
+          "last_epoch_new_loss_mean": 0.1794927498107558,
+          "first_source_V_correct": 26433,
+          "last_source_V_correct": 26532,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.0006733918674620548,
+          "last_epoch_new_loss_mean": 0.15223550724352267,
+          "first_source_V_correct": 26479,
+          "last_source_V_correct": 26572,
+          "source_V_count": 27000
+        }
+      ],
+      "PL_acceptance": 0.9497595532039976,
+      "coefficient": 0.4053865999870067,
+      "actual_training_seconds": 2957.2909822370857,
+      "cumulative_training_seconds": 4869.818023582455,
+      "fatal_markers": [],
+      "H_routes": {
+        "P_H_singleton": 612608,
+        "P_H_pair": 196435,
+        "P_H_soft_fallback": 41457,
+        "P_H_by_source_RX": {
+          "1": {
+            "singleton": 125796,
+            "pair": 39628,
+            "fallback": 4676
+          },
+          "3": {
+            "singleton": 110930,
+            "pair": 40495,
+            "fallback": 18675
+          },
+          "4": {
+            "singleton": 124367,
+            "pair": 41713,
+            "fallback": 4020
+          },
+          "6": {
+            "singleton": 127155,
+            "pair": 39572,
+            "fallback": 3373
+          },
+          "8": {
+            "singleton": 124360,
+            "pair": 35027,
+            "fallback": 10713
+          }
+        },
+        "P_H_by_raw_pseudo_class": {
+          "0": 136471,
+          "1": 128477,
+          "2": 139365,
+          "3": 127557,
+          "4": 136884,
+          "5": 140289
+        }
+      }
+    }
+  ]
+}

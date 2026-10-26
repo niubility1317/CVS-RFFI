@@ -1,25 +1,56 @@
 {
-  "status": "QUEUED_VERIFIED_NEURAL_NOT_STARTED",
+  "status": "VERIFIED_THREE_ACTUAL_PM_NATIVE_TRAJECTORIES",
   "execution_commit": "53c5b84d4914fb3c7fbca8a2ab721e04fe2d6ae7",
-  "ordinary_account_controller_PID_CWD_ARGV_UID": "VERIFIED",
-  "controller_log_growth": [
-    126,
-    441
-  ],
-  "jobs": 12,
-  "all_jobs_queued": true,
-  "GPU_workers": 0,
-  "predecessor_complete_present": false,
+  "models": 3,
+  "actual_live_CUDA_workers": 3,
+  "predecessor_complete": true,
   "new_calibration_F_forwards": 0,
   "new_calibration_weight_reads": 0,
-  "actual_new_checkpoint_smoke": "PENDING_FIRST_NATIVE_TRAINING_SEGMENT",
-  "archive_transfer": "VERIFIED",
-  "remote_compile": "PASS",
-  "source_seeds": [
-    2026092701,
-    2026092702,
-    2026092703
-  ],
-  "control_retraining": 0,
-  "goal_complete": false
+  "native_new_checkpoint_smokes": "PASS_3",
+  "actual_model_parameters": 863730,
+  "sig_time_views": 1,
+  "default_head_classes": 6,
+  "ordinary_PL_threshold": 0.95,
+  "ordinary_PL_weight": 1,
+  "U_TX_truth_reads": 0,
+  "target_reads": 0,
+  "goal_complete": false,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "coefficient": 0.150512613170486,
+      "source_batches_reused": 12,
+      "weighted_mode_norm_reference": {
+        "raw": 0.007921709184427493,
+        "H": 0.09999999999999999
+      },
+      "actual_native_checkpoint_smoke": "PASS",
+      "verified_U_updates": 493,
+      "H_routed": 56700
+    },
+    {
+      "model_seed": 2026092702,
+      "coefficient": 0.1453399924286534,
+      "source_batches_reused": 12,
+      "weighted_mode_norm_reference": {
+        "raw": 0.006293538445142005,
+        "H": 0.1
+      },
+      "actual_native_checkpoint_smoke": "PASS",
+      "verified_U_updates": 468,
+      "H_routed": 56700
+    },
+    {
+      "model_seed": 2026092703,
+      "coefficient": 0.15037222073226014,
+      "source_batches_reused": 12,
+      "weighted_mode_norm_reference": {
+        "raw": 0.010088743161945418,
+        "H": 0.1
+      },
+      "actual_native_checkpoint_smoke": "PASS",
+      "verified_U_updates": 453,
+      "H_routed": 56700
+    }
+  ]
 }

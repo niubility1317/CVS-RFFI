@@ -35,3 +35,5 @@ RXMean 六模型现已全部 ANALYZED：U 的 clean/六景为 84.532341%/70.3646
 Max三seed已完整ANALYZED：rawclean84.544643%、六景70.262070%，相对匹配PL −0.149206/+0.028836pp；相对随机U +0.012302/−0.102579pp，未达原目标。完整19980step/90模型epoch及3528000正式判决通过核验。预先固定的RXTrust-P三seed已真实校准/训练，alpha分别0.372451/0.383520/0.405387，首整H epoch的singleton/pair/fallback全U计数已核实；P无性能结论，原全范围目标active。
 
 P三seed E20→E30完整6660步/30模型epoch及每模型283500H三路计数已核验，原E50轨迹保持。36批同E20配对发现P改变H目标及raw/H剂量（H参考中位24.75%至26.96%，非逐批硬限幅）。独立PM三seed仅改为max_rawH_median(norm_aux/norm_primary)校准，alpha0.150513/0.145340/0.150372，复用同P源梯度，0新校准F/权重，整个P结束后才启动。代码/6tests/独立P0P1通过、CPU等待控制器已VERIFIED，真实PM smoke仍PENDING_FIRST_NATIVE_SEGMENT。原目标active，不读取P目标决定新矩阵。
+
+P三seed完整ANALYZED：rawclean84.367857%、六景69.716799%，相对PL −0.325992/−0.516435pp且样本SD增大，失败。19980step/90模型epoch与3528000正式判决完整核验。预先固定PM已三seed接续，自己原E20的真实native checkpoint smoke均PASS、首整H epoch计数完整；校准0新F/权重，alpha0.150513/0.145340/0.150372保持，未参考P目标改变配方。PM尚无性能，原全范围目标active。

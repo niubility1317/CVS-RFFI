@@ -1,6 +1,6 @@
 # RXTrust-PM：只改变 raw/H 的源梯度剂量校准
 
-状态：QUEUED_VERIFIED_NEURAL_NOT_STARTED。独立CPU控制器已发布并核实、12job等待原P完整结束，0新GPU worker；本版尚未进行实际NN smoke或训练。当前P三seed保持健康运行，未读取其目标结果；本候选固定后不依P分数决定是否执行。仍为三seed2026092701/02/03，控制使用已完成PL/Sup及在本候选启动前完成的P，不重复控制训练/预测。
+状态：RUNNING。三个新模型均已通过第一真实训练段的checkpoint roundtrip/sourceL2/6类有限输出检查，并开始自身E20+30训练。原P已完整结束；下文排队记录为发布时历史节点。当前P三seed保持健康运行，未读取其目标结果；本候选固定后不依P分数决定是否执行。仍为三seed2026092701/02/03，控制使用已完成PL/Sup及在本候选启动前完成的P，不重复控制训练/预测。
 
 原P的所有损失、普通rawPL.95/weight1、完整PAMF/单SIG_TIME/原默认头、fullT1 L、H单标签/候选集合/fallback、四源RX最大KL选择、全U分母、444步ramp、物理强度和缓存保持。唯一科学变化是系数公式：对raw/H分别计算原12个训练批的auxnorm/primarynorm中位数，再取较大者r，alpha=min(1,0.1/r)。它只限制冻结E20参考数据的两组中位比例；不是每批、未来epoch或AdamW的10%硬限幅。
 
@@ -25,3 +25,5 @@
 执行commit `53c5b84d4914fb3c7fbca8a2ab721e04fe2d6ae7` 已推送并独立核对上游OID；单archive传输校验VERIFIED、remote compile PASS。真实CPU控制器PID/CWD/argv/UID及日志126→441 bytes增长已核实，12job全QUEUED，未停止/热改当前P。PM首真实checkpoint smoke仍在第一训练段等待，不能把排队或复用旧梯度称作PM训练成功。见launch_verification.json。
 
 完整结果工具`rx_trust_pm_results collect/analyze`与源日志工具`rx_trust_pm_audit`已就绪。结果要求3行/12job全部完成，复用PL/Sup/P9参考、核查18组同seed物理顺序和3528000新raw判决；不把排队文件或缺seed当正式结果。沿用已核实的P路由/四候选/PL/fullL每步检查，PM日志按真实train__SEED.log定位。3项加权数值/错参考缺seed/未完成矩阵测试PASS，见analysis_tool_verification.json；只补本地分析，不改变已发布神经代码/规则。
+
+实际三条PM CUDA轨迹的PID/CWD/argv/UID/显卡映射及非零连续step已核实，见launch_verification.json。配置阶段确为0新F、0模型权重加载、0optimizer，读取原P12批源统计后系数与预登记逐seed一致。没有复制旧P smoke：每行自己的segment30/smoke.json真实读取E20并检查sourceL2、863730参数和原6类默认头。当前已完成首整H epoch，每行三路合计56700且原门控/ramp/尾批符合；此仅初始轨迹执行证据，非完整E50或性能。P负结果不回流本已冻结PM配方。
