@@ -1,0 +1,93 @@
+{
+  "status": "PHYSICAL_PAIRING_VERIFIED",
+  "new_raw_decisions": 3528000,
+  "checks": [
+    {
+      "method": "CovSel-U",
+      "reference": "SIG1-PL",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovSel-U",
+      "reference": "SIG1-Sup",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovSel-U",
+      "reference": "SIG1-PL",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovSel-U",
+      "reference": "SIG1-Sup",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovRandom-U",
+      "reference": "SIG1-PL",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovRandom-U",
+      "reference": "SIG1-Sup",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovRandom-U",
+      "reference": "SIG1-PL",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovRandom-U",
+      "reference": "SIG1-Sup",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovSel-LU",
+      "reference": "SIG1-PL",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovSel-LU",
+      "reference": "SIG1-Sup",
+      "task": "cross_rx",
+      "count": 126000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovSel-LU",
+      "reference": "SIG1-PL",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    },
+    {
+      "method": "CovSel-LU",
+      "reference": "SIG1-Sup",
+      "task": "cross_both",
+      "count": 42000,
+      "exact_ID_order": true
+    }
+  ],
+  "truth_reads": 0,
+  "IQ_reads": 0,
+  "F_G_weight_reads": 0
+}
