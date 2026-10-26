@@ -1,0 +1,272 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01",
+  "group_id": "pamf-repl-v2-20261026",
+  "display_name": "单视图REPL：U/L/LU双恢复视图三角色消融",
+  "description": "同一原始IQ经不同practical residual场景/实现和固定DURA，分别只替换U、只替换L、同时替换LU的两次mixed输入ordinary半批；LAs/raw及原跨RX/默认头/损失剂量保留。三个新单seedE20+30，已完成参照仅复用source结果不再前向或训练。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-SIG1-REPL-RestoredRoles-source"
+  ],
+  "tags": [
+    "PAMF",
+    "REPL",
+    "SIG_TIME-single-view",
+    "restored-L-U-roles",
+    "source-only",
+    "single-model-seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261026-diagnostic-PAMF-SIG1-LU-restored-views-m1-r01",
+    "20261026-phase1-PAMF-SIG1-REPL-RXOffset-source-m3-r01"
+  ],
+  "authorization": "用户最新授权探索DURA多信道恢复视图、U有RX标签且跨RX同TX必要、比较L/U优化；原goal持续授权研发/全部显卡。不联系其他对话。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2;no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "alloriginal6300 trueTX;full6Lforwards;newLrole replacesordinary64inmixedpairbyGa/Gb,As64unchanged;noPLgateonL",
+      "U_s": "original56700 hiddenTX/RXknown;rawcurrent95pseudo,U6weight6;newUrole replacesordinaryhalf ofmixedpair byGa/Gb;rawhalfunchanged",
+      "V": "original27000 finalsource8viewonly;noG/F/state/statupdates"
+    },
+    "train_ratio": "unchanged originalF0 L6300/U56700/V27000;13L37LU cumulativeE50;no extra true labels",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-model-seed role falsification;L-only names mean onlyLhasnewGviews,all3remainsemi-supervisedL/U;not targetperformance"
+  },
+  "checkpoint": {
+    "initialization": "eachnewrow independently sameown completed singleSIG_TIME ordinaryPL scratchE20 +new10+20 toE50/11100",
+    "sources": [
+      "known m201/F0-A1B1-SIG_TIME-F21-s2026092701/segment20 actualsource-onlyE20",
+      "same originalF0 DURA G-LU frozen,nevertrained",
+      "completedPL-X3/REPL-SIG1/NoStyleNoRXE sourceevaluations reusedwithoutforward;not studentinitialization"
+    ],
+    "contract_check_ref": "known threeE20 actualtensors/data-contract proof;actual ownE20/state/roles before joint L128/U256 realsmoke;RXstats ownrow/contract/E30 exactly2220 updates before+20",
+    "provenance_verdict": "same sourcecontract/IDs and scratchE20 lineage;noF50/sourcewinnerweightinit/no stoppedpartial/no targetselected parent",
+    "selection_rule": "all3fixedfinalE50 andsource8views;permetricmax3refs raw/H3>=-.1pp/G3>=+.3pp exact27/81/243correct;amongpassesG/raw/H/lowerGcostL,U,LU;else noexpansion/target"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-sig1-restored-roles-source-20261026",
+    "gpu_policy": "GPU0..7;globalCUDA+pending<2/free>=10000MiB;countallowners;oneowncontroller,3newstudents;preserveotherhealthywork",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/sig1_role_training",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_role_training dispatch --config PROJECT/releases/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-release-r01/runtime.json",
+    "stop_rule": "first role/input/ancestry/shape/finite/actualview/frozenG/smoke/budget/outputtechnicalfailure stopsnewdispatch;healthyactivefinish;noautoretry/foreignchanges;scientificFAILkept"
+  },
+  "expected_artifacts": [
+    "3realE20L128/U256jointbackwardsmokes;L768/AsKL0/U1536/style0/defaulthead+signature+bodyUgradnonzero;roleactualLreplace128or0/U256or0 andGaGbIQdifferent;Gfrozen",
+    "3ownE50/11100 finals,19980newupdates/90modelepochs;full L/U6 objectivesandrawfirstpaircrossRXpreserved",
+    "trainingGpacketsL852480/U1701000/LU2553480 plus2warm/segment;extraFbackbones0;Gcostruntimeindependentlyreported",
+    "eachsourceV27000x8actualpredictions andTX/RX/day;allcompletefixedcountschooseornull;0target/Utruth/Gupdate/newhead",
+    "3completedsourcecontrol summaries reusednoGPU;onearchive/remotecompare/compile andPID/CWD/cmd/GPU/loggrowth"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "completefixedV raw/H3/G3",
+      "L-onlyvU-onlyvLUinputintervention"
+    ],
+    "dimensions": [
+      "method",
+      "TX",
+      "RX",
+      "day",
+      "sourceview"
+    ],
+    "selection": "all3complete;sourcecorrect-countmax(PL-X3,oldREPL-SIG1,NoStyleNoRXE)-27raw/-81H/+243G;chooseG/raw/H/thencostL,U,LU",
+    "truth_policy": "allLtrueTX retained;Uraw95pseudo/noTXtruth;RXmetadatausedinoriginalcrossRX;Vfinalevalonly;0target",
+    "target": "noneinthissourcepilot;passedcandidatefuture3seedraw/sameGclean+sixpractical actualtargetrequired;originalandmatchedbaselinegoalsunchanged"
+  },
+  "rows": [
+    {
+      "row_id": "F0-REPL_G_U-s2026092701",
+      "method": "REPL_G_U",
+      "purpose": "newroleintervention;not controlretraining",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/configs/REPL_G_U.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/F/F0-REPL_G_U-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "enable_restored_L": false,
+        "enable_restored_U": true,
+        "style": false,
+        "receiver_extrapolation": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one modelseed2026092701 for eachmethod,not3seeds;originalsplit/augmentationretained;newsourcechannelsdeterministicphysicalID+epoch+role+a/b,scenea/bdifferent;no addedAWGN",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "knownscratch20+new10+20=E50/11100;new6660updates;L768/U6Fpassesunchanged;newGcost1701000packets+4stagewarm",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/F/F0-REPL_G_U-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/logs/REPL_G_U.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_role_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/configs/REPL_G_U.json",
+      "expected_artifacts": [
+        "3realE20L128/U256jointbackwardsmokes;L768/AsKL0/U1536/style0/defaulthead+signature+bodyUgradnonzero;roleactualLreplace128or0/U256or0 andGaGbIQdifferent;Gfrozen",
+        "3ownE50/11100 finals,19980newupdates/90modelepochs;full L/U6 objectivesandrawfirstpaircrossRXpreserved",
+        "trainingGpacketsL852480/U1701000/LU2553480 plus2warm/segment;extraFbackbones0;Gcostruntimeindependentlyreported",
+        "eachsourceV27000x8actualpredictions andTX/RX/day;allcompletefixedcountschooseornull;0target/Utruth/Gupdate/newhead",
+        "3completedsourcecontrol summaries reusednoGPU;onearchive/remotecompare/compile andPID/CWD/cmd/GPU/loggrowth"
+      ]
+    },
+    {
+      "row_id": "F0-REPL_G_L-s2026092701",
+      "method": "REPL_G_L",
+      "purpose": "newroleintervention;not controlretraining",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/configs/REPL_G_L.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/F/F0-REPL_G_L-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "enable_restored_L": true,
+        "enable_restored_U": false,
+        "style": false,
+        "receiver_extrapolation": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one modelseed2026092701 for eachmethod,not3seeds;originalsplit/augmentationretained;newsourcechannelsdeterministicphysicalID+epoch+role+a/b,scenea/bdifferent;no addedAWGN",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "knownscratch20+new10+20=E50/11100;new6660updates;L768/U6Fpassesunchanged;newGcost852480packets+4stagewarm",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/F/F0-REPL_G_L-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/logs/REPL_G_L.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_role_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/configs/REPL_G_L.json",
+      "expected_artifacts": [
+        "3realE20L128/U256jointbackwardsmokes;L768/AsKL0/U1536/style0/defaulthead+signature+bodyUgradnonzero;roleactualLreplace128or0/U256or0 andGaGbIQdifferent;Gfrozen",
+        "3ownE50/11100 finals,19980newupdates/90modelepochs;full L/U6 objectivesandrawfirstpaircrossRXpreserved",
+        "trainingGpacketsL852480/U1701000/LU2553480 plus2warm/segment;extraFbackbones0;Gcostruntimeindependentlyreported",
+        "eachsourceV27000x8actualpredictions andTX/RX/day;allcompletefixedcountschooseornull;0target/Utruth/Gupdate/newhead",
+        "3completedsourcecontrol summaries reusednoGPU;onearchive/remotecompare/compile andPID/CWD/cmd/GPU/loggrowth"
+      ]
+    },
+    {
+      "row_id": "F0-REPL_G_LU-s2026092701",
+      "method": "REPL_G_LU",
+      "purpose": "newroleintervention;not controlretraining",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/configs/REPL_G_LU.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/F/F0-REPL_G_LU-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "SIG_TIME",
+        "sig_time_views": 1,
+        "enable_restored_L": true,
+        "enable_restored_U": true,
+        "style": false,
+        "receiver_extrapolation": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one modelseed2026092701 for eachmethod,not3seeds;originalsplit/augmentationretained;newsourcechannelsdeterministicphysicalID+epoch+role+a/b,scenea/bdifferent;no addedAWGN",
+      "k": null,
+      "scenario": "F0 sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "knownscratch20+new10+20=E50/11100;new6660updates;L768/U6Fpassesunchanged;newGcost2553480packets+4stagewarm",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/F/F0-REPL_G_LU-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/logs/REPL_G_LU.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.sig1_role_training worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/configs/REPL_G_LU.json",
+      "expected_artifacts": [
+        "3realE20L128/U256jointbackwardsmokes;L768/AsKL0/U1536/style0/defaulthead+signature+bodyUgradnonzero;roleactualLreplace128or0/U256or0 andGaGbIQdifferent;Gfrozen",
+        "3ownE50/11100 finals,19980newupdates/90modelepochs;full L/U6 objectivesandrawfirstpaircrossRXpreserved",
+        "trainingGpacketsL852480/U1701000/LU2553480 plus2warm/segment;extraFbackbones0;Gcostruntimeindependentlyreported",
+        "eachsourceV27000x8actualpredictions andTX/RX/day;allcompletefixedcountschooseornull;0target/Utruth/Gupdate/newhead",
+        "3completedsourcecontrol summaries reusednoGPU;onearchive/remotecompare/compile andPID/CWD/cmd/GPU/loggrowth"
+      ]
+    }
+  ],
+  "notes": [
+    "No new targetresults were read to set thisrecipe;source-onlydiagnosticguidesroleallocation.",
+    "L-only/U-only describewhereGviewsintroduced,notwhichsource roleistrained;all3keepfullL/U.",
+    "OriginalsameTXcrossRX shallow/middle/joint ordinarypair retained;not claimingnewG-specificcrossRXloss.",
+    "Onlyordinaryhalf ofmixedpairchanges;fullordinarypair/rawpair/Asphysicalhalf andCE/KLcoefficients unchanged;Gcostadded,Fbudgetunchanged.",
+    "TwoGviewsdifferentphysicalchannelrealizationandscenea=(step-1)%3,b=step%3;newnamespaceeachcumulativeepoch;RX/dayhardwareunchanged.",
+    "Postnoiseandlowconfidence-Ulabel-freeconsistencyareseparatefutureablations,notstackedhere.",
+    "No targetclaimfromsource;3oldRXOffsetpilotrowsfailedandpreserved;newmatchingbaselinepipelinecontinuesunchanged."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "SIG1-PL",
+      "SIG1-Sup"
+    ],
+    "new_model_epochs": 80,
+    "shared_original_prefix_epochs": 20,
+    "total_unique_model_epochs": 100,
+    "new_optimizer_updates": 17760,
+    "per_model_cumulative_epochs": 50,
+    "per_model_cumulative_updates": 11100,
+    "source_V": 27000,
+    "source_views": 8,
+    "new_G_training": 0,
+    "target_reads": 0,
+    "graph_training": false
+  },
+  "registered_at": "2026-10-26T12:20:03+00:00"
+}

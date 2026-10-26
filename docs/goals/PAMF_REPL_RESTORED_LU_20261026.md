@@ -49,3 +49,10 @@ F/G全部参数与注册buffers冻结，0optimizer/新头/教师更新。L/U完�
 据此下一轮先比较三个独立角色配置：只给U使用双G、只给L使用双G、L/U均使用双G；以已经完成的同预算NoStyleNoRXE作为源机制参照，不重训该对照。三个新学生均保留原始IQ与L的As，L全部用真标签、U分类继续原始IQ.95伪标签门控，原同TX跨RX对齐保留。优先在原ordinary配对的部分位置替换为Ga/Gb、同包视图损失按包平均，避免增加身份分类剂量。具体交换位置/权重/实际F与G成本将在实现和最小预登记中固定，尚未启动新学生。
 
 原低置信U的同包无标签一致性另作后续消融，不直接赋硬TX标签，也不将不同物理包的低置信U当作已知负类。噪声位置同样独立，不在首轮一次叠加。源结果用于机制证伪，最终同一新方法仍需三seed原F0 raw/同G正式测试，严格单视图基线及原历史目标比较规则保持。
+
+
+## 已实现的首轮角色矩阵
+
+run `20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01` 已实现REPL_G_U/G_L/G_LU三个新学生，各一个seed01、同单SIG_TIME ordinaryPL E20独立+10+20到E50。只交换原mixed pair的ordinary半批；L原As半、U原raw半及第一ordinary对的浅/中/joint跨RX不变。L始终真标签，U继续raw95；无新的F骨干前向或分类剂量。不同G视图取相邻的不同source场景，并有独立a/b随机实现和逐累计epochnamespace。新增G处理成本L852480/U1701000/LU2553480包，stagewarm另计，不能将同F预算写成相同总算力。
+
+复用已完成NoStyleNoRXE、PL-X3和旧REPL-SIG1 source参照，不重新前向或训练。三行完整source8view后，max参照的raw/H3各不低于−.1pp、G3至少+.3pp，使用精确27/81/243正确数。通过者按G/raw/H及G成本L/U/LU选；无通过不扩种子或target。参数已在读取新增匹配基线target分数前固定。原三seed实际目标、严格匹配基线比较与历史绝对目标保持。实现通过10测试/15子检查和唯一P0P1审查，实际smoke/运行状态见[该run](../../automation_reports/CV-SincNet/20261026-phase1-PAMF-SIG1-REPL-RestoredRoles-source-m3-r01/report.md)。
