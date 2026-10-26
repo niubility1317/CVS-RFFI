@@ -1,0 +1,115 @@
+{
+  "status": "ANALYZED_BOUNDED_SOURCE_THREE_SEED",
+  "run_id": "20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "summary": [
+    {
+      "view": "clean",
+      "models": 3,
+      "physical_per_model": 27000,
+      "raw_accuracy_mean": 97.91851851851852,
+      "raw_accuracy_sample_sd": 0.09608238348942416,
+      "corrected_accuracy_mean": 97.8901234567901,
+      "corrected_accuracy_sample_sd": 0.08704360363986154,
+      "delta_pp_mean": -0.028395061728398712,
+      "delta_pp_sample_sd": 0.02730042516974832,
+      "raw_macro_f1_mean": 97.91479069558103,
+      "raw_macro_f1_sample_sd": 0.09763578721003771,
+      "corrected_macro_f1_mean": 97.88652052797768,
+      "corrected_macro_f1_sample_sd": 0.08840967120048158
+    },
+    {
+      "view": "practical_low_suburban",
+      "models": 3,
+      "physical_per_model": 27000,
+      "raw_accuracy_mean": 87.19382716049383,
+      "raw_accuracy_sample_sd": 0.22987839969546264,
+      "corrected_accuracy_mean": 87.1604938271605,
+      "corrected_accuracy_sample_sd": 0.20327676921304427,
+      "delta_pp_mean": -0.03333333333333618,
+      "delta_pp_sample_sd": 0.039196315719474385,
+      "raw_macro_f1_mean": 87.14783651772802,
+      "raw_macro_f1_sample_sd": 0.26503049776626847,
+      "corrected_macro_f1_mean": 87.11509987680705,
+      "corrected_macro_f1_sample_sd": 0.23405500996981526
+    },
+    {
+      "view": "practical_mid_urban",
+      "models": 3,
+      "physical_per_model": 27000,
+      "raw_accuracy_mean": 70.82098765432097,
+      "raw_accuracy_sample_sd": 0.36706550200444404,
+      "corrected_accuracy_mean": 70.76666666666667,
+      "corrected_accuracy_sample_sd": 0.38910047154267946,
+      "delta_pp_mean": -0.054320987654321584,
+      "delta_pp_sample_sd": 0.022630003431884742,
+      "raw_macro_f1_mean": 70.78642170808094,
+      "raw_macro_f1_sample_sd": 0.28083746872262083,
+      "corrected_macro_f1_mean": 70.7246385833835,
+      "corrected_macro_f1_sample_sd": 0.2997455671551708
+    },
+    {
+      "view": "practical_low_urban",
+      "models": 3,
+      "physical_per_model": 27000,
+      "raw_accuracy_mean": 56.62345679012346,
+      "raw_accuracy_sample_sd": 0.3889829398322853,
+      "corrected_accuracy_mean": 56.58024691358025,
+      "corrected_accuracy_sample_sd": 0.3727761372033082,
+      "delta_pp_mean": -0.0432098765432111,
+      "delta_pp_sample_sd": 0.020398409434394582,
+      "raw_macro_f1_mean": 56.54361987152631,
+      "raw_macro_f1_sample_sd": 0.33032822959997804,
+      "corrected_macro_f1_mean": 56.49126280631887,
+      "corrected_macro_f1_sample_sd": 0.3096066939127322
+    }
+  ],
+  "decisions": [
+    {
+      "model_seed": 2026092701,
+      "conditions": {
+        "clean_no_worse_than_27": true,
+        "three_H_total_nondecreasing": false,
+        "every_H_no_worse_than_54": true,
+        "every_RX_view_no_worse_than_point2": true
+      },
+      "source_necessary_pass": false,
+      "scope": "fixedF immediate preprocessing only;not trainedF compensation or target performance"
+    },
+    {
+      "model_seed": 2026092702,
+      "conditions": {
+        "clean_no_worse_than_27": true,
+        "three_H_total_nondecreasing": false,
+        "every_H_no_worse_than_54": true,
+        "every_RX_view_no_worse_than_point2": false
+      },
+      "source_necessary_pass": false,
+      "scope": "fixedF immediate preprocessing only;not trainedF compensation or target performance"
+    },
+    {
+      "model_seed": 2026092703,
+      "conditions": {
+        "clean_no_worse_than_27": true,
+        "three_H_total_nondecreasing": false,
+        "every_H_no_worse_than_54": true,
+        "every_RX_view_no_worse_than_point2": false
+      },
+      "source_necessary_pass": false,
+      "scope": "fixedF immediate preprocessing only;not trainedF compensation or target performance"
+    }
+  ],
+  "all_three_source_necessary_pass": false,
+  "source_decisions_verified": 648000,
+  "source_cells_verified": 360,
+  "full_source_stdout_records": 318,
+  "target_reads": 0,
+  "new_training": 0,
+  "weight_reads_in_analysis": 0,
+  "scope": "fixedE20 immediate preprocessing only;not newtrainedF/target/identitysafe/Phase2 proof",
+  "full_goal_complete": false
+}

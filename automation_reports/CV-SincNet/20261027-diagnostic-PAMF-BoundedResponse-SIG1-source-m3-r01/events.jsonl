@@ -1,3 +1,4 @@
 {"at": "2026-10-26T18:24:35+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-26T18:28:14+00:00", "status": "LOCAL_VERIFIED", "note": "8focused checks/compilePASS;one independentP0P1 andone targeted reader-countP1 fix closurePASS;real3seed checkpoint smoke remainsfirst runtime step.", "evidence": ["local_validation.json"], "row_id": null}
 {"at": "2026-10-26T18:31:57+00:00", "status": "RUNNING", "note": "发布VERIFIED，全部U56700/RX统计222批完成，0F/G/V/target；controller存活，三seed真实F源诊断等待原矩阵complete，未宣称checkpoint smoke或性能完成。", "evidence": ["calibration_summary.json"], "row_id": null}
+{"at": "2026-10-26T19:15:36+00:00", "status": "ANALYZED", "note": "全3模型源诊断648000决策/360分层一致，三seed均未过固定F前处理规则；0新训练/目标访问，固定版源负结果。", "evidence": ["results.md"], "row_id": null}

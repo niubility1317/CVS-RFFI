@@ -1,0 +1,28 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY_NEGATIVE",
+  "source_frozen_models": 3,
+  "source_parent_epoch": 20,
+  "default_head": [
+    6,
+    160
+  ],
+  "signature_parameters": 18976,
+  "reader_parameters": [
+    196001,
+    196001,
+    196001
+  ],
+  "source_V_physical_per_model": 27000,
+  "physical_source_views": 4,
+  "readouts": 2,
+  "decisions_verified": 648000,
+  "source_cells_verified": 360,
+  "full_F_stdout_records": 318,
+  "calibration_U_records": 56700,
+  "calibration_stdout_records": 222,
+  "stored_fitted_source_statistics": 12,
+  "new_training": 0,
+  "target_reads": 0,
+  "all_three_source_necessary_pass": false,
+  "full_goal_complete": false
+}

@@ -1,6 +1,6 @@
 # 有界接收响应校正三种子源诊断
 
-状态：RUNNING_CALIBRATION_COMPLETE_F_PENDING。只研究固定F即用式前处理。完整PAMF／单SIG_TIME／联合默认头和对应三个真实E20复用；不新增F训练、头拟合、DURA或目标测试。当前协方差矩阵保持健康完成，新诊断GPU部分只等待其完成状态，不读取目标分数。全部U/RX统计为一次确定性CPU拟合，随后三份模型都完成V27000 clean/三H的raw／校正成对读出，共648000个默认头决策。
+状态：ANALYZED_SOURCE_ONLY。只研究固定F即用式前处理。完整PAMF／单SIG_TIME／联合默认头和对应三个真实E20复用；不新增F训练、头拟合、DURA或目标测试。当前协方差矩阵保持健康完成，新诊断GPU部分只等待其完成状态，不读取目标分数。全部U/RX统计为一次确定性CPU拟合，随后三份模型都完成V27000 clean/三H的raw／校正成对读出，共648000个默认头决策。
 
 实际固定算子、源规则和解释边界见[源计划](../../../docs/goals/PAMF_BOUNDED_RESPONSE_SOURCE_PLAN_20261027.md)；完整矩阵/代码/命令/环境/CWD/数据角色/父源/预算/资源/停止规则见experiment.json。校准只用全部U56700和已知RX，不用U真TX、F输出、V或target。每seed先真实L2 raw/corrected checkpoint smoke，再V；负源结果不取消其他seed。源V不更新任何持久状态。
 
@@ -14,3 +14,5 @@
 两个RX主方向保留99.9912%的五RX均值差异能量。该比例只是用于拟合的4D响应统计，不是原IQ能量或独立泛化证据，更不是身份保护或识别收益。12项固定统计保存在远端私有npz，未提交其数值或样本描述。
 
 当前1个校准job完成、3个冻结F评估排队，controller健康；三份实际checkpoint的L2 smoke尚未执行。GPU部分继续等待原协方差矩阵完整结束，只读取其完成状态，不消费分数。当前没有新F训练或性能结论。[CPU校准及运行核实](calibration_summary.json)。
+
+全部4job成功，三份实际checkpoint smoke和V诊断均完整，控制器自然退出。648000决策/360分层重算一致，但三个seed都未通过固定F前处理源规则。无新F训练或目标测试。[实际三种子源结果](results.md)。目标仍active，不把源容忍写成收益。

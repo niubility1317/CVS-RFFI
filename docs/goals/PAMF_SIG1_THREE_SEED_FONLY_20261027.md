@@ -19,3 +19,5 @@
 本run队列资源更新：原globalidle阻塞已完成行测试/seed03；独立控制run`20261027-control-PAMF-Covariance-threeSeed-queue-r01`改用own≤4、每卡own≤1/总CUDA+pending≤2、free≥10000MiB，保留原全部科学配置与产物，不动其他owner。该变更不新增训练矩阵或数据权限。
 
 独立下一候选准备：[有界接收响应校正源计划](PAMF_BOUNDED_RESPONSE_SOURCE_PLAN_20261027.md)。仅有本地解析算子／合成检查，尚未发布真实源试验或训练；不依据当前单 seed/部分目标结果选参数，不改变协方差完整矩阵。任何新的 F 验证和训练继续覆盖三模型 seed。
+
+2026-10-27最终更新：协方差四方法×三seed完整12模型/28job已ANALYZED，全部clean均低于匹配PL，六景差−0.0903至+0.1001pp，未达原目标。[完整结果](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01/results.md)。有界固定F源校正的三seed也已完整负结果；后续继续全U/RX训练期物理视图路线，尚无新训练，原目标保持active。

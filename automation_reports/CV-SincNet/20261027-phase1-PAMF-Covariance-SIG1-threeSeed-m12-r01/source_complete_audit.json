@@ -1,0 +1,1038 @@
+{
+  "status": "COMPLETE_SOURCE_ROWS_AUDITED",
+  "observed": 1793040730.8109047,
+  "rows": [
+    {
+      "method": "CovSel-U",
+      "model_seed": 2026092702,
+      "status": "SOURCE_TRAINING_COMPLETE",
+      "epoch": 50,
+      "updates": 11100,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_COV_call": 1,
+          "last_COV_call": 2220,
+          "first_covariance_mean": 0.07682226628467843,
+          "last_covariance_mean": 0.04230543593498501,
+          "last_covariance_weight": 1.0,
+          "first_source_V_correct": 26433,
+          "last_source_V_correct": 26528,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_COV_call": 2221,
+          "last_COV_call": 6660,
+          "first_covariance_mean": 0.0412174078996654,
+          "last_covariance_mean": 0.025625233748206147,
+          "last_covariance_weight": 1.0,
+          "first_source_V_correct": 26513,
+          "last_source_V_correct": 26572,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1609368,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "covariance_U_seen": 1701000,
+        "covariance_L_pairs": 426240,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 1701000,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 332978,
+            "covariance": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 300154,
+            "covariance": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331507,
+            "covariance": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 332126,
+            "covariance": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 312603,
+            "covariance": 340200
+          }
+        },
+        "by_replica": [
+          567000,
+          567000,
+          567000
+        ],
+        "by_scene": [
+          567132,
+          567132,
+          566736
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_acceptance": 0.9461305114638447,
+      "coefficient": 1.0,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092702,
+        "method": "CovSel-U",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26572,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24323,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 19971,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16102,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2781.044315453153,
+      "cumulative_training_seconds": 4837.265050728805,
+      "full_stdout_bytes": 163524,
+      "fatal_markers": []
+    },
+    {
+      "method": "CovRandom-U",
+      "model_seed": 2026092702,
+      "status": "SOURCE_TRAINING_COMPLETE",
+      "epoch": 50,
+      "updates": 11100,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_COV_call": 1,
+          "last_COV_call": 2220,
+          "first_covariance_mean": 0.049632059678703815,
+          "last_covariance_mean": 0.04011243907315237,
+          "last_covariance_weight": 1.0,
+          "first_source_V_correct": 26440,
+          "last_source_V_correct": 26530,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_COV_call": 2221,
+          "last_COV_call": 6660,
+          "first_covariance_mean": 0.03971323792126265,
+          "last_covariance_mean": 0.03319000450239794,
+          "last_covariance_weight": 1.0,
+          "first_source_V_correct": 26516,
+          "last_source_V_correct": 26585,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1611048,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "covariance_U_seen": 1701000,
+        "covariance_L_pairs": 426240,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 1701000,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 333333,
+            "covariance": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 300449,
+            "covariance": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331479,
+            "covariance": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 332144,
+            "covariance": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 313643,
+            "covariance": 340200
+          }
+        },
+        "by_replica": [
+          567000,
+          567000,
+          567000
+        ],
+        "by_scene": [
+          567132,
+          567132,
+          566736
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_acceptance": 0.9471181657848324,
+      "coefficient": 1.0,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092702,
+        "method": "CovRandom-U",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26585,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24329,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 19984,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16119,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2778.1647633737884,
+      "cumulative_training_seconds": 4834.4676000732,
+      "full_stdout_bytes": 163758,
+      "fatal_markers": []
+    },
+    {
+      "method": "CovFull-U",
+      "model_seed": 2026092702,
+      "status": "SOURCE_TRAINING_COMPLETE",
+      "epoch": 50,
+      "updates": 11100,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_COV_call": 1,
+          "last_COV_call": 2220,
+          "first_covariance_mean": 0.05192678044172558,
+          "last_covariance_mean": 0.04378574086470647,
+          "last_covariance_weight": 1.0,
+          "first_source_V_correct": 26436,
+          "last_source_V_correct": 26528,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_COV_call": 2221,
+          "last_COV_call": 6660,
+          "first_covariance_mean": 0.04330428961563755,
+          "last_covariance_mean": 0.03736543841660023,
+          "last_covariance_weight": 1.0,
+          "first_source_V_correct": 26521,
+          "last_source_V_correct": 26587,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1610900,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "covariance_U_seen": 1701000,
+        "covariance_L_pairs": 426240,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 1701000,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 333248,
+            "covariance": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 300471,
+            "covariance": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331470,
+            "covariance": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 332135,
+            "covariance": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 313576,
+            "covariance": 340200
+          }
+        },
+        "by_replica": [
+          567000,
+          567000,
+          567000
+        ],
+        "by_scene": [
+          567132,
+          567132,
+          566736
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_acceptance": 0.9470311581422692,
+      "coefficient": 1.0,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092702,
+        "method": "CovFull-U",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26587,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24333,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 19948,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16058,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2768.6890876428224,
+      "cumulative_training_seconds": 4825.048916226253,
+      "full_stdout_bytes": 163602,
+      "fatal_markers": []
+    },
+    {
+      "method": "CovSel-LU",
+      "model_seed": 2026092702,
+      "status": "SOURCE_TRAINING_COMPLETE",
+      "epoch": 50,
+      "updates": 11100,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_COV_call": 1,
+          "last_COV_call": 2220,
+          "first_covariance_mean": 0.07631270245120332,
+          "last_covariance_mean": 0.03894541598856449,
+          "last_covariance_weight": 1.0,
+          "first_source_V_correct": 26432,
+          "last_source_V_correct": 26523,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_COV_call": 2221,
+          "last_COV_call": 6660,
+          "first_covariance_mean": 0.038103214280495235,
+          "last_covariance_mean": 0.023490845678827248,
+          "last_covariance_weight": 1.0,
+          "first_source_V_correct": 26521,
+          "last_source_V_correct": 26574,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1608899,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "covariance_U_seen": 1701000,
+        "covariance_L_pairs": 426240,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 1701000,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 332932,
+            "covariance": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 299865,
+            "covariance": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331557,
+            "covariance": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 332098,
+            "covariance": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 312447,
+            "covariance": 340200
+          }
+        },
+        "by_replica": [
+          567000,
+          567000,
+          567000
+        ],
+        "by_scene": [
+          567132,
+          567132,
+          566736
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_acceptance": 0.9458547912992358,
+      "coefficient": 1.0,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092702,
+        "method": "CovSel-LU",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26574,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24327,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 19956,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16081,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2842.6362370708957,
+      "cumulative_training_seconds": 4898.985071061179,
+      "full_stdout_bytes": 163604,
+      "fatal_markers": []
+    },
+    {
+      "method": "CovSel-U",
+      "model_seed": 2026092703,
+      "status": "SOURCE_TRAINING_COMPLETE",
+      "epoch": 50,
+      "updates": 11100,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_COV_call": 1,
+          "last_COV_call": 2220,
+          "first_covariance_mean": 0.08044399656690993,
+          "last_covariance_mean": 0.049770513448763536,
+          "last_covariance_weight": 0.9949095940590609,
+          "first_source_V_correct": 26431,
+          "last_source_V_correct": 26510,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_COV_call": 2221,
+          "last_COV_call": 6660,
+          "first_covariance_mean": 0.048676355011962553,
+          "last_covariance_mean": 0.031648661102260556,
+          "last_covariance_weight": 0.9949095940590609,
+          "first_source_V_correct": 26480,
+          "last_source_V_correct": 26559,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1608657,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "covariance_U_seen": 1701000,
+        "covariance_L_pairs": 426240,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 1701000,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 330581,
+            "covariance": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 297673,
+            "covariance": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331758,
+            "covariance": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 332861,
+            "covariance": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 315784,
+            "covariance": 340200
+          }
+        },
+        "by_replica": [
+          567000,
+          567000,
+          567000
+        ],
+        "by_scene": [
+          567132,
+          567132,
+          566736
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_acceptance": 0.9457125220458554,
+      "coefficient": 0.9949095940590609,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092703,
+        "method": "CovSel-U",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26559,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24288,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 20034,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16193,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2863.8748275679536,
+      "cumulative_training_seconds": 4776.302423604298,
+      "full_stdout_bytes": 163525,
+      "fatal_markers": []
+    },
+    {
+      "method": "CovRandom-U",
+      "model_seed": 2026092703,
+      "status": "SOURCE_TRAINING_COMPLETE",
+      "epoch": 50,
+      "updates": 11100,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_COV_call": 1,
+          "last_COV_call": 2220,
+          "first_covariance_mean": 0.053779311310332104,
+          "last_covariance_mean": 0.04039140325878655,
+          "last_covariance_weight": 0.9949095940590609,
+          "first_source_V_correct": 26422,
+          "last_source_V_correct": 26530,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_COV_call": 2221,
+          "last_COV_call": 6660,
+          "first_covariance_mean": 0.03966868913791201,
+          "last_covariance_mean": 0.031058858131973056,
+          "last_covariance_weight": 0.9949095940590609,
+          "first_source_V_correct": 26484,
+          "last_source_V_correct": 26579,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1608999,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "covariance_U_seen": 1701000,
+        "covariance_L_pairs": 426240,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 1701000,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 330677,
+            "covariance": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 297816,
+            "covariance": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331801,
+            "covariance": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 332754,
+            "covariance": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 315951,
+            "covariance": 340200
+          }
+        },
+        "by_replica": [
+          567000,
+          567000,
+          567000
+        ],
+        "by_scene": [
+          567132,
+          567132,
+          566736
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_acceptance": 0.9459135802469136,
+      "coefficient": 0.9949095940590609,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092703,
+        "method": "CovRandom-U",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26579,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24317,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 20065,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16236,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2844.960092122201,
+      "cumulative_training_seconds": 4757.404898928944,
+      "full_stdout_bytes": 163758,
+      "fatal_markers": []
+    },
+    {
+      "method": "CovFull-U",
+      "model_seed": 2026092703,
+      "status": "SOURCE_TRAINING_COMPLETE",
+      "epoch": 50,
+      "updates": 11100,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_COV_call": 1,
+          "last_COV_call": 2220,
+          "first_covariance_mean": 0.05396975482906307,
+          "last_covariance_mean": 0.044073944021989636,
+          "last_covariance_weight": 0.9949095940590609,
+          "first_source_V_correct": 26423,
+          "last_source_V_correct": 26529,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_COV_call": 2221,
+          "last_COV_call": 6660,
+          "first_covariance_mean": 0.04368498664651368,
+          "last_covariance_mean": 0.03765317819475591,
+          "last_covariance_weight": 0.9949095940590609,
+          "first_source_V_correct": 26485,
+          "last_source_V_correct": 26565,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1609547,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "covariance_U_seen": 1701000,
+        "covariance_L_pairs": 426240,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 1701000,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 330678,
+            "covariance": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 298176,
+            "covariance": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331770,
+            "covariance": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 332772,
+            "covariance": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 316151,
+            "covariance": 340200
+          }
+        },
+        "by_replica": [
+          567000,
+          567000,
+          567000
+        ],
+        "by_scene": [
+          567132,
+          567132,
+          566736
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_acceptance": 0.9462357436801881,
+      "coefficient": 0.9949095940590609,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092703,
+        "method": "CovFull-U",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26565,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24306,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 20067,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16231,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2861.238247558009,
+      "cumulative_training_seconds": 4773.682884872891,
+      "full_stdout_bytes": 163602,
+      "fatal_markers": []
+    },
+    {
+      "method": "CovSel-LU",
+      "model_seed": 2026092703,
+      "status": "SOURCE_TRAINING_COMPLETE",
+      "epoch": 50,
+      "updates": 11100,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_COV_call": 1,
+          "last_COV_call": 2220,
+          "first_covariance_mean": 0.07987221642523198,
+          "last_covariance_mean": 0.04708178898504189,
+          "last_covariance_weight": 0.9949095940590609,
+          "first_source_V_correct": 26422,
+          "last_source_V_correct": 26504,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_COV_call": 2221,
+          "last_COV_call": 6660,
+          "first_covariance_mean": 0.045908323010882816,
+          "last_covariance_mean": 0.02966144286633075,
+          "last_covariance_weight": 0.9949095940590609,
+          "first_source_V_correct": 26480,
+          "last_source_V_correct": 26560,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1607770,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "covariance_U_seen": 1701000,
+        "covariance_L_pairs": 426240,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 1701000,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 330523,
+            "covariance": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 297202,
+            "covariance": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331711,
+            "covariance": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 332780,
+            "covariance": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 315554,
+            "covariance": 340200
+          }
+        },
+        "by_replica": [
+          567000,
+          567000,
+          567000
+        ],
+        "by_scene": [
+          567132,
+          567132,
+          566736
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_acceptance": 0.945191064079953,
+      "coefficient": 0.9949095940590609,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092703,
+        "method": "CovSel-LU",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26560,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24294,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 20040,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16192,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2835.7871190872975,
+      "cumulative_training_seconds": 4748.291224581655,
+      "full_stdout_bytes": 163603,
+      "fatal_markers": []
+    }
+  ],
+  "pending": [],
+  "total_new_step_records": 53280,
+  "total_new_epoch_records": 240,
+  "target_reads": 0,
+  "IQ_reads": 0,
+  "weight_reads": 0,
+  "new_control_training": 0,
+  "full_goal_complete": false
+}

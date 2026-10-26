@@ -1,6 +1,6 @@
 # 三种子协方差原矩阵共享 GPU 队列接管
 
-状态：RUNNING_VERIFIED。原科学 run `20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01` 的4个seed02模型已训练到E50；全空闲GPU准入在其他任务进入同卡后，阻塞原定预测与seed03。独立观察GPU4/6/7各只有一个外部CUDA进程、剩余约20763MiB，原队列仍不准入。本控制只调整排队资源，不新增或重选方法。
+状态：ANALYZED_CONTROL_COMPLETE。原科学 run `20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01` 的4个seed02模型已训练到E50；全空闲GPU准入在其他任务进入同卡后，阻塞原定预测与seed03。独立观察GPU4/6/7各只有一个外部CUDA进程、剩余约20763MiB，原队列仍不准入。本控制只调整排队资源，不新增或重选方法。
 
 本run最多4条GPU作业，每卡最多1条own、最多2条总CUDA／pending作业，空余至少10000MiB；CPU scorer最多1条且计入其他owner。保持当前已经实际使用的own并发上限及同卡总负载上限。原28job、3seed、12模型、原冻结release/config、默认头、最终E50预算、所有完成模型/读出均保持；执行科学代码仍是原commit68b6338d20423498c110284c0c40b65a50d37de7。
 
@@ -12,3 +12,5 @@
 实际队列执行commit `285fd8c2bd485fe7043a788f39e94b72214d5d05`，archive比较VERIFIED、远端compilePASS。原controller精确身份核实后退出；接管时所有原GPU worker已自然完成，因此实际adopt数0，没有终止训练／预测／评分进程。新controller的实际PID/CWD/argv已独立核实，原科学job继续使用原release与原config。
 
 接管后4份seed02七景raw预测和独立CPU评分均已完整结束；4份seed03训练已真正启动并推进至E21/4662，真实源样本smoke均PASS，日志增长已核实。原28job目前16完成、4训练运行、8预测/评分排队，0失败。未读取新分数调整seed03，系数／掩码／预算此前已固定。原PL/Sup不重训。该控制run仍RUNNING，不因排队问题解除而标整个三seed矩阵完成。[接管和运行核实](launch_summary.json)。
+
+原28job全部成功，control complete与自然退出已独立读回；没有新增科学行或训练、没有改动其他owner。恢复排队已完成，其本身不表示科学目标完成。完整科学结果见原run的results.md。
