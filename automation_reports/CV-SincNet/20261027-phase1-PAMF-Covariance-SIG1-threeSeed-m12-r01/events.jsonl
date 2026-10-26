@@ -1,3 +1,4 @@
 {"at": "2026-10-26T16:48:52+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-26T17:06:19+00:00", "status": "RUNNING", "note": "三模型seed完整矩阵已发布；两个实际E20联合校准PASS，4个02模型存活/真实source smokePASS，03四行排队；01Full七景已独立评分，旧PL/Sup与01读出复用。", "evidence": ["launch_summary.json"], "row_id": null}
 {"at": "2026-10-26T17:14:40+00:00", "status": "RUNNING", "note": "三seed只读统计入口已完成5项检查，10份实际完成score各434个raw分层核对PASS，保留8份缺项，不改动健康训练。", "evidence": ["analysis_readiness.json"], "row_id": null}
+{"at": "2026-10-26T17:22:43+00:00", "status": "RUNNING", "note": "seed02四行已完成E30并进入后20轮，完整解析候选及旧对照13320 steps/60 epochs；全部U各10遍，PL约93.4%，未据中间源指标更改矩阵。", "evidence": ["source_segment30_audit.json"], "row_id": null}

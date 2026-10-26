@@ -1,0 +1,334 @@
+{
+  "status": "SOURCE_E20TO30_FULLY_PARSED",
+  "run_id": "20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01",
+  "model_seed": 2026092702,
+  "scope": "completed10-epoch segment only;ongoing fullE50/three-seed matrix unchanged",
+  "full_step_records": 13320,
+  "full_epoch_records": 60,
+  "candidate_step_records": 8880,
+  "reused_control_step_records": 4440,
+  "new_control_training": 0,
+  "rows": [
+    {
+      "method": "CovSel-U",
+      "model_seed": 2026092702,
+      "incremental_epochs": 10,
+      "incremental_updates": 2220,
+      "steps_parsed": 2220,
+      "epochs_parsed": 10,
+      "finite": true,
+      "native_L_packets_per_step": 768,
+      "As_KL_weight": 0.0,
+      "PL_seen": 567000,
+      "PL_accepted": 529708,
+      "first_source_V_correct": 26433,
+      "last_source_V_correct": 26528,
+      "source_V_count": 27000,
+      "first_source_V_accuracy": 97.9,
+      "last_source_V_accuracy": 98.25185185185185,
+      "native_AMP": false,
+      "optimizer": "AdamW",
+      "covariance_U_visits": 10,
+      "covariance_U_seen": 567000,
+      "covariance_U_unique": 56700,
+      "PL_acceptance": 0.9342292768959436,
+      "covariance_first_epoch_mean": 0.07682226628467843,
+      "covariance_last_epoch_mean": 0.04230543593498501,
+      "covariance_weight_first": 0.0022522522522522522,
+      "covariance_weight_last": 1.0,
+      "covariance_L_pairs": 142080,
+      "U_by_source_RX": {
+        "1": {
+          "seen": 113400,
+          "accepted": 110139,
+          "covariance": 113400
+        },
+        "3": {
+          "seen": 113400,
+          "accepted": 96961,
+          "covariance": 113400
+        },
+        "4": {
+          "seen": 113400,
+          "accepted": 110228,
+          "covariance": 113400
+        },
+        "6": {
+          "seen": 113400,
+          "accepted": 110302,
+          "covariance": 113400
+        },
+        "8": {
+          "seen": 113400,
+          "accepted": 102078,
+          "covariance": 113400
+        }
+      },
+      "replica_seen": [
+        226800,
+        170100,
+        170100
+      ],
+      "scene_seen": [
+        189044,
+        189044,
+        188912
+      ],
+      "native_L_forwards_reused": 5,
+      "extra_U_forwards": 1,
+      "fatal_stdout_markers": []
+    },
+    {
+      "method": "CovRandom-U",
+      "model_seed": 2026092702,
+      "incremental_epochs": 10,
+      "incremental_updates": 2220,
+      "steps_parsed": 2220,
+      "epochs_parsed": 10,
+      "finite": true,
+      "native_L_packets_per_step": 768,
+      "As_KL_weight": 0.0,
+      "PL_seen": 567000,
+      "PL_accepted": 530029,
+      "first_source_V_correct": 26440,
+      "last_source_V_correct": 26530,
+      "source_V_count": 27000,
+      "first_source_V_accuracy": 97.92592592592592,
+      "last_source_V_accuracy": 98.25925925925925,
+      "native_AMP": false,
+      "optimizer": "AdamW",
+      "covariance_U_visits": 10,
+      "covariance_U_seen": 567000,
+      "covariance_U_unique": 56700,
+      "PL_acceptance": 0.9347954144620811,
+      "covariance_first_epoch_mean": 0.049632059678703815,
+      "covariance_last_epoch_mean": 0.04011243907315237,
+      "covariance_weight_first": 0.0022522522522522522,
+      "covariance_weight_last": 1.0,
+      "covariance_L_pairs": 142080,
+      "U_by_source_RX": {
+        "1": {
+          "seen": 113400,
+          "accepted": 110219,
+          "covariance": 113400
+        },
+        "3": {
+          "seen": 113400,
+          "accepted": 97045,
+          "covariance": 113400
+        },
+        "4": {
+          "seen": 113400,
+          "accepted": 110222,
+          "covariance": 113400
+        },
+        "6": {
+          "seen": 113400,
+          "accepted": 110288,
+          "covariance": 113400
+        },
+        "8": {
+          "seen": 113400,
+          "accepted": 102255,
+          "covariance": 113400
+        }
+      },
+      "replica_seen": [
+        226800,
+        170100,
+        170100
+      ],
+      "scene_seen": [
+        189044,
+        189044,
+        188912
+      ],
+      "native_L_forwards_reused": 5,
+      "extra_U_forwards": 1,
+      "fatal_stdout_markers": []
+    },
+    {
+      "method": "CovFull-U",
+      "model_seed": 2026092702,
+      "incremental_epochs": 10,
+      "incremental_updates": 2220,
+      "steps_parsed": 2220,
+      "epochs_parsed": 10,
+      "finite": true,
+      "native_L_packets_per_step": 768,
+      "As_KL_weight": 0.0,
+      "PL_seen": 567000,
+      "PL_accepted": 530085,
+      "first_source_V_correct": 26436,
+      "last_source_V_correct": 26528,
+      "source_V_count": 27000,
+      "first_source_V_accuracy": 97.91111111111111,
+      "last_source_V_accuracy": 98.25185185185185,
+      "native_AMP": false,
+      "optimizer": "AdamW",
+      "covariance_U_visits": 10,
+      "covariance_U_seen": 567000,
+      "covariance_U_unique": 56700,
+      "PL_acceptance": 0.9348941798941799,
+      "covariance_first_epoch_mean": 0.05192678044172558,
+      "covariance_last_epoch_mean": 0.04378574086470647,
+      "covariance_weight_first": 0.0022522522522522522,
+      "covariance_weight_last": 1.0,
+      "covariance_L_pairs": 142080,
+      "U_by_source_RX": {
+        "1": {
+          "seen": 113400,
+          "accepted": 110209,
+          "covariance": 113400
+        },
+        "3": {
+          "seen": 113400,
+          "accepted": 97136,
+          "covariance": 113400
+        },
+        "4": {
+          "seen": 113400,
+          "accepted": 110232,
+          "covariance": 113400
+        },
+        "6": {
+          "seen": 113400,
+          "accepted": 110301,
+          "covariance": 113400
+        },
+        "8": {
+          "seen": 113400,
+          "accepted": 102207,
+          "covariance": 113400
+        }
+      },
+      "replica_seen": [
+        226800,
+        170100,
+        170100
+      ],
+      "scene_seen": [
+        189044,
+        189044,
+        188912
+      ],
+      "native_L_forwards_reused": 5,
+      "extra_U_forwards": 1,
+      "fatal_stdout_markers": []
+    },
+    {
+      "method": "CovSel-LU",
+      "model_seed": 2026092702,
+      "incremental_epochs": 10,
+      "incremental_updates": 2220,
+      "steps_parsed": 2220,
+      "epochs_parsed": 10,
+      "finite": true,
+      "native_L_packets_per_step": 768,
+      "As_KL_weight": 0.0,
+      "PL_seen": 567000,
+      "PL_accepted": 529664,
+      "first_source_V_correct": 26432,
+      "last_source_V_correct": 26523,
+      "source_V_count": 27000,
+      "first_source_V_accuracy": 97.8962962962963,
+      "last_source_V_accuracy": 98.23333333333333,
+      "native_AMP": false,
+      "optimizer": "AdamW",
+      "covariance_U_visits": 10,
+      "covariance_U_seen": 567000,
+      "covariance_U_unique": 56700,
+      "PL_acceptance": 0.9341516754850088,
+      "covariance_first_epoch_mean": 0.07631270245120332,
+      "covariance_last_epoch_mean": 0.03894541598856449,
+      "covariance_weight_first": 0.0022522522522522522,
+      "covariance_weight_last": 1.0,
+      "covariance_L_pairs": 142080,
+      "U_by_source_RX": {
+        "1": {
+          "seen": 113400,
+          "accepted": 110117,
+          "covariance": 113400
+        },
+        "3": {
+          "seen": 113400,
+          "accepted": 96946,
+          "covariance": 113400
+        },
+        "4": {
+          "seen": 113400,
+          "accepted": 110231,
+          "covariance": 113400
+        },
+        "6": {
+          "seen": 113400,
+          "accepted": 110295,
+          "covariance": 113400
+        },
+        "8": {
+          "seen": 113400,
+          "accepted": 102075,
+          "covariance": 113400
+        }
+      },
+      "replica_seen": [
+        226800,
+        170100,
+        170100
+      ],
+      "scene_seen": [
+        189044,
+        189044,
+        188912
+      ],
+      "native_L_forwards_reused": 5,
+      "extra_U_forwards": 1,
+      "fatal_stdout_markers": []
+    },
+    {
+      "method": "SIG1-PL",
+      "model_seed": 2026092702,
+      "incremental_epochs": 10,
+      "incremental_updates": 2220,
+      "steps_parsed": 2220,
+      "epochs_parsed": 10,
+      "finite": true,
+      "native_L_packets_per_step": 768,
+      "As_KL_weight": 0.0,
+      "PL_seen": 567000,
+      "PL_accepted": 530264,
+      "first_source_V_correct": 26451,
+      "last_source_V_correct": 26534,
+      "source_V_count": 27000,
+      "first_source_V_accuracy": 97.96666666666667,
+      "last_source_V_accuracy": 98.27407407407408,
+      "native_AMP": false,
+      "optimizer": "AdamW"
+    },
+    {
+      "method": "SIG1-Sup",
+      "model_seed": 2026092702,
+      "incremental_epochs": 10,
+      "incremental_updates": 2220,
+      "steps_parsed": 2220,
+      "epochs_parsed": 10,
+      "finite": true,
+      "native_L_packets_per_step": 768,
+      "As_KL_weight": 0.0,
+      "PL_seen": 0,
+      "PL_accepted": 0,
+      "first_source_V_correct": 26461,
+      "last_source_V_correct": 26534,
+      "source_V_count": 27000,
+      "first_source_V_accuracy": 98.0037037037037,
+      "last_source_V_accuracy": 98.27407407407408,
+      "native_AMP": false,
+      "optimizer": "AdamW"
+    }
+  ],
+  "truth_reads": 0,
+  "IQ_reads": 0,
+  "weight_reads": 0,
+  "target_feedback_used": false,
+  "full_goal_complete": false
+}
