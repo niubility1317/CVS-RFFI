@@ -117,6 +117,7 @@ def main():
  ax.set_xticks([3,5,10,20,30,40,50]);ax.set_xlim(0,51);ax.set_ylim(0,100);ax.set_xlabel('Total parameters (M); left range compressed, main axis linear');ax.set_ylabel('Accuracy (%)');ax.set_title('Capacity and cross-day + cross-receiver accuracy',loc='left',pad=12);ax.grid(color='#E5E7EB',lw=.5)
  ax.text(1.8,-.05,'//',transform=ax.get_xaxis_transform(),ha='center',fontsize=10)
  fig.legend(loc='lower center',bbox_to_anchor=(.5,.055),ncol=3,fontsize=6,handletextpad=.3,columnspacing=.8);footer(fig)
+ fig.text(.5,.045,'Parameter count does not measure inference latency or total computation.',ha='center',fontsize=6,color='#555555')
  save(fig,'fig04_parameter_double_holdout','参数量与双跨准确率')
  # One requested figure for every architecture: receiver, transmitter, confusion.
  for v in order:
