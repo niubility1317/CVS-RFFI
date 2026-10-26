@@ -1,0 +1,52 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "c0fc6a9a98e1a28669c2c41b59e26d2887311303",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_PID_CWD_argv_env_verified": true,
+  "all_four_train_PID_CWD_argv_GPU_step_log_growth_verified": true,
+  "live_jobs": [
+    {
+      "id": "SeparateRG",
+      "gpu": 0,
+      "step_records": 158
+    },
+    {
+      "id": "BridgeRG",
+      "gpu": 2,
+      "step_records": 160
+    },
+    {
+      "id": "BridgeHG",
+      "gpu": 3,
+      "step_records": 156
+    },
+    {
+      "id": "BridgeGG",
+      "gpu": 4,
+      "step_records": 140
+    }
+  ],
+  "source_calibration_status": "SOURCE_RESTORATION_BRIDGE_PREPARED",
+  "source_weight": 0.04677712061808677,
+  "source_gradient_rule": "common min(.25,.10*median(primary_norm)/max_method_median_extra_norm);12source_batches",
+  "integrated_smoke": {
+    "status": "PASS",
+    "model_seed": 2026092701,
+    "L_forward_packets": 768,
+    "U_seen": 256,
+    "extra_accepted": 185,
+    "head_finite_nonzero": true,
+    "optimizer_updates": 0,
+    "query_reads": 0,
+    "U_truth_read": false,
+    "method": "BridgeGG"
+  },
+  "new_target_reads": 0,
+  "student_seeds": [
+    2026092701
+  ],
+  "independent_P0P1": "PASS",
+  "focused_tests": 8,
+  "local_compile": "PASS"
+}

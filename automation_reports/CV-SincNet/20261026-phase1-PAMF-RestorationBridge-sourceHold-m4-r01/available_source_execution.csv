@@ -1,0 +1,5 @@
+method,model_seed,views,pair_mode,weight,complete_available_records,new_complete_epochs,U_seen,held_U_seen,extra_accepted,expected_extra_per_epoch,raw_forwards,H_forwards,G_forwards,valid_anchors,positive_pairs,negative_pairs,L_forward_packets_per_step,As_KL_weight,CRIC_weight,default_head_classes,actual_own_E30_parent,nonfinite_skips,U_truth_read,new_target_reads,finished_E50_checkpoint_verified
+SeparateRG,2026092701,raw+G,separate,0.04677712061808677,227,1,57980,11607,42883,41939,57980,0,57980,85766,2018992,13454484,768,0,0.1,6,True,0,False,0,False
+BridgeRG,2026092701,raw+G,bridge,0.04677712061808677,224,1,57212,11441,42316,41939,57212,0,57212,84632,1991580,13277584,768,0,0.1,6,True,0,False,0,False
+BridgeHG,2026092701,H+G,bridge,0.04677712061808677,226,1,57724,11550,42700,41939,0,57724,57724,85400,2009916,13399944,768,0,0.1,6,True,0,False,0,False
+BridgeGG,2026092701,G+G_next,bridge,0.04677712061808677,218,0,55808,11171,41271,41939,0,0,111616,82542,1944232,12962808,768,0,0.1,6,True,0,False,0,False
