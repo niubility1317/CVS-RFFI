@@ -1,0 +1,23 @@
+{
+  "status": "ONGOING_TRAINING_MECHANISM_ONLY",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01",
+  "code_commit": "d860ee49a036c599bcb0d7848feed22cc7de8bd7",
+  "all_complete_readable_records": 3269,
+  "records_by_method": {
+    "REPL_H2_U": 1093,
+    "REPL_H2_U_Pair": 1136,
+    "REPL_H2_LU_Pair": 1040
+  },
+  "records_not_sampled": true,
+  "complete_training": false,
+  "source_V_reads": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "new_model_forwards": 0,
+  "parameter_groups": [
+    "t2",
+    "cls_head",
+    "other"
+  ],
+  "scope": "Existing combined U group gradients, not isolated pair gradients, optimizer updates or sample usage fractions; no ranking or recipe changes; source/target performance unproven"
+}
