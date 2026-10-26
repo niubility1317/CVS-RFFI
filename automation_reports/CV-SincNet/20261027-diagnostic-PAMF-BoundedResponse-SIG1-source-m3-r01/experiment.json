@@ -1,0 +1,281 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01",
+  "group_id": "pamf-bounded-response-source-20261027",
+  "display_name": "有界RX混合响应校正三种子冻结E20源域成对诊断",
+  "description": "全部U56700及已知RX一次F-free统计12维；固定.1/.5dB/.025rad校正；三份已有SIG1 E20/defaulthead各在V27000 clean/三H比较raw与校正输入，不训练、不用G/target，不重训旧对照。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-BoundedResponse-source3"
+  ],
+  "tags": [
+    "PAMF",
+    "SIG_TIME",
+    "three-model-seeds",
+    "source-only",
+    "all-U-known-RX",
+    "bounded-input-correction",
+    "no-DURA"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261026-diagnostic-PAMF-RXResponse-LU-source-r01",
+    "20261027-phase1-PAMF-Covariance-SIG1-threeSeed-m12-r01"
+  ],
+  "authorization": "用户授权持续独立SSL研发、优先选择性协方差后研究有界接收响应校正；仅clean及星地衍生IQ、全部探索三模型seed、已完成对照复用。本次只做固定F源诊断，不启动新的F训练或目标测试。",
+  "code": {
+    "commit": "actual bounded operator/source runner Git commit before publish",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1;FP32 TF32off CPU2;calibration CPU-only",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "original equalized1 IQ;fixed L-STF response statistics andbounded perpacket spectral correction;source practical residual/post_sync/noEQ lowSuburban/midUrban/lowUrban; raw andcorrected shareexactphysicalIQ/H",
+    "contract_ref": "unchanged original F0; other protocol cohorts kept separate; prefix metadata matches original F0",
+    "physical_ids_ref": "unchanged sourceU56700/L6300/V27000 sourcecontract.role_ids andphysical fields;no target data",
+    "label_map_ref": "original F0 six registered classes; U TX truth absent",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "U_s": "full56700 raw descriptors+knownRX fit12fixedstats,TXabsent,noFoutputs",
+      "L_s": "2raw/corrected IQ perseed for actual frozenE20/defaulthead smoke,nofit",
+      "V": "full27000x4physicalviewsx2readouts perseed,diagnostic only,no model/stat updates",
+      "target": "not opened;predecessorcompletion status only,not scores"
+    },
+    "train_ratio": "no optimizer or newweights;original .07/.63/.30 roles unchanged",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "same source_channel defaults fs25MHz/fc2462MHz/residual/post_sync/noEQ/sessionseed20261016423/viewseed20261016421/namespacePAMF/restored_source/V/fixed;name doesnot invokeG"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "fixedE20 immediate preprocessing falsification only;not newtrainedF/target/Phase2/identity-safe orpurehardware proof"
+  },
+  "checkpoint": {
+    "initialization": "three own actual scratch-origin fullPAMF singleSIG_TIME E20 parents,strictload/nooptimizer/noheadfit",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092702/segment20",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/prefixes/F0-A1B1-SIG_TIME-F21-s2026092703/segment20"
+    ],
+    "contract_check_ref": "reuse actualsame-seed load_prefix scratchancestry/sourcephysicalcontract/defaulthead/ownE20 checks",
+    "provenance_verdict": "existing3parent sourcecontract/provenance verified;no fallback orG",
+    "selection_rule": "all three fixedE20s evaluated,no model/seed selection fromsource/target;fixedoperator exactlyRECIPE"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "current independent Codex chat",
+    "gpu_policy": "CPU calibration first;threefrozenF GPU workers waitfororiginalmatrixcomplete only;percard own1/totalCUDA+pending2/free10000MiB,CPU2,otherowners untouched",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_u_history_20261026/bounded_response_source",
+    "launch_command": "python -X utf8 -m experiments.pamf_u_history.publish_bounded_response_source --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/bounded_response_source --context local_artifacts/pamf_u_history_20261026/bounded_response_context.json",
+    "stop_rule": "first own input/provenance/nonfinite/output/technical failure stopsnewlaunches,activehealthyfinish;scientific source failure neverdrops remaining registeredseeds;exclusive outputs preserved/no retryoverwrite"
+  },
+  "expected_artifacts": [
+    "calibration/smoke.json actualU256/noF/G/labels",
+    "calibration/calibration.npz center4+basis2x4 private",
+    "calibration/complete.json all56700U/11340perRX/optimizer0/modelseednull",
+    "sSEED/smoke.json actualownE20/raw+corrected L2/defaulthead6/SIG1pool18976/head6x160/readerPmeasured/query0",
+    "sSEED/progress.json completeVcoverage",
+    "sSEED/source_predictions.npz raw/corrected4viewsx27000/defaulthead private",
+    "sSEED/complete.json fullsourceTX/RX/day/pairedfixes/confusion/quality/bounds/timing/stateunchanged/sourceguard",
+    "pipeline_state/jobs/controller identity/GPU/loggrowth",
+    "complete.json all3fixedsourceverdicts,goalfalse"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "three modelseed sourceV raw/corrected cleanandthreeH pairedcorrectcounts",
+      "fixed sourcefalsification rule perseed,no seedfilter"
+    ],
+    "secondary": [
+      "TX/RX/day/RXday accuracy/macroF1/confusion,fixes/breaks",
+      "qualitygate/boundtriggerfractions/actualCPUcorrection andsynchronizedFtime",
+      "allU RXmean/top2 statistics/noTX labels"
+    ],
+    "target": "zero target reads/predictions;sourceonly diagnostics",
+    "selection": "fixedF immediate preprocessing clean>=-27/27000,3Htotal>=0,eachH>=-54/27000,everyRX/view>=-.2pp;allthree finish;not trainingcompensation verdict"
+  },
+  "rows": [
+    {
+      "row_id": "s2026092701",
+      "method": "frozenSIG1-E20-raw-vs-bounded",
+      "purpose": "fixedsourcepreprocessing counterfactual,not newFtraining",
+      "config_ref": "experiments/pamf_u_history/bounded_response_source.py:evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01/configs/s2026092701.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "variesexistingF initialization only;calibration deterministic/F-free shared acrossmodels;sourcephysicalH fixedbysameIDs",
+      "k": null,
+      "scenario": "Lraw+3sourcepracticalH",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "reuseexistingE20/4440,nooptimizer/newtraining;27000x4sourceviewsx2readouts+sourceL2smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01/logs/s2026092701.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_bounded_response_source --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/bounded_response_source --context local_artifacts/pamf_u_history_20261026/bounded_response_context.json",
+      "expected_artifacts": [
+        "calibration/smoke.json actualU256/noF/G/labels",
+        "calibration/calibration.npz center4+basis2x4 private",
+        "calibration/complete.json all56700U/11340perRX/optimizer0/modelseednull",
+        "sSEED/smoke.json actualownE20/raw+corrected L2/defaulthead6/SIG1pool18976/head6x160/readerPmeasured/query0",
+        "sSEED/progress.json completeVcoverage",
+        "sSEED/source_predictions.npz raw/corrected4viewsx27000/defaulthead private",
+        "sSEED/complete.json fullsourceTX/RX/day/pairedfixes/confusion/quality/bounds/timing/stateunchanged/sourceguard",
+        "pipeline_state/jobs/controller identity/GPU/loggrowth",
+        "complete.json all3fixedsourceverdicts,goalfalse"
+      ]
+    },
+    {
+      "row_id": "s2026092702",
+      "method": "frozenSIG1-E20-raw-vs-bounded",
+      "purpose": "fixedsourcepreprocessing counterfactual,not newFtraining",
+      "config_ref": "experiments/pamf_u_history/bounded_response_source.py:evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01/configs/s2026092702.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "variesexistingF initialization only;calibration deterministic/F-free shared acrossmodels;sourcephysicalH fixedbysameIDs",
+      "k": null,
+      "scenario": "Lraw+3sourcepracticalH",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "reuseexistingE20/4440,nooptimizer/newtraining;27000x4sourceviewsx2readouts+sourceL2smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01/logs/s2026092702.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_bounded_response_source --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/bounded_response_source --context local_artifacts/pamf_u_history_20261026/bounded_response_context.json",
+      "expected_artifacts": [
+        "calibration/smoke.json actualU256/noF/G/labels",
+        "calibration/calibration.npz center4+basis2x4 private",
+        "calibration/complete.json all56700U/11340perRX/optimizer0/modelseednull",
+        "sSEED/smoke.json actualownE20/raw+corrected L2/defaulthead6/SIG1pool18976/head6x160/readerPmeasured/query0",
+        "sSEED/progress.json completeVcoverage",
+        "sSEED/source_predictions.npz raw/corrected4viewsx27000/defaulthead private",
+        "sSEED/complete.json fullsourceTX/RX/day/pairedfixes/confusion/quality/bounds/timing/stateunchanged/sourceguard",
+        "pipeline_state/jobs/controller identity/GPU/loggrowth",
+        "complete.json all3fixedsourceverdicts,goalfalse"
+      ]
+    },
+    {
+      "row_id": "s2026092703",
+      "method": "frozenSIG1-E20-raw-vs-bounded",
+      "purpose": "fixedsourcepreprocessing counterfactual,not newFtraining",
+      "config_ref": "experiments/pamf_u_history/bounded_response_source.py:evaluate",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01/configs/s2026092703.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "variesexistingF initialization only;calibration deterministic/F-free shared acrossmodels;sourcephysicalH fixedbysameIDs",
+      "k": null,
+      "scenario": "Lraw+3sourcepracticalH",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "reuseexistingE20/4440,nooptimizer/newtraining;27000x4sourceviewsx2readouts+sourceL2smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-diagnostic-PAMF-BoundedResponse-SIG1-source-m3-r01/logs/s2026092703.log",
+      "command": "python -X utf8 -m experiments.pamf_u_history.publish_bounded_response_source --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output local_artifacts/pamf_u_history_20261026/bounded_response_source --context local_artifacts/pamf_u_history_20261026/bounded_response_context.json",
+      "expected_artifacts": [
+        "calibration/smoke.json actualU256/noF/G/labels",
+        "calibration/calibration.npz center4+basis2x4 private",
+        "calibration/complete.json all56700U/11340perRX/optimizer0/modelseednull",
+        "sSEED/smoke.json actualownE20/raw+corrected L2/defaulthead6/SIG1pool18976/head6x160/readerPmeasured/query0",
+        "sSEED/progress.json completeVcoverage",
+        "sSEED/source_predictions.npz raw/corrected4viewsx27000/defaulthead private",
+        "sSEED/complete.json fullsourceTX/RX/day/pairedfixes/confusion/quality/bounds/timing/stateunchanged/sourceguard",
+        "pipeline_state/jobs/controller identity/GPU/loggrowth",
+        "complete.json all3fixedsourceverdicts,goalfalse"
+      ]
+    }
+  ],
+  "notes": [
+    "Existingresponse evidence RXvariance64.85%/TXmeanenergy43.54% inRXtop2 doesnot identify purehardware orpreserveidentity;boundedtrial only.",
+    "8focused local math/rule/pair-count/permission/reader regression checksPASS;one candidateP0/P1 andtargetedP1 closurePASS;actual3E20sourceL2smokes execute beforeanyV.",
+    "CPU sourceU calibration canfinish whilecovariance runs;F evaluation waitsforitscomplete metadata only. No scientificscores flow into eitherlivecandidate.",
+    "No newF/G network,EMA,classifier head orpseudoTX fitting.12fixedsource statistics aredata fitted,not called parameter-free.",
+    "Source_rule fail rejectsfixedF immediate preprocessing only;doesnot prove jointtraining compensation impossible. Allthree evaluated,negativecases kept.",
+    "Do not report diagnosticFtime asdeploymentB1 latency;sourceHgeneration/correctionCPU/Fforward separately timed.",
+    "Local source_data handles VALIDATED_ONCE unchanged,sourceprefix provenance reused,one releasearchive validation only;no furtherseals ordatarevalidation.",
+    "PrelaunchP1 fixed:do notcompare196001-parameter inference reader with863730 native student;check pool18976/head[6,160]/finite[2,6],recordreaderactualcount only."
+  ],
+  "matrix": {
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "frozen_models": 3,
+    "new_training": 0,
+    "optimizer_updates": 0,
+    "calibration_model_seed": null,
+    "U_calibration_records": 56700,
+    "source_L_smoke_per_model": 2,
+    "V_physical_per_model": 27000,
+    "source_views": 4,
+    "readouts": 2,
+    "source_model_decisions": 648000,
+    "new_target_predictions": 0,
+    "new_control_training": 0,
+    "recipe": {
+      "strength": 0.1,
+      "max_gain_db": 0.5,
+      "max_phase_rad": 0.025,
+      "RX_rank": 2,
+      "fit_role": "U_s",
+      "input_shape": [
+        2,
+        256
+      ],
+      "single_packet_inference": true,
+      "model_parameters": 0,
+      "stored_source_statistics": 12
+    },
+    "predecessor_dependency": "completiononly;no targetscoreconsumption"
+  },
+  "registered_at": "2026-10-26T18:24:35+00:00"
+}

@@ -67,12 +67,14 @@ class Correction:
         denominator=1+strength*gate[:,None]*delta
         # Construct a bounded polar inverse;never divide by a deep response null.
         log_bound=np.log(10)*RECIPE['max_gain_db']/20
-        gain=np.clip(-np.log(np.maximum(np.abs(denominator),1e-12)),-log_bound,log_bound)
-        phase=np.clip(-np.angle(denominator),-RECIPE['max_phase_rad'],RECIPE['max_phase_rad'])
+        raw_gain=-np.log(np.maximum(np.abs(denominator),1e-12));raw_phase=-np.angle(denominator)
+        gain=np.clip(raw_gain,-log_bound,log_bound)
+        phase=np.clip(raw_phase,-RECIPE['max_phase_rad'],RECIPE['max_phase_rad'])
         transfer=np.exp(gain+1j*phase)
         z=a[:,0].astype(np.float64)+1j*a[:,1].astype(np.float64)
         corrected=np.fft.ifft(np.fft.fft(z,axis=1)*transfer,axis=1)
         result=np.stack((corrected.real,corrected.imag),1).astype(a.dtype)
         if not np.isfinite(result).all():raise ValueError('Finite bounded corrected IQ required')
         return result,dict(max_abs_gain_db=float(np.max(np.abs(gain))*20/np.log(10)),max_abs_phase_rad=float(np.max(np.abs(phase))),
-            mean_quality_gate=float(gate.mean()),identity_control=False,neural_parameters=0,stored_source_statistics=12)
+            mean_quality_gate=float(gate.mean()),gain_bound_fraction=float((np.abs(raw_gain)>log_bound).mean()),
+            phase_bound_fraction=float((np.abs(raw_phase)>RECIPE['max_phase_rad']).mean()),identity_control=False,neural_parameters=0,stored_source_statistics=12)

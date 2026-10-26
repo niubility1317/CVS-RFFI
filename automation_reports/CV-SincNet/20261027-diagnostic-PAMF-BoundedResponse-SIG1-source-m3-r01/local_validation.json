@@ -1,0 +1,10 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "focused_tests": 8,
+  "compile": "PASS",
+  "independent_review": "PASS_AFTER_ONE_TARGETED_P1_FIX",
+  "fixed_P1": "whole native student parameter count incorrectly applied to inference reader;nowchecks pool18976/head6x160 andfiniteoutputs",
+  "real_checkpoint_smokes": "pending first step of each sourceF worker",
+  "new_training": 0,
+  "target_reads": 0
+}
