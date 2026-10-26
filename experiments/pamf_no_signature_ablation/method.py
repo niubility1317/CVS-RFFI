@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from copy import deepcopy
 
-RUN = '20261026-phase1-PAMF-noSIG-supervised-ablation-m15-r01'
+RUN = '20261026-phase1-PAMF-noSIG-supervised-ablation-m15-r02'
 SEEDS = (2026092701, 2026092702, 2026092703)
 ARMS = ('BASE', 'NO_PA', 'NO_REFERENCE', 'NO_PA_REFERENCE', 'WRONG_REFERENCE')
 PARAMETERS = dict(BASE=177025, NO_PA=165985, NO_REFERENCE=164225,

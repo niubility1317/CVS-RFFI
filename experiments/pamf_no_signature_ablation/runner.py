@@ -16,6 +16,13 @@ def activate(rt):
     start(rt)
 
 
+def smoke_arguments(factory,c,device):
+    # The frozen reader already sets this field; direct native smoke builds must
+    # do the same before entering Phase1IdentityAdapter.
+    a=factory(c,device);a.input_len=256
+    return a
+
+
 def prepare(rt):
     context=read(rt['context']);root=Path(rt['run_root']);jobs=[];sources={};cfgroot=root/'configs';cfgroot.mkdir()
     def add(kind,row,c,completion,status,deps=(),**extra):
@@ -75,7 +82,7 @@ def smoke(rt):
         c=configuration(context,row,rt['project'],rt['code_commit'])
         torch.manual_seed(c['model_seed']);torch.cuda.manual_seed_all(c['model_seed'])
         with architecture_scope(),installed(c,{},False),class_dimension(c),native_scope(original_config(c['model_seed'])) as native:
-            a=arguments(c,'cuda:0');net=t1_model.install(native.build_baseline_model(a,'cuda:0'),c).to('cuda:0')
+            a=smoke_arguments(arguments,c,'cuda:0');net=t1_model.install(native.build_baseline_model(a,'cuda:0'),c).to('cuda:0')
         ref=net.id_backbone.encoder
         count=sum(p.numel() for p in ref.parameters())
         if count!=PARAMETERS[arm]:raise ValueError(('Architecture parameter mismatch',arm,count))
@@ -136,6 +143,7 @@ def dispatch(rt):
     sm=dict(id='smoke',kind='smoke',config=rt['runtime_file']);child,item=launch(sm,gpu)
     state['smoke']=item;atomic(root/'pipeline_state.json',state)
     status=child.wait()
+    state['smoke'].update(status='FAILED' if status else 'PASS',exit_code=status,ended_at=time.time())
     if status or read(root/'smoke.json')['status']!='PASS':
         state['status']='FAILED_NO_QUERY_SMOKE';atomic(root/'pipeline_state.json',state);return
     state['status']='RUNNING'

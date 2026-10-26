@@ -26,6 +26,14 @@ class ConfigTests(unittest.TestCase):
         self.assertNotIn('SHUFFLE_TIME',ARMS)
         for row in rows():validate_config(configuration(self.context,row,'/project','abc'))
 
+    def test_direct_smoke_supplies_native_input_length(self):
+        from argparse import Namespace
+        from experiments.pamf_no_signature_ablation.runner import smoke_arguments
+        factory=lambda c,device:Namespace(num_classes=6)
+        # Reproduce the failed adapter boundary without importing a remote model.
+        with self.assertRaises(AttributeError):int(factory({},'cpu').input_len)
+        self.assertEqual(int(smoke_arguments(factory,{},'cpu').input_len),256)
+
     def test_reject_target_U_ancestors_and_recipe_changes(self):
         for key,value in [('truth','private'),('tests',{'cross_both':'private'}),('parent_source','old'),
                           ('shared_prefix','old'),('U_use',True),('own_EMA',True),('epochs',20),('ablation','F20'),

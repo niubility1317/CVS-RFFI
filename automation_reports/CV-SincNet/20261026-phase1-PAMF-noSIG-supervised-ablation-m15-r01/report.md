@@ -42,3 +42,7 @@
 物理 GPU1、5、6、7 各最多 1 个本 run worker，计入其他 owner 后每卡最多 2 个 GPU worker，空闲显存至少 12000 MiB；不替换控制器、不停止或热改其他健康任务。单 CPU scorer；计时仅等待自然空卡，5 结构×2 路径×5 batch×5 轮，共 250 case-round。一次源 checkpoint 无 query smoke 和五结构 roundtrip／backward 先执行，PASS 后立即训练，不另设审批。独立 P0/P1 审查未发现阻断项，协议负测与汇总复算测试已通过。
 
 代码／配置实际执行提交由发布包的 release_commit.txt 和 runtime.json 记录，启动读回后补入 experiment.json。命令、不可覆盖路径、数据句柄、种子、预算及停止规则以 experiment.json 为准。默认队列自动衔接训练、预测、评分、分析、参数／成本／时延与结果报告；当前没有新增性能结果。
+
+## r01 真实启动检查失败
+
+FAILED：实际 baseline checkpoint 来源检查已通过；随后五结构检查的直接原生构建入口缺 input_len，检查程序与控制器均已退出。37 个正式阶段任务全部保持 QUEUED，未训练、未预测、未评分。旧 root 保留，不能原地重启。已在本地复现 Namespace 缺字段边界，补显式256，与既有冻结 reader 一致；回归测试通过。替代 run 为 20261026-phase1-PAMF-noSIG-supervised-ablation-m15-r02。
