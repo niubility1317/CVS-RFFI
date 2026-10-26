@@ -11,3 +11,8 @@
 每卡全局CUDA+pending<2/free>=10000MiB，计入其他owner，不改变其进程。一份不可覆盖release/run、一次archive比较、remotecompile、独立PID/CWD/cmd/GPU/日志增长；任何角色/隐藏TX/finite/shape/buffer/smoke/输出错误结束本run，保留产物不自动重复提交。
 
 当前PLANNED，6项聚焦测试PASS，唯一独立P0/P1审查PASS，远端实际smoke为发布第一步。
+
+
+## 实际启动VERIFIED
+
+执行commit `0a840408f2b35cf77556a2e8e39c4b4ac2dc9445`（包含已核实的新实现提交994a876d）；一次archive比较VERIFIED、remotecompile PASS。实际L2单视图E20/默认头/同G smoke PASS。controller/唯一worker的PID/CWD/完整命令/物理GPU3与日志增长、L进度增长独立核实，读取时L4352/6300；后续自动U6300。0optimizer/V/target，仍是诊断中。此前一次本地版本检查在打包前拒绝了共享检出的提交切换，未创建archive或远端run；待提交/远端OID核实后只成功发布这一个run，没有重复worker。[启动证据](launch_evidence.json)。

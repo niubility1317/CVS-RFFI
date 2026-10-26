@@ -1,0 +1,38 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261026-diagnostic-PAMF-SIG1-LU-restored-views-m1-r01",
+  "code_commit": "0a840408f2b35cf77556a2e8e39c4b4ac2dc9445",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_PID_CWD_argv_verified": true,
+  "worker_PID_CWD_argv_CVD_verified": true,
+  "worker_pid": 369514,
+  "physical_GPU": 3,
+  "worker_on_GPU": true,
+  "log_growth": true,
+  "source_progress_growth": true,
+  "actual_smoke": {
+    "status": "PASS",
+    "source_L_packets": 2,
+    "signature_views": 1,
+    "signature_parameters": 18976,
+    "real_E20_defaulthead_and_sameG": true,
+    "optimizer_updates": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0
+  },
+  "source_progress": {
+    "status": "FROZEN_ROLE_VIEWS",
+    "role": "L_s",
+    "seen": 4352,
+    "total": 6300,
+    "new_model_optimizer_updates": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0
+  },
+  "optimizer_updates": 0,
+  "U_truth_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "limitation": "frozenL/U diagnostic inprogress;no newstudenttraining or targetresult"
+}
