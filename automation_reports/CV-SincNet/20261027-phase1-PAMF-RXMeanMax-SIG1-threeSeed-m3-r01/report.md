@@ -31,3 +31,7 @@ L额外64对仍为原随机风格KL且detach，保留与RXMean-U相同的标量�
 上述分析/核算新增5项测试及原随机风格统计4项、协方差统计3项、曝光核验3项均PASS；既有完整协方差结果在共用统计增加第三参考能力后逐字段不变。仅修改本地分析工具，远端神经执行commit仍为05e320bb0c554d9b135cec2e43b0e667617a8375，训练/选择配方未改。完整结束后分别执行max_audit、max_results collect、max_results analyze，使用已登记runtime；新指标不能反馈到当前已固定矩阵。
 
 当前已从等待转为实际三 seed 训练。三份真实 E20 的 fullPAMF/SIG1/defaulthead/source-only 梯度 smoke 与 12 批校准全部 PASS，三 seed alpha=1；各模型参数保持且校准 0 optimizer。三条训练实际 CUDA PID/UID/CWD/argv/显卡映射与日志增长已核实，已观察每行 538 至 584 个非零连续 step，见 launch_verification.json。原 RXMean 随机风格矩阵已全部 ANALYZED；其负结果不会改动本版 seed、物理幅度、Max 选择或预算。本版尚无完整源或正式结果，不能宣布收益。
+
+三 seed 均已完整完成新增前10轮 E20→E30；first_segment_audit.json 逐条检查全部6660条step/30模型epoch、每行E30真实checkpoint smoke、56700U各10遍、raw/H各283500、4候选2268000包、teacherU3118500包、studentU1134000包、各RX113400曝光和最大KL选择。后20轮已按原日程继续，尚未完成E50/正式结果，不能把E30节点称为实验完成。
+
+已存在36批零更新校准的统计见calibration_analysis.json：每seed raw的辅助/主欧氏梯度比中位数约4.33%至6.71%，H约13.76%至16.33%；总体中位系数规则并不是逐批10%硬上限。最大选择的KL中位数高于随机风格，但这不等价泛化收益；36批中14批梯度余弦为负，不等于实际AdamW反向或已定位clean损伤。未新增前向、更新、target或U真值读取，参数与健康日程保持。

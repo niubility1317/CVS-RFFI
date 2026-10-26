@@ -1,0 +1,402 @@
+{
+  "status": "THREE_MAX_RX_ROWS_E30_COMPLETE_LOG_AUDITED",
+  "observed_at": 1793051884.082855,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "steps": 2220,
+      "epochs": 10,
+      "alpha": 1.0,
+      "exposure": {
+        "calls": 2220,
+        "seen": 567000,
+        "unique_seen": 56700,
+        "min_visits": 10,
+        "max_visits": 10,
+        "raw_base_U": 283500,
+        "H_base_U": 283500,
+        "candidate_U_packets": 2268000,
+        "teacher_U_packets": 3118500,
+        "student_U_packets": 1134000,
+        "mean_shift_L_pairs": 142080,
+        "extra_L_teacher_packets": 142080,
+        "extra_L_student_packets": 142080,
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_accepted": 529327,
+      "PL_acceptance": 0.9335573192239859,
+      "epochs_summary": [
+        {
+          "new_U_epoch": 1,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.000716488128124216,
+          "random_KL_mean": 0.000484603517753049,
+          "all_style_KL_mean": 0.00047537463651351245,
+          "source_V_correct": 26431,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 2,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.004533730978502783,
+          "random_KL_mean": 0.0027785366165099315,
+          "all_style_KL_mean": 0.0028018504551607644,
+          "source_V_correct": 26412,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 3,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0006780933042325348,
+          "random_KL_mean": 0.00044454330854277286,
+          "all_style_KL_mean": 0.00044789471622107567,
+          "source_V_correct": 26409,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 4,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.0044359334069094414,
+          "random_KL_mean": 0.0028472406635488812,
+          "all_style_KL_mean": 0.002752591884141234,
+          "source_V_correct": 26476,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 5,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0006652543783242403,
+          "random_KL_mean": 0.00043357762551094565,
+          "all_style_KL_mean": 0.000439534338019675,
+          "source_V_correct": 26484,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 6,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.004164366041066813,
+          "random_KL_mean": 0.0026333226275898785,
+          "all_style_KL_mean": 0.0025848224208488858,
+          "source_V_correct": 26501,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 7,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0006629945587068964,
+          "random_KL_mean": 0.0004441339067295655,
+          "all_style_KL_mean": 0.0004342781655912011,
+          "source_V_correct": 26464,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 8,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.00415542377431684,
+          "random_KL_mean": 0.0026519111497117927,
+          "all_style_KL_mean": 0.0025820143692308686,
+          "source_V_correct": 26456,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 9,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0006143274496263313,
+          "random_KL_mean": 0.00040122982360887225,
+          "all_style_KL_mean": 0.00040407954148978607,
+          "source_V_correct": 26479,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 10,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.004186248317096583,
+          "random_KL_mean": 0.002577166929096403,
+          "all_style_KL_mean": 0.0025969235402708117,
+          "source_V_correct": 26479,
+          "source_V_count": 27000
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "steps": 2220,
+      "epochs": 10,
+      "alpha": 1.0,
+      "exposure": {
+        "calls": 2220,
+        "seen": 567000,
+        "unique_seen": 56700,
+        "min_visits": 10,
+        "max_visits": 10,
+        "raw_base_U": 283500,
+        "H_base_U": 283500,
+        "candidate_U_packets": 2268000,
+        "teacher_U_packets": 3118500,
+        "student_U_packets": 1134000,
+        "mean_shift_L_pairs": 142080,
+        "extra_L_teacher_packets": 142080,
+        "extra_L_student_packets": 142080,
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_accepted": 530740,
+      "PL_acceptance": 0.9360493827160494,
+      "epochs_summary": [
+        {
+          "new_U_epoch": 1,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0007224593721623826,
+          "random_KL_mean": 0.0005007732377323607,
+          "all_style_KL_mean": 0.0004881767526967451,
+          "source_V_correct": 26446,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 2,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.004027346854395997,
+          "random_KL_mean": 0.0024971383737047784,
+          "all_style_KL_mean": 0.0025048836056763926,
+          "source_V_correct": 26464,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 3,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0006448900629137013,
+          "random_KL_mean": 0.0004293675161649049,
+          "all_style_KL_mean": 0.0004313545909721765,
+          "source_V_correct": 26512,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 4,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.0039007055226017023,
+          "random_KL_mean": 0.0024811136782765053,
+          "all_style_KL_mean": 0.0024454921524896213,
+          "source_V_correct": 26523,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 5,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0006326636621206244,
+          "random_KL_mean": 0.0004358504545732783,
+          "all_style_KL_mean": 0.00042063169841951404,
+          "source_V_correct": 26507,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 6,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.003955668238566366,
+          "random_KL_mean": 0.002449639688501856,
+          "all_style_KL_mean": 0.0025055239303247282,
+          "source_V_correct": 26533,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 7,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0005921854595349565,
+          "random_KL_mean": 0.0004052455816391713,
+          "all_style_KL_mean": 0.0003947304841104752,
+          "source_V_correct": 26553,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 8,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.004024513427121984,
+          "random_KL_mean": 0.0025807184524842546,
+          "all_style_KL_mean": 0.002526092415398641,
+          "source_V_correct": 26553,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 9,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0005811064643444502,
+          "random_KL_mean": 0.00038140760741887724,
+          "all_style_KL_mean": 0.00038957220946227806,
+          "source_V_correct": 26540,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 10,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.0040502884432564385,
+          "random_KL_mean": 0.002585499766618349,
+          "all_style_KL_mean": 0.0025423847509627776,
+          "source_V_correct": 26539,
+          "source_V_count": 27000
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "steps": 2220,
+      "epochs": 10,
+      "alpha": 1.0,
+      "exposure": {
+        "calls": 2220,
+        "seen": 567000,
+        "unique_seen": 56700,
+        "min_visits": 10,
+        "max_visits": 10,
+        "raw_base_U": 283500,
+        "H_base_U": 283500,
+        "candidate_U_packets": 2268000,
+        "teacher_U_packets": 3118500,
+        "student_U_packets": 1134000,
+        "mean_shift_L_pairs": 142080,
+        "extra_L_teacher_packets": 142080,
+        "extra_L_student_packets": 142080,
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true
+      },
+      "PL_accepted": 530333,
+      "PL_acceptance": 0.935331569664903,
+      "epochs_summary": [
+        {
+          "new_U_epoch": 1,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0008063695041110386,
+          "random_KL_mean": 0.0005493025544654318,
+          "all_style_KL_mean": 0.0005269435025659297,
+          "source_V_correct": 26430,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 2,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.004315313976467797,
+          "random_KL_mean": 0.002728322937220402,
+          "all_style_KL_mean": 0.0027234524256142846,
+          "source_V_correct": 26514,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 3,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0007458346666975853,
+          "random_KL_mean": 0.0004878735133978488,
+          "all_style_KL_mean": 0.00048707928848064813,
+          "source_V_correct": 26427,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 4,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.004312941422769884,
+          "random_KL_mean": 0.0027996651798923005,
+          "all_style_KL_mean": 0.0027385535665687072,
+          "source_V_correct": 26495,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 5,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0006793291302217456,
+          "random_KL_mean": 0.00046286109785354266,
+          "all_style_KL_mean": 0.0004468117947433236,
+          "source_V_correct": 26454,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 6,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.004053584772459995,
+          "random_KL_mean": 0.0025280162087444485,
+          "all_style_KL_mean": 0.002570247539289732,
+          "source_V_correct": 26514,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 7,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.000679767815797875,
+          "random_KL_mean": 0.0004592534228527461,
+          "all_style_KL_mean": 0.0004447060653235583,
+          "source_V_correct": 26508,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 8,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.00400405871180549,
+          "random_KL_mean": 0.0025006095178190385,
+          "all_style_KL_mean": 0.0025273715177349543,
+          "source_V_correct": 26523,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 9,
+          "base": "raw",
+          "steps": 222,
+          "selected_KL_mean": 0.0006594853855875061,
+          "random_KL_mean": 0.0004216180022594599,
+          "all_style_KL_mean": 0.0004324380057729646,
+          "source_V_correct": 26525,
+          "source_V_count": 27000
+        },
+        {
+          "new_U_epoch": 10,
+          "base": "H",
+          "steps": 222,
+          "selected_KL_mean": 0.004133412072766438,
+          "random_KL_mean": 0.002597579886708912,
+          "all_style_KL_mean": 0.0026274276108099234,
+          "source_V_correct": 26532,
+          "source_V_count": 27000
+        }
+      ]
+    }
+  ],
+  "step_records": 6660,
+  "model_epochs": 30,
+  "new_F_forwards": 0,
+  "U_TX_truth_reads": 0,
+  "target_reads": 0,
+  "goal_complete": false
+}

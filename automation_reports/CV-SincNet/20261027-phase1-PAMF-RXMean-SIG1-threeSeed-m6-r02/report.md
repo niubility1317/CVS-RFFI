@@ -42,3 +42,5 @@
 源校准共 36 批：共同 alpha 都为 1，444 步 ramp。此前的 [calibration_analysis.json](calibration_analysis.json) 显示辅助/主欧氏梯度范数中位比例 raw 约 3.57% 至 5.64%、H 约 7.18% 至 11.51%，部分批次局部反向；这不证明实际 AdamW 方向或目标损伤因果。保留原 r01 的导入顺序技术失败（0 optimizer）及完成的 U 均值缓存，r02 修复后执行 commit `fa758a113f943f35a9da423fb1ca5cd3ff6a071c`；不存在按目标收益重启或挑 seed。
 
 固定代码入口 `rx_mean_source`、完整日志 `rx_mean_audit`、固定产物读取/汇总 `rx_mean_results`。原始 IQ、权重、逐包 logits/IDs 和私有路径留在原 run/private artifacts，仅提交公开统计。后续 RXMeanMax 三 seed 已在本结果之前固定并排队，待本 run 完成才占 GPU；本负结果不会改变其配方、预算或 seed。原目标仍 active。
+
+补充已存在源预测分析：[同包 raw/H 参照诊断](source_reference_diagnostics/report.md)。两方法×三 seed、648000 份已有 logits/1620 分层，无新 F/训练/target/U 真值。高置信 raw 的 low urban 参照约 38.8% 从 raw 对变为 H 错；H 高置信子集仍约 99.77% 正确。它提示区分参照证据强弱，不能用一致性替代身份纠错证据，也不作为当前 Max 配方修改依据。

@@ -1,0 +1,75 @@
+{
+  "status": "ANALYZED_EXISTING_MAX_SOURCE_CALIBRATION",
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "base": "raw",
+      "calibration_batches": 6,
+      "selected_KL_median": 0.000536687090061605,
+      "random_KL_median": 0.0004007981187896803,
+      "all_style_KL_median": 0.00033327464188914746,
+      "full_ramp_aux_primary_norm_ratio_median": 0.052631530460706975,
+      "negative_gradient_cosines": 3
+    },
+    {
+      "model_seed": 2026092701,
+      "base": "H",
+      "calibration_batches": 6,
+      "selected_KL_median": 0.004437557654455304,
+      "random_KL_median": 0.00257236254401505,
+      "all_style_KL_median": 0.002527049626223743,
+      "full_ramp_aux_primary_norm_ratio_median": 0.16333892005776385,
+      "negative_gradient_cosines": 2
+    },
+    {
+      "model_seed": 2026092702,
+      "base": "raw",
+      "calibration_batches": 6,
+      "selected_KL_median": 0.00051904606516473,
+      "random_KL_median": 0.00038634474913123995,
+      "all_style_KL_median": 0.00033541154698468745,
+      "full_ramp_aux_primary_norm_ratio_median": 0.04330217952400396,
+      "negative_gradient_cosines": 3
+    },
+    {
+      "model_seed": 2026092702,
+      "base": "H",
+      "calibration_batches": 6,
+      "selected_KL_median": 0.003851091954857111,
+      "random_KL_median": 0.0022097635082900524,
+      "all_style_KL_median": 0.0022870958782732487,
+      "full_ramp_aux_primary_norm_ratio_median": 0.13761512049053687,
+      "negative_gradient_cosines": 3
+    },
+    {
+      "model_seed": 2026092703,
+      "base": "raw",
+      "calibration_batches": 6,
+      "selected_KL_median": 0.0007855479780118912,
+      "random_KL_median": 0.00041402375791221857,
+      "all_style_KL_median": 0.00048695754958316684,
+      "full_ramp_aux_primary_norm_ratio_median": 0.0670918014436998,
+      "negative_gradient_cosines": 2
+    },
+    {
+      "model_seed": 2026092703,
+      "base": "H",
+      "calibration_batches": 6,
+      "selected_KL_median": 0.0036930901696905494,
+      "random_KL_median": 0.0021805495489388704,
+      "all_style_KL_median": 0.0021749251754954457,
+      "full_ramp_aux_primary_norm_ratio_median": 0.1434333599152203,
+      "negative_gradient_cosines": 1
+    }
+  ],
+  "source_batches": 36,
+  "new_F_forwards": 0,
+  "new_training_updates": 0,
+  "U_TX_truth_reads": 0,
+  "target_reads": 0,
+  "parameter_gradient_is_Euclidean": true,
+  "actual_AdamW_update_claim": false,
+  "causal_generalization_claim": false,
+  "recipe_changed": false,
+  "goal_complete": false
+}
