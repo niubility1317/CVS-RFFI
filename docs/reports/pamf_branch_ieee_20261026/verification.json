@@ -1,0 +1,29 @@
+{
+  "status": "VERIFIED",
+  "models": 18,
+  "structures": 6,
+  "selected_variants": 5,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "test_population": "unseen_receiver_and_earlier_unseen_date",
+  "reader": "PAMF_direct_only",
+  "packets_per_scene": 42000,
+  "overall_seed_rows": 288,
+  "summary_rows": 96,
+  "paired_rows": 80,
+  "stratum_seed_rows": 6624,
+  "stratum_summary_rows": 2208,
+  "stratum_paired_rows": 1840,
+  "delta_definition": "variant_minus_full",
+  "negative_is_degradation": true,
+  "maximum_absolute_numeric_difference": 0.0,
+  "tolerance": 1e-10,
+  "figures": 3,
+  "IEEEtran": true,
+  "new_training": 0,
+  "new_prediction": 0,
+  "new_truth_access": 0
+}

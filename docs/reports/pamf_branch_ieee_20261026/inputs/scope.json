@@ -1,0 +1,55 @@
+{
+  "report_date": "2026-10-26",
+  "scope": "Classification-only supervised PAMF, joint unseen receiver and earlier unseen date",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "structures": [
+    "full",
+    "NO_TIME",
+    "NO_SIGNATURE",
+    "NO_PA",
+    "NO_REFERENCE",
+    "WRONG_REFERENCE"
+  ],
+  "models": 18,
+  "source_filter": {
+    "protocol": "F0",
+    "test": "cross_both",
+    "readout": "raw",
+    "group": "strict_structure"
+  },
+  "registered_classes": 6,
+  "target_receivers": 7,
+  "packets_per_scene": 42000,
+  "scenes": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "training_epochs": 50,
+  "optimizer_updates_per_model": 11100,
+  "default_head_joint": true,
+  "delta_definition": "variant_minus_full",
+  "negative_means": "Worse than full PAMF",
+  "positive_means": "Better than full PAMF",
+  "summary_rows": 96,
+  "paired_rows": 80,
+  "stratum_seed_rows": 6624,
+  "stratum_summary_rows": 2208,
+  "stratum_paired_rows": 1840,
+  "SIG_TIME_clarification": {
+    "NO_TIME": "Remove explicit time coordinate, retain descriptor branch",
+    "NO_SIGNATURE": "Remove full SIG-TIME path-descriptor branch; same experiment, not a second removal",
+    "SIG_TIME": "Historical single-view control; excluded from this report"
+  },
+  "new_training": 0,
+  "new_prediction": 0,
+  "new_truth_access": 0
+}

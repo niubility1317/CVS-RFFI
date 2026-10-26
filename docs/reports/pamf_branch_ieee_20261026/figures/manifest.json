@@ -1,0 +1,20 @@
+[
+  {
+    "name": "seven_scene_accuracy",
+    "caption": "跨日跨接收机、PAMF直接识别的逐场景准确率。每点为3个训练种子均值。S为郊区，U为城市；不同线型和点形便于黑白打印。",
+    "source_csv": "tables/figure_accuracy.csv",
+    "style": "IEEE double-column; editable Times New Roman text"
+  },
+  {
+    "name": "paired_changes",
+    "caption": "同种子配对差：变体减完整PAMF。误差线为3个配对差的样本标准差，浅色小点为每个种子的配对差；负值表示下降，正值表示提高。",
+    "source_csv": "tables/figure_paired.csv",
+    "style": "IEEE double-column; editable Times New Roman text"
+  },
+  {
+    "name": "scene_changes",
+    "caption": "逐场景配对准确率变化，单位为百分点。暖红表示变体低于完整PAMF，青绿表示变体高于完整PAMF；色标以0为中心且对称。",
+    "source_csv": "tables/figure_scene_changes.csv",
+    "style": "IEEE double-column; editable Times New Roman text"
+  }
+]
