@@ -1,0 +1,855 @@
+{
+  "status": "VERIFIED_COMPLETE",
+  "run_id": "20261026-phase1-PAMF-SIG1-REPL-CleanH-source-m3-r01",
+  "code_commit": "d860ee49a036c599bcb0d7848feed22cc7de8bd7",
+  "new_source_prediction_decisions": 324000,
+  "new_source_stratified_cells": 180,
+  "new_full_training_step_records": 19980,
+  "reused_reference_scores": {
+    "Reference_PL_X3": {
+      "raw_correct": 26574,
+      "H3_correct": 60889
+    },
+    "Reference_REPL_SIG1": {
+      "raw_correct": 26554,
+      "H3_correct": 59701
+    },
+    "REPL_NoStyleNoRXE": {
+      "raw_correct": 26570,
+      "H3_correct": 59743
+    }
+  },
+  "source_decisions": [
+    {
+      "method": "REPL_H2_U",
+      "source_pass": true,
+      "raw_correct": 26549,
+      "H3_correct": 62255,
+      "raw": 98.32962962962964,
+      "H3": 76.85802469135803,
+      "delta_raw": -0.09259259259259259,
+      "delta_H3": 1.6864197530864198
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "source_pass": true,
+      "raw_correct": 26547,
+      "H3_correct": 62199,
+      "raw": 98.32222222222222,
+      "H3": 76.78888888888889,
+      "delta_raw": -0.1,
+      "delta_H3": 1.617283950617284
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "source_pass": true,
+      "raw_correct": 26554,
+      "H3_correct": 62190,
+      "raw": 98.34814814814816,
+      "H3": 76.77777777777777,
+      "delta_raw": -0.07407407407407407,
+      "delta_H3": 1.6061728395061727
+    }
+  ],
+  "source_selected": "REPL_H2_LU_Pair",
+  "source_macro_f1": [
+    {
+      "method": "REPL_H2_U",
+      "view": "raw",
+      "n": 27000,
+      "macro_f1": 98.32819180513802,
+      "confusion": [
+        [
+          4435,
+          8,
+          10,
+          9,
+          24,
+          14
+        ],
+        [
+          11,
+          4431,
+          18,
+          18,
+          15,
+          7
+        ],
+        [
+          1,
+          5,
+          4462,
+          4,
+          16,
+          12
+        ],
+        [
+          17,
+          134,
+          10,
+          4316,
+          12,
+          11
+        ],
+        [
+          22,
+          3,
+          6,
+          9,
+          4440,
+          20
+        ],
+        [
+          5,
+          8,
+          9,
+          2,
+          11,
+          4465
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_U",
+      "view": "practical_low_suburban",
+      "n": 27000,
+      "macro_f1": 91.30256528008775,
+      "confusion": [
+        [
+          4138,
+          141,
+          49,
+          76,
+          43,
+          53
+        ],
+        [
+          148,
+          4060,
+          54,
+          154,
+          56,
+          28
+        ],
+        [
+          68,
+          36,
+          4265,
+          36,
+          41,
+          54
+        ],
+        [
+          246,
+          468,
+          56,
+          3629,
+          67,
+          34
+        ],
+        [
+          86,
+          102,
+          45,
+          47,
+          4176,
+          44
+        ],
+        [
+          14,
+          21,
+          41,
+          7,
+          25,
+          4392
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_U",
+      "view": "practical_mid_urban",
+      "n": 27000,
+      "macro_f1": 76.0461262183311,
+      "confusion": [
+        [
+          3387,
+          382,
+          188,
+          242,
+          179,
+          122
+        ],
+        [
+          423,
+          3313,
+          192,
+          271,
+          216,
+          85
+        ],
+        [
+          268,
+          203,
+          3594,
+          101,
+          106,
+          228
+        ],
+        [
+          497,
+          696,
+          182,
+          2797,
+          225,
+          103
+        ],
+        [
+          332,
+          372,
+          161,
+          190,
+          3279,
+          166
+        ],
+        [
+          53,
+          49,
+          130,
+          15,
+          62,
+          4191
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_U",
+      "view": "practical_low_urban",
+      "n": 27000,
+      "macro_f1": 62.787148484933354,
+      "confusion": [
+        [
+          2796,
+          563,
+          292,
+          300,
+          312,
+          237
+        ],
+        [
+          578,
+          2614,
+          340,
+          444,
+          330,
+          194
+        ],
+        [
+          422,
+          358,
+          3019,
+          139,
+          178,
+          384
+        ],
+        [
+          717,
+          837,
+          346,
+          2091,
+          300,
+          209
+        ],
+        [
+          467,
+          546,
+          301,
+          278,
+          2618,
+          290
+        ],
+        [
+          134,
+          123,
+          203,
+          35,
+          109,
+          3896
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "view": "raw",
+      "n": 27000,
+      "macro_f1": 98.32067930278457,
+      "confusion": [
+        [
+          4436,
+          7,
+          8,
+          9,
+          26,
+          14
+        ],
+        [
+          12,
+          4428,
+          18,
+          20,
+          15,
+          7
+        ],
+        [
+          1,
+          5,
+          4462,
+          4,
+          16,
+          12
+        ],
+        [
+          16,
+          133,
+          10,
+          4316,
+          12,
+          13
+        ],
+        [
+          22,
+          3,
+          7,
+          8,
+          4439,
+          21
+        ],
+        [
+          5,
+          7,
+          8,
+          2,
+          12,
+          4466
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "view": "practical_low_suburban",
+      "n": 27000,
+      "macro_f1": 91.20690691366812,
+      "confusion": [
+        [
+          4131,
+          138,
+          45,
+          86,
+          46,
+          54
+        ],
+        [
+          152,
+          4045,
+          49,
+          169,
+          56,
+          29
+        ],
+        [
+          65,
+          42,
+          4262,
+          33,
+          45,
+          53
+        ],
+        [
+          263,
+          457,
+          51,
+          3626,
+          67,
+          36
+        ],
+        [
+          83,
+          105,
+          40,
+          52,
+          4177,
+          43
+        ],
+        [
+          13,
+          23,
+          39,
+          7,
+          25,
+          4393
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "view": "practical_mid_urban",
+      "n": 27000,
+      "macro_f1": 75.95112810032168,
+      "confusion": [
+        [
+          3385,
+          380,
+          185,
+          264,
+          170,
+          116
+        ],
+        [
+          428,
+          3303,
+          183,
+          299,
+          205,
+          82
+        ],
+        [
+          283,
+          208,
+          3573,
+          120,
+          94,
+          222
+        ],
+        [
+          487,
+          700,
+          171,
+          2822,
+          215,
+          105
+        ],
+        [
+          336,
+          384,
+          145,
+          214,
+          3261,
+          160
+        ],
+        [
+          62,
+          52,
+          129,
+          15,
+          59,
+          4183
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "view": "practical_low_urban",
+      "n": 27000,
+      "macro_f1": 62.880991496328896,
+      "confusion": [
+        [
+          2807,
+          572,
+          284,
+          330,
+          283,
+          224
+        ],
+        [
+          588,
+          2628,
+          315,
+          483,
+          302,
+          184
+        ],
+        [
+          431,
+          374,
+          2995,
+          168,
+          170,
+          362
+        ],
+        [
+          718,
+          851,
+          313,
+          2135,
+          285,
+          198
+        ],
+        [
+          465,
+          571,
+          288,
+          299,
+          2595,
+          282
+        ],
+        [
+          138,
+          127,
+          205,
+          44,
+          108,
+          3878
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "view": "raw",
+      "n": 27000,
+      "macro_f1": 98.3466643141218,
+      "confusion": [
+        [
+          4435,
+          7,
+          8,
+          9,
+          26,
+          15
+        ],
+        [
+          12,
+          4432,
+          19,
+          15,
+          15,
+          7
+        ],
+        [
+          1,
+          4,
+          4463,
+          5,
+          15,
+          12
+        ],
+        [
+          15,
+          135,
+          10,
+          4316,
+          13,
+          11
+        ],
+        [
+          21,
+          3,
+          7,
+          7,
+          4442,
+          20
+        ],
+        [
+          5,
+          7,
+          9,
+          2,
+          11,
+          4466
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "view": "practical_low_suburban",
+      "n": 27000,
+      "macro_f1": 91.21504760205168,
+      "confusion": [
+        [
+          4124,
+          143,
+          47,
+          88,
+          45,
+          53
+        ],
+        [
+          151,
+          4044,
+          53,
+          164,
+          60,
+          28
+        ],
+        [
+          62,
+          39,
+          4274,
+          31,
+          41,
+          53
+        ],
+        [
+          260,
+          459,
+          53,
+          3623,
+          70,
+          35
+        ],
+        [
+          79,
+          101,
+          43,
+          50,
+          4182,
+          45
+        ],
+        [
+          12,
+          24,
+          43,
+          5,
+          26,
+          4390
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "view": "practical_mid_urban",
+      "n": 27000,
+      "macro_f1": 75.92232083567964,
+      "confusion": [
+        [
+          3350,
+          391,
+          196,
+          269,
+          180,
+          114
+        ],
+        [
+          406,
+          3308,
+          192,
+          294,
+          222,
+          78
+        ],
+        [
+          267,
+          209,
+          3594,
+          113,
+          101,
+          216
+        ],
+        [
+          478,
+          700,
+          178,
+          2811,
+          229,
+          104
+        ],
+        [
+          325,
+          380,
+          148,
+          209,
+          3280,
+          158
+        ],
+        [
+          59,
+          52,
+          133,
+          14,
+          62,
+          4180
+        ]
+      ]
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "view": "practical_low_urban",
+      "n": 27000,
+      "macro_f1": 62.85521743981477,
+      "confusion": [
+        [
+          2775,
+          586,
+          295,
+          336,
+          292,
+          216
+        ],
+        [
+          553,
+          2635,
+          323,
+          486,
+          333,
+          170
+        ],
+        [
+          415,
+          381,
+          3013,
+          167,
+          169,
+          355
+        ],
+        [
+          690,
+          863,
+          327,
+          2128,
+          301,
+          191
+        ],
+        [
+          464,
+          578,
+          287,
+          296,
+          2606,
+          269
+        ],
+        [
+          137,
+          135,
+          206,
+          43,
+          106,
+          3873
+        ]
+      ]
+    }
+  ],
+  "within_model_H_vs_raw_pairs": [
+    {
+      "method": "REPL_H2_U",
+      "comparison": "same model H versus raw,not intervention benefit",
+      "view": "practical_low_suburban",
+      "n": 27000,
+      "corrected": 79,
+      "broken": 1968,
+      "both_wrong": 372,
+      "net": -1889
+    },
+    {
+      "method": "REPL_H2_U",
+      "comparison": "same model H versus raw,not intervention benefit",
+      "view": "practical_mid_urban",
+      "n": 27000,
+      "corrected": 73,
+      "broken": 6061,
+      "both_wrong": 378,
+      "net": -5988
+    },
+    {
+      "method": "REPL_H2_U",
+      "comparison": "same model H versus raw,not intervention benefit",
+      "view": "practical_low_urban",
+      "n": 27000,
+      "corrected": 72,
+      "broken": 9587,
+      "both_wrong": 379,
+      "net": -9515
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "comparison": "same model H versus raw,not intervention benefit",
+      "view": "practical_low_suburban",
+      "n": 27000,
+      "corrected": 76,
+      "broken": 1989,
+      "both_wrong": 377,
+      "net": -1913
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "comparison": "same model H versus raw,not intervention benefit",
+      "view": "practical_mid_urban",
+      "n": 27000,
+      "corrected": 71,
+      "broken": 6091,
+      "both_wrong": 382,
+      "net": -6020
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "comparison": "same model H versus raw,not intervention benefit",
+      "view": "practical_low_urban",
+      "n": 27000,
+      "corrected": 74,
+      "broken": 9583,
+      "both_wrong": 379,
+      "net": -9509
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "comparison": "same model H versus raw,not intervention benefit",
+      "view": "practical_low_suburban",
+      "n": 27000,
+      "corrected": 74,
+      "broken": 1991,
+      "both_wrong": 372,
+      "net": -1917
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "comparison": "same model H versus raw,not intervention benefit",
+      "view": "practical_mid_urban",
+      "n": 27000,
+      "corrected": 69,
+      "broken": 6100,
+      "both_wrong": 377,
+      "net": -6031
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "comparison": "same model H versus raw,not intervention benefit",
+      "view": "practical_low_urban",
+      "n": 27000,
+      "corrected": 71,
+      "broken": 9595,
+      "both_wrong": 375,
+      "net": -9524
+    }
+  ],
+  "new_model_forwards": 0,
+  "IQ_reads": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "scope": "Three single-seed source methods; reused frozen reference raw/H scores; no G score in selection; not three-seed target evidence",
+  "checkpoints": [
+    {
+      "method": "REPL_H2_U",
+      "cumulative_epochs": 50,
+      "cumulative_updates": 11100,
+      "new_epochs": 30,
+      "new_updates": 6660,
+      "actual_signature_views": 1,
+      "new_training_seconds": 6057.935892031062
+    },
+    {
+      "method": "REPL_H2_U_Pair",
+      "cumulative_epochs": 50,
+      "cumulative_updates": 11100,
+      "new_epochs": 30,
+      "new_updates": 6660,
+      "actual_signature_views": 1,
+      "new_training_seconds": 5920.7093841750175
+    },
+    {
+      "method": "REPL_H2_LU_Pair",
+      "cumulative_epochs": 50,
+      "cumulative_updates": 11100,
+      "new_epochs": 30,
+      "new_updates": 6660,
+      "actual_signature_views": 1,
+      "new_training_seconds": 6507.356763637159
+    }
+  ]
+}
