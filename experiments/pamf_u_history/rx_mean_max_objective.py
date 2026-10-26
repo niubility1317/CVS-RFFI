@@ -45,6 +45,9 @@ class Objective(MeanObjective):
         if self.history is None:self.history=Exposure(student._cd_U_loader.dataset.metadata)
         return super().plain(student,device)
 
+    def source_U_loss(self,logits,base_prob,mode):
+        return soft_loss(logits,base_prob)
+
     def extra(self,student,kwargs):
         if self.L_forwards!=5 or set(self.inputs)!={'H','raw'}:raise ValueError('Original five extra L forwards required')
         call=student._feature_l_steps+self.c.get('step_offset',0)-4440
@@ -66,9 +69,9 @@ class Objective(MeanObjective):
                 shifted=variants[selected,index];selected_styles=styles[selected,index]
             ul=student(shifted);ll=student(lshift)
         finally:student.train()
-        u=soft_loss(ul,up);l=soft_loss(ll,lp);value=combine(u,l,n,64,'U')
+        u=self.source_U_loss(ul,up,mode);l=soft_loss(ll,lp);value=combine(u,l,n,64,'U')
         if self.c['rx_mean_calibration']:
-            self.calibration_nodes=(ul,ll);self.candidates={METHODS[0]:value}
+            self.calibration_nodes=(ul,ll);self.candidates={self.c['paper_method']:value}
         else:self.candidates={}
         h=self.history;h.calls+=1;h.seen+=n;h.accepted+=int(self.accepted.sum());h.visits[self.ids]+=1;h.L_seen+=64
         h.raw_seen+=n*(mode=='raw');h.H_seen+=n*(mode=='H');h.by_replica[replica-1]+=n*(mode=='H');h.by_scene[scene]+=n*(mode=='H')

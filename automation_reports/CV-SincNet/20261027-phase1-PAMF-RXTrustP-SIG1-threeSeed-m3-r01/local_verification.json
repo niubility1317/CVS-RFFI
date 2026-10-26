@@ -1,0 +1,17 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "P_focused_tests": 11,
+  "existing_Max_regression_tests": 5,
+  "source_modules_compiled": 5,
+  "independent_P0P1_review": "PASS_no_direct_P0P1",
+  "default_Max_source_U_loss": "exact_original_softKL",
+  "default_Max_release_changed": false,
+  "source_candidate_proxy_models": 6,
+  "source_candidate_proxy_all_three_seeds": true,
+  "new_training_models_planned": 3,
+  "new_control_training": 0,
+  "new_F_forwards_over_Max": 0,
+  "real_P_checkpoint_smoke": "PENDING_FIRST_GPU_STEP",
+  "data_revalidation": false,
+  "goal_complete": false
+}
