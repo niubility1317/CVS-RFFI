@@ -1,0 +1,96 @@
+{
+  "status": "VERIFIED",
+  "observed_at": "2026-10-26T11:12:28.478875+08:00",
+  "execution_commit": "f922fc3fce6d1149c2f0c379050b6da3bba62cdd",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "no_query_smoke": "PASS",
+  "smoke_query_reads": 0,
+  "smoke_U_reads": 0,
+  "architectures": [
+    {
+      "arm": "BASE",
+      "parameters": 177025,
+      "finite_backward": true,
+      "strict_checkpoint_roundtrip": true
+    },
+    {
+      "arm": "NO_PA",
+      "parameters": 165985,
+      "finite_backward": true,
+      "strict_checkpoint_roundtrip": true
+    },
+    {
+      "arm": "NO_REFERENCE",
+      "parameters": 164225,
+      "finite_backward": true,
+      "strict_checkpoint_roundtrip": true
+    },
+    {
+      "arm": "NO_PA_REFERENCE",
+      "parameters": 153185,
+      "finite_backward": true,
+      "strict_checkpoint_roundtrip": true
+    },
+    {
+      "arm": "WRONG_REFERENCE",
+      "parameters": 177025,
+      "finite_backward": true,
+      "strict_checkpoint_roundtrip": true
+    }
+  ],
+  "active_training_workers": 4,
+  "physical_gpus": [
+    1,
+    5,
+    6,
+    7
+  ],
+  "same_process_log_growth_rows": [
+    "F__NO_PA-s2026092701",
+    "F__NO_PA-s2026092702",
+    "F__NO_PA-s2026092703",
+    "F__NO_REFERENCE-s2026092701"
+  ],
+  "epoch_progress": {
+    "F/NO_PA-s2026092701/source/segment20/progress.json": {
+      "epoch": 2,
+      "updates": 444,
+      "cumulative_epoch": 2,
+      "cumulative_updates": 444,
+      "U_actual": 0,
+      "PL_seen": 0,
+      "PL_accepted": 0
+    },
+    "F/NO_PA-s2026092702/source/segment20/progress.json": {
+      "epoch": 2,
+      "updates": 444,
+      "cumulative_epoch": 2,
+      "cumulative_updates": 444,
+      "U_actual": 0,
+      "PL_seen": 0,
+      "PL_accepted": 0
+    },
+    "F/NO_PA-s2026092703/source/segment20/progress.json": {
+      "epoch": 2,
+      "updates": 444,
+      "cumulative_epoch": 2,
+      "cumulative_updates": 444,
+      "U_actual": 0,
+      "PL_seen": 0,
+      "PL_accepted": 0
+    },
+    "F/NO_REFERENCE-s2026092701/source/segment20/progress.json": {
+      "epoch": 2,
+      "updates": 444,
+      "cumulative_epoch": 2,
+      "cumulative_updates": 444,
+      "U_actual": 0,
+      "PL_seen": 0,
+      "PL_accepted": 0
+    }
+  },
+  "actual_PID_CWD_argv_GPU_readback": "Verified in private raw snapshot; source/target paths and account details omitted here",
+  "raw_evidence_ref": "local_artifacts/pamf_no_signature_ablation_20261026/verification_latest.json",
+  "new_performance_results": false
+}

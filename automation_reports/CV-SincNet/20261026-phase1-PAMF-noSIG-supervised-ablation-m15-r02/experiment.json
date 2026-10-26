@@ -23,7 +23,7 @@
   "replaces_run_id": "20261026-phase1-PAMF-noSIG-supervised-ablation-m15-r01",
   "authorization": "当前用户请求监督去SIG-TIME消融，确认PA/参考四组，追加打乱参考模板相位，明确取消固定打乱局部顺序。引用对话01a151fb-3aef-7230-86a0-a7bf9cdac512仅作背景。",
   "code": {
-    "commit": "Recorded by publisher in release_commit.txt and runtime.json; filled with verified execution OID after launch",
+    "commit": "f922fc3fce6d1149c2f0c379050b6da3bba62cdd",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Python3.10 Torch2.1 FP32 TF32off CPU2",
     "cwd": "PROJECT/releases/20261026-phase1-PAMF-noSIG-supervised-ablation-m15-r02",

@@ -46,3 +46,7 @@
 ## r02 技术恢复
 
 仅补齐检查入口的 input_len=256；方法、数据、预算、种子、增强、DURA 与测试矩阵不变。新增本地回归测试通过，使用新不可覆盖 root，不改旧产物。
+
+## 实际启动核实
+
+VERIFIED：执行提交 `f922fc3fce6d1149c2f0c379050b6da3bba62cdd` 已推送并核对远端 OID；发布归档传输与远端编译通过。真实 checkpoint 与五种结构无 query 检查通过，参数量与预登记一致。已核对 4 个训练进程的实际 PID/CWD/argv/GPU；同 PID 日志增长和首轮训练更新已读回，U_actual、PL_seen、PL_accepted 均为 0。详细状态见 launch_verification.json。当前为 RUNNING，尚无新增测试结果。
