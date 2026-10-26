@@ -1,0 +1,132 @@
+{
+  "status": "FONLY_SOURCE_ANALYZED",
+  "run_id": "20261026-analysis-PAMF-SIG1-Covariance-Fonly-m4-r01",
+  "source_run_id": "20261026-phase1-PAMF-SIG1-Covariance-source-m4-r01",
+  "model_seed": 2026092701,
+  "baseline": "completed matched SIG1-PL",
+  "baseline_correct": {
+    "raw": 26561,
+    "practical_low_suburban": 24292,
+    "practical_mid_urban": 20033,
+    "practical_low_urban": 16209
+  },
+  "rows": [
+    {
+      "method": "CovSel-U",
+      "status": "FROZEN_SOURCE_ANALYZED",
+      "candidate_correct": {
+        "raw": 26555,
+        "practical_low_suburban": 24319,
+        "practical_mid_urban": 20039,
+        "practical_low_urban": 16234
+      },
+      "source_necessary_pass": true,
+      "conditions": {
+        "full_new_budget": true,
+        "all_U": true,
+        "clean_floor": true,
+        "raw_three_nondecreasing": true,
+        "legal_updates": true
+      },
+      "raw_correct_count_delta": {
+        "raw": -6,
+        "practical_low_suburban": 27,
+        "practical_mid_urban": 6,
+        "practical_low_urban": 25
+      },
+      "raw_clean_delta_pp": -0.022222222222222223,
+      "raw_three_delta_pp": 0.07160493827160494,
+      "scope": "new user-directed standalone F scope;old G-inclusive run verdict unchanged;not formal performance or goal success"
+    },
+    {
+      "method": "CovRandom-U",
+      "status": "FROZEN_SOURCE_ANALYZED",
+      "candidate_correct": {
+        "raw": 26556,
+        "practical_low_suburban": 24322,
+        "practical_mid_urban": 20030,
+        "practical_low_urban": 16220
+      },
+      "source_necessary_pass": true,
+      "conditions": {
+        "full_new_budget": true,
+        "all_U": true,
+        "clean_floor": true,
+        "raw_three_nondecreasing": true,
+        "legal_updates": true
+      },
+      "raw_correct_count_delta": {
+        "raw": -5,
+        "practical_low_suburban": 30,
+        "practical_mid_urban": -3,
+        "practical_low_urban": 11
+      },
+      "raw_clean_delta_pp": -0.018518518518518517,
+      "raw_three_delta_pp": 0.04691358024691358,
+      "scope": "new user-directed standalone F scope;old G-inclusive run verdict unchanged;not formal performance or goal success"
+    },
+    {
+      "method": "CovFull-U",
+      "status": "FROZEN_SOURCE_ANALYZED",
+      "candidate_correct": {
+        "raw": 26549,
+        "practical_low_suburban": 24269,
+        "practical_mid_urban": 20032,
+        "practical_low_urban": 16202
+      },
+      "source_necessary_pass": false,
+      "conditions": {
+        "full_new_budget": true,
+        "all_U": true,
+        "clean_floor": true,
+        "raw_three_nondecreasing": false,
+        "legal_updates": true
+      },
+      "raw_correct_count_delta": {
+        "raw": -12,
+        "practical_low_suburban": -23,
+        "practical_mid_urban": -1,
+        "practical_low_urban": -7
+      },
+      "raw_clean_delta_pp": -0.044444444444444446,
+      "raw_three_delta_pp": -0.03827160493827161,
+      "scope": "new user-directed standalone F scope;old G-inclusive run verdict unchanged;not formal performance or goal success"
+    },
+    {
+      "method": "CovSel-LU",
+      "status": "FROZEN_SOURCE_ANALYZED",
+      "candidate_correct": {
+        "raw": 26555,
+        "practical_low_suburban": 24327,
+        "practical_mid_urban": 20053,
+        "practical_low_urban": 16257
+      },
+      "source_necessary_pass": true,
+      "conditions": {
+        "full_new_budget": true,
+        "all_U": true,
+        "clean_floor": true,
+        "raw_three_nondecreasing": true,
+        "legal_updates": true
+      },
+      "raw_correct_count_delta": {
+        "raw": -6,
+        "practical_low_suburban": 35,
+        "practical_mid_urban": 20,
+        "practical_low_urban": 48
+      },
+      "raw_clean_delta_pp": -0.022222222222222223,
+      "raw_three_delta_pp": 0.1271604938271605,
+      "scope": "new user-directed standalone F scope;old G-inclusive run verdict unchanged;not formal performance or goal success"
+    }
+  ],
+  "raw_only": true,
+  "G_criteria_used": false,
+  "new_training": 0,
+  "new_IQ_reads": 0,
+  "new_F_G_weight_reads": 0,
+  "new_target_reads": 0,
+  "change_authorization": "user20261026 explicitly removed DURA-cooperation route;cleanIQ and satellite derivatives only",
+  "old_G_inclusive_rule_relabelled": false,
+  "goal_complete": false
+}

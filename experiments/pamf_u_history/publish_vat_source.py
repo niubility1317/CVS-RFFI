@@ -55,13 +55,13 @@ result=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),a
 '''
 
 
-def publish(repo,output,context,*,run_id=RUN,release_id=RELEASE,entrypoint='experiments.pamf_u_history.vat_source',required_relative=(),runtime_extra=None):
+def publish(repo,output,context,*,run_id=RUN,release_id=RELEASE,entrypoint='experiments.pamf_u_history.vat_source',required_relative=(),runtime_extra=None,context_validator=None,required_builder=None):
     repo=Path(repo);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     def git(*args):return subprocess.check_output(['git','-C',str(repo),*args])
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
     if git('ls-remote','origin','refs/heads/'+branch).decode().split()[0]!=commit:raise ValueError('Upstream differs')
     if git('status','--porcelain','--','experiments/pamf_u_history').strip():raise ValueError('Committed source implementation required')
-    c=json.loads(Path(context).read_text(encoding='utf-8'));validate_context(c)
+    c=json.loads(Path(context).read_text(encoding='utf-8'));(context_validator or validate_context)(c)
     project=c['project'];release=project+'/releases/'+release_id
     rt=dict(run_id=run_id,project=project,python=c['python'],release_root=release,run_root=project+'/runs/'+run_id,
         context=release+'/context.json',runtime_file=release+'/runtime.json',code_commit=commit,
@@ -79,8 +79,10 @@ def publish(repo,output,context,*,run_id=RUN,release_id=RELEASE,entrypoint='expe
         for name,value in {'context.json':Path(context).read_bytes(),'release_commit.txt':(commit+'\n').encode(),
             'experiment.json':git('show',commit+':automation_reports/CV-SincNet/'+run_id+'/experiment.json')}.items():
             info=tarfile.TarInfo(name);info.size=len(value);info.mode=0o644;target.addfile(info,io.BytesIO(value))
-    case=next(v for v in c['cases'] if v['model_seed']==2026092701)
-    required=[*c['frozen_sources'].values(),project+'/runs/'+PREFIX_RUN+'/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20/complete.json',project+'/runs/'+PREFIX_RUN+'/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20/final_ssdg.pth',case['expected_source_contract'],c['G']['checkpoint'],c['G']['source_contract']]
+    if required_builder is None:
+        case=next(v for v in c['cases'] if v['model_seed']==2026092701)
+        required=[*c['frozen_sources'].values(),project+'/runs/'+PREFIX_RUN+'/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20/complete.json',project+'/runs/'+PREFIX_RUN+'/prefixes/F0-A1B1-SIG_TIME-F21-s2026092701/segment20/final_ssdg.pth',case['expected_source_contract'],c['G']['checkpoint'],c['G']['source_contract']]
+    else:required=required_builder(c)
     required.extend(project+'/'+p for p in required_relative)
     package=dict(runtime=rt,required=required,archive_remote=project+'/releases/'+archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
     for name,value in [('runtime.json',rt),('package.json',package)]:
