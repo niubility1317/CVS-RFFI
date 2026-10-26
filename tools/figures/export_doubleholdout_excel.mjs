@@ -79,6 +79,7 @@ table(notes,['项目','说明'],[
  ['固定训练','每模型从零E200、10000次更新、纯CE、LS0；只用L_s6300。U_s56700不参与训练，V27000只监测。'],
  ['统计口径','模型种子2026092701至08，split392005固定；均值±样本SD（ddof=1）。单类准确率即召回率。'],
  ['最差RX口径','先在每个seed的7个RX中取最低准确率，再对8个seed计算均值与SD；不同于各RX均值中的最低值。'],
+ ['分类头比较','常见网络保留原线性分类头，PAMF保留cosine scale30头；严格去SIG-TIME消融的分类头与完整PAMF相同。共同训练配方不代表各架构均达到最优。'],
  ['预测复用','已有模型复用原固定预测。新消融逐row训练、冻结、clean预测完整后独立truth-last评分。'],
  ['证据边界','原目标基准此前已暴露。双跨是事后分层复算，不是新独立盲测；结果不反馈训练或选模。'],
  ['原始来源','原综合Excel及其已完成评分；20261014整体SIG_TIME八种子评分；20261026严格去SIG-TIME八种子补跑。'],
@@ -87,7 +88,7 @@ table(notes,['项目','说明'],[
 wb.recalculate();
 for(const e of expected){const actual=sheets[e.sheet].getRange(`E${e.row}:J${e.row}`).values[0];for(let j=0;j<6;j++)if(Math.abs(actual[j]-e.values[j])>1e-9)throw Error('Summary formula mismatch '+JSON.stringify(e));}
 console.log((await wb.inspect({kind:'match',searchTerm:'#REF!|#DIV/0!|#VALUE!|#NAME\\?',options:{useRegex:true,maxResults:12},maxChars:1000})).ndjson);
-for(const [name,range] of [['双跨汇总',`A1:K${6+order.length}`],['综合汇总',`A1:K${6+order.length}`],['消融对比','A1:H30'],['种子结果','A1:H11'],['接收机分层','A1:I11'],['发射机分层','A1:G11'],['混淆矩阵','A1:F11'],['实验说明','A1:B18']]){
+for(const [name,range] of [['双跨汇总',`A1:K${6+order.length}`],['综合汇总',`A1:K${6+order.length}`],['消融对比','A1:H30'],['种子结果','A1:H11'],['接收机分层','A1:I11'],['发射机分层','A1:G11'],['混淆矩阵','A1:F11'],['实验说明','A1:B19']]){
  const blob=await wb.render({sheetName:name,range,scale:1.2,format:'png'});await fs.writeFile(path.join(previewDir,name+'.png'),new Uint8Array(await blob.arrayBuffer()));
 }
 if(mode!=='render-only'){
