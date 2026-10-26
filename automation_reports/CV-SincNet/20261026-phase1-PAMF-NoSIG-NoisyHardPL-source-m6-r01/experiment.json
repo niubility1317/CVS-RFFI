@@ -1,0 +1,482 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01",
+  "group_id": "pamf-nosig-noisy-hard-20261026",
+  "display_name": "NoSIG困难有噪声伪标签的CE/GCE与raw/H/G匹配源证伪",
+  "description": "独立新噪声假设：冻结RawLabeler给原困难U生成noisy targets，用CE/缩权CE/GCE及匹配第二raw/G/HG视图；完整PAMF学生各E30+20，单seed源验证，不改旧可信标签失败结论。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-NoSIG-NoisyHardPL-source"
+  ],
+  "tags": [
+    "PAMF",
+    "NO_SIGNATURE",
+    "explicit-noisy-pseudo-labels",
+    "GCE",
+    "matched-CE-dose",
+    "paired-H-G",
+    "source-only",
+    "default-head-joint"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01",
+    "20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01",
+    "20261026-analysis-PAMF-NoSIG-RawAnchor-labels-r01",
+    "20261026-diagnostic-PAMF-URealizations-cache-m3-r01"
+  ],
+  "authorization": "用户授权持续研发适合PAMF的SSL、DURA配对也提高、后续去SIG_TIME并开放全部GPU；已完整复盘，当前改为显式处理有噪声困难标签，保留旧可信标签路线失败。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Phase1 Python/Torch2.1 FP32/TF32off CPU2threads;no installs",
+    "cwd": "PROJECT/releases/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "original F0 six registered default-head classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "original6300; unchanged full PAMF L mechanisms every student update",
+      "U_s": "original56700 hidden TX; original ownE30conf<.95 & ownRawLabelerconf>=.95 & rx!=1 noisy branch; remaining ordinary rawselfPL unchanged",
+      "V": "original27000 fixed final eight-view source evaluation; never objective input"
+    },
+    "train_ratio": "original roles/labels unchanged; new branch adds noisy targets to previously uncertain U; no new true labels; no target",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "single-student source pilot of explicitly noisy-label training; source V proxy93.83% not actualU precision; no target success or default replacement"
+  },
+  "checkpoint": {
+    "initialization": "six independent ownNoSIG ordinaryPL E30+20 toE50;sourceRawLabeler E40 frozen only forU labels",
+    "sources": [
+      "actual ownNoSIG scratchE20+10 prefix; strict source lineage verified",
+      "RawLabeler finalE40 known sourceL-only new10 stage with RX1 adaptationholdout; not loaded into student",
+      "samefixed originalF0 G-LU and threefresh pairedsourceU H/G IQ caches"
+    ],
+    "contract_check_ref": "actual E30 and R40 checkpoint/data-contract checks before hiddenU cache; original default6x160 head/zeroSequence/nativeSinc provenance; trueL2 teacher and six L128/U256 jointbackward smoke first",
+    "provenance_verdict": "same originalF0 roles; no oldSIG/researchF50/target-selected parent; sourceR40 ancestorknownUtrained, newR40onlyL",
+    "selection_rule": "fixed finalE50 each; allsix source rows complete before fixedsource selection; no label-source threshold tuning or newtarget access"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-nosig-noisyhard-20261026",
+    "gpu_policy": "GPU0..7;global CUDA+pending<2/free>=10000MiB;cache then sharedsmoke then sixmodels asspaceallows;preserve all foreign healthy work",
+    "remote_run_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01",
+    "remote_log_root": "PROJECT/releases/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_review_20261026/noisy_hard",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.noisy_hard_source dispatch --config PROJECT/releases/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-release-r01/runtime.json",
+    "stop_rule": "first actual smoke/protocol/noSIG/head/finite/coverage/state/technical failure stops newlaunches;healthy active finish;preserve outputs,no automaticretry or foreignchanges;source failure retained,no three-seed promotion"
+  },
+  "expected_artifacts": [
+    "actual frozenR40 sourceL2/defaulthead smoke and fullU56700 hidden-label cache;F56702/G0,zerooptimizer;no Utruth/target",
+    "cache originalE30 confidence/RawLabeler labels andconf/noisybool/physicalIDs only;no y;sourceVproxy explicitlynoisy93.829947%,Uprecisionunknown",
+    "six actualNoSIG E30 defaulthead L128/U256 jointbackward smokes incl noisemask and extra raw/G/H;L768/AsKL0/defaulthead finite/nonzero;zerooptimizer",
+    "six own finalE50/11100 students,20new epochs4440updates each;26640newfullrecords/120epoch;ordinaryrawselfPL+unchangedL",
+    "allrows samefixednoisylabels/masks,maskrx1off;each1134000Uexposures/20xuniquenoisycount;extraF=20xnoisycount onlysecondviewrows",
+    "allfinalV27000 eightviews;TX/RX/day and held/trained corrected/broken;nativeU/EMA/newhead/Gteacherupdates/target off",
+    "source compareNoSIG-PL:heldRX1 G3>=+.3pp,overallraw>=-.1pp,originalhardrawnet>0;allrows completebefore selection",
+    "onearchive transfercompare/remotecompile/independent PID-CWD-argv-GPU-loggrowth;costs and actualU/extraIQ utilizationreported"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "fixed student source performance conditions,not high-precision-label assumptions"
+    ],
+    "secondary": [
+      "noisy vsordinary U exposure,student disagreement,extra viewcounts",
+      "full convergence and allsource cells",
+      "boundedloss vsbatchuniform CE dose vsplainCE;raw2/G/HG inputcontrol"
+    ],
+    "target": "none inthis pilot;originalthree-student rawclean/rawsix/sameG requirements unchanged",
+    "selection": "all6 finish;passheldG>=+.3/raw>=-.1/hardrawnet>0;choosehighestsource raw,thenheldG,thenlowercost methodorder;frozenbeforetarget",
+    "truth_policy": "Utrue TXabsent;teacher cachedlabels fromrawIQ only;sourceV onlyfrozenfinaldiagnostics;no target"
+  },
+  "rows": [
+    {
+      "row_id": "F0-NoisyCE-s2026092701",
+      "method": "NoisyCE",
+      "purpose": "matched noisylabel loss/dose/extra view source falsification",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyCE.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyCE-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "noisy_recipe": {
+          "q": 0.0,
+          "rho": 0.0,
+          "extra": "none",
+          "uniform": false
+        },
+        "noisy_mask": "originalE30conf<.95/R40conf>=.95/RX!=1",
+        "raw_self_PL_other_U": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "full sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "ownNoSIG E30+20 toE50/11100;new4440updates;sharedR40extra10costseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyCE-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/logs/NoisyCE.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.noisy_hard_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyCE.json",
+      "expected_artifacts": [
+        "actual frozenR40 sourceL2/defaulthead smoke and fullU56700 hidden-label cache;F56702/G0,zerooptimizer;no Utruth/target",
+        "cache originalE30 confidence/RawLabeler labels andconf/noisybool/physicalIDs only;no y;sourceVproxy explicitlynoisy93.829947%,Uprecisionunknown",
+        "six actualNoSIG E30 defaulthead L128/U256 jointbackward smokes incl noisemask and extra raw/G/H;L768/AsKL0/defaulthead finite/nonzero;zerooptimizer",
+        "six own finalE50/11100 students,20new epochs4440updates each;26640newfullrecords/120epoch;ordinaryrawselfPL+unchangedL",
+        "allrows samefixednoisylabels/masks,maskrx1off;each1134000Uexposures/20xuniquenoisycount;extraF=20xnoisycount onlysecondviewrows",
+        "allfinalV27000 eightviews;TX/RX/day and held/trained corrected/broken;nativeU/EMA/newhead/Gteacherupdates/target off",
+        "source compareNoSIG-PL:heldRX1 G3>=+.3pp,overallraw>=-.1pp,originalhardrawnet>0;allrows completebefore selection",
+        "onearchive transfercompare/remotecompile/independent PID-CWD-argv-GPU-loggrowth;costs and actualU/extraIQ utilizationreported"
+      ]
+    },
+    {
+      "row_id": "F0-NoisyScaledCE-s2026092701",
+      "method": "NoisyScaledCE",
+      "purpose": "matched noisylabel loss/dose/extra view source falsification",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyScaledCE.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyScaledCE-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "noisy_recipe": {
+          "q": 0.0,
+          "rho": 0.0,
+          "extra": "none",
+          "uniform": true
+        },
+        "noisy_mask": "originalE30conf<.95/R40conf>=.95/RX!=1",
+        "raw_self_PL_other_U": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "full sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "ownNoSIG E30+20 toE50/11100;new4440updates;sharedR40extra10costseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyScaledCE-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/logs/NoisyScaledCE.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.noisy_hard_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyScaledCE.json",
+      "expected_artifacts": [
+        "actual frozenR40 sourceL2/defaulthead smoke and fullU56700 hidden-label cache;F56702/G0,zerooptimizer;no Utruth/target",
+        "cache originalE30 confidence/RawLabeler labels andconf/noisybool/physicalIDs only;no y;sourceVproxy explicitlynoisy93.829947%,Uprecisionunknown",
+        "six actualNoSIG E30 defaulthead L128/U256 jointbackward smokes incl noisemask and extra raw/G/H;L768/AsKL0/defaulthead finite/nonzero;zerooptimizer",
+        "six own finalE50/11100 students,20new epochs4440updates each;26640newfullrecords/120epoch;ordinaryrawselfPL+unchangedL",
+        "allrows samefixednoisylabels/masks,maskrx1off;each1134000Uexposures/20xuniquenoisycount;extraF=20xnoisycount onlysecondviewrows",
+        "allfinalV27000 eightviews;TX/RX/day and held/trained corrected/broken;nativeU/EMA/newhead/Gteacherupdates/target off",
+        "source compareNoSIG-PL:heldRX1 G3>=+.3pp,overallraw>=-.1pp,originalhardrawnet>0;allrows completebefore selection",
+        "onearchive transfercompare/remotecompile/independent PID-CWD-argv-GPU-loggrowth;costs and actualU/extraIQ utilizationreported"
+      ]
+    },
+    {
+      "row_id": "F0-NoisyGCE-s2026092701",
+      "method": "NoisyGCE",
+      "purpose": "matched noisylabel loss/dose/extra view source falsification",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyGCE.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyGCE-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "noisy_recipe": {
+          "q": 0.7,
+          "rho": 0.0,
+          "extra": "none",
+          "uniform": false
+        },
+        "noisy_mask": "originalE30conf<.95/R40conf>=.95/RX!=1",
+        "raw_self_PL_other_U": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "full sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "ownNoSIG E30+20 toE50/11100;new4440updates;sharedR40extra10costseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyGCE-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/logs/NoisyGCE.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.noisy_hard_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyGCE.json",
+      "expected_artifacts": [
+        "actual frozenR40 sourceL2/defaulthead smoke and fullU56700 hidden-label cache;F56702/G0,zerooptimizer;no Utruth/target",
+        "cache originalE30 confidence/RawLabeler labels andconf/noisybool/physicalIDs only;no y;sourceVproxy explicitlynoisy93.829947%,Uprecisionunknown",
+        "six actualNoSIG E30 defaulthead L128/U256 jointbackward smokes incl noisemask and extra raw/G/H;L768/AsKL0/defaulthead finite/nonzero;zerooptimizer",
+        "six own finalE50/11100 students,20new epochs4440updates each;26640newfullrecords/120epoch;ordinaryrawselfPL+unchangedL",
+        "allrows samefixednoisylabels/masks,maskrx1off;each1134000Uexposures/20xuniquenoisycount;extraF=20xnoisycount onlysecondviewrows",
+        "allfinalV27000 eightviews;TX/RX/day and held/trained corrected/broken;nativeU/EMA/newhead/Gteacherupdates/target off",
+        "source compareNoSIG-PL:heldRX1 G3>=+.3pp,overallraw>=-.1pp,originalhardrawnet>0;allrows completebefore selection",
+        "onearchive transfercompare/remotecompile/independent PID-CWD-argv-GPU-loggrowth;costs and actualU/extraIQ utilizationreported"
+      ]
+    },
+    {
+      "row_id": "F0-NoisyGCE2Raw-s2026092701",
+      "method": "NoisyGCE2Raw",
+      "purpose": "matched noisylabel loss/dose/extra view source falsification",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyGCE2Raw.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyGCE2Raw-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "noisy_recipe": {
+          "q": 0.7,
+          "rho": 0.25,
+          "extra": "raw",
+          "uniform": false
+        },
+        "noisy_mask": "originalE30conf<.95/R40conf>=.95/RX!=1",
+        "raw_self_PL_other_U": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "full sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "ownNoSIG E30+20 toE50/11100;new4440updates;sharedR40extra10costseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyGCE2Raw-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/logs/NoisyGCE2Raw.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.noisy_hard_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyGCE2Raw.json",
+      "expected_artifacts": [
+        "actual frozenR40 sourceL2/defaulthead smoke and fullU56700 hidden-label cache;F56702/G0,zerooptimizer;no Utruth/target",
+        "cache originalE30 confidence/RawLabeler labels andconf/noisybool/physicalIDs only;no y;sourceVproxy explicitlynoisy93.829947%,Uprecisionunknown",
+        "six actualNoSIG E30 defaulthead L128/U256 jointbackward smokes incl noisemask and extra raw/G/H;L768/AsKL0/defaulthead finite/nonzero;zerooptimizer",
+        "six own finalE50/11100 students,20new epochs4440updates each;26640newfullrecords/120epoch;ordinaryrawselfPL+unchangedL",
+        "allrows samefixednoisylabels/masks,maskrx1off;each1134000Uexposures/20xuniquenoisycount;extraF=20xnoisycount onlysecondviewrows",
+        "allfinalV27000 eightviews;TX/RX/day and held/trained corrected/broken;nativeU/EMA/newhead/Gteacherupdates/target off",
+        "source compareNoSIG-PL:heldRX1 G3>=+.3pp,overallraw>=-.1pp,originalhardrawnet>0;allrows completebefore selection",
+        "onearchive transfercompare/remotecompile/independent PID-CWD-argv-GPU-loggrowth;costs and actualU/extraIQ utilizationreported"
+      ]
+    },
+    {
+      "row_id": "F0-NoisyGCEG-s2026092701",
+      "method": "NoisyGCEG",
+      "purpose": "matched noisylabel loss/dose/extra view source falsification",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyGCEG.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyGCEG-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "noisy_recipe": {
+          "q": 0.7,
+          "rho": 0.25,
+          "extra": "G",
+          "uniform": false
+        },
+        "noisy_mask": "originalE30conf<.95/R40conf>=.95/RX!=1",
+        "raw_self_PL_other_U": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "full sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "ownNoSIG E30+20 toE50/11100;new4440updates;sharedR40extra10costseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyGCEG-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/logs/NoisyGCEG.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.noisy_hard_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyGCEG.json",
+      "expected_artifacts": [
+        "actual frozenR40 sourceL2/defaulthead smoke and fullU56700 hidden-label cache;F56702/G0,zerooptimizer;no Utruth/target",
+        "cache originalE30 confidence/RawLabeler labels andconf/noisybool/physicalIDs only;no y;sourceVproxy explicitlynoisy93.829947%,Uprecisionunknown",
+        "six actualNoSIG E30 defaulthead L128/U256 jointbackward smokes incl noisemask and extra raw/G/H;L768/AsKL0/defaulthead finite/nonzero;zerooptimizer",
+        "six own finalE50/11100 students,20new epochs4440updates each;26640newfullrecords/120epoch;ordinaryrawselfPL+unchangedL",
+        "allrows samefixednoisylabels/masks,maskrx1off;each1134000Uexposures/20xuniquenoisycount;extraF=20xnoisycount onlysecondviewrows",
+        "allfinalV27000 eightviews;TX/RX/day and held/trained corrected/broken;nativeU/EMA/newhead/Gteacherupdates/target off",
+        "source compareNoSIG-PL:heldRX1 G3>=+.3pp,overallraw>=-.1pp,originalhardrawnet>0;allrows completebefore selection",
+        "onearchive transfercompare/remotecompile/independent PID-CWD-argv-GPU-loggrowth;costs and actualU/extraIQ utilizationreported"
+      ]
+    },
+    {
+      "row_id": "F0-NoisyGCEHG-s2026092701",
+      "method": "NoisyGCEHG",
+      "purpose": "matched noisylabel loss/dose/extra view source falsification",
+      "config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyGCEHG.json",
+      "resolved_config_ref": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyGCEHG-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "structure": "NO_SIGNATURE",
+        "noisy_recipe": {
+          "q": 0.7,
+          "rho": 0.25,
+          "extra": "HG",
+          "uniform": false
+        },
+        "noisy_mask": "originalE30conf<.95/R40conf>=.95/RX!=1",
+        "raw_self_PL_other_U": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one student seed01, not three student results; source data/augmentation original fixed",
+      "k": null,
+      "scenario": "full sourceV raw/Graw/threeH/threeG",
+      "optimizer": "original native segment optimizer,defaulthead joint",
+      "lr": "original E30+20 cosine",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "ownNoSIG E30+20 toE50/11100;new4440updates;sharedR40extra10costseparate",
+      "output_root": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/F/F0-NoisyGCEHG-s2026092701/source",
+      "log_path": "PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/logs/NoisyGCEHG.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.noisy_hard_source worker --kind train_eval --config PROJECT/runs/20261026-phase1-PAMF-NoSIG-NoisyHardPL-source-m6-r01/configs/NoisyGCEHG.json",
+      "expected_artifacts": [
+        "actual frozenR40 sourceL2/defaulthead smoke and fullU56700 hidden-label cache;F56702/G0,zerooptimizer;no Utruth/target",
+        "cache originalE30 confidence/RawLabeler labels andconf/noisybool/physicalIDs only;no y;sourceVproxy explicitlynoisy93.829947%,Uprecisionunknown",
+        "six actualNoSIG E30 defaulthead L128/U256 jointbackward smokes incl noisemask and extra raw/G/H;L768/AsKL0/defaulthead finite/nonzero;zerooptimizer",
+        "six own finalE50/11100 students,20new epochs4440updates each;26640newfullrecords/120epoch;ordinaryrawselfPL+unchangedL",
+        "allrows samefixednoisylabels/masks,maskrx1off;each1134000Uexposures/20xuniquenoisycount;extraF=20xnoisycount onlysecondviewrows",
+        "allfinalV27000 eightviews;TX/RX/day and held/trained corrected/broken;nativeU/EMA/newhead/Gteacherupdates/target off",
+        "source compareNoSIG-PL:heldRX1 G3>=+.3pp,overallraw>=-.1pp,originalhardrawnet>0;allrows completebefore selection",
+        "onearchive transfercompare/remotecompile/independent PID-CWD-argv-GPU-loggrowth;costs and actualU/extraIQ utilizationreported"
+      ]
+    }
+  ],
+  "notes": [
+    "OldRGPL/Glabeler/rawanchor qualitycriteria remainFAIL;this is new explicitlynoisy-label loss hypothesis,not retrospective gate lowering.",
+    "SourceR40 confidence95hard V precision93.829947%;do not claimsameUprecision orindependentnoise assumptions.",
+    "GCE q=.7 from published2018 method;gradientCE*p_target^.7,bounded1/q;instance-dependentRFFInoise efficacyunproven.",
+    "ScaledCE rawcontrol multipliesCE bydetachedbatchmean p_target^.7;notexact fullgradientnormmatching.",
+    "G/HG secondforward count matchesRaw2;fresh3xscene3pairedIQ,no Gpostnorm/mixing/newGupdates;HGalternatesfixedsteps.",
+    "WholeSIG_TIME sequencebranchremoved,base time/frequency/PA/reference andoriginal160dheadjoint;no newheads.",
+    "Everymodelcumulative50/13L37LU;teacherR40 adds10L-onlyepochs/sharedparentcost,neverclaimexacttotalcomputeparity.",
+    "Currentonlyseed01sourcepilot;R1seenbybase/G,extraUbranchholdsR1;not trulyunseenRXvalidation.",
+    "Finalsamecandidate three-student actualtarget rawclean>=85.981746/rawsix>72.096197/Gsix>78.074636 andnewNoSIGcontrols remainunmet."
+  ],
+  "matrix": {
+    "student_seeds": [
+      2026092701
+    ],
+    "methods": [
+      "NoisyCE",
+      "NoisyScaledCE",
+      "NoisyGCE",
+      "NoisyGCE2Raw",
+      "NoisyGCEG",
+      "NoisyGCEHG"
+    ],
+    "recipes": {
+      "NoisyCE": {
+        "q": 0.0,
+        "rho": 0.0,
+        "extra": "none",
+        "uniform": false
+      },
+      "NoisyScaledCE": {
+        "q": 0.0,
+        "rho": 0.0,
+        "extra": "none",
+        "uniform": true
+      },
+      "NoisyGCE": {
+        "q": 0.7,
+        "rho": 0.0,
+        "extra": "none",
+        "uniform": false
+      },
+      "NoisyGCE2Raw": {
+        "q": 0.7,
+        "rho": 0.25,
+        "extra": "raw",
+        "uniform": false
+      },
+      "NoisyGCEG": {
+        "q": 0.7,
+        "rho": 0.25,
+        "extra": "G",
+        "uniform": false
+      },
+      "NoisyGCEHG": {
+        "q": 0.7,
+        "rho": 0.25,
+        "extra": "HG",
+        "uniform": false
+      }
+    },
+    "new_student_epochs": 120,
+    "new_updates": 26640,
+    "cumulative_epochs_each": 50,
+    "source_L": 6300,
+    "source_U": 56700,
+    "source_V": 27000,
+    "noisy_R40_confidence": 0.95,
+    "originalE30_hard_confidence_lt": 0.95,
+    "extra_U_RX1": false,
+    "rawselfPL_confidence": 0.95,
+    "source_label_precision_proxy": 93.82994732881866,
+    "U_precision": "UNKNOWN",
+    "G_updates": 0,
+    "teacher_updates": 0,
+    "target_reads": 0
+  },
+  "registered_at": "2026-10-26T06:21:59+00:00"
+}

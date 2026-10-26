@@ -1,0 +1,474 @@
+{
+  "status": "SOURCE_POSTERIOR_ANALYSIS_COMPLETE",
+  "run_id": "20261026-analysis-PAMF-NoSIG-RawAnchor-labels-r01",
+  "code_commit": "a02c6e5a4f21b9d96c5fc8e4f614f863eea136ef",
+  "model_seed": 2026092701,
+  "source_V": 27000,
+  "hard_pool": 2326,
+  "rule": {
+    "confidence": 0.95,
+    "minimum_certified": 200,
+    "minimum_precision_percent": 99.5,
+    "minimum_net_correct": 100
+  },
+  "rows": [
+    {
+      "method": "RawLabeler",
+      "certified": 1329,
+      "correct": 1247,
+      "precision": 93.82994732881866,
+      "corrected": 123,
+      "broken": 38,
+      "net_correct": 85
+    },
+    {
+      "method": "NoSIG-Sup",
+      "certified": 381,
+      "correct": 378,
+      "precision": 99.21259842519684,
+      "corrected": 2,
+      "broken": 0,
+      "net_correct": 2
+    },
+    {
+      "method": "NoSIG-PL",
+      "certified": 803,
+      "correct": 787,
+      "precision": 98.00747198007473,
+      "corrected": 7,
+      "broken": 0,
+      "net_correct": 7
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 342,
+      "correct": 342,
+      "precision": 100.0,
+      "corrected": 1,
+      "broken": 0,
+      "net_correct": 1,
+      "quality_pass": false
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 720,
+      "correct": 713,
+      "precision": 99.02777777777777,
+      "corrected": 6,
+      "broken": 0,
+      "net_correct": 6,
+      "quality_pass": false
+    }
+  ],
+  "source_accuracies": [
+    {
+      "method": "RawLabeler",
+      "source_V_accuracy": 97.7,
+      "hard_pool_accuracy": 78.24591573516767
+    },
+    {
+      "method": "NoSIG-Sup",
+      "source_V_accuracy": 97.75925925925925,
+      "hard_pool_accuracy": 76.65520206362855
+    },
+    {
+      "method": "NoSIG-PL",
+      "source_V_accuracy": 97.56296296296296,
+      "hard_pool_accuracy": 74.37661220980225
+    }
+  ],
+  "error_overlaps": [
+    {
+      "method": "SupAnchor",
+      "hard_pool": 2326,
+      "both_correct": 1644,
+      "adapted_only_correct": 176,
+      "anchor_only_correct": 139,
+      "both_wrong_same_class": 300,
+      "both_wrong_different_class": 67
+    },
+    {
+      "method": "PLAnchor",
+      "hard_pool": 2326,
+      "both_correct": 1608,
+      "adapted_only_correct": 212,
+      "anchor_only_correct": 122,
+      "both_wrong_same_class": 318,
+      "both_wrong_different_class": 66
+    }
+  ],
+  "source_cells": [
+    {
+      "method": "SupAnchor",
+      "certified": 342,
+      "correct": 342,
+      "precision": 100.0,
+      "corrected": 1,
+      "broken": 0,
+      "net_correct": 1,
+      "dimension": "overall",
+      "stratum": "ALL"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 2,
+      "correct": 2,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "RX",
+      "stratum": "1"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 142,
+      "correct": 142,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "RX",
+      "stratum": "3"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 5,
+      "correct": 5,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "RX",
+      "stratum": "4"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 3,
+      "correct": 3,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "RX",
+      "stratum": "6"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 190,
+      "correct": 190,
+      "precision": 100.0,
+      "corrected": 1,
+      "broken": 0,
+      "net_correct": 1,
+      "dimension": "RX",
+      "stratum": "8"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 96,
+      "correct": 96,
+      "precision": 100.0,
+      "corrected": 1,
+      "broken": 0,
+      "net_correct": 1,
+      "dimension": "day",
+      "stratum": "1"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 108,
+      "correct": 108,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "day",
+      "stratum": "2"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 138,
+      "correct": 138,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "day",
+      "stratum": "3"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 2,
+      "correct": 2,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "TX",
+      "stratum": "0"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 37,
+      "correct": 37,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "TX",
+      "stratum": "1"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 0,
+      "correct": 0,
+      "precision": null,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "TX",
+      "stratum": "2"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 267,
+      "correct": 267,
+      "precision": 100.0,
+      "corrected": 1,
+      "broken": 0,
+      "net_correct": 1,
+      "dimension": "TX",
+      "stratum": "3"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 30,
+      "correct": 30,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "TX",
+      "stratum": "4"
+    },
+    {
+      "method": "SupAnchor",
+      "certified": 6,
+      "correct": 6,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "TX",
+      "stratum": "5"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 720,
+      "correct": 713,
+      "precision": 99.02777777777777,
+      "corrected": 6,
+      "broken": 0,
+      "net_correct": 6,
+      "dimension": "overall",
+      "stratum": "ALL"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 1,
+      "correct": 1,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "RX",
+      "stratum": "1"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 349,
+      "correct": 345,
+      "precision": 98.8538681948424,
+      "corrected": 1,
+      "broken": 0,
+      "net_correct": 1,
+      "dimension": "RX",
+      "stratum": "3"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 17,
+      "correct": 15,
+      "precision": 88.23529411764706,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "RX",
+      "stratum": "4"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 4,
+      "correct": 4,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "RX",
+      "stratum": "6"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 349,
+      "correct": 348,
+      "precision": 99.7134670487106,
+      "corrected": 5,
+      "broken": 0,
+      "net_correct": 5,
+      "dimension": "RX",
+      "stratum": "8"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 218,
+      "correct": 217,
+      "precision": 99.54128440366972,
+      "corrected": 4,
+      "broken": 0,
+      "net_correct": 4,
+      "dimension": "day",
+      "stratum": "1"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 253,
+      "correct": 251,
+      "precision": 99.2094861660079,
+      "corrected": 1,
+      "broken": 0,
+      "net_correct": 1,
+      "dimension": "day",
+      "stratum": "2"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 249,
+      "correct": 245,
+      "precision": 98.39357429718875,
+      "corrected": 1,
+      "broken": 0,
+      "net_correct": 1,
+      "dimension": "day",
+      "stratum": "3"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 6,
+      "correct": 6,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "TX",
+      "stratum": "0"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 226,
+      "correct": 225,
+      "precision": 99.5575221238938,
+      "corrected": 1,
+      "broken": 0,
+      "net_correct": 1,
+      "dimension": "TX",
+      "stratum": "1"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 1,
+      "correct": 1,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "TX",
+      "stratum": "2"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 442,
+      "correct": 436,
+      "precision": 98.64253393665159,
+      "corrected": 5,
+      "broken": 0,
+      "net_correct": 5,
+      "dimension": "TX",
+      "stratum": "3"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 36,
+      "correct": 36,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "TX",
+      "stratum": "4"
+    },
+    {
+      "method": "PLAnchor",
+      "certified": 9,
+      "correct": 9,
+      "precision": 100.0,
+      "corrected": 0,
+      "broken": 0,
+      "net_correct": 0,
+      "dimension": "TX",
+      "stratum": "5"
+    }
+  ],
+  "source_manifest": {
+    "run_id": "20261026-analysis-PAMF-NoSIG-RawAnchor-labels-r01",
+    "source_role": "V",
+    "records": 27000,
+    "model_seed": 2026092701,
+    "data_status": "VALIDATED_ONCE source roles reused; existing physical order matched",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "upstream_runs": {
+      "controls": "20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01",
+      "adapted_labeler": "20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01",
+      "original_hard_pool": "20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01"
+    },
+    "upstream_audits": [
+      "automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-RGPL-base-source-m2-r01/complete_evidence.json",
+      "automation_reports/CV-SincNet/20261026-phase1-PAMF-NoSIG-RestorationLabeler-source-m2-r01/complete_evidence.json",
+      "automation_reports/CV-SincNet/20261026-diagnostic-PAMF-NoSIG-RGPL-sourceGraph-m1-r01/complete_evidence.json"
+    ],
+    "new_model_forwards": 0,
+    "IQ_reads": 0,
+    "U_truth_read": false,
+    "target_reads": 0,
+    "checkpoint_reads": 0,
+    "role_note": "Only frozen source V raw logits, original hard-pool predictions, visible source truth and domains; no IQ,weights,U or target arrays."
+  },
+  "U_truth_read": false,
+  "target_reads": 0,
+  "IQ_reads": 0,
+  "new_model_forwards": 0,
+  "new_training": false,
+  "automatic_student_launch": false,
+  "scope": "Fixed source posterior complementarity only; no target or U precision claim"
+}

@@ -178,7 +178,7 @@ def train(c):
         target_access=False,U_truth_read=False,head_fit_updates=0,signature_parameters=0,seconds=time.perf_counter()-start,source_diagnostic_only=True))
 
 
-def source_evaluate(c):
+def source_evaluate(c,validator=None):
     import numpy as np
     import torch
     from experiments.cric_dura_comparison.frozen_inference import reader_from_payload,load_G
@@ -187,7 +187,7 @@ def source_evaluate(c):
     from experiments.pamf_repl_completion.source import reader_structure
     from experiments.pamf_stage2_inference.engine import InferenceEngine
     from .restored_source import source_channel
-    validate_config(c);source=Path(c['output_root']);done=read(source/'complete.json');contract=read(c['source_contract'])
+    (validator or validate_config)(c);source=Path(c['output_root']);done=read(source/'complete.json');contract=read(c['source_contract'])
     if done['config']!=c or done['epoch']!=50 or done['updates']!=11100:raise ValueError('Complete own NoSIG control required')
     cp=torch.load(source/'final_ssdg.pth',map_location='cpu',weights_only=False);check_state(cp)
     with reader_structure(c):model=reader_from_payload(c,cp,'cuda:0')

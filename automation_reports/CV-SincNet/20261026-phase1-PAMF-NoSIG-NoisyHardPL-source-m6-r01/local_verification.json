@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "focused_test_command": "python -X utf8 -m unittest tests.test_pamf_noisy_hard_loss tests.test_pamf_noisy_hard_source tests.test_pamf_nosig_rgpl_base",
+  "focused_tests_passed": 12,
+  "local_compile": "PASS",
+  "registry_launch_ready_fields": "VALID",
+  "independent_P0P1_review": {
+    "reviewer": "ssl_p0p1_review",
+    "verdict": "PASS",
+    "findings": [],
+    "scope": "Only direct next-run legality, correctness, destruction, launchability and prediction defects; not scientific success."
+  },
+  "real_checkpoint_smoke": "first cache and shared backward steps; not yet executed for this run",
+  "student_source_performance": "not measured",
+  "target_performance": "not measured"
+}

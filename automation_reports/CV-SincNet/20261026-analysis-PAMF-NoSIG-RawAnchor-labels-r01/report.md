@@ -1,29 +1,23 @@
-# 冻结NoSIG监督与普通PL锚点核对原始IQ适配标签
+# 冻结 NoSIG raw 标签锚点：完整源分析
 
-- run_id：`20261026-analysis-PAMF-NoSIG-RawAnchor-labels-r01`
-- group_id：`pamf-nosig-raw-label-source-20261026`；类别：`analysis`；阶段：`Phase1`
-- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+**ANALYZED，两个固定候选均失败，不启动相应学生。** 单seed、源V27000的既有冻结预测；新增模型／checkpoint／IQ／U真值／target读取均0。执行代码`a02c6e5a4f21b9d96c5fc8e4f614f863eea136ef`。
 
-## 目的与对照
+原NoSIG E30 confidence<.95困难池2326条，所有方法都保持.95阈值，不按结果调参。
 
-仅现成源V原始IQ logits；RawLabeler分别与Sup50/PL50共同认证原E30困难池，固定阈值和质量条件；无新模型、IQ、U真值或target读取。
+| 标签来源 | 认证 | 正确 | precision | 纠正 | 引错 | 净纠正 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| RawLabeler | 1329 | 1247 | 93.829947% | 123 | 38 | +85 |
+| 完整监督单独 | 381 | 378 | 99.212598% | 2 | 0 | +2 |
+| 普通PL单独 | 803 | 787 | 98.007472% | 7 | 0 | +7 |
+| RawLabeler＋监督锚点 | 342 | 342 | 100.000000% | 1 | 0 | +1 |
+| RawLabeler＋PL锚点 | 720 | 713 | 99.027778% | 6 | 0 | +6 |
 
-## 数据、seed与模型来源
+监督锚点满足覆盖／precision，但未满足净纠正≥100；PL锚点还未满足precision≥99.5%。不能以100%宣布标签路线成功，也不继续加教师或改阈值直到过线。高置信交叉确认主要保留原本已经判对的低置信记录，没有保留足够的新增纠错。
 
-实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
-逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+不同模型仍有互补：困难池中RawLabeler单独判对、监督锚点判错176条，反向139条；二者共同错且同类300条。与PL锚点对应为212／122／318。既有标签质量与相关错误都很明确，不从一致性推断独立证据。
 
-## 执行与存储
+输入收集核对原source V物理顺序、27000×6 raw logits和可见源标签，原始模型来源已经完成全日志／CP核实。四项局部数学／权限检查通过；所有候选预测先固定，再作源质量算术。源V已经用于研发，这不是新独立盲测，更不是U精度或目标性能。
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+后续可改为明确处理噪声标签的独立方法：RawLabeler的93.83%源代理标签不改称可信标签，用有界损失控制错误梯度，并设置同标签普通CE、仅raw和额外raw／G视图匹配对照。那是不同损失假设，不能追溯把本次失败门槛降低或改成通过；原学生E50与三种子实际目标继续保持。
 
-## 结果与覆盖
-
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
-
-## 交接
-
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+[预登记](preregistration.md)、[完整证据](complete_evidence.json)、[标签质量](source_label_quality.csv)、[全部分层](source_quality_cells.csv)、[错误重叠](source_error_overlap.csv)。
