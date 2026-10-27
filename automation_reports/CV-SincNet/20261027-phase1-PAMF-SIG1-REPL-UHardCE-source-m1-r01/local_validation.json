@@ -1,0 +1,16 @@
+{
+  "status": "LOCAL_CHECKS_AND_ONE_P0P1_PASS",
+  "focused_tests": 5,
+  "tests": "tests.test_pamf_u_hard_ce",
+  "compile": "PASS",
+  "independent_review": {
+    "reviewer": "/root/ssl_p0p1_review",
+    "verdict": "PASS",
+    "scope": "new independent U hard-CE source candidate, direct P0/P1 only",
+    "finding": "No direct P0/P1 in linear delta sign, six-view doses, RXTX weights, retained L/KL/crossRX or launch chain"
+  },
+  "real_checkpoint_smoke": "NOT_YET_EXECUTED; first step actual ownE20 jointL/U backward then immediate continuation on PASS",
+  "source_only": true,
+  "new_GPU_launches": 0,
+  "target_reads": 0
+}
