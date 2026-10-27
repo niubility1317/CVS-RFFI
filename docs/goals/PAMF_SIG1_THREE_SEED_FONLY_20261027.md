@@ -51,3 +51,5 @@ PM三seed完整ANALYZED：clean84.542857%、六景70.569180%，相对普通PL �
 A实际三seed已训练：各自E20新12批校准与native checkpoint/sourceL2均PASS，alpha0.092806/0.100505/0.089225，H源中位参考10%、raw约0.44%至0.60%；0校准optimizer/V/target。真实PID/CWD/argv/UID/GPU与日志增长已核实，H硬锚/拒绝fallback非零、双类恒0；原PM完成后才接续，未从其目标结果改配方。当前仍无A性能结论，原目标active。
 
 A三seed E20→E30完整6660步/30模型epoch与U10遍/每RX-H/原PL门控已核验，双类恒0，继续E50。独立AL三seed已LOCAL_VERIFIED：仅现有64L RX视图改为真实TX CE(LS.01)并启用梯度，A的全部U损失和同分母归一化保持；L输入明确为raw/nativeAs而非卫星H。17检查/6编译/唯一P0P1PASS，自原E20新12源批联合校准并记L/U分量，等整个A完成；尚未新AL GPU/实际smoke，原目标active。
+
+AL三seed已发布CPU等待队列，执行e52deb10c235667db76a03af3444d5415e209264，archive/remotecompile和实际PID/CWD/argv/UID/日志状态增长VERIFIED；12job均排队、0新GPU。等待整个A完成，首GPU时才测真实E20联合L/U梯度/nativecheckpoint，不复制旧检查。现有A继续原健康训练与自动测试，原目标active。

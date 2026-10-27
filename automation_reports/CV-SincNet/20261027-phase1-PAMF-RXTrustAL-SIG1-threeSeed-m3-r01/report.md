@@ -1,6 +1,6 @@
 # RXTrust-AL：给现有 L 接收响应视图加入真实身份锚
 
-状态：PLANNED，尚未发布、真实AL checkpoint检查或训练。三个固定seed2026092701/02/03，方案在任何A目标分数读取前固定；等待整个A完成后执行，不按其分数决定运行。既有PL/Sup和届时完成的A直接复用，不重训或重测控制，不操作另一聊天。
+状态：QUEUED_VERIFIED_NEURAL_NOT_STARTED。独立CPU等待控制器已核实PID/CWD/argv/UID及日志/状态增长，12项job排队，0新GPU；实际AL checkpoint/联合梯度校准和训练尚未开始。固定3seed2026092701/02/03，在任何A目标分数读取前提交并发布；整个A完成后自动执行，不按其分数决定运行。已有PL/Sup/A控制复用，当前A健康配置保持。
 
 这是对用户“L与U是否应该同样优化”的具体检验。当前A的额外64条L只计算停止梯度的软KL；真实TX没有进入该新增分支。AL保留原fullT1 L和A全部U目标，只将这64条现有RX扰动L视图的新增目标换成真实TX CE，沿用原LS0.01并启用其梯度。原L监督不替换或削弱，U仍无TX真值。
 
@@ -21,3 +21,5 @@
 本地17项检查PASS（AL核心/队列7、完整结果3、A默认行为回归7），6模块编译PASS；本候选唯一一次独立P0/P1审查PASS。实际AL E20联合梯度和native checkpoint smoke仍PENDING_FIRST_GPU，不能用本地测试或A旧PASS替代。共享Max两个hook的默认softKL/停止L梯度行为逐值与梯度回归相同，当前A在旧不可变release运行，不受本地修改影响。见local_verification.json。
 
 计算边界：AL每个新增更新都给原64条L分支增加反向传播，共6660个L反向批/model；前向包数匹配不代表总FLOPs或时延相同。最终同时报告真实训练秒数和源校准秒数，不能将“0额外F前向”写成训练免费。
+
+执行commit `e52deb10c235667db76a03af3444d5415e209264` 已提交推送并独立核对上游OID；单archive传输校验VERIFIED，remote compile PASS，普通账号一次preflight核实独占root/三个原scratchE20同契约/已有fullU bank。实际CPU控制器与等待状态增长已核实，当前0新GPU/校准F/optimizer/target。AL真实jointL/U梯度和native checkpoint smoke仍在首GPU阶段等待，未将本地检查或旧A PASS当作本版实际检查。见launch_verification.json。
