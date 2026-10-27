@@ -1,18 +1,37 @@
 {
+  "schema": "pamf_current_method_v2",
   "method_name": "PAMF",
-  "semi_supervised_method": "ordinary_PL",
-  "display_name": "PAMF（普通伪标签）",
-  "status": "SINGLE_VIEW_PAPER_REPRODUCTION_PAUSED_USER_PRIORITY",
+  "semi_supervised_method": "pamf_tri_sig_time_ssl",
+  "display_name": "PAMF（Tri-SIG-TIME SSL）",
+  "status": "METHOD_FIXED_NO_NEW_EXPERIMENT",
   "decision_date": "2026-10-27",
-  "decision": "用户指定单视图PAMF为默认结构，普通PL保持；主比较改为匹配单视图，分支纯CE监督/半监督均重做；可读学术命名。",
-  "scope": "Current paper and future experiment method selection; historical frozen configurations and other owners remain unchanged.",
-  "source_registry_run": "20261027-phase1-pamf-single-view-paper-m120-r01",
-  "source_matrix_method": "main/pl",
-  "model_seeds": [
+  "decision": "用户最新固定三视图SIG-TIME；完整PAMF采用原版REPL加固定局部时序重排，命名Tri-SIG-TIME SSL；网络比较仅纯CE监督；监督版不变，普通PL仅增加0.95伪标签。",
+  "scope": "current paper definitions and later user-selected supplements; historical frozen outputs unchanged",
+  "architecture": {
+    "signature_views": 3,
+    "arm": "SIG_TIME_X3",
+    "six_class_deployment_parameters": 232993,
+    "signature_parameters": 55968,
+    "embedding_dimension": 160,
+    "default_head_joint": true,
+    "reference_and_PA_retained": true,
+    "full_method_temporal_order": "fixed local permutation",
+    "control_temporal_order": "original unless explicitly ablated"
+  },
+  "ssl_definition_ref": "configs/pamf_ssl_trisigtime.json",
+  "source_registry_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "source_matrix_method": "three-view rows only",
+  "existing_evidence_model_seeds": [
     2026092701,
     2026092702,
-    2026092703
+    2026092703,
+    2026092704,
+    2026092705,
+    2026092706,
+    2026092707,
+    2026092708
   ],
+  "future_experiment_seed_budget": "fixed per user-selected supplementary matrix; do not automatically expand all experiments to eight seeds",
   "target_based_single_seed_selection": false,
   "training": {
     "epochs": 50,
@@ -22,182 +41,153 @@
       10,
       20
     ],
-    "labeled_only_epochs": 13,
-    "joint_LU_epochs": 37,
     "L_batch": 128,
     "U_batch": 256,
-    "L_packet_forward_evaluations_per_update": 768,
-    "L_label_smoothing": 0.01,
-    "default_head_joint": true,
+    "L_only_epochs": 13,
+    "ordinary_PL_joint_epochs": [
+      14,
+      20
+    ],
+    "full_REPL_joint_epochs": [
+      21,
+      50
+    ],
+    "L_objective": "Original full supervised scaffold unchanged; cross-RX contrast, paired ordinary/raw KL, As true CE with As KL0, LS.01",
+    "EMA": false,
+    "native_U_gate": false,
     "posthoc_head_fit": false
   },
   "pseudo_labels": {
-    "generator": "current_model_eval_no_grad",
+    "generator": "current_student_eval_no_grad",
     "threshold": 0.95,
-    "weight": 1.0,
-    "label_smoothing": 0.0,
+    "weight": 6.0,
+    "label_smoothing": 0.01,
     "reduction": "whole_U_batch_mean",
     "EMA_teacher": false,
     "native_complex_gate": false,
     "U_truth_hidden": true,
-    "style_perturbation": false,
-    "gradient_projection": false,
-    "U_joint_contrast": false,
-    "receiver_extrapolation": false
+    "style_perturbation": true,
+    "gradient_projection": true,
+    "U_joint_contrast": true,
+    "receiver_extrapolation": true,
+    "applies_to": "full REPL stage E21-E50; E14-E20 ordinary PL prefix"
+  },
+  "variants": {
+    "network_CE": {
+      "display_name": "PAMF-CE",
+      "purpose": "network architecture comparison and structural ablation",
+      "L_objective": "true-label CE only; registered L augmentation CE allowed",
+      "L_label_smoothing": 0.0,
+      "U_use": false,
+      "U_loader": false,
+      "EMA": false,
+      "pseudo_labels": false,
+      "CRIC": false,
+      "paired_KL": false,
+      "U_entropy": false,
+      "temporal_order": "original unless explicitly ablated",
+      "default_head_joint": true,
+      "augmentation": "retain each explicitly registered L-only augmentation contract; no U or hidden TX labels",
+      "historical_channel_slot_CE_weight": 0.68
+    },
+    "supervised": {
+      "display_name": "PAMF-Sup",
+      "purpose": "supervised main-method control",
+      "L_objective": "unchanged full supervised scaffold",
+      "L_label_smoothing": 0.01,
+      "CRIC_cross_RX": true,
+      "ordinary_raw_paired_KL": true,
+      "As_true_label_CE": true,
+      "As_KL": 0.0,
+      "U_use": false,
+      "U_loader": false,
+      "EMA": false,
+      "temporal_order": "original",
+      "posthoc_head_fit": false
+    },
+    "ordinary_PL": {
+      "display_name": "PAMF-PL",
+      "inherits": "PAMF-Sup",
+      "only_added_mechanism": "ordinary confidence pseudo-label CE",
+      "threshold": 0.95,
+      "weight": 1.0,
+      "pseudo_label_smoothing": 0.0,
+      "reduction": "whole_U_batch_mean",
+      "U_use": true,
+      "U_batch": 256,
+      "U_start_epoch": 14,
+      "current_student_eval_no_grad": true,
+      "U_truth_hidden": true,
+      "EMA": false,
+      "native_complex_gate": false,
+      "U_MixStyle": false,
+      "U_gradient_projection": false,
+      "U_joint_contrast": false,
+      "receiver_extrapolation": false,
+      "temporal_order": "same original order as PAMF-Sup"
+    },
+    "full": {
+      "display_name": "PAMF",
+      "semi_supervised_name": "Tri-SIG-TIME SSL",
+      "definition_ref": "configs/pamf_ssl_trisigtime.json",
+      "U_use": true,
+      "temporal_order": "fixed local permutation"
+    }
+  },
+  "branch_ablation": {
+    "signature_views": 3,
+    "objective": "true-label CE only",
+    "U_use": false,
+    "U_loader": false,
+    "EMA": false,
+    "CRIC": false,
+    "paired_KL": false,
+    "semi_supervised_panel": false,
+    "matrix": "not expanded or launched in this decision"
   },
   "restoration": {
     "display_name": "DURA",
     "architecture_reference": "experiments/pamf_stage2_inference/frozen_version.json",
-    "matched_semisupervised_role": "DURA-LU",
+    "separate_from_classifier_definition": true,
+    "current_full_method_pairing_tested": false,
     "new_training_in_this_change": 0,
-    "matched_supervised_role": "DURA-L"
+    "historical_pairings": "retain exact original F/G semantics; no automatic relabel to current PAMF"
   },
   "reports": {
-    "current_comparison": "docs/PAMF_SINGLE_VIEW_PAPER_20261027.md",
-    "grouping_rules": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md",
-    "historical_method_definition": "docs/PAMF_REPL.md",
-    "current_reproduction": "docs/PAMF_SINGLE_VIEW_PAPER_20261027.md",
-    "historical_three_view_comparison": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md",
-    "repl_shuffled_view_results": "automation_reports/CV-SincNet/20261027-phase1-pamf-repl-shuffled-views-m16-r02/results_analysis.md"
+    "current_definition": "docs/PAMF_METHOD_DEFINITION_20261027.md",
+    "historical_20261025": "docs/PAMF_CURRENT_METHOD_20261025.md",
+    "historical_single_view_plan": "docs/PAMF_SINGLE_VIEW_PAPER_20261027.md",
+    "current_direct_evidence": "automation_reports/CV-SincNet/20261027-phase1-pamf-repl-shuffled-views-m16-r02/results_analysis.md"
   },
   "reporting": {
-    "main_display_columns": [
-      "RIEI",
-      "DRIFT",
-      "IB-RFF",
-      "SDG",
-      "PAMF",
-      "PAMF+DURA"
-    ],
-    "external_default_readout": "raw",
-    "PAMF_display_readouts": {
-      "supervised": {
-        "PAMF": "raw",
-        "PAMF+DURA": "DURA-L"
-      },
-      "ordinary_PL_semi_supervised": {
-        "PAMF": "raw",
-        "PAMF+DURA": "DURA-LU"
-      }
-    },
-    "external_DURA_section": "restorer_generality_only",
-    "supervised_PAMF_section": "supervised_main_comparison",
-    "no_channel_augmentation": {
-      "views": [
-        "clean"
-      ],
-      "populations": [
-        "cross_rx",
-        "cross_both"
-      ]
-    },
-    "channel_augmentation_on": {
-      "views": [
-        "clean",
-        "practical_high",
-        "practical_mid",
-        "practical_low_suburban",
-        "practical_high_urban",
-        "practical_mid_urban",
-        "practical_low_urban"
-      ],
-      "source_unseen_date": "separate_diagnostic"
-    },
-    "historical_predictions_preserved": true,
-    "primary_grouping": "user_priority_experiment_question",
-    "main_regimes": [
-      "supervised",
-      "ordinary_PL_semi_supervised"
-    ],
-    "external_main_cells": {
-      "supervised": "C",
-      "ordinary_PL_semi_supervised": "D"
-    },
-    "performance_chart_type": "vertical_columns_with_explicit_learning_regime_and_test_population",
-    "restoration_chart_type": "paired_without_DURA_with_DURA",
-    "main_learning_comparison": "paired_supervised_vs_ordinary_PL_without_and_with_channel_augmentation",
-    "other_priority_learning_regime": "ordinary_PL_semi_supervised_with_channel_augmentation",
-    "source_count_curve": {
-      "counts": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "five_source_models": "same_seed_main_experiment_models",
-      "display_target_receivers": [
-        0,
-        2,
-        5,
-        7,
-        9,
-        10
-      ],
-      "five_source_scoring": "aggregate_already_frozen_receiver_counts; no new predictions",
-      "views": [
-        "clean",
-        "six_practical_mean"
-      ],
-      "chart": "two_separate_line_figures_per_test_population",
-      "joint_common_packets_per_scene": 36000
-    },
-    "restoration_generality_methods": [
-      "RIEI",
-      "DRIFT",
-      "IB-RFF",
-      "SDG",
+    "variant_names": [
+      "PAMF-CE",
+      "PAMF-Sup",
+      "PAMF-PL",
       "PAMF"
     ],
-    "PAMF_no_channel_ordinary_PL_status": "new matching single-view controls registered; no result until frozen scoring",
-    "PAMF_color": "#C4364E",
-    "PAMF_with_DURA_color": "#E29525",
-    "independent_test_populations": {
-      "cross_rx": "target receivers; 2021-03-08/15/23",
-      "cross_both": "target receivers; 2021-03-01; earlier unseen date",
-      "separate_figure_and_table_per_experiment": true,
-      "source_unseen_date_is_separate_diagnostic": true,
-      "no_population_pooling": true,
-      "new_training_prediction_or_truth_scoring": 0
-    }
+    "main_full_method": "PAMF",
+    "ssl_method_name": "Tri-SIG-TIME SSL",
+    "network_comparison": "CE-only supervised, L_s only; no U_s",
+    "learning_comparison": [
+      "PAMF-Sup",
+      "PAMF-PL",
+      "PAMF"
+    ],
+    "data_names_reference": "configs/pamf_paper_names.json",
+    "separate_populations": [
+      "cross_rx",
+      "cross_both"
+    ],
+    "source_unseen_date": "separate diagnostic",
+    "combined_168000_view": "additional explicitly labeled aggregate only",
+    "historical_results_preserved": true,
+    "old_REPL_without_permutation_is_current_full_method": false
   },
-  "scientific_execution": {
-    "new_60_main_models": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
-    "F0_ordinary_PL_exact_reuse": "a462b7cf4c12a655e6c7a348ce2170a089f2d1cc",
-    "CPU_score_recovery": "a79bdf385489cb3822b37434a07e3c43e5ce839a",
-    "single_view_paper": "04ad92212f449fb57a024ec9109b385a81a2e45b"
+  "prior_runs": {
+    "completed_structure_comparison": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "paused_single_view_PL": "20261027-phase1-pamf-single-view-paper-m120-r01",
+    "paused_single_view_PL_auto_resume": false
   },
-  "architecture": {
-    "signature_views": 1,
-    "arm": "SIG_TIME",
-    "six_class_deployment_parameters": 196001,
-    "signature_parameters": 18976,
-    "embedding_dimension": 160,
-    "default_head_joint": true,
-    "reference_and_PA_retained": true
-  },
-  "names_reference": "configs/pamf_paper_names.json",
-  "previous_three_view_results": "Historical frozen results; do not relabel as current single-view results",
-  "branch_ablation": {
-    "signature_views": 1,
-    "objective": "L CE + .68 channel-slot CE; plus ordinary PL CE only in semi-supervised rows",
-    "L_label_smoothing": 0.0,
-    "CRIC": false,
-    "paired_KL": false,
-    "EMA": false,
-    "structures": 8,
-    "model_seeds": [
-      2026092701,
-      2026092702,
-      2026092703
-    ]
-  },
-  "active_priority_experiment": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
-  "priority_order": [
-    "Three signature views + REPL + Shuffled temporal order",
-    "Single signature view + REPL + Shuffled temporal order"
-  ],
-  "ordinary_PL_automatic_resume": false,
-  "active_priority_status": "REPL_SHUFFLED_VIEW_COMPARISON_ANALYZED"
+  "new_experiment_launched": false
 }

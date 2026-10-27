@@ -1,0 +1,33 @@
+{
+  "status": "METHOD_DEFINITION_FIXED",
+  "method": "Tri-SIG-TIME SSL",
+  "paper_name": "PAMF",
+  "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "source_rows": [
+    "main_split-repl-shuffled_time-3view-s2026092701",
+    "main_split-repl-shuffled_time-3view-s2026092702",
+    "main_split-repl-shuffled_time-3view-s2026092703",
+    "main_split-repl-shuffled_time-3view-s2026092704",
+    "main_split-repl-shuffled_time-3view-s2026092705",
+    "main_split-repl-shuffled_time-3view-s2026092706",
+    "main_split-repl-shuffled_time-3view-s2026092707",
+    "main_split-repl-shuffled_time-3view-s2026092708"
+  ],
+  "architecture_views": 3,
+  "method_definition": "docs/PAMF_METHOD_DEFINITION_20261027.md",
+  "network_comparison": "CE only; no U",
+  "supervised": "unchanged prior full L scaffold",
+  "ordinary_PL": "supervised + threshold.95 hard-pseudo CE only",
+  "temporal_order": {
+    "supervised": "original",
+    "ordinary_PL": "original",
+    "full_PAMF": "fixed local permutation"
+  },
+  "new_training": 0,
+  "new_prediction": 0,
+  "new_scoring": 0,
+  "new_DURA": 0,
+  "actual_matrix_unchanged": true,
+  "adoption_after_results_visible": true,
+  "historical_method_identity_preserved": true
+}

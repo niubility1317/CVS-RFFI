@@ -29,7 +29,11 @@
 
 后续旧产物专项清点（无新增删除）见[归档去重与缓存候选](docs/project_governance/20261012_remaining_audit/REPORT.md)。
 
-## 当前 PAMF 与外部方法对比（2026-10-25）
+## 当前 PAMF 方法定义（2026-10-27，最新）
+
+[当前方法与名称](docs/PAMF_METHOD_DEFINITION_20261027.md)：默认三视图SIG-TIME；完整方法PAMF采用Tri-SIG-TIME SSL。PAMF-CE仅有标签纯CE，PAMF-Sup保持原监督机制，PAMF-PL只增加0.95普通伪标签。后续补充由用户指定，本次无新实验。
+
+## 历史 PAMF 与外部方法对比（2026-10-25）
 
 [14 页 PAMF 网络分支消融报告](docs/PAMF_BRANCH_ABLATION_REPORT_20261025.md)：仅分类损失监督训练，9 种结构、27 个模型；含逐景结果、同种子配对、参数、实测时延及论文可用结论。
 

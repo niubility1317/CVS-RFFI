@@ -1,0 +1,177 @@
+{
+  "schema": "pamf_tri_sig_time_ssl_v1",
+  "method_id": "pamf_tri_sig_time_ssl",
+  "display_name": "Tri-SIG-TIME SSL",
+  "chinese_name": "三视图 SIG-TIME 时序重排半监督学习",
+  "english_name": "Tri-view SIG-TIME Semi-Supervised Learning with Fixed Temporal Permutation",
+  "paper_main_name": "PAMF",
+  "legacy_alias": "Three-view REPL + SHUFFLE_TIME",
+  "effective_date": "2026-10-27",
+  "architecture": {
+    "signature_views": 3,
+    "signature_mode": "SIG_TIME_X3",
+    "temporal_permutation": [
+      0,
+      5,
+      3,
+      6,
+      2,
+      1,
+      4,
+      7
+    ],
+    "permutation_seed": 2026102207,
+    "temporal_scope": "local feature windows only; not raw IQ or global sample/pseudolabel reassignment",
+    "window_count": 4,
+    "window_length": 8,
+    "local_projection": [
+      96,
+      6
+    ],
+    "descriptor_per_window": 28,
+    "descriptor_width_each_view": 112,
+    "concatenated_width": 336,
+    "output_embedding": 160,
+    "default_head_joint": true,
+    "six_class_parameters": 232993,
+    "signature_parameters": 55968
+  },
+  "source_permissions": {
+    "L_s": "visible TX labels",
+    "U_s": "IQ and permitted source RX only; TX hidden",
+    "V": "non-updating validation",
+    "target": "frozen prediction only; independent truth-last"
+  },
+  "training": {
+    "epochs": 50,
+    "updates": 11100,
+    "trajectory": [
+      20,
+      10,
+      20
+    ],
+    "L_batch": 128,
+    "U_batch": 256,
+    "L_only_epochs": 13,
+    "ordinary_PL_joint_epochs": [
+      14,
+      20
+    ],
+    "full_REPL_joint_epochs": [
+      21,
+      50
+    ],
+    "L_objective": "Original full supervised scaffold unchanged; cross-RX contrast, paired ordinary/raw KL, As true CE with As KL0, LS.01",
+    "EMA": false,
+    "native_U_gate": false,
+    "posthoc_head_fit": false
+  },
+  "frozen_REPL_recipe": {
+    "hard_pl": {
+      "threshold": 0.95,
+      "weight": 6.0,
+      "teacher": "current_student_eval_no_update",
+      "hard_targets": true,
+      "EMA": false,
+      "prototype": false,
+      "U_truth": false,
+      "start_epoch": 21,
+      "default_head_joint": true,
+      "ordinary_noise_std": 0.015,
+      "T1_U_CE_normalizer": 1.25,
+      "LS": 0.01,
+      "ordinary_raw_KL": 1.0,
+      "As_KL": 0.0,
+      "contrast_weight": 0.1,
+      "contrast_levels": [
+        "time_down",
+        "t2.pool"
+      ],
+      "contrast_only_accepted": true,
+      "physical_fraction": 0.5,
+      "contrast_same_pseudo_different_RX": true,
+      "method": "HPLT1U"
+    },
+    "hard_pl_no_uas": true,
+    "hard_pl_mixstyle": {
+      "levels": [
+        "time_down",
+        "t2.pool"
+      ],
+      "alpha": 0.1,
+      "probability_per_level": 0.5,
+      "eps": 1e-06,
+      "accepted_only": true,
+      "same_hard_pseudo": true,
+      "different_source_RX": true,
+      "detached_moments": true
+    },
+    "hard_pl_shared_style_plan": true,
+    "hard_pl_gradient_guard": {
+      "weight": 6.0,
+      "projection": "one_sided_per_group",
+      "groups": [
+        "t2",
+        "cls_head",
+        "other"
+      ],
+      "U_to_L_norm_cap": 1.0,
+      "tiny_L_squared_norm": 1e-12,
+      "anchor": "complete_current_L_objective",
+      "optimizer": "unchanged_native_Adam",
+      "extra_teacher_or_student_forward": false
+    },
+    "hard_pl_joint_contrast": {
+      "feature": "actual_CompositeReference_features_joint160",
+      "weight": 0.05,
+      "CE_normalizer": 1.25,
+      "student_views": "first_two_ordinary_U_passes",
+      "accepted_only": true,
+      "positive": "same_pseudo_different_source_RX",
+      "contrast": "same_native_CROSS_RX_temperature0.2",
+      "extra_forward": false,
+      "new_head": false
+    },
+    "hard_pl_receiver_extrapolation": {
+      "feature": "actual_CompositeReference_features_joint160",
+      "alpha": 0.25,
+      "ordinary_CE_coefficient_before": 0.5,
+      "ordinary_CE_coefficient": 0.25,
+      "extrapolated_CE_coefficient": 0.25,
+      "CE_normalizer": 1.25,
+      "label_smoothing": 0.01,
+      "student_views": "first_two_ordinary_U_passes",
+      "partner": "reuse_same_shared_six_U_style_partner_and_valid",
+      "invalid_partner": "original_CE_no_delta_no_sample_drop",
+      "extra_existing_head_calls": 2,
+      "extra_backbone_forwards": 0,
+      "new_head": false
+    }
+  },
+  "evidence": {
+    "run_id": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "row_condition": "view_comparison.view_count == 3",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704,
+      2026092705,
+      2026092706,
+      2026092707,
+      2026092708
+    ],
+    "readout": "raw",
+    "data_setting": "Main split",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d",
+    "checkpoint_rule": "Use all eight fixed-final models; no target-based single-seed selection",
+    "clean_mean_percent": 86.63065476190476,
+    "clean_sample_sd_percent": 1.0081831322002581,
+    "six_scene_mean_percent": 70.85770089285714,
+    "six_scene_sample_sd_percent": 0.49898745505515874,
+    "DURA_pairing_tested": false,
+    "adoption_after_results_visible": true
+  },
+  "no_new_experiment": true,
+  "historical_runs_weights_and_metrics_unchanged": true
+}

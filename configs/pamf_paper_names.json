@@ -1,5 +1,5 @@
 {
-  "schema": "pamf_paper_names_v1",
+  "schema": "pamf_paper_names_v2",
   "effective_date": "2026-10-27",
   "data_settings": {
     "F0": {
@@ -60,8 +60,9 @@
   },
   "structures": {
     "full": {
-      "english": "Full PAMF",
-      "chinese": "完整单视图 PAMF"
+      "english": "Tri-view SIG-TIME backbone",
+      "chinese": "三视图 SIG-TIME 骨干",
+      "note": "Architecture label; full learning method PAMF is named separately"
     },
     "no_time": {
       "english": "w/o Time coordinate",
@@ -94,12 +95,26 @@
   },
   "derived_five_source": "5 source receivers (Main model; common target receivers)",
   "regimes": {
-    "supervised": "Supervised",
-    "pl": "Semi-supervised (PL)"
+    "ce": "CE-only (labeled source only)",
+    "supervised": "PAMF-Sup",
+    "pl": "PAMF-PL",
+    "full": "PAMF (Tri-SIG-TIME SSL)"
   },
   "families": {
-    "main": "Main comparison",
-    "branch": "Branch ablation (CE only)"
+    "network": "Network architecture comparison (CE only)",
+    "branch": "PAMF structural ablation (CE only)",
+    "learning": "Learning regime comparison",
+    "main": "Main comparison"
   },
-  "policy": "Use semantic names in new tables/figures and registry display fields. Preserve immutable legacy paths/IDs in provenance only. Historical F1/F2 are distinct from Receiver split 1/2."
+  "policy": "New defaults use tri-view SIG-TIME. Keep semantic data-setting names. Add scoped aliases only; never rewrite immutable legacy outputs or relabel different methods.",
+  "current_definition": "docs/PAMF_METHOD_DEFINITION_20261027.md",
+  "method_names": {
+    "current_full": "PAMF",
+    "current_ssl": "Tri-SIG-TIME SSL",
+    "current_ssl_chinese": "三视图 SIG-TIME 时序重排半监督学习",
+    "current_ssl_english": "Tri-view SIG-TIME Semi-Supervised Learning with Fixed Temporal Permutation",
+    "current_row_scope": "Three-view REPL plus fixed local temporal permutation only",
+    "historical_original_REPL": "REPL with original temporal order",
+    "historical_single_view": "Single-view structure control; not current full PAMF"
+  }
 }

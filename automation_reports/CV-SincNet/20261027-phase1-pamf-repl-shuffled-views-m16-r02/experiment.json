@@ -9,7 +9,8 @@
   "aliases": [
     "Main split",
     "Three signature views + REPL + Shuffled temporal order",
-    "Single signature view + REPL + Shuffled temporal order"
+    "Single signature view + REPL + Shuffled temporal order",
+    "Tri-SIG-TIME SSL (three-view rows only)"
   ],
   "tags": [
     "PAMF",
@@ -1005,5 +1006,23 @@
       "target_feedback_selection"
     ]
   },
-  "registered_at": "2026-10-27T02:55:17+00:00"
+  "registered_at": "2026-10-27T02:55:17+00:00",
+  "paper_method_aliases": {
+    "effective_date": "2026-10-27",
+    "method": "Tri-SIG-TIME SSL",
+    "paper_main_name": "PAMF",
+    "row_condition": "view_comparison.view_count == 3",
+    "rows": [
+      "main_split-repl-shuffled_time-3view-s2026092701",
+      "main_split-repl-shuffled_time-3view-s2026092702",
+      "main_split-repl-shuffled_time-3view-s2026092703",
+      "main_split-repl-shuffled_time-3view-s2026092704",
+      "main_split-repl-shuffled_time-3view-s2026092705",
+      "main_split-repl-shuffled_time-3view-s2026092706",
+      "main_split-repl-shuffled_time-3view-s2026092707",
+      "main_split-repl-shuffled_time-3view-s2026092708"
+    ],
+    "single_view_rows": "retain historical structure-control identity",
+    "definition_ref": "docs/PAMF_METHOD_DEFINITION_20261027.md"
+  }
 }
