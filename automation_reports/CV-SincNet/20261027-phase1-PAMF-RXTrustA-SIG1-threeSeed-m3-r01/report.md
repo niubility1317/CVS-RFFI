@@ -27,3 +27,5 @@
 | 2026092703 | 0.089225469121 | 0.598630 | 10.000000 | 334 | 26386/0/2286 |
 
 以上是实际训练初期快照，非完整曝光或性能结论。三份校准各12新源批/33792计账F包，0optimizer/V/target，参数与buffer保持；系数符合预登记max_rawH_median规则，两种模式中位参考≤10%。H双类字段恒0，拒绝者仍softKL，原PL门控与ramp/尾批计数逐步通过；真实allU/各RX/逐scene完整性仍待E50全部日志核验。见launch_verification.json。
+
+三个seed均已完成E20→E30并继续E50。完整6660新增step/30模型epoch、每模型U56700各10遍、raw/H各283500、H硬锚+fallback合计283500且每RX56700，所有双类计数恒0；原PL门控、4候选最大KL、alpha/ramp、尾批124与source-only权限逐条通过，见first_segment_audit.json。该节点不等于完整E50或性能结论。AL已在A目标读取前固定，当前A健康配方保持。

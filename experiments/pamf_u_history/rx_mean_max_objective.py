@@ -48,6 +48,12 @@ class Objective(MeanObjective):
     def source_U_loss(self,logits,base_prob,mode):
         return soft_loss(logits,base_prob)
 
+    def source_L_loss(self,logits,base_prob,labels,mode):
+        return soft_loss(logits,base_prob)
+
+    def combine_source_losses(self,u,l,nu,nl):
+        return combine(u,l,nu,nl,'U')
+
     def extra(self,student,kwargs):
         if self.L_forwards!=5 or set(self.inputs)!={'H','raw'}:raise ValueError('Original five extra L forwards required')
         call=student._feature_l_steps+self.c.get('step_offset',0)-4440
@@ -69,7 +75,8 @@ class Objective(MeanObjective):
                 shifted=variants[selected,index];selected_styles=styles[selected,index]
             ul=student(shifted);ll=student(lshift)
         finally:student.train()
-        u=self.source_U_loss(ul,up,mode);l=soft_loss(ll,lp);value=combine(u,l,n,64,'U')
+        u=self.source_U_loss(ul,up,mode);l=self.source_L_loss(ll,lp,kwargs['labels'][mask],mode)
+        value=self.combine_source_losses(u,l,n,64)
         if self.c['rx_mean_calibration']:
             self.calibration_nodes=(ul,ll);self.candidates={self.c['paper_method']:value}
         else:self.candidates={}

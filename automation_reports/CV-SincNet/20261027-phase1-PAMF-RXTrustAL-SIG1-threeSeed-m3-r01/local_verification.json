@@ -1,0 +1,29 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "focused_checks": 17,
+  "new_AL_objective_pipeline_checks": 7,
+  "result_checks": 3,
+  "unchanged_A_regressions": 7,
+  "compiled_modules": 6,
+  "independent_P0P1": "PASS",
+  "review_count": 1,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "U_losses_unchanged": true,
+  "U_normalization_unchanged": true,
+  "ordinary_PL_unchanged": true,
+  "full_T1_L_unchanged": true,
+  "L_label_source": "original_L_batch_labels_same_mask",
+  "L_target": "true_TX_CE_LS0.01",
+  "L_base": "original_raw_or_native_As_then_RXstyle;not_satelliteH",
+  "extra_F_packets_over_A": 0,
+  "calibration_actual_checkpoint_smoke": "PENDING_FIRST_GPU_CALIBRATION",
+  "calibration_requires_L_and_U_gradients": true,
+  "calibration_parameters_unchanged_required": true,
+  "sourceV_or_target_used_for_coefficient": false,
+  "active_A_changed": false,
+  "goal_complete": false
+}
