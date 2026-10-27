@@ -1,4 +1,5 @@
 import copy,json,unittest,tempfile
+import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -48,5 +49,14 @@ class MatchingTests(unittest.TestCase):
             with seed_scope():
                 self.assertEqual(fake.original_config(2026092708)['model_seed'],2026092708)
                 self.assertEqual(fake.arguments(dict(model_seed=2026092708),'cpu').seed,2026092708)
+    @unittest.skipUnless(importlib.util.find_spec('torch'),'requires verified project Torch environment')
+    def test_actual_T1_hook_uses_segment_local_step_not_offset(self):
+        from experiments.cric_dura_comparison.t1_model import hook
+        model=SimpleNamespace(training=True,_feature_l_steps=1,_cd_config=dict(ablation='F21',step_offset=4440),_cd_pending=None)
+        kw=dict(model=model,labeled_output=None,labels=None,extra=None,domains=None,optimizer_step=1,identity_loss=None,labeled_count=128,labeled_inputs=None)
+        # Correct local step passes the ordering guard and reaches the IQ check.
+        with self.assertRaisesRegex(ValueError,'Actual ordinary IQ absent'):hook(model,**kw)
+        model._feature_l_steps=4440
+        with self.assertRaisesRegex(ValueError,'Ordered true L128'):hook(model,**kw)
 
 if __name__=='__main__':unittest.main()

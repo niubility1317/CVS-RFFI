@@ -35,3 +35,5 @@ GPU0-7动态剩余容量，一卡至多一个本run训练/预测、全卡总数�
 ## 用户优先级暂停（2026-10-27）
 
 VERIFIED：按用户最新要求，原 dispatcher 及 8 个精确所属 worker 已退出；独立读回存活0、其他owner修改0。所有已完成模型、阶段权重、预测和日志保留，阶段内未保存内存不冒称可逐步恢复。原队列不自动恢复，后续先完成三视图 REPL＋固定时间打乱，再运行单视图匹配组，run `20261027-phase1-pamf-repl-shuffled-views-m16-r01`。登记 STOPPED 对应用户暂停，不是科学或技术失败。
+
+优先REPL对比的首步source smoke计数错误已由新run `20261027-phase1-pamf-repl-shuffled-views-m16-r02` 接替；原普通PL队列继续暂停，无自动恢复。

@@ -15,3 +15,7 @@ GPU0–7动态检查，跳过其他账号或归属未知的整卡；同账号其
 ## 本地验证
 
 5项聚焦测试与编译PASS；唯一独立P0/P1审查PASS。发现新增种子参数模板可能让骨干／默认头仍使用01初始化，已令native runtime配置和args均传入实际seed，完成一次定点复核。真实checkpoint与四组源L/U反向检查为launcher第一步，通过后直接开始矩阵。
+
+## 首步检查失败，未进入训练
+
+VERIFIED：代码 fae3a0d8c24bdc54e1444e59b65a0a5583235cc6 的真实源smoke因段内步数被误设为累计4440，被原T1顺序检查拒绝。新训练0、target读取0、controller及worker均已结束。保留所有输出；同矩阵修复仅删除smoke中的该计数赋值，替代run `20261027-phase1-pamf-repl-shuffled-views-m16-r02` 使用全新root。

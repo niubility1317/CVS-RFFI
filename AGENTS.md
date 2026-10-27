@@ -1,6 +1,6 @@
 ## PAMF REPL 时间打乱对比优先（2026-10-27，用户最新要求）
 
-- 用户指定本轮优先完成三视图＋原版 REPL＋固定时间打乱的整组训练和七景正式评分，然后才启动单视图同方法匹配组；不再按普通 PL 运行本轮。独立 run 为 `20261027-phase1-pamf-repl-shuffled-views-m16-r01`，每组八个配对种子；原默认单视图结构约定仍保留。
+- 用户指定本轮优先完成三视图＋原版 REPL＋固定时间打乱的整组训练和七景正式评分，然后才启动单视图同方法匹配组；不再按普通 PL 运行本轮。独立 run 为 `20261027-phase1-pamf-repl-shuffled-views-m16-r02`，每组八个配对种子；原默认单视图结构约定仍保留。
 - 原单视图普通 PL 论文 run `20261027-phase1-pamf-single-view-paper-m120-r01` 已按用户要求暂停，本 owner 的 dispatcher／八 worker 精确停止，已存产物保留，不自动恢复。其他 owner 健康任务保持。此次仅改变本轮优先级与明确方法，数据和 truth-last 权限保持；配置见 `docs/PAMF_REPL_SHUFFLED_VIEWS_20261027.md`。
 
 ## PAMF 单视图默认与论文命名（2026-10-27，用户最新要求）

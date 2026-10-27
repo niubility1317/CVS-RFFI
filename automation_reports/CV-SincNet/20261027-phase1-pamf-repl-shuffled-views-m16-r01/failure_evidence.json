@@ -1,0 +1,14 @@
+{
+  "status": "VERIFIED",
+  "run_status": "FAILED_NO_QUERY_SMOKE",
+  "fingerprint": "ValueError: Ordered true L128 T1 update required",
+  "layer": "source smoke counter, before first training or target prediction",
+  "training_started": 0,
+  "target_access": 0,
+  "controller_alive": false,
+  "active_workers": 0,
+  "cause": "Smoke set segment-local counter4440 although optimizer_step1 and cumulative offset already in c.step_offset",
+  "fix": "Remove the smoke-only assignment; native local step starts at zero as in original hard_pl_worker smoke",
+  "replacement": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "artifacts_preserved": true
+}

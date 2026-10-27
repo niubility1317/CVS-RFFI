@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-RUN='20261027-phase1-pamf-repl-shuffled-views-m16-r01'
+RUN='20261027-phase1-pamf-repl-shuffled-views-m16-r02'
 RELEASE=RUN+'-release'
 SEEDS=tuple(range(2026092701,2026092709))
 TASKS=('cross_rx','cross_both')

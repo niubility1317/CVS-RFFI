@@ -59,7 +59,7 @@ def smoke(rt):
                     a=f_train.arguments(c,device);a.input_len=256;a.baseline_ckpt=a.teacher_ckpt='';a.from_scratch=a.a1_scratch_only=True
                     if a.seed!=seed or a.use_unlabeled or a.use_ema_teacher:raise ValueError('Actual model seed/native U permissions differ')
                     net=t1_model.install(native.build_baseline_model(a,device),c).to(device)
-                shape=assert_structure(net,c);net.load_state_dict(payload['model'],strict=True);net.train();net._feature_l_steps=4440
+                shape=assert_structure(net,c);net.load_state_dict(payload['model'],strict=True);net.train()
                 net._cd_U_loader=loaders['unlabeled_loader'];net._cd_U_iter=iter(net._cd_U_loader)
                 batch=next(iter(loaders['train_loader']));x,y,d=[v.to(device) for v in batch[:3]]
                 meta={k:v.to(device) if torch.is_tensor(v) else v for k,v in batch[3].items()}

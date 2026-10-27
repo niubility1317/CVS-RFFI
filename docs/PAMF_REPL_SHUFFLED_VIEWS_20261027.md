@@ -49,6 +49,6 @@ L 骨架完整保留：浅中层跨 RX 对比、ordinary/raw 配对 KL、As 两�
 
 N607 物理 GPU0–7 中，任何被其他系统账号 CUDA 进程占用的卡均跳过；归属未知也跳过。其他 owner 的同账号健康进程保留并计入容量。优先每个可用卡一个本轮 worker，然后在全卡总数最多 2、剩余显存至少 12000 MiB 时补第二槽。CPU scorer 最多 1 个。其他用户后续占卡时停止向该卡新派发，不结束其进程。
 
-唯一 run：`20261027-phase1-pamf-repl-shuffled-views-m16-r01`。正式矩阵以该 run 的 `experiment.json` 为准。新输出不可覆盖；普通 PL 原 run 记录为用户暂停，不自动恢复。已完成部分、阶段检查点、部分日志保留；原 final-only 模式下，尚未保存的阶段内内存进度不能按逐步 checkpoint 恢复。
+唯一 run：`20261027-phase1-pamf-repl-shuffled-views-m16-r02`。正式矩阵以该 run 的 `experiment.json` 为准。新输出不可覆盖；普通 PL 原 run 记录为用户暂停，不自动恢复。已完成部分、阶段检查点、部分日志保留；原 final-only 模式下，尚未保存的阶段内内存进度不能按逐步 checkpoint 恢复。
 
 启动状态、代码 commit、smoke、实际 PID/CWD/GPU 和日志增长另见该 run 的运行记录；未完成正式评分前不提供新性能成绩。低分不会触发重跑、删种子、改权重或调参。
