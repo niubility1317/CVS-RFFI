@@ -2,7 +2,7 @@
 from copy import deepcopy
 from experiments.pamf_single_view_paper.plan import PROTOCOLS,TASKS,VIEWS,READOUTS,SEEDS
 
-RUN='20261027-phase1-pamf-paper-completion-m119-r02'
+RUN='20261027-phase1-pamf-paper-completion-m119-r03'
 RELEASE=RUN+'-release'
 CE_VARIANT='pamf_tri_sigtime_ce'
 SSL_KEYS=('hard_pl','hard_pl_no_uas','hard_pl_label_smoothing','hard_pl_mixstyle','hard_pl_shared_style_plan',

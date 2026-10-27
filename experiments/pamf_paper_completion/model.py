@@ -2,6 +2,14 @@
 from contextlib import contextmanager
 from types import MethodType
 
+def source_arguments(original,c,device):
+    a=original(c,device)
+    # The ordinary trainer normally derives this from the data loader before
+    # construction. The standalone no-query smoke constructs the same adapter.
+    a.input_len=256
+    a.use_unlabeled=a.use_ema_teacher=False;a.lambda_u=a.lambda_ent=0.
+    return a
+
 def shuffled_without_time(self,h):
     import torch
     from torch.nn import functional as F
@@ -50,8 +58,7 @@ def installed(c,holder,ssl_enabled=False):
         validate_config(cfg)
         return structure(old_install(net,cfg),cfg['paper_row'],cfg['model_seed'])
     def args(cfg,device):
-        a=old_args(cfg,device);a.use_unlabeled=a.use_ema_teacher=False;a.lambda_u=a.lambda_ent=0.
-        return a
+        return source_arguments(old_args,cfg,device)
     t1_model.install,f_train.arguments=build,args
     try:
         with loader_scope():

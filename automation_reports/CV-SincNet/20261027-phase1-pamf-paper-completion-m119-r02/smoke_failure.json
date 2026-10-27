@@ -1,0 +1,16 @@
+{
+  "status": "FAILED_NO_QUERY_SMOKE",
+  "execution_commit": "db1267524c067b87f2b60e0dad80a96f90b70cc4",
+  "failure_layer": "native source adapter construction in no-query smoke",
+  "fingerprint": "Namespace missing input_len",
+  "owner_exited": true,
+  "formal_GPU_workers_started": 0,
+  "smoke_GPU_workers_started": 1,
+  "new_training_optimizer_steps": 0,
+  "new_predictions": 0,
+  "new_scores": 0,
+  "real_frozen_checkpoint_loaded": true,
+  "replacement_run_id": "20261027-phase1-pamf-paper-completion-m119-r03",
+  "local_reproduction": "Actual adapter fails without input_len; passes with256,embedding160",
+  "outputs_preserved": true
+}

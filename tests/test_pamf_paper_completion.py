@@ -64,5 +64,13 @@ class MatrixAndPermissions(unittest.TestCase):
         with self.assertRaises(ValueError):validate_reused_SSL(bad,ref)
         bad=copy.deepcopy(done);bad['actual_REPL']['calls']=4440
         with self.assertRaises(ValueError):validate_reused_SSL(bad,ref)
+    def test_source_constructor_arguments_have_physical_input_length(self):
+        from types import SimpleNamespace
+        from experiments.pamf_paper_completion.model import source_arguments
+        native=SimpleNamespace(num_classes=6,use_unlabeled=True,use_ema_teacher=True)
+        a=source_arguments(lambda c,device:native,{},'cpu')
+        self.assertEqual(a.input_len,256)
+        self.assertFalse(a.use_unlabeled);self.assertFalse(a.use_ema_teacher)
+        self.assertEqual((a.lambda_u,a.lambda_ent),(0.,0.))
 
 if __name__=='__main__':unittest.main()
