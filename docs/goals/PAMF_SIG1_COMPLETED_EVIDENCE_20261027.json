@@ -1055,7 +1055,7 @@
     }
   ],
   "completed_candidate_selection": "All completed methods from the four declared SIG1 runs; no ranking or seed selection",
-  "PM": "PENDING_FULL_THREE_SEED_TRAIN_PREDICT_SCORE_NOT_INCLUDED",
+  "PM": "ANALYZED_SEPARATELY_NOT_INCLUDED_IN_THIS_EIGHT_METHOD_SNAPSHOT",
   "new_training_updates": 0,
   "new_F_forwards": 0,
   "new_IQ_reads": 0,
@@ -1068,5 +1068,6 @@
     "Methods share parents/controls; methods are not independent replications",
     "Covariance seed01 artifacts were reused; 24 is logical model count, not new training count",
     "Observational contrasts and source diagnostics do not establish target-performance causality"
-  ]
+  ],
+  "PM_results_ref": "../../automation_reports/CV-SincNet/20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/report.md"
 }

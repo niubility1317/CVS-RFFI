@@ -1,0 +1,602 @@
+{
+  "status": "COMPLETE_RX_TRUST_PM_SOURCE_ROWS_AUDITED",
+  "observed_at": 1793060724.84164,
+  "rows": [
+    {
+      "method": "RXTrust-PM",
+      "model_seed": 2026092701,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0006857100701266858,
+          "last_epoch_new_loss_mean": 0.1952107848079355,
+          "first_source_V_correct": 26432,
+          "last_source_V_correct": 26474,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.0006101083553575508,
+          "last_epoch_new_loss_mean": 0.19328967345928824,
+          "first_source_V_correct": 26492,
+          "last_source_V_correct": 26552,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1613367,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 9355500,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 334683,
+            "mean_shift": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 298166,
+            "mean_shift": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 332370,
+            "mean_shift": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 334460,
+            "mean_shift": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 313688,
+            "mean_shift": 340200
+          }
+        },
+        "by_replica": [
+          283500,
+          283500,
+          283500
+        ],
+        "by_scene": [
+          283500,
+          283632,
+          283368
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true,
+        "mean_shift_U_seen": 1701000,
+        "mean_shift_L_pairs": 426240,
+        "raw_base_U": 850500,
+        "H_base_U": 850500,
+        "extra_L_teacher_packets": 426240,
+        "extra_L_student_packets": 426240,
+        "nonzero_shift_U": 1701000,
+        "by_RX_style": {
+          "1->3": 189024,
+          "1->8": 149410,
+          "3->1": 95927,
+          "3->4": 164138,
+          "3->6": 77841,
+          "4->3": 162923,
+          "4->8": 175889,
+          "6->3": 193214,
+          "6->8": 144953,
+          "8->1": 104756,
+          "8->4": 156783,
+          "8->6": 76447,
+          "1->4": 1092,
+          "4->6": 602,
+          "3->8": 2294,
+          "4->1": 786,
+          "1->6": 674,
+          "8->3": 2214,
+          "6->1": 1133,
+          "6->4": 900
+        },
+        "stored_training_statistics": 20,
+        "candidate_U_packets": 6804000,
+        "candidate_variants": 4,
+        "selection_policy": "per_packet_max_teacher_to_candidate_KL_over_other4_sourceRX",
+        "selection_uses_U_TX": false,
+        "P_H_singleton": 612748,
+        "P_H_pair": 194801,
+        "P_H_soft_fallback": 42951,
+        "P_H_by_source_RX": {
+          "1": {
+            "singleton": 127248,
+            "pair": 40174,
+            "fallback": 2678
+          },
+          "3": {
+            "singleton": 111336,
+            "pair": 38125,
+            "fallback": 20639
+          },
+          "4": {
+            "singleton": 124390,
+            "pair": 41859,
+            "fallback": 3851
+          },
+          "6": {
+            "singleton": 127513,
+            "pair": 39789,
+            "fallback": 2798
+          },
+          "8": {
+            "singleton": 122261,
+            "pair": 34854,
+            "fallback": 12985
+          }
+        },
+        "P_H_by_raw_pseudo_class": {
+          "0": 136727,
+          "1": 134976,
+          "2": 139690,
+          "3": 119934,
+          "4": 136034,
+          "5": 140188
+        },
+        "P_target_rule": "rawPLaccepted:union(raw_argmax,H_argmax);otherwise_sameH_softKL",
+        "P_U_TX_truth_read": false,
+        "P_extra_F_forwards": 0
+      },
+      "PL_acceptance": 0.9484814814814815,
+      "coefficient": 0.150512613170486,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092701,
+        "method": "RXTrust-PM",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26552,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24329,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 20071,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16326,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 3005.8465848672204,
+      "cumulative_training_seconds": 4866.144290958997,
+      "full_stdout_bytes": 163534,
+      "fatal_markers": []
+    },
+    {
+      "method": "RXTrust-PM",
+      "model_seed": 2026092702,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0006886347200798064,
+          "last_epoch_new_loss_mean": 0.20000132290763897,
+          "first_source_V_correct": 26445,
+          "last_source_V_correct": 26529,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.0006049451513791684,
+          "last_epoch_new_loss_mean": 0.19064269538733875,
+          "first_source_V_correct": 26536,
+          "last_source_V_correct": 26572,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1615031,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 9355500,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 333747,
+            "mean_shift": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 302671,
+            "mean_shift": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331696,
+            "mean_shift": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 332348,
+            "mean_shift": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 314569,
+            "mean_shift": 340200
+          }
+        },
+        "by_replica": [
+          283500,
+          283500,
+          283500
+        ],
+        "by_scene": [
+          283500,
+          283632,
+          283368
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true,
+        "mean_shift_U_seen": 1701000,
+        "mean_shift_L_pairs": 426240,
+        "raw_base_U": 850500,
+        "H_base_U": 850500,
+        "extra_L_teacher_packets": 426240,
+        "extra_L_student_packets": 426240,
+        "nonzero_shift_U": 1701000,
+        "by_RX_style": {
+          "1->3": 189978,
+          "1->4": 281,
+          "1->8": 149706,
+          "3->1": 107823,
+          "3->4": 147126,
+          "3->6": 83448,
+          "4->3": 158605,
+          "4->8": 181122,
+          "6->3": 201858,
+          "6->8": 137408,
+          "8->1": 102076,
+          "8->4": 145784,
+          "8->6": 89801,
+          "3->8": 1803,
+          "8->3": 2539,
+          "6->4": 257,
+          "1->6": 235,
+          "4->6": 112,
+          "6->1": 677,
+          "4->1": 361
+        },
+        "stored_training_statistics": 20,
+        "candidate_U_packets": 6804000,
+        "candidate_variants": 4,
+        "selection_policy": "per_packet_max_teacher_to_candidate_KL_over_other4_sourceRX",
+        "selection_uses_U_TX": false,
+        "P_H_singleton": 609901,
+        "P_H_pair": 198586,
+        "P_H_soft_fallback": 42013,
+        "P_H_by_source_RX": {
+          "1": {
+            "singleton": 126826,
+            "pair": 40134,
+            "fallback": 3140
+          },
+          "3": {
+            "singleton": 111416,
+            "pair": 40317,
+            "fallback": 18367
+          },
+          "4": {
+            "singleton": 122690,
+            "pair": 43227,
+            "fallback": 4183
+          },
+          "6": {
+            "singleton": 126258,
+            "pair": 39972,
+            "fallback": 3870
+          },
+          "8": {
+            "singleton": 122711,
+            "pair": 34936,
+            "fallback": 12453
+          }
+        },
+        "P_H_by_raw_pseudo_class": {
+          "0": 135934,
+          "1": 132984,
+          "2": 139745,
+          "3": 123733,
+          "4": 135957,
+          "5": 140134
+        },
+        "P_target_rule": "rawPLaccepted:union(raw_argmax,H_argmax);otherwise_sameH_softKL",
+        "P_U_TX_truth_read": false,
+        "P_extra_F_forwards": 0
+      },
+      "PL_acceptance": 0.9494597295708407,
+      "coefficient": 0.1453399924286534,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092702,
+        "method": "RXTrust-PM",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26572,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24382,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 20056,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16248,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2971.2132812109776,
+      "cumulative_training_seconds": 5027.771016608924,
+      "full_stdout_bytes": 163529,
+      "fatal_markers": []
+    },
+    {
+      "method": "RXTrust-PM",
+      "model_seed": 2026092703,
+      "new_step_records": 6660,
+      "new_epoch_records": 30,
+      "segments": [
+        {
+          "segment": "segment30",
+          "epochs": 10,
+          "steps": 2220,
+          "first_call": 1,
+          "last_call": 2220,
+          "first_epoch_new_loss_mean": 0.0007786125816228623,
+          "last_epoch_new_loss_mean": 0.19484982278768545,
+          "first_source_V_correct": 26425,
+          "last_source_V_correct": 26533,
+          "source_V_count": 27000
+        },
+        {
+          "segment": "segment50",
+          "epochs": 20,
+          "steps": 4440,
+          "first_call": 2221,
+          "last_call": 6660,
+          "first_epoch_new_loss_mean": 0.0006650191873206069,
+          "last_epoch_new_loss_mean": 0.18645018431450333,
+          "first_source_V_correct": 26484,
+          "last_source_V_correct": 26568,
+          "source_V_count": 27000
+        }
+      ],
+      "exposure": {
+        "calls": 6660,
+        "seen": 1701000,
+        "accepted": 1612600,
+        "unique_seen": 56700,
+        "min_visits": 30,
+        "max_visits": 30,
+        "student_U_packets": 3402000,
+        "teacher_U_packets": 9355500,
+        "by_source_RX": {
+          "1": {
+            "seen": 340200,
+            "accepted": 330818,
+            "mean_shift": 340200
+          },
+          "3": {
+            "seen": 340200,
+            "accepted": 300191,
+            "mean_shift": 340200
+          },
+          "4": {
+            "seen": 340200,
+            "accepted": 331857,
+            "mean_shift": 340200
+          },
+          "6": {
+            "seen": 340200,
+            "accepted": 333007,
+            "mean_shift": 340200
+          },
+          "8": {
+            "seen": 340200,
+            "accepted": 316727,
+            "mean_shift": 340200
+          }
+        },
+        "by_replica": [
+          283500,
+          283500,
+          283500
+        ],
+        "by_scene": [
+          283500,
+          283632,
+          283368
+        ],
+        "U_truth_read": false,
+        "target_reads": 0,
+        "model_EMA_updates": 0,
+        "new_inference_parameters": 0,
+        "default_head_joint": true,
+        "mean_shift_U_seen": 1701000,
+        "mean_shift_L_pairs": 426240,
+        "raw_base_U": 850500,
+        "H_base_U": 850500,
+        "extra_L_teacher_packets": 426240,
+        "extra_L_student_packets": 426240,
+        "nonzero_shift_U": 1701000,
+        "by_RX_style": {
+          "1->3": 136977,
+          "1->8": 202345,
+          "3->1": 95655,
+          "3->4": 157164,
+          "3->6": 85274,
+          "4->3": 122698,
+          "4->8": 216913,
+          "6->3": 156988,
+          "6->8": 182015,
+          "8->1": 92738,
+          "8->4": 162182,
+          "8->6": 82687,
+          "3->8": 2107,
+          "8->3": 2593,
+          "1->6": 465,
+          "6->4": 341,
+          "1->4": 413,
+          "6->1": 856,
+          "4->6": 167,
+          "4->1": 422
+        },
+        "stored_training_statistics": 20,
+        "candidate_U_packets": 6804000,
+        "candidate_variants": 4,
+        "selection_policy": "per_packet_max_teacher_to_candidate_KL_over_other4_sourceRX",
+        "selection_uses_U_TX": false,
+        "P_H_singleton": 610444,
+        "P_H_pair": 196821,
+        "P_H_soft_fallback": 43235,
+        "P_H_by_source_RX": {
+          "1": {
+            "singleton": 125783,
+            "pair": 39666,
+            "fallback": 4651
+          },
+          "3": {
+            "singleton": 110090,
+            "pair": 40476,
+            "fallback": 19534
+          },
+          "4": {
+            "singleton": 123920,
+            "pair": 42065,
+            "fallback": 4115
+          },
+          "6": {
+            "singleton": 126985,
+            "pair": 39570,
+            "fallback": 3545
+          },
+          "8": {
+            "singleton": 123666,
+            "pair": 35044,
+            "fallback": 11390
+          }
+        },
+        "P_H_by_raw_pseudo_class": {
+          "0": 135994,
+          "1": 128639,
+          "2": 139089,
+          "3": 126791,
+          "4": 136562,
+          "5": 140190
+        },
+        "P_target_rule": "rawPLaccepted:union(raw_argmax,H_argmax);otherwise_sameH_softKL",
+        "P_U_TX_truth_read": false,
+        "P_extra_F_forwards": 0
+      },
+      "PL_acceptance": 0.9480305702527925,
+      "coefficient": 0.15037222073226014,
+      "source_validation": {
+        "status": "MULTISEED_SOURCE_EVALUATED",
+        "model_seed": 2026092703,
+        "method": "RXTrust-PM",
+        "V_seen": 27000,
+        "raw_only": true,
+        "G_reads": 0,
+        "target_reads": 0,
+        "results": [
+          {
+            "view": "raw",
+            "correct": 26568,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_suburban",
+            "correct": 24360,
+            "n": 27000
+          },
+          {
+            "view": "practical_mid_urban",
+            "correct": 20109,
+            "n": 27000
+          },
+          {
+            "view": "practical_low_urban",
+            "correct": 16398,
+            "n": 27000
+          }
+        ]
+      },
+      "actual_training_seconds": 2940.734517203644,
+      "cumulative_training_seconds": 4853.141910523642,
+      "full_stdout_bytes": 163529,
+      "fatal_markers": []
+    }
+  ],
+  "pending": [],
+  "total_new_step_records": 19980,
+  "total_new_epoch_records": 90,
+  "target_reads": 0,
+  "IQ_reads": 0,
+  "weight_reads": 0,
+  "new_control_training": 0,
+  "full_goal_complete": false
+}

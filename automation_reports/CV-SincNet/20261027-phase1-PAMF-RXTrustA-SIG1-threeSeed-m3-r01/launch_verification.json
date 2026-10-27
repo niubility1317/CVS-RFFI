@@ -1,0 +1,94 @@
+{
+  "status": "VERIFIED_RUNNING_THREE_A_SOURCE_ROWS",
+  "execution_commit": "1402e4898872f23f3b82e114e9e253614a354474",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "ordinary_account_controller_PID_CWD_argv_UID": "VERIFIED",
+  "all_three_worker_PID_CWD_argv_UID_GPU": "VERIFIED",
+  "controller_log_bytes_first": 46,
+  "controller_log_bytes_at_snapshot": 184,
+  "worker_log_bytes_first": {
+    "train__2026092701": 6758,
+    "train__2026092702": 6758,
+    "train__2026092703": 6758
+  },
+  "worker_log_bytes_at_snapshot": {
+    "train__2026092701": 11745,
+    "train__2026092702": 11745,
+    "train__2026092703": 11745
+  },
+  "original_PM_complete_before_A_GPU": true,
+  "calibration_new_F_packets_total": 101376,
+  "calibration_new_optimizer_updates": 0,
+  "U_TX_truth_reads": 0,
+  "target_reads": 0,
+  "G_reads": 0,
+  "new_control_training": 0,
+  "new_control_predictions": 0,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "actual_checkpoint_gradient_smoke": "PASS",
+      "actual_native_roundtrip_sourceL2_smoke": "PASS",
+      "actual_full_model_parameters": 863730,
+      "actual_default_head_classes": 6,
+      "SIG_TIME_views": 1,
+      "new_U_updates_at_snapshot": 336,
+      "coefficient": 0.09280602995964286,
+      "weighted_source_mode_medians": {
+        "raw": 0.004884523399943255,
+        "H": 0.1
+      },
+      "calibration_batches": 12,
+      "calibration_optimizer_updates": 0,
+      "calibration_parameters_unchanged": true,
+      "calibration_F_packets": 33792,
+      "H_singleton_seen": 26739,
+      "H_pair_seen": 0,
+      "H_soft_fallback_seen": 2445
+    },
+    {
+      "model_seed": 2026092702,
+      "actual_checkpoint_gradient_smoke": "PASS",
+      "actual_native_roundtrip_sourceL2_smoke": "PASS",
+      "actual_full_model_parameters": 863730,
+      "actual_default_head_classes": 6,
+      "SIG_TIME_views": 1,
+      "new_U_updates_at_snapshot": 322,
+      "coefficient": 0.10050462613646816,
+      "weighted_source_mode_medians": {
+        "raw": 0.004352069352225003,
+        "H": 0.1
+      },
+      "calibration_batches": 12,
+      "calibration_optimizer_updates": 0,
+      "calibration_parameters_unchanged": true,
+      "calibration_F_packets": 33792,
+      "H_singleton_seen": 23600,
+      "H_pair_seen": 0,
+      "H_soft_fallback_seen": 2000
+    },
+    {
+      "model_seed": 2026092703,
+      "actual_checkpoint_gradient_smoke": "PASS",
+      "actual_native_roundtrip_sourceL2_smoke": "PASS",
+      "actual_full_model_parameters": 863730,
+      "actual_default_head_classes": 6,
+      "SIG_TIME_views": 1,
+      "new_U_updates_at_snapshot": 334,
+      "coefficient": 0.08922546912126271,
+      "weighted_source_mode_medians": {
+        "raw": 0.005986297441932513,
+        "H": 0.1
+      },
+      "calibration_batches": 12,
+      "calibration_optimizer_updates": 0,
+      "calibration_parameters_unchanged": true,
+      "calibration_F_packets": 33792,
+      "H_singleton_seen": 26386,
+      "H_pair_seen": 0,
+      "H_soft_fallback_seen": 2286
+    }
+  ],
+  "goal_complete": false
+}

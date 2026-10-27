@@ -45,3 +45,7 @@ PM三seed完整E20→E30的6660步/30模型epoch及H/RX/尾批/原PL计数已核
 既有六模型三seed源概率进一步证明集合内消歧的限制：raw对/baseH错时，集合内错类质量约69.6%，直接logit梯度步扩大错类优势，即使集合含真类。只读648000已有logits，0新F/训练/IQ/权重/UTX/target；不是实际P/PM选中RX视图或性能因果结论。详见P的source_set_margin_report.md。当前PM配方/三seed矩阵保持，未新增神经候选，原目标active。
 
 独立RXTrust-A三seed已固定并LOCAL_VERIFIED：仅把raw接受的H部分集合改成rawargmax硬CE，拒绝者同H软一致性；原PL/fullL/四RX最大KL和模式中位校准算法不变。目标变动必须从各自原E20重新测12源训练批梯度，不复用P/PM旧梯度。10检查/5编译/唯一P0P1PASS，等整个PM完成再开始；固定于任何PM目标读取前，未根据分数决定是否运行，实际smoke仍PENDING。
+
+PM三seed完整ANALYZED：clean84.542857%、六景70.569180%，相对普通PL −0.150992/+0.335946pp；六景各平均有收益但clean三seed均退步，分层仍有负值，原目标未达。全19980step/90epoch和3528000正式判决完整核验。预先固定A三seed已通过自己的实际E20校准/native无querysmoke并训练；不据PM分数改规则，后续仍全矩阵自动测试。
+
+A实际三seed已训练：各自E20新12批校准与native checkpoint/sourceL2均PASS，alpha0.092806/0.100505/0.089225，H源中位参考10%、raw约0.44%至0.60%；0校准optimizer/V/target。真实PID/CWD/argv/UID/GPU与日志增长已核实，H硬锚/拒绝fallback非零、双类恒0；原PM完成后才接续，未从其目标结果改配方。当前仍无A性能结论，原目标active。
