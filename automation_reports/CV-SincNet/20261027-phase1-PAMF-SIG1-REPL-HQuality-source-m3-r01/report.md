@@ -38,3 +38,12 @@
 
 
 后续另登记正式确认的四候选统一源选择规则，已在四版最终源评分前固定于[UHardCE登记](../20261027-phase1-PAMF-SIG1-REPL-UHardCE-source-m1-r01/experiment.json)的future_confirmation_source_cohort：三版HQuality加独立UHardCE均完成后，保留原门槛，按raw/H3/固定同分顺序选一个方法。它不热改本run训练、预算或原source_selected；没有合格者不扩种子或目标。
+
+
+## 首段E20+10已完整核验，继续最后20轮
+
+三版首段各2220条、合计6660条记录及实际E30 checkpoint已独立核验。权重均有限，保持单SIG_TIME/原6×160默认头，来源为本seed原E20，未引入teacher/nativeU/EMA教师或其他祖先。所有真实L/U曝光、双H、频率先验、裁剪及计数完整；没有新模型前向、V源预测、U TX或目标读取。之后继续各自E31至E50，原配方及预算不变。
+
+Fixed/Soft/Gate在整段的H CE权重质量为合格H曝光的50.0000%/80.1917%/66.6687%。分类头裁剪比例为72.6577%/69.6396%/48.6937%，保留U梯度范数中位比例73.9912%/76.5404%/92.3365%；分类头冲突仍为43.6036%/46.8468%/51.3063%。这些是完整首段的执行和局部梯度事实，不能当源评分、目标准确率或AdamW方向保证。
+
+证据：[独立E30核验](closed_E30_evidence.json)、[完整首段梯度](closed_E30_gradient_summary.csv)、[实际曝光和用时](closed_E30_U_exposure.csv)。本段核验在最终完整源分析时直接复用，不重复读取未变化的2220条训练记录。最终source gate与四版统一选择范围保持。
