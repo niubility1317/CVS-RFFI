@@ -1,1 +1,2 @@
 {"at": "2026-10-27T02:55:17+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-27T02:59:06+00:00", "status": "RUNNING", "note": "VERIFIED: real checkpoint plus four source backward cases PASS; eight three-view workers cover all seven eligible GPUs, foreign-user GPU2 excluded; zero single-view launched; exact PID/GPU/log growth checked.", "evidence": ["launch_evidence.json"], "row_id": null}

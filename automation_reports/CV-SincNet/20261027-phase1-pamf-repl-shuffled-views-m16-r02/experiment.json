@@ -26,7 +26,7 @@
   "replaces_run_id": "20261027-phase1-pamf-repl-shuffled-views-m16-r01",
   "authorization": "User 2026-10-27 requests three-view and single-view REPL+temporal shuffle, pauses ordinary PL queue, uses every GPU excluding other users, latest instruction requires complete three-view group first.",
   "code": {
-    "commit": null,
+    "commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "Existing N607 Phase1 Python/Torch, FP32, TF32 off, CPU threads2; no installations",
     "cwd": "PROJECT/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release"
