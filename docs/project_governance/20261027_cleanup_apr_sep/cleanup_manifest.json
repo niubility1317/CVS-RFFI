@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-27",
+  "status": "VERIFIED",
+  "scope": "2026 April to September historical temporary and duplicate materials; STAR-RFFI/STAR-test excluded",
+  "local": {
+    "status": "VERIFIED",
+    "files": 5,
+    "logical_bytes": 28649128,
+    "removed_empty_directories": 2,
+    "exact_pptx_recovery_verified": true
+  },
+  "N607": {
+    "status": "VERIFIED",
+    "files": 9,
+    "logical_bytes": 3678739,
+    "backup_members_verified": 9,
+    "other_staging_groups_preserved": 5
+  },
+  "combined": {
+    "files": 14,
+    "logical_bytes": 32327867
+  },
+  "recovery_backup_bytes": 423900,
+  "pptx_delta_bytes": 27144,
+  "physical_space_freed": "not measured",
+  "previous_historical_cleanup": "20261027_cleanup_historical/cleanup_manifest.json",
+  "evidence_directory": "local_artifacts/project_file_management/20261027_historical_cleanup_r08"
+}

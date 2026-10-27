@@ -59,3 +59,7 @@ python -X utf8 tools/project_files.py scan --database local_artifacts/project_fi
 ## 2026-10-27 历史资料再核查
 
 继续核查早期资料并记录一次纠正性恢复，见[历史资料清理记录](20261027_cleanup_historical/REPORT.md)。
+
+## 2026 年 4 至 9 月历史资料核查
+
+旧临时文件和重复产物的核查、清理及恢复方法见[专项清理记录](20261027_cleanup_apr_sep/REPORT.md)。

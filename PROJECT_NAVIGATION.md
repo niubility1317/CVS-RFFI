@@ -34,3 +34,5 @@
 同日继续深度核查及增量清理见[后续清理记录](docs/project_governance/20261027_cleanup_deepening/REPORT.md)。
 
 同日较早历史资料核查及纠正性恢复见[历史资料清理记录](docs/project_governance/20261027_cleanup_historical/REPORT.md)。
+
+2026 年 4 至 9 月历史资料专项核查与清理见[专项清理记录](docs/project_governance/20261027_cleanup_apr_sep/REPORT.md)。
