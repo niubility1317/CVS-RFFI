@@ -53,3 +53,7 @@ A实际三seed已训练：各自E20新12批校准与native checkpoint/sourceL2�
 A三seed E20→E30完整6660步/30模型epoch与U10遍/每RX-H/原PL门控已核验，双类恒0，继续E50。独立AL三seed已LOCAL_VERIFIED：仅现有64L RX视图改为真实TX CE(LS.01)并启用梯度，A的全部U损失和同分母归一化保持；L输入明确为raw/nativeAs而非卫星H。17检查/6编译/唯一P0P1PASS，自原E20新12源批联合校准并记L/U分量，等整个A完成；尚未新AL GPU/实际smoke，原目标active。
 
 AL三seed已发布CPU等待队列，执行e52deb10c235667db76a03af3444d5415e209264，archive/remotecompile和实际PID/CWD/argv/UID/日志状态增长VERIFIED；12job均排队、0新GPU。等待整个A完成，首GPU时才测真实E20联合L/U梯度/nativecheckpoint，不复制旧检查。现有A继续原健康训练与自动测试，原目标active。
+
+A三seed完整ANALYZED：clean84.610714%、六景70.500364%，对PL -0.083135/+0.267130pp；原主指标门槛尚未同时达到。 全部声明分层仍未证明严格优于两个匹配对照。19980step/90epoch与3528000正式判决完整核验。AL在A目标读取前已固定发布，按原计划自原E20接续三seed，不据本结果改规则；原完整goalactive。
+
+AL 实际三 seed 已训练：各自原 E20 的联合 L/U 梯度及 native checkpoint/sourceL2 检查均 PASS；36 批源分解确认新增 L 真实 CE 梯度非零。校准均正常完成并自动接续，控制器和三条 CUDA 轨迹已独立核实。原目标仍 active，尚无 AL 正式性能结论。

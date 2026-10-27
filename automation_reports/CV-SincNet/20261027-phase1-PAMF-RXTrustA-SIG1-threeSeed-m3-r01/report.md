@@ -1,31 +1,48 @@
-# RXTrust-A：同包接收响应扰动下的可信 raw 身份锚
+# RXTrust-A：完整三种子结果
 
-状态：RUNNING。三个seed自己的真实E20梯度校准和native checkpoint/sourceL2检查均PASS，已开始独立E20+30。普通PL、原L及默认头保持，H硬锚已产生非零记录；尚无A性能结论。A完整规则在读取PM目标分数前已固定和发布，PM全部12job结束后才接续；不依PM分数决定是否执行。
+状态：ANALYZED。三个固定E50模型、源诊断和raw clean＋六practical全部正式预测与独立评分完成。相对匹配普通PL，clean -0.083135pp、六景 +0.267130pp。原主指标门槛尚未同时达到。 全部声明分层仍未证明严格优于两个匹配对照。
 
-源依据是已完成的六模型三seed raw/H读出：正确类被集合包含，并不保证集合内部消歧；当错类概率较大，−log∑_S p 的直接logit步仍扩大其相对优势。该推导和源代理不是实际P/PM更新、U真值或性能因果证明。本候选保持自身接收响应输入路线，与另一聊天的跨样本特征/邻近参考路线分别验证，不发送消息或操作其任务。
+A保持原完整PAMF、单SIG_TIME、原默认头联合训练、fullT1 L、ordinaryrawPL.95/weight1、四源RX最大同baseKL选择和全部U分母。仅把PM在H阶段的raw接受样本集合损失换成rawargmax硬CE；raw拒绝者仍同H软KL，raw阶段仍全U同base软KL。L额外分支保持停止梯度软KL，原L监督不改。无DURA/恢复IQ/EMA教师/新头/推理增参。
 
-原完整 PAMF、单 SIG_TIME、默认头联合训练、fullT1 L、普通 rawPL 阈值0.95/权重1、E20+10+20至E50/11100、13L37LU全部保持。训练只有原clean IQ及同包星地H、已知RX及其有界RX均值差作用，不用DURA/恢复IQ/EMA/新分类头。物理强度0.1、±0.5dB/±0.025rad、四源RX逐包最大同base KL选择、15raw/15H日程、额外64L仅detach监测均不变。
+三seed2026092701/02/03各自原合法scratchSIG1 E20独立+10+20至E50/11100、13L37LU；不从PM E50继续。L6300/U56700/V27000、物理划分392005不变，U的TX隐藏/RX已知。PL/Sup/PM九份对照直接复用，不重训或重测。源系数按自身12个零更新训练批的raw/H中位范数比例较大者确定，不能用PM旧梯度替代，也不是每步或AdamW硬限幅。
 
-唯一目标变化是H阶段raw已被原PL接受的样本：原PM用raw/H判决并集，A直接对同包选中RX风格H计算rawargmax硬CE（无LS）。raw拒绝者继续原同H softKL，raw阶段仍全U同base softKL。全部U作分母，不按接受池重新放大；原rawPL损失和原L损失不变。使用detach当前eval raw预测，无UTX真值或新教师。
+总体168000=126000 cross_rx＋42000 cross_both，按正确数及混淆计数3:1合并，六景在每seed内求均值。每行14组预测先固定再独立truth-last。以下单位%，均值±三seed样本标准差。
 
-系数算法与PM一致：各seed在自己的真实原E20上测12个固定训练L/U批（6raw6H），0optimizer、参数/buffer保持，alpha=min(1,0.1/max_base median(norm_aux/norm_primary))，444步ramp。由于损失变了，必须重新测梯度，不能复用P/PM旧梯度；预计校准33792 F包/model，与训练成本分列。它只约束冻结源中位参考比例，非每步、未来epoch或AdamW硬上限。
+| 方法 | clean | 六景平均 |
+| --- | ---: | ---: |
+| RXTrust-A | 84.610714 ± 0.660875 | 70.500364 ± 1.019128 |
+| SIG1-PL | 84.693849 ± 0.692508 | 70.233234 ± 1.043286 |
+| SIG1-Sup | 84.116865 ± 0.887612 | 70.168056 ± 1.035243 |
+| RXTrust-PM | 84.542857 ± 0.644666 | 70.569180 ± 1.097656 |
 
-首真实E20/full863730参数/单SIG/defaulthead与U-only梯度检查PASS后自动校准并训练。每seed从原自身合法scratchE20独立+30，非PM E50续训。每模型U56700各30遍、raw/H各850500，H硬锚+fallback合计850500、每RX170100；legacy P_H_pair恒0，P_H_singleton即所有raw接受的H硬锚。训练F包18724860/model与PM相同，推理仍原始IQ单F，无新增参数/视图。
+同seed配对差，单位百分点：
 
-全部新GPU任务等待整个PM complete.json，纯资源依赖不读取其分数。随后own≤4、每卡own≤1、总CUDA+pending≤2/free10000MiB、总CPUscorer≤1，其他owner健康任务保持。首次本run技术/非有限/输入权限/独占输出错误停止新派发，健康子进程结束、原输出保留；科学负结果不取消seed。
+| 对照 | clean差 | 六景差 | 最差声明准确率分层差 |
+| --- | ---: | ---: | ---: |
+| SIG1-PL | -0.083135 ± 0.079346 | +0.267130 ± 0.038687 | -0.509524 |
+| SIG1-Sup | +0.493849 ± 0.227305 | +0.332308 ± 0.068075 | -1.588889 |
+| RXTrust-PM | +0.067857 ± 0.043939 | -0.068816 ± 0.078912 | -3.052381 |
 
-逐行finalE50后自动原sourceV raw+3H诊断、rawclean+六practical、cross_rx126000+cross_both42000。每行全部14组预测固定后独立truth-last，3×168000×7=3528000正式判决。完整逐seed、三seed均值±样本SD、同seed PL/Sup/PM配对、scene/TX/RX/day、macroF1和实际成本全部报告。源诊断、F0矩阵、单景或单seed改善均不能替代原rawclean≥85.98174603174603%、六景>72.0961970899471%与所有声明范围严格优于PL/Sup；原完整目标active。精确命令/路径/CWD/数据契约/父源及停止规则见experiment.json。
+逐seed相对普通PL，单位百分点：
 
-本地验证：7项硬锚/拒绝KL/全U分母/正确logit纠错方向/原PL与段间父源/三seed队列隔离/模式校准检查及3项完整结果加权/错参考缺seed/未完成矩阵拒绝检查全部PASS；5模块编译PASS，本候选唯一一次独立P0/P1审查PASS。这段是发布前节点；实际A E20校准和checkpoint smoke现已逐seedPASS，见下述运行证据。结果/完整日志工具已就绪，训练与测试连续执行，健康PM不变。
+| seed | clean差 | 六景差 |
+| --- | ---: | ---: |
+| 2026092701 | -0.118452 | +0.222520 |
+| 2026092702 | -0.138690 | +0.291468 |
+| 2026092703 | +0.007738 | +0.287401 |
 
-实际发布与训练已VERIFIED：执行commit `1402e4898872f23f3b82e114e9e253614a354474` 推送及独立上游OID对照完成；单archive传输校验VERIFIED，remote compile PASS。CPU控制器及三条CUDA轨迹的PID/CWD/argv/UID/实际显卡和日志增长均核实。自己真实E20 source-gradient检查（SIG/defaulthead非零）与首native checkpoint roundtrip/sourceL2/full863730/6类有限输出均PASS。原PM/其他owner未改动，source缓存与RXbank复用，原有控制不重训/重测。
+原主指标整数口径：clean正确426438/504000，六景正确2131931/3024000；保留最低正确数433348/2180190及rawclean≥85.98174603174603%、六景>72.0961970899471%的原要求。逐景/TX/RX/day等全部声明范围、macroF1和两个匹配对照仍需同时满足，不能选择seed或拼接方法。三seed不自动等于统计显著，F0已用于历史探索，不称新的独立盲测。
 
-| seed | 实际系数 | raw源中位比例（%） | H源中位比例（%） | 快照新增U更新 | 快照H硬锚/双类/fallback |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| 2026092701 | 0.092806029960 | 0.488452 | 10.000000 | 336 | 26739/0/2445 |
-| 2026092702 | 0.100504626136 | 0.435207 | 10.000000 | 322 | 23600/0/2000 |
-| 2026092703 | 0.089225469121 | 0.598630 | 10.000000 | 334 | 26386/0/2286 |
+完整证据：[矩阵](matrix_verification.json)、[完整源审计](complete_source_audit.json)、[逐seed](results/per_seed.csv)、[逐景](results/per_scene_mean.csv)、[配对总体](results/paired_summary.csv)、[逐景配对](results/paired_scene_mean.csv)、[全部声明分层](results/paired_strata_mean.csv)。12份score、18组同seed物理顺序配对及3528000次新raw正式决策均完整。
 
-以上是实际训练初期快照，非完整曝光或性能结论。三份校准各12新源批/33792计账F包，0optimizer/V/target，参数与buffer保持；系数符合预登记max_rawH_median规则，两种模式中位参考≤10%。H双类字段恒0，拒绝者仍softKL，原PL门控与ramp/尾批计数逐步通过；真实allU/各RX/逐scene完整性仍待E50全部日志核验。见launch_verification.json。
+全部19980新增step/90模型epoch及完整stdout已核验；每模型U56700各30遍，raw/H各850500，H硬锚+fallback合计850500且每RX170100，双类计数恒0。训练18724860个F前向包/model与PM匹配；源校准33792包/model、0optimizer/V/target、参数与buffer保持，源最终诊断、native sourceL2检查和目标测试另计。每个模型的实际训练时间如下，单位秒。
 
-三个seed均已完成E20→E30并继续E50。完整6660新增step/30模型epoch、每模型U56700各10遍、raw/H各283500、H硬锚+fallback合计283500且每RX56700，所有双类计数恒0；原PL门控、4候选最大KL、alpha/ramp、尾批124与source-only权限逐条通过，见first_segment_audit.json。该节点不等于完整E50或性能结论。AL已在A目标读取前固定，当前A健康配方保持。
+| seed | 新增30轮秒数 | 含原E20累计秒数 | 实际PL接受率（%） |
+| --- | ---: | ---: | ---: |
+| 2026092701 | 3042.857 | 4903.137 | 94.814638 |
+| 2026092702 | 3093.619 | 5150.187 | 94.825808 |
+| 2026092703 | 3036.015 | 4948.588 | 94.684127 |
+
+完整训练网络863730参数，部署reader196001参数，单SIG1池18976，口径分列。实际执行commit `1402e4898872f23f3b82e114e9e253614a354474`，原发布包/模型/预测/日志和控制均保留；没有源/目标评分反馈选模或重跑。
+
+AL已在任何A目标分数读取前固定、审查、提交并发布：A的U规则和相同分母保持，只把现有64条额外L的停止梯度KL换成真实TX CE(LS.01)。L输入仍raw/native普通As后RXstyle，不冒充U的星地H。AL等待整个A结束后自动接续，独立原E20+30及自身联合梯度校准，不按本结果决定执行或改变规则。原完整goal继续active；AL尚无正式性能结论。

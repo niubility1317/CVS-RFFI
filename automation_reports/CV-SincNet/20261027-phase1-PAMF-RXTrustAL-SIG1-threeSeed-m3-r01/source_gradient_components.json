@@ -1,0 +1,127 @@
+{
+  "status": "ANALYZED_EXISTING_AL_SOURCE_CALIBRATION_COMPONENTS",
+  "models": 3,
+  "batches": 36,
+  "groups": [
+    {
+      "model_seed": 2026092701,
+      "base": "raw",
+      "batches": 6,
+      "coefficient": 0.0699610295201752,
+      "weighted_joint_norm_ratio_median": 0.013641102976160795,
+      "weighted_U_norm_ratio_median": 0.003682156057501186,
+      "weighted_L_norm_ratio_median": 0.01250422594139281,
+      "U_to_primary_cosine_median": -0.02932846335598527,
+      "L_to_primary_cosine_median": 0.46968359889184447,
+      "U_L_cosine_from_norms_median": 0.07735564550305601,
+      "joint_to_primary_cosine_median": 0.4842454811250348,
+      "joint_negative_cosines": 1
+    },
+    {
+      "model_seed": 2026092701,
+      "base": "H",
+      "batches": 6,
+      "coefficient": 0.0699610295201752,
+      "weighted_joint_norm_ratio_median": 0.10000000000000002,
+      "weighted_U_norm_ratio_median": 0.07538414221649892,
+      "weighted_L_norm_ratio_median": 0.041892407453778924,
+      "U_to_primary_cosine_median": 0.12398605964144849,
+      "L_to_primary_cosine_median": 0.5617006298011133,
+      "U_L_cosine_from_norms_median": 0.27150765280703937,
+      "joint_to_primary_cosine_median": 0.43951750968605396,
+      "joint_negative_cosines": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "base": "raw",
+      "batches": 6,
+      "coefficient": 0.08913869432869494,
+      "weighted_joint_norm_ratio_median": 0.018278862757858144,
+      "weighted_U_norm_ratio_median": 0.003859899751113224,
+      "weighted_L_norm_ratio_median": 0.017168021349682913,
+      "U_to_primary_cosine_median": 0.013169891994083763,
+      "L_to_primary_cosine_median": 0.40212233457280844,
+      "U_L_cosine_from_norms_median": 0.05243421560825945,
+      "joint_to_primary_cosine_median": 0.364448039711161,
+      "joint_negative_cosines": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "base": "H",
+      "batches": 6,
+      "coefficient": 0.08913869432869494,
+      "weighted_joint_norm_ratio_median": 0.1,
+      "weighted_U_norm_ratio_median": 0.08869113587976676,
+      "weighted_L_norm_ratio_median": 0.05645400537409501,
+      "U_to_primary_cosine_median": 0.06622446885315349,
+      "L_to_primary_cosine_median": 0.5269627560094989,
+      "U_L_cosine_from_norms_median": 0.1410858912408989,
+      "joint_to_primary_cosine_median": 0.25416156179370664,
+      "joint_negative_cosines": 1
+    },
+    {
+      "model_seed": 2026092703,
+      "base": "raw",
+      "batches": 6,
+      "coefficient": 0.08290510536128441,
+      "weighted_joint_norm_ratio_median": 0.014089159896165817,
+      "weighted_U_norm_ratio_median": 0.005562252862193277,
+      "weighted_L_norm_ratio_median": 0.012887440101994874,
+      "U_to_primary_cosine_median": 0.169571471551273,
+      "L_to_primary_cosine_median": 0.3308524602716072,
+      "U_L_cosine_from_norms_median": 0.07535098144475055,
+      "joint_to_primary_cosine_median": 0.403386350759121,
+      "joint_negative_cosines": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "base": "H",
+      "batches": 6,
+      "coefficient": 0.08290510536128441,
+      "weighted_joint_norm_ratio_median": 0.1,
+      "weighted_U_norm_ratio_median": 0.09291641317628863,
+      "weighted_L_norm_ratio_median": 0.04584501255999812,
+      "U_to_primary_cosine_median": 0.10341305160394786,
+      "L_to_primary_cosine_median": 0.6000507660588827,
+      "U_L_cosine_from_norms_median": 0.2624115066520234,
+      "joint_to_primary_cosine_median": 0.22605869922602556,
+      "joint_negative_cosines": 0
+    }
+  ],
+  "A_U_component_norm_correspondence": [
+    {
+      "model_seed": 2026092701,
+      "batches": 12,
+      "U_norm_max_relative_error": 3.570901365836397e-09,
+      "primary_norm_max_relative_error": 1.7998837854839753e-09,
+      "norms_are_not_full_gradient_vectors": true,
+      "diagnostic_only_not_an_extra_run_gate": true
+    },
+    {
+      "model_seed": 2026092702,
+      "batches": 12,
+      "U_norm_max_relative_error": 1.0486949557739047e-08,
+      "primary_norm_max_relative_error": 5.2959874473363e-09,
+      "norms_are_not_full_gradient_vectors": true,
+      "diagnostic_only_not_an_extra_run_gate": true
+    },
+    {
+      "model_seed": 2026092703,
+      "batches": 12,
+      "U_norm_max_relative_error": 5.38147447153943e-09,
+      "primary_norm_max_relative_error": 3.1937994785445588e-09,
+      "norms_are_not_full_gradient_vectors": true,
+      "diagnostic_only_not_an_extra_run_gate": true
+    }
+  ],
+  "new_F_forwards": 0,
+  "new_training_updates": 0,
+  "new_weight_reads": 0,
+  "new_IQ_reads": 0,
+  "U_TX_truth_reads": 0,
+  "target_reads": 0,
+  "only_original_E20_zero_update_reference": true,
+  "parameter_norms_are_not_full_vector_equality": true,
+  "not_AdamW_or_future_batch_bound": true,
+  "causal_generalization_claim": false
+}

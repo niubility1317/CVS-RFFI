@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED_EXISTING_AGGREGATE_RESULTS",
+  "ranked_rows": {
+    "historical": 42,
+    "current_SIG1": 12,
+    "structural_and_loss": 37
+  },
+  "historical_source_only_candidates": 30,
+  "within_table_duplicates": 0,
+  "cross_table_known_references": 4,
+  "all_formal_ranked_rows_model_seeds": 3,
+  "formal_population_per_seed": 168000,
+  "source_V_rows_kept_out_of_formal_ranking": true,
+  "existing_control_retraining": 0,
+  "new_prediction_or_scoring": 0,
+  "all_sorted_descending_clean": true,
+  "repeated_current_references_agree_tolerance": 1e-09,
+  "structural_references_agree_tolerance": 1e-09,
+  "one_seed_history_weighted_clean": 85.10119047619048,
+  "one_seed_history_weighted_six": 70.73759920634922,
+  "full_goal_achieved": false
+}

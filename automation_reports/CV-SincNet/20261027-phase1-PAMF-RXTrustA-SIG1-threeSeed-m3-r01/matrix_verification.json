@@ -1,0 +1,33 @@
+{
+  "status": "VERIFIED_COMPLETE_RX_TRUST_A_THREE_SEED",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "models": 3,
+  "pipeline_jobs_complete": 12,
+  "score_rows": 12,
+  "raw_views_per_row": 14,
+  "formal_population_per_seed": 168000,
+  "candidate_raw_decisions": 3528000,
+  "references": [
+    "SIG1-PL",
+    "SIG1-Sup",
+    "RXTrust-PM"
+  ],
+  "physical_pairings": 18,
+  "all_predictions_fixed_before_independent_score": true,
+  "control_training_repeated": 0,
+  "control_predictions_repeated": 0,
+  "raw_only": true,
+  "source_step_records": 19980,
+  "source_epoch_records": 90,
+  "raw_clean_correct_total": 426438,
+  "raw_clean_denominator": 504000,
+  "raw_six_correct_total": 2131931,
+  "raw_six_denominator": 3024000,
+  "original_headline_integer_thresholds_met": false,
+  "declared_strata_strictly_above_both_controls": false,
+  "full_goal_complete": false
+}
