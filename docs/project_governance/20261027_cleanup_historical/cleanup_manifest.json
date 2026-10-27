@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-27",
+  "status": "VERIFIED",
+  "scope": "historical cleanup and corrective restoration; STAR-RFFI/STAR-test excluded",
+  "local": {
+    "status": "VERIFIED",
+    "deleted_files": 7071,
+    "deleted_logical_bytes": 1346755332,
+    "restored_files": 1,
+    "restored_logical_bytes": 32298,
+    "net_logical_change": 1346723034,
+    "synthetic_files": 6879,
+    "old_presentation_members": 192
+  },
+  "N607": {
+    "status": "VERIFIED_READ_ONLY",
+    "deleted_files": 0,
+    "old_run_checkpoints_preserved": 2838,
+    "old_archive_retained": true
+  },
+  "physical_space_freed": "not measured",
+  "previous_cleanup": "20261027_cleanup_deepening/cleanup_manifest.json",
+  "evidence_directory": "local_artifacts/project_file_management/20261027_cleanup_execution_r07"
+}

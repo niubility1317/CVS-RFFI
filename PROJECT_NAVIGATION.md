@@ -32,3 +32,5 @@
 2026-10-27 本机与 N607 已授权缓存及临时文件清理，见[清理记录](docs/project_governance/20261027_cleanup/REPORT.md)。
 
 同日继续深度核查及增量清理见[后续清理记录](docs/project_governance/20261027_cleanup_deepening/REPORT.md)。
+
+同日较早历史资料核查及纠正性恢复见[历史资料清理记录](docs/project_governance/20261027_cleanup_historical/REPORT.md)。

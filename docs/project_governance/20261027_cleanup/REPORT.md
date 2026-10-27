@@ -17,3 +17,7 @@
 本地恢复与审计资料位于 `local_artifacts/project_file_management/20261027_cleanup_execution_r05/`：`local_prepared.jsonl.gz` 和 `local_deletion_events.jsonl` 记录原路径、类型及重建／保留副本；`n607_prepared_request*.jsonl.gz` 与 `n607_deletion_events*.jsonl` 记录服务器逐项处理，独立读回文件记录不存在、保留和权限失败状态。缓存可由对应源码／pytest 重建；临时图片可从记录中的源 ZIP/PPTX 指定成员恢复，临时文档可从记录中的保留副本恢复。合成测试输出可按记录中的测试源码重新生成；不要覆盖现有新文件。
 
 旧图包、Codex 会话与附件、Git 内部资料、尚未核实的其他大型目录以及实验数据、模型、预测、评分和失败证据继续保留。三份插件临时克隆此前的整目录候选已撤回。此次不是全项目所有历史文件的最终去留结论；上轮未决范围与理由见 `local_artifacts/project_file_management/20261027_deep_review_r04/深度复核与清理清单.md`。
+
+## 2026-10-27 后续更正
+
+后续核查确认 `analysis_tmp/cvs_rffi_ppt_notes/unpacked/` 包含已编辑的演示文稿内容。此前删除的 `ppt/media/image1.png` 已从保留源 PPTX 精确恢复，目录继续保留。原表是删除时的历史读回；累计净变化需扣除恢复的 32,298 字节。详见[历史资料再核查](../20261027_cleanup_historical/REPORT.md)。

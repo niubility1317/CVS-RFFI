@@ -55,3 +55,7 @@ python -X utf8 tools/project_files.py scan --database local_artifacts/project_fi
 ## 2026-10-27 后续深度清理
 
 继续核查并清理已确认可重建的合成测试输出及少量重复源归档，见[后续清理记录](20261027_cleanup_deepening/REPORT.md)。
+
+## 2026-10-27 历史资料再核查
+
+继续核查早期资料并记录一次纠正性恢复，见[历史资料清理记录](20261027_cleanup_historical/REPORT.md)。

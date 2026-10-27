@@ -3,13 +3,14 @@
   "scan_date": "2026-09-16",
   "database": "E:\\type10-7\\local_artifacts\\project_file_management\\20260916\\inventory.sqlite",
   "snapshot": "20260916/inventory_summary.json",
-  "changes": "20261027_cleanup_deepening/cleanup_manifest.json",
+  "changes": "20261027_cleanup_historical/cleanup_manifest.json",
   "scope": "local inventory snapshot plus 20260916 cleanup and 20261012 local/N607 historical log compaction increment; reparse and Git internals excluded; user-authorized pre-September obsolete output pruning and historical locator retirement increment",
   "previous_changes": "20261012_cleanup/cleanup_manifest.json",
   "last_cleanup_date": "2026-10-27",
   "latest_readonly_audit": "20261012_remaining_audit/audit_manifest.json",
   "latest_readonly_audit_date": "2026-10-12",
   "retirement_changes": "20261012_retirement/deletion_manifest.json",
-  "latest_cleanup_report": "20261027_cleanup_deepening/REPORT.md",
-  "previous_cleanup_increment": "20261027_cleanup/cleanup_manifest.json"
+  "latest_cleanup_report": "20261027_cleanup_historical/REPORT.md",
+  "previous_cleanup_increment": "20261027_cleanup_deepening/cleanup_manifest.json",
+  "earlier_cleanup_increment": "20261027_cleanup/cleanup_manifest.json"
 }
