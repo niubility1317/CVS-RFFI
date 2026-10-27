@@ -2,7 +2,7 @@
   "method_name": "PAMF",
   "semi_supervised_method": "ordinary_PL",
   "display_name": "PAMF（普通伪标签）",
-  "status": "SINGLE_VIEW_PAPER_REPRODUCTION_RUNNING",
+  "status": "SINGLE_VIEW_PAPER_REPRODUCTION_PAUSED_USER_PRIORITY",
   "decision_date": "2026-10-27",
   "decision": "用户指定单视图PAMF为默认结构，普通PL保持；主比较改为匹配单视图，分支纯CE监督/半监督均重做；可读学术命名。",
   "scope": "Current paper and future experiment method selection; historical frozen configurations and other owners remain unchanged.",
@@ -191,5 +191,11 @@
       2026092702,
       2026092703
     ]
-  }
+  },
+  "active_priority_experiment": "20261027-phase1-pamf-repl-shuffled-views-m16-r01",
+  "priority_order": [
+    "Three signature views + REPL + Shuffled temporal order",
+    "Single signature view + REPL + Shuffled temporal order"
+  ],
+  "ordinary_PL_automatic_resume": false
 }
