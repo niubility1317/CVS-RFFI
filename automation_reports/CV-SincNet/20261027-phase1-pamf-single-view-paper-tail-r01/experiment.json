@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-27 current user: PAMF 单视图论文复现，剩余任务补到最后完成。This explicitly authorizes deferred continuation after both current REPL view-shuffle groups.",
   "code": {
-    "commit": null,
+    "commit": "50563195fa82d3d00794a15ac044dcce3f9fe308",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "Existing N607 Phase1 Python/Torch, FP32, TF32 off, CPU threads2; no installation",
     "cwd": "PROJECT/releases/20261027-phase1-pamf-single-view-paper-tail-r01-release"

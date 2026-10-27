@@ -1,0 +1,31 @@
+{
+  "status": "VERIFIED_WAITING_FOR_PREDECESSOR",
+  "code_commit": "50563195fa82d3d00794a15ac044dcce3f9fe308",
+  "host": "N607",
+  "continuation_run_id": "20261027-phase1-pamf-single-view-paper-tail-r01",
+  "original_run_id": "20261027-phase1-pamf-single-view-paper-m120-r01",
+  "predecessor": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "required_predecessor_models": 16,
+  "current_GPU_workers": 0,
+  "predecessor_status": "RUNNING",
+  "predecessor_workers": 8,
+  "remaining_stages": {
+    "predict": 84,
+    "score": 84,
+    "train": 43
+  },
+  "reused_stages": {
+    "predict": 36,
+    "score": 36,
+    "train": 65
+  },
+  "reusable_saved_segments": 11,
+  "rows_with_saved_segments": 6,
+  "local_tests_passed": 10,
+  "independent_P0_P1": "PASS",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "real_GPU_smoke": "DEFERRED_TO_FIRST_STEP_AFTER_PREDECESSOR",
+  "original_artifacts_preserved": true,
+  "other_owners_modified": false
+}

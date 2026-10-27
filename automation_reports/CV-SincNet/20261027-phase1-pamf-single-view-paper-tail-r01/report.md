@@ -27,3 +27,7 @@ Append the remaining fixed paper matrix after both current REPL view groups fini
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 实际排队 VERIFIED
+
+接续控制器已独立核对PID/CWD/完整命令及持续更新的等待状态，当前 WAITING_FOR_PREDECESSOR、0 GPU worker。原REPL控制器仍正常运行8条训练，其他owner改动0。归档传输比较VERIFIED、remote compile PASS；实际执行commit `50563195fa82d3d00794a15ac044dcce3f9fe308`。远端只读audit核实43训练／84预测／84评分余量、65训练和36预测／评分复用，11个已保存阶段匹配通过。详情见 launch_evidence.json；真实GPU smoke将在两组前序全部完成后的首步执行，当前不冒称训练已启动。
