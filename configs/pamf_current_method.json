@@ -57,7 +57,8 @@
     "grouping_rules": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md",
     "historical_method_definition": "docs/PAMF_REPL.md",
     "current_reproduction": "docs/PAMF_SINGLE_VIEW_PAPER_20261027.md",
-    "historical_three_view_comparison": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md"
+    "historical_three_view_comparison": "docs/PAMF_PRIORITY_COMPARISONS_20261026.md",
+    "repl_shuffled_view_results": "automation_reports/CV-SincNet/20261027-phase1-pamf-repl-shuffled-views-m16-r02/results_analysis.md"
   },
   "reporting": {
     "main_display_columns": [
@@ -198,5 +199,5 @@
     "Single signature view + REPL + Shuffled temporal order"
   ],
   "ordinary_PL_automatic_resume": false,
-  "active_priority_status": "THREE_VIEW_REPL_SHUFFLED_RUNNING"
+  "active_priority_status": "REPL_SHUFFLED_VIEW_COMPARISON_ANALYZED"
 }

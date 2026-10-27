@@ -1,2 +1,3 @@
 {"at": "2026-10-27T02:55:17+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-27T02:59:06+00:00", "status": "RUNNING", "note": "VERIFIED: real checkpoint plus four source backward cases PASS; eight three-view workers cover all seven eligible GPUs, foreign-user GPU2 excluded; zero single-view launched; exact PID/GPU/log growth checked.", "evidence": ["launch_evidence.json"], "row_id": null}
+{"at": "2026-10-27T06:52:02+00:00", "status": "ANALYZED", "note": "VERIFIED all48 stages; two eight-seed groups fully scored; three-view-first order verified; local aggregate recompute matches; PL three-seed comparison disclosed temporal-order confound.", "evidence": ["completion_evidence.json"], "row_id": null}
