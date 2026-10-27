@@ -33,6 +33,8 @@
 
 4. **借鉴 FastTrust 必须同时核对监督类型和梯度剂量。** P 的源集合包含率约99.883%并未转化为正式收益，clean/六景均退步、seed波动增大。其与 Max 的同E20配对校准中，raw目标几乎相同，但full-ramp的H辅助梯度参考中位比例升到24.75%至26.96%，18个H批有10个与主梯度负余弦；这同时改变了身份目标和校准后的压力。PM只固定改变系数公式，以分别约束raw/H的源中位参考比例；它仍须完成三个模型的正式验证。这些局部欧氏梯度不是每步上限或AdamW更新，也不能归因全部负收益。[P完整结果及校准](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-RXTrustP-SIG1-threeSeed-m3-r01/report.md)
 
+5. **集合包含真类不等于集合内部能够消歧。** 对 `−log∑_S p`，若集合内错误类概率大于真类，直接logit梯度步反而扩大错误类相对优势。既有六模型三seed的low urban源代理中，该子集集合内错误类质量约69.6%；这不是实际P/PM选中RX视图、参数更新或退步因果证据。0新F/训练，当前PM不热改。[解析推导与完整源统计](../../automation_reports/CV-SincNet/20261027-phase1-PAMF-RXTrustP-SIG1-threeSeed-m3-r01/source_set_margin_report.md)
+
 ## L 是否应与 U 一样施加新增约束
 
 当前只能评价两种具体附加项的范围，不能推广为所有半监督方法的结论。原完整 L 监督、普通 raw PL 和默认头在各匹配组保持；以下仅比较新增协方差／RX均值一致性是否同时覆盖 L。数值为 LU−U 的同 seed 配对均值±样本标准差，单位百分点。

@@ -41,3 +41,5 @@ P三seed完整ANALYZED：rawclean84.367857%、六景69.716799%，相对PL −0.3
 PM三seed完整E20→E30的6660步/30模型epoch及H/RX/尾批/原PL计数已核验，继续原E50。只读RX传递表几何诊断表明非自洽增益/相位能量0.033164%/0.281932%，投影变化很小且不能证明身份保护，故不为其新开神经候选；0新IQ/F/权重/UTX/V/target。PM健康且无新训练矩阵，原完整目标active。
 
 已将协方差四方法、RX均值两方法、Max与P共八种完成方法的三seed正式计数合并为[完整同基座证据](PAMF_SIG1_COMPLETED_EVIDENCE_20261027.md)。630个方法/seed/人群/场景计数单元与重复引用的PL/Sup逐项一致；全部八方法clean均值低于PL，逐景/分层也未全胜。两项LU−U的配对比较均未显示同时覆盖L有平均收益，但不能推广为全部半监督机制。该汇总0新训练/F/IQ/权重/truth，不含仍在健康训练的PM，既有对照不重跑；原目标active。
+
+既有六模型三seed源概率进一步证明集合内消歧的限制：raw对/baseH错时，集合内错类质量约69.6%，直接logit梯度步扩大错类优势，即使集合含真类。只读648000已有logits，0新F/训练/IQ/权重/UTX/target；不是实际P/PM选中RX视图或性能因果结论。详见P的source_set_margin_report.md。当前PM配方/三seed矩阵保持，未新增神经候选，原目标active。

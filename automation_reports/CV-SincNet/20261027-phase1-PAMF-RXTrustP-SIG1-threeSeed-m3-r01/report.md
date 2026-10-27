@@ -42,3 +42,5 @@ clean和六景的种子间波动都比PL更大，不能选个别正收益seed宣
 已存在36批零更新、同E20/seed/step的配对分析见[paired_calibration_analysis.json](paired_calibration_analysis.json)：主梯度范数相对差最大2.93e-9，选择KL完全相同，raw未加权辅助梯度近乎一致。P full-ramp参考raw约1.66%至2.72%、H约24.75%至26.96%；H反向余弦10/18，Max6/18。混合统计规则不是逐batch 10%上限；这只是局部欧氏梯度，不是实际AdamW或目标退步因果证明。原P未热改。
 
 在本P任何目标分数读取之前，独立PM已固定并发布，仅改变系数为按raw/H分别取norm比值中位数再限较大者。它复用原P同E20的12训练批梯度、0新校准F/权重/更新/target，不加载P E50；各seed仍自原E20独立+30。PM已按资源依赖接续并通过自己第一训练段的真实checkpoint无query检查，尚无完整结果。见[PM报告](../20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/report.md)。
+
+新增[集合内部梯度诊断](source_set_margin_report.md)：既有六份RXMean E50源概率/三seed中，在raw正确而baseH错误的子集，集合包含真类仍使直接logit步扩大错误类优势。low urban集合内错误类质量约69.57%，不是正确身份消歧证据。0新F/训练/IQ/权重/UTX/target；非实际P/PM选中RX视图、参数更新或负收益因果证明，4项检查通过，原PM保持健康。

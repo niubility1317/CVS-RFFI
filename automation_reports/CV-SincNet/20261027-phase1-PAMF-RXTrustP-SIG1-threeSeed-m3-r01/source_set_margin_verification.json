@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED_EXISTING_SOURCE_SET_MARGIN",
+  "focused_checks": 4,
+  "existing_models": 6,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_rows": 108,
+  "source_logit_packets": 648000,
+  "numerical_gradient_check": "independent central finite differences",
+  "new_training_updates": 0,
+  "new_F_forwards": 0,
+  "new_weight_reads": 0,
+  "new_IQ_reads": 0,
+  "U_TX_truth_reads": 0,
+  "target_reads": 0,
+  "healthy_PM_modified": false,
+  "goal_complete": false
+}
