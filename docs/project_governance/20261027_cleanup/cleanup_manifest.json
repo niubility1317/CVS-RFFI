@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-27",
+  "status": "VERIFIED",
+  "scope": "user-authorized cache, synthetic test output, and verified temporary copies; STAR-RFFI/STAR-test excluded",
+  "local": {
+    "status": "VERIFIED",
+    "files": 76468,
+    "logical_bytes": 8384513582,
+    "historical_originals_preserved": 8
+  },
+  "N607": {
+    "status": "VERIFIED",
+    "files": 406771,
+    "logical_bytes": 4777905384,
+    "permission_failures": 17,
+    "archive_copy_preserved": true
+  },
+  "combined": {
+    "files": 483239,
+    "logical_bytes": 13162418966
+  },
+  "physical_space_freed": "not measured",
+  "evidence_directory": "local_artifacts/project_file_management/20261027_cleanup_execution_r05",
+  "retained": "historical originals, experimental data and weights, Git internals, links, unknown files, and inaccessible server files"
+}

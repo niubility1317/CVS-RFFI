@@ -28,3 +28,5 @@
 2026-09-01 前无参考意义的旧产物清理及索引精简见[本机与 N607 永久清理报告](docs/project_governance/20261012_retirement/REPORT.md)。日期不是唯一筛选条件；已删除压缩件以新清单为准。
 
 后续旧产物专项清点（无新增删除）见[归档去重与缓存候选](docs/project_governance/20261012_remaining_audit/REPORT.md)。
+
+2026-10-27 本机与 N607 已授权缓存及临时文件清理，见[清理记录](docs/project_governance/20261027_cleanup/REPORT.md)。
