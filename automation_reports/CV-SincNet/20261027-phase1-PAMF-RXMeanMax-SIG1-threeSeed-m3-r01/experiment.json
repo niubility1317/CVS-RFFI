@@ -246,49 +246,45 @@
     }
   ],
   "notes": [
-    "User3seed instruction explicitly overridesearlier single-seed expansionstop;old01 values andG-inclusive sourceverdict unchanged. All4x3 fixedbefore02/03covariance target access.",
-    "02masks112/282,03masks91/362,01masks94/294;identicalnatural-support estimator,perseed featurecoordinates bound. No copying01 masks.",
-    "Eachseed fourmethods share its source9batch-calibratedalpha/ramp444;algorithm/formula unchanged,no V/targetweight tuning.",
-    "Reuse reviewed objective/trajectory/frozenreader/scorer;targeted seedbasisP0/P1PASS;11focused generalized/backcompat checksPASS. ActualeachownE20 jointbackward/cal smoke first,immediate continuation.",
-    "Only fixed sourcechannelmath code reused,notG engine/weights/restoredIQ. Physical arrays/roles validatedonce unchanged;no hashes/ledgers beyondsingle releasearchive.",
-    "Snapshotcalibration hasoptimizer0/stateunchanged;doesnot inherit9batch state into training. AllactualtrainingU30visits reported separately fromprefix7U/calibrationexposure.",
-    "Three-model-seed mean±sampleSD isnot independentdatasplit/channel-seed evidence orautomatic significance. Completeallrowsbeforeclaimingstablegain;originalgoalnot lowered."
+    "Own rows/methods/seeds and mechanism are authoritative; source execution and immutable archives unchanged.",
+    "Three same-seed original scratch SIG1 E20 parents independently add30 toE50/11100;all model seeds retained.",
+    "FullPAMF/singleSIG_TIME/defaulthead/fullT1L/ordinaryPL.95weight1 unchanged;source U TX hidden/RX known;noG.",
+    "All2tasksx7raw predictions fixed before independenttruth;sourceV diagnostic only;no target result feedback.",
+    "Metadata correction: copied covariance matrix/notes/analysis entrypoint removed;actual rows/controllers/configs and previous complete log/result audits already described this run correctly."
   ],
   "matrix": {
     "methods": [
-      "CovSel-U",
-      "CovRandom-U",
-      "CovFull-U",
-      "CovSel-LU"
+      "RXMean-MaxU"
     ],
     "model_seeds": [
       2026092701,
       2026092702,
       2026092703
     ],
-    "logical_F_models": 12,
-    "reused_seed01_F": 4,
-    "reused_seed01_raw_rows": 3,
-    "new_F_training": 8,
-    "new_F_epochs": 240,
-    "new_F_updates": 53280,
+    "logical_F_models": 3,
+    "new_F_training": 3,
+    "reused_E20_prefixes": 3,
+    "new_F_epochs": 90,
+    "new_F_updates": 19980,
     "per_model_total_epochs": 50,
     "per_model_total_updates": 11100,
     "per_model_trajectory": "13L37LU",
-    "new_calibrations": 2,
-    "calibration_rule": "min(1,.1*median(primarynorm)/max_method_median(covnorm)),9trainL/U batches,noV",
-    "seed01_alpha_reused": 1.0,
-    "new_prediction_rows": 9,
-    "new_CPU_score_rows": 9,
-    "total_raw_decisions_logical": 14112000,
-    "new_raw_decisions": 10584000,
+    "calibration_batches_per_seed": 12,
+    "calibration_raw_batches": 6,
+    "calibration_H_batches": 6,
+    "new_calibration_source_batches": 36,
+    "reused_calibration_source_batches": 0,
+    "new_prediction_rows": 3,
+    "new_CPU_score_rows": 3,
+    "total_raw_decisions_logical": 3528000,
+    "new_raw_decisions": 3528000,
     "G_weights": 0,
     "restored_IQ": 0,
     "new_PL_Sup_control_training": 0,
     "new_reference_prediction": 0,
     "source_score_seed_filtering": false
   },
-  "analysis_entrypoint": "experiments.pamf_u_history.covariance_three_results:collect/analyze",
+  "analysis_entrypoint": "experiments.pamf_u_history.rx_mean_max_results:collect/analyze",
   "mechanism": {
     "view": {
       "strength": 0.1,
@@ -333,5 +329,27 @@
     "extra_packets_over_random_RXMean_U": 6804000,
     "new_inference_parameters": 0
   },
-  "registered_at": "2026-10-26T20:34:58+00:00"
+  "registered_at": "2026-10-26T20:34:58+00:00",
+  "metadata_correction": {
+    "at": "2026-10-27T00:19:05.499799+00:00",
+    "reason": "Inherited covariance summary fields disagreed with own existing rows and mechanism",
+    "fields": [
+      "matrix",
+      "notes",
+      "analysis_entrypoint"
+    ],
+    "actual_scientific_recipe_changed": false,
+    "rows_changed": false,
+    "neural_code_changed": false,
+    "weights_changed": false,
+    "processes_changed": false,
+    "test_predictions_or_scores_changed": false,
+    "original_archive_and_git_history_preserved": true,
+    "old_summary_methods": [
+      "CovSel-U",
+      "CovRandom-U",
+      "CovFull-U",
+      "CovSel-LU"
+    ]
+  }
 }

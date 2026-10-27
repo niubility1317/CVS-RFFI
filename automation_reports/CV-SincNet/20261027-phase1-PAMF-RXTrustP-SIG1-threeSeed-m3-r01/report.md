@@ -44,3 +44,5 @@ clean和六景的种子间波动都比PL更大，不能选个别正收益seed宣
 在本P任何目标分数读取之前，独立PM已固定并发布，仅改变系数为按raw/H分别取norm比值中位数再限较大者。它复用原P同E20的12训练批梯度、0新校准F/权重/更新/target，不加载P E50；各seed仍自原E20独立+30。PM已按资源依赖接续并通过自己第一训练段的真实checkpoint无query检查，尚无完整结果。见[PM报告](../20261027-phase1-PAMF-RXTrustPM-SIG1-threeSeed-m3-r01/report.md)。
 
 新增[集合内部梯度诊断](source_set_margin_report.md)：既有六份RXMean E50源概率/三seed中，在raw正确而baseH错误的子集，集合包含真类仍使直接logit步扩大错误类优势。low urban集合内错误类质量约69.57%，不是正确身份消歧证据。0新F/训练/IQ/权重/UTX/target；非实际P/PM选中RX视图、参数更新或负收益因果证明，4项检查通过，原PM保持健康。
+
+登记摘要勘误：experiment.json的matrix/notes/analysis_entrypoint曾沿用旧协方差汇总字段，现按本run原有逐行配置与实际实现改正为3模型/1方法×3seed。原rows/mechanism、神经执行commit、不可变发布包、模型/进程/预测/评分和此前完整核验均不变；没有改方法、补训练或追溯重测。原错误与本次修正均在Git/事件记录保留。

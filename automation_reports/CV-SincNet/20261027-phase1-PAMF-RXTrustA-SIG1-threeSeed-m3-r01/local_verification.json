@@ -1,0 +1,30 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "focused_checks": 10,
+  "objective_pipeline_checks": 7,
+  "result_completeness_checks": 3,
+  "compiled_modules": 5,
+  "independent_P0P1": "PASS",
+  "review_count": 1,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "new_control_training": 0,
+  "H_raw_accepted_target": "single detached current raw argmax hard CE",
+  "H_raw_rejected_target": "original same-H softKL",
+  "ordinary_raw_PL_changed": false,
+  "full_T1_L_changed": false,
+  "default_head_changed": false,
+  "sig_time_views": 1,
+  "own_E20_new_calibration_batches_per_seed": 12,
+  "calibration_optimizer_updates": 0,
+  "calibration_actual_checkpoint_smoke": "PENDING_FIRST_GPU_CALIBRATION",
+  "actual_new_training_smoke": "PENDING_FIRST_NATIVE_SEGMENT",
+  "PM_modified": false,
+  "new_G_reads": 0,
+  "target_reads": 0,
+  "performance_proven": false,
+  "goal_complete": false
+}

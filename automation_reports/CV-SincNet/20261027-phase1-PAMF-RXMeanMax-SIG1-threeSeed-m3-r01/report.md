@@ -42,3 +42,5 @@
 完整审计首次因日志文件名沿用随机版而在只读stdout定位处退出；真实Max日志是train__SEED.log。已将共用审计的默认随机命名保留，并为Max/P指定实际命名，随后完整3行审计PASS。没有重训、重启、重新预测或覆盖产物，神经执行commit仍为`05e320bb0c554d9b135cec2e43b0e667617a8375`。
 
 下一候选RXTrust-P已在本组任何目标分数读取之前固定、独立审查并发布，仅资源上等待本组整体完成。它按raw可信度及raw/H分歧改变新增H监督类型，原PL和物理RX选择不变；本组结果没有反馈到P的配方或seed。P三份真实checkpoint/梯度检查已通过并开始自身E20+30轨迹，尚无完整性能结论。完整方法和当前状态见[RXTrust-P报告](../20261027-phase1-PAMF-RXTrustP-SIG1-threeSeed-m3-r01/report.md)。
+
+登记摘要勘误：experiment.json的matrix/notes/analysis_entrypoint曾沿用旧协方差汇总字段，现按本run原有逐行配置与实际实现改正为3模型/1方法×3seed。原rows/mechanism、神经执行commit、不可变发布包、模型/进程/预测/评分和此前完整核验均不变；没有改方法、补训练或追溯重测。原错误与本次修正均在Git/事件记录保留。

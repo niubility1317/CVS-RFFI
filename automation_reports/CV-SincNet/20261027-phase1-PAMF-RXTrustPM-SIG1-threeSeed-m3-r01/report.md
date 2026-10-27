@@ -29,3 +29,7 @@
 实际三条PM CUDA轨迹的PID/CWD/argv/UID/显卡映射及非零连续step已核实，见launch_verification.json。配置阶段确为0新F、0模型权重加载、0optimizer，读取原P12批源统计后系数与预登记逐seed一致。没有复制旧P smoke：每行自己的segment30/smoke.json真实读取E20并检查sourceL2、863730参数和原6类默认头。当前已完成首整H epoch，每行三路合计56700且原门控/ramp/尾批符合；此仅初始轨迹执行证据，非完整E50或性能。P负结果不回流本已冻结PM配方。
 
 三seed E20→E30完整段均已结束并逐条核验：6660step/30模型epoch，每模型56700U各10遍、raw/H各283500、H单标签/集合/fallback合计283500且每RX56700，原PL门控、四候选最大KL、alpha/ramp和尾批124一致。配置阶段三份记录确认复用原P12批源梯度、0新增F/权重，原E20 raw/H中位比例符合固定规则。自己两个训练段的真实checkpoint路径与源IO smoke保持，当前E30→E50已继续；见first_segment_audit.json。该节点不是完整E50或PM性能结论。
+
+登记摘要勘误：experiment.json的matrix/notes/analysis_entrypoint曾沿用旧协方差汇总字段，现按本run原有逐行配置与实际实现改正为3模型/1方法×3seed。原rows/mechanism、神经执行commit、不可变发布包、模型/进程/预测/评分和此前完整核验均不变；没有改方法、补训练或追溯重测。原错误与本次修正均在Git/事件记录保留。
+
+三seed均已固定E50/11100，全部19980新增step/90模型epoch及完整stdout、原PL门控/alpha-ramp/四RX选择/尾批/全部U30遍和H路由计数通过核验，见complete_training_audit.json。该快照尚有sourceV诊断未结束，状态保留该边界；真实训练worker已自动转入sourceV和逐行raw预测，完整目标结果仍未齐。新A三seed方案已在PM任何目标分数读取前固定，不以PM结果决定执行。

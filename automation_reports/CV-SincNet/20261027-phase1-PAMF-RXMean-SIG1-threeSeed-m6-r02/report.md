@@ -46,3 +46,5 @@
 补充已存在源预测分析：[同包 raw/H 参照诊断](source_reference_diagnostics/report.md)。两方法×三 seed、648000 份已有 logits/1620 分层，无新 F/训练/target/U 真值。高置信 raw 的 low urban 参照约 38.8% 从 raw 对变为 H 错；H 高置信子集仍约 99.77% 正确。它提示区分参照证据强弱，不能用一致性替代身份纠错证据，也不作为当前 Max 配方修改依据。
 
 已存20项U/RX统计的附加代数检查见[传递表往返/环路诊断](transfer_geometry_report.md)：非自洽对数增益/相位能量0.033164%/0.281932%，投影表RMS变化0.00055448。0新IQ/F/权重/UTX/V/target/训练，不能认定身份保护或性能退步根因。证据不足以优先另开该投影的神经训练，当前PM保持；旧训练和正式结果不改写。
+
+登记摘要勘误：experiment.json的matrix/notes/analysis_entrypoint曾沿用旧协方差汇总字段，现按本run原有逐行配置与实际实现改正为6模型/2方法×3seed。原rows/mechanism、神经执行commit、不可变发布包、模型/进程/预测/评分和此前完整核验均不变；没有改方法、补训练或追溯重测。原错误与本次修正均在Git/事件记录保留。
