@@ -146,7 +146,7 @@ def dispatch(rt):
     from experiments.pamf_repl_completion.runner import processes,capacity,foreign_CPU_score
     from experiments.cric_dura_comparison.pipeline import done,ready,block_failed_dependencies
     root=Path(rt['run_root']);root.mkdir(parents=True,exist_ok=False);(root/'logs').mkdir();jobs=prepare(rt);by={j['id']:j for j in jobs};active={};failed=[]
-    state=dict(status='SMOKE_PENDING',pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,code_commit=rt['code_commit'],owner=rt['launch_owner'],jobs={j['id']:dict(status='QUEUED') for j in jobs})
+    state=dict(status='SMOKE_PENDING',pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,code_commit=rt['code_commit'],owner=rt['launch_owner'],jobs={j['id']:dict(status='COMPLETE' if rt.get('reuse_completed_jobs') and done(j) else 'QUEUED') for j in jobs})
     def launch(job,gpu):
         path=root/'logs'/(job['id']+'.log');cmd=[rt['python'],'-u','-m','experiments.pamf_single_view_paper.runner','worker','--kind',job['kind'],'--config',job['config']]
         env=dict(os.environ,PYTHONPATH=rt['release_root'],CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
