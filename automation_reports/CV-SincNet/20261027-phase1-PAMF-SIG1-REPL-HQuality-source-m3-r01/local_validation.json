@@ -1,0 +1,16 @@
+{
+  "status": "LOCAL_CHECKS_AND_ONE_P0P1_PASS",
+  "focused_tests": 7,
+  "tests": "tests.test_pamf_h_quality",
+  "compile": "PASS",
+  "independent_review": {
+    "reviewer": "/root/ssl_p0p1_review",
+    "verdict": "PASS",
+    "scope": "only direct P0/P1 for new H-quality source pilots",
+    "finding": "No direct P0/P1 in three detached H weights, physical H CE correction, RXTX/guard connection, source training or publisher"
+  },
+  "real_checkpoint_smoke": "NOT_YET_EXECUTED; launcher first GPU step for all3, continue immediately on PASS",
+  "source_only": true,
+  "new_GPU_launches": 0,
+  "target_reads": 0
+}
