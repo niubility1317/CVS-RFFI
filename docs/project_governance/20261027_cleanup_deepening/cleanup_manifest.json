@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-27",
+  "status": "VERIFIED",
+  "scope": "incremental authorized cleanup; STAR-RFFI/STAR-test excluded",
+  "local": {
+    "status": "VERIFIED",
+    "files": 51732,
+    "logical_bytes": 4420215873,
+    "synthetic_files": 51728,
+    "synthetic_roots": 10,
+    "duplicate_archives": 3,
+    "pptx_test_duplicates": 1
+  },
+  "N607": {
+    "status": "VERIFIED",
+    "files": 1,
+    "logical_bytes": 73164800,
+    "retained_server_and_local_confirmed": true
+  },
+  "combined": {
+    "files": 51733,
+    "logical_bytes": 4493380673
+  },
+  "physical_space_freed": "not measured",
+  "previous_cleanup": "20261027_cleanup/cleanup_manifest.json",
+  "evidence_directory": "local_artifacts/project_file_management/20261027_cleanup_execution_r06",
+  "retained": "test sources and logs; retained closure copies and exact PPTX recovery delta; experimental data and unresolved outputs"
+}

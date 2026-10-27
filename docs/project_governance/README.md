@@ -51,3 +51,7 @@ python -X utf8 tools/project_files.py scan --database local_artifacts/project_fi
 ## 2026-10-27 本机与 N607 清理
 
 已授权清理缓存、合成测试输出和少量可重建临时副本；逐项记录及独立读回见[清理记录](20261027_cleanup/REPORT.md)。实验数据、权重和历史证据继续保留。
+
+## 2026-10-27 后续深度清理
+
+继续核查并清理已确认可重建的合成测试输出及少量重复源归档，见[后续清理记录](20261027_cleanup_deepening/REPORT.md)。

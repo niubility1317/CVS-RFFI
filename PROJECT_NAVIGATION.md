@@ -30,3 +30,5 @@
 后续旧产物专项清点（无新增删除）见[归档去重与缓存候选](docs/project_governance/20261012_remaining_audit/REPORT.md)。
 
 2026-10-27 本机与 N607 已授权缓存及临时文件清理，见[清理记录](docs/project_governance/20261027_cleanup/REPORT.md)。
+
+同日继续深度核查及增量清理见[后续清理记录](docs/project_governance/20261027_cleanup_deepening/REPORT.md)。
