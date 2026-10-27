@@ -2,7 +2,15 @@
 from copy import deepcopy
 from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
-from .plan import RUN,TASKS,READOUTS,configuration,make_plan
+from .plan import RUN,TASKS,READOUTS,configuration,make_plan,SSL_KEYS
+
+def validate_reused_SSL(done,reference):
+    c=done['config']
+    for k in SSL_KEYS:
+        if c.get(k)!=reference.get(k):raise ValueError('Reused full U recipe differs: '+k)
+    actual=done.get('actual_REPL',{}).get('calls',done.get('actual_adapter_SSL',{}).get('hard_PL_calls'))
+    segments=[(s['epoch'],s['updates'],s['config'].get('step_offset')) for s in done['segments']]
+    if actual!=6660 or segments!=[(20,4440,0),(10,2220,4440),(20,4440,6660)]:raise ValueError('Reused full SSL execution schedule differs')
 
 def reuse(ctx,row,rt):
     key=row['reuse_key']
@@ -23,8 +31,7 @@ def reuse(ctx,row,rt):
         if arm!={'full':'full','no_signature':'NO_SIGNATURE','moment':'COV_X3'}[row['structure']]:raise ValueError('Wrong reused architecture')
         if row['learning_regime']=='ssl':
             reference=ctx['templates'][str(row['model_seed'])]['repl']
-            for k,v in reference.items():
-                if k.startswith('hard_pl') and c.get(k)!=v:raise ValueError('Reused full U recipe differs: '+k)
+            validate_reused_SSL(d,reference)
         predictions=Path(old['predictions']);scores=Path(old['scores'])
         sd=read(scores/'complete.json');pd=read(predictions/'complete.json')
         if sd['status']!='SCORED_COMPLETE' or pd['status']!='ALL_PREDICTIONS_COMPLETE' or pd['truth_read']:raise ValueError('Historical readouts incomplete')

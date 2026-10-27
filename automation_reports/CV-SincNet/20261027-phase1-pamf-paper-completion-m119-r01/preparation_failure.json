@@ -1,0 +1,14 @@
+{
+  "status": "FAILED_PREPARATION",
+  "execution_commit": "fa6c45de4c8635a7f6d1223e6157445fef4f9253",
+  "failure_layer": "reuse metadata comparison before smoke",
+  "fingerprint": "Reused full U recipe differs: hard_pl_parent_epoch",
+  "owner_exited": true,
+  "GPU_workers_started": 0,
+  "new_models_trained": 0,
+  "new_predictions": 0,
+  "new_scores": 0,
+  "outputs_preserved": true,
+  "replacement_run_id": "20261027-phase1-pamf-paper-completion-m119-r02",
+  "REJECTED_EXTRA_GATE": "Equality of unused historical parent-epoch/continuation metadata; actual recipe and executed schedule remain required"
+}

@@ -2,9 +2,11 @@
 from copy import deepcopy
 from experiments.pamf_single_view_paper.plan import PROTOCOLS,TASKS,VIEWS,READOUTS,SEEDS
 
-RUN='20261027-phase1-pamf-paper-completion-m119-r01'
+RUN='20261027-phase1-pamf-paper-completion-m119-r02'
 RELEASE=RUN+'-release'
 CE_VARIANT='pamf_tri_sigtime_ce'
+SSL_KEYS=('hard_pl','hard_pl_no_uas','hard_pl_label_smoothing','hard_pl_mixstyle','hard_pl_shared_style_plan',
+          'hard_pl_gradient_guard','hard_pl_joint_contrast','hard_pl_receiver_extrapolation')
 
 def make_plan():
     rows=[]
@@ -71,8 +73,8 @@ def configuration(ctx,row,project,commit):
         default_head_joint=True,posthoc_head_fit=False,epochs=50,optimizer_updates=11100,trajectory=[20,10,20])
     if ssl:
         ref=ctx['templates'][seed]['repl']
-        for k,v in ref.items():
-            if k.startswith('hard_pl'):c[k]=deepcopy(v)
+        for k in SSL_KEYS:
+            if k in ref:c[k]=deepcopy(ref[k])
         c['repl_row']=dict(U=True,L_A=True,L_B=True,blocks=dict(style=True,guard=True,joint=True,extrapolation=True))
     return validate_config(c)
 

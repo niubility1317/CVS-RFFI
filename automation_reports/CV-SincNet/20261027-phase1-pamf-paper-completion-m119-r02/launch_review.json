@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "scope": "One independent P0/P1 review of direct next-run correctness, permissions, output preservation and launchability",
+  "findings": [
+    {
+      "priority": "P1",
+      "issue": "comparison_suite missing from publication archive",
+      "resolution": "Both tracked-member selection and Git archive include comparison_suite",
+      "targeted_confirmation": "PASS"
+    }
+  ],
+  "unresolved_P0_P1": 0,
+  "protocol_tests_passed": 10,
+  "actual_CPU_graph_checks": {
+    "no_time_permuted": 232993,
+    "no_pa_permuted": 221953,
+    "no_reference_permuted": 220193,
+    "reference_phase_permuted": 232993
+  },
+  "actual_CPU_outputs": "finite2x6; backward PASS",
+  "fixed_order": [
+    0,
+    5,
+    3,
+    6,
+    2,
+    1,
+    4,
+    7
+  ],
+  "extra_gates_added": false,
+  "targeted_technical_recovery": {
+    "status": "PASS",
+    "issue": "Unused legacy inheritance metadata falsely compared as SSL settings",
+    "fix": "Compare8consumedsettings;require6660actualSSLcallsand20+10+20segments",
+    "actual_legacy_sources_checked": 9,
+    "independent_regression_tests": 1,
+    "full_review_repeated": false
+  }
+}

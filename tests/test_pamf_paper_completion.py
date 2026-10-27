@@ -54,5 +54,15 @@ class MatrixAndPermissions(unittest.TestCase):
         c=self.config(family='architecture')
         for extra in ({'augmentation':True},{'epochs':50},{'extra_losses':['PL']},{'initial_checkpoint':'forbidden'}):
             with self.assertRaises(ValueError):validate_config(dict(c,**extra))
+    def test_legacy_SSL_bookkeeping_is_not_a_mechanism(self):
+        from experiments.pamf_paper_completion.prepare import validate_reused_SSL
+        ref=dict(hard_pl={'weight':6.,'threshold':.95},hard_pl_parent_epoch=20,hard_pl_continuation_epochs=30)
+        done=dict(config={'hard_pl':{'weight':6.,'threshold':.95}},actual_REPL={'calls':6660},
+                  segments=[dict(epoch=n,updates=n*222,config={'step_offset':o*222}) for n,o in ((20,0),(10,20),(20,30))])
+        validate_reused_SSL(done,ref)
+        bad=copy.deepcopy(done);bad['config']['hard_pl']['weight']=1.
+        with self.assertRaises(ValueError):validate_reused_SSL(bad,ref)
+        bad=copy.deepcopy(done);bad['actual_REPL']['calls']=4440
+        with self.assertRaises(ValueError):validate_reused_SSL(bad,ref)
 
 if __name__=='__main__':unittest.main()

@@ -1,0 +1,572 @@
+{
+  "status": "PASS",
+  "time": 1793093397.9388583,
+  "reused_complete_rows": [
+    {
+      "row_id": "F0-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-REPL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-REPL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-REPL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "ManyRx-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "ManyRx-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "ManyRx-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "ManyRx-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "ManyRx-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "ManyRx-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label01-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label01-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label01-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label01-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label01-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label01-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label05-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label05-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label05-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label05-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label05-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "label05-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m1-natural-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m1-natural-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m1-natural-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m1-natural-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m1-natural-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m1-natural-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m2-natural-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m2-natural-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m2-natural-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m2-natural-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m2-natural-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m2-natural-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m3-natural-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m3-natural-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m3-natural-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m3-natural-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m3-natural-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m3-natural-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m4-natural-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m4-natural-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m4-natural-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m4-natural-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m4-natural-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m4-natural-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m6-natural-supervised-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m6-natural-supervised-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m6-natural-supervised-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m6-natural-ordinary_PL-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m6-natural-ordinary_PL-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "m6-natural-ordinary_PL-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-REPL_NO_SIGNATURE-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-REPL_NO_SIGNATURE-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-REPL_NO_SIGNATURE-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-REPL_COV_X3-s2026092701",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-REPL_COV_X3-s2026092702",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    },
+    {
+      "row_id": "F0-REPL_COV_X3-s2026092703",
+      "contract_match": true,
+      "prediction_status": "ALL_PREDICTIONS_COMPLETE",
+      "score_status": "SCORED_COMPLETE"
+    }
+  ],
+  "DURA_caches": [
+    {
+      "protocol": "F0",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "F0",
+      "role": "LU",
+      "contract_match": true
+    },
+    {
+      "protocol": "F1_rx_repartition_r01",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "F1_rx_repartition_r01",
+      "role": "LU",
+      "contract_match": true
+    },
+    {
+      "protocol": "F2_rx_repartition_r01",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "F2_rx_repartition_r01",
+      "role": "LU",
+      "contract_match": true
+    },
+    {
+      "protocol": "ManyRx",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "ManyRx",
+      "role": "LU",
+      "contract_match": true
+    },
+    {
+      "protocol": "label01",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "label01",
+      "role": "LU",
+      "contract_match": true
+    },
+    {
+      "protocol": "label05",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "label05",
+      "role": "LU",
+      "contract_match": true
+    },
+    {
+      "protocol": "m1-natural",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "m1-natural",
+      "role": "LU",
+      "contract_match": true
+    },
+    {
+      "protocol": "m2-natural",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "m2-natural",
+      "role": "LU",
+      "contract_match": true
+    },
+    {
+      "protocol": "m3-natural",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "m3-natural",
+      "role": "LU",
+      "contract_match": true
+    },
+    {
+      "protocol": "m4-natural",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "m4-natural",
+      "role": "LU",
+      "contract_match": true
+    },
+    {
+      "protocol": "m6-natural",
+      "role": "L",
+      "contract_match": true
+    },
+    {
+      "protocol": "m6-natural",
+      "role": "LU",
+      "contract_match": true
+    }
+  ],
+  "CE_target_count": 168000,
+  "CE_double_cross_count": 42000,
+  "target_IQ_reads": 0,
+  "truth_reads": 0
+}
