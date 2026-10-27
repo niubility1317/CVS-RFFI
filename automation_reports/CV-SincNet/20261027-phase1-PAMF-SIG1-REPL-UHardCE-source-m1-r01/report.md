@@ -15,3 +15,17 @@
 新增6660步、30轮；源F0 L6300/U56700/V27000及物理ID不变。真实E20联合L/U backward无query检查先行，实际六logit梯度对独立hardCE scalar误差≤2e−6后立即训练。固定finalE50后27000×raw/三H预测，全部固定才做源V评分和RX/day/TX分层。原源门槛保持raw≥26568/27000且H3≥62109/81000；无通过不扩种子或目标，通过也只是允许之后独立登记三种子验证，原clean+1pp/六景>1.5pp及绝对门槛未放宽。
 
 普通账户N607、GPU0–7剩余容量，全owner CUDA+pending<2/free≥10000MiB；固定不可覆盖root、一次归档SHA/远端编译、PID/CWD/cmd/GPU/日志读回。首个继承/角色/finite/预算/执行技术错误停本run新派发，保留所有输出且不自动重跑；科学负结果保留。实际执行commit、环境/CWD、命令、逐行路径、所有seed和完整预期产物见experiment.json/runtime。
+
+
+## 启动已核实
+
+执行commit `9e2f4faee03025cb93c0653686ca6834b62e6908`，归档传输VERIFIED、远端编译PASS。真实E20联合L/U backward检查PASS：L768/U256/六U前向1536，实际六logit梯度与完整hardCE scalar检查误差4.656612873077393e-10。随后GPU4训练启动，2026-10-27 00:49:36 UTC 独立核实PID/CWD/模块/训练参数/实际GPU与步骤日志增长。步骤日志明确记录nativebase LS0.01、effectiveU LS0及六前向计数，变化已进入实际优化；它不是源或目标性能证据。
+
+当前一个学生源探索，原三版HQuality继续各自健康训练，无目标访问或三种子扩展。详情见[启动证据](launch_evidence.json)。
+
+
+## 后续正式确认的统一源选择范围
+
+2026-10-27 00:55:01 UTC 已只读核实四版均未完成E50冻结或最终源评分。在目标访问前固定未来确认规则：等待三版HQuality和本UHardCE共四版全部完成；各自原raw≥26568/H3≥62109门槛保持。合格者按raw正确数、H3正确数降序选择，仅完全同分按UHardCE、Fixed、Soft、Gate固定顺序。优先简单目标／常数规则不等于实测时延优势。唯一维护的结构化范围在experiment.json的future_confirmation_source_cohort。
+
+本规则仅决定之后另登记的三种子正式确认，当前健康训练、预算及每run原source_selected生成均不改。若无通过则不登记确认、不访问目标；若有，通过源选择的同一方法复用seed01，仅补自有原E20的seed02/03，六个监督/PL控制全部复用。源通过不是原目标通过，也不据之后目标表现改选另一个源候选、替换seed或选择性重跑。
