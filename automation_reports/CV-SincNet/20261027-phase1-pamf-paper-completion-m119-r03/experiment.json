@@ -26,7 +26,7 @@
   "replaces_run_id": "20261027-phase1-pamf-paper-completion-m119-r02",
   "authorization": "User confirmed pure CE and full SSL structural layers, removed PAMF-PL (Permuted), then explicitly requested comprehensive recheck followed by launch on 2026-10-27. Complete eleven-setting control scope; optional twelve internal-SSL variants excluded.",
   "code": {
-    "commit": "release_commit.txt / runtime.code_commit (immutable Git HEAD resolved by publisher)",
+    "commit": "c9ebb6db301815159710b4c5cc461c9fd808dc55",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python3.10.19 / Torch2.1.0+cu121; FP32, TF32 off; threads2; no installation",
     "cwd": "PROJECT/releases/20261027-phase1-pamf-paper-completion-m119-r03-release"
@@ -15642,5 +15642,6 @@
     "target_feedback": false,
     "selection": "fixed final; all declared rows and seeds retained"
   },
-  "registered_at": "2026-10-27T10:06:42+00:00"
+  "registered_at": "2026-10-27T10:06:42+00:00",
+  "launch_verification_ref": "launch_verification.json"
 }
