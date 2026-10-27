@@ -1,0 +1,34 @@
+{
+  "status": "VERIFIED_COMPLETION_BY_INDEPENDENT_ARTIFACT_AUDIT",
+  "execution_commit": "9665123eee953fef082cc0145cb714e2f67d56ff",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "observed_UTC": "2026-10-27 00:17:22 UTC",
+  "jobs": [
+    {
+      "id": "extract",
+      "status": "COMPLETE",
+      "pid": 891284,
+      "gpu": 0,
+      "log_bytes": 221,
+      "log_mtime": 1793060201.9829383,
+      "process": {
+        "alive": false,
+        "state": "MISSING"
+      }
+    },
+    {
+      "id": "score",
+      "status": "COMPLETE",
+      "pid": 891361,
+      "gpu": null,
+      "log_bytes": 810,
+      "log_mtime": 1793060204.272938,
+      "process": {
+        "alive": false,
+        "state": "MISSING"
+      }
+    }
+  ],
+  "limitation": "Both short jobs completed before first independent snapshot; live PID/CWD/GPU/log growth was not observed, no such live-state claim."
+}
