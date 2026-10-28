@@ -1,5 +1,7 @@
 # PAMF Phase2 对比方法代码盘点
 
+r05 已合并源训练、29条完整链路、状态继承和预算，并纳入所有方法匹配的 P0 received／P1 冻结DURA双路；DURA本轮资格未核实，不微调G或自动重训F。旧文中的单输入路径计数与“不新增DURA”安排由[完整总表](PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md)覆盖，历史结果和Phase1路线不追溯改写。
+
 日期：2026-10-28。范围：项目当前源目录、Git 发布镜像、已登记历史代码和固定外部源码的定向只读核查。**完整代码存在不等于当前 CWD 可运行，也不等于同契约成绩已完成。**本轮未读取训练数据／query truth，未执行任何方法。
 
 配套：[完整实验设计](PAMF_PHASE2_MILKR_EXPERIMENT_DESIGN_20261028.md)、[机器可读清单](../configs/pamf_phase2_milkr_experiment_design_20261028.json)。论文题名和版本来自项目已有来源记录及原始代码；本轮没有声称重新逐篇复核全部论文全文。

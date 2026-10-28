@@ -1,5 +1,7 @@
 # PAMF Phase2 主表与综合 practical residual 实验设计
 
+r05 已合并源训练、29条完整链路、状态继承和预算，并纳入所有方法匹配的 P0 received／P1 冻结DURA双路；DURA本轮资格未核实，不微调G或自动重训F。旧文中的单输入路径计数与“不新增DURA”安排由[完整总表](PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md)覆盖，历史结果和Phase1路线不追溯改写。
+
 r04 新增[完整链路衔接分析](PAMF_PHASE2_DA_REGISTRATION_LINKAGE_20261028.md)：T1/T2 继续解释单阶段与原生注册，T2-J 加入闭集 DA 的原生结构扩展／NCM／JointCE 三类注册，与 PAMF 做完整 A/B/C 比较。结构保持对照保留 B 的判决收益。原 MILKR 在 C 独立重拟合，不能主张 B 核状态继承或参数协同；以下原任务量不含新增 21 个组合。
 
 本轮 r03 总表已按用户最新指定将独立单场景收敛为 **low 郊区、mid 城区、low 城区三组**；每组全部 target support/query 使用该组同一种场景，各物理记录的随机信道实现独立且固定。综合仍为六分量、8 套，历史 MILKR 原三景不改名。完整清单、主表、22 版本、消融和修订后的工作量以[全面总实验表](PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md)为准。

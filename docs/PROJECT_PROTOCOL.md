@@ -1,5 +1,11 @@
 # CVS项目场景与数据协议
 
+## 本轮 Phase2 纳入冻结 DURA 的双输入路径设计（2026-10-28，用户最新补充）
+
+本轮总表增加 P0（原固定 received IQ）和 P1（同一 received 经冻结 DURA 后的估计恢复视图），所有方法均有匹配路径，A/B/C 的 support 与 query 始终在同一路径。原始 received 不重生成；恢复视图不是新增物理观测，不增加 K 或独立数据套数。只能从当前观测计算，不获准读取真实 clean、模拟器真值、源样本或 query 标签。query 恢复逐窗口固定推理，不更新 DURA、BN 或跨 query 统计。
+
+DURA 候选固定为 v1.0/R69 stage2、Graph-RR、FP32/TF32off 的既定版本。Phase1 证据不自动证明 Phase2 资格；其源物理角色、旧新 TX、RX/day、教师祖先、选择背景及表示须与本轮契约核对，未核实前不宣称可加载。若不合规，明确 P1 缺项，不静默换权重或新增训练。本轮不微调 DURA，不改变当前源识别器或恢复暂停任务；源训练也使用 DURA 的匹配方案仅列后续扩展。此条覆盖此前本轮 Phase2“不新增 DURA”的设计表述，不追溯修改 Phase1 历史路线。详见 `docs/PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md` r05。
+
 ## 本轮 Phase2 完整链路比较与声明边界（2026-10-28）
 
 域适应与新类注册的完整比较允许在已声明的闭集 DA 的实际 B 表示上接明确命名的 target-support 注册控制；这属于项目组合扩展，不追认为原论文原生 C。各方法在 C 只能使用自身已允许的当前旧／新 support 和历史状态；新增组合不获得额外 source、target U 或 query 拟合权限。未扩展闭集方法的 C 记 N/A，不填 0 分来证明联合方法优越。

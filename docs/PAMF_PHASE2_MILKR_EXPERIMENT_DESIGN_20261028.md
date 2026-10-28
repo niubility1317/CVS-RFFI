@@ -1,5 +1,7 @@
 # PAMF Phase2：MILKR 有标签域适应与新类注册完整实验设计
 
+r05 已合并源训练、29条完整链路、状态继承和预算，并纳入所有方法匹配的 P0 received／P1 冻结DURA双路；DURA本轮资格未核实，不微调G或自动重训F。旧文中的单输入路径计数与“不新增DURA”安排由[完整总表](PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md)覆盖，历史结果和Phase1路线不追溯改写。
+
 r04 新增[完整链路衔接分析](PAMF_PHASE2_DA_REGISTRATION_LINKAGE_20261028.md)：保留所有原生机制，给 7 个闭集 DA 各接原生结构扩展／NCM／JointCE 三类明确 C 控制，组成 T2-J 的 29 条完整链路槽位；新增组合 runner 尚未实现。MILKR C 的独立重拟合与 B 后参数继承有严格区别，不能用闭集方法 C=N/A 作为性能优势证据。
 
 本轮 r03 总表已按用户最新指定将独立单场景收敛为 **low 郊区、mid 城区、low 城区三组**；每组全部 target support/query 使用该组同一种场景，各物理记录的随机信道实现独立且固定。综合仍为六分量、8 套，历史 MILKR 原三景不改名。完整清单、主表、22 版本、消融和修订后的工作量以[全面总实验表](PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md)为准。
@@ -121,7 +123,7 @@ practical处理固定`processing_route=residual, mode=post_sync, equalization_en
 
 综合条件仰角按球面面积采样并传给已有ResidualChannel geometry接口，不继续对角度均匀取样。单场景诊断保留原生各区间均匀采样（mid20°–45°）。外层六场景概率不替换内部LOS/PARTIAL/BLOCKED规则。这是明确物理假设下的参考分布，不是实际星座／业务实测频率。
 
-详见[主表设计第1–2节](PAMF_PHASE2_MAIN_TABLES_20261028.md)、[可复算概率配置](../configs/pamf_phase2_practical_mixture_20261028.json)。不新增DURA，不增加clean无LEO新类主行，不将三单景成绩加权冒充混合support下的适应结果。
+详见[主表设计第1–2节](PAMF_PHASE2_MAIN_TABLES_20261028.md)、[可复算概率配置](../configs/pamf_phase2_practical_mixture_20261028.json)。本轮新增冻结DURA输入对照，资格另核；不增加clean无LEO新类主行，不将三单景成绩加权冒充混合support下的适应结果。
 
 ### 4.2 源域、旧类与新类
 

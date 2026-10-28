@@ -1,5 +1,7 @@
 # PAMF Phase2：域适应与新类注册的衔接、公平比较和优势证据
 
+r05 已合并源训练、29条完整链路、状态继承和预算，并纳入所有方法匹配的 P0 received／P1 冻结DURA双路；DURA本轮资格未核实，不微调G或自动重训F。旧文中的单输入路径计数与“不新增DURA”安排由[完整总表](PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md)覆盖，历史结果和Phase1路线不追溯改写。
+
 2026-10-28，r04 补充分析。**DESIGN_ONLY：未实现新的组合 runner，未读取目标 IQ／truth，未启动实验。**沿用 G10 八套与 D-LS／D-MU／D-LU 三个单景、相同源角色、4 模型、7 RX、5 draw、K1/5/10/20、N_new0/2/5/10/20。
 
 ## 1. 核心判断
