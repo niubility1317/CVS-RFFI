@@ -7,7 +7,8 @@
   "scope": "existing labeled MILKR Phase2 only; no zero-label R&D, Phase3, collaboration or federated work",
   "documents": [
     "docs/PAMF_PHASE2_MILKR_EXPERIMENT_DESIGN_20261028.md",
-    "docs/PAMF_PHASE2_METHOD_CODE_INVENTORY_20261028.md"
+    "docs/PAMF_PHASE2_METHOD_CODE_INVENTORY_20261028.md",
+    "docs/PAMF_PHASE2_MAIN_TABLES_20261028.md"
   ],
   "primary_method": {
     "name": "MILKR",
@@ -77,21 +78,58 @@
   },
   "data_panels": [
     {
-      "id": "P-Formal",
-      "role": "primary_protocol_panel",
-      "scenes": [
-        "leo_clear_weak",
-        "leo_low_elev_weak",
-        "leo_rain_weak"
+      "id": "P-Mixed",
+      "role": "PRIMARY",
+      "dataset_ids": [
+        "MIX01",
+        "MIX02",
+        "MIX03",
+        "MIX04",
+        "MIX05",
+        "MIX06",
+        "MIX07",
+        "MIX08"
+      ],
+      "condition": "practical_mixture_coverage_v1",
+      "native_scene_per_record": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
       ],
       "capsule_id": null,
       "split_id": null,
-      "data_status": "MATCHING_CAPSULE_NOT_ESTABLISHED_THIS_TASK",
-      "action": "reuse existing compatible VALIDATED_ONCE handles; one-time builder only if actual data facts newly constructed"
+      "data_status": "NOT_BUILT_OR_VERIFIED_THIS_TASK",
+      "probabilities": {
+        "practical_high": 0.04369141011349172,
+        "practical_mid": 0.07317984658235889,
+        "practical_low_suburban": 0.38312874330414937,
+        "practical_high_urban": 0.04369141011349172,
+        "practical_mid_urban": 0.07317984658235889,
+        "practical_low_urban": 0.38312874330414937
+      },
+      "action": "allocate disjoint physical pools, categorical scene and conditional covered-area geometry, native residual once per record"
+    },
+    {
+      "id": "P-Diagnostic",
+      "role": "SINGLE_SCENE_EXPLANATORY_NOT_PRIMARY_AVERAGE",
+      "scenes": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "capsule_id": null,
+      "data_status": "MUST_BE_PHYSICALLY_DISJOINT_FROM_ALL_MIXED_SETS",
+      "geometry_sampling": "unchanged native uniform within each scene, mid20-45"
     },
     {
       "id": "P-Legacy",
-      "role": "repeated_benchmark_not_relabelled_formal_weak_LEO",
+      "role": "REPEATED_HISTORICAL_REFERENCE_ONLY",
       "scenes": [
         "practical_high",
         "practical_mid",
@@ -106,10 +144,9 @@
     },
     {
       "id": "P-Confirm",
-      "role": "independent_confirmation_if_new_unexposed_valid_data_exist",
+      "role": "FUTURE_INDEPENDENT_CONFIRMATION_ONLY_IF_SEPARATELY_FIXED",
       "capsule_id": null,
-      "split_id": null,
-      "selection": "coverage_only_before_query; new support seed on same query is not independent"
+      "selection": "same fixed mixture distribution, independent valid data; no best-set selection"
     }
   ],
   "matrix": {
@@ -176,9 +213,9 @@
       2026092715
     ],
     "class_order_sensitivity_seeds": [
-      2026102801,
-      2026102802,
-      2026102803
+      2026102841,
+      2026102842,
+      2026102843
     ],
     "query_per_class": 30,
     "formal_support_pool_per_class": 36,
@@ -195,25 +232,74 @@
     "scenes_physical_ids_disjoint": true,
     "single_received_observation": true,
     "unequal_or_missing_class_K_supported_by_current_MILKR": false,
-    "counts_per_method_per_three_scene_panel": {
-      "A_unique": 84,
-      "B_unique": 1680,
-      "C_positive_new_unique": 6720,
-      "fits_B_plus_C": 8400,
-      "stage_predictions_unique": 8484,
-      "closed_set_stage_predictions_unique": 1764
+    "counts_per_method_primary_mixture": {
+      "A_unique": 224,
+      "B_unique": 4480,
+      "C_positive_new_unique": 17920,
+      "fits_B_plus_C": 22400,
+      "stage_predictions_unique": 22624,
+      "closed_set_stage_predictions_unique": 4704
+    },
+    "counts_per_method_six_scene_diagnostic": {
+      "A_unique": 168,
+      "B_unique": 3360,
+      "C_positive_new_unique": 13440,
+      "fits_B_plus_C": 16800,
+      "stage_predictions_unique": 16968,
+      "closed_set_stage_predictions_unique": 3528
+    },
+    "counts_combined_not_for_score_averaging": {
+      "A_unique": 392,
+      "B_unique": 7840,
+      "C_positive_new_unique": 31360,
+      "fits_B_plus_C": 39200,
+      "stage_predictions_unique": 39592,
+      "closed_set_stage_predictions_unique": 8232
+    },
+    "counts_PAMF8_primary_mixture_including_reused_first4": {
+      "A_unique": 448,
+      "B_unique": 8960,
+      "C_positive_new_unique": 35840,
+      "fits_B_plus_C": 44800,
+      "stage_predictions_unique": 45248,
+      "closed_set_stage_predictions_unique": 9408
+    },
+    "primary_dataset_ids": [
+      "MIX01",
+      "MIX02",
+      "MIX03",
+      "MIX04",
+      "MIX05",
+      "MIX06",
+      "MIX07",
+      "MIX08"
+    ],
+    "primary_mixed_dataset_count": 8,
+    "primary_display_K": 5,
+    "physical_allocation_seed": 2026102800,
+    "physical_ids_pairwise_disjoint_across_all_mixed_and_diagnostic_sets": true,
+    "scene_draw_independent_of_TX_and_role": true,
+    "date_sampling": {
+      "support_pool_per_day": 9,
+      "query_per_day_per_set": "7/8 rotating",
+      "query_per_day_over_8_sets": 60,
+      "missing_date_policy": "coverage-only unified rule before target scores, disclose deviation"
     }
   },
   "theoretical_payload_estimates": {
-    "unique_physical_received_pool": 36036,
-    "minimum_records_per_RX_class_across_three_scenes": 198,
-    "IQ_array_bytes_only": 73801728,
+    "IQ_array_bytes_only": 344408064,
     "MILKR_max_N": 520,
     "MILKR_max_C": 26,
     "FP64_gram_bytes": 2163200,
     "FP64_alpha_bytes": 108160,
     "MILKR_state_array_bytes": 3178272,
-    "measured": false
+    "measured": false,
+    "mixed8_physical_records": 96096,
+    "six_diagnostic_physical_records": 72072,
+    "combined_disjoint_physical_records": 168168,
+    "minimum_records_per_RX_class_combined": 924,
+    "mixed8_IQ_array_bytes_only": 196804608,
+    "six_diagnostic_IQ_array_bytes_only": 147603456
   },
   "external_RFFI_family_count": 14,
   "external_RFFI_families": [
@@ -261,7 +347,10 @@
         "batch_size": 256
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": true,
+      "primary_registration_table_member": false
     },
     {
       "id": "radionet_ada_knn",
@@ -298,7 +387,10 @@
         "knn_k": "K"
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "radionet_ada_ft_knn",
@@ -338,7 +430,11 @@
         "support_ft_epochs": 30
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": true,
+      "primary_registration_table_member": true,
+      "source_warmup": "source-only E/C training; target domain branch disabled until B"
     },
     {
       "id": "radionet_df_ft",
@@ -373,7 +469,10 @@
         "batch_size": 128
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "radionet_triplet",
@@ -410,7 +509,10 @@
         "lr": 0.001
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "protonet_cda",
@@ -449,7 +551,10 @@
         "target_optimizer_steps": 0
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": true,
+      "primary_registration_table_member": true
     },
     {
       "id": "mrior_sda",
@@ -485,7 +590,11 @@
         "CPL": false
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": true,
+      "primary_registration_table_member": false,
+      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B"
     },
     {
       "id": "dadda_sda",
@@ -518,7 +627,11 @@
         "target_steps": 100
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": true,
+      "primary_registration_table_member": false,
+      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B"
     },
     {
       "id": "twostage_sda",
@@ -554,7 +667,11 @@
         "ft_steps": 100
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": true,
+      "primary_registration_table_member": false,
+      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B"
     },
     {
       "id": "feature_separation_hu2024",
@@ -587,10 +704,16 @@
         "lr": 0.005,
         "batch_size": 256,
         "paper_target_samples_per_TX": 25,
-        "Kshot_is_explicit_extension": true
+        "Kshot_is_explicit_extension": true,
+        "target_epochs": 100,
+        "target_budget_basis": "explicit_project_setting",
+        "target_update_scope": "shared_encoder_and_TX_path_RX_frozen"
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": true,
+      "primary_registration_table_member": false
     },
     {
       "id": "feature_separation_legacy",
@@ -622,7 +745,10 @@
         "historical_target_epochs": 100
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "ra_collab_single_ft",
@@ -653,7 +779,10 @@
         "batch_size": 32
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": true,
+      "primary_registration_table_member": false
     },
     {
       "id": "tweak_m1",
@@ -686,7 +815,10 @@
         "query_observations": 1
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": true,
+      "primary_registration_table_member": false
     },
     {
       "id": "tweak_m10",
@@ -714,7 +846,10 @@
         "query_observations": 10
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "csil_corefix",
@@ -751,7 +886,10 @@
         "optimizer_C": "masked_SGDM"
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": true
     },
     {
       "id": "csil_author",
@@ -779,7 +917,10 @@
       "inventory_status": "complete_author_code_not_current_capsule_python_runner",
       "budget": null,
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "mopc_paper",
@@ -817,7 +958,10 @@
         "new_classes_per_session": 5
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": true
     },
     {
       "id": "mopc_public_code",
@@ -844,7 +988,10 @@
       "inventory_status": "complete_author_code_semantics_differ_from_paper_port",
       "budget": null,
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "orthogonal",
@@ -881,19 +1028,22 @@
         "C_epochs": 50
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": true
     },
     {
       "id": "issl_fixed_v1",
       "family": "ISSL",
       "display_name": "ISSL fixed_v1",
       "stages": [
-        "A_if_source_base_bound",
-        "B_not_native",
-        "C"
+        "A_from_source_only_base",
+        "B10_explicit_extension",
+        "C_inherits_own_B"
       ],
       "panel": "native_rffi",
-      "version": "explicit_implementation_fixes_not_full_paper_equivalence",
+      "version": "fixed_v1_plus_B10_target_SFT_explicit_extension",
       "required_access": [
         "old_training_replay",
         "stage_teacher",
@@ -918,10 +1068,17 @@
         "source_template_epochs": 300,
         "SSL_template_epochs": 2000,
         "transfer_template_epochs": 300,
-        "existing_diagnostic_epochs_per_stage": 1
+        "existing_diagnostic_epochs_per_stage": 1,
+        "B_epochs": 10,
+        "B_optimizer": "Adam",
+        "B_lr": 0.0001,
+        "B_batch_size": "min(32,6K)"
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": true
     },
     {
       "id": "issl_author_behavior",
@@ -949,7 +1106,10 @@
       "inventory_status": "complete_real_IQ_diagnostic_not_formal_result",
       "budget": null,
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "lora_triplet_knn",
@@ -987,7 +1147,11 @@
         "STFT_overlap": 32
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": true,
+      "predeclared_auxiliary_control": "k=min(15,K); separate from KNN15 main, no target-based replacement"
     }
   ],
   "registration_complete_families": [
@@ -1029,7 +1193,11 @@
       "inventory_status": "complete_RFFI_component_and_generic_code_bind_one_version",
       "budget": null,
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false,
+      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B"
     },
     {
       "id": "mcd",
@@ -1060,7 +1228,11 @@
         "discrepancy_weight": 15
       },
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false,
+      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B"
     },
     {
       "id": "ncm",
@@ -1086,7 +1258,10 @@
       "inventory_status": "complete_mechanism",
       "budget": null,
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "ridge",
@@ -1112,7 +1287,10 @@
       "inventory_status": "complete_mechanism_intercept_definition_differs_from_MILKR",
       "budget": null,
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "linear",
@@ -1138,7 +1316,10 @@
       "inventory_status": "complete_mechanism",
       "budget": null,
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "adabn",
@@ -1164,7 +1345,10 @@
       "inventory_status": "complete_mechanism_NA_if_encoder_has_no_BN",
       "budget": null,
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "sft",
@@ -1190,7 +1374,10 @@
       "inventory_status": "complete_mechanism",
       "budget": null,
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     },
     {
       "id": "coral_sft",
@@ -1217,7 +1404,10 @@
       "inventory_status": "complete_supervised_mechanism_not_full_native_Deep_CORAL",
       "budget": null,
       "launch_ready": false,
-      "current_contract_metrics": null
+      "current_contract_metrics": null,
+      "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
+      "primary_DA_table_member": false,
+      "primary_registration_table_member": false
     }
   ],
   "not_found_complete_independent_implementation": [
@@ -3462,7 +3652,8 @@
       5
     ],
     "MoPC_larger_sessions": "session20/session10 are explicit extensions, never secretly subdivide; 20 epochs per actual session",
-    "external_methods": "native state inheritance, no per-session reset disguised as continual learning"
+    "external_methods": "native state inheritance, no per-session reset disguised as continual learning",
+    "data_condition": "all eight fixed mixed datasets; single-scene analysis separate"
   },
   "metrics": [
     "A_old",
@@ -3489,20 +3680,24 @@
     "source_and_history_payload_bytes"
   ],
   "statistics": {
-    "primary_unit": "model seed after equal-weight averaging within fixed RX/scene/support/class-count grid",
+    "primary_unit": "model seed after averaging over 8 datasets x 7 RX x 5 draws within K/N",
     "primary_model_n": 4,
     "support_draws_not_independent_models": true,
     "H": "compute per cell then average",
     "four_pair_two_sided_signflip_min_p": 0.125,
-    "failure_policy": "retain all failures and missing rows, never silently drop"
+    "failure_policy": "retain all failures and missing rows, never silently drop",
+    "dataset_replicates": 8,
+    "report_dataset_sd_and_range": true,
+    "full_cartesian_repetitions_are_not_independent_models": true,
+    "fixed_set_count_no_accuracy_based_extension": true
   },
   "phases": [
-    "E0_inventory_and_binding",
-    "E1_single_seed_small_same_row_technical_validation",
-    "E2_fixed_main_matrices",
-    "E3_predeclared_mechanisms_and_sensitivity",
+    "E0_source_only_eligibility_and_frozen_checkpoints",
+    "E1_single_seed_MIX01_small_same_row_validation",
+    "E2_all8_mixed_primary_tables",
+    "E3_predeclared_MILKR_mechanisms_and_sensitivity",
     "E4_sessions_and_reliability",
-    "E5_PAMF8_seed_historical_and_independent_panels"
+    "E5_six_single_scene_diagnostics_PAMF8_and_historical_references"
   ],
   "execution": {
     "actual_run_id": null,
@@ -3517,5 +3712,115 @@
     "max_CPU_scorer": 1,
     "stop_rule": "systemic technical/protocol/input/output/nonfinite failure stops new dispatch; preserve healthy workers; no score-based stopping"
   },
-  "code_inventory_note": "file existence, AST parse, and references only; no algorithm imported, no runtime or GPU test, no query or source IQ loaded"
+  "code_inventory_note": "file existence, AST parse, and references only; no algorithm imported, no runtime or GPU test, no query or source IQ loaded",
+  "revision": "r02_mixed_practical_primary_source_only_before_adaptation",
+  "mixture_design_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+  "source_before_target_policy": {
+    "all_methods_same_source_physical_roles_as_PAMF": true,
+    "target_IQ_or_statistics_before_source_freeze": false,
+    "target_unlabeled_pretraining": false,
+    "U_s_TX_labels_hidden": true,
+    "V_persistent_updates": false,
+    "source_derived_prototype_enrollment_role": "L_s_only_frozen_before_target",
+    "A": "frozen per-query evaluation only; no update or selection",
+    "B": "current-row old labeled target support; source replay only where explicitly allowed",
+    "C": "new labeled support first becomes available; joint all-registered query inference",
+    "native_UDA_joint_training": "source-only initialization S, source-target terms activated at B only",
+    "independent_benchmark_builder": "may prepare target capsule; source trainer cannot consume IQ, statistics or scores",
+    "source_only_material_export_required_if_container_mixes_roles": true,
+    "source_loader_full_dataset_access_audited_this_task": false
+  },
+  "main_tables": {
+    "T0": {
+      "content": "source role, source regime/budget/U access/augmentation/payload; target S access=0"
+    },
+    "T1": {
+      "rows": [
+        "PAMF_MILKR",
+        "poster_ft",
+        "radionet_ada_ft_knn",
+        "protonet_cda",
+        "mrior_sda",
+        "dadda_sda",
+        "twostage_sda",
+        "feature_separation_hu2024",
+        "ra_collab_single_ft",
+        "tweak_m1"
+      ],
+      "columns": [
+        "method_version",
+        "source_regime",
+        "B_source_replay",
+        "A_old",
+        "B_K1",
+        "B_K5",
+        "B_K10",
+        "B_K20"
+      ],
+      "paired_delta_table": true
+    },
+    "T2": {
+      "rows": [
+        "PAMF_MILKR",
+        "csil_corefix",
+        "mopc_paper",
+        "orthogonal",
+        "issl_fixed_v1",
+        "lora_triplet_knn",
+        "protonet_cda",
+        "radionet_ada_ft_knn"
+      ],
+      "new_classes": 20,
+      "K_panels": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "primary_display_K": 5,
+      "columns": [
+        "method_version",
+        "A_old",
+        "B_old",
+        "C_old",
+        "C_new",
+        "H",
+        "B_minus_A_pp",
+        "B_minus_C_old_pp"
+      ]
+    },
+    "T3": {
+      "rows": [
+        "PAMF_MILKR",
+        "csil_corefix",
+        "mopc_paper",
+        "orthogonal",
+        "issl_fixed_v1",
+        "lora_triplet_knn",
+        "protonet_cda",
+        "radionet_ada_ft_knn"
+      ],
+      "K_panels": [
+        5,
+        20
+      ],
+      "new_counts": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "metric": "H; paired C_old/C_new companion"
+    },
+    "T4": {
+      "rows": "all primary rows applicable",
+      "K": [
+        5,
+        20
+      ],
+      "new_classes": 20,
+      "content": "fit/registration/end-to-end_B1_median_p95/memory/state/transfer; source cost separate"
+    },
+    "primary_condition": "P-Mixed only; never average with single scenes or historical results"
+  }
 }

@@ -1,12 +1,15 @@
 # PAMF Phase2：MILKR 有标签域适应与新类注册完整实验设计
 
-日期：2026-10-28。状态：**DESIGN_ONLY，尚未启动任何训练、预测或评分**。
+日期：2026-10-28，r02 综合 practical residual 与源域访问边界修订。状态：**DESIGN_ONLY，尚未启动任何训练、预测或评分**。
 
 本设计落实用户本轮范围：**仅设计现有有标签 MILKR 的完整 Phase2 实验**。不加入无标签适应、匿名新类发现、Phase3 unknown 拒识、多节点协同或联邦学习。K-shot 标签预算曲线属于现有有标签任务，不把它改称无标签研究。
+
+本轮主表与综合场景的最终口径见[主表详细设计](PAMF_PHASE2_MAIN_TABLES_20261028.md)。它覆盖前版的三种leo_weak主面板安排：主实验为固定8套综合practical residual，六单场景作为诊断。所有源训练严格source-only，到B才开放合法target support。
 
 配套文件：
 
 - [方法代码清单与版本边界](PAMF_PHASE2_METHOD_CODE_INVENTORY_20261028.md)：逐方法源码、入口、权限、现有完成度和未接入项。
+- [综合场景概率与8套数据](../configs/pamf_phase2_practical_mixture_20261028.json)：600km参考几何、场景权重、条件采样、独立物理池与随机性。
 - [机器可读实验设计](../configs/pamf_phase2_milkr_experiment_design_20261028.json)：矩阵、方法、预算引用和非可启动状态。
 - [当前 PAMF 定义](PAMF_METHOD_DEFINITION_20261027.md)、[科学协议](PROJECT_PROTOCOL.md)、[实验管理](EXPERIMENT_MANAGEMENT.md)。
 
@@ -80,35 +83,39 @@ b=\operatorname{unit}([\operatorname{unit}(z_{id}),4\operatorname{unit}(FFT96)])
 
 ## 3. 任务状态及严格配对
 
-|状态|可用于拟合的目标信息|输出与含义|
+|状态|可用于拟合的数据|输出与含义|
 |---|---|---|
-|A：适应前|不使用本 row 的 target support|冻结源模型对全部 6 个旧类的预测，得到 A_old|
-|B：旧类适应后|仅该 row 旧类有标签 support|同一旧类 query，得到 B_old|
-|C：新类注册后|保持同一旧类 support，加入当前注册新类 support|每个 query 对全部 6＋N_new 类竞争，得到 C_old、C_new、H|
+|S：源训练|与PAMF相同source RX/day/old TX及L_s/U_s/V物理角色；U_s TX隐藏，V不更新状态|source-only checkpoint及合法L_s派生的冻结原型／enrollment；任何target训练访问为0|
+|A：适应前评估|不拟合；冻结源模型只读前向目标query|A_old；该前向属于测试，不能反过来训练、校准或选模|
+|B：旧类适应|仅当前row旧类有标签target support；外部方法可用明确source replay|同一旧query的B_old；需要target的UDA对齐此时才启用|
+|C：新类注册|同一旧support，才加入合法新类support；按方法权限使用历史状态|每个query面对全部6＋N_new类，C_old/C_new/H|
 
-MILKR 的 B 和 C 是从同一冻结表示分别拟合的两个解析头。C 不继承 B 的系数、带宽或核中心化状态，不能称为神经网络持续微调或已经实现抗参数遗忘。
+S不允许提前读取target无标签IQ、support、query或其BN／统计／伪标签／指标；作者默认source-target联合训练器必须拆成source-only初始化与B适应。所有方法使用同一源域，不等于必须使用相同网络、损失或U_s；每行的标签权限、增强与计算披露清楚，不解封U_s标签。
 
-配对键为 `source_contract/model_seed/receiver/scenario/support_draw/K/class_set/query_physical_id`。K 或新增类数改变时，只要属于同一预登记切片，旧类 support 与旧类 query 物理身份保持可追溯匹配。按 opaque ID 连接，不按数组位置相减。
+源阶段需要类原型／enrollment的ProtoNet、LoRa、Tweak，只能从L_s构建并冻结A参考；PAMF使用原联合训练默认头，不另训Phase1头。source V不用于这些持久状态。没有合法A来源时记录缺口，不能借target support构造A。
 
-原生方法没有 A 的现成可用源判决器时，记 `N/A_no_source_decision`；不要用 target support 构建一个分类器再叫 A。没有旧类适应阶段的原生方法 B 可记 N/A；另跑显式 `+target-SFT` 扩展时单列，并同时保存原生 A→C 结果。
+MILKR的B和C在同一冻结表示上独立解析拟合；C不继承B的系数、带宽或中心化状态。外部原生C从自己的B状态复制，ISSL的B10是明确项目扩展，原生A→C另列。闭集DA不伪造C。
 
-闭集 DA 方法只参加 A/B 主表，C 为 `N/A_closed_set_method`。若另接通用注册头，名称必须是 `方法名 + explicit registration extension`，不能填成原论文新类注册成绩。
+配对键增加`dataset_id`：`source_contract/model_seed/dataset_id/receiver/support_draw/K/class_set/query_physical_id`。K和新增类数变化时旧support及query可追溯配对；按opaque ID连接，不按数组位置。适应状态不得跨dataset、RX、draw或K继承。
 
 ## 4. 数据与场景面板
 
-### 4.1 正式协议面板与历史复现分开
+### 4.1 综合practical residual为主，单场景与历史复现分开
 
-当前协议正文将 Phase2 单次观测场景列为 `leo_clear_weak / leo_low_elev_weak / leo_rain_weak`；历史 D92 已验证 capsule 则使用 `practical_high / practical_mid / practical_low_urban`。两者不能改名、拼接均值或继承成绩。
+用户已明确全部六practical并以综合场景为主，科学协议已同步本轮覆盖条款，不再以三种leo_weak作为本轮主面板。
 
-本设计采用：
+|面板|地位|数据与处理|
+|---|---|---|
+|P-Mixed|唯一主结论面板|MIX01–08，固定8套，相同概率、互异物理记录；每条样本只抽取一个practical场景和一次信道。capsule尚未构建／核实|
+|P-Diagnostic|单场景解释|六个practical各自独立物理池；与综合8套互斥，不能等权加入主平均|
+|P-Legacy|历史复现|既有三景及7RX capsule `residual-noeq-ba667eee4fb061055e4c08b5`、原D92四RX两capsule保持原身份，不能冒充新综合数据|
+|P-Confirm|额外独立确认（若另行固定）|新接收机／物理记录，仍按冻结综合概率；换support seed或复用query不叫独立确认|
 
-|数据面板|地位|场景与数据状态|处理|
-|---|---|---|---|
-|P-Formal|当前 PAMF＋MILKR 的正式协议主面板|三种 leo_weak；**本次未读取或验证到可直接使用的匹配 capsule**|执行前先查既有有效 capsule；存在即复用，否则对新增接收观测一次性构建验证。不得拿 practical capsule 改标签替代|
-|P-Legacy|历史方法复现与连续性面板|既有 practical 三景；7 RX capsule `residual-noeq-ba667eee4fb061055e4c08b5`；D92 原始 4 RX 两 capsule 另保留|原 received IQ、split 和历史许可原样复用，标为透明重复基准。当前模型能否加载须另核对 checkpoint 数据契约|
-|P-Confirm|独立泛化补充|未用于开发／选模的合法 receiver 或物理记录，仍为三种 leo_weak|先按覆盖而非性能规则固定，不把换 support seed、复用 query 叫独立验证|
+practical处理固定`processing_route=residual, mode=post_sync, equalization_enabled=false, fs_hz=25e6`。模型高度600km、地球半径6371km；城区／郊区各0.5为中性参考先验，仰角按可见覆盖球面面积计算。综合分档low10°–30°、mid30°–45°、high45°–80°；对应六概率依次为high suburban 0.04369141011349172、mid suburban 0.07317984658235889、low suburban 0.38312874330414937、high urban 0.04369141011349172、mid urban 0.07317984658235889、low urban 0.38312874330414937。
 
-这项安排不修改协议，不改变任何既有实验场景。Phase1 的 clean＋六 practical 默认不自动扩展为 Phase2 七景；本轮不设计无 LEO 新类正式成绩，也不新增 DURA 路线。若将六 practical 作为未来正式主面板，应先明确对应科学协议修订，不能在启动器中静默扩大。
+综合条件仰角按球面面积采样并传给已有ResidualChannel geometry接口，不继续对角度均匀取样。单场景诊断保留原生各区间均匀采样（mid20°–45°）。外层六场景概率不替换内部LOS/PARTIAL/BLOCKED规则。这是明确物理假设下的参考分布，不是实际星座／业务实测频率。
+
+详见[主表设计第1–2节](PAMF_PHASE2_MAIN_TABLES_20261028.md)、[可复算概率配置](../configs/pamf_phase2_practical_mixture_20261028.json)。不新增DURA，不增加clean无LEO新类主行，不将六单景成绩加权冒充混合support下的适应结果。
 
 ### 4.2 源域、旧类与新类
 
@@ -129,40 +136,33 @@ Phase1 出现过的任何 TX 只能是 old。新类身份及全部物理记录�
 
 ## 5. 主矩阵、随机性与任务数量
 
-### 5.1 固定主矩阵
+### 5.1 固定主综合矩阵
 
 |维度|主设置|
 |---|---|
-|旧类数|6|
-|每类有标签 support K|1、5、10、20|
-|新增类数|0、2、5、10、20，总注册类数 6、8、11、16、26|
-|目标 RX|Main split 全部 7 个；历史 D92 原始 4 RX 结果独立列出|
-|场景|每个面板自身三景，不跨面板合并|
-|主比较模型 seed|2026092701、02、03、04；各方法相同列表，不按性能筛 seed|
-|PAMF 稳定性补充|既有 05–08，合成 8-seed PAMF-only 结果；不能与外部 4-seed 当作完全配对|
-|support draw seed|2026092711、12、13、14、15|
-|物理 query 数|目标每类 30，沿用既有有效 split；实际不足必须报缺项，不能换掉低分 RX／TX|
-|正式面板 support 候选池|每 RX／场景／类固定36个物理记录，供5个draw独立排列取前K；每row只可用自己的K个，其余候选池记录不可参与拟合|
-|采样规则|同类一次排列取前 K，K 前缀嵌套；新增类 2⊂5⊂10⊂20；query 池固定|
-|日期口径|D1–D3 cross_rx 与 D0 cross_rx+unseen_day 分开报告；D0 不是未来日期|
+|旧类／新增类数|old6；N_new0、2、5、10、20，总注册类6、8、11、16、26|
+|每类有标签support|K1、5、10、20|
+|综合数据|MIX01–08，共8套，固定同一概率，各套物理ID互斥|
+|目标RX|Main split全部7个；历史D92原四RX结果独立列出|
+|主模型seed|2026092701至04，所有方法相同；PAMF05–08作额外稳定性补充|
+|support draw|2026092711至15，按dataset_id/RX/TX命名随机流|
+|每套每RX每类|36条support候选池＋30条query；每row仅开放自己的K条|
+|源角色|Ls6300、Us56700（TX隐藏）、V27000，与PAMF精确物理角色匹配|
+|目标日期|D0–D3，分别报告cross_rx与cross_rx+unseen_day；D0不是未来日期|
 
-数据／信道／support／model／class-order／evaluation 六类随机性分别记录。旧 capsule 的 data/augmentation/evaluation seed 为 `2026092705/2026092707/2026092706`，只属于旧 capsule；正式新 capsule 不凭数字相同假定相同划分。新类集合前缀固定，不按识别难度选类。
+模型seed、物理池划分、场景抽样、信道、support、evaluation、class-order分别记录；同套输入和split在方法及model seed间完全相同。class-order敏感性seed为2026102841/42/43，不混成数据套数。综合receiver_seed=2027固定RX/day硬件，不随TX或dataset生成新硬件。
 
-### 5.2 数量与复用
+数据36条候选池按四日期各9条；30条query按7/8条分日轮换，使8套合计每日期各60条／RX／类。实际缺日时在任何模型目标评分前按可用性固定统一替代规则并披露。K前缀嵌套，新增类集合2⊂5⊂10⊂20，query池不随K/draw变化。实际scene独立于TX／old-new／support-query采样，不按类别强制凑场景配额。
 
-每个完整方法、每个数据面板：
+### 5.2 主综合数量
 
-- A：`4×7×3=84` 个唯一模型／RX／场景参考预测。可复用，不随 K 和 support seed 重做。
-- B：`4×7×3×4×5=1680` 个 old-only support fit。
-- C：`4×7×3×4×5×4=6720` 个正新增类数 fit。
-- B＋C 共 **8400** 个预登记适应／注册row；A＋B＋C 共 **8484** 个去除A重复后的阶段预测记录。support draw允许重叠，实际不同support集合数须另报；若两个draw恰好相同，不把它们解释为独立support重复。序列化文件若重复A，须另外报告去重数量。
-- 闭集 DA 方法只有 A＋B，共 **1764** 个唯一阶段预测记录，不伪造 C。
-- 4-RX 历史面板的 B＋C 为 `4×4×3×4×5×5=4800`，不能与 7-RX 主矩阵混为同一覆盖。
-- PAMF 的 8-seed 补充为 B=3360、C=13440、A=168，总 16968；其中前 4 seed 复用主实验，不重复。
+每个支持完整B/C的方法：A=`4×8×7=224`；B=`4×8×7×4×5=4480`；C=`4×8×7×4×5×4=17920`。共**22400个fit row／22624个阶段预测**。闭集DA只有A＋B，共**4704**。这些是预登记row数，实际不同support集合数另报，不把相同draw当独立重复。
 
-新正式 capsule 采用每类36个support候选池＋30个query，以允许5个draw在K20仍有抽样变化；沿用既有builder的池式思路，不要求draw间support互斥。26类×7RX×3场景×66条，共 **36036** 个固定物理观测；每RX／类至少需198条可用记录。IQ数组理论载荷为 **73801728** 字节，约70.4MiB。每row仍只暴露K个有标签support，不得跨draw拟合或继承适配状态。这是不含ID、容器及其他元数据的设计估计，不是已构建产物或实测部署大小。历史capsule的池大小以自身manifest／builder记录为准，不重建来套本设计。
+六单场景诊断另有A168、B3360、C13440，共16800个fit row／16968个阶段预测。主综合＋六单景共39200个fit row／39592个阶段预测，但不能混成一个准确率。PAMF8模型主综合为44800个fit row／45248个阶段预测，前4模型复用，不重复。
 
-K=1 时整个任务仍有 C 个 support，不是总共一个样本；没有独立同类持出数据，不能报告 K=1 的监督持出准确率。
+综合8套需96096个物理观测，六单景另需72072，合计168168；每RX／类至少924条互异原记录。IQ数组理论载荷344408064字节，约328.45MiB，不含ID／容器／元数据。实际覆盖尚未核实；不足时报告缺项，不重放同一IQ构成多套。历史capsule保持原池大小与观测，不为匹配新设计而重建。
+
+K1仍有C个support，但没有独立同类持出；不得报告虚构的K1监督持出准确率。综合8套全部报告，不按成绩挑套或追加到预期均值。
 
 ## 6. 所有已找到完整代码的外部方法
 
@@ -196,7 +196,9 @@ MoPC-HR、ISSL 和 RadioNet 的不同实现版本不是不同论文家族。外�
 
 ## 7. 原生预算、权限与公平性
 
-### 7.1 两类原生比较
+### 7.1 source-only时间边界与两类原生比较
+
+源训练S阶段只用与PAMF相同的source角色，任何target输入与统计为0。原生DADDA/MRIOR/Two-stage/RadioNet训练器若默认从起点加载target，不能直接沿用；source初始化和target对齐须拆开，后者只能在B开启。允许原生source loss，不强制改成PAMF网络；source replay在B/C明确披露。
 
 主表 `Native-matched-input`：相同 target physical support/query、K、类别、场景和随机性，各方法保留自己的训练目标与原生更新机制。源训练预算与适应预算逐项披露；epoch 相同不等于 optimizer step、样本曝光或计算相同。
 
@@ -210,7 +212,7 @@ MoPC-HR、ISSL 和 RadioNet 的不同实现版本不是不同论文家族。外�
 |---|---|---|
 |当前 PAMF＋MILKR|既有 E50/11100；B/C 各一次解析 fit|不重训地面模型；不将旧 E200 成绩归入此行|
 |九类 native 历史系列|source E200/最后一轮；各方法实际 step 与 episode 不同|只在数据祖先契约匹配时复用；否则缺项，不回退旧模型|
-|Feature Separation 旧 matched 版|B 100 epochs|Hu strict 版原论文每 TX25 FT 样本与 K=1/5/10/20 是数据预算扩展|
+|Feature Separation Hu新版主行|B100epochs，Adam0.005，batch≤256，TX路径微调／RX冻结|该B预算是项目设置；旧matched版与原论文25samples/TX分别披露|
 |DADDA-SDA|B 100 次更新（100 epochs×1）|source replay、动态 LMMD 权重及 target CE 启用需实际记录|
 |MRIOR-SDA|B 100 次交替更新|GAD/DV-KL、CPL 关闭的旧版本明确标记|
 |Two-stage|DANN100＋LMMD100＋FT100|分阶段总更新量及各阶段 source/support 曝光分别记录|
@@ -221,7 +223,7 @@ MoPC-HR、ISSL 和 RadioNet 的不同实现版本不是不同论文家族。外�
 |CSIL matched corefix|B10 epochs；C3 epochs 掩码 SGDM|经验 Fisher、teacher、mask、旧块更新及源模型成本全计入|
 |MoPC-HR matched paper|B10 epochs；每 session20 epochs，最多5新类/session|最终 prototype 校正未必直接用于当前分类器预测|
 |Orthogonal matched|B10 epochs；C50 epochs|源正交几何训练不可省去|
-|ISSL|已有原预算模板 base300／SSL2000／transfer300；诊断仅1epoch|正式 arbitrary-K 接口和具体阶段预算需落入配置；不能用1epoch诊断代表完整方法|
+|ISSL fixed_v1＋B10|source base300；B10epochs Adam1e-4、batch=min(32,6K)；C SSL2000／transfer300|B是项目扩展；C保留原replay与queue。原生无B及作者行为版另列，不用1epoch诊断代表完整方法|
 |LoRa|作者1000epoch／source-only早停规则；现有 WiSig 仅短预算诊断|triplet、STFT、KNN memory 与本地预处理扩展必须披露|
 |Tweak|现有100epoch训练与固定多域calibration接口|学习率搜索只看合法source V；M10与M1不同观测预算|
 
@@ -278,7 +280,7 @@ S9/S10 的 B→C 继承与从原基座 reset 对照必须分开，总更新量�
 
 删除块采用显式 active-block 公式，保留块重新按预定规则归一化，并记录总范数、Gram trace、维度。另留 norm-matched 零块控制用于区分范数变化；不得在看 query 之后选择哪种删除定义。M6–M8 为读出输入消融，联合 `z_id` 仍可能包含被删分支信息，不能宣称网络彻底移除了该分支。真正网络分支消融需相应 source 从零训练，另计预算，不在本轮默认追加。
 
-不开展所有删除项的笛卡尔积。先在固定 K=1/5/20、N_new=0/5/20 的机制切片上完整比较，再将核心 M0/M2/M3 和预登记必要项扩到主矩阵；不能用该切片 query 分数挑选“有效消融”后只报它们。
+不开展所有删除项的笛卡尔积。先在预定MIX01/02、固定K=1/5/20、N_new=0/5/20的机制切片上完整比较，再将核心 M0/M2/M3 和预登记必要项扩到主矩阵；不能用该切片 query 分数挑选“有效消融”后只报它们。
 
 ## 10. 标签预算、参数与可靠性
 
@@ -314,11 +316,11 @@ K=1/5/10/20 全部真实标签可见，分别报告旧类、新类、H、floor�
 
 ### 11.1 规模
 
-必须保留完整K×N_new表，不能只展示N_new=2。N_new=0只报告A/B；新类准确率与H为N/A，不填0。新增类按固定身份顺序前缀，另做类顺序seed `2026102801/02/03` 的敏感性，不能把support seed冒充class-set seed。
+必须保留完整K×N_new表，不能只展示N_new=2。N_new=0只报告A/B；新类准确率与H为N/A，不填0。新增类按固定身份顺序前缀，另做类顺序seed `2026102841/42/43` 的敏感性，不能把support seed冒充class-set seed。
 
 ### 11.2 连续注册
 
-在同一最终20个新类、同一最终support上比较一次加入20、10＋10、5×4、2×10。主序贯切片固定 K5/20、4 model seeds、5 support draws、7 RX、3 scenes；方法按原生状态继承，逐session保存旧类、历史新cohort和本轮新cohort表现及累计成本。
+在同一最终20个新类、同一最终support上比较一次加入20、10＋10、5×4、2×10。主序贯切片固定 K5/20、4 model seeds、5 support draws、7 RX、8套综合数据；方法按原生状态继承，逐session保存旧类、历史新cohort和本轮新cohort表现及累计成本。
 
 MILKR每次都用累计合法target support重新拟合。最终support集合和特征完全相同时，其最终解应与一次联合拟合相同（仅允许已说明浮点误差）；因此最终顺序实验主要检验实现一致性，科学差异来自中间session表现和重复重拟合成本，不能将顺序不敏感包装成新的持续学习机制。
 
@@ -354,11 +356,11 @@ B_{old}-C_{old,all}
 
 ### 12.2 聚合与不确定性
 
-主指标先在每个model seed内，对固定RX、场景、support draw及正新增类规模等权平均，再报告4个model seed的均值±样本标准差。正新增类四档等权；N0独立列出。保留按实际query数合并的总体表，但标注为另一口径。
+主表只来自8套综合数据：先在每model_seed×dataset_id×RX×support_draw×K×N单元形成指标与方法配对差，再对固定8套、7RX、5draw等权汇总为每个model seed结果，最后报告4模型均值±样本标准差。H逐cell计算再平均；N0独立列出。T3如需聚合正新增类数，四档等权并注明，不与N0混合。
 
-方法差值先按完整配对键计算，再汇总model-seed差值。给出四seed配对差与t区间时明确样本小、共享测试集及条件性解释；描述性hierarchical／多维cluster bootstrap可另列，不把成千上万support重采样任务当作成千上万独立训练重复。四对模型seed的双侧精确符号翻转检验最小p为0.125，不能据此声称p<0.05。需要更强检验时，先固定扩seed矩阵再执行，不按结果追加到显著为止。
+另列8套逐套均值、套间标准差／范围、模型方差和support draw波动；实际场景频率及逐scene诊断由独立scorer在预测固定后报告。不能把8×5×4当160次独立模型训练，更不能把成千上万query当独立源训练重复。四对模型seed双侧精确符号翻转检验最小p=0.125；不依赖support伪重复宣称p<0.05。8数据套上的条件性bootstrap另列，明确共享模型／RX的边界。
 
-类排列、嵌套K、复用query会产生相关性。独立确认必须在未用于研发或选模的数据上完成，换support draw不构成新盲测。所有预定对比与负分层保留，探索性多重比较注明性质。
+六单景、历史三景、综合8套分开汇总。六单景加权准确率不代表混合support下的适应。所有8套使用同一概率，不从结果换概率、删除困难套或追加到显著为止。覆盖数据独立不等于真实星座／任务独立；当前PAMF选择背景仍披露。
 
 ### 12.3 判读目标与失败定义
 
@@ -388,7 +390,7 @@ MILKR理论状态可按 `8*N*(736+C+2)+16+8*(tau存在)+8*(gamma存在)` 字节�
 4. Hu完整复现、Tweak、RadioNet Triplet、RA单节点、ISSL、LoRa接入正式source/capsule/arbitrary-K接口；保留算法，删除测试选模／support-query重叠等非法默认。
 5. LoRa现有A已用了target enrollment；正式A需要合法source-enrollment参考，否则N/A。KNN15在K1/C6只有6个support，预定`min(15,Nsupport)`为预算兼容扩展并披露，不能运行时报错或静默换NCM。
 6. ISSL诊断旧3/新3/同RX/无LEO不能填正式6＋20类成绩；原行为版与fixed_v1要分开。Tweak M10不能直接接单物理query主表。
-7. 新正式LEO面板的capsule、当前checkpoint实际物理契约、完整外部方法预算与环境路径仍需在真正发布前绑定。本设计不猜这些值。
+7. 新综合practical residual面板的capsule、当前checkpoint实际物理契约、完整外部方法预算与环境路径仍需在真正发布前绑定。本设计不猜这些值。
 
 这些属于真实运行正确性问题，不增加报告SHA、封印、签名、receipt、额外审批或重复审查。
 
@@ -397,11 +399,11 @@ MILKR理论状态可按 `8*N*(736+C+2)+16+8*(tau存在)+8*(gamma存在)` 字节�
 |阶段|内容|完成证据|
 |---|---|---|
 |E0|登记完整方法、版本、权限、source祖先和适配缺口；选择单一完整Git承载面|逐方法代码清单与实际配置；不启动GPU|
-|E1|最小同row验证：seed01、固定第一个合法RX、clear场景、K1/5、N0/5/20|聚焦负测＋真实checkpoint无query smoke；验证合法输出与数值残差|
-|E2|已固定方法的主A/B/C矩阵，逐row完成后自动测试／独立评分|原生系统、共享表示主表、全部缺项和资源|
+|E1|最小同row验证：seed01、固定第一个合法RX、MIX01、K1/5、N0/5/20|聚焦负测＋真实checkpoint无query smoke；验证合法输出与数值残差|
+|E2|已固定方法的8套综合主A/B/C矩阵，逐row完成后自动测试／独立评分|原生系统、共享表示主表、全部缺项和资源|
 |E3|MILKR单因素机制切片与冻结敏感性；所有预定点保留|机制表、完整曲线、搜索成本与负结果|
 |E4|连续注册、类顺序与压力诊断|逐session cohort曲线及累计资源|
-|E5|PAMF8seed补充、历史复现及独立确认|分面板报告，不混合新旧基座与场景|
+|E5|六单景诊断、PAMF8seed补充、历史复现及独立确认|分面板报告，不混合新旧基座与场景|
 
 对新研发候选只允许先小型source/support可证伪研究，科学阈值须在query前预定；本轮固定MILKR及完整方法比较不按小型target分数删掉弱对手或改预算。低性能是结果。
 
@@ -411,22 +413,10 @@ N607执行使用普通账户，GPU选择在发布时依据实际空闲容量固�
 
 ## 15. 交付表图与验收
 
-必须输出以下完整材料：
+主表的最终行／列／版本及数据访问规则以[主表详细设计](PAMF_PHASE2_MAIN_TABLES_20261028.md)为准：T0 source公平边界；T1旧类A与B@K1/5/10/20；T2各K、N_new20的A/B/C_old/C_new/H；T3注册规模曲线；T4资源。
 
-|编号|表／图|内容|
-|---|---|---|
-|T1|方法与权限总表|所有完整代码方法、版本、source/history/target权限、native或扩展、完成度|
-|T2|旧类适应主表|每K的A、B、B−A、Macro-F1、floor及成本|
-|T3|新类注册主表|完整K×N的C_old/C_new/H、B−C_old、新旧差距|
-|T4|共享表示与MILKR消融|同一PAMF、相同support与读出控制、完整负结果|
-|T5|逐RX／场景／日期|主表均值背后的范围，原生权限面板分开|
-|T6|资源与状态|IQ端到端、缓存读出、适应／注册、内存／状态／传输|
-|F1|A→B→C三阶段图|旧类适应收益、注册竞争、原生和扩展分组|
-|F2|K×N热图及预算曲线|各方法H、C_old/C_new及总support数|
-|F3|机制与参数图|交互／局部核增量、λ／τ／FFT权重敏感性|
-|F4|连续注册曲线|最初旧类、各历史新cohort、当前新类及累计成本|
-|F5|错误变化图|纠错／损伤计数、old↔new混淆与下降分解|
+旧类主表包含PAMF＋MILKR和9个外部DA家族；注册主表包含PAMF＋MILKR及7个外部注册家族。其余完整路线、版本诊断、共享PAMF机制、MILKR消融、8套逐套波动、六单景、连续注册与旧类损伤分解全部保留在固定附表，不能以主表去重为由漏掉已有完整方法。
 
-保存row级CSV/JSON、完整混淆矩阵、opaque-ID预测与独立评分、resolved config、source lineage引用、实际更新／曝光日志和资源记录。原始IQ、checkpoint、预测、训练日志留在受控产物目录，不提交Git；版本化方法配置与公开汇总按项目流程交付。
+保存row级CSV/JSON、混淆矩阵、opaque-ID预测与独立评分、resolved config、source lineage、实际更新／曝光及资源记录。必须含dataset_id，明确source阶段target访问为0；原始IQ、checkpoint、预测与训练日志不提交Git。对外结论限定于此参考综合分布及地面代理，不声称真实在轨验证。
 
 设计完成的验收标准是：方法代码清单可追溯、主矩阵和适用边界明确、预算与权限不混用、指标可计算、缺口与实施顺序可直接交接。**它不代表实验已运行、外部方法已全部接入或MILKR已在当前PAMF基座上达到任何性能目标。**

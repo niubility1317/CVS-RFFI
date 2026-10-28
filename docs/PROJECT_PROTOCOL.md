@@ -1,5 +1,19 @@
 # CVS项目场景与数据协议
 
+## 本轮 PAMF Phase2 使用 practical residual 与分阶段目标访问（2026-10-28）
+
+用户本轮明确：星地信道使用 **practical residual**；所有域适应对比方法在目标适应前，均与 PAMF 使用同一套训练源域。此条覆盖下文将本轮 Phase2 场景限定为三种 `leo_weak` 的旧默认；不改写历史 received IQ、场景名称或已完成结果。
+
+本轮允许的 practical 标识为 `practical_high`、`practical_mid`、`practical_low_suburban`、`practical_high_urban`、`practical_mid_urban`、`practical_low_urban`，实际场景矩阵在本轮设计／run 中固定。执行路径固定 `processing_route=residual`、`mode=post_sync`、`equalization_enabled=false`、`fs_hz=25e6`，保留输入的真实预处理身份。单物理样本只绑定一份固定 received IQ，跨场景物理 ID 互斥，support/query 互斥；不能以同一物理 IQ 的六次叠加冒充六个独立观测。
+
+本轮主评估采用综合 practical residual：每条物理样本按事前固定概率抽取一个场景并处理一次；多套综合数据使用互不相交的物理记录，且与单场景诊断物理ID互斥。概率来自明确的参考几何与环境先验，不能依据目标识别结果设定或修改。原生low/mid仰角区间有重叠时，综合采样可采用其支持范围内的互斥分档和外部geometry，必须保留实际采样规则；内部衰落／接收机／residual处理公式不变。实际套数、概率、seed和矩阵属于本轮实验设计，不写成真实部署频率。
+
+地面源训练 S 阶段只允许匹配 PAMF 的源接收机、源日期、旧 TX、L_s/U_s/V 物理角色。L_s 的 TX 标签可见，U_s 的 TX 始终隐藏，V 只验证，不更新持久状态；不同方法可保留原生 source-only 目标，是否使用 U_s、增强和计算成本分别披露。禁止在 S 阶段或源 checkpoint 祖先中用目标 support、目标无标签 IQ、目标统计／BN／原型／伪标签、query 或目标指标训练、校准、早停和选模。外部方法的 source/history 权限例外不豁免这一时间边界，不能照搬原论文提前混入 target 的默认训练器。
+
+A 是源模型冻结后的目标 query 只读评估，不产生适应状态，评分不反馈选模；B 开放当前 row 的旧类有标签 target support，原生 UDA 可仅取该合法 support 的 IQ 做域对齐，不增设 query 无标签池；C 才加入合法新类有标签 support。原论文需 source replay、Fisher 或历史原型的外部方法可在 B/C 使用各自明确的合法源状态，但其产生必须在 source-only 边界内，且不能将该例外扩展给 MILKR 主方法。所有阶段的 query 仅逐样本测试，全部预登记预测固定后独立 truth-last 评分。源阶段派生的类原型／enrollment 仅由 L_s 生成并冻结；不能借用目标 support 构造 A。
+
+本条只固定本轮科学输入、阶段权限与声明边界，不启动实验、不改变其他 owner 或历史固定矩阵；未变化且已 `VALIDATED_ONCE` 的数据直接复用。新增场景若需要新的物理观测，只验证实际改变的数据事实，不因方法或文档修改重复建库。
+
 ## 星地测试与普通PL的当前训练约定（2026-10-19）
 
 用户最新要求：凡正式比较包含星地信道测试，训练须使用默认clean＋satellite拼接式星地增强。full与自身CE使用相同增强；卫星视图仅承载TX交叉熵，权重0.68，不附加星地一致性损失。本条覆盖此前“关闭训练增强仍默认进行星地测试”的后续正式比较约定；既有产物保留并标为无增强历史对照，不追溯改写。

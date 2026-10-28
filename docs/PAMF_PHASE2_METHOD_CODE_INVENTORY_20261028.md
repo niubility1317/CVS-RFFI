@@ -4,6 +4,14 @@
 
 配套：[完整实验设计](PAMF_PHASE2_MILKR_EXPERIMENT_DESIGN_20261028.md)、[机器可读清单](../configs/pamf_phase2_milkr_experiment_design_20261028.json)。论文题名和版本来自项目已有来源记录及原始代码；本轮没有声称重新逐篇复核全部论文全文。
 
+## 本轮主表资格与目标访问时点修订
+
+本轮以[综合practical residual的8套主表](PAMF_PHASE2_MAIN_TABLES_20261028.md)为准。以下“完整代码存在”不表示作者默认输入权限可以直接沿用：每个主表方法都先在匹配PAMF的L_s/U_s/V源角色训练与冻结source模型，S阶段target IQ／统计／BN／伪标签／指标访问为0；仅B开放旧类target support，C才开放新类support。UDA需要source-target联合更新的目标到B再开启，不允许先在target上预训练再把该模型当A。
+
+`comparison_suite/source.py:139`已有source-only结构及target_access=False字段，`pipeline.py:142`独立加载源checkpoint后才进入target路径；这只是对应9家族路径的源码证据，不证明所有独立作者入口均已合规接入。ProtoNet/LoRa/Tweak的A只能从S末L_s原型／enrollment／calibration构建；不再接受使用target enrollment的假A。源标签、source U_s使用和native计算预算分别披露，不把“相同源域”解释为把U_s标签全部开放。
+
+主表版本选择：RadioNet为完整ADA＋FT＋kNN；Hu2024用独立完整新版，B100epochs是项目固定预算；ISSL为fixed_v1＋明确B10扩展，原生无B版本在辅助表。原生Tweak M10在缺少合法观测组时仍为N/A，主表使用M1扩展。所有source/history权限只在其来源合法的前提下保留，不取消S阶段source-only边界。
+
 ## 1. 覆盖与去重
 
 纳入 **14 个外部 RFFI 方法家族**：POSTER、RadioNet、ProtoNet CDA、MRIOR、DADDA、Two-stage UDA＋FT、Feature Separation、RA-Collab 单节点扩展、Tweak、CSIL、MoPC-HR、Orthogonal Incremental SEI、ISSL、LoRa scalable/channel-robust RFFI。
