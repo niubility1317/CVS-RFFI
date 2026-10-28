@@ -1,0 +1,180 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase2-full-eq-preparation-s2026102901-r01",
+  "group_id": "phase2-full-eq-shared-data-r08",
+  "display_name": "PAMF Phase2 Full eq：八套独立综合与三种纯场景数据制作",
+  "description": "Full实际数据与四compact精确映射，保护历史query，计数选20新类；8mixed×150query/类＋3pure×500，24support池，分阶段actual-K读取；不训练/身份预测/评分。",
+  "kind": "diagnostic",
+  "stage": "Phase2-data-builder",
+  "aliases": [],
+  "tags": [
+    "phase2",
+    "full-eq",
+    "data-builder",
+    "practical",
+    "residual"
+  ],
+  "comparison_group_id": "full-eq-6old20new-7rx-8mixed3pure-r08",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User 2026-10-29 authorizes Full dataset allocation analysis, N607 upload and experiment-data preparation. No identity training, prediction or scoring.",
+  "code": {
+    "commit": "PUBLISH_CURRENT_COMMITTED_HEAD_RECORDED_IN_RUNTIME",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-full-eq-preparation-s2026102901-r01-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "configs/pamf_phase2_full_eq_data_r08_20261029.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-full-eq-preparation-s2026102901-r01/score_only/truth.json",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-full-eq-preparation-s2026102901-r01/selection.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_full_eq_data_r08_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "assigned per RX/domain/N by builder",
+    "split_id": "3220 deterministic actual-K support splits",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-full-eq-preparation-s2026102901-r01/builder_report.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-full-eq-preparation-s2026102901-r01/catalog.json",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json"
+  },
+  "permissions": {
+    "regime": "offline_data_builder_no_model",
+    "query_use": "offline physical-role allocation only; no fit or identity prediction",
+    "external_method_exception": null,
+    "claim_scope": "Data preparation only; historical Phase1 query may remain query-only, not independent blind test."
+  },
+  "checkpoint": {
+    "initialization": "not_applicable_data_builder",
+    "sources": [],
+    "contract_check_ref": "configs/pamf_phase2_full_eq_data_r08_20261029.json",
+    "provenance_verdict": "NO_CHECKPOINT_READ",
+    "selection_rule": "counts-only TX selection; no model or quality access"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/full-eq-preparation-20261029",
+    "gpu_policy": "CPU only, CUDA_VISIBLE_DEVICES empty; no GPU or identity work",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-full-eq-preparation-s2026102901-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-full-eq-preparation-s2026102901-r01-release",
+    "local_artifact_root": "local_artifacts/pamf_phase2_full_eq_preparation_20261029",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.full_runner --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-full-eq-preparation-s2026102901-r01-release/runtime.json",
+    "stop_rule": "First mapping/role/capacity/schema/finite/output-collision or subprocess failure stops; preserve partial artifacts; no auto retry or overwrite."
+  },
+  "expected_artifacts": [
+    "inventory_report.json",
+    "selection.json",
+    "allocation_report.json",
+    "builder_only/allocation.json",
+    "catalog.json",
+    "capsules/*/*/*/manifest.json",
+    "score_only/truth.json",
+    "builder_report.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "physical_record_count",
+      "fresh_support_count",
+      "query_count",
+      "capsule_count",
+      "split_count",
+      "scene_counts"
+    ],
+    "dimensions": [
+      "RX",
+      "TX",
+      "date",
+      "domain",
+      "K",
+      "N",
+      "support_draw"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "full-eq-data",
+      "method": "offline Full eq exact-identity allocator and practical residual builder",
+      "purpose": "shared-experiment-data",
+      "config_ref": "configs/pamf_phase2_full_eq_data_r08_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-full-eq-preparation-s2026102901-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026102901,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No model/scoring seed; support seeds and per-domain scene/channel seeds explicitly fixed in config. Allocation2026102901,arrival2026102902,query-order2026102903.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "8 independent mixed + low suburban/mid urban/low urban",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_full_eq_data_r08_20261029.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-full-eq-preparation-s2026102901-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-full-eq-preparation-s2026102901-r01-release/controller.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.full_runner --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-full-eq-preparation-s2026102901-r01-release/runtime.json",
+      "expected_artifacts": [
+        "inventory_report.json",
+        "selection.json",
+        "allocation_report.json",
+        "builder_only/allocation.json",
+        "catalog.json",
+        "capsules/*/*/*/manifest.json",
+        "score_only/truth.json",
+        "builder_report.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Raw dataset upload independently verified20ZIP34378471511bytes; all remote ZIP CRC PASS.",
+    "No F/G checkpoint required at this stage; real-checkpoint smoke not applicable to a data-only builder.",
+    "Five focused allocation/protocol-negative tests PASS; one independent P0/P1 review passed after one direct packaging fix.",
+    "8 independent mixed data groups use one distinct support seed each. Three pure groups use five support draws on fixed query; do not treat support repeats as independent query sets.",
+    "Source Phase1 training and all identity prediction/scoring queues remain on hold."
+  ],
+  "registered_at": "2026-10-28T17:05:43+00:00"
+}
