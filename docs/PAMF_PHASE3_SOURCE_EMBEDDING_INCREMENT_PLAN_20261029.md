@@ -16,12 +16,16 @@ L只读取固定split392005的6300合法记录，不重新划分；batch128、22
 
 两行完整后才判推进并输出MSP配对差。两行可并行，每行同卡依次train→eval，score使用CPU；优先两张不同较空闲卡，仅一卡有容量时可新增2进程，不停止任何他人任务。一行技术失败保留产物并让另一健康行完成，整体PARTIAL不晋级，不自动重启。所有输出新root不可覆盖，代码／配置提交、一次整个候选P0/P1、一次N607 preflight／归档比较／编译与实际PID/CWD/cmdline/GPU/log证据写同名最小登记。
 
-源成员监督仍是额外标签权限；novel3是重复源开发，known是同批经验校准风险，不宣称新盲测。正式RX24 U/Q不读，未执行目标适应、发现或匿名注册。当前实现及合成验证已完成，77项测试／52subtests通过，尚未真实训练或评分，Phase3目标未完成。
+源成员监督仍是额外标签权限；novel3是重复源开发，known是同批经验校准风险，不宣称新盲测。正式RX24 U/Q不读，未执行目标适应、发现或匿名注册。原实现及合成验证77项测试／52subtests通过；r02现已实际完整训练、预测和评分，VERIFIED/ANALYZED_SOURCE_ONLY、NO_PROMOTION，Phase3目标未完成。
 
-发布前状态：一次完整候选独立P0/P1审查PASS，独立运行同77项／52subtests通过。N607一次preflight PASS，原source parent、权重、cache及远端已验证OE6134 public数据在位；新run/release不存在。source_only协议字段在命名调整后的最终集成中已验证，控制行正式名称supervised_only。归档只传代码/配置/runtime，不重复传输数据；实际checkpoint梯度smoke为每row训练首步，尚无实测性能。
+发布前状态：一次完整候选独立P0/P1审查PASS，独立运行同77项／52subtests通过。N607一次preflight PASS，原source parent、权重、cache及远端已验证OE6134 public数据在位；新run/release不存在。source_only协议字段在命名调整后的最终集成中已验证，控制行正式名称supervised_only。归档只传代码/配置/runtime，不重复传输数据；实际checkpoint梯度smoke为每row训练首步，r02两行原L2及OE行OE2均PASS，已完成各222次更新与独立评分。
 
 ## 首次技术失败与定向恢复
 
 r01已实际发布，两行均在新增父兼容检查处退出，未到梯度smoke、优化或评估；没有新模型性能。原native E50祖先检查已通过，新增代码误把split_seed放在完成config中，并把原cache路径与验证后的复用路径相等当作身份。实际split_seed392005在source contract，两个cache路径不同，物理角色由既有contract和精确storage ID绑定确定。失败进程均已退出、foreignstop0，r01产物保留。
 
-r02仅修这一个兼容层：从真实contract严格核对seed，保留native来源校验和exact role_ids；不要求缓存路径一致，不重读raw或做新hash／数据验证。真实布局回归由旧代码失败到修复后2项／3subtests通过，并完成一次该P1的定向复核PASS，未重复完整77套。两行科学配置、222步、初始权重、数据、种子、阈值和95%门槛均不变。技术恢复使用独立不可覆盖run/release `20261029-phase3-source-embedding-increment-s2026092701-r02`，新release一次preflight已PASS，等待发布后的真实checkpoint梯度smoke继续。
+r02仅修这一个兼容层：从真实contract严格核对seed，保留native来源校验和exact role_ids；不要求缓存路径一致，不重读raw或做新hash／数据验证。真实布局回归由旧代码失败到修复后2项／3subtests通过，并完成一次该P1的定向复核PASS，未重复完整77套。两行科学配置、222步、初始权重、数据、种子、阈值和95%门槛均不变。技术恢复使用独立不可覆盖run/release `20261029-phase3-source-embedding-increment-s2026092701-r02`，新release一次preflight已PASS，现已通过真实checkpoint梯度smoke并完整执行同矩阵，VERIFIED/ANALYZED_SOURCE_ONLY、NO_PROMOTION。
+
+## r02 实际完成（2026-10-29）
+
+执行commit28d53ea9b38c19f642c59e31f178a3f65f40894d，两行各222/累计11322步，真实L2/OE2梯度及最终checkpoint smoke PASS；GPU2监督、GPU1 OE，foreignstop/target/U训练0。固定MSP监督未知47.8095%、OE59.9683%（配对+12.1587pp），OE closed98.4963%、open97.9593%、FRR1.5185%、对原F总损伤0.5074pp。总体及每RX已知保护全部通过，但unknown全部RX未95，eligible空、NO_PROMOTION；其他4分数不替换规则。完整两trace、两行评分与10份新旧日志见[实际结果](E:/type10-7/docs/PAMF_PHASE3_SOURCE_EMBEDDING_INCREMENT_RESULTS_20261029.md)。本轮不调参重跑，下一组合读出候选尚未实施。
