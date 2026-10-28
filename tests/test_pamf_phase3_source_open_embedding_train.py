@@ -386,6 +386,59 @@ class EmbeddingTrainTests(unittest.TestCase):
                 module._verified_parent(config, {})
             self.assertEqual(load.call_count, 0)
 
+    def test_actual_parent_layout_allows_moved_validated_cache_and_binds_contract_roles(self):
+        module = self.module()
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            # Shape of r01 actual_parent_metadata.json: selected_original has a
+            # summary null for split_seed, while the actual config has no key.
+            metadata = dict(complete_status='SOURCE_FROZEN',
+                config_keys=['run_id', 'row_id', 'source_cache', 'source_contract', 'repl_row', 'code_commit'],
+                selected_original=dict(run_id=module.PARENT_RUN, row_id=module.PARENT_ROW, split_seed=None,
+                    source_cache=str(root / 'old-CRIC-data/F0'), source_contract=str(root / 'parent-contract.json'),
+                    repl_row=dict(L_A=True, L_B=True, U=True, structure='SHUFFLE_TIME'), code_commit='b' * 40),
+                source_cache_expected=str(root / 'validated-full2x2-data/source/F0'), source_cache_same_resolved=False)
+            original = {key: value for key, value in metadata['selected_original'].items() if key in metadata['config_keys']}
+            config = self.config()
+            config.update(source_cache=metadata['source_cache_expected'], source_contract=str(root / 'current-contract.json'),
+                source_output=str(root / 'original-E50'))
+            contract = dict(classes=module.CLASSES, source_rxs=module.RX, source_days=[1, 2, 3], split_seed=392005,
+                counts=dict(L_s=6300, U_s=56700, V=27000),
+                role_ids={role: [role + ':' + str(i) for i in range(n)] for role, n in (('L_s', 6300), ('U_s', 56700), ('V', 27000))})
+            Path(config['source_contract']).write_text(json.dumps(contract), encoding='utf-8')
+            Path(original['source_contract']).write_text(json.dumps(contract), encoding='utf-8')
+            self.assertNotIn('split_seed', original)
+            self.assertNotEqual(original['source_cache'], config['source_cache'])
+            with patch.object(module.runner, '_load_model', return_value=object()) as native, \
+                    patch.object(module.runner, '_read', wraps=module.runner._read) as read, \
+                    patch('torch.load', return_value={'args': {'weight_decay': .0001}, 'model': {}}):
+                # Only the already-validated metadata is substituted; no IQ is opened.
+                complete = root / 'original-E50/complete.json'
+                complete.parent.mkdir()
+                complete.write_text(json.dumps({'status': 'SOURCE_FROZEN', 'config': original}), encoding='utf-8')
+                parsed = module._contract(config)
+                actual, _, identity = module._verified_parent(config, parsed)
+                self.assertEqual(actual, original)
+                self.assertEqual(identity['source_cache'], config['source_cache'])
+                native.assert_called_once_with(config, parsed, 'cpu')
+                self.assertTrue(any(Path(call.args[0]) == Path(original['source_contract']) for call in read.call_args_list))
+            for bad in (None, 2026092701, True):
+                with self.subTest(contract_split_seed=bad):
+                    Path(config['source_contract']).write_text(json.dumps(dict(contract, split_seed=bad)), encoding='utf-8')
+                    with self.assertRaises(ValueError):
+                        module._contract(config)
+            # Counts/classes stay unchanged: a foreign physical ID must still fail.
+            changed = copy.deepcopy(contract)
+            changed['role_ids']['L_s'][0] = 'foreign-physical-ID'
+            Path(config['source_contract']).write_text(json.dumps(changed), encoding='utf-8')
+            parsed = module._contract(config)
+            with patch.object(module.runner, '_load_model', return_value=object()), \
+                    patch('torch.load', side_effect=AssertionError('No payload load after role mismatch')) as load:
+                with self.assertRaisesRegex(ValueError, 'role_ids'):
+                    module._verified_parent(config, parsed)
+                self.assertEqual(load.call_count, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

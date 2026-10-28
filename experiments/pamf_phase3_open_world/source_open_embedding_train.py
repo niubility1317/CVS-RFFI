@@ -57,7 +57,8 @@ def validate_config(config):
 def _contract(config):
     value = runner._read(config['source_contract'])
     if (value.get('classes') != CLASSES or value.get('source_rxs') != RX or value.get('source_days') != [1, 2, 3]
-            or value.get('counts') != {'L_s': 6300, 'U_s': 56700, 'V': 27000}):
+            or value.get('counts') != {'L_s': 6300, 'U_s': 56700, 'V': 27000}
+            or type(value.get('split_seed')) is not int or value['split_seed'] != 392005):
         raise ValueError('Original six-class source physical roles required; no resplitting')
     return value
 
@@ -82,11 +83,16 @@ def _verified_parent(config, contract):
     done = runner._read(Path(config['source_output']) / 'complete.json')
     original = done['config']
     if (original.get('run_id') != PARENT_RUN or original.get('row_id') != PARENT_ROW
-            or original.get('split_seed') != 392005
-            or Path(original.get('source_cache', '')).resolve() != Path(config['source_cache']).resolve()
             or original.get('repl_row', {}).get('L_A') is not True
             or original.get('repl_row', {}).get('L_B') is not True):
         raise ValueError('Only the verified original full-six-class E50 source parent is allowed')
+    # The original config need not carry split_seed. A relocated validated IQ
+    # cache is bound by SourceDataset/its physical-ID storage index, not a path.
+    if Path(original['source_contract']).resolve() != Path(config['source_contract']).resolve():
+        parent_contract = runner._read(original['source_contract'])
+        for key in ('classes', 'source_rxs', 'source_days', 'counts', 'split_seed', 'role_ids'):
+            if parent_contract.get(key) != contract.get(key):
+                raise ValueError('Original source contract differs: ' + key)
     payload = torch.load(Path(config['source_output']) / 'final_ssdg.pth', map_location='cpu', weights_only=False)
     args = payload.get('args')
     if (not isinstance(args, dict) or not isinstance(args.get('weight_decay'), (float, int))

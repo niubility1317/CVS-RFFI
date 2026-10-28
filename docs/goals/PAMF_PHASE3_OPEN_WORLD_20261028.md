@@ -100,3 +100,5 @@ source-known risk calibrated scalar 已由 `20261029-phase3-source-risk-calibrat
 ## 原生开放集特征增量候选（2026-10-29）
 
 `20261029-phase3-source-embedding-increment-s2026092701-r01` 已登记并完成实现，尚未真实训练。supervised_only保留原native KL/CRIC/As监督骨架，不是纯CE/PAMF-CE；uniform_oe加λ.1均匀六类KL，两行均从原F6 E50独立初始化，cold CENTER_UNITS恒lr1e-4、新增222步/累计11322，原头和骨干joint、U关闭。77项测试/52subtests及一次完整独立P0/P1 PASS、一次N607 preflight PASS；先原生重建并strictload避免冻结Sinc梯度，真实2L梯度smoke(和OE行2OE)无step且恢复state/RNG后继续。source已知保护独立对照原F6同输入closed，源门槛保持95%unknown/5%FRR/2pp total保护，各RX均验，额外closed损伤预算.5pp；仅uniform_oe::msp可晋级，两行完整才判。source21远端public数据复用，无新数据重传/重验；2行并发每卡≤2新增，不停他人，单行技术失败保留另一健康行。正式RX24仍不读。详细见`docs/PAMF_PHASE3_SOURCE_EMBEDDING_INCREMENT_PLAN_20261029.md`；总目标保持ACTIVE。
+
+r01实际发布后两行在新增父兼容检查失败，0梯度smoke／优化／评估，未产生科学性能；原native祖先检查已过。实际source contract存split_seed392005、cache复用路径不同，新增校验错误要求config字段和路径相等。现仅定向修复该层，保留native E50与物理role_ids约束；2项／3subtests与一次本P1定向复核PASS，无raw重验／额外hash。r01已记FAILED并保留，r02同科学矩阵／222／种子／数据恢复，独立新root、一次release preflight PASS，尚未实训。目标和95%门槛不降，当前仍无达标正式target证据。

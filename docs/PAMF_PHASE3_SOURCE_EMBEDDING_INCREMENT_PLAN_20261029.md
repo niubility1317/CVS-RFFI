@@ -19,3 +19,9 @@ L只读取固定split392005的6300合法记录，不重新划分；batch128、22
 源成员监督仍是额外标签权限；novel3是重复源开发，known是同批经验校准风险，不宣称新盲测。正式RX24 U/Q不读，未执行目标适应、发现或匿名注册。当前实现及合成验证已完成，77项测试／52subtests通过，尚未真实训练或评分，Phase3目标未完成。
 
 发布前状态：一次完整候选独立P0/P1审查PASS，独立运行同77项／52subtests通过。N607一次preflight PASS，原source parent、权重、cache及远端已验证OE6134 public数据在位；新run/release不存在。source_only协议字段在命名调整后的最终集成中已验证，控制行正式名称supervised_only。归档只传代码/配置/runtime，不重复传输数据；实际checkpoint梯度smoke为每row训练首步，尚无实测性能。
+
+## 首次技术失败与定向恢复
+
+r01已实际发布，两行均在新增父兼容检查处退出，未到梯度smoke、优化或评估；没有新模型性能。原native E50祖先检查已通过，新增代码误把split_seed放在完成config中，并把原cache路径与验证后的复用路径相等当作身份。实际split_seed392005在source contract，两个cache路径不同，物理角色由既有contract和精确storage ID绑定确定。失败进程均已退出、foreignstop0，r01产物保留。
+
+r02仅修这一个兼容层：从真实contract严格核对seed，保留native来源校验和exact role_ids；不要求缓存路径一致，不重读raw或做新hash／数据验证。真实布局回归由旧代码失败到修复后2项／3subtests通过，并完成一次该P1的定向复核PASS，未重复完整77套。两行科学配置、222步、初始权重、数据、种子、阈值和95%门槛均不变。技术恢复使用独立不可覆盖run/release `20261029-phase3-source-embedding-increment-s2026092701-r02`，新release一次preflight已PASS，等待发布后的真实checkpoint梯度smoke继续。
