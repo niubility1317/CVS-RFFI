@@ -14,6 +14,6 @@
 
 仍只允许两个OE候选推进，源unknown宏拒识总体及各RX≥95%、known宏误拒≤5%、较同输入闭集宏损失≤2pp，双过优先linear。五静态控制不触发新方法推进。novel3为重复source开发，known是同批校准经验风险，不宣称独立新确认；即使源过门也不等价跨RX／星地／无标签适应／匿名注册成功。正式RX24 U/Q始终不读。
 
-流水线为export（最多一条新增GPU worker）→fitCPU→predictCPU→独立score。每卡可新增2的用户资源授权保持，按实际显存挑卡，不停止任何他人任务。新不可覆盖release/run，实际code/config提交、一次本候选P0/P1、一次N607 preflight／归档传输比较／编译、真实模型smoke及PID/CWD/argv/GPU/log读回留同名最小登记。当前实现中，没有本候选实际性能。
+流水线为export（最多一条新增GPU worker）→fitCPU→predictCPU→独立score。每卡可新增2的用户资源授权保持，按实际显存挑卡，不停止任何他人任务。新不可覆盖release/run，实际code/config提交、一次本候选P0/P1、一次N607 preflight／归档传输比较／编译、真实模型smoke及PID/CWD/argv/GPU/log读回留同名最小登记。实际四阶段已完成，状态 VERIFIED / ANALYZED_SOURCE_ONLY，科学结论 NO_PROMOTION。
 
-发布前状态：4新模块／对应4测试共34项测试和3个subtests通过，无warning；一次独立P0/P1审查PASS并独立同34项通过。N607一次preflight PASS，父源run ANALYZED_SOURCE_ONLY、原F权重与缓存在位，新release/run未存在，各卡可用显存约19–24GB。后续实际容量选择只新增一条导出worker，所有其他进程保持。新数据归档只含complete及public3文件，旧E盘路径不驱动取数；状态READY_FOR_RELEASE，尚未真实前向或训练。
+发布前状态：4新模块／对应4测试共34项测试和3个subtests通过，无warning；一次独立P0/P1审查PASS并独立同34项通过。N607一次preflight PASS，父源run ANALYZED_SOURCE_ONLY、原F权重与缓存在位，新release/run未存在，各卡可用显存约19–24GB。后续实际容量选择只新增一条导出worker，所有其他进程保持。新数据归档只含complete及public3文件，旧E盘路径不驱动取数；实际执行commit70c8346339f5d2f5bcbe14aa8863eca545fa167a，GPU2一个导出worker完成真实2L IQ smoke与OE6134前向，两个拒识器各200CPU步；四阶段完整、NO_PROMOTION。MLP未知75.0794%、FRR1.5185%、drop0.5852pp；详见[实际结果](E:/type10-7/docs/PAMF_PHASE3_SOURCE_DIVERSE_READOUT_RESULTS_20261029.md)。原方法定义与预算保持冻结。

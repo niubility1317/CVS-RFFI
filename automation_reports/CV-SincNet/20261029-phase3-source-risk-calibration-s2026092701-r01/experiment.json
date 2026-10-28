@@ -52,7 +52,7 @@
       3
     ],
     "target_days": [],
-    "tx_sets_ref": "source contract classes; labels0/1 validation-only; labels2/3/4/5 train",
+    "tx_sets_ref": "configs/pamf_phase3_source_risk_calibration_20261029.json; /home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json: registered_classes=[14-10,14-7,20-15,20-19,6-15,8-20], original known labels0..5; source auxiliary identities per configs/pamf_phase3_source_oe_data_20261029.json: exposure_train=[11-14,14-19,17-20,18-19] (4200), novel_validation=[19-15,19-16,7-1] (3150)",
     "roles": {
       "source_L": 6300,
       "source_V": 27000,
@@ -175,7 +175,8 @@
     "CPU-only real run; GPU added0, maxallowed2/card unchanged; do not stop/modify foreign jobs.",
     "No data package is needed: same remote immutable parent export/fit and OE truth are reused; no repeated data hashing/validation.",
     "One code/config commit, focused tests and one P0/P1; no unknown ROC tuning or target expansion on source fail.",
-    "Actual VERIFIED/ANALYZED_SOURCE_ONLY NO_PROMOTION: frozen source-known risk scalar; MLP unknown81.460317%, FRR1.366667%, knownopen97.618519%, drop0.848148pp; overall/allRX empirical known constraints pass, unknown overall/RX3/4/6/8 fail95. Same novel reused, not blind confirmation. Fforward0/GPU0/no new training; docs/PAMF_PHASE3_SOURCE_RISK_CALIBRATION_RESULTS_20261029.md."
+    "Actual VERIFIED/ANALYZED_SOURCE_ONLY NO_PROMOTION: frozen source-known risk scalar; MLP unknown81.460317%, FRR1.366667%, knownopen97.618519%, drop0.848148pp; overall/allRX empirical known constraints pass, unknown overall/RX3/4/6/8 fail95. Same novel reused, not blind confirmation. Fforward0/GPU0/no new training; docs/PAMF_PHASE3_SOURCE_RISK_CALIBRATION_RESULTS_20261029.md.",
+    "Metadata-only correction: data.tx_sets_ref now points to the actual full-six-class configuration, original registered6 source contract and source auxiliary identities. Code, seeds, physical roles, metrics and lifecycle status unchanged."
   ],
   "registered_at": "2026-10-28T19:07:20+00:00"
 }

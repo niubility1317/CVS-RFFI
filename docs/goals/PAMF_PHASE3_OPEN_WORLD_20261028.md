@@ -92,3 +92,7 @@ source-known risk calibrated scalar 已由 `20261029-phase3-source-risk-calibrat
 ## 多设备源OE数据实际完成（2026-10-29）
 
 `20261029-phase3-source-oe-diverse-data-r01` 已VERIFIED/VALIDATED_ONCE、ANALYZED，执行commit2f41fc2835798f583c54900ab4c791d762d0101c。6134条唯一source记录来自21台训练暴露设备，220非空／95空cell，保留novel19-15／19-16／7-1不转train；15个source容器读取、完整18行1467B日志及独立poststate齐全。额外source成员监督明确，原L/U/V／novel验证IQ／模型／channel／正式target／GPU调用0，不停止其他任务；尚无模型性能结果。见[数据结果](E:/type10-7/docs/PAMF_PHASE3_SOURCE_OE_DIVERSE_DATA_20261029.md)。
+
+## 多设备源域均衡拒识实际结果（2026-10-29）
+
+`20261029-phase3-source-diverse-readout-s2026092701-r01` 已VERIFIED/ANALYZED_SOURCE_ONLY，执行commit70c8346339f5d2f5bcbe14aa8863eca545fa167a，NO_PROMOTION。冻结完整六类F／身份头／L几何／100D consensus描述符，新21台OE6134同时采用role内15域均匀及normalizer .6/.4固定先验；linear／MLP各200CPU步。linear未知61.4286%、FRR1.5630%、drop0.5778pp；MLP未知75.0794%、FRR1.5185%、drop0.5852pp，较consensus85.7460%下降10.6667pp。known保护总体和每RX均过，unknown整体及RX3/4/6/8仍未达95%，eligible空、selected=null。真实2L IQ smoke与OE6134共6136新F前向，旧L/V/novel特征复用，GPU2只新增一导出worker；F/head/geometry更新、原U_s／正式target读取、foreignstop均0。34项测试＋3subtests及唯一P0/P1 PASS，4完整日志与400loss已归档。组合改动不能拆因，也不能断言更多设备有效或特征绝对上限；同knownV经验风险和同novel重复source开发，非跨RX／星地／适应／注册成功。见[结果报告](E:/type10-7/docs/PAMF_PHASE3_SOURCE_DIVERSE_READOUT_RESULTS_20261029.md)。不调阈值预算或重跑；下一方向为独立小预算source OE embedding微调＋同预算CE对照，尚未实施。Phase3总目标仍未完成。

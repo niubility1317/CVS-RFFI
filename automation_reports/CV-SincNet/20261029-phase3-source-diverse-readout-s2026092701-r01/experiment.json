@@ -1,0 +1,194 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-diverse-readout-s2026092701-r01",
+  "group_id": "pamf-phase3-source-diverse-readout",
+  "display_name": "PAMF第三阶段：21台源辅助设备域均衡拒识",
+  "description": "冻结完整F6/源几何/100D同类支持描述符，新21设备6134OE按role内15域均衡配重，同101/1633读出各200CPU步；V-only固定风险阈值和同novel3150重复源开发。",
+  "kind": "cvs",
+  "stage": "Phase3-source-diverse-OE-domain-balanced-rejection",
+  "aliases": [
+    "Phase3源21TX域均衡拒识"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "full_six_class",
+    "OE21TX",
+    "domain_balanced_membership",
+    "fixed_risk_calibration"
+  ],
+  "comparison_group_id": "phase3-source-consensus-fourTX-versus21TX-domain-balanced",
+  "parent_run_ids": [
+    "20261029-phase3-source-open-readout-s2026092701-r01",
+    "20261029-phase3-source-consensus-s2026092701-r01",
+    "20261029-phase3-source-oe-diverse-data-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工及自主设计执行；本轮遵循事先source-only开发路线，不以首轮target表调参。",
+  "code": {
+    "commit": "70c8346339f5d2f5bcbe14aa8863eca545fa167a",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-diverse-readout-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-diverse-readout-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original six-class source L/V plus Full auxiliary source devices",
+    "version": "original full6 source plus source21 auxiliary cap32 v1",
+    "representation": "matching eq1_center256_unitRMS source clean only; no new channel observations",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 source auxiliary open development",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-diverse-readout-s2026092701-r01/export/complete.json; parent originalexport/complete.json",
+    "label_map_ref": "oldsource6 L labels; OE21 per-record TX private and never transferred to fitter",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original registered source6 L/V; source OE21 excludes held novel3 and formal unknown4; source novel19-15/19-16/7-1 evaluation only.",
+    "roles": {
+      "source_L": 6300,
+      "exposure_train": 6134,
+      "source_V": 27000,
+      "novel_validation": 3150
+    },
+    "train_ratio": null,
+    "capsule_id": {
+      "exposure_train": "source-oe-diverse-9dd73fa533b19a64fd4db8d9"
+    },
+    "split_id": "5e0f620d5c7c72512e9e9edd",
+    "validation_ref": "20261029-phase3-source-oe-diverse-data-r01/data/complete.json VALIDATED_ONCE; originalparent source caches reused",
+    "support_query_ref": "No target; oldsourceL/V/novel roles unchanged; newOE21 excludesnovel3/formal4, possible source-train physical reuse across methods",
+    "leo_config_ref": "N/A source clean development only"
+  },
+  "permissions": {
+    "regime": "extra_source_known_unknown_membership_supervision_target_zero_labels",
+    "query_use": "No target query read; only already exposed source development novel records scored again",
+    "external_method_exception": null,
+    "claim_scope": "Repeated source development risk calibration; empirical known calibration protection, not independent confirmation or unseen-RX/satellite success"
+  },
+  "checkpoint": {
+    "initialization": "same full6 encoder and L geometry; new domain-balanced100D rejection states",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01/fit/geometry.npz",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01/export/complete.json"
+    ],
+    "contract_check_ref": "ParentSOURCE_OPEN_FEATURES_EXPORTED identity; sameF6sourcecontract/232993; newSOURCE_OE_DIVERSE_DATA_VALIDATED capsule/split/count6134; newstate descriptor+trainingregime",
+    "provenance_verdict": "Source-only parent F6 finalE50/11100 and oldL geometry; newOE21 source unknownmembership extra supervision; novel3/formal4 neverfitted, noDURA/teacher",
+    "selection_rule": "Same200steps/seed/101and1633params, role-domainweights1/15 and normalizerpriors.6/.4; V-only fixed.04FRR/.015correctrejectmaxthreshold; samepromotablerules"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-source-diverse-20261029",
+    "gpu_policy": "One sequential GPU export worker, <=2 added/card with actualmemory>=4096MB; CPUfit/predict/score; preserveforeign",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-diverse-readout-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-diverse-readout-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_diverse_readout_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_diverse_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-diverse-readout-s2026092701-r01-release/runtime.json",
+    "stop_rule": "wrong sourceF/newdata/descriptor/regime, forbidden OEtruth/V/novel/target fit, nonfinite, output collision or no legal complete predictions; preservepartial; scientificfail NO_PROMOTION no unknown-based retune"
+  },
+  "expected_artifacts": [
+    "export/smoke.json",
+    "export/exposure_train/public/features.npz",
+    "export/complete.json",
+    "fit/geometry.npz",
+    "fit/readouts.npz",
+    "fit/training.json",
+    "fit/complete.json",
+    "predict/calibration/thresholds.npy",
+    "predict/calibration/complete.json",
+    "predict/predictions.npz",
+    "predict/complete.json",
+    "score/results.json",
+    "score/complete.json",
+    "pipeline_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "known_macro_accuracy",
+      "known_macro_frr",
+      "known_macro_accuracy_drop",
+      "unknown_macro_rejection",
+      "auroc_known",
+      "oscr",
+      "source_RX_protection",
+      "eligible_OE_method"
+    ],
+    "dimensions": [
+      "7method",
+      "source_RX",
+      "known_TX",
+      "source_novel_TX"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-diverse-readout-s2026092701-r01/predict/predictions.npz",
+    "scorer_ref": "experiments/pamf_phase3_open_world/source_open_scoring.py"
+  },
+  "rows": [
+    {
+      "row_id": "source-diverse-readout-s2026092701",
+      "method": "Frozen PAMF+head-aligned100D+21OE role-domain-balanced rejection",
+      "purpose": "Test richer sourceOE devices while controlling source receiver/day membership prior",
+      "config_ref": "configs/pamf_phase3_source_diverse_readout_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-diverse-readout-s2026092701-r01/configs/export.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102906,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Samemodelseed for freshCPUreadouts, originalsource392005; newOEdata2026102906; no target/channel randomness.",
+      "k": null,
+      "scenario": "source_clean_only",
+      "optimizer": "CPU AdamW role-domain-weighted rejection readouts",
+      "lr": 0.001,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "6134newOE Fforwards+2realLsmoke; reuseoldL/V/novelfeatures. SourceL6300+OE6134 each200CPUfullbatch/linear101MLP1633;0F/headupdates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-diverse-readout-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-diverse-readout-s2026092701-r01/logs/export.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_diverse_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-diverse-readout-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "export/smoke.json",
+        "export/exposure_train/public/features.npz",
+        "export/complete.json",
+        "fit/geometry.npz",
+        "fit/readouts.npz",
+        "fit/training.json",
+        "fit/complete.json",
+        "predict/calibration/thresholds.npy",
+        "predict/calibration/complete.json",
+        "predict/predictions.npz",
+        "predict/complete.json",
+        "score/results.json",
+        "score/complete.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source only, additional binarysource membership labels; OEdevice identity/private truth not transferred or read by fit.",
+    "Onearchive includesonly newdata complete+public3files; exporter joins givenrelocationroot, ignoresoldWindowsabsoluteprovenancepaths.",
+    "No repeatrawvalidation/memberhashes. OriginalparentL/V/novelfeatures reused; actualF6smoke2L then onlyOE6134encoded.",
+    "F/defaulthead/Lgeometry/consensus100D remainfrozen; newreadout states mark descriptor_schema and source_role_domain_balanced_v1.",
+    "Bothroles separately15domainuniform: w=1/(15*n_domain); losspriors.5/.5,normalizerpriors.6/.4 fromlegacy6300/4200 fixednotfromnovel.",
+    "Domaincounts notTX labels enterfitweights, never deploymentrouting; no persource features/labels/weights savedin deploymentstate.",
+    "Same200CPUsteps/101and1633params and knownV4%/1.5pp risk calibration; sourcepromotion95%unknown+5%FRR+2ppdrop overall/eachRXunchanged.",
+    "ChangingOEclasscoverage plusdomainweighting, not a pureonlysamplecountablation. Physicalsource overlap acrossmethodsnotindependentreplicates.",
+    "Repeatednovel3source development and knowncalibrationempiricalrisk, not newindependentconfirmation/unseenRX/star/adaptation/registration success.",
+    "FormalRX24U/Q untouched; no target-based retuning,control-onlypromotion or seedexpansion onscientificfail.",
+    "OneGPUexportworker <=2new/card with actualmemorycapacity; foreignwork neverstopped; soleowner andimmutableout.",
+    "VERIFIED/ANALYZED_SOURCE_ONLY: all4stages COMPLETE; realF2LsmokePASS+OE6134encoded, eachreadout200CPUsteps, F/head/geometryupdates0, originalU_s/target/foreignstop0. linearunknown61.4286%/FRR1.5630%/drop.5778pp; MLP75.0794%/FRR1.5185%/drop.5852pp; MLPvsconsensus-10.6667pp. Allknownprotectionpasses, unknownoverall/RX3,4,6,8fails95; NO_PROMOTION/eligible[]/selectednull. Results docs/PAMF_PHASE3_SOURCE_DIVERSE_READOUT_RESULTS_20261029.md; local analysis_summary includes400loss/7methods/5RX/3TX/weights."
+  ],
+  "registered_at": "2026-10-28T19:52:02+00:00"
+}
