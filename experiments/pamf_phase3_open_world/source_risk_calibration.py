@@ -15,7 +15,7 @@ LOSS_LIMIT = Fraction(3, 200)
 SCHEMA = 'phase3_source_known_risk_calibration_v1'
 
 
-def _inputs(ids, y, closed_prediction, knownness, rx_i):
+def _inputs(ids, y, closed_prediction, knownness, rx_i, method_names):
     ids, y, closed, values, rx = map(np.asarray, (ids, y, closed_prediction, knownness, rx_i))
     n = len(ids) if ids.ndim else 0
     if (not n or ids.shape != (n,) or ids.dtype.kind != 'U' or np.any(np.char.strip(ids) == '')
@@ -27,8 +27,8 @@ def _inputs(ids, y, closed_prediction, knownness, rx_i):
     if (np.any(y >= 6) or np.any(y < 0) or np.any(closed >= 6) or np.any(closed < 0)
             or set(rx.tolist()) != set(RECEIVERS)):
         raise ValueError('Only six known classes and all five original source RX are allowed')
-    if values.shape != (n, len(METHODS)) or values.dtype.kind != 'f' or not np.isfinite(values).all():
-        raise ValueError('Aligned finite seven-method known-source scores required')
+    if values.shape != (n, len(method_names)) or values.dtype.kind != 'f' or not np.isfinite(values).all():
+        raise ValueError('Aligned finite known-source scores must match the declared methods')
     for receiver in RECEIVERS:
         if set(y[rx == receiver].tolist()) != set(range(6)):
             raise ValueError('Every source RX must contain all six known classes')
@@ -99,16 +99,26 @@ def _one(y, closed, scores, rx):
         constraints_passed=overall['constraints_passed'] and all(g['constraints_passed'] for g in by_rx.values()))
 
 
-def calibrate_known(ids, y, closed_prediction, knownness, rx_i):
+def calibrate_known(ids, y, closed_prediction, knownness, rx_i, method_names=None):
     """Choose one global scalar per method using known source V labels only.
 
     FRR is the mean of rejected/class count. Accuracy loss is the mean of
     rejected originally-correct/class count, not divided by correct count.
+
+    The default remains the original seven methods. An explicit fixed STATIC5
+    order supports embedding-increment controls without changing risk budgets.
     """
-    y, closed, values, rx = _inputs(ids, y, closed_prediction, knownness, rx_i)
-    methods = {name: _one(y, closed, values[:, j], rx) for j, name in enumerate(METHODS)}
-    return dict(schema=SCHEMA, method_names=list(METHODS), known_count=len(y), class_count=6,
-        receivers=list(RECEIVERS), thresholds=np.asarray([methods[name]['threshold'] for name in METHODS], dtype=np.float64),
+    if method_names is None:
+        names = METHODS
+    elif (isinstance(method_names, (list, tuple)) and all(isinstance(n, str) for n in method_names)
+          and tuple(method_names) in (METHODS, tuple(STATIC_METHODS))):
+        names = tuple(method_names)
+    else:
+        raise ValueError('Only the fixed original seven or static-five method order is allowed')
+    y, closed, values, rx = _inputs(ids, y, closed_prediction, knownness, rx_i, names)
+    methods = {name: _one(y, closed, values[:, j], rx) for j, name in enumerate(names)}
+    return dict(schema=SCHEMA, method_names=list(names), known_count=len(y), class_count=6,
+        receivers=list(RECEIVERS), thresholds=np.asarray([methods[name]['threshold'] for name in names], dtype=np.float64),
         limits=dict(known_macro_frr=.04, known_macro_correct_rejection_loss=.015), methods=methods,
         constraints_passed=all(method['constraints_passed'] for method in methods.values()),
         acceptance_rule='knownness >= one global threshold per method; score ties remain intact',

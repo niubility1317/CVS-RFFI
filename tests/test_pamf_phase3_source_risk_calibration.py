@@ -112,6 +112,31 @@ class SourceRiskCalibrationTests(unittest.TestCase):
         with self.assertRaises(TypeError):
             module.calibrate_known(ids, y, closed, scores, rx, unknown_scores=np.ones(3))
 
+    def test_explicit_static_five_matches_original_columns_and_tie_constraints(self):
+        module = self.module(); ids, y, closed, rx = self.rows(100)
+        values = np.random.default_rng(19).integers(-7, 9, (len(y), 7)).astype(np.float64)
+        closed[::7] = (closed[::7] + 1) % 6
+        original = module.calibrate_known(ids, y, closed, values, rx)
+        explicit = module.calibrate_known(ids, y, closed, values[:, :5], rx,
+                                          method_names=module.STATIC_METHODS)
+        self.assertEqual(explicit['method_names'], list(module.STATIC_METHODS))
+        np.testing.assert_array_equal(explicit['thresholds'], original['thresholds'][:5])
+        for name in module.STATIC_METHODS:
+            self.assertEqual(explicit['methods'][name], original['methods'][name])
+        self.assertEqual(explicit['limits'], original['limits'])
+        self.assertTrue(explicit['constraints_passed'])
+
+    def test_explicit_method_names_cannot_reorder_subset_or_mislabel_columns(self):
+        module = self.module(); ids, y, closed, rx = self.rows(2)
+        scores = np.ones((len(y), 5))
+        for names in [[], ['msp'], list(module.STATIC_METHODS)[::-1],
+                      ['msp', 'maxlogit', 'margin', 'energy', 'linear_oe'], 'msp']:
+            with self.subTest(names=names), self.assertRaises(ValueError):
+                module.calibrate_known(ids, y, closed, scores, rx, method_names=names)
+        with self.assertRaises(ValueError):
+            module.calibrate_known(ids, y, closed, np.ones((len(y), 7)), rx,
+                                    method_names=module.STATIC_METHODS)
+
 
 if __name__ == '__main__':
     unittest.main()
