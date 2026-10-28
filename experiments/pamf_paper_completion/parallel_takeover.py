@@ -52,6 +52,13 @@ def process_info(pid):
         return None
 
 
+def process_alive(pid, proc_root=Path('/proc')):
+    try:
+        return (proc_root / str(pid) / 'stat').read_text().split()[2] != 'Z'
+    except (FileNotFoundError, ProcessLookupError):
+        return False
+
+
 def scan_live(rt, jobs, proc_root=Path('/proc')):
     by_config = {j['config']: j for j in jobs}
     live = {}
@@ -87,7 +94,7 @@ def scan_live(rt, jobs, proc_root=Path('/proc')):
     return live
 
 
-def run(runtime_path):
+def run(runtime_path, recover_original=False):
     import json
     rt = json.loads(Path(runtime_path).read_text())
     sys.path.insert(0, rt['release_root'])
@@ -102,39 +109,45 @@ def run(runtime_path):
     jobs = read(root / 'jobs.json')
     initial = read(state_path)
     old_pid = initial['pid']
-    info = process_info(old_pid)
-    expected = [rt['python'], '-u', '-m', 'experiments.pamf_paper_completion.runner', 'dispatch', '--config', runtime_path]
-    if not info or info['cwd'] != rt['release_root'] or info['argv'] != expected or initial['status'] != 'RUNNING':
-        raise ValueError('Original owner is not the expected running dispatcher')
-    os.kill(old_pid, signal.SIGSTOP)
-    stopped = True
-    try:
-        for _ in range(100):
-            try:
-                if (Path('/proc') / str(old_pid) / 'stat').read_text().split()[2] in ('T', 't'):
-                    break
-            except FileNotFoundError:
-                raise RuntimeError('Original dispatcher disappeared before handoff')
-            time.sleep(.1)
-        else:
-            raise RuntimeError('Original dispatcher did not pause')
-        state = read(state_path)
-        live = scan_live(rt, jobs)
-        state = reconcile(jobs, state, live, done, lambda j: (root / 'logs' / (j['id'] + '.log')).exists())
-        if any(x['status'] not in ('QUEUED', 'RUNNING', 'COMPLETE') for x in state['jobs'].values()):
-            raise ValueError('Existing failure blocks dispatch')
-        os.kill(old_pid, signal.SIGTERM)
-        os.kill(old_pid, signal.SIGCONT)
-        stopped = False
-        for _ in range(100):
-            if process_info(old_pid) is None:
-                break
-            time.sleep(.1)
-        if process_info(old_pid) is not None:
-            raise RuntimeError('Old dispatcher did not exit; no new dispatch')
-    finally:
-        if stopped:
+    if recover_original:
+        if initial['status'] != 'RUNNING' or process_alive(old_pid):
+            raise ValueError('Recovery requires the original owner to be absent')
+        state = reconcile(jobs, initial, scan_live(rt, jobs), done,
+                          lambda j: (root / 'logs' / (j['id'] + '.log')).exists())
+    else:
+        info = process_info(old_pid)
+        expected = [rt['python'], '-u', '-m', 'experiments.pamf_paper_completion.runner', 'dispatch', '--config', runtime_path]
+        if not info or info['cwd'] != rt['release_root'] or info['argv'] != expected or initial['status'] != 'RUNNING':
+            raise ValueError('Original owner is not the expected running dispatcher')
+        os.kill(old_pid, signal.SIGSTOP)
+        stopped = True
+        try:
+            for _ in range(100):
+                try:
+                    if (Path('/proc') / str(old_pid) / 'stat').read_text().split()[2] in ('T', 't'):
+                        break
+                except FileNotFoundError:
+                    raise RuntimeError('Original dispatcher disappeared before handoff')
+                time.sleep(.1)
+            else:
+                raise RuntimeError('Original dispatcher did not pause')
+            state = read(state_path)
+            live = scan_live(rt, jobs)
+            state = reconcile(jobs, state, live, done, lambda j: (root / 'logs' / (j['id'] + '.log')).exists())
+            if any(x['status'] not in ('QUEUED', 'RUNNING', 'COMPLETE') for x in state['jobs'].values()):
+                raise ValueError('Existing failure blocks dispatch')
+            os.kill(old_pid, signal.SIGTERM)
             os.kill(old_pid, signal.SIGCONT)
+            stopped = False
+            for _ in range(100):
+                if not process_alive(old_pid):
+                    break
+                time.sleep(.1)
+            if process_alive(old_pid):
+                raise RuntimeError('Old dispatcher did not exit; no new dispatch')
+        finally:
+            if stopped:
+                os.kill(old_pid, signal.SIGCONT)
 
     state.update(pid=os.getpid(), cwd=os.getcwd(), argv=sys.argv, previous_owner_pid=old_pid, status='RUNNING',
                  concurrency_limit_per_gpu=3, takeover='parallel_takeover', controller_file=str(Path(__file__).resolve()))
@@ -146,7 +159,7 @@ def run(runtime_path):
     turn = 0
     while True:
         for key, item in list(active.items()):
-            if process_info(item['pid']) is not None:
+            if process_alive(item['pid']):
                 continue
             child = children.pop(key, None)
             if child:
@@ -211,4 +224,6 @@ def run(runtime_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--runtime', required=True)
-    run(parser.parse_args().runtime)
+    parser.add_argument('--recover-original', action='store_true')
+    args = parser.parse_args()
+    run(args.runtime, recover_original=args.recover_original)

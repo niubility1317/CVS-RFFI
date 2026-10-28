@@ -3,7 +3,7 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-from experiments.pamf_paper_completion.parallel_takeover import reconcile, scan_live, slots
+from experiments.pamf_paper_completion.parallel_takeover import process_alive, reconcile, scan_live, slots
 
 
 class TakeoverTests(unittest.TestCase):
@@ -56,4 +56,15 @@ class TakeoverTests(unittest.TestCase):
             with patch('experiments.pamf_paper_completion.parallel_takeover.os.getuid', return_value=proc.stat().st_uid, create=True), \
                  patch('experiments.pamf_paper_completion.parallel_takeover.process_info', side_effect=PermissionError):
                 self.assertEqual(scan_live({'run_root': '/run'}, [], proc_root=Path(temp)), {})
+
+    def test_dead_owner_detection_never_reads_environ(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            proc = root / '123'
+            proc.mkdir()
+            (proc / 'stat').write_text('123 (owner) Z 1')
+            self.assertFalse(process_alive(123, proc_root=root))
+            (proc / 'stat').write_text('123 (owner) S 1')
+            self.assertTrue(process_alive(123, proc_root=root))
+            self.assertFalse(process_alive(456, proc_root=root))
 
