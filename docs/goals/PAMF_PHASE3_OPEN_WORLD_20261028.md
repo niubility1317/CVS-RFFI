@@ -64,3 +64,5 @@ Full eq下载已于2026-10-29由独立owner完成158PKL/8767867条全量验证�
 source run`20261029-phase3-source-holdout-s2026092701-r01`已在N607 GPU2完成，VERIFIED/ANALYZED_SOURCE_ONLY。四类scratch232673参数、160维，TX0/1与RX8不进入训练，E20完整540步；source split392005、model seed2026092701。73项Phase3测试、一次本source候选独立P0/P1与真实metadata兼容检查通过。完整20epoch及87行stdout解析显示训练最终98.75%、已见RX V已知98.6528%、留出RX8为66.4722%；8规则全部未达95%推进，NO_PROMOTION，不扩三fold，详细见`docs/PAMF_PHASE3_SOURCE_HOLDOUT_RESULTS_20261029.md`。
 
 物理分支run`20261029-phase3-source-branch-s2026092701-r01`也已VERIFIED/ANALYZED_SOURCE_ONLY，95项测试及一次新候选P0/P1通过；N607 GPU2零新增训练，一次导出30360条8分支，完整16规则均NO_PROMOTION。全V最高未知拒识3.378%、RX8最高7.278%，RX8最高AUROC0.7493，不从中挑正式方法。执行commit df34171b8dc9942ec236e4504cac61768d70997a，结果见`docs/PAMF_PHASE3_BRANCH_EVIDENCE_RESULTS_20261029.md`。无标签代理的合法输入和未来评分边界保持；下一步优先联合域偏移校正、unknown成簇和anonymous注册。正式无标签适应、未知分类与持续注册仍未完成，目标保持完整ACTIVE。
+
+下一独立source候选固定“源锚点＋稳健公共平移＋anchored DP-means＋匿名注册”，细节见`docs/PAMF_PHASE3_SOURCE_JOINT_PLAN_20261029.md`。五个状态F/D0R0/D1R0/D0R1/D1R1仅需两次U拟合；D1同一平移也校正完整冻结head的输入，不改/训head。先source-only原F0 L隐藏标签代理，独立未来V评分，正式Full U/Q不读取。模型代理实现纯几何核心，数据代理实现独立truth-last联合评分，主Agent负责源角色导出/流水线与集成，review代理待候选可运行后一次P0/P1。当前为IMPLEMENTING，尚无新候选实际性能。
