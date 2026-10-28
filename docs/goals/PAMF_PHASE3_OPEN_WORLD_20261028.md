@@ -77,4 +77,8 @@ source run`20261029-phase3-source-holdout-s2026092701-r01`已在N607 GPU2完成�
 
 ## 下一独立源风险校准候选状态（2026-10-29）
 
-下一候选 source-known risk calibrated scalar 已登记，尚未运行。它复用现有冻结F／OE状态，仅由known V在总体及每RX约束宏FRR≤4%、原正确样本拒绝损伤≤1.5pp，unknown不参与校准或ROC挑阈值；不改变总目标95%未知拒识及旧类保护验收。此处仅记录当前固定方向和未运行状态，不声明代码测试、审查或发布已完成。
+source-known risk calibrated scalar 已由 `20261029-phase3-source-risk-calibration-s2026092701-r01` 真实完成VERIFIED/ANALYZED_SOURCE_ONLY，执行commit ba2b4ed63a03751b8934dd7385f16a05aa75bcf3。它复用冻结F／OE状态，只由known V标签校准总体及每RX宏FRR≤4%、原正确样本拒绝损伤≤1.5pp，所有源known约束通过；MLP未知宏拒识81.4603%（父76.6032%）、FRR1.3667%、known开放97.6185%、drop0.8481pp，未知整体和RX3/4/6/8仍未达95%，NO_PROMOTION。0新训练／Fforward／GPU，2L特征拒识checkpoint smoke PASS，正式target0；同knownV经验风险与同novel重复源开发，不是新盲测／跨RX／星地／适应或注册成功。见[风险校准结果](E:/type10-7/docs/PAMF_PHASE3_SOURCE_RISK_CALIBRATION_RESULTS_20261029.md)。不根据未知提高预算或重跑，Phase3总目标仍未完成。
+
+## 下一跨分支类别对应候选（2026-10-29）
+
+`20261029-phase3-source-consensus-s2026092701-r01` 已登记、实现中，尚未实跑。只改变100维描述符：保留各物理分支对完整默认头同一类别概率的加权支持，六项统计在同时置换类别列及同分时不变；F、L-only几何、原数据、101/1633参数与每读出200CPU步、knownV4%/1.5pp风险校准均匹配。原5静态控制仍不触发OE候选晋级，source95%未知/5%误拒/2pp保护及每RX要求不降。一次N607 CPU preflight已PASS，未增加GPU或读取正式池；具体方案见`docs/PAMF_PHASE3_SOURCE_CONSENSUS_PLAN_20261029.md`。这只是待验证的源开发假设，不声明已解决接收机依赖。

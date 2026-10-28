@@ -14,4 +14,4 @@
 
 唯一 launch owner 为主 Agent。新 run/output root 独占、parent 不可改写；两阶段为 predict（含真实拒识 checkpoint smoke、校准、固定全部预测）→独立 score。实际代码提交、命令、环境、路径、资源、停止规则和期望产物写入同 run 最小登记；一次 P0/P1 仅检查下次实跑直接缺陷。科学未达标不算技术故障，不重启健康进程或覆盖负结果。
 
-本地状态：13 项测试及 12 个子测试通过；一次独立 P0/P1 审查 PASS，审查者独立运行相同测试通过。N607 一次 CPU preflight PASS，父 run 为 ANALYZED_SOURCE_ONLY、实际代码76951634c0901175a6d78c88caffbf49fdce8d04，所有复用输入在位，新输出和 release 未存在。当前尚未启动本候选，真实 checkpoint smoke 为 predict 首步。
+实际状态：VERIFIED/ANALYZED_SOURCE_ONLY。执行commit ba2b4ed63a03751b8934dd7385f16a05aa75bcf3；两阶段、真实2L特征拒识checkpoint smoke及独立评分均完成，0Fforward／GPU／新训练。MLP未知宏拒识81.4603%，仍未达95%，科学NO_PROMOTION；同knownV经验风险与同novel重复源开发边界保持。完整[结果报告](E:/type10-7/docs/PAMF_PHASE3_SOURCE_RISK_CALIBRATION_RESULTS_20261029.md)。本计划方法、预算和验收不变，不从未知结果调预算重跑。

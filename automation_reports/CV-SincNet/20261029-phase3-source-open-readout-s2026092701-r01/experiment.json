@@ -1,0 +1,196 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-open-readout-s2026092701-r01",
+  "group_id": "pamf-phase3-source-open-readout",
+  "display_name": "PAMF第三阶段：完整六类基座源OE拒识",
+  "description": "当前六类TriSSL F冻结，L6300源几何+OE4200训练linear/MLP读出，knownV27000校阈值，TX隔离novel3150独立评分；5静态控制不触发OE晋级。",
+  "kind": "cvs",
+  "stage": "Phase3-source-open-rejection-current-full-PAMF",
+  "aliases": [
+    "Phase3完整基座源OE拒识"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "full_six_class",
+    "OE",
+    "frozen_identity_head",
+    "no_target"
+  ],
+  "comparison_group_id": "phase3-full6-source-OE-two-readouts-seven-rules",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261029-phase3-source-oe-data-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工及自主设计执行；本轮遵循事先source-only开发路线，不以首轮target表调参。",
+  "code": {
+    "commit": "76951634c0901175a6d78c88caffbf49fdce8d04",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-open-readout-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-open-readout-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original six-class source L/V plus Full auxiliary source devices",
+    "version": "existing aligned source contract subset",
+    "representation": "matching eq1_center256_unitRMS source clean only; no new channel observations",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 source auxiliary open development",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01/export/complete.json",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; OE TX identity private scorer only",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract classes; labels0/1 validation-only; labels2/3/4/5 train",
+    "roles": {
+      "source_L": 6300,
+      "source_V": 27000,
+      "exposure_train": 4200,
+      "novel_validation": 3150
+    },
+    "train_ratio": null,
+    "capsule_id": {
+      "exposure_train": "source-oe-417473b8dee6b66206d26620",
+      "novel_validation": "source-oe-7026a2fc71b26b44b250b014"
+    },
+    "split_id": "original-F0-source-plus-source-OE-417473b8dee6b66206d26620/7026a2fc71b26b44b250b014",
+    "validation_ref": "20261029-phase3-source-oe-data-r01/data/complete.json",
+    "support_query_ref": "No target; source novelty validation TX-disjoint from exposure training",
+    "leo_config_ref": "N/A source clean development only"
+  },
+  "permissions": {
+    "regime": "extra_source_known_unknown_membership_supervision_target_zero_labels",
+    "query_use": "no target query read",
+    "external_method_exception": null,
+    "claim_scope": "source-only rejection development, not unseen RX/satellite adaptation or registration success"
+  },
+  "checkpoint": {
+    "initialization": "unchanged_current_full_six_class_TriSSL",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "runner._load_model native matching six-class source contract and 232993 three-view architecture",
+    "provenance_verdict": "Current source-only finalE50/11100; original6 TX/LUV roles unchanged; no OE devices in F ancestry; no teacher/DURA loaded",
+    "selection_rule": "Existing fixed final checkpoint; rejection models200 full-batch steps; sourceV only99% threshold; novel devices only source promotion"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-source-open-20261029",
+    "gpu_policy": "One pilot worker; each card allows up to2 added task workers, memory>=4096MB; preserve all foreign work",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_open_readout_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_open_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-open-readout-s2026092701-r01-release/runtime.json",
+    "stop_rule": "model/source/OE handle mismatch, unintended originalU_s/target/private OE TX training read, nonfinite, output collision or stage unable to produce legal predictions; preserve partial. Scientific fail scores all7 methods, no target or threshold retry."
+  },
+  "expected_artifacts": [
+    "export/smoke.json",
+    "export/complete.json",
+    "export/source_L/features.npz",
+    "export/source_V/features.npz",
+    "export/exposure_train/public/features.npz",
+    "export/novel_validation/public/features.npz",
+    "fit/geometry.npz",
+    "fit/readouts.npz",
+    "fit/training.json",
+    "fit/complete.json",
+    "predict/calibration/thresholds.npy",
+    "predict/calibration/complete.json",
+    "predict/predictions.npz",
+    "predict/complete.json",
+    "score/results.json",
+    "score/complete.json",
+    "pipeline_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "known_macro_accuracy",
+      "known_macro_frr",
+      "known_macro_accuracy_drop",
+      "unknown_macro_rejection",
+      "auroc_known",
+      "oscr",
+      "source_RX_protection",
+      "eligible_OE_method"
+    ],
+    "dimensions": [
+      "7method",
+      "source_RX",
+      "known_TX",
+      "source_novel_TX"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01/predict/predictions.npz",
+    "scorer_ref": "experiments/pamf_phase3_open_world/source_open_scoring.py"
+  },
+  "rows": [
+    {
+      "row_id": "source-open-readout-s2026092701",
+      "method": "Frozen full six-class PAMF plus linear101/MLP1633 OE rejection",
+      "purpose": "first source open-device development pilot",
+      "config_ref": "configs/pamf_phase3_source_open_readout_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01/configs/export.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102905,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model source seed and CPU readout initialization2026092701; original source split392005; OE builder selection2026102905. No target/channel/support randomness.",
+      "k": null,
+      "scenario": "source_clean_only",
+      "optimizer": "CPU AdamW for new rejection readouts only",
+      "lr": 0.001,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "F encoder/head0 updates; source encoding40650+2 smoke. Each two rejection models200fullbatch6300known+4200OE, balancedmembership BCE; params101/1633.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01/logs/export.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_open_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-open-readout-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "export/smoke.json",
+        "export/complete.json",
+        "export/source_L/features.npz",
+        "export/source_V/features.npz",
+        "export/exposure_train/public/features.npz",
+        "export/novel_validation/public/features.npz",
+        "fit/geometry.npz",
+        "fit/readouts.npz",
+        "fit/training.json",
+        "fit/complete.json",
+        "predict/calibration/thresholds.npy",
+        "predict/calibration/complete.json",
+        "predict/predictions.npz",
+        "predict/complete.json",
+        "score/results.json",
+        "score/complete.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "OE is extra source membership supervision, not zero-source-label; no per-device OE labels enter fitter.",
+    "Original source U_s never read; frozen F already contains its legitimate original SSL training, unchanged.",
+    "Source novel3 TX never fit encoder/readout/normalizer/prototypes/threshold; trueTX only independent scorer after predictions.",
+    "Geometry on source L; readout normalizer on L+OEtrain; knownV only99% lower threshold calibration after fixed200 steps.",
+    "Only linear_oe/mlp16_oe may promote; both pass picks linear by fewerparams; 5static controls cannot trigger OE promotion.",
+    "Requiredsource95unknown overall/eachRX and old5%FRR/2ppmacrodrop overall/eachRX; no source result proves fullPhase3.",
+    "One archive transports code/config plus immutable sourceOEpublic/truth/complete data; one archiveSHA comparison, no data member hashes/revalidation.",
+    "Current full6 identity default head stays unchanged; formal RX24 U768/Q1920 not read or predicted.",
+    "Actual result VERIFIED/ANALYZED_SOURCE_ONLY, NO_PROMOTION: linear_oe68.476190% and mlp16_oe76.603175% novelTX macro rejection; known macroFRR0.996296%, allRX known protection passed; source clean only, target0, no adaptation/registration; result docs/PAMF_PHASE3_SOURCE_OE_REJECTION_RESULTS_20261029.md."
+  ],
+  "registered_at": "2026-10-28T18:53:59+00:00"
+}
