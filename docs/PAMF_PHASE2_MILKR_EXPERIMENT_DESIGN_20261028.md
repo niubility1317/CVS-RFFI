@@ -1,5 +1,7 @@
 # PAMF Phase2：MILKR 有标签域适应与新类注册完整实验设计
 
+r04 新增[完整链路衔接分析](PAMF_PHASE2_DA_REGISTRATION_LINKAGE_20261028.md)：保留所有原生机制，给 7 个闭集 DA 各接原生结构扩展／NCM／JointCE 三类明确 C 控制，组成 T2-J 的 29 条完整链路槽位；新增组合 runner 尚未实现。MILKR C 的独立重拟合与 B 后参数继承有严格区别，不能用闭集方法 C=N/A 作为性能优势证据。
+
 本轮 r03 总表已按用户最新指定将独立单场景收敛为 **low 郊区、mid 城区、low 城区三组**；每组全部 target support/query 使用该组同一种场景，各物理记录的随机信道实现独立且固定。综合仍为六分量、8 套，历史 MILKR 原三景不改名。完整清单、主表、22 版本、消融和修订后的工作量以[全面总实验表](PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md)为准。
 
 日期：2026-10-28，r03 综合 practical residual、三个指定单景与总表修订。状态：**DESIGN_ONLY，尚未启动任何训练、预测或评分**。

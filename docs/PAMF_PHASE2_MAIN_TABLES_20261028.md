@@ -1,5 +1,7 @@
 # PAMF Phase2 主表与综合 practical residual 实验设计
 
+r04 新增[完整链路衔接分析](PAMF_PHASE2_DA_REGISTRATION_LINKAGE_20261028.md)：T1/T2 继续解释单阶段与原生注册，T2-J 加入闭集 DA 的原生结构扩展／NCM／JointCE 三类注册，与 PAMF 做完整 A/B/C 比较。结构保持对照保留 B 的判决收益。原 MILKR 在 C 独立重拟合，不能主张 B 核状态继承或参数协同；以下原任务量不含新增 21 个组合。
+
 本轮 r03 总表已按用户最新指定将独立单场景收敛为 **low 郊区、mid 城区、low 城区三组**；每组全部 target support/query 使用该组同一种场景，各物理记录的随机信道实现独立且固定。综合仍为六分量、8 套，历史 MILKR 原三景不改名。完整清单、主表、22 版本、消融和修订后的工作量以[全面总实验表](PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md)为准。
 
 2026-10-28 修订。状态：**DESIGN_ONLY；未启动源训练、目标适应、预测或评分**。
