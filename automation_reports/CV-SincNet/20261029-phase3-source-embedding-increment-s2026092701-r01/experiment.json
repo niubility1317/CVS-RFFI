@@ -1,0 +1,227 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-embedding-increment-s2026092701-r01",
+  "group_id": "pamf-phase3-source-embedding-increment",
+  "display_name": "PAMF第三阶段：原生监督与均匀OE特征增量配对",
+  "description": "完整F6 E50各独立新增222步：原生L监督对照vs监督+uniformOE；原head/骨干联合CENTER_UNITS训练，U关闭，MSP预指定拒识，原F6同输入闭集保护。",
+  "kind": "cvs",
+  "stage": "Phase3-source-native-open-embedding-increment",
+  "aliases": [
+    "Phase3源开放特征222步增量"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "full_six_class",
+    "uniform_OE",
+    "joint_native_encoder_head",
+    "matched_supervised_control",
+    "E50plus222"
+  ],
+  "comparison_group_id": "phase3-source-native-supervised-versus-uniform-OE-222",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261029-phase3-source-open-readout-s2026092701-r01",
+    "20261029-phase3-source-oe-diverse-data-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工及自主设计执行；本轮遵循事先source-only开发路线，不以首轮target表调参。",
+  "code": {
+    "commit": "22cdc714eab234dceadee917887cc0e9d6debdf5",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-embedding-increment-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-embedding-increment-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original six-class source L/V plus Full auxiliary source devices",
+    "version": "original full6 source plus source21 auxiliary cap32 v1",
+    "representation": "matching eq1_center256_unitRMS source clean only; no new channel observations",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 source auxiliary open development",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; reused source21 capsule source-oe-diverse-9dd73fa533b19a64fd4db8d9",
+    "label_map_ref": "oldsource6 L labels; OE21 per-record TX private and never transferred to fitter",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_source_embedding_increment_20261029.json; originalsource_contract registered6; sourceOE21 cap32 excludesnovel3/formal4",
+    "roles": {
+      "original_source_L": 6300,
+      "original_U_s_increment_training": 0,
+      "OE_uniform_arm_only": 6134,
+      "source_V_calibration_evaluation": 27000,
+      "source_novel_validation": 3150
+    },
+    "train_ratio": null,
+    "capsule_id": {
+      "exposure_train": "source-oe-diverse-9dd73fa533b19a64fd4db8d9"
+    },
+    "split_id": "5e0f620d5c7c72512e9e9edd",
+    "validation_ref": "20261029-phase3-source-oe-diverse-data-r01/data/complete.json VALIDATED_ONCE; originalparent source caches reused",
+    "support_query_ref": "No target or originalU increment; fixed originalL roles +sourceOE21 only gradients, Vknownonlythreshold/novelonlyscore",
+    "leo_config_ref": "N/A source clean development only"
+  },
+  "permissions": {
+    "regime": "extra_source_known_unknown_membership_supervision_target_zero_labels",
+    "query_use": "No target query read; only already exposed source development novel records scored again",
+    "external_method_exception": null,
+    "claim_scope": "Repeated source development risk calibration; empirical known calibration protection, not independent confirmation or unseen-RX/satellite success"
+  },
+  "checkpoint": {
+    "initialization": "two independent native train constructors strictly load same originalF6 finalE50 payload",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "nativeE50 source ancestry and same392005 cache/registered6; new train constructor, not inference frozen_filters; real sourcegradient smoke restoresstate/RNG",
+    "provenance_verdict": "ParentE50/11100 legitimate originalTriSSL old6sourceL/U; increment onlyoriginalL andOE21 extra membership; originalU/V/novel/target nevergradient",
+    "selection_rule": "Fixed222updates coldCENTER_UNITS1e-4 for botharms, only uniform_oe::msp may sourcepromote after fullmatchedmatrix; noVearlystop/novelparamselection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-source-embedding-20261029",
+    "gpu_policy": "Two parallel arms, each sequential train/eval on one chosenGPU; differentfreecards preferred, sharedcard<=2added; CPUscore; preserveallforeign",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r01/rows/<arm>/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_embedding_increment_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_embedding_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-embedding-increment-s2026092701-r01-release/runtime.json",
+    "stop_rule": "source/parent/nativeSinc-gradient mismatch, forbidden U/V/novel/target optimization, nonfinite/outputcollision or rowunablelegalprediction; preservepartial; otherhealthyrowcontinues; no scientificretune/restart"
+  },
+  "expected_artifacts": [
+    "configs/{supervised_only,uniform_oe}.train.json",
+    "configs/{supervised_only,uniform_oe}.eval.json",
+    "rows/<arm>/train/{smoke.json,final.pt,steps.jsonl,training.json,complete.json}",
+    "rows/uniform_oe/train/oe_smoke.json",
+    "rows/<arm>/eval/{smoke.json,predictions.npz,complete.json}",
+    "rows/<arm>/eval/calibration/{prototypes.npy,thresholds.npy,complete.json}",
+    "rows/<arm>/score/{results.json,complete.json}",
+    "paired_source_metrics.json",
+    "pipeline_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "unknown_macro_rejection",
+      "known_macro_frr",
+      "known_macro_closed_accuracy",
+      "known_macro_open_accuracy",
+      "baseline_known_macro_closed_accuracy",
+      "encoder_closed_loss",
+      "total_open_loss",
+      "rejection_loss",
+      "paired_MSP_gain"
+    ],
+    "dimensions": [
+      "2trainingarms",
+      "5static_scores",
+      "sourceRX",
+      "knownTX",
+      "novelTX"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r01/rows/<arm>/eval/predictions.npz",
+    "scorer_ref": "experiments/pamf_phase3_open_world/source_embedding_scoring.py"
+  },
+  "rows": [
+    {
+      "row_id": "supervised_only-s2026092701",
+      "method": "PAMF native source222 supervised_only",
+      "purpose": "matched nativeL-supervised increment control, not pureCE/PAMF-CE",
+      "config_ref": "configs/pamf_phase3_source_embedding_increment_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r01/configs/supervised_only.train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102906,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "SamefixedF50 init/knownL andaug stream modelseed2026092701; existingdatasplit392005; onlyOEindependent sampler2026102907, datasetselection2026102906.",
+      "k": null,
+      "scenario": "source_clean_and_original_nativeL_As_training_only",
+      "optimizer": "cold AdamW CENTER_UNITS originalphysicalclip5",
+      "lr": 0.0001,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "Parent11100+new222=11322/globalepoch51, originalL28416sampled/170496packetviews/As14208; OE14208ifuniform,0ifcontrol. neweval36452Fforwards/row. NoUorVupdates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r01/rows/supervised_only",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r01/rows/supervised_only/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_embedding_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-embedding-increment-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "configs/{supervised_only,uniform_oe}.train.json",
+        "configs/{supervised_only,uniform_oe}.eval.json",
+        "rows/<arm>/train/{smoke.json,final.pt,steps.jsonl,training.json,complete.json}",
+        "rows/uniform_oe/train/oe_smoke.json",
+        "rows/<arm>/eval/{smoke.json,predictions.npz,complete.json}",
+        "rows/<arm>/eval/calibration/{prototypes.npy,thresholds.npy,complete.json}",
+        "rows/<arm>/score/{results.json,complete.json}",
+        "paired_source_metrics.json",
+        "pipeline_state.json"
+      ]
+    },
+    {
+      "row_id": "uniform_oe-s2026092701",
+      "method": "PAMF native source222 uniform_oe",
+      "purpose": "nativeL plus uniform6KL sourceOE increment candidate",
+      "config_ref": "configs/pamf_phase3_source_embedding_increment_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r01/configs/uniform_oe.train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102906,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "SamefixedF50 init/knownL andaug stream modelseed2026092701; existingdatasplit392005; onlyOEindependent sampler2026102907, datasetselection2026102906.",
+      "k": null,
+      "scenario": "source_clean_and_original_nativeL_As_training_only",
+      "optimizer": "cold AdamW CENTER_UNITS originalphysicalclip5",
+      "lr": 0.0001,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "Parent11100+new222=11322/globalepoch51, originalL28416sampled/170496packetviews/As14208; OE14208ifuniform,0ifcontrol. neweval36452Fforwards/row. NoUorVupdates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r01/rows/uniform_oe",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r01/rows/uniform_oe/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_embedding_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-embedding-increment-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "configs/{supervised_only,uniform_oe}.train.json",
+        "configs/{supervised_only,uniform_oe}.eval.json",
+        "rows/<arm>/train/{smoke.json,final.pt,steps.jsonl,training.json,complete.json}",
+        "rows/uniform_oe/train/oe_smoke.json",
+        "rows/<arm>/eval/{smoke.json,predictions.npz,complete.json}",
+        "rows/<arm>/eval/calibration/{prototypes.npy,thresholds.npy,complete.json}",
+        "rows/<arm>/score/{results.json,complete.json}",
+        "paired_source_metrics.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "supervised_only retains original native KL/CRIC/As supervision and is not pureCE/PAMF-CE; original Phase1/2 default model unchanged.",
+    "Botharms independently initialize same sourceverified full6 E50, never control→OE; source6defaulthead and encoder jointly update, no replacementhead.",
+    "Parent11100updates plus222new=11322, optimizercold/constant1e-4; not a historicalE50 rerun or fullTriSSL continuation.",
+    "Native train constructor restores Sinc gradient; inference frozenreader discarded afterancestryvalidation. L2 andOE2gradient smoke do notstep and restoreallstate/RNG.",
+    "OriginalL6300 fixedsplit392005, Uiter/EMA/teacheroff; original native6Lforwards/AsKL0/CRIC.1 atglobalE51 preserved.",
+    "UniformOE extra membership supervision only, no perdeviceTX; sampler15domainsuniform thenrecords, OEevalwithgrad andRNG/modesrestore; control noOEroot/IO.",
+    "Existingremote source21 publicdata reused from previousimmutable release, no duplicate archive/data validation/memberhash; formalRX24neverread.",
+    "Newcheckpoint ownstep identity11322 and datasetancestry; do not load with oldE50-onlystep assertions or reusefrozenoldfeatures asnewevaluation.",
+    "Eachnewencoder evaluates ownsourceL/V/novel onidenticalphysicalrecords, risk sourceVknownlabels .04/.015; thresholdbefore novel IQ/oldnovelbaseline.",
+    "Sourceguard independently checks originalF6 knownbaseline logits: closedloss<=.005/openloss<=.02/FRR<=.05/unknown>=.95 overall/eachRX.",
+    "Onlyuniform_oe::msp eligible afterbothrowscomplete; other4scores/strongsupervisedcontroldiagnostic, not choicebysourcetopscore.",
+    "Sameknown empiricalcalibration+repeatednovel3source development, not independent newconfirm/unseenRX/star/targetDA/anonymousregistration evidence.",
+    "Two parallelrows max2addedGPU/card, noforeignstop; one rowtechfailpreservesotherhealthy, partialcannotpromote. Scientificfailstillcompletescoreandreport.",
+    "Technical fact only: FAILED beforegradient smoke/optimizer/evaluation (0 newupdates, no newperformance). Native originalparent validation passed; extra compatibility check wrongly required split_seed in originalconfig and cachepathequality. Actualseed392005 in sourcecontract; validated relocated cache bound by physicalroleIDs. r02 targetedrecovery preserves originalsourceweights/scientificmatrix; r01 artifacts/status kept."
+  ],
+  "registered_at": "2026-10-28T20:43:23+00:00"
+}
