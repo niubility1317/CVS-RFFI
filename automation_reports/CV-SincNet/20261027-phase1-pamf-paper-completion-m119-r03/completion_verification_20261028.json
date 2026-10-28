@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED",
+  "remote_status": "ANALYZED",
+  "counts": {
+    "COMPLETE": 369
+  },
+  "analysis_complete": {
+    "status": "ANALYZED",
+    "logical_F": 200,
+    "new_F": 119,
+    "reused_F": 81,
+    "new_G": 0,
+    "summary_rows": 9222
+  },
+  "checked_at": 1793171078.0579185,
+  "execution_commit": "c9ebb6db301815159710b4c5cc461c9fd808dc55",
+  "results_report": "docs/reports/pamf_paper_results_20261028/report.md",
+  "no_new_training_prediction_or_scoring": true
+}

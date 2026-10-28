@@ -1,0 +1,73 @@
+{
+  "status": "VERIFIED",
+  "collections": [
+    {
+      "collection": "current",
+      "logical_rows": 200,
+      "missing": 0,
+      "controller_status": "ANALYZED",
+      "complete_scores": 200
+    },
+    {
+      "collection": "single_view",
+      "logical_rows": 120,
+      "missing": 0,
+      "controller_status": "ANALYZED",
+      "complete_scores": 120
+    },
+    {
+      "collection": "historical_repl",
+      "logical_rows": 201,
+      "missing": 0,
+      "controller_status": "RUNNING",
+      "complete_scores": 201
+    },
+    {
+      "collection": "external_factorial",
+      "logical_rows": 627,
+      "missing": 0,
+      "controller_status": "RUNNING",
+      "complete_scores": 627
+    },
+    {
+      "collection": "noSIG_CE",
+      "logical_rows": 15,
+      "missing": 0,
+      "controller_status": "ANALYZED",
+      "complete_scores": 15
+    },
+    {
+      "collection": "shuffled_8seed",
+      "logical_rows": 16,
+      "missing": 0,
+      "controller_status": "ANALYZED",
+      "complete_scores": 16
+    }
+  ],
+  "logical_memberships": 1179,
+  "unique_source_handles": 1089,
+  "overall_seed_rows": 125414,
+  "summary_rows": 41663,
+  "detailed_seed_rows": 1952282,
+  "historical_tables": 193,
+  "checks": {
+    "confusion_matrices_replayed": 1657994,
+    "paired_net_records": 974385,
+    "pooled_populations": 574
+  },
+  "negative_results_retained": true,
+  "seed_sd_ddof": 1,
+  "read_only_scores": true,
+  "no_training_prediction_or_truth_access": true,
+  "workbook_sheets": 17,
+  "workbook_data_cells_verified": 40206,
+  "official_current_per_seed_metrics_reconciled": 27696,
+  "per_class_records": 372756,
+  "current_stage_count": 369,
+  "current_new_train_count": 119,
+  "stage_elapsed_missing": 1,
+  "architecture_networks": 15,
+  "architecture_seeds": 8,
+  "visual_review": "17 sheet previews inspected; column widths corrected where needed",
+  "workbook_cells_verified_from_saved_xlsx": true
+}

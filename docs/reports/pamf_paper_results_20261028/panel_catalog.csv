@@ -1,0 +1,16 @@
+﻿实验,设置与目的,数据文件
+常见网络架构,纯 CE、无 U、无增强；检验结构表示能力。15 种网络×8 种子，其中含单/三视图 PAMF 和严格无 SIG-TIME。,15_architecture_E200_summary.csv
+最终主方法,PAMF 使用 Tri-SIG-TIME SSL；四种外部方法使用增强＋普通 PL0.95。11 个数据设置，三种子。,01_main_comparison.csv
+增强与 PL 控制,五种识别器的监督/PL×有/无信道增强；PAMF 另列完整方法第五臂。,02_augmentation_PL_factorial.csv
+接收机重划分,Main split、Receiver split 1/2；源数据量相同，F/G 合同匹配。,10_receiver_splits.csv
+标注比例,1%、5%、10%；10% 精确复用 Main split，V 固定。,09_label_fraction.csv
+源接收机数量,1 至 6 个源接收机；共同六目标，5 源点由 Main 的分层 CM 汇总。,08_source_receiver_curve_common6.csv
+十类规模,10 类、16 源/16 目标；不能混用六类包数或平均 F1。,11_ten_class_scale.csv
+七场景压力,clean＋六种 practical，各景独立，准确率和 Macro-F1 齐全。,12_seven_scenes.csv
+DURA 泛用性,固定识别器比较 raw、匹配 DURA-L、DURA-LU；不能将恢复器用 U 的贡献全部归于 F。,13_DURA_generality.csv
+F/G 无标签权限,完整 SSL 与同重排监督识别器×G-L/G-LU；自然序普通 PL 控制单列。,07_U_permission.csv
+两层结构消融,纯 CE 与完整 SSL 分层；完整、单视图、时间坐标、SIG-TIME、PA、参考、矩统计、重排/去重排、参考相位。,03_two_layer_structure_ablation.csv
+去 SIG-TIME 嵌套五组,无 SIG 基底及进一步去 PA、去参考、双删、参考相位扰动；基底三种子共享。,04_nested_noSIG_CE.csv
+单视图补充,120 行完整评分；主比较为完整 L 骨架 Sup/PL，分支为 CE/CE＋PL。,05_single_view_supplement.csv
+三/单视图八种子,完整 SSL、相同重排、8 个配对种子；该八种子面板 raw 为主，不扩写缺失的八种子 DURA。,06_view_comparison_8seed.csv
+历史正式机制和成本,T1 主矩阵、三核心、21 细项、G 七项、旧 REPL 内机制/结构、源物理诊断、G 交叉、时延和训练成本；保留原方法身份。,historical_table_index.csv

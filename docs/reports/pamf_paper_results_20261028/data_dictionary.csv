@@ -1,0 +1,17 @@
+﻿字段/文件,定义
+collection / panel,先筛来源集合与面板，避免把同一冻结模型的不同引用合并为独立重复。
+model_seed / seed_n,模型种子与实际种子数；本包综合汇总为 3 或 8，均不剔除退化种子。
+accuracy_pct / macro_f1_pct,百分数单位，79.9 表示 79.9%；不是 0.799。
+accuracy_sd_pp / macro_f1_sd_pp,种子间样本标准差，ddof=1，单位百分点。
+n_packets_per_scene,每个场景的物理包数；六景均值中仍表示每景包数，不把六个衍生视图当独立物理包。
+six_practical_mean,每个种子内对六种 practical 等权平均，再跨种子求均值及 SD；clean 不计入。
+combined_target,跨接收机＋双跨；由互斥人群 CM 相加后计算准确率/F1，不直接平均人群 F1。
+all_three_populations,跨日＋跨接收机＋双跨；包含源 RX 的未见 D0 日期。
+cross_rx_common6 / cross_both_common6,统一六个目标 RX 的源数量曲线，Main 模型对应 5 源点，未新增训练。
+confusion_matrices,JSONL 中行是真实类别、列是预测类别，零起始索引；具体 TX 见 class_mapping.csv。
+18_per_class_metrics.csv.gz,由已评分的整体 CM 派生每类 precision、recall、F1；precision 分母为 0 留空。
+paired_raw_corrections,repairs=原错后对；damage=原对后错；net=repairs−damage，保留每种子/分层。
+source_row / score_source,原冻结实验行和实际评分路径；仅供追溯，不是额外重复模型。
+actual U counters,累计曝光、接受数按原实际记录；会重复看到相同物理 U 包，不代表唯一包数。缺失不填零。
+worker seconds,共享设备上的单 worker 实际经过时间；不等同独占 GPU 秒、整个墙钟或能耗。
+controller_status,历史外部/REPL 控制器旧状态可能未刷新；完整性以 complete_scores 和已验证 score artifacts 为准。
