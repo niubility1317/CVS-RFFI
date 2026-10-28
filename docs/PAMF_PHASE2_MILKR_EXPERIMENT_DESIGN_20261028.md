@@ -6,6 +6,8 @@
 
 本轮主表与综合场景的最终口径见[主表详细设计](PAMF_PHASE2_MAIN_TABLES_20261028.md)。它覆盖前版的三种leo_weak主面板安排：主实验为固定8套综合practical residual，六单场景作为诊断。所有源训练严格source-only，到B才开放合法target support。
 
+应用现已明确为单星被动监听。综合概率仍是空间几何参考，不自动代表已采IQ或实际任务频率；接收条件与仰角占比分析见[被动监听分析](analysis/pamf_passive_elevation_20261028/REPORT.md)。本次不改变概率数值，不使用通信选星逻辑。
+
 配套文件：
 
 - [方法代码清单与版本边界](PAMF_PHASE2_METHOD_CODE_INVENTORY_20261028.md)：逐方法源码、入口、权限、现有完成度和未接入项。

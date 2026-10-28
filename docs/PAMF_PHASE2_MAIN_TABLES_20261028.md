@@ -2,6 +2,8 @@
 
 2026-10-28 修订。状态：**DESIGN_ONLY；未启动源训练、目标适应、预测或评分**。
 
+用户进一步明确应用为**单星被动监听，不控制地面TX、不选星**。下述76.63%低仰角分布保留为宽视场空间几何参考；轨道／天线／采集条件不同可显著改变分布，不能称为实际载荷频率，也不自动改成中高主导。新增[完整观测分布分析](analysis/pamf_passive_elevation_20261028/REPORT.md)含单次过境、14天时间采样和视场／接收门限敏感性。本次仅澄清解释，数值配置与矩阵未改；明确假设的参考基准仍可按既有流程开展。
+
 本文件落实用户最新要求，覆盖前版“以三种 leo_weak 为主”的安排：**以综合 practical residual 场景为主，固定8套数据抑制随机波动，六个单场景只作诊断；所有方法先在相同训练源域建立源模型，到目标适应阶段才接触合法target support。**现有有标签MILKR仍是主方法，不新增无标签方法研发。
 
 配套：[完整机制设计](PAMF_PHASE2_MILKR_EXPERIMENT_DESIGN_20261028.md)、[代码清单](PAMF_PHASE2_METHOD_CODE_INVENTORY_20261028.md)、[完整矩阵](../configs/pamf_phase2_milkr_experiment_design_20261028.json)、[综合概率与8套数据配置](../configs/pamf_phase2_practical_mixture_20261028.json)、[科学协议](PROJECT_PROTOCOL.md)。

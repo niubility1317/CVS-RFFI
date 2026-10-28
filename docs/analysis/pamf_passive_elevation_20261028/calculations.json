@@ -1,0 +1,1100 @@
+{
+  "schema": "pamf_single_satellite_passive_elevation_analysis_v1",
+  "date": "2026-10-28",
+  "task": "single satellite passive listening; no ground transmitter control or satellite selection",
+  "status": "GEOMETRY_ANALYSIS_ONLY",
+  "experiment_config_changed": false,
+  "IQ_read": false,
+  "assumptions": {
+    "altitude_m": 600000.0,
+    "earth_radius_m": 6371000.0,
+    "GM": 398600441800000.0,
+    "reference_days": 14,
+    "time_step_s": 5.0,
+    "earth_rotation": true,
+    "RAAN0_deg": 0.0,
+    "initial_anomaly_deg": 0.0,
+    "ground_longitude_deg": 0.0,
+    "constant_packet_rate": true,
+    "detection_model": false,
+    "J2": false,
+    "measured_orbit": false,
+    "measured_antenna_pattern": false
+  },
+  "bins": {
+    "low": [
+      10,
+      30
+    ],
+    "mid": [
+      30,
+      45
+    ],
+    "high_model_support": [
+      45,
+      80
+    ]
+  },
+  "area_profiles": [
+    {
+      "minimum_ground_elevation_deg": 10.0,
+      "low_mid_high": [
+        0.7662574866082987,
+        0.14635969316471778,
+        0.08738282022698345
+      ]
+    },
+    {
+      "minimum_ground_elevation_deg": 20.0,
+      "low_mid_high": [
+        0.4989460030907948,
+        0.31373885812417374,
+        0.1873151387850315
+      ]
+    },
+    {
+      "minimum_ground_elevation_deg": 25.0,
+      "low_mid_high": [
+        0.28693095320247797,
+        0.4464937309870155,
+        0.26657531581050653
+      ]
+    },
+    {
+      "minimum_ground_elevation_deg": 30.0,
+      "low_mid_high": [
+        0.0,
+        0.6261577795197701,
+        0.37384222048022986
+      ]
+    },
+    {
+      "minimum_ground_elevation_deg": 40.0,
+      "low_mid_high": [
+        0.0,
+        0.2807131970563844,
+        0.7192868029436156
+      ]
+    }
+  ],
+  "pass_profiles": [
+    {
+      "peak_elevation_deg": 30.0,
+      "minimum_elevation_deg": 10.0,
+      "upper_elevation_deg": 80.0,
+      "low_mid_high": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "assumptions": "one complete circular pass, fixed ground point, no Earth rotation within pass; uniform time and constant emission"
+    },
+    {
+      "peak_elevation_deg": 30.0,
+      "minimum_elevation_deg": 25.0,
+      "upper_elevation_deg": 80.0,
+      "low_mid_high": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "assumptions": "one complete circular pass, fixed ground point, no Earth rotation within pass; uniform time and constant emission"
+    },
+    {
+      "peak_elevation_deg": 45.0,
+      "minimum_elevation_deg": 10.0,
+      "upper_elevation_deg": 80.0,
+      "low_mid_high": [
+        0.6005102444732837,
+        0.39948975552671634,
+        0.0
+      ],
+      "assumptions": "one complete circular pass, fixed ground point, no Earth rotation within pass; uniform time and constant emission"
+    },
+    {
+      "peak_elevation_deg": 45.0,
+      "minimum_elevation_deg": 25.0,
+      "upper_elevation_deg": 80.0,
+      "low_mid_high": [
+        0.2199897174399537,
+        0.7800102825600463,
+        0.0
+      ],
+      "assumptions": "one complete circular pass, fixed ground point, no Earth rotation within pass; uniform time and constant emission"
+    },
+    {
+      "peak_elevation_deg": 60.0,
+      "minimum_elevation_deg": 10.0,
+      "upper_elevation_deg": 80.0,
+      "low_mid_high": [
+        0.5416702615260548,
+        0.21326242778550536,
+        0.24506731068843984
+      ],
+      "assumptions": "one complete circular pass, fixed ground point, no Earth rotation within pass; uniform time and constant emission"
+    },
+    {
+      "peak_elevation_deg": 60.0,
+      "minimum_elevation_deg": 25.0,
+      "upper_elevation_deg": 80.0,
+      "low_mid_high": [
+        0.17228139153696156,
+        0.3851403588861875,
+        0.44257824957685094
+      ],
+      "assumptions": "one complete circular pass, fixed ground point, no Earth rotation within pass; uniform time and constant emission"
+    },
+    {
+      "peak_elevation_deg": 90.0,
+      "minimum_elevation_deg": 10.0,
+      "upper_elevation_deg": 80.0,
+      "low_mid_high": [
+        0.5452201705845954,
+        0.19605866987574747,
+        0.25872115953965713
+      ],
+      "assumptions": "one complete circular pass, fixed ground point, no Earth rotation within pass; uniform time and constant emission"
+    },
+    {
+      "peak_elevation_deg": 90.0,
+      "minimum_elevation_deg": 25.0,
+      "upper_elevation_deg": 80.0,
+      "low_mid_high": [
+        0.1705834565722122,
+        0.3575670989771563,
+        0.47184944445063154
+      ],
+      "assumptions": "one complete circular pass, fixed ground point, no Earth rotation within pass; uniform time and constant emission"
+    },
+    {
+      "peak_elevation_deg": 90.0,
+      "minimum_elevation_deg": 10.0,
+      "upper_elevation_deg": 90.0,
+      "low_mid_high": [
+        0.5153210527075176,
+        0.1853070843737791,
+        0.2993718629187034
+      ],
+      "assumptions": "one complete circular pass, fixed ground point, no Earth rotation within pass; uniform time and constant emission"
+    }
+  ],
+  "orbit_time_profiles": [
+    {
+      "inclination_deg": 53.0,
+      "ground_latitude_deg": 0.0,
+      "reference_10_to_80": {
+        "accepted_samples": 3820,
+        "low_mid_high": [
+          0.7882198952879581,
+          0.14109947643979057,
+          0.07068062827225131
+        ]
+      },
+      "reference_10_to_90": {
+        "accepted_samples": 3828,
+        "low_mid_high": [
+          0.7865726227795193,
+          0.14080459770114942,
+          0.07262277951933124
+        ]
+      },
+      "fraction_above80_in_visible": 0.002089864158829724,
+      "elevation_mask_sensitivity": [
+        {
+          "minimum_ground_elevation_deg": 10.0,
+          "profile": {
+            "accepted_samples": 3820,
+            "low_mid_high": [
+              0.7882198952879581,
+              0.14109947643979057,
+              0.07068062827225131
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 1.0
+        },
+        {
+          "minimum_ground_elevation_deg": 20.0,
+          "profile": {
+            "accepted_samples": 1710,
+            "low_mid_high": [
+              0.5269005847953216,
+              0.3152046783625731,
+              0.15789473684210525
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.4476439790575916
+        },
+        {
+          "minimum_ground_elevation_deg": 25.0,
+          "profile": {
+            "accepted_samples": 1182,
+            "low_mid_high": [
+              0.3155668358714044,
+              0.4560067681895093,
+              0.22842639593908629
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.3094240837696335
+        },
+        {
+          "minimum_ground_elevation_deg": 30.0,
+          "profile": {
+            "accepted_samples": 809,
+            "low_mid_high": [
+              0.0,
+              0.6662546353522868,
+              0.3337453646477132
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.2117801047120419
+        },
+        {
+          "minimum_ground_elevation_deg": 40.0,
+          "profile": {
+            "accepted_samples": 401,
+            "low_mid_high": [
+              0.0,
+              0.3266832917705736,
+              0.6733167082294265
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.1049738219895288
+        }
+      ],
+      "hard_cone_sensitivity": [
+        {
+          "nadir_hard_cone_half_angle_deg": 60.0,
+          "minimum_ground_elevation_deg": 18.63294509143454,
+          "profile": {
+            "accepted_samples": 1904,
+            "low_mid_high": [
+              0.5751050420168067,
+              0.28308823529411764,
+              0.14180672268907563
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.49842931937172774
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 50.0,
+          "minimum_ground_elevation_deg": 33.050730279511974,
+          "profile": {
+            "accepted_samples": 651,
+            "low_mid_high": [
+              0.0,
+              0.5852534562211982,
+              0.4147465437788018
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.17041884816753927
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 45.0,
+          "minimum_ground_elevation_deg": 39.312700545319665,
+          "profile": {
+            "accepted_samples": 419,
+            "low_mid_high": [
+              0.0,
+              0.3556085918854415,
+              0.6443914081145584
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.10968586387434555
+        }
+      ]
+    },
+    {
+      "inclination_deg": 53.0,
+      "ground_latitude_deg": 30.0,
+      "reference_10_to_80": {
+        "accepted_samples": 4918,
+        "low_mid_high": [
+          0.7844652297681984,
+          0.140097600650671,
+          0.07543716958113054
+        ]
+      },
+      "reference_10_to_90": {
+        "accepted_samples": 4937,
+        "low_mid_high": [
+          0.7814462224022686,
+          0.13955843629734657,
+          0.07899534130038485
+        ]
+      },
+      "fraction_above80_in_visible": 0.0038484909864290318,
+      "elevation_mask_sensitivity": [
+        {
+          "minimum_ground_elevation_deg": 10.0,
+          "profile": {
+            "accepted_samples": 4918,
+            "low_mid_high": [
+              0.7844652297681984,
+              0.140097600650671,
+              0.07543716958113054
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 1.0
+        },
+        {
+          "minimum_ground_elevation_deg": 20.0,
+          "profile": {
+            "accepted_samples": 2268,
+            "low_mid_high": [
+              0.5326278659611993,
+              0.3037918871252205,
+              0.16358024691358025
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.46116307442049614
+        },
+        {
+          "minimum_ground_elevation_deg": 25.0,
+          "profile": {
+            "accepted_samples": 1546,
+            "low_mid_high": [
+              0.314359637774903,
+              0.44566623544631306,
+              0.23997412677878396
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.31435542903619357
+        },
+        {
+          "minimum_ground_elevation_deg": 30.0,
+          "profile": {
+            "accepted_samples": 1060,
+            "low_mid_high": [
+              0.0,
+              0.65,
+              0.35
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.21553477023180154
+        },
+        {
+          "minimum_ground_elevation_deg": 40.0,
+          "profile": {
+            "accepted_samples": 519,
+            "low_mid_high": [
+              0.0,
+              0.28516377649325625,
+              0.7148362235067437
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.10553070353802359
+        }
+      ],
+      "hard_cone_sensitivity": [
+        {
+          "nadir_hard_cone_half_angle_deg": 60.0,
+          "minimum_ground_elevation_deg": 18.63294509143454,
+          "profile": {
+            "accepted_samples": 2514,
+            "low_mid_high": [
+              0.5783611774065235,
+              0.2740652346857597,
+              0.1475735879077168
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.5111834078893859
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 50.0,
+          "minimum_ground_elevation_deg": 33.050730279511974,
+          "profile": {
+            "accepted_samples": 855,
+            "low_mid_high": [
+              0.0,
+              0.5660818713450292,
+              0.43391812865497076
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.1738511590077267
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 45.0,
+          "minimum_ground_elevation_deg": 39.312700545319665,
+          "profile": {
+            "accepted_samples": 545,
+            "low_mid_high": [
+              0.0,
+              0.3192660550458716,
+              0.6807339449541284
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.11081740544936966
+        }
+      ]
+    },
+    {
+      "inclination_deg": 53.0,
+      "ground_latitude_deg": 50.0,
+      "reference_10_to_80": {
+        "accepted_samples": 7116,
+        "low_mid_high": [
+          0.6475548060708263,
+          0.178752107925801,
+          0.1736930860033727
+        ]
+      },
+      "reference_10_to_90": {
+        "accepted_samples": 7162,
+        "low_mid_high": [
+          0.6433956995252723,
+          0.17760402122312202,
+          0.1790002792516057
+        ]
+      },
+      "fraction_above80_in_visible": 0.0064227869310248265,
+      "elevation_mask_sensitivity": [
+        {
+          "minimum_ground_elevation_deg": 10.0,
+          "profile": {
+            "accepted_samples": 7116,
+            "low_mid_high": [
+              0.6475548060708263,
+              0.178752107925801,
+              0.1736930860033727
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 1.0
+        },
+        {
+          "minimum_ground_elevation_deg": 20.0,
+          "profile": {
+            "accepted_samples": 4140,
+            "low_mid_high": [
+              0.39420289855072466,
+              0.3072463768115942,
+              0.2985507246376812
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.581787521079258
+        },
+        {
+          "minimum_ground_elevation_deg": 25.0,
+          "profile": {
+            "accepted_samples": 3198,
+            "low_mid_high": [
+              0.21575984990619138,
+              0.3977485928705441,
+              0.38649155722326456
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.4494097807757167
+        },
+        {
+          "minimum_ground_elevation_deg": 30.0,
+          "profile": {
+            "accepted_samples": 2508,
+            "low_mid_high": [
+              0.0,
+              0.507177033492823,
+              0.49282296650717705
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.3524451939291737
+        },
+        {
+          "minimum_ground_elevation_deg": 40.0,
+          "profile": {
+            "accepted_samples": 1556,
+            "low_mid_high": [
+              0.0,
+              0.20565552699228792,
+              0.794344473007712
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.21866216975829117
+        }
+      ],
+      "hard_cone_sensitivity": [
+        {
+          "nadir_hard_cone_half_angle_deg": 60.0,
+          "minimum_ground_elevation_deg": 18.63294509143454,
+          "profile": {
+            "accepted_samples": 4430,
+            "low_mid_high": [
+              0.4338600451467269,
+              0.2871331828442438,
+              0.27900677200902935
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.6225407532321529
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 50.0,
+          "minimum_ground_elevation_deg": 33.050730279511974,
+          "profile": {
+            "accepted_samples": 2167,
+            "low_mid_high": [
+              0.0,
+              0.42962621135209966,
+              0.5703737886479003
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.30452501405283866
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 45.0,
+          "minimum_ground_elevation_deg": 39.312700545319665,
+          "profile": {
+            "accepted_samples": 1617,
+            "low_mid_high": [
+              0.0,
+              0.23562152133580705,
+              0.764378478664193
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.22723440134907252
+        }
+      ]
+    },
+    {
+      "inclination_deg": 53.0,
+      "ground_latitude_deg": 60.0,
+      "reference_10_to_80": {
+        "accepted_samples": 4468,
+        "low_mid_high": [
+          0.9411369740376008,
+          0.058863025962399285,
+          0.0
+        ]
+      },
+      "reference_10_to_90": {
+        "accepted_samples": 4468,
+        "low_mid_high": [
+          0.9411369740376008,
+          0.058863025962399285,
+          0.0
+        ]
+      },
+      "fraction_above80_in_visible": 0.0,
+      "elevation_mask_sensitivity": [
+        {
+          "minimum_ground_elevation_deg": 10.0,
+          "profile": {
+            "accepted_samples": 4468,
+            "low_mid_high": [
+              0.9411369740376008,
+              0.058863025962399285,
+              0.0
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 1.0
+        },
+        {
+          "minimum_ground_elevation_deg": 20.0,
+          "profile": {
+            "accepted_samples": 1664,
+            "low_mid_high": [
+              0.8419471153846154,
+              0.1580528846153846,
+              0.0
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.37242614145031333
+        },
+        {
+          "minimum_ground_elevation_deg": 25.0,
+          "profile": {
+            "accepted_samples": 829,
+            "low_mid_high": [
+              0.6827503015681544,
+              0.3172496984318456,
+              0.0
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.18554162936436885
+        },
+        {
+          "minimum_ground_elevation_deg": 30.0,
+          "profile": {
+            "accepted_samples": 263,
+            "low_mid_high": [
+              0.0,
+              1.0,
+              0.0
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.058863025962399285
+        },
+        {
+          "minimum_ground_elevation_deg": 40.0,
+          "profile": null,
+          "retained_fraction_of_baseline_visible": 0.0
+        }
+      ],
+      "hard_cone_sensitivity": [
+        {
+          "nadir_hard_cone_half_angle_deg": 60.0,
+          "minimum_ground_elevation_deg": 18.63294509143454,
+          "profile": {
+            "accepted_samples": 1943,
+            "low_mid_high": [
+              0.8646423057128152,
+              0.13535769428718478,
+              0.0
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.434870188003581
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 50.0,
+          "minimum_ground_elevation_deg": 33.050730279511974,
+          "profile": null,
+          "retained_fraction_of_baseline_visible": 0.0
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 45.0,
+          "minimum_ground_elevation_deg": 39.312700545319665,
+          "profile": null,
+          "retained_fraction_of_baseline_visible": 0.0
+        }
+      ]
+    },
+    {
+      "inclination_deg": 97.6,
+      "ground_latitude_deg": 0.0,
+      "reference_10_to_80": {
+        "accepted_samples": 3039,
+        "low_mid_high": [
+          0.7923659098387628,
+          0.1332675222112537,
+          0.07436656794998354
+        ]
+      },
+      "reference_10_to_90": {
+        "accepted_samples": 3047,
+        "low_mid_high": [
+          0.7902855267476206,
+          0.13291762389235312,
+          0.07679684936002626
+        ]
+      },
+      "fraction_above80_in_visible": 0.002625533311453876,
+      "elevation_mask_sensitivity": [
+        {
+          "minimum_ground_elevation_deg": 10.0,
+          "profile": {
+            "accepted_samples": 3039,
+            "low_mid_high": [
+              0.7923659098387628,
+              0.1332675222112537,
+              0.07436656794998354
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 1.0
+        },
+        {
+          "minimum_ground_elevation_deg": 20.0,
+          "profile": {
+            "accepted_samples": 1354,
+            "low_mid_high": [
+              0.53397341211226,
+              0.29911373707533234,
+              0.16691285081240767
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.44554129647910495
+        },
+        {
+          "minimum_ground_elevation_deg": 25.0,
+          "profile": {
+            "accepted_samples": 914,
+            "low_mid_high": [
+              0.3096280087527352,
+              0.4431072210065646,
+              0.24726477024070023
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.3007568279039158
+        },
+        {
+          "minimum_ground_elevation_deg": 30.0,
+          "profile": {
+            "accepted_samples": 631,
+            "low_mid_high": [
+              0.0,
+              0.6418383518225039,
+              0.358161648177496
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.20763409016123724
+        },
+        {
+          "minimum_ground_elevation_deg": 40.0,
+          "profile": {
+            "accepted_samples": 302,
+            "low_mid_high": [
+              0.0,
+              0.25165562913907286,
+              0.7483443708609272
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.0993747943402435
+        }
+      ],
+      "hard_cone_sensitivity": [
+        {
+          "nadir_hard_cone_half_angle_deg": 60.0,
+          "minimum_ground_elevation_deg": 18.63294509143454,
+          "profile": {
+            "accepted_samples": 1493,
+            "low_mid_high": [
+              0.5773610180843939,
+              0.2712659075686537,
+              0.15137307434695244
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.49128002632444884
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 50.0,
+          "minimum_ground_elevation_deg": 33.050730279511974,
+          "profile": {
+            "accepted_samples": 501,
+            "low_mid_high": [
+              0.0,
+              0.5489021956087824,
+              0.45109780439121755
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.1648568608094768
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 45.0,
+          "minimum_ground_elevation_deg": 39.312700545319665,
+          "profile": {
+            "accepted_samples": 311,
+            "low_mid_high": [
+              0.0,
+              0.2733118971061093,
+              0.7266881028938906
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.10233629483382692
+        }
+      ]
+    },
+    {
+      "inclination_deg": 97.6,
+      "ground_latitude_deg": 30.0,
+      "reference_10_to_80": {
+        "accepted_samples": 3476,
+        "low_mid_high": [
+          0.7583429228998849,
+          0.15304948216340622,
+          0.08860759493670886
+        ]
+      },
+      "reference_10_to_90": {
+        "accepted_samples": 3488,
+        "low_mid_high": [
+          0.7557339449541285,
+          0.15252293577981652,
+          0.09174311926605505
+        ]
+      },
+      "fraction_above80_in_visible": 0.0034403669724770714,
+      "elevation_mask_sensitivity": [
+        {
+          "minimum_ground_elevation_deg": 10.0,
+          "profile": {
+            "accepted_samples": 3476,
+            "low_mid_high": [
+              0.7583429228998849,
+              0.15304948216340622,
+              0.08860759493670886
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 1.0
+        },
+        {
+          "minimum_ground_elevation_deg": 20.0,
+          "profile": {
+            "accepted_samples": 1666,
+            "low_mid_high": [
+              0.4957983193277311,
+              0.31932773109243695,
+              0.18487394957983194
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.47928653624856155
+        },
+        {
+          "minimum_ground_elevation_deg": 25.0,
+          "profile": {
+            "accepted_samples": 1193,
+            "low_mid_high": [
+              0.2958927074601844,
+              0.4459346186085499,
+              0.2581726739312657
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.34321058688147293
+        },
+        {
+          "minimum_ground_elevation_deg": 30.0,
+          "profile": {
+            "accepted_samples": 840,
+            "low_mid_high": [
+              0.0,
+              0.6333333333333333,
+              0.36666666666666664
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.24165707710011508
+        },
+        {
+          "minimum_ground_elevation_deg": 40.0,
+          "profile": {
+            "accepted_samples": 445,
+            "low_mid_high": [
+              0.0,
+              0.30786516853932583,
+              0.6921348314606741
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.12802071346375143
+        }
+      ],
+      "hard_cone_sensitivity": [
+        {
+          "nadir_hard_cone_half_angle_deg": 60.0,
+          "minimum_ground_elevation_deg": 18.63294509143454,
+          "profile": {
+            "accepted_samples": 1838,
+            "low_mid_high": [
+              0.5429815016322089,
+              0.28944504896626766,
+              0.16757344940152338
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.5287686996547756
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 50.0,
+          "minimum_ground_elevation_deg": 33.050730279511974,
+          "profile": {
+            "accepted_samples": 692,
+            "low_mid_high": [
+              0.0,
+              0.5549132947976878,
+              0.44508670520231214
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.19907940161104717
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 45.0,
+          "minimum_ground_elevation_deg": 39.312700545319665,
+          "profile": {
+            "accepted_samples": 460,
+            "low_mid_high": [
+              0.0,
+              0.33043478260869563,
+              0.6695652173913044
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.1323360184119678
+        }
+      ]
+    },
+    {
+      "inclination_deg": 97.6,
+      "ground_latitude_deg": 50.0,
+      "reference_10_to_80": {
+        "accepted_samples": 4823,
+        "low_mid_high": [
+          0.7681940700808625,
+          0.1378809869375907,
+          0.09392494298154676
+        ]
+      },
+      "reference_10_to_90": {
+        "accepted_samples": 4841,
+        "low_mid_high": [
+          0.7653377401363355,
+          0.1373683123321628,
+          0.09729394753150175
+        ]
+      },
+      "fraction_above80_in_visible": 0.00371824003305099,
+      "elevation_mask_sensitivity": [
+        {
+          "minimum_ground_elevation_deg": 10.0,
+          "profile": {
+            "accepted_samples": 4823,
+            "low_mid_high": [
+              0.7681940700808625,
+              0.1378809869375907,
+              0.09392494298154676
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 1.0
+        },
+        {
+          "minimum_ground_elevation_deg": 20.0,
+          "profile": {
+            "accepted_samples": 2177,
+            "low_mid_high": [
+              0.48644924207625173,
+              0.3054662379421222,
+              0.20808451998162608
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.4513788098693759
+        },
+        {
+          "minimum_ground_elevation_deg": 25.0,
+          "profile": {
+            "accepted_samples": 1555,
+            "low_mid_high": [
+              0.2810289389067524,
+              0.42765273311897106,
+              0.29131832797427654
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.3224134356209828
+        },
+        {
+          "minimum_ground_elevation_deg": 30.0,
+          "profile": {
+            "accepted_samples": 1118,
+            "low_mid_high": [
+              0.0,
+              0.5948121645796064,
+              0.40518783542039355
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.23180592991913745
+        },
+        {
+          "minimum_ground_elevation_deg": 40.0,
+          "profile": {
+            "accepted_samples": 622,
+            "low_mid_high": [
+              0.0,
+              0.2717041800643087,
+              0.7282958199356914
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.1289653742483931
+        }
+      ],
+      "hard_cone_sensitivity": [
+        {
+          "nadir_hard_cone_half_angle_deg": 60.0,
+          "minimum_ground_elevation_deg": 18.63294509143454,
+          "profile": {
+            "accepted_samples": 2393,
+            "low_mid_high": [
+              0.532804011700794,
+              0.2778938570831592,
+              0.1893021312160468
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.4961642131453452
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 50.0,
+          "minimum_ground_elevation_deg": 33.050730279511974,
+          "profile": {
+            "accepted_samples": 921,
+            "low_mid_high": [
+              0.0,
+              0.50814332247557,
+              0.49185667752442996
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.1909599834128136
+        },
+        {
+          "nadir_hard_cone_half_angle_deg": 45.0,
+          "minimum_ground_elevation_deg": 39.312700545319665,
+          "profile": {
+            "accepted_samples": 649,
+            "low_mid_high": [
+              0.0,
+              0.3020030816640986,
+              0.6979969183359014
+            ]
+          },
+          "retained_fraction_of_baseline_visible": 0.13456354965788928
+        }
+      ]
+    }
+  ],
+  "link_geometry": [
+    {
+      "elevation_deg": 10.0,
+      "slant_range_km": 1931.6353589090181,
+      "extra_free_space_loss_vs60_db": 9.028163964284156,
+      "satellite_off_nadir_deg": 64.16391689566444,
+      "native_model_LOS_prior_urban": 0.08571428571428574,
+      "native_model_LOS_prior_suburban": 0.6144578313253012
+    },
+    {
+      "elevation_deg": 20.0,
+      "slant_range_km": 1392.1639879993038,
+      "extra_free_space_loss_vs60_db": 6.183468939508213,
+      "satellite_off_nadir_deg": 59.18350676799558,
+      "native_model_LOS_prior_urban": 0.30000000000000004,
+      "native_model_LOS_prior_suburban": 0.7048192771084337
+    },
+    {
+      "elevation_deg": 30.0,
+      "slant_range_km": 1075.0880169291183,
+      "extra_free_space_loss_vs60_db": 3.9385414552684814,
+      "satellite_off_nadir_deg": 52.32458391175438,
+      "native_model_LOS_prior_urban": 0.48571428571428577,
+      "native_model_LOS_prior_suburban": 0.7831325301204819
+    },
+    {
+      "elevation_deg": 45.0,
+      "slant_range_km": 814.7990551417367,
+      "extra_free_space_loss_vs60_db": 1.530671365823562,
+      "satellite_off_nadir_deg": 40.25912229971969,
+      "native_model_LOS_prior_urban": 0.7107142857142856,
+      "native_model_LOS_prior_suburban": 0.8780120481927711
+    },
+    {
+      "elevation_deg": 60.0,
+      "slant_range_km": 683.1513775642859,
+      "extra_free_space_loss_vs60_db": 0.0,
+      "satellite_off_nadir_deg": 27.19140937124671,
+      "native_model_LOS_prior_urban": 0.8714285714285714,
+      "native_model_LOS_prior_suburban": 0.9457831325301205
+    },
+    {
+      "elevation_deg": 80.0,
+      "slant_range_km": 608.4428960487163,
+      "extra_free_space_loss_vs60_db": -1.0059424722060477,
+      "satellite_off_nadir_deg": 9.131571168872705,
+      "native_model_LOS_prior_urban": 0.9857142857142858,
+      "native_model_LOS_prior_suburban": 0.9939759036144579
+    }
+  ],
+  "resolution_check": {
+    "case": "i53_lat30",
+    "fine_step_s": 1.0,
+    "max_fraction_error": 0.0004034285890970324
+  },
+  "interpretation": "not a real mission or deployment frequency; antenna hard cones are hypothetical field-of-view sensitivity, not measured HPBW",
+  "sources": [
+    {
+      "title": "Elevation Angle Characterization for LEO Satellites: First and Second Order Statistics",
+      "url": "https://www.mdpi.com/2076-3417/13/7/4405"
+    },
+    {
+      "title": "AWS Ground Station site masks",
+      "url": "https://docs.aws.amazon.com/ground-station/latest/ug/locations.site-masks.html"
+    },
+    {
+      "title": "ESA Near Earth Antenna Performance Requirements, issue1.2, 16March2026",
+      "url": "https://commercialisation.esa.int/wp-content/uploads/2025/09/ESA-DOPS-MGT-TN-0014_Antenna-Performance-Requirements_Issue1.2-20260316.pdf"
+    }
+  ]
+}
