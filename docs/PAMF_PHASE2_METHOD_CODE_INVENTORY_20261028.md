@@ -4,6 +4,8 @@
 
 配套：[完整实验设计](PAMF_PHASE2_MILKR_EXPERIMENT_DESIGN_20261028.md)、[机器可读清单](../configs/pamf_phase2_milkr_experiment_design_20261028.json)。论文题名和版本来自项目已有来源记录及原始代码；本轮没有声称重新逐篇复核全部论文全文。
 
+本轮 r03 的场景、方法行与任务量见[全面总实验表](PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md)：独立单景仅 low 郊区／mid 城区／low 城区，综合仍含六分量。以下代码清单与历史来源身份不变。
+
 ## 本轮主表资格与目标访问时点修订
 
 本轮以[综合practical residual的8套主表](PAMF_PHASE2_MAIN_TABLES_20261028.md)为准。以下“完整代码存在”不表示作者默认输入权限可以直接沿用：每个主表方法都先在匹配PAMF的L_s/U_s/V源角色训练与冻结source模型，S阶段target IQ／统计／BN／伪标签／指标访问为0；仅B开放旧类target support，C才开放新类support。UDA需要source-target联合更新的目标到B再开启，不允许先在target上预训练再把该模型当A。

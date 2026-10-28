@@ -6,6 +6,7 @@
   "execution_authorized_by_this_design": false,
   "scope": "existing labeled MILKR Phase2 only; no zero-label R&D, Phase3, collaboration or federated work",
   "documents": [
+    "docs/PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md",
     "docs/PAMF_PHASE2_MILKR_EXPERIMENT_DESIGN_20261028.md",
     "docs/PAMF_PHASE2_METHOD_CODE_INVENTORY_20261028.md",
     "docs/PAMF_PHASE2_MAIN_TABLES_20261028.md"
@@ -116,16 +117,51 @@
       "id": "P-Diagnostic",
       "role": "SINGLE_SCENE_EXPLANATORY_NOT_PRIMARY_AVERAGE",
       "scenes": [
-        "practical_high",
-        "practical_mid",
         "practical_low_suburban",
-        "practical_high_urban",
         "practical_mid_urban",
         "practical_low_urban"
       ],
       "capsule_id": null,
       "data_status": "MUST_BE_PHYSICALLY_DISJOINT_FROM_ALL_MIXED_SETS",
-      "geometry_sampling": "unchanged native uniform within each scene, mid20-45"
+      "geometry_sampling": "native uniform: D-LS10-30, D-MU20-45, D-LU10-30",
+      "dataset_ids": [
+        "D-LS",
+        "D-MU",
+        "D-LU"
+      ],
+      "groups": [
+        {
+          "id": "D-LS",
+          "scenario": "practical_low_suburban",
+          "native_elevation_range_deg": [
+            10.0,
+            30.0
+          ],
+          "target_scene_probability": 1.0,
+          "dataset_count": 1
+        },
+        {
+          "id": "D-MU",
+          "scenario": "practical_mid_urban",
+          "native_elevation_range_deg": [
+            20.0,
+            45.0
+          ],
+          "target_scene_probability": 1.0,
+          "dataset_count": 1
+        },
+        {
+          "id": "D-LU",
+          "scenario": "practical_low_urban",
+          "native_elevation_range_deg": [
+            10.0,
+            30.0
+          ],
+          "target_scene_probability": 1.0,
+          "dataset_count": 1
+        }
+      ],
+      "target_scene_policy": "Each group uses its one scene for all support and query; independent fixed realization per physical record; not a three-scene mixture"
     },
     {
       "id": "P-Legacy",
@@ -240,21 +276,13 @@
       "stage_predictions_unique": 22624,
       "closed_set_stage_predictions_unique": 4704
     },
-    "counts_per_method_six_scene_diagnostic": {
-      "A_unique": 168,
-      "B_unique": 3360,
-      "C_positive_new_unique": 13440,
-      "fits_B_plus_C": 16800,
-      "stage_predictions_unique": 16968,
-      "closed_set_stage_predictions_unique": 3528
-    },
     "counts_combined_not_for_score_averaging": {
-      "A_unique": 392,
-      "B_unique": 7840,
-      "C_positive_new_unique": 31360,
-      "fits_B_plus_C": 39200,
-      "stage_predictions_unique": 39592,
-      "closed_set_stage_predictions_unique": 8232
+      "A_unique": 308,
+      "B_unique": 6160,
+      "C_positive_new_unique": 24640,
+      "fits_B_plus_C": 30800,
+      "stage_predictions_unique": 31108,
+      "closed_set_stage_predictions_unique": 6468
     },
     "counts_PAMF8_primary_mixture_including_reused_first4": {
       "A_unique": 448,
@@ -284,10 +312,65 @@
       "query_per_day_per_set": "7/8 rotating",
       "query_per_day_over_8_sets": 60,
       "missing_date_policy": "coverage-only unified rule before target scores, disclose deviation"
+    },
+    "counts_per_method_three_scene_diagnostic": {
+      "A_unique": 84,
+      "B_unique": 1680,
+      "C_positive_new_unique": 6720,
+      "fits_B_plus_C": 8400,
+      "stage_predictions_unique": 8484,
+      "closed_set_stage_predictions_unique": 1764
+    },
+    "diagnostic_dataset_count": 3,
+    "core_dataset_count": 11,
+    "core_condition_family_count": 4,
+    "diagnostic_datasets": [
+      {
+        "id": "D-LS",
+        "scenario": "practical_low_suburban",
+        "native_elevation_range_deg": [
+          10.0,
+          30.0
+        ],
+        "target_scene_probability": 1.0,
+        "dataset_count": 1
+      },
+      {
+        "id": "D-MU",
+        "scenario": "practical_mid_urban",
+        "native_elevation_range_deg": [
+          20.0,
+          45.0
+        ],
+        "target_scene_probability": 1.0,
+        "dataset_count": 1
+      },
+      {
+        "id": "D-LU",
+        "scenario": "practical_low_urban",
+        "native_elevation_range_deg": [
+          10.0,
+          30.0
+        ],
+        "target_scene_probability": 1.0,
+        "dataset_count": 1
+      }
+    ],
+    "all_primary_systems_core_counts": {
+      "unique_systems": 15,
+      "complete_ABC_systems": 8,
+      "closed_DA_systems": 7,
+      "source_model_bindings_at_most": 60,
+      "B_rows": 92400,
+      "C_rows": 197120,
+      "fits_B_plus_C": 289520,
+      "A_slots": 4620,
+      "stage_prediction_slots": 294140,
+      "excludes": "auxiliary versions, shared controls, ablation slices, sequential registration, extra PAMF seeds, G20/G25"
     }
   },
   "theoretical_payload_estimates": {
-    "IQ_array_bytes_only": 344408064,
+    "IQ_array_bytes_only": 270606336,
     "MILKR_max_N": 520,
     "MILKR_max_C": 26,
     "FP64_gram_bytes": 2163200,
@@ -295,11 +378,11 @@
     "MILKR_state_array_bytes": 3178272,
     "measured": false,
     "mixed8_physical_records": 96096,
-    "six_diagnostic_physical_records": 72072,
-    "combined_disjoint_physical_records": 168168,
-    "minimum_records_per_RX_class_combined": 924,
+    "combined_disjoint_physical_records": 132132,
+    "minimum_records_per_RX_class_combined": 726,
     "mixed8_IQ_array_bytes_only": 196804608,
-    "six_diagnostic_IQ_array_bytes_only": 147603456
+    "three_diagnostic_physical_records": 36036,
+    "three_diagnostic_IQ_array_bytes_only": 73801728
   },
   "external_RFFI_family_count": 14,
   "external_RFFI_families": [
@@ -3584,7 +3667,8 @@
     "M8": "without pa_local",
     "M9": "trace matching off",
     "M10": "class-blind pairwise-distance bandwidth",
-    "M11": "z_id-only or FFT-only matched local kernel"
+    "M11a": "z_id-only matched local kernel",
+    "M11b": "FFT96-only matched local kernel"
   },
   "ablation_new_configs_implemented_this_task": false,
   "sensitivity": {
@@ -3697,7 +3781,7 @@
     "E2_all8_mixed_primary_tables",
     "E3_predeclared_MILKR_mechanisms_and_sensitivity",
     "E4_sessions_and_reliability",
-    "E5_six_single_scene_diagnostics_PAMF8_and_historical_references"
+    "E5_three_single_scene_diagnostics_PAMF8_and_historical_references"
   ],
   "execution": {
     "actual_run_id": null,
@@ -3713,7 +3797,7 @@
     "stop_rule": "systemic technical/protocol/input/output/nonfinite failure stops new dispatch; preserve healthy workers; no score-based stopping"
   },
   "code_inventory_note": "file existence, AST parse, and references only; no algorithm imported, no runtime or GPU test, no query or source IQ loaded",
-  "revision": "r02_mixed_practical_primary_source_only_before_adaptation",
+  "revision": "r03_total_table_three_designated_single_scene_groups",
   "mixture_design_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
   "source_before_target_policy": {
     "all_methods_same_source_physical_roles_as_PAMF": true,
@@ -3822,5 +3906,147 @@
       "content": "fit/registration/end-to-end_B1_median_p95/memory/state/transfer; source cost separate"
     },
     "primary_condition": "P-Mixed only; never average with single scenes or historical results"
+  },
+  "supplementary_mixture_profiles": [
+    {
+      "id": "G25",
+      "status": "SUPPLEMENTARY_DESIGN_NOT_IN_CORE",
+      "minimum_elevation_deg": 25,
+      "proposed_dataset_count_if_implemented": 8,
+      "basis": "same covered-surface reference conditioned on minimum elevation; not empirical mission frequency",
+      "scenarios": [
+        {
+          "id": "practical_high",
+          "probability": 0.13328765790525327,
+          "conditional_elevation_range_deg": [
+            45.0,
+            80.0
+          ]
+        },
+        {
+          "id": "practical_mid",
+          "probability": 0.22324686549350775,
+          "conditional_elevation_range_deg": [
+            30.0,
+            45.0
+          ]
+        },
+        {
+          "id": "practical_low_suburban",
+          "probability": 0.14346547660123898,
+          "conditional_elevation_range_deg": [
+            25,
+            30.0
+          ]
+        },
+        {
+          "id": "practical_high_urban",
+          "probability": 0.13328765790525327,
+          "conditional_elevation_range_deg": [
+            45.0,
+            80.0
+          ]
+        },
+        {
+          "id": "practical_mid_urban",
+          "probability": 0.22324686549350775,
+          "conditional_elevation_range_deg": [
+            30.0,
+            45.0
+          ]
+        },
+        {
+          "id": "practical_low_urban",
+          "probability": 0.14346547660123898,
+          "conditional_elevation_range_deg": [
+            25,
+            30.0
+          ]
+        }
+      ],
+      "complete_adaptation_requires": "separate physically disjoint received pools and corresponding support fitting; query reweighting alone is not equivalent"
+    },
+    {
+      "id": "G20",
+      "status": "SUPPLEMENTARY_DESIGN_NOT_IN_CORE",
+      "minimum_elevation_deg": 20,
+      "proposed_dataset_count_if_implemented": 8,
+      "basis": "same covered-surface reference conditioned on minimum elevation; not empirical mission frequency",
+      "scenarios": [
+        {
+          "id": "practical_high",
+          "probability": 0.09365756939251575,
+          "conditional_elevation_range_deg": [
+            45.0,
+            80.0
+          ]
+        },
+        {
+          "id": "practical_mid",
+          "probability": 0.15686942906208687,
+          "conditional_elevation_range_deg": [
+            30.0,
+            45.0
+          ]
+        },
+        {
+          "id": "practical_low_suburban",
+          "probability": 0.2494730015453974,
+          "conditional_elevation_range_deg": [
+            20,
+            30.0
+          ]
+        },
+        {
+          "id": "practical_high_urban",
+          "probability": 0.09365756939251575,
+          "conditional_elevation_range_deg": [
+            45.0,
+            80.0
+          ]
+        },
+        {
+          "id": "practical_mid_urban",
+          "probability": 0.15686942906208687,
+          "conditional_elevation_range_deg": [
+            30.0,
+            45.0
+          ]
+        },
+        {
+          "id": "practical_low_urban",
+          "probability": 0.2494730015453974,
+          "conditional_elevation_range_deg": [
+            20,
+            30.0
+          ]
+        }
+      ],
+      "complete_adaptation_requires": "separate physically disjoint received pools and corresponding support fitting; query reweighting alone is not equivalent"
+    }
+  ],
+  "experiment_table_index": {
+    "T0": "source fairness and input permissions",
+    "T1": "old-class adaptation D0-D9",
+    "T2": "new-class registration R0-R7",
+    "T3": "4K x 5 new-count scaling",
+    "T4": "cost and latency",
+    "T5": "shared PAMF representation S0-S10",
+    "T6": "MILKR ablation",
+    "T7": "sequential registration",
+    "T8": "replication and failure stratification",
+    "S1": "all22 external code variants",
+    "S2": "G25/G20 supplementary mixture designs",
+    "S3": "environment and parameter sensitivities",
+    "S4": "historical/current backbone bridge"
+  },
+  "historical_milkr_scene_identity": {
+    "original": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "relabel_allowed": false,
+    "new_designated_groups_are_historical_reproduction": false
   }
 }

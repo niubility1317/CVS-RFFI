@@ -189,7 +189,40 @@
     2026092714,
     2026092715
   ],
-  "unique_physical_policy": "all eight mixed sets and six single-scene diagnostic sets pairwise physical-ID disjoint; single IQ has exactly one overlay",
+  "unique_physical_policy": "all eight mixed sets and three designated single-scene diagnostic sets pairwise physical-ID disjoint; single IQ has exactly one overlay",
+  "single_scene_diagnostics": [
+    {
+      "id": "D-LS",
+      "scenario": "practical_low_suburban",
+      "native_elevation_range_deg": [
+        10.0,
+        30.0
+      ],
+      "target_scene_probability": 1.0,
+      "dataset_count": 1
+    },
+    {
+      "id": "D-MU",
+      "scenario": "practical_mid_urban",
+      "native_elevation_range_deg": [
+        20.0,
+        45.0
+      ],
+      "target_scene_probability": 1.0,
+      "dataset_count": 1
+    },
+    {
+      "id": "D-LU",
+      "scenario": "practical_low_urban",
+      "native_elevation_range_deg": [
+        10.0,
+        30.0
+      ],
+      "target_scene_probability": 1.0,
+      "dataset_count": 1
+    }
+  ],
+  "revision": "r03_three_designated_single_scene_groups",
   "same_realization_for_all_methods": true,
   "same_realization_across_model_seeds": true,
   "support_pool_per_RX_class_set": 36,
