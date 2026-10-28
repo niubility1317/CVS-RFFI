@@ -11,3 +11,5 @@
 首次接管在暂停旧 owner 后，扫描非实验的用户系统进程环境时遇到 `PermissionError`，自动恢复旧 owner，未派发新 worker。修复为先按命令和本 run 配置路径过滤，再读取候选 worker 的环境；保留失败日志并以新文件名发布修复版本。
 
 第二次接管已停止旧 owner，但在确认其退出时，进程退出瞬间读取旧 owner 的 environ 遇到 `PermissionError`；新 owner 退出且未派发任务。独立核实原 owner 已退出、5 个原 worker 存活，另一 worker 已产出 `SOURCE_FROZEN`。修复为只用进程状态确认存活，并提供仅在原 owner 确实不存在时的显式恢复入口，重新核对现有进程与产物后继续原队列。
+
+2026-10-28 10:39 +08:00 独立读回：**VERIFIED / RUNNING**。控制脚本 commit `4a018017c5b68111505a27fb6dc70a5dac52edfb`，PID 1684021；原 owner 1190841 已退出，5 个运行中原 worker 接管，第 6 个已产出 source 完成文件。GPU 0/3/4/5/6/7 各 3 个本 run worker，合计 14 训练、4 预测；GPU 1/2 保持避让。新预测日志持续增长，队列未报告失败。调度器非正常退出时队列不会自动恢复，须先检查真实进程、日志及产物，不得重复启动。
