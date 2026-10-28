@@ -52,14 +52,20 @@ def process_info(pid):
         return None
 
 
-def scan_live(rt, jobs):
+def scan_live(rt, jobs, proc_root=Path('/proc')):
     by_config = {j['config']: j for j in jobs}
     live = {}
-    for proc in Path('/proc').iterdir():
+    for proc in proc_root.iterdir():
         if not proc.name.isdigit():
             continue
         try:
             if proc.stat().st_uid != os.getuid():
+                continue
+            argv = [x.decode() for x in proc.joinpath('cmdline').read_bytes().split(b'\0') if x]
+            if 'experiments.pamf_paper_completion.runner' not in argv or 'worker' not in argv:
+                continue
+            config = argv[argv.index('--config') + 1]
+            if not config.startswith(rt['run_root'] + '/configs/'):
                 continue
             info = process_info(int(proc.name))
             if not info or 'experiments.pamf_paper_completion.runner' not in info['argv'] or 'worker' not in info['argv']:
@@ -130,8 +136,8 @@ def run(runtime_path):
         if stopped:
             os.kill(old_pid, signal.SIGCONT)
 
-    state.update(pid=os.getpid(), previous_owner_pid=old_pid, status='RUNNING',
-                 concurrency_limit_per_gpu=3, takeover='parallel_takeover')
+    state.update(pid=os.getpid(), cwd=os.getcwd(), argv=sys.argv, previous_owner_pid=old_pid, status='RUNNING',
+                 concurrency_limit_per_gpu=3, takeover='parallel_takeover', controller_file=str(Path(__file__).resolve()))
     atomic(state_path, state)
     by = {j['id']: j for j in jobs}
     children = {}

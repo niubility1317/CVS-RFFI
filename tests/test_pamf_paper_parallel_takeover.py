@@ -1,6 +1,9 @@
 import unittest
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 
-from experiments.pamf_paper_completion.parallel_takeover import reconcile, slots
+from experiments.pamf_paper_completion.parallel_takeover import reconcile, scan_live, slots
 
 
 class TakeoverTests(unittest.TestCase):
@@ -35,4 +38,22 @@ class TakeoverTests(unittest.TestCase):
         self.assertEqual(slots({1, 2, 3}, {1}, foreign=False, free_mib=16000), 0)
         self.assertEqual(slots({1}, {1}, foreign=True, free_mib=16000), 0)
         self.assertEqual(slots({1}, {1}, foreign=False, free_mib=11000), 0)
+
+    def test_unrelated_process_environment_is_never_read(self):
+        with tempfile.TemporaryDirectory() as temp:
+            proc = Path(temp) / '123'
+            proc.mkdir()
+            (proc / 'cmdline').write_bytes(b'/usr/lib/systemd/systemd\x00--user\x00')
+            with patch('experiments.pamf_paper_completion.parallel_takeover.os.getuid', return_value=proc.stat().st_uid, create=True), \
+                 patch('experiments.pamf_paper_completion.parallel_takeover.process_info', side_effect=PermissionError):
+                self.assertEqual(scan_live({'run_root': '/run'}, [], proc_root=Path(temp)), {})
+
+    def test_other_run_worker_environment_is_never_read(self):
+        with tempfile.TemporaryDirectory() as temp:
+            proc = Path(temp) / '123'
+            proc.mkdir()
+            (proc / 'cmdline').write_bytes(b'python\x00-m\x00experiments.pamf_paper_completion.runner\x00worker\x00--config\x00/other/configs/a\x00')
+            with patch('experiments.pamf_paper_completion.parallel_takeover.os.getuid', return_value=proc.stat().st_uid, create=True), \
+                 patch('experiments.pamf_paper_completion.parallel_takeover.process_info', side_effect=PermissionError):
+                self.assertEqual(scan_live({'run_root': '/run'}, [], proc_root=Path(temp)), {})
 

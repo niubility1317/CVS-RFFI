@@ -7,3 +7,5 @@
 - 本次目标卡为 0、3、4、5、6、7；1、2 当前有其他用户，继续避让。显存至少留 12000 MiB、系统可用内存至少 32 GiB；计入卡上其他进程和尚未进入 CUDA 的本机 worker。
 - 接管脚本入口：`python parallel_takeover.py --runtime <原 release/runtime.json>`；执行后核实原 owner 退出、接管进程、每个 worker 的命令/GPU、日志增长及原 `pipeline_state.json`。原数据、配置和产物不移动、不覆盖。
 - 任一任务失败时停止新派发，保留其余运行进程完成；预测完整后才独立评分。检查真实 GPU、CPU、内存和磁盘条件，单纯增加进程数不保证加速。
+
+首次接管在暂停旧 owner 后，扫描非实验的用户系统进程环境时遇到 `PermissionError`，自动恢复旧 owner，未派发新 worker。修复为先按命令和本 run 配置路径过滤，再读取候选 worker 的环境；保留失败日志并以新文件名发布修复版本。
