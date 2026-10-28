@@ -41,13 +41,13 @@
 
 Tech stack：既有verified Python/PyTorch/NumPy；不安装新依赖。隔离在新包`experiments/pamf_phase3_open_world/`，不修改历史训练器。
 
-- [ ] `scores.py`：`knownness_scores(features, logits, prototypes)`及source-only quantile冻结；有限值、形状、类别置换一致性和组合阈值语义负测。
-- [ ] `data.py`：新单观测capsule的public received/opaque IDs与独立truth；验证source/target、discovery/query、场景物理互斥和无角色公开。输入复用现有合法构建器，禁止旧七视图loader改名冒充。
-- [ ] `runner.py`：源L原型/V阈值独立校准；严格加载三视图E50，批量导出无真值knownness/closed_prediction/accepted/prediction；全部文件写完才产生`ALL_PREDICTIONS_COMPLETE`。
-- [ ] `scoring.py`：ID一一对齐、closed baseline/known误拒/unknown拒识、逐TX/RX/scene、O(NlogN) AUROC/OSCR、完整预测后才连接truth；全拒绝/漏ID/重复ID/错shape/提前truth负测。
-- [ ] `launch.py`：不可覆盖root、每卡本run新增进程≤2、显存容量检查、单owner，不杀其他进程；固定技术停止条件。
-- [ ] `tests/test_pamf_phase3_*.py`：仅相关协议负测和算法行为测试；真实checkpoint no-query smoke为launcher第一步，PASS自动继续。
-- [ ] 按实际路径登记`20261028-phase3-pamf-open-set-s2026092701-r01`；实际矩阵在`experiment.json`维护，本文不伪造尚未核实的样本数/运行状态。
+- [x] `scores.py`：`knownness_scores(features, logits, prototypes)`及source-only quantile冻结；有限值、形状、类别置换一致性和组合阈值语义负测。
+- [x] `data.py`：新单观测capsule的public received/opaque IDs与独立truth；验证source/target、discovery/query、场景物理互斥和无角色公开。输入复用现有合法构建器，禁止旧七视图loader改名冒充。
+- [x] `runner.py`：源L原型/V阈值独立校准；严格加载三视图E50，批量导出无真值knownness/closed_prediction/accepted/prediction；全部文件写完才产生`ALL_PREDICTIONS_COMPLETE`。
+- [x] `scoring.py`：ID一一对齐、closed baseline/known误拒/unknown拒识、逐TX/RX/scene、O(NlogN) AUROC/OSCR、完整预测后才连接truth；全拒绝/漏ID/重复ID/错shape/提前truth负测。
+- [x] `launch.py`：不可覆盖root、每卡本run新增进程≤2、显存容量检查、单owner，不杀其他进程；固定技术停止条件。
+- [x] `tests/test_pamf_phase3_*.py`：仅相关协议负测和算法行为测试；真实checkpoint no-query smoke为launcher第一步，PASS自动继续。
+- [x] 按实际路径登记`20261028-phase3-pamf-open-set-s2026092701-r01`；实际矩阵在`experiment.json`维护，本文不伪造尚未核实的样本数/运行状态。
 
 ## 发布和停止
 
@@ -61,4 +61,4 @@ Tech stack：既有verified Python/PyTorch/NumPy；不安装新依赖。隔离�
 
 已找到待核实的新池候选：Full eq的RX `24-18`不在现有ManySig/ManyTx/ManyRx/SingleDay四子集RX列表内，可与本轮Phase2原7RX隔离。公开计数显示旧6TX加11-4/3-13在D1、D3有足量记录，12-20/5-20在D3也有足量后续未知query，但Full真实文件/packet映射未完成核实，不能写成数据已到位。候选为D1旧6加发现2类每TX每景32条无标签适应/发现（768条），D3上述8类加后续未知2类每TX每景64条独立query（1920条），三景共2688物理记录；实际场景和矩阵另在新run固定。source含D3地面数据，该切片不声明严格未来日期外推；不按Full index>=1000或容器前缀判断新记录，不改其他owner下载/Phase2规划。
 
-source-only类别/RX留出开发的最小四类scratch构造器已完成：232673参数、160维、三视图指定排列、原无bias余弦头联合CE可反传；没有加载6类旧checkpoint或读取target。6项真实CPU合成前向/反向和输入权限测试已通过，仅证明构造与梯度，不是开发性能。后续训练器需独立实现固定20个完整epoch的L-only CE开发诊断，不放宽原6类训练器/reader断言，不把4类CE开发模型冒充完整6类Tri-SIG-TIME SSL。
+source-only类别/RX留出开发实现及73项全部Phase3聚焦测试已通过；新source候选独立P0/P1审查PASS，真实L/V metadata的domain/eq/cell/ID兼容性已核实。四类scratch模型232673参数、160维，TX0/1与RX8不进入训练；固定20完整epoch/540步L-only CE，不继承六类权重，不放宽旧reader断言。新run`20261029-phase3-source-holdout-s2026092701-r01`正在发布，方案见`docs/PAMF_PHASE3_SOURCE_DEVELOPMENT_20261028.md`；模型seed2026092701、实际source split_seed392005。所有完成的首轮目标记录保持原状态，暂无本source run实测结果。
