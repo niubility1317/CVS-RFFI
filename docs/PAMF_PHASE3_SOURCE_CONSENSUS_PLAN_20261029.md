@@ -13,3 +13,5 @@ fit 不读 V／novel。新状态固定后，只用 known V 标签和分数，沿
 五个静态控制不能触发新 OE 推进。两个新读出均按源 unknown 宏拒识总体及每 RX≥95%、known 宏误拒≤5%、较同输入闭集宏损失≤2pp 验收；双过优先参数较少的 linear。未过则 NO_PROMOTION，不据 novel 改阈值、加训练步数、改设备名单或访问正式目标池。即使源过门，也只进入后续 source 确认，不等价跨 RX、星地、无标签适应或匿名注册成功。
 
 CPU 顺序执行 fit→predict→独立 score，新增 GPU worker0，每卡可新增2的用户授权保持，不停止任何其他进程。新不可覆盖 run／release root、实际代码提交、一次 P0/P1、一次 preflight／归档传输比较／编译、启动后 PID/CWD/argv/log 读回和最终独立评分留在同名最小实验登记。科学失败保留实际产物，不作为技术重启理由。当前状态为方案固定、实现中，尚无本候选实跑性能。
+
+本地验证：3 个模块及对应测试完成，10 项测试和 5 个子测试通过，无 warning；一次独立 P0/P1 审查 PASS，独立测试同样通过。CLI 帮助及 N607 一次 CPU preflight PASS，父完整源 run 为 ANALYZED_SOURCE_ONLY，复用输入在位、新 root 不存在。状态为 READY_FOR_RELEASE，真实父 checkpoint／新描述符 smoke 为 fit 首步，当前无本候选实跑性能。
