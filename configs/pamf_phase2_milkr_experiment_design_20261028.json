@@ -1,0 +1,3521 @@
+{
+  "schema": "pamf_phase2_milkr_experiment_design_v1",
+  "date": "2026-10-28",
+  "status": "DESIGN_ONLY",
+  "launch_ready": false,
+  "execution_authorized_by_this_design": false,
+  "scope": "existing labeled MILKR Phase2 only; no zero-label R&D, Phase3, collaboration or federated work",
+  "documents": [
+    "docs/PAMF_PHASE2_MILKR_EXPERIMENT_DESIGN_20261028.md",
+    "docs/PAMF_PHASE2_METHOD_CODE_INVENTORY_20261028.md"
+  ],
+  "primary_method": {
+    "name": "MILKR",
+    "implementation_id": "D92-BranchLocalRidge-v1",
+    "source_model": "PAMF Tri-SIG-TIME SSL three-view E50",
+    "source_registry_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_views": 3,
+    "six_class_parameters": 232993,
+    "feature_dims": {
+      "z_id": 160,
+      "fft": 96,
+      "t_emb": 160,
+      "f_emb": 160,
+      "pa_local": 160
+    },
+    "explicit_dim": 736,
+    "implicit_dim": 123616,
+    "lambda": 1,
+    "FFT_weight": 4,
+    "target": "onehot_minus_1_over_C",
+    "bandwidth": "median_nearest_other_class_squared_distance_support_only",
+    "trace_match": true,
+    "optimizer_steps": 0,
+    "readout_precision": "float64",
+    "query_policy": "per_sample_all_registered_classes",
+    "B_C_relation": "independent_current_support_refits",
+    "source_runtime_access": false,
+    "summary_runtime_access": false,
+    "current_encoder_exporter_compatibility": "REQUIRES_REAL_CHECKPOINT_NO_QUERY_CHECK; not verified in design",
+    "old_results_relabel_allowed": false,
+    "new_phase1_training_automatic": false
+  },
+  "source_contract_proposal": {
+    "source_rx_indices": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_rx_indices": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "source_roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "exact_physical_checkpoint_compatibility": "TO_BIND_BEFORE_ANY_LOAD; nominal split names insufficient"
+  },
+  "data_panels": [
+    {
+      "id": "P-Formal",
+      "role": "primary_protocol_panel",
+      "scenes": [
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "capsule_id": null,
+      "split_id": null,
+      "data_status": "MATCHING_CAPSULE_NOT_ESTABLISHED_THIS_TASK",
+      "action": "reuse existing compatible VALIDATED_ONCE handles; one-time builder only if actual data facts newly constructed"
+    },
+    {
+      "id": "P-Legacy",
+      "role": "repeated_benchmark_not_relabelled_formal_weak_LEO",
+      "scenes": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_urban"
+      ],
+      "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
+      "data_status": "EXISTING_RECORDED_VALIDATED_ONCE_NOT_REMOTE_RECHECKED",
+      "historical_four_RX_capsules": [
+        "residual-noeq-76121e6f34363fa612ec25fb",
+        "residual-noeq-d0a99fede324159c5a4750fd"
+      ]
+    },
+    {
+      "id": "P-Confirm",
+      "role": "independent_confirmation_if_new_unexposed_valid_data_exist",
+      "capsule_id": null,
+      "split_id": null,
+      "selection": "coverage_only_before_query; new support seed on same query is not independent"
+    }
+  ],
+  "matrix": {
+    "old_classes": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "new_classes_fixed_order": [
+      "11-4",
+      "3-13",
+      "12-20",
+      "5-20",
+      "20-12",
+      "17-11",
+      "14-14",
+      "2-17",
+      "4-1",
+      "19-13",
+      "19-8",
+      "2-19",
+      "8-1",
+      "14-20",
+      "13-3",
+      "1-18",
+      "20-7",
+      "7-7",
+      "2-3",
+      "18-12"
+    ],
+    "shots": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_counts": [
+      0,
+      2,
+      5,
+      10,
+      20
+    ],
+    "model_seeds_primary": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "PAMF_stability_extra_model_seeds": [
+      2026092705,
+      2026092706,
+      2026092707,
+      2026092708
+    ],
+    "support_draw_seeds": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715
+    ],
+    "class_order_sensitivity_seeds": [
+      2026102801,
+      2026102802,
+      2026102803
+    ],
+    "query_per_class": 30,
+    "formal_support_pool_per_class": 36,
+    "draws_may_overlap": true,
+    "class_counts": [
+      6,
+      8,
+      11,
+      16,
+      26
+    ],
+    "support_nesting": "one permutation per physical class and draw; prefix K",
+    "query_disjoint_from_support": true,
+    "scenes_physical_ids_disjoint": true,
+    "single_received_observation": true,
+    "unequal_or_missing_class_K_supported_by_current_MILKR": false,
+    "counts_per_method_per_three_scene_panel": {
+      "A_unique": 84,
+      "B_unique": 1680,
+      "C_positive_new_unique": 6720,
+      "fits_B_plus_C": 8400,
+      "stage_predictions_unique": 8484,
+      "closed_set_stage_predictions_unique": 1764
+    }
+  },
+  "theoretical_payload_estimates": {
+    "unique_physical_received_pool": 36036,
+    "minimum_records_per_RX_class_across_three_scenes": 198,
+    "IQ_array_bytes_only": 73801728,
+    "MILKR_max_N": 520,
+    "MILKR_max_C": 26,
+    "FP64_gram_bytes": 2163200,
+    "FP64_alpha_bytes": 108160,
+    "MILKR_state_array_bytes": 3178272,
+    "measured": false
+  },
+  "external_RFFI_family_count": 14,
+  "external_RFFI_families": [
+    "CSIL",
+    "DADDA",
+    "FeatureSeparation",
+    "ISSL",
+    "LoRa",
+    "MRIOR",
+    "MoPC-HR",
+    "Orthogonal",
+    "POSTER",
+    "ProtoNet",
+    "RA-Collab",
+    "RadioNet",
+    "Tweak",
+    "TwoStage"
+  ],
+  "external_method_variants": [
+    {
+      "id": "poster_ft",
+      "family": "POSTER",
+      "display_name": "POSTER Fine-Tuning",
+      "stages": [
+        "A",
+        "B"
+      ],
+      "panel": "native_rffi",
+      "version": "",
+      "required_access": [
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "code/snapshots/cvs_practical_baselines_20260927_wt/tools/run_practical_phase2_baseline.py",
+          "line": 94,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_code_runner_historical_scored_different_contract",
+      "budget": {
+        "target_epochs": 10,
+        "optimizer": "Adam",
+        "lr": 0.001,
+        "batch_size": 256
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "radionet_ada_knn",
+      "family": "RadioNet",
+      "display_name": "RadioNet ADA -> kNN",
+      "stages": [
+        "A",
+        "B",
+        "C_extension"
+      ],
+      "panel": "native_rffi_auxiliary",
+      "version": "matched_ada_only",
+      "required_access": [
+        "source_L_s_replay",
+        "target_support_iq",
+        "target_support_labels_for_knn"
+      ],
+      "source_evidence": [
+        {
+          "path": "external_sources/rffi_labeled_da_20260915/RadioNet/ADA/af_classifier.py",
+          "line": 98,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "comparison_suite/adaptation.py",
+          "line": 413,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_matched_runner_historical_predictions",
+      "budget": {
+        "historical_ada_iterations": 1000,
+        "author_ada_iterations": 10000,
+        "knn_k": "K"
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "radionet_ada_ft_knn",
+      "family": "RadioNet",
+      "display_name": "RadioNet ADA -> support FT -> kNN",
+      "stages": [
+        "A",
+        "B",
+        "C_extension"
+      ],
+      "panel": "native_rffi",
+      "version": "author_nshot_tuning_path",
+      "required_access": [
+        "source_L_s_replay",
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "external_sources/rffi_labeled_da_20260915/RadioNet/ADA/af_classifier.py",
+          "line": 202,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "external_sources/rffi_labeled_da_20260915/RadioNet/ADA/af_test.py",
+          "line": 28,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "comparison_suite/adaptation.py",
+          "line": 437,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_code_new_matrix_binding_required",
+      "budget": {
+        "ada_iterations": 10000,
+        "support_ft_epochs": 30
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "radionet_df_ft",
+      "family": "RadioNet",
+      "display_name": "RadioNet DF Fine-Tuning",
+      "stages": [
+        "A",
+        "B"
+      ],
+      "panel": "native_rffi_auxiliary",
+      "version": "",
+      "required_access": [
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "external_sources/rffi_labeled_da_20260915/RadioNet/finetune.py",
+          "line": 177,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "code/snapshots/cvs_practical_baselines_20260927_wt/tools/run_practical_phase2_baseline.py",
+          "line": 94,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_runner_historical_scored_different_contract",
+      "budget": {
+        "target_epochs": 30,
+        "optimizer": "Adam",
+        "lr": 0.001,
+        "batch_size": 128
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "radionet_triplet",
+      "family": "RadioNet",
+      "display_name": "RadioNet Triplet -> kNN",
+      "stages": [
+        "A_if_source_decision_available",
+        "B",
+        "C_extension"
+      ],
+      "panel": "native_rffi_auxiliary",
+      "version": "",
+      "required_access": [
+        "source_labeled_training",
+        "target_labeled_enrollment"
+      ],
+      "source_evidence": [
+        {
+          "path": "external_sources/rffi_labeled_da_20260915/RadioNet/triplet_network/triplet_training.py",
+          "line": 171,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "external_sources/rffi_labeled_da_20260915/RadioNet/triplet_network/triplet_test.py",
+          "line": 27,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_author_code_rffi256_capsule_adapter_required",
+      "budget": {
+        "triplet_epochs": 30,
+        "batch_size": 128,
+        "optimizer": "Adam",
+        "lr": 0.001
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "protonet_cda",
+      "family": "ProtoNet",
+      "display_name": "ProtoNet CDA / PTN",
+      "stages": [
+        "A_if_source_decision_available",
+        "B",
+        "C_extension"
+      ],
+      "panel": "native_rffi",
+      "version": "",
+      "required_access": [
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "paper_reproduction/protonet_cda/train.py",
+          "line": 594,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "comparison_suite/registration.py",
+          "line": 352,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "comparison_suite/registration.py",
+          "line": 631,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_native_and_matched_runner_historical_predictions",
+      "budget": {
+        "historical_source_epochs": 200,
+        "target_optimizer_steps": 0
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "mrior_sda",
+      "family": "MRIOR",
+      "display_name": "MRIOR-SDA",
+      "stages": [
+        "A",
+        "B"
+      ],
+      "panel": "native_rffi",
+      "version": "supervised_support_extension_CPL_off",
+      "required_access": [
+        "source_L_s_replay",
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "github_publish/CVS-RFFI-repo/paper_reproduction/mitigating_receiver_impact_da/algorithm.py",
+          "line": 322,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "github_publish/CVS-RFFI-repo/paper_reproduction/cvs_aligned/supervised_da.py",
+          "line": 94,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_code_in_publish_checkout_matched_runner",
+      "budget": {
+        "target_steps": 100,
+        "estimator_updates_per_step": 7,
+        "lr": 0.0006,
+        "CPL": false
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "dadda_sda",
+      "family": "DADDA",
+      "display_name": "DADDA-SDA",
+      "stages": [
+        "A",
+        "B"
+      ],
+      "panel": "native_rffi",
+      "version": "supervised_support_extension",
+      "required_access": [
+        "source_L_s_replay",
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "github_publish/CVS-RFFI-repo/paper_reproduction/DADDA/train.py",
+          "line": 265,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "github_publish/CVS-RFFI-repo/paper_reproduction/cvs_aligned/supervised_da.py",
+          "line": 168,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_code_in_publish_checkout_matched_runner",
+      "budget": {
+        "target_steps": 100
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "twostage_sda",
+      "family": "TwoStage",
+      "display_name": "Receiver-Agnostic Two-stage UDA + FT",
+      "stages": [
+        "A",
+        "B"
+      ],
+      "panel": "native_rffi",
+      "version": "support_limited_SDA_extension",
+      "required_access": [
+        "source_L_s_replay",
+        "target_support_iq",
+        "target_support_labels_at_FT"
+      ],
+      "source_evidence": [
+        {
+          "path": "github_publish/CVS-RFFI-repo/paper_reproduction/receiver_agnostic_twostage_uda/steps.py",
+          "line": 49,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "comparison_suite/adaptation.py",
+          "line": 466,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_code_in_publish_checkout_matched_runner",
+      "budget": {
+        "dann_steps": 100,
+        "lmmd_steps": 100,
+        "ft_steps": 100
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "feature_separation_hu2024",
+      "family": "FeatureSeparation",
+      "display_name": "Hu 2024 Feature Separation",
+      "stages": [
+        "A",
+        "B"
+      ],
+      "panel": "native_rffi",
+      "version": "hu_independent_reproduction",
+      "required_access": [
+        "source_TX_RX_labels",
+        "target_TX_support_labels"
+      ],
+      "source_evidence": [
+        {
+          "path": "paper_reproduction/hu_feature_separation_2024/training.py",
+          "line": 35,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "paper_reproduction/hu_feature_separation_2024/finetune.py",
+          "line": 12,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_independent_reproduction_capsule_adapter_required",
+      "budget": {
+        "lr": 0.005,
+        "batch_size": 256,
+        "paper_target_samples_per_TX": 25,
+        "Kshot_is_explicit_extension": true
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "feature_separation_legacy",
+      "family": "FeatureSeparation",
+      "display_name": "Feature Separation legacy matched version",
+      "stages": [
+        "A",
+        "B"
+      ],
+      "panel": "version_diagnostic",
+      "version": "legacy_native_matrix",
+      "required_access": [
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "paper_reproduction/feature_separation_crossrx/paper_checklist.md",
+          "line": 1,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "comparison_suite/adaptation.py",
+          "line": 466,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_legacy_code_historical_predictions",
+      "budget": {
+        "historical_target_epochs": 100
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "ra_collab_single_ft",
+      "family": "RA-Collab",
+      "display_name": "RA-Collab single-node FT",
+      "stages": [
+        "A",
+        "B"
+      ],
+      "panel": "native_rffi_auxiliary",
+      "version": "single_node_project_extension",
+      "required_access": [
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "baselines/ra_collab/finetune_cvs.py",
+          "line": 26,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_code_support_query_overlap_must_be_rebound",
+      "budget": {
+        "target_epochs": 20,
+        "optimizer": "SGD",
+        "lr": 1e-05,
+        "momentum": 0.9,
+        "batch_size": 32
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "tweak_m1",
+      "family": "Tweak",
+      "display_name": "Tweak M=1",
+      "stages": [
+        "A_if_source_decision_available",
+        "B"
+      ],
+      "panel": "native_rffi_auxiliary",
+      "version": "explicit_single_query_extension",
+      "required_access": [
+        "target_labeled_calibration"
+      ],
+      "source_evidence": [
+        {
+          "path": "paper_reproduction/gaskin_tweak_2023/calibration.py",
+          "line": 65,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "paper_reproduction/gaskin_tweak_2023/training.py",
+          "line": 53,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_algorithm_capsule_binding_required",
+      "budget": {
+        "source_epochs": 100,
+        "query_observations": 1
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "tweak_m10",
+      "family": "Tweak",
+      "display_name": "Tweak native M=10",
+      "stages": [
+        "A_if_source_decision_available",
+        "B"
+      ],
+      "panel": "native_multi_observation_separate",
+      "version": "native_multi_observation",
+      "required_access": [
+        "target_labeled_calibration",
+        "legal_predeclared_query_observation_groups"
+      ],
+      "source_evidence": [
+        {
+          "path": "paper_reproduction/gaskin_tweak_2023/calibration.py",
+          "line": 65,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "requires_separate_legal_grouped_observations_not_provided_by_single_query_capsule",
+      "budget": {
+        "query_observations": 10
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "csil_corefix",
+      "family": "CSIL",
+      "display_name": "CSIL matched empirical-Fisher corefix",
+      "stages": [
+        "A",
+        "B_extension",
+        "C"
+      ],
+      "panel": "native_rffi",
+      "version": "official_repo_corefix_empirical_fisher_matched_iq",
+      "required_access": [
+        "frozen_source_Fisher",
+        "stage_teacher",
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "github_publish/CVS-RFFI-repo/paper_reproduction/CSIL/model.py",
+          "line": 1,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "comparison_suite/registration.py",
+          "line": 414,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_code_historical_C_technical_failure_check_existing_recovery_before_resume",
+      "budget": {
+        "B_epochs": 10,
+        "C_epochs": 3,
+        "optimizer_C": "masked_SGDM"
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "csil_author",
+      "family": "CSIL",
+      "display_name": "CSIL original MATLAB behavior",
+      "stages": [
+        "source_native",
+        "C"
+      ],
+      "panel": "version_diagnostic",
+      "version": "author_native_dataset",
+      "required_access": [
+        "author_source_workspace",
+        "source_Fisher",
+        "stage_teacher",
+        "new_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "local_artifacts/external_refs/pcwhy_CSIL/ContinualLearning/WorkStage/CSIL.m",
+          "line": 1,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_author_code_not_current_capsule_python_runner",
+      "budget": null,
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "mopc_paper",
+      "family": "MoPC-HR",
+      "display_name": "MoPC-HR paper-semantic matched version",
+      "stages": [
+        "A",
+        "B_extension",
+        "C"
+      ],
+      "panel": "native_rffi",
+      "version": "cosine_correction_squared_L2_HR_classifier_inference",
+      "required_access": [
+        "historical_class_prototypes",
+        "stage_model_reference",
+        "target_labeled_support",
+        "prototype_feature_augmentation"
+      ],
+      "source_evidence": [
+        {
+          "path": "github_publish/CVS-RFFI-repo/paper_reproduction/mopc_hr_non_exemplar_cil_sei/algorithm.py",
+          "line": 25,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "comparison_suite/registration.py",
+          "line": 506,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_code_historical_C_technical_failure_check_existing_recovery",
+      "budget": {
+        "B_epochs": 10,
+        "C_epochs_per_session": 20,
+        "new_classes_per_session": 5
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "mopc_public_code",
+      "family": "MoPC-HR",
+      "display_name": "MoPC-HR public-code semantics",
+      "stages": [
+        "A",
+        "C"
+      ],
+      "panel": "version_diagnostic",
+      "version": "public_code_rawdot_softmax_HR_differences",
+      "required_access": [
+        "historical_class_prototypes",
+        "stage_model_reference",
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "github_publish/CVS-RFFI-repo/local_artifacts/external_refs/MoPC-HR/MoPC_HR_trainer.py",
+          "line": 270,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_author_code_semantics_differ_from_paper_port",
+      "budget": null,
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "orthogonal",
+      "family": "Orthogonal",
+      "display_name": "Orthogonal Incremental SEI / OSC-FSCIL-SEI",
+      "stages": [
+        "A",
+        "B_extension",
+        "C"
+      ],
+      "panel": "native_rffi",
+      "version": "",
+      "required_access": [
+        "source_geometric_training",
+        "frozen_encoder",
+        "old_classifier_weights",
+        "new_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "github_publish/CVS-RFFI-repo/paper_reproduction/orthogonal_incremental_sei/train.py",
+          "line": 540,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "comparison_suite/registration.py",
+          "line": 570,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_native_multisession_matched_historical_predictions",
+      "budget": {
+        "B_epochs": 10,
+        "C_epochs": 50
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "issl_fixed_v1",
+      "family": "ISSL",
+      "display_name": "ISSL fixed_v1",
+      "stages": [
+        "A_if_source_base_bound",
+        "B_not_native",
+        "C"
+      ],
+      "panel": "native_rffi",
+      "version": "explicit_implementation_fixes_not_full_paper_equivalence",
+      "required_access": [
+        "old_training_replay",
+        "stage_teacher",
+        "momentum_key",
+        "queue",
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "paper_reproduction/newclass_registration_20260930/issl_fixed.py",
+          "line": 168,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "paper_reproduction/newclass_registration_20260930/ISSL_REPAIR.md",
+          "line": 3,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_real_IQ_diagnostic_chain_formal_capsule_arbitrary_classes_adapter_required",
+      "budget": {
+        "source_template_epochs": 300,
+        "SSL_template_epochs": 2000,
+        "transfer_template_epochs": 300,
+        "existing_diagnostic_epochs_per_stage": 1
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "issl_author_behavior",
+      "family": "ISSL",
+      "display_name": "ISSL author-behavior preservation",
+      "stages": [
+        "A_if_source_base_bound",
+        "C"
+      ],
+      "panel": "version_diagnostic",
+      "version": "detached_KD_accumulating_gradients_original_queue_behavior",
+      "required_access": [
+        "old_training_replay",
+        "stage_teacher",
+        "queue",
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "paper_reproduction/newclass_registration_20260930/acceptance.py",
+          "line": 93,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_real_IQ_diagnostic_not_formal_result",
+      "budget": null,
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "lora_triplet_knn",
+      "family": "LoRa",
+      "display_name": "LoRa scalable/channel-robust triplet + KNN",
+      "stages": [
+        "A_if_legal_source_enrollment_available",
+        "B",
+        "C"
+      ],
+      "panel": "native_rffi",
+      "version": "explicit_Torch_and_256IQ_STFT_extension",
+      "required_access": [
+        "triplet_source_training",
+        "target_labeled_enrollment_memory"
+      ],
+      "source_evidence": [
+        {
+          "path": "paper_reproduction/newclass_registration_20260930/acceptance.py",
+          "line": 162,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "local_artifacts/external_refs/LoRa_RFFI_20260930/Openset_RFFI_TIFS/main.py",
+          "line": 121,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_author_and_diagnostic_runner_formal_capsule_arbitrary_K_adapter_required",
+      "budget": {
+        "author_source_max_epochs": 1000,
+        "knn_k": 15,
+        "small_K_rule": "min(15,Nsupport), explicit extension, retain native voting weights",
+        "STFT_window": 64,
+        "STFT_overlap": 32
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    }
+  ],
+  "registration_complete_families": [
+    "CSIL",
+    "MoPC-HR",
+    "Orthogonal",
+    "ISSL",
+    "LoRa",
+    "ProtoNet",
+    "RadioNet"
+  ],
+  "generic_and_shared_mechanisms": [
+    {
+      "id": "dann",
+      "family": "DANN",
+      "display_name": "DANN",
+      "stages": [
+        "A",
+        "B"
+      ],
+      "panel": "generic_DA",
+      "version": "",
+      "required_access": [
+        "source_labels",
+        "target_support_iq"
+      ],
+      "source_evidence": [
+        {
+          "path": "github_publish/CVS-RFFI-repo/paper_reproduction/receiver_agnostic_twostage_uda/steps.py",
+          "line": 49,
+          "exists_at_inventory": true
+        },
+        {
+          "path": "external_sources/Pytorch-Template/trainers/dann_trainer.py",
+          "line": 51,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_RFFI_component_and_generic_code_bind_one_version",
+      "budget": null,
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "mcd",
+      "family": "MCD",
+      "display_name": "MCD",
+      "stages": [
+        "A",
+        "B"
+      ],
+      "panel": "generic_DA",
+      "version": "",
+      "required_access": [
+        "source_labels",
+        "target_support_iq",
+        "two_classifier_heads"
+      ],
+      "source_evidence": [
+        {
+          "path": "external_sources/Pytorch-Template/trainers/mcd_trainer.py",
+          "line": 98,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_generic_algorithm_MNIST_default_requires_RFFI_adapter",
+      "budget": {
+        "generic_template_epochs": 45,
+        "discrepancy_steps": 4,
+        "discrepancy_weight": 15
+      },
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "ncm",
+      "family": "ncm",
+      "display_name": "ncm",
+      "stages": [
+        "A",
+        "B",
+        "C_only_if_explicit_extension"
+      ],
+      "panel": "shared_PAMF",
+      "version": "",
+      "required_access": [
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "comparison_suite/adaptation.py",
+          "line": 361,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_mechanism",
+      "budget": null,
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "ridge",
+      "family": "ridge",
+      "display_name": "ridge",
+      "stages": [
+        "A",
+        "B",
+        "C_only_if_explicit_extension"
+      ],
+      "panel": "shared_PAMF",
+      "version": "",
+      "required_access": [
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "comparison_suite/adaptation.py",
+          "line": 372,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_mechanism_intercept_definition_differs_from_MILKR",
+      "budget": null,
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "linear",
+      "family": "linear",
+      "display_name": "linear",
+      "stages": [
+        "A",
+        "B",
+        "C_only_if_explicit_extension"
+      ],
+      "panel": "shared_PAMF",
+      "version": "",
+      "required_access": [
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "comparison_suite/adaptation.py",
+          "line": 381,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_mechanism",
+      "budget": null,
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "adabn",
+      "family": "adabn",
+      "display_name": "adabn",
+      "stages": [
+        "A",
+        "B",
+        "C_only_if_explicit_extension"
+      ],
+      "panel": "shared_PAMF",
+      "version": "",
+      "required_access": [
+        "target_support_iq"
+      ],
+      "source_evidence": [
+        {
+          "path": "comparison_suite/adaptation.py",
+          "line": 393,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_mechanism_NA_if_encoder_has_no_BN",
+      "budget": null,
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "sft",
+      "family": "sft",
+      "display_name": "sft",
+      "stages": [
+        "A",
+        "B",
+        "C_only_if_explicit_extension"
+      ],
+      "panel": "shared_PAMF",
+      "version": "",
+      "required_access": [
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "comparison_suite/adaptation.py",
+          "line": 498,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_mechanism",
+      "budget": null,
+      "launch_ready": false,
+      "current_contract_metrics": null
+    },
+    {
+      "id": "coral_sft",
+      "family": "coral_sft",
+      "display_name": "coral_sft",
+      "stages": [
+        "A",
+        "B",
+        "C_only_if_explicit_extension"
+      ],
+      "panel": "shared_PAMF",
+      "version": "",
+      "required_access": [
+        "source_L_s_replay",
+        "target_labeled_support"
+      ],
+      "source_evidence": [
+        {
+          "path": "comparison_suite/adaptation.py",
+          "line": 501,
+          "exists_at_inventory": true
+        }
+      ],
+      "inventory_status": "complete_supervised_mechanism_not_full_native_Deep_CORAL",
+      "budget": null,
+      "launch_ready": false,
+      "current_contract_metrics": null
+    }
+  ],
+  "not_found_complete_independent_implementation": [
+    "CSCNet",
+    "Self-training and Prototype Augmentation (TIFS 2024)",
+    "SHOT",
+    "DAN",
+    "DSAN",
+    "CDAN",
+    "WD",
+    "independent Deep CORAL",
+    "independent LwF",
+    "independent EWC",
+    "iCaRL"
+  ],
+  "internal_D92_static_module_inventory": [
+    {
+      "path": "code/cvsrffi/d92_adaptive_fisher_adapter.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "svec",
+        "smat",
+        "prepare_fisher_subspace_geometry",
+        "fit_fisher_train_target",
+        "symmetric_exp_frechet",
+        "transform_fisher_subspace"
+      ],
+      "classes": [
+        "FisherAdapterFailure",
+        "_Result",
+        "FisherGeometry",
+        "FisherTarget",
+        "MatrixExponentialResult",
+        "FisherTransformResult",
+        "_Ledger"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_adaptive_fisher_joint_local_ridge.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "prepare_fisher_subspace_joint_training",
+        "evaluate_fisher_subspace_joint_objective",
+        "fit_fisher_subspace_joint_local_ridge",
+        "predict_fisher_subspace_joint_local_ridge"
+      ],
+      "classes": [
+        "FisherSubspaceFailure",
+        "_Recorder",
+        "_Ledger",
+        "AdaptiveSupportBasis",
+        "FisherSubspaceTraining",
+        "ObjectiveCache",
+        "FisherSubspaceState"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/evaluate_d92_adaptive_fisher_benchmark.py",
+        "tools/evaluate_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/run_d92_adaptive_fisher_benchmark.py",
+        "tools/run_d92_adaptive_fisher_support.py",
+        "tools/score_d92_adaptive_fisher_benchmark.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_adaptive_fisher_metric_step.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "build_class_balanced_prediction_fisher",
+        "solve_fisher_metric_step"
+      ],
+      "classes": [
+        "FisherMetricFailure",
+        "_Result",
+        "FisherResult",
+        "FisherMetricStep",
+        "_Ledger"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_adaptive_fisher_primitives.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "branch_geometry",
+        "interaction_distances",
+        "raw_kernel",
+        "fit_free_intercept_ridge",
+        "class_balanced_rmsce"
+      ],
+      "classes": [
+        "_Ledger"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_adaptive_score_calibration.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "make_skipped_positive_score_calibration",
+        "fit_positive_score_calibration",
+        "positive_score_calibration_jvp"
+      ],
+      "classes": [
+        "PositiveScoreCalibrationFailure",
+        "PositiveScoreCalibrationState",
+        "PositiveScoreCalibrationJVP"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_affine_joint_local_ridge.py",
+      "literal_method_ids": [
+        "D92-AffineJointLocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "prepare_affine_joint_training",
+        "evaluate_affine_joint_objective",
+        "fit_affine_joint_local_ridge",
+        "predict_affine_joint_local_ridge"
+      ],
+      "classes": [
+        "_Recorder",
+        "AffineJointProblem",
+        "AffineJointTraining",
+        "ObjectiveCache",
+        "AffineJointState"
+      ],
+      "config_references": [
+        "configs/d92_affine_joint_frozen_20261001.json",
+        "configs/d92_affine_joint_support_20261001.json",
+        "configs/d92_affine_joint_support_rx1_20261001.json",
+        "configs/d92_affine_joint_support_rx3_20261001.json",
+        "configs/d92_ground_a_support_20261001.json"
+      ],
+      "tool_references": [
+        "tools/collect_d92_affine_joint_training_diagnostics.py",
+        "tools/evaluate_d92_affine_joint_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_affine_joint_probe.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/report_d92_affine_joint_support.py",
+        "tools/run_d92_ground_a_support.py",
+        "tools/score_d92_ground_a_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_anchor_joint_local_ridge.py",
+      "literal_method_ids": [
+        "D92-AnchorJointLocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "prepare_anchor_joint_training",
+        "evaluate_anchor_joint_objective",
+        "fit_anchor_joint_local_ridge"
+      ],
+      "classes": [
+        "_Recorder",
+        "AnchorJointProblem",
+        "AnchorJointTraining",
+        "ObjectiveCache",
+        "AnchorJointState"
+      ],
+      "config_references": [
+        "configs/d92_anchor_joint_frozen_20261001.json",
+        "configs/d92_anchor_joint_support_20261001.json",
+        "configs/d92_anchor_joint_support_rx1_20261001.json",
+        "configs/d92_anchor_joint_support_rx3_20261001.json"
+      ],
+      "tool_references": [
+        "tools/evaluate_d92_anchor_joint_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_anchor_joint_probe.py",
+        "tools/report_d92_anchor_joint_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_balanced_support_gate.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "fit_balanced_support_gate",
+        "predict_balanced_support_gate",
+        "balanced_support_gate_jvp"
+      ],
+      "classes": [],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_branch_interaction.py",
+      "literal_method_ids": [
+        "D92-BranchInteraction-v1"
+      ],
+      "public_top_level_functions": [
+        "fit_branch_interaction",
+        "probe_branch_interaction"
+      ],
+      "classes": [
+        "BranchInteractionState"
+      ],
+      "config_references": [
+        "configs/d92_branch_interaction_frozen_20260929.json",
+        "configs/d92_branch_interaction_repeat_rx1_20260929.json",
+        "configs/d92_branch_interaction_repeat_rx3_20260929.json",
+        "configs/d92_branch_interaction_support_rx1_20260929.json",
+        "configs/d92_branch_interaction_support_rx3_20260929.json",
+        "configs/d92_branch_local_ridge_repeat_rx1_20260929.json",
+        "configs/d92_branch_local_ridge_repeat_rx3_20260929.json"
+      ],
+      "tool_references": [
+        "tools/analyze_d92_branch_local_margin_probe.py",
+        "tools/analyze_d92_branch_local_ridge_probe.py",
+        "tools/analyze_d92_branch_metric_probe.py",
+        "tools/analyze_d92_registration_diagnostic.py",
+        "tools/collect_d92_branch_interaction_audit.py",
+        "tools/evaluate_d92_affine_joint_probe.py",
+        "tools/evaluate_d92_anchor_joint_probe.py",
+        "tools/evaluate_d92_branch_interaction.py",
+        "tools/evaluate_d92_branch_interaction_probe.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_probe.py",
+        "tools/evaluate_d92_conditional_joint_probe.py",
+        "tools/evaluate_d92_fcr8_probe.py",
+        "tools/evaluate_d92_fisher_subspace_joint_probe.py",
+        "tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/evaluate_d92_group_barrier_joint_probe.py",
+        "tools/evaluate_d92_joint_channel_probe.py",
+        "tools/evaluate_d92_joint_spectral_probe.py",
+        "tools/evaluate_d92_margin_joint_probe.py",
+        "tools/evaluate_d92_mc_residual8_probe.py",
+        "tools/evaluate_d92_prototype_transport_probe.py",
+        "tools/evaluate_d92_proto_frame_joint_probe.py",
+        "tools/evaluate_d92_registration_diagnostic.py",
+        "tools/evaluate_d92_sequential_residual_probe.py",
+        "tools/evaluate_d92_support_metric_joint_probe.py",
+        "tools/evaluate_d92_within_class_metric_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/preflight_d92_branch_interaction.py",
+        "tools/preflight_d92_branch_interaction_probe.py",
+        "tools/prepare_d92_branch_interaction_benchmark.py",
+        "tools/prepare_d92_branch_interaction_probe.py",
+        "tools/prepare_d92_branch_local_margin_benchmark.py",
+        "tools/prepare_d92_branch_local_ridge_benchmark.py",
+        "tools/prepare_d92_branch_local_ridge_probe.py",
+        "tools/prepare_d92_branch_metric_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_affine_joint_probe.py",
+        "tools/publish_d92_anchor_joint_probe.py",
+        "tools/publish_d92_branch_interaction_probe.py",
+        "tools/publish_d92_branch_local_margin_probe.py",
+        "tools/publish_d92_branch_local_ridge_probe.py",
+        "tools/publish_d92_branch_metric_probe.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_fcr8_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_joint_channel_probe.py",
+        "tools/publish_d92_joint_spectral_probe.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_mc_residual8_probe.py",
+        "tools/publish_d92_native_crossfit_ridge.py",
+        "tools/publish_d92_native_full_crossfit_ridge.py",
+        "tools/publish_d92_native_local_ridge.py",
+        "tools/publish_d92_prototype_transport_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_registration_diagnostic.py",
+        "tools/publish_d92_sequential_residual_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/publish_d92_within_class_metric_probe.py",
+        "tools/run_d92_branch_interaction_probe.py",
+        "tools/run_d92_confirmation.py",
+        "tools/summarize_d92_affine_joint_probe.py",
+        "tools/summarize_d92_anchor_joint_probe.py",
+        "tools/summarize_d92_branch_interaction_probe.py",
+        "tools/summarize_d92_branch_local_ridge_benchmark.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_branch_local_margin.py",
+      "literal_method_ids": [
+        "D92-BranchLocalMargin-v1"
+      ],
+      "public_top_level_functions": [
+        "fit_branch_local_margin",
+        "probe_branch_local_margin"
+      ],
+      "classes": [
+        "NumericalFailure"
+      ],
+      "config_references": [
+        "configs/d92_branch_local_margin_frozen_20260929.json",
+        "configs/d92_branch_local_margin_support_rx1_20260929.json",
+        "configs/d92_branch_local_margin_support_rx3_20260929.json"
+      ],
+      "tool_references": [
+        "tools/analyze_d92_branch_local_margin_probe.py",
+        "tools/collect_d92_branch_local_margin_audit.py",
+        "tools/evaluate_d92_branch_local_margin.py",
+        "tools/evaluate_d92_branch_local_margin_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/preflight_d92_branch_local_margin.py",
+        "tools/preflight_d92_branch_local_margin_probe.py",
+        "tools/prepare_d92_branch_local_margin_benchmark.py",
+        "tools/prepare_d92_branch_local_margin_probe.py",
+        "tools/publish_d92_branch_local_margin_probe.py",
+        "tools/run_d92_branch_local_margin_probe.py",
+        "tools/run_d92_confirmation.py",
+        "tools/summarize_d92_branch_local_margin_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_branch_local_ridge.py",
+      "literal_method_ids": [
+        "D92-BranchLocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "fit_branch_local_ridge",
+        "probe_branch_local_ridge"
+      ],
+      "classes": [
+        "NumericalFailure",
+        "BranchLocalRidgeState"
+      ],
+      "config_references": [
+        "configs/d92_affine_joint_frozen_20261001.json",
+        "configs/d92_affine_joint_support_20261001.json",
+        "configs/d92_affine_joint_support_rx1_20261001.json",
+        "configs/d92_affine_joint_support_rx3_20261001.json",
+        "configs/d92_anchor_joint_frozen_20261001.json",
+        "configs/d92_anchor_joint_support_20261001.json",
+        "configs/d92_anchor_joint_support_rx1_20261001.json",
+        "configs/d92_anchor_joint_support_rx3_20261001.json",
+        "configs/d92_branch_local_ridge_frozen_20260929.json",
+        "configs/d92_branch_local_ridge_repeat_rx1_20260929.json",
+        "configs/d92_branch_local_ridge_repeat_rx3_20260929.json",
+        "configs/d92_branch_local_ridge_support_rx1_20260929.json",
+        "configs/d92_branch_local_ridge_support_rx3_20260929.json",
+        "configs/d92_conditional_joint_support_20261001.json",
+        "configs/d92_conditional_joint_support_rx1_20261001.json",
+        "configs/d92_conditional_joint_support_rx3_20261001.json",
+        "configs/d92_fcr8_frozen_20260930.json",
+        "configs/d92_fcr8_support_20260930.json",
+        "configs/d92_fcr8_support_rx1_20260930.json",
+        "configs/d92_fcr8_support_rx3_20260930.json",
+        "configs/d92_joint_channel_frozen_20260930.json",
+        "configs/d92_joint_channel_support_20260930.json",
+        "configs/d92_joint_channel_support_rx1_20260930.json",
+        "configs/d92_joint_channel_support_rx3_20260930.json",
+        "configs/d92_joint_spectral_frozen_20260930.json",
+        "configs/d92_joint_spectral_support_20260930.json",
+        "configs/d92_joint_spectral_support_rx1_20260930.json",
+        "configs/d92_joint_spectral_support_rx3_20260930.json",
+        "configs/d92_margin_joint_repeat_20261001.json",
+        "configs/d92_margin_joint_support_20261001.json",
+        "configs/d92_margin_joint_support_rx1_20261001.json",
+        "configs/d92_margin_joint_support_rx3_20261001.json",
+        "configs/d92_mc_residual8_frozen_20260930.json",
+        "configs/d92_mc_residual8_support_20260930.json",
+        "configs/d92_mc_residual8_support_rx1_20260930.json",
+        "configs/d92_mc_residual8_support_rx3_20260930.json",
+        "configs/d92_native_crossfit_ridge_repeat_20261003.json",
+        "configs/d92_native_crossfit_ridge_support_20261003.json",
+        "configs/d92_native_full_crossfit_ridge_repeat_20261003.json",
+        "configs/d92_native_full_crossfit_ridge_support_20261003.json",
+        "configs/d92_native_local_ridge_repeat_20261003.json",
+        "configs/d92_native_local_ridge_support_20261003.json",
+        "configs/d92_prototype_transport_frozen_20260930.json",
+        "configs/d92_prototype_transport_support_20260930.json",
+        "configs/d92_prototype_transport_support_recovery_20260930.json",
+        "configs/d92_prototype_transport_support_rx1_20260930.json",
+        "configs/d92_prototype_transport_support_rx3_20260930.json",
+        "configs/d92_registration_diagnostic_20260930.json",
+        "configs/d92_registration_diagnostic_rx1_20260930.json",
+        "configs/d92_registration_diagnostic_rx3_20260930.json",
+        "configs/d92_sequential_residual_head_frozen_20260930.json",
+        "configs/d92_sequential_residual_support_20260930.json",
+        "configs/d92_sequential_residual_support_rx1_20260930.json",
+        "configs/d92_sequential_residual_support_rx3_20260930.json",
+        "configs/d92_within_class_metric_frozen_20260930.json"
+      ],
+      "tool_references": [
+        "tools/analyze_d92_branch_local_margin_probe.py",
+        "tools/analyze_d92_branch_local_ridge_probe.py",
+        "tools/analyze_d92_registration_diagnostic.py",
+        "tools/collect_d92_branch_local_ridge_audit.py",
+        "tools/d92_native_local_ridge_runtime.py",
+        "tools/evaluate_d92_adaptive_fisher_benchmark.py",
+        "tools/evaluate_d92_adaptive_fisher_support.py",
+        "tools/evaluate_d92_affine_joint_probe.py",
+        "tools/evaluate_d92_anchor_joint_probe.py",
+        "tools/evaluate_d92_branch_local_ridge.py",
+        "tools/evaluate_d92_branch_local_ridge_probe.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_probe.py",
+        "tools/evaluate_d92_conditional_joint_probe.py",
+        "tools/evaluate_d92_fcr8_probe.py",
+        "tools/evaluate_d92_fisher_subspace_joint_benchmark.py",
+        "tools/evaluate_d92_fisher_subspace_joint_probe.py",
+        "tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/evaluate_d92_group_barrier_joint_probe.py",
+        "tools/evaluate_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/evaluate_d92_iterated_adaptive_fisher_support.py",
+        "tools/evaluate_d92_joint_channel_probe.py",
+        "tools/evaluate_d92_joint_spectral_probe.py",
+        "tools/evaluate_d92_margin_joint_probe.py",
+        "tools/evaluate_d92_mc_residual8_probe.py",
+        "tools/evaluate_d92_prototype_transport_probe.py",
+        "tools/evaluate_d92_proto_frame_joint_benchmark.py",
+        "tools/evaluate_d92_proto_frame_joint_probe.py",
+        "tools/evaluate_d92_registration_diagnostic.py",
+        "tools/evaluate_d92_sequential_residual_probe.py",
+        "tools/evaluate_d92_support_metric_joint_benchmark.py",
+        "tools/evaluate_d92_support_metric_joint_probe.py",
+        "tools/evaluate_d92_within_class_metric_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/preflight_d92_branch_local_ridge.py",
+        "tools/preflight_d92_branch_local_ridge_probe.py",
+        "tools/prepare_d92_branch_local_margin_benchmark.py",
+        "tools/prepare_d92_branch_local_margin_probe.py",
+        "tools/prepare_d92_branch_local_ridge_benchmark.py",
+        "tools/prepare_d92_branch_local_ridge_probe.py",
+        "tools/prepare_d92_registration_diagnostic.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_affine_joint_probe.py",
+        "tools/publish_d92_anchor_joint_probe.py",
+        "tools/publish_d92_branch_local_margin_probe.py",
+        "tools/publish_d92_branch_local_ridge_probe.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_fcr8_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_joint_channel_probe.py",
+        "tools/publish_d92_joint_spectral_probe.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_mc_residual8_probe.py",
+        "tools/publish_d92_native_crossfit_ridge.py",
+        "tools/publish_d92_native_full_crossfit_ridge.py",
+        "tools/publish_d92_native_local_ridge.py",
+        "tools/publish_d92_prototype_transport_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_registration_diagnostic.py",
+        "tools/publish_d92_sequential_residual_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/publish_d92_within_class_metric_probe.py",
+        "tools/run_d92_branch_local_ridge_probe.py",
+        "tools/run_d92_confirmation.py",
+        "tools/run_d92_registration_diagnostic.py",
+        "tools/summarize_d92_affine_joint_probe.py",
+        "tools/summarize_d92_anchor_joint_probe.py",
+        "tools/summarize_d92_branch_local_margin_benchmark.py",
+        "tools/summarize_d92_branch_local_margin_probe.py",
+        "tools/summarize_d92_branch_local_ridge_probe.py",
+        "tools/summarize_d92_conditional_joint_probe.py",
+        "tools/summarize_d92_margin_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_branch_metric.py",
+      "literal_method_ids": [
+        "D92-BranchMetric-v1"
+      ],
+      "public_top_level_functions": [
+        "fit_branch_metric",
+        "probe_branch_metric"
+      ],
+      "classes": [
+        "BranchMetricState"
+      ],
+      "config_references": [
+        "configs/d92_branch_metric_frozen_20260929.json",
+        "configs/d92_branch_metric_support_rx1_20260929.json",
+        "configs/d92_branch_metric_support_rx3_20260929.json"
+      ],
+      "tool_references": [
+        "tools/analyze_d92_branch_metric_probe.py",
+        "tools/evaluate_d92_branch_metric_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/preflight_d92_branch_metric_probe.py",
+        "tools/prepare_d92_branch_metric_probe.py",
+        "tools/publish_d92_branch_metric_probe.py",
+        "tools/run_d92_branch_metric_probe.py",
+        "tools/summarize_d92_branch_metric_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_branch_orbit_ce.py",
+      "literal_method_ids": [
+        "D92-BranchOrbitCE-v1"
+      ],
+      "public_top_level_functions": [
+        "fit_branch_orbit_ce",
+        "probe_branch_orbit_ce"
+      ],
+      "classes": [
+        "OrbitCEConvergenceError",
+        "BranchOrbitCEState"
+      ],
+      "config_references": [
+        "configs/d92_branch_orbit_ce_frozen_20260929.json",
+        "configs/d92_branch_orbit_ce_support_rx1_20260929.json",
+        "configs/d92_branch_orbit_ce_support_rx3_20260929.json"
+      ],
+      "tool_references": [
+        "tools/analyze_d92_branch_orbit_ce_probe.py",
+        "tools/evaluate_d92_branch_orbit_ce_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/preflight_d92_branch_orbit_ce_probe.py",
+        "tools/prepare_d92_branch_orbit_ce_probe.py",
+        "tools/publish_d92_branch_orbit_ce_probe.py",
+        "tools/run_d92_branch_orbit_ce_probe.py",
+        "tools/summarize_d92_branch_orbit_ce_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_branch_ridge.py",
+      "literal_method_ids": [
+        "D92-BranchRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "fit_branch_ridge"
+      ],
+      "classes": [
+        "BranchRidgeState"
+      ],
+      "config_references": [
+        "configs/d92_branch_interaction_repeat_rx1_20260929.json",
+        "configs/d92_branch_interaction_repeat_rx3_20260929.json",
+        "configs/d92_branch_local_ridge_repeat_rx1_20260929.json",
+        "configs/d92_branch_local_ridge_repeat_rx3_20260929.json",
+        "configs/d92_branch_ridge_frozen_20260929.json",
+        "configs/d92_branch_ridge_repeat_rx1_20260929.json",
+        "configs/d92_branch_ridge_repeat_rx3_20260929.json"
+      ],
+      "tool_references": [
+        "tools/analyze_d92_branch_local_margin_probe.py",
+        "tools/analyze_d92_registration_diagnostic.py",
+        "tools/collect_d92_branch_interaction_audit.py",
+        "tools/collect_d92_branch_local_margin_audit.py",
+        "tools/collect_d92_branch_local_ridge_audit.py",
+        "tools/collect_d92_branch_ridge_audit.py",
+        "tools/evaluate_d92_branch_ridge.py",
+        "tools/export_d92_branch_features.py",
+        "tools/finalize_d92_branch_ridge_record.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/preflight_d92_branch_interaction.py",
+        "tools/preflight_d92_branch_local_margin.py",
+        "tools/preflight_d92_branch_local_ridge.py",
+        "tools/preflight_d92_branch_ridge.py",
+        "tools/prepare_d92_branch_interaction_benchmark.py",
+        "tools/prepare_d92_branch_local_margin_benchmark.py",
+        "tools/prepare_d92_branch_local_ridge_benchmark.py",
+        "tools/prepare_d92_branch_ridge_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_affine_joint_probe.py",
+        "tools/publish_d92_anchor_joint_probe.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_confirmation.py",
+        "tools/publish_d92_fcr8_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_joint_channel_probe.py",
+        "tools/publish_d92_joint_spectral_probe.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_mc_residual8_probe.py",
+        "tools/publish_d92_native_crossfit_ridge.py",
+        "tools/publish_d92_native_full_crossfit_ridge.py",
+        "tools/publish_d92_native_local_ridge.py",
+        "tools/publish_d92_prototype_transport_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_registration_diagnostic.py",
+        "tools/publish_d92_sequential_residual_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/publish_d92_within_class_metric_probe.py",
+        "tools/run_d92_confirmation.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_branch_support_probe.py",
+      "literal_method_ids": [
+        "D92-BranchSupportProbe-v1"
+      ],
+      "public_top_level_functions": [
+        "probe_branch_support"
+      ],
+      "classes": [],
+      "config_references": [
+        "configs/d92_branch_support_probe_frozen_20260929.json",
+        "configs/d92_branch_support_probe_rx1_20260929.json",
+        "configs/d92_branch_support_probe_rx3_20260929.json"
+      ],
+      "tool_references": [
+        "tools/analyze_d92_affine_joint_probe.py",
+        "tools/analyze_d92_anchor_joint_probe.py",
+        "tools/analyze_d92_branch_local_margin_probe.py",
+        "tools/analyze_d92_branch_local_ridge_probe.py",
+        "tools/analyze_d92_branch_metric_probe.py",
+        "tools/analyze_d92_branch_orbit_ce_probe.py",
+        "tools/analyze_d92_branch_support_probe.py",
+        "tools/analyze_d92_conditional_joint_probe.py",
+        "tools/analyze_d92_fcr8_probe.py",
+        "tools/analyze_d92_joint_channel_probe.py",
+        "tools/analyze_d92_joint_spectral_probe.py",
+        "tools/analyze_d92_margin_joint_probe.py",
+        "tools/analyze_d92_mc_residual8_probe.py",
+        "tools/analyze_d92_prototype_transport_probe.py",
+        "tools/analyze_d92_registration_diagnostic.py",
+        "tools/analyze_d92_sequential_residual_probe.py",
+        "tools/analyze_d92_within_class_metric_probe.py",
+        "tools/evaluate_d92_affine_joint_probe.py",
+        "tools/evaluate_d92_anchor_joint_probe.py",
+        "tools/evaluate_d92_branch_interaction_probe.py",
+        "tools/evaluate_d92_branch_local_margin_probe.py",
+        "tools/evaluate_d92_branch_local_ridge_probe.py",
+        "tools/evaluate_d92_branch_metric_probe.py",
+        "tools/evaluate_d92_branch_orbit_ce_probe.py",
+        "tools/evaluate_d92_branch_support_probe.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_probe.py",
+        "tools/evaluate_d92_conditional_joint_probe.py",
+        "tools/evaluate_d92_fcr8_probe.py",
+        "tools/evaluate_d92_fisher_subspace_joint_benchmark.py",
+        "tools/evaluate_d92_fisher_subspace_joint_probe.py",
+        "tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/evaluate_d92_group_barrier_joint_probe.py",
+        "tools/evaluate_d92_joint_channel_probe.py",
+        "tools/evaluate_d92_joint_spectral_probe.py",
+        "tools/evaluate_d92_margin_joint_probe.py",
+        "tools/evaluate_d92_mc_residual8_probe.py",
+        "tools/evaluate_d92_prototype_transport_probe.py",
+        "tools/evaluate_d92_proto_frame_joint_benchmark.py",
+        "tools/evaluate_d92_proto_frame_joint_probe.py",
+        "tools/evaluate_d92_registration_diagnostic.py",
+        "tools/evaluate_d92_sequential_residual_probe.py",
+        "tools/evaluate_d92_support_metric_joint_benchmark.py",
+        "tools/evaluate_d92_support_metric_joint_probe.py",
+        "tools/evaluate_d92_within_class_metric_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/preflight_d92_affine_joint_probe.py",
+        "tools/preflight_d92_anchor_joint_probe.py",
+        "tools/preflight_d92_branch_interaction_probe.py",
+        "tools/preflight_d92_branch_local_margin_probe.py",
+        "tools/preflight_d92_branch_local_ridge_probe.py",
+        "tools/preflight_d92_branch_metric_probe.py",
+        "tools/preflight_d92_branch_orbit_ce_probe.py",
+        "tools/preflight_d92_branch_support_probe.py",
+        "tools/preflight_d92_fcr8_probe.py",
+        "tools/preflight_d92_joint_channel_probe.py",
+        "tools/preflight_d92_joint_spectral_probe.py",
+        "tools/preflight_d92_mc_residual8_probe.py",
+        "tools/preflight_d92_prototype_transport_probe.py",
+        "tools/preflight_d92_registration_diagnostic.py",
+        "tools/preflight_d92_sequential_residual_probe.py",
+        "tools/preflight_d92_within_class_metric_probe.py",
+        "tools/prepare_d92_branch_interaction_probe.py",
+        "tools/prepare_d92_branch_orbit_ce_probe.py",
+        "tools/prepare_d92_branch_support_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_affine_joint_probe.py",
+        "tools/publish_d92_anchor_joint_probe.py",
+        "tools/publish_d92_branch_interaction_probe.py",
+        "tools/publish_d92_branch_local_margin_probe.py",
+        "tools/publish_d92_branch_local_ridge_probe.py",
+        "tools/publish_d92_branch_metric_probe.py",
+        "tools/publish_d92_branch_orbit_ce_probe.py",
+        "tools/publish_d92_branch_support_probe.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_fcr8_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_ground_a_packet_export.py",
+        "tools/publish_d92_ground_a_support.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_joint_channel_probe.py",
+        "tools/publish_d92_joint_spectral_probe.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_mc_residual8_probe.py",
+        "tools/publish_d92_native_crossfit_ridge.py",
+        "tools/publish_d92_native_full_crossfit_ridge.py",
+        "tools/publish_d92_native_local_ridge.py",
+        "tools/publish_d92_prototype_transport_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_registration_diagnostic.py",
+        "tools/publish_d92_sequential_residual_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/publish_d92_within_class_metric_probe.py",
+        "tools/run_d92_affine_joint_probe.py",
+        "tools/run_d92_anchor_joint_probe.py",
+        "tools/run_d92_branch_interaction_probe.py",
+        "tools/run_d92_branch_local_margin_probe.py",
+        "tools/run_d92_branch_local_ridge_probe.py",
+        "tools/run_d92_branch_metric_probe.py",
+        "tools/run_d92_branch_support_probe.py",
+        "tools/run_d92_conditional_joint_probe.py",
+        "tools/run_d92_fcr8_probe.py",
+        "tools/run_d92_joint_channel_probe.py",
+        "tools/run_d92_joint_spectral_probe.py",
+        "tools/run_d92_margin_joint_probe.py",
+        "tools/run_d92_mc_residual8_probe.py",
+        "tools/run_d92_prototype_transport_probe.py",
+        "tools/run_d92_registration_diagnostic.py",
+        "tools/run_d92_sequential_residual_probe.py",
+        "tools/run_d92_within_class_metric_probe.py",
+        "tools/summarize_d92_affine_joint_probe.py",
+        "tools/summarize_d92_anchor_joint_probe.py",
+        "tools/summarize_d92_branch_interaction_probe.py",
+        "tools/summarize_d92_branch_local_margin_probe.py",
+        "tools/summarize_d92_branch_local_ridge_probe.py",
+        "tools/summarize_d92_branch_metric_probe.py",
+        "tools/summarize_d92_branch_orbit_ce_probe.py",
+        "tools/summarize_d92_branch_support_probe.py",
+        "tools/summarize_d92_conditional_joint_probe.py",
+        "tools/summarize_d92_fcr8_probe.py",
+        "tools/summarize_d92_joint_channel_probe.py",
+        "tools/summarize_d92_joint_spectral_probe.py",
+        "tools/summarize_d92_margin_joint_probe.py",
+        "tools/summarize_d92_mc_residual8_probe.py",
+        "tools/summarize_d92_prototype_transport_probe.py",
+        "tools/summarize_d92_registration_diagnostic.py",
+        "tools/summarize_d92_sequential_residual_probe.py",
+        "tools/summarize_d92_within_class_metric_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_calibrated_fisher_joint_local_ridge.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "prepare_fisher_subspace_joint_training",
+        "evaluate_fisher_subspace_joint_objective",
+        "fit_fisher_subspace_joint_local_ridge",
+        "predict_fisher_subspace_joint_local_ridge"
+      ],
+      "classes": [
+        "FisherSubspaceFailure",
+        "_Ledger",
+        "FisherSubspaceTraining",
+        "ObjectiveCache",
+        "FisherSubspaceState"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/analyze_d92_calibrated_fisher_joint_probe.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/report_d92_calibrated_fisher_joint_fixed_score.py",
+        "tools/run_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/run_d92_calibrated_fisher_joint_probe.py",
+        "tools/run_d92_fixed_head_gate_ablation.py",
+        "tools/score_d92_adaptive_fisher_benchmark.py",
+        "tools/score_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/score_d92_iterated_adaptive_fisher_benchmark.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_conditional_affine_kernel.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "fit_conditional_affine",
+        "conditional_affine_adjoint"
+      ],
+      "classes": [
+        "NumericalFailure",
+        "ConditionalAffineExpansion",
+        "ConditionalAffineState",
+        "ConditionalAffineAdjoint"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_conditional_joint_local_ridge.py",
+      "literal_method_ids": [
+        "D92-ConditionalJointLocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "prepare_conditional_joint_training",
+        "evaluate_conditional_joint_objective",
+        "project_coordinates",
+        "fit_conditional_joint_local_ridge",
+        "predict_conditional_joint_local_ridge"
+      ],
+      "classes": [
+        "_Recorder",
+        "ConditionalJointProblem",
+        "ConditionalJointTraining",
+        "ObjectiveCache",
+        "ConditionalJointState"
+      ],
+      "config_references": [
+        "configs/d92_conditional_joint_support_20261001.json",
+        "configs/d92_conditional_joint_support_rx1_20261001.json",
+        "configs/d92_conditional_joint_support_rx3_20261001.json",
+        "configs/d92_ground_a_support_20261001.json"
+      ],
+      "tool_references": [
+        "tools/collect_d92_conditional_joint_training_diagnostics.py",
+        "tools/evaluate_d92_conditional_joint_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/report_d92_conditional_joint_support.py",
+        "tools/run_d92_conditional_joint_probe.py",
+        "tools/run_d92_ground_a_support.py",
+        "tools/score_d92_ground_a_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_fisher_joint_primitives.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "branch_geometry",
+        "interaction_distances",
+        "raw_kernel",
+        "fit_free_intercept_ridge",
+        "class_balanced_rmsce"
+      ],
+      "classes": [
+        "_Ledger"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_fisher_metric_step.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "build_class_balanced_prediction_fisher",
+        "solve_fisher_metric_step"
+      ],
+      "classes": [
+        "FisherMetricFailure",
+        "_Result",
+        "FisherResult",
+        "FisherMetricStep",
+        "_Ledger"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_fisher_subspace_adapter.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "svec",
+        "smat",
+        "prepare_fisher_subspace_geometry",
+        "fit_fisher_train_target",
+        "symmetric_exp_frechet",
+        "transform_fisher_subspace"
+      ],
+      "classes": [
+        "FisherAdapterFailure",
+        "_Result",
+        "FisherGeometry",
+        "FisherTarget",
+        "MatrixExponentialResult",
+        "FisherTransformResult",
+        "_Ledger"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_fisher_subspace_joint_local_ridge.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "prepare_fisher_subspace_joint_training",
+        "evaluate_fisher_subspace_joint_objective",
+        "fit_fisher_subspace_joint_local_ridge",
+        "predict_fisher_subspace_joint_local_ridge"
+      ],
+      "classes": [
+        "FisherSubspaceFailure",
+        "_Ledger",
+        "FisherSubspaceTraining",
+        "ObjectiveCache",
+        "FisherSubspaceState"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/analyze_d92_fisher_subspace_joint_probe.py",
+        "tools/evaluate_d92_fisher_subspace_joint_benchmark.py",
+        "tools/evaluate_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/report_d92_fisher_subspace_joint_fixed_score.py",
+        "tools/run_d92_fisher_subspace_joint_benchmark.py",
+        "tools/run_d92_fisher_subspace_joint_probe.py",
+        "tools/score_d92_fisher_subspace_joint_benchmark.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_function_coordinate_residual8_local_ridge.py",
+      "literal_method_ids": [
+        "D92-FCR8LocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "initial_parameters",
+        "latent_coordinates",
+        "reconstruct_U",
+        "prepare_function_coordinate_training",
+        "evaluate_function_coordinate_objective",
+        "guarded_direction",
+        "fit_function_coordinate_local_ridge"
+      ],
+      "classes": [
+        "FCRProblem",
+        "FunctionCoordinateTraining",
+        "ObjectiveCache",
+        "FunctionCoordinateState"
+      ],
+      "config_references": [
+        "configs/d92_fcr8_frozen_20260930.json",
+        "configs/d92_fcr8_support_20260930.json",
+        "configs/d92_fcr8_support_rx1_20260930.json",
+        "configs/d92_fcr8_support_rx3_20260930.json"
+      ],
+      "tool_references": [
+        "tools/evaluate_d92_fcr8_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_affine_joint_probe.py",
+        "tools/publish_d92_anchor_joint_probe.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_fcr8_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_ground_classifier_a.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [],
+      "classes": [
+        "GroundFeatureContract",
+        "GroundHeadMetadata",
+        "GroundClassifierA"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/evaluate_d92_adaptive_fisher_benchmark.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_probe.py",
+        "tools/evaluate_d92_fisher_subspace_joint_benchmark.py",
+        "tools/evaluate_d92_fisher_subspace_joint_probe.py",
+        "tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/evaluate_d92_group_barrier_joint_benchmark.py",
+        "tools/evaluate_d92_group_barrier_joint_probe.py",
+        "tools/evaluate_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/evaluate_d92_margin_joint_benchmark.py",
+        "tools/evaluate_d92_proto_frame_joint_benchmark.py",
+        "tools/evaluate_d92_proto_frame_joint_probe.py",
+        "tools/evaluate_d92_support_metric_joint_benchmark.py",
+        "tools/evaluate_d92_support_metric_joint_probe.py",
+        "tools/export_d92_ground_classifier_a_packet.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/preflight_d92_adaptive_fisher_support.py",
+        "tools/preflight_d92_calibrated_fisher_joint_probe.py",
+        "tools/preflight_d92_fisher_subspace_joint_probe.py",
+        "tools/preflight_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/preflight_d92_group_barrier_joint_probe.py",
+        "tools/preflight_d92_iterated_adaptive_fisher_support.py",
+        "tools/preflight_d92_proto_frame_joint_probe.py",
+        "tools/preflight_d92_support_metric_joint_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_ground_a_packet_export.py",
+        "tools/publish_d92_ground_a_support.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/run_d92_ground_a_packet_export.py",
+        "tools/score_d92_ground_a_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_ground_summary.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "load_ground_summary"
+      ],
+      "classes": [
+        "GroundSummary"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/mirror_d92_upgrade.py",
+        "tools/predict_d92_summary_joint.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/run_d92_confirmation.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_group_balanced_barrier_gate.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "fit_group_balanced_barrier_gate",
+        "predict_group_balanced_barrier_gate",
+        "group_balanced_barrier_gate_vjp",
+        "group_balanced_barrier_gate_jvp"
+      ],
+      "classes": [
+        "GroupBalancedBarrierFailure",
+        "GroupBalancedBarrierState",
+        "GroupBalancedBarrierJVP"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/analyze_d92_calibrated_fisher_joint_probe.py",
+        "tools/analyze_d92_fisher_subspace_joint_probe.py",
+        "tools/analyze_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_group_balanced_support_metric_joint_local_ridge.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "prepare_group_balanced_support_metric_joint_training",
+        "evaluate_group_balanced_support_metric_joint_objective",
+        "fit_group_balanced_support_metric_joint_local_ridge",
+        "predict_group_balanced_support_metric_joint_local_ridge"
+      ],
+      "classes": [
+        "GroupBalancedSupportMetricFailure",
+        "_Ledger",
+        "GroupBalancedSupportMetricTraining",
+        "ObjectiveCache",
+        "GroupBalancedSupportMetricState"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/analyze_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/run_d92_group_balanced_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_group_barrier_gate.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "fit_group_barrier_gate",
+        "predict_group_barrier_gate",
+        "group_barrier_gate_vjp"
+      ],
+      "classes": [
+        "GroupBarrierFailure",
+        "GroupBarrierState",
+        "GroupBarrierVJP"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_group_barrier_joint_local_ridge.py",
+      "literal_method_ids": [
+        "D92-GroupBarrierJointLocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "compact_training_record",
+        "prepare_group_barrier_joint_training",
+        "evaluate_group_barrier_joint_objective",
+        "fit_group_barrier_joint_local_ridge",
+        "predict_group_barrier_joint_local_ridge"
+      ],
+      "classes": [
+        "_Recorder",
+        "ObjectiveCache",
+        "GroupBarrierJointState"
+      ],
+      "config_references": [
+        "configs/d92_group_barrier_joint_repeat_20261001.json",
+        "configs/d92_group_barrier_joint_support_20261001.json"
+      ],
+      "tool_references": [
+        "tools/analyze_d92_group_barrier_joint_probe.py",
+        "tools/evaluate_d92_group_barrier_joint_benchmark.py",
+        "tools/evaluate_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/run_d92_group_barrier_joint_benchmark.py",
+        "tools/run_d92_group_barrier_joint_probe.py",
+        "tools/score_d92_group_barrier_joint_benchmark.py",
+        "tools/score_d92_group_barrier_joint_benchmark_contract_r02.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_iterated_adaptive_fisher_joint_local_ridge.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "prepare_fisher_subspace_joint_training",
+        "evaluate_fisher_subspace_joint_objective",
+        "fit_fisher_subspace_joint_local_ridge",
+        "predict_fisher_subspace_joint_local_ridge"
+      ],
+      "classes": [
+        "FisherSubspaceState"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/evaluate_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/evaluate_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/run_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/run_d92_iterated_adaptive_fisher_support.py",
+        "tools/score_d92_iterated_adaptive_fisher_benchmark.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_joint_channel_local_ridge.py",
+      "literal_method_ids": [
+        "D92-JointChannelLocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "project_channels",
+        "prepare_channel_training",
+        "evaluate_channel_objective",
+        "fit_channel_local_ridge"
+      ],
+      "classes": [
+        "NumericalFailure",
+        "ChannelProblem",
+        "ChannelTraining",
+        "ChannelLocalRidgeState"
+      ],
+      "config_references": [
+        "configs/d92_joint_channel_frozen_20260930.json",
+        "configs/d92_joint_channel_support_20260930.json",
+        "configs/d92_joint_channel_support_rx1_20260930.json",
+        "configs/d92_joint_channel_support_rx3_20260930.json"
+      ],
+      "tool_references": [
+        "tools/evaluate_d92_joint_channel_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_affine_joint_probe.py",
+        "tools/publish_d92_anchor_joint_probe.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_fcr8_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_joint_channel_probe.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_mc_residual8_probe.py",
+        "tools/publish_d92_prototype_transport_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_joint_spectral_local_ridge.py",
+      "literal_method_ids": [
+        "D92-JointSpectralLocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "project_theta",
+        "prepare_joint_training",
+        "evaluate_joint_objective",
+        "fit_joint_spectral_local_ridge"
+      ],
+      "classes": [
+        "SpectralGeometry",
+        "KernelProblem",
+        "JointTraining",
+        "JointSpectralState"
+      ],
+      "config_references": [
+        "configs/d92_joint_spectral_frozen_20260930.json",
+        "configs/d92_joint_spectral_support_20260930.json",
+        "configs/d92_joint_spectral_support_rx1_20260930.json",
+        "configs/d92_joint_spectral_support_rx3_20260930.json"
+      ],
+      "tool_references": [
+        "tools/evaluate_d92_joint_spectral_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_joint_spectral_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_margin_constrained_residual8_local_ridge.py",
+      "literal_method_ids": [
+        "D92-MCResidual8LocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "initial_parameters",
+        "project_parameters",
+        "prepare_mc_residual8_training",
+        "evaluate_mc_objective",
+        "guarded_direction",
+        "fit_mc_residual8_local_ridge"
+      ],
+      "classes": [
+        "MCProblem",
+        "_Recorder",
+        "MCTraining",
+        "ObjectiveCache",
+        "MCResidual8State"
+      ],
+      "config_references": [
+        "configs/d92_mc_residual8_frozen_20260930.json",
+        "configs/d92_mc_residual8_support_20260930.json",
+        "configs/d92_mc_residual8_support_rx1_20260930.json",
+        "configs/d92_mc_residual8_support_rx3_20260930.json"
+      ],
+      "tool_references": [
+        "tools/evaluate_d92_mc_residual8_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_affine_joint_probe.py",
+        "tools/publish_d92_anchor_joint_probe.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_fcr8_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_mc_residual8_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_margin_joint_local_ridge.py",
+      "literal_method_ids": [
+        "D92-MarginJointLocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "compact_training_record",
+        "prepare_margin_joint_training",
+        "evaluate_margin_joint_objective",
+        "fit_margin_joint_local_ridge",
+        "predict_margin_joint_local_ridge"
+      ],
+      "classes": [
+        "_Recorder",
+        "MarginJointProblem",
+        "MarginJointTraining",
+        "ObjectiveCache",
+        "_SingleQueryPriorCache",
+        "MarginJointState"
+      ],
+      "config_references": [
+        "configs/d92_margin_ground_a_support_20261001.json",
+        "configs/d92_margin_joint_repeat_20261001.json",
+        "configs/d92_margin_joint_support_20261001.json",
+        "configs/d92_margin_joint_support_rx1_20261001.json",
+        "configs/d92_margin_joint_support_rx3_20261001.json"
+      ],
+      "tool_references": [
+        "tools/analyze_d92_group_barrier_joint_probe.py",
+        "tools/collect_d92_margin_joint_training_diagnostics.py",
+        "tools/evaluate_d92_group_barrier_joint_benchmark.py",
+        "tools/evaluate_d92_group_barrier_joint_probe.py",
+        "tools/evaluate_d92_margin_joint_benchmark.py",
+        "tools/evaluate_d92_margin_joint_probe.py",
+        "tools/export_d92_margin_training_ai_scalars.py",
+        "tools/measure_d92_margin_single_query_reuse.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/report_d92_ground_a_support.py",
+        "tools/report_d92_margin_joint_support.py",
+        "tools/run_d92_ground_a_support.py",
+        "tools/run_d92_margin_joint_benchmark.py",
+        "tools/run_d92_margin_joint_probe.py",
+        "tools/score_d92_ground_a_support.py",
+        "tools/score_d92_margin_joint_benchmark.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_margin_qp_head.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "fit_margin_qp_head",
+        "predict_margin_qp_head",
+        "margin_qp_head_vjp"
+      ],
+      "classes": [
+        "MarginQPFailure",
+        "UnsupportedJacobian",
+        "MarginQPHead",
+        "MarginQPVJP",
+        "_Ledger"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_native_support_tail.py",
+      "literal_method_ids": [
+        "D92_NATIVE_SUPPORT_CE"
+      ],
+      "public_top_level_functions": [
+        "require",
+        "check_iq",
+        "check_support",
+        "parameter_count",
+        "fit_support",
+        "register_support"
+      ],
+      "classes": [
+        "FitContext",
+        "NativeSupportClassifier",
+        "SupportFit"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/analyze_d92_native_support_errors.py",
+        "tools/control_d92_native_tail_score.py",
+        "tools/d92_native_support_runtime.py",
+        "tools/evaluate_d92_native_support_tail.py",
+        "tools/publish_d92_native_crossfit_ridge.py",
+        "tools/publish_d92_native_full_crossfit_ridge.py",
+        "tools/publish_d92_native_local_ridge.py",
+        "tools/publish_d92_native_tail_query.py",
+        "tools/publish_d92_native_tail_support.py",
+        "tools/run_d92_native_tail_support.py",
+        "tools/score_d92_native_crossfit_ridge.py",
+        "tools/score_d92_native_full_crossfit_ridge.py",
+        "tools/score_d92_native_local_ridge.py",
+        "tools/score_d92_native_support_tail.py",
+        "tools/score_d92_native_tail_query.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_positive_score_calibration.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "make_skipped_positive_score_calibration",
+        "fit_positive_score_calibration",
+        "positive_score_calibration_jvp"
+      ],
+      "classes": [
+        "PositiveScoreCalibrationFailure",
+        "PositiveScoreCalibrationState",
+        "PositiveScoreCalibrationJVP"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/analyze_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_proto_frame_ground_geometry.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "load_proto_frame_ground_geometry"
+      ],
+      "classes": [],
+      "config_references": [],
+      "tool_references": [
+        "tools/evaluate_d92_adaptive_fisher_benchmark.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_probe.py",
+        "tools/evaluate_d92_fisher_subspace_joint_benchmark.py",
+        "tools/evaluate_d92_fisher_subspace_joint_probe.py",
+        "tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/evaluate_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/evaluate_d92_proto_frame_joint_benchmark.py",
+        "tools/evaluate_d92_proto_frame_joint_probe.py",
+        "tools/evaluate_d92_support_metric_joint_benchmark.py",
+        "tools/evaluate_d92_support_metric_joint_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_proto_frame_joint_local_ridge.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "compact_training_record",
+        "prepare_proto_frame_joint_training",
+        "evaluate_proto_frame_joint_objective",
+        "fit_proto_frame_joint_local_ridge",
+        "predict_proto_frame_joint_local_ridge"
+      ],
+      "classes": [
+        "ProtoFrameFailure",
+        "_Ledger",
+        "_Recorder",
+        "_Problem",
+        "ProtoFrameTraining",
+        "ObjectiveCache",
+        "ProtoFrameState"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/analyze_d92_proto_frame_joint_probe.py",
+        "tools/evaluate_d92_proto_frame_joint_benchmark.py",
+        "tools/evaluate_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/report_d92_proto_frame_joint_fixed_score.py",
+        "tools/run_d92_proto_frame_joint_benchmark.py",
+        "tools/run_d92_proto_frame_joint_probe.py",
+        "tools/score_d92_proto_frame_joint_benchmark.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_proto_frame_primitives.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "build_proto_frame_dictionary",
+        "transform_z_id",
+        "branch_geometry",
+        "interaction_distances",
+        "raw_kernel",
+        "fit_free_intercept_ridge",
+        "class_balanced_rmsce",
+        "solve_hard_ball_step"
+      ],
+      "classes": [
+        "PrimitiveFailure",
+        "_Result",
+        "ProtoFrame",
+        "TangentResult",
+        "BranchGeometry",
+        "DistanceResult",
+        "KernelResult",
+        "RidgeResult",
+        "RMSResult",
+        "QuadraticStep",
+        "_Ledger"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_prototype_transport_local_ridge.py",
+      "literal_method_ids": [
+        "D92-PrototypeTransportLocalRidge-v1"
+      ],
+      "public_top_level_functions": [
+        "project_transport",
+        "prepare_prototype_transport_training",
+        "evaluate_transport_objective",
+        "fit_prototype_transport_local_ridge"
+      ],
+      "classes": [
+        "PrototypeTable",
+        "TransportProblem",
+        "PrototypeTransportTraining",
+        "ObjectiveCache",
+        "PrototypeTransportState"
+      ],
+      "config_references": [
+        "configs/d92_prototype_transport_frozen_20260930.json",
+        "configs/d92_prototype_transport_support_20260930.json",
+        "configs/d92_prototype_transport_support_recovery_20260930.json",
+        "configs/d92_prototype_transport_support_rx1_20260930.json",
+        "configs/d92_prototype_transport_support_rx3_20260930.json"
+      ],
+      "tool_references": [
+        "tools/evaluate_d92_prototype_transport_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_affine_joint_probe.py",
+        "tools/publish_d92_anchor_joint_probe.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_conditional_joint_probe.py",
+        "tools/publish_d92_fcr8_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_group_barrier_joint_benchmark.py",
+        "tools/publish_d92_group_barrier_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_margin_joint_benchmark.py",
+        "tools/publish_d92_margin_joint_probe.py",
+        "tools/publish_d92_mc_residual8_probe.py",
+        "tools/publish_d92_prototype_transport_probe.py",
+        "tools/publish_d92_proto_frame_joint_benchmark.py",
+        "tools/publish_d92_proto_frame_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_sequential_residual_head.py",
+      "literal_method_ids": [
+        "D92-LocalRidge-SequentialResidualHead8-v1"
+      ],
+      "public_top_level_functions": [
+        "score_scale",
+        "prepare_residual_training",
+        "fit_residual_base",
+        "train_residual_head"
+      ],
+      "classes": [
+        "NumericalFailure",
+        "PreparedResidualTraining",
+        "ResidualHeadState"
+      ],
+      "config_references": [
+        "configs/d92_sequential_residual_head_frozen_20260930.json",
+        "configs/d92_sequential_residual_support_20260930.json",
+        "configs/d92_sequential_residual_support_rx1_20260930.json",
+        "configs/d92_sequential_residual_support_rx3_20260930.json"
+      ],
+      "tool_references": [
+        "tools/evaluate_d92_sequential_residual_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/publish_d92_sequential_residual_probe.py",
+        "tools/run_d92_sequential_residual_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    },
+    {
+      "path": "code/cvsrffi/d92_support_adaptive_basis.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "svec",
+        "smat",
+        "extend_support_basis",
+        "embed_adapter_state"
+      ],
+      "classes": [
+        "BasisExtension",
+        "EmbeddedAdapterState"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_support_metric_basis.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "build_support_metric_basis"
+      ],
+      "classes": [
+        "_Limit",
+        "SupportMetricBasisFailure",
+        "SupportMetricBasis",
+        "_Ledger"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/analyze_d92_calibrated_fisher_joint_probe.py",
+        "tools/analyze_d92_fisher_subspace_joint_probe.py",
+        "tools/analyze_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/analyze_d92_support_metric_joint_probe.py",
+        "tools/analyze_d92_support_metric_joint_probe_scalar_r02.py",
+        "tools/evaluate_d92_calibrated_fisher_joint_probe.py",
+        "tools/evaluate_d92_fisher_subspace_joint_probe.py",
+        "tools/evaluate_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/evaluate_d92_support_metric_joint_probe.py",
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_calibrated_fisher_joint_benchmark.py",
+        "tools/publish_d92_calibrated_fisher_joint_probe.py",
+        "tools/publish_d92_fisher_subspace_joint_benchmark.py",
+        "tools/publish_d92_fisher_subspace_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/run_d92_calibrated_fisher_joint_probe.py",
+        "tools/run_d92_fisher_subspace_joint_probe.py",
+        "tools/run_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/run_d92_support_metric_joint_probe.py",
+        "tools/score_d92_support_metric_joint_benchmark.py",
+        "tools/score_d92_support_metric_joint_benchmark_scalar_r02.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_support_metric_joint_local_ridge.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "prepare_support_metric_joint_training",
+        "evaluate_support_metric_joint_objective",
+        "fit_support_metric_joint_local_ridge",
+        "predict_support_metric_joint_local_ridge"
+      ],
+      "classes": [
+        "SupportMetricJointFailure",
+        "_Ledger",
+        "SupportMetricTraining",
+        "ObjectiveCache",
+        "SupportMetricState"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/analyze_d92_support_metric_joint_probe.py",
+        "tools/analyze_d92_support_metric_joint_probe_scalar_r02.py",
+        "tools/evaluate_d92_support_metric_joint_benchmark.py",
+        "tools/evaluate_d92_support_metric_joint_probe.py",
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py",
+        "tools/report_d92_support_metric_joint_fixed_score.py",
+        "tools/run_d92_support_metric_joint_benchmark.py",
+        "tools/run_d92_support_metric_joint_probe.py",
+        "tools/score_d92_support_metric_joint_benchmark.py",
+        "tools/score_d92_support_metric_joint_benchmark_scalar_r02.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_support_metric_step.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "build_class_balanced_prediction_fisher",
+        "solve_support_metric_step"
+      ],
+      "classes": [
+        "SupportMetricFailure",
+        "_Result",
+        "FisherResult",
+        "MetricStep",
+        "_Ledger"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_group_balanced_support_metric_joint_probe.py",
+        "tools/publish_d92_support_metric_joint_benchmark.py",
+        "tools/publish_d92_support_metric_joint_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_unconstrained_group_gate.py",
+      "literal_method_ids": [],
+      "public_top_level_functions": [
+        "fit_gate",
+        "predict_gate"
+      ],
+      "classes": [
+        "GateFailure"
+      ],
+      "config_references": [],
+      "tool_references": [
+        "tools/publish_d92_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_adaptive_fisher_support.py",
+        "tools/publish_d92_fixed_head_gate_diagnostic.py",
+        "tools/publish_d92_iterated_adaptive_fisher_benchmark.py",
+        "tools/publish_d92_iterated_adaptive_fisher_support.py",
+        "tools/run_d92_fixed_head_gate_ablation.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "component_or_imported_method_identity_requires_caller_review"
+    },
+    {
+      "path": "code/cvsrffi/d92_within_class_metric.py",
+      "literal_method_ids": [
+        "D92-WithinClassMetric-v1"
+      ],
+      "public_top_level_functions": [
+        "fit_within_class_metric",
+        "fit_within_class_local_ridge",
+        "diagnose_leave_one_class_out"
+      ],
+      "classes": [
+        "NumericalFailure",
+        "WithinClassMetricState",
+        "WithinClassLocalRidgeState"
+      ],
+      "config_references": [
+        "configs/d92_joint_spectral_frozen_20260930.json",
+        "configs/d92_joint_spectral_support_20260930.json",
+        "configs/d92_joint_spectral_support_rx1_20260930.json",
+        "configs/d92_joint_spectral_support_rx3_20260930.json",
+        "configs/d92_within_class_metric_frozen_20260930.json"
+      ],
+      "tool_references": [
+        "tools/analyze_d92_within_class_metric_probe.py",
+        "tools/evaluate_d92_within_class_metric_probe.py",
+        "tools/mirror_d92_upgrade.py",
+        "tools/preflight_d92_within_class_metric_probe.py",
+        "tools/prepare_d92_within_class_metric_probe.py",
+        "tools/publish_d92_joint_spectral_probe.py",
+        "tools/publish_d92_within_class_metric_probe.py",
+        "tools/run_d92_within_class_metric_probe.py",
+        "tools/summarize_d92_within_class_metric_probe.py"
+      ],
+      "static_parse": "PASS",
+      "runtime_verified_this_task": false,
+      "classification": "algorithm_or_variant"
+    }
+  ],
+  "ablation_ids": {
+    "M0": "full MILKR",
+    "M1": "original D92 historical whole method",
+    "M2": "BranchRidge",
+    "M3": "BranchInteraction",
+    "M4": "without z_id",
+    "M5": "without FFT96",
+    "M6": "without t_emb",
+    "M7": "without f_emb",
+    "M8": "without pa_local",
+    "M9": "trace matching off",
+    "M10": "class-blind pairwise-distance bandwidth",
+    "M11": "z_id-only or FFT-only matched local kernel"
+  },
+  "ablation_new_configs_implemented_this_task": false,
+  "sensitivity": {
+    "lambda": [
+      0.01,
+      0.1,
+      1,
+      10,
+      100
+    ],
+    "tau_multiplier": [
+      0.25,
+      0.5,
+      1,
+      2,
+      4
+    ],
+    "FFT_weight": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "policy": "one variable at a time, default remains primary, no target-based selection"
+  },
+  "sequential_registration": {
+    "final_new_classes": 20,
+    "schedules": [
+      [
+        20
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        5,
+        5,
+        5,
+        5
+      ],
+      [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    ],
+    "shots": [
+      5,
+      20
+    ],
+    "final_MILKR_equivalence": "same final support and features imply same final refit; intermediate metrics and cumulative cost differ",
+    "MoPC_native_main_schedule": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "MoPC_larger_sessions": "session20/session10 are explicit extensions, never secretly subdivide; 20 epochs per actual session",
+    "external_methods": "native state inheritance, no per-session reset disguised as continual learning"
+  },
+  "metrics": [
+    "A_old",
+    "B_old",
+    "C_old",
+    "C_new",
+    "H",
+    "overall_accuracy",
+    "Macro_F1",
+    "worst_class_recall",
+    "recall_p10",
+    "B_minus_A_pp",
+    "B_minus_C_old_pp",
+    "old_new_absolute_gap_pp",
+    "net_corrections",
+    "old_to_new_errors",
+    "new_to_old_errors",
+    "fit_time",
+    "end_to_end_B1_latency",
+    "p95_latency",
+    "peak_GPU_memory",
+    "CPU_RSS",
+    "persistent_state_bytes",
+    "source_and_history_payload_bytes"
+  ],
+  "statistics": {
+    "primary_unit": "model seed after equal-weight averaging within fixed RX/scene/support/class-count grid",
+    "primary_model_n": 4,
+    "support_draws_not_independent_models": true,
+    "H": "compute per cell then average",
+    "four_pair_two_sided_signflip_min_p": 0.125,
+    "failure_policy": "retain all failures and missing rows, never silently drop"
+  },
+  "phases": [
+    "E0_inventory_and_binding",
+    "E1_single_seed_small_same_row_technical_validation",
+    "E2_fixed_main_matrices",
+    "E3_predeclared_mechanisms_and_sensitivity",
+    "E4_sessions_and_reliability",
+    "E5_PAMF8_seed_historical_and_independent_panels"
+  ],
+  "execution": {
+    "actual_run_id": null,
+    "implementation_commit": null,
+    "launch_command": null,
+    "environment": null,
+    "GPU_ids": null,
+    "output_root": null,
+    "state": "NOT_LAUNCHED",
+    "future_host": "N607 ordinary account",
+    "max_GPU_workers_per_card_proposal": 1,
+    "max_CPU_scorer": 1,
+    "stop_rule": "systemic technical/protocol/input/output/nonfinite failure stops new dispatch; preserve healthy workers; no score-based stopping"
+  },
+  "code_inventory_note": "file existence, AST parse, and references only; no algorithm imported, no runtime or GPU test, no query or source IQ loaded"
+}
