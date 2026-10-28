@@ -1,0 +1,50 @@
+{
+  "catalog_validation.json": {
+    "status": "VERIFIED",
+    "figures": 151,
+    "selected": 46,
+    "actual_cells": 9207,
+    "unavailable_numeric_cells": 0,
+    "issues": [],
+    "sparse_grids": [
+      {
+        "figure": "Fig004_network_parameters",
+        "panel": 0,
+        "missing_cells": 210
+      },
+      {
+        "figure": "Fig022_learning_augmented_cross_rx",
+        "panel": 0,
+        "missing_cells": 4
+      },
+      {
+        "figure": "Fig022_learning_augmented_cross_rx",
+        "panel": 1,
+        "missing_cells": 4
+      },
+      {
+        "figure": "Fig031_learning_augmented_cross_both",
+        "panel": 0,
+        "missing_cells": 4
+      },
+      {
+        "figure": "Fig031_learning_augmented_cross_both",
+        "panel": 1,
+        "missing_cells": 4
+      },
+      {
+        "figure": "Fig109_U_acceptance_plain_PL_acceptance",
+        "panel": 0,
+        "missing_cells": 1
+      }
+    ]
+  },
+  "export_validation.json": {
+    "status": "VERIFIED",
+    "figures": 151,
+    "plot_data_rows": 9207,
+    "exported_point_values": 9554,
+    "pdf_svg_png_each": 151,
+    "issues": []
+  }
+}
