@@ -42,3 +42,7 @@ source L_s特征只用于冻结类中心，全部source V clean分数只用于�
 ## 本地验证与版本
 
 实际代码/config commit：`1ff583b84b137e9ba1166a667b70f40ffd559134`。43项Phase3针对性测试通过；独立P0/P1审查PASS，无阻断问题。协议负测、固定模型接口和模拟完整校准/预测/评分已检查。真实checkpoint与N607执行依赖由launcher首步无query smoke验证，不将本地fixture当实际性能。原有其他任务的暂存改动已逐字保留。
+
+## 正式首轮结果
+
+VERIFIED/ANALYZED。真实checkpoint smoke PASS，1440条预测全部固定后独立truth-last评分完成，五个基线全部未达科学目标。执行器正常结束，未做技术重启；其他用户进程保留。完整逐方法/场景/RX/TX分析见`docs/PAMF_PHASE3_OPEN_SET_PILOT_20261028.md`。目标模式仍ACTIVE；不得按本目标表调阈值或选主方法。

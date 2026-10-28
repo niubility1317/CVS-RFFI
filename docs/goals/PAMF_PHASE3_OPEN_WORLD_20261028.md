@@ -57,4 +57,6 @@ Tech stack：既有verified Python/PyTorch/NumPy；不安装新依赖。隔离�
 
 ## 当前状态
 
-目标模式ACTIVE。已启动只读数据/代码分工；N607直接preflight已通过。尚未启动GPU任务，尚无Phase3性能结果。进度以实际run报告及独立artifact为准。
+目标模式ACTIVE。首轮`20261028-phase3-pamf-open-set-s2026092701-r01`已在N607 GPU2完成真实模型smoke、source校准、1440条冻结预测与独立truth-last评分，产物状态VERIFIED/ANALYZED。五种简单拒识基线全部未达95%及旧类保护门槛；完整结果见`docs/PAMF_PHASE3_OPEN_SET_PILOT_20261028.md`。不按该target表调阈值/选方法，继续source-only类别/RX留出开发。后续目标无标签适应/发现池尚待物理互斥核实，历史query不转训练。其他用户进程保持，目标未完成。
+
+已找到待核实的新池候选：Full eq的RX `24-18`不在现有ManySig/ManyTx/ManyRx/SingleDay四子集RX列表内，可与本轮Phase2原7RX隔离。公开计数显示旧6TX加11-4/3-13在D1、D3有足量记录，但Full真实文件/packet映射未完成核实，不能写成数据已到位。候选为D1每TX每景32条无标签适应/发现与D3每TX每景64条独立注册后query（8TX×3景×96条=2304物理记录），场景和实际新增unknown组另在新run固定。source含D3地面数据，该切片不声明严格未来日期外推；不按Full index>=1000或容器前缀判断新记录，不改其他owner下载/Phase2规划。

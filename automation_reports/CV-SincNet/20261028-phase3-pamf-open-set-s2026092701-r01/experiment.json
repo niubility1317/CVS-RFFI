@@ -67,11 +67,12 @@
       "U": 0.63,
       "V": 0.3
     },
-    "capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5",
-    "split_id": "new opaque evaluation sub-selection generated once from legacy query",
+    "capsule_id": "phase3-c28c6fb785e3bde1fb439454",
+    "split_id": "db88c39478e887b7111ad1fd",
     "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase2-practical-data-manytx-s2026092705-r01/capsule/manifest.json",
     "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261028-phase3-pamf-open-set-s2026092701-r01/data/builder_report.json",
-    "leo_config_ref": "configs/pamf_phase3_open_set_20261028.json:scenarios,processing_route"
+    "leo_config_ref": "configs/pamf_phase3_open_set_20261028.json:scenarios,processing_route",
+    "parent_capsule_id": "residual-noeq-ba667eee4fb061055e4c08b5"
   },
   "permissions": {
     "regime": "source-calibration_then-frozen-target-test",
@@ -210,5 +211,21 @@
     "Legacy support/query capsule validated once. No history query is relabeled as discovery/training. Discovery remains unimplemented pending legal pool.",
     "Current unrelated staged/unstaged repository changes are preserved; code commit will stage only Phase3 changes."
   ],
-  "registered_at": "2026-10-28T15:26:29+00:00"
+  "registered_at": "2026-10-28T15:26:29+00:00",
+  "outcome": {
+    "artifact_status": "ANALYZED",
+    "external_state": "VERIFIED",
+    "scientific_goals_pass": false,
+    "predictions": 1440,
+    "methods": {
+      "msp": false,
+      "maxlogit": false,
+      "margin": false,
+      "energy": false,
+      "cosine": false
+    },
+    "results_ref": "docs/PAMF_PHASE3_OPEN_SET_PILOT_20261028.md",
+    "target_feedback_forbidden": true,
+    "total_seconds": 14.169772386550903
+  }
 }
