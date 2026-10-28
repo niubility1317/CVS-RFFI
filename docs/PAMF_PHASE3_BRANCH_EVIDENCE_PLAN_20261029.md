@@ -43,4 +43,4 @@ call-local hooks必须finally移除，单次完整前向同时捕获分支与最
 
 模型代理负责branch_export及其测试，数据代理负责branch_rules及其测试，主Agent负责branch_launch、集成、登记和发布；独立review代理只做本候选一次P0/P1检查。实施已完成，95项Phase3相关测试通过；独立审查未发现直接P0/P1，22项候选相关测试通过。真实父checkpoint的两条合法L smoke属于远端导出首步，PASS即继续。
 
-READY_FOR_RELEASE。分支导出器、16规则runner和source-only流水线已实现；未建立正式无标签池，尚无本候选真实源性能。实际commit、命令、环境、GPU、输出、停止规则和预期产物由同名run的experiment.json固定，远端独立读回后更新运行状态。
+VERIFIED/ANALYZED_SOURCE_ONLY。本候选已在N607 GPU2完成真实父checkpoint smoke、30360条8分支导出及16规则，零target/零新增模型更新，完整默认头保持。16规则全部NO_PROMOTION；全V最高未知拒识3.378%、RX8最高7.278%，不扩三fold或正式target。执行commit为df34171b8dc9942ec236e4504cac61768d70997a，结果见PAMF_PHASE3_BRANCH_EVIDENCE_RESULTS_20261029.md及同名run。正式无标签池仍未建立，下一步继续联合无标签结构研发。

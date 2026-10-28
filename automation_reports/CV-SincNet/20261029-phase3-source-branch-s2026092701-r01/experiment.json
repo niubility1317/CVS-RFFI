@@ -1,0 +1,174 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-branch-s2026092701-r01",
+  "group_id": "pamf-phase3-source-branch",
+  "display_name": "PAMF第三阶段：源域物理分支未知证据",
+  "description": "固定自有四类CE20源模型，8分支乘2种距离，共16条源侧规则；零模型更新、零目标访问。",
+  "kind": "cvs",
+  "stage": "Phase3-source-physical-branch-development",
+  "aliases": [
+    "Phase3源域物理分支fold0"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "physical_branches",
+    "unknown_evidence",
+    "no_target"
+  ],
+  "comparison_group_id": "phase3-source-pair01-rx8-16-branch-rules",
+  "parent_run_ids": [
+    "20261029-phase3-source-holdout-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工及自主设计执行；本轮遵循事先source-only开发路线，不以首轮target表调参。",
+  "code": {
+    "commit": "df34171b8dc9942ec236e4504cac61768d70997a",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-branch-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-branch-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig Main source L_s/V only",
+    "version": "existing aligned source contract subset",
+    "representation": "equalized1_center256_unit_rms, clean source, no channel augmentation",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-branch-s2026092701-r01/export/source_branches.npz",
+    "label_map_ref": "configs/pamf_phase3_branch_evidence_20261029.json:fold",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract classes; labels0/1 validation-only; labels2/3/4/5 train",
+    "roles": {
+      "L_s": 3360,
+      "U_s": 0,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "source-pair01-rx8-fixed-L-selection",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "support_query_ref": "N/A source development only; V is never query or training",
+    "leo_config_ref": "N/A source clean development, no target scene"
+  },
+  "permissions": {
+    "regime": "source_only_scratch_class_receiver_holdout",
+    "query_use": "no_target_query_exists",
+    "external_method_exception": null,
+    "claim_scope": "source proxy development only; no formal target, adaptation, discovery or registration success"
+  },
+  "checkpoint": {
+    "initialization": "strict_own_source_checkpoint",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-holdout-s2026092701-r01/train/source_model.pt"
+    ],
+    "contract_check_ref": "branch_export.py validates own parent complete/config/manifest and four-class state",
+    "provenance_verdict": "parent scratch CE20 source-only3360L, no U/target; same fold/seed/cache/contract/runtime",
+    "selection_rule": "parent fixed epoch20 before V; no new optimization or model selection; 16 source rules fixed before export"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-branches-20261029",
+    "gpu_policy": "One pilot worker; each card allows up to2 added task workers, memory>=4096MB; preserve all foreign work",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-branch-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-branch-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_branch_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.branch_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-branch-s2026092701-r01-release/runtime.json",
+    "stop_rule": "parent or fold mismatch, missing source branch, unmasked CFO27, unintended updates, target/U read, nonfinite or output collision; preserve partial artifacts. Scientific failure is not a technical restart."
+  },
+  "expected_artifacts": [
+    "export/smoke.json",
+    "export/source_branches.npz",
+    "export/complete.json",
+    "rules/bundle.npz",
+    "rules/results.json",
+    "rules/complete.json",
+    "pipeline_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "known_closed_accuracy",
+      "known_open_accuracy",
+      "known_macro_frr",
+      "source_proxy_unknown_macro_rejection",
+      "auroc_known",
+      "oscr",
+      "source_promotion"
+    ],
+    "dimensions": [
+      "representation",
+      "distance",
+      "source_RX",
+      "source_TX",
+      "all_V/heldout_RX8"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-branch-s2026092701-r01/export/source_branches.npz",
+    "scorer_ref": "experiments/pamf_phase3_open_world/branch_rules.py"
+  },
+  "rows": [
+    {
+      "row_id": "source-branches-fold0-s2026092701",
+      "method": "Frozen source PAMF physical branch evidence, 8 representations x2 distances",
+      "purpose": "single-fold source falsification, no target or model update",
+      "config_ref": "configs/pamf_phase3_branch_evidence_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-branch-s2026092701-r01/configs/export.json",
+      "data_overrides": {
+        "heldout_source_RX": 8,
+        "heldout_source_TX_labels": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new randomness; parent model seed and source split are retained; fixed16 source rules.",
+      "k": null,
+      "scenario": "source_clean_only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "No additional training. Frozen own CE20/540, source L3360/V27000 once for eight representations.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-branch-s2026092701-r01/export",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-branch-s2026092701-r01/logs/export.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.branch_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-branch-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "export/smoke.json",
+        "export/source_branches.npz",
+        "export/complete.json",
+        "rules/bundle.npz",
+        "rules/results.json",
+        "rules/complete.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No target data or earlier target scores enter this run.",
+    "Global location/scale, prototypes and covariance use source L only; V known calibrates fixed99% retention.",
+    "Classification always uses unchanged complete four-class default head; branch distance only rejects.",
+    "Source RX8 is held out of model fitting but V known includes RX8 for threshold calibration.",
+    "Source promotion requires95% proxy unknown rejection,<=5% known FRR and<=2pp known drop, both aggregate and heldout RX8.",
+    "This is source proxy evidence, not formal six-class target rejection/adaptation/discovery/registration.",
+    "Full eq download validation is complete; separately authorized Phase3 data-pool preparation does not resume paused Phase2 jobs."
+  ],
+  "registered_at": "2026-10-28T16:55:12+00:00"
+}

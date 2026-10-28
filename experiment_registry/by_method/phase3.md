@@ -7,4 +7,5 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |PAMF第三阶段：跨接收机星地冻结开集拒识首轮|managed_run|[打开](../../automation_reports/CV-SincNet/20261028-phase3-pamf-open-set-s2026092701-r01/report.md)|
+|PAMF第三阶段：源域物理分支未知证据|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-branch-s2026092701-r01/report.md)|
 |PAMF第三阶段：源域类别与接收机留出开发|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-holdout-s2026092701-r01/report.md)|
