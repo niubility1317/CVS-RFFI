@@ -35,4 +35,13 @@ builder 一次核对 source/target、两角色和跨场景物理互斥、每记�
 
 ## 当前状态
 
-READY_TO_BUILD。builder及11项针对性测试已完成并通过，包含真实ResidualChannel三景合成IQ；本候选一次独立P0/P1审查PASS，审查者独立运行同11项通过。尚未读取真实Full ZIP或生成新池，没有Phase3正式无标签适应、分类、注册或95%拒识结果。主Agent负责配置、登记、Git和本地构建；模型代理负责新builder与针对性测试；独立审查者只检查下一次真实构建的直接P0/P1。
+**VERIFIED／VALIDATED_ONCE**。真实构建已完成，独立读回两个public目录、完成标记和32行完整日志通过。U768（每景256）／Q1920（每景640），全局2688个canonical接收记录唯一且跨角色／场景互斥；只读取2个ZIP成员，没有重新全量验证。未加载模型、预测或训练，零GPU，不停止其他owner。原生PID3368及实际命令已核实，完成后进程退出。
+
+实际code/config commit为`e4ebaa2682d8c2e87182a8b8ce36ae5ea5eec4d9`。11项针对性测试及本候选一次独立P0/P1审查PASS，包含真实ResidualChannel三景合成IQ。新池位于`local_artifacts/pamf_phase3_full_pool_20261029_r01/pool/`；独立读回、完整构建日志、元数据分析见同目录上层的build_post_state.json、build.log、analysis_summary.json。原始数据、IQ及truth不提交Git。
+
+|角色|capsule_id|split_id|
+|---|---|---|
+|discovery|p3full-636b5bdd4dac13a1608e63a7|332811f1ff75c05e18c794e7|
+|evaluation|p3full-35f7907e8044d907f22701e4|ff2715f5818c999bcc80fc2c|
+
+这只是数据入口就绪，不是Phase3正式拒识、适应、分类或注册成功。正式query尚未模型推理或评分，后续方法仍先通过源开发门槛，再用同一未变数据池确认。

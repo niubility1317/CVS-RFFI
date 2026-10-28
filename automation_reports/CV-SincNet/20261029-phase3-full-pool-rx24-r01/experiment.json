@@ -1,0 +1,176 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-full-pool-rx24-r01",
+  "group_id": "pamf-phase3-full-data",
+  "display_name": "PAMF第三阶段：RX24独立无标签流与未来查询集",
+  "description": "在已全量验证Full eq上创建RX24-18 D1无标签768条与D3未来query1920条，单物理记录单practical residual观测；不加载模型或预测评分。",
+  "kind": "data",
+  "stage": "Phase3-independent-unlabeled-discovery-and-future-query",
+  "aliases": [
+    "Phase3新Full数据池RX24"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "full_eq",
+    "new_receiver",
+    "unlabeled_stream",
+    "future_query",
+    "data_only"
+  ],
+  "comparison_group_id": "phase3-rx24-d1-U-d3-Q-3practical",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工、自主设计与执行；新Phase3不恢复其他owner暂停Phase2任务。",
+  "code": {
+    "commit": "e4ebaa2682d8c2e87182a8b8ce36ae5ea5eec4d9",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "cwd": "E:\\type10-7\\github_publish\\CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "Full WiSig eq",
+    "version": "20 completed ZIP /158 PKL validated 20261029 r02",
+    "representation": "eq1 existing256 samples -> source-matchedFP32 unitRMS -> residual received FP32[2,256], no second normalization",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3零标签开放世界20261028",
+    "physical_ids_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_full_pool_20261029_r01\\pool\\builder_report.json",
+    "label_map_ref": "configs/pamf_phase3_full_pool_20261029.json registered+discovery+future_unknown private builder roster",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "24-18"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_08",
+      "2021_03_23"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_full_pool_20261029.json",
+    "roles": {
+      "target_unlabeled_discovery": 768,
+      "future_query": 1920
+    },
+    "train_ratio": null,
+    "capsule_id": {
+      "discovery": "p3full-636b5bdd4dac13a1608e63a7",
+      "evaluation": "p3full-35f7907e8044d907f22701e4"
+    },
+    "split_id": {
+      "discovery": "332811f1ff75c05e18c794e7",
+      "evaluation": "ff2715f5818c999bcc80fc2c"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_full_pool_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "new U/query disjoint dates and receivers absent from all compact headers; no historical query reclassification",
+    "leo_config_ref": "configs/pamf_phase3_full_pool_20261029.json; 25MHz/2462MHz residual post_sync noEQ,30dB reference SNR reflect; roleblind scene and seed"
+  },
+  "permissions": {
+    "regime": "builder_private_labels_public_unlabeled_future_query",
+    "query_use": "create immutable input only; no model fitting/prediction/scoring",
+    "external_method_exception": null,
+    "claim_scope": "data readiness and single-observation role validation only; no formal RFFI performance"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "data-only builder has no model input",
+    "provenance_verdict": "no weights, optimizer, teacher or recovery model loaded",
+    "selection_rule": "fixed metadata capacity/role allocation, no IQ performance filtering"
+  },
+  "execution": {
+    "host": "local-Windows",
+    "launch_owner": "codex-pamf-phase3-full-data-20261029",
+    "gpu_policy": "CPU-only builder; zero GPU processes; no foreign tasks changed",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_full_pool_20261029_r01",
+    "launch_command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -B -u -m experiments.pamf_phase3_open_world.full_pool --config configs/pamf_phase3_full_pool_20261029.json --output \"E:/type10-7/local_artifacts/pamf_phase3_full_pool_20261029_r01/pool\"",
+    "stop_rule": "missing/wrong selected member, data shape/count mismatch, role/source overlap, repeated physical observation, unintended EQ or nonfinite received, output collision; preserve partial. No automatic rebuild or selective sample replacement."
+  },
+  "expected_artifacts": [
+    "pool/discovery/public/{manifest.json,ids.npy,received.npy}",
+    "pool/discovery/truth/truth.npz",
+    "pool/evaluation/public/{manifest.json,ids.npy,received.npy}",
+    "pool/evaluation/truth/truth.npz",
+    "pool/builder_report.json",
+    "pool/complete.json",
+    "build.log",
+    "build_launch.json",
+    "build_post_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "physical_record_count",
+      "public_role_label_absent",
+      "roles_scenes_disjoint",
+      "single_received_per_record",
+      "finite_received"
+    ],
+    "dimensions": [
+      "discovery/evaluation",
+      "TX_private",
+      "date",
+      "Full_RX30/24-18",
+      "scene"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "builder protocol verification only; no RFFI scorer"
+  },
+  "rows": [
+    {
+      "row_id": "full-rx24-d1U-d3Q-3practical",
+      "method": "Full eq source-matched normalization and roleblind fixed practical residual builder",
+      "purpose": "create new independent Phase3 U/discovery and future-query assets",
+      "config_ref": "configs/pamf_phase3_full_pool_20261029.json",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_full_pool_20261029_r01\\pool\\builder_report.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026102901,
+        "data": 2026102901,
+        "augmentation": 2026102903,
+        "support": null,
+        "evaluation": 2026102904
+      },
+      "seed_notes": "No model or labeled support; receiver seed2026102902, selection2026102901, per-record channel2026102903, public shuffle2026102904.",
+      "k": null,
+      "scenario": "practical_low_suburban+practical_mid_urban+practical_low_urban_equal_strata",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2 selected PKL members;2688 physical receptions; one residual process each; no inference/training",
+      "output_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_full_pool_20261029_r01\\pool",
+      "log_path": "E:\\type10-7\\local_artifacts\\pamf_phase3_full_pool_20261029_r01\\build.log",
+      "command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -B -u -m experiments.pamf_phase3_open_world.full_pool --config configs/pamf_phase3_full_pool_20261029.json --output \"E:/type10-7/local_artifacts/pamf_phase3_full_pool_20261029_r01/pool\"",
+      "expected_artifacts": [
+        "pool/discovery/public/{manifest.json,ids.npy,received.npy}",
+        "pool/discovery/truth/truth.npz",
+        "pool/evaluation/public/{manifest.json,ids.npy,received.npy}",
+        "pool/evaluation/truth/truth.npz",
+        "pool/builder_report.json",
+        "pool/complete.json",
+        "build.log",
+        "build_launch.json",
+        "build_post_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Full原始验证直接复用；本builder只核对本次改变的接收记录/角色/场景，未变数据不重验。",
+    "RX24-18在四compact受限header中均缺席，证据compact_receiver_headers.json；不靠Full index判断新记录。",
+    "跨日期是新接收记录，不证明独立发射事件；source也含D3，因此不声明严格未来日期外推。",
+    "初始已注册6类公开；新增类别数量/身份/角色/每类配额只在builder私有，不进入算法。",
+    "后续query在方法source冻结后才预测，绝不参与适应/聚类/注册；所有预测完成后才独立评分。",
+    "不加载DURA；严格未知4TX未进入当前六类F祖先训练/源V，不继承其他数据契约权重。"
+  ],
+  "registered_at": "2026-10-28T17:06:35+00:00"
+}
