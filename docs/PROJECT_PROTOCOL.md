@@ -1,5 +1,17 @@
 # CVS项目场景与数据协议
 
+## Phase3 零标签开放世界与跨接收机默认（2026-10-28，用户最新授权）
+
+用户明确启动Phase3：在Phase1基础上，跨接收机域泛化始终是默认要求，进一步完成未知类拒识、无标签目标域适应、未知类别发现和无标签新类注册。源RX与目标RX保持互斥；首轮单星被动监听，不把多节点协同或外部确权设为前置条件。本条覆盖下文仅将Phase3限定为协同/外部确权再有标签注册的旧范围，不改变Phase2既有support/query权限、历史received、数据身份或其他owner任务。
+
+Phase3目标端零人工TX标签。新建且事前固定的target无标签适应/发现池可按预登记算法更新目标判决/adapter、聚类并形成匿名注册类别；该池与source全部物理角色、独立future query物理互斥。历史Phase1/2/Phase3 query保持测试身份，不追溯改为训练或注册support。未来query只逐样本推理，预测全部固定后独立truth-last评分；真实known/unknown角色、未知类别数、类别配额、TX映射和评分反馈不能进入适应、发现、注册、阈值或候选选择。算法从无标签数据自行估计簇数是允许的，读取真实簇数不是。
+
+正式输入采用本轮practical residual、post_sync、noEQ、25MHz及单物理记录单固定received观测。known与unknown采用相同分配公式，不按真实角色选择scene/seed/处理路径。派生计算view不增加物理观测数；跨数据角色与独立场景的物理记录互斥。新增数据使用独立`phase3_min_v1`公共received/opaque ID接口和仅供独立评分的truth侧文件；builder一次核对实际物理角色、RX/TX/继承与唯一观测后标`VALIDATED_ONCE`，未变数据跨方法复用，不增加成员hash、receipt或审批链。
+
+严格未知TX不得进入所用模型、教师或恢复器祖先的有标签/无标签训练和源validation选择。曾无标签见过但尚未注册的设备允许作为另一明确设置，不与严格未见结果混报。source L_s可预先构建并冻结身份锚点，V仅用于无持久模型更新的规则/阈值校准；部署source-free方法不回读source IQ。适配状态与原始冻结source bundle分开记录，不改写源锚点的历史身份。
+
+无标签注册输出可持续识别的`anonymous_device_id`，不自动表示真实运营名称、物理所有者或业务授权。发现/注册质量需在后续独立观测上评价；scorer可在预测固定后做聚类ID与TX的置换匹配，但该匹配不得回流预测器。拒识/defer在已注册类识别率中计错；所有注册类共同竞争，注册后继续评价后续未注册设备。指标、候选/矩阵、seed、资源与推进门槛见`docs/goals/PAMF_PHASE3_OPEN_WORLD_20261028.md`及各run，不由此声明任何方法已经达标。
+
 ## 本轮 Phase2 纳入冻结 DURA 的双输入路径设计（2026-10-28，用户最新补充）
 
 本轮总表增加 P0（原固定 received IQ）和 P1（同一 received 经冻结 DURA 后的估计恢复视图），所有方法均有匹配路径，A/B/C 的 support 与 query 始终在同一路径。原始 received 不重生成；恢复视图不是新增物理观测，不增加 K 或独立数据套数。只能从当前观测计算，不获准读取真实 clean、模拟器真值、源样本或 query 标签。query 恢复逐窗口固定推理，不更新 DURA、BN 或跨 query 统计。
