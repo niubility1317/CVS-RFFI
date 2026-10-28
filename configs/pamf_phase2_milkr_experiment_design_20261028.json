@@ -5680,6 +5680,9 @@
       "PAMF_extra4_seeds_core_both_stage_slots": 62216,
       "PAMF_Sup_PL_existing_bridge_both_fit_slots": 123200,
       "PAMF_Sup_PL_existing_bridge_both_stage_slots": 124432,
+      "LoRa_Kadaptive_extra_fit_slots": 0,
+      "LoRa_Kadaptive_extra_stage_slots": 61600,
+      "LoRa_Kadaptive_policy": "same native voting, k=min(15,K); reuse identical enrollment and frozen query features; predeclared companion, no target-driven replacement",
       "source_matched_G_F_training": "not active; up to60 extra F source bindings and806960/811580 fit/stage slots if separately designed",
       "environment_query_reweighting_extra_fits": 0
     }
