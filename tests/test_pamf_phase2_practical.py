@@ -30,6 +30,13 @@ def test_three_slot_gpu_limit_and_foreign_user():
     assert not eligible(dict(blocked=False,pids={1,2,3},free=10000),2,3)
     assert not eligible(dict(blocked=True,pids={1},free=20000),0,1)
 
+def test_connection_file_is_explicit_and_checked_before_packaging(tmp_path):
+    from experiments.pamf_phase2_practical.publish import connection_options
+    with pytest.raises(FileNotFoundError,match='--ssh-config'):connection_options(tmp_path)
+    path=tmp_path/'known-project-config';path.write_text('Host N607\n',encoding='utf-8')
+    options=connection_options(tmp_path,path)
+    assert Path(options[1])==path.resolve() and options[-1]=='ConnectTimeout=10'
+
 def test_pending_data_decision_has_no_target_jobs():
     rt=dict(run_root='run',preparation_only=True)
     assert [j['kind'] for j in make_jobs(rt)]==['smoke']

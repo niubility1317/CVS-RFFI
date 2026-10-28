@@ -31,8 +31,14 @@ result=dict(status='SUBMITTED_AWAITING_READBACK',pid=child.pid,cwd=str(release),
 (release/'submit.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
 '''
 
-def run(repo,runtime,output):
+def connection_options(repo,ssh_config=None):
+    config=Path(ssh_config) if ssh_config else Path(repo)/'tools/n607_ssh_config'
+    if not config.is_file():raise FileNotFoundError('Pass --ssh-config with the verified project connection file: '+str(config))
+    return ['-F',str(config.resolve()),'-o','BatchMode=yes','-o','ConnectTimeout=10']
+
+def run(repo,runtime,output,ssh_config=None):
     repo=Path(repo);output=Path(output);output.mkdir(parents=True,exist_ok=True);rt=json.loads(Path(runtime).read_text(encoding='utf-8'))
+    connection=connection_options(repo,ssh_config)
     def git(*args):return subprocess.check_output(['git','-C',str(repo),*args])
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
     if git('ls-remote','origin','refs/heads/'+branch).decode().split()[0]!=commit:raise ValueError('Current upstream OID differs')
@@ -47,7 +53,6 @@ def run(repo,runtime,output):
             if not member.isfile():continue
             data=old.extractfile(member).read();item=tarfile.TarInfo(member.name);item.size=len(data);item.mode=0o644;target.addfile(item,io.BytesIO(data))
         data=(commit+'\n').encode();item=tarfile.TarInfo('release_commit.txt');item.size=len(data);target.addfile(item,io.BytesIO(data))
-    connection=['-F',str(repo/'tools/n607_ssh_config'),'-o','BatchMode=yes','-o','ConnectTimeout=10']
     package=dict(runtime=rt,archive_remote=rt['project']+'/releases/'+archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
     (output/'runtime.json').write_text(json.dumps(rt,indent=2),encoding='utf-8');(output/'package.json').write_text(json.dumps(package,indent=2),encoding='utf-8')
     subprocess.run(['scp',*connection,str(archive),'N607:'+package['archive_remote']],check=True,timeout=60)
@@ -58,4 +63,4 @@ def run(repo,runtime,output):
     value=json.loads(result.stdout);(output/'submit.json').write_text(json.dumps(value,indent=2),encoding='utf-8');print(json.dumps(value))
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--repo',required=True);p.add_argument('--runtime',required=True);p.add_argument('--output',required=True);a=p.parse_args();run(a.repo,a.runtime,a.output)
+    p=argparse.ArgumentParser();p.add_argument('--repo',required=True);p.add_argument('--runtime',required=True);p.add_argument('--output',required=True);p.add_argument('--ssh-config');a=p.parse_args();run(a.repo,a.runtime,a.output,a.ssh_config)

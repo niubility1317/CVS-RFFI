@@ -21,3 +21,13 @@ ManyTx 每个当前目标 RX/TX 每日期 50 条，共 200 条。原 8 综合＋
 唯一 owner 为 codex-phase2-practical-20261028；不可覆盖 run/release，命令、环境和全部路径以 experiment.json/runtime 为准。先一次真实 checkpoint 无 query smoke；本 run 仅此作业。每卡总进程不超过 3，先铺每卡再增加槽；其他账号占用整卡跳过，其他 owner 进程保留。第一次技术/协议/输入/非有限/碰撞错误停止新派发，失败不自动重试。
 
 本地 8 项聚焦测试通过；一次独立 P0/P1 静态审查通过，覆盖本次 source-only 首发和 publisher。发布后补唯一代码 commit、单 archive 传输比较、远端编译与 PID/CWD/argv/GPU/log 独立读回。
+
+## 发布与独立读回
+
+VERIFIED：代码版本 `71f1428c8ac85695ebffb2efd791fe34061b325b` 已提交、推送并独立核对 upstream OID；归档只比较一次传输 SHA，远端编译通过。控制器 PID 2043771 的 CWD、argv 与 run-root 已独立核实，source-only smoke 尚为 QUEUED。
+
+首个客户端 SCP 在本地配置定位层失败，尚未连接远端。已独立核实 release/run/archive 不存在，再用项目根已验证的连接配置继续同一归档。恢复后传输、编译与控制器落地均 VERIFIED，没有重复启动。后续 publisher 支持显式 `--ssh-config`，配置缺失会在打包前失败；该回归项通过、唯一一次原问题定点复核通过，未热改本次远端冻结代码。
+
+初次 preflight 有 7 张空闲卡；发布时其他账号已占用全部 8 张卡。队列遵守其他账号整卡避让，当前 worker 尚未进入 GPU；控制器会等待合适资源。不能将控制器存活或归档编译通过写成真实 checkpoint smoke 通过。目标性能实验未启动，数据容量选择尚未收到。
+
+本机私有读回为 `local_artifacts/pamf_phase2_readiness_20261028/latest_readback.json`。完整数据问题及可行调整见 `docs/PAMF_PHASE2_CAPACITY_AUDIT_20261028.md`。当前无性能结果，无 query/truth 读取、无优化更新。
