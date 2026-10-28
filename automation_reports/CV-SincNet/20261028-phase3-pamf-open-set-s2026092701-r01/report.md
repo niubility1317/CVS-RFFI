@@ -46,3 +46,7 @@ source L_s特征只用于冻结类中心，全部source V clean分数只用于�
 ## 正式首轮结果
 
 VERIFIED/ANALYZED。真实checkpoint smoke PASS，1440条预测全部固定后独立truth-last评分完成，五个基线全部未达科学目标。执行器正常结束，未做技术重启；其他用户进程保留。完整逐方法/场景/RX/TX分析见`docs/PAMF_PHASE3_OPEN_SET_PILOT_20261028.md`。目标模式仍ACTIVE；不得按本目标表调阈值或选主方法。
+
+## 划分seed登记更正（2026-10-29）
+
+原登记将模型seed2026092701误记为source split seed。已依据实际source_contract.json更正为392005；模型seed保持2026092701。实际数据、物理ID、checkpoint和已完成预测/评分不变，不重训或重测。该更正只修复元数据，不将历史结果重新解释为新实验。

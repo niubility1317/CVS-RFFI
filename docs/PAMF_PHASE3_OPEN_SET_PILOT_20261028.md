@@ -88,3 +88,7 @@ L_s6300条冻结类中心；全部source V clean27000条校准每种最终knownn
 - 本地独立读回：`local_artifacts/pamf_phase3_20261028_r01/post_state.json`、`pipeline_state.json`。
 - 原始评分与完整标记：`local_artifacts/pamf_phase3_20261028_r01/score/scores.json`、`score/complete.json`。
 - 模型smoke、源校准、全部预测标记及builder物理映射在同本地产物根；IQ、预测大文件、权重和原始日志未提交Git。
+
+## 元数据更正（2026-10-29）
+
+实读源契约split_seed为392005；此前静态登记将model seed2026092701误填为source split seed，已更正。实际运行从原source_contract读取角色，未使用该错误元数据改变数据；历史代码commit、模型、物理记录和结果保持，不重复训练/预测/评分。

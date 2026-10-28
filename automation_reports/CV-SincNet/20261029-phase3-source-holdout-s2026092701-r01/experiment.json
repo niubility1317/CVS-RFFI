@@ -1,0 +1,194 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-holdout-s2026092701-r01",
+  "group_id": "pamf-phase3-source-holdout",
+  "display_name": "PAMF第三阶段：源域类别与接收机留出开发",
+  "description": "从零四类PAMF，留出source TX0/1及RX8；L-only cleanCE20完整遍历/540步，完整V冻结导出后比较8种源拒识分数，零target访问。",
+  "kind": "cvs",
+  "stage": "Phase3-source-development",
+  "aliases": [
+    "Phase3源域开发fold0"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "class_holdout",
+    "receiver_holdout",
+    "scratch",
+    "no_target"
+  ],
+  "comparison_group_id": "phase3-source-pair01-rx8-ce20-fullpasses",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工及自主设计执行；本轮遵循事先source-only开发路线，不以首轮target表调参。",
+  "code": {
+    "commit": "1d9f4bd57665641d65cb6d33c9183d5d44c03277",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-holdout-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-holdout-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig Main source L_s/V only",
+    "version": "existing aligned source contract subset",
+    "representation": "equalized1_center256_unit_rms, clean source, no channel augmentation",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-holdout-s2026092701-r01/train/fold_manifest.json",
+    "label_map_ref": "configs/pamf_phase3_source_dev_20261028.json:fold",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract classes; labels0/1 validation-only; labels2/3/4/5 train",
+    "roles": {
+      "L_s": 3360,
+      "U_s": 0,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "source-pair01-rx8-fixed-L-selection",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "support_query_ref": "N/A source development only; V is never query or training",
+    "leo_config_ref": "N/A source clean development, no target scene"
+  },
+  "permissions": {
+    "regime": "source_only_scratch_class_receiver_holdout",
+    "query_use": "no_target_query_exists",
+    "external_method_exception": null,
+    "claim_scope": "source proxy development only; no formal target, adaptation, discovery or registration success"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "source_fold.py strict role/physical selection; source_development.py no checkpoint inputs",
+    "provenance_verdict": "no inherited checkpoint; all old six-class weights forbidden; immutable historical roots supply code only",
+    "selection_rule": "fixed epoch20; no V model forward until frozen, no earlystop; V then calibrates rules and source promotion only"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-source-20261029",
+    "gpu_policy": "One pilot worker; each card allows up to2 added task workers, memory>=4096MB; preserve all foreign work",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-holdout-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-holdout-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_dev_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-holdout-s2026092701-r01-release/runtime.json",
+    "stop_rule": "wrong source roles/split, any target/U/resume access, output collision, nonfinite model or inability to freeze/export; preserve partial. Poor source scientific results are not a technical restart."
+  },
+  "expected_artifacts": [
+    "train/smoke.json",
+    "train/fold_manifest.json",
+    "train/epochs.jsonl",
+    "train/source_model.pt",
+    "train/source_features.npz",
+    "train/complete.json",
+    "rules/results.json",
+    "rules/complete.json",
+    "pipeline_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "train_CE",
+      "train_accuracy",
+      "known_closed_accuracy",
+      "known_open_accuracy",
+      "known_macro_frr",
+      "source_proxy_unknown_macro_rejection",
+      "auroc_known",
+      "oscr",
+      "source_promotion"
+    ],
+    "dimensions": [
+      "rule",
+      "source_RX",
+      "source_TX",
+      "all_V/heldout_RX8"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-holdout-s2026092701-r01/train/source_features.npz",
+    "scorer_ref": "experiments/pamf_phase3_open_world/source_geometry.py"
+  },
+  "rows": [
+    {
+      "row_id": "source-holdout-fold0-s2026092701",
+      "method": "Scratch 4-class PAMF CE20 plus 8 frozen source rejection rules",
+      "purpose": "single-fold source falsification pilot",
+      "config_ref": "configs/pamf_phase3_source_dev_20261028.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-holdout-s2026092701-r01/configs/train.json",
+      "data_overrides": {
+        "heldout_source_RX": 8,
+        "heldout_source_TX_labels": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026102802
+      },
+      "seed_notes": "model seed controls scratch/dropout; inherited source split fixed; evaluation/shuffle seed only training order; no augmentation/support/target data randomness",
+      "k": null,
+      "scenario": "source_clean_only",
+      "optimizer": {
+        "name": "AdamW",
+        "lr": 0.0003,
+        "weight_decay": 0.0001,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08
+      },
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "3360L x20 full passes=67200 exposures; batch128/tail32;27step/epoch=540 optimizer calls,539 nonzero LR calls; not native E20/4440",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-holdout-s2026092701-r01/train",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-holdout-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-holdout-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "train/smoke.json",
+        "train/fold_manifest.json",
+        "train/epochs.jsonl",
+        "train/source_model.pt",
+        "train/source_features.npz",
+        "train/complete.json",
+        "rules/results.json",
+        "rules/complete.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No target data or first-run target scores are inputs to this source run.",
+    "Full V is read-only development; known-only score quantiles do not fit model/BN/centers/covariance.",
+    "Source L centers/covariance are newly fitted after fixed scratch model freeze; V unknown only supports source promotion.",
+    "One-fold95/5/2pp gate precedes any further folds; no model seed/full target expansion from a failed source pilot.",
+    "New Full eq target pool remains separate and unbuilt pending actual data/identity checks."
+  ],
+  "registered_at": "2026-10-28T16:03:53+00:00",
+  "metadata_corrections": [
+    {
+      "field": "rows[].seeds.split",
+      "previous": 2026092701,
+      "actual": 392005,
+      "evidence": "Read source_contract.json split_seed=392005; 2026092701 is model seed",
+      "scientific_execution_changed": false,
+      "checkpoint_changed": false,
+      "data_changed": false
+    }
+  ]
+}

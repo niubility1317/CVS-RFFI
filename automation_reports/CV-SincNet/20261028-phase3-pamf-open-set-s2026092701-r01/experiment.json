@@ -171,7 +171,7 @@
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
-        "split": 2026092701,
+        "split": 392005,
         "data": 2026092705,
         "augmentation": null,
         "support": null,
@@ -227,5 +227,16 @@
     "results_ref": "docs/PAMF_PHASE3_OPEN_SET_PILOT_20261028.md",
     "target_feedback_forbidden": true,
     "total_seconds": 14.169772386550903
-  }
+  },
+  "metadata_corrections": [
+    {
+      "field": "rows[].seeds.split",
+      "previous": 2026092701,
+      "actual": 392005,
+      "evidence": "Read source_contract.json split_seed=392005; 2026092701 is model seed",
+      "scientific_execution_changed": false,
+      "checkpoint_changed": false,
+      "data_changed": false
+    }
+  ]
 }
