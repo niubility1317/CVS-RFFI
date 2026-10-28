@@ -41,3 +41,7 @@
 训练严格留出source labels0/1和RX8，从原L_s只取3360条，原V27000完整仅最后eval导出。无checkpoint继承或teacher；固定20完整遍历/540调用、539次非零LR，不早停、不用V训练/更新BN/原型。训练固定后L拟合4类中心与共享收缩协方差，V known校准各分数99%保留阈值，proxy unknown只作源规则评价。完整V包含RX8 known，因此RX8只对参数训练留出，源规则结果不是全未见RX阈值确认。
 
 首fold必须按预登记95%/5%/2pp条件通过才扩展其余两个source fold；失败写NO_PROMOTION，不根据首轮target表改阈值/选规则。当前无target访问、无目标无标签适应/发现/注册结论。首步合法source L scratch smoke通过后自动训练/导出/源规则评分；输出独占，不停止或改动其他用户进程。
+
+## 实际结果与完整日志结论
+
+VERIFIED/ANALYZED_SOURCE_ONLY，E20/540完整训练及8种源规则评价结束，NO_PROMOTION。完整20epoch/87行stdout已解析，无错误/警告标记。训练最终98.75%，已见RX的V已知98.6528%，留出RX8为66.4722%；所有规则均未达源晋级，不扩三fold，不访问target调参。详细逐轮/逐规则/逐RX结果见`docs/PAMF_PHASE3_SOURCE_HOLDOUT_RESULTS_20261029.md`。正式完整Phase3目标仍未达到，继续开放表征和无标签适应/发现研发。

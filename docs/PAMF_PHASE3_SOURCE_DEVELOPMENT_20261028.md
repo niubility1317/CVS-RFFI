@@ -37,4 +37,4 @@
 
 ## 当前状态
 
-LOCAL_VERIFIED。scratch构造、source派生/训练/规则评价/调度已完成，全部Phase3聚焦测试73项PASS；本source候选一次独立P0/P1审查PASS。真实N607 source metadata的15域、eq1、L70/V300每格、角色ID和split_seed392005均独立核实；未读取IQ/U/target做该格式检查。尚未启动此run，无source留出实测结果。源数据和目标基准分开，完整Phase3目标仍ACTIVE。
+VERIFIED/ANALYZED_SOURCE_ONLY。N607 GPU2完成固定E20/540及8种规则评价，完整20条epoch/87行训练stdout已解析；所有规则未达推进条件，NO_PROMOTION，不扩三fold、不访问target调参。已见RX V已知98.6528%、RX8为66.4722%，详细结果见`docs/PAMF_PHASE3_SOURCE_HOLDOUT_RESULTS_20261029.md`。当前候选实现/73项测试/一次独立P0/P1与实际metadata核对均已完成；负结果不是系统失败，不重启。下一独立物理分支证据候选见`docs/PAMF_PHASE3_BRANCH_EVIDENCE_PLAN_20261029.md`，尚未实施。正式完整Phase3目标仍ACTIVE。

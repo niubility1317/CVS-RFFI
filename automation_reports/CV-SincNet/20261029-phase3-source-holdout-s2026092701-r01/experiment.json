@@ -190,5 +190,29 @@
       "checkpoint_changed": false,
       "data_changed": false
     }
-  ]
+  ],
+  "outcome": {
+    "artifact_status": "ANALYZED_SOURCE_ONLY",
+    "external_state": "VERIFIED",
+    "target_reads": 0,
+    "source_promotion": false,
+    "next_step": "NO_PROMOTION",
+    "epochs": 20,
+    "optimizer_calls": 540,
+    "known_closed_V": 0.9221666666666667,
+    "known_closed_seen_RX": 0.9865277777777778,
+    "known_closed_heldout_RX8": 0.6647222222222222,
+    "source_proxy_unknown_macro_rejection": {
+      "msp": 0.0071111111111111115,
+      "maxlogit": 0.012666666666666666,
+      "margin": 0.017888888888888888,
+      "energy": 0.01388888888888889,
+      "cosine": 0.022222222222222223,
+      "mahalanobis_s005": 0.03277777777777778,
+      "mahalanobis_s020": 0.033777777777777775,
+      "mahalanobis_s050": 0.03322222222222222
+    },
+    "results_ref": "docs/PAMF_PHASE3_SOURCE_HOLDOUT_RESULTS_20261029.md",
+    "pipeline_seconds": 29.204134941101074
+  }
 }
