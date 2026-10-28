@@ -1,0 +1,37 @@
+{
+  "revision_validation.json": {
+    "status": "VERIFIED",
+    "figures": 155,
+    "selected": 50,
+    "unchanged_metric_rows": 9307,
+    "inline_panels": 6,
+    "curved_arrows": 30,
+    "figure_order_unchanged": true
+  },
+  "export_validation.json": {
+    "status": "VERIFIED",
+    "figures": 155,
+    "plot_data_rows": 9307,
+    "exported_point_values": 10034,
+    "pdf_svg_png_each": 155,
+    "issues": []
+  },
+  "delivery_verification.json": {
+    "status": "VERIFIED",
+    "figures": 155,
+    "selected": 50,
+    "modified_figures": [
+      1,
+      2,
+      3,
+      6,
+      39,
+      40,
+      41,
+      42
+    ],
+    "preview_pages": 8,
+    "all_explanation_pages": 59,
+    "selected_explanation_pages": 22
+  }
+}
