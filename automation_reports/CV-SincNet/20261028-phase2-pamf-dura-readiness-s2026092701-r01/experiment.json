@@ -1,0 +1,159 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261028-phase2-pamf-dura-readiness-s2026092701-r01",
+  "group_id": "phase2-pamf-practical-execution",
+  "display_name": "PAMF Phase2 复用权重与 DURA 接口真实验证",
+  "description": "Only two legal source L observations; strict current three-view F and frozen DURA. No target builder/prediction until data-capacity choice is resolved.",
+  "kind": "diagnostic",
+  "stage": "Phase2 preparation",
+  "aliases": [
+    "MILKR source smoke",
+    "DURA Phase2 readiness"
+  ],
+  "tags": [
+    "PAMF",
+    "MILKR",
+    "DURA",
+    "no-query",
+    "source-only-smoke"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User 2026-10-28: check and launch, reuse eligible Phase1; three task processes per GPU. Target capacity change requires answer to pending clarification, so this run consumes source L only.",
+  "code": {
+    "commit": "actual Git HEAD supplied at release; no config SHA",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "Existing N607 CVS-RFFI Python/Torch; FP32/TF32off; one CPU thread",
+    "cwd": "PROJECT/releases/20261028-phase2-pamf-dura-readiness-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig original Main split source only",
+    "version": "existing VALIDATED_ONCE",
+    "representation": "equalized1 / FP32 2x256 / unitRMS / 25MHz",
+    "contract_ref": "PROJECT/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json#role_ids",
+    "label_map_ref": "PROJECT/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json#classes",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "PROJECT/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json#classes",
+    "roles": {
+      "L_s": "6300 available; exactly first2 source L for forward smoke",
+      "U_s": "56700 hidden TX; not consumed by this diagnostic",
+      "V": "27000; not consumed"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse unchanged VALIDATED_ONCE source handles; no target capsule opened",
+    "support_query_ref": null,
+    "leo_config_ref": "No new channel generation"
+  },
+  "permissions": {
+    "regime": "source_only_no_update",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Real checkpoint branch/engine compatibility only; no Phase2 performance result"
+  },
+  "checkpoint": {
+    "initialization": "Strict frozen Phase1 reuse, zero training",
+    "sources": [
+      "PROJECT/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "PROJECT/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092702/source",
+      "PROJECT/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092703/source",
+      "PROJECT/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092704/source",
+      "PROJECT/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "report.md: source role comparisons, original source-only ancestry, immutable native loaders",
+    "provenance_verdict": "Exact role_ids/counts/RX/day/split match observed; current F own scratch20/10/20; original DURA lineage metadata retained",
+    "selection_rule": "User-designated current F and DURA fixed final; no target selection in this run"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase2-practical-20261028",
+    "gpu_policy": "All0-7 eligible; skip foreign/unknown CUDA cards; total<=3/card, free>=4000MiB; no healthy process changes",
+    "remote_run_root": "PROJECT/runs/20261028-phase2-pamf-dura-readiness-s2026092701-r01",
+    "remote_log_root": "PROJECT/runs/20261028-phase2-pamf-dura-readiness-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase2_readiness_20261028",
+    "launch_command": "PYTHON -u -m experiments.pamf_phase2_practical.runner dispatch --runtime PROJECT/releases/20261028-phase2-pamf-dura-readiness-s2026092701-r01-release/runtime.json",
+    "stop_rule": "First technical/protocol/nonfinite/output/input failure stops new dispatch; retain partial artifacts and healthy peers; no automatic retry"
+  },
+  "expected_artifacts": [
+    "smoke.json with real checkpoint/zero query/zero updates",
+    "pipeline_state.json",
+    "one worker log and exact PID/CWD/argv/GPU readback"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "finite branch dimensions",
+      "exact composite identity feature equality",
+      "DURA batch-vs-individual consistency",
+      "frozen F state unchanged"
+    ],
+    "dimensions": [
+      "source2",
+      "P0",
+      "P1"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "source-real-checkpoint-smoke",
+      "method": "Current Tri-SIG-TIME SSL + DURA v1 Graph-RR",
+      "purpose": "Interface verification before target access",
+      "config_ref": "PROJECT/releases/20261028-phase2-pamf-dura-readiness-s2026092701-r01-release/runtime.json",
+      "resolved_config_ref": "PROJECT/runs/20261028-phase2-pamf-dura-readiness-s2026092701-r01/smoke.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source role IDs reused; no augmentation, support sampling or query evaluation in this diagnostic.",
+      "k": null,
+      "scenario": [
+        "source clean",
+        "same source current IQ through frozen DURA"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Two source L inputs; repeated no-update forwards, zero fitting/target/query",
+      "output_root": "PROJECT/runs/20261028-phase2-pamf-dura-readiness-s2026092701-r01",
+      "log_path": "PROJECT/runs/20261028-phase2-pamf-dura-readiness-s2026092701-r01/logs/smoke.log",
+      "command": "PYTHON -u -m experiments.pamf_phase2_practical.runner worker --runtime PROJECT/releases/20261028-phase2-pamf-dura-readiness-s2026092701-r01-release/runtime.json --job smoke",
+      "expected_artifacts": [
+        "smoke.json with real checkpoint/zero query/zero updates",
+        "pipeline_state.json",
+        "one worker log and exact PID/CWD/argv/GPU readback"
+      ]
+    }
+  ],
+  "notes": [
+    "DATA_CAPACITY: ManyTx exactly 50 signals/date ×4=200 per RX/TX; original11×66=726 impossible without reuse. Pending user choice is correctness-critical, no target jobs exist in preparation_only mode.",
+    "No source training is repeated. Four current F seeds and 36 external source candidates identified for later exact provenance checks; this smoke loads seed01 and one fixed G only.",
+    "Historical engineering selection exposure disclosed; this is no new blind benchmark."
+  ],
+  "registered_at": "2026-10-28T13:38:53+00:00"
+}

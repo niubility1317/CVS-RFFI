@@ -1,0 +1,240 @@
+{
+  "schema": "pamf_phase2_practical_mixture_design_v1",
+  "date": "2026-10-28",
+  "status": "DESIGN_ONLY",
+  "capsule_built": false,
+  "target_IQ_read": false,
+  "name": "Practical residual coverage-weighted mixture",
+  "model_source": "code/leo_practical/channel.py",
+  "channel_version": "leo_practical_v3_six_scenarios_20260919",
+  "route": {
+    "processing_route": "residual",
+    "mode": "post_sync",
+    "equalization_enabled": false,
+    "fs_hz": 25000000.0,
+    "fc_hz": 2450000000.0,
+    "earth_radius_m": 6371000.0,
+    "altitude_m": 600000.0
+  },
+  "probability_basis": {
+    "geometry": "uniform ground surface area in visible spherical annulus, conditioned on 10<=elevation<=80 deg",
+    "formula": "psi(e)=acos(R/(R+h)*cos(e))-e; P(a<=e<b)=[cos(psi(b))-cos(psi(a))]/[cos(psi(80))-cos(psi(10))]",
+    "environment": {
+      "suburban": 0.5,
+      "urban": 0.5
+    },
+    "environment_basis": "neutral benchmark coverage prior; actual geographic/traffic frequencies unavailable",
+    "empirical_deployment_frequency": false,
+    "measured_ephemeris": false,
+    "elevation_band_probability": {
+      "low": 0.7662574866082987,
+      "mid": 0.14635969316471778,
+      "high": 0.08738282022698345
+    },
+    "overlapping_native_ranges": "native mid20-45 overlaps low10-30; mixed sampler uses exclusive 10-30/30-45/45-80 bands and explicit geometry"
+  },
+  "scenarios": [
+    {
+      "id": "practical_high",
+      "environment": "suburban",
+      "probability": 0.04369141011349172,
+      "native_elevation_range_deg": [
+        45.0,
+        80.0
+      ],
+      "mixed_conditional_elevation_range_deg": [
+        45.0,
+        80.0
+      ]
+    },
+    {
+      "id": "practical_mid",
+      "environment": "suburban",
+      "probability": 0.07317984658235889,
+      "native_elevation_range_deg": [
+        20.0,
+        45.0
+      ],
+      "mixed_conditional_elevation_range_deg": [
+        30.0,
+        45.0
+      ]
+    },
+    {
+      "id": "practical_low_suburban",
+      "environment": "suburban",
+      "probability": 0.38312874330414937,
+      "native_elevation_range_deg": [
+        10.0,
+        30.0
+      ],
+      "mixed_conditional_elevation_range_deg": [
+        10.0,
+        30.0
+      ]
+    },
+    {
+      "id": "practical_high_urban",
+      "environment": "urban",
+      "probability": 0.04369141011349172,
+      "native_elevation_range_deg": [
+        45.0,
+        80.0
+      ],
+      "mixed_conditional_elevation_range_deg": [
+        45.0,
+        80.0
+      ]
+    },
+    {
+      "id": "practical_mid_urban",
+      "environment": "urban",
+      "probability": 0.07317984658235889,
+      "native_elevation_range_deg": [
+        20.0,
+        45.0
+      ],
+      "mixed_conditional_elevation_range_deg": [
+        30.0,
+        45.0
+      ]
+    },
+    {
+      "id": "practical_low_urban",
+      "environment": "urban",
+      "probability": 0.38312874330414937,
+      "native_elevation_range_deg": [
+        10.0,
+        30.0
+      ],
+      "mixed_conditional_elevation_range_deg": [
+        10.0,
+        30.0
+      ]
+    }
+  ],
+  "per_record_generation": [
+    "choose one scenario from fixed six-category probability vector, independently of TX/class/old-new/support-query/model/method",
+    "within selected band sample cos(psi) uniformly between band boundaries; derive elevation and physical Geometry; bound floating-point endpoint error to declared band",
+    "keep native receiver/session construction and signed circular range-rate formula; receiver_seed fixed2027 across all sets",
+    "call ResidualChannel with geometry=... once; all remaining practical fading/receiver/processing formulas unchanged",
+    "store realized scene/geometry/state diagnostics on builder/scorer side, never as oracle predictor inputs"
+  ],
+  "generator_implementation_status": "PLANNED: existing ResidualChannel accepts geometry, batch wrapper needs mixed geometry adapter",
+  "inner_fading_state_rule": "native Nie2012 state_probabilities(elevation,environment); do not multiply or replace with outer six-scenario probabilities",
+  "replicates": [
+    {
+      "id": "MIX01",
+      "physical_partition_index": 0,
+      "scene_seed": 2026102811,
+      "channel_seed": 2026102821,
+      "evaluation_seed": 2026102831
+    },
+    {
+      "id": "MIX02",
+      "physical_partition_index": 1,
+      "scene_seed": 2026102812,
+      "channel_seed": 2026102822,
+      "evaluation_seed": 2026102832
+    },
+    {
+      "id": "MIX03",
+      "physical_partition_index": 2,
+      "scene_seed": 2026102813,
+      "channel_seed": 2026102823,
+      "evaluation_seed": 2026102833
+    },
+    {
+      "id": "MIX04",
+      "physical_partition_index": 3,
+      "scene_seed": 2026102814,
+      "channel_seed": 2026102824,
+      "evaluation_seed": 2026102834
+    },
+    {
+      "id": "MIX05",
+      "physical_partition_index": 4,
+      "scene_seed": 2026102815,
+      "channel_seed": 2026102825,
+      "evaluation_seed": 2026102835
+    },
+    {
+      "id": "MIX06",
+      "physical_partition_index": 5,
+      "scene_seed": 2026102816,
+      "channel_seed": 2026102826,
+      "evaluation_seed": 2026102836
+    },
+    {
+      "id": "MIX07",
+      "physical_partition_index": 6,
+      "scene_seed": 2026102817,
+      "channel_seed": 2026102827,
+      "evaluation_seed": 2026102837
+    },
+    {
+      "id": "MIX08",
+      "physical_partition_index": 7,
+      "scene_seed": 2026102818,
+      "channel_seed": 2026102828,
+      "evaluation_seed": 2026102838
+    }
+  ],
+  "receiver_seed": 2027,
+  "physical_allocation_seed": 2026102800,
+  "support_draw_seeds": [
+    2026092711,
+    2026092712,
+    2026092713,
+    2026092714,
+    2026092715
+  ],
+  "unique_physical_policy": "all eight mixed sets and three designated single-scene diagnostic sets pairwise physical-ID disjoint; single IQ has exactly one overlay",
+  "single_scene_diagnostics": [
+    {
+      "id": "D-LS",
+      "scenario": "practical_low_suburban",
+      "native_elevation_range_deg": [
+        10.0,
+        30.0
+      ],
+      "target_scene_probability": 1.0,
+      "dataset_count": 1
+    },
+    {
+      "id": "D-MU",
+      "scenario": "practical_mid_urban",
+      "native_elevation_range_deg": [
+        20.0,
+        45.0
+      ],
+      "target_scene_probability": 1.0,
+      "dataset_count": 1
+    },
+    {
+      "id": "D-LU",
+      "scenario": "practical_low_urban",
+      "native_elevation_range_deg": [
+        10.0,
+        30.0
+      ],
+      "target_scene_probability": 1.0,
+      "dataset_count": 1
+    }
+  ],
+  "revision": "r03_three_designated_single_scene_groups",
+  "same_realization_for_all_methods": true,
+  "same_realization_across_model_seeds": true,
+  "support_pool_per_RX_class_set": 36,
+  "query_per_RX_class_set": 30,
+  "fixed_number_of_mixed_sets": 8,
+  "accuracy_based_replication_extension": false,
+  "claims": "physics-informed reference mixture over terrestrial proxy IQ; not a measured mission distribution or in-orbit validation",
+  "literature": [
+    {
+      "title": "Elevation Angle Characterization for LEO Satellites: First and Second Order Statistics",
+      "url": "https://www.mdpi.com/2076-3417/13/7/4405",
+      "role": "supports dependence on latitude, inclination and altitude; the covered-area reference assumption and computed weights here are our explicit design"
+    }
+  ]
+}
