@@ -1,0 +1,202 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-joint-s2026092701-r01",
+  "group_id": "pamf-phase3-source-joint",
+  "display_name": "PAMF第三阶段：源代理无标签域校正与匿名注册",
+  "description": "冻结四类PAMF，source L隐藏标签代理U1050，稳健公共平移与anchored DPmeans形成匿名注册；五状态在未来RX8V5400独立truth-last评分。",
+  "kind": "cvs",
+  "stage": "Phase3-source-joint-unlabeled-adaptation-discovery-registration",
+  "aliases": [
+    "Phase3源联合无标签fold0"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "unlabeled_adaptation",
+    "anonymous_registration",
+    "DPmeans",
+    "no_target"
+  ],
+  "comparison_group_id": "phase3-source-pair01-rx8-five-states",
+  "parent_run_ids": [
+    "20261029-phase3-source-holdout-s2026092701-r01",
+    "20261029-phase3-source-branch-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工及自主设计执行；本轮遵循事先source-only开发路线，不以首轮target表调参。",
+  "code": {
+    "commit": "6570e891982d72bc317c9219ead3e97221d93951",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-joint-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-joint-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "WiSig Main source L_s/V only",
+    "version": "existing aligned source contract subset",
+    "representation": "equalized1_center256_unit_rms, clean source, no channel augmentation",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-joint-s2026092701-r01/export/fold_manifest.json",
+    "label_map_ref": "configs/pamf_phase3_source_joint_20261029.json:source proxy builder only",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract classes; labels0/1 validation-only; labels2/3/4/5 train",
+    "roles": {
+      "L_s_train": 3360,
+      "seen_known_V_calibration": 14400,
+      "source_L_hidden_label_proxy_U": 1050,
+      "RX8_future_V": 5400,
+      "original_U_s": 0
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "source-pair01-rx8-fixed-source-L-hidden-proxy-and-future-V",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "support_query_ref": "Original F0 L private selection; all source roles physically disjoint; no historical F1/F2 query artifacts read; non-blind source development",
+    "leo_config_ref": "N/A source clean development, no target scene"
+  },
+  "permissions": {
+    "regime": "source_only_hidden_label_proxy_joint",
+    "query_use": "future RX8 V per-record frozen prediction only; U state frozen first",
+    "external_method_exception": null,
+    "claim_scope": "source proxy development, cross-split historical exposure disclosed; not formal target/complete TriSSL performance"
+  },
+  "checkpoint": {
+    "initialization": "strict_own_scratch_four_class_parent",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-holdout-s2026092701-r01/train/source_model.pt"
+    ],
+    "contract_check_ref": "branch_export own parent/state identity plus stream_export same frozen branch source_manifest and physical roles",
+    "provenance_verdict": "own CE20/540 L3360 scratch only; heldTX0/1 and RX8 absent parameter training, no inherited six-class weights/teacher/DURA/target",
+    "selection_rule": "Parent fixed epoch20; no new optimization or model selection; all source geometry and five states fixed before this run"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-source-joint-20261029",
+    "gpu_policy": "One pilot worker; each card allows up to2 added task workers, memory>=4096MB; preserve all foreign work",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-joint-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-joint-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_joint_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.stream_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-joint-s2026092701-r01-release/runtime.json",
+    "stop_rule": "source/parent/branch role mismatch, unintended source_U_s or Full/target read, label leakage, nonfinite, artifact collision, no legal prediction or systematic technical failure; preserve partial. Scientific cap/nonconvergence/NO_PROMOTION still predicts and scores all5 states, never triggers target tuning or silent restart."
+  },
+  "expected_artifacts": [
+    "export/smoke.json",
+    "export/complete.json",
+    "export/source_inputs.npz",
+    "export/fold_manifest.json",
+    "export/discovery/public/features.npz",
+    "export/evaluation/public/features.npz",
+    "calibration/bundle.npz",
+    "calibration/complete.json",
+    "predict/states.json",
+    "predict/registry.npz",
+    "predict/discovery_predictions.npz",
+    "predict/future_predictions.npz",
+    "predict/complete.json",
+    "score/results.json",
+    "score/complete.json",
+    "pipeline_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "old_macro_frr",
+      "old_accuracy_drop_from_baseline",
+      "new4_future_accuracy",
+      "later5_rejection",
+      "anonymous_U_purity_coverage",
+      "old_false_registration",
+      "duplicate_registrations",
+      "paired_D1_D0_old_gain",
+      "paired_R0_R1_old_damage",
+      "convergence_and_cap",
+      "source_promotion"
+    ],
+    "dimensions": [
+      "F/D0R0/D1R0/D0R1/D1R1",
+      "source_TX",
+      "heldout_source_RX8"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-joint-s2026092701-r01/predict/future_predictions.npz",
+    "scorer_ref": "experiments/pamf_phase3_open_world/stream_scoring.py"
+  },
+  "rows": [
+    {
+      "row_id": "source-joint-fold0-s2026092701",
+      "method": "Frozen PAMF anchors + Huber common shift + anchored DPmeans + anonymous registry",
+      "purpose": "one source fold, two unlabeled fits, five frozen states; no formal target",
+      "config_ref": "configs/pamf_phase3_source_joint_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-joint-s2026092701-r01/configs/export.json",
+      "data_overrides": {
+        "heldout_source_RX": 8,
+        "heldout_source_TX_labels": [
+          0,
+          1
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new stochastic fitting: ID-ordered deterministic geometry; parent model2026092701/source split392005 retained.",
+      "k": null,
+      "scenario": "source_clean_only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "No new neural training; own parent20epochs/540. Only2sourceLsmoke+1050U full forwards; reused frozen L/V features; DP20outer x32free cap, Huber10; source-calibrated single99% higher threshold.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-joint-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-joint-s2026092701-r01/logs/export.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.stream_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-joint-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "export/smoke.json",
+        "export/complete.json",
+        "export/source_inputs.npz",
+        "export/fold_manifest.json",
+        "export/discovery/public/features.npz",
+        "export/evaluation/public/features.npz",
+        "calibration/bundle.npz",
+        "calibration/complete.json",
+        "predict/states.json",
+        "predict/registry.npz",
+        "predict/discovery_predictions.npz",
+        "predict/future_predictions.npz",
+        "predict/complete.json",
+        "score/results.json",
+        "score/complete.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source prototype/whitening use train L only; lambda_det uses old4 V from seenRX1/3/4/6, never RX8 V.",
+    "Private selector may load original L6300; source label1 RX8L210 never enters model or fitting. Original U_s never opened.",
+    "U1050 truth/count/roles are private builder/scorer; no unknown class count or quotas enter algorithm.",
+    "D0 has unlabeled discovery; only F is a logically zero-U decision. D1 additionally corrects same frozen head input, never fits a new head.",
+    "All old and qualified-new centers use same fixed detection radius; unmatched anonymous acceptance never counts as unknown rejection.",
+    "U truth assigns anonymous->TX mapping only after all predictions complete, fixed for future V; no future rematching.",
+    "RX8 belongs to original F0 source, but is historical target in other splits. No blind target or multiple-unknown-class discovery claim.",
+    "Complete Tri-SIG-TIME SSL is not reproduced by this CE20 source proxy; formal Full U768/Q1920 remains unopened to model.",
+    "Source scientific fail does not expand target/seed, relax95/5/2pp/80 gates, or sweep thresholds.",
+    "Only D1R1 may promote the full joint candidate; F/D0/R0 remain diagnostic controls even if their own partial metrics pass."
+  ],
+  "registered_at": "2026-10-28T17:42:40+00:00"
+}

@@ -10,3 +10,5 @@
 |PAMF第三阶段：RX24独立无标签流与未来查询集|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-full-pool-rx24-r01/report.md)|
 |PAMF第三阶段：源域物理分支未知证据|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-branch-s2026092701-r01/report.md)|
 |PAMF第三阶段：源域类别与接收机留出开发|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-holdout-s2026092701-r01/report.md)|
+|PAMF第三阶段：源代理无标签域校正与匿名注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-joint-s2026092701-r01/report.md)|
+|PAMF第三阶段：完整基座源端辅助开放数据|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-oe-data-r01/report.md)|

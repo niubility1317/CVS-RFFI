@@ -1,0 +1,3 @@
+{"at": "2026-10-28T17:42:40+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-28T17:50:33+00:00", "status": "LANDED", "note": "VERIFIED single archive comparison and remote compile; frozen source joint candidate, no Full target access", "evidence": ["local_artifacts/pamf_phase3_source_joint_20261029_r01/landing_readback.txt"], "row_id": null}
+{"at": "2026-10-28T18:03:45+00:00", "status": "ANALYZED", "note": "VERIFIED complete export/calibration/5-state future predictions/independent score; D0/D1 cap32 with zero qualified clusters; all states NO_PROMOTION, no target expansion", "evidence": ["local_artifacts/pamf_phase3_source_joint_20261029_r01/post_state.json"], "row_id": null}

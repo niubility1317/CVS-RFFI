@@ -38,4 +38,13 @@
 
 ## 当前状态
 
-READY_TO_BUILD。科学边界已在PROJECT_PROTOCOL的Phase3源端辅助开放集开发节定义，builder及6项针对性测试已实现并通过（10个subtests），含7350次真实iq_record合成验证；本候选一次独立P0/P1审查PASS，审查者独立运行6项通过。尚未读取真实15个PKL、构建7350条辅助源数据或训练拒识器。原始数据可用和容量事实不代表开放识别性能，95%目标不变。
+**VERIFIED／VALIDATED_ONCE**。真实15个source成员已完成读取，4200／3150两角色共7350个canonical接收记录唯一；各TX1050、各TX/RX/date70。独立读回public三文件、FP32形状／有限值、opaque ID和15域映射通过，17行完整日志无异常；原生PID55544实际命令已核实，完成后进程退出。原L/U/V、模型、正式target及channel生成均0，零GPU，不停止其他owner。
+
+实际code/config commit为`795e4a9604f391cb53e19ba24c2d2e8d5f24188a`；6测试及10个subtests、本候选一次独立P0/P1通过。完整数据和私有truth留在`local_artifacts/pamf_phase3_source_oe_data_20261029_r01/data/`，独立后态、完整日志和按TX／域核对见上层build_post_state.json、build.log、analysis_summary.json，原始数据不提交Git。
+
+|角色|capsule_id|split_id|
+|---|---|---|
+|exposure_train|source-oe-417473b8dee6b66206d26620|a785b6d93f20e3db31d88135|
+|novel_validation|source-oe-7026a2fc71b26b44b250b014|9750930b8dc41d0149dc3895|
+
+这只是数据入口，不是OE训练或95%拒识成功。后续当前六类冻结PAMF、100维类别置换不变描述符、线性／MLP拒识读出及无OE控制见`PAMF_PHASE3_SOURCE_OE_REJECTION_PLAN_20261029.md`，尚未运行；正式RX24的U/Q仍未模型推理。

@@ -1,0 +1,172 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-oe-data-r01",
+  "group_id": "pamf-phase3-source-open-data",
+  "display_name": "PAMF第三阶段：完整基座源端辅助开放数据",
+  "description": "按元数据集合/容量固定Full中全compact外的7辅助TX，原source5RX×D1D2D3每cell70，训练暴露4200/新设备验证3150；纯数据，不读正式target、不训模型。",
+  "kind": "data",
+  "stage": "Phase3-source-auxiliary-open-development-data",
+  "aliases": [
+    "Phase3源辅助7TX数据"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "Full_eq",
+    "auxiliary_outliers",
+    "extra_source_supervision",
+    "data_only"
+  ],
+  "comparison_group_id": "phase3-source-oe-seven-outside-compact-TX",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工、自主设计与执行；新Phase3不恢复其他owner暂停Phase2任务。",
+  "code": {
+    "commit": "795e4a9604f391cb53e19ba24c2d2e8d5f24188a",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "cwd": "E:\\type10-7\\github_publish\\CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "Full WiSig eq auxiliary source devices",
+    "version": "20261029 original Full validation reused; new source-open roles",
+    "representation": "original eq1 256-point -> matching source FP32 unitRMS; no channel observations",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3源端辅助开放集开发20261029",
+    "physical_ids_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_data_20261029_r01\\data\\builder_report.json",
+    "label_map_ref": "configs/pamf_phase3_source_oe_data_20261029.json; TX private only, source unknown membership is extra source supervision",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_source_oe_data_20261029.json",
+    "roles": {
+      "auxiliary_exposure_train": 4200,
+      "auxiliary_novel_validation": 3150,
+      "original_L_s": 0,
+      "original_U_s": 0,
+      "original_V": 0
+    },
+    "train_ratio": null,
+    "capsule_id": {
+      "exposure_train": "source-oe-417473b8dee6b66206d26620",
+      "novel_validation": "source-oe-7026a2fc71b26b44b250b014"
+    },
+    "split_id": {
+      "exposure_train": "a785b6d93f20e3db31d88135",
+      "novel_validation": "9750930b8dc41d0149dc3895"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_data_20261029_r01\\data\\complete.json",
+    "support_query_ref": "No target/support/query; source auxiliary TX-disjoint training/validation, both disjoint old6/formal4/compact150",
+    "leo_config_ref": "None; source preprocessing only, no channel generation"
+  },
+  "permissions": {
+    "regime": "source_auxiliary_known_unknown_membership_supervision",
+    "query_use": "no target query input or model inference",
+    "external_method_exception": null,
+    "claim_scope": "source auxiliary data legality/readiness only; not zero-source-label or RFFI performance"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "builder has no model/checkpoint/original L/U/V input",
+    "provenance_verdict": "Current six-class PAMF and default identity head unchanged; no weights loaded",
+    "selection_rule": "Fixed metadata150-vs174 difference, minimum70 each15sourcecell, lexical4/3 split before any IQ/score"
+  },
+  "execution": {
+    "host": "local-Windows",
+    "launch_owner": "codex-pamf-phase3-source-oe-data-20261029",
+    "gpu_policy": "CPU data builder only; zero GPU; no foreign process changes",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_data_20261029_r01",
+    "launch_command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -B -u -m experiments.pamf_phase3_open_world.source_oe_data --config configs/pamf_phase3_source_oe_data_20261029.json --output \"E:/type10-7/local_artifacts/pamf_phase3_source_oe_data_20261029_r01/data\"",
+    "stop_rule": "TX intersects compact/known6/formalunknown4, missing source member or shortcell, raw shape/nonfinite, duplicate physical record, normalization error or output collision; preserve partial, no quality filtering/replacement or silent rebuild"
+  },
+  "expected_artifacts": [
+    "data/exposure_train/public/{iq.npy,ids.npy,metadata.npz}",
+    "data/novel_validation/public/{iq.npy,ids.npy,metadata.npz}",
+    "data/exposure_train/truth/truth.npz",
+    "data/novel_validation/truth/truth.npz",
+    "data/builder_report.json",
+    "data/complete.json",
+    "build.log",
+    "build_launch.json",
+    "build_post_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_auxiliary_counts",
+      "TX_role_disjoint",
+      "canonical_unique",
+      "public_TX_absent",
+      "normalization_once",
+      "original_and_target_reads_zero"
+    ],
+    "dimensions": [
+      "train/novel_validation",
+      "source_RX/day",
+      "TX_private"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "data builder validation only"
+  },
+  "rows": [
+    {
+      "row_id": "source-sevenTX-four-train-three-val",
+      "method": "Full source auxiliary TX-disjoint preprocessing builder",
+      "purpose": "Prepare source-only open-development inputs for current full six-class PAMF",
+      "config_ref": "configs/pamf_phase3_source_oe_data_20261029.json",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_data_20261029_r01\\data\\builder_report.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026102905,
+        "data": 2026102905,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed per RX/day/TX permutation seed2026102905; no model/channel/support/evaluation randomness.",
+      "k": null,
+      "scenario": "source_clean_preprocessing_only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "15 source PKL selected members;7350 source records, one unitRMS each; no model/channel outputs",
+      "output_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_data_20261029_r01\\data",
+      "log_path": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_data_20261029_r01\\build.log",
+      "command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -B -u -m experiments.pamf_phase3_open_world.source_oe_data --config configs/pamf_phase3_source_oe_data_20261029.json --output \"E:/type10-7/local_artifacts/pamf_phase3_source_oe_data_20261029_r01/data\"",
+      "expected_artifacts": [
+        "data/exposure_train/public/{iq.npy,ids.npy,metadata.npz}",
+        "data/novel_validation/public/{iq.npy,ids.npy,metadata.npz}",
+        "data/exposure_train/truth/truth.npz",
+        "data/novel_validation/truth/truth.npz",
+        "data/builder_report.json",
+        "data/complete.json",
+        "build.log",
+        "build_launch.json",
+        "build_post_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "原source六类L/U/V及F6身份模型不改变、不读取。辅助OE训练资格是额外源监督，目标标签仍0。",
+    "辅助train4TX与novel验证3TX互斥，并排除四compact150TX/旧六类/正式四未知；不泛称全项目历史从未见过。",
+    "Main source RX[1,3,4,6,8]对应实际names，不能使用Full RX indices作Main索引。",
+    "原始Full验证复用，仅15新source成员读取，不重复全量CRC/hash/波形扫描。",
+    "后续拒识器/源开发另run，独立source门槛通过前不对正式Full U/Q做模型访问。"
+  ],
+  "registered_at": "2026-10-28T18:10:00+00:00"
+}
