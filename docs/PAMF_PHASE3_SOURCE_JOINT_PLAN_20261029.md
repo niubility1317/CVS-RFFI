@@ -52,4 +52,4 @@ b从0开始，固定10次迭代。在q-b上找最近/次近旧锚点，用原始
 
 DP-means的平方距离与组件数惩罚来自[原始DP-means论文](https://icml.cc/2012/papers/291.pdf)，固定旧锚点、平移、组件资格与匿名注册均为本项目待验证扩展。备选[DBSCAN原始论文](https://cdn.aaai.org/KDD/1996/KDD96-037.pdf)不要求类别数，但当前高维尺度和密度差异容易导致碎裂/连通，首轮不并行扩展。
 
-状态：READY_FOR_RELEASE。五个stream模块及针对性测试已实现；初始68项整体测试通过，随后修复独立P0/P1审查发现的“控制组误触发联合推进”问题，相关48项测试及审查者4项针对复核通过，其余23项未变。当前只允许完整D1R1晋级。合成fixture已实际串联导出、源校准、双U状态、未来预测和独立评分；这不代表真实源或target性能。真实候选已登记，尚未执行；实际commit、命令、环境、GPU、不可覆盖root与停止规则在同名run的experiment.json固定。真实checkpoint两条合法L smoke为导出首步，PASS立即继续。
+状态：VERIFIED/ANALYZED_SOURCE_ONLY。真实候选已在N607 GPU2完整完成四stage，执行commit6570e891982d72bc317c9219ead3e97221d93951；真实2L smoke PASS、U1050/未来5400冻结预测和独立truth-last评分完成。两状态首轮达到32组件上限，合格组件0；D1旧类开放准确率63.9167%，较D0下降1.2222pp，后续未知拒识2.1111%，新类未来准确率0，NO_PROMOTION，不扩正式target或种子。详细见PAMF_PHASE3_SOURCE_JOINT_RESULTS_20261029.md。初始68项测试、P1修复相关48项与独立4项复核通过，其余23项未变；只允许完整D1R1晋级的口径保持，不能由部分控制结果替代联合目标。
