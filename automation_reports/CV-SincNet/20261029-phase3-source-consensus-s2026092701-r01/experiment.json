@@ -1,0 +1,190 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-consensus-s2026092701-r01",
+  "group_id": "pamf-phase3-source-consensus",
+  "display_name": "PAMF第三阶段：跨分支同类支持拒识",
+  "description": "完整F6和L几何冻结，100D描述符加入默认头概率对齐的分支统计，保持101/1633参数与200CPU步；V-only固定风险阈值；source novel重复开发truth-last。",
+  "kind": "cvs",
+  "stage": "Phase3-source-cross-branch-head-aligned-rejection",
+  "aliases": [
+    "Phase3源跨分支类别对应拒识"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "full_six_class",
+    "OE",
+    "head_aligned_descriptor",
+    "fixed_risk_calibration",
+    "CPU_only"
+  ],
+  "comparison_group_id": "phase3-full6-source-descriptor-sorted-versus-head-aligned",
+  "parent_run_ids": [
+    "20261029-phase3-source-open-readout-s2026092701-r01",
+    "20261029-phase3-source-risk-calibration-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工及自主设计执行；本轮遵循事先source-only开发路线，不以首轮target表调参。",
+  "code": {
+    "commit": "951fbddea7cafb4deb5e0e18a4d404edd7d02b74",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-consensus-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-consensus-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original six-class source L/V plus Full auxiliary source devices",
+    "version": "existing aligned source contract subset",
+    "representation": "matching eq1_center256_unitRMS source clean only; no new channel observations",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 source auxiliary open development",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01/export/complete.json",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; OE TX identity private scorer only",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract classes; labels0/1 validation-only; labels2/3/4/5 train",
+    "roles": {
+      "source_L": 6300,
+      "source_V": 27000,
+      "exposure_train": 4200,
+      "novel_validation": 3150
+    },
+    "train_ratio": null,
+    "capsule_id": {
+      "exposure_train": "source-oe-417473b8dee6b66206d26620",
+      "novel_validation": "source-oe-7026a2fc71b26b44b250b014"
+    },
+    "split_id": "original-F0-source-plus-source-OE-417473b8dee6b66206d26620/7026a2fc71b26b44b250b014",
+    "validation_ref": "20261029-phase3-source-oe-data-r01/data/complete.json",
+    "support_query_ref": "No target; source novelty validation TX-disjoint from exposure training",
+    "leo_config_ref": "N/A source clean development only"
+  },
+  "permissions": {
+    "regime": "extra_source_known_unknown_membership_supervision_target_zero_labels",
+    "query_use": "No target query read; only already exposed source development novel records scored again",
+    "external_method_exception": null,
+    "claim_scope": "Repeated source development risk calibration; empirical known calibration protection, not independent confirmation or unseen-RX/satellite success"
+  },
+  "checkpoint": {
+    "initialization": "parent_L_only_geometry_reuse_new_source_rejection_readouts",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01/fit/geometry.npz",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-open-readout-s2026092701-r01/export/complete.json"
+    ],
+    "contract_check_ref": "Matching complete parent full6 export and frozen L geometry; new readout must match head_aligned_branch_summary_v1",
+    "provenance_verdict": "Parent76951634c0901175a6d78c88caffbf49fdce8d04 source-only features and L geometry; no parent/encoder/head updates; fresh readouts fit sourceL+OEtrain only",
+    "selection_rule": "Fixed200steps/seed, new100Ddescriptor, same V-only macroFRR4%/correctreject1.5pp maxthreshold; novel never fits or calibrates"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-source-consensus-20261029",
+    "gpu_policy": "CPU-only, zero added GPU workers; per-card allowance2 unchanged; preserve all foreign work",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-consensus-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-consensus-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_consensus_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_consensus_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-consensus-s2026092701-r01-release/runtime.json",
+    "stop_rule": "wrong parent/descriptor or state mismatch, nonfinite, output collision, illegal V/novel training read or inability to complete legal predictions; scientific failure NO_PROMOTION without threshold/budget retry"
+  },
+  "expected_artifacts": [
+    "fit/smoke.json",
+    "fit/geometry.npz",
+    "fit/readouts.npz",
+    "fit/training.json",
+    "fit/complete.json",
+    "predict/calibration/thresholds.npy",
+    "predict/calibration/complete.json",
+    "predict/predictions.npz",
+    "predict/complete.json",
+    "score/results.json",
+    "score/complete.json",
+    "pipeline_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "known_macro_accuracy",
+      "known_macro_frr",
+      "known_macro_accuracy_drop",
+      "unknown_macro_rejection",
+      "auroc_known",
+      "oscr",
+      "source_RX_protection",
+      "eligible_OE_method"
+    ],
+    "dimensions": [
+      "7method",
+      "source_RX",
+      "known_TX",
+      "source_novel_TX"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-consensus-s2026092701-r01/predict/predictions.npz",
+    "scorer_ref": "experiments/pamf_phase3_open_world/source_open_scoring.py"
+  },
+  "rows": [
+    {
+      "row_id": "source-consensus-s2026092701",
+      "method": "Frozen full6 PAMF plus head-aligned branch-summary OE rejection",
+      "purpose": "test same-class physical branch support while matching descriptor dimension/readout budget/risk calibration",
+      "config_ref": "configs/pamf_phase3_source_consensus_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-consensus-s2026092701-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102905,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Same parent physical data/geometry; new readout initialization same2026092701, source split392005 distinct.",
+      "k": null,
+      "scenario": "source_clean_only",
+      "optimizer": "CPU AdamW rejection readouts only",
+      "lr": 0.001,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Descriptor100→linear101/MLP1633 each200fullbatchL6300+OE4200; 0Fforwards/encoder/headupdates,0GPU; real parent rejector+newdescriptor sourceL2smoke first.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-consensus-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-consensus-s2026092701-r01/logs/fit.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_consensus_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-consensus-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "fit/smoke.json",
+        "fit/geometry.npz",
+        "fit/readouts.npz",
+        "fit/training.json",
+        "fit/complete.json",
+        "predict/calibration/thresholds.npy",
+        "predict/calibration/complete.json",
+        "predict/predictions.npz",
+        "predict/complete.json",
+        "score/results.json",
+        "score/complete.json",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Single changed scientific ingredient is100Ddescriptor: perbranch max/second/mean/popstd/headprobweightedmean/maxminusweightedmean for cosine and negativeMaha² plus4unchangedlogitglobals.",
+    "Complete six-class head softmax probabilities are row-local and jointly class-permutation invariant including ties; no RX-specific inference or new identity head.",
+    "Original F6/defaulthead/parent geometry remain frozen; actual source feature export reused without data revalidation or new sourceIQ/Fforwards.",
+    "New rejection states must mark head_aligned_branch_summary_v1; old100D sorted-descriptor readouts cannot be silently reused.",
+    "Newsource readouts fit onlyL/OEtrain for same200CPUsteps/101and1633parameters; sourceV only fixed known-risk threshold calibration, novel neverfit.",
+    "Same sourceknown4%FRR/1.5ppcorrectreject empirical budgets, sourcepromotion95%unknown+5%FRR+2ppdrop overall/eachRX unchanged.",
+    "Novel3TX3150 reused source development evaluation, not independent confirmation; formal RX24U/Q untouched.",
+    "Source membership labels are extra supervision, no auxiliary TX identity labels enter fit; originalU_s hiddentruth remains closed.",
+    "First noquery smoke actually loads parent rejection checkpoints on2sourceLfeatures and checks new descriptor; not new fullFforward or newlytrainedcheckpoint claimed.",
+    "CPUonly/addedGPU0/foreignstop0; one launch owner and immutable output; no novel-based parameter sweep or automatic target promotion.",
+    "Actual VERIFIED/ANALYZED_SOURCE_ONLY NO_PROMOTION: consensus100D only, parent F/geometry frozen; newlinear/MLP200CPUsteps each. Unknown82.698413%/85.746032%, MLP+4.285714pp vsrisk; knownprotection allRX passes but unknown overall/RX3/4/6/8 below95. Same-source repeated development, not receiver invariance or independent confirmation. Fforward/GPU/target/foreignstop0. docs/PAMF_PHASE3_SOURCE_CONSENSUS_RESULTS_20261029.md."
+  ],
+  "registered_at": "2026-10-28T19:22:30+00:00"
+}

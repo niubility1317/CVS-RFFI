@@ -1,0 +1,169 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-oe-diverse-data-r01",
+  "group_id": "pamf-phase3-source-diverse-oe-data",
+  "display_name": "PAMF第三阶段：21台源辅助设备数据",
+  "description": "Full中compact外24TX保留3novel，其余21训练备选在原5RX×3day每cell最多32、少量全取，6134唯一source记录；CPU纯数据，不读目标或模型。",
+  "kind": "data",
+  "stage": "Phase3-source-21-device-auxiliary-exposure-data",
+  "aliases": [
+    "Phase3源辅助21TX数据"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "Full_eq",
+    "diverse_auxiliary_outliers",
+    "extra_source_supervision",
+    "data_only"
+  ],
+  "comparison_group_id": "phase3-source-oe-four-to21-TX",
+  "parent_run_ids": [
+    "20261029-phase3-source-oe-data-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工、自主设计与执行；新Phase3不恢复其他owner暂停Phase2任务。",
+  "code": {
+    "commit": "2f41fc2835798f583c54900ab4c791d762d0101c",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "cwd": "E:\\type10-7\\github_publish\\CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "Full WiSig eq auxiliary source devices",
+    "version": "20261029 original Full validation reused; new source-open roles",
+    "representation": "original eq1 256-point -> matching source FP32 unitRMS; no channel observations",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3源端辅助开放集开发20261029",
+    "physical_ids_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_diverse_data_20261029_r01\\data\\builder_report.json",
+    "label_map_ref": "configs/pamf_phase3_source_oe_diverse_data_20261029.json; auxiliaryTX private only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_source_oe_diverse_data_20261029.json",
+    "roles": {
+      "auxiliary_exposure_train": 6134,
+      "new_novel_validation": 0,
+      "original_L_s": 0,
+      "original_U_s": 0,
+      "original_V": 0
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "source21noncompact-TX-cap32-exclude3novel",
+    "validation_ref": "local_artifacts/pamf_phase2_full_eq_validation_20261029_r02/summary.json",
+    "support_query_ref": "No target/support/query; all21sourceTX disjoint old6/formal4/compact150 and excluded3source-novel; no oldvalidation re-role",
+    "leo_config_ref": "None; source preprocessing only, no channel generation"
+  },
+  "permissions": {
+    "regime": "source_auxiliary_known_unknown_membership_supervision",
+    "query_use": "no target query input or model inference",
+    "external_method_exception": null,
+    "claim_scope": "source auxiliary data legality/readiness only; not zero-source-label or RFFI performance"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "builder has no model/checkpoint/original L/U/V input",
+    "provenance_verdict": "Current six-class PAMF and default identity head unchanged; no weights loaded",
+    "selection_rule": "Metadata24minus3reservedNovel=21TX; cap32 each sourceRX/day/TX, below32all, zeroempty; seed2026102906 fixed beforeIQ/scores"
+  },
+  "execution": {
+    "host": "local-Windows",
+    "launch_owner": "codex-pamf-phase3-source-diverse-data-20261029",
+    "gpu_policy": "CPU data builder only; zero GPU; no foreign process changes",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_diverse_data_20261029_r01",
+    "launch_command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -B -u -m experiments.pamf_phase3_open_world.source_oe_diverse_data --config configs/pamf_phase3_source_oe_diverse_data_20261029.json --output \"E:/type10-7/local_artifacts/pamf_phase3_source_oe_diverse_data_20261029_r01/data\"",
+    "stop_rule": "TXcompact/old6/formal4/novel3 intersection, source member/capacity mismatch, malformed/nonfinite raw shape, duplicate physical record, wrong single preprocessing or output collision; preserve partial, no score/quality selection"
+  },
+  "expected_artifacts": [
+    "data/exposure_train/public/{iq.npy,ids.npy,metadata.npz}",
+    "data/exposure_train/truth/truth.npz",
+    "data/builder_report.json",
+    "data/complete.json",
+    "build.log",
+    "build_launch.json",
+    "build_post_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_auxiliary_counts",
+      "TX_role_disjoint",
+      "canonical_unique",
+      "public_TX_absent",
+      "normalization_once",
+      "original_and_target_reads_zero"
+    ],
+    "dimensions": [
+      "source_RX/day",
+      "TX_private",
+      "original4/new17"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "data builder validation only"
+  },
+  "rows": [
+    {
+      "row_id": "source21TX-cap32",
+      "method": "Full source21 auxiliary cap32 preprocessing builder",
+      "purpose": "Prepare more diverse source unknown-member training while keeping novel3 and formal4 excluded",
+      "config_ref": "configs/pamf_phase3_source_oe_diverse_data_20261029.json",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_diverse_data_20261029_r01\\data\\builder_report.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026102906,
+        "data": 2026102906,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Metadata-only fixed percellcap32 and selectionseed2026102906; no model/channel/support/eval randomness.",
+      "k": null,
+      "scenario": "source_clean_preprocessing_only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "15sourcePKLcontainers/6134unique selected rows/oneunitRMS each;220nonempty95emptycells; no model/channel",
+      "output_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_diverse_data_20261029_r01\\data",
+      "log_path": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_oe_diverse_data_20261029_r01\\build.log",
+      "command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -B -u -m experiments.pamf_phase3_open_world.source_oe_diverse_data --config configs/pamf_phase3_source_oe_diverse_data_20261029.json --output \"E:/type10-7/local_artifacts/pamf_phase3_source_oe_diverse_data_20261029_r01/data\"",
+      "expected_artifacts": [
+        "data/exposure_train/public/{iq.npy,ids.npy,metadata.npz}",
+        "data/exposure_train/truth/truth.npz",
+        "data/builder_report.json",
+        "data/complete.json",
+        "build.log",
+        "build_launch.json",
+        "build_post_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Reuse originalFull158PKL VALIDATED_ONCE; no repeatrawCRC/hash/20ZIPscan.",
+    "Newdataset includes21outsidecompactsourceTX but excludesold6/formal4/source-novel3; neither IQ quality nor score selects classes/records.",
+    "Cap32 means below32all, zeroempty; keep19tiny4–7samplecells, no duplication/filtering based on quality.",
+    "Expected6134unique: original4TX1920 plusnew17TX4214; sharedsource recordsacrossmethodsnotindependentreplicates.",
+    "Publiconlyiq/ids/rxdaydomain; perrecordTX private. Extra source known/unknown membership is supervision, targetlabels0.",
+    "RX18-2+3-19 contribute64.118%, laterfitterplannedrole-domain1/15weights; databuilderitself no weighting/no model training.",
+    "One newstatusSOURCE_OE_DIVERSE_DATA_VALIDATED/VALIDATED_ONCE,minimalcapsule/split/count; notold4200schema.",
+    "Rawsourcecontainer unpickle may materializeunselectedarrays; only21selectedTXrows enter output, no V/novel/target selection or training.",
+    "CPUonly/GPU0/model0/channel0/foreignstop0; immutableoutput and exactPID/CWD/argv/logpoststate.",
+    "Actual data VERIFIED/VALIDATED_ONCE6134,220nonempty95empty,15source containers,18loglines1467B clean; code2f41fc2835798f583c54900ab4c791d762d0101c, noF/channel/GPU/formaltarget, no model performance claim. docs/PAMF_PHASE3_SOURCE_OE_DIVERSE_DATA_20261029.md."
+  ],
+  "registered_at": "2026-10-28T19:36:57+00:00"
+}

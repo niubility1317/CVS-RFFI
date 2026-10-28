@@ -88,3 +88,7 @@ source-known risk calibrated scalar 已由 `20261029-phase3-source-risk-calibrat
 下一步先构建21台源辅助训练数据，保留3台novel和正式4unknown，原L/U/V与F保持。`20261029-phase3-source-oe-diverse-data-r01`已登记，builder5项测试/5subtests及一次独立P0/P1通过，待本机CPU真实构建。按原source5RX×3day每非空TXcell最多32、少量全取，预期6134唯一记录（原4台1920＋新增17台4214），不按IQ/score挑选。后续源读出拟按role内15域均匀权重，归一化保持旧6300/4200的known.6/OE.4先验；这是新的源监督与域配重候选，不宣称只改了样本数或已经有效，目标端标签和访问仍0。
 
 后续若需要训练开放空间embedding，必须沿原`pamf_repl_view_shuffle.source.train`训练构造器重建三视图/固定排列/六类默认头后strict加载核实E50payload，不能对`frozen_inference.reader_from_payload`直接解冻：推理reader把Sinc._filters换为含no_grad的frozen_filters。合法增量训练需保留原CENTER_UNITS及标签权限、单列原11100步＋新增预算；当前只做只读可行性调查，没有开启该训练。
+
+## 多设备源OE数据实际完成（2026-10-29）
+
+`20261029-phase3-source-oe-diverse-data-r01` 已VERIFIED/VALIDATED_ONCE、ANALYZED，执行commit2f41fc2835798f583c54900ab4c791d762d0101c。6134条唯一source记录来自21台训练暴露设备，220非空／95空cell，保留novel19-15／19-16／7-1不转train；15个source容器读取、完整18行1467B日志及独立poststate齐全。额外source成员监督明确，原L/U/V／novel验证IQ／模型／channel／正式target／GPU调用0，不停止其他任务；尚无模型性能结果。见[数据结果](E:/type10-7/docs/PAMF_PHASE3_SOURCE_OE_DIVERSE_DATA_20261029.md)。

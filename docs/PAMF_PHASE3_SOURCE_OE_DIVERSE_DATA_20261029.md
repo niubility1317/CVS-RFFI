@@ -12,6 +12,12 @@
 
 新不可覆盖输出只有`exposure_train`角色：public精确`iq.npy`、`ids.npy`、`metadata.npz`（rx_i/day_i/domain）；TX只放private truth/builder report。complete使用独立`SOURCE_OE_DIVERSE_DATA_VALIDATED`与`VALIDATED_ONCE`、capsule/split/count最小句柄，不能静默冒充旧4200数据。原4台跨实验可能物理复用，按各独立角色实际唯一6134计数，不宣称新增6134条全部未使用历史样本。
 
-本机CPU数据准备，新增GPU工作进程为0，无模型/训练/预测/评分；保留所有其他用户任务。一次新builder P0/P1、相关合成测试、实际代码提交、精确进程与产物读回留在同名最小登记。当前方案固定、实现中，数据尚未构建；源95%拒识和完整Phase3目标均未完成。
+本机CPU数据准备，新增GPU工作进程为0，无模型/训练/预测/评分；保留所有其他用户任务。一次新builder P0/P1、相关合成测试、实际代码提交、精确进程与产物读回留在同名最小登记。实际数据已VERIFIED/VALIDATED_ONCE；源95%拒识和完整Phase3目标均未完成，本数据不提供性能结果。
 
-发布前验证：新builder与CLI已完成，5项测试和5个subtests通过（原4项数据测试＋新增CLI观测测试）；一次独立P0/P1审查PASS并独立运行当前5项全部通过。CLI首行只输出实际PID/CWD/argv的运行JSON，供原生进程信息与日志读回核对，不安装新依赖。待真实构建，模型性能尚无新证据。
+发布前验证：新builder与CLI已完成，5项测试和5个subtests通过（原4项数据测试＋新增CLI观测测试）；一次独立P0/P1审查PASS并独立运行当前5项全部通过。CLI首行只输出实际PID/CWD/argv的运行JSON，供原生进程信息与日志读回核对，不安装新依赖。真实构建已完成，模型性能尚无新证据。
+
+## 实际构建结果（2026-10-29）
+
+run `20261029-phase3-source-oe-diverse-data-r01` 已ANALYZED，实际代码`2f41fc2835798f583c54900ab4c791d762d0101c`。6134条唯一记录、220非空／95空cell，原4台1920＋新17台4214；15个source容器实际读取完成。capsule=`source-oe-diverse-9dd73fa533b19a64fd4db8d9`，split=`5e0f620d5c7c72512e9e9edd`。完整18行／1467B日志无异常，独立poststate为VERIFIED、进程已退出；只复用既有Full验证，无全量重扫／原始hash。原L/U/V、novel验证IQ、模型、channel、正式target读取／调用为0，新增GPU及foreignstop为0。额外source成员监督明确保留，未训练／预测，不构成拒识或Phase3达标。
+
+[完成标记](E:/type10-7/local_artifacts/pamf_phase3_source_oe_diverse_data_20261029_r01/data/complete.json)；[实际builder report](E:/type10-7/local_artifacts/pamf_phase3_source_oe_diverse_data_20261029_r01/data/builder_report.json)；[完整日志](E:/type10-7/local_artifacts/pamf_phase3_source_oe_diverse_data_20261029_r01/build.log)；[独立poststate](E:/type10-7/local_artifacts/pamf_phase3_source_oe_diverse_data_20261029_r01/build_post_state.json)；[摘要](E:/type10-7/local_artifacts/pamf_phase3_source_oe_diverse_data_20261029_r01/analysis_summary.json)。
