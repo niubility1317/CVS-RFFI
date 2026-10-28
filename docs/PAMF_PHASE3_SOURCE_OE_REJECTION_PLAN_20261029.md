@@ -34,4 +34,4 @@
 
 上述只是源开发门槛。即使通过，也没有证明未见RX、星地三景、零标签适应或注册成功；后续仍需按总目标固定确认矩阵，旧类、新注册类与后续严格未知分别验收。正式unknown4与本source辅助训练／验证TX始终隔离。
 
-状态：READY_FOR_RELEASE。导出器、读出核心、fit/predict执行器、独立评分和四阶段launcher均已实现；64项测试及35个subtests通过，本候选一次独立P0/P1审查PASS，审查者独立运行同64项通过。搬迁后仅按给定oe_data_root读取已验证数据，旧E/F路径只保留来源说明；不重验数据或增加成员hash。真实F6checkpoint两条Lsmoke是导出首步，PASS立即继续。当前尚未真实导出、训练或评分，没有OE拒识性能或95%达标证据；实际commit、命令、环境、GPU、不可覆盖root、停止规则由同名run的experiment.json固定。
+状态：VERIFIED/ANALYZED_SOURCE_ONLY。run `20261029-phase3-source-open-readout-s2026092701-r01` 已完成真实六类checkpoint两条Lsmoke PASS、40652条冻结F前向、两个读出各200次CPU更新、30150条七方法预测及独立truth-last评分；执行commit `76951634c0901175a6d78c88caffbf49fdce8d04`。linear_oe／mlp16_oe未知TX宏拒识68.4762%／76.6032%，旧类保护通过，但整体及RX3/4/6/8拒识未达95%，科学NO_PROMOTION，eligible空、selected=null。完整[结果报告](E:/type10-7/docs/PAMF_PHASE3_SOURCE_OE_REJECTION_RESULTS_20261029.md)记录损失、RX/TX与证据。64项测试／35subtests及独立P0/P1验证记录保持；本候选方法定义与参数不变，不重跑或访问正式target。

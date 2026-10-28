@@ -69,4 +69,12 @@ source run`20261029-phase3-source-holdout-s2026092701-r01`已在N607 GPU2完成�
 
 下一优先路线直接利用当前满意的完整六类PAMF，使用独立source开放开发数据，不再只依赖预算弱得多的4CE代理。元数据确认Full174类比四compact并集150多24类，其中7类在原source5RX×D1D2D3均≥70；按容量与字典序事前分为辅助暴露4类4200条、独立源新设备验证3类3150条，排除旧6和正式4unknown。科学边界已写入PROJECT_PROTOCOL，额外source已知/未知成员监督明确披露，原L/U/V和六类身份头不变；正式target仍零标签。数据run`20261029-phase3-source-oe-data-r01`已VERIFIED/VALIDATED_ONCE：7350唯一source记录、15成员、每TX/RX/day70、公开无辅助TX、17行完整日志无异常，原L/U/V/模型/target/channel均0，零GPU、不停止他人。6项测试/10subtests及一次独立P0/P1通过，执行commit795e4a9604f391cb53e19ba24c2d2e8d5f24188a，数据句柄见`docs/PAMF_PHASE3_SOURCE_OPEN_DATA_20261029.md`。
 
-完整六类source拒识候选拟`20261029-phase3-source-open-readout-s2026092701-r01`，详细在`docs/PAMF_PHASE3_SOURCE_OE_REJECTION_PLAN_20261029.md`及对应config。F与默认身份头冻结，8物理分支导出后由L拟合类置换不变的100维描述符；仅额外源成员监督训练101参数linear或1633参数MLP16，各200次CPU feature更新，known V仅99%阈值校准，辅助新设备3TX只在全部预测后独立评分。5静态控制不能推进OE候选，source门槛95%未知/5%误拒/2pp旧类保护含各源RX，双过时优先linear；这不是全Phase3验收。导出器6项合成测试、读出核心25项已通过，source执行器/独立评分正在实现，尚未真实导出或训练；正式RX24 U/Q仍未模型访问。
+完整六类source拒识候选`20261029-phase3-source-open-readout-s2026092701-r01`已完成，详细在`docs/PAMF_PHASE3_SOURCE_OE_REJECTION_PLAN_20261029.md`及对应config。F与默认身份头冻结，8物理分支导出后由L拟合类置换不变的100维描述符；仅额外源成员监督训练101参数linear或1633参数MLP16，各200次CPU feature更新，known V仅99%阈值校准，辅助新设备3TX只在全部预测后独立评分。5静态控制不能推进OE候选，source门槛95%未知/5%误拒/2pp旧类保护含各源RX，双过时优先linear；这不是全Phase3验收。实际64项测试＋35个subtests与独立P0/P1通过，真实导出、200步读出训练及独立评分均已完成，科学NO_PROMOTION；实际结果见下节，正式RX24 U/Q仍未模型访问。
+
+## 完整六类源OE拒识实际结果（2026-10-29）
+
+`20261029-phase3-source-open-readout-s2026092701-r01`已VERIFIED/ANALYZED_SOURCE_ONLY，执行commit`76951634c0901175a6d78c88caffbf49fdce8d04`；4完整日志、真实2Lsmoke和四阶段产物齐全。当前完整6类F与身份头冻结，8分支完成40652条前向，两个源成员监督读出各完成200次CPU更新；原U_s／正式RX24 U/Q读取0，encoder／身份head更新0。linear_oe／mlp16_oe的3个辅助未知TX宏拒识68.4762%／76.6032%，known宏FRR均0.9963%，旧类开放宏准确率97.9148%／97.8852%（原closed98.4667%）。整体及全部sourceRX旧类保护通过，但unknown整体和RX3/4/6/8未达95%，仅RX1通过；eligible空、selected=null、NO_PROMOTION。详情见[源OE结果报告](E:/type10-7/docs/PAMF_PHASE3_SOURCE_OE_REJECTION_RESULTS_20261029.md)。这是source clean已见RX的新TX开发，非跨RX／星地／无标签适应／注册成功；本run不调参重跑、不扩seed、不访问正式池。后续仍需独立source候选，当前无新实验启动；总目标仍未完成。
+
+## 下一独立源风险校准候选状态（2026-10-29）
+
+下一候选 source-known risk calibrated scalar 已登记，尚未运行。它复用现有冻结F／OE状态，仅由known V在总体及每RX约束宏FRR≤4%、原正确样本拒绝损伤≤1.5pp，unknown不参与校准或ROC挑阈值；不改变总目标95%未知拒识及旧类保护验收。此处仅记录当前固定方向和未运行状态，不声明代码测试、审查或发布已完成。
