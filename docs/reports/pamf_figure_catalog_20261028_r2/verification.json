@@ -1,0 +1,49 @@
+{
+  "revision_validation.json": {
+    "status": "VERIFIED",
+    "figures": 155,
+    "selected": 50,
+    "original_cells_unchanged": 9207,
+    "percent_line_panels": 24,
+    "common_axis_families": {
+      "七场景主比较": [
+        30,
+        95
+      ],
+      "源数量主比较": [
+        15,
+        95
+      ],
+      "结构七场景": [
+        40,
+        90
+      ],
+      "五方法七场景": [
+        25,
+        95
+      ],
+      "源数量 Macro-F1": [
+        10,
+        85
+      ]
+    },
+    "paired_gain_cells": 30,
+    "issues": []
+  },
+  "export_validation.json": {
+    "status": "VERIFIED",
+    "figures": 155,
+    "plot_data_rows": 9307,
+    "exported_point_values": 10034,
+    "pdf_svg_png_each": 155,
+    "issues": []
+  },
+  "delivery_verification.json": {
+    "status": "VERIFIED",
+    "figures": 155,
+    "selected": 50,
+    "all_explanation_pages": 59,
+    "selected_explanation_pages": 22,
+    "efficiency_table_pages": 3
+  }
+}
