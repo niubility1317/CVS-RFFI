@@ -1,0 +1,587 @@
+{
+  "schema": "pamf_phase2_capacity_r06",
+  "date": "2026-10-28",
+  "status": "CONTINGENCY_ONLY_NOT_PRIMARY",
+  "launch_ready": false,
+  "supersedes": "r05 data sizes, K-dependent group counts and E01-E10 budgets; method S/B/C identities unchanged",
+  "scope": "Existing labeled MILKR; practical residual; six fixed mixture probabilities; three pure scenarios; P0/P1",
+  "per_RX_TX_available": 200,
+  "dates": 4,
+  "per_date_available": 50,
+  "source_roles": {
+    "L_s": 6300,
+    "U_s_hidden_TX": 56700,
+    "V": 27000
+  },
+  "targets": {
+    "RX": 7,
+    "old_classes": 6,
+    "new_classes": 20,
+    "total_classes": 26
+  },
+  "atomic_mixed_blocks": [
+    {
+      "id": "MIX01",
+      "support_pool": 6,
+      "query": 7,
+      "support_by_date": [
+        2,
+        2,
+        1,
+        1
+      ],
+      "query_by_date": [
+        2,
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "MIX02",
+      "support_pool": 6,
+      "query": 7,
+      "support_by_date": [
+        1,
+        2,
+        2,
+        1
+      ],
+      "query_by_date": [
+        2,
+        2,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "MIX03",
+      "support_pool": 6,
+      "query": 7,
+      "support_by_date": [
+        1,
+        1,
+        2,
+        2
+      ],
+      "query_by_date": [
+        2,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "id": "MIX04",
+      "support_pool": 6,
+      "query": 7,
+      "support_by_date": [
+        2,
+        1,
+        1,
+        2
+      ],
+      "query_by_date": [
+        1,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "MIX05",
+      "support_pool": 6,
+      "query": 7,
+      "support_by_date": [
+        2,
+        2,
+        1,
+        1
+      ],
+      "query_by_date": [
+        2,
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "MIX06",
+      "support_pool": 6,
+      "query": 7,
+      "support_by_date": [
+        1,
+        2,
+        2,
+        1
+      ],
+      "query_by_date": [
+        2,
+        2,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "MIX07",
+      "support_pool": 6,
+      "query": 7,
+      "support_by_date": [
+        1,
+        1,
+        2,
+        2
+      ],
+      "query_by_date": [
+        2,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "id": "MIX08",
+      "support_pool": 6,
+      "query": 7,
+      "support_by_date": [
+        2,
+        1,
+        1,
+        2
+      ],
+      "query_by_date": [
+        1,
+        2,
+        2,
+        2
+      ]
+    }
+  ],
+  "single_scene_pools": [
+    {
+      "id": "D-LS",
+      "scenario": "practical_low_suburban",
+      "support_pool": 24,
+      "query": 8,
+      "support_by_date": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "query_by_date": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D-MU",
+      "scenario": "practical_mid_urban",
+      "support_pool": 24,
+      "query": 8,
+      "support_by_date": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "query_by_date": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D-LU",
+      "scenario": "practical_low_urban",
+      "support_pool": 24,
+      "query": 8,
+      "support_by_date": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "query_by_date": [
+        2,
+        2,
+        2,
+        2
+      ]
+    }
+  ],
+  "per_K": [
+    {
+      "K": 1,
+      "mixed_tasks": 8,
+      "mixed_groups": [
+        [
+          "MIX01"
+        ],
+        [
+          "MIX02"
+        ],
+        [
+          "MIX03"
+        ],
+        [
+          "MIX04"
+        ],
+        [
+          "MIX05"
+        ],
+        [
+          "MIX06"
+        ],
+        [
+          "MIX07"
+        ],
+        [
+          "MIX08"
+        ]
+      ],
+      "candidate_support_per_class": 6,
+      "used_support_per_class": 1,
+      "query_per_class": 7,
+      "all_scene_tasks": 11,
+      "B_old_support": 6,
+      "C20_total_support": 26,
+      "mixed_A_B_old_query": 42,
+      "mixed_C20_old_query": 42,
+      "mixed_C20_new_query": 140,
+      "mixed_C20_total_query": 182,
+      "single_A_B_old_query": 48,
+      "single_C20_total_query": 208
+    },
+    {
+      "K": 5,
+      "mixed_tasks": 8,
+      "mixed_groups": [
+        [
+          "MIX01"
+        ],
+        [
+          "MIX02"
+        ],
+        [
+          "MIX03"
+        ],
+        [
+          "MIX04"
+        ],
+        [
+          "MIX05"
+        ],
+        [
+          "MIX06"
+        ],
+        [
+          "MIX07"
+        ],
+        [
+          "MIX08"
+        ]
+      ],
+      "candidate_support_per_class": 6,
+      "used_support_per_class": 5,
+      "query_per_class": 7,
+      "all_scene_tasks": 11,
+      "B_old_support": 30,
+      "C20_total_support": 130,
+      "mixed_A_B_old_query": 42,
+      "mixed_C20_old_query": 42,
+      "mixed_C20_new_query": 140,
+      "mixed_C20_total_query": 182,
+      "single_A_B_old_query": 48,
+      "single_C20_total_query": 208
+    },
+    {
+      "K": 10,
+      "mixed_tasks": 4,
+      "mixed_groups": [
+        [
+          "MIX01",
+          "MIX03"
+        ],
+        [
+          "MIX02",
+          "MIX04"
+        ],
+        [
+          "MIX05",
+          "MIX07"
+        ],
+        [
+          "MIX06",
+          "MIX08"
+        ]
+      ],
+      "candidate_support_per_class": 12,
+      "used_support_per_class": 10,
+      "query_per_class": 14,
+      "all_scene_tasks": 7,
+      "B_old_support": 60,
+      "C20_total_support": 260,
+      "mixed_A_B_old_query": 84,
+      "mixed_C20_old_query": 84,
+      "mixed_C20_new_query": 280,
+      "mixed_C20_total_query": 364,
+      "single_A_B_old_query": 48,
+      "single_C20_total_query": 208
+    },
+    {
+      "K": 20,
+      "mixed_tasks": 2,
+      "mixed_groups": [
+        [
+          "MIX01",
+          "MIX02",
+          "MIX03",
+          "MIX04"
+        ],
+        [
+          "MIX05",
+          "MIX06",
+          "MIX07",
+          "MIX08"
+        ]
+      ],
+      "candidate_support_per_class": 24,
+      "used_support_per_class": 20,
+      "query_per_class": 28,
+      "all_scene_tasks": 5,
+      "B_old_support": 120,
+      "C20_total_support": 520,
+      "mixed_A_B_old_query": 168,
+      "mixed_C20_old_query": 168,
+      "mixed_C20_new_query": 560,
+      "mixed_C20_total_query": 728,
+      "single_A_B_old_query": 48,
+      "single_C20_total_query": 208
+    }
+  ],
+  "physical_allocation_seed": 2026102800,
+  "support_order_seed": 2026102840,
+  "support_repetitions": {
+    "count": 5,
+    "labels": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715
+    ],
+    "base_pool_rule": "One seed-frozen 6-record order per RX/TX/base block, rotated by offsets0/1/2/3/4; K1 uses first1, K>=5 uses first5 per member block",
+    "single_rule": "One seed-frozen 24-record order per RX/TX/single scene, rotated by offsets0/5/10/15/20; nested firstK",
+    "independent_data_replicates": false
+  },
+  "allocation": {
+    "per_RX_TX": 200,
+    "support_candidates_per_RX_TX": 120,
+    "query_per_RX_TX": 80,
+    "support_by_date": [
+      30,
+      30,
+      30,
+      30
+    ],
+    "query_by_date": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "mixed_records": 18928,
+    "mixed_support_candidates": 8736,
+    "mixed_queries": 10192,
+    "single_scene_each_records": 5824,
+    "single_scene_each_support_candidates": 4368,
+    "single_scene_each_queries": 1456,
+    "total_records": 36400,
+    "total_support_candidates": 21840,
+    "total_queries": 14560,
+    "raw_float32_IQ_bytes": 74547200,
+    "both_P0_P1_IQ_bytes": 149094400
+  },
+  "supplementary_slices": {
+    "first_quartet": [
+      "MIX01",
+      "MIX02",
+      "MIX03",
+      "MIX04"
+    ],
+    "K1_K5_groups": 4,
+    "K10_groups": 2,
+    "K20_groups": 1,
+    "with_three_singles_K1_K5_groups": 7,
+    "with_three_singles_K20_groups": 4,
+    "primary_draw_count": 5,
+    "thin_supplement_draw_count": 1
+  },
+  "reporting": {
+    "primary_cell": "model/RX/atomic_base_pool/draw/K/N/path, even when the fitting task merges multiple base pools",
+    "H": "compute old/new accuracy and harmonic mean within each fixed atomic report cell, then aggregate",
+    "task_H": "optional secondary, explicitly task-pooled; do not mix with atomic-cell H for K curves",
+    "independence": "Eight report slices at every K do not imply eight independent fits; K20 has two fitting groups per RX/draw"
+  },
+  "budget_ledger": [
+    {
+      "id": "E01",
+      "name": "29条完整链路",
+      "A": 9240,
+      "B": 142800,
+      "C": 1104320,
+      "fit_slots": 1247120,
+      "stage_prediction_slots": 1256360,
+      "additional_physical_records": 0,
+      "physical_scope": "全部200条/RX/TX；K1/5/10/20；N0/2/5/10/20；4F×7RX×5draw×2paths",
+      "notes": "15个B前缀、29个C后缀；A逐基础池复用。完整方法/预算不缩短。"
+    },
+    {
+      "id": "E02",
+      "name": "8个共享PAMF控制",
+      "A": 0,
+      "B": 40320,
+      "C": 80640,
+      "fit_slots": 120960,
+      "stage_prediction_slots": 120960,
+      "additional_physical_records": 0,
+      "physical_scope": "第一四块综合＋三个单景；K1/5/20；N0/5/20；4F×7RX×5draw×2paths",
+      "notes": "S1/2/3/4/8/9/10/11；同片MILKR从E01复用，S5/6在E03。"
+    },
+    {
+      "id": "E03",
+      "name": "MILKR机制消融",
+      "A": 0,
+      "B": 41720,
+      "C": 121520,
+      "fit_slots": 163240,
+      "stage_prediction_slots": 163240,
+      "additional_physical_records": 0,
+      "physical_scope": "M2/M3全矩阵；九个机制变体第一四块综合、K1/5/20、N0/5/20、4F×7RX×5draw×2paths",
+      "notes": "M0复用主行；M1历史整体方法仅条件参考。"
+    },
+    {
+      "id": "E04",
+      "name": "12个非默认参数点",
+      "A": 0,
+      "B": 3024,
+      "C": 3024,
+      "fit_slots": 6048,
+      "stage_prediction_slots": 6048,
+      "additional_physical_records": 0,
+      "physical_scope": "第一四块综合；K1/5/20；N0/20；4F×7RX×1draw；P0",
+      "notes": "三个单因素轴各四个非默认点；默认点复用。全部报告，不按query择优。"
+    },
+    {
+      "id": "E05",
+      "name": "22条等数据直接C",
+      "A": 0,
+      "B": 0,
+      "C": 6160,
+      "fit_slots": 6160,
+      "stage_prediction_slots": 6160,
+      "additional_physical_records": 0,
+      "physical_scope": "第一四块综合；K5/20；N20；4F×7RX×1draw×2paths",
+      "notes": "标签与B+C相同；无中间B更新。"
+    },
+    {
+      "id": "E06",
+      "name": "4条原生无B的A→C",
+      "A": 0,
+      "B": 0,
+      "C": 1120,
+      "fit_slots": 1120,
+      "stage_prediction_slots": 1120,
+      "additional_physical_records": 0,
+      "physical_scope": "同E05",
+      "notes": "原生新类输入权限不同，不解释为等标签B轨迹消融。"
+    },
+    {
+      "id": "E07",
+      "name": "15系统分次注册",
+      "A": 0,
+      "B": 0,
+      "C": 71400,
+      "fit_slots": 71400,
+      "stage_prediction_slots": 71400,
+      "additional_physical_records": 0,
+      "physical_scope": "第一四块综合；K5/20；4F×7RX×1draw×2paths",
+      "notes": "1×20/2×10/4×5/10×2共17个C阶段；相同终态与中间状态按方法精确复用。"
+    },
+    {
+      "id": "E08",
+      "name": "15系统三个额外类顺序",
+      "A": 0,
+      "B": 0,
+      "C": 50400,
+      "fit_slots": 50400,
+      "stage_prediction_slots": 50400,
+      "additional_physical_records": 0,
+      "physical_scope": "同E07；仅4×5日程；三个额外类顺序",
+      "notes": "默认顺序在E07；顺序不改变物理数据。"
+    },
+    {
+      "id": "E09",
+      "name": "8个原代码辅助版本",
+      "A": 1568,
+      "B": 4032,
+      "C": 8064,
+      "fit_slots": 12096,
+      "stage_prediction_slots": 13664,
+      "additional_physical_records": 0,
+      "physical_scope": "第一四块综合＋三个单景；K1/5/20；N0/5/20；4F×7RX×1draw×2paths",
+      "notes": "沿r05最多四个不同source/A、四条B、四条C版本的复用前上界；不合法/未接通者N/A且0活跃槽位。"
+    },
+    {
+      "id": "E10",
+      "name": "DANN/MCD通用控制",
+      "A": 448,
+      "B": 1008,
+      "C": 4032,
+      "fit_slots": 5040,
+      "stage_prediction_slots": 5488,
+      "additional_physical_records": 0,
+      "physical_scope": "第一四块综合；K1/5/20；N0/5/20；4F×7RX×1draw×2paths",
+      "notes": "两B前缀各接NCM/JointCE；通用RFFI绑定扩展，非新增RFFI论文。"
+    }
+  ],
+  "budget_summary": {
+    "fit_slots": 1683584,
+    "stage_prediction_slots": 1694840,
+    "core_fit_slots": 1247120,
+    "core_stage_slots": 1256360,
+    "core_B_tasks_per_model_path": 1190,
+    "first_main_K5_N20": {
+      "A": 9240,
+      "B": 46200,
+      "C": 89320,
+      "fit_slots": 135520
+    },
+    "second_main_K20_N20": {
+      "A": 0,
+      "B": 21000,
+      "C": 40600,
+      "fit_slots": 61600
+    },
+    "core_individual_query_decisions": {
+      "A": 403200,
+      "B": 8064000,
+      "C": 158502400,
+      "total": 166969600
+    }
+  },
+  "rules": [
+    "Every physical record receives one channel realization only; pure and atomic mixed pools are disjoint",
+    "Within a fixed K the primary mixed tasks are disjoint; across K they reuse the same fixed base observations",
+    "All methods, model seeds, support repetitions, C suffixes, ablations and P0/P1 share the same legal physical pools",
+    "No same-record second overlay to produce new G20/G25 or extra mixture replicas",
+    "No query becomes support, and only current registered classes/support are visible at each A/B/C stage",
+    "Logical stage slots are not optimizer updates, independent observations or measured GPU hours",
+    "Missing interfaces are N/A, never zero accuracy; preserve native budgets and source permissions"
+  ],
+  "superseded_primary_planning_by": "configs/pamf_phase2_full_eq_planning_r07_20261028.json"
+}

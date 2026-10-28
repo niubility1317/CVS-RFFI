@@ -5685,6 +5685,9 @@
       "LoRa_Kadaptive_policy": "same native voting, k=min(15,K); reuse identical enrollment and frozen query features; predeclared companion, no target-driven replacement",
       "source_matched_G_F_training": "not active; up to60 extra F source bindings and806960/811580 fit/stage slots if separately designed",
       "environment_query_reweighting_extra_fits": 0
-    }
-  }
+    },
+    "superseded_data_and_budget_by": "configs/pamf_phase2_capacity_r06_20261028.json"
+  },
+  "active_data_and_budget_design": "configs/pamf_phase2_full_eq_planning_r07_20261028.json",
+  "capacity_execution_note": "USER_HOLD_NO_NEW_LAUNCH; r05 method registry retained, r06 contingency only; Full eq r07 query/class/scope candidates not final"
 }

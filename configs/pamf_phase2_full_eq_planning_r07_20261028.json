@@ -1,0 +1,324 @@
+{
+  "schema": "pamf_phase2_full_eq_planning_r07",
+  "date": "2026-10-28",
+  "status": "USER_HOLD_NO_NEW_LAUNCH",
+  "launch_ready": false,
+  "authorization": "User requests no new launch while downloading Full WiSig eq; optimize design and training first. No automatic restart on file arrival.",
+  "supersedes": "r06 small-query scheme demoted to contingency; final class set/shared-query scope and actual file counts not locked",
+  "report": "docs/PAMF_PHASE2_FULL_EQ_QUERY_AND_TRAINING_20261028.md",
+  "source_roles_unchanged": {
+    "L_s": 6300,
+    "U_s_hidden_TX": 56700,
+    "V": 27000,
+    "old_classes": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "source_RX": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_RX": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "current_PAMF": "Tri-SIG-TIME SSL three views, E50/11100, current source-only checkpoints",
+    "DURA": "v1.0 frozen R69 stage2, Graph-RR FP32/TF32off"
+  },
+  "official_metadata_evidence": {
+    "source": "https://github.com/WiSig-dataset/wisig-examples/blob/master/data_summary.pkl",
+    "scope": "public counts only, not actual downloaded file validation",
+    "original_pairs": 182,
+    "original_total": 554823,
+    "original_pair_min_total": 590,
+    "original_pair_min_date": 69
+  },
+  "primary_candidate": {
+    "status": "CANDIDATE_CLASS_SET_NOT_FINAL_ALLOCATION",
+    "rule": "Among source-unseen TX: descending minimum packet count over all7RX×4dates, descending minimum4date_total over RX, lexical identity tie-break; no IQ/accuracy selection",
+    "proposed_new_classes": [
+      "8-3",
+      "8-18",
+      "20-7",
+      "2-19",
+      "11-7",
+      "7-11",
+      "1-18",
+      "3-18",
+      "16-1",
+      "5-5",
+      "20-12",
+      "8-8",
+      "1-10",
+      "17-11",
+      "16-16",
+      "3-13",
+      "11-4",
+      "7-10",
+      "10-7",
+      "11-1"
+    ],
+    "coverage": [
+      {
+        "transmitter": "8-3",
+        "minimum_date": 1031,
+        "minimum_total": 4475
+      },
+      {
+        "transmitter": "8-18",
+        "minimum_date": 1028,
+        "minimum_total": 4229
+      },
+      {
+        "transmitter": "20-7",
+        "minimum_date": 966,
+        "minimum_total": 4127
+      },
+      {
+        "transmitter": "2-19",
+        "minimum_date": 894,
+        "minimum_total": 4066
+      },
+      {
+        "transmitter": "11-7",
+        "minimum_date": 870,
+        "minimum_total": 3887
+      },
+      {
+        "transmitter": "7-11",
+        "minimum_date": 831,
+        "minimum_total": 4124
+      },
+      {
+        "transmitter": "1-18",
+        "minimum_date": 813,
+        "minimum_total": 3644
+      },
+      {
+        "transmitter": "3-18",
+        "minimum_date": 754,
+        "minimum_total": 3991
+      },
+      {
+        "transmitter": "16-1",
+        "minimum_date": 708,
+        "minimum_total": 3315
+      },
+      {
+        "transmitter": "5-5",
+        "minimum_date": 706,
+        "minimum_total": 3848
+      },
+      {
+        "transmitter": "20-12",
+        "minimum_date": 694,
+        "minimum_total": 3747
+      },
+      {
+        "transmitter": "8-8",
+        "minimum_date": 666,
+        "minimum_total": 3536
+      },
+      {
+        "transmitter": "1-10",
+        "minimum_date": 596,
+        "minimum_total": 2946
+      },
+      {
+        "transmitter": "17-11",
+        "minimum_date": 576,
+        "minimum_total": 2641
+      },
+      {
+        "transmitter": "16-16",
+        "minimum_date": 565,
+        "minimum_total": 3182
+      },
+      {
+        "transmitter": "3-13",
+        "minimum_date": 543,
+        "minimum_total": 4273
+      },
+      {
+        "transmitter": "11-4",
+        "minimum_date": 522,
+        "minimum_total": 3083
+      },
+      {
+        "transmitter": "7-10",
+        "minimum_date": 507,
+        "minimum_total": 3270
+      },
+      {
+        "transmitter": "10-7",
+        "minimum_date": 480,
+        "minimum_total": 3549
+      },
+      {
+        "transmitter": "11-1",
+        "minimum_date": 467,
+        "minimum_total": 4271
+      }
+    ],
+    "original_class_set_preserved_as": "Historical/sparse-coverage comparison, not silently relabeled",
+    "query_domains": 4,
+    "mixed_query_shared_across_support_episodes": true,
+    "mixed_support_repetitions": 8,
+    "single_support_repetitions": 5,
+    "support_pool_per_domain_RX_class": 24,
+    "query_per_domain_RX_class": 500,
+    "support_per_domain_per_date": [
+      6,
+      6,
+      6,
+      6
+    ],
+    "query_per_domain_per_date": [
+      124,
+      110,
+      129,
+      137
+    ],
+    "required_per_RX_TX_by_date": [
+      520,
+      464,
+      540,
+      572
+    ],
+    "published_minimum_per_date": [
+      522,
+      467,
+      543,
+      576
+    ],
+    "public_metadata_capacity_feasible": true,
+    "total_records": 381472,
+    "unique_support_candidates": 17472,
+    "unique_query": 364000,
+    "note": "Selecting different new TX and sharing query changes benchmark scope; source6/Rs/L/U/V and source models stay unchanged. User download counts/IDs/representation still pending; no launch."
+  },
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "K": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "new_counts": [
+    0,
+    2,
+    5,
+    10,
+    20
+  ],
+  "input_paths": [
+    "P0",
+    "P1"
+  ],
+  "repeats": {
+    "mixed_support_episodes": 8,
+    "single_scene_support_episodes": 5,
+    "mixed_support_seeds": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715,
+      2026092716,
+      2026092717,
+      2026092718
+    ],
+    "single_support_seeds": [
+      2026092711,
+      2026092712,
+      2026092713,
+      2026092714,
+      2026092715
+    ],
+    "query_shared_within_domain": true,
+    "physical_query_datasets": 4,
+    "independent_query_replicates_not_equal_to_support_episodes": true
+  },
+  "physical_domains": [
+    "G10 mixture",
+    "practical_low_suburban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "core_logical_budget_upper": {
+    "source_profiles": 15,
+    "complete_chains": 29,
+    "A": 3360,
+    "B": 77280,
+    "C": 597632,
+    "fit_slots": 674912,
+    "stage_slots": 678272,
+    "first_main_K5_N20": {
+      "B": 19320,
+      "C": 37352,
+      "fit_slots": 56672
+    },
+    "second_main_K20_N20": {
+      "B": 19320,
+      "C": 37352,
+      "fit_slots": 56672
+    },
+    "warning": "Not optimizer steps/GPU-hours or release order; missing native interfaces remain missing; replay mapping still to bind"
+  },
+  "reuse": {
+    "source": "one matching source model/method version/seed; preserve source roles, no Full-source retrain by default",
+    "G": "one deterministic G-only restored view per physical received, shared by all F seeds/methods",
+    "frozen_features": "own F checkpoint + input_path + physical ID + feature definition; no cross-native-model substitution",
+    "FFT": "one FFT96 per input_path/physical ID; independent of F seed",
+    "B": "one actual B state per source/seed/path/RX/domain/support/RNG; reused across N and C suffixes",
+    "C": "exact same state/input/classes/RNG only; MILKR re-estimates bandwidth/centering per current support",
+    "metrics": "derive all metrics from one frozen prediction artifact; no repeated F inference for reporting"
+  },
+  "current_execution": {
+    "no_target_experiment_started": true,
+    "source_only_smoke": "PASS; two L_s, zero target/query/updates; dispatcher and worker finished",
+    "source_run": "20261028-phase2-pamf-dura-readiness-s2026092701-r01",
+    "new_jobs_authorized_now": false
+  },
+  "query_stability_reporting": {
+    "full_query_per_class": 500,
+    "query_shards": 8,
+    "shard_sizes_per_class": [
+      63,
+      63,
+      63,
+      63,
+      62,
+      62,
+      62,
+      62
+    ],
+    "primary_metric": "full500 query, compute per actual row before aggregation",
+    "extra_fit_slots": 0,
+    "extra_model_inference": 0,
+    "independence": "support repeats and query shards are separate dependent axes; no64-IID claim",
+    "predictor_receives_query_shard_or_class_quotas": false
+  }
+}
