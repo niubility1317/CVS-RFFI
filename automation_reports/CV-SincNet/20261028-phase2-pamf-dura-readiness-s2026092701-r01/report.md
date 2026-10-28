@@ -35,3 +35,7 @@ VERIFIED：代码版本 `71f1428c8ac85695ebffb2efd791fe34061b325b` 已提交、�
 ## 外部源权重复用核查补充
 
 36/36 VERIFIED：8 个主比较家族×4 个种子共 32 份，以及旧版 Feature Separation 辅助版本×4 共 4 份。检查实际 completion/initialization/source_contract 与 last.pt 内容，role_ids/RX/day/ratio/split、类别、equalized1/256/unitRMS、scratch-only 来源、固定最终 E200 选择和 target_access 均通过；需 source base_state 的方法也已核实文件存在。没有进行目标推理或任何优化更新。具体逐行检查见 native_source_reuse_summary.json；实际 B/C 接口与当前版本身份仍需在相应 run 绑定，不能将此来源核查写成全部 29 条链已经运行。
+
+## 后续独立读回与用户暂不启动
+
+VERIFIED：source-only smoke 已完成并PASS，实际仅2条合法L_s，target/query/optimizer_updates均为0。dispatcher和worker均已退出，没有存活的本任务等待队列。用户正在下载Full WiSig eq，明确要求暂不启动新任务；不自动恢复。仅此接口诊断的状态为ANALYZED，不代表Phase2目标实验完成。摘要见smoke_summary.json；私有独立读回在local_artifacts/pamf_phase2_readiness_20261028/latest_readback_after_deferral.json。

@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "real_checkpoint": true,
+  "source_rows": 2,
+  "target_rows": 0,
+  "query_rows": 0,
+  "optimizer_updates": 0,
+  "PAMF_parameters": 232993,
+  "DURA_parameters": 266951,
+  "branch_dimensions": {
+    "z_id": [
+      2,
+      160
+    ],
+    "t_emb": [
+      2,
+      160
+    ],
+    "f_emb": [
+      2,
+      160
+    ],
+    "pa_local": [
+      2,
+      160
+    ]
+  },
+  "actual_composite_joint": true,
+  "DURA_individual_packet_check": true
+}
