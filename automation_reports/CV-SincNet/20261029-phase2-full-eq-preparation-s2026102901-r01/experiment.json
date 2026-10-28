@@ -19,7 +19,7 @@
   "replaces_run_id": null,
   "authorization": "User 2026-10-29 authorizes Full dataset allocation analysis, N607 upload and experiment-data preparation. No identity training, prediction or scoring.",
   "code": {
-    "commit": "PUBLISH_CURRENT_COMMITTED_HEAD_RECORDED_IN_RUNTIME",
+    "commit": "f9117df47c11c484115e082760fc3d16f5d17a3d",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-full-eq-preparation-s2026102901-r01-release"
@@ -172,9 +172,10 @@
   "notes": [
     "Raw dataset upload independently verified20ZIP34378471511bytes; all remote ZIP CRC PASS.",
     "No F/G checkpoint required at this stage; real-checkpoint smoke not applicable to a data-only builder.",
-    "Five focused allocation/protocol-negative tests PASS; one independent P0/P1 review passed after one direct packaging fix.",
+    "Six focused allocation/protocol-negative tests PASS; one independent P0/P1 review passed after one direct packaging fix.",
     "8 independent mixed data groups use one distinct support seed each. Three pure groups use five support draws on fixed query; do not treat support repeats as independent query sets.",
-    "Source Phase1 training and all identity prediction/scoring queues remain on hold."
+    "Source Phase1 training and all identity prediction/scoring queues remain on hold.",
+    "Actual inventory and allocation VERIFIED:4872cells,1962202Full rows,490568legacy compact matches,197168ManyTx exclusions;20count-selected TX and539448physical records fixed. Received build RUNNING."
   ],
   "registered_at": "2026-10-28T17:05:43+00:00"
 }

@@ -3,7 +3,7 @@
 - run_id：`20261029-phase2-full-eq-preparation-s2026102901-r01`
 - group_id：`phase2-full-eq-shared-data-r08`；类别：`diagnostic`；阶段：`Phase2-data-builder`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -39,3 +39,9 @@ N607普通用户项目：`/home/szu2070436088/2510044040/CV-SincNet`。已完成
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 已验证发布与库存
+
+实际执行commit为`f9117df47c11c484115e082760fc3d16f5d17a3d`，代码归档传输及远端编译PASS。controller PID2166357、inventory PID2166364和随后build PID2167556的CWD/argv与日志增长已独立核实。
+
+全部4,872个目标库存单元精确映射通过：Full1,962,202条，四compact并集匹配490,568条，ManyTx全量排除197,168条。已固定20个新类、539,448条本轮物理记录及逐日期配额，见分配报告。received正生成，未取得完整builder_report/catalog，不宣称数据全部完成。当前身份训练/身份预测/评分为0，DURA目标缓存未启动。
