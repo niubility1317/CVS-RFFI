@@ -10,7 +10,8 @@
     "docs/PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md",
     "docs/PAMF_PHASE2_MILKR_EXPERIMENT_DESIGN_20261028.md",
     "docs/PAMF_PHASE2_METHOD_CODE_INVENTORY_20261028.md",
-    "docs/PAMF_PHASE2_MAIN_TABLES_20261028.md"
+    "docs/PAMF_PHASE2_MAIN_TABLES_20261028.md",
+    "docs/PAMF_PHASE2_FULL_EQ_ALLOCATION_R08_20261029.md"
   ],
   "primary_method": {
     "name": "MILKR",
@@ -5688,6 +5689,10 @@
     },
     "superseded_data_and_budget_by": "configs/pamf_phase2_capacity_r06_20261028.json"
   },
-  "active_data_and_budget_design": "configs/pamf_phase2_full_eq_planning_r07_20261028.json",
-  "capacity_execution_note": "USER_HOLD_NO_NEW_LAUNCH; r05 method registry retained, r06 contingency only; Full eq r07 query/class/scope candidates not final"
+  "active_data_and_budget_design": "configs/pamf_phase2_full_eq_data_r08_20261029.json",
+  "capacity_execution_note": "USER_HOLD_NO_NEW_LAUNCH; r05 method registry retained, r06 contingency only; Full eq r07 query/class/scope candidates not final",
+  "active_selected_classes": "configs/pamf_phase2_full_eq_r08_selected_classes_20261029.json",
+  "data_preparation_status": "ALLOCATION_VERIFIED_RECEIVED_BUILD_RUNNING",
+  "data_preparation_run": "20261029-phase2-full-eq-preparation-s2026102901-r01",
+  "identity_experiments_still_on_hold": true
 }

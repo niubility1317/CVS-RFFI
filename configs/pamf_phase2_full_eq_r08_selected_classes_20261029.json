@@ -1,0 +1,243 @@
+{
+  "schema": "pamf_phase2_full_eq_r08_selected_classes",
+  "run_id": "20261029-phase2-full-eq-preparation-s2026102901-r01",
+  "code_commit": "f9117df47c11c484115e082760fc3d16f5d17a3d",
+  "rule": "Exclude six source TX; require all7RX×4dates nonempty, minimum per-RX remaining count sufficient for all11domains, and fresh-support count sufficient for all11domains. Rank descending minimum four-date query-eligible total after reserving entire ManyTx, descending minimum fresh-support total after excluding all four compact datasets, descending minimum raw date count, lexical tie. Take20; fixed independent arrival permutation. No IQ quality, model or accuracy selection.",
+  "coverage_order": [
+    "8-3",
+    "3-13",
+    "11-1",
+    "8-18",
+    "20-7",
+    "7-11",
+    "2-19",
+    "3-18",
+    "11-7",
+    "5-5",
+    "20-12",
+    "1-18",
+    "10-7",
+    "8-8",
+    "16-1",
+    "7-10",
+    "4-11",
+    "4-1",
+    "19-1",
+    "16-16"
+  ],
+  "arrival_order": [
+    "11-1",
+    "11-7",
+    "20-7",
+    "3-18",
+    "20-12",
+    "19-1",
+    "4-1",
+    "16-16",
+    "3-13",
+    "8-3",
+    "1-18",
+    "4-11",
+    "7-11",
+    "7-10",
+    "8-18",
+    "5-5",
+    "10-7",
+    "8-8",
+    "16-1",
+    "2-19"
+  ],
+  "selected_count": 20,
+  "source_classes_unchanged": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "count_summary": [
+    {
+      "transmitter": "14-10",
+      "old": true,
+      "minimum_full": 4537,
+      "minimum_available_after_manytx": 4337,
+      "minimum_fresh_support": 537
+    },
+    {
+      "transmitter": "14-7",
+      "old": true,
+      "minimum_full": 4762,
+      "minimum_available_after_manytx": 4562,
+      "minimum_fresh_support": 762
+    },
+    {
+      "transmitter": "20-15",
+      "old": true,
+      "minimum_full": 6165,
+      "minimum_available_after_manytx": 5965,
+      "minimum_fresh_support": 2165
+    },
+    {
+      "transmitter": "20-19",
+      "old": true,
+      "minimum_full": 5484,
+      "minimum_available_after_manytx": 5284,
+      "minimum_fresh_support": 1484
+    },
+    {
+      "transmitter": "6-15",
+      "old": true,
+      "minimum_full": 4404,
+      "minimum_available_after_manytx": 4204,
+      "minimum_fresh_support": 404
+    },
+    {
+      "transmitter": "8-20",
+      "old": true,
+      "minimum_full": 5245,
+      "minimum_available_after_manytx": 5045,
+      "minimum_fresh_support": 1245
+    },
+    {
+      "transmitter": "11-1",
+      "old": false,
+      "minimum_full": 4271,
+      "minimum_available_after_manytx": 4071,
+      "minimum_fresh_support": 2871
+    },
+    {
+      "transmitter": "11-7",
+      "old": false,
+      "minimum_full": 3887,
+      "minimum_available_after_manytx": 3687,
+      "minimum_fresh_support": 2937
+    },
+    {
+      "transmitter": "20-7",
+      "old": false,
+      "minimum_full": 4127,
+      "minimum_available_after_manytx": 3927,
+      "minimum_fresh_support": 3177
+    },
+    {
+      "transmitter": "3-18",
+      "old": false,
+      "minimum_full": 3991,
+      "minimum_available_after_manytx": 3791,
+      "minimum_fresh_support": 3041
+    },
+    {
+      "transmitter": "20-12",
+      "old": false,
+      "minimum_full": 3747,
+      "minimum_available_after_manytx": 3547,
+      "minimum_fresh_support": 2797
+    },
+    {
+      "transmitter": "19-1",
+      "old": false,
+      "minimum_full": 3193,
+      "minimum_available_after_manytx": 2993,
+      "minimum_fresh_support": 2993
+    },
+    {
+      "transmitter": "4-1",
+      "old": false,
+      "minimum_full": 3223,
+      "minimum_available_after_manytx": 3023,
+      "minimum_fresh_support": 3023
+    },
+    {
+      "transmitter": "16-16",
+      "old": false,
+      "minimum_full": 3182,
+      "minimum_available_after_manytx": 2982,
+      "minimum_fresh_support": 2232
+    },
+    {
+      "transmitter": "3-13",
+      "old": false,
+      "minimum_full": 4273,
+      "minimum_available_after_manytx": 4073,
+      "minimum_fresh_support": 3323
+    },
+    {
+      "transmitter": "8-3",
+      "old": false,
+      "minimum_full": 4475,
+      "minimum_available_after_manytx": 4275,
+      "minimum_fresh_support": 3525
+    },
+    {
+      "transmitter": "1-18",
+      "old": false,
+      "minimum_full": 3644,
+      "minimum_available_after_manytx": 3444,
+      "minimum_fresh_support": 3444
+    },
+    {
+      "transmitter": "4-11",
+      "old": false,
+      "minimum_full": 3232,
+      "minimum_available_after_manytx": 3032,
+      "minimum_fresh_support": 2282
+    },
+    {
+      "transmitter": "7-11",
+      "old": false,
+      "minimum_full": 4124,
+      "minimum_available_after_manytx": 3924,
+      "minimum_fresh_support": 2724
+    },
+    {
+      "transmitter": "7-10",
+      "old": false,
+      "minimum_full": 3270,
+      "minimum_available_after_manytx": 3070,
+      "minimum_fresh_support": 2320
+    },
+    {
+      "transmitter": "8-18",
+      "old": false,
+      "minimum_full": 4229,
+      "minimum_available_after_manytx": 4029,
+      "minimum_fresh_support": 3279
+    },
+    {
+      "transmitter": "5-5",
+      "old": false,
+      "minimum_full": 3848,
+      "minimum_available_after_manytx": 3648,
+      "minimum_fresh_support": 2898
+    },
+    {
+      "transmitter": "10-7",
+      "old": false,
+      "minimum_full": 3549,
+      "minimum_available_after_manytx": 3349,
+      "minimum_fresh_support": 2599
+    },
+    {
+      "transmitter": "8-8",
+      "old": false,
+      "minimum_full": 3536,
+      "minimum_available_after_manytx": 3336,
+      "minimum_fresh_support": 3336
+    },
+    {
+      "transmitter": "16-1",
+      "old": false,
+      "minimum_full": 3315,
+      "minimum_available_after_manytx": 3115,
+      "minimum_fresh_support": 3115
+    },
+    {
+      "transmitter": "2-19",
+      "old": false,
+      "minimum_full": 4066,
+      "minimum_available_after_manytx": 3866,
+      "minimum_fresh_support": 3116
+    }
+  ]
+}

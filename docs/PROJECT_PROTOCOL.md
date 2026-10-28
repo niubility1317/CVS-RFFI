@@ -1,5 +1,13 @@
 # CVS项目场景与数据协议
 
+## Full WiSig Phase2 数据制作授权（2026-10-29，用户最新要求）
+
+用户已授权根据完整数据继续分析分配、上传 N607 并制作实验数据，覆盖下方“暂不构建”的部分；身份训练、身份预测和评分仍暂停。只读下载验证已通过，Full 优先扩充目标端，源六类、源 RX/day、L_s/U_s/V 及可复用 Phase1 权重身份保持。
+
+本轮 Full 基准按原始 float64 IQ 在同 RX/TX/date 内精确匹配旧 compact。新 support 排除 ManySig、ManyTx、ManyRx、SingleDay 的并集，保守保护其历史 query 角色；所有新观测另排除整个 ManyTx，避免已知历史 Phase2 received 重新生成。其他历史 Phase1/compact 记录可以继续仅作 query，此为明确命名的新 Full 基准，不声称独立盲测或穷尽全项目历史暴露；旧 received 与结果保持原身份。
+
+按实际排除后的数量固定新20类及独立到达顺序，不按 IQ 质量或性能挑选。物理数据组互斥，每个物理记录在本轮只生成一次 practical residual。日期按实际容量尽量均衡，不把固定日期配额强加于缺量单元；综合概率不随 TX、旧新类或 support/query 改变。各 N 注册阶段只提供已注册 query，各行只提供实际 K 条/类 support，未开放类别及额外 support 候选不进入该行读取器。共享 query 不计独立重复。具体数量、seed、文件布局与当前预算见 r08 配置和本轮数据准备记录。
+
 ## Full WiSig eq 扩容规划与暂不启动（2026-10-28，用户最新要求）
 
 用户正在下载完整 WiSig eq，明确要求先优化实验/训练设置、避免重复工作，暂不启动新任务。既有 ManyTx 的局部容量不再约束正式主表；r06 小 query 分层方案仅作应急备选。较大 query 的正式数据分配须依据实际 Full eq 计数确定，当前候选见 `docs/PAMF_PHASE2_FULL_EQ_QUERY_AND_TRAINING_20261028.md`，不能把公开元数据计数等同实际文件已完成或已建立实验数据。
