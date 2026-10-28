@@ -1,0 +1,14 @@
+{
+  "validation_root": "E:/type10-7/local_artifacts/pamf_phase2_full_eq_validation_20261029_r02",
+  "full_root": "F:/FULL wisig",
+  "source_receivers": ["1-19", "18-2", "19-2", "2-19", "3-19"],
+  "receiver": "24-18",
+  "receiver_index": 30,
+  "registered_classes": ["14-10", "14-7", "20-15", "20-19", "6-15", "8-20"],
+  "discovery_classes": ["11-4", "3-13"],
+  "future_unknown_classes": ["12-20", "5-20"],
+  "days": {"discovery": "2021_03_08", "evaluation": "2021_03_23"},
+  "per_scene": {"discovery": 32, "evaluation": 64},
+  "scenes": ["practical_low_suburban", "practical_mid_urban", "practical_low_urban"],
+  "seeds": {"selection": 2026102901, "receiver": 2026102902, "channel": 2026102903, "shuffle": 2026102904}
+}
