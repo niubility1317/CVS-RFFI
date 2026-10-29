@@ -1,8 +1,8 @@
 {
   "schema": "pamf_phase2_milkr_experiment_design_v1",
   "date": "2026-10-28",
-  "status": "CORE_EXECUTION_RUNNING_EXTERNAL_INTERFACES_PENDING",
-  "launch_ready": false,
+  "status": "CORE_AND_ALL_RUNNABLE_EXTERNAL_METHODS_RUNNING_OR_QUEUED",
+  "launch_ready": true,
   "execution_authorized_by_this_design": false,
   "scope": "existing labeled MILKR Phase2 complete S/B/C comparison plus frozen DURA input factor; no new G training, target-U R&D, Phase3 or collaboration",
   "documents": [
@@ -454,11 +454,17 @@
         "lr": 0.001,
         "batch_size": 256
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": true,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "poster_ft",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "radionet_ada_knn",
@@ -494,11 +500,17 @@
         "author_ada_iterations": 10000,
         "knn_k": "K"
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "radionet_ada_knn",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "radionet_ada_ft_knn",
@@ -537,12 +549,18 @@
         "ada_iterations": 10000,
         "support_ft_epochs": 30
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": true,
       "primary_registration_table_member": true,
-      "source_warmup": "source-only E/C training; target domain branch disabled until B"
+      "source_warmup": "source-only E/C training; target domain branch disabled until B",
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "radionet_ada_ft_knn",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "radionet_df_ft",
@@ -576,11 +594,17 @@
         "lr": 0.001,
         "batch_size": 128
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "radionet_df_ft",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "radionet_triplet",
@@ -616,11 +640,17 @@
         "optimizer": "Adam",
         "lr": 0.001
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "radionet_triplet",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "protonet_cda",
@@ -658,11 +688,17 @@
         "historical_source_epochs": 200,
         "target_optimizer_steps": 0
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": true,
-      "primary_registration_table_member": true
+      "primary_registration_table_member": true,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "protonet_cda",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "mrior_sda",
@@ -697,12 +733,18 @@
         "lr": 0.0006,
         "CPL": false
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": true,
       "primary_registration_table_member": false,
-      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B"
+      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B",
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "mrior_sda",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "dadda_sda",
@@ -734,12 +776,18 @@
       "budget": {
         "target_steps": 100
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": true,
       "primary_registration_table_member": false,
-      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B"
+      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B",
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "dadda_sda",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "twostage_sda",
@@ -774,12 +822,18 @@
         "lmmd_steps": 100,
         "ft_steps": 100
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": true,
       "primary_registration_table_member": false,
-      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B"
+      "source_warmup": "source-only architecture/objective; actual source-target alignment starts in B",
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "twostage_sda",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "feature_separation_hu2024",
@@ -817,11 +871,17 @@
         "target_budget_basis": "explicit_project_setting",
         "target_update_scope": "shared_encoder_and_TX_path_RX_frozen"
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": true,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "feature_separation_hu2024",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "feature_separation_legacy",
@@ -852,11 +912,17 @@
       "budget": {
         "historical_target_epochs": 100
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "feature_separation_legacy",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "ra_collab_single_ft",
@@ -886,11 +952,17 @@
         "momentum": 0.9,
         "batch_size": 32
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": true,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "ra_collab_single_ft",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "tweak_m1",
@@ -922,11 +994,17 @@
         "source_epochs": 100,
         "query_observations": 1
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": true,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "tweak_m1",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "tweak_m10",
@@ -957,7 +1035,13 @@
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "tweak_m10",
+        "status": "N_A_BY_ORIGINAL_TABLE",
+        "reason": "Native M=10 needs ten legally linked same-transmitter observations per query track. The current capsule has one fixed 256-IQ window per opaque physical ID and no predeclared same-TX track ID. Query truth, reshape and random grouping cannot supply those tracks."
+      }
     },
     {
       "id": "csil_corefix",
@@ -993,11 +1077,17 @@
         "C_epochs": 3,
         "optimizer_C": "masked_SGDM"
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": true
+      "primary_registration_table_member": true,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "csil_corefix",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "csil_author",
@@ -1028,7 +1118,13 @@
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "csil_author",
+        "status": "N_A_BY_ORIGINAL_TABLE",
+        "reason": "Original MATLAB workspace/author source Fisher is not a runnable Python version of the current capsule. The historical empirical-Fisher corefix source cannot be relabeled as original exp(gradient_squared) Fisher; that original numerical path overflowed even float64."
+      }
     },
     {
       "id": "mopc_paper",
@@ -1065,11 +1161,17 @@
         "C_epochs_per_session": 20,
         "new_classes_per_session": 5
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": true
+      "primary_registration_table_member": true,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "mopc_paper",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "mopc_public_code",
@@ -1095,11 +1197,17 @@
       ],
       "inventory_status": "complete_author_code_semantics_differ_from_paper_port",
       "budget": null,
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "mopc_public_code",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "orthogonal",
@@ -1135,11 +1243,17 @@
         "B_epochs": 10,
         "C_epochs": 50
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": true
+      "primary_registration_table_member": true,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "orthogonal",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "issl_fixed_v1",
@@ -1182,11 +1296,17 @@
         "B_lr": 0.0001,
         "B_batch_size": "min(32,6K)"
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": true
+      "primary_registration_table_member": true,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "issl_fixed_v1",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "issl_author_behavior",
@@ -1213,11 +1333,17 @@
       ],
       "inventory_status": "complete_real_IQ_diagnostic_not_formal_result",
       "budget": null,
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
-      "primary_registration_table_member": false
+      "primary_registration_table_member": false,
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "issl_author_behavior",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     },
     {
       "id": "lora_triplet_knn",
@@ -1254,12 +1380,18 @@
         "STFT_window": 64,
         "STFT_overlap": 32
       },
-      "launch_ready": false,
+      "launch_ready": true,
       "current_contract_metrics": null,
       "source_stage_policy": "same PAMF source physical roles; target IQ/statistics prohibited before B; U_s TX hidden",
       "primary_DA_table_member": false,
       "primary_registration_table_member": true,
-      "predeclared_auxiliary_control": "k=min(15,K); separate from KNN15 main, no target-based replacement"
+      "predeclared_auxiliary_control": "k=min(15,K); separate from KNN15 main, no target-based replacement",
+      "execution_binding": {
+        "run_id": "20261029-phase2-external-threepool-m4-r01",
+        "profile": "lora_triplet_knn",
+        "status": "RUNNING_OR_QUEUED",
+        "reason": null
+      }
     }
   ],
   "registration_complete_families": [
@@ -4516,7 +4648,7 @@
   "complete_master_r05": {
     "revision": "r05_complete_S_B_C_master_with_frozen_DURA",
     "status": "DESIGN_ONLY",
-    "execution_authorized": false,
+    "execution_authorized": true,
     "primary_source_profiles": [
       {
         "id": "pamf",
@@ -5691,7 +5823,9 @@
       "source_matched_G_F_training": "not active; up to60 extra F source bindings and806960/811580 fit/stage slots if separately designed",
       "environment_query_reweighting_extra_fits": 0
     },
-    "superseded_data_and_budget_by": "configs/pamf_phase2_capacity_r06_20261028.json"
+    "superseded_data_and_budget_by": "configs/pamf_phase2_capacity_r06_20261028.json",
+    "current_binding": "configs/pamf_phase2_external_threepool_execution_20261029.json",
+    "current_binding_run": "20261029-phase2-external-threepool-m4-r01"
   },
   "active_data_and_budget_design": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
   "capacity_execution_note": "User chooses3disjoint physical pools to guarantee>=150query perRX/TX atK20;minimum176.Eachpool repeated episodes;r09channelsreused;identity experiments remainonhold.",
@@ -5720,7 +5854,12 @@
   "current_core_execution_run": "20261029-phase2-milkr-threepool-m4-r01",
   "current_core_execution_config": "configs/pamf_phase2_milkr_threepool_execution_20261029.json",
   "current_core_execution_status": "VERIFIED_RUNNING_FIRST_PAIRED_UNIT",
-  "external_full_registry_execution_status": "SOURCE_REUSE_AUDIT_AVAILABLE_EPISODIC_INTERFACES_PENDING",
+  "external_full_registry_execution_status": "DEPLOYED20_RUNNABLE_VARIANTS28_CHAINS;2_ORIGINAL_NA",
   "current_core_execution_code_commit": "20f920985a97376aad2ac9663d33dcb9b81e3c49",
-  "core_launch_ready": true
+  "core_launch_ready": true,
+  "current_external_execution_run": "20261029-phase2-external-threepool-m4-r01",
+  "current_external_execution_code_commit": "6860e01be055dc92e1b3c43865034df802e2bf02",
+  "current_external_execution_config": "configs/pamf_phase2_external_threepool_execution_20261029.json",
+  "current_Phase2_resource_policy": "core+external two Phase2 GPU workers perGPU0-7,other owners additional;verified16",
+  "current_unified_controller_run": "20261029-phase2-external-threepool-m4-r01"
 }

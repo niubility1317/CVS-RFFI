@@ -1,5 +1,11 @@
 # CVS项目场景与数据协议
 
+## Phase2 全外部方法与本轮双进程口径（2026-10-29，用户最新明确）
+
+用户明确要求将原总表的外部对比全部接入相同三池数据并启动，原生方法和组合扩展逐阶段区分。本轮 Phase2 核心＋外部合计每 GPU 两个训练／预测 worker，其他 owner 的进程另计；此项覆盖下方“计入可见既有进程”的旧口径。启动前仍核实实际剩余显存，绝不停止、修改、重启其他 owner。统一调度仅接管本轮旧核心 CPU 父调度器，健康 GPU worker 保持 PID、代码、CWD、命令和输出；后续核心任务仍使用原发布版本。
+
+已匹配源契约的 Phase1 权重直接复用，缺失方法只按相同合法源角色从头补齐原定完整预算。外部源训练不接收目标数据句柄；进入 B 前必须完成实际 checkpoint 的 source-only 无 query smoke。原闭集 DA 方法原生 C 为 N/A，原生输出扩展 FT100／NCM／JointCE100 单列项目组合；原始 CSIL MATLAB/Fisher 和 Tweak M10 的既有不可绑定项仍为 N/A，不能用 corefix／M1 冒充。P1 使用核心完全相同的冻结 DURA 缓存；其生产任务完成后才允许读取，不独立重做恢复或训练 G。详细执行矩阵见 `docs/PAMF_PHASE2_EXTERNAL_THREEPOOL_EXECUTION_20261029.md`。
+
 ## Phase2 三池正式实验启动授权（2026-10-29，用户最新要求）
 
 用户要求检查三池制作进度，完成后核验互斥划分、support/query及星地信道，准备好直接启动Phase2；覆盖下方本轮身份训练/预测/评分暂停约定。输入仍为r10三物理池、原六旧类/二十新类、全补集query且每类至少150、pool内多组随机划分与独立信道；不改变科学数据权限或历史记录。所有方法进入B之前只使用同一合法源域，Phase1合规权重及冻结DURA直接复用，不因Full目标扩容重复源训练。
@@ -24,26 +30,6 @@
 
 query真值在当前任务中始终不进入拟合；跨套曾为query的记录允许在另一独立任务中成为合法support。query仅逐样本面对全部已注册类；禁止query统计/配额拟合或借任务间身份重用路由候选。所有事前固定套次均报告，不按结果重采信道、挑套或调参；复用原始记录的多套仿真不写成更多独立物理数据或独立盲测。原r08互斥数据保留为已完成且被用户更正替代的历史产物。
 
-## Phase3 源端辅助开放集开发（2026-10-29，本目标研究定义）
-
-在本Phase3自主研究授权内，可另设与原source RX及正式target RX均互斥的开发接收机集合R_dev，用于未见接收机与practical星地域变的开发验证。它不是对原L_s/U_s/V、正式RX24-18或Phase2数据的改写。R_dev只能按已有元数据中的角色互斥与容量事前选择，不按IQ质量或识别成绩选择；所用checkpoint祖先须未在R_dev训练。已知TX沿用旧六类，开发未知TX与辅助OE训练TX和正式四未知均互斥。须明确披露其属于开发域、未知设备是否曾作源开发验证，以及已暴露结果不再具有盲测身份。
-
-R_dev可建立物理互斥的U_dev与V_dev：U_dev仅提供无标签公共received和opaque ID，可按预登记算法适应、发现及匿名注册；V_dev只在状态冻结后逐样本预测，全部预测固定后独立评分，标签不得用于拟合、阈值校准、早停或同run重做。开发验证不替代正式独立future query；允许据开发结论形成下一独立机制，但禁止逐TX专属规则、读取未知真值/类别数/配额，以及将V_dev回收为训练。每个物理记录仍只有一份固定received，RX、日期、信道处理与继承边界按既有接口复用；正式R_t的U/Q继续隔离，正式评分不回流方案选择。
-
-按2026-10-29用户将clean跨RX与星地跨RX分开验收的要求，可为已固定R_dev物理记录另建clean条件控制。控制只恢复同一canonical记录的source匹配FP32/一次unit RMS输入，不新抽样、不生成第二份practical、不新增均衡，不计为更多独立物理样本。clean与star可用相同opaque ID作评分端配对，但通过独立`phase3_clean_min_v1`公共三文件及不同capsule/split区分；clean predictor仅读clean，star predictor仅读其单份received或冻结恢复结果，禁止以逐条clean参考拟合/校正星地输入。clean U/V仍按原角色物理互斥，truth-last与未知标签/真实类数隐藏保持；源、开发与正式RX边界不变。性能目标由最新goal和targets配置管理，历史run判定不追改。
-
-为在当前完整六类PAMF上开发开放集机制，本Phase3目标增加独立的source辅助设备数据角色。该角色只来自原source RX/day，辅助TX须与旧六类、正式目标发现类及后续未知类均不相交；训练用辅助TX与源验证用辅助TX也互斥，名单和数量按元数据容量事前固定，不按IQ质量或识别成绩挑选。它不改写Phase1原L_s/U_s/V、既有checkpoint及Phase2数据权限，也不将辅助TX自动加入初始已注册类。
-
-若采用Outlier Exposure（源端辅助未知暴露），source训练可获得“当前六类已知／辅助源端未知”的成员监督；辅助设备真实TX仅由builder和独立source评分保管，不能把这种额外源监督写成零源标签。目标端仍为零人工TX标签。必须分别披露新增源数据、标签权限、成本及匹配的无OE对照；原U_s的隐藏TX真值不解封、不用于筛新角色。辅助新设备验证只读，不更新模型、阈值或持久判决参数；原known V仅允许无模型更新的既定源端阈值校准，不拟合拒识器参数或早停。正式target IQ、目标类别构成及评分不参与source阶段。
-
-本路线先保持当前六类完整PAMF及默认身份头冻结，后续辅助拒识器或其他source状态单独版本、预登记和验证，不把四类CE代理成绩当完整PAMF的能力上限。基础checkpoint仍须匹配原六类源契约；新增状态记录自己的source辅助设备祖先和源选择依据。正式严格未知TX不得进入基础模型、辅助训练或辅助源验证选择的任何祖先。
-
-本Phase3目标后续可单独命名原生source增量候选：从已核实的完整六类F训练构造器严格初始化，在原L_s及独立OE训练角色上联合更新骨干和既有六类默认身份头，保留Phase1/2固定权重与默认身份，不以冻结骨干另训身份头代替。原U_s隐藏真值、V、source novel验证和正式target均不进入该增量优化；不使用源验证早停。报告原11100步与新增固定更新、优化器是否重置和全部源成员监督，保留同增量预算的source监督对照。推理reader的冻结滤波器不能冒充可训练Sinc路径；实际checkpoint无query梯度smoke后按预登记继续。新模型已知保护须与原F同输入闭集预测比较，不能仅以新模型自身闭集结果掩盖特征损伤；source V仍只作无模型更新的固定阈值校准，未知私有truth仍在全部预测后才由独立scorer连接。
-
-新source辅助数据只在本次改变的TX/RX/day/角色和物理接收记录上做一次builder核对，并复用已完成的Full原始验证。辅助TX不在四compact名单中可以排除同TX的旧compact记录继承，但不能据此宣称穷尽全项目历史未暴露；若使用compact已包含TX的新记录，须按相同RX/TX/date的原float64记录精确排除，不能用Full索引或文件前缀判断新记录。源端归一化IQ与正式target固定received分开；源训练衍生计算/增强view不增加物理样本数，正式target仍执行单记录单固定practical residual观测。
-
-部署侧不回读源IQ或逐样本源特征；source状态冻结后才开放合法目标无标签流，未来query仍只逐样本推理、全部预测固定后独立truth-last评分。该定义不证明任何辅助方法有效，具体候选、容量、科学门槛和实际结果留在独立目标/run。
-
 ## Full WiSig Phase2 数据制作授权（2026-10-29，用户最新要求）
 
 用户已授权根据完整数据继续分析分配、上传 N607 并制作实验数据，覆盖下方“暂不构建”的部分；身份训练、身份预测和评分仍暂停。只读下载验证已通过，Full 优先扩充目标端，源六类、源 RX/day、L_s/U_s/V 及可复用 Phase1 权重身份保持。
@@ -52,72 +38,141 @@ R_dev可建立物理互斥的U_dev与V_dev：U_dev仅提供无标签公共receiv
 
 按实际排除后的数量固定新20类及独立到达顺序，不按 IQ 质量或性能挑选。物理数据组互斥，每个物理记录在本轮只生成一次 practical residual。日期按实际容量尽量均衡，不把固定日期配额强加于缺量单元；综合概率不随 TX、旧新类或 support/query 改变。各 N 注册阶段只提供已注册 query，各行只提供实际 K 条/类 support，未开放类别及额外 support 候选不进入该行读取器。共享 query 不计独立重复。具体数量、seed、文件布局与当前预算见 r08 配置和本轮数据准备记录。
 
-## Full WiSig eq 扩容规划与暂不启动（2026-10-28，用户最新要求）
+## 本对话独立 PAMF 半监督改为识别器直接泛化（2026-10-26）
 
-用户正在下载完整 WiSig eq，明确要求先优化实验/训练设置、避免重复工作，暂不启动新任务。既有 ManyTx 的局部容量不再约束正式主表；r06 小 query 分层方案仅作应急备选。较大 query 的正式数据分配须依据实际 Full eq 计数确定，当前候选见 `docs/PAMF_PHASE2_FULL_EQ_QUERY_AND_TRAINING_20261028.md`，不能把公开元数据计数等同实际文件已完成或已建立实验数据。
+用户明确撤下本对话的 DURA 配合研发路线。后续本路线训练仅使用合法源域 clean IQ 及同一物理记录叠加星地信道的衍生视图；不使用 DURA 恢复 IQ、权重、输出、教师或恢复器协同损失，也不以恢复后性能作为新方法筛选条件。新正式评价使用冻结 F 原默认头直接识别 clean 与已声明的六种 practical IQ，不新增恢复器读出。现有仅用 clean/As 的健康 F 训练保持，已登记旧 run 的只读评估收尾及已生成 DURA 结果保留为历史，不据其重选新路线。本条仅约束本对话独立研发，不改变其他 owner 的任务或项目固定 DURA 版本。
 
-大 query 候选区分物理测试池和 support 重复：同一固定 query 可以在不同合法 support 任务上作配对评估，但不计为新的独立测试集；support/query 角色全局互斥，方法只能读取本行已开放的 K 条support与已注册query。共享 query 或按覆盖计数重定新TX集合属于需明确命名的基准范围，不静默改写历史名单/结果，也不按识别表现挑样本或类别。最终范围尚未锁定。
+L_s/U_s/V、原物理 ID、源/目标 RX/day/TX、U_s 的 TX 隐藏与已知 RX 标签权限不变。同一物理记录的多个信道视图仍属于同一角色。V 不参与梯度或持久状态更新，目标不参与掩码、参数、候选或 epoch 选择；预测全部固定后独立 truth-last 评分。现有匹配监督与普通 PL 权重及完成预测复用，不重复训练对照。新方法与指标、矩阵和资源安排在独立目标及实验记录中固定。
 
-源六类、源RX/day及L_s/U_s/V角色保持，Full优先扩充目标端；匹配的Phase1权重直接复用，未选择的Full记录不自动变为训练或target U。既有S/B/C、practical residual、冻结DURA、逐样本全类竞争和truth-last权限不变。当前不新增训练/数据构建/目标推理/评分，不因下载完成自动恢复队列，不改变其他owner任务。
+## 本轮 Full 四格 practical residual 与泛化统计（2026-10-23）
 
-## Phase3 零标签开放世界与跨接收机默认（2026-10-28，用户最新授权）
+用户已授权按 `EXTERNAL_FULL_PRACTICAL_RESIDUAL_2X2_DESIGN_20261023.md` 发布。四种外部方法仅 Full，保留原生目标/默认头/预算；新增信道增强与普通 PL 的 2×2，增强关闭时用原 L IQ 维持辅助 CE 剂量。增强启用时只用 low suburban/mid urban/low urban，条件概率 .40/.35/.25，最大预算进度 0/.20/.45 对应施加概率 .30/.60/.80；实际引擎为 practical ResidualChannel residual/post_sync/noEQ。该明确无信道控制覆盖历史“星地测试必须开启增强”的默认，不删除旧产物。
 
-用户明确启动Phase3：在Phase1基础上，跨接收机域泛化始终是默认要求，进一步完成未知类拒识、无标签目标域适应、未知类别发现和无标签新类注册。源RX与目标RX保持互斥；首轮单星被动监听，不把多节点协同或外部确权设为前置条件。本条覆盖下文仅将Phase3限定为协同/外部确权再有标签注册的旧范围，不改变Phase2既有support/query权限、历史received、数据身份或其他owner任务。
+原日期 D1–D3 保持。F1/F2 源 RX 分别改为 [0,1,2,5,7] 和 [0,3,9,10,11]，其余原合同保持；新 RX 的 F/G 均需匹配全部祖先。冻结测试分为源 RX 的 D0 未见日诊断、目标 RX 的 D1–D3 跨 RX、目标 RX 的 D0 双跨。各 row 三类、raw/匹配 G、七景决策全部固定后独立 truth-last。D0 比训练日期早，不声明未来 D3 外推。取消固定 L1080/V5400、独立 chrono 训练及 m5 新源数量点。
 
-Phase3目标端零人工TX标签。新建且事前固定的target无标签适应/发现池可按预登记算法更新目标判决/adapter、聚类并形成匿名注册类别；该池与source全部物理角色、独立future query物理互斥。历史Phase1/2/Phase3 query保持测试身份，不追溯改为训练或注册support。未来query只逐样本推理，预测全部固定后独立truth-last评分；真实known/unknown角色、未知类别数、类别配额、TX映射和评分反馈不能进入适应、发现、注册、阈值或候选选择。算法从无标签数据自行估计簇数是允许的，读取真实簇数不是。
+外部普通 PL 不用 EMA/复杂门控；最终原生 T1 继续自身 EMA/原 U 机制。新增匹配 PAMF 监督关闭 U/EMA；无信道同时关闭 As 和拼接变换。缓存仅共享合法同表示、同物理 ID、同轮/阶段/场景/session/seed 的固定 FP32 IQ，不共享学生目标，不扩展任何源/目标权限。不以目标结果调参、选模、重排或选择性重跑。
 
-正式输入采用本轮practical residual、post_sync、noEQ、25MHz及单物理记录单固定received观测。known与unknown采用相同分配公式，不按真实角色选择scene/seed/处理路径。派生计算view不增加物理观测数；跨数据角色与独立场景的物理记录互斥。新增数据使用独立`phase3_min_v1`公共received/opaque ID接口和仅供独立评分的truth侧文件；builder一次核对实际物理角色、RX/TX/继承与唯一观测后标`VALIDATED_ONCE`，未变数据跨方法复用，不增加成员hash、receipt或审批链。
+## PAMF 新半监督方法研发的授权范围（2026-10-23）
 
-严格未知TX不得进入所用模型、教师或恢复器祖先的有标签/无标签训练和源validation选择。曾无标签见过但尚未注册的设备允许作为另一明确设置，不与严格未见结果混报。source L_s可预先构建并冻结身份锚点，V仅用于无持久模型更新的规则/阈值校准；部署source-free方法不回读source IQ。适配状态与原始冻结source bundle分开记录，不改写源锚点的历史身份。
+用户明确要求研发适合 PAMF 的新半监督方法，超过其匹配监督版和普通伪标签版。因此，本次独立 PAMF 半监督研究允许源域自身 EMA、软伪标签、同一源物理记录的物理信道视图一致性，以及仅由可见 L_s 标签建立的跨接收机身份参考；下方“仅普通 PL”的历史方法限制不适用于本次研究。该例外不更改既有对照或已固定默认模型，也不解封 U_s 的 TX 标签。新方法、权重和增强规则在目标访问前登记；监督骨架、默认头及训练成本须匹配披露。
 
-无标签注册输出可持续识别的`anonymous_device_id`，不自动表示真实运营名称、物理所有者或业务授权。发现/注册质量需在后续独立观测上评价；scorer可在预测固定后做聚类ID与TX的置换匹配，但该匹配不得回流预测器。拒识/defer在已注册类识别率中计错；所有注册类共同竞争，注册后继续评价后续未注册设备。指标、候选/矩阵、seed、资源与推进门槛见`docs/goals/PAMF_PHASE3_OPEN_WORLD_20261028.md`及各run，不由此声明任何方法已经达标。
+源/目标接收机、物理 ID、L_s/U_s/V 角色及其互斥边界保持。V 仅作不更新状态的源域验证和诊断；EMA、原型及其统计只可由合法训练角色更新。不得以目标测试结果修改超参数、候选顺序、权重或选择性重跑；预测全部固定后独立 truth-last 评分。性能目标与显卡/种子安排保存于本次目标和实验记录，不作为新增数据权限。
 
-## Phase2 容量重设计与固定基础池比较（2026-10-28）
+版本：2026-08-24
+协议模式：`p2_min_v1`
 
-本轮容量重设计以互斥的综合基础观测池和指定三个独立单场景池固定 received IQ。不同 K 的综合任务可以按事前固定分组，合并这些基础池的合法 support 候选与 query；同一 K 的主任务分组互斥，跨 K 则复用原固定观测和相同 query 总体。不重新叠加信道，不将同一 ID 的重复方法、模型、support 重复或 P0/P1 视图算作新增物理数据；query 在全部任务中始终不转为 support。具体数量和 K 对应组数见 `docs/PAMF_PHASE2_DATA_BUDGET_REDESIGN_20261028.md` 与 r06 配置，本条不把八个基础池解释为每个 K 都有八个完整独立拟合任务。
+## 文件职责
 
-主表和 K 曲线可以在预测固定后，统一按原基础池的 opaque query ID 切片计算指标及 H，再按固定口径汇总。合并任务产生的多个报告切片不当作多个独立拟合状态；预测本身仍逐样本面对全部注册类，不按 query 真值、角色、配额或报告切片路由。全部方法共享同一分配，原有 S/B/C 目标访问、source 例外、冻结 DURA 和 truth-last 边界不变；未来类的输入只在相应 C/session 开放。
+本文件只定义CVS-RFFI/CV-SincNet的科学场景、数据集合、数据生成、Phase1/Phase2边界、Stage2-A/B/C权限和可声明范围。活动性能目标、当前候选方法、实验矩阵、seed、资源上限、N607操作、Git流程和实验结论均由独立文档管理。
 
-此条落实本轮数据与指标重设计，覆盖旧的统一池容量和各 K 都有相同组数的设计假设；不修改历史 received/结果或已发布 source-only 验证任务。执行器必须按新行级矩阵绑定，不能将本设计计算通过写成数据已构建或实验已完成。
+一次性Phase2数据builder/validator实现边界见[PHASE2_DATA_VALIDATION_APPENDIX.md](PHASE2_DATA_VALIDATION_APPENDIX.md)。
 
-## 本轮 Phase2 纳入冻结 DURA 的双输入路径设计（2026-10-28，用户最新补充）
+## 项目场景与集合
 
-本轮总表增加 P0（原固定 received IQ）和 P1（同一 received 经冻结 DURA 后的估计恢复视图），所有方法均有匹配路径，A/B/C 的 support 与 query 始终在同一路径。原始 received 不重生成；恢复视图不是新增物理观测，不增加 K 或独立数据套数。只能从当前观测计算，不获准读取真实 clean、模拟器真值、源样本或 query 标签。query 恢复逐窗口固定推理，不更新 DURA、BN 或跨 query 统计。
+CVS研究天基RFFI中的弱标注跨接收机域泛化，以及部署到目标卫星接收机域后的少样本域适应与新类注册。WiSig/ManySig是地面代理数据，LEO弱信道叠加是物理启发的部署压力代理，不等价于真实在轨验证。
 
-DURA 候选固定为 v1.0/R69 stage2、Graph-RR、FP32/TF32off 的既定版本。Phase1 证据不自动证明 Phase2 资格；其源物理角色、旧新 TX、RX/day、教师祖先、选择背景及表示须与本轮契约核对，未核实前不宣称可加载。若不合规，明确 P1 缺项，不静默换权重或新增训练。本轮不微调 DURA，不改变当前源识别器或恢复暂停任务；源训练也使用 DURA 的匹配方案仅列后续扩展。此条覆盖此前本轮 Phase2“不新增 DURA”的设计表述，不追溯修改 Phase1 历史路线。详见 `docs/PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md` r05。
+### N607实验承载角色
 
-## 本轮 Phase2 完整链路比较与声明边界（2026-10-28）
+N607是大规模训练、Phase2方法实验、125稳定性screen、独立确认矩阵和资源审计的主要计算与证据承载面。它不是`R_s`或`R_t`中的接收机，不是source/target数据来源，不是卫星实体，也不产生任何Phase2协议例外。代码与协议先在本地Git承载面修改和验证，SSH、环境、GPU、launcher、日志与报告操作由`AGENTS.md`管理。
 
-域适应与新类注册的完整比较允许在已声明的闭集 DA 的实际 B 表示上接明确命名的 target-support 注册控制；这属于项目组合扩展，不追认为原论文原生 C。各方法在 C 只能使用自身已允许的当前旧／新 support 和历史状态；新增组合不获得额外 source、target U 或 query 拟合权限。未扩展闭集方法的 C 记 N/A，不填 0 分来证明联合方法优越。
+```text
+x = R_d(H_d * T_y(s)) + n
+R_t ∩ R_s = ∅
+Y_old ∩ Y_new = ∅
+Y_unknown ∩ (Y_old ∪ Y_new) = ∅
+```
 
-原 MILKR 使用冻结 PAMF，在 B 对旧 support 拟合，在 C 对新旧 support 重新独立拟合；它统一算法但不继承 B 核参数。相同最终输入下，直接 C 与 B 后 C 的终态应一致；不得称为已证实的两阶段参数协同或旧类永不下降。正式 C 始终面对全部已注册类别，旧类候选集限制只作预测固定后的离线损伤分解。衔接设计见 `docs/PAMF_PHASE2_DA_REGISTRATION_LINKAGE_20261028.md`，本次不启动实验。
+`T_y`是身份来源，`H_d`是传播/星地信道扰动，`R_d`是接收机响应。Phase1出现过的TX在Phase2只能是旧类。
 
-## 本轮独立单场景固定为三组（2026-10-28，用户最新指定）
+## Phase1地面数据
 
-本轮 PAMF Phase2 独立单场景仅为低仰角郊区 `practical_low_suburban`、中仰角城区 `practical_mid_urban`、低仰角城区 `practical_low_urban` 三组，覆盖此前六个单场景诊断的安排。每组全部目标 support/query 使用该组同一种场景，组内各物理记录仍有自己的固定随机信道实现；不是将三景按 1/3 混入一个任务。原生仰角范围分别为 10°–30°、20°–45°、10°–30°。
+Phase1是weak-label/semi-supervised source-domain DG：
 
-综合主场景仍从六种 practical 分量抽取并固定 8 套；三组独立单场景不改变综合主概率。历史 MILKR 已完成的 high suburban／mid suburban／low urban 三景及原 received IQ 保留原身份，不改名或重生成。所有新数据组物理 ID 互斥、单记录单观测、相同源训练及 S→A→B→C 目标访问边界保持。本次只更新设计，不启动实验。完整总表见 `docs/PAMF_PHASE2_TOTAL_EXPERIMENT_TABLE_20261028.md`。
+```text
+L_s = {(x_i,y_i,d_i): receiver(x_i) ∈ R_s}
+U_s = {(x_j,d_j): receiver(x_j) ∈ R_s, y_j hidden or unavailable}
+rho_label ≤ 0.1
+```
 
-## 本轮应用为单星被动监听（2026-10-28，用户进一步明确）
+当前统一划分语义为相对source全池`L_s/U_s/V=0.07/0.63/0.30`：有TX标签训练集、无TX标签训练集和单一source validation。三个角色均不得包含`R_t`，物理样本ID两两不交。`V`可用于source侧校准、阈值冻结和checkpoint选择，但不得反向传播、更新EMA、prototype、normalization或其他持久状态；不得再把`V`拆成`V_cal/V_select`等方法角色。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
 
-PAMF本轮目标应用为单颗卫星被动监听，不控制地面发射机，不选择服务卫星。仰角采样应区分空间覆盖、单星过境时间、天线视场及已采集IQ总体；不得直接借用通信星座最高仰角选星或主动发射调度形成的概率。未声明接收视场／检测筛选时，中高仰角主导不能作为默认事实。
+## Phase2最小数据协议
 
-既有600km、10°–80°球面面积概率保留为明确的宽视场空间几何参考，不解释为实际载荷频率。任务实测概率取决于轨道／姿态、TX位置与活动、收发天线、采集过程；改变权重或接收门限不得依据识别成绩。条件于有效观测的识别性能与所有监听机会上的检测／采集／识别性能分开。单物理样本单received观测、target访问时点及truth-last保持；本次说明不修改概率数值、不启动实验，也不增加发布审批或数据重验证门槛。定量分析见 `docs/analysis/pamf_passive_elevation_20261028/REPORT.md`。
+### 单物理样本单LEO接收观测
 
-## 本轮 PAMF Phase2 使用 practical residual 与分阶段目标访问（2026-10-28）
+每个clean/raw物理IQ在进入Phase2前只允许叠加一次随机LEO弱信道：
 
-用户本轮明确：星地信道使用 **practical residual**；所有域适应对比方法在目标适应前，均与 PAMF 使用同一套训练源域。此条覆盖下文将本轮 Phase2 场景限定为三种 `leo_weak` 的旧默认；不改写历史 received IQ、场景名称或已完成结果。
+```text
+received_i = H(c_i,seed_i)(clean_i)
+c_i ∈ {leo_clear_weak,leo_low_elev_weak,leo_rain_weak}
+```
 
-本轮允许的 practical 标识为 `practical_high`、`practical_mid`、`practical_low_suburban`、`practical_high_urban`、`practical_mid_urban`、`practical_low_urban`，实际场景矩阵在本轮设计／run 中固定。执行路径固定 `processing_route=residual`、`mode=post_sync`、`equalization_enabled=false`、`fs_hz=25e6`，保留输入的真实预处理身份。单物理样本只绑定一份固定 received IQ，跨场景物理 ID 互斥，support/query 互斥；不能以同一物理 IQ 的六次叠加冒充六个独立观测。
+一个稳定`physical_sample_id`只能绑定一个场景、一个随机信道实现和一份固定接收IQ。禁止由同一物理样本生成多场景、多随机实现或多LEO状态副本。三场景物理ID两两不交；单场景support/query物理ID不交。
 
-本轮主评估采用综合 practical residual：每条物理样本按事前固定概率抽取一个场景并处理一次；多套综合数据使用互不相交的物理记录，且与单场景诊断物理ID互斥。概率来自明确的参考几何与环境先验，不能依据目标识别结果设定或修改。原生low/mid仰角区间有重叠时，综合采样可采用其支持范围内的互斥分档和外部geometry，必须保留实际采样规则；内部衰落／接收机／residual处理公式不变。实际套数、概率、seed和矩阵属于本轮实验设计，不写成真实部署频率。
+`K-shot`表示每类K个互不重复的物理support。由固定接收IQ计算的均衡、FFT、归一化或其他数学表征不增加K，不得调用LEO模拟器、恢复clean或生成第二份LEO观测。support计算view可参与状态更新；query计算view只能用于当前逐样本推理，不能更新任何状态或参与选择。
 
-地面源训练 S 阶段只允许匹配 PAMF 的源接收机、源日期、旧 TX、L_s/U_s/V 物理角色。L_s 的 TX 标签可见，U_s 的 TX 始终隐藏，V 只验证，不更新持久状态；不同方法可保留原生 source-only 目标，是否使用 U_s、增强和计算成本分别披露。禁止在 S 阶段或源 checkpoint 祖先中用目标 support、目标无标签 IQ、目标统计／BN／原型／伪标签、query 或目标指标训练、校准、早停和选模。外部方法的 source/history 权限例外不豁免这一时间边界，不能照搬原论文提前混入 target 的默认训练器。
+### 允许输入与禁止输入
 
-A 是源模型冻结后的目标 query 只读评估，不产生适应状态，评分不反馈选模；B 开放当前 row 的旧类有标签 target support，原生 UDA 可仅取该合法 support 的 IQ 做域对齐，不增设 query 无标签池；C 才加入合法新类有标签 support。原论文需 source replay、Fisher 或历史原型的外部方法可在 B/C 使用各自明确的合法源状态，但其产生必须在 source-only 边界内，且不能将该例外扩展给 MILKR 主方法。所有阶段的 query 仅逐样本测试，全部预登记预测固定后独立 truth-last 评分。源阶段派生的类原型／enrollment 仅由 L_s 生成并冻结；不能借用目标 support 构造 A。
+Phase2运行时采用穷尽式白名单，只允许读取：`p2_min_v1`、`VALIDATED_ONCE`固定目标域LEO received IQ及匹配的`capsule_id/split_id`；当前row合法target support标签、必要注册类别表和无query真值/角色split；地面预先计算、随checkpoint上传并保持不可变的类原型及必要类别映射；冻结checkpoint和预登记算法配置。
 
-本条只固定本轮科学输入、阶段权限与声明边界，不启动实验、不改变其他 owner 或历史固定矩阵；未变化且已 `VALIDATED_ONCE` 的数据直接复用。新增场景若需要新的物理观测，只验证实际改变的数据事实，不因方法或文档修改重复建库。
+除此之外，不得读取、构造或恢复任何地面source/clean样本、源域数据加载器、source replay/cache、源域特征、样本级embedding、源域统计量、源域BatchNorm状态、伪源域样本、生成式源数据、可还原源样本的中间信息或其他外部source状态。不得读取query真值、query角色、真实query batch类别集合/数量或其他query反馈。
 
+地面类原型只能作为不可训练的类别锚点和冻结判决依据；不得反向更新、在线重估、追加源域信息，或扩展为D92式协方差、LDA、持久分类头、样本级记忆或类条件源域统计。缺少合规原型时不得回读地面样本重建。
+
+### query只测试
+
+每个query独立面对全部已注册类别。禁止query真值/角色、真实query batch类别集合或数量、每类配额、标签排序/分块以及Hungarian、optimal transport或其他跨query全局重排。预测artifact先冻结，独立scorer之后才连接真值；评分结果不得回流。
+
+### 一次验证、跨方法复用
+
+数据builder完成唯一观测、物理ID、集合和禁止成员检查后输出最小句柄：
+
+```text
+protocol_schema = p2_min_v1
+phase2_data_status = VALIDATED_ONCE
+capsule_id = <content identity>
+split_id = <receiver/TX/scenario/K/support-query identity>
+single_leo_observation = true
+clean_source_runtime_access = false
+query_fit_access = false
+query_decision_policy = per_sample_all_registered_classes
+```
+
+只有固定接收IQ字节、物理ID、receiver/TX集合、scenario、K、support/query划分或协议schema变化才重验。候选、adapter、超参数、epoch、原型规则、method lock、模型状态和资源预算变化不使data capsule失效。hash、签名、allowlist、访问账本和pre-open检查由builder/validator一次性自动完成，见[PHASE2_DATA_VALIDATION_APPENDIX.md](PHASE2_DATA_VALIDATION_APPENDIX.md)。
+
+## Stage2权限
+
+本节及前述Phase2最小数据协议只约束Stage2主方法及其内部候选。CSIL、MoPC-HR等外部论文对比方法可按原论文完整流程使用base/source数据、历史统计、训练批次和评估流程，也不受主方法资源预算约束。正式对比默认要求全部新类注册及新类评测样本叠加并记录LEO星地信道；经用户显式要求，可另跑仅用于归因的matched无LEO新类诊断，保持方法、物理样本ID、support/query划分、K-shot、seed和旧类评测条件不变，只替换同一新类物理记录的未叠加IQ。该诊断必须标为`DIAGNOSTIC_NEW_CLASS_NO_LEO_NON_FORMAL`并与正式LEO结果隔离，不能用于CVS卫星场景性能声明、方法晋级或Stage2协议有效性证明。对比方法须披露权限差异，其结果不能作为主方法协议合规证据。
+
+| 阶段 | target信息 | 任务 |
+|---|---|---|
+| Stage2-A | 无target TX标签 | zero-label target reference/diagnostic |
+| Stage2-B | `Y_old`的K-shot support标签 | 旧类目标域适应与校准 |
+| Stage2-C | `Y_old∪Y_new`的K-shot support标签 | 同一目标域内旧类适应与新类注册 |
+| Phase3 | 未注册类仅作独立评估 | unknown rejection备用扩展 |
+
+Stage2-C中旧类适应和新类注册同等重要；注册前/后旧类比较必须来自同一row、同一query和同一推理规则。具体性能门槛、确认矩阵和资源限制属于独立目标文档。
+
+floor评价覆盖全部实际注册类，不使用预选难类清单。算法、loss、校准与更新规则必须对类标签置换保持同一形式；禁止按具体TX/class ID设置白名单、专属分支、专属权重、专属阈值或专属超参数。可以从每类合法support估计半径、不确定度或权重，但全部类别必须采用同一公式和同一超参数生成规则。
+
+## 声明边界
+
+可以声明CVS研究弱标注跨接收机DG、LEO压力下旧类少样本适应与新类注册。不能把WiSig称为真实卫星数据，不能把LEO模拟称为真实在轨验证，不能把source-only DG称为few-shot适应，也不能把旧类提升、unknown拒识或协议无效结果当作新类注册成功。
+
+## Checkpoint训练数据一致性与继承污染禁令
+
+本节约束正式CVS主方法的完整模型来源，覆盖Phase1初始化、恢复训练、教师蒸馏、特征提取、模型融合及Phase2/Phase3所用基座。数据权限约束整个产生流程，不能只检查本轮训练配置。旧报告中的“成熟基座”“固定基线”、默认checkpoint路径或历史可加载记录均不授予复用权限。
+
+1. **禁止跨训练划分继承。**用于初始化或续训的checkpoint，其产生流程必须与本次预登记的Phase1数据契约一致：数据集及版本、raw/equalized与物理记录映射、source/target接收机与日期、TX集合及标签映射、L_s/U_s/V比例和各角色实际物理样本ID、划分算法及影响划分的seed。仅数据集文件名、split名称、样本数或比例相同，不构成一致。任一不一致即禁止用于该正式run；无污染但训练集不同，也不能作为匹配初始化或严格同条件基线。
+2. **物理样本身份优先。**复制文件、改路径、重编号、换seed、重新归一化、切片或叠加新的LEO信道，不会消除底层物理IQ的历史归属。衍生视图必须追溯原始物理记录；不得把同一记录的不同视图放入互斥角色。只改变模型随机初始化seed且实际数据契约不变，不算数据划分改变。
+3. **禁令追溯所有继承来源。**核对直接checkpoint及其全部上游预训练、resume、warm-start、teacher/EMA、蒸馏、集成与融合来源。部分加载骨干、丢弃分类头、冻结参数、只取embedding、重新训练adapter或重置optimizer，均不能解除既有污染。原型、归一化统计、阈值和其他随模型继承的持久状态同样受限；未知祖先不能默认视为从零训练。
+4. **禁止历史目标暴露与测试选模。**任一上游使用当前target的物理样本（有标签或无标签）、统计量、伪标签，或其指标参与训练、校准、早停、checkpoint选择、候选排序、超参数调整及选择性重跑，该来源及其后代均不得用于当前干净泛化结论。仅检查“本轮不反向传播目标标签”不够。历史源域V若转为当前target，同样构成污染。任何测试集选模（包括含测试指标的joint_safe）均不满足source-only选模要求；即使旧测试集与当前target不同也不得作为合规来源。模型完全冻结后的独立最终评分本身不等于训练污染，但其结果不得再参与选择或反馈研发。
+5. **缺证据即禁止使用。**加载前依据实际生效配置、数据索引/可复现划分、训练和选模记录核对来源，禁止只相信launcher默认值、文件名或口头声明。当前数据契约、每个继承来源及选模依据、差异和结论写入现有run报告即可，无需另建签名、哈希链或审批系统。无法确认实际物理ID或祖先来源时记为CHECKPOINT_PROVENANCE_UNVERIFIED；不一致记为CHECKPOINT_DATA_CONTRACT_MISMATCH；已证实目标参与训练或选择记为CHECKPOINT_TARGET_CONTAMINATED。三者均禁止该来源进入正式run，不得先跑后补证据。
+6. **恢复路径与比较边界。**无合规checkpoint时，仅可在已有训练授权内按本次数据契约从零训练，并只以单一source V或预登记固定轮次选模；不能私自改变训练集、目标集或借用旧权重节省预算。共享初始化的消融使用同一合规checkpoint；从零训练的对比固定数据划分，披露训练随机性。公平比较还须披露预训练/续训总预算，不能把历史额外训练隐去。改变合法数据契约后须重新判断checkpoint适用性。
+7. **不得追认或洗白污染结果。**发现问题后保留原checkpoint、日志和结果，在受影响报告中标明来源及后代范围；污染结果记为PROTOCOL_INVALID_FOR_CLEAN_GENERALIZATION，来源不明结果记为PROTOCOL_VALIDITY_UNVERIFIED，不进入正式有效结果汇总、晋级或干净泛化对比。产物完整不代表协议有效；共享污染源也不能抵消污染。既有运行的停机、删除、覆盖或重跑仍遵守原授权，不由本条自动授权。
+8. **阶段权限不互相替代。**Phase2/Phase3继承的地面基座必须匹配预登记Phase1契约，而非要求其训练集等于target support；合法Stage2 support适配保持原权限，query始终不得参与拟合或选择。外部论文方法的显式权限例外不能用于给CVS主方法洗白，也不自动豁免训练/测试污染披露。只有用户明确另立跨数据预训练研究时，才可作为单独任务披露权限差异，不能标为本契约下的匹配source-only实验。
+
+此项是现有输入权限检查的一部分。VALIDATED_ONCE只证明数据capsule自身已验证，不证明任意checkpoint均适用；换checkpoint只需核对其与现有契约及历史来源的兼容性，不触发未改变数据capsule的重复builder验证。相同来源与契约已有可复用核对结论时直接引用；来源、契约或新污染证据改变才重查受影响部分。
 ## 星地测试与普通PL的当前训练约定（2026-10-19）
 
 用户最新要求：凡正式比较包含星地信道测试，训练须使用默认clean＋satellite拼接式星地增强。full与自身CE使用相同增强；卫星视图仅承载TX交叉熵，权重0.68，不附加星地一致性损失。本条覆盖此前“关闭训练增强仍默认进行星地测试”的后续正式比较约定；既有产物保留并标为无增强历史对照，不追溯改写。
