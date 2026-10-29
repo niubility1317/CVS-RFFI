@@ -1,8 +1,8 @@
 {
   "schema": "pamf_phase2_milkr_experiment_design_v1",
   "date": "2026-10-28",
-  "status": "CORE_AND_ALL_RUNNABLE_EXTERNAL_METHODS_RUNNING_OR_QUEUED",
-  "launch_ready": true,
+  "status": "STOPPED_BY_USER_PENDING_DESIGN_REVIEW",
+  "launch_ready": false,
   "execution_authorized_by_this_design": false,
   "scope": "existing labeled MILKR Phase2 complete S/B/C comparison plus frozen DURA input factor; no new G training, target-U R&D, Phase3 or collaboration",
   "documents": [
@@ -4648,7 +4648,7 @@
   "complete_master_r05": {
     "revision": "r05_complete_S_B_C_master_with_frozen_DURA",
     "status": "DESIGN_ONLY",
-    "execution_authorized": true,
+    "execution_authorized": false,
     "primary_source_profiles": [
       {
         "id": "pamf",
@@ -5832,7 +5832,7 @@
   "active_selected_classes": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
   "data_preparation_status": "R10_COMPLETE_FULL_DATA_AUDIT_PASS",
   "data_preparation_run": "20261029-phase2-threepool-episodes-s2026102901-r01",
-  "identity_experiments_still_on_hold": false,
+  "identity_experiments_still_on_hold": true,
   "active_data_rules": {
     "physical_pools": 3,
     "physical_pool_disjoint": true,
@@ -5850,17 +5850,19 @@
     "legacy_embedded_data_and_query_budgets": "HISTORICAL_NONBINDING;use active_data_and_budget_design"
   },
   "data_preparation_code_commit": "1346655254e8b56f2104cebd69014ad75a1e8eb6",
-  "execution_authorized_by_latest_user": true,
+  "execution_authorized_by_latest_user": false,
   "current_core_execution_run": "20261029-phase2-milkr-threepool-m4-r01",
   "current_core_execution_config": "configs/pamf_phase2_milkr_threepool_execution_20261029.json",
-  "current_core_execution_status": "VERIFIED_RUNNING_FIRST_PAIRED_UNIT",
-  "external_full_registry_execution_status": "DEPLOYED20_RUNNABLE_VARIANTS28_CHAINS;2_ORIGINAL_NA",
+  "current_core_execution_status": "STOPPED_BY_USER",
+  "external_full_registry_execution_status": "STOPPED_BY_USER",
   "current_core_execution_code_commit": "20f920985a97376aad2ac9663d33dcb9b81e3c49",
-  "core_launch_ready": true,
+  "core_launch_ready": false,
   "current_external_execution_run": "20261029-phase2-external-threepool-m4-r02",
   "current_external_execution_code_commit": "924bd939d3386a108332b65af9fea5ab30d302ee",
   "current_external_execution_config": "configs/pamf_phase2_external_threepool_repair_20261029.json",
   "current_Phase2_resource_policy": "core+external two Phase2 GPU workers perGPU0-7,other owners additional;verified16",
   "current_unified_controller_run": "20261029-phase2-external-threepool-m4-r02",
-  "current_external_recovery": "MoPC train-mode repaired;first two-path units scored;0failed0blocked;RadioNet originalPID preserved"
+  "current_external_recovery": "MoPC train-mode repaired;first two-path units scored;0failed0blocked;RadioNet originalPID preserved",
+  "automatic_resume_allowed": false,
+  "user_stop_at_utc": "2026-10-29T15:13:22Z"
 }

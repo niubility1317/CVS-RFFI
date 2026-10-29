@@ -187,7 +187,11 @@
         "7": 2
       },
       "RadioNet_pid": 2600850
-    }
+    },
+    "automatic_resume_allowed": false,
+    "user_stop_at_utc": "2026-10-29T15:13:22Z",
+    "user_stop_reason": "User requests stop before redesign;no authorization to resume",
+    "live_owned_Phase2_workers": 0
   },
   "expected_artifacts": [
     "core_controller_handoff.json",
@@ -4477,5 +4481,5 @@
     }
   ],
   "notes": [],
-  "status": "RUNNING"
+  "status": "STOPPED"
 }

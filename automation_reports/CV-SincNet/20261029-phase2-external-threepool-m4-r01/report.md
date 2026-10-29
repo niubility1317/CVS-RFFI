@@ -99,3 +99,5 @@ Any protocol/numerical/worker/output failure blocks that source/profile and desc
 独立 P0/P1 审查 PASS；发现的无seed核心评分排序、原生wrapper扩头继承、Windows生成远端路径三项实质问题均已修复并定点验证。原生 B 全预算真实整合验证通过：MRIOR800更新、DADDA100更新、TwoStage300更新，其 C 各100更新。legacy Feature Separation 按历史配置恢复 B100，未缩成10。
 
 2026-10-29 技术恢复：两MoPC旧eval训练实现已被r02替代，原失败/partial保留；11589项阻断解除，健康GPU重启0。新控制器、RadioNet状态与后续结果见 20261029-phase2-external-threepool-m4-r02。
+
+用户停止（2026-10-29T15:13:22Z UTC）：STOPPED_BY_USER。统一Phase2调度器1个、GPU worker16个已停止；独立连接核验所属进程0。保留全部已有产物，其他owner停止信号0；自动恢复关闭，用户重新授权前不启动训练、预测、评分或资源补测。实验设计待复核，本次不归因或自动重设计。
