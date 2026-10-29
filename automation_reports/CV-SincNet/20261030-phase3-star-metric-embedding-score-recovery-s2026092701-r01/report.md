@@ -21,3 +21,11 @@ Run `20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01`，实
 仅这一次根因修复；任何失败保留partial，相同数值指纹若重复则停止恢复重试，不扩容差或重训。恢复只补齐原固定矩阵，指标和晋级规则不变，不能依据控制分数换主/调参或访问target。AN/HOW=N/A、完整Phase3 ACTIVE。
 
 验证：8项受影响score测试/23子用例PASS10.50s、2AST PASS；实际冻结checkpoint30150条公有数值回归已证实旧FP32失败/FP64过原tol。一项直接P0/P1问题的唯一针对性复核PASS，不重原core/train/launch suite或全审查；一次新run preflight核原prediction complete和两个旧scorecomplete/新root可用。单实际code/config commit、一个archive SHA比较/compile、实际gcheckpoint noquery smoke、启动PID/CWD/cmd/log及完整独立评分，不增加hash链/授权token/报告审批。
+
+## 实际完成（2026-10-30）
+
+VERIFIED / ANALYZED_SOURCE_ONLY，compactOE缺失评分已完整，模型/旧prediction/聚合/τ均只读；原identity/main score直接复用。原run的FAILED_PRESERVED保持，三臂科学矩阵由本恢复补齐。compactOE主MD宏AK=90.492593%、CK=98.892593%、RU=14.634921%、H=25.195153%，known42pass/unknown12fail/NO_PROMOTION，不替换固定main。
+
+actual g真实checkpoint两合成unit smokePASS，来源/预算/四FP32tensor/四FP64aggregate/12τ/全部30150公有单位、raw/margin均在private truth之前验证。CPU64reference maxdiff known1.1743978e-6、novel9.5367432e-7，原1e-5/2e-6和rawmargin1e-10未改。result run/code保留原predictionefb82a4177e9b59533b7e71408ded6b63fc8733a，scorer_run/code指本run/4211e8981e85fa26e0ce354267043ecb2116530b，precision显式CPU_FP64_reference_from_FP32_weights；部署FP32不变。
+
+新g参考30152（含synthetic2），新training/model/pred/τ/真实IQ/F/G0，GPU新增0/foreign0。PID3193705正确newrelease CWD/argv、CUDA空，日志0→1647B，终态live0；独立公有复核4.916324s，不是部署时延。recoveryarchive4c755c86cb004962e27112b4c9b6190fdc0912c71ecc2d724998ed1b7cb288c9（357files/data0）单SHA/compile VERIFIED；实际smoke/完成score/独立poststate VERIFIED。完整分析见`docs/PAMF_PHASE3_STAR_METRIC_EMBEDDING_RESULTS_20261030.md`；target0、AN/HOW=N/A、fullgoalACTIVE。

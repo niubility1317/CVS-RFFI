@@ -32,3 +32,26 @@ sourceRX1/3/4/6/8（1-19/18-2/19-2/2-19/3-19）/2021-03-08/15/23均已见。旧6
 NN参数F/G499944+g20704=520648；每臂g FP32权重82816B/四FP64聚合418560B/两法12τ96B，不含optimizer和研究中间文件。训练/评测g与FP64score/独立复核耗时分别报告，GPU显存是采样，均不冒充B1端到端时延。
 
 验证：21 passed, 816 warnings, 47 subtests passed in 13.07s，四AST/实际runtime PASS、唯一独立P0/P1 PASS；相关定向9tests20sub与主suite重叠不加计。覆盖loss/mask/梯度/采样/公平轨迹/source权限与真实预算、无行部署、冻结边界/truth-last/默认head与固定主晋级。单code/config commit/一个archiveSHA比较/remotecompile、真实checkpoint首步smoke与PID/CWD/cmd/GPU/log增长，完成后完整训练轨迹分析及逐rowtruth-last，不增报告审批/重复父suite/未来stageGate。
+
+## 实际完成及独立评分恢复（2026-10-30）
+
+VERIFIED：三臂模型/全部predictions及三臂×两法评分现完整，唯一主compact_oe_structure::predicted_identity_mahalanobis为NO_PROMOTION。原pipeline实际FAILED_PRESERVED保留，不改写其终态；compactOE独立评分由新score-recovery run补齐，identity/main原score复用。完整结果/数据/训练/配对见`docs/PAMF_PHASE3_STAR_METRIC_EMBEDDING_RESULTS_20261030.md`，完整Phase3 ACTIVE，AN/HOW=N/A。
+
+| 固定臂 / 分数 | 宏 A_K | 宏 C_K | 宏 R_U | H-score | 原F0 closed−A_K |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| identity / minimum_relative | 90.400000% | 98.681481% | 12.317460% | 21.680801% | 0.581481 pp |
+| identity / predicted_identity_mahalanobis | 90.451852% | 98.651852% | 10.539683% | 18.879480% | 0.529630 pp |
+| compact_oe / minimum_relative | 90.444444% | 98.900000% | 18.317460% | 30.464941% | 0.537037 pp |
+| compact_oe / predicted_identity_mahalanobis | 90.492593% | 98.892593% | 14.634921% | 25.195153% | 0.488889 pp |
+| compact_oe_structure / minimum_relative | 90.433333% | 99.048148% | 16.920635% | 28.507366% | 0.548148 pp |
+| compact_oe_structure / predicted_identity_mahalanobis | 90.433333% | 98.870370% | 12.476190% | 21.927290% | 0.548148 pp |
+
+六法known42通过、unknown整体/五RX/六景12组90%均未过。主MD−同预算compactOE：known正确41g/57l净−16，unknown拒对151g/219l净−68；主MD−identity：正确净−5、unknown拒对净+61。source heldRX1NN为identity78.793651%、compactOE78.539683%、main79.142857%，只源结构诊断而非未来注册AN。结构项末100步MSE0.058455 vs无结构诊断0.276159，未带来本轮拒识收益，不能据控制较高换主。
+
+完整2000步和10份stdout已解析，两个learned的1000/1000批次逐元素相同；各120000L/128000OE曝光、unique6300/6134，全部loss/grad finite。NN只有g20704参数更新，F/defaulthead/G固定；sourcefree部署exact4files/四参数tensor/四聚合/12τ，无逐样本source行。NN合520648，g tensorpayload82816B、aggregate418560B、12τ96B。生产g605350forward，F6仅actualF0syntheticG10P0 smoke，真实IQ/F/G0；独立复核额外forward另计，父F30152和历史G恢复成本保留。
+
+数据始终同G10P1的L6300/OE6134/V27000/novel3150，source5RX/三日/historicalnovel仍非跨未见RX/新TX盲测；L旧TX/RX及OE成员用于g、V只τ，OE TX/K和target U/Q/正式RX24-18/原Us新读取0。原F0closed90.981481%为父复用，所有身份仍原headargmax，不把拒识g当新身份head。无新DA/发现/未来注册结果。
+
+原codeefb82a4177e9b59533b7e71408ded6b63fc8733a/preregd2638af643fac0f788a41b6901c8d85ee3065e4c/archive963e23c6fa33af39a2f3767c8a46bdedeb699c317590560bc40f0ae4f75214cf（356files/data0）发布/compile/runtime/首步actualF0 smoke VERIFIED；21tests47subPASS13.07s/一次独立P0P1。原driver3178144、source3178462/CUDA2/350MiB与3178464/CUDA3/358MiB、main3179142/CUDA2/360MiB独立实时核实，均采样非峰值；日志完整增长、81.408632s原pipeline失败保留、终态live/ownedGPU0、foreign0。批量g/CPUscore/复核时间非B1部署时延。
+
+compactOE失败发生于CPU FP32公有模型重建，private truth前7/27000略超原unit容差；原FP32weights/units均finite，非近零塌缩。只新20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/code4211e8981e85fa26e0ce354267043ecb2116530b将独立参考计算升FP64，原tol1e-5/2e-6与rawmargin1e-10不变；原模型/预测/τ/两个旧score不动。恢复complete明确prediction旧code和scorer新code，实际knownmaxdiff1.1743978e-6/novel9.5367432e-7通过，全部公有校验后truthlast；g2actualcheckpointsynthetic smokePASS，新CPU reference30152/F/G0，PID3193705/log0→1647/终态live0/无GPU。恢复8tests23subPASS10.50s及唯一问题针对复核与原suite分开计；原失败artifact不覆盖、不重训或选择性重预测。

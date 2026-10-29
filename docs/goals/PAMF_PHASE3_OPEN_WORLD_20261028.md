@@ -491,3 +491,30 @@ baseline保留cache同输入原F0，而非新encoder自身closed；完整训练6
 target U/Q、正式RX24-18新读取0，无新目标适应、发现或未来匿名注册，A_N/H_OW=N/A，完整 Phase3 **ACTIVE**。两项固定原F0邻域改动均未达拒识要求，后续不沿此结果扫k或重校准；优先研究可只导出参数/聚合状态的独立拒识表征，并保留未知结构。这是下一待证伪机制，不是已验证收益或对全目标的缩减。
 
 下一机制的具体研究范围（尚未运行）：继续冻结同一原F0及默认身份头，在合法同G10 P1的L/OE特征上单独学习拒识度量；检验旧类跨source RX紧凑、OE与旧类分离，以及OE相互几何关系保持的联合目标。目标端仅允许读取冻结的度量网络参数和类别聚合状态，不读取逐样本source bank；保留原F0映射的匹配控制，V仍只校准阈值、novel只冻结后评分。新网络、固定损失/预算和唯一主分数在独立run预登记后才运行，不按本轮某个novel TX设专属规则。该方向同时服务拒识与后续匿名身份结构，不替代跨未见RX、零标签适应和独立未来注册的最终验证。
+
+## 2026-10-30 独立拒识度量与未知结构保持实际完成
+
+上述待执行机制现已完成：`20261030-phase3-star-metric-embedding-s2026092701-r01`，训练/预测code `efb82a4177e9b59533b7e71408ded6b63fc8733a`、预登记 `d2638af643fac0f788a41b6901c8d85ee3065e4c`。三臂identity（0步）、compact_oe（1000步）、compact_oe_structure（1000步）均保留原F0 E50/default6head与DURA；仅独立20704参数的160→64→160 residual-unit网络g训练。两个学习臂相同CPU初始化和1000/1000逐步相同采样：known跨sourceRX对比+OE排斥，唯一差别为主臂增加OE Gram结构保持。主分数在任何真实训练/novel读取前固定为预测类直接Mahalanobis距离的负值，RMD保留控制。
+
+| 固定臂/分数 | A_K% | R_U% | H-score% | C_K% | 原 F0 损失 pp |
+| --- | --- | --- | --- | --- | --- |
+| identity / minimum_relative | 90.400000 | 12.317460 | 21.680801 | 98.681481 | 0.581481 |
+| identity / predicted_identity_mahalanobis | 90.451852 | 10.539683 | 18.879480 | 98.651852 | 0.529630 |
+| compact_oe / minimum_relative | 90.444444 | 18.317460 | 30.464941 | 98.900000 | 0.537037 |
+| compact_oe / predicted_identity_mahalanobis | 90.492593 | 14.634921 | 25.195153 | 98.892593 | 0.488889 |
+| compact_oe_structure / minimum_relative | 90.433333 | 16.920635 | 28.507366 | 99.048148 | 0.548148 |
+| **compact_oe_structure / predicted_identity_mahalanobis（主）** | **90.433333** | **12.476190** | **21.927290** | **98.870370** | **0.548148** |
+
+六运行点均known42保护通过、unknown整体/五源RX/六景12组90%未通过，固定主 **NO_PROMOTION**。主MD相对同预算无结构臂正确接收获得41/丢失57（净−16）、未知拒对获得151/丢失219（净−68），A_K−0.059259pp、R_U−2.158730pp、H−3.267863pp；相对identity净正确−5、未知拒对+61。不能按较高的控制或RMD替换主。原F0同P1闭集90.981481%保持，所有身份仍原默认head，拒识g没有另训/替换身份头。
+
+完整2000步/10份stdout已解析。两训练臂各L120000/OE128000曝光、实际unique6300/6134；全部loss/gradient有限，采样逐步一致。末100步均值：无结构total4.133593、known3.734641、OE排斥0.039895、结构诊断0.276159；主total5.056047、known3.800412、OE排斥0.067109、结构0.058455。结构项降低了该训练诊断，但没有改善本轮拒识。source novel heldRX1NN为identity2482/3150=78.793651%、无结构2474/3150=78.539683%、主2493/3150=79.142857%；它是源设备结构诊断，不是A_N或未来匿名注册成功，也不新增晋级门槛。
+
+数据仍同G10 MIX01 P1的L6300/OE6134/V27000/novel3150、已见sourceRX1/3/4/6/8与2021-03-08/15/23、三个历史曝光novel；非跨未见RX或新TX盲测。L旧TX/RX及OE成员监督用于g，V仅12τ校准，模型/四聚合冻结先V、部署包/τ冻结先novel。原Us/targetUQ/正式RX24-18新读取0，OE真TX/K不进训练，F/head/G更新0。真实新IQ/F/G0，原三臂F6仅合成G10P0 actualcheckpoint烟测；g生产forward合605350（含两个训练臂248000各、三臂L聚合+V/novel），父F30152与历史P1恢复成本保留祖先。
+
+部署包确为四文件：g四FP32 tensor（20704参数/82816B payload）、四FP64类/背景聚合（418560B）、12τ（96B）及元数据；无source逐样本ID/标签/feature bank。F/G499944+g20704=520648神经参数。这证明本轮产出可无源样本读出的参数/聚合状态，不证明拒识有效或目标泛化成功；批量g/聚合score和独立复核耗时均非B1整机时延。
+
+原pipeline因compactOE独立CPU FP32重建7/27000条略超原容差而为 **FAILED_PRESERVED**，模型/三臂prediction完整、identity/main评分已完成。已保留失败日志，只用新 `20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01` 恢复该control评分，code `4211e8981e85fa26e0ce354267043ecb2116530b`、预登记 `e08de80e520d07fb5fee2156a147ecb652bb46fa`。同一FP32权重无损提升到CPU FP64做独立参考，原unit容差1e-5/2e-6、raw/margin1e-10不变，原模型/预测/τ及两个已完成score不动；全部公有验证后才truth-last。实际重建maxdiff known1.1743978e-6/novel9.5367432e-7，actual g的2 synthetic smoke PASS，恢复新g reference30152、F/G0/GPU0。三臂科学矩阵因该独立恢复而完整，不改写旧pipeline为成功。
+
+原21tests/47subPASS13.07s及一次P0/P1；恢复仅受影响8tests/23subPASS10.50s及一次问题针对性复核（不合计成单suite）。两个code/config提交/独占run、各一次preflight/archive比较/compile和实际PID/CWD/argv/log证据均VERIFIED；原driver3178144、identity3178462/CUDA2与compactOE3178464/CUDA3实时350/358MiB，main3179142/CUDA2采样360MiB均非峰；原81.408632s pipeline仍失败保留，恢复3193705 CPU PID/log0→1647B/终态live0，foreign干预0。完整逐组/配对/训练及恢复证据见 `docs/PAMF_PHASE3_STAR_METRIC_EMBEDDING_RESULTS_20261030.md`。
+
+无新增跨未见RX测试、无标签目标适应或未来匿名注册结果，A_N/H_OW=N/A，完整 Phase3 **ACTIVE**。下一步优先检查训练排斥目标（prototype cosine）与当前Gaussian距离读出的对应关系，在同一固定主g上另记小规模、冻结模型的匹配读出证伪；不得据本轮较好control更换g、调训练预算或改known保护/未知门槛。该后续尚未运行，不是已经确认的收益。

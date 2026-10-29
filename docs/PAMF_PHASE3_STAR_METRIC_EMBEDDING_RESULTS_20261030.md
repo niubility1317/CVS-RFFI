@@ -1,8 +1,8 @@
 # G10 冻结 F0 的独立拒识度量学习：源端结果
 
-三臂训练和预测均已完成；原 run 的 `identity`、`compact_oe_structure` 已完成独立评分，`compact_oe` 在 CPU 重建度量特征的公开证据校验中退出，发生于私有真值读取前。**当前三臂评分矩阵尚未闭合**，原 pipeline 状态为 `FAILED_PRESERVED`。已完成的固定主方法 `compact_oe_structure::predicted_identity_mahalanobis` 得到 A_K=90.433333%、R_U=12.476190%、H=21.927290%；已知 42 组保护通过，未知 12 组均未达到 90%，该行判定为 NO_PROMOTION。
+原运行与独立仅评分恢复的证据已共同补齐 **三臂×两种分数**。唯一主方法 `compact_oe_structure::predicted_identity_mahalanobis` 得到 **A_K=90.433333%、R_U=12.476190%、H=21.927290%**；已知 42 组保护通过，未知 12 组均未达到 90%，最终科学判定为 **NO_PROMOTION**。主臂较 identity 多拒绝 61 条 novel，却比不加结构项的 `compact_oe` 少拒绝 68 条；不能以控制臂或另一分数替换主组合。
 
-仅评分技术恢复另记为 `20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01`。它只补 `compact_oe` 的独立评分，原模型、预测、聚合、阈值以及另两行评分保持；在恢复产物取回前，本报告不把三臂矩阵写成完成，也不将旧 pipeline 改称成功。完整 Phase3 目标仍为 ACTIVE。
+原 run 的 `compact_oe` 独立 CPU FP32 特征重建曾在私有真值读取前技术失败，原 pipeline 的 **FAILED_PRESERVED** 状态保留。`20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01` 仅补该臂评分；原模型、预测、聚合、阈值及另两臂评分不变。完整矩阵来自两个 run 的证据，不将旧 pipeline 改称成功。完整 Phase3 目标仍为 ACTIVE，A_N、H_OW 为 N/A。
 
 ## 1. 固定身份与数据边界
 
@@ -11,12 +11,14 @@
 | 原 run | `20261030-phase3-star-metric-embedding-s2026092701-r01` |
 | 实际 code commit | `efb82a4177e9b59533b7e71408ded6b63fc8733a` |
 | Release archive SHA-256 | `963e23c6fa33af39a2f3767c8a46bdedeb699c317590560bc40f0ae4f75214cf` |
+| 恢复 scorer code commit | `4211e8981e85fa26e0ce354267043ecb2116530b` |
+| 恢复 archive SHA-256 | `4c755c86cb004962e27112b4c9b6190fdc0912c71ecc2d724998ed1b7cb288c9` |
 | 三臂 | `identity`、`compact_oe`、`compact_oe_structure` |
 | 唯一主组合 | `compact_oe_structure::predicted_identity_mahalanobis` |
 | 父公开特征 | `20261030-phase3-star-local-support-s2026092701-r01`，code `84cdc012f7d9641b283c407f6048bfe4e6e21cf6` |
 | 身份与输入路径 | 原 F0 完整六类默认头 / G10 MIX01 P1 |
 
-本报告依据 `local_artifacts/pamf_phase3_star_metric_embedding_20261030_r01/` 中各臂完整 `predict/training.jsonl`、`training_complete.json`、`complete.json`、已完成 `score/results.json`，以及 `training_analysis.json`、全部 source/driver/score stdout、runtime、package、release verification 和 observations。私有训练分析完整解析了两条学习臂共 **2000 条**记录及 **10 份** stdout，不是尾部或百步抽样。固定方法见[本轮计划](PAMF_PHASE3_STAR_METRIC_EMBEDDING_PLAN_20261030.md)，原 G10 和特征祖先见[父局部支持结果](PAMF_PHASE3_STAR_LOCAL_SUPPORT_RESULTS_20261030.md)。
+本报告依据 `local_artifacts/pamf_phase3_star_metric_embedding_20261030_r01/` 中各臂完整 `predict/training.jsonl`、`training_complete.json`、`complete.json`、已完成 `score/results.json`，以及 `training_analysis.json`、全部 source/driver/score stdout、runtime、package、release verification 和 observations；compact_oe 结果另取 `local_artifacts/pamf_phase3_star_metric_embedding_score_recovery_20261030_r01/score/results.json`，并核对其 smoke、发布、日志和完成证据。私有训练分析完整解析了两条学习臂共 **2000 条**记录及 **10 份** stdout，不是尾部或百步抽样；它保留恢复前评分尚缺的时间快照，不被追溯改写。固定方法见[本轮计划](PAMF_PHASE3_STAR_METRIC_EMBEDDING_PLAN_20261030.md)，原 G10 和特征祖先见[父局部支持结果](PAMF_PHASE3_STAR_LOCAL_SUPPORT_RESULTS_20261030.md)。
 
 | 源角色 | 记录数 | 本轮用途 |
 |---|---:|---|
@@ -97,7 +99,7 @@ S=\operatorname{mean}_{i\ne j}\left[(z_i^Tz_j)-(\hat{x}_i^T\hat{x}_j)\right]^2.
 
 两臂 total 均较初值下降，但训练中反复波动；目标权重不同，不能按 total 高低排序科学性能。主臂末 100 步 S 较低，只说明此训练目标下批内 Gram 偏差较小，不构成开放集泛化或物理因果证据。两臂训练实际用时分别为 23.598189 秒、30.170920 秒，不含后续聚合、校准或评分。
 
-## 4. 已完成独立评分与待补控制
+## 4. 完整三臂独立评分
 
 各比率按所需真实 TX 等权宏平均。A_K 为正确且接收占全部已知样本的比例，C_K 为接收比例，H=`2 A_K R_U/(A_K+R_U)`；损伤使用百分点（pp）。原 F0 P1 closed 为 **90.981481%**，逐条 closed 始终保持该原默认头预测。
 
@@ -105,14 +107,29 @@ S=\operatorname{mean}_{i\ne j}\left[(z_i^Tz_j)-(\hat{x}_i^T\hat{x}_j)\right]^2.
 |---|---|---:|---:|---:|---:|---:|---:|---:|
 | identity | minimum_relative | 90.400000 | 98.681481 | 12.317460 | 21.680801 | 0.581481 | 81.077245 | 75.287710 |
 | identity | predicted_identity_mahalanobis | 90.451852 | 98.651852 | 10.539683 | 18.879480 | 0.529630 | 78.699005 | 73.170709 |
-| compact_oe | minimum_relative | 待恢复评分 | — | — | — | — | — | — |
-| compact_oe | predicted_identity_mahalanobis | 待恢复评分 | — | — | — | — | — | — |
+| compact_oe | minimum_relative | 90.444444 | 98.900000 | 18.317460 | 30.464941 | 0.537037 | 86.821771 | 80.367864 |
+| compact_oe | predicted_identity_mahalanobis | 90.492593 | 98.892593 | 14.634921 | 25.195153 | 0.488889 | 88.043382 | 81.357491 |
 | compact_oe_structure | minimum_relative | 90.433333 | 99.048148 | 16.920635 | 28.507366 | 0.548148 | 84.043922 | 77.812626 |
 | **compact_oe_structure** | **predicted_identity_mahalanobis（主）** | **90.433333** | **98.870370** | **12.476190** | **21.927290** | **0.548148** | **81.316514** | **75.497499** |
 
-已完成固定主臂的 known42 全通过，unknown12 全失败；控制 `identity` 也为 NO_PROMOTION。`minimum_relative` 只作预登记诊断，不能因其 R_U 较高而换主。AUROC/OSCR 仅为固定分数曲线，不替代已冻结运行点，不回流校准。`fresh_closed` 相关字段来自父结果复用，本轮没有重新实测真实 V/novel 的 F 前向。
+六个臂/分数组合的 known42 均通过，unknown12 均失败。`minimum_relative` 及其他臂只作预登记控制，不能因其 R_U 较高而换主。AUROC/OSCR 仅为固定分数曲线，不替代已冻结运行点，不回流校准。`fresh_closed` 相关字段来自父结果复用，本轮没有重新实测真实 V/novel 的 F 前向。
 
-### 4.1 固定主组合的 RX 与场景
+### 4.1 跨臂同 ID 配对
+
+逐项对齐原公开 known/novel 的相同 ID 后计算，三臂的 known 标签、原默认头 closed 及同输入 baseline 一致。以下均为左臂减右臂，“获得/丢失/净数”来自实际逐行判决，不由宏比例倒推。Known 六类各 4500、novel 三类各 1050，因此总体净计数与宏平均差值对应；计算 novel 拒绝配对无需打开私有 TX。
+
+| 左臂−右臂 | 分数 | known 正确接收获得/丢失/净数 | known 接收获得/丢失/净数 | novel 拒绝获得/丢失/净数 | ΔA_K（pp） | ΔR_U（pp） | ΔH（pp） |
+|---|---|---|---|---|---:|---:|---:|
+| compact_oe−identity | minimum_relative | 98/86/+12 | 199/140/+59 | 314/125/+189 | +0.044444 | +6.000000 | +8.784140 |
+| compact_oe−identity | predicted_identity_mahalanobis | 90/79/+11 | 187/122/+65 | 257/128/+129 | +0.040741 | +4.095238 | +6.315674 |
+| 主臂−identity | minimum_relative | 100/91/+9 | 224/125/+99 | 291/146/+145 | +0.033333 | +4.603175 | +6.826565 |
+| 主臂−identity | predicted_identity_mahalanobis | 78/83/−5 | 167/108/+59 | 201/140/+61 | −0.018519 | +1.936508 | +3.047811 |
+| 主臂−compact_oe | minimum_relative | 57/60/−3 | 127/87/+40 | 166/210/−44 | −0.011111 | −1.396825 | −1.957576 |
+| 主臂−compact_oe | predicted_identity_mahalanobis | 41/57/−16 | 93/99/−6 | 151/219/−68 | −0.059259 | −2.158730 | −3.267863 |
+
+两学习臂同初始化与同采样的差别是结构项；上表比较的是各自冻结表示、聚合和合法校准运行点的合成结果，不能将差值拆成未经测量的单一物理因果。主方法较 identity 的 R_U 虽有增加，仍远低于门槛；结构项在本次固定配方下也未带来相对 compact_oe 的拒识收益。
+
+### 4.2 固定主组合的 RX 与场景
 
 | 分组 | known / novel 数 | C_K（%） | A_K（%） | R_U（%） | H（%） | 原 F0 closed−A_K（pp） |
 |---|---:|---:|---:|---:|---:|---:|
@@ -131,19 +148,33 @@ S=\operatorname{mean}_{i\ne j}\left[(z_i^Tz_j)-(\hat{x}_i^T\hat{x}_j)\right]^2.
 
 完整 30 个 known RX×场景保护保留于评分 JSON。42 组最低 C_K 为 RX3/high_urban 的 **96.667435%**，最大损伤为 RX3/low_suburban 的 **1.958133pp**，均在门槛内。主方法校准 common-tail 为 `26/2285`，六 τ 为 `[-133.4373928518374,-146.76341877678217,-164.75262556340445,-145.49464615081416,-300.1204036466481,-258.0747394647565]`，按原预测旧类路由；下一候选不满足既定 known 约束。
 
-主方法逐 novel TX 拒绝数为：`19-15` 174/1050（16.571429%）、`19-16` 152/1050（14.476190%）、`7-1` 67/1050（6.380952%）。这些是已冻结源端运行点结果，不用于训练或阈值选择。
+各臂直接 MD 分数的逐 novel TX 拒绝如下。每类均为 1050 条；这些是冻结后的源端结果，不用于训练或阈值选择。
 
-### 4.2 源 novel 的 held-RX 1NN 结构诊断
+| Novel TX | identity 拒绝数 / R_U（%） | compact_oe 拒绝数 / R_U（%） | 主臂拒绝数 / R_U（%） |
+|---|---|---|---|
+| 19-15 | 188 / 17.904762 | 207 / 19.714286 | 174 / 16.571429 |
+| 19-16 | 42 / 4.000000 | 129 / 12.285714 | 152 / 14.476190 |
+| 7-1 | 102 / 9.714286 | 125 / 11.904762 | 67 / 6.380952 |
+
+### 4.3 源 novel 的 held-RX 1NN 结构诊断
 
 独立 scorer 只在全部公开预测校验后，用 novel 真值计算“排除同 RX 邻居”的 1NN 命中。该诊断不拟合参数，不进入晋级门槛，也不是匿名注册 A_N 或未来 query 准确率。
 
 | 度量 | 总体命中率（%） | 19-15（%） | 19-16（%） | 7-1（%） | 命中数 / 3150 |
 |---|---:|---:|---:|---:|---:|
 | original F0 / identity g | 78.793651 | 63.619048 | 95.809524 | 76.952381 | 2482 |
-| compact_oe | 待恢复评分 | — | — | — | — |
+| compact_oe | 78.539683 | 65.904762 | 94.571429 | 75.142857 | 2474 |
 | compact_oe_structure | 79.142857 | 69.523810 | 92.476190 | 75.428571 | 2493 |
 
-已完成主臂较 original F0 增加 11 个命中，总体 +0.349206pp；三个 TX 的变化方向不同，不能只以总体改善宣称结构全面保留。完整五 RX 切片和逐 ID 邻居证据保留于独立评分文件，报告不复制逐样本 bank。
+主臂较 original F0 增加 11 个命中（+0.349206pp），较 compact_oe 增加 19 个命中（+0.603175pp）；compact_oe 较 original F0 少 8 个命中（−0.253968pp）。主臂相对 original F0 在三个 TX 上分别为 +62、−35、−16 个命中，变化方向不同，不能只以总体改善宣称结构全面保留。
+
+| 度量 | RX1（%） | RX3（%） | RX4（%） | RX6（%） | RX8（%） |
+|---|---:|---:|---:|---:|---:|
+| original F0 / identity g | 91.904762 | 70.952381 | 70.476190 | 85.714286 | 74.920635 |
+| compact_oe | 91.428571 | 74.761905 | 68.412698 | 86.507937 | 71.587302 |
+| compact_oe_structure | 92.857143 | 74.761905 | 65.238095 | 87.142857 | 75.714286 |
+
+各 RX 均有 630 条。这里的“held-RX”仅指为当前记录检索其他 RX 的邻居，不表示从原 F0 训练中留出该 RX。完整逐 ID 邻居证据保留于独立评分文件，报告只列聚合，不复制逐样本 bank。
 
 ## 5. 部署状态与实际成本
 
@@ -158,14 +189,15 @@ S=\operatorname{mean}_{i\ne j}\left[(z_i^Tz_j)-(\hat{x}_i^T\hat{x}_j)\right]^2.
 | 两训练臂 optimizer 更新 | 各 1000，共 2000；identity 为 0 |
 | g 前向行数 | identity 36450；每学习臂 284450（训练 248000+L 聚合 6300+V/novel 30150） |
 | 三臂合计 g 前向 | 605350 行，其中训练 496000 行；独立评分重建另计 |
+| 仅评分恢复新增 g reference 前向 | **30152 行**：实际部署 checkpoint 的合成单位特征 smoke 2 条＋known27000＋novel3150；不重跑生产预测 |
 | 新真实 IQ / F / G 前向 | 全部 0；每臂额外 synthetic G10 P0 F smoke 2 条，合计 F6 |
 | 原 F / 默认头 / G 更新 | 全部 0 |
 | 祖先成本 | 父 F30152 与历史 teacher、P1 恢复成本保留，特征复用不等于历史成本为 0 |
 
 | 臂 | g 训练（秒） | V/novel g 前向（秒） | FP64 聚合 CPU readout（秒） | 独立公开复核（秒） |
 |---|---:|---:|---:|---:|
-| identity | 0.000638（零训练管理开销） | 1.206728 | 5.248654 | 已完成，详见 score timing |
-| compact_oe | 23.598189 | 2.333462 | 4.803968 | 原校验失败；恢复另计 |
+| identity | 0.000638（零训练管理开销） | 1.206728 | 5.248654 | 7.300621 |
+| compact_oe | 23.598189 | 2.333462 | 4.803968 | 恢复 4.916324；原失败复核耗时另保留 |
 | compact_oe_structure | 30.170920 | 1.049718 | 1.468160 | 3.529798 |
 
 CPU readout 只计 V/novel 固定聚合评分，g 前向计时与校准、加载、独立重建分开。这些批量计时和 GPU 采样都不是端到端 B1 时延或峰值显存，也不能推导实际部署加速倍数。
@@ -176,12 +208,18 @@ CPU readout 只计 V/novel 固定聚合评分，g 前向计时与校准、加载
 
 已保存的 known-only 数值诊断支持：CPU FP32 线性/残差的后端末位差异经 residual 单位化被放大，7/27000 个已知向量未通过原逐元素容差（rtol=1e-5、atol=2e-6）。最大 CPU32/GPU 单位坐标差为 2.987683e-6；CPU FP64 reference 对全部 27000 known 在原容差下通过，最大差 1.174265e-6。未发现权重或特征 dtype 损坏；residual 最小范数约 0.05348828，远高于归一化 eps=1e-12，没有 eps 分支坍缩证据。该诊断没有生产 CUDA 的中间激活，不能声称直接测得每个 CUDA 中间误差。
 
-恢复 run 仅更换独立验证的数值参考路径为 CPU FP64，以原 FP32 参数值计算；不放宽原容差，不修改 g、源聚合、τ、保存的生产 FP32 单位特征或分数，也不重新训练、校准、预测或读取真实 IQ。它只补 `compact_oe`；identity 和固定主臂已完成评分按原文件引用。**恢复最终状态、第三臂指标及三臂配对待 RECOVERY_FETCH_COMPLETE 后补入。**
+恢复 run 仅更换独立验证的数值参考路径为 **`CPU_FP64_reference_from_FP32_weights`**：实际部署仍保留四个 FP32 tensor，复核将其值提升到 CPU FP64 计算，再以 FP32 单位输出与已保存生产值比较。原 rtol=1e-5、atol=2e-6 不变，FP64 raw/margin 复核 atol=1e-10 不变；聚合评分继续使用已通过校验的原生产单位特征。实际远端全 30150 条公开重建通过，known 最大绝对差 **1.17439777e-6**、novel **9.53674316e-7**。
+
+恢复未修改 g、源聚合、τ、保存的生产 FP32 单位特征或分数，也未重新训练、校准、预测或读取真实 IQ。它只补 `compact_oe`，identity 和固定主臂评分按原文件引用。恢复结果的 `run_id/code_commit` 仍标识原预测 run 和 `efb82a...`，另以 `scorer_run_id/scorer_code_commit` 标识恢复 run 和 `4211e898...`，两种身份不混写。
+
+恢复状态为 **ANALYZED_SOURCE_ONLY / NO_PROMOTION**，真实部署 checkpoint 的 2 条 synthetic-unit smoke PASS，随后完整公开校验和 truth-last 评分完成。CPU PID **3193705** 的 CWD/argv 指向恢复 release，CUDA 可见列表为空，日志 **0→1647 bytes**，终态 live 为空，新增 GPU worker=0、foreign stops=0；恢复 archive SHA 与远端一致、compile VERIFIED。新增 30152 条 g reference 前向单列为技术复核成本，F/G 前向和更新仍为 0。三臂×两法矩阵至此由双 run 证据闭合，旧 pipeline 的失败记录及故障 stdout 保留。
 
 原执行证据：聚焦测试 `21 passed / 47 subtests passed / 13.07s`，816 条 `np.trapz` 弃用警告，无失败；一次独立 P0/P1 审查 PASS。单 archive SHA 比较、远端 compile、runtime validation 均 VERIFIED，target handles 与数据传输为 0。Source PID 为 identity **3178462/GPU2**、compact_oe **3178464/GPU3**、主臂 **3179142/GPU2**；对应实时采样 350、358、360 MiB，均非峰值。日志分别增长 546→647、921→2801、2614→2948 bytes；最终 owned/live 为 0，foreign stops 为 0。
 
-## 7. 当前结论
+修复仅运行受影响 scorer 测试：**8 passed / 23 subtests passed / 10.50s**，1020 条同类弃用警告；一次针对 FP64 验证、scorer 身份和首步 smoke 的 P0/P1 定向复核 PASS。它与原 `21/47`、复核中的重叠定向测试分开报告，不相加为一个新 suite，也未重复完整候选审查。
 
-固定主臂的已知保护通过，但未知拒识远未达到源端 90% 门槛，已完成主评分为 NO_PROMOTION。两学习臂的训练轨迹完整、有限值与同采样对照得到证实；这不能替代开放集性能或未见 RX 验收。compact_oe 评分技术恢复完成前，不给出三臂完整对照结论，也不将缺失评分填为 0。
+## 7. 最终科学判定
+
+完整矩阵中，固定主组合已知保护通过，未知拒识远未达到源端 90% 门槛，最终为 **NO_PROMOTION**。两学习臂的训练轨迹完整、有限值与同采样对照得到证实，source-free 状态也已形成；这些事实不能替代开放集性能或未见 RX 验收。主臂的源 held-RX 1NN 总体略增，同时冻结运行点的未知拒识低于 compact_oe，两个指标不能互相替代。
 
 本轮没有目标 U/Q、域适应、未知聚类或匿名注册，未证明跨未见 RX 星地泛化或完整 Phase3 完成；恢复只补合法评分证据，不改变主规则或引入新的机制承诺。
