@@ -1,5 +1,7 @@
 # 星地接收与恢复联合拒识证据：预登记
 
+当前登记状态：ANALYZED_SOURCE_ONLY；两stage COMPLETE，实测 NO_PROMOTION。以下预登记正文保留，结果见末节。
+
 run `20261029-phase3-star-paired-evidence-s2026092701-r01`，发布前登记，不是实测成功；完整Phase3目标ACTIVE，适用用户最新v3双90%/同输入原F0闭集到开放损失2pp、宏A_K/R_U/H。
 
 实际code `bcc873cd9f9273133d74b5bc591c947b37ce16e1`；30项相关测试与56subtests PASS，一次独立下一实跑P0/P1审查PASS，本地runtime validate和一次N607 preflight PASS。实际原F0无query合成G10 smoke是预测第一步，PASS立即继续，无token/receipt。
@@ -19,3 +21,22 @@ GPU：0..7实际free≥4096MB一张，单预测child，本任务新增每卡≤2
 产物root为prediction/complete.json、geometry/P0/P1、readouts.npz/readouts.json、thresholds.npy、calibration/complete.json、predict/known_predictions.npz和novel_predictions.npz；独立score/results.json和complete.json。同row完整分析后代码/报告/登记Git提交push并远端OID读回，IQ/权重/原始日志和预测不提交。
 
 技术非法输入/继承/非有限/输出碰撞/无法合法预测评分则保留partial，不盲重发；科学低分仍完成全部固定预测/评分，不调阈值、选控制、扩seed或打开target。REJECTED_EXTRA_GATE：无独立设计审批、重复数据验证、file/member hash、receipt或额外报告审查发布门槛。一个代码commit、一份archive一次local/remote SHA与一次compile、一次独立审查和实际smoke按项目最小流程完成。
+
+## 2026-10-29 G10 源端 paired evidence 实测结果
+
+`20261029-phase3-star-paired-evidence-s2026092701-r01` 两stage完成；唯一主paired1000 **NO_PROMOTION**，完整Phase3目标保持 **ACTIVE**。
+
+| 方法 | A_K% | R_U% | H-score% | C_K% | F0损pp | 源gate |
+| --- | --- | --- | --- | --- | --- | --- |
+| energy | 90.1444 | 10.2540 | 18.4134 | 97.7852 | 0.8370 | False |
+| P1-200 | 90.2222 | 44.8571 | 59.9220 | 98.1259 | 0.7593 | False |
+| paired-200 | 90.1815 | 41.8095 | 57.1318 | 98.1222 | 0.8000 | False |
+| P1-1000 | 90.2111 | 43.9048 | 59.0638 | 98.2185 | 0.7704 | False |
+| paired-1000 | 90.3593 | 43.7143 | 58.9227 | 98.4778 | 0.6222 | False |
+
+v3 known42组CK≥90%/同输入原F0 P1 closed−AK≤2pp全部通过，unknown overall/5RX/6scene共12组均未达90%。AN/HOW=N/A，target/适应/发现/注册访问0。
+同初始化3233参数、两条各1000CPU全批轨迹总2000更新；200快照不新增优化。主−同预算P1-only：ΔAK+0.1481pp/ΔRU−0.1905pp/ΔH−0.1411pp，净正确+40/未知拒识−6；AUROC+0.8848pp/OSCR+0.7921pp，排序改善不等于运行点过线。
+主−energy：ΔAK+0.2148pp/ΔRU+33.4603pp/ΔH+40.5093pp，净正确+58/未知拒识+1054；paired1000−paired200净正确+48/未知拒识+60。五方法和其余预算/输入配对均如实报告，不按分换主或扫描阈值。
+复用G10缓存42584既有物理记录，P0/P1双路85168 F前向，F/G/head更新0、Gforward0；21OE额外membership源监督，V额外known标签仅校准，novel历史暴露且同源RX。主部署共享F+G+MLP503177参数，不是两个F。
+独立live确认driver2925797/source2925886 CWD/argv/CUDA2，GPU UUID4fb…388MB离散样本非peak；source日志11674→21345B，终态owned/live空、foreign0。pipeline35.992259s是整过程时间，不是逐包延迟。
+完整五方法/42组/逐TX/五项配对净数、2000loss与四快照、域权重/状态/观察边界见 [`PAMF_PHASE3_STAR_PAIRED_RESULTS_20261029.md`](../../../docs/PAMF_PHASE3_STAR_PAIRED_RESULTS_20261029.md)。

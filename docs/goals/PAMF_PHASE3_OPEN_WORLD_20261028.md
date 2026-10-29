@@ -360,3 +360,13 @@ baseline保留cache同输入原F0，而非新encoder自身closed；完整训练6
 在本轮同F0、同输入的配对P1 energy控制上，MLP的R_U提高34.6667pp（未知净多拒1092条），H提高41.5472pp，A_K仅少1条正确接收（−0.0037pp）；这支持多分支拒识证据比该单标量更有效，但未知绝对拒识仍未达90%。不能以这项源收益替代跨RX或无标签未来注册验证。
 
 一次独立P0/P1审查PASS，33项相关检查/35subtests PASS，单archive传输比较/compile/runtime/原F0实际checkpoint无query合成G10 smoke通过。独立首次观察确认driver2904272 live及CWD/argv；source predictor2904371（pipeline指派GPU2）和CPU scorer2904466在第二次观察前已完整退出，未捕获GPU子进程的独立实时占用，不伪造GPU显存或日志增长采样，不为证明监控而重跑。既有源物理记录/同episode复用不算独立新数据；源未知为历史暴露三设备、同源RX而非未见目标RX。正式与开发target读取0，无DA/发现/注册，A_N/H_OW为N/A，完整Phase3目标仍ACTIVE。
+
+## G10 配对证据与匹配预算实际完成（2026-10-29）
+
+`20261029-phase3-star-paired-evidence-s2026092701-r01` 已VERIFIED/ANALYZED_SOURCE_ONLY，实际code `bcc873cd9f9273133d74b5bc591c947b37ce16e1`，预登记 `af0369e6ca8fea4bc60ffa6ca4954acbff2853b0`。原F0 E50/defaulthead冻结，身份固定P1；P0/P1各100D consensus拼200D，两MLP均3233名义参数、相同初始权重，P1-only的后100维在拟合/normalizer/预测前置零。各1000 CPU更新，同轨迹事前保存200/1000快照，总实际2000步，不把快照加成2400步。
+
+唯一主paired1000的宏 A_K/R_U/H为90.3593/43.7143/58.9227%，C_K98.4778%，原F0同输入P1闭集90.9815%，总损0.6222pp；宏AUROC94.2525%、宏OSCR86.6136%。42组known保护过、unknown总体/5源RX/6scene全未90，NO_PROMOTION。同预算paired−P1-only正确接收净+40、未知拒对净−6，A_K+0.1481pp、R_U−0.1905pp、H−0.1411pp；相对energy净正确+58、未知拒对+1054，但不能据此替代未知绝对目标。完整五方法、2×2效应、源分组/逐TX/两轨迹2000loss与聚合状态见 `docs/PAMF_PHASE3_STAR_PAIRED_RESULTS_20261029.md`。
+
+本轮主global τ受RX6/low urban源交叉组的已知保护约束，所有方法下一候选τ均不合法；这是source-V经验保护，排序更高不等于运行点通过。该固定输入扩展和预算比较没有解决未知拒识，不能继续仅凭加特征/训练loss下降宣称改进。
+
+一次独立P0/P1 PASS，30项相关检查/56子测试通过，原F0实际合成星地无query smoke/单archive比较/compile/runtime均VERIFIED。独立观察driver2925797/source2925886 live CWD/argv、CUDA2及GPU UUID4fb...离散388MB；日志11674→21345B，source/score已完整结束，owned/live终态空、foreignstop0。源角色继续L6300/OE6134/V27000/novel3150、同源五RX/三日与历史暴露novel；无新真实信道/G/raw/独立物理记录、无target/DA/发现/注册。A_N/H_OW=N/A，正式RX24-18未访问，完整目标仍ACTIVE。
