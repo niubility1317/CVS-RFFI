@@ -1,0 +1,233 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-star-relative-s2026092701-r01",
+  "group_id": "pamf-phase3-star-only-relative-geometry",
+  "display_name": "PAMF第三阶段：星地G10相对距离与无标签注册",
+  "description": "Original Phase1 frozen singleF0; sourceL/V star-only G10, MD/RMD stats andknown-risk calibration; P0/P1 fourstate futureQ independentU-only scoring.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-only-G10-open-world-development",
+  "aliases": [
+    "Phase3 G10相对距离四态"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "star_only",
+    "RMD",
+    "unlabeled",
+    "registration",
+    "development_only"
+  ],
+  "comparison_group_id": "phase3-star-g10-frozen-F0-MD-RMD",
+  "parent_run_ids": [
+    "20261029-phase3-star-g10-pool-rx24-1-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "a391d7ae8baeb5b772ebb93854c92606cd0aa95a",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-relative-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original source aggregates/L cache/knownV compact and fixed RX24-1 independent U/futureQ",
+    "version": "Existing VALIDATED_ONCE physical roles, no IQ or channel regeneration",
+    "representation": "Original rawManySig L/V metadata selection -> once RMS/G10 fixed received -> F0 P0 and same IQ DURA/F0 P1; target newG10 phase3_min_v1",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; /home/szu2070436088/2510044040/CV-SincNet/runs/20261023-phase1-practical-residual-full2x2-m600-r01/data/source/F0/{L_s,V}_metadata.npz; starG10 builder_report.mapping",
+    "label_map_ref": "Old6 source labels reused only for source statistics/calibration; no target labels in predict/fit; anonymous permutation only Utruth in scorer after Qfreeze",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "24-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_08",
+      "2021_03_15"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L": 6300,
+      "source_V": 27000,
+      "source_original_U_new_consumption": 0,
+      "source_OE_novel": 0,
+      "target_U": 384,
+      "future_Q": 864
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "discovery": "p3dev-star-g10-6e1292b62ab09286ebf1a0df",
+      "evaluation": "p3dev-star-g10-71a5a0dec23ac6ccc3b479c2"
+    },
+    "split_id": {
+      "discovery": "83c5cc1fe2f2a1512dbc1287",
+      "evaluation": "05de65cd4818f3e5e33ced5c"
+    },
+    "validation_ref": "local_artifacts/pamf_phase3_star_g10_pool_20261029_r01/pool/complete.json; original Phase1 source cached contract",
+    "support_query_ref": "No labeled target support; U unlabeled fit only, physical-disjoint Q after registry/bias freeze; U/Q truth scorer-only",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "source known L statistics/Vthreshold only; target no labels/knownunknown roles/trueK/quota",
+    "query_use": "Future Q row-local after source and all U aggregates frozen, fourstates then separatetruth scorer",
+    "external_method_exception": null,
+    "claim_scope": "Single seed/developmentRX/oneG10episode, repeated physicalsource and source-exposed novel devices; notformalRX24-18 or overallPhase3 completion"
+  },
+  "checkpoint": {
+    "initialization": "strict original F0 E50 plus fixed DURA",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Originalsource L/U/V matching Phase1 parent; no E51,auxiliaryOE,or prior target-adapted state; current targetRX disjoint",
+    "selection_rule": "Fixed original Phase1 final E50/11100, not selected using this G10target"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-star-relative-20261029",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-relative-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-relative-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_relative_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_relative_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-relative-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Dynamic0-7 actualfree>=4096MB, single own GPUworker, <=2added/card; foreign work unchanged",
+    "stop_rule": "Wrong identity/public role/forbidden truth or Qfit, nonfinite, collision or incomplete legal prediction preserves partial without retry. Zero clusters/core shortage/scientific failure is completed negative evidence."
+  },
+  "expected_artifacts": [
+    "pipeline_state.json",
+    "logs/*.log",
+    "source/complete.json",
+    "source/by_path/{P0,P1}/{geometry.npz,metric.npz,thresholds.npy,statistics.npz,calibration/complete.json}",
+    "rows/{P0,P1}/predict/{complete.json,predictions.npz,adaptation/state.npz,adaptation/discovery_diagnostics.npz,adaptation/complete.json}",
+    "rows/{P0,P1}/score/{scores.json,complete.json}",
+    "observed_state.json"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "unknown_macro_rejection",
+      "old_acceptance",
+      "old_open",
+      "sameinput_F0_loss",
+      "new_future_macro",
+      "intended_registered_FRR",
+      "later_unknown_rejection",
+      "U_cluster_contamination"
+    ],
+    "dimensions": [
+      "P0/P1 both satellite",
+      "fourDA_REG states",
+      "sixG10scenes",
+      "TX/RX/day",
+      "7REG0diagnostics",
+      "pairedDA/REGdeltas",
+      "coverage/N_A"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-relative-s2026092701-r01/rows/<path>/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_relative_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json"
+  },
+  "rows": [
+    {
+      "row_id": "P0-fourstates-s2026092701",
+      "method": "FrozenF0 G10 MD/RMD P0",
+      "purpose": "Fixed primary DA1_REG1::relative_mahalanobis, matched fourstate futureQ",
+      "config_ref": "configs/pamf_phase3_star_relative_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-relative-s2026092701-r01/configs/P0.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": 2026104001,
+        "support": null,
+        "evaluation": 2026102914
+      },
+      "seed_notes": "No reselectedphysicalroles; same MIX01received P0/P1, deterministicUclusters,no trueK",
+      "k": null,
+      "scenario": "G10_six_component_MIX01",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "SourceL6300/V27000 oneG10 each, all neural0updates; U384 adapt/discover then Q864, noQfit, formal0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-relative-s2026092701-r01/rows/P0",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-relative-s2026092701-r01/logs/P0_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_relative_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-relative-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "pipeline_state.json",
+        "logs/*.log",
+        "source/complete.json",
+        "source/by_path/{P0,P1}/{geometry.npz,metric.npz,thresholds.npy,statistics.npz,calibration/complete.json}",
+        "rows/{P0,P1}/predict/{complete.json,predictions.npz,adaptation/state.npz,adaptation/discovery_diagnostics.npz,adaptation/complete.json}",
+        "rows/{P0,P1}/score/{scores.json,complete.json}",
+        "observed_state.json"
+      ]
+    },
+    {
+      "row_id": "P1-fourstates-s2026092701",
+      "method": "FrozenF0 G10 MD/RMD P1",
+      "purpose": "Fixed primary DA1_REG1::relative_mahalanobis, matched fourstate futureQ",
+      "config_ref": "configs/pamf_phase3_star_relative_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-relative-s2026092701-r01/configs/P1.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": 2026104001,
+        "support": null,
+        "evaluation": 2026102914
+      },
+      "seed_notes": "No reselectedphysicalroles; same MIX01received P0/P1, deterministicUclusters,no trueK",
+      "k": null,
+      "scenario": "G10_six_component_MIX01",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "SourceL6300/V27000 oneG10 each, all neural0updates; U384 adapt/discover then Q864, noQfit, formal0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-relative-s2026092701-r01/rows/P1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-relative-s2026092701-r01/logs/P1_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_relative_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-relative-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "pipeline_state.json",
+        "logs/*.log",
+        "source/complete.json",
+        "source/by_path/{P0,P1}/{geometry.npz,metric.npz,thresholds.npy,statistics.npz,calibration/complete.json}",
+        "rows/{P0,P1}/predict/{complete.json,predictions.npz,adaptation/state.npz,adaptation/discovery_diagnostics.npz,adaptation/complete.json}",
+        "rows/{P0,P1}/score/{scores.json,complete.json}",
+        "observed_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "SourceWholePKL load is physical IO; only L/V selected records consumed, no claim byte-level source partition reads.",
+    "Source geometry/metric/normalization/sigma/eps/radius/90anchors fit L only; V only42group risk thresholds. All new IQ star before any F/G.",
+    "One F0+G499944 NNparameters; MD/RMD full covariances are additional non-gradient state. No oldE51 or learnedOE reader.",
+    "Single-model sourceconfidence +branchvotes for Ucore, not independentdualF agreement; bias no core identity is scientificfailure.",
+    "DBSCAN unknownK free/zeroallowed; fullold+anoncompetition; U-onlytruth mapping after fourQstatescomplete; unmatchedanon errornotreject.",
+    "Allsixscene coverage needed; missinggroups N/A notsuccess; unknown90/known95/F0loss2pp/new80/regoldloss2pp; no targetthreshold scan.",
+    "Scientificfailures do notchangefixedmatrix, no formal/seed expansion; totalgoal ACTIVE."
+  ],
+  "registered_at": "2026-10-29T10:02:51+00:00",
+  "verification": {
+    "focused_tests": "29 unique tests/33 subtests PASS:core7/7,source9/7,target4/4,score7/10,launch2/5",
+    "independent_review": "Single P0/P1 PASS, no direct release defects",
+    "checkpoint_smoke": "Source/target first step actual F0/G synthetic satellite IQ smoke, PASS immediately continues",
+    "source_contract_compatibility": "Original F0 optional preprocessing fields regression passed; originalsplit392005 retained",
+    "foreign_processes_stopped": 0
+  }
+}
