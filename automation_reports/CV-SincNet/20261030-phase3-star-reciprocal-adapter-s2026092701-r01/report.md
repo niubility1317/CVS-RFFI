@@ -27,3 +27,50 @@ DA0/DA1各U-only注册：两old margin均负的候选在当前mutual10NN图取�
 - 技术fail保留partial，科学负分/emptyseed/K0不重启/重选τ/改K；UNKNOWN先核原PID/root，不重复提交或触碰foreign。
 
 验证：集成48 passed, 1584 warnings, 39 subtests passed in 11.10s、10AST/实际runtimePASS；之后仅producer4定向PASS5.15s含1新增empty-mask精确旁路（与主suite3项重叠，不累加为独立全suite）。唯一独立直接P0/P1 PASS。一次preflight source原F0/聚合/公有capsule/split/G在位、未读UQ或truth值，8卡free11195–18793MB。单code/configcommit、单archiveSHA比较/remotecompile、真实checkpoint首步smoke、实际PID/CWD/argv/GPU/log增长及prediction全完后truthlast；不增签名/报告审批/重复数据验证。
+
+## 实际完成：零目标标签适应、发现与未来匿名注册（2026-10-30）
+
+VERIFIED / ANALYZED_DEVELOPMENT。两臂×四态完整预测和独立评分，唯一主reciprocal::DA1_REG1仍NO_PROMOTION。目标端trueTX/K/配额输入0、source逐行feature/IQ新读取0、F0/G/defaulthead/readout/6τ更新0；各10432参数g只由U384学习200步，所有U状态先Q864冻结。四个scorer匿名map全部用Utruth固定后才读Qtruth，模型未接触映射或truth。完整v3目标ACTIVE/finalfalse，正式RX24-18未访问。
+
+| 臂/状态 | 旧类宏 A_O（A_K） | 旧类 C_O | 当前 R_U | H-score | 未来 A_N | H_OW |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| self_pl/DA0_REG0 | 65.972222% | 88.368056% | 76.388889% | 70.799458% | N/A | N/A |
+| self_pl/DA1_REG0 | 69.618056% | 93.402778% | 60.763889% | 64.890331% | N/A | N/A |
+| self_pl/DA0_REG1 | 65.972222% | 91.493056% | 65.625000% | 65.798153% | 4.687500% | 12.308736% |
+| self_pl/DA1_REG1 | 69.618056% | 96.006944% | 25.000000% | 36.788991% | 13.541667% | 23.399066% |
+| reciprocal/DA0_REG0 | 65.972222% | 88.368056% | 76.388889% | 70.799458% | N/A | N/A |
+| reciprocal/DA1_REG0 | 68.923611% | 93.229167% | 60.763889% | 64.587052% | N/A | N/A |
+| reciprocal/DA0_REG1 | 65.972222% | 91.493056% | 65.625000% | 65.798153% | 4.687500% | 12.308736% |
+| reciprocal/DA1_REG1 | 68.923611% | 93.229167% | 27.083333% | 38.886377% | 11.458333% | 21.628696% |
+
+REG0 R_U分母为全部三未知6/7/8；REG1主R_U为U未出现的plannedlater8，不能直接以两态H/RU差表示注册影响。A_N分母始终两个真实U到达类，漏发现记0；REG0 AN/HOW N/A。REG1另报实际未注册集合和intended旧六+两到达类接收率，不能把old C_O93.23%当全应注册类C_K已达标：主intended C=78.385417%仍低于90%。
+
+主DA1REG0较同Q DA0REG0：known正确380→397净+17，A_O+2.951389pp；接受509→537净+28，C_O+4.861111pp；unknown拒对220→175净−45，R_U−15.625pp。原F0同P1闭集420/576=72.916667%，主开放397/576=68.923611%，仍损3.993056pp>2。适应有旧类开放收益，但不满足未知保护或完整联合条件；控制DA1旧正确401/576，比主多4，不能替换固定主。
+
+主DA1只有一个35条匿名cluster，Utruth显示全为到达类7、old污染0；另一到达类6未发现。独立futureQ类7只22/96正确、类6为0/96，所以AN22/192=11.458333%，不能报U纯度100%为注册成功。原DA0匿名cluster16条含14old+2new6；控制DA1 K3包含34纯new7、16纯old3及原16混合cluster，weightedpurity93.939394%同样不代表未来AN13.541667%达标。
+
+两阶段oldgate已在实际Q实现同DA REG旧A_O损失精确0；主later拒对在DA1REG前后均26/96=27.083333%，本轮REG没有再损伤该量。later的大幅损失发生在适应：DA0 REG0为64/96=66.666667%，DA1为26/96。注册仍漏设备、未来识别率低，不能仅凭oldretain通过宣布开放系统有效。
+
+trusted136条中128old+8unknown，old伪标签正确103/128=80.468750%；主扩15条均old，13正确2错误，且0条改变原argmax。主selected151中143old+8unknown、old标签正确116/143=81.118881%。这是全部预测冻结后的Utruth诊断，未回算法。扩展虽增加较干净的known样本，却没有纠正trusted错误，当前训练不证明真实身份学习改善。
+
+完整400条训练步和全部3stdout已读取，每臂200fullU384=76800曝光，共153600；伪标签CE曝光control27200/main30200。全部loss/gradientfinite、损失分解一致，真实parameters_changed8832/10432，各max preNorm residual .1000000164为FP32舍入量，.1常量未改。control首末total .0153068006→.0008124282，main .0246448591→.0011712685；F0/head/G参数与buffer和sourcegeometry/readout/τ不变，训练loss下降不能替代joint目标。
+
+source祖先仍原三视图SSL E50/11100/392005 L6300/Us56700/V27000及sourceOE成员监督。当前实际新IQ只有G10旧U384/Mar8和futureQ864/Mar15，同RX24-1、source五RX互斥、P0received/P1冻结DURA、同MIX01/receiver2027/scene2026103001/channel2026104001，无clean新路线/重抽物理/信道，不把1248既有记录当独立新数据或新盲测。targetQ高郊区缺某必需unknown类，按原覆盖规则N/A且不认证，不重抽样凑指标。
+
+### 完成后的身份与路由分解（post-hoc，非预登记候选）
+
+在全部预测/主评分固定后，另一个独立CPU同row分析只重算固定数组：实际m1+原τ[currentclass]还原readout raw，再用原F0预测类的原τ索引；也检查保持m1但只恢复原F0身份。无新模型/阈值拟合、NNforward、Utruth读取或匿名重匹配，主predictions/verdict完全不动。该诊断不作新盲测、晋级或重判本主结果。
+
+主candidate闭集413/576=71.701389%，较原F0净−7（3得10失）；开放误拒再损16/576=2.777778pp，总3.993056=闭集1.215278+正确误拒2.777778pp。只恢复原F0身份、保留当前gate，AK403/576=69.965278%、C93.229167%、RU60.763889%、H65.040763%，原F0损2.951389pp仍失败。再恢复原class路由为AK69.791667/C93.055556/RU60.763889/H64.965647%，仍失败。控制相应samegateAK70.138889%、origrouteAK69.791667/RU60.416667，也未过。
+
+按同一顺序，原身份下gate改变带来known正确380→403净+23，再更换适应后身份403→397净−6，最终+17；不是闭集身份性能改善。条件τ路由变化也不能单独修复unknownR下降，不能据诊断直接换成更高数字版本。该证据将下一科学问题从单纯head/routing错误收束到target域knownness漂移及对未知设备的保护。
+
+### 成本、发布与可观测证据
+
+F0 full forward2500=2496real+4synthetic，G1250=1248real+2synthetic；g训练153600+终态诊断768+UQ推理2496=156864行，额外原head特征前向153600+2496+2=156098。source四个3233快照都存/每evidence都算四个，real14976MLP行、smoke8，sourceL/OE/旧Gcache/Phase1祖先成本不抹去。神经实际同时双g533740、单g523308；geometry/90聚合/原型/radii/部署封装另计，无source逐行bank、无B1时延证据。
+
+code d3d8f5680fd72dc7ded272ffd1ded3143e490244/prereg544a313006685fa0f45f82a8a06e44923af30b4c；48tests39subPASS11.10s，后producer4定向PASS5.15s含1新增（非另一完整suite），10AST/runtime与唯一独立直接P0P1 PASS。一次preflight/archiveSHA1638a485996cc10480a733f3a4bdf7f008e6770fd166b955dba1b7d23a7e4d08（387files/data0）比较/compile VERIFIED。实际F0/G syntheticG10 smoke先U PASS，head inputgrad4.5401769、head logits roundtrip差0，realrows0读/updates0。
+
+仅driver3267295独立live抓到正确CWD/argv/CUDA空；predict3267384由pipeline分配GPU6、score3267483 CPU，仅jobs/stdout，未抓子进程瞬时独立GPU显存或live log增长，不为遥测重跑。终态live/ownedGPU空、foreign干预0、predict/score/driver日志1052/1574/21B（driver0→21已观察）；三个complete齐。pipeline23.247853s、predictjob18.405200s/score4.763123s，predict内部13.545977s，含加载/数学检查、非B1或因果并行提速。
+
+完整逐类/场景/CI、400步训练窗口、K与污染、配对计数和posthoc表见docs/PAMF_PHASE3_STAR_RECIPROCAL_ADAPTER_RESULTS_20261030.md。当前不扩正式/seed、不更换控制、不调整旧阈值；后续独立机制需同时解决knownness的未知保护和新设备跨日泛化，不能把本轮oldgate结构改进或U纯cluster缩减成整个Phase3完成。
