@@ -7,6 +7,7 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |PAMF第三阶段：跨接收机星地冻结开集拒识首轮|managed_run|[打开](../../automation_reports/CV-SincNet/20261028-phase3-pamf-open-set-s2026092701-r01/report.md)|
+|PAMF第三阶段：可靠旧类锚点的无标签正交对齐|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-development-alignment-s2026092701-r01/report.md)|
 |PAMF第三阶段：RX24-1跨接收机clean配对控制|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-development-clean-rx24-1-r01/report.md)|
 |PAMF第三阶段：RX24-1冻结跨接收机clean拒识|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-development-clean-transfer-s2026092701-r01/report.md)|
 |PAMF第三阶段：RX24-1跨接收机星地开发池|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-development-pool-rx24-1-r01/report.md)|
