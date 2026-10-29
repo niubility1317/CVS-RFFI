@@ -25,3 +25,11 @@ source五RX1/3/4/6/8、三日2021-03-08/15/23，与训练RX相同，保留三nov
 验证：29集成tests/45subtests、五AST和runtime schema PASS；唯一review发现score完成字段P1，已最小修复arm_source_gate_passed/eligible_primary并新增1条回归PASS，总unique30/45sub，不重跑未变suite。独立定向7tests/4sub与主测试重叠不再加计。唯一独立P0/P1已PASS并定点复核该修复，未加第二次全审。一次N607 preflight检查原source契约/缓存四role/真实显存通过、target0；release一次archiveSHA比较/remotecompile、first-step actualcheckpoint noquerysmoke、启动PID/CWD/cmdline/GPU/log增长和truth-last同row分析按原最小流程执行。
 
 技术停止限祖先/角色错误、输出碰撞、非有限或无法完成合法prediction，保留partial、不原地重启。无performance结果或完成声明，目标仍ACTIVE。
+
+## 实际技术停止（2026-10-30）
+
+状态 VERIFIED/FAILED_PRESERVED，无性能结果。teacher导出完成，但两组train在 `_model` 将完整native训练容器参数总数误与232993部署识别器计数比较而退出，发生在native梯度smoke与任何optimizer更新之前；未读V/novel/target，没有预测或评分。独立终态所有本run进程已退出，其他owner不变，无需kill。
+
+只读CPU真实原checkpoint构造诊断确认：完整DualCVSincNetDisentangle容器900722，id_backbone及其encoder均232993；另667729位于本轮forward不使用的dom_backbone/dom_enhancer/dom_head/adv_head。原严格parent、三view/default6head/Sinc结构校验通过，实际骨干没有变化。新增错误是计数对象范围，不是将参数阈值降低或换模型。
+
+保留code6043b64d69df2cd877547fad5a71a36a2f2c4f76、原archive/输出/teacher/日志；一次针对性修复只把计数对象改为部署encoder，并补含额外训练分支wrapper的回归。随后以新r02不可覆盖run/release完整重导teacher并跑原预算/两组/评分，不复用此失败目录或放宽跨run身份校验。r01不计科学失败、性能分数或成功训练。证据local_artifacts/pamf_phase3_star_joint_ova_20261029_r01/{observed_state.json,count_diagnostic.json,logs/*train.log}。完整目标ACTIVE。

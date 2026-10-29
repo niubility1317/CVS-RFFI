@@ -32,6 +32,7 @@
 |星地多分支证据拒识器：预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-consensus-s2026092701-r01/report.md)|
 |PAMF第三阶段：统一星地G10开发观测|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-g10-pool-rx24-1-r01/report.md)|
 |PAMF第三阶段：开放损失联合表征与特征保真|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-joint-ova-s2026092701-r01/report.md)|
+|PAMF第三阶段：开放损失联合表征与特征保真|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-joint-ova-s2026092701-r02/report.md)|
 |PAMF 第三阶段：全 U 邻域适应与匿名注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-neighborhood-s2026092701-r01/report.md)|
 |PAMF第三阶段：星地域残差投影源端证伪|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-nuisance-s2026092701-r01/report.md)|
 |PAMF 第三阶段：类条件开放边界与难负类学习|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-ova-evidence-s2026092701-r01/report.md)|
