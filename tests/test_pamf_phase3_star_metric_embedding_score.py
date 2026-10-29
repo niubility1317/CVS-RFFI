@@ -3,6 +3,7 @@ import importlib
 import json
 from pathlib import Path
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 import numpy as np
@@ -89,6 +90,8 @@ class MetricEmbeddingScoreTests(unittest.TestCase):
                 self.assertEqual(result['next_step'],'SOURCE_METRIC_EMBEDDING_READY_FOR_TARGET_FALSIFICATION' if arm==m.PRIMARY_ARM else 'CONTROL_ONLY_COMPLETE')
                 self.assertEqual(result['primary_summary']['H_OS'],1.);self.assertEqual(result['target_reads'],0);self.assertEqual(result['full_goal_status'],'ACTIVE')
                 self.assertIsNone(result['A_N']);self.assertTrue(result['source_free_deployment_state'])
+                self.assertEqual(result['scorer_run_id'],m.RUN_ID);self.assertEqual(result['scorer_code_commit'],'a'*40)
+                self.assertEqual(result['verification_precision'],'CPU_FP64_reference_from_FP32_weights')
                 self.assertLess(result['novel_cross_RX_retrieval']['metric']['macro_hit_rate'],.9)
                 self.assertFalse(result['novel_structure_is_promotion_gate'])
                 self.assertEqual(result['input_costs']['g_evaluation_rows'],270)
@@ -102,8 +105,73 @@ class MetricEmbeddingScoreTests(unittest.TestCase):
             with patch.object(m,'COUNTS',counts):result=m.score(p,t,Path(td)/'score')
             self.assertTrue(result['methods']['minimum_relative']['goals']['passed']);self.assertFalse(result['eligible_primary']);self.assertEqual(result['next_step'],'NO_PROMOTION')
 
+    def test_reference_uses_FP64_without_changing_deployed_FP32_state(self):
+        with tempfile.TemporaryDirectory() as td:
+            m,p,t,counts=self.fixture(Path(td),'compact_oe');path=p/'deployment/model.pt'
+            before=torch.load(path,map_location='cpu',weights_only=True);marker=json.loads((p/'complete.json').read_text())
+            reference,_,_=m._deployment(p,marker)
+            self.assertTrue(all(v.dtype==torch.float64 for v in reference.state_dict().values()))
+            after=torch.load(path,map_location='cpu',weights_only=True)
+            self.assertTrue(all(v.dtype==torch.float32 and torch.equal(v,before[k]) for k,v in after.items()))
+
+    def test_actual_model_smoke_precedes_public_arrays_truth_and_records_recovery_identity(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td);m,p,t,counts=self.fixture(root,'compact_oe');recovery=root/'recovery';recovery.mkdir();smoke=recovery/'smoke.json'
+            expected=torch.load(p/'deployment/model.pt',map_location='cpu',weights_only=True);events=[]
+            original_npz=m._npz;original_truth=m._truth;original_forward=m.core.MetricNet.forward
+            def forward(net,x):
+                self.assertEqual(x.dtype,torch.float64)
+                self.assertTrue(all(v.dtype==torch.float64 and torch.equal(v,expected[k].double()) for k,v in net.state_dict().items()))
+                events.append(('forward',len(x)))
+                return original_forward(net,x)
+            def npz(path,fields):
+                if Path(path).name in ('known_predictions.npz','novel_predictions.npz'):
+                    self.assertTrue(smoke.is_file());self.assertEqual(json.loads(smoke.read_text())['status'],'PASS')
+                    events.append(('public',Path(path).name))
+                return original_npz(path,fields)
+            def truth(*args):
+                self.assertTrue(smoke.is_file());self.assertIn(('public','novel_predictions.npz'),events);events.append(('truth',))
+                return original_truth(*args)
+            with patch.object(m,'COUNTS',counts),patch.object(m,'_npz',side_effect=npz),patch.object(m,'_truth',side_effect=truth),\
+                 patch.object(m.core.MetricNet,'forward',new=forward):
+                result=m.score(p,t,recovery/'score',scorer_run_id='20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01',
+                    scorer_code_commit='b'*40,smoke_output=smoke)
+            self.assertEqual(events[0],('forward',2));self.assertEqual(events[-1],('truth',))
+            self.assertEqual(result['run_id'],m.RUN_ID);self.assertEqual(result['code_commit'],'a'*40)
+            self.assertEqual(result['scorer_run_id'],'20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01')
+            self.assertEqual(result['scorer_code_commit'],'b'*40);self.assertEqual(result['verification_precision'],'CPU_FP64_reference_from_FP32_weights')
+            self.assertTrue(json.loads(smoke.read_text())['actual_deployment_checkpoint']);self.assertEqual(json.loads(smoke.read_text())['private_truth_reads'],0)
+
+    def test_recovery_cli_forwards_explicit_identity_and_smoke(self):
+        m=importlib.import_module('experiments.pamf_phase3_open_world.star_metric_embedding_score')
+        args=['score','--prediction-root','old/predict','--novel-truth','truth','--output','new/score',
+            '--scorer-run-id','recovery','--scorer-code-commit','b'*40,'--smoke-output','new/smoke.json']
+        with patch.object(sys,'argv',args),patch.object(m,'score') as call:m.main()
+        call.assert_called_once_with('old/predict','truth','new/score',scorer_run_id='recovery',scorer_code_commit='b'*40,smoke_output='new/smoke.json')
+
+    def test_invalid_scorer_identity_is_rejected_before_public_inputs(self):
+        m=importlib.import_module('experiments.pamf_phase3_open_world.star_metric_embedding_score')
+        for args in ({'scorer_run_id':'recovery'},{'scorer_code_commit':'b'*40},
+                {'scorer_run_id':'recovery','scorer_code_commit':'invalid'},
+                {'scorer_run_id':'recovery','scorer_code_commit':int('1'*40)}):
+            with self.subTest(args=args),tempfile.TemporaryDirectory() as td,patch.object(m,'_prediction',side_effect=AssertionError('No public access for invalid identity')):
+                with self.assertRaises(ValueError):m.score('not-opened','not-opened',Path(td)/'score',**args)
+
+    def test_invalid_actual_model_smoke_blocks_public_arrays_and_truth(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td);m,p,t,counts=self.fixture(root,'compact_oe');model_path=p/'deployment/model.pt'
+            state=torch.load(model_path,map_location='cpu',weights_only=True);state['fc2.bias'][0]=-1.;torch.save(state,model_path)
+            # The deployed checkpoint maps the first fixed synthetic unit to zero.
+            original=m._npz
+            def public(path,fields):
+                if Path(path).name in ('known_predictions.npz','novel_predictions.npz'):raise AssertionError('Public rows opened before actual-model smoke')
+                return original(path,fields)
+            with patch.object(m,'COUNTS',counts),patch.object(m,'_npz',side_effect=public),patch.object(m,'_truth',side_effect=AssertionError('No private truth')):
+                with self.assertRaisesRegex(ValueError,'unit norm'):m.score(p,t,root/'score',smoke_output=root/'smoke.json')
+            self.assertFalse((root/'smoke.json').exists());self.assertFalse((root/'score').exists())
+
     def test_public_source_deployment_training_and_score_errors_precede_truth(self):
-        for defect in ('freeze','parent','private','identity','g_unit','raw','margin','tau','aggregate','deployment_extra','model_extra','model_tensor','budget','trace','source_L'):
+        for defect in ('freeze','parent','private','identity','g_unit','g_unit_small_tamper','raw','margin','tau','aggregate','deployment_extra','model_extra','model_tensor','budget','trace','source_L'):
             with self.subTest(defect=defect),tempfile.TemporaryDirectory() as td:
                 root=Path(td);m,p,t,counts=self.fixture(root)
                 if defect in ('freeze','parent'):
@@ -127,6 +195,7 @@ class MetricEmbeddingScoreTests(unittest.TestCase):
                     if defect=='private':d['tx']=np.asarray(['19-15']*len(d['ids']))
                     elif defect=='identity':d['closed'][0]=1
                     elif defect=='g_unit':d['metric_unit_features'][0]=np.eye(160,dtype=np.float32)[21]
+                    elif defect=='g_unit_small_tamper':d['metric_unit_features'][0,21]=1e-4
                     elif defect=='raw':d['raw_scores'][0,1]+=.1
                     elif defect=='margin':d['scores'][0,1]+=.1
                     elif defect=='tau':d['conditional'][0,0]=1.

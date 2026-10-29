@@ -19,6 +19,7 @@ from .metrics import open_set_metrics
 RUN_ID='20261030-phase3-star-metric-embedding-s2026092701-r01'
 SCHEMA='pamf_phase3_star_metric_embedding_scores_v1'
 STATUS='STAR_METRIC_EMBEDDING_SCORES_COMPLETE'
+VERIFICATION_PRECISION='CPU_FP64_reference_from_FP32_weights'
 PARENT_RUN='20261030-phase3-star-local-support-s2026092701-r01'
 PARENT_CODE='84cdc012f7d9641b283c407f6048bfe4e6e21cf6'
 TEACHER_RUN='20261029-phase3-star-joint-ova-s2026092701-r02'
@@ -132,7 +133,7 @@ def _deployment(root,marker):
         raise ValueError('Only four finite FP32 MetricNet parameter tensors may be deployed')
     if marker['arm']=='identity' and (bool(torch.count_nonzero(state['fc2.weight'])) or bool(torch.count_nonzero(state['fc2.bias']))):
         raise ValueError('Identity arm must retain the zero-initialized residual output layer')
-    net=core.MetricNet().cpu();net.load_state_dict(state,strict=True);net.eval()
+    net=core.MetricNet().cpu().float();net.load_state_dict(state,strict=True);net.double().eval()
     metric=_npz(path/'metric.npz',METRIC_SHAPES)
     if any(v.dtype!=np.float64 or v.shape!=METRIC_SHAPES[k] or not np.isfinite(v).all() for k,v in metric.items()):
         raise ValueError('Exactly four finite FP64 source-L aggregate arrays required; no per-record source state')
@@ -141,7 +142,21 @@ def _deployment(root,marker):
     return net,metric,tau
 
 
-def _prediction(root):
+def _reference_smoke(net,marker,output):
+    x=torch.zeros((2,160),dtype=torch.float64);x[0,0]=1.;x[1,159]=1.
+    with torch.no_grad():value=net(x)
+    if value.dtype!=torch.float64 or tuple(value.shape)!=(2,160) or not bool(torch.isfinite(value).all()):
+        raise ValueError('Actual deployed MetricNet FP64 reference smoke must produce finite unit vectors')
+    norms=np.asarray(torch.linalg.vector_norm(value,dim=1).tolist(),np.float64)
+    if not np.allclose(norms,1.,rtol=0,atol=2e-12):raise ValueError('Actual deployed MetricNet reference smoke must remain unit norm')
+    _write(Path(output),dict(schema='pamf_phase3_star_metric_embedding_scorer_smoke_v1',status='PASS',
+        prediction_run_id=marker['run_id'],prediction_code_commit=marker['code_commit'],arm=marker['arm'],
+        actual_deployment_checkpoint=True,verification_precision=VERIFICATION_PRECISION,synthetic_unit_rows=2,
+        unit_norms=norms.tolist(),parameters=20704,g_reference_forward_rows=2,F_forward_rows=0,G_forward_rows=0,
+        source_known_rows_read=0,source_novel_rows_read=0,private_truth_reads=0,neural_updates=0))
+
+
+def _prediction(root,smoke_output=None):
     root=Path(root);marker=_read(root/'complete.json');arm=marker.get('arm');steps=0 if arm=='identity' else 1000
     if (marker.get('schema')!=evaluation.SCHEMA or marker.get('status')!=evaluation.STATUS or marker.get('run_id')!=RUN_ID or arm not in ARMS
             or re.fullmatch('[0-9a-f]{40}',str(marker.get('code_commit'))) is None
@@ -159,6 +174,7 @@ def _prediction(root):
             or any(not _number(marker.get(k)) or marker[k]<0 for k in ('cpu_readout_seconds','g_evaluation_seconds'))):
         raise ValueError('Complete original-head source predictions, frozen deployment and exact per-arm costs required before truth')
     parent_root,pm,y,rx,seen=_source(marker);training=_training(root,marker,y,rx);net,metric,tau=_deployment(root,marker)
+    if smoke_output is not None:_reference_smoke(net,marker,smoke_output)
     cal=_read(root/'calibration/complete.json')
     if (cal.get('schema')!=evaluation.SCHEMA or cal.get('status')!=evaluation.CALIBRATION_STATUS
             or any(cal.get(k)!=marker[k] for k in ('run_id','code_commit','arm')) or cal.get('method_names')!=list(METHODS)
@@ -186,13 +202,13 @@ def _prediction(root):
         rebuilt=[]
         with torch.no_grad():
             for start in range(0,n,128):
-                x=torch.tensor(data['unit_features'][start:start+128].tolist(),dtype=torch.float32)
+                x=torch.tensor(data['unit_features'][start:start+128].tolist(),dtype=torch.float64)
                 rebuilt.append(np.asarray(net(x).tolist(),np.float32))
         units=np.concatenate(rebuilt);diff[role]=float(np.max(np.abs(units.astype(np.float64)-data['metric_unit_features'])))
         if not np.allclose(units,data['metric_unit_features'],rtol=1e-5,atol=2e-6):
             raise ValueError('Saved metric units must reconstruct from only deployed network parameters and original F0 units')
-        # CPU/GPU FP32 g is checked above. Exact FP64 readout uses those verified
-        # production units, avoiding false failures from different linear kernels.
+        # FP32 deployment weights are losslessly promoted for CPU FP64 reference
+        # reconstruction. Readout still uses the verified production FP32 units.
         raw=core.metric_scores(data['metric_unit_features'],data['closed'],metric)
         if (not np.allclose(raw,data['raw_scores'],rtol=0,atol=1e-10)
                 or not np.allclose(raw-tau[:,data['closed']].T,data['scores'],rtol=0,atol=1e-10)):
@@ -201,10 +217,14 @@ def _prediction(root):
     return marker,cal,tau,*rows,dict(training=training,CPU_metric_unit_max_abs_diff=diff,parent_F_forward_rows=pm['F_forward_rows'])
 
 
-def score(prediction_root,novel_truth,output):
+def score(prediction_root,novel_truth,output,*,scorer_run_id=None,scorer_code_commit=None,smoke_output=None):
     output=Path(output)
     if output.exists():raise FileExistsError('A new immutable independent per-arm score root is required')
-    started=time.perf_counter();marker,cal,tau,known,novel,evidence=_prediction(prediction_root);seconds=time.perf_counter()-started
+    if ((scorer_run_id is None)!=(scorer_code_commit is None)
+            or scorer_run_id is not None and (not isinstance(scorer_run_id,str) or not scorer_run_id.strip()
+                or not isinstance(scorer_code_commit,str) or re.fullmatch('[0-9a-f]{40}',scorer_code_commit) is None)):
+        raise ValueError('Explicit scorer run and forty-character code identity must be supplied together')
+    started=time.perf_counter();marker,cal,tau,known,novel,evidence=_prediction(prediction_root,smoke_output=smoke_output);seconds=time.perf_counter()-started
     truth=_truth(novel_truth,novel)
     km=dict(common._masks(known['rx_i'],known['scenario']));um=dict(common._masks(novel['rx_i'],truth['scenario']));methods={}
     for j,name in enumerate(METHODS):
@@ -231,6 +251,8 @@ def score(prediction_root,novel_truth,output):
             else float(main['overall'][key]-methods[METHODS[0]]['overall'][key])
             for key in ('known_macro_open_accuracy','known_macro_acceptance','unknown_macro_rejection','H_OS')})
     result=dict(schema=SCHEMA,status=STATUS,run_id=RUN_ID,code_commit=marker['code_commit'],arm=marker['arm'],method_names=list(METHODS),methods=methods,
+        scorer_run_id=marker['run_id'] if scorer_run_id is None else scorer_run_id,
+        scorer_code_commit=marker['code_commit'] if scorer_code_commit is None else scorer_code_commit,verification_precision=VERIFICATION_PRECISION,
         primary_arm=PRIMARY_ARM,primary_method=PRIMARY,primary_path='P1',primary_summary=main['overall'],primary_goals=main['goals'],
         source_gate_passed=passed,arm_source_gate_passed=passed,eligible_primary=bool(eligible),
         next_step='SOURCE_METRIC_EMBEDDING_READY_FOR_TARGET_FALSIFICATION' if eligible else 'CONTROL_ONLY_COMPLETE' if passed else 'NO_PROMOTION',
@@ -245,7 +267,7 @@ def score(prediction_root,novel_truth,output):
         ancestor_costs=dict(parent_F_forward_rows=evidence['parent_F_forward_rows'],historical_P1_restoration_reused=True,reuse_is_not_zero_cost=True),
         timing=dict(production_CPU_readout_seconds=marker['cpu_readout_seconds'],production_g_evaluation_seconds=marker['g_evaluation_seconds'],
             independent_public_reconstruction_seconds=seconds,not_end_to_end_B1_latency=True),
-        reconstruction=dict(CPU_FP32_metric_unit_max_abs_diff=evidence['CPU_metric_unit_max_abs_diff'],metric_unit_rtol=1e-5,metric_unit_atol=2e-6,
+        reconstruction=dict(CPU_FP64_reference_metric_unit_max_abs_diff=evidence['CPU_metric_unit_max_abs_diff'],metric_unit_rtol=1e-5,metric_unit_atol=2e-6,
             FP64_raw_margin_atol=1e-10,FP64_readout_uses_verified_production_metric_units=True),
         fresh_closed_is_parent_reuse=True,fresh_closed_vs_cached_baseline_changed_count=0,
         storage=dict(F_parameters=232993,G_parameters=266951,g_parameters=20704,total_neural_parameters=520648,g_FP32_bytes=82816,aggregate_FP64_bytes=418560,threshold_FP64_bytes=96),
@@ -257,7 +279,8 @@ def score(prediction_root,novel_truth,output):
 def main():
     print(json.dumps(dict(event='STAR_METRIC_EMBEDDING_SCORE_PROCESS',pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv)),flush=True)
     p=argparse.ArgumentParser();p.add_argument('--prediction-root',required=True);p.add_argument('--novel-truth',required=True);p.add_argument('--output',required=True)
-    a=p.parse_args();score(a.prediction_root,a.novel_truth,a.output)
+    p.add_argument('--scorer-run-id');p.add_argument('--scorer-code-commit');p.add_argument('--smoke-output')
+    a=p.parse_args();score(a.prediction_root,a.novel_truth,a.output,scorer_run_id=a.scorer_run_id,scorer_code_commit=a.scorer_code_commit,smoke_output=a.smoke_output)
 
 
 if __name__=='__main__':main()

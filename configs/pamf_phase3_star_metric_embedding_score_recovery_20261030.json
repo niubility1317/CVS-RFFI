@@ -1,0 +1,20 @@
+{
+  "run_id": "20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01",
+  "prediction_run_id": "20261030-phase3-star-metric-embedding-s2026092701-r01",
+  "prediction_code_commit": "efb82a4177e9b59533b7e71408ded6b63fc8733a",
+  "scope": "Independent score recovery of compact_oe only; reuse identity and compact_oe_structure scores",
+  "recovery_arm": "compact_oe",
+  "verification_precision": "CPU FP64 reference from unchanged FP32 deployment weights",
+  "unit_reconstruction_tolerance": {"rtol": 0.00001, "atol": 0.000002},
+  "readout_reconstruction_absolute_tolerance": 0.0000000001,
+  "model_updates": 0,
+  "prediction_updates": 0,
+  "threshold_updates": 0,
+  "new_real_IQ_F_G_rows": 0,
+  "new_metric_reference_rows": 30152,
+  "new_metric_reference_rows_scope": "2 synthetic actual-checkpoint smoke plus known27000 and novel3150 verification",
+  "truth_policy": "All original predictions complete and all public reconstruction checks pass before source novel truth",
+  "source_only": true,
+  "target_reads": 0,
+  "full_goal_status": "ACTIVE"
+}
