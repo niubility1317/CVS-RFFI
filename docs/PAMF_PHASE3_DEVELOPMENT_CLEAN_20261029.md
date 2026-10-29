@@ -38,3 +38,16 @@ builder 私下复制父 truth 的 `ids/y/receiver`，仅将 `scenario` 改为 `c
 先观察模块缺失导致的 8 个预期失败，再实现 builder／loader。clean 专项最终 **8 tests＋29 subtests PASS**；与既有 `tests/test_pamf_phase3_data.py` 合并的窄范围回归为 **16 tests＋32 subtests PASS**，配置校验与语法解析通过。
 
 只使用合成 Full pickle 和合成 parent metadata／truth，调用真实 `iq_record`；覆盖错 parent／IDs／canonical／成员、无信道与无重抽样、只读两个映射成员、私有文件不公开、loader 契约和数值异常、原 root 防覆盖与 CLI 首行身份。没有读取真实 IQ 或权重，没有真实 build、模型运行、评分、发布或提交。真实构建与独立 P0/P1 检查由本 run 的 launch owner 按项目最小流程完成，数据准备不等于科学目标完成。
+
+## 实际构建完成（2026-10-29）
+
+run `20261029-phase3-development-clean-rx24-1-r01` 已VERIFIED/VALIDATED_ONCE/ANALYZED_DATA_ONLY，code `959a1a68e76a7e2cfba6700c2a251da8330e59b9`。实际U384/V864，沿用parent同序ID和1248条原物理记录，两个既定Full成员、零新采样/信道/F/G/预测/正式target。实际PID43708的原生命令、CLI CWD及起始live进程已核实，日志541→838B、5行完整读取无异常；完成标记和公共三文件齐全，进程已退出。
+
+专项8 tests/29 subtests及相邻16 tests/32 subtests PASS的原始stdout只留在实现worker工具回合，未保存磁盘测试日志；登记已将误指的focused_tests.log设null，并保留这一观察限制，不为补日志重复测试。一次独立P0/P1 PASS。真实构建日志与post/complete/analysis_summary有独立保存；本构建没有科学性能结果。
+
+|角色|capsule_id|split_id|
+|---|---|---|
+|discovery|p3dev-clean-ef10219d27274e04e83408d1|64274719133a83590352add5|
+|evaluation|p3dev-clean-20e01e9ae54a4bc3ae503a3f|347fd2cb757a37f7f162223a|
+
+真实IQ和truth保持本机local_artifacts，不提交Git；clean与star模型输入隔离，目标95%/90%尚未证明。

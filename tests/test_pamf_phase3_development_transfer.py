@@ -151,6 +151,124 @@ class DevelopmentTransferTests(unittest.TestCase):
         data['logits'] = np.asarray(logits.tolist(), np.float32)
         return data
 
+    def clean_fixture(self, root):
+        config, _ = self.fixture(root)
+        star_public = Path(config['public_root'])
+        public = root / 'clean-development/evaluation/public'
+        public.mkdir(parents=True)
+        count = 36
+        ids = np.asarray([f'p3dev-{index:024x}' for index in range(count)])
+        iq = np.zeros((count, 2, 256), np.float32)
+        iq[:, 0, :] = np.arange(count)[:, None]
+        manifest = json.loads((star_public / 'manifest.json').read_text())
+        manifest.update(schema='phase3_clean_min_v1', capsule_id='p3dev-clean-capsule',
+            split_id='clean-dev-split', count=count, iq_shape=[count, 2, 256],
+            processing_route='clean', mode='clean')
+        self.write(public / 'manifest.json', manifest)
+        np.save(public / 'ids.npy', ids, allow_pickle=False)
+        np.save(public / 'received.npy', iq, allow_pickle=False)
+        truth = root / 'private-clean/truth.npz'
+        truth.parent.mkdir()
+        np.savez(truth, ids=ids[::-1], y=(np.arange(count) % 9)[::-1],
+            receiver=np.full(count, 26, np.int64), scenario=np.full(count, 'clean'))
+        config.update(public_root=str(public), capsule_id=manifest['capsule_id'], split_id=manifest['split_id'],
+            expected_count=count, view_family='clean_cross_receiver', input_paths=['C0'],
+            dura_checkpoint=None, dura_release=None)
+        return config, truth, star_public
+
+    def test_clean_config_accepts_only_isolated_C0_without_DURA_or_paired_reference(self):
+        module = self.module()
+        with tempfile.TemporaryDirectory() as tmp:
+            config, _, star_public = self.clean_fixture(Path(tmp))
+            self.assertIs(module.validate_config(config), config)
+            for key, value in [('input_paths', ['P0', 'P1']), ('input_paths', ['C0', 'P1']),
+                    ('input_paths', ['P0']), ('dura_checkpoint', 'a-frozen-G.pt'),
+                    ('dura_release', 'frozen-G-code'), ('paired_reference', str(star_public)),
+                    ('clean_reference', str(star_public)), ('star_public_root', str(star_public))]:
+                with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                    module.validate_config(dict(config, **{key: value}))
+
+    def test_clean_public_uses_independent_loader_without_opening_star(self):
+        module = self.module()
+        from experiments.pamf_phase3_open_world import development_clean
+        with tempfile.TemporaryDirectory() as tmp:
+            config, _, star_public = self.clean_fixture(Path(tmp))
+            numpy_load = np.load
+            def only_clean(path, *args, **kwargs):
+                if isinstance(path, (str, Path)):
+                    self.assertFalse(Path(path).resolve().is_relative_to(star_public.resolve()),
+                                     'C0 must never open a star public artifact')
+                return numpy_load(path, *args, **kwargs)
+            with patch.object(module, 'load_public', side_effect=AssertionError('No residual public loader for C0')), \
+                 patch.object(development_clean, 'load_clean_public', wraps=development_clean.load_clean_public) as clean_load, \
+                 patch.object(development_clean, '_parent', side_effect=AssertionError('No paired builder access')), \
+                 patch.object(np, 'load', side_effect=only_clean):
+                manifest, ids, values = module._public(config)
+            try:
+                clean_load.assert_called_once_with(config['public_root'])
+                self.assertEqual(manifest['schema'], 'phase3_clean_min_v1')
+                self.assertEqual((manifest['processing_route'], manifest['mode']), ('clean', 'clean'))
+                self.assertEqual(values.shape, (36, 2, 256))
+                self.assertFalse(values.flags.writeable)
+                self.assertEqual(len(ids), 36)
+            finally:
+                values._mmap.close()
+
+    def test_clean_frozen_C0_prediction_and_score_use_95_and_clean_scene_only(self):
+        module = self.module()
+        from experiments.pamf_phase3_open_world import development_clean
+        from experiments.pamf_phase3_open_world import source_open_readout as core, source_baseline_risk
+        targets = Path(__file__).resolve().parents[1] / 'configs/pamf_phase3_targets_20261029.json'
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config, truth, _ = self.clean_fixture(root)
+            with self.models(module) as (encoder, original, _), \
+                 patch.object(module, '_load_dura', side_effect=AssertionError('C0 has no DURA')), \
+                 patch.object(module, 'load_public', side_effect=AssertionError('C0 never reads star')), \
+                 patch.object(development_clean, 'load_clean_public', wraps=development_clean.load_clean_public) as clean_load, \
+                 patch.object(core, 'fit_geometry', side_effect=AssertionError('No target fit')), \
+                 patch.object(core, 'fit_readouts', side_effect=AssertionError('No target fit')), \
+                 patch.object(source_baseline_risk, 'calibrate_known', side_effect=AssertionError('No recalibration')):
+                predicted = module.predict(config, 'cpu')
+            clean_load.assert_called_once_with(config['public_root'])
+            self.assertEqual(predicted['status'], 'CLEAN_DEVELOPMENT_TRANSFER_PREDICTIONS_COMPLETE')
+            self.assertEqual(predicted['input_paths'], ['C0'])
+            self.assertTrue(predicted['clean_condition_complete'])
+            self.assertFalse(predicted['paired_complete'])
+            self.assertIsNone(predicted['dura_version'])
+            self.assertEqual(encoder.seen, original.seen)
+            self.assertEqual(encoder.seen[2:], list(range(36)))
+            self.assertTrue(predicted['frozen_parameters_buffers_unchanged'])
+            self.assertTrue(predicted['frozen_source_aggregates_unchanged'])
+            self.assertEqual(predicted['new_threshold_calibrations'], 0)
+            # Keep one of twelve unknown rows accepted. The resulting 11/12
+            # rejection distinguishes the current clean95 target from star90.
+            path = root / 'predictions/predictions.npz'
+            with np.load(path, allow_pickle=False) as data:
+                values = {key: data[key].copy() for key in data.files}
+            values['knownness'][0, 6, -1] = values['thresholds'][-1]
+            values['accepted'][0, 6, -1] = True
+            values['prediction'][0, 6, -1] = values['closed_prediction'][0, 6]
+            np.savez(path, **values)
+            result = module.score(root / 'predictions', truth, root / 'score', targets)
+            self.assertEqual(result['condition_unknown_rejection_min'], .95)
+            self.assertEqual(set(result['input_paths']), {'C0'})
+            self.assertIsNone(result['P1_minus_P0'])
+            self.assertEqual(result['primary_method'], 'mlp16_oe')
+            self.assertFalse(result['paired_complete'])
+            c0 = result['input_paths']['C0']
+            overall = c0['methods']['mlp16_oe']['overall']
+            self.assertAlmostEqual(overall['unknown_macro_rejection'], 11 / 12)
+            self.assertGreaterEqual(overall['unknown_macro_rejection'], .90)
+            self.assertLess(overall['unknown_macro_rejection'], .95)
+            self.assertEqual(overall['known_macro_acceptance'], 1.)
+            self.assertEqual(overall['original_closed_minus_new_open'], 0.)
+            self.assertEqual(set(c0['methods']['mlp16_oe']['by_scenario']), {'clean'})
+            self.assertTrue(c0['primary_goals']['checks']['main_scene_coverage'])
+            self.assertFalse(c0['primary_goals']['checks']['overall_condition_targets'])
+            self.assertFalse(c0['primary_goals']['pass'])
+            self.assertFalse(result['final_phase3_complete'])
+
     @contextlib.contextmanager
     def models(self, module, *, encoder=None, original=None, dura=None):
         encoder = FakeReader() if encoder is None else encoder
