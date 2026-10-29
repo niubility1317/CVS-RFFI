@@ -1,0 +1,449 @@
+{
+  "title_en": "PAMF: Structured RF Fingerprints and Receiver-Aware Semi-Supervised Learning Under Receiver and Channel Shifts",
+  "title_zh": "PAMF：面向接收机与信道变化的结构化射频指纹表征及接收机感知半监督学习",
+  "abstract_en": "Radio frequency fingerprint identification is affected by receiver variability, propagation distortion, and limited transmitter annotations. This paper presents PAMF, a compact source-only identification framework that combines structured signal representations with receiver-aware semi-supervised learning. A Sinc-based temporal backbone is complemented by mirrored spectral descriptors, memory-polynomial features, relative reference responses, and three independently projected local path descriptors. A fixed endpoint-preserving permutation defines the paths consistently during training and inference. Tri-SIG-TIME SSL combines confidence-filtered pseudo-labels, cross-receiver identity pairing, feature perturbation, and labeled-gradient anchoring. An optional frozen dual-stage restoration network, DURA, is trained from source IQ without transmitter labels or classifier feedback. On the six-class Main split of WiSig, three-seed mean accuracies across six simulated channel conditions are 71.16% for direct cross-receiver identification and 79.90% with DURA; joint receiver/date holdout accuracies are 68.81% and 76.83%. The six-class identifier contains 232,993 parameters. Architecture, learning-regime, and two-layer structural controls characterize both benefits and limitations. The results establish performance on terrestrial measurements with simulated channel stress, rather than real in-orbit validation.",
+  "abstract_zh": "射频指纹识别受到接收机差异、传播失真与发射机标签不足的共同影响。本文提出仅利用源域训练的紧凑识别框架 PAMF，将结构化信号表征与接收机感知半监督学习相结合。网络以 Sinc 时域骨干为基础，融合镜像频谱描述、记忆多项式特征、相对参考响应，以及三个独立投影的局部路径描述。保留窗口首尾的固定排列在训练和推理中一致地定义特征路径。Tri-SIG-TIME SSL 联合使用置信筛选伪标签、跨接收机身份配对、特征扰动和有标签梯度锚定。作为可选前端，冻结的双阶段恢复网络 DURA 使用源域 IQ 训练，不读取发射机标签或分类器反馈。在 WiSig 六类 Main split 上，三种子六种模拟信道平均准确率分别为跨接收机直接识别 71.16%、接入 DURA 后 79.90%；接收机与日期双跨对应为 68.81% 和 76.83%。六类识别器包含 232993 个参数。架构、学习方式及两层结构控制共同揭示方法的收益与限制。实验提供地面实测数据上的模拟信道压力证据，不代表真实在轨验证。",
+  "blocks": [
+    {
+      "type": "section",
+      "en": "Introduction",
+      "zh": "引言"
+    },
+    {
+      "type": "text",
+      "en": "Radio frequency fingerprint identification (RFFI) uses device-dependent waveform variations as evidence of transmitter identity. Receiver hardware and propagation conditions also shape the observed waveform, so identification accuracy within one acquisition environment does not establish transfer to another receiver. WiSig explicitly exposes receiver and recording-date variability in measured WiFi signals \\cite{wisig}. We consider ground-side learning followed by direct inference at an unseen receiver, motivated by passive satellite listening. The receiver does not control the transmitter, and target observations are unavailable for training or adaptation.",
+      "zh": "射频指纹识别利用设备相关的波形差异判断发射机身份。接收机硬件和传播条件同样改变观测波形，因此同一采集环境内的准确率不能证明模型能够迁移至其他接收机。WiSig 实测 WiFi 数据明确呈现了接收机与采集日期变化带来的影响\\cite{wisig}。本文面向单星被动监听的应用动机，研究地面训练后在未见接收机上直接推理的任务。接收端不控制发射机，训练和适应均不访问目标观测。"
+    },
+    {
+      "type": "text",
+      "en": "Cross-receiver domain generalization learns transferable identity information using source receivers. RIEI separates transmitter- and receiver-related representations \\cite{riei}, whereas DRIFT combines disentanglement with adversarial learning \\cite{drift}. Information-bottleneck learning reduces receiver-related redundancy without requiring receiver labels \\cite{ib}, and single-source domain generalization uses domain expansion and alignment to address channel shortcuts \\cite{sdg}. These approaches motivate explicit treatment of acquisition dependence. They also leave a representation-design question: which complementary waveform relationships should a compact identifier preserve under receiver and channel shifts?",
+      "zh": "跨接收机域泛化通过源接收机学习可迁移的身份信息。RIEI 分离发射机与接收机相关表征\\cite{riei}，DRIFT 结合解耦与对抗学习\\cite{drift}，信息瓶颈方法在不要求接收机标签的条件下降低接收相关冗余\\cite{ib}，单源域泛化则通过域扩展与对齐缓解信道捷径\\cite{sdg}。这些工作说明了控制采集依赖的必要性，也留下一个表征设计问题：紧凑识别器应保留哪些互补波形关系，才能应对接收机和信道变化？"
+    },
+    {
+      "type": "text",
+      "en": "Limited annotations create a coupled learning problem. Confidence-based pseudo-labeling can exploit unlabeled source recordings, but confidence does not establish receiver-independent identity information. FixMatch illustrates the effectiveness of confidence filtering and consistency learning \\cite{fixmatch}; MixStyle constructs domain variation by mixing feature statistics \\cite{mixstyle}. In RFFI, perturbations must preserve weak identity cues. We therefore condition feature mixing and extrapolation on accepted same-pseudo-identity samples from different source receivers and constrain their parameter gradients relative to labeled supervision.",
+      "zh": "标签不足进一步形成相互耦合的学习问题。置信伪标签能够利用无标签源记录，但置信度并不证明预测依据与接收机无关。FixMatch 展示了置信筛选与一致性学习的作用\\cite{fixmatch}，MixStyle 通过混合特征统计构造域变化\\cite{mixstyle}。射频指纹中的扰动还必须保留较弱的身份线索。因此，本文使用不同源接收机上被接受的同伪身份样本指导统计混合和特征外推，并以有标签监督约束相应参数梯度。"
+    },
+    {
+      "type": "text",
+      "en": "This paper develops PAMF with Tri-SIG-TIME SSL. The contributions are threefold. First, a compact structured representation combines temporal/spectral processing, nonlinear memory, reference-relative responses, and three projected local increment-and-area descriptors. Second, a receiver-aware source-only training procedure links pseudo-label pairing, feature perturbation, and labeled-gradient anchoring without adding a deployment head. Third, an independently trained restoration front end is integrated and evaluated with frozen identifiers, separating its use of source IQ from identifier supervision. Factorial controls and two-layer structural ablations establish the scope of these contributions. We claim the evaluated integrated design, not the invention of Sinc filtering, memory polynomials, path signatures, or statistical mixing. The empirical benefit of the complete SSL recipe is condition-dependent.",
+      "zh": "本文提出结合 Tri-SIG-TIME SSL 的 PAMF。贡献包括三个方面。首先，构建紧凑的结构化表征，融合时频处理、非线性记忆、相对参考响应及三个投影空间中的局部增量与面积描述。其次，设计接收机感知的源域训练流程，将伪标签配对、特征扰动和有标签梯度锚定相结合，不增加部署分类头。最后，接入独立训练的恢复前端，并在冻结识别器下验证，分开分析恢复器使用源 IQ 与识别器使用身份监督的作用。因子控制及两层结构消融限定上述贡献的证据范围。本文贡献是经过验证的整体设计，不将 Sinc 滤波、记忆多项式、路径签名或统计混合本身称为新发明。完整 SSL 配方的实际收益随条件变化。"
+    },
+    {
+      "type": "section",
+      "en": "Problem Formulation and Channel Model",
+      "zh": "问题建模与信道模型"
+    },
+    {
+      "type": "subsection",
+      "en": "Source-Only Cross-Receiver Identification",
+      "zh": "仅源域训练的跨接收机识别"
+    },
+    {
+      "type": "text",
+      "en": "For transmitter k and receiver r, write the measured baseband signal as follows, where T is transmitter hardware response, h is propagation, and R is receiver response. This observation equation does not assume an identifiable factorization of these components.",
+      "zh": "对于发射机 k 与接收机 r，复基带观测表示如下，其中 T 为发射机硬件响应，h 为传播响应，R 为接收机响应。该观测方程不假设能够唯一辨识各组成部分。"
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{equation}x_{k,r}[n]=\\mathcal R_r\\{(h_{k,r}*\\mathcal T_k(s))[n]\\}+w_r[n].\\label{eq:obs}\\end{equation}"
+    },
+    {
+      "type": "text",
+      "en": "Source and target receiver sets are disjoint, while their known-transmitter class spaces are shared. Each input X is a real 2 by 256 IQ representation. Labeled source data L_s, unlabeled source data U_s, and source validation V_s have disjoint physical identifiers. Receiver metadata are available in L_s and U_s; transmitter labels in U_s remain hidden. Validation does not update persistent model state. The training-pool label fraction and target risk are defined by",
+      "zh": "源与目标接收机集合互斥，已知发射机类别空间保持一致。每个输入 X 为实值 2×256 IQ 表示。有标签源集 L_s、无标签源集 U_s 和源验证集 V_s 在物理记录标识上互斥。L_s 和 U_s 的接收机元数据可见，U_s 的发射机标签始终隐藏。验证不更新模型持久状态。训练池标注比例与目标风险定义为"
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{align}\\mathcal R_s\\cap\\mathcal R_t&=\\varnothing, &\\rho&=\\frac{|\\mathcal L_s|}{|\\mathcal L_s|+|\\mathcal U_s|},\\\\ R_t(f)&=\\mathbb E_{(X,y)\\sim P_t}[\\mathbb I\\{f(X)\\ne y\\}].\\label{eq:risk}\\end{align}"
+    },
+    {
+      "type": "text",
+      "en": "Target risk is an evaluation objective, not a training loss accessible to the learner. No target IQ, statistics, labels, or classifier refitting is used. All derived views retain their source record's role. The task is closed-set identification of known devices; unknown rejection, target adaptation, and new-device registration are outside this manuscript.",
+      "zh": "目标风险用于描述评价目标，不是学习器可访问的训练损失。训练不使用目标 IQ、统计量或标签，也不重新拟合目标分类头。所有派生视图继承原记录的数据角色。本文研究已知设备的闭集识别，未知拒识、目标适应与新设备注册不属于本文范围。"
+    },
+    {
+      "type": "subsection",
+      "en": "Geometry and Free-Space Loss",
+      "zh": "星地几何与自由空间损耗"
+    },
+    {
+      "type": "text",
+      "en": "The stress model combines geometry, environment-dependent blockage, composite fading, multipath, and imperfect receive processing. NTN channel studies motivate inclusion of geometry and Doppler \\cite{ntn}, but the implemented engineering parameters are not claimed to reproduce a calibrated standardized or in-orbit channel. For Earth radius R_E, altitude H, elevation angle theta, carrier f_c, and light speed c,",
+      "zh": "压力模型结合几何、环境相关遮挡、复合衰落、多径和不完美接收处理。NTN 信道研究为纳入几何和多普勒提供依据\\cite{ntn}，本文工程参数不被解释为经过标定的标准信道或在轨信道。设地球半径为 R_E、轨道高度为 H、仰角为 theta、载频为 f_c、光速为 c，则"
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{align}d(\\theta,H)&=\\sqrt{(R_E+H)^2-R_E^2\\cos^2\\theta}-R_E\\sin\\theta,\\\\ L_{\\rm FS}(d,f_c)&=20\\log_{10}(4\\pi d f_c/c),\\\\ g_{\\rm FS}&=10^{-[L_{\\rm FS}(d,f_c)-L_{\\rm FS}(d_{\\rm ref},f_c)]/20}\\nonumber\\\\ &=d_{\\rm ref}/d.\\label{eq:fspl}\\end{align}"
+    },
+    {
+      "type": "text",
+      "en": "We use H=600 km, f_c=2.462 GHz, R_E=6371 km, and a 60-degree reference elevation. The reference distance is approximately 683.2 km and absolute free-space loss is approximately 157.0 dB. At 20 degrees, loss increases by approximately 6.18 dB. The amplitude ratio applies this relative difference to normalized IQ. Reference receive quality is specified through a 30 dB signal-to-added-noise ratio, not an absolute link budget derived from transmit power, antenna gains, and system temperature.",
+      "zh": "本文采用 H=600 km、f_c=2.462 GHz、R_E=6371 km，以 60 度仰角为参考。参考斜距约为 683.2 km，绝对自由空间损耗约为 157.0 dB。仰角降至 20 度时，损耗增加约 6.18 dB。幅度比将这一相对差异施加于归一化 IQ。参考接收质量由 30 dB 的信号与新增噪声功率比设定，不等于根据发射功率、天线增益与系统温度推算的绝对链路预算。"
+    },
+    {
+      "type": "subsection",
+      "en": "Propagation and Receive Processing",
+      "zh": "传播与接收处理"
+    },
+    {
+      "type": "text",
+      "en": "For normalized measured input x, the additional propagation and receiver chain is expressed as",
+      "zh": "对于归一化实测输入 x，新增传播与接收链路表示为"
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{align}u[n]&=g_{\\rm FS}\\sum_{\\ell}h_\\ell[n]\\mathcal D_{\\tau_\\ell}\\{x\\}[n],\\\\ v[n]&=(u[n]+w[n])e^{j\\psi[n]},\\\\ r[n]&=\\alpha v[n]+\\beta v^*[n],\\\\ y[n]&=\\mathcal A\\{\\mathcal C_{\\hat\\xi}\\{r\\}[n]\\},\\label{eq:channel}\\end{align}"
+    },
+    {
+      "type": "text",
+      "en": "Here D is fractional delay, psi includes common Doppler, oscillator offset, and phase noise, alpha/beta model main/image coupling, C denotes imperfect IQ calibration and carrier compensation, and A denotes AGC. Common Doppler satisfies f_D=-(f_c/c) times the radial range rate. A three-state LOS/partial/blocked mixture controls direct-path shadowing, diffuse power, and delay spread. With elevation in degrees, the declared empirical state probabilities are",
+      "zh": "其中 D 为分数延迟，psi 包含公共多普勒、本振偏移与相位噪声，alpha/beta 描述主信号与镜像耦合，C 表示带误差的 IQ 校准与载波补偿，A 表示 AGC。公共多普勒满足 f_D=-(f_c/c) 乘以径向距离变化率。视距、部分遮挡与完全遮挡三状态控制直达径阴影、散射功率与时延扩展。仰角以度计时，声明的经验状态概率为"
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{align}p_{\\rm LOS}&=1-(90-\\theta)^2/C_e,\\\\ p_{\\rm partial}&=\\eta_e(1-p_{\\rm LOS}),\\\\ p_{\\rm blocked}&=(1-\\eta_e)(1-p_{\\rm LOS}),\\end{align}"
+    },
+    {
+      "type": "text",
+      "en": "where (C_e,eta_e) equals (16600,0.8) for suburban and (7000,0.2) for urban conditions. Statewise direct-path amplitude dB mean/SD are 0/1 for LOS and -8/3 for partial blockage; blocked observations have no direct path. Total diffuse powers are -18/-18/-20 dB and RMS delay spreads are 20/50/100 ns. Three diffuse taps are used. Six stress scenes cross suburban/urban environments with high (45--80 degrees), middle (20--45 degrees), and low (10--30 degrees) elevations; the elevation intervals overlap.",
+      "zh": "其中郊区取 (C_e,eta_e)=(16600,0.8)，城市取 (7000,0.2)。视距与部分遮挡的直达径幅度 dB 均值／标准差分别为 0/1 和 -8/3，完全遮挡移除直达径。三个状态的总散射功率依次为 -18/-18/-20 dB，RMS 时延扩展为 20/50/100 ns，使用三条散射径。郊区／城市分别与高仰角 45 至 80 度、中仰角 20 至 45 度、低仰角 10 至 30 度组合，形成六景；仰角区间存在重叠。"
+    },
+    {
+      "type": "text",
+      "en": "Sampling is 25 MHz, so each 256-sample snapshot lasts 10.24 microseconds. Added noise is circular complex Gaussian with fixed variance 10^(-3) on the normalized reference scale. Receive-quality thresholds of 5/15 dB control tracking precision; base oscillator-offset SD is 200 Hz, fine/coarse frequency-error SDs are 100/500 Hz, and base phase-tracking error is 1 degree. AGC is bounded to plus/minus 30 dB and no propagation equalization is added by the stress engine. Short snapshots use locally stationary parameters; independent packets are not treated as a measured continuous satellite trajectory. Existing channel/receiver effects and noise in the terrestrial recording remain. AGC scales signal and noise together and therefore does not undo the SNR loss caused by distance or blockage.",
+      "zh": "采样率为 25 MHz，256 点快照对应 10.24 微秒。新增噪声为圆对称复高斯噪声，在归一化参考尺度下方差固定为 10^(-3)。接收质量阈值 5/15 dB 控制跟踪精度；基础本振频偏标准差为 200 Hz，精细／粗频率误差标准差为 100/500 Hz，基础相位跟踪误差为 1 度。AGC 范围为正负 30 dB，压力引擎不新增传播均衡。短快照采用局部平稳参数；独立包不被当作实测连续卫星轨迹。地面记录已有的信道、接收机影响和噪声继续保留。AGC 同时缩放信号与噪声，不能消除距离或遮挡造成的信噪比下降。"
+    },
+    {
+      "type": "section",
+      "en": "Proposed PAMF Identifier",
+      "zh": "PAMF 识别器"
+    },
+    {
+      "type": "text",
+      "en": "Fig.~\\ref{fig:1} separates source training, direct target inference, and optional restoration. All identifier branches and the original cosine classifier are jointly trained. The deployed feature has dimension 160; the six-class network has 232,993 parameters. Physical structure supplies inductive biases rather than uniquely recovered hardware parameters.",
+      "zh": "Fig.~\\ref{fig:1} 区分源域训练、目标直接推理与可选恢复路径。识别器所有分支与原余弦分类头联合训练，部署特征为 160 维，六类网络包含 232993 个参数。物理结构提供归纳偏置，不表示唯一恢复真实硬件参数。"
+    },
+    {
+      "type": "figure",
+      "number": 1,
+      "en": "PAMF training and inference framework. Unlabeled TX identities remain hidden. DURA is optional and independently trained; deployment uses no target updating.",
+      "zh": "PAMF 训练与推理框架。无标签样本的 TX 身份始终隐藏；DURA 为独立训练的可选前端，部署不进行目标更新。"
+    },
+    {
+      "type": "subsection",
+      "en": "Complementary Structured Features",
+      "zh": "互补的结构化表征"
+    },
+    {
+      "type": "text",
+      "en": "The temporal front end uses learnable Sinc band-pass filters \\cite{sinc}, which restrict first-layer filters through their cutoff frequencies. A mirrored-spectrum branch describes paired positive/negative frequency powers and their relative asymmetry. A dedicated nonlinear-memory branch lifts clipped IQ into odd-order delayed bases inspired by memory-polynomial modeling \\cite{mp}. Their core expressions are",
+      "zh": "时域前端采用可学习 Sinc 带通滤波器\\cite{sinc}，通过截止频率约束首层滤波形状。镜像频谱分支描述正负频率配对功率及其相对不对称性。独立非线性记忆分支借鉴记忆多项式建模\\cite{mp}，将限幅 IQ 提升为奇数阶延时基。核心表达为"
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{align}g_\\ell[n]&\\propto w[n]\\{2\\nu_h\\operatorname{sinc}(2\\nu_h n)\\nonumber\\\\ &\\hspace{22mm}-2\\nu_l\\operatorname{sinc}(2\\nu_l n)\\},\\\\ r_k&=\\log\\frac{P_k^++\\epsilon}{P_k^-+\\epsilon},\\quad a_k=\\frac{|P_k^+-P_k^-|}{P_k^++P_k^-+\\epsilon},\\\\ b_{p,m}[n]&=\\tilde x[n-m]|\\tilde x[n-m]|^{p-1},\\end{align}"
+    },
+    {
+      "type": "text",
+      "en": "with p in {1,3,5} and m in {0,1,2,3}. The temporal branch also retains local differences and a cubic basis, whereas the dedicated PA branch jointly expands nonlinear order and short memory. Their roles are complementary rather than identical. Reference-relative processing compares the known WiFi preamble with its fixed ideal template after per-window internal offset compensation. Common complex gain is normalized, response deviations are bounded, and the explicit frequency-offset identity coordinate is zeroed. The resulting response still contains channel and receiver effects. No target-specific reference fitting is performed.",
+      "zh": "其中 p 取 1、3、5，m 取 0、1、2、3。时域分支还保留局部差分与三阶基；独立 PA 分支联合展开非线性阶数与短时记忆，两者提供互补入口。相对参考处理在每窗口内部频偏补偿后，将已知 WiFi 前导与固定理想模板比较。分支归一化公共复增益，对响应偏差作有界变换，并将显式频偏身份坐标置零。所得响应仍包含信道与接收机影响，不进行目标接收机专属参考拟合。"
+    },
+    {
+      "type": "subsection",
+      "en": "Three-View Local Increment-and-Area Encoding",
+      "zh": "三视图局部增量与面积编码"
+    },
+    {
+      "type": "text",
+      "en": "Three independently learned 96-to-6 projections read the same 96-by-32 intermediate sequence. Each projected path has four nonoverlapping eight-point windows. Within a window, the fixed zero-based permutation pi=[0,5,3,6,2,1,4,7] reorders only the signature input features, after which a monotone encoding coordinate is appended. Neither raw IQ nor the temporal backbone is permuted. For a seven-dimensional window path,",
+      "zh": "三个独立学习的 96 至 6 维投影读取同一 96×32 中层序列。每个投影路径划分为四个不重叠的八点窗口。窗口内固定零起始排列 pi=[0,5,3,6,2,1,4,7] 只重排签名输入特征，随后添加单调编码坐标。原始 IQ 与时域骨干均不被重排。对于七维窗口路径，有"
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{align}\\gamma_j&=[u_{\\pi(j)}^\\top,j/7]^\\top,\\quad\\Delta\\gamma_j=\\gamma_j-\\gamma_{j-1},\\\\ d&=\\sum_{j=1}^{7}\\Delta\\gamma_j,\\\\ A^{ab}&=\\tfrac12\\sum_{i<j}(\\Delta\\gamma_i^a\\Delta\\gamma_j^b-\\Delta\\gamma_i^b\\Delta\\gamma_j^a).\\label{eq:sig}\\end{align}"
+    },
+    {
+      "type": "text",
+      "en": "The seven first-order coordinates and 21 independent antisymmetric areas yield 28 values per window. Four windows and three projections produce 336 values, followed by a 336-to-160 projection. These are low-order path descriptors \\cite{sig}, not the full second-level signature tensor. Endpoint preservation keeps the total increment unchanged; the internal permutation changes path areas. The appended coordinate describes encoding progress, not original sample time. No invariance to arbitrary permutations is claimed.",
+      "zh": "七个一阶坐标与 21 个独立反对称面积在每窗口形成 28 维描述。四窗口、三投影共同形成 336 维，再映射至 160 维。该设计使用低阶路径描述\\cite{sig}，并非完整二阶签名张量。保留首尾使总增量不变，内部排列改变路径面积。附加坐标表示编码进程，不是原始采样时刻；本文不宣称任意排列不变性。"
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{align}z={}&\\operatorname{LN}(f_{\\rm TF})+\\tanh(a_{\\rm PA})\\odot\\operatorname{LN}(f_{\\rm PA})\\nonumber\\\\ &+\\tanh(a_{\\rm R})\\odot f_{\\rm R}\\nonumber\\\\ &+0.2\\tanh(a_{\\rm S})\\odot\\operatorname{LN}(f_{\\rm S}),\\\\ p_c(X)&=\\frac{\\exp(30\\,\\hat w_c^\\top\\hat z)}{\\sum_k\\exp(30\\,\\hat w_k^\\top\\hat z)}.\\end{align}"
+    },
+    {
+      "type": "text",
+      "en": "Layer normalization coordinates feature scales, while bounded per-coordinate gains control residual contributions. Hats denote L2 normalization. The same representation and original jointly trained head are retained at inference; the three views are projections of one observation, not extra receiver captures.",
+      "zh": "LayerNorm 协调特征尺度，有界逐维增益控制补充残差的贡献。帽号表示 L2 归一化。推理保留相同表征与原联合训练分类头；三视图是同一观测的投影，不是额外接收机采集。"
+    },
+    {
+      "type": "subsection",
+      "en": "Receiver-Aware Source Semi-Supervision",
+      "zh": "接收机感知的源域半监督学习"
+    },
+    {
+      "type": "text",
+      "en": "The labeled objective retains true-label CE, ordinary/raw paired KL, and shallow/intermediate same-identity cross-receiver contrast. Channel-augmented labeled slots use CE without their independent KL. Label smoothing is 0.01. The current student in evaluation mode generates stop-gradient hard pseudo-labels on raw U inputs, with no EMA teacher:",
+      "zh": "有标签目标保留真实标签 CE、普通／原始视图配对 KL，以及浅中层同身份跨接收机对比。带信道增强的有标签槽只使用 CE，不计算其独立 KL。标签平滑为 0.01。当前学生在评估模式下对原始 U 输入生成停止梯度的硬伪标签，不使用 EMA 教师："
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{align}q_i&=\\operatorname{sg}(p_\\theta^{\\rm eval}(X_i)),\\quad\\hat y_i=\\arg\\max_c q_{i,c},\\\\ m_i&=\\mathbb I(\\max_cq_{i,c}\\ge0.95),\\\\ \\mathcal P_i^U&=\\{j:m_i=m_j=1,\\hat y_i=\\hat y_j,r_i\\ne r_j\\}.\\end{align}"
+    },
+    {
+      "type": "text",
+      "en": "Accepted pairs guide feature-statistic mixing in shallow and intermediate layers, following the statistical-mixing construction of \\cite{mixstyle}. With a stop-gradient Beta(0.1,0.1) mixing coefficient, partner means and standard deviations are mixed while normalized feature content is retained. Each layer activates with probability 0.5. Fused-feature contrast has weight 0.05. For a valid partner j, extrapolation uses the original deployment head:",
+      "zh": "接受配对指导浅层与中层统计混合，沿用\\cite{mixstyle}的统计构造。混合系数为停止梯度的 Beta(0.1,0.1) 随机变量，在保留归一化特征内容的同时混合伙伴的均值和标准差。每层启用概率为 0.5，融合特征对比权重为 0.05。对于合法伙伴 j，外推通过原部署分类头约束："
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{equation}z_i^{\\rm ext}=z_i+0.25(z_i-z_j).\\end{equation}"
+    },
+    {
+      "type": "text",
+      "en": "The difference direction can also contain sample-specific variation; it is not an identified pure receiver factor. If no valid partner exists, ordinary accepted pseudo-label supervision is retained. Complete U learning uses six student forwards with shared pairing/mixing, ordinary/raw paired KL, and shallow/intermediate contrast. U's auxiliary raw slot has no additional channel augmentation. The base CE coefficients 0.5/0.25/0.25/0.25 are normalized by 1.25; extrapolation reallocates ordinary-view CE rather than adding unmatched label dose. The full U objective has weight 6. All accepted-mask CE means use the actual U batch size, not only the accepted count.",
+      "zh": "差分方向也可能包含样本自身变化，不能视为准确辨识的纯接收机因素。不存在合法伙伴时，仍保留普通接受伪标签监督。完整 U 学习采用六次学生前向，共享配对与混合方案，保留普通／原始配对 KL 和浅中层对比。U 的辅助原始槽不新增信道增强。基础 CE 系数 0.5/0.25/0.25/0.25 以 1.25 归一化；外推从普通视图 CE 重新分配剂量，不额外增加不匹配标签剂量。完整 U 目标权重为 6。接受掩码 CE 按实际 U 批量求均值，不只按接受数求均值。"
+    },
+    {
+      "type": "subsection",
+      "en": "Labeled-Gradient Anchoring and Schedule",
+      "zh": "有标签梯度锚定与训练日程"
+    },
+    {
+      "type": "text",
+      "en": "For each of the intermediate module, classification head, and remaining parameters, let g_L be the gradient of the complete labeled objective and g_U that of the weighted U objective. Conflicting components are removed and the remaining U norm is capped by the labeled norm:",
+      "zh": "对于中层模块、分类头及其余参数三组，令 g_L 为完整有标签目标梯度，g_U 为加权 U 目标梯度。移除冲突分量后，将 U 范数限制在有标签范数内："
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{align}\\bar g_U&=g_U-\\frac{\\min(\\langle g_U,g_L\\rangle,0)}{\\|g_L\\|^2}g_L,\\\\ \\tilde g_U&=\\min(1,\\|g_L\\|/\\|\\bar g_U\\|)\\bar g_U,\\\\ g&=g_L+\\tilde g_U.\\label{eq:guard}\\end{align}"
+    },
+    {
+      "type": "text",
+      "en": "When the labeled squared norm is at most 10^(-12), that group's U contribution is zero; a zero projected U gradient is left zero. This guarantees the declared gradient alignment, not monotonic loss reduction after a finite Adam step. Training is E50 with labeled/U batches 128/256: epochs 1--13 use L only, 14--20 add ordinary PL, and 21--50 enable complete U learning and protection. All later 37 epochs jointly use L and U. Feature mixing, extrapolation, contrast losses, and gradient anchoring are training-only operations.",
+      "zh": "有标签梯度平方范数不超过 10^(-12) 时，该组 U 贡献置零；投影后 U 梯度为零时保持零。该规则约束所声明的梯度方向，不保证有限 Adam 步之后损失单调下降。训练为 E50，L/U 批量为 128/256：第 1 至 13 轮仅 L，第 14 至 20 轮加入普通 PL，第 21 至 50 轮启用完整 U 学习与保护。后 37 轮均联合使用 L 与 U。统计混合、外推、对比损失及梯度锚定仅用于训练。"
+    },
+    {
+      "type": "section",
+      "en": "Independent Source-Only Restoration",
+      "zh": "独立的源域恢复前端"
+    },
+    {
+      "type": "text",
+      "en": "DURA is an optional dual-stage unrolled restoration architecture. A coarse estimator yields c from the current received window y. An action estimator predicts a 64-tap FIR, pointwise main/image coefficients, and one positive scalar variance v. It defines a real-linear operator, with the adjoint taken under the real part of the complex inner product:",
+      "zh": "DURA 是可选的双阶段展开恢复结构。粗恢复模块由当前接收窗口 y 产生 c，作用估计器预测 64 抽头 FIR、逐点主／镜像系数和一个正标量方差 v，构成实线性算子，其伴随对应复内积的实部："
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{equation}A(x)=m\\odot H_h(x)+q\\odot\\overline{H_h(x)}.\\end{equation}"
+    },
+    {
+      "type": "text",
+      "en": "Starting from x_0=c, stage k uses a learned prior informed by the backprojected observation residual and approximately solves a soft consistency problem:",
+      "zh": "从 x_0=c 开始，第 k 阶段根据观测残差的反投影构造学习先验，并近似求解软一致性问题："
+    },
+    {
+      "type": "equation",
+      "tex": "\\begin{align}e_k&=A^*(y-Ax_{k-1}),\\\\ p_k&=c+\\tau D_k([y,c,x_{k-1},\\operatorname{norm}(e_k),\\log v]),\\\\ x_k&\\approx\\arg\\min_x\\,v^{-1}\\|y-Ax\\|^2+\\tau^{-2}\\|x-p_k\\|^2.\\end{align}"
+    },
+    {
+      "type": "text",
+      "en": "Each stage performs two CG iterations, for four iterations in total. The six-class identifier and DURA contain 232,993 and 266,951 parameters, respectively. Source IQ is paired with its simulated distortion for G training; TX labels, trained classifier outputs, and target samples do not train G. The compact student also uses frozen source-trained restoration ancestry, whose cost is separate from incremental student training. For each experimental setting, G's training contract is matched to source receivers and physical roles. G-L and G-LU use L IQ and L+U IQ, respectively, without their TX labels. One fixed G is normally shared across identifier seeds. Restoration predicts a useful waveform estimate; it does not certify exact recovery of intrinsic transmitter parameters.",
+      "zh": "每阶段执行两次 CG，共四次。六类识别器与 DURA 分别包含 232993 和 266951 个参数。G 使用源 IQ 及其模拟失真配对训练，不读取 TX 标签、训练好分类器输出或目标样本。紧凑学生还利用冻结的源域恢复教师祖先，其成本与学生新增训练成本分开。各实验 G 的训练契约与源接收机和物理角色匹配。G-L 与 G-LU 分别使用 L IQ 和 L+U IQ，均不读取其 TX 标签。多个识别器种子通常共享一个固定 G。恢复输出是有用的波形估计，不证明精确恢复固有发射机参数。"
+    },
+    {
+      "type": "section",
+      "en": "Experimental Setup",
+      "zh": "实验设置"
+    },
+    {
+      "type": "text",
+      "en": "Table~\\ref{tab:settings} specifies the main data roles. Cross-RX testing uses unseen receivers on source dates D1--D3; double holdout additionally uses D0. D0 precedes the training dates, so double holdout is not future-date extrapolation. Cross-date results at source receivers are retained as supplementary diagnostics. Main-split receiver/date populations are reported separately rather than hidden by their 3:1 packet-weighted pool.",
+      "zh": "Table~\\ref{tab:settings} 列出主要数据角色。跨接收机使用未见 RX 的源日期 D1 至 D3；双跨还使用 D0。D0 早于训练日期，因此双跨不等于未来日期外推。源接收机上的跨日结果保留为补充诊断。Main split 的跨接收机与双跨分别报告，不以包数比为 3:1 的综合池掩盖两者差异。"
+    },
+    {
+      "type": "table",
+      "key": "settings"
+    },
+    {
+      "type": "text",
+      "en": "There are three receiver splits, label fractions 1/5/10%, source counts 1--6, and a ten-class setting with 16 source and 16 target receivers. Source-count curves use the same six target receivers [0,2,5,7,9,10]; the five-source point is reconstructed from existing Main-split stratified confusion matrices. Source count changes available sample size as well as receiver diversity. Six-scene means equally average the six practical accuracies within each model seed before averaging over seeds. Repeated channel views of one IQ are correlated derivatives, not new physical observations.",
+      "zh": "实验覆盖三种 RX 划分、1/5/10% 标签、1 至 6 个源接收机，以及 16 源／16 目标 RX 的十类设置。源数量曲线统一目标 RX=[0,2,5,7,9,10]，五源点由已有 Main split 分层混淆矩阵重建。源数量同时改变样本量与接收机多样性。六景平均先在每个模型种子内等权平均六个 practical 准确率，再跨种子汇总。同一 IQ 的多个信道视图是相关派生数据，不是新增物理观测。"
+    },
+    {
+      "type": "text",
+      "en": "Architecture controls use E200 CE, no U and no ordinary/channel augmentation, with eight seeds. E50 structural CE controls retain their registered true-label augmentation slots, with no KL, contrast, or U. PAMF-Sup retains complete labeled objectives; PAMF-PL adds ordinary PL at threshold 0.95 and weight 1 with natural local order. Complete PAMF uses fixed local permutation and Tri-SIG-TIME SSL. Main comparisons generally use three identifier seeds; a separate direct-inference single/three-view panel has eight paired seeds. External Full objectives are augmented with the registered channel CE and ordinary PL; native budgets are E100 for RIEI/DRIFT and E200 for IB-RFF/SDG, versus PAMF E50. Epoch counts alone are not compute-matched.",
+      "zh": "架构控制使用 E200 纯 CE，无 U、无普通／信道增强，采用八种子。E50 结构 CE 控制保留预登记的真实标签增强槽，不含 KL、对比或 U。PAMF-Sup 保留完整有标签目标；PAMF-PL 在自然局部顺序下加入阈值 0.95、权重 1 的普通 PL。完整 PAMF 使用固定局部排列与 Tri-SIG-TIME SSL。主比较通常为三个识别器种子；独立单／三视图直接识别面板具有八个配对种子。外部 Full 目标加入已登记的信道 CE 与普通 PL；RIEI/DRIFT 原生预算为 E100，IB-RFF/SDG 为 E200，PAMF 为 E50。轮数本身不等于计算量匹配。"
+    },
+    {
+      "type": "text",
+      "en": "All predictions are frozen before independent truth-side scoring. Accuracy and macro-F1 use the same rows and physical populations. Error bars are sample SD across model seeds, not confidence intervals. Shared restoration weights mean restored-result SD does not quantify joint F/G retraining uncertainty. The benchmark has been used during method development; the results are not described as a newly untouched blind confirmation.",
+      "zh": "全部预测固定后才独立连接真值评分。准确率与 Macro-F1 使用同一实验行和物理群体。误差棒为模型种子间样本标准差，不是置信区间。恢复权重共享意味着恢复结果标准差不刻画 F/G 联合重训不确定性。该基准曾用于方法研发，本文不将结果描述为新建立且从未接触的盲测确认。"
+    },
+    {
+      "type": "section",
+      "en": "Results and Discussion",
+      "zh": "结果与讨论"
+    },
+    {
+      "type": "subsection",
+      "en": "Main Identification Comparison",
+      "zh": "主方法比较"
+    },
+    {
+      "type": "text",
+      "en": "Table~\\ref{tab:main} reports three-seed Main-split results. Direct six-scene cross-RX accuracy is 71.16% for PAMF and 65.30% for the strongest compared external method, SDG, a 5.86-point difference. With the same G-LU front end, the means are 79.90% and 67.12%, respectively. Double-holdout direct/restored accuracies are 68.81/76.83% for PAMF and 63.59/65.66% for SDG. These comparisons support the evaluated complete identifier and restoration combination; they do not identify a single responsible mechanism.",
+      "zh": "Table~\\ref{tab:main} 给出 Main split 三种子结果。PAMF 跨接收机直接六景准确率为 71.16%，已比较外部方法中最强的 SDG 为 65.30%，相差 5.86 个百分点。同一 G-LU 前端下，两者分别为 79.90% 与 67.12%。双跨直接／恢复准确率中，PAMF 为 68.81/76.83%，SDG 为 63.59/65.66%。这些比较支持所评估完整识别器与恢复组合的表现，不单独归因于某一机制。"
+    },
+    {
+      "type": "table",
+      "key": "main"
+    },
+    {
+      "type": "subsection",
+      "en": "Architecture Under CE-Only Training",
+      "zh": "纯 CE 下的网络结构"
+    },
+    {
+      "type": "text",
+      "en": "Fig.~\\ref{fig:2} isolates architecture from SSL. The three-view E200 model reaches 79.73% double-holdout clean accuracy, versus 75.05% for Complex ResNet-18-1D. Single-view PAMF reaches 79.63%, showing that much of the structural benefit is already present without three projections. Removing SIG-TIME gives 76.98%. Three-view superiority over single-view is therefore modest in this panel and is not used as a claim of a large universal gain.",
+      "zh": "Fig.~\\ref{fig:2} 将架构与 SSL 分开。三视图 E200 双跨 clean 为 79.73%，Complex ResNet-18-1D 为 75.05%。单视图 PAMF 达到 79.63%，表明结构收益很大一部分在不使用三个投影时已存在。去 SIG-TIME 为 76.98%。因此该面板中三视图相对单视图的优势有限，不能据此宣称普遍大幅提升。"
+    },
+    {
+      "type": "figure",
+      "number": 2,
+      "en": "CE-only architecture comparison under (a) cross-receiver and (b) joint receiver/date holdout. E200, clean, eight model seeds; point labels give mean plus/minus sample SD. Accuracy only is shown here; macro-F1 and per-seed values accompany the supplementary data.",
+      "zh": "纯 CE 架构比较：(a) 跨接收机，(b) 接收机与日期双跨。E200、clean、八个模型种子，点旁为均值与样本标准差。此处展示准确率，Macro-F1 与逐种子值随补充数据提供。"
+    },
+    {
+      "type": "subsection",
+      "en": "Learning Regimes and Unlabeled-Data Attribution",
+      "zh": "学习方式与无标签数据归因"
+    },
+    {
+      "type": "text",
+      "en": "Fig.~\\ref{fig:3} and Table~\\ref{tab:learning} distinguish supervised, ordinary-PL, and complete training. Relative to ordinary PL, complete PAMF improves cross-RX clean accuracy by 2.25 points, but direct six-scene accuracy by only 0.11 points. With the same G-LU, six-scene gains are 1.39 points for cross-RX and 0.08 for double holdout. Across 11 settings, the restored cross-RX six-scene difference is positive in seven and negative in four. The complete recipe therefore does not uniformly dominate ordinary PL.",
+      "zh": "Fig.~\\ref{fig:3} 与 Table~\\ref{tab:learning} 区分监督、普通 PL 和完整训练。相对普通 PL，完整 PAMF 跨接收机 clean 提高 2.25 个百分点，但直接六景仅提高 0.11 个百分点。同一 G-LU 下，六景增益在跨接收机与双跨分别为 1.39 和 0.08 个百分点。11 个设置中，恢复后跨接收机六景差值七正四负。因此完整配方并非在所有条件下均优于普通 PL。"
+    },
+    {
+      "type": "figure",
+      "number": 3,
+      "en": "Augmented learning-regime comparison for (a) cross-RX and (b) double holdout. Supervision here means the method's native supervised objective, not the E200 CE-only architecture recipe. Complete SSL exists only for PAMF. Bars use a zero baseline.",
+      "zh": "有增强学习方式比较：(a) 跨接收机，(b) 双跨。此处监督组指各方法原生监督目标，不等于 E200 纯 CE 架构配方。完整 SSL 只对应 PAMF；柱状图采用零基线。"
+    },
+    {
+      "type": "table",
+      "key": "learning"
+    },
+    {
+      "type": "text",
+      "en": "Natural-order PL versus fixed-order complete PAMF changes both the U recipe and local encoding. This is a full-recipe comparison. A completed same-permutation supervised control and the F/G U-permission grid provide additional attribution without inventing an unmeasured permuted-PL arm. On cross-RX six-scene data, same-order supervised/complete raw accuracies are 72.53/71.16%; with the same G-LU they are 79.51/79.90%. G-L versus G-LU comparisons keep the identifier fixed. Thus improved restoration and changed identifier training must be reported separately.",
+      "zh": "自然序 PL 与固定排列完整 PAMF 同时改变 U 配方和局部编码，属于完整方案比较。已完成的同排列监督控制及 F/G 无标签权限四格可补充归因，无需虚构未测的重排 PL。跨接收机六景中，同排列监督／完整方法直接准确率为 72.53/71.16%；同一 G-LU 下为 79.51/79.90%。G-L 与 G-LU 比较则固定识别器。因此恢复改进与识别器训练变化必须分开报告。"
+    },
+    {
+      "type": "subsection",
+      "en": "Channel Stress and Generalization Conditions",
+      "zh": "信道压力与泛化条件"
+    },
+    {
+      "type": "text",
+      "en": "Fig.~\\ref{fig:4} reports clean and all six stress conditions rather than only their average. Low-elevation urban scenes remain difficult. The plots use common limits across paired holdouts, and their nonzero line-plot axes do not change the underlying numerical gains. Scene means are equal-weight stress summaries, not estimated occurrence probabilities in an actual satellite mission.",
+      "zh": "Fig.~\\ref{fig:4} 展示 clean 与全部六种压力场景，不只报告平均值。低仰角城市仍然困难。配对跨域图使用相同范围，折线图非零坐标起点不改变实际数值增益。六景平均是等权压力汇总，不是实际卫星任务中场景发生概率的估计。"
+    },
+    {
+      "type": "figure",
+      "number": 4,
+      "en": "Seven-condition robustness: (a) cross-RX and (b) double holdout. Curves are mean plus/minus SD over three identifier seeds. All methods use their declared source-only training; PAMF+DURA shares the PAMF identifier with its direct counterpart.",
+      "zh": "七条件鲁棒性：(a) 跨接收机，(b) 双跨。曲线为三个识别器种子的均值与标准差。各方法采用已声明的源域训练；PAMF+DURA 与直接 PAMF 使用同一识别器。"
+    },
+    {
+      "type": "text",
+      "en": "Fig.~\\ref{fig:5} shows receiver-split and label-fraction sensitivity. Restored complete PAMF cross-RX six-scene accuracy varies from 79.90% on Main split to 66.58% and 75.26% on Receiver splits 1 and 2. This variation makes a single split insufficient to characterize the task. At 1/5/10% labels the corresponding values are 74.43/77.41/79.90%. The ten-class setting gives 62.09% direct and 72.60% restored cross-RX six-scene accuracy; the ordinary-PL counterpart gives approximately 63.31/72.44%, again showing condition-dependent SSL gains.",
+      "zh": "Fig.~\\ref{fig:5} 展示 RX 划分与标注比例敏感性。完整 PAMF 恢复后跨接收机六景从 Main split 的 79.90% 变为 Receiver split 1/2 的 66.58% 和 75.26%，说明单一划分不足以描述该任务。1/5/10% 标签对应 74.43/77.41/79.90%。十类设置跨接收机六景直接／恢复为 62.09/72.60%，普通 PL 对照约为 63.31/72.44%，同样显示 SSL 收益具有条件性。"
+    },
+    {
+      "type": "figure",
+      "number": 5,
+      "en": "Six-scene receiver-split and label-fraction sensitivity. Paired columns report cross-RX and double holdout. The ten-percent point exactly reuses Main-split models; these settings are not extra independent datasets.",
+      "zh": "六景下的接收机划分与标注比例敏感性。配对列依次报告跨接收机和双跨；适用的 10%／Main split 结果精确复用，不计作额外独立数据集。"
+    },
+    {
+      "type": "text",
+      "en": "Fig.~\\ref{fig:6} uses common target receivers for source-count curves. More sources generally improve clean performance, while six-scene curves are nonmonotonic. Because natural data volume increases with source count, this experiment measures the combined effect of coverage and sample availability, not the isolated causal effect of receiver diversity.",
+      "zh": "Fig.~\\ref{fig:6} 在共同目标接收机上绘制源数量曲线。更多源总体有利于 clean，但六景曲线并不单调。由于自然数据量随源数量增加，该实验反映覆盖范围与样本可用性的共同作用，不能单独归因为接收机多样性的因果贡献。"
+    },
+    {
+      "type": "figure",
+      "number": 6,
+      "en": "One-to-six-source curves on a common six-receiver target set. Top: clean; bottom: six-scene mean. Left/right: cross-RX/double holdout. The five-source point reuses existing stratified predictions; it is not newly trained.",
+      "zh": "共同六目标 RX 上的一至六源曲线。上排为 clean，下排为六景；左／右为跨接收机／双跨。五源点复用已有分层预测，不新增训练。"
+    },
+    {
+      "type": "subsection",
+      "en": "Restoration Across Frozen Identifiers",
+      "zh": "冻结识别器下的恢复收益"
+    },
+    {
+      "type": "text",
+      "en": "Fig.~\\ref{fig:7} compares the same frozen identifier before and after matched DURA-LU. All five identifiers obtain positive mean six-scene gains on Main split. PAMF gains are 8.74 points for cross-RX and 8.02 for double holdout. This supports general utility within the tested identifier family. It does not establish superiority over every alternative restoration algorithm, nor exact physical recovery of transmitter hardware effects.",
+      "zh": "Fig.~\\ref{fig:7} 比较同一冻结识别器在匹配 DURA-LU 前后的表现。Main split 上五种识别器的六景平均均提高。PAMF 跨接收机与双跨增益分别为 8.74 和 8.02 个百分点。该结果支持在所测试识别器家族内的泛用性，不证明优于所有其他恢复算法，也不证明精确恢复发射机硬件效应。"
+    },
+    {
+      "type": "figure",
+      "number": 7,
+      "en": "DURA gains for five frozen identifiers. Curved arrows connect direct and restored means and annotate percentage-point increases. Each pair shares F and uses its setting-matched G; error bars primarily reflect F-seed variation.",
+      "zh": "五种冻结识别器的 DURA 收益。曲线箭头连接直接与恢复均值，并标注百分点提升。每对共享 F，使用当前设置匹配的 G；误差棒主要反映 F 种子变化。"
+    },
+    {
+      "type": "subsection",
+      "en": "Two-Layer Structural Evidence",
+      "zh": "两层结构证据"
+    },
+    {
+      "type": "text",
+      "en": "Fig.~\\ref{fig:8} compares structural deletions under CE-only and complete-SSL training using paired model seeds. Removing PA reduces direct cross-RX six-scene accuracy by 7.21 points under CE and 6.78 under SSL. SIG deletion is conditional: under CE it changes cross-RX/double-holdout means by -0.88/+0.85 points, whereas under SSL the changes are -3.85/-2.10. The CE and SSL layers therefore answer different questions. They should not be merged into a single ranking of universal branch importance.",
+      "zh": "Fig.~\\ref{fig:8} 通过配对种子比较纯 CE 与完整 SSL 下的结构删除。删除 PA 使直接跨接收机六景在 CE 与 SSL 下分别下降 7.21 和 6.78 个百分点。SIG 删除具有条件性：CE 下跨接收机／双跨变化为 -0.88/+0.85 个百分点，SSL 下为 -3.85/-2.10。CE 与 SSL 两层回答不同问题，不宜合并为普遍分支重要性排序。"
+    },
+    {
+      "type": "figure",
+      "number": 8,
+      "en": "Structural variants minus their layer-matched full model, direct six-scene accuracy. Points and bars show paired mean differences and sample SD for three seeds. CE and complete SSL are separate panels; cross-RX and double holdout are paired within each panel.",
+      "zh": "结构变体相对其训练层完整模型的直接六景准确率变化。点与误差棒为三个种子的配对差均值及样本标准差。CE 与完整 SSL 分面展示，面板内并列跨接收机与双跨。"
+    },
+    {
+      "type": "text",
+      "en": "The completed nested no-SIG CE controls further remove PA and/or reference responses; these are supplementary conditional checks, not SSL experiments. Historical T1 and ordered-REPL mechanism panels retain their original training identities. Their component deletions cannot be relabeled as current fixed-permutation SSL ablations. Some historical deletions give small positive changes, so the evidence does not show every retained component is individually necessary.",
+      "zh": "已完成的去 SIG 嵌套 CE 控制进一步删除 PA 和／或参考响应，作为补充条件检查，不属于 SSL 实验。历史 T1 与自然序 REPL 机制面板保留原训练身份，不能改名为当前固定排列 SSL 消融。部分历史删除带来小幅正变化，因此证据并未证明每个保留组件都各自必要。"
+    },
+    {
+      "type": "subsection",
+      "en": "Efficiency and Scope",
+      "zh": "效率与适用范围"
+    },
+    {
+      "type": "text",
+      "en": "Table~\\ref{tab:eff} reports parameter counts and explicitly partial operation counts. PAMF is parameter-efficient, and F+G totals 499,944 parameters. The counted convolution/matrix FLOPs omit some signature algebra, FFT, normalization, and functional operations. Existing timing tables use different execution and measurement boundaries, so no cross-table speedup is claimed here. A current-checkpoint, common-hardware latency comparison remains an evidence gap if deployment speed is a main claim.",
+      "zh": "Table~\\ref{tab:eff} 报告参数量和明确标为部分的运算计数。PAMF 参数较少，F+G 总计 499944 个参数。卷积／矩阵 FLOPs 尚未覆盖部分签名代数、FFT、归一化及函数操作。既有计时表采用不同执行与测量边界，本文不据此给出跨表加速比。若将部署速度作为主要主张，当前权重、同硬件的统一延迟比较仍为缺项。"
+    },
+    {
+      "type": "table",
+      "key": "eff"
+    },
+    {
+      "type": "text",
+      "en": "The present evaluation uses one terrestrial measurement family, six- and ten-class subsets, and simulated propagation. It establishes neither end-to-end satellite detection/acquisition nor independent in-orbit performance. Independent receiver/hardware datasets and matched external restoration comparisons would strengthen external validity. Three-seed means are descriptive evidence; small differences are not declared statistically significant. Source-count confounding, shared G weights, and prior benchmark exposure are retained as explicit limitations.",
+      "zh": "当前评价使用一个地面实测数据家族、六类／十类子集与模拟传播，尚未建立端到端卫星检测捕获或独立在轨性能。独立接收机／硬件数据及匹配外部恢复比较能够加强外部有效性。三种子均值属于描述性证据，较小差值不被声明为统计显著。源数量混杂、G 权重共享及既有基准暴露均作为明确限制保留。"
+    },
+    {
+      "type": "section",
+      "en": "Conclusion",
+      "zh": "结论"
+    },
+    {
+      "type": "text",
+      "en": "PAMF combines compact structured RF features with receiver-aware source semi-supervision and supports an independently trained DURA front end. The completed comparisons show strong performance relative to the four evaluated external identifiers and substantial restoration gains on the Main split. CE-only and SSL structural controls reveal condition-dependent branch effects, while ordinary-PL comparisons bound the incremental benefit of the complete training recipe. The results support the evaluated receiver/date and simulated-channel conditions. Independent data and unified deployment measurements are the next priorities for strengthening generality and efficiency claims.",
+      "zh": "PAMF 将紧凑结构化射频特征与接收机感知的源域半监督训练结合，并支持独立训练的 DURA 前端。已完成比较显示，相对四种已评估外部识别器具有较强表现，Main split 上恢复收益明显。纯 CE 与 SSL 结构控制揭示了分支作用的条件性，普通 PL 对照则限定完整训练配方的增量收益。现有结果支持已评估接收机／日期与模拟信道条件。独立数据及统一部署测量是加强泛化与效率主张的后续重点。"
+    }
+  ]
+}
