@@ -1,0 +1,18 @@
+{
+  "run_id": "20261029-phase3-star-consensus-s2026092701-r01",
+  "source_model": "original_F0_E50_11100_frozen",
+  "cache_parent_run": "20261029-phase3-star-representation-s2026092701-r01",
+  "primary_path": "P1",
+  "primary_method": "mlp16_oe",
+  "methods": ["msp", "maxlogit", "margin", "energy", "cosine", "linear_oe", "mlp16_oe"],
+  "source_roles": {"L": 6300, "OE": 6134, "V": 27000, "novel": 3150},
+  "descriptor": "head_aligned_branch_summary_v1_100D",
+  "readout_budget": {"steps_each": 200, "paths": 2, "readers_each_path": 2, "F_updates": 0, "G_updates": 0},
+  "known_macro_acceptance_min": 0.90,
+  "original_closed_minus_open_max": 0.02,
+  "source_unknown_macro_rejection_min": 0.90,
+  "targets_ref": "configs/pamf_phase3_targets_20261029.json",
+  "primary_report": ["A_K", "R_U", "H-score"],
+  "source_only": true,
+  "target_handles": 0
+}
