@@ -126,13 +126,64 @@ class StarOeRiskBudgetTests(unittest.TestCase):
             elif defect=='cross_ids':bad['oe_ids'][0]=bad['ids'][0]
             else:bad['score']=bad['score'][:,None]
             with self.subTest(defect=defect),self.assertRaises(ValueError):self.calibrate(m,bad)
-        self.assertEqual(list(inspect.signature(m.calibrate).parameters),list(d))
+        self.assertEqual(list(inspect.signature(m.calibrate).parameters),list(d)+['initial_thresholds'])
+        self.assertEqual(inspect.signature(m.calibrate).parameters['initial_thresholds'].kind,inspect.Parameter.KEYWORD_ONLY)
         self.assertEqual(list(inspect.signature(m.apply).parameters),['score','closed','state'])
         with self.assertRaises(TypeError):m.calibrate(**d,oe_tx=np.zeros(15))
         state,_=self.calibrate(m,d)
         with self.assertRaises(TypeError):m.apply(np.ones(1),np.zeros(1,np.int64),state,y=np.zeros(1))
         for bad in ({'conditional_thresholds':np.zeros(5)},dict(state,OE_rows=np.zeros(2))):
             with self.assertRaises(ValueError):m.apply(np.ones(1),np.zeros(1,np.int64),bad)
+
+    def test_seeded_known_gap_risks_and_OE_prefix_start_at_actual_threshold(self):
+        m=self.module();d,_=self.data();seed=np.array([4.5,0.,0.,0.,0.,0.]);original=seed.copy()
+        d.update(oe_ids=np.asarray(['OE-'+str(i) for i in range(150)]),
+            oe_closed=np.tile(np.array([0]*9+[1],np.int64),15),
+            oe_score=np.tile(np.array([-1.]*7+[5.5,5.5,.5]),15),oe_domain=np.repeat(np.arange(15,dtype=np.int64),10))
+        state,report=m.calibrate(**d,initial_thresholds=seed)
+        self.assertTrue(report['constraints_passed']);self.assertEqual(report['initialization'],'provided_thresholds')
+        self.assertAlmostEqual(report['objective_before'],.7);self.assertAlmostEqual(report['objective_after'],.9)
+        self.assertEqual([row['class_index'] for row in report['trace']],[0])
+        self.assertEqual(report['trace'][0]['known_newly_rejected'],30)
+        self.assertEqual(report['trace'][0]['OE_newly_rejected'],30)
+        self.assertEqual(state['conditional_thresholds'][0],np.nextafter(5.5,np.inf));self.assertEqual(state['conditional_thresholds'][1],0.)
+        self.assertEqual(report['selected_OE_levels'],[2,0,0,0,0,0])
+        self.assertTrue(np.all(state['conditional_thresholds']>=seed));np.testing.assert_array_equal(seed,original)
+        query_score=np.tile(np.linspace(-2,10,100),6);query_class=np.repeat(np.arange(6,dtype=np.int64),100)
+        accepted=m.apply(query_score,query_class,state)>=0
+        self.assertTrue(np.all(~accepted|(query_score>=seed[query_class])))
+        for group in report['groups'].values():self.assertEqual(group['original_closed_minus_new_open'],.02)
+
+    def test_seeded_no_additional_OE_gain_keeps_exact_initial_thresholds(self):
+        m=self.module();d,_=self.data();d['score'][:]=100;d['oe_score'][:]=-1
+        seed=np.arange(6,dtype=np.float64)*.17
+        state,report=m.calibrate(**d,initial_thresholds=seed)
+        np.testing.assert_array_equal(state['conditional_thresholds'],seed)
+        self.assertTrue(report['constraints_passed']);self.assertEqual(report['trace'],[])
+        self.assertEqual(report['objective_before'],1.);self.assertEqual(report['objective_after'],1.)
+        self.assertEqual(report['initial_thresholds'],seed.tolist())
+
+    def test_seeded_infeasible_start_is_preserved_and_not_described_as_accept_all(self):
+        m=self.module();d,_=self.data();seed=np.full(6,1000.,np.float64)
+        state,report=m.calibrate(**d,initial_thresholds=seed)
+        np.testing.assert_array_equal(state['conditional_thresholds'],seed)
+        self.assertFalse(report['constraints_passed']);self.assertFalse(report['initial_feasible'])
+        self.assertTrue(report['initial_state_preserved_on_failure']);self.assertFalse(report['zero_rejection_fallback'])
+        self.assertEqual(report['objective_before'],1.);self.assertEqual(report['objective_after'],1.)
+        self.assertEqual(report['trace'],[]);self.assertEqual(report['selected_OE_levels'][0],1)
+
+    def test_seeded_None_preserves_default_thresholds_and_trace(self):
+        m=self.module();d,_=self.data();default,report=m.calibrate(**d)
+        explicit,report2=m.calibrate(**d,initial_thresholds=None)
+        np.testing.assert_array_equal(default['conditional_thresholds'],explicit['conditional_thresholds'])
+        self.assertEqual(report,report2);self.assertEqual(report['initialization'],'accept_all')
+        self.assertEqual(default['conditional_thresholds'][0],np.nextafter(5.5,np.inf))
+
+    def test_seeded_invalid_initial_shape_dtype_finite_and_positional_argument_rejected(self):
+        m=self.module();d,_=self.data()
+        for seed in (np.zeros(5),np.zeros((6,1)),np.zeros(6,np.float32),np.full(6,np.nan),np.full(6,np.inf)):
+            with self.subTest(seed=seed),self.assertRaises(ValueError):m.calibrate(**d,initial_thresholds=seed)
+        with self.assertRaises(TypeError):m.calibrate(*d.values(),np.zeros(6))
 
 
 if __name__=='__main__':unittest.main()

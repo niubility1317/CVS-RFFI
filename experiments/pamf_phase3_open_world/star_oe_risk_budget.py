@@ -44,7 +44,7 @@ def _groups(y,closed,baseline,accepted,masks,coverage):
             known_count=int(mask.sum()),class_counts=np.bincount(y[mask],minlength=6).tolist()) for name,mask in masks}
 
 
-def _queues(ids,y,closed,score,oe_closed,oe_score,oe_domain,masks,counts,domain_counts):
+def _queues(ids,y,closed,score,oe_closed,oe_score,oe_domain,masks,counts,domain_counts,thresholds):
     queues=[]
     for c in range(6):
         oe=np.flatnonzero(oe_closed==c);levels,inverse=np.unique(oe_score[oe],return_inverse=True)
@@ -58,8 +58,10 @@ def _queues(ids,y,closed,score,oe_closed,oe_score,oe_domain,masks,counts,domain_
         prefix=np.zeros((len(ix)+1,len(masks),2),np.float64)
         prefix[1:,:,0]=np.cumsum(coefficients,axis=0)
         prefix[1:,:,1]=np.cumsum(coefficients*(closed[ix]==y[ix])[:,None],axis=0)
+        initial_known=int(np.searchsorted(score[ix],thresholds[c],side='left'))
         queues.append(dict(levels=levels,gains=gains,risks=prefix[positions],known_counts=positions,
-            oe_counts=domain_layers.sum(axis=1),index=0))
+            oe_counts=domain_layers.sum(axis=1),index=int(np.searchsorted(levels,thresholds[c],side='left')),
+            initial_risk=prefix[initial_known],selected_known=initial_known))
     return queues
 
 
@@ -87,28 +89,42 @@ def _objective(oe_score,oe_closed,oe_domain,thresholds,domain_counts):
     return float(np.mean(np.bincount(oe_domain[rejected],minlength=15)/domain_counts))
 
 
-def calibrate(ids,y,closed,baseline,score,rx,scenario,oe_ids,oe_closed,oe_score,oe_domain):
-    """Allocate six finite thresholds using known-V risks and OE domain gain."""
+def calibrate(ids,y,closed,baseline,score,rx,scenario,oe_ids,oe_closed,oe_score,oe_domain,*,initial_thresholds=None):
+    """Allocate thresholds from accept-all or a supplied monotone starting point."""
     ids,y,closed,baseline,score,rx,scenario,oe_ids,oe_closed,oe_score,oe_domain=_valid(
         ids,y,closed,baseline,score,rx,scenario,oe_ids,oe_closed,oe_score,oe_domain)
     masks=list(risk._masks(rx,scenario));counts=np.asarray([np.bincount(y[mask],minlength=6) for _,mask in masks])
     coverage={name:bool(np.all(counts[i]>0)) for i,(name,_) in enumerate(masks)}
     domain_counts=np.bincount(oe_domain,minlength=15)
-    thresholds=np.full(6,min(float(score.min()),float(oe_score.min())),np.float64)
-    initial=_groups(y,closed,baseline,np.ones(len(y),bool),masks,coverage)
+    provided=initial_thresholds is not None
+    if provided:
+        thresholds=np.asarray(initial_thresholds)
+        if thresholds.shape!=(6,) or thresholds.dtype!=np.float64 or not np.isfinite(thresholds).all():
+            raise ValueError('The optional starting state must contain six finite FP64 thresholds')
+        thresholds=thresholds.copy()
+    else:thresholds=np.full(6,min(float(score.min()),float(oe_score.min())),np.float64)
+    start_thresholds=thresholds.copy()
+    initial_levels=[int(np.searchsorted(np.unique(oe_score[oe_closed==c]),thresholds[c],side='left')) for c in range(6)]
+    objective_before=_objective(oe_score,oe_closed,oe_domain,thresholds,domain_counts)
+    no_rejection=_groups(y,closed,baseline,np.ones(len(y),bool),masks,coverage)
+    no_rejection_feasible=all(coverage.values()) and all(row['constraints_passed'] for row in no_rejection.values())
+    initial=_groups(y,closed,baseline,score>=thresholds[closed],masks,coverage)
     feasible=all(coverage.values()) and all(row['constraints_passed'] for row in initial.values())
     trace=[];queues=[];next_rows=[];selected=np.zeros((6,len(masks),2),np.float64)
     if feasible:
-        base=np.asarray([[0.,initial[name]['encoder_closed_loss']] for name,_ in masks],np.float64)
-        current=base.copy();queues=_queues(ids,y,closed,score,oe_closed,oe_score,oe_domain,masks,counts,domain_counts)
+        base=np.asarray([[0.,no_rejection[name]['encoder_closed_loss']] for name,_ in masks],np.float64)
+        queues=_queues(ids,y,closed,score,oe_closed,oe_score,oe_domain,masks,counts,domain_counts,thresholds)
+        for c,q in enumerate(queues):selected[c]=q['initial_risk']
+        current=base+selected.sum(axis=0)
         while True:
             best=None
             for c in range(6):
                 row=_candidate(c,queues,selected,current,base)
                 if row['feasible'] and row['gain']>0 and (best is None or row['ratio']>best['ratio']):best=row
             if best is None:break
-            c=best['class_index'];q=queues[c];i=q['index'];old_known=int(q['known_counts'][i-1]) if i else 0
+            c=best['class_index'];q=queues[c];i=q['index'];old_known=q['selected_known']
             thresholds[c]=best['threshold'];selected[c]=q['risks'][i];q['index']+=1;current=base+selected.sum(axis=0)
+            q['selected_known']=int(q['known_counts'][i])
             trace.append(dict(step=len(trace)+1,class_index=c,OE_level=best['OE_level'],threshold=best['threshold'],
                 gain=best['gain'],cost=best['cost'] if np.isfinite(best['cost']) else None,ratio=best['ratio'],
                 OE_newly_rejected=int(q['oe_counts'][i]),known_newly_rejected=int(q['known_counts'][i])-old_known))
@@ -127,14 +143,16 @@ def calibrate(ids,y,closed,baseline,score,rx,scenario,oe_ids,oe_closed,oe_score,
     passed=all(coverage.values()) and all(row['constraints_passed'] for row in groups.values())
     state={'conditional_thresholds':thresholds}
     report=dict(conditional_thresholds=thresholds.tolist(),constraints_passed=bool(passed),groups=groups,group_count=42,
-        objective_before=0.,objective_after=_objective(oe_score,oe_closed,oe_domain,thresholds,domain_counts),trace=trace,
+        initialization='provided_thresholds' if provided else 'accept_all',initial_thresholds=start_thresholds.tolist(),
+        objective_before=objective_before,objective_after=_objective(oe_score,oe_closed,oe_domain,thresholds,domain_counts),trace=trace,
         coverage=dict(known_groups_complete=all(coverage.values()),missing_known_classes_by_group={name:np.flatnonzero(counts[i]==0).tolist()
             for i,(name,_) in enumerate(masks) if not coverage[name]},known_predicted_class_counts=np.bincount(closed,minlength=6).tolist(),
             OE_domains_complete=True,OE_domain_counts=domain_counts.tolist()),
-        initial_feasible=bool(feasible),no_rejection_feasible=bool(feasible),zero_rejection_fallback=not feasible,
+        initial_feasible=bool(feasible),no_rejection_feasible=bool(no_rejection_feasible),zero_rejection_fallback=bool(not provided and not feasible),
+        initial_state_preserved_on_failure=bool(provided and not feasible),
         maximal=bool(feasible and not any(row['feasible'] for row in next_rows)),global_optimum_claimed=False,
         selected_prefix_counts=[int(np.count_nonzero((oe_closed==c)&(oe_score<thresholds[c]))) for c in range(6)],
-        selected_OE_levels=[q['index'] for q in queues] if queues else [0]*6,next_candidates=next_rows,
+        selected_OE_levels=[q['index'] for q in queues] if queues else initial_levels,next_candidates=next_rows,
         known_count=len(y),OE_count=len(oe_score),source_only=True,target_reads=0,novel_inputs_used=False,
         source_V_labels_used=True,source_OE_membership_used=True,source_OE_TX_or_K_used=False,
         source_V_neural_fit=False,source_V_normalizer_fit=False,neural_updates=0,
