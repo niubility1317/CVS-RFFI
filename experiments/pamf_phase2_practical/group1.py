@@ -1,15 +1,15 @@
-"""Group1 contracts: native AB versus native AC, source-only midpoint PL."""
+"""Group1: full Tri-SIG-TIME SSL PAMF and native external midpoint-PL controls."""
 import copy
 import torch
 from torch.nn import functional as F
 
-RUN='20261030-phase2-group1-concat-midPL-threepool-m4-r01'
+RUN='20261030-phase2-group1-trisigtime-threepool-m4-r04'
 SEEDS=(2026092701,2026092702,2026092703,2026092704)
 
 
 def catalog():
     rows=[
-        ('pamf_pl_milkr','both',50,'pamf',None),
+        ('pamf_tri_sig_time_ssl_milkr','both',50,'pamf',None),
         ('protonet_cda','DA',200,'protonet',None),
         ('mrior_sda','DA',200,'mrior',None),
         ('dadda_sda','DA',200,'dadda',None),
@@ -24,7 +24,7 @@ def catalog():
         ('issl','CIL',300,'issl_author_behavior',None),
         ('lora_triplet_knn','CIL',1000,'lora_triplet_knn',None),
     ]
-    return [dict(id=i,category=c,epochs=e,PL_start_epoch=e//2+1,method=m,
+    return [dict(id=i,category=c,epochs=e,PL_start_epoch=14 if m=='pamf' else e//2+1,method=m,
                  B='native' if c!='CIL' else None,C='native' if c!='DA' else None,
                  active=reason is None,unavailable_reason=reason,
                  native_scope='original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter')
@@ -32,6 +32,8 @@ def catalog():
 
 
 def row(name):
+    if name=='pamf_pl_milkr':
+        return dict(catalog()[0],id=name,PL_start_epoch=26,source_method='historical_ordinary_PL_not_current_PAMF')
     return next(r for r in catalog() if r['id']==name)
 
 
@@ -70,7 +72,8 @@ def validate_source_config(c):
 
 def source_scope(rt):
     keys=('run_id','run_root','release_root','phase1_release','frozen_sources','source_cache','source_contract',
-          'augmentation_cache','augmentation_cpu_workers','code_commit','source_base_config','python','source_cpu_threads')
+          'augmentation_cache','augmentation_cpu_workers','code_commit','source_base_config','python','source_cpu_threads',
+          'PAMF_sources','PAMF_definition')
     result={k:rt[k] for k in keys if k in rt}
     validate_source_config(result)
     return result

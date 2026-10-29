@@ -182,3 +182,31 @@ def test_recovery_reuses_external_jobs_and_replaces_only_PAMF(tmp_path):
         assert job['output'].startswith(cfg['run_root'])
         assert job['runtime_file']==cfg['runtime_file']
         assert all(v.startswith(job['origin']+'-') for v in job['dependencies'])
+
+
+def test_current_PAMF_requires_full_Tri_SIG_TIME_SSL_not_ordinary_PL(tmp_path):
+    import copy,json
+    from pathlib import Path
+    from experiments.pamf_phase2_practical.trisig_source import validate_done,SOURCE_RUN
+    from experiments.pamf_phase2_practical import group1_source
+    definition=json.loads((Path(__file__).parents[1]/'configs/pamf_ssl_trisigtime.json').read_text())
+    contract={'role_ids':{'L_s':['L1'],'U_s':['U1']}}
+    cp=tmp_path/'contract.json';cp.write_text(json.dumps(contract))
+    c=dict(run_id=SOURCE_RUN,model_seed=42,view_comparison={'view_count':3},source_contract=str(cp),
+        U_start_epoch=14,satellite_concat=False,own_EMA=False,
+        repl_row=dict(structure='SHUFFLE_TIME',L_A=True,L_B=True,
+            blocks=dict(style=True,guard=True,joint=True,extrapolation=True)))
+    c.update(copy.deepcopy(definition['frozen_REPL_recipe']))
+    done=dict(status='SOURCE_FROZEN',epoch=50,updates=11100,target_access=False,U_truth_read=False,
+        head_fit_updates=0,config=c,actual_REPL=dict(calls=6660,seen=1701000,student_views=10206000))
+    assert validate_done(done,definition,42,contract) is c
+    for key,value in [('weight',1.),('LS',0.)]:
+        bad=copy.deepcopy(done);bad['config']['hard_pl'][key]=value
+        with pytest.raises(ValueError,match='mechanism differs'):
+            validate_done(bad,definition,42,contract)
+    bad=copy.deepcopy(done);bad['config']['view_comparison']['view_count']=1
+    with pytest.raises(ValueError,match='views'):validate_done(bad,definition,42,contract)
+    assert module().catalog()[0]['id']=='pamf_tri_sig_time_ssl_milkr'
+    recipe=group1_source.recipe('pamf_tri_sig_time_ssl_milkr')
+    assert recipe['full_REPL_epochs']==[21,50] and recipe['REPL_weight']==6.
+    assert recipe['temporal_permutation']==[0,5,3,6,2,1,4,7]

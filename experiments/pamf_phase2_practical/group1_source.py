@@ -42,6 +42,13 @@ def source_data(c,role):
 
 def recipe(profile):
     r=row(profile)
+    if profile=='pamf_tri_sig_time_ssl_milkr':
+        return dict(schema='group1_current_PAMF_Tri_SIG_TIME_SSL_v1',profile=profile,method='pamf_tri_sig_time_ssl',
+            definition='configs/pamf_ssl_trisigtime.json',epochs=50,updates=11100,signature_views=3,
+            temporal_permutation=[0,5,3,6,2,1,4,7],L_only_epochs=13,ordinary_PL_epochs=[14,20],
+            full_REPL_epochs=[21,50],REPL_weight=6.,PL_threshold=.95,EMA=False,
+            satellite_concat=False,source_policy='reuse_exact_original_complete_Tri_SIG_TIME_SSL',
+            target_contact=False,U_TX_truth_read=False)
     return dict(schema='group1_source_concat_midPL_v1',profile=profile,method=r['method'],epochs=r['epochs'],
         PL_start_epoch=r['PL_start_epoch'],PL_threshold=.95,PL_weight=1.,U_batch_ratio=2,
         satellite_concat=True,satellite_weight=.68,satellite_on='L_only',
@@ -367,6 +374,9 @@ def _train_pamf(c,seed,out,*,diagnostic=False):
 def load_source(c,profile,seed,device):
     validate_source_config(c);folder=Path(c['run_root'])/'source'/f'{profile}-s{seed}'
     expected=read(c['source_contract']);r=row(profile)
+    if profile=='pamf_tri_sig_time_ssl_milkr':
+        from .trisig_source import load
+        return load(c,seed,device)
     if profile=='pamf_pl_milkr':
         bind_pamf_trainer(c)
         from experiments.cric_dura_comparison.frozen_inference import load_F
@@ -392,6 +402,9 @@ def load_source(c,profile,seed,device):
 
 def train(c,profile,seed,output,device='cuda:0'):
     validate_source_config(c);out=Path(output)
+    if profile=='pamf_tri_sig_time_ssl_milkr':
+        from .trisig_source import reuse
+        return reuse(c,seed,out,device)
     total=Path(c['run_root'])/'resource_telemetry'/f'{profile}-s{seed}'/'A_end_to_end.json'
     with Measure(total,dict(profile=profile,seed=seed,stage='A_END_TO_END_SOURCE_ONLY',includes_data_and_serialization=True)) as probe:
         activate(c);torch.set_num_threads(c.get('source_cpu_threads',1))

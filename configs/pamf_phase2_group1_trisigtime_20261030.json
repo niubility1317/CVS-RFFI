@@ -1,0 +1,26 @@
+{
+  "run_id": "20261030-phase2-group1-trisigtime-threepool-m4-r04",
+  "replaces_run_id": "20261030-phase2-group1-concat-midPL-threepool-m4-r03",
+  "method_profile": "pamf_tri_sig_time_ssl_milkr",
+  "display_name": "PAMF with Tri-SIG-TIME SSL + MILKR",
+  "PAMF_definition": "configs/pamf_ssl_trisigtime.json",
+  "PAMF_source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "source_training_reused": 4,
+  "source_new_training": 0,
+  "source_historical_updates_each": 11100,
+  "source_augmentation": "original_frozen_PAMF_recipe_satellite_concat_false_As_retained",
+  "external_source": "original_full_supervised_plus_concat0.68_plus_midpoint_PL0.95_weight1",
+  "external_run": "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+  "external_rows_unchanged": 40,
+  "target_matrix": "same_registered_Group1_AB_AC_ABC_DURA_2x2_threepool_7RX_KN_and_episodes",
+  "source_choice": "predeclared_four_seeds_in_numeric_order_no_target_selection",
+  "GPU_policy": "two_combined_own_workers_per_card_other_owners_additional",
+  "no_ordinary_PL_relabeling": true,
+  "old_wrong_recipe_outputs": "preserved_excluded_from_current_PAMF_results"
+}
