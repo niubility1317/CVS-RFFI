@@ -1,8 +1,8 @@
 {
-  "title_en": "PAMF: Structured RF Fingerprints and Receiver-Aware Semi-Supervised Learning Under Receiver and Channel Shifts",
-  "title_zh": "PAMF：面向接收机与信道变化的结构化射频指纹表征及接收机感知半监督学习",
-  "abstract_en": "Radio frequency fingerprint identification is affected by receiver variability, propagation distortion, and limited transmitter annotations. This paper presents PAMF, a compact source-only identification framework that combines structured signal representations with receiver-aware semi-supervised learning. A Sinc-based temporal backbone is complemented by mirrored spectral descriptors, memory-polynomial features, relative reference responses, and three independently projected local path descriptors. A fixed endpoint-preserving permutation defines the paths consistently during training and inference. Tri-SIG-TIME SSL combines confidence-filtered pseudo-labels, cross-receiver identity pairing, feature perturbation, and labeled-gradient anchoring. An optional frozen dual-stage restoration network, DURA, is trained from source IQ without transmitter labels or classifier feedback. On the six-class Main split of WiSig, three-seed mean accuracies across six simulated channel conditions are 71.16% for direct cross-receiver identification and 79.90% with DURA; joint receiver/date holdout accuracies are 68.81% and 76.83%. The six-class identifier contains 232,993 parameters. Architecture, learning-regime, and two-layer structural controls characterize both benefits and limitations. The results establish performance on terrestrial measurements with simulated channel stress, rather than real in-orbit validation.",
-  "abstract_zh": "射频指纹识别受到接收机差异、传播失真与发射机标签不足的共同影响。本文提出仅利用源域训练的紧凑识别框架 PAMF，将结构化信号表征与接收机感知半监督学习相结合。网络以 Sinc 时域骨干为基础，融合镜像频谱描述、记忆多项式特征、相对参考响应，以及三个独立投影的局部路径描述。保留窗口首尾的固定排列在训练和推理中一致地定义特征路径。Tri-SIG-TIME SSL 联合使用置信筛选伪标签、跨接收机身份配对、特征扰动和有标签梯度锚定。作为可选前端，冻结的双阶段恢复网络 DURA 使用源域 IQ 训练，不读取发射机标签或分类器反馈。在 WiSig 六类 Main split 上，三种子六种模拟信道平均准确率分别为跨接收机直接识别 71.16%、接入 DURA 后 79.90%；接收机与日期双跨对应为 68.81% 和 76.83%。六类识别器包含 232993 个参数。架构、学习方式及两层结构控制共同揭示方法的收益与限制。实验提供地面实测数据上的模拟信道压力证据，不代表真实在轨验证。",
+  "title_en": "PAMF: Compact RF Fingerprinting for Spaceborne Passive Sensing under Receiver and Channel Shifts",
+  "title_zh": "PAMF：面向天基被动感知的紧凑跨接收机射频指纹识别",
+  "abstract_en": "Spaceborne passive RF fingerprinting seeks to identify physical terrestrial transmitters from their emissions, despite changes in receiving hardware and propagation, within a limited payload-processing budget. We present PAMF, a compact source-only RF fingerprint identifier designed for this joint requirement. Its structured representation combines temporal/spectral processing, nonlinear-memory features, reference-relative responses, and three projected local SIG-TIME descriptors. Receiver-aware Tri-SIG-TIME SSL exploits partially labeled source recordings through cross-receiver pairing, feature perturbation, and labeled-gradient anchoring; inference requires no target adaptation or additional classification head. On the six-class Main split of WiSig with six simulated space--ground channel conditions, three-seed mean direct accuracies are 71.16% for unseen receivers and 68.81% for joint receiver/date holdout, exceeding the strongest evaluated external comparator by 5.86 and 5.22 percentage points. An optional independently trained DURA front end raises these means to 79.90% and 76.83%. PAMF contains 232,993 parameters, 93.94% fewer than the compared ResNet-18-1D, and requires 0.89 MiB for FP32 weights. Receiver re-partitioning, label-budget studies, and two-layer ablations examine the conditions supporting these gains. The resulting accuracy and parameter-storage trade-off motivates payload-oriented inference; real in-orbit performance and hardware-specific latency remain to be validated.",
+  "abstract_zh": "天基被动射频指纹识别需要在有限载荷处理预算下，克服接收硬件与传播变化，从地面辐射信号中识别具体物理发射机。本文针对这一联合需求，提出仅利用源域训练的紧凑射频指纹识别器 PAMF。其结构化表征融合时频处理、非线性记忆特征、相对参考响应和三个投影空间中的局部 SIG-TIME 描述。接收机感知的 Tri-SIG-TIME SSL 通过跨接收机配对、特征扰动和有标签梯度锚定利用部分标注的源记录；推理不需要目标域适应或额外分类头。在 WiSig 六类 Main split 及六种模拟星地信道条件下，三种子直接识别平均准确率在未见接收机与接收机／日期双留出中分别为 71.16% 和 68.81%，比所评估的最强外部对照分别高 5.86 和 5.22 个百分点。接入独立训练的可选 DURA 前端后，两者提高至 79.90% 和 76.83%。PAMF 包含 232993 个参数，比所比较的 ResNet-18-1D 少 93.94%，FP32 权重仅占 0.89 MiB。接收机重划分、标签预算研究及两层消融进一步检验这些收益成立的条件。准确率与参数存储的折中支持面向载荷推理的设计；真实在轨性能及特定硬件时延仍需验证。",
   "blocks": [
     {
       "type": "section",
@@ -11,8 +11,8 @@
     },
     {
       "type": "text",
-      "en": "Space-based radio frequency (RF) sensing extends remote observation from the appearance of objects to their electromagnetic emissions. Satellite observations can support wide-area spectrum monitoring, interference assessment, and the characterization of terrestrial emitters. These applications involve related but different questions: where an emitter is, what signal it transmits, and which physical device generated that signal. A recent survey explicitly connects satellite RF geolocation with emitter fingerprinting while distinguishing their measurement and learning requirements \\cite{space_review}. An industry perspective summarized from Scott's cover story likewise describes the transition of commercial space-based RF monitoring from experimental demonstrations toward operational services \\cite{scott_digest}. As RF collection becomes more accessible, extracting reliable device identity from heterogeneous observations becomes an increasingly relevant research problem.",
-      "zh": "天基射频（RF）感知将遥感观测从目标外观扩展到目标的电磁辐射。卫星观测能够支持广域频谱监测、干扰评估与地面辐射源特征分析。这些应用涉及相互关联但并不相同的问题：辐射源位于何处、发射何种信号，以及信号由哪一台物理设备产生。近期综述将卫星 RF 地理定位与辐射源指纹识别联系起来，同时区分了二者在测量与学习方面的要求\\cite{space_review}。Scott 封面报道的公开摘要也从产业角度介绍了商业天基 RF 监测由技术验证走向实际服务的过程\\cite{scott_digest}。随着 RF 数据采集能力的发展，如何从异构观测中提取可靠的设备身份，成为更具现实需求的研究问题。"
+      "en": "For a spaceborne passive RF fingerprinting payload, successful identification requires more than recognizing signals collected by the training receiver. A useful model must retain transmitter identity when receiving hardware and propagation conditions change, and its inference footprint must fit the available processing resources. Space-based RF sensing supports wide-area spectrum monitoring, interference assessment, and emitter characterization; a recent survey relates these applications to both geolocation and device fingerprinting \\cite{space_review}. An industry summary of Scott's cover story describes the transition of commercial satellite RF services toward operational use \\cite{scott_digest}. This development makes a joint question central: how can a small identifier preserve useful transmitter distinctions across unseen receivers and impaired space--ground observations?",
+      "zh": "对于天基被动射频指纹识别载荷，识别成功不能仅以训练接收机采集的信号为依据。有效模型需要在接收硬件与传播条件改变时保留发射机身份判别能力，同时使推理开销适应可用处理资源。天基 RF 感知能够支持广域频谱监测、干扰评估与辐射源特征分析；近期综述将这些应用与地理定位和设备指纹识别联系起来\\cite{space_review}。Scott 封面报道的产业摘要也介绍了商业卫星 RF 服务走向实际应用的过程\\cite{scott_digest}。由此引出本文的核心问题：如何用一个小型识别器，在未见接收机与受损星地观测中保持有用的发射机个体差异？"
     },
     {
       "type": "text",
@@ -21,8 +21,8 @@
     },
     {
       "type": "text",
-      "en": "The deployment architecture is also evolving. Peng Cheng Laboratory's PEGA-SUS1, launched on September 20, 2026, integrates 5G non-terrestrial-network components, onboard AI computing, and space--ground communication payloads in an in-orbit technology-verification platform \\cite{pegasus1}. Such developments motivate compact inference models, although onboard computing does not remove the cost of acquiring identity annotations or collecting representative data from every future receiver. We therefore consider an explicit deployment choice: learn from labeled and unlabeled ground-side source receivers, freeze the model, and perform direct identification at an unseen receiver without target-domain adaptation. This setting is relevant when target observations are unavailable during development or when a reproducible model must be deployed before new observations arrive.",
-      "zh": "系统部署方式也在演进。鹏城实验室于 2026 年 9 月 20 日发射的 PEGA-SUS1 将 5G 非地面网络组件、星载 AI 计算与星地通信载荷集成于在轨技术验证平台\\cite{pegasus1}。这类进展为紧凑推理模型提供了应用动机，但星上具备计算能力，并不能消除获取身份标注或收集各类未来接收机代表性数据的成本。因此，本文选择一种明确的部署方式：利用地面侧源接收机的有标签与无标签数据学习，冻结模型，然后在未见接收机上直接识别，不开展目标域适应。该设置适用于研发阶段无法获得目标观测，或需要在新观测到来之前部署可复现模型的情况。"
+      "en": "The deployment architecture is also evolving. Peng Cheng Laboratory's PEGA-SUS1, launched on September 20, 2026, integrates non-terrestrial-network components, onboard AI computing, and space--ground communication payloads in an in-orbit verification platform \\cite{pegasus1}. Such platforms motivate models with small weight storage and manageable inference operations. They also make deployment requirements concrete: receiver changes should not require collecting a newly labeled target dataset or refitting a separate head. We study ground-side learning from partially labeled source receivers followed by frozen inference at an unseen receiver. The design targets deployable recognition without making target-domain access a prerequisite.",
+      "zh": "系统部署方式也在演进。鹏城实验室于 2026 年 9 月 20 日发射的 PEGA-SUS1 将非地面网络组件、星载 AI 计算与星地通信载荷集成于在轨验证平台\\cite{pegasus1}。这类平台为权重存储小、推理运算可控的模型提供了应用动机，也使部署需求更加具体：更换接收机不应以重新收集目标域标注数据或单独拟合分类头为前提。本文研究利用部分标注的地面源接收机数据学习，再在未见接收机上冻结推理的方式，面向无需将目标域访问作为前提的可部署识别。"
     },
     {
       "type": "text",
@@ -51,8 +51,8 @@
     },
     {
       "type": "text",
-      "en": "Representation design is important because identity information is distributed across different waveform relationships. Local temporal and spectral patterns, amplitude-dependent nonlinear memory, and responses relative to an internal reference need not react identically to a receiver change. Memory-polynomial modeling provides an established description of nonlinear RF behavior \\cite{mp}, while path-signature methods describe ordered increments and interactions along a sequence \\cite{sig}. These tools motivate complementary inductive biases rather than a claim that each branch uniquely recovers a physical component. A useful design must retain their joint discriminative information at a modest deployment cost, and its value must be tested by matched structural controls rather than inferred from the names of its components.",
-      "zh": "表征设计之所以重要，是因为身份信息分布于不同的波形关系中。局部时域与频域模式、幅度相关的非线性记忆，以及相对于内部参考的响应，对接收机变化的反应未必相同。记忆多项式为非线性 RF 行为提供了成熟的描述方式\\cite{mp}，路径签名方法则描述序列中的有序增量及其相互作用\\cite{sig}。这些工具为互补的归纳偏置提供了依据，但并不意味着每个分支都能唯一恢复某个物理组成。有效设计需要在适当的部署成本下保留这些关系的联合判别信息，并通过匹配的结构对照检验其价值，不能仅凭组件名称推断其有效性。"
+      "en": "A compact representation should preserve complementary identity relationships instead of relying on capacity alone. Local temporal and spectral patterns, amplitude-dependent nonlinear memory, and responses relative to an internal reference need not react identically to receiver and channel changes. Memory-polynomial models describe nonlinear RF behavior \\cite{mp}, while path-signature methods summarize ordered increments and sequence interactions \\cite{sig}. We use these ideas as complementary inductive biases within a shared identifier. Their role is to retain discriminative structure with a small parameter budget; branch names do not imply a unique physical decomposition. Matched architecture and deletion controls are therefore needed to distinguish a useful combination from redundant complexity.",
+      "zh": "紧凑表征应通过保留互补身份关系提高泛化能力，而非单纯依赖网络容量。局部时频模式、幅度相关的非线性记忆，以及相对于内部参考的响应，对接收机与信道变化的反应未必相同。记忆多项式描述非线性 RF 行为\\cite{mp}，路径签名方法汇总有序增量与序列相互作用\\cite{sig}。本文将这些思想作为共享识别器中的互补归纳偏置，目标是在较小参数预算下保留判别结构；分支名称不意味着对物理组成的唯一分解。因此，需要匹配的架构与删除对照，区分有效组合和冗余复杂度。"
     },
     {
       "type": "text",
@@ -66,8 +66,8 @@
     },
     {
       "type": "text",
-      "en": "We develop PAMF, a compact identifier trained with Tri-SIG-TIME SSL, to address these representation and optimization requirements jointly. The identifier combines temporal/spectral processing, a power-amplifier-inspired nonlinear-memory branch, reference-relative response processing, and three learned projections for local temporal descriptors. SIG-TIME summarizes first-order increments and second-order antisymmetric areas in each projected feature path. A fixed local permutation changes the feature-path traversal before time-coordinate augmentation; the raw IQ sequence and the temporal order processed by the convolutional backbone are preserved. The three views are internal projected descriptions rather than three independently acquired RF recordings. Their fused representation is learned with the existing jointly trained classification head.",
-      "zh": "为同时处理表征与优化要求，本文构建紧凑识别器 PAMF，并采用 Tri-SIG-TIME SSL 训练。识别器融合时频处理、受功率放大器行为启发的非线性记忆分支、相对参考响应处理，以及用于局部时序描述的三个可学习投影。SIG-TIME 在各投影特征路径上汇总一阶增量与二阶反对称面积。固定局部排列在加入时间坐标之前改变特征路径的遍历方式；原始 IQ 序列与卷积骨干处理的时间顺序保持原状。三个视图是内部投影描述，而非三次独立采集的 RF 记录。融合表征与网络既有分类头共同训练。"
+      "en": "PAMF addresses this requirement with a structured three-view SIG-TIME identifier. A shared temporal/spectral backbone is complemented by a power-amplifier-inspired nonlinear-memory branch and reference-relative response processing. Three learned projections encode local first-order increments and second-order antisymmetric areas, preserving relational information beyond pooled feature magnitudes. A fixed local permutation changes feature-path traversal before time-coordinate augmentation; raw IQ and backbone temporal order remain intact. These are internal feature views, not three independent RF recordings. With the original jointly trained classification head, the six-class identifier contains 232,993 parameters and occupies 0.89 MiB in FP32 weights, allowing its generalization performance to be assessed alongside a concrete deployment cost.",
+      "zh": "PAMF 采用结构化三视图 SIG-TIME 识别器处理这一需求。在共享时频骨干之外，网络引入受功率放大器行为启发的非线性记忆分支与相对参考响应处理。三个可学习投影编码局部一阶增量和二阶反对称面积，保留池化特征幅值之外的关系信息。固定局部排列在加入时间坐标之前改变特征路径遍历，原始 IQ 与骨干处理的时间顺序保持原状。这些是内部特征视图，而非三份独立 RF 记录。使用原有联合训练分类头时，六类识别器包含 232993 个参数，FP32 权重占 0.89 MiB，使泛化性能能够与明确的部署成本共同评估。"
     },
     {
       "type": "text",
@@ -76,8 +76,8 @@
     },
     {
       "type": "text",
-      "en": "We additionally investigate DURA as an optional restoration front end for impaired inputs. Model-based deep reconstruction has shown how learned priors can be combined with explicit data-consistency operations \\cite{modl}. Here, a compact two-stage unfolded restorer is trained independently from source IQ and simulated pairs, without transmitter-identity labels or access to a trained identifier. Its contribution is then evaluated by attaching the same frozen restorer to frozen recognition models. Separating restoration from identifier supervision permits distinct questions to be answered: whether the front end improves recognition across channel conditions, and whether the improvement depends on the identifier's use of unlabeled source data.",
-      "zh": "此外，本文将 DURA 作为受损输入的可选恢复前端。基于模型的深度重建表明，可将学习先验与显式数据一致性运算相结合\\cite{modl}。在本文中，紧凑的双阶段展开恢复器利用源 IQ 与模拟配对独立训练，不使用发射机身份标签，也不访问训练好的识别器。随后，将同一冻结恢复器连接到冻结识别模型，评估其贡献。将恢复与身份监督分开，可以分别回答两个问题：恢复前端能否跨信道条件改善识别，以及该改善是否依赖识别器对无标签源数据的利用。"
+      "en": "For severe channel impairment, PAMF also supports an optional DURA restoration front end. Learned priors combined with explicit data consistency are an established model-based reconstruction strategy \\cite{modl}. DURA adapts this design principle to source-IQ restoration using a compact two-stage unfolded network, trained independently without transmitter-identity labels or access to a trained identifier. Direct PAMF and PAMF+DURA are evaluated separately. This distinction exposes the identifier's intrinsic generalization and the additional benefit of impairment compensation, while offering two deployment configurations with different processing budgets.",
+      "zh": "针对严重信道损伤，PAMF 还支持可选的 DURA 恢复前端。将学习先验与显式数据一致性结合，是成熟的基于模型重建思路\\cite{modl}。DURA 将这一设计原则用于源 IQ 恢复，采用紧凑的双阶段展开网络独立训练，不使用发射机身份标签，也不访问训练好的识别器。本文分别评价直接 PAMF 与 PAMF+DURA，从而区分识别器自身的泛化能力与损伤补偿带来的额外收益，并提供处理预算不同的两种部署配置。"
     },
     {
       "type": "text",
@@ -86,8 +86,8 @@
     },
     {
       "type": "text",
-      "en": "1) We formulate a compact, structured RFFI representation that integrates complementary temporal/spectral, nonlinear-memory, reference-relative, and three-view local path information. The local permutation is defined at the feature-path level. Pure cross-entropy architecture comparisons and matched structural ablations quantify the behavior of this representation without conflating it with semi-supervised training.",
-      "zh": "1）构建紧凑的结构化 RFFI 表征，联合利用时频、非线性记忆、相对参考响应与三视图局部路径信息，并将局部重排明确限定在特征路径层面。通过纯交叉熵网络比较与匹配结构消融，检验该表征的表现，避免与半监督训练收益混淆。"
+      "en": "1) We design a compact structured RF fingerprint identifier for receiver and channel generalization. Complementary temporal/spectral, nonlinear-memory, reference-relative, and three-view local path features are fused into one jointly trained representation. The 232,993-parameter identifier uses 93.94% fewer parameters than the compared ResNet-18-1D; pure cross-entropy architecture comparisons separate the representation's behavior from semi-supervised training.",
+      "zh": "1）设计面向接收机与信道泛化的紧凑结构化 RF 指纹识别器，将互补的时频、非线性记忆、相对参考响应和三视图局部路径特征融合于共同训练的表征中。识别器仅包含 232993 个参数，比所比较的 ResNet-18-1D 少 93.94%；纯交叉熵架构比较用于区分表征本身的表现与半监督训练的作用。"
     },
     {
       "type": "text",
@@ -96,8 +96,8 @@
     },
     {
       "type": "text",
-      "en": "3) We integrate an independently trained, identity-label-free restoration front end and evaluate the system using receiver/date holdouts, receiver re-partitioning, label-budget and source-receiver studies, a larger transmitter set, and six controlled impairment conditions. Eight-seed architecture and view comparisons complement three-seed main comparisons and two-layer ablations. Explicit identifier/restorer data-use controls separate recognition, unlabeled-data, and restoration effects; the evidence is reported as a measured-IQ simulation study rather than real-satellite validation.",
-      "zh": "3）接入独立训练、不使用身份标签的恢复前端，并通过接收机与日期留出、接收机重划分、标签预算、源接收机数量、扩展发射机集合及六种受控损伤条件评估系统。八种子网络与视图对照补充三种子主方法比较及两层消融；识别器与恢复器的数据使用控制用于区分识别、无标签数据与恢复的作用。本文将其报告为实测 IQ 基础上的仿真研究，不作为真实卫星验证。"
+      "en": "3) We evaluate the accuracy--resource trade-off under six simulated space--ground channel conditions, receiver/date holdouts, receiver re-partitioning, label budgets, source-receiver counts, and a larger transmitter set. Eight-seed architecture/view controls complement three-seed main comparisons and two-layer ablations. Frozen, independently trained DURA provides an optional robustness extension with explicit data-use controls. The evaluation identifies both the generalization advantage and its limits, supporting payload-oriented model design on measured terrestrial IQ with simulated propagation.",
+      "zh": "3）在六种模拟星地信道条件下，通过接收机／日期留出、接收机重划分、标签预算、源接收机数量与扩展发射机集合，评估准确率与资源开销的折中。八种子架构／视图对照补充三种子主比较及两层消融；独立训练并冻结的 DURA 在明确数据权限下提供可选稳健性扩展。实验识别泛化优势及其边界，为基于实测地面 IQ 和模拟传播的载荷导向模型设计提供依据。"
     },
     {
       "type": "text",
@@ -363,13 +363,18 @@
     },
     {
       "type": "subsection",
-      "en": "Main Identification Comparison",
-      "zh": "主方法比较"
+      "en": "Generalization Beyond the Training Receiver",
+      "zh": "超出训练接收机的泛化能力"
     },
     {
       "type": "text",
-      "en": "Table~\\ref{tab:main} reports three-seed Main-split results. Direct six-scene cross-RX accuracy is 71.16% for PAMF and 65.30% for the strongest compared external method, SDG, a 5.86-point difference. With the same G-LU front end, the means are 79.90% and 67.12%, respectively. Double-holdout direct/restored accuracies are 68.81/76.83% for PAMF and 63.59/65.66% for SDG. These comparisons support the evaluated complete identifier and restoration combination; they do not identify a single responsible mechanism.",
-      "zh": "Table~\\ref{tab:main} 给出 Main split 三种子结果。PAMF 跨接收机直接六景准确率为 71.16%，已比较外部方法中最强的 SDG 为 65.30%，相差 5.86 个百分点。同一 G-LU 前端下，两者分别为 79.90% 与 67.12%。双跨直接／恢复准确率中，PAMF 为 68.81/76.83%，SDG 为 63.59/65.66%。这些比较支持所评估完整识别器与恢复组合的表现，不单独归因于某一机制。"
+      "en": "The central result is that PAMF's advantage survives the combination of receiver mismatch and simulated space--ground impairment. Table~\\ref{tab:main} shows a 5.86-percentage-point direct six-scene advantage over the strongest evaluated external comparator, SDG, on unseen receivers. The advantage remains 5.22 points when the recording date is also held out. Because these are direct identifier outputs, the difference cannot be attributed to DURA. It supports the integrated representation and training design as the primary source of the observed comparative advantage.",
+      "zh": "核心结果是：PAMF 的优势在接收机不匹配与模拟星地损伤同时存在时仍然保持。Table~\\ref{tab:main} 显示，其未见接收机直接识别六景平均比已评估的最强外部对照 SDG 高 5.86 个百分点；进一步留出采集日期后，优势仍为 5.22 个百分点。这些结果来自识别器直接输出，不能归因于 DURA，而是支持完整表征与训练设计构成所观察比较优势的主要来源。"
+    },
+    {
+      "type": "text",
+      "en": "The date holdout tests an additional acquisition change rather than future-time forecasting: D0 precedes the source training dates. Its value is that PAMF's relative advantage persists outside the receiver/date combinations used for learning. With a setting-matched G-LU, the corresponding six-scene accuracies reach 79.90% and 76.83%, revealing further room for improvement through input restoration. We next separate architecture, training, and channel effects to determine what this overall result actually establishes.",
+      "zh": "日期留出检验的是额外采集变化，而非未来时刻预测，因为 D0 早于源训练日期。其意义在于，PAMF 的相对优势在训练未使用的接收机／日期组合上仍然存在。接入与设置匹配的 G-LU 后，两类六景准确率分别达到 79.90% 和 76.83%，说明输入恢复还能进一步改善结果。下文分别检查结构、训练与信道作用，明确这一总体结果能够支持哪些结论。"
     },
     {
       "type": "table",
@@ -377,35 +382,40 @@
     },
     {
       "type": "subsection",
-      "en": "Architecture Under CE-Only Training",
-      "zh": "纯 CE 下的网络结构"
+      "en": "Discriminative Structure without a Large Backbone",
+      "zh": "不依赖大骨干的判别表征"
     },
     {
       "type": "text",
-      "en": "Fig.~\\ref{fig:2} isolates architecture from SSL. The three-view E200 model reaches 79.73% double-holdout clean accuracy, versus 75.05% for Complex ResNet-18-1D. Single-view PAMF reaches 79.63%, showing that much of the structural benefit is already present without three projections. Removing SIG-TIME gives 76.98%. Three-view superiority over single-view is therefore modest in this panel and is not used as a claim of a large universal gain.",
-      "zh": "Fig.~\\ref{fig:2} 将架构与 SSL 分开。三视图 E200 双跨 clean 为 79.73%，Complex ResNet-18-1D 为 75.05%。单视图 PAMF 达到 79.63%，表明结构收益很大一部分在不使用三个投影时已存在。去 SIG-TIME 为 76.98%。因此该面板中三视图相对单视图的优势有限，不能据此宣称普遍大幅提升。"
+      "en": "The CE-only comparison asks whether the representation remains competitive when the complete SSL recipe is removed. In Fig.~\\ref{fig:2}, three-view PAMF exceeds Complex ResNet-18-1D by 4.67 points on the joint holdout while using a much smaller model. This matters for deployment: the recognition advantage is not obtained simply by increasing backbone capacity. The top panel uses 126,000 target packets from D1--D3; the bottom uses the disjoint 42,000 packets from held-out D0. Their consistent strong PAMF performance links the compact structure to cross-receiver discrimination, independently of the E50 SSL recipe.",
+      "zh": "纯 CE 比较回答：去掉完整 SSL 配方后，该表征是否仍有竞争力。Fig.~\\ref{fig:2} 中，三视图 PAMF 在双留出上比 Complex ResNet-18-1D 高 4.67 个百分点，同时使用更小的模型。这对部署具有直接意义：识别优势并非简单依靠增大骨干容量获得。上图采用 D1--D3 的 126000 条目标记录，下图采用互不重叠的留出日期 D0 的 42000 条记录。PAMF 在两者中的较强表现，将紧凑结构与跨接收机判别联系起来，且独立于 E50 SSL 配方。"
+    },
+    {
+      "type": "text",
+      "en": "The same evidence also refines the role of the three-view design. Single-view PAMF is already strong; adding two projections changes joint-holdout clean accuracy by only 0.10 points. The larger gap to the no-SIG variant supports retaining local path information, but this panel does not establish a large independent benefit from the number of views. We retain three views as the evaluated complete configuration and assess branch dependence separately under the channel-stress training conditions.",
+      "zh": "同一证据也使三视图的作用更加明确。单视图 PAMF 已具有较强表现，增加两个投影在双留出 clean 上仅改变 0.10 个百分点；相对去 SIG 变体更大的差距支持保留局部路径信息，但该面板不能证明视图数量本身带来大幅独立收益。本文将三视图保留为已评估的完整配置，并在信道压力训练条件下另行检验分支依赖。"
     },
     {
       "type": "figure",
       "number": 2,
-      "en": "CE-only architecture comparison under (a) cross-receiver and (b) joint receiver/date holdout. E200, clean, eight model seeds; point labels give mean plus/minus sample SD. Accuracy only is shown here; macro-F1 and per-seed values accompany the supplementary data.",
-      "zh": "纯 CE 架构比较：(a) 跨接收机，(b) 接收机与日期双跨。E200、clean、八个模型种子，点旁为均值与样本标准差。此处展示准确率，Macro-F1 与逐种子值随补充数据提供。"
+      "en": "CE-only architecture comparison, E200, clean, eight paired model seeds. Top: cross-receiver testing on D1--D3 (126,000 packets per seed). Bottom: receiver/date holdout on D0 (42,000 packets per seed). Both include all 15 variants. Points and error bars show mean plus/minus sample SD; gray dots show individual seeds.",
+      "zh": "纯 CE 架构比较，E200、clean、八个配对模型种子。上：D1--D3 跨接收机，每种子 126000 条；下：D0 接收机／日期双留出，每种子 42000 条。两图均包含完整 15 种变体。点与误差棒为均值及样本标准差，灰点为逐种子结果。"
     },
     {
       "type": "subsection",
-      "en": "Learning Regimes and Unlabeled-Data Attribution",
-      "zh": "学习方式与无标签数据归因"
+      "en": "What the Training Controls Explain",
+      "zh": "训练对照解释了什么"
     },
     {
       "type": "text",
-      "en": "Fig.~\\ref{fig:3} and Table~\\ref{tab:learning} distinguish supervised, ordinary-PL, and complete training. Relative to ordinary PL, complete PAMF improves cross-RX clean accuracy by 2.25 points, but direct six-scene accuracy by only 0.11 points. With the same G-LU, six-scene gains are 1.39 points for cross-RX and 0.08 for double holdout. Across 11 settings, the restored cross-RX six-scene difference is positive in seven and negative in four. The complete recipe therefore does not uniformly dominate ordinary PL.",
-      "zh": "Fig.~\\ref{fig:3} 与 Table~\\ref{tab:learning} 区分监督、普通 PL 和完整训练。相对普通 PL，完整 PAMF 跨接收机 clean 提高 2.25 个百分点，但直接六景仅提高 0.11 个百分点。同一 G-LU 下，六景增益在跨接收机与双跨分别为 1.39 和 0.08 个百分点。11 个设置中，恢复后跨接收机六景差值七正四负。因此完整配方并非在所有条件下均优于普通 PL。"
+      "en": "Fig.~\\ref{fig:3} and Table~\\ref{tab:learning} locate the contribution of unlabeled-source training within the complete system. Ordinary PL already provides a strong PAMF baseline. Moving to the complete recipe improves cross-receiver clean accuracy by 2.25 points, whereas the direct six-scene change is only 0.11 points. Thus the much larger advantage over external identifiers cannot be interpreted as a gain caused solely by the new SSL components. It combines the representation, supervised learning objectives, augmentation, and unlabeled-data recipe.",
+      "zh": "Fig.~\\ref{fig:3} 与 Table~\\ref{tab:learning} 用于定位无标签源域训练在完整系统中的作用。普通 PL 已构成较强的 PAMF 基线。采用完整配方后，跨接收机 clean 提高 2.25 个百分点，但直接六景变化仅为 0.11 个百分点。因此，相对外部识别器更大的优势不能全部解释为新 SSL 组件的收益，而是共同包含表征、监督学习目标、增强与无标签数据配方的作用。"
     },
     {
       "type": "figure",
       "number": 3,
-      "en": "Augmented learning-regime comparison for (a) cross-RX and (b) double holdout. Supervision here means the method's native supervised objective, not the E200 CE-only architecture recipe. Complete SSL exists only for PAMF. Bars use a zero baseline.",
-      "zh": "有增强学习方式比较：(a) 跨接收机，(b) 双跨。此处监督组指各方法原生监督目标，不等于 E200 纯 CE 架构配方。完整 SSL 只对应 PAMF；柱状图采用零基线。"
+      "en": "Six-scene learning-regime comparison with augmentation. Top: cross-receiver; bottom: receiver/date holdout. Supervision denotes native labeled objectives rather than the E200 CE-only recipe. Restored columns retain the original F/G pairings; Table~\\ref{tab:learning} separates identifier and restorer data use.",
+      "zh": "有增强六景学习方式比较，上为跨接收机，下为接收机／日期双留出。监督指原生有标签目标，不等于 E200 纯 CE 配方。恢复列保留原 F/G 配对；Table~\\ref{tab:learning} 进一步区分识别器与恢复器的数据使用。"
     },
     {
       "type": "table",
@@ -413,93 +423,108 @@
     },
     {
       "type": "text",
-      "en": "Natural-order PL versus fixed-order complete PAMF changes both the U recipe and local encoding. This is a full-recipe comparison. A completed same-permutation supervised control and the F/G U-permission grid provide additional attribution without inventing an unmeasured permuted-PL arm. On cross-RX six-scene data, same-order supervised/complete raw accuracies are 72.53/71.16%; with the same G-LU they are 79.51/79.90%. G-L versus G-LU comparisons keep the identifier fixed. Thus improved restoration and changed identifier training must be reported separately.",
-      "zh": "自然序 PL 与固定排列完整 PAMF 同时改变 U 配方和局部编码，属于完整方案比较。已完成的同排列监督控制及 F/G 无标签权限四格可补充归因，无需虚构未测的重排 PL。跨接收机六景中，同排列监督／完整方法直接准确率为 72.53/71.16%；同一 G-LU 下为 79.51/79.90%。G-L 与 G-LU 比较则固定识别器。因此恢复改进与识别器训练变化必须分开报告。"
+      "en": "The controls reveal an interaction between training and readout. With the same fixed local permutation, complete SSL is below the supervised model on direct six-scene accuracy, but slightly above it after the same G-LU. Better clean discrimination therefore does not automatically imply better robustness to every waveform impairment. The full recipe and ordinary PL also differ in local ordering, so that comparison estimates the deployable recipes as a whole. Its restored cross-receiver difference is positive in seven of 11 settings and negative in four. We consequently use SSL as a tested support for generalization rather than claim that its extra components universally improve ordinary PL.",
+      "zh": "对照还揭示了训练与读出之间的交互：在固定局部排列相同的条件下，完整 SSL 的直接六景准确率低于监督模型，接入同一 G-LU 后则略高。这说明，更强的 clean 判别并不自动转化为对各类波形损伤都更稳健。完整配方与普通 PL 还同时改变局部顺序，因此二者比较估计的是可部署整体配方的差异。其恢复后跨接收机差值在 11 个设置中七正四负。本文据此将 SSL 作为经过检验的泛化支撑，而不宣称附加组件能在所有条件下改善普通 PL。"
     },
     {
       "type": "subsection",
-      "en": "Channel Stress and Generalization Conditions",
-      "zh": "信道压力与泛化条件"
+      "en": "Channel Bottlenecks and Transfer across Data Conditions",
+      "zh": "信道瓶颈与数据条件迁移"
     },
     {
       "type": "text",
-      "en": "Fig.~\\ref{fig:4} reports clean and all six stress conditions rather than only their average. Low-elevation urban scenes remain difficult. The plots use common limits across paired holdouts, and their nonzero line-plot axes do not change the underlying numerical gains. Scene means are equal-weight stress summaries, not estimated occurrence probabilities in an actual satellite mission.",
-      "zh": "Fig.~\\ref{fig:4} 展示 clean 与全部六种压力场景，不只报告平均值。低仰角城市仍然困难。配对跨域图使用相同范围，折线图非零坐标起点不改变实际数值增益。六景平均是等权压力汇总，不是实际卫星任务中场景发生概率的估计。"
+      "en": "The seven-condition curves in Fig.~\\ref{fig:4} explain why an aggregate lead is insufficient to characterize robustness. PAMF separates clearly from the external methods in clean and moderate impairment conditions, but its direct low-urban accuracy approaches SDG: 51.99% versus 51.11% for cross-receiver testing, and approximately 50.06% for both on the joint holdout. The hardest setting therefore exposes a shared bottleneck despite differences in identifier design. This pattern is consistent with severe corruption suppressing the identity evidence available to the classifier; it does not show that a larger classifier would recover the missing evidence.",
+      "zh": "Fig.~\\ref{fig:4} 的七条件曲线解释了为何不能仅用平均领先描述稳健性。PAMF 在 clean 与中等损伤条件下与外部方法形成较清楚的差距，但低仰角城市场景的直接准确率接近 SDG：跨接收机为 51.99% 与 51.11%，双留出中两者均约为 50.06%。最困难设置因此揭示了不同识别器设计共同面临的瓶颈。该模式与严重损伤压制分类器可利用身份信息的解释一致，并不能说明增大分类器即可恢复这些信息。"
     },
     {
       "type": "figure",
       "number": 4,
-      "en": "Seven-condition robustness: (a) cross-RX and (b) double holdout. Curves are mean plus/minus SD over three identifier seeds. All methods use their declared source-only training; PAMF+DURA shares the PAMF identifier with its direct counterpart.",
-      "zh": "七条件鲁棒性：(a) 跨接收机，(b) 双跨。曲线为三个识别器种子的均值与标准差。各方法采用已声明的源域训练；PAMF+DURA 与直接 PAMF 使用同一识别器。"
+      "en": "Seven-condition robustness. Top: cross-receiver; bottom: receiver/date holdout. PAMF+DURA uses the same identifier as direct PAMF.",
+      "zh": "七条件稳健性。上为跨接收机，下为接收机／日期双留出。PAMF+DURA 与直接 PAMF 使用同一识别器。"
     },
     {
       "type": "text",
-      "en": "Fig.~\\ref{fig:5} shows receiver-split and label-fraction sensitivity. Restored complete PAMF cross-RX six-scene accuracy varies from 79.90% on Main split to 66.58% and 75.26% on Receiver splits 1 and 2. This variation makes a single split insufficient to characterize the task. At 1/5/10% labels the corresponding values are 74.43/77.41/79.90%. The ten-class setting gives 62.09% direct and 72.60% restored cross-RX six-scene accuracy; the ordinary-PL counterpart gives approximately 63.31/72.44%, again showing condition-dependent SSL gains.",
-      "zh": "Fig.~\\ref{fig:5} 展示 RX 划分与标注比例敏感性。完整 PAMF 恢复后跨接收机六景从 Main split 的 79.90% 变为 Receiver split 1/2 的 66.58% 和 75.26%，说明单一划分不足以描述该任务。1/5/10% 标签对应 74.43/77.41/79.90%。十类设置跨接收机六景直接／恢复为 62.09/72.60%，普通 PL 对照约为 63.31/72.44%，同样显示 SSL 收益具有条件性。"
+      "en": "Restoration is most useful where this bottleneck is strongest. DURA raises PAMF's low-urban accuracy by 16.58 points under receiver holdout and 17.31 points under joint holdout, while clean accuracy changes by less than 0.07 points. The benefit is therefore concentrated in impaired observations rather than a uniform shift of all predictions. This supports using the compact identifier alone when its direct performance is adequate, and adding restoration when the propagation regime justifies the extra processing. The six-scene average remains an equal-weight stress summary, not a mission-specific occurrence-weighted accuracy.",
+      "zh": "恢复在该瓶颈最明显时更有价值。DURA 使 PAMF 的低仰角城市准确率在接收机留出与双留出中分别提高 16.58 和 17.31 个百分点，而 clean 变化小于 0.07 个百分点。收益因此主要集中于受损观测，而非对所有预测产生一致偏移。这支持两种配置：直接表现已足够时使用紧凑识别器，传播条件需要时再增加恢复处理。六景平均仍是等权压力汇总，并非按具体任务发生概率加权的准确率。"
+    },
+    {
+      "type": "text",
+      "en": "Receiver re-partitioning probes a different failure mode. Training-set size is matched across the three five-source splits, yet restored PAMF accuracy spans 66.58% to 79.90% (Fig.~\\ref{fig:5}). This sensitivity shows that receiver composition matters even when the sample budget is controlled. Increasing the labeled fraction from 1% to 10% improves the corresponding Main-split result from 74.43% to 79.90%, indicating that source supervision still constrains transfer. These findings favor collecting representative source receivers and reliable labels over treating a single favorable split as a complete deployment forecast.",
+      "zh": "接收机重划分检验另一类失效因素。三套五源划分的训练样本量相同，恢复后 PAMF 准确率仍跨越 66.58% 至 79.90%（Fig.~\\ref{fig:5}）。这说明，即使控制样本预算，接收机组成仍影响迁移。Main split 的标注比例从 1% 增加至 10% 时，对应结果由 74.43% 提高至 79.90%，表明源域监督仍然约束泛化。相比将某个有利划分当作完整部署预测，这些发现更支持收集有代表性的源接收机数据与可靠标签。"
     },
     {
       "type": "figure",
       "number": 5,
-      "en": "Six-scene receiver-split and label-fraction sensitivity. Paired columns report cross-RX and double holdout. The ten-percent point exactly reuses Main-split models; these settings are not extra independent datasets.",
-      "zh": "六景下的接收机划分与标注比例敏感性。配对列依次报告跨接收机和双跨；适用的 10%／Main split 结果精确复用，不计作额外独立数据集。"
+      "en": "Six-scene sensitivity to receiver partition and label fraction. Top row: receiver splits; bottom row: label fraction. Left: cross-receiver; right: receiver/date holdout. Main-split/ten-percent endpoints reuse existing models.",
+      "zh": "接收机划分与标签比例的六景敏感性。上排为接收机划分，下排为标注比例；左列为跨接收机，右列为接收机／日期双留出。Main split／10% 端点复用已有模型。"
     },
     {
       "type": "text",
-      "en": "Fig.~\\ref{fig:6} uses common target receivers for source-count curves. More sources generally improve clean performance, while six-scene curves are nonmonotonic. Because natural data volume increases with source count, this experiment measures the combined effect of coverage and sample availability, not the isolated causal effect of receiver diversity.",
-      "zh": "Fig.~\\ref{fig:6} 在共同目标接收机上绘制源数量曲线。更多源总体有利于 clean，但六景曲线并不单调。由于自然数据量随源数量增加，该实验反映覆盖范围与样本可用性的共同作用，不能单独归因为接收机多样性的因果贡献。"
+      "en": "The source-count curves and ten-class study delimit how far the current result extends. Six-scene accuracy is nonmonotonic as source count increases (Fig.~\\ref{fig:6}), whereas the accompanying clean results generally improve; receiver coverage and data volume increase together, so this is not an isolated test of receiver diversity. Expanding to ten transmitters lowers direct six-scene accuracy to 62.09%, while restoration recovers it to 72.60%. Together, the experiments support transfer across the evaluated conditions but show that neither source count nor a strong six-class result guarantees scale-independent robustness.",
+      "zh": "源数量曲线与十类研究限定了当前结果能够扩展多远。源数量增加时，六景准确率并不单调（Fig.~\\ref{fig:6}），而随附的 clean 结果总体改善；接收机覆盖与数据量同步增加，因此该研究未单独隔离接收机多样性的作用。扩展至十个发射机后，直接六景准确率降至 62.09%，恢复后为 72.60%。这些实验共同支持所评估条件之间的迁移，同时表明源数量增加或六类上的较强结果，均不能保证不受规模影响的稳健性。"
     },
     {
       "type": "figure",
       "number": 6,
-      "en": "One-to-six-source curves on a common six-receiver target set. Top: clean; bottom: six-scene mean. Left/right: cross-RX/double holdout. The five-source point reuses existing stratified predictions; it is not newly trained.",
-      "zh": "共同六目标 RX 上的一至六源曲线。上排为 clean，下排为六景；左／右为跨接收机／双跨。五源点复用已有分层预测，不新增训练。"
+      "en": "One-to-six-source six-scene curves on the common target receivers. Top: cross-receiver; bottom: receiver/date holdout. Corresponding clean curves and full values accompany the supplementary data.",
+      "zh": "共同目标接收机上的一至六源六景曲线。上为跨接收机，下为接收机／日期双留出。对应 clean 曲线与完整数值随补充数据提供。"
     },
     {
       "type": "subsection",
-      "en": "Restoration Across Frozen Identifiers",
-      "zh": "冻结识别器下的恢复收益"
+      "en": "Restoration as a Modular Robustness Extension",
+      "zh": "作为模块化稳健性扩展的恢复"
     },
     {
       "type": "text",
-      "en": "Fig.~\\ref{fig:7} compares the same frozen identifier before and after matched DURA-LU. All five identifiers obtain positive mean six-scene gains on Main split. PAMF gains are 8.74 points for cross-RX and 8.02 for double holdout. This supports general utility within the tested identifier family. It does not establish superiority over every alternative restoration algorithm, nor exact physical recovery of transmitter hardware effects.",
-      "zh": "Fig.~\\ref{fig:7} 比较同一冻结识别器在匹配 DURA-LU 前后的表现。Main split 上五种识别器的六景平均均提高。PAMF 跨接收机与双跨增益分别为 8.74 和 8.02 个百分点。该结果支持在所测试识别器家族内的泛用性，不证明优于所有其他恢复算法，也不证明精确恢复发射机硬件效应。"
+      "en": "Fig.~\\ref{fig:7} tests whether DURA's effect is specific to PAMF. The same setting-matched frozen restorer improves the mean six-scene accuracy of all five frozen identifiers, so its utility is not restricted to retraining a particular classifier. PAMF retains the highest restored accuracy among the evaluated models, combining a strong direct representation with useful waveform compensation. Because G is trained without identity labels or classifier feedback, these gains demonstrate a modular route to robustness under the declared source-data permissions.",
+      "zh": "Fig.~\\ref{fig:7} 检查 DURA 的作用是否仅针对 PAMF。相同设置下的同一冻结恢复器提高了五种冻结识别器的六景平均，说明其作用并不局限于重新训练某个特定分类器。在所评估模型中，PAMF 仍保持最高恢复后准确率，将较强的直接表征与有效的波形补偿结合起来。由于 G 训练不使用身份标签或分类器反馈，这些收益展示了在已声明源数据权限下增强稳健性的一条模块化路径。"
     },
     {
       "type": "figure",
       "number": 7,
-      "en": "DURA gains for five frozen identifiers. Curved arrows connect direct and restored means and annotate percentage-point increases. Each pair shares F and uses its setting-matched G; error bars primarily reflect F-seed variation.",
-      "zh": "五种冻结识别器的 DURA 收益。曲线箭头连接直接与恢复均值，并标注百分点提升。每对共享 F，使用当前设置匹配的 G；误差棒主要反映 F 种子变化。"
-    },
-    {
-      "type": "subsection",
-      "en": "Two-Layer Structural Evidence",
-      "zh": "两层结构证据"
+      "en": "DURA gains for five frozen identifiers. Top: cross-receiver; bottom: receiver/date holdout. Curved arrows connect direct and restored means and show percentage-point gains. Each pair shares F and a setting-matched G.",
+      "zh": "五种冻结识别器的 DURA 收益。上为跨接收机，下为接收机／日期双留出。曲线箭头连接直接与恢复均值，标明百分点提升；每对共享 F 并使用设置匹配的 G。"
     },
     {
       "type": "text",
-      "en": "Fig.~\\ref{fig:8} compares structural deletions under CE-only and complete-SSL training using paired model seeds. Removing PA reduces direct cross-RX six-scene accuracy by 7.21 points under CE and 6.78 under SSL. SIG deletion is conditional: under CE it changes cross-RX/double-holdout means by -0.88/+0.85 points, whereas under SSL the changes are -3.85/-2.10. The CE and SSL layers therefore answer different questions. They should not be merged into a single ranking of universal branch importance.",
-      "zh": "Fig.~\\ref{fig:8} 通过配对种子比较纯 CE 与完整 SSL 下的结构删除。删除 PA 使直接跨接收机六景在 CE 与 SSL 下分别下降 7.21 和 6.78 个百分点。SIG 删除具有条件性：CE 下跨接收机／双跨变化为 -0.88/+0.85 个百分点，SSL 下为 -3.85/-2.10。CE 与 SSL 两层回答不同问题，不宜合并为普遍分支重要性排序。"
+      "en": "The comparison holds F fixed before and after restoration, but shares G across the three F seeds. Its error bars consequently describe mainly identifier-seed variation and do not estimate full restorer-training uncertainty. Recognition improvement is evidence that the restored signal is more useful to these classifiers; it is not a measurement of uniquely recovered transmitter hardware. A matched comparison against alternative restorers remains necessary for a restoration-specific superiority claim.",
+      "zh": "恢复前后比较固定 F，但三个 F 种子共享 G。因此，误差棒主要描述识别器种子变化，并未估计完整的恢复器训练不确定性。识别改善说明恢复信号对这些分类器更有用，并不等于测量到唯一恢复的发射机硬件特性。若要主张恢复算法本身优于其他方法，仍需匹配的外部恢复对照。"
+    },
+    {
+      "type": "subsection",
+      "en": "Why the Branches Must Be Evaluated at Two Training Levels",
+      "zh": "为何需要两层分支评价"
+    },
+    {
+      "type": "text",
+      "en": "The joint-holdout deletions in Fig.~\\ref{fig:8}, together with the accompanying cross-receiver estimates, provide the strongest consistent branch evidence for nonlinear-memory processing. Removing PA reduces direct cross-receiver six-scene accuracy by 7.21 points under CE and 6.78 under complete SSL. The repeated loss under different objectives supports keeping this branch in a compact model: its contribution is not confined to one unlabeled-learning recipe. This is evidence for the implemented nonlinear-memory representation, rather than direct identification of physical amplifier parameters.",
+      "zh": "Fig.~\\ref{fig:8} 的双留出删除结果及随附的跨接收机估计，为非线性记忆处理提供了最一致的分支证据。删除 PA 后，直接跨接收机六景准确率在 CE 与完整 SSL 下分别下降 7.21 和 6.78 个百分点。不同训练目标下重复出现的损失支持在紧凑模型中保留该分支，其贡献并非局限于某一无标签学习配方。这里支持的是已实现的非线性记忆表征，而非直接辨识物理功放参数。"
     },
     {
       "type": "figure",
       "number": 8,
-      "en": "Structural variants minus their layer-matched full model, direct six-scene accuracy. Points and bars show paired mean differences and sample SD for three seeds. CE and complete SSL are separate panels; cross-RX and double holdout are paired within each panel.",
-      "zh": "结构变体相对其训练层完整模型的直接六景准确率变化。点与误差棒为三个种子的配对差均值及样本标准差。CE 与完整 SSL 分面展示，面板内并列跨接收机与双跨。"
+      "en": "Two-layer structural deletions on the joint receiver/date holdout. Top: CE; bottom: complete SSL. Left: accuracy; right: macro-F1. Open circles denote clean and filled squares the six-scene mean; bars show paired sample SD for three seeds. Cross-receiver estimates are provided in the accompanying data.",
+      "zh": "接收机／日期双留出上的两层结构删除。上为 CE，下为完整 SSL；左为准确率，右为 Macro-F1。空心圆为 clean，实心方形为六景平均，误差棒为三个种子的配对样本标准差。跨接收机估计随数据提供。"
     },
     {
       "type": "text",
-      "en": "The completed nested no-SIG CE controls further remove PA and/or reference responses; these are supplementary conditional checks, not SSL experiments. Historical T1 and ordered-REPL mechanism panels retain their original training identities. Their component deletions cannot be relabeled as current fixed-permutation SSL ablations. Some historical deletions give small positive changes, so the evidence does not show every retained component is individually necessary.",
-      "zh": "已完成的去 SIG 嵌套 CE 控制进一步删除 PA 和／或参考响应，作为补充条件检查，不属于 SSL 实验。历史 T1 与自然序 REPL 机制面板保留原训练身份，不能改名为当前固定排列 SSL 消融。部分历史删除带来小幅正变化，因此证据并未证明每个保留组件都各自必要。"
+      "en": "SIG-TIME illustrates why a single importance ranking would be misleading. Removing it changes CE joint-holdout six-scene accuracy by +0.85 points but complete-SSL accuracy by -2.10 points. The usefulness of the path descriptor therefore depends on the learned representation and training objective. CE asks what the structure learns from true labels; complete SSL asks whether the same structure remains useful with pseudo-identities and feature perturbations. Reading the panels together supports a representation--training interaction, not a claim that every extra descriptor is beneficial in isolation.",
+      "zh": "SIG-TIME 说明了单一重要性排序为何会误导。删除该模块后，CE 双留出六景变化为 +0.85 个百分点，完整 SSL 则为 -2.10 个百分点。因此，路径描述的作用依赖已学习表征与训练目标。CE 层回答结构能从真实标签学到什么；完整 SSL 层回答引入伪身份和特征扰动后，同一结构是否仍有用。联合阅读两层结果支持表征与训练之间存在交互，而非证明每个额外描述单独加入都有利。"
+    },
+    {
+      "type": "text",
+      "en": "Nested no-SIG CE controls and historical mechanism deletions remain useful supplementary checks, but retain their own objectives and ordering. They cannot be relabeled as ablations of current fixed-permutation SSL. The mixed signs of smaller effects also discourage pruning solely from one mean: a deployment simplification should preserve robustness across both holdouts and channel conditions, with its cost reduction measured under a consistent execution boundary.",
+      "zh": "去 SIG 嵌套 CE 控制与历史机制删除仍可作为补充检查，但需要保留各自目标与顺序，不能改名为当前固定排列 SSL 的消融。较小效应的正负混合也说明，不应仅依据某个均值裁剪结构。面向部署的精简需要同时保持两类留出与信道条件下的稳健性，并在一致执行边界下测量成本降低。"
     },
     {
       "type": "subsection",
-      "en": "Efficiency and Scope",
-      "zh": "效率与适用范围"
+      "en": "Implications for Payload-Oriented Inference",
+      "zh": "面向载荷推理的意义"
     },
     {
       "type": "text",
-      "en": "Table~\\ref{tab:eff} reports parameter counts and explicitly partial operation counts. PAMF is parameter-efficient, and F+G totals 499,944 parameters. The counted convolution/matrix FLOPs omit some signature algebra, FFT, normalization, and functional operations. Existing timing tables use different execution and measurement boundaries, so no cross-table speedup is claimed here. A current-checkpoint, common-hardware latency comparison remains an evidence gap if deployment speed is a main claim.",
-      "zh": "Table~\\ref{tab:eff} 报告参数量和明确标为部分的运算计数。PAMF 参数较少，F+G 总计 499944 个参数。卷积／矩阵 FLOPs 尚未覆盖部分签名代数、FFT、归一化及函数操作。既有计时表采用不同执行与测量边界，本文不据此给出跨表加速比。若将部署速度作为主要主张，当前权重、同硬件的统一延迟比较仍为缺项。"
+      "en": "The deployment advantage established by Table~\\ref{tab:eff} is a small parameter footprint together with competitive recognition, rather than compactness alone. PAMF uses 232,993 parameters versus 3,847,430 for ResNet-18-1D, a 93.94% reduction, while the CE comparison favors PAMF on held-out data. Its FP32 weights occupy 0.89 MiB; including DURA gives 499,944 parameters and 1.91 MiB of weights. These configurations reduce model storage and the amount of weight data to distribute, offering a concrete advantage when an RF payload must host inference alongside other processing tasks.",
+      "zh": "Table~\\ref{tab:eff} 所建立的部署优势，是较小参数规模与有竞争力识别表现同时成立，而非只有模型小。PAMF 使用 232993 个参数，ResNet-18-1D 为 3847430 个，减少 93.94%；与此同时，CE 比较中的留出数据表现更有利于 PAMF。其 FP32 权重占 0.89 MiB，连同 DURA 则为 499944 个参数、1.91 MiB 权重。在 RF 载荷需要同时承担其他处理任务时，这两种配置能够减少模型存储及需要分发的权重数据量，形成明确优势。"
     },
     {
       "type": "table",
@@ -507,8 +532,18 @@
     },
     {
       "type": "text",
-      "en": "The present evaluation uses one terrestrial measurement family, six- and ten-class subsets, and simulated propagation. It establishes neither end-to-end satellite detection/acquisition nor independent in-orbit performance. Independent receiver/hardware datasets and matched external restoration comparisons would strengthen external validity. Three-seed means are descriptive evidence; small differences are not declared statistically significant. Source-count confounding, shared G weights, and prior benchmark exposure are retained as explicit limitations.",
-      "zh": "当前评价使用一个地面实测数据家族、六类／十类子集与模拟传播，尚未建立端到端卫星检测捕获或独立在轨性能。独立接收机／硬件数据及匹配外部恢复比较能够加强外部有效性。三种子均值属于描述性证据，较小差值不被声明为统计显著。源数量混杂、G 权重共享及既有基准暴露均作为明确限制保留。"
+      "en": "The operational choice depends on the channel regime. Direct PAMF minimizes the added front-end workload; PAMF+DURA spends extra processing to recover accuracy in severe impairment. Parameter storage excludes activations, workspaces, and runtime buffers, and the reported convolution/matrix counts do not cover all FFT and path-algebra operations. The current evidence therefore supports a compact payload-inference candidate, while achievable throughput, power, and latency must be measured on the intended hardware. No onboard speedup is inferred from parameter ratios.",
+      "zh": "实际配置选择取决于信道条件。直接 PAMF 减少额外前端处理，PAMF+DURA 则通过增加处理改善严重损伤下的准确率。参数存储不包含激活、工作区和运行缓冲，已有卷积／矩阵计数也未覆盖全部 FFT 与路径代数运算。因此，当前证据支持一种紧凑的载荷推理候选设计；可达吞吐量、功耗和时延仍需在目标硬件上测量，不能从参数比例推出星上加速比。"
+    },
+    {
+      "type": "subsection",
+      "en": "Scope of the Generalization Claim",
+      "zh": "泛化结论的适用范围"
+    },
+    {
+      "type": "text",
+      "en": "The study establishes cross-receiver and receiver/date transfer on measured WiSig IQ under six controlled synthetic channel conditions. These tests share one measurement family and do not establish end-to-end satellite detection, acquisition, or independent in-orbit performance. Three-seed differences are descriptive; small improvements are not labeled statistically significant.",
+      "zh": "本研究在实测 WiSig IQ 与六种受控合成信道条件下，建立跨接收机及接收机／日期迁移证据。这些测试属于同一实测数据家族，尚未建立端到端卫星检测、捕获或独立在轨性能。三种子差异属于描述性结果，较小改善不被表述为统计显著。"
     },
     {
       "type": "section",
@@ -517,8 +552,8 @@
     },
     {
       "type": "text",
-      "en": "PAMF combines compact structured RF features with receiver-aware source semi-supervision and supports an independently trained DURA front end. The completed comparisons show strong performance relative to the four evaluated external identifiers and substantial restoration gains on the Main split. CE-only and SSL structural controls reveal condition-dependent branch effects, while ordinary-PL comparisons bound the incremental benefit of the complete training recipe. The results support the evaluated receiver/date and simulated-channel conditions. Independent data and unified deployment measurements are the next priorities for strengthening generality and efficiency claims.",
-      "zh": "PAMF 将紧凑结构化射频特征与接收机感知的源域半监督训练结合，并支持独立训练的 DURA 前端。已完成比较显示，相对四种已评估外部识别器具有较强表现，Main split 上恢复收益明显。纯 CE 与 SSL 结构控制揭示了分支作用的条件性，普通 PL 对照则限定完整训练配方的增量收益。现有结果支持已评估接收机／日期与模拟信道条件。独立数据及统一部署测量是加强泛化与效率主张的后续重点。"
+      "en": "This paper presented PAMF for spaceborne passive RF fingerprint identification, addressing receiver generalization and simulated space--ground impairment with a compact model. The source-only identifier retains an advantage over four evaluated external methods under receiver and joint receiver/date holdouts, with only 232,993 parameters and 0.89 MiB of FP32 weights. CE controls associate the compact architecture with competitive discrimination, while two-layer ablations identify a consistent contribution from nonlinear-memory processing and training-dependent effects for SIG-TIME. Ordinary PL remains a strong baseline, so the full SSL recipe is not presented as uniformly superior. Optional independently trained DURA improves the most impaired observations and provides a second accuracy--processing trade-off. The results support payload-oriented inference design on terrestrial measurements with synthetic propagation; independent hardware data and target-platform measurements are needed to establish broader generalization and operational deployment performance.",
+      "zh": "本文面向天基被动射频指纹识别提出 PAMF，以紧凑模型处理跨接收机泛化及模拟星地信道损伤。仅源域训练的识别器在接收机与接收机／日期双留出上保持相对四种已评估外部方法的优势，且仅包含 232993 个参数、0.89 MiB FP32 权重。CE 控制将紧凑架构与有竞争力的判别表现联系起来；两层消融发现非线性记忆处理具有一致贡献，而 SIG-TIME 的作用依赖训练条件。普通 PL 仍是较强基线，完整 SSL 不被表述为普遍占优。独立训练的可选 DURA 改善最严重损伤下的观测，提供另一种准确率与处理开销折中。实测地面数据与合成传播结果支持面向载荷推理的设计；更广泛泛化及实际部署性能仍需独立硬件数据与目标平台测量建立。"
     }
   ]
 }

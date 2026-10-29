@@ -1,6 +1,6 @@
-# PAMF 论文第一版：核心贡献、正文框架、图表与证据
+# PAMF 论文第三版：泛化主线、部署开销与实验依据
 
-PAMF manuscript v1: contributions, structure, figures, and evidence. 2026-10-29.
+PAMF manuscript v3: generalization, deployment footprint, and evidence. 2026-10-29.
 
 本次只整合已有冻结结果、整理作图和撰写论文，没有训练、预测或新增目标评分。中文与英文论文共用段落结构、公式和数据，便于逐段核对。英文采用 IEEEtran journal、10 pt、双栏；中文沿用该双栏骨架供审阅，不视为正式英文投稿模板。目标期刊尚未指定，因此没有虚构刊名、录用日期、作者和基金信息。
 
@@ -12,9 +12,9 @@ Only frozen results are reused. No training, prediction, or new truth-side scori
 
 Research question: identify known transmitters at inaccessible, unseen receivers from partially labeled source IQ, while coping with additional channel degradation. Passive satellite listening motivates the setting; the evidence is terrestrial WiSig plus simulated channel stress.
 
-论文主线：结构化识别表征 → 接收机感知源域半监督训练 → 独立源域恢复前端 → 按接收机、日期、信道及标签权限分层验证。PAMF 始终指三视图 SIG-TIME + Tri-SIG-TIME SSL 的识别器；PAMF+DURA 明确包含独立恢复器，不能混名。
+论文主线：星地信道损伤下的跨接收机泛化 → 在较小参数和权重存储预算下保持识别优势 → 结构、训练和可选恢复分别解释收益 → 评价适用条件。半监督是支撑泛化的训练手段，DURA 是可选稳健性扩展，二者不取代“泛化与紧凑结构”的核心定位。PAMF 始终指三视图 SIG-TIME + Tri-SIG-TIME SSL 的识别器；PAMF+DURA 明确包含独立恢复器，不能混名。
 
-Narrative: structured identification features → receiver-aware source SSL → independent source-trained restoration → receiver/date/channel and permission-controlled evaluation. PAMF names the identifier; PAMF+DURA explicitly includes the optional front end.
+Narrative: receiver generalization under space--ground impairment → recognition with a small weight footprint → architecture/training/restoration attribution → conditions and limits. SSL supports the main generalization objective; DURA is optional. PAMF names the identifier; PAMF+DURA includes the front end.
 
 ## 2. 可写的贡献与支持范围 / Contributions and claim boundaries
 
@@ -22,7 +22,8 @@ Narrative: structured identification features → receiver-aware source SSL → 
 |---|---|---|---|
 | C1 | 紧凑结构化表征：时频、非线性记忆、参考响应和局部路径 / Compact complementary signal representation | E200 CE 15结构×8种子；E50 CE/SSL两层消融；单/三视图8种子 | 结构整体优于已比较骨干；不宣称各分支普遍必要或唯一恢复TX物理参数 |
 | C2 | 接收机感知的半监督训练：同伪身份跨RX配对、扰动与L梯度锚定 / Receiver-aware source SSL | 监督/PL/完整方法；增强×PL；同排列监督；F/G U权限；11设置配对差 | 当前完整方案相对PL七正四负；普通PL与完整方案同时改变排列和U算法；不宣称全条件普遍领先 |
-| C3 | 独立源域恢复与冻结识别器配合 / Independent restoration for frozen identifiers | DURA五识别器泛用性；L/LU权限控制；两层结构恢复前后；历史G内部消融 | 不把历史G消融改为当前完整SSL绑定证据；不宣称优于尚未匹配比较的所有恢复算法 |
+| C3 | 系统泛化与资源折中，含可选独立恢复 / Generalization--resource trade-off with optional restoration | 多划分、标签预算、源数量、十类、六景；参数与权重存储；DURA五识别器及权限控制 | 不把历史G消融改为当前完整SSL绑定证据；不宣称优于未匹配的恢复算法，不从参数量推出星上加速或功耗 |
+| D | 参数小与留出判别表现同时成立 / Compactness with competitive discrimination | F 232993参数、0.89MiB FP32权重；比ResNet-18-1D少93.94%；F+G 499944参数、1.91MiB | 参数表比较的是已计数常见架构，不冒充四种外部RFFI方法的完整成本比较；权重存储不含激活和运行工作区 |
 | E | 结构与训练作用有条件性 / Condition-dependent structural effects | 无SIG在CE双跨六景+0.85pp，SSL对应-2.10pp；PA删除跨RX CE/SSL -7.21/-6.78pp | 作为实验发现；不将差异直接当作物理因果证明 |
 
 不作为独立新发明：Sinc 滤波、记忆多项式、路径签名、MixStyle、高置信伪标签、CG或CUDA Graph。本稿主张具体任务下的组合结构与训练流程。新颖性仍需在最接近论文全文与实际实现版本上逐项核对。
@@ -33,12 +34,12 @@ Not claimed as inventions: Sinc filtering, memory polynomials, signatures, MixSt
 
 | 节 | 中文 / English | 该节回答的问题 |
 |---|---|---|
-| I | 引言 / Introduction | 被动监听中的接收机变化、标签不足；相关工作；三个贡献 |
+| I | 引言 / Introduction | 天基载荷面对的泛化和资源联合要求；相关工作；紧凑PAMF及支撑机制 |
 | II | 问题建模与信道 / Problem formulation and channel model | 观测、源/目标权限、闭集风险；绝对FSPL与相对归一化；六景及接收处理 |
 | III | PAMF识别器 / Proposed PAMF identifier | 分支核心思路与必要公式；三视图局部编码；配对SSL；梯度保护与日程 |
 | IV | 独立源域恢复 / Independent source-only restoration | 粗恢复、实线性作用、两阶段prior+CG；训练权限与F/G分离 |
 | V | 实验设置 / Experimental setup | 数据角色、划分、场景、种子、预算、对照与统计口径 |
-| VI | 结果与讨论 / Results and discussion | 主比较；结构；学习方式；泛化；恢复；两层消融；效率及限制 |
+| VI | 结果与讨论 / Results and discussion | 泛化优势能否保持；是否依赖大模型；SSL解释多少；最难信道瓶颈；源组成与标签；两层结构；载荷配置与边界 |
 | VII | 结论 / Conclusion | 已支持结果、适用边界及高价值缺项 |
 
 三个被引用写作对话均已读取。Introduction 复用问题动机但改为被动监听语义；方法采用用户最后指定的核心机制说明，保留必要公式而省略逐层实现堆叠；信道采用最后完整版并保留绝对FSPL→相对归一化→固定新增噪声底→质量相关接收处理的逻辑。修正旧稿中把8种子扩写成所有主方法比较的描述。
@@ -54,21 +55,23 @@ Page numbers below refer to the selected r3 PDF, not historical Fig labels. Exte
 | 正文编号 | 来源页 / Source pages | 正文用途与取舍 / Purpose |
 |---|---|---|
 | Fig.1 | 新绘结构示意，依据已固定机制 | 总体训练/推理/可选恢复框架；没有新增实验数据 |
-| Fig.2 | 第1、2页；原Fig001A、Fig001 | CE架构跨RX/双跨并排；准确率均值±SD贴点；F1放补充 |
+| Fig.2 | 第1、2页；原Fig001A、Fig001 | D1--D3跨RX 126000条／D0双留出42000条相邻；每图完整15模型、八种子；均值±SD贴点，F1放补充 |
 | Fig.3 | 第25、26页；原Fig022、Fig031 | 有增强监督/PL/完整方法六景面板；clean在Table II；无增强23/24页放补充 |
 | Fig.4 | 第31、32页；原Fig025、Fig034 | 七场景曲线，跨RX/双跨并排，相同坐标范围 |
 | Fig.5 | 第27至30页；原Fig023/032、024/033 | RX划分+标签比例六景四面板；clean完整数据保留补充 |
-| Fig.6 | 第33至36页；与37/38页同数据 | 源数量clean/六景×跨RX/双跨四面板，避免重复展示 |
+| Fig.6 | 第33至36页；与37/38页同数据 | 六景跨RX/双跨原图相邻，clean原图保留补充 |
 | Fig.7 | 第42页；39至41页为同实验替代版 | DURA五识别器恢复增益，保留数值、曲线箭头和pp提升；替代画法不再占正文 |
-| Fig.8 | 第43至50页同实验，并复用逐种子数据 | CE/完整SSL两层结构，跨RX/双跨配对，显示真实配对SD；逐景与池化版本放补充 |
+| Fig.8 | 第43至50页同实验，并复用逐种子数据 | CE/完整SSL双留出原始配对图相邻，含clean/六景与准确率/F1；跨RX完整数据随附 |
 | Table I | data_settings与已核实物理角色 | 主数据构成、源/目标RX、样本数；区分训练池10%与源全池7% |
 | Table II | 01_main_comparison.csv | 5识别器×两种holdout，clean、raw六景、G-LU六景及F1，3种子 |
 | Table III | 07_U_permission.csv | 自然序监督/PL、同排列监督与完整SSL，分别接raw/G-L/G-LU；复用已有归因控制 |
 | Table IV | 第三版效率表，参数+部分运算计数 | 不画效率图；MAC/FLOPs覆盖范围写清；统一延迟缺项不填造 |
 
-正文图仅从冻结表重排，原始统计值不变。柱状图保留明确零基线以避免截断夸大；折线图使用标明范围的非零起点，同组坐标一致。所有图为PDF矢量，另附PNG预览；每图有对应CSV，来源见figures/manifest.json。跨RX和双跨始终相邻。
+正文实验图直接复用已选第三版矢量PDF，只裁切、等比例排版和增加黑色范围标题；保留原配色、线型、标记、误差棒及坐标，不重新绘制数据。柱状图保留明确零基线以避免截断夸大；折线图使用标明范围的非零起点，同组坐标一致。所有图为PDF矢量，另附PNG预览；每图有对应CSV，来源见figures/manifest.json。跨RX和双跨始终相邻。
 
 Main figures are reformatted from frozen statistics without changing values. Bars have explicit zero baselines; paired line plots use consistent nonzero limits. Vector PDFs, PNG previews, and CSV data are included. Cross-RX and double holdout are adjacent throughout.
+
+Fig.2 修正：第二版误用汇总表中不完整的 `cross_rx` 字段。第三版直接嵌入已选图 `Fig001A_network_cross_rx` 和 `Fig001_network_accuracy_f1` 的原始准确率面板，完整15模型、八种子，分别对应126000条跨RX与42000条双留出；两类物理记录互不重叠。跨RX原图数据已由冻结混淆矩阵精确计算，本次不新增计算、预测或真值访问。
 
 ## 5. 每项结论对应哪些实验 / Conclusion-to-experiment map
 

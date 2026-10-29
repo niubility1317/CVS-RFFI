@@ -22,7 +22,7 @@ def main():
     ap=argparse.ArgumentParser();ap.add_argument('--source',type=Path,required=True);ap.add_argument('--catalog',type=Path,required=True);ap.add_argument('--results',type=Path,required=True);ap.add_argument('--output',type=Path,required=True);ap.add_argument('--plot-python',required=True);ap.add_argument('--skip-figures',action='store_true');a=ap.parse_args()
     out=a.output;out.mkdir(parents=True,exist_ok=True);(out/'figures').mkdir(exist_ok=True);(out/'data').mkdir(exist_ok=True)
     manuscript=json.loads((a.source/'manuscript_blocks.json').read_text(encoding='utf-8'))
-    if not a.skip_figures:subprocess.run([a.plot_python,str(Path(__file__).with_name('render_pamf_paper_figures_20261029.py')),'--catalog',str(a.catalog),'--results',str(a.results),'--output',str(out/'figures')],check=True)
+    if not a.skip_figures:subprocess.run([sys.executable,str(Path(__file__).with_name('reuse_pamf_selected_artwork_20261029.py')),'--catalog',str(a.catalog),'--results',str(a.results),'--output',str(out/'figures'),'--plot-python',a.plot_python],check=True)
     for fn in ['01_main_comparison.csv','02_augmentation_PL_factorial.csv','03_two_layer_structure_ablation.csv','04_nested_noSIG_CE.csv','06_view_comparison_8seed.csv','07_U_permission.csv','10_receiver_splits.csv','11_ten_class_scale.csv','14_paired_effects_summary.csv','14_paired_effects_per_seed.csv','15_architecture_E200_summary.csv','15_architecture_E200_per_seed.csv','17_training_U_exposure.csv','DURA_contract_audit.csv']:
         p=a.results/fn
         if p.exists():shutil.copy2(p,out/'data'/fn)
@@ -31,9 +31,10 @@ def main():
     def one(rows,**filters):
         found=[r for r in rows if all(r.get(k)==v for k,v in filters.items())];assert len(found)==1,(filters,len(found));return found[0]
     def value(r,metric='accuracy'):return f"{float(r[metric+'_mean_pct']):.2f} $\\pm$ {float(r[metric+'_sd_pp']):.2f}"
-    def table(caption,label,head,rows,align=None,wide=True,note=''):
+    def table(caption,label,head,rows,align=None,wide=True,note='',separators=()):
         env='table*' if wide else 'table'; align=align or ('l'*len(head))
-        return '\\begin{'+env+'}[!t]\n\\caption{'+caption+'}\\label{tab:'+label+'}\n\\centering\\footnotesize\n\\begin{tabular}{'+align+'}\\toprule\n'+' & '.join(head)+r' \\ \midrule'+'\n'+'\n'.join(' & '.join(r)+r' \\' for r in rows)+'\n\\bottomrule\\end{tabular}\n'+('\\par\\smallskip\\begin{minipage}{\\textwidth}\\scriptsize '+note+'\\end{minipage}\n' if note else '')+'\\end{'+env+'}\n'
+        body=[''.join(['\\midrule\n' if i in separators else '', ' & '.join(r),r' \\']) for i,r in enumerate(rows)]
+        return '\\begin{'+env+'}[!t]\n\\caption{'+caption+'}\\label{tab:'+label+'}\n\\centering\\footnotesize\n\\begin{tabular}{'+align+'}\\toprule\n'+' & '.join('\\textbf{'+h+'}' for h in head)+r' \\ \midrule'+'\n'+'\n'.join(body)+'\n\\bottomrule\\end{tabular}\n'+('\\par\\smallskip\\begin{minipage}{\\textwidth}\\scriptsize '+note+'\\end{minipage}\n' if note else '')+'\\end{'+env+'}\n'
     def tables(lang):
         zh=lang=='zh'
         settings=[['Source RX','1, 3, 4, 6, 8','D1--D3'],['Target RX','0, 2, 5, 7, 9, 10, 11','D1--D3 / D0'],['Source L / U / V','6,300 / 56,700 / 27,000','Physical roles disjoint'],['Cross-RX / double holdout','126,000 / 42,000','Packets per scene'],['1\\% / 5\\% L','630 / 3,150','Fixed V; remaining train IQ is U'],['Ten-class source / target RX','16 / 16','Different packet populations']]
@@ -43,16 +44,28 @@ def main():
             for test in ['cross_rx','cross_both']:
                 raw=one(mainrows,data_setting='Main split',method=m,test=test,readout='raw',scene='six_practical_mean',dimension='overall');clean=one(mainrows,data_setting='Main split',method=m,test=test,readout='raw',scene='clean',dimension='overall');g=one(mainrows,data_setting='Main split',method=m,test=test,readout='DURA-LU',scene='six_practical_mean',dimension='overall')
                 rows.append([esc(m),'Cross-RX' if test=='cross_rx' else 'Double holdout',value(clean),value(raw),value(g),value(g,'macro_f1')])
-        mm=table('Main split 主比较：均值与样本标准差，三个 F 种子。' if zh else 'Main-split comparison: mean and sample SD over three F seeds.','main',['Identifier','Test','Clean, raw','Six scenes, raw','Six scenes, G-LU','Macro-F1, G-LU'],rows,'llrrrr',note='All entries are percentages. G-LU is shared across F seeds within each data setting. External objectives use ordinary PL plus channel augmentation; PAMF uses complete Tri-SIG-TIME SSL.')
+        for row in rows:
+            if row[0]=='PAMF':row[:]=['\\textbf{'+c+'}' if i!=1 else c for i,c in enumerate(row)]
+        mm=table('Main split 主比较：均值与样本标准差，三个 F 种子。' if zh else 'Main-split comparison: mean and sample SD over three F seeds.','main',['Identifier','Test','Clean, raw','Six scenes, raw','Six scenes, G-LU','Macro-F1, G-LU'],rows,'llrrrr',note='All entries are percentages. G-LU is shared across F seeds within each data setting. External objectives use ordinary PL plus channel augmentation; PAMF uses complete Tri-SIG-TIME SSL. Bold numeric entries are the largest displayed means within each holdout, not significance claims.',separators=(8,))
         rows=[]
         for m,order in [('PAMF-Sup','Natural'),('PAMF-PL','Natural'),('PAMF-Sup','Permuted'),('PAMF','Permuted')]:
             for test in ['cross_rx','cross_both']:
                 rs=[one(learning,data_setting='Main split',method=m,variant='Full three-view',temporal_order=order,test=test,readout=g,scene='six_practical_mean',dimension='overall') for g in ['raw','DURA-L','DURA-LU']]
                 rows.append([m,order,'Cross-RX' if test=='cross_rx' else 'Double holdout']+[value(r) for r in rs])
-        ll=table('学习方式与 F/G 无标签权限：六景准确率。' if zh else 'Learning regimes and separate F/G unlabeled-data permissions: six-scene accuracy.','learning',['Identifier','Local order','Test','Direct','G-L','G-LU'],rows,'lllrrr',note='Sup retains labeled auxiliary objectives. Same-permutation Sup isolates the complete U package at fixed local order. Ordinary PL and complete PAMF differ in both U recipe and local order; no permuted-PL result is invented.')
+        for test in ['Cross-RX','Double holdout']:
+            group=[r for r in rows if r[2]==test]
+            for j in range(3,6):
+                best=max(float(r[j].split()[0]) for r in group)
+                for row in group:
+                    if float(row[j].split()[0])==best:row[j]='\\textbf{'+row[j]+'}'
+        for row in rows:
+            if row[0]=='PAMF':row[0]='\\textbf{PAMF}'
+        ll=table('学习方式与 F/G 无标签权限：六景准确率。' if zh else 'Learning regimes and separate F/G unlabeled-data permissions: six-scene accuracy.','learning',['Identifier','Local order','Test','Direct','G-L','G-LU'],rows,'lllrrr',note='Sup retains labeled auxiliary objectives. Same-permutation Sup isolates the complete U package at fixed local order. Ordinary PL and complete PAMF differ in both U recipe and local order. Bold numeric entries are the largest displayed means within each holdout; they do not imply statistical significance.',separators=(6,))
         rows=[[esc(r['model']),f"{float(r['parameters_M']):.3f}",f"{float(r['conv_matrix_MACs_M']):.2f}",f"{float(r['conv_matrix_FLOPs_M']):.2f}",f"{float(r['FP32_parameter_MiB']):.2f}"] for r in eff]
         rows += [['DURA','0.267','--','--',f'{266951*4/2**20:.2f}'],['PAMF + DURA','0.500','--','--',f'{499944*4/2**20:.2f}']]
-        ee=table('参数规模与部分运算计数；不包含统一可比的延迟排名。' if zh else 'Parameter size and partial operation counts; no unified latency ranking is inferred.','eff',['Model','Params (M)','Counted MACs (M)','Counted FLOPs (M)','FP32 weights (MiB)'],rows,'lrrrr',note='Counted operations cover convolution/matrix operators only. FFT, path algebra, normalization and other functional operations are incompletely covered. Historical latency boundaries differ; total FLOPs and current F+G latency remain unverified in this manuscript.')
+        for row in rows:
+            if row[0].startswith('PAMF'):row[:]=['\\textbf{'+c+'}' for c in row]
+        ee=table('参数规模与部分运算计数；不包含统一可比的延迟排名。' if zh else 'Parameter size and partial operation counts; no unified latency ranking is inferred.','eff',['Model','Params (M)','Counted MACs (M)','Counted FLOPs (M)','FP32 weights (MiB)'],rows,'lrrrr',note='Bold rows identify PAMF deployment configurations. Counted operations cover convolution/matrix operators only; FFT, path algebra, normalization and other functional operations are incompletely covered. Weight storage excludes activations and workspaces. Historical latency boundaries differ; total FLOPs and current F+G latency remain unverified.',separators=(6,7))
         return dict(settings=ss,main=mm,learning=ll,eff=ee)
     refs=(a.source/'references.bib').read_text(encoding='utf-8')
     paired=['# PAMF 中英文逐段对照稿 / Aligned bilingual manuscript','','本文件段落与两个 IEEE PDF 共用同一来源；公式以 TeX 保留，PDF 中正常排版。','']
@@ -82,7 +95,7 @@ def main():
 '''+prose(manuscript['abstract_'+lang])+r'''
 \end{abstract}
 \begin{IEEEkeywords}
-Radio frequency fingerprinting, receiver generalization, semi-supervised learning, path descriptors, signal restoration.
+Radio frequency fingerprinting, space--ground channels, receiver generalization, compact neural networks, semi-supervised learning.
 \end{IEEEkeywords}
 '''
         body=[];ts=tables(lang)
@@ -94,7 +107,7 @@ Radio frequency fingerprinting, receiver generalization, semi-supervised learnin
             elif typ=='text':body.append(prose(b[lang])+'\n\n')
             elif typ=='equation':body.append(b['tex']+'\n')
             elif typ=='table':body.append(ts[b['key']])
-            elif typ=='figure':body.append('\\begin{figure*}[!t]\n\\centering\\includegraphics[width=\\textwidth]{images/fig%02d.pdf}\n\\caption{%s}\\label{fig:%d}\n\\end{figure*}\n'%(b['number'],prose(b[lang]),b['number']))
+            elif typ=='figure':body.append('\\begin{figure*}[!t]\n\\centering\\includegraphics[width=\\textwidth,height=.86\\textheight,keepaspectratio]{images/fig%02d.pdf}\n\\caption{%s}\\label{fig:%d}\n\\end{figure*}\n'%(b['number'],prose(b[lang]),b['number']))
         tex=header+''.join(body)+'\n\\bibliographystyle{IEEEtran}\n\\bibliography{references}\n\\end{document}\n'
         (p/'main.tex').write_text(tex,encoding='utf-8')
     for i,b in enumerate(manuscript['blocks']):
