@@ -264,3 +264,27 @@ C0/P1 均实际应用 bias；DA1_REG0 相对 DA0_REG0 的旧 open 为 −3/576�
 `20261029-phase3-star-g10-pool-rx24-1-r01`已VERIFIED/VALIDATED_ONCE，code/config `3f24f8016f5586f096bbaa8d83f221b397dbbeb8`。保持RX24-1原U384/Q864物理角色，1248原记录按MILKR实际G10代码生成一份新MIX01星地观测；原clean/三景压力数据保留，主输入改为星地P0及同received的DURA P1。12tests/47subtests及唯一P0/P1 PASS，真实CPU数据作业与完整日志/产物已独立核对；模型/GPU/训练/预测/评分/正式RX24-18读取0。后续新source replay/calibration也必须先星地化；本数据run未给出新性能，完整目标ACTIVE。详见`docs/PAMF_PHASE3_STAR_G10_INPUT_20261029.md`。
 
 下一实际动作先建立与Phase1原L/V物理契约一致的G10 source统计/校准输入，再从Phase1原F0/default6头和冻结DURA进行新主条件的拒识/无标签适应/注册配对验证。不能把旧Phase3 E51的clean辅助训练或clean几何改标成满足新输入范围；若另作历史控制须完整披露祖先。源原始IQ仅builder可读，需从原始记录在一次RMS之前生成星地，避免把已归一化clean缓存当原始数据再归一化。此前讨论的relative/domain几何方案尚未实施/登记，须在正确星地输入上独立固定方法和控制；本轮没有新的神经训练或性能候选。
+
+## 2026-10-29 G10 星地单 F0 相对距离四态结果
+
+`20261029-phase3-star-relative-s2026092701-r01` 完成5jobs与独立U/Q truth-last评分；两 path 均 NO_PROMOTION，总目标 **ACTIVE**。新source只消费原L6300/V27000的G10观测，唯一F0＋G全冻结、神经0更新，无E51/OE/clean模型输入；σ只来自L，V只known-only42组τ校准。
+
+| path | 状态 | 旧接收% | 旧 open% | F0 损 pp | REG0 拒识% | 未来新 macro% | H% | 注册 FRR% | later 拒识% |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| P0 | DA0_REG0 | 99.1319 | 56.7708 | 0.3472 | 8.6806 | N/A | N/A | N/A | 13.5417 |
+| P0 | DA1_REG0 | 99.1319 | 56.7708 | 0.3472 | 7.6389 | N/A | N/A | N/A | 14.5833 |
+| P0 | DA0_REG1 | 99.1319 | 56.7708 | 0.3472 | N/A | 0.0000 | 0.0000 | 2.2135 | 13.5417 |
+| P0 | DA1_REG1 | 99.1319 | 56.7708 | 0.3472 | N/A | 0.0000 | 0.0000 | 1.6927 | 14.5833 |
+| P1 | DA0_REG0 | 97.2222 | 71.0069 | 1.9097 | 3.1250 | N/A | N/A | N/A | 4.1667 |
+| P1 | DA1_REG0 | 97.5694 | 71.1806 | 1.7361 | 2.7778 | N/A | N/A | N/A | 4.1667 |
+| P1 | DA0_REG1 | 97.2222 | 71.0069 | 1.9097 | N/A | 0.0000 | 0.0000 | 2.7344 | 4.1667 |
+| P1 | DA1_REG1 | 97.5694 | 71.1806 | 1.7361 | N/A | 0.0000 | 0.0000 | 2.3438 | 4.1667 |
+
+P0：REG0 RMD拒识7.6389%、旧接收99.1319%、open56.7708%；注册后新macro0.0000%、注册FRR1.6927%、later拒识14.5833%、F0总损0.3472pp。adaptation=False、registration=False；scene缺类用N/A/coverage，不填0或认证。
+P1：REG0 RMD拒识2.7778%、旧接收97.5694%、open71.1806%；注册后新macro0.0000%、注册FRR2.3438%、later拒识4.1667%、F0总损1.7361pp。adaptation=False、registration=False；scene缺类用N/A/coverage，不填0或认证。
+
+两path同一RX24-1 U384/Q864、同1248物理G10记录，跨日但非source未见日期；正式RX24-18未读。F0+G499944 NN参数，额外metric统计另计；source33300物理、66600F/33300G计算曝光。独立GPU采样[(2818487, 404), (2818487, 798)]是采样非峰值；终态owned/live为空与foreignstop0以observed_state核实，pipeline119.498955s非逐包时延。全部方法/scene/TX/簇组成与计数边界见 [完整结果](../PAMF_PHASE3_STAR_RELATIVE_RESULTS_20261029.md)。
+
+两path全局旧类接受/同输入F0损失单项通过，但未知拒识和未来新类80%均失败；P1 high urban/low urban 的F0损伤4.1667/3.5755pp超限，high suburban缺19-15而不能完整认证。四态注册K全0，P0/P1新类184/188条错接为旧类，故低注册FRR不代表成功。DA1 RMD AUROC .774185/.652507低于.855必要界；P1 RMD较MD排序低7.7498pp，不能仅平移τ解决。
+
+下一假设（未实施）：只在源侧区分RX/day扰动和身份方向，检验能否改善拒识排序及候选密度支持；当前没有可评估的已注册原型，不归因于已证实的跨日半径失败。保留全部科学目标，不用Q调参或提前完成总Phase3。
