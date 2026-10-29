@@ -1,0 +1,151 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-star-source-exposure-g10-r01",
+  "group_id": "pamf-phase3-star-source-membership-training",
+  "display_name": "PAMF第三阶段：源辅助未知成员G10训练观测",
+  "description": "Exact6134 original sourceOE21 records, fixed G10, preserved nonuniform domains; outside-six membership only, no model or target.",
+  "kind": "data",
+  "stage": "Phase3-source-G10-membership-data",
+  "aliases": [
+    "OE21星地观测"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "membership_supervision",
+    "data_only"
+  ],
+  "comparison_group_id": "phase3-star-sourceOE21",
+  "parent_run_ids": [
+    "20261029-phase3-source-oe-diverse-data-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户本对话明确Phase1以后所有样本叠加星地，按引用MILKR对话设置；沿用完整Phase3自主执行与零目标标签授权。",
+  "code": {
+    "commit": "d319e3196f90113045a4f4f0958eeffe497f8785",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "cwd": "E:\\type10-7\\github_publish\\CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "Full WiSig eq",
+    "version": "20 completed ZIP /158 PKL validated 20261029 r02",
+    "representation": "Full eq1 FP64[256,2] transpose, reference adapter FP32 conversion then once RMS then G10 ResidualChannel FP32 received; no output RMS/no additional EQ",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "E:/type10-7/local_artifacts/pamf_phase3_source_oe_diverse_data_20261029_r01/data/builder_report.json::mapping",
+    "label_map_ref": "Outside-six membership; TX/K builder private only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original fixed21 auxiliary devices, no sixold/heldout3/formal4",
+    "roles": {
+      "auxiliary_source_training": 6134
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "E:/type10-7/local_artifacts/pamf_phase3_source_oe_diverse_data_20261029_r01/data/complete.json",
+    "support_query_ref": "No target, no support/query; historicalOE4 overlap537 disclosed",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 G10/receiver2027/2450MHz"
+  },
+  "permissions": {
+    "regime": "source member-supervised builder",
+    "query_use": "No model or target data",
+    "external_method_exception": null,
+    "claim_scope": "Data readiness only; not heldout validation or performance"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "data-only builder has no model input",
+    "provenance_verdict": "no weights, optimizer, teacher or recovery model loaded",
+    "selection_rule": "fixed metadata capacity/role allocation, no IQ performance filtering"
+  },
+  "execution": {
+    "host": "local-Windows",
+    "launch_owner": "codex-phase3-star-exposure-20261029",
+    "gpu_policy": "CPU-only local data builder, CUDA invisible; no foreign process changes",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01",
+    "launch_command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -X utf8 -B -u -m experiments.pamf_phase3_open_world.star_source_exposure --config \"E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01/build_config.json\" --output \"E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01/pool\"",
+    "stop_rule": "Wrong existing locator/index/ID, shape/nonfinite/star observation, output collision; preserve partial, no resampling"
+  },
+  "expected_artifacts": [
+    "pool/public/{manifest.json,ids.npy,received.npy,metadata.npz}",
+    "pool/{builder_report.json,complete.json}",
+    "build.log",
+    "build_launch.json",
+    "build_post_state.json"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "exact6134_original_mapping",
+      "single_fixed_G10",
+      "outside_six_membership_only",
+      "finite_received"
+    ],
+    "dimensions": [
+      "15nonuniformRXday",
+      "6G10scenes"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "builder checks only"
+  },
+  "rows": [
+    {
+      "row_id": "sourceOE6134-G10-MIX01",
+      "method": "MILKR G10 residual reference adapter",
+      "purpose": "All new model inputs satellite; unchanged original source auxiliary membership",
+      "config_ref": "configs/pamf_phase3_star_source_exposure_20261029.json",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\build_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026102906,
+        "data": 2026103001,
+        "augmentation": 2026104001,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original6134 mapping/order/nonuniform domains, no resampling",
+      "k": null,
+      "scenario": "G10_MIX01_six_components_coverage_weighted",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "15exactFullmembers; source6134; model0/target0/no truth output",
+      "output_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool",
+      "log_path": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\build.log",
+      "command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -X utf8 -B -u -m experiments.pamf_phase3_open_world.star_source_exposure --config \"E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01/build_config.json\" --output \"E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01/pool\"",
+      "expected_artifacts": [
+        "pool/public/{manifest.json,ids.npy,received.npy,metadata.npz}",
+        "pool/{builder_report.json,complete.json}",
+        "build.log",
+        "build_launch.json",
+        "build_post_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No old normalizedIQ/truth/newselection/Full revalidation.",
+    "Same physical6134, one new G10, 537oldOE4 physical overlap not independent.",
+    "Public4 files: outside-six membership only, no TX/K.",
+    "CPUonly; modelcheckpoint smoke/N607 release not applicable."
+  ],
+  "registered_at": "2026-10-29T11:32:53+00:00"
+}
