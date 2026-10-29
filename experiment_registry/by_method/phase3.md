@@ -31,6 +31,7 @@
 |预测类别条件风险阈值：预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-class-risk-s2026092701-r01/report.md)|
 |星地多分支证据拒识器：预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-consensus-s2026092701-r01/report.md)|
 |PAMF第三阶段：统一星地G10开发观测|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-g10-pool-rx24-1-r01/report.md)|
+|PAMF 第三阶段：全 U 邻域适应与匿名注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-neighborhood-s2026092701-r01/report.md)|
 |PAMF第三阶段：星地域残差投影源端证伪|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-nuisance-s2026092701-r01/report.md)|
 |星地接收与恢复联合拒识证据：预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-paired-evidence-s2026092701-r01/report.md)|
 |PAMF第三阶段：星地G10相对距离与无标签注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-relative-s2026092701-r01/report.md)|
