@@ -1,0 +1,188 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-conditional-support-s2026092701-r01",
+  "group_id": "pamf-phase3-star-conditional-support",
+  "display_name": "PAMF第三阶段：预测身份条件局部支持诊断",
+  "description": "Frozen original F0; source L known TX partitions the neighbor bank while queries use the original predicted identity; exact pooled-relative parent control.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-conditional-support",
+  "aliases": [
+    "预测身份条件局部支持"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "frozen_F0",
+    "conditional_knn",
+    "not_deployment_bank"
+  ],
+  "comparison_group_id": "phase3-star-pooled-vs-predicted-identity-support",
+  "parent_run_ids": [
+    "20261030-phase3-star-local-support-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261029-phase3-star-joint-ova-s2026092701-r02",
+    "20261029-phase3-star-representation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "0e5cfae40fb7f91825f695fbf4a1ac4fdaa6f0fe",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-conditional-support-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Reuse original F0 same-G10-P1 teacher L/OE units and parent known/novel units+defaulthead logits; sourceL y metadata only; no new real IQ values",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_feature_bank": 6300,
+      "source_L_metadata_labels": 6300,
+      "source_OE_feature_bank": 6134,
+      "known_V_calibration": 27000,
+      "heldout_novel": 3150,
+      "original_U_new": 0,
+      "target": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool\\complete.json; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "Source bank freezes before V; primary6tau fit on knownV only, control6tau copied exactly; novel features opened after freeze; no target handles or deployment source bank.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "SourceL existing true old TX partitions bank; query only original predicted identity; OE membership allowed but OE TX/K forbidden; V labels only calibrate primary tau.",
+    "query_use": "No targetU/Q or historical query training. Public source novel features read after state freeze, truth only independent scorer after all predictions.",
+    "external_method_exception": null,
+    "claim_scope": "Source-only diagnostic; seen5RX and historicalnovel, no newRX/TX/DA/registration. Full per-record bank cannot be used at deployment; source-free export requires separate candidate."
+  },
+  "checkpoint": {
+    "initialization": "Original Phase1 F0 E50/11100/defaulthead frozen; parent source unit features preserve same model identity; no r02 increment weights.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-local-support-s2026092701-r01/rows/original_F0/predict/{complete.json,source_bank.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz}"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Same originalF0 sourcecontract392005/frozenDURA/cache ancestry; sourceL labels aligned by exact existing role IDs; no target-adapted or Phase3 increment model.",
+    "selection_rule": "Fixed k8/eps1e-6/predicted identity score before current access, no grid, novel threshold feedback or control substitution."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-conditional-support-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-conditional-support-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-conditional-support-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_conditional_support_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_conditional_support_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-conditional-support-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One source process on actualfree>=4096MB GPU, eachcard<=2added, foreign unchanged",
+    "stop_rule": "Legality/nonfinite/collision/unable legal prediction preserves artifacts; no performance-triggered restart, hyperparameter change or control replacement"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/*.json",
+    "logs/*.log",
+    "rows/original_F0/state.json",
+    "rows/original_F0/predict/{smoke.json,source_bank.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz,complete.json}",
+    "rows/original_F0/predict/calibration/complete.json",
+    "rows/original_F0/score/{results.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "A_K",
+      "R_U",
+      "H-score",
+      "C_K",
+      "original_F0_closed_loss",
+      "bank_memory",
+      "readout_compute_time"
+    ],
+    "dimensions": [
+      "twofixedsupportscores",
+      "known42",
+      "unknown12",
+      "TX",
+      "RX",
+      "scene",
+      "same_ID_paired"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-conditional-support-s2026092701-r01/rows/original_F0/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_conditional_support_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "star-conditional-support-s2026092701",
+      "method": "PAMF F0 predicted-identity local-support diagnostic",
+      "purpose": "Only sourceL known TX partition changes; pooled relative control reproduces parent; fullbank is not deployment state.",
+      "config_ref": "configs/pamf_phase3_star_conditional_support_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-conditional-support-s2026092701-r01/configs/original_F0_source_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No new randomness or observations; fixed existing G10 P1 and original F0 features/head; sourceL true labels never query true labels.",
+      "k": null,
+      "scenario": "G10 MIX01 P1",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "RealIQ/F/G0; F2 synthetic actualcheckpoint smoke only; NN/Gupdates0; control6tau reused, primary6tau sourceV calibrated.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-conditional-support-s2026092701-r01/rows/original_F0",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-conditional-support-s2026092701-r01/logs/original_F0_source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_conditional_support_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-conditional-support-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/original_F0/state.json",
+        "rows/original_F0/predict/{smoke.json,source_bank.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz,complete.json}",
+        "rows/original_F0/predict/calibration/complete.json",
+        "rows/original_F0/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "One-factor source-only falsification: conditional known neighbor support vs exact pooled-relative control.",
+    "Full source bank is a diagnostic teacher, not deployment state; source-free exported aggregate/parameter method must be separately registered before any target use.",
+    "Old six TX/source L labels allowed; OE TX/K, targetlabels, query statistics and oldquery recycling forbidden.",
+    "L/OE/V/novel42584 records reused, historical exposedsource novel; no independent RX/TX claim. AN/HOWnull, fullgoalACTIVE.",
+    "Parent cost F30152 and historical G P1 creation retained as ancestry. New F2 onlysmoke; bank storage and CPUscore costs separate, no B1 speed claim."
+  ],
+  "registered_at": "2026-10-29T18:45:04+00:00"
+}
