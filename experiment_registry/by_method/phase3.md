@@ -45,6 +45,7 @@
 |PAMF第三阶段：共同可行阈值的单调扩展|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-common-seeded-risk-s2026092701-r01/report.md)|
 |PAMF 第三阶段：预测身份条件局部支持诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-conditional-support-s2026092701-r01/report.md)|
 |PAMF第三阶段：源样本局部支持与跨接收机共识|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-local-support-s2026092701-r01/report.md)|
+|PAMF 第三阶段：固定主度量的原型余弦读出|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-metric-cosine-s2026092701-r01/report.md)|
 |PAMF 第三阶段：独立拒识度量及未知结构保持|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-metric-embedding-s2026092701-r01/report.md)|
 |PAMF 度量学习独立评分恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/report.md)|
 |PAMF第三阶段：源OE收益与独立类风险预算|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-oe-risk-budget-s2026092701-r01/report.md)|

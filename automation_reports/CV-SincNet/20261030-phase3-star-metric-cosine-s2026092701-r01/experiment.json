@@ -1,0 +1,187 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-metric-cosine-s2026092701-r01",
+  "group_id": "pamf-phase3-star-metric-cosine",
+  "display_name": "PAMF第三阶段：固定主度量的原型余弦读出",
+  "description": "Keep original structure metric g fixed; test prototype cosine aligned with its OE repulsion; original Mahalanobis operating point reused as matched reference, not recalibrated.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-metric-cosine",
+  "aliases": [
+    "固定度量原型余弦读出"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "frozen_metric",
+    "cosine_prototype",
+    "source_free"
+  ],
+  "comparison_group_id": "phase3-star-frozen-metric-readout-alignment",
+  "parent_run_ids": [
+    "20261030-phase3-star-metric-embedding-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "abb2490048d7fcceffbffe814d15f880b79522f4",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-cosine-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Parent fixed structure g GPU FP32 metric units and original F0 units/logits on G10 MIX01 P1; L-only class_means reused as normalized six prototypes.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "ancestor_L": 6300,
+      "ancestor_OE": 6134,
+      "known_V_calibration": 27000,
+      "source_novel_evaluation": 3150,
+      "new_L_OE_features": 0,
+      "new_neural_training": 0,
+      "target": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool\\complete.json; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "Prototypes fixed before V; twelve cosine thresholds freeze before novel features; oldMD reference margins/tau reused, no oldscore file read.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "No new neural/aggregate fitting; parent knownL/OE supervision remains ancestor. V labels calibrate six tau per cosine only; target/OE TX/K forbidden.",
+    "query_use": "Source public novel only after prototypes/network/twelve tau frozen, independent truth after all predictions/public checks; no parent private-derived score file consumption.",
+    "external_method_exception": null,
+    "claim_scope": "Same seen source5RX/3days and historical source novel. Source-only readout falsification, not target/registration confirmation."
+  },
+  "checkpoint": {
+    "initialization": "Exactly original fixed main compact_oe_structure g1000 checkpoint and parent F0/DURA ancestry; no control-arm switch, retraining, covariance fit or new source bank.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/rows/compact_oe_structure/predict/deployment/model.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/rows/compact_oe_structure/predict/deployment/metric.npz"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Same original sourceL/OE g training and originalF0/sourcecontract392005/DURA/G10P1; parent prediction codeefb82a4 and fixed arm enforced.",
+    "selection_rule": "Two cosine functions fixed from training objective before current new readout evaluation; maximum_cosine sole primary; no train/model selection or novel threshold feedback."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-metric-cosine-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-cosine-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-cosine-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_metric_cosine_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_metric_cosine start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-cosine-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "CPU-only source readout then independentCPU scorer, zero addedGPU workers; foreign unchanged",
+    "stop_rule": "Preserve on legality/nonfinite/collision/unable legalprediction; no performance stopping, model switch or selective restart."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "config.json",
+    "logs/*.log",
+    "predict/{smoke.json,known_predictions.npz,novel_predictions.npz,complete.json}",
+    "predict/calibration/complete.json",
+    "predict/deployment/{model.pt,prototypes.npz,thresholds.npz,complete.json}",
+    "score/{results.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "A_K",
+      "R_U",
+      "H-score",
+      "C_K",
+      "original_F0_closed_loss",
+      "paired_originalMD_reference",
+      "sourcefree_state",
+      "compute_cost"
+    ],
+    "dimensions": [
+      "twofixedcosinescores",
+      "exact_old_MD_reference",
+      "known42",
+      "unknown12",
+      "TX",
+      "RX",
+      "scene",
+      "paired_ID"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-cosine-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_metric_cosine_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "star-metric-cosine-s2026092701",
+      "method": "PAMF fixed structure g prototype cosine",
+      "purpose": "Test training/readout alignment without changing metric g or defaultF0 identity; maximum_cosine primary.",
+      "config_ref": "configs/pamf_phase3_star_metric_cosine_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-cosine-s2026092701-r01/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "All original seeds preserved; no new stochastic training/observation. Parent g modelCPUinit2026092701/sampler2026103002, G10scene2026103001/channel2026104001.",
+      "k": null,
+      "scenario": "G10 MIX01 P1",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 neural/model updates; 2syntheticunit actualg smoke; no new realg/F/G/IQ, twoFP64cosine readouts30150, independentg30150 reference separate.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-cosine-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-cosine-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_metric_cosine start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-cosine-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "config.json",
+        "logs/*.log",
+        "predict/{smoke.json,known_predictions.npz,novel_predictions.npz,complete.json}",
+        "predict/calibration/complete.json",
+        "predict/deployment/{model.pt,prototypes.npz,thresholds.npz,complete.json}",
+        "score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed parent main only even though noStructure previously scoredhigher; this is a new frozen readout, not retrospective winner selection.",
+    "Producer never reads parent score files; originalMD reference only independent scorer reuses public saved margins/tau, not recalibration.",
+    "Deployment four files: samegFP32weights82816B payload, normalizedLprototypes7680B, twelveFP64tau96B, metadata; no source rows.",
+    "Only ancestor gmain1000 steps; entire previous three-arm benchmark cost2000 updates recorded separately, not additional training ancestry.",
+    "Same42584 ancestor physical records, currentonlyV27000/novel3150 publicfeatures. Target0 AN/HOWnull fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-29T20:30:26+00:00"
+}
