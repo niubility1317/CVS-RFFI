@@ -15,3 +15,11 @@ A/B/C 继续分阶段实测 CPU RSS、CUDA allocated/reserved、训练/适应/�
 唯一配置：`configs/pamf_phase2_group1_recovery_r03_20261030.json`，科学矩阵引用 r01。入口 `python -u -m experiments.pamf_phase2_practical.group1_recovery --runtime <release>/runtime.json`；实际 commit、环境、路径、owner 和命令见登记。每预测单元完成后独立 truth-last，分数不影响后续运行。技术失败阻止相应后继；相同修复指纹再次发生时不盲目重启。状态：PREREGISTERED，启动须独立读回。
 
 技术记录：r02 仅在发布前 smoke 中误将计时装饰器路径判为 trainer 路径不符，0 次优化，未启动调度/接管。r03 对原生 train 解包后检查实际函数，保留其运行时计时装饰器；回归覆盖该情况，正式方法、预算和外部健康任务不变。
+
+## 实际发布核验（2026-10-29T18:10:35.784958+00:00）
+
+状态：**VERIFIED / RUNNING**。代码提交 `64a2849dae2baeef0edc7f9c60ea0d5a4175f1ba`。真实源 checkpoint＋4 次完整监督/PL 反传 smoke PASS，CRIC_calls=4、extra_L=3584、PL_seen=1024，卫星监督计数和实际施加数均为正。smoke 仅诊断，不继承其权重，正式 PL 仍从 E26 开启。
+
+统一 CPU controller PID `3133817` 的 CWD/命令已独立核实；旧 CPU controller 已退出，收养 16 个健康 worker，重启 GPU worker 数为0。此快照两版合计每 GPU 自有 worker：`{"0": 2, "1": 2, "2": 2, "3": 2, "4": 2, "5": 2, "6": 2, "7": 2}`；任务计数 `{"COMPLETE": 21, "FAILED": 0, "BLOCKED": 0, "RUNNING": 16, "QUEUED": 42533}`（COMPLETE 是 source/predict/score 工作单元，不是全部实验完成）。已完成结果直接复用；其他 owner 未修改。
+
+训练资源文件已实际落盘，A/B/C 及推理分阶段记录继续自动生成。r01 错误 PAMF E20 及 r02 发布前诊断失败均单列保留，不冒充有效完整训练。所有正式训练完成后按固定矩阵自动预测并独立评分；当前不声明最终准确率、性能排名或矩阵完成。
