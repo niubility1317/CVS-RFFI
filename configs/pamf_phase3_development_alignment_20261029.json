@@ -1,0 +1,58 @@
+{
+  "run_id": "20261029-phase3-development-alignment-s2026092701-r01",
+  "purpose": "Fit condition-specific source-anchored orthogonal feature alignment using public unlabeled U only, then freeze before independent V",
+  "conditions": ["C0", "P1"],
+  "primary_method": "mlp16_oe",
+  "controls": "Reuse completed frozen D0 predictions on exactly the same V records; D1 uses U-fitted alignment and the original six-class default head",
+  "source_endpoint": "fixed E51 uniform_oe, original4OE MLP and original-baseline-risk source thresholds",
+  "data": {
+    "receiver": "24-1",
+    "U_date": "2021_03_08",
+    "V_date": "2021_03_15",
+    "U_public_count": 384,
+    "V_public_count": 864,
+    "formal_RX24_18_reads": 0,
+    "paired_conditions_not_new_physical_records": true
+  },
+  "initial_core": {
+    "source_frozen_MSP_and_cosine_thresholds": true,
+    "head_and_fused_prototype_unique_argmax_agree": true,
+    "learned_branch_votes": ["time160", "frequency160", "pa160"],
+    "minimum_agreeing_votes": 2,
+    "tie_gap": 1e-8,
+    "minimum_core_records_per_predicted_old_class": 8,
+    "minimum_supported_predicted_old_classes": 3,
+    "MLP_acceptance_required": false,
+    "target_top_fraction_or_true_class_quota": false,
+    "fixed_once_before_alignment": true
+  },
+  "alignment": {
+    "rule": "Per branch standardize by frozen source statistics; normalized weighted core class directions M and source prototypes P; R=polar(I+0.5*M.T@P/K); apply standardized raw row vectors by right multiplication",
+    "sample_weight": "MSP times learned-branch agreement fraction, normalized within each supported pseudo-class; equal class mass over supported old pseudo-classes",
+    "identity_regularization_strength": 0.5,
+    "minimum_nondegenerate_classes_per_branch": 3,
+    "reference29_coordinate27_fixed": true,
+    "preserves": "Euclidean distances and cosine between standardized branch vectors; not whitened Mahalanobis distances",
+    "identity_fallback": "Insufficient reliable core or fused support; cannot be called successful adaptation",
+    "fits_per_condition": 1,
+    "neural_optimizer_steps": 0,
+    "F_G_head_readout_source_geometry_threshold_updates": 0,
+    "query_state_updates": 0,
+    "source_per_record_bank_deployed": false
+  },
+  "evaluation": {
+    "clean_unknown_macro_rejection_min": 0.95,
+    "practical_unknown_macro_rejection_min": 0.90,
+    "each_main_scene_required": true,
+    "later_U_unseen_unknown_uses_condition_target": true,
+    "known_macro_frr_max": 0.05,
+    "known_open_drop_from_original_same_input_closed_max": 0.02,
+    "known_acceptance_objective": "maximize subject to rejection and identity protection",
+    "D1_known_open_gain_over_D0_required": true,
+    "adaptation_applied_required": true,
+    "all_predictions_before_independent_truth": true,
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json"
+  },
+  "budget": "One seed, C0/P1 independently reset, one U pass plus closed-form alignment each, D0 predictions reused, D1 V per-sample; at most one added GPU worker at a time",
+  "claim_scope": "Development only, previously source-evaluated novel TX, no formal query/anonymous registration claim; insufficient/negative result does not trigger threshold tuning or selective rerun"
+}
