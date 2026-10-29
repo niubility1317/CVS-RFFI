@@ -258,7 +258,26 @@ def pamf_epoch_resource(config,model,updates,started):
         f.write(__import__('json').dumps(record)+'\n')
 
 
-def _train_pamf(c,seed,out):
+def bind_pamf_trainer(c):
+    """Bind the historical BASE trainer that actually executes labeled hooks."""
+    import inspect
+    import sys
+    from experiments.cvs_phase1_overlay import model as overlay
+    directory=Path(c['frozen_sources']['BASE'])/'experiments/adv3b02_xuc/code'
+    require((directory/'SSDG/train_ssdg.py').is_file(),'Fixed BASE source trainer missing')
+    overlay.NATIVE=directory
+    sys.path.insert(0,str(directory))
+    native=overlay.native_modules()
+    actual=Path(inspect.getsourcefile(native.train)).resolve()
+    require(actual==(directory/'SSDG/train_ssdg.py').resolve(),
+            'PAMF native trainer was already imported from a different release')
+    require('_source_labeled_feature_hook' in inspect.getsource(native.train),
+            'PAMF native trainer cannot execute the full supervised objective')
+    return native
+
+
+def _train_pamf(c,seed,out,*,diagnostic=False):
+    bind_pamf_trainer(c)
     from experiments.cric_dura_comparison import t1_train,t1_model,f_train
     from experiments.practical_full_2x2 import pamf_model
     original_install=pamf_model.install
@@ -313,6 +332,21 @@ def _train_pamf(c,seed,out):
     saved=t1_model.install;t1_model.install=install;f_train.context=context;pamf_model.plain_pl=plain_pl
     try:
         with seed_scope(),Measure(out/'A_resources.json',dict(profile='pamf_pl_milkr',seed=seed,stage='A'),optimizers=True) as probe:
+            if diagnostic:
+                # Four real CPU optimizer updates, source-only, never an initializer.
+                # U starts immediately here solely to exercise its actual backward path.
+                out.mkdir(parents=True,exist_ok=False)
+                smoke=dict(cfg,output_root=str(out/'segment20'),segment_epochs=20,
+                    epoch_offset=0,step_offset=0,parent_source=None,U_start_epoch=1)
+                f_train.train(smoke,device='cpu',smoke_steps=2)
+                value=read(out/'segment20/progress.json')
+                require(value['CRIC_calls']==4 and value['PL_seen']==1024,'PAMF actual training hook/PL missing')
+                records=[__import__('json').loads(v) for v in (out/'segment20/group1_epoch_resources.jsonl').read_text().splitlines()]
+                require(records[-1]['satellite_seen']==512 and records[-1]['satellite_actually_applied']>0,
+                        'PAMF actual satellite supervision missing')
+                probe.result.update(diagnostic_only=True,query_reads=0,target_reads=0,
+                    smoke_weights_not_training_initializers=True,**value)
+                return
             t1_train.train(cfg)
             records=[read(p) for p in sorted(out.glob('segment*/group1_progress.json'))]
             require(len(records)==3,'PAMF source exposure counters missing')
@@ -333,6 +367,7 @@ def load_source(c,profile,seed,device):
     validate_source_config(c);folder=Path(c['run_root'])/'source'/f'{profile}-s{seed}'
     expected=read(c['source_contract']);r=row(profile)
     if profile=='pamf_pl_milkr':
+        bind_pamf_trainer(c)
         from experiments.cric_dura_comparison.frozen_inference import load_F
         from experiments.pamf_repl_view_shuffle.source import seed_scope
         with seed_scope():model,cfg=load_F(folder,expected,device)

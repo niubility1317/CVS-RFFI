@@ -1,0 +1,28 @@
+{
+  "run_id": "20261030-phase2-group1-concat-midPL-threepool-m4-r02",
+  "replaces_run_id": "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+  "replacement_scope": "PAMF_only_from_scratch",
+  "unchanged_external_methods_run_id": "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+  "scientific_matrix": "configs/pamf_phase2_group1_release_20261030.json",
+  "method_profiles": [
+    "pamf_pl_milkr"
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "source_epochs": 50,
+  "source_updates": 11100,
+  "PL_start_epoch": 26,
+  "source_trainer": "frozen_sources.BASE/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+  "actual_training_hook_required_every_update": true,
+  "controller": "experiments.pamf_phase2_practical.group1_recovery",
+  "GPU_policy": "combined_old_and_new_at_most_two_own_workers_per_GPU_other_owners_additional",
+  "healthy_external_workers": "adopt_PID_CWD_argv_GPU_output_unchanged",
+  "source_augmentation_cache": "reuse_original_group1_fixed_source_cache",
+  "target_data": "reuse_VALIDATED_ONCE_r10_without_regeneration",
+  "failed_PAMF_checkpoint": "preserve_do_not_inherit_wrong_supervised_recipe",
+  "source_smoke": "four_real_CPU_updates_source_only_with_PL_enabled_for_diagnostic_only_never_initializer"
+}

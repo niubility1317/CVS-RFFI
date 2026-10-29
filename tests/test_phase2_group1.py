@@ -137,3 +137,43 @@ def test_native_source_bundle_exposes_path_required_by_B(tmp_path,monkeypatch):
         'mrior_sda',42,'cpu')
     assert bundle['source_path']==str(folder)
     assert bundle['source_checkpoint']==str(folder/'source.pt')
+
+
+def test_PAMF_rejects_trainer_without_actual_supervised_hook(tmp_path,monkeypatch):
+    from experiments.pamf_phase2_practical.group1_source import bind_pamf_trainer
+    from experiments.cvs_phase1_overlay import model as overlay
+    path=tmp_path/'experiments/adv3b02_xuc/code/SSDG/train_ssdg.py'
+    path.parent.mkdir(parents=True)
+    def load(text):
+        path.write_text(text)
+        spec=importlib.util.spec_from_file_location('test_group1_bound_trainer',path)
+        value=importlib.util.module_from_spec(spec);spec.loader.exec_module(value)
+        return value
+    old=load('def train(args):\n    return 0\n')
+    monkeypatch.setattr(overlay,'native_modules',lambda:old)
+    monkeypatch.setattr(overlay,'NATIVE',tmp_path)
+    monkeypatch.syspath_prepend(str(tmp_path))
+    with pytest.raises(ValueError,match='full supervised objective'):
+        bind_pamf_trainer({'frozen_sources':{'BASE':str(tmp_path)}})
+    current=load("def train(args):\n    return getattr(args, '_source_labeled_feature_hook')\n")
+    monkeypatch.setattr(overlay,'native_modules',lambda:current)
+    assert bind_pamf_trainer({'frozen_sources':{'BASE':str(tmp_path)}}) is current
+    assert overlay.NATIVE==path.parents[1]
+
+
+def test_recovery_reuses_external_jobs_and_replaces_only_PAMF(tmp_path):
+    from experiments.pamf_phase2_practical.group1_recovery import matrix
+    common=dict(model_seeds=[2026092701],capsules=['P01/MIX01/RX1-1'])
+    old=dict(common,run_root=str(tmp_path/'old'),runtime_file='old/runtime.json',release_root='old/release')
+    new=dict(common,run_root=str(tmp_path/'new'),runtime_file='new/runtime.json',release_root='new/release',
+        method_profiles=['pamf_pl_milkr'])
+    jobs=matrix(new,old)
+    assert len({j['id'] for j in jobs})==len(jobs)
+    assert {j['profile'] for j in jobs if j['origin']=='replacement'}=={'pamf_pl_milkr'}
+    assert all(j['profile']!='pamf_pl_milkr' for j in jobs if j['origin']=='legacy')
+    assert len([j for j in jobs if j['kind']=='source'])==11
+    for job in jobs:
+        cfg=old if job['origin']=='legacy' else new
+        assert job['output'].startswith(cfg['run_root'])
+        assert job['runtime_file']==cfg['runtime_file']
+        assert all(v.startswith(job['origin']+'-') for v in job['dependencies'])

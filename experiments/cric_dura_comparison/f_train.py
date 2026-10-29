@@ -176,6 +176,8 @@ def train(c, device='cuda:0', smoke_steps=None):
             result = saved['_detach_log_mapping'](values)
             if 'train/loss' in result:
                 state['steps'] += 1
+                if c.get('group1_recipe') and owner.model._cd_calls!=state['steps']:
+                    raise RuntimeError('PAMF full supervised hook did not execute for the actual update')
                 compact = batch_clean(result)
                 if compact.get('train/skipped_nonfinite_loss', 0) or compact.get('train/skipped_nonfinite_grad', 0):
                     raise FloatingPointError('Nonfinite native update')
