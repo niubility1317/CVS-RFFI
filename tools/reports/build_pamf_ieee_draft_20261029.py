@@ -23,11 +23,11 @@ def main():
     out=a.output;out.mkdir(parents=True,exist_ok=True);(out/'figures').mkdir(exist_ok=True);(out/'data').mkdir(exist_ok=True)
     manuscript=json.loads((a.source/'manuscript_blocks.json').read_text(encoding='utf-8'))
     if not a.skip_figures:
-        subprocess.run([sys.executable,str(Path(__file__).with_name('reuse_pamf_selected_artwork_20261029.py')),'--catalog',str(a.catalog),'--results',str(a.results),'--output',str(out/'figures'),'--plot-python',a.plot_python],check=True)
         diagram_dir=out/'diagrams'
         subprocess.run([a.plot_python,str(Path(__file__).with_name('render_pamf_method_diagrams_20261030.py')),'--output',str(diagram_dir)],check=True)
         for source,destination in [('System_A_training_and_inference.pdf','fig01.pdf'),('System_A_training_and_inference.png','fig01.png'),('PAMF_A_parallel_branches.pdf','pamf_network.pdf'),('DURA_A_two_stage.pdf','dura_network.pdf')]:
             shutil.copy2(diagram_dir/source,out/'figures'/destination)
+        subprocess.run([sys.executable,str(Path(__file__).with_name('reuse_pamf_selected_artwork_20261029.py')),'--catalog',str(a.catalog),'--results',str(a.results),'--output',str(out/'figures'),'--plot-python',a.plot_python],check=True)
     for fn in ['01_main_comparison.csv','02_augmentation_PL_factorial.csv','03_two_layer_structure_ablation.csv','04_nested_noSIG_CE.csv','06_view_comparison_8seed.csv','07_U_permission.csv','10_receiver_splits.csv','11_ten_class_scale.csv','14_paired_effects_summary.csv','14_paired_effects_per_seed.csv','15_architecture_E200_summary.csv','15_architecture_E200_per_seed.csv','17_training_U_exposure.csv','DURA_contract_audit.csv']:
         p=a.results/fn
         if p.exists():shutil.copy2(p,out/'data'/fn)
