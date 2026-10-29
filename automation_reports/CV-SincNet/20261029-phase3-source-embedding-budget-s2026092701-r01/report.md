@@ -33,3 +33,7 @@ BothfromoriginalE50 independentcold CENTER_UNITS nativeL arms, fixed2220steps/to
 ## 实际启动核实
 
 VERIFIED_RUNNING。原E50实际L2梯度smoke两行PASS、OE2额外PASS，CPU/GPU路径与immutable root符合；driver2486087，train监督2486111/GPU1、OE2486112/GPU2，独立CWD/argv/CUDA/PID已读回。两份日志从73/138字节增长到19757/21283字节，观察到210/204步，owned显存各1496MB（观测非峰值）。无foreign停止，当前无性能结果；后续冻结、导出、读出、预测与评分由同一流水线自动完成。
+
+## 实际完成结果
+
+VERIFIED / ANALYZED_SOURCE_ONLY，NO_PROMOTION。两行各完成2220步/累计13320，真实梯度和最终模型导出smoke PASS，五stage全部完成；4,440步trace、800个读出loss点、10完整日志和所有7方法评分已取回。MLP监督90.0635%／OE92.0635%，配对+2.0000pp；OE新closed98.6222%、open97.7222%、FRR1.7778%、原F总损伤0.7444pp。未知整体/每RX门槛未过，仅RX1过95，eligible空/selectednull。与E51原F风险读出92.6667%仅同novel重复source描述比较，十轮低0.6032pp，不称统计显著或独立确认。正式RX24U/Q0、foreignstop0，owned两GPU已正常退出。完整结果见 docs/PAMF_PHASE3_SOURCE_EMBEDDING_BUDGET_RESULTS_20261029.md；不是跨RX星地/无标签适应/匿名注册成功，不以源结果改写默认Phase1/2。
