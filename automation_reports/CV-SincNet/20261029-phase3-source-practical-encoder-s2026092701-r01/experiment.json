@@ -1,0 +1,311 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-practical-encoder-s2026092701-r01",
+  "group_id": "pamf-phase3-source-practical-native-encoder-increment",
+  "display_name": "PAMF第三阶段：匹配预算的源端星地编码器联合增量",
+  "description": "Two independent222-update E51 children with original native six-view L supervision, matched extraCE0.68 and sourceOE0.1; clean vs practical+frozenG second view. Own clean-L geometry/four-view readout and calibration, then fixed C0/P1 development vs completed parent_E51 augmented-readout predictions.",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-practical-encoder-and-fixed-development",
+  "aliases": [
+    "Phase3源端星地编码器联合增量"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_encoder_increment",
+    "clean_matched_control",
+    "practical_increment",
+    "target_U0",
+    "two_independent_arms"
+  ],
+  "comparison_group_id": "phase3-E51-native-increment222-clean-vs-practical-G",
+  "parent_run_ids": [
+    "20261029-phase3-source-practical-readout-s2026092701-r01",
+    "20261029-phase3-source-embedding-increment-s2026092701-r02",
+    "20261029-phase3-source-embedding-readout-s2026092701-r01",
+    "20261029-phase3-source-baseline-risk-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权持续Phase3源端研发；本次预算/配方/两arm和source后固定开发矩阵均在运行前冻结，不按target分数选择或调参。",
+  "code": {
+    "commit": "b578c074ba68b8ff9aa539209b3410f1f103ba3d",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-practical-encoder-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-practical-encoder-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original source five-RX L/OE21 training and L/V/OE4/novel3 evaluation; fixed RX24-1 Q",
+    "version": "Existing VALIDATED_ONCE source/public roles; one source-only derived training cache",
+    "representation": "Cache clean+three canonical residual/frozenG views, no second RMS/EQ; source evaluation compact descriptor100/static5/logits6",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 source computational views and source-only increments",
+    "physical_ids_ref": "Existing source contract and original OE21/OE4/public development handles, no physical resampling",
+    "label_map_ref": "Old6 source y only; OE membership/uniform6 objective without trueTX; novel private scorer only; zero target labels in fit",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "24-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_15"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_source_practical_encoder_20261029.json; registered old6, original OE21 training, original OE4 readout and novel3 evaluation unchanged",
+    "roles": {
+      "cache_L_physical": 6300,
+      "cache_OE21_physical": 6134,
+      "cache_physical": 12434,
+      "cache_derived_views": 49736,
+      "source_eval_L": 6300,
+      "source_eval_OE4": 4200,
+      "source_eval_V": 27000,
+      "source_eval_novel": 3150,
+      "source_eval_physical_each_arm": 40650,
+      "source_eval_derived_views_each_arm": 162600,
+      "development_Q_each_condition": 864,
+      "unique_development_Q_across_arms_conditions": 864,
+      "source_original_U_reads": 0,
+      "target_U_reads": 0,
+      "formal_target_reads": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "C0": "p3dev-clean-20e01e9ae54a4bc3ae503a3f",
+      "P1": "p3dev-e900eaa3fa0f5ff5dc785a37"
+    },
+    "split_id": {
+      "C0": "347fd2cb757a37f7f162223a",
+      "P1": "668208756ed3d2a1a070dce0"
+    },
+    "validation_ref": "Existing source contract/OE VALIDATED_ONCE and exact public development capsules/splits; no Full/ZIP revalidation",
+    "support_query_ref": "No targetU/support. Independent own source fits then frozen per-record Q; parent completed augmented_readout state reused exactly",
+    "leo_config_ref": "Source cached receiver2026102912/channel2026102931; iid scene2026102932; fixed existing devP1 received, C0 no practical/G"
+  },
+  "permissions": {
+    "regime": "Source old6 supervised native encoder/defaulthead plus OE membership; no target adaptation",
+    "query_use": "Only fixed C0/P1 per-record prediction after own source geometry/readout/thresholds freeze; independent truth-last scorer",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed source experiment and exposed RX24-1 development; not formal target/newTX blind confirmation/anonymous registration"
+  },
+  "checkpoint": {
+    "initialization": "Both arms independently strict-load same verified uniform-OE E51; native Sinc/defaulthead jointly train, optimizer reset",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r02/rows/uniform_oe/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Root source_practical_encoder initial_model/load_trained verifies parent and native state; own encoder identity updates222/cumulative11544",
+    "provenance_verdict": "Original source fiveRX/old6 L and sourceOE21 only; V/novel/target do not train encoder; G/source ancestry reused",
+    "selection_rule": "practical_increment::MLP predeclared, clean_increment matched control; fixed222 updates, no source validation earlystop/candidate or target score selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-source-practical-encoder-20261029",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-practical-encoder-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-practical-encoder-s2026092701-r01/rows/<arm>/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_practical_encoder_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_practical_encoder_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-practical-encoder-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Two independent GPU rows after one sharedcache; at most2added/card, actualfree>=4096*(existing own reservation+1), no foreign modifications",
+    "stop_rule": "Fixed222 updates. Protocol/checkpoint/role, nonfinite, output collision or legal prediction technical failure preserves partial without retry; other healthy row/owner allowed to finish. Source scientific failure never cancels its fixed dev."
+  },
+  "expected_artifacts": [
+    "runtime.json",
+    "configs/cache.json",
+    "configs/<arm>.{train,source}.json",
+    "configs/<arm>.<condition>.json",
+    "cache/source_L/{ids.npy,metadata.npz,<view>.npy}",
+    "cache/source_OE/{ids.npy,metadata.npz,<view>.npy}",
+    "cache/complete.json",
+    "rows/<arm>/train/{final.pt,steps.jsonl,complete.json}",
+    "rows/<arm>/source/compact/<role>/<view>/data.npz",
+    "rows/<arm>/source/fit/{geometry.npz,readouts.npz,training.json,complete.json}",
+    "rows/<arm>/source/calibration/{thresholds.npy,complete.json}",
+    "rows/<arm>/source/predict/<view>/predictions.npz",
+    "rows/<arm>/source/predict/complete.json",
+    "rows/<arm>/source/complete.json",
+    "rows/<arm>/source/score/{scores.json,complete.json}",
+    "rows/<arm>/development/<condition>/predict/{predictions.npz,complete.json}",
+    "rows/<arm>/development/<condition>/score/{scores.json,complete.json}",
+    "rows/<arm>/logs/<stage>.log",
+    "rows/<arm>/pipeline_state.json",
+    "logs/cache.log",
+    "logs/<arm>.driver.log",
+    "launch.json",
+    "pipeline_state.json",
+    "observed_state.json",
+    "observations.jsonl",
+    "post_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "unknown_macro_rejection",
+      "known_macro_acceptance",
+      "known_macro_frr",
+      "known_macro_closed_accuracy",
+      "known_macro_open_accuracy",
+      "original_closed_macro_accuracy",
+      "original_closed_minus_new_open",
+      "encoder_closed_loss_diagnostic",
+      "auroc_known",
+      "oscr",
+      "training_gradients",
+      "source_state_frozen"
+    ],
+    "dimensions": [
+      "clean_increment/practical_increment",
+      "source fourviews",
+      "source RX/TX/RX-by-view",
+      "C0/P1",
+      "parent_E51/increment",
+      "seven methods",
+      "oldTX/novelTX",
+      "scene"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-practical-encoder-s2026092701-r01/rows/<arm>/source/predict and development/<condition>/predict",
+    "scorer_ref": "source_practical_encoder_readout score; source_practical_encoder_development score",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json"
+  },
+  "rows": [
+    {
+      "row_id": "clean_increment-s2026092701",
+      "method": "clean_increment",
+      "purpose": "Matched native source encoder increment; independently complete own source evaluation and fixed C0/P1 development without waiting for other arm",
+      "config_ref": "configs/pamf_phase3_source_practical_encoder_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-practical-encoder-s2026092701-r01/configs/clean_increment.train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2026102932,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "L2026092701/OE2026102907/scene2026102932; shared cached channel2026102931/receiver2026102912; exact parent development observations reused",
+      "k": null,
+      "scenario": "Source clean matched extra view",
+      "optimizer": "AdamW_CENTER_UNITS reset, parent weight decay, constant schedule",
+      "lr": 0.0001,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "222 newupdates each; parent11322/cumulative11544; original nativeL6 + extraCE0.68; OE64 clean+matchedsecond128 meanKLuniform6*.1; own readouts each200CPU; noU/EMA",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-practical-encoder-s2026092701-r01/rows/clean_increment",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-practical-encoder-s2026092701-r01/rows/clean_increment/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_practical_encoder_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-practical-encoder-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "runtime.json",
+        "configs/cache.json",
+        "configs/<arm>.{train,source}.json",
+        "configs/<arm>.<condition>.json",
+        "cache/source_L/{ids.npy,metadata.npz,<view>.npy}",
+        "cache/source_OE/{ids.npy,metadata.npz,<view>.npy}",
+        "cache/complete.json",
+        "rows/<arm>/train/{final.pt,steps.jsonl,complete.json}",
+        "rows/<arm>/source/compact/<role>/<view>/data.npz",
+        "rows/<arm>/source/fit/{geometry.npz,readouts.npz,training.json,complete.json}",
+        "rows/<arm>/source/calibration/{thresholds.npy,complete.json}",
+        "rows/<arm>/source/predict/<view>/predictions.npz",
+        "rows/<arm>/source/predict/complete.json",
+        "rows/<arm>/source/complete.json",
+        "rows/<arm>/source/score/{scores.json,complete.json}",
+        "rows/<arm>/development/<condition>/predict/{predictions.npz,complete.json}",
+        "rows/<arm>/development/<condition>/score/{scores.json,complete.json}",
+        "rows/<arm>/logs/<stage>.log",
+        "rows/<arm>/pipeline_state.json",
+        "logs/cache.log",
+        "logs/<arm>.driver.log",
+        "launch.json",
+        "pipeline_state.json",
+        "observed_state.json",
+        "observations.jsonl",
+        "post_state.json"
+      ]
+    },
+    {
+      "row_id": "practical_increment-s2026092701",
+      "method": "practical_increment",
+      "purpose": "Matched native source encoder increment; independently complete own source evaluation and fixed C0/P1 development without waiting for other arm",
+      "config_ref": "configs/pamf_phase3_source_practical_encoder_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-practical-encoder-s2026092701-r01/configs/practical_increment.train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2026102932,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "L2026092701/OE2026102907/scene2026102932; shared cached channel2026102931/receiver2026102912; exact parent development observations reused",
+      "k": null,
+      "scenario": "Source iid low_suburban/mid_urban/low_urban through frozenG extra view",
+      "optimizer": "AdamW_CENTER_UNITS reset, parent weight decay, constant schedule",
+      "lr": 0.0001,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "222 newupdates each; parent11322/cumulative11544; original nativeL6 + extraCE0.68; OE64 clean+matchedsecond128 meanKLuniform6*.1; own readouts each200CPU; noU/EMA",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-practical-encoder-s2026092701-r01/rows/practical_increment",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-practical-encoder-s2026092701-r01/rows/practical_increment/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_practical_encoder_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-practical-encoder-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "runtime.json",
+        "configs/cache.json",
+        "configs/<arm>.{train,source}.json",
+        "configs/<arm>.<condition>.json",
+        "cache/source_L/{ids.npy,metadata.npz,<view>.npy}",
+        "cache/source_OE/{ids.npy,metadata.npz,<view>.npy}",
+        "cache/complete.json",
+        "rows/<arm>/train/{final.pt,steps.jsonl,complete.json}",
+        "rows/<arm>/source/compact/<role>/<view>/data.npz",
+        "rows/<arm>/source/fit/{geometry.npz,readouts.npz,training.json,complete.json}",
+        "rows/<arm>/source/calibration/{thresholds.npy,complete.json}",
+        "rows/<arm>/source/predict/<view>/predictions.npz",
+        "rows/<arm>/source/predict/complete.json",
+        "rows/<arm>/source/complete.json",
+        "rows/<arm>/source/score/{scores.json,complete.json}",
+        "rows/<arm>/development/<condition>/predict/{predictions.npz,complete.json}",
+        "rows/<arm>/development/<condition>/score/{scores.json,complete.json}",
+        "rows/<arm>/logs/<stage>.log",
+        "rows/<arm>/pipeline_state.json",
+        "logs/cache.log",
+        "logs/<arm>.driver.log",
+        "launch.json",
+        "pipeline_state.json",
+        "observed_state.json",
+        "observations.jsonl",
+        "post_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Primary practical_increment::mlp16_oe fixed; clean_increment matched control, no source or target candidate re-selection.",
+    "Both rows independently cold-fork E51, optimizer reset222 updates, cumulative11544; native original defaulthead and Sinc jointly train, no replacement head.",
+    "Same L indices/exposures/native six-view loss; additionalCE .68 is rawclean control vs iid practical+frozenG variant, label smoothing .01.",
+    "SourceOE21/6134 member supervision, batch64 -> clean+second128, average uniformKL*.1; no trueTX, sourceU/EMA/Vfit/target0.",
+    "One shared L6300/OE6134 cache, 12434 physical/49736 derived views; cachedpractical are computational augmentations, not new independent records.",
+    "After each own encoder freezes: new cleanL-only geometry, L/OE4 fourview readouts200CPU each and own normalization; no copied E51 geometry.",
+    "KnownV4views only30groups one global threshold/method, FRR5/originalFsameinput2pp and whole ties; .5pp encoder loss diagnostic only.",
+    "Novel IQ/prediction opened after own thresholds save; all4view source predictions complete before independent private sourceTX score.",
+    "Source negative scores do not cancel fixed C0/P1; every row source/dev prediction/scoring can finish without the other encoder row.",
+    "Parent dev reference is previous source-practical-readout augmented_readout state, not original pre-practical D0; no parent recomputation.",
+    "Latest clean95/star90 eachmain scene, knownaccept maximize/FRR5/originalF2pp, allmethods/TX/RX/scenes reported; no target threshold/oracle scan.",
+    "TargetU0/formal0, same864 Q across arms/conditions; RX24-1 is crossRX but not strictly unseen date, novel3/source and development previously exposed.",
+    "Two row workers allowed within actualmemory reservation policy; do not modify or stop foreign/other healthy processes.",
+    "No Phase1/2 default replacement, target adaptation, unknown clustering or anonymous registration claim. Full Phase3 remains incomplete."
+  ],
+  "registered_at": "2026-10-29T06:56:00+00:00",
+  "verification": {
+    "focused_tests": "32 unique tests/68subtests covered: native6/7sub,cache7/23sub,readout8/14sub,dev original7/24sub then real-parent-layout newregression+neighbors3/10sub PASS,launcher3PASS",
+    "independent_P0_P1": "PASS one full review; unique dev parent source/fit path P1 reproduced RED, fixed and once targeted confirmed PASS",
+    "actual_checkpoint_smoke": "Cache first E51/F0/G synthetic views; perrow native gradient smoke before real training IQ; source/dev synthetic before heldout IQ. Pending actual launch.",
+    "N607_preflight": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_practical_encoder_20261029_r01\\preflight.json",
+    "code_commit": "b578c074ba68b8ff9aa539209b3410f1f103ba3d"
+  }
+}

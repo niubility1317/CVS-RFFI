@@ -25,5 +25,6 @@
 |PAMF第三阶段：完整基座源端辅助开放数据|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-oe-data-r01/report.md)|
 |PAMF第三阶段：21台源辅助设备数据|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-oe-diverse-data-r01/report.md)|
 |PAMF第三阶段：完整六类基座源OE拒识|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-open-readout-s2026092701-r01/report.md)|
+|PAMF第三阶段：匹配预算的源端星地编码器联合增量|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-practical-encoder-s2026092701-r01/report.md)|
 |PAMF第三阶段：源端星地域读出与跨RX冻结诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-practical-readout-s2026092701-r01/report.md)|
 |PAMF第三阶段：源已知风险约束拒识校准|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-risk-calibration-s2026092701-r01/report.md)|
