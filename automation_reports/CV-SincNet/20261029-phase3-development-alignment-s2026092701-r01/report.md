@@ -57,3 +57,13 @@ SFOW-RFFI的可靠旧类保护和局部几何思想提供参考，但其论文�
 一次N607 preflight PASS：两旧D0与Q public句柄、源聚合/阈值及P1 G存在，新run/release/archive路径未占；GPU空闲19726至22694MB（启动逐row再查实际memory），只新增1worker同时运行，不停止外人。服务器将只接收两个U的公共三文件，无Utruth；Q和D0复用旧不可变根。模型真实checkpoint synthetic2 smoke是每condition首步，PASS立即继续，不设smoke token。适应目标另外保护U未见later unknown总体及每有样本主景95%/90%，相关私有分组只在独立scorer。
 
 新增R状态每condition234825个FP64系数、1878600字节（约1.79MiB），不是新增神经可训练权重；原F232993和MLP1633参数不变。小型合成时长不外推部署吞吐，实际本run计时/状态按后态证据报告。当前真实U尚未读取、尚无新性能结果，总目标仍ACTIVE。
+
+## 实际U适应与独立评分完成（2026-10-29）
+
+已VERIFIED/ANALYZED_DEVELOPMENT_ONLY，C0/P1各adapter→预测→独立score全COMPLETE，无技术失败。两行均实际applied，不是identity；C0合格core157，P1初始150/合格147，均支持5个旧伪类0/2/3/4/5，不能把伪类覆盖写成真实TX覆盖或纯度。每条件只U384拟合R，再V864逐样本预测，D0精确旧结果复用，全部新预测固定后独立truth-last。source/F/G/head/读出/阈值更新0，原模型参数和R在query保持不变，formalRX24-18读取0。
+
+MLP clean旧open62.6736→63.1944（+0.5208pp）、known接收80.7292→81.25、unknown99.3056→98.9583；星地旧open53.2986→55.0347（+1.7361pp）、known接收72.9167→74.8264、unknown57.2917不变。两行虽有正收益，known保护仍失败，P1unknown/later保护也失败，均NO_PROMOTION，不扩seed、不回调η或阈值。真实无标签适应已执行，但尚无通过目标的适应方法，匿名注册0，总目标ACTIVE。
+
+实际driver2575506和C0worker2575527的live /proc PID/CWD/cmdline已捕获，C0日志541→960B；完成后owned均退出。两个模型工作期间未捕获owned CUDA compute快照，GPU3来自driver分配记录，不将其他用户GPU表或单次采样称峰值；不为补观察重跑。完整17个元数据/日志文件及adapter/predictions NPZ实际存在/大小已读回。真实checkpoint合成2IQ smoke均在U前PASS，适配后head在已确认N607 ABI组合上实际成功。一次archive比较和compile为VERIFIED。阶段实际计时见post_state，不当作逐包部署延迟。
+
+同row完整报告见`docs/PAMF_PHASE3_DEVELOPMENT_ALIGNMENT_RESULTS_20261029.md`，评分/核心诊断/后态在本local_artifacts根。clean与star仍1248个原始物理记录的两条件、U日D1→V日D2，开发TX已source评过，不是正式新TX盲测。保留全部负结果与其他owner工作，foreignstop0。

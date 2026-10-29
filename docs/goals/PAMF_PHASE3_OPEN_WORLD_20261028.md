@@ -154,3 +154,20 @@ C0未知单项过95，但旧类FRR/总损伤失败；P0/P1均未过90且known保
 实用景codea3b8bb24b6b9e357bf37678209cf0c21d666f7df，10tests/16subtests及一次P0/P1 PASS；clean生产算法未改，code/config1e1876db7d0f7b8f3724fe95acf3c8c8d5b64fef补3个C0 tests/8subtests及一次新C0配置边界P0/P1 PASS，未重复旧代码全审。两run各完成N607 preflight/单归档一次比较/compile、实际checkpoint合成2IQ no-query smoke后立即预测。前台任务很短，首次独立post已终态，未捕获运行期独立PID/CWD/GPU/log增长；实际CLI身份、完整日志/markers及已退出状态有保存，不冒充live证据/峰值/部署延迟，不为补观察重跑。GPU0实用景与GPU6 clean各只新增1worker，无foreign停止；后续GPU表其他任务保持。
 
 下一研究重点直接转向合法U_dev上的无标签域偏移处理及身份保持的未知发现：先提高未见RX的已知接收/正确识别，同时守住95%/90%拒识。当前结果显示未见RX的已知样本被大量拒绝，支持域变化影响拒识的判断；单纯提高拒绝强度或只恢复known不足以达标。下一候选须另行固定算法/源校准/更新预算与D0/D1及注册控制，U只读公共无标签输入、不读真实构成，V不回收训练，正式RX24-18继续隔离。目标保持ACTIVE；当前没有成功无标签适应或未来匿名注册证据，不标完成。
+
+## 首个真实无标签U适应结果（2026-10-29）
+
+`20261029-phase3-development-alignment-s2026092701-r01`已VERIFIED/ANALYZED_DEVELOPMENT_ONLY，code`cdaeccaf201f8c242ac00400b5c499f4dc1e63a8`。当前F使用GN/LN，无可直接更新的BN统计；新方法为源锚点/初始可靠旧伪类约束的正交多分支特征adapter。源MSP/cos门槛＋head/fused近邻一致＋time/frequency/PA2票，≥8条/旧伪类且≥3类；不用MLP已接受或unknown比例/类数/配额。一次求R=polar(I+.5M.TP/K)，reference27固定0，std raw右乘后交原默认head重算logits/descriptor。它保留std空间欧氏距离/cos，不保留whitened距离，也不把latent坐标称真实PA恢复。原F/G/head/MLP/source几何/阈值不变，但确实拟合了U特定R状态，每condition234825个FP64系数/1878600B，不把0神经optimizer步数写成未适应。
+
+C0/P1从同一source独立用U384（RX24-1 D1）拟合R并写冻结checkpoint后，再对D2 V864逐样本预测；D0只在R冻结后加载旧完成预测作匹配控制，不重复旧row；真值只独立scorer连接。两condition同1248原物理记录，不共享clean参考。两行均实际applied，C0合格core157，P1初选150/合格147；支持5个旧伪类0/2/3/4/5，不等于5个真实TX或已知纯度。U中的两个未注册设备已无标签见过，第三个later未进入U；这些开发TX此前source评过，不称source新TX盲测。正式RX24-18 U768/Q1920依然未模型访问。
+
+|主MLP条件|旧open D0→D1|已知接收D0→D1|未知拒识D0→D1|D1原F总损伤|
+|---|---:|---:|---:|---:|
+|C0 clean跨RX|62.6736→63.1944%|80.7292→81.2500%|99.3056→98.9583%|16.4931pp|
+|P1 星地+DURA跨RX|53.2986→55.0347%|72.9167→74.8264%|57.2917→57.2917%|17.7083pp|
+
+旧open分别多3/576与10/576，+0.5208/+1.7361pp；都有正收益，但known FRR/原F2pp保护仍失败，P1总体/scene/later未知保护仍失败，均NO_PROMOTION，不扩seed、不按V改η或阈值。clean unknown单项仍过95，不代表整体成功。已完成真实无标签适应实验，但尚无通过验收的适应方法；匿名注册仍0，完整目标ACTIVE。
+
+两行各真实checkpoint合成2IQ smoke先于U，所有模型与R在Q冻结；sourceIQ/逐源样本bank/formal/新阈值0。原pure+outer联合22tests/39subtests、launcher3tests PASS；唯一review的两个P1（storage同根与Torch2.1/NumPy2桥）已定点修复，新2回归＋1邻近3tests/14subtests PASS并一次定向复核PASS，未重复全审/数据验证。一次N607 preflight/单归档比较/compile PASS。真实driver/C0worker live PID/CWD/cmd和C0日志增长已捕获，模型运行时ownedCUDA采样未捕获，GPU3分配来自driver，不报告峰值或逐包时延；完成后owned均退出，foreignstop0。实际pipeline13.7489s包含模型载入/两条件U与Q/评分，不是部署延迟。完整报告见`docs/PAMF_PHASE3_DEVELOPMENT_ALIGNMENT_RESULTS_20261029.md`。
+
+下一优先改进源训练的拒识分数/表征对星地域和冻结恢复后输入的覆盖。当前P1 D1主分数AUROC约71.6363%；本等量开发池若单global阈值同时已知接收≥95%且未知拒识≥90%，至少95%×90%=85.5%的known/unknown配对应正确排序，因此仅移动当前阈值无法满足两项。此为当前单分数/本数据的必要条件，不推导所有模型不可能，也不扫描V寻找oracle阈值。新独立候选可让合法source L与既有辅助OE通过同规则星地/G输入来训练拒识器、源known-only校准后再验证；不把开发V回收训练，不更换source基座/默认恢复器或擅改数据权限，不读取正式Q。未知身份聚类与未来匿名注册≥80%的完整目标继续保留。
