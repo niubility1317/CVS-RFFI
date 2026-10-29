@@ -448,3 +448,23 @@ baseline保留cache同输入原F0，而非新encoder自身closed；完整训练6
 最大q=97/4473，下一q=92/4241在源RX6/low urban使原F0损失达2.0316pp而不合法。六阈值仅需48B FP64聚合，无CDF/逐行source bank；它们是同一源V的经验风险校准，无conformal或跨域覆盖保证。详细数据/每预测桶与真实TX区分/42组/边界/配对和成本在 `docs/PAMF_PHASE3_STAR_CLASS_RISK_RESULTS_20261029.md`。
 
 24项相关检查/45子测试及一次独立P0/P1审查PASS，单archive/compile/runtime与真实父readout checkpoint的2条synthetic-feature无query smoke均VERIFIED；该smoke不是新F0/G或星地IQ测试。CPU driver2955649/source2955662独立live CWD/argv、CUDA空，日志485→607B，CPUscore2955731完成，终态live空，GPU新增/foreignstop0。源known/novel同五sourceRX/三日、novel3历史开发暴露，不能替代未见RX target；本轮无target/DA/发现/注册，A_N/H_OW=N/A，正式RX24-18未访问，完整目标ACTIVE。
+
+## 2026-10-30 冻结 F0 局部邻域支持度实际完成
+
+`20261030-phase3-star-local-support-s2026092701-r01` 已 VERIFIED / ANALYZED_SOURCE_ONLY，实际代码 `84cdc012f7d9641b283c407f6048bfe4e6e21cf6`、预登记 `9c248810e16fece047b15bcadca32e15e4c31a90`。固定 k=8，比较 pooled_known、pooled_relative、rx_consensus_relative；唯一主方法为最后一项。原 F0 E50/default6head 完全冻结，已知身份由其原默认头给出；支持库仅使用原 F0 teacher 的 L6300/OE6134 单位 fused160，未使用 OE 真 TX 或 K。查询不按真实 RX、场景或标签路由。
+
+| 固定方法 | A_K% | R_U% | H-score% | C_K% | 原 F0 损失 pp |
+| --- | --- | --- | --- | --- | --- |
+| pooled_known | 90.625926 | 24.095238 | 38.068883 | 99.159259 | 0.355556 |
+| pooled_relative | 90.470370 | 27.015873 | 41.607187 | 98.414815 | 0.511111 |
+| **rx_consensus_relative（主）** | **90.607407** | **13.111111** | **22.907458** | **98.925926** | **0.374074** |
+
+三种方法均通过 known42 保护，均未通过 unknown 总体/五源 RX/六景共12组90%要求，主候选 **NO_PROMOTION**。主方法相对 pooled_relative 多正确接收37条、少拒识未知438条，R_U 降13.904762pp、H 降18.699729pp；不能因控制较好而事后换主。主方法三个未知 TX 的拒识为168/1050、25/1050、220/1050，分别16.000000%、2.380952%、20.952381%。该结果未支持按源 RX 距离取中位数的共识机制，不调 k、重新选阈值或扩大种子。
+
+全部真实输入仍为同 G10 MIX01 的既有 P1；L/OE bank 在 V27000 前固定，三分数共18个预测类别阈值由源 V 校准后，才对 novel3150 预测，完整 prediction 后独立 truth-last。fresh 原 F0 与缓存同 P1 闭集均24565/27000（90.981481%），逐条身份变化0，基线未重设。源五 RX/三日和三个历史暴露 novel 仍非新 RX / 新 TX 盲测；target U/Q、正式 RX24-18 读取0。
+
+实际新增 F30152（V27000+novel3150+合成 G10 P0 smoke2），G前向0、NN/optimizer/G更新0。部署 NN 参数 F232993+G266951=499944，无辅助头；bank FP32特征7957760B、FP64工作特征15915520B，另需 RX/IDs/距离工作区。生产 CPU 距离读出30150行39.840640s，独立公开分数复核36.003145s，二者均非 B1 端到端时延。pipeline94.166825s。
+
+20项聚焦测试/46子用例和一次独立P0/P1通过；单归档传输比较/remote compile/runtime/原F0实际checkpoint合成星地smoke均 VERIFIED。独立观察 driver3140372、source3140756 在正确 CWD/argv、CUDA2，实时显存388MB为采样值，日志1716→7337→10481B；评分3141520，终态 live/owned GPU 均空，foreign干预0。详细逐RX/scene/TX、校准边界及配对见 `docs/PAMF_PHASE3_STAR_LOCAL_SUPPORT_RESULTS_20261030.md`。
+
+本轮只完成源端拒识候选证伪，无目标适应、发现或未来匿名注册新结果，A_N/H_OW=N/A；用户 v3 指标与完整 Phase3 目标继续 **ACTIVE**。后续先依据已有实现收窄拒识表征和条件支持的缺口，另定机制与独立 run，不将此轮失败阈值转为目标反馈。

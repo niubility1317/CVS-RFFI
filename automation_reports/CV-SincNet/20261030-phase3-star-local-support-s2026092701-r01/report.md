@@ -28,3 +28,21 @@ NN部署参数F232993+G266951=499944，无aux；源bankFP32约7.96MB、FP64工�
 技术stop仅来源/角色/权限错误、非有限、输出碰撞或无法完成合法prediction，保留全部partial，不因性能低停止或重启。未知启动结果先读回，不盲目重复提交。没有其他owner干预权限。
 
 验证：20tests/46subtests PASS6.11s、四AST/实际runtime schema PASS；一次独立P0/P1 PASS，定向7tests16sub与主suite重叠不加计。覆盖手算距离/ties/RXmedian/查询行独立与bank不变/父数据角色/默认头/原cachebaseline/true-label-before-validation/不可覆盖与实际终态字段。一次本run N607 preflight核实原F0 source契约／teacher身份／四role句柄／GPU剩余显存PASS，target0。单code/config commit、一个archiveSHA比较/remotecompile、actualcheckpoint smoke、启动PID/CWD/cmd/GPU/log及全部预测后的独立评分，未添加报告审批/封印/hash链或重复父suite。
+
+## 实际完成（2026-10-30）
+
+VERIFIED / ANALYZED_SOURCE_ONLY。唯一主 `original_F0::rx_consensus_relative` 为 NO_PROMOTION；完整预测、18个已冻结阈值和独立 CPU truth-last 评分全部完成，终态 live/owned GPU 为空，foreign 干预0。完整结果见 `docs/PAMF_PHASE3_STAR_LOCAL_SUPPORT_RESULTS_20261030.md`；完整 Phase3 ACTIVE，A_N/H_OW=N/A。
+
+| 固定分数 | 宏 A_K | 宏 C_K | 宏 R_U | H-score | 原 F0 闭集−A_K |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| pooled_known | 90.625926% | 99.159259% | 24.095238% | 38.068883% | 0.355556 pp |
+| pooled_relative | 90.470370% | 98.414815% | 27.015873% | 41.607187% | 0.511111 pp |
+| rx_consensus_relative | 90.607407% | 98.925926% | 13.111111% | 22.907458% | 0.374074 pp |
+
+三个方法 known42 保护通过，unknown 总体/五源RX/六景90%保护失败。主相对pooled_relative正确接收净+37、未知拒对净−438，R_U−13.904762pp、H−18.699729pp；不按较好的控制换主。原F0同P1闭集与fresh均24565/27000=90.981481%，逐条身份变化0，未重设基线。
+
+支持库L6300/OE6134、V27000、novel3150均既有G10 MIX01 P1，原五source RX/三日及历史暴露三novel不构成未见RX或独立新TX。bank在V前固定，阈值在novel前冻结，source predictor私有novel truth读取0；目标U/Q及正式RX24-18读取0，无DA/发现/注册新证据。
+
+实际新F30152、G0、NN/optimizer/G更新0。F232993+G266951=499944参数，无aux；bank FP32特征7957760B、工作FP64特征15915520B，RX/IDs/workspace另计。生产CPU核心距离读出30150行39.840640s，公开证据独立复核36.003145s，均非B1端到端时延。pipeline墙钟94.166825s。
+
+driver3140372/source3140756/CPU scorer3141520已独立实时核对正确CWD/argv；source CUDA2、388MB采样非峰值，日志1716→7337→10481B增长。终态所有本run进程结束，foreign未改。code84cdc012f7d9641b283c407f6048bfe4e6e21cf6，prereg9c248810e16fece047b15bcadca32e15e4c31a90；archivebb4ed13b64dcd8fdafbdd25e053736fc72cb0b427fd4f30fe13eeac784415cb3，336files/data0，一次传输SHA比较/compile/runtime VERIFIED。20tests/46subtests PASS6.11s、一次独立P0/P1 PASS、首步真实原F0checkpoint合成星地无query smoke PASS。没有重新训练、调k、重校准、扩seed、选择性重跑或target访问。
