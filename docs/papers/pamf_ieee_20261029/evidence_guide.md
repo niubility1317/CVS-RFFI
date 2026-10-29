@@ -1,6 +1,6 @@
-# PAMF 论文第三版：泛化主线、部署开销与实验依据
+# PAMF 论文第四版：方法设计、天基泛化与实验依据
 
-PAMF manuscript v3: generalization, deployment footprint, and evidence. 2026-10-29.
+PAMF manuscript v4: generalization, deployment footprint, and evidence. 2026-10-30.
 
 本次只整合已有冻结结果、整理作图和撰写论文，没有训练、预测或新增目标评分。中文与英文论文共用段落结构、公式和数据，便于逐段核对。英文采用 IEEEtran journal、10 pt、双栏；中文沿用该双栏骨架供审阅，不视为正式英文投稿模板。目标期刊尚未指定，因此没有虚构刊名、录用日期、作者和基金信息。
 
@@ -54,14 +54,16 @@ Page numbers below refer to the selected r3 PDF, not historical Fig labels. Exte
 
 | 正文编号 | 来源页 / Source pages | 正文用途与取舍 / Purpose |
 |---|---|---|
-| Fig.1 | 新绘结构示意，依据已固定机制 | 总体训练/推理/可选恢复框架；没有新增实验数据 |
-| Fig.2 | 第1、2页；原Fig001A、Fig001 | D1--D3跨RX 126000条／D0双留出42000条相邻；每图完整15模型、八种子；均值±SD贴点，F1放补充 |
-| Fig.3 | 第25、26页；原Fig022、Fig031 | 有增强监督/PL/完整方法六景面板；clean在Table II；无增强23/24页放补充 |
-| Fig.4 | 第31、32页；原Fig025、Fig034 | 七场景曲线，跨RX/双跨并排，相同坐标范围 |
-| Fig.5 | 第27至30页；原Fig023/032、024/033 | RX划分+标签比例六景四面板；clean完整数据保留补充 |
-| Fig.6 | 第33至36页；与37/38页同数据 | 六景跨RX/双跨原图相邻，clean原图保留补充 |
-| Fig.7 | 第42页；39至41页为同实验替代版 | DURA五识别器恢复增益，保留数值、曲线箭头和pp提升；替代画法不再占正文 |
-| Fig.8 | 第43至50页同实验，并复用逐种子数据 | CE/完整SSL双留出原始配对图相邻，含clean/六景与准确率/F1；跨RX完整数据随附 |
+| Fig.1 | 新绘系统流程 | 源域开发与两条冻结推理路径；概念性部署示意 |
+| Fig.2 | 新绘 PAMF 架构 | 多分支、三视图与残差融合；另有两种可选画法 |
+| Fig.3 | 新绘 DURA 结构 | 粗恢复、作用估计与两阶段先验/一致性；另有阶段细节图 |
+| Fig.4 | 第1、2页；原Fig001A、Fig001 | D1--D3跨RX 126000条／D0双留出42000条相邻；每图完整15模型、八种子；均值±SD贴点，F1放补充 |
+| Fig.5 | 第25、26页；原Fig022、Fig031 | 有增强监督/PL/完整方法六景面板；clean在Table II；无增强23/24页放补充 |
+| Fig.6 | 第31、32页；原Fig025、Fig034 | 七场景曲线，跨RX/双跨并排，相同坐标范围 |
+| Fig.7 | 第27至30页；原Fig023/032、024/033 | RX划分+标签比例六景四面板；clean完整数据保留补充 |
+| Fig.8 | 第35、36页；第37、38页为同实验替代版 | 六景跨RX/双跨原图相邻；第33、34页的clean图保留补充 |
+| Fig.9 | 第42页；39至41页为同实验替代版 | DURA五识别器恢复增益，保留数值、曲线箭头和pp提升；替代画法不再占正文 |
+| Fig.10 | 第43至50页同实验，并复用逐种子数据 | CE/完整SSL双留出原始配对图相邻，含clean/六景与准确率/F1；跨RX完整数据随附 |
 | Table I | data_settings与已核实物理角色 | 主数据构成、源/目标RX、样本数；区分训练池10%与源全池7% |
 | Table II | 01_main_comparison.csv | 5识别器×两种holdout，clean、raw六景、G-LU六景及F1，3种子 |
 | Table III | 07_U_permission.csv | 自然序监督/PL、同排列监督与完整SSL，分别接raw/G-L/G-LU；复用已有归因控制 |
@@ -71,23 +73,23 @@ Page numbers below refer to the selected r3 PDF, not historical Fig labels. Exte
 
 Main figures are reformatted from frozen statistics without changing values. Bars have explicit zero baselines; paired line plots use consistent nonzero limits. Vector PDFs, PNG previews, and CSV data are included. Cross-RX and double holdout are adjacent throughout.
 
-Fig.2 修正：第二版误用汇总表中不完整的 `cross_rx` 字段。第三版直接嵌入已选图 `Fig001A_network_cross_rx` 和 `Fig001_network_accuracy_f1` 的原始准确率面板，完整15模型、八种子，分别对应126000条跨RX与42000条双留出；两类物理记录互不重叠。跨RX原图数据已由冻结混淆矩阵精确计算，本次不新增计算、预测或真值访问。
+Fig.4 修正：第二版误用汇总表中不完整的 `cross_rx` 字段。第三版直接嵌入已选图 `Fig001A_network_cross_rx` 和 `Fig001_network_accuracy_f1` 的原始准确率面板，完整15模型、八种子，分别对应126000条跨RX与42000条双留出；两类物理记录互不重叠。跨RX原图数据已由冻结混淆矩阵精确计算，本次不新增计算、预测或真值访问。
 
 ## 5. 每项结论对应哪些实验 / Conclusion-to-experiment map
 
 | 结论 / Conclusion | 结果与证据 / Evidence | 可复用内容 / Reuse |
 |---|---|---|
-| 完整PAMF优于四种已比较外部识别器 | Main跨RX六景71.16 vs SDG65.30；同G79.90 vs67.12；双跨68.81/76.83 vs63.59/65.66 | 01_main_comparison；Table II；Fig.3/4 |
-| 轻量结构在纯CE下有效 | E200双跨79.73 vs ComplexResNet75.05；232993参数 | 15_architecture；Fig.2；Table IV |
-| 完整SSL增益随条件变化 | 相对PL跨RX clean+2.25，raw六景+0.11，同G六景+1.39；11设置七正四负 | 14_paired_effects；02_factorial；Table III；Fig.5/6 |
+| 完整PAMF优于四种已比较外部识别器 | Main跨RX六景71.16 vs SDG65.30；同G79.90 vs67.12；双跨68.81/76.83 vs63.59/65.66 | 01_main_comparison；Table II；Fig.5/4 |
+| 轻量结构在纯CE下有效 | E200双跨79.73 vs ComplexResNet75.05；232993参数 | 15_architecture；Fig.4；Table IV |
+| 完整SSL增益随条件变化 | 相对PL跨RX clean+2.25，raw六景+0.11，同G六景+1.39；11设置七正四负 | 14_paired_effects；02_factorial；Table III；Fig.7/6 |
 | 相同排列下U包不必提高raw六景 | 同排列Sup/完整raw72.53/71.16；G-LU79.51/79.90 | 07_U_permission；不新增重排PL |
-| DURA在五种识别器上有平均收益 | Main五识别器raw/匹配G-LU配对；PAMF跨RX+8.74、双跨+8.02pp | 13_DURA_generality；Fig.7；原39–42页只选一版 |
-| PA分支贡献较明确 | 跨RX六景删除PA：CE -7.21、SSL -6.78pp | 03_two_layer；Fig.8；04嵌套CE |
+| DURA在五种识别器上有平均收益 | Main五识别器raw/匹配G-LU配对；PAMF跨RX+8.74、双跨+8.02pp | 13_DURA_generality；Fig.9；原39–42页只选一版 |
+| PA分支贡献较明确 | 跨RX六景删除PA：CE -7.21、SSL -6.78pp | 03_two_layer；Fig.10；04嵌套CE |
 | SIG作用依赖训练条件 | 删除SIG：CE跨RX/双跨 -0.88/+0.85，SSL -3.85/-2.10pp | 03_two_layer；04嵌套；不混写E200CE |
 | 三视图相对单视图提升有限 | E200双跨clean +0.10pp；完整SSL8种子跨RX/双跨六景+0.59/+0.22pp | 15_architecture与06_view_comparison分别报告 |
-| RX划分影响明显 | PAMF+G跨RX六景79.90/66.58/75.26 | 10_receiver_splits；Fig.5 |
-| 标签增加总体有利于本方法 | 1/5/10%恢复跨RX六景74.43/77.41/79.90 | 09_label_fraction；Fig.5；10%复用Main |
-| 源数量不能概括为越多越好 | clean总体改善；六景非单调，且样本量同步增加 | 08_source_receiver_curve_common6；Fig.6 |
+| RX划分影响明显 | PAMF+G跨RX六景79.90/66.58/75.26 | 10_receiver_splits；Fig.7 |
+| 标签增加总体有利于本方法 | 1/5/10%恢复跨RX六景74.43/77.41/79.90 | 09_label_fraction；Fig.7；10%复用Main |
+| 源数量不能概括为越多越好 | clean总体改善；六景非单调，且样本量同步增加 | 08_source_receiver_curve_common6；Fig.8 |
 | 十类规模仍有恢复收益 | raw62.09→72.60；PL63.31→72.44 | 11_ten_class_scale；补充S5；不是大规模174TX验证 |
 
 ## 6. 补充材料与版本隔离 / Supplementary material and version separation

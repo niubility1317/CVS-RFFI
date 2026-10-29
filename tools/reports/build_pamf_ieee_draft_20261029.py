@@ -11,7 +11,7 @@ def esc(s):
 
 def prose(s):
     # Citation/reference keys are identifiers, not inline mathematical variables.
-    parts=re.split(r'(\\(?:cite|ref|eqref)\{[^}]*\})',s)
+    parts=re.split(r'(\\(?:cite|ref|eqref)\{[^}]*\}|\$(?:\\.|[^$])*\$)',s)
     for i in range(0,len(parts),2):
         part=re.sub(r'(?<!\\)%',r'\\%',parts[i])
         part=re.sub(r'10\^\((-?\d+)\)',lambda m:'$10^{'+m[1]+'}$',part)
@@ -22,7 +22,12 @@ def main():
     ap=argparse.ArgumentParser();ap.add_argument('--source',type=Path,required=True);ap.add_argument('--catalog',type=Path,required=True);ap.add_argument('--results',type=Path,required=True);ap.add_argument('--output',type=Path,required=True);ap.add_argument('--plot-python',required=True);ap.add_argument('--skip-figures',action='store_true');a=ap.parse_args()
     out=a.output;out.mkdir(parents=True,exist_ok=True);(out/'figures').mkdir(exist_ok=True);(out/'data').mkdir(exist_ok=True)
     manuscript=json.loads((a.source/'manuscript_blocks.json').read_text(encoding='utf-8'))
-    if not a.skip_figures:subprocess.run([sys.executable,str(Path(__file__).with_name('reuse_pamf_selected_artwork_20261029.py')),'--catalog',str(a.catalog),'--results',str(a.results),'--output',str(out/'figures'),'--plot-python',a.plot_python],check=True)
+    if not a.skip_figures:
+        subprocess.run([sys.executable,str(Path(__file__).with_name('reuse_pamf_selected_artwork_20261029.py')),'--catalog',str(a.catalog),'--results',str(a.results),'--output',str(out/'figures'),'--plot-python',a.plot_python],check=True)
+        diagram_dir=out/'diagrams'
+        subprocess.run([a.plot_python,str(Path(__file__).with_name('render_pamf_method_diagrams_20261030.py')),'--output',str(diagram_dir)],check=True)
+        for source,destination in [('System_A_training_and_inference.pdf','fig01.pdf'),('System_A_training_and_inference.png','fig01.png'),('PAMF_A_parallel_branches.pdf','pamf_network.pdf'),('DURA_A_two_stage.pdf','dura_network.pdf')]:
+            shutil.copy2(diagram_dir/source,out/'figures'/destination)
     for fn in ['01_main_comparison.csv','02_augmentation_PL_factorial.csv','03_two_layer_structure_ablation.csv','04_nested_noSIG_CE.csv','06_view_comparison_8seed.csv','07_U_permission.csv','10_receiver_splits.csv','11_ten_class_scale.csv','14_paired_effects_summary.csv','14_paired_effects_per_seed.csv','15_architecture_E200_summary.csv','15_architecture_E200_per_seed.csv','17_training_U_exposure.csv','DURA_contract_audit.csv']:
         p=a.results/fn
         if p.exists():shutil.copy2(p,out/'data'/fn)
@@ -102,12 +107,17 @@ Radio frequency fingerprinting, space--ground channels, receiver generalization,
         for i,b in enumerate(manuscript['blocks']):
             typ=b['type']
             if typ in ['section','subsection']:
-                if typ=='section' and b['en']=='Conclusion':body.append('\\clearpage\n\\balance\n')
+                if typ=='section' and b['en']=='Conclusion':body.append('\\clearpage\n')
                 body.append('\\'+typ+'{'+b[lang]+'}\n')
             elif typ=='text':body.append(prose(b[lang])+'\n\n')
             elif typ=='equation':body.append(b['tex']+'\n')
             elif typ=='table':body.append(ts[b['key']])
-            elif typ=='figure':body.append('\\begin{figure*}[!t]\n\\centering\\includegraphics[width=\\textwidth,height=.86\\textheight,keepaspectratio]{images/fig%02d.pdf}\n\\caption{%s}\\label{fig:%d}\n\\end{figure*}\n'%(b['number'],prose(b[lang]),b['number']))
+            elif typ=='figure':body.append('\\begin{figure*}[!t]\n\\centering\\includegraphics[width=\\textwidth,height=.84\\textheight,keepaspectratio]{images/fig%02d.pdf}\n\\caption{%s}\\label{fig:%d}\n\\end{figure*}\n'%(b['number'],prose(b[lang]),b['number']))
+            elif typ=='figure_asset':body.append('\\begin{figure*}[!t]\n\\centering\\includegraphics[width=\\textwidth,height=.75\\textheight,keepaspectratio]{images/%s}\n\\caption{%s}\\label{%s}\n\\end{figure*}\n'%(b['file'],prose(b[lang]),b['label']))
+            elif typ=='list_item':
+                if i==0 or manuscript['blocks'][i-1]['type']!='list_item':body.append('\\begin{enumerate}\n')
+                body.append('\\item '+prose(b[lang])+'\n')
+                if i+1==len(manuscript['blocks']) or manuscript['blocks'][i+1]['type']!='list_item':body.append('\\end{enumerate}\n')
         tex=header+''.join(body)+'\n\\bibliographystyle{IEEEtran}\n\\bibliography{references}\n\\end{document}\n'
         (p/'main.tex').write_text(tex,encoding='utf-8')
     for i,b in enumerate(manuscript['blocks']):
@@ -156,11 +166,30 @@ Radio frequency fingerprinting, space--ground channels, receiver generalization,
     # Every selected page is accounted for; the excluded external model detail pages are explicit.
     index=read(a.catalog/'图表索引.csv');mapping=[]
     main_map={1:'Fig.2',2:'Fig.2',6:'Table IV',23:'Supplement S3',24:'Supplement S3',25:'Fig.3 / Table III',26:'Fig.3 / Table III',27:'Fig.5',28:'Fig.5',29:'Fig.5',30:'Fig.5',31:'Fig.4',32:'Fig.4',33:'Fig.6',34:'Fig.6',35:'Fig.6',36:'Fig.6',37:'Fig.6 (same data)',38:'Fig.6 (same data)',39:'Fig.7 (alternative)',40:'Fig.7 (alternative)',41:'Fig.7 (alternative)',42:'Fig.7',43:'Fig.8',44:'Supplement S6',45:'Supplement S6',46:'Supplement S6',47:'Fig.8',48:'Supplement S6',49:'Supplement S6',50:'Supplement S6'}
+    main_map.update({33:'Supplement S4: clean source-count',34:'Supplement S4: clean source-count',37:'Supplement S4: clean + six-scene alternative',38:'Supplement S4: clean + six-scene alternative'})
+    fig_order=[b for b in manuscript['blocks'] if b['type'] in ['figure','figure_asset']]
+    fig_number={b['number']:i+1 for i,b in enumerate(fig_order) if b['type']=='figure'}
+    main_map={k:re.sub(r'Fig\.(\d+)',lambda m:'Fig.'+str(fig_number[int(m[1])]),v) for k,v in main_map.items()}
+    # The source artwork retains its historical asset names, while the paper has
+    # additional conceptual diagrams. Keep both identities explicit for readers.
+    manifest_path=out/'figures'/'manifest.json'
+    if manifest_path.exists():
+        manifest=[]
+        for entry in json.loads(manifest_path.read_text(encoding='utf-8')):
+            if entry.get('conceptual_diagram'):continue
+            asset_number=entry.get('asset_figure',entry['paper_figure'])
+            entry['asset_figure']=asset_number
+            entry['paper_figure']=fig_number[asset_number]
+            manifest.append(entry)
+        for i,block in enumerate(fig_order):
+            if block['type']=='figure_asset':
+                manifest.append({'paper_figure':i+1,'asset_file':block['file'],'sources':['New conceptual diagram'],'data':None,'conceptual_diagram':True})
+        manifest_path.write_text(json.dumps(sorted(manifest,key=lambda e:e['paper_figure']),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     for r in index:
         n=int(r['figure_number']);decision='Excluded: external model detail page' if 11<=n<=22 else main_map.get(n,'Supplement: retained candidate')
         mapping.append(dict(selected_page=n,old_reference=r['old_reference'],figure_id=r['figure_id'],title=r['short_title'],paper_use=decision,plot_data=r['plot_data'],seed_data=r['seed_data']))
     with (out/'已选50页_正文补充映射.csv').open('w',encoding='utf-8-sig',newline='') as f:w=csv.DictWriter(f,fieldnames=list(mapping[0]));w.writeheader();w.writerows(mapping)
-    validation={'no_training':True,'no_prediction':True,'no_new_truth_scoring':True,'selected_pages':len(mapping),'excluded_external_detail_pages':12,'retained_candidates':38,'main_figures':8,'main_tables':4,'aligned_blocks':len(manuscript['blocks']),'same_equations_and_data':True}
+    validation={'no_training':True,'no_prediction':True,'no_new_truth_scoring':True,'selected_pages':len(mapping),'excluded_external_detail_pages':12,'retained_candidates':38,'main_figures':len(fig_order),'main_tables':4,'aligned_blocks':len(manuscript['blocks']),'existing_experiment_data_reused':True}
     (out/'build_validation.json').write_text(json.dumps(validation,indent=2),encoding='utf-8');shutil.copy2(a.source/'manuscript_blocks.json',out/'manuscript_blocks.json')
     print(json.dumps(validation))
 
