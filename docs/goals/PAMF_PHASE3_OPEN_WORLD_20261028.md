@@ -196,3 +196,28 @@ aug星地低郊区/中城市/低城市未知拒识分别47.9167%/35.4167%/33.333
 两条件均NO_PROMOTION，不扩seed或访问正式池。仅源读出/校准不能消除域变化下的身份特征和未知分离问题；下一优先候选应在合法source训练角色上进行星地/G输入的编码器与原默认头联合增量训练，保留同预算source控制与clean身份保护，争取同时改善known正确识别和unknown排序。不回收V_dev训练、不读其真值拟合、不改变原默认F/G身份，不把更高接收率当未知拒识进展。未知发现/未来匿名注册仍未完成，完整目标ACTIVE。
 
 9stage全部COMPLETE、实际checkpoint合成2IQ四view smoke在source IQ前通过，C0/P1也各在Q前smoke。聚焦29tests/24subtests PASS；唯一独立审查两个API P1已修复并定向确认。一次N607 preflight/单归档比较/远端compile VERIFIED。捕获实际driver2624334/export2624355的PID/CWD/命令、GPU3可见性、owned CUDA占用与日志增长；900MB为一次采样不是峰值。source导出437.2247s、两个readout拟合stage6.0401s，完整stage计时见post_state，不当作逐包部署时延。完成后本run进程退出，其他owner未停止/改动。完整报告为`docs/PAMF_PHASE3_SOURCE_PRACTICAL_READOUT_RESULTS_20261029.md`，原始评分/训练损失/后态在本run local_artifacts。
+
+## 匹配预算的源端星地编码器联合增量结果（2026-10-29）
+
+`20261029-phase3-source-practical-encoder-s2026092701-r01`已VERIFIED/ANALYZED_DEVELOPMENT_ONLY，实际code/config `b578c074ba68b8ff9aa539209b3410f1f103ba3d`。同一E51父状态各独立222步，累计11544，fresh AdamW CENTER_UNITS lr1e-4/wd1e-4/物理clip5；原六类默认head和Sinc都实际联合更新，未另训身份head。两arm保留native原六路监督/crossRX0.1/As和U-off，额外L128 CE权重0.68：clean_increment用clean，practical_increment用同记录随机三景固定source practical/G。OE21的64条物理记录以clean＋对应第二view共128平均uniformKL乘0.1；成员监督存在，未知TX不读取。control仍含native旧As，不称全无星地训练。
+
+共享训练cache仅L6300/OE21共6134，12434物理/49736计算view，源U/V/novel/target0。源channel2931/receiver2912与另一个独立scene采样流2932按record选择，不按类别；primary额外L三景9568/9582/9266，共28416，额外OE4839/4663/4706，共14208。两arm各L native170496＋extra28416＝198912 packet，OE两view28416，222步全部完成。源端freeze后各用自身新clean-L几何、L/OE4四view读出各200CPU、known V四view30组校准，再novel预测/独立score；每arm40650物理/162600计算view。targetU0/正式RX24-18读取0，源/开发科学失败均不改已冻结配方。
+
+两arm自动各完成source和C0/P1完整预测/独立truth-last。C0/P1仍同RX24-1 D2 Q864（known576/unknown288），两arm/条件不增加独立物理样本；父parent_E51精确复用上一run augmented_readout，不复用更早original读出或重新运行父模型。source与query阶段模型/聚合量冻结。以下MLP均预登记主方法，主arm一直practical_increment：
+
+|条件/状态|未知拒识|known接收|known闭集正确|known开放正确|原F closed−open损伤|AUROC|
+|---|---:|---:|---:|---:|---:|---:|
+|C0 parent_E51|96.8750%|90.4514%|78.2986%|71.5278%|8.1597pp|98.2898%|
+|C0 clean_increment|97.5694%|90.2778%|75.6944%|70.1389%|9.5486pp|97.5272%|
+|C0 practical_increment|98.6111%|85.7639%|67.5347%|57.8125%|21.8750pp|97.1861%|
+|P1 parent_E51|38.8889%|93.0556%|71.8750%|68.5764%|4.1667pp|86.1075%|
+|P1 clean_increment|37.1528%|94.2708%|71.8750%|69.0972%|3.6458pp|87.2962%|
+|P1 practical_increment|50.0000%|89.0625%|69.9653%|62.8472%|9.8958pp|85.2515%|
+
+原F同输入闭集C0为79.6875%、P1为72.7431%。primary相对control，P1多拒未知37/288（+12.8472pp）却少接收known30/576、少开放正确36/576（−6.25pp），AUROC反降2.0448pp；C0闭集少47/576（−8.1597pp）、开放少71/576（−12.3264pp）。相对parent，primary的P1未知多拒32/288，但开放少33/576；不能只取拒识单项作正结果。两arm均NO_PROMOTION，不将control换成主候选、不扩seed或读正式池。
+
+primary星地低郊区/中城市/低城市拒识60.4167%/46.8750%/42.7083%，known接收90.1042%/89.5833%/87.5000%，逐景均失败。P1整体AUROC85.2515%低于同时95%接收/90%拒识所需85.5%的必要下界；更直接地，primary C0/P1闭集本身已分别低于原F允许的77.6875%/70.7431%最低开放准确率，而开放准确率不可能高于自身闭集，所以移动阈值无法挽回身份保护。此为当前分数/模型/开发池的数学界，不推断所有方法无解，也不扫描oracle阈值。
+
+源端known V上primary clean闭集98.3481%、lowurban闭集85.6704%，control为98.5519%/84.9519%；源域较小变化不能代替新RX的身份保持。source未知主目标仍失败，完整源/开发及逐RX/TX/scene结果见`docs/PAMF_PHASE3_SOURCE_PRACTICAL_ENCODER_RESULTS_20261029.md`。该结果不支持继续无约束地改动完整身份函数；下一优先验证保留父模型clean路径的受约束星地特征映射/身份保持，再接合法U的无标签域适应，降低附加TX监督依赖。新方案仍另行冻结目标/矩阵，不回收开发Q训练；未知发现和未来匿名注册≥80%继续保留，完整目标ACTIVE。
+
+共享cache＋两row共15stage全部COMPLETE，native真实checkpoint梯度smoke及source/dev合成smoke通过，head/Sinc更新有实际状态比较，所有源/目标标签边界与冻结检查通过。32项唯一tests/68subtests覆盖：dev旧7/24及新增真实目录回归/邻近3/10分别保存；唯一独立review的一个parent/source/fit目录P1已修并一次定向PASS，不重复全审。一次preflight/单归档比较/compile VERIFIED；捕获driver2673776、cache2673864、两rowdrivers2675837/2675840、训练2675845/2675846和source2678276/2677698等实际PID/CWD/cmdline/CUDA及log增长/ownedGPU采样。训练分别GPU7/4、一次采样各1540MB，不是峰值；完成后owned退出、foreign0。源训练实计101.4671/86.8424s，整pipeline712.9620s含缓存/并行/加载/源开发评测，非因果加速或逐包时延证据。

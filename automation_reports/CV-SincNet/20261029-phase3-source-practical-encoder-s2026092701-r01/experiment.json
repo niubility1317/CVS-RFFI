@@ -226,7 +226,9 @@
         "observed_state.json",
         "observations.jsonl",
         "post_state.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "result_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_practical_encoder_20261029_r01\\rows\\clean_increment\\development\\<C0|P1>\\score\\scores.json"
     },
     {
       "row_id": "practical_increment-s2026092701",
@@ -281,7 +283,9 @@
         "observed_state.json",
         "observations.jsonl",
         "post_state.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "result_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_practical_encoder_20261029_r01\\rows\\practical_increment\\development\\<C0|P1>\\score\\scores.json"
     }
   ],
   "notes": [
@@ -304,8 +308,1463 @@
   "verification": {
     "focused_tests": "32 unique tests/68subtests covered: native6/7sub,cache7/23sub,readout8/14sub,dev original7/24sub then real-parent-layout newregression+neighbors3/10sub PASS,launcher3PASS",
     "independent_P0_P1": "PASS one full review; unique dev parent source/fit path P1 reproduced RED, fixed and once targeted confirmed PASS",
-    "actual_checkpoint_smoke": "Cache first E51/F0/G synthetic views; perrow native gradient smoke before real training IQ; source/dev synthetic before heldout IQ. Pending actual launch.",
+    "actual_checkpoint_smoke": "PASS cache E51/F0/G synthetic, each row native Sinc/defaulthead gradient smoke before sourceIQ, source/dev smoke before heldout IQ",
     "N607_preflight": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_practical_encoder_20261029_r01\\preflight.json",
-    "code_commit": "b578c074ba68b8ff9aa539209b3410f1f103ba3d"
+    "code_commit": "b578c074ba68b8ff9aa539209b3410f1f103ba3d",
+    "truth_last": "VERIFIED source 4view and each development2state predictions frozen before independent truth",
+    "post_launch": "VERIFIED live cache/train/source PID/CWD/cmdline/CUDA+ownedGPU/loggrowth; final owned exited",
+    "frozen_state": "VERIFIED source/G parameters and own arrays unchanged during source/dev evaluation",
+    "remote_release": "VERIFIED one archive SHA comparison/remote compile, canonical practical package included; no IQ transfer",
+    "actual_training": "VERIFIED222steps each, physicalSinc/default6head updated jointly, sourceU/V/novel/target optimization0, cachedview/RNG exposures recorded",
+    "evaluation": "VERIFIED both source/dev complete and truth-last, frozen own/parent states, targetU/formal0",
+    "foreign_processes_stopped": 0
+  },
+  "result_summary": {
+    "artifact_status": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "primary_arm": "practical_increment",
+    "rows": {
+      "clean_increment": {
+        "source_primary_by_view": {
+          "clean": {
+            "unknown_macro_rejection": 0.7336507936507936,
+            "known_macro_acceptance": 0.9941111111111111,
+            "known_macro_frr": 0.005888888888888889,
+            "known_macro_open_accuracy": 0.9831851851851852,
+            "known_macro_closed_accuracy": 0.9855185185185183,
+            "original_closed_macro_accuracy": 0.9846666666666667,
+            "original_closed_minus_new_open": 0.001481481481481528,
+            "encoder_closed_loss": -0.0008518518518516593,
+            "auroc_known": 0.9907568195179305,
+            "oscr": 0.9791149265138154
+          },
+          "practical_low_suburban": {
+            "unknown_macro_rejection": 0.49174603174603176,
+            "known_macro_acceptance": 0.9924814814814815,
+            "known_macro_frr": 0.007518518518518519,
+            "known_macro_open_accuracy": 0.9555185185185185,
+            "known_macro_closed_accuracy": 0.9585555555555555,
+            "original_closed_macro_accuracy": 0.9573703703703704,
+            "original_closed_minus_new_open": 0.0018518518518518823,
+            "encoder_closed_loss": -0.001185185185185067,
+            "auroc_known": 0.962852228101117,
+            "oscr": 0.9283903233392123
+          },
+          "practical_mid_urban": {
+            "unknown_macro_rejection": 0.39873015873015877,
+            "known_macro_acceptance": 0.9894444444444445,
+            "known_macro_frr": 0.010555555555555556,
+            "known_macro_open_accuracy": 0.9086666666666668,
+            "known_macro_closed_accuracy": 0.9135185185185185,
+            "original_closed_macro_accuracy": 0.9142962962962962,
+            "original_closed_minus_new_open": 0.005629629629629318,
+            "encoder_closed_loss": 0.0007777777777776551,
+            "auroc_known": 0.9323252792475015,
+            "oscr": 0.8591889594356261
+          },
+          "practical_low_urban": {
+            "unknown_macro_rejection": 0.31523809523809526,
+            "known_macro_acceptance": 0.9804074074074074,
+            "known_macro_frr": 0.019592592592592595,
+            "known_macro_open_accuracy": 0.8394074074074074,
+            "known_macro_closed_accuracy": 0.8495185185185186,
+            "original_closed_macro_accuracy": 0.851,
+            "original_closed_minus_new_open": 0.011592592592592599,
+            "encoder_closed_loss": 0.001481481481481417,
+            "auroc_known": 0.8907837624926513,
+            "oscr": 0.7670561081716638
+          }
+        },
+        "source_primary_goals": {
+          "overall_known": {
+            "checks": {
+              "known_acceptance": true,
+              "known_FRR": true,
+              "total_original_closed_open_loss": true
+            },
+            "passed": true,
+            "encoder_half_point_is_diagnostic_only": true
+          },
+          "by_receiver_known": {
+            "1": {
+              "checks": {
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": true,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "3": {
+              "checks": {
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": true,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "4": {
+              "checks": {
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": true,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "6": {
+              "checks": {
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": true,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "8": {
+              "checks": {
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": true,
+              "encoder_half_point_is_diagnostic_only": true
+            }
+          },
+          "by_view": {
+            "clean": {
+              "checks": {
+                "unknown_rejection": false,
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": false,
+              "unknown_rejection_min": 0.95,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "practical_low_suburban": {
+              "checks": {
+                "unknown_rejection": false,
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": false,
+              "unknown_rejection_min": 0.9,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "practical_mid_urban": {
+              "checks": {
+                "unknown_rejection": false,
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": false,
+              "unknown_rejection_min": 0.9,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "practical_low_urban": {
+              "checks": {
+                "unknown_rejection": false,
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": false,
+              "unknown_rejection_min": 0.9,
+              "encoder_half_point_is_diagnostic_only": true
+            }
+          },
+          "by_receiver_view": {
+            "1": {
+              "clean": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.95,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_suburban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_mid_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              }
+            },
+            "3": {
+              "clean": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.95,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_suburban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_mid_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              }
+            },
+            "4": {
+              "clean": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.95,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_suburban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_mid_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              }
+            },
+            "6": {
+              "clean": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.95,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_suburban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_mid_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              }
+            },
+            "8": {
+              "clean": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.95,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_suburban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_mid_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              }
+            }
+          },
+          "passed": false
+        },
+        "development": {
+          "C0": {
+            "primary": {
+              "parent_E51": {
+                "unknown_macro_rejection": 0.96875,
+                "known_macro_acceptance": 0.9045138888888888,
+                "known_macro_frr": 0.09548611111111112,
+                "known_macro_open_accuracy": 0.7152777777777778,
+                "known_macro_closed_accuracy": 0.7829861111111112,
+                "original_closed_macro_accuracy": 0.796875,
+                "original_closed_minus_new_open": 0.08159722222222221,
+                "encoder_closed_loss": 0.01388888888888884,
+                "auroc_known": 0.9828980999228395,
+                "oscr": 0.7704957561728396
+              },
+              "increment": {
+                "unknown_macro_rejection": 0.9756944444444445,
+                "known_macro_acceptance": 0.9027777777777778,
+                "known_macro_frr": 0.09722222222222222,
+                "known_macro_open_accuracy": 0.701388888888889,
+                "known_macro_closed_accuracy": 0.7569444444444443,
+                "original_closed_macro_accuracy": 0.796875,
+                "original_closed_minus_new_open": 0.09548611111111105,
+                "encoder_closed_loss": 0.03993055555555569,
+                "auroc_known": 0.9752724729938271,
+                "oscr": 0.7449062017746915
+              }
+            },
+            "by_scene": {
+              "parent_E51": {
+                "clean": {
+                  "unknown_macro_rejection": 0.96875,
+                  "known_macro_acceptance": 0.9045138888888888,
+                  "known_macro_frr": 0.09548611111111112,
+                  "known_macro_open_accuracy": 0.7152777777777778,
+                  "known_macro_closed_accuracy": 0.7829861111111112,
+                  "original_closed_macro_accuracy": 0.796875,
+                  "original_closed_minus_new_open": 0.08159722222222221,
+                  "encoder_closed_loss": 0.01388888888888884,
+                  "auroc_known": 0.9828980999228395,
+                  "oscr": 0.7704957561728396
+                }
+              },
+              "increment": {
+                "clean": {
+                  "unknown_macro_rejection": 0.9756944444444445,
+                  "known_macro_acceptance": 0.9027777777777778,
+                  "known_macro_frr": 0.09722222222222222,
+                  "known_macro_open_accuracy": 0.701388888888889,
+                  "known_macro_closed_accuracy": 0.7569444444444443,
+                  "original_closed_macro_accuracy": 0.796875,
+                  "original_closed_minus_new_open": 0.09548611111111105,
+                  "encoder_closed_loss": 0.03993055555555569,
+                  "auroc_known": 0.9752724729938271,
+                  "oscr": 0.7449062017746915
+                }
+              }
+            },
+            "primary_goals": {
+              "parent_E51": {
+                "checks": {
+                  "overall_condition_targets": false,
+                  "main_scene_coverage": true,
+                  "each_preregistered_main_scene_targets": false
+                },
+                "pass": false
+              },
+              "increment": {
+                "checks": {
+                  "overall_condition_targets": false,
+                  "main_scene_coverage": true,
+                  "each_preregistered_main_scene_targets": false
+                },
+                "pass": false
+              }
+            },
+            "primary_pass": false,
+            "delta": {
+              "unknown_macro_rejection": 0.006944444444444531,
+              "known_macro_acceptance": -0.0017361111111110494,
+              "known_macro_open_accuracy": -0.01388888888888884,
+              "known_macro_frr": 0.001736111111111105,
+              "original_closed_minus_new_open": 0.01388888888888884,
+              "encoder_closed_loss": 0.02604166666666685,
+              "auroc_known": -0.0076256269290123635,
+              "oscr": -0.02558955439814814
+            },
+            "increment_closed_diff_from_parent_count": 75
+          },
+          "P1": {
+            "primary": {
+              "parent_E51": {
+                "unknown_macro_rejection": 0.3888888888888889,
+                "known_macro_acceptance": 0.9305555555555556,
+                "known_macro_frr": 0.06944444444444445,
+                "known_macro_open_accuracy": 0.6857638888888888,
+                "known_macro_closed_accuracy": 0.71875,
+                "original_closed_macro_accuracy": 0.7274305555555555,
+                "original_closed_minus_new_open": 0.04166666666666663,
+                "encoder_closed_loss": 0.00868055555555547,
+                "auroc_known": 0.8610749421296295,
+                "oscr": 0.6273992091049383
+              },
+              "increment": {
+                "unknown_macro_rejection": 0.37152777777777773,
+                "known_macro_acceptance": 0.9427083333333334,
+                "known_macro_frr": 0.057291666666666664,
+                "known_macro_open_accuracy": 0.6909722222222222,
+                "known_macro_closed_accuracy": 0.71875,
+                "original_closed_macro_accuracy": 0.7274305555555555,
+                "original_closed_minus_new_open": 0.03645833333333326,
+                "encoder_closed_loss": 0.00868055555555547,
+                "auroc_known": 0.8729624807098765,
+                "oscr": 0.6349344135802468
+              }
+            },
+            "by_scene": {
+              "parent_E51": {
+                "practical_low_suburban": {
+                  "unknown_macro_rejection": 0.4791666666666667,
+                  "known_macro_acceptance": 0.9479166666666666,
+                  "known_macro_frr": 0.052083333333333336,
+                  "known_macro_open_accuracy": 0.7447916666666666,
+                  "known_macro_closed_accuracy": 0.78125,
+                  "original_closed_macro_accuracy": 0.7708333333333334,
+                  "original_closed_minus_new_open": 0.02604166666666674,
+                  "encoder_closed_loss": -0.01041666666666663,
+                  "auroc_known": 0.9106987847222222,
+                  "oscr": 0.7100694444444445
+                },
+                "practical_low_urban": {
+                  "unknown_macro_rejection": 0.3333333333333333,
+                  "known_macro_acceptance": 0.9270833333333334,
+                  "known_macro_frr": 0.07291666666666667,
+                  "known_macro_open_accuracy": 0.65625,
+                  "known_macro_closed_accuracy": 0.6822916666666666,
+                  "original_closed_macro_accuracy": 0.7083333333333334,
+                  "original_closed_minus_new_open": 0.05208333333333337,
+                  "encoder_closed_loss": 0.02604166666666674,
+                  "auroc_known": 0.8219943576388888,
+                  "oscr": 0.5740559895833334
+                },
+                "practical_mid_urban": {
+                  "unknown_macro_rejection": 0.3541666666666667,
+                  "known_macro_acceptance": 0.9166666666666666,
+                  "known_macro_frr": 0.08333333333333333,
+                  "known_macro_open_accuracy": 0.65625,
+                  "known_macro_closed_accuracy": 0.6927083333333334,
+                  "original_closed_macro_accuracy": 0.703125,
+                  "original_closed_minus_new_open": 0.046875,
+                  "encoder_closed_loss": 0.01041666666666663,
+                  "auroc_known": 0.8439670138888888,
+                  "oscr": 0.5951063368055556
+                }
+              },
+              "increment": {
+                "practical_low_suburban": {
+                  "unknown_macro_rejection": 0.46875,
+                  "known_macro_acceptance": 0.9583333333333334,
+                  "known_macro_frr": 0.041666666666666664,
+                  "known_macro_open_accuracy": 0.75,
+                  "known_macro_closed_accuracy": 0.78125,
+                  "original_closed_macro_accuracy": 0.7708333333333334,
+                  "original_closed_minus_new_open": 0.02083333333333337,
+                  "encoder_closed_loss": -0.01041666666666663,
+                  "auroc_known": 0.9184027777777778,
+                  "oscr": 0.7163085937499999
+                },
+                "practical_low_urban": {
+                  "unknown_macro_rejection": 0.3125,
+                  "known_macro_acceptance": 0.9427083333333334,
+                  "known_macro_frr": 0.057291666666666664,
+                  "known_macro_open_accuracy": 0.6510416666666666,
+                  "known_macro_closed_accuracy": 0.6770833333333334,
+                  "original_closed_macro_accuracy": 0.7083333333333334,
+                  "original_closed_minus_new_open": 0.05729166666666674,
+                  "encoder_closed_loss": 0.03125,
+                  "auroc_known": 0.8376736111111109,
+                  "oscr": 0.5748155381944445
+                },
+                "practical_mid_urban": {
+                  "unknown_macro_rejection": 0.3333333333333333,
+                  "known_macro_acceptance": 0.9270833333333334,
+                  "known_macro_frr": 0.07291666666666667,
+                  "known_macro_open_accuracy": 0.671875,
+                  "known_macro_closed_accuracy": 0.6979166666666666,
+                  "original_closed_macro_accuracy": 0.703125,
+                  "original_closed_minus_new_open": 0.03125,
+                  "encoder_closed_loss": 0.00520833333333337,
+                  "auroc_known": 0.8567708333333334,
+                  "oscr": 0.6101345486111112
+                }
+              }
+            },
+            "primary_goals": {
+              "parent_E51": {
+                "checks": {
+                  "overall_condition_targets": false,
+                  "main_scene_coverage": true,
+                  "each_preregistered_main_scene_targets": false
+                },
+                "pass": false
+              },
+              "increment": {
+                "checks": {
+                  "overall_condition_targets": false,
+                  "main_scene_coverage": true,
+                  "each_preregistered_main_scene_targets": false
+                },
+                "pass": false
+              }
+            },
+            "primary_pass": false,
+            "delta": {
+              "unknown_macro_rejection": -0.01736111111111116,
+              "known_macro_acceptance": 0.01215277777777779,
+              "known_macro_open_accuracy": 0.00520833333333337,
+              "known_macro_frr": -0.012152777777777783,
+              "original_closed_minus_new_open": -0.00520833333333337,
+              "encoder_closed_loss": 0.0,
+              "auroc_known": 0.011887538580246937,
+              "oscr": 0.007535204475308532
+            },
+            "increment_closed_diff_from_parent_count": 15
+          }
+        },
+        "training_diagnostics": {
+          "loss": {
+            "count": 222,
+            "first": 0.6043059229850769,
+            "last": 1.2112412452697754,
+            "mean": 0.6326367182506097,
+            "minimum": 0.3696731626987457,
+            "maximum": 1.6032298803329468,
+            "first25_mean": 0.6154074251651764,
+            "last25_mean": 0.6819079327583313
+          },
+          "supervised_loss": {
+            "count": 222,
+            "first": 0.5533022880554199,
+            "last": 1.1801728010177612,
+            "mean": 0.5913331093820365,
+            "minimum": 0.3297266960144043,
+            "maximum": 1.5710543394088745,
+            "first25_mean": 0.5684841096401214,
+            "last25_mean": 0.642108519077301
+          },
+          "oe_loss": {
+            "count": 222,
+            "first": 0.5100364685058594,
+            "last": 0.3106839656829834,
+            "mean": 0.4130360994253073,
+            "minimum": 0.2926516532897949,
+            "maximum": 0.6032164096832275,
+            "first25_mean": 0.4692331600189209,
+            "last25_mean": 0.3979940986633301
+          },
+          "physical_grad_norm": {
+            "count": 222,
+            "first": 2.230588674545288,
+            "last": 4.284399032592773,
+            "mean": 1.700965351618088,
+            "minimum": 0.6371355056762695,
+            "maximum": 7.655548095703125,
+            "first25_mean": 2.0271327018737795,
+            "last25_mean": 1.5384470438957214
+          }
+        },
+        "readout_diagnostics": {
+          "linear_oe": {
+            "count": 200,
+            "first": 0.6931473016738892,
+            "last": 0.21827667951583862,
+            "minimum": 0.21827667951583862,
+            "increases": 0,
+            "first25_mean": 0.5466232061386108,
+            "last25_mean": 0.22257257342338563
+          },
+          "mlp16_oe": {
+            "count": 200,
+            "first": 0.8502888679504395,
+            "last": 0.1454976201057434,
+            "minimum": 0.1454976201057434,
+            "increases": 0,
+            "first25_mean": 0.5580085885524749,
+            "last25_mean": 0.14909375548362733
+          }
+        },
+        "scene_histogram": {
+          "additional_L": {
+            "clean": 28416,
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "additional_OE": {
+            "clean": 14208,
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          }
+        },
+        "training_seconds": 101.46707663312554,
+        "native_weight_decay": 0.0001,
+        "stage_seconds": {
+          "train": 107.13701367378235,
+          "source": 455.15567445755005,
+          "source_score": 4.265799045562744,
+          "C0_predict": 4.798159599304199,
+          "C0_score": 2.30818247795105,
+          "P1_predict": 7.563234567642212,
+          "P1_score": 2.307041883468628
+        },
+        "assigned_gpu": 7
+      },
+      "practical_increment": {
+        "source_primary_by_view": {
+          "clean": {
+            "unknown_macro_rejection": 0.7711111111111112,
+            "known_macro_acceptance": 0.9901851851851852,
+            "known_macro_frr": 0.009814814814814816,
+            "known_macro_open_accuracy": 0.9787037037037037,
+            "known_macro_closed_accuracy": 0.9834814814814815,
+            "original_closed_macro_accuracy": 0.9846666666666667,
+            "original_closed_minus_new_open": 0.005962962962962948,
+            "encoder_closed_loss": 0.001185185185185178,
+            "auroc_known": 0.9880707113462669,
+            "oscr": 0.9747164844209288
+          },
+          "practical_low_suburban": {
+            "unknown_macro_rejection": 0.5495238095238095,
+            "known_macro_acceptance": 0.9877407407407407,
+            "known_macro_frr": 0.012259259259259256,
+            "known_macro_open_accuracy": 0.9514814814814815,
+            "known_macro_closed_accuracy": 0.9581111111111111,
+            "original_closed_macro_accuracy": 0.9573703703703704,
+            "original_closed_minus_new_open": 0.0058888888888889435,
+            "encoder_closed_loss": -0.0007407407407407085,
+            "auroc_known": 0.9567620223398001,
+            "oscr": 0.9220880893592004
+          },
+          "practical_mid_urban": {
+            "unknown_macro_rejection": 0.46634920634920635,
+            "known_macro_acceptance": 0.9806666666666667,
+            "known_macro_frr": 0.019333333333333334,
+            "known_macro_open_accuracy": 0.9061851851851852,
+            "known_macro_closed_accuracy": 0.9170370370370371,
+            "original_closed_macro_accuracy": 0.9142962962962962,
+            "original_closed_minus_new_open": 0.008111111111110958,
+            "encoder_closed_loss": -0.0027407407407409323,
+            "auroc_known": 0.921962533803645,
+            "oscr": 0.8531168900646677
+          },
+          "practical_low_urban": {
+            "unknown_macro_rejection": 0.386031746031746,
+            "known_macro_acceptance": 0.9675555555555555,
+            "known_macro_frr": 0.03244444444444445,
+            "known_macro_open_accuracy": 0.8375925925925927,
+            "known_macro_closed_accuracy": 0.8567037037037036,
+            "original_closed_macro_accuracy": 0.851,
+            "original_closed_minus_new_open": 0.013407407407407312,
+            "encoder_closed_loss": -0.005703703703703655,
+            "auroc_known": 0.8756610346854792,
+            "oscr": 0.7616810582010582
+          }
+        },
+        "source_primary_goals": {
+          "overall_known": {
+            "checks": {
+              "known_acceptance": true,
+              "known_FRR": true,
+              "total_original_closed_open_loss": true
+            },
+            "passed": true,
+            "encoder_half_point_is_diagnostic_only": true
+          },
+          "by_receiver_known": {
+            "1": {
+              "checks": {
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": true,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "3": {
+              "checks": {
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": true,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "4": {
+              "checks": {
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": true,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "6": {
+              "checks": {
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": true,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "8": {
+              "checks": {
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": true,
+              "encoder_half_point_is_diagnostic_only": true
+            }
+          },
+          "by_view": {
+            "clean": {
+              "checks": {
+                "unknown_rejection": false,
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": false,
+              "unknown_rejection_min": 0.95,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "practical_low_suburban": {
+              "checks": {
+                "unknown_rejection": false,
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": false,
+              "unknown_rejection_min": 0.9,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "practical_mid_urban": {
+              "checks": {
+                "unknown_rejection": false,
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": false,
+              "unknown_rejection_min": 0.9,
+              "encoder_half_point_is_diagnostic_only": true
+            },
+            "practical_low_urban": {
+              "checks": {
+                "unknown_rejection": false,
+                "known_acceptance": true,
+                "known_FRR": true,
+                "total_original_closed_open_loss": true
+              },
+              "passed": false,
+              "unknown_rejection_min": 0.9,
+              "encoder_half_point_is_diagnostic_only": true
+            }
+          },
+          "by_receiver_view": {
+            "1": {
+              "clean": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.95,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_suburban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_mid_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              }
+            },
+            "3": {
+              "clean": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.95,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_suburban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_mid_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              }
+            },
+            "4": {
+              "clean": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.95,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_suburban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_mid_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              }
+            },
+            "6": {
+              "clean": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.95,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_suburban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_mid_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              }
+            },
+            "8": {
+              "clean": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.95,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_suburban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_mid_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              },
+              "practical_low_urban": {
+                "checks": {
+                  "unknown_rejection": false,
+                  "known_acceptance": true,
+                  "known_FRR": true,
+                  "total_original_closed_open_loss": true
+                },
+                "passed": false,
+                "unknown_rejection_min": 0.9,
+                "encoder_half_point_is_diagnostic_only": true
+              }
+            }
+          },
+          "passed": false
+        },
+        "development": {
+          "C0": {
+            "primary": {
+              "parent_E51": {
+                "unknown_macro_rejection": 0.96875,
+                "known_macro_acceptance": 0.9045138888888888,
+                "known_macro_frr": 0.09548611111111112,
+                "known_macro_open_accuracy": 0.7152777777777778,
+                "known_macro_closed_accuracy": 0.7829861111111112,
+                "original_closed_macro_accuracy": 0.796875,
+                "original_closed_minus_new_open": 0.08159722222222221,
+                "encoder_closed_loss": 0.01388888888888884,
+                "auroc_known": 0.9828980999228395,
+                "oscr": 0.7704957561728396
+              },
+              "increment": {
+                "unknown_macro_rejection": 0.986111111111111,
+                "known_macro_acceptance": 0.8576388888888888,
+                "known_macro_frr": 0.1423611111111111,
+                "known_macro_open_accuracy": 0.5781249999999999,
+                "known_macro_closed_accuracy": 0.6753472222222222,
+                "original_closed_macro_accuracy": 0.796875,
+                "original_closed_minus_new_open": 0.2187500000000001,
+                "encoder_closed_loss": 0.12152777777777779,
+                "auroc_known": 0.9718605324074074,
+                "oscr": 0.6604335455246915
+              }
+            },
+            "by_scene": {
+              "parent_E51": {
+                "clean": {
+                  "unknown_macro_rejection": 0.96875,
+                  "known_macro_acceptance": 0.9045138888888888,
+                  "known_macro_frr": 0.09548611111111112,
+                  "known_macro_open_accuracy": 0.7152777777777778,
+                  "known_macro_closed_accuracy": 0.7829861111111112,
+                  "original_closed_macro_accuracy": 0.796875,
+                  "original_closed_minus_new_open": 0.08159722222222221,
+                  "encoder_closed_loss": 0.01388888888888884,
+                  "auroc_known": 0.9828980999228395,
+                  "oscr": 0.7704957561728396
+                }
+              },
+              "increment": {
+                "clean": {
+                  "unknown_macro_rejection": 0.986111111111111,
+                  "known_macro_acceptance": 0.8576388888888888,
+                  "known_macro_frr": 0.1423611111111111,
+                  "known_macro_open_accuracy": 0.5781249999999999,
+                  "known_macro_closed_accuracy": 0.6753472222222222,
+                  "original_closed_macro_accuracy": 0.796875,
+                  "original_closed_minus_new_open": 0.2187500000000001,
+                  "encoder_closed_loss": 0.12152777777777779,
+                  "auroc_known": 0.9718605324074074,
+                  "oscr": 0.6604335455246915
+                }
+              }
+            },
+            "primary_goals": {
+              "parent_E51": {
+                "checks": {
+                  "overall_condition_targets": false,
+                  "main_scene_coverage": true,
+                  "each_preregistered_main_scene_targets": false
+                },
+                "pass": false
+              },
+              "increment": {
+                "checks": {
+                  "overall_condition_targets": false,
+                  "main_scene_coverage": true,
+                  "each_preregistered_main_scene_targets": false
+                },
+                "pass": false
+              }
+            },
+            "primary_pass": false,
+            "delta": {
+              "unknown_macro_rejection": 0.01736111111111105,
+              "known_macro_acceptance": -0.046875,
+              "known_macro_open_accuracy": -0.1371527777777779,
+              "known_macro_frr": 0.046874999999999986,
+              "original_closed_minus_new_open": 0.1371527777777779,
+              "encoder_closed_loss": 0.10763888888888895,
+              "auroc_known": -0.011037567515432056,
+              "oscr": -0.11006221064814814
+            },
+            "increment_closed_diff_from_parent_count": 141
+          },
+          "P1": {
+            "primary": {
+              "parent_E51": {
+                "unknown_macro_rejection": 0.3888888888888889,
+                "known_macro_acceptance": 0.9305555555555556,
+                "known_macro_frr": 0.06944444444444445,
+                "known_macro_open_accuracy": 0.6857638888888888,
+                "known_macro_closed_accuracy": 0.71875,
+                "original_closed_macro_accuracy": 0.7274305555555555,
+                "original_closed_minus_new_open": 0.04166666666666663,
+                "encoder_closed_loss": 0.00868055555555547,
+                "auroc_known": 0.8610749421296295,
+                "oscr": 0.6273992091049383
+              },
+              "increment": {
+                "unknown_macro_rejection": 0.5,
+                "known_macro_acceptance": 0.890625,
+                "known_macro_frr": 0.109375,
+                "known_macro_open_accuracy": 0.6284722222222223,
+                "known_macro_closed_accuracy": 0.6996527777777778,
+                "original_closed_macro_accuracy": 0.7274305555555555,
+                "original_closed_minus_new_open": 0.09895833333333315,
+                "encoder_closed_loss": 0.02777777777777768,
+                "auroc_known": 0.8525149498456791,
+                "oscr": 0.5941960841049383
+              }
+            },
+            "by_scene": {
+              "parent_E51": {
+                "practical_low_suburban": {
+                  "unknown_macro_rejection": 0.4791666666666667,
+                  "known_macro_acceptance": 0.9479166666666666,
+                  "known_macro_frr": 0.052083333333333336,
+                  "known_macro_open_accuracy": 0.7447916666666666,
+                  "known_macro_closed_accuracy": 0.78125,
+                  "original_closed_macro_accuracy": 0.7708333333333334,
+                  "original_closed_minus_new_open": 0.02604166666666674,
+                  "encoder_closed_loss": -0.01041666666666663,
+                  "auroc_known": 0.9106987847222222,
+                  "oscr": 0.7100694444444445
+                },
+                "practical_low_urban": {
+                  "unknown_macro_rejection": 0.3333333333333333,
+                  "known_macro_acceptance": 0.9270833333333334,
+                  "known_macro_frr": 0.07291666666666667,
+                  "known_macro_open_accuracy": 0.65625,
+                  "known_macro_closed_accuracy": 0.6822916666666666,
+                  "original_closed_macro_accuracy": 0.7083333333333334,
+                  "original_closed_minus_new_open": 0.05208333333333337,
+                  "encoder_closed_loss": 0.02604166666666674,
+                  "auroc_known": 0.8219943576388888,
+                  "oscr": 0.5740559895833334
+                },
+                "practical_mid_urban": {
+                  "unknown_macro_rejection": 0.3541666666666667,
+                  "known_macro_acceptance": 0.9166666666666666,
+                  "known_macro_frr": 0.08333333333333333,
+                  "known_macro_open_accuracy": 0.65625,
+                  "known_macro_closed_accuracy": 0.6927083333333334,
+                  "original_closed_macro_accuracy": 0.703125,
+                  "original_closed_minus_new_open": 0.046875,
+                  "encoder_closed_loss": 0.01041666666666663,
+                  "auroc_known": 0.8439670138888888,
+                  "oscr": 0.5951063368055556
+                }
+              },
+              "increment": {
+                "practical_low_suburban": {
+                  "unknown_macro_rejection": 0.6041666666666666,
+                  "known_macro_acceptance": 0.9010416666666666,
+                  "known_macro_frr": 0.09895833333333333,
+                  "known_macro_open_accuracy": 0.6614583333333334,
+                  "known_macro_closed_accuracy": 0.7447916666666666,
+                  "original_closed_macro_accuracy": 0.7708333333333334,
+                  "original_closed_minus_new_open": 0.109375,
+                  "encoder_closed_loss": 0.02604166666666674,
+                  "auroc_known": 0.8988172743055556,
+                  "oscr": 0.6595052083333333
+                },
+                "practical_low_urban": {
+                  "unknown_macro_rejection": 0.4270833333333333,
+                  "known_macro_acceptance": 0.875,
+                  "known_macro_frr": 0.125,
+                  "known_macro_open_accuracy": 0.59375,
+                  "known_macro_closed_accuracy": 0.671875,
+                  "original_closed_macro_accuracy": 0.7083333333333334,
+                  "original_closed_minus_new_open": 0.11458333333333337,
+                  "encoder_closed_loss": 0.03645833333333337,
+                  "auroc_known": 0.8099500868055556,
+                  "oscr": 0.5485026041666666
+                },
+                "practical_mid_urban": {
+                  "unknown_macro_rejection": 0.46875,
+                  "known_macro_acceptance": 0.8958333333333334,
+                  "known_macro_frr": 0.10416666666666667,
+                  "known_macro_open_accuracy": 0.6302083333333334,
+                  "known_macro_closed_accuracy": 0.6822916666666666,
+                  "original_closed_macro_accuracy": 0.703125,
+                  "original_closed_minus_new_open": 0.07291666666666663,
+                  "encoder_closed_loss": 0.02083333333333337,
+                  "auroc_known": 0.8434787326388888,
+                  "oscr": 0.5737847222222222
+                }
+              }
+            },
+            "primary_goals": {
+              "parent_E51": {
+                "checks": {
+                  "overall_condition_targets": false,
+                  "main_scene_coverage": true,
+                  "each_preregistered_main_scene_targets": false
+                },
+                "pass": false
+              },
+              "increment": {
+                "checks": {
+                  "overall_condition_targets": false,
+                  "main_scene_coverage": true,
+                  "each_preregistered_main_scene_targets": false
+                },
+                "pass": false
+              }
+            },
+            "primary_pass": false,
+            "delta": {
+              "unknown_macro_rejection": 0.1111111111111111,
+              "known_macro_acceptance": -0.03993055555555558,
+              "known_macro_open_accuracy": -0.05729166666666652,
+              "known_macro_frr": 0.03993055555555555,
+              "original_closed_minus_new_open": 0.05729166666666652,
+              "encoder_closed_loss": 0.01909722222222221,
+              "auroc_known": -0.008559992283950435,
+              "oscr": -0.033203125
+            },
+            "increment_closed_diff_from_parent_count": 45
+          }
+        },
+        "training_diagnostics": {
+          "loss": {
+            "count": 222,
+            "first": 0.9347729086875916,
+            "last": 1.3289198875427246,
+            "mean": 0.8065491154924169,
+            "minimum": 0.5164915919303894,
+            "maximum": 1.8168444633483887,
+            "first25_mean": 0.7993023753166199,
+            "last25_mean": 0.8541640210151672
+          },
+          "supervised_loss": {
+            "count": 222,
+            "first": 0.828508734703064,
+            "last": 1.2785755395889282,
+            "mean": 0.7443329854322983,
+            "minimum": 0.4544336795806885,
+            "maximum": 1.7622767686843872,
+            "first25_mean": 0.7264666926860809,
+            "last25_mean": 0.7967096209526062
+          },
+          "oe_loss": {
+            "count": 222,
+            "first": 1.0626416206359863,
+            "last": 0.5034432411193848,
+            "mean": 0.6221613003326966,
+            "minimum": 0.46834516525268555,
+            "maximum": 1.0626416206359863,
+            "first25_mean": 0.7283567619323731,
+            "last25_mean": 0.574544038772583
+          },
+          "physical_grad_norm": {
+            "count": 222,
+            "first": 3.4238712787628174,
+            "last": 4.7252702713012695,
+            "mean": 2.485703628342431,
+            "minimum": 1.0618633031845093,
+            "maximum": 8.145377159118652,
+            "first25_mean": 3.063001766204834,
+            "last25_mean": 2.5874351692199706
+          }
+        },
+        "readout_diagnostics": {
+          "linear_oe": {
+            "count": 200,
+            "first": 0.6931473016738892,
+            "last": 0.19979524612426758,
+            "minimum": 0.19979524612426758,
+            "increases": 0,
+            "first25_mean": 0.5374450004100799,
+            "last25_mean": 0.20373407781124114
+          },
+          "mlp16_oe": {
+            "count": 200,
+            "first": 0.8721192479133606,
+            "last": 0.13671709597110748,
+            "minimum": 0.13671709597110748,
+            "increases": 0,
+            "first25_mean": 0.5517413711547852,
+            "last25_mean": 0.13956989824771882
+          }
+        },
+        "scene_histogram": {
+          "additional_L": {
+            "clean": 0,
+            "practical_low_suburban": 9568,
+            "practical_mid_urban": 9582,
+            "practical_low_urban": 9266
+          },
+          "additional_OE": {
+            "clean": 0,
+            "practical_low_suburban": 4839,
+            "practical_mid_urban": 4663,
+            "practical_low_urban": 4706
+          }
+        },
+        "training_seconds": 86.84238857682794,
+        "native_weight_decay": 0.0001,
+        "stage_seconds": {
+          "train": 91.88148474693298,
+          "source": 459.762202501297,
+          "source_score": 4.464657306671143,
+          "C0_predict": 4.355730772018433,
+          "C0_score": 2.1852190494537354,
+          "P1_predict": 7.319164037704468,
+          "P1_score": 2.5492615699768066
+        },
+        "assigned_gpu": 4
+      }
+    },
+    "practical_minus_clean": {
+      "C0": {
+        "unknown_macro_rejection": 0.010416666666666519,
+        "known_macro_acceptance": -0.04513888888888895,
+        "known_macro_frr": 0.04513888888888888,
+        "known_macro_open_accuracy": -0.12326388888888906,
+        "known_macro_closed_accuracy": -0.0815972222222221,
+        "original_closed_macro_accuracy": 0.0,
+        "original_closed_minus_new_open": 0.12326388888888906,
+        "encoder_closed_loss": 0.0815972222222221,
+        "auroc_known": -0.0034119405864196928,
+        "oscr": -0.08447265625
+      },
+      "P1": {
+        "unknown_macro_rejection": 0.12847222222222227,
+        "known_macro_acceptance": -0.05208333333333337,
+        "known_macro_frr": 0.052083333333333336,
+        "known_macro_open_accuracy": -0.06249999999999989,
+        "known_macro_closed_accuracy": -0.01909722222222221,
+        "original_closed_macro_accuracy": 0.0,
+        "original_closed_minus_new_open": 0.06249999999999989,
+        "encoder_closed_loss": 0.01909722222222221,
+        "auroc_known": -0.020447530864197372,
+        "oscr": -0.04073832947530853
+      }
+    },
+    "target_U_reads": 0,
+    "formal_target_reads": 0,
+    "final_phase3_complete": false
+  },
+  "artifacts": {
+    "report": "docs/PAMF_PHASE3_SOURCE_PRACTICAL_ENCODER_RESULTS_20261029.md",
+    "post_state": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_practical_encoder_20261029_r01\\post_state.json",
+    "source_scores": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_practical_encoder_20261029_r01\\rows\\<arm>\\source\\score\\scores.json",
+    "development_scores": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_practical_encoder_20261029_r01\\rows\\<arm>\\development\\<C0|P1>\\score\\scores.json"
   }
 }
