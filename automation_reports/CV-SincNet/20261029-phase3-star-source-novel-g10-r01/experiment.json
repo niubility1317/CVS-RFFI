@@ -54,9 +54,9 @@
       "source_heldout_novel": 3150
     },
     "train_ratio": null,
-    "capsule_id": null,
-    "split_id": null,
-    "validation_ref": "E:/type10-7/local_artifacts/pamf_phase3_source_oe_data_20261029_r01/data/complete.json; matching VALIDATED_ONCE source-only parent",
+    "capsule_id": "p3source-novel-g10-ec0c99642c5f15c96f42e055",
+    "split_id": "c570fdd9173191e488aa5690",
+    "validation_ref": "local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
     "support_query_ref": "No target/support/query role; heldout source devices only",
     "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 G10/receiver2027/2450MHz"
   },
@@ -156,5 +156,18 @@
     "Same physical3150, no additional physical independence or never-exposed claim.",
     "Local CPU builder; real model checkpoint smoke and N607 release are not applicable."
   ],
-  "registered_at": "2026-10-29T10:49:07+00:00"
+  "registered_at": "2026-10-29T10:49:07+00:00",
+  "artifacts": {
+    "complete": "local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "post_state": "local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\build_post_state.json",
+    "analysis": "docs/PAMF_PHASE3_STAR_NUISANCE_RESULTS_20261029.md"
+  },
+  "verification": {
+    "focused_tests": "6 unique +14 subtests PASS",
+    "review": "one independent P0/P1 PASS",
+    "actual_CPU_PID": 12828,
+    "data_status": "VALIDATED_ONCE",
+    "model_predictions": 0,
+    "target_reads": 0
+  }
 }
