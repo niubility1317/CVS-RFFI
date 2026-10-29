@@ -1,0 +1,71 @@
+{
+  "schema": "pamf_phase2_resource_reporting_v1",
+  "purpose": "Mandatory evidence dimensions for resource comparison;not an extra experiment release gate",
+  "measurement_stages": [
+    "source_S_amortized",
+    "B_old_domain_adaptation",
+    "C_registration_increment",
+    "B_plus_current_C_deployment",
+    "DURA_support",
+    "F_support_embedding",
+    "query_inference_separate"
+  ],
+  "dimensions": [
+    "method_and_revision",
+    "native_or_combination",
+    "input_P0_P1",
+    "K",
+    "new_count",
+    "pool",
+    "episode",
+    "RX",
+    "model_seed",
+    "physical_GPU",
+    "precision",
+    "batch_size",
+    "concurrency",
+    "cache_policy"
+  ],
+  "timing": {
+    "end_to_end_stage": "wall clock from legal current support ready through copied/fitted finalized state;CUDA synchronize both boundaries;query excluded",
+    "compute_only": "separate input/copy/embedding/DURA/optimization/kernel/write components",
+    "attribution": "parallel observed latency and controlled benchmark latency have different labels;no direct speed ranking across unmatched scopes"
+  },
+  "memory": [
+    "CUDA_allocated_start",
+    "CUDA_allocated_peak",
+    "CUDA_incremental_peak",
+    "CUDA_reserved_peak",
+    "CPU_RSS_start_peak",
+    "persistent_model_bytes",
+    "persistent_registration_state_bytes",
+    "auxiliary_optimizer_teacher_memory_scope"
+  ],
+  "budget": [
+    "actual_epochs",
+    "minibatches",
+    "optimizer_steps_per_network",
+    "source_support_replay_exposures",
+    "old_support_exposures",
+    "new_support_exposures",
+    "forward_backward_counts",
+    "updated_parameter_elements",
+    "masked_parameter_elements",
+    "solved_coefficients_or_prototypes"
+  ],
+  "compute": [
+    "measured_or_estimated_MACs_FLOPs_with_operator_coverage_and_convention",
+    "CPU_closed_form_cost",
+    "energy_only_if_legitimately_attributable"
+  ],
+  "accounting": [
+    "charge_shared_B_once_per_deployed_chain",
+    "C_prefixes_are_independent_forks_not_cumulative_arrival",
+    "DURA_cached_generation_and_deployment_cost_separate",
+    "source_checkpoint_reuse_is_not_zero_historical_training_cost",
+    "0_optimizer_steps_is_not0_cost",
+    "communication0_only_under_stated_local_support_assumption"
+  ],
+  "recovery_of_missing_evidence": "First extract exact deterministic counts from existing artifacts and code;lost wall-clock/peak measurements remain missing. A separately authorized resource benchmark can measure them;do not relabel supplemental measurements as historical originals.",
+  "runtime_action": "Read-only metadata audit;no live code change,worker restart,new training,prediction,scoring or profiling launch"
+}

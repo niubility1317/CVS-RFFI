@@ -1,0 +1,870 @@
+{
+  "schema": "phase2_resource_observation_audit_v1",
+  "at_utc": "2026-10-29T14:57:32Z",
+  "status": "PARTIAL_INSTRUMENTATION_NOT_READY_FOR_UNIFIED_EFFICIENCY_CLAIMS",
+  "scope": "All20activeprofiles;firstcapsule/firstmodelseed/P0 representative K10,N10,partialB fallbackK1;not exhaustive fullmatrix resource aggregation",
+  "counts": {
+    "external_profiles": 20,
+    "B_with_measured_time": 11,
+    "B_with_measured_peak_CUDA": 11,
+    "paths_with_complete_manifests": 36
+  },
+  "profiles": {
+    "poster_ft": {
+      "B": {
+        "fit_wall_seconds": null,
+        "optimizer_steps": null,
+        "trainable_parameters": null,
+        "resident_state_bytes": null,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": null,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J08",
+          "fit_wall_seconds": 0.37511975690722466,
+          "optimizer_steps": 100,
+          "trainable_parameters": 1296,
+          "resident_state_bytes": 212848,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J15",
+          "fit_wall_seconds": 0.07649176893755794,
+          "optimizer_steps": 0,
+          "trainable_parameters": 0,
+          "resident_state_bytes": 214728,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 0,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J22",
+          "fit_wall_seconds": 0.24413217417895794,
+          "optimizer_steps": 100,
+          "trainable_parameters": 1296,
+          "resident_state_bytes": 214792,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": false,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "radionet_ada_knn": {
+      "B": {
+        "fit_wall_seconds": 288.40523527609184,
+        "optimizer_steps": 20000,
+        "trainable_parameters": 1078229,
+        "resident_state_bytes": null,
+        "resident_model_bytes": 4281824,
+        "resident_decision_bytes": 15840,
+        "peak_process_cuda_allocated_MiB": 167.20556640625,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "radionet_ada_knn",
+          "fit_wall_seconds": 0.0020652301609516144,
+          "optimizer_steps": 0,
+          "trainable_parameters": 0,
+          "resident_state_bytes": null,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": 42240,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": null,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": true,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "radionet_ada_ft_knn": {
+      "B": {
+        "fit_wall_seconds": 308.3644901411608,
+        "optimizer_steps": 20030,
+        "trainable_parameters": 1078229,
+        "resident_state_bytes": null,
+        "resident_model_bytes": 4281824,
+        "resident_decision_bytes": 15840,
+        "peak_process_cuda_allocated_MiB": 166.98779296875,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J01",
+          "fit_wall_seconds": 0.002103588078171015,
+          "optimizer_steps": 0,
+          "trainable_parameters": 0,
+          "resident_state_bytes": null,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": 42240,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": null,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": true,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "radionet_df_ft": {
+      "B": {
+        "fit_wall_seconds": null,
+        "optimizer_steps": null,
+        "trainable_parameters": null,
+        "resident_state_bytes": null,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": null,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [],
+      "native_C": false,
+      "observed_B_K": 10,
+      "C_status": "N_A_NATIVE_CLOSED_SET"
+    },
+    "radionet_triplet": {
+      "B": {
+        "fit_wall_seconds": null,
+        "optimizer_steps": null,
+        "trainable_parameters": null,
+        "resident_state_bytes": null,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": null,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "radionet_triplet",
+          "fit_wall_seconds": null,
+          "optimizer_steps": null,
+          "trainable_parameters": null,
+          "resident_state_bytes": null,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": null,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": true,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "protonet_cda": {
+      "B": {
+        "fit_wall_seconds": 0.01564645115286112,
+        "optimizer_steps": 0,
+        "trainable_parameters": 0,
+        "resident_state_bytes": 21440097,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": 377.9921875,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J02",
+          "fit_wall_seconds": 0.018192283809185028,
+          "optimizer_steps": 0,
+          "trainable_parameters": 0,
+          "resident_state_bytes": 21450337,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": 554.41845703125,
+          "support_training_exposures": null,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": true,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "mrior_sda": {
+      "B": {
+        "fit_wall_seconds": 6.877619157079607,
+        "optimizer_steps": 800,
+        "trainable_parameters": 4898567,
+        "resident_state_bytes": null,
+        "resident_model_bytes": 19632876,
+        "resident_decision_bytes": 0,
+        "peak_process_cuda_allocated_MiB": 293.17578125,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J09",
+          "fit_wall_seconds": 0.7115180492401123,
+          "optimizer_steps": 100,
+          "trainable_parameters": 8208,
+          "resident_state_bytes": 19653476,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J16",
+          "fit_wall_seconds": 0.05298517690971494,
+          "optimizer_steps": 0,
+          "trainable_parameters": 0,
+          "resident_state_bytes": 19665644,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 0,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J23",
+          "fit_wall_seconds": 0.15636399993672967,
+          "optimizer_steps": 100,
+          "trainable_parameters": 8208,
+          "resident_state_bytes": 19665708,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": false,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "dadda_sda": {
+      "B": {
+        "fit_wall_seconds": 12.635895424056798,
+        "optimizer_steps": 100,
+        "trainable_parameters": 11521670,
+        "resident_state_bytes": null,
+        "resident_model_bytes": 46125288,
+        "resident_decision_bytes": 0,
+        "peak_process_cuda_allocated_MiB": 2148.4091796875,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J10",
+          "fit_wall_seconds": 1.4595590336248279,
+          "optimizer_steps": 100,
+          "trainable_parameters": 2064,
+          "resident_state_bytes": 46130528,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J17",
+          "fit_wall_seconds": 0.058658051304519176,
+          "optimizer_steps": 0,
+          "trainable_parameters": 0,
+          "resident_state_bytes": 46133480,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 0,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J24",
+          "fit_wall_seconds": 0.13064880017191172,
+          "optimizer_steps": 100,
+          "trainable_parameters": 2064,
+          "resident_state_bytes": 46133544,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": false,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "twostage_sda": {
+      "B": {
+        "fit_wall_seconds": 6.928100740071386,
+        "optimizer_steps": 300,
+        "trainable_parameters": 104888,
+        "resident_state_bytes": null,
+        "resident_model_bytes": 421552,
+        "resident_decision_bytes": 0,
+        "peak_process_cuda_allocated_MiB": 150.27001953125,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J11",
+          "fit_wall_seconds": 0.26063176430761814,
+          "optimizer_steps": 100,
+          "trainable_parameters": 2064,
+          "resident_state_bytes": 426792,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J18",
+          "fit_wall_seconds": 0.012653111014515162,
+          "optimizer_steps": 0,
+          "trainable_parameters": 0,
+          "resident_state_bytes": 429744,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 0,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J25",
+          "fit_wall_seconds": 0.10854024440050125,
+          "optimizer_steps": 100,
+          "trainable_parameters": 2064,
+          "resident_state_bytes": 429808,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": false,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "feature_separation_hu2024": {
+      "B": {
+        "fit_wall_seconds": null,
+        "optimizer_steps": null,
+        "trainable_parameters": null,
+        "resident_state_bytes": null,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": null,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J12",
+          "fit_wall_seconds": 0.7296133222989738,
+          "optimizer_steps": 100,
+          "trainable_parameters": 4112,
+          "resident_state_bytes": 7574556,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J19",
+          "fit_wall_seconds": 0.1558210658840835,
+          "optimizer_steps": 0,
+          "trainable_parameters": 0,
+          "resident_state_bytes": 7580660,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 0,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J26",
+          "fit_wall_seconds": 0.209309256169945,
+          "optimizer_steps": 100,
+          "trainable_parameters": 4112,
+          "resident_state_bytes": 7580724,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": false,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "feature_separation_legacy": {
+      "B": {
+        "fit_wall_seconds": 4.703567594755441,
+        "optimizer_steps": 100,
+        "trainable_parameters": 11339090,
+        "resident_state_bytes": null,
+        "resident_model_bytes": 45396008,
+        "resident_decision_bytes": 0,
+        "peak_process_cuda_allocated_MiB": 798.91455078125,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [],
+      "native_C": false,
+      "observed_B_K": 10,
+      "C_status": "N_A_NATIVE_CLOSED_SET"
+    },
+    "ra_collab_single_ft": {
+      "B": {
+        "fit_wall_seconds": null,
+        "optimizer_steps": null,
+        "trainable_parameters": null,
+        "resident_state_bytes": null,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": null,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J13",
+          "fit_wall_seconds": 0.9970646519213915,
+          "optimizer_steps": 100,
+          "trainable_parameters": 4112,
+          "resident_state_bytes": 3473228,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J20",
+          "fit_wall_seconds": 0.08198695629835129,
+          "optimizer_steps": 0,
+          "trainable_parameters": 0,
+          "resident_state_bytes": 3479332,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 0,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J27",
+          "fit_wall_seconds": 0.189631509128958,
+          "optimizer_steps": 100,
+          "trainable_parameters": 4112,
+          "resident_state_bytes": 3479396,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": false,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "tweak_m1": {
+      "B": {
+        "fit_wall_seconds": null,
+        "optimizer_steps": null,
+        "trainable_parameters": null,
+        "resident_state_bytes": null,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": null,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J14",
+          "fit_wall_seconds": null,
+          "optimizer_steps": null,
+          "trainable_parameters": null,
+          "resident_state_bytes": null,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": null,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J21",
+          "fit_wall_seconds": 0.0807383731007576,
+          "optimizer_steps": 0,
+          "trainable_parameters": 0,
+          "resident_state_bytes": 8877888,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 0,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        },
+        {
+          "arm": "J28",
+          "fit_wall_seconds": 0.21677107783034444,
+          "optimizer_steps": 100,
+          "trainable_parameters": 208,
+          "resident_state_bytes": 8877952,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": 16000,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": true,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "csil_corefix": {
+      "B": {
+        "fit_wall_seconds": 0.19223653804510832,
+        "optimizer_steps": 10,
+        "trainable_parameters": 385578,
+        "resident_state_bytes": 4635744,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": 60.13720703125,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J03",
+          "fit_wall_seconds": 0.10990311065688729,
+          "optimizer_steps": 9,
+          "trainable_parameters": 1426,
+          "resident_state_bytes": 4641784,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": 51.115234375,
+          "support_training_exposures": null,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": true,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "mopc_paper": {
+      "B": {
+        "fit_wall_seconds": 0.1493213977664709,
+        "optimizer_steps": 10,
+        "trainable_parameters": 385542,
+        "resident_state_bytes": 1556832,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": 51.10009765625,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J04",
+          "fit_wall_seconds": 2.420639146119356,
+          "optimizer_steps": 160,
+          "trainable_parameters": 386832,
+          "resident_state_bytes": 1567112,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": 41.68798828125,
+          "support_training_exposures": null,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": true,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "mopc_public_code": {
+      "B": {
+        "fit_wall_seconds": 0.13242937112227082,
+        "optimizer_steps": 10,
+        "trainable_parameters": 385542,
+        "resident_state_bytes": 1556832,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": 51.10009765625,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "mopc_public_code",
+          "fit_wall_seconds": 2.454481386113912,
+          "optimizer_steps": 160,
+          "trainable_parameters": 386832,
+          "resident_state_bytes": 1567112,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": 41.42236328125,
+          "support_training_exposures": null,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": true,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "orthogonal": {
+      "B": {
+        "fit_wall_seconds": 0.5225896136835217,
+        "optimizer_steps": 10,
+        "trainable_parameters": 768,
+        "resident_state_bytes": 1586480,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": 28.0419921875,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J05",
+          "fit_wall_seconds": 3.6099167126230896,
+          "optimizer_steps": 50,
+          "trainable_parameters": 1280,
+          "resident_state_bytes": 1591600,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": 34.82080078125,
+          "support_training_exposures": null,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": true,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    },
+    "issl_fixed_v1": {
+      "B": {
+        "fit_wall_seconds": null,
+        "optimizer_steps": null,
+        "trainable_parameters": null,
+        "resident_state_bytes": null,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": null,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [],
+      "native_C": true,
+      "observed_B_K": 1,
+      "C_status": "FIRST_UNIT_NOT_YET_COMPLETE"
+    },
+    "issl_author_behavior": {
+      "B": {
+        "fit_wall_seconds": null,
+        "optimizer_steps": null,
+        "trainable_parameters": null,
+        "resident_state_bytes": null,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": null,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [],
+      "native_C": true,
+      "observed_B_K": 1,
+      "C_status": "FIRST_UNIT_NOT_YET_COMPLETE"
+    },
+    "lora_triplet_knn": {
+      "B": {
+        "fit_wall_seconds": null,
+        "optimizer_steps": null,
+        "trainable_parameters": null,
+        "resident_state_bytes": null,
+        "resident_model_bytes": null,
+        "resident_decision_bytes": null,
+        "peak_process_cuda_allocated_MiB": null,
+        "support_training_exposures": null,
+        "CPU_peak_RSS_bytes": null,
+        "energy_J": null,
+        "FLOPs": null
+      },
+      "C": [
+        {
+          "arm": "J07",
+          "fit_wall_seconds": null,
+          "optimizer_steps": null,
+          "trainable_parameters": null,
+          "resident_state_bytes": null,
+          "resident_model_bytes": null,
+          "resident_decision_bytes": null,
+          "peak_process_cuda_allocated_MiB": null,
+          "support_training_exposures": null,
+          "CPU_peak_RSS_bytes": null,
+          "energy_J": null,
+          "FLOPs": null
+        }
+      ],
+      "native_C": true,
+      "observed_B_K": 10,
+      "C_status": "OBSERVED"
+    }
+  },
+  "MILKR": [
+    {
+      "stage": "B",
+      "k": 10,
+      "new_count": 0,
+      "fit_wall_seconds": 0.02714788680896163,
+      "fit_plus_query_decision_seconds": 6.880950408056378,
+      "gram_seconds": 0.025566813070327044,
+      "linear_solve_seconds": 0.000285562127828598,
+      "optimizer_steps": 0,
+      "persistent_head_bytes": 357152,
+      "training_feature_bytes": 353280,
+      "gram_bytes": 28800,
+      "coefficient_bytes": 2880,
+      "peak_CPU_RSS_bytes": null,
+      "peak_CUDA_bytes": null,
+      "scope": "CPU support fitting only;excludes F feature extraction/DURA;seconds also contains query scoring"
+    },
+    {
+      "stage": "C",
+      "k": 10,
+      "new_count": 10,
+      "fit_wall_seconds": 0.14432572433725,
+      "fit_plus_query_decision_seconds": 32.280680048745126,
+      "gram_seconds": 0.14037193218246102,
+      "linear_solve_seconds": 0.0005601663142442703,
+      "optimizer_steps": 0,
+      "persistent_head_bytes": 965152,
+      "training_feature_bytes": 942080,
+      "gram_bytes": 204800,
+      "coefficient_bytes": 20480,
+      "peak_CPU_RSS_bytes": null,
+      "peak_CUDA_bytes": null,
+      "scope": "CPU support fitting only;excludes F feature extraction/DURA;seconds also contains query scoring"
+    }
+  ],
+  "query_IQ_read": false,
+  "truth_read": false,
+  "performance_scores_read": false,
+  "missing_data_policy": "null means not measured or not yet observable;never zero;algorithmic zero optimizer steps separately identified"
+}
