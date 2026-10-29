@@ -27,3 +27,7 @@ A/B/C 继续分阶段实测 CPU RSS、CUDA allocated/reserved、训练/适应/�
 ## PAMF 正式训练启动读回
 
 已核实 3 个 PAMF seed 实际运行，另余种子按原4-seed矩阵排队。首轮 satellite_seen=28416、satellite_actually_applied=8470，实际执行星地拼接；E26 前 PL_seen=0。最高已完成 E4，逐轮计时与资源文件持续更新。真实 worker 的 PID/CWD/argv/GPU 与日志增长已独立核实。该启动核验只使用源端证据，不读取目标分数，也不声明最终性能。
+
+## 用户方法更正：已被替代
+
+本run的普通PL＋拼接源配方不是当前PAMF。用户明确完整PAMF使用Tri-SIG-TIME SSL；4个相关worker及CPUcontroller已精确停止并独立核实退出，旧权重/结果/开销保留，不用于当前PAMF。新run `20261030-phase2-group1-trisigtime-threepool-m4-r04` 复用原合法三视图完整REPL源模型并接管原外部健康任务；外部代码、输出及已完成结果保持。
