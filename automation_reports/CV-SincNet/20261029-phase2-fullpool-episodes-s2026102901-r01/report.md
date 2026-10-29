@@ -49,3 +49,7 @@ VERIFIED：实际执行 commit 为 `42e6dca573508f511d2f33861ac7dbd58eaeee45`；
 ## r10 三池数据输入复用
 
 用户最终选择三个互斥物理池，r09全池布局不再作为后续身份任务输入。此作业的逐episode原始信道观测仍合法且可精确分片复用，因此健康r09工厂继续，不停止、不热改、不重生成。同一received及匿名ID在r10按原始物理身份归属拆为3池，并新抽pool内support/query；r10 run为`20261029-phase2-threepool-episodes-s2026102901-r01`。复制/分片不计新信道或新独立物理样本，r09历史输出保持。
+
+## 全部制作完成与正式实验接入
+
+ARTIFACTS_COMPLETE，已独立确认DATA_COMPLETE。三池数据为483bank/9660split/12760929观测，原始记录554823、最小query176。其全部数据已由正式核心run `20261029-phase2-milkr-threepool-m4-r01` 的data_audit进一步核验通过；实际Phase2 target预测已启动。旧工厂received/ID精确复用，历史输出保留，不增加源训练或物理样本数。

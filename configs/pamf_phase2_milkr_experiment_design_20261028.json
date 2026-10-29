@@ -1,7 +1,7 @@
 {
   "schema": "pamf_phase2_milkr_experiment_design_v1",
   "date": "2026-10-28",
-  "status": "DESIGN_ONLY",
+  "status": "CORE_EXECUTION_RUNNING_EXTERNAL_INTERFACES_PENDING",
   "launch_ready": false,
   "execution_authorized_by_this_design": false,
   "scope": "existing labeled MILKR Phase2 complete S/B/C comparison plus frozen DURA input factor; no new G training, target-U R&D, Phase3 or collaboration",
@@ -13,7 +13,8 @@
     "docs/PAMF_PHASE2_MAIN_TABLES_20261028.md",
     "docs/PAMF_PHASE2_FULL_EQ_ALLOCATION_R08_20261029.md",
     "docs/PAMF_PHASE2_FULLPOOL_EPISODES_R09_20261029.md",
-    "docs/PAMF_PHASE2_THREEPOOL_EPISODES_R10_20261029.md"
+    "docs/PAMF_PHASE2_THREEPOOL_EPISODES_R10_20261029.md",
+    "docs/PAMF_PHASE2_CORE_EXECUTION_20261029.md"
   ],
   "primary_method": {
     "name": "MILKR",
@@ -5695,9 +5696,9 @@
   "active_data_and_budget_design": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
   "capacity_execution_note": "User chooses3disjoint physical pools to guarantee>=150query perRX/TX atK20;minimum176.Eachpool repeated episodes;r09channelsreused;identity experiments remainonhold.",
   "active_selected_classes": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
-  "data_preparation_status": "R10_THREE_POOLS_VALIDATED_BANK_BUILD_RUNNING",
+  "data_preparation_status": "R10_COMPLETE_FULL_DATA_AUDIT_PASS",
   "data_preparation_run": "20261029-phase2-threepool-episodes-s2026102901-r01",
-  "identity_experiments_still_on_hold": true,
+  "identity_experiments_still_on_hold": false,
   "active_data_rules": {
     "physical_pools": 3,
     "physical_pool_disjoint": true,
@@ -5714,5 +5715,12 @@
     "identity_state": "reset source per pool/episode/K;inherit B-to-C only within current task",
     "legacy_embedded_data_and_query_budgets": "HISTORICAL_NONBINDING;use active_data_and_budget_design"
   },
-  "data_preparation_code_commit": "1346655254e8b56f2104cebd69014ad75a1e8eb6"
+  "data_preparation_code_commit": "1346655254e8b56f2104cebd69014ad75a1e8eb6",
+  "execution_authorized_by_latest_user": true,
+  "current_core_execution_run": "20261029-phase2-milkr-threepool-m4-r01",
+  "current_core_execution_config": "configs/pamf_phase2_milkr_threepool_execution_20261029.json",
+  "current_core_execution_status": "VERIFIED_RUNNING_FIRST_PAIRED_UNIT",
+  "external_full_registry_execution_status": "SOURCE_REUSE_AUDIT_AVAILABLE_EPISODIC_INTERFACES_PENDING",
+  "current_core_execution_code_commit": "20f920985a97376aad2ac9663d33dcb9b81e3c49",
+  "core_launch_ready": true
 }

@@ -58,3 +58,7 @@ run：`20261029-phase2-threepool-episodes-s2026102901-r01`。实际配置为`con
 ## 6. 已验证执行状态
 
 N607数据作业已启动，代码commit `1346655254e8b56f2104cebd69014ad75a1e8eb6`，归档传输、编译和进程路径/命令/日志VERIFIED。实际partition_report确认P01/P02/P03为184936/184944/184943，最小query176。首组实际三池数据的互斥、覆盖、精确观测复用及A/B/C读取检查通过；首读75/483bank已完成。当前RUNNING，尚未全部制作完成；身份训练/预测/评分和DURA缓存仍为0。
+
+## 全部完成与核验
+
+三池数据已全部制作完成：483bank、9660split、12760929仿真观测。正式核心run的全量data_audit已PASS，互斥划分、support/query全补集与嵌套、B/C旧support、逐组信道seed/实际scene/仰角均核实，最小query176。Phase2核心实验已启动，详见 [正式执行记录](PAMF_PHASE2_CORE_EXECUTION_20261029.md)。
