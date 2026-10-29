@@ -538,3 +538,9 @@ Run `20261030-phase3-star-metric-cosine-s2026092701-r01`，VERIFIED / ANALYZED_S
 执行code abb2490048d7fcceffbffe814d15f880b79522f4、预登记b67a2ed4a6e13e383df2e38dbe6b1a012c75b647，11tests35subPASS5.19s/2AST/实际runtime与一次直接P0P1 PASS。一次preflight/archiveSHA22c06cd3cf83129cdefbc3a9720b92974b807e8714b8eafc930ab94ba2fdb476（363files/data0）比较/compile/runtime VERIFIED。首次独立观察pipeline3222125 live且CWD/argv/CUDA空正确；短时predict3222222和score3222229只由pipeline jobs记录，未抓到独立实时占用，不重跑补遥测。终态live空，predict991B/score1247B/pipeline528B完整日志，全部prediction/cal/deploy/score complete。pipeline9.822261s，predict5.178522s、score4.641403s含进程加载/验证，非readout逐包时延。CPU-only新增GPU0、foreign干预0。
 
 完整逐RX/场景/TX、配对、成本与数据权限见 docs/PAMF_PHASE3_STAR_METRIC_COSINE_RESULTS_20261030.md。本轮结束固定g换读出的证伪，不沿historical novel真值扫阈值/选择控制，下一独立方法先检查开放表征训练和无标签适应的实际作用。当前星地跨RX CK/RU≥90%、AK距原同输入F0最多2pp、未来匿名注册目标保持。
+
+## 2026-10-30 默认头开放暴露与相对关系保持已固定待发布
+
+新run `20261030-phase3-star-relation-oe-s2026092701-r01`，执行code `19691a2cad35dcef6dd1ae42973bfba0e14ea705`；两原F0 native/defaulthead独立2220更新，CE/KD+OE关系Gram均有，主relation_oe额外uniform默认头暴露1、control0，无逐向量锚定/aux/增广/U。uniformOE历史已做，本轮只检验关系保持条件下开放暴露的配对作用，不预断旧权重5主导梯度。源knownV只按用户overall+六主scene7组CK90/F0loss2pp选单globalentropyτ；42源组全报、余35仅诊断、不改旧run。实际26tests41subPASS7.57s/10AST/runtime和一次P0P1通过，一次N607preflight源/teacher/G10Q句柄及显存已核实。
+
+两row固定source结束后各一次RX24-1 G10Q864跨RX开发验证，source RU90不再作为这个新机制的entrygate。模型/τ先novel和Q冻结，全部预测完独立score；targetU384保持未读、Q不拟合、正式RX24-18不读、未知TX/K/配额隐藏。当前只DA0_REG0，成功仅下一独立UDA资格，不扩seed或完成目标，AN/HOW=N/A。此前cosine负结果已独立归档Git56df8c3fc8ef0526644c039f7e3a47f66d985e0a；完整v3星地跨RX目标保持ACTIVE。方法/数据/预算/停止见`docs/PAMF_PHASE3_STAR_RELATION_OE_PLAN_20261030.md`及本run登记；此处尚不声称已启动或取得性能。

@@ -1,0 +1,236 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-relation-oe-s2026092701-r01",
+  "group_id": "pamf-phase3-star-relation-oe",
+  "display_name": "PAMF第三阶段：默认头开放暴露与相对结构保持",
+  "description": "Original native F0 matched source increments with OE relational Gram preservation; uniform-default-head exposure sole main/control difference; source-known seven-group global entropy calibration then fixed small crossRX Q once, no source90 entry gate.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-and-crossRX-development",
+  "aliases": [
+    "默认头开放暴露与关系保持"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "cross_RX_development",
+    "default_head",
+    "OE",
+    "Gram",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-star-native-relation-and-open-exposure",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261029-phase3-star-representation-s2026092701-r01",
+    "20261029-phase3-star-joint-ova-s2026092701-r02",
+    "20261029-phase3-star-g10-pool-rx24-1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "19691a2cad35dcef6dd1ae42973bfba0e14ea705",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-relation-oe-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_relation_oe_launch"
+    ],
+    "configs": [
+      "configs/pamf_phase3_star_relation_oe_20261030.json"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Fixed G10 MIX01 P1 restored source IQ and matched originalF0 OE unit teacher; target RX24-1 received -> same frozen DURA P1; all postPhase1 IQ star.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "L_train": 6300,
+      "OE_train": 6134,
+      "known_V_calibration": 27000,
+      "source_novel_evaluation": 3150,
+      "target_U_unused": 384,
+      "target_future_Q": 864
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool\\complete.json; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "Source L/OE train; knownV scalar only; all source/model/threshold freeze before novel+target; targetQ never fit; existing U/Q disjoint; Q0 old576/unknown288 scorer-only composition.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Source old6 L labels and auxiliary outside-six membership; no OE TX/K, hidden Us, target labels/roles/K/quotas, source-bank deployment or query fitting.",
+    "query_use": "Fixed source novel and crossRX Q predictions complete per row, then distinct CPU scorer opens both private truths. Source unknown success is not an entry gate. U unused.",
+    "external_method_exception": null,
+    "claim_scope": "Seen-source historicalnovel diagnostic and exposed RX24-1 crossRX development only, no blind/formal RX24-18/UDA/registration confirmation."
+  },
+  "checkpoint": {
+    "initialization": "Each arm strict originalF0 E50/11100 independent native default6head+encoder update, fresh physicalAdamW2220; frozen DURA; reuse originalF0 OE teacher, never old trained joint candidate.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r02/teacher",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original6 sourcecontract392005 L6300/Us56700/V27000; cached G10P1 L/OE matched; oldteacher code5aa0411 originalF0 only; no target-trained ancestry.",
+    "selection_rule": "Fixed2220 endpoint perarm, no model selection; sourceknown7 calibration oneglobal scalar, novel/target no fit; mainrelation_oe fixed before new IQ, control cannot replace."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-relation-oe-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-relation-oe-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-relation-oe-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_relation_oe_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_relation_oe_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-relation-oe-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Two rows different actual >=4096MB cards from0..7; <=2 added own workers/GPU; other users untouched; GPU train/eval then separateCPU scorer.",
+    "stop_rule": "Technical legality/provenance/nonfinite/collision/unlaunchable prediction preserves failedrow; independent healthyrow continues. Scientific failure no retry/retune/reorder or source90 gate."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/*.json",
+    "logs/*.log",
+    "rows/*/state.json",
+    "rows/*/train/{final.pt,resolved_config.json,training_summary.json,steps.jsonl,smoke.json,complete.json}",
+    "rows/*/predict/{known_predictions.npz,novel_predictions.npz,target_predictions.npz,threshold.npy,complete.json}",
+    "rows/*/predict/calibration/complete.json",
+    "rows/*/score/{results.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "C_K",
+      "original F0 closed-AK",
+      "candidate closed",
+      "source+target paired counts"
+    ],
+    "dimensions": [
+      "two arms",
+      "source42 diagnostics/seven hard calibration groups",
+      "target overall/six main scenes",
+      "TX",
+      "RX",
+      "modelseed",
+      "G10episode",
+      "source novel heldRX1NN"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-relation-oe-s2026092701-r01/rows/*/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_relation_oe_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "relation_control-s2026092701",
+      "method": "PAMF relation_control",
+      "purpose": "Isolate defaulthead OE KL weight1 under fixed relational Gram preservation; entropy_global, same crossRX Q.",
+      "config_ref": "configs/pamf_phase3_star_relation_oe_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-relation-oe-s2026092701-r01/rows/relation_control/train/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Native init/model2026092701; L IID2026092701, OE domain2026102907; G10 scene/channel2026103001/2026104001 and receiver2027 fixed. No stochastic augmentation.",
+      "k": null,
+      "scenario": "G10 MIX01 P1 source and unseenRX24-1 Q",
+      "optimizer": "Fresh native CENTER_UNITS AdamW",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220 fixed iid updates/cumulative13320, one optimizer, L/OE128 each:284160 exposures each/568320 fullF realrows perarm; no naturalepoch claim, no aux.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-relation-oe-s2026092701-r01/rows/relation_control",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-relation-oe-s2026092701-r01/logs/relation_control_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_relation_oe_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-relation-oe-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/*/state.json",
+        "rows/*/train/{final.pt,resolved_config.json,training_summary.json,steps.jsonl,smoke.json,complete.json}",
+        "rows/*/predict/{known_predictions.npz,novel_predictions.npz,target_predictions.npz,threshold.npy,complete.json}",
+        "rows/*/predict/calibration/complete.json",
+        "rows/*/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "relation_oe-s2026092701",
+      "method": "PAMF relation_oe",
+      "purpose": "Isolate defaulthead OE KL weight1 under fixed relational Gram preservation; entropy_global, same crossRX Q.",
+      "config_ref": "configs/pamf_phase3_star_relation_oe_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-relation-oe-s2026092701-r01/rows/relation_oe/train/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Native init/model2026092701; L IID2026092701, OE domain2026102907; G10 scene/channel2026103001/2026104001 and receiver2027 fixed. No stochastic augmentation.",
+      "k": null,
+      "scenario": "G10 MIX01 P1 source and unseenRX24-1 Q",
+      "optimizer": "Fresh native CENTER_UNITS AdamW",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220 fixed iid updates/cumulative13320, one optimizer, L/OE128 each:284160 exposures each/568320 fullF realrows perarm; no naturalepoch claim, no aux.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-relation-oe-s2026092701-r01/rows/relation_oe",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-relation-oe-s2026092701-r01/logs/relation_oe_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_relation_oe_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-relation-oe-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/*/state.json",
+        "rows/*/train/{final.pt,resolved_config.json,training_summary.json,steps.jsonl,smoke.json,complete.json}",
+        "rows/*/predict/{known_predictions.npz,novel_predictions.npz,target_predictions.npz,threshold.npy,complete.json}",
+        "rows/*/predict/calibration/complete.json",
+        "rows/*/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "UniformOE already tested historically; new comparison is uniform defaulthead exposure with relational-only OE teacher preservation, not proof that absoluteanchor dominated.",
+    "Seven source hardgroups match overall+main scenes; other35/42 slices diagnostic, no predictedclass commontail; do not relabel old42-run outcomes.",
+    "Source novel below90 does not cancel either frozen crossRX evaluation. Query Q never fit, Uunused, formalRX24-18 untouched.",
+    "No anonymous registry/A_N/H_OW or completePhase3 success claimed; source/target histories exposed; preserve olddata and foreign processes."
+  ],
+  "registered_at": "2026-10-29T20:56:36+00:00"
+}
