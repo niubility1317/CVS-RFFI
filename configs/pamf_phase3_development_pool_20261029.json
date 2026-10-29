@@ -1,0 +1,16 @@
+{
+  "validation_root": "E:/type10-7/local_artifacts/pamf_phase2_full_eq_validation_20261029_r02",
+  "full_root": "F:/FULL wisig",
+  "compact_receiver_evidence": "E:/type10-7/local_artifacts/pamf_phase3_full_pool_20261029_r01/compact_receiver_headers.json",
+  "source_receivers": ["1-19", "18-2", "19-2", "2-19", "3-19"],
+  "formal_receiver": "24-18",
+  "receiver": "24-1",
+  "receiver_index": 26,
+  "registered_classes": ["14-10", "14-7", "20-15", "20-19", "6-15", "8-20"],
+  "discovery_classes": ["19-15", "19-16"],
+  "future_unknown_classes": ["7-1"],
+  "days": {"discovery": "2021_03_08", "evaluation": "2021_03_15"},
+  "per_scene": {"discovery": 16, "evaluation": 32},
+  "scenes": ["practical_low_suburban", "practical_mid_urban", "practical_low_urban"],
+  "seeds": {"selection": 2026102911, "receiver": 2026102912, "channel": 2026102913, "shuffle": 2026102914}
+}
