@@ -1,0 +1,178 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-development-clean-rx24-1-r01",
+  "group_id": "pamf-phase3-development-clean-data",
+  "display_name": "PAMF第三阶段：RX24-1跨接收机clean配对控制",
+  "description": "Restore exact same1248 parent development physical records/IDs as clean controls, no resampling/channel/model/formal target.",
+  "kind": "data",
+  "stage": "Phase3-development-clean-cross-receiver-control",
+  "aliases": [
+    "Phase3跨RXclean数据控制"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "development_only",
+    "unseen_receiver",
+    "clean_control",
+    "paired_original_not_new_records",
+    "data_only"
+  ],
+  "comparison_group_id": "phase3-dev-rx24-1-same-record-clean-vs-practical",
+  "parent_run_ids": [
+    "20261029-phase3-development-pool-rx24-1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工、自主设计与执行；新Phase3不恢复其他owner暂停Phase2任务。",
+  "code": {
+    "commit": "959a1a68e76a7e2cfba6700c2a251da8330e59b9",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "cwd": "E:\\type10-7\\github_publish\\CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "Full WiSig eq",
+    "version": "20 completed ZIP /158 PKL validated 20261029 r02",
+    "representation": "Same Full eq selected record -> source iq_record FP32[2,256] once unit RMS; no channel or new equalization",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 R_dev paired clean control20261029",
+    "physical_ids_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_20261029_r01\\pool\\builder_report.json",
+    "label_map_ref": "Same old6 and private parent truth; independent clean public schema",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "24-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_08",
+      "2021_03_15"
+    ],
+    "tx_sets_ref": "ParentRX24-1 unchanged canonical mapping",
+    "roles": {
+      "development_unlabeled": 384,
+      "development_validation": 864
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "Same parent U384/V864 disjoint original records, condition control not new physical observations",
+    "leo_config_ref": "No channel; parent fixed received unchanged"
+  },
+  "permissions": {
+    "regime": "builder_private_labels_public_unlabeled_development",
+    "query_use": "Input construction only, model/fit/pred/scoring0",
+    "external_method_exception": null,
+    "claim_scope": "Clean data readiness only; not performance; star predictor forbidden paired clean reference"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "data-only builder has no model input",
+    "provenance_verdict": "no weights, optimizer, teacher or recovery model loaded",
+    "selection_rule": "fixed metadata capacity/role allocation, no IQ performance filtering"
+  },
+  "execution": {
+    "host": "local-Windows",
+    "launch_owner": "codex-pamf-phase3-development-clean-data-20261029",
+    "gpu_policy": "CPU-only builder; zero GPU processes; no foreign tasks changed",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_20261029_r01",
+    "launch_command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -X utf8 -B -u -m experiments.pamf_phase3_open_world.development_clean --config configs/pamf_phase3_development_clean_20261029.json --output \"E:/type10-7/local_artifacts/pamf_phase3_development_clean_20261029_r01/pool\"",
+    "stop_rule": "Wrong completed parent/mapping/IDs/selected member, shape/nonfinite, output collision. Preserve partial; no resampling or automatic rebuild."
+  },
+  "expected_artifacts": [
+    "pool/discovery/public/{manifest.json,ids.npy,received.npy}",
+    "pool/discovery/truth/truth.npz",
+    "pool/evaluation/public/{manifest.json,ids.npy,received.npy}",
+    "pool/evaluation/truth/truth.npz",
+    "pool/builder_report.json",
+    "pool/complete.json",
+    "build.log",
+    "build_launch.json",
+    "build_post_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "physical_record_count",
+      "public_role_label_absent",
+      "roles_scenes_disjoint",
+      "single_received_per_record",
+      "finite_received"
+    ],
+    "dimensions": [
+      "U_dev/V_dev",
+      "privateTX",
+      "D1/D2",
+      "FullRX26/24-1",
+      "scene"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "builder protocol verification only; no RFFI scorer"
+  },
+  "rows": [
+    {
+      "row_id": "dev-rx24-1-clean-same-parent-records",
+      "method": "Exact mapped source iq_record clean control",
+      "purpose": "Separately evaluate clean crossRX95 and star crossRX90 without leaking clean references to star method",
+      "config_ref": "configs/pamf_phase3_development_clean_20261029.json",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_20261029_r01\\pool\\builder_report.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No random selection/channel; exact parent canonical mapping and mixed ID order reused.",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2 indexed PKLmembers,1248 same original records, channel/model0",
+      "output_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_20261029_r01\\pool",
+      "log_path": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_20261029_r01\\build.log",
+      "command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -X utf8 -B -u -m experiments.pamf_phase3_open_world.development_clean --config configs/pamf_phase3_development_clean_20261029.json --output \"E:/type10-7/local_artifacts/pamf_phase3_development_clean_20261029_r01/pool\"",
+      "expected_artifacts": [
+        "pool/discovery/public/{manifest.json,ids.npy,received.npy}",
+        "pool/discovery/truth/truth.npz",
+        "pool/evaluation/public/{manifest.json,ids.npy,received.npy}",
+        "pool/evaluation/truth/truth.npz",
+        "pool/builder_report.json",
+        "pool/complete.json",
+        "build.log",
+        "build_launch.json",
+        "build_post_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Userlatest cleancrossRX95/starcrossRX90/knownacceptmaximize; historicaltargets unchanged.",
+    "Clean/received are separate experimental conditions withsameIDs and1248originalrecords, notnewindependentrecords.",
+    "Public clean min v1 distinct from residual contract; no per-record cleanreference tostar model.",
+    "Parent U/V physicallydisjoint, source/formalRX boundaries unchanged; alltruth private, no F/G/predict.",
+    "No revalidationFull/ZIPscan/hashchain, no sampling/qualityselection/channel. Onlytwo parentindexedmembers."
+  ],
+  "registered_at": "2026-10-29T04:00:16+00:00",
+  "verification": {
+    "focused_tests": "8 tests and 29 subtests; adjacent16 tests and32 subtests PASS",
+    "log": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_20261029_r01\\focused_tests.log",
+    "independent_review": "One development-builder P0/P1 PASS; no direct launch defects",
+    "checkpoint_smoke": "Not applicable: data-only CPU builder has no model input",
+    "foreign_processes_stopped": 0
+  }
+}

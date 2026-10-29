@@ -1,0 +1,229 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-development-transfer-s2026092701-r01",
+  "group_id": "pamf-phase3-unseen-rx-practical-transfer",
+  "display_name": "PAMF第三阶段：RX24-1冻结开集拒识与DURA配对迁移",
+  "description": "Source-frozen E51 OE encoder/MLP/threshold on unseen RX24-1 development V864, paired original received and DURA. No fit, U or formal Q.",
+  "kind": "diagnostic",
+  "stage": "Phase3-development-unseen-receiver-practical-frozen-transfer",
+  "aliases": [
+    "Phase3跨RX星地拒识迁移诊断"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "development_only",
+    "unseen_receiver",
+    "practical",
+    "DURA_paired",
+    "no_fit"
+  ],
+  "comparison_group_id": "phase3-dev-rx24-1-source-E51OE-frozen-P0P1",
+  "parent_run_ids": [
+    "20261029-phase3-source-baseline-risk-s2026092701-r01",
+    "20261029-phase3-development-pool-rx24-1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工及自主设计执行；本轮遵循事先source-only开发路线，不以首轮target表调参。",
+  "code": {
+    "commit": "a3b8bb24b6b9e357bf37678209cf0c21d666f7df",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-transfer-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-transfer-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Full WiSig RX24-1 fixed development received",
+    "version": "development pool 20261029 r01 VALIDATED_ONCE",
+    "representation": "FP32[2,256], fixed practical residual; paired P1 frozen DURA output",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 source-development/R_dev",
+    "physical_ids_ref": "local_artifacts/pamf_phase3_development_pool_20261029_r01/pool/builder_report.json",
+    "label_map_ref": "Only initial old6 in predictor; private truth retained by scorer",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "24-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_15"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_source_baseline_risk_20261029.json; same registered6/sourceOE4/novel3 unchanged",
+    "roles": {
+      "V_dev": 864,
+      "U_dev_reads": 0,
+      "formal_target_reads": 0
+    },
+    "train_ratio": null,
+    "capsule_id": "p3dev-e900eaa3fa0f5ff5dc785a37",
+    "split_id": "668208756ed3d2a1a070dce0",
+    "validation_ref": "local_artifacts/pamf_phase3_development_pool_20261029_r01/pool/complete.json",
+    "support_query_ref": "V_dev no fitting/threshold adjustment; U384 not opened; formal RX24-18 untouched",
+    "leo_config_ref": "configs/pamf_phase3_development_pool_20261029.json"
+  },
+  "permissions": {
+    "regime": "source-frozen development-domain inference; no target labels or adaptation",
+    "query_use": "Only per-sample prediction, complete all P0/P1 before independent score",
+    "external_method_exception": null,
+    "claim_scope": "Development transfer only, not formal target/blind novel population/DA/registration"
+  },
+  "checkpoint": {
+    "initialization": "Strict fixed own E51 uniform OE plus source aggregate geometry/readout/threshold; original F6 closed reference; DURA v1/R69",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r02/rows/uniform_oe/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "E51 existing source contract and completed readout/risk identities; DURA readiness20261028 source contract PASS and compact absent novel3 metadata",
+    "provenance_verdict": "Source5 RX only, development RX24-1 excluded from ancestors. Novel3 never training/OE; already source evaluated. Formal4 excluded.",
+    "selection_rule": "Fixed E51 source endpoint; P1/MLP primary, P0/other scores diagnostic; no development-score replacement or source threshold refit"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-development-transfer-20261029",
+    "gpu_policy": "One added predictor on actual free GPU; <=2 added/card, do not modify foreign work",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-transfer-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-transfer-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_transfer_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.development_transfer predict --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-transfer-s2026092701-r01-release/predict_config.json --device cuda:0",
+    "stop_rule": "Wrong source state/data handles, nonfinite, output collision, forbidden truth/fit, missing paired predictions or unlaunchable dependency. Preserve partial; do not change thresholds, samples or channel from development scores."
+  },
+  "expected_artifacts": [
+    "predict_config.json",
+    "logs/predict.log",
+    "predict/smoke.json",
+    "predict/predictions.npz",
+    "predict/complete.json",
+    "score/scores.json",
+    "score/complete.json",
+    "launch.json",
+    "running_verification.json",
+    "post_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "unknown_macro_rejection",
+      "known_macro_acceptance",
+      "known_macro_frr",
+      "known_open_accuracy",
+      "original_closed_accuracy",
+      "known_total_drop",
+      "AUROC",
+      "OSCR"
+    ],
+    "dimensions": [
+      "P0/P1",
+      "7methods",
+      "oldTX",
+      "novelTX",
+      "3scenes",
+      "RX24-1"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-transfer-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/development_transfer.py score"
+  },
+  "rows": [
+    {
+      "row_id": "P0-s2026092701",
+      "method": "Frozen source E51OE with MLP16, unchanged fixed received",
+      "purpose": "Compare restoration effect and fixed rejection transfer, no fitting",
+      "config_ref": "configs/pamf_phase3_development_transfer_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-transfer-s2026092701-r01-release/predict_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102911,
+        "augmentation": 2026102913,
+        "support": null,
+        "evaluation": 2026102914
+      },
+      "seed_notes": "Data+received reused intact; no sampling or new channel; F/MLP/threshold already frozen.",
+      "k": null,
+      "scenario": "three practical equal strata",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 fitting/updates; V864 per view plus synthetic real-checkpoint no-query smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-transfer-s2026092701-r01/predict",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-transfer-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.development_transfer predict --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-transfer-s2026092701-r01-release/predict_config.json --device cuda:0",
+      "expected_artifacts": [
+        "predict_config.json",
+        "logs/predict.log",
+        "predict/smoke.json",
+        "predict/predictions.npz",
+        "predict/complete.json",
+        "score/scores.json",
+        "score/complete.json",
+        "launch.json",
+        "running_verification.json",
+        "post_state.json"
+      ]
+    },
+    {
+      "row_id": "P1-s2026092701",
+      "method": "Frozen source E51OE with MLP16, same received through frozen DURA v1.0 R69, FP32 TF32off reuse+graph nativeFalse",
+      "purpose": "Compare restoration effect and fixed rejection transfer, no fitting",
+      "config_ref": "configs/pamf_phase3_development_transfer_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-transfer-s2026092701-r01-release/predict_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102911,
+        "augmentation": 2026102913,
+        "support": null,
+        "evaluation": 2026102914
+      },
+      "seed_notes": "Data+received reused intact; no sampling or new channel; F/MLP/threshold already frozen.",
+      "k": null,
+      "scenario": "three practical equal strata",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 fitting/updates; V864 per view plus synthetic real-checkpoint no-query smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-transfer-s2026092701-r01/predict",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-transfer-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.development_transfer predict --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-transfer-s2026092701-r01-release/predict_config.json --device cuda:0",
+      "expected_artifacts": [
+        "predict_config.json",
+        "logs/predict.log",
+        "predict/smoke.json",
+        "predict/predictions.npz",
+        "predict/complete.json",
+        "score/scores.json",
+        "score/complete.json",
+        "launch.json",
+        "running_verification.json",
+        "post_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Latest target practical crossRX>=90 overall/scene; cleancrossRX>=95 separately, knownaccept maximize plus FRR5 and sameinput originalF2pp protection.",
+    "This run practical only; no clean public references and no U access. Anonymous registration/adaptation absent.",
+    "Source old6 L6300/U56700/V27000 legacy; E51+222 nativeL+source21OE, readoutL+source4OE4200, Vknown-only calibration, repeatednovel3 developed before.",
+    "Source endpoint NO_PROMOTION remains unchanged; development diagnostic is not formal promotion or relabeling.",
+    "DURA F-free gradient training ancestry and original sourceV/F-based R17 candidate selection disclosed; novel3 absent all fourcompact excludes original G training.",
+    "No per-record sourcebank/unknowncount/scene/quotas/trueTX into predictor. Source aggregate state only.",
+    "SyntheticIQ realcheckpoint smoke first; no source/target IQ smoke; no query fitting. Allpaired predictions before independent scorer.",
+    "Immutable run root; preserve partial; actual remainingmemory check, foreign processes untouched."
+  ],
+  "registered_at": "2026-10-29T03:55:38+00:00",
+  "verification": {
+    "focused": "10 tests and16 subtests PASS",
+    "independent_review": "One P0/P1 PASS",
+    "preflight": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_transfer_20261029_r01\\preflight.txt",
+    "real_checkpoint_smoke": "First predict step, synthetic2 IQ before V access; not yet executed"
+  }
+}
