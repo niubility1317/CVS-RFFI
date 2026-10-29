@@ -85,3 +85,7 @@ run：`20261029-phase2-fullpool-episodes-s2026102901-r01`。配置：`configs/pa
 任一输入数量/格式变化、池容量不足、当前任务角色重叠、输出碰撞、非有限 received 或 worker 失败即停止本 controller 所拥有的子进程，保留 partial，不修改其他 owner 的任务，不自动改配方覆盖重跑。5 项聚焦检查已通过，包含全补集、跨 K 角色变化、跨套重采样、A 不读标签/未来类别，以及真实 practical 算子的跨套不同信道。发布后以实际 PID/CWD/argv、日志增长和产物独立回读核实启动；数据全部完成须有最终 builder_report/catalog，提交 PID 不能代表完成。
 
 r08 已成功完成 539,448 条物理记录的旧版数据构建，保留全部输出；其互斥分配与重选类别因用户本次更正而被替代，不作为本版输入，不记为技术失败。历史结果保持原定义，不改标为 r09。
+
+## 7. 当前执行状态
+
+已在 N607 启动本版 CPU 数据制作，执行 commit `42e6dca573508f511d2f33861ac7dbd58eaeee45`。归档传输与远端编译 VERIFIED，controller/worker 的实际路径、命令和日志已独立回读。当前 RUNNING；最终 161 bank 和 catalog/builder_report 尚未完成。身份实验继续暂停。

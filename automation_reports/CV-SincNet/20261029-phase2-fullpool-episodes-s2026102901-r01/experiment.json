@@ -24,7 +24,7 @@
   "replaces_run_id": "20261029-phase2-full-eq-preparation-s2026102901-r01",
   "authorization": "User explicitly corrects Phase2: all suites reuse one raw pool, random K support per class, entire remainder query, fresh satellite overlay per suite; execute data-preparation correction only.",
   "code": {
-    "commit": null,
+    "commit": "42e6dca573508f511d2f33861ac7dbd58eaeee45",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-fullpool-episodes-s2026102901-r01-release"

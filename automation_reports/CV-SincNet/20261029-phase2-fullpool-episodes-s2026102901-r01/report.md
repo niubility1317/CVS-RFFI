@@ -39,3 +39,9 @@
 停止规则见 execution.stop_rule：首次输入数量/格式变化、容量不足、当前任务角色重叠、输出碰撞、非有限值或 worker 错误停止本任务子进程，保留 partial，不动其他 owner，不自动更换参数重跑。
 
 5 项聚焦检查 PASS。唯一一次独立 P0/P1 审查 PASS，无未解决 P0/P1；审查确认固定原26类每日期非空，最小四日池590。预期最终产物为 builder_only 原池、161个 received/IDs/manifest/stage_rows/actual-K split/标签、独立 score sidecar、catalog 和 builder_report。启动用独立 PID/CWD/argv 与产物/日志增长证明；全部数据完成必须有最终报告，不将 submitted 当 complete。
+
+## 已验证启动
+
+VERIFIED：实际执行 commit 为 `42e6dca573508f511d2f33861ac7dbd58eaeee45`；发布归档 SHA 对比一致、远端编译通过。独立回读 controller PID2486872 与 pool worker2486876 的 CWD/完整 argv/线程设置一致，CUDA_VISIBLE_DEVICES 为空；首读已有4个 RX 原始池 manifest 和对应增长日志。当前是 RUNNING，尚无最终 builder_report，不宣称数据全部制作完成。证据为同 run 的 preparation_status.json 以及本地 latest_readback.json；无身份训练、身份预测、评分或 DURA 缓存。
+
+随后独立回读确认进入 episodes 阶段：7个 RX 原始池均完成，共554,823条；8个 CPU worker 正在生成 satellite received。进度文件合计至少80000条观测已写出。当前尚无完整 bank 的结束报告，最终数据完整性状态仍为 RUNNING。
