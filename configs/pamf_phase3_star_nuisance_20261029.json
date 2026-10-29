@@ -1,0 +1,47 @@
+{
+  "schema": "pamf_phase3_star_nuisance_plan_v1",
+  "run_id": "20261029-phase3-star-nuisance-s2026092701-r01",
+  "source_only": true,
+  "model_seed": 2026092701,
+  "parent_encoder": "original Phase1 Tri-SIG-TIME E50/11100, 232993 parameters",
+  "paths": ["P0", "P1"],
+  "deployment_primary_path": "P1",
+  "variants": ["control", "rx", "rxday"],
+  "scores": ["mahalanobis", "relative_mahalanobis"],
+  "primary_variant": "rxday",
+  "primary_score": "relative_mahalanobis",
+  "nuisance_fit": {
+    "input": "source L five standardized-unit branches, original eight-branch geometry unchanged",
+    "residual": "class-conditioned RX or RX-by-day group means minus class mean",
+    "identity_protection": "orthogonalize residuals against between-class mean span before SVD",
+    "energy_fraction": 0.9,
+    "rank_cap": 16,
+    "transform": "remove selected directions, then unit-normalize; zero residual uses identity",
+    "covariance": "0.8 full covariance + 0.2 trace/d isotropic shrinkage",
+    "normalization_fit_role": "source L only"
+  },
+  "source_counts": {"L": 6300, "known_V": 27000, "heldout_device_validation": 3150},
+  "calibration": {
+    "role": "known V only",
+    "groups": "overall + 5 RX + 6 G10 scenes + 30 RX-scene",
+    "macro_frr_max": 0.05,
+    "same_input_original_F0_closed_minus_open_max": 0.02,
+    "ties": "intact",
+    "thresholds": "one maximal legal scalar per path/variant/score"
+  },
+  "advance_rule": {
+    "fixed_candidate": "P1/rxday/relative_mahalanobis only; controls cannot replace it",
+    "known_calibration_all_42_groups_pass": true,
+    "source_unknown_macro_rejection_min": 0.9,
+    "unknown_required_groups": "overall + 5 RX + 6 G10 scenes",
+    "unknown_RX_scene": "diagnostic, not an added scientific gate",
+    "failure": "NO_PROMOTION; no target reads, no retuning or seed expansion",
+    "success": "source-only eligibility, not Phase3 completion; freeze before separate small target four-state validation"
+  },
+  "all_new_model_IQ_satellite": true,
+  "episode": {"id": "MIX01", "scene_seed": 2026103001, "channel_seed": 2026104001},
+  "new_neural_updates": 0,
+  "original_U_new_reads": 0,
+  "target_reads": 0,
+  "metric_definition_ref": "docs/PAMF_PHASE3_METRICS_20261029.md"
+}
