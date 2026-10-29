@@ -1,0 +1,667 @@
+{
+  "schema": "pamf_phase2_group1_design_v1",
+  "date": "2026-10-30",
+  "status": "DESIGN_ONLY_USER_STOP_STILL_ACTIVE",
+  "launch_authorized_by_this_document": false,
+  "auto_resume": false,
+  "training_started": false,
+  "prediction_started": false,
+  "scoring_started": false,
+  "resource_measurement_started": false,
+  "design_document": "docs/PAMF_PHASE2_GROUP1_DESIGN_20261030.md",
+  "user_decisions": {
+    "paths": [
+      "A_B_DA_comparison",
+      "A_C_registration_comparison",
+      "PAMF_A_B_C_process"
+    ],
+    "metric_PL": "distance_softmax_max_probability_ge_0.95",
+    "retain_native_full_supervised_objective": true,
+    "PL_start": "middle_of_source_training",
+    "DURA_support_query_2x2": true,
+    "detailed_stage_resources": true,
+    "multiple_target_receivers": true
+  },
+  "proposed_choices": {
+    "normalized_metric_confidence_temperature": 0.1,
+    "common_PL_weight": 1.0,
+    "U_batch_to_L_batch_ratio": 2,
+    "fixed_horizon_no_early_stop": true,
+    "main_shot": 5,
+    "main_new_count": 20,
+    "curves_fixed_episode": "MIX01",
+    "original_algorithm_hyperparameters": "bind_explicit_original_entry_no_generic_backbone_defaults"
+  },
+  "stages": {
+    "A": "source_training",
+    "A0": "frozen_source_zero_adaptation_evaluation",
+    "B": "target_old_class_support_adaptation",
+    "C": "new_class_registration"
+  },
+  "methods": [
+    {
+      "id": "pamf_pl_milkr",
+      "display_name": "PAMF-PL＋MILKR",
+      "family_category": "both",
+      "source_supervised_binding": "current_three_view_SIG_TIME",
+      "A_epochs_proposed": 50,
+      "A_PL_start_epoch": 26,
+      "A_objective": "native_supervised_scaffold_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": "current_support_only_local_ridge",
+      "C": "full_refit_old_and_new_support_no_B_kernel_inheritance",
+      "B_to_C_external_combination": false,
+      "implementation_identity": "design_adapter_required",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "protonet_cda",
+      "display_name": "ProtoNet CDA",
+      "family_category": "DA",
+      "source_supervised_binding": "native_episode_encoder",
+      "A_epochs_proposed": 200,
+      "A_PL_start_epoch": 101,
+      "A_objective": "native_episode_NLL_plus_pseudo_episode_NLL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": "target_support_prototypes",
+      "C": null,
+      "B_to_C_external_combination": false,
+      "implementation_identity": "native_binding_required",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "mrior_sda",
+      "display_name": "MRIOR-SDA",
+      "family_category": "DA",
+      "source_supervised_binding": "native_MRIOR_source",
+      "A_epochs_proposed": 200,
+      "A_PL_start_epoch": 101,
+      "A_objective": "native_supervised_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": "existing_SDA_GAD_DV_KL",
+      "C": null,
+      "B_to_C_external_combination": false,
+      "implementation_identity": "existing_SDA_extension_not_original_UDA",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "dadda_sda",
+      "display_name": "DADDA-SDA",
+      "family_category": "DA",
+      "source_supervised_binding": "native_DADDA_source",
+      "A_epochs_proposed": 200,
+      "A_PL_start_epoch": 101,
+      "A_objective": "native_supervised_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": "existing_SDA_dynamic_alignment_LMMD",
+      "C": null,
+      "B_to_C_external_combination": false,
+      "implementation_identity": "existing_SDA_extension_not_original_UDA",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "twostage",
+      "display_name": "Two-stage UDA＋FT",
+      "family_category": "DA",
+      "source_supervised_binding": "native_twostage_source",
+      "A_epochs_proposed": 200,
+      "A_PL_start_epoch": 101,
+      "A_objective": "native_supervised_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": "native_DANN_LMMD_FT_order",
+      "C": null,
+      "B_to_C_external_combination": false,
+      "implementation_identity": "support_only_task_adaptation",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "feature_separation_hu2024",
+      "display_name": "Feature Separation/Hu2024",
+      "family_category": "DA",
+      "source_supervised_binding": "native_Hu2024_attention_encoder",
+      "A_epochs_proposed": 200,
+      "A_PL_start_epoch": 101,
+      "A_objective": "full_TX_RX_separation_entropy_supervised_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": "native_fewshot_adaptation_RX_freezing",
+      "C": null,
+      "B_to_C_external_combination": false,
+      "implementation_identity": "independent_reproduction_input_port",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "poster_ft",
+      "display_name": "POSTER Fine-Tuning",
+      "family_category": "DA",
+      "source_supervised_binding": "native_POSTER_Homegrown",
+      "A_epochs_proposed": 200,
+      "A_PL_start_epoch": 101,
+      "A_objective": "native_supervised_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": "native_dense_layer_reset_FT",
+      "C": null,
+      "B_to_C_external_combination": false,
+      "implementation_identity": "author_FT_mechanism_input_port",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "radionet_ada_knn",
+      "display_name": "RadioNet ADA＋kNN",
+      "family_category": "DA",
+      "source_supervised_binding": "native_RadioNet_ADA_source",
+      "A_epochs_proposed": 200,
+      "A_PL_start_epoch": 101,
+      "A_objective": "native_source_supervised_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": "full_ADA_then_target_support_kNN",
+      "C": null,
+      "B_to_C_external_combination": false,
+      "implementation_identity": "support_only_and_k_equals_K_binding_disclosed",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "tweak",
+      "display_name": "Tweak",
+      "family_category": "DA",
+      "source_supervised_binding": "native_Tweak_metric_encoder",
+      "A_epochs_proposed": 100,
+      "A_PL_start_epoch": 51,
+      "A_objective": "native_batch_hard_plus_pseudo_anchor_batch_hard",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": "native_center_radius_M10_calibration",
+      "C": null,
+      "B_to_C_external_combination": false,
+      "implementation_identity": "N_A_NATIVE_M10_INPUT_UNBOUND",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "csil",
+      "display_name": "CSIL",
+      "family_category": "CIL",
+      "source_supervised_binding": "native_CSIL_encoder_teacher_Fisher",
+      "A_epochs_proposed": 200,
+      "A_PL_start_epoch": 101,
+      "A_objective": "native_full_supervised_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": null,
+      "C": "native_channel_expansion_mask_KD_EWC",
+      "B_to_C_external_combination": false,
+      "implementation_identity": "N_A_AUTHOR_FISHER_PATH_UNBOUND",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "mopc_hr",
+      "display_name": "MoPC-HR",
+      "family_category": "CIL",
+      "source_supervised_binding": "native_MoPC_HR_encoder_prototypes",
+      "A_epochs_proposed": 200,
+      "A_PL_start_epoch": 101,
+      "A_objective": "native_base_training_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": null,
+      "C": "paper_semantics_prototype_correction_augmentation_HR",
+      "B_to_C_external_combination": false,
+      "implementation_identity": "paper_semantics_reproduction_not_public_code_alias",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "orthogonal",
+      "display_name": "Orthogonal Incremental SEI",
+      "family_category": "CIL",
+      "source_supervised_binding": "native_orthogonal_base_training",
+      "A_epochs_proposed": 200,
+      "A_PL_start_epoch": 101,
+      "A_objective": "native_base_geometry_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": null,
+      "C": "native_freezing_new_weights_incremental_calibration",
+      "B_to_C_external_combination": false,
+      "implementation_identity": "native_mechanism_input_port",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "issl",
+      "display_name": "ISSL",
+      "family_category": "CIL",
+      "source_supervised_binding": "native_ISSL_source_topology",
+      "A_epochs_proposed": 300,
+      "A_PL_start_epoch": 151,
+      "A_objective": "native_source_supervised_plus_CE_PL",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": null,
+      "C": "author_behavior_SSL_and_transfer",
+      "B_to_C_external_combination": false,
+      "implementation_identity": "author_vs_repaired_semantics_binding_required",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    },
+    {
+      "id": "lora_triplet_knn",
+      "display_name": "scalable/channel-robust LoRa RFFI",
+      "family_category": "CIL",
+      "source_supervised_binding": "native_LoRa_triplet_and_Ls_gallery",
+      "A_epochs_proposed": 1000,
+      "A_PL_start_epoch": 501,
+      "A_objective": "native_triplet_plus_pseudo_anchor_triplet",
+      "A_early_stopping": false,
+      "A_freeze": "final_fixed_budget",
+      "B": null,
+      "C": "native_frozen_encoder_append_enrollment_kNN15",
+      "B_to_C_external_combination": false,
+      "implementation_identity": "WiSig_short_IQ_STFT_Torch_port_disclosed",
+      "target_query_for_fit": false,
+      "source_training_target_access": false,
+      "B_added_to_CIL": false
+    }
+  ],
+  "excluded_automatic_additions": [
+    "RA_Collab_single_node_FT",
+    "RadioNet_DF_FT",
+    "RadioNet_triplet",
+    "legacy_feature_separation",
+    "MoPC_public_code_as_second_family",
+    "ISSL_repaired_as_second_family",
+    "generic_B10_before_CIL",
+    "DA_plus_new_class_NCM_FT_JointCE",
+    "metric_trainable_softmax_head"
+  ],
+  "source": {
+    "receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "days": [
+      1,
+      2,
+      3
+    ],
+    "classes": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "L_s": 6300,
+    "U_s_hidden_TX": 56700,
+    "V": 27000,
+    "source_view_policy": "retain_bound_native_source_only_supervised_views_no_new_shared_target_channel_augmentation",
+    "target_access_before_B_or_C": false,
+    "teacher": "current_student_eval_no_grad_no_persistent_update",
+    "EMA": false,
+    "threshold": 0.95,
+    "pseudo_label_smoothing": 0.0,
+    "reduction": "whole_U_anchor_batch",
+    "max_U_batches_per_native_supervised_update": 1,
+    "native_L_update_schedule_unchanged_by_U_loader": true,
+    "metric": {
+      "applies_to": [
+        "tweak",
+        "lora_triplet_knn"
+      ],
+      "confidence_embedding": "unit_L2",
+      "prototype": "unit_mean_unit_embedding_of_Ls_class",
+      "distance": "squared_Euclidean",
+      "temperature": 0.1,
+      "center_refresh": "epoch_start_current_student_eval_no_grad_Ls_only",
+      "U_loss": "native_metric_loss_U_anchor_with_true_Ls_positive_negative",
+      "no_added_trainable_head": true,
+      "native_supervised_distance_unchanged": true,
+      "native_deployment_decision_unchanged": true
+    },
+    "reuse": "exact_data_training_schedule_objective_architecture_and_full_ancestry_match_only",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "matched_checkpoint_reuse_count": null
+  },
+  "data": {
+    "config_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "data_status": "REUSE_VALIDATED_ONCE",
+    "new_data_generation": false,
+    "total_physical_records": 554823,
+    "physical_pool_sizes": [
+      184936,
+      184944,
+      184943
+    ],
+    "pools": [
+      "P01",
+      "P02",
+      "P03"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "dates": [
+      "2021_03_01",
+      "2021_03_08",
+      "2021_03_15",
+      "2021_03_23"
+    ],
+    "old_classes": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "new_class_order": [
+      "11-4",
+      "3-13",
+      "12-20",
+      "5-20",
+      "20-12",
+      "17-11",
+      "14-14",
+      "2-17",
+      "4-1",
+      "19-13",
+      "19-8",
+      "2-19",
+      "8-1",
+      "14-20",
+      "13-3",
+      "1-18",
+      "20-7",
+      "7-7",
+      "2-3",
+      "18-12"
+    ],
+    "shots": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "new_counts": [
+      2,
+      5,
+      10,
+      20
+    ],
+    "mixed_episodes": [
+      "MIX01",
+      "MIX02",
+      "MIX03",
+      "MIX04",
+      "MIX05",
+      "MIX06",
+      "MIX07",
+      "MIX08"
+    ],
+    "pure_conditions": {
+      "LS": "practical_low_suburban",
+      "MU": "practical_mid_urban",
+      "LU": "practical_low_urban"
+    },
+    "pure_episodes_each": 5,
+    "query": "all_current_registered_class_pool_complement_of_actual_K_support",
+    "minimum_query_per_class_actual": 176,
+    "minimum_query_per_class_required": 150,
+    "no_cross_task_target_state": true,
+    "no_query_fitting": true,
+    "received": "fixed_per_episode_physical_record_shared_across_methods_seeds_K_and_DURA",
+    "mixture_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "probability_interpretation": "coverage_geometry_reference_not_measured_satellite_activity_frequency",
+    "source_roles_unchanged": true
+  },
+  "C_labels": {
+    "available_old": "6*K",
+    "available_new": "N*K",
+    "PAMF_used_old": "6*K",
+    "PAMF_used_new": "N*K",
+    "external": "native_consumption_only_record_old_new_used_and_source_history_separately",
+    "equal_available_does_not_mean_equal_used": true,
+    "new_only_regime_PAMF": "N_A_current_local_ridge_requires_all_registered_classes"
+  },
+  "PAMF": {
+    "F_parameters": 232993,
+    "G_parameters": 266951,
+    "F_plus_G_parameters": 499944,
+    "source_variant": "three_view_PAMF_Sup_plus_ordinary_PL_midpoint_not_full_REPL",
+    "F_frozen_in_B_C": true,
+    "local_ridge": "D92-BranchLocalRidge-v1",
+    "arm": "local_ridge",
+    "B_support": "old_K_per_class",
+    "C_support": "old_and_current_new_K_per_class",
+    "C_inherits_B_kernel": false,
+    "identical_C_support_AC_ABC_terminal_equal": true,
+    "ABC_extra_terminal_C_fit": false,
+    "C_can_reuse_unchanged_frozen_F_old_support_features": true,
+    "accounting": "B_cost_plus_C_increment_do_not_double_count_old_feature_extraction",
+    "solver": "float64_Cholesky_no_jitter",
+    "optimizer_steps_B_C": 0
+  },
+  "DURA": {
+    "version": "dura_v1",
+    "frozen": true,
+    "target_training": false,
+    "precision": "FP32_TF32off",
+    "engine": "reuse=True,graph=True,native=False",
+    "support_flag_same_in_B_and_C": true,
+    "fits_per_stage_point": 2,
+    "conditions": [
+      {
+        "id": "1.1",
+        "support_restored": false,
+        "query_restored": false,
+        "shared_fit": "raw_support"
+      },
+      {
+        "id": "1.2",
+        "support_restored": false,
+        "query_restored": true,
+        "shared_fit": "raw_support"
+      },
+      {
+        "id": "2.1",
+        "support_restored": true,
+        "query_restored": false,
+        "shared_fit": "restored_support"
+      },
+      {
+        "id": "2.2",
+        "support_restored": true,
+        "query_restored": true,
+        "shared_fit": "restored_support"
+      }
+    ],
+    "no_posthoc_best_cell_selection": true,
+    "G_training_repeats": 0
+  },
+  "target_budgets": {
+    "PAMF": "one_full_support_fit_per_B_or_C_support_path",
+    "protonet_cda": "prototype_computation_no_backprop",
+    "mrior_sda": "100_outer_plus_7_estimator_updates_per_outer_lr0.0006",
+    "dadda_sda": "100_alignment_updates",
+    "twostage": "100_DANN_plus_100_LMMD_plus_100_support_FT_updates",
+    "feature_separation_hu2024": "100_epochs_Adam0.005_batch256_native_full_loader",
+    "poster_ft": "10_epochs_Adam0.001_batch256_native_layer_reset",
+    "radionet_ada_knn": "10000_ADA_iterations_then_support_kNN_k_equals_K_disclosed",
+    "tweak": "native_calibration_no_gradient_M10_input_unbound",
+    "csil": "3_epochs_masked_SGDM0.01_author_Fisher_path_unbound",
+    "mopc_hr": "20_epochs_per_5newclass_session_SGD0.01_paper_semantics",
+    "orthogonal": "50_epochs_SGD0.08_native_frozen_range",
+    "issl": "2000_SSL_epochs_plus_300_transfer_epochs_no_generic_B10",
+    "lora_triplet_knn": "append_enrollment_kNN15_no_backprop"
+  },
+  "tables": {
+    "main": [
+      "G1_B_DA_accuracy_and_resources",
+      "G1_C_registration_accuracy_and_resources",
+      "PAMF_DURA_2x2",
+      "PAMF_AC_ABC_process_costs"
+    ],
+    "appendix": [
+      "K_N_curves",
+      "three_pure_scenarios",
+      "per_RX_TX_day",
+      "source_PL_acceptance_exposure",
+      "native_binding_NA_and_port_identity",
+      "full_resources"
+    ],
+    "no_forced_extra_MILKR_ablations": true
+  },
+  "metrics": {
+    "B": [
+      "class_macro_accuracy",
+      "Macro_F1",
+      "paired_B_minus_A0",
+      "worst_RX"
+    ],
+    "C": [
+      "old_class_macro_accuracy",
+      "new_class_macro_accuracy",
+      "harmonic_mean_H",
+      "all_registered_class_macro_accuracy",
+      "Macro_F1",
+      "micro_accuracy",
+      "worst_RX"
+    ],
+    "aggregation": "episode_within_pool_RX_seed_then_equal_pool_equal_RX_then_model_seed_mean_SD",
+    "truth_last": true,
+    "target_scores_control_training": false,
+    "repeated_episodes_are_independent_physical_populations": false
+  },
+  "resources": {
+    "collect_on_every_actual_fit": true,
+    "stages": [
+      "A",
+      "B",
+      "C_direct",
+      "C_after_B_increment",
+      "query_inference"
+    ],
+    "required_fields": [
+      "method_version_native_port_repair_identity",
+      "commit",
+      "data_handles",
+      "seed_RX_pool_episode_K_N",
+      "support_query_flags",
+      "physical_GPU_hardware_precision_batch_concurrency_cache",
+      "stage_wall_seconds_CUDA_synchronized",
+      "data_transfer_G_F_pseudolabel_kernel_forward_backward_optimizer_save_seconds",
+      "actual_epochs_batches_optimizer_steps_per_submodule",
+      "full_and_actual_updated_parameter_count",
+      "teacher_discriminator_queue_optimizer_memory",
+      "source_L_U_unique_and_total_exposure",
+      "PL_acceptance_count_rate_class_histogram",
+      "available_and_used_old_new_target_labels",
+      "native_source_replay_exposure",
+      "CUDA_allocated_baseline_peak_delta_reserved",
+      "CPU_RSS_baseline_sampled_peak_and_interval",
+      "persistent_F_G_head_gallery_history_bytes",
+      "MAC_FLOP_convention_and_operator_coverage",
+      "worker_hours_vs_physical_GPU_hours",
+      "failure_status_NaN_OOM_partial_steps"
+    ],
+    "resource_benchmark": "same_hardware_precision_input_cache_single_worker_uncontended_at_least_3_full_stage_repeats",
+    "accuracy_parallelism_if_future_authorized": "two_own_workers_per_GPU_other_owners_additional_check_actual_free_memory",
+    "energy": "only_attributable_controlled_measurement_else_N_A",
+    "actual_GPU_hour_budget": null
+  },
+  "budget": {
+    "unit": "unique_target_stage_fit_not_optimizer_step",
+    "main": {
+      "cells": 672,
+      "shots": [
+        5
+      ],
+      "new_counts": [
+        20
+      ],
+      "fits": 11424
+    },
+    "curves_additional": {
+      "cells": 84,
+      "episode": "MIX01",
+      "extra_B_K_points": 3,
+      "extra_C_K_N_points": 15,
+      "fits": 11340
+    },
+    "pure": {
+      "cells": 1260,
+      "shots": [
+        5
+      ],
+      "new_counts": [
+        20
+      ],
+      "fits": 21420
+    },
+    "total_fit_upper_bound": 44184,
+    "target_prediction_units_excluding_A0": {
+      "main": 14112,
+      "curves_additional": 14364,
+      "pure": 26460,
+      "total": 54936,
+      "unit": "full_current_stage_query_pool_for_one_state_and_one_query_path_not_physical_sample"
+    },
+    "main_if_CSIL_author_Tweak_M10_unbound": 10080,
+    "total_if_CSIL_author_Tweak_M10_unbound": 38808,
+    "selected_A_bundles_upper_bound": 56,
+    "A_training_trajectories_if_Tweak_five_LR_search": 72,
+    "A_new_training_count": null,
+    "estimated_wall_time": "unknown_until_future_complete_fixed_pilot_measurement",
+    "automatic_launch": false
+  },
+  "missing_bindings": [
+    "CSIL_author_MATLAB_and_Fisher_numerical_path",
+    "Tweak_M10_legal_same_transmission_multi_observation_query_tracks",
+    "all_native_source_objectives_backbones_optimizer_margin_episode_bindings_and_midpoint_PL_implementation",
+    "actual_per_checkpoint_exact_reuse_inventory"
+  ]
+}
