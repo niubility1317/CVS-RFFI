@@ -2,6 +2,17 @@
   "schema": "pamf_phase3_scientific_targets_v2",
   "effective_user_update": "2026-10-29",
   "cross_receiver_required": true,
+  "post_phase1_input_policy": {
+    "primary_condition": "practical_cross_receiver",
+    "all_new_model_consumed_IQ_satellite_overlaid": true,
+    "target_roles": ["unlabeled_adaptation", "discovery", "anonymous_registration", "future_query"],
+    "new_source_replay_auxiliary_calibration_IQ_also_satellite": true,
+    "phase1_frozen_ancestry_preserved": true,
+    "clean_cross_receiver_scope": "Phase1 ground reference only; no new Phase3 clean data route",
+    "channel_reference": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "P0": "fixed satellite received IQ",
+    "P1": "same satellite received through frozen DURA v1.0"
+  },
   "unknown_macro_rejection_min": {
     "clean_cross_receiver": 0.95,
     "practical_cross_receiver": 0.90

@@ -1,5 +1,17 @@
 # CVS项目场景与数据协议
 
+## Phase3 离开 Phase1 后统一星地观测（2026-10-29，用户最新澄清）
+
+用户明确：脱离 Phase1 后，后续接触的样本全部叠加星地信道，具体采用所引用“评估 MILKR 的无标签适配”对话的星地设置。Phase3 新的无标签适应/发现池、注册样本、未来 query，以及 Phase3 新消费的源端重放/辅助训练/校准 IQ，均先成为星地 received，再进入模型。Phase1 既有权重及已冻结聚合状态保留原祖先；不能把 Phase3 新读 clean IQ 的实验写成满足本条。原始地面记录只可在离线 builder 中生成 received，不作为部署的逐条 clean 参考。此前 clean 结果保留为地面对照，旧三等量压力场景及其旧频率/receiver seed 的成绩保留历史身份，不改标为新主实验。
+
+星地模型复用 MILKR 已执行的 G10：`leo_practical_v3_six_scenarios_20260919`，600 km、25 MHz、2.45 GHz、residual/post_sync/no additional EQ、reference SNR 30 dB、reflect；原始 FP64 IQ 前256点转 FP32[2,256]，进入信道前一次 unit RMS，输出不再按样本归一化。综合场景为郊区/城区各0.5、按10°至80°覆盖球面面积计算的六分量，使用 `configs/pamf_phase2_practical_mixture_20261028.json` 未舍入概率。综合 low/mid/high 仰角带互斥10°–30°/30°–45°/45°–80°，带内均匀采样 cos(psi) 后计算实际几何；指定单景 low suburban/mid urban/low urban 仍用原生10°–30°/20°–45°/10°–30°，不能混用。内层 LOS/PARTIAL/BLOCKED 仍由原生仰角/环境公式决定，不把外层六场景概率再乘入。
+
+接收机会话固定 `rx:<RX>/day:<date>`、receiver seed=2027；scene/geometry 和 channel 使用独立的事前 episode seed，与 TX、旧/新/未知角色、U/Q、方法、模型 seed 无关。同 episode 的一条原始记录只有一份固定 received，跨方法与 P0/P1 共享；P0 为该星地 received，P1 为同一 received 经冻结 DURA v1.0 的恢复结果，两者都是星地路径，P0 不表示 clean。若另立 episode，应独立重抽星地实现并明确原始记录的复用；不能把重复仿真计为更多独立物理数据。历史输出不可覆盖。
+
+本条继承的是星地模型和观测规则，不自动引入 Phase2 的有标签 K-shot、真实类别数、全 bank 提前读取或 query 转 support 权限。Phase3 原 U/future-Q 物理互斥和角色保持；旧 query 不回收训练，未知 TX/真实 K/配额仍仅 builder/scorer 可见，算法自行发现簇数。正式 RX24-18 继续保留。首个新 G10 开发数据复用 RX24-1 原 U384/Q864 的相同物理角色，仅为一个新固定信道实现，不新增物理样本或宣称独立新 TX 盲测。新性能候选另行登记，不继承旧三景或 clean 成绩。
+
+最新主验收为星地跨 RX 未知拒识总体及预登记主景至少90%，最大化已知类接收率并保留 FRR≤5%/同输入闭集到开放损失≤2pp；无标签适应与未来匿名注册的全部目标保持。clean跨RX的95%目标仅作地面参考，不能以其通过替代 Phase3 星地验收；其历史口径不追改。
+
 ## Phase2 全外部方法与本轮双进程口径（2026-10-29，用户最新明确）
 
 用户明确要求将原总表的外部对比全部接入相同三池数据并启动，原生方法和组合扩展逐阶段区分。本轮 Phase2 核心＋外部合计每 GPU 两个训练／预测 worker，其他 owner 的进程另计；此项覆盖下方“计入可见既有进程”的旧口径。启动前仍核实实际剩余显存，绝不停止、修改、重启其他 owner。统一调度仅接管本轮旧核心 CPU 父调度器，健康 GPU worker 保持 PID、代码、CWD、命令和输出；后续核心任务仍使用原发布版本。
