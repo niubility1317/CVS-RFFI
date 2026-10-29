@@ -13,13 +13,14 @@ import time
 from .io import read,write,atomic,require
 from .external_takeover import process
 from .group1_dispatch import jobs,completed
+from .group1 import row
 
 
 def matrix(rt,old):
     result=[]
     for origin,cfg in (('legacy',old),('replacement',rt)):
         for job in jobs(cfg):
-            if origin=='legacy' and job['profile']=='pamf_pl_milkr':continue
+            if origin=='legacy' and row(job['profile'])['method']=='pamf':continue
             key=origin+'-'+job['id']
             result.append(dict(job,id=key,original_id=job['id'],origin=origin,
                 runtime_file=cfg['runtime_file'],release_root=cfg['release_root'],
@@ -65,7 +66,8 @@ class Adopted:
 
 def dispatch(rt):
     old=read(rt['recovery_runtime']);root=Path(rt['run_root'])
-    require(rt['method_profiles']==['pamf_pl_milkr'],'Replacement must contain only PAMF')
+    require(rt['method_profiles'] in (['pamf_pl_milkr'],['pamf_tri_sig_time_ssl_milkr']),
+            'Replacement must contain only PAMF')
     require(rt['augmentation_cache']==old['augmentation_cache'],'Source simulation cache must remain shared')
     root.mkdir(parents=True,exist_ok=False);(root/'logs').mkdir();(root/'job_results').mkdir()
     items=matrix(rt,old);by={j['id']:j for j in items}
@@ -74,7 +76,13 @@ def dispatch(rt):
         replacement_for=old['run_id'],legacy_queues_resumed=False))
     producer=read(Path(old['run_root'])/'augmentation_owner.json')
     require(process(producer['pid']) is not None,'Existing source augmentation producer missing')
-    parent=suspend_parent(old)
+    correction=read(rt['method_correction_stop']) if rt.get('method_correction_stop') else None
+    if correction:
+        require(correction['controller_exited'] and process(correction['stopped_controller']['pid']) is None
+            and all(process(v['pid']) is None for v in correction['stopped_PAMF_workers']),
+            'Wrong-recipe controller/workers still alive')
+        parent=None
+    else:parent=suspend_parent(old)
     try:
         observed=running_workers(old,by)
         occupancy=Counter(v['gpu'] for v in observed.values() if v['gpu'] is not None)
@@ -88,18 +96,20 @@ def dispatch(rt):
                 failed[j['id']]=read(file);profile_errors.add((j['origin'],j['profile']))
         remaining=set(by)-set(active)-done-set(failed);blocked=set()
         # Terminate only the independently verified CPU parent, never its children.
-        os.kill(parent,signal.SIGTERM);os.kill(parent,signal.SIGCONT)
-        deadline=time.monotonic()+5
-        while process(parent) and time.monotonic()<deadline:time.sleep(.1)
-        require(process(parent) is None,'Legacy CPU parent did not exit')
+        if parent is not None:
+            os.kill(parent,signal.SIGTERM);os.kill(parent,signal.SIGCONT)
+            deadline=time.monotonic()+5
+            while process(parent) and time.monotonic()<deadline:time.sleep(.1)
+            require(process(parent) is None,'Legacy CPU parent did not exit')
         handoff=dict(status='VERIFIED',legacy_parent_pid=parent,legacy_parent_exited=True,
             model_workers_restarted=0,adopted_workers=list(observed.values()),
             scientific_config_unchanged=True,output_paths_unchanged=True,
             controller_pid=os.getpid(),controller_runtime=rt['runtime_file'])
         write(root/'handoff.json',handoff)
-        write(Path(old['run_root'])/'group1_replacement_handoff.json',handoff)
+        old_handoff='group1_controller_'+rt['run_id']+'.json' if correction else 'group1_replacement_handoff.json'
+        write(Path(old['run_root'])/old_handoff,handoff)
     finally:
-        if process(parent):os.kill(parent,signal.SIGCONT)
+        if parent is not None and process(parent):os.kill(parent,signal.SIGCONT)
     while True:
         stop=(root/'USER_STOP.json').is_file() or (Path(old['run_root'])/'USER_STOP.json').is_file()
         if any(by[k]['kind']=='source' for k in remaining) and process(producer['pid']) is None:

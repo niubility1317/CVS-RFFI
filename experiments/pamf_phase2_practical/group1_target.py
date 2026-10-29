@@ -110,7 +110,7 @@ def predict(rt,job):
     Ks,Cs=workpoints(manifest['episode_id']);rows=[];B_support_features={}
     if job.get('scope')=='pilot_main':Ks,Cs=[5],[(5,20)]
     elif job.get('scope')=='curve_extra':Ks,Cs=[k for k in Ks if k!=5],[(k,n) for k,n in Cs if (k,n)!=(5,20)]
-    engine=load_G(rt,device) if profile=='pamf_pl_milkr' else None
+    engine=load_G(rt,device) if r['method']=='pamf' else None
     log=(out/'native_fit.jsonl').open('x',encoding='utf-8')
     def emit(record):
         log.write(json.dumps(dict(observed_at=time.time(),**plain(record)),allow_nan=False)+'\n');log.flush()
@@ -197,7 +197,7 @@ def predict(rt,job):
                     dict(fit=costs[p],shared_query=probe.result),AC_ABC_terminal_shared=stage=='C')
             if stage=='B':save(s,'A0',f'Q{query_path}',np.asarray(default,np.int16),resources=probe.result)
     try:
-        if profile=='pamf_pl_milkr':
+        if r['method']=='pamf':
             for k in Ks:pamf_stage(lookup[k,0],'B')
             for k,n in Cs:pamf_stage(lookup[k,n],'C')
         else:

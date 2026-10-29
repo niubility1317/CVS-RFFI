@@ -7,12 +7,13 @@ import subprocess
 import sys
 import time
 from .io import read,write,atomic,require
-from .group1 import catalog,source_scope
+from .group1 import catalog,source_scope,row
 
 
 def jobs(rt):
     root=Path(rt['run_root']);result=[]
-    for r in catalog():
+    selected=[row(p) for p in rt['method_profiles']] if rt.get('method_profiles') is not None else catalog()
+    for r in selected:
         if not r['active']:continue
         if rt.get('method_profiles') is not None and r['id'] not in rt['method_profiles']:continue
         first=f'predict-{r["id"]}-s{rt["model_seeds"][0]}-c0000'
