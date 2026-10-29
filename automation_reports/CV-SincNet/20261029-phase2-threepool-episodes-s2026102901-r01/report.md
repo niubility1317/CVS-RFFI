@@ -45,3 +45,7 @@
 VERIFIED：执行commit `1346655254e8b56f2104cebd69014ad75a1e8eb6`，一次归档传输SHA比对及远端编译通过；PID2505230的CWD/完整argv/CPU线程设置与运行计划一致，CUDA不可见，日志有增长。partition_report确认三池184936/184944/184943、并集554823，RX/TX/day分层且池间互斥；实际最小class pool196，K20query176，均满足至少150。
 
 首个MIX01/RX1-1的三个实际capsule精确received/ID复用、三池物理互斥和全量覆盖、各20split标签与完整query补集及最小150均通过；A不读support，B/C当前阶段读取检查通过。检查仅为离线数据一致性，model read/身份预测/评分均0。首读已完成75/483bank、1981842条观测分片；状态RUNNING，上游r09仍健康生成，最终catalog/builder_report尚未取得，不宣称全量制作完成。
+
+## 全部制作完成与正式实验接入
+
+ARTIFACTS_COMPLETE，已独立确认DATA_COMPLETE。三池数据为483bank/9660split/12760929观测，原始记录554823、最小query176。其全部数据已由正式核心run `20261029-phase2-milkr-threepool-m4-r01` 的data_audit进一步核验通过；实际Phase2 target预测已启动。旧工厂received/ID精确复用，历史输出保留，不增加源训练或物理样本数。

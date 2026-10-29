@@ -68,3 +68,9 @@ run：20261029-phase2-milkr-threepool-m4-r01。配置：configs/pamf_phase2_milk
 14项聚焦检查PASS；一次独立P0/P1审查PASS。直接N607 preflight与实际source/cache/checkpoint13个输入路径已核实，8卡当时均空闲，磁盘约2.1TB。旧source smoke已有PASS证据；本launcher仍以当前实际checkpoint无query smoke作为首步直接继续，不使用smoke许可文件。一次release归档SHA比较、远端编译后检查实际PID/CWD/argv、GPU和日志，提交成功不等于运行/实验完成。
 
 完整外部方法的source物理契约审计已有36个匹配checkpoint可复用（8个主家族及旧Feature Separation辅助版，各4seed），不重复训练。它们的新episodic A/B/C适配与其他原生版本继续单独登记，不能将旧Feature Separation改名Hu2024，不能用PAMF-NCM充ProtoNet，不能用公共注册头掩盖原生CSIL/MoPC/ISSL机制。本核心run未启动这些外部行，后续接入不以核心目标分数挑选方法。
+
+## 实际发布与首批运行
+
+VERIFIED：执行commit `20f920985a97376aad2ac9663d33dcb9b81e3c49`，单归档SHA比对及远端编译通过。controller PID2535404、首targetworker PID2536087/GPU0的CWD/完整argv及日志增长已独立回读；GPU每卡2进程门限包含已知/pending进程。source-only实际F/G checkpoint smokePASS；483capsule/9660split全量数据auditPASS，554823原始记录、12760929仿真观测、池间互斥、完整query补集、K/N嵌套与B/C旧support一致、每组信道seed不同及实际scene/elevation均通过，最小query176。数据audit没有加载模型或做预测。
+
+首正式单元已经保存P0旧类K1/5/10/20各3arm的预测，正在后续注册/恢复路径计算；本单元全部128行预测固定才独立评分，之后自动展开同一固定矩阵，不以分数放行。当前RUNNING，不是完整实验结果，Phase1训练新增0。外部完整方法保留其身份和源复用证据，本核心run没有假称启动外部29链路。

@@ -40,3 +40,7 @@ run：20261029-phase2-milkr-threepool-m4-r01。配置：configs/pamf_phase2_milk
 14项聚焦检查PASS；一次独立P0/P1审查PASS。直接N607 preflight与实际source/cache/checkpoint13个输入路径已核实，8卡当时均空闲，磁盘约2.1TB。旧source smoke已有PASS证据；本launcher仍以当前实际checkpoint无query smoke作为首步直接继续，不使用smoke许可文件。一次release归档SHA比较、远端编译后检查实际PID/CWD/argv、GPU和日志，提交成功不等于运行/实验完成。
 
 完整外部方法的source物理契约审计已有36个匹配checkpoint可复用（8个主家族及旧Feature Separation辅助版，各4seed），不重复训练。它们的新episodic A/B/C适配与其他原生版本继续单独登记，不能将旧Feature Separation改名Hu2024，不能用PAMF-NCM充ProtoNet，不能用公共注册头掩盖原生CSIL/MoPC/ISSL机制。本核心run未启动这些外部行，后续接入不以核心目标分数挑选方法。
+
+## 已验证启动状态
+
+执行commit `20f920985a97376aad2ac9663d33dcb9b81e3c49`，发布传输/编译、实际controller与GPUworker路径/命令/日志已VERIFIED。source-only实际checkpoint smoke与全量数据audit均PASS，483bank/9660split全部完成，实际最小query176。首targetworker已产生P0各K旧类适应预测，正在完成首P0/P1配对单元；之后按每GPU最多2进程自动展开固定矩阵。当前RUNNING，尚无完整正式评分结果；外部链路尚未由此核心controller启动。
