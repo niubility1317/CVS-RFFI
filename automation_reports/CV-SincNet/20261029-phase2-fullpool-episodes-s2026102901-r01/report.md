@@ -45,3 +45,7 @@
 VERIFIED：实际执行 commit 为 `42e6dca573508f511d2f33861ac7dbd58eaeee45`；发布归档 SHA 对比一致、远端编译通过。独立回读 controller PID2486872 与 pool worker2486876 的 CWD/完整 argv/线程设置一致，CUDA_VISIBLE_DEVICES 为空；首读已有4个 RX 原始池 manifest 和对应增长日志。当前是 RUNNING，尚无最终 builder_report，不宣称数据全部制作完成。证据为同 run 的 preparation_status.json 以及本地 latest_readback.json；无身份训练、身份预测、评分或 DURA 缓存。
 
 随后独立回读确认进入 episodes 阶段：7个 RX 原始池均完成，共554,823条；8个 CPU worker 正在生成 satellite received。进度文件合计至少80000条观测已写出。当前尚无完整 bank 的结束报告，最终数据完整性状态仍为 RUNNING。
+
+## r10 三池数据输入复用
+
+用户最终选择三个互斥物理池，r09全池布局不再作为后续身份任务输入。此作业的逐episode原始信道观测仍合法且可精确分片复用，因此健康r09工厂继续，不停止、不热改、不重生成。同一received及匿名ID在r10按原始物理身份归属拆为3池，并新抽pool内support/query；r10 run为`20261029-phase2-threepool-episodes-s2026102901-r01`。复制/分片不计新信道或新独立物理样本，r09历史输出保持。
