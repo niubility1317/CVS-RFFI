@@ -118,3 +118,9 @@ r01实际发布后两行在新增父兼容检查失败，0梯度smoke／优化�
 `20261029-phase3-source-baseline-risk-s2026092701-r01` 已VERIFIED/ANALYZED_SOURCE_ONLY，执行commita18daf5080bca7e76c3837907dcfdefd97fbc5bd。两固定E51/读出只重校known-only阈值，F/head/readout新增0；MLP监督88.0635%／OE92.6667%，OE较父+1.9048pp，FRR2.0296%、open97.3852%、原F总损伤1.0815pp。总体及每RX known保护通过，监督RX6/OERX3总损伤2pp预算恰绑定，两个MLP仍仅RX1未知过95，故NO_PROMOTION。9tests/4subtests与一次P0/P1PASS，4完整logs、2Lreadout smoke、阈值最大合法及完成产物齐全；工作极短首次post即完成，未捕获liveCWD/GPU观察、不伪造/重跑。见[结果](E:/type10-7/docs/PAMF_PHASE3_SOURCE_BASELINE_RISK_RESULTS_20261029.md)。同novel重复source，不是跨RX/星地/DA/注册成功。
 
 下一独立`20261029-phase3-source-embedding-budget-s2026092701-r01`已登记并实现中：同原F6 E50独立冷启动的监督/OE两行固定新增2220步（E51..60），累计13320，非E51挑选后续训；native L/CRIC/As、OE21 λ.1、Uoff保持，自己的8分支/newL几何＋原4OE读出200，knownV仍原F总损伤2pp/FRR5%。固定末步、无V/novel早停，95与旧类保护不降，每卡≤2新增、不停foreign；正式RX24U/Q仍未访问，Phase3总目标ACTIVE。
+
+## 十轮源增量实际运行（2026-10-29）
+
+`20261029-phase3-source-embedding-budget-s2026092701-r01`已VERIFIED_RUNNING，执行commit6ffccc4ac1bb80d2d47a77e08a8a288012fa1353，36tests/38subtests PASS、一次新候选P0/P1 PASS。N607一次preflight/单归档比较/compile后，真实原L2/OE2梯度smoke PASS，GPU1监督/GPU2 OE已独立核实PID/CWD/argv/CUDA与日志增长；均各一新增worker、不停foreign。固定两行各2220步，当前尚无终态性能；训练后自动source导出/读出/known-only校准/独立评分。正式RX24U/Q仍不访问。
+
+状态工具在本次用户更新指令后读回总目标为`blocked`，未提供原因；该读回不等于科研指标完成。用户原Phase3研发授权继续适用，本轮已授权实验照常执行；没有将目标工具写成ACTIVE、没有修改其状态或新建重复目标。当前Phase3整体尚未完成。

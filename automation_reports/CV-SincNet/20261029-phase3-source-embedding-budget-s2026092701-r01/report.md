@@ -27,3 +27,9 @@ BothfromoriginalE50 independentcold CENTER_UNITS nativeL arms, fixed2220steps/to
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+实际code/config commit：`6ffccc4ac1bb80d2d47a77e08a8a288012fa1353`。36项聚焦tests、38个subtests通过，一次本候选独立P0/P1PASS。原222兼容保持，新2220支持10个native逻辑epoch、连续随机流；两行原E50独立cold启动，全局11101..13320，固定末步无V/novel早停。原L2/OE2实际Sinc/原head梯度smoke无step恢复state/RNG后即训练，原头joint、Uoff；冻结后ownL2与40652新8分支导出、各自L-only几何＋原4OE读出200。knownV仅校准原F总损伤2pp/FRR5%，阈值先于novel；7methods完整预测后独立truth-last、onlyMLP/完整两行判95及old保护。N607一次preflight、source21/4数据复用、不raw重验/新传数据，每卡新增≤2、不停foreign；单row失败保留健康另一行。
+
+## 实际启动核实
+
+VERIFIED_RUNNING。原E50实际L2梯度smoke两行PASS、OE2额外PASS，CPU/GPU路径与immutable root符合；driver2486087，train监督2486111/GPU1、OE2486112/GPU2，独立CWD/argv/CUDA/PID已读回。两份日志从73/138字节增长到19757/21283字节，观察到210/204步，owned显存各1496MB（观测非峰值）。无foreign停止，当前无性能结果；后续冻结、导出、读出、预测与评分由同一流水线自动完成。
