@@ -16,6 +16,20 @@ Phase3 主场景为跨接收机星地观测。已知类正确接收率 A_K 相�
 
 先做单模型 seed 的小规模可证伪研究，合法源侧冻结候选、阈值与晋级规则后才访问预登记目标；通过科学阈值后扩展3模型 seed/未见 RX 确认。全部预登记预测固定后独立 truth-last 评分，报告逐 RX/场景/TX、宏主指标、配对收益、覆盖和统计限制；目标测试不用于调参、选模、选择性重跑或回收历史 query。保留 Phase1/2 与历史 Phase3 的数据、权重、输出、阈值和原判定，checkpoint 祖先必须匹配数据契约。代码配置以 Git 提交推送和远端 OID 读回固定，正式训练默认 N607，每 GPU 最多新增两个本任务训练/预测进程、启动前核实剩余显存，不停止、修改或重启其他用户/owner 工作，不覆盖已有输出。完整范围达成并有对应实测证据前，目标保持 ACTIVE；科学失败不宣称完成，真正缺少合法输入/权限时说明具体缺项。
 
+## 最新源端类条件开放边界研究（2026-10-29）
+
+`20261029-phase3-star-ova-evidence-s2026092701-r01` 已完成 N607 source-only拟合/校准/四决策预测/独立truth-last评分，VERIFIED/ANALYZED_SOURCE_ONLY，唯一主 `ova_max` 为NO_PROMOTION。原F0默认P1身份、G10 P0/P1 cache与DURA祖先保持；新class-conditional配对106维输入由每path八分支的指定类/最强其他类证据组成。只训练两个共享106→32→1 MLP（每个3457参数）各1000 CPU更新，共2000；六条件槽共享权重，不是六个独立身份头。所有身份仍是原P1 argmax，OVA只判old-presence，不替换原分类头。
+
+source L6300真实旧六标签及OE6134成员关系/域用于拟合，V27000仅四组共24个predicted-class阈值，全部冻结后才读source novel3150；原Us不新增消费。全部新IQ均为既有G10星地，一条received共享P0/P1，无真实raw/信道重生，source42584物理记录已历史曝光；五source RX/day与训练相同，不是目标跨RX或新TX盲测。代码 `0655a5cb0975dc047c712a76630d3e0354da0e55`，23tests/55subtests和唯一独立P0/P1 PASS。
+
+四决策 A_K/R_U/H（%）：membership_routed=90.4519/38.6349/54.1434，membership_max=90.4000/40.8254/56.2485，ova_routed=89.9259/58.9206/71.1940，主ova_max=90.0185/55.5873/68.7320。主C_K97.6889%，原同输入F0闭集90.9815%到open损0.9630pp，四方法的42已知保护均通过；主unknown总体＋五RX＋六scene共12组全部未达90%。源数据/条件与此前目标RX24-1四态不同，不能把该55.59%与目标76.39%作直接性能变化。
+
+同max算子下，OVA相对membership净多拒465条未知（+14.7619pp），已知正确净少103（−0.3815pp），H+12.4835pp；两个reader的容量、初始化、更新预算和normalizer匹配。OVA的max相对routed救回25条已知正确，同时净少拒105条未知（−3.3333pp）；四决策各有独立source-known校准τ，比较包括校准后的完整运行点，不能把全部差异归因于无校准算子。主方法不换为较高H的ova_routed，所有控制保持原身份。
+
+实际85170 F0前向（含2synthetic星地smoke）、真实G新前向0，原F0/defaulthead/G均不更新，两个新readout更新2000单列。driver3031346/source3031437独立live CUDA4、GPU95d925a1/388MB，source日志9782→11034→21611B；CPUscorer3032614完成，终态所有jobs0/live空。source进程83.421217s、score3.287446s、pipeline86.790642s，不是部署逐包时延。没有新增目标U/Q或formalRX24-18句柄/读取，A_N/H_OW=N/A，其他owner不变。完整结果见 `docs/PAMF_PHASE3_STAR_OVA_RESULTS_20261029.md`。
+
+当前证据说明难负类目标有源端收益，但浅层开放读出仍不足以达到拒识要求。下一研究应在合法源侧检验开放表征学习，同时保持旧类和未注册设备细粒度结构，而不是继续在已暴露目标Q上改变阈值或簇数。完整跨RX星地拒识、无标签适应、匿名未来注册目标继续ACTIVE，没有已全部完成的证据。
+
 ## 最新跨 RX 无标签联合实验（2026-10-29）
 
 `20261029-phase3-star-neighborhood-s2026092701-r01` 已在 N607 完成 source90聚合→全U无标签适应/发现→四态独立未来Q→CPU truth-last评分，状态 VERIFIED/ANALYZED_DEVELOPMENT，唯一主状态DA1_REG1为NO_PROMOTION。固定paired1000及六个预测类τ，新增源IQ只复用G10 L6300，U384/futureQ864均为RX24-1、source五RX互斥，原G10 MIX01与物理角色不变；真实TX/角色/K/配额不进入predictor。code `cb58217de28eb2cb5536d2392aef268b79006877`，24tests/34subtests通过且唯一独立P0/P1 PASS。

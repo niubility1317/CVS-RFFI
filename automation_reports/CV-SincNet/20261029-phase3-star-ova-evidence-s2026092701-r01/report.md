@@ -1,5 +1,7 @@
 # PAMF 第三阶段：类条件开放边界与难负类学习
 
+当前登记状态：ANALYZED_SOURCE_ONLY；两stage COMPLETE，实测NO_PROMOTION。以下预登记保留，结果见末节。
+
 ## 预登记
 
 Run `20261029-phase3-star-ova-evidence-s2026092701-r01`，code `0655a5cb0975dc047c712a76630d3e0354da0e55`；唯一主方法`ova_max`，固定四决策membership_routed/membership_max/ova_routed/ova_max来自两个共享MLP，不以控制替换主方法。方法与门槛见`docs/PAMF_PHASE3_STAR_OVA_PLAN_20261029.md`和`configs/pamf_phase3_star_ova_20261029.json`。
@@ -27,3 +29,19 @@ source五RX1/3/4/6/8、days2021-03-08/15/23，目标RX不在config；same source
 ### 发布前核实
 
 唯一独立P0/P1审查已PASS，未发现下一真实run的直接阻断；独立定向7tests/22subtests与主测试重叠不加计unique。核对两模型预算、原P1身份、novel开启前阈值冻结、四分数重建和独立truth顺序，控制不替代主方法。一次N607 preflight通过，sourcecontract392005和缓存四role身份/数量匹配，actual显存充足、target句柄0。代码提交0655a5cb0975dc047c712a76630d3e0354da0e55；启动与性能证据待后续真实artifact读回。
+
+## 2026-10-29 G10 源端共享OVA证据实测结果
+
+`20261029-phase3-star-ova-evidence-s2026092701-r01` source_predict/score全部COMPLETE；唯一主ova_max **NO_PROMOTION**，全目标 **ACTIVE**。
+
+| scalar | AK% | RU% | H% | CK% | F0损pp |
+| --- | --- | --- | --- | --- | --- |
+| membership_routed | 90.4519 | 38.6349 | 54.1434 | 98.4111 | 0.5296 |
+| membership_max | 90.4000 | 40.8254 | 56.2485 | 98.3556 | 0.5815 |
+| ova_routed | 89.9259 | 58.9206 | 71.1940 | 97.3556 | 1.0556 |
+| ova_max | 90.0185 | 55.5873 | 68.7320 | 97.6889 | 0.9630 |
+
+四scalar均known42通过，主实际unknown必需12/12全部失败。OVA−membership同routed正确−142/未知拒识+639，同max正确−103/未知拒识+465；OVA max−routed正确+25但未知拒识−105、H−2.4621pp。四scalar各自known-only校准，不把差全部归因纯max算子，不换控制当主。
+两sharedMLP3457各1000CPU步、同初始权重，总2000；normalizer仅L/OE，成员监督+known真实L类用于OVA目标；V27k仅42组/24τ，novel3150最后预测/独立truth-last。四scalar由class_scores[N,2,6]重建验证，identity原P1，不是nativeOVANet/targetOEM/六身份头。
+源85168F0角色行＋2synthetic=85170，Gnew0/NNencoder更新0，无新物理数据或target访问。主最小503401参数、实际两读出506858；两geometry/212normalizer/24τ另计。source83.421217s/score3.287446s，pipeline86.790642s非逐包时延。独立sourceGPU4/388MB两次离散样本、log9782→11034→21611B；terminalalljobs0/live0/foreign0。
+完整四方法/42组/真TX/2000loss/配对净数/成本和资源证据见[`PAMF_PHASE3_STAR_OVA_RESULTS_20261029.md`](../../../docs/PAMF_PHASE3_STAR_OVA_RESULTS_20261029.md)。同源5RX和历史novel不是跨RX target成功，AN/HOW=N/A，不新增实验。
