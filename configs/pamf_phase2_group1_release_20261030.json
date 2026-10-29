@@ -1,0 +1,838 @@
+{
+  "schema": "pamf_phase2_group1_release_v1",
+  "run_id": "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+  "status": "PREREGISTERED_NEW_RUN",
+  "authorization": "User2026-10-30:release approved Group1 matrix;all source defaults use satellite concatenation;new run only",
+  "legacy_queues_resumed": false,
+  "training_started": false,
+  "methods": [
+    {
+      "id": "pamf_pl_milkr",
+      "category": "both",
+      "epochs": 50,
+      "PL_start_epoch": 26,
+      "method": "pamf",
+      "B": "native",
+      "C": "native",
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "protonet_cda",
+      "category": "DA",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "method": "protonet",
+      "B": "native",
+      "C": null,
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "mrior_sda",
+      "category": "DA",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "method": "mrior",
+      "B": "native",
+      "C": null,
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "dadda_sda",
+      "category": "DA",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "method": "dadda",
+      "B": "native",
+      "C": null,
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "twostage",
+      "category": "DA",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "method": "twostage",
+      "B": "native",
+      "C": null,
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "feature_separation_hu2024",
+      "category": "DA",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "method": "feature_separation_hu2024",
+      "B": "native",
+      "C": null,
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "poster_ft",
+      "category": "DA",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "method": "poster_ft",
+      "B": "native",
+      "C": null,
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "radionet_ada_knn",
+      "category": "DA",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "method": "radionet_ada",
+      "B": "native",
+      "C": null,
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "tweak",
+      "category": "DA",
+      "epochs": 100,
+      "PL_start_epoch": 51,
+      "method": "tweak",
+      "B": "native",
+      "C": null,
+      "active": false,
+      "unavailable_reason": "native_M10_observation_tracks_unbound",
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "csil",
+      "category": "CIL",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "method": "csil",
+      "B": null,
+      "C": "native",
+      "active": false,
+      "unavailable_reason": "author_MATLAB_Fisher_path_unbound",
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "mopc_hr",
+      "category": "CIL",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "method": "mopc_hr",
+      "B": null,
+      "C": "native",
+      "active": false,
+      "unavailable_reason": "original_encoder_binding_unresolved_no_generic_encoder_substitution",
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "orthogonal",
+      "category": "CIL",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "method": "orthogonal",
+      "B": null,
+      "C": "native",
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "issl",
+      "category": "CIL",
+      "epochs": 300,
+      "PL_start_epoch": 151,
+      "method": "issl_author_behavior",
+      "B": null,
+      "C": "native",
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    },
+    {
+      "id": "lora_triplet_knn",
+      "category": "CIL",
+      "epochs": 1000,
+      "PL_start_epoch": 501,
+      "method": "lora_triplet_knn",
+      "B": null,
+      "C": "native",
+      "active": true,
+      "unavailable_reason": null,
+      "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+    }
+  ],
+  "source_recipes": {
+    "pamf_pl_milkr": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "pamf_pl_milkr",
+      "method": "pamf",
+      "epochs": 50,
+      "PL_start_epoch": 26,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    },
+    "protonet_cda": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "protonet_cda",
+      "method": "protonet",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    },
+    "mrior_sda": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "mrior_sda",
+      "method": "mrior",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    },
+    "dadda_sda": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "dadda_sda",
+      "method": "dadda",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    },
+    "twostage": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "twostage",
+      "method": "twostage",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    },
+    "feature_separation_hu2024": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "feature_separation_hu2024",
+      "method": "feature_separation_hu2024",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    },
+    "poster_ft": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "poster_ft",
+      "method": "poster_ft",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    },
+    "radionet_ada_knn": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "radionet_ada_knn",
+      "method": "radionet_ada",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    },
+    "orthogonal": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "orthogonal",
+      "method": "orthogonal",
+      "epochs": 200,
+      "PL_start_epoch": 101,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    },
+    "issl": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "issl",
+      "method": "issl_author_behavior",
+      "epochs": 300,
+      "PL_start_epoch": 151,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    },
+    "lora_triplet_knn": {
+      "schema": "group1_source_concat_midPL_v1",
+      "profile": "lora_triplet_knn",
+      "method": "lora_triplet_knn",
+      "epochs": 1000,
+      "PL_start_epoch": 501,
+      "PL_threshold": 0.95,
+      "PL_weight": 1.0,
+      "U_batch_ratio": 2,
+      "satellite_concat": true,
+      "satellite_weight": 0.68,
+      "satellite_on": "L_only",
+      "U_objective": "ordinary_clean_source_PL",
+      "source_channel": "practical_residual_post_sync_noeq",
+      "source_channel_probabilities": [
+        0.4,
+        0.35,
+        0.25
+      ],
+      "source_channel_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "source_channel_probability_schedule": [
+        [
+          0.0,
+          0.3
+        ],
+        [
+          0.2,
+          0.6
+        ],
+        [
+          0.45,
+          0.8
+        ]
+      ],
+      "source_fc_hz": 2462000000.0,
+      "source_fs_hz": 25000000.0,
+      "metric_temperature": 0.1,
+      "no_added_classifier": true,
+      "EMA": false,
+      "early_stopping": false,
+      "selection": "fixed_final_epoch",
+      "native_supervised_objective_retained": true,
+      "target_contact": false,
+      "U_TX_truth_read": false
+    }
+  },
+  "source_contract_counts": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "source_RX_indices": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_days": [
+    1,
+    2,
+    3
+  ],
+  "source_checkpoint_reused": 0,
+  "source_checkpoint_reason": "old source runs do not match midpoint ordinary PL plus this concat recipe",
+  "source_optimizer_bindings": {
+    "pamf_pl_milkr": "original_full_supervised_native_CENTER_UNITS_20plus10plus20_optimizer_trajectory",
+    "protonet_cda": "SGD0.01_200epochs_50episodes_each_6way_5support5query",
+    "mrior_sda": "Adam0.001_200epochs_batch128",
+    "dadda_sda": "Adam0.001_200epochs_batch128",
+    "twostage": "Adam0.001_200epochs_batch128",
+    "feature_separation_hu2024": "Adam0.005_batch256_sourceV_plateau_factor0.1_patience10",
+    "poster_ft": "Adam0.001_200epochs_batch128",
+    "radionet_ada_knn": "Adam0.001_200epochs_batch128",
+    "orthogonal": "SGD0.01_200epochs_batch128_full_base_geometry_loss_fixed_uniform_target_perturb0.01",
+    "issl": "Adam0.03_300epochs_batch128_StepLR100_factor0.5",
+    "lora_triplet_knn": "RMSprop0.001_alpha0.9_eps1e-7_1000epochs_batch32_sourceV_plateau0.2_patience10"
+  },
+  "target_data_config": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+  "target_mixture_config": "configs/pamf_phase2_practical_mixture_20261028.json",
+  "data_status": "REUSE_VALIDATED_ONCE",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "target_receivers": [
+    "1-1",
+    "14-7",
+    "2-1",
+    "20-1",
+    "7-14",
+    "7-7",
+    "8-8"
+  ],
+  "physical_pools": [
+    "P01",
+    "P02",
+    "P03"
+  ],
+  "mixed_episodes": 8,
+  "pure_episodes_each": 5,
+  "main_point": {
+    "K": 5,
+    "N": 20
+  },
+  "curves": {
+    "episode": "MIX01",
+    "K": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "N": [
+      2,
+      5,
+      10,
+      20
+    ]
+  },
+  "comparison_paths": {
+    "DA": "A_B",
+    "CIL": "A_C",
+    "PAMF": "A_B_and_A_C_and_BC_resource_trajectory"
+  },
+  "DURA": {
+    "version": "dura_v1",
+    "train": false,
+    "conditions": [
+      "S0Q0",
+      "S0Q1",
+      "S1Q0",
+      "S1Q1"
+    ],
+    "fits_per_stage": 2
+  },
+  "full_family_design_target_fits": 44184,
+  "currently_bound_target_fits": 35616,
+  "resource_only_BC_extra_fits": 6,
+  "resource_logging_on_every_fit": true,
+  "GPU": {
+    "allowed": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "own_per_GPU": 2,
+    "other_owners_additional": true,
+    "min_free_MiB": 6000
+  },
+  "source_trainings": 44,
+  "target_prediction_jobs": 21263,
+  "truth_side_score_jobs": 21263,
+  "scoring": "independent_after_each_whole_prediction_unit_fixed_no_training_feedback",
+  "source_U_truth_read": false,
+  "query_fit": false,
+  "stop_rule": "Stop descendants of failed source/profile;do not alter other owners;systemic source-cache/protocol/output failures stop new admissions;no target-score feedback",
+  "code_identity": "Git release commit in runtime.json;no config/report hash gate"
+}

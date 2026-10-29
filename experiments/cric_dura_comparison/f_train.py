@@ -198,6 +198,9 @@ def train(c, device='cuda:0', smoke_steps=None):
                 U_actual=ctx['unlabeled_loader'].actual_examples if ctx['unlabeled_loader'] else 0,
                 seconds=time.perf_counter() - start), exclusive=False)
             print(json.dumps(dict(event='CRIC_EPOCH_COMPLETE', epoch=len(rows), updates=state['steps'])), flush=True)
+            if c.get('group1_recipe'):
+                from experiments.pamf_phase2_practical.group1_source import pamf_epoch_resource
+                pamf_epoch_resource(c,m,state['steps'],start)
         native._build_ssdg_wisig_data = data
         native.build_baseline_model = model
         native._detach_log_mapping = detach
