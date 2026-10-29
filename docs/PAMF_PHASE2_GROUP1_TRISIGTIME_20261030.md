@@ -19,3 +19,11 @@ PAMF A 直接复用已完成 `20261027-phase1-pamf-repl-shuffled-views-m16-r02` 
 有效总矩阵仍为11家族、44个源模型（PAMF4复用＋外部40既有新训练行），35616次目标拟合＋6次固定BC增量资源测量，21263预测/21263独立评分任务。r04不重复任何外部工作。数据VALIDATED_ONCE复用，不新做数据哈希/重验。配置为 `configs/pamf_phase2_group1_trisigtime_20261030.json`，Git固定代码；一次P0/P1审查、聚焦负测和真实checkpoint smoke后直接启动。
 
 停止规则：源方法错误或协议/输出冲突阻止对应后继，源服务系统失败停止新接纳；低分不停止、不重排、不调参。当前为PREREGISTERED，发布后独立PID/CWD/argv/GPU/log读回才能声明运行，测试全部固定后独立truth-last。
+
+## 实际发布读回（2026-10-29T18:38:13.108313+00:00）
+
+状态：**VERIFIED / RUNNING**。代码提交 `951bd957b8cc2cf6da96f48ad0f5aad34f7dfcb9`。四个原完整Tri-SIG-TIME SSL模型均通过真实权重/配方/源祖先/实际视图与重排检查；F＋DURA固定CUDA执行路径的source-only smoke PASS，query/target读取0，新增源训练更新0。CPU图执行尝试被GPU路径要求拦截，其日志保留；随后同一固定代码在合法GPU上完成检查，模型及精度未变。
+
+统一controller PID `3149875` 的CWD/argv已独立核实；收养9个仍在运行的外部worker，其他完成行按原completion复用。每卡自有worker `{"0": 2, "1": 2, "2": 2, "3": 2, "4": 2, "5": 2, "6": 2, "7": 2}`，总16；当前计数 `{"COMPLETE": 43, "FAILED": 0, "BLOCKED": 0, "RUNNING": 16, "QUEUED": 42511}`（工作单元计数，不是全部实验完成）。原4个错误PL训练worker与其CPUcontroller均独立确认退出，未停止其他owner。
+
+源训练成本引用原模型三段实际resource summary和训练时间，本轮加载/检查单列；B/C资源继续由实际拟合记录。后续固定预测与独立truth-last评分已串联，当前不宣称完整性能结论。
