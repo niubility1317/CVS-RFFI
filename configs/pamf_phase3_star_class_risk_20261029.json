@@ -1,0 +1,22 @@
+{
+  "run_id": "20261029-phase3-star-class-risk-s2026092701-r01",
+  "parent_run": "20261029-phase3-star-paired-evidence-s2026092701-r01",
+  "frozen_score": "paired_mlp16_step1000",
+  "identity_path": "P1",
+  "methods": ["global_control", "predicted_class"],
+  "primary_method": "predicted_class",
+  "conditional_key": "frozen default-head predicted class, never true TX or role",
+  "calibration": "maximum common predicted-class tail fraction q, with intact score ties and exact 42-group known risk",
+  "stored_threshold_count": {"global_control": 1, "predicted_class": 6},
+  "known_V_scores": 27000,
+  "source_novel_scores": 3150,
+  "new_neural_updates": 0,
+  "new_IQ_reads": 0,
+  "target_handles": 0,
+  "known_macro_acceptance_min": 0.90,
+  "original_closed_minus_open_max": 0.02,
+  "source_unknown_macro_rejection_min": 0.90,
+  "targets_ref": "configs/pamf_phase3_targets_20261029.json",
+  "primary_report": ["A_K", "R_U", "H-score"],
+  "scope": "empirical source-known threshold allocation, no conformal or target-coverage guarantee"
+}
