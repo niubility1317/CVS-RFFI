@@ -1,0 +1,286 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-unlabeled-registration-s2026092701-r01",
+  "group_id": "pamf-phase3-frozen-unlabeled-adaptation-registration",
+  "display_name": "PAMF第三阶段：冻结身份的无标签适应与匿名注册四态闭环",
+  "description": "Frozen originalF0 identity/defaulthead plus E51 augmented rejection. Source L density/anchors and knownV calibration, independent condition U bias/discovery/anonymous registry, then frozen four-state futureQ and truth-last U-only permutation scoring.",
+  "kind": "diagnostic",
+  "stage": "Phase3-unlabeled-adaptation-anonymous-registration-development",
+  "aliases": [
+    "Phase3无标签适应匿名注册四态"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "unlabeled_target_U",
+    "anonymous_registration",
+    "four_states",
+    "F0_identity_frozen",
+    "development_only"
+  ],
+  "comparison_group_id": "phase3-RX24-1-frozenF0-E51-fourstate-DA-registration",
+  "parent_run_ids": [
+    "20261029-phase3-source-practical-readout-s2026092701-r01",
+    "20261029-phase3-development-alignment-s2026092701-r01",
+    "20261029-phase3-source-practical-encoder-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权完整Phase3无标签适应/未知发现/匿名注册；本轮四态与5jobs事前固定，U truth仅score侧评估，不授权目标监督或futureQ拟合。",
+  "code": {
+    "commit": "a6679caca686c9941a5b948764c1dd0a9330e882",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-unlabeled-registration-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-unlabeled-registration-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original source aggregates/L cache/knownV compact and fixed RX24-1 independent U/futureQ",
+    "version": "Existing VALIDATED_ONCE physical roles, no IQ or channel regeneration",
+    "representation": "C0 clean; P1 fixed received through frozenDURA; source one chosen cached view/physical/condition and aggregate-only deployment",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 unlabeled discovery/registration and independent futureQ",
+    "physical_ids_ref": "Existing source contract and development builder mapping; same1248 physical records across C0/P1",
+    "label_map_ref": "Old6 source labels reused only for source statistics/calibration; no target labels in predict/fit; anonymous permutation only Utruth in scorer after Qfreeze",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "24-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_08",
+      "2021_03_15"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_physical_each_condition": 6300,
+      "source_V_physical": 27000,
+      "source_V_calibration_exposures": 108000,
+      "target_U_each_condition": 384,
+      "future_Q_each_condition": 864,
+      "unique_target_physical_across_conditions": 1248,
+      "source_OE21_new_reads": 0,
+      "source_novel_new_reads": 0,
+      "source_original_U_reads": 0,
+      "formal_target_reads": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "C0": {
+        "U": "p3dev-clean-ef10219d27274e04e83408d1",
+        "Q": "p3dev-clean-20e01e9ae54a4bc3ae503a3f"
+      },
+      "P1": {
+        "U": "p3dev-1824cfe895d8484c77e937c4",
+        "Q": "p3dev-e900eaa3fa0f5ff5dc785a37"
+      }
+    },
+    "split_id": {
+      "C0": {
+        "U": "64274719133a83590352add5",
+        "Q": "347fd2cb757a37f7f162223a"
+      },
+      "P1": {
+        "U": "a3eb0f1cb91faa624d8f489d",
+        "Q": "668208756ed3d2a1a070dce0"
+      }
+    },
+    "validation_ref": "Existing source/cache/export and development capsule/split handles; no raw data revalidation/hash chain",
+    "support_query_ref": "No labeled target support; U unlabeled fit only, physical-disjoint Q after registry/bias freeze; U/Q truth scorer-only",
+    "leo_config_ref": "P1 existing fixed received+frozenG; source cached practical selection iid2026102935 per physical; C0 no practical"
+  },
+  "permissions": {
+    "regime": "Source supervised aggregate statistics plus true target-unlabeled U adaptation/discovery; no targetTX supervision",
+    "query_use": "Four frozen per-record futureQ states only; no Q pooled fitting, threshold calibration or anonymous mapping",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed exposed developmentRX, not independent formal/newTX blind evidence; anonymous presence alone does not prove accuracy"
+  },
+  "checkpoint": {
+    "initialization": "OriginalF0/E50 frozen default6 identity; frozenE51 auxiliary; previous augmented rejection weights/cleanL geometry; frozenDURA",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-readout-s2026092701-r01/rows/uniform_oe",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-practical-readout-s2026092701-r01/source/fit",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Existing source_bundle/aug bundle/cache/V export identities matched before source backend; no new NN fit",
+    "provenance_verdict": "Source fiveRX only ancestors; oldsourceL labels and V knownlabels disclosed; OE21 only E51 ancestry, no new OE rows",
+    "selection_rule": "DA1_REG1::mlp16_oe fixed. Source known-only globaltau/density; U-label-free bias/DBSCAN/anonymous state; no target truth or query selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-unlabeled-registration-20261029",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-unlabeled-registration-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-unlabeled-registration-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_unlabeled_registration_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.unlabeled_registration_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-unlabeled-registration-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Dynamic per-job choice, free>=4096MB and max2 added/card; one GPU worker sequentially, never modify foreign processes",
+    "stop_rule": "Wrong identity/public role/forbidden truth or Qfit, nonfinite, collision or incomplete legal prediction preserves partial without retry. Zero clusters/core shortage/scientific failure is completed negative evidence."
+  },
+  "expected_artifacts": [
+    "runtime.json",
+    "configs/source.json",
+    "configs/{C0,P1}.json",
+    "source/frozen/{geometry,readouts}.npz",
+    "source/thresholds.npy",
+    "source/statistics.npz",
+    "source/calibration/complete.json",
+    "source/complete.json",
+    "rows/<condition>/predict/adaptation/{state.npz,discovery_diagnostics.npz,complete.json}",
+    "rows/<condition>/predict/{predictions.npz,complete.json}",
+    "rows/<condition>/score/{scores.json,complete.json}",
+    "logs/{source,C0_predict,C0_score,P1_predict,P1_score}.log",
+    "launch.json",
+    "pipeline_state.json",
+    "observed_state.json",
+    "observations.jsonl",
+    "post_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_known_acceptance",
+      "old_macro_frr",
+      "old_open_accuracy",
+      "originalF0_closed_minus_open",
+      "novel_rejection_before_registration",
+      "new_class_future_macro_accuracy",
+      "registered_macro_frr",
+      "later_unknown_rejection",
+      "anonymous_clusters",
+      "noise",
+      "purity",
+      "merges_splits",
+      "old_false_registration",
+      "AUROC",
+      "OSCR"
+    ],
+    "dimensions": [
+      "C0/P1",
+      "DA0_REG0",
+      "DA1_REG0",
+      "DA0_REG1",
+      "DA1_REG1",
+      "oldTX/newTX/laterTX",
+      "scene",
+      "REG0 seven-score diagnostics",
+      "DA/REG paired deltas"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-unlabeled-registration-s2026092701-r01/rows/<condition>/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/unlabeled_registration_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json"
+  },
+  "rows": [
+    {
+      "row_id": "C0-fourstates-s2026092701",
+      "method": "Frozen identity unlabeledDA/anonymous registry C0",
+      "purpose": "Full2x2 DA/REG control on one U fit/frozen futureQ; fixed primary DA1_REG1",
+      "config_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-unlabeled-registration-s2026092701-r01/configs/C0.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102911,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026102914
+      },
+      "seed_notes": "Same existing physical U/Q; deterministic sourceP1selection2026102935; anonymous IDs from opaque order, no true count/target seed search",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "All neural parameters/readouts0updates; U384 once plus closed-form bias and unconstrained DBSCAN/anonymous prototypes; freeze before Q864; no source row bank deployed",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-unlabeled-registration-s2026092701-r01/rows/C0",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-unlabeled-registration-s2026092701-r01/logs/C0_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.unlabeled_registration_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-unlabeled-registration-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "runtime.json",
+        "configs/source.json",
+        "configs/{C0,P1}.json",
+        "source/frozen/{geometry,readouts}.npz",
+        "source/thresholds.npy",
+        "source/statistics.npz",
+        "source/calibration/complete.json",
+        "source/complete.json",
+        "rows/<condition>/predict/adaptation/{state.npz,discovery_diagnostics.npz,complete.json}",
+        "rows/<condition>/predict/{predictions.npz,complete.json}",
+        "rows/<condition>/score/{scores.json,complete.json}",
+        "logs/{source,C0_predict,C0_score,P1_predict,P1_score}.log",
+        "launch.json",
+        "pipeline_state.json",
+        "observed_state.json",
+        "observations.jsonl",
+        "post_state.json"
+      ]
+    },
+    {
+      "row_id": "P1-fourstates-s2026092701",
+      "method": "Frozen identity unlabeledDA/anonymous registry P1",
+      "purpose": "Full2x2 DA/REG control on one U fit/frozen futureQ; fixed primary DA1_REG1",
+      "config_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-unlabeled-registration-s2026092701-r01/configs/P1.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102911,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026102914
+      },
+      "seed_notes": "Same existing physical U/Q; deterministic sourceP1selection2026102935; anonymous IDs from opaque order, no true count/target seed search",
+      "k": null,
+      "scenario": "low_suburban/mid_urban/low_urban received through frozenG",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "All neural parameters/readouts0updates; U384 once plus closed-form bias and unconstrained DBSCAN/anonymous prototypes; freeze before Q864; no source row bank deployed",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-unlabeled-registration-s2026092701-r01/rows/P1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-unlabeled-registration-s2026092701-r01/logs/P1_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.unlabeled_registration_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-unlabeled-registration-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "runtime.json",
+        "configs/source.json",
+        "configs/{C0,P1}.json",
+        "source/frozen/{geometry,readouts}.npz",
+        "source/thresholds.npy",
+        "source/statistics.npz",
+        "source/calibration/complete.json",
+        "source/complete.json",
+        "rows/<condition>/predict/adaptation/{state.npz,discovery_diagnostics.npz,complete.json}",
+        "rows/<condition>/predict/{predictions.npz,complete.json}",
+        "rows/<condition>/score/{scores.json,complete.json}",
+        "logs/{source,C0_predict,C0_score,P1_predict,P1_score}.log",
+        "launch.json",
+        "pipeline_state.json",
+        "observed_state.json",
+        "observations.jsonl",
+        "post_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed identity originalF0/defaulthead, auxiliaryE51/aug readout/cleanL geometry and G frozen; twoF+G cost reported, not old singleF deployment latency.",
+    "Only sourceL6300 newly used percondition with one view each, oldV27000 fourview compact calibration, sourceOE21/newnovel/U_s0; original source10% and V extra known labels disclosed.",
+    "Eps source perpoint seventh-other same TX/RX/day k-distance.95; radius source F0 groupLOO.95; 90aggregate anchors/mean7scores, no sourcebank/trueunknownK.",
+    "C0/P1 targetU384 independent fits; source sigma/tau fixed. Bias cap.1/strength.5 and reliablecore fixed; no core identity fallback is scientific failure, no gate relaxation.",
+    "DA0/DA1 discovery separate on primaryrejectedU; sourceeps DBSCAN min8/cluster16 uniqueIDs; numberfree and zero valid, no hiddenquota.",
+    "Anonymous prototypes compete jointly with allold6; deterministicold-firstties, rejection onlynegative maxmargin; no true role routing.",
+    "FourfutureQ states complete before independentU/Qtruth; anonymous mapping fitted with Utruth only in scorer, never Qmapping and never fed back.",
+    "Utruth archive only release/score_truth/C0/U.npz and P1/U.npz; predictor configs contain no truth. Local archive manifest is packaging metadata, not extra permission.",
+    "Newclass macro includes all trueU arrivals evenundiscovered; unmatched anonymous accepted predictions remain errors. REG0 registration accuracy N/A.",
+    "Clean rejection95/star90 eachscene, FRR5/originalF0open2pp; newfuture macro80 and registration oldloss2pp; source/currentmethod not target reselected.",
+    "RX24-1/source repeatednovel and dates exposed; same1248physical acrossconditions, one modelseed, formalRX24-18 untouched; totalPhase3 remains incomplete."
+  ],
+  "registered_at": "2026-10-29T08:33:54+00:00"
+}
