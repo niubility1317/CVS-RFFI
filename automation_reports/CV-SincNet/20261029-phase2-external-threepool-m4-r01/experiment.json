@@ -194,7 +194,11 @@
       "failure_count": 0
     },
     "current_controller_run": "20261029-phase2-external-threepool-m4-r02",
-    "current_controller_pid": 2742828
+    "current_controller_pid": 2742828,
+    "automatic_resume_allowed": false,
+    "user_stop_at_utc": "2026-10-29T15:13:22Z",
+    "user_stop_reason": "User requests stop before redesign;no authorization to resume",
+    "live_owned_Phase2_workers": 0
   },
   "expected_artifacts": [
     "core_controller_handoff.json",
@@ -4480,7 +4484,7 @@
     "One new immutable root;1932predictjobs+1932independentscorers;P0P1wholecapSeedclosure before truth.",
     "Original source code commit remains immutable in release;this post-launch metadata commit does not change live workers."
   ],
-  "status": "CONTINUED_BY_R02_CONTROLLER_WITH_MOPC_SUPERSEDED",
+  "status": "STOPPED",
   "technical_failure_recovery": {
     "failed_profile_P0_jobs": 2,
     "blocked_jobs": 11589,

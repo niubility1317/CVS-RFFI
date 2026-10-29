@@ -107,7 +107,11 @@
     "stop_rule": "First protocol/numerical/worker/output failure stops new dispatch,preserves immutable outputs and already-running healthy workers.No target-score stopping/retry/selection;no otherownerintervention.",
     "current_controller_run": "20261029-phase2-external-threepool-m4-r02",
     "current_controller_pid": 2742828,
-    "current_resource_policy": "two Phase2 workers/GPU,other owners additional;original model code and output unchanged"
+    "current_resource_policy": "two Phase2 workers/GPU,other owners additional;original model code and output unchanged",
+    "automatic_resume_allowed": false,
+    "user_stop_at_utc": "2026-10-29T15:13:22Z",
+    "user_stop_reason": "User requests stop before redesign;no authorization to resume",
+    "live_owned_Phase2_workers": 0
   },
   "expected_artifacts": [
     "source_smoke.json",
@@ -724,5 +728,6 @@
     "No Phase1training;4PAMFsources andDURAv1 reused;no model tuning or Gtraining.Query feature and restoration cache opens only rows permitted by current stage.",
     "One new immutable root;1932predictjobs+1932independentscorers;P0P1wholecapSeedclosure before truth."
   ],
-  "registered_at": "2026-10-29T04:05:33+00:00"
+  "registered_at": "2026-10-29T04:05:33+00:00",
+  "status": "STOPPED"
 }
