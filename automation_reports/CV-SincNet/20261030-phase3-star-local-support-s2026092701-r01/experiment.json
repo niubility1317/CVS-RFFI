@@ -1,0 +1,186 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-local-support-s2026092701-r01",
+  "group_id": "pamf-phase3-star-local-support",
+  "display_name": "PAMF第三阶段：源样本局部支持与跨接收机共识",
+  "description": "Original frozen F0 with full source known/OE feature banks, mean8-neighbor support and source-RX consensus; default identity unchanged.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-local-support",
+  "aliases": [
+    "星地局部邻域支持度"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "frozen_F0",
+    "knn_support"
+  ],
+  "comparison_group_id": "phase3-star-pooled-vs-RX-support",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261029-phase3-star-joint-ova-s2026092701-r02",
+    "20261029-phase3-star-representation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "84cdc012f7d9641b283c407f6048bfe4e6e21cf6",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-local-support-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Original F0 same-G10-P1 unitfused160 banks L/OE reused from teacher; fresh originalF0 P1 V/novel features and original defaulthead logits",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_feature_bank": 6300,
+      "source_OE_feature_bank": 6134,
+      "known_V_calibration": 27000,
+      "heldout_novel": 3150,
+      "original_U_new": 0,
+      "target": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool\\complete.json; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "Banks freeze before V; V labels only calibrate18thresholds; novel P1 opened only after all bank/model/threshold state frozen; no target handles.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Source known/OE membership and source RX form banks; V known labels calibrate risk; OE TX/K and target labels forbidden",
+    "query_use": "No target U/Q or historical query training. Source novel only frozen originalF0 inference then independent truth-last CPU score.",
+    "external_method_exception": null,
+    "claim_scope": "Five seen source RX and three historically exposed novel devices; no fresh blind TX/unseenRX/DA/registration claim"
+  },
+  "checkpoint": {
+    "initialization": "Original Phase1 F0 E50/11100/defaulthead frozen; r02 teacher supplies originalF0 features, never r02 increment weights",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r02/teacher/{complete.json,L.npz,OE.npz}"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Same originalF0/sourcecontract392005 and frozenDURA identity across bank/cache; no target-adapted or Phase3 increment checkpoint",
+    "selection_rule": "OriginalF0 fixed independently of source novel rankings; one k8/eps1e-6/mainRXconsensus chosen before current access, no grid or control substitution"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-local-support-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-local-support-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-local-support-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_local_support_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_local_support_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-local-support-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One source process on actualfree>=4096MB GPU, eachcard<=2added, foreign unchanged",
+    "stop_rule": "Legality/nonfinite/collision/unable legal prediction preserves artifacts; no performance-triggered restart, hyperparameter change or control replacement"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/*.json",
+    "logs/*.log",
+    "rows/original_F0/state.json",
+    "rows/original_F0/predict/{smoke.json,source_bank.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz,complete.json}",
+    "rows/original_F0/predict/calibration/complete.json",
+    "rows/original_F0/score/{results.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "A_K",
+      "R_U",
+      "H-score",
+      "C_K",
+      "original_F0_closed_loss",
+      "fresh_closed",
+      "bank_memory",
+      "readout_compute_time"
+    ],
+    "dimensions": [
+      "threefixedsupportscores",
+      "known42",
+      "unknown12",
+      "TX",
+      "RX",
+      "scene",
+      "same_ID_paired"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-local-support-s2026092701-r01/rows/original_F0/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_local_support_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "star-local-support-s2026092701",
+      "method": "PAMF F0 source local-support",
+      "purpose": "Compare pooled known, pooled relative and sourceRX median relative support; only RX consensus primary",
+      "config_ref": "configs/pamf_phase3_star_local_support_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-local-support-s2026092701-r01/configs/original_F0_source_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No new randomness; fixed existing G10 P1 and deterministic k8/eps1e-6 neighbor distances; true query RX not score input.",
+      "k": null,
+      "scenario": "G10 MIX01 P1",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NN/Gupdates0; V27000+novel3150 cachedP1 F forwards plus2synthetic=30152; bank L/OE neuralforward0; no newG",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-local-support-s2026092701-r01/rows/original_F0",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-local-support-s2026092701-r01/logs/original_F0_source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_local_support_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-local-support-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/original_F0/state.json",
+        "rows/original_F0/predict/{smoke.json,source_bank.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz,complete.json}",
+        "rows/original_F0/predict/calibration/complete.json",
+        "rows/original_F0/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Agent selected local source support because existing prototype/covariance summaries do not cover a full L/OE neighbor bank.",
+    "RX consensus groups fixed source bank only; never routes by true queryRX/scene/TX or target statistics.",
+    "Default identity head stays originalF0 argmax, not neighbor identity; no auxiliary NN or sourceOE TX/K.",
+    "Dense bank FP32 about7.96MB, FP64 working about15.92MB plusRX/workspace; NN499944 includes existingG, no speed claim.",
+    "Same42584 physical records/historically exposednovel/seenRX. Target0, AN/HOWnull, fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-29T18:16:31+00:00"
+}
