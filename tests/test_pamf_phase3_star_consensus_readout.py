@@ -132,5 +132,19 @@ class StarConsensusReadoutTests(unittest.TestCase):
         for name in branches:np.testing.assert_array_equal(branches[name],before[name])
         self.assertEqual(m.METHODS,('msp','maxlogit','margin','energy','cosine','linear_oe','mlp16_oe'))
 
+    def test_explicit_nonseven_method_names_and_default_backward_compatibility(self):
+        m=self.module();rows,ids,y,rx,scene=self.inputs(m)
+        values=np.ones((len(y),7),np.float64)
+        old,original=m.calibrate_known(ids,y,y,y,values,rx,scene)
+        same,explicit=m.calibrate_known(ids,y,y,y,values,rx,scene,method_names=m.METHODS)
+        np.testing.assert_array_equal(same,old);self.assertEqual(explicit,original)
+        names=('first','second','third')
+        got,report=m.calibrate_known(ids,y,y,y,values[:,:3],rx,scene,method_names=names)
+        self.assertEqual(got.shape,(3,));self.assertEqual(report['method_names'],list(names))
+        self.assertEqual(list(report['methods']),list(names));self.assertTrue(report['constraints_passed'])
+        for bad in ((),('same','same'),('good',''),('good',2),'one'):
+            with self.subTest(method_names=bad),self.assertRaises(ValueError):
+                m.calibrate_known(ids,y,y,y,values[:,:3],rx,scene,method_names=bad)
+
 
 if __name__=='__main__':unittest.main()

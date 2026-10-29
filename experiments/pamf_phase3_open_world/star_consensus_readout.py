@@ -102,24 +102,29 @@ def _risk_group(y, closed, baseline, values, threshold):
         original_closed_minus_new_open=float(loss),constraints_passed=bool(frr<=FRR and loss<=TOTAL_LOSS))
 
 
-def calibrate_known(ids, y, closed, baseline, scores, rx, scenario):
+def calibrate_known(ids, y, closed, baseline, scores, rx, scenario, *, method_names=METHODS):
     """Maximal global scalar/method from source known V, accepting full ties.
 
     All 42 groups require six-class coverage. Missing coverage or already
     excessive original-F0 damage uses the minimum score (accept all), reports
     scientific failure, and does not borrow unknown scores or labels.
     """
+    if not isinstance(method_names,(tuple,list,np.ndarray)) or np.ndim(method_names)!=1:
+        raise ValueError('An explicit nonempty vector of unique method names is required')
+    names=tuple(method_names)
+    if not names or any(not isinstance(name,str) or not name.strip() for name in names) or len(set(names))!=len(names):
+        raise ValueError('An explicit nonempty vector of unique method names is required')
     ids,y,closed,baseline,scores,rx,scenario=map(np.asarray,(ids,y,closed,baseline,scores,rx,scenario))
     n=len(ids) if ids.ndim==1 else 0
     if (not n or ids.dtype.kind!='U' or len(set(ids.tolist()))!=n or np.any(np.char.strip(ids)=='')
-            or scores.shape!=(n,7) or scores.dtype.kind!='f' or not np.isfinite(scores).all()
+            or scores.shape!=(n,len(names)) or scores.dtype.kind!='f' or not np.isfinite(scores).all()
             or any(a.shape!=(n,) or a.dtype.kind not in 'iu' for a in (y,closed,baseline,rx))
             or any(np.any((a<0)|(a>=6)) for a in (y,closed,baseline)) or not np.isin(rx,RECEIVERS).all()
             or scenario.shape!=(n,) or scenario.dtype.kind!='U' or not np.isin(scenario,SCENES).all()):
-        raise ValueError('Only aligned source-known V IDs/labels, complete six-class predictions and seven finite scores may calibrate')
+        raise ValueError('Only aligned source-known V IDs/labels, complete six-class predictions and declared finite scores may calibrate')
     masks=list(_masks(rx,scenario));coverage={key:set(y[mask].tolist())==set(range(6)) for key,mask in masks}
     methods={};thresholds=[]
-    for j,name in enumerate(METHODS):
+    for j,name in enumerate(names):
         values=scores[:,j]
         local={key:_local_maximum(y[mask],closed[mask],baseline[mask],values[mask]) for key,mask in masks if coverage[key]}
         feasible=all(coverage.values()) and all(row[1] for row in local.values())
@@ -140,7 +145,7 @@ def calibrate_known(ids, y, closed, baseline, scores, rx, scenario):
             next_candidate_passed=bool(next_pass))
         thresholds.append(threshold)
     return np.asarray(thresholds,np.float64),dict(schema=SCHEMA,status=CALIBRATION_STATUS,run_id=RUN_ID,
-        method_names=list(METHODS),primary_method=PRIMARY,primary_path=PRIMARY_PATH,known_count=n,group_count=42,
+        method_names=list(names),primary_method=PRIMARY if names==METHODS else None,primary_path=PRIMARY_PATH,known_count=n,group_count=42,
         class_count=6,receivers=list(RECEIVERS),scenario_order=list(SCENES),known_only=True,source_only=True,
         methods=methods,constraints_passed=all(row['constraints_passed'] for row in methods.values()),
         source_V_labels_used=True,source_V_metric_fit=False,source_V_readout_fit=False,source_V_score_normalization_fit=False,
