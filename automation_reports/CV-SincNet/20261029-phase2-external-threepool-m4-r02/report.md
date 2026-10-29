@@ -28,6 +28,14 @@ GPU0–7本轮核心＋外部＋修复合计每卡2个，其他owner另计；接
 
 运行命令、环境/CWD、commit、远端路径、逐行继承与预期产物以同run `experiment.json` 为准。唯一owner为 codex/root/phase2-external-mopc-repair-20261029。相同数值指纹经一次本地修复后若再次发生，保留产物并停止受影响版本后续派发，不盲目重试；健康任务继续。修复方法目标成绩不参与停止、重跑或选模。
 
-当前状态：PREREGISTERED。一次最小独立P0/P1审查与启动后PID/CWD/argv/GPU/日志证据回填于本报告。
+当前状态：VERIFIED RUNNING。一次最小独立P0/P1审查与启动后PID/CWD/argv/GPU/日志证据回填于本报告。
 
 最小独立P0/P1审查：PASS；MoPC support-train/query-eval及恢复矩阵四项聚焦检查通过，无额外P0/P1。
+
+## 启动后独立核验（2026-10-29T08:16:26Z UTC）
+
+VERIFIED RUNNING。执行 commit `924bd939d3386a108332b65af9fea5ab30d302ee`，单 archive SHA传输比较与远端编译PASS，真实checkpoint无query smoke PASS。控制器2742828接管旧CPU2597281；旧CPU已退出，健康GPU worker重启0。原11589项BLOCKED已恢复，新队列当前FAILED=0/BLOCKED=0；GPU0–7本轮各2，共16，其他owner另计。
+
+两个MoPC版本均已在N607完成首个P01/MIX01/RX1-1/seed2026092701全部K/N的P0/P1冻结预测（各24row/路径）并完成独立评分；只核验产物状态，未读取分数用于调参。原两个失败与旧partial保留于r01，不能与新实现混合。完整后续矩阵持续运行，非全部实验完成。
+
+RadioNet仍为原PID2600850/GPU6、原r01代码/CWD/命令，未重启。最新源训练第10轮，第8449步；全部1894条结构化记录loss有限，target_contact=false，继续原30轮×25815更新预算。

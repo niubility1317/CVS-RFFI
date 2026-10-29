@@ -105,8 +105,8 @@
     "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase2_core_execution_20261029",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.episodic_dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-milkr-threepool-m4-r01-release/runtime.json",
     "stop_rule": "First protocol/numerical/worker/output failure stops new dispatch,preserves immutable outputs and already-running healthy workers.No target-score stopping/retry/selection;no otherownerintervention.",
-    "current_controller_run": "20261029-phase2-external-threepool-m4-r01",
-    "current_controller_pid": 2597281,
+    "current_controller_run": "20261029-phase2-external-threepool-m4-r02",
+    "current_controller_pid": 2742828,
     "current_resource_policy": "two Phase2 workers/GPU,other owners additional;original model code and output unchanged"
   },
   "expected_artifacts": [

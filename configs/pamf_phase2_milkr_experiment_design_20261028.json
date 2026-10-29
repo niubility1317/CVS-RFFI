@@ -5857,9 +5857,10 @@
   "external_full_registry_execution_status": "DEPLOYED20_RUNNABLE_VARIANTS28_CHAINS;2_ORIGINAL_NA",
   "current_core_execution_code_commit": "20f920985a97376aad2ac9663d33dcb9b81e3c49",
   "core_launch_ready": true,
-  "current_external_execution_run": "20261029-phase2-external-threepool-m4-r01",
-  "current_external_execution_code_commit": "6860e01be055dc92e1b3c43865034df802e2bf02",
-  "current_external_execution_config": "configs/pamf_phase2_external_threepool_execution_20261029.json",
+  "current_external_execution_run": "20261029-phase2-external-threepool-m4-r02",
+  "current_external_execution_code_commit": "924bd939d3386a108332b65af9fea5ab30d302ee",
+  "current_external_execution_config": "configs/pamf_phase2_external_threepool_repair_20261029.json",
   "current_Phase2_resource_policy": "core+external two Phase2 GPU workers perGPU0-7,other owners additional;verified16",
-  "current_unified_controller_run": "20261029-phase2-external-threepool-m4-r01"
+  "current_unified_controller_run": "20261029-phase2-external-threepool-m4-r02",
+  "current_external_recovery": "MoPC train-mode repaired;first two-path units scored;0failed0blocked;RadioNet originalPID preserved"
 }

@@ -192,7 +192,9 @@
         "FAILED": 0
       },
       "failure_count": 0
-    }
+    },
+    "current_controller_run": "20261029-phase2-external-threepool-m4-r02",
+    "current_controller_pid": 2742828
   },
   "expected_artifacts": [
     "core_controller_handoff.json",
@@ -3353,7 +3355,8 @@
         "predictions/*/*/*/P1/complete.json",
         "scores/*/*/*/complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "PREREGISTERED",
+      "implementation_superseded_by": "20261029-phase2-external-threepool-m4-r02"
     },
     {
       "row_id": "mopc_paper-s2026092702",
@@ -3401,7 +3404,8 @@
         "predictions/*/*/*/P1/complete.json",
         "scores/*/*/*/complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "PREREGISTERED",
+      "implementation_superseded_by": "20261029-phase2-external-threepool-m4-r02"
     },
     {
       "row_id": "mopc_paper-s2026092703",
@@ -3449,7 +3453,8 @@
         "predictions/*/*/*/P1/complete.json",
         "scores/*/*/*/complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "PREREGISTERED",
+      "implementation_superseded_by": "20261029-phase2-external-threepool-m4-r02"
     },
     {
       "row_id": "mopc_paper-s2026092704",
@@ -3497,7 +3502,8 @@
         "predictions/*/*/*/P1/complete.json",
         "scores/*/*/*/complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "PREREGISTERED",
+      "implementation_superseded_by": "20261029-phase2-external-threepool-m4-r02"
     },
     {
       "row_id": "mopc_public_code-s2026092701",
@@ -3545,7 +3551,8 @@
         "predictions/*/*/*/P1/complete.json",
         "scores/*/*/*/complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "PREREGISTERED",
+      "implementation_superseded_by": "20261029-phase2-external-threepool-m4-r02"
     },
     {
       "row_id": "mopc_public_code-s2026092702",
@@ -3593,7 +3600,8 @@
         "predictions/*/*/*/P1/complete.json",
         "scores/*/*/*/complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "PREREGISTERED",
+      "implementation_superseded_by": "20261029-phase2-external-threepool-m4-r02"
     },
     {
       "row_id": "mopc_public_code-s2026092703",
@@ -3641,7 +3649,8 @@
         "predictions/*/*/*/P1/complete.json",
         "scores/*/*/*/complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "PREREGISTERED",
+      "implementation_superseded_by": "20261029-phase2-external-threepool-m4-r02"
     },
     {
       "row_id": "mopc_public_code-s2026092704",
@@ -3689,7 +3698,8 @@
         "predictions/*/*/*/P1/complete.json",
         "scores/*/*/*/complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "PREREGISTERED",
+      "implementation_superseded_by": "20261029-phase2-external-threepool-m4-r02"
     },
     {
       "row_id": "orthogonal-s2026092701",
@@ -4470,5 +4480,12 @@
     "One new immutable root;1932predictjobs+1932independentscorers;P0P1wholecapSeedclosure before truth.",
     "Original source code commit remains immutable in release;this post-launch metadata commit does not change live workers."
   ],
-  "status": "RUNNING"
+  "status": "CONTINUED_BY_R02_CONTROLLER_WITH_MOPC_SUPERSEDED",
+  "technical_failure_recovery": {
+    "failed_profile_P0_jobs": 2,
+    "blocked_jobs": 11589,
+    "recovered_by": "20261029-phase2-external-threepool-m4-r02",
+    "old_artifacts_preserved": true,
+    "other_profiles_unchanged": true
+  }
 }
