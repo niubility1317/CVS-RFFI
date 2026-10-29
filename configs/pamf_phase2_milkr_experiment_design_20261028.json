@@ -11,7 +11,8 @@
     "docs/PAMF_PHASE2_MILKR_EXPERIMENT_DESIGN_20261028.md",
     "docs/PAMF_PHASE2_METHOD_CODE_INVENTORY_20261028.md",
     "docs/PAMF_PHASE2_MAIN_TABLES_20261028.md",
-    "docs/PAMF_PHASE2_FULL_EQ_ALLOCATION_R08_20261029.md"
+    "docs/PAMF_PHASE2_FULL_EQ_ALLOCATION_R08_20261029.md",
+    "docs/PAMF_PHASE2_FULLPOOL_EPISODES_R09_20261029.md"
   ],
   "primary_method": {
     "name": "MILKR",
@@ -104,7 +105,7 @@
       ],
       "capsule_id": null,
       "split_id": null,
-      "data_status": "NOT_BUILT_OR_VERIFIED_THIS_TASK",
+      "data_status": "R09_DATA_PREPARATION",
       "probabilities": {
         "practical_high": 0.04369141011349172,
         "practical_mid": 0.07317984658235889,
@@ -113,7 +114,8 @@
         "practical_mid_urban": 0.07317984658235889,
         "practical_low_urban": 0.38312874330414937
       },
-      "action": "allocate disjoint physical pools, categorical scene and conditional covered-area geometry, native residual once per record"
+      "action": "same entire original-class pool each episode;fresh residual overlay per record;K support/full complement query",
+      "physical_independence": false
     },
     {
       "id": "P-Diagnostic",
@@ -124,12 +126,12 @@
         "practical_low_urban"
       ],
       "capsule_id": null,
-      "data_status": "MUST_BE_PHYSICALLY_DISJOINT_FROM_ALL_MIXED_SETS",
+      "data_status": "R09_SAME_RAW_POOL_FRESH_OVERLAY_EACH_OF_5_EPISODES_PER_SCENE",
       "geometry_sampling": "native uniform: D-LS10-30, D-MU20-45, D-LU10-30",
       "dataset_ids": [
-        "D-LS",
-        "D-MU",
-        "D-LU"
+        "LS01-LS05",
+        "MU01-MU05",
+        "LU01-LU05"
       ],
       "groups": [
         {
@@ -5689,10 +5691,23 @@
     },
     "superseded_data_and_budget_by": "configs/pamf_phase2_capacity_r06_20261028.json"
   },
-  "active_data_and_budget_design": "configs/pamf_phase2_full_eq_data_r08_20261029.json",
-  "capacity_execution_note": "USER_HOLD_NO_NEW_LAUNCH; r05 method registry retained, r06 contingency only; Full eq r07 query/class/scope candidates not final",
-  "active_selected_classes": "configs/pamf_phase2_full_eq_r08_selected_classes_20261029.json",
-  "data_preparation_status": "ALLOCATION_VERIFIED_RECEIVED_BUILD_RUNNING",
-  "data_preparation_run": "20261029-phase2-full-eq-preparation-s2026102901-r01",
-  "identity_experiments_still_on_hold": true
+  "active_data_and_budget_design": "configs/pamf_phase2_fullpool_episodes_r09_20261029.json",
+  "capacity_execution_note": "User supersedes cross-suite physical disjointness/global query protection for this Phase2 repeated-task benchmark; r09 full-pool config authoritative. Identity experiments remain on hold.",
+  "active_selected_classes": "configs/pamf_phase2_fullpool_episodes_r09_20261029.json",
+  "data_preparation_status": "R09_CPU_DATA_BUILD_RUNNING_INDEPENDENTLY_VERIFIED",
+  "data_preparation_run": "20261029-phase2-fullpool-episodes-s2026102901-r01",
+  "identity_experiments_still_on_hold": true,
+  "active_data_rules": {
+    "same_raw_pool": true,
+    "support": "K per RX/TX",
+    "query": "all remaining registered-class pool rows",
+    "fresh_channel_each_episode": true,
+    "nested_K_same_H_within_episode": true,
+    "source_roles_unchanged": true,
+    "unique_physical_pool_records": 554823,
+    "episodes": 23,
+    "legacy_embedded_data_and_query_budgets": "HISTORICAL_NONBINDING;use active_data_and_budget_design",
+    "identity_state": "reset matched source per episode/K;B-to-C inheritance within task only"
+  },
+  "data_preparation_code_commit": "42e6dca573508f511d2f33861ac7dbd58eaeee45"
 }
