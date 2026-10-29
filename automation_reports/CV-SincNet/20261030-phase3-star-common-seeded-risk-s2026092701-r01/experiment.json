@@ -1,0 +1,224 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-common-seeded-risk-s2026092701-r01",
+  "group_id": "pamf-phase3-star-common-seeded-risk",
+  "display_name": "PAMF第三阶段：共同可行阈值的单调扩展",
+  "description": "Freeze both source-only r02 models and all raw scores; compare exact common/zero-initialized controls with common-initialized monotone risk allocation.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-monotone-risk-calibration",
+  "aliases": [
+    "星地共同可行点初始化"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "frozen_model",
+    "monotone_risk"
+  ],
+  "comparison_group_id": "phase3-star-common-zero-seeded-risk",
+  "parent_run_ids": [
+    "20261029-phase3-star-joint-ova-s2026092701-r02",
+    "20261030-phase3-star-oe-risk-budget-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "119210ba86fb8b569f6cdeb887d314c1458a2007",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-common-seeded-risk-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Existing G10 P1 V/novel and OE public prediction arrays only; no new real IQ or neural forward except actual-checkpoint synthetic probes",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_new": 0,
+      "source_OE_public_predictions": 6134,
+      "known_V_public_predictions": 27000,
+      "heldout_novel_public_predictions": 3150,
+      "original_U_new": 0,
+      "target": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool\\complete.json; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "Source V true-six risk protection and OE outside-six/domain proxy only. Three thresholds freeze before novel public rows; no target handles.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Source V known true labels and OE membership/domain; no OE TX/K or target labels",
+    "query_use": "No target U/Q or historical query training; source novel public arrays only after policies freeze and independent truth-last scorer",
+    "external_method_exception": null,
+    "claim_scope": "Seen source five RX and historically exposed three novel devices only; no target crossRX/DA/registration success claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen matched r02 F/native+aux checkpoints only for identity verification and two synthetic G10 probes; no optimizer or real IQ forward",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r02/rows/detach_control/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r02/rows/joint/train/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "r02 model sourcecontract392005/oldF0E50 ancestry retained. OE parent supplies public raw logits and fixed zero policy, never neural weights.",
+    "selection_rule": "Carry both fixed r02 arms. Common and zero controls exactly reused; only joint/common_initialized_budget primary; no novel or target selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-common-seeded-risk-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-common-seeded-risk-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-common-seeded-risk-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_common_seeded_risk_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_common_seeded_risk_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-common-seeded-risk-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Max2rows on distinct actualfree>=4096MB GPUs; each<=2added; foreign unchanged",
+    "stop_rule": "Legality/nonfinite/collision/unable legal prediction preserves failedrow; independent healthyrow continues; scientific fail no retuning or restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/*.json",
+    "logs/*.log",
+    "rows/<arm>/state.json",
+    "rows/<arm>/predict/{smoke.json,OE_scores.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz,complete.json}",
+    "rows/<arm>/predict/calibration/complete.json",
+    "rows/<arm>/score/{results.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "A_K",
+      "R_U",
+      "H-score",
+      "C_K",
+      "original_F0_closed_loss",
+      "OE_domain_macro_rejection",
+      "pointwise_monotonicity",
+      "source_novel_structure_guard"
+    ],
+    "dimensions": [
+      "two_frozen_arms",
+      "three_threshold_policies",
+      "known42",
+      "unknown12",
+      "TX",
+      "RX",
+      "scene",
+      "same_ID_paired"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-common-seeded-risk-s2026092701-r01/rows/<arm>/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_common_seeded_risk_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "detach_control-s2026092701",
+      "method": "PAMF frozen detach_control common-initialized risk",
+      "purpose": "Isolate initialization under same raw evidence, all42 safety constraints and classwise monotone thresholds",
+      "config_ref": "configs/pamf_phase3_star_common_seeded_risk_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-common-seeded-risk-s2026092701-r01/configs/detach_control_source_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No new randomness. Same G10 P1 public predictions, deterministic queues and class-index ties.",
+      "k": null,
+      "scenario": "G10 MIX01 P1 public evidence",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NN/aux/G updates0; eacharm two synthetic checkpoint probes only, total F4; real IQ forwards0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-common-seeded-risk-s2026092701-r01/rows/detach_control",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-common-seeded-risk-s2026092701-r01/logs/detach_control_source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_common_seeded_risk_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-common-seeded-risk-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/<arm>/state.json",
+        "rows/<arm>/predict/{smoke.json,OE_scores.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz,complete.json}",
+        "rows/<arm>/predict/calibration/complete.json",
+        "rows/<arm>/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "joint-s2026092701",
+      "method": "PAMF frozen joint common-initialized risk",
+      "purpose": "Isolate initialization under same raw evidence, all42 safety constraints and classwise monotone thresholds",
+      "config_ref": "configs/pamf_phase3_star_common_seeded_risk_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-common-seeded-risk-s2026092701-r01/configs/joint_source_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No new randomness. Same G10 P1 public predictions, deterministic queues and class-index ties.",
+      "k": null,
+      "scenario": "G10 MIX01 P1 public evidence",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NN/aux/G updates0; eacharm two synthetic checkpoint probes only, total F4; real IQ forwards0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-common-seeded-risk-s2026092701-r01/rows/joint",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-common-seeded-risk-s2026092701-r01/logs/joint_source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_common_seeded_risk_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-common-seeded-risk-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/<arm>/state.json",
+        "rows/<arm>/predict/{smoke.json,OE_scores.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz,complete.json}",
+        "rows/<arm>/predict/calibration/complete.json",
+        "rows/<arm>/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Agent chose common initialization to remove avoidable acceptall-greedy underperformance without lowering constraints.",
+    "Every new threshold >=common; acceptance subset holds at fixedrawscore, not a targetknown guarantee or RU90 proof.",
+    "Default initial_thresholds=None preserves old algorithm. No old run/threshold/verdict overwritten.",
+    "Only source V labels and OE membership/domains fit thresholds; novel only frozen prediction/score; target0.",
+    "Public arrays reuse same42584 physical records, seenRX/historicalnovel, not independentblindTX. AN/HOWnull, fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-29T17:32:19+00:00"
+}
