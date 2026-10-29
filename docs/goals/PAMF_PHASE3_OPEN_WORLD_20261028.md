@@ -171,3 +171,28 @@ C0/P1从同一source独立用U384（RX24-1 D1）拟合R并写冻结checkpoint后
 两行各真实checkpoint合成2IQ smoke先于U，所有模型与R在Q冻结；sourceIQ/逐源样本bank/formal/新阈值0。原pure+outer联合22tests/39subtests、launcher3tests PASS；唯一review的两个P1（storage同根与Torch2.1/NumPy2桥）已定点修复，新2回归＋1邻近3tests/14subtests PASS并一次定向复核PASS，未重复全审/数据验证。一次N607 preflight/单归档比较/compile PASS。真实driver/C0worker live PID/CWD/cmd和C0日志增长已捕获，模型运行时ownedCUDA采样未捕获，GPU3分配来自driver，不报告峰值或逐包时延；完成后owned均退出，foreignstop0。实际pipeline13.7489s包含模型载入/两条件U与Q/评分，不是部署延迟。完整报告见`docs/PAMF_PHASE3_DEVELOPMENT_ALIGNMENT_RESULTS_20261029.md`。
 
 下一优先改进源训练的拒识分数/表征对星地域和冻结恢复后输入的覆盖。当前P1 D1主分数AUROC约71.6363%；本等量开发池若单global阈值同时已知接收≥95%且未知拒识≥90%，至少95%×90%=85.5%的known/unknown配对应正确排序，因此仅移动当前阈值无法满足两项。此为当前单分数/本数据的必要条件，不推导所有模型不可能，也不扫描V寻找oracle阈值。新独立候选可让合法source L与既有辅助OE通过同规则星地/G输入来训练拒识器、源known-only校准后再验证；不把开发V回收训练，不更换source基座/默认恢复器或擅改数据权限，不读取正式Q。未知身份聚类与未来匿名注册≥80%的完整目标继续保留。
+
+## 源端星地读出匹配结果（2026-10-29）
+
+`20261029-phase3-source-practical-readout-s2026092701-r01`已VERIFIED/ANALYZED_DEVELOPMENT_ONLY，代码/config为`ca60bdf20090f664fbcf27682138d63cfd2751dc`。原E51/F0/G/六类默认头/clean-L几何全部冻结。本次复用source5RX、三日的L6300/OE4共4200/V27000/novel3共3150，40650物理记录，每条clean＋三practical→DURA，共162600计算view，不新增独立记录。新channel seed2026102931；各角色同scene/opaqueID规则，不读OE TX或novel truth生成。源端成员监督额外存在，不称全流程无标签。
+
+calibration_only精确复用原linear/MLP和mean/std；augmented_readout在L25200/OE16800视图上各固定200CPU AdamW步，拟合101/1633参数及训练mean/std。两arm同四view known V108000校准，整体/5RX/4view/20RX×view共30组FRR5%/原F同输入closed−open2pp，ties整组，一个global τ/方法。源未知不校准；两arm状态/阈值全部冻结后才source novel预测，8组预测固定后独立truth-last。两arm均known校准可行，但source未知拒识不达标。主候选augMLP事前固定，不按source或target切换。
+
+开发仅复用RX24-1、D2的Q864（576known/288unknown）配对C0/P1，两条件共864原始物理记录，targetU0/正式RX24-18读取0。两个current arm共享本次F/G前向和六类head；历史original D0及原F baseline精确复用。两条件历史/本次closed差异均0。source负结果仍按预登记完成全部开发预测和独立评分，不重跑、不调目标阈值。
+
+|条件/主MLP状态|未知拒识|已知接收|已知open正确率|原F closed−open损伤|AUROC|
+|---|---:|---:|---:|---:|---:|
+|clean original|99.3056%|80.7292%|62.6736%|17.0139pp|97.8709%|
+|clean calibration_only|96.1806%|86.8056%|67.8819%|11.8056pp|97.8709%|
+|clean augmented_readout|96.8750%|90.4514%|71.5278%|8.1597pp|98.2898%|
+|星地+DURA original|57.2917%|72.9167%|53.2986%|19.4444pp|70.9262%|
+|星地+DURA calibration_only|34.7222%|89.4097%|66.3194%|6.4236pp|70.9262%|
+|星地+DURA augmented_readout|38.8889%|93.0556%|68.5764%|4.1667pp|86.1075%|
+
+clean相对原状态多56/576已知接收、多51/576已知正确开放识别；未知多7/288被接受，仍单项超过95%。星地多116/576已知接收、多88/576正确开放识别，但未知多53/288被接受，拒识单项远低90%。相对同校准control，augMLP的星地AUROC增加15.1813pp，known接收+3.6458pp/open+2.2569pp/unknown拒识+4.1667pp；确有分数排序收益，尚非验收成功。
+
+aug星地低郊区/中城市/低城市未知拒识分别47.9167%/35.4167%/33.3333%，known接收94.7917%/91.6667%/92.7083%；三景均失败。中/低城市AUROC84.3967%/82.1994%仍低于同时95%接收/90%拒识所需85.5%的必要下界，故仅挪动当前单分数阈值仍无法满足逐景保护。总体AUROC86.1075%超过必要下界也不证明存在合格阈值，不扫描开发oracle阈值。
+
+两条件均NO_PROMOTION，不扩seed或访问正式池。仅源读出/校准不能消除域变化下的身份特征和未知分离问题；下一优先候选应在合法source训练角色上进行星地/G输入的编码器与原默认头联合增量训练，保留同预算source控制与clean身份保护，争取同时改善known正确识别和unknown排序。不回收V_dev训练、不读其真值拟合、不改变原默认F/G身份，不把更高接收率当未知拒识进展。未知发现/未来匿名注册仍未完成，完整目标ACTIVE。
+
+9stage全部COMPLETE、实际checkpoint合成2IQ四view smoke在source IQ前通过，C0/P1也各在Q前smoke。聚焦29tests/24subtests PASS；唯一独立审查两个API P1已修复并定向确认。一次N607 preflight/单归档比较/远端compile VERIFIED。捕获实际driver2624334/export2624355的PID/CWD/命令、GPU3可见性、owned CUDA占用与日志增长；900MB为一次采样不是峰值。source导出437.2247s、两个readout拟合stage6.0401s，完整stage计时见post_state，不当作逐包部署时延。完成后本run进程退出，其他owner未停止/改动。完整报告为`docs/PAMF_PHASE3_SOURCE_PRACTICAL_READOUT_RESULTS_20261029.md`，原始评分/训练损失/后态在本run local_artifacts。
