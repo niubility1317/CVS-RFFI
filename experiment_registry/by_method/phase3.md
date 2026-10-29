@@ -8,9 +8,11 @@
 |---|---|---|
 |PAMF第三阶段：跨接收机星地冻结开集拒识首轮|managed_run|[打开](../../automation_reports/CV-SincNet/20261028-phase3-pamf-open-set-s2026092701-r01/report.md)|
 |PAMF第三阶段：RX24独立无标签流与未来查询集|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-full-pool-rx24-r01/report.md)|
+|PAMF第三阶段：原F参照的源已知风险校准|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-baseline-risk-s2026092701-r01/report.md)|
 |PAMF第三阶段：源域物理分支未知证据|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-branch-s2026092701-r01/report.md)|
 |PAMF第三阶段：跨分支同类支持拒识|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-consensus-s2026092701-r01/report.md)|
 |PAMF第三阶段：21台源辅助设备域均衡拒识|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-diverse-readout-s2026092701-r01/report.md)|
+|PAMF第三阶段：十轮开放集特征增量与匹配监督|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-embedding-budget-s2026092701-r01/report.md)|
 |PAMF第三阶段：原生监督与均匀OE特征增量配对|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-embedding-increment-s2026092701-r01/report.md)|
 |PAMF第三阶段：原生监督与均匀OE特征增量配对|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-embedding-increment-s2026092701-r02/report.md)|
 |PAMF第三阶段：固定特征增量与跨分支拒识读出组合|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-embedding-readout-s2026092701-r01/report.md)|

@@ -112,3 +112,9 @@ r01实际发布后两行在新增父兼容检查失败，0梯度smoke／优化�
 `20261029-phase3-source-embedding-readout-s2026092701-r01` 已VERIFIED/ANALYZED_SOURCE_ONLY，执行commit806dec253b7556ee3d4af842bf9a2d8fd714009e。两编码器各自重导40652样本、L-only新几何＋原4OE4200读出，各linear/MLP200CPU步，历史222不变、新encoder/head0。MLP监督86.3492%、OE90.7619%，配对+4.4127pp，较原E50同novel参考85.7460%为+.6032/+5.0159pp。OE FRR1.5556%、open97.7407%、原F总损伤.7259pp；7方法known总体/每RX保护均过，两个MLP仅RX1未知达95%，故NO_PROMOTION。30tests/2subtests与一次P0/P1PASS、800loss/8logs/2Lsmoke、原始GPU2/1 PID和退出证据完整，foreign/target0。见[完整结果](E:/type10-7/docs/PAMF_PHASE3_SOURCE_EMBEDDING_READOUT_RESULTS_20261029.md)。仍是同novel重复source开发，目标未完成。
 
 下一独立候选`20261029-phase3-source-baseline-risk-s2026092701-r01`已登记、当前实现中：冻结上述全部状态，无新F/head/readout更新，只用knownV和原Fbaseline直接校准原目标中的总open损伤≤2pp与FRR≤5%（总体/每RX）。此前自身损伤1.5pp/FRR4%的安全预留不追改；新候选仍须95%unknown/5%FRR/.5ppencoder/2pp总损伤全部通过，unknown不校准。正式RX24 U/Q仍不读，Phase3总目标ACTIVE。
+
+## 原模型参照风险实际结果（2026-10-29）
+
+`20261029-phase3-source-baseline-risk-s2026092701-r01` 已VERIFIED/ANALYZED_SOURCE_ONLY，执行commita18daf5080bca7e76c3837907dcfdefd97fbc5bd。两固定E51/读出只重校known-only阈值，F/head/readout新增0；MLP监督88.0635%／OE92.6667%，OE较父+1.9048pp，FRR2.0296%、open97.3852%、原F总损伤1.0815pp。总体及每RX known保护通过，监督RX6/OERX3总损伤2pp预算恰绑定，两个MLP仍仅RX1未知过95，故NO_PROMOTION。9tests/4subtests与一次P0/P1PASS，4完整logs、2Lreadout smoke、阈值最大合法及完成产物齐全；工作极短首次post即完成，未捕获liveCWD/GPU观察、不伪造/重跑。见[结果](E:/type10-7/docs/PAMF_PHASE3_SOURCE_BASELINE_RISK_RESULTS_20261029.md)。同novel重复source，不是跨RX/星地/DA/注册成功。
+
+下一独立`20261029-phase3-source-embedding-budget-s2026092701-r01`已登记并实现中：同原F6 E50独立冷启动的监督/OE两行固定新增2220步（E51..60），累计13320，非E51挑选后续训；native L/CRIC/As、OE21 λ.1、Uoff保持，自己的8分支/newL几何＋原4OE读出200，knownV仍原F总损伤2pp/FRR5%。固定末步、无V/novel早停，95与旧类保护不降，每卡≤2新增、不停foreign；正式RX24U/Q仍未访问，Phase3总目标ACTIVE。

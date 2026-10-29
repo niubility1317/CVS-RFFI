@@ -104,8 +104,7 @@
     "rows/<arm>/predict/{predictions.npz,complete.json}",
     "rows/<arm>/predict/calibration/{thresholds.npy,complete.json}",
     "rows/<arm>/score/{results.json,complete.json}",
-    "pipeline_state.json",
-    "paired_source_metrics.json"
+    "pipeline_state.json"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -164,8 +163,7 @@
         "rows/<arm>/predict/{predictions.npz,complete.json}",
         "rows/<arm>/predict/calibration/{thresholds.npy,complete.json}",
         "rows/<arm>/score/{results.json,complete.json}",
-        "pipeline_state.json",
-        "paired_source_metrics.json"
+        "pipeline_state.json"
       ]
     },
     {
@@ -202,8 +200,7 @@
         "rows/<arm>/predict/{predictions.npz,complete.json}",
         "rows/<arm>/predict/calibration/{thresholds.npy,complete.json}",
         "rows/<arm>/score/{results.json,complete.json}",
-        "pipeline_state.json",
-        "paired_source_metrics.json"
+        "pipeline_state.json"
       ]
     }
   ],
@@ -217,7 +214,8 @@
     "OldE50consensus85.746%reference exactlyreused, notnewrun/predictions/independentreplicate.",
     "Allsourcephysicalroles reused/VALIDATED_ONCE, no raw revalidation/hash ornewdataarchive; no target U/Q.",
     "Repeatedsource devfold andknownsamecalibrationrisk, notindependentconfirmation/unseenRX/star/DA/newregistrationproof.",
-    "Atmost2 parallelGPUexports, eachcardmax2added, CPUotherstages; foreignworkneverstopped, immutableoutputs/partialnopromotion."
+    "Atmost2 parallelGPUexports, eachcardmax2added, CPUotherstages; foreignworkneverstopped, immutableoutputs/partialnopromotion.",
+    "Actualfulltwoarmresult in pipeline_state.json plus bothscore/results; controller doesnotwrite separatepaired_source_metrics.json, expectedlist correctedtoobserved artifactcontract."
   ],
   "registered_at": "2026-10-28T21:36:05+00:00"
 }

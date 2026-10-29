@@ -29,3 +29,7 @@
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 实际 code/config commit：`806dec253b7556ee3d4af842bf9a2d8fd714009e`。新候选30项聚焦测试及2个subtests通过，一次独立P0/P1 PASS。真实E51checkpoint L2 smoke作为导出首步，PASS后继续；两编码器各40652次样本前向，编码器/原6类head新增更新0。各自L-only新几何，原4OE4200和L6300仅训练匹配二分类读出，各200步；V只阈值、novel只冻结后预测评分。仅MLP可晋级，完整两行后选择；原F6同输入保护。N607一次preflight、既有数据复用，每卡新增≤2、不停止foreign。
+
+## 实际结果
+
+VERIFIED / ANALYZED_SOURCE_ONLY，NO_PROMOTION。两个MLP未知宏拒识86.3492%／90.7619%；OE行FRR1.5556%、open97.7407%、相对原F总损伤0.7259pp。全部7方法的known保护总体和每RX均通过，两个MLP仅RX1未知达到95%，eligible空/selected=null。四条200步loss共800点、8stage日志、realL2smoke完整；GPU2/1实际owned PID与退出读回已保留，foreignstop/target0。完整结果见 docs/PAMF_PHASE3_SOURCE_EMBEDDING_READOUT_RESULTS_20261029.md。同novel重复source，不是跨RX星地/适应/注册成功；不追改此前MSP或本轮阈值。

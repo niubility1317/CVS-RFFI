@@ -1,0 +1,225 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-source-embedding-budget-s2026092701-r01",
+  "group_id": "pamf-phase3-source-embedding-budget",
+  "display_name": "PAMF第三阶段：十轮开放集特征增量与匹配监督",
+  "description": "BothfromoriginalE50 independentcold CENTER_UNITS nativeL arms, fixed2220steps/total13320; OE21λ.1, new8branches+original4OE200readout, known originalF risk; no earlystop/noveltune.",
+  "kind": "cvs",
+  "stage": "Phase3-source-ten-epoch-open-embedding-budget",
+  "aliases": [
+    "Phase3十轮源开放集特征增量"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "native_joint",
+    "2220_added_steps",
+    "matched_supervised",
+    "uniform_OE21",
+    "frozen_200readout"
+  ],
+  "comparison_group_id": "phase3-native-E50plus2220-supervised-versus-uniformOE",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261029-phase3-source-oe-diverse-data-r01",
+    "20261029-phase3-source-open-readout-s2026092701-r01",
+    "20261029-phase3-source-baseline-risk-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工及自主设计执行；本轮遵循事先source-only开发路线，不以首轮target表调参。",
+  "code": {
+    "commit": null,
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-embedding-budget-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-embedding-budget-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original six-class source L/V plus Full auxiliary source devices",
+    "version": "original full6 source plus source21 auxiliary cap32 v1",
+    "representation": "matching eq1_center256_unitRMS source clean only; no new channel observations",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 source auxiliary open development",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json + source21/4OE validated handles and exportcomplete",
+    "label_map_ref": "oldsource6 L labels; OE21 per-record TX private and never transferred to fitter",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_source_embedding_budget_20261029.json; originalregistered6 onlyL labels; source21 membership-onlyencoderOE; original4OE4200readout; novel3/3150scoreonly",
+    "roles": {
+      "source_L": 6300,
+      "source_V": 27000,
+      "exposure_train": 4200,
+      "novel_validation": 3150
+    },
+    "train_ratio": null,
+    "capsule_id": {
+      "exposure_train": "source-oe-diverse-9dd73fa533b19a64fd4db8d9"
+    },
+    "split_id": "5e0f620d5c7c72512e9e9edd",
+    "validation_ref": "20261029-phase3-source-oe-diverse-data-r01/data/complete.json VALIDATED_ONCE; originalparent source caches reused",
+    "support_query_ref": "Sameimmutable originalL/V/source21/4OE/novel3 roles, no query recycling; formalRX24U/Q unread",
+    "leo_config_ref": "N/A source clean development only"
+  },
+  "permissions": {
+    "regime": "extra_source_known_unknown_membership_supervision_target_zero_labels",
+    "query_use": "No target query read; only already exposed source development novel records scored again",
+    "external_method_exception": null,
+    "claim_scope": "Repeated source development risk calibration; empirical known calibration protection, not independent confirmation or unseen-RX/satellite success"
+  },
+  "checkpoint": {
+    "initialization": "Botharms from actualverified originalF6 E50, not E51 continuation; cold AdamW",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Existingnativeparent E50 ancestry plus sourcephysicalrole_ids andalignedstorage SourceDataset, not path-equality",
+    "provenance_verdict": "Original6 sourcecontract/seed392005, original11100 thennew2220; source21 OEonlyuniform, U/V/novel/targettraining0; originaldefaulthead joint",
+    "selection_rule": "Fixedterminal2220 only, no V/novel earlystop; readoutsfixed200; knownV originalFbudget5%FRR/2pp, onlyMLPeligible withfulltwoarmmatrix"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-source-embedding-budget-20261029",
+    "gpu_policy": "Two parallelrows, train/export GPU thenCPUfit/predict/score; atmost2added/card actualcapacity; foreignpreserved",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-budget-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-budget-s2026092701-r01/rows/<arm>/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_embedding_budget_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_embedding_budget_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-embedding-budget-s2026092701-r01-release/runtime.json",
+    "stop_rule": "Wrongancestry/roles/budget, forbiddenU/V/novel/targettrain, brokenSinc/headgradient, nonfinite/collision/unablelegalprediction; preservepartial/healthyotherrow. No scientificearlystop/retune."
+  },
+  "expected_artifacts": [
+    "configs/<arm>.train.json",
+    "configs/<arm>.export.json",
+    "rows/<arm>/train/{smoke.json,oe_smoke.json,steps.jsonl,resolved_config.json,training.json,final.pt,complete.json}",
+    "rows/<arm>/export/{smoke.json,complete.json}",
+    "rows/<arm>/export/<role>/features.npz",
+    "rows/<arm>/fit/{geometry.npz,readouts.npz,training.json,complete.json}",
+    "rows/<arm>/predict/calibration/{thresholds.npy,complete.json}",
+    "rows/<arm>/predict/{predictions.npz,complete.json}",
+    "rows/<arm>/score/{results.json,complete.json}",
+    "pipeline_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "unknown_macro_rejection",
+      "known_macro_frr",
+      "known_macro_closed_accuracy",
+      "known_macro_open_accuracy",
+      "baseline_known_macro_closed_accuracy",
+      "encoder_closed_loss",
+      "total_open_loss",
+      "rejection_loss",
+      "paired_MSP_gain"
+    ],
+    "dimensions": [
+      "2arms",
+      "7methods",
+      "sourceRX",
+      "knownTX",
+      "novelTX"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-budget-s2026092701-r01/rows/<arm>/predict/predictions.npz",
+    "scorer_ref": "experiments/pamf_phase3_open_world/source_embedding_budget_scoring.py"
+  },
+  "rows": [
+    {
+      "row_id": "supervised_only-s2026092701",
+      "method": "NativeL E50plus2220 supervised_only with matchedopenreadouts",
+      "purpose": "Matchedfixed10epoch sourceembedding budget; isolate additional uniformOE, no newdefaultPhase1/2model",
+      "config_ref": "configs/pamf_phase3_source_embedding_budget_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-budget-s2026092701-r01/configs/supervised_only.train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102906,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Originalparentseed2026092701; L2026092701/OE2026102907, source21selection2026102906 and4OE2026102905; fixedterminalonly.",
+      "k": null,
+      "scenario": "source_clean_only",
+      "optimizer": "cold AdamW_CENTER_UNITS constant then CPUreadout AdamW",
+      "lr": 0.0001,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "Original11100+new2220=13320/E60. L284160/As142080/packetviews1704960, uniformOE142080. Newexport40652; eachlinear/MLP200CPUsteps.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-budget-s2026092701-r01/rows/supervised_only",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-budget-s2026092701-r01/rows/supervised_only/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_embedding_budget_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-embedding-budget-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "configs/<arm>.train.json",
+        "configs/<arm>.export.json",
+        "rows/<arm>/train/{smoke.json,oe_smoke.json,steps.jsonl,resolved_config.json,training.json,final.pt,complete.json}",
+        "rows/<arm>/export/{smoke.json,complete.json}",
+        "rows/<arm>/export/<role>/features.npz",
+        "rows/<arm>/fit/{geometry.npz,readouts.npz,training.json,complete.json}",
+        "rows/<arm>/predict/calibration/{thresholds.npy,complete.json}",
+        "rows/<arm>/predict/{predictions.npz,complete.json}",
+        "rows/<arm>/score/{results.json,complete.json}",
+        "pipeline_state.json"
+      ]
+    },
+    {
+      "row_id": "uniform_oe-s2026092701",
+      "method": "NativeL E50plus2220 uniform_oe with matchedopenreadouts",
+      "purpose": "Matchedfixed10epoch sourceembedding budget; isolate additional uniformOE, no newdefaultPhase1/2model",
+      "config_ref": "configs/pamf_phase3_source_embedding_budget_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-budget-s2026092701-r01/configs/uniform_oe.train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102906,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Originalparentseed2026092701; L2026092701/OE2026102907, source21selection2026102906 and4OE2026102905; fixedterminalonly.",
+      "k": null,
+      "scenario": "source_clean_only",
+      "optimizer": "cold AdamW_CENTER_UNITS constant then CPUreadout AdamW",
+      "lr": 0.0001,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "Original11100+new2220=13320/E60. L284160/As142080/packetviews1704960, uniformOE142080. Newexport40652; eachlinear/MLP200CPUsteps.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-budget-s2026092701-r01/rows/uniform_oe",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-budget-s2026092701-r01/rows/uniform_oe/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_embedding_budget_launch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-source-embedding-budget-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "configs/<arm>.train.json",
+        "configs/<arm>.export.json",
+        "rows/<arm>/train/{smoke.json,oe_smoke.json,steps.jsonl,resolved_config.json,training.json,final.pt,complete.json}",
+        "rows/<arm>/export/{smoke.json,complete.json}",
+        "rows/<arm>/export/<role>/features.npz",
+        "rows/<arm>/fit/{geometry.npz,readouts.npz,training.json,complete.json}",
+        "rows/<arm>/predict/calibration/{thresholds.npy,complete.json}",
+        "rows/<arm>/predict/{predictions.npz,complete.json}",
+        "rows/<arm>/score/{results.json,complete.json}",
+        "pipeline_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Newindependent candidate fromoriginalE50 forbotharms, no E51-selected continuation; originalPhase1/2 remain.",
+    "Native KL/CRIC/As preserved, supervised_only isnot pureCE/PAMF-CE. Jointhead no replacement; U/teacher/EMAloops off.",
+    "Fixed2220/10epochs, constant1e-4/cold CENTER_UNITS; ordinaryaugmentationstationary13, Asglobal11101..13320; no earlystop or checkpointselection.",
+    "Source21 membership-only encoderOE train; original4OE4200 memberreadout200; novel3/3150 neverfit, alltruthlast.",
+    "EachownnewF8branches40652; newL-only geometry/consensus100D. OriginalF sameIQbaseline independentlyaligned.",
+    "KnownV maxscalar underoriginaltotal2pp/FRR5% eachRX/global, tiesintact, freezebeforenovel; onlyMLP/fullmatrix/supervisedpreferredifbothpass.",
+    "AllsourceRXunknown95/knownFRR5/encoderclosed.5pp/total2pp retained; sourcepass notfinalPhase3completion.",
+    "RepeatedknownV/novel3 development, nofreshconfirmation/crossRX/star/DA/registrationclaim; formalRX24U/Q unread.",
+    "Immutableoutputs/VALIDATED_ONCE sourcehandlesreuse, no raw revalidation/dataarchive; percardmax2added/2rows/foreignstop0."
+  ],
+  "registered_at": "2026-10-29T02:26:26+00:00"
+}
