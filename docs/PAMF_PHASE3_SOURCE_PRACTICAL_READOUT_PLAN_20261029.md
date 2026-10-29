@@ -63,7 +63,7 @@ N607 单 owner，release 为 `releases/<run>-release`，不可覆盖 run 为 `ru
 | 输出路径（相对 run） | 完成标记 |
 | --- | --- |
 | source/export/<role>/<view>/data.npz、complete.json | SOURCE_PRACTICAL_DESCRIPTORS_EXPORTED |
-| source/fit/<arm>/{geometry,readouts}.npz、complete.json、training.json | SOURCE_PRACTICAL_READOUTS_FROZEN |
+| source/fit/<arm>/{geometry.npz,readouts.npz,complete.json}；source/fit/{training.json,complete.json} | SOURCE_PRACTICAL_READOUTS_FROZEN |
 | source/calibration/<arm>/{thresholds.npy,complete.json}、总 complete.json | SOURCE_PRACTICAL_THRESHOLDS_FROZEN |
 | source/predict/<arm>/<view>/predictions.npz、总 complete.json | ALL_SOURCE_PRACTICAL_PREDICTIONS_COMPLETE |
 | source/score/{scores,complete}.json | SCORED_SOURCE_PRACTICAL_COMPLETE |
