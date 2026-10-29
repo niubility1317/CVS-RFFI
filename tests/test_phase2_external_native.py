@@ -78,6 +78,32 @@ def test_profiles_are_versioned_and_complete_budgets():
         bridge.load_source({}, "csil_author", 2026092701, "cpu")
 
 
+@pytest.mark.parametrize('profile',['mopc_paper','mopc_public_code'])
+def test_mopc_C_trains_each_session_on_support_and_freezes_query_BN(profile):
+    b=bundle(profile);x,y=iq(6,2)
+    B=bridge.fit_B({},b,x,y,41);before=snapshot(B['model']);train_forwards=[]
+    def observe(module,args):
+        if torch.is_grad_enabled():
+            assert module.training, 'MoPC incremental optimization must enable training mode'
+            train_forwards.append(len(args[0]))
+    B['model'].register_forward_pre_hook(observe)
+    nx,ny=iq(10,2)
+    C=bridge.native_C({},b,B,nx,ny+6,tuple(range(6,16)),41)
+    assert len(train_forwards)==40 and sum(train_forwards)==400
+    assert C['resources']['optimizer_steps']==40
+    unchanged(before,B['model'])
+    assert not C['model'].training
+    for name,v in C['model'].state_dict().items():
+        if name.endswith('num_batches_tracked'):
+            assert int(v-before[name])==40
+    after=snapshot(C['model'])
+    with torch.no_grad():
+        q=nx[:3];together=C['score_fn'](C['model'],q)
+        apart=torch.cat([C['score_fn'](C['model'],row[None]) for row in q])
+    torch.testing.assert_close(together,apart,rtol=2e-4,atol=2e-4)
+    unchanged(after,C['model'])
+
+
 @pytest.mark.parametrize("profile", ["protonet_cda", "csil_corefix", "mopc_paper", "mopc_public_code", "orthogonal"])
 def test_native_registration_inherits_B_and_independent_C_forks(profile):
     b = bundle(profile)

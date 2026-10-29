@@ -60,7 +60,7 @@ def adopt(rt,output):
 
 def resources(rt):
     from .runner import occupancy
-    result=occupancy();runtime_paths={rt['runtime_file'],rt['shared_core_runtime']}
+    result=occupancy();runtime_paths={rt['runtime_file'],rt['shared_core_runtime'],*rt.get('phase2_runtime_files',[])}
     for value in result.values():value['phase2_pids']=set()
     for p in Path('/proc').iterdir():
         if not p.name.isdigit():continue

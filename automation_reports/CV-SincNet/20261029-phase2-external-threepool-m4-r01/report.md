@@ -97,3 +97,5 @@ Any protocol/numerical/worker/output failure blocks that source/profile and desc
 已复用核心完成结果，并接管原健康 GPU worker，重启数 0；旧 CPU 调度器独立读回已退出。外部真实 checkpoint 无 query smoke 通过数 44/44，当前计数 `{"COMPLETE": 86, "RUNNING": 16, "QUEUED": 119752, "BLOCKED": 0, "FAILED": 0}`，失败数 0。矩阵内其余任务由同一控制器持续排队执行，不能将排队当作完成。所有 GPU worker 的 PID/CWD/argv/GPU 及日志增长证据保留于本地运行回读记录与远端 pipeline_state。
 
 独立 P0/P1 审查 PASS；发现的无seed核心评分排序、原生wrapper扩头继承、Windows生成远端路径三项实质问题均已修复并定点验证。原生 B 全预算真实整合验证通过：MRIOR800更新、DADDA100更新、TwoStage300更新，其 C 各100更新。legacy Feature Separation 按历史配置恢复 B100，未缩成10。
+
+2026-10-29 技术恢复：两MoPC旧eval训练实现已被r02替代，原失败/partial保留；11589项阻断解除，健康GPU重启0。新控制器、RadioNet状态与后续结果见 20261029-phase2-external-threepool-m4-r02。

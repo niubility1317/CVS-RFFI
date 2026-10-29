@@ -24,6 +24,9 @@ def priority_key(job,first_seed):
 
 
 def make_jobs(rt):
+    if rt.get('continuation_runtime'):
+        from .external_recovery import jobs
+        return jobs(rt)
     root=Path(rt['run_root']);jobs=[]
     for item in rt['source_plan']:
         for seed in rt['model_seeds']:
@@ -71,6 +74,9 @@ def gpu_ready(device,own):
 
 def worker(rt,job):
     from . import external_execution as execute
+    if job['kind']=='repair_smoke':
+        from .external_recovery import source_smoke
+        return source_smoke(rt,job)
     if job['kind']=='source':return execute.source_job(rt,job)
     if job['kind']=='predict':return execute.predict(rt,job)
     if job['kind']=='score':return execute.score_pair(rt,job)
@@ -82,7 +88,7 @@ def is_complete(job):
         path=Path(job['output']) if job['original_kind'] in ('smoke','audit') else Path(job['output'])/'complete.json'
         return path.is_file() and read(path)['status']==job['success']
     path=Path(job['output'])/'complete.json'
-    expected={'source':'SOURCE_READY','predict':'PREDICTIONS_COMPLETE','score':'SCORED_COMPLETE'}[job['kind']]
+    expected={'source':'SOURCE_READY','predict':'PREDICTIONS_COMPLETE','score':'SCORED_COMPLETE','repair_smoke':'PASS'}[job['kind']]
     return path.is_file() and read(path)['status']==expected
 
 
@@ -97,23 +103,27 @@ def dispatch(rt):
     matrix=make_jobs(rt);write(root/'jobs.json',matrix);by={j['id']:j for j in matrix}
     remaining={j['id'] for j in matrix};done=set();blocked=set();failed={};active={};profile_errors=set();source_errors=set()
     if rt.get('continue_core'):
-        from .external_takeover import adopt
+        if rt.get('continuation_runtime'):
+            from .external_recovery import adopt
+        else:
+            from .external_takeover import adopt
         old,adopted=adopt(rt,root/'core_controller_handoff.json')
         for oldid,item in adopted.items():
-            key='core__'+oldid;require(key in by,'Unknown adopted worker job')
-            item['original_kind']=by[key]['original_kind']
+            key=oldid if rt.get('continuation_runtime') else 'core__'+oldid
+            require(key in by,'Unknown adopted worker job')
+            item['original_kind']=by[key].get('original_kind')
             active[key]=(None,item);remaining.remove(key)
         for j in matrix:
-            if j['kind']=='core' and j['id'] not in active and is_complete(j):
+            if (j['kind']=='core' or rt.get('continuation_runtime')) and j['id'] not in active and is_complete(j):
                 done.add(j['id']);remaining.remove(j['id'])
     write(root/'admission_policy.json',dict(scope=rt.get('gpu_count_scope','phase2'),per_gpu=2,minimum_free_MiB=5000))
     state=dict(status='RUNNING',controller_pid=os.getpid(),code_commit=rt['code_commit'],owner=rt['launch_owner'],
                active={},counts={},profiles={},inactive_profiles={p:x['inactive_reason'] for p,x in rt['profile_matrix'].items() if not x['active']})
     atomic(root/'pipeline_state.json',state)
     def launch(j,gpu):
-        cwd=j['core_release'] if j['kind']=='core' else rt['release_root']
+        cwd=j['core_release'] if j['kind']=='core' else j.get('worker_release',rt['release_root'])
         command=([rt['python'],'-u','-m','experiments.pamf_phase2_practical.episodic_dispatch','--runtime',j['core_runtime'],'--job',j['original_id']]
-                 if j['kind']=='core' else [rt['python'],'-u','-m','experiments.pamf_phase2_practical.external_dispatch','--runtime',rt['runtime_file'],'--job',j['id']])
+                 if j['kind']=='core' else [rt['python'],'-u','-m','experiments.pamf_phase2_practical.external_dispatch','--runtime',j.get('worker_runtime',rt['runtime_file']),'--job',j['id']])
         env=dict(os.environ,PYTHONPATH=cwd,CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
         log=root/'logs'/(j['id']+'.log')
         with log.open('x') as f:process=subprocess.Popen(command,cwd=cwd,env=env,stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT)
