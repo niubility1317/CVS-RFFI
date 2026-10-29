@@ -31,3 +31,13 @@ Create development RX24-1 D1 unlabeled384 /D2 heldout864, original6 plus2discove
 ## 真实构建前固定
 
 实际代码/config commit `26c3e79eb6d078fc492c6b885ae8831e4358fb6c`。CWD 为 Git-backed mirror；12 tests＋26 subtests 最终 PASS，一次独立 P0/P1 PASS。只制作 RX24-1 的 U384/V864，1248 个物理记录，零模型／GPU／正式 RX24-18 读取。只复用 Full 已验证索引并读两成员；原始数据不重验、不加 hash 链。不可覆盖 pool/build.log；真实 CLI 首行 PID/CWD/argv 与原生进程信息及完整日志/产物独立核对。缺成员/形状数量或角色冲突/非有限/输出碰撞即保留部分产物，不自动重建。
+
+## 实际构建结果（2026-10-29）
+
+本run已 **VERIFIED／VALIDATED_ONCE／ANALYZED_DATA_ONLY**，执行代码`26c3e79eb6d078fc492c6b885ae8831e4358fb6c`。实际U384/V864，共1248唯一物理接收记录；只读取两个已索引Full成员。原生PID50904的实际命令、Git-backed CWD和CLI首行已独立核实，首个观察进程存活；日志670→1766B，最终22行完整读取无异常，完成标记和公共三文件齐全，进程已退出。模型读取/预测/优化/正式RX24-18读取/GPU新增/停止其他owner均0。
+
+U capsule=`p3dev-1824cfe895d8484c77e937c4`，split=`a3eb0f1cb91faa624d8f489d`；V capsule=`p3dev-e900eaa3fa0f5ff5dc785a37`，split=`668208756ed3d2a1a070dce0`。输入保持一次unit RMS后一次固定ResidualChannel，无重EQ/输出RMS/clean参考；跨角色和场景物理互斥。该构建没有产生拒识、适应或注册成绩，也未使用正式目标池。
+
+用户随后明确clean跨RX拒识≥95%、星地跨RX≥90%，已知接收尽可能高；新目标见`configs/pamf_phase3_targets_20261029.json`。本数据run无性能判定，不追改旧科学run。clean条件控制将另立数据run，从本映射恢复相同记录，预测侧与star隔离，不把配对条件当新增独立物理样本。
+
+证据：`local_artifacts/pamf_phase3_development_pool_20261029_r01/{build_post_state.json,build_observations.jsonl,analysis_summary.json,build.log,pool/complete.json}`。真实IQ/私有truth/原始日志不提交Git。

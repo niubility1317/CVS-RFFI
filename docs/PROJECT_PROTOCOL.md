@@ -23,6 +23,8 @@ query真值在当前任务中始终不进入拟合；跨套曾为query的记录�
 
 R_dev可建立物理互斥的U_dev与V_dev：U_dev仅提供无标签公共received和opaque ID，可按预登记算法适应、发现及匿名注册；V_dev只在状态冻结后逐样本预测，全部预测固定后独立评分，标签不得用于拟合、阈值校准、早停或同run重做。开发验证不替代正式独立future query；允许据开发结论形成下一独立机制，但禁止逐TX专属规则、读取未知真值/类别数/配额，以及将V_dev回收为训练。每个物理记录仍只有一份固定received，RX、日期、信道处理与继承边界按既有接口复用；正式R_t的U/Q继续隔离，正式评分不回流方案选择。
 
+按2026-10-29用户将clean跨RX与星地跨RX分开验收的要求，可为已固定R_dev物理记录另建clean条件控制。控制只恢复同一canonical记录的source匹配FP32/一次unit RMS输入，不新抽样、不生成第二份practical、不新增均衡，不计为更多独立物理样本。clean与star可用相同opaque ID作评分端配对，但通过独立`phase3_clean_min_v1`公共三文件及不同capsule/split区分；clean predictor仅读clean，star predictor仅读其单份received或冻结恢复结果，禁止以逐条clean参考拟合/校正星地输入。clean U/V仍按原角色物理互斥，truth-last与未知标签/真实类数隐藏保持；源、开发与正式RX边界不变。性能目标由最新goal和targets配置管理，历史run判定不追改。
+
 为在当前完整六类PAMF上开发开放集机制，本Phase3目标增加独立的source辅助设备数据角色。该角色只来自原source RX/day，辅助TX须与旧六类、正式目标发现类及后续未知类均不相交；训练用辅助TX与源验证用辅助TX也互斥，名单和数量按元数据容量事前固定，不按IQ质量或识别成绩挑选。它不改写Phase1原L_s/U_s/V、既有checkpoint及Phase2数据权限，也不将辅助TX自动加入初始已注册类。
 
 若采用Outlier Exposure（源端辅助未知暴露），source训练可获得“当前六类已知／辅助源端未知”的成员监督；辅助设备真实TX仅由builder和独立source评分保管，不能把这种额外源监督写成零源标签。目标端仍为零人工TX标签。必须分别披露新增源数据、标签权限、成本及匹配的无OE对照；原U_s的隐藏TX真值不解封、不用于筛新角色。辅助新设备验证只读，不更新模型、阈值或持久判决参数；原known V仅允许无模型更新的既定源端阈值校准，不拟合拒识器参数或早停。正式target IQ、目标类别构成及评分不参与source阶段。

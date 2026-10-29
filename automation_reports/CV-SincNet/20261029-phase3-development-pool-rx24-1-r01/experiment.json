@@ -61,8 +61,14 @@
       "development_validation": 864
     },
     "train_ratio": null,
-    "capsule_id": null,
-    "split_id": null,
+    "capsule_id": {
+      "discovery": "p3dev-1824cfe895d8484c77e937c4",
+      "evaluation": "p3dev-e900eaa3fa0f5ff5dc785a37"
+    },
+    "split_id": {
+      "discovery": "a3eb0f1cb91faa624d8f489d",
+      "evaluation": "668208756ed3d2a1a070dce0"
+    },
     "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01\\pool\\complete.json",
     "support_query_ref": "FreshoutsidecompactRX24-1, roles/scenesdisjoint, notformalRX24-18; no historicalquery recycling",
     "leo_config_ref": "configs/pamf_phase3_development_pool_20261029.json; same residual/post_sync/noEQ oneview/record"
@@ -175,5 +181,22 @@
     "independent_review": "One development-builder P0/P1 PASS; no direct launch defects",
     "checkpoint_smoke": "Not applicable: data-only CPU builder has no model input",
     "foreign_processes_stopped": 0
+  },
+  "artifacts": {
+    "complete": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01\\pool\\complete.json",
+    "post_state": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01\\build_post_state.json",
+    "full_build_log": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01\\build.log"
+  },
+  "result_summary": {
+    "artifact_status": "VERIFIED",
+    "data_status": "VALIDATED_ONCE",
+    "discovery_count": 384,
+    "evaluation_count": 864,
+    "unique_physical_records": 1248,
+    "model_predictions": 0,
+    "formal_target_reads": 0,
+    "gpu_processes_added": 0,
+    "scientific_performance": null,
+    "claim_scope": "Data readiness only; not rejection/adaptation/registration success"
   }
 }
