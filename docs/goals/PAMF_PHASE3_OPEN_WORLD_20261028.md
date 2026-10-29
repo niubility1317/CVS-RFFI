@@ -350,3 +350,13 @@ P1：REG0 RMD拒识2.7778%、旧接收97.5694%、open71.1806%；注册后新macr
 baseline保留cache同输入原F0，而非新encoder自身closed；完整训练6660步、Sinc/head梯度与buffer不变、曝光、七方法/两path/分组/逐TX/源1NN及资源边界见 `docs/PAMF_PHASE3_STAR_REPRESENTATION_RESULTS_20261029.md`。
 本轮按事前C_K≥95%/R_U≥90%/原F0总损≤2pp判定，不追改；后续用户新C_K≥90%口径另见targets/metrics，未重算本轮τ。C相对B运行点H升4.0182pp，但A_K降0.0963pp、macroOSCR降0.9173pp、源1NN降13.2063pp，不能据H或接收率单项推进。
 源1NN为已有五source RX间heldout TX结构诊断，不是A_N；A_N/H_OW=N/A，无DA/发现/注册。source成功也不意味着完整Phase3达成，控制不能替换C，下一假设未实施。
+
+## G10 冻结 F0 多分支证据拒识器实际完成（2026-10-29）
+
+`20261029-phase3-star-consensus-s2026092701-r01` 已 VERIFIED/ANALYZED_SOURCE_ONLY，代码 `652091c76546716d4ef687f771854ef0560dbcb6`。按最新 v3 实际执行双90%/原F0损失2pp，不改写上一轮阈值。原 F0 E50/11100与六类默认头完全冻结，复用现有G10 P0/P1缓存；L6300/OE6134拟合100D多分支consensus与域等权binary linear/MLP，各path各200步，总800CPU读出更新，F/head/G更新0。knownV27000仅42组阈值，novel3150仅两path全部模型与阈值冻结后的独立truth-last源评估。
+
+唯一主 P1/mlp16_oe 的宏 A_K=90.1407%、R_U=44.9206%、H-score=59.9606%，C_K=97.9741%；原F0闭集90.9815%，总损失0.8407pp，宏AUROC92.4137%、宏OSCR84.9425%。42组known保护通过，unknown总体/5源RX/6scene未达90%，NO_PROMOTION，不访问target或以控制替换主候选。完整2×7方法、逐TX/RX/scene、800步读出loss、模型状态与成本见 `docs/PAMF_PHASE3_STAR_CONSENSUS_RESULTS_20261029.md`。
+
+在本轮同F0、同输入的配对P1 energy控制上，MLP的R_U提高34.6667pp（未知净多拒1092条），H提高41.5472pp，A_K仅少1条正确接收（−0.0037pp）；这支持多分支拒识证据比该单标量更有效，但未知绝对拒识仍未达90%。不能以这项源收益替代跨RX或无标签未来注册验证。
+
+一次独立P0/P1审查PASS，33项相关检查/35subtests PASS，单archive传输比较/compile/runtime/原F0实际checkpoint无query合成G10 smoke通过。独立首次观察确认driver2904272 live及CWD/argv；source predictor2904371（pipeline指派GPU2）和CPU scorer2904466在第二次观察前已完整退出，未捕获GPU子进程的独立实时占用，不伪造GPU显存或日志增长采样，不为证明监控而重跑。既有源物理记录/同episode复用不算独立新数据；源未知为历史暴露三设备、同源RX而非未见目标RX。正式与开发target读取0，无DA/发现/注册，A_N/H_OW为N/A，完整Phase3目标仍ACTIVE。

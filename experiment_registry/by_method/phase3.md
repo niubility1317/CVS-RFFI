@@ -28,7 +28,7 @@
 |PAMF第三阶段：匹配预算的源端星地编码器联合增量|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-practical-encoder-s2026092701-r01/report.md)|
 |PAMF第三阶段：源端星地域读出与跨RX冻结诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-practical-readout-s2026092701-r01/report.md)|
 |PAMF第三阶段：源已知风险约束拒识校准|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-risk-calibration-s2026092701-r01/report.md)|
-|PAMF第三阶段：星地多分支证据拒识器|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-consensus-s2026092701-r01/report.md)|
+|星地多分支证据拒识器：预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-consensus-s2026092701-r01/report.md)|
 |PAMF第三阶段：统一星地G10开发观测|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-g10-pool-rx24-1-r01/report.md)|
 |PAMF第三阶段：星地域残差投影源端证伪|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-nuisance-s2026092701-r01/report.md)|
 |PAMF第三阶段：星地G10相对距离与无标签注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-relative-s2026092701-r01/report.md)|
