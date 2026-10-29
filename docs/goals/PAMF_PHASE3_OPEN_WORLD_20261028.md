@@ -573,3 +573,9 @@ driver3240533、row3240623/24及train3240632/CUDA4、3240631/CUDA2独立live正�
 本轮结束，保留失败科学结果，不换控制、不调targetτ/训练、不扩正式或seed。下一科学问题是源端开放暴露造成的跨RX身份损伤及目标域拒识错配，需要目标U的受约束适应和独立未来Q证伪；当前没有据此宣称已获得有效UDA或无标签注册。
 
 覆盖补充：本小规模targetQ的practical_high中，scorer未知类6计数0、类7为4、类8为2，必需未知覆盖不完整，该景R_U/H为N/A，不能认证通过；总体三未知各96条覆盖完整。保留原固定观测和全部预测，不据缺项重抽信道或补挑样本。
+
+## 2026-10-30 U互近邻适应与两阶段注册已固定待发布
+
+新 `20261030-phase3-star-reciprocal-adapter-s2026092701-r01`，code `d3d8f5680fd72dc7ded272ffd1ded3143e490244`。回到原F0/default6head与G冻结，source聚合/pairedMLP/6τ直接复用，不继续训练源分类器。仅合法无标签U384学10432参数g200步（空mask0且精确旁路），控制selfPL、主reciprocal trusted MNN扩pseudo+allU Gram保结构；oldgate之后才匿名ball，图连通分量自主K/半分稳定/min16/boundary≤.05。两臂四态、所有U状态先Q冻结、Q864逐批只推理，独立score先U四映射再Qtruth；目标标签/K/配额0、source逐行读取0、formal0。最新v3绝对目标保持，DA0弱基线只是对照不作额外不可能entry gate，fullgoalACTIVE。
+
+集成48tests39subPASS11.10s、producer4定向PASS5.15s（含1新增，非重复整组）、10AST/实际runtime与一次独立P0P1通过。一次N607preflight源/G10句柄和实际显存已核对，未读UQ/IQ/truth值；后续单GPU发布、自动完整预测和独立评分。当前尚未启动或取得新性能，详见`docs/PAMF_PHASE3_STAR_RECIPROCAL_ADAPTER_PLAN_20261030.md`和本run登记；此前relationOE负结果不改标、不承接其失败增量。

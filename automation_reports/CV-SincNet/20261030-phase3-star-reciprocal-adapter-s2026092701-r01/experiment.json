@@ -1,0 +1,241 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-reciprocal-adapter-s2026092701-r01",
+  "group_id": "pamf-phase3-star-reciprocal-adapter",
+  "display_name": "PAMF第三阶段：U池互近邻适应与两阶段匿名注册",
+  "description": "Frozen originalF0/defaulthead/G and paired source priors; U-only bounded residual adapter, reciprocal pseudolabels vs selfPL; automatic MNN-component anonymous registration behind old-class gate; independent futureQ 2x4 states.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-UDA-discovery-registration",
+  "aliases": [
+    "U互近邻适应与两阶段注册"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_free",
+    "unlabeled_target",
+    "reciprocal",
+    "adapter",
+    "anonymous_registration"
+  ],
+  "comparison_group_id": "phase3-star-UDA-reciprocal-vs-selfPL",
+  "parent_run_ids": [
+    "20261029-phase3-star-neighborhood-s2026092701-r01",
+    "20261029-phase3-star-g10-pool-rx24-1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "d3d8f5680fd72dc7ded272ffd1ded3143e490244",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-reciprocal-adapter-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_reciprocal_launch"
+    ],
+    "configs": [
+      "configs/pamf_phase3_star_reciprocal_adapter_20261030.json"
+    ]
+  },
+  "data": {
+    "dataset": "Original source aggregates/L cache/knownV compact and fixed RX24-1 independent U/futureQ",
+    "version": "Existing VALIDATED_ONCE physical roles, no IQ or channel regeneration",
+    "representation": "Existing single G10 received P0 and same-record frozenDURA P1; originalF0 branches/default6logits; only U384 learns adapter and registry, futureQ864 rowwise inference.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/L/ids.npy; G10 public opaque U/Q IDs",
+    "label_map_ref": "Old6 source labels reused only for source statistics/calibration; no target labels in predict/fit; anonymous permutation only Utruth in scorer after Qfreeze",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "24-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_08",
+      "2021_03_15"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "target_U_adaptation_discovery": 384,
+      "target_future_Q": 864,
+      "new_source_IQ_or_features": 0,
+      "ancestor_L": 6300,
+      "ancestor_U_s": 56700,
+      "ancestor_V": 27000,
+      "ancestor_OE": 6134
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "discovery": "p3dev-star-g10-6e1292b62ab09286ebf1a0df",
+      "evaluation": "p3dev-star-g10-71a5a0dec23ac6ccc3b479c2"
+    },
+    "split_id": {
+      "discovery": "83c5cc1fe2f2a1512dbc1287",
+      "evaluation": "05de65cd4818f3e5e33ced5c"
+    },
+    "validation_ref": "local_artifacts/pamf_phase3_star_g10_pool_20261029_r01/pool/complete.json; original Phase1 source cached contract",
+    "support_query_ref": "U March8 and Q March15 fixed disjoint caps/splits, no query fit/statistics; all adapter/registry states freeze before Q; all2x4 predictions before U/Q truth.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Zero targetTX/unknownK/quotas; source priors retain historical oldL+auxoutside-six membership supervision. Only targetU derived pseudolabels and all-U Gram update10432-param adapter.",
+    "query_use": "FutureQ readonly rowwise; no training, threshold selection, normalization or matching; all U anonymous maps truth-side frozen before Qtruth.",
+    "external_method_exception": null,
+    "claim_scope": "Single exposed development RX24-1/seed/G10episode, not new blind/formal target or totalPhase3 success; source free aggregate-only no L/OE bank reads."
+  },
+  "checkpoint": {
+    "initialization": "OriginalF0 E50/11100/default6head and DURA R69 frozen; exact old neighborhood source aggregatebundle; two zero-final adapter inits seed2026092701 independent, no failed relationOE ancestry.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-neighborhood-s2026092701-r01/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Source392005 original6 L/U/V and matched source G10 prior codecb58217 with no target training; new targetU fits explicitly scoped to this RX/episode, never a new source or blind parent.",
+    "selection_rule": "Fixed200 fullU steps perarm or explicit empty-mask identity0; sourcepriors/tau immutable; primary reciprocalDA1REG1 fixed before U; no model/threshold/partitionK choice by Q."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-reciprocal-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-reciprocal-adapter-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-reciprocal-adapter-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_reciprocal_adapter_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_reciprocal_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-reciprocal-adapter-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One owned prediction/Uadapter GPU worker, highest actualfree>=4096MB card0..7, <=2 added own/GPU, foreign untouched; independent CPU scorer afterwards.",
+    "stop_rule": "Preserve on legality/provenance/nonfinite/collision/unable legalprediction; no-seed/K0/poorperformance not technicalretry; observe existing handle before any restart."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/predict.json",
+    "logs/*.log",
+    "predict/{smoke.json,predictions.npz,complete.json}",
+    "predict/adapter_*/{model.pt,steps.jsonl,summary.json}",
+    "predict/adaptation/{complete.json,U_evidence.npz,pseudo_*.npz,*_DA*.npz,*_diagnostics.json}",
+    "score/{scores.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "macro A_K",
+      "state-specific R_U",
+      "H-score",
+      "C_K",
+      "originalF0closed-loss",
+      "A_N",
+      "R_L",
+      "registrationretention",
+      "H_OW"
+    ],
+    "dimensions": [
+      "selfPL/reciprocal",
+      "DA0/1xREG0/1",
+      "source-targetRX",
+      "UfitMarch8/futureQMarch15",
+      "TX",
+      "sixactualscenes",
+      "anonymousK",
+      "pseudolabelpollution",
+      "pairedIDs"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-reciprocal-adapter-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_reciprocal_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "self_pl-fourstates-s2026092701",
+      "method": "PAMF U self_pl adapter",
+      "purpose": "Isolate fixed reciprocal-neighbor label expansion under same boundedadapter/all-U Gram, compare4states and two-stage registry.",
+      "config_ref": "configs/pamf_phase3_star_reciprocal_adapter_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-reciprocal-adapter-s2026092701-r01/configs/predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": 2026102914,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "SourceF0/adapters seed2026092701; original UQ physical selection2026102914 reused, not resampled; G10scene/channel2026103001/2026104001 receiver2027; fullU deterministic updates, no sampler/augmentation.",
+      "k": null,
+      "scenario": "G10 MIX01 RX24-1 P1 identity with P0/P1 pairedrejection",
+      "optimizer": "adapter-only fresh AdamW",
+      "lr": 0.001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "200 fullU384 updates/arm=76800 adapter and frozenhead row exposures, all-U Gram. Empty pseudolabel mask explicit0steps identity; F0/G/head/readout/tau updates0.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-reciprocal-adapter-s2026092701-r01/predict/adapter_self_pl",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-reciprocal-adapter-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_reciprocal_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-reciprocal-adapter-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/predict.json",
+        "logs/*.log",
+        "predict/{smoke.json,predictions.npz,complete.json}",
+        "predict/adapter_*/{model.pt,steps.jsonl,summary.json}",
+        "predict/adaptation/{complete.json,U_evidence.npz,pseudo_*.npz,*_DA*.npz,*_diagnostics.json}",
+        "score/{scores.json,complete.json}",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "reciprocal-fourstates-s2026092701",
+      "method": "PAMF U reciprocal adapter",
+      "purpose": "Isolate fixed reciprocal-neighbor label expansion under same boundedadapter/all-U Gram, compare4states and two-stage registry.",
+      "config_ref": "configs/pamf_phase3_star_reciprocal_adapter_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-reciprocal-adapter-s2026092701-r01/configs/predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": 2026102914,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "SourceF0/adapters seed2026092701; original UQ physical selection2026102914 reused, not resampled; G10scene/channel2026103001/2026104001 receiver2027; fullU deterministic updates, no sampler/augmentation.",
+      "k": null,
+      "scenario": "G10 MIX01 RX24-1 P1 identity with P0/P1 pairedrejection",
+      "optimizer": "adapter-only fresh AdamW",
+      "lr": 0.001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "200 fullU384 updates/arm=76800 adapter and frozenhead row exposures, all-U Gram. Empty pseudolabel mask explicit0steps identity; F0/G/head/readout/tau updates0.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-reciprocal-adapter-s2026092701-r01/predict/adapter_reciprocal",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-reciprocal-adapter-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_reciprocal_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-reciprocal-adapter-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/predict.json",
+        "logs/*.log",
+        "predict/{smoke.json,predictions.npz,complete.json}",
+        "predict/adapter_*/{model.pt,steps.jsonl,summary.json}",
+        "predict/adaptation/{complete.json,U_evidence.npz,pseudo_*.npz,*_DA*.npz,*_diagnostics.json}",
+        "score/{scores.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Primary reciprocalDA1REG1, all absolute final v3 targets remain; unadapted DA0 diagnostic not mandatory pre-pass, never a baseline-driven impossible extra gate.",
+    "All4 scorer-side U maps frozen before Qtruth, never passed to clustering/prediction; trueunknownK not algorithm input, zero registry valid; AN allarrivals denominator.",
+    "REG oldgate keeps accepted oldlabels; laterunknown still requires futureQ evidence, clusterpurity not futureAN.",
+    "Source fourMLP snapshot storage/scoring and bothadapter residency counted, rawfeature originalnorm restored; no source perrecord bank deployed.",
+    "Actualcheckpoint syntheticG10 F0/G and originalhead gradient smoke before U; scientificfailure no source90 cancellation/retune/multiseed/formal escalation."
+  ],
+  "registered_at": "2026-10-29T21:38:03+00:00"
+}
