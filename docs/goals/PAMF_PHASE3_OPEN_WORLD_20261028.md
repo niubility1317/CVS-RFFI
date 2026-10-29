@@ -370,3 +370,13 @@ baseline保留cache同输入原F0，而非新encoder自身closed；完整训练6
 本轮主global τ受RX6/low urban源交叉组的已知保护约束，所有方法下一候选τ均不合法；这是source-V经验保护，排序更高不等于运行点通过。该固定输入扩展和预算比较没有解决未知拒识，不能继续仅凭加特征/训练loss下降宣称改进。
 
 一次独立P0/P1 PASS，30项相关检查/56子测试通过，原F0实际合成星地无query smoke/单archive比较/compile/runtime均VERIFIED。独立观察driver2925797/source2925886 live CWD/argv、CUDA2及GPU UUID4fb...离散388MB；日志11674→21345B，source/score已完整结束，owned/live终态空、foreignstop0。源角色继续L6300/OE6134/V27000/novel3150、同源五RX/三日与历史暴露novel；无新真实信道/G/raw/独立物理记录、无target/DA/发现/注册。A_N/H_OW=N/A，正式RX24-18未访问，完整目标仍ACTIVE。
+
+## G10 预测类别条件风险阈值实际完成（2026-10-29）
+
+`20261029-phase3-star-class-risk-s2026092701-r01` 已VERIFIED/ANALYZED_SOURCE_ONLY，实际code `bb507e2b6f4d66bd808a485d70d64d25c3556da3`、预登记 `a23d46b3e54b35db25f5c90f8e8f5b3458b92929`。冻结父paired1000原始分数/P1身份，只knownV27000以完整tie-prefix Fraction共同尾率校准六个预测类别阈值；查询路由只看模型预测c，不看真实TX/RX/scene。global对照逐值重现父τ和接收集合。无新神经、geometry、normalizer训练、IQ/F/G前向或物理记录；原F0/G和父L6300/OE6134的2000步读出祖先成本保留。
+
+唯一主predicted_class的宏A_K/R_U/H=90.0593/59.6508/71.7668%，C_K97.8407%，原F0同P1闭集90.9815%，损失0.9222pp；margin宏AUROC96.0749%、OSCR88.5425%。42known保护过、unknown整体/5源RX/6scene共12组均未90%，NO_PROMOTION。相对global未知净多拒502、known净少正确接收81，R_U/H分别+15.9365/+12.8441pp、A_K−0.3000pp；三novel拒识净变+199/+342/−39，不能把宏提升说成每个新类都改善或未来注册成功。
+
+最大q=97/4473，下一q=92/4241在源RX6/low urban使原F0损失达2.0316pp而不合法。六阈值仅需48B FP64聚合，无CDF/逐行source bank；它们是同一源V的经验风险校准，无conformal或跨域覆盖保证。详细数据/每预测桶与真实TX区分/42组/边界/配对和成本在 `docs/PAMF_PHASE3_STAR_CLASS_RISK_RESULTS_20261029.md`。
+
+24项相关检查/45子测试及一次独立P0/P1审查PASS，单archive/compile/runtime与真实父readout checkpoint的2条synthetic-feature无query smoke均VERIFIED；该smoke不是新F0/G或星地IQ测试。CPU driver2955649/source2955662独立live CWD/argv、CUDA空，日志485→607B，CPUscore2955731完成，终态live空，GPU新增/foreignstop0。源known/novel同五sourceRX/三日、novel3历史开发暴露，不能替代未见RX target；本轮无target/DA/发现/注册，A_N/H_OW=N/A，正式RX24-18未访问，完整目标ACTIVE。
