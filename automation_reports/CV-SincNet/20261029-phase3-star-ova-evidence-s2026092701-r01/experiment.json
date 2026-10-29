@@ -1,0 +1,192 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-star-ova-evidence-s2026092701-r01",
+  "group_id": "pamf-phase3-star-class-conditional-ova",
+  "display_name": "PAMF第三阶段：类条件开放边界与难负类学习",
+  "description": "Frozen F0/DURA-cache, paired class-conditional106 descriptors; two shared MLP32 readers membership/OVA-hard; routed/max four fixed decisions, primary OVA-max.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-conditional-open-boundary",
+  "aliases": [
+    "星地类条件OVA拒识"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "OVA",
+    "class_conditional",
+    "hard_negative",
+    "CK90"
+  ],
+  "comparison_group_id": "phase3-star-source-OVA-two-objectives-two-readouts",
+  "parent_run_ids": [
+    "20261029-phase3-star-representation-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "0655a5cb0975dc047c712a76630d3e0354da0e55",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-ova-evidence-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original source role G10 cache from 20261029-phase3-star-representation-s2026092701-r01",
+    "version": "Existing completed star cache; no new physical records, G/channel computations or raw-IQ validation",
+    "representation": "Same G10 P1/P0 per physical record -> six class-conditional paired106 descriptors; original defaultP1 classification",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "known_V": 27000,
+      "heldout_novel": 3150,
+      "target": 0,
+      "original_U_new_reads": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/complete.json",
+    "support_query_ref": "No target/U/Q; L6300+OE6134 fit only, V27000 known-only six-cutoff calibration, source novel3150 only after all reader/threshold state frozen",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Source L true-six labels for OVA and membership; source OE membership/domain only no OE TX labels; V only known-risk cutoff; target0",
+    "query_use": "No target query handles; independent source-novel prediction and truth-last scoring only",
+    "external_method_exception": null,
+    "claim_scope": "Same five source receivers and historically exposed three source-novel devices; source falsification not target crossRX or anonymous registration evidence"
+  },
+  "checkpoint": {
+    "initialization": "Original Phase1 F0 E50/11100 and default6head unchanged; DURA fixed cache only; new shared MLP32 readers from scratch",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Matching original F0/DURA source contract and G10 cached source roles; no target-adapted model, no Phase3 encoder increment or old readout loading",
+    "selection_rule": "Primary ova_max fixed before source novel, two independent common-initialized1000 trajectories; all4decisions reported, no bestcontrol substitution"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-ova-20261029",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-ova-evidence-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-ova-evidence-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_ova_evidence_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_ova_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-ova-evidence-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One GPU predict worker at a time, actualfree>=4096MB; <=2 added/card; other owners untouched",
+    "stop_rule": "Illegal input/provenance/nonfinite/output collision or failed prediction/score preserves partial; scientificfail completes every method/path, no retune/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "logs/*.log",
+    "configs/source.json",
+    "prediction/{complete.json,smoke.json,readouts.npz,readouts.json,thresholds.npz}",
+    "prediction/geometry/{P0,P1}.npz",
+    "prediction/calibration/complete.json",
+    "prediction/predict/{known_predictions.npz,novel_predictions.npz}",
+    "score/{results.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "A_K",
+      "R_U",
+      "H-score",
+      "C_K",
+      "sameinput_F0_loss"
+    ],
+    "dimensions": [
+      "4fixeddecisionmethods",
+      "2sameinitializationobjectives",
+      "routed_vs_max",
+      "42knownriskgroups",
+      "TX",
+      "5sourceRX",
+      "6scene",
+      "complete2000readoutloss"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-ova-evidence-s2026092701-r01/prediction",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_ova_score.py",
+    "definition_ref": "docs/PAMF_PHASE3_METRICS_20261029.md",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "star-ova-s2026092701",
+      "method": "FrozenPAMF classconditional shared MLP32 OVA/membership",
+      "purpose": "Primary ova_max, matched membership and routed decisions; four inference methods from two trained states",
+      "config_ref": "configs/pamf_phase3_star_ova_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-ova-evidence-s2026092701-r01/configs/source.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Frozen G10scene/channel seeds unchanged; CPU readoutseed2026092701; no new augmentation/support",
+      "k": null,
+      "scenario": "G10 MIX01",
+      "optimizer": "CPU AdamW binary readers only",
+      "lr": 0.001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2fresh sharedMLP106x32x1 common-initialized trajectories1000 CPUupdates each,total2000; F/head/G0updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-ova-evidence-s2026092701-r01/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-ova-evidence-s2026092701-r01/logs/source_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_ova_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-ova-evidence-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "logs/*.log",
+        "configs/source.json",
+        "prediction/{complete.json,smoke.json,readouts.npz,readouts.json,thresholds.npz}",
+        "prediction/geometry/{P0,P1}.npz",
+        "prediction/calibration/complete.json",
+        "prediction/predict/{known_predictions.npz,novel_predictions.npz}",
+        "score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "All newly consumed IQ G10 star P0/P1 same record; no new raw/channel generation except synthetic no-query smoke.",
+    "OVA onlyrejector; identity always originalF0 defaultP1argmax even max-six knownness; no extra identityhead fitting or replacement.",
+    "Six conditional inputs share one106x32x1 network per arm,3457params each; no six independent classifiers or newTXname logits.",
+    "Source L true labels used for truepositive/hardwrongold negative, OE onlyrole/domain; no OE TX/K. Control knownpositives use nativeP1class.",
+    "CommonFP64normalizer .6known/.4OE,domainuniform withinrole anduniformsixclassslots; roleloss .5/.5,OVAknownterms halfpositive/halfhardwrong; OEhardmax botharms.",
+    "V27000 only calibration for4sets sixpredclass cutoffs(global4 diagnostic), known42 CK90/F0loss2pp, no normalizer/readerfit onV.",
+    "Primaryova_max sourceunknown90 overall+5RX+6scene andsourceknown42 required before a future separatelypreregistered targetfalsification; sourcepass isnotcrossRXsuccess.",
+    "No targetU/Qhandles/trueK/quotas, no DA/discovery/registration thissource-stage; AN/HOW N_A, wholegoalACTIVE.",
+    "OVANet hardnegative conceptual inspiration only: frozenF/nonlinearsharedclassinput/sourceOE/knownVcal differs, no nativeOVANet or targetOEM claim."
+  ],
+  "registered_at": "2026-10-29T15:07:33+00:00"
+}

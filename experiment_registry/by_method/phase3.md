@@ -33,6 +33,7 @@
 |PAMF第三阶段：统一星地G10开发观测|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-g10-pool-rx24-1-r01/report.md)|
 |PAMF 第三阶段：全 U 邻域适应与匿名注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-neighborhood-s2026092701-r01/report.md)|
 |PAMF第三阶段：星地域残差投影源端证伪|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-nuisance-s2026092701-r01/report.md)|
+|PAMF 第三阶段：类条件开放边界与难负类学习|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-ova-evidence-s2026092701-r01/report.md)|
 |星地接收与恢复联合拒识证据：预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-paired-evidence-s2026092701-r01/report.md)|
 |PAMF第三阶段：星地G10相对距离与无标签注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-relative-s2026092701-r01/report.md)|
 |PAMF第三阶段：星地开放集表征与防塌缩学习|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-representation-s2026092701-r01/report.md)|
