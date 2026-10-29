@@ -1,4 +1,4 @@
-"""One source-only E50+222 PAMF increment, with optional uniform OE."""
+"""Explicit source-only E50 increments of 222 or 2220 steps, with optional OE."""
 from __future__ import annotations
 
 import argparse
@@ -25,12 +25,21 @@ RX = [1, 3, 4, 6, 8]
 PARENT_RUN = '20261027-phase1-pamf-repl-shuffled-views-m16-r02'
 PARENT_ROW = 'main_split-repl-shuffled_time-3view-s2026092701'
 ADDED_STEPS = 222
+LEGAL_STEPS = (222, 2220)
 PARENT_STEPS = 11100
 OE_BATCH = 64
 OE_WEIGHT = .1
 SCHEMA = 'pamf_phase3_source_embedding_increment_v1'
 SINC_PREFIX = 'id_backbone.encoder.core.id_backbone.sinc.'
 HEAD_NAME = 'id_backbone.encoder.core.id_backbone.cls_head.weight'
+
+
+def _budget(steps):
+    if type(steps) is not int or steps not in LEGAL_STEPS:
+        raise ValueError('Only the declared 222 or 2220 source-update budgets are allowed')
+    return dict(steps=steps, epochs=steps // ADDED_STEPS, cumulative_updates=PARENT_STEPS + steps,
+        final_epoch=50 + steps // ADDED_STEPS, L_sampled_exposures=128 * steps,
+        As_generated_exposures=64 * steps, L_forward_packet_views=768 * steps)
 
 
 def validate_config(config):
@@ -41,10 +50,11 @@ def validate_config(config):
         raise ValueError('Source increment input whitelist differs: ' + str(sorted(set(config) ^ expected)))
     base = {key: config[key] for key in runner.COMMON}
     runner.validate_config('calibrate', dict(base, source_cache=config['source_cache'], retention=.99))
-    fixed = dict(steps=ADDED_STEPS, lr=.0001, L_seed=2026092701, OE_seed=2026102907,
+    _budget(config['steps'])
+    fixed = dict(lr=.0001, L_seed=2026092701, OE_seed=2026102907,
                  model_seed=2026092701, batch_size=128)
     if any(type(config[key]) is not type(value) or config[key] != value for key, value in fixed.items()):
-        raise ValueError('Fixed seed, 222-update increment and constant learning rate required')
+        raise ValueError('Fixed seed and constant learning rate required')
     if config['registered_classes'] != CLASSES:
         raise ValueError('Original ordered six-class roster required')
     if len(config['code_commit']) != 40 or any(c not in '0123456789abcdef' for c in config['code_commit']):
@@ -69,7 +79,7 @@ def _training_config(config, parent):
         source_cache=config['source_cache'], source_contract=config['source_contract'], model_seed=config['model_seed'],
         ablation='F20', regime='matched_sat_supervised', U_use=False, own_EMA=False, native_U_gate=False,
         native_unlabeled_loop=False, satellite_concat=False, step_offset=PARENT_STEPS, epoch_offset=50,
-        segment_epochs=1, parent_source=None, num_classes=6)
+        segment_epochs=_budget(config['steps'])['epochs'], parent_source=None, num_classes=6)
     value.pop('core_mechanisms', None)
     value['repl_row'] = dict(value['repl_row'], U=False)
     return value
@@ -158,10 +168,13 @@ def load_trained_model(config, checkpoint, device='cuda:0'):
     """Load this increment without applying the historical E50 terminal-step rule."""
     model = make_trainable_model(config, device)
     value = torch.load(checkpoint, map_location='cpu', weights_only=False)
+    budget = _budget(config['steps'])
     if (value.get('schema') != SCHEMA or value.get('identity') != _checkpoint_identity(config)
             or value.get('original_parent_identity') != model._phase3_parent_identity
             or value.get('source_data_handle') != model._phase3_source_handle
-            or value.get('updates') != ADDED_STEPS or value.get('cumulative_updates') != 11322
+            or not isinstance(value.get('config'), dict) or type(value['config'].get('steps')) is not int
+            or value['config']['steps'] != config['steps'] or value.get('updates') != config['steps']
+            or value.get('cumulative_updates') != budget['cumulative_updates']
             or value.get('optimizer_reset') is not True or value.get('U_reads') != 0
             or value.get('target_reads') != 0 or value.get('validation_reads') != 0):
         raise ValueError('This frozen Phase3 increment identity or source-only budget differs')
@@ -336,7 +349,7 @@ def _train_steps(model, batches, optimizer, augmentor, no_pa, device, steps, oe_
         if not bool(torch.isfinite(torch.as_tensor(grad_norm))):
             raise FloatingPointError('Nonfinite physical global gradient norm')
         optimizer.step()
-        row = dict(step=step, cumulative_updates=PARENT_STEPS + step, epoch=51, lr=float(optimizer.param_groups[0]['lr']),
+        row = dict(step=step, cumulative_updates=PARENT_STEPS + step, epoch=51 + (step - 1) // ADDED_STEPS, lr=float(optimizer.param_groups[0]['lr']),
             loss=float(loss.detach()), supervised_loss=float(loss_l.detach()), oe_loss=float(loss_oe.detach()),
             oe_weight=OE_WEIGHT if oe_batch is not None else 0., L_samples=128, ordinary_forward_samples=384,
             As_generated_samples=64, As_forward_samples=128, raw_forward_samples=256, L_forward_calls=6,
@@ -352,6 +365,7 @@ def _train_steps(model, batches, optimizer, augmentor, no_pa, device, steps, oe_
 
 def train(config, device='cuda:0'):
     validate_config(config)
+    budget = _budget(config['steps']); steps = budget['steps']
     output = Path(config['output_root'])
     if output.exists():
         raise FileExistsError('A new immutable Phase3 source increment root is required')
@@ -396,6 +410,9 @@ def train(config, device='cuda:0'):
         from experiments.cric_dura_comparison.f_data import FixedEpochLoader
         from experiments.cric_dura_comparison.f_optimizer import build, clip_physical
         batches = FixedEpochLoader(labeled, 128, config['L_seed'], steps=ADDED_STEPS, drop_last=True)
+        # Match native logical epochs: each begins a fresh DataLoader iterator,
+        # while its independent generator continues without reseeding.
+        budget_batches = (batch for _ in range(budget['epochs']) for batch in batches)
         optimizer = build(model, list(model.parameters()), 'CENTER_UNITS', lr=config['lr'],
             weight_decay=float(model._phase3_parent_args['weight_decay']), betas=(.9, .999), eps=1e-8, foreach=False)
         if optimizer.state:
@@ -406,35 +423,36 @@ def train(config, device='cuda:0'):
             def on_step(row):
                 stream.write(json.dumps(row, allow_nan=False) + '\n')
                 stream.flush()
-                print('SOURCE_EMBEDDING_PROGRESS', config['row_id'], row['step'], ADDED_STEPS,
+                print('SOURCE_EMBEDDING_PROGRESS', config['row_id'], row['step'], steps,
                       'loss', row['loss'], 'oe', row['oe_loss'], flush=True)
-            trace = _train_steps(model, batches, optimizer, augmentor, no_pa, device, ADDED_STEPS,
+            trace = _train_steps(model, budget_batches, optimizer, augmentor, no_pa, device, steps,
                 oe_next, lambda opt, params: clip_physical(opt, params, 5.), on_step=on_step)
-        if (len(trace) != ADDED_STEPS or optimizer._sinc_unit_steps != ADDED_STEPS
-                or optimizer._sinc_physical_clip_calls != ADDED_STEPS or model._cd_calls != ADDED_STEPS
-                or model._feature_l_steps != ADDED_STEPS or model._cd_U_seen or model._cd_U_accepted
-                or labeled.role != 'L_s' or batches.actual_examples != 28416):
-            raise ValueError('The complete fixed 222-step source increment is missing')
+        if (len(trace) != steps or optimizer._sinc_unit_steps != steps
+                or optimizer._sinc_physical_clip_calls != steps or model._cd_calls != steps
+                or model._feature_l_steps != steps or model._cd_U_seen or model._cd_U_accepted
+                or labeled.role != 'L_s' or batches.actual_examples != budget['L_sampled_exposures']):
+            raise ValueError('The complete declared source increment is missing')
         model.zero_grad(set_to_none=True)
         model.eval().requires_grad_(False)
         summary = dict(status='SOURCE_OPEN_EMBEDDING_FROZEN', schema=SCHEMA, config=config,
             original_parent_identity=model._phase3_parent_identity, source_data_handle=model._phase3_source_handle,
-            source_OE_handle=oe_handle, arm=config['arm'], updates=ADDED_STEPS, parent_updates=PARENT_STEPS,
-            cumulative_updates=11322, parent_epochs=50, increment_epoch=51, optimizer_reset=True,
+            source_OE_handle=oe_handle, arm=config['arm'], updates=steps, parent_updates=PARENT_STEPS,
+            cumulative_updates=budget['cumulative_updates'], parent_epochs=50, increment_epoch=budget['final_epoch'], optimizer_reset=True,
             optimizer='AdamW_CENTER_UNITS', lr=config['lr'], lr_schedule='constant',
             weight_decay=float(model._phase3_parent_args['weight_decay']), ordinary_augmentation_epoch=13,
             augmentation_state=augmentation_state, cross_RX_weight=.1, source_only=True,
             U_reads=0, validation_reads=0, novel_validation_reads=0, target_reads=0, OE_truth_reads=0,
             model_classes=6, parameters=232993, default_head_joint=True, identity_head_replaced=False,
-            L_sampled_exposures=28416, As_generated_exposures=14208, L_forward_packet_views=170496,
-            OE_sampled_exposures=OE_BATCH * ADDED_STEPS if oe_next is not None else 0,
+            L_sampled_exposures=budget['L_sampled_exposures'], As_generated_exposures=budget['As_generated_exposures'],
+            L_forward_packet_views=budget['L_forward_packet_views'],
+            OE_sampled_exposures=OE_BATCH * steps if oe_next is not None else 0,
             L_smoke_samples=2, OE_smoke_samples=2 if oe_next is not None else 0,
             checkpoint='final.pt', seconds=time.perf_counter() - start,
             claim='independent Phase3 source increment; does not replace historical E50 or establish open-set performance')
         checkpoint = dict(schema=SCHEMA, model={key: value.detach().cpu() for key, value in model.state_dict().items()},
             config=config, identity=_checkpoint_identity(config), original_parent_identity=model._phase3_parent_identity,
             source_data_handle=model._phase3_source_handle, source_OE_handle=oe_handle, arm=config['arm'],
-            updates=ADDED_STEPS, cumulative_updates=11322, optimizer_reset=True,
+            updates=steps, cumulative_updates=budget['cumulative_updates'], optimizer_reset=True,
             U_reads=0, validation_reads=0, target_reads=0, training_summary=summary)
         with (output / 'final.pt').open('xb') as stream:
             torch.save(checkpoint, stream)

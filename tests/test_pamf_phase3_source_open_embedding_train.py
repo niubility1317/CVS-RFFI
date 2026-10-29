@@ -281,6 +281,7 @@ class EmbeddingTrainTests(unittest.TestCase):
         model._phase3_parent_identity = {'run': 'verified-E50'}
         model._phase3_source_handle = {'source': 'original-LUV'}
         payload = dict(schema=module.SCHEMA, identity=module._checkpoint_identity(config),
+            config=copy.deepcopy(config),
             original_parent_identity=model._phase3_parent_identity, source_data_handle=model._phase3_source_handle,
             updates=222, cumulative_updates=11322, optimizer_reset=True, U_reads=0, target_reads=0,
             validation_reads=0, model=copy.deepcopy(model.state_dict()))
@@ -295,7 +296,7 @@ class EmbeddingTrainTests(unittest.TestCase):
         self.assertFalse(loaded.training)
         self.assertTrue(all(not p.requires_grad for p in loaded.parameters()))
 
-    def test_training_completes_222_steps_and_writes_marker_last_without_ce_oe_io(self):
+    def _training_roundtrip(self, steps):
         module = self.module()
         from contextlib import contextmanager
         import tempfile
@@ -349,8 +350,14 @@ class EmbeddingTrainTests(unittest.TestCase):
             if Path(path).name == 'complete.json':
                 self.assertTrue((Path(path).parent / 'final.pt').is_file())
                 self.assertTrue((Path(path).parent / 'training.json').is_file())
-                self.assertEqual(len((Path(path).parent / 'steps.jsonl').read_text().splitlines()), 222)
+                self.assertEqual(len((Path(path).parent / 'steps.jsonl').read_text().splitlines()), steps)
             original_write(path, value)
+        from experiments.cric_dura_comparison.f_data import FixedEpochLoader
+        epoch_calls = []
+        class CountedEpochLoader(FixedEpochLoader):
+            def __iter__(self):
+                epoch_calls.append(len(epoch_calls) + 1)
+                return super().__iter__()
         with tempfile.TemporaryDirectory() as td:
             root = Path(td) / 'run'
             with patch.object(module, 'make_trainable_model', return_value=model), \
@@ -360,19 +367,32 @@ class EmbeddingTrainTests(unittest.TestCase):
                     patch.object(module, '_load_oe', side_effect=AssertionError('Supervised control must never read OE')) as oe, \
                     patch('experiments.cric_dura_comparison.f_optimizer.build', side_effect=build), \
                     patch('experiments.cric_dura_comparison.f_optimizer.clip_physical', side_effect=clip), \
+                    patch('experiments.cric_dura_comparison.f_data.FixedEpochLoader', CountedEpochLoader), \
                     patch.object(module.runner, '_write', side_effect=write), patch('builtins.print'):
-                result = module.train(self.config(str(root)), 'cpu')
+                result = module.train(dict(self.config(str(root)), steps=steps), 'cpu')
             self.assertEqual(result['status'], 'SOURCE_OPEN_EMBEDDING_FROZEN')
-            self.assertEqual(result['updates'], 222)
-            self.assertEqual(result['cumulative_updates'], 11322)
+            self.assertEqual(result['updates'], steps)
+            self.assertEqual(result['cumulative_updates'], 11100 + steps)
             self.assertEqual(result['OE_sampled_exposures'], 0)
-            self.assertEqual(result['L_sampled_exposures'], 28416)
+            self.assertEqual(result['L_sampled_exposures'], 128 * steps)
+            self.assertEqual(result['As_generated_exposures'], 64 * steps)
+            self.assertEqual(result['L_forward_packet_views'], 768 * steps)
+            self.assertEqual(len(epoch_calls), steps // 222)
             self.assertEqual(oe.call_count, 0)
             self.assertEqual(writes[-1], 'complete.json')
             value = torch.load(root / 'final.pt', map_location='cpu', weights_only=False)
             self.assertEqual(value['identity']['arm'], 'supervised_only')
             self.assertEqual(value['original_parent_identity'], model._phase3_parent_identity)
-            self.assertEqual(value['updates'], 222)
+            self.assertEqual(value['updates'], steps)
+            trace = [json.loads(line) for line in (root / 'steps.jsonl').read_text().splitlines()]
+            self.assertEqual(trace[-1]['epoch'], 50 + steps // 222)
+            self.assertEqual(trace[-1]['cumulative_updates'], 11100 + steps)
+
+    def test_training_completes_222_steps_and_writes_marker_last_without_ce_oe_io(self):
+        self._training_roundtrip(222)
+
+    def test_training_completes_2220_steps_and_ten_native_logical_epochs(self):
+        self._training_roundtrip(2220)
 
     def test_bad_parent_is_rejected_before_l_oe_or_training(self):
         module = self.module()
@@ -438,6 +458,51 @@ class EmbeddingTrainTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'role_ids'):
                     module._verified_parent(config, parsed)
                 self.assertEqual(load.call_count, 0)
+
+    def test_budget_2220_is_explicit_and_has_e60_counts_without_changing_222(self):
+        module = self.module()
+        config = dict(self.config(), steps=2220)
+        module.validate_config(config)
+        value = module._budget(2220)
+        self.assertEqual(value, dict(steps=2220, epochs=10, cumulative_updates=13320, final_epoch=60,
+            L_sampled_exposures=284160, As_generated_exposures=142080, L_forward_packet_views=1704960))
+        self.assertEqual(module._budget(222)['cumulative_updates'], 11322)
+        self.assertEqual(module._budget(222)['L_sampled_exposures'], 28416)
+        native = module._training_config(config, {'repl_row': {'U': True}})
+        self.assertEqual(native['segment_epochs'], 10)
+        self.assertEqual(native['step_offset'], 11100)
+        for bad in (2221, 444, 2220., True):
+            with self.subTest(steps=bad), self.assertRaises(ValueError): module.validate_config(dict(config, steps=bad))
+
+    def test_budget_loader_binds_payload_config_and_cumulative_preserving_schema(self):
+        module = self.module(); config = dict(self.config(), steps=2220)
+        model = ToyModel(); model._phase3_parent_identity = {'parent': 'original-E50'}; model._phase3_source_handle = {'role': 'LUV'}
+        value = dict(schema=module.SCHEMA, config=config, identity=module._checkpoint_identity(config),
+            original_parent_identity=model._phase3_parent_identity, source_data_handle=model._phase3_source_handle,
+            updates=2220, cumulative_updates=13320, optimizer_reset=True, U_reads=0, validation_reads=0, target_reads=0,
+            model=copy.deepcopy(model.state_dict()))
+        for changed in ({'updates': 222}, {'cumulative_updates': 11322}, {'config': dict(config, steps=222)}):
+            with self.subTest(changed=changed), patch.object(module, 'make_trainable_model', return_value=model), \
+                    patch('torch.load', return_value=dict(value, **changed)), self.assertRaises(ValueError):
+                module.load_trained_model(config, 'own-final.pt', 'cpu')
+        with patch.object(module, 'make_trainable_model', return_value=model), patch('torch.load', return_value=value), patch.object(module, '_assert_trainable'):
+            result = module.load_trained_model(config, 'own-final.pt', 'cpu')
+        self.assertFalse(result.training)
+        self.assertEqual(module.SCHEMA, 'pamf_phase3_source_embedding_increment_v1')
+
+    def test_trace_epoch_rolls_from_e51_to_e52_at_223_without_rewarming_contrast(self):
+        module = self.module(); model = ToyModel().train()
+        opt = torch.optim.AdamW(model.parameters(), lr=.0001)
+        batch = (torch.randn(128, 2, 256), torch.arange(128) % 6, torch.arange(128) % 15, {})
+        def labeled(m, x, y, *unused):
+            reader = m.id_backbone.encoder
+            return torch.nn.functional.cross_entropy(reader.classify_features(reader.features(x)), y), \
+                {'CRIC_supcon_weight': .1, 'T1_L_packets': 768, 'T1_PL_seen': 0}
+        rows = module._train_steps(model, [batch] * 223, opt, None, False, 'cpu', 223, None,
+            lambda o, p: torch.nn.utils.clip_grad_norm_(p, 5.), labeled_loss=labeled)
+        self.assertEqual(rows[221]['epoch'], 51)
+        self.assertEqual(rows[222]['epoch'], 52)
+        self.assertEqual(rows[222]['cumulative_updates'], 11323)
 
 
 if __name__ == '__main__':
