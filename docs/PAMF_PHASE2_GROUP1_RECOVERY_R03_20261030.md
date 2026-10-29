@@ -23,3 +23,7 @@ A/B/C 继续分阶段实测 CPU RSS、CUDA allocated/reserved、训练/适应/�
 统一 CPU controller PID `3133817` 的 CWD/命令已独立核实；旧 CPU controller 已退出，收养 16 个健康 worker，重启 GPU worker 数为0。此快照两版合计每 GPU 自有 worker：`{"0": 2, "1": 2, "2": 2, "3": 2, "4": 2, "5": 2, "6": 2, "7": 2}`；任务计数 `{"COMPLETE": 21, "FAILED": 0, "BLOCKED": 0, "RUNNING": 16, "QUEUED": 42533}`（COMPLETE 是 source/predict/score 工作单元，不是全部实验完成）。已完成结果直接复用；其他 owner 未修改。
 
 训练资源文件已实际落盘，A/B/C 及推理分阶段记录继续自动生成。r01 错误 PAMF E20 及 r02 发布前诊断失败均单列保留，不冒充有效完整训练。所有正式训练完成后按固定矩阵自动预测并独立评分；当前不声明最终准确率、性能排名或矩阵完成。
+
+## PAMF 正式训练启动读回
+
+已核实 3 个 PAMF seed 实际运行，另余种子按原4-seed矩阵排队。首轮 satellite_seen=28416、satellite_actually_applied=8470，实际执行星地拼接；E26 前 PL_seen=0。最高已完成 E4，逐轮计时与资源文件持续更新。真实 worker 的 PID/CWD/argv/GPU 与日志增长已独立核实。该启动核验只使用源端证据，不读取目标分数，也不声明最终性能。
