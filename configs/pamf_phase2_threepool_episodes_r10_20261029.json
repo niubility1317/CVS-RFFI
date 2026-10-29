@@ -1,0 +1,279 @@
+{
+  "schema": "pamf_phase2_threepool_episodes_r10",
+  "run_id": "20261029-phase2-threepool-episodes-s2026102901-r01",
+  "authorization": "User requests disjoint physical pools with repeated random support/query tasks within each;explicitly chooses three pools if four cannot keep minimum150query.Continue previously authorized data preparation only.",
+  "configuration_path": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+  "controller_module": "experiments.pamf_phase2_practical.three_pool_data",
+  "old_classes": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "new_classes": [
+    "11-4",
+    "3-13",
+    "12-20",
+    "5-20",
+    "20-12",
+    "17-11",
+    "14-14",
+    "2-17",
+    "4-1",
+    "19-13",
+    "19-8",
+    "2-19",
+    "8-1",
+    "14-20",
+    "13-3",
+    "1-18",
+    "20-7",
+    "7-7",
+    "2-3",
+    "18-12"
+  ],
+  "new_class_order": "Original MILKR twenty-class order restored; no availability-based reselection",
+  "source_receivers": [
+    "1-19",
+    "18-2",
+    "19-2",
+    "2-19",
+    "3-19"
+  ],
+  "target_receivers": [
+    "1-1",
+    "14-7",
+    "2-1",
+    "20-1",
+    "7-14",
+    "7-7",
+    "8-8"
+  ],
+  "dates": [
+    "2021_03_01",
+    "2021_03_08",
+    "2021_03_15",
+    "2021_03_23"
+  ],
+  "source_roles_unchanged": {
+    "L_s": 6300,
+    "U_s_hidden_TX": 56700,
+    "V": 27000,
+    "days": [
+      1,
+      2,
+      3
+    ]
+  },
+  "expected_pool_records": 554823,
+  "shots": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "new_counts": [
+    0,
+    2,
+    5,
+    10,
+    20
+  ],
+  "support_seed": 2026102901,
+  "bank_order_seed": 2026102902,
+  "query_order_seed": 2026102903,
+  "model_seeds_for_later_matched_identity_experiments": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "model_seed_does_not_resample_data": true,
+  "max_cpu_workers": 1,
+  "pool_rule": "Three mutually disjoint original-record pools stratified by RX/TX/day;exhaustive union;TX total and each date counts across pools differ by at most1;no class removal or duplication.",
+  "sampling_rule": "Within each physical pool,8mixed+5each of3pure episodes.Each episode/RX/TX draws nested K-prefix support;full current registered-class remainder query.Roles can switch across episodes within same pool only.",
+  "channel_rule": "Reuse r09 VALIDATED_ONCE observation banks,subset to each disjoint physical pool.Every episode has fresh scene/geometry/fading/noise;one raw record belongs to one physical pool.Preserve exact received values and observation IDs.No additional channel generation.",
+  "initialization_rule": "Every episode/K/model seed starts from the same matched frozen source bundle and fresh target optimizer/memory/BN/prototypes. B-to-C inheritance only within that task. No cross-episode or cross-K target state/labels/score feedback.",
+  "historical_policy": "Three pools are record-disjoint,not independent RX/TX/day populations.Repeats are conditional within each pool;not69independent physical data sets.SourceL/U/V unchanged;legacy outputs retained.",
+  "metric_rule": "Primary class-macro accuracy/Macro-F1 and macro old/new H because full query class counts vary; also report micro accuracy and actual class/RX/day denominators. Conditional episode variation is not physical-data independence. Optional K-common-query intersection uses frozen predictions only.",
+  "storage": "One materialized received bank per physical-pool/episode/RX,subset of validated r09 bank;current-stage reader opens actual-K support and full registered-pool complement only.",
+  "episodes": [
+    {
+      "id": "MIX01",
+      "condition": "MIX",
+      "scene_seed": 2026103001,
+      "channel_seed": 2026104001
+    },
+    {
+      "id": "MIX02",
+      "condition": "MIX",
+      "scene_seed": 2026103002,
+      "channel_seed": 2026104002
+    },
+    {
+      "id": "MIX03",
+      "condition": "MIX",
+      "scene_seed": 2026103003,
+      "channel_seed": 2026104003
+    },
+    {
+      "id": "MIX04",
+      "condition": "MIX",
+      "scene_seed": 2026103004,
+      "channel_seed": 2026104004
+    },
+    {
+      "id": "MIX05",
+      "condition": "MIX",
+      "scene_seed": 2026103005,
+      "channel_seed": 2026104005
+    },
+    {
+      "id": "MIX06",
+      "condition": "MIX",
+      "scene_seed": 2026103006,
+      "channel_seed": 2026104006
+    },
+    {
+      "id": "MIX07",
+      "condition": "MIX",
+      "scene_seed": 2026103007,
+      "channel_seed": 2026104007
+    },
+    {
+      "id": "MIX08",
+      "condition": "MIX",
+      "scene_seed": 2026103008,
+      "channel_seed": 2026104008
+    },
+    {
+      "id": "LS01",
+      "condition": "LS",
+      "scenario": "practical_low_suburban",
+      "scene_seed": 2026103101,
+      "channel_seed": 2026104101
+    },
+    {
+      "id": "LS02",
+      "condition": "LS",
+      "scenario": "practical_low_suburban",
+      "scene_seed": 2026103102,
+      "channel_seed": 2026104102
+    },
+    {
+      "id": "LS03",
+      "condition": "LS",
+      "scenario": "practical_low_suburban",
+      "scene_seed": 2026103103,
+      "channel_seed": 2026104103
+    },
+    {
+      "id": "LS04",
+      "condition": "LS",
+      "scenario": "practical_low_suburban",
+      "scene_seed": 2026103104,
+      "channel_seed": 2026104104
+    },
+    {
+      "id": "LS05",
+      "condition": "LS",
+      "scenario": "practical_low_suburban",
+      "scene_seed": 2026103105,
+      "channel_seed": 2026104105
+    },
+    {
+      "id": "MU01",
+      "condition": "MU",
+      "scenario": "practical_mid_urban",
+      "scene_seed": 2026103111,
+      "channel_seed": 2026104111
+    },
+    {
+      "id": "MU02",
+      "condition": "MU",
+      "scenario": "practical_mid_urban",
+      "scene_seed": 2026103112,
+      "channel_seed": 2026104112
+    },
+    {
+      "id": "MU03",
+      "condition": "MU",
+      "scenario": "practical_mid_urban",
+      "scene_seed": 2026103113,
+      "channel_seed": 2026104113
+    },
+    {
+      "id": "MU04",
+      "condition": "MU",
+      "scenario": "practical_mid_urban",
+      "scene_seed": 2026103114,
+      "channel_seed": 2026104114
+    },
+    {
+      "id": "MU05",
+      "condition": "MU",
+      "scenario": "practical_mid_urban",
+      "scene_seed": 2026103115,
+      "channel_seed": 2026104115
+    },
+    {
+      "id": "LU01",
+      "condition": "LU",
+      "scenario": "practical_low_urban",
+      "scene_seed": 2026103121,
+      "channel_seed": 2026104121
+    },
+    {
+      "id": "LU02",
+      "condition": "LU",
+      "scenario": "practical_low_urban",
+      "scene_seed": 2026103122,
+      "channel_seed": 2026104122
+    },
+    {
+      "id": "LU03",
+      "condition": "LU",
+      "scenario": "practical_low_urban",
+      "scene_seed": 2026103123,
+      "channel_seed": 2026104123
+    },
+    {
+      "id": "LU04",
+      "condition": "LU",
+      "scenario": "practical_low_urban",
+      "scene_seed": 2026103124,
+      "channel_seed": 2026104124
+    },
+    {
+      "id": "LU05",
+      "condition": "LU",
+      "scenario": "practical_low_urban",
+      "scene_seed": 2026103125,
+      "channel_seed": 2026104125
+    }
+  ],
+  "expected_outputs": {
+    "unique_physical_pool_records": 554823,
+    "physical_pools": 3,
+    "episodes_per_pool": 23,
+    "capsules": 483,
+    "splits": 9660,
+    "reused_observations": 12760929,
+    "additional_channel_generations": 0
+  },
+  "identity_training": 0,
+  "identity_predictions": 0,
+  "scoring": 0,
+  "input_run_id": "20261029-phase2-fullpool-episodes-s2026102901-r01",
+  "physical_pools": [
+    "P01",
+    "P02",
+    "P03"
+  ],
+  "physical_pool_seed": 2026102904,
+  "minimum_query_per_class": 150,
+  "poll_seconds": 15,
+  "input_wait_timeout_seconds": 86400
+}

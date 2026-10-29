@@ -1,0 +1,197 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase2-threepool-episodes-s2026102901-r01",
+  "group_id": "phase2-threepool-episodes-r10",
+  "display_name": "PAMF Phase2：三个互斥物理池、池内重采样、最小query150",
+  "description": "原6旧20新/7RX/4日554823条分3互斥池；每池8mixed+三pure各5组，K support与完整补集query；复用r09既有逐组信道，无身份实验。",
+  "kind": "diagnostic",
+  "stage": "Phase2-data-builder",
+  "aliases": [],
+  "tags": [
+    "phase2",
+    "full-eq",
+    "data-builder",
+    "practical",
+    "residual",
+    "shared-pool",
+    "episodic",
+    "full-query-complement"
+  ],
+  "comparison_group_id": "original6old20new-3physical-pools-23episodes-r10",
+  "parent_run_ids": [
+    "20261029-phase2-fullpool-episodes-s2026102901-r01"
+  ],
+  "replaces_run_id": "20261029-phase2-fullpool-episodes-s2026102901-r01",
+  "authorization": "User requests disjoint physical pools with repeated random support/query tasks within each;explicitly chooses three pools if four cannot keep minimum150query.Continue previously authorized data preparation only.",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-threepool-episodes-s2026102901-r01-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_only/partition/*/partition.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "483 pool/episode/RX banks",
+    "split_id": "9660actual-K splits",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_report.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/catalog.json",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json"
+  },
+  "permissions": {
+    "regime": "offline_data_builder_no_model",
+    "query_use": "Offline partition/repack and task allocation only;no fit/predict/score.",
+    "external_method_exception": null,
+    "claim_scope": "3record-disjoint pools,each23conditional repeats;not69physical-independent datasets;not new independent historical blind test."
+  },
+  "checkpoint": {
+    "initialization": "not_applicable_data_builder",
+    "sources": [],
+    "contract_check_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "provenance_verdict": "NO_CHECKPOINT_READ",
+    "selection_rule": "Original class order;reuse validated observation banks without loading F/G"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase2-threepool-data-r10",
+    "gpu_policy": "CPU only,single process;existing r09CPU8continue as upstream;CUDA invisible",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-threepool-episodes-s2026102901-r01-release",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase2_threepool_r10_20261029",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.three_pool_data --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-threepool-episodes-s2026102901-r01-release/runtime.json",
+    "stop_rule": "Input mismatch,physical overlap/missing membership,min query<150,output collision,repack error,upstream failure or24hourwait timeout stops r10 only;preserve partial;no overwrite/class removal/automatic retry."
+  },
+  "expected_artifacts": [
+    "partition_report.json",
+    "builder_only/partition/*/partition.npz",
+    "builder_only/partition/*/counts.json",
+    "capsules/*/*/*/received.npy",
+    "capsules/*/*/*/ids.npy",
+    "capsules/*/*/*/manifest.json",
+    "capsules/*/*/*/splits/*.json",
+    "capsules/*/*/*/support_labels/*.npy",
+    "score_only/*/*/*.npz",
+    "catalog.json",
+    "builder_report.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "physical_records",
+      "pool_totals",
+      "min_class_pool",
+      "min_query_at_max_K",
+      "reused_observations",
+      "additional_channel_generations",
+      "capsules",
+      "splits"
+    ],
+    "dimensions": [
+      "pool",
+      "RX",
+      "TX",
+      "date",
+      "episode",
+      "K",
+      "N"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "threepool-episode-data",
+      "method": "3disjoint stratified physical pools;exact r09 observation reuse;poolwise K support/full complement query",
+      "purpose": "shared-experiment-data",
+      "config_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-threepool-episodes-s2026102901-r01-release/runtime.json",
+      "data_overrides": {
+        "physical_pools": 3,
+        "minimum_query_per_class": 150
+      },
+      "seeds": {
+        "model": null,
+        "split": 2026102904,
+        "data": null,
+        "augmentation": null,
+        "support": 2026102901,
+        "evaluation": null
+      },
+      "seed_notes": "Partition2026102904;pool/episode/RX/TX support derived from2026102901;queryorder2026102903;scene/channel seeds carried from r09config;modelseednot applicable,no model loaded.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "3physical pools,each8mixed+5each of3pure",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-threepool-episodes-s2026102901-r01-release/controller.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.three_pool_data --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-threepool-episodes-s2026102901-r01-release/runtime.json",
+      "expected_artifacts": [
+        "partition_report.json",
+        "builder_only/partition/*/partition.npz",
+        "builder_only/partition/*/counts.json",
+        "capsules/*/*/*/received.npy",
+        "capsules/*/*/*/ids.npy",
+        "capsules/*/*/*/manifest.json",
+        "capsules/*/*/*/splits/*.json",
+        "capsules/*/*/*/support_labels/*.npy",
+        "score_only/*/*/*.npz",
+        "catalog.json",
+        "builder_report.json"
+      ]
+    }
+  ],
+  "notes": [
+    "User explicitly selected three pools because four would leave minimum127query atK20;three leaves176,>=150.",
+    "No four/five-pool data release launched;uncommitted draft implementation replaced before registration.",
+    "Healthy r09remains observation factory;received values/IDs reused exactly,not new channels/physical records.No IQ raw reupload.",
+    "483banks9660splits12760929reused observations;sourceL/U/V unchanged;DURA/model fits,predictions,scoring0.",
+    "ThreepoolB/Cfitbudget upper3xr09;no identity queue launch by this data job.",
+    "10focused tests PASS;one independent P0/P1 review and its single targeted concurrency fix confirmation PASS;data-only no checkpoint smoke."
+  ],
+  "registered_at": "2026-10-29T03:09:25+00:00"
+}
