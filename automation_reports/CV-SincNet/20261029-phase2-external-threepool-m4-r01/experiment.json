@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "User2026-10-29:all prior-table external methods on the same three pools;reuse legal Phase1;native and combinations separated;Phase2 combined core+external exactly two workers/GPU,other owners additional;never stop other owners.",
   "code": {
-    "commit": null,
+    "commit": "6860e01be055dc92e1b3c43865034df802e2bf02",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-external-threepool-m4-r01-release"
@@ -166,7 +166,33 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-external-threepool-m4-r01/logs",
     "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase2_external_execution_20261029",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.external_dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-external-threepool-m4-r01-release/runtime.json",
-    "stop_rule": "Any protocol/numerical/worker/output failure blocks that source/profile and descendants, preserves partials and unrelated healthy workers; no score-based stop/retry/selection. Core systemic failure stops new core work and unavailable shared-G descendants."
+    "stop_rule": "Any protocol/numerical/worker/output failure blocks that source/profile and descendants, preserves partials and unrelated healthy workers; no score-based stop/retry/selection. Core systemic failure stops new core work and unavailable shared-G descendants.",
+    "post_launch_evidence": {
+      "status": "VERIFIED",
+      "at_utc": "2026-10-29T05:29:39Z",
+      "controller_pid": 2597281,
+      "own_workers_per_GPU": {
+        "0": 2,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2
+      },
+      "other_owner_workers_counted": false,
+      "source_checks_ready": 44,
+      "handoff": "VERIFIED;old CPU dispatcher exited;GPU model workers restarted0;original CWD/argv/output unchanged",
+      "counts": {
+        "COMPLETE": 86,
+        "RUNNING": 16,
+        "QUEUED": 119752,
+        "BLOCKED": 0,
+        "FAILED": 0
+      },
+      "failure_count": 0
+    }
   },
   "expected_artifacts": [
     "core_controller_handoff.json",
@@ -4441,6 +4467,8 @@
     "Full fixed reproduction expands after first complete same-row paired prediction unit;no targetmetriccontrolsdispatch;not new candidate selection.",
     "Core3arms do not replace external comparisons.All29chain/22variantregistry retained;external episodic interfaces not launched by this firstcorecontroller.",
     "No Phase1training;4PAMFsources andDURAv1 reused;no model tuning or Gtraining.Query feature and restoration cache opens only rows permitted by current stage.",
-    "One new immutable root;1932predictjobs+1932independentscorers;P0P1wholecapSeedclosure before truth."
-  ]
+    "One new immutable root;1932predictjobs+1932independentscorers;P0P1wholecapSeedclosure before truth.",
+    "Original source code commit remains immutable in release;this post-launch metadata commit does not change live workers."
+  ],
+  "status": "RUNNING"
 }

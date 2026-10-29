@@ -88,4 +88,12 @@ Any protocol/numerical/worker/output failure blocks that source/profile and desc
 
 完整 B 权重只保存每方法首 cap/seed 示例，所有任务保存 B 来源、资源与实际继承说明，并在执行中验证 source/B 未被 C 修改；避免全量复制大模型耗尽磁盘。预测和原始日志留在服务器，不提交 Git。
 
-当前状态：PREREGISTERED，启动后的独立进程/GPU/日志证据将回填本报告。
+当前状态：VERIFIED RUNNING，详见下方独立读回。
+
+## 启动后独立核验
+
+状态：**VERIFIED RUNNING**，尚未完成整组实验。UTC 2026-10-29T05:29:39Z：控制器 PID 2597281；GPU0–7 本轮各 2 个，共 16 个，其他 owner 另计。实际代码 commit `6860e01be055dc92e1b3c43865034df802e2bf02`，单 archive 传输 SHA 比较与远端 compile 均通过。
+
+已复用核心完成结果，并接管原健康 GPU worker，重启数 0；旧 CPU 调度器独立读回已退出。外部真实 checkpoint 无 query smoke 通过数 44/44，当前计数 `{"COMPLETE": 86, "RUNNING": 16, "QUEUED": 119752, "BLOCKED": 0, "FAILED": 0}`，失败数 0。矩阵内其余任务由同一控制器持续排队执行，不能将排队当作完成。所有 GPU worker 的 PID/CWD/argv/GPU 及日志增长证据保留于本地运行回读记录与远端 pipeline_state。
+
+独立 P0/P1 审查 PASS；发现的无seed核心评分排序、原生wrapper扩头继承、Windows生成远端路径三项实质问题均已修复并定点验证。原生 B 全预算真实整合验证通过：MRIOR800更新、DADDA100更新、TwoStage300更新，其 C 各100更新。legacy Feature Separation 按历史配置恢复 B100，未缩成10。

@@ -74,3 +74,5 @@ run：20261029-phase2-milkr-threepool-m4-r01。配置：configs/pamf_phase2_milk
 VERIFIED：执行commit `20f920985a97376aad2ac9663d33dcb9b81e3c49`，单归档SHA比对及远端编译通过。controller PID2535404、首targetworker PID2536087/GPU0的CWD/完整argv及日志增长已独立回读；GPU每卡2进程门限包含已知/pending进程。source-only实际F/G checkpoint smokePASS；483capsule/9660split全量数据auditPASS，554823原始记录、12760929仿真观测、池间互斥、完整query补集、K/N嵌套与B/C旧support一致、每组信道seed不同及实际scene/elevation均通过，最小query176。数据audit没有加载模型或做预测。
 
 首正式单元已经保存P0旧类K1/5/10/20各3arm的预测，正在后续注册/恢复路径计算；本单元全部128行预测固定才独立评分，之后自动展开同一固定矩阵，不以分数放行。当前RUNNING，不是完整实验结果，Phase1训练新增0。外部完整方法保留其身份和源复用证据，本核心run没有假称启动外部29链路。
+
+2026-10-29 调度交接 VERIFIED：由 `20261029-phase2-external-threepool-m4-r01` 控制器 PID 2597281 统一管理本轮每卡2进程，其他owner另计；原CPU调度器已退出，健康GPU任务重启0，执行代码/数据/输出保持原身份。后续实时状态查看外部统一run。
