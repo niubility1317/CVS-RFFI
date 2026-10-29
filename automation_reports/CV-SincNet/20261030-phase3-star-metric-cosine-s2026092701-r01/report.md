@@ -26,3 +26,23 @@ NN部署F/G499944+g20704=520648不变；g权重payload82816B/prototypes7680B/12�
 主报trueTX宏AK/RU/H及CK/原F0损、known42/unknown整体5RX6scene12组/逐TXRXscene/AUROC/OSCR/CI、主−predcos及主−原MD的同ID配对。只有固定maximum_cosine known42及unknown12均过90%才可另记小target证伪；control较好不能替主，无H独立90门槛，不扩seed或把source当完整目标。
 
 验证：11 passed, 612 warnings, 35 subtests passed in 5.19s，2AST/实际runtime PASS；唯一独立直接P0P1 PASS（其定向与主suite重叠不加计）。覆盖pure数学/身份不换/父score隔离/θ与原Φ复制/源原型/零训练/实际checkpoint smoke和冻结顺序/独立truth边界/外部MD不校准及主失败不换control。一次N607 preflight核固定主g完整与合法句柄、no parent score/newIQ/target/GPU读取。单code/config commit/一个archiveSHA比较/remotecompile、actualgcheckpoint首步smoke、PID/CWD/cmd/log增长和完整预测后独立评分，不加重复父trace/fullsuite/数据验证或报告审批。
+
+## 固定主度量的余弦读出实际完成（2026-10-30）
+
+VERIFIED / ANALYZED_SOURCE_ONLY。唯一主 maximum_cosine 的 known42 保护通过、unknown 总体/五源 RX/六场景12组90%未通过，NO_PROMOTION。主、控制与旧MD的身份均为同一原F0默认头，旧MD只复用父公开margin及原阈值，不是新部署包支持的第三分数。
+
+| 固定分数 | 宏 A_K | 宏 C_K | 宏 R_U | H-score | 原 F0 closed−A_K |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 原 MD 外部参考 | 90.433333% | 98.870370% | 12.476190% | 21.927290% | 0.548148 pp |
+| predicted_cosine | 90.385185% | 98.259259% | 31.746032% | 46.988330% | 0.596296 pp |
+| maximum_cosine | 90.425926% | 98.348148% | 27.365079% | 42.015307% | 0.555556 pp |
+
+主较旧MD正确接收99得/101失（净−2），未知拒对709得/240失（净+469），RU+14.888889pp、H+20.088017pp；改用训练变量的读出有所改善，但远低于90%。不能用较高的 predicted_cosine 控制替换预先固定的主方法。原F0同输入P1闭集90.981481%，本轮主损失0.555556pp，AUROC80.671049%、OSCR74.911718%。
+
+固定 structured main g 的四FP32 tensor与L-only原型祖先不变，无新模型/optimizer更新、不读L/OE逐样本特征、不新增真实IQ/F/G前向。祖先仍L6300/OE6134/V27000/novel3150共42584原物理记录，五已见sourceRX/三日/G10MIX01P1，历史novel三TX各1050。V只校准两法12τ，全部模型/原型/τ/cal/known冻结后才novel，公有CPU64重建后独立单次truthlast。无targetUQ/正式RX24-18访问，无新目标适应/发现/未来注册；AN/HOW=N/A、fullgoalACTIVE。
+
+实际gcheckpoint两syntheticunit smokePASS。生产新g2仅smoke、真实g/F/G0；CPU余弦读出30150行0.112731s，独立CPU64 g参考30150及读出重建1.525449s，均非部署B1端到端时延。已验证父g/Lmeans复制，unit最大差known6.92904e-7/novel5.32717e-7，原rtol1e-5/atol2e-6不变，FP64cosine/margin容差1e-12。部署exact4files，同g20704参数82816B、原型7680B、12τ96B，source逐样本行0，F/G/g神经参数合520648，祖先训练/缓存成本保留。
+
+执行code abb2490048d7fcceffbffe814d15f880b79522f4、预登记b67a2ed4a6e13e383df2e38dbe6b1a012c75b647，11tests35subPASS5.19s/2AST/实际runtime与一次直接P0P1 PASS。一次preflight/archiveSHA22c06cd3cf83129cdefbc3a9720b92974b807e8714b8eafc930ab94ba2fdb476（363files/data0）比较/compile/runtime VERIFIED。首次独立观察pipeline3222125 live且CWD/argv/CUDA空正确；短时predict3222222和score3222229只由pipeline jobs记录，未抓到独立实时占用，不重跑补遥测。终态live空，predict991B/score1247B/pipeline528B完整日志，全部prediction/cal/deploy/score complete。pipeline9.822261s，predict5.178522s、score4.641403s含进程加载/验证，非readout逐包时延。CPU-only新增GPU0、foreign干预0。
+
+完整逐RX/场景/TX、配对、成本与数据权限见 docs/PAMF_PHASE3_STAR_METRIC_COSINE_RESULTS_20261030.md。本轮结束固定g换读出的证伪，不沿historical novel真值扫阈值/选择控制，下一独立方法先检查开放表征训练和无标签适应的实际作用。当前星地跨RX CK/RU≥90%、AK距原同输入F0最多2pp、未来匿名注册目标保持。
