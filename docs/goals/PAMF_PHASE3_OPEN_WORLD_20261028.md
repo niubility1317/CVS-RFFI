@@ -18,6 +18,18 @@ Phase3 主场景为跨接收机星地观测。已知类正确接收率 A_K 相�
 
 先做单模型 seed 的小规模可证伪研究，合法源侧冻结候选、阈值与晋级规则后才访问预登记目标；通过科学阈值后扩展3模型 seed/未见 RX 确认。全部预登记预测固定后独立 truth-last 评分，报告逐 RX/场景/TX、宏主指标、配对收益、覆盖和统计限制；目标测试不用于调参、选模、选择性重跑或回收历史 query。保留 Phase1/2 与历史 Phase3 的数据、权重、输出、阈值和原判定，checkpoint 祖先必须匹配数据契约。代码配置以 Git 提交推送和远端 OID 读回固定，正式训练默认 N607，每 GPU 最多新增两个本任务训练/预测进程、启动前核实剩余显存，不停止、修改或重启其他用户/owner 工作，不覆盖已有输出。完整范围达成并有对应实测证据前，目标保持 ACTIVE；科学失败不宣称完成，真正缺少合法输入/权限时说明具体缺项。
 
+## 最新源端阈值风险分配比较（2026-10-30）
+
+`20261030-phase3-star-oe-risk-budget-s2026092701-r01` 已VERIFIED/ANALYZED_SOURCE_ONLY，code `585e10b07be1f6821edea08b4853582b92512aff`。冻结上述原r02两个F/aux及rawmax，比较精确复用的common_tail与新oe_risk_budget，唯一主joint::oe_risk_budget为NO_PROMOTION。新算法从接受全部开始，用source OE15域宏拒识收益贪心分配六预测类阈值，全部42组原F0身份保护2pp和C_K90约束保持；没有用novel调阈值或修改神经模型。
+
+主预算阈值宏A_K90.900000%、R_U20.285714%、H33.169215%、C_K98.274074%，原同P1 F0闭集90.981481%到open损0.081481pp。相同模型、rawscore和全部ID上的common为A_K91.003704%、R_U24.920635%、H39.126729%；新预算净少正确接收28、净少拒146未知。OE域宏代理也由56.668574%降至53.122567%，不能把主失败解释成“训练代理改善但对novel迁移失败”。贪心从自身acceptall收益0升高，不保证超过原有common可行点，更不保证全局最优。
+
+control的预算R_U20.253968%对原11.682540%有局部收益，OE域宏36.647997%到40.116098%，但旧正确接收净少246；控制不替主。四运行点known42均过、unknown12均未90%，结构guard因模型／特征不变仍通过，A_N/H_OW=N/A。全部非score公共字段和common margin逐条精确复现父r02，分数校准差不冒充表征提升。完整分组、trace和配对差见 `docs/PAMF_PHASE3_STAR_OE_RISK_BUDGET_RESULTS_20261030.md`。
+
+新消费仅既有星地P1 OE6134/arm与2合成G10 P0 noquery smoke/arm，共12272 F前向，F/aux/G更新0、G新前向0；V27000/novel3150复用公共预测、不新读IQ，不增加42584原物理样本。source仍为已见五RX和历史三novel，targetU/Q/formal读取0。21tests/34subtests、四AST/runtime和唯一独立P0/P1通过，单归档比较/远端编译通过。已捕获driver3090943和source3090989/3090990正确CWD/argv/CUDA4/2环境；第二次观察已全终态，未捕获独立live CUDA显存样本，不伪造峰值或为遥测重跑，foreign未改。
+
+本结果只否定当前从acceptall出发的贪心路径相对主common的收益，尚未证明独立阈值族没有更好的可行点。后续若检验common初始化的单调扩展，应另立固定科学比较，不能热改本run、回填较高分或宣称已验证。完整跨RX星地拒识、零目标标签适应、发现和未来匿名注册仍ACTIVE。
+
 ## 最新源端联合 OVA 表征研究（2026-10-30）
 
 `20261029-phase3-star-joint-ova-s2026092701-r02` 已在 N607 完成原 F0 教师重导、两组各2220步训练、冻结预测及独立 truth-last 评分，VERIFIED/ANALYZED_SOURCE_ONLY，唯一主 `joint::ova_max` 为 NO_PROMOTION。code `5aa041122396d48c49b8cb3d5912649bdc3217e1`。两组独立从原三视图 F0 E50/11100初始化；原默认六类头联合更新，新增966参数binary辅助层只拒识。CE＋原F0 logits KD＋单位特征保真相同，唯一差别为OVA是否反传骨干。每组F2220/aux2220、F累计13320；两组共4440次F更新及4440次aux更新，不能将8880次optimizer调用写成F更新。
