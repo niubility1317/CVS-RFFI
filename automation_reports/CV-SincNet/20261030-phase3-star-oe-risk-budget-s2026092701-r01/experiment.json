@@ -1,0 +1,223 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-oe-risk-budget-s2026092701-r01",
+  "group_id": "pamf-phase3-star-OE-risk-budget",
+  "display_name": "PAMF第三阶段：源OE收益与独立类风险预算",
+  "description": "Freeze both source-only r02 models and raw max scores; independent predicted-class risk budgets vs exact existing common-tail thresholds.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-risk-calibration",
+  "aliases": [
+    "星地OE风险预算阈值"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "frozen_model",
+    "risk_budget"
+  ],
+  "comparison_group_id": "phase3-star-common-tail-vs-independent-risk",
+  "parent_run_ids": [
+    "20261029-phase3-star-joint-ova-s2026092701-r02",
+    "20261029-phase3-star-representation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "585e10b07be1f6821edea08b4853582b92512aff",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-oe-risk-budget-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Cached G10 P1 source OE6134 only new neural inputs; exact r02 V/novel public logits/predictions/features reused",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_new": 0,
+      "source_OE": 6134,
+      "known_V_public_predictions": 27000,
+      "heldout_novel_public_predictions": 3150,
+      "original_U_new": 0,
+      "target": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool\\complete.json; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "No target handles. OE domain-macro proxy plus known V risk fit, thresholds freeze before source novel public arrays; independent truth-last scorer.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Source known V true-six risk supervision and OE outside-six membership/domain; no OE TX/K or target labels",
+    "query_use": "No target U/Q or historical query training; source novel reused only after frozen policies, no novel calibration",
+    "external_method_exception": null,
+    "claim_scope": "Same seen source RX and historically exposed three novel; no target crossRX/DA/anonymous registration claim"
+  },
+  "checkpoint": {
+    "initialization": "Strict frozen matched r02 trained native+auxiliary checkpoints, no training or optimizer",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r02/rows/detach_control/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r02/rows/joint/train/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Both r02 parents trained source-only from originalF0 E50 using matching sourcecontract392005; same G10 cache and all prior role boundaries retained",
+    "selection_rule": "Predeclared carry both r02 arms; only joint::oe_risk_budget primary, original F0 baseline retained; no novel/target parameter or checkpoint selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-oe-risk-budget-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-oe-risk-budget-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-oe-risk-budget-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_oe_risk_budget_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_oe_risk_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-oe-risk-budget-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Max2rows on distinct actualfree>=4096MB GPUs, each<=2added, no foreign process change",
+    "stop_rule": "Technical legality/nonfinite/collision/unable legal prediction preserves failedrow; independent healthyrow continues, no scientific restart or threshold reselection"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/*.json",
+    "logs/*.log",
+    "rows/<arm>/state.json",
+    "rows/<arm>/predict/{smoke.json,OE_scores.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz,complete.json}",
+    "rows/<arm>/predict/calibration/complete.json",
+    "rows/<arm>/score/{results.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "A_K",
+      "R_U",
+      "H-score",
+      "C_K",
+      "original_F0_closed_loss",
+      "OE_domain_macro_rejection",
+      "source_novel_structure_guard"
+    ],
+    "dimensions": [
+      "two_frozen_arms",
+      "two_threshold_policies",
+      "known42",
+      "unknown12",
+      "TX",
+      "RX",
+      "scene",
+      "same_physical_ID_paired"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-oe-risk-budget-s2026092701-r01/rows/<arm>/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_oe_risk_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "detach_control-s2026092701",
+      "method": "PAMF frozen OVA detach_control risk-budget",
+      "purpose": "Same model/rawscore; exact common-tail vs sourceOE risk allocation; only joint budget may advance",
+      "config_ref": "configs/pamf_phase3_star_oe_risk_budget_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-oe-risk-budget-s2026092701-r01/configs/detach_control_source_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No new randomness; deterministic greedy class-index ties, sourceOE domain balanced, same frozen G10.",
+      "k": null,
+      "scenario": "G10 MIX01 P1",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "F/aux/G updates0; eacharm OE6134+2 synthetic probes=6136 F, total12272, reused V/novel neuralforward0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-oe-risk-budget-s2026092701-r01/rows/detach_control",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-oe-risk-budget-s2026092701-r01/logs/detach_control_source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_oe_risk_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-oe-risk-budget-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/<arm>/state.json",
+        "rows/<arm>/predict/{smoke.json,OE_scores.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz,complete.json}",
+        "rows/<arm>/predict/calibration/complete.json",
+        "rows/<arm>/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "joint-s2026092701",
+      "method": "PAMF frozen OVA joint risk-budget",
+      "purpose": "Same model/rawscore; exact common-tail vs sourceOE risk allocation; only joint budget may advance",
+      "config_ref": "configs/pamf_phase3_star_oe_risk_budget_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-oe-risk-budget-s2026092701-r01/configs/joint_source_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No new randomness; deterministic greedy class-index ties, sourceOE domain balanced, same frozen G10.",
+      "k": null,
+      "scenario": "G10 MIX01 P1",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "F/aux/G updates0; eacharm OE6134+2 synthetic probes=6136 F, total12272, reused V/novel neuralforward0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-oe-risk-budget-s2026092701-r01/rows/joint",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-oe-risk-budget-s2026092701-r01/logs/joint_source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_oe_risk_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-oe-risk-budget-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/<arm>/state.json",
+        "rows/<arm>/predict/{smoke.json,OE_scores.npz,known_predictions.npz,novel_predictions.npz,thresholds.npz,complete.json}",
+        "rows/<arm>/predict/calibration/complete.json",
+        "rows/<arm>/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Agent chose independent calibration to isolate common-tail restriction, not lowerknown protection or select by novel.",
+    "All42 trueknownmacro groups CK90 and originalF0loss2pp remain; sourceOE domainmacro objective is not true unknownTXmacro.",
+    "Only independent six thresholds fitted; no neural update, head replacement, newG, L/U or target read.",
+    "Novel old source development reused afterfreeze, not independentblindTX. AN/HOWnull and fullPhase3ACTIVE.",
+    "No perfilehash/seal/datarevalidation; reuse VALIDATED_ONCE role handles and strict parent model provenance."
+  ],
+  "registered_at": "2026-10-29T17:00:51+00:00"
+}
