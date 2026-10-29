@@ -39,3 +39,9 @@
 10项聚焦检查PASS，涵盖穷尽互斥分层平衡、固定seed、非法输入、query下限、跨组固定物理归属、精确复用received/ID、A/B/C边界及全补集。唯一P0/P1审查发现并发读上游未写完JSON的P1，已改为等待上游既有原子progress完成状态；一次定点复审PASS，无未解决P0/P1，不修改健康上游代码。
 
 不加载F/G，checkpoint smoke不适用；identity train/predict/score0，DURA缓存0。身份行预算理论上为r09三倍但本作业不启动身份队列。实际代码commit由full_publish从已推送GitHEAD写入runtime/submit，启动后回填；归档一次SHA比较、一次远端编译，随后独立PID/CWD/argv/日志/产物读回。最终完成须有partition_report、全部483capsule、catalog及builder_report；submitted不是complete。
+
+## 实际启动与数据检查
+
+VERIFIED：执行commit `1346655254e8b56f2104cebd69014ad75a1e8eb6`，一次归档传输SHA比对及远端编译通过；PID2505230的CWD/完整argv/CPU线程设置与运行计划一致，CUDA不可见，日志有增长。partition_report确认三池184936/184944/184943、并集554823，RX/TX/day分层且池间互斥；实际最小class pool196，K20query176，均满足至少150。
+
+首个MIX01/RX1-1的三个实际capsule精确received/ID复用、三池物理互斥和全量覆盖、各20split标签与完整query补集及最小150均通过；A不读support，B/C当前阶段读取检查通过。检查仅为离线数据一致性，model read/身份预测/评分均0。首读已完成75/483bank、1981842条观测分片；状态RUNNING，上游r09仍健康生成，最终catalog/builder_report尚未取得，不宣称全量制作完成。

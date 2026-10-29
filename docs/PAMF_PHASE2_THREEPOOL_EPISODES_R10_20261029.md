@@ -54,3 +54,7 @@ P1必须由同一P0received经冻结DURA v1.0计算，不重抽H或增加K；本
 run：`20261029-phase2-threepool-episodes-s2026102901-r01`。实际配置为`configs/pamf_phase2_threepool_episodes_r10_20261029.json`。r10采用独占run/release；单CPU进程增量消费r09已完成的bank，未完成输入每15秒检查一次，最长等待24小时。r09原8CPU生成器保持，不停止或热改。执行命令、Git commit、环境/CWD、路径、输出和owner见同run experiment.json/report.md；实际commit由发布器从已推送HEAD绑定runtime。
 
 首次输入契约不符、物理归属重叠/缺失、任一类query不足150、输出碰撞、分片错误、上游失败或等待超时即停止本r10进程并保留partial，不干预r09或其他任务，不自动缩量/换类/覆盖。数据作业不加载checkpoint，因此F/G smoke不适用。聚焦检查和唯一P0/P1审查后发布；以实际PID/CWD/argv/日志/产物回读证明运行。完成需有partition_report、483个capsule及worker report、catalog和builder_report；提交成功不代表完成。
+
+## 6. 已验证执行状态
+
+N607数据作业已启动，代码commit `1346655254e8b56f2104cebd69014ad75a1e8eb6`，归档传输、编译和进程路径/命令/日志VERIFIED。实际partition_report确认P01/P02/P03为184936/184944/184943，最小query176。首组实际三池数据的互斥、覆盖、精确观测复用及A/B/C读取检查通过；首读75/483bank已完成。当前RUNNING，尚未全部制作完成；身份训练/预测/评分和DURA缓存仍为0。
