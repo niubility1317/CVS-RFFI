@@ -96,6 +96,8 @@ def train(c, device='cuda:0', smoke_steps=None):
     parent=None
     if c.get('parent_source'):
         previous=read(Path(c['parent_source'])/'complete.json')
+        from .core_groups import check_parent
+        check_parent(c,previous['config'])
         if not is_t1 or previous['source_contract']!=c['source_contract'] or previous['config']['model_seed']!=c['model_seed'] or previous['config']['ablation']!=c.get('ablation'):
             raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
         parent=torch.load(Path(c['parent_source'])/'final_ssdg.pth',map_location='cpu',weights_only=False)
@@ -168,7 +170,9 @@ def train(c, device='cuda:0', smoke_steps=None):
             if logits.shape != (2, c['num_classes']) or not bool(torch.isfinite(logits).all()):
                 raise ValueError('Actual-source checkpoint smoke failed')
             write(out / 'smoke.json', dict(status='PASS', source_samples=2, query_reads=0,
-                TX_labels_U_read=0, parameters=sum(p.numel() for p in value.parameters()), default_head_classes=c['num_classes']))
+                TX_labels_U_read=0, parameters=sum(p.numel() for p in value.parameters()), default_head_classes=c['num_classes'],
+                source_IQ_binding={role:loader.dataset.iq_binding for role,loader in
+                    (('L_s',ctx['train_loader']),('U_s',ctx['unlabeled_loader']),('V',ctx['val_loader'])) if loader is not None}))
             value.train()
             return value
         metrics = gzip.open(out / 'step_metrics.jsonl.gz', 'xt', encoding='utf-8', compresslevel=3)
