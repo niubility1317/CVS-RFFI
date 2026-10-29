@@ -1,0 +1,192 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-star-consensus-s2026092701-r01",
+  "group_id": "pamf-phase3-star-branch-consensus-readout",
+  "display_name": "PAMF第三阶段：星地多分支证据拒识器",
+  "description": "Frozen original F0 and fixed G10 P0/P1 cache; source-domain-balanced binary consensus readers with v3 known risk and independent novel evaluation.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-consensus",
+  "aliases": [
+    "星地多分支拒识"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "consensus",
+    "CK90"
+  ],
+  "comparison_group_id": "phase3-star-consensus-MLP-linear-static",
+  "parent_run_ids": [
+    "20261029-phase3-star-representation-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "652091c76546716d4ef687f771854ef0560dbcb6",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-consensus-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original source role G10 cache from 20261029-phase3-star-representation-s2026092701-r01",
+    "version": "Existing completed star cache; no new physical records, G/channel computations or raw-IQ validation",
+    "representation": "P0 fixed star received, P1 same observation through frozen DURA; no clean model inputs",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "known_V": 27000,
+      "heldout_novel": 3150,
+      "target": 0,
+      "original_U_new_reads": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/complete.json",
+    "support_query_ref": "Source L/OE training, V calibration, device-heldout novel prediction; target no handles",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "OriginalL labels + extra sourceOE membership, no OE TX/K; no targetlabels",
+    "query_use": "V only after geometry/readout fit; novel only after both paths and every threshold frozen; private truth only independent scorer",
+    "external_method_exception": null,
+    "claim_scope": "Source development only; neither unseenRX nor unlabeledtarget adaptation/registration"
+  },
+  "checkpoint": {
+    "initialization": "frozen original F0 E50 default-six reader, not any previous increment",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original F0 contract retained; fixed DURA only as existing cache ancestry, not loaded this run",
+    "selection_rule": "MLP16/P1 fixed primary before all novel access; fixed200 reader updates, no checkpoint selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-consensus-20261029",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-consensus-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-consensus-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_consensus_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_consensus_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-consensus-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One GPU predict worker at a time, actualfree>=4096MB; <=2 added/card; other owners untouched",
+    "stop_rule": "Illegal input/provenance/nonfinite/output collision or failed prediction/score preserves partial; scientificfail completes every method/path, no retune/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "logs/*.log",
+    "configs/source.json",
+    "prediction/{complete.json,smoke.json}",
+    "prediction/predict/{known_predictions.npz,novel_predictions.npz}",
+    "prediction/by_path/{P0,P1}/{geometry.npz,readouts.npz,readouts.json,thresholds.npy,calibration/complete.json}",
+    "score/{results.json,complete.json}",
+    "observed_state.json"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "C_K>=.90",
+      "same-input originalF0 loss<=.02"
+    ],
+    "dimensions": [
+      "P0/P1",
+      "7methods",
+      "42known groups",
+      "TX",
+      "5RX",
+      "6scene",
+      "400loss/path"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-consensus-s2026092701-r01/prediction",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_consensus_score.py",
+    "definition_ref": "docs/PAMF_PHASE3_METRICS_20261029.md",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json"
+  },
+  "rows": [
+    {
+      "row_id": "star-consensus-s2026092701",
+      "method": "Frozen PAMF + source membership MLP16 consensus",
+      "purpose": "Only P1/mlp16_oe may qualify; P0/linear/static diagnostic only",
+      "config_ref": "configs/pamf_phase3_star_consensus_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-consensus-s2026092701-r01/configs/source.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Frozen G10scene/channel seeds unchanged; CPU readoutseed2026092701; no new augmentation/support",
+      "k": null,
+      "scenario": "G10 MIX01",
+      "optimizer": "CPU AdamW binary readers only",
+      "lr": 0.001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Each path linear101/MLP1633 fixed200 full-batch CPU updates; total800; F/G/head updates0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-consensus-s2026092701-r01/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-consensus-s2026092701-r01/logs/source_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_consensus_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-consensus-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "logs/*.log",
+        "configs/source.json",
+        "prediction/{complete.json,smoke.json}",
+        "prediction/predict/{known_predictions.npz,novel_predictions.npz}",
+        "prediction/by_path/{P0,P1}/{geometry.npz,readouts.npz,readouts.json,thresholds.npy,calibration/complete.json}",
+        "score/{results.json,complete.json}",
+        "observed_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All new model IQ star; unchanged originalF0 six-class defaulthead, no F/head updates.",
+    "Source membership supervision, not zero source labels; OE TX/K hidden.",
+    "Novel3 historicallyexposed on same five source RX; not unseenRX target or newTX blind test.",
+    "V only source-known risk, allpath thresholds before novel; v3 CK90/unknown90/loss2pp.",
+    "Matched no-OE static and linear controls within same frozen encoder; no control substitution.",
+    "No target input, DA, discovery or registration in this source qualification row; AN/HOW null."
+  ],
+  "registered_at": "2026-10-29T12:07:36+00:00",
+  "verification": {
+    "unique_relevant_tests": 33,
+    "subtests": 35,
+    "independent_review": "one candidate P0/P1 PASS; independent6tests+3subtests overlap, not extra unique",
+    "local_runtime_validation": "PASS",
+    "preflight": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_consensus_20261029_r01\\preflight.json",
+    "real_checkpoint_smoke": "source predictor first step; actual original F0 + synthetic G10; continue immediately onPASS"
+  }
+}
