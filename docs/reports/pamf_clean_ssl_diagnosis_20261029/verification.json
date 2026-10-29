@@ -1,0 +1,28 @@
+{
+  "status": "VERIFIED",
+  "analysis_only": true,
+  "logical_models": 84,
+  "logical_epoch_records": 4200,
+  "deep_step_models": 27,
+  "shared_prefix_pairs_verified": 9,
+  "unique_log_counts": {
+    "epoch_files": 231,
+    "epoch_records": 3780,
+    "csv_files": 231,
+    "csv_records": 3780,
+    "step_files": 72,
+    "step_records": 259740,
+    "stdout_files": 72,
+    "stdout_bytes": 7067672
+  },
+  "structured_log_issues": 0,
+  "target_training": false,
+  "new_prediction_or_scoring": false,
+  "stdout_limit": "Partial current-location stdout coverage; previous full 280-file audit used as secondary evidence.",
+  "comparison_rows": 56,
+  "source_summary_rows": 12,
+  "mechanism_rows": 4,
+  "tenclass_double_clean_net_correct_delta": -853,
+  "TX_20_19_net_correct_delta": -682,
+  "TX_20_19_fraction_of_net_loss": 0.7995310668229777
+}
