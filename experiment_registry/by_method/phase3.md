@@ -7,6 +7,7 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |PAMF第三阶段：跨接收机星地冻结开集拒识首轮|managed_run|[打开](../../automation_reports/CV-SincNet/20261028-phase3-pamf-open-set-s2026092701-r01/report.md)|
+|PAMF第三阶段：RX24-1跨接收机星地开发池|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-development-pool-rx24-1-r01/report.md)|
 |PAMF第三阶段：RX24独立无标签流与未来查询集|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-full-pool-rx24-r01/report.md)|
 |PAMF第三阶段：原F参照的源已知风险校准|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-baseline-risk-s2026092701-r01/report.md)|
 |PAMF第三阶段：源域物理分支未知证据|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-source-branch-s2026092701-r01/report.md)|

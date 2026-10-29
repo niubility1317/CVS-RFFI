@@ -1,0 +1,29 @@
+{
+  "schema": "pamf_phase3_scientific_targets_v2",
+  "effective_user_update": "2026-10-29",
+  "cross_receiver_required": true,
+  "unknown_macro_rejection_min": {
+    "clean_cross_receiver": 0.95,
+    "practical_cross_receiver": 0.90
+  },
+  "each_preregistered_main_scene_required": true,
+  "known_macro_acceptance": {
+    "objective": "maximize subject to unknown rejection and known identity protection",
+    "minimum": 0.95,
+    "definition": "1 minus known macro false rejection rate; wrong accepted identity is reported separately"
+  },
+  "known_open_accuracy_drop_from_same_input_original_closed_max": 0.02,
+  "unlabeled_adaptation": {
+    "target_tx_labels": 0,
+    "known_open_accuracy_gain_required": true,
+    "preserve_condition_specific_rejection_and_known_protection": true
+  },
+  "anonymous_registration": {
+    "future_independent_new_class_macro_accuracy_min": 0.80,
+    "old_class_drop_from_pre_registration_max": 0.02,
+    "later_unregistered_rejection_uses_condition_specific_target": true
+  },
+  "threshold_selection": "source only; no target truth, true class count, quota or query-score calibration",
+  "historical_results": "Keep original preregistered criteria and verdicts; do not relabel old runs as passed",
+  "confidence_intervals": "Report separately from point-estimate targets"
+}

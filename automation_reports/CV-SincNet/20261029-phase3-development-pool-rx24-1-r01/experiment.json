@@ -1,0 +1,179 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-development-pool-rx24-1-r01",
+  "group_id": "pamf-phase3-development-rx-data",
+  "display_name": "PAMF第三阶段：RX24-1跨接收机星地开发池",
+  "description": "Create development RX24-1 D1 unlabeled384 /D2 heldout864, original6 plus2discovery/1later source-novel devices; formalRX24-18 untouched, dataonly.",
+  "kind": "data",
+  "stage": "Phase3-source-development-heldout-receiver-and-practical",
+  "aliases": [
+    "Phase3未见接收机开发数据"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "development_only",
+    "unseen_receiver",
+    "single_received",
+    "data_only"
+  ],
+  "comparison_group_id": "phase3-development-rx24-1-d1U-d2V-3practical",
+  "parent_run_ids": [
+    "20261029-phase3-full-pool-rx24-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工、自主设计与执行；新Phase3不恢复其他owner暂停Phase2任务。",
+  "code": {
+    "commit": "26c3e79eb6d078fc492c6b885ae8831e4358fb6c",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe",
+    "cwd": "E:\\type10-7\\github_publish\\CVS-RFFI-repo"
+  },
+  "data": {
+    "dataset": "Full WiSig eq",
+    "version": "20 completed ZIP /158 PKL validated 20261029 r02",
+    "representation": "eq1 existing256 samples -> source-matchedFP32 unitRMS -> residual received FP32[2,256], no second normalization",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 R_dev supplementary definition20261029",
+    "physical_ids_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01\\pool\\builder_report.json",
+    "label_map_ref": "configs/pamf_phase3_development_pool_20261029.json; builder-only sixold/two discovery/one later",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "24-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_08",
+      "2021_03_15"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_development_pool_20261029.json",
+    "roles": {
+      "development_unlabeled": 384,
+      "development_validation": 864
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "FreshoutsidecompactRX24-1, roles/scenesdisjoint, notformalRX24-18; no historicalquery recycling",
+    "leo_config_ref": "configs/pamf_phase3_development_pool_20261029.json; same residual/post_sync/noEQ oneview/record"
+  },
+  "permissions": {
+    "regime": "builder_private_labels_public_unlabeled_development",
+    "query_use": "Input construction only, model/fit/pred/scoring0",
+    "external_method_exception": null,
+    "claim_scope": "Datareadiness only for unseenRX/practical development; notformaltest/performance/independentnewTXpopulation"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "data-only builder has no model input",
+    "provenance_verdict": "no weights, optimizer, teacher or recovery model loaded",
+    "selection_rule": "fixed metadata capacity/role allocation, no IQ performance filtering"
+  },
+  "execution": {
+    "host": "local-Windows",
+    "launch_owner": "codex-pamf-phase3-development-data-20261029",
+    "gpu_policy": "CPU-only builder; zero GPU processes; no foreign tasks changed",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01",
+    "launch_command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -X utf8 -B -u -m experiments.pamf_phase3_open_world.development_pool --config configs/pamf_phase3_development_pool_20261029.json --output \"E:/type10-7/local_artifacts/pamf_phase3_development_pool_20261029_r01/pool\"",
+    "stop_rule": "missing/wrong selected member, data shape/count mismatch, role/source overlap, repeated physical observation, unintended EQ or nonfinite received, output collision; preserve partial. No automatic rebuild or selective sample replacement."
+  },
+  "expected_artifacts": [
+    "pool/discovery/public/{manifest.json,ids.npy,received.npy}",
+    "pool/discovery/truth/truth.npz",
+    "pool/evaluation/public/{manifest.json,ids.npy,received.npy}",
+    "pool/evaluation/truth/truth.npz",
+    "pool/builder_report.json",
+    "pool/complete.json",
+    "build.log",
+    "build_launch.json",
+    "build_post_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "physical_record_count",
+      "public_role_label_absent",
+      "roles_scenes_disjoint",
+      "single_received_per_record",
+      "finite_received"
+    ],
+    "dimensions": [
+      "U_dev/V_dev",
+      "privateTX",
+      "D1/D2",
+      "FullRX26/24-1",
+      "scene"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "builder protocol verification only; no RFFI scorer"
+  },
+  "rows": [
+    {
+      "row_id": "dev-rx24-1-d1U-d2V-3practical",
+      "method": "Full eq source-matched preprocessing androleblind fixed practical received",
+      "purpose": "Construct independent heldoutreceiver development stream/validation, no formalQ exposure",
+      "config_ref": "configs/pamf_phase3_development_pool_20261029.json",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01\\pool\\builder_report.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 2026102911,
+        "data": 2026102911,
+        "augmentation": 2026102913,
+        "support": null,
+        "evaluation": 2026102914
+      },
+      "seed_notes": "No model; selection11/receiver12/channel13/shuffle14, named20261029 seeds.",
+      "k": null,
+      "scenario": "practical_low_suburban+practical_mid_urban+practical_low_urban_equal_strata",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2indexed PKLmembers /1248uniquephysicalreceived /CPUonly/no model",
+      "output_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01\\pool",
+      "log_path": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01\\build.log",
+      "command": "\"C:/Users/lh594/.conda/envs/ssr-gpu/python.exe\" -X utf8 -B -u -m experiments.pamf_phase3_open_world.development_pool --config configs/pamf_phase3_development_pool_20261029.json --output \"E:/type10-7/local_artifacts/pamf_phase3_development_pool_20261029_r01/pool\"",
+      "expected_artifacts": [
+        "pool/discovery/public/{manifest.json,ids.npy,received.npy}",
+        "pool/discovery/truth/truth.npz",
+        "pool/evaluation/public/{manifest.json,ids.npy,received.npy}",
+        "pool/evaluation/truth/truth.npz",
+        "pool/builder_report.json",
+        "pool/complete.json",
+        "build.log",
+        "build_launch.json",
+        "build_post_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "R_dev disjoint fromsource5/formal24-18/currentPhase2seven andoutsidefourcompactRXheaders; notclaim allprojecthistoryexhaustive.",
+    "Novel3 identities previously sourcevalidation, never gradient/OEtrain; newRX/domain validation, notnewTXpopulation blindtest.",
+    "SourceoriginalL/U/V unchanged; formalRX24U/Q untouched. D2 alsosourceotherRXdate, notunseen-date extrapolation.",
+    "384Uold288/discovery96;864Vold576/discovery192/later96; trueunknowncount/TX/scene/quotas builder/scoreonly.",
+    "V_dev fitting/calibration/earlystop prohibited; newindependentdevelopmentmechanism mayfollowaggregate evidence but no same-run queryretune orformalfeedback.",
+    "One fixedreceived/physicalrecord, roleblind distribution andseed; no newEQ/postRMS/clean saved.",
+    "Reuse Full existing VALIDATED_ONCE summary/counts/memberindex; two reads no rescan/hashchain, GPU0/foreignstop0."
+  ],
+  "registered_at": "2026-10-29T03:31:33+00:00",
+  "verification": {
+    "focused_tests": "12 tests and 26 subtests PASS; final GREEN attempt 2",
+    "log": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_pool_20261029_r01\\focused_tests.log",
+    "independent_review": "One development-builder P0/P1 PASS; no direct launch defects",
+    "checkpoint_smoke": "Not applicable: data-only CPU builder has no model input",
+    "foreign_processes_stopped": 0
+  }
+}
