@@ -1,0 +1,64 @@
+{
+  "run_id": "20261029-phase3-unlabeled-registration-s2026092701-r01",
+  "schema": "pamf_phase3_unlabeled_registration_plan_v1",
+  "model_seed": 2026092701,
+  "states": ["DA0_REG0","DA1_REG0","DA0_REG1","DA1_REG1"],
+  "primary_state": "DA1_REG1",
+  "primary_method": "mlp16_oe",
+  "identity": "Frozen original F0/E50 default6 head on actual C0 or P1 IQ; no encoder/head updates or replacement",
+  "rejection_features": "Frozen uniform-OE E51 eight branches, unchanged original clean-L geometry and previous four-view augmented readout",
+  "restoration": "Frozen DURA R69/v1, FP32 TF32off reuse/graph true native false",
+  "source_statistics": {
+    "source_L_physical_each_condition": 6300,
+    "C0": "Clean cached source IQ",
+    "P1": "One of three existing fixed practical/G views per physical record, iid seed2026102935 independent of y",
+    "source_V_physical": 27000,
+    "source_V_derived_views": 108000,
+    "calibration": "One global threshold per method, existing known-V four views/30groups; F0 identity equals baseline; FRR5%/correct-rejection loss2pp; intact ties; no unknown calibration",
+    "sigma": "Known-V score std per condition, C0 27000 and P1 81000 derived exposures, floor1e-6",
+    "density_eps": "95th percentile of each source sample's seventh-other-neighbor distance within same known TX/RX/day",
+    "new_class_radius": "95th percentile cosine distance to same-source-group leave-one-out F0-unit center",
+    "anchors": "90 source class/RX/day group mean unit F0 centers and mean knownness, each70 physical records; no source row bank deployed"
+  },
+  "adaptation": {
+    "target_U_per_condition": 384,
+    "target_TX_labels": 0,
+    "reliable_core": "F0 and E51 MSP>=.95, argmax agree, fused prototype nearest agrees with cosine>=.5, at least2 of time/frequency/PA prototypes agree",
+    "minimum_per_old_pseudo_class": 8,
+    "minimum_supported_old_pseudo_classes": 3,
+    "bias": "Half class-equal mean difference between source unit prototypes and U core unit centroids, branchnorm cap.1; reference27 fixed0",
+    "updates": "One closed-form U bias state; original neural weights/readout/thresholds unchanged",
+    "no_core": "Identity bias, scientific failure recorded; no truth-driven relaxation"
+  },
+  "discovery": {
+    "input": "Unique U observations rejected by current primary MLP, separate DA0 and DA1",
+    "embedding": "Five equal-weight whitened unit branches: fused/time/frequency/PA/PA_moments, 688 dimensions",
+    "algorithm": "DBSCAN, eps source-calibrated, min_samples8, at least16 independent opaque U IDs per retained cluster",
+    "true_unknown_count_or_quota": false,
+    "cluster_count": "Inferred, zero valid; deterministic anonymous IDs from opaque-ID order",
+    "representative": "Unit mean original F0 fused feature per retained cluster",
+    "penalty": "Max source-anchor anonymous margin minus source-anchor old margin, clipped>=0, plus.05; U-dependent prototype fit only, no Q statistics"
+  },
+  "registration": {
+    "old_margins": "(F0logits-maxF0logits)/30 + (knownness-tau)/source_sigma",
+    "new_margins": "1-cosine_distance(F0unit,anonymous_prototype)/source_radius-penalty",
+    "decision": "All six old and all anonymous classes compete jointly; reject if maximum margin<0, accept ties at0; deterministic old-first argmax",
+    "Q_fit": false,
+    "permutation": "Independent scorer uses U truth only after all future-Q predictions fixed; never Q-fit anonymous mapping or return mapping to predictor",
+    "new_accuracy_denominator": "All true novel arrivals in U, including undiscovered/unmatched devices; unmatched anonymous predictions are errors, not rejection"
+  },
+  "evaluation": {
+    "conditions": ["C0","P1"],
+    "Q_each_condition": 864,
+    "unique_original_U_Q_records": 1248,
+    "formal_RX24_18_reads": 0,
+    "diagnostic_rejection_methods": "Seven scores for REG0; anonymous registration uses preregistered MLP only",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json",
+    "U_and_Q_physical_disjoint": true,
+    "truth_last": "Four states per condition complete before separate U/Q scorer",
+    "evidence_scope": "Single-seed RX24-1 development, exposed source novel devices and dates; not independent formal confirmation"
+  },
+  "stop": "Technical source/role/identity/collision/nonfinite/incomplete prediction failure preserves partial; zero discovered clusters or failed scientific goals do not retune or retry",
+  "resource": {"host":"N607","max_concurrent_GPU_workers":1,"max_added_workers_per_GPU":2,"minimum_free_MB":4096,"foreign_processes_stopped":0},
+  "final_phase3_complete": false
+}
