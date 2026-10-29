@@ -1,0 +1,178 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01",
+  "group_id": "pamf-phase3-star-metric-embedding-score-recovery",
+  "display_name": "PAMF度量学习：冻结预测的FP64独立评分恢复",
+  "description": "Only compactOE failed public CPU FP32 reconstruction; CPU FP64 reference preserves original tolerance, model, source prediction and twelve thresholds. No training or new scientific candidate.",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-score-recovery",
+  "aliases": [
+    "度量学习独立评分恢复"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "technical_recovery",
+    "FP64_reference",
+    "no_retraining"
+  ],
+  "comparison_group_id": "phase3-star-metric-embedding-structure-ablation",
+  "parent_run_ids": [
+    "20261030-phase3-star-metric-embedding-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "4211e8981e85fa26e0ce354267043ecb2116530b",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Unchanged original compactOE saved GPU FP32 metric units, original F0 units/logits, four L aggregates, twelve thresholds; CPU FP64 verification only.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "public_known_prediction_verification": 27000,
+      "public_novel_prediction_verification": 3150,
+      "source_L_metadata_verification": 6300,
+      "new_model_training": 0,
+      "target": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool\\complete.json; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "Original complete predictions and states reused unchanged; private truth only after all public reference reconstruction checks. Two completed scores referenced without rerun.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "No new training/threshold/model/prediction changes; existing legal source metadata and completed source public predictions only.",
+    "query_use": "Source novel truth only after the same independent validation boundary; target U/Q and private unknown K unused.",
+    "external_method_exception": null,
+    "claim_scope": "Score-only technical recovery, not a new model/candidate/test or independent physical data."
+  },
+  "checkpoint": {
+    "initialization": "Load original frozen compactOE FP32 model.pt strictly; use a CPU FP64 copy only for independent mathematical reference.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/rows/compact_oe/predict/deployment/model.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Same original g1000 sourceL/OE training and original F0/DURA ancestry, no target or validation neural updates; saved prediction parameters/thresholds untouched.",
+    "selection_rule": "Single known numerical failure repair; original primary/model/budget/tolerance stay fixed; no reranking or selective model rerun."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-metric-score-recovery-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_metric_embedding_score_recovery_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_metric_embedding_score --prediction-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/rows/compact_oe/predict --novel-truth /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-representation-s2026092701-r01-release/score_truth/source_novel.npz --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/score --scorer-run-id 20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01 --scorer-code-commit 4211e8981e85fa26e0ce354267043ecb2116530b --smoke-output /home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/smoke.json",
+    "gpu_policy": "CPU-only independent scorer, CUDA_VISIBLE_DEVICES empty, zero addedGPU workers; foreign untouched",
+    "stop_rule": "Preserve on any failure; no blind resubmit or tolerance widening. Same numerical fingerprint after this one fix stops recovery retries."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "logs/score.log",
+    "smoke.json",
+    "score/results.json",
+    "score/complete.json",
+    "observations.jsonl",
+    "runtime.json"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "A_K",
+      "R_U",
+      "H-score",
+      "C_K",
+      "original_F0_closed_loss",
+      "source_novel_held_RX_1NN_diagnostic",
+      "complete_training_loss",
+      "source_free_deployment_state",
+      "compute_cost"
+    ],
+    "dimensions": [
+      "threefixedarms",
+      "twofixedmetric_scores",
+      "known42",
+      "unknown12",
+      "TX",
+      "RX",
+      "scene"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/rows/compact_oe/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_metric_embedding_score.py; CPU FP64 reference repair",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "compact_oe-score-recovery-s2026092701",
+      "method": "CPU FP64 independent verification of frozen compactOE",
+      "purpose": "Complete missing control score only",
+      "config_ref": "configs/pamf_phase3_star_metric_embedding_score_recovery_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "All original model/split/observation seeds retained; no new sampling or stochastic model update.",
+      "k": null,
+      "scenario": "same G10 MIX01 P1 completed source predictions",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0updates/0newIQ/F/G; g reference30150+synthetic2; no originaltraining/prediction or completedscore rerun",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/score",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/logs/score.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_metric_embedding_score --prediction-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/rows/compact_oe/predict --novel-truth /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-representation-s2026092701-r01-release/score_truth/source_novel.npz --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/score --scorer-run-id 20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01 --scorer-code-commit 4211e8981e85fa26e0ce354267043ecb2116530b --smoke-output /home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/smoke.json",
+      "expected_artifacts": [
+        "launch.json",
+        "logs/score.log",
+        "smoke.json",
+        "score/results.json",
+        "score/complete.json",
+        "observations.jsonl",
+        "runtime.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original run pipeline FAILED_PRESERVED, all3 model/predictions complete, two scores complete; these remain unchanged.",
+    "Known CPU32 failed7/27000/maxabs2.98768e-6; same weightsCPU64 all30150public rows pass original tolerance, no private truth used to diagnose.",
+    "Only missing compactOE score written in a new immutable root; original identity/main scores referenced, not recomputed.",
+    "Result run_id/code_commit continue to identify original prediction; scorer_run_id/scorer_code_commit identify this execution. FullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-29T19:47:46+00:00"
+}
