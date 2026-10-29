@@ -98,14 +98,14 @@
   "expected_artifacts": [
     "predict_config.json",
     "logs/predict.log",
-    "predict/smoke.json",
     "predict/predictions.npz",
     "predict/complete.json",
     "score/scores.json",
     "score/complete.json",
     "launch.json",
-    "running_verification.json",
-    "post_state.json"
+    "post_state.json",
+    "post_state.json",
+    "observed_state.json"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -127,7 +127,8 @@
       "RX24-1"
     ],
     "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-transfer-s2026092701-r01/predict",
-    "scorer_ref": "experiments/pamf_phase3_open_world/development_transfer.py score"
+    "scorer_ref": "experiments/pamf_phase3_open_world/development_transfer.py score",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json"
   },
   "rows": [
     {
@@ -224,6 +225,354 @@
     "focused": "10 tests and16 subtests PASS",
     "independent_review": "One P0/P1 PASS",
     "preflight": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_transfer_20261029_r01\\preflight.txt",
-    "real_checkpoint_smoke": "First predict step, synthetic2 IQ before V access; not yet executed"
+    "real_checkpoint_smoke": "PASS:2syntheticIQ with actual frozen checkpoints before any V received; log+prediction completion, no standalone smoke.json"
+  },
+  "result_summary": {
+    "artifact_status": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "view_family": "practical_cross_receiver",
+    "count": 864,
+    "primary_method": "mlp16_oe",
+    "primary": {
+      "P0": {
+        "count": 864,
+        "known_count": 576,
+        "unknown_count": 288,
+        "known_classes_present": 6,
+        "unknown_classes_present": 3,
+        "known_closed_correct": 300,
+        "known_correct_accepted": 176,
+        "known_rejected": 322,
+        "unknown_accepted": 72,
+        "unknown_rejected": 216,
+        "known_closed_accuracy": 0.5208333333333334,
+        "known_open_accuracy": 0.3055555555555556,
+        "known_accuracy_drop": 0.2152777777777778,
+        "known_macro_closed_accuracy": 0.5208333333333333,
+        "known_macro_open_accuracy": 0.3055555555555556,
+        "known_frr": 0.5590277777777778,
+        "known_macro_frr": 0.5590277777777778,
+        "unknown_rejection": 0.75,
+        "unknown_macro_rejection": 0.75,
+        "unknown_far": 0.25,
+        "auroc_known": 0.6542667341820987,
+        "oscr": 0.39482060185185186,
+        "known_per_class": [
+          {
+            "label": 0,
+            "count": 96,
+            "rejected": 42,
+            "frr": 0.4375,
+            "closed_accuracy": 0.65625,
+            "open_accuracy": 0.5520833333333334,
+            "rejection_interval95": [
+              0.3425682747577502,
+              0.5372411737244593
+            ]
+          },
+          {
+            "label": 1,
+            "count": 96,
+            "rejected": 39,
+            "frr": 0.40625,
+            "closed_accuracy": 0.3125,
+            "open_accuracy": 0.21875,
+            "rejection_interval95": [
+              0.31345302166501676,
+              0.5062611510582975
+            ]
+          },
+          {
+            "label": 2,
+            "count": 96,
+            "rejected": 77,
+            "frr": 0.8020833333333334,
+            "closed_accuracy": 0.3958333333333333,
+            "open_accuracy": 0.11458333333333333,
+            "rejection_interval95": [
+              0.7114483305401257,
+              0.869472668462529
+            ]
+          },
+          {
+            "label": 3,
+            "count": 96,
+            "rejected": 62,
+            "frr": 0.6458333333333334,
+            "closed_accuracy": 0.21875,
+            "open_accuracy": 0.010416666666666666,
+            "rejection_interval95": [
+              0.5462430234225731,
+              0.7342015967856051
+            ]
+          },
+          {
+            "label": 4,
+            "count": 96,
+            "rejected": 75,
+            "frr": 0.78125,
+            "closed_accuracy": 0.65625,
+            "open_accuracy": 0.21875,
+            "rejection_interval95": [
+              0.688620932638833,
+              0.8522365491912246
+            ]
+          },
+          {
+            "label": 5,
+            "count": 96,
+            "rejected": 27,
+            "frr": 0.28125,
+            "closed_accuracy": 0.8854166666666666,
+            "open_accuracy": 0.71875,
+            "rejection_interval95": [
+              0.20107410838369372,
+              0.3782589613040394
+            ]
+          }
+        ],
+        "unknown_per_class": [
+          {
+            "label": 6,
+            "count": 96,
+            "rejected": 89,
+            "rejection": 0.9270833333333334,
+            "rejection_interval95": [
+              0.8570696833485983,
+              0.9642324186896375
+            ]
+          },
+          {
+            "label": 7,
+            "count": 96,
+            "rejected": 49,
+            "rejection": 0.5104166666666666,
+            "rejection_interval95": [
+              0.41196037089885484,
+              0.6080713876874437
+            ]
+          },
+          {
+            "label": 8,
+            "count": 96,
+            "rejected": 78,
+            "rejection": 0.8125,
+            "rejection_interval95": [
+              0.7229774574820691,
+              0.8779753001068837
+            ]
+          }
+        ],
+        "confidence_intervals95": {
+          "known_closed_accuracy": [
+            0.4800333206237175,
+            0.5613573037183437
+          ],
+          "known_open_accuracy": [
+            0.26932801570103365,
+            0.3443594904397302
+          ],
+          "known_frr": [
+            0.5182223209386176,
+            0.5990511146972219
+          ],
+          "unknown_rejection": [
+            0.6969211525895718,
+            0.7964974335903747
+          ],
+          "unknown_far": [
+            0.20350256640962516,
+            0.30307884741042823
+          ]
+        },
+        "original_closed_macro_accuracy": 0.5399305555555556,
+        "known_macro_acceptance": 0.4409722222222222,
+        "encoder_closed_loss": 0.01909722222222232,
+        "original_closed_minus_new_open": 0.234375
+      },
+      "P1": {
+        "count": 864,
+        "known_count": 576,
+        "unknown_count": 288,
+        "known_classes_present": 6,
+        "unknown_classes_present": 3,
+        "known_closed_correct": 414,
+        "known_correct_accepted": 307,
+        "known_rejected": 156,
+        "unknown_accepted": 123,
+        "unknown_rejected": 165,
+        "known_closed_accuracy": 0.71875,
+        "known_open_accuracy": 0.5329861111111112,
+        "known_accuracy_drop": 0.18576388888888884,
+        "known_macro_closed_accuracy": 0.71875,
+        "known_macro_open_accuracy": 0.5329861111111112,
+        "known_frr": 0.2708333333333333,
+        "known_macro_frr": 0.2708333333333333,
+        "unknown_rejection": 0.5729166666666666,
+        "unknown_macro_rejection": 0.5729166666666666,
+        "unknown_far": 0.4270833333333333,
+        "auroc_known": 0.7092616705246914,
+        "oscr": 0.5200737847222223,
+        "known_per_class": [
+          {
+            "label": 0,
+            "count": 96,
+            "rejected": 5,
+            "frr": 0.052083333333333336,
+            "closed_accuracy": 0.9479166666666666,
+            "open_accuracy": 0.8958333333333334,
+            "rejection_interval95": [
+              0.02244960047424143,
+              0.11618478031492638
+            ]
+          },
+          {
+            "label": 1,
+            "count": 96,
+            "rejected": 11,
+            "frr": 0.11458333333333333,
+            "closed_accuracy": 0.2604166666666667,
+            "open_accuracy": 0.20833333333333334,
+            "rejection_interval95": [
+              0.06519871993416433,
+              0.19362621237279404
+            ]
+          },
+          {
+            "label": 2,
+            "count": 96,
+            "rejected": 29,
+            "frr": 0.3020833333333333,
+            "closed_accuracy": 0.9479166666666666,
+            "open_accuracy": 0.6979166666666666,
+            "rejection_interval95": [
+              0.21931158499064568,
+              0.40008500186968426
+            ]
+          },
+          {
+            "label": 3,
+            "count": 96,
+            "rejected": 19,
+            "frr": 0.19791666666666666,
+            "closed_accuracy": 0.5,
+            "open_accuracy": 0.4270833333333333,
+            "rejection_interval95": [
+              0.13052733153747123,
+              0.28855166945987454
+            ]
+          },
+          {
+            "label": 4,
+            "count": 96,
+            "rejected": 57,
+            "frr": 0.59375,
+            "closed_accuracy": 0.875,
+            "open_accuracy": 0.3645833333333333,
+            "rejection_interval95": [
+              0.49373884894170256,
+              0.6865469783349833
+            ]
+          },
+          {
+            "label": 5,
+            "count": 96,
+            "rejected": 35,
+            "frr": 0.3645833333333333,
+            "closed_accuracy": 0.78125,
+            "open_accuracy": 0.6041666666666666,
+            "rejection_interval95": [
+              0.27523940085174403,
+              0.4643477375263765
+            ]
+          }
+        ],
+        "unknown_per_class": [
+          {
+            "label": 6,
+            "count": 96,
+            "rejected": 84,
+            "rejection": 0.875,
+            "rejection_interval95": [
+              0.794115318705986,
+              0.9270279904007575
+            ]
+          },
+          {
+            "label": 7,
+            "count": 96,
+            "rejected": 32,
+            "rejection": 0.3333333333333333,
+            "rejection_interval95": [
+              0.2470569241521054,
+              0.43243493846711983
+            ]
+          },
+          {
+            "label": 8,
+            "count": 96,
+            "rejected": 49,
+            "rejection": 0.5104166666666666,
+            "rejection_interval95": [
+              0.41196037089885484,
+              0.6080713876874437
+            ]
+          }
+        ],
+        "confidence_intervals95": {
+          "known_closed_accuracy": [
+            0.6806765121312828,
+            0.7539250434603579
+          ],
+          "known_open_accuracy": [
+            0.49215854986417257,
+            0.573376605344091
+          ],
+          "known_frr": [
+            0.23614893317869812,
+            0.30855419905863046
+          ],
+          "unknown_rejection": [
+            0.5151973541284554,
+            0.6287164001740289
+          ],
+          "unknown_far": [
+            0.37128359982597103,
+            0.4848026458715444
+          ]
+        },
+        "original_closed_macro_accuracy": 0.7274305555555555,
+        "known_macro_acceptance": 0.7291666666666667,
+        "encoder_closed_loss": 0.00868055555555547,
+        "original_closed_minus_new_open": 0.1944444444444443
+      }
+    },
+    "primary_goals": {
+      "P0": {
+        "checks": {
+          "overall_condition_targets": false,
+          "main_scene_coverage": true,
+          "each_preregistered_main_scene_targets": false
+        },
+        "pass": false
+      },
+      "P1": {
+        "checks": {
+          "overall_condition_targets": false,
+          "main_scene_coverage": true,
+          "each_preregistered_main_scene_targets": false
+        },
+        "pass": false
+      }
+    },
+    "U_dev_reads": 0,
+    "formal_target_reads": 0,
+    "final_phase3_complete": false
+  },
+  "artifacts": {
+    "report": "docs/PAMF_PHASE3_DEVELOPMENT_TRANSFER_RESULTS_20261029.md",
+    "score": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_transfer_20261029_r01\\score\\scores.json",
+    "post_state": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_transfer_20261029_r01\\post_state.json",
+    "prediction_complete": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_transfer_20261029_r01\\predict\\complete.json"
   }
 }

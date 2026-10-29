@@ -134,3 +134,23 @@ r01实际发布后两行在新增父兼容检查失败，0梯度smoke／优化�
 `20261029-phase3-source-embedding-budget-s2026092701-r01` 已VERIFIED/ANALYZED_SOURCE_ONLY/NO_PROMOTION，执行commit6ffccc4ac1bb80d2d47a77e08a8a288012fa1353。两原E50独立分叉各2220步，累计13320；4440步trace、800loss、10logs、实际Sinc/原head梯度与own8branch/readout smoke齐全，五stage全部完成。MLP监督90.0635%、OE92.0635%，OE FRR1.7778%、open97.7222%、原F总损伤.7444pp；仅RX1未知达95，各eligible空。与E51已完成参考92.6667%相比，十轮低.6032pp，未证实加轮数进一步改善未知拒识。正式RX24U/Q仍未模型访问；其他用户保持、owned GPU1/2均已退出。见[完整结果](E:/type10-7/docs/PAMF_PHASE3_SOURCE_EMBEDDING_BUDGET_RESULTS_20261029.md)。
 
 用户当前请求总结报告，正在汇总方法/训练验证测试角色/跨RX与未知设置；此时不启动新的科学候选。后续局部聚合几何、连续拒识证据到未知发现和future验证的机制仅记研究笔记，不冒充已实现。总目标工具读回blocked且未被改写，Phase3整体未完成；源best92.6667%是同RX clean开发成绩，不是正式跨RX星地95%。
+
+## 最新跨接收机实证与下一步（2026-10-29）
+
+用户最新指标已固定：clean跨RX未知拒识≥95%，叠加星地后总体及各主景≥90%；已知类接收尽可能高，保留FRR≤5%与原F同输入闭集到开放损伤≤2pp。历史各run原门槛/NO_PROMOTION不追改，完整目标的零标签适应、发现、未来匿名注册与持续未知保护仍保留。
+
+RX24-1独立开发池已实际完成：U384（D1）/V864（D2），旧六类＋开发发现19-15/19-16、后续未知7-1；三景low suburban/mid urban/low urban。原source五RX、正式24-18与开发24-1互斥，原Full/compact元数据复用。star code26c3e79eb6d078fc492c6b885ae8831e4358fb6c，clean控制code959a1a68e76a7e2cfba6700c2a251da8330e59b9；两条件同1248原始物理记录/同序opaque ID，不计更多独立样本，模型端clean与star隔离。两个真实CPU构建有起始live PID/CWD/命令及日志增长、完成产物和退出证据。正式RX24-18 U768/Q1920仍未模型访问。
+
+已完成两独立冻结迁移诊断。统一固定source E51 uniformOE/MLP/原knownV阈值，原F6同输入closed作保护基线，不根据开发成绩选endpoint/分数/调阈值；各自全部V864预测后独立truth-last评分，U0/sourceIQ0/逐条sourcebank0/formal0/更新0。P1/MLP为星地主行，P0和其余6分数仅诊断。
+
+|条件/主MLP|未知拒识|已知接收|含拒识已知识别|原F同输入闭集|总损伤|
+|---|---:|---:|---:|---:|---:|
+|C0 clean跨RX|99.3056%|80.7292%|62.6736%|79.6875%|17.0139pp|
+|P0 星地received|75.0000%|44.0972%|30.5556%|53.9931%|23.4375pp|
+|P1 同received＋DURA v1|57.2917%|72.9167%|53.2986%|72.7431%|19.4444pp|
+
+C0未知单项过95，但旧类FRR/总损伤失败；P0/P1均未过90且known保护失败，所有实际状态NO_PROMOTION。DURA改善known，却在当前source拒识器下多接受未知，不能仅报known收益当开放集成功。C0/P0/P1是配对物理记录的不同条件，不把sameRX source92.6667%与此新RX跨条件结果当同输入提升。完整报告分别见`docs/PAMF_PHASE3_DEVELOPMENT_TRANSFER_RESULTS_20261029.md`、`docs/PAMF_PHASE3_DEVELOPMENT_CLEAN_TRANSFER_RESULTS_20261029.md`。
+
+实用景codea3b8bb24b6b9e357bf37678209cf0c21d666f7df，10tests/16subtests及一次P0/P1 PASS；clean生产算法未改，code/config1e1876db7d0f7b8f3724fe95acf3c8c8d5b64fef补3个C0 tests/8subtests及一次新C0配置边界P0/P1 PASS，未重复旧代码全审。两run各完成N607 preflight/单归档一次比较/compile、实际checkpoint合成2IQ no-query smoke后立即预测。前台任务很短，首次独立post已终态，未捕获运行期独立PID/CWD/GPU/log增长；实际CLI身份、完整日志/markers及已退出状态有保存，不冒充live证据/峰值/部署延迟，不为补观察重跑。GPU0实用景与GPU6 clean各只新增1worker，无foreign停止；后续GPU表其他任务保持。
+
+下一研究重点直接转向合法U_dev上的无标签域偏移处理及身份保持的未知发现：先提高未见RX的已知接收/正确识别，同时守住95%/90%拒识。当前结果显示未见RX的已知样本被大量拒绝，支持域变化影响拒识的判断；单纯提高拒绝强度或只恢复known不足以达标。下一候选须另行固定算法/源校准/更新预算与D0/D1及注册控制，U只读公共无标签输入、不读真实构成，V不回收训练，正式RX24-18继续隔离。目标保持ACTIVE；当前没有成功无标签适应或未来匿名注册证据，不标完成。

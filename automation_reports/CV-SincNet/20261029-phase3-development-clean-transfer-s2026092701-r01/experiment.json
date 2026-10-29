@@ -1,0 +1,368 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-development-clean-transfer-s2026092701-r01",
+  "group_id": "pamf-phase3-unseen-rx-clean-transfer",
+  "display_name": "PAMF第三阶段：RX24-1冻结跨接收机clean拒识",
+  "description": "Isolated C0 clean864, same frozen source E51OE/MLP/threshold and original F closedbaseline; no DURA or target updates.",
+  "kind": "diagnostic",
+  "stage": "Phase3-development-clean-unseen-receiver-frozen-transfer",
+  "aliases": [
+    "Phase3跨RXclean95诊断"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "development_only",
+    "unseen_receiver",
+    "clean",
+    "no_fit"
+  ],
+  "comparison_group_id": "phase3-dev-rx24-1-fixed-source-E51OE-C0",
+  "parent_run_ids": [
+    "20261029-phase3-source-baseline-risk-s2026092701-r01",
+    "20261029-phase3-development-clean-rx24-1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-28授权完整Phase3目标、分步分工及自主设计执行；本轮遵循事先source-only开发路线，不以首轮target表调参。",
+  "code": {
+    "commit": "1e1876db7d0f7b8f3724fe95acf3c8c8d5b64fef",
+    "checkout": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-clean-transfer-s2026092701-r01-release",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-clean-transfer-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Full WiSig RX24-1 same-record clean development control",
+    "version": "clean pool 20261029 r01 VALIDATED_ONCE",
+    "representation": "FP32[2,256] source iq_record once unit RMS, no channel",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 source-development/R_dev",
+    "physical_ids_ref": "local_artifacts/pamf_phase3_development_clean_20261029_r01/pool/builder_report.json",
+    "label_map_ref": "Only initial old6 in predictor; private truth retained by scorer",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "24-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_15"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_source_baseline_risk_20261029.json; same registered6/sourceOE4/novel3 unchanged",
+    "roles": {
+      "V_dev": 864,
+      "U_dev_reads": 0,
+      "formal_target_reads": 0
+    },
+    "train_ratio": null,
+    "capsule_id": "p3dev-clean-20e01e9ae54a4bc3ae503a3f",
+    "split_id": "347fd2cb757a37f7f162223a",
+    "validation_ref": "local_artifacts/pamf_phase3_development_clean_20261029_r01/pool/complete.json",
+    "support_query_ref": "V_dev no fitting/threshold adjustment; U384 not opened; formal RX24-18 untouched",
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source-frozen development-domain inference; no target labels or adaptation",
+    "query_use": "Only per-sample prediction, complete all P0/P1 before independent score",
+    "external_method_exception": null,
+    "claim_scope": "Development transfer only, not formal target/blind novel population/DA/registration"
+  },
+  "checkpoint": {
+    "initialization": "Same frozen E51 uniformOE source aggregates and originalF6 closed reference; no DURA",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-source-embedding-increment-s2026092701-r02/rows/uniform_oe/train/final.pt"
+    ],
+    "contract_check_ref": "E51 existing source contract and completed readout/risk identities; DURA readiness20261028 source contract PASS and compact absent novel3 metadata",
+    "provenance_verdict": "Source5 RX only, development RX24-1 excluded from ancestors. Novel3 never training/OE; already source evaluated. Formal4 excluded.",
+    "selection_rule": "Same endpoint frozen before both conditions, MLP primary; no threshold refit/selection from practical or clean outcomes"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-phase3-development-clean-transfer-20261029",
+    "gpu_policy": "One added predictor on actual free GPU; <=2 added/card, do not modify foreign work",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-clean-transfer-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-clean-transfer-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_transfer_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.development_transfer predict --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-clean-transfer-s2026092701-r01-release/predict_config.json --device cuda:0",
+    "stop_rule": "Wrong source/clean handles, clean-star reference leakage, nonfinite/collision/forbidden fit or missing legal C0 predictions; preserve partial, no score-driven rerun."
+  },
+  "expected_artifacts": [
+    "predict_config.json",
+    "logs/predict.log",
+    "predict/predictions.npz",
+    "predict/complete.json",
+    "score/scores.json",
+    "score/complete.json",
+    "launch.json",
+    "observed_state.json",
+    "post_state.json",
+    "observed_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "unknown_macro_rejection",
+      "known_macro_acceptance",
+      "known_macro_frr",
+      "known_open_accuracy",
+      "original_closed_accuracy",
+      "known_total_drop",
+      "AUROC",
+      "OSCR"
+    ],
+    "dimensions": [
+      "C0",
+      "7methods",
+      "oldTX",
+      "novelTX",
+      "clean",
+      "RX24-1"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-clean-transfer-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/development_transfer.py score",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json"
+  },
+  "rows": [
+    {
+      "row_id": "C0-s2026092701",
+      "method": "Same frozen E51OE/MLP on independent clean public input",
+      "purpose": "Isolated clean cross-receiver evaluation of exactly the frozen E51 OE/MLP/source threshold used in practical transfer",
+      "config_ref": "configs/pamf_phase3_development_clean_transfer_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-clean-transfer-s2026092701-r01-release/predict_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102911,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026102914
+      },
+      "seed_notes": "Same parent physical IDs, no channel/random selection or model updates; source seed fixed.",
+      "k": null,
+      "scenario": "clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 fitting/updates; V864 per view plus synthetic real-checkpoint no-query smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-clean-transfer-s2026092701-r01/predict",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-development-clean-transfer-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.development_transfer predict --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-clean-transfer-s2026092701-r01-release/predict_config.json --device cuda:0",
+      "expected_artifacts": [
+        "predict_config.json",
+        "logs/predict.log",
+        "predict/predictions.npz",
+        "predict/complete.json",
+        "score/scores.json",
+        "score/complete.json",
+        "launch.json",
+        "observed_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Clean crossRX95, not practical90; knownaccept maximize/FRR5/originalF2pp.",
+    "Separate public clean schema, C0 only, no DURA or star received/reference readable. Same864 physical records, not new independent data.",
+    "Source frozen endpoint/readout/threshold same as practical run; no refit or selection from practical outcomes.",
+    "U/formal/sourceIQ/bank0; synthetic actualcheckpoint2IQ smoke beforeV; allC0 predictions fixed before independent private truth scoring.",
+    "Original code review reused; newC0 focused3tests/8subtests cover condition boundary, clean isolation and95vs90 target.",
+    "Development RX24-1/source-novel3 previously source evaluated, not formal/newTX blind confirmation/DA/registration."
+  ],
+  "registered_at": "2026-10-29T04:10:13+00:00",
+  "verification": {
+    "focused": "3 new C0 tests and8 subtests PASS; practical tests not rerun",
+    "independent_review": "One new C0 configuration/input-boundary P0/P1 PASS; unchanged old code not re-reviewed",
+    "real_checkpoint_smoke": "PASS:2syntheticIQ with actual frozen checkpoints before any V received; log+prediction completion, no standalone smoke.json"
+  },
+  "result_summary": {
+    "artifact_status": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "view_family": "clean_cross_receiver",
+    "count": 864,
+    "primary_method": "mlp16_oe",
+    "primary": {
+      "C0": {
+        "count": 864,
+        "known_count": 576,
+        "unknown_count": 288,
+        "known_classes_present": 6,
+        "unknown_classes_present": 3,
+        "known_closed_correct": 451,
+        "known_correct_accepted": 361,
+        "known_rejected": 111,
+        "unknown_accepted": 2,
+        "unknown_rejected": 286,
+        "known_closed_accuracy": 0.7829861111111112,
+        "known_open_accuracy": 0.6267361111111112,
+        "known_accuracy_drop": 0.15625,
+        "known_macro_closed_accuracy": 0.7829861111111112,
+        "known_macro_open_accuracy": 0.626736111111111,
+        "known_frr": 0.19270833333333334,
+        "known_macro_frr": 0.19270833333333337,
+        "unknown_rejection": 0.9930555555555556,
+        "unknown_macro_rejection": 0.9930555555555557,
+        "unknown_far": 0.006944444444444444,
+        "auroc_known": 0.9787085262345678,
+        "oscr": 0.766698013117284,
+        "known_per_class": [
+          {
+            "label": 0,
+            "count": 96,
+            "rejected": 0,
+            "frr": 0.0,
+            "closed_accuracy": 1.0,
+            "open_accuracy": 1.0,
+            "rejection_interval95": [
+              3.469446951953614e-18,
+              0.038475587857675686
+            ]
+          },
+          {
+            "label": 1,
+            "count": 96,
+            "rejected": 1,
+            "frr": 0.010416666666666666,
+            "closed_accuracy": 0.21875,
+            "open_accuracy": 0.20833333333333334,
+            "rejection_interval95": [
+              0.0018411702168162486,
+              0.056666176227157854
+            ]
+          },
+          {
+            "label": 2,
+            "count": 96,
+            "rejected": 3,
+            "frr": 0.03125,
+            "closed_accuracy": 0.96875,
+            "open_accuracy": 0.9583333333333334,
+            "rejection_interval95": [
+              0.010684070371201164,
+              0.0878867932453698
+            ]
+          },
+          {
+            "label": 3,
+            "count": 96,
+            "rejected": 5,
+            "frr": 0.052083333333333336,
+            "closed_accuracy": 0.6979166666666666,
+            "open_accuracy": 0.6875,
+            "rejection_interval95": [
+              0.02244960047424143,
+              0.11618478031492638
+            ]
+          },
+          {
+            "label": 4,
+            "count": 96,
+            "rejected": 89,
+            "frr": 0.9270833333333334,
+            "closed_accuracy": 0.8645833333333334,
+            "open_accuracy": 0.052083333333333336,
+            "rejection_interval95": [
+              0.8570696833485983,
+              0.9642324186896375
+            ]
+          },
+          {
+            "label": 5,
+            "count": 96,
+            "rejected": 13,
+            "frr": 0.13541666666666666,
+            "closed_accuracy": 0.9479166666666666,
+            "open_accuracy": 0.8541666666666666,
+            "rejection_interval95": [
+              0.0808770644581112,
+              0.21801138502144396
+            ]
+          }
+        ],
+        "unknown_per_class": [
+          {
+            "label": 6,
+            "count": 96,
+            "rejected": 96,
+            "rejection": 1.0,
+            "rejection_interval95": [
+              0.9615244121423243,
+              1.0
+            ]
+          },
+          {
+            "label": 7,
+            "count": 96,
+            "rejected": 95,
+            "rejection": 0.9895833333333334,
+            "rejection_interval95": [
+              0.9433338237728424,
+              0.9981588297831838
+            ]
+          },
+          {
+            "label": 8,
+            "count": 96,
+            "rejected": 95,
+            "rejection": 0.9895833333333334,
+            "rejection_interval95": [
+              0.9433338237728424,
+              0.9981588297831838
+            ]
+          }
+        ],
+        "confidence_intervals95": {
+          "known_closed_accuracy": [
+            0.7475073065648927,
+            0.8147153407481029
+          ],
+          "known_open_accuracy": [
+            0.5865194885435828,
+            0.6652734762039553
+          ],
+          "known_frr": [
+            0.16257567687869207,
+            0.22691261407590774
+          ],
+          "unknown_rejection": [
+            0.9750375880566797,
+            0.9980935124648815
+          ],
+          "unknown_far": [
+            0.0019064875351183699,
+            0.024962411943320287
+          ]
+        },
+        "original_closed_macro_accuracy": 0.796875,
+        "known_macro_acceptance": 0.8072916666666666,
+        "encoder_closed_loss": 0.01388888888888884,
+        "original_closed_minus_new_open": 0.17013888888888895
+      }
+    },
+    "primary_goals": {
+      "C0": {
+        "checks": {
+          "overall_condition_targets": false,
+          "main_scene_coverage": true,
+          "each_preregistered_main_scene_targets": false
+        },
+        "pass": false
+      }
+    },
+    "U_dev_reads": 0,
+    "formal_target_reads": 0,
+    "final_phase3_complete": false
+  },
+  "artifacts": {
+    "report": "docs/PAMF_PHASE3_DEVELOPMENT_CLEAN_TRANSFER_RESULTS_20261029.md",
+    "score": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_transfer_20261029_r01\\score\\scores.json",
+    "post_state": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_transfer_20261029_r01\\post_state.json",
+    "prediction_complete": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_transfer_20261029_r01\\predict\\complete.json"
+  }
+}

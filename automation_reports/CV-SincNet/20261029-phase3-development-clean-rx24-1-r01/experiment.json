@@ -62,8 +62,14 @@
       "development_validation": 864
     },
     "train_ratio": null,
-    "capsule_id": null,
-    "split_id": null,
+    "capsule_id": {
+      "discovery": "p3dev-clean-ef10219d27274e04e83408d1",
+      "evaluation": "p3dev-clean-20e01e9ae54a4bc3ae503a3f"
+    },
+    "split_id": {
+      "discovery": "64274719133a83590352add5",
+      "evaluation": "347fd2cb757a37f7f162223a"
+    },
     "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_20261029_r01\\pool\\complete.json",
     "support_query_ref": "Same parent U384/V864 disjoint original records, condition control not new physical observations",
     "leo_config_ref": "No channel; parent fixed received unchanged"
@@ -170,9 +176,21 @@
   "registered_at": "2026-10-29T04:00:16+00:00",
   "verification": {
     "focused_tests": "8 tests and 29 subtests; adjacent16 tests and32 subtests PASS",
-    "log": "E:\\type10-7\\local_artifacts\\pamf_phase3_development_clean_20261029_r01\\focused_tests.log",
+    "log": null,
     "independent_review": "One development-builder P0/P1 PASS; no direct launch defects",
     "checkpoint_smoke": "Not applicable: data-only CPU builder has no model input",
-    "foreign_processes_stopped": 0
+    "foreign_processes_stopped": 0,
+    "evidence_note": "Implementation worker tool stdout reported8tests/29subtests and adjacent16tests/32subtests PASS; no raw test log was saved. No duplicate test run."
+  },
+  "result_summary": {
+    "status": "VERIFIED/ANALYZED_DATA_ONLY",
+    "U": 384,
+    "V": 864,
+    "unique_original_records": 1248,
+    "paired_original_not_new_records": true,
+    "channel_records": 0,
+    "model_predictions": 0,
+    "formal_target_reads": 0,
+    "gpu_processes_added": 0
   }
 }

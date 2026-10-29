@@ -35,3 +35,9 @@ code/config commit `a3b8bb24b6b9e357bf37678209cf0c21d666f7df`；10 tests＋16 su
 只预测V_dev864，U/formal/sourceIQ/逐条sourcebank0；先加载实际冻结checkpoint并对2条固定合成IQ做no-query smoke，PASS立即继续。新state/阈值更新0。P0为原received，P1为冻结DURA同输入恢复，分别以原F同输入closed作为已知保护基线；不读取clean参考。全部paired predictions.npz和complete固定后才独立score CLI连接private truth。score输出scores.json，不用query真值或未知数调阈值。
 
 目标采用用户最新实用景跨RX总体/每景未知拒识90%，known接收率尽可能高且FRR≤5%、原F同输入open损伤≤2pp。数据scope只是新RX开发、novel3重复source开发设备，不是正式确认/DA/注册成功。技术错误/碰撞/越界/非法输入保留partial，不用低分重跑/改样本。远端普通短SSH在immutable release CWD执行predict/score，独立读回PID/CWD/argv/GPU/log与完成产物。实际命令/环境/输出详见experiment.json。
+
+## 实际预测与评分完成（2026-10-29）
+
+已VERIFIED/ANALYZED_DEVELOPMENT_ONLY，科学NO_PROMOTION。864记录全部固定预测后独立truth-last评分，主方法MLP保持，全部source状态与阈值更新0、U/formal读取0。实际checkpoint的2条合成IQ smoke在V读取前PASS，证据保存在完整predict.log和complete，不存在独立smoke.json，登记已改为真实artifact。
+
+首次独立post已终态，未捕获运行期独立PID/CWD/GPU/log增长；CLI首行实际身份和完整日志/markers可用，但不冒充live证据，不为补观察重跑。当前快照其他GPU进程不当作本run；foreignstop0。实际代码`a3b8bb24b6b9e357bf37678209cf0c21d666f7df`，同row完整报告见`docs/PAMF_PHASE3_DEVELOPMENT_TRANSFER_RESULTS_20261029.md`，评分及post见local_artifacts/pamf_phase3_development_transfer_20261029_r01。目标仍ACTIVE，clean95/star90及known保护未同时达成。
