@@ -27,7 +27,7 @@ with tarfile.open(p['archive_remote']) as z:
 Path(rt['runtime_file']).write_text(json.dumps(rt,indent=2)+'\n')
 env=dict(os.environ,CUDA_VISIBLE_DEVICES='',PYTHONPATH=str(release),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
 subprocess.run([rt['python'],'-m','compileall','-q',str(release)],cwd=release,env=env,check=True)
-command=[rt['python'],'-u','-m','experiments.pamf_phase2_practical.full_runner','--runtime',rt['runtime_file']]
+command=[rt['python'],'-u','-m',rt.get('controller_module','experiments.pamf_phase2_practical.full_runner'),'--runtime',rt['runtime_file']]
 with (release/'controller.log').open('x') as f:
  child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
 out=dict(status='SUBMITTED_AWAITING_READBACK',pid=child.pid,argv=command,cwd=str(release),run_root=str(root),
@@ -42,7 +42,7 @@ def run(a):
     def git(*x):return subprocess.check_output(['git','-C',str(repo),*x])
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
     assert git('ls-remote','origin','refs/heads/'+branch).decode().split()[0]==commit
-    paths=['experiments/pamf_phase2_practical','configs/pamf_phase2_full_eq_data_r08_20261029.json',
+    paths=['experiments/pamf_phase2_practical',rt.get('configuration_path','configs/pamf_phase2_full_eq_data_r08_20261029.json'),
            'configs/pamf_phase2_practical_mixture_20261028.json','automation_reports/CV-SincNet/'+rt['run_id']]
     assert not git('status','--porcelain','--',*paths).strip(),'Uncommitted release input'
     rt['code_commit']=commit

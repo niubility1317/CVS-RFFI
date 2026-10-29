@@ -1,0 +1,192 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase2-fullpool-episodes-s2026102901-r01",
+  "group_id": "phase2-fullpool-episodes-r09",
+  "display_name": "PAMF Phase2 Full eq：同池 K-support 全补集 query 与逐套重新叠加",
+  "description": "原6旧类20新类、7RX、4日共554823条原始记录；8综合+每种纯场景5套，逐套fresh practical residual，actual-K support及全补集query；数据制作，无模型。",
+  "kind": "diagnostic",
+  "stage": "Phase2-data-builder",
+  "aliases": [],
+  "tags": [
+    "phase2",
+    "full-eq",
+    "data-builder",
+    "practical",
+    "residual",
+    "shared-pool",
+    "episodic",
+    "full-query-complement"
+  ],
+  "comparison_group_id": "fullpool-original6old20new-7rx-23episodes-r09",
+  "parent_run_ids": [
+    "20261029-phase2-full-eq-preparation-s2026102901-r01"
+  ],
+  "replaces_run_id": "20261029-phase2-full-eq-preparation-s2026102901-r01",
+  "authorization": "User explicitly corrects Phase2: all suites reuse one raw pool, random K support per class, entire remainder query, fresh satellite overlay per suite; execute data-preparation correction only.",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-fullpool-episodes-s2026102901-r01-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "configs/pamf_phase2_fullpool_episodes_r09_20261029.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-fullpool-episodes-s2026102901-r01/builder_only/pool/*/records.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-fullpool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_fullpool_episodes_r09_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one per episode/RX,161 total",
+    "split_id": "20 per bank: K1/5/10/20 and N0/2/5/10/20;3220 total",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-fullpool-episodes-s2026102901-r01/builder_report.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-fullpool-episodes-s2026102901-r01/catalog.json",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json"
+  },
+  "permissions": {
+    "regime": "offline_data_builder_no_model",
+    "query_use": "Offline task-relative allocation only; no fit/predict/score; records and roles may recur across independent tasks.",
+    "external_method_exception": null,
+    "claim_scope": "554823 unique physical records;23 conditional repeats with fresh H/support;not23 independent physical data sets or a new independent blind test."
+  },
+  "checkpoint": {
+    "initialization": "not_applicable_data_builder",
+    "sources": [],
+    "contract_check_ref": "configs/pamf_phase2_fullpool_episodes_r09_20261029.json",
+    "provenance_verdict": "NO_CHECKPOINT_READ",
+    "selection_rule": "original MILKR class order;no checkpoint or quality selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase2-episodic-data-r09",
+    "gpu_policy": "CPU only,max8 own workers,CUDA invisible,OMP/MKL/OpenBLAS1",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-fullpool-episodes-s2026102901-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-fullpool-episodes-s2026102901-r01-release",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase2_episodic_r09_20261029",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.episodic_runner --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-fullpool-episodes-s2026102901-r01-release/runtime.json",
+    "stop_rule": "First changed input count/schema,insufficient pool,current-task role overlap,nonfinite observation,output collision or worker error stops own children only;preserve partial,no auto retry."
+  },
+  "expected_artifacts": [
+    "builder_only/pool/manifest.json",
+    "builder_only/pool/*/raw_iq.npy",
+    "capsules/*/*/received.npy",
+    "capsules/*/*/ids.npy",
+    "capsules/*/*/manifest.json",
+    "capsules/*/*/stage_rows/*.npy",
+    "capsules/*/*/splits/*.json",
+    "capsules/*/*/support_labels/*.npy",
+    "score_only/*/*.npz",
+    "catalog.json",
+    "builder_report.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "unique_physical_pool_records",
+      "reoverlaid_observations",
+      "capsules",
+      "splits",
+      "per_class_query_count",
+      "scene_counts"
+    ],
+    "dimensions": [
+      "RX",
+      "TX",
+      "date",
+      "episode",
+      "K",
+      "N"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "fullpool-episode-data",
+      "method": "offline shared raw pool,episode-wise practical residual,actual-K full query complement",
+      "purpose": "shared-experiment-data",
+      "config_ref": "configs/pamf_phase2_fullpool_episodes_r09_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-fullpool-episodes-s2026102901-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": 2026102901,
+        "evaluation": null
+      },
+      "seed_notes": "No model/optimizer/scoring. Episode-specific scene/channel seeds in config;bank/order base2026102902,queryorder2026102903;support per episode/RX/TX derived from2026102901.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "8mixed +5low suburban +5mid urban +5low urban;all fresh channels",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_fullpool_episodes_r09_20261029.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-fullpool-episodes-s2026102901-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-fullpool-episodes-s2026102901-r01-release/controller.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.episodic_runner --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase2-fullpool-episodes-s2026102901-r01-release/runtime.json",
+      "expected_artifacts": [
+        "builder_only/pool/manifest.json",
+        "builder_only/pool/*/raw_iq.npy",
+        "capsules/*/*/received.npy",
+        "capsules/*/*/ids.npy",
+        "capsules/*/*/manifest.json",
+        "capsules/*/*/stage_rows/*.npy",
+        "capsules/*/*/splits/*.json",
+        "capsules/*/*/support_labels/*.npy",
+        "score_only/*/*.npz",
+        "catalog.json",
+        "builder_report.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Raw upload already VERIFIED:20ZIP34378471511bytes;reuse existing full validation/inventory.",
+    "User explicitly supersedes global support/query exclusion and cross-suite physical disjointness for this Phase2 resampled benchmark only.",
+    "Same episode uses nested K support and same received;next episode redraws H and support.Every episode/K identity state starts at the frozen matched source.",
+    "Original6old20new order restored;no capacity-based class selection,no compact exclusions,no query cap.",
+    "5 focused tests PASS;one independent P0/P1 review PASS,no unresolved P0/P1;no checkpoint smoke because no model loaded.",
+    "Source L/U/V unchanged;identity training/prediction/scoring0;DURA target cache not built in this job.",
+    "Code commit is resolved from pushed Git HEAD by full_publish into runtime/submit;record updated after launch."
+  ],
+  "registered_at": "2026-10-29T02:45:07+00:00"
+}

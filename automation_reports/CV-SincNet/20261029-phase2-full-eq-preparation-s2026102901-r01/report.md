@@ -45,3 +45,9 @@ N607普通用户项目：`/home/szu2070436088/2510044040/CV-SincNet`。已完成
 实际执行commit为`f9117df47c11c484115e082760fc3d16f5d17a3d`，代码归档传输及远端编译PASS。controller PID2166357、inventory PID2166364和随后build PID2167556的CWD/argv与日志增长已独立核实。
 
 全部4,872个目标库存单元精确映射通过：Full1,962,202条，四compact并集匹配490,568条，ManyTx全量排除197,168条。已固定20个新类、539,448条本轮物理记录及逐日期配额，见分配报告。received正生成，未取得完整builder_report/catalog，不宣称数据全部完成。当前身份训练/身份预测/评分为0，DURA目标缓存未启动。
+
+## 用户更正后的替代状态
+
+REPLACED。独立回读已确认旧构建实际成功完成：builder_report 为 VALIDATED_ONCE，539,448 条物理记录、385 capsule、3,220 split；旧 controller/worker 均已退出，无需停止。身份训练、身份预测、评分均为0。以上旧版产物完整保留。
+
+用户取消跨套物理互斥及固定 query，故本分配不再用于新实验。由 `20261029-phase2-fullpool-episodes-s2026102901-r01` 的同池 K-support／全补集 query／逐套重新叠加方案替代；这是科学数据设计更正，不是技术失败。旧库存计数复用，旧 received 不改标为新版。
