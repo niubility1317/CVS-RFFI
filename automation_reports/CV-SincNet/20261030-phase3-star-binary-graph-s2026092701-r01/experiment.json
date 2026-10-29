@@ -1,0 +1,198 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-binary-graph-s2026092701-r01",
+  "group_id": "pamf-phase3-star-binary-graph",
+  "display_name": "PAMF第三阶段：冻结身份的无标签二元图适应",
+  "description": "Frozen originalF0/defaulthead/G and source pairedprior; U-only binary knownness weighted Laplacian solve and independent automatic anonymous registry; futureQ four states, no identity feature changes.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-UDA-discovery-registration",
+  "aliases": [
+    "U二元图适应与匿名注册"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_free",
+    "unlabeled_target",
+    "binary_graph",
+    "anonymous_registration"
+  ],
+  "comparison_group_id": "phase3-star-binary-graph-vs-fixed-source",
+  "parent_run_ids": [
+    "20261029-phase3-star-neighborhood-s2026092701-r01",
+    "20261029-phase3-star-g10-pool-rx24-1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "bb9f5823f53bdbba6dd3e65f9f58dfe70bf86cdb",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-binary-graph-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_binary_graph_launch"
+    ],
+    "configs": [
+      "configs/pamf_phase3_star_binary_graph_20261030.json"
+    ]
+  },
+  "data": {
+    "dataset": "Original source aggregates/L cache/knownV compact and fixed RX24-1 independent U/futureQ",
+    "version": "Existing VALIDATED_ONCE physical roles, no IQ or channel regeneration",
+    "representation": "Existing G10 P0 received and same-record frozenDURA P1; originalF0 unitfused160/defaultlogits/pairedmargin. Only U384 fits binary graph and registry; futureQ864 rowwise frozen-state interpolation.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/L/ids.npy; G10 public opaque U/Q IDs",
+    "label_map_ref": "Old6 source labels reused only for source statistics/calibration; no target labels in predict/fit; anonymous permutation only Utruth in scorer after Qfreeze",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "24-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_08",
+      "2021_03_15"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "target_U_adaptation_discovery": 384,
+      "target_future_Q": 864,
+      "new_source_IQ_or_features": 0,
+      "ancestor_L": 6300,
+      "ancestor_U_s": 56700,
+      "ancestor_V": 27000,
+      "ancestor_OE": 6134
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "discovery": "p3dev-star-g10-6e1292b62ab09286ebf1a0df",
+      "evaluation": "p3dev-star-g10-71a5a0dec23ac6ccc3b479c2"
+    },
+    "split_id": {
+      "discovery": "83c5cc1fe2f2a1512dbc1287",
+      "evaluation": "05de65cd4818f3e5e33ced5c"
+    },
+    "validation_ref": "local_artifacts/pamf_phase3_star_g10_pool_20261029_r01/pool/complete.json; original Phase1 source cached contract",
+    "support_query_ref": "U March8 and Q March15 fixed disjoint caps/splits. No Q fit/statistics/matching. All U graph+registry frozen before Q; all4predictions before truth.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Zero targetTX/unknownK/quotas; source priors retain originalL/auxmembership supervision. U binary seeds from fixed scores, no identity pseudo-training; explicit unlabeledU memory allowed.",
+    "query_use": "FutureQ readonly rowwise originalF/G feature and frozenU interpolation; no Q-Q statistics, optimization, calibration or rematching. Both U maps fixed before Qtruth.",
+    "external_method_exception": null,
+    "claim_scope": "Single exposed devRX24-1/seed/G10, not fresh blind or formal confirmation; sourcefree aggregate-only, no source per-record bank; deployment U384 memory explicit."
+  },
+  "checkpoint": {
+    "initialization": "OriginalF0 E50/11100/default6head and DURA R69 frozen, exact original neighborhood source prior. No adapter or prior target-adapted weights inherited.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-neighborhood-s2026092701-r01/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original source392005 sixclasses L/U/V and matched G10 prior codecb58217 targetreads0. U-only graph scoped to this targetRX/episode, never reused as blind source ancestry.",
+    "selection_rule": "Fixed one FP64 weighted harmonic solve on allU; pos margin>=0 MSP>=.95, neg margin<0 MSP<=.5; if either absent exactSKIPPED. No target truth/threshold or candidate choice."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-binary-graph-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_binary_graph_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_binary_graph_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-binary-graph-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One owned frozenF/G feature prediction worker, highest actualfree>=4096MB card0..7, <=2 additionalown/GPU; no foreign interference. Separate CPU scorer follows.",
+    "stop_rule": "Preserve direct protocol/provenance/nonfinite/collision/unable-prediction failure; seedempty/K0/scientificlow not technicalfailure/retry; UNKNOWN reconcile ownedPID/root before resubmission."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/predict.json",
+    "logs/*.log",
+    "predict/{smoke.json,Q_evidence.npz,predictions.npz,complete.json}",
+    "predict/adaptation/{complete.json,U_evidence.npz,graph.npz,graph.json,DA*.npz,DA*_diagnostics.json}",
+    "score/{scores.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "macro A_K",
+      "state-specific R_U",
+      "H-score",
+      "C_K",
+      "originalF0closed-loss",
+      "A_N",
+      "R_L",
+      "registrationretention",
+      "H_OW"
+    ],
+    "dimensions": [
+      "DA0/1xREG0/1",
+      "source-targetRX",
+      "UfitMarch8/futureQMarch15",
+      "TX",
+      "sixactualscenes",
+      "anonymousK",
+      "binaryseedpollution",
+      "pairedIDs"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_binary_graph_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "binary-graph-fourstates-s2026092701",
+      "method": "PAMF frozen identity binary graph",
+      "purpose": "Isolate targetU binary knownness adaptation without identity features/logits changes; automaticregistry fourfuturestates.",
+      "config_ref": "configs/pamf_phase3_star_binary_graph_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-s2026092701-r01/configs/predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": 2026102914,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "F0seed2026092701 and physicalUQ2026102914 reused; graph deterministic no model/sampler init. G10receiver2027/scene2026103001/channel2026104001; no resampling.",
+      "k": null,
+      "scenario": "G10 MIX01 RX24-1 P1 identity with P0/P1 rejection",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One U384 SPD binarysolve or exactskip, lambda1/seedweight10/k10/fixedcutoff0, 0 neuralupdates; memory384x160+sigma/f/IDs. FrozenF/G fullP0P1 once perUQ, complete4states.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-s2026092701-r01/predict",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_binary_graph_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-binary-graph-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/predict.json",
+        "logs/*.log",
+        "predict/{smoke.json,Q_evidence.npz,predictions.npz,complete.json}",
+        "predict/adaptation/{complete.json,U_evidence.npz,graph.npz,graph.json,DA*.npz,DA*_diagnostics.json}",
+        "score/{scores.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Primary DA1REG1 fixed, v3absolute targets unchanged. DA0absolute and source90 not prerequisite, no state replacement or formal/seed automatic expansion.",
+    "U binarygraph may fit currentRX/episode but sourceF/G/head/geometry/readout/tau all frozen; old identity never changes. Binaryseed pseudo supervision not true targetlabels.",
+    "Both scorerU anonymous maps fixed before Qtruth; AN allreal arrivals inclmisses, unmatched anonymous acceptedwrong, K0 valid.",
+    "All actual four3233 source readout snapshots scored/stored; explicit targetU memory and graph/NN distance costs reported separately, no sourcebank or B1speed claim."
+  ],
+  "registered_at": "2026-10-29T22:15:48+00:00"
+}

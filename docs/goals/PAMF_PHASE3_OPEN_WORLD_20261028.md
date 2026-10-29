@@ -626,3 +626,7 @@ code d3d8f5680fd72dc7ded272ffd1ded3143e490244/prereg544a313006685fa0f45f82a8a06e
 仅driver3267295独立live抓到正确CWD/argv/CUDA空；predict3267384由pipeline分配GPU6、score3267483 CPU，仅jobs/stdout，未抓子进程瞬时独立GPU显存或live log增长，不为遥测重跑。终态live/ownedGPU空、foreign干预0、predict/score/driver日志1052/1574/21B（driver0→21已观察）；三个complete齐。pipeline23.247853s、predictjob18.405200s/score4.763123s，predict内部13.545977s，含加载/数学检查、非B1或因果并行提速。
 
 完整逐类/场景/CI、400步训练窗口、K与污染、配对计数和posthoc表见docs/PAMF_PHASE3_STAR_RECIPROCAL_ADAPTER_RESULTS_20261030.md。当前不扩正式/seed、不更换控制、不调整旧阈值；后续独立机制需同时解决knownness的未知保护和新设备跨日泛化，不能把本轮oldgate结构改进或U纯cluster缩减成整个Phase3完成。
+
+## 2026-10-30 冻结身份的二元图适应已固定待发布
+
+新`20261030-phase3-star-binary-graph-s2026092701-r01`，code`bb9f5823f53bdbba6dd3e65f9f58dfe70bf86cdb`，独立于失败reciprocal；原F0/G/defaulthead/sourceprior完全冻结，仅U384一次FP64二元graph solve+匿名registry，合法U memory部署明确；futureQ864逐行只推理，四态全固定后独立score先U两maps后Qtruth。26 passed, 632 warnings, 24 subtests passed in 7.51s、8AST/实际runtime和唯一freshP0P1 PASS，单N607preflight PASS，当前尚未新启动/取得性能。详见本run与`docs/PAMF_PHASE3_STAR_BINARY_GRAPH_PLAN_20261030.md`；v3完整门槛不减、正式RX未读、goalACTIVE。
