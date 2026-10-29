@@ -1,0 +1,187 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-star-class-risk-s2026092701-r01",
+  "group_id": "pamf-phase3-star-predicted-class-risk",
+  "display_name": "PAMF第三阶段：预测类别条件风险阈值",
+  "description": "Frozen paired1000 rawscore/defaultP1 identity, knownV-only exact predicted-class threshold allocation versus global control; no new neural training or IQ.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-class-risk",
+  "aliases": [
+    "星地预测类阈值"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "class_threshold",
+    "CK90"
+  ],
+  "comparison_group_id": "phase3-star-global-versus-predclass-threshold",
+  "parent_run_ids": [
+    "20261029-phase3-star-paired-evidence-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "bb507e2b6f4d66bd808a485d70d64d25c3556da3",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-class-risk-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Frozen completed G10 source-known/novel predictions from 20261029-phase3-star-paired-evidence-s2026092701-r01",
+    "version": "Same fixed source record IDs and original P0/P1 observations; no new independent data",
+    "representation": "Parent paired1000 raw knownness and P1 default-head predictions; new two margin columns at threshold0",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "known_V_scores": 27000,
+      "heldout_novel_scores": 3150,
+      "new_source_L_IQ": 0,
+      "new_source_OE_IQ": 0,
+      "target": 0
+    },
+    "train_ratio": null,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-paired-evidence-s2026092701-r01/prediction/complete.json",
+    "support_query_ref": "KnownV only thresholds; novel fixed rawscore accessed after all thresholds freeze; target no handles",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Source known V threshold calibration only; original L/OE membership supervision inherited, no new source neural fit",
+    "query_use": "Parent source-novel scores only after source-known thresholds freeze; true novel TX only independent scorer",
+    "external_method_exception": null,
+    "claim_scope": "Source development only; neither unseenRX nor unlabeledtarget adaptation/registration"
+  },
+  "checkpoint": {
+    "initialization": "Frozen parent readout feature checkpoint for no-query smoke; no F/G checkpoint loading",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-paired-evidence-s2026092701-r01/prediction/readouts.npz"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-paired-evidence-s2026092701-r01/prediction/complete.json",
+    "provenance_verdict": "Parent paired1000 fitted only legal sourceL/OE; original F0/G ancestors retained; no target history or V neural fit",
+    "selection_rule": "Fixed paired1000 rawscore, predicted_class primary; common tail q chosen by knownV risk only, not novel"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-class-risk-20261029",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-class-risk-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-class-risk-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_class_risk_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_class_risk_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-class-risk-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "CPU-only CUDA invisible, zero added GPU worker; no foreign process changes",
+    "stop_rule": "Illegal frozen-parent/input/nonfinite/output collision or failed legal prediction/score preserves partial; scientificfail completes both policies, no retune/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "logs/*.log",
+    "configs/source.json",
+    "prediction/{complete.json,smoke.json,thresholds.npz}",
+    "prediction/calibration/complete.json",
+    "prediction/predict/{known_predictions.npz,novel_predictions.npz}",
+    "score/{results.json,complete.json}",
+    "observed_state.json"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "C_K>=.90",
+      "same-input originalF0 loss<=.02"
+    ],
+    "dimensions": [
+      "2threshold policies",
+      "42known groups",
+      "TX",
+      "5sourceRX",
+      "6scene",
+      "sixpredictedclass cutoffs"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-class-risk-s2026092701-r01/prediction",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_class_risk_score.py",
+    "definition_ref": "docs/PAMF_PHASE3_METRICS_20261029.md",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json"
+  },
+  "rows": [
+    {
+      "row_id": "star-class-risk-s2026092701",
+      "method": "Frozen paired knownness + predicted-class conditional thresholds",
+      "purpose": "Only predicted_class may qualify; global_control cannot replace it; no trueTX routing",
+      "config_ref": "configs/pamf_phase3_star_class_risk_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-class-risk-s2026092701-r01/configs/source.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "All model/split/scene/channel seeds inherited fixed parent; no new random fitting/sampling/augmentation",
+      "k": null,
+      "scenario": "G10 MIX01",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero new optimizer/F/G/IQ; knownV calibration1global+6conditional thresholds. Parent F0E50 and 2000readout updates ancestry retained",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-class-risk-s2026092701-r01/prediction",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-class-risk-s2026092701-r01/logs/source_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_class_risk_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-class-risk-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "logs/*.log",
+        "configs/source.json",
+        "prediction/{complete.json,smoke.json,thresholds.npz}",
+        "prediction/calibration/complete.json",
+        "prediction/predict/{known_predictions.npz,novel_predictions.npz}",
+        "score/{results.json,complete.json}",
+        "observed_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All prior model IQ G10 star, no new IQ model input or channel generation.",
+    "KnownV true labels only source risk; query cutoff conditioned on observable frozen head prediction, never trueTX/role/scene.",
+    "Six deployed scalars, no CDF or per-record bank, no source-V neural/geometry/normalizer fit, no conformal target guarantee.",
+    "Parent source model trained L6300/OE6134 and original F0weaklabels10%; thisrun no sourceNN training.",
+    "Source novel3 same sourceRX and historicallyexposed; target/DA/discovery/reg0, AN/HOW null."
+  ],
+  "registered_at": "2026-10-29T13:18:44+00:00",
+  "verification": {
+    "unique_relevant_tests": 24,
+    "subtests": 45,
+    "independent_review": "one candidate P0/P1 PASS",
+    "local_runtime_validation": "PASS",
+    "preflight": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_class_risk_20261029_r01\\preflight.json",
+    "real_checkpoint_smoke": "source first step: actual frozen parent readout checkpoint + two synthetic feature rows, no IQ/query or F/G loading; continue onPASS"
+  }
+}
