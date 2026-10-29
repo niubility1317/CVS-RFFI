@@ -10,10 +10,13 @@ def esc(s):
     return s
 
 def prose(s):
-    s=re.sub(r'(?<!\\)%',r'\\%',s)
-    s=re.sub(r'10\^\((-?\d+)\)',lambda m:'$10^{'+m[1]+'}$',s)
-    s=re.sub(r'(?<![\\\w])([A-Za-z]+_[A-Za-z0-9]+)',lambda m:'$'+m[1]+'$',s)
-    return s
+    # Citation/reference keys are identifiers, not inline mathematical variables.
+    parts=re.split(r'(\\(?:cite|ref|eqref)\{[^}]*\})',s)
+    for i in range(0,len(parts),2):
+        part=re.sub(r'(?<!\\)%',r'\\%',parts[i])
+        part=re.sub(r'10\^\((-?\d+)\)',lambda m:'$10^{'+m[1]+'}$',part)
+        parts[i]=re.sub(r'(?<![\\\w])([A-Za-z]+_[A-Za-z0-9]+)',lambda m:'$'+m[1]+'$',part)
+    return ''.join(parts)
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--source',type=Path,required=True);ap.add_argument('--catalog',type=Path,required=True);ap.add_argument('--results',type=Path,required=True);ap.add_argument('--output',type=Path,required=True);ap.add_argument('--plot-python',required=True);ap.add_argument('--skip-figures',action='store_true');a=ap.parse_args()
@@ -58,7 +61,7 @@ def main():
         for f in (out/'figures').glob('*.pdf'):shutil.copy2(f,p/'images'/f.name)
         (p/'references.bib').write_text(refs,encoding='utf-8')
         header=(r'\RequirePackage[T1]{fontenc}'+'\n' if lang=='zh' else '')+r'''\documentclass[journal,10pt]{IEEEtran}
-\usepackage{amsmath,amssymb,bm,graphicx,booktabs,array,cite,url,balance}
+\usepackage{amsmath,amssymb,bm,graphicx,booktabs,array,cite,url,xurl,balance}
 \interdisplaylinepenalty=2500
 \raggedbottom
 '''
