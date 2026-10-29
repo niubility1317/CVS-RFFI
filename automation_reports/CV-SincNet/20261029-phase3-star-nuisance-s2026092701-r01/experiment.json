@@ -1,0 +1,252 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-star-nuisance-s2026092701-r01",
+  "group_id": "pamf-phase3-star-nuisance-source-falsification",
+  "display_name": "PAMF第三阶段：星地域残差投影源端证伪",
+  "description": "Source-only fixed control/RX/RXday MD/RMD; L-only protected nuisance projection, known-only V risk calibration, G10 heldout-device score.",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-star-open-set",
+  "aliases": [
+    "G10域残差投影"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "nuisance"
+  ],
+  "comparison_group_id": "phase3-star-source-nuisance-three-variants",
+  "parent_run_ids": [
+    "20261029-phase3-star-source-novel-g10-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "fccbde38a407891db5acce776d6ad7af891f1341",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-nuisance-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Original source aggregates/L cache/knownV compact and fixed RX24-1 independent U/futureQ",
+    "version": "Existing VALIDATED_ONCE physical roles, no IQ or channel regeneration",
+    "representation": "Raw source L/V -> fixed G10; source-novel exact3150 fixed G10 -> P0/P1",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; source metadata; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\builder_report.json",
+    "label_map_ref": "known six source labels; novel TX only separate scorer",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L": 6300,
+      "known_V": 27000,
+      "heldout_device_validation": 3150,
+      "source_U_new_reads": 0,
+      "target": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3source-novel-g10-ec0c99642c5f15c96f42e055",
+    "split_id": "c570fdd9173191e488aa5690",
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "Source-only; no target U/Q handles",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Source L fitting/knownV threshold only/novel public after all freezes",
+    "query_use": "No target reads; novel TX/scenario truth only separate source scorer",
+    "external_method_exception": null,
+    "claim_scope": "Source development evidence only, repeated source RX/novel devices; no target or anonymous registration result"
+  },
+  "checkpoint": {
+    "initialization": "strict original F0 E50 plus fixed DURA",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Originalsource L/U/V matching Phase1 parent; no E51,auxiliaryOE,or prior target-adapted state; current targetRX disjoint",
+    "selection_rule": "Fixed original Phase1 final E50/11100, not selected using this G10target"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-nuisance-20261029",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_nuisance_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_nuisance_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-nuisance-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Dynamic0-7 actualfree>=4096MB, single own GPUworker, <=2added/card; foreign work unchanged",
+    "stop_rule": "Input/provenance mismatch, nonfinite, wrong shape/path, output collision or unlaunchable prediction/scoring; preserve partial. Scientific fail completes scoring, no retuning/restart."
+  },
+  "expected_artifacts": [
+    "pipeline_state.json",
+    "launch.json",
+    "logs/*.log",
+    "prediction/{smoke.json,complete.json,known_predictions.npz,novel_predictions.npz}",
+    "prediction/source/{P0,P1}/{geometry.npz,<variant>/metric.npz}",
+    "prediction/source/calibration/{thresholds.npy,complete.json}",
+    "score/{results.json,complete.json}",
+    "observed_state.json"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "known_correct_acceptance",
+      "unknown_macro_rejection",
+      "H_OS",
+      "oscr_auc_macro",
+      "same_input_F0_loss"
+    ],
+    "dimensions": [
+      "3variants",
+      "MD/RMD",
+      "P0/P1",
+      "TX/RX/day/6scene",
+      "42groups"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/prediction",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_nuisance_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json; nuisance plan advance_rule",
+    "definition_ref": "docs/PAMF_PHASE3_METRICS_20261029.md"
+  },
+  "rows": [
+    {
+      "row_id": "control-s2026092701",
+      "method": "FrozenF0 G10 control MD/RMD",
+      "purpose": "Fixed source falsification; sole primary rxday/RMD/P1",
+      "config_ref": "configs/pamf_phase3_star_nuisance_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/configs/source.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": 2026104001,
+        "support": null,
+        "evaluation": 2026102905
+      },
+      "seed_notes": "Original L/V/heldout mappings; fixed sameG10, no seed search",
+      "k": null,
+      "scenario": "G10 MIX01",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "36450 existing physical records, shared72900 F/36450 G forwards, neural0; truth-side independent",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/prediction/source/P1/control",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/logs/source_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_nuisance_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-nuisance-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "pipeline_state.json",
+        "launch.json",
+        "logs/*.log",
+        "prediction/{smoke.json,complete.json,known_predictions.npz,novel_predictions.npz}",
+        "prediction/source/{P0,P1}/{geometry.npz,<variant>/metric.npz}",
+        "prediction/source/calibration/{thresholds.npy,complete.json}",
+        "score/{results.json,complete.json}",
+        "observed_state.json"
+      ]
+    },
+    {
+      "row_id": "rx-s2026092701",
+      "method": "FrozenF0 G10 rx MD/RMD",
+      "purpose": "Fixed source falsification; sole primary rxday/RMD/P1",
+      "config_ref": "configs/pamf_phase3_star_nuisance_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/configs/source.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": 2026104001,
+        "support": null,
+        "evaluation": 2026102905
+      },
+      "seed_notes": "Original L/V/heldout mappings; fixed sameG10, no seed search",
+      "k": null,
+      "scenario": "G10 MIX01",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "36450 existing physical records, shared72900 F/36450 G forwards, neural0; truth-side independent",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/prediction/source/P1/rx",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/logs/source_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_nuisance_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-nuisance-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "pipeline_state.json",
+        "launch.json",
+        "logs/*.log",
+        "prediction/{smoke.json,complete.json,known_predictions.npz,novel_predictions.npz}",
+        "prediction/source/{P0,P1}/{geometry.npz,<variant>/metric.npz}",
+        "prediction/source/calibration/{thresholds.npy,complete.json}",
+        "score/{results.json,complete.json}",
+        "observed_state.json"
+      ]
+    },
+    {
+      "row_id": "rxday-s2026092701",
+      "method": "FrozenF0 G10 rxday MD/RMD",
+      "purpose": "Fixed source falsification; sole primary rxday/RMD/P1",
+      "config_ref": "configs/pamf_phase3_star_nuisance_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/configs/source.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": 2026104001,
+        "support": null,
+        "evaluation": 2026102905
+      },
+      "seed_notes": "Original L/V/heldout mappings; fixed sameG10, no seed search",
+      "k": null,
+      "scenario": "G10 MIX01",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "36450 existing physical records, shared72900 F/36450 G forwards, neural0; truth-side independent",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/prediction/source/P1/rxday",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-nuisance-s2026092701-r01/logs/source_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_nuisance_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-nuisance-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "pipeline_state.json",
+        "launch.json",
+        "logs/*.log",
+        "prediction/{smoke.json,complete.json,known_predictions.npz,novel_predictions.npz}",
+        "prediction/source/{P0,P1}/{geometry.npz,<variant>/metric.npz}",
+        "prediction/source/calibration/{thresholds.npy,complete.json}",
+        "score/{results.json,complete.json}",
+        "observed_state.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original Phase1 F0/default head only, same-path F0 closed baselines; fixed G no update.",
+    "L-only nuisance/metric/score scales; V only maximal legal known thresholds; novel public after freeze; private truth separate.",
+    "Primary P1/rxday/RMD must pass known42 plus unknown overall/5RX/6scenes90. No alternative candidate promotion.",
+    "Failure NO_PROMOTION without target access; source success only permits separately frozen small target test.",
+    "MD/RMD/controls all report; source novel devices have historical exposure, not fresh-device blind test."
+  ],
+  "registered_at": "2026-10-29T10:51:23+00:00",
+  "verification": {
+    "focused_unique_tests": 34,
+    "data_review": "PASS once",
+    "model_review": "PASS once",
+    "checkpoint_smoke": "First source job real frozen F0/G synthetic-star no-query, continues on PASS",
+    "preflight": "local_artifacts/pamf_phase3_star_nuisance_20261029_r01/preflight.json"
+  }
+}
