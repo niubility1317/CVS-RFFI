@@ -27,3 +27,20 @@ source五RX1/3/4/6/8、三日2021-03-08/15/23，与训练RX相同，保留三nov
 验证：原候选29集成tests/45subtests、launcher字段修复新增1回归PASS，原unique30/45sub保留；本次只新增1个参数对象回归，修复后1PASS3.58s，r02五AST/runtime schema PASS，未重跑未变suite。原唯一候选独立P0/P1 PASS，本参数P1一次定向复核PASS，未加第二次全审。一次本r02 N607 preflight检查原source契约/缓存四role/真实显存通过、target0；release一次archiveSHA比较/remotecompile、first-step actualcheckpoint noquerysmoke、启动PID/CWD/cmdline/GPU/log增长和truth-last同row分析按原最小流程执行。
 
 技术停止限祖先/角色错误、输出碰撞、非有限或无法完成合法prediction，保留partial、不原地重启。无performance结果或完成声明，目标仍ACTIVE。
+
+## 实际完成与科学结论（2026-10-30）
+
+VERIFIED / ANALYZED_SOURCE_ONLY，唯一主 `joint::ova_max` 为 NO_PROMOTION。teacher、两组各2220训练更新、各三决策冻结预测／18阈值以及独立CPU truth-last评分均完成；结果与完整日志已下载，checkpoint保留远端。完整分析见 `docs/PAMF_PHASE3_STAR_JOINT_OVA_RESULTS_20261029.md`，证据为本run `local_artifacts/pamf_phase3_star_joint_ova_20261029_r02/` 中的pipeline、observations、各row train/predict/calibration/score complete与全部4440步trace。
+
+| 固定决策 | 宏 A_K | 宏 R_U | H-score | 宏 C_K | 原F0同P1闭集−A_K |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| detach_control::ova_max | 91.292593% | 11.682540% | 20.714309% | 99.144444% | −0.311111pp |
+| joint::ova_max（唯一主） | 91.003704% | 24.920635% | 39.126729% | 98.462963% | −0.022222pp |
+
+两组原F0同P1闭集均90.981481%；主known42保护通过，但unknown总体＋5RX＋6scene共12组全未90%。joint较control净多拒417未知、已知正确净少78，不能以局部配对收益抵消绝对拒识失败。源novel跨RX1NN joint79.968254%、control79.206349%、原F0 78.793651%，结构guard通过，但它不是未来匿名注册A_N。AN/HOW=N/A，formal／target新读取0，没有扩seed或进入目标实验；完整Phase3 ACTIVE。
+
+固定校准产物表明，joint max的下一个既定common-tail候选在RX3/practical_mid触发总身份损伤2.012821pp，此时该组C_K仍94.6018%；control下一候选在RX3/practical_high触发2.332492pp。当前高总体接收与低拒识受局部身份保护约束影响；该诊断仅限已预登记common-tail阈值族，不重校准或断言所有阈值／表征均不可行。
+
+实际driver3073425，teacher3073522完成；joint train3073601/GPU2、control3073602/GPU4均已独立捕获正确CWD/argv/CUDA/706MB与日志增长，eval3075149/3075217同卡388MB也独立捕获。最终所有job为COMPLETE，live与ownedGPU为空，foreignstop=0。成功r02完整pipeline约177.740s，为整段离线研究耗时，不是部署单包时延。部署F232993＋aux966＋G266951=500910，完整native训练wrapper900722另列，不以wrapper计数冒充部署参数。r01失败产物与额外教师成本继续保留。
+
+发布archive `2d57af3dc18cfdae7b2e40c0aea7754d64be636a4504b13549de08b37c4eb632`，308文件／数据传输0，一次远端SHA比较、compile和runtime schema均VERIFIED。没有热修改、原地重启、测试回流选模或修改其他owner工作。
