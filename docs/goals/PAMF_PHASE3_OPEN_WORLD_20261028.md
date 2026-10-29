@@ -258,3 +258,9 @@ C0/P1 均实际应用 bias；DA1_REG0 相对 DA0_REG0 的旧 open 为 −3/576�
 该开发闭环完成不构成总Phase3完成；维持clean95%/star90%、FRR5%、同输入原F0open损失2pp、未来新类macro80%与旧类保留全部目标。
 
 下一科学假设是：冻结旧身份函数仍不足以使当前星地拒识几何可分；应区分候选集的旧类污染、两到达类合并及跨日期原型失配，再检验有约束的表征/拒识证据能否同时改善未来新类识别与后续拒识。该假设尚未实施，不回收本轮 Q 调参。
+
+## 统一G10星地开发输入已就绪
+
+`20261029-phase3-star-g10-pool-rx24-1-r01`已VERIFIED/VALIDATED_ONCE，code/config `3f24f8016f5586f096bbaa8d83f221b397dbbeb8`。保持RX24-1原U384/Q864物理角色，1248原记录按MILKR实际G10代码生成一份新MIX01星地观测；原clean/三景压力数据保留，主输入改为星地P0及同received的DURA P1。12tests/47subtests及唯一P0/P1 PASS，真实CPU数据作业与完整日志/产物已独立核对；模型/GPU/训练/预测/评分/正式RX24-18读取0。后续新source replay/calibration也必须先星地化；本数据run未给出新性能，完整目标ACTIVE。详见`docs/PAMF_PHASE3_STAR_G10_INPUT_20261029.md`。
+
+下一实际动作先建立与Phase1原L/V物理契约一致的G10 source统计/校准输入，再从Phase1原F0/default6头和冻结DURA进行新主条件的拒识/无标签适应/注册配对验证。不能把旧Phase3 E51的clean辅助训练或clean几何改标成满足新输入范围；若另作历史控制须完整披露祖先。源原始IQ仅builder可读，需从原始记录在一次RMS之前生成星地，避免把已归一化clean缓存当原始数据再归一化。此前讨论的relative/domain几何方案尚未实施/登记，须在正确星地输入上独立固定方法和控制；本轮没有新的神经训练或性能候选。

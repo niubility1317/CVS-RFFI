@@ -46,3 +46,32 @@ P0 为一份固定星地 received；P1 为这同一份 received 经固定 DURA v
 公开数据每角色仅manifest.json/ids.npy/received.npy，仍为phase3_min_v1；没有TX、真实未知数、类别配额、scene、geometry或clean参考。新的opaque ID带本run/episode，防止与旧信道输出混用。真值和实际场景/仰角/seed只存离线builder/scorer侧。方法从U自行发现未知数，Q只逐条预测。
 
 这次数据作业不加载F/G、训练、预测或评分，不改变Phase1/2任务。实际构建状态以run登记、PID/日志与complete产物读回为准；完整性能候选随后另立run，并使用星地≥90%、已知FRR≤5%/同输入open损失≤2pp、未来新类macro≥80%及注册旧类保持等全部目标。
+
+## 实际构建结果
+
+**VERIFIED／VALIDATED_ONCE／ANALYZED_DATA_ONLY**。实际代码/config `3f24f8016f5586f096bbaa8d83f221b397dbbeb8`，U384/Q864，1248个原物理记录各增加一份本MIX01固定星地实现；仅两已索引Full成员，未新增独立物理样本。旧U/Q角色保持，旧received/truth/scene/score读取均0；新F/G加载、训练、预测、评分、正式RX24-18读取和GPU新增均0。
+
+| 角色 | 实际场景 | 记录数 | 实际仰角°范围 |
+| --- | --- | ---: | --- |
+| discovery | practical_high | 17 | 45.7103 至 76.9954 |
+| discovery | practical_mid | 27 | 30.7488 至 43.6544 |
+| discovery | practical_low_suburban | 158 | 10.0764 至 29.6692 |
+| discovery | practical_high_urban | 20 | 45.4529 至 76.2168 |
+| discovery | practical_mid_urban | 32 | 31.3383 至 44.7697 |
+| discovery | practical_low_urban | 130 | 10.0724 至 29.9985 |
+| evaluation | practical_high | 39 | 45.1953 至 78.1206 |
+| evaluation | practical_mid | 67 | 30.0146 至 44.7757 |
+| evaluation | practical_low_suburban | 320 | 10.0422 至 29.6956 |
+| evaluation | practical_high_urban | 54 | 45.2506 至 77.8500 |
+| evaluation | practical_mid_urban | 60 | 30.5614 至 44.9584 |
+| evaluation | practical_low_urban | 324 | 10.0629 至 29.8799 |
+
+六景按参考G10概率逐记录抽样，有限样本计数无需等于配额，不按真实类别或角色重平衡。公开每角色精确三文件、phase3_min_v1；原始canonical、场景/仰角/seed和truth留私有builder/scorer侧。
+
+discovery capsule=`p3dev-star-g10-6e1292b62ab09286ebf1a0df`，split=`83c5cc1fe2f2a1512dbc1287`。
+
+evaluation capsule=`p3dev-star-g10-71a5a0dec23ac6ccc3b479c2`，split=`05de65cd4818f3e5e33ced5c`。
+
+完整读取本次11行stdout，无异常；已独立捕获真实子进程PID/命令与CLI的CWD，日志增长与终态artifact由build_observations/build_post_state记录；不把启动返回值当完成。此次只证明输入数据就绪，新的G10拒识/适应/注册性能尚未测定，Phase3目标保持ACTIVE。原clean与三等量压力景成绩不迁移到本设置。
+
+证据：`local_artifacts/pamf_phase3_star_g10_pool_20261029_r01/{pool/complete.json,pool/builder_report.json,analysis_summary.json,build.log,build_observations.jsonl,build_post_state.json}`；无IQ/私有truth/原始日志入Git。
