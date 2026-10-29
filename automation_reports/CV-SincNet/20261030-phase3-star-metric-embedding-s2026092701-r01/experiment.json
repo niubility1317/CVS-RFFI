@@ -1,0 +1,270 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-metric-embedding-s2026092701-r01",
+  "group_id": "pamf-phase3-star-metric-embedding",
+  "display_name": "PAMF第三阶段：冻结F0的独立拒识度量及未知结构保持",
+  "description": "Three fixed source arms: identity0, compactOE1000, compactOE+OEGram1000; independent 20704-parameter metric embedding with source-free Gaussian aggregates; original identity head frozen.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-metric-embedding",
+  "aliases": [
+    "独立拒识度量学习与未知结构保持"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "frozen_F0",
+    "metric_embedding",
+    "source_free_export"
+  ],
+  "comparison_group_id": "phase3-star-metric-embedding-structure-ablation",
+  "parent_run_ids": [
+    "20261030-phase3-star-local-support-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261029-phase3-star-joint-ova-s2026092701-r02",
+    "20261029-phase3-star-representation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "efb82a4177e9b59533b7e71408ded6b63fc8733a",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-embedding-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Original F0 same-G10-P1 unitfused160 teacher L/OE and parent V/novel features+defaultlogits; sourceL metadata old TX/RX only, no new real IQ.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_feature_training": 6300,
+      "source_L_TX_RX_metadata": 6300,
+      "source_OE_feature_training": 6134,
+      "known_V_calibration": 27000,
+      "heldout_novel": 3150,
+      "original_U_new": 0,
+      "target": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool\\complete.json; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "g and four L aggregates freeze before V; 12tau/deployment/cal/known freeze before novel; source features never exported in deployment, target U/Q untouched.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "L visible old TX/source RX for crossRX contrast; OE outside-six membership only, no OE TX/K; V labels calibrate tau only; private novel truth independent scorer only.",
+    "query_use": "No target or oldquery training. Each source row evaluates public historical source novel only after state freeze and independent truth-last.",
+    "external_method_exception": null,
+    "claim_scope": "Seen5sourceRX/3days and historically exposed3novel; no unseenRX/newTX blind claim. Only source-free weights/aggregate/threshold exported, not per-record bank."
+  },
+  "checkpoint": {
+    "initialization": "Original Phase1 F0/defaulthead and DURA frozen; new MetricNet from shared CPU seed2026092701 zero final layer; no pretrained or target-adapted metric state.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-local-support-s2026092701-r01/rows/original_F0/predict/{complete.json,source_bank.npz,known_predictions.npz,novel_predictions.npz}"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Same originalF0 sourcecontract392005 and frozenDURA/G10 cache ancestry; r02 teacher is pre-increment originalF0, never its updated model; source L labels align to role IDs.",
+    "selection_rule": "Final fixed1000 learned updates per arm/identity0, no earlystop, source V model fit or novel-driven hyperparameter/arm selection; sole main compact_oe_structure::predicted_identity_mahalanobis."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-metric-embedding-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_metric_embedding_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_metric_embedding_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-embedding-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "At most2 concurrent source train/predict workers, actualfree>=4096MB, eachGPU<=2added, foreign unchanged",
+    "stop_rule": "Legality/nonfinite/output collision/unable legal prediction preserve partial; no performance stop, arm swap or selective restart."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/*.json",
+    "logs/*.log",
+    "rows/*/state.json",
+    "rows/*/predict/{training.jsonl,training_complete.json,smoke.json,known_predictions.npz,novel_predictions.npz,complete.json}",
+    "rows/*/predict/calibration/complete.json",
+    "rows/*/predict/deployment/{model.pt,metric.npz,thresholds.npz,complete.json}",
+    "rows/*/score/{results.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "A_K",
+      "R_U",
+      "H-score",
+      "C_K",
+      "original_F0_closed_loss",
+      "source_novel_held_RX_1NN_diagnostic",
+      "complete_training_loss",
+      "source_free_deployment_state",
+      "compute_cost"
+    ],
+    "dimensions": [
+      "threefixedarms",
+      "twofixedmetric_scores",
+      "known42",
+      "unknown12",
+      "TX",
+      "RX",
+      "scene"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/rows/*/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_metric_embedding_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "star-metric-embedding-identity-s2026092701",
+      "method": "PAMF frozen F0 metric embedding identity",
+      "purpose": "Fixed main structure arm with matched noStructure and zero-update shared-architecture identity reference.",
+      "config_ref": "configs/pamf_phase3_star_metric_embedding_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/configs/identity_source_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "F0 modelseed2026092701; independent metric initialization CPU seed2026092701 and sampling seed2026103002; existing G10 scene2026103001/channel2026104001, no new IQ randomness.",
+      "k": null,
+      "scenario": "G10 MIX01 P1",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Zero metric optimizer steps; sourceL6300 aggregation + V27000/novel3150 g forwards; actualF0synthetic smoke2, realF/G0, F/head/G updates0.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/rows/identity",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/logs/identity_source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_metric_embedding_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-embedding-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/*/state.json",
+        "rows/*/predict/{training.jsonl,training_complete.json,smoke.json,known_predictions.npz,novel_predictions.npz,complete.json}",
+        "rows/*/predict/calibration/complete.json",
+        "rows/*/predict/deployment/{model.pt,metric.npz,thresholds.npz,complete.json}",
+        "rows/*/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "star-metric-embedding-compact_oe-s2026092701",
+      "method": "PAMF frozen F0 metric embedding compact_oe",
+      "purpose": "Fixed main structure arm with matched noStructure and zero-update shared-architecture identity reference.",
+      "config_ref": "configs/pamf_phase3_star_metric_embedding_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/configs/compact_oe_source_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "F0 modelseed2026092701; independent metric initialization CPU seed2026092701 and sampling seed2026103002; existing G10 scene2026103001/channel2026104001, no new IQ randomness.",
+      "k": null,
+      "scenario": "G10 MIX01 P1",
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "1000 metric steps, 120000L+128000OE exposures; fixed final; sourceL6300 aggregation + V27000/novel3150 g forwards; actualF0synthetic smoke2, realF/G0, F/head/G updates0.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/rows/compact_oe",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/logs/compact_oe_source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_metric_embedding_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-embedding-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/*/state.json",
+        "rows/*/predict/{training.jsonl,training_complete.json,smoke.json,known_predictions.npz,novel_predictions.npz,complete.json}",
+        "rows/*/predict/calibration/complete.json",
+        "rows/*/predict/deployment/{model.pt,metric.npz,thresholds.npz,complete.json}",
+        "rows/*/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "star-metric-embedding-compact_oe_structure-s2026092701",
+      "method": "PAMF frozen F0 metric embedding compact_oe_structure",
+      "purpose": "Fixed main structure arm with matched noStructure and zero-update shared-architecture identity reference.",
+      "config_ref": "configs/pamf_phase3_star_metric_embedding_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/configs/compact_oe_structure_source_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "F0 modelseed2026092701; independent metric initialization CPU seed2026092701 and sampling seed2026103002; existing G10 scene2026103001/channel2026104001, no new IQ randomness.",
+      "k": null,
+      "scenario": "G10 MIX01 P1",
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "1000 metric steps, 120000L+128000OE exposures; fixed final; sourceL6300 aggregation + V27000/novel3150 g forwards; actualF0synthetic smoke2, realF/G0, F/head/G updates0.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/rows/compact_oe_structure",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-embedding-s2026092701-r01/logs/compact_oe_structure_source.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_metric_embedding_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-embedding-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/*/state.json",
+        "rows/*/predict/{training.jsonl,training_complete.json,smoke.json,known_predictions.npz,novel_predictions.npz,complete.json}",
+        "rows/*/predict/calibration/complete.json",
+        "rows/*/predict/deployment/{model.pt,metric.npz,thresholds.npz,complete.json}",
+        "rows/*/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-free metric state is only20704NNparameters, fourFP64 aggregate arrays418560B and12tau96B; no per-record source state in deployment.",
+    "Train arms share CPU initialization and complete sampled batches; only OEGram weight0vs10 differs. Total2000optimizer updates; identity0 explicitly not matched training budget.",
+    "Known crossRX contrastT0.1 +10relu(maxOEprotoCos)^2 +0/10offdiagOEGramMSE; fixed noEMA/scheduler/earlystop.",
+    "Original defaultF0 head owns identity in every arm; independent g rejects only. Source novel structure is scorer diagnostic, never AN or a new target gate.",
+    "Input42584 physical records reused, seen sourceRX/historical source novel; target0 AN/HOWnull fullgoalACTIVE. ParentF30152 and historicalG cost retained; newF6 synthetic only."
+  ],
+  "registered_at": "2026-10-29T19:22:57+00:00"
+}
