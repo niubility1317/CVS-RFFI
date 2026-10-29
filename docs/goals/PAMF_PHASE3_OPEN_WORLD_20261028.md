@@ -18,6 +18,20 @@ Phase3 主场景为跨接收机星地观测。已知类正确接收率 A_K 相�
 
 先做单模型 seed 的小规模可证伪研究，合法源侧冻结候选、阈值与晋级规则后才访问预登记目标；通过科学阈值后扩展3模型 seed/未见 RX 确认。全部预登记预测固定后独立 truth-last 评分，报告逐 RX/场景/TX、宏主指标、配对收益、覆盖和统计限制；目标测试不用于调参、选模、选择性重跑或回收历史 query。保留 Phase1/2 与历史 Phase3 的数据、权重、输出、阈值和原判定，checkpoint 祖先必须匹配数据契约。代码配置以 Git 提交推送和远端 OID 读回固定，正式训练默认 N607，每 GPU 最多新增两个本任务训练/预测进程、启动前核实剩余显存，不停止、修改或重启其他用户/owner 工作，不覆盖已有输出。完整范围达成并有对应实测证据前，目标保持 ACTIVE；科学失败不宣称完成，真正缺少合法输入/权限时说明具体缺项。
 
+## 最新源端共同可行点单调扩展（2026-10-30）
+
+`20261030-phase3-star-common-seeded-risk-s2026092701-r01` 已VERIFIED/ANALYZED_SOURCE_ONLY，code `119210ba86fb8b569f6cdeb887d314c1458a2007`，唯一主joint::common_initialized_budget为NO_PROMOTION。固定两个r02 F/aux/rawmax；精确复用common与zero两个旧策略，只改变新预算从common可行点起步且六阈值逐项只增，42组宏C_K90／原F0总身份损伤2pp保持。
+
+主宏A_K90.922222%、C_K98.262963%、R_U28.825397%、H43.773215%，原F0同P1闭集90.981481%到open损0.059259pp。相对自身common的R_U24.920635%，多拒对123、丢失拒对0（+3.904762pp），已知正确少22、接受少54；H+4.646486pp。θ单调和逐ID接收子集由独立scorer核对；OE域宏代理56.668574%到57.253128%，仅31新增OE分数层。该结果排除了上一acceptall贪心退步的一部分初始化影响，但绝对拒识仍未达标，也不是全局最优证据。
+
+control的common初始化R_U32.317460%相对原11.682540%改善，OE域宏36.647997%到47.275538%、810新增层；控制仍不能替主。六运行点known42及原结构guard通过、unknown总体／五RX／六景共12组全部未90%，没有目标晋级或扩seed。完整方法／分组／轨迹／配对结果见 `docs/PAMF_PHASE3_STAR_COMMON_SEEDED_RISK_RESULTS_20261030.md`。
+
+仅重用同G10 P1公共knownV27000/OE6134/novel3150预测和原r02模型身份；无新真实IQ读取或前向、无F/aux/G/optimizer更新。每arm仅2条实际checkpoint合成G10 P0 noquery smoke，总F4，G0；42584原物理记录不增加。源仍为已见五RX与历史三novel，targetU/Q/formal读取0，A_N/H_OW=N/A。25tests/42subtests、4AST/runtime与唯一P0/P1通过，单archive比较/远端compile通过。
+
+driver3106658、source3106706/CUDA4和3106707/CUDA2有独立live PID/CWD/argv/env读回；前四次未出现owned nvidia显存样本，末次已全部终态，不伪造实际GPU占用或峰值，不为遥测重跑。所有source和独立CPUscore完整、live为空，foreign未改。完整跨新RX星地拒识、零目标标签适应、未知发现与未来匿名注册保持ACTIVE；source局部收益不能替代最终验收。
+
+后续评分路线的只读核查已完成：现有100D／106D描述和MD/RMD主要基于六类原型、均值和协方差，没有完整source L/OE bank的k近邻距离或局部支持比；novel内跨RX1NN只是评分端结构诊断。originalF0同G10 P1的L6300/OE6134单位fused160可从r02 teacher复用，novel3150的originalF0单位特征可从r02 baseline_fused_unit复用；当前指定完成目录中缺少V27000的同类单位特征。下一独立研究可检验局部支持分数并先补该合法源特征缺口，不能把该只读可行性结论写成新方法已实现／有效或目标已达成。
+
 ## 最新源端阈值风险分配比较（2026-10-30）
 
 `20261030-phase3-star-oe-risk-budget-s2026092701-r01` 已VERIFIED/ANALYZED_SOURCE_ONLY，code `585e10b07be1f6821edea08b4853582b92512aff`。冻结上述原r02两个F/aux及rawmax，比较精确复用的common_tail与新oe_risk_budget，唯一主joint::oe_risk_budget为NO_PROMOTION。新算法从接受全部开始，用source OE15域宏拒识收益贪心分配六预测类阈值，全部42组原F0身份保护2pp和C_K90约束保持；没有用novel调阈值或修改神经模型。

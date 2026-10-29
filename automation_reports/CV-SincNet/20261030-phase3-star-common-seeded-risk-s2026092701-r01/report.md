@@ -25,3 +25,24 @@ NN固定r02/code5aa041122396d48c49b8cb3d5912649bdc3217e1的两模型及966参数
 技术stop只限角色/来源/权限错误、非有限、输出碰撞或无法完成合法prediction，失败row保留partial，另一健康row继续。未知启动结果先读回不盲目重发，不能用低科学分数作为重启理由。
 
 验证：25tests/42subtests PASS7.09s，4AST与实际runtime schema PASS；包括None旧行为、真实初始known间隙风险、已有OE prefix、单调θ/逐ID子集、两个旧策略精确复现、freeze前不读novel及truth-before-validation负测。唯一独立P0/P1 PASS，其定向6tests10sub与主suite重叠不加计；不重复父suite/报告审批。本run一次N607 preflight核实两父pred及模型checkpoint/原sourcecontract/真实显存通过，target0。按最小流程做一个archive SHA比较、一次remotecompile、first-step actualcheckpoint smoke、PID/CWD/argv/GPU/log增长及完整预测后的独立评分，不增加数据重验或封印链。
+
+## 实际完成（2026-10-30）
+
+VERIFIED/ANALYZED_SOURCE_ONLY，唯一主joint::common_initialized_budget为NO_PROMOTION。两组source、三策略冻结预测/校准及独立CPU truth-last评分完整，终态live/ownedGPU为空；target0，AN/HOW=N/A，完整Phase3 ACTIVE。完整结果见`docs/PAMF_PHASE3_STAR_COMMON_SEEDED_RISK_RESULTS_20261030.md`。
+
+| 固定运行点 | 宏 A_K | 宏 C_K | 宏 R_U | H-score | 原F0闭集−A_K | OE域宏代理 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| detach_control::common_tail | 91.292593% | 99.144444% | 11.682540% | 20.714309% | -0.311111pp | 36.647997% |
+| detach_control::zero_initialized_budget | 90.381481% | 97.192593% | 20.253968% | 33.092172% | 0.600000pp | 40.116098% |
+| detach_control::common_initialized_budget | 90.562963% | 97.622222% | 32.317460% | 47.635984% | 0.418519pp | 47.275538% |
+| joint::common_tail | 91.003704% | 98.462963% | 24.920635% | 39.126729% | -0.022222pp | 56.668574% |
+| joint::zero_initialized_budget | 90.900000% | 98.274074% | 20.285714% | 33.169215% | 0.081481pp | 53.122567% |
+| joint::common_initialized_budget | 90.922222% | 98.262963% | 28.825397% | 43.773215% | 0.059259pp | 57.253128% |
+
+六运行点known42／原结构保护通过，但unknown总体／五RX／六景12组均未90%。主相对common多拒对123/lost0、少正确接收22/少接受54，RU+3.904762pp、H+4.646486pp；逐ID子集和两旧策略精确复现均独立确认。OE域宏56.668574→57.253128%，新joint31层、control810层，共841条新trace；旧zero的6550条只复用，不计新增优化。贪心仍非全局最优，控制较高RU32.317460%不能替主。
+
+NN/aux/G/optimizer更新0，真实新IQ读取／前向0，仅2合成G10 P0 noquery smoke/arm，总F4，G0；V/OE/novel公共数组复用、不增加物理记录。source仍已见RX／历史novel，不是跨新RX或匿名注册成功。
+
+driver3106658，source3106706/CUDA4和3106707/CUDA2已有正确live CWD/argv/env独立读回；前四次未采到owned nvidia显存，第五次已全terminal，故无显存/峰值，不为遥测重跑。source log562→679／553→652B为起末观察，CPUscore全部complete，foreign未改。整pipeline墙钟10.645742s，非逐包部署时延。
+
+实际code119210ba86fb8b569f6cdeb887d314c1458a2007，prereg60c217bc6b55dd6bfe73e11c5a3c731757f7c365，archiveed449b8d933b66a6d503d19b9768c29143849eafa0ddab308df12c571f2c2563／326文件／data0，一次SHA比较／compile／runtime VERIFIED。25tests42subPASS7.09s、唯一P0/P1 PASS，未重新训练／调阈值／选择性重跑或访问target。证据为本run完整pipeline、observations、两组predict/score、全部日志及JSON/NPZ。
