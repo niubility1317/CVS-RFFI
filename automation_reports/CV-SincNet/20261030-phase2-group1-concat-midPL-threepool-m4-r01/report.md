@@ -29,3 +29,7 @@ N607，8×RTX3090；每GPU至多2个本run训练/预测进程，其他owner另�
 停止规则：源/profile技术失败阻止其后继；至少两行同指纹的系统性pre-prediction错误、源cache服务失败、协议/输出冲突停止新接纳并保留partial。低分不停止、不调参、不重采信道，不修改其他owner。预测单元全部固定后才独立truth-last，分数不控制后续训练/排序。
 
 预期产物：`owner.json`、`method_matrix.json`、`jobs.json`、`pipeline_state.json`、`source/*/group1_complete.json`、`source/*/A_resources.json`、`resource_telemetry/*/A_end_to_end.json`、逐job日志、逐B/C资源及预测、独立scores与逐RX/TX/day指标。当前登记不证明这些产物已产生；启动后按PID/CWD/cmdline/GPU/log增长独立核实。
+
+## 实际运行与技术替代
+
+r01 外部方法已核实运行；PAMF E20 hook 缺失失败，其错误配方权重不继承。20261030-phase2-group1-concat-midPL-threepool-m4-r03 仅从零替代 PAMF，统一接管调度；健康外部 worker 保持原代码/PID/输出。旧停止队列未恢复。见新 run 报告与独立启动快照。

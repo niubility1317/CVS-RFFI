@@ -1,0 +1,2959 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+  "group_id": "phase2-group1-native-AB-AC-concat-midPL",
+  "display_name": "PAMF Phase2第一组：原生域适应/注册＋源拼接增强＋中期PL",
+  "description": "按最新第一组设计发布，14家族11已绑定；44个合法新source训练；DA只AB、注册只AC，PAMF另列BC与DURA四格；逐阶段资源全记录。",
+  "kind": "cvs",
+  "stage": "Phase2-A-B-C",
+  "aliases": [],
+  "tags": [
+    "Phase2",
+    "group1",
+    "native-task",
+    "concat",
+    "midpoint-PL",
+    "threepool",
+    "resources",
+    "DURA",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261029-phase2-threepool-episodes-s2026102901-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User2026-10-30:release approved Group1 matrix;all source defaults use satellite concatenation;new run only",
+  "code": {
+    "commit": "2466103beace0d7c72c8c50e22744201cd010835",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "configs/pamf_phase2_group1_release_20261030.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_only/partition/*/partition.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "483r10physicalpool/episode/RXcapsules",
+    "split_id": "9660r10actualKsplits",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/catalog.json",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit"
+  },
+  "permissions": {
+    "regime": "source_then_current_labeled_support",
+    "query_use": "test_only",
+    "external_method_exception": "native source replay/gallery/teacher/prototypes explicitly recorded;PAMF support only",
+    "claim_scope": "matched WiSig/256IQ/input ports and declared SDA/PL adaptations;not original dataset parity or fresh blind benchmark"
+  },
+  "checkpoint": {
+    "initialization": "scratch matching source contract;old runs not midpoint PL+concat",
+    "sources": [],
+    "source_only": true,
+    "checkpoint_reuse_count": 0,
+    "provenance_verdict": "SCRATCH_NEW_SOURCE_ONLY",
+    "selection_rule": "fixed_final_budget",
+    "contract_check_ref": "same VALIDATED_ONCE source contract;own stage20+10+20 ancestry only for PAMF;DURA frozen original",
+    "provenance_status": "new scratch;own-stage exact ancestry only;frozen DURA source history retained"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase2-group1-20261030",
+    "gpu_policy": "max_two_own_per_GPU_other_owners_additional",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase2_group1_release_20261030",
+    "launch_command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.pamf_phase2_practical.group1_dispatch",
+      "--runtime",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json"
+    ],
+    "stop_rule": "Stop descendants of failed source/profile;do not alter other owners;systemic source-cache/protocol/output failures stop new admissions;no target-score feedback"
+  },
+  "expected_artifacts": [
+    "pipeline_state.json",
+    "source/*/group1_complete.json",
+    "source/*/A_resources.json",
+    "resource_telemetry/*/A_end_to_end.json",
+    "predictions/*/predictions.json",
+    "scores/*/metrics.json",
+    "job_results/*.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro_accuracy",
+      "Macro_F1",
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "A_B_C_wall_seconds",
+      "CUDA_peak",
+      "CPU_RSS_peak",
+      "optimizer_steps",
+      "actual_updated_parameters",
+      "persistent_state_bytes"
+    ],
+    "dimensions": [
+      "method",
+      "stage",
+      "model_seed",
+      "RX",
+      "pool",
+      "episode",
+      "K",
+      "N",
+      "support_path",
+      "query_path"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/predictions",
+    "scorer_ref": "experiments.pamf_phase2_practical.episodic_score"
+  },
+  "rows": [
+    {
+      "row_id": "pamf_pl_milkr-s2026092701",
+      "method": "pamf_pl_milkr",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "original_full_supervised_native_CENTER_UNITS_20plus10plus20_optimizer_trajectory",
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/pamf_pl_milkr-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-pamf_pl_milkr-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-pamf_pl_milkr-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "pamf_pl_milkr-s2026092702",
+      "method": "pamf_pl_milkr",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "original_full_supervised_native_CENTER_UNITS_20plus10plus20_optimizer_trajectory",
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/pamf_pl_milkr-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-pamf_pl_milkr-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-pamf_pl_milkr-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "pamf_pl_milkr-s2026092703",
+      "method": "pamf_pl_milkr",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "original_full_supervised_native_CENTER_UNITS_20plus10plus20_optimizer_trajectory",
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/pamf_pl_milkr-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-pamf_pl_milkr-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-pamf_pl_milkr-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "pamf_pl_milkr-s2026092704",
+      "method": "pamf_pl_milkr",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "original_full_supervised_native_CENTER_UNITS_20plus10plus20_optimizer_trajectory",
+      "lr": null,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/pamf_pl_milkr-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-pamf_pl_milkr-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-pamf_pl_milkr-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "protonet_cda-s2026092701",
+      "method": "protonet_cda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "SGD0.01_200epochs_50episodes_each_6way_5support5query",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/protonet_cda-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-protonet_cda-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-protonet_cda-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "protonet_cda-s2026092702",
+      "method": "protonet_cda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "SGD0.01_200epochs_50episodes_each_6way_5support5query",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/protonet_cda-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-protonet_cda-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-protonet_cda-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "protonet_cda-s2026092703",
+      "method": "protonet_cda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "SGD0.01_200epochs_50episodes_each_6way_5support5query",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/protonet_cda-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-protonet_cda-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-protonet_cda-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "protonet_cda-s2026092704",
+      "method": "protonet_cda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "SGD0.01_200epochs_50episodes_each_6way_5support5query",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/protonet_cda-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-protonet_cda-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-protonet_cda-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "mrior_sda-s2026092701",
+      "method": "mrior_sda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/mrior_sda-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-mrior_sda-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-mrior_sda-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "mrior_sda-s2026092702",
+      "method": "mrior_sda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/mrior_sda-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-mrior_sda-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-mrior_sda-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "mrior_sda-s2026092703",
+      "method": "mrior_sda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/mrior_sda-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-mrior_sda-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-mrior_sda-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "mrior_sda-s2026092704",
+      "method": "mrior_sda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/mrior_sda-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-mrior_sda-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-mrior_sda-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "dadda_sda-s2026092701",
+      "method": "dadda_sda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/dadda_sda-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-dadda_sda-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-dadda_sda-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "dadda_sda-s2026092702",
+      "method": "dadda_sda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/dadda_sda-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-dadda_sda-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-dadda_sda-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "dadda_sda-s2026092703",
+      "method": "dadda_sda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/dadda_sda-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-dadda_sda-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-dadda_sda-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "dadda_sda-s2026092704",
+      "method": "dadda_sda",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/dadda_sda-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-dadda_sda-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-dadda_sda-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "twostage-s2026092701",
+      "method": "twostage",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/twostage-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-twostage-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-twostage-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "twostage-s2026092702",
+      "method": "twostage",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/twostage-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-twostage-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-twostage-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "twostage-s2026092703",
+      "method": "twostage",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/twostage-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-twostage-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-twostage-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "twostage-s2026092704",
+      "method": "twostage",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/twostage-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-twostage-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-twostage-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092701",
+      "method": "feature_separation_hu2024",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.005_batch256_sourceV_plateau_factor0.1_patience10",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/feature_separation_hu2024-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-feature_separation_hu2024-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-feature_separation_hu2024-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092702",
+      "method": "feature_separation_hu2024",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.005_batch256_sourceV_plateau_factor0.1_patience10",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/feature_separation_hu2024-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-feature_separation_hu2024-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-feature_separation_hu2024-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092703",
+      "method": "feature_separation_hu2024",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.005_batch256_sourceV_plateau_factor0.1_patience10",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/feature_separation_hu2024-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-feature_separation_hu2024-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-feature_separation_hu2024-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092704",
+      "method": "feature_separation_hu2024",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.005_batch256_sourceV_plateau_factor0.1_patience10",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/feature_separation_hu2024-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-feature_separation_hu2024-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-feature_separation_hu2024-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "poster_ft-s2026092701",
+      "method": "poster_ft",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/poster_ft-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-poster_ft-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-poster_ft-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "poster_ft-s2026092702",
+      "method": "poster_ft",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/poster_ft-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-poster_ft-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-poster_ft-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "poster_ft-s2026092703",
+      "method": "poster_ft",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/poster_ft-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-poster_ft-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-poster_ft-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "poster_ft-s2026092704",
+      "method": "poster_ft",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/poster_ft-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-poster_ft-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-poster_ft-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092701",
+      "method": "radionet_ada_knn",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/radionet_ada_knn-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-radionet_ada_knn-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-radionet_ada_knn-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092702",
+      "method": "radionet_ada_knn",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/radionet_ada_knn-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-radionet_ada_knn-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-radionet_ada_knn-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092703",
+      "method": "radionet_ada_knn",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/radionet_ada_knn-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-radionet_ada_knn-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-radionet_ada_knn-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092704",
+      "method": "radionet_ada_knn",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.001_200epochs_batch128",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/radionet_ada_knn-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-radionet_ada_knn-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-radionet_ada_knn-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "orthogonal-s2026092701",
+      "method": "orthogonal",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "SGD0.01_200epochs_batch128_full_base_geometry_loss_fixed_uniform_target_perturb0.01",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/orthogonal-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-orthogonal-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-orthogonal-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "orthogonal-s2026092702",
+      "method": "orthogonal",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "SGD0.01_200epochs_batch128_full_base_geometry_loss_fixed_uniform_target_perturb0.01",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/orthogonal-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-orthogonal-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-orthogonal-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "orthogonal-s2026092703",
+      "method": "orthogonal",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "SGD0.01_200epochs_batch128_full_base_geometry_loss_fixed_uniform_target_perturb0.01",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/orthogonal-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-orthogonal-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-orthogonal-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "orthogonal-s2026092704",
+      "method": "orthogonal",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "SGD0.01_200epochs_batch128_full_base_geometry_loss_fixed_uniform_target_perturb0.01",
+      "lr": null,
+      "epochs": 200,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/orthogonal-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-orthogonal-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-orthogonal-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "issl-s2026092701",
+      "method": "issl",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.03_300epochs_batch128_StepLR100_factor0.5",
+      "lr": null,
+      "epochs": 300,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/issl-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-issl-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-issl-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "issl-s2026092702",
+      "method": "issl",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.03_300epochs_batch128_StepLR100_factor0.5",
+      "lr": null,
+      "epochs": 300,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/issl-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-issl-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-issl-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "issl-s2026092703",
+      "method": "issl",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.03_300epochs_batch128_StepLR100_factor0.5",
+      "lr": null,
+      "epochs": 300,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/issl-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-issl-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-issl-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "issl-s2026092704",
+      "method": "issl",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "Adam0.03_300epochs_batch128_StepLR100_factor0.5",
+      "lr": null,
+      "epochs": 300,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/issl-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-issl-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-issl-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092701",
+      "method": "lora_triplet_knn",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "RMSprop0.001_alpha0.9_eps1e-7_1000epochs_batch32_sourceV_plateau0.2_patience10",
+      "lr": null,
+      "epochs": 1000,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/lora_triplet_knn-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-lora_triplet_knn-s2026092701.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-lora_triplet_knn-s2026092701"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092702",
+      "method": "lora_triplet_knn",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "RMSprop0.001_alpha0.9_eps1e-7_1000epochs_batch32_sourceV_plateau0.2_patience10",
+      "lr": null,
+      "epochs": 1000,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/lora_triplet_knn-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-lora_triplet_knn-s2026092702.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-lora_triplet_knn-s2026092702"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092703",
+      "method": "lora_triplet_knn",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "RMSprop0.001_alpha0.9_eps1e-7_1000epochs_batch32_sourceV_plateau0.2_patience10",
+      "lr": null,
+      "epochs": 1000,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/lora_triplet_knn-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-lora_triplet_knn-s2026092703.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-lora_triplet_knn-s2026092703"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092704",
+      "method": "lora_triplet_knn",
+      "purpose": "primary",
+      "config_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": 2026102904,
+        "augmentation": 2026102301,
+        "support": 2026102901,
+        "evaluation": 2026102903
+      },
+      "seed_notes": "Model controls own initialization/training RNG;pool/support/channel/query-order seeds fixed independently;episode channel seeds in r10 config.",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX8_plus_LS_MU_LU5_each",
+      "optimizer": "RMSprop0.001_alpha0.9_eps1e-7_1000epochs_batch32_sourceV_plateau0.2_patience10",
+      "lr": null,
+      "epochs": 1000,
+      "fl_rounds": null,
+      "budget_ref": "configs/pamf_phase2_group1_release_20261030.json",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/source/lora_triplet_knn-s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01/logs/source-lora_triplet_knn-s2026092704.log",
+      "command": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.pamf_phase2_practical.group1_dispatch",
+        "--runtime",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json",
+        "--job",
+        "source-lora_triplet_knn-s2026092704"
+      ],
+      "expected_artifacts": [
+        "group1_complete.json",
+        "A_resources.json"
+      ],
+      "notes": "Native task mechanism plus declared source PL/concat and WiSig input port;AB or AC only"
+    }
+  ],
+  "notes": [
+    "Missing numeric LR in row is intentional: full per-method optimizer/LR binding is in budget_ref, including native PAMF trajectory.",
+    "Inactive methods preserve author identity and do not enter scheduler. No legacy B10 or generic C extension.",
+    "Independent review P1 missing source_path fixed with failing-then-passing regression;targeted re-review PASS.",
+    "Source optimizer counters cover scheduler-wrapped steps;8 focused Group1 tests PASS;native/additional bridge tests PASS."
+  ],
+  "matrix": {
+    "methods": [
+      {
+        "id": "pamf_pl_milkr",
+        "category": "both",
+        "epochs": 50,
+        "PL_start_epoch": 26,
+        "method": "pamf",
+        "B": "native",
+        "C": "native",
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "protonet_cda",
+        "category": "DA",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "method": "protonet",
+        "B": "native",
+        "C": null,
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "mrior_sda",
+        "category": "DA",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "method": "mrior",
+        "B": "native",
+        "C": null,
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "dadda_sda",
+        "category": "DA",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "method": "dadda",
+        "B": "native",
+        "C": null,
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "twostage",
+        "category": "DA",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "method": "twostage",
+        "B": "native",
+        "C": null,
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "feature_separation_hu2024",
+        "category": "DA",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "method": "feature_separation_hu2024",
+        "B": "native",
+        "C": null,
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "poster_ft",
+        "category": "DA",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "method": "poster_ft",
+        "B": "native",
+        "C": null,
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "radionet_ada_knn",
+        "category": "DA",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "method": "radionet_ada",
+        "B": "native",
+        "C": null,
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "tweak",
+        "category": "DA",
+        "epochs": 100,
+        "PL_start_epoch": 51,
+        "method": "tweak",
+        "B": "native",
+        "C": null,
+        "active": false,
+        "unavailable_reason": "native_M10_observation_tracks_unbound",
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "csil",
+        "category": "CIL",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "method": "csil",
+        "B": null,
+        "C": "native",
+        "active": false,
+        "unavailable_reason": "author_MATLAB_Fisher_path_unbound",
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "mopc_hr",
+        "category": "CIL",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "method": "mopc_hr",
+        "B": null,
+        "C": "native",
+        "active": false,
+        "unavailable_reason": "original_encoder_binding_unresolved_no_generic_encoder_substitution",
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "orthogonal",
+        "category": "CIL",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "method": "orthogonal",
+        "B": null,
+        "C": "native",
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "issl",
+        "category": "CIL",
+        "epochs": 300,
+        "PL_start_epoch": 151,
+        "method": "issl_author_behavior",
+        "B": null,
+        "C": "native",
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      },
+      {
+        "id": "lora_triplet_knn",
+        "category": "CIL",
+        "epochs": 1000,
+        "PL_start_epoch": 501,
+        "method": "lora_triplet_knn",
+        "B": null,
+        "C": "native",
+        "active": true,
+        "unavailable_reason": null,
+        "native_scope": "original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter"
+      }
+    ],
+    "source_recipes": {
+      "pamf_pl_milkr": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "pamf_pl_milkr",
+        "method": "pamf",
+        "epochs": 50,
+        "PL_start_epoch": 26,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      },
+      "protonet_cda": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "protonet_cda",
+        "method": "protonet",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      },
+      "mrior_sda": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "mrior_sda",
+        "method": "mrior",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      },
+      "dadda_sda": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "dadda_sda",
+        "method": "dadda",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      },
+      "twostage": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "twostage",
+        "method": "twostage",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      },
+      "feature_separation_hu2024": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "feature_separation_hu2024",
+        "method": "feature_separation_hu2024",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      },
+      "poster_ft": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "poster_ft",
+        "method": "poster_ft",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      },
+      "radionet_ada_knn": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "radionet_ada_knn",
+        "method": "radionet_ada",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      },
+      "orthogonal": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "orthogonal",
+        "method": "orthogonal",
+        "epochs": 200,
+        "PL_start_epoch": 101,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      },
+      "issl": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "issl",
+        "method": "issl_author_behavior",
+        "epochs": 300,
+        "PL_start_epoch": 151,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      },
+      "lora_triplet_knn": {
+        "schema": "group1_source_concat_midPL_v1",
+        "profile": "lora_triplet_knn",
+        "method": "lora_triplet_knn",
+        "epochs": 1000,
+        "PL_start_epoch": 501,
+        "PL_threshold": 0.95,
+        "PL_weight": 1.0,
+        "U_batch_ratio": 2,
+        "satellite_concat": true,
+        "satellite_weight": 0.68,
+        "satellite_on": "L_only",
+        "U_objective": "ordinary_clean_source_PL",
+        "source_channel": "practical_residual_post_sync_noeq",
+        "source_channel_probabilities": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "source_channel_scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_channel_probability_schedule": [
+          [
+            0.0,
+            0.3
+          ],
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.45,
+            0.8
+          ]
+        ],
+        "source_fc_hz": 2462000000.0,
+        "source_fs_hz": 25000000.0,
+        "metric_temperature": 0.1,
+        "no_added_classifier": true,
+        "EMA": false,
+        "early_stopping": false,
+        "selection": "fixed_final_epoch",
+        "native_supervised_objective_retained": true,
+        "target_contact": false,
+        "U_TX_truth_read": false
+      }
+    },
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "primary": {
+      "pools": 3,
+      "episodes": 8,
+      "RX": 7,
+      "K": 5,
+      "N": 20
+    },
+    "curves": {
+      "episode": "MIX01",
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ]
+    },
+    "pure": {
+      "scenes": 3,
+      "episodes_each": 5
+    },
+    "canonical_configuration": "configs/pamf_phase2_group1_release_20261030.json"
+  },
+  "runtime": {
+    "host": "N607",
+    "GPU": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "max_own_per_GPU": 2,
+    "other_owners_additional": true,
+    "launch_owner": "codex/root/phase2-group1-20261030",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+    "release_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release",
+    "command": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.pamf_phase2_practical.group1_dispatch",
+      "--runtime",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase2-group1-concat-midPL-threepool-m4-r01-release/runtime.json"
+    ]
+  },
+  "status": "PREREGISTERED",
+  "unavailable_rows": [],
+  "registered_at": "2026-10-29T17:31:25+00:00"
+}
