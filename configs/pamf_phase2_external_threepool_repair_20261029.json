@@ -1,0 +1,41 @@
+{
+  "schema": "pamf_phase2_external_threepool_technical_recovery_v1",
+  "run_id": "20261029-phase2-external-threepool-m4-r02",
+  "parent_run": "20261029-phase2-external-threepool-m4-r01",
+  "repair_profiles": [
+    "mopc_paper",
+    "mopc_public_code"
+  ],
+  "repair_version": "mopc_support_train_mode_r02",
+  "method_change": "C current-support train mode restored every session;query/reference/prototype extraction eval;no LR/epoch/objective/data/seed changes",
+  "source_retraining": 0,
+  "source_smoke": "one actual checkpoint no-query smoke,immediately followed by repaired pilot",
+  "continuation": "adopt healthy workers without restarting;future non-MoPC jobs keep original release/runtime/output;reuse completed markers",
+  "data_validation": "Reuse existing r10 VALIDATED_ONCE and complete data_audit PASS",
+  "scoring": "P0/P1 and whole K/N unit predictions complete before independent truth-side scorer",
+  "resource_policy": "GPU0-7,two Phase2 core+external+repair workers perGPU,other owners additional;remaining memory>=5000MiB",
+  "stop_rule": "Any protocol/numerical/worker/output failure blocks that source/profile and descendants, preserves partials and unrelated healthy workers; no score-based stop/retry/selection. Core systemic failure stops new core work and unavailable shared-G descendants.",
+  "expected_outputs": {
+    "external_variants": 22,
+    "runnable_variants": 20,
+    "original_N_A": 2,
+    "external_chains": 28,
+    "source_bases": 68,
+    "source_checkpoints_reused": 44,
+    "new_source_training": 24,
+    "prediction_jobs": 77280,
+    "score_jobs": 38640,
+    "minimum_query_per_class": 176,
+    "core_prediction_jobs": 1932,
+    "core_scoring_jobs": 1932,
+    "repaired_prediction_jobs": 7728,
+    "repaired_score_jobs": 3864,
+    "repair_source_smoke_jobs": 1,
+    "new_source_training_this_repair": 0,
+    "inherited_continuing_source_training": "Only original RadioNet triplet seeds,original complete budget and paths"
+  },
+  "source_replay": "unchanged per-profile",
+  "failure_fingerprint": "FloatingPointError nonfinite registration training term in _mopc_register: C was in eval mode",
+  "local_validation": "Original-source checkpoint plus original actual support,CPU:before both versions nonfinite;after64/64 full-budget K/N/P0/P1 fits finite,query_rows0,truth_reads0",
+  "native_reference": "https://github.com/xmuLdz/MoPC-HR/blob/main/MoPC_HR_trainer.py#L128"
+}

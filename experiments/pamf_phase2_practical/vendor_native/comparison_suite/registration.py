@@ -544,6 +544,11 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
         stage_rows = ((y >= begin) & (y < end)).nonzero().flatten()
         reference = copy.deepcopy(model).eval()
         previous = {k: p.detach().clone() for k, p in model.named_parameters()}
+        # register_new_classes and prototype extraction leave the model in
+        # eval mode. Native MoPC optimizes each session in train mode; only
+        # current support updates BN. Re-enable it after every session's
+        # prototype extraction, while the reference and query stay in eval.
+        model.train()
         optimizer = torch.optim.SGD(model.parameters(), lr=cfg.mopc_lr,
                                     momentum=cfg.mopc_momentum, weight_decay=cfg.mopc_weight_decay)
         for epoch, iteration, rows in _batches(len(stage_rows), cfg.mopc_epochs, cfg.mopc_batch_size,
@@ -586,6 +591,7 @@ def _mopc_register(state: RegistrationState, x: torch.Tensor, y: torch.Tensor,
     state.prototypes = historical
     state.protocol_metadata.update(C_method="MoPC_HR_paper_CE_protoaugmentation_squared_layerHR",
         mopc_version="paper_equations_7_to_22", incremental_stages=stages,
+        C_training_mode="train_current_support_only", query_BN_updates=False,
         class_order=list(state.classes[state.old_count:]), class_order_frozen_before_query=True,
         prototype_correction_consumed_by_later_stages=len(stages) > 1,
         final_decision="trained_classifier_all_registered_logits",
