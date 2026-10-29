@@ -268,10 +268,11 @@ def bind_pamf_trainer(c):
     overlay.NATIVE=directory
     sys.path.insert(0,str(directory))
     native=overlay.native_modules()
-    actual=Path(inspect.getsourcefile(native.train)).resolve()
+    training_function=inspect.unwrap(native.train)
+    actual=Path(inspect.getsourcefile(training_function)).resolve()
     require(actual==(directory/'SSDG/train_ssdg.py').resolve(),
             'PAMF native trainer was already imported from a different release')
-    require('_source_labeled_feature_hook' in inspect.getsource(native.train),
+    require('_source_labeled_feature_hook' in inspect.getsource(training_function),
             'PAMF native trainer cannot execute the full supervised objective')
     return native
 

@@ -156,6 +156,11 @@ def test_PAMF_rejects_trainer_without_actual_supervised_hook(tmp_path,monkeypatc
     with pytest.raises(ValueError,match='full supervised objective'):
         bind_pamf_trainer({'frozen_sources':{'BASE':str(tmp_path)}})
     current=load("def train(args):\n    return getattr(args, '_source_labeled_feature_hook')\n")
+    import functools
+    implementation=current.train
+    @functools.wraps(implementation)
+    def profiled(*args,**kwargs):return implementation(*args,**kwargs)
+    current.train=profiled
     monkeypatch.setattr(overlay,'native_modules',lambda:current)
     assert bind_pamf_trainer({'frozen_sources':{'BASE':str(tmp_path)}}) is current
     assert overlay.NATIVE==path.parents[1]
