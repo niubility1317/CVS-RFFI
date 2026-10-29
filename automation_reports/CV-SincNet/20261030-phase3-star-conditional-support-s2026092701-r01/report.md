@@ -26,3 +26,22 @@ bank先于V固定，控制raw/六τ/margin/接收精确复现父pooled_relative�
 主报宏AK/RU/H/CK、原baseline损伤、42/12分组与逐TX/RX/scene、AUROC/OSCR/CI、同ID配对。NN499944=F232993+G266951，无aux；bank FP32特征7957760B/FP64工作15915520B，L_y50400B与RX/IDs/索引/workspace另计。新生产CPUscore和独立复核分别报告，不冒充B1端到端时延。
 
 验证：19 passed, 408 warnings, 57 subtests passed in 6.72s；四模块AST/实际runtime PASS，一次独立P0/P1 PASS。覆盖条件邻居/控制数值一致、标签权限/默认头、smoke先source、bank和12τ冻结顺序、私有truth在公有验证后、PASS也非targeteligible及source→score终态；不重复父suite。单preflight确认父完成/原F0身份及sourceL合法句柄/GPU余量，真实IQ/target读取0；单code/config commit、一个archive比较/compile、actualcheckpoint smoke、PID/CWD/cmd/GPU/log与全预测后独立评分，不加未来exporter或报告审批。
+
+## 实际完成（2026-10-30）
+
+VERIFIED / ANALYZED_SOURCE_ONLY。唯一主 `original_F0::predicted_identity_relative` 为 NO_PROMOTION；完整prediction、冻结12τ与独立truth-last评分均完成。完整结果见 `docs/PAMF_PHASE3_STAR_CONDITIONAL_SUPPORT_RESULTS_20261030.md`，完整Phase3 ACTIVE，A_N/H_OW=N/A。
+
+| 固定方法 | 宏 A_K | 宏 C_K | 宏 R_U | H-score | 原 F0 closed−A_K |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| pooled_relative | 90.470370% | 98.414815% | 27.015873% | 41.607187% | 0.511111 pp |
+| predicted_identity_relative | 90.485185% | 98.381481% | 25.111111% | 39.312393% | 0.496296 pp |
+
+两方法known42通过，unknown整体/5RX/6scene12组90%均失败。主相对控制known正确净+4、unknown拒对净−60、known接收净−9；A_K+0.014815pp、R_U−1.904762pp、H−2.294793pp。控制raw/六τ/margin/acceptance全部精确复现parent，未重新校准。AUROC/OSCR小幅提高不替代冻结运行点要求，三novel拒对数相对控制均减少。
+
+sourceL6300/OE6134/V27000/novel3150全部复用同原F0/同G10P1，source五RX/三日及historically exposednovel仍非未见RX/TX盲测；本轮仅新增L合法y元数据6300条作source bank分组，OE TX/K和原Us/target标签均未读。真实新IQ/F/G0，额外F2仅actualcheckpoint syntheticG10P0 smoke，NN/G/optimizer更新0；父F30152及历史P1恢复成本单列。freshclosed字段同父原F0复制（24565/27000=90.981481%），非本轮新真实前向。
+
+全部bank在V前、主6τ与控制6τ在novel特征打开前冻结，source predictor私有novel truth读取0，独立scorer公有复核后truth-last；targetU/Q/正式RX24-18读取0，无DA/发现/未来匿名注册。完整bank仅source诊断，不是可部署状态；eligible_primary/target_eligible即科学PASS也固定false，source_free_export_required=true，不能直接把逐样本source bank带到target。
+
+NN499944参数无aux；bankFP32特征7957760B/工作FP64特征15915520B/L_y50400B，另有RX/IDs/索引/workspace。CPU生产core.score 30150行30.578845s，独立公有复核31.914745s，pipeline72.418846s，均非B1部署时延或加速声明。
+
+driver3155703/row3155856/source3156415/CPUscore3156821已独立核实。source正确releaseCWD/argv/CUDA2、GPU350MiB实时样本非峰，日志564→653B，终态本run live/ownedGPU均空，foreign未干预。code0e5cfae40fb7f91825f695fbf4a1ac4fdaa6f0fe，prereg1bec291758fb8b0415fa204aa34de76d37fc827f；archive9725a58d0cfb6deb7e1b311daa73dfd243687b82cfce6e32ded0183701d31cf1，346files/data0，单SHA比较/remotecompile/runtime VERIFIED。19tests57subPASS6.72s、唯一独立P0/P1 PASS、首步原F0真实checkpoint合成星地smoke PASS，未重复父suite/调k/扩seed/换主或target访问。

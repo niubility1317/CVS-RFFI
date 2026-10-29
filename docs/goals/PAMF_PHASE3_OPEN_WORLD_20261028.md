@@ -468,3 +468,26 @@ baseline保留cache同输入原F0，而非新encoder自身closed；完整训练6
 20项聚焦测试/46子用例和一次独立P0/P1通过；单归档传输比较/remote compile/runtime/原F0实际checkpoint合成星地smoke均 VERIFIED。独立观察 driver3140372、source3140756 在正确 CWD/argv、CUDA2，实时显存388MB为采样值，日志1716→7337→10481B；评分3141520，终态 live/owned GPU 均空，foreign干预0。详细逐RX/scene/TX、校准边界及配对见 `docs/PAMF_PHASE3_STAR_LOCAL_SUPPORT_RESULTS_20261030.md`。
 
 本轮只完成源端拒识候选证伪，无目标适应、发现或未来匿名注册新结果，A_N/H_OW=N/A；用户 v3 指标与完整 Phase3 目标继续 **ACTIVE**。后续先依据已有实现收窄拒识表征和条件支持的缺口，另定机制与独立 run，不将此轮失败阈值转为目标反馈。
+
+## 2026-10-30 预测身份条件局部支持实际完成
+
+`20261030-phase3-star-conditional-support-s2026092701-r01` 已 VERIFIED / ANALYZED_SOURCE_ONLY，code `0e5cfae40fb7f91825f695fbf4a1ac4fdaa6f0fe`、prereg `1bec291758fb8b0415fa204aa34de76d37fc827f`。在同原 F0/default6head、同 G10 P1 单位 fused160、k8/eps1e-6 下，仅新增 source L 真实旧类分组；query 用原默认头的预测类选对应 L 子bank，OE 仍全bank，身份不改成邻居标签。匹配 pooled_relative 的 raw/六τ/margin/接收集合逐值复现父实验，未重新拟合控制。
+
+| 固定方法 | A_K% | R_U% | H-score% | C_K% | 原 F0 损失 pp |
+| --- | --- | --- | --- | --- | --- |
+| pooled_relative（原控制） | 90.470370 | 27.015873 | 41.607187 | 98.414815 | 0.511111 |
+| **predicted_identity_relative（主）** | **90.485185** | **25.111111** | **39.312393** | **98.381481** | **0.496296** |
+
+两方法 known42 保护通过，unknown 总体/五 RX/六景12组90%均失败，主候选 **NO_PROMOTION**。主相对控制正确接收获得21/丢失17（净+4）、未知拒对获得52/丢失112（净−60）、known接受净−9；A_K +0.014815pp、R_U −1.904762pp、H −2.294793pp。宏 AUROC 91.564951%、OSCR 84.866768%略高于控制的91.231017%/84.367286%，不能替代已冻结运行点的拒识要求。三未知类拒识312/1050、190/1050、289/1050，相对控制分别少22/4/34条；本轮没有支持条件邻域带来运行点收益。
+
+全部42584原物理记录和特征复用：L6300/OE6134 bank、V27000、novel3150，同已见五源RX、2021-03-08/15/23和历史曝光三novel。新增读取L的合法y元数据6300条，只用于source bank划分；不是解封U_s或OE的真TX/K。原F0同P1闭集仍24565/27000=90.981481%，fresh字段为父特征/头预测复用，不是本轮真实IQ新前向。bank在V前冻结，仅主六τ由V校准，控制六τ复用，全部12τ/cal/known写全后才打开novel特征；完整预测后独立truth-last评分。
+
+协议明确部署端不能回读逐样本source特征，因此**完整bank仅为source机制诊断，不能直接带入目标部署**。本轮显式 source_bank_is_deployment_state=false、source_free_export_required=true，eligible_primary/target_eligible在科学PASS情形也保持false；通过只允许另记聚合锚点/参数化的source-free导出研究。这是既有权限边界，不新增未来实现或本轮发布门槛；上轮fullbank结果同样不能当可部署状态。源端负结果未授权任何target访问。
+
+本轮真实IQ/F/G前向0、NN/optimizer/G更新0，额外F2仅actualcheckpoint synthetic G10 P0无query smoke；父F30152及历史P1恢复成本保留祖先。NN参数499944无aux，bankFP32特征7957760B/工作FP64特征15915520B，另需L_y50400B及RX/IDs/索引/workspace。CPU生产score30150行30.578845s、独立公有证据复核31.914745s、pipeline72.418846s，均非B1端到端时延或部署bank收益。
+
+19项集成测试/57子用例PASS6.72s，一次独立P0/P1 PASS（定向7/21与主suite重叠不加计）；单archiveSHA/remotecompile/runtime及首步原F0实际checkpoint smoke VERIFIED。driver3155703/source3156415（正确CWD/argv/CUDA2、350MiB实时采样非峰）、score3156821已独立核实，source日志564→653B，终态live/ownedGPU空、foreign干预0。完整分组/校准边界/成本与数据权限见 `docs/PAMF_PHASE3_STAR_CONDITIONAL_SUPPORT_RESULTS_20261030.md`。
+
+target U/Q、正式RX24-18新读取0，无新目标适应、发现或未来匿名注册，A_N/H_OW=N/A，完整 Phase3 **ACTIVE**。两项固定原F0邻域改动均未达拒识要求，后续不沿此结果扫k或重校准；优先研究可只导出参数/聚合状态的独立拒识表征，并保留未知结构。这是下一待证伪机制，不是已验证收益或对全目标的缩减。
+
+下一机制的具体研究范围（尚未运行）：继续冻结同一原F0及默认身份头，在合法同G10 P1的L/OE特征上单独学习拒识度量；检验旧类跨source RX紧凑、OE与旧类分离，以及OE相互几何关系保持的联合目标。目标端仅允许读取冻结的度量网络参数和类别聚合状态，不读取逐样本source bank；保留原F0映射的匹配控制，V仍只校准阈值、novel只冻结后评分。新网络、固定损失/预算和唯一主分数在独立run预登记后才运行，不按本轮某个novel TX设专属规则。该方向同时服务拒识与后续匿名身份结构，不替代跨未见RX、零标签适应和独立未来注册的最终验证。
