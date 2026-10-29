@@ -31,6 +31,7 @@
 |PAMF第三阶段：统一星地G10开发观测|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-g10-pool-rx24-1-r01/report.md)|
 |PAMF第三阶段：星地域残差投影源端证伪|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-nuisance-s2026092701-r01/report.md)|
 |PAMF第三阶段：星地G10相对距离与无标签注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-relative-s2026092701-r01/report.md)|
+|PAMF第三阶段：星地开放集表征与防塌缩学习|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-representation-s2026092701-r01/report.md)|
 |PAMF第三阶段：源辅助未知成员G10训练观测|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-source-exposure-g10-r01/report.md)|
 |PAMF第三阶段：源端留出设备G10星地观测|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-source-novel-g10-r01/report.md)|
 |PAMF第三阶段：冻结身份的无标签适应与匿名注册四态闭环|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-unlabeled-registration-s2026092701-r01/report.md)|
