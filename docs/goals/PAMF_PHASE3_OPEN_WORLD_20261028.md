@@ -1,12 +1,20 @@
 # PAMF Phase3：跨接收机星地无标签开放世界识别
 
+## 当前主报与验收（2026-10-29，用户最新指定）
+
+Phase3 主场景为跨接收机星地观测。已知类正确接收率 A_K 相对同输入、同路径原冻结 PAMF 闭集宏准确率下降不超过 2 个百分点；已知类宏接收率 C_K≥90%，未知类宏拒识率 R_U≥90%，总体及预登记主场景均检查。C_K 的 90% 覆盖此前 Agent 设置的 95%（FRR≤5%）；当前对应 FRR≤10%。后续再收紧 2pp 损失预算，由用户指定。
+
+主表固定报告逐 TX 宏平均 A_K、R_U、H-score，其中 H-score=2 A_K R_U/(A_K+R_U)，先各自宏平均再求调和平均；接收但身份错误不计 A_K。C_K、同输入闭集准确率和 closed−open 损失并列作验收依据，宏 AUROC/OSCR 辅助诊断。H-score 不另设统一硬门槛，不替代上述同时成立的约束。详细定义和计算边界见 `docs/PAMF_PHASE3_METRICS_20261029.md`，机读要求为 `configs/pamf_phase3_targets_20261029.json` v3。
+
+后续继续零目标 TX 标签适应、未知发现和未来匿名注册；原未来新类宏识别≥80%、注册前后旧类损失≤2pp、后续星地未知拒识≥90%等未修改项继续保留。clean 跨接收机拒识95%仅为 Phase1 地面参考，后续模型新消费的 IQ 全部叠加星地。历史 run 的预登记、阈值、结果和判定不追改。本文下方旧目标、旧资源／方法矩阵和完成记录按原时间保留，不覆盖本节最新口径。完整目标仍 ACTIVE。
+
 ## 离开 Phase1 后全部使用星地观测（2026-10-29，用户最新澄清）
 
 用户引用“评估 MILKR 的无标签适配”（thread `01a18197-50fe-7f93-bd50-7f98d3f59cff`），明确 Phase1 后接触的样本都叠加星地。已实际读取该任务，并核对 r09/r10 文档、六分量配置和已提交 `data.observe` 源码（`71f1428c8ac85695ebffb2efd791fe34061b325b`）。Phase3 新的 U、发现、注册、未来 Q，以及新消费的 source replay/辅助训练/校准 IQ 均为星地；Phase1 固定权重/聚合祖先保留，原始地面 IQ 仅离线生成 received，不供方法逐条参考。下文历史 clean/三景矩阵与完成记录保持原身份，以本节为后续范围。
 
 主条件改为 MILKR G10：600km/25MHz/2.45GHz、residual/post_sync/noEQ、一次输入 RMS、输出不重归一化、receiver seed2027，六场景按覆盖面积概率抽样。综合 low/mid/high 为10–30/30–45/45–80度；指定单景 mid urban 仍20–45度。P0 是星地 received，P1 是同 received 经固定 DURA，两条都不是 clean。新 episode 重抽信道，方法/种子/P0P1共享该 episode 的固定 received；不把重复原记录计为更多物理样本，也不引入 Phase2 的标签/真实K或 query回收权限。
 
-当前 Phase3 主验收为跨RX星地总体及预登记主景未知宏拒识≥90%，在此约束下最大化已知接收并保留FRR≤5%、同输入closed到open损失≤2pp；适应须有旧类正收益，未来匿名新类macro≥80%、注册旧类损失≤2pp、后续未知拒识≥90%。原clean跨RX95%仅保留地面参考，不作后续Phase3新数据路由或星地成功证明。目标保持ACTIVE，完整无标签开放世界范围不缩减。
+当前 Phase3 主验收以上方最新口径为准：跨RX星地总体及预登记主景未知宏拒识≥90%，已知宏接收≥90%、同输入closed到open损失≤2pp；适应须有旧类正收益，未来匿名新类macro≥80%、注册旧类损失≤2pp、后续未知拒识≥90%。原clean跨RX95%仅保留地面参考，不作后续Phase3新数据路由或星地成功证明。目标保持ACTIVE，完整无标签开放世界范围不缩减。
 
 先构建新独立 `20261029-phase3-star-g10-pool-rx24-1-r01`：仅复用原RX24-1 U384/Q864物理角色，按MIX01原G10配置重叠加一次；旧received与成绩保留，不再新增clean实验。此数据作业不读模型、训练、预测、评分或正式RX24-18，后续方法另记run；未声明新G10性能已达标。细节见 `docs/PAMF_PHASE3_STAR_G10_INPUT_20261029.md`。
 
@@ -22,7 +30,7 @@
 
 在当前三视图PAMF/Tri-SIG-TIME SSL基础上，完成跨接收机开放世界RFFI：clean条件未知TX宏拒识≥95%，叠加practical residual星地后总体及每主场景≥90%；在这些约束下最大化已知类接收率，同时保留FRR≤5%及同输入原F闭集到开放损失≤2pp。依次实现冻结模型拒识、零目标TX标签适应、未知类别发现和匿名持续注册；适应须有旧类正收益，注册须在未来独立观测新类宏识别≥80%、旧类较注册前损失≤2pp、后续未知维持相应95%/90%拒识。目标端不提供TX标签、known/unknown角色、未知类别数或类别配额；允许的无标签发现数据必须与最终query物理互斥。真实身份命名/业务授权与匿名设备注册分开。预测先固定、独立truth-last评分；不根据目标成绩调阈值、选模或选择性重跑。保留Phase1/2原产物，先做单模型seed小规模可证伪实验，源侧冻结规则且达到科学门槛后扩展3个模型seed确认。指标未达时保留负结果，不擅自降低门槛或宣称完成。
 
-## 验收口径
+## 原验收口径（历史，当前以首节最新要求为准）
 
 |任务|量化目标|评价限制|
 |---|---|---|
@@ -319,3 +327,18 @@ P1：REG0 RMD拒识2.7778%、旧接收97.5694%、open71.1806%；注册后新macr
 主对control的ΔA_K/ΔR_U/ΔH_OS/ΔOSCR/ΔAUROC=0.1778/-4.0952/-7.4520/-0.9160/-1.0847pp；不按单项换主。资源samples=[(2849941, 798), (2849941, 832)]非peak，终态owned/live0、foreignstop0。
 主分数AUROC82.7789%低于同时95%接收与90%拒识所需85.5%必要界；known保护已过，问题是源开放集分离，而非闭集head漂移。主P1五branch硬删除rank12/15/9/5/3虽保留preunit类间span，reunit后fused类均值仍变化31.29%；该机制未通过源端证伪，不推进target。
 完整逐RX/scene/TX、42组保护、实际投影rank/能量与类间损伤、计数及权限边界见 `docs/PAMF_PHASE3_STAR_NUISANCE_RESULTS_20261029.md`。无target验证/DA/注册结果，不宣布Phase3完成；后续假设未实施。
+
+## 2026-10-29 G10 源端表征学习结果
+
+`20261029-phase3-star-representation-s2026092701-r01` cache＋三arm train/eval/score均完成；固定主 `oe_vic/P1/energy`：**NO_PROMOTION**，总目标 **ACTIVE**。
+
+| arm/P1 energy | C_K% | A_K% | R_U% | H_OS% | macroOSCR% | F0损pp | arm源gate |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| anchor | 97.4778 | 90.4852 | 17.0159 | 28.6450 | 79.3009 | 0.4963 | False |
+| oe | 98.2074 | 90.8222 | 22.1905 | 35.6666 | 84.2900 | 0.1593 | False |
+| oe_vic | 98.4481 | 90.7259 | 25.3968 | 39.6847 | 83.3727 | 0.2556 | False |
+
+三组从原F0 E50/11100独立2220 IID更新至13320，L两view CE＋同输入原F0 KD；B加OE uniformKL，C再加OE raw-fused VICReg。L6300标签＋OE6134 outside-six额外成员监督，V27000只42组τ，novel3150只冻结后源评分；target/U_s0。
+baseline保留cache同输入原F0，而非新encoder自身closed；完整训练6660步、Sinc/head梯度与buffer不变、曝光、七方法/两path/分组/逐TX/源1NN及资源边界见 `docs/PAMF_PHASE3_STAR_REPRESENTATION_RESULTS_20261029.md`。
+本轮按事前C_K≥95%/R_U≥90%/原F0总损≤2pp判定，不追改；后续用户新C_K≥90%口径另见targets/metrics，未重算本轮τ。C相对B运行点H升4.0182pp，但A_K降0.0963pp、macroOSCR降0.9173pp、源1NN降13.2063pp，不能据H或接收率单项推进。
+源1NN为已有五source RX间heldout TX结构诊断，不是A_N；A_N/H_OW=N/A，无DA/发现/注册。source成功也不意味着完整Phase3达成，控制不能替换C，下一假设未实施。

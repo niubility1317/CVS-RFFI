@@ -32,8 +32,8 @@
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-representation-s2026092701-r01-release"
   },
   "data": {
-    "dataset": "Original source aggregates/L cache/knownV compact and fixed RX24-1 independent U/futureQ",
-    "version": "Existing VALIDATED_ONCE physical roles, no IQ or channel regeneration",
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
     "representation": "All G10received plus fixed DURA P1 cache; trainingP1 and received-derived phase/gain views only",
     "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
     "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",

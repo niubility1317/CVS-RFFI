@@ -3,7 +3,7 @@
 - run_id：`20261029-phase3-star-source-exposure-g10-r01`
 - group_id：`pamf-phase3-star-source-membership-training`；类别：`data`；阶段：`Phase3-source-G10-membership-data`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED；完整实测与科学判定见下。
 
 ## 目的与对照
 
@@ -21,9 +21,17 @@ Exact6134 original sourceOE21 records, fixed G10, preserved nonuniform domains; 
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+实际作业已完成，源端结果及权限边界见末尾追加。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-10-29 source exposure G10 数据实测结果
+
+`20261029-phase3-star-source-exposure-g10-r01` VERIFIED_COMPLETE，code `d319e3196f90113045a4f4f0958eeffe497f8785`；复用原6134 source辅助物理映射生成G10，21个非初始六类设备仅公开membership，无TX/K进入模型，未读取target。
+
+只捕获terminal post：PID61824、1321B/18行；无live/GPUgrowth证据，foreignstop0。
+
+这些是旧物理记录的新固定星地计算视图，不新增独立物理样本；与历史OE4重叠537条，非历史独立。后续三arm完整科学结果见 `docs/PAMF_PHASE3_STAR_REPRESENTATION_RESULTS_20261029.md`，不可把source资格写成跨RX或注册成功。

@@ -1,6 +1,7 @@
 {
-  "schema": "pamf_phase3_scientific_targets_v2",
+  "schema": "pamf_phase3_scientific_targets_v3",
   "effective_user_update": "2026-10-29",
+  "latest_user_change": "C_K>=90%, R_U>=90% in the satellite primary condition; A_K no more than 2 percentage points below the same-input same-path original closed-set baseline; primary report uses class-macro A_K, R_U and their harmonic mean",
   "cross_receiver_required": true,
   "post_phase1_input_policy": {
     "primary_condition": "practical_cross_receiver",
@@ -20,10 +21,21 @@
   "each_preregistered_main_scene_required": true,
   "known_macro_acceptance": {
     "objective": "maximize subject to unknown rejection and known identity protection",
-    "minimum": 0.95,
+    "minimum": 0.90,
     "definition": "1 minus known macro false rejection rate; wrong accepted identity is reported separately"
   },
   "known_open_accuracy_drop_from_same_input_original_closed_max": 0.02,
+  "primary_report": {
+    "metrics": ["A_K", "R_U", "H-score"],
+    "averaging": "First calculate within each required true TX, then weight TX equally; known and unknown rosters are separate",
+    "A_K": "known_macro_open_accuracy: correct identity AND accepted, divided by all known observations within each TX",
+    "R_U": "unknown_macro_rejection: rejected observations divided by all unknown observations within each TX",
+    "H-score": "2*A_K*R_U/(A_K+R_U), using macro A_K and macro R_U; zero when either measured component is zero, null when required coverage is missing",
+    "H_score_independent_hard_threshold": null,
+    "accompanying_constraints": ["C_K>=0.90", "A_K>=original_F0_macro_closed_accuracy-0.02", "R_U>=0.90 for the satellite primary condition"],
+    "secondary_metrics": ["C_K", "original_F0_macro_closed_accuracy", "original_closed_minus_new_open", "auroc_known_macro", "oscr_auc_macro"],
+    "drop_unit": "absolute proportion difference; 0.02 equals 2 percentage points, not a 2% relative reduction"
+  },
   "unlabeled_adaptation": {
     "target_tx_labels": 0,
     "known_open_accuracy_gain_required": true,
