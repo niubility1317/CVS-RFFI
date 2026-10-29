@@ -1,0 +1,230 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261029-phase3-star-joint-ova-s2026092701-r01",
+  "group_id": "pamf-phase3-star-joint-OVA-feature-preservation",
+  "display_name": "PAMF第三阶段：开放损失联合表征与特征保真",
+  "description": "Matched originalF0 E50 increments, same CE/KD/unitfeature teacher and auxiliaryOVA, only auxiliary encoder gradient detached vs joint; fixed2220 each, P1 real inputs.",
+  "kind": "diagnostic",
+  "stage": "Phase3-star-source-joint-open-representation",
+  "aliases": [
+    "星地联合OVA与保结构"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "native_gradient",
+    "OVA",
+    "feature_distillation"
+  ],
+  "comparison_group_id": "phase3-star-detach-vs-joint-OVA",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261029-phase3-star-representation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "6043b64d69df2cd877547fad5a71a36a2f2c4f76",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-joint-ova-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Real source inputs cached G10 P1 only; originalF0 unit-feature teacher on L/OE, native F+originalhead joint source training, frozen original F0 baseline; synthetic G10 P0 smoke separately counted",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json; originalL/Vmetadata; sourceOE21/novel G10builder mappings",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "known_V": 27000,
+      "heldout_novel": 3150,
+      "original_U_new_reads": 0,
+      "target": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool\\complete.json; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "No targetU/Qhandles. L/OEtrain, Vonly18thresholds perrow aftertrainingfreeze, novelpredictiononlyaftertau; independent truth with sourcecrossRX1NN diagnostic",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "SourceL trueold6 labels+sourceOE outside-six membership/domain, no OE TX/K, no target labels",
+    "query_use": "No targetquery. Sourceheldoutnovel only frozenprediction/retrievaldiagnostic afterallthresholds; trueTX onlyCPUscorer",
+    "external_method_exception": null,
+    "claim_scope": "Two matched source-only native increments; same sourceRX and historicalnovel, no targetcrossRX/DA/registration evidence"
+  },
+  "checkpoint": {
+    "initialization": "Both arms independently strictoriginalF0 E50/11100 with fresh optimizers; separate auxiliary966 not replacement identityhead",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original full-six sourcecontract matching; newsourceOE allowed by Phase3 auxiliaryprotocol, no prior Phase3 increment or target-adapted state",
+    "selection_rule": "Final2220 endpoint only; fixedprimary joint::ova_max, no V/novelcheckpoint choice; originalF0 baseline never reset to candidateclosed"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-star-joint-ova-20261029",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_joint_ova_20261029_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_joint_ova_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-joint-ova-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Teacher singleGPU then max2rows on distinctactualfree>=4096MB cards, eachcard<=2added, foreign unchanged",
+    "stop_rule": "Technical legality/nonfinite/collision/unablelegalprediction preservesfailedrow; healthyindependentrowcontinues; scientificfail notretune/restart/target access"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "logs/*.log",
+    "configs/*.json",
+    "teacher/{complete.json,smoke.json,L.npz,OE.npz}",
+    "rows/<arm>/state.json",
+    "rows/<arm>/train/{final.pt,complete.json,training.json,steps.jsonl,smoke.json}",
+    "rows/<arm>/predict/{complete.json,smoke.json,known_predictions.npz,novel_predictions.npz,thresholds.npz,calibration/complete.json}",
+    "rows/<arm>/score/{results.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "A_K",
+      "R_U",
+      "H-score",
+      "C_K",
+      "originalF0closed_loss",
+      "candidateclosed",
+      "source_novel_crossRX1NN_guard"
+    ],
+    "dimensions": [
+      "2fixedarms",
+      "3fixedscores",
+      "42knownriskgroups",
+      "overall5RX6sceneunknown",
+      "TX",
+      "2220steptraces",
+      "source_novel1NN_notregistration"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r01/rows/<arm>/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_joint_ova_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3"
+  },
+  "rows": [
+    {
+      "row_id": "detach_control-s2026092701",
+      "method": "PAMF source jointOVA detach_control",
+      "purpose": "Only primaryjoint::ova_max canadvance; samebudget and initialF/aux, encodergradientonly difference",
+      "config_ref": "configs/pamf_phase3_star_joint_ova_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r01/configs/detach_control_train_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Lsampler2026092701/OEdomainSampler2026102907, sameindependentstreams andfixedG10; no randomview/trueK",
+      "k": null,
+      "scenario": "G10 MIX01P1",
+      "optimizer": "Fresh nativephysicalAdamW F plus separateAdamW auxiliary",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220IID jointupdates perarm, L128+OE128 onceP1concat256, cumulativeF13320; aux2220samebudget; eacharm4440optimizer.step calls, nottennaturalepochs",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r01/rows/detach_control",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r01/logs/detach_control_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_joint_ova_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-joint-ova-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "logs/*.log",
+        "configs/*.json",
+        "teacher/{complete.json,smoke.json,L.npz,OE.npz}",
+        "rows/<arm>/state.json",
+        "rows/<arm>/train/{final.pt,complete.json,training.json,steps.jsonl,smoke.json}",
+        "rows/<arm>/predict/{complete.json,smoke.json,known_predictions.npz,novel_predictions.npz,thresholds.npz,calibration/complete.json}",
+        "rows/<arm>/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "joint-s2026092701",
+      "method": "PAMF source jointOVA joint",
+      "purpose": "Only primaryjoint::ova_max canadvance; samebudget and initialF/aux, encodergradientonly difference",
+      "config_ref": "configs/pamf_phase3_star_joint_ova_20261029.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r01/configs/joint_train_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Lsampler2026092701/OEdomainSampler2026102907, sameindependentstreams andfixedG10; no randomview/trueK",
+      "k": null,
+      "scenario": "G10 MIX01P1",
+      "optimizer": "Fresh nativephysicalAdamW F plus separateAdamW auxiliary",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220IID jointupdates perarm, L128+OE128 onceP1concat256, cumulativeF13320; aux2220samebudget; eacharm4440optimizer.step calls, nottennaturalepochs",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r01/rows/joint",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r01/logs/joint_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_joint_ova_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-joint-ova-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "logs/*.log",
+        "configs/*.json",
+        "teacher/{complete.json,smoke.json,L.npz,OE.npz}",
+        "rows/<arm>/state.json",
+        "rows/<arm>/train/{final.pt,complete.json,training.json,steps.jsonl,smoke.json}",
+        "rows/<arm>/predict/{complete.json,smoke.json,known_predictions.npz,novel_predictions.npz,thresholds.npz,calibration/complete.json}",
+        "rows/<arm>/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Real sourceonlyP1; teacher L/OEexport P1, candidateV/novelP1, originalsourcenovel baselineP1; syntheticP0G10smokes separatelycounted/noGnew.",
+    "Fdefault6head jointlyupdatedCE/KD, neverreplaced; aux6independentbinarylogits966parameters onlyrejector on unitfused160.",
+    "Control stops onlyOVA-to-F gradient; allotherlosses andbothoptimizers/initialization/sampling match. lambdaFeature5/lambdaOVA1 beforeanynewIQ.",
+    "FD uses originalsamesampleunitfeature onL/OE, no V/novel fitting; KD originalLteacherfull6logits T2; no uniformdefaultheadOE or VICReg.",
+    "EacharmF2220/aux2220, cumF13320; totaltwoarms4440Fupdates+4440auxupdates=8880optimizerstepcalls, not8880Fupdates.",
+    "Knowncal6predictedcandidateclassτ each3scores/row, constraintsrelative ORIGINALF0P1closed; noacceptallfallbackmisclaimwhennewclosedloses2pp.",
+    "SourceunknowncrossRX1NN onlydiagnostic/scientificstructuralguard>=originalminus2pp, notAN/anonymousregistration; trueTX accessedonlyafterpredictions.",
+    "Onlyjoint::ova_max withknown42/RU90overall5RX6scene/1NNguard mayenternewseparatelyregisteredtargetfalsification; controlsnotreplaceprimary.",
+    "Known sourceRX/threehistoricallyexposednovel, no freshblindtargetclaim. EntiregoalACTIVE, targetformal0, AN/HOWnull."
+  ],
+  "registered_at": "2026-10-29T16:06:06+00:00"
+}
