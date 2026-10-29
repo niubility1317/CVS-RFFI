@@ -26,7 +26,7 @@ from . import star_representation_train as previous
 from . import star_consensus_run as frozen
 from . import star_joint_ova_loss as losses
 
-RUN_ID='20261029-phase3-star-joint-ova-s2026092701-r01'
+RUN_ID='20261029-phase3-star-joint-ova-s2026092701-r02'
 SCHEMA='pamf_phase3_star_joint_ova_train_v1'
 STATUS='STAR_JOINT_OVA_SOURCE_FROZEN'
 TEACHER_SCHEMA='pamf_phase3_star_joint_ova_teacher_v1'
@@ -187,7 +187,10 @@ def _auxiliary(device):
 
 
 def _model(model):
-    if sum(p.numel() for p in model.parameters())!=MODEL_PARAMETERS:raise ValueError('Only the current complete original-F0 identity model is allowed')
+    # The native training container also retains unused domain/adversarial heads.
+    # The deployment identity count belongs to the complete encoder, as in runner.
+    if sum(p.numel() for p in model.id_backbone.encoder.parameters())!=MODEL_PARAMETERS:
+        raise ValueError('Only the current complete original-F0 identity encoder is allowed')
     return model.eval().requires_grad_(True)
 
 
@@ -275,7 +278,8 @@ def run(config,device='cuda:0'):
             lr=config['lr'],aux_lr=.001,aux_weight_decay=.0001,physical_global_clip=5.,aux_global_clip=5.,lr_schedule='constant',
             source_only=True,target_reads=0,U_reads=0,validation_reads=0,novel_validation_reads=0,OE_truth_reads=0,
             legacy_clean_IQ_reads=0,SourceDataset_calls=0,received_cache_values_read=0,G_forward_rows=0,G_updates=0,
-            model_classes=6,parameters=MODEL_PARAMETERS,aux_parameters=AUX_PARAMETERS,default_head_joint=True,identity_head_replaced=False,
+            model_classes=6,parameters=MODEL_PARAMETERS,identity_parameters=sum(p.numel() for p in model.id_backbone.encoder.parameters()),
+            training_container_parameters=sum(p.numel() for p in model.parameters()),aux_parameters=AUX_PARAMETERS,default_head_joint=True,identity_head_replaced=False,
             input_path='cached_P1_only',model_mode='eval_with_grad',dropout_enabled=False,BN_updates=0,model_buffers_unchanged=True,
             precision='FP32',TF32=False,source_L_count=COUNTS['L'],source_OE_count=COUNTS['OE'],
             L_sampled_exposures=BATCH*updates,OE_sampled_exposures=BATCH*updates,L_forward_samples=BATCH*updates,OE_forward_samples=BATCH*updates,

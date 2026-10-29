@@ -20,7 +20,7 @@ from . import star_class_risk as risk
 from . import star_consensus_score as common
 from .development_transfer import _snapshot_model, _check_model
 
-RUN_ID='20261029-phase3-star-joint-ova-s2026092701-r01'
+RUN_ID='20261029-phase3-star-joint-ova-s2026092701-r02'
 SCHEMA='pamf_phase3_star_joint_ova_prediction_v1'
 STATUS='STAR_JOINT_OVA_PREDICTIONS_COMPLETE'
 CALIBRATION_STATUS='STAR_JOINT_OVA_THRESHOLDS_FROZEN'

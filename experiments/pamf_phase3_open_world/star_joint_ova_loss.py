@@ -11,7 +11,7 @@ import torch
 import torch.nn.functional as F
 
 
-RUN_ID='20261029-phase3-star-joint-ova-s2026092701-r01'
+RUN_ID='20261029-phase3-star-joint-ova-s2026092701-r02'
 FEATURE_DIM=160
 CLASS_COUNT=6
 TEMPERATURE=2.

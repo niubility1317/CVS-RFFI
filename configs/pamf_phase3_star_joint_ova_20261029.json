@@ -1,19 +1,31 @@
 {
   "schema": "pamf_phase3_star_joint_ova_plan_v1",
-  "run_id": "20261029-phase3-star-joint-ova-s2026092701-r01",
+  "run_id": "20261029-phase3-star-joint-ova-s2026092701-r02",
   "model_seed": 2026092701,
   "source_only": true,
-  "arms": ["detach_control","joint"],
+  "arms": [
+    "detach_control",
+    "joint"
+  ],
   "primary": "joint::ova_max",
-  "initializer": "Each arm independently strict original Tri-SIG-TIME SSL F0 E50/11100,232993parameters,sourcecontract392005",
+  "initializer": "Each arm independently strict original Tri-SIG-TIME SSL F0 E50/11100,active identity232993/native training container900722,sourcecontract392005",
   "real_input": "Existing G10 MIX01 cached P1 only for source teacher/train/eval and originalF0 novel reference; no real P0 consumption or target handles",
   "smoke_exception": "Actual original/candidate F checkpoints use synthetic G10 P0 IQ no-query probes, separately counted; not a real P0 control or P1+G smoke",
-  "source_counts": {"L":6300,"OE":6134,"V":27000,"novel":3150},
+  "source_counts": {
+    "L": 6300,
+    "OE": 6134,
+    "V": 27000,
+    "novel": 3150
+  },
   "teacher": "Original frozen F0 same-P1 unit rawfused160 features for L/OE only; original full-six Lteacher logits already cache; no V/novelteacher fitting",
   "train": {
     "steps_per_arm": 2220,
     "F_cumulative_updates_per_arm": 13320,
-    "batch": {"L":128,"OE":128,"F_forward":"one concat256 per step"},
+    "batch": {
+      "L": 128,
+      "OE": 128,
+      "F_forward": "one concat256 per step"
+    },
     "sampling": "L IID uniform seed2026092701; OE IID uniform15RX/daydomains then uniformwithin domain seed2026102907; same two arms, no augmentation",
     "F_optimizer": "Fresh native CENTER_UNITS physical AdamW lr1e-4,parentweightdecay,physical globalclip5",
     "auxiliary": "Separate unit-fused160 -> six independent binary linear logits,966parameters,std.01/bias0 seeded2026092701; not identity head",
@@ -28,10 +40,24 @@
     "feature_preservation": "0.5 mean(1-cos(student_L,original_L))+0.5 OE,teacher detached,weight5",
     "OVA": "0.5*[0.5 positive trueL softplus(-g_y)+0.5 hardest wrongold softplus(g)]+0.5 hardest-six OE softplus(g),weight1",
     "sole_arm_difference": "detach_control feeds detached student unit features only to auxiliaryOVA; joint allows auxiliaryOVA gradient to F; both update same aux and keepCE/KD/feature gradients",
-    "disabled": ["VICReg","uniform_defaulthead_OE","randomview","As","CRIC","PL","EMA","native_U_loop","target_OEM"]
+    "disabled": [
+      "VICReg",
+      "uniform_defaulthead_OE",
+      "randomview",
+      "As",
+      "CRIC",
+      "PL",
+      "EMA",
+      "native_U_loop",
+      "target_OEM"
+    ]
   },
   "eval": {
-    "methods": ["energy","ova_routed","ova_max"],
+    "methods": [
+      "energy",
+      "ova_routed",
+      "ova_max"
+    ],
     "identity": "Candidate jointlytrained original default P1 head argmax,never auxargmax",
     "baseline": "Original F0 same-P1 Vcache closed predictions,never reset to candidateclosed",
     "thresholds": "Per3scores/arm six predictedcandidateclass cutoffs; knownV27000 only,42trueTXmacro C90/originalF0loss2pp groups,complete ties",
@@ -43,9 +69,26 @@
   "source_RX_and_novel_historically_exposed": true,
   "target_handles": 0,
   "A_N_H_OW": null,
-  "expected_F_forward_rows": {"teacher_real":12434,"teacher_synthetic":2,"training_real_two_arms":1136640,"training_synthetic_two_arms":4,"candidate_eval_real_two_arms":60300,"candidate_eval_synthetic_two_arms":4,"original_novel_reference_two_arms":6300,"total":1215684},
+  "expected_F_forward_rows": {
+    "teacher_real": 12434,
+    "teacher_synthetic": 2,
+    "training_real_two_arms": 1136640,
+    "training_synthetic_two_arms": 4,
+    "candidate_eval_real_two_arms": 60300,
+    "candidate_eval_synthetic_two_arms": 4,
+    "original_novel_reference_two_arms": 6300,
+    "total": 1215684
+  },
   "new_G_forwards": 0,
-  "resource": {"host":"N607","max_concurrent_rows":2,"distinct_GPU_cards":true,"max_added_workers_per_GPU":2,"minimum_free_MB":4096,"foreign_processes_stopped":0},
+  "resource": {
+    "host": "N607",
+    "max_concurrent_rows": 2,
+    "distinct_GPU_cards": true,
+    "max_added_workers_per_GPU": 2,
+    "minimum_free_MB": 4096,
+    "foreign_processes_stopped": 0
+  },
   "stop": "Teachertechnicalfailure stopsrows; failedrowpreserved and independenthealthyrowcontinues; scientificfailure no retune/restart/targetaccess",
-  "final_phase3_complete": false
+  "final_phase3_complete": false,
+  "replaces_run_id": "20261029-phase3-star-joint-ova-s2026092701-r01"
 }

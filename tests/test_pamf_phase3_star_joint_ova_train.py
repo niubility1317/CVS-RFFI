@@ -21,7 +21,7 @@ class FakeModel(fixtures.FakeModel):
 class StarJointOvaTrainTests(unittest.TestCase):
     def module(self):return importlib.import_module('experiments.pamf_phase3_open_world.star_joint_ova_train')
     def config(self,root,arm='joint'):
-        old=fixtures.StarRepresentationTrainTests().config(root,'oe');run='20261029-phase3-star-joint-ova-s2026092701-r01'
+        old=fixtures.StarRepresentationTrainTests().config(root,'oe');run='20261029-phase3-star-joint-ova-s2026092701-r02'
         output=str(root/arm);native=dict(old['native_config'],run_id=run,row_id=arm+'-s2026092701',output_root=output)
         return dict(run_id=run,code_commit='a'*40,arm=arm,native_config=native,L_root=old['L_root'],OE_root=old['OE_root'],
             teacher_root=str(root/'teacher'),output_root=output,steps=2220,lr=.0001,L_seed=2026092701,OE_seed=2026102907)
@@ -155,6 +155,29 @@ class StarJointOvaTrainTests(unittest.TestCase):
             with patch('torch.load',return_value={'schema':'oldE51'}),\
                  patch.object(m.native,'make_trainable_model',side_effect=AssertionError('No old state initialization')),self.assertRaises(ValueError):
                 m.load_trained_model(c,'old.pt','cpu')
+
+    def test_native_wrapper_extra_training_heads_do_not_change_identity_count(self):
+        m=self.module();root=Path(__file__).resolve().parents[1];c=self.config(root)
+        cfg=m._native_config(c);cfg['base_release']=str(root)
+        frozen=root/'local_artifacts/cric_dura_comparison_20261021/frozen_sources'
+        cfg['frozen_sources']={k:str(frozen/k) for k in ('F','AF','BASE','FOLD','G')}
+        m.runner._activate(cfg)
+        parent=dict(run_id='synthetic-parent',row_id='synthetic-parent',model_seed=2026092701,method_id='pamf_t1_e50',
+            source_rxs=[1,3,4,6,8],source_days=[1,2,3],num_classes=6,view_comparison={'view_count':3},
+            paper_method='synthetic graph only',repl_row={'group':'main','structure':'SHUFFLE_TIME','L_A':True,'L_B':True,'U':True})
+        with patch('torch.load',side_effect=AssertionError('No real checkpoint or IQ access')):
+            model=m.native._new_native(cfg,m.native._training_config(cfg,parent),'cpu')
+        m.native._assert_trainable(model)
+        reader=model.id_backbone.encoder;count=lambda module:sum(p.numel() for p in module.parameters())
+        self.assertEqual(count(model),900722);self.assertEqual(count(reader),232993);self.assertEqual(count(reader.core),164225)
+        extras={name.split('.')[0] for name,_ in model.named_parameters() if not name.startswith('id_backbone.')}
+        self.assertEqual(extras,{'dom_backbone','dom_enhancer','dom_head','adv_head'})
+        state_keys=set(model.state_dict());parameter_ids={id(p) for p in model.parameters()}
+        self.assertIs(m._model(model),model)
+        self.assertEqual(set(model.state_dict()),state_keys);self.assertEqual({id(p) for p in model.parameters()},parameter_ids)
+        self.assertTrue(all(p.requires_grad for p in model.parameters()));self.assertFalse(model.training)
+        reader.register_parameter('wrong_identity_size',nn.Parameter(torch.zeros(1)))
+        with self.assertRaises(ValueError):m._model(model)
 
 
 if __name__=='__main__':unittest.main()

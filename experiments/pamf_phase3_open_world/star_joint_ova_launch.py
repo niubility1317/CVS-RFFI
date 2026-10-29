@@ -8,7 +8,7 @@ import time
 
 from .star_representation_launch import _read,_write,_env,_gpu_free,_job
 
-RUN='20261029-phase3-star-joint-ova-s2026092701-r01'
+RUN='20261029-phase3-star-joint-ova-s2026092701-r02'
 ARMS=('detach_control','joint')
 FIELDS={'run_id','code_commit','run_root','release_root','python','launch_owner','allowed_gpus',
     'minimum_free_mb','max_added_workers_per_gpu','max_concurrent_rows','teacher_config','rows','novel_truth'}

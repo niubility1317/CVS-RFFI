@@ -1,6 +1,6 @@
 # G10 开放损失联合表征与特征保真
 
-Run `20261029-phase3-star-joint-ova-s2026092701-r01`，唯一主 `joint::ova_max`。固定两组 `detach_control/joint`，均从原 F0 E50/11100 独立初始化并更新2220步；不是继承此前按novel成绩选择的Phase3增量。方法、权重和门槛在本轮任何新IQ访问前固定。
+Run `20261029-phase3-star-joint-ova-s2026092701-r02`，唯一主 `joint::ova_max`。固定两组 `detach_control/joint`，均从原 F0 E50/11100 独立初始化并更新2220步；不是继承此前按novel成绩选择的Phase3增量。方法、权重和门槛在本轮任何新IQ访问前固定。
 
 上一冻结特征上的类条件OVA未达到未知拒识要求。本轮检验让开放边界损失参与特征学习是否有益，并用原F0逐记录单位特征约束保护未注册设备的几何结构。该约束不能保证设备纯度或未来识别；结构是否保持由源端保留设备的独立诊断检查，不靠训练loss宣布成功。
 
@@ -41,3 +41,9 @@ teacher导出只L/OE originalF0单位特征及opaque IDs，完整后两组可在
 预期F前向：teacher12434实物＋2合成；两组真实训练1136640＋4合成；两组candidate eval60300＋4合成；原F0 novel参考6300，总1215684行，真实G新前向0。重复IID曝光不是更多独立数据；原F0与历史G训练/缓存成本保留。主部署NN参数F232993＋aux966＋G266951＝500910，训练/诊断额外teacher及控制模型另计，不预先宣称时延改善。
 
 唯一launch owner当前root。N607 teacher单GPU，随后至多2组各占不同实际显存≥4096MB卡，每卡最多新增2本任务进程；不停止/修改/重启其他owner。一步code/config commit、聚焦协议负测、唯一独立P0/P1审查、最小prereg、一次preflight/archiveSHA比较/compile与实际checkpoint first-step smoke，启动后独立PID/CWD/argv/GPU/log增长，truth-last同row分析。具体命令、环境、CWD、输入输出及artifact由本run登记固定。teacher技术失败不启动rows，failedrow保留partial、独立健康row继续；科学失败不会停止、重启或热修改。方法身份以Git和匹配契约为准，不加封印/receipt链或单独审批。
+
+## 技术恢复 r02（2026-10-30）
+
+原 `20261029-phase3-star-joint-ova-s2026092701-r01` 在teacher导出完成后，两行均于任何smoke/更新前因参数计数对象错误退出，产物保留。实际native训练容器900722包含未参与本次forward的域分支，部署encoder为232993；唯一修复将原232993计数检查指向 `model.id_backbone.encoder`，完整wrapper、严格state加载、原头、优化器参数集合均保持。真实native graph回归先RED、修复后PASS，错误encoder仍拒绝。
+
+新 `20261029-phase3-star-joint-ova-s2026092701-r02` 使用全新run/release/teacher/row目录，完整重导teacher，不增加跨run兼容或沿用r01身份。两行、原F0父权重、真实G10 P1输入、所有seed/2220更新/损失/阈值与唯一主晋级规则不变；r01不是模型继承来源，不计科学性能结果。完整Phase3继续ACTIVE。
