@@ -14,6 +14,7 @@ def jobs(rt):
     root=Path(rt['run_root']);result=[]
     for r in catalog():
         if not r['active']:continue
+        if rt.get('method_profiles') is not None and r['id'] not in rt['method_profiles']:continue
         first=f'predict-{r["id"]}-s{rt["model_seeds"][0]}-c0000'
         for seed in rt['model_seeds']:
             sk=f'source-{r["id"]}-s{seed}';folder=root/'source'/f'{r["id"]}-s{seed}'
