@@ -3,7 +3,7 @@
 - run_id：`20261030-phase1-DURA-source-spectralMix-s2026092701-r01`
 - group_id：`phase1-dura-source-spectral-transfer`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -34,3 +34,10 @@
 原noVar E20从零单阶段对照保持损失、学习率、批量、物理源数据与20份模拟缓存。本版只在每次访问以0.5概率选择源统计频谱重加权：均匀选另一源RX的日期组合，使用正实增益，保输入RMS，以 `y+A(Sx-x)` 同步改变配对参考和接收IQ。未选样本原样，一次G前向；没有TX标签、F指导、神经教师或恢复器祖先。频谱统计预计算0.252秒，单独计成本，不计作额外神经训练阶段。冻结推理不读取该统计或RX元数据。
 
 源诊断达到预定双视图条件，足以检验这条候选，不代表识别已改善。固定最终E20后自动完成同一F50的1800×7源面板及168000×7目标预测，全部七景固定后独立truth-last。实际增强比例、L/U曝光、跨源组合计数及完整耗时必须随结果报告，默认DURA保持。
+
+
+## 已核实启动
+
+VERIFIED / RUNNING。执行commit `b1ed34788b02410bd4d7e534db93e23c4af7e33e`，21项聚焦新旧测试与唯一独立P0/P1审查PASS；一次N607 preflight/单归档两端SHA/远端compile通过。控制器PID699538、GPU4 worker PID699710实际存活，独立核实release CWD、完整命令、GPU4绑定与训练日志增长。真实2Ls增强、完整梯度、checkpoint重载与同F默认头no-query smoke PASS；两条源样本均实际走增强路径（2/2），GPU训练重新建立sampler，未继承smoke随机数状态。
+
+当前E3/741更新，累计151.651秒；F/身份标签/学习教师/初始化checkpoint训练读取均0。尚无正式成绩。固定E20/4940与全部源、目标七景计划继续，其他owner任务保持。

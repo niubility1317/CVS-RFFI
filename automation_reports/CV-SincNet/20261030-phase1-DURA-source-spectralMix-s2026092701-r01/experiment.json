@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-30 /goal星地性能接近clean；用户新增优化训练效率、多阶段太浪费时间；六景各自距rawclean<=3pp确认",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "b1ed34788b02410bd4d7e534db93e23c4af7e33e",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261030-DURA-source-spectralMix-r01"
@@ -98,7 +98,7 @@
     "remote_run_root": "runs/20261030-phase1-DURA-source-spectralMix-s2026092701-r01",
     "remote_log_root": "logs/20261030-phase1-DURA-source-spectralMix-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-source-spectralMix-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.spectral_mix run --root ../.. --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.spectral_mix run --root ../.. --commit b1ed34788b02410bd4d7e534db93e23c4af7e33e",
     "stop_rule": "Badcontract/role/outputcollision/nonfinite/checkpoint/smoke/predictioncoverage: preservefailedrow,noautomaticretry/hotedit;healthyrowcontinues;no performance stop;unrelatedowneruntouched"
   },
   "expected_artifacts": [
@@ -175,7 +175,7 @@
       "budget_ref": "E20/4940,B256,L126000/U1134000,one jointstage/zero neural ancestors;sourcePSD63k precompute.252s reused separately;one Gforward/visit",
       "output_root": "runs/20261030-phase1-DURA-source-spectralMix-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261030-phase1-DURA-source-spectralMix-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.spectral_mix worker --root ../.. --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_direct_train.spectral_mix worker --root ../.. --commit b1ed34788b02410bd4d7e534db93e23c4af7e33e --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",
