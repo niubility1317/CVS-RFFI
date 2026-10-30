@@ -18,6 +18,10 @@ from .vendor_native.comparison_suite import models as nets
 
 
 EXTRA={'poster_ft','feature_separation_hu2024','issl_author_behavior','lora_triplet_knn'}
+# Hu et al. did not publish the loss coefficients.  This project-calibrated
+# value keeps the original Frobenius loss and balances its initial source-only
+# gradient against the two classification losses at the original batch size.
+HU_SIMILARITY_WEIGHT = 1.0 / 8192.0
 
 
 def model_for(method,device):
@@ -49,7 +53,7 @@ def recipe(profile):
             full_REPL_epochs=[21,50],REPL_weight=6.,PL_threshold=.95,EMA=False,
             satellite_concat=False,source_policy='reuse_exact_original_complete_Tri_SIG_TIME_SSL',
             target_contact=False,U_TX_truth_read=False)
-    return dict(schema='group1_source_concat_midPL_v1',profile=profile,method=r['method'],epochs=r['epochs'],
+    result = dict(schema='group1_source_concat_midPL_v1',profile=profile,method=r['method'],epochs=r['epochs'],
         PL_start_epoch=r['PL_start_epoch'],PL_threshold=.95,PL_weight=1.,U_batch_ratio=2,
         satellite_concat=True,satellite_weight=.68,satellite_on='L_only',
         U_objective='ordinary_clean_source_PL',source_channel='practical_residual_post_sync_noeq',
@@ -58,6 +62,10 @@ def recipe(profile):
         source_fc_hz=2462e6,source_fs_hz=25e6,
         metric_temperature=.1,no_added_classifier=True,EMA=False,early_stopping=False,selection='fixed_final_epoch',
         native_supervised_objective_retained=True,target_contact=False,U_TX_truth_read=False)
+    if profile == 'feature_separation_hu2024':
+        result.update(hu_similarity_weight=HU_SIMILARITY_WEIGHT,
+                      hu_weight_origin='source_gradient_calibration_unpublished_paper_parameter')
+    return result
 
 
 @torch.no_grad()
@@ -73,11 +81,16 @@ def augment(reader,indices,epoch,epochs,device):
     return torch.tensor(values.tolist(),device=device,dtype=torch.float32),info
 
 
-def supervised(model,method,x,y,rx,*,episode_support=5):
+def supervised(model,method,x,y,rx,*,episode_support=5,hu_terms=None):
     if method=='feature_separation_hu2024':
         from .vendor_extra.hu.losses import feature_separation_loss
         prepared=extra.augment_iq(extra.preprocess_iq(x))
-        return feature_separation_loss(model.network(prepared),y,rx)[0]
+        value, terms = feature_separation_loss(model.network(prepared),y,rx,
+            lambda_similarity=HU_SIMILARITY_WEIGHT)
+        if hu_terms is not None:
+            for key, term in terms.items():
+                hu_terms[key] = hu_terms.get(key, 0.) + float(term)
+        return value
     if method=='orthogonal':
         from .vendor_native.paper_reproduction.orthogonal_incremental_sei.losses import base_training_loss
         z=embedding(model,method,x);targets=model.pseudo_targets
@@ -152,7 +165,7 @@ def _train_native(c,profile,seed,out,device):
                 elif method=='lora_triplet_knn':batches=[extra._triplets(y,32,gen) for _ in range(len(y)//32)]
                 else:batches=[v for v in torch.randperm(len(y),generator=gen).split(batch) if len(v)>1]
                 model.train()
-                epoch_native=epoch_sat=epoch_PL=0.
+                epoch_native=epoch_sat=epoch_PL=0.;hu_terms={}
                 for indices in batches:
                     opt.zero_grad(set_to_none=True)
                     if method=='lora_triplet_knn':
@@ -167,7 +180,7 @@ def _train_native(c,profile,seed,out,device):
                     else:
                         ix=indices;xx=x[ix].to(device);yy=y[ix].to(device);rr=rx[ix].to(device)
                         L_seen_mask[ix]=True
-                        base=supervised(model,method,xx,yy,rr)
+                        base=supervised(model,method,xx,yy,rr,hu_terms=hu_terms if method=='feature_separation_hu2024' else None)
                         star,info=augment(reader,ix,epoch,r['epochs'],device)
                         sat=supervised(model,method,star,yy,rr) if method=='protonet' else F.cross_entropy(logits(model,method,star),yy)
                         Lcount=len(ix);sat_seen+=Lcount;sat_applied+=info['applied_count']
@@ -232,6 +245,9 @@ def _train_native(c,profile,seed,out,device):
                     epoch_wall_seconds=time.perf_counter()-epoch_started,
                     U_unique_exposed=int(U_seen_mask.sum()),L_supervised_unique=int(L_seen_mask.sum()),
                     PL_accepted_class_histogram=accepted_hist.tolist(),metric_center_refresh_seconds=center_seconds)
+                if hu_terms:
+                    record['hu_terms_mean']={key:value/count for key,value in hu_terms.items()}
+                    record['hu_weighted_similarity_mean']=record['hu_terms_mean']['similarity']*HU_SIMILARITY_WEIGHT
                 log.write(__import__('json').dumps(record)+'\n');log.flush();atomic(out/'progress.json',record)
                 print('SOURCE_EPOCH',profile,epoch,r['epochs'],total/count,seen,accepted,flush=True)
         model.eval();native={}

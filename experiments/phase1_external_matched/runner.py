@@ -182,7 +182,7 @@ def predict(c):
         folder = out/task; folder.mkdir()
         np.savez(folder/'predictions.npz', ids=ids, **values)
         counts[task] = dict(count=len(ids), views=list(VIEWS), readouts=['raw'])
-    write(out/'complete.json', dict(status='ALL_PREDICTIONS_COMPLETE', run_id=RUN,
+    write(out/'complete.json', dict(status='ALL_PREDICTIONS_COMPLETE', run_id=c['run_id'],
           row_id=c['row_id'], tests=counts, views=list(VIEWS), readouts=['raw'], truth_read=False, query_fit=False))
 
 

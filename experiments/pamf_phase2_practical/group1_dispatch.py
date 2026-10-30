@@ -42,6 +42,9 @@ def jobs(rt):
                         output=str(root/'scores'/r['id']/f's{seed}'/'c0000-curves'),
                         completion=str(root/'scores'/r['id']/f's{seed}'/'c0000-curves/complete.json'),
                         status='SCORED_COMPLETE',gpu=False,dependencies=[extra],priority=0))
+    if rt.get('hu_phase1_runtime'):
+        from .hu_repair import phase1_jobs
+        result.extend(phase1_jobs(rt))
     return result
 
 
@@ -55,6 +58,9 @@ def worker(rt,j):
     if j['kind']=='score':
         from .episodic_score import run
         return run(rt,j)
+    if j['kind'] in ('phase1_predict','phase1_score'):
+        from experiments.phase1_external_matched.runner import predict,score
+        return (predict if j['kind']=='phase1_predict' else score)(j['config'])
     raise ValueError('Unknown Group1 job kind')
 
 
@@ -71,6 +77,9 @@ def dispatch(rt):
     write(root/'method_matrix.json',dict(methods=catalog(),source_concat=True,PL='midpoint0.95',
         input_data='VALIDATED_ONCE_r10',query_fit=False))
     matrix=jobs(rt);write(root/'jobs.json',matrix)
+    if rt.get('wait_for_phase2_state'):
+        from .hu_repair import wait_for_previous_owner
+        wait_for_previous_owner(rt,root)
     by={j['id']:j for j in matrix};remaining=set(by);done=set();failed={};blocked=set();active={};profile_errors=set()
     # Existing source-only practical cache machinery; new owner/cache, no old service changes.
     cache_script=('import json;from experiments.pamf_phase2_practical.group1 import source_scope;'
@@ -111,7 +120,7 @@ def dispatch(rt):
             active[j['id']]=(child,item);remaining.remove(j['id']);available.remove(j)
             print('GROUP1_LAUNCH',j['id'],child.pid,gpu,flush=True)
         if not stop:
-            if not any(item['kind']=='score' for _,item in active.values()):
+            if not any(item['kind'] in ('score','phase1_score') for _,item in active.values()):
                 scorer=next((j for j in available if not j['gpu']),None)
                 if scorer:launch(scorer,None)
             from .runner import occupancy
