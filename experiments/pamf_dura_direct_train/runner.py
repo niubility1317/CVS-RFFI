@@ -296,6 +296,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.head_guided_capacity3 worker',
                 'pamf_dura_direct_train.long_budget worker',
                 'pamf_dura_direct_train.spectral_mix worker',
+                'pamf_dura_direct_train.posterior_guided worker',
                 'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
             goal_workers=sum(any(name in line for name in tokens) for line in commands)

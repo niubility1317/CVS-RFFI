@@ -63,3 +63,10 @@ G只有一次联合训练，没有coarse/action/prior逐级预训练，也不从
 
 
 headFeature r02完整七景仍未达3pp后，另登记源阶段对照`20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01`：固定noVar与headFeature source-final、同512源位置×cached01/20、CPU2/0GPU/0更新，复用同F/同队列的默认R69历史源阶段统计。只在headFeature最后prior的两视图teacher一致数均比其native多≥6/512、Fcos误差≤0.9倍、逐source scene一致数均不减少时，才另登记该冻结G的prior-only运行版并完成正式七景；否则不发布该运行版。noVar/default仅对照，不能择其为父或用oracle部署；该源判断不是真实TX准确率或目标上界，不改变任何已完成权重/负结果。
+
+
+## 连续后验特征约束独立对照
+
+独立登记 `20261030-phase1-DURA-source-posteriorKL010-s2026092701-r01`：同一冻结F的源clean/restored特征由原联合分类头确定性映射成6维连续后验，KL(clean||restored)、T1、系数0.1。没有硬伪TX标签、真实TX读取、头训练或F更新，不扩大到target。G从零单阶段E20/4940，原noVar骨架/数据/日程不变，source特征缓存一次，restoredF每visit一次；仍明确F-guided/继承F上游50轮知识与成本。
+
+该项来源于已完成source-task-geometry的特征距离与选择保持不等价现象；0.1仅与旧cos同数字，不称梯度强度匹配或最优参数。固定finalE20后自动source1800×7/target168000×7、独立truth-last，逐景3pp与clean要求保持。旧cos、headFeature、F-free结果及默认DURA不改变，信道重配失败候选不追加训练。
