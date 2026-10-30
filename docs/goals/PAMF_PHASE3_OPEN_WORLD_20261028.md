@@ -867,3 +867,8 @@ Run `20261031-phase3-mixture-uda-s2026092701-r01`，actualcode `d72a7b7c301fec2f
 ### 2026-10-31 无标签混合平移的完整负结果与保留基线
 
 Run `20261031-phase3-mixture-uda-s2026092701-r01` / actualcode `d72a7b7c301fec2ff3736e4221dfe5047ab78efc`，六列×三DURA条件全部预测/独立评分 COMPLETE，执行VERIFIED，科学NO_PROMOTION。唯一主DA_M_ratio源AK89.770370/CK97.107407/RU60.888889/H72.561330%，clean68.576389/85.069444/99.652778/81.244267%，star63.020833/84.895833/75.694444/68.778682%。对DA0_ratio，star正确接收0增/0失、未知拒对0增/2失，AK0pp/RU−0.694444pp；clean正确接收0增/2失、未知不变，AK−0.347222pp。已知模式控制DA_K_ratio的starAK63.541667但RU73.611111/H68.206751%，不是成功或替换主。两目标统计拟合各20轮，objective均改善且delta范数1.412971/0.915601小于源r2.370508、rank14，但无任务收益，不能以拟合目标改善宣称有效。新G/F0/signal各384真实＋各2synthetic；网络/源密度/τ更新0、Q/sourceIQ新读0、Utruth0，保留原F0同路径基线和完整源状态。实际predict8.230080s/CPUscore7.996030s，短GPU阶段未捕获live显存，UNKNOWN而不为遥测重跑；独立CPU_PID/CWD/argv/CUDAempty/日志增长及终态无所属进程已核。clean相对F0损11.458333pp、star9.895833pp，CK90/星地RU90及场景覆盖未满足。保留此前源端固定的DURA＋P1signal＋density_ratio DA0作为后续基线，本轮adapter不晋级、不回流Q调τ。完整跨RX/零标签发现/未来匿名REG仍ACTIVE，正式RX未访问，详见 `docs/PAMF_PHASE3_MIXTURE_UDA_RESULTS_20261031.md`。
+
+
+### 2026-10-31 预测身份条件密度与三类DURA测试预登记
+
+Run `20261031-phase3-class-density-s2026092701-r01` / actualcode `4af0668331682636ee212077b38cd912857a1b31`。严格冻结原P1 signalr03和known90/OE32，只比较全类/预测类15mode条件密度×known/ratio，唯一主predicted_ratio。全部NN/密度在V前冻结、四τ在任何NV/Q前冻结；源27000/3150两旧列精确控制，crossRX clean864与star864都接入同一DURA，并重新计算同DURA输出F0基线。三个条件共享源星地τ，不按目标校准；source未过也全测。主报宏AK/RU/H，cleanRU95/starRU90、CK90/损2pp/覆盖，缺主景类则不认证。历史source/devQ曝光，sourceL/OE/Us/U/正式RX24-18新读0，NN/密度/normalizer拟合0；源V已知标签用于两套新六阈值校准，另两套精确复用。完整跨RX星地、零标签DA/发现/未来匿名REG仍ACTIVE，当前无性能。
