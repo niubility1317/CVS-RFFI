@@ -1,4 +1,4 @@
-"""Adopt Group1 workers and accelerate only not-yet-started external jobs."""
+"""Adopt Group1 workers and accelerate pending ISSL and LoRa jobs."""
 import argparse
 from collections import Counter
 import os
@@ -16,7 +16,8 @@ def resolve_jobs(items,done,active,new_by,rt):
     resolved=[]
     for original in items:
         j=dict(original);key=j['id']
-        use_new=(j['origin']=='legacy' and j['kind']!='source' and key not in done and key not in active)
+        use_new=(j['origin']=='legacy' and j['profile'] in rt['method_profiles']
+                 and j['kind']!='source' and key not in done and key not in active)
         if use_new and j['kind']=='score':
             predecessor=j['dependencies'][0]
             use_new=predecessor not in done and predecessor not in active
@@ -25,7 +26,7 @@ def resolve_jobs(items,done,active,new_by,rt):
             for field in ('output','completion','prediction'):
                 if field in new:j[field]=new[field]
             j['runtime_file']=rt['runtime_file'];j['release_root']=rt['release_root']
-            j['execution_version']='external_cuda'
+            j['execution_version']='external_cuda_v2'
         resolved.append(j)
     return resolved
 
@@ -36,7 +37,7 @@ def _parent(rt):
             'Existing controller is not healthy')
     require(item and item['uid']==os.getuid() and item['cwd']==rt['release_root']
             and rt['runtime_file'] in item['argv']
-            and 'experiments.pamf_phase2_practical.cuda_takeover' in item['argv']
+            and 'experiments.pamf_phase2_practical.external_accel_takeover' in item['argv']
             and '--job' not in item['argv'],'Existing controller identity mismatch')
     return pid
 
@@ -79,20 +80,22 @@ def _check_pending(items,configs):
 
 def dispatch(rt):
     parent_rt=read(rt['takeover_runtime']);previous=read(parent_rt['takeover_runtime'])
-    legacy=read(previous['recovery_runtime'])
-    require(parent_rt['run_id']=='20261030-phase2-group1-cuda-takeover-m4-r05','Unexpected current run')
+    older=read(previous['takeover_runtime']);legacy=read(older['recovery_runtime'])
+    require(parent_rt['run_id']=='20261030-phase2-external-accelerated-m4-r06','Unexpected current run')
     require(rt['external_source_root']==legacy['run_root'],'External source root mismatch')
+    require(set(rt['method_profiles'])=={'issl','lora_triplet_knn'},'Unexpected accelerated profile set')
     identity={'run_id','release_root','run_root','runtime_file','code_commit','launch_owner',
               'authorization','method_profiles'}
     require(set(legacy).issubset(rt),'New runtime omitted existing fields')
     for name in set(legacy)-identity:
         require(rt[name]==legacy[name],'External scientific input changed: '+name)
     root=Path(rt['run_root']);old_root=Path(parent_rt['run_root'])
-    configs={c['runtime_file']:c for c in (parent_rt,previous,legacy)}
+    configs={c['runtime_file']:c for c in (parent_rt,previous,older,legacy)}
     items=read(old_root/'jobs.json');by={j['id']:j for j in items}
     require(len(by)==len(items),'Duplicate existing job ID')
     new_by={j['id']:j for j in jobs(rt)}
-    require(all(j['original_id'] in new_by for j in items if j['origin']=='legacy'),
+    require(all(j['original_id'] in new_by for j in items
+                if j['origin']=='legacy' and j['profile'] in rt['method_profiles']),
             'External matrix does not match existing jobs')
     require(all(completed(j) for j in items if j['kind']=='source'),'Source jobs not all complete')
     producer=read(Path(legacy['run_root'])/'augmentation_owner.json')

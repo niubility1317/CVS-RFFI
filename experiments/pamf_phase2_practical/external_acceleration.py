@@ -33,8 +33,16 @@ def _mean_loss(values):
     return sum(torch.stack(values).detach().cpu().tolist())/len(values)
 
 
+def teacher_merge_supported(device):
+    """Limit the batch-64 path to the verified N607 numerical environment."""
+    return (device.type=='cuda' and torch.cuda.get_device_name(device)=='NVIDIA GeForce RTX 3090'
+            and torch.__version__.split('+',1)[0]=='2.1.0' and torch.version.cuda=='12.1'
+            and not torch.backends.cuda.matmul.allow_tf32 and not torch.backends.cudnn.allow_tf32)
+
+
 def issl_ssl(model, x, old_classes, spec, seed, logger):
     dev=extra._device(model); author=model.profile=='issl_author_behavior'
+    merge_teacher=teacher_merge_supported(dev)
     key=copy.deepcopy(model).eval().requires_grad_(False)
     x=extra._iq(x).to(dev)
     gen=torch.Generator().manual_seed(seed)
@@ -50,7 +58,14 @@ def issl_ssl(model, x, old_classes, spec, seed, logger):
         for ix in extra._indices(len(x),64,gen):
             xx=x[ix.to(dev)]
             qx=issl_input_validated(xx,218);kx=issl_input_validated(xx,218);q=model.network(qx)[0]
-            with torch.no_grad():k=key.network(kx)[0];t=key.network(qx)[0]
+            # Merge only full batches: N607 bitwise source-only checks cover
+            # 64, while several tail batch sizes select different CUDA kernels.
+            with torch.no_grad():
+                if merge_teacher and len(q)==64:
+                    both=key.network(torch.cat((kx,qx),dim=0))[0]
+                    k,t=both.split(64,dim=0)
+                else:
+                    k=key.network(kx)[0];t=key.network(qx)[0]
             kd=extra._kd(q[:,:old_classes],t[:,:old_classes],20)
             if author:kd=kd.detach().requires_grad_(True)
             q=F.normalize(q,dim=1,eps=1e-12);k=F.normalize(k,dim=1,eps=1e-12)

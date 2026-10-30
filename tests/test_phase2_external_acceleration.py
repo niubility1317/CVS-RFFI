@@ -6,6 +6,7 @@ import torch
 
 from experiments.pamf_phase2_practical.features import tensor
 from experiments.pamf_phase2_practical import external_additional as extra
+from experiments.pamf_phase2_practical import external_acceleration as acceleration
 from experiments.pamf_phase2_practical.external_acceleration import checked_step, issl_ssl, issl_transfer
 from experiments.pamf_phase2_practical.vendor_native.comparison_suite.adaptation import _grad_norm, _batch_scalars
 from experiments.pamf_phase2_practical.vendor_native.comparison_suite import adaptation
@@ -73,12 +74,32 @@ def test_radionet_updates_and_metrics_match_original(monkeypatch):
     assert history[0]==history[1]
 
 
+@pytest.mark.parametrize('device',['cpu','cuda'])
+def test_lora_cached_gallery_matches_original_stable_knn(monkeypatch,device):
+    if device=='cuda' and not torch.cuda.is_available():pytest.skip('CUDA unavailable')
+    monkeypatch.setattr(extra,'native_features',lambda model,x:x)
+    torch.manual_seed(127)
+    model=torch.nn.Linear(4,4,bias=False).to(device)
+    gallery=torch.randn(40,4);gallery[0:20]=0
+    labels=torch.arange(40)%6
+    state=extra._metric_state(dict(profile='lora_triplet_knn',model=model,resources={}),gallery,labels)
+    query=torch.cat((torch.zeros(1,4),torch.randn(4,4))).to(device)
+    distance=torch.cdist(query,gallery.to(device))
+    nearest=labels.to(device)[distance.argsort(dim=1,stable=True)[:,:15]]
+    expected=torch.stack([(nearest==c).sum(1).to(query.dtype) for c in range(6)],1)/15
+    assert torch.equal(state['score_fn'](model,query),expected)
+    assert state['native_state']['enrollment_device_features'].device.type==device
+
+
 @pytest.mark.skipif(not torch.cuda.is_available(),reason='CUDA unavailable')
-def test_issl_author_training_and_transfer_match_original():
+@pytest.mark.parametrize('classes',[6,26])
+@pytest.mark.parametrize('merge',[False,True])
+def test_issl_author_training_and_transfer_match_original(classes,merge,monkeypatch):
     torch.set_num_threads(1)
     torch.backends.cudnn.deterministic=True
+    monkeypatch.setattr(acceleration,'teacher_merge_supported',lambda device:merge)
     extra._seed(901)
-    original=extra.NativeModel('issl_author_behavior',classes=6).cuda()
+    original=extra.NativeModel('issl_author_behavior',classes=classes).cuda()
     accelerated=copy.deepcopy(original)
     g=torch.Generator().manual_seed(731)
     x=torch.randn(65,2,256,generator=g)

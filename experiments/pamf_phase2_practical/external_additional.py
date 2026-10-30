@@ -647,14 +647,23 @@ def _metric_state(state,features,labels,source=False):
             weights=torch.where(zero.any(1,keepdim=True),zero.to(d.dtype),weights)
             return weights/weights.sum(1,keepdim=True).clamp_min(1e-12)
     else:
+        # The frozen enrollment gallery is reused for every query batch.
+        # Keep one device copy instead of transferring the same gallery on
+        # every call; retain CPU originals for the method's native state.
+        gallery_device=f.to(_device(state['model']))
+        labels_device=y.to(_device(state['model']))
+        n.update(enrollment_device_features=gallery_device,enrollment_device_y=labels_device)
         def score(model,x):
-            z=native_features(model,x);distance=torch.cdist(z,f.to(x.device));k=min(15,len(f))
+            z=native_features(model,x);distance=torch.cdist(z,gallery_device.to(x.device));k=min(15,len(f))
             # Uniform 15-neighbor native LoRa vote; class ties choose lowest class.
-            ix=distance.argsort(dim=1,stable=True)[:,:k];neighbors=y.to(x.device)[ix]
+            ix=distance.argsort(dim=1,stable=True)[:,:k];neighbors=labels_device.to(x.device)[ix]
             return torch.stack([(neighbors==c).sum(1).to(z.dtype) for c in classes],1)/k
     result=dict(state,score_fn=score,classes=classes,native_state=n)
     result['resources']=dict(state['resources'],enrollment_count=len(y),source_enrollment=source,
         knn_k=min(15,len(y)) if p=='lora_triplet_knn' else None,query_fit=False)
+    if p=='lora_triplet_knn':
+        result['resources'].update(enrollment_cache_device=str(gallery_device.device),
+            enrollment_cache_bytes=gallery_device.numel()*gallery_device.element_size()+labels_device.numel()*labels_device.element_size())
     return result
 
 
