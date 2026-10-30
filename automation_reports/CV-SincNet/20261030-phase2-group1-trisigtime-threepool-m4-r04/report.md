@@ -27,3 +27,7 @@ PAMF A 直接复用已完成 `20261027-phase1-pamf-repl-shuffled-views-m16-r02` 
 统一controller PID `3149875` 的CWD/argv已独立核实；收养9个仍在运行的外部worker，其他完成行按原completion复用。每卡自有worker `{"0": 2, "1": 2, "2": 2, "3": 2, "4": 2, "5": 2, "6": 2, "7": 2}`，总16；当前计数 `{"COMPLETE": 43, "FAILED": 0, "BLOCKED": 0, "RUNNING": 16, "QUEUED": 42511}`（工作单元计数，不是全部实验完成）。原4个错误PL训练worker与其CPUcontroller均独立确认退出，未停止其他owner。
 
 源训练成本引用原模型三段实际resource summary和训练时间，本轮加载/检查单列；B/C资源继续由实际拟合记录。后续固定预测与独立truth-last评分已串联，当前不宣称完整性能结论。
+
+## 2026-10-31 性能核查
+
+已按后续r08权威jobs.json连接r04/r05的PAMF和r06的外部评分，复核完整主矩阵。主要发现为单边恢复的表示/核尺度失配；source完整训练、主矩阵保存状态及评分算术未发现相应故障。详细证据和边界见 [性能核查报告](../../../docs/analysis/PAMF_PHASE2_DIAGNOSIS_20261031.md)。本次仅分析冻结结果，不改参数/权重，不启动新实验。
