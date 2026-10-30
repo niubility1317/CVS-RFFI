@@ -17,6 +17,12 @@ SameE20/4940/peak1e-3aslivefastLR;only structuredidentityinitialization:randomin
 
 此矩阵在fast LR正式结果尚未读取时冻结，不改变当前健康训练，不用当前或将来target分数选择父/调参。每版自动source1800×7与target168000×7、独立truth-last和同卡G/G+F成本；目标仍为六星地各自距rawclean≤3pp并保持clean，不以初始恒等或更快source下降代替正式收益。
 
+## 实际发布与训练
+
+VERIFIED：执行commit `d62107285bb0ae3fe952a4d0954de2cc16c8bab9`，release `20261030-DURA-direct-identityinit-r01`，archive传输SHA一致/远端编译通过。实际完整图的2Ls初始恒等检查、梯度、checkpoint严格存取和F50 noquery smoke均PASS，之后按原资源规则自动启动。CPUcontroller3596624/worker3597618、GPU2、实际CWD/cmdline和日志增长已独立读回。
+
+已核实E7/1729、Ls44100/Us396900曝光，source IQNMSE0.0410731，0TX/F/学习教师/初始化checkpoint读取。该读回仅证明训练健康；本run正式性能尚未形成，默认DURA保持不变。
+
 ## 数据、seed与模型来源
 
 实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。

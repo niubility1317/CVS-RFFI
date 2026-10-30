@@ -20,10 +20,10 @@
   "replaces_run_id": null,
   "authorization": "2026-10-30 /goal星地性能接近clean；用户新增优化训练效率、多阶段太浪费时间；六景各自距rawclean<=3pp确认",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "d62107285bb0ae3fe952a4d0954de2cc16c8bab9",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
-    "cwd": "releases/20261030-phase1-DURA-direct-identityinit-s2026092701-r01-release"
+    "cwd": "releases/20261030-DURA-direct-identityinit-r01"
   },
   "data": {
     "dataset": "ManySig",
@@ -95,7 +95,7 @@
     "remote_run_root": "runs/20261030-phase1-DURA-direct-identityinit-s2026092701-r01",
     "remote_log_root": "runs/20261030-phase1-DURA-direct-identityinit-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-direct-identityinit-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.identity_init run --root ../.. --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.identity_init run --root ../.. --commit d62107285bb0ae3fe952a4d0954de2cc16c8bab9",
     "stop_rule": "Badcontract/role/outputcollision/nonfinite/checkpoint/smoke/predictioncoverage: preservefailedrow,noautomaticretry/hotedit;healthyrowcontinues;no performance stop;unrelatedowneruntouched"
   },
   "expected_artifacts": [
@@ -170,7 +170,7 @@
       "budget_ref": "E20/4940fromscratch,cumulative20/noancestorcost;L126000/U1134000exposures;2sourceactionprobes/example;0neuralteacherinputs",
       "output_root": "runs/20261030-phase1-DURA-direct-identityinit-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261030-phase1-DURA-direct-identityinit-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.identity_init worker --root ../.. --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_direct_train.identity_init worker --root ../.. --commit d62107285bb0ae3fe952a4d0954de2cc16c8bab9 --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",
