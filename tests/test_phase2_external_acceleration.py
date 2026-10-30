@@ -92,6 +92,33 @@ def test_lora_cached_gallery_matches_original_stable_knn(monkeypatch,device):
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(),reason='CUDA unavailable')
+def test_lora_source_smoke_reads_source_checkpoint_gallery(monkeypatch,tmp_path):
+    import sys,types,json
+    from experiments.pamf_phase2_practical import external_accel_smoke as smoke
+    torch.manual_seed(129)
+    source_x=torch.randn(65,2,256)
+    gallery=torch.randn(30,512);labels=torch.arange(30)%6
+    model=torch.nn.Linear(512,512,bias=False).cuda().eval()
+    monkeypatch.setattr(extra,'native_features',lambda model,x:x.flatten(1))
+    native={'source_enrollment_features':gallery,'source_enrollment_y':labels}
+    state=extra._metric_state(dict(profile='lora_triplet_knn',model=model,resources={},native_state=native),gallery,labels,source=True)
+    # group1_source deliberately returns the original checkpoint native_state,
+    # not the internal metric state's enrollment_features fields.
+    bundle=dict(model=model,score_fn=state['score_fn'],native_state=native,classes=state['classes'])
+    module=types.ModuleType('experiments.cric_dura_comparison.f_data')
+    module.SourceDataset=lambda *args:types.SimpleNamespace(x=source_x)
+    monkeypatch.setitem(sys.modules,'experiments.cric_dura_comparison.f_data',module)
+    monkeypatch.setattr(smoke,'activate',lambda rt:None)
+    monkeypatch.setattr(smoke,'read',lambda path:{})
+    monkeypatch.setattr(smoke,'load_source',lambda *args:bundle)
+    out=tmp_path/'smoke.json'
+    smoke.run({'source_cache':'source','source_contract':'contract','model_seeds':[1],
+               'method_profiles':['lora_triplet_knn']},out)
+    result=json.loads(out.read_text(encoding='utf-8'))
+    assert result['status']=='PASS' and result['query_rows']==0
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(),reason='CUDA unavailable')
 @pytest.mark.parametrize('classes',[6,26])
 @pytest.mark.parametrize('merge',[False,True])
 def test_issl_author_training_and_transfer_match_original(classes,merge,monkeypatch):

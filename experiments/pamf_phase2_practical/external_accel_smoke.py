@@ -32,8 +32,8 @@ def run(rt, output):
         require(all(torch.equal(before[k],v) for k,v in model.state_dict().items()),'Source anchor mutated: '+profile)
         checks[profile]='PASS'
         if profile=='lora_triplet_knn':
-            gallery=bundle['native_state']['enrollment_features']
-            labels=bundle['native_state']['enrollment_y']
+            gallery=bundle['native_state']['source_enrollment_features']
+            labels=bundle['native_state']['source_enrollment_y']
             with torch.inference_mode():
                 z=extra.native_features(model,new_tensor[:2])
                 distances=torch.cdist(z,gallery.to(z.device))
@@ -75,5 +75,6 @@ def run(rt, output):
         del before,model,bundle,scores
     write(Path(output),dict(status='PASS',actual_checkpoints=checks,source_rows=65,
         target_rows=0,query_rows=0,truth_read=False,input_exact=True,
-        issl_source_training_equal=True,issl_full_batch_head_counts=[8,11,16,26],
+        issl_source_training_equal='issl' in checks,
+        issl_full_batch_head_counts=[8,11,16,26] if 'issl' in checks else [],
         deterministic_setting='verification_only_restored_before_launch'))

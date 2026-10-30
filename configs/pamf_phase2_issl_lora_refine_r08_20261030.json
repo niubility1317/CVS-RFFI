@@ -1,0 +1,13 @@
+{
+  "run_id": "20261030-phase2-issl-lora-refine-m4-r08",
+  "replaces_failed_run_id": "20261030-phase2-issl-lora-refine-m4-r07",
+  "takeover_parent_run_id": "20261030-phase2-external-accelerated-m4-r06",
+  "external_source_run": "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+  "profiles": ["issl", "lora_triplet_knn"],
+  "execution_changes": ["combine frozen ISSL teacher evaluations only for batch 64 in verified RTX 3090 / PyTorch 2.1 / CUDA 12.1 / TF32-off environment", "cache frozen LoRa enrollment gallery on the inference GPU"],
+  "unchanged": "all source checkpoints and data contracts, native objectives, optimizer, minibatch order and sizes, random draws, 2000 SSL plus 300 transfer epochs, physical pools, support/query splits, seeds and truth-last scoring",
+  "inflight": "adopt existing workers without restart; only not-yet-started ISSL and LoRa prediction jobs use the new release; other methods remain on their existing releases",
+  "gpu_policy": "at most two combined owned training or prediction workers per GPU; other owners separate",
+  "stop_rule": "preserve existing systemic-technical-failure rule; block affected method on training/prediction failure; stop handoff on ownership or partial-output conflict",
+  "expected_artifacts": ["smoke.json", "original_jobs.json", "jobs.json", "handoff.json", "pipeline_state.json", "job_results", "predictions", "scores"]
+}
