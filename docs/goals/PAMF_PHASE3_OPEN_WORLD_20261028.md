@@ -758,3 +758,10 @@ Run `20261030-phase3-star-protected-open-s2026092701-r01`、code7dd90671968ddf58
 Run `20261030-phase3-star-joint-geometry-s2026092701-r01`、code3023c26b4bb2b2f74148303362bd615d854d18ff，VERIFIED/ANALYZED_SOURCE_DIAGNOSTIC。L6300+NV3150同G10P1，主R1同时跨RX/day未知同TX2040/3150=64.761905%、落旧类629/3150=19.968254%；仅NV参考同TX76.571429%，加旧类净失372条。原F0未知同TX64.285714%、落旧类20.476190%，R1未知结构只小幅改善；不能以近邻率替代拒识RU、未来AN或未见RX验收。全部16条件/混淆/分组/完整日志分析，实际checkpoint parts-only smoke2，L adapter6300、NV逐值复用3150、新F/G/更新/target均0。
 
 下一候选主线：冻结原F0默认身份，拟合源L类条件多中心支持分布与只含outside-six监督的OE背景密度比，输出聚合中心/二阶统计/权重，不部署逐行sourcebank；匹配known-only分布控制，唯一主densityratio，区别于已失败的8NN/条件8NN、max关系或二元图。具体容量/拟合/风险公式在独立预登记固定，不由novel真值选；V只固定风险校准，先单seed源反证、合法预测全冻结后独立评分，known保护+RU90通过才另启动跨RX星地。该新候选尚未实现/运行，不宣称收益。完整零目标TX标签适应、未知发现及未来匿名注册继续，v3 CK90/RU90、AK损≤2pp、AN80/REG旧损≤2pp保持ACTIVE；详见`docs/PAMF_PHASE3_JOINT_GEOMETRY_RESULTS_20261030.md`。
+
+
+## 2026-10-30 多中心密度源实验完成，不晋级
+
+Run `20261030-phase3-star-density-s2026092701-r01`、codeb8163a03e8d3d299127c7914272a2d866f92c89a，VERIFIED/ANALYZED_SOURCE_ONLY、NO_PROMOTION。原F0/defaulthead冻结，L6300拟合90域Gaussian modes/共享收缩白化，主OE6134无TX/K拟合32背景mode/固定25Lloyd；V27000只known42校准、NV3150全两policy预测后独立truth。主AK90.374074/CK98.325926/RU28.095238/H42.864791%，原F0损失0.607407pp，AUROC91.705905%；控制AK90.285185/CK98.433333/RU21.015873/H34.095309%。背景净增未知拒对223、正确known净增24，两组known42过，未知失败。sourceRX已见/novel历史曝光，target0，真实F/G/NN更新0、合成F2；完整25轨迹/42组风险/所有分组/日志和独立数组读回齐全。
+
+下一候选增加新的表征信息：保留原fused160/defaulthead身份，检验原F0融合前四贡献的逐分支单位化拼接，和当前fused160密度作同族统计对照；不根据novel真值挑分支/权重或调本轮τ。先在实际冻结构造器验证合法feature导出/维度与成本，再独立固定单seed源矩阵/执行；当前尚未实现或证明收益。源通过才另登记跨未见RX星地，原U/Q隔离、无标签适应/发现/未来匿名注册及完整目标仍ACTIVE，AN/HOW未执行。完整数据/方法/分组/成本见`docs/PAMF_PHASE3_DENSITY_RESULTS_20261030.md`。
