@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-threegpu-takeover-m4-r09",
+  "group_id": "phase2-group1-native-AB-AC-concat-midPL",
+  "display_name": "Phase2 对照队列限制三张显卡",
+  "description": "原Phase2第一组只调度GPU1、5、7；接管健康GPU/评分进程，未选卡在跑任务自然结束；保留全部源模型、数据、方法、任务、失败及阻塞状态。",
+  "kind": "comparison",
+  "stage": "Phase2-A-B-C",
+  "aliases": [],
+  "tags": [
+    "Phase2",
+    "threegpu",
+    "controlled-takeover",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase2-issl-lora-refine-m4-r08"
+  ],
+  "replaces_run_id": "20261030-phase2-issl-lora-refine-m4-r08",
+  "authorization": "2026-10-31用户明确要求Phase2对比方法只分配三个显卡；健康进程保留完成。",
+  "code": {
+    "commit": "release Git HEAD",
+    "checkout": "release archive",
+    "environment": "N607 CVS-RFFI torch2.1 CUDA12.1",
+    "cwd": "immutable release root"
+  },
+  "data": {
+    "dataset": "WiSig full r10 threepool Phase2",
+    "version": "p2_min_v1 VALIDATED_ONCE",
+    "representation": "original Group1 frozen received IQ",
+    "contract_ref": "configs/pamf_phase2_group1_trisigtime_20261030.json",
+    "physical_ids_ref": "original r08 jobs.json and original capsules",
+    "label_map_ref": "original Group1 class mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "original r08 registered capsules",
+    "split_id": "original r08 K/N splits",
+    "validation_ref": "original validated-once",
+    "support_query_ref": null,
+    "leo_config_ref": "original r10 mixture and pure scenes"
+  },
+  "permissions": {
+    "regime": "original Phase2 methods and data",
+    "query_use": "original prediction and independent truth-last score",
+    "external_method_exception": null,
+    "claim_scope": "same Group1 scientific contract; allocation change only"
+  },
+  "checkpoint": {
+    "initialization": "reuse existing Group1 source and in-flight workers",
+    "sources": [
+      "20261030-phase2-issl-lora-refine-m4-r08"
+    ],
+    "contract_check_ref": "source_scope plus payload recipe/contract/seed/ancestry and original F0 context",
+    "provenance_verdict": "original matching source contracts and existing completed artifacts preserved",
+    "selection_rule": "original existing preregistered matrix"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/phase2-threegpu-takeover-r09",
+    "gpu_policy": "GPU 1,5,7 only for new workers; max2 own per card; existing others drain",
+    "remote_run_root": "runs/20261031-phase2-threegpu-takeover-m4-r09",
+    "remote_log_root": "runs/20261031-phase2-threegpu-takeover-m4-r09/logs",
+    "local_artifact_root": null,
+    "launch_command": "python -u -m experiments.pamf_phase2_practical.gpu_limit_takeover --runtime <runtime.json>",
+    "stop_rule": "preserve existing 16 ISSL failures and profile/dependency blocks; no rerun; stop admissions on systemic technical failure"
+  },
+  "expected_artifacts": [
+    "jobs.json",
+    "smoke.json",
+    "handoff.json",
+    "pipeline_state.json",
+    "original per-row predictions and scores"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "original Group1 metrics"
+    ],
+    "dimensions": [
+      "method",
+      "model seed",
+      "pool",
+      "RX",
+      "scene",
+      "K",
+      "N"
+    ],
+    "prediction_ref": "original immutable jobs paths",
+    "scorer_ref": "original independent scoring paths"
+  },
+  "rows": [
+    {
+      "row_id": "phase2-original-matrix-threegpu",
+      "method": "all current Group1 original methods",
+      "purpose": "resource-only controlled takeover",
+      "config_ref": "original r08 jobs.json and runtimes",
+      "resolved_config_ref": "original r08 jobs.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "all original model/data/split/support seeds preserved in r08 jobs and runtime",
+      "k": null,
+      "scenario": "original MIX8 plus pure scenes and K/N curves",
+      "optimizer": "unchanged",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "original immutable job outputs",
+      "log_path": "original per-job logs",
+      "command": "group1_dispatch per original job",
+      "expected_artifacts": [
+        "original prediction completion",
+        "independent scores"
+      ]
+    }
+  ],
+  "notes": [
+    "原r08所有已完成、失败和阻塞状态保留；目标结果不参与调参。",
+    "原有非1/5/7卡健康进程自然结束，不停止不重启；仅限后续派发。",
+    "原始42570工作单元以r08 jobs.json为准；不改变矩阵。"
+  ],
+  "registered_at": "2026-10-30T18:25:20+00:00"
+}
