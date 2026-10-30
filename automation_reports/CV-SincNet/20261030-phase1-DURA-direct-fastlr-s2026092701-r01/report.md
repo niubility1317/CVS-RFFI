@@ -15,6 +15,12 @@ MatchedscratchE20sameinit/data/loss/budget;onlypeakLR2e-4to1e-3;sourcefull20epoc
 
 每版均完整测试；不按source表现取消正式预测，不按目标结果调参或换父。成功仍要求六个星地场景逐个距同一rawclean≤3pp并保持clean性能，同时核算累计训练成本。只完成更快的source拟合不视为目标完成。
 
+## 已发布与实际运行
+
+VERIFIED：新release `20261030-DURA-direct-fastlr-r01`、执行commit `a0acfbe0c237e38d0460a9f1ea29c46b22cf84a6`，单archiveSHA一致/远端compile通过，CPUcontroller PID3580693、worker PID3580791、物理GPU6、CWD/cmdline/log增长已读回。实际2Ls梯度/随机checkpoint严格存取/原F50无query smoke PASS后已自动继续。
+
+首个完整epoch为E1/247、39.260秒，Ls6300/Us56700曝光，IQNMSE0.4660237，F_inputs/TX_labels/learned_teacher_inputs/initialization_checkpoint_loads均0。该记录只证明实际source训练健康进行，不代表正式性能或最终速度收益。后续按固定E20自动七景truth-last；不重新启动已结束的旧恢复队列。
+
 ## 数据、seed与模型来源
 
 实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
