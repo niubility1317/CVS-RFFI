@@ -23,7 +23,7 @@ def supervised_action(kernel,coefficients):
                   torch.complex(coefficients[:,2],coefficients[:,3]))
 
 
-def direct_objective(model,received,clean,actual_action,actual_variance,probes,*,return_restored=False):
+def direct_objective(model,received,clean,actual_action,actual_variance,probes,*,return_restored=False,return_coarse=False):
     """All source targets enter one joint update; no learned teacher is needed.
 
     Source simulator action/variance supervision is explicitly additional to IQ
@@ -59,4 +59,5 @@ def direct_objective(model,received,clean,actual_action,actual_variance,probes,*
     loss=paired+.1*prior_error+.05*spectral+.05*action_error+.001*noise_error
     terms=dict(iq_nmse=paired,prior_nmse=prior_error,spectral_error=spectral,
                action_probe_nmse=action_error,log_variance_mse=noise_error)
+    if return_coarse:return loss,terms,current,base
     return (loss,terms,current) if return_restored else (loss,terms)

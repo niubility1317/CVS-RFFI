@@ -1,0 +1,218 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01",
+  "group_id": "phase1-dura-scratch-early-coarse-IQ-hint",
+  "display_name": "DURA 从零单阶段30轮与早期粗恢复IQ教师指导",
+  "description": "266951参数原图，从零联合E30/7410；前10轮原R17coarseIQ提示1→.1、后20轮0；先缓存630k教师IQ，无F/TX/V/target优化，自动七景正式。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "single-stage",
+    "scratch",
+    "E30",
+    "R17-IQ-teacher",
+    "training-efficiency"
+  ],
+  "comparison_group_id": "DURA-source-F-guided-vs-matched-noVarAux",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01",
+    "20261031-phase1-DURA-IQenhance-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active optimization goal;userE30budget2026-10-31;existingoriginalR17legalIQteacherpermission;student fromscratch jointschedule,sourceonly",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-DURA-coarse-IQhint-E30-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07 63000 sourceL/U IQ/actions;20cachedcorruptions+repeat01-10;teacherIQ cachedfirst10 correspondingreceived",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "PairedsourceIQ/action andfrozenR17coarseIQ;TXtruth/F/V/targettraining0",
+    "augmentation": "Original15percentclean/85percentpractical;no newchannel/RX/phase augmentation"
+  },
+  "permissions": {
+    "regime": "SourceIQ_teacher_guided_G_optimization_without_F",
+    "query_use": "Single frozenreadout7source/7target;allviewsperrolebeforeindependenttruthlast",
+    "external_method_exception": "Explicituserpermission2026-10-30 onlysourceFweights/featuresforG;notF-free;frozenFnoheadtraining/updates",
+    "claim_scope": "NoFweights/outputs inGoptimization;sourceF-informedresearchandhistoricalR17sourceVselectiondisclosed;not whollyF-uninformedpipeline;defaultunchanged"
+  },
+  "checkpoint": {
+    "initialization": "Studentrandomscratch;0R17/copiedG/Fweights;frozenoriginalR17coarse IQ onlytrainingteacher",
+    "sources": [
+      "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth (noquerysmoke/postfreezeevalonly)"
+    ],
+    "contract_check_ref": "R17strictoriginalbase47loader+R17pathsvalidate_teacheractualparent/sourcebudget/sourcechoice;unchangedR07ACTION_SOURCE_CACHE_COMPLETE handles;Fstrictoriginalsource_reader forsmoke/eval",
+    "provenance_verdict": "OriginalR17cd977/E20/4940/R02coarse20/R07action20/original7/63/30/noTX-F-targetoptimization/sourcechoicebeforetarget;newGancestry0;sourceIQpathsPASSnot targetselection",
+    "selection_rule": "FixedfinalE30/7410,not source/targetselected;hintweights[1..0.1]epochs1..10/0epochs11..30 fixedbefore newtarget"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-coarse-IQhint",
+    "gpu_policy": "One own worker on GPU4/6/7 with>=12000MiB free and<=2 existing computePIDs before adding,total<=3;goal<=2,oneown/card;CPU2/independentCPUscorer1;otherownersunchanged",
+    "remote_run_root": "runs/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01",
+    "remote_log_root": "logs/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.coarse_hint run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wrongteacher/source/roles/budget/collision/nonfinite/frozenstate/reload/coverage:preserveaffectedrun,noautoretry/hotedit/fallback;source or targetperformance neverstop;otherownersuntouched"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-scratch_joint.json",
+    "scratch_joint/resolved_config.json",
+    "scratch_joint/initialization.json",
+    "scratch_joint/coarse_teacher_cache/complete.json",
+    "scratch_joint/coarse_teacher_cache/physical_ids.npy",
+    "scratch_joint/training.jsonl",
+    "scratch_joint/training_complete.json",
+    "scratch_joint/final.pt",
+    "scratch_joint/matched_profile.json",
+    "scratch_joint/source_prediction/complete.json",
+    "scratch_joint/source_summary.json",
+    "scratch_joint/target_prediction/complete.json",
+    "scratch_joint/target_summary.json",
+    "scratch_joint/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "MacroF1",
+      "Correct",
+      "repair_damage_net",
+      "TX/RX/day",
+      "rawclean_gap3pp",
+      "R17_eachscene1pp",
+      "cleanpreservation",
+      "complete30curves/lr/clip/hintweight",
+      "sourcecoarseNMSE/hintNMSE",
+      "teacher_cachetime/bytes/inputs/unchanged",
+      "studenttrain/fullpipelinecost",
+      "matchedG/GplusF_B1/B128medianP95throughput",
+      "params/checkpointbytes/ConvLinearMAC/FFT-CG/VRAM"
+    ],
+    "dimensions": [
+      "arm",
+      "clean/sixpractical",
+      "TX",
+      "RX",
+      "day",
+      "originalF50seed2026092701"
+    ],
+    "prediction_ref": "scratch_joint/{source,target}_prediction;7viewsfixedbeforetruth",
+    "scorer_ref": "IndependentCPU originaldirectevaluation aftercomplete7;sourcefixed1800 andformal168000;noadaptation"
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "ScratchE30noVar4base+earlyR17coarseIQhint,lambda1to.1first10then0;allGjoint",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/coarse_hint.py",
+      "resolved_config_ref": "runs/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01/scratch_joint/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Student2026092701/dataorder2026103004/cache2026101912/eval2027;student/probeTorchRNG reset afterteachercache,not affectedby teacherload",
+      "k": null,
+      "scenario": "Unchangedoriginalsourcecache15percentclean/85percentpractical;first10sourceviews matchedteacherIQ;formalclean+sixpractical",
+      "optimizer": "resetAdamW/W1e-4/globalclip1/warm247cos2e-5",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "G30/7410/B256/L189000/U1701000;teacher630kcoarseforwardonce and630kcachevisits;teachercoarse20historical/bundle60;studentcopiedweights0",
+      "output_root": "runs/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01/scratch_joint",
+      "log_path": "runs/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01/logs/scratch_joint.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.coarse_hint worker --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-scratch_joint.json",
+        "scratch_joint/resolved_config.json",
+        "scratch_joint/initialization.json",
+        "scratch_joint/coarse_teacher_cache/complete.json",
+        "scratch_joint/coarse_teacher_cache/physical_ids.npy",
+        "scratch_joint/training.jsonl",
+        "scratch_joint/training_complete.json",
+        "scratch_joint/final.pt",
+        "scratch_joint/matched_profile.json",
+        "scratch_joint/source_prediction/complete.json",
+        "scratch_joint/source_summary.json",
+        "scratch_joint/target_prediction/complete.json",
+        "scratch_joint/target_summary.json",
+        "scratch_joint/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "FixedR17coarseonly fromsourceIQpaths b2ec9a1:coarseNMSE.02502/.02331 andteacherchoices467/487 vsnoVarcoarse.1321/.1278/257/272;sourceproxy notTXaccuracy or targetbenefit.Stage1/2not uniformclean targets;do notdistillallstages.",
+    "Allcoarse/action/two-priors joint fromfirststep withoneAdamW/one globalLR/no optimizerreset;30epoch7410;hintterm schedule first10 linearly1to.1,remaining20exact0;not extra pretraining stages/passes.",
+    "Studentarchitecture266951/2prior4CG27FFT unchanged;1studentforward/visit;source_objective optionalreturncoarse preservesdefaultAPI andcontextonce;IQ/prior.1/STFT.05/action.05 base;no varianceaux.",
+    "FrozenR17bundleloadedstrict andpermissionvalidated;onlyfrozen.coarse evaluated tocache10x63000sourceIQ/noF/updates;1.29024GBnumericcacheplusmetadata.Snapshotcoarseweightsunchanged;cacheforwardcost andpeakVRAM separate;coarseusedparamscountactual.",
+    "Cachegeneration completesbefore randomstudent creation;TorchCPU/CUDAseed reset after teacher preparation;G/data/probe initialRNG aligned E30physicalcontrol.RandomnewG,no optimizer/head/weights fromteacher inherited.",
+    "EachteacherIQ cache andstudentreceived correspondsameepoch/sourceindex;first10 teacherrefvisits630000,live teachertrainingforwards0;after10teacher arraysnotread/hintnotcomputed;20fixedcorruptioncaches repeatfirst10 for30epochs.",
+    "TrainingFreads0/directTX0/V0/target0,studentteacherweightcopy0;Fonlycontroller2Ls noquerysmoke andpostfreezeeval.HistoricalR17sourceVlabelsselection andF-informedsource research disclosed,not entirelyF-uninformedpipeline.",
+    "E30physicalreadout IQenhance run is fixedsamebudgetoptimizationreference,physicalGnoFgradient/independentclip;wholeoldprocessincludedFheadandcost,not independentF-freetraining;no causalsharedGPU speedclaim.",
+    "CurrentpermissionGPU4/6/7oneownworker,admissionexisting<=2/free>=12000MiB,totalafteradding<=3/goal2/own1card;teacherpreparation uses SAMEworker/card,no extra teacherprocess;preserveothers.",
+    "Sevenfocusedchecks/P0P1reviewPASS;real2Ls sourceIQteacher+studentgradient/strictreload/originalFdefaulthead atfirststep thenimmediatecontinue.Full30final automaticprofile/source1800x7/target168000x7truthlast regardlesssourcebenefit,allnegativepreserved."
+  ],
+  "registered_at": "2026-10-30T19:30:07+00:00"
+}
