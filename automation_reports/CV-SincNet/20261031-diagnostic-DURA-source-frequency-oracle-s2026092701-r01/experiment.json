@@ -1,0 +1,166 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01",
+  "group_id": "phase1-dura-source-frequency-oracle",
+  "display_name": "源IQ频率分位复数与幅相理想修正诊断",
+  "description": "复用原paired source512×noVar/default×cache01/20，四等频点分位分别理想替换complex及Q4幅/相，原F保持性评估，0G/更新/TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "frequency",
+    "weak-bins",
+    "source-only",
+    "oracle"
+  ],
+  "comparison_group_id": "DURA-source-frequency-components",
+  "parent_run_ids": [
+    "20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active recovery/efficiency goal and authorized frozen sourceF mechanism analysis;sourceclean only oracle,not deployable or new target prediction",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-DURA-source-frequency-oracle-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Existingphase-oracle noVar/DURA_default source512pairedIQ forcache01/20,originalR07sourceindices128L384U",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07sourceIDs[source_indices] mustexactmatchall4phase-oracleNPZs/sourcepositions/roles/clean",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "ExistingACTION_SOURCE_CACHE_COMPLETE original63000 roles;sourceIDs matched F",
+    "support_query_ref": "No query/support;source training-pool diagnostic",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "None",
+    "actual_training_labels": "No training;TX/V/target hidden;onlysourcepairedIQ andoriginalFcleanteacherchoice",
+    "augmentation": "No new corruption/input generation;sourceoracle modifiesexisting4IQcells"
+  },
+  "permissions": {
+    "regime": "Frozen_source_frequency_oracle_with_original_frozen_F",
+    "query_use": "NoTX/V/target;only originalsource L/U pairedIQ",
+    "external_method_exception": "Explicituserpermission2026-10-30 onlysourceFweights/featuresforG;notF-free;frozenFnoheadtraining/updates",
+    "claim_scope": "Fcleanchoice fidelity,notactualTXaccuracy/not targeteffect/not certified recoverability bound;not deployable/noautomatictraining"
+  },
+  "checkpoint": {
+    "initialization": "FrozenoriginalF only;noGloaded/no learnedstudent/nooptimizer",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Existingfrozen.load_reader strictFmetadata/ancestry/sourcecontract plusGsourceIDsrolebinding;read-onlypreflightL6300/U56700 sets match;noTXvaluesread",
+    "provenance_verdict": "OriginalF50/4df7 matchedsource7/63/30/sourceonlyoriginalhead;strictload_reader/2Lsactualsmoke thenoldpairedreferenceFfeatures/logitsreproduction;noGcheckpointloading",
+    "selection_rule": "Fixedoriginalsource512/all4cells/all7interventions;no selection ormodeltraining"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-frequency-oracle",
+    "gpu_policy": "CPU2/CUDAempty/GPU0workers;Fanalysis14848+smoke2;G0/optimizer0;noCPUtruthscorer;preservehealthyE30/others",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.source_frequency_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "stop_rule": "SourceID/roles/clean/oldFmetadata orreproduction/nonfinite/sourcepopulation/collision/budget/Fstatefailure:preserve/noautoretry;no performance stop/nootherownercontrol"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "noVar-1.npz",
+    "noVar-20.npz",
+    "DURA_default-1.npz",
+    "DURA_default-20.npz",
+    "results.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQ_NMSE",
+      "replaced_clean_energy_share",
+      "Fcosineerror",
+      "posterior_KL",
+      "Fcleanchoiceagreement",
+      "pairedrepair_damage",
+      "CPUcost"
+    ],
+    "dimensions": [
+      "noVar/DURA_default",
+      "cache01/20",
+      "native/complexQ1-Q4/phaseQ4/magnitudeQ4",
+      "scene/RX/day/role/state/lock"
+    ],
+    "prediction_ref": "PrivateoracleIQ/features/logits;sourceonly,not formalprediction",
+    "scorer_ref": "NoTXtruth;Fcleanargmax only/sourcepairedIQ;independentNumPyarithmetic aftercompletion"
+  },
+  "rows": [
+    {
+      "row_id": "source_frequency",
+      "method": "PerpacketcleanFFTpower-ranked4x64 bins;complexQ1-Q4 andQ4phase/magnitudeoracle;baselineunchanged",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_efficiency/source_frequency_oracle.py",
+      "resolved_config_ref": "runs/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "No sampling;originalfixedpositions/IDs andsourceF2026092701;originalsplit392005/cache2026101912;newrandomseednone",
+      "k": null,
+      "scenario": "ExistingR07sourcecached01/20 mixedseven;nonewchannels",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newG/updates;F512cleanreference+4cellsx7casesx512=14848+2smoke;CPU2",
+      "output_root": "runs/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.source_frequency_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "noVar-1.npz",
+        "noVar-20.npz",
+        "DURA_default-1.npz",
+        "DURA_default-20.npz",
+        "results.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Existingposthocsourcequartiles showQ4only.109379percentcleanenergy butrelativeIQNMSE.388-.462;thisalone doesnotidentifyTXtraitsorjustifyfrequencyloss.Thisstep testsFchoice sensitivity tosourceoraclefrequencycomponents.",
+    "Four64bin quartiles orderedbyEACHsourcepacketcleanFFTpower,notfixedfrequencybandsandnotTXlabels;complexreplace Q1/Q2/Q3/Q4 separately,plusQ4phase-onlyandmagnitude-only;native baseline unchanged.Allcasesfixedbeforelaunch.",
+    "Phaseundefinedatclean coefficientzero leavesobservedcoefficientunchanged;magnitudezero-restoredphase undefined retainszero;no inventedphase-reference.Maincomplexreplacementexactlyremovesits FFT error component;phasecontrolpreservesmagnitude;roundingtoFP32 disclosed.",
+    "Alloraclecasesrequirepairedsourceclean;neveruseatdeployment/target andneverclaimtrueTXaccuracy orBayes/physicsceiling.Fcleanchoiceagreement/featureerror only,zero newGforwards/training/TX/V/target.",
+    "Originalphase-oracle metadataF/source roles/ID/clean/Ffeatures/logitschecked.OriginalFstrictcheckpoint actual2Ls thenimmediatefullCPU2.Fparameters/stateandgradunchanged;no modelheadfit/newdiagnostichead.",
+    "Seven fixedcasesx4cells plusone512cleanteacherforward=14848analysisFinputs/smoke2.PrivateoracleIQ/Ffeatures/logits/allroleRXdayscenestatelock groups savedfor independentarithmetic;noposthocepoch/scene/caseselection.",
+    "Descriptive diagnostic only/noautotrainingqualification;sourcegeometry agreementnot targetperformanceproof.HealthypriorauxE30continuesexactlyunchanged;its targetresultsnotreadfor thishypothesis.Originaldefaultanduser3pp/clean/efficiency goalremain.",
+    "Literaturecontextonly:Channel2Channel JSAC2025 useslog-spectrum extraction/modifiedclassification andmultiframefusion,notdirectlycompatiblewithfixedF/256IQpath;DeepRadioID transmitterFIRoptimization notourreceiverG.No externalaccuracy inherited."
+  ],
+  "registered_at": "2026-10-30T20:14:59+00:00"
+}
