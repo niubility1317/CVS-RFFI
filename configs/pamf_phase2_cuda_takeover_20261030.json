@@ -1,0 +1,12 @@
+{
+  "run_id": "20261030-phase2-group1-cuda-takeover-m4-r05",
+  "replaces_run_id": "20261030-phase2-group1-trisigtime-threepool-m4-r04",
+  "method": "pamf_tri_sig_time_ssl_milkr",
+  "execution_change": "FP64 batched CUDA local-ridge query decision; CPU exact near-tie fallback",
+  "unchanged": "source checkpoints, frozen DURA, source training, physical pools, received IQ, support/query splits, K/N, seeds, method fits and truth-last scoring",
+  "external_methods": "retain the original r01 release, training and output roots",
+  "inflight": "adopt and preserve existing workers and outputs; new PAMF predictions only for not-yet-started jobs",
+  "gpu_policy": "at most two combined owned training or prediction workers per GPU; other owners separate",
+  "stop_rule": "preserve existing systemic-technical-failure rule; stop admission on ownership, output, protocol or prediction failure",
+  "expected_artifacts": ["source_smoke.json", "smoke.json", "original_jobs.json", "jobs.json", "handoff.json", "pipeline_state.json", "job_results", "predictions", "scores"]
+}
