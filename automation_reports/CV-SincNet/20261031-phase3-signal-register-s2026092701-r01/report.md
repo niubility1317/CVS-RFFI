@@ -21,3 +21,14 @@ REG0主宏AK/RU/H分母allnonold；REG1 oldAK/laterRU/H另AN/H_KN/registeredmacr
 24unique+29sub聚焦PASS（实际toy producer→独立CPU4truth一次），8AST/9镜像文件、唯一直接P0/P1审查PASS。单preflight/归档SHA比较/remotecompile、启动PID-CWD-argv-GPU-log核实。非法角色/祖先/非有限/输出碰撞/无法合法prediction时保留，不partial truth/覆盖重启，UNKNOWN核原PID/root；源失败/零簇仍完成预登记Q，科学负结果不停止健康任务。
 
 预期launch/pipeline/configs/logs、smoke、source_radius/density/anonymous models、registration U公开特征/分配及freeze、Vcal/thresholds、known/novel/两Q完整pred、独立score results/complete与observations。IQ/权重/预测/原日志/private runtime不进Git。
+
+## 最终结果（ANALYZED_DEVELOPMENT / NO_PROMOTION）
+
+唯一主 predicted_REG1，匿名 K=0。ε=17.987383312044177；原簇 305/24 条仅 75/4 条 predicted 拒识，均未过严格半数，噪声 55 条中 54 条拒识；无 rawcluster 真 TX 组成证据。
+主 source/clean/star A_K=89.744444/70.833333/64.0625%，C_K=96.759259/87.326389/85.590278%；REG1 later-only R_U=71.523810/100/79.166667%，A_N/H_KN/H_OW overall 均 0。
+REG1 逐条等于对应 REG0；所有固定 cohort 正确/接收/拒识 gain/loss/net 均 0。实际未注册三类 R_U 仍为 61.936508/100/77.083333%，不能把分母变化当收益。
+实际部署六旧类＋零匿名；预期注册集合含全部真实 U 到达类，主 clean/star 接收率为 65.494792/70.182292%。high 缺 19-15，相关新类与预期注册宏指标 N/A。
+source known12 校准保护通过；K0 两过程各 single-zero candidate，无有效匿名阈值优化。clean/star 原 F0→A_K 损失 9.201389/8.854167 pp，旧 CK/AN 等门槛失败，NO_PROMOTION，完整目标 ACTIVE。
+新增 signal6684、F0/G 各384，synthetic各2；NN0，新 ε1，匿名 Gaussian0；旧 τ96 B＋零占位16 B。predict/score/pipeline=25.931523/11.398478/37.415431 s，非逐包延迟。
+独立 producer live CUDA4/510 MiB 离散样本非峰值；CPU scorer 仅 pipeline/产物完成证据，终态 live/GPU 空、foreign0。三生产 stdout 无 warning/error；24 unique＋29 sub、一次审查、单包 SHA/compile/runtime VERIFIED。
+完整 12 点、分组、三配对见[结果公报](../../../docs/PAMF_PHASE3_SIGNAL_REGISTER_RESULTS_20261031.md)；无 DA/持续注册成功，保留原 predicted 候选与 pooled 对照，无新增实验。
