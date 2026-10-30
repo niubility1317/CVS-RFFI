@@ -52,7 +52,7 @@
 |PAMF 多中心密度候选：源侧预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-density-s2026092701-r01/report.md)|
 |PAMF 旧类与未知类联合邻域诊断预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-joint-geometry-s2026092701-r01/report.md)|
 |PAMF第三阶段：源样本局部支持与跨接收机共识|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-local-support-s2026092701-r01/report.md)|
-|PAMF第三阶段：固定信号表征的12组与42组风险校准|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-macro12-risk-s2026092701-r01/report.md)|
+|PAMF 固定开放表征：12组与42组已知风险校准|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-macro12-risk-s2026092701-r01/report.md)|
 |PAMF 第三阶段：固定主度量的原型余弦读出|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-metric-cosine-s2026092701-r01/report.md)|
 |PAMF 第三阶段：独立拒识度量及未知结构保持|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-metric-embedding-s2026092701-r01/report.md)|
 |PAMF 度量学习独立评分恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/report.md)|
