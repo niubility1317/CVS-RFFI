@@ -784,3 +784,8 @@ Run `20261030-phase3-star-metric-residual-s2026092701-r01`、code310588cbd8c79bc
 ### 2026-10-30 预登记L–OE分离与known-support主读出
 
 独立新run `20261030-phase3-star-crossset-metric-s2026092701-r01`，code `fb016284e6c1f4715da4c690e2333efce89103b5`。两arm S_SEP/S_SEP_TOPO 同L192/OE64/102688参数/2220步，从原F0零残差重新开始；Lanchor在L+OE候选上显式学习outside-six合法负关系，不构造OE–OE硬关系。唯一主S_SEP_TOPO::learned_known_support，密度比仅诊断。V仅known42固定校准、NV仅truthlast；sourceL/OE/V/NV与G10P1不变、target0。主早筛通过才另登记跨未见RX星地，完整v3/更高拒识及无标签DA/发现/匿名注册继续ACTIVE；未取得本轮性能。设计见 `docs/PAMF_PHASE3_CROSSSET_METRIC_PLAN_20261030.md`。
+
+
+### 2026-10-30 L–OE分离两臂实际完成
+
+Run `20261030-phase3-star-crossset-metric-s2026092701-r01` / code `fb016284e6c1f4715da4c690e2333efce89103b5`，两arm各2220、三列预测/独立truthlast完成，执行VERIFIED、NO_PROMOTION。唯一主S_SEP_TOPO::learned_known_support A_K90.496296%、C_K98.685185%、R_U23.015873%、H36.698290%；主arm ratio诊断R_U32.952381%，不换主或晋级。sourceRX已见/novel历史曝光，target0；后续研究优先信号级开放分支和浅中层特征，尚无实现/性能声明。完整v3跨RX星地/更高拒识与无标签DA/发现/未来REG继续ACTIVE，结果见 `docs/PAMF_PHASE3_CROSSSET_METRIC_RESULTS_20261030.md`。
