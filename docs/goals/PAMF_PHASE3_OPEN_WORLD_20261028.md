@@ -717,3 +717,19 @@ Run `20261030-phase3-star-physical-open-s2026092701-r01`，code31fa172946aeaecd2
 VERIFIED 2x2220/all source+crossRXG10P1 predictions/independent truth-last; fixedprimaryP_LOE AK=69.2708%, CK=95.8333%, RU=20.1389%, H=31.2055%, originalF0loss=3.6458pp; NO_PROMOTION; sourceonly increment, DA/REG incomplete/fullgoalACTIVE.
 
 详见 `docs/PAMF_PHASE3_PHYSICAL_OPEN_RESULTS_20261030.md`。
+
+
+## 2026-10-30 物理配对后身份结构诊断完成
+
+Run `20261030-phase3-star-physical-geometry-s2026092701-r01`，code `8aeac9583dc6becf4bcfd7ccebea06a1ee6176a8`，VERIFIED／ANALYZED_SOURCE_DIAGNOSTIC。source novel3150 固定 G10P1、五表征／20邻居选择后独立truth，新增6300真实F＋4合成、F0特征3150复用、G/更新/target0。F0 fused同时跨RX/day1NN76.603175%；P_L fused76.158730/open68.634921%；主P_LOE fused75.523810/open67.301587%。主open64 RX方差比.178240/TX.085569，对比F0.028875/.421118；非零秩但身份结构变弱，单纯增秩／同记录一致性不够，不能把问题只归为阈值。DIAGNOSTIC_ONLY不晋级；没有新AK/RU或未来AN成绩，原v3/无标签适应/发现/匿名注册目标保持ACTIVE。详见`docs/PAMF_PHASE3_PHYSICAL_GEOMETRY_RESULTS_20261030.md`。
+
+
+## 2026-10-30 身份几何保护型再优化已设计并实现组件
+
+当前跨RX星地physical-open主版本未达标，最新source3150诊断显示open64同时跨RX/day身份检索67.301587%低于原fused16076.603175%，且RX组间方差比例更高。下一轮固定为protected160：原Tri-SIG-TIME SSL F0/defaulthead完全冻结，身份仍输出原同P1 logits；以同pass四项贡献生成零初始化、相对L2幅度≤0.1的160维残差，最终拒识/后续发现用unit160；relation输入差/积320维。PAMF当前方法与原phase1/2模型不改名或替换。
+
+组件代码 `62efcb32292710911d92549cf5274fad10768d5f` 已实现model/loss和合成集成验证；新增模块构造参数66177，与原F0的active299170待实际checkpoint首步smoke确认。model7＋18subtests PASS13.34s；loss8 PASS4.63s、dtype相关1定点复核PASS3.80s（不增加独立覆盖）；集成R0/R1两项PASS7.12s。只用合成接口/缓存tensor，尚无实际checkpoint smoke、新训练、目标读取或性能提升结果。
+
+下一执行目标：完成source-only cache/train/predict/score launcher及聚焦协议负测，从合法原F0独立建立R0残差关闭、唯一主R1有界残差两组；同初始化/采样/2220步，冻结原身份、学习relation和主adapter，源L可见六类、OE只outside-six成员、无OE TX/K/Us/V/NV/target优化。L192/OE64软邻域T.1、权重.1，跨RX且跨day公共候选格等权；2/3/4/5旧注册子集循环，完整六类OE成员loss。具体固定定义见`configs/pamf_phase3_protected_geometry_20261030.json`和`docs/PAMF_PHASE3_PROTECTED_GEOMETRY_DESIGN_20261030.md`。
+
+先执行两组完整源冻结预测及独立truthlast，V只既定风险校准、NV只独立评分；主R1必须通过既定known风险组与source RU90才另预登记跨RX星地开发评估，不从控制换主、不按NV调权/阈值、不访问历史Q训练或扩正式RX/多seed。失败保留科学负结果并继续研究，不以组件测试或检索率宣称全Phase3达标。v3 CK90/RU90、AK距原同输入闭集≤2pp，以及无标签适应、发现和未来匿名注册目标保持ACTIVE。
