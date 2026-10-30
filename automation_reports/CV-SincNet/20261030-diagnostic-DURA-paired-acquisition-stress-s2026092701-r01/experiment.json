@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01",
+  "group_id": "phase1-dura-paired-acquisition-stress",
+  "display_name": "DURA 保持功率与噪声的源采集响应扰动诊断",
+  "description": "冻结 noVar 源 final；同源 512×2 缓存视图比较原始及精确 A 配对采集响应扰动；CPU2、无更新或目标读取。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "acquisition-style",
+    "frozen-F-analysis",
+    "single-stage-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original R07 source128Ls/384Us fixed positions × cached01/20; original and bounded acquisition-style paired IQ",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Existing source_indices: first 128 L and 384 U positions, unchanged source contract; opaque IDs verified against original F source L/U",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "none;noqueryorclassificationprediction"
+  },
+  "permissions": {
+    "regime": "authorized_source_frozen_F_analysis_no_updates",
+    "query_use": "none",
+    "external_method_exception": "User2026-10-30explicitlyallowedindependentsourceFguidance;Fparams/headfrozen;no directTXlabels",
+    "claim_scope": "Source acquisition-response robustness only. F source features/choices are descriptive, not TX truth or eligibility criteria; no new G weights."
+  },
+  "checkpoint": {
+    "initialization": "No initialization or updates. Read fixed noVar source-final E20/4940/cf40 only and original frozen F50.",
+    "sources": [
+      "runs/20261030-phase1-DURA-direct-noVarAux-s2026092701-r01/scratch_joint/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "Fixed noVar scratch source-final without F/TX/target training; original source L/U physical IDs match frozen F source contract.",
+    "selection_rule": "Fixed matched noVar source-final chosen before this probe; no ranking/epoch/parent selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-style-stress",
+    "gpu_policy": "CPU2/0GPU;0updates;otherownersuntouched",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.style_stress --root ../.. --output ../../runs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Source/checkpoint/F permission mismatch, nonfinite metrics, model state/gradient change, or output collision: preserve and stop without automatic retry; no TX/V/target."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "epoch01.npz",
+    "epoch20.npz",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "original/styled common-clean-power IQ MSE",
+      "power relative error",
+      "exact-A noise replay error",
+      "style energy",
+      "descriptive clean/style frozen-F choice agreement",
+      "descriptive restoration feature/choice fidelity",
+      "predeclared training eligibility"
+    ],
+    "dimensions": [
+      "original/styled",
+      "cached01/20",
+      "role/scene/state/lock"
+    ],
+    "prediction_ref": "No classification prediction or truth; private source diagnostic tensors only",
+    "scorer_ref": "Independent aggregate/statistic recomputation from private source NPZ; no truth"
+  },
+  "rows": [
+    {
+      "row_id": "paired-style-stress",
+      "method": "One bounded causal FIR+image acquisition response; RMS preserved and exact y+A(Sx-x) pairing",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/style_stress.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103014
+      },
+      "seed_notes": "Style local generator 2026103014 reused for cached01/20; original G2026092701 fixed. No support/model updates or global RNG alteration.",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "One fixed G, source2Ls G/F smoke + 512×2 views, B32; CPU2/0GPU/0 updates",
+      "output_root": "runs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.style_stress --root ../.. --output ../../runs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "epoch01.npz",
+        "epoch20.npz",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Both cached views must have styled/original common-reference-power MSE ratio >=1.10, power-relative-error max<=2e-6, noise-replay-MSE/common-power max<=1e-10. Otherwise no training from this probe. F fidelity is descriptive, not a threshold or parameter-selection target.",
+    "Fixed style: two causal complex taps, real/imag std .03 and combined L1<=.08; IQ image real/imag std .005 and abs<=.015; per-packet original RMS retained. Same source A and same noise via y+A(Sx-x).",
+    "If eligible, separately preregister a scratch E20/4940 source-only single-stage contrast, one style draw with probability .5 per visit and one G forward. No three-forward antithetic/oracle-response loss or pretrained G stage.",
+    "Historical R32 pairing was correct: 1-2% PA/IQ/random ± perturbations plus original, three full G forwards, pretrained ancestors/unshared3priors. This probe differs in acquisition filter, RMS, boundedness and planned one-forward scratch training; no claim old pairing was wrong.",
+    "Existing source VALIDATED_ONCE cache reused; no TX labels/V/target; original F50 frozen. Source F knowledge used for descriptive design diagnostics must be disclosed, even if later G gradients do not use F.",
+    "Three focused tests PASS (invertibility/RMS, noncommuting-A exact noise, independent RNG). One independent P0/P1 review required before release; real-source smoke is first launcher step then immediate continuation.",
+    "No target accuracy or default change. Goal remains six scenes within3pp of raw clean84.676190476% and clean preservation, plus measured training efficiency."
+  ],
+  "registered_at": "2026-10-30T10:50:06+00:00"
+}
