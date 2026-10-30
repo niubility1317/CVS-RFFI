@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-direct-physics-s2026092701-m2-r01",
+  "group_id": "phase1-dura-source-physics",
+  "display_name": "DURA两份单阶段模型的源物理误差归因",
+  "description": "FixedfastLR/noVarAux sourcefinals;512source128L384U xepochs01/20;native/CG16/oracleaction/noise/cleanprior;0F/TX/V/target/updates",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "gradient-conflict",
+    "F-free",
+    "single-stage"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase1-DURA-direct-fastlr-s2026092701-r01",
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-direct-physics-s2026092701-m2-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07 fixedsource_indices512/128Ls384Us;pairedclean/received/kernel/coefficients/varianceepochs01/20",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsourcecache;deterministicsource_indicesinexistingDURAdiagnostic;opaquepositionssaved",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "none;noqueryorclassificationprediction"
+  },
+  "permissions": {
+    "regime": "source_only_TX_hidden_F_free",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only fixed-final-prior counterfactual physics errors; not identity, accuracy bound or legal deployment predictions"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source final E20s, no learned state transfer or update",
+    "sources": [
+      "runs/20261030-phase1-DURA-direct-fastlr-s2026092701-r01/scratch_joint/final.pt",
+      "runs/20261030-phase1-DURA-direct-noVarAux-s2026092701-r01/scratch_joint/final.pt"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "REUSE_VERIFIED_MATCHING_ORIGINAL_SOURCE_CONTRACT; validate payload sourcefinalstage2E20/4940",
+    "selection_rule": "Both sides of fixedvariance ablation, not target-ranked;strictconfig/sourcecommit and source-training legality checked"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-physics",
+    "gpu_policy": "CPU2/0GPU;healthyfastinterptraininguntouched",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-direct-physics-s2026092701-m2-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-direct-physics-s2026092701-m2-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-direct-physics-s2026092701-m2-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.source_physics --root ../.. --output ../../runs/20261030-diagnostic-DURA-direct-physics-s2026092701-m2-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Contract/checkpoint/collision/real-smoke/nonfinite/native-state-mismatch/statechange:preservepartial,noautomaticretry"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "source_positions.npy",
+    "per_example.npz",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQNMSE",
+      "FFTpowerquartilecomplexerror",
+      "sourceoperatorprobeerror",
+      "sourcevariance/residual",
+      "mean/median/P90/P95"
+    ],
+    "dimensions": [
+      "fastLR/noVarAux",
+      "epoch01/20",
+      "all/Ls/Us",
+      "coarse/stage1/prior/native/CG16/sourceoracles"
+    ],
+    "prediction_ref": "none",
+    "scorer_ref": "none;source-only aggregate arithmetic"
+  },
+  "rows": [
+    {
+      "row_id": "source-physics-pair",
+      "method": "Fixed sourcefinal priors and counterfactual operator/variance/cleanprior;no parameter update",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/source_physics.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "Fixedfirst256Lsrolepositions;modelseedcontrolsrandomfactory;evalcontrols2probes;supportN/A;sourceR07receiverseed2026101911",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2modelsx(2Lsfirstsmoke+512sourcex2epochs);B64;0updates",
+      "output_root": "runs/20261030-diagnostic-DURA-direct-physics-s2026092701-m2-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-direct-physics-s2026092701-m2-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.source_physics --root ../.. --output ../../runs/20261030-diagnostic-DURA-direct-physics-s2026092701-m2-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "source_positions.npy",
+        "per_example.npz",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Original defaultDURAinverse/sourceR29moments/R31gradients alreadyexist;do not repeat old moment/complexloss training as a new idea.",
+    "Bothfixedordinaryscratchmodels vary onlyvarianceaux;sourcecommits a0acfbe0c237e38d0460a9f1ea29c46b22cf84a6/cf40edea90667d9645a724b1e8f333027cdf7869.",
+    "Reset shared runnerconfiguration/factory/objective between loaders;strictload matches each actualsource recipe;no cross-recipe inheritance.",
+    "Sourcephysics uses existingdiagnose_batch/summarize,actualfinalprior andsame4probeRNG;exactnativeCG2reconstruction required.",
+    "Action bottleneck supportedonlyif oracleActionCG16 IQmean >=10%lowerthan learnedCG16 inbothcachedviews andprobe0error>1%;next training ifanyseparatelyfixed fromsourceevidence.",
+    "Oracle substitutions holdlearnedpriorfixed,maymismatch its training;not a bound on recognition or justificationtofeedtruth/clean todeployment.",
+    "Source2Lscheckpointsmoke permodel firstthencontinue;frozenstateunchanged;12aggregatecells andperexamplerecords;0F/TX/V/target/optimizer.",
+    "Existingstrictsource checkpoint negative test1PASS;oneindependentP0/P1review before release;onlyminimalworkflow."
+  ],
+  "registered_at": "2026-10-30T06:00:02+00:00"
+}
