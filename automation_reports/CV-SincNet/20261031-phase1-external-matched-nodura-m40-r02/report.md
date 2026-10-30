@@ -35,3 +35,7 @@
 每GPU本任务至多1个预测进程，所有owner的CUDA与待启动PID计入总数；新进程启动前总数必须小于4、剩余显存不少于12000MiB。Phase2仍运行时须先核实该卡两个已存活Phase2预测worker均在本次GPU快照中，以避免旧快照与Phase2补位交错；CPU评分最多1。其他owner进程不停止、不热改。首次真实源权重无query smoke通过后自动启动，技术失败停止新预测并保留产物。
 
 独立P0/P1审查及一次定点复核指出Phase2补位与GPU快照次序窗口，已要求两个Phase2 worker PID都属于同一快照，并以针对性交错测试验证。
+
+## 发布读回（2026-10-31，香港时间）
+
+VERIFIED：执行代码commit `01907ff46b01fa991862a69a32f64c8c08d59e9c` 已push并独立核对；一次发布归档传输比较和远端编译通过。r01 controller经PID/CWD/argv核对并暂停后再次核实80项排队、零子进程、零输出，精确停止且确认退出。r02 controller PID 1015035 存活；十个实际源权重source-only CPU smoke PASS。02:06首批7个预测worker在GPU0/1/3/4/5/6/7上运行，PID/CWD/命令和CUDA占用均已读回；日志分别产生cross_rx clean及practical预测输出。Phase2 controller及其worker继续运行。本次为预测启动证据，尚未产生完整row评分或最终结果。
