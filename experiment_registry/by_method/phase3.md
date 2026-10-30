@@ -48,6 +48,7 @@
 |PAMF第三阶段：共同可行阈值的单调扩展|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-common-seeded-risk-s2026092701-r01/report.md)|
 |PAMF 第三阶段：预测身份条件局部支持诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-conditional-support-s2026092701-r01/report.md)|
 |PAMF 融合前四贡献密度：源侧预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-contribution-density-s2026092701-r01/report.md)|
+|PAMF第三阶段：已知与辅助未知分离及软结构控制|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-crossset-metric-s2026092701-r01/report.md)|
 |PAMF 多中心密度候选：源侧预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-density-s2026092701-r01/report.md)|
 |PAMF 旧类与未知类联合邻域诊断预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-joint-geometry-s2026092701-r01/report.md)|
 |PAMF第三阶段：源样本局部支持与跨接收机共识|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-local-support-s2026092701-r01/report.md)|

@@ -1,0 +1,240 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-crossset-metric-s2026092701-r01",
+  "group_id": "pamf-phase3-source-crossset-metric",
+  "display_name": "PAMF第三阶段：已知与辅助未知分离及软结构控制",
+  "description": "Frozen originalF0/defaulthead; new zero-last102688 open metric projection. Both arms L192/OE64 with explicit legal cross-set L anchors, with/without frozen OE soft topology; preregistered known-support primary and ratio diagnostic.",
+  "kind": "cvs",
+  "stage": "Phase3-source-crossset-metric-falsification",
+  "aliases": [
+    "已知辅助未知分离"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "crossset_metric",
+    "known_support",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-crossset-separation-with-without-OE-topology",
+  "parent_run_ids": [
+    "20261030-phase3-star-protected-open-s2026092701-r01",
+    "20261030-phase3-star-contribution-density-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "fb016284e6c1f4715da4c690e2333efce89103b5",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-crossset-metric-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_crossset_metric_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_CROSSSET_METRIC_PLAN_20261030.md"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Existing sameG10MIX01/P1 originalF0 fused160 teacher plus balanced native-fourcontribution640; derived L/OE cache, V/NV features/defaulthead from contribution-density parent, no new physicalIQ.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/ids.npy",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_embedding_train_and_density": 6300,
+      "source_OE_both_embedding_and_density": 6134,
+      "source_V_fixed_knownrisk": 27000,
+      "source_novel_truthside_only": 3150,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "target_Q_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Source roles disjoint; old6 L/novel70 perTX/RX/day, V300, source5RX/3day seen. SourceL trueold6 only, OE trueTX/K hidden. Target U/Q untouched, no target support/query train.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Both arms sourceL supervised crossset KL over L+OE candidates. OE outside-six gives legitimate L-OE negatives only; no OE-OE hard identities/TX/K. Primary adds frozenF0 OE soft topology. Both postfit known/background aggregates.",
+    "query_use": "V only knownrisk/6tau after NN+density freeze; novel feature consumption aftertau and independenttruth after allrow predictions; no V/NV/target optimization or sourceNN earlystop.",
+    "external_method_exception": null,
+    "claim_scope": "Singlemodelseed seen-sourceRX/historically exposed unknown diagnostic; no final crossRX/UDA/discovery/futureREG success, complete goalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "New auxiliary102688 params seed2701, lastlayerzero z0=unit(originalu); no learnedθ parent. OriginalF0 Tri-SIG-TIME SSL E50/11100/default6head frozen, nativeupdates0; prepareactualF0 syntheticG10smoke2. Each aux freshAdamW2220 steps, no NNresume/EMA/alternateidentityhead.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original6sourcecontract392005 L6300/Us56700/V27000 unchanged. Protected7dd cache supplies originalF0 L/OE features, no R1 weights. Contribution parentedc28ad00baace5e4b9567fbf3391154bf6c34b4 supplies originalF0 V/NV samepass features and fixedoriginal160control only, no640density weight influence. ActualF0/DURA/sourcehandles match, no targettrained ancestry.",
+    "selection_rule": "Fixed2220/freshAdamW.0001/wd.0001/clip5, identical L192/OE64 RNG3017/3018 eacharm, T.1/candidateL-OE prior.5 each then equalpublicdomain. S_SEP crossset only; S_SEP_TOPO +OE_KL weight1. Known-support soleprimary, learnedratio diagnostic; density90/32/25seed3019/D160 freeze before known42, no earlystop or NV tuning."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-crossset-metric-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-crossset-metric-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-crossset-metric-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_crossset_metric_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_crossset_metric_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-crossset-metric-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Commonprepare then max2 GPU train/eval workers, actualfree>=4096MiB allowed0..7 <=2 addedown/card; perroweval immediately aftertrain, max1 independentCUDAemptyCPU scorer; foreignpreserved.",
+    "stop_rule": "Illegal ancestry/role/nonfinite/collision/unusableprediction/technicalfailure preserves row; no score incompletepredict, no auto restart/retune. Healthy peer continues fixedbudget, scientific negatives do not stop. UNKNOWN reconcile originalPID/root; no foreignoperations."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/*.json",
+    "logs/*.log",
+    "features/{complete,smoke}.json",
+    "features/{L,OE}.npz",
+    "rows/{S_SEP,S_SEP_TOPO}/train/{complete,smoke}.json",
+    "rows/{S_SEP,S_SEP_TOPO}/train/final.pt",
+    "rows/{S_SEP,S_SEP_TOPO}/train/*.jsonl",
+    "rows/{S_SEP,S_SEP_TOPO}/predict/*",
+    "rows/{S_SEP,S_SEP_TOPO}/score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "S_SEP/S_SEP_TOPO same L/OE/init/steps",
+      "fixedF0ratio/learnedknownsupport/learnedratio",
+      "old6/novel3 trueTX",
+      "sourceRX1/3/4/6/8",
+      "day1/2/3",
+      "sameG10MIX6scene"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-crossset-metric-s2026092701-r01/rows/{S_SEP,S_SEP_TOPO}/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_crossset_metric_score.py",
+    "targets_ref": "Sourceearlygate only; final crossRXstar/higherrejection/zeroTXlabelDA/discovery/futureREG remain required.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "C_K>=90%",
+      "originalF0 sameP1 closed minus A_K<=2pp",
+      "sole S_SEP_TOPO::learned_known_support known42+sourceoverallRU90 earlygate"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "S_SEP-s2026092701",
+      "method": "PAMF-OW S_SEP open-metric density",
+      "purpose": "Matched crossset separation control",
+      "config_ref": "docs/PAMF_PHASE3_CROSSSET_METRIC_PLAN_20261030.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-crossset-metric-s2026092701-r01/configs/S_SEP_train_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "NewNNinit2701/Lrng2026103017/OErng2026103018 independent/deterministic extra domains; postdensitykmeans3019. FrozenG10receiver2027/scene2026103001/channel2026104001.",
+      "k": null,
+      "scenario": "Seen-source5RX/3day G10P1 old6/heldout3TX sourcefalsification",
+      "optimizer": "AdamW fresh",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Eacharm2220 auxiliaryupdates/102688params, native0/11100 unchanged. Each L192/step=426240 and OE64/step=142080; same exact L/OE indices acrossarms. Fixedknown90/background32 aggregates from L6300/OE6134, primaryknownsupport vsratio diagnostics. CommonF0synthetic2/real0/G0; each realopen42584 eval +synthetic probes.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-crossset-metric-s2026092701-r01/rows/S_SEP",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-crossset-metric-s2026092701-r01/logs/S_SEP_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_crossset_metric_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-crossset-metric-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "features/{complete,smoke}.json",
+        "features/{L,OE}.npz",
+        "rows/{S_SEP,S_SEP_TOPO}/train/{complete,smoke}.json",
+        "rows/{S_SEP,S_SEP_TOPO}/train/final.pt",
+        "rows/{S_SEP,S_SEP_TOPO}/train/*.jsonl",
+        "rows/{S_SEP,S_SEP_TOPO}/predict/*",
+        "rows/{S_SEP,S_SEP_TOPO}/score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "S_SEP_TOPO-s2026092701",
+      "method": "PAMF-OW S_SEP_TOPO open-metric density",
+      "purpose": "Soleprimary crossset separation +OE frozen soft topology; soleknownsupport readout",
+      "config_ref": "docs/PAMF_PHASE3_CROSSSET_METRIC_PLAN_20261030.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-crossset-metric-s2026092701-r01/configs/S_SEP_TOPO_train_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "NewNNinit2701/Lrng2026103017/OErng2026103018 independent/deterministic extra domains; postdensitykmeans3019. FrozenG10receiver2027/scene2026103001/channel2026104001.",
+      "k": null,
+      "scenario": "Seen-source5RX/3day G10P1 old6/heldout3TX sourcefalsification",
+      "optimizer": "AdamW fresh",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Eacharm2220 auxiliaryupdates/102688params, native0/11100 unchanged. Each L192/step=426240 and OE64/step=142080; same exact L/OE indices acrossarms. Fixedknown90/background32 aggregates from L6300/OE6134, primaryknownsupport vsratio diagnostics. CommonF0synthetic2/real0/G0; each realopen42584 eval +synthetic probes.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-crossset-metric-s2026092701-r01/rows/S_SEP_TOPO",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-crossset-metric-s2026092701-r01/logs/S_SEP_TOPO_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_crossset_metric_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-crossset-metric-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "features/{complete,smoke}.json",
+        "features/{L,OE}.npz",
+        "rows/{S_SEP,S_SEP_TOPO}/train/{complete,smoke}.json",
+        "rows/{S_SEP,S_SEP_TOPO}/train/final.pt",
+        "rows/{S_SEP,S_SEP_TOPO}/train/*.jsonl",
+        "rows/{S_SEP,S_SEP_TOPO}/predict/*",
+        "rows/{S_SEP,S_SEP_TOPO}/score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Only S_SEP_TOPO::learned_known_support may be eligible after complete matchedmatrix; no control/ratio replacement by result.",
+    "L-OE negative uses only outside-six membership; no OE-OE hardpositive/negative/TX/K, OE teacher soft structure not trueidentity.",
+    "Both arms use same L and OE training values and exact samples; extra OE soft objective adds compute, no equalFLOP claim.",
+    "V only fixed known42/tau after all states frozen; novel all aftertau/truthlast. Seen-source/historicalunknown only, fullcrossRXstarUDA/discovery/futureREG ACTIVE."
+  ],
+  "registered_at": "2026-10-30T13:50:01+00:00"
+}

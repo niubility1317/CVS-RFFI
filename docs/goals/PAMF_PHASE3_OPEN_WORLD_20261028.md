@@ -779,3 +779,8 @@ Run `20261030-phase3-star-contribution-density-s2026092701-r01`、codeedc28ad00b
 Run `20261030-phase3-star-metric-residual-s2026092701-r01`、code310588cbd8c79bc4c687939ab49202ea422e8a2c，VERIFIED/ANALYZED_SOURCE_ONLY、NO_PROMOTION。M_L/M_LOE各2220新aux102688参数，F0/defaulthead frozen/native0，全部4440 finite/同L indices/完整metadata重放/梯度路径通过。主AK90.418519/CK98.411111/RU23.174603/H36.893313%，原F0损失0.562963pp；M_L RU23.682540%，固定F0 RU28.095238%。known42皆过、unknown失败；主vsM_L正确净+8/未知拒对净−16，主vsF0正确+12/未知拒对−155。postfit背景两者含OE，M_L仅embedding无OE。sourceRX已见/novel历史曝光，所有数据仍原G10P1，target0/AN/HOW未执行；真实F00/合成2/G0，新open真实feature行1079728/合成16/native更新0，pipeline199.695379s非B1。完整25×2/42×2/分组/log/controlarrays/独立读回齐全。
 
 下一候选补足L–OE跨集合约束：将已授权outside-six成员事实转为L–OE有效负关系，不假定OE彼此异设备、不解封OE TX/K，保留OE软内部结构的有/无匹配。现有L–L＋OE–OE几何不显式锚定两组相对位置，独立旋转表征层可保组内余弦，属新假设结构理由而非本轮失败因果结论。另预登记绝对known支持密度与known/OE比读出对照，避免默认OE代表所有未见设备；唯一主与具体预算/规则在新run固定，不按本轮novel truth调参/改阈值。尚未实现/验证，完整跨未见RX星地/高拒识/无标签DA/发现/未来匿名注册继续ACTIVE。详见`docs/PAMF_PHASE3_METRIC_RESIDUAL_RESULTS_20261030.md`。
+
+
+### 2026-10-30 预登记L–OE分离与known-support主读出
+
+独立新run `20261030-phase3-star-crossset-metric-s2026092701-r01`，code `fb016284e6c1f4715da4c690e2333efce89103b5`。两arm S_SEP/S_SEP_TOPO 同L192/OE64/102688参数/2220步，从原F0零残差重新开始；Lanchor在L+OE候选上显式学习outside-six合法负关系，不构造OE–OE硬关系。唯一主S_SEP_TOPO::learned_known_support，密度比仅诊断。V仅known42固定校准、NV仅truthlast；sourceL/OE/V/NV与G10P1不变、target0。主早筛通过才另登记跨未见RX星地，完整v3/更高拒识及无标签DA/发现/匿名注册继续ACTIVE；未取得本轮性能。设计见 `docs/PAMF_PHASE3_CROSSSET_METRIC_PLAN_20261030.md`。
