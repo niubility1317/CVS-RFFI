@@ -1,0 +1,268 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-protected-open-s2026092701-r01",
+  "group_id": "pamf-phase3-protected-source-identity-geometry",
+  "display_name": "PAMF第三阶段：身份几何保护型开放拒识源侧反证",
+  "description": "Frozen original F0/default head; R1 bounded contribution-conditioned unit160+source episodic/OE membership+soft geometry; R0 samearchitecture fixed features; N0 matched no-OE data control. Source-only final2220, then V risk and independent novel scoring.",
+  "kind": "cvs",
+  "stage": "Phase3-source-only-protected-geometry",
+  "aliases": [
+    "身份几何保护型拒识",
+    "protected160"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "bounded_geometry",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-protected160-frozen160-noOE",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261029-phase3-star-representation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "7dd90671968ddf58aab5a5b302b4d56371c8b9c9",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-protected-open-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_protected_open_launch"
+    ],
+    "configs": [
+      "configs/pamf_phase3_protected_geometry_20261030.json",
+      "docs/PAMF_PHASE3_PROTECTED_GEOMETRY_DESIGN_20261030.md"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Existing single fixed G10MIX01/P1 source roles; one source L/OE originalF0 rawfused/fourcontribution cache; no new clean/P0 values/G/real channel draws.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/ids.npy",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "L_train_and_aggregate": 6300,
+      "OE_train_for_R0_R1": 6134,
+      "OE_train_for_N0": 0,
+      "known_V_calibration": 27000,
+      "source_novel_evaluation": 3150,
+      "target_U_new": 0,
+      "target_Q_new": 0,
+      "original_U_s_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Each step sourceL support96/query96 disjoint, class6x15RXdaygrid+extra; everyquery prototypes exclude same RX OR day. OE64 public-grid-balanced only R0/R1, opaque IDs and publicdomains, no hiddenTX/K.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "SourceL oldsix TX/RXday visible, R0/R1 OE outside-six membership and publicRXday only; N0 never loads OE values. No OEtrueTX/K, Us, target, validation/neural fitting.",
+    "query_use": "Every row fixedfinal2220 then L-only aggregates; knownV solely fixed predicted-class/common-tail risk calibration; all source predictions+geometryneighbors before independent source-novel truth. No targetQ.",
+    "external_method_exception": null,
+    "claim_scope": "Source seen-RX, historically exposed novel-three development only. Source90 gate is not target success, UDA, discovery or future anonymous registration; fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Independent strict original Tri-SIG-TIME SSL F0E50/11100 perarm, all native frozen; random new66177 partsseed2701, onlyparts train. No learned previous Phase3 ancestor.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original source6 contract/split392005/source-only E50 known lineage; exact existing G10P1 role originalF0/DURA parents. No target-trained ancestry; DURA remains frozen/cache-only, no G load.",
+    "selection_rule": "Only fixed2220 final endpoint; mainR1::relation_max immutable, allcontrolsreported; no V/NV/target earlystop/reweight/checkpoint or candidate selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-protected-open-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_protected_open_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_protected_open_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-protected-open-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One featurecache worker then up to3independent row pipelines; before each native/training/eval actualfree>=4096MB, <=2addedown/card, foreign never excludescard, separateCUDAempty/BLAS1CPU truthscorer.",
+    "stop_rule": "Cache failure starts no row. Technical row failure preserves it and stops pending notstarted rows; other started rows continue, no auto retry/restart/retune/earlystop. UNKNOWN reconcile originalPID/CWD/argv/root, foreignoperations0."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/*.json",
+    "logs/*.log",
+    "features/{L.npz,OE.npz,smoke.json,complete.json}",
+    "rows/*/state.json",
+    "rows/*/train/{final.pt,resolved_config.json,steps.jsonl,training_summary.json,smoke.json,complete.json}",
+    "rows/*/predict/{source_aggregates.npz,thresholds.npy,known_predictions.npz,novel_predictions.npz,novel_features.npz,calibration/complete.json,smoke.json,complete.json}",
+    "rows/*/score/{results.json,complete.json}",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "N0/R0/soleprimaryR1",
+      "source42knownriskgroups",
+      "sourceRX/day/scene/knownTX/privateheldoutTX",
+      "original/protected160 frozengeometry",
+      "full2220loss/grad/bound/uniqueexposure"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/rows/*/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_protected_open_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json; source known42pass and primaryRU90 only target-prereg eligibility; fullgoal not complete"
+  },
+  "rows": [
+    {
+      "row_id": "N0-s2026092701",
+      "method": "PAMF-OW protected160 N0",
+      "purpose": "Matched noOE data/member supervision control, boundedresidual and Lonlysoftneighbor",
+      "config_ref": "configs/pamf_phase3_protected_geometry_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/rows/N0/train/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": 2026103017,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "model initializes parts2701, native inheritedoriginal2701; independentL/OE samplerseed3017, oldslotseed3018, K2/3/4/5 cycle. G10receiver2027/scene3001/channel4001 unchanged; no new channel/augmentation seed.",
+      "k": null,
+      "scenario": "Only fixedG10P1 source5seenRX/3day; no targetnewIQ",
+      "optimizer": "Fresh AdamW on newparts only, wd.0001 clip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220 adapter optimizerupdates; originalF0 remains11100/no nativeupdate. L192 and OE0 cached adapterrows/step, no realnativeF inoptimization. Originalnativefrozen232993/newparts66177, R0 trainable10305 vsN0/R166177; sharedsourcecache realF12434, eachrow V+NVF30150 andLaggregatecached6300; no G.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/rows/N0",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/logs/N0_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_protected_open_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-protected-open-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "features/{L.npz,OE.npz,smoke.json,complete.json}",
+        "rows/*/state.json",
+        "rows/*/train/{final.pt,resolved_config.json,steps.jsonl,training_summary.json,smoke.json,complete.json}",
+        "rows/*/predict/{source_aggregates.npz,thresholds.npy,known_predictions.npz,novel_predictions.npz,novel_features.npz,calibration/complete.json,smoke.json,complete.json}",
+        "rows/*/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "R0-s2026092701",
+      "method": "PAMF-OW protected160 R0",
+      "purpose": "Samearchitecture fixedunitF0 features, fullL/OE learnedrelation control",
+      "config_ref": "configs/pamf_phase3_protected_geometry_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/rows/R0/train/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": 2026103017,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "model initializes parts2701, native inheritedoriginal2701; independentL/OE samplerseed3017, oldslotseed3018, K2/3/4/5 cycle. G10receiver2027/scene3001/channel4001 unchanged; no new channel/augmentation seed.",
+      "k": null,
+      "scenario": "Only fixedG10P1 source5seenRX/3day; no targetnewIQ",
+      "optimizer": "Fresh AdamW on newparts only, wd.0001 clip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220 adapter optimizerupdates; originalF0 remains11100/no nativeupdate. L192 and OE64 cached adapterrows/step, no realnativeF inoptimization. Originalnativefrozen232993/newparts66177, R0 trainable10305 vsN0/R166177; sharedsourcecache realF12434, eachrow V+NVF30150 andLaggregatecached6300; no G.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/rows/R0",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/logs/R0_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_protected_open_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-protected-open-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "features/{L.npz,OE.npz,smoke.json,complete.json}",
+        "rows/*/state.json",
+        "rows/*/train/{final.pt,resolved_config.json,steps.jsonl,training_summary.json,smoke.json,complete.json}",
+        "rows/*/predict/{source_aggregates.npz,thresholds.npy,known_predictions.npz,novel_predictions.npz,novel_features.npz,calibration/complete.json,smoke.json,complete.json}",
+        "rows/*/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "R1-s2026092701",
+      "method": "PAMF-OW protected160 R1",
+      "purpose": "Soleprimary boundedunit160 contribution-conditioned adapter with fullL/OE relation+softneighbors",
+      "config_ref": "configs/pamf_phase3_protected_geometry_20261030.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/rows/R1/train/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": 2026103017,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "model initializes parts2701, native inheritedoriginal2701; independentL/OE samplerseed3017, oldslotseed3018, K2/3/4/5 cycle. G10receiver2027/scene3001/channel4001 unchanged; no new channel/augmentation seed.",
+      "k": null,
+      "scenario": "Only fixedG10P1 source5seenRX/3day; no targetnewIQ",
+      "optimizer": "Fresh AdamW on newparts only, wd.0001 clip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220 adapter optimizerupdates; originalF0 remains11100/no nativeupdate. L192 and OE64 cached adapterrows/step, no realnativeF inoptimization. Originalnativefrozen232993/newparts66177, R0 trainable10305 vsN0/R166177; sharedsourcecache realF12434, eachrow V+NVF30150 andLaggregatecached6300; no G.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/rows/R1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/logs/R1_train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_protected_open_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-protected-open-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "features/{L.npz,OE.npz,smoke.json,complete.json}",
+        "rows/*/state.json",
+        "rows/*/train/{final.pt,resolved_config.json,steps.jsonl,training_summary.json,smoke.json,complete.json}",
+        "rows/*/predict/{source_aggregates.npz,thresholds.npy,known_predictions.npz,novel_predictions.npz,novel_features.npz,calibration/complete.json,smoke.json,complete.json}",
+        "rows/*/score/{results.json,complete.json}",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Source roles already VALIDATED_ONCE; derived featurecache has no new capsule, capsule_id null intentionally. Exact source manifest/parent handles reused, no rehash or data revalidation.",
+    "InitialN0 addedbeforeanynewdata/run to honor required matchednoOEcontrol. PrimaryR1/2220budget/source-only permission unchanged; N0lessdata/compute disclosed, no matchedFrow claim.",
+    "Sourceold labels six order14-10/14-7/20-15/20-19/6-15/8-20; sourceRX1/3/4/6/8 physical1-19/18-2/19-2/2-19/3-19, days2021-03-08/15/23. SourceNV19-15/19-16/7-1 each1050 scoreonly; OE21 identities/K hidden learner, originalUs hiddenunused.",
+    "NativeF0 identity head neverreplaced/trained, originalF0 logits route allidentities and thresholds. Unit160 anchored originalrawfused withrelativeL2bound.1 andzero gains; architecture internal64 not finalrejectspace; no conditioner/VICReg/GRL/unknown hardinstance labels.",
+    "Train eachrow automatically frozenV/NVprediction and independentCPUtruth; allnovel geometryneighbors before same onlyprivate source read. Geometry diagnostic not performancegate/registrationAN.",
+    "SourceL aggregates only90 domainclasssums/counts, no source rows deployed. SourceV neuralfit0, only existingriskτ, NV onlytruthside scoring. Target/U/Q/formal0, no newblindRX/TX claim, AN/HOW N/A/fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-30T09:30:50+00:00"
+}
