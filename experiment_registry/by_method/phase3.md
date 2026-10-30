@@ -71,4 +71,5 @@
 |PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r02/report.md)|
 |PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r03/report.md)|
 |已有较好开放方案：DURA 接入前后配对测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-dura-best-s2026092701-r01/report.md)|
+|PAMF第三阶段：背景混合锚定的无标签域适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-mixture-uda-s2026092701-r01/report.md)|
 |PAMF P0开放表征与P1身份路径：匹配训练单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-star-raw-open-s2026092701-r01/report.md)|

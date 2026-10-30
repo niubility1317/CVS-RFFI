@@ -1,0 +1,201 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-mixture-uda-s2026092701-r01",
+  "group_id": "pamf-phase3-background-mixture-UDA",
+  "display_name": "PAMF第三阶段：背景混合锚定的无标签域适应",
+  "description": "Fixed P1signal known90/OE32 and oldtau; source-nuisance subspace bounded U-only MAP-EM shift. DA0,known-onlyDA_K,backgroundDA_M primary; original identities unchanged. ThreeDURA tests.",
+  "kind": "cvs",
+  "stage": "Phase3-unlabelled-mixture-UDA-development",
+  "aliases": [
+    "背景混合U适应"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "UDA",
+    "unlabelled",
+    "mixture",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-DA0-known-background-mixture-shift",
+  "parent_run_ids": [
+    "20261031-phase3-dura-best-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "d72a7b7c301fec2ff3736e4221dfe5047ab78efc",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-mixture-uda-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_mixture_uda_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_MIXTURE_UDA_PLAN_20261031.md",
+      "configs/pamf_phase3_targets_20261029.json"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Fixed G10U384 through sameDURA/F0/P1signal. U-only fit uses P1z160, no logits/trueTX/K/quota. ExistingDURA source/Q publicpredictions consumed onlyafter adaptersfreeze; no newQIQ.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-relative-s2026092701-r01-release/data/star_g10/discovery/public/ids.npy; parentDURA source/target predictions ids",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "target_unlabelled_U_fit": 384,
+      "source_L_new": 0,
+      "source_OE_new": 0,
+      "source_Us_new": 0,
+      "source_V_outputs_reused": 27000,
+      "source_novel_outputs_reused": 3150,
+      "clean_Q_outputs_reused": 864,
+      "star_Q_outputs_reused": 864,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Existing RX24-1 U03-08/Q03-15 physicaldisjoint, sourceRX5 disjointfromtargetRX. Upublic oldregistered6 only, trueunknownTX/K hidden; cleanonlytest. HistoricNV/Q exposure, notformalblind.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "TargetU only for 2x20 MAP-EM. Source prior from frozenclass-major90means, sourceλ/radius; no sourceV/Q fit. Density/NN/tau fixed, originalF0identities unchanged.",
+    "query_use": "ThreeCPsynthetic2 then sourceprior/density/tau freeze beforeU; both adapters frozenbefore anyparent NV/Q NPZ. SharedstarUdelta onclean/star targetRX; sourceotherRXdelta0. Allpred before3truthreads, noUtruth/NNfit/EMrefitinscorer/retau.",
+    "external_method_exception": null,
+    "claim_scope": "Zero-target-TX-label statistical DA only, no REG/discovery. source seenRX control; singlehistoricdevRX/Q, missingmain-sceneTX NA. FullgoalACTIVE,AN/HOWnull."
+  },
+  "checkpoint": {
+    "initialization": "Frozenbest P1signalr03 dc01 CP+originalF0 E50+fixedDURAv1R69; noNN optimizer/resume. Source11+old2tau exact, sourcebasis/λ/radius onlyaggregate. DA0 exactparent.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Same sourcecontract392005 and frozenDURA/signal ancestry asbest9fc. NewtargetUderivedadapters separate, originalcheckpointremains sourceonly; no targetQ/labels in source or adapter fit.",
+    "selection_rule": "SoleDA_M_ratio index5; DA_K diagnostic known-only control. Rank sourceSVDnonzero≤14, λ=s²/15,r=maxsourceoffsetnorm. Fixed20 MAP-EM init0, 60bisect constrainedMstep, groupsknown/background .5/.5, noU/Q earlystop or candidate swap."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-mixture-uda-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-mixture-uda-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-mixture-uda-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_mixture_uda_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_mixture_uda_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-mixture-uda-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "OneGPUproducer free>=4096MiB <=2addedown/card allowed0..7; independentCUDAemptyCPUscore, otherownerspreserved.",
+    "stop_rule": "Invalidrole/ancestry/nonfinite/materialUobjective decrease/outputcollision/unusableprediction preserve, no partialtruthscore/autorestart. UNKNOWN reconcileoriginalPID/root; no scientificfailstop or foreignoperations."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/*.log",
+    "predict/{complete,smoke}.json",
+    "predict/models/*",
+    "predict/thresholds.npz",
+    "predict/adaptation/{source_prior.npz,DA_K.npz,DA_M.npz,fit_diagnostics.json,complete.json,U_features.npz}",
+    "predict/source/*",
+    "predict/targets/*",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "DA0/DA_K/DA_M ×known/ratio",
+      "source_DURA/clean_DURA/star_DURA",
+      "old6/novel3TX RX/day/scene coverage",
+      "primaryvsDA0ratio/DA_Kratio pairedcounts"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-mixture-uda-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_mixture_uda_score.py",
+    "targets_ref": "ThreeDURAtests/latestclean95star90/CK90/AKloss2pp; fullunlabelleddiscovery/futureREG/multiRXconfirmation remainsrequired.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "DA_M_ratio starAK positivegain vsDA0",
+      "cleanRU95/starRU90+CK90/originalF0loss2pp/main-scenecoverage"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "mixture-uda-s2026092701",
+      "method": "PAMF-OW bounded background-mixture UDA",
+      "purpose": "One Uexport, 2x20 sharedshift fits; soleDA_M_ratio, unchangedidentity/sourceτ, frozenDA0 parent.",
+      "config_ref": "docs/PAMF_PHASE3_MIXTURE_UDA_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-mixture-uda-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No stochasticfit. Originalmodel2701/G10receiver2027scene3001channel4001/oldsource kmeans3019 inherited. Ufixed384, initzero/fixedEM20. cleannotfit.",
+      "k": null,
+      "scenario": "SourceDURA plus devcrossRXcleanDURA/starDURA, Ustaronly",
+      "optimizer": "Fixed MAP-EM 20 iterations perarm, constrained analytic Mstep",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NewNN/sourcefit/retau0; targetadapter2x20 iterations/21records each; newG/F0/signal real384 each+synth2each. Q/source realforward0/oldoutputreuse. OldF011100+signal2220/Gcostretained. Deltas2x160F64, sourcepriorrank14 fromaggregates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-mixture-uda-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-mixture-uda-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_mixture_uda_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-mixture-uda-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/*.log",
+        "predict/{complete,smoke}.json",
+        "predict/models/*",
+        "predict/thresholds.npz",
+        "predict/adaptation/{source_prior.npz,DA_K.npz,DA_M.npz,fit_diagnostics.json,complete.json,U_features.npz}",
+        "predict/source/*",
+        "predict/targets/*",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "F0/defaultidentity unchanged; onlyreceiver-specific targetopenness shift, sourceRXusesdelta0.",
+    "Mixtureprior .5/.5 nottrueUratio or unknownK; allUused, no hardpseudo gate/logits in fit.",
+    "Qfeatures onlyafter adaptersfreeze, DA0 exact, noQstatistics/retau/Utruth. ThreeDURA tests evenifsourcefails.",
+    "Fulltargetstatfit cost2x20 disclosed thoughNNupdates0; noanonymousREGclaim.",
+    "HistoricdevQ/sourceNV andmissingmain-scenecoverage retained;formalRXheld/fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-30T17:58:19+00:00"
+}
