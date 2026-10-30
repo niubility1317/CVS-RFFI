@@ -809,3 +809,8 @@ Run `20261030-phase3-star-signal-open-s2026092701-r02` / actualcode `b1f99b77a81
 ### 2026-10-30 signal-open r02合成前向依赖失败
 
 Run `20261030-phase3-star-signal-open-s2026092701-r02` / code `b1f99b77a81fa4fd82f7d519a7db4f1aa46d7b15` 导出后合成probe失败已VERIFIED，未读真实IQ/训练/评分。原forward return_aux仍计算被丢弃的classify logits，删W引发AttributeError；原components的joint不依赖W。与r01类型guard ValueError不同指纹，r03将只旁路独立copy内部被丢弃的logits，保证原features/梯度、分类路径和科学目标不变。root/日志保留、live/GPU空、foreign0，无性能结果，完整目标ACTIVE。
+
+
+### 2026-10-30 独立信号级开放分支r03前向依赖恢复
+
+Run `20261030-phase3-star-signal-open-s2026092701-r03` / actualcode `dc01a402582f93e452dbaa3ef59a9fbb44151818`，单E_SIGNAL，新headless信号232033+MLP102688=334721，原F0/default6身份路径固定。相同crossset+OEsoft结构、L192/OE64/3017/3018/2220及known-support主读出，将梯度推进浅中层，Sinc用CENTER_UNITS物理策略；冻结前端控制精确复用原S_SEP_TOPO，不重训。合法既有G10/P1 IQ L6300/OE6134训练，V27000仅固定known42/τ、NV3150仅truthlast，无新信道/G/二次RMS/P0/clean值/target。复制特征祖先11100+新增2220=13320、MLP2220、原识别器native0分别披露。主source早筛通过才另登记跨未见RX；完整v3与更高拒识/无标签DA/发现/未来匿名REG继续ACTIVE，当前无新性能。设计见 `docs/PAMF_PHASE3_SIGNAL_OPEN_PLAN_20261030.md`。
