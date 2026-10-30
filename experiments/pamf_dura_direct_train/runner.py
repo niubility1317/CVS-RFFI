@@ -127,6 +127,9 @@ def smoke(args,p):
     action=supervised_action(take_array('kernel'),take_array('coefficients'))
     noise=take_array('variance')
     student=scratch_model(2026092701)
+    if student.initialization_report.get('clean_identity_initialization'):
+        with torch.no_grad():
+            torch.testing.assert_close(student(x),x,atol=2e-6,rtol=2e-6)
     with torch.no_grad():expected=student(y).clone()
     generator=torch.Generator().manual_seed(2026103004)
     probes=[torch.complex(torch.randn(2,256,generator=generator),torch.randn(2,256,generator=generator)) for _ in range(2)]
@@ -268,7 +271,7 @@ def dispatch(args,p):
             free=[gpu for gpu,row in state.items() if gpu in range(8) and gpu not in used and row['free_mb']>=12000 and len(row['pids'])<2]
             free.sort(key=lambda gpu:-state[gpu]['free_mb'])
             commands=subprocess.check_output(['ps','-eo','args='],text=True).splitlines()
-            goal_workers=sum(any(name in line for name in ('pamf_dura_prior_refine.runner worker','pamf_dura_prior_recovery.runner worker','pamf_dura_direct_train.runner worker','pamf_dura_direct_train.fast_lr worker')) for line in commands)
+            goal_workers=sum(any(name in line for name in ('pamf_dura_prior_refine.runner worker','pamf_dura_prior_recovery.runner worker','pamf_dura_direct_train.runner worker','pamf_dura_direct_train.fast_lr worker','pamf_dura_direct_train.identity_init worker')) for line in commands)
             if goal_workers>=2:free=[]
             while pending and free and len(active)<1:
                 arm=pending.pop(0);gpu=free.pop(0)
