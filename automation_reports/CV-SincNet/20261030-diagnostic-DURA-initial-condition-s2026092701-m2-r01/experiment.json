@@ -1,0 +1,156 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-initial-condition-s2026092701-m2-r01",
+  "group_id": "phase1-dura-initial-conditioning",
+  "display_name": "DURA单阶段普通与恒等初始化的源梯度规模",
+  "description": "2untrainedinitialstatesx512sourcex2cachedviews;5componentderivatives/4fixedsums;0optimizer/F/TX/V/target",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "gradient-conflict",
+    "F-free",
+    "single-stage"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-initial-condition-s2026092701-m2-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Fixed128Ls384Us opaque source_indices;cachedreceived01/20/clean/action/noise;no labels",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsourcecache;deterministicsource_indicesinexistingDURAdiagnostic;opaquepositionssaved",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "none;noqueryorclassificationprediction"
+  },
+  "permissions": {
+    "regime": "source_only_TX_hidden_F_free",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Batchmeanweightedsourcegradientgeometryonly;notperexamplecausalityoridentity/targetperformance"
+  },
+  "checkpoint": {
+    "initialization": "Two untrained skeletons seed2026092701;identity only deterministic output heads/FIR",
+    "sources": [
+      "PredesignatedfastLRsourcefinal only for real-checkpoint2Lsnoquerysmoke;notinitializer"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "REUSE_VERIFIED_MATCHING_ORIGINAL_SOURCE_CONTRACT; validate payload sourcefinalstage2E20/4940",
+    "selection_rule": "Untrainedsame-seedstatesonly;no trainedweightinitialization/teacher/no targetranking"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-initial-conditioning",
+    "gpu_policy": "CPU2/0GPU;healthyaction020untouched",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-initial-condition-s2026092701-m2-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-initial-condition-s2026092701-m2-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-initial-condition-s2026092701-m2-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.initial_condition --root ../.. --output ../../runs/20261030-diagnostic-DURA-initial-condition-s2026092701-m2-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Contract/sourcecheckpoint/smoke/collision/nonfinitegradient/statechange/persistentgrad:preservepartial,noautoretry"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "batchmean loss components",
+      "raw norm",
+      "IQ cosine",
+      "clip would apply",
+      "clip scale"
+    ],
+    "dimensions": [
+      "ordinary/identity untrained states",
+      "cachedepoch01/20",
+      "64B32batches",
+      "base/strongA/noVar/noVarStrongA"
+    ],
+    "prediction_ref": "none",
+    "scorer_ref": "none;source-only temporary autograd;no weights updated"
+  },
+  "rows": [
+    {
+      "row_id": "initial-source-gradients",
+      "method": "5componenttemporaryautograd;4fixedlinearcombinations;no actualclip/update",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/initial_condition.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "Fixedfirst256Lsrolepositions;modelseedcontrolsrandomfactory;evalcontrols2probes;supportN/A;sourceR07receiverseed2026101911",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "64sourceB32gradientbatches;2initialstatesx512x2views;actualsourcecheckpoint2Lsfirstsmoke;0updates",
+      "output_root": "runs/20261030-diagnostic-DURA-initial-condition-s2026092701-m2-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-initial-condition-s2026092701-m2-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.initial_condition --root ../.. --output ../../runs/20261030-diagnostic-DURA-initial-condition-s2026092701-m2-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Currentaction020sourceE16 actualB256clipfraction.99595/IQ.03754;source finalgradientratios neednot describe initialization;no targetscore used.",
+    "Fixedsame randominnerweights and architecture;identityzeroscoarse temporal/action/global/prioroutputheads andFIRdelta0;all parameters remain differentiable.",
+    "Sourcecacheepoch means channelobservation cache,not optimizer/model age;bothstates untrainedthroughout;allmodelweights/buffersunchanged/p.gradNone.",
+    "Autograd five unweighted componentgradients once/batch;derive base/.2action/noVar/noVar+.2action without changing state;FP64 norm geometry,notperexample gradients.",
+    "Decisionfixed:identity noVar medianrawnorm <= halfordinary andmean noVar losslower atbothcachedviews;otherwise no combinedinitializercandidate fromthis diagnostic.",
+    "Real strictfastLRsourcecheckpoint/2Ls noquery smoke only;its learnedstate never copied toinitial models;0F/labels/V/target/newweights.",
+    "ActualB256cliprate andB32diagnostic clippingestimate are distinct;initial conditioning not convergence/TX proof.",
+    "Existing gradient geometry and sourcecheckpoint negative checks2PASS;oneindependentP0/P1reviewbeforerelease;singleCPU2/0GPU."
+  ],
+  "registered_at": "2026-10-30T06:31:32+00:00"
+}
