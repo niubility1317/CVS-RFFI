@@ -1,0 +1,159 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01",
+  "group_id": "phase1-dura-source-IQ-teacher-paths",
+  "display_name": "原 R17 合规源域 IQ 教师逐层保真诊断",
+  "description": "固定source512×cached01/20，对原R17 coarse及三个后求解IQ路径评估保真与cleanF选择保持；0训练/TX/V/target，不默认中间输出可作教师。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "R17",
+    "IQ-teacher",
+    "source-only",
+    "single-stage-research"
+  ],
+  "comparison_group_id": "DURA-source-F-guided-vs-matched-noVarAux",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Existing user-authorized originalR17 source IQteacher plus active single-stage training efficiency/recovery goal;thisstep source diagnostics only",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-DURA-R17-source-IQpaths-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07all63000source roles;fixed512probe128L384U;cache01/20;R17strictsourcecheckpoint andoldpairedFcleanreference",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy andfixedsource_indices;referenceNPZphysicalIDs/sourcepositions",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "ExistingACTION_SOURCE_CACHE_COMPLETE original63000 roles;sourceIDs matched F",
+    "support_query_ref": "No query/support;source training-pool diagnostic",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "None",
+    "actual_training_labels": "No training or TX labels;Fcleanfeature/logit reference only;historicalR17sourceVlabel-based beforetarget choice disclosed",
+    "augmentation": "No new source/channel observations;unchangedcached01/20"
+  },
+  "permissions": {
+    "regime": "Frozen_source_R17_IQpath_diagnostic_with_frozen_F_evaluation",
+    "query_use": "NoTX/V/target;only originalsource L/U pairedIQ",
+    "external_method_exception": "Explicituserpermission2026-10-30 onlysourceFweights/featuresforG;notF-free;frozenFnoheadtraining/updates",
+    "claim_scope": "Training-pool teacherFchoice fidelity,nottrueTXaccuracy/not targeteffect/not certified recoverylimit;noautomatictrainingqualification"
+  },
+  "checkpoint": {
+    "initialization": "FrozenoriginalR17 andfrozenoriginalF;no student/no neuralupdates",
+    "sources": [
+      "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Existingfrozen.load_reader strictFmetadata/ancestry/sourcecontract plusGsourceIDsrolebinding;read-onlypreflightL6300/U56700 sets match;noTXvaluesread",
+    "provenance_verdict": "R17actualmetadataVERIFIEDcd977/E20/4940/4665073/R02coarse20+R07action20/original7/63/30/0TX-F-targettrain/sourcechoicebeforetarget;strictoriginalbase47load+2LsFsmoke atlaunch",
+    "selection_rule": "OriginaluserfixedR17unshared,source-selectedbeforetarget;allfourIQpaths/alltwoviews descriptive,no rankingornewparentchoice"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-R17-IQpaths",
+    "gpu_policy": "CPU2/CUDAempty;Gsource1024+2smoke,F4096+2smoke;no optimizer",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.r17_teacher_paths --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "stop_rule": "WrongR17config/sourceancestry/budget/beforetargetselection/oldFpairing/physicalIDs/nonfinite/G-Fstatechange/outputcollision:failpreserve/noautoretry;otherownersunchanged"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "epoch01.npz",
+    "epoch20.npz",
+    "results.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQ_NMSE",
+      "Fcosineerror",
+      "Fcleanchoiceagreement",
+      "IQ/feature quantiles",
+      "CPUcost"
+    ],
+    "dimensions": [
+      "cached01/20",
+      "coarse/stage1/stage2/native",
+      "scene/RX/day/roles/state/lock"
+    ],
+    "prediction_ref": "PrivateperpathIQ/features/logits/sourcepositions;not targetprediction",
+    "scorer_ref": "OnlysourcecleanFchoices/pairedIQ;independentprivatearray arithmetic aftercomplete;no TXtruth"
+  },
+  "rows": [
+    {
+      "row_id": "R17_paths",
+      "method": "FrozenR17coarse andthreepostCGIQpaths;source-onlydescriptive",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_efficiency/r17_teacher_paths.py",
+      "resolved_config_ref": "runs/20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "R17prior/Fmodel2026092701;source63000fixedsplit392005;originalcacheaugmentation2026101912;fixedsource_indices;nonew sampling",
+      "k": null,
+      "scenario": "OriginalR07cached01/20 seven-scenemix;sourceL/Uonly",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "No newtraining;teacherhistorical20coarse+20action+20prior=60componentepochs;source512x2G and4Fpaths;CPU2",
+      "output_root": "runs/20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.r17_teacher_paths --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "epoch01.npz",
+        "epoch20.npz",
+        "results.json"
+      ]
+    }
+  ],
+  "notes": [
+    "R17provenance actualreadbackmetadata beforeanynewGforward:originalcd977/unshared20/4940,sourceR02coarse20/R07action20,noTX/F/targettraining,originalsourceVlabelbasedchoicefrozenbeforetarget.R17/Foldresults/defaultunchanged.",
+    "Historicalscratch_guidance wasComplexTFUNet1.305m/E40/threeFcos+T2KL,notR17IQteacher.OriginalR17compactdistill copiedteacherweights;notourscratchsingle-stageproposal.Thesepermissions/knowledge differencesnotignored.",
+    "Existingstagecompare coarseIQ oftenworseinbetterdefault;do notpresume intermediateIQisphysicallyclean orcopyitbecausefinalmodelgood.ThisstepdescribesR17fourpaths before decidingwhether studenthints useful.",
+    "StrictoriginalR17loaderfullconfig + explicitparentcontract/budget/permissions validation;Fstrictsameoriginalcontract.SourceID roles63000 matchF;fixedprobe512 matchesoldphaseoracleFcleanreference IDs/scene/clean.",
+    "CPU2/noGPU,real2LsactualG/Fsmoke then1024G and4096F sourceinputs;G/Fstateandgradunchanged;0optimizer/TX/V/target.No student/no newtrainscheduled orsourcequalification gate.",
+    "Threetargeted tests coverwrongsource/F/TX/target/budget/choice metadata,IQ vsFmetrics,andgroupcounts;oneP0P1review/onepreflight/archiveSHA/compile/independentPIDCWDargvlogreadback.PrivateIQnotGit."
+  ],
+  "registered_at": "2026-10-30T19:05:10+00:00"
+}
