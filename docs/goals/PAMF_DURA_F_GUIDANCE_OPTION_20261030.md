@@ -76,3 +76,6 @@ headFeature r02完整七景仍未达3pp后，另登记源阶段对照`20261030-d
 
 
 公开L-STF全局相位参考诊断：20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01。原63k源中62488只拟合一个公共圆均值，512统计留出验证同F完整特征/原头保持；15RX/day逐一判据。0G/神经更新/逐样本TX/V/target，只属源F-informed设计检查，不继承全局相位不变性假设，不授权RX专属或目标相位拟合，默认保持。
+
+
+独立source phase-only oracle诊断：20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01。固定noVar/defaultR69与同F50/source512×3views，原clean仅用于counterfactual单位相位对齐；0更新/TX/V/target，oracle不可部署或作为准确率上界。sourceF信息只用于phaseweight研究资格；只noVar按预定双视图/全部scene/clean条件晋级，不改默认或目标权限。
