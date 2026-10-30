@@ -845,3 +845,8 @@ Run `20261031-phase3-star-raw-open-s2026092701-r01` / code `617681c8b2f24e7d05c1
 ### 2026-10-31 P0开放路径匹配训练完整结果
 
 Run `20261031-phase3-star-raw-open-s2026092701-r01` / actualcode `617681c8b2f24e7d05c1e8f5a48cb74d99a1c8cb`，训练/四列预测/独立truthlast COMPLETE，执行VERIFIED，科学 `NO_PROMOTION`。唯一主P0known12 A_K90.048148/C_K98.503704/R_U3.936508/H7.543258%，原P1闭集损0.933333pp；相较P1known12 RU-42.952381pp、AK0.100000pp。全部2220匹配索引/finite/Sincstep/clip核实；原F0 P0teacher6134、signal训练568320＋评估42584新增前向，原身份native0。两路径都星地，source5RX已见/NV历史曝光，V同时用于known阈值风险，不能当新RX盲证据。目标访问0，完整v3跨RX星地/零标签DA/发现/未来匿名REG仍ACTIVE，详见 `docs/PAMF_PHASE3_RAW_OPEN_RESULTS_20261031.md`。
+
+
+### 2026-10-31 较好既有方法DURA前后六路径预登记
+
+Run `20261031-phase3-dura-best-s2026092701-r01` / actualcode `9fc23a4cb78111aa96cc72fde0d35c036a876e5d`。按用户优先选择原P1 signal known/ratio两既有较好方案，唯一主ratio；原sourceDURA RU46.888889/60.888889已经含G。本轮同模型/统计/两原τ冻结，source/clean/star各raw与DURA配对，clean也G，每路径F0闭集同输入。新F0/signal各33606、G1728真实行，sourceDURA精确复用；无新NN/fit/τcal/L/OE/Us/U/formal。六pathpred后3truth独立评分，比较两侧各自closed下的正确接收/未知拒对净收益，三DURA为主、raw仅诊断。指标clean95/star90/CK90/损2pp和主景覆盖保持，历史NV/devQ曝光。prepared条件密度暂不运行，完整零标签DA/发现/未来匿名REG目标ACTIVE，当前无新性能。

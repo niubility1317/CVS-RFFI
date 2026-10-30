@@ -1,0 +1,200 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-dura-best-s2026092701-r01",
+  "group_id": "pamf-phase3-good-methods-DURA-paired",
+  "display_name": "PAMF第三阶段：较好固定方案接入DURA前后配对",
+  "description": "User prioritizes previously good methods. Same frozen P1signal r03 known-support and density-ratio, exact sourceDURA controls. Source/crossclean/crossstar each raw and DURA; no training, refitting, newconditionalscore or threshold calibration.",
+  "kind": "cvs",
+  "stage": "Phase3-good-methods-DURA-six-path-development",
+  "aliases": [
+    "较好方法DURA补测"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "best_methods",
+    "DURA_paired",
+    "three_conditions",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-fixed-P1-known-ratio-DURA-versus-raw",
+  "parent_run_ids": [
+    "20261031-phase3-star-raw-open-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "9fc23a4cb78111aa96cc72fde0d35c036a876e5d",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-dura-best-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_dura_best_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_DURA_BEST_PLAN_20261031.md",
+      "configs/pamf_phase3_targets_20261029.json"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Same fixed source starreceived and existingP1 outputs; devcrossRX clean and starpublic IQ each raw/DURA. All mainDURA paths through fixedG, pairedraw diagnostic sameθ/stats/tau. Each originalF0closed baseline sees samepathinput.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{V,novel}/ids.npy; devclean/starpublic ids.npy with capsule/split",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_new_reads": 0,
+      "source_OE_new_reads": 0,
+      "source_V_raw_forward_and_DURA_reuse": 27000,
+      "source_novel_raw_forward_and_DURA_reuse": 3150,
+      "cross_clean_Q": 864,
+      "cross_star_Q": 864,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "SourceV/NV disjoint; devRX24-1 Q03-15/U03-08 disjoint,Uunread. Qold6each96/novel3each96 onlybuilder/scorer. Same864physicalQ raw/G/clean/star paired, not3456independentrecords. SourceVparentcalibrated;NV/Qhistoricexposure.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "All networks, known90/OE32 and two historicalP1 six-tau fixed. No currentfit/calibration; sourceknownlabels only retained for independentmetrics, rawscore uses originalF0 predictedidentity tau routing. QueryTX/K/quota hidden.",
+    "query_use": "Actual3checkpoint syntheticG10two first, frozen source11+twoτ before anysourceIQ/NV/Q. Sixpathpredictions allcomplete beforeCPU scorer reads sourcenovel/clean/startruth eachonce, shared across pairedraw/DURA. No queryfit/statistics/U/DA/REG or newconditionalmethod.",
+    "external_method_exception": null,
+    "claim_scope": "SourceDURA priorRU46.888889/60.888889 alreadyincludedG; never call thatbefore-restoration. Newraw/G samefrozenP1model comparison, not separatelytrainedrawmodel. ThreeDURAmain tests plusrawdiagnostics, historicaldevQ/singleRX/notformalblind, fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Strict existingP1signal r03 final/code dc01a402582f93e452dbaa3ef59a9fbb44151818 +originalF0 E50/default6 +DURAv1R69. Originalraw-open P0CP not loaded, conditionaldensityprepared notrun.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Originalsourcecontract392005 and fixedDURA ancestry unchanged. Signal11100+2220 onlylegalL/OE, no targetancestry. ReferenceP1 identity fromsignal_reference_identity, notrawP0main. AllVALIDATED_ONCE handles reused.",
+    "selection_rule": "Two methods selected from previoussourceknown12 protection and betterRU, before newQaccess. Soleprimarydensity_ratio, controlsnotreplaceit. Exact old11stats+two6tau/rawDURA margins, no calibration or sourceV fitting. All six paths share θ/stats/tau; rawdiagnostic cannot replaceDURAmain."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-dura-best-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-dura-best-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-dura-best-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_dura_best_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_dura_best_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-dura-best-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "OneGPUproducer free>=4096MiB/start allowed0..7 <=2addedown/card, thenCUDAemptyCPUscore; foreign preserved.",
+    "stop_rule": "Invalidrole/ancestry/nonfinite/collision/unusablepred preserve, no partialtruthscore/autorestart. UNKNOWN reconcileoriginalPID/root. Scientificsourcefaildoesnotcancel Q; no foreign actions."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/*.log",
+    "predict/{complete,smoke}.json",
+    "predict/models/*",
+    "predict/thresholds.npz",
+    "predict/source/{source_raw,source_DURA}/{known,novel}_predictions.npz",
+    "predict/targets/{clean_raw,clean_DURA,star_raw,star_DURA}/*",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "known_support/density_ratio soleprimaryratio",
+      "source_raw/source_DURA/clean_raw/clean_DURA/star_raw/star_DURA",
+      "DURA-minus-raw eachmethod: bothclosedcanchange",
+      "old6/novel3TX RX/day/scene coverage"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-dura-best-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_dura_best_score.py",
+    "targets_ref": "Latestuser threeDURAmain tests plus raw diagnostics; no formalgoalcompletion/UDA/REG. Missingmain-sceneTX NA notcertified.",
+    "primary": [
+      "classmacro A_K",
+      "classmacro R_U",
+      "H-score",
+      "C_K>=90%",
+      "samepath originalF0closed minusAK<=2pp",
+      "cleanDURA RU95/starDURA RU90+main-scene coverage; sourceRUdiagnostic"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "dura-best-s2026092701",
+      "method": "PAMF-OW fixed good methods raw/DURA paired",
+      "purpose": "Before/afterG sixpaths samefrozenP1signal known/ratio; soleprimaryratio, no newmethod or tau.",
+      "config_ref": "docs/PAMF_PHASE3_DURA_BEST_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-dura-best-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No randomfit; r03signal2701/density3019/sourceG10receiver2027scene3001channel4001 inherited. Fixedcleanpublic and pairedsource/Q records. No newchanneldraw.",
+      "k": null,
+      "scenario": "source seenRX, devcrossRX clean/star each raw and DURA",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "AllNN/fit/retau updates0. NewF0+signal real each33606=30150source_raw+4*864Q, G1728=2*864; synththreeeach2. SourceDURAexactreuse, L/OE/Us/U/formal0. 11array364340B+2x6FP64tau96B. ParentF011100/signal2220/Gcost separate.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-dura-best-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-dura-best-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_dura_best_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-dura-best-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/*.log",
+        "predict/{complete,smoke}.json",
+        "predict/models/*",
+        "predict/thresholds.npz",
+        "predict/source/{source_raw,source_DURA}/{known,novel}_predictions.npz",
+        "predict/targets/{clean_raw,clean_DURA,star_raw,star_DURA}/*",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Selected two previouslygoodsource methods, sourceDURA baselinealreadyincludedG; ratioRU60.888889 notbefore-restoration.",
+    "FixedsameP1network/stats/tau acrossallpaths, no P0trainedweight or conditionalnewscore. Rawdiagnostic isnotretrainedrawroute.",
+    "EveryDURAmain includesG includingclean; originalF0 baseline samepath. DURA−raw correctacceptance uses eachsidesownclosed, notfixedclosed pairedhelper.",
+    "Allsixpredbefore3truthreads, sourcefailuredoesnotcancel Q. ThreeDURAmain developmentgate requirescrossclean95/star90+CK90/loss2pp/main-scenecoverage; sourceRUonlydiagnostic.",
+    "HistoricNV/devQ/singleRX, formalRX/U untouched, fullzeroTXlabelDA/discovery/futureREGgoalACTIVE,AN/HOW null."
+  ],
+  "registered_at": "2026-10-30T17:19:53+00:00"
+}
