@@ -1,0 +1,166 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-source-stage-fidelity-s2026092701-r01",
+  "group_id": "phase1-dura-source-stage-fidelity",
+  "display_name": "DURA默认版源分阶段身份特征保持与物理求解定位",
+  "description": "Frozen defaultR69+originalF50;source512x2views;received/coarse/stage1/prior/native/CG4-8-16/sourceoracleA-noise;teacherfeature/choicefidelity;0updates/TX/V/target",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "gradient-conflict",
+    "F-free",
+    "single-stage"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-source-stage-fidelity-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Originalsource128Ls384Us xcached01/20;pairedIQ/action;reuseauthorized63000x160cleanFcachewithsamephysicalorder",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsourcecache;deterministicsource_indicesinexistingDURAdiagnostic;opaquepositionssaved",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "none;noqueryorclassificationprediction"
+  },
+  "permissions": {
+    "regime": "authorized_source_frozen_F_analysis_no_updates",
+    "query_use": "none",
+    "external_method_exception": "User2026-10-30explicitlyallowedindependentsourceFguidance;Fparams/headfrozen;no directTXlabels",
+    "claim_scope": "OnlysourcecleanFfeature/choicefidelity,notTXaccuracyorwaveformidentityproof;sourceoracleA/noiseisnondeployablecounterfactual/notaccuracyupperbound;oldGweightsremainF-free"
+  },
+  "checkpoint": {
+    "initialization": "Frozen defaultDURAR69 stage2 E20/4940, noGupdates;frozenoriginalF50/source cache",
+    "sources": [
+      "runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "ReuseverifiedR69originalsourcepayload/lineage;reuseFsourcecontractandmatchingLsUs physicalIDs;noGinitialization/updates",
+    "selection_rule": "UserfixeddefaultR69andF50;no modelranking;sourceinverseIQdiagnosticrevisitedfornewlyauthorizedsourceFfeaturefidelity"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-stage-fidelity",
+    "gpu_policy": "CPU2/0GPU/no optimizer updates;queuedGPUtraininguntouched",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-source-stage-fidelity-s2026092701-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-source-stage-fidelity-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-source-stage-fidelity-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.stage_fidelity --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-stage-fidelity-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wrongsource/Fcacheorder/defaultcheckpoint/nonnullstatechange/nativeexactreconstruction/nonfinite/collision:preserve,noautoretry;noTX/V/targetreads"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "epoch01.npz",
+    "epoch20.npz",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQNMSE",
+      "sourceFcosineerror",
+      "sourceFheadprojectederror",
+      "cleanFchoiceagreement",
+      "cleanFchoice margin",
+      "teacherrepair/damage_vs_native",
+      "fixedsolvereligibility"
+    ],
+    "dimensions": [
+      "received/coarse/stage1/prior/native/learnedCG4-8-16/oracleaction16/oracleboth16",
+      "cached01/20",
+      "role/scene/state/lock"
+    ],
+    "prediction_ref": "none;private source diagnostic tensorsonly",
+    "scorer_ref": "none;sourceFteacherfidelitywithoutTXtruth"
+  },
+  "rows": [
+    {
+      "row_id": "source-stage-fidelity",
+      "method": "FrozenGstages/lastpriorcounterfactualsolves+frozenFfeaturefidelity;0update",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/stage_fidelity.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "Fixedfirst256Lsrolepositions;modelseedcontrolsrandomfactory;evalcontrols2probes;supportN/A;sourceR07receiverseed2026101911",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "DefaultG/F source2Ls smoke+512x2cachedviews,32B32batchesx10paths;0updates;CPU2",
+      "output_root": "runs/20261030-diagnostic-DURA-source-stage-fidelity-s2026092701-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-source-stage-fidelity-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.stage_fidelity --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-stage-fidelity-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "epoch01.npz",
+        "epoch20.npz",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Userhasauthorized sourcefrozenFweights/featuresindependentbranch;diagnosticreadsonlysourceFfeatures/headchoices;neverreadTXtruth/V/target;frozenoldR69weightsremainF-free.",
+    "Formerdefaultsourceinverse11c5b4a6... diagnosedIQonly andmoreCGworsenedIQ9-10%;thisnewstageprobeaddsidentityteacherfidelityunderexplicitnewpermission;noassumedaccuracyupperbound.",
+    "SourcephysicalIDroles/order/cacheidentitystrict;defaultR69sourcepayload/arm/epoch/updates strict;originalF50load_readerprovenance;real2Ls G/Fsmokefirst.",
+    "NativeCG2reconstructionfromsamecontext/prior/startmustbitmatchexistingoutput;learnedCG4/8/16reusefixedprior/action/variance/stage1start;no additionalprior or estimation.",
+    "Oracletrueaction/noise sourcedfromsourcepairedsimulatorarrays;notdeployment/Gtraining/target/predictions;allorigarraysretainedprivate.",
+    "Scientificruleforall3CGchoicesfixedbeforeevidence:bothcachedviews overallteacheragreement+>=1pp(+6/512),Fcoserror<=.9native,andallscene teachercorrect>=native;smallestqualifyingCGonlyforseparateformalregistration.",
+    "Qualificationdoesnotasserttargetgain;ifnonesuitable no solverrelease fromthisprobe;currentheadFeatureE20/4940auto7formalqueuecontinuesunchanged.",
+    "G/Fstateexactlyunchanged/p.gradNone;zerooptimizer;sourcechoiceagreementnotTXaccuracy;reportbothIQandFfidelityandteacherrepair/damagewithouttruth.",
+    "Onefocuseddecision-ruletestPASS;oneindependentP0/P1reviewbeforelaunch;no extraapproval/hash/reviewgates."
+  ],
+  "registered_at": "2026-10-30T08:12:42+00:00"
+}
