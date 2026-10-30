@@ -234,3 +234,6 @@ strongPhase E30已实际发布84c5f08b3f334781cad4cb96f9e22bd33d9000eb，control
 
 
 strongPhase E30 84c5f08b3完整结案：7410步/30loss复算/原168000x7及独立126组；clean84.436905、lowurban67.311310。较同预算physical midU+0.347619pp(+584)/lowU+0.604167pp(+1015)，其余四景及clean下降，rawclean净−402；六景仍全部低于默认，3pp/clean未通过，不晋级。训练1002.686482s/全流程1187.861899s，266951图/2prior4CG27FFT，F-TX-teacher-V-target优化0。保留混合结果不按目标调mask/权重；宽coarse容量对照在本成绩读取前按旧source拟合/参数盘点固定，不混本phase损失。默认与目标ACTIVE。
+
+
+wideCoarse E30实际发布a55a568fc06cc3047647e8201d7fe5ca16f872b2：controller1152012/worker1152105/GPU6，source2Ls新coarse非零梯度/1466771严格重载/原F noquery PASS；11checks/ONEP0P1/preflight/archiveSHA/compile与PID-CWD-argv-CUDA-GPU-loggrowth核实，准入1PID/free19245MiB/后态2PID，他人保持。完整coarse1305958+原compactaction79477/prior81336，总1466771/ConvLinearMAC116098088/2prior4CG27FFT；较原R17少68.558%参数、比default大449.453%，实际时延/全训练成本待测。原64b8教师缓存只读复用，当前加载/前向0/handle核对0.010655s，历史630k生产132.756142s/1.29GB/coarse20-bundle60另列。当前E3/30，IQhint访问189000次/加权loss一致，F/TX/V/target优化0、无教师权重继承；同旧hint配方只改容量，不混phase。固定30后全七景，默认/3pp/clean/效率目标ACTIVE。

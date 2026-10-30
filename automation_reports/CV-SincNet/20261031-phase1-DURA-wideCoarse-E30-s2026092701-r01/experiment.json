@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active recovery/efficiency goal/userE30budget/originalR17sourceIQteacher authorized;independentcapacitycandidate/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "a55a568fc06cc3047647e8201d7fe5ca16f872b2",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-wideCoarse-E30-r01"
@@ -103,7 +103,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-wideCoarse-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-wideCoarse-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-wideCoarse-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.wide_coarse run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.wide_coarse run --root /home/szu2070436088/2510044040/CV-SincNet --commit a55a568fc06cc3047647e8201d7fe5ca16f872b2",
     "stop_rule": "Source/cacheproducer/teacher/roles/IDs/nonfinite/metadata/collision/checkpoint/smoke/coverage/ownedobservation technicalfailure:preserveaffectedrow/noautoretry;no performance stop/nootherownercontrol"
   },
   "expected_artifacts": [
@@ -179,7 +179,7 @@
       "budget_ref": "Scratch30/7410/B256/L189000U1701000;1466771parameters/116098088ConvLinearMAC estimate;0newteacherload-forward/630kcachevisits;historiccoarse20/bundle60/cache132.756s separate",
       "output_root": "runs/20261031-phase1-DURA-wideCoarse-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-wideCoarse-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.wide_coarse worker --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_direct_train.wide_coarse worker --root /home/szu2070436088/2510044040/CV-SincNet --commit a55a568fc06cc3047647e8201d7fe5ca16f872b2 --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",
