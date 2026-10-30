@@ -251,6 +251,14 @@ def capacity():
     return result
 
 
+def eligible_gpus(state,used,max_visible,allowed=None):
+    """Apply the registered total-process cap before adding one own worker."""
+    if allowed is None:allowed=range(8)
+    free=[gpu for gpu,row in state.items() if gpu in allowed and gpu not in used
+        and row['free_mb']>=12000 and len(row['pids'])<max_visible]
+    return sorted(free,key=lambda gpu:-state[gpu]['free_mb'])
+
+
 def dispatch(args,p):
     import fcntl
     if p['output'].exists() or os.environ.get('CUDA_VISIBLE_DEVICES')!='':
@@ -268,14 +276,15 @@ def dispatch(args,p):
         with (args.root/'runs/receiver_residual_capacity4.lock').open('a') as stream:
             fcntl.flock(stream,fcntl.LOCK_EX)
             state=capacity();used={gpu for _,gpu in active.values()}
-            free=[gpu for gpu,row in state.items() if gpu in range(8) and gpu not in used and row['free_mb']>=12000 and len(row['pids'])<2]
-            free.sort(key=lambda gpu:-state[gpu]['free_mb'])
+            config=configuration()
+            free=eligible_gpus(state,used,config['max_total_visible_GPU_processes'],config['allowed_GPUs'])
             commands=subprocess.check_output(['ps','-eo','pid=,args='],text=True).splitlines()
             tokens=('pamf_dura_prior_refine.runner worker','pamf_dura_prior_recovery.runner worker',
                 'pamf_dura_direct_train.runner worker','pamf_dura_direct_train.fast_lr worker',
                 'pamf_dura_direct_train.identity_init worker','pamf_dura_direct_train.no_variance worker',
                 'pamf_dura_direct_train.fast_interp worker','pamf_dura_direct_train.strong_action worker',
                 'pamf_dura_direct_train.f_guided worker','pamf_dura_direct_train.head_guided worker',
+                'pamf_dura_direct_train.head_guided_capacity3 worker',
                 'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
             goal_workers=sum(any(name in line for name in tokens) for line in commands)
