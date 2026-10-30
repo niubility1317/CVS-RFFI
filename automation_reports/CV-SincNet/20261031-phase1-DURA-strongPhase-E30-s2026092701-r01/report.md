@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-strongPhase-E30-s2026092701-r01`
 - group_id：`phase1-dura-scratch-strong-phase`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -41,3 +41,8 @@ VERIFIED / RUNNING，代码84c5f08b3f334781cad4cb96f9e22bd33d9000eb。8项聚焦
 controller1134232/worker1134322，GPU4；/proc实际CWD/完整argv/commit/CUDA、GPU PID和日志增长独立读回。准入已有1个PID/free22883MiB，当前后态2个，本任务1worker，其他owner保持。当前E1/30、247更新，日志617字节。
 
 实际phase项非零（0.23589571），Q1clean能量占比0.88471944，总loss按登记五项复算一致；F/TX/学习教师输入和祖先加载0，实际新损失已经进入训练。该检查不证明正式收益；固定30后自动source1800×7、target168000×7及独立truth-last。当前没有新目标成绩，部署默认与完整3pp/clean/效率目标保持。
+
+
+## 完整训练与正式七景结果
+
+VERIFIED / ANALYZED。E30/7410、七景与126组独立复算完成；clean84.436905%、lowurban67.311310%。较同预算physical，mid/low urban+0.347619/+0.604167pp，其余四景及clean下降；六景仍低于默认，3pp/clean未达。训练1002.686秒/全流程1187.862秒。完整曲线、全部分组、参数/实际时延与成本见[详细分析](analysis.md)及results.json。默认保持。

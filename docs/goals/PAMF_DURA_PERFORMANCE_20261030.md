@@ -231,3 +231,6 @@ noPriorAux E30 eb46cab8e完整结束：7410步/L189000U1701000/0G祖先教师-F-
 
 
 strongPhase E30已实际发布84c5f08b3f334781cad4cb96f9e22bd33d9000eb，controller1134232/worker1134322/GPU4存活，真实2Ls梯度/strictreload/F仅smoke PASS，CWD/argv/CUDA/GPU/loggrowth核实；8checks/ONEP0P1/preflight/archiveSHA/compile PASS，准入1PID/free22883MiB/后态2PID，本任务1worker。他人不变。Gscratch30/7410，noVar四loss+Q1精确phasecomponent1，使该项1→2；图266951/2prior4CG27FFT不变/训练额外2FFT/部署额外0，F/TX/教师/V/target优化0，F-informed源机制选择披露。已E1/30，phase项非零/加权loss一致，固定final30全七景，不按源误差或目标反馈停训/重跑；默认与目标ACTIVE。
+
+
+strongPhase E30 84c5f08b3完整结案：7410步/30loss复算/原168000x7及独立126组；clean84.436905、lowurban67.311310。较同预算physical midU+0.347619pp(+584)/lowU+0.604167pp(+1015)，其余四景及clean下降，rawclean净−402；六景仍全部低于默认，3pp/clean未通过，不晋级。训练1002.686482s/全流程1187.861899s，266951图/2prior4CG27FFT，F-TX-teacher-V-target优化0。保留混合结果不按目标调mask/权重；宽coarse容量对照在本成绩读取前按旧source拟合/参数盘点固定，不混本phase损失。默认与目标ACTIVE。
