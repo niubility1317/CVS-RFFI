@@ -3,7 +3,7 @@
 - run_id：`20261030-diagnostic-DURA-joint-gradient-s2026092701-r01`
 - group_id：`phase1-dura-source-gradient`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -33,3 +33,32 @@ FrozenfastLRsourcefinal;source128L+384U xepochs01/20,B32;weightedIQ/prior/spectr
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 完整源域结果
+
+VERIFIED/ANALYZED_SOURCE_ONLY。实际checkpoint两Ls noquery smoke通过，CPU2/0GPU，PID3626846/CWD/argv/日志增长已核实，正常退出。512固定源位置（128Ls＋384Us）×epoch01/20、B32完整32批，耗时34.590秒。模型全部权重/缓冲区不变，p.grad未积累；0优化器/TX/F/V/target。以下从完整32批结果独立聚合；零范数cos为null。
+
+|参数组|辅助项|有效cos批次|负cos批次|平均cos|范数比中位数|
+|---|---|---:|---:|---:|---:|
+|all|prior_nmse|32|1|0.627635|0.106315|
+|all|spectral_error|32|0|0.512010|0.011965|
+|all|action_probe_nmse|32|3|0.175827|0.076239|
+|all|log_variance_mse|32|25|-0.077822|0.144868|
+|all|combined_auxiliary|32|2|0.340449|0.233170|
+|frozen.coarse.|prior_nmse|32|1|0.694672|0.122216|
+|frozen.coarse.|spectral_error|32|1|0.502809|0.010770|
+|frozen.coarse.|action_probe_nmse|32|6|0.298081|0.037225|
+|frozen.coarse.|log_variance_mse|32|14|0.056898|0.045298|
+|frozen.coarse.|combined_auxiliary|32|1|0.655791|0.167715|
+|frozen.estimator.|prior_nmse|32|1|0.626608|0.087240|
+|frozen.estimator.|spectral_error|32|0|0.531062|0.011608|
+|frozen.estimator.|action_probe_nmse|32|4|0.250412|0.165704|
+|frozen.estimator.|log_variance_mse|32|27|-0.193325|0.316012|
+|frozen.estimator.|combined_auxiliary|32|11|0.086938|0.404764|
+|prior.|prior_nmse|32|0|0.609394|0.084179|
+|prior.|spectral_error|32|0|0.511607|0.013453|
+|prior.|action_probe_nmse|0|0|null|0.000000|
+|prior.|log_variance_mse|0|0|null|0.000000|
+|prior.|combined_auxiliary|32|0|0.645446|0.090992|
+
+方差辅助项相对IQ在全参数25/32批、estimator27/32批为负方向，其他分量整体更一致。该证据支持独立匹配地移除方差辅助校准损失，不能证明其必然改善正式识别，也不支持同时删除全部辅助监督。梯度为batch均值，非逐样本或目标因果分析。原始32批与source位置留在忽略的local_artifacts/remote原root，Git仅公开汇总。

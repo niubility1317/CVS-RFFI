@@ -3,7 +3,7 @@
 - run_id：`20261030-phase1-DURA-direct-identityinit-s2026092701-r01`
 - group_id：`phase1-dura-single-stage-efficiency`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -41,3 +41,23 @@ VERIFIED：执行commit `d62107285bb0ae3fe952a4d0954de2cc16c8bab9`，release `20
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 完整单阶段训练和七景结果
+
+VERIFIED/ANALYZED。20条完整epoch、4940更新，累计L126000/U1134000曝光；祖先checkpoint、学习教师、TX/F/V/target训练读取均为0。训练763.331秒（12.722分钟），266951参数，训练峰值allocated 1034.42MiB。完整stdout无traceback/OOM；source1800×7和target168000×7全部完成，controller/worker自然退出。执行commit d62107285bb0ae3fe952a4d0954de2cc16c8bab9。
+
+全七prediction固定后独立CPU truth-last，再次独立复算126个总体/TX/RX/day分组一致。原F50/defaulthead单seed，不扩展为当前Tri-SIG-TIME SSL或Phase2/3证据。
+
+|场景|准确率%|相对普通初始化pp|相对默认DURApp|距rawclean pp|
+|---|---:|---:|---:|---:|
+|clean|84.620833|-0.044643|-0.057143|0.055357|
+|practical_high|81.629167|+1.634524|-1.195833|3.047024|
+|practical_mid|80.130357|+1.220238|-1.430357|4.545833|
+|practical_low_suburban|78.541071|+1.083333|-1.517262|6.135119|
+|practical_high_urban|80.323810|+1.570833|-1.422024|4.352381|
+|practical_mid_urban|73.293452|+0.987500|-2.192857|11.382738|
+|practical_low_urban|66.442857|+0.801190|-2.447024|18.233333|
+
+六个星地场景均高于普通随机初始化fastLR，lowurban66.442857%，但六景均低于默认DURA，六景3pp目标=False。原R17逐景最多下降1pp容忍=True，它不替代本次优化目标。clean较raw少93条正确（−0.055357pp），较默认少96条。
+
+最终source IQNMSE 0.02773173略高于普通初始化0.02702048，而星地准确率更高；源IQ均值不能充分代理身份保真，不能将这一单seed现象解释为因果机制。固定最后E20，不选中间epoch。匹配同卡B1/B128 G/G+F三轮交替时延/P95/吞吐见results.json；共享负载不用于跨卡历史速度比。所有权重和原始日志保留原root/local_artifacts，不提交Git。默认DURA保持，目标ACTIVE。

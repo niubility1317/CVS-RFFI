@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "b62be9e4a10d4f775d775f6d71f8f9ddc20ffcf4",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261030-diagnostic-DURA-joint-gradient-s2026092701-r01-release"
@@ -83,7 +83,7 @@
     "remote_run_root": "runs/20261030-diagnostic-DURA-joint-gradient-s2026092701-r01",
     "remote_log_root": "logs/20261030-diagnostic-DURA-joint-gradient-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-joint-gradient-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_gradient.runner --root ../.. --output ../../runs/20261030-diagnostic-DURA-joint-gradient-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_gradient.runner --root ../.. --output ../../runs/20261030-diagnostic-DURA-joint-gradient-s2026092701-r01 --commit b62be9e4a10d4f775d775f6d71f8f9ddc20ffcf4",
     "stop_rule": "Wrongsource/checkpoint/collision/nonfinitegradient/modelstatechange/persistentgrad:preservepartial,noautomaticretry"
   },
   "expected_artifacts": [
@@ -134,7 +134,7 @@
       "budget_ref": "512uniquesourcepositions x2cachedviews,B32;5autogradcomponents/batch;0optimizerupdates",
       "output_root": "runs/20261030-diagnostic-DURA-joint-gradient-s2026092701-r01",
       "log_path": "logs/20261030-diagnostic-DURA-joint-gradient-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_gradient.runner --root ../.. --output ../../runs/20261030-diagnostic-DURA-joint-gradient-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_gradient.runner --root ../.. --output ../../runs/20261030-diagnostic-DURA-joint-gradient-s2026092701-r01 --commit b62be9e4a10d4f775d775f6d71f8f9ddc20ffcf4",
       "expected_artifacts": [
         "launch.json",
         "results.json",

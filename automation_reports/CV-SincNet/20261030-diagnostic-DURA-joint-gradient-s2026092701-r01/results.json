@@ -1,0 +1,179 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "code_commit": "b62be9e4a10d4f775d775f6d71f8f9ddc20ffcf4",
+  "source_run": "20261030-phase1-DURA-direct-fastlr-s2026092701-r01",
+  "source_records": 512,
+  "source_L": 128,
+  "source_U": 384,
+  "epochs": [
+    1,
+    20
+  ],
+  "batches": 32,
+  "weights": {
+    "iq_nmse": 1.0,
+    "prior_nmse": 0.1,
+    "spectral_error": 0.05,
+    "action_probe_nmse": 0.05,
+    "log_variance_mse": 0.001
+  },
+  "groups": {
+    "all": {
+      "prior_nmse": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 1,
+        "mean_cosine": 0.6276349612423165,
+        "median_norm_ratio": 0.10631507948690515
+      },
+      "spectral_error": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 0,
+        "mean_cosine": 0.5120095121954396,
+        "median_norm_ratio": 0.011965125052828443
+      },
+      "action_probe_nmse": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 3,
+        "mean_cosine": 0.1758267133778042,
+        "median_norm_ratio": 0.07623934571959264
+      },
+      "log_variance_mse": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 25,
+        "mean_cosine": -0.07782246535152722,
+        "median_norm_ratio": 0.14486758468629965
+      },
+      "combined_auxiliary": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 2,
+        "mean_cosine": 0.34044930867302037,
+        "median_norm_ratio": 0.23316984212083913
+      }
+    },
+    "frozen.coarse.": {
+      "prior_nmse": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 1,
+        "mean_cosine": 0.69467249030558,
+        "median_norm_ratio": 0.12221584109237615
+      },
+      "spectral_error": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 1,
+        "mean_cosine": 0.5028087570158656,
+        "median_norm_ratio": 0.01076956079243996
+      },
+      "action_probe_nmse": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 6,
+        "mean_cosine": 0.29808050464095126,
+        "median_norm_ratio": 0.037225436371635626
+      },
+      "log_variance_mse": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 14,
+        "mean_cosine": 0.05689787568580252,
+        "median_norm_ratio": 0.045297526206800345
+      },
+      "combined_auxiliary": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 1,
+        "mean_cosine": 0.6557913745790191,
+        "median_norm_ratio": 0.16771464862182017
+      }
+    },
+    "frozen.estimator.": {
+      "prior_nmse": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 1,
+        "mean_cosine": 0.6266078930757986,
+        "median_norm_ratio": 0.08724029607216263
+      },
+      "spectral_error": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 0,
+        "mean_cosine": 0.5310617280470804,
+        "median_norm_ratio": 0.011608015531862359
+      },
+      "action_probe_nmse": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 4,
+        "mean_cosine": 0.25041153147735773,
+        "median_norm_ratio": 0.16570413350596166
+      },
+      "log_variance_mse": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 27,
+        "mean_cosine": -0.1933247691343419,
+        "median_norm_ratio": 0.3160118136203063
+      },
+      "combined_auxiliary": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 11,
+        "mean_cosine": 0.08693817167885579,
+        "median_norm_ratio": 0.4047643560441164
+      }
+    },
+    "prior.": {
+      "prior_nmse": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 0,
+        "mean_cosine": 0.6093938259404884,
+        "median_norm_ratio": 0.08417868464259565
+      },
+      "spectral_error": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 0,
+        "mean_cosine": 0.5116065645421127,
+        "median_norm_ratio": 0.013452791367902128
+      },
+      "action_probe_nmse": {
+        "batches": 32,
+        "defined_cosine": 0,
+        "negative_cosine": 0,
+        "mean_cosine": null,
+        "median_norm_ratio": 0.0
+      },
+      "log_variance_mse": {
+        "batches": 32,
+        "defined_cosine": 0,
+        "negative_cosine": 0,
+        "mean_cosine": null,
+        "median_norm_ratio": 0.0
+      },
+      "combined_auxiliary": {
+        "batches": 32,
+        "defined_cosine": 32,
+        "negative_cosine": 0,
+        "mean_cosine": 0.6454461835665563,
+        "median_norm_ratio": 0.09099223067870812
+      }
+    }
+  },
+  "seconds": 34.58974423306063,
+  "model_unchanged": true,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "F_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "scope": "Batch-mean weighted gradient geometry, not per-example gradients or target/identity evidence",
+  "goal_complete": false
+}
