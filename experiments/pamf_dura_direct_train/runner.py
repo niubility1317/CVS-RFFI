@@ -300,6 +300,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.posterior_guided worker',
                 'pamf_dura_direct_train.phase_pair worker',
                 'pamf_dura_direct_train.analytic_rf worker',
+                'pamf_dura_direct_train.rx_canonical worker',
                 'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
             goal_workers=sum(any(name in line for name in tokens) for line in commands)
@@ -320,7 +321,9 @@ def dispatch(args,p):
                         env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(gpu)),stdin=subprocess.DEVNULL,
                         stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
                 active[arm]=(process,gpu)
-                write_json(p['output']/('submitted-'+arm+'.json'),dict(pid=process.pid,GPU=gpu,command=command(args,'worker',arm)))
+                write_json(p['output']/('submitted-'+arm+'.json'),dict(pid=process.pid,GPU=gpu,command=command(args,'worker',arm),
+                    admission=dict(visible_GPU_compute_PIDs=len(state[gpu]['pids']),free_memory_MB=state[gpu]['free_mb'],
+                                   maximum_total_after_adding=config['max_total_visible_GPU_processes'])))
         if time.monotonic()-last>30:
             print(json.dumps(dict(event='QUEUE_STATE',pending=pending,active={a:dict(pid=v[0].pid,GPU=v[1]) for a,v in active.items()},failed=failed)),flush=True)
             last=time.monotonic()
