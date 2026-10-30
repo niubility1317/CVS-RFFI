@@ -172,3 +172,6 @@ noVar/headFeature源阶段对照完成：64批/15120统计独立复算，0训练
 
 
 source phase-only oracle闭合：固定noVar与default/source512×clean/缓存01/20，6cells/132groups/5412统计独立复算，G/F不变，CPU2/计算16.605771秒/0更新/TX/V/target。noVar整体相位仅移除10.161418%/9.109140%IQ误差，F教师选择+0/+2，部分scene-1；clean保持512。两个缓存视图均未过原资格，不启动phaseweight训练。default相位可移除9.652549%/9.279142%、F选择各+1，原G平均相位差约1.7°至1.8°。关闭本轮整体相位优先路线，残差尚含其他形状/幅度/滤波/时变相位/噪声，不能全称TX损伤；oracle不部署/不作准确率上界，默认与3pp/clean/效率目标保持。
+
+
+同phase-oracle六源输出事后频谱统计：每包按cleanFFT能量分4×64bins，Q1能量88.4778%、Q4仅.109379%；noVarQ4相对NMSE.44至.46，F选择变化组整体NMSE也更高，不能全归因弱频点/TX损伤。Parseval和分区校验通过，0新G/F前向/训练/TX/V/target。R02粗恢复只IQ+.1log功率谱；R01确有解析RF损失但主身份资格全失败。下一当前结构RF约束必须独立匹配、先source梯度/成本固定权重，不把历史负结果当成功依据；完整3pp/clean/效率目标保持。
