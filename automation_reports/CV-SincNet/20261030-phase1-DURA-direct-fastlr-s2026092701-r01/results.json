@@ -1,0 +1,187 @@
+{
+  "status": "ANALYZED",
+  "count": 168000,
+  "raw_clean": 84.67619047619047,
+  "metrics": {
+    "clean": {
+      "accuracy": 84.66547619047618,
+      "macro_f1": 84.3743406984801,
+      "correct": 142238,
+      "count": 168000,
+      "repaired": 579,
+      "damaged": 597,
+      "net_repaired": -18,
+      "raw_clean_gap_pp": 0.01071428571428612,
+      "delta_original_lr_pp": -0.7369047619047677,
+      "delta_DURA_pp": -0.012500000000002842,
+      "delta_R17_pp": 0.07857142857142208
+    },
+    "practical_high": {
+      "accuracy": 79.99464285714286,
+      "macro_f1": 79.39938768920757,
+      "correct": 134391,
+      "count": 168000,
+      "repaired": 70357,
+      "damaged": 4397,
+      "net_repaired": 65960,
+      "raw_clean_gap_pp": 4.681547619047606,
+      "delta_original_lr_pp": 0.6744047619047677,
+      "delta_DURA_pp": -2.830357142857139,
+      "delta_R17_pp": -1.3244047619047592
+    },
+    "practical_mid": {
+      "accuracy": 78.91011904761905,
+      "macro_f1": 78.34693927184433,
+      "correct": 132569,
+      "count": 168000,
+      "repaired": 70443,
+      "damaged": 4934,
+      "net_repaired": 65509,
+      "raw_clean_gap_pp": 5.766071428571422,
+      "delta_original_lr_pp": 1.69583333333334,
+      "delta_DURA_pp": -2.650595238095235,
+      "delta_R17_pp": -0.6678571428571303
+    },
+    "practical_low_suburban": {
+      "accuracy": 77.4577380952381,
+      "macro_f1": 76.97636034421991,
+      "correct": 130129,
+      "count": 168000,
+      "repaired": 70177,
+      "damaged": 5618,
+      "net_repaired": 64559,
+      "raw_clean_gap_pp": 7.218452380952371,
+      "delta_original_lr_pp": 2.4928571428571473,
+      "delta_DURA_pp": -2.600595238095238,
+      "delta_R17_pp": -0.5386904761904674
+    },
+    "practical_high_urban": {
+      "accuracy": 78.75297619047619,
+      "macro_f1": 78.16172040647344,
+      "correct": 132305,
+      "count": 168000,
+      "repaired": 70577,
+      "damaged": 4965,
+      "net_repaired": 65612,
+      "raw_clean_gap_pp": 5.92321428571428,
+      "delta_original_lr_pp": 1.8964285714285722,
+      "delta_DURA_pp": -2.992857142857133,
+      "delta_R17_pp": -1.600595238095238
+    },
+    "practical_mid_urban": {
+      "accuracy": 72.30595238095238,
+      "macro_f1": 71.85584508925295,
+      "correct": 121474,
+      "count": 168000,
+      "repaired": 70937,
+      "damaged": 7395,
+      "net_repaired": 63542,
+      "raw_clean_gap_pp": 12.370238095238093,
+      "delta_original_lr_pp": 6.61369047619047,
+      "delta_DURA_pp": -3.1803571428571473,
+      "delta_R17_pp": -1.379166666666677
+    },
+    "practical_low_urban": {
+      "accuracy": 65.64166666666667,
+      "macro_f1": 65.40333874912037,
+      "correct": 110278,
+      "count": 168000,
+      "repaired": 69058,
+      "damaged": 9683,
+      "net_repaired": 59375,
+      "raw_clean_gap_pp": 19.034523809523805,
+      "delta_original_lr_pp": 9.60059523809523,
+      "delta_DURA_pp": -3.2482142857142833,
+      "delta_R17_pp": -1.5750000000000028
+    }
+  },
+  "training_seconds": 771.2217810316943,
+  "training_epochs": 20,
+  "ancestor_epochs": 0,
+  "teacher_inputs": 0,
+  "final_source_losses": {
+    "loss": 0.03593895323598196,
+    "iq_nmse": 0.027020477590106784,
+    "spectral_error": 0.007145704104077249,
+    "prior_nmse": 0.04218560487031937,
+    "action_probe_nmse": 0.08031073124825008,
+    "log_variance_mse": 0.3270931210290818
+  },
+  "source_IQ_improvement_fraction": 0.3268602955074479,
+  "independently_recomputed_groups": 126,
+  "matched_profile": {
+    "status": "PROFILE_COMPLETE",
+    "cases": {
+      "G_B1": {
+        "DURA": {
+          "median_ms": 4.640248604118824,
+          "p95_ms": 4.97561045922339,
+          "throughput_samples_s": 216.32756730841223,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 4.482391057536006,
+          "p95_ms": 5.219001416116953,
+          "throughput_samples_s": 217.83582915682922,
+          "iterations": 48
+        }
+      },
+      "G_B128": {
+        "DURA": {
+          "median_ms": 16.64545014500618,
+          "p95_ms": 18.04599822498858,
+          "throughput_samples_s": 7684.189580876072,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 16.669631469994783,
+          "p95_ms": 18.124210415408015,
+          "throughput_samples_s": 7691.569576028794,
+          "iterations": 48
+        }
+      },
+      "G_plus_F_B1": {
+        "DURA": {
+          "median_ms": 5.688820965588093,
+          "p95_ms": 6.057735998183489,
+          "throughput_samples_s": 176.3540250589207,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 5.603678058832884,
+          "p95_ms": 6.00547983776778,
+          "throughput_samples_s": 178.08403611240044,
+          "iterations": 48
+        }
+      },
+      "G_plus_F_B128": {
+        "DURA": {
+          "median_ms": 18.491704016923904,
+          "p95_ms": 20.319810532964766,
+          "throughput_samples_s": 6926.260413598784,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 18.529081251472235,
+          "p95_ms": 19.897014531306922,
+          "throughput_samples_s": 6887.754244495557,
+          "iterations": 48
+        }
+      }
+    },
+    "parameters": 266951,
+    "parameter_bytes": 1067804,
+    "checkpoint_bytes": 1304484,
+    "ConvLinear_MAC": 25068072,
+    "prior_calls": 2,
+    "CG_updates": 4,
+    "FFT_IFFT": 27,
+    "peak_allocated_bytes": 130500608,
+    "physical_GPU": "6",
+    "timing_scope": "Samecard alternating3rounds;FP32/TF32off;preloadedGPUinput;GorG+originalFdefaulthead;copy/ownedoutput/validity included;capture/loader/transfer/queueexcluded",
+    "memory_scope": "Shared benchmark resident models and graphs;not standalone deployment VRAM"
+  },
+  "six_scene_gap3pp": false,
+  "goal_complete": false,
+  "R17_atmost1pp_loss": false
+}
