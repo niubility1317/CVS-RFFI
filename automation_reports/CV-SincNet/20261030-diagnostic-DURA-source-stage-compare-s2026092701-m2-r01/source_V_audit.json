@@ -1,0 +1,494 @@
+{
+  "status": "INDEPENDENTLY_RECOMPUTED_SOURCE_V",
+  "scored_records": 1800,
+  "checked_source_records": 315,
+  "all_source_predictions_before_V_truth": true,
+  "source_label_role": "V only after freeze; no G updates or U_s/target label reads in this audit",
+  "overall": {
+    "noVarAux": {
+      "clean": {
+        "count": 1800,
+        "accuracy": 98.38888888888889,
+        "macro_f1": 98.38375383790479,
+        "repaired": 0,
+        "damaged": 2,
+        "net_repaired": -2
+      },
+      "practical_high": {
+        "count": 1800,
+        "accuracy": 97.94444444444444,
+        "macro_f1": 97.93656252622736,
+        "repaired": 793,
+        "damaged": 7,
+        "net_repaired": 786
+      },
+      "practical_mid": {
+        "count": 1800,
+        "accuracy": 96.16666666666667,
+        "macro_f1": 96.15069436311283,
+        "repaired": 817,
+        "damaged": 17,
+        "net_repaired": 800
+      },
+      "practical_low_suburban": {
+        "count": 1800,
+        "accuracy": 95.66666666666667,
+        "macro_f1": 95.64976852237493,
+        "repaired": 825,
+        "damaged": 21,
+        "net_repaired": 804
+      },
+      "practical_high_urban": {
+        "count": 1800,
+        "accuracy": 96.5,
+        "macro_f1": 96.47280343425749,
+        "repaired": 833,
+        "damaged": 14,
+        "net_repaired": 819
+      },
+      "practical_mid_urban": {
+        "count": 1800,
+        "accuracy": 90.0,
+        "macro_f1": 90.06330612430412,
+        "repaired": 871,
+        "damaged": 32,
+        "net_repaired": 839
+      },
+      "practical_low_urban": {
+        "count": 1800,
+        "accuracy": 83.0,
+        "macro_f1": 83.05299128844382,
+        "repaired": 893,
+        "damaged": 59,
+        "net_repaired": 834
+      }
+    },
+    "cos010": {
+      "clean": {
+        "count": 1800,
+        "accuracy": 98.44444444444444,
+        "macro_f1": 98.43917446570346,
+        "repaired": 1,
+        "damaged": 2,
+        "net_repaired": -1
+      },
+      "practical_high": {
+        "count": 1800,
+        "accuracy": 97.66666666666667,
+        "macro_f1": 97.65644709343228,
+        "repaired": 791,
+        "damaged": 10,
+        "net_repaired": 781
+      },
+      "practical_mid": {
+        "count": 1800,
+        "accuracy": 96.66666666666667,
+        "macro_f1": 96.64879461458956,
+        "repaired": 827,
+        "damaged": 18,
+        "net_repaired": 809
+      },
+      "practical_low_suburban": {
+        "count": 1800,
+        "accuracy": 95.94444444444444,
+        "macro_f1": 95.92720372622185,
+        "repaired": 832,
+        "damaged": 23,
+        "net_repaired": 809
+      },
+      "practical_high_urban": {
+        "count": 1800,
+        "accuracy": 97.44444444444444,
+        "macro_f1": 97.4263073247835,
+        "repaired": 848,
+        "damaged": 12,
+        "net_repaired": 836
+      },
+      "practical_mid_urban": {
+        "count": 1800,
+        "accuracy": 90.88888888888889,
+        "macro_f1": 90.8650558139019,
+        "repaired": 883,
+        "damaged": 28,
+        "net_repaired": 855
+      },
+      "practical_low_urban": {
+        "count": 1800,
+        "accuracy": 85.83333333333333,
+        "macro_f1": 85.76507430688251,
+        "repaired": 929,
+        "damaged": 44,
+        "net_repaired": 885
+      }
+    },
+    "headFeature": {
+      "clean": {
+        "count": 1800,
+        "accuracy": 98.44444444444444,
+        "macro_f1": 98.43886031466158,
+        "repaired": 1,
+        "damaged": 2,
+        "net_repaired": -1
+      },
+      "practical_high": {
+        "count": 1800,
+        "accuracy": 98.05555555555556,
+        "macro_f1": 98.05276676036469,
+        "repaired": 795,
+        "damaged": 7,
+        "net_repaired": 788
+      },
+      "practical_mid": {
+        "count": 1800,
+        "accuracy": 97.16666666666667,
+        "macro_f1": 97.16143719380482,
+        "repaired": 832,
+        "damaged": 14,
+        "net_repaired": 818
+      },
+      "practical_low_suburban": {
+        "count": 1800,
+        "accuracy": 96.44444444444444,
+        "macro_f1": 96.43522139692678,
+        "repaired": 836,
+        "damaged": 18,
+        "net_repaired": 818
+      },
+      "practical_high_urban": {
+        "count": 1800,
+        "accuracy": 97.77777777777777,
+        "macro_f1": 97.76480547154377,
+        "repaired": 854,
+        "damaged": 12,
+        "net_repaired": 842
+      },
+      "practical_mid_urban": {
+        "count": 1800,
+        "accuracy": 91.77777777777779,
+        "macro_f1": 91.77899835269821,
+        "repaired": 896,
+        "damaged": 25,
+        "net_repaired": 871
+      },
+      "practical_low_urban": {
+        "count": 1800,
+        "accuracy": 85.72222222222223,
+        "macro_f1": 85.62953537156694,
+        "repaired": 929,
+        "damaged": 46,
+        "net_repaired": 883
+      }
+    }
+  },
+  "head_vs_noVar": {
+    "clean": {
+      "all": {
+        "count": 1800,
+        "repaired": 1,
+        "damaged": 0,
+        "net": 1
+      },
+      "RX:1": {
+        "count": 360,
+        "repaired": 0,
+        "damaged": 0,
+        "net": 0
+      },
+      "RX:3": {
+        "count": 360,
+        "repaired": 1,
+        "damaged": 0,
+        "net": 1
+      },
+      "RX:4": {
+        "count": 360,
+        "repaired": 0,
+        "damaged": 0,
+        "net": 0
+      },
+      "RX:6": {
+        "count": 360,
+        "repaired": 0,
+        "damaged": 0,
+        "net": 0
+      },
+      "RX:8": {
+        "count": 360,
+        "repaired": 0,
+        "damaged": 0,
+        "net": 0
+      }
+    },
+    "practical_high": {
+      "all": {
+        "count": 1800,
+        "repaired": 9,
+        "damaged": 7,
+        "net": 2
+      },
+      "RX:1": {
+        "count": 360,
+        "repaired": 1,
+        "damaged": 0,
+        "net": 1
+      },
+      "RX:3": {
+        "count": 360,
+        "repaired": 4,
+        "damaged": 4,
+        "net": 0
+      },
+      "RX:4": {
+        "count": 360,
+        "repaired": 0,
+        "damaged": 0,
+        "net": 0
+      },
+      "RX:6": {
+        "count": 360,
+        "repaired": 0,
+        "damaged": 0,
+        "net": 0
+      },
+      "RX:8": {
+        "count": 360,
+        "repaired": 4,
+        "damaged": 3,
+        "net": 1
+      }
+    },
+    "practical_mid": {
+      "all": {
+        "count": 1800,
+        "repaired": 27,
+        "damaged": 9,
+        "net": 18
+      },
+      "RX:1": {
+        "count": 360,
+        "repaired": 5,
+        "damaged": 1,
+        "net": 4
+      },
+      "RX:3": {
+        "count": 360,
+        "repaired": 8,
+        "damaged": 6,
+        "net": 2
+      },
+      "RX:4": {
+        "count": 360,
+        "repaired": 7,
+        "damaged": 0,
+        "net": 7
+      },
+      "RX:6": {
+        "count": 360,
+        "repaired": 3,
+        "damaged": 1,
+        "net": 2
+      },
+      "RX:8": {
+        "count": 360,
+        "repaired": 4,
+        "damaged": 1,
+        "net": 3
+      }
+    },
+    "practical_low_suburban": {
+      "all": {
+        "count": 1800,
+        "repaired": 28,
+        "damaged": 14,
+        "net": 14
+      },
+      "RX:1": {
+        "count": 360,
+        "repaired": 7,
+        "damaged": 3,
+        "net": 4
+      },
+      "RX:3": {
+        "count": 360,
+        "repaired": 10,
+        "damaged": 5,
+        "net": 5
+      },
+      "RX:4": {
+        "count": 360,
+        "repaired": 3,
+        "damaged": 1,
+        "net": 2
+      },
+      "RX:6": {
+        "count": 360,
+        "repaired": 1,
+        "damaged": 1,
+        "net": 0
+      },
+      "RX:8": {
+        "count": 360,
+        "repaired": 7,
+        "damaged": 4,
+        "net": 3
+      }
+    },
+    "practical_high_urban": {
+      "all": {
+        "count": 1800,
+        "repaired": 30,
+        "damaged": 7,
+        "net": 23
+      },
+      "RX:1": {
+        "count": 360,
+        "repaired": 3,
+        "damaged": 0,
+        "net": 3
+      },
+      "RX:3": {
+        "count": 360,
+        "repaired": 11,
+        "damaged": 3,
+        "net": 8
+      },
+      "RX:4": {
+        "count": 360,
+        "repaired": 7,
+        "damaged": 0,
+        "net": 7
+      },
+      "RX:6": {
+        "count": 360,
+        "repaired": 3,
+        "damaged": 1,
+        "net": 2
+      },
+      "RX:8": {
+        "count": 360,
+        "repaired": 6,
+        "damaged": 3,
+        "net": 3
+      }
+    },
+    "practical_mid_urban": {
+      "all": {
+        "count": 1800,
+        "repaired": 72,
+        "damaged": 40,
+        "net": 32
+      },
+      "RX:1": {
+        "count": 360,
+        "repaired": 11,
+        "damaged": 3,
+        "net": 8
+      },
+      "RX:3": {
+        "count": 360,
+        "repaired": 16,
+        "damaged": 6,
+        "net": 10
+      },
+      "RX:4": {
+        "count": 360,
+        "repaired": 13,
+        "damaged": 13,
+        "net": 0
+      },
+      "RX:6": {
+        "count": 360,
+        "repaired": 16,
+        "damaged": 10,
+        "net": 6
+      },
+      "RX:8": {
+        "count": 360,
+        "repaired": 16,
+        "damaged": 8,
+        "net": 8
+      }
+    },
+    "practical_low_urban": {
+      "all": {
+        "count": 1800,
+        "repaired": 114,
+        "damaged": 65,
+        "net": 49
+      },
+      "RX:1": {
+        "count": 360,
+        "repaired": 21,
+        "damaged": 14,
+        "net": 7
+      },
+      "RX:3": {
+        "count": 360,
+        "repaired": 27,
+        "damaged": 13,
+        "net": 14
+      },
+      "RX:4": {
+        "count": 360,
+        "repaired": 27,
+        "damaged": 15,
+        "net": 12
+      },
+      "RX:6": {
+        "count": 360,
+        "repaired": 18,
+        "damaged": 11,
+        "net": 7
+      },
+      "RX:8": {
+        "count": 360,
+        "repaired": 21,
+        "damaged": 12,
+        "net": 9
+      }
+    }
+  },
+  "common_capture_days": [
+    "2021_03_08",
+    "2021_03_15",
+    "2021_03_23"
+  ],
+  "target_common_days_from_existing_summaries": {
+    "clean": {
+      "count": 126000,
+      "head_minus_noVar_correct": 253,
+      "delta_pp": 0.2007936507936508
+    },
+    "practical_high": {
+      "count": 126000,
+      "head_minus_noVar_correct": -722,
+      "delta_pp": -0.573015873015873
+    },
+    "practical_mid": {
+      "count": 126000,
+      "head_minus_noVar_correct": -574,
+      "delta_pp": -0.4555555555555556
+    },
+    "practical_low_suburban": {
+      "count": 126000,
+      "head_minus_noVar_correct": -196,
+      "delta_pp": -0.15555555555555556
+    },
+    "practical_high_urban": {
+      "count": 126000,
+      "head_minus_noVar_correct": -563,
+      "delta_pp": -0.44682539682539685
+    },
+    "practical_mid_urban": {
+      "count": 126000,
+      "head_minus_noVar_correct": -435,
+      "delta_pp": -0.34523809523809523
+    },
+    "practical_low_urban": {
+      "count": 126000,
+      "head_minus_noVar_correct": -52,
+      "delta_pp": -0.04126984126984127
+    }
+  },
+  "scope": "Previously frozen seven-view results; source V paired truth-side analysis only, not training/selection; target shared-day contrasts from already-published aggregate records; RX/day causality not proved"
+}

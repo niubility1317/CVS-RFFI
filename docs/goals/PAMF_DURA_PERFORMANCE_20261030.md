@@ -122,3 +122,6 @@ source-headFeature已按commit d79a280d843696d680c82bf63b0138905cf1cb5d发布，
 
 
 headFeature资源r02完整完成E20/4940和七景正式测试，126组独立复算一致。clean84.902381%（较raw+380条正确），lowurban67.876786%，六星地均低于匹配noVar及默认；相对cos0.1仅lowurban+0.049405pp，其余五星地下降，逐景3pp未达。G新增流程1623.216秒/27.054分钟，发布到完整分析1999.843秒/33.331分钟，target七景337.460秒；共享三进程和不同模型/时段不做跨运行因果速度比。F末状态不变/更新0、G从零祖先0/直接TX-V-target训练0，F上游50轮知识/成本另计。全部负结果保留，默认DURA不变；下一研究应从当前新G的源stage/prior/求解特征定位开始，不按目标类别/场景调参。
+
+
+noVar/headFeature源阶段对照完成：64批/15120统计独立复算，0训练/TX/V/target，默认同源baseline复用。headFeature source native教师一致数+8/+5（512/视图），但prior比native少11/3条、特征误差更大，prior-only双视图门槛均失败，不发布删最后求解版本。补充冻结后V truth-side独立复算315组：headFeature六星地sourceV均高于noVar，lowurban83.00→85.7222%/净+49，五个源RX均净增益；目标在共同三采集日期仍六景负差，不能只归因新day0。该现象支持优先检验采集风格迁移鲁棒性，但RX/日期/样本分布因果未隔离，不能按目标日期调参或以子集代替全七景。下一候选先查历史pair_aug_control/observable_response实际机制避免重复；默认与3pp/效率目标保持。
