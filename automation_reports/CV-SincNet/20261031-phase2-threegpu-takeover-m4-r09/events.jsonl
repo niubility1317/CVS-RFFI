@@ -1,1 +1,2 @@
 {"at": "2026-10-30T18:25:20+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-30T18:28:45+00:00", "status": "FAILED", "note": "Transient unidentified child; owner resumed and worker independently confirmed completed; no handoff occurred.", "evidence": ["runs/20261031-phase2-threegpu-takeover-m4-r09/smoke.json", "releases/20261031-phase2-threegpu-takeover-m4-r09-release/controller.log"], "row_id": null}

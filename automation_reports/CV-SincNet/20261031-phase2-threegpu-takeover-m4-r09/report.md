@@ -33,3 +33,7 @@
 2026-10-31 用户指定Phase2对比队列只分配3张卡。选GPU1、5、7，依实际free显存发布，每卡最多2个本任务worker。安全接管r08已有预测及CPU评分进程，不停止、不重启、不修改科学配置；其他卡上的已运行worker自然完成，后续绝不派发至其他卡。原42570工作单元的路径、版本、依赖、已完成结果与16个既有ISSL失败及其blocked后继保持；不恢复这些失败任务，也不更改其他owner工作。
 
 先做真实源checkpoint CPU无query smoke；确认旧CPU controller身份并暂停至T状态、核对原workers、重建完成/失败/阻塞、排除不明部分输出，然后仅停止旧CPU controller并启动新控制器；接管失败则恢复旧controller。独立P0/P1审查发现停止确认竞态，已修复并完成一次定点复核。自动运行与评分、同一方法矩阵、truth-last和原系统故障处理不变。非目标卡仍有在途worker期间，实际占用可能暂超过三张，直至这些worker完成。
+
+## 接管未完成（2026-10-31 02:26，香港时间）
+
+FAILED：真实源checkpoint CPU smoke PASS；扫描旧controller子进程时出现暂未识别PID 1034046，按保护条件中止并SIGCONT恢复旧controller，未停止或重启任何模型worker。随后独立读回该PID对应原RadioNet预测c0297，已正常完成并记录COMPLETE。r09未接管任何任务，保留目录及日志；r10仅修复该具体扫描时序，其他合同、矩阵及三卡设置不变。

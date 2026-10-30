@@ -1,9 +1,19 @@
 import unittest
 
-from experiments.pamf_phase2_practical.gpu_limit_state import partition
+from experiments.pamf_phase2_practical.gpu_limit_state import partition, stable_workers
 
 
 class TakeoverStateTest(unittest.TestCase):
+    def test_unidentified_transient_child_is_reconciled_or_fails_closed(self):
+        observed = iter([{}, {'worker': {'pid': 5}}])
+        def check(value):
+            if not value: raise ValueError('Unidentified live controller child: 5')
+        self.assertIn('worker', stable_workers(lambda: next(observed), check, lambda _: None))
+        with self.assertRaisesRegex(ValueError, 'Unidentified live controller child'):
+            stable_workers(lambda: {}, check, lambda _: None, attempts=2)
+        with self.assertRaisesRegex(ValueError, 'Other failure'):
+            stable_workers(lambda: {}, lambda _: (_ for _ in ()).throw(ValueError('Other failure')), lambda _: None)
+
     def test_failed_profile_and_dependencies_are_preserved(self):
         def row(profile, deps=()):
             return {'origin': 'legacy', 'profile': profile, 'dependencies': list(deps)}

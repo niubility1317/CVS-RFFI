@@ -11,7 +11,7 @@ from .cuda_takeover import Adopted, _check_children
 from .external_accel_takeover import _workers, _check_pending
 from .external_takeover import process
 from .group1_dispatch import completed
-from .gpu_limit_state import partition
+from .gpu_limit_state import partition, stable_workers
 from .io import atomic, read, require, write
 
 
@@ -47,7 +47,8 @@ def dispatch(rt):
         time.sleep(.3)  # Already-forked children can reach exec before inspection.
         state = read(old_root/'pipeline_state.json')
         require(state['controller_pid'] == parent and state['status'] == 'RUNNING', 'Owner changed')
-        observed = _workers(configs, by); _check_children(parent, observed)
+        observed = stable_workers(lambda: _workers(configs, by),
+                                  lambda workers: _check_children(parent, workers), time.sleep)
         failed = {}
         for key in state['failed_jobs']:
             result = read(old_root/'job_results'/(key+'.json'))
