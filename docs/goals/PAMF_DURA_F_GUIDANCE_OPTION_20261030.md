@@ -60,3 +60,6 @@ G只有一次联合训练，没有coarse/action/prior逐级预训练，也不从
 
 
 用户另行明确允许headFeature资源切换r02：仅GPU4/6/7中的一张、启动后总可见计算进程最多3，新增本任务1个且free≥12GB；只替换仍未启动GPU的旧CPU队列，其他owner保持。此项仅资源/执行版本改变，科学sourceF指导系数、G从零单阶段E20、F冻结/直接TX-V-target隐藏与完整七景保持。新run `20261030-phase1-DURA-source-headFeature-s2026092701-r02`，禁止将资源授权解释为目标端学习或默认版本替换。
+
+
+headFeature r02完整七景仍未达3pp后，另登记源阶段对照`20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01`：固定noVar与headFeature source-final、同512源位置×cached01/20、CPU2/0GPU/0更新，复用同F/同队列的默认R69历史源阶段统计。只在headFeature最后prior的两视图teacher一致数均比其native多≥6/512、Fcos误差≤0.9倍、逐source scene一致数均不减少时，才另登记该冻结G的prior-only运行版并完成正式七景；否则不发布该运行版。noVar/default仅对照，不能择其为父或用oracle部署；该源判断不是真实TX准确率或目标上界，不改变任何已完成权重/负结果。

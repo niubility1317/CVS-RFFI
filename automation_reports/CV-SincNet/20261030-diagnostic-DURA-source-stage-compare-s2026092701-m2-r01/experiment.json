@@ -1,0 +1,173 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01",
+  "group_id": "phase1-dura-source-stage-compare",
+  "display_name": "DURA单阶段noVar与原头特征指导的源分阶段对照",
+  "description": "FrozennoVar/headFeature sourcefinals;source512x2views/10paths;reuse fixeddefault sourcepairedstagefacts;CPU2/noF-Gupdates/TX/V/target",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "gradient-conflict",
+    "F-free",
+    "single-stage"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01",
+    "20261030-phase1-DURA-source-headFeature-s2026092701-r02",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Originalsource128Ls384Us fixedpositions xcached01/20;firstauthorizedsourceFclean63000cache;defaultpairedstagebaseline samepositions/roles/scene-state-lock",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsourcecache;deterministicsource_indicesinexistingDURAdiagnostic;opaquepositionssaved",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "none;noqueryorclassificationprediction"
+  },
+  "permissions": {
+    "regime": "authorized_source_frozen_F_analysis_no_updates",
+    "query_use": "none",
+    "external_method_exception": "User2026-10-30explicitlyallowedindependentsourceFguidance;Fparams/headfrozen;no directTXlabels",
+    "claim_scope": "OnlysourcecleanFfeature/choicefidelity,notTXaccuracyorwaveformidentityproof;sourceoracleA/noiseisnondeployablecounterfactual/notaccuracyupperbound;oldGweightsremainF-free"
+  },
+  "checkpoint": {
+    "initialization": "FrozennoVarE20/cf40 andheadFeatureE20/81df;no newweights/initialization;defaultR69sourcefacts reused",
+    "sources": [
+      "runs/20261030-phase1-DURA-direct-noVarAux-s2026092701-r01/scratch_joint/final.pt",
+      "runs/20261030-phase1-DURA-source-headFeature-s2026092701-r02/scratch_joint/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "ReuseverifiedR69originalsourcepayload/lineage;reuseFsourcecontractandmatchingLsUs physicalIDs;noGinitialization/updates",
+    "selection_rule": "MatchednoVarcontrolandlatestfixedheadFeaturefinal;defaultbaselineuserfixed;no parentranking or intermediateepochselection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-stage-compare",
+    "gpu_policy": "CPU2/0GPU;0updates;otherownersuntouched",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.stage_compare --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Source/checkpoint/Fpermission/teacher/cacheorder/defaultcohort mismatch/nativeCG2nonexact/nonfinite/statechange/outputcollision:preserve,noautoretry;0TX/V/target"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "noVarAux-epoch01.npz",
+    "noVarAux-epoch20.npz",
+    "headFeature-epoch01.npz",
+    "headFeature-epoch20.npz",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQNMSE",
+      "sourceFfeaturecosineerror",
+      "sourceFheadprojectederror",
+      "cleanFchoiceagreement",
+      "teacherchoice margins",
+      "teacherrepair/damage_vs_own_native",
+      "headFeaturepriorruntimeeligibility"
+    ],
+    "dimensions": [
+      "noVarAux/headFeature/reusedDURAdefault",
+      "10stage-CG-sourceoraclepaths",
+      "cached01/20",
+      "role/scene/state/lock"
+    ],
+    "prediction_ref": "none;private source diagnostic tensorsonly",
+    "scorer_ref": "none;sourceFteacherfidelitywithoutTXtruth"
+  },
+  "rows": [
+    {
+      "row_id": "source-stage-compare",
+      "method": "TwofixedsourcefinalGmodelsx10pathfidelity;defaultexactcohortreused;0update",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/stage_compare.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "Fixedfirst256Lsrolepositions;modelseedcontrolsrandomfactory;evalcontrols2probes;supportN/A;sourceR07receiverseed2026101911",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2modelsx(source2LsG/Fsmoke+512x2views),B32/64batchesx10paths;CPU2/noGPU",
+      "output_root": "runs/20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.stage_compare --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "noVarAux-epoch01.npz",
+        "noVarAux-epoch20.npz",
+        "headFeature-epoch01.npz",
+        "headFeature-epoch20.npz",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "CurrentheadFeaturecompletedall20/7formal/independent126groupsnegative;allresultsretained01975d886... .Thisnewsourceprobe locatesstageeffects,not usingtargetTX/sceneweights or selectingparents.",
+    "OnlyheadFeature-priorruntime canqualify:bothcachedviews priorclean-Fagreement>=native+6/512 andcoserror<=.9native,everysourcescene teachercorrect>=native.Otherwise no priorruntime release fromthisprobe.",
+    "NoVarandDURAarefixedcontrols,notselectableparentcandidates;oracleA/noisepathsneverdeployableoraccuracybounds;FteacherchoiceisnotTXtruth.",
+    "NoVarFtrainingflagFalseandheadFeatureTrue keptstrict;Fguidedschema/teacheridentity/stateunchanged0update checked;restoreallsharedrunnerGLOBALSbeforeeachconfigure/load.",
+    "BothmodelsGscratchE20/4940sourcefinal;noinitialization/newtraining;sourceL/Uphysicalsets matchFsource;firstauthorized160DFcacheidentity/fullorderchecked,not labels.",
+    "Defaultstage-fidelitysourcebaseline64xx runmetadata sameFteacher/G-Funchanged/0updates reused;source_positions/roles/scene-state-lock exactequalityatbothviews beforecomparison;not rereunningunchangeddefault.",
+    "NativeCG2exactreconstruction,real2LsG/Fsmokefirstpermodel,F-Gstateunchanged/gradNone;paired60finitecolumnssavedprivateperview,allaggregate role/scene/state/lock retained.",
+    "One meaningfulpriorqualification/scene-protectiontestPASS andone independentP0/P1reviewPASS;singleGit/preflight/archiveSHA/compile/noextras;newtrainedversionsstillautomaticall7formal.",
+    "DirectTX/V/target0;F-sourceknowledgeinheritedonlyheadFeatureGtraining,oldnoVar/defaultweightsremainF-free;currentrawclean3ppgoal/defaultunchanged."
+  ],
+  "registered_at": "2026-10-30T09:54:19+00:00"
+}
