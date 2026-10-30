@@ -146,3 +146,6 @@ wideCoarse首步2Ls新coarse梯度/严格重载/F noquery、11项聚焦检查和
 
 
 独立纯G重复对照与30份抽样矩阵已完整结束：额外抽样在5/6星地净增73至2214条正确，但lowurban净少670、clean净少283；两组都未达六景3pp和clean保持。新数据多样性在本单pair有局部收益，未证明攻克最难场景或达到恢复极限。完整14份冻结预测后的126配对纠错、分组与源曲线见[fresh配对分析](../20261031-phase1-DURA-freshViews-E30-s2026092701-r01/analysis.md)。
+
+
+完整两阶段源context诊断已结束：20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/97da8a29，主对照纯repeat源E30/7410、512源128L384U×clean/01/20，CPU36.665秒/0GPU/0优化TX-V-target。真实算子替换使主对照NMSE降低约11%，但Fclean选择−2/−5、clean−1；rank32真实算子表示误差很小而预测平滑后IQ略差、F选择+1/0。两项均未过事前固定源门槛，不据此启动新G或放宽。default换clean粗恢复反而恶化，提示潜在表示共同适配；该反事实不是可部署方案、真实TX准确率或恢复上限。六份完整NPZ/480分组case独立复算，G/F全state不变、所有计数闭合。见[完整诊断](../20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/analysis.md)（分析总报告相对路径）或automation_reports/CV-SincNet/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/analysis.md；默认保持/目标ACTIVE。

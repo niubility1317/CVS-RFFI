@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01`
 - group_id：`phase1-dura-source-full-context-oracles`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -36,3 +36,8 @@
 主对照 known_action 或 rank32 必须在缓存01/20各自使 IQNMSE 下降至少10%、源clean F选择多恢复至少6/512条，每个非clean场景最多少1条、clean场景不少，全部512clean输入选择不下降。rank32另要求实际源算子的两白噪声探针相对误差在两view总体及逐七景均≤1%。优先合格rank32，否则合格knownaction仅支持另行登记源算子课程研究；均失败则不晋级，不放宽。默认和knowncoarse/both仅描述。这是源一致性代理，不是TX准确率、目标收益或恢复上限。无自动训练；未来任何新G仍须独立从零联合30epoch和七景正式预测后truth-last。
 
 CPU2/CUDA空，3072 context、15360完整stage样本、13824新增F特征、1536复用defaultnativeF，首步每模型2条Ls真实G/F smoke。六份源IQ/特征NPZ私有保存，不提交。4聚焦测试已通过，唯一P0/P1审查后发布；首步smoke通过即继续。默认DURA及目标保持。
+
+
+## 完整诊断结果
+
+VERIFIED / ANALYZED（SOURCE_ONLY）。六份完整NPZ/480分组case独立复算一致。known_action降低波形误差约11%，但Fclean选择−2/−5，clean−1；rank32选择+1/0、IQ误差略增。两项均未通过固定源门槛，不自动训练，不放宽。CPU循环36.665214秒、0TX/V/target/优化更新，G/F状态不变；不构成物理恢复极限或真实TX准确率。见[完整分析](analysis.md)与results.json。默认保持，目标ACTIVE。

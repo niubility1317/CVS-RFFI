@@ -270,3 +270,6 @@ Fresh30本行正式结案：32a/30轮7410/L189000U1701000，实际sourceview1..3
 
 
 纯G源抽样配对矩阵完整结案：repeat8cf E30/7410/source01..20+repeat10，clean84.630357/lowurban67.372619，30完整日志/126单行记录复算；fresh32a全30独立抽样同预算同G初值-CUDAprobe-npshuffle。全14预测核对后truth-last，126配对净纠错独立一致：fresh在5/6星地提高（high+1.317857/mid+1.099405/lowsub+.572024/highurban+1.132143/midurban+.043452），lowurban−.398810/−670、clean−.168452/−283；两组0/6通过3pp且clean低于raw，不替换默认。学生循环fresh976.251s/repeat981.684s，source新增530.740s/4.1958GB另计，全分析1691.499s/1162.601s；source第一20轮曲线IQ最大绝对差0.002244012，跨GPU不承诺逐位轨迹，单pair不称seed均值或统计显著。旧physical CUDAseed混杂与修复已披露，所有旧产物保持。当前两worker均自然结束，默认保持/目标ACTIVE。
+
+
+完整两阶段源context诊断已结束：20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/97da8a29，主对照纯repeat源E30/7410、512源128L384U×clean/01/20，CPU36.665秒/0GPU/0优化TX-V-target。真实算子替换使主对照NMSE降低约11%，但Fclean选择−2/−5、clean−1；rank32真实算子表示误差很小而预测平滑后IQ略差、F选择+1/0。两项均未过事前固定源门槛，不据此启动新G或放宽。default换clean粗恢复反而恶化，提示潜在表示共同适配；该反事实不是可部署方案、真实TX准确率或恢复上限。六份完整NPZ/480分组case独立复算，G/F全state不变、所有计数闭合。见automation_reports/CV-SincNet/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/analysis.md；默认保持/目标ACTIVE。
