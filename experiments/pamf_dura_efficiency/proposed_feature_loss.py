@@ -1,4 +1,4 @@
-"""Unlaunched F-guidance prototype; real F training use needs user authorization."""
+"""Frozen-F consistency for the explicitly authorized source-only guided branch."""
 import torch
 from torch.nn import functional as F
 

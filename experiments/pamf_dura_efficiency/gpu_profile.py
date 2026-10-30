@@ -141,7 +141,8 @@ def launch(args):
             tokens=('pamf_dura_prior_refine.runner worker','pamf_dura_prior_recovery.runner worker',
                 'pamf_dura_direct_train.runner worker','pamf_dura_direct_train.fast_lr worker',
                 'pamf_dura_direct_train.identity_init worker','pamf_dura_direct_train.no_variance worker',
-                'pamf_dura_direct_train.fast_interp worker','pamf_dura_direct_train.strong_action worker',MODULE+' worker')
+                'pamf_dura_direct_train.fast_interp worker','pamf_dura_direct_train.strong_action worker',
+                'pamf_dura_direct_train.f_guided worker',MODULE+' worker')
             own=sum(any(token in command for token in tokens) for command in commands)
             used=set()
             for command in commands:

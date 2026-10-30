@@ -1,5 +1,11 @@
 # CVS项目场景与数据协议
 
+## 独立源域 F 指导恢复器对照（2026-10-30，用户明确授权）
+
+仅对`docs/goals/PAMF_DURA_F_GUIDANCE_OPTION_20261030.md`所列独立Phase1对照，用户已明确同意新增源域F特征指导。恢复器G从零单阶段训练，可读取同源合同下已冻结F的权重和源clean/源restored特征；F参数、状态和原联合分类头不更新。G不直接读取TX标签、V或target参与训练，不生成target伪标签或回流正式结果。原source物理角色、checkpoint来源禁令、最终轮次冻结、七景预测后独立truth-last保持。
+
+该方法通过F继承源有标签知识，必须单独标为F-guided，不能称为原F-free/完全无TX监督，不能隐去F的既有训练成本或新增缓存/前反向开销。原F-free结果及DURA v1.0默认不变；本授权不扩展到Phase2/3恢复器目标端训练，也不豁免任何模型的实际数据契约和来源检查。当前配对为原F50/defaulthead，不挪用当前Tri-SIG-TIME SSL身份或成绩。
+
 ## Phase2 当前 PAMF 固定 Tri-SIG-TIME SSL（2026-10-30，用户最新更正）
 
 用户再次明确本轮PAMF使用Tri-SIG-TIME SSL。当前PAMF A固定为三视图SIG-TIME＋原版REPL全部机制＋固定局部排列[0,5,3,6,2,1,4,7]，不得以普通PL或仅有三视图结构的模型替代。按既定四seed预算优先复用原20261027三视图完整源模型，完整核对其源合同、祖先与实际方法。原固定日程为13L＋7轮普通PL前缀＋30轮完整REPL，U权重6；该定义覆盖下方误将PAMF纳入统一中期普通PL的部分。

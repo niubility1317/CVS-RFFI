@@ -1,0 +1,208 @@
+{
+  "status": "ANALYZED",
+  "metrics": {
+    "clean": {
+      "accuracy": 85.2375,
+      "macro_f1": 85.0557908982058,
+      "correct": 143199,
+      "count": 168000,
+      "repaired": 3225,
+      "damaged": 2282,
+      "net_repaired": 943,
+      "raw_clean_gap_pp": -0.5613095238095269,
+      "delta_fastLR_pp": 0.572023809523813,
+      "delta_DURA_pp": 0.5595238095238102,
+      "delta_R17_pp": 0.6505952380952351
+    },
+    "practical_high": {
+      "accuracy": 80.42619047619047,
+      "macro_f1": 79.90109693410109,
+      "correct": 135116,
+      "count": 168000,
+      "repaired": 71038,
+      "damaged": 4353,
+      "net_repaired": 66685,
+      "raw_clean_gap_pp": 4.25,
+      "delta_fastLR_pp": 0.4315476190476062,
+      "delta_DURA_pp": -2.3988095238095326,
+      "delta_R17_pp": -0.892857142857153
+    },
+    "practical_mid": {
+      "accuracy": 78.93154761904762,
+      "macro_f1": 78.42572709846813,
+      "correct": 132605,
+      "count": 168000,
+      "repaired": 70456,
+      "damaged": 4911,
+      "net_repaired": 65545,
+      "raw_clean_gap_pp": 5.74464285714285,
+      "delta_fastLR_pp": 0.02142857142857224,
+      "delta_DURA_pp": -2.629166666666663,
+      "delta_R17_pp": -0.646428571428558
+    },
+    "practical_low_suburban": {
+      "accuracy": 77.42202380952381,
+      "macro_f1": 77.01262612864858,
+      "correct": 130069,
+      "count": 168000,
+      "repaired": 70123,
+      "damaged": 5624,
+      "net_repaired": 64499,
+      "raw_clean_gap_pp": 7.254166666666663,
+      "delta_fastLR_pp": -0.035714285714291805,
+      "delta_DURA_pp": -2.6363095238095298,
+      "delta_R17_pp": -0.5744047619047592
+    },
+    "practical_high_urban": {
+      "accuracy": 78.94702380952381,
+      "macro_f1": 78.44461416120092,
+      "correct": 132631,
+      "count": 168000,
+      "repaired": 70917,
+      "damaged": 4979,
+      "net_repaired": 65938,
+      "raw_clean_gap_pp": 5.729166666666657,
+      "delta_fastLR_pp": 0.19404761904762324,
+      "delta_DURA_pp": -2.79880952380951,
+      "delta_R17_pp": -1.4065476190476147
+    },
+    "practical_mid_urban": {
+      "accuracy": 71.06488095238095,
+      "macro_f1": 70.84799596119217,
+      "correct": 119389,
+      "count": 168000,
+      "repaired": 69541,
+      "damaged": 8084,
+      "net_repaired": 61457,
+      "raw_clean_gap_pp": 13.611309523809524,
+      "delta_fastLR_pp": -1.2410714285714306,
+      "delta_DURA_pp": -4.421428571428578,
+      "delta_R17_pp": -2.6202380952381077
+    },
+    "practical_low_urban": {
+      "accuracy": 63.55773809523809,
+      "macro_f1": 63.86006251536871,
+      "correct": 106777,
+      "count": 168000,
+      "repaired": 66668,
+      "damaged": 10794,
+      "net_repaired": 55874,
+      "raw_clean_gap_pp": 21.118452380952377,
+      "delta_fastLR_pp": -2.0839285714285722,
+      "delta_DURA_pp": -5.3321428571428555,
+      "delta_R17_pp": -3.658928571428575
+    }
+  },
+  "count": 168000,
+  "raw_clean": 84.67619047619047,
+  "training_seconds": 1091.9222032292746,
+  "training_epochs": 20,
+  "ancestor_epochs": 0,
+  "teacher_inputs": 0,
+  "final_source_losses": {
+    "loss": 0.09350323814815945,
+    "iq_nmse": 0.03523900249458495,
+    "spectral_error": 0.009063807031701482,
+    "prior_nmse": 0.057147044492146325,
+    "action_probe_nmse": 0.2332356576314048,
+    "log_variance_mse": 5.449207842630053
+  },
+  "epoch_clip_fractions": [
+    0.8259109311740891,
+    0.9473684210526315,
+    0.9595141700404858,
+    0.9919028340080972,
+    0.9149797570850202,
+    0.8461538461538461,
+    0.9959514170040485,
+    0.9392712550607287,
+    0.97165991902834,
+    0.9230769230769231,
+    0.8947368421052632,
+    0.9473684210526315,
+    0.9554655870445344,
+    0.9757085020242915,
+    0.9919028340080972,
+    0.9959514170040485,
+    0.9878542510121457,
+    0.9878542510121457,
+    0.9959514170040485,
+    0.9878542510121457
+  ],
+  "independently_recomputed_groups": 126,
+  "matched_profile": {
+    "status": "PROFILE_COMPLETE",
+    "cases": {
+      "G_B1": {
+        "DURA": {
+          "median_ms": 4.441484808921814,
+          "p95_ms": 13.374786381609738,
+          "throughput_samples_s": 157.24688049209848,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 8.728293934836984,
+          "p95_ms": 13.269414869137108,
+          "throughput_samples_s": 113.94202668441994,
+          "iterations": 48
+        }
+      },
+      "G_B128": {
+        "DURA": {
+          "median_ms": 22.477076621726155,
+          "p95_ms": 52.86180793773383,
+          "throughput_samples_s": 4149.057711651307,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 25.488459039479494,
+          "p95_ms": 52.77017636690289,
+          "throughput_samples_s": 4343.866849922311,
+          "iterations": 48
+        }
+      },
+      "G_plus_F_B1": {
+        "DURA": {
+          "median_ms": 6.610553944483399,
+          "p95_ms": 18.814393458887935,
+          "throughput_samples_s": 93.06383030749923,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 6.06771488673985,
+          "p95_ms": 18.79074622411281,
+          "throughput_samples_s": 99.16143467694502,
+          "iterations": 48
+        }
+      },
+      "G_plus_F_B128": {
+        "DURA": {
+          "median_ms": 28.870549285784364,
+          "p95_ms": 58.61040982417762,
+          "throughput_samples_s": 3856.375479949153,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 28.739060275256634,
+          "p95_ms": 58.48952119704336,
+          "throughput_samples_s": 3882.598401657431,
+          "iterations": 48
+        }
+      }
+    },
+    "parameters": 266951,
+    "parameter_bytes": 1067804,
+    "checkpoint_bytes": 1304868,
+    "ConvLinear_MAC": 25068072,
+    "prior_calls": 2,
+    "CG_updates": 4,
+    "FFT_IFFT": 27,
+    "peak_allocated_bytes": 130500608,
+    "physical_GPU": "4",
+    "timing_scope": "Samecard alternating3rounds;FP32/TF32off;preloadedGPUinput;GorG+originalFdefaulthead;copy/ownedoutput/validity included;capture/loader/transfer/queueexcluded",
+    "memory_scope": "Shared benchmark resident models and graphs;not standalone deployment VRAM"
+  },
+  "R17_atmost1pp_loss": false,
+  "six_scene_gap3pp": false,
+  "goal_complete": false
+}

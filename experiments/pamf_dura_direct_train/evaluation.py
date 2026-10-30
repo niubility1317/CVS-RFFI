@@ -7,7 +7,7 @@ import time
 import numpy as np
 import torch
 
-from .runner import VIEWS, F_RUN, read_json, write_json, load_model, parent_model
+from .runner import VIEWS, F_RUN, read_json, write_json, load_model, parent_model, configuration
 from experiments.pamf_dura_diagnostics.runner import tensor, numpy_values
 
 
@@ -37,7 +37,7 @@ def frozen(args,p):
 @torch.no_grad()
 def predict(args,p,role):
     done=read_json(p['output']/args.arm/'training_complete.json')
-    if (done['status'],done['epoch'],done['updates'],done['training_F_access'],done['target_reads']) != ('SOURCE_TRAINED',20,4940,False,0):
+    if (done['status'],done['epoch'],done['updates'],done['training_F_access'],done['target_reads']) != ('SOURCE_TRAINED',20,4940,configuration()['training_F_access'],0):
         raise ValueError('Complete frozen legal source training before prediction required')
     folder,ids,_,_=reference(p,role)
     model,reader,engine=frozen(args,p)
