@@ -181,3 +181,6 @@ source phase-only oracle闭合：固定noVar与default/source512×clean/缓存01
 
 
 源解析RF辅助E20完成4940更新、七景和126组独立复算。固定alpha=0.009527944261805803，解析变换2.52m输入/参数不变，单G前向，0训练好F/直接TX/V/target/恢复器祖先训练。clean84.661310%，lowurban66.466071%；六景3pp=False/clean保持=False/R17逐景1pp=False。G流程1093.996秒，全流程1428.170秒；其他任务后续新增造成同卡4PID，未追加本任务，默认保持。
+
+
+同原F50 source RX几何：复用63000缓存，fit62488/holdout512，0G读取/神经更新/TX/V/target。连续后验坐标条件均值，不硬伪TX；headrank5保护后共享RX占条件RX均值差能量32.271767%，留一坐标cos.475377/30条全正，fit-probecos.976573，留一RX捕获均值66.073853%/5RX全>10%。完整10.08m特征独立QR/lstsq复算57统计通过，CPU2/0.755323秒，仅几何资格PASS。头选择保持系代数构造，不是G/身份/目标效果。下一先固定.25规范特征的source梯度/实质变化校准，不直接开训练，默认和3pp/clean/效率目标保持。

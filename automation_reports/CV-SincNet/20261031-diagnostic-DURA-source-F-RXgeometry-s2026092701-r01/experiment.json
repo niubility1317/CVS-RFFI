@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-30明确允许独立源F指导对照；仅用同冻结F源域特征约束身份，G单阶段从零，不直接TX/目标训练。当前只是该分支源诊断，无训练或部署变化。",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "aee80ffb0b1e573ec2267c22362a69db30c4b9ac",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01-release"
@@ -83,7 +83,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.rx_geometry --root ../.. --output ../../runs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.rx_geometry --root ../.. --output ../../runs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01 --commit aee80ffb0b1e573ec2267c22362a69db30c4b9ac",
     "stop_rule": "BadF/source/cachecontract/IDs/roles/order,missingRX/nonfinitefeatures/unexpectedrank,cache2Ls mismatch,headalgebramismatch/Fstatechange/collision:preserve/noautoretry;scientificFAILcloseswithouttraining"
   },
   "expected_artifacts": [
@@ -137,7 +137,7 @@
       "budget_ref": "Reuse63000oldFfeaturevectors;newactualF2Ls only/G0/CPU2/0GPU/0updates",
       "output_root": "runs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.rx_geometry --root ../.. --output ../../runs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.rx_geometry --root ../.. --output ../../runs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01 --commit aee80ffb0b1e573ec2267c22362a69db30c4b9ac",
       "expected_artifacts": [
         "launch.json",
         "results.json",
