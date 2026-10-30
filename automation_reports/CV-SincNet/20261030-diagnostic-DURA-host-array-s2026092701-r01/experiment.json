@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-host-array-s2026092701-r01",
+  "group_id": "phase1-dura-host-array-efficiency",
+  "display_name": "DURA等值主机输出转换与完整研发成本盘点",
+  "description": "OwnedFP32DLPackconversion replaces Python scalar lists;actualsource2Ls G/F bit-equality smoke thenCPU synthetic alternation;0training/target;audited7completecurrentgoalruns",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "efficiency",
+    "serialization",
+    "source-only",
+    "no-query",
+    "CPU"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-host-array-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Originalsource128Ls384Us xcached01/20;pairedIQ/action;reuseauthorized63000x160cleanFcachewithsamephysicalorder",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsourcecache;deterministicsource_indicesinexistingDURAdiagnostic;opaquepositionssaved",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "none;noqueryorclassificationprediction"
+  },
+  "permissions": {
+    "regime": "authorized_source_frozen_F_analysis_no_updates",
+    "query_use": "none",
+    "external_method_exception": "User2026-10-30explicitlyallowedindependentsourceFguidance;Fparams/headfrozen;no directTXlabels",
+    "claim_scope": "Actual source IQ/features/logits serialization equality and syntheticCPU conversion timing;notfullGPU-transfer/training/prediction acceleration;past7formalresults reused onlyfor cost reporting"
+  },
+  "checkpoint": {
+    "initialization": "Frozen defaultDURAR69 stage2 E20/4940, noGupdates;frozenoriginalF50/source cache",
+    "sources": [
+      "runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "ReuseverifiedR69originalsourcepayload/lineage;reuseFsourcecontractandmatchingLsUs physicalIDs;noGinitialization/updates",
+    "selection_rule": "UserfixeddefaultR69/F50 onlyfornoqueryIOsmoke;no newweights/headtraining/parentselection;currentheadFeatureimmutable releaseunchanged"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-host-array",
+    "gpu_policy": "CPU2/0GPU/no optimizer updates;existingGPUqueueuntouched",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-host-array-s2026092701-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-host-array-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-host-array-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.host_array_check --root ../.. --output ../../runs/20261030-diagnostic-DURA-host-array-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wrongsource/defaultG/Fcontract/sourcephysicalroles/bitmismatch/nonowned/nonwriteable/nonfinite/statechange/collision:preserve,noautoretry/fallback;0TX/V/target"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ActualsourceIQ/features/logitsFP32bitequality",
+      "ownedwriteableFP32",
+      "CPUold/newmedianand9roundtimings",
+      "completed7runtraining/prediction/scoringwallcost",
+      "7runformal7viewmetrics/full140epochcurves"
+    ],
+    "dimensions": [
+      "B128IQ",
+      "B128logits",
+      "B512IQ",
+      "oldtolist/DLPackcopy",
+      "source2Ls",
+      "7completedrows"
+    ],
+    "prediction_ref": "none",
+    "scorer_ref": "none;existing882independentlyrecomputedformalgroupresultsreusedonly"
+  },
+  "rows": [
+    {
+      "row_id": "source-IO-smoke-and-CPU-timing",
+      "method": "FixedG/Fsource2Lssmoke;DLPackownedFP32copy;syntheticCPUtiming only",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/host_array_check.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "Fixedfirst256Lsrolepositions;modelseedcontrolsrandomfactory;evalcontrols2probes;supportN/A;sourceR07receiverseed2026101911",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Real2LsG/Fsmoke;3syntheticshapesx9alternatingroundsx20callspermethod;CPU2/0GPU;0modelupdate/target",
+      "output_root": "runs/20261030-diagnostic-DURA-host-array-s2026092701-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-host-array-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.host_array_check --root ../.. --output ../../runs/20261030-diagnostic-DURA-host-array-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Torch2.1/NumPy2.2.5 actualsyntheticAPIprobe alreadyPASS forordinary/inference/strided/float64/owned/writeable andsource-memoryindependence;no np Tensor.numpy bridge.",
+    "numpy_values returns np.from_dlpack(detach.cpu()).astype(float32,copy=True), ownedwritable array;no borrowedview/lifetimealias;keepsnormalrealfloat32conversion contract.",
+    "Four focused equality/ownership/strided-gradient/inference/finiteFP32bitboundary testsPASS;one independentP0/P1correctness review before actualrun.",
+    "ActualdefaultR69/sourceF50 provenance/roleIDs reused;2Lssourcecache received only;newoldbit-equal IQ1024/features320/logits12=1356scalars required;F/Gstateunchanged/p.gradNone.",
+    "Benchmarkuses onlysyntheticCPUarrays;9alternatingrounds/20calls each;noGPUallocation/query/target. Adoption evidence requiresall3mediannew<=.5oldplusbitexact/ownershipPASS;full-prediction savings remainunmeasured.",
+    "CurrentheadFeaturecontroller andallhistoricalarchivefilesunchanged;repositoryhelperwillapplyonlytonewreleases;nohotswap or claim currentqueuedjobusesnewconversion.",
+    "SevencompletedGscratchE20single-stage versions auditedfromwhole140epochlogs,independent126groupchecksperrow,andremoteimmutablephasefileintervals. Usedonlycompletedresultanalysis,notmodelranking/newtargetfeedback.",
+    "Pastphasewalltimes includequeue/sharedGPU/I-O/warmup/processsetup,notcausalefficiencybenchmark;originalF50upstreamteacherbudgetforF-guided50epochsseparate;Gancestor0forallscratchrows.",
+    "Everynewtrainedversion stillall7formalpredictionsbeforetruth;hostserializationcheckdoesnotreplaceformalqualityor3ppacceptance;defaultDURAunchanged."
+  ],
+  "registered_at": "2026-10-30T08:33:12+00:00"
+}

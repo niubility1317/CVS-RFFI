@@ -45,7 +45,9 @@ def tensor(value, device):
 
 
 def numpy_values(value):
-    return np.asarray(value.detach().cpu().tolist(), dtype=np.float32)
+    # DLPack bypasses the unavailable Torch2.1/NumPy2 C bridge. Keep the owned,
+    # writable FP32 result contract without materializing Python scalar lists.
+    return np.from_dlpack(value.detach().cpu()).astype(np.float32, copy=True)
 
 
 def action_from_arrays(kernel, coefficients):
