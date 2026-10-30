@@ -16,3 +16,10 @@ Run `20261030-phase3-source-crossrx-neighbors-s2026092701-r01`，实际执行代
 - 产物为features L/OE NPZ+smoke/complete、mining calibration/results/complete及四direct-pairNPZ、launch/pipeline/config/完整日志/observations；所有特征和原始日志私有不Git。非法角色/祖先、非有限、输出碰撞或运行不能闭合保留且不自动重试；科学无可用边记ANALYZED/NO_RELIABLE_SOURCE_NEIGHBORS，不作技术错误、不热改规则。UNKNOWN先核原PID/root。
 
 目前仅预登记，不宣称启动或取得配对/识别结果。用户授权自主设计分工推进，额外设计审批/builder review/签名链NONBLOCKING。
+
+
+## 实际完成与科学结论
+
+VERIFIED source L6300/OE6134 G10 P0export/P1reuse; P1 candidate1358/1674 sameTX, PAIR22/25, no feasible L98%/25group rule; all final edges0; NO_RELIABLE_SOURCE_NEIGHBORS, no training/target/truth/G updates, fullgoalACTIVE.
+
+详见 `docs/PAMF_PHASE3_SOURCE_NEIGHBOR_RESULTS_20261030.md`。

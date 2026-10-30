@@ -696,3 +696,10 @@ Run `20261030-phase3-star-reference-open-s2026092701-r01`，code13d063b98699b1aa
 VERIFIED C0/C1 2x2220 source updates, all source/crossRX-G10P1 predictions and independent truth-last scores; primary C1 AK=61.4583%, CK=84.2014%, RU=51.0417%, H=55.7677%, F0closed-loss=11.4583 个百分点; NO_PROMOTION; DA/REG not performed, fullgoal ACTIVE.
 
 详见 `docs/PAMF_PHASE3_REFERENCE_OPEN_RESULTS_20261030.md`。
+
+
+## 2026-10-30 源端匿名跨RX正对实际结果
+
+VERIFIED source L6300/OE6134 G10 P0export/P1reuse; P1 candidate1358/1674 sameTX, PAIR22/25, no feasible L98%/25group rule; all final edges0; NO_RELIABLE_SOURCE_NEIGHBORS, no training/target/truth/G updates, fullgoalACTIVE.
+
+详见 `docs/PAMF_PHASE3_SOURCE_NEIGHBOR_RESULTS_20261030.md`。
