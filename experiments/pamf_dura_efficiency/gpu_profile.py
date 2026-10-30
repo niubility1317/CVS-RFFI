@@ -140,7 +140,8 @@ def launch(args):
             commands=subprocess.check_output(['ps','-eo','pid=,args='],text=True).splitlines()
             tokens=('pamf_dura_prior_refine.runner worker','pamf_dura_prior_recovery.runner worker',
                 'pamf_dura_direct_train.runner worker','pamf_dura_direct_train.fast_lr worker',
-                'pamf_dura_direct_train.identity_init worker','pamf_dura_direct_train.no_variance worker',MODULE+' worker')
+                'pamf_dura_direct_train.identity_init worker','pamf_dura_direct_train.no_variance worker',
+                'pamf_dura_direct_train.fast_interp worker',MODULE+' worker')
             own=sum(any(token in command for token in tokens) for command in commands)
             used=set()
             for command in commands:

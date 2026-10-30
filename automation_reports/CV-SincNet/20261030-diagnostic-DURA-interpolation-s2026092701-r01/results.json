@@ -1,0 +1,55 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "summaries": {
+    "native_linear": {
+      "samples": 9,
+      "median_seconds": 0.2217565798200667,
+      "min_seconds": 0.21751833613961935,
+      "max_seconds": 0.3649964523501694
+    },
+    "slice_linear2x": {
+      "samples": 9,
+      "median_seconds": 0.18974131299182773,
+      "min_seconds": 0.18620670540258288,
+      "max_seconds": 0.19270373601466417
+    }
+  },
+  "round_medians": [
+    {
+      "native_linear": 0.2210583188571036,
+      "slice_linear2x": 0.18886297522112727
+    },
+    {
+      "slice_linear2x": 0.18995148409157991,
+      "native_linear": 0.2217565798200667
+    },
+    {
+      "native_linear": 0.2242386476136744,
+      "slice_linear2x": 0.1911677741445601
+    }
+  ],
+  "round_reductions": [
+    0.14564185506535043,
+    0.14342345897602427,
+    0.14748070335355334
+  ],
+  "relative_reduction_fraction": 0.1443712148438443,
+  "adoption_threshold": "median>=10% reduction and every round positive",
+  "threshold_passed": true,
+  "source_run": "20261030-phase1-DURA-direct-fastlr-s2026092701-r01",
+  "source_commit": "a0acfbe0c237e38d0460a9f1ea29c46b22cf84a6",
+  "batch": 256,
+  "epoch": 20,
+  "values_and_clipped_gradients_close": true,
+  "gradient_rtol": 2e-05,
+  "gradient_atol": 2e-06,
+  "model_unchanged": true,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "F_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "physical_GPU": "4",
+  "scope": "Shared-card same-source no-update steps; full objective/backward/clip/data gather and copy/logging; excludes optimizer step and epoch-cache construction; not end-to-end training speed or quality",
+  "goal_complete": false
+}
