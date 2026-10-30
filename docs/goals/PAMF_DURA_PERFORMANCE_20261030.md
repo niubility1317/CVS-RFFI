@@ -261,3 +261,6 @@ wideCoarse E30实际发布a55a568fc06cc3047647e8201d7fe5ca16f872b2：controller1
 
 
 SOURCE_COMPARISON_CORRECTION：N607 Torch2.1纯CPU工厂trace发现旧IQenhance physical虽643个G初state与纯G完全一致，其enhanced factory torch.manual_seed2026103107随后只恢复CPU RNG，额外重设CUDA探针；compact/fresh实际CUDAprobe2026092701。旧489代码与修复前现代码仅参数计数元数据不同，该事实适用于历史已执行旧增强对照。0CUDAinit/G-Fforward/checkpoint/updates/TX-V-target。旧七景真实指标和预算比较保留，但所有历史vs该physical比较不再称严格同探针单机制配对；不回流改旧权重、预测或选epoch。当前代码修复CPU head初始化用default_generator避免CUDA副作用，头和G初值保持。新独立repeatViews E30纯G20+repeat10作为fresh30的主配对对照，目标访问前补登记，网络/损失/model-CUDA-npseed/LR预算匹配，仅source21..30抽样不同；新GPU4+fresh6总2，评价实际等fresh worker/scorer退出，完整自动七景。fresh健康32a进程保持，默认与目标ACTIVE。
+
+
+新源抽样/严格纯G配对均已实际GPU训练：fresh32a worker1224405/GPU6 E27/30、sourceview27；repeat8cf worker1232279/GPU4 E6/30，均真实2Ls梯度/strictreload/Fsmoke PASS、实际CWD-argv-CUDA-GPUPID/loggrowth/合法准入核实，合计2ownworker/每卡1。fresh10新视图630000模拟访问/4.1958GB、CPU8制备530.740140s，旧20只读复用/物理ID-roles-Vpanel保持，真实读view21..30。两组scratch30/7410/noVar4基础项、model/CUDAprobe2026092701/npshuffle2026103004，训练F/TX/neuralteacher/initcheckpoint0；fresh与repeat各自都固定final30后全七景truth-last。N607修复后CPU工厂trace再验证CUDA调用只余2026092701/643G初state一致/0CUDAinit-GFforward-checkpoint-TX-V-target，旧archive不改。数值轨迹不承诺跨GPU逐位相同，旧physical比较限制已全局注明；默认保持/完整目标ACTIVE。

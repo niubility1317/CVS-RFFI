@@ -50,3 +50,12 @@ controller1218619实际CWD/完整argv/commit/CUDA空、8个source spawn子进程
 ## 目标访问前补齐严格随机数配对对照
 
 源首轮差异触发的纯CPU检查证明：旧physical预算匹配，但增强头初始化额外改变CUDA探针seed，先前仅检查CPU RNG的判断不完整。旧数据/分数/权重保留，历史vsphysical只作同预算观察、不当严格单机制归因。补充独立纯G repeatViews E30，与本版stock训练路径/G初值/CUDAprobe2026092701/npshuffle2026103004完全匹配；本版健康32a进程不热改，不改G/loss/预算。初state643张量一致、CUDA未初始化、0G-Fforward/0checkpoint/0TX-V-target的trace见control_cuda_seed_audit.json。新主对照在本版目标访问前登记，独立全七景测试。
+
+
+## 实际GPU训练核实
+
+VERIFIED / RUNNING，学生训练阶段，执行32a32998d3c76105b017a0905300e8edbce64e16。真实2Ls G目标梯度/严格重载/原F noquery首步PASS。worker1224405/GPU6的实际CWD、完整argv/commit、CUDA、GPU PID及日志增长独立核实。准入已有1PID/free19245MiB，后态2PID。与另一张卡合计2本任务GPU worker/每卡1，其他owner保持。
+
+新增10份源抽样全部完成：630000次模拟访问/4195800000数值字节，CPU8制备530.740140秒；每份原nativeactionreplay/shape/FP32/finite/固定scene顺序检查通过，外部完整元数据读回一致。旧01..20只读链接，源physicalIDs/roles/Vpanel保持；source generation不是训练epoch。当前已读到source_cache_view27，确实没有把21..30映射回01..10。
+
+已27/30轮/6669更新/L170100/U1530900，当前五项加权loss独立复算一致，F/TX/神经teacher/初始化checkpoint训练读取0。当前只证明运行和输入日程，不是正式身份收益；固定final30后自动七景168000/truth-last与profile，默认保持/目标ACTIVE。

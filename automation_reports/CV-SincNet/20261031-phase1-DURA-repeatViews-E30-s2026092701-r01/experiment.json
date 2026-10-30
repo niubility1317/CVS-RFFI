@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration/efficiency goal/userE30budget;necessaryindependentpureGcontrolafterverifiedsourceRNGconfound;beforefresh targetaccess/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "8cf8e22c9ffb54d271b22e621401de8e34c69068",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-repeatViews-E30-r01"
@@ -102,7 +102,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-repeatViews-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-repeatViews-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-repeatViews-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.repeat_views run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.repeat_views run --root /home/szu2070436088/2510044040/CV-SincNet --commit 8cf8e22c9ffb54d271b22e621401de8e34c69068",
     "stop_rule": "Sourcecontract/roles/collision/nonfinite/strictcheckpoint/smoke/coverage technicalfailure:preserve/noautoretry/nootherownercontrol;no performance stop"
   },
   "expected_artifacts": [
@@ -177,7 +177,7 @@
       "budget_ref": "30/7410/B256/L189000U1701000/266951/2prior4CG27FFT;0sourcegeneration/teacher/Ftraining;extraindependentcontrolcostfullyreported",
       "output_root": "runs/20261031-phase1-DURA-repeatViews-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-repeatViews-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.repeat_views worker --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_direct_train.repeat_views worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 8cf8e22c9ffb54d271b22e621401de8e34c69068 --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",

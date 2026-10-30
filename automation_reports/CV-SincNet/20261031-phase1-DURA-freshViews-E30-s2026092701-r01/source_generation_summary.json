@@ -1,0 +1,237 @@
+{
+  "status": "ACTION_SOURCE_CACHE_COMPLETE",
+  "train_count": 63000,
+  "source_V_count": 1800,
+  "epochs": 30,
+  "original_action_run": "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+  "source_contract": "original7/63/30",
+  "reused_views": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "new_views": [
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "new_source_visits": 630000,
+  "new_numeric_bytes": 4195800000,
+  "source_generation_CPU_workers": 8,
+  "augmentation_seed": 2026101912,
+  "receiver_seed": 2026101911,
+  "records": [
+    {
+      "source_view": 21,
+      "count": 63000,
+      "numeric_bytes": 419580000,
+      "max_native_replay_error": 2.3657688871883083e-16,
+      "clean_count": 9648,
+      "nonclean_count": 53352,
+      "scene_counts": {
+        "clean": 9648,
+        "practical_high": 8957,
+        "practical_high_urban": 8825,
+        "practical_low_suburban": 8902,
+        "practical_low_urban": 8806,
+        "practical_mid": 9018,
+        "practical_mid_urban": 8844
+      },
+      "seconds": 55.12513280566782
+    },
+    {
+      "source_view": 22,
+      "count": 63000,
+      "numeric_bytes": 419580000,
+      "max_native_replay_error": 2.405478889935456e-16,
+      "clean_count": 9400,
+      "nonclean_count": 53600,
+      "scene_counts": {
+        "clean": 9400,
+        "practical_high": 8872,
+        "practical_high_urban": 9018,
+        "practical_low_suburban": 8975,
+        "practical_low_urban": 8949,
+        "practical_mid": 8783,
+        "practical_mid_urban": 9003
+      },
+      "seconds": 53.28773288615048
+    },
+    {
+      "source_view": 23,
+      "count": 63000,
+      "numeric_bytes": 419580000,
+      "max_native_replay_error": 2.4781880837242476e-16,
+      "clean_count": 9513,
+      "nonclean_count": 53487,
+      "scene_counts": {
+        "clean": 9513,
+        "practical_high": 8844,
+        "practical_high_urban": 8889,
+        "practical_low_suburban": 9021,
+        "practical_low_urban": 9016,
+        "practical_mid": 8764,
+        "practical_mid_urban": 8953
+      },
+      "seconds": 52.9325901302509
+    },
+    {
+      "source_view": 24,
+      "count": 63000,
+      "numeric_bytes": 419580000,
+      "max_native_replay_error": 2.41618572453276e-16,
+      "clean_count": 9450,
+      "nonclean_count": 53550,
+      "scene_counts": {
+        "clean": 9450,
+        "practical_high": 8928,
+        "practical_high_urban": 8941,
+        "practical_low_suburban": 8835,
+        "practical_low_urban": 8938,
+        "practical_mid": 8985,
+        "practical_mid_urban": 8923
+      },
+      "seconds": 52.27684757485986
+    },
+    {
+      "source_view": 25,
+      "count": 63000,
+      "numeric_bytes": 419580000,
+      "max_native_replay_error": 2.3498304071167567e-16,
+      "clean_count": 9324,
+      "nonclean_count": 53676,
+      "scene_counts": {
+        "clean": 9324,
+        "practical_high": 8998,
+        "practical_high_urban": 8951,
+        "practical_low_suburban": 8817,
+        "practical_low_urban": 9127,
+        "practical_mid": 9070,
+        "practical_mid_urban": 8713
+      },
+      "seconds": 52.36253135185689
+    },
+    {
+      "source_view": 26,
+      "count": 63000,
+      "numeric_bytes": 419580000,
+      "max_native_replay_error": 2.3790268774106213e-16,
+      "clean_count": 9505,
+      "nonclean_count": 53495,
+      "scene_counts": {
+        "clean": 9505,
+        "practical_high": 9019,
+        "practical_high_urban": 8912,
+        "practical_low_suburban": 8974,
+        "practical_low_urban": 8830,
+        "practical_mid": 8961,
+        "practical_mid_urban": 8799
+      },
+      "seconds": 52.96173960529268
+    },
+    {
+      "source_view": 27,
+      "count": 63000,
+      "numeric_bytes": 419580000,
+      "max_native_replay_error": 2.3369435305046794e-16,
+      "clean_count": 9456,
+      "nonclean_count": 53544,
+      "scene_counts": {
+        "clean": 9456,
+        "practical_high": 8867,
+        "practical_high_urban": 9054,
+        "practical_low_suburban": 8899,
+        "practical_low_urban": 8849,
+        "practical_mid": 8903,
+        "practical_mid_urban": 8972
+      },
+      "seconds": 52.94528532680124
+    },
+    {
+      "source_view": 28,
+      "count": 63000,
+      "numeric_bytes": 419580000,
+      "max_native_replay_error": 2.425784371931168e-16,
+      "clean_count": 9401,
+      "nonclean_count": 53599,
+      "scene_counts": {
+        "clean": 9401,
+        "practical_high": 9014,
+        "practical_high_urban": 8809,
+        "practical_low_suburban": 9006,
+        "practical_low_urban": 9068,
+        "practical_mid": 8800,
+        "practical_mid_urban": 8902
+      },
+      "seconds": 53.01203085714951
+    },
+    {
+      "source_view": 29,
+      "count": 63000,
+      "numeric_bytes": 419580000,
+      "max_native_replay_error": 2.336179069229032e-16,
+      "clean_count": 9468,
+      "nonclean_count": 53532,
+      "scene_counts": {
+        "clean": 9468,
+        "practical_high": 8847,
+        "practical_high_urban": 9048,
+        "practical_low_suburban": 8980,
+        "practical_low_urban": 8786,
+        "practical_mid": 8941,
+        "practical_mid_urban": 8930
+      },
+      "seconds": 53.132649671752006
+    },
+    {
+      "source_view": 30,
+      "count": 63000,
+      "numeric_bytes": 419580000,
+      "max_native_replay_error": 2.366865152698004e-16,
+      "clean_count": 9539,
+      "nonclean_count": 53461,
+      "scene_counts": {
+        "clean": 9539,
+        "practical_high": 8941,
+        "practical_high_urban": 8854,
+        "practical_low_suburban": 9095,
+        "practical_low_urban": 8787,
+        "practical_mid": 8792,
+        "practical_mid_urban": 8992
+      },
+      "seconds": 52.61698498716578
+    }
+  ],
+  "TX_labels_read": 0,
+  "F_outputs_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "neural_teacher_inputs": 0,
+  "model_optimizer_updates": 0,
+  "seconds": 530.7401397163048,
+  "scope": "Originalsourcepool/no newphysicalIDs;originalnativechannel draws21..30;cleanbranchmayrepeat;notnewV/targetobservations"
+}
