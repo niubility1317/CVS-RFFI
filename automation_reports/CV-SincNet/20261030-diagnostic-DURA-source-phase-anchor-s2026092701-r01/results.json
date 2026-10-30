@@ -1,0 +1,247 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "calibration": {
+    "all": {
+      "count": 62488,
+      "valid_count": 62488,
+      "valid_fraction": 1.0,
+      "resultant": 0.9700127256744421,
+      "mean_degrees": -23.29747295555004,
+      "p95_absolute_error_degrees": 25.15680669245981
+    },
+    "sessions": {
+      "1:1": {
+        "count": 4165,
+        "valid_count": 4165,
+        "valid_fraction": 1.0,
+        "resultant": 0.9933438537652233,
+        "mean_degrees": -25.15311238432438,
+        "p95_absolute_error_degrees": 10.817835269162392,
+        "mean_error_to_global_degrees": 1.8556394287743387
+      },
+      "1:2": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9946335530504987,
+        "mean_degrees": -24.82439375887801,
+        "p95_absolute_error_degrees": 10.652347894046159,
+        "mean_error_to_global_degrees": 1.5269208033279682
+      },
+      "1:3": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9940292434247388,
+        "mean_degrees": -25.041550503454918,
+        "p95_absolute_error_degrees": 11.093374550798934,
+        "mean_error_to_global_degrees": 1.744077547904876
+      },
+      "3:1": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9309797430354823,
+        "mean_degrees": -21.30521399939777,
+        "p95_absolute_error_degrees": 38.539330858845844,
+        "mean_error_to_global_degrees": 1.9922589561522734
+      },
+      "3:2": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9419625962245496,
+        "mean_degrees": -21.643393051217483,
+        "p95_absolute_error_degrees": 37.05406681904147,
+        "mean_error_to_global_degrees": 1.6540799043325585
+      },
+      "3:3": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9115696437323731,
+        "mean_degrees": -21.01090229708943,
+        "p95_absolute_error_degrees": 51.02538919544326,
+        "mean_error_to_global_degrees": 2.2865706584606116
+      },
+      "4:1": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9886922083400529,
+        "mean_degrees": -25.776345070209118,
+        "p95_absolute_error_degrees": 10.954755742913042,
+        "mean_error_to_global_degrees": 2.478872114659076
+      },
+      "4:2": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9894547368394764,
+        "mean_degrees": -25.609333820062144,
+        "p95_absolute_error_degrees": 10.885709153756748,
+        "mean_error_to_global_degrees": 2.311860864512102
+      },
+      "4:3": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9878247682014352,
+        "mean_degrees": -25.903109491089158,
+        "p95_absolute_error_degrees": 11.349927486174998,
+        "mean_error_to_global_degrees": 2.6056365355391162
+      },
+      "6:1": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9924467235481113,
+        "mean_degrees": -24.617385164365288,
+        "p95_absolute_error_degrees": 11.6386824593067,
+        "mean_error_to_global_degrees": 1.3199122088152464
+      },
+      "6:2": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9908972613219672,
+        "mean_degrees": -24.451813686767416,
+        "p95_absolute_error_degrees": 11.65639540225702,
+        "mean_error_to_global_degrees": 1.1543407312173741
+      },
+      "6:3": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9903695677457661,
+        "mean_degrees": -24.48952561794774,
+        "p95_absolute_error_degrees": 11.987683105983589,
+        "mean_error_to_global_degrees": 1.1920526623976997
+      },
+      "8:1": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.950720188523757,
+        "mean_degrees": -19.870681410311555,
+        "p95_absolute_error_degrees": 35.02021497191526,
+        "mean_error_to_global_degrees": 3.426791545238487
+      },
+      "8:2": {
+        "count": 4166,
+        "valid_count": 4166,
+        "valid_fraction": 1.0,
+        "resultant": 0.9563275930688016,
+        "mean_degrees": -19.73760709562722,
+        "p95_absolute_error_degrees": 34.884205707971304,
+        "mean_error_to_global_degrees": 3.5598658599228235
+      },
+      "8:3": {
+        "count": 4165,
+        "valid_count": 4165,
+        "valid_fraction": 1.0,
+        "resultant": 0.9493553632686778,
+        "mean_degrees": -19.20153733054952,
+        "p95_absolute_error_degrees": 35.27654377731343,
+        "mean_error_to_global_degrees": 4.095935625000521
+      }
+    }
+  },
+  "heldout_phase": {
+    "count": 512,
+    "valid_count": 512,
+    "valid_fraction": 1.0,
+    "resultant": 0.964801632387168,
+    "mean_degrees": -23.30036529123205,
+    "p95_absolute_error_degrees": 30.4960222152918
+  },
+  "heldout_F": {
+    "all": {
+      "count": 512,
+      "teacher_correct": 488,
+      "feature_cosine_error": 0.01340243627782911,
+      "posterior_KL": 0.10225660620543678
+    },
+    "receivers": {
+      "1": {
+        "count": 103,
+        "teacher_correct": 103,
+        "feature_cosine_error": 0.0024503839826120915,
+        "posterior_KL": 0.000641666161228492
+      },
+      "3": {
+        "count": 102,
+        "teacher_correct": 95,
+        "feature_cosine_error": 0.0259667202538135,
+        "posterior_KL": 0.157136953163906
+      },
+      "4": {
+        "count": 102,
+        "teacher_correct": 100,
+        "feature_cosine_error": 0.005479477199853635,
+        "posterior_KL": 0.057626642041490275
+      },
+      "6": {
+        "count": 102,
+        "teacher_correct": 100,
+        "feature_cosine_error": 0.004197603931613997,
+        "posterior_KL": 0.023325189344599512
+      },
+      "8": {
+        "count": 103,
+        "teacher_correct": 90,
+        "feature_cosine_error": 0.028873690123696928,
+        "posterior_KL": 0.27188577415997595
+      }
+    }
+  },
+  "decision": {
+    "phase_calibration_passed": false,
+    "heldout_F_preserved": false,
+    "source_anchor_study_eligible": false
+  },
+  "source_rule": "Calibration excludes fixed source512. ALL62488: valid>=.999,resultant>=.99; EACH15RX/day:valid>=.999,resultant>=.95,mean direction within5degrees global. Disjoint512 F preservation:overallchoice>=.995,EACHRX>=.99,meanFcos<=.001,meanKL<=.001. Any undefined phase or failure: no global-anchor deployment/training from this study;no RX-specific fallback.",
+  "source_records": 63000,
+  "calibration_records": 62488,
+  "probe_records": 512,
+  "source_public_correlator_inputs": 63000,
+  "F_feature_analysis_inputs": 1024,
+  "F_smoke_inputs": 2,
+  "F_teacher": {
+    "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "seed": 2026092701,
+    "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+    "epoch": 50,
+    "updates": 11100
+  },
+  "public_bank_reference": "https://raw.githubusercontent.com/bastibl/gr-ieee802-11/ad0598e4a874f4b8e1f391a1e0323e80df2b34ff/examples/wifi_phy_hier.grc",
+  "public_bank_learned_parameters": 0,
+  "F_unchanged": true,
+  "optimizer_updates": 0,
+  "G_checkpoint_reads": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "power_error_max": 8.525240247081456e-08,
+  "seconds": 1.442473964765668,
+  "scope": "Source phase-reference feasibility and originalF teacher-choice preservation;not TX/hardware calibration,target phase prior or restoration performance",
+  "independent_check": {
+    "status": "INDEPENDENTLY_RECOMPUTED",
+    "calibration_probe_disjoint": true,
+    "source_gain_vectors": 63000,
+    "phase_statistics": 117,
+    "F_statistics": 24,
+    "total_statistics": 141,
+    "F_vector_metrics": 3,
+    "maximum_Numpy64_vs_Torch32_abs_error": 6.282794915435375e-07,
+    "decision": {
+      "phase_calibration_passed": false,
+      "heldout_F_preserved": false,
+      "source_anchor_study_eligible": false
+    },
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "optimizer_updates": 0
+  }
+}
