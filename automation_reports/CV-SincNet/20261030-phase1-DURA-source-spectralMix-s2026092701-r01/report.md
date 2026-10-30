@@ -3,7 +3,7 @@
 - run_id：`20261030-phase1-DURA-source-spectralMix-s2026092701-r01`
 - group_id：`phase1-dura-source-spectral-transfer`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -41,3 +41,33 @@
 VERIFIED / RUNNING。执行commit `b1ed34788b02410bd4d7e534db93e23c4af7e33e`，21项聚焦新旧测试与唯一独立P0/P1审查PASS；一次N607 preflight/单归档两端SHA/远端compile通过。控制器PID699538、GPU4 worker PID699710实际存活，独立核实release CWD、完整命令、GPU4绑定与训练日志增长。真实2Ls增强、完整梯度、checkpoint重载与同F默认头no-query smoke PASS；两条源样本均实际走增强路径（2/2），GPU训练重新建立sampler，未继承smoke随机数状态。
 
 当前E3/741更新，累计151.651秒；F/身份标签/学习教师/初始化checkpoint训练读取均0。尚无正式成绩。固定E20/4940与全部源、目标七景计划继续，其他owner任务保持。
+
+
+## 完整训练与正式七景结果
+
+VERIFIED / ANALYZED。完整20条epoch/4940更新，L126000/U1134000曝光；从零单阶段，0G祖先/F指导/神经教师/直接TX/V/target训练。频谱配对实际选择629996/1260000（49.999683%）；独立重放4940次随机调用计数一致，跨RX抽样矩阵总数与L/U计数相符，同RX格子全0。真实2Ls增强/梯度/重载/同F默认头smoke通过，GPU sampler重置seed。执行commit b1ed34788b02410bd4d7e534db93e23c4af7e33e。
+
+source1800×7和target168000×7全部固定后各自独立CPU truth-last；再次独立复算126个总体/TX/RX/day、MacroF1及修复/损伤指标一致，详见results.json的target_group_records。完整日志无Traceback/OOM/数值失败，控制器与worker自然退出。该基准先前已暴露，顺序隔离不代表新的独立盲测。
+
+|场景|准确率%|相对noVar E20 pp|相对默认DURA pp|距raw clean pp|净纠错（相对raw同景）|
+|---|---:|---:|---:|---:|---:|
+|clean|84.848810|+0.106548|+0.170833|-0.172619|+290|
+|practical_high|80.458333|-0.445833|-2.366667|4.217857|+66739|
+|practical_mid|79.294643|-0.111905|-2.266071|5.381548|+66155|
+|practical_low_suburban|77.840476|-0.028571|-2.217857|6.835714|+65202|
+|practical_high_urban|79.276190|-0.722619|-2.469643|5.400000|+66491|
+|practical_mid_urban|72.750000|-1.642857|-2.736310|11.926190|+64288|
+|practical_low_urban|66.245238|-2.225595|-2.644643|18.430952|+60389|
+
+六景3pp验收=False，clean不低于raw=True，原R17逐景最多下降1pp容忍=False，分别判定。默认DURA保持，结果不回流选择轮次/父权重或目标分组权重；未选择性重跑。
+
+G训练循环及保存991.638秒；必要源统计读取/采样器准备0.407秒，G完整训练流程992.782秒/16.546分钟。源PSD初次统计0.252秒另计并复用，原模拟缓存初次生成不在每轮G计时内。控制器启动至本row完整分析1303.957秒/21.733分钟，目标七景预测278.721秒。N607共享负载不同，不把跨运行耗时差归因于单一方法。仍266951参数/2prior/4CG/27FFT，推理不读频谱bank或RX元数据，无额外推理分支；同卡交替G/G+F测量见matched_profile。
+
+源训练误差包含原始和频谱增强参考，不与无增强训练误差直接当作同分布比较。预定1800条源V面板七景的固定参考比较见source_V_comparison，不扩展成整个V集或TX细节保真证明。
+
+
+## 同行解释与边界
+
+六星地均低于固定noVar E20对照，下降0.028571至2.225595个百分点；lowurban为66.245238%，而预定1800条源V面板的lowurban由83.000000%到83.666667%。源侧变化、配对正确和数值可逆性均不足以证明TX判别信息在目标条件下保持。本轮未隔离退化发生于估计器、prior还是最终求解，不能据此宣称已证明某种TX细节被抹去；不按目标类别/接收机/日期修改权重或选择性重测。
+
+下一项源机制核实可从已有原生生成器的绑定关系入手：`pamf_action_restore.data.generate` 用原始源RX/day构造模拟receiver session。应先检验保留原始clean参考、重新配对合法源信道实现的反事实是否揭示该耦合的影响；这只是尚未实现/验证的下一研究问题，不是本候选的追加训练或已完成改进。默认、原始权重及各版负结果保留，3pp目标继续ACTIVE。

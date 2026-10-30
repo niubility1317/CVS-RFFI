@@ -1,0 +1,441 @@
+{
+  "status": "AGGREGATED_EXISTING_FROZEN_RESULTS",
+  "raw_clean_accuracy": 84.67619047619047,
+  "scene_minimum_accuracy": 81.67619047619047,
+  "target_count_per_scene": 168000,
+  "minimum_correct_per_scene": 137216,
+  "rows": [
+    {
+      "name": "DURA v1.0（默认）",
+      "run": "20261021-phase1-restoration-stage2-graph-s2026092701-r01",
+      "accuracies": {
+        "clean": 84.67797619047619,
+        "practical_high": 82.825,
+        "practical_mid": 81.56071428571428,
+        "practical_low_suburban": 80.05833333333334,
+        "practical_high_urban": 81.74583333333334,
+        "practical_mid_urban": 75.48630952380952,
+        "practical_low_urban": 68.88988095238095
+      },
+      "G_epochs": 120,
+      "G_ancestor_epochs": "多组件累计；非单阶段120轮",
+      "F_guided_G": false,
+      "training_minutes": null,
+      "scene_gaps_pp": {
+        "practical_high": 1.8511904761904674,
+        "practical_mid": 3.115476190476187,
+        "practical_low_suburban": 4.617857142857133,
+        "practical_high_urban": 2.930357142857133,
+        "practical_mid_urban": 9.189880952380946,
+        "practical_low_urban": 15.786309523809521
+      },
+      "clean_preserved": true,
+      "scenes_passing_3pp": 2,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "原 DURA 续训对照",
+      "run": "20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02",
+      "arm": "continuation",
+      "accuracies": {
+        "clean": 84.62738095238095,
+        "practical_high": 81.98035714285714,
+        "practical_mid": 80.55535714285715,
+        "practical_low_suburban": 78.99107142857143,
+        "practical_high_urban": 80.89940476190476,
+        "practical_mid_urban": 74.34583333333333,
+        "practical_low_urban": 67.48273809523809
+      },
+      "G_epochs": 140,
+      "G_ancestor_epochs": 120,
+      "G_incremental_epochs": 20,
+      "F_guided_G": false,
+      "training_minutes": 18.265552900669476,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 2.6958333333333258,
+        "practical_mid": 4.120833333333323,
+        "practical_low_suburban": 5.68511904761904,
+        "practical_high_urban": 3.776785714285708,
+        "practical_mid_urban": 10.330357142857139,
+        "practical_low_urban": 17.19345238095238
+      },
+      "clean_preserved": false,
+      "scenes_passing_3pp": 1,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "原 DURA 先验锚定续训",
+      "run": "20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02",
+      "arm": "prior_anchor",
+      "accuracies": {
+        "clean": 84.71666666666667,
+        "practical_high": 81.87202380952381,
+        "practical_mid": 80.51369047619048,
+        "practical_low_suburban": 78.88154761904762,
+        "practical_high_urban": 80.85,
+        "practical_mid_urban": 74.40357142857142,
+        "practical_low_urban": 67.85714285714286
+      },
+      "G_epochs": 140,
+      "G_ancestor_epochs": 120,
+      "G_incremental_epochs": 20,
+      "F_guided_G": false,
+      "training_minutes": 15.8507359200002,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 2.80416666666666,
+        "practical_mid": 4.162499999999994,
+        "practical_low_suburban": 5.794642857142847,
+        "practical_high_urban": 3.826190476190476,
+        "practical_mid_urban": 10.272619047619045,
+        "practical_low_urban": 16.81904761904761
+      },
+      "clean_preserved": true,
+      "scenes_passing_3pp": 1,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "原学习率直接训练",
+      "run": "20261030-phase1-DURA-direct-joint-s2026092701-r01",
+      "accuracies": {
+        "clean": 85.40238095238095,
+        "practical_high": 79.3202380952381,
+        "practical_mid": 77.21428571428571,
+        "practical_low_suburban": 74.96488095238095,
+        "practical_high_urban": 76.85654761904762,
+        "practical_mid_urban": 65.6922619047619,
+        "practical_low_urban": 56.041071428571435
+      },
+      "G_epochs": 20,
+      "G_ancestor_epochs": 0,
+      "F_guided_G": false,
+      "training_minutes": 13.332968332401167,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-direct-joint-s2026092701-r01/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 5.355952380952374,
+        "practical_mid": 7.461904761904762,
+        "practical_low_suburban": 9.711309523809518,
+        "practical_high_urban": 7.819642857142853,
+        "practical_mid_urban": 18.983928571428564,
+        "practical_low_urban": 28.635119047619035
+      },
+      "clean_preserved": true,
+      "scenes_passing_3pp": 0,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "提高学习率",
+      "run": "20261030-phase1-DURA-direct-fastlr-s2026092701-r01",
+      "accuracies": {
+        "clean": 84.66547619047618,
+        "practical_high": 79.99464285714286,
+        "practical_mid": 78.91011904761905,
+        "practical_low_suburban": 77.4577380952381,
+        "practical_high_urban": 78.75297619047619,
+        "practical_mid_urban": 72.30595238095238,
+        "practical_low_urban": 65.64166666666667
+      },
+      "G_epochs": 20,
+      "G_ancestor_epochs": 0,
+      "F_guided_G": false,
+      "training_minutes": 12.853696350528237,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-direct-fastlr-s2026092701-r01/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 4.681547619047606,
+        "practical_mid": 5.766071428571422,
+        "practical_low_suburban": 7.218452380952371,
+        "practical_high_urban": 5.92321428571428,
+        "practical_mid_urban": 12.370238095238093,
+        "practical_low_urban": 19.034523809523805
+      },
+      "clean_preserved": false,
+      "scenes_passing_3pp": 0,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "恒等初始化",
+      "run": "20261030-phase1-DURA-direct-identityinit-s2026092701-r01",
+      "accuracies": {
+        "clean": 84.62083333333334,
+        "practical_high": 81.62916666666666,
+        "practical_mid": 80.13035714285715,
+        "practical_low_suburban": 78.54107142857143,
+        "practical_high_urban": 80.32380952380952,
+        "practical_mid_urban": 73.29345238095239,
+        "practical_low_urban": 66.44285714285715
+      },
+      "G_epochs": 20,
+      "G_ancestor_epochs": 0,
+      "F_guided_G": false,
+      "training_minutes": 12.722179841149288,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-direct-identityinit-s2026092701-r01/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 3.0470238095238074,
+        "practical_mid": 4.54583333333332,
+        "practical_low_suburban": 6.1351190476190425,
+        "practical_high_urban": 4.352380952380955,
+        "practical_mid_urban": 11.382738095238082,
+        "practical_low_urban": 18.23333333333332
+      },
+      "clean_preserved": false,
+      "scenes_passing_3pp": 0,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "移除方差辅助",
+      "run": "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01",
+      "accuracies": {
+        "clean": 84.7422619047619,
+        "practical_high": 80.90416666666667,
+        "practical_mid": 79.40654761904761,
+        "practical_low_suburban": 77.86904761904762,
+        "practical_high_urban": 79.99880952380953,
+        "practical_mid_urban": 74.39285714285714,
+        "practical_low_urban": 68.47083333333333
+      },
+      "G_epochs": 20,
+      "G_ancestor_epochs": 0,
+      "F_guided_G": false,
+      "training_minutes": 14.19960100823082,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-direct-noVarAux-s2026092701-r01/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 3.7720238095238017,
+        "practical_mid": 5.2696428571428555,
+        "practical_low_suburban": 6.80714285714285,
+        "practical_high_urban": 4.677380952380943,
+        "practical_mid_urban": 10.283333333333331,
+        "practical_low_urban": 16.20535714285714
+      },
+      "clean_preserved": true,
+      "scenes_passing_3pp": 0,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "固定插值展开",
+      "run": "20261030-phase1-DURA-direct-fastinterp-s2026092701-r01",
+      "accuracies": {
+        "clean": 84.6327380952381,
+        "practical_high": 81.07678571428572,
+        "practical_mid": 79.46666666666667,
+        "practical_low_suburban": 77.88988095238095,
+        "practical_high_urban": 79.725,
+        "practical_mid_urban": 72.6827380952381,
+        "practical_low_urban": 65.81904761904762
+      },
+      "G_epochs": 20,
+      "G_ancestor_epochs": 0,
+      "F_guided_G": false,
+      "training_minutes": 13.65249601083342,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-direct-fastinterp-s2026092701-r01/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 3.5994047619047507,
+        "practical_mid": 5.209523809523802,
+        "practical_low_suburban": 6.786309523809521,
+        "practical_high_urban": 4.951190476190476,
+        "practical_mid_urban": 11.993452380952377,
+        "practical_low_urban": 18.857142857142847
+      },
+      "clean_preserved": false,
+      "scenes_passing_3pp": 0,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "加重 action 监督",
+      "run": "20261030-phase1-DURA-direct-action020-s2026092701-r01",
+      "accuracies": {
+        "clean": 85.2375,
+        "practical_high": 80.42619047619047,
+        "practical_mid": 78.93154761904762,
+        "practical_low_suburban": 77.42202380952381,
+        "practical_high_urban": 78.94702380952381,
+        "practical_mid_urban": 71.06488095238095,
+        "practical_low_urban": 63.55773809523809
+      },
+      "G_epochs": 20,
+      "G_ancestor_epochs": 0,
+      "F_guided_G": false,
+      "training_minutes": 18.198703387154577,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-direct-action020-s2026092701-r01/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 4.25,
+        "practical_mid": 5.74464285714285,
+        "practical_low_suburban": 7.254166666666663,
+        "practical_high_urban": 5.729166666666657,
+        "practical_mid_urban": 13.611309523809524,
+        "practical_low_urban": 21.118452380952377
+      },
+      "clean_preserved": true,
+      "scenes_passing_3pp": 0,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "源 F 余弦指导",
+      "run": "20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01",
+      "accuracies": {
+        "clean": 84.90416666666667,
+        "practical_high": 80.69821428571429,
+        "practical_mid": 79.30178571428571,
+        "practical_low_suburban": 77.8375,
+        "practical_high_urban": 79.73095238095237,
+        "practical_mid_urban": 73.74583333333334,
+        "practical_low_urban": 67.82738095238095
+      },
+      "G_epochs": 20,
+      "G_ancestor_epochs": 0,
+      "F_guided_G": true,
+      "training_minutes": 17.887450765135387,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 3.977976190476184,
+        "practical_mid": 5.374404761904756,
+        "practical_low_suburban": 6.8386904761904646,
+        "practical_high_urban": 4.945238095238096,
+        "practical_mid_urban": 10.930357142857133,
+        "practical_low_urban": 16.84880952380952
+      },
+      "clean_preserved": true,
+      "scenes_passing_3pp": 0,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "源 F 原头投影指导",
+      "run": "20261030-phase1-DURA-source-headFeature-s2026092701-r02",
+      "accuracies": {
+        "clean": 84.90238095238095,
+        "practical_high": 79.94047619047619,
+        "practical_mid": 78.51607142857144,
+        "practical_low_suburban": 77.12559523809523,
+        "practical_high_urban": 79.1345238095238,
+        "practical_mid_urban": 73.61011904761905,
+        "practical_low_urban": 67.87678571428572
+      },
+      "G_epochs": 20,
+      "G_ancestor_epochs": 0,
+      "F_guided_G": true,
+      "training_minutes": 27.053607855550943,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-source-headFeature-s2026092701-r02/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 4.73571428571428,
+        "practical_mid": 6.160119047619034,
+        "practical_low_suburban": 7.550595238095241,
+        "practical_high_urban": 5.541666666666671,
+        "practical_mid_urban": 11.06607142857142,
+        "practical_low_urban": 16.799404761904754
+      },
+      "clean_preserved": true,
+      "scenes_passing_3pp": 0,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "单阶段 E40",
+      "run": "20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01",
+      "accuracies": {
+        "clean": 84.81488095238096,
+        "practical_high": 80.09404761904761,
+        "practical_mid": 78.9297619047619,
+        "practical_low_suburban": 77.775,
+        "practical_high_urban": 79.20059523809525,
+        "practical_mid_urban": 73.67261904761905,
+        "practical_low_urban": 67.80059523809524
+      },
+      "G_epochs": 40,
+      "G_ancestor_epochs": 0,
+      "F_guided_G": false,
+      "training_minutes": 23.33874967393931,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 4.5821428571428555,
+        "practical_mid": 5.746428571428567,
+        "practical_low_suburban": 6.9011904761904646,
+        "practical_high_urban": 5.475595238095224,
+        "practical_mid_urban": 11.00357142857142,
+        "practical_low_urban": 16.87559523809523
+      },
+      "clean_preserved": true,
+      "scenes_passing_3pp": 0,
+      "all_acceptance_passed": false
+    },
+    {
+      "name": "源频谱配对增强",
+      "run": "20261030-phase1-DURA-source-spectralMix-s2026092701-r01",
+      "accuracies": {
+        "clean": 84.84880952380952,
+        "practical_high": 80.45833333333333,
+        "practical_mid": 79.29464285714286,
+        "practical_low_suburban": 77.8404761904762,
+        "practical_high_urban": 79.27619047619048,
+        "practical_mid_urban": 72.75,
+        "practical_low_urban": 66.2452380952381
+      },
+      "G_epochs": 20,
+      "G_ancestor_epochs": 0,
+      "F_guided_G": false,
+      "training_minutes": 16.54637342651064,
+      "metrics_ref": "automation_reports/CV-SincNet/20261030-phase1-DURA-source-spectralMix-s2026092701-r01/results.json",
+      "scene_gaps_pp": {
+        "practical_high": 4.217857142857142,
+        "practical_mid": 5.381547619047609,
+        "practical_low_suburban": 6.835714285714275,
+        "practical_high_urban": 5.3999999999999915,
+        "practical_mid_urban": 11.92619047619047,
+        "practical_low_urban": 18.430952380952377
+      },
+      "clean_preserved": true,
+      "scenes_passing_3pp": 0,
+      "all_acceptance_passed": false
+    }
+  ],
+  "default_scene_gaps": [
+    {
+      "view": "practical_high",
+      "accuracy": 82.825,
+      "gap_pp": 1.8511904761904674,
+      "correct": 139146,
+      "additional_correct_needed": 0
+    },
+    {
+      "view": "practical_mid",
+      "accuracy": 81.56071428571428,
+      "gap_pp": 3.115476190476187,
+      "correct": 137022,
+      "additional_correct_needed": 194
+    },
+    {
+      "view": "practical_low_suburban",
+      "accuracy": 80.05833333333334,
+      "gap_pp": 4.617857142857133,
+      "correct": 134498,
+      "additional_correct_needed": 2718
+    },
+    {
+      "view": "practical_high_urban",
+      "accuracy": 81.74583333333334,
+      "gap_pp": 2.930357142857133,
+      "correct": 137333,
+      "additional_correct_needed": 0
+    },
+    {
+      "view": "practical_mid_urban",
+      "accuracy": 75.48630952380952,
+      "gap_pp": 9.189880952380946,
+      "correct": 126817,
+      "additional_correct_needed": 10399
+    },
+    {
+      "view": "practical_low_urban",
+      "accuracy": 68.88988095238095,
+      "gap_pp": 15.786309523809521,
+      "correct": 115735,
+      "additional_correct_needed": 21481
+    }
+  ],
+  "source_refs": [
+    "automation_reports/CV-SincNet/20261030-diagnostic-DURA-source-stage-compare-s2026092701-m2-r01/source_V_audit.json",
+    "automation_reports/CV-SincNet/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01/results.json"
+  ],
+  "target_truth_new_reads": 0,
+  "benchmark_previously_exposed": true,
+  "causal_training_speedup_proven": false,
+  "goal_complete": false
+}
