@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-30 /goal星地性能接近clean；用户新增优化训练效率、多阶段太浪费时间；六景各自距rawclean<=3pp确认",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "d0ac66573e7e5f775da76de01a2e4ac0a18ce1bd",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261030-DURA-direct-noVar-E40-r01"
@@ -97,7 +97,7 @@
     "remote_run_root": "runs/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01",
     "remote_log_root": "logs/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.long_budget run --root ../.. --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.long_budget run --root ../.. --commit d0ac66573e7e5f775da76de01a2e4ac0a18ce1bd",
     "stop_rule": "Badcontract/role/outputcollision/nonfinite/checkpoint/smoke/predictioncoverage: preservefailedrow,noautomaticretry/hotedit;healthyrowcontinues;no performance stop;unrelatedowneruntouched"
   },
   "expected_artifacts": [
@@ -172,7 +172,7 @@
       "budget_ref": "E40/9880,B256,L252000/U2268000,one joint stage; no ancestor or learned teacher; original20 fixed corruption views used twice with per-epoch shuffled order",
       "output_root": "runs/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01/scratch_joint/worker.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.long_budget worker --root ../.. --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_direct_train.long_budget worker --root ../.. --commit d0ac66573e7e5f775da76de01a2e4ac0a18ce1bd --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",
