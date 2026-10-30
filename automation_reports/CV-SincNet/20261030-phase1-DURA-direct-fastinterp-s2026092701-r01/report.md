@@ -27,3 +27,9 @@ SamefastLRscratchE20/4940/data/seeds/objective;onlyfourCore12of15linear2x replac
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 启动后实际状态
+
+VERIFIED/RUNNING。执行commit 34b5a5cbbf495fad2871beb555e33cd80fa6fe1d，N607一次只读preflight通过，唯一release归档本地/远端SHA匹配、远端compile通过；CWD为`releases/20261030-DURA-direct-fastinterp-r01`。首步两Ls真实输入、实际冻结F50 checkpoint无query smoke PASS，随后直接继续。CPUcontroller PID3707960，GPU4 worker PID3708661；独立/proc核实CWD/完整命令/CUDA可见设备，并在nvidia-smi中匹配实际worker。训练日志从0增长到468bytes、至少完成E1。其他owner后续启动的健康进程保持。
+
+当前尚无正式结果；E20固定冻结后自动source/target各七景、独立truth-last和成本报告，不因源成绩改变测试矩阵。目标继续ACTIVE。
