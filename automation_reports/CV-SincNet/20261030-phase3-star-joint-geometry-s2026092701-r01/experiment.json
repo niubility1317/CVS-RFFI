@@ -1,0 +1,185 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-joint-geometry-s2026092701-r01",
+  "group_id": "pamf-phase3-source-joint-geometry",
+  "display_name": "PAMF第三阶段：旧六类与未知三类联合邻域诊断",
+  "description": "Frozen original160 and protected160 R1 on same L6300+novel3150; all16 label-blind neighbors before independent source truth, no updates/target.",
+  "kind": "cvs",
+  "stage": "Phase3-source-only-joint-geometry-diagnostic",
+  "aliases": [
+    "九设备联合邻域诊断"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_diagnostic",
+    "frozen_features",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-original-vs-protected160-joint-source-geometry",
+  "parent_run_ids": [
+    "20261030-phase3-star-protected-open-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "3023c26b4bb2b2f74148303362bd615d854d18ff",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-joint-geometry-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_joint_geometry_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_JOINT_GEOMETRY_PLAN_20261030.md"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Same existing G10MIX01/P1 cached features; map L6300 through frozen R1 parts, reuse exact novel3150 features. No IQ/F0/G forward.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,novel}/ids.npy",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_cached_feature_diagnostic": 6300,
+      "source_novel_reused_feature_diagnostic": 3150,
+      "source_OE_new": 0,
+      "source_V_new": 0,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "target_Q_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Same-pool union9450 vs novel-only3150 references; four label-blind masks, self excluded/opaque-ID ties. Known L is training-seen; benchmark-role pooling not inferred unknown set.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Frozen parts-only R1 on cached L plus exact reused novel; algorithm sees opaqueID/RX/day/benchmark pool, independent scorer connects L labels and private novel TX only after all16 neighbor selections.",
+    "query_use": "No target/query fitting; historically exposed source-novel diagnostic, sourceRX seen, no new blind test.",
+    "external_method_exception": null,
+    "claim_scope": "Source joint geometry diagnostic only, not rejection, UDA, anonymous categorization or future registration. Full goalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Only complete frozen R1 open_world parts loaded; strict originalF0/DURA/source handle ancestry. Original F0 E50/11100 remains frozen; R1 additional2220 parts steps/native0.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-protected-open-s2026092701-r01/rows/R1/train/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Parent run actual execution7dd90671968ddf58aab5a5b302b4d56371c8b9c9/sourceonly; original source contract392005 and G10P1 handles verified. No F0/G checkpoint loaded in this diagnostic.",
+    "selection_rule": "Original and sole R1 both reported; no checkpoint/score/threshold/representation selection or fitting from source novel truth."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-joint-geometry-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-joint-geometry-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-joint-geometry-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_joint_geometry_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_joint_geometry_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-joint-geometry-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One new frozen adapter GPU worker, actualfree>=4096MiB, allowed0..7, <=2 added own/card; foreign preserved; independent CUDAempty/BLAS1 CPU scorer.",
+    "stop_rule": "Illegal ancestry/role, nonfinite, collision or technical failure preserves outputs; no score after incomplete export, no automatic retry/retune. UNKNOWN reconciled before resubmission; foreign operations0."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/export.json",
+    "logs/{driver,export,score}.log",
+    "features/union.npz",
+    "features/{smoke,complete}.json",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "original_fused160 vs protected160",
+      "four masks all_other/crossRX/crossday/both",
+      "source old6/novel3 TX",
+      "sourceRX1/3/4/6/8",
+      "source day1/2/3"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-joint-geometry-s2026092701-r01/features",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_joint_geometry_score.py",
+    "targets_ref": "Diagnostic only; v3 AK/CK/RU targets unchanged, no promotion/futureAN.",
+    "primary": [
+      "9x9 confusion and macro1NN union vs novel references",
+      "novel neighbor known/ownTX/othernovel proportions",
+      "paired known intrusions and correct gains/losses"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-joint-geometry-s2026092701",
+      "method": "PAMF-OW frozen original/protected160 joint geometry",
+      "purpose": "Measure source novel proximity to known six vs within-novel structure.",
+      "config_ref": "docs/PAMF_PHASE3_JOINT_GEOMETRY_PLAN_20261030.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-joint-geometry-s2026092701-r01/configs/export.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No new stochastic fitting; frozen parent2701, same G10 receiver2027/scene2026103001/channel2026104001; deterministic opaqueID ties.",
+      "k": null,
+      "scenario": "Seen-source5RX/3day G10P1 old6+heldout3TX joint geometry",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 updates/F0load/Gload/Fforward/Gforward/target;6300 adapter feature rows+2 synthetic adapter rows;3150 existing novel feature rows reused.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-joint-geometry-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-joint-geometry-s2026092701-r01/logs/export.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_joint_geometry_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-joint-geometry-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/export.json",
+        "logs/{driver,export,score}.log",
+        "features/union.npz",
+        "features/{smoke,complete}.json",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "All source IQ previously G10P1; this stage cached features only; no new IQ, V/OE/Us/target reads.",
+    "All16 neighbors fixed before truth; pool role is dataset reference design, never predicted unknown/known.",
+    "Known L is training-seen; novel3/sourceRX historically exposed. 9NN is neither RU nor futureAN. Full goalACTIVE.",
+    "Only actual machinery consumed is loaded; actual frozen adapter no-query smoke2 first, continue immediately on PASS."
+  ],
+  "registered_at": "2026-10-30T10:48:02+00:00"
+}
