@@ -1,0 +1,160 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01",
+  "group_id": "phase1-dura-known-action-independent-prior",
+  "display_name": "DURA 已知真实信道与独立源高斯先验恢复参照",
+  "description": "source62488拟合单一Gaussian二阶先验，排除固定512；cached01/20使用真实sourceaction和widely-linear插件噪声估计，与既有G输出配对；非部署/非上界。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "known-action",
+    "Gaussian-reference",
+    "recoverability"
+  ],
+  "comparison_group_id": "DURA-source-F-guided-vs-matched-noVarAux",
+  "parent_run_ids": [
+    "20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active restoration optimization and 2026-10-31 comprehensive recoverability question;source-only diagnostics within existing IQ/actualsimulator/F-frozen evaluation permissions",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-DURA-known-action-Gaussian-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "R07 source train clean62488 fit plus disjoint512probe actual cached01/20 action/received;noV/target",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;fixedsource_indices128Ls384Us;previouspairednpzIDs",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "ExistingACTION_SOURCE_CACHE_COMPLETE original63000 roles;sourceIDs matched F",
+    "support_query_ref": "No query/support;source training-pool diagnostic",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "No target access",
+    "actual_training_labels": "No TX labels or neuraltraining;sourceIQ covariance only fit62488",
+    "augmentation": "No new received samples;originalcache01/20 clean rowsidentity"
+  },
+  "permissions": {
+    "regime": "source_only_counterfactual_known_action_and_Gaussian_prior",
+    "query_use": "NoV/target;sourceclean usedonly for marginalprior fit and postestimationmetrics",
+    "external_method_exception": "Explicituserpermission2026-10-30 onlysourceFweights/featuresforG;notF-free;frozenFnoheadtraining/updates",
+    "claim_scope": "Extra actualchannelinformation and approximate marginalGaussian/AGCplug-in likelihood;notdeployable/not conditionalBayesupperbound;Fcleanchoiceagreement notTXaccuracy"
+  },
+  "checkpoint": {
+    "initialization": "No G loaded/updated;sourcecovariance estimated algebraically;originalF frozen evaluation only",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Existingfrozen.load_reader strictFmetadata/ancestry/sourcecontract plusGsourceIDsrolebinding;read-onlypreflightL6300/U56700 sets match;noTXvaluesread",
+    "provenance_verdict": "SameoriginalF50 strictsource contract via load_reader/sourceIDs;Gcomparison reused frozencomplete source phase-oracle outputs",
+    "selection_rule": "One fixedridge1e-6 trace(C)/512;sourcefit62488 excludes512;no candidate/grid/threshold-selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-known-action",
+    "gpu_policy": "CUDAempty;CPU2;0newG/optimizer;F2Ls smoke+1024sourcefeatures",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.known_action_reference --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wrongsource/previousFteacher/physicalIDs/scenes/nonfinite/Cholesky/densenative mismatch/Fstatechange:failpreserve,noautorerun;otherownersuntouched"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "source_prior.npz",
+    "view1.npz",
+    "view20.npz",
+    "results.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "NMSE",
+      "NMSEmedian/p90",
+      "Fcleanchoiceagreement",
+      "Ffeaturecosine",
+      "dense-native-replay",
+      "CPUcost"
+    ],
+    "dimensions": [
+      "cached01/20",
+      "all/sevensource-scene"
+    ],
+    "prediction_ref": "Privateview1/view20 pairedIQfeatures/logits;previoussourceGbaseline outputs",
+    "scorer_ref": "Sourceonly descriptive metrics,0TX/V/target;no training qualification gate"
+  },
+  "rows": [
+    {
+      "row_id": "known_action_reference",
+      "method": "Knownaction Gaussian plugin posterior mean;single source marginalprior/ridge",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_efficiency/known_action_reference.py",
+      "resolved_config_ref": "runs/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "No newrandom sampling;fixedoriginalsource panel/sourcecorruption seeds;FandoldGmodelseed2026092701",
+      "k": null,
+      "scenario": "OriginalR07sourcecached01/20;actualA/noise additionaloracleinformation;nodeployment",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "sourcefit62488/probe512x2;0neuralupdates/Gforwards,Fsource1024+2smoke;CPU2",
+      "output_root": "runs/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.known_action_reference --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "source_prior.npz",
+        "view1.npz",
+        "view20.npz",
+        "results.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fit63000 minus fixed512=62488 original cleanIQ only;compute marginalmean/covariance + fixed1e-6trace/512ridge;noTX or perclass/RX fit.",
+    "Real512D causalreflect widelylinear A exactoriginalsourceoperator;noiseN from n=a*w+b*conj(w),wCN(0,.001),noEQ.Conditionalnoisegivennoise-dependentAGCnotexactGaussian;thisisplug-inreference,notBayesbound.",
+    "Estimate mu+CAt(ACA^T+N)^-1(y-A mu) viaCholesky;clean cache rowsidentity.512x2 allsource choices frozen,notselectedfrom scores.",
+    "OriginalF frozen2Lsactualsmoke then1024sourceIQfeatures;comparecleanFteacherchoices/features only,noTXaccuracy.0Gloaded/newGforwards/optimizer/V/target.",
+    "Reuseprevioussourcephaseoracle noVar/default nativeIQ/Ffeatures/logits andcleanFreference,verifyFteacher/unchanged/sourcepositions/IDs/scenes/cleanbytes.",
+    "Fivefocusedtests:realoperatorvsnativeimage/reflect;pure24delaycounterexample;MonteCarlonoisecovariance;knownnoiseshrinkage;fitprobeexclusion.IndependentP0P1review once,oneimmutableCPUrelease/preflight/archiveSHA/compile/actualPIDandlogpoststate.",
+    "No sourcequalificationthreshold/no newtraintrigger.Helps separate blindactionestimation from independentprior limitations onlywhere evidence supports;doesnotcertifytrueTXdetails or source/targetupperbounds."
+  ],
+  "registered_at": "2026-10-30T18:23:33+00:00"
+}
