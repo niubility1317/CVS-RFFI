@@ -68,4 +68,4 @@
 |PAMF Phase3 默认头开放暴露与相对结构保持|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-relation-oe-s2026092701-r01/report.md)|
 |PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r01/report.md)|
 |PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r02/report.md)|
-|PAMF第三阶段：独立可训练信号级开放分支|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r03/report.md)|
+|PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r03/report.md)|

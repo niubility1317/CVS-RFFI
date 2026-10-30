@@ -814,3 +814,8 @@ Run `20261030-phase3-star-signal-open-s2026092701-r02` / code `b1f99b77a81fa4fd8
 ### 2026-10-30 独立信号级开放分支r03前向依赖恢复
 
 Run `20261030-phase3-star-signal-open-s2026092701-r03` / actualcode `dc01a402582f93e452dbaa3ef59a9fbb44151818`，单E_SIGNAL，新headless信号232033+MLP102688=334721，原F0/default6身份路径固定。相同crossset+OEsoft结构、L192/OE64/3017/3018/2220及known-support主读出，将梯度推进浅中层，Sinc用CENTER_UNITS物理策略；冻结前端控制精确复用原S_SEP_TOPO，不重训。合法既有G10/P1 IQ L6300/OE6134训练，V27000仅固定known42/τ、NV3150仅truthlast，无新信道/G/二次RMS/P0/clean值/target。复制特征祖先11100+新增2220=13320、MLP2220、原识别器native0分别披露。主source早筛通过才另登记跨未见RX；完整v3与更高拒识/无标签DA/发现/未来匿名REG继续ACTIVE，当前无新性能。设计见 `docs/PAMF_PHASE3_SIGNAL_OPEN_PLAN_20261030.md`。
+
+
+### 2026-10-30 signal-open r03完整源侧结果
+
+Run `20261030-phase3-star-signal-open-s2026092701-r03` / code `dc01a402582f93e452dbaa3ef59a9fbb44151818`，2220signal+projection更新、四列预测和独立truthlast完成，VERIFIED/NO_PROMOTION。唯一主A_K90.388889/C_K98.388889/R_U31.301587/H46.500199%，原F0损0.592593pp，known42通过；比匹配frozenknown未知+261（+8.285714pp）、正确−29/H+9.801909pp，三未知净+167/−14/+108，不是一致改善。四列均未RU90；原recognizer native0，复制feature祖先11100+2220=13320，sourceRXseen/NV历史曝光/target0。r01/r02技术失败不并为科学结果，smoke成本缺artifact记UNKNOWN。后续只用V检查局部42保护与总体2pp预算的差距，再独立固定校准对照；不扫NV或降低用户总体/主景门槛。完整跨RX星地/零标签DA/发现/未来REG目标ACTIVE，详见 `docs/PAMF_PHASE3_SIGNAL_OPEN_RESULTS_20261030.md`。
