@@ -225,3 +225,6 @@ E30IQ增强既有14组冻结logits的事后概率分析完成（2b051a0c3），�
 
 
 noPriorAux E30 eb46cab8e完整结束：7410步/L189000U1701000/0G祖先教师-F-TX-V-target训练，priorloss0而网络/4CG保留；全30loss重算及七景独立126组一致。clean84.676786（净+1raw）、lowurban66.020238，七景均低于E30physical、六景均低于默认，3pp/R17每景1pp未达。循环1001.619769s/全流程1183.545899s，实际前序进程检查.055396s，无他人干预。source/model准备未单独计时，不填0。默认保持，目标ACTIVE；源跨模型prior误差观察不足以证明删该辅助项有效。
+
+
+强频点幅相source诊断779f1e91e完成，CPU7.239624s/F8704+2/0G-update-TX-V-target/F不变，416组9568标量复算。noVar Q1phase选择478→488/496→502、移除约30%IQ误差，缓存01的mid场景−1；Q1幅度+13/+3，defaultQ1phase+6/+3且一景−1。不是所有场景保证，不冒充旧globalphase资格。可独立检验Q1精确相位MSE分量权重1→2，保留IQ/幅度/先验/action与固定E30/正式七景；部署无clean/mask，无目标反馈，当前oracle不能部署/不是真实TXaccuracy或极限。默认与目标ACTIVE。

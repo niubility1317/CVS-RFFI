@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-frequency-components-s2026092701-r01`
 - group_id：`phase1-dura-source-frequency-oracle`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -27,3 +27,8 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+
+## 完整源结果
+
+VERIFIED / ANALYZED_SOURCE_ONLY，CPU7.239624秒/F8704+2smoke/0G-update-TX-V-target，F不变。独立416组9568标量复算；noVar Q1phase一致数478→488/496→502，移除约30%IQ误差，一景仍−1。Q1幅度+13/+3，强相位并非所有场景不降，不冒充旧globalphase资格；支持独立新训练检验，不能部署oracle或作身份/极限证明。详见[完整分析](analysis.md)和results.json。
