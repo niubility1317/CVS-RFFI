@@ -1,0 +1,163 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-source-Fphase-s2026092701-r01",
+  "group_id": "phase1-dura-source-Fphase-sensitivity",
+  "display_name": "DURA 同冻结F源域全局相位敏感性诊断",
+  "description": "CPU2/零训练；固定源L128/U384，8角度检查原F50完整160D特征和原头后验/选择；不读G、逐样本TX真值、V或target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "F-informed",
+    "phase-sensitivity",
+    "identifiability",
+    "training-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase1-DURA-source-phasePair-s2026092701-r01",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-30明确允许独立源F指导对照；仅用同冻结F源域特征约束身份，G单阶段从零，不直接TX/目标训练。当前只是该分支源诊断，无训练或部署变化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original sourceclean FP32[2,256] onceunitRMS;fixed512(L128/U384) ×8 global phase angles 0,45,...315degrees;no extra normalization or channel generation",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;fixedsource_indices positions;source roles checked against sameF source IDs",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "No new satellite views;current check only sourceclean coordinate rotations",
+    "target_panel": "none;no target access/classificationtruth"
+  },
+  "permissions": {
+    "regime": "authorized_frozen_F_source_feature_analysis;not_F_free_design",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Sourceclean F feature/posterior/teacherchoice sensitivity only;not TX accuracy,target invariance,restoration improvement or theoreticalidentifiability proof"
+  },
+  "checkpoint": {
+    "initialization": "No model initialization/updates;read originalF50/defaulthead only;G checkpoint reads0",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_fcrossrx_readout/frozen.py load_reader and f_guided.source_ids;actual original7/63/30 roles/physical IDs",
+    "provenance_verdict": "Existing originalF50 source-final/scratch/50epochs11100/defaulthead sourcecommit4df7 checked by original loader;no G ancestors/updates;F state frozen.",
+    "selection_rule": "Fixed original sameF50 seed2026092701;all8 angles and allsourcegroups;no result-based model/panel/angle selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-Fphase",
+    "gpu_policy": "CPU2/0GPU/0updates;otherownersuntouched",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.phase_sensitivity --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wrong source roles/RX/day/checkpoint,nonfinite feature/logit/metric,power mismatch,F state/gradient change,output collision:preserve/no autoretry;scientific failure is complete negative result,no threshold relaxation"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "values.npz",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Fcosineerror",
+      "KL(clean||rotated)",
+      "teacherargmaxagreement",
+      "pointwisepowererror",
+      "fixedphasequotientstudyeligibility"
+    ],
+    "dimensions": [
+      "8fixedphaseangles",
+      "sourceRole",
+      "sourceRX",
+      "sourceDay"
+    ],
+    "prediction_ref": "No TX truth predictions;private source F features/logits/metrics",
+    "scorer_ref": "Independent CPU/NumPy recomputation from complete private NPZ;no truth"
+  },
+  "rows": [
+    {
+      "row_id": "source-Fphase",
+      "method": "SameF50 full160Dfeatures/originalhead on fixed common phase rotatedsourcecleanIQ",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/phase_sensitivity.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed originalF2026092701/source split392005;source positions role-stratified linearspacing128Ls/384Us;8 deterministicangles;no random augmentation/support/modelupdates.",
+      "k": null,
+      "scenario": "Originalsourceclean only,deterministic phase coordinates;no new target/satellite sample",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Source2Ls actual F checkpoint smoke;512x8=4096 feature-analysis inputs;B32/CPU2/0GPU/0G/0updates",
+      "output_root": "runs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.phase_sensitivity --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "values.npz",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-phasePair full source V degraded despite exact pair algebra;original source cache10.246746percentunlocked plus simple phase counterexample motivated sensitivity study. This hypothesis arises from source results and nativecode,not target subgroup weights.",
+    "Reference response branch removes flat gain/phase but model contract says whole_model_invariant=False. Test full frozen160Dfeature and originaljointhead,not only reference branch. No F updates/head fitting/G reads.",
+    "No cache from anotherG needed. Original63k source roles and physicalID sets match F source contract;fixed source512 all5RX/3days. Never read perrecordTX labels;original source class-map metadata checked by established Floader only.",
+    "Angles0..315degrees in45degree increments allreported. Exactly commoncomplexscalar multiplication,no time/frequencyshift,AGC/EQ/RMSrenormalization. Input power audit<=2e-6. Actualsource2Ls Fcheckpoint noquerysmoke first thencontinue.",
+    "Fixed eligibility ALL7nonzero angles:teacherchoiceagreement>=99.5percentoverall AND>=99percentEACHsourceRX,overallmeanFcos<=.001 andKL(clean||rotated)<=.001. Failed angle/RX cannot be averaged away. No threshold tuning or selecting a small angleafterfailure.",
+    "Passing only supports separate phasequotientloss study;doesnot release/changeG or prove continuousphase/received/target invariance. Failure means no global-phase-quotient training from this diagnostic. Method is F-informed design,not F-free because sourceF information decides next research.",
+    "F source trained50/11100 and carries supervised knowledge;its cost/provenance retained. NewF/Gupdates0,TX/V/targetreads0,CPU2/0GPU. No new full7 restoration predictions because no newG/version is trained or deployed.",
+    "3focused rotation/composition/power,logitshift/argmaxchange,strictallangle/allRX/metricnegative testsPASS;one independent P0/P1review required. Minimal onecommit/preflight/archiveSHA/compile/livePID/logreadback only.",
+    "Rawsource features/logits/opaqueIDs remain private NPZ;publish aggregate88groups/metrics and decision. Independently recompute all groups and eligibility,check Fstateunchanged. DefaultDURA and full3pp/clean/efficiencygoal unchanged."
+  ],
+  "registered_at": "2026-10-30T14:25:34+00:00"
+}

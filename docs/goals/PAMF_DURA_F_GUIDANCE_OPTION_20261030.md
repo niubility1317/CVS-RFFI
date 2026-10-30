@@ -70,3 +70,6 @@ headFeature r02完整七景仍未达3pp后，另登记源阶段对照`20261030-d
 独立登记 `20261030-phase1-DURA-source-posteriorKL010-s2026092701-r01`：同一冻结F的源clean/restored特征由原联合分类头确定性映射成6维连续后验，KL(clean||restored)、T1、系数0.1。没有硬伪TX标签、真实TX读取、头训练或F更新，不扩大到target。G从零单阶段E20/4940，原noVar骨架/数据/日程不变，source特征缓存一次，restoredF每visit一次；仍明确F-guided/继承F上游50轮知识与成本。
 
 该项来源于已完成source-task-geometry的特征距离与选择保持不等价现象；0.1仅与旧cos同数字，不称梯度强度匹配或最优参数。固定finalE20后自动source1800×7/target168000×7、独立truth-last，逐景3pp与clean要求保持。旧cos、headFeature、F-free结果及默认DURA不改变，信道重配失败候选不追加训练。
+
+
+独立源域F相位诊断：20261030-diagnostic-DURA-source-Fphase-s2026092701-r01，固定同F50/原头/source512×8角度，CPU2/0更新/G读取0/逐样本TX-V-target读取0。只用于判断全局相位商空间损失是否值得另立研究，全部角度/RX阈值预登记；F-informed而非F-free设计，不改变默认或当前恢复器，完整3pp/clean/效率目标保持。
