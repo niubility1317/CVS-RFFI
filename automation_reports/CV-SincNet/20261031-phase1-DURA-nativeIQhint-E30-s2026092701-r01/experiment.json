@@ -1,0 +1,219 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01",
+  "group_id": "phase1-dura-scratch-final-IQ-teacher",
+  "display_name": "紧凑恢复器从零30轮：受损源样本最终IQ教师指导",
+  "description": "G266951从零单阶段30轮，noVar四基础项仅新增非clean源样本最终R17 IQ MSE权重1；clean教师项0、参考detach、部署不读scene/teacher。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "E30",
+    "single-stage",
+    "scratch",
+    "final-IQ-teacher",
+    "source-nonclean-mask",
+    "training-efficiency"
+  ],
+  "comparison_group_id": "DURA-source-F-guided-vs-matched-noVarAux",
+  "parent_run_ids": [
+    "20261031-source-DURA-R17-nativeIQ-cache-s2026092701-r01",
+    "20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active restoration/efficiency goal/userE30budget/authorized originalR17 sourceIQteacher;fixedrecipe in945114bf4 beforewide targetread;newindependentG/defaultunchanged",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-DURA-nativeIQhint-E30-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source63000/20corruptioncaches+repeat01-10;readonly originalR17 FINAL IQ cache20x63000",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "PairedsourcecleanIQ/action andsource-only frozenoriginalR17finalIQ;TX/F/V/targetoptimizer0;source scene onlymaskteacherloss;no learnedstatecopy",
+    "augmentation": "Originalcached15percentclean85percentpractical;no newtarget/simulation;cleanteacherweight0"
+  },
+  "permissions": {
+    "regime": "Source_paired_IQ_and_original_R17_finalIQcache_training_with_F_informed_research_history",
+    "query_use": "Single frozenreadout7source/7target;allviewsperrolebeforeindependenttruthlast",
+    "external_method_exception": "Explicituserpermission2026-10-30 onlysourceFweights/featuresforG;notF-free;frozenFnoheadtraining/updates",
+    "claim_scope": "GoptimizationFweights/outputs/TX/V/target0;historicalsourceV/Fselection andsourceF-informedresearchdisclosed;not whollyF-uninformedresearch;not recoveryceiling"
+  },
+  "checkpoint": {
+    "initialization": "CompactG266951scratch/alljoint/no inheritedweights;onlyteacherIQartifact isread",
+    "sources": [
+      "runs/20261031-source-DURA-R17-nativeIQ-cache-s2026092701-r01/scratch_joint/native_teacher_cache (sourceIQ only)",
+      "OriginalR17cd977 historicalcoarse20/action20/prior20 viafixedcacheonly;no teachercheckpointloadnow",
+      "OriginalF50/defaulthead onlynoquerysmoke/postfreezeeval;R69onlypostfreezeprofilebaseline"
+    ],
+    "contract_check_ref": "native_iq_hint.validate_cache_metadata producer6848/source7-63-30/finalstage3/20views/1260000inputs/source-onlyflags+IDs/roles;originalteacherprovenancepreviouslyverified",
+    "provenance_verdict": "Gancestor0;produceralreadyANALYZED/frozenoriginalR17/ID-role-match/all20FP32arraysfinite;currentteachercheckpointload-forward-update0",
+    "selection_rule": "Fixedfinal30/7410/all7;originalR17source-selectedbeforetarget;weight1/cleanmask fixedin945114bf4 beforewide targetread;no candidate/epoch/sceneranking"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-nativeIQhint-E30",
+    "gpu_policy": "GPU6only/oneownworker;admissionexisting<=2/free>=12000MiB/adding<=3/goal<=2;wide andcacheproduceractualworker terminal;oneownCPUscorer;othersuntouched",
+    "remote_run_root": "runs/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01",
+    "remote_log_root": "logs/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.native_iq_hint run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Source/cacheteacher/producer/roles/IDs/scene/shape/nonfinite/collision/checkpoint/smoke/coverage technicalfailure:preserveaffectedrow/noautoretry/nootherownercontrol;no performance stop"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-scratch_joint.json",
+    "scratch_joint/launch.json",
+    "scratch_joint/resolved_config.json",
+    "scratch_joint/initialization.json",
+    "scratch_joint/teacher_cache_reuse.json",
+    "scratch_joint/training.jsonl",
+    "scratch_joint/training_complete.json",
+    "scratch_joint/final.pt",
+    "scratch_joint/matched_profile.json",
+    "scratch_joint/source_prediction/complete.json",
+    "scratch_joint/source_summary.json",
+    "scratch_joint/target_prediction/complete.json",
+    "scratch_joint/target_summary.json",
+    "scratch_joint/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "MacroF1",
+      "Correct",
+      "repair_damage_net",
+      "TX/RX/day",
+      "rawclean_gap3pp",
+      "R17_eachscene1pp",
+      "cleanpreservation",
+      "full30curves/clip/finalnativehint/actualcleanmaskcounts",
+      "currenttrain/cacheaccess/fullpipeline_seconds",
+      "historicteacher60/cache972.193282seconds/1.26mforwards/2.58048GB",
+      "matchedG/GplusF_B1/B128medianP95throughput",
+      "actualparameters/checkpointbytes/ConvLinearMAC/FFT-CG/VRAM"
+    ],
+    "dimensions": [
+      "arm",
+      "clean/sixpractical",
+      "TX",
+      "RX",
+      "day",
+      "originalF50seed2026092701"
+    ],
+    "prediction_ref": "scratch_joint/{source,target}_prediction;7viewsfixedbeforetruth",
+    "scorer_ref": "IndependentCPU originaldirectevaluation aftercomplete7;sourcefixed1800 andformal168000;noadaptation"
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "CompactscratchG/noVar4base + weight1*batchmean(nonclean_source_mask*NMSE(studentfinal,originalR17final));all30",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/native_iq_hint.py",
+      "resolved_config_ref": "runs/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01/scratch_joint/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Student2026092701/dataorder2026103004/cache2026101912/eval2027;student/probeTorchRNG reset afterteachercache,not affectedby teacherload",
+      "k": null,
+      "scenario": "Unchangedoriginalsourcecache15percentclean/85percentpractical;first10sourceviews matchedteacherIQ;formalclean+sixpractical",
+      "optimizer": "resetAdamW/W1e-4/globalclip1/warm247cos2e-5",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "ScratchE30/7410/B256/L189000U1701000;266951;20cachedviews+repeat01-10;1890000teacherrefvisits/actualnoncleanactive;newteacherforward0;history60componentepochs+972.193282s cache separate",
+      "output_root": "runs/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01/scratch_joint",
+      "log_path": "runs/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01/logs/scratch_joint.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.native_iq_hint worker --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-scratch_joint.json",
+        "scratch_joint/launch.json",
+        "scratch_joint/resolved_config.json",
+        "scratch_joint/initialization.json",
+        "scratch_joint/teacher_cache_reuse.json",
+        "scratch_joint/training.jsonl",
+        "scratch_joint/training_complete.json",
+        "scratch_joint/final.pt",
+        "scratch_joint/matched_profile.json",
+        "scratch_joint/source_prediction/complete.json",
+        "scratch_joint/source_summary.json",
+        "scratch_joint/target_prediction/complete.json",
+        "scratch_joint/target_summary.json",
+        "scratch_joint/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Sourcebasis originalR17nativeIQNMSE.017367/.016427 vsnoVar.022352/.021122;sourceFcleanchoice+10/+7 butcache01midscene-1.Onlysourceproxy,nottrueTXaccuracy/targetguarantee.Originalteacherbeforetarget/userauthorized;do not chooseR69basedontarget.",
+    "Recipefixedin945114bf4 beforewideformalscoresread:compactG266951 scratchsingleE30/noVar4base + finalteacherIQweight1onlynonclean source samples;cleanteacherweight0.Implementationmatchesfixedhypothesis;no targetfeedbackorparameterretuning.",
+    "FinalteacheristhirdoriginalR17stage,notcoarse orstage1/2.Eachsourcecacheview one-to-onephysicalID/roles/receivedorder;20fullviews thenE21..30repeat01..10.OnlyfullproducerANALYZEDcacheaccepted,all20independentlyfinite;no hashes/seals/extra data revalidation.",
+    "LossfinalIQ1/priorIQ.1/STFT.05/actionprobe.05/varianceaux0;add finalteacherMSE normalizedbydetachedsourcecleanenergy andnonclean Booleanmask,weight1wholebatchmean notactive-onlynormalization.EquivalenttwoIQterms onnonclean pulltoward clean-teachermidpoint;teachererrorcanremain,notclaimhardgroundtruth.",
+    "OriginalGsingleforward usedforbaseandteacherterms,reference.detach/cleanenergy.detach;sourcecleanstilltrainedbybasecleanIQ,teachermask0.ReceivedIQonlyatdeployment;no scene/mask/cache/teacher neededinference,structure2prior4CG27FFTunchanged.",
+    "AllGweightsrandomgraph(no learnedteacherweightcopy),oneAdamW .001warm247cos2e-5/WD1e-4/clip1/B256,model2026092701/data-probe2026103004/corruption2026101912.30/7410/L189000U1701000,sourcefinalfixed/noepochselection/optimizerreset/pretrain.",
+    "Teacherartifactpreparedonce1.26mforwards+2CPUsourceLs,972.193282sloop/976.382917swhole/2580480000numericbytes;originalhistorical60componentepochs disclosed.Studentsnewteachercheckpointload/forward/update0 butreferences1.89m,activecountactual;reuse isnotcost-freeknowledge.",
+    "GoptimizationF/TX/V/target0,sourceF-informedmethodresearch/historicalR17sourceV/Fselection explicit;currentFonlyrealnoquerysmoke andpostfreezeformal.OriginalF50/defaulthead/rawclean84.676190 same,defaultDURAimmutable.",
+    "8focusedchecksPASS(new5+existingteacherprovenance3),oneindependentP0P1PASS;N607Torch2.1/NumPy2boolarrayCPUconversionexplicitlyconfirmed.2actualLs sourceGgradient/strictsave-reload/originalFdefaultheadnoquerysmokefirst thencontinue,notapprovaltoken.",
+    "GPU6withinexistingauthorization;actualwide/cacheproducerterminal,goal<=2GPU/own1card/visible<=3/free12GB.OnlyoneownCPUtruthscorer.Fullsource1800/target168000x7 thenindependenttruth-last evenifsourceworse;no otherownercontrol.",
+    "ComparedefaultDURA andE30physicalsamebudget;physicalcontrolparametersnoFgradientbutwholeprocessFguided/costincluded.Singleseed/exposedbenchmark,allnewGformalrequired;reportallcost/clean/eachscene/identity damage,notaverage-onlyclaim."
+  ],
+  "registered_at": "2026-10-30T21:57:07+00:00"
+}
