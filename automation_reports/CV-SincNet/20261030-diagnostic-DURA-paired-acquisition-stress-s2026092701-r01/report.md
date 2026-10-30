@@ -3,7 +3,7 @@
 - run_id：`20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01`
 - group_id：`phase1-dura-paired-acquisition-stress`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -31,3 +31,17 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+
+## 实际结果
+
+VERIFIED / ANALYZED_SOURCE_ONLY。执行 commit `6328fe60db02e99c1ea806f0c27b6fd70c6b5e3b`，CPU2/0GPU 耗时 8.427 秒，真实 source2Ls G/F smoke 通过，32 个 B32 批次完成。PID269042 存活时已独立核实 release CWD、完整命令、空 CUDA 绑定与日志增长；最终产物完整。唯一 P0/P1 审查 PASS，3 项聚焦配对测试 PASS，一次 preflight、归档两端 SHA 和远端 compile 通过。F/G 状态不变、grad None、0 更新/直接 TX/V/target。
+
+独立复算 1080 个 role/scene/state/lock 聚合标量，并核对原始分支与上一 source-stage 对照的相同位置、角色和 IQ/F 结果一致。源数组与位置仅保留私有 artifact，公开汇总见 results.json。
+
+|缓存视图|原 MSE|扰动 MSE|相对增加|功率相对误差最大值|噪声回放误差最大值|训练资格|
+|---|---:|---:|---:|---:|---:|---|
+|1|0.02235236|0.02381189|6.5297%|2.980e-07|3.748e-14|False|
+|20|0.02112201|0.02263714|7.1732%|2.980e-07|4.033e-14|False|
+
+两视图 MSE 增幅均小于预定 10%，因此不据此启动 paired-style 训练，不改变扰动强度或放宽门槛。信号功率与原噪声配对均通过。源 clean/style F 选择保持 511/512；恢复后 teacher 一致数分别变化 −2/+1，仅为源特征描述，不能代替 TX 真值或迁移性能。默认 DURA、全七景正式验收和训练效率目标均保持。

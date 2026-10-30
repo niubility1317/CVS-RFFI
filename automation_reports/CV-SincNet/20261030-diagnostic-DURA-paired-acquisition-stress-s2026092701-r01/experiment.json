@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "6328fe60db02e99c1ea806f0c27b6fd70c6b5e3b",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01-release"
@@ -85,7 +85,7 @@
     "remote_run_root": "runs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01",
     "remote_log_root": "logs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.style_stress --root ../.. --output ../../runs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.style_stress --root ../.. --output ../../runs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01 --commit 6328fe60db02e99c1ea806f0c27b6fd70c6b5e3b",
     "stop_rule": "Source/checkpoint/F permission mismatch, nonfinite metrics, model state/gradient change, or output collision: preserve and stop without automatic retry; no TX/V/target."
   },
   "expected_artifacts": [
@@ -140,7 +140,7 @@
       "budget_ref": "One fixed G, source2Ls G/F smoke + 512×2 views, B32; CPU2/0GPU/0 updates",
       "output_root": "runs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01",
       "log_path": "logs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.style_stress --root ../.. --output ../../runs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.style_stress --root ../.. --output ../../runs/20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01 --commit 6328fe60db02e99c1ea806f0c27b6fd70c6b5e3b",
       "expected_artifacts": [
         "launch.json",
         "epoch01.npz",
