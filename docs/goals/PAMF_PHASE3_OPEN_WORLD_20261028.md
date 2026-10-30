@@ -789,3 +789,8 @@ Run `20261030-phase3-star-metric-residual-s2026092701-r01`、code310588cbd8c79bc
 ### 2026-10-30 L–OE分离两臂实际完成
 
 Run `20261030-phase3-star-crossset-metric-s2026092701-r01` / code `fb016284e6c1f4715da4c690e2333efce89103b5`，两arm各2220、三列预测/独立truthlast完成，执行VERIFIED、NO_PROMOTION。唯一主S_SEP_TOPO::learned_known_support A_K90.496296%、C_K98.685185%、R_U23.015873%、H36.698290%；主arm ratio诊断R_U32.952381%，不换主或晋级。sourceRX已见/novel历史曝光，target0；后续研究优先信号级开放分支和浅中层特征，尚无实现/性能声明。完整v3跨RX星地/更高拒识与无标签DA/发现/未来REG继续ACTIVE，结果见 `docs/PAMF_PHASE3_CROSSSET_METRIC_RESULTS_20261030.md`。
+
+
+### 2026-10-30 预登记独立信号级开放分支
+
+Run `20261030-phase3-star-signal-open-s2026092701-r01` / actualcode `eec44ce2f1d587d9e46ed4860fe6e204f5621155`，单E_SIGNAL，新headless信号232033+MLP102688=334721，原F0/default6身份路径固定。相同crossset+OEsoft结构、L192/OE64/3017/3018/2220及known-support主读出，将梯度推进浅中层，Sinc用CENTER_UNITS物理策略；冻结前端控制精确复用原S_SEP_TOPO，不重训。合法既有G10/P1 IQ L6300/OE6134训练，V27000仅固定known42/τ、NV3150仅truthlast，无新信道/G/二次RMS/P0/clean值/target。复制特征祖先11100+新增2220=13320、MLP2220、原识别器native0分别披露。主source早筛通过才另登记跨未见RX；完整v3与更高拒识/无标签DA/发现/未来匿名REG继续ACTIVE，当前无新性能。设计见 `docs/PAMF_PHASE3_SIGNAL_OPEN_PLAN_20261030.md`。
