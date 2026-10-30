@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "Active recovery/efficiency goal and authorized frozen sourceF mechanism analysis;sourceclean only oracle,not deployable or new target prediction",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "fb1427f3c5127619bb774dfccf86bfbb39b448d9",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-source-frequency-oracle-r01"
@@ -85,7 +85,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.source_frequency_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.source_frequency_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit fb1427f3c5127619bb774dfccf86bfbb39b448d9",
     "stop_rule": "SourceID/roles/clean/oldFmetadata orreproduction/nonfinite/sourcepopulation/collision/budget/Fstatefailure:preserve/noautoretry;no performance stop/nootherownercontrol"
   },
   "expected_artifacts": [
@@ -141,7 +141,7 @@
       "budget_ref": "0newG/updates;F512cleanreference+4cellsx7casesx512=14848+2smoke;CPU2",
       "output_root": "runs/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.source_frequency_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.source_frequency_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit fb1427f3c5127619bb774dfccf86bfbb39b448d9",
       "expected_artifacts": [
         "launch.json",
         "noVar-1.npz",

@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01`
 - group_id：`phase1-dura-source-frequency-oracle`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -32,3 +32,8 @@
 ## 最小研究说明
 
 旧source描述显示Q4仅约0.109%clean能量而相对误差大，不能据此认定是身份信息或直接改loss。本次只复用原phase-oracle的合法paired512 IQ，分别理想修正四个64频点分位的complex系数，以及Q4相位/幅度，检查原冻结F的clean选择保持和特征误差。按每包clean谱能量排序，不按标签、场景或RX选频点；所有干预只用于source机制诊断，不可部署、不作真实TX准确率或恢复极限。F读取14848分析+2Ls smoke，G/更新/TX/V/target均0。全部场景/组保留，无自动训练资格，不依据本次或健康noPriorAux目标结果调参。3项聚焦测试通过，唯一P0/P1审查PASS（无直接发布缺陷），发布后首步实际F smoke直接继续CPU2。原F50/数据契约/其他owner/默认DURA保持。
+
+
+## 完整源域结果
+
+VERIFIED / ANALYZED_SOURCE_ONLY。CPU14.557697秒，F14848+2smoke/0G/0更新/TX/V/target，F不变。728组/16744标量独立复算；Q4理想修正未稳定提高F自身clean选择，Q1complex四单元均改善。不能把弱频点相对误差直接当TX信息损失，不自动启动训练。详见[完整分析](analysis.md)与results.json，默认与3pp目标保持。
