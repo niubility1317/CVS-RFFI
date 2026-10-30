@@ -1,0 +1,167 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01",
+  "group_id": "phase1-dura-source-public-phase-anchor",
+  "display_name": "DURA 公开L-STF公共相位参考可行性诊断",
+  "description": "CPU2/0G/0更新；63000源IQ公开相关器，62488统计单一圆均值、留出512验证完整F保持；15RX/day逐一验收，无TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "public-LSTF",
+    "phase-reference",
+    "F-informed",
+    "single-stage-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-diagnostic-DURA-source-Fphase-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-30明确允许独立源F指导对照；仅用同冻结F源域特征约束身份，G单阶段从零，不直接TX/目标训练。当前只是该分支源诊断，无训练或部署变化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original63000 sourceclean FP32[2,256] onceunitRMS;exclude fixedsource512 from62488 phasecalibration;heldout512 onlyfixed F preservation",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;fixedsource_indices128Ls/384Us probe;calibration complement in same original63000",
+    "label_map_ref": "No perrecord TX labels;class-map metadata only establishedF sourcecontract check",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "No satellite generation;public L-STF bank at25Msps/nominal20MHz,window80:160,320delays/1over16samples",
+    "target_panel": "none;noGordeploymentorquery"
+  },
+  "permissions": {
+    "regime": "source_IQ_public_correlator_statistics_and_authorized_F_holdout_probe;not_F_free_design",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Sourcegain circularconcentration/oneglobalphasefeasibility and sameF choicepreservation;not TX/hardware calibration or proof of actualtargetcleanphase"
+  },
+  "checkpoint": {
+    "initialization": "No G/optimizer/model updates;read original sameF50/defaulthead for source smoke/check only",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_fcrossrx_readout/frozen.py load_reader and f_guided.source_ids;actual original7/63/30 roles/physical IDs",
+    "provenance_verdict": "Matching original7/63/30 source physical roles checked by originalFloader andsource_ids;Fsource50/11100/scratch4df7;publiccorrelator0 learnedparameters",
+    "selection_rule": "FixedsameFseed2026092701;one scalar circularmean from62488 excludingprobe;noFmetrics used to fit phase;all15groups and512probe reported"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-phase-anchor",
+    "gpu_policy": "CPU2/0GPU/0updates;otherownersuntouched",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.phase_anchor --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wrongsource/checkpoint/RX/day,nonfinitepublicgain/Foutput,sourcepowererror,Fstatechange,collision:preserve/no autoretry. Undefinedcalibrationdirection orinvalidprobephase is scientific qualificationfailure;reportmissingFprobe,never invent referenceangle."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "values.npz",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "validfraction",
+      "circularresultant",
+      "meanphase",
+      "sessionmeanversusglobalangle",
+      "p95circulardeviation",
+      "heldoutFchoiceagreement",
+      "Fcosineerror",
+      "KL(clean||canonical)",
+      "powererror",
+      "strictglobalanchoreligibility"
+    ],
+    "dimensions": [
+      "62488calibrationall/15RXday",
+      "512heldout",
+      "5sourceRX"
+    ],
+    "prediction_ref": "Private publicgain/Ffeature-logit diagnostics,noTXtruth",
+    "scorer_ref": "IndependentNumPy recomputation of allcircular/Fstatistics from privateNPZ;no truth"
+  },
+  "rows": [
+    {
+      "row_id": "source-phase-anchor",
+      "method": "PublicLSTF phasegain,oneglobalcircularmean on62488,disjoint512phaseprojection andsameFpreservation",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/phase_anchor.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fseed2026092701/source split392005;fixedlinearspacing128Ls/384Us holdout;deterministic62488complement andpublicbank;no augmentation/support/trainingRNG.",
+      "k": null,
+      "scenario": "Sourceclean public reference only;noRX-specificcanonicalphase,nonewRMS/AGC/EQ/satelliteview",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "63000publiccorrelatorinputs;62488phasefit/512heldout;source2Ls actualFsmoke;1024Fanalysis ifallprobephasesdefined;CPU2/0GPU/G/updates",
+      "output_root": "runs/20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.phase_anchor --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "values.npz",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Prior Fphase source512x8 showed all7nonzeroangles fail identitychoicepreservation;do not ignoreoutputabsolutephase ortrain phasequotientloss. New study instead asks if actualsourceclean has one stable public reference,not if allphases are equivalent.",
+    "Existing ExcitationResponse finitebank has0 learnedparams,knownLSTF fromexisting pinnedreference. New helper reuses same80:160 window/CFOcorrection/4periodmean/unitenergy/320correlationbank,returns complexmatchedgain. No claim to identify RX/TX hardwarephase or IQ convention.",
+    "Alloriginal63000source L/U processedonce. Probe source512(L128/U384) excluded from62488phasefit;no perpacketTXtruth/Fmetrics usedforfit. Holdout is forphase statistic only,F50 has its originalfullsource trainingknowledge,not an unseenFdomain orindependentblindtest.",
+    "Oneglobalmu is unweighted circularmean of unitgain forabs(g)>1e-6. Invalidfractions reported. Mean direction undefined ifresultant<=1e-12;no default0angle. No receiver/day-specificdeploymentlookups,qualityweights,clusterselection ortargetcalibration.",
+    "Fixedqualifier ALLcalibrationvalid>=.999 andrho>=.99;EACH15RX/dayvalid>=.999,rho>=.95,meanwithin5degreesglobal. Heldout512correctedclean R=exp(i(mu−arggain)),sameF overallchoice>=99.5percent/EACHRX>=99percent/meanFcos<=.001/meanKL<=.001. Bothmustpass.",
+    "Ifmu undefined orany512gain invalid,do notcreateFcanonicalcomparison;report0Fanalysisandqualificationfalse. Otherwiseall512orig/canonicalF views reported even ifcircularcondition fails. Powercheck<=2e-6. Fstate/gradientsunchanged;0G/TX/V/target.",
+    "Real2LsoriginalFcheckpointsmoke first thencontinue. ReadexactoriginalFsourcecontract;classmapmetadata allowed,perrecordTXlabels neverloaded. Fsupervisedknowledge50/11100 costsdisclosed;sourceF informs methoddecision so notF-freedesign.",
+    "Anyphase/Ffailure means no globalanchor runtime/training fromthisstudy;no thresholdrelaxation/RX-specificfallback. Passingonlysupports separateregisteredGsourcepathstudy,not automaticformal targettest ordeploymentchange.",
+    "6focused publicphase/rotation,wrap/undefined,crosssession/Fguard,andexistingFmetric/phaseguardtestsPASS;oneindependentP0/P1review required. Onecodecommit/preflight/archiveSHA/compile/actualPID/CWD/argv/logpoststate only.",
+    "Publishonly aggregatecircle/Fstatistics andindependentrecomputation. Fullsourcegain/metadata/Ffeatures/logits stayprivate. HistoricalR52 referencecontrols andnegativephaseaugmentationkeepidentities;DURAdefault/full3ppcleanandefficiencygoal unchanged."
+  ],
+  "registered_at": "2026-10-30T14:48:10+00:00"
+}

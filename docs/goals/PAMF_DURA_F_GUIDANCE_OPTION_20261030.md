@@ -73,3 +73,6 @@ headFeature r02完整七景仍未达3pp后，另登记源阶段对照`20261030-d
 
 
 独立源域F相位诊断：20261030-diagnostic-DURA-source-Fphase-s2026092701-r01，固定同F50/原头/source512×8角度，CPU2/0更新/G读取0/逐样本TX-V-target读取0。只用于判断全局相位商空间损失是否值得另立研究，全部角度/RX阈值预登记；F-informed而非F-free设计，不改变默认或当前恢复器，完整3pp/clean/效率目标保持。
+
+
+公开L-STF全局相位参考诊断：20261030-diagnostic-DURA-source-phase-anchor-s2026092701-r01。原63k源中62488只拟合一个公共圆均值，512统计留出验证同F完整特征/原头保持；15RX/day逐一判据。0G/神经更新/逐样本TX/V/target，只属源F-informed设计检查，不继承全局相位不变性假设，不授权RX专属或目标相位拟合，默认保持。
