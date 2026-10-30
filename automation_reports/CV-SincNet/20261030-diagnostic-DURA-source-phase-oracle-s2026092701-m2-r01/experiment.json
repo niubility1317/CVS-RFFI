@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-30明确允许独立源F指导对照；仅用同冻结F源域特征约束身份，G单阶段从零，不直接TX/目标训练。当前只是该分支源诊断，无训练或部署变化。",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "7e2d22ed1fe0feeac1df8381be89e4bb527108c5",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01-release"
@@ -86,7 +86,7 @@
     "remote_run_root": "runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01",
     "remote_log_root": "logs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.phase_oracle --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.phase_oracle --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01 --commit 7e2d22ed1fe0feeac1df8381be89e4bb527108c5",
     "stop_rule": "Wrongsource/G/Fcontract/config,missingnativeviews/scenes,nonfiniteIQ/F/metrics,power/decompositionmismatch,state/gradientchange,collision:preserve/noautoretry;no performance stop/targetfeedback"
   },
   "expected_artifacts": [
@@ -148,7 +148,7 @@
       "budget_ref": "PerG2Lscheckpointsmoke+512x3Gforwards+2Fcases/view;overall3072G/6656Fanalysis,4G/Fsmoke;CPU2/0updates",
       "output_root": "runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01",
       "log_path": "logs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.phase_oracle --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.phase_oracle --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01 --commit 7e2d22ed1fe0feeac1df8381be89e4bb527108c5",
       "expected_artifacts": [
         "launch.json",
         "results.json",
