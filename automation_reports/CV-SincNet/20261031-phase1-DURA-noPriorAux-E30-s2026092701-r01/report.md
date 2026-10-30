@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-noPriorAux-E30-s2026092701-r01`
 - group_id：`phase1-dura-scratch-prior-IQ-loss-ablation`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -43,3 +43,8 @@ VERIFIED / RUNNING。代码 eb46cab8ef9c253c193a10db1724ed9835ed2cf9，6 项聚�
 controller 1104507、worker 1104599，实际 GPU 6；独立核实 /proc CWD、完整 argv/commit、CUDA、GPU PID 及日志增长。准入已有 1 个 compute PID、剩余 19245 MiB；此次后态 2 个 PID，本任务只加 1 个，未修改其他 owner。实际已 E1/30、247 更新，训练 F/TX/教师输入及初始化加载均 0。
 
 固定只去除 priorIQ 辅助拟合、保留 prior 网络与物理求解。当前没有正式成绩；固定 final30 后自动七景，source 误差或 clip 变化不取消测试。前序 coarsehint 已实际结束，后续仍按真实进程检查守住评分并发，耗时单列。
+
+
+## 完整训练与正式七景结果
+
+VERIFIED / ANALYZED。E30/7410/全七景与126组独立复算通过，clean84.676786%、lowurban66.020238%，七景均低于同预算physical；六景3pp/R17逐景1pp未通过，默认不变。循环1001.620秒，全流程1183.546秒。完整30曲线、全部组、显存/延迟/实际排队与权限见[详细分析](analysis.md)和results.json。

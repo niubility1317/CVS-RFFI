@@ -222,3 +222,6 @@ E30IQ增强既有14组冻结logits的事后概率分析完成（2b051a0c3），�
 
 
 源频率oracle fb1427f3c 完成，CPU14.557697s/F14848+2smoke/0G-update-TX-V-target/F不变，728组16744标量复算。弱Q4complex：noVar478→479/496→495，default486→484/498→498，不稳定；Q4phase/magnitude同样无稳定收益。强Q1complex：noVar494/507、default501/506（相对native+16/+11/+15/+8）。不因Q4相对误差大直接加权，不把选择一致当TXaccuracy；下一源检查分离Q1/Q2幅/相，非部署/非认证极限/不自动训练，默认与完整3pp/clean/效率目标保持。
+
+
+noPriorAux E30 eb46cab8e完整结束：7410步/L189000U1701000/0G祖先教师-F-TX-V-target训练，priorloss0而网络/4CG保留；全30loss重算及七景独立126组一致。clean84.676786（净+1raw）、lowurban66.020238，七景均低于E30physical、六景均低于默认，3pp/R17每景1pp未达。循环1001.619769s/全流程1183.545899s，实际前序进程检查.055396s，无他人干预。source/model准备未单独计时，不填0。默认保持，目标ACTIVE；源跨模型prior误差观察不足以证明删该辅助项有效。
