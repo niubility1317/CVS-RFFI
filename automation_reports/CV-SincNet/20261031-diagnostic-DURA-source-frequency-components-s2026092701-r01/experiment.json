@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-frequency-components-s2026092701-r01",
+  "group_id": "phase1-dura-source-frequency-oracle",
+  "display_name": "源强频点幅度与相位误差分离",
+  "description": "前次sourceQ1/Q2 complex修正有F选择收益，本次固定Q1/Q2 phase和magnitude四干预；0G/更新/TX/V/target，不自动训练。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "frequency",
+    "weak-bins",
+    "source-only",
+    "oracle"
+  ],
+  "comparison_group_id": "DURA-source-frequency-components",
+  "parent_run_ids": [
+    "20261031-diagnostic-DURA-source-frequency-oracle-s2026092701-r01",
+    "20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active recovery/efficiency goal and authorized frozen sourceF mechanism analysis;sourceclean only oracle,not deployable or new target prediction",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-DURA-source-frequency-components-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Existingphase-oracle noVar/DURA_default source512pairedIQ forcache01/20,originalR07sourceindices128L384U",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07sourceIDs[source_indices] mustexactmatchall4phase-oracleNPZs/sourcepositions/roles/clean",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "ExistingACTION_SOURCE_CACHE_COMPLETE original63000 roles;sourceIDs matched F",
+    "support_query_ref": "No query/support;source training-pool diagnostic",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "None",
+    "actual_training_labels": "No training;TX/V/target hidden;onlysourcepairedIQ andoriginalFcleanteacherchoice",
+    "augmentation": "No new corruption/input generation;sourceoracle modifiesexisting4IQcells"
+  },
+  "permissions": {
+    "regime": "Frozen_source_frequency_oracle_with_original_frozen_F",
+    "query_use": "NoTX/V/target;only originalsource L/U pairedIQ",
+    "external_method_exception": "Explicituserpermission2026-10-30 onlysourceFweights/featuresforG;notF-free;frozenFnoheadtraining/updates",
+    "claim_scope": "Fcleanchoice fidelity,notactualTXaccuracy/not targeteffect/not certified recoverability bound;not deployable/noautomatictraining"
+  },
+  "checkpoint": {
+    "initialization": "FrozenoriginalF only;noGloaded/no learnedstudent/nooptimizer",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Existingfrozen.load_reader strictFmetadata/ancestry/sourcecontract plusGsourceIDsrolebinding;read-onlypreflightL6300/U56700 sets match;noTXvaluesread",
+    "provenance_verdict": "OriginalF50/4df7 matchedsource7/63/30/sourceonlyoriginalhead;strictload_reader/2Lsactualsmoke thenoldpairedreferenceFfeatures/logitsreproduction;noGcheckpointloading",
+    "selection_rule": "Fixedoriginalsource512/all4cells/all7interventions;no selection ormodeltraining"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-frequency-components",
+    "gpu_policy": "CPU2/CUDAempty/GPU0workers;Fanalysis8704+smoke2;G0/optimizer0;noCPUtruthscorer;otherownersuntouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-frequency-components-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-frequency-components-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-frequency-components-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.source_frequency_components --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "stop_rule": "SourceID/roles/clean/oldFmetadata orreproduction/nonfinite/sourcepopulation/collision/budget/Fstatefailure:preserve/noautoretry;no performance stop/nootherownercontrol"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "noVar-1.npz",
+    "noVar-20.npz",
+    "DURA_default-1.npz",
+    "DURA_default-20.npz",
+    "results.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQ_NMSE",
+      "replaced_clean_energy_share",
+      "Fcosineerror",
+      "posterior_KL",
+      "Fcleanchoiceagreement",
+      "pairedrepair_damage",
+      "CPUcost"
+    ],
+    "dimensions": [
+      "noVar/DURA_default",
+      "cache01/20",
+      "phaseQ1/magnitudeQ1/phaseQ2/magnitudeQ2",
+      "scene/RX/day/role/state/lock"
+    ],
+    "prediction_ref": "PrivateoracleIQ/features/logits;sourceonly,not formalprediction",
+    "scorer_ref": "NoTXtruth;Fcleanargmax only/sourcepairedIQ;independentNumPyarithmetic aftercompletion"
+  },
+  "rows": [
+    {
+      "row_id": "strong_frequency_components",
+      "method": "Fourfixedsourceoracles:phase_Q1/magnitude_Q1/phase_Q2/magnitude_Q2;no repeatednativeFforward",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_efficiency/source_frequency_components.py",
+      "resolved_config_ref": "runs/20261031-diagnostic-DURA-source-frequency-components-s2026092701-r01/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "No sampling;originalfixedpositions/IDs andsourceF2026092701;originalsplit392005/cache2026101912;newrandomseednone",
+      "k": null,
+      "scenario": "ExistingR07sourcecached01/20 mixedseven;nonewchannels",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0G/updates;F512clean+4sourcecellsx4casesx512=8704+2smoke;nativebaseline fromcompletedprevioussourceoracle",
+      "output_root": "runs/20261031-diagnostic-DURA-source-frequency-components-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-frequency-components-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.source_frequency_components --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "noVar-1.npz",
+        "noVar-20.npz",
+        "DURA_default-1.npz",
+        "DURA_default-20.npz",
+        "results.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Basedonlyon completedsourcefrequencyoracle fb1427f3c:Q4complex/phase/magnotstableteacherchoicegain;Q1complex +16/+11/noVar,+15/+8/default,Q2complex+15/+4/+11/+1.Targetresultdoesnotsetthisfourcasematrix.",
+    "Fixedfourcases sourcecleanphase_Q1/magnitude_Q1/phase_Q2/magnitude_Q2;perpacketcleanrank64bins.No selection/re-ranking/modelupdates;allfourcases/allfourIQcells retained.Clean/nativesourceIQ andreferenceIDsoriginalphase-oracleunchanged.",
+    "ReuseoriginalsourceFcheckpoint/basecontracts andreal2Lsfirstsmoke/full512oldFcleanfeature-logitreproduction/statecheck;no Gloaded/nativeFnotrepeated,oldnativebaselinealreadyverifiedinfirstoracle.Finputs8704+2smoke;allprivateoutputs preserved.",
+    "Phase-onlykeepsobservedmagnitude;magnitude-onlykeepsobservedphase,andmayincreaseIQMSEwhenphasewrong;zero-coefficientneutralhandlingunchanged.Fcleanchoiceagreementonly/notTXaccuracy/notcertifiedceiling/notdeployable.",
+    "Primitive4testsPASS includingmagnitude-oracleMSEincreasewithwrongphase;ONEnewP0P1reviewPASS forwrapperandexactinputbudgetchange.Archives/Git/outputrootindependent;oldfb142releaseandoutputsnotchanged.",
+    "Descriptive source diagnostic/noautomatictrainingqualification;allsourceRXS/day/state/lock/scenes.NoTX/V/target/neuralupdates;doesnotchangefinishednoPriorAuxrecipe/defaultDURA/3ppgoal."
+  ],
+  "registered_at": "2026-10-30T20:23:06+00:00"
+}

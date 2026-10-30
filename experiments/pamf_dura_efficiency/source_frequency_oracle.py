@@ -132,7 +132,8 @@ def run(args):
             case_names=np.asarray(CASES),IQ=np.stack(saved_iq),F_features=np.stack(saved_f),F_logits=np.stack(saved_z),
             reference_F_features=numpy_values(rf),reference_F_logits=numpy_values(rz),**vectors)
         summary[model+'/'+view]=cell
-    if inputs!=14848 or any(not torch.equal(v,before[k]) for k,v in reader.state_dict().items()) or any(v.grad is not None for v in reader.parameters()):
+    expected_inputs=512+len(arrays)*len(CASES)*512
+    if inputs!=expected_inputs or any(not torch.equal(v,before[k]) for k,v in reader.state_dict().items()) or any(v.grad is not None for v in reader.parameters()):
         raise ValueError('Fixed F budget/state changed')
     training.write_json(output/'results.json',dict(status='ANALYZED_SOURCE_ONLY',run=RUN,commit=args.commit,
         summary=summary,source_run=SOURCE_RUN,source_records=512,L_s=128,U_s=384,

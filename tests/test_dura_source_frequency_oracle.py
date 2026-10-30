@@ -28,3 +28,11 @@ def test_phase_probe_preserves_spectral_magnitude_and_reference_identity():
 def test_invalid_boundary_is_rejected():
     with pytest.raises(ValueError):replace_bins(np.zeros((2,2,255)),np.zeros((2,2,255)),0)
     with pytest.raises(ValueError):replace_bins(np.zeros((2,2,256)),np.zeros((2,2,256)),4)
+
+
+def test_magnitude_oracle_can_raise_error_with_an_incorrect_phase():
+    x=np.ones((1,2,256),dtype=np.float32);z=-.2*x
+    _,magnitude=replace_bins(x,z,0,'magnitude')
+    _,phase=replace_bins(x,z,0,'phase')
+    assert magnitude['iq_nmse'][0]>magnitude['native_iq_nmse'][0]
+    assert phase['iq_nmse'][0]<phase['native_iq_nmse'][0]
