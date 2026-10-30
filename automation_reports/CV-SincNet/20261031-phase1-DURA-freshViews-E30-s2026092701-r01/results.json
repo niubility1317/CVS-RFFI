@@ -16526,8 +16526,16 @@
     "memory_scope": "Shared benchmark resident models and graphs;not standalone deployment VRAM"
   },
   "matched_control_run": "20261031-phase1-DURA-repeatViews-E30-s2026092701-r01",
-  "matched_comparison_status": "PENDING_CONTROL_COMPLETION",
-  "matched_control_delta": null,
+  "matched_comparison_status": "COMPLETE",
+  "matched_control_delta": {
+    "clean": -0.16845238095238096,
+    "practical_high": 1.3178571428571428,
+    "practical_mid": 1.099404761904762,
+    "practical_low_suburban": 0.5720238095238095,
+    "practical_high_urban": 1.1321428571428571,
+    "practical_mid_urban": 0.04345238095238095,
+    "practical_low_urban": -0.39880952380952384
+  },
   "historical_IQenhance_physical_CUDA_probe_seed_confounded": true,
   "CUDA_probe_seed": 2026092701,
   "numpy_shuffle_seed": 2026103004,
@@ -16539,5 +16547,8 @@
   "six_scene_gap3pp": false,
   "R17_atmost1pp_loss": true,
   "scenes_passing_gap3pp": 0,
-  "goal_complete": false
+  "goal_complete": false,
+  "matched_control_paired_groups": 126,
+  "matched_comparison_ref": "paired_comparison.json",
+  "matched_satellite_scenes_improved": 5
 }

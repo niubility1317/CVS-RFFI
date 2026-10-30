@@ -64,3 +64,8 @@ VERIFIED / RUNNING，学生训练阶段，执行32a32998d3c76105b017a0905300e8ed
 ## 本行完整七景结果
 
 VERIFIED / ANALYZED，本行30/7410/30不同source cache views、全七景168000/独立126组复算通过。clean84.461905%较raw少360，lowurban66.973810%，七景均低于默认/0of6通过3pp。源制备530.740140s、训练976.251282s、全分析1691.498856s；source额外4.1958GB另列，无神经teacher/F/TX/V/target训练。独立同CUDA探针纯G repeatViews主对照尚在训练，配对增益待完成，不用旧physical混杂对照提前归因。完整见[分析](analysis.md)、results.json。默认保持/目标ACTIVE。
+
+
+## 完整配对补齐
+
+独立repeatViews对照已完成；全部14份预测后truth-last、126配对分组复算一致。30份抽样相对20+repeat10在5/6星地提高0.043至1.318pp，但lowurban−.398810pp/−670、clean−.168452pp/−283。两组仍0/6满足3pp且clean低于raw；没有source或target回流调参。完整配对JSON、曲线和成本已补齐，默认保持/目标ACTIVE。

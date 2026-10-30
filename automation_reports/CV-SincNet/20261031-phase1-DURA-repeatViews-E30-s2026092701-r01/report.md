@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-repeatViews-E30-s2026092701-r01`
 - group_id：`phase1-dura-scratch-source-draw-count`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -43,3 +43,8 @@ VERIFIED / RUNNING，学生训练阶段，执行8cf8e22c9ffb54d271b22e621401de8e
 独立纯G重复对照，无增强分支/F训练/神经教师/额外数据制备。未来增强工厂修复的N607 Torch2.1纯CPUtrace已复测，CUDA种子调用只余2026092701，G643个初始state保持；0CUDA初始化/G-Fforward/checkpoint/更新/TX-V-target，旧archive和模型不改。评价会精确等fresh32a实际worker/scorer结束。
 
 已6/30轮/1482更新/L37800/U340200，当前五项加权loss独立复算一致，F/TX/神经teacher/初始化checkpoint训练读取0。当前只证明运行和输入日程，不是正式身份收益；固定final30后自动七景168000/truth-last与profile，默认保持/目标ACTIVE。
+
+
+## 完整训练与配对矩阵
+
+VERIFIED / ANALYZED。30/7410/全七景/126单行+126配对独立复算通过，clean84.630357/lowurban67.372619、0of6通过3pp。与fresh比较五景提高、lowurban及clean下降，不能换默认；训练981.684s/全分析1162.601s。完整训练、TX/RX/day、净纠错、随机数限制和成本见[分析](analysis.md)、results.json及fresh的paired_comparison.json。默认保持/目标ACTIVE。

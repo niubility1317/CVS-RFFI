@@ -267,3 +267,6 @@ SOURCE_COMPARISON_CORRECTION：N607 Torch2.1纯CPU工厂trace发现旧IQenhance 
 
 
 Fresh30本行正式结案：32a/30轮7410/L189000U1701000，实际sourceview1..30而非重复10，G训练F/TX/neuralteacher/initcheckpoint0。全7×168000固定后truth-last、126组独立一致，clean84.461905（raw−360条/−.214286pp）、lowurban66.973810%，七景均低于默认、0/6通过3pp；原R17逐景最多下降1pp的历史容忍通过，但当前优化目标未通过。额外源制备530.740140s/4.1958GB、G训练976.251282s、全分析1691.498856s；缓存可复用但成本不隐藏。独立同CUDAprobe纯G repeatViews8cf对照仍健康训练，当前matched_control_delta=null，不以旧physical探针混杂比较提前归因；两行不因本行target结果调参或重跑，默认保持/目标ACTIVE。
+
+
+纯G源抽样配对矩阵完整结案：repeat8cf E30/7410/source01..20+repeat10，clean84.630357/lowurban67.372619，30完整日志/126单行记录复算；fresh32a全30独立抽样同预算同G初值-CUDAprobe-npshuffle。全14预测核对后truth-last，126配对净纠错独立一致：fresh在5/6星地提高（high+1.317857/mid+1.099405/lowsub+.572024/highurban+1.132143/midurban+.043452），lowurban−.398810/−670、clean−.168452/−283；两组0/6通过3pp且clean低于raw，不替换默认。学生循环fresh976.251s/repeat981.684s，source新增530.740s/4.1958GB另计，全分析1691.499s/1162.601s；source第一20轮曲线IQ最大绝对差0.002244012，跨GPU不承诺逐位轨迹，单pair不称seed均值或统计显著。旧physical CUDAseed混杂与修复已披露，所有旧产物保持。当前两worker均自然结束，默认保持/目标ACTIVE。
