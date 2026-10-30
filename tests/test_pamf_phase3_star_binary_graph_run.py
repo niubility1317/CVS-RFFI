@@ -95,3 +95,31 @@ def test_nonzero_u_registry_protects_old_acceptance_with_graph_scores(tmp_path):
         np.testing.assert_array_equal(p['prediction'][da+2,accepted],p['prediction'][da,accepted])
         assert np.any(p['prediction'][da+2,~accepted]==6)
         assert not np.any((p['prediction'][da+2,~accepted]>=0)&(p['prediction'][da+2,~accepted]<6))
+
+
+def test_cross_backend_fp64_roundoff_reconstructs_using_saved_memory(tmp_path):
+    r,c,_=pipeline(tmp_path)
+    fit=r.core.fit;margins=r.core.margins
+    def rounded_fit(*args):
+        state,diag=fit(*args)
+        state['f']=np.nextafter(state['f'],np.inf)
+        diag['solve_residual_linf']+=2e-15
+        return state,diag
+    def rounded_margins(*args):return np.nextafter(margins(*args),np.inf)
+    with patch.object(r.core,'fit',side_effect=rounded_fit),patch.object(r.core,'margins',side_effect=rounded_margins):
+        _,p,_,_=r._predictions(c['output_root'])
+    assert p['prediction'].shape==(4,864)
+
+
+def test_reconstruction_still_rejects_substantive_memory_and_joint_changes(tmp_path):
+    r,c,_=pipeline(tmp_path);root=Path(c['output_root'])
+    with np.load(root/'adaptation/graph.npz',allow_pickle=False) as z:original={k:z[k].copy() for k in z.files}
+    for key,changed in [('f',original['f']+1e-8),('sigma',np.nextafter(original['sigma'],np.inf)),
+                        ('f',original['f'].astype(np.float32)),('ids',original['ids'][::-1])]:
+        bad=dict(original);bad[key]=changed;np.savez(root/'adaptation/graph.npz',**bad)
+        with pytest.raises(ValueError,match='graph memory'):r._predictions(root)
+    np.savez(root/'adaptation/graph.npz',**original)
+    with np.load(root/'predictions.npz',allow_pickle=False) as z:p={k:z[k].copy() for k in z.files}
+    p['joint_margins_DA1_REG0'][0,0]+=1e-8
+    np.savez(root/'predictions.npz',**p)
+    with pytest.raises(ValueError,match='joint decisions'):r._predictions(root)

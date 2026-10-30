@@ -29,6 +29,25 @@ FIELDS={'run_id','code_commit','source_root','U_public_root','U_capsule_id','U_s
 PRED_FIELDS={'ids','U_ids','state_names','prediction','closed_prediction','baseline_closed_prediction','knownness'}|{'joint_margins_'+s for s in STATES}
 DIAG_FIELDS=reciprocal.DIAG_FIELDS
 EVIDENCE_FIELDS={'ids','unit','logits','margins'}
+FP64_RECONSTRUCTION_ATOL=1e-12
+
+
+def _fp64_close(actual,expected):
+    return (actual.dtype==expected.dtype==np.float64 and actual.shape==expected.shape
+        and np.isfinite(actual).all() and np.isfinite(expected).all()
+        and np.allclose(actual,expected,rtol=0.,atol=FP64_RECONSTRUCTION_ATOL))
+
+
+def _graph_diagnostics_close(actual,expected):
+    if not isinstance(actual,dict) or set(actual)!=set(expected):return False
+    floating={'solve_residual_linf','energy_before','energy_after','f_min','f_max'}
+    for key,value in expected.items():
+        saved=actual[key]
+        if key in floating and value is not None:
+            if (type(saved) is not float or not np.isfinite(saved) or not np.isfinite(value)
+                or abs(saved-value)>FP64_RECONSTRUCTION_ATOL):return False
+        elif type(saved) is not type(value) or saved!=value:return False
+    return True
 
 
 def validate_config(c):
@@ -176,8 +195,16 @@ def _predictions(root):
     if not np.array_equal(evidence['ids'],p['U_ids']):raise ValueError('U memory alignment differs')
     graph,diag=core.fit(evidence['unit'],evidence['logits'],evidence['margins'],evidence['ids'])
     saved=_load_npz(root/'adaptation/graph.npz',{'unit','ids','sigma','f'});meta=_read(root/'adaptation/graph.json')
-    if (any(saved[k].dtype!=graph[k].dtype or not np.array_equal(saved[k],graph[k]) for k in saved) or meta!=dict(schema=core.STATE_SCHEMA,skipped=graph['skipped'],diagnostics=diag)
-        or done['graph_diagnostics']!=diag or frozen.get('graph_diagnostics')!=diag):raise ValueError('Frozen U graph memory does not reconstruct')
+    if (any(saved[k].dtype!=graph[k].dtype or not np.array_equal(saved[k],graph[k]) for k in ('unit','ids','sigma'))
+        or (not np.array_equal(saved['f'],graph['f']) if graph['skipped'] else not _fp64_close(saved['f'],graph['f']))
+        or set(meta)!={'schema','skipped','diagnostics'} or meta['schema']!=core.STATE_SCHEMA
+        or type(meta['skipped']) is not bool or meta['skipped']!=graph['skipped']
+        or not _graph_diagnostics_close(meta['diagnostics'],diag)
+        or done['graph_diagnostics']!=meta['diagnostics'] or frozen.get('graph_diagnostics')!=meta['diagnostics']):
+        raise ValueError('Frozen U graph memory does not reconstruct')
+    # Verify independently, then reconstruct deployment decisions from the exact
+    # saved memory rather than substituting a platform-specific LAPACK result.
+    graph=core._state(dict(schema=core.STATE_SCHEMA,skipped=meta['skipped'],**saved))
     states={};diagnostics={}
     for da in DAS:
         s=_load_npz(root/'adaptation'/(da+'.npz'),{'centers','radii'})
@@ -198,8 +225,12 @@ def _predictions(root):
     for i,name in enumerate(STATES):
         prediction,closed,knownness,joint=registry.infer(q['unit'],q['logits'],current[name[:3]],states[name[:3]],name.endswith('REG1'))
         actual=p['joint_margins_'+name]
-        if (actual.dtype!=np.float64 or not np.array_equal(actual,joint) or not np.array_equal(p['prediction'][i],prediction)
-            or not np.array_equal(p['knownness'][i],knownness) or not np.array_equal(p['closed_prediction'][int(name.startswith('DA1'))],closed)
+        if (not _fp64_close(actual,joint) or not np.array_equal(p['prediction'][i],prediction)
+            or not _fp64_close(p['knownness'][i],knownness)
+            or not np.array_equal(p['knownness'][i]>=0,knownness>=0)
+            or not np.array_equal(actual.max(1),p['knownness'][i])
+            or not np.array_equal(np.where(actual.max(1)>=0,actual.argmax(1),-1),p['prediction'][i])
+            or not np.array_equal(p['closed_prediction'][int(name.startswith('DA1'))],closed)
             or not np.array_equal(p['baseline_closed_prediction'],closed)):
             raise ValueError('Fixed identity, graph margins, joint decisions or old gate differ')
     return done,p,diagnostics,states
