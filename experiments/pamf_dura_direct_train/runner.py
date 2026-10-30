@@ -301,6 +301,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.phase_pair worker',
                 'pamf_dura_direct_train.analytic_rf worker',
                 'pamf_dura_direct_train.rx_canonical worker',
+                'pamf_dura_direct_train.enhanced worker',
                 'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
             goal_workers=sum(any(name in line for name in tokens) for line in commands)
