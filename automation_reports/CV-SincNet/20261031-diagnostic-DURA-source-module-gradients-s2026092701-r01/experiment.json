@@ -1,0 +1,163 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01",
+  "group_id": "phase1-dura-source-module-gradient-role",
+  "display_name": "单阶段恢复器源域模块分工梯度诊断",
+  "description": "旧noVar源E20 checkpoint，固定512源样本×缓存01/20/B32，final IQ与coarse clean/action/prior/STFT模块梯度几何；0新训练/F/TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "module-gradient",
+    "single-stage",
+    "training-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01",
+    "20261030-diagnostic-DURA-joint-gradient-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07same512sourcepositions128Ls384Us/cachedreceived01and20/sourcepairedclean-action",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsource_indices deterministic512 positions;original7/63/30 unchanged;privatepositions in32batchrecords",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "None",
+    "actual_training_labels": "No newtraining;pairedsourceclean/action,0TX/F/V/target"
+  },
+  "permissions": {
+    "regime": "Source_checkpoint_module_parameter_gradient_diagnostic",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Batchmean source localparametergradientgeometry only,notperexampleidentity/targetefficacy/recoverylimit;notnewG orautomatictraining"
+  },
+  "checkpoint": {
+    "initialization": "FixednoVarcf40sourcefinalE20;eval/requiresgrad onlytemporaryautograd;0optimizer/nocheckpointstateupdates",
+    "sources": [
+      "runs/20261030-phase1-DURA-direct-noVarAux-s2026092701-r01/scratch_joint/final.pt"
+    ],
+    "contract_check_ref": "no_variance.configure + originalstrict base.load_model cf40/fullconfig/aliases + validate_source20/4940/L126000U1134000/source-only flags/ancestor0/params266951",
+    "provenance_verdict": "Originalsource7/63/30 checkpoint fixedfinal beforetarget;no ancestor/teacher/TX/F/V/target optimization;strictloaderfirst andmodelstateunchangedafter",
+    "selection_rule": "PredesignatedexistingnoVar sourcefinal20/fixed512/all32batches;no targetranking ornewparentinitialization;benchmark exposed history disclosed"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-module-gradients",
+    "gpu_policy": "CPU2/CUDAempty/0GPU;nativeIQhintGPU6 unchanged;nottruthscorer",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_gradient.module_roles --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wrongsource/checkpoint/roles/shape/collision/nonfinitegradient/statechange/persistentgrad:preserve/noautoretry;scientificnegative closeswithoutrelaxingrule"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "modulegradientnorm/dot/cosine/normratio",
+      "all32batchlosses",
+      "coarseclean_finalIQ_conflict",
+      "actionprobe_finalIQ_conflict",
+      "actual1024sourceGinputs+2smoke/CPUcost/stateunchanged"
+    ],
+    "dimensions": [
+      "sourcecached01/20",
+      "32B32batches",
+      "coarse/action/prior",
+      "finalIQvscoarseclean/action.05/prior.1/STFT.05"
+    ],
+    "prediction_ref": "None,notnewG orformaltest",
+    "scorer_ref": "NoTX/F/truth;all32batchgeometry independentlyrecomputed fromnorm/dot;stateequality"
+  },
+  "rows": [
+    {
+      "row_id": "source-module-gradient",
+      "method": "SingleGforward/fiveautogradcomponents/uniquecompleteparameterpartition/nooptimizer",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_gradient/module_roles.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "Fixedfirst256Lsrolepositions;modelseedcontrolsrandomfactory;evalcontrols2probes;supportN/A;sourceR07receiverseed2026101911",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512uniquephysicalsource x2cachedviews=1024Ginputs+2realLscheckpointsmoke;32B32batches/5autogradlosses;CPU2/0GPU/0F/0updates",
+      "output_root": "runs/20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_gradient.module_roles --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Motivation fromsourcecode/modulecontract:originalmultistagetraining separatedcoarse/action/prior;onejoint trainingmaychangeintermediatemeaning.Coarseclean supervisiongradientwasnotpartofoldfive-lossgeometry;onlymeasurethisspecificmissingdirection,notassertgradientconflict.",
+    "FixedoldnoVarcf40source20/4940/ancestor0,notwaitingfornativeIQhinttargetandnotusingitforrules.No currenthealthyGconfiguration ortraining changed.No newGcreated,so0newformalquery.",
+    "Source512=128L384U exactlyexistingtraining-poolprobe,notheldoutV;twooriginalcacheviews01/20/all32batches.Originalsourceclean/simulatoractiontargets,TX/V/targetandFhidden.2sourceLs actualcheckpointsmokefirst;doesnotloadFnotconsumed.",
+    "Eachsourceforward return_coarseTrue reusedforfinalIQ/prior.1/STFT.05/action.05/coarsecleanIQ1.OriginalnoVar varianceaux0/notgradienttarget.GradientswithrespecttoalluniqueGparameters,partitionexactcoarse/action/prior,no new learnedhelper orhead.",
+    "autograd.grad retainsgraphonlywithincurrentbatch,allowunused explicitlyzeros,zero-normcosinenull;allcomponentgradientsfinite.Nomodeloptimizer,model.eval/fullstateequality/p.gradNone atfinish.",
+    "Predesignatedsourcehypothesis rule:coarse clean vsfinalIQ oncoarse group oractionprobe vsfinalIQ onaction group musthave32definedcosines and>=24negativeoutof32.Onlysupports furtherindependentstudyofthatmodulegradientrole;noautomatictraining oridentityqualification;failuremeansruleunchanged.",
+    "No claimthatpositivealignmentisoptimal ornegativecosinealoneprovesbadgeneralization;batchmean localgeometry/frozenE20point,notentiretrajectory/perexamplecausality.0F meansnotidentityevidence.",
+    "4focusedchecks(new3+existinggeometry1)PASS andoneP0P1PASS;onepreflight/archiveSHA/remotecompile/pinnedrelease/actualPID-CWD-argv-CUDA-logpoststate.OnlyCPU2 noGPU added,othersuntouched.",
+    "Any laternewG mustindependentlyregisterscratchsingleE30 andcompleteallsevenformaltruth-last.DefaultDURA/eachsatellitegap3pp/clean/efficiency acceptanceunchanged;diagnosticcompletionisnotgoalcompletion."
+  ],
+  "registered_at": "2026-10-30T22:12:56+00:00"
+}
