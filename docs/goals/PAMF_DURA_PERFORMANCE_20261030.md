@@ -204,3 +204,6 @@ source phase-only oracle闭合：固定noVar与default/source512×clean/缓存01
 
 
 E30单阶段IQ增强已完整30/7410及双读出七景，252组与全量成对IQ约束独立复算。physical/enhanced lowurban66.707143/66.039881%，clean84.842262/84.455952%，增强七景全负；low净−1121、clean净−649，clean类别1−7.6536pp。两个读出0/6达3pp，默认保持。G流程1611.311秒/26.855分钟，全流程2058.587秒/34.310分钟；G+F_B1默认4.6481ms、增强5.3925ms（共享负载）。实际930新增/267881总参数纠正原手算多100；未热改旧489程序/权重，未来本地配置已改且计数测试9PASS。该headfactor2受限增强未成功，不据目标再调幅度/权重；下一来源核查可研究原R17合规IQ教师如何帮助从零单阶段收敛，F来源权限保持。见20261031-phase1-DURA-IQenhance-E30-s2026092701-r01/analysis.md。
+
+
+原R17 IQ教师来源与路径已核实：原cd977/source7/63/30，coarse/action/prior各20历史组件轮次，无TX/F/target优化，sourceV标签选择先于target。CPU13.514224秒/512×2×4路径/208组2288统计复核。coarse IQ NMSE2.5020/2.3306%、cleanF一致467/487，比noVar coarse13.2109/12.7773%和257/272好；R17 stage1/2却不统一优于coarse，默认DURA中间IQ也不宜强认为clean。下一候选固定从零单阶段30轮，coarse/action/prior始终联合，前10轮原R17coarseIQ提示权重1→.1、后20轮0，基础noVar4项保持，无F/TX/V/target训练、无权重复制；计划teacherIQ630k缓存一次/完整成本后实测，仍待实现与实际发布。所有新版本正式七景保持，默认和逐景3pp目标ACTIVE。见20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01/analysis.md。
