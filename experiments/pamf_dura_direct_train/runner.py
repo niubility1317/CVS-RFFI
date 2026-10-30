@@ -182,7 +182,8 @@ def train(args,p):
             expected=dict(received=(63000,2,256),kernel=(63000,2,64),coefficients=(63000,4,256),variance=(63000,))
             if any(value.shape!=expected[key] or value.dtype!=np.float32 for key,value in arrays.items()):
                 raise ValueError('Fixed matching full sourceIQ/action epoch required')
-            totals=dict.fromkeys(('loss','iq_nmse','spectral_error','prior_nmse','action_probe_nmse','log_variance_mse'),0.)
+            totals=dict.fromkeys(('loss','iq_nmse','spectral_error','prior_nmse','action_probe_nmse','log_variance_mse',
+                                  *config.get('extra_loss_metrics',[])),0.)
             clipped=0;order=rng.permutation(63000)
             for offset in range(0,63000,256):
                 take=order[offset:offset+256]
@@ -298,6 +299,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.spectral_mix worker',
                 'pamf_dura_direct_train.posterior_guided worker',
                 'pamf_dura_direct_train.phase_pair worker',
+                'pamf_dura_direct_train.analytic_rf worker',
                 'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
             goal_workers=sum(any(name in line for name in tokens) for line in commands)
