@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-source-spectral-stress-s2026092701-r01",
+  "group_id": "phase1-dura-source-spectral-transfer",
+  "display_name": "DURA 源 RX 日期频谱重加权压力诊断",
+  "description": "源63000 L/U按15个RX/day统计PSD，构造正实增益并精确A配对，固定源512×2检查noVar恢复鲁棒性；CPU2/无标签或F指导。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "source-calibrated-spectrum",
+    "single-stage-efficiency",
+    "F-smoke-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01",
+    "20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-source-spectral-stress-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original source63000 L/U empirical15session PSD; original128Ls/384Us fixed positions × cached01/20 spectral stress; no V/target",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Existing R07 train opaque physical_ids/roles/rx/day order; no TX decoding; fixed source_indices reused from IQ baseline",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "none;noqueryorclassificationprediction"
+  },
+  "permissions": {
+    "regime": "source_IQ_only_frozen_G_diagnostic;F_noquery_smoke_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Empirical RX/day source distribution contrast, not causal receiver transfer function or TX identity truth. F weights only for first source2Ls no-query smoke, no F features/optimization metrics."
+  },
+  "checkpoint": {
+    "initialization": "No initialization or updates. Read fixed noVar source-final E20/4940/cf40 only and original frozen F50.",
+    "sources": [
+      "runs/20261030-phase1-DURA-direct-noVarAux-s2026092701-r01/scratch_joint/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "Fixed noVar scratch source-final without F/TX/target training; original source L/U physical IDs match frozen F source contract.",
+    "selection_rule": "Fixed matched noVar E20 source-final chosen before earlier target access, not ranked against E40/F-guided variants; old unchanged source IQ baseline reused, not an initialization."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-spectral-stress",
+    "gpu_policy": "CPU2/0GPU;0updates;otherownersuntouched",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-source-spectral-stress-s2026092701-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-source-spectral-stress-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-source-spectral-stress-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.spectral_stress --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-spectral-stress-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Existing source/checkpoint/baseline cohort mismatch, missing source RX/day handles, nonfinite PSD/metrics, state/gradient change or output collision: preserve and stop without automatic retry; no TX/V/target."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "spectral_bank.npz",
+    "epoch01.npz",
+    "epoch20.npz",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "empirical session PSD/gain bounds/floor fraction",
+      "original/styled common-power MSE",
+      "power relative error",
+      "exact-A noise replay error",
+      "style energy",
+      "fixed source-only training eligibility"
+    ],
+    "dimensions": [
+      "cached01/20",
+      "role/scene/state/lock/source_RX/source_day"
+    ],
+    "prediction_ref": "None; private source IQ/PSD-derived arrays only, no F feature or TX predictions",
+    "scorer_ref": "Independent bank/formula/aggregate/decision arithmetic from private source NPZ; no truth"
+  },
+  "rows": [
+    {
+      "row_id": "source-spectral-stress",
+      "method": "Empirical source-session spectral gain sqrt(smoothedPSD_dest/smoothedPSD_origin),another sourceRX;unit-RMS paired y+A(Sx-x)",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/spectral_stress.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103015
+      },
+      "seed_notes": "Fixed empirical15source sessions; independent NumPy destination draw2026103015, each otherRX session uniform; same destinations across cached01/20. G2026092701 fixed; supportN/A; no model updates.",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Source63000 PSD calibration once;source2Ls G/F smoke;512×2 oneGforward styled cases;unchanged originalIQ metrics reused;CPU2/0GPU/0updates",
+      "output_root": "runs/20261030-diagnostic-DURA-source-spectral-stress-s2026092701-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-source-spectral-stress-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.spectral_stress --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-spectral-stress-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "spectral_bank.npz",
+        "epoch01.npz",
+        "epoch20.npz",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Both cached source views require styled/original common-power MSE>=1.10, power relative error max<=2e-6 and same-A noise replay MSE/commonpower max<=1e-10. If eligible only, separately preregister scratch E20/4940,p.5 spectral augmentation,one G forward. Otherwise no training from this candidate. No F or TX criterion.",
+    "Use all63000 legal source clean IQ only (L6300/U56700),15 existing RX/day sessions,4200 each. Fixed9-bin periodic PSD smoothing and floor .001 of pooled mean power. Positive real gains derive only from source PSD ratios. No target estimate or hand tuning of amplitude.",
+    "Each512 fixed source position draws destination uniformly among12 source sessions with different RX. RMS remains unchanged; source action and noise preserved with y+A(Sx-x). Spectral phase is preserved, reweighting is invertible for nonzero IQ. It is not a measured causal RX response.",
+    "Earlier two-tap/image perturbation failed its10% rule and is not trained or enlarged. This is a distinct source-calibrated spectral family, with the same stress criterion; source calibration does not use its F metric fields.",
+    "Reused unchanged noVar original IQ errors from prior diagnostic6328 execution; selective NPZ fields only. Exact source positions/roles/scene-state-lock checked before reuse. No repeated unchanged baseline G forward apart from required actual2Ls smoke.",
+    "F is loaded only for first source2Ls noquery smoke and released before calibration/stress; F feature analysis0, F optimization0, directTX/V/target0. Source noVar weights are unchanged; no new G version/target prediction.",
+    "Three focused positive/reciprocal/invalid-bank, RMS/phase/invertibility and noncommuting-A noise tests PASS; one independent P0/P1 review required. Single archive/preflight/compile and actualPID/CWD/env/log check only.",
+    "All prior E20/E40/F-guided negatives and defaultDURA preserved. The previous goal turn made progress through completeE40 formal/independent126group evidence. Goal remains all6 within3pp of same rawclean plus clean preservation and measured efficient training."
+  ],
+  "registered_at": "2026-10-30T11:44:36+00:00"
+}
