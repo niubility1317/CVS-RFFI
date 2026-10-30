@@ -991,3 +991,14 @@ source/sourceNV、U/Q角色、旧六及三非旧TX、RX24-1/index26、U03-08/Q03
 ### 2026-10-31 冻结 GMM 类别竞争拒识预登记
 
 Run `20261031-phase3-class-competition-s2026092701-r01` / actualcode `b30db356419342dd15ecf811e444916aa1e5c4df`，四列pooled_ratio/predicted_ratio/class_competition/hybrid_competition，唯一主最后。原sourceF0/defaulthead/G/r03/known90/OE32/白化及两old6tau保持；每类15等质量ℓ_j，b_c=logmeanother，诊断ℓ_c−b_c、主ℓ_c−logaddexp(ℓOE,b_c)+log2，背景0.5/0.5/T1固定，不把旧OVA等竞争泛称首次。原F0 c不变、不densityargmax/另训身份头。actual3CP synthetic2首步→公式与exactdensity冻→源V27000两new6tau/旧two6tau exact→全τ冻→NV3150/clean864/star864三DURA全四列pred→CPU3truth-last。newNN/density/normalizer/真实GFsignal/源IQ/U0，原source训练/cache和统计成本继承；Vonly新12标量实际fit。gate保留sourceknown12、clean95/star90/CK90/同DURA闭集损2pp、主景coverage及主starAK/RU不低于原predicted；source失败不取消Q。历史NV/Q/单RXseed/source日期重合/high未知缺19-15 NA、正式RX未读不变，无targetDA/发现/注册，AN/HOW=N/A；原重点候选和对照保持，完整目标ACTIVE，当前无新性能。见`docs/PAMF_PHASE3_CLASS_COMPETITION_PLAN_20261031.md`。
+
+
+### 2026-10-31 冻结 GMM 类别竞争拒识完整结果
+
+Run `20261031-phase3-class-competition-s2026092701-r01` / actualcode `b30db356419342dd15ecf811e444916aa1e5c4df`，四列×三DURA预测及独立三truth评分COMPLETE，执行VERIFIED、科学NO_PROMOTION。唯一主hybrid_competition source/clean/star宏AK/CK/RU/H分别89.688889/96.514815/61.301587/72.826729%、68.576389/85.069444/100/81.359423%、62.673611/83.506944/76.736111/68.995607%；sameDURA原F0闭集损1.292593/11.458333/10.243056pp。源known12通过不代替跨RX综合门槛，星地CK/RU/原F0保护及必需场景仍失败。
+
+对原predicted_ratio：source旧正确18增33失/net−15、unknown拒对33增53失/net−20；clean旧正确0增13失/net−13、unknown拒对不变；star旧正确0增8失/net−8、接收0增12失/net−12、unknown拒对1增2失/net−1，AK−1.388889pp/RU−0.347222pp/H−0.976718pp，不能替换原重点候选。仅known竞争诊断starAK64.583333/CK86.979167/RU22.569444/H33.449535%，局部旧AK微增不能掩盖未知大量误接收，更不能把类间自信等同开放集已知证据；保持原predicted_ratio重点候选与pooled_ratio冻结对照，不据Q重调0.5/T1、换主或选择性重跑。
+
+原F0默认c、G/r03、known90/OE32/normalizer及两old6τ精确保持；主密度背景0.5OE+0.5otherknown、诊断无OE，只新公式而无新NN/Gaussian/normalizer统计参数。sourceL/OE/Us/U/真实GFsignal新读及前向0，actual三CP synthetic2each首步PASS；V27000额外knownlabels新校准two6τ=12标量96B，旧12exact，总24τ192B，原density364340B/NN834665、source训练及cache成本继承，无逐行source/U bank部署。U/正式RX24-18不访问，无DA/发现/匿名REG，AN/HOW=N/A；历史sourceNV/devQ、单seed/RX/source日期重合/high缺19-15之RU/H NA保持，完整目标ACTIVE。
+
+predict17.873421s/CPUscore15.735417s/pipeline33.693221s为完整进程非B1。独立driver1253032与CPUscorer1253692的CWD/fullargv/CUDAempty、predict日志0→674B/score47B/driver21B及终态live/owned空已核；producer1253122/GPU4只有pipeline配置/产物和实际smoke证据，未独立捕获predictorlive或显存样本，不虚报GPU/peak、不补遥测重跑，foreign0。9unique+30sub/一次P0P1PASS，661files/data0单archiveSHA/compile/runtimeVERIFIED。详见`docs/PAMF_PHASE3_CLASS_COMPETITION_RESULTS_20261031.md`。

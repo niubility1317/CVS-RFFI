@@ -15,3 +15,13 @@ newNN/真实F0Gsignal/sourceIQ0，新density/normalizer/statisticalparameters0�
 N607解释器 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-class-competition-s2026092701-r01-release`，唯一owner `codex-phase3-class-competition-20261031`；不可覆盖root `/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-class-competition-s2026092701-r01`。命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_class_competition_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-class-competition-s2026092701-r01-release/runtime.json`。单producerGPU空闲≥4096MiB/每卡新增本任务≤2，CPU评分CUDAempty；不停止/修改/重启其他owner。
 
 聚焦core/producer→CPU/launcher协议负测、唯一直接P0/P1通过；具体测试数及证据在private verification.json。一次preflight/archive SHA/compile，启动核PID/CWD/argv/GPU/log增长。非法角色/祖先/非有限/输出碰撞/无法合法pred保留，无partial truth/覆盖重启；UNKNOWN先核原PID/root，科学低分不停健康任务。IQ/weights/preds/rawlogs/private runtime不进Git。
+
+## 最终结果（ANALYZED_DEVELOPMENT / NO_PROMOTION）
+
+唯一主hybrid_competition，source/clean/star AK89.688889/68.576389/62.673611%、CK96.514815/85.069444/83.506944%、RU61.301587/100/76.736111%、H72.826729/81.359423/68.995607%。
+主−predicted：clean正确0增13失；star正确0增8失、未知拒对1增2失，AK/RU/H下降1.388889/.347222/.976718pp。class_competition星地AK64.583333但RU22.569444，不能换主或称无OE训练。
+同DURA原F0闭集损source1.292593/clean11.458333/star10.243056pp；sourceknown12通过但42未全过，未来CK/2pp/星地RU失败，high缺19-15相关RU/H N/A。旧predicted重点候选/pooled冻结对照保留，NO_PROMOTION/目标ACTIVE。
+固定GMM新公式为lc−logaddexp(lOE,logmeanother)+log2；不是此前未做类竞争。NN/Gaussian/normalizer新fit0，但额外V27000标签实际新校准12τ，旧12exact，24FP64=192B；已存下一tail受RX3损2.0185185pp约束，无新扫描。
+真实GFsignal/sourceL/OE/U0，三CP synthetic各2；NN834665/density364340B及原训练/cache成本继承，无prior/sourcebank，AN/HOW N/A、无UDA/REG。
+predict/score/pipeline=17.873421/15.735417/33.693221s；独立driver/CPUlive-CWD-argv-CUDAempty已捕获，predictor仅pipeline GPU4/产物，显存UNKNOWN；终态live/GPU空foreign0，三生产stdout无warning/error。
+9unique+30sub、一次review，单包661files/data0、SHA/compile/runtime VERIFIED。完整12点/全分组/三pair见[公报](../../../docs/PAMF_PHASE3_CLASS_COMPETITION_RESULTS_20261031.md)，未新增实验或重评分。
