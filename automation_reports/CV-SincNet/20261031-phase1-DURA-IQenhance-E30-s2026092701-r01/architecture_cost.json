@@ -1,0 +1,22 @@
+{
+  "physical_parameters": 266951,
+  "enhancer_parameters": 1030,
+  "total_parameters": 267981,
+  "physical_ConvLinear_MAC_per_IQ": 25068072,
+  "enhancer_ConvLinear_MAC_per_IQ": 208896,
+  "total_ConvLinear_MAC_per_IQ": 25276968,
+  "enhancer_conv_MACs": [
+    114688,
+    20480,
+    65536,
+    8192
+  ],
+  "relative_parameter_increase_percent": 0.3858385995931838,
+  "relative_ConvLinear_MAC_increase_percent": 0.8333149832982768,
+  "FP32_parameter_bytes": 1071924,
+  "physical_prior_calls": 2,
+  "physical_CG_updates": 4,
+  "physical_FFT_IFFT_calls": 27,
+  "extra_deployment_F_calls": 0,
+  "scope": "Conv1d+Linear only;excludesFFT/CG/norm/activation/memory/F;physicalsamegraph as frozen_version;actualruntime andcheckpointbytes await finalartifacts"
+}

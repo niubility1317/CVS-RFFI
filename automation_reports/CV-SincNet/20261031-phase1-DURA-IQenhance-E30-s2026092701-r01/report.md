@@ -35,3 +35,10 @@
 ## 启动独立读回
 
 VERIFIED / RUNNING。代码 489f339757b7b3fb9214b3341d780ec98bb14e89；9项聚焦检查、唯一P0/P1审查及原入口P1定点复核通过；一次N607preflight、单归档SHA比较、远端compile通过。controller PID1018738 的 /proc CWD/完整argv/空CUDA读回存在，source2Ls真实F冻结、F梯度隔离、两组G梯度、严格重载、非零增强优化路径smoke PASS。 worker/PID/GPU：{'pid': 1024839, 'GPU': 4, 'command': ['/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python', '-u', '-m', 'experiments.pamf_dura_direct_train.enhanced', 'worker', '--root', '/home/szu2070436088/2510044040/CV-SincNet', '--commit', '489f339757b7b3fb9214b3341d780ec98bb14e89', '--arm', 'scratch_joint'], 'admission': {'visible_GPU_compute_PIDs': 2, 'free_memory_MB': 22382, 'maximum_total_after_adding': 3}}。其他owner未改动；排队不等于训练已完成。完整E30双读出七景与实测成本仍待完成。
+
+
+## 双读出独立分析准备
+
+新增只读CPU复核程序 enhancement_pair_score.py：仅当原run全部结束且两读出14个target输出和两套基准七景完整后连接truth/clean，复算252个官方分组与每景IQ误差，并新增增强相对物理输出的126组净纠错。对实际成对IQ检查5% RMS修正上限与复增益/相位投影；数值容忍分别0.05001和非微小修正的归一化内积0.003。它不改变正在运行的模型、训练配方、预测或冻结选择。两个针对性算术/边界检查通过，实际全量验证待正式产物完成。
+
+结构成本独立列于architecture_cost.json：整网267981参数、FP32参数1071924字节；卷积/线性MAC25.276968M，其中新增0.208896M（约0.833%）。物理图仍2prior/4CG/27FFT，部署只用增强输出时不增加F调用。MAC不包含FFT/CG/归一化/激活/访存，不据其涨幅推定实际延迟；正式配对预测会计算两次F，仅用于比较，不冒充单输出部署成本。
