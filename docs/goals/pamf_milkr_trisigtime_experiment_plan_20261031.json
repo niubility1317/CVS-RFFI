@@ -1,0 +1,286 @@
+{
+  "schema": "pamf_milkr_redesign_plan_v1",
+  "date": "2026-10-31",
+  "status": "DESIGN_ONLY_NOT_IMPLEMENTED_NOT_LAUNCHED",
+  "plan_id": "milkr-trisigtime-redesign-20261031",
+  "run_id": null,
+  "method_identity": "PAMF: frozen Tri-SIG-TIME SSL plus proposed MILKR candidates",
+  "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "new_F_training": 0,
+  "new_DURA_training": 0,
+  "target_backprop_steps": 0,
+  "source_calibration": {
+    "seed": 2026092701,
+    "source_RX": 5,
+    "episodes_per_RX": 8,
+    "physical_support_per_class": 5,
+    "held_per_class": 32,
+    "lambda_grid": [
+      0.001,
+      0.01,
+      0.1,
+      1.0
+    ],
+    "selected_lambda": null,
+    "fixed_RBF_scales": [
+      0.25,
+      1.0,
+      4.0
+    ],
+    "source_factorization_upper_bound": 3360,
+    "F_inputs": 17760,
+    "DURA_inputs": 8880,
+    "pseudo_novel_limitation": "F already saw all source classes and RX; head-level proxy only"
+  },
+  "views": {
+    "S0": [
+      "received"
+    ],
+    "S1": [
+      "DURA(received)"
+    ],
+    "SD": [
+      "received",
+      "DURA(received)"
+    ],
+    "SD_is_original_S1": false,
+    "physical_K_multiplier": 1,
+    "Q0_DURA_calls": 0,
+    "all_paths_share_query_blindness": true
+  },
+  "variants": [
+    {
+      "id": "R0",
+      "geometry": "historical_v1",
+      "B_prior": null,
+      "C_prior": "refit",
+      "views": [
+        "S0",
+        "S1"
+      ],
+      "reuse": true
+    },
+    {
+      "id": "R1",
+      "geometry": "new",
+      "B_prior": "zero",
+      "C_prior": "zero",
+      "views": [
+        "S0",
+        "S1"
+      ]
+    },
+    {
+      "id": "R2",
+      "geometry": "new",
+      "B_prior": "h_A",
+      "C_prior": "embed(h_A)+Pi_C",
+      "views": [
+        "S0",
+        "S1"
+      ]
+    },
+    {
+      "id": "R3",
+      "geometry": "new",
+      "B_prior": "h_A",
+      "C_prior": "embed(f_B)+Pi_C",
+      "views": [
+        "S0",
+        "S1"
+      ]
+    },
+    {
+      "id": "R4",
+      "geometry": "new",
+      "B_prior": "mean(h_A)",
+      "C_prior": "embed(h_A)+Pi_C",
+      "views": [
+        "SD"
+      ]
+    },
+    {
+      "id": "R5",
+      "geometry": "new",
+      "B_prior": "mean(h_A)",
+      "C_prior": "embed(f_B)+Pi_C",
+      "views": [
+        "SD"
+      ]
+    }
+  ],
+  "target_matrix": {
+    "data": "existing r10 threepool VALIDATED_ONCE",
+    "pools": [
+      "P01",
+      "P02",
+      "P03"
+    ],
+    "RX": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "K": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "N": [
+      2,
+      5,
+      10,
+      20
+    ],
+    "query": "full registered-class support complement, min 176 at K20",
+    "mixture_probabilities": "unchanged original full precision configuration",
+    "target_selection_or_tuning": false,
+    "main": {
+      "cells": 672,
+      "states": 6048,
+      "factorizations": 4032,
+      "metric_rows": 12096
+    },
+    "curves_additional": {
+      "base_cells": 84,
+      "states": 8316,
+      "factorizations": 4536,
+      "metric_rows": 16632
+    },
+    "pure_scenes": {
+      "cells": 1260,
+      "states": 11340,
+      "factorizations": 7560,
+      "metric_rows": 22680
+    },
+    "ablations_additional": {
+      "base_cells": 84,
+      "states": 1344,
+      "factorizations": 1344,
+      "metric_rows": 2688
+    },
+    "total_new": {
+      "states": 27048,
+      "factorizations": 17472,
+      "metric_rows": 54096
+    }
+  },
+  "optional_extensions": {
+    "sequential_C": {
+      "updates_upper_bound": 2016,
+      "metric_rows_upper_bound": 4032,
+      "sessions": 4,
+      "new_classes_each": 5,
+      "orders": [
+        "fixed_forward",
+        "fixed_reverse"
+      ]
+    },
+    "H_source": {
+      "rank_per_block": 8,
+      "ridge": 0.01,
+      "FP32_scalars": 13248,
+      "target_rows_automatically_added": false,
+      "source_mapping_fits": 5,
+      "source_head_fits": 120
+    },
+    "full_view_loss_target": false
+  },
+  "memory_payload_estimates": [
+    {
+      "K": 5,
+      "N": 20,
+      "physical_rows": 130,
+      "support_views": 1,
+      "feature_bytes": 382720,
+      "cholesky_bytes": 135200,
+      "coefficient_bytes": 27040,
+      "payload_bytes": 544960,
+      "payload_MiB": 0.51971435546875,
+      "scope": "one_full_Cholesky_plus_features_plus_merged_coefficients_only"
+    },
+    {
+      "K": 5,
+      "N": 20,
+      "physical_rows": 130,
+      "support_views": 2,
+      "feature_bytes": 765440,
+      "cholesky_bytes": 135200,
+      "coefficient_bytes": 27040,
+      "payload_bytes": 927680,
+      "payload_MiB": 0.88470458984375,
+      "scope": "one_full_Cholesky_plus_features_plus_merged_coefficients_only"
+    },
+    {
+      "K": 20,
+      "N": 20,
+      "physical_rows": 520,
+      "support_views": 1,
+      "feature_bytes": 1530880,
+      "cholesky_bytes": 2163200,
+      "coefficient_bytes": 108160,
+      "payload_bytes": 3802240,
+      "payload_MiB": 3.6260986328125,
+      "scope": "one_full_Cholesky_plus_features_plus_merged_coefficients_only"
+    },
+    {
+      "K": 20,
+      "N": 20,
+      "physical_rows": 520,
+      "support_views": 2,
+      "feature_bytes": 3061760,
+      "cholesky_bytes": 2163200,
+      "coefficient_bytes": 108160,
+      "payload_bytes": 5333120,
+      "payload_MiB": 5.0860595703125,
+      "scope": "one_full_Cholesky_plus_features_plus_merged_coefficients_only"
+    }
+  ],
+  "external": {
+    "DA": [
+      "DADDA-SDA",
+      "MRIOR-SDA",
+      "ProtoNet CDA",
+      "RadioNet ADA+kNN",
+      "Two-stage SDA",
+      "Hu2024 feature separation",
+      "POSTER FT"
+    ],
+    "CIL": [
+      "ISSL",
+      "Orthogonal SEI",
+      "LoRa Triplet+kNN"
+    ],
+    "unbound_native": [
+      "Tweak M10",
+      "CSIL MATLAB/Fisher",
+      "MoPC-HR original encoder"
+    ],
+    "generic_BC_combinations_added": false,
+    "reuse_complete_same_protocol": true
+  },
+  "authorization": {
+    "design_only": true,
+    "commands_or_remote_processes_started": false,
+    "existing_workers_modified": false
+  },
+  "gpu_future": {
+    "host": "N607",
+    "max_own_workers_per_card": 2,
+    "others_additional": true,
+    "memory_preflight_required": true
+  },
+  "evidence_report": "docs/analysis/PAMF_PHASE2_DIAGNOSIS_20261031.md",
+  "design_report": "docs/goals/PAMF_MILKR_TRISIGTIME_REDESIGN_20261031.md"
+}
