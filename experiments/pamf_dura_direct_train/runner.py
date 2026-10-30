@@ -118,6 +118,10 @@ def source_training(p):
     return clean,roles
 
 
+def training_pair(received,clean,actual_action,source_positions):
+    return received,clean
+
+
 def smoke(args,p):
     clean,roles=source_training(p)
     take=np.flatnonzero(roles=='L_s')[:2]
@@ -127,6 +131,7 @@ def smoke(args,p):
     x=tensor(clean[take],'cpu');y=take_array('received')
     action=supervised_action(take_array('kernel'),take_array('coefficients'))
     noise=take_array('variance')
+    y,x=training_pair(y,x,action,take)
     student=scratch_model(2026092701)
     if student.initialization_report.get('clean_identity_initialization'):
         with torch.no_grad():
@@ -184,6 +189,7 @@ def train(args,p):
                 x=tensor(clean[take],'cuda:0')
                 values={key:tensor(value[take],'cuda:0') for key,value in arrays.items()}
                 action=supervised_action(values['kernel'],values['coefficients'])
+                values['received'],x=training_pair(values['received'],x,action,take)
                 probes=[torch.complex(torch.randn(len(take),256,device='cuda:0'),torch.randn(len(take),256,device='cuda:0')) for _ in range(2)]
                 optimizer.zero_grad(set_to_none=True)
                 for group in optimizer.param_groups:group['lr']=learning_rate(updates)
@@ -289,6 +295,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.f_guided worker','pamf_dura_direct_train.head_guided worker',
                 'pamf_dura_direct_train.head_guided_capacity3 worker',
                 'pamf_dura_direct_train.long_budget worker',
+                'pamf_dura_direct_train.spectral_mix worker',
                 'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
             goal_workers=sum(any(name in line for name in tokens) for line in commands)

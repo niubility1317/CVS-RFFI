@@ -1,0 +1,211 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase1-DURA-source-spectralMix-s2026092701-r01",
+  "group_id": "phase1-dura-source-spectral-transfer",
+  "display_name": "DURA 源频谱配对增强单阶段恢复对照",
+  "description": "源统计校准频谱增益，每次p.5精确A配对增强，一次G前向；从零单阶段E20/4940，无F/恢复器教师，自动全七景truth-last。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "single-stage",
+    "scratch",
+    "source-calibrated-spectrum",
+    "paired-augmentation",
+    "training-efficiency"
+  ],
+  "comparison_group_id": "DURA-scratch-fastLR-noVarAux",
+  "parent_run_ids": [
+    "20261030-diagnostic-DURA-source-spectral-stress-s2026092701-r01",
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30 /goal星地性能接近clean；用户新增优化训练效率、多阶段太浪费时间；六景各自距rawclean<=3pp确认",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-DURA-source-spectralMix-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original63000 source L/U20corruption epochs, pairedclean IQ and actual source A; p.5 empirical source-session spectral reweighting with same A/noise and inputRMS",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Sourcepairedclean and source simulatoraction;variance diagnostic log only;TX0/F0/V0/target0",
+    "augmentation": "UnchangedR07clean15%/nativepractical85%cache;no newreceivedorroles"
+  },
+  "permissions": {
+    "regime": "source_IQ_and_simulator_action_only;F_noquery_smoke_and_frozen_evaluation_only",
+    "query_use": "allsevenpredictionsbeforeindependenttruthlast",
+    "external_method_exception": null,
+    "claim_scope": "G training has0direct TX/F/V/target; empirical sourcePSD is not causal RX identification or TX fidelity proof; old default unchanged."
+  },
+  "checkpoint": {
+    "initialization": "Random scratch graph only; no G/checkpoint/teacher/coarse/estimator ancestor",
+    "sources": [],
+    "contract_check_ref": "OriginalvalidatedsourceR07cache;randomfactorygraphonly;F50/R69weightsforpostfreezeevalreferenceonly",
+    "provenance_verdict": "No initialization weights; original7/63/30 legal L/U source handles and source-only fixed PSD calibration reuse. F50 only smoke/frozen evaluation; existing checkpoints retain identities.",
+    "selection_rule": "Fixed finalE20/4940, no source/target ranking or intermediate selection; noVar E20 only a comparison, not initialization."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-direct-single-stage",
+    "gpu_policy": "One own worker on one of GPU4/6/7 with>=12000MiB free and<=2 existing compute PIDs before adding (total<=3);one own/card,goal<=2;other owners untouched",
+    "remote_run_root": "runs/20261030-phase1-DURA-source-spectralMix-s2026092701-r01",
+    "remote_log_root": "logs/20261030-phase1-DURA-source-spectralMix-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-source-spectralMix-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.spectral_mix run --root ../.. --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badcontract/role/outputcollision/nonfinite/checkpoint/smoke/predictioncoverage: preservefailedrow,noautomaticretry/hotedit;healthyrowcontinues;no performance stop;unrelatedowneruntouched"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-ARM.json",
+    "ARM/final.pt",
+    "ARM/training.jsonl",
+    "ARM/training_complete.json",
+    "ARM/matched_profile.json",
+    "ARM/source_prediction/complete.json",
+    "ARM/source_summary.json",
+    "ARM/target_prediction/complete.json",
+    "ARM/target_summary.json",
+    "ARM/complete.json",
+    "complete.json",
+    "spectral_smoke.json",
+    "scratch_joint/source_pairing_summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "MacroF1",
+      "Correct",
+      "repair_damage_net",
+      "TX/RX/day",
+      "rawclean_gap_pp",
+      "DURAv1delta_pp",
+      "clean_damage",
+      "G/GplusFsamecardB1/B128median/P95/throughput",
+      "parameters",
+      "parameterbytes",
+      "checkpointbytes",
+      "MAC",
+      "FFT_CG",
+      "sharedbenchmarkpeakVRAM",
+      "trainingfullcurves"
+    ],
+    "dimensions": [
+      "arm",
+      "clean/sixpractical",
+      "TX",
+      "RX",
+      "day",
+      "originalF50seed2026092701"
+    ],
+    "prediction_ref": "ARM/{source,target}_prediction;allsevencompletebeforetruth",
+    "scorer_ref": "IndependentCPU subprocess runner score;sourceafterfreeze;targetafterallnewandbaselineviewsvalidated;noqueryfeedback"
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "Scratch noVar E20 plus empirical source spectral paired augmentation,p.5,one G forward",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/spectral_mix.py",
+      "resolved_config_ref": "runs/20261030-phase1-DURA-source-spectralMix-s2026092701-r01/scratch_joint/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model2026092701,shuffle2026103004,nativecorruptions2026101912,independent pairmask/destination2026103016 reset afterCPU smoke;sourcebank fixed15sessions;eval2027 originalF;supportN/A.",
+      "k": null,
+      "scenario": "Original source20 native route-mix includingclean; p.5 source spectral virtual reference paired through same frozen actual A/noise",
+      "optimizer": "resetAdamW",
+      "lr": 0.001,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "E20/4940,B256,L126000/U1134000,one jointstage/zero neural ancestors;sourcePSD63k precompute.252s reused separately;one Gforward/visit",
+      "output_root": "runs/20261030-phase1-DURA-source-spectralMix-s2026092701-r01/scratch_joint",
+      "log_path": "runs/20261030-phase1-DURA-source-spectralMix-s2026092701-r01/logs/scratch_joint.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.spectral_mix worker --root ../.. --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-ARM.json",
+        "ARM/final.pt",
+        "ARM/training.jsonl",
+        "ARM/training_complete.json",
+        "ARM/matched_profile.json",
+        "ARM/source_prediction/complete.json",
+        "ARM/source_summary.json",
+        "ARM/target_prediction/complete.json",
+        "ARM/target_summary.json",
+        "ARM/complete.json",
+        "complete.json",
+        "source_pairing_summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only spectral diagnostic a55b378eb47a6796ab375d2884f2e71b541a74a6 passed prespecifiedMSE>=10% both views: +32.311503/+25.354464%,power max2.384e-7/noise3.971e-14. Independent57600gain values/780stats verified;not target-derived parameters.",
+    "PSD bank from original63000L/U/15RX-day sessions,4200each;fixed9bin smoothing/.001relativefloor (actual0triggered),gain sqrt(dest/origin),positive real. Uniform another sourceRX session among12. No F metrics or TX labels used for calibration/eligibility.",
+    "p.5 localNumPy2026103016 masks and destinations independent of model/probe/dataorder RNG. Onlyselected clean FFT-reweighted thenunitRMS;wholebatch received+=A(reference-clean) preserves actual A/noise and untouched rows. Inputpower preserved,outputpower/effectiveSNR may change;not a fresh nativeAGC simulation.",
+    "One source_pair hook is consumed by realCPU source2Ls smoke and actualtrain, before unchanged noVar objective. No extra G/teacher forward, no antithetic3view loss, no pretrained components;inference still IQ-only with2priors/4CG/27FFT and266951params.",
+    "CPU smoke actually styles both2Ls using fixedseed, then GPU training createsfresh sampler with same seed. Sidecar validates1.26mseen/4940calls and records actual selectedfraction,L/Ucounts,crosssessionmatrix,prep and fullGpipeline time. Frozen prediction never consumes bank/source RXmetadata.",
+    "Fixed noVar E20 remains matchedcontrol, sourcecf40 chosen before earlier target exposure; not E40 restart or teacher. Loss/LR/B256/optimizer/clip/physicalsource/dataorder/nativecorruptionbudget unchanged; noVar variance mismatch diagnostic only.",
+    "Fromscratch E20/4940 finalonly, all versions automatically source1800x7 and target168000x7 with same original F50/defaulthead;all7 fixed before each independentCPUtruthlast. No source-negative cancellation,selection,performance stop or selective rerun.",
+    "Report all6individual rawclean84.676190476% gaps<=3pp,cleanpreservation,R17eachscene1pptolerance,macroF1,perTX/RX/day,repair/damage and measuredcost. Existing benchmark exposed;not new independentblindtest.",
+    "21 targeted new/style/oldcheckpoint/resource/noVar/objective/LR/E40/eval tests PASS;one independentP0/P1 review required,one realG/F noquery smoke first thencontinue,singlecommit/preflight/archiveSHA/compile/PIDreadback only.",
+    "Earlier manual2tap perturbation failed and is not enlarged/trained. Default DURA and historicalF-guided variants remain unchanged;no otherowner task is stopped or modified."
+  ],
+  "registered_at": "2026-10-30T12:01:26+00:00"
+}
