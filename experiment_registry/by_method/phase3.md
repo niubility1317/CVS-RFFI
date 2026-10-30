@@ -51,5 +51,7 @@
 |PAMF 第三阶段：独立拒识度量及未知结构保持|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-metric-embedding-s2026092701-r01/report.md)|
 |PAMF 度量学习独立评分恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-metric-embedding-score-recovery-s2026092701-r01/report.md)|
 |PAMF第三阶段：源OE收益与独立类风险预算|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-oe-risk-budget-s2026092701-r01/report.md)|
+|PAMF-OW 动态注册集合训练|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-open-episodic-s2026092701-r01/report.md)|
+|PAMF-OW 动态注册集合训练|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-open-episodic-s2026092701-r02/report.md)|
 |PAMF Phase3 U池互近邻适应与两阶段匿名注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-reciprocal-adapter-s2026092701-r01/report.md)|
 |PAMF Phase3 默认头开放暴露与相对结构保持|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-relation-oe-s2026092701-r01/report.md)|

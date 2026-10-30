@@ -665,3 +665,8 @@ DA1REG0相对DA0REG0：旧正确380→393净+13（21得8失），接受509→523
 初始26tests/24subPASS7.51s和一次freshP0P1；直接数值修复3受影响PASS5.28s/真实公有gatePASS、CPU恢复执行3PASS4.36s与唯一问题定点复审PASS，不累计成同一次32test全suite。原397file/data0 archive d0244e8fdab1199d1fe4da1193108e731e861aaf3e099d884449c2798d72cc1c；恢复399file/data0 archive8d1417794f1a48914a2faf147b52435c7a6682b329287713dca6d24e1963798e，各一次SHA/compile/runtime核实，无重复训练/预测或新数据。
 
 详细四态/24scene/主逐TX与CI、U组件纯度/匿名映射、数据权限、全部成本和失败恢复证据见`docs/PAMF_PHASE3_STAR_BINARY_GRAPH_RESULTS_20261030.md`。本轮不晋级、调τ/seed/K/复制控制，不扩大正式/多seed；全Phase3 goalACTIVE/finalfalse。下一独立科学问题是可靠unknown种子及跨日类别覆盖，不能把低置信度旧样本直接定义未知。
+
+
+## 2026-10-30 PAMF-OW 动态注册集合已开始源训练
+
+Run `20261030-phase3-star-open-episodic-s2026092701-r02`，code `1029bc4f4ab86022c75ae0f3332b5dfafc1fe909`。已实现同次t2/PA/SIG开放64、有界残差、共享关系及三臂源集合训练，完整原生Sinc/默认head联合更新。S0 detach、S1 full6、M rotate5，主M固定；2220步/每arm，原F0 E50/11100独立起点。真实checkpoint无query梯度烟测/直接P0P1与一次兼容修复定向复核通过，N607正式source已运行，S0/S1首步和增长实证齐，M排队。r01仅NumPy2/Torch2.1 metadata转换失败、0update/0target/0truth，产物保留，恢复不改科学设置。完整矩阵/数据/指标/停止见`docs/PAMF_PHASE3_STAR_OPEN_EPISODIC_PLAN_20261030.md`及本run登记。当前无新性能结论，自动完成每row预测与独立评分，targetU/正式RX24-18未访问；UDA/匿名注册和targets v3目标保持ACTIVE。
