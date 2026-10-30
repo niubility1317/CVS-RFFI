@@ -9,6 +9,7 @@ import numpy as np
 
 SCHEMA='pamf_phase3_star_density_state_v1'
 CONTRIBUTION_SCHEMA='pamf_phase3_star_contribution_density_state_v1'
+JOINT_SCHEMA='pamf_phase3_star_joint_feature_density_state_v1'
 METHODS=('known_only','density_ratio')
 DIMENSION=160
 CLASSES=(0,1,2,3,4,5)
@@ -27,8 +28,8 @@ BACKGROUND_FIELDS={'background_means','background_variances','background_weights
 
 def _dimension(dimension):
     if dimension is None:return DIMENSION
-    if type(dimension) is not int or dimension not in (DIMENSION,4*DIMENSION):
-        raise ValueError('Only the original fused or four-contribution dimension is allowed')
+    if type(dimension) is not int or dimension not in (DIMENSION,2*DIMENSION,4*DIMENSION):
+        raise ValueError('Only original fused160, joint320 or four-contribution640 geometry is allowed')
     return dimension
 
 
@@ -37,8 +38,9 @@ def _state_dimension(state):
     if not isinstance(schema,np.ndarray) or schema.shape!=() or schema.dtype.kind!='U':
         raise ValueError('Matching flat-array density state schema required')
     if schema.item()==SCHEMA:return DIMENSION
+    if schema.item()==JOINT_SCHEMA:return 2*DIMENSION
     if schema.item()==CONTRIBUTION_SCHEMA:return 4*DIMENSION
-    raise ValueError('Only original fused160 and four-contribution density schemas are allowed')
+    raise ValueError('Only original fused160, joint320 and four-contribution density schemas are allowed')
 
 
 def unit(x,dimension=None):
@@ -134,7 +136,8 @@ def fit_known(x,y,rx,day,*,dimension=None):
     pooled=float(np.square(zresidual).sum()/(n*width));alpha=KNOWN_CELL_SIZE/(KNOWN_CELL_SIZE+width)
     radial=np.asarray([np.square(zresidual[rows]).sum()/(len(rows)*width) for rows in groups])
     variance=np.maximum(alpha*radial+(1-alpha)*pooled,VARIANCE_FLOOR)
-    state=dict(schema=np.asarray(SCHEMA if width==DIMENSION else CONTRIBUTION_SCHEMA),origin=origin,whitener=whitener,
+    schema=SCHEMA if width==DIMENSION else JOINT_SCHEMA if width==2*DIMENSION else CONTRIBUTION_SCHEMA
+    state=dict(schema=np.asarray(schema),origin=origin,whitener=whitener,
         log_abs_det_whitener=np.asarray(np.linalg.slogdet(whitener)[1],np.float64),pooled_L_variance=np.asarray(pooled,np.float64),
         known_means=(np.asarray(means)-origin)@whitener,known_variances=variance,known_weights=np.full(len(groups),1/len(groups),np.float64))
     validate_state(state,'known_only')
