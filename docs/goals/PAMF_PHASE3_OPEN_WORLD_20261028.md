@@ -677,3 +677,10 @@ Run `20261030-phase3-star-open-episodic-s2026092701-r02`，code `1029bc4f4ab8602
 VERIFIED 3x2220 source updates/all source+crossRX predictions/independent scores; primary M AK=60.590278%, CK=80.902778%, RU=64.583333%, H=62.523116%, originalF0loss=12.326389 pp; NO_PROMOTION; UDA/REG incomplete, fullgoalACTIVE.
 
 源L6300/OE6134/V27000/NV3150/跨RX24-1 futureQ864，全部G10P1；原F0同输入基线与既有checkpoint祖先不变。M固定不重排；完整训练/参数/成本/逐scene/TX/缺覆盖及失败r01保留见`docs/PAMF_PHASE3_STAR_OPEN_EPISODIC_RESULTS_20261030.md`。
+
+
+## 2026-10-30 冻结未知身份结构与融合边界诊断
+
+Run `20261030-phase3-star-open-feature-diagnostic-s2026092701-r01`，VERIFIED frozen source-novel3150/sevenrepr/all4NNchoices before sole source truth. F0 fused crossRXday76.603175%, M fused76.825397%, M open76.984127%, S1 open77.587302%. M open RXvariance16.286785% vs F0 2.887514%, not wholesale collapse/no causalproof. Target/G/updates0, AN/REG N/A, fullgoalACTIVE.
+
+实际源码reference仅最终加性贡献，未条件校正t2/PA/SIG；open64虽然保留GN/PA-LN/SIG-LN，未完整继承时频/reference/PA增益组合。不能把低TX占比当因果或把未启用canonical模块算当前能力。下一独立科学候选检查原融合证据及明确参考条件化，保持旧负路线/主M/数据权限，不按诊断换控制。详见结果报告。
