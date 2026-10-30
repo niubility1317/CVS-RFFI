@@ -249,3 +249,9 @@ wideCoarse E30实际发布a55a568fc06cc3047647e8201d7fe5ca16f872b2：controller1
 
 
 最终IQ教师学生已独立登记并启动：20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01，执行728129ece6855743fc4939193ab2bc3b7693b9aa，controller1192588/worker1192680/GPU6，准入已有1PID/free19245MiB/后态2PID，真实2Ls目标梯度/严格重载/原F noquerysmoke PASS，8checks与唯一P0P1 PASS。紧凑G266951 scratch单阶段E30/7410；noVar4base+非clean最终原R17IQ MSE权重1/clean教师0，已在945114bf4且wide正式分数读取前固定。当前E3、teacherref189000/active160614，实时teacher/F/TX优化0，source缓存复用句柄.011453秒而历史972.193282秒/1.26m/2.58048GB和60组件轮次另计。后续固定final30自动七景/truth-last；目前不是正式收益，默认保持/目标ACTIVE。
+
+
+源模块梯度诊断结案：20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01/7f7cfd68，旧noVarcf40源final20/4940/ancestor0，512源×缓存01/20/32B32/1024G+2Ls，CPU2/0GPU，0F/TX/V/target/updates，model全state不变/p.gradNone。384组norm-dot-cos-ratio/全32批汇总独立复算一致；coarseclean与finalIQ在coarse18/32负cos、均值-.038594/范数比中位12.068895，actionprobe2/32负cos、均值.364921；均未达到事先24/32判据。不放宽/不启动梯度分离训练，局部sourcegeometry不当身份或完整轨迹证据。循环28.349202s，4tests/唯一P0P1/实际PID-CWD-argv-CUDA空-loggrowth和自然结束已核实，默认保持/目标ACTIVE。
+
+
+最终IQ教师学生E30完整结案：20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01/728129ec，7410更新/L189000U1701000/teacherref1890000/active1606874/新teacher前向加载0，Gscratch/ancestor0/训练F-TX-V-target0；完整30日志和逐cache mask独立复算。全7×168000预测后truth-last/126组独立一致，clean84.823810%/lowurban67.375595%，3pp0/6/clean保持True/R17逐景1ppFalse。训练1056.551s/G流程1057.366s/全流程1241.367s；266951参数/2prior4CG27FFT，历史缓存972.193s/1.26m/2.58048GB+60组件轮次另计。默认保持，完整目标ACTIVE；不回流调权重、epoch或场景。

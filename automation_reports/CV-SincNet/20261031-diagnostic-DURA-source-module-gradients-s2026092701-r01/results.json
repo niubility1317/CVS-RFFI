@@ -1,0 +1,3512 @@
+{
+  "status": "ANALYZED",
+  "source_run": "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01",
+  "source_commit": "cf40edea90667d9645a724b1e8f333027cdf7869",
+  "summary": {
+    "coarse/coarse_clean_IQ": {
+      "batches": 32,
+      "defined_cosines": 32,
+      "negative_cosines": 18,
+      "mean_cosine": -0.03859405450419621,
+      "median_right_to_left_norm": 12.068895139571893
+    },
+    "coarse/action_probe": {
+      "batches": 32,
+      "defined_cosines": 32,
+      "negative_cosines": 3,
+      "mean_cosine": 0.28679674852142756,
+      "median_right_to_left_norm": 0.06970231676661637
+    },
+    "coarse/prior_IQ": {
+      "batches": 32,
+      "defined_cosines": 32,
+      "negative_cosines": 0,
+      "mean_cosine": 0.5879727969314785,
+      "median_right_to_left_norm": 0.15107133270187872
+    },
+    "coarse/spectral": {
+      "batches": 32,
+      "defined_cosines": 32,
+      "negative_cosines": 1,
+      "mean_cosine": 0.5238540382238247,
+      "median_right_to_left_norm": 0.011123830698881069
+    },
+    "action/coarse_clean_IQ": {
+      "batches": 32,
+      "defined_cosines": 0,
+      "negative_cosines": 0,
+      "mean_cosine": null,
+      "median_right_to_left_norm": null
+    },
+    "action/action_probe": {
+      "batches": 32,
+      "defined_cosines": 32,
+      "negative_cosines": 2,
+      "mean_cosine": 0.36492146014210763,
+      "median_right_to_left_norm": 0.19954971397764076
+    },
+    "action/prior_IQ": {
+      "batches": 32,
+      "defined_cosines": 32,
+      "negative_cosines": 0,
+      "mean_cosine": 0.7865135177489048,
+      "median_right_to_left_norm": 0.09154875203013801
+    },
+    "action/spectral": {
+      "batches": 32,
+      "defined_cosines": 32,
+      "negative_cosines": 0,
+      "mean_cosine": 0.5757782008558983,
+      "median_right_to_left_norm": 0.013356946944502856
+    },
+    "prior/coarse_clean_IQ": {
+      "batches": 32,
+      "defined_cosines": 0,
+      "negative_cosines": 0,
+      "mean_cosine": null,
+      "median_right_to_left_norm": null
+    },
+    "prior/action_probe": {
+      "batches": 32,
+      "defined_cosines": 0,
+      "negative_cosines": 0,
+      "mean_cosine": null,
+      "median_right_to_left_norm": null
+    },
+    "prior/prior_IQ": {
+      "batches": 32,
+      "defined_cosines": 32,
+      "negative_cosines": 0,
+      "mean_cosine": 0.6265479359701234,
+      "median_right_to_left_norm": 0.08390386957068867
+    },
+    "prior/spectral": {
+      "batches": 32,
+      "defined_cosines": 32,
+      "negative_cosines": 1,
+      "mean_cosine": 0.470191659340772,
+      "median_right_to_left_norm": 0.013089944479932619
+    }
+  },
+  "decision": {
+    "coarse_gradient_conflict": false,
+    "action_gradient_conflict": false,
+    "rule": "Atleast24of32negativecosines inpredesignatedgroup;sourcehypothesisonly/notidentityorformalqualification"
+  },
+  "source_records": 512,
+  "source_L": 128,
+  "source_U": 384,
+  "source_views": [
+    1,
+    20
+  ],
+  "batch_size": 32,
+  "source_G_inputs": 1024,
+  "smoke_G_inputs": 2,
+  "new_F_inputs": 0,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "model_unchanged": true,
+  "persistent_gradients": false,
+  "seconds": 28.349202098790556,
+  "scope": "SOURCE_ONLY",
+  "code_commit": "7f7cfd682bf732013fbc9820e9ad4d1d77c41413",
+  "independently_recomputed_geometry_records": 384,
+  "source_batches": [
+    {
+      "source_view": 1,
+      "offset": 0,
+      "count": 32,
+      "L_s": 32,
+      "U_s": 0,
+      "losses": {
+        "final_IQ": 0.016012782230973244,
+        "prior_IQ": 0.002846780698746443,
+        "spectral": 0.00019927663379348814,
+        "action_probe": 0.0012121323961764574,
+        "coarse_clean_IQ": 0.10446678102016449
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.1783441664383741,
+            "right_norm": 0.635438079875264,
+            "dot": 0.020867627829634507,
+            "cosine": 0.18413694647640916,
+            "right_to_left_norm": 3.562987747596646
+          },
+          "action_probe": {
+            "left_norm": 0.1783441664383741,
+            "right_norm": 0.00706684548525746,
+            "dot": 0.00045182425053200126,
+            "cosine": 0.3584965931662899,
+            "right_to_left_norm": 0.03962476388426963
+          },
+          "prior_IQ": {
+            "left_norm": 0.1783441664383741,
+            "right_norm": 0.016702194827177063,
+            "dot": 0.0026955303352942783,
+            "cosine": 0.9049232989177118,
+            "right_to_left_norm": 0.09365147826659313
+          },
+          "spectral": {
+            "left_norm": 0.1783441664383741,
+            "right_norm": 0.0023837092090723765,
+            "dot": 0.00021867092874889161,
+            "cosine": 0.5143738325742959,
+            "right_to_left_norm": 0.013365781772828855
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.241932614166215,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.241932614166215,
+            "right_norm": 0.027910426619871313,
+            "dot": 0.001072872078876097,
+            "cosine": 0.15888651890119668,
+            "right_to_left_norm": 0.11536446508487692
+          },
+          "prior_IQ": {
+            "left_norm": 0.241932614166215,
+            "right_norm": 0.014470996827865424,
+            "dot": 0.003270032753575012,
+            "cosine": 0.9340265819305662,
+            "right_to_left_norm": 0.059814163037660614
+          },
+          "spectral": {
+            "left_norm": 0.241932614166215,
+            "right_norm": 0.0020298518134903116,
+            "dot": 0.00019585144317000658,
+            "cosine": 0.39881182224215755,
+            "right_to_left_norm": 0.008390153681784062
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.2529959856593987,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.2529959856593987,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.2529959856593987,
+            "right_norm": 0.01372234209758756,
+            "dot": 0.0032147194876026115,
+            "cosine": 0.9259791558575623,
+            "right_to_left_norm": 0.054239366928381064
+          },
+          "spectral": {
+            "left_norm": 0.2529959856593987,
+            "right_norm": 0.0013326142443627574,
+            "dot": 9.465069509533903e-05,
+            "cosine": 0.28074092489121094,
+            "right_to_left_norm": 0.0052673335542834186
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 32,
+      "count": 32,
+      "L_s": 32,
+      "U_s": 0,
+      "losses": {
+        "final_IQ": 0.020133763551712036,
+        "prior_IQ": 0.0054477425292134285,
+        "spectral": 0.00016115351172629744,
+        "action_probe": 0.0012450865469872952,
+        "coarse_clean_IQ": 0.2092292457818985
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.0635263088595886,
+            "right_norm": 1.1658934039471764,
+            "dot": -0.0074885918494749975,
+            "cosine": -0.1011085061461262,
+            "right_to_left_norm": 18.35292219675687
+          },
+          "action_probe": {
+            "left_norm": 0.0635263088595886,
+            "right_norm": 0.006224726018643962,
+            "dot": 0.00015367582915112976,
+            "cosine": 0.3886258657445251,
+            "right_to_left_norm": 0.09798658430481764
+          },
+          "prior_IQ": {
+            "left_norm": 0.0635263088595886,
+            "right_norm": 0.030441369370763475,
+            "dot": 0.0004207260451268038,
+            "cosine": 0.21756127303598574,
+            "right_to_left_norm": 0.4791931078200632
+          },
+          "spectral": {
+            "left_norm": 0.0635263088595886,
+            "right_norm": 0.0004854657546551697,
+            "dot": 1.6737168651129655e-05,
+            "cosine": 0.5427124328964494,
+            "right_to_left_norm": 0.0076419638315235435
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.11012119345543464,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.11012119345543464,
+            "right_norm": 0.025713572387358354,
+            "dot": 0.0009280007797714065,
+            "cosine": 0.3277291067506573,
+            "right_to_left_norm": 0.23350248558434372
+          },
+          "prior_IQ": {
+            "left_norm": 0.11012119345543464,
+            "right_norm": 0.009483214733976272,
+            "dot": 0.0008904848510571798,
+            "cosine": 0.8527074188309787,
+            "right_to_left_norm": 0.08611616380469096
+          },
+          "spectral": {
+            "left_norm": 0.11012119345543464,
+            "right_norm": 0.0011745389086559566,
+            "dot": 7.756679292988496e-05,
+            "cosine": 0.5997047903308006,
+            "right_to_left_norm": 0.010665875221660081
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.09596833606098176,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.09596833606098176,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.09596833606098176,
+            "right_norm": 0.016536829811976003,
+            "dot": 0.000719868252109353,
+            "cosine": 0.4535997419124874,
+            "right_to_left_norm": 0.172315479154165
+          },
+          "spectral": {
+            "left_norm": 0.09596833606098176,
+            "right_norm": 0.0009341432139156377,
+            "dot": 3.0066211594241446e-05,
+            "cosine": 0.33538009346726033,
+            "right_to_left_norm": 0.009733869026571945
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 64,
+      "count": 32,
+      "L_s": 32,
+      "U_s": 0,
+      "losses": {
+        "final_IQ": 0.032730814069509506,
+        "prior_IQ": 0.004593444522470236,
+        "spectral": 0.000435334601206705,
+        "action_probe": 0.0022962118964642286,
+        "coarse_clean_IQ": 0.12663760781288147
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.22610687740566718,
+            "right_norm": 0.7955705949543304,
+            "dot": 0.029895163018021014,
+            "cosine": 0.16619135579845662,
+            "right_to_left_norm": 3.5185599132704226
+          },
+          "action_probe": {
+            "left_norm": 0.22610687740566718,
+            "right_norm": 0.012584456651136722,
+            "dot": 0.00034373595875030225,
+            "cosine": 0.1208027234260795,
+            "right_to_left_norm": 0.055657115765472526
+          },
+          "prior_IQ": {
+            "left_norm": 0.22610687740566718,
+            "right_norm": 0.016215620169254413,
+            "dot": 0.0030199608109644214,
+            "cosine": 0.8236713726309708,
+            "right_to_left_norm": 0.07171661629805862
+          },
+          "spectral": {
+            "left_norm": 0.22610687740566718,
+            "right_norm": 0.008849855991805957,
+            "dot": 0.0018640243068858032,
+            "cosine": 0.931540186838674,
+            "right_to_left_norm": 0.03914014510902331
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.2699339839489777,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.2699339839489777,
+            "right_norm": 0.04935619337133843,
+            "dot": 0.008458941410162863,
+            "cosine": 0.6349167657887422,
+            "right_to_left_norm": 0.18284542260772776
+          },
+          "prior_IQ": {
+            "left_norm": 0.2699339839489777,
+            "right_norm": 0.019870723530249323,
+            "dot": 0.004899895740412289,
+            "cosine": 0.9135148127608002,
+            "right_to_left_norm": 0.07361327106558485
+          },
+          "spectral": {
+            "left_norm": 0.2699339839489777,
+            "right_norm": 0.00842942040987892,
+            "dot": 0.001846981866747034,
+            "cosine": 0.8117220672603789,
+            "right_to_left_norm": 0.031227710889015846
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.26982334537374436,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.26982334537374436,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.26982334537374436,
+            "right_norm": 0.015156847424173328,
+            "dot": 0.003593032894990878,
+            "cosine": 0.8785627624708088,
+            "right_to_left_norm": 0.05617322475628972
+          },
+          "spectral": {
+            "left_norm": 0.26982334537374436,
+            "right_norm": 0.008810560248556558,
+            "dot": 0.0020500944894617807,
+            "cosine": 0.8623644211926105,
+            "right_to_left_norm": 0.03265306875634744
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 96,
+      "count": 32,
+      "L_s": 32,
+      "U_s": 0,
+      "losses": {
+        "final_IQ": 0.04011989012360573,
+        "prior_IQ": 0.00533217191696167,
+        "spectral": 0.0006464853067882359,
+        "action_probe": 0.001966521143913269,
+        "coarse_clean_IQ": 0.16105887293815613
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.09063491711247955,
+            "right_norm": 1.0060078413498532,
+            "dot": 0.021722205981366524,
+            "cosine": 0.23823579768608424,
+            "right_to_left_norm": 11.09956155309746
+          },
+          "action_probe": {
+            "left_norm": 0.09063491711247955,
+            "right_norm": 0.004753898420183235,
+            "dot": 8.83443040078525e-05,
+            "cosine": 0.20503741322654412,
+            "right_to_left_norm": 0.052451070422269624
+          },
+          "prior_IQ": {
+            "left_norm": 0.09063491711247955,
+            "right_norm": 0.014077535987143681,
+            "dot": 0.0008994585285789576,
+            "cosine": 0.7049510405993736,
+            "right_to_left_norm": 0.15532133128861592
+          },
+          "spectral": {
+            "left_norm": 0.09063491711247955,
+            "right_norm": 0.002020320177482548,
+            "dot": 7.690182246287472e-05,
+            "cosine": 0.419972534204798,
+            "right_to_left_norm": 0.022290748884067433
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.1254851123788985,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.1254851123788985,
+            "right_norm": 0.025333156533080742,
+            "dot": 0.0010803344146484894,
+            "cosine": 0.3398417257260515,
+            "right_to_left_norm": 0.20188176950097506
+          },
+          "prior_IQ": {
+            "left_norm": 0.1254851123788985,
+            "right_norm": 0.010622436954905124,
+            "dot": 0.0011342523542861751,
+            "cosine": 0.8509289968619176,
+            "right_to_left_norm": 0.08465097375719756
+          },
+          "spectral": {
+            "left_norm": 0.1254851123788985,
+            "right_norm": 0.002016141956665362,
+            "dot": 0.00015394319631130372,
+            "cosine": 0.6084812329251746,
+            "right_to_left_norm": 0.016066782094258974
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.15165411669303433,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.15165411669303433,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.15165411669303433,
+            "right_norm": 0.012019652672390916,
+            "dot": 0.0013879185290273624,
+            "cosine": 0.7614087295387807,
+            "right_to_left_norm": 0.07925701546711125
+          },
+          "spectral": {
+            "left_norm": 0.15165411669303433,
+            "right_norm": 0.003823864364580784,
+            "dot": 0.00016157466997499562,
+            "cosine": 0.27862276294170846,
+            "right_to_left_norm": 0.025214378929922048
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 128,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.007783348672091961,
+        "prior_IQ": 0.0020600135903805494,
+        "spectral": 7.505559915443882e-05,
+        "action_probe": 0.0012743074912577868,
+        "coarse_clean_IQ": 0.09168487042188644
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.04307341243491912,
+            "right_norm": 0.9039615791882115,
+            "dot": -0.012548117373848408,
+            "cosine": -0.3222695856376866,
+            "right_to_left_norm": 20.986532714444984
+          },
+          "action_probe": {
+            "left_norm": 0.04307341243491912,
+            "right_norm": 0.005566486513953442,
+            "dot": -1.7112817463379595e-05,
+            "cosine": -0.07137252758635448,
+            "right_to_left_norm": 0.12923254042999285
+          },
+          "prior_IQ": {
+            "left_norm": 0.04307341243491912,
+            "right_norm": 0.009220292122287583,
+            "dot": 0.00011864134218146813,
+            "cosine": 0.2987322368681592,
+            "right_to_left_norm": 0.2140599409489274
+          },
+          "spectral": {
+            "left_norm": 0.04307341243491912,
+            "right_norm": 0.0003836107124956745,
+            "dot": 9.786840291619517e-06,
+            "cosine": 0.592301039983821,
+            "right_to_left_norm": 0.008905974493552913
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.04925559921318176,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.04925559921318176,
+            "right_norm": 0.02947289323124611,
+            "dot": 0.00034298527586239247,
+            "cosine": 0.2362637532613912,
+            "right_to_left_norm": 0.5983663522939863
+          },
+          "prior_IQ": {
+            "left_norm": 0.04925559921318176,
+            "right_norm": 0.007683390379121984,
+            "dot": 0.00024307371901438198,
+            "cosine": 0.6422875435830888,
+            "right_to_left_norm": 0.15599019201589084
+          },
+          "spectral": {
+            "left_norm": 0.04925559921318176,
+            "right_norm": 0.0006728463464628136,
+            "dot": 2.3638990654730218e-05,
+            "cosine": 0.7132756917299882,
+            "right_to_left_norm": 0.013660301716170104
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.05861084969467354,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.05861084969467354,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.05861084969467354,
+            "right_norm": 0.008793507201835521,
+            "dot": 0.00016387418233419128,
+            "cosine": 0.31795846863545496,
+            "right_to_left_norm": 0.1500320716666672
+          },
+          "spectral": {
+            "left_norm": 0.05861084969467354,
+            "right_norm": 0.0006861632819348559,
+            "dot": 2.2100393765431975e-05,
+            "cosine": 0.549533939481826,
+            "right_to_left_norm": 0.011707103471615656
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 160,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.008929463103413582,
+        "prior_IQ": 0.002263879869133234,
+        "spectral": 8.426212298218161e-05,
+        "action_probe": 0.001487631700001657,
+        "coarse_clean_IQ": 0.08682697266340256
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.08268341747490933,
+            "right_norm": 0.7816926779831098,
+            "dot": -0.008979690083096575,
+            "cosine": -0.13893347086298008,
+            "right_to_left_norm": 9.454044134306836
+          },
+          "action_probe": {
+            "left_norm": 0.08268341747490933,
+            "right_norm": 0.008049360402639547,
+            "dot": 0.00029021933716468406,
+            "cosine": 0.436060305100654,
+            "right_to_left_norm": 0.09735156877232562
+          },
+          "prior_IQ": {
+            "left_norm": 0.08268341747490933,
+            "right_norm": 0.011601820007845895,
+            "dot": 0.0006672367405293754,
+            "cosine": 0.6955612992997271,
+            "right_to_left_norm": 0.14031616450017345
+          },
+          "spectral": {
+            "left_norm": 0.08268341747490933,
+            "right_norm": 0.0004197080547394607,
+            "dot": 1.419700776845467e-05,
+            "cosine": 0.409101524051855,
+            "right_to_left_norm": 0.0050760849945132355
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.07793249575982653,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.07793249575982653,
+            "right_norm": 0.031304252820589566,
+            "dot": 0.0009736584545693988,
+            "cosine": 0.39910274271669616,
+            "right_to_left_norm": 0.40168420779264474
+          },
+          "prior_IQ": {
+            "left_norm": 0.07793249575982653,
+            "right_norm": 0.007173188253757681,
+            "dot": 0.0003297880753148833,
+            "cosine": 0.5899349617806506,
+            "right_to_left_norm": 0.0920436100989774
+          },
+          "spectral": {
+            "left_norm": 0.07793249575982653,
+            "right_norm": 0.0005934567673441895,
+            "dot": 2.933237604050895e-05,
+            "cosine": 0.6342194736122301,
+            "right_to_left_norm": 0.007615010420981679
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.09971031047799334,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.09971031047799334,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.09971031047799334,
+            "right_norm": 0.007188350904484488,
+            "dot": 0.0005222678875362389,
+            "cosine": 0.7286584161649593,
+            "right_to_left_norm": 0.07209235303776333
+          },
+          "spectral": {
+            "left_norm": 0.09971031047799334,
+            "right_norm": 0.0008472469401917847,
+            "dot": 3.9414777037669545e-05,
+            "cosine": 0.4665616052598917,
+            "right_to_left_norm": 0.00849708456558038
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 192,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.02664526365697384,
+        "prior_IQ": 0.0034941257908940315,
+        "spectral": 0.00036818464286625385,
+        "action_probe": 0.0006048626382835209,
+        "coarse_clean_IQ": 0.13111314177513123
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.0782387959487479,
+            "right_norm": 0.7566756015329171,
+            "dot": -0.02170514475085903,
+            "cosine": -0.36663236266280813,
+            "right_to_left_norm": 9.67136051056556
+          },
+          "action_probe": {
+            "left_norm": 0.0782387959487479,
+            "right_norm": 0.0032161827611344286,
+            "dot": 6.207424061567845e-05,
+            "cosine": 0.24668829155352812,
+            "right_to_left_norm": 0.041107262990617364
+          },
+          "prior_IQ": {
+            "left_norm": 0.0782387959487479,
+            "right_norm": 0.008674754158419333,
+            "dot": 0.00048602639123521753,
+            "cosine": 0.7161112855379328,
+            "right_to_left_norm": 0.11087535350239704
+          },
+          "spectral": {
+            "left_norm": 0.0782387959487479,
+            "right_norm": 0.0014994379166873165,
+            "dot": 3.730766440343054e-05,
+            "cosine": 0.31801486037575394,
+            "right_to_left_norm": 0.01916488998206922
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.12393421696956257,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.12393421696956257,
+            "right_norm": 0.016864649449856925,
+            "dot": 0.000947094965603682,
+            "cosine": 0.45313226040570775,
+            "right_to_left_norm": 0.1360774277050443
+          },
+          "prior_IQ": {
+            "left_norm": 0.12393421696956257,
+            "right_norm": 0.011150105323146399,
+            "dot": 0.0012886154137610136,
+            "cosine": 0.9325091994575707,
+            "right_to_left_norm": 0.08996793295498685
+          },
+          "spectral": {
+            "left_norm": 0.12393421696956257,
+            "right_norm": 0.001617786724580392,
+            "dot": 0.00010149811872595466,
+            "cosine": 0.5062272252893187,
+            "right_to_left_norm": 0.01305359217283561
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.13769203980154987,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.13769203980154987,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.13769203980154987,
+            "right_norm": 0.011372609057970145,
+            "dot": 0.0011586475530090587,
+            "cosine": 0.7399159764972301,
+            "right_to_left_norm": 0.08259452815399525
+          },
+          "spectral": {
+            "left_norm": 0.13769203980154987,
+            "right_norm": 0.0023527507415558,
+            "dot": 0.00013768305150746143,
+            "cosine": 0.42500665459286147,
+            "right_to_left_norm": 0.017087049802927804
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 224,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.03969291225075722,
+        "prior_IQ": 0.005963844247162342,
+        "spectral": 0.0005830773734487593,
+        "action_probe": 0.0016769294161349535,
+        "coarse_clean_IQ": 0.186732679605484
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.07418058719828605,
+            "right_norm": 1.0819425259546984,
+            "dot": -0.00115023847026576,
+            "cosine": -0.014331558829225361,
+            "right_to_left_norm": 14.58525157077345
+          },
+          "action_probe": {
+            "left_norm": 0.07418058719828605,
+            "right_norm": 0.006381723843579407,
+            "dot": 0.00013482450940027735,
+            "cosine": 0.2848003868172433,
+            "right_to_left_norm": 0.08602956763500595
+          },
+          "prior_IQ": {
+            "left_norm": 0.07418058719828605,
+            "right_norm": 0.020811550365611046,
+            "dot": 0.00047665917488237165,
+            "cosine": 0.3087544713387828,
+            "right_to_left_norm": 0.2805525158486734
+          },
+          "spectral": {
+            "left_norm": 0.07418058719828605,
+            "right_norm": 0.001660686599269755,
+            "dot": 4.8511892992942386e-05,
+            "cosine": 0.3937950689658344,
+            "right_to_left_norm": 0.02238707810212812
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.09027554159887652,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.09027554159887652,
+            "right_norm": 0.023924127319539492,
+            "dot": 0.0008088421338771577,
+            "cosine": 0.3745049468416179,
+            "right_to_left_norm": 0.26501228235043045
+          },
+          "prior_IQ": {
+            "left_norm": 0.09027554159887652,
+            "right_norm": 0.007194522657559776,
+            "dot": 0.0005346813087097403,
+            "cosine": 0.8232332728757228,
+            "right_to_left_norm": 0.07969514810032789
+          },
+          "spectral": {
+            "left_norm": 0.09027554159887652,
+            "right_norm": 0.001597089461057866,
+            "dot": 5.9102062593941346e-05,
+            "cosine": 0.4099239482475698,
+            "right_to_left_norm": 0.017691275319668
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.12159105539503377,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.12159105539503377,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.12159105539503377,
+            "right_norm": 0.01229837288560295,
+            "dot": 0.0008402109897800503,
+            "cosine": 0.5618741769878786,
+            "right_to_left_norm": 0.10114537492619924
+          },
+          "spectral": {
+            "left_norm": 0.12159105539503377,
+            "right_norm": 0.002719000174670788,
+            "dot": 8.548841373705553e-05,
+            "cosine": 0.25858087166365606,
+            "right_to_left_norm": 0.02236184368856002
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 256,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.023618614301085472,
+        "prior_IQ": 0.0035419506020843983,
+        "spectral": 0.0002487206947989762,
+        "action_probe": 0.0010365109192207456,
+        "coarse_clean_IQ": 0.15533143281936646
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.10462114115946655,
+            "right_norm": 1.051098765145263,
+            "dot": 0.026177850753528967,
+            "cosine": 0.2380515473082657,
+            "right_to_left_norm": 10.0467147795984
+          },
+          "action_probe": {
+            "left_norm": 0.10462114115946655,
+            "right_norm": 0.004459793565302828,
+            "dot": 0.00020694122819005576,
+            "cosine": 0.4435195959035697,
+            "right_to_left_norm": 0.042628034027129204
+          },
+          "prior_IQ": {
+            "left_norm": 0.10462114115946655,
+            "right_norm": 0.014704952973882577,
+            "dot": 0.001251117515380465,
+            "cosine": 0.8132330335550769,
+            "right_to_left_norm": 0.14055431637348387
+          },
+          "spectral": {
+            "left_norm": 0.10462114115946655,
+            "right_norm": 0.0007080604060639735,
+            "dot": 3.076372079455673e-05,
+            "cosine": 0.41528772884044046,
+            "right_to_left_norm": 0.006767852063329413
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.09608460457979975,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.09608460457979975,
+            "right_norm": 0.017667781336483182,
+            "dot": 0.0010813922696095326,
+            "cosine": 0.6370117421579876,
+            "right_to_left_norm": 0.18387733824527336
+          },
+          "prior_IQ": {
+            "left_norm": 0.09608460457979975,
+            "right_norm": 0.009870042142410669,
+            "dot": 0.0008249727678341183,
+            "cosine": 0.8698949279143195,
+            "right_to_left_norm": 0.10272240995916723
+          },
+          "spectral": {
+            "left_norm": 0.09608460457979975,
+            "right_norm": 0.0011643782034127207,
+            "dot": 3.4465141712618714e-05,
+            "cosine": 0.3080577891484468,
+            "right_to_left_norm": 0.012118259824295643
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.14107271999883553,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.14107271999883553,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.14107271999883553,
+            "right_norm": 0.011915725956558095,
+            "dot": 0.0010939755425285864,
+            "cosine": 0.6507947881637837,
+            "right_to_left_norm": 0.0844651322853664
+          },
+          "spectral": {
+            "left_norm": 0.14107271999883553,
+            "right_norm": 0.001604345642382838,
+            "dot": 6.304764528644978e-05,
+            "cosine": 0.2785658614683464,
+            "right_to_left_norm": 0.011372472597083837
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 288,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.008897690102458,
+        "prior_IQ": 0.0018566057551652193,
+        "spectral": 9.848638001130894e-05,
+        "action_probe": 0.0010136449709534645,
+        "coarse_clean_IQ": 0.08064146339893341
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.04827116013280232,
+            "right_norm": 0.8020543755056513,
+            "dot": 0.003950938673772685,
+            "cosine": 0.10204899677634888,
+            "right_to_left_norm": 16.61560180652507
+          },
+          "action_probe": {
+            "left_norm": 0.04827116013280232,
+            "right_norm": 0.00487191563026676,
+            "dot": 2.7837895153031345e-05,
+            "cosine": 0.11837197654404732,
+            "right_to_left_norm": 0.10092808245882794
+          },
+          "prior_IQ": {
+            "left_norm": 0.04827116013280232,
+            "right_norm": 0.008592077129262951,
+            "dot": 0.00021930911650560282,
+            "cosine": 0.5287748390875383,
+            "right_to_left_norm": 0.17799607686296867
+          },
+          "spectral": {
+            "left_norm": 0.04827116013280232,
+            "right_norm": 0.0005396886239561457,
+            "dot": 2.121649625562665e-05,
+            "cosine": 0.8144091880802241,
+            "right_to_left_norm": 0.011180353289031563
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.0627226984441296,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.0627226984441296,
+            "right_norm": 0.02048536738202731,
+            "dot": 0.0004305561715305098,
+            "cosine": 0.33508989203722644,
+            "right_to_left_norm": 0.3266021375064835
+          },
+          "prior_IQ": {
+            "left_norm": 0.0627226984441296,
+            "right_norm": 0.006041509348493663,
+            "dot": 0.0002664677229346282,
+            "cosine": 0.7031928151239156,
+            "right_to_left_norm": 0.09632094119603532
+          },
+          "spectral": {
+            "left_norm": 0.0627226984441296,
+            "right_norm": 0.0006589122513309334,
+            "dot": 3.161352101617823e-05,
+            "cosine": 0.7649279888418588,
+            "right_to_left_norm": 0.010505164281442086
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.08736280810783062,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.08736280810783062,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.08736280810783062,
+            "right_norm": 0.006514236221321649,
+            "dot": 0.0003336727875158838,
+            "cosine": 0.5863145898412178,
+            "right_to_left_norm": 0.07456532547902105
+          },
+          "spectral": {
+            "left_norm": 0.08736280810783062,
+            "right_norm": 0.0010910378779374701,
+            "dot": 5.449947763614773e-05,
+            "cosine": 0.5717760053111038,
+            "right_to_left_norm": 0.012488585263775154
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 320,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.009053459390997887,
+        "prior_IQ": 0.0018831879133358598,
+        "spectral": 9.529271483188495e-05,
+        "action_probe": 0.000843965623062104,
+        "coarse_clean_IQ": 0.09115049988031387
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.03538198760242625,
+            "right_norm": 0.78515458642984,
+            "dot": -0.006808692378770994,
+            "cosine": -0.2450904081138795,
+            "right_to_left_norm": 22.190799320047233
+          },
+          "action_probe": {
+            "left_norm": 0.03538198760242625,
+            "right_norm": 0.004086030822237394,
+            "dot": 4.5550718841217856e-05,
+            "cosine": 0.3150731324324923,
+            "right_to_left_norm": 0.11548336029480724
+          },
+          "prior_IQ": {
+            "left_norm": 0.03538198760242625,
+            "right_norm": 0.00602108535478267,
+            "dot": 9.712839244989618e-05,
+            "cosine": 0.4559205743755423,
+            "right_to_left_norm": 0.17017374553513737
+          },
+          "spectral": {
+            "left_norm": 0.03538198760242625,
+            "right_norm": 0.000406036452194908,
+            "dot": 9.821564981680932e-06,
+            "cosine": 0.6836494110296348,
+            "right_to_left_norm": 0.011475795445902673
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.052518617846961664,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.052518617846961664,
+            "right_norm": 0.017032892116785665,
+            "dot": 0.00024393708907399168,
+            "cosine": 0.2726943584528715,
+            "right_to_left_norm": 0.3243210277623683
+          },
+          "prior_IQ": {
+            "left_norm": 0.052518617846961664,
+            "right_norm": 0.006930023747726485,
+            "dot": 0.0002601699185061065,
+            "cosine": 0.7148403684571392,
+            "right_to_left_norm": 0.13195365818499744
+          },
+          "spectral": {
+            "left_norm": 0.052518617846961664,
+            "right_norm": 0.0008365282426682891,
+            "dot": 3.3771531362763223e-05,
+            "cosine": 0.7686999590043185,
+            "right_to_left_norm": 0.015928222732477803
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.051298521372542746,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.051298521372542746,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.051298521372542746,
+            "right_norm": 0.00803599001464442,
+            "dot": 0.00015237534072978695,
+            "cosine": 0.36963275915589566,
+            "right_to_left_norm": 0.15665149403206072
+          },
+          "spectral": {
+            "left_norm": 0.051298521372542746,
+            "right_norm": 0.0006648961631618064,
+            "dot": 2.2465017081166975e-05,
+            "cosine": 0.6586399646871139,
+            "right_to_left_norm": 0.012961312438874476
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 352,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.015254274941980839,
+        "prior_IQ": 0.0028505532536655664,
+        "spectral": 0.00018169829854741693,
+        "action_probe": 0.0017467208672314882,
+        "coarse_clean_IQ": 0.09120775014162064
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.09697526514864765,
+            "right_norm": 0.8989989762237443,
+            "dot": 0.024532921881065074,
+            "cosine": 0.28140324621061796,
+            "right_to_left_norm": 9.270394619140477
+          },
+          "action_probe": {
+            "left_norm": 0.09697526514864765,
+            "right_norm": 0.006495868280748296,
+            "dot": 0.0003241324292403963,
+            "cosine": 0.5145461089947956,
+            "right_to_left_norm": 0.06698479525465761
+          },
+          "prior_IQ": {
+            "left_norm": 0.09697526514864765,
+            "right_norm": 0.01586320195846456,
+            "dot": 0.0012215593966415003,
+            "cosine": 0.794077260717777,
+            "right_to_left_norm": 0.16357987713824548
+          },
+          "spectral": {
+            "left_norm": 0.09697526514864765,
+            "right_norm": 0.0008312357696503047,
+            "dot": 2.9882461462547796e-05,
+            "cosine": 0.37070732614973223,
+            "right_to_left_norm": 0.008571626675896709
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.11397347007297919,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.11397347007297919,
+            "right_norm": 0.021809313094291224,
+            "dot": 0.0005976333607635204,
+            "cosine": 0.2404302311839164,
+            "right_to_left_norm": 0.19135429569992338
+          },
+          "prior_IQ": {
+            "left_norm": 0.11397347007297919,
+            "right_norm": 0.011705546443988456,
+            "dot": 0.0010869299721611388,
+            "cosine": 0.8147157291627409,
+            "right_to_left_norm": 0.10270413313285268
+          },
+          "spectral": {
+            "left_norm": 0.11397347007297919,
+            "right_norm": 0.0008086389257055747,
+            "dot": 4.1313280196383906e-05,
+            "cosine": 0.44826131837389505,
+            "right_to_left_norm": 0.007094975042769069
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.16311209244964966,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.16311209244964966,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.16311209244964966,
+            "right_norm": 0.010979019923838972,
+            "dot": 0.001554156754009089,
+            "cosine": 0.8678508394604765,
+            "right_to_left_norm": 0.06730966269240912
+          },
+          "spectral": {
+            "left_norm": 0.16311209244964966,
+            "right_norm": 0.001361198674556098,
+            "dot": 5.809364154013974e-05,
+            "cosine": 0.2616501114605721,
+            "right_to_left_norm": 0.00834517327387165
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 384,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.01691565103828907,
+        "prior_IQ": 0.002988905180245638,
+        "spectral": 0.000189435260836035,
+        "action_probe": 0.0021991184912621975,
+        "coarse_clean_IQ": 0.11191615462303162
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.17966542994707854,
+            "right_norm": 0.8735718562466166,
+            "dot": -0.009642022667552562,
+            "cosine": -0.06143346243026542,
+            "right_to_left_norm": 4.862214486693027
+          },
+          "action_probe": {
+            "left_norm": 0.17966542994707854,
+            "right_norm": 0.008871294429503386,
+            "dot": -0.0001786359360513414,
+            "cosine": -0.112077211141571,
+            "right_to_left_norm": 0.049376746723710147
+          },
+          "prior_IQ": {
+            "left_norm": 0.17966542994707854,
+            "right_norm": 0.0129300784140035,
+            "dot": 0.001834353551141898,
+            "cosine": 0.7896185913546956,
+            "right_to_left_norm": 0.07196753664749043
+          },
+          "spectral": {
+            "left_norm": 0.17966542994707854,
+            "right_norm": 0.0007923643655048103,
+            "dot": 5.4281000054807874e-05,
+            "cosine": 0.38129260575626955,
+            "right_to_left_norm": 0.004410221631051704
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.34766126530478825,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.34766126530478825,
+            "right_norm": 0.03885568438061829,
+            "dot": -0.004313930107596603,
+            "cosine": -0.31934655490389535,
+            "right_to_left_norm": 0.11176305288584343
+          },
+          "prior_IQ": {
+            "left_norm": 0.34766126530478825,
+            "right_norm": 0.018343169264228243,
+            "dot": 0.006046488613321831,
+            "cosine": 0.9481401973553754,
+            "right_to_left_norm": 0.052761613371415196
+          },
+          "spectral": {
+            "left_norm": 0.34766126530478825,
+            "right_norm": 0.001340011648057393,
+            "dot": 0.000143261369270233,
+            "cosine": 0.3075135223433229,
+            "right_to_left_norm": 0.003854359923825939
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.2771076312810499,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.2771076312810499,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.2771076312810499,
+            "right_norm": 0.01513528705455589,
+            "dot": 0.0038926376627097022,
+            "cosine": 0.9281214975876833,
+            "right_to_left_norm": 0.054618802753956926
+          },
+          "spectral": {
+            "left_norm": 0.2771076312810499,
+            "right_norm": 0.001444144197412708,
+            "dot": 0.00013417650648281149,
+            "cosine": 0.3352875554936675,
+            "right_to_left_norm": 0.005211491977815719
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 416,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.02728070132434368,
+        "prior_IQ": 0.003979481291025877,
+        "spectral": 0.00037037854781374335,
+        "action_probe": 0.0019310963107272983,
+        "coarse_clean_IQ": 0.12483445554971695
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.1208224110423583,
+            "right_norm": 0.8761830969428501,
+            "dot": 0.03669951861076433,
+            "cosine": 0.34667138779971113,
+            "right_to_left_norm": 7.251825959967602
+          },
+          "action_probe": {
+            "left_norm": 0.1208224110423583,
+            "right_norm": 0.006722344193963128,
+            "dot": 0.00020476016861469684,
+            "cosine": 0.2521025481368561,
+            "right_to_left_norm": 0.05563822254470975
+          },
+          "prior_IQ": {
+            "left_norm": 0.1208224110423583,
+            "right_norm": 0.01380368822247334,
+            "dot": 0.0012482011333967494,
+            "cosine": 0.7484140520800175,
+            "right_to_left_norm": 0.11424774678295402
+          },
+          "spectral": {
+            "left_norm": 0.1208224110423583,
+            "right_norm": 0.00187168634820862,
+            "dot": 0.00017656163417062597,
+            "cosine": 0.7807567887945623,
+            "right_to_left_norm": 0.015491218326643377
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.10867619027401139,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.10867619027401139,
+            "right_norm": 0.020236019592341867,
+            "dot": 0.00043897406889991964,
+            "cosine": 0.19960865560849725,
+            "right_to_left_norm": 0.18620472010768555
+          },
+          "prior_IQ": {
+            "left_norm": 0.10867619027401139,
+            "right_norm": 0.009485618291985432,
+            "dot": 0.0006772988037996688,
+            "cosine": 0.6570225247206949,
+            "right_to_left_norm": 0.08728331631858652
+          },
+          "spectral": {
+            "left_norm": 0.10867619027401139,
+            "right_norm": 0.0016733592944052436,
+            "dot": 0.0001262540441908883,
+            "cosine": 0.6942592785161127,
+            "right_to_left_norm": 0.015397662451969552
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.18207330477654057,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.18207330477654057,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.18207330477654057,
+            "right_norm": 0.01378153786632372,
+            "dot": 0.0019750569452309987,
+            "cosine": 0.787110424114902,
+            "right_to_left_norm": 0.07569224869751151
+          },
+          "spectral": {
+            "left_norm": 0.18207330477654057,
+            "right_norm": 0.0030529284372485246,
+            "dot": 0.00039046286850633966,
+            "cosine": 0.7024523037391588,
+            "right_to_left_norm": 0.01676757853654273
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 448,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.035619378089904785,
+        "prior_IQ": 0.0060033854097127914,
+        "spectral": 0.0004967152490280569,
+        "action_probe": 0.0011880029924213886,
+        "coarse_clean_IQ": 0.20484377443790436
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.08994208114744365,
+            "right_norm": 1.2372033105565694,
+            "dot": 0.015268124342260384,
+            "cosine": 0.13720871034793625,
+            "right_to_left_norm": 13.75555573956978
+          },
+          "action_probe": {
+            "left_norm": 0.08994208114744365,
+            "right_norm": 0.0032064535155148103,
+            "dot": 8.844089829683733e-05,
+            "cosine": 0.3066657429172854,
+            "right_to_left_norm": 0.035650203715638
+          },
+          "prior_IQ": {
+            "left_norm": 0.08994208114744365,
+            "right_norm": 0.027134913232996685,
+            "dot": 0.0010706692796978998,
+            "cosine": 0.4386963006792093,
+            "right_to_left_norm": 0.3016931884032563
+          },
+          "spectral": {
+            "left_norm": 0.08994208114744365,
+            "right_norm": 0.00218829642249323,
+            "dot": 6.187331871810198e-05,
+            "cosine": 0.31436510181076416,
+            "right_to_left_norm": 0.024330062130827466
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.16252111878803074,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.16252111878803074,
+            "right_norm": 0.011672389602162813,
+            "dot": 0.0010987569280950218,
+            "cosine": 0.5792046610439756,
+            "right_to_left_norm": 0.07182075590672377
+          },
+          "prior_IQ": {
+            "left_norm": 0.16252111878803074,
+            "right_norm": 0.010632570826157725,
+            "dot": 0.001521090887119365,
+            "cosine": 0.8802521141477418,
+            "right_to_left_norm": 0.06542270263365173
+          },
+          "spectral": {
+            "left_norm": 0.16252111878803074,
+            "right_norm": 0.003183427399304593,
+            "dot": 0.0002750010980168687,
+            "cosine": 0.5315323170549869,
+            "right_to_left_norm": 0.01958777679506747
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.15599352232352912,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.15599352232352912,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.15599352232352912,
+            "right_norm": 0.016902264788514688,
+            "dot": 0.0015720231224722867,
+            "cosine": 0.5962212684106782,
+            "right_to_left_norm": 0.10835235038452139
+          },
+          "spectral": {
+            "left_norm": 0.15599352232352912,
+            "right_norm": 0.003431424492261392,
+            "dot": 0.00021090267533603924,
+            "cosine": 0.3940044052474353,
+            "right_to_left_norm": 0.0219972242510471
+          }
+        }
+      }
+    },
+    {
+      "source_view": 1,
+      "offset": 480,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.028949692845344543,
+        "prior_IQ": 0.003951190039515495,
+        "spectral": 0.00034145984682254493,
+        "action_probe": 0.0011406589765101671,
+        "coarse_clean_IQ": 0.15607024729251862
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.10636395939167795,
+            "right_norm": 0.9682831875442919,
+            "dot": 0.011994410478057476,
+            "cosine": 0.11646140378464198,
+            "right_to_left_norm": 9.103489500411092
+          },
+          "action_probe": {
+            "left_norm": 0.10636395939167795,
+            "right_norm": 0.0050877685255153226,
+            "dot": 0.00021996865343242998,
+            "cosine": 0.40647978891117775,
+            "right_to_left_norm": 0.04783357590873395
+          },
+          "prior_IQ": {
+            "left_norm": 0.10636395939167795,
+            "right_norm": 0.01473442125564738,
+            "dot": 0.0012366815118858554,
+            "cosine": 0.7890968151686512,
+            "right_to_left_norm": 0.13852832613525498
+          },
+          "spectral": {
+            "left_norm": 0.10636395939167795,
+            "right_norm": 0.0014990627990912923,
+            "dot": 9.32224326386428e-05,
+            "cosine": 0.5846636712852675,
+            "right_to_left_norm": 0.014093710009149782
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.12333802954667358,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.12333802954667358,
+            "right_norm": 0.01248031474626488,
+            "dot": 0.0010016960671477208,
+            "cosine": 0.6507488730402363,
+            "right_to_left_norm": 0.10118788821368416
+          },
+          "prior_IQ": {
+            "left_norm": 0.12333802954667358,
+            "right_norm": 0.011889095241407825,
+            "dot": 0.001315114481380725,
+            "cosine": 0.896845736846357,
+            "right_to_left_norm": 0.09639439907631045
+          },
+          "spectral": {
+            "left_norm": 0.12333802954667358,
+            "right_norm": 0.0017999774719041795,
+            "dot": 0.00012556036488775918,
+            "cosine": 0.5655727724374584,
+            "right_to_left_norm": 0.014593856238176986
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.14416028955549193,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.14416028955549193,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.14416028955549193,
+            "right_norm": 0.011875721221432461,
+            "dot": 0.0011769915800535788,
+            "cosine": 0.6874921061700899,
+            "right_to_left_norm": 0.08237858884752805
+          },
+          "spectral": {
+            "left_norm": 0.14416028955549193,
+            "right_norm": 0.002272922993859361,
+            "dot": 0.00011850608379822027,
+            "cosine": 0.36166816140699465,
+            "right_to_left_norm": 0.01576663726791725
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 0,
+      "count": 32,
+      "L_s": 32,
+      "U_s": 0,
+      "losses": {
+        "final_IQ": 0.010217489674687386,
+        "prior_IQ": 0.0018612361745908856,
+        "spectral": 0.00011778352200053632,
+        "action_probe": 0.0012945220805704594,
+        "coarse_clean_IQ": 0.09249516576528549
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.04839342435365217,
+            "right_norm": 0.7854492171183349,
+            "dot": -0.013027521019666564,
+            "cosine": -0.3427341007308757,
+            "right_to_left_norm": 16.230494692386
+          },
+          "action_probe": {
+            "left_norm": 0.04839342435365217,
+            "right_norm": 0.005764743901918127,
+            "dot": 9.808159487031455e-05,
+            "cosine": 0.3515775588916626,
+            "right_to_left_norm": 0.11912246299807615
+          },
+          "prior_IQ": {
+            "left_norm": 0.04839342435365217,
+            "right_norm": 0.006329008033641512,
+            "dot": 0.00017880665344992267,
+            "cosine": 0.5837967512415818,
+            "right_to_left_norm": 0.13078239695108232
+          },
+          "spectral": {
+            "left_norm": 0.04839342435365217,
+            "right_norm": 0.0003731435194620501,
+            "dot": 1.203017561847013e-05,
+            "cosine": 0.6662077946628862,
+            "right_to_left_norm": 0.007710624417383054
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.042104515194101265,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.042104515194101265,
+            "right_norm": 0.02756807722324735,
+            "dot": -4.101304567224929e-06,
+            "cosine": -0.0035333517476411414,
+            "right_to_left_norm": 0.6547534651844078
+          },
+          "prior_IQ": {
+            "left_norm": 0.042104515194101265,
+            "right_norm": 0.0050505601354239645,
+            "dot": 0.00010316131804281558,
+            "cosine": 0.4851194248124499,
+            "right_to_left_norm": 0.1199529340770449
+          },
+          "spectral": {
+            "left_norm": 0.042104515194101265,
+            "right_norm": 0.0005225447523885596,
+            "dot": 1.56352655094119e-05,
+            "cosine": 0.710645644723559,
+            "right_to_left_norm": 0.012410658333901602
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.0590485880775801,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.0590485880775801,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.0590485880775801,
+            "right_norm": 0.007894086146712682,
+            "dot": 0.00018995560812164118,
+            "cosine": 0.4075123180347926,
+            "right_to_left_norm": 0.13368797466149665
+          },
+          "spectral": {
+            "left_norm": 0.0590485880775801,
+            "right_norm": 0.0007805382799599553,
+            "dot": 3.1207679242503526e-05,
+            "cosine": 0.6771076943732901,
+            "right_to_left_norm": 0.013218576520990762
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 32,
+      "count": 32,
+      "L_s": 32,
+      "U_s": 0,
+      "losses": {
+        "final_IQ": 0.024867594242095947,
+        "prior_IQ": 0.004694140050560236,
+        "spectral": 0.00019723991863429546,
+        "action_probe": 0.0008787330007180572,
+        "coarse_clean_IQ": 0.18207451701164246
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.06826791738341484,
+            "right_norm": 0.9570933988081228,
+            "dot": -0.006074978302845643,
+            "cosine": -0.09297662041479285,
+            "right_to_left_norm": 14.019665979156429
+          },
+          "action_probe": {
+            "left_norm": 0.06826791738341484,
+            "right_norm": 0.003072379119040509,
+            "dot": 2.2912956129219462e-05,
+            "cosine": 0.10924200551098824,
+            "right_to_left_norm": 0.0450047289678551
+          },
+          "prior_IQ": {
+            "left_norm": 0.06826791738341484,
+            "right_norm": 0.01820370305610054,
+            "dot": 0.0005336281011116349,
+            "cosine": 0.42940025189548714,
+            "right_to_left_norm": 0.26665092116202427
+          },
+          "spectral": {
+            "left_norm": 0.06826791738341484,
+            "right_norm": 0.0006171657199596821,
+            "dot": 2.4282830380982165e-05,
+            "cosine": 0.576342779382264,
+            "right_to_left_norm": 0.00904034784734209
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.09133330012983867,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.09133330012983867,
+            "right_norm": 0.017324178362764286,
+            "dot": 0.00044305732698775107,
+            "cosine": 0.2800129560671697,
+            "right_to_left_norm": 0.18968085395070994
+          },
+          "prior_IQ": {
+            "left_norm": 0.09133330012983867,
+            "right_norm": 0.00818278611341202,
+            "dot": 0.0006373496133665438,
+            "cosine": 0.8528003638981086,
+            "right_to_left_norm": 0.08959258125765124
+          },
+          "spectral": {
+            "left_norm": 0.09133330012983867,
+            "right_norm": 0.0010716599705602786,
+            "dot": 6.114378170925178e-05,
+            "cosine": 0.6246922771556387,
+            "right_to_left_norm": 0.01173350759292411
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.10631663156525407,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.10631663156525407,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.10631663156525407,
+            "right_norm": 0.017483050790228778,
+            "dot": 0.0013340818322897482,
+            "cosine": 0.7177348634779745,
+            "right_to_left_norm": 0.16444323463632488
+          },
+          "spectral": {
+            "left_norm": 0.10631663156525407,
+            "right_norm": 0.0011256135050164984,
+            "dot": 4.695132160616142e-05,
+            "cosine": 0.39233523937456555,
+            "right_to_left_norm": 0.010587369901064157
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 64,
+      "count": 32,
+      "L_s": 32,
+      "U_s": 0,
+      "losses": {
+        "final_IQ": 0.02387377619743347,
+        "prior_IQ": 0.004202664829790592,
+        "spectral": 0.00029124406864866614,
+        "action_probe": 0.0020230324007570744,
+        "coarse_clean_IQ": 0.13107940554618835
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.07285025336268741,
+            "right_norm": 0.870656387402467,
+            "dot": 0.002300775261959538,
+            "cosine": 0.03627407462887829,
+            "right_to_left_norm": 11.951315846053069
+          },
+          "action_probe": {
+            "left_norm": 0.07285025336268741,
+            "right_norm": 0.012683174222302977,
+            "dot": 0.00021807393415357825,
+            "cosine": 0.23601778694434083,
+            "right_to_left_norm": 0.17409924656211379
+          },
+          "prior_IQ": {
+            "left_norm": 0.07285025336268741,
+            "right_norm": 0.011850136033305448,
+            "dot": 0.0005420842719783958,
+            "cosine": 0.6279316946477191,
+            "right_to_left_norm": 0.16266430775894697
+          },
+          "spectral": {
+            "left_norm": 0.07285025336268741,
+            "right_norm": 0.0012159364996033371,
+            "dot": 6.531369723587318e-05,
+            "cosine": 0.7373306833035689,
+            "right_to_left_norm": 0.016690902824314922
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.17340377612014782,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.17340377612014782,
+            "right_norm": 0.05775214185134235,
+            "dot": 0.006476554523104378,
+            "cosine": 0.6467216201759356,
+            "right_to_left_norm": 0.33305008197357305
+          },
+          "prior_IQ": {
+            "left_norm": 0.17340377612014782,
+            "right_norm": 0.015282412048634522,
+            "dot": 0.0024602345016712674,
+            "cosine": 0.9283805835889701,
+            "right_to_left_norm": 0.08813194493553393
+          },
+          "spectral": {
+            "left_norm": 0.17340377612014782,
+            "right_norm": 0.001758361637384047,
+            "dot": 0.00025132170503525185,
+            "cosine": 0.8242581437660524,
+            "right_to_left_norm": 0.010140273047835564
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.13135548026984883,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.13135548026984883,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.13135548026984883,
+            "right_norm": 0.010947508150512512,
+            "dot": 0.000990476322615995,
+            "cosine": 0.6887801526058166,
+            "right_to_left_norm": 0.08334260685601094
+          },
+          "spectral": {
+            "left_norm": 0.13135548026984883,
+            "right_norm": 0.001920464233756991,
+            "dot": 0.00015923700733732178,
+            "cosine": 0.631232842731619,
+            "right_to_left_norm": 0.014620358661943183
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 96,
+      "count": 32,
+      "L_s": 32,
+      "U_s": 0,
+      "losses": {
+        "final_IQ": 0.021154653280973434,
+        "prior_IQ": 0.003186297370120883,
+        "spectral": 0.00022920822084415704,
+        "action_probe": 0.0007663657888770103,
+        "coarse_clean_IQ": 0.14337258040905
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.0739960339201105,
+            "right_norm": 0.90175077551754,
+            "dot": -0.019370371720982407,
+            "cosine": -0.29029729407669247,
+            "right_to_left_norm": 12.186474433090716
+          },
+          "action_probe": {
+            "left_norm": 0.0739960339201105,
+            "right_norm": 0.006029774165407813,
+            "dot": 7.63232134148659e-05,
+            "cosine": 0.1710594839612876,
+            "right_to_left_norm": 0.08148780206136227
+          },
+          "prior_IQ": {
+            "left_norm": 0.0739960339201105,
+            "right_norm": 0.00987732220323091,
+            "dot": 0.0003805372393879979,
+            "cosine": 0.520654348006253,
+            "right_to_left_norm": 0.13348448126145407
+          },
+          "spectral": {
+            "left_norm": 0.0739960339201105,
+            "right_norm": 0.0007796471550061378,
+            "dot": 2.2021014314251734e-05,
+            "cosine": 0.3817075744199326,
+            "right_to_left_norm": 0.01053633706703633
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.07541766431289558,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.07541766431289558,
+            "right_norm": 0.01940507700286794,
+            "dot": 0.0003624430876033496,
+            "cosine": 0.24765743627565756,
+            "right_to_left_norm": 0.25730148473386083
+          },
+          "prior_IQ": {
+            "left_norm": 0.07541766431289558,
+            "right_norm": 0.006867072009155208,
+            "dot": 0.00040408499860024164,
+            "cosine": 0.7802397070960565,
+            "right_to_left_norm": 0.09105389396129862
+          },
+          "spectral": {
+            "left_norm": 0.07541766431289558,
+            "right_norm": 0.0013406091363874642,
+            "dot": 5.395634967733269e-05,
+            "cosine": 0.5336632633130856,
+            "right_to_left_norm": 0.017775797601282055
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.14159913919194625,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.14159913919194625,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.14159913919194625,
+            "right_norm": 0.012531191376726836,
+            "dot": 0.0012018098139825492,
+            "cosine": 0.6773026430192443,
+            "right_to_left_norm": 0.08849765223318232
+          },
+          "spectral": {
+            "left_norm": 0.14159913919194625,
+            "right_norm": 0.0015751843611571054,
+            "dot": 8.561784069359944e-05,
+            "cosine": 0.383859475929808,
+            "right_to_left_norm": 0.011124250967527755
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 128,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.0038727286737412214,
+        "prior_IQ": 0.0009875941323116422,
+        "spectral": 3.398030094103888e-05,
+        "action_probe": 0.0003927734505850822,
+        "coarse_clean_IQ": 0.08099415898323059
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.033621988743074295,
+            "right_norm": 0.8910746855237941,
+            "dot": -0.012874026015118133,
+            "cosine": -0.4297114025257865,
+            "right_to_left_norm": 26.502735823660764
+          },
+          "action_probe": {
+            "left_norm": 0.033621988743074295,
+            "right_norm": 0.0036485048143140653,
+            "dot": 6.804853696475032e-05,
+            "cosine": 0.5547284889109093,
+            "right_to_left_norm": 0.1085154373881471
+          },
+          "prior_IQ": {
+            "left_norm": 0.033621988743074295,
+            "right_norm": 0.007299151022947121,
+            "dot": 9.512075863062498e-05,
+            "cosine": 0.3875962417944351,
+            "right_to_left_norm": 0.21709456506943403
+          },
+          "spectral": {
+            "left_norm": 0.033621988743074295,
+            "right_norm": 0.00019554932773570752,
+            "dot": 1.62214701638206e-07,
+            "cosine": 0.024672348246330286,
+            "right_to_left_norm": 0.005816114246840565
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.03906942781737524,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.03906942781737524,
+            "right_norm": 0.012776834807803455,
+            "dot": 4.2798761268574734e-05,
+            "cosine": 0.08573751041303501,
+            "right_to_left_norm": 0.3270289717967471
+          },
+          "prior_IQ": {
+            "left_norm": 0.03906942781737524,
+            "right_norm": 0.005168310349546891,
+            "dot": 4.425000285531515e-05,
+            "cosine": 0.21914303275536487,
+            "right_to_left_norm": 0.13228528387222507
+          },
+          "spectral": {
+            "left_norm": 0.03906942781737524,
+            "right_norm": 0.0004228901344784263,
+            "dot": 7.342394802898639e-06,
+            "cosine": 0.44439905662633666,
+            "right_to_left_norm": 0.01082406777122944
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.03131754420839156,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.03131754420839156,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.03131754420839156,
+            "right_norm": 0.008305120068318217,
+            "dot": 2.8170630390045658e-05,
+            "cosine": 0.10830860217826861,
+            "right_to_left_norm": 0.2651906552140462
+          },
+          "spectral": {
+            "left_norm": 0.03131754420839156,
+            "right_norm": 0.0003085940288687588,
+            "dot": 3.716543449234248e-06,
+            "cosine": 0.3845599005508025,
+            "right_to_left_norm": 0.009853710968373786
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 160,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.010357553139328957,
+        "prior_IQ": 0.0018673648592084646,
+        "spectral": 0.00011718690802808851,
+        "action_probe": 0.0014240843011066318,
+        "coarse_clean_IQ": 0.08199958503246307
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.10224597294311996,
+            "right_norm": 0.8470060267609079,
+            "dot": -0.014330315068152384,
+            "cosine": -0.16547143246280974,
+            "right_to_left_norm": 8.28400378401311
+          },
+          "action_probe": {
+            "left_norm": 0.10224597294311996,
+            "right_norm": 0.007219639634552226,
+            "dot": 4.8377746592114094e-05,
+            "cosine": 0.06553659943209983,
+            "right_to_left_norm": 0.07061050354099084
+          },
+          "prior_IQ": {
+            "left_norm": 0.10224597294311996,
+            "right_norm": 0.008571705878627768,
+            "dot": 0.0005362389366670455,
+            "cosine": 0.611849870763804,
+            "right_to_left_norm": 0.08383416609861259
+          },
+          "spectral": {
+            "left_norm": 0.10224597294311996,
+            "right_norm": 0.0009920646075891727,
+            "dot": 8.361374972173627e-05,
+            "cosine": 0.8243118288372735,
+            "right_to_left_norm": 0.009702725486714905
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.156373256591634,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.156373256591634,
+            "right_norm": 0.030839567509876504,
+            "dot": 0.0005062389643083744,
+            "cosine": 0.1049747403913995,
+            "right_to_left_norm": 0.1972176584543065
+          },
+          "prior_IQ": {
+            "left_norm": 0.156373256591634,
+            "right_norm": 0.010176496018981442,
+            "dot": 0.0012802544973572342,
+            "cosine": 0.8045176239855035,
+            "right_to_left_norm": 0.06507823806187768
+          },
+          "spectral": {
+            "left_norm": 0.156373256591634,
+            "right_norm": 0.0013605375262834782,
+            "dot": 0.00019123801423419787,
+            "cosine": 0.8988789696432941,
+            "right_to_left_norm": 0.008700576786198793
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.15778017975679956,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.15778017975679956,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.15778017975679956,
+            "right_norm": 0.009513962116333935,
+            "dot": 0.0011666015873395708,
+            "cosine": 0.7771568847686009,
+            "right_to_left_norm": 0.060298841914102515
+          },
+          "spectral": {
+            "left_norm": 0.15778017975679956,
+            "right_norm": 0.001798178292149161,
+            "dot": 0.0002514269860414662,
+            "cosine": 0.8861896884108438,
+            "right_to_left_norm": 0.011396731166873121
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 192,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.012103034183382988,
+        "prior_IQ": 0.0020901253446936607,
+        "spectral": 8.155849354807287e-05,
+        "action_probe": 0.0006429075147025287,
+        "coarse_clean_IQ": 0.12269590049982071
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.060630950598722276,
+            "right_norm": 0.8988058023290268,
+            "dot": -0.015508949412893677,
+            "cosine": -0.2845916375826032,
+            "right_to_left_norm": 14.824207660500841
+          },
+          "action_probe": {
+            "left_norm": 0.060630950598722276,
+            "right_norm": 0.004171053497041696,
+            "dot": 7.980035531302996e-05,
+            "cosine": 0.31554745926847266,
+            "right_to_left_norm": 0.06879412999224188
+          },
+          "prior_IQ": {
+            "left_norm": 0.060630950598722276,
+            "right_norm": 0.007142687653089736,
+            "dot": 0.00021511565996976568,
+            "cosine": 0.496724968509091,
+            "right_to_left_norm": 0.1178059651474483
+          },
+          "spectral": {
+            "left_norm": 0.060630950598722276,
+            "right_norm": 0.00034311977499699764,
+            "dot": 1.3935837911204725e-05,
+            "cosine": 0.669873751455779,
+            "right_to_left_norm": 0.005659152159231171
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.09780998376088709,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.09780998376088709,
+            "right_norm": 0.021776468821682327,
+            "dot": 0.0012130925067172012,
+            "cosine": 0.569538747048922,
+            "right_to_left_norm": 0.22264055247078413
+          },
+          "prior_IQ": {
+            "left_norm": 0.09780998376088709,
+            "right_norm": 0.008666901949971684,
+            "dot": 0.0007469158810186125,
+            "cosine": 0.8810988276879242,
+            "right_to_left_norm": 0.08860958377377283
+          },
+          "spectral": {
+            "left_norm": 0.09780998376088709,
+            "right_norm": 0.000676559403844623,
+            "dot": 1.910577861847783e-05,
+            "cosine": 0.2887191692967541,
+            "right_to_left_norm": 0.006917079196113413
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.0865343291143722,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.0865343291143722,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.0865343291143722,
+            "right_norm": 0.008982286405424623,
+            "dot": 0.0004228164702479185,
+            "cosine": 0.543972026173364,
+            "right_to_left_norm": 0.1038002662914594
+          },
+          "spectral": {
+            "left_norm": 0.0865343291143722,
+            "right_norm": 0.0005404491324957057,
+            "dot": 3.0511357665585774e-05,
+            "cosine": 0.6524064977419975,
+            "right_to_left_norm": 0.006245488212907914
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 224,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.0538453608751297,
+        "prior_IQ": 0.006690893322229385,
+        "spectral": 0.000890346709638834,
+        "action_probe": 0.0028526796959340572,
+        "coarse_clean_IQ": 0.1770307719707489
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.13075923714671334,
+            "right_norm": 0.9264656051191867,
+            "dot": 0.017812935611827663,
+            "cosine": 0.14703943287704485,
+            "right_to_left_norm": 7.0852784501922565
+          },
+          "action_probe": {
+            "left_norm": 0.13075923714671334,
+            "right_norm": 0.017520015450569245,
+            "dot": 0.0017211262433623326,
+            "cosine": 0.7512869820003361,
+            "right_to_left_norm": 0.13398682825681824
+          },
+          "prior_IQ": {
+            "left_norm": 0.13075923714671334,
+            "right_norm": 0.0392797540435029,
+            "dot": 0.0044404881645756285,
+            "cosine": 0.8645489325425963,
+            "right_to_left_norm": 0.30039754667144913
+          },
+          "spectral": {
+            "left_norm": 0.13075923714671334,
+            "right_norm": 0.003207416208974463,
+            "dot": -0.0001015253443379396,
+            "cosine": -0.24207323459382382,
+            "right_to_left_norm": 0.024529174985746558
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.20150237351981443,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.20150237351981443,
+            "right_norm": 0.04372139629931762,
+            "dot": 0.0059614338932419105,
+            "cosine": 0.6766694086397781,
+            "right_to_left_norm": 0.21697707841152722
+          },
+          "prior_IQ": {
+            "left_norm": 0.20150237351981443,
+            "right_norm": 0.06857161183771657,
+            "dot": 0.011177714745046615,
+            "cosine": 0.8089627011541699,
+            "right_to_left_norm": 0.34030175744293994
+          },
+          "spectral": {
+            "left_norm": 0.20150237351981443,
+            "right_norm": 0.005362548340251407,
+            "dot": 2.3935982867828683e-05,
+            "cosine": 0.022151333675015625,
+            "right_to_left_norm": 0.026612829648500837
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.16624803656654136,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.16624803656654136,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.16624803656654136,
+            "right_norm": 0.01211963904867932,
+            "dot": 0.0014246834699315615,
+            "cosine": 0.7070858962967741,
+            "right_to_left_norm": 0.0729009454726907
+          },
+          "spectral": {
+            "left_norm": 0.16624803656654136,
+            "right_norm": 0.004265298059925256,
+            "dot": -1.526925919300093e-05,
+            "cosine": -0.021533372698374763,
+            "right_to_left_norm": 0.02565623118332622
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 256,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.0407981351017952,
+        "prior_IQ": 0.005048924591392279,
+        "spectral": 0.0005917257512919605,
+        "action_probe": 0.0015805087750777602,
+        "coarse_clean_IQ": 0.15899334847927094
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.14118837321577674,
+            "right_norm": 1.0914821975483826,
+            "dot": 0.0357668984734657,
+            "cosine": 0.2320949500078778,
+            "right_to_left_norm": 7.730680456812698
+          },
+          "action_probe": {
+            "left_norm": 0.14118837321577674,
+            "right_norm": 0.014527510768358938,
+            "dot": 0.0015685957039437834,
+            "cosine": 0.7647524569402481,
+            "right_to_left_norm": 0.10289452620972332
+          },
+          "prior_IQ": {
+            "left_norm": 0.14118837321577674,
+            "right_norm": 0.020383336955324807,
+            "dot": 0.0025560425545987286,
+            "cosine": 0.8881654232458609,
+            "right_to_left_norm": 0.14436979824233234
+          },
+          "spectral": {
+            "left_norm": 0.14118837321577674,
+            "right_norm": 0.0014861798502070053,
+            "dot": 8.427042000517408e-05,
+            "cosine": 0.401610311892112,
+            "right_to_left_norm": 0.010526219803777269
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.1639334675283646,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.1639334675283646,
+            "right_norm": 0.03192632266949076,
+            "dot": 0.003246226707691436,
+            "cosine": 0.6202436442841106,
+            "right_to_left_norm": 0.19475170720686857
+          },
+          "prior_IQ": {
+            "left_norm": 0.1639334675283646,
+            "right_norm": 0.013978205160198647,
+            "dot": 0.002204029711931104,
+            "cosine": 0.9618302002368445,
+            "right_to_left_norm": 0.08526755012840843
+          },
+          "spectral": {
+            "left_norm": 0.1639334675283646,
+            "right_norm": 0.002347962700879715,
+            "dot": 0.0002805177188278137,
+            "cosine": 0.7287884476406962,
+            "right_to_left_norm": 0.014322656235362425
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.14209388884528507,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.14209388884528507,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.14209388884528507,
+            "right_norm": 0.013974718912046689,
+            "dot": 0.0012487510953184272,
+            "cosine": 0.6288649656818708,
+            "right_to_left_norm": 0.09834848652261652
+          },
+          "spectral": {
+            "left_norm": 0.14209388884528507,
+            "right_norm": 0.0027365771704227445,
+            "dot": 0.0001517353030640429,
+            "cosine": 0.39021461974286303,
+            "right_to_left_norm": 0.019258936416346444
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 288,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.006770487874746323,
+        "prior_IQ": 0.0018382834969088435,
+        "spectral": 6.325708818621933e-05,
+        "action_probe": 0.0010475724702700973,
+        "coarse_clean_IQ": 0.08203773945569992
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.038446756670677866,
+            "right_norm": 0.8585232967976054,
+            "dot": -0.00594665344829751,
+            "cosine": -0.18016102178902044,
+            "right_to_left_norm": 22.33018780105252
+          },
+          "action_probe": {
+            "left_norm": 0.038446756670677866,
+            "right_norm": 0.004714080956578113,
+            "dot": 3.837555727480985e-05,
+            "cosine": 0.21173758218593267,
+            "right_to_left_norm": 0.12261322839160047
+          },
+          "prior_IQ": {
+            "left_norm": 0.038446756670677866,
+            "right_norm": 0.007255954259355148,
+            "dot": 3.938142045677522e-05,
+            "cosine": 0.1411682826318595,
+            "right_to_left_norm": 0.1887273436744545
+          },
+          "spectral": {
+            "left_norm": 0.038446756670677866,
+            "right_norm": 0.0003509671477244828,
+            "dot": 7.894547694920684e-06,
+            "cosine": 0.585060903628088,
+            "right_to_left_norm": 0.009128654225134014
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.045990763760861864,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.045990763760861864,
+            "right_norm": 0.019349379813861662,
+            "dot": 6.539041521172401e-05,
+            "cosine": 0.07348123105324281,
+            "right_to_left_norm": 0.4207231676880301
+          },
+          "prior_IQ": {
+            "left_norm": 0.045990763760861864,
+            "right_norm": 0.005093006689187494,
+            "dot": 6.90693519121957e-05,
+            "cosine": 0.2948767372383099,
+            "right_to_left_norm": 0.11073977191745711
+          },
+          "spectral": {
+            "left_norm": 0.045990763760861864,
+            "right_norm": 0.0004627732219625999,
+            "dot": 7.6483596849005e-06,
+            "cosine": 0.35935977351272186,
+            "right_to_left_norm": 0.010062307822694171
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.0621996325512513,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.0621996325512513,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.0621996325512513,
+            "right_norm": 0.006283607576289586,
+            "dot": 0.0001843956847427171,
+            "cosine": 0.4717955927887616,
+            "right_to_left_norm": 0.10102322664224768
+          },
+          "spectral": {
+            "left_norm": 0.0621996325512513,
+            "right_norm": 0.0005647543032203636,
+            "dot": 1.7766129186365065e-05,
+            "cosine": 0.5057611289420868,
+            "right_to_left_norm": 0.00907970481586072
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 320,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.010391656309366226,
+        "prior_IQ": 0.001930194441229105,
+        "spectral": 0.00014573466614820063,
+        "action_probe": 0.0006223365780897439,
+        "coarse_clean_IQ": 0.08913230150938034
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.0646652640178184,
+            "right_norm": 0.8078511479921846,
+            "dot": -0.011145276993735373,
+            "cosine": -0.21334794545151345,
+            "right_to_left_norm": 12.492814500371987
+          },
+          "action_probe": {
+            "left_norm": 0.0646652640178184,
+            "right_norm": 0.0031881876492367103,
+            "dot": 7.345882839839803e-05,
+            "cosine": 0.35631086652184646,
+            "right_to_left_norm": 0.04930294026725401
+          },
+          "prior_IQ": {
+            "left_norm": 0.0646652640178184,
+            "right_norm": 0.00829289876087609,
+            "dot": 0.0003670253749067788,
+            "cosine": 0.6844136653705309,
+            "right_to_left_norm": 0.12824348414615605
+          },
+          "spectral": {
+            "left_norm": 0.0646652640178184,
+            "right_norm": 0.0007156704008176049,
+            "dot": 2.287149543241296e-05,
+            "cosine": 0.49420877314551853,
+            "right_to_left_norm": 0.011067308108730573
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.09495886485517417,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.09495886485517417,
+            "right_norm": 0.016144344644439937,
+            "dot": 0.0003252928850625143,
+            "cosine": 0.21218693021620727,
+            "right_to_left_norm": 0.1700140863000244
+          },
+          "prior_IQ": {
+            "left_norm": 0.09495886485517417,
+            "right_norm": 0.009178521198115828,
+            "dot": 0.0007893000087595766,
+            "cosine": 0.9055947121404525,
+            "right_to_left_norm": 0.09665786561491004
+          },
+          "spectral": {
+            "left_norm": 0.09495886485517417,
+            "right_norm": 0.0015637822648574995,
+            "dot": 0.00010615477065572223,
+            "cosine": 0.714871064324954,
+            "right_to_left_norm": 0.016467996613507237
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.10608864650017433,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.10608864650017433,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.10608864650017433,
+            "right_norm": 0.007814336750202832,
+            "dot": 0.0005412026522780561,
+            "cosine": 0.6528281679750682,
+            "right_to_left_norm": 0.07365855827173731
+          },
+          "spectral": {
+            "left_norm": 0.10608864650017433,
+            "right_norm": 0.0017152536616523565,
+            "dot": 0.00013634332365583006,
+            "cosine": 0.7492670129775599,
+            "right_to_left_norm": 0.016168117119389754
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 352,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.008378282189369202,
+        "prior_IQ": 0.0017377398908138275,
+        "spectral": 8.381972293136641e-05,
+        "action_probe": 0.0009508911753073335,
+        "coarse_clean_IQ": 0.07992380857467651
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.042918646730812735,
+            "right_norm": 0.8725387753994353,
+            "dot": -0.013528300009411482,
+            "cosine": -0.3612538382202624,
+            "right_to_left_norm": 20.33006261525507
+          },
+          "action_probe": {
+            "left_norm": 0.042918646730812735,
+            "right_norm": 0.002678729964091982,
+            "dot": 2.4124320506083135e-05,
+            "cosine": 0.2098360653833971,
+            "right_to_left_norm": 0.06241412924533877
+          },
+          "prior_IQ": {
+            "left_norm": 0.042918646730812735,
+            "right_norm": 0.006629655756527811,
+            "dot": 5.268701572938179e-05,
+            "cosine": 0.1851682840913461,
+            "right_to_left_norm": 0.1544702888259559
+          },
+          "spectral": {
+            "left_norm": 0.042918646730812735,
+            "right_norm": 0.0005702018718828297,
+            "dot": 1.7470310668169183e-05,
+            "cosine": 0.7138812402686892,
+            "right_to_left_norm": 0.01328564424361178
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.06362608927205526,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.06362608927205526,
+            "right_norm": 0.013086678040039044,
+            "dot": 0.00028815973228277437,
+            "cosine": 0.34607373772960354,
+            "right_to_left_norm": 0.20568100585409932
+          },
+          "prior_IQ": {
+            "left_norm": 0.06362608927205526,
+            "right_norm": 0.0075632768214206544,
+            "dot": 0.00028612716054548425,
+            "cosine": 0.5945848762641652,
+            "right_to_left_norm": 0.11887068509084785
+          },
+          "spectral": {
+            "left_norm": 0.06362608927205526,
+            "right_norm": 0.000993219976772752,
+            "dot": 4.6145049446386506e-05,
+            "cosine": 0.7302043893280886,
+            "right_to_left_norm": 0.015610262836144112
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.06939290773941718,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.06939290773941718,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.06939290773941718,
+            "right_norm": 0.005253867399577203,
+            "dot": 0.00018609184609361172,
+            "cosine": 0.5104264259832384,
+            "right_to_left_norm": 0.07571187850070236
+          },
+          "spectral": {
+            "left_norm": 0.06939290773941718,
+            "right_norm": 0.000965122035974979,
+            "dot": 4.7730185669857295e-05,
+            "cosine": 0.712682026390444,
+            "right_to_left_norm": 0.013908078900500687
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 384,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.014875572174787521,
+        "prior_IQ": 0.002527551958337426,
+        "spectral": 0.0002293058205395937,
+        "action_probe": 0.000977592309936881,
+        "coarse_clean_IQ": 0.10646060854196548
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.05770516343536495,
+            "right_norm": 0.8634608497450983,
+            "dot": -0.006395935643889961,
+            "cosine": -0.1283650395204691,
+            "right_to_left_norm": 14.963320409139005
+          },
+          "action_probe": {
+            "left_norm": 0.05770516343536495,
+            "right_norm": 0.004115772314163913,
+            "dot": 3.499981572549411e-05,
+            "cosine": 0.1473668298015947,
+            "right_to_left_norm": 0.07132416007752847
+          },
+          "prior_IQ": {
+            "left_norm": 0.05770516343536495,
+            "right_norm": 0.0085214586253108,
+            "dot": 0.00027467105121607515,
+            "cosine": 0.5585785760247626,
+            "right_to_left_norm": 0.14767237657780158
+          },
+          "spectral": {
+            "left_norm": 0.05770516343536495,
+            "right_norm": 0.001156711387528699,
+            "dot": 4.5931792577375744e-05,
+            "cosine": 0.6881350964561418,
+            "right_to_left_norm": 0.020045197321454974
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.08691699326279215,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.08691699326279215,
+            "right_norm": 0.014405893126426674,
+            "dot": 0.0007492561186568004,
+            "cosine": 0.5983914993829721,
+            "right_to_left_norm": 0.16574311404066502
+          },
+          "prior_IQ": {
+            "left_norm": 0.08691699326279215,
+            "right_norm": 0.009126820957178849,
+            "dot": 0.000688094343278551,
+            "cosine": 0.8674086772331309,
+            "right_to_left_norm": 0.10500617444950092
+          },
+          "spectral": {
+            "left_norm": 0.08691699326279215,
+            "right_norm": 0.0013397493300620117,
+            "dot": 9.745557933958529e-05,
+            "cosine": 0.8369094365068888,
+            "right_to_left_norm": 0.015414124209420139
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.09958512348313697,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.09958512348313697,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.09958512348313697,
+            "right_norm": 0.009028243983158072,
+            "dot": 0.0005843676996143633,
+            "cosine": 0.6499627228224224,
+            "right_to_left_norm": 0.09065856091132779
+          },
+          "spectral": {
+            "left_norm": 0.09958512348313697,
+            "right_norm": 0.0016846023363133523,
+            "dot": 0.00010629691246651687,
+            "cosine": 0.6336198657994012,
+            "right_to_left_norm": 0.016916204724078197
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 416,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.029366804286837578,
+        "prior_IQ": 0.00407783780246973,
+        "spectral": 0.00043495549471117556,
+        "action_probe": 0.0015491452068090439,
+        "coarse_clean_IQ": 0.12537644803524017
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.1560884371885837,
+            "right_norm": 0.892944015364968,
+            "dot": 0.03353739617286088,
+            "cosine": 0.24062147125824504,
+            "right_to_left_norm": 5.720756972447142
+          },
+          "action_probe": {
+            "left_norm": 0.1560884371885837,
+            "right_norm": 0.014478327174843871,
+            "dot": -0.0005342843565829694,
+            "cosine": -0.2364195246770744,
+            "right_to_left_norm": 0.09275720505389758
+          },
+          "prior_IQ": {
+            "left_norm": 0.1560884371885837,
+            "right_norm": 0.021073369125332475,
+            "dot": 0.002728779887264811,
+            "cosine": 0.8295905545265748,
+            "right_to_left_norm": 0.13500916214486758
+          },
+          "spectral": {
+            "left_norm": 0.1560884371885837,
+            "right_norm": 0.0032117726119043613,
+            "dot": 0.00037308081851654797,
+            "cosine": 0.7441961144835274,
+            "right_to_left_norm": 0.020576620983295168
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.19380253173023745,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.19380253173023745,
+            "right_norm": 0.05639711083120501,
+            "dot": 0.006112182132361141,
+            "cosine": 0.5592165099627924,
+            "right_to_left_norm": 0.29100296228176575
+          },
+          "prior_IQ": {
+            "left_norm": 0.19380253173023745,
+            "right_norm": 0.013420844771581517,
+            "dot": 0.0023759882961362157,
+            "cosine": 0.9134925244093942,
+            "right_to_left_norm": 0.069250100356081
+          },
+          "spectral": {
+            "left_norm": 0.19380253173023745,
+            "right_norm": 0.0017841803027272736,
+            "dot": 0.00023355250004420796,
+            "cosine": 0.6754393120309479,
+            "right_to_left_norm": 0.009206176445675928
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.16678858124266419,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.16678858124266419,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.16678858124266419,
+            "right_norm": 0.01253243938431354,
+            "dot": 0.0014493252679443698,
+            "cosine": 0.6933682271465417,
+            "right_to_left_norm": 0.07513967257794366
+          },
+          "spectral": {
+            "left_norm": 0.16678858124266419,
+            "right_norm": 0.002444543899282233,
+            "dot": 0.0001959891957405321,
+            "cosine": 0.4806931966782659,
+            "right_to_left_norm": 0.01465654231883905
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 448,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.024833794683218002,
+        "prior_IQ": 0.005366710480302572,
+        "spectral": 0.00026301282923668623,
+        "action_probe": 0.0007316035334952176,
+        "coarse_clean_IQ": 0.2073659896850586
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.08668067913980011,
+            "right_norm": 1.5194978846422114,
+            "dot": -0.028466750077779605,
+            "cosine": -0.2161302139358721,
+            "right_to_left_norm": 17.529833634454327
+          },
+          "action_probe": {
+            "left_norm": 0.08668067913980011,
+            "right_norm": 0.0027447571505953136,
+            "dot": 7.653977235773551e-05,
+            "cosine": 0.32170731476575276,
+            "right_to_left_norm": 0.03166515511684583
+          },
+          "prior_IQ": {
+            "left_norm": 0.08668067913980011,
+            "right_norm": 0.06072105907734494,
+            "dot": 0.0005366421765012938,
+            "cosine": 0.10195843465212934,
+            "right_to_left_norm": 0.7005143439106304
+          },
+          "spectral": {
+            "left_norm": 0.08668067913980011,
+            "right_norm": 0.0007360816483787287,
+            "dot": 3.104654508327627e-05,
+            "cosine": 0.4865920202195754,
+            "right_to_left_norm": 0.008491876802113692
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.08328507029770227,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.08328507029770227,
+            "right_norm": 0.0135503274120326,
+            "dot": 0.0005156197635197464,
+            "cosine": 0.45689100673304367,
+            "right_to_left_norm": 0.1626981566275563
+          },
+          "prior_IQ": {
+            "left_norm": 0.08328507029770227,
+            "right_norm": 0.007689526824757982,
+            "dot": 0.0005666817217294119,
+            "cosine": 0.8848556571045636,
+            "right_to_left_norm": 0.09232779413251123
+          },
+          "spectral": {
+            "left_norm": 0.08328507029770227,
+            "right_norm": 0.001454573510341536,
+            "dot": 8.211863571768909e-05,
+            "cosine": 0.6778582634394459,
+            "right_to_left_norm": 0.017464997089420307
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.11700625705129418,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.11700625705129418,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.11700625705129418,
+            "right_norm": 0.01734249586442955,
+            "dot": 0.0005890048779178813,
+            "cosine": 0.2902673613771819,
+            "right_to_left_norm": 0.14821853379026392
+          },
+          "spectral": {
+            "left_norm": 0.11700625705129418,
+            "right_norm": 0.001287256371617126,
+            "dot": 6.786730643674443e-05,
+            "cosine": 0.4505951117621917,
+            "right_to_left_norm": 0.0110016028549038
+          }
+        }
+      }
+    },
+    {
+      "source_view": 20,
+      "offset": 480,
+      "count": 32,
+      "L_s": 0,
+      "U_s": 32,
+      "losses": {
+        "final_IQ": 0.042245298624038696,
+        "prior_IQ": 0.005867497064173222,
+        "spectral": 0.0006363006541505456,
+        "action_probe": 0.0016787387430667877,
+        "coarse_clean_IQ": 0.18333354592323303
+      },
+      "geometry": {
+        "coarse": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.13749247816588922,
+            "right_norm": 1.0718861471778047,
+            "dot": 0.03734379952071939,
+            "cosine": 0.2533908362988725,
+            "right_to_left_norm": 7.795962088082657
+          },
+          "action_probe": {
+            "left_norm": 0.13749247816588922,
+            "right_norm": 0.009397458311964837,
+            "dot": 0.0008183869078321395,
+            "cosine": 0.6333872626967227,
+            "right_to_left_norm": 0.068348890334397
+          },
+          "prior_IQ": {
+            "left_norm": 0.13749247816588922,
+            "right_norm": 0.02443401386172309,
+            "dot": 0.0029411874330650387,
+            "cosine": 0.8754854766161301,
+            "right_to_left_norm": 0.17771164057602223
+          },
+          "spectral": {
+            "left_norm": 0.13749247816588922,
+            "right_norm": 0.00264305526572162,
+            "dot": 0.00019780889072780217,
+            "cosine": 0.5443279357161525,
+            "right_to_left_norm": 0.0192232717089635
+          }
+        },
+        "action": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.1791893847982308,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.1791893847982308,
+            "right_norm": 0.03303874492491036,
+            "dot": 0.004045879711447177,
+            "cosine": 0.6834034189083397,
+            "right_to_left_norm": 0.18437891821612282
+          },
+          "prior_IQ": {
+            "left_norm": 0.1791893847982308,
+            "right_norm": 0.019728224223499145,
+            "dot": 0.003398915756054042,
+            "cosine": 0.9614797165499622,
+            "right_to_left_norm": 0.11009705873879382
+          },
+          "spectral": {
+            "left_norm": 0.1791893847982308,
+            "right_norm": 0.002705294115682786,
+            "dot": 0.0001371253594903485,
+            "cosine": 0.28287268504724544,
+            "right_to_left_norm": 0.015097401660979953
+          }
+        },
+        "prior": {
+          "coarse_clean_IQ": {
+            "left_norm": 0.166857624824719,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "action_probe": {
+            "left_norm": 0.166857624824719,
+            "right_norm": 0.0,
+            "dot": 0.0,
+            "cosine": null,
+            "right_to_left_norm": 0.0
+          },
+          "prior_IQ": {
+            "left_norm": 0.166857624824719,
+            "right_norm": 0.014851569334802093,
+            "dot": 0.001691726346456977,
+            "cosine": 0.682671399744136,
+            "right_to_left_norm": 0.089007435832815
+          },
+          "spectral": {
+            "left_norm": 0.166857624824719,
+            "right_norm": 0.004472729796234497,
+            "dot": 8.680061669879881e-05,
+            "cosine": 0.11630652789192217,
+            "right_to_left_norm": 0.026805666213533974
+          }
+        }
+      }
+    }
+  ],
+  "goal_complete": false
+}

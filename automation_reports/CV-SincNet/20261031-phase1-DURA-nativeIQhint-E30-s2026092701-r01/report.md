@@ -45,3 +45,8 @@ controller1192588/worker1192680/GPU6，实际CWD、完整argv/commit、CUDA、GP
 已3/30轮/741更新，L18900/U170100，teacher参考189000/非clean激活160614，五项加权loss独立复算一致。F/TX/实时teacher/初始化checkpoint读取0；cache句柄核对0.011453秒，原1.26m教师制备972.193282秒/2.58048GB/历史60组件轮次另计。source clean mask仅训练，部署图仍received-only。
 
 当前只确认按固定配方训练；完整30轮、七景正式测试与实际成本尚待返回。自动全七景和truth-last保持，默认与逐景3pp/clean/效率目标ACTIVE。
+
+
+## 完整训练与正式七景结果
+
+VERIFIED / ANALYZED。E30/7410/L189000U1701000、teacherref1890000/非clean1606874/实时0，完整30曲线与mask核对通过；全七景固定后truth-last、126组独立一致。clean84.823810%/lowurban67.375595%，六景3pp通过0/6、clean保持=True。训练1056.551s/全流程1241.367s，历史teacher/cache成本另计。完整见[分析](analysis.md)和results.json。默认保持，完整目标ACTIVE。
