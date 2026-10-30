@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration optimization and 2026-10-31 comprehensive recoverability question;source-only diagnostics within existing IQ/actualsimulator/F-frozen evaluation permissions",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "f443942e33318b9f72733908dc2735203addaa96",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-known-action-Gaussian-r01"
@@ -85,7 +85,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.known_action_reference --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.known_action_reference --root /home/szu2070436088/2510044040/CV-SincNet --commit f443942e33318b9f72733908dc2735203addaa96",
     "stop_rule": "Wrongsource/previousFteacher/physicalIDs/scenes/nonfinite/Cholesky/densenative mismatch/Fstatechange:failpreserve,noautorerun;otherownersuntouched"
   },
   "expected_artifacts": [
@@ -137,7 +137,7 @@
       "budget_ref": "sourcefit62488/probe512x2;0neuralupdates/Gforwards,Fsource1024+2smoke;CPU2",
       "output_root": "runs/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.known_action_reference --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.known_action_reference --root /home/szu2070436088/2510044040/CV-SincNet --commit f443942e33318b9f72733908dc2735203addaa96",
       "expected_artifacts": [
         "launch.json",
         "source_prior.npz",

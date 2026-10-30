@@ -198,3 +198,6 @@ source phase-only oracle闭合：固定noVar与default/source512×clean/缓存01
 
 
 用户E30/IQ特征增强方向已落实代码489f339757b7b3fb9214b3341d780ec98bb14e89：scratch单阶段30/7410，新增1030参数受限shape修正、F梯度仅增强/独立clip，真实2Ls smoke与9项检查/一次审查PASS，controller1018738，状态RUNNING，默认不变。并行既有IQ全量分析已完成28单元/77.055秒，0新G/F；default lowurban NMSE6.9580%/energyfit93.0420%与识别68.8899%/clean保留81.3568%分开，尾部24点占该景误差19.56%（高郊60.92%）。不能从均值/幅相oracle认证恢复极限，完整分析见20261031-analysis-DURA-recoverability-s2026092701-r01/analysis.md。新E30性能与效率、六景3pp/clean验收仍未完成。
+
+
+已知source action＋独立Gaussian先验参照完成：fit62488排除probe512/缓存01与20，CPU18.357643秒，G0/F1026/更新0/直接TX-V-target0；288统计独立复核。相对default源NMSE约降9.75%/16.87%，F-clean选择净−6/0（纠9损15、纠8损8），lowurban小组−2/+1；不是目标TX效果或恢复上界。算子和先验同时改变，AGC条件噪声/非Gaussian假设不满足，不能孤立归因或认证极限；本参照不部署/不触发新训练，健康E30保持。见20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01/analysis.md。

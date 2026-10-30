@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01`
 - group_id：`phase1-dura-known-action-independent-prior`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -32,3 +32,8 @@ source62488拟合单一Gaussian二阶先验，排除固定512；cached01/20使�
 ## 最小研究说明
 
 当前E30健康训练保持。本诊断只在源训练池，独立62488拟合一次全局高斯二阶先验，排除512固定probe；对原缓存01/20的512样本利用真实模拟action和插件噪声协方差求解一个固定参照，与旧noVar/default输出配对。没有target/V/TX读取、G加载或训练，不将源教师一致率称真实TX准确率。信号非高斯且AGC依赖实际噪声，故已知action＋高斯先验参照并不是真实条件Bayes最优，也不是准确率/误差上界；不从本诊断自动触发新训练。源码、矩阵、精确命令、环境/CWD/路径/CPU和技术停止规则见登记；现仅待发布。
+
+
+## 实际完成
+
+VERIFIED / ANALYZED_SOURCE_ONLY，代码f443942e33318b9f72733908dc2735203addaa96。真实source2Ls F smoke/冻结与CPU2/空CUDA/PID/CWD/argv/日志和产物核实。512×2计算18.357643秒、G0/F1026/更新0/TX-V-target0；288统计独立复算。相对default源NMSE降低，F-clean选择净−6/0，不作恢复上界或部署声明。详见 [分析](analysis.md) 和 results.json。E30健康训练保持，默认和六景3pp验收未达。
