@@ -1,0 +1,211 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase1-DURA-source-phasePair-s2026092701-r01",
+  "group_id": "phase1-dura-source-phase-covariance",
+  "display_name": "DURA 精确相位配对单阶段恢复对照",
+  "description": "源clean/received同旋转，真实宽线性action共轭变换；单前向从零E20/4940，F-free，自动全七景truth-last。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "single-stage",
+    "scratch",
+    "exact-phase-pair",
+    "F-free",
+    "training-efficiency"
+  ],
+  "comparison_group_id": "DURA-scratch-fastLR-noVarAux",
+  "parent_run_ids": [
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30 /goal星地性能接近clean；用户新增优化训练效率、多阶段太浪费时间；六景各自距rawclean<=3pp确认",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-DURA-source-phasePair-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original63000 source L/U20cached views including existing15percentclean;common uniform phase rotation of clean/received and conjugated source action;no new physical samples",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Sourcepairedclean and source simulatoraction;variance diagnostic log only;TX0/F0/V0/target0",
+    "augmentation": "Original R07 clean15percent/nativepractical85percent cache;online common phase rotation of source pairedIQ and conjugated source action;no newphysicalrecords"
+  },
+  "permissions": {
+    "regime": "source_IQ_and_simulator_action_only;F_noquery_smoke_and_frozen_evaluation_only",
+    "query_use": "allsevenpredictionsbeforeindependenttruthlast",
+    "external_method_exception": null,
+    "claim_scope": "G training has0directTX/F/V/target;phase covariance is a source coordinate augmentation,not a proven causal receiver transformation or target gain;defaultunchanged"
+  },
+  "checkpoint": {
+    "initialization": "Random scratch graph;no G/coarse/estimator/prior/teacher checkpoint",
+    "sources": [],
+    "contract_check_ref": "OriginalvalidatedsourceR07cache;randomfactorygraphonly;F50/R69weightsforpostfreezeevalreferenceonly",
+    "provenance_verdict": "No initialization weights;original7/63/30 validated source L/U handles;F50 evaluation-only provenance retained.",
+    "selection_rule": "Fixed finalE20/4940,no source/target ranking;noVar sourcecf40 is control only,not initializer"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-direct-single-stage",
+    "gpu_policy": "One ownworker on ONE of GPU4/6/7,>=12000MiB free,<=2 existing computePIDs beforeadding,total<=3;otherownersuntouched",
+    "remote_run_root": "runs/20261030-phase1-DURA-source-phasePair-s2026092701-r01",
+    "remote_log_root": "logs/20261030-phase1-DURA-source-phasePair-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-source-phasePair-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.phase_pair run --root ../.. --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badcontract/role/outputcollision/nonfinite/checkpoint/smoke/predictioncoverage: preservefailedrow,noautomaticretry/hotedit;healthyrowcontinues;no performance stop;unrelatedowneruntouched"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-ARM.json",
+    "ARM/final.pt",
+    "ARM/training.jsonl",
+    "ARM/training_complete.json",
+    "ARM/matched_profile.json",
+    "ARM/source_prediction/complete.json",
+    "ARM/source_summary.json",
+    "ARM/target_prediction/complete.json",
+    "ARM/target_summary.json",
+    "ARM/complete.json",
+    "complete.json",
+    "phase_smoke.json",
+    "scratch_joint/source_pairing_summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "MacroF1",
+      "Correct",
+      "repair_damage_net",
+      "TX/RX/day",
+      "rawclean_gap_pp",
+      "DURAv1delta_pp",
+      "clean_damage",
+      "G/GplusFsamecardB1/B128median/P95/throughput",
+      "parameters",
+      "parameterbytes",
+      "checkpointbytes",
+      "MAC",
+      "FFT_CG",
+      "sharedbenchmarkpeakVRAM",
+      "trainingfullcurves"
+    ],
+    "dimensions": [
+      "arm",
+      "clean/sixpractical",
+      "TX",
+      "RX",
+      "day",
+      "originalF50seed2026092701"
+    ],
+    "prediction_ref": "ARM/{source,target}_prediction;allsevencompletebeforetruth",
+    "scorer_ref": "IndependentCPU subprocess runner score;sourceafterfreeze;targetafterallnewandbaselineviewsvalidated;noqueryfeedback"
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "Scratch noVar E20 plus common source phase rotation and exact real-linear action conjugation",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/phase_pair.py",
+      "resolved_config_ref": "runs/20261030-phase1-DURA-source-phasePair-s2026092701-r01/scratch_joint/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model2026092701,shuffle2026103004,nativecache2026101912,independentphase2026103019 resetafterCPU2Ls smoke,eval2027 sameF50defaulthead;supportN/A",
+      "k": null,
+      "scenario": "Original native source route mix and15percentclean unchanged;theta uniform[-pi,pi],probability1,common IQrotation andimage coefficient times exp(2itheta)",
+      "optimizer": "resetAdamW",
+      "lr": 0.001,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "E20/4940/B256,L126000/U1134000,onejointstage/oneGforwardpervisit;zero learnedancestors/Fteachers",
+      "output_root": "runs/20261030-phase1-DURA-source-phasePair-s2026092701-r01/scratch_joint",
+      "log_path": "runs/20261030-phase1-DURA-source-phasePair-s2026092701-r01/logs/scratch_joint.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.phase_pair worker --root ../.. --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-ARM.json",
+        "ARM/final.pt",
+        "ARM/training.jsonl",
+        "ARM/training_complete.json",
+        "ARM/matched_profile.json",
+        "ARM/source_prediction/complete.json",
+        "ARM/source_summary.json",
+        "ARM/target_prediction/complete.json",
+        "ARM/target_summary.json",
+        "ARM/complete.json",
+        "complete.json",
+        "source_pairing_summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Current active goal authorizes single-stage G optimization and allsixscene3pp+clean preservation. This is independent F-free;authorized F-guided negative results kept unchanged. DefaultDURA not changed.",
+    "Source code trace: action cache generation already includes15percentclean identity. Initial idea to add20percentclean was based on incomplete tracing and explicitly abandoned BEFORE implementation/registration/launch. No duplicate clean-mix experiment.",
+    "Existing R32 pairaug used1/2percent PA/IQ/random directions andthreeGforwards withfrozenpretrainedcontext. This candidate instead rotates both IQcoordinates andexactsourceoperator once;no R32weights or learned teachers inherited.",
+    "For A(z)=aH(z)+bconj(H(z)),R=exp(itheta),A2=RAR^-1 keepskernel/main and changesimage toR^2b. Thus y2-A2x2=R(y-Ax),whitevariance and pointwise power unchanged;ordinary rotaterawIQ without imagechange is wrong. No additionalRMSrenormalization/AGC/EQ/latency shift.",
+    "Per visit one independent NumPy2026103019 uniformangle;no IQ/TX/scene/RX/day/Fmetric selects angles. All1.26mvisits rotated,including existingclean. Anglehistogram/sum/square/count recorded and independently replayed;globalshuffle/probe/modelRNG unchanged.",
+    "Loss/LR/optimizer/WD/clip20/4940 andall63000physicalsource unchanged from noVar;oneGforward/visit,zeroFtraining. Smoke uses actual2Ls andpairedaction/power audit,fullgradients/Gcheckpointreload/samefrozenFdefaulthead;freshsampler forGPUtrain.",
+    "Inference unchanged266951params/2prior/4CG/27FFT,IQonly,no rotation averaging/phasealignment/Fguidance/sourcebank. Samecard alternatingG/G+Fprofile;sharedGPUtimingsreportedwithoutcausalspeedclaim.",
+    "FinalE20only. Everytrainedversionautomatically source1800x7 andtarget168000x7;all7predictionsfixedbeforeindependentCPUtruthlast eachrole. No source-negative cancellation/targetfeedback/earlystop/sceneweights/selectivererun.",
+    "Reportsixindividual rawclean84.676190476%gaps<=3pp,cleanpreservation,R17eachscene1pptolerance,macroF1,perTX/RX/day,repair/damage,full20logs andmeasuredcost. Existingbenchmarkexposed;notnewblindtest/multiseedclaim.",
+    "8targeted mathematicalpairing/RNG/childroute/budget/noVar/checkpoint/objectivetestsPASS. OneindependentP0/P1review,realcheckpointsource-onlysmoke firstthencontinue,onepreflight/archiveSHA/compile/PIDreadback only.",
+    "Relatedprimaryliterature: Cekic, Gopalakrishnan and Madhow, Wireless Fingerprinting via Deep Learning: The Impact of Confounding Factors arXiv:2002.10791 motivates testing nuisancevariation;neither paper nor algebra proves this candidate works. No target adaptation borrowed from otherPhase2/3owners."
+  ],
+  "registered_at": "2026-10-30T13:52:04+00:00"
+}
