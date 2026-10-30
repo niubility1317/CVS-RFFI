@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration/efficiency goal and explicitly authorized originalR17 sourceIQteacher;source-only preparation inparallel within existingtwo-worker GPU authorization",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "6848d46e95741082e2783a525e6d0d376e8ff7c6",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-R17-nativeIQ-cache-r01"
@@ -86,7 +86,7 @@
     "remote_run_root": "runs/20261031-source-DURA-R17-nativeIQ-cache-s2026092701-r01",
     "remote_log_root": "logs/20261031-source-DURA-R17-nativeIQ-cache-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-source-DURA-R17-nativeIQ-cache-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.r17_native_cache run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.r17_native_cache run --root /home/szu2070436088/2510044040/CV-SincNet --commit 6848d46e95741082e2783a525e6d0d376e8ff7c6",
     "stop_rule": "Teacherprovenance/source/roles/inputshape/collision/nonfinite/incompletecount/teacherstate technicalfailure:preserveallprefix/noautoretry;nootherownercontrol"
   },
   "expected_artifacts": [
@@ -185,7 +185,7 @@
       "budget_ref": "0newtraining/updates;20x63000sourceGforward+2CPU sourceLs smoke;B128;cache2.58048GB;original20coarse+20action+20prior=60componentepochs historical",
       "output_root": "runs/20261031-source-DURA-R17-nativeIQ-cache-s2026092701-r01/scratch_joint/native_teacher_cache",
       "log_path": "runs/20261031-source-DURA-R17-nativeIQ-cache-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.r17_native_cache worker --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_efficiency.r17_native_cache worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 6848d46e95741082e2783a525e6d0d376e8ff7c6 --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",

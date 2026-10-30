@@ -237,3 +237,6 @@ strongPhase E30 84c5f08b3完整结案：7410步/30loss复算/原168000x7及独�
 
 
 wideCoarse E30实际发布a55a568fc06cc3047647e8201d7fe5ca16f872b2：controller1152012/worker1152105/GPU6，source2Ls新coarse非零梯度/1466771严格重载/原F noquery PASS；11checks/ONEP0P1/preflight/archiveSHA/compile与PID-CWD-argv-CUDA-GPU-loggrowth核实，准入1PID/free19245MiB/后态2PID，他人保持。完整coarse1305958+原compactaction79477/prior81336，总1466771/ConvLinearMAC116098088/2prior4CG27FFT；较原R17少68.558%参数、比default大449.453%，实际时延/全训练成本待测。原64b8教师缓存只读复用，当前加载/前向0/handle核对0.010655s，历史630k生产132.756142s/1.29GB/coarse20-bundle60另列。当前E3/30，IQhint访问189000次/加权loss一致，F/TX/V/target优化0、无教师权重继承；同旧hint配方只改容量，不混phase。固定30后全七景，默认/3pp/clean/效率目标ACTIVE。
+
+
+原R17最终native IQ source缓存预制已发布6848d46e95741082e2783a525e6d0d376e8ff7c6：controller1174803/worker1174895/GPU4，7checks/ONEP0P1/preflight/archiveSHA/compile与真实2Ls原G noquery冻结state PASS；PID/CWD/argv/CUDA/GPU/loggrowth独立核实，准入1PID/free22883MiB/后态2，与wideCoarseGPU6合计2本任务worker。他人保持。原teacher选在target前/source7-63-30/coarse-action-prior各20历史轮次；当前生产0训练/F/TX/V/target，20x63000最终第三stage IQ/2.58048GB，已2视图/126000输入，完成与全成本待实测。后续若试验已固定紧凑scratchE30/noVar4base+非clean源native教师IQMSE权重1，sourceclean教师项0/mask仅训练，先另登记不自动由producer启动、不按wide目标结果调权重。默认和完整3pp/clean/效率目标ACTIVE。
