@@ -22,9 +22,9 @@ Phase3 主场景为跨接收机星地观测。已知类正确接收率 A_K 相�
 
 2026-10-30 根据用户“同步更新目标”再次核对：本节、下方完整目标 prompt、指标定义文档及 v3 机读配置一致，作为后续新研究的执行和验收口径。应用目标卡仍显示较早的“星地拒识95%／已知误拒≤5%”；当前目标工具仅支持状态变更，不能改写活动目标正文，因此该旧卡不作为数值验收依据，也不能通过虚报完成来替换。完整 Phase3 尚未达成，保持 ACTIVE。
 
-## 当前完整目标 prompt（2026-10-30 同步，指标沿用用户最新指定）
+## 当前完整目标 prompt（2026-10-31 同步，指标及三类 DURA 测试沿用用户最新指定）
 
-在现有三视图 PAMF/Tri-SIG-TIME SSL 基础上，实现并验证 Phase3 跨接收机星地开放世界 RFFI，依次完成未知拒识、零目标 TX 标签域适应、未知设备发现和匿名持续注册。Phase1 后所有新消费的 IQ 均叠加已固定的 G10 星地信道，源和目标接收机互斥；主路径为同一星地 received 经冻结 DURA 的 P1，P0 为配对星地 received 对照。主报逐 TX 宏平均已知类正确接收率 A_K、未知类拒识率 R_U 和 H-score=2A_KR_U/(A_K+R_U)，同时要求 C_K≥90%、R_U≥90%、A_K 相对同输入同路径原冻结 PAMF 闭集宏准确率下降不超过 2 个百分点；总体及预登记主场景分别验收，缺少必需类别覆盖不能认证。C_K 与 R_U 在达标基础上尽量提高，H-score 不替代各单项约束，2pp 预算后续再按用户指定收紧。clean 跨接收机的 95% 拒识只保留 Phase1 地面参考，不新增 Phase3 clean 模型输入。
+在现有三视图 PAMF/Tri-SIG-TIME SSL 基础上，实现并验证 Phase3 跨接收机星地开放世界 RFFI，依次完成未知拒识、零目标 TX 标签域适应、未知设备发现和匿名持续注册。Phase3 的训练、源端校准、无标签适应、发现和注册均使用已固定 G10 星地观测，目标接收机与源接收机互斥。后续候选同时完成源域已知接收机、跨接收机 clean 和跨接收机星地三类冻结测试，全部先接入同一 DURA v1.0，再进入 PAMF；clean 仅为冻结测试例外，不进入上述学习环节。主报逐 TX 宏平均已知类正确接收率 A_K、未知类拒识率 R_U 和 H-score=2A_KR_U/(A_K+R_U)。星地 R_U≥90%，跨接收机 clean R_U≥95%；同时要求 C_K≥90%，A_K 相对同输入、同 DURA 输出的原冻结 PAMF 闭集宏准确率下降不超过 2 个百分点。总体及预登记主场景分别验收，缺少必需类别覆盖不能认证。C_K 与 R_U 在达标基础上尽量提高，H-score 不替代各单项约束，2pp 预算后续再按用户指定收紧。source 结果不通过也完成已预登记的跨接收机测试；历史 run 的矩阵、阈值和判定不追改。
 
 无标签适应须在同一独立未来测试上保住拒识、接收和身份保护并获得可报告的旧类正确接收正收益。匿名注册须在与发现池物理互斥的未来观测上，新设备宏平均正确识别率≥80%，旧类较同 DA 状态注册前下降≤2个百分点，已注册类宏接收率≥90%，后续仍未注册设备的星地跨接收机宏拒识率≥90%。所有旧类与匿名新类共同竞争；真实未知 TX、known/unknown 角色、类数、配额与 U→TX 评分映射均不进入预测器。U 仅按无标签算法适应、发现和建簇，Q 不用于拟合或回收训练；匿名身份映射只由独立 scorer 在 U 拟合并冻结，不能在 Q 重拟合。注册失败的新设备保留在未来识别分母中，不以建簇样本回测代替未来验证。
 
@@ -933,3 +933,10 @@ Run `20261031-phase3-joint-feature-s2026092701-r01` / actualcode `b7f81eca9a2a0b
 ### 2026-10-31 固定密度拒识边界源训练预登记
 
 Run `20261031-phase3-density-boundary-s2026092701-r01` / actualcode `e3194bc6ed46ce1580967f036a35fcb138e1c906`，两独立r03 source-only副本REPLAY/BOUNDARY各2220/freshCENTER_UNITS，L192/OE64索引匹配；共同crossset+OEtopo+r03点anchor，仅主加固定conditionalGMMratio/160 BCE(权1)。原F0/G/r03/旧11Gaussian和pointteacher保持，F0缓存u经原头的预测c路由，非L真y；无新head/U/clean/V训练。只parentheader/models先actualCPsmoke和两gradientprobe，referencez与head-only各12434一次，学生真实1136640/新NN4440，总feature15540/MLP4440、F0仍11100。两神经freeze后sourceV四新6tau+E0旧两tau exact，六套tau后NV/cleanQ/starQ，六列×三DURA完整pred再独立三truth。GMM/normalizer新fit0，eval两学生source60300+Q3456=63756signal，QF0/G1728、E0z/score缓存exact。gate保持sourceknown12、clean95/star90/CK90/损2pp/主景覆盖，starAK/RU均不低于E0与REPLAY；sourceRU仅诊断，不取消Q。sourceNV/Q历史、单seed/RX/high缺类NA、无U/正式RX/匿名REG均保留，完整目标ACTIVE，当前未启动无性能。方案见 `docs/PAMF_PHASE3_DENSITY_BOUNDARY_PLAN_20261031.md`。
+
+
+### 2026-10-31 固定密度拒识边界配对训练完整结果
+
+Run `20261031-phase3-density-boundary-s2026092701-r01` / actualcode `e3194bc6ed46ce1580967f036a35fcb138e1c906`：REPLAY/BOUNDARY各2220完整更新、六读出×三DURA预测及独立三truth-last全部COMPLETE，执行VERIFIED、科学NO_PROMOTION。唯一主：source_DURA AK/CK/RU/H 89.611111/96.696296/62.761905/73.820998%；clean_DURA AK/CK/RU/H 74.652778/91.666667/97.222222/84.455668%；star_DURA AK/CK/RU/H 62.673611/84.027778/78.125000/69.551480%。对同预算REPLAY_pred，star正确13增/16失/净−3、未知拒对49增/8失/净+41，RU+14.236111pp/H+6.011710pp但AK−0.520833pp；对旧E0_pred，star正确14增/22失/净−8、未知12增/9失/净+3，AK−1.388889pp/RU+1.041667pp/H−0.420845pp。clean对E0正确净+22、未知拒对净−8，CK91.666667/RU97.222222单项通过，但同G闭集80.034722−AK仍损5.381944pp，超过2pp；starCK84.027778/RU78.125/损10.243056pp失败。保留原E0_pred重点候选及E0_pooled冻结对照，不因相对续训控制的拒识收益或clean局部改善替换基线。
+
+完整4440步由独立scorer核连续/配对索引/有限，两个arm均实际覆盖L6300/OE6134；sourcepointteacher、原F0/G/r03/GMM及学生buffers保持，BCE梯度实际到完整encoder而非只MLP。REPLAY总loss .356811643→.226494700，BOUNDARY .731422193→.473986185，末BCE .212238527对REPLAY诊断.352863794；训练loss降低不代表跨RX达标，模块梯度仅首2步记录。原GMM/normalizer新fit0、Vonly四新6tau实际fit、两旧exact；sourceAUC主较E0下降5.282118pp（固定margin排序诊断，不以RU微增宣称整体分离提升）。新sourceNN4440/feature15540/MLP4440，学生真实1136640+parentreference12434 signal，F0head-only12434与sourcebackbone/G0分列；eval63756 signal/F0G1728/E0real0，synthetic另列，旧训练/cache成本继承，teacherbank不部署。train462.670735s/predict26.080005s/CPUscore16.561103s；独立driver1155253/train1155342 CWD/argv/CUDA4/GPU_UUID95d925a1 758MiB采样与log增长/末态空已核；predict1161117与CPU1161391仅pipeline GPU4/gpuNone及代码CUDAempty，未捕获其独立live遥测，不为补采样重跑，foreign0。sourceNV/devQ历史、单RX/seed/high缺19-15继续NA，U/正式RX未读、无目标DA/发现/匿名REG，AN/HOW=N/A，完整目标ACTIVE。完整目标prompt另同步已授权三DURA测试的clean例外，矩阵/实际代码/既有判定不变。详见 `docs/PAMF_PHASE3_DENSITY_BOUNDARY_RESULTS_20261031.md`。

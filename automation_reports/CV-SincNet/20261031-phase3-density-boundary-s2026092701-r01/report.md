@@ -17,3 +17,17 @@ PLANNED，当前无新性能；run `20261031-phase3-density-boundary-s2026092701
 23unique tests+34sub PASS、10AST/11文件镜像、一次直接P0/P1审查PASS；首步actual三CPsynthetic smoke＋source/BCE no-step梯度probe，PASS立即继续。单preflight/archive SHA比较/compile及PID-CWD-argv-GPU-log核实。非法角色/祖先、非有限、输出碰撞或不能合法prediction时保留，不partial评分/自动重启；UNKNOWN核原PID/root，科学负结果不停止健康任务。
 
 预期launch/pipeline/configs/logs；train fixed density/smoke/complete与两arm checkpoint+全steps；predict共享state/四新sourceVtau/两旧tau、sourceknown/novel/两个Q完整pred与smoke/complete；独立score results/complete，observations及完整训练/结果分析。private teacher行cache、IQ、权重、原日志和预测不进Git。
+
+## 最终结果（DENSITY-BOUNDARY，NO_PROMOTION）
+
+- 两臂各2220步/三DURA条件六方法全部COMPLETE，唯一BOUNDARY_predicted不晋级；保留E0_predicted重点候选和E0_pooled冻结对照，全目标ACTIVE。
+- 主source A_K/C_K/R_U/H=89.611111/96.696296/62.761905/73.820998%；clean74.652778/91.666667/97.222222/84.455668%；star62.673611/84.027778/78.125000/69.551480%。
+- 星地主vsREPLAY正确13增16失/net−3、未知49增8失/net+41；ΔA_K−.520833pp/ΔR_U+14.236111pp/ΔH+6.011710pp。对E0正确−8/未知+3，H−.420845pp，不能以匹配拒识收益晋级。
+- clean虽CK/RU单项过，原F0closed80.034722%到AK仍损5.381944pp；star原72.916667%损10.243056pp且CK/RU失败。F0默认身份逐样本不变。
+- 全4440步连续/有限/同L192OE64索引，实际unique各L6300/OE6134；module梯度仅首2，global norm/Sinc/clip全程，>clip5步674/863。两目标不同，不按total loss排序。
+- 固定r03/GMM/pointteacher/F0/G与studentbuffers保持；新两NN4440更新，特征15540/MLP4440，GMM/normalizer0fit，四新6τ仅V；源AUROC主较E0−5.282118pp。
+- 主部署834665NN参数；三open+F0/G架构活跃合计1504107，非实际驻留测量。共享density364340 B/全36τ288 B，无teacherbank部署。
+- student1136640+parent12434 signal；F0head-only12434/backbone0/Gtrain0；evalsignal63756、F0/G1728。合成trainparent/F/G各2+student16，evalopen6/F/G各2，祖先成本保留。
+- train/predict/score/pipeline462.670735/26.080005/16.561103/505.483873 s。独立仅driver/train GPU4 758MiB离散样本与log增长；predictor/CPUlive未捕获，非peak/B1，终态空/foreign0。
+- sourceknown12过/42未过；high未知0/4/2缺19-15，R_U/H=N/A。源seenRX/历史NVQ/单seedRX，U/formal0、无DA/发现REG，AN/HOW N/A。
+- 23unique+34sub和一次P0/P1 review PASS，627files/data0单SHA比较/compile/runtime VERIFIED。详见[公报](../../../docs/PAMF_PHASE3_DENSITY_BOUNDARY_RESULTS_20261031.md)；仅既有产物分析，无新fit/score/阈值扫描。
