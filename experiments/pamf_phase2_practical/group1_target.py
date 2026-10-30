@@ -125,7 +125,8 @@ def predict(rt,job):
         print('GROUP1_PREDICTED',profile,stage,path,s['k'],s['new_count'],len(pred),flush=True)
     def pamf_stage(s,stage):
         from .milkr.d92_branch_local_ridge import fit_branch_local_ridge
-        task=load_task(cap,s['split_id'],stage=stage);states={};costs={}
+        from .milkr.cuda_local_ridge import CudaLocalRidge
+        task=load_task(cap,s['split_id'],stage=stage);states={};scorers={};costs={}
         for support_path in (0,1):
             path=out/f'{stage}-K{s["k"]}-N{s["new_count"]}-S{support_path}-fit.json'
             with Measure(path,dict(profile=profile,seed=seed,stage=stage,support_restored=support_path,
@@ -138,6 +139,7 @@ def predict(rt,job):
                 state,ksec=_timed(lambda:fit_branch_local_ridge(**features,support_labels=labels,
                     support_ids=ids,classes=s['registered_classes'],old_classes=rt['old_classes'],arm='local_ridge'))
                 states[support_path]=state
+                scorers[support_path]=CudaLocalRidge(state,device)
                 if stage=='B':B_support_features[s['k'],support_path]=(features,task['support_ids'].copy())
                 probe.result.update(G_support_seconds=gsec,F_support_seconds=fsec,kernel_fit_seconds=ksec,
                     persistent_head_bytes=state.audit['persistent_state_bytes'],actual_target_old_labels=6*s['k'],
@@ -177,6 +179,7 @@ def predict(rt,job):
                             terminal_state_identical=True,used_for_query=False)
         for query_path in (0,1):
             pred={p:[] for p in (0,1)};restricted={p:[] for p in (0,1)};default=[]
+            tie_start={p:scorers[p].cpu_tie_rows for p in scorers}
             file=out/f'{stage}-K{s["k"]}-N{s["new_count"]}-Q{query_path}-inference.json'
             with Measure(file,dict(stage='QUERY',profile=profile,query_restored=query_path,
                          query_count=len(task['query_x']),support_states_shared=2),model) as probe:
@@ -187,10 +190,12 @@ def predict(rt,job):
                     (features,sourcepred),elapsed=_timed(lambda:_features(bundle['reader'],raw,device));ftime+=elapsed
                     default.extend(sourcepred.tolist())
                     for p,state in states.items():
-                        scores,elapsed=_timed(lambda:state.score(**features));dtime+=elapsed
+                        scores,elapsed=_timed(lambda:scorers[p].score(**features));dtime+=elapsed
                         pred[p].extend(scores.argmax(1).tolist());restricted[p].extend(scores[:,:6].argmax(1).tolist())
                 probe.result.update(G_query_seconds=gtime,F_query_seconds=ftime,decision_two_states_seconds=dtime,
-                    shared_features_between_support_states=True,query_updates=0)
+                    shared_features_between_support_states=True,query_updates=0,
+                    decision_backend='CUDA_FP64_rank2',
+                    numerical_tie_cpu_rows={p:scorers[p].cpu_tie_rows-tie_start[p] for p in scorers})
             for p in (0,1):
                 save(s,stage,f'S{p}Q{query_path}',np.asarray(pred[p],np.int16),
                     np.asarray(restricted[p],np.int16) if s['new_count'] else None,
