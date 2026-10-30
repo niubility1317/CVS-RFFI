@@ -3,7 +3,7 @@
 - run_id：`20261031-analysis-DURA-recoverability-s2026092701-r01`
 - group_id：`phase1-dura-existing-IQ-recoverability`；类别：`analysis`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -30,3 +30,8 @@
 
 
 复用已完成输出的独立CPU评分分析，不新增预测、模型加载或更新。全七景逐包 IQ 配对只在评分端读取。能量拟合分数、识别保留率与不可认证的真实极限分开，不以 oracle 校正当作部署或识别率上界。
+
+
+## 全量分析完成
+
+VERIFIED / ANALYZED。28个既有case×view单元，每个168000条，CPU77.055秒，新增G/F前向0、更新0。14个新模型全量NMSE与原独立评分差异≤4.98e-9、default七景准确率重现；逐包误差和边界分解闭合。主要结论见 [详细分析](analysis.md) 和 results.json。默认low urban：NMSE6.9580%、能量拟合93.0420%、识别68.8899%/rawclean81.3568%；当前实测水平不认证物理极限。原始rawclean的零误差对齐比例无定义，JSON中该近零数值不解释。默认和主目标保持。

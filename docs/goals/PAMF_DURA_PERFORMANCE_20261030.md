@@ -195,3 +195,6 @@ source phase-only oracle闭合：固定noVar与default/source512×clean/缓存01
 
 
 头保护RX特征参考E20完成4940更新和全七景/126组独立复算，固定.25收缩/weight.019528750294704578，1.26m源参考访问/F不变，G祖先0/直接TX-V-target训练0，非F-free。clean84.866667%，lowurban68.417857%；六景3pp=False/clean保持=True/R17逐景1pp=True。G流程1156.041秒，全流程1580.748秒；参考及权重同时改变，不作孤立RX因果结论，默认保持。
+
+
+用户E30/IQ特征增强方向已落实代码489f339757b7b3fb9214b3341d780ec98bb14e89：scratch单阶段30/7410，新增1030参数受限shape修正、F梯度仅增强/独立clip，真实2Ls smoke与9项检查/一次审查PASS，controller1018738，状态RUNNING，默认不变。并行既有IQ全量分析已完成28单元/77.055秒，0新G/F；default lowurban NMSE6.9580%/energyfit93.0420%与识别68.8899%/clean保留81.3568%分开，尾部24点占该景误差19.56%（高郊60.92%）。不能从均值/幅相oracle认证恢复极限，完整分析见20261031-analysis-DURA-recoverability-s2026092701-r01/analysis.md。新E30性能与效率、六景3pp/clean验收仍未完成。

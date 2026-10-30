@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-IQenhance-E30-s2026092701-r01`
 - group_id：`phase1-dura-recognition-oriented-IQ-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -30,3 +30,8 @@
 
 
 最小说明：用户 E30 授权；原数据/原F/defaulthead；从零单阶段物理恢复＋受限IQ增强，F梯度只到新增1030参数。同一训练的两读出全部14视图每角色预测固定后独立评分。5% RMS、factor2参考和全部预算事前固定；无目标反馈或中途选模。实际命令/环境/路径/GPU/停止规则和产物见本登记。当前只是待发布，不代表已训练或有效。
+
+
+## 启动独立读回
+
+VERIFIED / RUNNING。代码 489f339757b7b3fb9214b3341d780ec98bb14e89；9项聚焦检查、唯一P0/P1审查及原入口P1定点复核通过；一次N607preflight、单归档SHA比较、远端compile通过。controller PID1018738 的 /proc CWD/完整argv/空CUDA读回存在，source2Ls真实F冻结、F梯度隔离、两组G梯度、严格重载、非零增强优化路径smoke PASS。 worker/PID/GPU：{'pid': 1024839, 'GPU': 4, 'command': ['/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python', '-u', '-m', 'experiments.pamf_dura_direct_train.enhanced', 'worker', '--root', '/home/szu2070436088/2510044040/CV-SincNet', '--commit', '489f339757b7b3fb9214b3341d780ec98bb14e89', '--arm', 'scratch_joint'], 'admission': {'visible_GPU_compute_PIDs': 2, 'free_memory_MB': 22382, 'maximum_total_after_adding': 3}}。其他owner未改动；排队不等于训练已完成。完整E30双读出七景与实测成本仍待完成。
