@@ -70,3 +70,4 @@
 |PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r01/report.md)|
 |PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r02/report.md)|
 |PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r03/report.md)|
+|PAMF第三阶段：P0开放表征与P1身份分工|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-star-raw-open-s2026092701-r01/report.md)|

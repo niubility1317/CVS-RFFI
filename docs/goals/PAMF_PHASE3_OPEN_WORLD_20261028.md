@@ -829,3 +829,8 @@ Run `20261030-phase3-star-macro12-risk-s2026092701-r01` / code `26fbecff1df7e547
 ### 2026-10-30 固定分数known12校准实际完成
 
 Run `20261030-phase3-star-macro12-risk-s2026092701-r01` / code `26fbecff1df7e5476bcc5f459d8367c6fa49fd36`，四路预测/独立truthlast完成，VERIFIED/NO_PROMOTION。唯一主signal_known12 A_K89.948148/C_K97.522222/R_U46.888889/H61.643672%，原F0损1.033333pp，hard12通过但known42失败（5cross损伤>2pp）；同signal42未知+491（+15.587302pp）、正确−119/接受−234，旧控制完全复用。sourceRX3整体已用2pp预算，下一q损2.018519pp；总体尚余.966667pp不等于可继续提高同q。真实IQ/NN/几何新0、CPsynthetic2，父成本保留、sourceNV历史曝光/target0。后续拟独立检验P1身份与P0开放信号路径的匹配训练，不声称DURA损坏或已改善；完整跨RX星地/零标签DA/发现/未来REG目标ACTIVE，详见 `docs/PAMF_PHASE3_MACRO12_RISK_RESULTS_20261030.md`。
+
+
+### 2026-10-31 P0开放分支与P1身份分工预登记
+
+Run `20261031-phase3-star-raw-open-s2026092701-r01` / code `617681c8b2f24e7d05c1e8f5a48cb74d99a1c8cb`。固定原F0/P1 default6身份，新增从原F0初始化的P0 headless信号分支，原F0 P0 OEteacher重新计算6134，模型导出先于teacher冻结。与P1r03同结构／2220步／全部采样索引／目标；四列P1known12、P1ratio12、P0known12、P0ratio12，唯一主P0known12。两路径均星地，P0不等于clean；原P1闭集为统一保护基线。新NN／统计先freeze，V27000仅hard12风险，所有τ后novel3150，最后独立truthlast；不访问目标、Us或未来query。sourceNV历史曝光，只是早筛，主hard12＋整体RU90通过才另登记跨未见RX测试。原用户v3总体／主景CK90、RU90、AK较同输入原闭集损失≤2pp，以及零目标TX标签DA／发现／未来匿名REG均保持，goalACTIVE。当前未启动／无性能。
