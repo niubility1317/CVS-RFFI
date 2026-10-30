@@ -1,0 +1,166 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-source-channel-reassign-s2026092701-r01",
+  "group_id": "phase1-dura-source-channel-decoupling",
+  "display_name": "DURA 保留 clean 参考的同域与跨 RX 信道重配诊断",
+  "description": "固定源512×2；保持xi不变，比较同RX/day及跨RX的完整(Aj,noisej)重配，匹配scene/state/lock；CPU2/零更新/零身份标签或F指导。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "channel-reassignment",
+    "reference-preserved",
+    "single-stage-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01",
+    "20261030-diagnostic-DURA-paired-acquisition-stress-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-source-channel-reassign-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original63000 source L/U cached channel/noise donor pool; fixed128Ls/384Us positions × cached01/20; metadata-matched within/crossRX counterfactuals",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Original opaque source positions/roles/rx/day and scene/state/lock; no TX decoding; no V/target",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "none;noqueryorclassificationprediction"
+  },
+  "permissions": {
+    "regime": "source_IQ_only_frozen_G_diagnostic;F_noquery_smoke_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source operator/noise reassignment with original clean IQ reference; not fresh native AGC or causal RX proof. F only first source2Ls noquery smoke; no F metrics."
+  },
+  "checkpoint": {
+    "initialization": "No initialization or updates. Read fixed noVar source-final E20/4940/cf40 only and original frozen F50.",
+    "sources": [
+      "runs/20261030-phase1-DURA-direct-noVarAux-s2026092701-r01/scratch_joint/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "Fixed noVar scratch source-final without F/TX/target training; original source L/U physical IDs match frozen F source contract.",
+    "selection_rule": "Fixed original noVar cf40 source-final, not selected from latesttarget; unchanged originalIQ baseline6328 reused. No model initialization/updates."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-channel-reassign",
+    "gpu_policy": "CPU2/0GPU;0updates;otherownersuntouched",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-source-channel-reassign-s2026092701-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-source-channel-reassign-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-source-channel-reassign-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.reassign_stress --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-channel-reassign-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Source/checkpoint/baseline cohort mismatch, no metadata-matched source counterfactuals, nonfinite metrics, context/native output mismatch, state/gradient change or collision: preserve/no autoretry. Low coverage is scientific qualification failure; no model/target score selection."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "epoch01.npz",
+    "epoch20.npz",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "original/within/cross IQNMSE",
+      "within/cross source action white-probe NMSE",
+      "signal/noise power",
+      "noise replay error",
+      "clean reference bitwise preservation",
+      "metadata eligibility coverage",
+      "fixed source-only training eligibility"
+    ],
+    "dimensions": [
+      "cached01/20",
+      "withinRXday/crossRX",
+      "role/scene/state/lock/source_RX/source_day"
+    ],
+    "prediction_ref": "No TX/F predictions; private source counterfactual diagnostics only",
+    "scorer_ref": "Independent source arithmetic/statistical recomputation from NPZ; no truth"
+  },
+  "rows": [
+    {
+      "row_id": "source-channel-reassign",
+      "method": "Keepxi;eta_j=yj−Ajxj;newy=Ajxi+eta_j;whole native cached action/noise tuple matched byscene/state/lock",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/reassign_stress.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103017
+      },
+      "seed_notes": "FixedG2026092701;donor localNumPy seed2026103017+cached_epoch;2whiteprobe Torch seed2026103018 reset perview;model/probe/dataorder independent. No support/update.",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Source2Ls G/Fsmoke;up to512x2viewsx2cases;B32,2whiteprobes;originalIQ baseline reused;CPU2/0GPU/0updates",
+      "output_root": "runs/20261030-diagnostic-DURA-source-channel-reassign-s2026092701-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-source-channel-reassign-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.reassign_stress --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-channel-reassign-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "epoch01.npz",
+        "epoch20.npz",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Source code pamf_action_restore.data.generate binds receiver_for_session to source RX/day; this diagnostic tests a possible learned association, not a proven cause. Original clean reference xi remains unchanged, unlike previous PSD references.",
+    "Within donor differs from self and matches originalRX/day/scene/state/lock. Cross donor has differentRX but same scene/state/lock. Both drawn only from original63000sourceL/U. Cases without both metadata donor pools are excluded before modelmetrics and reported;atleast480/512 required eachview.",
+    "Move the entire cached sourceAction Aj and its residualnoise eta_j=yj−Ajxj together; ynew=Ajxi+eta_j. Action remains existing causalreflect FIR64/widelylinear family, no new filter support or IQ style change. AGC_j stays frozen;not a fresh native AGC draw.",
+    "Qualification fixed before execution: BOTH views cross/within mean IQerror>=1.10 AND action-probeerror>=1.10,coverage>=480,clean unchanged and noise replay max<=1e-10. Onlythen separately preregister scratchE20/4940,p.5 whole-realization reassignment,oneGforward;otherwise no training from this candidate.",
+    "Signal/noise powers retained to expose difficulty changes. Matching tags does not isolate all causal factors. No F/identity accuracy proxy is used for qualification;F only real2Ls smoke thenreleased,0F optimization/featureanalysis/TX/V/target.",
+    "NativeG context reused for one restoration forward percase;firstbatch checked exactly againstforward. OriginalsourceIQ baseline6328 values reused only after samepositions/roles/scene-state-lock checks, selective fields no oldFmetrics.",
+    "Fixed noVar E20/cf40source-final, not E40 or spectralMix chosen from target;G params/grad stateunchanged. Existing benchmark exposed; no new trainedversion or target predictions from this sourceprobe.",
+    "3focused metadata match/exclusion,realwidelylinearreflectFIR exactnoise/originalreference,dualviewqualification negative testsPASS;one independentP0/P1review required. OneGit/preflight/archiveSHA/compile/livePIDcheck only;no extra gates.",
+    "All healthyotherowners and historicalweights/results preserved;defaultDURA remains. Full objective still all6sat sceneswithin3pp of rawclean plusclean and efficient single-stage training."
+  ],
+  "registered_at": "2026-10-30T12:48:42+00:00"
+}
