@@ -15,3 +15,15 @@
 29相关唯一tests＋44sub通过（含共享320扩展所需160/640兼容回归），AST/镜像和一次直接P0/P1审查PASS。实际CP noquery smoke为launcher首步，PASS立即继续；单preflight/单archive SHA比较/remotecompile和PID-CWD-argv-GPU-log独立核实后收尾。非法来源/角色、非有限、输出碰撞或无法合法prediction时保留，不partial评分/自动重启；UNKNOWN核原PID/root，科学负结果不停止健康任务。
 
 预期产物：launch/pipeline/configs/logs；predict models/density及joint/source拟合诊断，calibration/4×6tau，known/novel和两个Q predictions，smoke/predcomplete；独立score results/complete；observations与完整分析。IQ、权重、原日志和预测不进Git。
+
+## 最终结果（JOINT-FEATURE，NO_PROMOTION）
+
+- 三条件四方法全部完成，唯一主joint_predicted_ratio不晋级；原predicted重点候选/pooled对照保留，目标ACTIVE。
+- 主source A_K/C_K/R_U/H=89.722222/96.785185/66.666667/76.494967%；clean=67.708333/84.201389/100/80.745342%；star=63.368056/84.722222/78.472222/70.115939%。
+- 对predicted：source正确/未知拒对净−6/+149，clean−18/0，star−4/+4；星地ΔA_K−0.694444pp、ΔR_U+1.388889pp、ΔH+0.143614pp，H小增不救保护失败。
+- 原F0闭集source/clean/star90.981481/80.034722/72.916667%不变。主clean/star身份损失12.326389/9.548611pp，C_K均<90%。sourceknown12过、42未过；high未知0/4/2缺19-15，R_U/H=N/A。
+- 联合320统计新fit1（known90/OE32/25Lloyd）及新12个V-only阈值，NN0；joint数组1136236 B、原density364340 B、全24τ192 B，无逐行bank。
+- 新signal12434/F0与G各1728真实前向，Qsignal0/sourceF0G0，合成三模型各2；NN834665参数及祖先训练/cache成本保留。
+- predict/CPUscore/pipeline24.475319/12.593357/37.150677 s，非单包时延。独立predictorGPU4样本444MiB/日志549→695B，非峰值；CPUlive未捕获，终态空/foreign0。
+- 29unique+44sub PASS、一次P0/P1 review PASS，616files/data0、单包SHA比较/compile/runtime VERIFIED；fixture NameError定向修正和旧trapz warnings已保留，非实际run失败。
+- 源seenRX/历史NV与Q曝光，单seedRX，U/formal0、无DA/REG，A_N/H_OW=N/A。详见[公报](../../../docs/PAMF_PHASE3_JOINT_FEATURE_RESULTS_20261031.md)；未重fit/rescore/扫描阈值。
