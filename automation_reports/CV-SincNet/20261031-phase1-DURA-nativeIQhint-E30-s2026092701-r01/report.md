@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01`
 - group_id：`phase1-dura-scratch-final-IQ-teacher`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 

@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-freshViews-E30-s2026092701-r01`
 - group_id：`phase1-dura-scratch-source-draw-count`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -34,3 +34,14 @@
 紧凑G266951从零单阶段30/7410/noVar四基础项；唯一变量是30份源信道抽样，原R07的01..20只读链接，21..30沿用同一原native生成器/种子体系/namespace规则生成，不再重复01..10。L6300/U56700/物理ID/顺序/clean单位/源RX-day与固定V面板均保持。30份抽样不是30个新物理总体，clean分支仍可能相同。新10份630000次模拟访问/4.1958GB数值字节，8CPU workers制备，实际成本完整单列；没有神经教师、F/TX/V/target训练读取，不把原R07模型当初始化。
 
 4聚焦检查/唯一P0P1 PASS。controller首步真实2Ls G梯度/严格重载/原F默认头noquerysmoke，随即CPU制备新10份；全部nativeactionreplay/shape/FP32/finite/scene-order/完整计数通过后才GPU6准入训练，期间不占GPU worker。各模块第一步联合更新，B256/.001warm247cos2e-5/WD1e-4/clip1，model/data/probe RNG不变，每轮实际source_cache_view写日志。固定final30后自动七景168000各景/独立truth-last/profile/源V1800，source负结果也不取消。GPU6新增1/max3总PID/free12GB/goal2，其他owner保持。当前待发布，默认与每景3pp/clean/效率目标ACTIVE。
+
+
+## 实际启动与源数据制备
+
+VERIFIED / RUNNING，当前阶段SOURCE_DATA_PREPARATION，G训练尚未开始。执行32a32998d3c76105b017a0905300e8edbce64e16，4聚焦检查/唯一P0P1 PASS，一次N607 preflight/单archive SHA比较/远端compile通过。首步真实2Ls新G目标梯度、严格保存重载、原F默认头noquerysmoke PASS后立即开始源生成，F/TX/target优化和神经教师读取0。
+
+controller1218619实际CWD/完整argv/commit/CUDA空、8个source spawn子进程及日志增长独立读回；子进程均同一release/CUDA空。当前没有submitted GPU worker，不把CPU制备称为训练。其他owner保持，全部缓存完成后才按GPU6/max3总PID/free12GB/goal2准入。
+
+新增已完成4/10份（21..24），每份63000条/419580000数值字节；共252000次源模拟访问。最近一份52.276848秒，clean9450/受损53550，native action replay最大相对误差2.416e-16，shape/FP32/finite/固定scene顺序均已检查。当前日志4483字节，下一份仍在生成；不据单份时间宣称完整制备或训练加速。
+
+完整10份生成成本、固定30轮、七景正式与匹配profile待返回；没有增加学生预训练或另训头。默认DURA、每景3pp/clean/实际效率目标仍ACTIVE。

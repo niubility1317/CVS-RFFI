@@ -255,3 +255,6 @@ wideCoarse E30实际发布a55a568fc06cc3047647e8201d7fe5ca16f872b2：controller1
 
 
 最终IQ教师学生E30完整结案：20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01/728129ec，7410更新/L189000U1701000/teacherref1890000/active1606874/新teacher前向加载0，Gscratch/ancestor0/训练F-TX-V-target0；完整30日志和逐cache mask独立复算。全7×168000预测后truth-last/126组独立一致，clean84.823810%/lowurban67.375595%，3pp0/6/clean保持True/R17逐景1ppFalse。训练1056.551s/G流程1057.366s/全流程1241.367s；266951参数/2prior4CG27FFT，历史缓存972.193s/1.26m/2.58048GB+60组件轮次另计。默认保持，完整目标ACTIVE；不回流调权重、epoch或场景。
+
+
+30份源信道抽样对照已发布：20261031-phase1-DURA-freshViews-E30-s2026092701-r01，执行32a32998d3c76105b017a0905300e8edbce64e16，紧凑G266951 scratch单阶段E30/7410/noVar四基础项与model/data/probe RNG不变。已知原缓存只有20份、预算30使后10轮重复01..10，故仅新增原native namespace21..30，同AUG2026101912/RX2026101911/六practical+15%clean，原20只读链接，物理ID/roles/clean/Vpanel不变。新10共630000模拟访问/4.1958GB数值数据，源制备成本实际单列、无神经teacher/F/TX/V/target优化。4checks/唯一P0P1 PASS、真实2Ls G梯度/严格重载/原F noquerysmoke PASS、一次preflight/archive比较/compile后实际controller1218619/CWD-argv-CUDA空/8CPU子进程/loggrowth核实。当前SOURCE_DATA_PREPARATION，已4/10视图、GPU训练尚未开始；最近52.276848s/63k/419580000bytes/replay2.416e-16。全10完成才GPU6 own1/max3PID/free12GB/goal2，固定final30后自动全七景168000/truth-last/profile，其他owner保持。默认不变/完整目标ACTIVE。
