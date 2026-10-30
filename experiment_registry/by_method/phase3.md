@@ -42,6 +42,7 @@
 |PAMF第三阶段：源辅助未知成员G10训练观测|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-source-exposure-g10-r01/report.md)|
 |PAMF第三阶段：源端留出设备G10星地观测|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-star-source-novel-g10-r01/report.md)|
 |PAMF第三阶段：冻结身份的无标签适应与匿名注册四态闭环|managed_run|[打开](../../automation_reports/CV-SincNet/20261029-phase3-unlabeled-registration-s2026092701-r01/report.md)|
+|PAMF第三阶段：源端匿名跨接收机正对验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-source-crossrx-neighbors-s2026092701-r01/report.md)|
 |PAMF Phase3 冻结身份的无标签二元图适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-binary-graph-s2026092701-r01/report.md)|
 |PAMF 二元图独立评分恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01/report.md)|
 |PAMF第三阶段：共同可行阈值的单调扩展|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-common-seeded-risk-s2026092701-r01/report.md)|

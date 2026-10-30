@@ -1,0 +1,181 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-source-crossrx-neighbors-s2026092701-r01",
+  "group_id": "pamf-phase3-source-anonymous-crossrx-pairs",
+  "display_name": "PAMF第三阶段：源端匿名跨接收机正对验证",
+  "description": "Original frozen F0 source P0 export and exact P1 feature reuse, source-L high precision pair-rule calibration then unlabeled OE mining. No neural update or target/private truth.",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-pair-input-diagnostic",
+  "aliases": [
+    "匿名跨RX正对"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "unlabeled_pairs"
+  ],
+  "comparison_group_id": "p1-vs-p0p1-agreement-source-neighbors",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261029-phase3-star-representation-s2026092701-r01",
+    "20261029-phase3-star-joint-ova-s2026092701-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "6eaf8d9a4f40f19834e317c50014836e2e96f689",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-source-crossrx-neighbors-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_source_neighbor_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_SOURCE_NEIGHBOR_PLAN_20261030.md"
+    ]
+  },
+  "data": {
+    "dataset": "Existing original source L6300 and Full sourceOE6134 only; V/novel/Us/target not opened",
+    "version": "Existing VALIDATED_ONCE G10MIX01 role cache; no new physical records or channel realization",
+    "representation": "Same-record sourceG10 P0 originalF0 unitfused160 export + exact existing P1 teacher unitfused160 reuse",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE}/ids.npy",
+    "label_map_ref": "L original known-six y; OE has no TX/y/K",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original old6 from source contract; OE outside-six only and realTX/K hidden",
+    "roles": {
+      "source_L_rule_calibration": 6300,
+      "source_OE_unlabeled_pair_mining": 6134,
+      "source_V": 0,
+      "source_novel": 0,
+      "original_U_s": 0,
+      "target_U": 0,
+      "target_Q": 0
+    },
+    "train_ratio": null,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66"
+    },
+    "validation_ref": "Existing source role manifests plus source-exposure G10 pool complete; unchanged VALIDATED_ONCE handles",
+    "support_query_ref": "No deployment support/query. Direct crossRX AND crossday source edges only; pair candidates never see y; L y calibrates distance rule before OE values",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Frozen source L/OE features; legal L trueTX for source rule fit only, OE unknownTX/K inaccessible; no target or private truth input",
+    "query_use": "No V/novel/Us/target U/Q. This is source-training-input preparation, not heldout rejection evaluation.",
+    "external_method_exception": null,
+    "claim_scope": "Source-L fitted edge precision and unlabeled-OE coverage only; OE true precision unknown, components not identities; not UDA/REG/futureAN or blind confirmation"
+  },
+  "checkpoint": {
+    "initialization": "Only originalF0 E50/11100/defaultsix frozen. P1 teacher code5aa0411 from originalF0, no joint-OVA/M/C1 checkpoint load; DURA ancestry checked but no G load.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-joint-ova-s2026092701-r02/teacher/complete.json"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Matching original source contract392005, Main5RX/3day/L6300-Us56700-V27000 and original F0/DURA cache identities; no target-trained ancestor.",
+    "selection_rule": "Fixed originalF0 and both P1/PAIR rules; only sourceL calibrates rule, PAIR solemain; no target, novel, or OEtrueTX choice"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-source-neighbors-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-source-crossrx-neighbors-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-source-crossrx-neighbors-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_neighbors_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_source_neighbor_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-source-crossrx-neighbors-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One GPU export, actualfree>=4096MB, <=2 added own/card; others preserved; miner CPU CUDAempty/BLAS1",
+    "stop_rule": "Preserve invalid role/ancestor, nonfinite, collision/unlaunchable or incomplete export; no miner on failed export, no retry/retune; scientific no-pairs is terminal analyzed not technical failure; UNKNOWN reconcile exact root/PID"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/export.json",
+    "logs/{driver,export,mine}.log",
+    "features/{L,OE}.npz",
+    "features/{smoke,complete}.json",
+    "mining/{calibration,results,complete}.json",
+    "mining/{P1,PAIR}_{L,OE}_pairs.npz",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "sourceL global/5RX/6TX pair precision>=.98 and incidentedges>=25/group",
+      "frozen-rule directedge sourceL/OE node coverage overall>=.20, eachRX>=.10 and OEedges>=256"
+    ],
+    "dimensions": [
+      "P1 control, PAIR sole primary",
+      "sourceRX1/3/4/6/8",
+      "source day1/2/3",
+      "L y only; OEtrueTX unavailable"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-source-crossrx-neighbors-s2026092701-r01/mining",
+    "scorer_ref": "No private scorer or truth input; only sourceL fit metrics/unlabeledOE diagnostics",
+    "targets_ref": "Diagnostic only; Phase3 targets v3 remainACTIVE, no AK/RU/AN certification"
+  },
+  "rows": [
+    {
+      "row_id": "source-neighbors-s2026092701",
+      "method": "PAMF source anonymous crossRX pairs",
+      "purpose": "Falsify reliable anonymous direct source positive pairs before new neural learning; paired-original-F0 fixedfeatures",
+      "config_ref": "docs/PAMF_PHASE3_SOURCE_NEIGHBOR_PLAN_20261030.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-source-crossrx-neighbors-s2026092701-r01/configs/export.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No stochastic fit. Original F0 frozen modelseed2701; G10receiver2027/scene3001/channel4001 unchanged. Ties opaqueID lexical.",
+      "k": null,
+      "scenario": "Existing source5RX/3day G10 P0/P1 L/OE only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 neural updates; F0 realP0 12434 + synthetic2, P1 features12434 reused; G0; physicalpool12434; CPU blocked128 nearestneighbors and legal sourceL rulefit",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-source-crossrx-neighbors-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-source-crossrx-neighbors-s2026092701-r01/logs/export.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_source_neighbor_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-source-crossrx-neighbors-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/export.json",
+        "logs/{driver,export,mine}.log",
+        "features/{L,OE}.npz",
+        "features/{smoke,complete}.json",
+        "mining/{calibration,results,complete}.json",
+        "mining/{P1,PAIR}_{L,OE}_pairs.npz",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Original Phase1 ancestral L/(L+Us)=10%; no NN training or Us read in this run.",
+    "L threshold calibration only. All L thresholds frozen before OE features; OEonly opaqueID/RXday/features, no TX/K/quotas.",
+    "Direct pair precision onL does not establish OE truth; no transitive component hardlabels or discoveredtrueK.",
+    "No unknown success gate for target in this source-only diagnostic; future experiment separate, finalgoalACTIVE.",
+    "All postPhase1 IQ satellite; P0 is received, not clean; preserved F0/G/defaulthead/historicaloutputs. No extra approvals/hash chains."
+  ],
+  "registered_at": "2026-10-30T06:34:41+00:00"
+}
