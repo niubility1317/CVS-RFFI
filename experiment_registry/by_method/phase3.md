@@ -72,6 +72,7 @@
 |PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r03/report.md)|
 |PAMF 预测身份条件密度：三条件 DURA 测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-class-density-s2026092701-r01/report.md)|
 |PAMF 源域类别联合偏移的无标签适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-class-shift-s2026092701-r01/report.md)|
+|PAMF 固定密度拒识边界配对训练|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-density-boundary-s2026092701-r01/report.md)|
 |已有较好开放方案：DURA 接入前后配对测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-dura-best-s2026092701-r01/report.md)|
 |PAMF 身份与开放特征联合密度|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-joint-feature-s2026092701-r01/report.md)|
 |PAMF 源模式局部协方差与三类 DURA 测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-local-cov-s2026092701-r01/report.md)|

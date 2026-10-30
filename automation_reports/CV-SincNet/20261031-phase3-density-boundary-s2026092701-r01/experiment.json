@@ -1,0 +1,217 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-density-boundary-s2026092701-r01",
+  "group_id": "pamf-phase3-fixed-density-boundary-training",
+  "display_name": "PAMF第三阶段：固定密度拒识边界配对训练",
+  "description": "Two independent r03 source-only students with identical replay and fixed point teacher; BOUNDARY adds differentiable original conditional-GMM BCE. No new head, targetlabels or targetfit. One shared source Gaussian stays fixed through training/prediction.",
+  "kind": "cvs",
+  "stage": "Phase3-source-boundary-neural-three-DURA-development",
+  "aliases": [
+    "固定密度比端到端拒识训练"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "density_boundary",
+    "source_neural",
+    "all_DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-r03-replay-point-anchor-fixed-density-BCE",
+  "parent_run_ids": [
+    "20261031-phase3-class-density-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "e3194bc6ed46ce1580967f036a35fcb138e1c906",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-density-boundary-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_density_boundary_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_DENSITY_BOUNDARY_PLAN_20261031.md",
+      "configs/pamf_phase3_targets_20261029.json"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Only existing G10P1 sourceL/OE IQ trains complete independent signal encoders; originalF0 u cache supplies frozen head routes and source-onlyr03 once supplies pointteacher. One oldsourceGMM fixed. V/NV cachedP1 and clean/starQ sameDURA outputs, no cleanlearning.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/ids.npy with matched source_feature_cache; parentclassdensity source/Q predictions:ids",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_train": 6300,
+      "source_OE_train": 6134,
+      "source_parent_signal_reference_forward": 12434,
+      "F0_source_head_only_forward": 12434,
+      "source_F0_backbone_new": 0,
+      "source_G_new": 0,
+      "source_V_knownrisk": 27000,
+      "source_novel_truthside_only": 3150,
+      "cross_clean_Q": 864,
+      "cross_star_Q": 864,
+      "Q_new_F_and_G": 1728,
+      "eval_new_signal": 63756,
+      "Q_E0_signal_new": 0,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "TrainingL/OE vs V/NV roles remain disjoint. ExistingQRX24-1 03-15 old6/unknown3each96 onlyscorer; U03-08 unread and distinct. Allphysicalroles VALIDATED_ONCE; historyNV/Qexposed, sourceRXseen, formalRX24-18 held.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "LoldTX and OEoutside-six/publicRXday only; originalF0 frozen predictedclasses, not Ltruey, route fixedGaussianBCE. Both teacherz and sourceGMM fixed; no U/Q/realunknownTX/K/quota, cleanfit or new identityhead.",
+    "query_use": "Train loader onlysourceparentheader/models, neveroldtau/cal or V/NV/Q arrays. Actual3CP smoke and synthetic gradients first -> sameL/OE2220+2220 -> allNNfreeze -> oldVcal/newfour6tau onlyV -> all6taufreeze -> sourceNV/cleanQ/starQ fullpred -> independentCPU3truthjoins. QoldE0cacheexact; no targetfit.",
+    "external_method_exception": null,
+    "claim_scope": "Source-only boundary mechanism study, not targetUDA/REG/formalblindproof. Singlemodel/historicdevRX/highmissingunknown class staysNA; fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Strict independent REPLAY/BOUNDARY copies of originalsource-onlyP1signal r03, full live headlessencoder334721. Frozen F0E50 default6/DURAv1r69 and originaldensity160 source11. Exclude targetSSL/P0/localcov/joint320 states.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Sourcecontract392005/VALIDATED_ONCE/sourceF0-G-r03/cache identities retained. Actual cachedP1 sourceIQ and originalteacher u align IDs/metadata. SourceNN increments new2220 each; no target-trained ancestor.",
+    "selection_rule": "Fixedfinal2220 each, noearlystop. SameL/OEindices, basecrosssetKL/OEtopology and pointanchor common; onlymainBCEweight1, conditionalratio divided160. Gaussian allfrozen. Four new Vknown12 six-tau; two old exact. No targetfeedback/scan/controlpromotion."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-density-boundary-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-density-boundary-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-density-boundary-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_density_boundary_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_density_boundary_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-density-boundary-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "OneGPU train/eval worker; actualfree>=4096MiB and<=2addedown/card. Two arms sequential for saved paired source trace. IndependentCUDAempty CPUscorer; preserveforeignwork.",
+    "stop_rule": "Illegalancestry/role/nonfinite/outputcollision/unusableprediction preserve, no partialtruthscore/autorestart. UNKNOWN reconcileoriginalPID/root. ScientificsourcefailuredoesnotcancelQ orstophealthyforeignwork."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/*.log",
+    "train/{complete,smoke}.json",
+    "train/density.npz",
+    "train/{REPLAY,BOUNDARY}/{complete.json,steps.jsonl,final.pt}",
+    "predict/{complete,smoke}.json",
+    "predict/models/{density.npz,complete.json}",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/source/source_DURA/{known,novel}_predictions.npz",
+    "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "E0/REPLAY/BOUNDARY x pooled/predictedratio",
+      "source_seenRX/clean_DURA/star_DURA",
+      "old6/novel3TX",
+      "source5RX3day/devRX24-1",
+      "MIX6scene and coverage"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-density-boundary-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_density_boundary_score.py",
+    "targets_ref": "Latest20261031 threeconditions allDURA; condition-specific targets remainclean95/star90, CK90/AKloss2pp. FullzeroTXlabelDA/discovery/futureanonymousREG stillrequired.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "C_K>=90%",
+      "sameDURAoriginalF0closedminusAK<=2pp",
+      "cleanRU95/starRU90 and maincoverage",
+      "sourceknown12 guard",
+      "mainstarAK/RU notlowerthanE0predicted andREPLAYpredicted"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "density-boundary-s2026092701",
+      "method": "PAMF-OW fixed conditional density BCE",
+      "purpose": "Source-neural boundary learning against matched replay+pointanchor control, originalE0 exact. SoleprimaryBOUNDARY_predicted.",
+      "config_ref": "docs/PAMF_PHASE3_DENSITY_BOUNDARY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-density-boundary-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Both copies sameoriginalr03, L/OE sampler seeds2026103017/18 matchedall2220, noaugmentation. FrozenG10receiver2027scene3001channel4001 and originalsourcekmeans3019 inherited; no newchannel.",
+      "k": null,
+      "scenario": "Source seenRX starP1 training/test and devcrossRX cleanDURA/starDURA",
+      "optimizer": "Fresh AdamW CENTER_UNITS, physicalclip5; Sincx1000 eps1e-11 decay0, otherwd1e-4/eps1e-8",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Two2220newNNupdates(total4440), student1136640sourceforward; pointteacherparent12434 +F0head-only12434, sourceF0backbone/G0. Eval2*(27000+3150)+2*1728=63756signal, QF0/G1728, E0newreal0; synthetictrainparent/F/G2each+student16, evalopen6/F/G2each. FixedsourceGMM/normalizer new0, fournew6tau24scalar; banknotdeploy. Featurecum15540/MLP4440 perstudent, F0still11100.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-density-boundary-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-density-boundary-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_density_boundary_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-density-boundary-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/{complete,smoke}.json",
+        "train/density.npz",
+        "train/{REPLAY,BOUNDARY}/{complete.json,steps.jsonl,final.pt}",
+        "predict/{complete,smoke}.json",
+        "predict/models/{density.npz,complete.json}",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/source/source_DURA/{known,novel}_predictions.npz",
+        "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-onlyNN experiment, not unsupervisedtargetadaptation. BinaryOEmembership allowed; trueOE TX/K hidden.",
+    "Pointteacher common to botharms preservesfixedGMM coordinate frame, no trainable membership/identityhead.",
+    "One fixedoldsource11 throughouttrain/eval; no postNNdensityrefit. Four sourceVthresholdsets actualfit, oldtwoexact.",
+    "HistoricalNV/devQ exposed/highmissing19-15 noresampling. All3testsDURA, sourcefaildoesnotcancelQ. U/formalRX/REG untouched, fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-30T21:04:13+00:00"
+}
