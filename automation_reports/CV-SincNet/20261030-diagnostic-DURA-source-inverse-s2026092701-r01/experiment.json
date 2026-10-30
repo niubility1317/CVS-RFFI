@@ -1,0 +1,159 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-source-inverse-s2026092701-r01",
+  "group_id": "phase1-dura-performance-source-inverse",
+  "display_name": "DURA v1源端求解误差与算子失配诊断",
+  "description": "Frozen DURA; fixed128L+384U positions x cachedepochs1/20; native2CG/fixedlastprior16CG/sourceoracle action and noise counterfactuals; no F/TX/V/target",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "restoration",
+    "source-only",
+    "inverse-problem",
+    "performance"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30 /goal全面深入分析并优化星地恢复网络；现有TX无标签/F-free恢复器研究授权",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-source-inverse-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original R07 cached FP32 IQ[2,256] plus source simulator kernel/coefficient/variance,epochs01/20",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;selected source positions in outputnpz",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations"
+  },
+  "permissions": {
+    "regime": "source_only_TX_hidden_F_free",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Training-pool source counterfactual IQ diagnostics; not deployable predictions, accuracy upperbound or identity proof"
+  },
+  "checkpoint": {
+    "initialization": "frozen_DURA_v1",
+    "sources": [
+      "runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "REUSE_VERIFIED_MATCHING_ORIGINAL_SOURCE_CONTRACT; validate payload sourcefinalstage2E20/4940",
+    "selection_rule": "User-designated default checkpoint; no selection or updates"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-inverse",
+    "gpu_policy": "CPU2/0GPU initial diagnostic; existing otherowner GPU tasks preserved",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-source-inverse-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_diagnostics.runner --checkpoint ../../runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt --action-run ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --output ../../runs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01 --device cpu --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Fail on bad source cache/checkpoint/roles,output collision,nonfinite,nonexact native reconstruction or changedmodel;preserve partial outputs,no automaticretry,never stop otherowners"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "epoch01.npz",
+    "epoch20.npz",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQ_NMSE",
+      "prefix232",
+      "tail24",
+      "FFTpowerquartile_error",
+      "operator_probe_NMSE",
+      "variance_log_ratio"
+    ],
+    "dimensions": [
+      "epoch",
+      "L/U",
+      "scene",
+      "state",
+      "lock",
+      "native/oracle/CG"
+    ],
+    "prediction_ref": "none;diagnostic numeric arrays only",
+    "scorer_ref": "sourcepairedclean scoring in diagnostic; noTXtruthscorer"
+  },
+  "rows": [
+    {
+      "row_id": "frozen-dura-source-inverse",
+      "method": "FrozenDURA_native_and_sourceoracle_counterfactuals",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_diagnostics/runner.py",
+      "resolved_config_ref": "launch.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103001
+      },
+      "seed_notes": "Model/source/data/augmentation are inheritedR07/R69; sampling positions deterministic; evaluation seed controls4probes; support N/A; receiverseed2026101911 inherited",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512uniqueL/U x2cachedviews+2Lsactualsmoke;no training",
+      "output_root": "runs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_diagnostics.runner --checkpoint ../../runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt --action-run ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --output ../../runs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01 --device cpu --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "epoch01.npz",
+        "epoch20.npz",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Original base release supplies unmodified legacy model dependencies; overlay code has separate Git commit.",
+    "Source-only diagnostic has no newly trained network, no target prediction or truth scoring obligation.",
+    "REJECTED_EXTRA_GATE:genericdesignapproval;projectminimalworkflowcontrols"
+  ],
+  "registered_at": "2026-10-30T03:24:02+00:00"
+}
