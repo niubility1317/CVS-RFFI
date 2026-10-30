@@ -175,3 +175,6 @@ source phase-only oracle闭合：固定noVar与default/source512×clean/缓存01
 
 
 同phase-oracle六源输出事后频谱统计：每包按cleanFFT能量分4×64bins，Q1能量88.4778%、Q4仅.109379%；noVarQ4相对NMSE.44至.46，F选择变化组整体NMSE也更高，不能全归因弱频点/TX损伤。Parseval和分区校验通过，0新G/F前向/训练/TX/V/target。R02粗恢复只IQ+.1log功率谱；R01确有解析RF损失但主身份资格全失败。下一当前结构RF约束必须独立匹配、先source梯度/成本固定权重，不把历史负结果当成功依据；完整3pp/clean/效率目标保持。
+
+
+源解析RF输出梯度诊断闭合：source512×缓存01/20，CPU2/1.232532秒，0训练/TX/V/target。五解析支路之和，唯一alpha=0.0095279442618058027；两个view压力.258124/.237195、平均cos.282386/.283367、负cos均0/16，通过预定可行性。完整双梯度1048576值与IQ闭式公式独立复算一致。仅支持独立scratchE20 matched RF辅助损失试验，不作G参数方向、TX身份或目标性能成功结论；默认DURA和逐景3pp/clean/效率目标未达成。

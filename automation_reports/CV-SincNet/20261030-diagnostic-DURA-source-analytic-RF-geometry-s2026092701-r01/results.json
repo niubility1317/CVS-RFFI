@@ -1,0 +1,647 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "source_rule": "Alpha=.25/median32batch(||gRF||/||gIQ||), where gradients are with respect to outputIQ, RF=sum5 normalized analytic branch errors. Both fixed source cached01/20 require median alpha*ratio in [.125,.5], mean gradient cosine>=0 and at most8/16 negative cosines. Finite nonzero gradients required. No weight grid, F output, TX, V or target calibration. Passing permits only a separately registered matched scratch E20 training, not an efficacy claim.",
+  "decision": {
+    "alpha": 0.009527944261805803,
+    "views": [
+      {
+        "view": 1,
+        "median_pressure": 0.25812433144186997,
+        "mean_cosine": 0.28238615952432156,
+        "negative_batches": 0,
+        "passed": true
+      },
+      {
+        "view": 20,
+        "median_pressure": 0.23719533004772947,
+        "mean_cosine": 0.2833673912100494,
+        "negative_batches": 0,
+        "passed": true
+      }
+    ],
+    "analytic_RF_study_eligible": true
+  },
+  "batches": [
+    {
+      "view": 1,
+      "offset": 0,
+      "batch": 32,
+      "iq_nmse": 0.016012782230973244,
+      "branches": {
+        "frequency": 0.00631353072822094,
+        "pa": 0.051549941301345825,
+        "sinc": 0.031835079193115234,
+        "highfreq": 0.022338807582855225,
+        "reference": 0.007140481844544411
+      },
+      "iq_gradient_norm": 0.0027962003368884325,
+      "rf_gradient_norm": 0.053089626133441925,
+      "ratio": 18.986345660954758,
+      "cosine": 0.33821457624435425,
+      "seconds": 0.15838576015084982
+    },
+    {
+      "view": 1,
+      "offset": 32,
+      "batch": 32,
+      "iq_nmse": 0.020133763551712036,
+      "branches": {
+        "frequency": 0.010801521129906178,
+        "pa": 0.06978204101324081,
+        "sinc": 0.03517696633934975,
+        "highfreq": 0.02826583944261074,
+        "reference": 0.06886669248342514
+      },
+      "iq_gradient_norm": 0.0031354320235550404,
+      "rf_gradient_norm": 0.2010054737329483,
+      "ratio": 64.1077440757407,
+      "cosine": 0.09230635315179825,
+      "seconds": 0.04250052198767662
+    },
+    {
+      "view": 1,
+      "offset": 64,
+      "batch": 32,
+      "iq_nmse": 0.032730814069509506,
+      "branches": {
+        "frequency": 0.011155950836837292,
+        "pa": 0.12272943556308746,
+        "sinc": 0.0702591985464096,
+        "highfreq": 0.03501490131020546,
+        "reference": 0.0205982718616724
+      },
+      "iq_gradient_norm": 0.003997730556875467,
+      "rf_gradient_norm": 0.1200316771864891,
+      "ratio": 30.024954278135006,
+      "cosine": 0.2522434592247009,
+      "seconds": 0.037196224089711905
+    },
+    {
+      "view": 1,
+      "offset": 96,
+      "batch": 32,
+      "iq_nmse": 0.04011989012360573,
+      "branches": {
+        "frequency": 0.016753263771533966,
+        "pa": 0.13697977364063263,
+        "sinc": 0.04923730343580246,
+        "highfreq": 0.05703999847173691,
+        "reference": 0.03121037781238556
+      },
+      "iq_gradient_norm": 0.0044260346330702305,
+      "rf_gradient_norm": 0.09168370068073273,
+      "ratio": 20.714636979045512,
+      "cosine": 0.26731425523757935,
+      "seconds": 0.030887124128639698
+    },
+    {
+      "view": 1,
+      "offset": 128,
+      "batch": 32,
+      "iq_nmse": 0.007783348672091961,
+      "branches": {
+        "frequency": 0.004609087947756052,
+        "pa": 0.039578698575496674,
+        "sinc": 0.029040127992630005,
+        "highfreq": 0.009108425118029118,
+        "reference": 0.0032131802290678024
+      },
+      "iq_gradient_norm": 0.0019494781736284494,
+      "rf_gradient_norm": 0.05404896289110184,
+      "ratio": 27.72483612396833,
+      "cosine": 0.3710781931877136,
+      "seconds": 0.03213496832177043
+    },
+    {
+      "view": 1,
+      "offset": 160,
+      "batch": 32,
+      "iq_nmse": 0.008929463103413582,
+      "branches": {
+        "frequency": 0.004582151770591736,
+        "pa": 0.04819362610578537,
+        "sinc": 0.04255881533026695,
+        "highfreq": 0.00870379526168108,
+        "reference": 0.004168515093624592
+      },
+      "iq_gradient_norm": 0.0020880824886262417,
+      "rf_gradient_norm": 0.06964195519685745,
+      "ratio": 33.352109208422696,
+      "cosine": 0.3503907024860382,
+      "seconds": 0.04299446614459157
+    },
+    {
+      "view": 1,
+      "offset": 192,
+      "batch": 32,
+      "iq_nmse": 0.02664526365697384,
+      "branches": {
+        "frequency": 0.01109536923468113,
+        "pa": 0.09407100081443787,
+        "sinc": 0.042846690863370895,
+        "highfreq": 0.034797340631484985,
+        "reference": 0.05429133027791977
+      },
+      "iq_gradient_norm": 0.0036069899797439575,
+      "rf_gradient_norm": 0.09895643591880798,
+      "ratio": 27.43463011389691,
+      "cosine": 0.22831520438194275,
+      "seconds": 0.03940918715670705
+    },
+    {
+      "view": 1,
+      "offset": 224,
+      "batch": 32,
+      "iq_nmse": 0.03969291225075722,
+      "branches": {
+        "frequency": 0.015850357711315155,
+        "pa": 0.1508975625038147,
+        "sinc": 0.04622054100036621,
+        "highfreq": 0.054702095687389374,
+        "reference": 0.024815386161208153
+      },
+      "iq_gradient_norm": 0.004402419086545706,
+      "rf_gradient_norm": 0.07848924398422241,
+      "ratio": 17.828662478793643,
+      "cosine": 0.30245327949523926,
+      "seconds": 0.04032654035836458
+    },
+    {
+      "view": 1,
+      "offset": 256,
+      "batch": 32,
+      "iq_nmse": 0.023618614301085472,
+      "branches": {
+        "frequency": 0.011781384237110615,
+        "pa": 0.07978735864162445,
+        "sinc": 0.048949696123600006,
+        "highfreq": 0.031145893037319183,
+        "reference": 0.010299396701157093
+      },
+      "iq_gradient_norm": 0.003395957173779607,
+      "rf_gradient_norm": 0.07725485414266586,
+      "ratio": 22.749066077498068,
+      "cosine": 0.2938738167285919,
+      "seconds": 0.04292965214699507
+    },
+    {
+      "view": 1,
+      "offset": 288,
+      "batch": 32,
+      "iq_nmse": 0.008897690102458,
+      "branches": {
+        "frequency": 0.005419149994850159,
+        "pa": 0.06500919163227081,
+        "sinc": 0.024461034685373306,
+        "highfreq": 0.01063084602355957,
+        "reference": 0.0027553285472095013
+      },
+      "iq_gradient_norm": 0.0020843641832470894,
+      "rf_gradient_norm": 0.056031595915555954,
+      "ratio": 26.881864678881662,
+      "cosine": 0.35697484016418457,
+      "seconds": 0.031106525100767612
+    },
+    {
+      "view": 1,
+      "offset": 320,
+      "batch": 32,
+      "iq_nmse": 0.009053459390997887,
+      "branches": {
+        "frequency": 0.00541872251778841,
+        "pa": 0.05810588598251343,
+        "sinc": 0.023505963385105133,
+        "highfreq": 0.011108754202723503,
+        "reference": 0.005338566843420267
+      },
+      "iq_gradient_norm": 0.0021025303285568953,
+      "rf_gradient_norm": 0.05848972871899605,
+      "ratio": 27.81873246943429,
+      "cosine": 0.3480813503265381,
+      "seconds": 0.0324363368563354
+    },
+    {
+      "view": 1,
+      "offset": 352,
+      "batch": 32,
+      "iq_nmse": 0.015254274941980839,
+      "branches": {
+        "frequency": 0.006938161328434944,
+        "pa": 0.08850900828838348,
+        "sinc": 0.033582329750061035,
+        "highfreq": 0.022957658395171165,
+        "reference": 0.005662131123244762
+      },
+      "iq_gradient_norm": 0.0027291711885482073,
+      "rf_gradient_norm": 0.06724435091018677,
+      "ratio": 24.639110654673754,
+      "cosine": 0.32893088459968567,
+      "seconds": 0.031303866766393185
+    },
+    {
+      "view": 1,
+      "offset": 384,
+      "batch": 32,
+      "iq_nmse": 0.01691565103828907,
+      "branches": {
+        "frequency": 0.007002479396760464,
+        "pa": 0.06541644036769867,
+        "sinc": 0.0515938326716423,
+        "highfreq": 0.020958513021469116,
+        "reference": 0.006632381118834019
+      },
+      "iq_gradient_norm": 0.0028739511035382748,
+      "rf_gradient_norm": 0.0784609392285347,
+      "ratio": 27.300721690058417,
+      "cosine": 0.28721848130226135,
+      "seconds": 0.031005889177322388
+    },
+    {
+      "view": 1,
+      "offset": 416,
+      "batch": 32,
+      "iq_nmse": 0.02728070132434368,
+      "branches": {
+        "frequency": 0.011744379065930843,
+        "pa": 0.11180645227432251,
+        "sinc": 0.041873373091220856,
+        "highfreq": 0.03688318282365799,
+        "reference": 0.018128156661987305
+      },
+      "iq_gradient_norm": 0.0036497474648058414,
+      "rf_gradient_norm": 0.06948944926261902,
+      "ratio": 19.039522578671264,
+      "cosine": 0.32402369379997253,
+      "seconds": 0.031386973336339
+    },
+    {
+      "view": 1,
+      "offset": 448,
+      "batch": 32,
+      "iq_nmse": 0.035619378089904785,
+      "branches": {
+        "frequency": 0.01667848229408264,
+        "pa": 0.1005418598651886,
+        "sinc": 0.04396570846438408,
+        "highfreq": 0.05097018554806709,
+        "reference": 0.1046837791800499
+      },
+      "iq_gradient_norm": 0.004170403815805912,
+      "rf_gradient_norm": 0.2047938108444214,
+      "ratio": 49.10647023394925,
+      "cosine": 0.11946304887533188,
+      "seconds": 0.030871902126818895
+    },
+    {
+      "view": 1,
+      "offset": 480,
+      "batch": 32,
+      "iq_nmse": 0.028949692845344543,
+      "branches": {
+        "frequency": 0.011955863796174526,
+        "pa": 0.09983944147825241,
+        "sinc": 0.038275908678770065,
+        "highfreq": 0.03764336183667183,
+        "reference": 0.012267653830349445
+      },
+      "iq_gradient_norm": 0.0037597327027469873,
+      "rf_gradient_norm": 0.08273673802614212,
+      "ratio": 22.00601600366214,
+      "cosine": 0.2572964131832123,
+      "seconds": 0.03036089614033699
+    },
+    {
+      "view": 20,
+      "offset": 0,
+      "batch": 32,
+      "iq_nmse": 0.010217489674687386,
+      "branches": {
+        "frequency": 0.004878621082752943,
+        "pa": 0.04836946725845337,
+        "sinc": 0.035915352404117584,
+        "highfreq": 0.010670848190784454,
+        "reference": 0.004784397315233946
+      },
+      "iq_gradient_norm": 0.0022336088586598635,
+      "rf_gradient_norm": 0.047640565782785416,
+      "ratio": 21.32896527432701,
+      "cosine": 0.41626808047294617,
+      "seconds": 0.03671082993969321
+    },
+    {
+      "view": 20,
+      "offset": 32,
+      "batch": 32,
+      "iq_nmse": 0.024867594242095947,
+      "branches": {
+        "frequency": 0.013110882602632046,
+        "pa": 0.07385174930095673,
+        "sinc": 0.053348101675510406,
+        "highfreq": 0.03312037140130997,
+        "reference": 0.055427324026823044
+      },
+      "iq_gradient_norm": 0.003484590444713831,
+      "rf_gradient_norm": 0.22081328928470612,
+      "ratio": 63.36850565026451,
+      "cosine": 0.09698239713907242,
+      "seconds": 0.031201164703816175
+    },
+    {
+      "view": 20,
+      "offset": 64,
+      "batch": 32,
+      "iq_nmse": 0.02387377619743347,
+      "branches": {
+        "frequency": 0.00865117460489273,
+        "pa": 0.09899008274078369,
+        "sinc": 0.08225241303443909,
+        "highfreq": 0.026460891589522362,
+        "reference": 0.011091788299381733
+      },
+      "iq_gradient_norm": 0.003414251608774066,
+      "rf_gradient_norm": 0.07882306724786758,
+      "ratio": 23.08648461797755,
+      "cosine": 0.34196242690086365,
+      "seconds": 0.03217826317995787
+    },
+    {
+      "view": 20,
+      "offset": 96,
+      "batch": 32,
+      "iq_nmse": 0.021154653280973434,
+      "branches": {
+        "frequency": 0.009510336443781853,
+        "pa": 0.08922912180423737,
+        "sinc": 0.019959919154644012,
+        "highfreq": 0.03171120956540108,
+        "reference": 0.009937605820596218
+      },
+      "iq_gradient_norm": 0.0032139404211193323,
+      "rf_gradient_norm": 0.07105597853660583,
+      "ratio": 22.10867944834487,
+      "cosine": 0.2574308514595032,
+      "seconds": 0.041182177141308784
+    },
+    {
+      "view": 20,
+      "offset": 128,
+      "batch": 32,
+      "iq_nmse": 0.0038727286737412214,
+      "branches": {
+        "frequency": 0.002535482868552208,
+        "pa": 0.020450688898563385,
+        "sinc": 0.012434097006917,
+        "highfreq": 0.0048400335945189,
+        "reference": 0.0028884969651699066
+      },
+      "iq_gradient_norm": 0.0013751293299719691,
+      "rf_gradient_norm": 0.04321696609258652,
+      "ratio": 31.42756477564729,
+      "cosine": 0.3488554060459137,
+      "seconds": 0.0364994197152555
+    },
+    {
+      "view": 20,
+      "offset": 160,
+      "batch": 32,
+      "iq_nmse": 0.010357553139328957,
+      "branches": {
+        "frequency": 0.004380888771265745,
+        "pa": 0.05456053465604782,
+        "sinc": 0.046396397054195404,
+        "highfreq": 0.009626376442611217,
+        "reference": 0.0033619068562984467
+      },
+      "iq_gradient_norm": 0.002248866017907858,
+      "rf_gradient_norm": 0.0575605183839798,
+      "ratio": 25.595352469031887,
+      "cosine": 0.40826621651649475,
+      "seconds": 0.03302852623164654
+    },
+    {
+      "view": 20,
+      "offset": 192,
+      "batch": 32,
+      "iq_nmse": 0.012103034183382988,
+      "branches": {
+        "frequency": 0.006730751134455204,
+        "pa": 0.052303850650787354,
+        "sinc": 0.023893065750598907,
+        "highfreq": 0.016916094347834587,
+        "reference": 0.004654962569475174
+      },
+      "iq_gradient_norm": 0.002430984051898122,
+      "rf_gradient_norm": 0.05271876975893974,
+      "ratio": 21.686184949579047,
+      "cosine": 0.3473852276802063,
+      "seconds": 0.03141008596867323
+    },
+    {
+      "view": 20,
+      "offset": 224,
+      "batch": 32,
+      "iq_nmse": 0.0538453608751297,
+      "branches": {
+        "frequency": 0.020325519144535065,
+        "pa": 0.1104152575135231,
+        "sinc": 0.04922015219926834,
+        "highfreq": 0.07452122867107391,
+        "reference": 0.03726630657911301
+      },
+      "iq_gradient_norm": 0.00512754125520587,
+      "rf_gradient_norm": 0.1719609647989273,
+      "ratio": 33.536729641002786,
+      "cosine": 0.16537946462631226,
+      "seconds": 0.03150934865698218
+    },
+    {
+      "view": 20,
+      "offset": 256,
+      "batch": 32,
+      "iq_nmse": 0.0407981351017952,
+      "branches": {
+        "frequency": 0.017713235691189766,
+        "pa": 0.1117284893989563,
+        "sinc": 0.0682787373661995,
+        "highfreq": 0.04809059575200081,
+        "reference": 0.023204203695058823
+      },
+      "iq_gradient_norm": 0.004463290795683861,
+      "rf_gradient_norm": 0.09024617075920105,
+      "ratio": 20.219648436636007,
+      "cosine": 0.2650263011455536,
+      "seconds": 0.03192815277725458
+    },
+    {
+      "view": 20,
+      "offset": 288,
+      "batch": 32,
+      "iq_nmse": 0.006770487874746323,
+      "branches": {
+        "frequency": 0.004484589211642742,
+        "pa": 0.04798202961683273,
+        "sinc": 0.014912433922290802,
+        "highfreq": 0.009524176828563213,
+        "reference": 0.002639822196215391
+      },
+      "iq_gradient_norm": 0.00181821349542588,
+      "rf_gradient_norm": 0.05733446776866913,
+      "ratio": 31.533407882466346,
+      "cosine": 0.3314918279647827,
+      "seconds": 0.030911074951291084
+    },
+    {
+      "view": 20,
+      "offset": 320,
+      "batch": 32,
+      "iq_nmse": 0.010391656309366226,
+      "branches": {
+        "frequency": 0.00442791311070323,
+        "pa": 0.03422936424612999,
+        "sinc": 0.018964555114507675,
+        "highfreq": 0.014506828971207142,
+        "reference": 0.0030584661290049553
+      },
+      "iq_gradient_norm": 0.0022525652311742306,
+      "rf_gradient_norm": 0.04701201617717743,
+      "ratio": 20.870434971896785,
+      "cosine": 0.31034383177757263,
+      "seconds": 0.02882660599425435
+    },
+    {
+      "view": 20,
+      "offset": 352,
+      "batch": 32,
+      "iq_nmse": 0.008378282189369202,
+      "branches": {
+        "frequency": 0.0044539496302604675,
+        "pa": 0.05080258846282959,
+        "sinc": 0.023431483656167984,
+        "highfreq": 0.012224776670336723,
+        "reference": 0.0038337053265422583
+      },
+      "iq_gradient_norm": 0.002022611675783992,
+      "rf_gradient_norm": 0.11492524296045303,
+      "ratio": 56.82022126956547,
+      "cosine": 0.18380965292453766,
+      "seconds": 0.028065228834748268
+    },
+    {
+      "view": 20,
+      "offset": 384,
+      "batch": 32,
+      "iq_nmse": 0.014875572174787521,
+      "branches": {
+        "frequency": 0.005975797772407532,
+        "pa": 0.056841928511857986,
+        "sinc": 0.05715859681367874,
+        "highfreq": 0.021158559247851372,
+        "reference": 0.008771637454628944
+      },
+      "iq_gradient_norm": 0.0026950810570269823,
+      "rf_gradient_norm": 0.07779631018638611,
+      "ratio": 28.86603725091866,
+      "cosine": 0.32861626148223877,
+      "seconds": 0.029087821952998638
+    },
+    {
+      "view": 20,
+      "offset": 416,
+      "batch": 32,
+      "iq_nmse": 0.029366804286837578,
+      "branches": {
+        "frequency": 0.014981855638325214,
+        "pa": 0.10456959158182144,
+        "sinc": 0.04506785422563553,
+        "highfreq": 0.03700699657201767,
+        "reference": 0.013886921107769012
+      },
+      "iq_gradient_norm": 0.0037867205683141947,
+      "rf_gradient_norm": 0.07900010049343109,
+      "ratio": 20.86240562730538,
+      "cosine": 0.2812637686729431,
+      "seconds": 0.028231423813849688
+    },
+    {
+      "view": 20,
+      "offset": 448,
+      "batch": 32,
+      "iq_nmse": 0.024833794683218002,
+      "branches": {
+        "frequency": 0.01168057695031166,
+        "pa": 0.07277774810791016,
+        "sinc": 0.03284718841314316,
+        "highfreq": 0.031375154852867126,
+        "reference": 0.011875484138727188
+      },
+      "iq_gradient_norm": 0.003482223255559802,
+      "rf_gradient_norm": 0.0842490866780281,
+      "ratio": 24.19405089651101,
+      "cosine": 0.23428966104984283,
+      "seconds": 0.030694234650582075
+    },
+    {
+      "view": 20,
+      "offset": 480,
+      "batch": 32,
+      "iq_nmse": 0.042245298624038696,
+      "branches": {
+        "frequency": 0.01933945156633854,
+        "pa": 0.13032706081867218,
+        "sinc": 0.0648418515920639,
+        "highfreq": 0.06258498132228851,
+        "reference": 0.022444741800427437
+      },
+      "iq_gradient_norm": 0.004541759379208088,
+      "rf_gradient_norm": 0.12541817128658295,
+      "ratio": 27.614446476565906,
+      "cosine": 0.21650688350200653,
+      "seconds": 0.029247924219816923
+    }
+  ],
+  "analytic_branches": [
+    "frequency",
+    "pa",
+    "sinc",
+    "highfreq",
+    "reference"
+  ],
+  "source_records": 512,
+  "source_visits": 1024,
+  "L_s": 128,
+  "U_s": 384,
+  "views": [
+    1,
+    20
+  ],
+  "G_analysis_inputs": 0,
+  "F_analysis_inputs": 0,
+  "G_smoke_inputs": 2,
+  "F_smoke_inputs": 2,
+  "G_unchanged": true,
+  "F_unchanged": true,
+  "analytic_transform_inputs": 2048,
+  "analytic_parameters_frozen": true,
+  "trained_F_weights_used_in_calibration": false,
+  "saved_F_members_opened": 0,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "seconds": 1.2325320322997868,
+  "scope": "OutputIQ gradients,not G parameter gradients;source-only feasibility,not target efficacy;broader research F-informed",
+  "independent_check": {
+    "status": "INDEPENDENTLY_RECOMPUTED",
+    "source_visits": 1024,
+    "batches": 32,
+    "scalar_statistics": 320,
+    "output_gradient_values": 1048576,
+    "IQ_gradient_formula_max_abs_error": 8.13957203504509e-11,
+    "maximum_Numpy64_vs_Torch32_scalar_abs_error": 2.9289562377243783e-05,
+    "recomputed_alpha": 0.009527944761217464,
+    "decision_matches": true,
+    "target_reads": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0
+  }
+}
