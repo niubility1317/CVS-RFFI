@@ -187,3 +187,6 @@ source phase-only oracle闭合：固定noVar与default/source512×clean/缓存01
 
 
 头保护RX特征梯度校准完成：同noVar源512×缓存01/20，G/F不变，0更新/直接TX/V/target；三类1572864梯度值独立重算一致，CPU2/4.062794秒。新旧Fcos梯度差中位42.3231%/47.8118%，IQcos.045729/.042799、负批次均0、压力.239969/.266674，两视图PASS；唯一lossweight=0.019528750294704578，特征收缩固定.25，不加大。只支持一个独立scratchE20匹配F-guided新参考试验，不能称参数方向或目标成功；默认/3pp/clean/训练效率目标保持。
+
+
+头保护RX特征参考单阶段试验已发布：fb795cebeb21d3cbd97aad05aecfa1afff441018，CPUcontroller956189/worker957861/GPU7，真实F-G梯度/冻结/重载/原头与source参考smoke通过；准入已有2PID/free22382MiB，后态共4PID，仅own1，不改别人。G仍scratchE20/4940、原IQ缓存/.25feature收缩/源校准weight.019528750294704578，自动全七景；F源50轮知识继承，非F-free，未声称正式收益，默认保持。
