@@ -107,3 +107,6 @@ strongA0.2已完整七景并独立复算126组：lowurban63.557738%（较原fast
 
 
 source-headFeature已按commit d79a280d843696d680c82bf63b0138905cf1cb5d发布，真实2Ls G/F梯度、F冻结与G严格重载smoke PASS，12聚焦检查及独立P0/P1审查PASS。CPUcontroller PID4025316实际存活/CWD/argv/空CUDA/日志增长已核实，当前仅QUEUED：各卡可见PID≥2，无ownGPUworker/epoch/预测。原控制器按资源约定等待并自动衔接单阶段E20和完整七景，不重发或更改其他owner。性能与3pp验收未完成。
+
+
+默认R69源分阶段F特征定位完成：512源×2cached视图/10路径/32批，CPU13.895秒、7560统计独立复算、F/G零更新且状态不变。stage2相对stage1与cleanF选择一致率+4.8828/+4.6875pp，独立lastprior仅63.09/64.45%；保留两个有效推理步骤，继续优化一次联合训练。CG4/8/16没有teacher保持收益、F余弦误差反而增大，全部未通过预定逐源场景保护/双视图条件，不发布增加CG版本。真实A/noise仅源反事实，不能作目标上界。headFeature当前GPU资源队列保持，目标3pp与正式七景验收未完成。
