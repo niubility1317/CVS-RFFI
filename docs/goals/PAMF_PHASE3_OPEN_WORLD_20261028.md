@@ -751,3 +751,10 @@ Run `20261030-phase3-star-protected-open-s2026092701-r01`、code7dd90671968ddf58
 下一安全动作固定为原F0与主R1的源侧联合邻域诊断：利用已有sourceL6300特征缓存及当前novel3150同次特征，先固定无TX/K参与的旧known与novel联合跨RX/day近邻，再独立只读评分；不将novel或历史query转训练，不以novel内部几何代替known/unknown分离。先区分未知内部可分却贴旧类和分数未利用邻域，查重既有local-support/background研究后才提出新学习机制，避免重复试分数或预先认定pair监督缺失。任何新候选仍独立预登记、唯一主模型、源校准、完整预测/独立truthlast。全跨RX星地/零目标标签适应/发现/未来匿名注册目标保持ACTIVE，AN/HOW均N/A。
 
 完整结果见`docs/PAMF_PHASE3_PROTECTED_OPEN_RESULTS_20261030.md`；真实F102884＋合成14、G0、训练adapter曝光1562880，单seed小矩阵未达标不伪装完整Phase3。
+
+
+## 2026-10-30 旧六类与未知三类联合诊断完成
+
+Run `20261030-phase3-star-joint-geometry-s2026092701-r01`、code3023c26b4bb2b2f74148303362bd615d854d18ff，VERIFIED/ANALYZED_SOURCE_DIAGNOSTIC。L6300+NV3150同G10P1，主R1同时跨RX/day未知同TX2040/3150=64.761905%、落旧类629/3150=19.968254%；仅NV参考同TX76.571429%，加旧类净失372条。原F0未知同TX64.285714%、落旧类20.476190%，R1未知结构只小幅改善；不能以近邻率替代拒识RU、未来AN或未见RX验收。全部16条件/混淆/分组/完整日志分析，实际checkpoint parts-only smoke2，L adapter6300、NV逐值复用3150、新F/G/更新/target均0。
+
+下一候选主线：冻结原F0默认身份，拟合源L类条件多中心支持分布与只含outside-six监督的OE背景密度比，输出聚合中心/二阶统计/权重，不部署逐行sourcebank；匹配known-only分布控制，唯一主densityratio，区别于已失败的8NN/条件8NN、max关系或二元图。具体容量/拟合/风险公式在独立预登记固定，不由novel真值选；V只固定风险校准，先单seed源反证、合法预测全冻结后独立评分，known保护+RU90通过才另启动跨RX星地。该新候选尚未实现/运行，不宣称收益。完整零目标TX标签适应、未知发现及未来匿名注册继续，v3 CK90/RU90、AK损≤2pp、AN80/REG旧损≤2pp保持ACTIVE；详见`docs/PAMF_PHASE3_JOINT_GEOMETRY_RESULTS_20261030.md`。
