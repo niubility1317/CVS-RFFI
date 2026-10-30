@@ -1,0 +1,168 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01",
+  "group_id": "phase1-dura-source-full-context-oracles",
+  "display_name": "恢复器完整两阶段源域参考替换与信道平滑诊断",
+  "description": "纯repeat E30主对照和默认DURA描述对照；512源样本×clean/缓存01/20，完整两阶段固定五种context，源F一致性与IQ误差；0新训练/TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "context-intervention",
+    "identity-preservation",
+    "training-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase1-DURA-repeatViews-E30-s2026092701-r01",
+    "20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07 fixed512sourcepositions128Ls384Us xclean/cached01/20;actualsimulatoroperator andsourceclean onlycounterfactual",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "source_indices deterministic128Ls384Us positions;strict paired IDs/roles/clean/rx/day with existing source phase NPZ",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "None",
+    "actual_training_labels": "No newtraining;sourcepairedIQ/action andsamefrozenF sourceclean features,0directTX/V/target"
+  },
+  "permissions": {
+    "regime": "Source_only_frozenG_F_context_counterfactual",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source training-pool IQ/Fclean-choice proxy and operator fit;unavailable-sideinformation,notdeployable/nottrueTXaccuracy/targetefficacy/MMSE/recoveryceiling;noautomatictraining"
+  },
+  "checkpoint": {
+    "initialization": "No newinitialization/optimizer:strict load pure repeat sourcefinal30 then defaultR69 as descriptive only;F50/defaulthead frozen",
+    "sources": [
+      "runs/20261031-phase1-DURA-repeatViews-E30-s2026092701-r01/scratch_joint/final.pt",
+      "runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "repeat_views.configure strict base.load_model 8cf8e22 E30/7410/189kL1701kU/266951/F-TX-V-target0/ancestor0;parent_model R69 and originalF loader;source reference F_teacher and all physical metadata strict match",
+    "provenance_verdict": "Existing source7/63/30 pure repeat final selected by fixedepoch beforetarget;defaultR69 historical source ancestry unchanged,descriptive only;originalF50 source4df7b94/50/11100 defaulthead. No modelused as newparent/teacher.",
+    "selection_rule": "Primary fixed latest independently scratch E30 matchedcontrol,not selected by target ranking. Default and knowncoarse/both descriptive. Benchmark exposed history disclosed."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-context-oracles",
+    "gpu_policy": "CPU2/CUDAempty/0GPU,nottruthscorer;all prior own workers terminal;other owners untouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.context_oracle --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wrongcheckpoint/source/shape/order/context/native replay/nonfinite/statechange/persistentgrad/collision:preserveandstop/noautorerun;scientificnegative neverrelaxes rule"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "results.json",
+    "complete.json",
+    "repeat_E30-{clean,1,20}.npz PRIVATE",
+    "DURA_default-{clean,1,20}.npz PRIVATE",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "perrecord IQNMSE/featurecosine/posteriorKL/Fcleanchoice",
+      "actualoperator rank32two-whiteprobe relativeNMSE",
+      "cleaninput preservation",
+      "actual CPUcost/context/solver/Finputs/stateunchanged",
+      "fixedsourceeligibility"
+    ],
+    "dimensions": [
+      "primary repeat_E30/default descriptive",
+      "clean/cached01/20",
+      "native/known_action/known_coarse/known_both/rank32_action",
+      "sourceall/role/RX/day/scene"
+    ],
+    "prediction_ref": "Six private sourceNPZ;no target predictions/notnewG",
+    "scorer_ref": "NoTXtruth;independent rawNPZ metrics reaggregation against sourceclean F only aftercomplete"
+  },
+  "rows": [
+    {
+      "row_id": "source-full-context",
+      "method": "Builtin fulltwo-stage stage_outputs context substitutions;fixedDCT32 actionprojection/kernelandvarianceheld;allmodels eval/no_grad",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/context_oracle.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "Existing source_indices fixed128Ls384Us;Gmodelseed2026092701;sourceoriginalAUG2026101912/RX2026101911;two shared whiteprobe banks evaluation2026103005;no support/newobservations",
+      "k": null,
+      "scenario": "Sourceclean plus originalR07 cached01/20 eachincluding seven source scenes",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512uniquephysicalsource x3views x2models=3072contextinputs;5cases=15360fullstageinputs;13824newFfeatures+1536reuseddefaultnative;real2Ls/modelsmoke=4G+4F;CPU2,0updates/TX/V/target",
+      "output_root": "runs/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.context_oracle --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "results.json",
+        "complete.json",
+        "repeat_E30-{clean,1,20}.npz PRIVATE",
+        "DURA_default-{clean,1,20}.npz PRIVATE",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Distinct from old sourceinverse diagnostic:old substituted finalprior CG16 withoutF. Here originalbuiltin fullbothstages retain2prior/4CG;primary newpure repeatE30,sourceidentityproxy,rank32prediction intervention.",
+    "Five fixed cases: native;actual source simulator A with nativecoarse;sourceclean base with originalpredictedA;both;predicted main/image fixedfirst32DCT modes. Kernel unchanged for rank32,nativevariance held for everycase. No reestimation of A afterchangingcoarse.",
+    "Old source phase NPZ clean Freference strictlymatch IDs/positions/roles/clean/RX/day/scene/state/lock. Primary native G/F recomputed;only defaultnativeF reused afternative IQ replay maxabs<=2e-5. No oldnoVar native IQ/logits used as primary output.",
+    "Physical rankfit:two fixed complexwhite probes shared betweenmodels/views,actualA vs actualA rank32,perrecord relativeMSE. Sourceclean identity operator for cleaninput control. Source trainingpool counterfactuals not independentV or target bound.",
+    "Decision fixed beforedataaccess:only primaryrepeatE30 known_action/rank32 mayqualify. BOTH cached01/20 eachIQNMSE<=.9native AND Fcleanchoicegain>=6/512 AND everynoncleanscene loses<=1choice/cleanscene0;512cleaninput choices nofall. Rank32 additionally actualA two-probeNMSE<=.01 overallandEACH7scene bothviews. Preferqualifiedrank32,elsequalifiedknownaction supports separateactioncurriculumstudy,elseNone. Noautomatictraining.",
+    "Default/knowncoarse/both descriptive only. Never select R69 as newteacher fromtarget results. No gradient/model/head fit/TX/V/target;fullstate equality and gradNone after.",
+    "Four focused tests PASS;one required independentP0P1 review beforelaunch. Firstreal2Ls/modelG-F noquery smoke thencontinues automatically;onepreflight/archiveSHA/compile andactual PID/CWD/argv/CUDAempty/loggrowth poststate.",
+    "NewG only after independentpreregistration,sourcequalifiedhypothesis,fromscratchjoint30 andfullsevenformaltruth-last. DefaultDURA/currenteachscene3pp/clean/actualefficiency acceptance remainsACTIVE."
+  ],
+  "registered_at": "2026-10-30T23:50:41+00:00"
+}
