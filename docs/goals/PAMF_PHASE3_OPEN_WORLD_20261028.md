@@ -4,7 +4,7 @@
 
 后续新候选默认同时完成三类测试：源域已知接收机、跨接收机 clean、跨接收机星地，全部接入同一冻结 DURA v1.0→PAMF。clean 输入也先经过 DURA，必须重新计算原 F0 在相同 DURA(clean) 输出上的闭集基线，不能挪用历史绕过恢复器的 clean 成绩。clean 仅为冻结测试对照，Phase3 训练、无标签适应、发现和注册仍使用星地样本。原 C_K≥90%、同条件原闭集减 A_K≤2pp 保持；跨 RX clean 的 R_U≥95%、跨 RX 星地的 R_U≥90%，主报逐 TX 宏 A_K/R_U/H-score。三类结果分别验收，源侧未通过不取消已登记的跨 RX 测试，旧实验不追溯补测或改判。
 
-用户随后要求先选前面性能较好的方法，核实是否接入DURA，未接入则补测并比较变化。当前优先固定 P1 signal r03 的已知支持与密度比两个方案：它们源侧 R_U46.888889%/60.888889%本来就含DURA，C_K和原F0损失满足原known12；旧跨RX clean直接输入没有DURA，也不是相同开放网络，不能冒充本次配对。已完成独立dura-best run，对同一个模型、统计和两套原阈值执行了source/跨RXclean/跨RXstar各raw与DURA配对，三个DURA路径为主，raw为接入前后诊断；每路径原F0闭集也用该路径输入计算，不重新训练或调阈值。预测类条件密度已另行完成三类DURA测试，按用户最新要求作为重点候选；原pooled density ratio保留冻结对照。当前局部协方差实验仅改变source-L模式形状，具体矩阵见最新预登记。完整跨RX星地、零标签适应、未知发现和未来匿名注册目标ACTIVE。
+用户随后要求先选前面性能较好的方法，核实是否接入DURA，未接入则补测并比较变化。当前优先固定 P1 signal r03 的已知支持与密度比两个方案：它们源侧 R_U46.888889%/60.888889%本来就含DURA，C_K和原F0损失满足原known12；旧跨RX clean直接输入没有DURA，也不是相同开放网络，不能冒充本次配对。已完成独立dura-best run，对同一个模型、统计和两套原阈值执行了source/跨RXclean/跨RXstar各raw与DURA配对，三个DURA路径为主，raw为接入前后诊断；每路径原F0闭集也用该路径输入计算，不重新训练或调阈值。预测类条件密度已另行完成三类DURA测试，按用户最新要求作为重点候选；原pooled density ratio保留冻结对照。局部协方差已完成并保留负结果；当前联合身份与开放表征实验不改变两个既有候选，具体矩阵见最新预登记。完整跨RX星地、零标签适应、未知发现和未来匿名注册目标ACTIVE。
 
 ## 历史研发路线（2026-10-30，用户要求再优化 PAMF）
 
@@ -916,3 +916,8 @@ Run `20261031-phase3-local-cov-s2026092701-r01` / actualcode `4d1d645dd13de875a7
 Run `20261031-phase3-local-cov-s2026092701-r01` / actualcode `4d1d645dd13de875a7f6adf32508a9732ffd3f47`，sourceL6300冻结signal前向、90局部cov和两新six-tau、四列×三DURA预测及独立三truth-last均COMPLETE，执行VERIFIED、科学NO_PROMOTION。唯一主：source AK/CK/RU/H 89.844444/96.907407/63.777778/74.599611%；clean_DURA AK/CK/RU/H 61.111111/77.777778/100.000000/75.862069%；star_DURA AK/CK/RU/H 60.763889/82.986111/71.180556/65.561038%。对选定predicted_ratio，source正确接收净+27、未知拒对净+58；clean正确净−56、未知不变；star正确8增/27失/净−19，未知拒对7增/24失/净−17，AK−3.298611pp/RU−5.902778pp/H−4.411287pp。source局部改善未迁移到新RX，不替换原重点候选predicted_ratio或冻结pooled_ratio对照。
 
 原90means/whitener/背景OE32、F0/G/r03和所有身份保持；重算mean最大绝对误差2.442491e−14、trace1.110223e−16、floor0，无数值技术失败，不重跑/扫参数。新NN/原密度/背景/normalizer0，新cov90和Vonly tau12实际fit；真实signal6300/F0G0、synthetic各2、另存约18MB局部矩阵，旧训练/源缓存/三DURA query前向成本继承。predict21.183924s/CPUscore19.138905s；driver1104163/CPU1105453的live/CWD/argv/CUDAempty及最终空已核，predict1104252/GPU4仅pipeline/日志记录、未捕获独立predictorlive或显存样本，不虚报GPU遥测。foreign0。历史sourceNV/devQ、单RX/seed、high未知缺19-15维持N/A，U/正式RX未读，无匿名REG/AN/HOW。完整跨RX星地拒识、零标签DA/发现/未来注册目标ACTIVE。详见 `docs/PAMF_PHASE3_LOCAL_COV_RESULTS_20261031.md`。
+
+
+### 2026-10-31 原身份与开放特征联合密度预登记
+
+Run `20261031-phase3-joint-feature-s2026092701-r01` / actualcode `b7f81eca9a2a0bb55afc361acd50f3fbd739b68a`。保留原pooled/predicted ratio两精确控制，唯一主joint_predicted_ratio；同记录原F0 u160/r03 z160单位拼320，新sourceL6300/OE6134 known90/OE32/全局cov白化和源V两组六tau。不同于localcov/四贡献640/P0P1融合，不更新原F0/G/r03或另训身份头。sourceu缓存对齐、sourcez12434新冻结前向；sourceV/NV双特征复用，Q新同G/F0u1728并核同logits/closed、z原样复用。新stats freeze先V/tau，全部四tau后NV/cleanQ/starQ，三DURA全部pred后CPU三truth-last。统计新fit1/tau12，NN0，目标U/TX/K/quota/正式RX/REG0。clean95/star90/CK90/损2pp/必需场景覆盖及starAK/RU不低于原predicted保持，sourceRU仅诊断；历史NV/Q曝光、单RX/seed/high缺类NA不变，完整目标ACTIVE，当前未启动无性能。方案见 `docs/PAMF_PHASE3_JOINT_FEATURE_PLAN_20261031.md`。

@@ -1,0 +1,208 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-joint-feature-s2026092701-r01",
+  "group_id": "pamf-phase3-joint-identity-signal-density",
+  "display_name": "PAMF第三阶段：身份与开放特征联合密度",
+  "description": "Fixed originalF0 unit160 and source-onlyr03 signal160 joint320 known90/OE32 density, versus selectedtwo exact160 ratio controls. No neural update, targetlabel or targetfit.",
+  "kind": "cvs",
+  "stage": "Phase3-joint-feature-three-DURA-development",
+  "aliases": [
+    "身份与开放特征联合320密度"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "joint_feature",
+    "all_DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-fixed-P1-signal160-joint320-density",
+  "parent_run_ids": [
+    "20261031-phase3-class-density-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "b7f81eca9a2a0bb55afc361acd50f3fbd739b68a",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-joint-feature-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_joint_feature_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_JOINT_FEATURE_PLAN_20261031.md",
+      "configs/pamf_phase3_targets_20261029.json"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "OriginalF0 sourceu160 cache + newfrozenr03 z160 of sameG10P1 sourceL/OE. Existing V/NV u/z; Qnew sameDURA->F0 u and parentcachedz. Unitconcat320; no cleanlearning.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE}/ids.npy aligned with /home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-crossset-metric-s2026092701-r01/features/{L,OE}.npz; /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-class-density-s2026092701-r01/predict/{known,novel}_predictions.npz and Q ids",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_new_signal_forward": 6300,
+      "source_OE_new_signal_forward": 6134,
+      "source_F_new_forward": 0,
+      "source_V_knownrisk": 27000,
+      "source_novel_truthside_only": 3150,
+      "cross_clean_Q": 864,
+      "cross_star_Q": 864,
+      "Q_new_F_and_G": 1728,
+      "Q_new_signal": 0,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "SourceL/OE/V/NV mutuallydisjoint; targetQ03-15 existing864physicalrecords sharedclean/star, U03-08 unread. HistoricaldevRX24-1/old6+novel3(each96) onlyscorer; formalRX24-18 retained.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "SourceL oldTXlabels/publicdomain, OE onlyoutside-six/publicRXday(noTX/K), newjoint density sourceonly. Vknownlabels aftermodelsfreeze onlytwo6tau. No targetlabels/K/quota/U/cleanfit or queryfit.",
+    "query_use": "Actual3CPsynthetic2 smoke -> sourceL/OE u/z alignment+jointfit -> statsfreeze -> Vtau -> all4tau freeze -> sourceNV and clean/starQ actualG/F0 u whilecachedz -> allpredcomplete -> independentCPU3truthjoins.",
+    "external_method_exception": null,
+    "claim_scope": "Singlemodel/onehistoricallyexposed devRX, sourceRXseen. highmissingunknownTX remainsNA. No formalconfirmation/UDA/REG, fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "OriginalF0 E50/default6 and frozen source-onlyP1signal r03, DURA v1.0. Selectedclass-density source11/two6tau exact. Newjoint320 sourceGaussian state, no localcov/Ustudent/P0weights.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Sourcecontract392005/VALIDATED_ONCE role handles/fixedDURA retained. F0teacheru role/IDs/metadata matchr03IQ and sourceF0/G identity. No target-trained ancestry or newneuralweights.",
+    "selection_rule": "Equalunitconcat u/z; fullglobalwithin90cell covariance .9/.1, known90 and OE32/25Lloydseed3019 originalfamily with D320. Newownschema; old160/640unchanged. Uniquejoint_predicted_ratio, sourceVknown12 fixedrule, no scans or targetfeedback."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-joint-feature-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-feature-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-feature-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_joint_feature_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_joint_feature_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-joint-feature-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "OneproducerGPU >=4096MiBactualfree and<=2addedown/card, independentCUDAemptyCPUscorer. Preserveallforeignwork.",
+    "stop_rule": "Illegalancestry/role/nonfinite/outputcollision/unusableprediction preserve, no partialtruthscore/autorestart. UNKNOWN reconcileoriginalPID/root. ScientificsourcefailuredoesnotcancelQ or foreignhealthywork."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/*.log",
+    "predict/{complete,smoke}.json",
+    "predict/models/{density,joint}.npz",
+    "predict/models/complete.json",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/{known,novel}_predictions.npz",
+    "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "oldpooled/oldpredicted/jointpooled/jointpredicted ratio",
+      "source_seenRX/clean_DURA/star_DURA",
+      "old6/novel3TX",
+      "source5RX3day/devRX24-1",
+      "MIX6scene and coverage"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-feature-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_joint_feature_score.py",
+    "targets_ref": "Latest20261031 threeconditions allDURA; condition-specific targets remainclean95/star90, CK90/AKloss2pp. FullzeroTXlabelDA/discovery/futureanonymousREG stillrequired.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "C_K>=90%",
+      "sameDURAoriginalF0closedminusAK<=2pp",
+      "cleanRU95/starRU90 and maincoverage",
+      "sourceknown12 guard",
+      "mainstarAK/RUnotlowerthanpredictedratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "joint-feature-s2026092701",
+      "method": "PAMF-OW joint identity/open density",
+      "purpose": "Source-onlyjoint320 distribution vs selectedsignal160 ratios; soleprimaryjoint_predicted_ratio.",
+      "config_ref": "docs/PAMF_PHASE3_JOINT_FEATURE_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-feature-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Newjoint OE kmeansseed2026103019 fixed; r03/F0 and G10receiver2027scene3001channel4001 inherited, no newchannelrealization.",
+      "k": null,
+      "scenario": "Source seenRX starP1 and devcrossRX cleanDURA/starDURA",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NewNN0; newsourcejointknown90/OE32/normalizer1 +2new6tau. SourceL/OE signal12434; QF0/G1728, Qsignal0/sourceF0G0; synthetic3CP each2. Original160state/oldtwo6tau exact, sourceF0cache/parentQsignal inherited. Deployjoint aggregate320 only, no source bank.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-feature-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-feature-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_joint_feature_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-joint-feature-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/*.log",
+        "predict/{complete,smoke}.json",
+        "predict/models/{density,joint}.npz",
+        "predict/models/complete.json",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/{known,novel}_predictions.npz",
+        "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Keep selectedoldtwo methods as exactcontrols, no historicalmain relabeling.",
+    "Joint320F0/r03 differs from priorcontribution640 and P0/P1reader; bothnetworks source-onlyfrozen.",
+    "SourceV/NV u/z reused; Qnewu requires sameG/F0 only, zreused. AlltestsDURA and identity unchanged.",
+    "HistoricalsourceNV/devQ, singleRX/seed and highmissing19-15 remain, no U/formalRX/anonymousREG; fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-30T20:21:27+00:00"
+}
