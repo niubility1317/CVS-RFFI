@@ -16,7 +16,7 @@ from . import star_open_world_model as ow
 from . import star_open_world_episode as episode
 from . import star_open_world_loss as losses
 
-RUN_ID='20261030-phase3-star-open-episodic-s2026092701-r01'
+RUN_ID='20261030-phase3-star-open-episodic-s2026092701-r02'
 ARMS=('S0','S1','M')
 SCHEMA='pamf_phase3_star_open_world_train_v1'
 STATUS='STAR_OPEN_WORLD_SOURCE_FROZEN'

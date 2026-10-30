@@ -9,7 +9,7 @@ import time
 
 from .star_representation_launch import _read, _write, _env, _gpu_free, _job
 
-RUN = '20261030-phase3-star-open-episodic-s2026092701-r01'
+RUN = '20261030-phase3-star-open-episodic-s2026092701-r02'
 ARMS = ('S0', 'S1', 'M')
 PRIMARY = 'M::relation_max'
 TRAIN_STATUS = 'STAR_OPEN_WORLD_SOURCE_FROZEN'

@@ -10,6 +10,19 @@ def module():
     except ModuleNotFoundError:pytest.fail('open-world membership loss is not implemented')
 
 
+def test_numpy_slot_metadata_never_uses_numpy_torch_bridge(monkeypatch):
+    m=module();original=torch.as_tensor
+    def no_array_bridge(value,*args,**kwargs):
+        if isinstance(value,np.ndarray):raise RuntimeError('historical Torch cannot infer NumPy2 int64 dtype')
+        return original(value,*args,**kwargs)
+    monkeypatch.setattr(torch,'as_tensor',no_array_bridge)
+    support=torch.eye(6,64)[:,None,:].repeat(1,16,1).requires_grad_()
+    p,labels=m.prototypes(support,np.asarray([3,0,5,1,4,2],dtype=np.int64),3,'M')
+    assert labels.tolist()==[0,5,1,4,2]
+    p.square().sum().backward();assert support.grad is not None
+    with pytest.raises(ValueError):m.prototypes(support,np.arange(6,dtype=np.float64),0,'M')
+
+
 def test_prototype_slots_preserve_graph_and_loss_is_column_permutation_invariant():
     m=module();z=torch.eye(6,64,dtype=torch.float64)[:,None,:].repeat(1,16,1).requires_grad_()
     order=np.asarray([3,0,5,1,4,2]);p,labels=m.prototypes(z,order,3,'M')

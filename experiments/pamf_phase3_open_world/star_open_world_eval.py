@@ -17,7 +17,7 @@ from . import star_relative_target as public
 from .development_transfer import _snapshot_model, _check_model
 
 
-RUN_ID='20261030-phase3-star-open-episodic-s2026092701-r01'
+RUN_ID='20261030-phase3-star-open-episodic-s2026092701-r02'
 ARMS=('S0','S1','M');PRIMARY_ARM='M';PRIMARY_METHOD='relation_max'
 SCHEMA='pamf_phase3_star_open_world_prediction_v1'
 STATUS='STAR_OPEN_WORLD_PREDICTIONS_COMPLETE'

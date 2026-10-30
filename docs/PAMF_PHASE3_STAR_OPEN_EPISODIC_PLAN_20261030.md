@@ -1,6 +1,6 @@
 # PAMF-OW 动态注册集合首轮实验
 
-Run `20261030-phase3-star-open-episodic-s2026092701-r01`。本轮落实[再设计](PAMF_PHASE3_OPEN_REDESIGN_20261030.md)，检验源端训练成员关系能否迁移到跨接收机星地开放判决。唯一主候选为 M，S0/S1 是固定控制，不按目标成绩换主。完整目标仍为 ACTIVE。
+当前执行 run `20261030-phase3-star-open-episodic-s2026092701-r02`。r01 在第一步原型槽 metadata 的 NumPy2/Torch2.1 转换处技术失败，三行均完成真实权重 smoke、尚无 optimizer 更新或目标访问；原输出保留。r02 仅修复 int64 metadata 转 Python 整数列表的兼容边界，矩阵、模型、预算、采样与目标设置不变。本轮落实[再设计](PAMF_PHASE3_OPEN_REDESIGN_20261030.md)，检验源端训练成员关系能否迁移到跨接收机星地开放判决。唯一主候选为 M，S0/S1 是固定控制，不按目标成绩换主。完整目标仍为 ACTIVE。
 
 三个模型分别从原完整 Tri-SIG-TIME SSL `20261027-phase1-pamf-repl-shuffled-views-m16-r02/main_split-repl-shuffled_time-3view-s2026092701` 的 E50/11100 终点独立开始。严格构造原生可微 Sinc、骨干和默认六类头，再加入开放模块；不复用训练后的 Phase3 候选。当前 Phase1/2 默认模型不变。
 

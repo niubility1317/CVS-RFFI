@@ -20,7 +20,7 @@ def module():
 
 
 def config(root,arm='M'):
-    run='20261030-phase3-star-open-episodic-s2026092701-r01';code='a'*40
+    run='20261030-phase3-star-open-episodic-s2026092701-r02';code='a'*40
     native=dict(base_release='base',frozen_sources='sources',source_output='original',source_contract='contract',model_seed=2026092701)
     train=dict(run_id=run,code_commit=code,arm=arm,native_config=native,L_root=str(root/'cache/L'),OE_root=str(root/'cache/OE'),
         output_root=str(root/'train'/arm),steps=2220,lr=.0001,sampling_seed=2026103017,slot_seed=2026103018)

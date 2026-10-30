@@ -15,6 +15,11 @@ def prototypes(z_support,slot_order,held_class,arm):
     if z_support.shape!=(6,16,64):raise ValueError('Source support must have shape [6,16,64]')
     if arm not in ('S0','S1','M') or type(held_class) is not int or held_class not in range(6):
         raise ValueError('Fixed source training arm and held class required')
+    # Historical Torch2.1 cannot infer NumPy2 scalar dtypes. Slot metadata is
+    # not differentiable; preserve its strict int64 contract via Python ints.
+    if not isinstance(slot_order,torch.Tensor) and hasattr(slot_order,'tolist'):
+        if str(getattr(slot_order,'dtype',None))!='int64':raise ValueError('slot_order must be int64')
+        slot_order=slot_order.tolist()
     order=torch.as_tensor(slot_order,device=z_support.device)
     if order.dtype!=torch.int64 or order.shape!=(6,) or not torch.equal(order.sort().values,torch.arange(6,device=order.device)):
         raise ValueError('slot_order must be a permutation of six source classes')
