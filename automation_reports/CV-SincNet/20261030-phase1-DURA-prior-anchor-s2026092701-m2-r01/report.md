@@ -31,7 +31,7 @@ Source evidence: CG16 hurts and internal priors rely on biased learned consisten
 
 每行固定finalE20后自动：同卡原DURA/本版graph/reuse的G与G+F、B1/B128三轮交替测速，source1800×7预测及独立评分，target168000×7预测及独立评分。每组全部七景新预测和同F50旧基线均完整有效后才能连接truth；target侧复用原rawF50和默认DURA graph七景预测，不重算旧版。评分给逐TX/RX/day、MacroF1、净纠错、相对DURA及rawclean差距。原R17每景1pp容忍将在同row结果汇总时单列。源成绩不会取消任何新版正式测试或改变另一健康行。
 
-主要验收按目标暂定六景各自距同一rawclean≤3pp，clean损伤≤1pp，并单列旧70%/5pp目标。单seed工程基准，目标已暴露；不得扩展为新盲测、当前Tri-SIG-TIME SSL或Phase2/3性能。完整源日志、训练时间、参数存储、MAC/FFT/CG、同卡时延和显存同时保留；共享负载测速不与旧独占时延直接算加速比。
+主要验收为用户2026-10-30已确认的六景各自距同一rawclean≤3pp，并保持clean性能；clean损伤≤1pp为原有容忍上限，并单列旧70%/5pp目标。单seed工程基准，目标已暴露；不得扩展为新盲测、当前Tri-SIG-TIME SSL或Phase2/3性能。完整源日志、训练时间、参数存储、MAC/FFT/CG、同卡时延和显存同时保留；共享负载测速不与旧独占时延直接算加速比。
 
 当前无新训练或正式性能结果。健康其他owner不干预。启动资源按GPU可见总进程数与实际显存核对，最多两个本run GPU worker、每卡最多一个；全卡已有两条可见GPU进程则等待，CPU独立scorer最多一个。只对技术故障保留并报告，不以低准确率停机、调参或重试。总目标仍ACTIVE。
 
