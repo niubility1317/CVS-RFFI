@@ -88,3 +88,46 @@ def test_input_errors_and_no_numpy_abi(monkeypatch):
     assert model(x).shape==(4,160)
     for bad in (x.double(),x[:,:,:255],x*float('nan')):
         with pytest.raises(ValueError):model(bad)
+
+
+def test_export_actual_sequence_reader_boundary_keeps_feature_graph_and_original_identity(monkeypatch):
+    """The source loader installs SequenceReference, not x3.CompositeReference.
+
+    Use the native-interface toy with that distinct class boundary; exercise
+    production _export without the Headless callback used by other fixtures.
+    """
+    import ast,sys,types
+    from pathlib import Path
+    train=importlib.import_module('experiments.pamf_phase3_open_world.star_signal_open_train')
+    native,x=source();reader=native.id_backbone.encoder
+    SequenceReference=type('SequenceReference',(type(reader),),{'__module__':'experiments.cvs_feature_sequence50.features'})
+    reader.__class__=SequenceReference;original_logits=native(x).detach().clone()
+    # Execute only the historical export definitions, avoiding unavailable
+    # native-release constructors. The exact production guard remains intact.
+    old=types.ModuleType('experiments.cvs_rdrop_sinc_units.x3_features');old.nn=nn;old.torch=torch
+    old.CompositeReference=type('CompositeReference',(nn.Module,),{})
+    text=Path(__file__).parents[1].joinpath('experiments/cvs_rdrop_sinc_units/x3_features.py').read_text(encoding='utf-8')
+    nodes=[n for n in ast.parse(text).body if isinstance(n,(ast.ClassDef,ast.FunctionDef)) and n.name in ('ExportedComposite','export')]
+    exec(compile(ast.Module(body=nodes,type_ignores=[]),'<historical-x3-export>','exec'),old.__dict__)
+    for name,key,value in (('experiments.cvs_source_identity_readout.input_policy','NoExplicitCFO',type(reader.response)),
+            ('experiments.cvs_residual_identity.model','ResidualPhysicalHead',type(reader.core.id_backbone.cls_head))):
+        module=types.ModuleType(name);setattr(module,key,value);monkeypatch.setitem(sys.modules,name,module)
+    monkeypatch.setitem(sys.modules,old.__name__,old)
+    source_state={n:p.detach().clone() for n,p in reader.state_dict().items()};features=type(reader).features
+    exported=train._export(native)
+    assert type(exported.encoder) is SequenceReference and type(exported.encoder).features is features
+    assert sum(p.numel() for p in exported.parameters())==232033
+    torch.testing.assert_close(exported.forward_features(x),reader.features(x),atol=0,rtol=0)
+    assert hasattr(reader.core.id_backbone.cls_head,'weight') and not hasattr(exported.encoder.core.id_backbone.cls_head,'weight')
+    assert not {p.data_ptr() for p in reader.parameters()} & {p.data_ptr() for p in exported.parameters()}
+    a=api();model=a.SignalOpen(exported);opt=a.optimizer(model)
+    for step in range(2):
+        opt.zero_grad(set_to_none=True);model(x)[:,0].sum().backward()
+        assert model.signal.encoder.core.id_backbone.sinc.low_coordinate.grad.abs().sum()>0
+        assert model.signal.encoder.core.id_backbone.t2[0].weight.grad.abs().sum()>0
+        assert model.signal.encoder.response_projection[0].weight.grad.abs().sum()>0
+        assert model.signal.encoder.sequence_pool.projection.weight.grad.abs().sum()>0
+        if step:assert model.projection.network[0].weight.grad.abs().sum()>0
+        a.clip(opt,model);opt.step()
+    torch.testing.assert_close(native(x),original_logits,atol=0,rtol=0)
+    for n,p in reader.state_dict().items():torch.testing.assert_close(p,source_state[n],atol=0,rtol=0)

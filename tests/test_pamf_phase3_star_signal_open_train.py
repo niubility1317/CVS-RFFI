@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import torch
 from test_pamf_phase3_star_crossset_metric_train import fixture as parent_fixture
-from test_pamf_phase3_star_signal_open_model import source,Headless
+from test_pamf_phase3_star_signal_open_model import source
 
 
 def api():return importlib.import_module('experiments.pamf_phase3_open_world.star_signal_open_train')
@@ -42,7 +42,7 @@ def fixture(root,mp):
             model._phase3_source_handle=dict(classes=t.native.CLASSES,source_rxs=t.native.RX,source_days=[1,2,3],split_seed=392005,
                 counts=dict(L_s=6300,U_s=56700,V=27000),source_contract=n['source_contract'])
             return model.to(device)
-        mp.setattr(t.native,'make_trainable_model',construct);mp.setattr(t,'_export',lambda model:Headless(model))
+        mp.setattr(t.native,'make_trainable_model',construct)
         mp.setattr(t,'_checkpoint_smoke',lambda model,device:dict(status='PASS',actual_F0_checkpoint=True,F0_forward_rows=2,G_forward_rows=0))
         def load(root,role):
             assert role in ('L','OE');return roles[role]

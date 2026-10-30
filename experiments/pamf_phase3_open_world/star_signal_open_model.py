@@ -3,6 +3,7 @@
 The original six-class identifier is neither stored nor changed by this module.
 """
 from __future__ import annotations
+from copy import deepcopy
 import torch
 from torch import nn
 from torch.nn import functional as F
@@ -12,6 +13,23 @@ FEATURE_PARAMETERS=232033
 PROJECTION_PARAMETERS=102688
 PARAMETERS=334721
 SINC_PREFIX='signal.encoder.core.id_backbone.sinc.'
+
+
+class HeadlessSignal(nn.Module):
+    """Copy the strictly loaded live reader, preserving its actual feature class.
+
+    The legal Phase1 constructor installs SequenceReference; the historical
+    x3 exporter accepts a different CompositeReference. Only class W is removed.
+    """
+    def __init__(self,reader):
+        super().__init__()
+        if (not isinstance(reader,nn.Module) or not callable(getattr(reader,'features',None))
+                or tuple(reader.core.id_backbone.cls_head.weight.shape)!=(6,160)):
+            raise ValueError('Strictly loaded complete original six-class reader required')
+        self.encoder=deepcopy(reader);del self.encoder.core.id_backbone.cls_head.weight
+
+    def forward_features(self,x):return self.encoder.features(x)
+    def forward(self,x):return self.forward_features(x)
 
 
 def unit(x):

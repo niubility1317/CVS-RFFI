@@ -14,7 +14,7 @@ from . import star_crossset_metric_eval as parent
 from . import star_representation_cache as IQ
 from . import star_class_risk as risk
 
-RUN_ID='20261030-phase3-star-signal-open-s2026092701-r01'
+RUN_ID='20261030-phase3-star-signal-open-s2026092701-r02'
 SCHEMA='pamf_phase3_star_signal_open_prediction_v1'
 STATUS='STAR_SIGNAL_OPEN_PREDICTIONS_COMPLETE'
 DENSITY_STATUS='STAR_SIGNAL_OPEN_DENSITIES_FROZEN'

@@ -15,7 +15,7 @@ from . import star_signal_open_model as core
 from . import star_consensus_run as base
 from . import star_representation_cache as IQ
 
-RUN_ID='20261030-phase3-star-signal-open-s2026092701-r01'
+RUN_ID='20261030-phase3-star-signal-open-s2026092701-r02'
 ARMS=('E_SIGNAL',)
 SCHEMA='pamf_phase3_star_signal_open_train_v1'
 STATUS='STAR_SIGNAL_OPEN_SOURCE_FROZEN'
@@ -70,9 +70,8 @@ def _metadata(c):
 
 
 def _export(model):
-    # Native construction installs the original release namespace first.
-    from experiments.cvs_rdrop_sinc_units.x3_features import export
-    return export(model)
+    # Preserve the actual, strictly loaded differentiable SequenceReference.
+    return core.HeadlessSignal(model.id_backbone.encoder)
 
 
 def _checkpoint_smoke(model,device):
