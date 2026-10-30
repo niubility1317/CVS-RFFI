@@ -733,3 +733,21 @@ Run `20261030-phase3-star-physical-geometry-s2026092701-r01`，code `8aeac9583dc
 下一执行目标：完成source-only cache/train/predict/score launcher及聚焦协议负测，从合法原F0独立建立R0残差关闭、唯一主R1有界残差两组；同初始化/采样/2220步，冻结原身份、学习relation和主adapter，源L可见六类、OE只outside-six成员、无OE TX/K/Us/V/NV/target优化。L192/OE64软邻域T.1、权重.1，跨RX且跨day公共候选格等权；2/3/4/5旧注册子集循环，完整六类OE成员loss。具体固定定义见`configs/pamf_phase3_protected_geometry_20261030.json`和`docs/PAMF_PHASE3_PROTECTED_GEOMETRY_DESIGN_20261030.md`。
 
 先执行两组完整源冻结预测及独立truthlast，V只既定风险校准、NV只独立评分；主R1必须通过既定known风险组与source RU90才另预登记跨RX星地开发评估，不从控制换主、不按NV调权/阈值、不访问历史Q训练或扩正式RX/多seed。失败保留科学负结果并继续研究，不以组件测试或检索率宣称全Phase3达标。v3 CK90/RU90、AK距原同输入闭集≤2pp，以及无标签适应、发现和未来匿名注册目标保持ACTIVE。
+
+
+## 2026-10-30 protected160 源侧三组已实际运行
+
+VERIFIED RUNNING at stored live snapshot: cache actualF0 noquery smoke/pass+sourceP1 features complete; three exact trainPID/CWD/argv/CUDA/GPU and actual positive step/loggrowth. NativeF0 frozen, sourceonly, foreign0; no newperformance result.
+
+Run `20261030-phase3-star-protected-open-s2026092701-r01`，code7dd90671968ddf58aab5a5b302b4d56371c8b9c9。N0无OE、R0固定原unit160、主R1有界unit160，各2220 adapter步，原F0仍11100/native0；共享cache真实12434F＋2合成、三actual训练PID/GPU/梯度烟测及step已验证。逐行自动V风险校准/NV预测/先几何邻居再唯一source truth，只有主R1 source42known+RU90可进入下一次跨RX预登记，source不是target成功。没有新target Q/DA/REG/AN成绩，目标ACTIVE。
+
+
+## 2026-10-30 protected160 三组源实验完成，不晋级
+
+Run `20261030-phase3-star-protected-open-s2026092701-r01`、code7dd90671968ddf58aab5a5b302b4d56371c8b9c9：N0/R0/主R1各2220、总6660新parts步骤，原native0；全部训练/预测/独立CPU评分完成，完整trace与14stdout188行/全部随机索引重放核对。sourceL6300/OE6134/V27000/NV3150固定G10P1，原F0闭集90.981481%，主R1 AK90.596296/CK98.977778/RU9.269841/H16.818780%，源42known过、unknown失败、NO_PROMOTION，无目标新访问或多seed扩展。
+
+源novel内部同时跨RX/day1NN由F0 76.603175→R1 76.571429%，TX/RX方差比近似保持；关系argmaxknownV90.744444%，不能归为未学会旧身份匹配。正确known条件AUROC .852538351低于AK损伤2pp+RU90必要界.880215754（RU95界.929116629），仅排除当前冻结margin统一阈值平移，不能推广所有新类条件规则不可能；未扫描/选择新阈值。必要性证明与实际秩、OSCR/B一致，sourceonly非target成功。
+
+下一安全动作固定为原F0与主R1的源侧联合邻域诊断：利用已有sourceL6300特征缓存及当前novel3150同次特征，先固定无TX/K参与的旧known与novel联合跨RX/day近邻，再独立只读评分；不将novel或历史query转训练，不以novel内部几何代替known/unknown分离。先区分未知内部可分却贴旧类和分数未利用邻域，查重既有local-support/background研究后才提出新学习机制，避免重复试分数或预先认定pair监督缺失。任何新候选仍独立预登记、唯一主模型、源校准、完整预测/独立truthlast。全跨RX星地/零目标标签适应/发现/未来匿名注册目标保持ACTIVE，AN/HOW均N/A。
+
+完整结果见`docs/PAMF_PHASE3_PROTECTED_OPEN_RESULTS_20261030.md`；真实F102884＋合成14、G0、训练adapter曝光1562880，单seed小矩阵未达标不伪装完整Phase3。
