@@ -210,10 +210,10 @@ def train(args,p):
     write_json(row/'training_complete.json',dict(status='SOURCE_TRAINED',arm=args.arm,epoch=config['epochs'],updates=updates,
         L_exposures=seen_l,U_exposures=seen_u,training_TX_labels_read=0,training_F_access=False,V_reads=0,target_reads=0,
         teacher_updates=0,teacher_reference_visits=teacher_visits,live_teacher_training_inputs=0,initialization_checkpoint_loads=0,ancestor_epochs=0,
-        cumulative_epochs=config['epochs'],head_fit_updates=0,parameters=266951,changed_state_tensors=changed,
+        cumulative_epochs=config['epochs'],head_fit_updates=0,parameters=sum(v.numel() for v in student.parameters()),changed_state_tensors=changed,
         peak_allocated_bytes=torch.cuda.max_memory_allocated(),seconds=time.perf_counter()-started,
         source_preparation_seconds=preparation_seconds,total_G_training_pipeline_seconds=time.perf_counter()-started_total,
-        teacher_cache=cache_record,teacher_cache_forward_inputs=630000,teacher_cache_numeric_bytes=1290240000,
+        teacher_cache=cache_record,teacher_cache_forward_inputs=cache_record['teacher_inputs'],teacher_cache_numeric_bytes=cache_record['numeric_bytes'],
         teacher_component_epochs=20,teacher_bundle_component_epochs=60,student_copied_teacher_parameters=0))
 
 

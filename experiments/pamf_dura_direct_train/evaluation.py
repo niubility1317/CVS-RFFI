@@ -159,6 +159,22 @@ def score(args,p,role):
 
 
 @torch.no_grad()
+def conv_linear_mac(model,example):
+    """Count executed Conv1d/Linear MACs, including repeated shared weights."""
+    total=0
+    def count(module,inputs,output):
+        nonlocal total
+        if isinstance(module,torch.nn.Conv1d):
+            total+=output.numel()*(module.in_channels//module.groups)*module.kernel_size[0]
+        else:total+=output.numel()*module.in_features
+    handles=[m.register_forward_hook(count) for m in model.modules() if isinstance(m,(torch.nn.Conv1d,torch.nn.Linear))]
+    try:model(example)
+    finally:
+        for handle in handles:handle.remove()
+    return total
+
+
+@torch.no_grad()
 def profile(args,p):
     from experiments.pamf_stage2_inference.engine import InferenceEngine
     from experiments.pamf_fcrossrx_readout.frozen import load_reader
@@ -166,6 +182,8 @@ def profile(args,p):
     student=load_model(p['output']/args.arm/'final.pt','cuda:0',arm=args.arm,commit=args.commit)
     reader=load_reader(p['reader'],p['source_cache'],'cuda:0').eval().requires_grad_(False)
     values=tensor(np.load(p['cache']/'validation/practical_low_urban.npy',mmap_mode='r',allow_pickle=False)[:128],'cuda:0')
+    parameters=sum(v.numel() for v in student.parameters())
+    mac=conv_linear_mac(student,values[:1])
     torch.cuda.reset_peak_memory_stats()
     records={}
     for scope in ('G','G_plus_F'):
@@ -187,8 +205,8 @@ def profile(args,p):
         del engines
         gc.collect();torch.cuda.empty_cache()
     write_json(p['output']/args.arm/'matched_profile.json',dict(status='PROFILE_COMPLETE',cases=records,
-        parameters=266951,parameter_bytes=266951*4,checkpoint_bytes=(p['output']/args.arm/'final.pt').stat().st_size,
-        ConvLinear_MAC=25068072,prior_calls=2,CG_updates=4,FFT_IFFT=27,
+        parameters=parameters,parameter_bytes=parameters*4,checkpoint_bytes=(p['output']/args.arm/'final.pt').stat().st_size,
+        ConvLinear_MAC=mac,prior_calls=2,CG_updates=4,FFT_IFFT=27,
         peak_allocated_bytes=torch.cuda.max_memory_allocated(),physical_GPU=os.environ['CUDA_VISIBLE_DEVICES'],
         timing_scope='Samecard alternating3rounds;FP32/TF32off;preloadedGPUinput;GorG+originalFdefaulthead;copy/ownedoutput/validity included;capture/loader/transfer/queueexcluded',
         memory_scope='Shared benchmark resident models and graphs;not standalone deployment VRAM'))
