@@ -57,3 +57,14 @@ Actualcode `eec44ce2f1d587d9e46ed4860fe6e204f5621155`，唯一owner `codex-phase
 本地focused验证：{"model_train": {"unique_tests": 8, "subtests": 7, "seconds": 6.43, "stdout": "local_artifacts/pamf_phase3_star_signal_open_20261030_r01/core_train_tests.log"}, "eval_score": {"unique_tests": 7, "subtests": 18, "initial_unaffected_passed": 3, "initial_unaffected_subtests": 8, "calibration_directory_fix_targeted_passed": 4, "targeted_subtests": 10, "targeted_seconds": 7.51, "legacy_trapz_deprecations": 872}, "launcher": {"tests": 7, "seconds": 3.09, "prior_unfinished_eval_syntax_import_failure_resolved": true}, "AST_files": 10, "mirror_bytewise_matches": 10, "unique_tests_total": 22, "real_data_weights_truth_read_in_local_tests": 0}；唯一直接P0/P1审查PASS。单次N607preflight确认固定四角色P1文件/祖先与source元数据、原F0 checkpoint、冻结前端控制及实际剩余显存；IQ/私有truth实值读取0。尚未本轮实际训练/取得性能。
 
 预期产物：actualcheckpoint syntheticG10烟测/梯度probe、2220完整loss/indices/梯度/physicaloptimizer日志与headless+MLP final.pt；严格重载smoke、known/background fit/四model/四τ/known风险/四列预测、独立CPUtruthlast；PID/CWD/argv/GPU/log-growth与终态。IQ/NN权重/原始日志/逐行预测/source feature bank不入Git。完整跨RX星地与无标签DA/发现/未来REG目标ACTIVE。
+
+
+## 实际技术终态：无性能结果
+
+VERIFIED／STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE，NO_PERFORMANCE_RESULT。actualcode `eec44ce2f1d587d9e46ed4860fe6e204f5621155`；534文件/data0 archive SHA fb9f62bf73a3e10d8b8ebe9a40e125c2a10d85189d609e5aa175892c93f215c9 单次比较/remotecompile/runtime PASS。启动driver826730、train826888；独立观察pipeline FAILED_PRESERVED，所属live/GPU均空，无需kill，其他owner操作0。
+
+错误发生于make_trainable_model之后的x3_features.export边界：合法实际reader为experiments.cvs_feature_sequence50.features.SequenceReference，旧exporter要求CompositeReference。一次CPU只读构造诊断确认reader232993、W[6,160]、NoExplicitCFO与ResidualPhysicalHead类型正确，三views均[0,5,3,6,2,1,4,7]、Sinc为CoordinateSinc且_filters原可微；没有IQ读取/合成forward/optimizer。不是更换权重或数据合同的问题。
+
+stack停在训练_roles调用之前；L/OE IQ值/新增神经更新/目标访问0，无V/NV预测或独立评分，不能给出性能。首步烟测在代码顺序上先于导出，但失败时未落盘完整smoke.json，不以缺少独立artifact宣布首步完整验证。remote root、configs和完整错误日志均保留。
+
+新r02只修复独立分支导出：复制已严格加载的实际可微特征提取器、保留其features方法、仅删旧W，不修改shared exporter、科学目标/采样/预算/数据或控制。针对实际SequenceReference的本地回归及该问题一次定点复审后，按新不可覆盖root发布；同指纹再次出现则停止盲目重启。完整跨RX星地/高拒识/无标签DA/发现/未来REG继续ACTIVE。
