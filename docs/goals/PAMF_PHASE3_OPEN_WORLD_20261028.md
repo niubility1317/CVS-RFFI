@@ -689,3 +689,10 @@ Run `20261030-phase3-star-open-feature-diagnostic-s2026092701-r01`，VERIFIED fr
 ## 2026-10-30 完整贡献与参考条件残差已经实施
 
 Run `20261030-phase3-star-reference-open-s2026092701-r01`，code13d063b98699b1aab9e8e05f3583a65299104515，已实现同次完整四贡献640与小容量reference-conditioned residual；C0constant/C1real maskedr29，同结构/参数/采样/2220预算，soleprimaryC1。两行均从原TriSIGTIME SSL F0E50/11100独立开始，原defaulthead、NoExplicitCFO27、M五类任务/同P1 KD/fullL/共享梯度保护保留；nativeF0不变，旧M未继续。actualcheckpoint smoke/首步训练与PID/CWD/argv/GPU/loggrowth实证齐。详见`docs/PAMF_PHASE3_REFERENCE_OPEN_DESIGN_20261030.md`和本run预登记。两source训练进行中，自动冻结Lproto/Vcal/NV+crossRXQ864/独立CPUscore；U/formal0读，完整v3/无标签适应/匿名注册目标ACTIVE，当前无新科学成功声明。
+
+
+## 2026-10-30 完整贡献与参考条件残差实际结果
+
+VERIFIED C0/C1 2x2220 source updates, all source/crossRX-G10P1 predictions and independent truth-last scores; primary C1 AK=61.4583%, CK=84.2014%, RU=51.0417%, H=55.7677%, F0closed-loss=11.4583 个百分点; NO_PROMOTION; DA/REG not performed, fullgoal ACTIVE.
+
+详见 `docs/PAMF_PHASE3_REFERENCE_OPEN_RESULTS_20261030.md`。

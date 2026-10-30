@@ -30,3 +30,10 @@ Run `20261030-phase3-star-reference-open-s2026092701-r01`，执行代码 `13d063
 VERIFIED / RUNNING，执行code13d063b98699b1aab9e8e05f3583a65299104515。434files/data0，archive539aa5ca0cb1d89dffb43092000b99961413cb5d3460ecb9d18e4ab213fa14c6远端单次比较/compile通过。driver3681335及C0 train3681467/CUDA6、C1 train3681473/CUDA7的livePID/CWD/完整argv/实际GPU已独立核实；实际checkpoint梯度smoke PASS、首步与日志增长齐。每卡一新增own进程，显存离散样本各1722MiB（非峰值），foreign操作0。
 
 主C1和控制C0保持同architecture/alltrainable315106active/982835container、相同L/OE采样与M五类任务。C0零条件仍可学习constant残差；C1只多使用本条maskedr29的条件输入。现无正式识别成绩，完成后自动full prediction和独立双truth评分，不依据source/target score调参/停其它row。目标U/正式RX未访问，AN/HOW/UDA/REG尚未实施，完整v3目标ACTIVE。
+
+
+## 两组全部完成后的实际结论
+
+VERIFIED C0/C1 2x2220 source updates, all source/crossRX-G10P1 predictions and independent truth-last scores; primary C1 AK=61.4583%, CK=84.2014%, RU=51.0417%, H=55.7677%, F0closed-loss=11.4583 个百分点; NO_PROMOTION; DA/REG not performed, fullgoal ACTIVE.
+
+详见 `docs/PAMF_PHASE3_REFERENCE_OPEN_RESULTS_20261030.md`。
