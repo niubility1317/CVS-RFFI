@@ -1,0 +1,211 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-signal-ssl-s2026092701-r01",
+  "group_id": "pamf-phase3-source-replay-target-instance-signal",
+  "display_name": "PAMF第三阶段：源重放与目标双视图信号适应",
+  "description": "Independent r03 SOURCE/TARGET_SSL copies each444 freshCENTER_UNITS updates; TARGET adds fixedstarU perrecord two phase/gain views NTXent. F0/G frozen; sourcefit known90/OE32 and knownVtau onlyafter NNfreeze. Sixmethods/threedDURA/soleSSL_ratio.",
+  "kind": "cvs",
+  "stage": "Phase3-deep-signal-target-SSL-development",
+  "aliases": [
+    "目标双视图开放表征"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "target_SSL",
+    "source_replay",
+    "deep_signal",
+    "all_DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-DA0-source-replay-target-instance-contrast",
+  "parent_run_ids": [
+    "20261030-phase3-star-signal-open-s2026092701-r03",
+    "20261031-phase3-dura-best-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "72b0b60d6c445e907b1bd05061cc3dbcd36132af",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-signal-ssl-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_signal_ssl_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_SIGNAL_SSL_PLAN_20261031.md",
+      "configs/pamf_phase3_targets_20261029.json"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "FixedsourceL/OE P1 replay; starU384 received→sameDURA once, TARGETtwo globalphase/gain derivedviews. SOURCEnoU. Newdeepstudentz fit sourceL/OE density thenknownVtau; clean/starQ sameGoutput for F0 andall3open models.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/ids.npy; U/home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-relative-s2026092701-r01-release/data/star_g10/discovery/public/ids.npy; declaredQpublic/ids.npy",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_training_unique": 6300,
+      "source_OE_training_unique": 6134,
+      "source_training_exposures": 227328,
+      "target_U_unique": 384,
+      "target_U_instance_exposures": 28416,
+      "target_U_augmented_signal_rows": 56832,
+      "source_V_threshold_calibration": 27000,
+      "source_novel_truthside_only": 3150,
+      "clean_Q": 864,
+      "star_Q": 864,
+      "original_Us_new": 0,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "sourcefourroles andtargetU/Q physicaldisjoint; RXsource5/target24-1 separate. U03-08/Q03-15; cleanonlytest. UtrueTX/K/quota hidden. TARGETunknownunregistered mayhaveunlabelledUexposure, notstrictunseenTX; historicNV/Q, notformalblind.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "SourceL true6labels, sourceOE outside-six/publicRXday only, originalF0OE teacher fixed. TARGET U-only instance positives samephysicalrecord, no pseudoTX/realK/quotas. FrozenoriginalF0/G; target weights explicitUancestor separate.",
+    "query_use": "Actual3CPsynthetic first thenmatchedSOURCE444 beforeopeningU; TARGET444+allNNfreeze then sourceL/OEfit2 densities, Vonly4newtau. All6tau beforeNV/anyQ, allsixbythreepredictionsbefore independent3truths. No targetQ/clean/validation in NN optimization or earlystop.",
+    "external_method_exception": null,
+    "claim_scope": "Targetdeepneural adaptation ofindependentauxbranch, notsource-only backbone orF0identity update. SOURCEsourceonly/TARGETnot. Source/devQhistorical, oneRX/seed, scenecoverageNA, noREG/fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Bothnew334721students independently strictcopy completedr03dc01, freshoptim444 each; originalF0 E50/default6 andDURAv1R69 unchanged. SOURCE finalnotusedtoinitializeTARGET. ExactDA0 olddensity/tau; newsourceaggregate bundle carriesTARGETUancestor.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Originalsourcecontract392005/actualsourceR03 andsameG/F0 checked. Sourcefourcache roles VALIDATED_ONCE. NewSOURCE U0/sourceonly; TARGET legalU384/noQtrueTX/K. Newtargetweightsnoteligibleassourceonly; nonewformalaccess.",
+    "selection_rule": "SoleSSL_ratio idx5 vsDA0ratio andSOURCEratio. SOURCE/TARGETfixed444updates,lr1e-4,freshCENTER_UNITS, sameL/OEindices; U64noreplacementbatch/independentviews,temp.1/weight1, noEMA/pseudoTX/K/earlystop. Newsourceknown90/OE32seed3019/25Lloyd andhard12Vtau, no Qfeedback."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-signal-ssl-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-signal-ssl-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-signal-ssl-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_signal_ssl_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_signal_ssl_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-signal-ssl-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "OneGPUtrain worker completesSOURCE/TARGETsequentially, thenoneGPUeval, independentCUDAemptyCPUscore. Actualfree>=4096MiB <=2addedown/card allowed0..7, foreignownerpreserved.",
+    "stop_rule": "Invalidrole/ancestry/nonfinite/mismatchedsourceindices/outputcollision/unusableprediction preserve,no partialtruthscore/autorestart. UNKNOWNreconcileoriginalPID/root; source scientificfailuredoesnotcancelQ orstopforeignwork."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/*.log",
+    "train/{complete,smoke,U_manifest}.json",
+    "train/U_restored.npz",
+    "train/{SOURCE,TARGET_SSL}/{final.pt,complete.json,steps.jsonl}",
+    "predict/{complete,smoke}.json",
+    "predict/models/*",
+    "predict/calibration/*",
+    "predict/thresholds.npz",
+    "predict/source/*",
+    "predict/targets/*",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "DA0/SOURCE/TARGET_SSL ×known/ratio",
+      "source_DURA/clean_DURA/star_DURA",
+      "old6/novel3TX RX/day/scene coverage",
+      "U-addedgain vsmatchedSOURCE vsDA0 paircounts"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-signal-ssl-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_signal_ssl_score.py",
+    "targets_ref": "Latestv3/threeconditionsallDURA, clean95/star90/CK90/AKloss2pp; fullmultiRX/seed/discovery/futureREGstillrequired.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "SSL_ratio starAKpositive vsbothDA0andSOURCE",
+      "cleanRU95/starRU90,CK90,originalF0loss2pp,requiredscenecoverage"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "signal-ssl-s2026092701",
+      "method": "PAMF-OW source-replay plus target-instance signal learning",
+      "purpose": "Onefixedpairedtrainmatrix SOURCE/TARGET444 each andfrozenDA0; onlyTARGETaddsUtwo-viewNTXent; fixedsixcolumns/threedDURA/soleSSL_ratio.",
+      "config_ref": "docs/PAMF_PHASE3_SIGNAL_SSL_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-signal-ssl-s2026092701-r01/configs/train.json; /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-signal-ssl-s2026092701-r01/configs/eval.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": 2026103102,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "InheritedsourceL3017/OE3018 sampling; Udraw2026103101 independent CPUphase/gain2026103102; olddensitykmeans3019; no stochasticmodel reinit orchannel redraw.",
+      "k": null,
+      "scenario": "Fixedstar sourceL/OE+targetU learning; sourceDURA/cleancrossRXDURA/starcrossRXDURA evaluation",
+      "optimizer": "FreshAdamW CENTER_UNITS botharms,physicalclip5,evalBN/dropout",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2x444newNNsteps; SOURCE113664/TARGET170496studenttrainrows, SOURCEU0/TARGETU384+56832derivedviewrows. Evalnewsignal90352/F01728/G1728; trainG384; combinedsignal374512/G2112/F01728+synthseparate. Newsource density2/sourceVtau4, oldDA0stats/tau exact. OldF011100/r03signal2220/Gtraining retained.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-signal-ssl-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-signal-ssl-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_signal_ssl_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-signal-ssl-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/{complete,smoke,U_manifest}.json",
+        "train/U_restored.npz",
+        "train/{SOURCE,TARGET_SSL}/{final.pt,complete.json,steps.jsonl}",
+        "predict/{complete,smoke}.json",
+        "predict/models/*",
+        "predict/calibration/*",
+        "predict/thresholds.npz",
+        "predict/source/*",
+        "predict/targets/*",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "OriginalF0/defaultsixhead andDURA/sourceR03checkpoint unchanged; completeindependenttargetsignalencoder/projectionlearns, notfeatureonlyMLP.",
+    "SOURCE444 sourceonly U0; TARGET444 sameL/OEindices plusUinstanceNTXent, no target labels/K/quotas. Newtargetweightsexplicitlynotpure-source.",
+    "Newnormalizer/densitysourceL/OE onlyafterNNfreeze; 4newhard12tauonlyV, no targetcalibration. NV/Qreadonly afterall6taufreeze.",
+    "Unknownmeansunregistered; targetUexposure tracked, notstrictunseenTXgeneralization. source/devQhistorical andhighmissingTX remainNA.",
+    "FullREG/discoverynotperformed, AN/HOWnull/fullgoalACTIVE. No scientificfailcanceling threeDURAtests orforeignprocess interruption."
+  ],
+  "registered_at": "2026-10-30T19:21:43+00:00"
+}
