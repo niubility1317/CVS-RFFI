@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01",
+  "group_id": "phase1-dura-source-head-protected-RX-geometry",
+  "display_name": "冻结原 F 源特征的分类头保护 RX 方向证伪",
+  "description": "源F缓存63000/fit62488/holdout512，soft6后验条件RX均值、原头rank5保护、留一坐标/留一RX几何；无训练/TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "F-guided-research",
+    "RX-geometry",
+    "head-protection"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-30明确允许独立源F指导对照；仅用同冻结F源域特征约束身份，G单阶段从零，不直接TX/目标训练。当前只是该分支源诊断，无训练或部署变化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Originalsource63000 L/U cached160DcleanFfeatures;fit62488 excludesfixed512(L128/U384);continuoussoft6Doriginalheadposteriors,norowTXtruth",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07/cache/train/physical_ids.npy;sourceFcos010featurecachephysicalIDs exactorder;fixedsource_indices128Ls/384Us",
+    "label_map_ref": "No perrecordTXtruth;F source class-mapmetadataonlyoriginalcontractcheck",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "none;sourcecleanfeaturesonly,no newchannel generation",
+    "target_panel": "none;sourcegeometrydoesnotchangeG/deployment"
+  },
+  "permissions": {
+    "regime": "authorizedfrozenFsourcefeaturediagnostic;softposteriorweightsnotTXtruth;F-informed",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "SourceRXfeatureassociation/protectedsubspace/leaveoneRXgeometry;notcausalRXhardware,fittedhead,GunseenRXgeneralizationorformalperformance"
+  },
+  "checkpoint": {
+    "initialization": "No G ornewhead initialization/updates;loadoriginalfrozenF50 onlyactual2Ls smoke andoriginalheadweights",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_fcrossrx_readout/frozen.py load_reader and f_guided.source_ids;actual original7/63/30 roles/physical IDs",
+    "provenance_verdict": "OriginalF50source50/11100/defaulthead4df7strictmetadata;cos010sourcefeaturecacheteacheridentity/physicalIDs match;Funchanged;nonewG/ancestor",
+    "selection_rule": "F/cachefixedoriginalsourcebeforeGtraining;fitindicesexclude512holdout;nosource/targetranking,Gparentselectionorweightfitting"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-F-RXgeometry",
+    "gpu_policy": "CPU2/0GPU/0updates;otherownersuntouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.rx_geometry --root ../.. --output ../../runs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "BadF/source/cachecontract/IDs/roles/order,missingRX/nonfinitefeatures/unexpectedrank,cache2Ls mismatch,headalgebramismatch/Fstatechange/collision:preserve/noautoretry;scientificFAILcloseswithouttraining"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "results.json",
+    "complete.json",
+    "geometry.npz",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "protectedsharedRXenergyfraction",
+      "leaveposteriorcoordinatecosines",
+      "fit_holdout_RXcosines",
+      "leaveRXcapture/definedcoverage",
+      "headorthogonality/choicepreservationalgebra",
+      "CPUcost"
+    ],
+    "dimensions": [
+      "5sourceRX",
+      "6continuousposteriorcoordinates",
+      "fit62488/holdout512",
+      "5leaveoneRXsubspaces"
+    ],
+    "prediction_ref": "Existing63000sourceFfeatures;privatecentroid/probe/head/basisarrays in geometry.npz;noTXlabels",
+    "scorer_ref": "IndependentNumPy64 rereadswholeoriginalsourcecache/IDs, recomputesallweightedcentroids/LOOgeometry/decision;0newF/G/TX/V/target"
+  },
+  "rows": [
+    {
+      "row_id": "source-F-RXgeometry",
+      "method": "SoftposteriorconditionalsharedRXmeans,orthogonaltooriginalcenteredheadrank5",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/rx_geometry.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "OriginalsourceFseed2026092701;fixedsource_indicesholdout512,deterministicsoftweightedlinearalgebra;no newmodel/augmentation RNG",
+      "k": null,
+      "scenario": "OriginalsourcecleanFfeatures,no channel/newIQ",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Reuse63000oldFfeaturevectors;newactualF2Ls only/G0/CPU2/0GPU/0updates",
+      "output_root": "runs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.rx_geometry --root ../.. --output ../../runs/20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "results.json",
+        "complete.json",
+        "geometry.npz",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "No directTXtruth/hardpseudoTX/newhead/Gtraining.Continuous6DsoftposteriorfromSAMEoriginalFheadweightsconditionalfeaturemeans;inheritsFsource50epochknowledge;cannotcallF-free.",
+    "Reusepreexisting63000sourceFcleanfeaturesfromcos010source_feature_cache,metadataF_teacherstrictmatch,IDs exactsourceorder.F/cache provenanceandactual2Ls smoke cachedfeaturematch checked.Ffrozenstateunchanged.",
+    "Holdoutfixedsource_indices512(L128/U384),fitremaining62488;allsourceRX1/3/4/6/8 andsource days1/2/3.No V/targetreads orperformancefeedback.",
+    "PerRX/softcoordinate weightedunitfeaturemeans;sharedRXoffset=equalmeanacrosssixsoftcoordinates thenprojectofforiginalnormalizedheadcenteredrank5.FullRXbasis rank<=4,eachleaveRXbasis rank<=3.",
+    "Eligibilityfixedbeforedata: protectedshared/conditionalRXenergy>=.05;leaveoneposteriorcoordinatemeancos>.1 andpositivefraction>.5;fit-vs-holdoutRXdirectionmeancos>.1;leaveoneRXcapturemean>=.20 and>=.10foratleast4/5RX.ZerodirectiondefinedFalse/capture0 conservative,explicitreported.",
+    "Alpha.25onlydiagnosticfeaturetransformation,notIQ/Gdeployment.Originalheadchoicepreservationisanalgebraicconsequenceofheadorthogonality,notpositiveidentityevidence orscientificadmissioncriterion.CannotinferGcleanretention.",
+    "Passonlypermitsseparatesourcecanonicalfeatureloss-gradientcalibration;notGtrainingorformalprediction.No changingthresholds/rank/softtemperature/receiverweightsafterFAIL.DefaultDURA/3pp/clean/efficiencygoal unchanged.",
+    "EarlierOct26singleSIGgeometryusedtrueL_TXanddifferentF/REPL;notreusedascurrentF50evidence.No extensionofsourceRXspanstounseenRXGgeneralization orcausalhardwareinterpretation.",
+    "11focusedshared-vs-interaction/zerodirection/headalgebra/softweight/existingguidedcheckpointnegativesPASS;oneP0/P1review,preflight/archiveSHA/compile/actualPIDpoststate.OnlyprivatearraysremainoutsideGit;publishaggregates/CPUcost."
+  ],
+  "registered_at": "2026-10-30T16:39:06+00:00"
+}
