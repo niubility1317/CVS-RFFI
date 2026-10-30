@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-30 user explicitly answered:允许新增独立 F 指导对照（建议）;proposaldocs/goals/PAMF_DURA_F_GUIDANCE_OPTION_20261030.md",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "c3b76d2bf5cf61c9ba116d0bfc901c3c5e41739b",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261030-DURA-source-posteriorKL010-r01"
@@ -102,7 +102,7 @@
     "remote_run_root": "runs/20261030-phase1-DURA-source-posteriorKL010-s2026092701-r01",
     "remote_log_root": "runs/20261030-phase1-DURA-source-posteriorKL010-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-source-posteriorKL010-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.posterior_guided run --root ../.. --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.posterior_guided run --root ../.. --commit c3b76d2bf5cf61c9ba116d0bfc901c3c5e41739b",
     "stop_rule": "Wrongsource/teacher/roles/collision/nonfinite/Fstatechange/Fgrad/missingIQgradient/strictreload/predcoverage:preserveaffectedrun,noautoretry/hotedit/fallback;allhealthyothersuntouched"
   },
   "expected_artifacts": [
@@ -187,7 +187,7 @@
       "budget_ref": "OneGjointE20/4940,L126000/U1134000;Gancestor0;Fclean63000once+Frestored1260000;Fupdates0;reusedF50/11100declared",
       "output_root": "runs/20261030-phase1-DURA-source-posteriorKL010-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261030-phase1-DURA-source-posteriorKL010-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.posterior_guided worker --root ../.. --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_direct_train.posterior_guided worker --root ../.. --commit c3b76d2bf5cf61c9ba116d0bfc901c3c5e41739b --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",
