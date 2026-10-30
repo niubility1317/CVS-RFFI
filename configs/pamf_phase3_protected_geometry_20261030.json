@@ -1,6 +1,6 @@
 {
   "schema": "pamf_phase3_protected_geometry_design_v1",
-  "status": "MODEL_AND_LOSS_IMPLEMENTED_PENDING_SOURCE_EXPERIMENT",
+  "status": "SOURCE_PIPELINE_IMPLEMENTED_PENDING_REAL_RUN",
   "method": "PAMF-OW protected160",
   "current_PAMF_unchanged": "Tri-SIG-TIME SSL",
   "targets_ref": "configs/pamf_phase3_targets_20261029.json",
@@ -44,6 +44,7 @@
     "parameter_counts_status": "NEW_MODULE_CONSTRUCTED_66177; FULL_F0_PAIR_PENDING_REAL_CHECKPOINT_SMOKE"
   },
   "arms": {
+    "N0": {"role": "matched_no_OE_control", "residual_enabled": true, "relation_trainable": true, "OE_training_rows": 0, "soft_neighbor_roles": ["L"]},
     "R0": {"role": "matched_control", "residual_enabled": false, "relation_trainable": true},
     "R1": {"role": "sole_primary", "residual_enabled": true, "relation_trainable": true}
   },
@@ -57,6 +58,7 @@
     "slot_seed": 2026103018,
     "initialization_seed": 2026092701,
     "shared_indices_and_initialization": true,
+    "matching_scope": "same L sampling, initialization and 2220 optimizer updates; N0 has no OE input, less adapter compute and no binary auxiliary membership supervision",
     "checkpoint_selection": "fixed_final_step_only",
     "backbone_updates": 0,
     "new_identity_head_training": 0
@@ -110,11 +112,15 @@
     "model_tests": "7 passed, 18 subtests passed in 13.34s",
     "loss_tests": "8 passed in 4.63s; dtype-specific targeted recheck 1 passed in 3.80s, overlapping test not additional coverage",
     "joint_model_loss_tests": "R0/R1 both passed, 2 passed in 7.12s",
+    "cache_train_tests": "13 passed, 24 subtests passed in 9.51s",
+    "eval_score_tests": "9 passed in 9.92s; existing shared metrics trapz deprecation warnings",
+    "launcher_tests": "8 passed in 7.65s; actual trainer-to-launcher completion regression separately 1 passed in 52.90s",
+    "direct_P0_P1_review": "PASS after one targeted fix/review: add top-level arm to train completion",
     "real_checkpoint_smoke": false,
     "new_training_started": false,
     "new_performance_result": false
   },
-  "first_experiment_scope": "source-only single-seed two-arm falsification; all preregistered source views predicted and frozen before independent scoring",
+  "first_experiment_scope": "source-only single-seed N0/R0/R1 falsification; each row immediately predicts all preregistered source views and freezes geometry neighbors before independent scoring",
   "promotion": {
     "full_v3_targets_unchanged": true,
     "primary_arm_fixed": "R1",
