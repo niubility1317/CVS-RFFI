@@ -22,10 +22,10 @@
   "replaces_run_id": "20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01",
   "authorization": "2026-10-30 /goal全面深入分析并优化星地恢复网络；现有TX无标签/F-free恢复器研究授权",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "19e4248a48ac79657635c31aac887088f029fce0",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
-    "cwd": "releases/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02-release"
+    "cwd": "releases/20261030-DURA-direct-and-recovery-r01"
   },
   "data": {
     "dataset": "ManySig",
@@ -98,7 +98,7 @@
     "remote_run_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02",
     "remote_log_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02/logs",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02",
-    "launch_command": "python -u -m experiments.pamf_dura_prior_recovery.runner run --root ../.. --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_prior_recovery.runner run --root ../.. --commit 19e4248a48ac79657635c31aac887088f029fce0",
     "stop_rule": "Badcontract/role/outputcollision/nonfinite/checkpoint/smoke/predictioncoverage: preservefailedrow,noautomaticretry/hotedit;healthyrowcontinues;no performance stop;unrelatedowneruntouched"
   },
   "expected_artifacts": [
@@ -168,7 +168,7 @@
       "budget_ref": "0newupdates;reuseoriginalsourceE20/4940;all7formalrequired",
       "output_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02/continuation",
       "log_path": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02/logs/continuation.log",
-      "command": "python -u -m experiments.pamf_dura_prior_recovery.runner worker --root ../.. --commit PENDING_CODE_COMMIT --arm continuation",
+      "command": "python -u -m experiments.pamf_dura_prior_recovery.runner worker --root ../.. --commit 19e4248a48ac79657635c31aac887088f029fce0 --arm continuation",
       "expected_artifacts": [
         "smoke.json",
         "ARM/checkpoint_reference.json",
@@ -206,7 +206,7 @@
       "budget_ref": "0newupdates;reuseoriginalsourceE20/4940;all7formalrequired",
       "output_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02/prior_anchor",
       "log_path": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r02/logs/prior_anchor.log",
-      "command": "python -u -m experiments.pamf_dura_prior_recovery.runner worker --root ../.. --commit PENDING_CODE_COMMIT --arm prior_anchor",
+      "command": "python -u -m experiments.pamf_dura_prior_recovery.runner worker --root ../.. --commit 19e4248a48ac79657635c31aac887088f029fce0 --arm prior_anchor",
       "expected_artifacts": [
         "smoke.json",
         "ARM/checkpoint_reference.json",
