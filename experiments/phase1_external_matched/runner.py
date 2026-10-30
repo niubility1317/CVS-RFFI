@@ -10,7 +10,7 @@ import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
-RUN = '20261031-phase1-external-matched-nodura-m40-r01'
+RUN = '20261031-phase1-external-matched-nodura-m40-r02'
 PROFILES = ('protonet_cda', 'mrior_sda', 'dadda_sda', 'twostage',
             'feature_separation_hu2024', 'poster_ft', 'radionet_ada_knn',
             'orthogonal', 'issl', 'lora_triplet_knn')
@@ -79,6 +79,30 @@ def done(job):
 def is_score_job(argv):
     return any(arg == '--job' and i + 1 < len(argv) and argv[i+1].startswith('score-')
                for i, arg in enumerate(argv))
+
+
+def gpu_eligible(device, own_active):
+    # Count every CUDA and pending experiment PID, including other owners.
+    return len(device['pids']) < 4 and device['free'] >= 12000 and not own_active
+
+
+def phase2_capacity(state, gpu, alive, device_pids):
+    """Wait for Phase2 to fill its two slots before admitting another job."""
+    if state['status'] != 'RUNNING':
+        return not alive(state['controller_pid'])
+    if not alive(state['controller_pid']):
+        return False
+    workers = [v for v in state['active'].values()
+               if v.get('kind') == 'predict' and v.get('gpu') == gpu and alive(v['pid'])]
+    return len(workers) == 2 and all(v['pid'] in device_pids for v in workers)
+
+
+def process_alive(pid):
+    try:
+        stat = Path('/proc', str(pid), 'stat').read_text()
+        return stat.split(') ', 1)[1][0] != 'Z'
+    except (FileNotFoundError, ProcessLookupError):
+        return False
 
 
 def other_scorer(owned):
@@ -249,10 +273,11 @@ def dispatch(rt):
             j=scores[0];active[j['id']]=launch('score',j['config'],j['id']);state[j['id']]='RUNNING'
         if not failed:
             devices=resources()
+            phase2=read(rt['phase2_state'])
             for gpu in rt['allowed_gpus']:
                 dev=devices[gpu]
-                # One new worker per GPU; existing owners count towards the two-process limit.
-                if dev['blocked'] or len(dev['pids'])>=2 or dev['free']<12000 or any(x[1]['gpu']==gpu for x in active.values()):continue
+                # One new worker per GPU, including other users in the total limit.
+                if not gpu_eligible(dev, any(x[1]['gpu']==gpu for x in active.values())) or not phase2_capacity(phase2,gpu,process_alive,dev['pids']):continue
                 j=next((v for v in pending if v['kind']=='predict' and state[v['id']]=='QUEUED'),None)
                 if not j:break
                 active[j['id']]=launch('predict',j['config'],j['id'],gpu);state[j['id']]='RUNNING'
