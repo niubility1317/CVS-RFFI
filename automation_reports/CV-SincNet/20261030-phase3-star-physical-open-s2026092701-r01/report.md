@@ -27,3 +27,10 @@ sourceL6300/OE6134来自原5RX/3day的G10MIX01 P0/P1，祖先F0/DURA合同不变
 VERIFIED／RUNNING。code31fa172946aeaecd2d3f1e784aee7366b7b5bee1；454文件/data0 release，单archive SHA ca42f56ddf8e116e9c8133dff7672f0da0d3bd47e38151cd1f7171a809b2d52c 比较/compile/runtime PASS。driver3989640、P_L train3990790/CUDA7、P_LOE train3990793/CUDA6已独立live核实精确CWD/完整argv/GPU；实际checkpoint native/open/physical noquery烟测PASS，首步及日志增长齐。两GPU各一个新增own进程，显存离散样本1844MiB/worker，非峰值；其他用户停止/修改/重启0。
 
 两组当前按原固定2220预算运行，主P_LOE不换。额外physical前向只读取同记录sourceP0；分类和冻结评估仍P1。OE没有未知身份标签、失败邻接伪标签、真实K；无Us/V/novel/target训练。此时没有新性能结论，逐行训练后自动完整source+crossRXQ预测和独立CPU双truth评分；U/formalRX仍0读，DA/匿名注册/完整v3目标保持ACTIVE。
+
+
+## 两组全部完成后的实际结论
+
+VERIFIED 2x2220/all source+crossRXG10P1 predictions/independent truth-last; fixedprimaryP_LOE AK=69.2708%, CK=95.8333%, RU=20.1389%, H=31.2055%, originalF0loss=3.6458pp; NO_PROMOTION; sourceonly increment, DA/REG incomplete/fullgoalACTIVE.
+
+详见 `docs/PAMF_PHASE3_PHYSICAL_OPEN_RESULTS_20261030.md`。
