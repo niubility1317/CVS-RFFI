@@ -274,7 +274,8 @@ def dispatch(args,p):
             tokens=('pamf_dura_prior_refine.runner worker','pamf_dura_prior_recovery.runner worker',
                 'pamf_dura_direct_train.runner worker','pamf_dura_direct_train.fast_lr worker',
                 'pamf_dura_direct_train.identity_init worker','pamf_dura_direct_train.no_variance worker',
-                'pamf_dura_direct_train.fast_interp worker','pamf_dura_efficiency.gpu_profile worker',
+                'pamf_dura_direct_train.fast_interp worker','pamf_dura_direct_train.strong_action worker',
+                'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
             goal_workers=sum(any(name in line for name in tokens) for line in commands)
             for line in commands:

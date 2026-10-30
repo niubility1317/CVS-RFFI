@@ -1,0 +1,197 @@
+{
+  "status": "ANALYZED",
+  "metrics": {
+    "clean": {
+      "accuracy": 84.6327380952381,
+      "macro_f1": 84.3438599816603,
+      "correct": 142183,
+      "count": 168000,
+      "repaired": 365,
+      "damaged": 438,
+      "net_repaired": -73,
+      "raw_clean_gap_pp": 0.043452380952373915,
+      "delta_fastLR_pp": -0.032738095238087794,
+      "delta_DURA_pp": -0.045238095238090636,
+      "delta_R17_pp": 0.04583333333333428
+    },
+    "practical_high": {
+      "accuracy": 81.07678571428572,
+      "macro_f1": 80.5628345651892,
+      "correct": 136209,
+      "count": 168000,
+      "repaired": 71901,
+      "damaged": 4123,
+      "net_repaired": 67778,
+      "raw_clean_gap_pp": 3.5994047619047507,
+      "delta_fastLR_pp": 1.0821428571428555,
+      "delta_DURA_pp": -1.7482142857142833,
+      "delta_R17_pp": -0.24226190476190368
+    },
+    "practical_mid": {
+      "accuracy": 79.46666666666667,
+      "macro_f1": 78.91111732968493,
+      "correct": 133504,
+      "count": 168000,
+      "repaired": 71174,
+      "damaged": 4730,
+      "net_repaired": 66444,
+      "raw_clean_gap_pp": 5.209523809523802,
+      "delta_fastLR_pp": 0.5565476190476204,
+      "delta_DURA_pp": -2.0940476190476147,
+      "delta_R17_pp": -0.11130952380950987
+    },
+    "practical_low_suburban": {
+      "accuracy": 77.88988095238095,
+      "macro_f1": 77.31541792053348,
+      "correct": 130855,
+      "count": 168000,
+      "repaired": 70586,
+      "damaged": 5301,
+      "net_repaired": 65285,
+      "raw_clean_gap_pp": 6.786309523809521,
+      "delta_fastLR_pp": 0.43214285714284983,
+      "delta_DURA_pp": -2.168452380952388,
+      "delta_R17_pp": -0.10654761904761756
+    },
+    "practical_high_urban": {
+      "accuracy": 79.725,
+      "macro_f1": 79.21446177105923,
+      "correct": 133938,
+      "count": 168000,
+      "repaired": 72033,
+      "damaged": 4788,
+      "net_repaired": 67245,
+      "raw_clean_gap_pp": 4.951190476190476,
+      "delta_fastLR_pp": 0.9720238095238045,
+      "delta_DURA_pp": -2.0208333333333286,
+      "delta_R17_pp": -0.6285714285714334
+    },
+    "practical_mid_urban": {
+      "accuracy": 72.6827380952381,
+      "macro_f1": 72.18618802292815,
+      "correct": 122107,
+      "count": 168000,
+      "repaired": 71718,
+      "damaged": 7543,
+      "net_repaired": 64175,
+      "raw_clean_gap_pp": 11.993452380952377,
+      "delta_fastLR_pp": 0.3767857142857167,
+      "delta_DURA_pp": -2.8035714285714306,
+      "delta_R17_pp": -1.0023809523809604
+    },
+    "practical_low_urban": {
+      "accuracy": 65.81904761904762,
+      "macro_f1": 65.43535276319672,
+      "correct": 110576,
+      "count": 168000,
+      "repaired": 69485,
+      "damaged": 9812,
+      "net_repaired": 59673,
+      "raw_clean_gap_pp": 18.857142857142847,
+      "delta_fastLR_pp": 0.17738095238095752,
+      "delta_DURA_pp": -3.0708333333333258,
+      "delta_R17_pp": -1.3976190476190453
+    }
+  },
+  "count": 168000,
+  "raw_clean": 84.67619047619047,
+  "training_seconds": 819.1497606500052,
+  "native_control_training_seconds": 771.2217810316943,
+  "training_wall_comparison_causal": false,
+  "end_to_end_training_acceleration_proven": false,
+  "training_epochs": 20,
+  "ancestor_epochs": 0,
+  "teacher_inputs": 0,
+  "final_source_losses": {
+    "loss": 0.03594563868216106,
+    "iq_nmse": 0.0271996911783067,
+    "spectral_error": 0.007203484582049506,
+    "prior_nmse": 0.04120488119503808,
+    "action_probe_nmse": 0.07944527147308228,
+    "log_variance_mse": 0.29302138815985784
+  },
+  "native_control_final_source_losses": {
+    "loss": 0.03593895323598196,
+    "iq_nmse": 0.027020477590106784,
+    "spectral_error": 0.007145704104077249,
+    "prior_nmse": 0.04218560487031937,
+    "action_probe_nmse": 0.08031073124825008,
+    "log_variance_mse": 0.3270931210290818
+  },
+  "independently_recomputed_groups": 126,
+  "matched_profile": {
+    "status": "PROFILE_COMPLETE",
+    "cases": {
+      "G_B1": {
+        "DURA": {
+          "median_ms": 4.346998641267419,
+          "p95_ms": 8.628194988705218,
+          "throughput_samples_s": 180.18243614769946,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 5.348291946575046,
+          "p95_ms": 8.770993584766984,
+          "throughput_samples_s": 160.1026169041889,
+          "iterations": 48
+        }
+      },
+      "G_B128": {
+        "DURA": {
+          "median_ms": 18.443633103743196,
+          "p95_ms": 31.06632351409644,
+          "throughput_samples_s": 6017.406672630598,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 10.062730871140957,
+          "p95_ms": 17.88102884311229,
+          "throughput_samples_s": 10357.830124133136,
+          "iterations": 48
+        }
+      },
+      "G_plus_F_B1": {
+        "DURA": {
+          "median_ms": 9.162265108898282,
+          "p95_ms": 11.787829431705177,
+          "throughput_samples_s": 118.28136056215772,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 5.564769264310598,
+          "p95_ms": 11.837921803817153,
+          "throughput_samples_s": 135.96160159775988,
+          "iterations": 48
+        }
+      },
+      "G_plus_F_B128": {
+        "DURA": {
+          "median_ms": 23.356668883934617,
+          "p95_ms": 35.38033780641854,
+          "throughput_samples_s": 5258.459734548777,
+          "iterations": 48
+        },
+        "student": {
+          "median_ms": 12.601798167452216,
+          "p95_ms": 21.966194827109575,
+          "throughput_samples_s": 8618.673221189132,
+          "iterations": 48
+        }
+      }
+    },
+    "parameters": 266951,
+    "parameter_bytes": 1067804,
+    "checkpoint_bytes": 1304804,
+    "ConvLinear_MAC": 25068072,
+    "prior_calls": 2,
+    "CG_updates": 4,
+    "FFT_IFFT": 27,
+    "peak_allocated_bytes": 129845248,
+    "physical_GPU": "4",
+    "timing_scope": "Samecard alternating3rounds;FP32/TF32off;preloadedGPUinput;GorG+originalFdefaulthead;copy/ownedoutput/validity included;capture/loader/transfer/queueexcluded",
+    "memory_scope": "Shared benchmark resident models and graphs;not standalone deployment VRAM"
+  },
+  "R17_atmost1pp_loss": false,
+  "six_scene_gap3pp": false,
+  "goal_complete": false
+}
