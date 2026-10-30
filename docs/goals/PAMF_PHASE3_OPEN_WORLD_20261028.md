@@ -971,3 +971,18 @@ Run `20261031-phase3-signal-register-s2026092701-r01` / actualcode `e48f3b357ecc
 ### 2026-10-31 层次密度发现与匿名注册预登记
 
 Run `20261031-phase3-hier-register-s2026092701-r01` / actualcode `d6f3a19fe06252c2e4b9ed199939896b4504ab62`，唯一主predicted_REG1，原两base REG0精确/对应REG1共四列×三DURA；HDBSCAN固定minsize16/minsamples8/eom/brute/alpha1/eps0/allowSingleFalse/copyTrue/njobs1/freeK，不sourceε切割、不未知真K/配额。strictmajority/size16/fullmembersGaussian/no1K/同sourceVknown12校准与共同竞争不改。actual三CP synthetic2→e48原sourceaggregate和U四公开特征cache（ignoreoldlabels/results）→新anonfreeze→V两globalτ+旧two6τexact→全部4x3pred→CPU U/sourceNV/两Qtruth；U-only映射、所有真实Uarrivals入AN、分母/缺类口径不变。newNN/realGFsignal/sourceL/sourceεfit0，旧source6300+U384前向/模型/GMM/Q缓存成本继承；当前targetU算法消费384真实缓存特征、anon U-derived，非source-only总状态。v3 AN80/oldrel和abs2pp/old及预期registeredCK90/laterclean95star90/scenecoverage，sourceknown12保护；仅新增竞争不能修复旧AK/laterRU，AN单项不宣称全目标成功，后续无标签适应/联合拒识/持续多session仍保留。历史NV/Q/单RXseed/source日期重合/high缺19-15NA/正式RX未访问保持，完整目标ACTIVE，当前无新性能。见 `docs/PAMF_PHASE3_HIER_REGISTER_PLAN_20261031.md`。
+
+
+### 2026-10-31 层次密度匿名注册结果与现有优良基线保留
+
+Run `20261031-phase3-hier-register-s2026092701-r01` / actualcode `d6f3a19fe06252c2e4b9ed199939896b4504ab62`，四方法×三DURA预测和独立U/sourceNV/cleanQ/starQ四truth评分全部COMPLETE，执行VERIFIED、科学NO_PROMOTION，完整Phase3目标ACTIVE。按用户“先选取前面性能好的方法”，继续固定原source-only r03＋预测类条件密度`predicted_ratio`为重点候选，`pooled_ratio`为冻结对照；新注册候选未替代基线。原跨RXclean/star baseline宏AK/CK/RU/H分别70.833333/87.326389/100/82.926829%、64.062500/85.590278/77.083333/69.972325%，均接冻结DURA；clean未知拒识单项通过不能掩盖星地拒识、CK及same-DURA原F0闭集2pp保护未过。
+
+仅将发现算子改为固定HDBSCAN(minsize16/minsamples8/eom/brute)，不设真实K/配额。U384原公开特征缓存重用；raw簇190/21/28/27/31，noise87，strictmajority/size16仅21条簇合格。独立U评分确认该簇全部来自19-15，purity100%、旧类污染0、anon0→label6；未发现另一真实到达设备19-16，不能把一簇纯度写成完整发现或未来识别率。实际old6+anon1，预期注册集合old6+全部arrivals2中的未发现类仍入指标分母。无targetDA、无持续多session完成。
+
+主predicted_REG1 source/clean/star oldAK为89.703704/70.833333/64.062500%，oldCK96.948148/87.500000/87.152778%，later-only RU50.571429/66.666667/60.416667%，H64.679240/68.686869/62.186193%，完整两arrival宏AN6.142857/47.916667/33.854167%；同DURA原F0闭集损1.277778/9.201389/8.854167pp。19-15 futureclean92/96=95.833333%、star65/96=67.708333%，19-16均0，故不得用单类数替代宏AN。sourceknown12通过仅经验校准；目标全门槛仍失败，high缺19-15的AN/预期注册CK/HKN/HOW保持NA，不认证完整六景。
+
+主REG1对原REG0同ID：clean/star旧正确均gain0/loss0；接收分别新增1/9条且均错。19-15新增正确92/65；同一later7-1拒对clean96→64(-32)、star76→58(-18)，即100→66.666667%、79.166667→60.416667%；source旧正确损11、later拒对损220。REG0主RU77.083333%分母含全部三非旧类，REG1later主60.416667%只含7-1，二者不能当同集合配对；实际仍未注册19-16与7-1的star宏拒识67.187500%另列。仅固定旧margin上新增竞争的结构不能提高旧正确或同later拒识，当前部分注册收益不能替代原综合目标。
+
+原F0/defaulthead、signalr03、G、sourceGaussian/normalizer、两旧六τ保持；newNN/真实GFsignal/sourceLreads/sourceεnewfit均0，U算法消费384个缓存公开特征。原sourceε仅祖先记录不用作聚类，原sourceL6300+U384前向和F0/r03/G训练、Q缓存成本继承，actualCP synthetic各2先smokePASS。新增anonGaussian1/1484B、旧density364340B、祖先radius156B；两globalτ=-280.6977305402709/-281.16204591272106，old12τ96B+new2τ16B=112B，NN834665参数；逐行source/U bank不部署。
+
+source/sourceNV、U/Q角色、旧六及三非旧TX、RX24-1/index26、U03-08/Q03-15、G10单固定received和三DURA路径保持；sourceNV/Q历史曝光、单seed/RX/source日期重合、正式RX24-18未读。predict47.769382s/CPUscore12.666512s/pipeline60.521157s为进程时间非B1。独立driver1234212/producer1234312 CWD/fullargv/CUDA7及GPU_UUID9c4eb614的406MiB单样本已核（非peak），log525→675B；CPU1235017仅pipeline/gpuNone与代码CUDAempty证据、无独立live捕获，未补遥测重跑。终态owned进程/GPU空、foreign0。10unique+45sub已通过/一次P0P1PASS；653files/data0单archiveSHA/compile/runtimeVERIFIED。详见`docs/PAMF_PHASE3_HIER_REGISTER_RESULTS_20261031.md`。

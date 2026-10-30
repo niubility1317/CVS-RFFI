@@ -19,3 +19,14 @@ anonfreeze→sourceV两新globalτ＋旧two6τexact→全阈值冻→NV+两Q完�
 命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_hier_register_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-hier-register-s2026092701-r01-release/runtime.json`。N607解释器 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-hier-register-s2026092701-r01-release`，唯一owner `codex-phase3-hier-register-20261031`，不可覆盖run `/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-hier-register-s2026092701-r01` /logs；singleproducer GPU free≥4096MiB/每卡新增本任务≤2，独立CPU CUDAempty。不得停止/修改/重启其他owner。
 
 10unique+45sub通过（新core/cache边界、旧默认唯一actual回归、新缓存actualproducer→CPU4truth、两改动旧fixture定向、新launcher），10AST/11镜像文件，唯一直接P0/P1 PASS；local sklearn1.7.2/N6071.7.0签名verified/noinstall。单preflight/archive SHA/compile/启动PID-CWD-argv-GPU-log核实；非法角色/祖先/非有限/输出碰撞/无法合法pred保留、不partial truth/覆盖重启，UNKNOWN核原PID/root；科学负结果不停止健康任务。IQ/weights/pred/rawlogs/private runtime不进Git。
+
+## 最终结果（ANALYZED_DEVELOPMENT / NO_PROMOTION）
+
+唯一主 predicted_REG1；实际 HDBSCAN1.7.0 固定参数、不用 sourceε，五簇190/21/28/27/31中仅21条簇通过，匿名K1。已注册簇U真值纯19-15，映射0→6；其他raw簇无真TX组成证据，漏发现19-16。
+未来class6 clean92/96、star65/96，但class7全0；完整AN=47.916667/33.854167%，不得只报已发现类95.8333/67.7083%。
+主clean/star AK70.833333/64.0625%、CK87.5/87.152778%、laterRU66.666667/60.416667%，old正确不增；固定later拒对损32/18，新增旧接收+1/+9均错误。
+实际未注册{7,8}RU=82.8125/67.1875%；REG0三非旧与REG1later分母不同。预期注册集合含全部到达类，实际部署旧6+匿名1；high缺19-15相关指标N/A。
+source主AK89.703704/RU50.571429/AN6.142857%，known12在复用V校准上通过、42未全过；下一更低注册阈值均因RX3旧损2.0185185pp失败。未来旧F0损仍9.201389/8.854167pp，NO_PROMOTION/全目标ACTIVE。
+新NN/realG,F0,signal/sourceL/εfit均0；cachedU384，新Gaussian1、V阈值2，旧source/训练/cache成本继承。density364340B/radius156Bunused/anonymous1484B/全部τ112B，NN834665，不部署逐行bank。
+predict/score/pipeline47.769382/12.666512/60.521157s；独立producerCUDA7/406MiB非peak，CPU仅pipeline完成证据，终态live/GPU空foreign0；三生产stdout无warning/error。
+10unique+45sub、一次review、单包653files/data0、SHA/compile/runtime VERIFIED。完整12点/三pair见[公报](../../../docs/PAMF_PHASE3_HIER_REGISTER_RESULTS_20261031.md)；依据原class-density三DURA结果保留predicted_ratio重点候选/pooled_ratio冻结对照，HIER不替换，无DA/多session成功或新增实验。
