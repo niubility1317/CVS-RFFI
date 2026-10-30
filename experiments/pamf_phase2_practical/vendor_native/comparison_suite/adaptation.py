@@ -237,7 +237,18 @@ def radionet_ada_batch_step(model, discriminator, source_x, source_y, support_x,
 
 
 def _grad_norm(model):
-    return math.sqrt(sum(float(p.grad.detach().square().sum()) for p in model.parameters() if p.grad is not None))
+    values = [p.grad.detach().square().sum().double() for p in model.parameters() if p.grad is not None]
+    # Original per-parameter float conversion synchronized the GPU once per
+    # parameter. A single transfer retains the same Python summation order.
+    return math.sqrt(sum(torch.stack(values).cpu().tolist())) if values else 0.
+
+
+def _batch_scalars(row):
+    keys = [key for key, value in row.items() if isinstance(value, torch.Tensor) and value.numel() == 1]
+    if not keys:
+        return row
+    values = torch.stack([row[key].detach().reshape(()).double() for key in keys]).cpu().tolist()
+    return dict(row, **dict(zip(keys, values)))
 
 
 def _indices(n, batch_size, generator, device):
@@ -431,7 +442,8 @@ def _fit(method, base, sx, sy, classes, cfg, source_x, source_y, metadata, devic
                 ti = _indices(len(sx), batch_size, generator, device)
                 terms = radionet_ada_batch_step(model, discriminator, source_x[si], source_y[si], sx[ti], optimizer, optimizer_d,
                     class_weight=float(cfg.get("class_weight", 4)), domain_weight=float(cfg.get("domain_weight", 4)))
-                if not math.isfinite(float(terms["loss"])):
+                terms = _batch_scalars(terms)
+                if not math.isfinite(terms["loss"]):
                     raise FloatingPointError("nonfinite RadioNet ADA fit loss")
                 emit({"iteration": iteration + 1, "stage": "ADA", **terms})
             if method.endswith("ft_knn"):

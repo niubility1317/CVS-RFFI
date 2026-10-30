@@ -56,13 +56,14 @@ def fit_C(rt,bundle,x,y,new_ids,seed,logger):
             C_initialization='A_source_gallery_no_B')
         return state
     if method=='issl_author_behavior':
+        from .external_acceleration import issl_ssl,issl_transfer
         extra._seed(seed);model=copy.deepcopy(bundle['model']).requires_grad_(True)
         count=6+len(new_ids);extra._issl_expand(model,count)
         replay=bundle['native_state'];rx,ry=replay['source_replay_x'],replay['source_replay_y']
         transfer_x=torch.cat((rx,x.detach().cpu()));transfer_y=torch.cat((ry,y.detach().cpu()))
         spec=extra.source_training_spec(method)
-        _,ssl_seconds=_timed(lambda:extra._issl_ssl(model,torch.cat((rx,transfer_x)),6,spec,seed,logger))
-        _,transfer_seconds=_timed(lambda:extra._train_ce(model,transfer_x,transfer_y,300,128,.03,seed,logger,crop=218,stage='C_transfer'))
+        _,ssl_seconds=_timed(lambda:issl_ssl(model,torch.cat((rx,transfer_x)),6,spec,seed,logger))
+        _,transfer_seconds=_timed(lambda:issl_transfer(model,transfer_x,transfer_y,300,128,.03,seed,logger,crop=218))
         return dict(model=model.eval(),score_fn=extra.native_logits,classes=tuple(range(count)),profile=profile,
             resources=dict(C_initialization='A_no_B',C_SSL_epochs=2000,C_transfer_epochs=300,
                 C_SSL_seconds=ssl_seconds,C_transfer_seconds=transfer_seconds,

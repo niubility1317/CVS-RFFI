@@ -8,7 +8,14 @@ NAMES=('z_id','t_emb','f_emb','pa_local','fft')
 
 def tensor(array,device):
     import torch
-    return torch.tensor(np.asarray(array,dtype=np.float32).tolist(),device=device,dtype=torch.float32)
+    value=np.asarray(array,dtype=np.float32)
+    if not value.flags.c_contiguous or not value.flags.writeable:
+        value=np.array(value,dtype=np.float32,order='C',copy=True)
+    if value.size==0:
+        return torch.tensor(value.tolist(),device=device,dtype=torch.float32)
+    # The buffer protocol works with N607's PyTorch 2.1 / NumPy 2 combination,
+    # unlike the NumPy bridge. copy=True preserves the original tensor contract.
+    return torch.frombuffer(memoryview(value),dtype=torch.float32).reshape(value.shape).to(device,copy=True)
 
 def fft96(iq):
     """Unchanged D92 historical spectral_logmag_sketch arithmetic."""

@@ -372,7 +372,7 @@ def _train_pamf(c,seed,out,*,diagnostic=False):
 
 
 def load_source(c,profile,seed,device):
-    validate_source_config(c);folder=Path(c['run_root'])/'source'/f'{profile}-s{seed}'
+    validate_source_config(c);folder=Path(c.get('external_source_root',c['run_root']))/'source'/f'{profile}-s{seed}'
     expected=read(c['source_contract']);r=row(profile)
     if profile=='pamf_tri_sig_time_ssl_milkr':
         from .trisig_source import load

@@ -96,12 +96,13 @@ def test_native_source_optimizes_satellite_and_enables_PL_at_midpoint(tmp_path,m
 
 def test_issl_direct_C_keeps_all_classes_without_old_target_support(monkeypatch):
     from experiments.pamf_phase2_practical import group1_target as target
+    from experiments.pamf_phase2_practical import external_acceleration as acceleration
     calls={}
     def no_B(*args,**kwargs):raise AssertionError('B is forbidden for direct C')
     monkeypatch.setattr(target.extra,'fit_B',no_B)
     monkeypatch.setattr(target.extra,'_issl_expand',lambda model,count:calls.update(classes=count))
-    monkeypatch.setattr(target.extra,'_issl_ssl',lambda model,x,old,*a:calls.update(ssl_rows=len(x),old=old))
-    monkeypatch.setattr(target.extra,'_train_ce',lambda model,x,y,epochs,*a,**kw:calls.update(transfer_rows=len(x),epochs=epochs))
+    monkeypatch.setattr(acceleration,'issl_ssl',lambda model,x,old,*a:calls.update(ssl_rows=len(x),old=old))
+    monkeypatch.setattr(acceleration,'issl_transfer',lambda model,x,y,epochs,*a,**kw:calls.update(transfer_rows=len(x),epochs=epochs))
     source_x=torch.randn(6,2,256);source_y=torch.arange(6)
     bundle=dict(profile='issl',method='issl_author_behavior',model=torch.nn.Linear(3,6),
         native_state={'source_replay_x':source_x,'source_replay_y':source_y})
