@@ -1,0 +1,20 @@
+# PAMF 独立度量残差＋OE软结构：源侧预登记
+
+Run `20261030-phase3-star-metric-residual-s2026092701-r01`；实际执行code `310588cbd8c79bc4c687939ab49202ea422e8a2c`，唯一owner `codex-phase3-metric-residual-20261030`。固定网络/损失/采样见 `docs/PAMF_PHASE3_METRIC_RESIDUAL_PLAN_20261030.md`，唯一两row矩阵维护于experiment.json。主M_LOE，匹配M_L；两组相同zero-last 640→128GELU→160/102688、init2701、L采样、2220步/constantlr1e−4/freshAdamWwd1e−4/clip5。F0/default6head不训练、不替换；open z=unit(u+g(c))，没有0.1硬残差上界、另训identityhead或maxmember关系头。
+
+源L每步192、six×15cells各2＋每类两轮转格，Lrng3017；M_LOE再取OE64，每15域4＋四轮转格，OErng3018独立。L监督度量KL只跨RX且跨day、正target按合法同旧TX域等权；主另加OE frozenF0 softneighborhood KL权1、T.1、teacher stopgrad，candidate与anchor域平衡，不输入OE TX/K、不假定其它OE为异设备。M_L embedding不打开OE值，但后续两者density均用OEoutside-six，不能称全流程无OE或同FLOP。
+
+共同prepare首先严格加载原F0 actualcheckpoint、两条syntheticG10 noquery smoke，PASS即导出既有L/OE特征对。SourceL6300/OE6134来自protected-cache code7dd90671968ddf58aab5a5b302b4d56371c8b9c9原F0，原u160＋branchunit c640；无R1/640density权重继承。新aux网络随机zero-last起点，训练前只做不更新参数的feature梯度smoke，不占2220steps。每row固定终点保存新CP、严格重载＋synthetic_open2；映射L/OE→D160density90/32/25Lloydseed3019，共享covshrink.1。source/model全部冻结后才V风险校准，τ后才novel；原F0/defaulthead身份逐条保持。
+
+V27000（旧六各4500）/novel3150（19-15/19-16/7-1各1050）的u160/c640/defaultlogits复用contribution-density codeedc28ad00baace5e4b9567fbf3391154bf6c34b4；固定F0density reference为其中col0原样复用，只比较不影响新fit/cal。L6300旧六各1050、每TX×RX×day70；sourceRX1/3/4/6/8为1-19/18-2/19-2/2-19/3-19，day2021-03-08/15/23。sourceRX/日期已见、novel历史曝光，非newRX/TX盲测。原Us56700、target U/Q和正式RX24-18不读，不回收历史query。
+
+原F0为Tri-SIG-TIME SSL E50/11100/default6head/232993，sourcecontract392005和DURA v1.0祖先保持。全部postPhase1输入原固定G10MIX01/P1：600km/25MHz/2.45GHz、residual/post_sync/noEQ/refSNR30dB/reflect、receiver2027/scene2026103001/channel2026104001，原一次RMS/单received不变，P0不是clean。无新物理记录/信道生成/clean/P0实值/真实F0/G前向；仅common syntheticF0两行，各arm另有OPEN feature smoke及真实训练/映射计数，均单列不混为原F0续训。
+
+每row训练终点立即自动eval/独立truthlast，不等另一row；无模型/V/NV/目标早停。两row结果不回流健康训练。独立CPUscore只用保存的learned160重建density，全部本row预测完整后才唯一读novel truth；主报宏AK/RU/H、CK、原同P1 F0损失、AUROC/OSCR、完整TX/RX/day/scene与reference配对。M_LOE known42＋整体sourceRU90只是进入下一次跨RX预登记的必要早筛；控制不能替主，source通过不等于最终目标。完整跨RX星地/更高拒识/零标签DA/发现/匿名注册继续ACTIVE，AN/HOW本轮N/A。
+
+- 环境 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-residual-s2026092701-r01-release`；命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_metric_residual_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-metric-residual-s2026092701-r01-release/runtime.json`。
+- 独占runroot `/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-metric-residual-s2026092701-r01`；commonprepare后最多两个GPUtrain/eval，启动actualfree≥4096MiB、每卡新增本任务≤2。单独CUDAempty/BLAS1 CPUscore一次最多1，其他用户不停止/修改/重启。
+- 实际focused验证：{"model_train": {"tests": 9, "subtests": 16, "seconds": 5.92}, "eval_score": {"unique_tests_verified": 7, "unique_subtests": 11, "bridge_test_passed": 1, "bridge_seconds": 2.82, "integration_first_passed": 5, "integration_first_subtests": 10, "integration_first_seconds": 10.2, "collision_assertion_targeted_recheck_passed": 1, "targeted_subtests": 4, "targeted_seconds": 3.65, "subtests_overlap_not_double_counted": true, "production_changed_for_assertion": false, "legacy_np_trapz_deprecations": 648}, "launcher": {"tests": 5, "seconds": 3.11}, "AST_files": 10, "real_data_weights_truth_read_in_local_tests": 0}；10AST/runtime、唯一直接P0/P1 review PASS。一次N607preflight PASS，只读已验证角色/来源metadata、文件存在及freeVRAM，IQ/private truth值0。
+- 单archive SHA比较/远端compile及首步actualcheckpoint smoke通过后立即继续；独立PID/CWD/argv/GPU/log-growth与最终artifact读回；不增加hash/receipt/审批链。
+- 预期commonderived cache、完整2220loss/indices/first-two-grad与finalCP、各row实际CP smoke、density/25fit/τ/knownrisk、全部predictions和独立score以及observations。weights/IQ/sourcefeaturebanks/原log/预测不入Git。
+- 非法来源/角色、非有限、输出碰撞、无法合法预测或系统技术错误保留；不评分不完整预测，不自动重启，UNKNOWN先核原PID/root。科学负结果不停止健康peer、不过早终止固定预算。此时仅预登记，尚无本轮实际新训练/性能。
