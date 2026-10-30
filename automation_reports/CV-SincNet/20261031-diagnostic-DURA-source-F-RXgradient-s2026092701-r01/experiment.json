@@ -1,0 +1,163 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-F-RXgradient-s2026092701-r01",
+  "group_id": "phase1-dura-source-RX-canonical-feature-gradient",
+  "display_name": "原头保护 RX 特征参考的源输出梯度证伪",
+  "description": "固定noVar source512×缓存01/20，比较IQ/旧Fcos/保护RX特征目标梯度；唯一权重及实质差异门槛，CPU2/无训练/TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "F-guided",
+    "RX-canonical-reference",
+    "output-gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-diagnostic-DURA-source-F-RXgeometry-s2026092701-r01",
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-30明确允许独立源F指导对照；仅用同冻结F源域特征约束身份，G单阶段从零，不直接TX/目标训练。当前只是该分支源诊断，无训练或部署变化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-F-RXgradient-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Fixedsource512(L128/U384)clean/nativeIQcached01/20 plus original/canonical160DsourceFtargets fromqualifiedgeometry;no hardTX",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07/cache/train/physical_ids.npy;sourceFcos010featurecachephysicalIDs exactorder;fixedsource_indices128Ls/384Us",
+    "label_map_ref": "No perrecordTXtruth;F source class-mapmetadataonlyoriginalcontractcheck",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07nativecache01/20only;no newchannel generation",
+    "target_panel": "none;sourceIQgradientcalibrationonly"
+  },
+  "permissions": {
+    "regime": "authorizedfrozenFsourcefeaturediagnostic;softposteriorweightsnotTXtruth;F-informed",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "SourceoutputIQgradientgeometry/differencefromoldFcos,notGparametergradient/identity/targetefficacy;F-guidedsourceknowledgeinherited"
+  },
+  "checkpoint": {
+    "initialization": "No updates;fixednoVarcf40sourcefinal20 only2Ls Gsmoke;frozenoriginalF50 for2Ls smoke+source1024inputgradients",
+    "sources": [
+      "runs/20261030-phase1-DURA-direct-noVarAux-s2026092701-r01/scratch_joint/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_fcrossrx_readout/frozen.py load_reader and f_guided.source_ids;actual original7/63/30 roles/physical IDs",
+    "provenance_verdict": "NoVarcf40source20/4940scratchstrictloader;originalF50source50/11100/defaulthead4df7;qualifiedaee80ffsourcegeometry/head/roles/IDs match;G/Funchanged",
+    "selection_rule": "FixednoVar sourcecontrol;original .25referencefrompreviousqualifiedgeometry,notnewtargetchosenweights/parent;fixed512sourceholdout originallyexcludedfit"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-F-RXgradient",
+    "gpu_policy": "CPU2/0GPU/0updates;otherownersuntouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-F-RXgradient-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-F-RXgradient-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-F-RXgradient-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.canonical_gradient --root ../.. --output ../../runs/20261031-diagnostic-DURA-source-F-RXgradient-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "BadG/F/source/geometrycontract/IDs/roles/head/reference,missingnativeviews/nonfinitezerogradients/statechange/collision:preserve/noautoretry;scientificFAILcloseswithouttraining"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "results.json",
+    "complete.json",
+    "gradients.npz",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQNMSE",
+      "originalFcos",
+      "RXcanonicalFcos",
+      "outputgradientnormratio/cos",
+      "gradientdifference_to_originalFcos",
+      "singlecalibratedlossweight",
+      "CPUcost"
+    ],
+    "dimensions": [
+      "2fixedsourceviews",
+      "16B32batches/view",
+      "IQ/oldFcos/canonicalgradient"
+    ],
+    "prediction_ref": "Same512 sourceIQ only;private3completeoutputgradientvectors;noTXlabels",
+    "scorer_ref": "IndependentNumPy64 all1572864gradientvalues/32batchnorms/dots/differences/qualification plusIQclosedform;0newF/G/TX/V/target"
+  },
+  "rows": [
+    {
+      "row_id": "source-F-RXgradient",
+      "method": "FrozenFcos againsthead-protectedRXcanonicalsourcefeaturetarget vsoldcleanFtarget",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/canonical_gradient.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "OriginalsourceFseed2026092701;fixedsource_indicesholdout512,deterministicsoftweightedlinearalgebra;no newmodel/augmentation RNG",
+      "k": null,
+      "scenario": "Sourcecached01/20nativeIQunchanged",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2Ls G/Fcheckpointsmoke;1024sourceFfeaturegradientinputs;Ganalysis0/CPU2/0GPU/0updates",
+      "output_root": "runs/20261031-diagnostic-DURA-source-F-RXgradient-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-F-RXgradient-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.canonical_gradient --root ../.. --output ../../runs/20261031-diagnostic-DURA-source-F-RXgradient-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "results.json",
+        "complete.json",
+        "gradients.npz",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Onlyqualifiedgeometryaee80ffb0b1e573ec2267c22362a69db30c4b9ac:originalnormalizedheadrank5protectedRXbasisrank4,reference=unitFclean-.25projection(unitFclean-fitmean).No IQphasecanonicalization or deploymentadapter.",
+    "Geometryfit62488excludedfixed512 probe;referencearrays/IDs/roles andactualoriginalFhead match.NativeIQfromfixednoVarcf40source51201/20,sourcecleanunchanged;Gonlysmoke,notmainnewforwards.",
+    "ReaderoriginalFsourceweightsfrozen;actualsourceFfeatures differentiablewrtIQ.Threeoutputgradients:IQNMSE,old1-cos(Frestored,Fclean),new1-cos(Frestored,RXreference).Bothteacherreferencesdetached,0Fparametergrad/updates.",
+    "Uniquelossweight=.25/median32(normgCanonical/normgIQ).Bothviewmedianpressure[.125,.5],meancosIQ>=0,negative<=8/16,mediannorm(gCanonical-gOld)/normgOld>=.10.Finite/nonzerogradientsrequired.No weightgrid/strongershrinkafterFAIL.",
+    "Atleast10percentgradientdifferenceisfixednoveltyfalsification toavoidrepeating nearidenticalfailedFcos;headchoicepreservationisalgebraicandnotusedtoqualify.Gparameterdirections/actualcleanandtargetperformanceunknown.",
+    "IfPASS onlyseparatelyregisteredmatchedsingle-stageGscratchE20/4940withnewfixedreference/weight maytrain.Automaticall7testrequiredthen,defaultDURA/3pp/clean/efficiencygoalsunchanged.Thisrun0training.",
+    "OneF50seed/originalheadand50/11100sourceknowledgeinherited;notF-free,hardpseudoTXFalse,directTX/V/target0.No originaltarget/Gresultfeedback orsourceFheadfitting.",
+    "8focusednewreferencegradient/decisions/oldcheckpointnegative/NumPybridgechecksPASS;oneP0/P1review/preflight/archiveSHA/compile/actualPIDpoststate only.Fullprivategradientsnotcommitted;publishgeometry/cost."
+  ],
+  "registered_at": "2026-10-30T16:49:34+00:00"
+}
