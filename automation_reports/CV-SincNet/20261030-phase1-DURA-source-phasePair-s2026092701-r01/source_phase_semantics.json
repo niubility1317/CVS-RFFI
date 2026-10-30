@@ -1,0 +1,173 @@
+{
+  "scope": "Posthoc metadata of same fixed source training cache;not a new fit or target evidence",
+  "visits": 1260000,
+  "lock_visits": {
+    "degraded": 115029,
+    "locked": 827185,
+    "not_applicable": 188677,
+    "unlocked": 129109
+  },
+  "scene_lock_visits": {
+    "clean": {
+      "not_applicable": 188677
+    },
+    "practical_high": {
+      "degraded": 1773,
+      "locked": 177036,
+      "unlocked": 304
+    },
+    "practical_high_urban": {
+      "degraded": 14643,
+      "locked": 160936,
+      "unlocked": 2699
+    },
+    "practical_low_suburban": {
+      "degraded": 20059,
+      "locked": 149546,
+      "unlocked": 8538
+    },
+    "practical_low_urban": {
+      "degraded": 32649,
+      "locked": 67214,
+      "unlocked": 79240
+    },
+    "practical_mid": {
+      "degraded": 8820,
+      "locked": 165831,
+      "unlocked": 3738
+    },
+    "practical_mid_urban": {
+      "degraded": 37085,
+      "locked": 106622,
+      "unlocked": 34590
+    }
+  },
+  "epoch_locks": [
+    {
+      "degraded": 5716,
+      "locked": 41438,
+      "not_applicable": 9438,
+      "unlocked": 6408
+    },
+    {
+      "degraded": 5782,
+      "locked": 41424,
+      "not_applicable": 9406,
+      "unlocked": 6388
+    },
+    {
+      "degraded": 5815,
+      "locked": 41293,
+      "not_applicable": 9542,
+      "unlocked": 6350
+    },
+    {
+      "degraded": 5784,
+      "locked": 41489,
+      "not_applicable": 9363,
+      "unlocked": 6364
+    },
+    {
+      "degraded": 5716,
+      "locked": 41191,
+      "not_applicable": 9455,
+      "unlocked": 6638
+    },
+    {
+      "degraded": 5723,
+      "locked": 41299,
+      "not_applicable": 9456,
+      "unlocked": 6522
+    },
+    {
+      "degraded": 5781,
+      "locked": 41344,
+      "not_applicable": 9444,
+      "unlocked": 6431
+    },
+    {
+      "degraded": 5681,
+      "locked": 41470,
+      "not_applicable": 9442,
+      "unlocked": 6407
+    },
+    {
+      "degraded": 5849,
+      "locked": 41247,
+      "not_applicable": 9481,
+      "unlocked": 6423
+    },
+    {
+      "degraded": 5693,
+      "locked": 41347,
+      "not_applicable": 9422,
+      "unlocked": 6538
+    },
+    {
+      "degraded": 5674,
+      "locked": 41386,
+      "not_applicable": 9426,
+      "unlocked": 6514
+    },
+    {
+      "degraded": 5798,
+      "locked": 41426,
+      "not_applicable": 9342,
+      "unlocked": 6434
+    },
+    {
+      "degraded": 5856,
+      "locked": 41247,
+      "not_applicable": 9505,
+      "unlocked": 6392
+    },
+    {
+      "degraded": 5748,
+      "locked": 41159,
+      "not_applicable": 9484,
+      "unlocked": 6609
+    },
+    {
+      "degraded": 5674,
+      "locked": 41496,
+      "not_applicable": 9366,
+      "unlocked": 6464
+    },
+    {
+      "degraded": 5832,
+      "locked": 41261,
+      "not_applicable": 9391,
+      "unlocked": 6516
+    },
+    {
+      "degraded": 5678,
+      "locked": 41409,
+      "not_applicable": 9468,
+      "unlocked": 6445
+    },
+    {
+      "degraded": 5729,
+      "locked": 41465,
+      "not_applicable": 9470,
+      "unlocked": 6336
+    },
+    {
+      "degraded": 5823,
+      "locked": 41494,
+      "not_applicable": 9232,
+      "unlocked": 6451
+    },
+    {
+      "degraded": 5677,
+      "locked": 41300,
+      "not_applicable": 9544,
+      "unlocked": 6479
+    }
+  ],
+  "unlocked_fraction": 0.10246746031746032,
+  "IQ_reads": 0,
+  "TX_labels_read": 0,
+  "F_inputs": 0,
+  "V_reads": 0,
+  "target_reads": 0
+}
