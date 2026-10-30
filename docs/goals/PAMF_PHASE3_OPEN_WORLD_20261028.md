@@ -670,3 +670,10 @@ DA1REG0相对DA0REG0：旧正确380→393净+13（21得8失），接受509→523
 ## 2026-10-30 PAMF-OW 动态注册集合已开始源训练
 
 Run `20261030-phase3-star-open-episodic-s2026092701-r02`，code `1029bc4f4ab86022c75ae0f3332b5dfafc1fe909`。已实现同次t2/PA/SIG开放64、有界残差、共享关系及三臂源集合训练，完整原生Sinc/默认head联合更新。S0 detach、S1 full6、M rotate5，主M固定；2220步/每arm，原F0 E50/11100独立起点。真实checkpoint无query梯度烟测/直接P0P1与一次兼容修复定向复核通过，N607正式source已运行，S0/S1首步和增长实证齐，M排队。r01仅NumPy2/Torch2.1 metadata转换失败、0update/0target/0truth，产物保留，恢复不改科学设置。完整矩阵/数据/指标/停止见`docs/PAMF_PHASE3_STAR_OPEN_EPISODIC_PLAN_20261030.md`及本run登记。当前无新性能结论，自动完成每row预测与独立评分，targetU/正式RX24-18未访问；UDA/匿名注册和targets v3目标保持ACTIVE。
+
+
+## 2026-10-30 PAMF-OW 三行源集合学习实际结果
+
+VERIFIED 3x2220 source updates/all source+crossRX predictions/independent scores; primary M AK=60.590278%, CK=80.902778%, RU=64.583333%, H=62.523116%, originalF0loss=12.326389 pp; NO_PROMOTION; UDA/REG incomplete, fullgoalACTIVE.
+
+源L6300/OE6134/V27000/NV3150/跨RX24-1 futureQ864，全部G10P1；原F0同输入基线与既有checkpoint祖先不变。M固定不重排；完整训练/参数/成本/逐scene/TX/缺覆盖及失败r01保留见`docs/PAMF_PHASE3_STAR_OPEN_EPISODIC_RESULTS_20261030.md`。

@@ -32,3 +32,24 @@ Run `20261030-phase3-star-open-episodic-s2026092701-r02`，执行代码 `1029bc4
 VERIFIED / RUNNING。执行代码 `1029bc4f4ab86022c75ae0f3332b5dfafc1fe909`；归档416文件/新增data0，SHA `eeeeda0b2b84211802ae38b706ea0c5f15d01a0b2f1ab2b93beacaa58c872cc8`，远端一次比较/compile和runtime校验PASS。driver3487225、S0 train3487260/CUDA7、S1 train3487263/CUDA1的PID/CWD/完整argv与实际GPU已独立读回；源步日志增长、真实梯度smoke和参数更新已核实。实际离散GPU显存样本约1.7GiB，非峰值。当前快照 `{"S0": {"status": "RUNNING", "latest_step": 550, "smoke": true}, "S1": {"status": "RUNNING", "latest_step": 525, "smoke": true}, "M": {"status": "QUEUED", "latest_step": 0, "smoke": false}}`；M按预登记队列，不改为控制主报。
 
 本次兼容恢复未改变科学模型、数据、预算、RNG或阈值；原r01三臂0update失败产物保留，所有own进程自然退出。当前没有正式识别成绩，源训练loss不能替代开集性能。每row固定后自动进行L原型/V校准/NV与Q完整预测/独立CPU评分。目标v3 CK90/RU90/F0loss2pp和完整UDA/发现/匿名注册仍ACTIVE，其他用户干预0。
+
+
+## 两个控制的已评分结果，主候选训练中
+
+S0/S1均VERIFIED完整训练2220步、冻结source/target预测和独立truth-last评分。原同P1 F0 target闭集72.916667%。
+
+| 控制 | 候选闭集 | 宏 A_K | 宏 C_K | 宏 R_U | H-score | 原F0 closed−A_K |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| S0 | 72.048611% | 72.048611% | 99.305556% | 0.000000% | 0.000000% | 0.868056 pp |
+| S1 | 72.395833% | 64.930556% | 86.458333% | 52.430556% | 58.014875% | 7.986111 pp |
+
+S0目标已知正确415/576、未知拒对0/288；S1候选闭集417/576、正确接收374/576、未知拒对151/288。S1原F0总损46条，由候选闭集净少3条与另拒掉43条候选正确组成，不能只报接收率或H上涨。两控制source predicted-class known风险约束均通过、无accept-all fallback；S0当前目标macroAUROC72.410301%，S1为76.020568%。这些结果尚不支持跨RX星地绝对目标，不将source校准通过解释为目标保护保证。
+
+唯一主M保持预登记2220步；实际train3501355/CUDA6、row3501341的PID/CWD/argv/GPU独立核实、日志增长。没有按控制成绩改主、调参数/阈值、续训或取消M。当前run保持RUNNING，AN/HOW/适应/注册N/A，完整v3目标ACTIVE；正式RX24-18与本轮targetU未读。
+
+
+## 三行全部完成后的实际结论
+
+VERIFIED 3x2220 source updates/all source+crossRX predictions/independent scores; primary M AK=60.590278%, CK=80.902778%, RU=64.583333%, H=62.523116%, originalF0loss=12.326389 pp; NO_PROMOTION; UDA/REG incomplete, fullgoalACTIVE.
+
+详见`docs/PAMF_PHASE3_STAR_OPEN_EPISODIC_RESULTS_20261030.md`及本地完整分析。
