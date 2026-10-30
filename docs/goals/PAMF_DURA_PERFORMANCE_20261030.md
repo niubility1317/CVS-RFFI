@@ -104,3 +104,6 @@ strongA0.2已完整七景并独立复算126组：lowurban63.557738%（较原fast
 
 
 原头可见源特征诊断32批/2560几何标量已独立核对，F/G零更新且状态不变，0直接TX/V/target。冻结原头rank5投影与其中心特征判别误差梯度对齐.9919/.9892，旧cos为.7162/.6126；源校准alpha=.006607891036090233，两epoch预定资格全部通过。下一独立source-headFeature从零单阶段E20/4940，仅把旧.1cos改为该固定原头可见特征项；不加载G，不改F/原头/数据/基础损失/原生执行，自动全七景。该源资格不证明目标提升，3pp目标与默认保持。
+
+
+source-headFeature已按commit d79a280d843696d680c82bf63b0138905cf1cb5d发布，真实2Ls G/F梯度、F冻结与G严格重载smoke PASS，12聚焦检查及独立P0/P1审查PASS。CPUcontroller PID4025316实际存活/CWD/argv/空CUDA/日志增长已核实，当前仅QUEUED：各卡可见PID≥2，无ownGPUworker/epoch/预测。原控制器按资源约定等待并自动衔接单阶段E20和完整七景，不重发或更改其他owner。性能与3pp验收未完成。

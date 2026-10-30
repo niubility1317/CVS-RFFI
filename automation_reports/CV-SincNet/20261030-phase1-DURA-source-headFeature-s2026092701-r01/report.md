@@ -3,7 +3,7 @@
 - run_id：`20261030-phase1-DURA-source-headFeature-s2026092701-r01`
 - group_id：`phase1-dura-single-stage-efficiency`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：QUEUED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -27,3 +27,11 @@ SourcefrozenFheadfeatureprojection rank5;alpha sourcecalibrated;GscratchE20/4940
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 发布读回与实际资源等待
+
+VERIFIED/QUEUED。执行commit d79a280d843696d680c82bf63b0138905cf1cb5d已提交/推送并比较远端OID一致，12项聚焦检查及该训练候选唯一独立P0/P1审查PASS，一次N607 preflight、单归档本地/远端SHA比较和远端compile通过。真实source2Ls原F50/G smoke通过：新投影特征到IQ梯度有限非零、F/原头参数状态不变、G严格保存重载、源物理角色匹配，0直接TX/target读取。
+
+CPU controller PID4025316实际存活，独立核实CWD=`releases/20261030-DURA-source-headFeature-r01`、完整命令、空CUDA绑定。其日志从空增长至304bytes，包含smoke PASS及多条pending scratch_joint/active空/failed空的队列记录。各卡当前可见compute进程数均≥2，不满足预登记的启动时总可见PID<2条件；当前没有本run GPU worker、没有epoch完成或预测。控制器自然等资源，不干预其他owner，不把已发布或CPU存活称为训练已开始。
+
+资源符合时原控制器自动启动一次G从零单阶段E20/4940，再串联全部source1800×7/target168000×7、同卡时延及独立truth-last。固定源系数/预算不热改，不重复提交；后续先读本root/PID/产物。正式性能未知，六星地3pp目标ACTIVE、默认DURA保持。
