@@ -1,6 +1,6 @@
 # PAMF 独立信号级开放分支：固定单候选
 
-Run `20261030-phase3-star-signal-open-s2026092701-r02`，唯一新arm `E_SIGNAL`。唯一主readout为`signal_known_support`。匹配冻结前端控制直接复用已完成crossset-metric的`S_SEP_TOPO`；不重训或按结果挑选控制。完整Phase3目标保持，不把source筛查当跨未见RX、无标签适应或匿名注册成功。
+Run `20261030-phase3-star-signal-open-s2026092701-r03`，唯一新arm `E_SIGNAL`。唯一主readout为`signal_known_support`。匹配冻结前端控制直接复用已完成crossset-metric的`S_SEP_TOPO`；不重训或按结果挑选控制。完整Phase3目标保持，不把source筛查当跨未见RX、无标签适应或匿名注册成功。
 
 ## 要检验的改变
 
@@ -22,7 +22,7 @@ V旧六设备各4500、每TX×RX×day300，仅在全部NN和密度统计冻结�
 
 ## 网络、可微路径与优化器
 
-先调用现有`source_open_embedding_train.make_trainable_model`核对原source祖先、重建真正可微的PAMF并严格加载原F0。禁止复制冻结部署reader后训练，其Sinc冻结路径不保梯度。复制该实际`SequenceReference`完整特征提取器并保留其原features方法，仅删除六类W[6,160]，得到232033参数的独立信号分支。原六类身份W没有进入新分支，也不创建新身份头。
+先调用现有`source_open_embedding_train.make_trainable_model`核对原source祖先、重建真正可微的PAMF并严格加载原F0。禁止复制冻结部署reader后训练，其Sinc冻结路径不保梯度。复制该实际`SequenceReference`完整特征提取器并保留其原features方法，仅删除六类W[6,160]，得到232033参数的独立信号分支。原六类身份W没有进入新分支，也不创建新身份头。 原return_aux仍计算随后被丢弃的分类logits，独立copy仅把该内部classify输出槽显式置零，保留原components/joint及特征前向；这些零logits不作为身份预测，不修改原F0分类器，不携带旧Wbuffer。
 
 新分支同次P1 forward捕获原raw fused160和原四贡献（time-frequency、tanh(gain)×PA、tanh(response_gain)×reference、signature）。参考29维的NoExplicitCFO坐标27仍为0。四贡献各FP64单位化、拼接整体单位化再FP32为c_theta，raw fused FP64单位化再FP32为u_theta；与冻结特征预处理保持一致。新102688参数MLP与前轮同seed2701、640→128GELU→160、最后层精确0。`z=unit(u_theta+g(c_theta))`，此处禁止detach学生u/c；OE teacher为固定原F0 u的stopgrad，不能让teacher随student更新。
 

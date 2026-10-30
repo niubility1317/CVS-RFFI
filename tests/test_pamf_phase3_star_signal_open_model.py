@@ -37,6 +37,63 @@ def source():
     return native,x
 
 
+class ReturnAuxCore(SignalCore):
+    def forward(self,x,y=None,return_aux=False):
+        self.calls+=1;x=self.sinc(x);h=self.t2(x)
+        pa=self.pa(torch.cat((x.mean(-1),x.square().mean(-1)),1))
+        # Real ResidualPhysicalHead.forward always classifies, even though
+        # IdentityOnlyCVS.features keeps only the returned joint embedding.
+        out=self.cls_head(self.base(h.mean(-1)),None,pa,labels=y,return_emb=True)
+        return dict(feat_joint=out[7],logits=out[0]) if return_aux else out[0]
+
+
+def return_aux_source():
+    """Use actual historical head/features method definitions, synthetic weights."""
+    import ast,math
+    from pathlib import Path
+    root=Path(__file__).parents[1]
+    def actual(relative,name,**namespace):
+        nodes=ast.parse((root/relative).read_text(encoding='utf-8')).body
+        node=next(n for n in nodes if isinstance(n,ast.ClassDef) and n.name==name)
+        ns=dict(torch=torch,nn=nn,F=torch.nn.functional,math=math,**namespace)
+        exec(compile(ast.Module(body=[node],type_ignores=[]),relative,'exec'),ns);return ns[name]
+    Head=actual('experiments/cvs_residual_identity/model.py','ResidualPhysicalHead')
+    Identity=actual('experiments/cvs_identity_ce/model.py','IdentityOnlyCVS')
+    Reference=actual('experiments/cvs_reference_identity/model.py','ReferenceCVS')
+    Sequence=actual('local_artifacts/cric_dura_comparison_20261021/frozen_sources/BASE/experiments/cvs_feature_sequence50/features.py',
+        'SequenceReference',ReferenceCVS=Reference)
+    native,x=source();reader=native.id_backbone.encoder;core=reader.core.id_backbone
+    head=Head(160);head.load_state_dict(core.cls_head.state_dict(),strict=True);core.cls_head=head
+    core.__class__=ReturnAuxCore;reader.core.__class__=Identity;reader.__class__=Sequence
+    return native.eval(),x
+
+
+def test_return_aux_real_head_discards_logits_but_preserves_features_and_all_gradients():
+    train=importlib.import_module('experiments.pamf_phase3_open_world.star_signal_open_train')
+    native,x=return_aux_source();reader=native.id_backbone.encoder;head=reader.core.id_backbone.cls_head
+    original_state={k:v.detach().clone() for k,v in reader.state_dict().items()};identity=native(x).detach().clone()
+    exported=train._export(native);copied=exported.encoder;copy_head=copied.core.id_backbone.cls_head
+    assert type(copied) is type(reader) and type(copied).features is type(reader).features
+    assert type(copy_head).forward is type(head).forward and type(copy_head).components is type(head).components
+    raw=reader.features(x);copy_raw=exported.forward_features(x)
+    torch.testing.assert_close(copy_raw,raw,atol=0,rtol=0)
+    assert not hasattr(copy_head,'weight') and not any('cls_head.weight' in k for k in exported.state_dict())
+    names=[k for k,p in reader.named_parameters() if k!='core.id_backbone.cls_head.weight']
+    original=dict(reader.named_parameters());copy=dict(copied.named_parameters());weight=torch.linspace(.1,1.1,160)
+    g0=torch.autograd.grad((raw*weight).sum(),[original[k] for k in names],allow_unused=True)
+    g1=torch.autograd.grad((copy_raw*weight).sum(),[copy[k] for k in names],allow_unused=True)
+    for left,right in zip(g0,g1):
+        if left is None:assert right is None
+        else:torch.testing.assert_close(right,left,atol=0,rtol=0)
+    for prefix in ('core.id_backbone.sinc.','core.id_backbone.t2.','core.id_backbone.pa.','response_projection.','sequence_pool.'):
+        assert any(g is not None and bool(g.abs().sum()>0) for k,g in zip(names,g1) if k.startswith(prefix))
+    model=api().SignalOpen(exported);out=model.features(x)
+    assert set(out)=={'z','u','c','raw_fused160','contributions','reference29'} and not out['reference29'][:,27].any()
+    assert api().parameter_report(model)['signal_parameters']==334721
+    torch.testing.assert_close(native(x),identity,atol=0,rtol=0)
+    for k,v in reader.state_dict().items():torch.testing.assert_close(v,original_state[k],atol=0,rtol=0)
+
+
 def test_one_pass_zero_last_matches_frozen_preprocessing_without_detaching_student():
     a=api();native,x=source();signal=Headless(native);model=a.SignalOpen(signal).eval();r=signal.encoder
     out=model.features(x);assert set(out)=={'z','u','c','raw_fused160','contributions','reference29'}

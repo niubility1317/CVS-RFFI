@@ -15,7 +15,7 @@ from . import star_signal_open_model as core
 from . import star_consensus_run as base
 from . import star_representation_cache as IQ
 
-RUN_ID='20261030-phase3-star-signal-open-s2026092701-r02'
+RUN_ID='20261030-phase3-star-signal-open-s2026092701-r03'
 ARMS=('E_SIGNAL',)
 SCHEMA='pamf_phase3_star_signal_open_train_v1'
 STATUS='STAR_SIGNAL_OPEN_SOURCE_FROZEN'

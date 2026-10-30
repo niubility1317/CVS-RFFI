@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import torch
 from test_pamf_phase3_star_crossset_metric_train import fixture as parent_fixture
-from test_pamf_phase3_star_signal_open_model import source
+from test_pamf_phase3_star_signal_open_model import return_aux_source as source
 
 
 def api():return importlib.import_module('experiments.pamf_phase3_open_world.star_signal_open_train')
