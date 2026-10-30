@@ -3,7 +3,7 @@
 - run_id：`20261030-phase1-DURA-source-phasePair-s2026092701-r01`
 - group_id：`phase1-dura-source-phase-covariance`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -39,3 +39,10 @@
 
 
 本地验证：8项针对性检查通过，覆盖非交换共轭分量、真实伴随、噪声/功率、旋转复合与零旋转、缓存不变、随机数隔离、单前向和原合同拒绝。唯一独立P0/P1审查PASS，无阻断缺陷；N607只读preflight已核实身份/路径与实际显存。远端真实checkpoint/source2Ls smoke由launcher首先执行，PASS后立即继续。
+
+
+## 已核实启动
+
+VERIFIED / RUNNING。执行commit `028be06be1b7009867790b82ea7522de8b521dc2`，8项聚焦检查与唯一独立P0/P1审查PASS；一次N607 preflight、单归档两端SHA和远端compile通过。控制器PID797107、GPU7 worker PID797202实际存活，独立核实release CWD、完整命令、GPU绑定与训练日志增长。source2Ls实际旋转/单G目标/有限非零梯度/严格checkpoint重载/同F默认头no-query smoke PASS。残差旋转最大误差4.8054801e-07，相对样本功率最大误差2.82035245e-07；GPU训练已重建独立phase RNG。
+
+当前E1/20、247/4940更新，累计60.167秒。F、TX标签、学习教师和初始化checkpoint训练读取均0。固定E20最终轮次后自动全七景；尚无正式成绩，其他owner任务保持。

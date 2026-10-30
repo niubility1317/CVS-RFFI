@@ -155,3 +155,6 @@ noVar/headFeature源阶段对照完成：64批/15120统计独立复算，0训练
 
 
 连续后验F-guided E20完成4940更新与完整七景，126组独立复算，F参数/状态不变，0直接TX/V/target/硬伪TX/G祖先。clean84.381548%，lowurban67.943452%；六景3pp=False/clean保持=False/R17逐景1pp=False。G流程1116.279秒，全流程1420.082秒；F既有50轮知识成本另计，非F-free，默认保持。
+
+
+源精确相位配对E20对照已发布：028be06be，N607 GPU7 worker797202，当前E1/247更新。原缓存实际生成器含15% clean，取消重复新增clean混合思路，未实现或启动。新对照只旋转clean/received并令真实action image乘R²，保留噪声/功率/方差；8项聚焦检查和唯一P0/P1审查PASS，真实2Ls的G梯度/重载/F默认头smoke与配对误差检查通过。仍从零单阶段20轮/4940，一次G前向，0F/直接TX/V/target/恢复器祖先训练，冻结自动全七景，默认与3pp/clean/效率目标保持。
