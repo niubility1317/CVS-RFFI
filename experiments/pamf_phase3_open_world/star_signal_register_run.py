@@ -28,6 +28,7 @@ CONDITIONS=parent.CONDITIONS
 COUNTS=parent.COUNTS
 Q_COUNT=parent.Q_COUNT
 U_COUNT=U_reader.U_COUNT
+CACHED_U_FEATURES=False
 PARENT_CODE='4af0668331682636ee212077b38cd912857a1b31'
 FIELDS={'run_id','code_commit','reference_config','output_root','batch_size','U_public_root','U_capsule_id','U_split_id'}
 _read,_write,_npz,_same=parent._read,parent._write,parent._npz,parent._same
@@ -82,7 +83,19 @@ def _produce(a,state,anonymous,tau,registration_tau):
     return dict(a,raw_scores=raw,scores=base,predictions=predictions,decision_scores=decision,anonymous_raw_scores=new)
 
 
-def run(c,device='cuda:0'):
+def _source(c,b,identity,device,state):
+    features,meta,ids,manifest=_source_L(c,b,identity,device)
+    source,diag=core.source_radius(state,features,meta['y'],meta['rx'],meta['day'])
+    return source,diag,ids,manifest,dict(source_L_reads=COUNTS['L'],source_signal_rows=COUNTS['L'],source_radius_new_fits=1)
+
+
+def run(c,device='cuda:0',*,policy=None):
+    policy=sys.modules[__name__] if policy is None else policy
+    RUN_ID,SCHEMA,STATUS=policy.RUN_ID,policy.SCHEMA,policy.STATUS
+    MODELS_STATUS,REGISTRATION_STATUS,CALIBRATION_STATUS=policy.MODELS_STATUS,policy.REGISTRATION_STATUS,policy.CALIBRATION_STATUS
+    COUNTS,U_COUNT,core=policy.COUNTS,policy.U_COUNT,policy.core
+    validate_config,_source,_U=policy.validate_config,policy._source,policy._U
+    cached_U=getattr(policy,'CACHED_U_FEATURES',False)
     validate_config(c);out=Path(c['output_root'])
     if out.exists():raise FileExistsError('Observe original immutable run; never replace or restart it')
     torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
@@ -99,13 +112,13 @@ def run(c,device='cuda:0'):
     original=deepcopy(state);old_tau=tau.copy();out.mkdir(parents=True)
     for name in ('models','registration','calibration'):(out/name).mkdir()
     _write(out/'resolved_config.json',c);_write(out/'smoke.json',smoke)
-    features,meta,L_ids,L_manifest=_source_L(c,b,identity,device);unchanged()
-    source,source_diag=core.source_radius(state,features,meta['y'],meta['rx'],meta['day']);del features
+    source,source_diag,L_ids,L_manifest,source_cost=_source(c,b,identity,device,state);unchanged()
     source_before=deepcopy(source)
     _npz(out/'models/density.npz',state);_npz(out/'models/source_radius.npz',source)
     _write(out/'models/complete.json',dict(schema=SCHEMA,status=MODELS_STATUS,run_id=RUN_ID,code_commit=c['code_commit'],
         model_identity=identity,source_L_count=COUNTS['L'],source_L_manifest=L_manifest,source_radius_fitted=True,
-        source_radius_frozen_before_U=True,original_density_refitted=False,source_V_fit=False,target_U_reads=0,diagnostics=source_diag))
+        source_radius_frozen_before_U=True,source_radius_new_fits=source_cost['source_radius_new_fits'],current_source_L_reads=source_cost['source_L_reads'],
+        U_features_reused=cached_U,original_density_refitted=False,source_V_fit=False,target_U_reads=0,diagnostics=source_diag))
     U,U_manifest=_U(c,b,device);unchanged()
     if set(L_ids.tolist())&set(U['ids'].tolist()):raise ValueError('Target U cannot overlap source L')
     _,base=_base(state,U['signal_features'],U['closed'],tau);U['base_scores']=base
@@ -152,10 +165,12 @@ def run(c,device='cuda:0'):
         anonymous_count=len(anonymous['means']),source_radius_frozen_before_U=True,anonymous_frozen_before_V_and_Q=True,
         all_thresholds_frozen_before_novel_and_Q=True,all_three_conditions_complete=True,all_conditions_through_DURA=True,
         original_F0_default_identity_unchanged=True,source_states_unchanged=True,model_parameters_buffers_unchanged=True,REG0_controls_reused_exactly=True,
-        original_density_refitted=False,source_radius_fitted=True,registration_threshold_sets_fitted=2,neural_updates=0,original_U_s_reads=0,
-        source_L_reads=COUNTS['L'],source_OE_reads=0,target_U_reads=U_COUNT,target_Q_IQ_reads=0,private_truth_reads=0,U_truth_reads=0,
-        source_novel_truth_reads=0,target_truth_reads=0,formal_target_accessed=False,real_signal_forward_rows=COUNTS['L']+U_COUNT,
-        real_F_forward_rows=U_COUNT,G_forward_rows=U_COUNT,synthetic_signal_forward_rows=2,synthetic_F_forward_rows=2,G_synthetic_forward_rows=2,
+        original_density_refitted=False,source_radius_fitted=True,source_radius_new_fits=source_cost['source_radius_new_fits'],
+        current_source_L_reads=source_cost['source_L_reads'],U_features_reused=cached_U,registration_threshold_sets_fitted=2,neural_updates=0,original_U_s_reads=0,
+        source_L_reads=source_cost['source_L_reads'],source_OE_reads=0,target_U_reads=U_COUNT,target_Q_IQ_reads=0,private_truth_reads=0,U_truth_reads=0,
+        source_novel_truth_reads=0,target_truth_reads=0,formal_target_accessed=False,real_signal_forward_rows=source_cost['source_signal_rows']+(0 if cached_U else U_COUNT),
+        real_F_forward_rows=0 if cached_U else U_COUNT,G_forward_rows=0 if cached_U else U_COUNT,
+        synthetic_signal_forward_rows=2,synthetic_F_forward_rows=2,G_synthetic_forward_rows=2,
         source_bank_deployed=False,U_bank_deployed=False,per_record_source_rows_deployed=0,target_DA=False,target_REG=True,
         classification_path='same_DURA_F0_old_identity_plus_anonymous_joint_competition',identity_baseline_path='same_DURA_output_original_F0',
         queries_reused_without_new_neural_forward=True,source_only=False,original_neural_models_source_only=True,

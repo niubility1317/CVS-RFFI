@@ -81,7 +81,7 @@ def _U_state(U,state,source,anonymous,tau):
         mask=labels==label;n=int(mask.sum());eligible=n>=16 and int(U['rejected'][mask].sum())*2>n
         slots=np.unique(assigned[mask])
         if len(slots)!=1 or (eligible and slots[0]<0) or (not eligible and slots[0]!=-1):
-            raise ValueError('Register only complete DBSCAN clusters of size sixteen and strict rejected majority')
+            raise ValueError('Register only complete density clusters of size sixteen and strict rejected majority')
         if eligible:
             j=int(slots[0]);selected.append(j);x=white[mask];mean=x.mean(0)
             variance=max(n/(n+160)*float(np.mean(np.sum((x-mean)**2,axis=1)))/160+160/(n+160)*float(state['pooled_L_variance']),1e-8)
@@ -90,9 +90,11 @@ def _U_state(U,state,source,anonymous,tau):
     if sorted(selected)!=list(range(K)) or np.any(assigned[labels<0]!=-1):raise ValueError('Anonymous states cannot omit, split or invent U clusters')
 
 
-def _prediction(root):
+def _prediction(root,*,evaluation_override=None):
+    evaluation=globals()['evaluation'] if evaluation_override is None else evaluation_override
+    run_id=evaluation.RUN_ID
     root=Path(root);m=_read(root/'complete.json')
-    _require(m,dict(schema=evaluation.SCHEMA,status=evaluation.STATUS,run_id=RUN_ID,method_names=list(METHODS),primary_method=PRIMARY,
+    _require(m,dict(schema=evaluation.SCHEMA,status=evaluation.STATUS,run_id=run_id,method_names=list(METHODS),primary_method=PRIMARY,
         known_count=COUNTS['V'],novel_count=COUNTS['novel'],U_count=U_COUNT,source_radius_frozen_before_U=True,anonymous_frozen_before_V_and_Q=True,
         all_thresholds_frozen_before_novel_and_Q=True,all_three_conditions_complete=True,all_conditions_through_DURA=True,
         original_F0_default_identity_unchanged=True,source_states_unchanged=True,model_parameters_buffers_unchanged=True,REG0_controls_reused_exactly=True,
@@ -110,9 +112,9 @@ def _prediction(root):
     source=_load(root/'models/source_radius.npz');anonymous=_load(root/'models/anonymous.npz');core.validate_source(source);core.validate_anonymous(anonymous)
     K=len(anonymous['means'])
     fit=_read(root/'models/complete.json');reg=_read(root/'registration/complete.json')
-    _require(fit,dict(schema=evaluation.SCHEMA,status=evaluation.MODELS_STATUS,run_id=RUN_ID,code_commit=m['code_commit'],model_identity=identity,
+    _require(fit,dict(schema=evaluation.SCHEMA,status=evaluation.MODELS_STATUS,run_id=run_id,code_commit=m['code_commit'],model_identity=identity,
         source_L_count=COUNTS['L'],source_radius_fitted=True,source_radius_frozen_before_U=True,original_density_refitted=False,source_V_fit=False,target_U_reads=0),'Source-only radius must freeze before U')
-    _require(reg,dict(schema=evaluation.SCHEMA,status=evaluation.REGISTRATION_STATUS,run_id=RUN_ID,code_commit=m['code_commit'],U_count=U_COUNT,
+    _require(reg,dict(schema=evaluation.SCHEMA,status=evaluation.REGISTRATION_STATUS,run_id=run_id,code_commit=m['code_commit'],U_count=U_COUNT,
         U_manifest=m['U_manifest'],anonymous_count=K,anonymous_ids=anonymous['anonymous_ids'].tolist(),anonymous_frozen_before_V_and_Q=True,
         true_U_labels_used=False,true_unknown_count_used=False,query_fit=False,source_prediction_reads=0,source_radius_frozen_before_U=True,U_bank_deployed=False),'Anonymous U state must freeze before V or Q')
     if m['anonymous_count']!=K:raise ValueError('Actual anonymous count differs from completed predictions')
@@ -120,7 +122,7 @@ def _prediction(root):
     if (not np.array_equal(thresholds['conditional'],tau) or thresholds['conditional'].dtype!=np.float64
             or registration_tau.shape!=(2,) or registration_tau.dtype!=np.float64 or not np.isfinite(registration_tau).all()):raise ValueError('Original two six-threshold controls and finite registration thresholds required')
     cal=_read(root/'calibration/complete.json')
-    _require(cal,dict(schema=evaluation.SCHEMA,status=evaluation.CALIBRATION_STATUS,run_id=RUN_ID,code_commit=m['code_commit'],
+    _require(cal,dict(schema=evaluation.SCHEMA,status=evaluation.CALIBRATION_STATUS,run_id=run_id,code_commit=m['code_commit'],
         method_names=list(METHODS),primary_method=PRIMARY,conditional_thresholds=tau.tolist(),registration_thresholds=registration_tau.tolist(),
         known_count=COUNTS['V'],known_only=True,unknown_inputs_used=False,target_label_reads=0,U_state_frozen=True,
         source_V_neural_fit=False,source_V_density_fit=False,source_V_threshold_fit=True,shared_thresholds_for_all_conditions=True),'Only frozen-U, source-V known calibration is legal')
@@ -249,10 +251,11 @@ def _difference(a,b):
     return result
 
 
-def score(prediction_root,U_truth,source_novel_truth,clean_truth,star_truth,output):
+def score(prediction_root,U_truth,source_novel_truth,clean_truth,star_truth,output,*,evaluation_override=None,result_schema=SCHEMA,result_status=STATUS):
     out=Path(output)
     if out.exists():raise FileExistsError('New immutable independent registration score root required')
-    m,cal,rows,U,anonymous=_prediction(prediction_root)
+    if evaluation_override is None:m,cal,rows,U,anonymous=_prediction(prediction_root)
+    else:m,cal,rows,U,anonymous=_prediction(prediction_root,evaluation_override=evaluation_override)
     # Every public prediction/state/threshold above passes before the first
     # private join. No Q labels can enter anonymous matching.
     ut=_truth(U_truth,U['ids'])
@@ -298,20 +301,21 @@ def score(prediction_root,U_truth,source_novel_truth,clean_truth,star_truth,outp
         paired[name]=dict(left=METHODS[left],right=METHODS[right],conditions=result)
     main=methods[PRIMARY];source_pass=main['source']['known_12_groups_passed'] and main['source']['source_calibration_passed']
     passed=bool(source_pass and all(main[c]['goals']['passed'] for c in CONDITIONS[1:]))
-    result=dict(schema=SCHEMA,status=STATUS,run_id=RUN_ID,code_commit=m['code_commit'],method_names=list(METHODS),primary_method=PRIMARY,
+    result=dict(schema=result_schema,status=result_status,run_id=m['run_id'],code_commit=m['code_commit'],method_names=list(METHODS),primary_method=PRIMARY,
         methods=methods,primary_summary={c:main[c]['overall'] for c in CONDITIONS},paired=paired,cluster_diagnostics=clusters,
         U_true_arrival_labels=arrivals,planned_later_labels=later,U_mapping_frozen_before_source_and_Q_truth=True,Q_truth_used_for_cluster_mapping=False,
         source_known_12_passed=bool(source_pass),registration_success=passed,development_gate_passed=passed,eligible_primary=passed,
         next_step='DEVELOPMENT_REGISTRATION_PASSED_FOR_SEPARATE_CONFIRMATION' if passed else 'NO_PROMOTION',
         truth_last=True,all_three_predictions_before_truth=True,U_truth_reads=1,source_novel_truth_reads=1,target_truth_reads=2,
         target_DA=False,target_REG=True,target_U_reads=m['target_U_reads'],neural_updates=0,registration_threshold_sets_fitted=2,source_radius_fitted=True,
+        source_radius_new_fits=m.get('source_radius_new_fits'),current_source_L_reads=m.get('current_source_L_reads'),U_features_reused=m.get('U_features_reused',False),
         formal_target_accessed=False,full_goal_status='ACTIVE',final_phase3_complete=False,full_goal_passed=False,
         costs={key:m[key] for key in ('real_signal_forward_rows','real_F_forward_rows','G_forward_rows','synthetic_signal_forward_rows','synthetic_F_forward_rows','G_synthetic_forward_rows')},
         metrics_scope='H_score=harmonic(old AK,later RU) after REG; H_KN and H_OW separately. REG0 AN/H_KN/H_OW are N/A.',
         scope='Source V is reused calibration; source RX/novel and one future development RX historically exposed; no formal or complete Phase3 claim',
         source_bank_deployed=False,U_bank_deployed=False,per_record_source_rows_deployed=0)
     out.mkdir(parents=True);_write(out/'results.json',result);_write(out/'complete.json',{k:v for k,v in result.items() if k not in ('methods','paired','cluster_diagnostics')})
-    print(STATUS,result['next_step'],flush=True);return result
+    print(result_status,result['next_step'],flush=True);return result
 
 
 def main():

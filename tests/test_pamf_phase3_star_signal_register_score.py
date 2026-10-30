@@ -70,7 +70,7 @@ def test_positive_anonymous_full_U_moments_and_joint_reconstruction(monkeypatch)
     anon['means'][0,0]+=.1
     with pytest.raises(ValueError,match='all assigned U'):s._U_state(U,d,source,anon,tau)
     anon['means'][0,0]-=.1;U['assignments'][0]=-1
-    with pytest.raises(ValueError,match='complete DBSCAN'):s._U_state(U,d,source,anon,tau)
+    with pytest.raises(ValueError,match='complete density'):s._U_state(U,d,source,anon,tau)
 
 
 def test_fixed_primary_cannot_borrow_pooled_or_hide_scene_missing_arrival(tmp_path,monkeypatch):
@@ -90,7 +90,7 @@ def test_fixed_primary_cannot_borrow_pooled_or_hide_scene_missing_arrival(tmp_pa
     st=dict(y=y.copy(),receiver=np.full(len(y),26),scenario=np.tile(np.asarray(s.common.SCENES),9))
     U=dict(ids=np.asarray(['u0','u1','u2','u3']),assignments=np.asarray([0,0,1,1],np.int64))
     ut=dict(y=np.asarray([6,6,7,7]),receiver=np.full(4,26),scenario=np.asarray([s.common.SCENES[0]]*4))
-    m=dict(code_commit='a'*40,target_U_reads=4,**{key:0 for key in ('real_signal_forward_rows','real_F_forward_rows','G_forward_rows','synthetic_signal_forward_rows','synthetic_F_forward_rows','G_synthetic_forward_rows')})
+    m=dict(run_id=s.RUN_ID,code_commit='a'*40,target_U_reads=4,**{key:0 for key in ('real_signal_forward_rows','real_F_forward_rows','G_forward_rows','synthetic_signal_forward_rows','synthetic_F_forward_rows','G_synthetic_forward_rows')})
     cal=dict(report=dict(methods={name:dict(constraints_passed=True) for name in s.METHODS[2:]}));reads=[]
     monkeypatch.setattr(s,'_prediction',lambda *a:(m,cal,dict(known=k,novel=n,clean_DURA=clean,star_DURA=star),U,dict(means=np.zeros((2,160)))))
     monkeypatch.setattr(s,'_source_truth',lambda *a:reads.append('source') or nt)
