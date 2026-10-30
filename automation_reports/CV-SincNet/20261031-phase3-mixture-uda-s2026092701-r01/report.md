@@ -69,3 +69,28 @@ Actualcode `d72a7b7c301fec2ff3736e4221dfe5047ab78efc`，唯一owner `codex-phase
 Focused验证：{"core": {"unique_tests": 6, "initial_passed": 5, "targeted_source_centering_fix_passed": 1, "targeted_seconds": 0.58, "initial_seconds": 1.48, "repeated_full_suite": false}, "producer": {"tests": 3, "subtests": 4, "seconds": 8.22, "stdout": "run_tests.log"}, "scorer": {"tests": 4, "subtests": 9, "seconds": 8.04, "stdout": "score_tests.log", "legacy_numpy_trapz_deprecations": 4668}, "launcher": {"tests": 7, "seconds": 3.01, "tool_stdout_observed": true}, "test_items_total": 20, "additional_subtests": 13, "AST_files": 8, "mirror_matches": 10, "preview_runtime_validate": true, "registry_fields_validate": true, "real_IQ_weights_truth_reads": 0}；一次直接P0/P1独立审查PASS。单次N607preflight核既有DURA父prediction、三模型、合法U384 capsule/split及输出无碰撞；无IQ/private truth实值读取，复用VALIDATED_ONCE。
 
 首步三真实checkpoint的两条syntheticG10无query smoke，PASS立即继续。源prior/原密度/原τ先冻结；starU384经DURA导出，仅signal用于两个20轮MAP-EM适配。两个adapter先冻结再读父source/Q特征；source delta0，clean/star target同starUdelta。三条件六列全完成后独立CUDAempty scorer连接三份truth各一次，无Utruth。新G/F0/signal各384真实行，source/Q新前向0；NN/sourcefit/τfit0，实际目标统计fit2×20。当前未启动，无新性能。原始IQ/权重/U逐行特征/预测/原始日志不Git。
+
+
+## 实际启动与独立观察
+
+VERIFIED CPU评分运行（保存snapshot时），actualcode `d72a7b7c301fec2ff3736e4221dfe5047ab78efc`；单archive SHA `6e5d3a9f7d66aac897cf65964927c0b669a5222d4d7b61d60d5507705b9b01db` 比较及remote compile/runtime PASS。所属PID/CWD/完整argv/CUDA [{"pid": 1008449, "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_mixture_uda_launch driver --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-mixture-uda-s2026092701-r01-release/runtime.json ", "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-mixture-uda-s2026092701-r01-release", "CUDA_VISIBLE_DEVICES": ""}, {"pid": 1008625, "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_mixture_uda_score --prediction-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-mixture-uda-s2026092701-r01/predict --source-novel-truth /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-representation-s2026092701-r01-release/score_truth/source_novel.npz --clean-truth /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-development-clean-transfer-s2026092701-r01-release/data/development/evaluation/truth/truth.npz --star-truth /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-relative-s2026092701-r01-release/score_truth/Q.npz --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-mixture-uda-s2026092701-r01/score ", "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-mixture-uda-s2026092701-r01-release", "CUDA_VISIBLE_DEVICES": ""}]，预测日志从0增长到完成。短GPU阶段在离散观察前已结束，未捕获live GPU显存，故该项UNKNOWN，不为补遥测重跑。U-only拟合与Q推理严格分开，两个adapter冻结后才读source/Q；三DURA预测完成后自动独立CPU评分，不按源失败取消Q。foreign停止/修改/重启0；这是启动证据，没有新性能声明。
+
+## 最终结果（已完成，无晋级）
+
+本run实际两阶段均COMPLETE/ret0，pipeline `ANALYZED_DEVELOPMENT`，唯一主 `DA_M_ratio` 判定 `NO_PROMOTION`，完整目标ACTIVE。前文“当前未启动”及“没有新性能”属于事前/启动时记录，当前状态以本节为准。
+
+| 主方法条件 | 宏A_K% | C_K% | R_U% | H% | 同DURA原F0损伤pp |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| source_DURA | 89.770370 | 97.107407 | 60.888889 | 72.561330 | 1.211111 |
+| clean_DURA | 68.576389 | 85.069444 | 99.652778 | 81.244267 | 11.458333 |
+| star_DURA | 63.020833 | 84.895833 | 75.694444 | 68.778682 | 9.895833 |
+
+主−DA0：clean正确接收/接受各净−2，未知拒对0；star正确/接受0，未知拒对−2（gain0/loss2），R_U−0.694444pp、H−0.285245pp，未产生要求的star A_K正收益。主−DA_K：clean正确/接受−3；star正确−3、接受−4、未知拒对+6。DA_K虽较DA0多3条star正确接收，却少拒8条未知，不能替主或称适应成功。源六列逐值重复原两列；默认身份与同输入原F0基线均未变。
+
+源known12通过但known42有4个交叉组超2pp；源R_U仅诊断。目标clean虽过R_U95单项，CK90/2pp失败；star整体R_U90/CK90/2pp失败，high场景未知三TX计数0/4/2，宏R_U/H为N/A，六景无法认证。没有删景、调τ、读取U真值或选择性重跑。
+
+完整42条拟合记录有限、目标函数数值非降；源rank14/r2.370508，δK1.412971/δM0.915601、约束乘子全0，均真实applied。新增目标统计fit2×20，NN/源密度/τ更新0；新G/F0/signal各384real＋2synthetic，source/Q新IQ前向0。predict8.230080s/CPUscore7.996030s/pipeline16.333900s是批处理成本。三份完整runtime stdout无warning/error；本地scorer测试旧np.trapz告警4668次另存。20测试项＋13子项和单P0/P1PASS保持原计数。
+
+独立观测只捕获driver、CPUscorer和终态，未捕获GPUworker live显存；GPU7是pipeline分配，GPUlive memory/peak UNKNOWN，未为遥测重跑。终态owned/live空、foreign0。三条件全预测固定后才source/clean/star truth各一次，Utruth0。单开发RX/seed、历史sourceNV/Q及缺场景覆盖保持；formal/U_s/发现/注册未访问，A_N/H_OW为N/A，final Phase3 complete=false。
+
+完整18运行点、主配对及分组见 [结果报告](../../../docs/PAMF_PHASE3_MIXTURE_UDA_RESULTS_20261031.md)；本地 `analysis.json` 保留全部已评分TX/RX/day/scene/42组、CI、21×2trace及完整stdout。原始IQ/权重/预测/日志不提交。
