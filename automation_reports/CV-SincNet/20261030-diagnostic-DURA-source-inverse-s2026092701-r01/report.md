@@ -32,3 +32,9 @@ Frozen DURA; fixed128L+384U positions x cachedepochs1/20; native2CG/fixedlastpri
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 技术失败，原产物保留
+
+2026-10-30远端状态VERIFIED/FAILED。提交`6a9916cd57670de052aa7424de379fdf3b49f881`的归档传输SHA一致、编译通过；实际checkpoint严格加载成功。首次两条Ls smoke在`torch.from_numpy`处发生`TypeError: expected np.ndarray (got numpy.ndarray)`，原Torch2.1与NumPy2 C桥不兼容。进程自然退出，仅有launch.json，未运行诊断或产生prediction，未更新模型。原日志保留`logs/<run_id>/stdout.log`，不原地重启。
+
+技术修复复用项目已验证的direct-buffer传入，并移除Tensor.numpy传出，新增禁用两种C桥接口的针对性回归检查；本地4项检查通过。替代run `20261030-diagnostic-DURA-source-inverse-s2026092701-r02`，科学矩阵/位置/预算/权限均不变。

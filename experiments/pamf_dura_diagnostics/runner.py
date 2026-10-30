@@ -18,7 +18,7 @@ from experiments.pamf_action_restore.operators import Action
 from experiments.pamf_restoration.models import complex_iq, pair
 from experiments.pamf_uncertainty_restore.models import weighted_map
 
-RUN = '20261030-diagnostic-DURA-source-inverse-s2026092701-r01'
+RUN = '20261030-diagnostic-DURA-source-inverse-s2026092701-r02'
 PARENT = '20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69'
 ACTION = '20261019-phase1-restoration-learned-action-source-s2026092701-r07'
 
@@ -38,7 +38,14 @@ def source_indices(roles):
 
 
 def tensor(value, device):
-    return torch.from_numpy(np.array(value, dtype=np.float32, copy=True)).to(device)
+    # The frozen N607 runtime is Torch2.1 + NumPy2; its C bridge is unavailable.
+    # Match the existing R46 direct-buffer route, for IQ and action arrays.
+    contiguous = np.array(value, dtype=np.float32, copy=True, order='C')
+    return torch.frombuffer(memoryview(contiguous), dtype=torch.float32).reshape(contiguous.shape).to(device)
+
+
+def numpy_values(value):
+    return np.asarray(value.detach().cpu().tolist(), dtype=np.float32)
 
 
 def action_from_arrays(kernel, coefficients):
@@ -115,7 +122,7 @@ def diagnose_batch(model, clean, received, actual_action, actual_variance, probe
         z = complex_iq(values)
         response = actual_action(z)
         metrics[f'operator/probe{probe}_nmse'] = (action(z)-response).abs().square().mean(1)/response.abs().square().mean(1).clamp_min(1e-4)
-    return {key: value.cpu().numpy() for key, value in metrics.items()}
+    return {key: numpy_values(value) for key, value in metrics.items()}
 
 
 def summarize(values, selected):

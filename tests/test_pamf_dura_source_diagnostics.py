@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import torch
 
-from experiments.pamf_dura_diagnostics.runner import action_from_arrays, source_indices, waveform_metrics
+from experiments.pamf_dura_diagnostics.runner import action_from_arrays, source_indices, waveform_metrics, tensor, numpy_values
 from experiments.pamf_uncertainty_restore.models import weighted_map
 
 
@@ -42,3 +42,16 @@ def test_diagnostic_metrics_handle_weak_bins_without_nonfinite_weights():
     assert all(torch.isfinite(value).all() for value in metrics.values())
     assert torch.equal(metrics['prefix232_nmse'], torch.zeros(2))
     assert (metrics['tail24_nmse'] > 0).all()
+
+
+def test_numpy2_old_torch_route_never_calls_unavailable_c_bridge(monkeypatch):
+    def unavailable(*args, **kwargs):
+        raise TypeError('expected np.ndarray (got numpy.ndarray)')
+    monkeypatch.setattr(torch, 'from_numpy', unavailable)
+    monkeypatch.setattr(torch.Tensor, 'numpy', unavailable)
+    for shape in ((3,), (3, 2, 64), (3, 4, 256)):
+        source = np.arange(np.prod(shape), dtype=np.float32).reshape(shape)
+        result = tensor(source, 'cpu')
+        assert np.array_equal(numpy_values(result), source)
+        result.fill_(0)
+        assert source.flat[-1] > 0  # CPU tensor owns its copied backing buffer.

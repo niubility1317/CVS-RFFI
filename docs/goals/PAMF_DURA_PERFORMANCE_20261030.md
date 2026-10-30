@@ -28,7 +28,7 @@
 
 ## 第一个可证伪实验
 
-登记 `20261030-diagnostic-DURA-source-inverse-s2026092701-r01`，只使用原 R07 训练池按角色位置均匀抽取的128 L_s+384 U_s，固定 epoch01/20 的 received 及同份 source 模拟器参数。首先两条真实 L_s 做实际 checkpoint 无 query smoke，随后立即诊断。0 TX 标签、0 F、0 V、0 target、0 优化器更新；不产生部署 prediction。
+当前登记 `20261030-diagnostic-DURA-source-inverse-s2026092701-r02`，只使用原 R07 训练池按角色位置均匀抽取的128 L_s+384 U_s，固定 epoch01/20 的 received 及同份 source 模拟器参数。首先两条真实 L_s 做实际 checkpoint 无 query smoke，随后立即诊断。0 TX 标签、0 F、0 V、0 target、0 优化器更新；不产生部署 prediction。原r01在首步smoke因旧Torch/NumPy2 C桥不兼容失败，保留输出；r02使用项目既有direct-buffer传入和tolist传出，矩阵及科学设置不变。
 
 比较当前 coarse、stage1、stage2、最终 prior，以及固定最后一个 prior 的2/16次CG。另分别替换 source 模拟器真实方差/算子，两者同时替换，并用 clean prior 测软一致性引入的偏差。用固定随机白探针量化算子误差，按场景、state、lock、L/U汇总IQ、尾部和有分母下限的复FFT分组误差。完整源数组统计留存，不能用均值掩盖长尾。
 
