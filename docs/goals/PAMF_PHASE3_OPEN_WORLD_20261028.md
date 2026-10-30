@@ -909,3 +909,10 @@ Run `20261031-phase3-signal-ssl-s2026092701-r01` / actualcode `72b0b60d6c445e907
 ### 2026-10-31 既有较好方法的局部协方差预登记
 
 Run `20261031-phase3-local-cov-s2026092701-r01` / actualcode `4d1d645dd13de875a7f6adf32508a9732ffd3f47`，固定原pooled/predicted ratio两控制，新known90各模式仅以原L6300P1估完整协方差C=70/230*S+160/230*pooledI，原mean/whitener/OE32/F0/G保持。新local pooled及唯一主local predicted，各Vonly six-tau，旧两tau精确，全部freeze后sourceNV/cleanQ/starQ缓存score、独立三truth-last。补sourceLsignal6300真实前向，F0/G/Q新真实0；cov90/tau12实际拟合，非全零成本；不读U/正式RX。检验方向相关形状，不再训练失败SSL学生或对历史Q调参；全部三DURA测试自动完成，主gate保持clean95/star90、CK90/损2pp/场景覆盖及starAK/RU不低于predicted。source/NV/Q历史曝光及high缺类保留，不称匿名REG或独立新盲测，完整目标ACTIVE，当前未启动无性能。方案见 `docs/PAMF_PHASE3_LOCAL_COV_PLAN_20261031.md`。
+
+
+### 2026-10-31 源模式局部协方差完整结果
+
+Run `20261031-phase3-local-cov-s2026092701-r01` / actualcode `4d1d645dd13de875a7f6adf32508a9732ffd3f47`，sourceL6300冻结signal前向、90局部cov和两新six-tau、四列×三DURA预测及独立三truth-last均COMPLETE，执行VERIFIED、科学NO_PROMOTION。唯一主：source AK/CK/RU/H 89.844444/96.907407/63.777778/74.599611%；clean_DURA AK/CK/RU/H 61.111111/77.777778/100.000000/75.862069%；star_DURA AK/CK/RU/H 60.763889/82.986111/71.180556/65.561038%。对选定predicted_ratio，source正确接收净+27、未知拒对净+58；clean正确净−56、未知不变；star正确8增/27失/净−19，未知拒对7增/24失/净−17，AK−3.298611pp/RU−5.902778pp/H−4.411287pp。source局部改善未迁移到新RX，不替换原重点候选predicted_ratio或冻结pooled_ratio对照。
+
+原90means/whitener/背景OE32、F0/G/r03和所有身份保持；重算mean最大绝对误差2.442491e−14、trace1.110223e−16、floor0，无数值技术失败，不重跑/扫参数。新NN/原密度/背景/normalizer0，新cov90和Vonly tau12实际fit；真实signal6300/F0G0、synthetic各2、另存约18MB局部矩阵，旧训练/源缓存/三DURA query前向成本继承。predict21.183924s/CPUscore19.138905s；driver1104163/CPU1105453的live/CWD/argv/CUDAempty及最终空已核，predict1104252/GPU4仅pipeline/日志记录、未捕获独立predictorlive或显存样本，不虚报GPU遥测。foreign0。历史sourceNV/devQ、单RX/seed、high未知缺19-15维持N/A，U/正式RX未读，无匿名REG/AN/HOW。完整跨RX星地拒识、零标签DA/发现/未来注册目标ACTIVE。详见 `docs/PAMF_PHASE3_LOCAL_COV_RESULTS_20261031.md`。

@@ -17,3 +17,15 @@
 聚焦协议负测、数学与一次producer→score合成集成已完成，结果见本地verification；唯一直接P0/P1审查PASS。launcher首步实际三个CP synthetic noquery smoke，PASS立即继续。发布单preflight/单archive SHA比较/remotecompile，启动独立核PID/CWD/argv/GPU/log增长。非法来源/角色、非有限、输出碰撞或无法产生合法预测时保留、不partial评分/自动重启；UNKNOWN先核原PID/root。科学负结果不停止健康任务。
 
 预期产物：launch/pipeline/configs/logs；predict models/density及local、model freeze/diagnostics、sourceV calibration/4×6tau、known/novel和两个Q predictions、prediction complete/smoke；独立score results/complete；本地observations及完整结果分析。原IQ/权重/运行日志/预测不提交Git。
+
+## 最终结果（LOCAL-COV，NO_PROMOTION）
+
+- 已完成三 DURA 条件四方法，pipeline ANALYZED_DEVELOPMENT；唯一主 local_predicted_ratio 不晋级，目标 ACTIVE。
+- 主 source A_K/C_K/R_U/H=89.844444/96.907407/63.777778/74.599611%；clean=61.111111/77.777778/100/75.862069%；star=60.763889/82.986111/71.180556/65.561038%。
+- 对 predicted_ratio，source 正确/未知拒对净数 +27/+58；clean −56/0；star −19/−17；star ΔA_K/ΔR_U/ΔH=−3.298611/−5.902778/−4.411287pp。保留原 predicted 候选与 pooled 对照，不替主。
+- 原 F0 source/clean/star 闭集 90.981481/80.034722/72.916667% 不变；主 clean/star C_K<90%，F0 损失 18.923611/12.152778pp。
+- source known12 过、known42 未过；high 未知 0/4/2 缺 19-15，R_U/H=N/A。NV/Q 历史暴露，source RX 已见，非独立未见 RX 确认；U/formal 访问0，无 REG，A_N/H_OW=N/A。
+- 仅新增 L6300 signal 前向、90 个局部协方差和 12 个 V-only 阈值；真实 F0/G0、神经更新0，实际 checkpoint 合成三模型各2。local 数组18433588 B，原背景/NN不变。
+- predictor1104252/GPU4 与 CPU1105453 阶段均 COMPLETE；独立只捕获 driver/CPU live，GPU显存/峰值 UNKNOWN，终态 live/owned 空、foreign0。
+- predict/score/pipeline=21.183924/19.138905/40.407914 s，非单包时延。19unique+27sub PASS，一次 P0/P1 review PASS；发布607files/data0，单 archive 比较/compile/runtime VERIFIED。
+- 完整结果：[公报](../../../docs/PAMF_PHASE3_LOCAL_COV_RESULTS_20261031.md)；私有 analysis.json 仅汇总既有产物，未重评分、拟合或扫描阈值。
