@@ -201,7 +201,7 @@ def train(args,p):
                 clipped+=int(norm>1);optimizer.step();updates+=1
                 seen_l+=int((roles[take]=='L_s').sum());seen_u+=int((roles[take]=='U_s').sum())
                 for key,value in dict(loss=loss,**terms).items():totals[key]+=float(value.detach().sum())
-            record=dict(epoch=epoch,updates=updates,losses={key:value/63000 for key,value in totals.items()},
+            record=dict(epoch=epoch,source_cache_view=cache_epoch,updates=updates,losses={key:value/63000 for key,value in totals.items()},
                 L_exposures=seen_l,U_exposures=seen_u,clip_fraction=clipped/247,seconds=time.perf_counter()-started,
                 F_inputs=0,TX_labels_read=0,learned_teacher_inputs=0,initialization_checkpoint_loads=0)
             stream.write(json.dumps(record,allow_nan=False)+'\n');stream.flush()
@@ -308,6 +308,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.wide_coarse worker',
                 'pamf_dura_efficiency.r17_native_cache worker',
                 'pamf_dura_direct_train.native_iq_hint worker',
+                'pamf_dura_direct_train.fresh_views worker',
                 'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
             goal_workers=sum(any(name in line for name in tokens) for line in commands)
