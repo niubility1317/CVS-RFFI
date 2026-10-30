@@ -4,7 +4,7 @@
 
 后续新候选默认同时完成三类测试：源域已知接收机、跨接收机 clean、跨接收机星地，全部接入同一冻结 DURA v1.0→PAMF。clean 输入也先经过 DURA，必须重新计算原 F0 在相同 DURA(clean) 输出上的闭集基线，不能挪用历史绕过恢复器的 clean 成绩。clean 仅为冻结测试对照，Phase3 训练、无标签适应、发现和注册仍使用星地样本。原 C_K≥90%、同条件原闭集减 A_K≤2pp 保持；跨 RX clean 的 R_U≥95%、跨 RX 星地的 R_U≥90%，主报逐 TX 宏 A_K/R_U/H-score。三类结果分别验收，源侧未通过不取消已登记的跨 RX 测试，旧实验不追溯补测或改判。
 
-用户随后要求先选前面性能较好的方法，核实是否接入DURA，未接入则补测并比较变化。当前优先固定 P1 signal r03 的已知支持与密度比两个方案：它们源侧 R_U46.888889%/60.888889%本来就含DURA，C_K和原F0损失满足原known12；旧跨RX clean直接输入没有DURA，也不是相同开放网络，不能冒充本次配对。下一run对同一个模型、统计和两套原阈值执行source/跨RXclean/跨RXstar各raw与DURA配对，三个DURA路径为主，raw为接入前后诊断；每路径原F0闭集也用该路径输入计算，不重新训练或调阈值。prepared的预测类条件密度候选保留，暂不发布或运行。完整跨RX星地、零标签适应、未知发现和未来匿名注册目标ACTIVE。
+用户随后要求先选前面性能较好的方法，核实是否接入DURA，未接入则补测并比较变化。当前优先固定 P1 signal r03 的已知支持与密度比两个方案：它们源侧 R_U46.888889%/60.888889%本来就含DURA，C_K和原F0损失满足原known12；旧跨RX clean直接输入没有DURA，也不是相同开放网络，不能冒充本次配对。已完成独立dura-best run，对同一个模型、统计和两套原阈值执行了source/跨RXclean/跨RXstar各raw与DURA配对，三个DURA路径为主，raw为接入前后诊断；每路径原F0闭集也用该路径输入计算，不重新训练或调阈值。prepared的预测类条件密度候选保留，暂不发布或运行。完整跨RX星地、零标签适应、未知发现和未来匿名注册目标ACTIVE。
 
 ## 历史研发路线（2026-10-30，用户要求再优化 PAMF）
 
@@ -850,3 +850,10 @@ Run `20261031-phase3-star-raw-open-s2026092701-r01` / actualcode `617681c8b2f24e
 ### 2026-10-31 较好既有方法DURA前后六路径预登记
 
 Run `20261031-phase3-dura-best-s2026092701-r01` / actualcode `9fc23a4cb78111aa96cc72fde0d35c036a876e5d`。按用户优先选择原P1 signal known/ratio两既有较好方案，唯一主ratio；原sourceDURA RU46.888889/60.888889已经含G。本轮同模型/统计/两原τ冻结，source/clean/star各raw与DURA配对，clean也G，每路径F0闭集同输入。新F0/signal各33606、G1728真实行，sourceDURA精确复用；无新NN/fit/τcal/L/OE/Us/U/formal。六pathpred后3truth独立评分，比较两侧各自closed下的正确接收/未知拒对净收益，三DURA为主、raw仅诊断。指标clean95/star90/CK90/损2pp和主景覆盖保持，历史NV/devQ曝光。prepared条件密度暂不运行，完整零标签DA/发现/未来匿名REG目标ACTIVE，当前无新性能。
+
+
+### 2026-10-31 较好既有方法DURA前后完整结果
+
+Run `20261031-phase3-dura-best-s2026092701-r01` / actualcode `9fc23a4cb78111aa96cc72fde0d35c036a876e5d`，同一P1 signal r03、统计和两套旧τ的2method×6path预测/3truth独立评分全部完成，执行VERIFIED、科学NO_PROMOTION。主ratio源raw→DURA A_K25.333333→89.770370、C_K25.911111→97.107407、R_U97.650794→60.888889、H40.229909→72.561330%；clean raw→DURA A_K68.229167→68.923611、C_K85.243056→85.416667、R_U100→99.652778、H81.114551→81.487441%；star raw→DURA A_K10.243056→63.020833、C_K12.326389→84.895833、R_U97.569444→76.388889、H18.539766→69.063927%。原F0同DURA闭集clean80.034722/star72.916667，损11.111111/9.895833pp仍超2；CK90未达，starRU90未达、主景缺TX保持N/A。DURA恢复星地已知接收，raw高RU同时大量误拒known，不能当综合成功。旧source较好成绩本来含G且精确复用，不虚报新恢复收益；prepared条件密度未启动。新F0/signal各33606/G1728真实行、各synth2，NN/fit/retau/U/formal0。完整零标签DA/发现/未来匿名REG仍ACTIVE，详见 `docs/PAMF_PHASE3_DURA_BEST_RESULTS_20261031.md`。
+
+当前证据把下一步重点指向跨RX已知误拒与星地未知分离的联合改进。后续只从合法无标签U学习域适应/未知结构，不回收Q、不用Q真值调阈值，不把source或clean单项RU通过当全系统成功；三类DURA主测试及同路径F0保护继续。新机制需另行固定输入/目标/对照/预算后实施，完整目标不缩小。

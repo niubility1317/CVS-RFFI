@@ -63,3 +63,21 @@ Actualcode `9fc23a4cb78111aa96cc72fde0d35c036a876e5d`，唯一owner `codex-phase
 Focused验证：{"producer": {"tests": 3, "subtests": 5, "seconds": 7.02, "stdout": "local_artifacts/pamf_phase3_dura_best_20261031_r01/run_tests.log"}, "scorer": {"tests": 6, "subtests": 8, "seconds": 8.61, "stdout": "local_artifacts/pamf_phase3_dura_best_20261031_r01/score_tests.log", "existing_numpy_trapz_deprecations": 2520}, "launcher": {"tests": 7, "seconds": 3.16, "stdout_evidence": "Observed one local tool result: 7 passed in3.16s; no repeated logging run"}, "test_items_total": 16, "additional_subtests": 13, "AST_files": 6, "mirror_matches": 11, "preview_runtime_validate": true, "registry_fields_validate": true, "three_main_conditions_require_DURA": true, "raw_only_paired_diagnostics": true, "real_IQ_weights_truth_read_in_local_tests": 0, "prepared_conditional_candidate_not_launched_or_consumed": true}；本实际候选一次直接P0/P1审查PASS。单次N607preflight仅核原完成/来源、3checkpoint/public文件存在、两个864的capsule/split、sourceV/NV既有角色manifest和actualfree显存，IQ/private truth实值0，复用VALIDATED_ONCE。
 
 首步actual原F0＋DURA＋P1signal syntheticG10两行，state保持、PASS立即继续。两套旧τ与统计在任何真实输入前冻结；sourceDURA精确复用原结果，sourceRaw与两Q各raw/G重新预测，同路径F0基线。所有六路径完整后独立CPUtruthlast，DURA−raw配对使用两侧各自closed。全部主测试DURA包括clean；source失败也全测，不retau/fit/query统计。当前未启动／无新性能。原始IQ/权重/逐行预测/原始日志不Git。
+
+
+## 实际启动与独立观察
+
+VERIFIED／RUNNING（保存snapshot时刻），actualcode `9fc23a4cb78111aa96cc72fde0d35c036a876e5d`；单archive SHA `db7ad37001e936c1e7b4d1776d6896e29cfc373db9f31b21a8b85ab4622b9a9c` 比较、remotecompile/runtime PASS。所属PID/CWD/argv/CUDA [{"pid": 973232, "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_dura_best_run --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-dura-best-s2026092701-r01/configs/run.json --device cuda:0 ", "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-dura-best-s2026092701-r01-release", "CUDA_VISIBLE_DEVICES": "4"}, {"pid": 973140, "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_dura_best_launch driver --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-dura-best-s2026092701-r01-release/runtime.json ", "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-dura-best-s2026092701-r01-release", "CUDA_VISIBLE_DEVICES": ""}]，离散GPU ["973232, GPU-95d925a1-7218-ca7b-adef-164241f4f491, 444"] 与日志增长已核实，不是峰值。冻结两既有P1方法/统计/原τ，三DURA主测试及raw配对诊断；所有预测完成后独立truth-last，不fit/retau/U/匿名注册，foreign停止/修改/重启0。本时刻没有新性能声明。
+
+
+## 实际结果（2026-10-31，最终）
+
+**VERIFIED / ANALYZED_DEVELOPMENT / NO_PROMOTION；完整目标 ACTIVE。** 此前预登记和启动段是各自时刻的历史快照，本节为最新终态。唯一主 density_ratio，prepared 条件密度未启动；固定既有 P1 signal r03、源统计和两套原 τ，无新训练或重校准。
+
+旧较好 source_DURA 成绩本来含 G，主 A_K/C_K/R_U/H=89.770370/97.107407/60.888889/72.561330%；source_raw 为25.333333/25.911111/97.650794/40.229909%。跨 RX clean raw→DURA：68.229167/85.243056/100/81.114551→68.923611/85.416667/99.652778/81.487441%；星地 raw→DURA：10.243056/12.326389/97.569444/18.539766→63.020833/84.895833/76.388889/69.063927%。
+
+主星地 DURA−raw：闭集正确 gain128/loss37/net+91，正确接收 gain310/loss6/net+304，正确误拒净−213，接收净+418，错误身份接收净+114，未知拒对 gain5/loss66/net−61，H+50.524161pp。clean 正确接收净+4、未知拒对净−1；source 正确接收净+17398、未知拒对净−1158。raw 高 R_U 不能掩盖大量 known 误拒。clean_DURA CK85.416667/损失11.111111pp，star_DURA CK84.895833/RU76.388889/损失9.895833pp，均失败；star high 未知0/4/2，R_U/H=N/A，不能认证六景。source known12通过、ratio known42有4交叉超限，不追改原规则。
+
+全部六路径预测完成后 source/clean/star truth 各1次，共用对应 raw/G 配对；sourceV父校准、NV/Q历史曝光、单seed/RX及正式/U未访问边界保持。新增真实F0/signal各33606、G1728，各synthetic2；无fit/update。三份完整stdout254行、warning/error/nonfinite0；predict37.840444s、score16.073465s、pipeline54.001907s，非B1。独立live predictor973232/GPU4/444MiB、driver973140，score974155/CUDAempty；日志5094→11297B，终态live/owned GPU空，foreign0，显存非峰值。
+
+完整十二运行点、两方法配对、真实TX/RX/day/scene与CI/覆盖见 [最终结果报告](../../../docs/PAMF_PHASE3_DURA_BEST_RESULTS_20261031.md)；本地 `local_artifacts/pamf_phase3_dura_best_20261031_r01/analysis.json` 保存紧凑全量解析。A_N/H_OW=N/A，未执行DA/REG，完整Phase3未完成。
