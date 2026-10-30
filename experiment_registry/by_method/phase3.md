@@ -55,6 +55,7 @@
 |PAMF-OW 动态注册集合训练|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-open-episodic-s2026092701-r01/report.md)|
 |PAMF-OW 动态注册集合训练|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-open-episodic-s2026092701-r02/report.md)|
 |PAMF未知设备跨RX身份结构冻结诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-open-feature-diagnostic-s2026092701-r01/report.md)|
+|PAMF第三阶段：物理配对训练后未知设备身份结构诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-physical-geometry-s2026092701-r01/report.md)|
 |PAMF同记录星地视图身份结构学习|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-physical-open-s2026092701-r01/report.md)|
 |PAMF Phase3 U池互近邻适应与两阶段匿名注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-reciprocal-adapter-s2026092701-r01/report.md)|
 |PAMF完整贡献与参考条件残差|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-reference-open-s2026092701-r01/report.md)|

@@ -1,0 +1,184 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-physical-geometry-s2026092701-r01",
+  "group_id": "pamf-phase3-source-physical-feature-geometry",
+  "display_name": "PAMF第三阶段：物理配对训练后未知设备身份结构诊断",
+  "description": "Frozen P_L/P_LOE fused160/open64 and reused original-F0 fused160; five source-novel representations, all 20 label-blind NN choices before source truth, no updates/target/registration.",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-only-geometry-diagnostic",
+  "aliases": [
+    "物理配对身份结构诊断"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_diagnostic",
+    "frozen_features",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-physical-open64-vs-fused160-source-geometry",
+  "parent_run_ids": [
+    "20261030-phase3-star-physical-open-s2026092701-r01",
+    "20261030-phase3-star-open-feature-diagnostic-s2026092701-r01",
+    "20261029-phase3-star-representation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "8aeac9583dc6becf4bcfd7ccebea06a1ee6176a8",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-physical-geometry-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_physical_geometry_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_PHYSICAL_GEOMETRY_PLAN_20261030.md"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Same fixed G10MIX01 cachedP1 source-novel only; original F0 feature arrays reused from exact same role, no new F0/G forward.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/novel/ids.npy",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_novel_frozen_export_and_truthside_geometry": 3150,
+      "source_L_new": 0,
+      "source_OE_new": 0,
+      "source_V_new": 0,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "target_Q_new": 0
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "OE": "p3source-exposure-g10-d3de31748308bfd147a83192",
+      "novel": "p3source-novel-g10-ec0c99642c5f15c96f42e055"
+    },
+    "split_id": {
+      "OE": "82200b480ea0396fbd57ab66",
+      "novel": "c570fdd9173191e488aa5690"
+    },
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_exposure_20261029_r01\\pool\\complete.json; E:\\type10-7\\local_artifacts\\pamf_phase3_star_source_novel_20261029_r01\\pool\\complete.json",
+    "support_query_ref": "Same-pool all-other/crossRX/crossday/crossRXandday 1NN, self excluded and opaque-ID stable ties; source TX labels only score frozen choices; not deployment support/query or futureAN.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Frozen P_L/P_LOE inference on existing source-novel G10P1; algorithm sees opaque IDs/RX/day/features, scorer reads source TX truth after all five exports and 20 neighbor choices.",
+    "query_use": "No target query or source fitting; historically exposed source-novel diagnostic, not a fresh blind test.",
+    "external_method_exception": null,
+    "claim_scope": "Heldout source TX geometry on seen-source RX/day only; not newRX confirmation, unsupervised categorization, UDA or anonymous registration. Full Phase3 goal ACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Two exact frozen physical-open source parents, each 2220 fresh steps/cumulative13320 from originalF0E50/11100. OriginalF0 features reused, F0 checkpoint not loaded; G not loaded.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-physical-open-s2026092701-r01/rows/P_L/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-physical-open-s2026092701-r01/rows/P_LOE/train/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Parent physical-open code31fa172946aeaecd2d3f1e784aee7366b7b5bee1, source-only fixed source6 contract392005, originalF0/DURA identities match cached source novel; no target-trained ancestry. Reused F0 feature export code55977eec2cf0c2bd09d7c6856179f919e9f0923d.",
+    "selection_rule": "Both fixed parents/all five representations reported; main P_LOE unchanged, no checkpoint/threshold/representation selection or optimization from truth."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-physical-geometry-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-physical-geometry-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-physical-geometry-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_physical_geometry_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_physical_geometry_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-physical-geometry-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One new GPU export worker, actualfree>=4096MB, allowed0..7, <=2 added own/card; foreign preserved; separate CUDAempty/BLAS1 CPU scorer.",
+    "stop_rule": "Illegal ancestry/role, nonfinite, collision or technical failure preserves output; no score on incomplete export. No automatic retry/retune; reconcile UNKNOWN originalPID/root; no foreign operations."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/export.json",
+    "logs/{driver,export,score}.log",
+    "features/{F0,P_L,P_LOE}.npz",
+    "features/{smoke,complete}.json",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "source true-TX macro1NN all-other/crossRX/crossday/crossRXandday",
+      "crossRXandday same-vs-different cosine gap",
+      "effective/participation rank",
+      "TX/RX/day between variance ratios"
+    ],
+    "dimensions": [
+      "five fixed representations F0/P_L/P_LOE",
+      "source heldout trueTX",
+      "source RX1/3/4/6/8",
+      "source day1/2/3",
+      "missing candidate N/A"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-physical-geometry-s2026092701-r01/features",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_physical_geometry_score.py",
+    "targets_ref": "Diagnostic only; v3 targets unchanged and not certified by geometry"
+  },
+  "rows": [
+    {
+      "row_id": "source-geometry-s2026092701",
+      "method": "PAMF-OW physical-open frozen source geometry",
+      "purpose": "Distinguish novel-device identity structure from membership ranking failure after physical pairing.",
+      "config_ref": "docs/PAMF_PHASE3_PHYSICAL_GEOMETRY_PLAN_20261030.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-physical-geometry-s2026092701-r01/configs/export.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Frozen parents init2701/source sampler3017/slots3018; no stochastic fit. Existing G10 receiver2027/scene2026103001/channel2026104001; opaque-ID ties.",
+      "k": null,
+      "scenario": "Seen-source5RX/3day G10P1 heldout3TX geometry diagnostic",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 updates;2x3150=6300 new realFrows+4 synthetic;3150 originalF0 feature rows reused; G0/F0load0/target0. 3150 distinct existing physical records.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-physical-geometry-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-physical-geometry-s2026092701-r01/logs/export.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_physical_geometry_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-physical-geometry-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/export.json",
+        "logs/{driver,export,score}.log",
+        "features/{F0,P_L,P_LOE}.npz",
+        "features/{smoke,complete}.json",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "All postPhase1 input remains fixed G10P1; no new clean/P0/L/V/OE/Us/target IQ or Gload.",
+    "Five representations/all20 neighbor selections fixed before independent source truth; no TX/K/quotas in NN selection.",
+    "Source same-pool geometry only; AN/HOW/UDA/REG N/A, no promotion/formal/multiseed. GoalACTIVE.",
+    "Constant/zero rank preserved, missing candidate N/A; originalF0 arrays reused with source identity, not hash/receipt chains."
+  ],
+  "registered_at": "2026-10-30T08:15:49+00:00"
+}
