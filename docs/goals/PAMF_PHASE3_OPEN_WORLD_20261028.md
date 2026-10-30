@@ -765,3 +765,10 @@ Run `20261030-phase3-star-joint-geometry-s2026092701-r01`、code3023c26b4bb2b2f7
 Run `20261030-phase3-star-density-s2026092701-r01`、codeb8163a03e8d3d299127c7914272a2d866f92c89a，VERIFIED/ANALYZED_SOURCE_ONLY、NO_PROMOTION。原F0/defaulthead冻结，L6300拟合90域Gaussian modes/共享收缩白化，主OE6134无TX/K拟合32背景mode/固定25Lloyd；V27000只known42校准、NV3150全两policy预测后独立truth。主AK90.374074/CK98.325926/RU28.095238/H42.864791%，原F0损失0.607407pp，AUROC91.705905%；控制AK90.285185/CK98.433333/RU21.015873/H34.095309%。背景净增未知拒对223、正确known净增24，两组known42过，未知失败。sourceRX已见/novel历史曝光，target0，真实F/G/NN更新0、合成F2；完整25轨迹/42组风险/所有分组/日志和独立数组读回齐全。
 
 下一候选增加新的表征信息：保留原fused160/defaulthead身份，检验原F0融合前四贡献的逐分支单位化拼接，和当前fused160密度作同族统计对照；不根据novel真值挑分支/权重或调本轮τ。先在实际冻结构造器验证合法feature导出/维度与成本，再独立固定单seed源矩阵/执行；当前尚未实现或证明收益。源通过才另登记跨未见RX星地，原U/Q隔离、无标签适应/发现/未来匿名注册及完整目标仍ACTIVE，AN/HOW未执行。完整数据/方法/分组/成本见`docs/PAMF_PHASE3_DENSITY_RESULTS_20261030.md`。
+
+
+## 2026-10-30 四贡献640密度完成，不晋级
+
+Run `20261030-phase3-star-contribution-density-s2026092701-r01`、codeedc28ad00baace5e4b9567fbf3391154bf6c34b4，VERIFIED/ANALYZED_SOURCE_ONLY、NO_PROMOTION。主640 AK90.440741/CK98.470370/RU16.158730/H27.418664%，原F0损失0.540741pp；固定160控制原样复用AK90.374074/CK98.325926/RU28.095238/H42.864791%。主已知正确净+18，未知拒对净−376；19-16收益被另两TX退步抵消，不能按TX或分支择优。sourceL6300/OE6134/V27000/NV3150同G10P1，sourceRX已见、novel历史曝光；真实F30150＋合成2、G/NN更新/target0，全部25轨迹/42风险/分组/日志/独立control数组读回齐全。640与160不仅信息不同，统计维度/方差收缩/资源也不同，不归因为某单分支。
+
+下一步单独学习开放embedding：原F0/defaulthead身份冻结，open以原unit160的零残差起点、仍输出160维；源L跨RX/day度量监督，主另加OE原F0软邻域保持，不读OE TX/K/硬伪边，不再用max成员关系头。拟两组同结构/初始化/固定预算的L-only embedding控制和L＋OE软结构主；两者后续统计背景均含OE，不能称整体无OE控制。新网络/损失/预算/随机流须独立最小预登记，尚未实现或验证；不以当前novel标签调参。通过源known保护＋整体RU90早筛才另登记跨RX星地，完整无标签适应/发现/未来匿名注册和更高拒识目标持续ACTIVE，AN/HOW未执行。详见`docs/PAMF_PHASE3_CONTRIBUTION_DENSITY_RESULTS_20261030.md`。
