@@ -35,3 +35,7 @@
 模型实际load校验来源、源数据合同、种子、冻结recipe和无目标继承；预测与truth分进程。首步十个真实源模型的CPU no-query smoke，通过后自动运行；出现系统技术失败停止接纳新预测，已启动任务保留。每卡本任务至多1个worker、同卡CUDA及待执行总数小于2、剩余显存至少12000MiB；其他owner任务保留，CPU scorer全局最多1。
 
 独立P0/P1审查发现已修正增量profile检查与现有--job score-*进程识别；两个修复完成定点复核。实际运行状态以远端PID、日志、状态文件及评分产物为准。
+
+## 发布读回（2026-10-31，香港时间）
+
+VERIFIED：代码提交 `c3ae5704c0871f4850a30593a161e42ae9702814` 已push并独立核对远端分支；一次发布归档传输比较及远端编译通过。controller PID 1002746，CWD和命令行独立读回一致。十种实际source checkpoint的CPU source-only无query smoke全部PASS，target/truth读取0。首个队列状态为40预测、40评分排队，GPU worker 0；此前其他实验继续运行，实际等待资源。该状态不是预测或评分完成证据。
