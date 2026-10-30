@@ -4,7 +4,7 @@
 
 后续新候选默认同时完成三类测试：源域已知接收机、跨接收机 clean、跨接收机星地，全部接入同一冻结 DURA v1.0→PAMF。clean 输入也先经过 DURA，必须重新计算原 F0 在相同 DURA(clean) 输出上的闭集基线，不能挪用历史绕过恢复器的 clean 成绩。clean 仅为冻结测试对照，Phase3 训练、无标签适应、发现和注册仍使用星地样本。原 C_K≥90%、同条件原闭集减 A_K≤2pp 保持；跨 RX clean 的 R_U≥95%、跨 RX 星地的 R_U≥90%，主报逐 TX 宏 A_K/R_U/H-score。三类结果分别验收，源侧未通过不取消已登记的跨 RX 测试，旧实验不追溯补测或改判。
 
-用户随后要求先选前面性能较好的方法，核实是否接入DURA，未接入则补测并比较变化。当前优先固定 P1 signal r03 的已知支持与密度比两个方案：它们源侧 R_U46.888889%/60.888889%本来就含DURA，C_K和原F0损失满足原known12；旧跨RX clean直接输入没有DURA，也不是相同开放网络，不能冒充本次配对。已完成独立dura-best run，对同一个模型、统计和两套原阈值执行了source/跨RXclean/跨RXstar各raw与DURA配对，三个DURA路径为主，raw为接入前后诊断；每路径原F0闭集也用该路径输入计算，不重新训练或调阈值。prepared的预测类条件密度候选保留，暂不发布或运行。完整跨RX星地、零标签适应、未知发现和未来匿名注册目标ACTIVE。
+用户随后要求先选前面性能较好的方法，核实是否接入DURA，未接入则补测并比较变化。当前优先固定 P1 signal r03 的已知支持与密度比两个方案：它们源侧 R_U46.888889%/60.888889%本来就含DURA，C_K和原F0损失满足原known12；旧跨RX clean直接输入没有DURA，也不是相同开放网络，不能冒充本次配对。已完成独立dura-best run，对同一个模型、统计和两套原阈值执行了source/跨RXclean/跨RXstar各raw与DURA配对，三个DURA路径为主，raw为接入前后诊断；每路径原F0闭集也用该路径输入计算，不重新训练或调阈值。预测类条件密度已另行完成三类DURA测试，按用户最新要求作为重点候选；原pooled density ratio保留冻结对照。当前局部协方差实验仅改变source-L模式形状，具体矩阵见最新预登记。完整跨RX星地、零标签适应、未知发现和未来匿名注册目标ACTIVE。
 
 ## 历史研发路线（2026-10-30，用户要求再优化 PAMF）
 
@@ -904,3 +904,8 @@ Run `20261031-phase3-signal-ssl-s2026092701-r01` / actualcode `72b0b60d6c445e907
 本轮选取两种已完成方法：原P1 signal r03＋pooled known/OE density_ratio作为冻结对照（`20261031-phase3-dura-best-s2026092701-r01`）；同一冻结表征的predicted_ratio作为重点候选（`20261031-phase3-class-density-s2026092701-r01`）。后者按原F0预测身份选取15个源RX/day模式，背景32模式保持，只使用原源V确定自身六阈值；身份头与DURA不改。所有三类测试均使用DURA。前者clean/star AK/RU/H为68.923611/99.652778/81.487441%与63.020833/76.388889/69.063927%；后者为70.833333/100.000000/82.926829%与64.062500/77.083333/69.972325%。优先保留已知正确接收与未知拒识共同改善的方法，不按RU单项选择SSL、CLASS偏移或SHARED偏移。
 
 此次只筛选历史开发证据并归档已完成实验，不新增训练、预测、评分、阈值拟合或正式RX访问。不修改任何历史run主方法/结论，不将重点候选视为科学晋级或独立盲测确认；原冻结对照继续保留。两者仍未达到CK≥90%、星地RU≥90%和相对同DURA闭集AK损失≤2pp的联合要求，目标ACTIVE。
+
+
+### 2026-10-31 既有较好方法的局部协方差预登记
+
+Run `20261031-phase3-local-cov-s2026092701-r01` / actualcode `4d1d645dd13de875a7f6adf32508a9732ffd3f47`，固定原pooled/predicted ratio两控制，新known90各模式仅以原L6300P1估完整协方差C=70/230*S+160/230*pooledI，原mean/whitener/OE32/F0/G保持。新local pooled及唯一主local predicted，各Vonly six-tau，旧两tau精确，全部freeze后sourceNV/cleanQ/starQ缓存score、独立三truth-last。补sourceLsignal6300真实前向，F0/G/Q新真实0；cov90/tau12实际拟合，非全零成本；不读U/正式RX。检验方向相关形状，不再训练失败SSL学生或对历史Q调参；全部三DURA测试自动完成，主gate保持clean95/star90、CK90/损2pp/场景覆盖及starAK/RU不低于predicted。source/NV/Q历史曝光及high缺类保留，不称匿名REG或独立新盲测，完整目标ACTIVE，当前未启动无性能。方案见 `docs/PAMF_PHASE3_LOCAL_COV_PLAN_20261031.md`。
