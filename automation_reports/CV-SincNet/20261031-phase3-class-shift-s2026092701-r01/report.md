@@ -61,3 +61,20 @@ Actualcode `74e0a3de37d0f3673375804fb09b06c4f624745b`，唯一owner `codex-phase
 Focused验证：{"core": {"tests": 5, "passed": 5, "seconds": 0.88, "console_output_observed": true, "persistent_stdout": false, "cache_warning": 1, "real_data_reads": 0}, "producer": {"unique_tests": 3, "subtests": 4, "seconds": 9.86, "stdout": "run_tests.log"}, "scorer": {"unique_tests": 5, "subtests": 10, "seconds": 10.19, "final_handle_alignment_targeted_tests": 1, "final_targeted_subtests": 10, "final_targeted_seconds": 8.01, "overlap_not_new_items": true, "stdout": "score_tests.log"}, "launcher": {"unique_tests": 7, "seconds": 3.08, "stdout": "launcher_tests.log"}, "test_items_total": 20, "additional_subtests": 14, "AST_files": 8, "mirror_matches": 9, "preview_runtime_validate": true, "registry_fields_validate": true, "real_U_Q_IQ_weights_truth_reads": 0}。一次直接P0/P1审查PASS；单N607preflight核best/旧mix完成及实际来源/CP/缓存文件存在、Ucapsule/split与actualfree，无IQ/feature/truth实值读取，VALIDATED_ONCE复用。
 
 实际三CP两条syntheticG10 smoke首步，PASS立即继续；sourceclassprior先冻结，再开cachedstarU384，仅signal用于新CLASS20步；SHARED原20步adapter/trace精确继承，不refit。CLASSfreeze后读source/Q，sourceRXdelta0，clean/star target同一starU状态。所有三DURA×六列固定后唯一独立CUDAempty scorer读三truth各一次，无Utruth/EMin score/Q统计/retau。新真实IQ/G/F0/signal前向0，synthetic各2，目标统计新20/继承20明确分列，NN/source密度/阈值更新0。当前未启动，无性能声明；IQ/CP/U逐行特征/预测/原日志不Git。
+
+
+## 实际启动与独立观察
+
+VERIFIED RUNNING（snapshot时刻），actualcode `74e0a3de37d0f3673375804fb09b06c4f624745b`；单archive SHA `b1c0f00000c3b189bfbac2279efc609e5e1984689932e7866a0a53e65daa1809` 比较及remote compile/runtime PASS。独立所属PID/CWD/argv/CUDA [{"pid": 1043324, "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_class_shift_run --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-class-shift-s2026092701-r01/configs/run.json --device cuda:0 ", "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-class-shift-s2026092701-r01-release", "CUDA_VISIBLE_DEVICES": "7"}, {"pid": 1043230, "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_class_shift_launch driver --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-class-shift-s2026092701-r01-release/runtime.json ", "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-class-shift-s2026092701-r01-release", "CUDA_VISIBLE_DEVICES": ""}]，GPU离散样本 ["1043324, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 374"]，日志增长核实。GPU live采样VERIFIED，显存非峰值。CLASS20仅用cachedstarU，SHARED20继承；source网络/密度/原τ冻结，全部三DURA预测后独立CPU评分；U真值/Q拟合/匿名注册/foreign操作0。
+
+## 最终结果（NO_PROMOTION）
+
+三条件六列COMPLETE、pipeline ANALYZED_DEVELOPMENT；唯一CLASS_ratio，NO_PROMOTION/完整目标ACTIVE。前文未启动/无性能为事前记录，当前以本节为准。
+主宏A_K/C_K/R_U/H（%）：source89.770370/97.107407/60.888889/72.561330；clean70.312500/86.805556/99.652778/82.450204；star64.062500/86.111111/71.180556/67.434211。原F0闭集不变，clean损伤9.722222pp/star8.854167pp，CK/保护及星地RU失败。
+主−DA0：clean正确/接受各+8、未知0；star正确+6/接受+7、未知拒对gain0/loss15（RU−5.208333pp/H−1.629716pp）。主−SHARED：clean正确/接受+10；star正确+6/接受+7/未知拒对−13。新增接收不是身份头纠错。
+high未知TX0/4/2→RU/H N/A；其余五景RU<90、六景损伤>2pp。源known12保持/42未全过，源RU只诊断；未用class-density新τ或更高控制救主。
+CLASS21条有限递增，目标181695.052814→182029.344876、末增.000135359；RMS2.044845<r5.263391、maxclass3.058136/backgroundnorm.887298、乘子0。新CLASS20统计fit与继承SHARED20分开，source/τ/NN更新0不等于目标mode未拟合。
+新realIQ/G/F0/signal0，缓存U384、三checkpoint synthetic各2；predict7.573466s/score6.886858s/pipe14.578216s非B1。神经834665不变，新prior107768B/CLASS9208B；祖先训练与旧U导出成本保留。
+独立live GPU7/PID1043324/374MiB仅离散样本，终态空/foreign0；未捕获CPUscorer live /proc，仅pipeline CPU/ret0与产物。运行stdout无异常；scorer旧trapz告警4668＋重叠单case696；core console5PASS/缓存warning1无rawlog如实记载。
+20unique＋14sub、单P0P1PASS、package587/data0；全预测后三truth各一次/Utruth0。历史sourceNV/Q、单RX/seed、formal未访问，无发现注册，A_N/H_OW N/A/finalfalse。
+[完整结果](../../../docs/PAMF_PHASE3_CLASS_SHIFT_RESULTS_20261031.md)；私有analysis.json保留精简汇总与CLASS21/继承SHARED21完整轨迹，≤300KB。
