@@ -152,3 +152,6 @@ noVar/headFeature源阶段对照完成：64批/15120统计独立复算，0训练
 
 
 连续后验F-guided对照已发布：c3b76d2bf，N607 GPU4 worker765216，实际source2Ls后验IQ梯度/严格重载/F冻结smoke通过，15项测试/唯一P0/P1审查PASS；63000源160D特征缓存2.966秒，当前E5/1235更新。G仍从零单阶段E20/4940，原pairedclean不变；F原头将特征确定性映射为soft6D后验，T1/KL(clean||restored)/0.1，无硬伪TX或真实TX读取。F上游50轮知识成本明确复用，不能称F-free；自动全七景及3pp/clean/效率目标保持。
+
+
+连续后验F-guided E20完成4940更新与完整七景，126组独立复算，F参数/状态不变，0直接TX/V/target/硬伪TX/G祖先。clean84.381548%，lowurban67.943452%；六景3pp=False/clean保持=False/R17逐景1pp=False。G流程1116.279秒，全流程1420.082秒；F既有50轮知识成本另计，非F-free，默认保持。
