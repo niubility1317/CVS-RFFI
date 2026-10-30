@@ -20,3 +20,10 @@ sourceL6300/OE6134来自原5RX/3day的G10MIX01 P0/P1，祖先F0/DURA合同不变
 - 两组训练真实F5683200；eval新F每组37314/原F0864/G864，总F5759556真实+24合成，G1728真实+4合成。train实际checkpointsmoke8合成F/arm，先source values，PASS直接继续。sourcepool42584+Q864=43448，不把多view/重复曝光当新记录。
 - model/loss10tests18sub PASS3.85s；evalscore13tests39sub PASS4.14s后唯一wrapper接口定向1 PASS2.88s；trainer3 PASS22.60s（实际可微单step两臂）；launcher3 PASS4.02s，非一次合并suite。12AST/实际runtime，唯一directP0P1 PASS。一次preflight只元数据/文件存在/GPU，真实IQ/truth0；单archive比较/compile后启动、独立PID/CWD/argv/GPU/log增长和全部预测后truthlast，不增审批/签名/hash链。
 - 预期train final/resolved/steps/summary/smoke/complete；predict prototypes/thresholds/known/NV/Q/calibration/complete；score results/complete；launch/pipeline/row/config/logs/observations。所有raw日志/weights/features私有不Git。非法角色/祖先、非有限、输出碰撞/不可运行/无法合法预测保留，无自动重试、按科学结果停或热改；UNKNOWN核原PID/root。当前不宣称已启动或新性能成功。
+
+
+## 实际启动与初步运行核实
+
+VERIFIED／RUNNING。code31fa172946aeaecd2d3f1e784aee7366b7b5bee1；454文件/data0 release，单archive SHA ca42f56ddf8e116e9c8133dff7672f0da0d3bd47e38151cd1f7171a809b2d52c 比较/compile/runtime PASS。driver3989640、P_L train3990790/CUDA7、P_LOE train3990793/CUDA6已独立live核实精确CWD/完整argv/GPU；实际checkpoint native/open/physical noquery烟测PASS，首步及日志增长齐。两GPU各一个新增own进程，显存离散样本1844MiB/worker，非峰值；其他用户停止/修改/重启0。
+
+两组当前按原固定2220预算运行，主P_LOE不换。额外physical前向只读取同记录sourceP0；分类和冻结评估仍P1。OE没有未知身份标签、失败邻接伪标签、真实K；无Us/V/novel/target训练。此时没有新性能结论，逐行训练后自动完整source+crossRXQ预测和独立CPU双truth评分；U/formalRX仍0读，DA/匿名注册/完整v3目标保持ACTIVE。

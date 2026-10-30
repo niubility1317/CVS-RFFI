@@ -703,3 +703,10 @@ VERIFIED C0/C1 2x2220 source updates, all source/crossRX-G10P1 predictions and i
 VERIFIED source L6300/OE6134 G10 P0export/P1reuse; P1 candidate1358/1674 sameTX, PAIR22/25, no feasible L98%/25group rule; all final edges0; NO_RELIABLE_SOURCE_NEIGHBORS, no training/target/truth/G updates, fullgoalACTIVE.
 
 详见 `docs/PAMF_PHASE3_SOURCE_NEIGHBOR_RESULTS_20261030.md`。
+
+
+## 2026-10-30 同记录星地视图结构学习已实施
+
+VERIFIED RUNNING: actual originalF0/noquery native+open+physical smoke PASS, both first updates/loggrowth, independent live trainPID/CWD/argv/GPU confirmed; same-record P0P1 source only, foreign0.
+
+Run `20261030-phase3-star-physical-open-s2026092701-r01`，code31fa172946aeaecd2d3f1e784aee7366b7b5bee1；P_L与主P_LOE各2220，原F0独立起点、C0常量结构315106不变；原fullL/KD/M成员保留，新增known跨RXday对比与L同recordP0P1 raw64正则，两组仅OE正则0/.1有别，1280Frows/step。真checkpoint烟测和livePID/GPU/log已核实，自动fullprediction/truthlast。详见`docs/PAMF_PHASE3_PHYSICAL_OPEN_PLAN_20261030.md`及run登记。目标适应/匿名注册仍未完成，当前无新科学成功声明。
