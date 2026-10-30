@@ -228,3 +228,6 @@ noPriorAux E30 eb46cab8e完整结束：7410步/L189000U1701000/0G祖先教师-F-
 
 
 强频点幅相source诊断779f1e91e完成，CPU7.239624s/F8704+2/0G-update-TX-V-target/F不变，416组9568标量复算。noVar Q1phase选择478→488/496→502、移除约30%IQ误差，缓存01的mid场景−1；Q1幅度+13/+3，defaultQ1phase+6/+3且一景−1。不是所有场景保证，不冒充旧globalphase资格。可独立检验Q1精确相位MSE分量权重1→2，保留IQ/幅度/先验/action与固定E30/正式七景；部署无clean/mask，无目标反馈，当前oracle不能部署/不是真实TXaccuracy或极限。默认与目标ACTIVE。
+
+
+strongPhase E30已实际发布84c5f08b3f334781cad4cb96f9e22bd33d9000eb，controller1134232/worker1134322/GPU4存活，真实2Ls梯度/strictreload/F仅smoke PASS，CWD/argv/CUDA/GPU/loggrowth核实；8checks/ONEP0P1/preflight/archiveSHA/compile PASS，准入1PID/free22883MiB/后态2PID，本任务1worker。他人不变。Gscratch30/7410，noVar四loss+Q1精确phasecomponent1，使该项1→2；图266951/2prior4CG27FFT不变/训练额外2FFT/部署额外0，F/TX/教师/V/target优化0，F-informed源机制选择披露。已E1/30，phase项非零/加权loss一致，固定final30全七景，不按源误差或目标反馈停训/重跑；默认与目标ACTIVE。
