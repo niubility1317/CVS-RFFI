@@ -819,3 +819,8 @@ Run `20261030-phase3-star-signal-open-s2026092701-r03` / actualcode `dc01a402582
 ### 2026-10-30 signal-open r03完整源侧结果
 
 Run `20261030-phase3-star-signal-open-s2026092701-r03` / code `dc01a402582f93e452dbaa3ef59a9fbb44151818`，2220signal+projection更新、四列预测和独立truthlast完成，VERIFIED/NO_PROMOTION。唯一主A_K90.388889/C_K98.388889/R_U31.301587/H46.500199%，原F0损0.592593pp，known42通过；比匹配frozenknown未知+261（+8.285714pp）、正确−29/H+9.801909pp，三未知净+167/−14/+108，不是一致改善。四列均未RU90；原recognizer native0，复制feature祖先11100+2220=13320，sourceRXseen/NV历史曝光/target0。r01/r02技术失败不并为科学结果，smoke成本缺artifact记UNKNOWN。后续只用V检查局部42保护与总体2pp预算的差距，再独立固定校准对照；不扫NV或降低用户总体/主景门槛。完整跨RX星地/零标签DA/发现/未来REG目标ACTIVE，详见 `docs/PAMF_PHASE3_SIGNAL_OPEN_RESULTS_20261030.md`。
+
+
+### 2026-10-30 固定表征known12风险校准预登记
+
+Run `20261030-phase3-star-macro12-risk-s2026092701-r01` / code `26fbecff1df7e5476bcc5f459d8367c6fa49fd36`，固定父signal-open r03原分数/身份/known8，唯一主signal_known12；2×2冻结前端/信号×known42/known12。新hard12保overall+5RX+6scene的同macroC_K90/原F0损失2pp与覆盖，只把30cross切片列为完整诊断，不声称known42通过。两新六τ由V27000 exactFraction common-tail独立确定，全部τ固定后才novel3150，独立truthlast。NN/几何/归一化/真实IQ/F/G/signal前向新0，仅实际父CP synthetic_signal2；无target或未来REG结果。源NV历史曝光，完整用户总体/主场景与跨RX星地/零标签DA/发现/未来REG指标不变，goalACTIVE；当前未启动/无性能。设计见 `docs/PAMF_PHASE3_MACRO12_RISK_PLAN_20261030.md`。
