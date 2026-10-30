@@ -119,3 +119,6 @@ source-headFeature已按commit d79a280d843696d680c82bf63b0138905cf1cb5d发布，
 
 
 资源授权已实际落地并独立读回VERIFIED：旧r01 PID4025316仅CPU队列、无GPU row，在capacity锁内精确停止后/proc确认不再运行，旧smoke/日志保留，登记REPLACED不恢复。新r02按commit81dfc80a2d4687f9b9ab7bc9c28ede6b092f7c4a在GPU4/PID4060125实际RUNNING，source2Ls真实梯度/F冻结/G严格重载smoke PASS，完整argv/CWD/CUDA/显存/日志增长核实；该卡总3进程、own约2020MiB/free20965MiB，未改其他owner。源63000×160缓存3.450秒完成，至少E1/247，首轮82.045秒，仍从零单阶段累计E20/4940并自动全七景；当前无正式成绩，3pp目标及默认保持。
+
+
+headFeature资源r02完整完成E20/4940和七景正式测试，126组独立复算一致。clean84.902381%（较raw+380条正确），lowurban67.876786%，六星地均低于匹配noVar及默认；相对cos0.1仅lowurban+0.049405pp，其余五星地下降，逐景3pp未达。G新增流程1623.216秒/27.054分钟，发布到完整分析1999.843秒/33.331分钟，target七景337.460秒；共享三进程和不同模型/时段不做跨运行因果速度比。F末状态不变/更新0、G从零祖先0/直接TX-V-target训练0，F上游50轮知识/成本另计。全部负结果保留，默认DURA不变；下一研究应从当前新G的源stage/prior/求解特征定位开始，不按目标类别/场景调参。
