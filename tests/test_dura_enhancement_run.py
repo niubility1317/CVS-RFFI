@@ -15,6 +15,7 @@ def test_E30_routes_and_permissions(monkeypatch):
     assert (config['epochs'],config['updates'],config['L_exposures'],config['U_exposures'])==(30,7410,189000,1701000)
     assert config['training_F_access'] and config['training_TX_labels']==0 and not config['target_training']
     assert config['readouts']==['physical','scratch_joint'] and config['training_stages']==1
+    assert 266951+sum(p.numel() for p in trial.ShapeEnhancer().parameters())==config['parameters']
     args=SimpleNamespace(root='root',commit='a'*40)
     assert all(base.command(args,m,'scratch_joint','target')[3]==trial.MODULE for m in ('worker','score'))
     assert trial.learning_rate(0)==pytest.approx(.001/247)

@@ -201,3 +201,6 @@ source phase-only oracle闭合：固定noVar与default/source512×clean/缓存01
 
 
 已知source action＋独立Gaussian先验参照完成：fit62488排除probe512/缓存01与20，CPU18.357643秒，G0/F1026/更新0/直接TX-V-target0；288统计独立复核。相对default源NMSE约降9.75%/16.87%，F-clean选择净−6/0（纠9损15、纠8损8），lowurban小组−2/+1；不是目标TX效果或恢复上界。算子和先验同时改变，AGC条件噪声/非Gaussian假设不满足，不能孤立归因或认证极限；本参照不部署/不触发新训练，健康E30保持。见20261031-diagnostic-DURA-known-action-Gaussian-s2026092701-r01/analysis.md。
+
+
+E30单阶段IQ增强已完整30/7410及双读出七景，252组与全量成对IQ约束独立复算。physical/enhanced lowurban66.707143/66.039881%，clean84.842262/84.455952%，增强七景全负；low净−1121、clean净−649，clean类别1−7.6536pp。两个读出0/6达3pp，默认保持。G流程1611.311秒/26.855分钟，全流程2058.587秒/34.310分钟；G+F_B1默认4.6481ms、增强5.3925ms（共享负载）。实际930新增/267881总参数纠正原手算多100；未热改旧489程序/权重，未来本地配置已改且计数测试9PASS。该headfactor2受限增强未成功，不据目标再调幅度/权重；下一来源核查可研究原R17合规IQ教师如何帮助从零单阶段收敛，F来源权限保持。见20261031-phase1-DURA-IQenhance-E30-s2026092701-r01/analysis.md。

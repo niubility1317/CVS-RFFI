@@ -239,7 +239,7 @@ def configure():
     def configuration():
         value=previous_configuration()
         value.update(run=RUN,recipe='physical_plus_bounded_IQ_enhancement_E30',epochs=30,updates=7410,
-            L_exposures=189000,U_exposures=1701000,new_cumulative_epochs=30,parameters=267981,
+            L_exposures=189000,U_exposures=1701000,new_cumulative_epochs=30,parameters=267881,
             corruption_epochs=20,corruption_schedule='epochs01-20 then01-10;30fresh source shuffles;20 unique corruption caches',
             source_freeze='fixedfinalE30/7410;noearlystop/source-or-target-ranking',training_stages=1,
             F_feature_weight=1.,enhanced_IQ_weight=1.,F_reference='normalize(u+QheadQheadT*u);factor2 original centered-head projection',

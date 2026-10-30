@@ -1,7 +1,7 @@
 {
   "physical_parameters": 266951,
-  "enhancer_parameters": 1030,
-  "total_parameters": 267981,
+  "enhancer_parameters": 930,
+  "total_parameters": 267881,
   "physical_ConvLinear_MAC_per_IQ": 25068072,
   "enhancer_ConvLinear_MAC_per_IQ": 208896,
   "total_ConvLinear_MAC_per_IQ": 25276968,
@@ -11,12 +11,14 @@
     65536,
     8192
   ],
-  "relative_parameter_increase_percent": 0.3858385995931838,
+  "relative_parameter_increase_percent": 0.3483785413802533,
   "relative_ConvLinear_MAC_increase_percent": 0.8333149832982768,
-  "FP32_parameter_bytes": 1071924,
+  "FP32_parameter_bytes": 1071524,
   "physical_prior_calls": 2,
   "physical_CG_updates": 4,
   "physical_FFT_IFFT_calls": 27,
   "extra_deployment_F_calls": 0,
-  "scope": "Conv1d+Linear only;excludesFFT/CG/norm/activation/memory/F;physicalsamegraph as frozen_version;actualruntime andcheckpointbytes await finalartifacts"
+  "scope": "Conv1d+Linear only;excludesFFT/CG/norm/activation/memory/F;physicalsamegraph as frozen_version;actualruntime andcheckpointbytes await finalartifacts",
+  "actual_checkpoint_bytes": 1313996,
+  "parameter_count_erratum": "Original489 release metadata handcount267981/1030 was100 too high;actual model267881/930;remote immutable runtime andcheckpoint preserved"
 }

@@ -208,12 +208,13 @@
   "notes": [
     "One trainingstage30epochs/7410jointAdamWsteps;20uniquecached corruptions +repeatfirst10;original63000 allsource roles,15percentclean.OriginalnewG ancestors0.",
     "Physicalparameters trained noVarfourlosses;enhancer reads received and detachedphysical;Fcos+enhancedIQNMSE coefficients1 each,only enhancer receives thesegradients.Independentclip1pergroup avoids globalclipcoupling;physical target unchanged.",
-    "Conv4to16k7/GN/SiLU/depthwisek5/pointwise16/GN/SiLU/out2zero-init,1030params;whole267981.Projection removes complexscalar gain/phase directions,relativeRMS<=.05/energy<=.0025.Confidence alone isnot efficacy.",
+    "Conv4to16k7/GN/SiLU/depthwisek5/pointwise16/GN/SiLU/out2zero-init,930params;whole267881.Projection removes complexscalar gain/phase directions,relativeRMS<=.05/energy<=.0025.Confidence alone isnot efficacy.",
     "FrozenoriginalF/defaulthead sourcefeatures once63000;normalizedfeature u,rank5 centeredheadprojection P,teacher normalize(u+Pu);factor2visible components algebra preserves originalargmax,doesnot certify trueTX.Original F50cost andlabeledknowledge inherited.",
     "Only IQ enhancernetwork isnew;no directTX/V/targettraining,hardpseudoTX,extraidentityhead,Fupdates,targetadapter.Claim recognition-orientedIQ distinct exactTXhardware reconstruction.",
     "FixedfinalE30,source1800/target168000,physical+enhanced readouts each7views;all14 perrole before independenttruthlast.Eachversion formallytested regardlesssource metrics,originaldefaultDURA unchanged.",
     "MatchedsamecardDURA/physical/enhanced B1/B128 latency,full30curves/fullpipelinecost,parameterbytes/storage/VRAM.Threepp eachsixscene plusclean andR17guard separately.No cross-run causalspeedratio onsharedGPU.",
-    "GPU4/6/7oneownworker,admissionbeforeexisting<=2/free>=12000MiB,afteradding<=3/goal2/own1card;preserve others.OneP0P1review,8focusedchecks,actual2Ls noquerysmoke first then immediatecontinue."
+    "GPU4/6/7oneownworker,admissionbeforeexisting<=2/free>=12000MiB,afteradding<=3/goal2/own1card;preserve others.OneP0P1review,8focusedchecks,actual2Ls noquerysmoke first then immediatecontinue.",
+    "Actualparametercount930enhancer/267881whole;initialhandcount1030/267981+100erratum corrected inpublicreport/localfutureconfig;original489metadata/runtime/checkpoint preserved,nomodelchange."
   ],
   "registered_at": "2026-10-30T18:07:59+00:00"
 }
