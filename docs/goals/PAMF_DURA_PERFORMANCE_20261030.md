@@ -116,3 +116,6 @@ source-headFeature已按commit d79a280d843696d680c82bf63b0138905cf1cb5d发布，
 
 
 用户在旧headFeature队列等待约40分钟后明确允许资源调整：仅GPU4/6/7选一张、启动前free≥12000MiB且最多已有2个可见计算进程，本任务新增1个后总数≤3；own每卡1/goal最多2不变。只在旧r01仍无GPU row时锁内精确停止本run CPU排队控制器，保留全部smoke/日志并独立登记r02，避免重复；其他owner/科学模型/数据/E20预算保持。若r01已开始GPU训练则拒绝切换并保留健康旧任务。新r02沿用既定source headFeature系数和全七景，含已逐位验证的ownedFP32输出转换；真实启动/旧进程后态以本run产物读回为准，不把授权或登记当成启动成功。
+
+
+资源授权已实际落地并独立读回VERIFIED：旧r01 PID4025316仅CPU队列、无GPU row，在capacity锁内精确停止后/proc确认不再运行，旧smoke/日志保留，登记REPLACED不恢复。新r02按commit81dfc80a2d4687f9b9ab7bc9c28ede6b092f7c4a在GPU4/PID4060125实际RUNNING，source2Ls真实梯度/F冻结/G严格重载smoke PASS，完整argv/CWD/CUDA/显存/日志增长核实；该卡总3进程、own约2020MiB/free20965MiB，未改其他owner。源63000×160缓存3.450秒完成，至少E1/247，首轮82.045秒，仍从零单阶段累计E20/4940并自动全七景；当前无正式成绩，3pp目标及默认保持。

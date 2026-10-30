@@ -23,7 +23,7 @@
   "replaces_run_id": "20261030-phase1-DURA-source-headFeature-s2026092701-r01",
   "authorization": "2026-10-30userexplicitanswer:允许单卡新增1个进程，总数最多3个;onlyreplaceoldCPUqueuebeforeGPUrowstart;others/model/data/budgetunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "81dfc80a2d4687f9b9ab7bc9c28ede6b092f7c4a",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261030-DURA-source-headFeature-capacity3-r02"
@@ -100,7 +100,7 @@
     "remote_run_root": "runs/20261030-phase1-DURA-source-headFeature-s2026092701-r02",
     "remote_log_root": "runs/20261030-phase1-DURA-source-headFeature-s2026092701-r02/logs",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-source-headFeature-s2026092701-r02",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.head_guided_capacity3 run --root ../.. --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.head_guided_capacity3 run --root ../.. --commit 81dfc80a2d4687f9b9ab7bc9c28ede6b092f7c4a",
     "stop_rule": "Oldrowstarted/children/wrongPID-CWD-commit/rootcollision:refusehandover,preservehealthyoldtraining.OtherwiseexistingG/F/source/nonfinite/scoringfailurestoprule,noautoretry/hotedit/fallback"
   },
   "expected_artifacts": [
@@ -185,7 +185,7 @@
       "budget_ref": "OneGjointE20/4940,L126000/U1134000;Gancestor0;Fclean63000once+Frestored1260000;Fupdates0;reusedF50/11100declared",
       "output_root": "runs/20261030-phase1-DURA-source-headFeature-s2026092701-r02/scratch_joint",
       "log_path": "runs/20261030-phase1-DURA-source-headFeature-s2026092701-r02/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.head_guided_capacity3 worker --root ../.. --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_direct_train.head_guided_capacity3 worker --root ../.. --commit 81dfc80a2d4687f9b9ab7bc9c28ede6b092f7c4a --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",
