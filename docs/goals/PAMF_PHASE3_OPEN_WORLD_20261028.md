@@ -772,3 +772,10 @@ Run `20261030-phase3-star-density-s2026092701-r01`、codeb8163a03e8d3d299127c791
 Run `20261030-phase3-star-contribution-density-s2026092701-r01`、codeedc28ad00baace5e4b9567fbf3391154bf6c34b4，VERIFIED/ANALYZED_SOURCE_ONLY、NO_PROMOTION。主640 AK90.440741/CK98.470370/RU16.158730/H27.418664%，原F0损失0.540741pp；固定160控制原样复用AK90.374074/CK98.325926/RU28.095238/H42.864791%。主已知正确净+18，未知拒对净−376；19-16收益被另两TX退步抵消，不能按TX或分支择优。sourceL6300/OE6134/V27000/NV3150同G10P1，sourceRX已见、novel历史曝光；真实F30150＋合成2、G/NN更新/target0，全部25轨迹/42风险/分组/日志/独立control数组读回齐全。640与160不仅信息不同，统计维度/方差收缩/资源也不同，不归因为某单分支。
 
 下一步单独学习开放embedding：原F0/defaulthead身份冻结，open以原unit160的零残差起点、仍输出160维；源L跨RX/day度量监督，主另加OE原F0软邻域保持，不读OE TX/K/硬伪边，不再用max成员关系头。拟两组同结构/初始化/固定预算的L-only embedding控制和L＋OE软结构主；两者后续统计背景均含OE，不能称整体无OE控制。新网络/损失/预算/随机流须独立最小预登记，尚未实现或验证；不以当前novel标签调参。通过源known保护＋整体RU90早筛才另登记跨RX星地，完整无标签适应/发现/未来匿名注册和更高拒识目标持续ACTIVE，AN/HOW未执行。详见`docs/PAMF_PHASE3_CONTRIBUTION_DENSITY_RESULTS_20261030.md`。
+
+
+## 2026-10-30 独立度量残差两臂完成，不晋级
+
+Run `20261030-phase3-star-metric-residual-s2026092701-r01`、code310588cbd8c79bc4c687939ab49202ea422e8a2c，VERIFIED/ANALYZED_SOURCE_ONLY、NO_PROMOTION。M_L/M_LOE各2220新aux102688参数，F0/defaulthead frozen/native0，全部4440 finite/同L indices/完整metadata重放/梯度路径通过。主AK90.418519/CK98.411111/RU23.174603/H36.893313%，原F0损失0.562963pp；M_L RU23.682540%，固定F0 RU28.095238%。known42皆过、unknown失败；主vsM_L正确净+8/未知拒对净−16，主vsF0正确+12/未知拒对−155。postfit背景两者含OE，M_L仅embedding无OE。sourceRX已见/novel历史曝光，所有数据仍原G10P1，target0/AN/HOW未执行；真实F00/合成2/G0，新open真实feature行1079728/合成16/native更新0，pipeline199.695379s非B1。完整25×2/42×2/分组/log/controlarrays/独立读回齐全。
+
+下一候选补足L–OE跨集合约束：将已授权outside-six成员事实转为L–OE有效负关系，不假定OE彼此异设备、不解封OE TX/K，保留OE软内部结构的有/无匹配。现有L–L＋OE–OE几何不显式锚定两组相对位置，独立旋转表征层可保组内余弦，属新假设结构理由而非本轮失败因果结论。另预登记绝对known支持密度与known/OE比读出对照，避免默认OE代表所有未见设备；唯一主与具体预算/规则在新run固定，不按本轮novel truth调参/改阈值。尚未实现/验证，完整跨未见RX星地/高拒识/无标签DA/发现/未来匿名注册继续ACTIVE。详见`docs/PAMF_PHASE3_METRIC_RESIDUAL_RESULTS_20261030.md`。
