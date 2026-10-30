@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active optimization goal;userE30budget2026-10-31;existingoriginalR17legalIQteacherpermission;student fromscratch jointschedule,sourceonly",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "64b8d453e4ead7b8242163bef67dc3db964d5a1f",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-coarse-IQhint-E30-r01"
@@ -102,7 +102,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.coarse_hint run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.coarse_hint run --root /home/szu2070436088/2510044040/CV-SincNet --commit 64b8d453e4ead7b8242163bef67dc3db964d5a1f",
     "stop_rule": "Wrongteacher/source/roles/budget/collision/nonfinite/frozenstate/reload/coverage:preserveaffectedrun,noautoretry/hotedit/fallback;source or targetperformance neverstop;otherownersuntouched"
   },
   "expected_artifacts": [
@@ -179,7 +179,7 @@
       "budget_ref": "G30/7410/B256/L189000/U1701000;teacher630kcoarseforwardonce and630kcachevisits;teachercoarse20historical/bundle60;studentcopiedweights0",
       "output_root": "runs/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.coarse_hint worker --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_direct_train.coarse_hint worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 64b8d453e4ead7b8242163bef67dc3db964d5a1f --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",

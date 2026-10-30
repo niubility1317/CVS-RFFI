@@ -207,3 +207,6 @@ E30单阶段IQ增强已完整30/7410及双读出七景，252组与全量成对IQ
 
 
 原R17 IQ教师来源与路径已核实：原cd977/source7/63/30，coarse/action/prior各20历史组件轮次，无TX/F/target优化，sourceV标签选择先于target。CPU13.514224秒/512×2×4路径/208组2288统计复核。coarse IQ NMSE2.5020/2.3306%、cleanF一致467/487，比noVar coarse13.2109/12.7773%和257/272好；R17 stage1/2却不统一优于coarse，默认DURA中间IQ也不宜强认为clean。下一候选固定从零单阶段30轮，coarse/action/prior始终联合，前10轮原R17coarseIQ提示权重1→.1、后20轮0，基础noVar4项保持，无F/TX/V/target训练、无权重复制；计划teacherIQ630k缓存一次/完整成本后实测，仍待实现与实际发布。所有新版本正式七景保持，默认和逐景3pp目标ACTIVE。见20261031-diagnostic-DURA-R17-source-IQpaths-s2026092701-r01/analysis.md。
+
+
+早期coarse IQ教师单阶段E30已实际发布：代码64b8d453e4ead7b8242163bef67dc3db964d5a1f，controller1087077/worker1087169/GPU4存活、CWD/argv/CUDA/GPU/日志核实。7checks/ONEP0P1及source2Ls冻结R17/学生梯度/strictreload/F仅smoke PASS。准入已有1PID/free22883MiB，后态2PID，无其他owner修改。630k教师IQ缓存132.756142秒/1.29024GB numeric，使用coarse1305958参数/历史20轮，R17包4665073参数/60组件轮次；教师更新0且不变。G无权重复制，已E1/30，训练F/TX/V/target0，前10轮hint1→.1再0、30轮全联合、原266951图不变；自动七景与完整实际成本待结束。默认/逐景3pp/clean目标ACTIVE。
