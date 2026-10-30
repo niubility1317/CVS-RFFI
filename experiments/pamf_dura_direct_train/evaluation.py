@@ -37,7 +37,8 @@ def frozen(args,p):
 @torch.no_grad()
 def predict(args,p,role):
     done=read_json(p['output']/args.arm/'training_complete.json')
-    if (done['status'],done['epoch'],done['updates'],done['training_F_access'],done['target_reads']) != ('SOURCE_TRAINED',20,4940,configuration()['training_F_access'],0):
+    config=configuration()
+    if (done['status'],done['epoch'],done['updates'],done['training_F_access'],done['target_reads']) != ('SOURCE_TRAINED',config['epochs'],config['updates'],config['training_F_access'],0):
         raise ValueError('Complete frozen legal source training before prediction required')
     folder,ids,_,_=reference(p,role)
     model,reader,engine=frozen(args,p)

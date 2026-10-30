@@ -91,7 +91,8 @@ def save_model(path, model, arm, epoch, updates, commit):
         torch.save(value, stream)
 
 
-def load_model(path, device, *, arm, commit, epoch=20):
+def load_model(path, device, *, arm, commit, epoch=None):
+    if epoch is None:epoch=configuration()['epochs']
     value=torch.load(path, map_location='cpu', weights_only=False)
     expected=dict(schema='dura_direct_joint_v1', arm=arm, epoch=epoch, updates=epoch*247,
         code_commit=commit, config=configuration(), source_contract='original7/63/30',
@@ -156,6 +157,7 @@ def smoke(args,p):
 
 def train(args,p):
     clean,roles=source_training(p)
+    config=configuration()
     torch.manual_seed(2026092701);torch.cuda.manual_seed_all(2026092701)
     student=scratch_model(2026092701).to('cuda:0')
     before={key:value.detach().cpu().clone() for key,value in student.state_dict().items()}
@@ -168,8 +170,9 @@ def train(args,p):
     rng=np.random.default_rng(2026103004)
     updates=seen_l=seen_u=0;started=time.perf_counter();torch.cuda.reset_peak_memory_stats()
     with (row/'training.jsonl').open('x',encoding='utf-8') as stream:
-        for epoch in range(1,21):
-            folder=p['cache']/'epochs'/f'{epoch:02d}'
+        for epoch in range(1,config['epochs']+1):
+            cache_epoch=(epoch-1)%config.get('corruption_epochs',20)+1
+            folder=p['cache']/'epochs'/f'{cache_epoch:02d}'
             arrays={key:np.load(folder/(key+'.npy'),mmap_mode='r',allow_pickle=False) for key in ('received','kernel','coefficients','variance')}
             expected=dict(received=(63000,2,256),kernel=(63000,2,64),coefficients=(63000,4,256),variance=(63000,))
             if any(value.shape!=expected[key] or value.dtype!=np.float32 for key,value in arrays.items()):
@@ -196,14 +199,14 @@ def train(args,p):
                 F_inputs=0,TX_labels_read=0,learned_teacher_inputs=0,initialization_checkpoint_loads=0)
             stream.write(json.dumps(record,allow_nan=False)+'\n');stream.flush()
             print(json.dumps(dict(event='SOURCE_EPOCH_COMPLETE',arm=args.arm,**record)),flush=True)
-    if (updates,seen_l,seen_u)!=(4940,126000,1134000):raise ValueError('Incomplete fixed source budget')
+    if (updates,seen_l,seen_u)!=(config['updates'],config['L_exposures'],config['U_exposures']):raise ValueError('Incomplete fixed source budget')
     changed=sum(not torch.equal(value.detach().cpu(),before[key]) for key,value in student.state_dict().items())
     if not changed:raise ValueError('Random initialized model did not train')
-    save_model(row/'final.pt',student,args.arm,20,updates,args.commit)
-    write_json(row/'training_complete.json',dict(status='SOURCE_TRAINED',arm=args.arm,epoch=20,updates=updates,
+    save_model(row/'final.pt',student,args.arm,config['epochs'],updates,args.commit)
+    write_json(row/'training_complete.json',dict(status='SOURCE_TRAINED',arm=args.arm,epoch=config['epochs'],updates=updates,
         L_exposures=seen_l,U_exposures=seen_u,training_TX_labels_read=0,training_F_access=False,V_reads=0,target_reads=0,
         teacher_updates=0,learned_teacher_inputs=0,initialization_checkpoint_loads=0,ancestor_epochs=0,
-        cumulative_epochs=20,head_fit_updates=0,parameters=266951,changed_state_tensors=changed,
+        cumulative_epochs=config['epochs'],head_fit_updates=0,parameters=266951,changed_state_tensors=changed,
         peak_allocated_bytes=torch.cuda.max_memory_allocated(),seconds=time.perf_counter()-started))
 
 
@@ -285,6 +288,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.fast_interp worker','pamf_dura_direct_train.strong_action worker',
                 'pamf_dura_direct_train.f_guided worker','pamf_dura_direct_train.head_guided worker',
                 'pamf_dura_direct_train.head_guided_capacity3 worker',
+                'pamf_dura_direct_train.long_budget worker',
                 'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
             goal_workers=sum(any(name in line for name in tokens) for line in commands)

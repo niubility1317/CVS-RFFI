@@ -1,0 +1,206 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01",
+  "group_id": "phase1-dura-single-stage-convergence",
+  "display_name": "DURA 从零单阶段 40 轮收敛对照",
+  "description": "完整源20轮曲线仍下降；固定noVar损失，单阶段从零40轮/9880更新，无祖先/F训练；自动源与目标全七景，披露不同训练预算。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "single-stage",
+    "scratch",
+    "no-variance-aux",
+    "E40",
+    "training-efficiency"
+  ],
+  "comparison_group_id": "DURA-scratch-fastLR-noVarAux",
+  "parent_run_ids": [
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30 /goal星地性能接近clean；用户新增优化训练效率、多阶段太浪费时间；六景各自距rawclean<=3pp确认",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-DURA-direct-noVar-E40-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalfullsourceR07clean/received/kernel/coefficients/varianceepochs01..20;sourceV1800x7/formal168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Sourcepairedclean and source simulatoraction;variance diagnostic log only;TX0/F0/V0/target0",
+    "augmentation": "UnchangedR07clean15%/nativepractical85%cache;no newreceivedorroles"
+  },
+  "permissions": {
+    "regime": "source_TX_hidden_F_free_training_frozenF_evaluation",
+    "query_use": "allsevenpredictionsbeforeindependenttruthlast",
+    "external_method_exception": null,
+    "claim_scope": "AlreadyexposedPhase1engineeringbenchmarkwithoriginalF50defaulthead;notnewblindtest,currentTriSSLorPhase2/3performance"
+  },
+  "checkpoint": {
+    "initialization": "Random scratch graph only; no checkpoint/teacher/coarse/estimator ancestors",
+    "sources": [],
+    "contract_check_ref": "OriginalvalidatedsourceR07cache;randomfactorygraphonly;F50/R69weightsforpostfreezeevalreferenceonly",
+    "provenance_verdict": "NO_INITIALIZATION_CHECKPOINTS_OR_ANCESTOR_WEIGHTS",
+    "selection_rule": "Fixed final E40/9880, no intermediate checkpoint ranking; original E20 only a frozen comparison, not initialization."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-direct-single-stage",
+    "gpu_policy": "One own worker on one of GPU4/6/7 with >=12000MiB free and <=2 existing compute PIDs (total<=3); goal<=2,one own/card; other owners untouched",
+    "remote_run_root": "runs/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01",
+    "remote_log_root": "logs/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.long_budget run --root ../.. --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badcontract/role/outputcollision/nonfinite/checkpoint/smoke/predictioncoverage: preservefailedrow,noautomaticretry/hotedit;healthyrowcontinues;no performance stop;unrelatedowneruntouched"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-ARM.json",
+    "ARM/final.pt",
+    "ARM/training.jsonl",
+    "ARM/training_complete.json",
+    "ARM/matched_profile.json",
+    "ARM/source_prediction/complete.json",
+    "ARM/source_summary.json",
+    "ARM/target_prediction/complete.json",
+    "ARM/target_summary.json",
+    "ARM/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "MacroF1",
+      "Correct",
+      "repair_damage_net",
+      "TX/RX/day",
+      "rawclean_gap_pp",
+      "DURAv1delta_pp",
+      "clean_damage",
+      "G/GplusFsamecardB1/B128median/P95/throughput",
+      "parameters",
+      "parameterbytes",
+      "checkpointbytes",
+      "MAC",
+      "FFT_CG",
+      "sharedbenchmarkpeakVRAM",
+      "trainingfullcurves"
+    ],
+    "dimensions": [
+      "arm",
+      "clean/sixpractical",
+      "TX",
+      "RX",
+      "day",
+      "originalF50seed2026092701"
+    ],
+    "prediction_ref": "ARM/{source,target}_prediction;allsevencompletebeforetruth",
+    "scorer_ref": "IndependentCPU subprocess runner score;sourceafterfreeze;targetafterallnewandbaselineviewsvalidated;noqueryfeedback"
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "Scratch noVar E40 single joint stage; original20 corruption views cycle twice",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/long_budget.py",
+      "resolved_config_ref": "runs/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01/scratch_joint/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Modelseedrandominitand2newsourceprobes;datafullpoolshuffle;R07augmentation/receiver2026101911fixed;supportN/A",
+      "k": null,
+      "scenario": "clean+sixpracticalfixedoriginalreceived",
+      "optimizer": "resetAdamW",
+      "lr": "Peak.001,247-updatewarmup,cosine over9880 to.00002",
+      "epochs": 40,
+      "fl_rounds": null,
+      "budget_ref": "E40/9880,B256,L252000/U2268000,one joint stage; no ancestor or learned teacher; original20 fixed corruption views used twice with per-epoch shuffled order",
+      "output_root": "runs/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01/scratch_joint",
+      "log_path": "runs/20261030-phase1-DURA-direct-noVar-E40-s2026092701-r01/scratch_joint/worker.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.long_budget worker --root ../.. --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-ARM.json",
+        "ARM/final.pt",
+        "ARM/training.jsonl",
+        "ARM/training_complete.json",
+        "ARM/matched_profile.json",
+        "ARM/source_prediction/complete.json",
+        "ARM/source_summary.json",
+        "ARM/target_prediction/complete.json",
+        "ARM/target_summary.json",
+        "ARM/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only rationale uses all20 noVar epoch logs: mean IQNMSE E11-15=.028893018846284778; E16-20=.025564287546135128 (11.520877% lower). No target-derived epoch, parent, loss or scene selection. Latest paired-style probe failed its fixed rule; no style augmentation is included.",
+    "Budget is independently fixed to40 complete epochs from random initialization, not E20 continuation or a second stage. Same noVar objective, original native interpolation, original architecture266951params/2priors/4CG/27FFT. No F gradient/cache or teacher forward during G train.",
+    "Reuse original VALIDATED_ONCE source R07 63000 clean L6300/U56700 and20 fixed corruption views, sequentially cycle01-20 twice; fresh per-epoch permutation from the original data seed. No new physical data or label permissions.",
+    "Full cumulative40 compared with fixed E20 control and DURA historical120 component epochs; report actual wall time and dependencies separately, do not call budgets matched or promise speed/quality from epoch counts.",
+    "Final40/9880 only; no performance stop, early stopping or intermediate selection. Each new trained version automatically source1800x7 then target168000x7 with same original F50/default head; all7 arrays fixed before independent CPU truth-last.",
+    "Clean preservation, every six practical scene gap<=3pp relative rawclean84.676190476%, R17 per-scene1pp tolerance and perTX/RX/day/net repairs reported separately. No selective rerun or target feedback; default DURA unchanged.",
+    "Host conversion uses already-verified DLPack ownedFP32 route; resources same bounded user3process authorization on GPU4/6/7,one own. New run is not replacement of a healthy job and never changes other owners.",
+    "Three targeted E40/partial-budget/child-route tests and11 existing noVar/checkpoint/resource/LR/eval tests PASS; one independent P0/P1 review and real-checkpoint source no-query smoke first, then immediate continuation.",
+    "Earlier source F descriptive diagnostics are disclosed; this budget decision uses source IQ training curves only. Old F-guided candidates retained separately and are not this G initialization."
+  ],
+  "registered_at": "2026-10-30T10:57:42+00:00"
+}

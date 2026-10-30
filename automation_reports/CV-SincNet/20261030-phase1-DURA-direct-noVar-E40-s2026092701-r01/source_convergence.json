@@ -1,0 +1,74 @@
+{
+  "status": "ANALYZED_COMPLETE_SOURCE_LOGS",
+  "control": "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01",
+  "epochs": 20,
+  "blocks": [
+    {
+      "epochs": [
+        1,
+        5
+      ],
+      "count": 5,
+      "losses": {
+        "loss": 0.1872985417063274,
+        "iq_nmse": 0.139958097998585,
+        "spectral_error": 0.02909989245425141,
+        "prior_nmse": 0.2716393032384297,
+        "action_probe_nmse": 0.37443034279232934,
+        "log_variance_mse": 21.239795210387218
+      },
+      "clip_fraction": 0.09716599190283401
+    },
+    {
+      "epochs": [
+        6,
+        10
+      ],
+      "count": 5,
+      "losses": {
+        "loss": 0.046020773528303416,
+        "iq_nmse": 0.03623908334364967,
+        "spectral_error": 0.009265751946965854,
+        "prior_nmse": 0.05476291108509851,
+        "action_probe_nmse": 0.07684222566324567,
+        "log_variance_mse": 23.178794568743022
+      },
+      "clip_fraction": 0.0016194331983805667
+    },
+    {
+      "epochs": [
+        11,
+        15
+      ],
+      "count": 5,
+      "losses": {
+        "loss": 0.03581893710730568,
+        "iq_nmse": 0.028893018846284778,
+        "spectral_error": 0.007537256911491591,
+        "prior_nmse": 0.0447333362859393,
+        "action_probe_nmse": 0.0415144346257997,
+        "log_variance_mse": 21.849080896189857
+      },
+      "clip_fraction": 0.0024291497975708503
+    },
+    {
+      "epochs": [
+        16,
+        20
+      ],
+      "count": 5,
+      "losses": {
+        "loss": 0.03150287229238995,
+        "iq_nmse": 0.025564287546135128,
+        "spectral_error": 0.006838487444037483,
+        "prior_nmse": 0.04004157507684496,
+        "action_probe_nmse": 0.03185005684617966,
+        "log_variance_mse": 20.94780386681935
+      },
+      "clip_fraction": 0.0016194331983805667
+    }
+  ],
+  "IQ_last5_reduction_vs_previous5": 0.11520884397227593,
+  "target_reads": 0,
+  "checkpoint_selection": false
+}
