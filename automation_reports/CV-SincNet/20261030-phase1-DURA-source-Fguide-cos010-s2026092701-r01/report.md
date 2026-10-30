@@ -3,7 +3,7 @@
 - run_id：`20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01`
 - group_id：`phase1-dura-single-stage-efficiency`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -37,3 +37,11 @@ Explicitlyauthorized source F-guided,notF-free;GscratchE20/4940noGancestors;noVa
 Fclean特征只缓存一次63000条，数值40.32MB，实际读取/前向/保存耗时和总准备时间单列；之后1260000次F(restored)前反向只到G，F参数/状态不变。F既有50轮训练预算明确披露，不能称无教师成本。G初始化祖先0，不继承任何已测试G；目标结果不选择父或回调系数。实际GPU启动仍需真实两Ls/Fcheckpoints特征到IQ非零梯度、G严格重载、Funchanged首步smoke PASS，随后直接继续。
 
 全七景和独立truth-last自动闭合，原F50/defaulthead，不能挪用当前Tri-SIG-TIME SSL或Phase2/3成绩。损失特征一致不证明TX逐细节波形真实，仍检查source IQ与正式TX/RX/day/净纠错/clean伤害及完整成本；六景3pp目标不降低。
+
+## 首步真实检查与实际启动
+
+VERIFIED/RUNNING。用户明确授权后的执行commit 2cee2bec08165769f787b2aa85d1a8d97177844d，一次N607 preflight、单归档两端SHA和远端compile通过，唯一P0/P1审查PASS，8项聚焦检查通过。CWD=`releases/20261030-DURA-source-Fguide-cos010-r01`。实际原F50 checkpoint＋两Ls数据smoke验证F特征到restored IQ的有限非零梯度、G全部源梯度、G严格重载、F参数/状态不变及原默认头有限输出；不读TX/target。
+
+CPUcontroller PID3956900，GPU4 worker PID3958132；独立/proc核实存活、CWD、完整argv和CUDA绑定，并从nvidia-smi匹配worker显存。训练日志由0增长到1627bytes，至少完成E3。源clean F缓存63000条/160D、40.32MB数值、耗时3.782270秒，物理ID按原G顺序写入；每轮避免重复计算同一source clean F目标，额外restored F前反向仍实际执行并计数，不能宣称F指导没有开销。
+
+当前training F access=True、F_updates=0、直接TX labels=0，G祖先0；F既有source-final50/11100知识明确继承。F完整状态将在训练末再次核验；当前smoke通过不冒充训练末证明或正式性能。固定最后E20后自动source1800×7、target168000×7、匹配时延与独立truth-last；六景3pp目标继续ACTIVE，默认DURA保持。
