@@ -57,3 +57,12 @@ Actualcode `b1f99b77a81fa4fd82f7d519a7db4f1aa46d7b15`，唯一owner `codex-phase
 本地focused验证：{"model_train": {"unique_tests": 8, "subtests": 7, "seconds": 6.43, "stdout": "local_artifacts/pamf_phase3_star_signal_open_20261030_r01/core_train_tests.log"}, "eval_score": {"unique_tests": 7, "subtests": 18, "initial_unaffected_passed": 3, "initial_unaffected_subtests": 8, "calibration_directory_fix_targeted_passed": 4, "targeted_subtests": 10, "targeted_seconds": 7.51, "legacy_trapz_deprecations": 872}, "launcher": {"tests": 7, "seconds": 3.09, "prior_unfinished_eval_syntax_import_failure_resolved": true}, "AST_files": 10, "mirror_bytewise_matches": 10, "original_candidate_unique_tests": 22, "r02_export_fix": {"targeted_unique_tests": 2, "regression_passed": 2, "regression_seconds": 5.26, "production_export_checkpoint_targeted_passed": 1, "checkpoint_seconds": 4.96, "overlapping_case_not_double_counted": true, "full_suite_rerun": false, "stdout": "local_artifacts/pamf_phase3_star_signal_open_20261030_r02/export_fix_tests.log"}, "real_data_weights_truth_read_in_local_tests": 0}；唯一直接P0/P1审查PASS。单次N607preflight确认固定四角色P1文件/祖先与source元数据、原F0 checkpoint、冻结前端控制及实际剩余显存；IQ/私有truth实值读取0。尚未本轮实际训练/取得性能。
 
 预期产物：actualcheckpoint syntheticG10烟测/梯度probe、2220完整loss/indices/梯度/physicaloptimizer日志与headless+MLP final.pt；严格重载smoke、known/background fit/四model/四τ/known风险/四列预测、独立CPUtruthlast；PID/CWD/argv/GPU/log-growth与终态。IQ/NN权重/原始日志/逐行预测/source feature bank不入Git。完整跨RX星地与无标签DA/发现/未来REG目标ACTIVE。
+
+
+## 实际技术终态：合成前向的旧权重依赖
+
+VERIFIED／STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE，NO_PERFORMANCE_RESULT。code `b1f99b77a81fa4fd82f7d519a7db4f1aa46d7b15`，534文件/data0 archive SHA `909b445ecc3915b8b43048d851807eac5b872427ee43a566162b47f6b3bfb01a` 单次比较/remotecompile/runtime PASS。driver835941、train835964均已独立核实退出、live/GPU空，foreign操作0。
+
+classguard问题已消除；本次停在合成_gradient_smoke，尚未进入_roles或真实IQ/optimizer。实际SequenceReference.features→core.features→return_aux路径仍调用ResidualPhysicalHead.forward.classify(joint)；删除W后该被丢弃的logits计算访问不存在weight，AttributeError，与r01构造时ValueError指纹/层位不同。源码证明joint已由components形成，core.features只取feat_joint，分类logits不参与返回特征。无训练/预测/评分指标。
+
+原root、配置及完整堆栈保留。r03只在独立copy的特征边界显式旁路被丢弃的内部logits，继续原components/joint/reference/signature及全部梯度；原身份模型不改，不新增身份头或旧Wbuffer。先用实际head.forward/return_aux依赖回归验证特征/梯度等价，再就本明确缺陷一次定点复审，新root恢复相同科学配置。不能拿无内部分类调用的toy证明真实forward兼容。完整跨RX星地/高拒识/零标签DA/发现/未来REG继续ACTIVE。
