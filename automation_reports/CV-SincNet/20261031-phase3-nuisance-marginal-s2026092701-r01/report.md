@@ -19,3 +19,15 @@ PLANNED，当前无新性能。Run `20261031-phase3-nuisance-marginal-s202609270
 本地聚焦检验详情见 verification.json，唯一直接P0/P1审查PASS；实际CP smoke是首步并在PASS后立即继续。单preflight/archive SHA比较/remotecompile/启动PID-CWD-argv-GPU-log核实。非法角色/祖先、非有限、输出碰撞或不能合法prediction保留并停止本run，不partial truth评分/覆盖/自动重启；UNKNOWN核原PID/root，科学负结果不停止健康任务。
 
 预期launch/pipeline/configs/logs、predict smoke/complete、models density/prior/complete、源V calibration/thresholds、known/novel/两个Q的完整预测、独立score结果及observations。IQ、权重、预测、原日志和私有runtime不进Git。
+
+## 最终结果（NUISANCE-MARGINAL，NO_PROMOTION）
+
+- 四方法×三DURA条件全部COMPLETE，主marginal_predicted_ratio不晋级，原predicted重点候选/pooled冻结对照保留，目标ACTIVE。
+- 主source A_K/C_K/R_U/H=89.762963/96.796296/61.079365/72.693983%；clean71.354167/87.847222/100/83.282675%；star64.0625/85.763889/76.041667/69.539963%。
+- 对old predicted，star正确0增0失、接受+1但错误，未知1增4失/net−3，R_U−1.041667pp/H−.432362pp；clean正确4增1失/net+3。原F0闭集不变，star身份损失8.854167pp。
+- known12过/42未过，sourceRU仅诊断；high未知0/4/2缺19-15，R_U/H=N/A。单seed/开发RX、历史NVQ曝光，U/formal0、无DA/发现REG，AN/HOW N/A。
+- 仅由known90源均值推导15-domain人口cov/15，rank14，known/OE同vI+C解析边缘化，非hard projection或U点式δ。无新IQ/真实F0Gsignal/NN更新；actual三CP合成各2。
+- prior18204 B、原density364340 B、全24τ192 B，主一组6τ48 B，无rowbank；新两个V-only六τ、原两组exact，神经834665及祖先训练/cache成本继承。
+- predict/score/pipeline25.616272/14.970574/40.674194 s。独立producerCUDA7两次406MiB样本/live日志均512 B、末674 B；CPUlive未捕获，非peak/B1，终态空/foreign0。
+- 13unique+34sub/一次review PASS，636files/data0单SHA比较/compile/runtime VERIFIED；生产3stdout742 B/7行无异常，测试mock修复与1792旧trapz warnings单列。
+- 详见[公报](../../../docs/PAMF_PHASE3_NUISANCE_MARGINAL_RESULTS_20261031.md)和私有analysis；未新增fit/评分/扫描或补采遥测。
