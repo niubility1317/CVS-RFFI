@@ -1,0 +1,195 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-signal-open-s2026092701-r02",
+  "group_id": "pamf-phase3-independent-signal-open",
+  "display_name": "PAMF第三阶段：独立可训练信号级开放分支",
+  "description": "Move same crossset+OE soft topology gradients into headless TriSIGTIME signal encoder232033 plus zero-last102688 residual. Originaldefaulthead frozen. Reuse matched frozen-front S_SEP_TOPO control; no P0P1/VICReg/KD or new identity head.",
+  "kind": "cvs",
+  "stage": "Phase3-source-signal-open-falsification",
+  "aliases": [
+    "信号级开放分支"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "signal_open",
+    "headless",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-frozen-front-versus-signal-gradient",
+  "parent_run_ids": [
+    "20261030-phase3-star-crossset-metric-s2026092701-r01",
+    "20261029-phase3-star-representation-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261030-phase3-star-signal-open-s2026092701-r01",
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "b1f99b77a81fa4fd82f7d519a7db4f1aa46d7b15",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-signal-open-s2026092701-r02-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_signal_open_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_SIGNAL_OPEN_PLAN_20261030.md"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Existing sameG10MIX01/P1 restored FP32[N,2,256] IQ; no second RMS/EQ/channel/G. OriginalF0 teacher u/metadata from crossset derivedfeatures; frozen control predictions/model/tau exact reused.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/ids.npy",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_signal_train_and_density": 6300,
+      "source_OE_signal_train_and_density": 6134,
+      "source_V_fixed_knownrisk": 27000,
+      "source_novel_truthside_only": 3150,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "target_Q_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Source four roles42584 disjoint, 5RX/3day seen; L/novel70 perTX/RX/day, V300. OE trueTX/K hidden, source novelty historically exposed, target untouched. P0 mapped but no value read.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "SourceL oldTX crossset KL against L/OE outside-six, primaryOE frozen-u softtopology. All signalfeatureparams including Sinc learn, originalF0 classifier stays separate/frozen. No OE-OE hard identities/TX/K.",
+    "query_use": "TrainingonlyL/OE P1+teacherfeatures. Eval L/OE densitiesfreeze beforeV; V only fixedknown42/tau; bothnewtau freeze before novel IQ/referencepred; independenttruth aftercomplete. No target/U/Us or historicalquery train.",
+    "external_method_exception": null,
+    "claim_scope": "Seen-source historicalnovel mechanism test only; not finalcrossRX/targetUDA/discovery/futureREG, fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Strict originalF0 E50/11100 reconstruction then actualSequenceReference export headless232033, new zero-last102688 seed2701. No learnedauxθ or parentcontrol signalweights warmstart. Originalrecognizer remains232993/E50/nativeupdates0.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Originalsixsourcecontract392005 L6300/Us56700/V27000 legal. SameF0+DURAv1 sourceIQroles matchcurrent originalfeaturecache. Frozenfrontcontrol fb016284e6c1f4715da4c690e2333efce89103b5/S_SEP_TOPO referenceonly. No R1/new640density/targettrained ancestry.",
+    "selection_rule": "Fixed2220 signal+projection updates, no earlystop. FreshAdamW1e-4/wd1e-4/eps1e-8 with existingCENTER_UNITS scale25000/multiplier1000/physicalclip5/physicaldecay. SameL192/OE64 indices3017/3018, T.1 crossset+OE_KL1. signalknownsupport fixedprimary, ratio diagnostic; density90/32/25seed3019 frozenbeforeV."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-signal-open-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r02/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_signal_open_20261030_r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_signal_open_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-signal-open-s2026092701-r02-release/runtime.json",
+    "gpu_policy": "OneGPUtrain thenoneGPUeval; eachstartactualfree>=4096MiB allowed0..7, <=2addedown/card, foreignpreserved. OneCUDAemptyCPUscore afterallpredictions.",
+    "stop_rule": "Illegal ancestry/role/nonfinite/collision/unusableprediction/systemtechnicalfailure preserve original output. No incomplete score/autorestart/retune; UNKNOWN reconcile originalPID/root. Scientificnegative doesnotstop healthy run; no foreign operations."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/*.json",
+    "logs/*.log",
+    "rows/E_SIGNAL/train/{complete,smoke,training_summary}.json",
+    "rows/E_SIGNAL/train/final.pt",
+    "rows/E_SIGNAL/train/*.jsonl",
+    "rows/E_SIGNAL/predict/*",
+    "rows/E_SIGNAL/score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "matchedfrozenfrontknown/ratio vsnewsignalknown/ratio",
+      "old6/novel3 trueTX",
+      "sourceRX1/3/4/6/8",
+      "day1/2/3",
+      "sameG10MIX6scene"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r02/rows/E_SIGNAL/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_signal_open_score.py",
+    "targets_ref": "Sourceearlygate only; formal crossRXstar/higherrejection/zeroTXlabelUDA/discovery/futureREG remain required.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "C_K>=90%",
+      "sameP1 originalF0 closed minus A_K<=2pp",
+      "sole E_SIGNAL::signal_known_support known42+sourceoverallRU90 earlygate"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "E_SIGNAL-s2026092701",
+      "method": "PAMF-OW independent signal branch",
+      "purpose": "Soleprimary signalknownsupport; move sameobjective into fullheadlessF0 signalencoder, exactreusedfrozenfrontcontrol.",
+      "config_ref": "docs/PAMF_PHASE3_SIGNAL_OPEN_PLAN_20261030.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r02/configs/E_SIGNAL_train_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "F0source2701/newMLP2701; L3017/OE3018 samefixedcontrol; density3019/G10receiver2027/scene3001/channel4001. No newaugmentationdraw.",
+      "k": null,
+      "scenario": "Seen-source5RX/3day G10P1 old6/heldout3TX sourcefalsification",
+      "optimizer": "FreshAdamW CENTER_UNITS physicalpolicy",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220 new signalfeature+projection steps, featureparent11100/cumulative13320 separately from originalF0 E50/native0; trainable334721=232033+102688, oldF0+signalactive567714. L426240/OE142080 trainingP1 forwards, eval42584. OriginalF0real0/G0; synthetic smoke/probes separately recorded. Frozenfrontcontrol reused no newtraining.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r02/rows/E_SIGNAL",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r02/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_signal_open_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-signal-open-s2026092701-r02-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/*.json",
+        "logs/*.log",
+        "rows/E_SIGNAL/train/{complete,smoke,training_summary}.json",
+        "rows/E_SIGNAL/train/final.pt",
+        "rows/E_SIGNAL/train/*.jsonl",
+        "rows/E_SIGNAL/predict/*",
+        "rows/E_SIGNAL/score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "FixedE_SIGNAL::signal_known_support only; frozenfront/ratio diagnostic cannotreplaceprimary.",
+    "Originalidentity W not trained; sourceheadlessfeatureancestor11100 plus2220=13320 disclosed, originalrecognizer native0/E50 preserved.",
+    "Only P1 fixedIQ; no P0/clean values, second RMS/EQ/channel/G or new physicalrecords. Real trainingV/NV/Us/target0.",
+    "No OE-OE hardTX/K, noKD/P0P1/VICReg/augmentation. Signalgradient scope only newmechanisticfactor, physicaloptimizer required forSinc.",
+    "Seen-source/historicnovel only, no targetUDA/REG or fullgoalcomplete; fullscopeACTIVE."
+  ],
+  "registered_at": "2026-10-30T14:37:00+00:00"
+}

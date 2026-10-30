@@ -799,3 +799,8 @@ Run `20261030-phase3-star-signal-open-s2026092701-r01` / actualcode `eec44ce2f1d
 ### 2026-10-30 signal-open r01导出技术失败
 
 Run `20261030-phase3-star-signal-open-s2026092701-r01` / code `eec44ce2f1d587d9e46ed4860fe6e204f5621155` 执行技术失败已VERIFIED，尚未读训练IQ或更新，NO_PERFORMANCE_RESULT。真实SequenceReference被旧x3-only exporter类型guard拒绝；只读类/结构诊断确认原PAMF三视图/时间重排/232993/Sinc一致，父权重/数据合法性未变。原root/错误日志保留、进程全退出、foreign0；下一r02只修该导出接口，经回归/定点复审后使用新root，不重调科学配方。完整目标ACTIVE。
+
+
+### 2026-10-30 独立信号级开放分支r02定点恢复
+
+Run `20261030-phase3-star-signal-open-s2026092701-r02` / actualcode `b1f99b77a81fa4fd82f7d519a7db4f1aa46d7b15`，单E_SIGNAL，新headless信号232033+MLP102688=334721，原F0/default6身份路径固定。相同crossset+OEsoft结构、L192/OE64/3017/3018/2220及known-support主读出，将梯度推进浅中层，Sinc用CENTER_UNITS物理策略；冻结前端控制精确复用原S_SEP_TOPO，不重训。合法既有G10/P1 IQ L6300/OE6134训练，V27000仅固定known42/τ、NV3150仅truthlast，无新信道/G/二次RMS/P0/clean值/target。复制特征祖先11100+新增2220=13320、MLP2220、原识别器native0分别披露。主source早筛通过才另登记跨未见RX；完整v3与更高拒识/无标签DA/发现/未来匿名REG继续ACTIVE，当前无新性能。设计见 `docs/PAMF_PHASE3_SIGNAL_OPEN_PLAN_20261030.md`。
