@@ -872,3 +872,8 @@ Run `20261031-phase3-mixture-uda-s2026092701-r01` / actualcode `d72a7b7c301fec2f
 ### 2026-10-31 预测身份条件密度与三类DURA测试预登记
 
 Run `20261031-phase3-class-density-s2026092701-r01` / actualcode `4af0668331682636ee212077b38cd912857a1b31`。严格冻结原P1 signalr03和known90/OE32，只比较全类/预测类15mode条件密度×known/ratio，唯一主predicted_ratio。全部NN/密度在V前冻结、四τ在任何NV/Q前冻结；源27000/3150两旧列精确控制，crossRX clean864与star864都接入同一DURA，并重新计算同DURA输出F0基线。三个条件共享源星地τ，不按目标校准；source未过也全测。主报宏AK/RU/H，cleanRU95/starRU90、CK90/损2pp/覆盖，缺主景类则不认证。历史source/devQ曝光，sourceL/OE/Us/U/正式RX24-18新读0，NN/密度/normalizer拟合0；源V已知标签用于两套新六阈值校准，另两套精确复用。完整跨RX星地、零标签DA/发现/未来匿名REG仍ACTIVE，当前无性能。
+
+
+### 2026-10-31 预测身份条件密度完整三条件结果
+
+Run `20261031-phase3-class-density-s2026092701-r01`，actualcode `4af0668331682636ee212077b38cd912857a1b31`；四列×三DURA条件全部预测/独立truth-last COMPLETE，执行VERIFIED、科学NO_PROMOTION。唯一主predicted_ratio：source AK/CK/RU/H 89.744444/96.759259/61.936508/73.291437%，原F0损伤1.237037pp；clean_DURA AK/CK/RU/H 70.833333/87.326389/100.000000/82.926829%，原F0损伤9.201389pp；star_DURA AK/CK/RU/H 64.062500/85.590278/77.083333/69.972325%，原F0损伤8.854167pp。相对pooled_ratio，clean正确接收净+11、未知拒对净+1；star正确接收8增/2失/净+6、接收10增/6失/净+4、未知拒对4增/2失/净+2，即AK+1.041667pp、RU+0.694444pp、H+0.908398pp。source正确接收净−7、未知拒对净+33，known12保护保持但不能冒充42全过。两个新六阈值仅源V27000已知标签校准，两旧精确复用，NN/密度/normalizer拟合0；原F0/G/P1冻结，synthetic各2实际CP smoke PASS，新Q G/F0/signal各1728、sourceIQ/L/OE/Us/目标U/正式RX新读0。predict/CPUscore实际批处理{"predict": 29.048555, "score": 9.49642}s；所属GPU7/PID1021309/344MiB独立离散样本、CPU1022185 CUDAempty及终态空均核，344MiB非峰值；foreign操作0。跨RX clean虽RU100%，CK87.326389%、损9.201389pp仍失败；starCK85.590278%、RU77.083333%、损8.854167pp失败，high未知缺19-15保留N/A。结果为局部改善，不替换此前冻结基线或认定零标签DA/匿名注册完成；历史NV/devQ曝光、单RX/seed和原MIX01观测保持，完整Phase3目标ACTIVE。详见 `docs/PAMF_PHASE3_CLASS_DENSITY_RESULTS_20261031.md`。

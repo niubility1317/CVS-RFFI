@@ -53,3 +53,19 @@ Actualcode `4af0668331682636ee212077b38cd912857a1b31`，唯一owner `codex-phase
 Focused验证：{"producer": {"tests": 3, "subtests": 4, "seconds": 7.27, "stdout": "run_tests.log"}, "scorer": {"tests": 5, "subtests": 8, "seconds": 7.36, "legacy_numpy_trapz_warnings": 2568, "stdout": "score_tests.log"}, "core_and_launcher": {"tests": 15, "previous_session_console_pass": true, "persistent_stdout": false}, "test_items_total": 23, "additional_subtests": 12, "AST_files": 8, "mirror_matches": 8, "production_unchanged_since_prepared": true, "real_IQ_weights_truth_reads": 0}；本候选一次直接P0/P1审查PASS。单次N607preflight只核父完成/来源元数据、三CP和public文件存在、两个864的capsule/split/count和实际free显存；IQ/private truth实值0，复用VALIDATED_ONCE。
 
 首步actual三checkpoint syntheticG10两行→DURA→F0/P1signal，state保持、PASS立即继续。全部统计NN在V前冻结、全部四τ在任何NV/Q前冻结，三个条件共享源星地τ，两个Q都经DURA且重新算同输出F0闭集。全矩阵pred完成后独立CPUtruthlast；源侧失败不取消两跨RX测试。无U/适应/注册/clean训练或目标参数拟合，缺scene覆盖保留N/A。全部原始IQ/权重/日志/逐行预测不入Git。当前尚未启动／无新性能。
+
+
+## 实际启动与独立观察
+
+VERIFIED RUNNING（snapshot时刻），actualcode `4af0668331682636ee212077b38cd912857a1b31`；单archive SHA `050d2e93329a93d65b3c11309e6201553c1ece2030096e39273aeac88f22cb68` 比较及remote compile/runtime PASS。独立所属PID/CWD/argv/CUDA [{"pid": 1021220, "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_class_density_launch driver --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-class-density-s2026092701-r01-release/runtime.json ", "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-class-density-s2026092701-r01-release", "CUDA_VISIBLE_DEVICES": ""}, {"pid": 1021309, "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_class_density_run --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-class-density-s2026092701-r01/configs/run.json --device cuda:0 ", "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-class-density-s2026092701-r01-release", "CUDA_VISIBLE_DEVICES": "7"}]，GPU离散样本 ["1021309, GPU-9c4eb614-ca19-a390-aaf4-801f8980b6a9, 344"]，日志增长核实。GPU live采样VERIFIED，显存非峰值。两个新阈值组仅源V标签校准；网络/密度冻结，全部三DURA预测后独立CPU评分；U/目标拟合/匿名注册/foreign操作0。
+
+## 最终结果（NO_PROMOTION）
+
+全部三条件×四列预测/独立评分COMPLETE，pipeline ANALYZED_DEVELOPMENT；唯一主predicted_ratio未换，NO_PROMOTION/完整目标ACTIVE。前文尚未启动/无性能属于事前记录，当前以本节为准。
+主宏A_K/C_K/R_U/H（%）：source89.744444/96.759259/61.936508/73.291437；clean70.833333/87.326389/100/82.926829；star64.062500/85.590278/77.083333/69.972325。原F0损伤1.237037/9.201389/8.854167pp，clean/star保护失败。
+主−pooled_ratio：source正确接收−7/接受−94/未知拒对+33；clean正确/接受+11、未知拒对+1；star正确gain8/loss2/net+6、接受net+4、未知拒对gain4/loss2/net+2。原身份不变，不能把重新接收称身份纠错。
+两个Q pooled控制与dura-best的ID/logits/closed/features/raw/margin/宏指标逐值一致；source旧成绩本来含DURA。主high未知TX0/4/2→R_U/H N/A；所有星地主景2pp失败，源known12通过但known42有5交叉组超限。
+NN/密度拟合0，但源V实际新校准两套六τ共12标量；另两旧六τ精确复用。新增G/F0/signal各1728real＋2synthetic，source新前向0；祖先训练成本保留。predict29.048555s/CPUscore9.496420s/pipeline38.634129s不是B1。
+独立live predictor1021309/CUDA7/344MiB采样、CPU1022185/CUDA空，终态live/ownedGPU空、foreign0；采样不是峰值。三完整运行stdout无异常，本地scorer旧np.trapz告警2568。
+既有23唯一项＋12子项/一次P0P1 PASS；producer/scorer stdout持久，core/launch15仅先前console证据，无持久stdout且本轮未重测。sourceNV/Q历史曝光、单RX/seed、formal/U未访问；无DA/REG，A_N/H_OW N/A。
+[完整结果](../../../docs/PAMF_PHASE3_CLASS_DENSITY_RESULTS_20261031.md)；私有analysis.json仅164KB必要汇总，不复制全methods/cal。
