@@ -1,0 +1,245 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01",
+  "group_id": "phase1-dura-prior-anchor-performance",
+  "display_name": "DURA内部先验配对监督与同预算续训",
+  "description": "Source evidence: CG16 hurts and internal priors rely on biased learned consistency. FixedDURA v1 E20continuation vs +0.1 mean2prior pairedclean NMSE; same266951params/two priors/fourCG and automaticfrozenF50sevenvieweval",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "restoration",
+    "performance",
+    "prior-anchor",
+    "F-free",
+    "TX-hidden"
+  ],
+  "comparison_group_id": "DURA-v1-F50-original76330-sevenview",
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30 /goal全面深入分析并优化星地恢复网络；现有TX无标签/F-free恢复器研究授权",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Fulloriginalsource63000L6300/U56700pairedclean+cachedR07epochs1..20;sourceV1800x7;originalformal168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance"
+  },
+  "permissions": {
+    "regime": "source_TX_hidden_F_free_training_frozenF_evaluation",
+    "query_use": "allsevenpredictionsbeforeindependenttruthlast",
+    "external_method_exception": null,
+    "claim_scope": "AlreadyexposedPhase1engineeringbenchmarkwithoriginalF50defaulthead;notnewblindtest,currentTriSSLorPhase2/3performance"
+  },
+  "checkpoint": {
+    "initialization": "frozen_DURA_v1",
+    "sources": [
+      "runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "DefaultDURA frozen_version.json and originalR69 strictsourcefinalpayload;originalF50loader checks matching sourcecontract/scratch ancestry/defaulthead",
+    "provenance_verdict": "REUSE_VERIFIED_MATCHING_ORIGINAL_SOURCE_CONTRACT; validate payload sourcefinalstage2E20/4940",
+    "selection_rule": "BothfixedlastE20/4940,noearlystop/source/targetranking"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-prior-refine",
+    "gpu_policy": "N607allowedphysical0..7;max2ownGPUworkers,atmost1own/card;beforelaunchfree>=12000MBandallvisibleGPUprocesses<2includingotherowners;sharedcapacitylock;CPU2;independentscorermax1",
+    "remote_run_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01",
+    "remote_log_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_prior_refine.runner run --root ../.. --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badcontract/role/outputcollision/nonfinite/checkpoint/smoke/predictioncoverage: preservefailedrow,noautomaticretry/hotedit;healthyrowcontinues;no performance stop;unrelatedowneruntouched"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-ARM.json",
+    "ARM/final.pt",
+    "ARM/training.jsonl",
+    "ARM/training_complete.json",
+    "ARM/matched_profile.json",
+    "ARM/source_prediction/complete.json",
+    "ARM/source_summary.json",
+    "ARM/target_prediction/complete.json",
+    "ARM/target_summary.json",
+    "ARM/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "MacroF1",
+      "Correct",
+      "repair_damage_net",
+      "TX/RX/day",
+      "rawclean_gap_pp",
+      "DURAv1delta_pp",
+      "clean_damage",
+      "G/GplusFsamecardB1/B128median/P95/throughput",
+      "parameters",
+      "parameterbytes",
+      "checkpointbytes",
+      "MAC",
+      "FFT_CG",
+      "sharedbenchmarkpeakVRAM",
+      "trainingfullcurves"
+    ],
+    "dimensions": [
+      "arm",
+      "clean/sixpractical",
+      "TX",
+      "RX",
+      "day",
+      "originalF50seed2026092701"
+    ],
+    "prediction_ref": "ARM/{source,target}_prediction;allsevencompletebeforetruth",
+    "scorer_ref": "IndependentCPU subprocess runner score;sourceafterfreeze;targetafterallnewandbaselineviewsvalidated;noqueryfeedback"
+  },
+  "rows": [
+    {
+      "row_id": "continuation",
+      "method": "DURAv1samegraphresetAdamWE20 control",
+      "purpose": "matched_control",
+      "config_ref": "experiments/pamf_dura_prior_refine/model.py",
+      "resolved_config_ref": "continuation/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103002,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "ModelinheritedDURAv1;data seedshufflesfullsourcepool;fixedR07augmentation/receiver2026101911;fixedR05eval;supportN/A",
+      "k": null,
+      "scenario": "clean+sixpracticalfixedoriginalreceived",
+      "optimizer": "resetAdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "4940updates/globalbatch256;63000source x20;L126000/U1134000exposures;inheritedR69120componentepochs+20incremental,notfromscratch",
+      "output_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01/continuation",
+      "log_path": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01/logs/continuation.log",
+      "command": "python -u -m experiments.pamf_dura_prior_refine.runner worker --root ../.. --commit PENDING_CODE_COMMIT --arm continuation",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-ARM.json",
+        "ARM/final.pt",
+        "ARM/training.jsonl",
+        "ARM/training_complete.json",
+        "ARM/matched_profile.json",
+        "ARM/source_prediction/complete.json",
+        "ARM/source_summary.json",
+        "ARM/target_prediction/complete.json",
+        "ARM/target_summary.json",
+        "ARM/complete.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "prior_anchor",
+      "method": "DURAv1samegraphresetAdamWE20 +0.1mean2internalpriorpairedcleanNMSE",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_prior_refine/model.py",
+      "resolved_config_ref": "prior_anchor/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103002,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "ModelinheritedDURAv1;data seedshufflesfullsourcepool;fixedR07augmentation/receiver2026101911;fixedR05eval;supportN/A",
+      "k": null,
+      "scenario": "clean+sixpracticalfixedoriginalreceived",
+      "optimizer": "resetAdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "4940updates/globalbatch256;63000source x20;L126000/U1134000exposures;inheritedR69120componentepochs+20incremental,notfromscratch",
+      "output_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01/prior_anchor",
+      "log_path": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01/logs/prior_anchor.log",
+      "command": "python -u -m experiments.pamf_dura_prior_refine.runner worker --root ../.. --commit PENDING_CODE_COMMIT --arm prior_anchor",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-ARM.json",
+        "ARM/final.pt",
+        "ARM/training.jsonl",
+        "ARM/training_complete.json",
+        "ARM/matched_profile.json",
+        "ARM/source_prediction/complete.json",
+        "ARM/source_summary.json",
+        "ARM/target_prediction/complete.json",
+        "ARM/target_summary.json",
+        "ARM/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Legal sourcepairedclean supervision is additionalwaveform supervision,notTXlabels;notcleanfree.",
+    "Botharmsfixedbeforetargetaccess;allnewversionsformalregardlesssourceperformance; no repeatedtargetdriven tuning.",
+    "FrozenDURAv1 teacherweightsand graph path unchanged;newweightsseparateversionsnotdefaultreplacement.",
+    "Immutablebase release47c264286ca689f060a3f36aafb763fe209a6f06;newoverlayincludesdirectbufferdiagnostichelpers.",
+    "Onlyoneseedfirstpairedmechanismexperiment; no multi-seed/full125expansion implied."
+  ],
+  "registered_at": "2026-10-30T03:38:25+00:00"
+}
