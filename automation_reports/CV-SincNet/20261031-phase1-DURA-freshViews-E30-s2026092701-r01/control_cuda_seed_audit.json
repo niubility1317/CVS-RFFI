@@ -1,0 +1,26 @@
+{
+  "status": "VERIFIED_CPU_FACTORY_CUDA_SEED_TRACE",
+  "torch_version": "2.1.0+cu121",
+  "CUDA_VISIBLE_DEVICES": "",
+  "cuda_initialized": false,
+  "physical_state_tensors": 643,
+  "physical_initial_state_equal": true,
+  "compact_cuda_seed_calls": [
+    2026092701
+  ],
+  "enhanced_cuda_seed_calls": [
+    2026092701,
+    2026103107
+  ],
+  "fresh_cuda_seed_calls": [
+    2026092701
+  ],
+  "cuda_probe_seed_equal": false,
+  "fresh_matches_compact_seed": true,
+  "torch_manual_seed_calls_cuda_seed_all": true,
+  "G_F_forwards": 0,
+  "checkpoint_loads": 0,
+  "optimizer_updates": 0,
+  "TX_V_target_reads": 0,
+  "scope": "PureCPU randomgraphfactory withtracedlazyCUDAseedfunction;no CUDAallocation oroldrun mutation;numeric initialstates equalbutprobe seedcontexts differ"
+}

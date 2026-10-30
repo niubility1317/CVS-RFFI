@@ -135,3 +135,8 @@ wideCoarse首步2Ls新coarse梯度/严格重载/F noquery、11项聚焦检查和
 
 
 针对多阶段与单阶段分工的补充源诊断，固定旧noVar E20/512源×缓存01/20、32批/384组梯度：coarseclean相对final IQ在coarse仅18/32负cos、actionprobe在action仅2/32，均未达到事先24/32判据，不据此启动梯度分离训练。CPU循环28.349秒/1024G输入+2Ls检查，0F/TX/V/target/优化，模型不变；局部梯度几何不是身份收益或完整轨迹证据。见[模块梯度分析](../20261031-diagnostic-DURA-source-module-gradients-s2026092701-r01/analysis.md)。
+
+
+## 同预算 physical 对照的随机数配对限制
+
+补充源代码检查确认：旧IQ增强实验的physical G初值与纯G一致，但增强头初始化额外重设CUDA seed2026103107，CPU恢复并未还原CUDA。它的真实七景分数与预算比较保留；此前不同方法相对该physical的涨跌不能作为严格同探针随机数下的单机制因果隔离。新fresh/repeat配对独立纯G对照已在fresh访问目标前补登记，均用CUDAprobe2026092701/npshuffle2026103004，只比较后10轮源抽样；旧模型/预测/执行代码不改。纯CPU trace见[fresh对照审计](../20261031-phase1-DURA-freshViews-E30-s2026092701-r01/control_cuda_seed_audit.json)。

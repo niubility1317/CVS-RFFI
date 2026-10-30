@@ -45,3 +45,8 @@ controller1218619实际CWD/完整argv/commit/CUDA空、8个source spawn子进程
 新增已完成4/10份（21..24），每份63000条/419580000数值字节；共252000次源模拟访问。最近一份52.276848秒，clean9450/受损53550，native action replay最大相对误差2.416e-16，shape/FP32/finite/固定scene顺序均已检查。当前日志4483字节，下一份仍在生成；不据单份时间宣称完整制备或训练加速。
 
 完整10份生成成本、固定30轮、七景正式与匹配profile待返回；没有增加学生预训练或另训头。默认DURA、每景3pp/clean/实际效率目标仍ACTIVE。
+
+
+## 目标访问前补齐严格随机数配对对照
+
+源首轮差异触发的纯CPU检查证明：旧physical预算匹配，但增强头初始化额外改变CUDA探针seed，先前仅检查CPU RNG的判断不完整。旧数据/分数/权重保留，历史vsphysical只作同预算观察、不当严格单机制归因。补充独立纯G repeatViews E30，与本版stock训练路径/G初值/CUDAprobe2026092701/npshuffle2026103004完全匹配；本版健康32a进程不热改，不改G/loss/预算。初state643张量一致、CUDA未初始化、0G-Fforward/0checkpoint/0TX-V-target的trace见control_cuda_seed_audit.json。新主对照在本版目标访问前登记，独立全七景测试。

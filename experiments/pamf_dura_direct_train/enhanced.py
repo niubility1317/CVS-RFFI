@@ -233,8 +233,10 @@ def configure():
     previous_configuration=base.configuration;previous_command=base.command;previous_scratch=base.scratch_model
     def scratch(seed):
         model=previous_scratch(seed)
-        state=torch.get_rng_state()
-        torch.manual_seed(2026103107);model.enhancer=ShapeEnhancer();torch.set_rng_state(state)
+        # CPU-only head initialization must not reseed the CUDA action probes.
+        with torch.random.fork_rng(devices=[]):
+            torch.random.default_generator.manual_seed(2026103107)
+            model.enhancer=ShapeEnhancer()
         return model
     def configuration():
         value=previous_configuration()
