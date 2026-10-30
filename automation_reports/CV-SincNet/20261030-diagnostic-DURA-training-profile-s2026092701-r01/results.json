@@ -1,0 +1,101 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "source_run": "20261030-phase1-DURA-direct-fastlr-s2026092701-r01",
+  "source_commit": "a0acfbe0c237e38d0460a9f1ea29c46b22cf84a6",
+  "batch": 256,
+  "epoch": 20,
+  "L_s": 128,
+  "U_s": 128,
+  "summaries": {
+    "individual": {
+      "samples": 9,
+      "median_seconds": 0.13150154799222946,
+      "min_seconds": 0.10167239001020789,
+      "max_seconds": 0.18797727581113577
+    },
+    "buffered": {
+      "samples": 9,
+      "median_seconds": 0.137562433257699,
+      "min_seconds": 0.10612621810287237,
+      "max_seconds": 0.14448573999106884
+    }
+  },
+  "buffered_reduction_fraction": -0.04608983968635627,
+  "round_medians": [
+    {
+      "individual": 0.13150154799222946,
+      "buffered": 0.137562433257699
+    },
+    {
+      "buffered": 0.13886296702548862,
+      "individual": 0.13381577609106898
+    },
+    {
+      "individual": 0.10657796589657664,
+      "buffered": 0.10821533529087901
+    }
+  ],
+  "selected_profile_events": {
+    "aten::upsample_linear1d": {
+      "name": "aten::upsample_linear1d",
+      "count": 62,
+      "self_cpu_us": 1142,
+      "cpu_total_us": 2491,
+      "self_cuda_us": 60283,
+      "cuda_total_us": 60508
+    },
+    "aten::upsample_linear1d_backward": {
+      "name": "aten::upsample_linear1d_backward",
+      "count": 60,
+      "self_cpu_us": 938,
+      "cpu_total_us": 3826,
+      "self_cuda_us": 79968,
+      "cuda_total_us": 80552
+    },
+    "aten::convolution_backward": {
+      "name": "aten::convolution_backward",
+      "count": 720,
+      "self_cpu_us": 57617,
+      "cpu_total_us": 101110,
+      "self_cuda_us": 55946,
+      "cuda_total_us": 68855
+    },
+    "cudaLaunchKernel": {
+      "name": "cudaLaunchKernel",
+      "count": 18860,
+      "self_cpu_us": 113555,
+      "cpu_total_us": 113555,
+      "self_cuda_us": 12570,
+      "cuda_total_us": 12760
+    },
+    "dura_source_prepare": {
+      "name": "dura_source_prepare",
+      "count": 4,
+      "self_cpu_us": 10088,
+      "cpu_total_us": 19368,
+      "self_cuda_us": 0,
+      "cuda_total_us": 1685
+    },
+    "dura_metric_copy": {
+      "name": "dura_metric_copy",
+      "count": 4,
+      "self_cpu_us": 293,
+      "cpu_total_us": 1572,
+      "self_cuda_us": 0,
+      "cuda_total_us": 78
+    }
+  },
+  "profile_steps": 4,
+  "values_and_clipped_gradients_close": true,
+  "gradient_rtol": 2e-05,
+  "gradient_atol": 2e-06,
+  "model_unchanged": true,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "F_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "physical_GPU": "4",
+  "scope": "Shared-card same-source no-update steps; full objective/backward/clip/data gather and copy/logging; excludes optimizer step and epoch-cache construction; not end-to-end training speed or quality",
+  "goal_complete": false
+}

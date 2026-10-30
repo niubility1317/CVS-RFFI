@@ -21,6 +21,9 @@ RUN='20261030-diagnostic-DURA-training-profile-s2026092701-r01'
 MODULE='experiments.pamf_dura_efficiency.gpu_profile'
 SOURCE='20261030-phase1-DURA-direct-fastlr-s2026092701-r01'
 SOURCE_COMMIT='a0acfbe0c237e38d0460a9f1ea29c46b22cf84a6'
+CASES=('individual','buffered')
+SWITCH_FACTORY=None
+METRIC_MODE=None
 
 
 def source(root,device):
@@ -46,10 +49,12 @@ def benchmark(args):
             for key in ('received','kernel','coefficients','variance')}
     before={key:value.detach().clone() for key,value in model.state_dict().items()}
     parameters=list(model.parameters())
+    switch=SWITCH_FACTORY(model) if SWITCH_FACTORY is not None else None
     training.write_json(args.output/'worker.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,
         physical_GPU=os.environ['CUDA_VISIBLE_DEVICES'],code_commit=args.commit))
 
     def step(mode,copy_gradients=False):
+        if switch is not None:switch(mode)
         torch.cuda.synchronize();started=time.perf_counter()
         for parameter in parameters:parameter.grad=None
         # Reset the probe RNG so the two logging paths see identical inputs.
@@ -68,23 +73,23 @@ def benchmark(args):
             clipped=int(norm>1)
         with torch.profiler.record_function('dura_metric_copy'):
             sums=[value.detach().sum() for value in dict(loss=loss,**terms).values()]
-            metrics=([float(value) for value in sums] if mode=='individual' else torch.stack(sums).cpu().tolist())
+            metrics=([float(value) for value in sums] if (METRIC_MODE or mode)=='individual' else torch.stack(sums).cpu().tolist())
         torch.cuda.synchronize();elapsed=time.perf_counter()-started
         gradients=[None if v.grad is None else v.grad.detach().clone() for v in parameters] if copy_gradients else None
         return elapsed,metrics,clipped,gradients
 
     # Allow the small repeatability error of existing CUDA reductions.
-    _,first,clip_a,reference=step('individual',True)
-    _,second,clip_b,other=step('buffered',True)
+    _,first,clip_a,reference=step(CASES[0],True)
+    _,second,clip_b,other=step(CASES[1],True)
     if clip_a!=clip_b:raise ValueError('Logging path changed clipping state')
     torch.testing.assert_close(torch.tensor(first),torch.tensor(second),rtol=2e-5,atol=2e-6)
     for a,b in zip(reference,other):
         if (a is None)!=(b is None):raise ValueError('Logging path changed gradient participation')
         if a is not None:torch.testing.assert_close(a,b,rtol=2e-5,atol=2e-6)
     del reference,other
-    timings={key:[] for key in ('individual','buffered')};rounds=[]
+    timings={key:[] for key in CASES};rounds=[]
     for round_index in range(3):
-        order=('individual','buffered') if round_index%2==0 else ('buffered','individual')
+        order=CASES if round_index%2==0 else CASES[::-1]
         record={}
         for mode in order:
             samples=[step(mode)[0] for _ in range(3)]
@@ -92,7 +97,7 @@ def benchmark(args):
         rounds.append(record)
     with torch.profiler.profile(activities=[torch.profiler.ProfilerActivity.CPU,torch.profiler.ProfilerActivity.CUDA],
                                 record_shapes=False,with_stack=False,profile_memory=False) as profiler:
-        for _ in range(4):step('individual')
+        for _ in range(4):step(CASES[0])
     events=[dict(name=event.key,count=event.count,self_cpu_us=event.self_cpu_time_total,
                  cpu_total_us=event.cpu_time_total,self_cuda_us=event.self_cuda_time_total,
                  cuda_total_us=event.cuda_time_total) for event in profiler.key_averages()]
@@ -105,7 +110,8 @@ def benchmark(args):
         source_commit=SOURCE_COMMIT,epoch=20,source_examples=256,batch=256,
         L_s=int((roles[indices]=='L_s').sum()),U_s=int((roles[indices]=='U_s').sum()),
         repeats=timings,rounds=rounds,summaries=summaries,
-        buffered_reduction_fraction=1-summaries['buffered']['median_seconds']/summaries['individual']['median_seconds'],
+        cases=list(CASES),metric_copy_mode=METRIC_MODE or 'case-specific',
+        relative_reduction_fraction=1-summaries[CASES[1]]['median_seconds']/summaries[CASES[0]]['median_seconds'],
         values_and_clipped_gradients_close=True,gradient_rtol=2e-5,gradient_atol=2e-6,
         model_unchanged=True,optimizer_updates=0,TX_labels_read=0,
         F_reads=0,V_reads=0,target_reads=0,CPU_threads=2,physical_GPU=os.environ['CUDA_VISIBLE_DEVICES'],

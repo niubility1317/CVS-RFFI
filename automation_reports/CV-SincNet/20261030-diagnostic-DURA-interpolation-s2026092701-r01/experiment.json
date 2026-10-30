@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-interpolation-s2026092701-r01",
+  "group_id": "phase1-dura-training-step-profile",
+  "display_name": "DURA固定二倍插值的源域等价与GPU速度诊断",
+  "description": "SamefastLRsourcefinal/no update;onlyfourCore12of15linear2x ops replaced by halfpixel slices;full gradient agreement and alternatingGPUwall",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "gradient-conflict",
+    "F-free",
+    "single-stage"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase1-DURA-direct-fastlr-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-interpolation-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07 source_indices first256 positions,epoch20;pairedIQ/action/noise;no V/target",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsourcecache;deterministicsource_indicesinexistingDURAdiagnostic;opaquepositionssaved",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "none;noqueryorclassificationprediction"
+  },
+  "permissions": {
+    "regime": "source_only_TX_hidden_F_free",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Batchmeanweightedsourcegradientgeometryonly;notperexamplecausalityoridentity/targetperformance"
+  },
+  "checkpoint": {
+    "initialization": "FrozenfastLRsourceE20/4940;requiresgradonlyfortemporaryautograd,nooptimizer",
+    "sources": [
+      "runs/20261030-phase1-DURA-direct-fastlr-s2026092701-r01/scratch_joint/final.pt"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "REUSE_VERIFIED_MATCHING_ORIGINAL_SOURCE_CONTRACT; validate payload sourcefinalstage2E20/4940",
+    "selection_rule": "PredesignatedsourcefinalE20/currentprimarysingle-stagevariant;sourcecommitA0;notargetranking"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-step-profile",
+    "gpu_policy": "CPU2;max1thisdiag/max2aggregategoal/atmost1ownpercard;totalvisiblepids<2/free12GB;no interference",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-interpolation-s2026092701-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-interpolation-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-interpolation-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.interp_profile run --root ../.. --output ../../runs/20261030-diagnostic-DURA-interpolation-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Contract/checkpoint/smoke/nonfinite/numericalmismatch/statechange/collision/workerfailure:preserveoutputs,noautoretry;no performance stop"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "submitted.json",
+    "worker.json",
+    "results.json",
+    "gpu.log",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "same-source step median/min/max",
+      "unprofiled repeats",
+      "CPU/CUDA self/total event time",
+      "parameter gradient agreement",
+      "peak_allocated"
+    ],
+    "dimensions": [
+      "native_linear/slice_linear2x",
+      "3alternatingroundsx3repeats",
+      "4nativeprofiledsteps"
+    ],
+    "prediction_ref": "none",
+    "scorer_ref": "none;zero updates/source-only"
+  },
+  "rows": [
+    {
+      "row_id": "native-vs-slice-linear2x",
+      "method": "Sameweights/nativelinear vs fixedhalfpixelslices;individual logging both",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/interp_profile.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "Fixedfirst256Lsrolepositions;modelseedcontrolsrandomfactory;evalcontrols2probes;supportN/A;sourceR07receiverseed2026101911",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2warm/18timed/4profiled B256;0updates;no learned targets;2sourceLs CPU smoke first",
+      "output_root": "runs/20261030-diagnostic-DURA-interpolation-s2026092701-r01",
+      "log_path": "runs/20261030-diagnostic-DURA-interpolation-s2026092701-r01/gpu.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.interp_profile run --root ../.. --output ../../runs/20261030-diagnostic-DURA-interpolation-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "submitted.json",
+        "worker.json",
+        "results.json",
+        "gpu.log",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source profile identified native linear upsample forward/backward as large GPU events;scalar logging optimization not adopted.",
+    "Replace only four unconditional Core decoder paths (12of15upsamples);action estimator separate3upsamples remain native;no parameters/aliases/normalization/CG/loss/RNG changes.",
+    "Fixed 2x halfpixel interpolation:even=.25left+.75current,odd=.75current+.25right;clamped edges preserved;all existing time grids doubled.",
+    "FiveCPUdouble precision forward/adjoint/edge tests PASS includingT1/T3/T32/T64/T128;fullsource model loss/clipped gradients rtol2e-5/atol2e-6 before timing.",
+    "Scientific adoption threshold fixed before run:>=10% medianstepreduction and each roundpositive;else no trainingcandidate from this execution change.",
+    "2warm+18timed+4nativeprofiled,B256same source/probes/frozenfastLRsourceweights;0optimizer/modelstatechange/F/TX/V/target;not quality proof.",
+    "One independent P0/P1 review required only for new interpolation implementation;existing profile machinery already reviewed, no duplicate full review."
+  ],
+  "registered_at": "2026-10-30T05:38:33+00:00"
+}
