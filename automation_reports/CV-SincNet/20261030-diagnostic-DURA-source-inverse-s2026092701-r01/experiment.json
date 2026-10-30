@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-30 /goal全面深入分析并优化星地恢复网络；现有TX无标签/F-free恢复器研究授权",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "6a9916cd57670de052aa7424de379fdf3b49f881",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261030-diagnostic-DURA-source-inverse-s2026092701-r01-release"
@@ -82,7 +82,7 @@
     "remote_run_root": "runs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01",
     "remote_log_root": "logs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-source-inverse-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_diagnostics.runner --checkpoint ../../runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt --action-run ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --output ../../runs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01 --device cpu --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_diagnostics.runner --checkpoint ../../runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt --action-run ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --output ../../runs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01 --device cpu --commit 6a9916cd57670de052aa7424de379fdf3b49f881",
     "stop_rule": "Fail on bad source cache/checkpoint/roles,output collision,nonfinite,nonexact native reconstruction or changedmodel;preserve partial outputs,no automaticretry,never stop otherowners"
   },
   "expected_artifacts": [
@@ -139,7 +139,7 @@
       "budget_ref": "512uniqueL/U x2cachedviews+2Lsactualsmoke;no training",
       "output_root": "runs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01",
       "log_path": "logs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_diagnostics.runner --checkpoint ../../runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt --action-run ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --output ../../runs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01 --device cpu --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_diagnostics.runner --checkpoint ../../runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt --action-run ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --output ../../runs/20261030-diagnostic-DURA-source-inverse-s2026092701-r01 --device cpu --commit 6a9916cd57670de052aa7424de379fdf3b49f881",
       "expected_artifacts": [
         "launch.json",
         "epoch01.npz",

@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-30 /goal全面深入分析并优化星地恢复网络；现有TX无标签/F-free恢复器研究授权",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "44bb16ed08b29e7e4ee61c21e1e1287d18791c75",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01-release"
@@ -97,7 +97,7 @@
     "remote_run_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01",
     "remote_log_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_prior_refine.runner run --root ../.. --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_prior_refine.runner run --root ../.. --commit 44bb16ed08b29e7e4ee61c21e1e1287d18791c75",
     "stop_rule": "Badcontract/role/outputcollision/nonfinite/checkpoint/smoke/predictioncoverage: preservefailedrow,noautomaticretry/hotedit;healthyrowcontinues;no performance stop;unrelatedowneruntouched"
   },
   "expected_artifacts": [
@@ -172,7 +172,7 @@
       "budget_ref": "4940updates/globalbatch256;63000source x20;L126000/U1134000exposures;inheritedR69120componentepochs+20incremental,notfromscratch",
       "output_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01/continuation",
       "log_path": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01/logs/continuation.log",
-      "command": "python -u -m experiments.pamf_dura_prior_refine.runner worker --root ../.. --commit PENDING_CODE_COMMIT --arm continuation",
+      "command": "python -u -m experiments.pamf_dura_prior_refine.runner worker --root ../.. --commit 44bb16ed08b29e7e4ee61c21e1e1287d18791c75 --arm continuation",
       "expected_artifacts": [
         "launch.json",
         "plan.json",
@@ -215,7 +215,7 @@
       "budget_ref": "4940updates/globalbatch256;63000source x20;L126000/U1134000exposures;inheritedR69120componentepochs+20incremental,notfromscratch",
       "output_root": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01/prior_anchor",
       "log_path": "runs/20261030-phase1-DURA-prior-anchor-s2026092701-m2-r01/logs/prior_anchor.log",
-      "command": "python -u -m experiments.pamf_dura_prior_refine.runner worker --root ../.. --commit PENDING_CODE_COMMIT --arm prior_anchor",
+      "command": "python -u -m experiments.pamf_dura_prior_refine.runner worker --root ../.. --commit 44bb16ed08b29e7e4ee61c21e1e1287d18791c75 --arm prior_anchor",
       "expected_artifacts": [
         "launch.json",
         "plan.json",

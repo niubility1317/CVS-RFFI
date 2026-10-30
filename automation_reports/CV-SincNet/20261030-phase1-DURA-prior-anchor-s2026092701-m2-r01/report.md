@@ -38,3 +38,11 @@ Source evidence: CG16 hurts and internal priors rely on biased learned consisten
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 已发布与实际启动
+
+VERIFIED：执行代码`44bb16ed08b29e7e4ee61c21e1e1287d18791c75`已commit/push并独立核对远端OID；N607新不可变release的单archiveSHA一致、远端编译通过。CPUcontroller PID3491668的CWD/cmdline/runroot已独立读回，首步实际2Ls的两arm原生forward重建、非零梯度、严格checkpoint存取及原F50默认头smoke均PASS。
+
+首次实际GPU训练为`continuation`，PID3492603/PPID3491668、物理GPU6、CWD/命令和日志增长已核实；E1/247次更新已完成，loss0.02422984、F_inputs0、TX_labels_read0，实际L6300/U56700曝光。`prior_anchor`当时仍排队，控制器继续按同一固定资源规则调度，不构成失败。此为阶段性读回，实时进度以原run日志/进程为准；未产生正式性能结论，不能将一行启动写成两行训练完成。
+
+恢复工作先读本run原状态，保留健康进程。每行E20后自动评分；读取目标结果只作固定矩阵分析，不修改另一行。最终还需收集完整40轮日志、两份独立权重、两行七景及同卡成本，与DURA/原R17/同预算对照逐景比较。总目标active。
