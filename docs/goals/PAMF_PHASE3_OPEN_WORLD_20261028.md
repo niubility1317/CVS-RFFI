@@ -892,3 +892,15 @@ Run `20261031-phase3-class-shift-s2026092701-r01` / actualcode `74e0a3de37d0f367
 ### 2026-10-31 源重放与目标实例对比的深层适应预登记
 
 Run `20261031-phase3-signal-ssl-s2026092701-r01` / actualcode `72b0b60d6c445e907b1bd05061cc3dbcd36132af`。独立复制原r03完整334721信号分支为SOURCE/TARGET_SSL，各freshCENTER_UNITS444步、sourceL192/OE64索引逐步匹配；TARGET增加U64同记录独立phase/gain两view的NT-Xent1/temp0.1，SOURCE U0，只有SOURCE全完成后才真实开starU384并G恢复一次。原F0/default6、DURA、r03本体冻结；新学生Sinc/body/projection可训练，BN/Dropout eval/buffers保持。SOURCE纯源/TARGET显式U祖先，未知是未注册且可无标签曝光，不称严格未见。全部NNfreeze后两sourceL/OE density90/OE32＋四sourceV hard12tau，DA0原11/两tau保持；全部六tau后NV/两个Q，六列×源DURA/cleanDURA/starDURA全预测后独立3truth，无Utruth/trueK/quota/Q统计或评分回流。唯一SSL_ratio须starAK同时胜DA0/SOURCE且cleanRU95/starRU90/CK90/同G原F0损2pp/主景coverage。新增训练888更新/源曝光227328/targetUview56832，预测新source/querysignal90352、G/F01728，trainG384，旧F011100/r032220/G祖先成本保持。历史sourceNV/Q曝光和high缺类保留，formalRX及未来query未访问；不做匿名REG，完整Phase3目标ACTIVE，当前未启动无性能。
+
+
+### 2026-10-31 深层目标实例对比的完整匹配实验结果
+
+Run `20261031-phase3-signal-ssl-s2026092701-r01` / actualcode `72b0b60d6c445e907b1bd05061cc3dbcd36132af`：两个独立学生各444更新、六方法×三DURA条件的预测与独立truth-last均完成，执行VERIFIED、科学NO_PROMOTION。source_DURA AK/CK/RU/H 89.496296/96.640741/69.936508/78.516570%；clean_DURA AK/CK/RU/H 58.506944/74.826389/96.527778/72.855232%；star_DURA AK/CK/RU/H 55.208333/74.131944/82.291667/66.082702%。相对原DA0_ratio，星地正确接收净−45、未知拒对净+17，AK−7.812500pp/RU+5.902778pp/H−2.981225pp；相对同预算SOURCE_ratio，正确接收净−34、未知拒对净+27，AK−5.902778pp/RU+9.375000pp/H−0.411253pp。未知拒识上升不能抵消已知正确接收损失。原F0/G/r03冻结、SOURCE U0、TARGET U384且适配祖先明确；模块梯度仅前两步有日志，不推广到全部444步。正式RX未访问，匿名注册未完成，完整目标ACTIVE。详见 `docs/PAMF_PHASE3_SIGNAL_SSL_RESULTS_20261031.md`。
+
+
+### 2026-10-31 按用户要求选取既有较好方法
+
+本轮选取两种已完成方法：原P1 signal r03＋pooled known/OE density_ratio作为冻结对照（`20261031-phase3-dura-best-s2026092701-r01`）；同一冻结表征的predicted_ratio作为重点候选（`20261031-phase3-class-density-s2026092701-r01`）。后者按原F0预测身份选取15个源RX/day模式，背景32模式保持，只使用原源V确定自身六阈值；身份头与DURA不改。所有三类测试均使用DURA。前者clean/star AK/RU/H为68.923611/99.652778/81.487441%与63.020833/76.388889/69.063927%；后者为70.833333/100.000000/82.926829%与64.062500/77.083333/69.972325%。优先保留已知正确接收与未知拒识共同改善的方法，不按RU单项选择SSL、CLASS偏移或SHARED偏移。
+
+此次只筛选历史开发证据并归档已完成实验，不新增训练、预测、评分、阈值拟合或正式RX访问。不修改任何历史run主方法/结论，不将重点候选视为科学晋级或独立盲测确认；原冻结对照继续保留。两者仍未达到CK≥90%、星地RU≥90%和相对同DURA闭集AK损失≤2pp的联合要求，目标ACTIVE。
