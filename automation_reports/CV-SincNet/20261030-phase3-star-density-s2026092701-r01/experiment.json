@@ -1,0 +1,194 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-density-s2026092701-r01",
+  "group_id": "pamf-phase3-source-density-ratio",
+  "display_name": "PAMF第三阶段：多中心已知分布与辅助背景密度比",
+  "description": "Frozen original F0/defaulthead; source90mode regularized Gaussian mixture, weighted32capacity background mixture, full probability mass/volume/scale; source-only known_only control and main density_ratio.",
+  "kind": "cvs",
+  "stage": "Phase3-source-density-falsification",
+  "aliases": [
+    "源侧多中心密度比"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "density_ratio",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-known-density-vs-OE-density-ratio",
+  "parent_run_ids": [
+    "20261030-phase3-star-protected-open-s2026092701-r01",
+    "20261030-phase3-star-local-support-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "b8163a03e8d3d299127c7914272a2d866f92c89a",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-density-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_density_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_DENSITY_PLAN_20261030.md"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Same originalF0 unit160 G10MIX01/P1; cached L/OE rawfeatures normalized uniformly FP64 and exact reused local-support V/NV features/defaulthead outputs; no oldscore/tau read.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/ids.npy",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_density_fit": 6300,
+      "source_OE_main_background_fit": 6134,
+      "source_V_fixed_known_risk": 27000,
+      "source_novel_score_only": 3150,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "target_Q_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Original source roles disjoint; L sixTX/5RX/3day70 each, V only known risk after states frozen, novel readonly independent truth; no target/support/query new fit.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "L trueold6 labels plus public RX/day; OE outside-six membership/publicdomains only, trueOE TX/K hidden; known_only never uses OE fitting. Cached oldsource outputs never make old scores/target Q legal training.",
+    "query_use": "Source V only fixed threshold calibration, source novel independent truth-last after all two-policy predictions. No target U/Q/Us/IQ/new channel.",
+    "external_method_exception": null,
+    "claim_scope": "Source-only single originalseed falsification, source RX seen and novel historically exposed; not crossnewRX/UDA/discovery/registration completion, fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Original native Phase1 Tri-SIG-TIME SSL E50/11100/default6head frozen; realcheckpoint noquery syntheticG10 smoke2 before cached source reads. Statistical state new from L/OE, no neural or optimizer updates.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original source contract392005/6class L6300 Us56700 V27000 unchanged. Protected cache code7dd90671968ddf58aab5a5b302b4d56371c8b9c9 raw ORIGINAL F0 features only; no protectedadapter inheritance. Local-support code84cdc012f7d9641b283c407f6048bfe4e6e21cf6 ORIGINAL F0 V/NV feature reuse only. Both sourceonly F0/DURA identities match; no candidate/target weights.",
+    "selection_rule": "Fixed90known domains, OEcapacity32/25 Lloyd/seed2026103019/shared covariance shrink.1/modevariance shrinkD160, no V/NV/target parameter or iteration selection. SourceV calibrates knownrisk only; sole main ratio unchanged."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-density-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-density-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-density-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_density_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_density_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-density-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One new originalF0 smoke worker, actualfree>=4096MiB allowed0..7 <=2 addedown/card, foreign preserved; CPU BLAS1 density fit and separate CUDAempty CPU scorer.",
+    "stop_rule": "Illegal ancestry/role, nonfinite, outputcollision or technicalfailure preserves output; no score before all predictions complete; no auto retry/retune. UNKNOWN reconcile originalPID/root; foreign operations0."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/{driver,predict,score}.log",
+    "predict/{smoke,fit,complete}.json",
+    "predict/*model*.npz",
+    "predict/*predictions.npz",
+    "predict/*threshold*",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "known_only control/density_ratio soleprimary",
+      "source trueold6/novel3 TX",
+      "source RX1/3/4/6/8",
+      "day1/2/3",
+      "G10MIX six practical slices"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-density-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_density_score.py",
+    "targets_ref": "v3 source falsification gate only; only then new preregistered crossRXstar check, no source substituted for finalgoal.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "C_K>=90%",
+      "same-input original F0 closed minus A_K<=2pp",
+      "known42 and sourceRU90 primary gate"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-density-s2026092701",
+      "method": "PAMF-OW Gaussian mixture density_ratio",
+      "purpose": "Test density model with probability mode volume/scale vs known_only control at fixed knownrisk, while preserving original defaulthead identities.",
+      "config_ref": "docs/PAMF_PHASE3_DENSITY_PLAN_20261030.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-density-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Original F0 model2701, frozen physical G10 receiver2027/scene2026103001/channel2026104001. Background kmeans++ RNG2026103019 only; no shots/hiddenTX/K/quotas.",
+      "k": null,
+      "scenario": "Seen-source5RX/3day G10P1 old6 vs heldout3 source device types",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "No neural/optimizer updates; source L6300 cachedstats, mainOE6134/25Lloyd, V27000+NV3150 output reuse; syntheticF2/realF0/G0. One row with matched policy dimension, not two independent trainings.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-density-s2026092701-r01/predict",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-density-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_density_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-density-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/{driver,predict,score}.log",
+        "predict/{smoke,fit,complete}.json",
+        "predict/*model*.npz",
+        "predict/*predictions.npz",
+        "predict/*threshold*",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Sole main density_ratio; no best-policy selection from source novel, known_only control has no OE density parameter.",
+    "Full likelihood includes component weights, radial volumes/scales and whitening determinant; aggregate state only, not old8NN renamed.",
+    "All postPhase1 IQ stays fixed G10P1; this run only cached source features/olddefaultlogits, synthetic realcheckpointsmoke2 and no realF/G.",
+    "Sourceknown risk42/FRR10%/2pp calibration from V only after frozen models; all thresholds before novel; independent sole source truth after all predictions.",
+    "No UDA/REG/AN yet, fullgoalACTIVE, formal RX24-18 and all targetnewaccess0."
+  ],
+  "registered_at": "2026-10-30T11:16:03+00:00"
+}
