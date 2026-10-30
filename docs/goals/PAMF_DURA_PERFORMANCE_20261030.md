@@ -240,3 +240,12 @@ wideCoarse E30实际发布a55a568fc06cc3047647e8201d7fe5ca16f872b2：controller1
 
 
 原R17最终native IQ source缓存预制已发布6848d46e95741082e2783a525e6d0d376e8ff7c6：controller1174803/worker1174895/GPU4，7checks/ONEP0P1/preflight/archiveSHA/compile与真实2Ls原G noquery冻结state PASS；PID/CWD/argv/CUDA/GPU/loggrowth独立核实，准入1PID/free22883MiB/后态2，与wideCoarseGPU6合计2本任务worker。他人保持。原teacher选在target前/source7-63-30/coarse-action-prior各20历史轮次；当前生产0训练/F/TX/V/target，20x63000最终第三stage IQ/2.58048GB，已2视图/126000输入，完成与全成本待实测。后续若试验已固定紧凑scratchE30/noVar4base+非clean源native教师IQMSE权重1，sourceclean教师项0/mask仅训练，先另登记不自动由producer启动、不按wide目标结果调权重。默认和完整3pp/clean/效率目标ACTIVE。
+
+
+宽coarse E30完整结案：a55a568，1466771参数/116098088MAC，30/7410/L189000U1701000/源IQ教师复用630k/新teacher加载前向0。全部七景预测后truth-last，独立126组一致；clean84.863690%，lowurban66.073810%，六景均低于默认与E30physical，0/6通过3pp，原R17逐景1pp未通过。源coarse NMSE .02399570/final .01776716低于匹配紧凑hint仍未改善身份。训练2091.901s/G流程2092.824s/全流程2451.928s，B1G+F默认4.671210ms/本版5.894090ms，历史缓存132.756s/60组件轮次另计；默认保持、目标ACTIVE。最终IQ教师候选的非clean权重1/clean0在本版正式分数读取前已以945114bf4固定，不由这些负结果调权重。
+
+
+原R17最终IQ源缓存生产完整完成：code6848，20×63000/1260000 GPU输入+CPU smoke2/2.58048GB，完整20数组finite/shape/dtype/ID-role独立核实、teacher不变。新增训练/F/TX/V/target/updates0，循环972.193282s（16.203min）/全制备976.382917s/peakallocated75658240bytes。历史R17coarse/action/prior各20、合计60组件轮次保留；源缓存可复用但不当免费知识或新样本。状态ANALYZED仅SOURCE_CACHE_ONLY，不是新G正式收益，默认保持/目标ACTIVE。
+
+
+最终IQ教师学生已独立登记并启动：20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01，执行728129ece6855743fc4939193ab2bc3b7693b9aa，controller1192588/worker1192680/GPU6，准入已有1PID/free19245MiB/后态2PID，真实2Ls目标梯度/严格重载/原F noquerysmoke PASS，8checks与唯一P0P1 PASS。紧凑G266951 scratch单阶段E30/7410；noVar4base+非clean最终原R17IQ MSE权重1/clean教师0，已在945114bf4且wide正式分数读取前固定。当前E3、teacherref189000/active160614，实时teacher/F/TX优化0，source缓存复用句柄.011453秒而历史972.193282秒/1.26m/2.58048GB和60组件轮次另计。后续固定final30自动七景/truth-last；目前不是正式收益，默认保持/目标ACTIVE。

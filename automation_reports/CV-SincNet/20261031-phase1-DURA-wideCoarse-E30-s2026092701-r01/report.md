@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-wideCoarse-E30-s2026092701-r01`
 - group_id：`phase1-dura-scratch-coarse-capacity`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -43,3 +43,8 @@ controller1152012/worker1152105/GPU6，实际/proc CWD、完整argv/commit、CUD
 原64b8教师IQ缓存权限、生产者和63000物理ID顺序已核实。本次teacher加载/前向/更新均0，cache handle读取核对0.010655秒；已189000次参考访问、hint实际执行，总loss按固定五项复算一致，F/TX/实时教师及初始化权重读取0。历史630000教师前向/132.756142秒/1.29024GB数值缓存、coarse20轮/fullbundle60组件轮次另计；没有把缓存复用当总训练加速。
 
 新图1466771参数/116098088 ConvLinearMAC、2prior4CG27FFT。当前只证明新容量与缓存复用按计划执行，尚无正式收益；固定E30后自动七景及实际profile，source下降不取消测试。默认与逐景3pp/clean/效率目标保持。
+
+
+## 完整训练与正式七景结果
+
+VERIFIED / ANALYZED。E30/7410、126组独立复算、全30曲线通过。clean84.863690%，lowurban66.073810%，六景均低于默认与同预算physical，0/6通过3pp。源IQ误差更低未带来身份收益。1466771参数、116098088MAC；G训练2091.901秒、全流程2451.928秒；同卡G+F B1默认4.671210ms/本版5.894090ms。完整训练、成本和TX/RX/day见 [分析](analysis.md) 与results.json。默认保持，目标ACTIVE。

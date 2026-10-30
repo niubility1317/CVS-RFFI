@@ -3,7 +3,7 @@
 - run_id：`20261031-source-DURA-R17-nativeIQ-cache-s2026092701-r01`
 - group_id：`phase1-dura-original-R17-native-IQ-cache`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -47,3 +47,8 @@ controller1174803/worker1174895/GPU4的实际CWD/完整argv/commit/CUDA、GPU PI
 ## 已固定的后续研究意图
 
 若开展学生试验，将独立登记紧凑266951参数、从零单阶段E30/7410，保持noVar四项基础loss，在非clean源腐蚀样本上增加权重1的最终native IQ教师MSE；sourceclean样本不加教师项，mask仅训练使用。教师参考按cache01..20、再复用01..10，与同一received/物理ID配对。当前尚未自动启动该学生；该配方来自原R17源证据，后续不按宽coarse正式成绩调教师权重或mask。每版仍完整七景/真实TX/clean/成本验收。
+
+
+## 完整源缓存结案
+
+VERIFIED / ANALYZED，仅SOURCE_CACHE_ONLY。20×63000/1.26m教师输入+2smoke，2.58048GB，完整ID/role/shape/dtype/finite读回通过、teacher不变，0训练/F/TX/V/target。循环972.193282s、全流程976.382917s、peakallocated75658240字节；历史60组件轮次另计。详细见[分析](analysis.md)和results.json，不是目标性能或目标完成。

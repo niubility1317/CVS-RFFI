@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration/efficiency goal/userE30budget/authorized originalR17 sourceIQteacher;fixedrecipe in945114bf4 beforewide targetread;newindependentG/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "728129ece6855743fc4939193ab2bc3b7693b9aa",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-nativeIQhint-E30-r01"
@@ -103,7 +103,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.native_iq_hint run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.native_iq_hint run --root /home/szu2070436088/2510044040/CV-SincNet --commit 728129ece6855743fc4939193ab2bc3b7693b9aa",
     "stop_rule": "Source/cacheteacher/producer/roles/IDs/scene/shape/nonfinite/collision/checkpoint/smoke/coverage technicalfailure:preserveaffectedrow/noautoretry/nootherownercontrol;no performance stop"
   },
   "expected_artifacts": [
@@ -179,7 +179,7 @@
       "budget_ref": "ScratchE30/7410/B256/L189000U1701000;266951;20cachedviews+repeat01-10;1890000teacherrefvisits/actualnoncleanactive;newteacherforward0;history60componentepochs+972.193282s cache separate",
       "output_root": "runs/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.native_iq_hint worker --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_direct_train.native_iq_hint worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 728129ece6855743fc4939193ab2bc3b7693b9aa --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",
