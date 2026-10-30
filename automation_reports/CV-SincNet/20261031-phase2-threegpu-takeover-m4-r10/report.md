@@ -33,3 +33,7 @@
 用户指定Phase2对照队列只分配3张卡，选择GPU1/5/7；每卡最多2个本任务worker。r08其他卡在途任务自然结束，保留原预测/评分路径、方法矩阵、全部已完成结果、16个已有ISSL失败及blocked后继；不恢复失败任务、不影响其他owner。
 
 r09因暂停旧controller后短暂出现未识别child而安全中止，旧controller已恢复；该child随后被原controller记为正常完成。r10仅对这一具体竞态做有界重扫：每次重新枚举并核对全部子进程，持续未知仍中止并恢复旧controller，不接受未知进程。新root和原root独立，第一次真实源checkpoint无query smoke后立即进行接管。修复及失败/依赖阻塞重建已完成聚焦测试和独立定点复核。
+
+## 接管读回（2026-10-31 02:29，香港时间）
+
+VERIFIED / RUNNING：执行commit `01dccd506c26881d77062be5ab4e7a300fb42347` push和远端OID一致，一次发布归档校验及远端编译通过；10个真实源checkpoint CPU无query smoke PASS。原controller PID 4067312 已退出，新controller PID 1042034 接管15个健康在途预测，模型worker重启0；原16个FAILED及3848个BLOCKED保留。新任务只允许GPU1/5/7，其他GPU0/2/3/4/6原有任务自然收尾；当时该队列仍处于收尾阶段，不能声称已从这些卡全部退出。

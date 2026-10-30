@@ -1,1 +1,2 @@
 {"at": "2026-10-30T18:28:49+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-30T18:30:32+00:00", "status": "RUNNING", "note": "Old controller exited; fifteen workers adopted without restart; new GPU admissions restricted to 1,5,7 while other cards drain.", "evidence": ["runs/20261031-phase2-threegpu-takeover-m4-r10/handoff.json", "runs/20261031-phase2-threegpu-takeover-m4-r10/pipeline_state.json"], "row_id": null}
