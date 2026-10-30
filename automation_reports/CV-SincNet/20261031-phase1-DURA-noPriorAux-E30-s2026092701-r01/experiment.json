@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration goal/userE30budget/authorizedmultiGPUresearch;source-grounded objectiveablation within unchangedsourcepermissions",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "eb46cab8ef9c253c193a10db1724ed9835ed2cf9",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-noPriorAux-E30-r01"
@@ -102,7 +102,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-noPriorAux-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-noPriorAux-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-noPriorAux-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.prior_aux_free run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.prior_aux_free run --root /home/szu2070436088/2510044040/CV-SincNet --commit eb46cab8ef9c253c193a10db1724ed9835ed2cf9",
     "stop_rule": "Badsource/roles/nonfinite/collision/checkpoint/smoke/coverage/ownerobservationfailure:preserveaffectedrow/noautoretry;no performance stop;no stop/hotedit healthy predecessor"
   },
   "expected_artifacts": [
@@ -176,7 +176,7 @@
       "budget_ref": "Gscratch30/7410/B256/L189000/U1701000;oneG/visit;no teachers/ancestors/Ftrain;20uniquecorruptions+repeat10",
       "output_root": "runs/20261031-phase1-DURA-noPriorAux-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-noPriorAux-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.prior_aux_free worker --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --arm scratch_joint",
+      "command": "python -u -m experiments.pamf_dura_direct_train.prior_aux_free worker --root /home/szu2070436088/2510044040/CV-SincNet --commit eb46cab8ef9c253c193a10db1724ed9835ed2cf9 --arm scratch_joint",
       "expected_artifacts": [
         "launch.json",
         "plan.json",

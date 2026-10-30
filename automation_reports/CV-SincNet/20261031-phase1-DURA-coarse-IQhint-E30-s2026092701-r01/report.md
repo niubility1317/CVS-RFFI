@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-coarse-IQhint-E30-s2026092701-r01`
 - group_id：`phase1-dura-scratch-early-coarse-IQ-hint`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -43,3 +43,8 @@ VERIFIED / RUNNING。执行64b8d453e4ead7b8242163bef67dc3db964d5a1f，7项聚焦
 10×63000教师IQ缓存完成，实际132.756142秒，数值1290240000字节；冻结coarse实际1305958参数，完整R17包4665073参数。教师更新0/状态不变/F-TX-V-target读取0，准备峰值allocated93954560字节。学生在缓存完成后重新固定RNG，从零单阶段E30；当前已完成1轮/247更新、日志1706字节，hint1.0首轮实际执行，训练F/TX读取0。
 
 固定预算与后续自动七景保持；当前没有新正式成绩，不把source教师保持或已启动当作性能改善。缓存成本与训练成本分开，默认DURA与原六景3pp/clean目标保持。
+
+
+## 完整训练与正式七景结果
+
+VERIFIED / ANALYZED。E30/7410、完整七景/独立126组复算通过；clean84.958333%，lowurban65.366667%，六星地均低于默认与同预算physical，3pp未达标。教师缓存132.756秒，G流程1123.106秒，全流程1303.066秒。完整曲线、来源权限、TX/RX/day、实际成本和边界见 [详细分析](analysis.md) 与 results.json。默认保持，目标未完成。

@@ -210,3 +210,9 @@ E30单阶段IQ增强已完整30/7410及双读出七景，252组与全量成对IQ
 
 
 早期coarse IQ教师单阶段E30已实际发布：代码64b8d453e4ead7b8242163bef67dc3db964d5a1f，controller1087077/worker1087169/GPU4存活、CWD/argv/CUDA/GPU/日志核实。7checks/ONEP0P1及source2Ls冻结R17/学生梯度/strictreload/F仅smoke PASS。准入已有1PID/free22883MiB，后态2PID，无其他owner修改。630k教师IQ缓存132.756142秒/1.29024GB numeric，使用coarse1305958参数/历史20轮，R17包4665073参数/60组件轮次；教师更新0且不变。G无权重复制，已E1/30，训练F/TX/V/target0，前10轮hint1→.1再0、30轮全联合、原266951图不变；自动七景与完整实际成本待结束。默认/逐景3pp/clean目标ACTIVE。
+
+
+取消 priorIQ 辅助拟合单项 E30 对照 VERIFIED/RUNNING：eb46cab8ef9c253c193a10db1724ed9835ed2cf9，controller1104507/worker1104599/GPU6，实际2Ls smoke PASS，CWD/argv/CUDA/GPU/loggrowth核实；准入1PID/free19245MiB，后态2PID，本任务1worker、他人不变。G从零30/7410，保留266951图/2prior4CG27FFT，仅prioraux.1→0，方差aux0延续noVar，IQ/STFT/action不变，F/TX/教师/V/target训练0。源阶段差异非因果证明；固定final30全七景，无性能停止。旧coarsehint已结束；评分按真实旧句柄退出串行，默认与3pp/clean目标保持ACTIVE。
+
+
+早期coarseIQhint E30完整结案：7410更新/L189000U1701000/教师缓存630k且不变/学生不继承权重，训练F/TX/V/target0。七景固定后truth-last，126组独立复算，clean84.958333/lowurban65.366667；全部六景低于默认与E30physical，R17逐景1pp也未通过，3pp目标未完成。缓存132.756s/循环989.817s/G流程1123.106s/全流程1303.066s，266951图不变/B1G+F4.633238ms，完整30曲线与成本已归档。单阶段效率可控但质量未达标，默认保持；不依据负结果热改正在运行的noPriorAux。
