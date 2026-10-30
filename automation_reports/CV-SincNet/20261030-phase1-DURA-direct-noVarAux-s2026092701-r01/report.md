@@ -33,3 +33,9 @@ Sourcegradientmatchedablation:onlyremove.001logvarianceauxloss;sameordinaryscrat
 仅移除0.001×logvariance辅助校准，保留最终IQ、内部prior、谱和source action四项。依据固定fastLR源checkpoint的32批源梯度；不因恒等版正式成绩切换初始化或选择父权重。实际完全从普通随机初始化训练，累计E20/4940，source数据/seed/探针/学习率/FP32均匹配fastLR。方差仍通过恢复路径学习，只声明正值一致性参数，不声明物理噪声校准。
 
 一个独立P0/P1审查PASS，两个聚焦测试PASS；首步真实checkpoint无query smoke后立即训练。完成后自动source1800×7、target168000×7、同卡时延及独立truth-last，所有负结果保留。无性能早停或候选重排，默认DURA不变。具体命令/不可覆盖root/GPU容量与技术失败停止规则见experiment.json。
+
+## 启动后实际状态
+
+VERIFIED/RUNNING。执行commit cf40edea90667d9645a724b1e8f333027cdf7869，N607一次只读preflight通过，唯一release归档本地/远端SHA匹配、远端compile通过；CWD为`releases/20261030-DURA-direct-noVarAux-r01`。首步两Ls真实输入、实际冻结F50 checkpoint无query smoke PASS，随后直接继续。CPUcontroller PID3641689，GPU7 worker PID3642320；独立/proc核实CWD/完整命令/CUDA可见设备，并在nvidia-smi中匹配实际worker。训练日志从0增长到467bytes、至少完成E1。其他owner后续启动的健康进程保持。
+
+当前尚无正式结果；E20固定冻结后自动source/target各七景、独立truth-last和成本报告，不因源成绩改变测试矩阵。目标继续ACTIVE。
