@@ -1,0 +1,1374 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase1-external-matched-nodura-m40-r01",
+  "group_id": "phase1-external-group1-matched-seven-views",
+  "display_name": "外部对照 Phase1 七场景同样本补测",
+  "description": "复用10种对照各4个本轮源权重，使用PAMF原同一168000样本及固定七场景，只进行原生冻结直接识别、不接DURA；预测后独立truth-last评分，逐接收机及种子汇总。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "external",
+    "four-seed",
+    "no-DURA",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase2-group1-concat-midPL-threepool-m4-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户于2026-10-31明确授权补测所有对照方法，四seed、同样本七场景、不接DURA。",
+  "code": {
+    "commit": "release Git HEAD",
+    "checkout": "release archive",
+    "environment": "N607 CVS-RFFI torch2.1 CUDA12.1",
+    "cwd": "immutable release root"
+  },
+  "data": {
+    "dataset": "ManySig Main split",
+    "version": "F0 VALIDATED_ONCE",
+    "representation": "equalized1 unitRMS IQ 2x256",
+    "contract_ref": "PAMF 20261027 context handles F0 source_contract",
+    "physical_ids_ref": "same original F0 cross_rx and cross_both manifest/index",
+    "label_map_ref": "same six classes in PAMF F0",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": "F0 392005",
+    "validation_ref": "PAMF original VALIDATED_ONCE handles",
+    "support_query_ref": null,
+    "leo_config_ref": "PAMF original six frozen practical observations"
+  },
+  "permissions": {
+    "regime": "frozen source only",
+    "query_use": "frozen prediction only; independent truth-last score",
+    "external_method_exception": null,
+    "claim_scope": "PAMF-matched direct Phase1 recognition; no restoration or adaptation"
+  },
+  "checkpoint": {
+    "initialization": "frozen source.pt",
+    "sources": [
+      "20261030-phase2-group1-concat-midPL-threepool-m4-r01/source"
+    ],
+    "contract_check_ref": "source_scope plus payload recipe/contract/seed/ancestry and original F0 context",
+    "provenance_verdict": "source-only group1_A_v1 validated on load; no target contact",
+    "selection_rule": "fixed final source weights of 4 predeclared seeds"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/phase1-external-matched-m40-r01",
+    "gpu_policy": "one new worker per GPU, total CUDA/pending workers <2; free >=12000MiB; foreign cards skipped",
+    "remote_run_root": "runs/20261031-phase1-external-matched-nodura-m40-r01",
+    "remote_log_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs",
+    "local_artifact_root": null,
+    "launch_command": "python -u -m experiments.phase1_external_matched.runner dispatch --config <runtime.json>",
+    "stop_rule": "any technical failure stops new predictions; healthy workers finish; preserve artifacts; no target feedback"
+  },
+  "expected_artifacts": [
+    "jobs.json",
+    "smoke.json",
+    "pipeline_state.json",
+    "40 complete predictions",
+    "40 independent truth-last scores",
+    "analysis/per_seed.csv",
+    "analysis/summary.csv"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1"
+    ],
+    "dimensions": [
+      "model seed",
+      "scenario",
+      "receiver",
+      "date",
+      "transmitter"
+    ],
+    "prediction_ref": "readouts/<method-seed>/predictions",
+    "scorer_ref": "readouts/<method-seed>/scores"
+  },
+  "rows": [
+    {
+      "row_id": "protonet_cda-s2026092701",
+      "method": "protonet_cda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/protonet_cda-s2026092701",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__protonet_cda-s2026092701.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092702",
+      "method": "protonet_cda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/protonet_cda-s2026092702",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__protonet_cda-s2026092702.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092703",
+      "method": "protonet_cda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/protonet_cda-s2026092703",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__protonet_cda-s2026092703.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092704",
+      "method": "protonet_cda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/protonet_cda-s2026092704",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__protonet_cda-s2026092704.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092701",
+      "method": "mrior_sda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/mrior_sda-s2026092701",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__mrior_sda-s2026092701.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092702",
+      "method": "mrior_sda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/mrior_sda-s2026092702",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__mrior_sda-s2026092702.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092703",
+      "method": "mrior_sda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/mrior_sda-s2026092703",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__mrior_sda-s2026092703.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092704",
+      "method": "mrior_sda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/mrior_sda-s2026092704",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__mrior_sda-s2026092704.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092701",
+      "method": "dadda_sda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/dadda_sda-s2026092701",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__dadda_sda-s2026092701.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092702",
+      "method": "dadda_sda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/dadda_sda-s2026092702",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__dadda_sda-s2026092702.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092703",
+      "method": "dadda_sda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/dadda_sda-s2026092703",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__dadda_sda-s2026092703.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092704",
+      "method": "dadda_sda",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/dadda_sda-s2026092704",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__dadda_sda-s2026092704.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092701",
+      "method": "twostage",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/twostage-s2026092701",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__twostage-s2026092701.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092702",
+      "method": "twostage",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/twostage-s2026092702",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__twostage-s2026092702.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092703",
+      "method": "twostage",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/twostage-s2026092703",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__twostage-s2026092703.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092704",
+      "method": "twostage",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/twostage-s2026092704",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__twostage-s2026092704.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092701",
+      "method": "feature_separation_hu2024",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/feature_separation_hu2024-s2026092701",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__feature_separation_hu2024-s2026092701.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092702",
+      "method": "feature_separation_hu2024",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/feature_separation_hu2024-s2026092702",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__feature_separation_hu2024-s2026092702.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092703",
+      "method": "feature_separation_hu2024",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/feature_separation_hu2024-s2026092703",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__feature_separation_hu2024-s2026092703.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092704",
+      "method": "feature_separation_hu2024",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/feature_separation_hu2024-s2026092704",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__feature_separation_hu2024-s2026092704.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092701",
+      "method": "poster_ft",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/poster_ft-s2026092701",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__poster_ft-s2026092701.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092702",
+      "method": "poster_ft",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/poster_ft-s2026092702",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__poster_ft-s2026092702.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092703",
+      "method": "poster_ft",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/poster_ft-s2026092703",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__poster_ft-s2026092703.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092704",
+      "method": "poster_ft",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/poster_ft-s2026092704",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__poster_ft-s2026092704.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092701",
+      "method": "radionet_ada_knn",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/radionet_ada_knn-s2026092701",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__radionet_ada_knn-s2026092701.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092702",
+      "method": "radionet_ada_knn",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/radionet_ada_knn-s2026092702",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__radionet_ada_knn-s2026092702.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092703",
+      "method": "radionet_ada_knn",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/radionet_ada_knn-s2026092703",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__radionet_ada_knn-s2026092703.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092704",
+      "method": "radionet_ada_knn",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/radionet_ada_knn-s2026092704",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__radionet_ada_knn-s2026092704.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092701",
+      "method": "orthogonal",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/orthogonal-s2026092701",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__orthogonal-s2026092701.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092702",
+      "method": "orthogonal",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/orthogonal-s2026092702",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__orthogonal-s2026092702.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092703",
+      "method": "orthogonal",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/orthogonal-s2026092703",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__orthogonal-s2026092703.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092704",
+      "method": "orthogonal",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/orthogonal-s2026092704",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__orthogonal-s2026092704.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "issl-s2026092701",
+      "method": "issl",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/issl-s2026092701",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__issl-s2026092701.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "issl-s2026092702",
+      "method": "issl",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/issl-s2026092702",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__issl-s2026092702.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "issl-s2026092703",
+      "method": "issl",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/issl-s2026092703",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__issl-s2026092703.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "issl-s2026092704",
+      "method": "issl",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/issl-s2026092704",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__issl-s2026092704.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092701",
+      "method": "lora_triplet_knn",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/lora_triplet_knn-s2026092701",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__lora_triplet_knn-s2026092701.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092702",
+      "method": "lora_triplet_knn",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/lora_triplet_knn-s2026092702",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__lora_triplet_knn-s2026092702.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092703",
+      "method": "lora_triplet_knn",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/lora_triplet_knn-s2026092703",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__lora_triplet_knn-s2026092703.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092704",
+      "method": "lora_triplet_knn",
+      "purpose": "frozen_native_direct_readout",
+      "config_ref": "runtime-generated predict/score configs",
+      "resolved_config_ref": "runs/20261031-phase1-external-matched-nodura-m40-r01/configs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "不重训、不生成新信道或support；直接复用PAMF原先冻结测试视图及seed",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": null,
+      "output_root": "runs/20261031-phase1-external-matched-nodura-m40-r01/readouts/lora_triplet_knn-s2026092704",
+      "log_path": "runs/20261031-phase1-external-matched-nodura-m40-r01/logs/predict__lora_triplet_knn-s2026092704.log",
+      "command": "worker predict then independent score",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "当前10种已绑定对照，不含未绑定CSIL/Tweak/MoPC。",
+    "不修改现有owner；任何指标不反馈训练或调参。",
+    "PAMF原结果复用，不新训练、不重新预测。"
+  ],
+  "registered_at": "2026-10-30T17:51:27+00:00"
+}
