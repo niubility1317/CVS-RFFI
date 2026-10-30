@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-30明确允许独立源F指导对照；仅用同冻结F源域特征约束身份，G单阶段从零，不直接TX/目标训练。当前只是该分支源诊断，无训练或部署变化。",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "860984a6e511894a4bcb5dd2e08debcad3fa8a53",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01-release"
@@ -85,7 +85,7 @@
     "remote_run_root": "runs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01",
     "remote_log_root": "logs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.phase_sensitivity --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.phase_sensitivity --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01 --commit 860984a6e511894a4bcb5dd2e08debcad3fa8a53",
     "stop_rule": "Wrong source roles/RX/day/checkpoint,nonfinite feature/logit/metric,power mismatch,F state/gradient change,output collision:preserve/no autoretry;scientific failure is complete negative result,no threshold relaxation"
   },
   "expected_artifacts": [
@@ -138,7 +138,7 @@
       "budget_ref": "Source2Ls actual F checkpoint smoke;512x8=4096 feature-analysis inputs;B32/CPU2/0GPU/0G/0updates",
       "output_root": "runs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01",
       "log_path": "logs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.phase_sensitivity --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.phase_sensitivity --root ../.. --output ../../runs/20261030-diagnostic-DURA-source-Fphase-s2026092701-r01 --commit 860984a6e511894a4bcb5dd2e08debcad3fa8a53",
       "expected_artifacts": [
         "launch.json",
         "values.npz",
