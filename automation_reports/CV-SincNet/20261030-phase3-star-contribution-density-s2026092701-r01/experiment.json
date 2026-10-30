@@ -1,0 +1,200 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-contribution-density-s2026092701-r01",
+  "group_id": "pamf-phase3-source-contribution-density",
+  "display_name": "PAMF第三阶段：融合前四贡献密度与冻结融合160控制",
+  "description": "Frozen original F0/defaulthead; branch-unit640 density_ratio vs exact frozen fused160 density control. Same statistical family, dimension/shrink/cost differences disclosed; sourceonly.",
+  "kind": "cvs",
+  "stage": "Phase3-source-contribution-density-falsification",
+  "aliases": [
+    "四贡献开放密度"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "source_only",
+    "contribution640",
+    "density_ratio",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-fused160-vs-contribution640-density",
+  "parent_run_ids": [
+    "20261030-phase3-star-density-s2026092701-r01",
+    "20261030-phase3-star-protected-open-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "edc28ad00baace5e4b9567fbf3391154bf6c34b4",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-contribution-density-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_contribution_density_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_CONTRIBUTION_DENSITY_PLAN_20261030.md"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Same fixed G10MIX01/P1 originalF0; L/OE cached4contrib; new samepass V/NV640/defaulthead. Frozen160control model/tau/predictions from density parent.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/ids.npy",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_main640_fit": 6300,
+      "source_OE_main640_background_fit": 6134,
+      "source_V_main_known_risk": 27000,
+      "source_novel_score_only": 3150,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "target_Q_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Original source4roles disjoint; source5RX/3day seen; L/novel70 perTX/RX/day, V300. No target supports/queries, no novel fitting.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "L old6 truey/publicdomains; OE outside-six/publicdomains only, no trueOE TX/K. Frozen160control scores used only comparison after main frozen, never main fit/cal.",
+    "query_use": "V main only fixedknown42 thresholds after640model frozen; novel forward after main tau frozen; both predictions complete before sole source private truth. No Us/target/clean/P0/G.",
+    "external_method_exception": null,
+    "claim_scope": "Singlemodelseed seen-sourceRX/historically exposed novel falsification; not final crossRX/UDA/discovery/futureREG. Sourceoverall earlygate only, fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Strict original Phase1 Tri-SIG-TIME SSL E50/11100/default6head; first native4contrib samepass syntheticG10 smoke2, no adapter weights/unused parts. New main stats L/OE, NN/optimizer0.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-density-s2026092701-r01/predict/models/density_ratio.npz",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-density-s2026092701-r01/predict/thresholds.npz"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original6source contract392005 unchanged. Protectedcache code7dd90671968ddf58aab5a5b302b4d56371c8b9c9 original4contrib only/noR1; control density actualcodeb8163a03e8d3d299127c7914272a2d866f92c89a source L/OE+V-onlycal/NV-onlyscore. F0/DURA/rolehandles match, no targettrained ancestor.",
+    "selection_rule": "Sole main allfour640 fixed before newresults; 90known/32background/25Lloyd/seed3019/shrink.1. NewD640 vs oldD160 dimension-dependent shrink/cost differs. MainV fixed risk only; control tau/model immutable."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-contribution-density-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-contribution-density-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-contribution-density-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_contribution_density_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_contribution_density_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-contribution-density-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One GPU V/NV forward worker, actualfree>=4096MiB allowed0..7 <=2 addedown/card; separate CUDAempty/BLAS1 CPU scorer, foreign preserved.",
+    "stop_rule": "Illegal ancestry/role, nonfinite, identity mismatch/collision/technicalfailure preserves; incompletepredict never scores. No autoretry/retune; UNKNOWN reconcile originalPID/root, foreignops0."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/{driver,predict,score}.log",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/models/*.npz",
+    "predict/models/complete.json",
+    "predict/thresholds.npz",
+    "predict/calibration/complete.json",
+    "predict/{known,novel}_predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "fixed fused160_density_ratio/main contribution640_density_ratio",
+      "source old6/novel3 TX",
+      "sourceRX1/3/4/6/8",
+      "day1/2/3",
+      "sameG10MIX six practical slices"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-contribution-density-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_contribution_density_score.py",
+    "targets_ref": "v3 plus higherrejection goal unchanged; sourceearlyscreen, separate crossRXstar prereg after pass.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "C_K>=90%",
+      "sameP1 originalF0 closed minus A_K<=2pp",
+      "known42+sourceoverallRU90 earlygate only"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-contribution-density-s2026092701",
+      "method": "PAMF-OW contribution640 Gaussian density_ratio",
+      "purpose": "Test pre-fusion directions against frozen160control with unchanged originaldefaulthead.",
+      "config_ref": "docs/PAMF_PHASE3_CONTRIBUTION_DENSITY_PLAN_20261030.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-contribution-density-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "OriginalF0 model2701, G10 receiver2027/scene2026103001/channel2026104001. Mainkmeans++ RNG2026103019, no trueunknownTX/K/quota/shot sampler.",
+      "k": null,
+      "scenario": "Seen-source5RX/3day G10P1 old6 vs sourceheld3TX",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Main L6300/OE6134 cached4contrib stats, 25Lloyd; newrealF30150+synthetic2/G0/NN0; fixed160control models/tau/predict reused. One row/twopolicy cols, no equalcost claim.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-contribution-density-s2026092701-r01/predict",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-contribution-density-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_contribution_density_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-contribution-density-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/{driver,predict,score}.log",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/models/*.npz",
+        "predict/models/complete.json",
+        "predict/thresholds.npz",
+        "predict/calibration/complete.json",
+        "predict/{known,novel}_predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Original default6head full Tri-SIG-TIME SSL; directnative hooks, no unused ProtectedParts or alternateidentityhead.",
+    "Samepass4weightedcontrib each FP64unit then wholeconcat→FP32; zero branch stays0/allzero errors. All fit/query uniformly FP64renorm.",
+    "Control primary density parent frozen, no re-selection from newNV. D640/D160 samefamily, dimension-shrink/storage/compute differ.",
+    "Mainmodel beforeV/mainτ beforeNV; bothpredict before independenttruth; known42+sourceoverallRU90 earlyscreen only. target/UDA/REG0/fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-30T11:52:07+00:00"
+}
