@@ -29,14 +29,16 @@ def reference(p,role):
 def frozen(args,p):
     from experiments.pamf_fcrossrx_readout.frozen import load_reader
     from experiments.pamf_stage2_inference.engine import InferenceEngine
-    model=load_model(p['output']/args.arm/'final.pt','cuda:0',arm=args.arm,commit=args.commit)
+    checkpoint_root=getattr(args,'checkpoint_root',p['output'])
+    checkpoint_commit=getattr(args,'checkpoint_commit',args.commit)
+    model=load_model(checkpoint_root/args.arm/'final.pt','cuda:0',arm=args.arm,commit=checkpoint_commit)
     reader=load_reader(p['reader'],p['source_cache'],'cuda:0').eval().requires_grad_(False)
     return model,reader,InferenceEngine(model,reader,reuse=True,graph=True,native=False)
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def predict(args,p,role):
-    done=read_json(p['output']/args.arm/'training_complete.json')
+    done=read_json(getattr(args,'checkpoint_root',p['output'])/args.arm/'training_complete.json')
     if (done['status'],done['epoch'],done['updates'],done['training_F_access'],done['target_reads']) != ('SOURCE_TRAINED',20,4940,False,0):
         raise ValueError('Complete frozen legal source training before prediction required')
     folder,ids,_,_=reference(p,role)
@@ -157,12 +159,14 @@ def score(args,p,role):
         F_run=F_RUN,F_seed=2026092701))
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def profile(args,p):
     from experiments.pamf_stage2_inference.engine import InferenceEngine
     from experiments.pamf_fcrossrx_readout.frozen import load_reader
     baseline,_=parent_model(p,'cuda:0');baseline.eval().requires_grad_(False)
-    student=load_model(p['output']/args.arm/'final.pt','cuda:0',arm=args.arm,commit=args.commit)
+    checkpoint_root=getattr(args,'checkpoint_root',p['output'])
+    checkpoint_commit=getattr(args,'checkpoint_commit',args.commit)
+    student=load_model(checkpoint_root/args.arm/'final.pt','cuda:0',arm=args.arm,commit=checkpoint_commit)
     reader=load_reader(p['reader'],p['source_cache'],'cuda:0').eval().requires_grad_(False)
     values=tensor(np.load(p['cache']/'validation/practical_low_urban.npy',mmap_mode='r',allow_pickle=False)[:128],'cuda:0')
     torch.cuda.reset_peak_memory_stats()
@@ -186,7 +190,7 @@ def profile(args,p):
         del engines
         gc.collect();torch.cuda.empty_cache()
     write_json(p['output']/args.arm/'matched_profile.json',dict(status='PROFILE_COMPLETE',cases=records,
-        parameters=266951,parameter_bytes=266951*4,checkpoint_bytes=(p['output']/args.arm/'final.pt').stat().st_size,
+        parameters=266951,parameter_bytes=266951*4,checkpoint_bytes=(checkpoint_root/args.arm/'final.pt').stat().st_size,
         ConvLinear_MAC=25068072,prior_calls=2,CG_updates=4,FFT_IFFT=27,
         peak_allocated_bytes=torch.cuda.max_memory_allocated(),physical_GPU=os.environ['CUDA_VISIBLE_DEVICES'],
         timing_scope='Samecard alternating3rounds;FP32/TF32off;preloadedGPUinput;GorG+originalFdefaulthead;copy/ownedoutput/validity included;capture/loader/transfer/queueexcluded',

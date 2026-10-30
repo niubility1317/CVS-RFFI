@@ -33,3 +33,18 @@ CPU2zerooptimizerupdates;onlineDURAteacher/cachedteacher/randomsinglejointsource
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 完成与证据边界
+
+VERIFIED/ANALYZED_SOURCE_ONLY。远端actual DURA checkpoint与随机完整图2Ls smoke均PASS，CPU2/0GPU完成六个计时case；原模型state均未改变，0optimizer/F/TX/V/target及prediction。固定256个Ls位置重复计时，没有新增物理样本。
+
+|batch|在线教师每步秒|缓存教师每步秒|从零联合目标每步秒|从零相对在线耗时减少|
+|---|---:|---:|---:|---:|
+|32|0.354858|0.262623|0.260413|26.61%|
+|256|1.535041|1.152319|1.186435|22.71%|
+
+上述为CPU2下forward/objective/backward/gradientclip的6次计时中位数，每case另2次预热。缓存生产、optimizerstep、IO/传输与初始化均未计入；固定顺序的小型CPU计时不作为GPU吞吐、公平完整预算比较或最终训练加速结论。随机模型loss约2.26而旧权重loss约0.013，其质量和初始化不同，不能把耗时更短当作同精度更快收敛。
+
+新路线去掉约120个组件epoch祖先与在线学习教师才是累计成本的主要待验改动；将以单seed从零单阶段完整E20/4940和自动七景测试核实。没有降低六景各自距rawclean≤3pp及clean保持的用户目标。当前两行旧路线训练健康完成，但评估遇到constructor inference_mode版本计数错误，已保留权重并用独立零训练恢复run处理。
+
+执行代码`3a5cbd98142392e2feaf84d2f50a099e383273a5`已推送并独立匹配远端OID；单archive传输SHA一致、远端编译、实际PID/CWD/argv与日志增长核实。完整结果仅保留local_artifacts/pamf_restoration/<run_id>/results.json，不提交模型或原始运行状态。

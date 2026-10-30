@@ -46,3 +46,9 @@ VERIFIED：执行代码`44bb16ed08b29e7e4ee61c21e1e1287d18791c75`已commit/push�
 首次实际GPU训练为`continuation`，PID3492603/PPID3491668、物理GPU6、CWD/命令和日志增长已核实；E1/247次更新已完成，loss0.02422984、F_inputs0、TX_labels_read0，实际L6300/U56700曝光。`prior_anchor`当时仍排队，控制器继续按同一固定资源规则调度，不构成失败。此为阶段性读回，实时进度以原run日志/进程为准；未产生正式性能结论，不能将一行启动写成两行训练完成。
 
 恢复工作先读本run原状态，保留健康进程。每行E20后自动评分；读取目标结果只作固定矩阵分析，不修改另一行。最终还需收集完整40轮日志、两份独立权重、两行七景及同卡成本，与DURA/原R17/同预算对照逐景比较。总目标active。
+
+## E20权重完成，评估技术失败
+
+VERIFIED/PARTIAL：两行均完成E20/4940并保存独立final.pt和training_complete.json，无TX/F/V/target训练。continuation训练1095.933秒，峰值allocated1073766400 bytes。两行随后同一postfreeze profile故障：外层`@torch.inference_mode`包住模型/reader构造，FrozenCenteredSinc读取`low_coordinate._version`时抛出`Inference tensors do not track version counter`。此前未产生正式prediction，未连接truth；原控制器和两个worker自然退出，所有权重/完整40轮日志/partial保留。
+
+本地精确重现四个失败（两实现×predict/profile），改用`no_grad`构造常规参数，InferenceEngine继续自身inference_mode/graph/reuse；四项回归转PASS，并保留directcheckpoint权限负测。一次该P1问题定点复审PASS。不修改旧release或原输出，新r02复用两份固定权重，新增训练0，自动补齐测速及两行原七景truth-last。此故障修复不改变科学配方、checkpoint或任何其他owner。
