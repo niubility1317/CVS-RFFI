@@ -1,0 +1,184 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01",
+  "group_id": "pamf-phase3-star-binary-graph-score-recovery",
+  "display_name": "PAMF 二元图独立评分恢复",
+  "description": "Score-only recovery after original CPU reconstruction rejected FP64 roundoff before any truth; original complete graph/registry/predictions unchanged. No new IQ/model/graph fit for deployment.",
+  "kind": "diagnostic",
+  "stage": "Phase3-independent-score-recovery",
+  "aliases": [
+    "二元图评分舍入差修复"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "G10",
+    "score_recovery",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-star-binary-graph-vs-fixed-source",
+  "parent_run_ids": [
+    "20261030-phase3-star-binary-graph-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "ca05fae1fbdd9b0174e8fb0804ffc2645c5516c5",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_binary_graph_score_recovery"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "Original source aggregates/L cache/knownV compact and fixed RX24-1 independent U/futureQ",
+    "version": "Existing VALIDATED_ONCE physical roles, no IQ or channel regeneration",
+    "representation": "Original completed public unit/logits/margins/U graph/registry and4futureQ predictions; no received IQ/weights accessed by recovery.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/L/ids.npy; G10 public opaque U/Q IDs",
+    "label_map_ref": "Old6 source labels reused only for source statistics/calibration; no target labels in predict/fit; anonymous permutation only Utruth in scorer after Qfreeze",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "24-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_08",
+      "2021_03_15"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "new_IQ": 0,
+      "new_deployment_model_fits": 0,
+      "original_U": 384,
+      "original_Q": 864,
+      "truth_U_scoring": 384,
+      "truth_Q_scoring": 864
+    },
+    "train_ratio": 0.1,
+    "capsule_id": {
+      "discovery": "p3dev-star-g10-6e1292b62ab09286ebf1a0df",
+      "evaluation": "p3dev-star-g10-71a5a0dec23ac6ccc3b479c2"
+    },
+    "split_id": {
+      "discovery": "83c5cc1fe2f2a1512dbc1287",
+      "evaluation": "05de65cd4818f3e5e33ced5c"
+    },
+    "validation_ref": "local_artifacts/pamf_phase3_star_g10_pool_20261029_r01/pool/complete.json; original Phase1 source cached contract",
+    "support_query_ref": "Use original frozen U/Q IDs and paths; public gate first, U two maps all fixed before Qtruth. No labels/mapper or outputs returned to original algorithm.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Only independent CPU scoring of fixed original predictions; targettruth remains exclusively scorer-side, no Qfit or model/threshold change.",
+    "query_use": "Read fixed Q public outputs and Qtruth after allpublicgate+Umap; no Q stats/calibration/rematching.",
+    "external_method_exception": null,
+    "claim_scope": "Same exposed development run and same fixed4states, not new performance candidate, blind data or regenerated predictions."
+  },
+  "checkpoint": {
+    "initialization": "No checkpoint/model loaded; original producer F0/G smoke and provenance preserved in source predict complete.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-s2026092701-r01/predict"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original producer codebb9f5823f53bdbba6dd3e65f9f58dfe70bf86cdb; graph/registry/predictions immutable. Recoverycode differs only publicFP64 tolerance and CPU execution.",
+    "selection_rule": "Original fixed DA1REG1 and original4states/v3 goals, no scientific selection or change."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-binary-graph-score-recovery-20261030",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_star_binary_graph_score_recovery_20261030_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_binary_graph_score_recovery start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "CPU-only separate score process; CUDA_VISIBLE_DEVICES empty;0 GPUworkers/newNNupdates/foreign actions.",
+    "stop_rule": "One targeted numericrepair; any same fingerprint recurrence preserves failed output without blind retry. Original failedrun and predictions unchanged."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/recovery.json",
+    "logs/score.log",
+    "score/scores.json",
+    "score/complete.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "macro A_K",
+      "state-specific R_U",
+      "H-score",
+      "C_K",
+      "originalF0closed-loss",
+      "A_N",
+      "R_L",
+      "registrationretention",
+      "H_OW"
+    ],
+    "dimensions": [
+      "originalfourstates",
+      "trueTX",
+      "RX/day/sixscenes",
+      "Uclusterdiagnostics",
+      "fixedcohortpaired"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_binary_graph_score.py",
+    "targets_ref": "configs/pamf_phase3_targets_20261029.json v3 unchanged"
+  },
+  "rows": [
+    {
+      "row_id": "original-fourstates-score-only-s2026092701",
+      "method": "PAMF binary graph independent score recovery",
+      "purpose": "Finish missing independent scores, preserve producer scientificstate and originalFAILED_PRESERVED.",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01/configs/recovery.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01/configs/recovery.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": 2026102914,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "F0seed2026092701 and physicalUQ2026102914 reused; graph deterministic no model/sampler init. G10receiver2027/scene2026103001/channel2026104001; no resampling.",
+      "k": null,
+      "scenario": "G10 MIX01 RX24-1 P1 identity with P0/P1 rejection",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0 neuralupdates/prediction regeneration/IQrows. One read-only Ugraph reconstruction for numericalvalidation,2 Utruth maps,1 Qtruth score.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01/score",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01/logs/score.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_binary_graph_score_recovery start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/recovery.json",
+        "logs/score.log",
+        "score/scores.json",
+        "score/complete.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Originalrun FAILED_PRESERVED, originalpredict complete retained. Failurebeforeanytruth. This is one score-only repair, not newscientificperformance run or reranking.",
+    "Observed f maxabs7.77e-16, residual delta1.776e-15, joints4.44e-16, changedpredictions/acceptsign0. Only finite FP64 numeric reconstruction abs1e-12 rtol0; dtype/IDs/discrete decisions exact.",
+    "Latest v3 fullgoals unchanged, no automaticformal/seed. CPU recovery sourcecheckpoints notconsumed, original actualsmoke reused as producer evidence."
+  ],
+  "registered_at": "2026-10-29T22:25:55+00:00"
+}

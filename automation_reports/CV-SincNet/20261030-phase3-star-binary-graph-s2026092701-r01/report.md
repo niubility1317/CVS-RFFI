@@ -20,3 +20,7 @@ DA1REG0完整v3七组CK90/RU90/F0总损2pp+positiveAKgain，DA1REG1 AN80/intende
 - 技术fail仅直接协议/祖先/非有限/冲突/不能合法prediction等，保留partial；emptyseed/K0/低分正常结果。UNKNOWN先核原root/PID，不重复launch/误伤foreign。
 
 聚焦集成：26 passed, 632 warnings, 24 subtests passed in 7.51s；8AST/实际runtimePASS，唯一fresh独立直接P0/P1 PASS。一个code/configGit提交和独立remoteOID读回；一次archiveSHA比较/remotecompile；真实F0/G合成G10checkpoint smoke首步在U前PASS立即继续；实际post PID/CWD/argv/GPU/log证据及独立truthlast自动收尾。无额外seal/审批/数据重验。
+
+## 原预测完成、评分前技术失败及单次恢复
+
+原四态预测和真实F/G smoke已完成；独立CPU公有gate因f7.77e-16舍入差拒绝，未读任何truth，原FAILED_PRESERVED保持。模型/阈值/预测和接受符号无变化；一次定向修复在新`20261030-phase3-star-binary-graph-score-recovery-s2026092701-r01`仅补独立CPU评分，不重训或重预测，score code`ca05fae1fbdd9b0174e8fb0804ffc2645c5516c5`。当前尚无本方法正式性能结论，待该恢复完成后同row汇总。
