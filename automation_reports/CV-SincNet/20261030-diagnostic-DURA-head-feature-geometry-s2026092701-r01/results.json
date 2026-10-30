@@ -1,0 +1,297 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "cells": [
+    {
+      "epoch": 1,
+      "metrics": {
+        "iq_nmse": 0.022352356230840087,
+        "isotropic_feature_error": 0.015945417690090835,
+        "head_projected_feature_error": 0.1678080721758306,
+        "centered_head_error": 0.0018512877650209703,
+        "teacher_argmax_agreement": 0.93359375,
+        "margin_for_clean_F_choice": 5.928042113780975,
+        "clean_F_margin": 7.110863089561462
+      },
+      "geometry": {
+        "all": {
+          "base_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.1543839385970225,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 46.804262338333054
+          },
+          "base_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.1693766326159755,
+            "negative_cosines": 1,
+            "defined_ratio": 16,
+            "median_ratio": 0.315965697709512
+          },
+          "task_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.9919237003419911,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 95.3415026983775
+          },
+          "task_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.7161847926458608,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 0.6134185472966653
+          }
+        },
+        "frozen.coarse.": {
+          "base_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.19107667836279976,
+            "negative_cosines": 5,
+            "defined_ratio": 16,
+            "median_ratio": 47.553382961046495
+          },
+          "base_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.23363830831295834,
+            "negative_cosines": 2,
+            "defined_ratio": 16,
+            "median_ratio": 0.3826247165467228
+          },
+          "task_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.9907326046267363,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 94.75183609368247
+          },
+          "task_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.6870331913565184,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 0.7947226648701387
+          }
+        },
+        "frozen.estimator.": {
+          "base_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.17037888566479698,
+            "negative_cosines": 4,
+            "defined_ratio": 16,
+            "median_ratio": 18.794691637756777
+          },
+          "base_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.1434436001016081,
+            "negative_cosines": 4,
+            "defined_ratio": 16,
+            "median_ratio": 0.13948387565312728
+          },
+          "task_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.9889298140771999,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 93.3221479831827
+          },
+          "task_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.6945730155293592,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 0.5483785463050297
+          }
+        },
+        "prior.": {
+          "base_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.1406458606767521,
+            "negative_cosines": 1,
+            "defined_ratio": 16,
+            "median_ratio": 56.9212574581238
+          },
+          "base_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.1480107577088812,
+            "negative_cosines": 1,
+            "defined_ratio": 16,
+            "median_ratio": 0.3717238719121758
+          },
+          "task_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.9924743196343245,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 94.9538355739892
+          },
+          "task_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.7181320357398181,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 0.5208887919803605
+          }
+        }
+      },
+      "calibrated_ratio": 0.30927746555628666,
+      "passed": true
+    },
+    {
+      "epoch": 20,
+      "metrics": {
+        "iq_nmse": 0.02112201384443324,
+        "isotropic_feature_error": 0.011401640484109521,
+        "head_projected_feature_error": 0.10513840499334037,
+        "centered_head_error": 0.001163190110673895,
+        "teacher_argmax_agreement": 0.96875,
+        "margin_for_clean_F_choice": 6.3527999222278595,
+        "clean_F_margin": 7.110863089561462
+      },
+      "geometry": {
+        "all": {
+          "base_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.12523818684335974,
+            "negative_cosines": 1,
+            "defined_ratio": 16,
+            "median_ratio": 34.951635333164226
+          },
+          "base_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.12578323784494772,
+            "negative_cosines": 2,
+            "defined_ratio": 16,
+            "median_ratio": 0.34244622859602447
+          },
+          "task_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.9891511579349748,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 89.82387055256768
+          },
+          "task_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.612585772387242,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 0.7488108748124502
+          }
+        },
+        "frozen.coarse.": {
+          "base_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.09720838786289479,
+            "negative_cosines": 5,
+            "defined_ratio": 16,
+            "median_ratio": 37.35636064841941
+          },
+          "base_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.18056950470853472,
+            "negative_cosines": 3,
+            "defined_ratio": 16,
+            "median_ratio": 0.40771095143386027
+          },
+          "task_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.9879166810549578,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 91.2246841985204
+          },
+          "task_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.5560219155136766,
+            "negative_cosines": 1,
+            "defined_ratio": 16,
+            "median_ratio": 0.8469511129791537
+          }
+        },
+        "frozen.estimator.": {
+          "base_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.16061883087169132,
+            "negative_cosines": 2,
+            "defined_ratio": 16,
+            "median_ratio": 20.066534974428393
+          },
+          "base_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.11601526733575472,
+            "negative_cosines": 4,
+            "defined_ratio": 16,
+            "median_ratio": 0.22321457650006027
+          },
+          "task_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.989955928185754,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 90.56348106285914
+          },
+          "task_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.6461642855707038,
+            "negative_cosines": 1,
+            "defined_ratio": 16,
+            "median_ratio": 0.7013680442113313
+          }
+        },
+        "prior.": {
+          "base_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.12274856583373825,
+            "negative_cosines": 2,
+            "defined_ratio": 16,
+            "median_ratio": 44.69416142837615
+          },
+          "base_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.11888976647372537,
+            "negative_cosines": 2,
+            "defined_ratio": 16,
+            "median_ratio": 0.39998670202918635
+          },
+          "task_projected": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.9889507094283857,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 90.0916302505755
+          },
+          "task_cosine": {
+            "defined_cosine": 16,
+            "mean_cosine": 0.6392889714337721,
+            "negative_cosines": 0,
+            "defined_ratio": 16,
+            "median_ratio": 0.7332788958932364
+          }
+        }
+      },
+      "calibrated_ratio": 0.23095659781471053,
+      "passed": true
+    }
+  ],
+  "alpha": 0.006607891036090233,
+  "gradient_pressure": 0.25,
+  "candidate_eligible": true,
+  "source_records": 512,
+  "source_L": 128,
+  "source_U": 384,
+  "batches": 32,
+  "checked_geometry_scalars": 2560,
+  "basis_rank": 5,
+  "basis_from": "SVD rowspace of centered normalized frozen original six by160 default head;no fitting",
+  "model_unchanged": true,
+  "F_unchanged": true,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "seconds": 38.89100601291284,
+  "source_rule": "Calibrate alpha=.25/median(all32 unweighted projected/base gradient norm ratios); new scratch E20 candidate eligible only if both source views: calibrated median ratio [.125,.5], base/projected mean cosine>=0 and at most8/16 negative, projected/task mean cosine>cosine/task mean cosine and>0, teacher agreement<1; all states unchanged/no truth or target; no coefficient grid or target feedback",
+  "scope": "Source teacher geometry/calibration only;not TX accuracy or formal generalization;proposed head-space direction predates Fguide target result access",
+  "goal_complete": false
+}

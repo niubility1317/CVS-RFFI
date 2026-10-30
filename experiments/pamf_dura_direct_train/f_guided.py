@@ -16,6 +16,7 @@ from experiments.pamf_dura_efficiency.proposed_feature_loss import frozen_featur
 RUN='20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01'
 MODULE='experiments.pamf_dura_direct_train.f_guided'
 F_SOURCE_COMMIT='4df7b94d0fd8ce29056bd8236364e45afa92e07f'
+GUIDANCE_METRIC='F_feature_cosine_error'
 
 
 def teacher_reference():return dict(run=base.F_RUN,seed=2026092701,source_commit=F_SOURCE_COMMIT,epoch=50,updates=11100)
@@ -59,7 +60,7 @@ def objective(student,reader,received,clean,action,variance,probes,reference):
     _,terms,restored=source_objective(student,received,clean,action,variance,probes,return_restored=True)
     guide=frozen_feature_loss(reader,restored,reference)
     loss=terms['iq_nmse']+.1*terms['prior_nmse']+.05*terms['spectral_error']+.05*terms['action_probe_nmse']+.1*guide
-    return loss,dict(terms,F_feature_cosine_error=guide),restored
+    return loss,dict(terms,**{GUIDANCE_METRIC:guide}),restored
 
 
 def smoke(args,p):
@@ -76,7 +77,7 @@ def smoke(args,p):
     probes=[torch.complex(torch.randn(2,256,generator=generator),torch.randn(2,256,generator=generator)) for _ in range(2)]
     loss,terms,restored=objective(student,reader,values['received'],x,
         base.supervised_action(values['kernel'],values['coefficients']),values['variance'],probes,reference)
-    feature_input_gradient=torch.autograd.grad(terms['F_feature_cosine_error'].mean(),restored,retain_graph=True)[0]
+    feature_input_gradient=torch.autograd.grad(terms[GUIDANCE_METRIC].mean(),restored,retain_graph=True)[0]
     if not torch.isfinite(feature_input_gradient).all() or not feature_input_gradient.abs().sum()>0:
         raise ValueError('Actual frozen F feature loss must provide a finite nonzero IQ gradient')
     loss.mean().backward()
@@ -132,7 +133,7 @@ def train(args,p):
         for epoch in range(1,21):
             folder=p['cache']/'epochs'/f'{epoch:02d}'
             arrays={key:np.load(folder/(key+'.npy'),mmap_mode='r',allow_pickle=False) for key in ('received','kernel','coefficients','variance')}
-            totals=dict.fromkeys(('loss','iq_nmse','prior_nmse','spectral_error','action_probe_nmse','log_variance_mse','F_feature_cosine_error'),0.)
+            totals=dict.fromkeys(('loss','iq_nmse','prior_nmse','spectral_error','action_probe_nmse','log_variance_mse',GUIDANCE_METRIC),0.)
             clipped=0;order=rng.permutation(63000)
             for offset in range(0,63000,256):
                 take=order[offset:offset+256];x=base.tensor(clean[take],'cuda:0')
