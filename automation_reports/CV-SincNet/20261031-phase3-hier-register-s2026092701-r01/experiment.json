@@ -1,0 +1,210 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-hier-register-s2026092701-r01",
+  "group_id": "pamf-phase3-hierarchical-anonymous-registration",
+  "display_name": "PAMF第三阶段：层次密度发现与匿名注册",
+  "description": "Only replace fixed-source-epsilon discovery with HDBSCAN/eom on the same complete cached starU; preserve source r03/F0/G/GMM, strict-majority qualification, Gaussian joint competition and sourceV calibration. No class-count input or Q feedback.",
+  "kind": "cvs",
+  "stage": "Phase3-hierarchical-registration-three-DURA-development",
+  "aliases": [
+    "层次密度无标签注册"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "HDBSCAN",
+    "cached_U",
+    "all_DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-r03-fixed-vs-hierarchical-discovery",
+  "parent_run_ids": [
+    "20261031-phase3-signal-register-s2026092701-r01",
+    "20261031-phase3-class-density-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "d6f3a19fe06252c2e4b9ed199939896b4504ab62",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-hier-register-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_hier_register_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_HIER_REGISTER_PLAN_20261031.md",
+      "configs/pamf_phase3_targets_20261029.json"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Originalsignal-register completed sourceGaussian/radius aggregates and U384 publicF0/r03 features from identicalfixedG10+DURA; only ids/logits/closed/features enter newfit. Existing sourceV/NV/cleanQ/starQ caches unchanged.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-signal-register-s2026092701-r01/predict/registration/U.npz:ids and inherited U capsule/split; originalclassdensity source/targetpred:ids",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_ancestral": 6300,
+      "source_L_new_reads": 0,
+      "source_OE_new": 0,
+      "source_Us_new": 0,
+      "source_V_knownrisk": 27000,
+      "source_novel_truthside_only": 3150,
+      "target_U_cached": 384,
+      "new_real_F_G_signal_forward": 0,
+      "cross_clean_Q": 864,
+      "cross_star_Q": 864,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Source roles/U03-08/futureQ03-15 physical identity/disjointness and VALIDATED_ONCE remain unchanged. Originalsame864Q physicalIDs, old6/nonold3each96 onlyscorer, historicexposure/nonblind/source-seendays. Newsourceεunused and no sourceL/P0/cleanIQ reread.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Newcluster uses complete cachedunlabeledstarU only, no priorclusterassignments/oldregisteredτ/score/sourceNV/Qfit. OriginalsourceNN/GMM frozen. SourceVknown labels only new2globalregistrationτ after newUstatefreeze; no trueU TX/K/quota.",
+    "query_use": "Actual3CP synthetic2 smoke -> inheritedsourceaggregate/identity -> fourpublicUfeaturefields only -> HDBSCANstatefreeze -> sourceVnewtau+oldtwo6tau exact -> all4x3 source/NV/twofuturecachedQ predictions -> independentCPU4truth. U-onlyHungarian neverreturned tofit. No newrealIQ/NNforward.",
+    "external_method_exception": null,
+    "claim_scope": "SinglehistoricaldevelopmentRXseed initialregistrationcomponent, not DA/continualmulti-session/fullPhase3. Addedcompetitors cannotincreaseoldAK/laterRU at fixedoldmargin; ANalone neverpromotes. highmissingarrival remainsNA, formalRXuntouched."
+  },
+  "checkpoint": {
+    "initialization": "SameoriginalF0 TriSIGTIME SSL E50/11100/default6, source-onlyr03dc01a402 and DURA v1/R69. SourceGMM90/OE32+oldtwo6tau from4af, source/Ufeaturecachee48f3b originalNN outputs only; never inherit its registeredparams or scientificscore.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "CurrentoriginalF0/r03/G identities matchcompleted e48 inputcache, sourceGaussian exactequal. Ucapsule/splitfixedG10 P1/VALIDATED_ONCE, oldproducerprivate_truth_reads0/neural_updates0. Newanonymous U-derived; originalsourceNN provenance untouched.",
+    "selection_rule": "FixedHDBSCAN mincluster16/minsamples8/eom/brute/n_jobs1/alpha1/epsilon0/copyTrue/allowsingleFalse. CompleteU stableopaque ordering; qualifystrictmajorityoldpredictedreject and size16. No trueK/pseudoclassquota/parametersearch. SameGaussian shrinkage/jointties/sourceVknown12; solepredicted_REG1."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-hier-register-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-hier-register-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-hier-register-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_hier_register_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_hier_register_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-hier-register-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "OneproducerGPU actualCPsynthetic smoke only; free>=4096MiB/<=2addedown/card. Allrealfeatureforwards reused; independentCUDAemptyCPUscore. Preserveforeignwork.",
+    "stop_rule": "Illegalancestry/role/nonfinite/outputcollision/unusableprediction preserve; no partialtruth/overwrite/autorestart. UNKNOWN reconcileoriginalPID/root. Zero qualifiedclusters/sourcefailure stillcompletefixedQ."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/*.log",
+    "predict/{complete,smoke}.json",
+    "predict/models/{density,source_radius,anonymous}.npz",
+    "predict/models/complete.json",
+    "predict/registration/{complete.json,U.npz}",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/{known,novel}_predictions.npz",
+    "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "pooled/predicted xREG0/REG1",
+      "source_DURA/clean_DURA/star_DURA",
+      "old6/Uarrivals/later/actualunregistered",
+      "source5RX3day/devRX24-1",
+      "MIX6scene/coverage",
+      "UclusterpurityvsindependentfutureAN"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-hier-register-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_hier_register_score.py",
+    "targets_ref": "Latest20261031 threeconditions allDURA; condition-specific targets remainclean95/star90, CK90/AKloss2pp. FullzeroTXlabelDA/discovery/futureanonymousREG stillrequired.",
+    "primary": [
+      "REG1 futureAN>=80% alltrueUarrivals inclundiscovered",
+      "oldAK/C_K, laterRU/H_score explicitroster, HKN/HOW/intendedregisteredmacroAKCKFRR",
+      "oldrel2pp and sameDURAoriginalF0abs2pp/old+intendedregisteredCK90/laterRUclean95star90",
+      "requiredscene classcoverage/sourceknown12; sceneANreportednotnew80gate"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "hier-register-s2026092701",
+      "method": "PAMF-OW HDBSCAN anonymous registration",
+      "purpose": "Testrelative-densityhierarchy atfixedselectedembedding/qualification/jointdecision against originalbase controls. Registrationcomponentonly; wholegoalunchanged.",
+      "config_ref": "docs/PAMF_PHASE3_HIER_REGISTER_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-hier-register-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No newrandomfit; HDBSCAN opaqueIDsort; local sklearn1.7.2/N6071.7.0 recorded, noinstall. OriginalsourceGMM2026103019/G10receiver2027scene3001channel4001 inherited; no newchannel.",
+      "k": null,
+      "scenario": "Originalsame starU384 tothreefrozenDURA source/futureconditions",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NewNN/realF0Gsignal/sourceL/sourceepsfit0; actualCPsynthetic2each. NewHDBSCANU384 + KanonymousGaussian + twoVcalprocedures. Originalsignalrun sourceL6300signal+U384GFsignal/sourceeps and originalGMM/neural/Qcache costs inherited. NN834665 + actualaggregates/taus, no perrecorddeploy.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-hier-register-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-hier-register-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_hier_register_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-hier-register-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/*.log",
+        "predict/{complete,smoke}.json",
+        "predict/models/{density,source_radius,anonymous}.npz",
+        "predict/models/complete.json",
+        "predict/registration/{complete.json,U.npz}",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/{known,novel}_predictions.npz",
+        "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Originalsignal-register sharedengine default and newpolicy sharetruth-critical numericalpipeline; no globalmonkeypatch/runidentity mixing.",
+    "source_radius_fitted=True recordsinheritedsourcefit; newsource_radius_new_fits0/sourceL0 and U_features_reusedTrue explicitlytrackcurrentcost.",
+    "dbscan_labels is compatfield for HDBSCANcanonical labels; diagidentifiesactualalgorithm/version.",
+    "Allmodels+oldGMM/tau preserved, newUstatistics targetderived. No sourceNV/Q/trueK feedback or forcedclusters.",
+    "REG0RUallnonold/REG1later denominatorsseparate, same-laterpaircounts; intendedregisteredsetincludesundiscoveredarrivals.",
+    "Historicdevexposure/highmissing19-15/noformal/noDA/no multiregistrationclaim, fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-30T22:51:48+00:00"
+}

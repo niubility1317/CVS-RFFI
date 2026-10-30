@@ -74,6 +74,7 @@
 |PAMF 源域类别联合偏移的无标签适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-class-shift-s2026092701-r01/report.md)|
 |PAMF 固定密度拒识边界配对训练|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-density-boundary-s2026092701-r01/report.md)|
 |已有较好开放方案：DURA 接入前后配对测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-dura-best-s2026092701-r01/report.md)|
+|PAMF 层次密度发现与匿名注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-hier-register-s2026092701-r01/report.md)|
 |PAMF 身份与开放特征联合密度|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-joint-feature-s2026092701-r01/report.md)|
 |PAMF 源模式局部协方差与三类 DURA 测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-local-cov-s2026092701-r01/report.md)|
 |PAMF 背景混合锚定的无标签域偏移|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-mixture-uda-s2026092701-r01/report.md)|
