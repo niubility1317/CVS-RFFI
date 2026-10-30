@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261030-diagnostic-DURA-head-feature-geometry-s2026092701-r01",
+  "group_id": "phase1-dura-source-head-feature-geometry",
+  "display_name": "DURA源原头可见特征方向与梯度校准",
+  "description": "FrozennoVarE20/source512x2views;fixed originalhead centered normalized rowspace;4component gradients;deterministic alpha calibration;0updates/TX/V/target",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "gradient-conflict",
+    "F-free",
+    "single-stage"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261030-phase1-DURA-direct-noVarAux-s2026092701-r01",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-30用户新增要求：此外还要优化训练效率，之前多阶段训练太浪费时间，不利于研发迭代",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261030-diagnostic-DURA-head-feature-geometry-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Originalsource128Ls384Us xcached01/20;pairedIQ/action;reuseauthorized63000x160cleanFcachewithsamephysicalorder",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsourcecache;deterministicsource_indicesinexistingDURAdiagnostic;opaquepositionssaved",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "none;noqueryorclassificationprediction"
+  },
+  "permissions": {
+    "regime": "authorized_source_frozen_F_analysis_no_updates",
+    "query_use": "none",
+    "external_method_exception": "User2026-10-30explicitlyallowedindependentsourceFguidance;Fparams/headfrozen;no directTXlabels",
+    "claim_scope": "Sourceclean-Fchoiceagreement/marginsareteacherfidelity,notTXaccuracy;sourcegradientnotidentitytruth;0optimizer/target"
+  },
+  "checkpoint": {
+    "initialization": "FrozennoVarE20 strictsourcefinal;temporary autograd only;original frozenF head/sourcecache",
+    "sources": [
+      "runs/20261030-phase1-DURA-direct-noVarAux-s2026092701-r01/scratch_joint/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/pamf_stage2_inference/frozen_version.json training_permissions; originalR69 and current goal report",
+    "provenance_verdict": "REUSE_VERIFIED_MATCHING_ORIGINAL_SOURCE_CONTRACT; validate payload sourcefinalstage2E20/4940",
+    "selection_rule": "OriginalnoVarcontrolfixedfromsourceauxconflict;no parentranking;source geometry hypothesisdocumentedbeforeFguide010targetmetricread"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-head-feature-geometry",
+    "gpu_policy": "CPU2/0GPU;0optimizerupdates",
+    "remote_run_root": "runs/20261030-diagnostic-DURA-head-feature-geometry-s2026092701-r01",
+    "remote_log_root": "logs/20261030-diagnostic-DURA-head-feature-geometry-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261030-diagnostic-DURA-head-feature-geometry-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.head_geometry --root ../.. --output ../../runs/20261030-diagnostic-DURA-head-feature-geometry-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wrongsource/teacher/cacheorder/headformula/checkpoint/nonfinite/statechange/persistentgrad/collision:preserve,noautoretry;no targetreads"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "sourceIQNMSE",
+      "isotropic/projectedfeatureerrors",
+      "centeredoriginalheaderror",
+      "cleanFargmaxagreement/margins",
+      "base/projected/cos/taskgradientgeometry",
+      "deterministicgradientcoefficient"
+    ],
+    "dimensions": [
+      "noVarE20",
+      "cached01/20",
+      "source32B32batches",
+      "all/coarse/estimator/prior"
+    ],
+    "prediction_ref": "none",
+    "scorer_ref": "none;sourcegeometrywithoutTXtruth"
+  },
+  "rows": [
+    {
+      "row_id": "source-head-feature-geometry",
+      "method": "Frozenoriginalheadcontrastrowspace/SVD;noheadfit;4autogradcomponents;0update",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/head_geometry.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "Fixedfirst256Lsrolepositions;modelseedcontrolsrandomfactory;evalcontrols2probes;supportN/A;sourceR07receiverseed2026101911",
+      "k": null,
+      "scenario": "R07 epochs01/20 original route mix includingclean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "FrozenG/F real2Lssmoke+512x2views,B32/32batches;4autogradcomponents;0updates",
+      "output_root": "runs/20261030-diagnostic-DURA-head-feature-geometry-s2026092701-r01",
+      "log_path": "logs/20261030-diagnostic-DURA-head-feature-geometry-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.head_geometry --root ../.. --output ../../runs/20261030-diagnostic-DURA-head-feature-geometry-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Authorization source frozenFweights/features;projectiononlyfromsameoriginaldefaulthead;noF/head/Gupdate,nodirectTX/V/target;inheritsFsourceknowledge.",
+    "BasisSVD of normalized head weights minusmeanclassrow;rank1..5;notfittedlearnedprojection;normalizedfeatures useoriginalepsilon1e-4;isotropicenergyscaleD/2rank.",
+    "Actualfrozenhead formula independently inspected inimmutablebase47:scale30*linear(normalizefeatures1e-4,normalizeweights1e-4);diagnostic verifiesformula onactualsourcecache.",
+    "Alpha=.25/median(all32unweightedprojected/basegradientnormratios),no grid;calibratedgradientpressurenotrawlossmatching.",
+    "Eligibilitybothcachedviews:medianweightedratio[.125,.5],basealignmentmeancos>=0,negativebatches<=8/16,projected-taskmeancos>cosine-taskmeancosand>0,teacheragreement<1.",
+    "OnlyifeligiblecannewindependentGscratchE20/4940samebudgetrunpreregister;nevercontinueoldG;whole7formalrequiredforallnewtrainedversions.",
+    "FirstFguide010formal scoresalreadyreadandnegative;newdirectionpredatesreadingfromsource-taskdiag;noclaimnewblindgeneralization or performance fromsourcegeometry.",
+    "Oneactualsource2LsG/Fsmokeandfullstate/p.gradunchanged;allsourcepositions/privatebatchesignoredinGit;publicaggregatesonly.",
+    "Focused algebra/gradientisolation/protocol guardtests andone independentP0/P1 reviewbeforelaunch;no extrareview/gates."
+  ],
+  "registered_at": "2026-10-30T07:56:49+00:00"
+}

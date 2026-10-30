@@ -1,0 +1,207 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "cells": [
+    {
+      "model": "noVarAux",
+      "epoch": 1,
+      "count": 512,
+      "metrics": {
+        "iq_nmse": 0.022352356230840087,
+        "feature_cosine_error": 0.015945417690090835,
+        "teacher_argmax_agreement": 0.93359375,
+        "margin_for_clean_F_choice": 5.928042113780975,
+        "clean_F_margin": 7.110863089561462
+      },
+      "geometry": {
+        "all": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.1693766326159755,
+          "negative_cosines": 1,
+          "defined_ratio": 16,
+          "median_ratio": 0.315965697709512
+        },
+        "frozen.coarse.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.23363830831295834,
+          "negative_cosines": 2,
+          "defined_ratio": 16,
+          "median_ratio": 0.3826247165467228
+        },
+        "frozen.estimator.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.1434436001016081,
+          "negative_cosines": 4,
+          "defined_ratio": 16,
+          "median_ratio": 0.13948387565312728
+        },
+        "prior.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.1480107577088812,
+          "negative_cosines": 1,
+          "defined_ratio": 16,
+          "median_ratio": 0.3717238719121758
+        }
+      }
+    },
+    {
+      "model": "noVarAux",
+      "epoch": 20,
+      "count": 512,
+      "metrics": {
+        "iq_nmse": 0.02112201384443324,
+        "feature_cosine_error": 0.011401640484109521,
+        "teacher_argmax_agreement": 0.96875,
+        "margin_for_clean_F_choice": 6.3527999222278595,
+        "clean_F_margin": 7.110863089561462
+      },
+      "geometry": {
+        "all": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.12578323784494772,
+          "negative_cosines": 2,
+          "defined_ratio": 16,
+          "median_ratio": 0.34244622859602447
+        },
+        "frozen.coarse.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.18056950470853472,
+          "negative_cosines": 3,
+          "defined_ratio": 16,
+          "median_ratio": 0.40771095143386027
+        },
+        "frozen.estimator.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.11601526733575472,
+          "negative_cosines": 4,
+          "defined_ratio": 16,
+          "median_ratio": 0.22321457650006027
+        },
+        "prior.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.11888976647372537,
+          "negative_cosines": 2,
+          "defined_ratio": 16,
+          "median_ratio": 0.39998670202918635
+        }
+      }
+    },
+    {
+      "model": "Fguide010",
+      "epoch": 1,
+      "count": 512,
+      "metrics": {
+        "iq_nmse": 0.022870663495268673,
+        "feature_cosine_error": 0.011818983242847025,
+        "teacher_argmax_agreement": 0.94921875,
+        "margin_for_clean_F_choice": 6.347414821386337,
+        "clean_F_margin": 7.110863089561462
+      },
+      "geometry": {
+        "all": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.12758960493692303,
+          "negative_cosines": 1,
+          "defined_ratio": 16,
+          "median_ratio": 0.24534747167755794
+        },
+        "frozen.coarse.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.14238271990351448,
+          "negative_cosines": 4,
+          "defined_ratio": 16,
+          "median_ratio": 0.23892276386259179
+        },
+        "frozen.estimator.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.14889534261544524,
+          "negative_cosines": 6,
+          "defined_ratio": 16,
+          "median_ratio": 0.11475674022068752
+        },
+        "prior.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.1521332984663549,
+          "negative_cosines": 1,
+          "defined_ratio": 16,
+          "median_ratio": 0.26076408956768493
+        }
+      }
+    },
+    {
+      "model": "Fguide010",
+      "epoch": 20,
+      "count": 512,
+      "metrics": {
+        "iq_nmse": 0.020944368981872685,
+        "feature_cosine_error": 0.008492617635056376,
+        "teacher_argmax_agreement": 0.970703125,
+        "margin_for_clean_F_choice": 6.707205772399902,
+        "clean_F_margin": 7.110863089561462
+      },
+      "geometry": {
+        "all": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.15503854948546208,
+          "negative_cosines": 1,
+          "defined_ratio": 16,
+          "median_ratio": 0.2204446657319406
+        },
+        "frozen.coarse.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.16792659101004714,
+          "negative_cosines": 5,
+          "defined_ratio": 16,
+          "median_ratio": 0.2734358462315328
+        },
+        "frozen.estimator.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.15925786991137728,
+          "negative_cosines": 5,
+          "defined_ratio": 16,
+          "median_ratio": 0.15969453268604844
+        },
+        "prior.": {
+          "defined_cosine": 16,
+          "mean_cosine": 0.15379644316649915,
+          "negative_cosines": 1,
+          "defined_ratio": 16,
+          "median_ratio": 0.2525318795224504
+        }
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "epoch": 1,
+      "weighted_guide_base_median_ratio": 0.24534747167755794,
+      "mean_cosine": 0.12758960493692303,
+      "teacher_argmax_agreement": 0.94921875,
+      "guided_to_control_IQ_ratio": 1.0231880370496897,
+      "passed": false
+    },
+    {
+      "epoch": 20,
+      "weighted_guide_base_median_ratio": 0.2204446657319406,
+      "mean_cosine": 0.15503854948546208,
+      "teacher_argmax_agreement": 0.970703125,
+      "guided_to_control_IQ_ratio": 0.9915895868704122,
+      "passed": false
+    }
+  ],
+  "stronger_beta_rule_passed": false,
+  "source_records": 512,
+  "source_L": 128,
+  "source_U": 384,
+  "batches": 64,
+  "checked_geometry_scalars": 1280,
+  "model_unchanged": true,
+  "F_unchanged": true,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "seconds": 37.79085751483217,
+  "source_rule": "Stronger beta0.3 candidate only if both epochs Fguide/base weighted gradient norm median<=.2,mean cosine>=0,teacher agreement<.98,and Fguide IQ<=1.1 matched noVar;otherwise no beta increase from this diagnostic",
+  "scope": "Frozen F clean-choice agreement and margins are source teacher fidelity, not TX accuracy;batchmean gradients;no new weights or target feedback",
+  "goal_complete": false
+}

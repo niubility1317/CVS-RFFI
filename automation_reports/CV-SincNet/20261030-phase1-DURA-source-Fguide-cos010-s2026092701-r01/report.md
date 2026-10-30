@@ -3,7 +3,7 @@
 - run_id：`20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01`
 - group_id：`phase1-dura-single-stage-efficiency`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -45,3 +45,25 @@ VERIFIED/RUNNING。用户明确授权后的执行commit 2cee2bec08165769f787b2aa
 CPUcontroller PID3956900，GPU4 worker PID3958132；独立/proc核实存活、CWD、完整argv和CUDA绑定，并从nvidia-smi匹配worker显存。训练日志由0增长到1627bytes，至少完成E3。源clean F缓存63000条/160D、40.32MB数值、耗时3.782270秒，物理ID按原G顺序写入；每轮避免重复计算同一source clean F目标，额外restored F前反向仍实际执行并计数，不能宣称F指导没有开销。
 
 当前training F access=True、F_updates=0、直接TX labels=0，G祖先0；F既有source-final50/11100知识明确继承。F完整状态将在训练末再次核验；当前smoke通过不冒充训练末证明或正式性能。固定最后E20后自动source1800×7、target168000×7、匹配时延与独立truth-last；六景3pp目标继续ACTIVE，默认DURA保持。
+
+## 完整源F指导训练与七景正式结果
+
+VERIFIED/ANALYZED。20个epoch/4940更新、L126000/U1134000曝光完整；G从零一次联合训练、0祖先G/直接TX标签/V/target训练。源F clean缓存63000次、restored训练前向1260000次，F参数/状态不变、更新0、原分类头拟合0。执行commit2cee2bec08165769f787b2aa85d1a8d97177844d；真实G/F首步梯度/严格重载smoke与独立P0/P1审查均PASS，实际PID/CWD/命令/GPU/日志增长已核实。
+
+完整训练1068.366秒，源准备4.881秒（含clean特征缓存3.782秒），新增G训练流程共1073.247秒/17.887分钟。266951参数、峰值allocated 1372.14MiB；同卡交替G/G+F B1/B128、存储/MAC/求解预算见results.json。共享卡时段不同，不能与F-free耗时直接推断因果倍率。F既有50轮/11100更新及源有标签知识明确复用，不能称F-free或完全TX无监督。
+
+source1800×7和target168000×7固定完成后独立CPU truth-last，再从不可变logits/truth独立复算126个总体/TX/RX/day分组一致；controller/worker自然结束。原F50/defaulthead配对、单seed，不扩展到当前Tri-SIG-TIME SSL/Phase2/3。
+
+|场景|准确率%|相对匹配noVar pp|相对默认DURA pp|距raw clean pp|
+|---|---:|---:|---:|---:|
+|clean|84.904167|+0.161905|+0.226190|-0.227976|
+|practical_high|80.698214|-0.205952|-2.126786|3.977976|
+|practical_mid|79.301786|-0.104762|-2.258929|5.374405|
+|practical_low_suburban|77.837500|-0.031548|-2.220833|6.838690|
+|practical_high_urban|79.730952|-0.267857|-2.014881|4.945238|
+|practical_mid_urban|73.745833|-0.647024|-1.740476|10.930357|
+|practical_low_urban|67.827381|-0.643452|-1.062500|16.848810|
+
+六个星地均低于匹配noVarAux对照，lowurban−0.643452pp到67.827381%，相对默认低1.062500pp。clean84.904167%，较raw多383条正确（596纠错/213损伤）；不能用clean提高代替星地验收。六星地距raw clean3.977976至16.848810pp，逐景3pp=False，原R17逐景最多1pp容忍=True。不更换默认。
+
+完整源E20 IQNMSE0.02539897、余弦误差0.01134746、末轮裁剪0；源F特征改善未转为正式星地改善。已在本目标分数读取前完成source-task-geometry诊断并否决简单升至beta0.3，其源误差降低约26%但clean-F选择一致率改善较小，后续若检验原头可见的特征方向只以该源证据固定方案。保留全部负结果，不选中间轮次、不按target类别/场景调参或选择性重跑。目标继续ACTIVE。
