@@ -190,3 +190,6 @@ source phase-only oracle闭合：固定noVar与default/source512×clean/缓存01
 
 
 头保护RX特征参考单阶段试验已发布：fb795cebeb21d3cbd97aad05aecfa1afff441018，CPUcontroller956189/worker957861/GPU7，真实F-G梯度/冻结/重载/原头与source参考smoke通过；准入已有2PID/free22382MiB，后态共4PID，仅own1，不改别人。G仍scratchE20/4940、原IQ缓存/.25feature收缩/源校准weight.019528750294704578，自动全七景；F源50轮知识继承，非F-free，未声称正式收益，默认保持。
+
+
+头保护RX特征参考E20完成4940更新和全七景/126组独立复算，固定.25收缩/weight.019528750294704578，1.26m源参考访问/F不变，G祖先0/直接TX-V-target训练0，非F-free。clean84.866667%，lowurban68.417857%；六景3pp=False/clean保持=True/R17逐景1pp=True。G流程1156.041秒，全流程1580.748秒；参考及权重同时改变，不作孤立RX因果结论，默认保持。
