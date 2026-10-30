@@ -140,3 +140,6 @@ wideCoarse首步2Ls新coarse梯度/严格重载/F noquery、11项聚焦检查和
 ## 同预算 physical 对照的随机数配对限制
 
 补充源代码检查确认：旧IQ增强实验的physical G初值与纯G一致，但增强头初始化额外重设CUDA seed2026103107，CPU恢复并未还原CUDA。它的真实七景分数与预算比较保留；此前不同方法相对该physical的涨跌不能作为严格同探针随机数下的单机制因果隔离。新fresh/repeat配对独立纯G对照已在fresh访问目标前补登记，均用CUDAprobe2026092701/npshuffle2026103004，只比较后10轮源抽样；旧模型/预测/执行代码不改。纯CPU trace见[fresh对照审计](../20261031-phase1-DURA-freshViews-E30-s2026092701-r01/control_cuda_seed_audit.json)。
+
+
+30份源信道抽样版已完整评分：clean84.461905%、lowurban66.973810%，七景均低于默认/0of6满足3pp；额外10份制备8.846分钟、学生从零单阶段训练16.271分钟、全分析28.192分钟，0F/TX/神经教师训练。独立同CUDA探针纯G20+repeat10配对对照仍在训练，抽样数量的独立效应待完整矩阵判断。详见[本行分析](../20261031-phase1-DURA-freshViews-E30-s2026092701-r01/analysis.md)，该负结果不是物理恢复极限的证明。

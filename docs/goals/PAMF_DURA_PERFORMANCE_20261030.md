@@ -264,3 +264,6 @@ SOURCE_COMPARISON_CORRECTION：N607 Torch2.1纯CPU工厂trace发现旧IQenhance 
 
 
 新源抽样/严格纯G配对均已实际GPU训练：fresh32a worker1224405/GPU6 E27/30、sourceview27；repeat8cf worker1232279/GPU4 E6/30，均真实2Ls梯度/strictreload/Fsmoke PASS、实际CWD-argv-CUDA-GPUPID/loggrowth/合法准入核实，合计2ownworker/每卡1。fresh10新视图630000模拟访问/4.1958GB、CPU8制备530.740140s，旧20只读复用/物理ID-roles-Vpanel保持，真实读view21..30。两组scratch30/7410/noVar4基础项、model/CUDAprobe2026092701/npshuffle2026103004，训练F/TX/neuralteacher/initcheckpoint0；fresh与repeat各自都固定final30后全七景truth-last。N607修复后CPU工厂trace再验证CUDA调用只余2026092701/643G初state一致/0CUDAinit-GFforward-checkpoint-TX-V-target，旧archive不改。数值轨迹不承诺跨GPU逐位相同，旧physical比较限制已全局注明；默认保持/完整目标ACTIVE。
+
+
+Fresh30本行正式结案：32a/30轮7410/L189000U1701000，实际sourceview1..30而非重复10，G训练F/TX/neuralteacher/initcheckpoint0。全7×168000固定后truth-last、126组独立一致，clean84.461905（raw−360条/−.214286pp）、lowurban66.973810%，七景均低于默认、0/6通过3pp；原R17逐景最多下降1pp的历史容忍通过，但当前优化目标未通过。额外源制备530.740140s/4.1958GB、G训练976.251282s、全分析1691.498856s；缓存可复用但成本不隐藏。独立同CUDAprobe纯G repeatViews8cf对照仍健康训练，当前matched_control_delta=null，不以旧physical探针混杂比较提前归因；两行不因本行target结果调参或重跑，默认保持/目标ACTIVE。

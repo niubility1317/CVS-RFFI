@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-freshViews-E30-s2026092701-r01`
 - group_id：`phase1-dura-scratch-source-draw-count`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -59,3 +59,8 @@ VERIFIED / RUNNING，学生训练阶段，执行32a32998d3c76105b017a0905300e8ed
 新增10份源抽样全部完成：630000次模拟访问/4195800000数值字节，CPU8制备530.740140秒；每份原nativeactionreplay/shape/FP32/finite/固定scene顺序检查通过，外部完整元数据读回一致。旧01..20只读链接，源physicalIDs/roles/Vpanel保持；source generation不是训练epoch。当前已读到source_cache_view27，确实没有把21..30映射回01..10。
 
 已27/30轮/6669更新/L170100/U1530900，当前五项加权loss独立复算一致，F/TX/神经teacher/初始化checkpoint训练读取0。当前只证明运行和输入日程，不是正式身份收益；固定final30后自动七景168000/truth-last与profile，默认保持/目标ACTIVE。
+
+
+## 本行完整七景结果
+
+VERIFIED / ANALYZED，本行30/7410/30不同source cache views、全七景168000/独立126组复算通过。clean84.461905%较raw少360，lowurban66.973810%，七景均低于默认/0of6通过3pp。源制备530.740140s、训练976.251282s、全分析1691.498856s；source额外4.1958GB另列，无神经teacher/F/TX/V/target训练。独立同CUDA探针纯G repeatViews主对照尚在训练，配对增益待完成，不用旧physical混杂对照提前归因。完整见[分析](analysis.md)、results.json。默认保持/目标ACTIVE。
