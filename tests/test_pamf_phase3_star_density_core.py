@@ -39,6 +39,19 @@ def test_hand_density_includes_component_weight_volume_jacobian_and_ratio(toy):
     with pytest.raises(ValueError):s.validate_state(b,'known_only')
 
 
+def test_legacy160_manual_density_and_explicit_default_geometry_are_unchanged(monkeypatch):
+    s=api()
+    for name,value in dict(CLASSES=(0,),RECEIVERS=(1,),DAYS=(1,),KNOWN_CELL_SIZE=2).items():monkeypatch.setattr(s,name,value)
+    state=dict(schema=np.asarray('pamf_phase3_star_density_state_v1'),origin=np.zeros(160),whitener=np.eye(160),
+        log_abs_det_whitener=np.asarray(0.),pooled_L_variance=np.asarray(2.),known_means=np.zeros((1,160)),
+        known_variances=np.asarray([2.]),known_weights=np.asarray([1.]))
+    x=np.eye(160)[:2]
+    np.testing.assert_allclose(s.score(state,7*x,'known_only'),np.full(2,-80*math.log(4*math.pi)-.25),atol=1e-13,rtol=0.)
+    args=(x,np.zeros(2,np.int64),np.ones(2,np.int64),np.ones(2,np.int64))
+    default,_=s.fit_known(*args);explicit,_=s.fit_known(*args,dimension=160)
+    for name in default:np.testing.assert_array_equal(default[name],explicit[name])
+
+
 def test_known_four_cardinal_points_have_analytic_within_variance_and_correct_whitener(toy):
     s,x,y,rx,day=toy;state,diag=s.fit_known(x,y,rx,day)
     # Within C has eigenvalues 0 and 1/2. Shrinkage gives 1/40 and 19/40,
