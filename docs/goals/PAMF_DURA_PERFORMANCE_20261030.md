@@ -327,3 +327,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 保留源稳定正交特征的10维校准
 
 20261031-diagnostic-DURA-source-softReference10IQ-s2026092701-r01/516ea8e3。VERIFIED / ANALYZED，仅SOURCE_ONLY，科学判定FAIL、技术执行通过。源512原head5/J5保持，追加fit62488/90RX-day软均值的秩5正交方向；参考位移覆盖19.4824%→46.6467%、RX离散度比0.527648、软坐标间离散度比1.019489。FP32线性残差max1.124e-5、512clean判决保持、IQ位移均值0.012443%均通过；真实F偏移误差P95=1.147242>1，新增5维独立cos=0.398134/0.382603<0.5，未通过固定资格。CPU2/PID1465120/CWD-argv-env-loggrowth/真实2Ls检查核实，循环8.452086秒自然结束（新增512×5J 3.908956秒）；F2048+2smoke/VJP4608+2smoke、0G/TX-V-target/更新。512最小IQ位移、combined/aux共2048方向、2621440闭式分量/52分组独立复算。没有新G训练、完整源J或正式预测，不搜索维数/beta/alpha/阈值，默认和完整目标保持。 原5维软参考E30七景正收益保持其原身份；本次只是新source-only诊断，没有取消任何已登记的新G正式矩阵。后续优先研究精确非线性约束的有效性和实际计算成本，不通过放宽失败资格推进。当前六景3pp、clean保持、同质量训练效率目标继续ACTIVE。
+
+
+## 精确非线性源域参考可达性
+
+20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01/b621e3d5。VERIFIED / ANALYZED，仅SOURCE_ONLY。固定原source10参考/beta.25/alpha不变，512源128L384U、8次GaussNewton重线性化/半步0.5。实际F相对偏移误差median 0.010535806/P95 0.205998719，IQ位移NMSEmean 0.013526%/P95 0.027196%，512原clean判决保持，固定可达性PASS。真实2Ls随机G/原F精确guide梯度注入、IQ cap、三模块梯度及F/G状态检查通过；G0优化/0保存权重，未使用失败clean-J或旧G误差。CPU2/PID1501100/CWD-argv-env-loggrowth已核实，主循环54.974718秒自然结束；F4608/VJP40960，加smokeF4/VJP2/G2。4096闭式IQ更新/2097152分量/4608非线性观测几何及最终判定独立复算，0TX/V/target/完整源J/新G训练。只支持另登记GPU步开销测量，不自动训练、不称目标识别收益或硬件细节恢复；旧10维局部近似FAIL保持，默认和完整目标保持。 后续另登记GPU步开销测量，若可行再登记Gscratchsinglejoint30/7410和全七景truth-last；本次未启动这些阶段。六景逐个距rawclean≤3pp、clean保持、同质量训练效率目标继续ACTIVE。
