@@ -1093,3 +1093,8 @@ Run `20261031-phase3-target-prototype-s2026092701-r01` / actualcode `35d41680b20
 ### 2026-10-31 冻结Sinc的目标原型骨干适配预登记
 
 Run `20261031-phase3-body-prototype-s2026092701-r01` / code `a33612e978948da25bd733bcb9edba3ac9d74e9a`，主PCD_predicted_ratio，SOURCE/TARGET各444，从原r03独立初始化；只固定Sinc48/buffers，body231985＋projection102688更新。源原crossset/OE＋KD10，source indices matched；同上轮target.1 global/local/K16/全部seeds，SOURCE先完成才开U384。全部三DURA/六列预测后独立truthlast；原4af基线保持，目标/门槛不降低。真实学生IQ454656、父12818、G384；完整方案与数据/祖先/指标/停止规则见`docs/PAMF_PHASE3_BODY_PROTOTYPE_PLAN_20261031.md`。无匿名REG或formalRX，完整目标ACTIVE。
+
+
+### 2026-10-31 原型骨干技术失败与冻结评估恢复
+
+r01在a336下两臂444训练全部完成，但首次eval加载把6个nonpersistent缓存误判为缺失，FAILED_PRESERVED/无性能结论，未读Q/truth。实际权重persistent/Sinc差异0；一次定点RED→GREEN修复后独立r02 `20261031-phase3-body-prototype-s2026092701-r02` / evalcode `4273e88392abe0717c1bd94fca1370d19c67cbb3` 精确复用旧两CP，训练仍a336/r01，不重训或改科学配方。r02只predict→CPUscore/新optimizer0，继承888训练成本，原六列三DURA/τ/数据/主读出/门槛不变；原基线保留，完整goalACTIVE，匿名注册未完成。见`docs/PAMF_PHASE3_BODY_PROTOTYPE_RECOVERY_20261031.md`。
