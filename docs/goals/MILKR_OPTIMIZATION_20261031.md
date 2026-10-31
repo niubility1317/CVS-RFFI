@@ -6,7 +6,7 @@
 
 用户已明确允许 raw／DURA 同一条 query 融合，并要求保留仅 DURA 输出对照；support 仍严格 S0 raw、S1 G。新版 Q0=raw、QG（机器 Q1）=仅 G、QF（机器 Q2）=融合。当前主验收为全部 K1/5/10/20×N2/5/10/20、两 S 下 Q0 较匹配原 Q0 至少 +5pp，且同状态 QF>Q0。QG 完整单列，与原 QG 保持同输入配对；QF 与原 QG 的差须标明路径改变，不冒充同输入增益。早期角点、均值、单 support 的高收益不能代替全格。科学协议本轮例外已更新，旧 run 仍保留原 G-only 定义。
 
-R38 首 RX 四角点 36 行已完成：S0 raw+5为3/4、QF>Q0为4/4；S1 raw+5为4/4、QF>Q0为4/4。未达标组合：S0 K1/N20 raw差+4.8378pp、融合差+1.4034pp。严格晋级 False。最终all16/七RX尚未完成，目标ACTIVE。R26/R27为此前历史结果。
+R39 首 RX 全16格 120 行已完成：S0 raw+5为11/16、QF>Q0为16/16；S1 raw+5为16/16、QF>Q0为16/16。未达标组合：S0 K1/N20 raw差+4.9513pp、融合差+1.3870pp；S0 K10/N2 raw差+4.5428pp、融合差+3.7388pp；S0 K20/N2 raw差+4.7671pp、融合差+2.9658pp；S0 K20/N5 raw差+3.8462pp、融合差+3.7295pp；S0 K20/N10 raw差+3.8748pp、融合差+3.5878pp。严格晋级 False。最终七RX all16尚未完成，目标ACTIVE。R26/R27为此前历史结果。
 
 ## 历史 G-only 阶段每格验收（覆盖旧均值口径）
 
@@ -319,3 +319,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R39 RF旧类先验方向与全KN验证
 
 保留R38成员gate，旧类prior方向以normalize(originalp*currentSUP_RBF_oldclassmean)校准，headgate仍输入originalp，中性RF还原原p，无新权重。每物理OOF均train-only，F/G/head冻结。新候选首RX覆盖all16KN/120三路预测，逐格通过才六RX；最终七RX等权all16目标不变，旧失败不改，尚未发布。
+
+### R39 实际结果
+
+120行独立truth-last完成，所属进程退出。两S逐KN验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 11, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 16, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.951270096769211, 'fusion_gain_pp': 1.3870375975507665}, {'S': 'S0', 'K': 10, 'N': 2, 'raw_gain_pp': 4.542752733491517, 'fusion_gain_pp': 3.738796792809951}, {'S': 'S0', 'K': 20, 'N': 2, 'raw_gain_pp': 4.767061039023912, 'fusion_gain_pp': 2.9658397354685118}, {'S': 'S0', 'K': 20, 'N': 5, 'raw_gain_pp': 3.846181281562122, 'fusion_gain_pp': 3.7295036166338558}, {'S': 'S0', 'K': 20, 'N': 10, 'raw_gain_pp': 3.8747501861795874, 'fusion_gain_pp': 3.587759402317392}]。当前SUP旧类RF乘积方向/中性还原原p/两gate与各折train-only核实，双核/单残差KRR保持；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
