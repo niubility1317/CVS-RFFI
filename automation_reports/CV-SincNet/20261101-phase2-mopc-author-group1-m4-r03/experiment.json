@@ -23,7 +23,7 @@
   ],
   "authorization": "User2026-11-01 complete originalPhase2Group1 with frozenR42 mainrow; fill missing MoPC native encoder binding using explicit author attentionResNet WiSig256 single-record input adaptation; fresh4seed sourceA and originaldirectAC matrix; noISSL restart orother-owner changes",
   "code": {
-    "commit": "COMMIT_AT_RELEASE",
+    "commit": "e71cbebdd658892942505db6d675549980e18ef8",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-mopc-author-group1-m4-r03-release"
@@ -128,7 +128,7 @@
     "gpu_policy": "physicalGPU1/5 maxone NEW own train/predict percard, observedtotalGPUprocesses<3 beforeadmission andfree>=6000MiB; currentR42 GPUs0/2/3/4/6 untouched; independentCPUscorer1",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-mopc-author-group1-m4-r03",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-mopc-author-group1-m4-r03/logs",
-    "local_artifact_root": "E:\\type10-7\\local_artifacts\\phase2_mopc_author_20261101",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\phase2_mopc_author_fullrelease_20261101",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.group1_dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-mopc-author-group1-m4-r03-release/runtime.json",
     "stop_rule": "Any technical/protocol/illegal-output failure stops admissions for this one profile, drains healthy owned workers and retains partials; no blind retry or score-based tuning; source fixedE200, target fixednative C budgets"
   },
