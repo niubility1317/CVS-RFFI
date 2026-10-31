@@ -1,0 +1,202 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase3-P3Restore-TF-F0-E30-s2026092701-r01",
+  "group_id": "phase3-independent-restoration-TF-E30-pair",
+  "display_name": "Phase3独立时频恢复器：原F0特征指导从零单阶段30轮",
+  "description": "同196898参数TF、初值、源顺序和15%clean保持；额外.1全F0cos指导及IQ梯度cap.5。",
+  "kind": "cvs",
+  "stage": "Phase3",
+  "aliases": [],
+  "tags": [
+    "Phase3",
+    "P3-Restore-TF",
+    "scratch",
+    "single-stage",
+    "E30",
+    "F-guided"
+  ],
+  "comparison_group_id": "P3Restore-TF-IQ-vs-F0-guided-single30",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User20261101:majorarchitecture/Phase3/scratchsingle30/onlyoriginalLsUs/OEonlyfrozendiagnostic/sourceFguidanceallowed/defaultDURAunchanged",
+  "code": {
+    "commit": "b33839dd1010dea36b68526043bbc4abe5eb1095",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Torch2.1 NumPy2;FP32 TF32off CPU2;actualF0 original3ff8 E50/11100",
+    "cwd": "releases/20261101-phase3-P3Restore-TF-E30-pair-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 L_s6300/U_s56700/V27000;source G10 MIX01",
+    "representation": "Full63000 originalLsUs cachedG10MIX01P0-clean;15%clean identity route;same source schedule botharms",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract.json/392005",
+    "physical_ids_ref": "OriginalL_s/U_smetadata IDs matched role_ids and completed received caches",
+    "label_map_ref": "No y read;source sixTX namespace only private locator/not G input",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      3,
+      4
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2019-08-21",
+      "2019-08-22"
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse originalL d319 and Us VALIDATED_ONCE capsule pamf-source-Us392005-G10-MIX01-20261031-r01/split392005-Us-source5rx-3day-eq1;no rehash/revalidation",
+    "support_query_ref": "Existing exposed Phase3 RX3-2 development fixedpublicclean/star10238 each/no newformalRX24-18. Additional originalhistoricalPhase1 168000x7/source5RX target7RX0/2/5/7/9/10/11 days0..3.",
+    "leo_config_ref": "ExistingG10 MIX01 scene2026103001/channel2026104001/receiver2027/25MHz2.45GHz600km/refSNR30/reflect/post_sync-noEQ",
+    "actual_training_labels": "NoTX/y/V/OE/novel/targettraining. IQ supervision rawsourcepair;actual frozenoriginalF0clean-fused160 supervision/no CE or classprototype.",
+    "augmentation": "FixedoneG10MIX01 perphysical source;30fullpasses;15%clean mask eachEpoch. NumPydefault_rng2026110101 independent of model/teacher. Originalhistorical received views retain R07/2.462GHz identity,notG10."
+  },
+  "permissions": {
+    "regime": "source_only_scratch_G_F0",
+    "query_use": "Optimization onlyoriginal6300Ls56700Us. No TX/OE/V/novel/target/U-Q learning. After fixedfinal30, allregisteredpredictions complete then independentCPUtruth. No resultsfeedback orselectivererun.",
+    "external_method_exception": null,
+    "claim_scope": "NewGPhase3actualF0/defaulthead. Fixedsource-r03 E0/finalPCD/density/tau retained as input-shift diagnostic;PCDtargetUancestry disclosed,not newGteacher/init ormatchedcalibration. HistoricalF50seven separate/noPhase3claim."
+  },
+  "checkpoint": {
+    "initialization": "IndependentTFscratch196898/zeroresidualidentity/no Gcheckpoint or IQteacher/no DURAarchitecturedependency",
+    "sources": [
+      "ActualoriginalTriSIGSSL F0 3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/main3view/E50-11100/232993/source392005;frozenonlineinputVJP/fused160cache40.32MB",
+      "DATAONLY cache20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/exec53410ce889adc94c53c1783741f970fbdaf51453/VALIDATED_ONCE/capsule p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+      "Postfreeze only: originalDURA R69 sourceb2a2/20-4940 runtime47c;source-r03 E0/finaltargetPCD+frozen source densities/tau from fresh-DURA0305;not Gancestors/teachers",
+      "HistoricalF50 original4df7 CROSS_RX50/11100/defaulthead only frozen seven-view regression;baseline predictions reused exactIDs"
+    ],
+    "contract_check_ref": "OriginalF0source392005 fullsource roles/actualstrictancestry;full63000pairedcache validated and prior512 bitwise identity;strictnewTFschema requires config sourcecapsule/split/scratch/no forbiddenreads;existingdownstream provenance validators retained.",
+    "provenance_verdict": "NewGscratch/ancestor0/LsUs-only/OEonlyfrozendiagnostic/no targetPCDknowledgeintotraining. F0 originalsource50-11100 knowledge explicit. PureIQ entirestudy notF-free because smoke/eval access;optimization F-free.",
+    "selection_rule": "Fixedfinal30/7410/noearlystop/noVselection. SameTFinit/dataorder/masks/B256 botharms;AdamW.001 warm247 cosine2e-5/WD1e-4/clip1;IQNMSE+.05mean3STFT;+.1fullF0fused160cos detachedperrecordIQgradientcap.5."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/p3restore-TF-E30-pair",
+    "gpu_policy": "Singlecontroller/twoactiveGPUrows max;GPU4/6/7/percardown1/free>=12000MiB/existingcompute<=2/addONE total<=3. RechecksamecardbeforeeachGPUstage/wait20sifbusy. CPUtruthscorers<=1/sharedIQrunscore.lock. Othersuntouched.",
+    "remote_run_root": "runs/20261101-phase3-P3Restore-TF-F0-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261101-phase3-P3Restore-TF-F0-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-phase3-P3Restore-TF-F0-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.pipeline start --root /home/szu2070436088/2510044040/CV-SincNet --commit b33839dd1010dea36b68526043bbc4abe5eb1095 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-P3Restore-TF-E30-pair-r01-release/inputs.json --reference /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-dura-s2026092701-r01-release/runtime.json",
+    "stop_rule": "Badsource/teacherancestry/shape/strictcheckpoint/cap/nonfinite/modelstate/missingrealsmoke/count-collision/illegalprediction:preservefailedrow/noautoretry/otherhealthyrowcontinues;no performance stop. GPUbusywait only. Everytrainedversion allregisteredtests regardlesssourcequality."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "phase3_config.json",
+    "logs/*.log",
+    "training/config.json",
+    "training/smoke.json",
+    "training/smoke_E0.pt PRIVATE",
+    "training/data_schedule.npz PRIVATE",
+    "training/training.jsonl PRIVATE",
+    "training/final.pt PRIVATE",
+    "training/training_complete.json",
+    "phase3_prediction/{smoke,matched_profile,complete}.json",
+    "phase3_prediction/source/{known,novel}.npz PRIVATE",
+    "phase3_prediction/targets/{clean,star}.npz PRIVATE",
+    "historical_prediction/physical_ids.npy PRIVATE",
+    "historical_prediction/{seven_views}.iq.npy PRIVATE",
+    "historical_prediction/{seven_views}.logits.npy PRIVATE",
+    "historical_prediction/complete.json",
+    "phase3_score/results.json",
+    "historical_summary.json",
+    "complete.json",
+    "controller_complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ActualPhase3 F0 rawclean-reference/scenewise6TXmacro gap3pp/cleanpreservation/AK-CK-RU-H/source-crossRXclean-crossRXstar",
+      "Eachscene absenceofanyknownTX=N/A/notPASS;PCDfixedinputshift and originalDURA closed/open pairedloss/2ppprotect separately",
+      "Historical168000x7 F50 accuracy-MacroF1/netcorrection/TX-RX-day/IQNMSE/clean-damage/rawclean-retention;notPhase3F0G10",
+      "Full30loss/7410/exposures/identity-vsP0counts/sharedcache10.528927s/F0ancestor50-11100/onlineF01890000",
+      "Full196898params/19646464MAC/768realchannelFFT/0CG;actualfulltrain-and-wholewall/peakVRAM/sameGPUalternatingB1-B128G-GF0-GF0E0PCD profile vsdefaultDURAgraph/CPUdensityexcluded andpipelinecostseparate"
+    ],
+    "dimensions": [
+      "singlemodelseed2026092701",
+      "L6300Us56700/epoch/30wholepasses",
+      "Phase3V27000novel3150clean10238star10238",
+      "Historical168000x7/6TX/7RX/4day"
+    ],
+    "prediction_ref": "Eachrow allPhase3four andhistoricalsevenfixed before anynew private truth read;oldcontrols exactIDaligned. FreshprocessseparatesactualF0fromoldF50runtime.",
+    "scorer_ref": "IndependentCUDAemptyCPU process/sharedlock;no targetfeedback/modelselection/no freeK ortruth inpredictor;all trainedversions tested."
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint30",
+      "method": "IndependentTF196898/IQplusfrozenoriginalF0coscap.5",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_phase3_restoration/{checkpoint,train,phase3_eval,historical_eval,pipeline}.py",
+      "resolved_config_ref": "training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110101,
+        "augmentation": 2026104001,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701 preservedCPU/CUDA streams;split392005/sourceoriginalMIX01scene2026103001-channel2026104001-receiver2027;sourceorderandcleanmaskrng2026110101;supportN/A;existingqueryepisodes unchanged",
+      "k": null,
+      "scenario": "OriginalsourceG10MIX01/15%sourcecleanidentity;Phase3frozen4panels+historicalF50seven",
+      "optimizer": "AdamW/WD1e-4/clip1/warm247cosmin2e-5",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratchjoint30/7410/B256tail24/L189000Us1701000/G1890000;onlineF0fused160rows1890000/inputVJP/40.32MBsharedcleanFcache",
+      "output_root": "runs/20261101-phase3-P3Restore-TF-F0-E30-s2026092701-r01",
+      "log_path": "runs/20261101-phase3-P3Restore-TF-F0-E30-s2026092701-r01/logs/pipeline.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.pipeline row --root /home/szu2070436088/2510044040/CV-SincNet --commit b33839dd1010dea36b68526043bbc4abe5eb1095 --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-P3Restore-TF-E30-pair-r01-release/inputs.json --reference /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-dura-s2026092701-r01-release/runtime.json --arm F0",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "phase3_config.json",
+        "logs/*.log",
+        "training/config.json",
+        "training/smoke.json",
+        "training/smoke_E0.pt PRIVATE",
+        "training/data_schedule.npz PRIVATE",
+        "training/training.jsonl PRIVATE",
+        "training/final.pt PRIVATE",
+        "training/training_complete.json",
+        "phase3_prediction/{smoke,matched_profile,complete}.json",
+        "phase3_prediction/source/{known,novel}.npz PRIVATE",
+        "phase3_prediction/targets/{clean,star}.npz PRIVATE",
+        "historical_prediction/physical_ids.npy PRIVATE",
+        "historical_prediction/{seven_views}.iq.npy PRIVATE",
+        "historical_prediction/{seven_views}.logits.npy PRIVATE",
+        "historical_prediction/complete.json",
+        "phase3_score/results.json",
+        "historical_summary.json",
+        "complete.json",
+        "controller_complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "21focusednewchecks(9train/checkpoint+12eval/protocol)PASS;one independentP0P1 twoarmsPASS inclprofile;one directresourcefix targetedPASS. Existingarchitecture/objective/cachechecksnotrepeated.",
+    "Cacheproducer priorcomplete0updates:63k pairs+F0featurecache10.528927s/2.309879sF0subset;costsharedonce/notperarmtrainingtime. Legacycostr02differentinitialstate-step-only cannotclaimsamequality speed.",
+    "Phase3 fixedPCD has576targetUancestor;newtargetUinputs0/Gtargettraining0;new G changes downstream distribution,oldtau/densityonlydiagnostic/notmatched deployment orgoalcompletion.",
+    "Model freeze isfinal30 forbotharms;noV/OE/novel ortarget selection. Everyversion completesalltests evenifsourceworse. No healthyotherownerstop/hotchange.",
+    "Main3pp usesactualPhase3F0,not old142256F50correctcount. MissingknownTXscene=N/A. OriginalDURAclosedprotect independentlyreported;no maskingbynewG-ownbaseline.",
+    "Historicalold168000seven views retainoldcarrier2.462GHz andoldF50 metadata;rawcleanonlyfrozenevaluation input,notGtraining. Additionaldiagnosticnot mainPhase3G10.",
+    "DefaultDURA unchanged. No extra hash/seal/review/approval. FullgoalACTIVE untilsixscene-clean-open-quality-and-efficiency validated."
+  ],
+  "registered_at": "2026-10-31T17:40:00+00:00"
+}
