@@ -10,8 +10,9 @@ import time
 from experiments.pamf_dura_direct_train import contextual_recovery as resources
 from experiments.pamf_dura_direct_train import runner as base
 from experiments.pamf_identity_flow import rollout_train as candidate
+from experiments.pamf_identity_flow.resource_policy import is_restoration_gpu_worker
 
-RUN='20261101-diagnostic-identity-rollout-phase3-profile-s2026092701-r01'
+RUN='20261101-diagnostic-identity-rollout-phase3-profile-s2026092701-r02'
 ROOT=Path('/home/szu2070436088/2510044040/CV-SincNet')
 CANDIDATE_COMMIT='54e74d7f7f8c01e5755909f3a417a2279cc4c28b'
 
@@ -50,6 +51,9 @@ def main():
                 state=base.capacity();commands=subprocess.check_output(['ps','-eo','pid=,args='],text=True).splitlines()
                 tokens=resources.goal_worker_tokens()+('contextual_phase3_entry.py predict','identity_flow_worker.py --root','identity_rollout_worker.py --root','experiments.pamf_identity_flow.phase3_profile --root','experiments.pamf_identity_flow.rollout_phase3_profile --root','experiments.pamf_identity_flow.trajectory_probe --root','experiments.pamf_identity_flow.forcing_probe --root')
                 count,used=resources.active_goal_workers(commands,tokens)
+                external=[line for line in commands if is_restoration_gpu_worker(line)]
+                other_count,other_used=resources.active_goal_workers(external,('experiments.pamf_phase3_restoration.','/pamf_phase3_restoration/'))
+                count+=other_count;used.update(other_used)
                 free=[gpu for gpu in base.eligible_gpus(state,used,3,[4,6,7]) if not state[gpu]['pids']]
                 if count:free=[]
                 if free:
