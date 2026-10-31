@@ -39,3 +39,8 @@
 独立包 `experiments/pamf_phase3_restoration/model.py` 已实现，不依赖DURA模型。宽64、六块膨胀1/2/4/8/16/32、全率时域门控与逐通道复频域滤波，输出为received加零初始化残差。FFT的DC/Nyquist不设置无效虚部参数。完整196898参数、实际Conv/Linear MAC19646464；每包六次rFFT和六次irFFT、每次64通道，共768个实通道变换，FFT/GN/激活成本不包含在MAC中。容量不是效果或速度证据。
 
 9项聚焦检查PASS：恒等初值/随机流/严格state重载、零输出及激活后的所有时频/门控梯度、复频滤波与完整Hermitian DFT的前向/参数伴随、逐记录/置换/单条推理独立性、完整MAC/频域调用和输入形状/精度反例。尚未加载实际Phase3 F0、构建新源G10配对、完成真实源smoke/GPU成本或任何新G训练/正式预测。下一步绑定正确F0合同与合法源配对，再登记零更新成本诊断及单阶段30轮正式矩阵；不把实现完成当性能完成。
+
+
+## 首次真实源F0与GPU成本诊断
+
+20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r01：原Tri-SIG-TIME SSL F0/3ff8/50-11100、L_s6300/U_s56700同392005合同。固定128Ls384Us的现成G10 MIX01 P0及原raw配对clean，0TX/V/OE/target/optimizer。新TF与固定R69只读图拷贝对照，两种损失/三块/每块2warm6timed/B256交替，共96次forward-backward-clip，0step。原R69不是新TF祖先或教师IQ；F0指导.1cos fused160、IQ输入梯度cap.5。首2Ls真实smoke后继续，参数状态不变；只证明成本与输入梯度接口，不冒充等质量提速或新性能。23聚焦检查和唯一P0P1 PASS，默认与完整目标保持。
