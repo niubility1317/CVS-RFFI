@@ -9,3 +9,20 @@ C-SVC用当前K标签及相同核Gram训练，OVO优化/OVR decision_function输
 源门槛：四路平均H≥ridge+0.5pp、两S Q0各≥ridge−0.5pp、各K四路均值≥ridge−0.5pp、两S Q1>Q0。通过者取源H最高，平局小C；无通过则source-only停止target0。通过才首RX1-1/P01/MIX01/seed2026092701的全16KN四路80行，全补集query；匹配原版/R14各80行复用。全部预测固定后独立truth-last。目标仍两S Q0较原版≥5pp、Q1>Q0和Q0旧新各≥原版−1pp；仅先导通过才相同参数其余六RX确认，完整逐格保留，不降低5pp。
 
 本候选唯一独立P0/P1审查PASS；合成held类识别、全类输出、query批次独立/系数不变、selection JSON、ridge控制精确测试PASS。真实checkpoint无query smoke为launcher第一步，通过即继续。源GPU4、targetGPU0一worker，实际显存余量检查；其他owner不动，技术失败保留产物不盲重试。
+
+## 用户验收澄清（源阶段运行中）
+
+用户明确选择“每个K/N格都至少+5个百分点”。均值通过不能判定goal完成或继续扩展；两种support每个K/N分别要求Q0较匹配原版≥5pp、Q1>Q0，四路相对原版的逐格+5也完整检验。源候选/C网格/矩阵/种子/算法/预算均不变，健康源进程不热改；此项仅更新科学验收与晋级。原已发布快照保留，不抹去当时规则。后续不得以先导或七RX均值掩盖单格不足。
+
+## 源端实际结果
+
+**VERIFIED**：真实checkpoint无query smoke PASS，五RX/两epoch/四K/四oldcount/四路/五classifier控制共3200源H完成。source CCA参数原样复制，目标support/query/预测/评分0，所属进程全部退出。sklearn实测1.7.0，未跨版本pickle。执行commit `da91d2bbfa24d48d8e18a536e91c7a609321551b`；release传输、compile与PID/CWD/argv/GPU/log增长均已核实。
+
+| C | 源四路H | 较ridge差 | S0/S1 Q0差 | 各K最小差 | 通过 |
+|---:|---:|---:|---|---:|---|
+| 0.1 | 79.395% | +0.017pp | -1.094, +0.471pp | -0.666pp | False |
+| 1.0 | 79.107% | -0.271pp | -1.094, -0.422pp | -0.976pp | False |
+| 10.0 | 79.148% | -0.229pp | -0.694, -0.486pp | -1.160pp | False |
+| 100.0 | 79.148% | -0.229pp | -0.694, -0.486pp | -1.160pp | False |
+
+没有C通过预登记源门槛，正常source-only科学停止，不降低阈值访问目标；它不能作为ridge优化成功证据。用户最新要求每K/N格≥5pp，原R14仅6/16 raw格满足，goal仍ACTIVE。

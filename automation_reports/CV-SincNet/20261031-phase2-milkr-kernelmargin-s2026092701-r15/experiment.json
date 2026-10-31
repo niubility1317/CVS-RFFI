@@ -26,7 +26,7 @@
   ],
   "authorization": "User2026-10-31 MILKR goal +5pp; Tri-SIG-TIME SSL; support S0/S1 separate; each Q1 must exceed its Q0",
   "code": {
-    "commit": "COMMIT_AT_RELEASE",
+    "commit": "da91d2bbfa24d48d8e18a536e91c7a609321551b",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-kernelmargin-s2026092701-r15-release"
@@ -146,10 +146,10 @@
     "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-physicalH-s2026092701-r14/predictions",
     "scorer_ref": "experiments.pamf_phase2_practical.episodic_score",
     "primary": "C macro H equal-weight across 16 KN cells, separately for S0Q0/S1Q0, paired with matching original",
-    "success": "both S: Q0-original Q0 >=5pp and new Q1-new Q0 >0; report every KN cell and stricter every-cell pass separately",
+    "success": "User clarified every K/N cell >=5pp; bothsupport routes separately, Q1>Q0 percell. All4 matching-original gains explicitly checked; means never substitute for a failedcell.",
     "secondary": "R14matched80/ridge control and originalMILKR80; all4paths/all16KN; old/new/F1/floor; no querytrueold/newrole",
     "scientific_source_rule": "source5heldRX x2ep x4K xoldcount2..5 x4paths; shadowCCA excludesheldRX, support<=20/held32 physicallydisjoint. C.1/1/10/100 + exactR14ridge control. SourcefourH>=ridge+.5pp, eachS Q0>=ridge-.5pp, eachKmean>=ridge-.5pp, bothS Q1>Q0. BestsourceH then smallerC, nonepasses=>target0.",
-    "promotion_rule": "samefirstRX allKN pilot: bothS Q0-original>=5pp,Q1>Q0,Q0old/new>=original-1pp; onlyunchangedparameter further6RX confirmation; eachcell strictercriterion separately"
+    "promotion_rule": "Superseded by latest user: firstRX every16KN must pass Q0-original>=5pp and Q1>Q0 for bothS; also report all4case+5 status. No mean-only expansion. Source gate/model/C-grid/matrix unchanged."
   },
   "rows": [
     {
@@ -273,7 +273,8 @@
     "Source supportprefix<=20/held32 physicallydisjoint perclass/episode; old_count1 excluded per establishedbandwidth requirement. NoU/Vtruth, no targetduring sourcechoice.",
     "StrictS0/Q0 rawonly, S1/Q1 actualGonly; bothquerypaths share same fittedsupportstate. CurrentK labels/allregisteredquerycomplement; no extra physical labels.",
     "CandidateuniqueP0/P1reviewPASS. Synthetic heldidentity classification/allclassshape/querybatchindependence/coefunchanged/selectionJSON and exactridgecontrol PASS. Source actualcheckpoint noquerysmoke launcherfirststep thenimmediate sourcecalibration.",
-    "OnlysourcegatePASS startsfirstRX1-1 P01/MIX01 all16KN80rows, allpredictionsfixed beforeindependenttruthlast; sameuser twoS Q0+5pp/Q1>Q0/oldnewguard; pilotpass onlyunchanged remaining6RX confirmation. Negativecandidate no expansion, no targetfeedbacktuning."
+    "OnlysourcegatePASS startsfirstRX1-1 P01/MIX01 all16KN80rows, allpredictionsfixed beforeindependenttruthlast; sameuser twoS Q0+5pp/Q1>Q0/oldnewguard; pilotpass onlyunchanged remaining6RX confirmation. Negativecandidate no expansion, no targetfeedbacktuning.",
+    "While healthy source-only controller running, user answered optional question: every K/N cell at least+5pp. This changes only acceptance/promotion, no model/sourcechoice/matrix/seed/trainingbudget or rerun. Original immutable release snapshot preserved, canonical report amendment records latest instruction."
   ],
   "registered_at": "2026-10-31T04:10:12+00:00"
 }
