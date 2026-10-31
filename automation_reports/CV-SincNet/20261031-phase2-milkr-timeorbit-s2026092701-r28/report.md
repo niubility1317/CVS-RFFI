@@ -13,3 +13,18 @@ sourceGPU4/targetGPU0实际容量核实，其他owner不动。commit、命令、
 ## 发布前核验
 
 22项相关检查及4项非法协议输入检查通过（末次定向9项含time worker与原worker回归），本地compile/diff检查通过。唯一独立P0/P1审查PASS：16视图只同记录，G先且一次，各shift重算FFT，head保留未移位C4；source及worker的SUP/query均使用extract_time；source失败不生成最终encoder或启动target，三路36行评分接口闭合。实际checkpoint无query smoke将在launcher首步运行，PASS直接继续。
+
+## 实际结果
+
+**VERIFIED**：实际 checkpoint 无 query smoke PASS；release archive 传输比较与 remotecompile PASS；所属 PID/CWD/argv/GPU 与日志增长已读取，当前全部所属进程退出。执行 commit `cad271fc3ce781c5d5c457f567442c82387d8b81`，源流程 106.909 秒。
+
+候选和 C4 对照均完成 120 个 K1 规则及 K20 物理 OOF 源验证（对照复用已冻结 R27 源结果）。候选 source 主宏H差 -0.6884 个百分点，源门槛 False。
+
+| 源 K | support | raw 宏H配对差（百分点） |
+|---:|---|---:|
+| 1 | S0 | -0.3185 |
+| 1 | S1 | -0.1688 |
+| 20 | S0 | +0.1396 |
+| 20 | S1 | -3.7205 |
+
+按预登记科学门槛 source-only 停止，未拟合最终 encoder，target IQ/预测/评分均 0；没有把失败源参数送入目标再挑结果。F/G/head 更新 0。这个负结果不能替代最终每16KN宏H要求，goal ACTIVE。

@@ -235,3 +235,7 @@ source 主宏H相对 CCA-only -1.5595pp，各K/S raw差 [{'k': 1, 'S': 0, 'delta
 ### R29 时间相位轨道候选
 
 固定同received移位0/64/128/192×四相位，共16RF视图，G先原包一次，headprior仍未移位原C4。每移位重算HanningFFT，源CCA64五RX/TXheld，源主H对R27sourcecontrol≥+.5pp且每K/Sraw≥−.25pp才进36行角点；失败target0。当前SUP prior/OOF/fusion不变，最终all16两Sraw+5/QF>raw保持，goal ACTIVE。
+
+### R29 实际结果
+
+source 主宏H相对 R27 C4 对照 -0.6884pp，各K/S raw差 [{'k': 1, 'S': 0, 'delta_pp': -0.31845426999645987}, {'k': 1, 'S': 1, 'delta_pp': -0.1688095220045982}, {'k': 20, 'S': 0, 'delta_pp': 0.13959979131126232}, {'k': 20, 'S': 1, 'delta_pp': -3.720517268969259}]，源门槛 False。按预登记 source-only 停止，target0、未拟合最终encoder。 所属进程已退出，所有旧run保持；最终16KN逐格目标未达，goal ACTIVE。
