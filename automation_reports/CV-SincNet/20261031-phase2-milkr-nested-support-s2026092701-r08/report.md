@@ -15,3 +15,9 @@ R12不使用源已见六类的gain决定目标权重。只继承原R9 source-onl
 pilot S0Q0平均H相对原MILKR>=+5pp，旧/新宏各不低于原版超过1pp，且16格中至少12格非负，才按完全相同策略/参数在新不可变run验证其余6RX；不因pilot分数调参或选择重跑。pilot通过不是goal完成，最终仍需合适的多RX配对证据。失败则不扩该候选；保留完整负差。P01已曝光，不声称盲测。
 
 两项测试及本候选唯一P0/P1审查PASS：physical folds互斥/全覆盖/各类训练K相同，K1/控制精确R9、K2强度平局和query批次独立。源真实checkpoint smoke仍验证336与原输出不变。源GPU4、目标GPU0一个worker，启动前查显存，不改其他owner；系统技术错误保留产物不原地重启。
+
+## 技术失败（无性能结果）
+
+**FAILED / VERIFIED**。真实F/G source smoke PASS后，在源L12样本数值检查的Torch Tensor NumPy索引失败，指纹`RuntimeError: Could not infer dtype of numpy.int64`；PID1422982已退出，尚未创建target worker或prediction。原产物保留，无目标性能结果。
+
+本机Torch2.10原生索引可用；本地通过旧Torch边界模拟回归精确重现同指纹（修复前FAIL）。仅将索引先转Python int列表，保持顺序及FP32值，修复后PASS；唯一原问题定点P1复审PASS。新run替代，原root不重启、不覆盖。
