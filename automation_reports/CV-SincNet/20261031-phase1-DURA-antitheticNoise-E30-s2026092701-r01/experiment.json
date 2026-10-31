@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-and-efficiency goal;explicit source frozen-F feature-guidance and scratchsingle-stage30epoch authorization;noTX/V/targetoptimization/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "9925a6c6c4e73e3fa1f76f9b2c4105bfbfa91801",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-antitheticNoise-E30-r01"
@@ -102,7 +102,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-antitheticNoise-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-antitheticNoise-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-antitheticNoise-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.antithetic_noise run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.antithetic_noise run --root /home/szu2070436088/2510044040/CV-SincNet --commit 9925a6c6c4e73e3fa1f76f9b2c4105bfbfa91801",
     "stop_rule": "Illegal source/Fcache-RNG/Action scaling/receivedRMS/nonfinite/guidecap>.5*(1+2e-5)/collision/checkpoint/smoke/coverage:preservefailedrow/noautoretry/noothers. No performance stop. Final30/all7evenifsourceworse"
   },
   "expected_artifacts": [
@@ -158,11 +158,11 @@
         "model": 2026092701,
         "split": 392005,
         "data": 2026103004,
-        "augmentation": 2026101912,
+        "augmentation": 2026103107,
         "support": null,
         "evaluation": 2027
       },
-      "seed_notes": "GandCUDAprobe2026092701/privateNumpyorder2026103004/cache2026101912/eval2027;no teacherload/cache;priorwrappingdrawsnoRNGandpreservesinitialweights",
+      "seed_notes": "model/CUDAprobe2026092701;physicalsplit392005/sourcepositionsdata2026101901;cachedchannelaugmentation2026101912/receiver2026101911;newresidualsignaugmentationNumPy2026103107;shuffleNumPy2026103004;evaluation2027;supportN/A",
       "k": null,
       "scenario": "Originalsourcecache15percentclean/85percentpractical;01..20then01..10;no teacherIQ;formalclean+sixpractical",
       "optimizer": "resetAdamW/W1e-4/globalclip1/warm247cos2e-5",
@@ -172,7 +172,7 @@
       "budget_ref": "Gscratch30/7410/B256/L189000U1701000/Gancestor0;knownsourceAclean1.89m/adjustedAprobe3.78m,extraFFTtrainingonly;SIGcache40.32MBreuse/newFcache0;onlineFprefix-VJP1.89m/fullF0/F50knowledgeexplicit;266951/2prior4CG27FFT inferenceunchanged",
       "output_root": "runs/20261031-phase1-DURA-antitheticNoise-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-antitheticNoise-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.antithetic_noise run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_direct_train.antithetic_noise run --root /home/szu2070436088/2510044040/CV-SincNet --commit 9925a6c6c4e73e3fa1f76f9b2c4105bfbfa91801",
       "expected_artifacts": [
         "launch.json",
         "plan.json",

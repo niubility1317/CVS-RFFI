@@ -225,3 +225,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 源残差符号数据覆盖对照
 
 20261031-phase1-DURA-antitheticNoise-E30-s2026092701-r01：独立G从零单阶段E30/7410，原SIG-only主体/四物理项/alpha1-cap0.5不变。专用源Bernoulli0.5残差符号增强，重归一化原接收RMS并同步A/variance，数值clean跳过；0TX/V/target，不声称完整模拟重抽或条件AGC分布等价。只读复用原F-only SIG40.32MB、F50知识/成本披露，原F成对方差FAIL保持。主对照SIG47591与次对照pureG8cf，全部自动七景truth-last，默认与完整目标保持。
+
+
+## 源残差符号覆盖G实际启动
+
+20261031-phase1-DURA-antitheticNoise-E30-s2026092701-r01。VERIFIED RUNNING。执行9925a6c6c4e73e3fa1f76f9b2c4105bfbfa91801，controller1774712/worker1774802/GPU4实际PID/CWD/完整命令、空CUDA控制器与CUDA4 worker、计算PID和日志增长已核实。启动前free22883MiB/已有1计算PID，新增1个符合总数≤3。首步真实2非cleanLs强制正负两路，实际RMS/Action-probe/variance/原F和SIGcache/guidecap/三G模块梯度/严格E0/native-optimized全部PASS。已完成2/30轮/494步；本轮requested=0.498095、effective=0.423016、功率比=1.000000000，数值clean跳过。SIGcache40.32MB只读复用，句柄核对与mmap打开0.054573秒（不是完整数值读完耗时），新F缓存/存储0；F50上游知识/原缓存成本披露。固定30后自动全部七景与独立truth-last，当前没有正式性能结论，默认保持。

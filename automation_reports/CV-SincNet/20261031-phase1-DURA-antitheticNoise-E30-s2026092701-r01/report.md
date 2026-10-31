@@ -42,3 +42,8 @@
 3项聚焦检查通过；已验证47基底命名空间下的actual factory266951、适配器/RNG隔离、单E30/all7 worker-score路由和完整入口通过，唯一P0/P1 PASS。首步真实2个非clean L_s（按缓存variance>1e−8选固定前2个，不读TX）强制[True,False]，检查实际增强与缩放Action/probe/variance/RMS、原F/cache、guidecap、coarse/action/prior全部梯度、严格E0和原生/优化推理及F原头状态；PASS立即继续。smoke G8/fullF4/prefix2/VJP2/源Aclean4/源Aprobe8，0TX/V/target/优化。
 
 G从零固定最终30轮后，自动同卡profile/source1800×7/target168000×7，每role全七景预测固定后独立CPU truth-last；源表现差也不取消新G正式测试。主对照SIG47591、次对照pureG8cf及默认DURA/R17；六星地各≥137216正确/81.6761904762%、clean≥142256、R17每景最多损失1680和旧低城区70%分开报告。共享GPU单次墙钟不当作因果加速；默认DURA及Phase2/3不变。
+
+
+## 实际启动核实
+
+VERIFIED RUNNING。执行9925a6c6c4e73e3fa1f76f9b2c4105bfbfa91801，controller1774712/worker1774802/GPU4实际PID/CWD/完整命令、空CUDA控制器与CUDA4 worker、计算PID和日志增长已核实。启动前free22883MiB/已有1计算PID，新增1个符合总数≤3。首步真实2非cleanLs强制正负两路，实际RMS/Action-probe/variance/原F和SIGcache/guidecap/三G模块梯度/严格E0/native-optimized全部PASS。已完成2/30轮/494步；本轮requested=0.498095、effective=0.423016、功率比=1.000000000，数值clean跳过。SIGcache40.32MB只读复用，句柄核对与mmap打开0.054573秒（不是完整数值读完耗时），新F缓存/存储0；F50上游知识/原缓存成本披露。固定30后自动全部七景与独立truth-last，当前没有正式性能结论，默认保持。
