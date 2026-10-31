@@ -304,3 +304,6 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 
 
 源四相位IQ合成诊断 20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01/d2f2dc59 完整完成：default主对象/pureG描述，source512×clean/01/20，精确四直角旋转后G输出逆旋转再IQ平均，native重放0/C4代数等变误差1.192e-7，非符号/顺序实现错误。默认缓存NMSE约增至21.935/20.624倍、clean-F486→352/498→367、fullclean512→509，pureG同样失败；原生G在腐蚀输入的旋转路由转回后仍严重不齐，直接平均抵消。固定门槛FAIL不放宽/不改主/不发布runtime，不取消已登记正式矩阵。CPU28.622022s/12288G+36smoke/6144F+8smoke/0TX-V-target-updates，27648逐条指标和132分组独立复算，PID1357440自然结束。4倍G成本/8prior16CG108FFT，未测GPU时延不称加速；默认与完整目标ACTIVE。
+
+
+源软坐标跨RX参考 20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01/210e2380 几何资格PASS：sourceF63000缓存，fit62488（L6172/U56316）排除512；按RX/day软6坐标均值，其他4RX×3day等权、beta.25混原unitfeature。90单元最小有效N684.292、512/512原头判断保持，head可见RX关联离散度比.523619、软坐标间离散度比1.014648。不同于旧headnull RXcanonical；softF输出不是真TX/硬伪标签，无另训头。CPU统计.212823s/新F骨干2/head-only63512+2smoke/0G-TX-V-target-updates，378000软概率/90cell/30reference/512probe/11groups独立复算。只支持另登记IQ梯度/可达性校准，未启动新G或正式预测；F历史50/11100及40.32MB缓存3.782s披露。实际PID1374175/CWD/env/log与launchargv/commit/完整产物核对，直接proc cmdline短暂为空保留UNKNOWN，未重复启动；默认和完整目标ACTIVE。
