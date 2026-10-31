@@ -1,0 +1,36 @@
+{
+  "external_state": "FAILED",
+  "status": "FAILED_TECHNICAL",
+  "run": "20261031-phase1-DURA-midSIG-E30-s2026092701-r01",
+  "execution_commit": "26eb4e2c8f5eaf13c1ed4f24d1641238d28f5803",
+  "controller_PID": 1726563,
+  "controller_terminal_verified": true,
+  "GPU_worker_started": false,
+  "G_training_updates": 0,
+  "formal_predictions": 0,
+  "failure_layer": "Real2Ls_CPU_smoke_gradient_assertion",
+  "error": "Actual auxiliary shared G gradients missing",
+  "root_cause": "Smoke wrongly required spectral encoder derivative before zero-initialized spectral output to be nonzero at initial step",
+  "local_reproduction": {
+    "status": "REPRODUCED",
+    "gradient_norms": {
+      "spectral_encoder0": 0.0,
+      "spectral_output": 0.0014105233130976558,
+      "temporal_encoder0": 0.002429121406748891,
+      "temporal_encoder1": 0.007094651460647583,
+      "projection": 0.5312039852142334
+    },
+    "spectral_output_zero_initialized": true,
+    "reason": "Atinitialstepzerooutputweightsblockauxderivativefromspectralencoder;actualspectraloutputandtemporalsharedlayersreceiveit",
+    "synthetic_records": 2,
+    "source_reads": 0,
+    "F_checkpoint_reads": 0,
+    "optimizer_updates": 0
+  },
+  "fix": "Check actual spectral output plus temporal shallow-middle and auxiliary projection; method/data/budget unchanged",
+  "source_outputs_preserved": true,
+  "replacement_run": "20261031-phase1-DURA-midSIG-E30-s2026092701-r02",
+  "default_DURA_changed": false,
+  "goal_complete": false,
+  "registry_status": "FAILED"
+}

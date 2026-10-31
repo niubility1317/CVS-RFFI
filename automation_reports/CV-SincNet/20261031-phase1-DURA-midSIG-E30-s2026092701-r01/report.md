@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-midSIG-E30-s2026092701-r01`
 - group_id：`phase1-dura-middle-signature-aux-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：FAILED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -40,3 +40,12 @@ G全部参数从零、单阶段30轮/7410步，原主体初值逐项匹配SIG对
 6项聚焦检查、实际factory参数/初值/别名核验和实际入口PASS，唯一P0/P1 PASS。首步真实2Ls检查实际aux对频谱、时域浅中层及投影的梯度；复用cache对真实F、原onlinecap、全部G模块、strictE0重载、无推理aux调用、原生/优化输出及原F原头state。smoke G8/前缀F4/完整F2/F输入VJP2，无新cache和TX/V/target。PASS立即继续30轮及同卡profile、source1800×7、formal168000×7，每role全7预测固定后独立CPUtruth-last，源差也不取消正式测试。
 
 本版是源特征机制与G梯度路径的独立检验，不按目标TX/RX分数设层位/权重，不继承旧G或修改默认DURA。每六星地≥137216正确/81.6761904762%、clean≥142256；R17逐景最多损失1680与旧低城区70%另列。完整质量、参数/存储/延迟/显存/缓存和训练成本全部报告，目标ACTIVE。
+
+
+## 首步检查技术失败
+
+FAILED / FAILED_TECHNICAL，首步CPU真实2Ls检查中断，controller1726563已退出，尚未创建GPU worker、训练更新或正式预测。执行26eb4e2c8f5eaf13c1ed4f24d1641238d28f5803，原目录与日志完整保留，没有停止其他owner。
+
+根因已本地复现：现有coarse.spectral.out是零初始化，aux梯度首步到达spectral.out.weight，但其编码器在零输出权重之前的梯度严格为0。原smoke选错非零检查点，不是模型/源数据失败。合成实际G两条记录（0源/F/目标读取、0优化）的gradient norms：spectral encoder0=0，spectral output=0.0014105233，temporal shallow=0.0024291214，middle=0.0070946515，projection=0.5312039852。
+
+先建立回归检查重现旧选择器FAIL，再仅修正为检查spectral output、temporal shallow/middle与projection；不改网络、损失、权重、初值、数据、种子或30轮预算，新增错误日志保留各norm。7项检查已PASS，按新r02不可变根发布，r01不覆盖或复跑。同一异常经一次修复若重现，保留并停止盲目重试。

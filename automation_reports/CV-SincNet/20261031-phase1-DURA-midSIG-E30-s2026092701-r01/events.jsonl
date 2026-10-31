@@ -1,1 +1,2 @@
 {"at": "2026-10-31T07:30:16+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-31T07:38:45+00:00", "status": "FAILED", "note": "VERIFIED CPU2Ls smoke assertion failure beforeGPU/0train/0formal;zero-initializedspectraloutblocksencoderinitialgrad;localreproduced,selectorregressionRED-GREEN;preserveandreplacer02samemethodbudget", "evidence": ["automation_reports/CV-SincNet/20261031-phase1-DURA-midSIG-E30-s2026092701-r01/failure_analysis.json"], "row_id": null}

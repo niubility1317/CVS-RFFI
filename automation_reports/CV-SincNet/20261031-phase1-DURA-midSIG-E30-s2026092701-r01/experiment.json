@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-performance-and-efficiency goal;explicit sourcefrozenFfeature-guidance/scratchsingle-stage30epoch;sourcefeatureauxiliaryprojectionnotclassificationhead;noTX-V-targettraining/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "26eb4e2c8f5eaf13c1ed4f24d1641238d28f5803",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-midSIG-E30-r01"
@@ -102,7 +102,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-midSIG-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-midSIG-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-midSIG-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.mid_signature run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.mid_signature run --root /home/szu2070436088/2510044040/CV-SincNet --commit 26eb4e2c8f5eaf13c1ed4f24d1641238d28f5803",
     "stop_rule": "Badsource/cache/IDs/Fstate-RNG/actualmidshape-hook/gradient/nonfinite/checkpoint/collision/onlineSIGpressure>0.5*(1+2e-5)/smoke/coverage:preservefailedrow/noautoretry/nootherownercontrol. Noperformancestop;fixedfinal30/all7evenifsourceworse."
   },
   "expected_artifacts": [
@@ -172,7 +172,7 @@
       "budget_ref": "Gscratch30/7410/B256/L189000U1701000;G287591/aux20640train-only;2prior4CG27FFT/noaddedinferenceprojection;cache40.32MBreusednewF0-copy0;main1890000Fprefix+VJP/1890000auxfeaturetargets/F50knowledgecostseparate",
       "output_root": "runs/20261031-phase1-DURA-midSIG-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-midSIG-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.mid_signature run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_direct_train.mid_signature run --root /home/szu2070436088/2510044040/CV-SincNet --commit 26eb4e2c8f5eaf13c1ed4f24d1641238d28f5803",
       "expected_artifacts": [
         "launch.json",
         "plan.json",
