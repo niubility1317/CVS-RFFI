@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01",
+  "group_id": "phase1-dura-source-response-SIG-complementarity",
+  "display_name": "参考响应与时序签名互补性：原头源域联合替换诊断",
+  "description": "固定默认DURA/source512×01/20，复用实际加权四分量，联合替换response+SIG的clean源分量，接同一冻结原头；无新G/模型训练/TX-V-target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "response-SIG",
+    "actual-additive-components",
+    "frozen-original-head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-performance-and-efficiency goal;explicit same-source frozen-F feature-guidance;independent CPU source feature diagnosis, no G training or query",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source512128L384U/cache01and20;previousbranchFeaturesdefaultDURAactualweightedidentity-PA-response-SIGfeatures;pairedsourcecleancomponents",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07source63000L/U roles/512indices/IDs/RX/day/clean exactlymatchedprevioussourcecache",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalsourceR07cache01/20;reuseactualsourcecomponentobservations;no newchannel/view/Goracleteacherdata",
+    "target_panel": "None",
+    "actual_training_labels": "NoG/modeloptimization/TXtruth. OriginalsourcecleanFchoices asdiagnosticproxy;latentfeatureinterventionsonly,notmodifiedIQ"
+  },
+  "permissions": {
+    "regime": "Source_only_frozenF_joint_response_SIG_counterfactual",
+    "query_use": "Noquery/target/V/trueTX. Pairedsourcecleancomponentoracles only;notdeployableIQ/targetadaptation",
+    "external_method_exception": null,
+    "claim_scope": "SourcecleanFchoicecounterfactual,nottrueTXaccuracy/hardware/recoverylimit;responsepathmaycontainRX/channelinformation. OldPA/PAplusSIG/sourceIQFAILspreserved. NoGinitialization/headfit/automatictraining"
+  },
+  "checkpoint": {
+    "initialization": "OriginalfrozenF50/defaulthead only;0Gcheckpointreads/forwards/modeloptimizer;existingdefaultDURAsourcefeatures DATAONLY",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01/clean_components.npz and DURA_default-{1,20}.npz actualweightedsourcefeatures DATAONLY"
+    ],
+    "contract_check_ref": "OriginalF50/source4df7/50-11100/defaulthead/actualsource63000roles;512IDs/L-U/clean/RX/day;previousFunchanged/0TX-V-target/oldPAFAIL;actual2Lsweightedcomponents-and-originalheadsmoke/replayoriginalsinglebranchlogits",
+    "provenance_verdict": "SameoriginalsourceF50/defaulthead;previousvalidateddefaultR69source-onlyobservations DATAONLY,0Gweightloads. PAandPAplusSIGFAILsunchanged. Newresponse+SIGhypothesisfixedbeforeanynewjointoutput. OriginalF50supervisedknowledge/historicalcachecostretained.",
+    "selection_rule": "FixeddefaultDURA/source512128L384U/caches01and20;native/response/SIG/response+SIG/allclean. BOTHjointgain>=6/native,>=2/SIG;all5RX/native>=0,eachRX/SIG>=-1and>=4of5RX/SIG>=0;noncleanscene/native>=-1,clean/native>=0. Noparent/branch/thresholdsearch;passonlysupportsseparatelearninghypothesis,noautomaticGtraining."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-response-SIG",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU;ownantitheticGcontroller1774712-worker1774802naturallyendedandall7closed;otherownersuntouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.response_signature_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badcontract/order/shape/Fsourcecomponents-or-originalheadreplay/nonfinite/Fstate/smoke/collision:preserveandstop/noautoretry. Scientificfailnoparent/branch/thresholdsearch;noautomaticGtraining."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "clean_reference.npz PRIVATE",
+    "DURA_default-{1,20}.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "actualweightedcomponents/originalheadreplay",
+      "cleanFchoiceagreement/gainvsnative/gainvsSIG/margin/relativefeatureerror",
+      "sourceRX/day/L-U/scene/state/lock",
+      "bothviewresponseSIGfixedhypothesis",
+      "F-backbone/head/Gcounts/Funchanged/CPUcost"
+    ],
+    "dimensions": [
+      "512uniquesourcephysicalrecords128L384U",
+      "defaultDURAonly",
+      "caches01and20",
+      "native/response/signature/response_signature/allclean"
+    ],
+    "prediction_ref": "Noformal/newGprediction. Private sourcecounterfactualfeatures/logits;allcleanistautologicalpositivecontrol/nottrueTX100percent",
+    "scorer_ref": "NoTXtruth. IndependentNumPyall1024observations/5cases/actualweightedcomposites/originalheadlogits/choices/margins/groups/decisions;noextraNN"
+  },
+  "rows": [
+    {
+      "row_id": "source-response-SIG",
+      "method": "Actualweightedresponse+SIGjointsourcecleanreplacement/SAMEoriginalhead;fixedidentity-PA",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{joint_branches.py,joint_branch_probe.py,response_signature_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "OriginalF/model2026092701;fixedsourceindices2026101901/split392005/cache2026101912;no modelseedscan/support/targetevaluation",
+      "k": null,
+      "scenario": "Source512128L384U×01/20/defaultDURA;latentoracle notrealizableIQ/trueTX/deployment",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2;mainfullF0/head5120;smokerealLs2/F2/head2;0Gweightloads/forwards/modeloptimizer/TX-V-target",
+      "output_root": "runs/20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.response_signature_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "clean_reference.npz PRIVATE",
+        "DURA_default-{1,20}.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Only fixed defaultDURA source observations are used. PreviousPA,PA+SIG,sourceIQFAILs preserved. Newjointresponse+SIGprimaryfixedbeforecomputingjointoutput;notselectedfromnewformalresults. NoGtraining/newGversion/formalprediction.",
+    "ActualfourweightedcomponentsfromoriginalF50:identity+PA+response+SIG. Keeprestoredidentity/PA;replaceweightedresponse/SIG individuallyorjointlyinexactadditiveorder. Sameoriginalsixclasshead;nofit/newhead/classloss. Replayoriginalnative/response(index3)/SIG(index4)/allclean(index5)logits.",
+    "FixeddefaultDURA/source512128L384U/caches01and20;native/response/SIG/response+SIG/allclean. BOTHjointgain>=6/native,>=2/SIG;all5RX/native>=0,eachRX/SIG>=-1and>=4of5RX/SIG>=0;noncleanscene/native>=-1,clean/native>=0. Noparent/branch/thresholdsearch;passonlysupportsseparatelearninghypothesis,noautomaticGtraining.",
+    "PairedsourcecleanFchoicesarenotTXtruth. LatentmixedfeaturesmaynothavecorrespondingIQ. ResponsefeaturesmayencodeRX/channelandarenotisolatedhardware. Allcleanconstructive512/512isnot100percenttrueTX/recoveryceiling. Repeated512physicalrecordsnot5120independentrecords.",
+    "MainfullF0/head5120;smokereal2Ls/fullF2/head2;0Gcheckpoint/forward/modeloptimization/TX-V-target. FstatebitwiseandgradNonecheck. CPU2only. HistoricalF50/11100supervisedknowledge/defaultG/sourcefeaturecachecostretained.",
+    "3focusedtestsPASS:PAdefaultpreserved,response-SIGactualswap/identity-PApreservation/noinplacemutation/allcleanidentity;badshape/missing/nonadditive/unsupportedbranchrejection. ActualentryhelpPASS. OneP0P1PASS. Firstreal2LssmokePASScontinuesimmediately. Singlepreflight/archiveSHA/compile/postPID-CWD-argv-emptyCUDA-loggrowth;independentNumPyall1024observations/5120headrows/52groups.",
+    "DefaultDURAunchanged. ExistingE30antitheticGcompleteANALYZED;noownliveGPU. Sourcehypothesisdoesnotfulfil6scene3pp/clean/samequalityefficiencygoal."
+  ],
+  "registered_at": "2026-10-31T09:31:26+00:00"
+}

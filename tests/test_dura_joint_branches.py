@@ -1,6 +1,6 @@
 import pytest
 import torch
-from experiments.pamf_dura_efficiency.joint_branches import paired_cases,CASES
+from experiments.pamf_dura_efficiency.joint_branches import paired_cases,CASES,cases_for
 from experiments.pamf_dura_efficiency.branch_features import BRANCHES
 
 
@@ -21,3 +21,16 @@ def test_unmatched_or_incomplete_or_nonadditive_components_are_rejected():
     with pytest.raises(ValueError):paired_cases(x,p,x,{'PA':p['PA']})
     with pytest.raises(ValueError):paired_cases(x,p,x,dict(p,signature=torch.zeros(1,160)))
     with pytest.raises(AssertionError):paired_cases(x+1,p,x,p)
+    with pytest.raises(ValueError):paired_cases(x,p,x,p,'identity')
+
+
+def test_response_signature_preserves_identity_pa_and_actual_additive_order():
+    torch.manual_seed(52);p={k:torch.randn(3,160) for k in BRANCHES};q={k:torch.randn(3,160) for k in BRANCHES}
+    total=p['identity']+p['PA']+p['response']+p['signature'];clean=q['identity']+q['PA']+q['response']+q['signature']
+    before={k:v.clone() for k,v in p.items()};cases=paired_cases(total,p,clean,q,'response')
+    assert tuple(cases)==cases_for('response') and cases['native'] is total and cases['all_clean'] is clean
+    torch.testing.assert_close(cases['response'],p['identity']+p['PA']+q['response']+p['signature'])
+    torch.testing.assert_close(cases['response_signature'],p['identity']+p['PA']+q['response']+q['signature'])
+    torch.testing.assert_close(cases['response_signature']-cases['signature'],q['response']-p['response'],atol=1e-6,rtol=2e-6)
+    assert all(torch.equal(v,before[k]) for k,v in p.items())
+    for v in paired_cases(clean,q,clean,q,'response').values():torch.testing.assert_close(v,clean)
