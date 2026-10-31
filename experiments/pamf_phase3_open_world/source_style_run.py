@@ -112,7 +112,7 @@ def _training_metadata(c,pm):
         if (row!=m.get('rows',{}).get(arm) or row.get('status')!=t.ROW_STATUS or row.get('identity')!=identity or row.get('updates')!=444
                 or row.get('source_only') is not True or row.get('target_U_reads')!=0):raise ValueError('Complete source-only native/style row differs')
         identities[arm]=_identity(identity,arm,c,pm)
-    costs={k:m[k] for k in ('real_parent_signal_forward_rows','real_student_signal_forward_rows','G_forward_rows','real_F_forward_rows')}
+    costs={k:m[k] for k in ('real_parent_signal_forward_rows','real_student_forward_rows','G_forward_rows','real_F_forward_rows')}
     costs.update({k:v for k,v in m.items() if k.startswith('synthetic_') or k=='G_synthetic_forward_rows'})
     return identities,np.asarray([],dtype='<U1'),costs
 
@@ -293,7 +293,7 @@ def evaluate(c,device='cuda:0'):
         private_truth_reads=0,U_truth_reads=0,source_novel_truth_reads=0,target_truth_reads=0,original_U_s_reads=0,new_neural_updates=0,new_candidate_optimizer_updates=888,prediction_optimizer_updates=0,Sinc_optimizer_steps=0,
         real_signal_forward_rows=real_signal,real_F_forward_rows=2*Q_COUNT,G_forward_rows=2*Q_COUNT,real_signal_forward_rows_by_arm=dict(E0=0,OLD_PCD=0,**{arm:sum(COUNTS.values())+2*Q_COUNT for arm in NEW_ARMS}),
         synthetic_F_forward_rows=smoke['synthetic_F_forward_rows'],G_synthetic_forward_rows=smoke['G_synthetic_forward_rows'],synthetic_signal_forward_rows=smoke['synthetic_signal_forward_rows'],training_costs=training_costs,
-        combined_new_real_signal_forward_rows=training_costs['real_parent_signal_forward_rows']+training_costs['real_student_signal_forward_rows']+real_signal,
+        combined_new_real_signal_forward_rows=training_costs['real_parent_signal_forward_rows']+training_costs['real_student_forward_rows']+real_signal,
         combined_new_G_forward_rows=training_costs['G_forward_rows']+2*Q_COUNT,combined_new_real_F_forward_rows=training_costs['real_F_forward_rows']+2*Q_COUNT,
         original_F0_parameters=232993,joint_student_parameters=335681,primary_deployed_neural_parameters=602632,source_bank_deployed=False,U_bank_deployed=False,formal_target_accessed=False,final_phase3_complete=False,full_goal_status='ACTIVE',A_N=None,H_OW=None)
     frozen_check();_write(out/'complete.json',done);print(STATUS,flush=True);return done

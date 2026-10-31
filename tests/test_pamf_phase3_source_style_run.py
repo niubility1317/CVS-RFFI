@@ -97,7 +97,7 @@ def fixture(root,mp):
         done=dict(schema=t.SCHEMA,status=t.STATUS,run_id=m.RUN_ID,code_commit=c['code_commit'],config=tc,arms=list(m.NEW_ARMS),rows=rows,identities=identities,
             total_optimizer_updates=888,source_sampling_matched=True,original_models_unchanged=True,all_student_buffers_unchanged=True,all_student_Sinc_unchanged=True,
             target_U_reads=0,target_Q_reads=0,private_truth_reads=0,U_truth_reads=0,final_phase3_complete=False,test_only_nominal_completion=True,
-            real_parent_signal_forward_rows=0,real_student_signal_forward_rows=0,G_forward_rows=0,real_F_forward_rows=0)
+            real_parent_signal_forward_rows=m.COUNTS['L']+m.COUNTS['OE'],real_student_forward_rows=320*888,G_forward_rows=0,real_F_forward_rows=0)
         for arm,row in rows.items():
             folder=Path(tc['output_root'])/arm;folder.mkdir(parents=True);m._write(folder/'complete.json',row)
         m._write(Path(tc['output_root'])/'complete.json',done)
@@ -135,6 +135,10 @@ def test_actual_eight_readouts_gate_CPU_truth_then_seven_corruptions(tmp_path,mo
         assert done['threshold_values']==48 and done['threshold_bytes']==384 and done['U_ID_metadata_reads']==done['target_U_reads']==0
         assert done['known_count']==m.COUNTS['V'] and done['novel_count']==m.COUNTS['novel'] and not done['classification_unchanged']
         assert done['real_signal_forward_rows']==2*sum(m.COUNTS.values())+4*m.Q_COUNT
+        assert done['training_costs']['real_student_forward_rows']==320*888 and 'real_student_signal_forward_rows' not in done['training_costs']
+        assert done['combined_new_real_signal_forward_rows']==m.COUNTS['L']+m.COUNTS['OE']+320*888+done['real_signal_forward_rows']
+        assert done['combined_new_G_forward_rows']==done['G_forward_rows']==2*m.Q_COUNT
+        assert done['combined_new_real_F_forward_rows']==done['real_F_forward_rows']==2*m.Q_COUNT
         score=importlib.import_module('experiments.pamf_phase3_open_world.source_style_score');monkeypatch.setattr(score,'COUNTS',dict(m.COUNTS));monkeypatch.setattr(score,'Q_COUNT',m.Q_COUNT)
         monkeypatch.setattr(m.risk,'calibrate_known',lambda *a:pytest.fail('CPU scoring cannot recalibrate'))
         _,_,rows=score._prediction(out)
