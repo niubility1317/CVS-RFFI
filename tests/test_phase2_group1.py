@@ -169,7 +169,12 @@ def test_PAMF_rejects_trainer_without_actual_supervised_hook(tmp_path,monkeypatc
 def test_recovery_reuses_external_jobs_and_replaces_only_PAMF(tmp_path):
     from experiments.pamf_phase2_practical.group1_recovery import matrix
     common=dict(model_seeds=[2026092701],capsules=['P01/MIX01/RX1-1'])
-    old=dict(common,run_root=str(tmp_path/'old'),runtime_file='old/runtime.json',release_root='old/release')
+    # Freeze the historical job set: newly bound MoPC belongs to a new run,
+    # rather than being retroactively added to this legacy-recovery fixture.
+    old=dict(common,run_root=str(tmp_path/'old'),runtime_file='old/runtime.json',release_root='old/release',
+        method_profiles=['pamf_tri_sig_time_ssl_milkr','protonet_cda','mrior_sda','dadda_sda',
+            'twostage','feature_separation_hu2024','poster_ft','radionet_ada_knn','orthogonal',
+            'issl','lora_triplet_knn'])
     new=dict(common,run_root=str(tmp_path/'new'),runtime_file='new/runtime.json',release_root='new/release',
         method_profiles=['pamf_pl_milkr'])
     jobs=matrix(new,old)
