@@ -15,7 +15,7 @@ from .milkr_identity_source import source_train_indices,scores
 
 
 def query_scores(rt,state,pair,held):
-    if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):
+    if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
         from .milkr.prior_fusion import fuse
         raw=state.evaluate(subset(pair[0],held));restored=state.evaluate(subset(pair[1],held));fused,_=fuse(raw,restored)
         return {0:raw[0],1:restored[0],2:fused}
@@ -30,10 +30,10 @@ def evaluate_frames(rt,frames,fit_K1,fit_many):
             if rt['kernel_method']=='registered_scale':rule['bandwidth_scope']='registered'
             if rt['kernel_method']=='local_anchor':rule['local_anchor_policy']=rt['local_anchor_policy']
             if rt['kernel_method']=='teacher_kernel':rule['teacher_weight']=rt['teacher_weight']
-            if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):rule.update(prior_weight=rt['prior_weight'],fusion_policy=rt['fusion_policy'])
-            if rt['kernel_method'] in ('confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):rule['confidence_rule']=rt['confidence_rule']
+            if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):rule.update(prior_weight=rt['prior_weight'],fusion_policy=rt['fusion_policy'])
+            if rt['kernel_method'] in ('confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):rule['confidence_rule']=rt['confidence_rule']
             if rt['kernel_method']=='center_prior':rule['support_center_strength']=rt['support_center_strength']
-            if rt['kernel_method'] in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):rule['orbit_ensemble_weight']=rt['orbit_ensemble_weight']
+            if rt['kernel_method'] in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):rule['orbit_ensemble_weight']=rt['orbit_ensemble_weight']
             if rt['kernel_method']=='density_orbit_ensemble':rule['kernel_density_rule']=rt['kernel_density_rule']
             if rt['kernel_method'] in ('kernel_gate_ensemble','rf_class_ensemble'):rule['rf_prior_gate_rule']=rt['rf_prior_gate_rule']
             if rt['kernel_method']=='rf_class_ensemble':rule['rf_class_prior_rule']=rt['rf_class_prior_rule']
@@ -42,7 +42,7 @@ def evaluate_frames(rt,frames,fit_K1,fit_many):
                 for sp in (0,1):
                     state=fit_K1(subset(frame['mapped'][sp],support),np.arange(6),[frame['ids'][i] for i in support],old_count=4,fixed=rule,conditional_loo=False)
                     for qp,prediction in query_scores(rt,state,frame['mapped'],frame['held']).items():rows.append(dict(rx=frame['rx'],k=1,S=sp,Q=qp,**scores(np.repeat(np.arange(6),32),prediction.argmax(1))))
-            objective=[r['H'] for r in rows if rt['kernel_method'] not in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble') or r['Q'] in (0,2)]
+            objective=[r['H'] for r in rows if rt['kernel_method'] not in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble') or r['Q'] in (0,2)]
             grid.append(dict(K1_rule=rule,source_H=float(np.mean(objective)),rows=rows))
     best=max(enumerate(grid),key=lambda item:(item[1]['source_H'],item[1]['K1_rule']['ridge'],-item[0]))[1]
     validation=list(best['rows'])
@@ -76,20 +76,20 @@ def calibrate(rt):
         from .milkr.teacher_kernel import fit as teacher_fit,WEIGHT
         require(rt.get('teacher_weight')==WEIGHT,'Frozen teacher kernel weight differs')
         encoder_type=TeacherBridge;fit_K1=teacher_fit;fit_many=teacher_fit
-    if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):
+    if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
         from .teacher_features import TeacherBridge
         from .milkr.prior_fusion import fit as prior_fit,PRIOR_WEIGHT,FUSION_POLICY
         require(rt.get('prior_weight')==PRIOR_WEIGHT and rt.get('fusion_policy')==FUSION_POLICY,'Frozen prior/fusion settings differ')
-        if rt['kernel_method'] in ('confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):
+        if rt['kernel_method'] in ('confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
             from .milkr.support_prior_gate import RULE
-            if rt['kernel_method'] in ('ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):
+            if rt['kernel_method'] in ('ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
                 from .milkr.support_ridge_prior import RULE
             if rt['kernel_method']=='class_orbit_ensemble':
                 from .milkr.support_class_prior import RULE
             require(rt.get('confidence_rule')==RULE,'Frozen support-confidence rule differs')
         from .teacher_features import bridge_type
         encoder_type=bridge_type(rt['kernel_method']);fit_K1=prior_fit;fit_many=prior_fit
-    if rt['kernel_method'] in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):
+    if rt['kernel_method'] in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
         from .milkr.orbit_ensemble import fit as ensemble_fit
         require(rt.get('orbit_ensemble_weight')==.5,'Fixed equal orbit kernels required')
         if rt['kernel_method']=='class_orbit_ensemble':require(rt.get('class_prior_projection')=='simplex','Fixed class prior simplex projection required')
@@ -103,11 +103,12 @@ def calibrate(rt):
     if rt['kernel_method']=='rf_class_ensemble':
         from .milkr.support_rf_class_prior import RULE as RF_CLASS_RULE
         require(rt.get('rf_class_prior_rule')==RF_CLASS_RULE,'Wrong frozen RF class prior rule')
-    if rt['kernel_method']=='corr_orbit_ensemble':require(rt.get('canonical_correlation_power')==.5,'Fixed source CCA correlation weighting required')
+    if rt['kernel_method'] in ('corr_orbit_ensemble','crossrx_residual_ensemble'):require(rt.get('canonical_correlation_power')==.5,'Fixed source CCA correlation weighting required')
+    if rt['kernel_method']=='crossrx_residual_ensemble':require(rt.get('source_residual_steps')==600 and rt.get('source_residual_bound')==.25 and rt.get('source_contrastive_temperature')==.1 and rt.get('source_pair_weight')==1. and rt.get('source_anchor_weight')==.1,'Wrong fixed source contrastive residual recipe')
     require(rt['source_cache_epochs']==[91,92] and rt['orbit_quarters']==[0,1,2,3] and rt['orbit_rank']==64,'Wrong preregistered orbit configuration')
     if rt['kernel_method']=='episodic_metric':require(rt.get('metric_steps')==600 and rt.get('metric_gain_bounds')==[.25,4.],'Wrong source episodic metric budget')
-    if rt['kernel_method'] in ('ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):require(rt.get('calibration_ridge_fraction')==.1,'Wrong fixed support calibration ridge')
-    if rt['kernel_method'] in ('phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):require(rt.get('RF_phase_eighths')==list(range(8)),'Fixed C8 RF orbit required')
+    if rt['kernel_method'] in ('ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):require(rt.get('calibration_ridge_fraction')==.1,'Wrong fixed support calibration ridge')
+    if rt['kernel_method'] in ('phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):require(rt.get('RF_phase_eighths')==list(range(8)),'Fixed C8 RF orbit required')
     if rt['kernel_method']=='center_prior':require(rt.get('support_center_strength')==.5,'Fixed half RF centering required')
     if rt['kernel_method']=='time_orbit':require(rt.get('time_shifts')==[0,64,128,192],'Fixed four cyclic shifts required')
     if rt['kernel_method']=='residual_skip':require(rt.get('residual_skip_weight')==.5 and rt.get('FFT_complement') is False and rt.get('frequency_embedding_complement') is False,'Fixed invariant-block CCA-only and other-block half-complement required')
@@ -125,13 +126,14 @@ def calibrate(rt):
     for index,rx in enumerate(sorted(np.unique(m['rx_i']).tolist())):
         held_tx=[index,index+1];old_tx=[c for c in range(6) if c not in held_tx]
         train=source_train_indices(rx_all,source_y,rx,held_tx)
-        training_options=dict(labels=source_y[train],receivers=rx_all[train],physical_ids=ids_all[train],seed=rt['source_proxy_seed']+rx*10000+303) if rt['kernel_method']=='episodic_metric' else {}
+        training_options=dict(labels=source_y[train],receivers=rx_all[train],physical_ids=ids_all[train],seed=rt['source_proxy_seed']+rx*10000+303) if rt['kernel_method'] in ('episodic_metric','crossrx_residual_ensemble') else {}
         encoder=encoder_type.fit(*[subset(f,train) for f in features],**training_options);rng=np.random.default_rng(rt['source_proxy_seed']+rx*100)
         if rt['kernel_method']=='episodic_metric':metric_training.append(dict(held_RX=int(rx),**encoder.cca.training_summary))
+        if rt['kernel_method']=='crossrx_residual_ensemble':metric_training.append(dict(held_RX=int(rx),C4=encoder.encoders[0].training_summary,C8=encoder.encoders[1].training_summary))
         groups=[rng.permutation(np.flatnonzero((m['rx_i']==rx)&(m['y']==c)))[:52] for c in old_tx+held_tx]
         require(all(len(g)==52 for g in groups),'Insufficient source holdout count')
         positions=np.concatenate(groups);held=np.concatenate([np.arange(c*52+20,(c+1)*52) for c in range(6)])
-        options=dict(old_columns=old_tx) if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble') else {}
+        options=dict(old_columns=old_tx) if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble') else {}
         mapped=[encoder.transform(subset(f,positions),restored=bool(path),**options) for path,f in enumerate(features)]
         frames.append(dict(rx=int(rx),mapped=mapped,ids=[str(m['ids'][int(p)]) for p in positions],held=held))
         if rt['kernel_method']=='native_skip':
@@ -162,9 +164,9 @@ def calibrate(rt):
             threshold=dict(primary_H_gain_pp=.5,each_raw_K_S_min_pp=-.25),pass_gate=eligible)
     path=None;residual_summary=None;correlation_summary=None
     if eligible:
-        training_options=dict(labels=source_y,receivers=rx_all,physical_ids=ids_all,seed=rt['source_proxy_seed']+303) if rt['kernel_method']=='episodic_metric' else {}
+        training_options=dict(labels=source_y,receivers=rx_all,physical_ids=ids_all,seed=rt['source_proxy_seed']+303) if rt['kernel_method'] in ('episodic_metric','crossrx_residual_ensemble') else {}
         final=encoder_type.fit(*features,**training_options);path=Path(rt['run_root'])/('source_phase_cca.npz' if distribution else 'source_orbit_cca.npz');final.save(path);loaded=encoder_type.load(path)
-        if rt['kernel_method']=='corr_orbit_ensemble':
+        if rt['kernel_method'] in ('corr_orbit_ensemble','crossrx_residual_ensemble'):
             correlation_summary=dict(power=.5,schema=final.schema,parameters=sum(a.size for encoder in final.encoders for p in encoder.parameters for a in p),
                 C4=final.encoders[0].correlation_summary,C8=final.encoders[1].correlation_summary,source_examples_retained=0)
         if rt['kernel_method']=='residual_skip':
@@ -174,13 +176,14 @@ def calibrate(rt):
                 native_orthogonality_norms=[float(np.linalg.norm(np.concatenate((p[2],p[3]),axis=1).T@native[1])) for p,native in zip(final.cca.cca.parameters,final.cca.parameters) if native is not None],
                 source_examples_retained=0)
         if rt['kernel_method']=='episodic_metric':metric_training.append(dict(held_RX=None,**final.cca.training_summary))
+        if rt['kernel_method']=='crossrx_residual_ensemble':metric_training.append(dict(held_RX=None,C4=final.encoders[0].training_summary,C8=final.encoders[1].training_summary))
         for sp in (0,1):
             small=subset(features[sp],slice(0,12))
             require(all(np.array_equal(value,loaded.transform(small,restored=bool(sp))[key]) for key,value in final.transform(small,restored=bool(sp)).items()),'Orbit encoder reload differs')
     write(Path(rt['run_root'])/'source_selection.json',dict(status='SOURCE_FROZEN',K1_rule=best['K1_rule'],target_eligible=eligible,
-        scientific_verdict=('SOURCE_FEATURE_GATE_PASS' if eligible else 'SOURCE_FEATURE_GATE_FAIL') if rt['kernel_method'] in ('native_skip','time_orbit','episodic_metric') else 'FIXED_FEATURE_CORNER_FALSIFICATION_NO_SOURCE_GAIN_GATE',source_control=control_evidence,source_metric_training=metric_training,RF_phase_eighths=rt.get('RF_phase_eighths',[0,2,4,6]),RF_kernel_orbits=([4,8] if rt['kernel_method'] in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble') else [8] if rt['kernel_method']=='phase8_prior' else [4]),head_phase_quarters=[0,1,2,3],time_shifts=rt.get('time_shifts',[0]),source_control_ref=rt.get('source_control_ref'),encoder_checkpoint_created=bool(path),selected_rank=64,orbit_quarters=[0,1,2,3],source_K1_grid=grid,source_summary=validation,
+        scientific_verdict=('SOURCE_FEATURE_GATE_PASS' if eligible else 'SOURCE_FEATURE_GATE_FAIL') if rt['kernel_method'] in ('native_skip','time_orbit','episodic_metric') else 'FIXED_FEATURE_CORNER_FALSIFICATION_NO_SOURCE_GAIN_GATE',source_control=control_evidence,source_metric_training=metric_training,RF_phase_eighths=rt.get('RF_phase_eighths',[0,2,4,6]),RF_kernel_orbits=([4,8] if rt['kernel_method'] in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble') else [8] if rt['kernel_method']=='phase8_prior' else [4]),head_phase_quarters=[0,1,2,3],time_shifts=rt.get('time_shifts',[0]),source_control_ref=rt.get('source_control_ref'),encoder_checkpoint_created=bool(path),selected_rank=64,orbit_quarters=[0,1,2,3],source_K1_grid=grid,source_summary=validation,
         source_RX_TX_folds=folds,source_residual_skip=residual_summary,source_correlation_weighting=correlation_summary,source_physical_rows=len(m['ids']),source_paired_observations=len(features[0]['z_id']),
-        source_phase_pairs=len(features[0]['z_id'])*(4 if distribution else 1),feature_method=rt['kernel_method'],source_held_new_head_columns_removed_before_softmax=rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'),
-        source_primary_query_paths=[0,2] if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble') else [0,1],
+        source_phase_pairs=len(features[0]['z_id'])*(4 if distribution else 1),feature_method=rt['kernel_method'],source_held_new_head_columns_removed_before_softmax=rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'),
+        source_primary_query_paths=[0,2] if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble') else [0,1],
         target_reads=0,query_reads=0,U_truth_reads=0,F_updates=0,G_updates=0,seconds=time.perf_counter()-started,source_numerical_smoke='PASS',
         scope='source old4/new2; encoder fit excludes held RX/TX but F saw all source6; fixed RFphaseorbit/rank64 not targetselected; no source examples/statistics used by target worker'))

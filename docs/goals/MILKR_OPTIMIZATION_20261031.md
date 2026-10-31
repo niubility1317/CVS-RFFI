@@ -331,3 +331,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R40 实际结果
 
 120行独立truth-last完成，所属进程退出。两S逐KN验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 13, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 16, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.7993016847533205, 'fusion_gain_pp': 1.6151794290816979}, {'S': 'S0', 'K': 10, 'N': 2, 'raw_gain_pp': 4.986189782680784, 'fusion_gain_pp': 3.8128501672164528}, {'S': 'S0', 'K': 20, 'N': 5, 'raw_gain_pp': 4.703615703764131, 'fusion_gain_pp': 3.6600810159622243}]。源CCA方向sqrt(rho)加权/557440参数及rho摘要核实，R31gate/双核/各折train-only单残差KRR保持；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### R41 源跨RX对比残差
+
+源L监督SupCon同TX跨RX正对、raw/G配对和base锚点，CorrCCA上有界.25的64维残差。每orbit600固定步，五验证加最终共7200更新、最终两orbit1200；CCA557440FP64+新增NN684032FP32。两个CCA及NN同时heldRX/TX保护，F/G/原head冻结、target不训NN。首RXall16KN120预测，逐格通过才六RX，最终目标不变，尚未发布。
