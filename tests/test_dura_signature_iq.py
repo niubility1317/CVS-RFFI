@@ -1,6 +1,6 @@
 import pytest
 import torch
-from experiments.pamf_dura_efficiency.signature_iq import signature_features, signature_steps, project
+from experiments.pamf_dura_efficiency.signature_iq import signature_features, signature_steps, loss_scaled_signature_steps, project
 
 
 class Reader(torch.nn.Module):
@@ -60,3 +60,25 @@ def test_fixed_steps_respect_per_record_ball_and_keep_reader_frozen():
     torch.testing.assert_close(project(anchor, torch.zeros_like(anchor)), anchor)
     oracle = project(anchor, clean-anchor)
     torch.testing.assert_close((oracle-anchor).square().sum((1,2))/anchor.square().sum((1,2)), torch.full((3,),.0001))
+
+
+def test_loss_scaled_steps_shrink_near_reference_instead_of_forcing_rms_step():
+    torch.manual_seed(31); reader = Reader().eval().requires_grad_(False)
+    anchor = torch.randn(3,2,8); clean = anchor + 1e-5*torch.randn_like(anchor)
+    target = signature_features(reader, clean).detach()
+    fixed, _ = signature_steps(reader, anchor, target)
+    adaptive, history = loss_scaled_signature_steps(reader, anchor, target)
+    def mse(x): return (signature_features(reader,x)-target).square().sum(1)
+    assert torch.all(mse(adaptive) < mse(anchor)) and torch.all(mse(fixed) > mse(anchor))
+    assert torch.all((adaptive-anchor).square().mean((1,2)) < (fixed-anchor).square().mean((1,2)))
+    assert history.shape==(4,3) and all(p.grad is None for p in reader.parameters())
+    equal, zero_history = loss_scaled_signature_steps(reader, anchor, signature_features(reader,anchor).detach())
+    torch.testing.assert_close(equal,anchor,atol=0,rtol=0);assert torch.count_nonzero(zero_history)==0
+
+
+def test_loss_scaled_steps_keep_the_same_per_record_iq_ball():
+    torch.manual_seed(32);reader=Reader().eval().requires_grad_(False);anchor=torch.randn(3,2,8)
+    target=signature_features(reader,anchor+torch.randn_like(anchor)).detach()
+    result,_=loss_scaled_signature_steps(reader,anchor,target)
+    relative=(result-anchor).square().sum((1,2))/anchor.square().sum((1,2))
+    assert torch.all(relative<=.00010001) and torch.isfinite(result).all()

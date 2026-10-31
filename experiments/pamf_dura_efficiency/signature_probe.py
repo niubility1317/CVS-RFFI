@@ -44,8 +44,8 @@ def decision(groups):
     return dict(eligible=all(checks.values()),checks=checks)
 
 
-def run(args):
-    if args.output!=args.root/'runs'/RUN or args.output.exists() or os.environ.get('CUDA_VISIBLE_DEVICES')!='':
+def run(args, *, run_id=RUN, rule=RULE, iq_steps=signature_steps):
+    if args.output!=args.root/'runs'/run_id or args.output.exists() or os.environ.get('CUDA_VISIBLE_DEVICES')!='':
         raise ValueError('New immutable CPU source diagnostic required')
     p=base.paths(args.root);clean,roles=base.source_training(p);indices=source_indices(roles);ids=f_guided.source_ids(p,roles)
     folder=args.root/'runs'/SOURCE;meta=base.read_json(folder/'results.json')
@@ -69,7 +69,7 @@ def run(args):
     from experiments.pamf_fcrossrx_readout.frozen import load_reader
     reader=load_reader(p['reader'],p['source_cache'],'cpu').eval().requires_grad_(False)
     before={k:v.clone() for k,v in reader.state_dict().items()}
-    args.output.mkdir();base.write_json(args.output/'launch.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,commit=args.commit,rule=RULE,CPU_threads=2,GPU_workers=0))
+    args.output.mkdir();base.write_json(args.output/'launch.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,commit=args.commit,rule=rule,CPU_threads=2,GPU_workers=0))
     if not np.all(roles[indices[:2]]=='L_s'):raise ValueError('Real smoke must use two L_s')
     x=tensor(clean[indices[:2]],'cpu').requires_grad_(True)
     actual,parts=components(reader,x);expected=parts['signature'];direction=torch.linspace(-1,1,160)[None]
@@ -93,7 +93,7 @@ def run(args):
         for start in range(0,512,32):
             sl=slice(start,start+32);anchor=tensor(a['restored'][sl],'cpu');truth=tensor(clean[indices[sl]],'cpu')
             target=tensor(reference['parts'][3,sl],'cpu')
-            signature_iq,history=signature_steps(reader,anchor,target)
+            signature_iq,history=iq_steps(reader,anchor,target)
             with torch.no_grad():
                 iq_oracle=project(anchor,truth-anchor)
                 iq=torch.stack((anchor,iq_oracle,signature_iq));new_feature,new_parts=components(reader,iq[1:].flatten(0,1))
@@ -123,7 +123,7 @@ def run(args):
     if any(not torch.equal(v,before[k]) for k,v in reader.state_dict().items()) or any(p.grad is not None for p in reader.parameters()):
         raise ValueError('Frozen original F changed')
     verdict=dict(eligible=all(r['decision']['eligible'] for r in results.values()),automatic_training=False)
-    base.write_json(args.output/'results.json',dict(status='ANALYZED_SOURCE_ONLY',run=RUN,source_run=SOURCE,rule=RULE,
+    base.write_json(args.output/'results.json',dict(status='ANALYZED_SOURCE_ONLY',run=run_id,source_run=SOURCE,rule=rule,
         source_records=512,source_L=128,source_U=384,views=list(VIEWS),cases=list(CASES),results=results,records=records,decision=verdict,
         F_teacher=f_guided.teacher_reference(),F_unchanged=True,full_F_inputs=2048,prefix_inputs=4096,input_VJP_records=4096,
         head_only_inputs=3072,smoke_full_F_inputs=2,smoke_prefix_inputs=2,smoke_input_VJP_records=4,smoke_head_only_inputs=2,

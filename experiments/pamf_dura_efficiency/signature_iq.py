@@ -62,3 +62,30 @@ def signature_steps(reader, anchor, reference):
             proposal = value - .0025 * anchor_rms * gradient / rms
             value = project(anchor, proposal-anchor)
     return value.detach(), torch.stack(history)
+
+
+def loss_scaled_signature_steps(reader, anchor, reference):
+    """Four loss-scaled steps; each step <=0.25% RMS, total <=1%.
+
+    The local proposal is -(L / ||grad L||^2) grad L. Unlike a fixed
+    normalized direction, its size contracts as a quadratic loss approaches
+    zero. This is a SOURCE feasibility algorithm, not a convergence guarantee.
+    """
+    value = anchor.detach().clone()
+    anchor_rms = anchor.square().mean((1, 2), keepdim=True).sqrt().clamp_min(1e-8)
+    history = []
+    for _ in range(4):
+        value.requires_grad_(True)
+        signature = signature_features(reader, value)
+        loss = (signature-reference).square().sum(1) / reference.square().sum(1).clamp_min(1e-4)
+        gradient = torch.autograd.grad(loss.sum(), value)[0]
+        if not torch.isfinite(loss).all() or not torch.isfinite(gradient).all():
+            raise FloatingPointError('Nonfinite source signature IQ derivative')
+        history.append(loss.detach())
+        with torch.no_grad():
+            energy = gradient.square().sum((1, 2), keepdim=True).clamp_min(1e-20)
+            step = loss[:, None, None] * gradient / energy
+            rms = step.square().mean((1, 2), keepdim=True).sqrt().clamp_min(1e-12)
+            step = step * (.0025 * anchor_rms / rms).clamp_max(1.)
+            value = project(anchor, value-step-anchor)
+    return value.detach(), torch.stack(history)
