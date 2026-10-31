@@ -115,3 +115,7 @@ R15校准源最佳+0.1547pp未过0.5pp，正常source-only停止target0。R16是
 ### R17当前候选
 
 源L类内噪声metric融合入R14原CCA16两路projection权重，保留ridge/nested头与F/G。原σ候选0/.25/.5/.75/.9，源五heldRX×固定epoch91×K1/5/20优先验证K1；训练用两epoch并排除heldRX，无target泄漏。无cov/classmeans/prototypes上传，仅冻结encoder参数。sourcegate未过target0；通过才首RX全部16KN四路80行。按用户每格Q0+5且Q1>Q0判定，mean不能晋级。唯一审查/合成检查PASS，准备发布；不保证收益。
+
+### R17实际结果
+
+源s0.9门槛PASS，源K1两S Q0+9.5492/+4.5899pp，实际首RX80预测/评分完成。S0Q0相对原版均值+6.7692pp，但Q0≥5仅11/16，Q1>Q0仅10/16；S1两项均16/16。按最新逐格要求不晋级，无其他六RX实验。源known6收益不能外推new20，goal仍ACTIVE。原R14七RX证据保持，source class-noise model不改默认。下一步需要更接近未见类别的源验证或新的支持集几何，不以目标分数选择σ重跑。所有所属进程退出。
