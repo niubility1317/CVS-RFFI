@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-performance-efficiency goal and explicit independent frozen-source-F guidance; source-only CPU association/latent intervention; no G training or target use",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "9d266929d4e0eea27057eebeda8239fd24f0b6d9",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01-release"
@@ -60,7 +60,7 @@
     "leo_config_ref": "OriginalR07cache01/20;0newchannelobservations;onlytemporarysourceIQcounterfactuals",
     "target_panel": "None",
     "actual_training_labels": "No training. Source pairedcleanIQ and actualweightedcleanSIG/frozenFcleanchoice are counterfactual references. No TX/V/target labels or fitting",
-    "augmentation": "No new observation/RNG/augmentation;original512sourcepositions2026101901/source01and20;shiftedSIG=np.roll(all512cleanSIG,1,axis0)beforebatching"
+    "augmentation": "No new observation/RNG/augmentation;original512sourcepositions are rolewise deterministiclinspace128L384U/cache01and20;shiftedSIG=np.roll(all512cleanSIG,1,axis0)beforebatching"
   },
   "permissions": {
     "regime": "Source_only_fixed_weight_prior_SIG_conditioner_counterfactual",
@@ -87,7 +87,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.prior_context_oracle_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.prior_context_oracle_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01 --commit 9d266929d4e0eea27057eebeda8239fd24f0b6d9",
     "stop_rule": "Badsource/Fcache/roles-ID-scene-order/Gstrictpayload-config/Fstate-or-Gstate-change/gradpopulation/hookrestoration/nonfinite/collision/smoke/execute:preservefailedrun/noautoretry. ScientificFAILdoesnotchangeprimary/threshold/donor orstartG."
   },
   "expected_artifacts": [
@@ -130,7 +130,7 @@
         "support": null,
         "evaluation": 2027
       },
-      "seed_notes": "No new model/optimizer/augmentation RNG. MainG-Fseed2026092701/fixedsourceindices2026101901/split392005/cacheaugmentation2026101912;globalSIGshift1deterministic/supportN/A",
+      "seed_notes": "No new model/optimizer/augmentation RNG. MainG-Fseed2026092701/fixedrolewise-linspace128L384U/split392005/cacheaugmentation2026101912/globalSIGshift1/supportN/A",
       "k": null,
       "scenario": "Source-training-pool512L128U384/cache01and20/4x20fixedwindow80:160/pairedcleanoracles/0V-target",
       "optimizer": null,
@@ -140,7 +140,7 @@
       "budget_ref": "CPU2/0optimizer/0TX-V-target/mainG4096-F4096+real2noncleanLs-smokeG12-F4/source1024visits512unique/128L384U;mainG30-7410/F50knowledgecostretained",
       "output_root": "runs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.prior_context_oracle_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.prior_context_oracle_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01 --commit 9d266929d4e0eea27057eebeda8239fd24f0b6d9",
       "expected_artifacts": [
         "launch.json",
         "smoke.json",
@@ -159,7 +159,8 @@
     "CacheactualweightedSIG160andfullcleanFfeatures160 aredistinctreferences;formeronlyconditionerinput-and-descriptorerrors/latteronlyFcos-reference. OriginalSIG63000x160/40.32MBexistingcacheindependentproofreused/newcacheF0;oldphasecacheonlycleanFrow0. MainG30-7410/F50source4df7-50/11100/cache63000prefix-.847077s costdisclosed/F-guided.",
     "3focusedtestsPASS:actualfixedvalues/zero-disabled/perrecord/negativeboundary/exceptionsrestoreandstatefixed;BOTHviewsgain-vs-shift-and-RXprotection. ActualmoduleCLI/help/CPUoutputguardbeforedata/actualG344295fourpaths/oracleinputs/nonzero-disabled-effect/exceptionhookrestoration/nativeIQ-state-gradpreservedPASS. OneP0P1beforelaunch. Firstreal2noncleanLssmoke strictmainfinal30/sourceSIG-and-cleanFcache/originalhead/4paths/exactnativeIQrestored;G12-F4,0updates;PASScontinues.",
     "Bothviewsfixed1/20/source128L384U/5RX/7scene/512unique1024visits/4case144groups. Actualconditionerinput-and-output/learnedpredictions/W-bias/fullIQ-F/IDs-privateNPZs retained for independentNumPycompletecheck;0extraNN. Gitaggregatesonly. MainF4096/G4096 plus4F/12Gsmoke,0TX-V-target/optimizer/formalprediction.",
-    "Oneimmutableoutput/preflight/archiveSHA/remotecompile/PID-CWD-argv-CUDAempty-loggrowth. CPU2 noGPU/truthscorer;oldpairedGended/otherowners/defaultDURAunchanged. CompletegoalACTIVE:all6gap3pp+clean+R17guard+actualquality-efficiency. ScientificFAILnotblockgoal."
+    "Oneimmutableoutput/preflight/archiveSHA/remotecompile/PID-CWD-argv-CUDAempty-loggrowth. CPU2 noGPU/truthscorer;oldpairedGended/otherowners/defaultDURAunchanged. CompletegoalACTIVE:all6gap3pp+clean+R17guard+actualquality-efficiency. ScientificFAILnotblockgoal.",
+    "Actual source_indices uses role-wise linspace, not a new random seed. Metadata corrected to this observed selection rule; same established512records unchanged, no rerun or scientific threshold change."
   ],
   "registered_at": "2026-10-31T13:53:04+00:00"
 }

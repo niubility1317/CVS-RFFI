@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01`
 - group_id：`phase1-dura-source-fixedweight-prior-context-oracle`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -40,3 +40,8 @@
 源 clean F 选择可能不是真实 TX；这批源数据曾用于 G 训练。将真实 clean SIG 放入已适配预测特征的条件层，可能偏离训练输入分布。因此该理想参照不可部署，不是目标收益、物理恢复极限或任何更强预测器的普适有效性证明。循环移位保持源特征池的边际分布，不保持逐条范数或 IQ 修正能量，也不假设供体一定来自其他 TX。
 
 3项聚焦检查与实际344295模型/CLI/CPU输出边界/四路径/条件值/非零关闭效应/异常hook恢复/state和grad检查通过。唯一独立P0/P1审查在发布前完成。首步真实2条非clean L_s，严格 final30 加载、源 SIG 与 clean F 参照、实际条件输入、关闭输出、恢复原IQ和原分类头 smoke：G12/F4、0更新，PASS直接继续。主循环G4096/F4096、CPU2，无GPU/真值评分进程。全部IQ/F/预测特征/实际条件输入输出/W和bias保留私有NPZ，Git只保存聚合证据；独立NumPy复算144个分组case、实际线性条件层、零输出、输入置换及规则，不新增NN前向。默认DURA和完整六景3pp/clean/同质量效率目标保持。
+
+
+## 完整源诊断结果
+
+VERIFIED / ANALYZED_SOURCE_ONLY，主条件PASS。相同权重正常487/500一致，关闭481/497，本条clean SIG498/505，循环移位480/498；144分组case和实际条件层独立复算通过。详见[完整分析](analysis.md)与results.json。CPU2主循环14.107593秒，G4096/F4096、另smoke G12/F4，0TX/V/target/更新；进程自然退出。该源理想参照不可部署或认证恢复极限，不自动训练。
