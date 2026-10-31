@@ -1,0 +1,157 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-phase1-dura-trisig-source-s2026092701-r01",
+  "group_id": "phase1-dura-source-trisigtime-consistency",
+  "display_name": "Phase1 源样本旧恢复器与 Tri-SIG-TIME 一致性诊断",
+  "description": "仅重用 Phase1 源训练记录的原始接收和旧恢复器原始输出，以原 Tri-SIG-TIME SSL 比较对 clean 基座判断的保留程度。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "source-only",
+    "diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发更强星地恢复网络并严格限定 Phase1 地面训练、测试与 Tri-SIG-TIME SSL 基座。",
+  "code": {
+    "commit": "2c4cc66c8553e07983fbd41c0ba738d84520a7d4",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch CPU only, original Phase1 frozen Tri-SIG-TIME release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-phase1-dura-trisig-source-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/dura_source_trisig_diagnostic.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Phase1 R07 source clean/received and existing original DURA native IQ, aligned source positions only",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "none",
+    "actual_training_labels": "No training and no TX labels, V or test IQ",
+    "augmentation": "Existing source views 01 and 20 only"
+  },
+  "permissions": {
+    "regime": "Phase1 source L_s/U_s and frozen original Tri-SIG-TIME SSL only",
+    "query_use": "No test or V access",
+    "external_method_exception": null,
+    "claim_scope": "Source label-free consistency, not accuracy or target performance"
+  },
+  "checkpoint": {
+    "initialization": "Frozen Phase1 Tri-SIG-TIME E50 and existing frozen original Phase1 DURA native source IQ",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01/DURA_default-{1,20}.npz"
+    ],
+    "contract_check_ref": "Pinned source producer launch, exact 128 L +384 U deterministic positions, role IDs and clean arrays",
+    "provenance_verdict": "Phase1-only source outputs; no old classifier decisions consumed",
+    "selection_rule": "Fixed source records/views, no optimization or output-based selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-dura-source-trisig",
+    "gpu_policy": "CPU2/0GPU, true source checkpoint smoke before launch",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-dura-trisig-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-dura-trisig-source-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.dura_source_trisig_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --commit 2c4cc66c8553e07983fbd41c0ba738d84520a7d4",
+    "stop_rule": "Input contract mismatch, nonfinite output, insufficient stratum or output collision: preserve evidence, no automatic retry"
+  },
+  "expected_artifacts": [
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "raw and DURA clean-teacher agreement",
+      "mean clean-to-output KL",
+      "feature cosine",
+      "IQ NMSE",
+      "teacher-consistency repairs/damages"
+    ],
+    "dimensions": [
+      "source views 01/20, 512 fixed L_s/U_s physical IDs",
+      "source scene, state and role"
+    ],
+    "prediction_ref": "source aggregate only",
+    "scorer_ref": "dura_source_trisig_diagnostic.py, Tri-SIG-TIME SSL",
+    "targets_ref": "source diagnostic only, no target performance claim"
+  },
+  "notes": [
+    "源记录固定 512 个唯一物理 ID（L128/U384），R07 源视图 01/20 共 1024 条观测；配对 clean/roles/物理 ID 与 Phase1 原缓存逐项比对。",
+    "只从旧源档案惰性读取原 DURA native IQ、clean、源 ID/role/scene/state，严格不读取旧 F 输出、对齐波形或辅助分析结果。",
+    "对 clean、raw 和原 DURA IQ 全部重新用冻结的 Tri-SIG-TIME 计算特征和分类分布；一致率以 clean F 判断为参照，不是真实 TX 准确率。",
+    "不访问 V、测试 IQ 或 TX 真值，所有网络零更新；该诊断仅为后续源数据候选提供机制证据，不更改已登记运行候选。"
+  ],
+  "rows": [
+    {
+      "row_id": "source_consistency",
+      "method": "Frozen DURA native source IQ and frozen Tri-SIG-TIME SSL",
+      "purpose": "Evaluate source-semantic case for DURA-anchored generative flow",
+      "config_ref": "experiments/pamf_phase1_flow/dura_source_trisig_diagnostic.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/dura_source_trisig_diagnostic.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed existing source positions and views; no stochastic sampling",
+      "k": null,
+      "scenario": "Phase1 source views 01 and 20",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512 unique source rows x two received views x clean/raw/native frozen reader passes",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-dura-trisig-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-dura-trisig-source-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.dura_source_trisig_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --commit 2c4cc66c8553e07983fbd41c0ba738d84520a7d4",
+      "expected_artifacts": [
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "registered_at": "2026-10-31T18:44:43+00:00"
+}
