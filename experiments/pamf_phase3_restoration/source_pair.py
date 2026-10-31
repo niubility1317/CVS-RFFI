@@ -31,7 +31,7 @@ def selected_indices(role):
     return np.linspace(0, COUNTS[role]-1, 128 if role=='L_s' else 384, dtype=int)
 
 
-def metadata(c):
+def metadata(c, *, full=False):
     validate_source(c)
     from experiments.pamf_phase3_open_world.star_relative_source import _contract
     contract = _contract(c)
@@ -45,16 +45,18 @@ def metadata(c):
                 raise ValueError('Original label-hidden source metadata differs')
             if f['ids'].tolist() != contract['role_ids'][role]:
                 raise ValueError('Source role physical ID order differs')
-            take = selected_indices(role)
+            take = np.arange(COUNTS[role]) if full else selected_indices(role)
             part = {name: f[name][take].copy() for name in METADATA}
         parts.append(part)
     result = {key: np.concatenate([part[key] for part in parts]) for key in METADATA}
-    if len(set(result['ids'].tolist())) != 512:
+    if len(set(result['ids'].tolist())) != (63000 if full else 512):
         raise ValueError('Selected L_s/U_s physical records overlap')
     return contract, result
 
 
-def _received(c, role, contract):
+def open_received(c, role, contract):
+    if role not in ('L_s', 'U_s'):
+        raise ValueError('Only original L_s/U_s received handles allowed')
     folder = Path(c['L_received_root' if role=='L_s' else 'Us_received_root'])
     m = read(folder/'manifest.json')
     expected = dict(role='L' if role=='L_s' else 'U_s', count=COUNTS[role], precision='FP32', source_only=True, received_input_path='P0')
@@ -75,9 +77,15 @@ def _received(c, role, contract):
     if ids.tolist()!=contract['role_ids'][role]:
         raise ValueError('Cached G10 source IDs differ from the original role')
     x = np.load(folder/'received.npy', mmap_mode='r', allow_pickle=False)
+    if x.dtype!=np.float32 or x.shape!=(COUNTS[role], 2, 256):
+        x._mmap.close()
+        raise ValueError('Original source received FP32 shape differs')
+    return x, m
+
+
+def _received(c, role, contract):
+    x,m = open_received(c,role,contract)
     try:
-        if x.dtype!=np.float32 or x.shape!=(COUNTS[role], 2, 256):
-            raise ValueError('Original source received FP32 shape differs')
         result=np.array(x[selected_indices(role)], copy=True)
     finally:
         x._mmap.close()

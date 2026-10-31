@@ -21,7 +21,8 @@ def test_source_boundary_rejects_training_role_expansion_before_any_file_or_impo
         validate_source(value)
 
 
-def test_source_locator_metadata_never_fetches_L_labels_or_any_other_role(monkeypatch):
+@pytest.mark.parametrize('full',[False,True])
+def test_source_locator_metadata_never_fetches_L_labels_or_any_other_role(monkeypatch,full):
     import sys
     from types import SimpleNamespace
     from experiments.pamf_phase3_restoration import source_pair as m
@@ -45,6 +46,8 @@ def test_source_locator_metadata_never_fetches_L_labels_or_any_other_role(monkey
         return Store('L_s' if name.startswith('L_s') else 'U_s')
     monkeypatch.setattr(m.np,'load',load)
     c={k:'source' for k in SOURCE_FIELDS};c['episode']=EPISODE
-    _,meta=m.metadata(c)
-    assert len(meta['ids'])==512 and 'y' not in meta
+    _,meta=m.metadata(c,full=full)
+    assert len(meta['ids'])==(63000 if full else 512) and 'y' not in meta
+    if full:
+        assert np.array_equal(meta['ids'],np.concatenate([ids['L_s'],ids['U_s']]))
     assert {r for r,k in accessed}=={'L_s','U_s'} and all(k!='y' for r,k in accessed)
