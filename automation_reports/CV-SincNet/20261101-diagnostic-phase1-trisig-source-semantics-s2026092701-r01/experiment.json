@@ -1,0 +1,152 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-phase1-trisig-source-semantics-s2026092701-r01",
+  "group_id": "phase1-trisigtime-source-semantics",
+  "display_name": "Phase1 源训练样本的基座语义稳定性诊断",
+  "description": "只使用 Phase1 L_s/U_s 配对 clean 与模拟接收 IQ，分四档检查冻结 Tri-SIG-TIME SSL 的分类一致率、特征余弦和 KL；不读真实标签或测试数据。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "source-only",
+    "diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发更强星地恢复网络并严格限定 Phase1 地面训练、测试与 Tri-SIG-TIME SSL 基座。",
+  "code": {
+    "commit": "c332dc263ef275dbabfcec18f71a1972792cff83",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch CPU only, original Phase1 frozen Tri-SIG-TIME release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-phase1-trisig-source-semantics-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/source_semantic_diagnostic.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Source R07 view01 paired clean/received IQ and simulator noise variance; four variance quantile strata",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "none",
+    "actual_training_labels": "No updates, no TX labels, no target or test IQ",
+    "augmentation": "Existing R07 source view01 only"
+  },
+  "permissions": {
+    "regime": "Source L_s/U_s only; immutable original Tri-SIG-TIME SSL",
+    "query_use": "No target or test access",
+    "external_method_exception": null,
+    "claim_scope": "512 source records, label-free consistency diagnostic only"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original Phase1 Tri-SIG-TIME SSL E50/11100 only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache"
+    ],
+    "contract_check_ref": "Full original Tri-SIG-TIME source checkpoint ancestry and exact L_s/U_s physical ID sets",
+    "provenance_verdict": "Phase1 source-only model and source cache; fixed final E50 reader",
+    "selection_rule": "One exact registered seed and source view; no candidate selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-source-semantics",
+    "gpu_policy": "CPU only; no GPU use",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-trisig-source-semantics-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-trisig-source-semantics-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.source_semantic_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --commit c332dc263ef275dbabfcec18f71a1972792cff83",
+    "stop_rule": "Input contract mismatch, nonfinite output, insufficient stratum or output collision: preserve evidence, no automatic retry"
+  },
+  "expected_artifacts": [
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean vs received teacher top1 agreement",
+      "clean teacher confidence",
+      "feature cosine",
+      "KL clean to received"
+    ],
+    "dimensions": [
+      "4 fixed source variance quartiles x 128 L_s/U_s samples"
+    ],
+    "prediction_ref": "none; only aggregate source metrics",
+    "scorer_ref": "source_semantic_diagnostic.py",
+    "targets_ref": "diagnostic, not accuracy or a performance goal"
+  },
+  "notes": [
+    "诊断只计算 source clean 与 source received 两次冻结推断的一致性，不训练模型、不访问任何真实 TX 标签。",
+    "四个 source variance 分位区间各固定随机抽取 128 条，抽样 seed 2026110111；不以模型输出选择记录。",
+    "一致率不是准确率，不作星地测试性能推断；诊断结果只用于构思未来源训练目标，不改变已运行的 E30 训练。"
+  ],
+  "rows": [
+    {
+      "row_id": "source_consistency",
+      "method": "Frozen Tri-SIG-TIME SSL paired source predictions",
+      "purpose": "Diagnose source semantic distortion without TX labels",
+      "config_ref": "experiments/pamf_phase1_flow/source_semantic_diagnostic.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/source_semantic_diagnostic.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110111,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source sample selection seed; no model training or test sampling",
+      "k": null,
+      "scenario": "Four R07 view01 source variance strata",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512 source records, two frozen CPU forward passes each",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-trisig-source-semantics-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-trisig-source-semantics-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.source_semantic_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --commit c332dc263ef275dbabfcec18f71a1972792cff83",
+      "expected_artifacts": [
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "registered_at": "2026-10-31T17:55:18+00:00"
+}
