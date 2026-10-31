@@ -2,13 +2,19 @@
 
 用户目标：固定 **Tri-SIG-TIME SSL** 基座，优化 MILKR，使宏 H 比匹配原版提高至少 5 个百分点；可用适当小矩阵，覆盖各 K/N。状态：**ACTIVE，未达成**。不得把实验技术完成写成科学目标完成。
 
-## 最新用户验收：每个K/N格（覆盖旧均值口径）
+## 最新用户授权：query 同记录融合，保留 G-only 对照
+
+用户已明确允许 raw／DURA 同一条 query 融合，并要求保留仅 DURA 输出对照；support 仍严格 S0 raw、S1 G。新版 Q0=raw、QG（机器 Q1）=仅 G、QF（机器 Q2）=融合。当前主验收为全部 K1/5/10/20×N2/5/10/20、两 S 下 Q0 较匹配原 Q0 至少 +5pp，且同状态 QF>Q0。QG 完整单列，与原 QG 保持同输入配对；QF 与原 QG 的差须标明路径改变，不冒充同输入增益。早期角点、均值、单 support 的高收益不能代替全格。科学协议本轮例外已更新，旧 run 仍保留原 G-only 定义。
+
+R26 首 RX 四角点 36 行已完成：融合 QF>Q0 在两 S 均 4/4，但 raw+5 在两 S 均仅 3/4；因此未晋级，最终目标仍 ACTIVE。以下 G-only 阶段的验收文字与结果均为历史记录。当前最广证据仍是 R14 七 RX，全格目标未通过。
+
+## 历史 G-only 阶段每格验收（覆盖旧均值口径）
 
 用户已明确回复“每个K/N格都至少+5个百分点”。K1/5/10/20×N2/5/10/20每格分别列support S0/S1，Q0与匹配原MILKR差至少5pp，且接入query DURA的Q1高于当前Q0。完整四路各自对原版+5pp结果也逐格检验；均值通过不能替代单格，不用跨support或K/N的高收益弥补失败格。多RX表格的每个K/N先对固定RX等权汇总，并保留每RX；不擅自把要求扩大成每条query都提高。
 
 R14七RX S0Q0仅6/16格≥5pp、Q1>Q0仅11/16，严格目标明确未达成；mean+4.110也未达。R15source-only停止。R16在用户答复时源阶段健康运行，现已按源门槛正常停止，参数/C选择/矩阵不热改，只按最新逐格要求分析和决定是否扩展；不能再用mean-only先导晋级。goal保持ACTIVE。
 
-## 当前最新结果：R14七RX确认
+## 当前最广证据：R14七RX确认
 
 - S0：Q0较原版+4.1100pp；Q1相对当前Q0增量+0.9372pp；均值验收False，每格验收False。
 - S1：Q0较原版+33.9102pp；Q1相对当前Q0增量+17.5136pp；均值验收True，每格验收False。
@@ -205,3 +211,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### 用户授权query融合与R26
 
 用户明确允许同记录raw/Gquery融合，保留G-only对照，SUP仍pureS0/S1。已先更新PROJECT_PROTOCOL仅本轮新run，旧结果不改。主验收all16KN两S Q0较原Q0+5保持，新增QF>Q0；QG单列，QFvs原QG不称matched。R26固定冻结head函数prior.5+当前SUP残差KRR，纯RF核/真实物理OOF；fusion只在G最近SUP距离更小且margin更大时取半权，否则raw，规则不读query标签/批统计。首4corner三query共36行allfixedthen独立truth，rawscorecache只同物理row配对不更新state。角点全过才12KN/六RX。
+
+### R26 实际结果与下一步缺口
+
+36行独立truthlast完成、所有所属进程退出；QF>Q0两S均4/4，均值S0+2.9507pp、S1+14.2197pp；G-only相对raw均值S0−2.0680、S1+18.2062，完整控制保留。raw+5两S均3/4，S0 K1N20仅+3.7906、S1 K1N2仅+4.3524；严格不扩。冻结head函数prior使knownold召回增加但new受损，下一步应解决raw旧新平衡，不能只优化融合或回调本run规则。最终16KN全部逐格目标仍ACTIVE。

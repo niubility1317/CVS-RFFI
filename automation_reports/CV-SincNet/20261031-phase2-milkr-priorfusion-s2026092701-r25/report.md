@@ -13,3 +13,36 @@ source合法/数值/实际checkpoint无query smoke后，首RX1-1/P01/MIX01/seed2
 sourceGPU4/targetGPU0，启动前核实实际显存、最多每卡两个本owner新训练/预测，不动其他owner。完整commit/命令/环境/CWD、来源/data句柄、路径和停止条件见experiment.json。最小独立P0/P1审查、真实checkpointsmoke、一次archiveSHA/remotecompile、实际PID/GPU/log增长和独立评分保持；技术失败保留，不盲重试。
 
 唯一独立P0/P1审查PASS；函数prior残差正规方程/截距、类别表映射、融合无标签/逐条独立、真实物理OOF、mockworker三path行对齐/严格SUP/缓存清空及既有teacher/orbit/非法输入共18项相关检查通过。真实F/G/head checkpoint无query smoke为launcher第一步，PASS后直接源校准及36行先导。
+
+## 实际完成与结果
+
+**VERIFIED**：release archive传输/remotecompile通过，发布后实际source进程PID/GPU已读取，最终源/target日志增长、36个prediction与SCORED_COMPLETE及全部所属进程退出核实。真实F/G/head无query smoke PASS。代码commit `a656856c978334cbc2dce7027599b1f96d4ecfed`。source固定Q0/QF选择K1规则：{'config': ['signature_identity', 'all', 0.5, 'single'], 'ridge': 0.01, 'outer_folds': 3, 'outer_strengths': [0.0, 0.25, 0.5, 0.75], 'ridge_reference_classes': 6, 'prior_weight': 0.5, 'fusion_policy': 'rf_distance_margin_half_v1'}；源流程53.902秒。
+
+target worker [85.74730308167636]秒，raw每行score/distance临时缓存[28777056]字节，最终缓存0行；12个fit记录均严格单SUP路径，head6列合法映射、prior.5、物理OOF状态与allocatedK核实。融合没有额外F/G参数更新。
+
+| 路径 | 当前角点平均宏H% | 同输入原版差pp | QF−Q0 pp | QG−Q0 pp |
+|---|---:|---:|---:|---:|
+| S0Q0 | 53.8908 | +7.7718 | +2.9507 | -2.0680 |
+| S0Q1 | 51.8228 | +9.4301 | +2.9507 | -2.0680 |
+| S0Q2 | 56.8414 | 不适用：融合新路径 | +2.9507 | -2.0680 |
+| S1Q0 | 45.3046 | +27.2837 | +14.2197 | +18.2062 |
+| S1Q1 | 63.5108 | +5.2068 | +14.2197 | +18.2062 |
+| S1Q2 | 59.5243 | 不适用：融合新路径 | +14.2197 | +18.2062 |
+
+Q0/Q1分别为raw/G-only同输入对照；Q2为用户允许的同记录融合，不把Q2对原G-only的差冒充同输入配对。Q2对原raw/G的跨路径差单独保留result_summary字段。
+
+## 逐角点验收
+
+- S0：raw较原raw至少+5为3/4，QF>raw为4/4，全部角点通过False。
+- S1：raw较原raw至少+5为3/4，QF>raw为4/4，全部角点通过False。
+
+严格晋级 False；raw尚有失败格，不扩其余12KN或其他六RX。纯raw/G四路对原版逐格+5全部通过 False，作为控制单列，不用融合隐藏原G-only下降。
+
+| K | N | S0 raw H%（对原差pp） | S0 QF−raw pp | S0 G−raw pp | S1 raw H%（对原差pp） | S1 QF−raw pp | S1 G−raw pp |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 2 | 47.259 (+16.139) | +2.595 | -2.377 | 40.945 (+4.352) | +10.762 | +17.242 |
+| 1 | 20 | 29.766 (+3.791) | +1.368 | -1.499 | 26.567 (+10.661) | +6.898 | +10.400 |
+| 20 | 2 | 70.629 (+5.068) | +3.804 | -0.903 | 56.472 (+52.480) | +19.905 | +23.369 |
+| 20 | 20 | 67.909 (+6.089) | +4.035 | -3.493 | 57.235 (+41.641) | +19.313 | +21.813 |
+
+raw失败为S0 K1/N20（+3.7906pp）及S1 K1/N2（+4.3524pp）。融合在全部8个角点/S组合均提升，但不能代替raw每格+5的要求。只是一RX/单seed/P01MIX01的已曝光开发证据，不代表全部16KN或七RX，不称新盲测。源F见过六TX/源三景代理限制保持，goal ACTIVE。
