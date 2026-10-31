@@ -1,0 +1,27 @@
+{
+  "status": "ANALYZED",
+  "artifact_scope": "SOURCE_ONLY",
+  "run": "20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01",
+  "execution_commit": "d2f2dc59af2d8089dfe8945de92c5b0a0733f747",
+  "pid": 1357440,
+  "post_launch_live_verified": true,
+  "CWD_argv_CUDA_verified": true,
+  "observed_log_growth_bytes": [
+    345,
+    1128
+  ],
+  "natural_exit_verified": true,
+  "CPU_threads": 2,
+  "GPU_workers": 0,
+  "real_Ls_per_model": 2,
+  "G_inputs": 12288,
+  "G_smoke_inputs": 36,
+  "F_inputs": 6144,
+  "F_smoke_inputs": 8,
+  "seconds": 28.62202246999368,
+  "independent_groups": 132,
+  "independent_packet_metrics": 27648,
+  "runtime_study_eligible": false,
+  "default_DURA_changed": false,
+  "goal_complete": false
+}

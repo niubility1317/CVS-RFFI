@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01`
 - group_id：`phase1-dura-source-quarter-orbit`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -36,3 +36,8 @@
 两个源缓存均要求IQNMSE≤native的0.9、clean-F选择一致数净增≥6/512；各非clean景最多少1条，clean景不损失；完整512条clean输入也不损失。失败不放宽、不改主对象。通过仅支持另登记完整七景正式runtime测试，不自动部署或训练。源F选择不是TX真值准确率。
 
 代数上平均路由误差=合成误差+路由分歧，只能保证优于四路的平均波形误差，不能保证优于原native或改善身份。4倍G输入/共享266951权重/总8prior16CG108FFT成本披露，不能预先称加速。CPU2/CUDA空，12288G+6144F主输入、smoke36G+8F，0TX/V/target/优化；原sourceF缓存与上游监督成本另计。完整六份NPZ和所有分组独立复算，默认与完整目标保持。
+
+
+## 完成结果
+
+VERIFIED / ANALYZED，仅 SOURCE_ONLY。执行 d2f2dc59af2d8089dfe8945de92c5b0a0733f747，CPU2/PID1357440，两模型各2Ls native重放最大误差0、C4等变误差1.192e-7，完整六单元28.622022秒自然结束。默认缓存01/20 IQ误差约增至21.934876/20.624343倍，clean-F一致数486→352/498→367；fullclean512→509，未过固定门槛。pureG描述对照同样失败，不改主或放宽，不发布此运行版本。27648逐条指标、132分组和路由平均/误差分解独立复算一致，0TX/V/target/更新；本次全部源诊断完成，未取消任何已登记正式矩阵。默认与完整目标保持。详见[完整分析](analysis.md)、results.json 与 source_quarter_orbit.png。

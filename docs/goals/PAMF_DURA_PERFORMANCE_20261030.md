@@ -301,3 +301,6 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 
 
 源噪声稳定性诊断 20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01/7475398c 完整结束：固定pureG repeatE30/defaultR69、source512×cache01/20，按缓存标量方差作同一±各向同性扰动（不是原生噪声重抽），clean不扰动；两缓存增益比1.111890/1.005703均低于事先1.25，不能明确定位为单阶段特异噪声放大，不放宽、不启动该训练。CPU20.558967秒/G-F各6144+4smoke/0TX-V-target-updates，22528逐条指标和108分组独立复算，PID1349938自然结束；默认与完整目标ACTIVE。
+
+
+源四相位IQ合成诊断 20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01/d2f2dc59 完整完成：default主对象/pureG描述，source512×clean/01/20，精确四直角旋转后G输出逆旋转再IQ平均，native重放0/C4代数等变误差1.192e-7，非符号/顺序实现错误。默认缓存NMSE约增至21.935/20.624倍、clean-F486→352/498→367、fullclean512→509，pureG同样失败；原生G在腐蚀输入的旋转路由转回后仍严重不齐，直接平均抵消。固定门槛FAIL不放宽/不改主/不发布runtime，不取消已登记正式矩阵。CPU28.622022s/12288G+36smoke/6144F+8smoke/0TX-V-target-updates，27648逐条指标和132分组独立复算，PID1357440自然结束。4倍G成本/8prior16CG108FFT，未测GPU时延不称加速；默认与完整目标ACTIVE。
