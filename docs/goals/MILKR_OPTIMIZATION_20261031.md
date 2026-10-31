@@ -39,12 +39,14 @@ R9与R6在同一P02/seed/split/处理路径实际配对：S0Q0增加0.7111pp、S
 
 源码/测试/配置已在 `code/worktrees/standard_ce_baselines_20261010` 及发布承载面镜像；其他owner未提交更改保留。机器状态和完整私有产物不提交。根实验索引已登记三run，实际状态以各run证据为准。
 
-## 下一步交接（未实现、未发布）
+## 最新四路验收与后续证据
 
-旧新偏移已实际检验为源端负结果：K1选beta0，K5/10/20平均H分别下降1.9873/1.1952/0.3381pp。不要降低原门槛或继续目标评测这个未通过候选。
+用户追加：support必须严格区分接入/不接入DURA；两组各自要求query不接入时比原版高，接入query后更高。原+5个百分点目标保留。当前按16个K/N等权平均核算，同时完整报告每格；若用户指定每格+5则按更严格口径。R9的S0Q1大幅下降，不能作为合格替代。
 
-下一条待证伪机制是**三视图描述符的任务归一化**。实际descriptor包含固定时间坐标及不同量纲的signature分量，整体角度可能被共同坐标主导；现有R9仅逐112维块单位化。先在源L十个既有episode比较：原R9、仅用当前support对每个112维块按坐标中心化、以及支持方差向块内平均方差收缩的标准化（预选ridge fraction=0.01/0.1/1/10）。原五个特征块保持原定义，IQ归一化不变。所有location/scale仅由当前support估计并在query前冻结；query不能参与中心/方差或选择。K1也有至少六旧类support，能估计任务统计，但不能把自拟合率当验证。
+- R10任务归一化（r06）源端none胜出，最优非none平均-0.2285pp，target0。
+- R11支持Fisher全局强度（r07）源端强度0胜出，其余均下降，target0。
+- R12物理支持outerCV（r08/r09）两次技术失败：源旧Torch NumPy索引、目标审计np.bool_ JSON。均已精确定位、定点修复与复审，尚无任何有效prediction/评分；r09曾接触B/K1 support，不能声称target未访问。旧root保留，所属进程全部退出。
+- r10仅预备未发布，因用户四路要求替代旧raw-only晋级标准，STOPPED/NOT_LAUNCHED。远端release/run均不存在，无健康进程被停止。
+- 新R13（sourcebridge r11）：合法sourceL paired raw/restored特征学习固定rank8残差映射；目标raw路映射到restored特征空间，真实G路不映射。严格S0/S1分别处理，不混入另一支持路。R12头与同head无映射R12C控制，首RX1-1覆盖全部K/N/四路，共160行。先导未达到两个S的Q0+5pp且Q1>Q0则不扩展。映射是离线参数checkpoint，目标不访问源样本特征；不改F/G或默认分类头。
 
-只在源L held上选择一个全局模式，所有目标K/N/RX共享；源均值至少+0.5pp且各K不低超过0.5pp才考虑新小矩阵，否则保留source-only负结果。该假设未实现，不能保证5pp，也不据R9某个query格调fraction。若实施，需测试冻结统计的query批次独立性、核PSD及真实checkpoint无query smoke；不得引入额外数据重验、报告审批或hash链。
-
-目前仍未达到用户的主指标+5pp。续接先读本文件、相应原报告和当前代码，已完成run只读复用。goal保持active，不能把低收益记成技术blocked。所有本任务进程均已正常结束，当前无需要等待的训练/预测句柄。
+goal保持ACTIVE。没有候选满足最新四路条件与原+5pp要求；不能以技术发布完成代替科学达成。新run状态以其报告和独立post-state为准。
