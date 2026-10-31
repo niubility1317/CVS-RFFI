@@ -1,0 +1,239 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01",
+  "group_id": "phase1-dura-frozen-SIG-train-V-generalization",
+  "display_name": "冻结特征预测器的源训练与源验证泛化诊断：三模型",
+  "description": "三固定final30 G的实际条件特征预测，对比原训练512×01/20及固定sourceV1800×七景；分解冻结head可见/正交误差，不读TX/V标签或target、不拟合。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "source-V-diagnostic",
+    "SIG-generalization",
+    "head-contrast-decomposition",
+    "no-training"
+  ],
+  "comparison_group_id": "DURA-original-context-vs-deep-linear-MLP-frozen-source-generalization",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-performance-efficiency goal and explicit independent frozen-source-F guidance; source-only CPU association/latent intervention; no G training or target use",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "ExistingoriginalR07source-train512rolewise-linspace128L384U/cache01and20;existingfixedsource-V1800/all7receivedviews;2312uniquephysicalrecords",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07source63000 and fixedsource_indices512/128L384U/IDs/RX/day, no position search",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "ExistingR07validation1800 andsource_reference ID-membership-RX-day handles/VALIDATED_ONCE;Vusedforfrozenmechanismdiagnosis only",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07cache01/20;0newchannelobservations;onlytemporarysourceIQcounterfactuals",
+    "target_panel": "None;noformalpredictionornewdeployableG",
+    "actual_training_labels": "No training. Source paired clean IQ and frozenFactualSIG references;sourceV IQ-ID-RX-day only/no V labels/noTXlabels/target/headfit/updates.",
+    "augmentation": "No new observation/augmentation/RNG. Two originaltraincachedmixed-sceneviews vs seven existingVsceneviews;differentfixedcorruptiondraws disclosed/notmatchednoise/notunseenRX"
+  },
+  "permissions": {
+    "regime": "Frozen_source_train_and_V_feature_generalization_diagnostic",
+    "query_use": "0target/query/TXlabels/Vlabels/fitting/optimization. SourceVphysicalIQ onlyafterGfrozen/noVtraining/epoch-ranking/threshold. SameknownsourceRXnotnewRX. F50/defaultheadfixed.",
+    "external_method_exception": null,
+    "claim_scope": "Two separate descriptive hypotheses/notTXaccuracy/targetbenefit/recoverybound/modelselectionorautomatictraining. F-guidedknowledgeexplicit/defaultDURAunchanged."
+  },
+  "checkpoint": {
+    "initialization": "No learner/initialization;freshsequentialworkerstrictloadeachsource-onlyfinal30/7410/oldconfig-factory andoriginalF50;allG-Fstate-gradfixed",
+    "sources": [
+      "runs/20261031-phase1-DURA-SIGcontextPrior-E30-s2026092701-r01/scratch_joint/final.pt /4452e09285b650536ab5e9dcc2acbfd9268c00e8/344295params/frozen-source-Fguided-scratch30/noGancestor/noTX-V-targettraining",
+      "runs/20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01/scratch_joint/final.pt /df7fe90d16910f7373d79ee93291f265506a8434/406055params/frozen-source-Fguided-scratch30/noGancestor/noTX-V-targettraining",
+      "runs/20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01/scratch_joint/final.pt /df7fe90d16910f7373d79ee93291f265506a8434/457575params/frozen-source-Fguided-scratch30/noGancestor/noTX-V-targettraining",
+      "OriginalF50 runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth/source4df7/50-11100/frozenoriginalhead",
+      "OriginalF-onlySIG63000x160FP32/40.32MB/cacheproducedbeforeoldGoptimizer/read-onlymatchingtrainIDs/notGancestor",
+      "ExistingR07validation1800/clean+sixreceived+physical_ids+RX-day/independentVrole/noVlabels"
+    ],
+    "contract_check_ref": "Original7/63/30/VALIDATED_ONCEsourcehandles;Gstrictsavedconfig/source-Fteacher-metadata/exactfactory/aliases/final30;F50source4df7/defaulthead;source_referencefixedV1800membershipandRXday/disjointtrainV/no labels",
+    "provenance_verdict": "All3Gs source-onlyF-guided/scratch30-7410/noGancestor/noVtargettraining. F-onlytrainSIGcacheproofreused/newtraincacheF0. NewVcleanSIG1800reference isdiagnostic-only/1.152MB/nottraining. F50/11100-andoldcache63000prefix-.847077s knowledgecostdisclosed.",
+    "selection_rule": "No checkpoint/model selection. All3 fixedGs;train512rolewise128L384U×views1/20,V1800×all7. H1 BOTHdeep:trainmean2SIGMSEgain>=10%in>=4of6scenes BOTHcachedviews,andVnogainin>=4of6. H2 separately BOTHdeep:VtotalSIGMSEgain>=10%in>=4of6andVhead-visibleMSEnogainin>=4of6. Separatehypotheses/nofallbackprimary/noautomatictraining. Headspacefromfrozenheadcenterednormalizedrows/notdatafit;full/visible/orth useidenticalcleansigenergydenominator."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-SIG-generalization",
+    "gpu_policy": "CPU2/CUDAempty/OMP-MKL-OPENBLAS2/onefreshsequentialworkeratime/0GPU/0truthscorer;oldGjobsended/otherownersuntouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe run --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badrole/IDs/overlap/sourceVmetadata/Gstrictconfig/cache-order/shape/nonfinite/state-grad-or-hook-change/collision/smoke/execute/missingfixedmatrix:preservefailedrun/stopremaining/noautoretry. ScientifichypothesisFAILdoesnotstop/reselect/refit/retune."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-{context,linear,mlp}.json",
+    "source_V_SIG/complete.json",
+    "source_V_SIG/targets.npy PRIVATE",
+    "{model}/launch.json",
+    "{model}/smoke.json",
+    "{model}/results.json",
+    "{model}/complete.json",
+    "{model}/{train-1,train-20,V-sevenviews}.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Actualconditionermean2SIGrelativeMSE/perprior/frozen-head-visible-plus-orthogonal/errorenergyidentity",
+      "RestoredIQSIGrelativeMSE/head-visible/IQNMSE/knownsourceRX-day-role-scene",
+      "H1 train-to-Vfailure andH2 head-directiontradeoff independently/all3models/noTXaccuracy",
+      "G-Fstate-gradfixed/hookrestored/G40872-restoredSIGprefix40872/newVcleanprefix1800/smokeG12-Ffull12/CPUcost/noVtraining-labels-target"
+    ],
+    "dimensions": [
+      "3fixedGs-onemodelseed/not3seeds",
+      "source-train512128L384U×2cachedmixedviews;sourceV1800×7explicitviews",
+      "train18groups×2+V10groups×7=106permodel/318total;2312unique/13624observationspermodel"
+    ],
+    "prediction_ref": "Noformaltest/newGversion;27privatefrozenfeature-IQNPZs/all3sourceVs. Onlysource-knownRX/heldrecordgeneralization,notunseenRX orTXtrueclassification",
+    "scorer_ref": "No label truth. IndependentNumPyall27arrays/sourceID-role-reference-order/318groups/featurefull-visible-orthogonality/rawheadprojector/twohypotheses.0extraNN/noGselection."
+  },
+  "rows": [
+    {
+      "row_id": "context",
+      "method": "Frozen-context-G344295-final30/4452e09285b650536ab5e9dcc2acbfd9268c00e8/actualconditionerSIG-observer/train-Vdiagnostic",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{signature_generalization.py,signature_generalization_probe.py}",
+      "resolved_config_ref": "context/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new RNG/model/augmentation/physicalsampling. ExistingR07handlesandseedsreused;train512rolewiseLINSPACE;sourceVexisting1800IDs;modelseed2026092701/split392005/supportN-A.",
+      "k": null,
+      "scenario": "Fixedsource-train512128L384U/cache01and20 + fixedsourceV1800/sevenreceivedviews/noTX-Vlabels-target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "CPU2/G13624-restoredSIGprefix13624/newVcleanprefix1800onlycontext,0otherrows/smokeG4-Ffull4;trainunique512-Vunique1800/0optimizer-TX-Vlabels-target/headfit",
+      "output_root": "runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/context",
+      "log_path": "logs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit PENDING_CODE_COMMIT --key context",
+      "expected_artifacts": [
+        "context/launch.json",
+        "context/smoke.json",
+        "context/results.json",
+        "context/complete.json",
+        "context/{train-1,train-20,V-sevenviews}.npz PRIVATE"
+      ]
+    },
+    {
+      "row_id": "linear",
+      "method": "Frozen-linear-G406055-final30/df7fe90d16910f7373d79ee93291f265506a8434/actualconditionerSIG-observer/train-Vdiagnostic",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{signature_generalization.py,signature_generalization_probe.py}",
+      "resolved_config_ref": "linear/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new RNG/model/augmentation/physicalsampling. ExistingR07handlesandseedsreused;train512rolewiseLINSPACE;sourceVexisting1800IDs;modelseed2026092701/split392005/supportN-A.",
+      "k": null,
+      "scenario": "Fixedsource-train512128L384U/cache01and20 + fixedsourceV1800/sevenreceivedviews/noTX-Vlabels-target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "CPU2/G13624-restoredSIGprefix13624/newVcleanprefix1800onlycontext,0otherrows/smokeG4-Ffull4;trainunique512-Vunique1800/0optimizer-TX-Vlabels-target/headfit",
+      "output_root": "runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/linear",
+      "log_path": "logs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit PENDING_CODE_COMMIT --key linear",
+      "expected_artifacts": [
+        "linear/launch.json",
+        "linear/smoke.json",
+        "linear/results.json",
+        "linear/complete.json",
+        "linear/{train-1,train-20,V-sevenviews}.npz PRIVATE"
+      ]
+    },
+    {
+      "row_id": "mlp",
+      "method": "Frozen-mlp-G457575-final30/df7fe90d16910f7373d79ee93291f265506a8434/actualconditionerSIG-observer/train-Vdiagnostic",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{signature_generalization.py,signature_generalization_probe.py}",
+      "resolved_config_ref": "mlp/results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new RNG/model/augmentation/physicalsampling. ExistingR07handlesandseedsreused;train512rolewiseLINSPACE;sourceVexisting1800IDs;modelseed2026092701/split392005/supportN-A.",
+      "k": null,
+      "scenario": "Fixedsource-train512128L384U/cache01and20 + fixedsourceV1800/sevenreceivedviews/noTX-Vlabels-target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "CPU2/G13624-restoredSIGprefix13624/newVcleanprefix1800onlycontext,0otherrows/smokeG4-Ffull4;trainunique512-Vunique1800/0optimizer-TX-Vlabels-target/headfit",
+      "output_root": "runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/mlp",
+      "log_path": "logs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit PENDING_CODE_COMMIT --key mlp",
+      "expected_artifacts": [
+        "mlp/launch.json",
+        "mlp/smoke.json",
+        "mlp/results.json",
+        "mlp/complete.json",
+        "mlp/{train-1,train-20,V-sevenviews}.npz PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "PreviousgoalturnPROGRESS:sourceconditionoracle9d/8faePASS;deepLinear-MLPdf7/5bbcompletedall7negative. Sourcefinaltrainview10 headMSEmain.21042/linear.17329/MLP.17120 butoutputSIGonly~1-2%lower. Thisdiagnosesrecordgeneralizationanderrordirectionswithoutnewtargetreadsortarget-patternhyperparameters;all3modelsincluded/nochoosingbest.",
+    "ProtocolPhase1 sourceV onlyvalidation/noG-Vtraining. Thisisfrozenmechanismdiagnosis:nooptimizer/model-buffer/statefitting/headfit/threshold/epochselection. source_reference opensIQ-ID-RX-dayonly/notlabeldatasets. VcleanSIGnewreferenceoutputisdiagnosticnottraining;Gtrainingreuse_targets hardcodedoriginal63000sourceL-Ucache. V-IDstrain-IDsmustbedisjoint.",
+    "Train512fixedrolewiselinspace128L384U/source1and20 mixed7scenes. Vfixed1800oldpanel7explicitviews. Differentchannelrealizationsandrecorddistributions,notmatched-noise/newRX/causaloverfittingproof. Same5sourceRX/3days;allIDorder-RX-day-rolepaired;sourceV1800notnewindependentseed. Sourcephysical2312,main13624observationspermodel/3=40872.",
+    "ObserveactualtwoLinearconditionerinputs withread-onlyprehooks/clone/finallyremove. MainG.forward unchanged/IQstrictrepeat. CapturecompositeSIGincludingnewdeepresidual. FrozenFactualweightedSIGprefixforrestoredIQ;noTXlogitsorlabelsneeded. Frozenheadcenterednormalizedrowspace reusedhead_feature_basis(rank<=5),notfittedprojection/classifier;decompositionusesrawSIGdifference/samefulltargetenergyfloor1e-4. Head-visibleSIGerrornotfullclassificationerrororhardwareidentityproof.",
+    "TrainSIG40.32MBproofread-onlyreuse/newtraincacheF0. FirstcontextworkerafteractualLs-smoke computesVcleanSIG1800/1.152MBonce;remainingworkersmetadata-IDreuse/noNNduplicate. MainG40872/restoredprefix40872/newVprefix1800/smokeG12-fullF12/Fupdates0;F50source4df7-50/11100+oldcache63000prefix/.847077s costdisclosed/F-guided. All3originalGsingle30-7410/noancestor andscientificnegativeversionspreserved.",
+    "H1 andH2 explicitinselectionrule/independentlyreported/cleanonlydescriptive/noindicatorfallback. Counts>=4/6 applyseparately,scene-wisegainsalsofullyreported. Zero-baselinerelativegainundefinedexplicitNone/notreplacedbydefault. FAILnotblockgoal orautomaticallyrunG;PASSonlysupportsseparatelegalhypothesis/notgoalachievement.",
+    "3focusedtestsPASS:perrecordMSEdecomposition/floor/shape-boundary;bothmodels-and-cachedviews/H1;H2separate. ThreeactualCLI-CPU-beforedata-guard/344295-406055-457575factory/twoobservers/exactIQ/exceptioncleanup/state-grad/decompositionPASS/0dataNN. OneP0P1PASS. Eachfreshworkerstrictfinal30real2noncleanLs G4/fullF4 smoke-originalSIG-defaulthead-frozenstate,thencontinueswhole9views;noquery.",
+    "27privateNPZs/fullIQ-andSIG/IDs-RX-day-role/headbasis-W retainedN607;Gitonlyaggregates. IndependentNumPycomplete318groupcells/ID-role-targetcache/algebra/headprojection/twofixedhypotheses,0extraNN. Oneimmutableoutput/preflight/archiveSHA/compile/postPID-CWD-argv-CUDAempty-loggrowth. CPU2seqworkers/noGPU/otherowners-defaultDURA-previousartifactsunchanged/completegoalACTIVE."
+  ],
+  "registered_at": "2026-10-31T15:04:33+00:00"
+}

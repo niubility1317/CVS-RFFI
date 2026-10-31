@@ -132,7 +132,7 @@
       },
       "seed_notes": "No new model/optimizer/augmentation RNG. MainG-Fseed2026092701/fixedrolewise-linspace128L384U/split392005/cacheaugmentation2026101912/globalSIGshift1/supportN/A",
       "k": null,
-      "scenario": "Source-training-pool512L128U384/cache01and20/4x20fixedwindow80:160/pairedcleanoracles/0V-target",
+      "scenario": "Source-training-pool512128L384U/cache01and20/fixedweights-fourSIGconditionerreadouts/noV-target",
       "optimizer": null,
       "lr": null,
       "epochs": null,
@@ -160,7 +160,8 @@
     "3focusedtestsPASS:actualfixedvalues/zero-disabled/perrecord/negativeboundary/exceptionsrestoreandstatefixed;BOTHviewsgain-vs-shift-and-RXprotection. ActualmoduleCLI/help/CPUoutputguardbeforedata/actualG344295fourpaths/oracleinputs/nonzero-disabled-effect/exceptionhookrestoration/nativeIQ-state-gradpreservedPASS. OneP0P1beforelaunch. Firstreal2noncleanLssmoke strictmainfinal30/sourceSIG-and-cleanFcache/originalhead/4paths/exactnativeIQrestored;G12-F4,0updates;PASScontinues.",
     "Bothviewsfixed1/20/source128L384U/5RX/7scene/512unique1024visits/4case144groups. Actualconditionerinput-and-output/learnedpredictions/W-bias/fullIQ-F/IDs-privateNPZs retained for independentNumPycompletecheck;0extraNN. Gitaggregatesonly. MainF4096/G4096 plus4F/12Gsmoke,0TX-V-target/optimizer/formalprediction.",
     "Oneimmutableoutput/preflight/archiveSHA/remotecompile/PID-CWD-argv-CUDAempty-loggrowth. CPU2 noGPU/truthscorer;oldpairedGended/otherowners/defaultDURAunchanged. CompletegoalACTIVE:all6gap3pp+clean+R17guard+actualquality-efficiency. ScientificFAILnotblockgoal.",
-    "Actual source_indices uses role-wise linspace, not a new random seed. Metadata corrected to this observed selection rule; same established512records unchanged, no rerun or scientific threshold change."
+    "Actual source_indices uses role-wise linspace, not a new random seed. Metadata corrected to this observed selection rule; same established512records unchanged, no rerun or scientific threshold change.",
+    "Descriptive scenario field corrected from old periodic-template carry-over to actual fixed-weight SIG-conditioner intervention;code/data/threshold/results unchanged/no rerun."
   ],
   "registered_at": "2026-10-31T13:53:04+00:00"
 }
