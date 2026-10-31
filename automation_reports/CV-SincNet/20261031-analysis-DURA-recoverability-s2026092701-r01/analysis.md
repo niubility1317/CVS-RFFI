@@ -1,6 +1,6 @@
 # 星地 IQ 能恢复几成：全量证据与 30 轮新方向
 
-默认DURA的六星地平均能量拟合约9.3至9.8成、识别准确率约raw clean的8.1至9.8成，这是已达到的水平，真实极限仍未知。默认仅两景距raw clean≤3个百分点。新增小权重粗恢复监督G从零单阶段30轮已完成：clean 84.612500%、低城区 67.280357%，六景3pp通过0/6，默认保持。最新完整结果见[粗恢复监督分析](../20261031-phase1-DURA-coarseAnchor-E30-s2026092701-r01/analysis.md)；历史各版、完整纠错与成本保留于下文。波形恢复、固定F识别与真实硬件特质分别判断。
+默认DURA的六星地平均能量拟合约9.3至9.8成、识别准确率约raw clean的8.1至9.8成，这是已达到的水平，真实极限仍未知。默认仅两景距raw clean≤3个百分点。新增原SIG训练期执行优化G从零单阶段30轮已完成：clean 84.867262%、低城区 69.287500%，六景3pp通过0/6，默认保持。最新完整结果见[训练执行优化分析](../20261031-phase1-DURA-SIGfastTrain-E30-s2026092701-r01/analysis.md)；历史各版、完整纠错与成本保留于下文。波形恢复、固定F识别与真实硬件特质分别判断。
 
 ## 指标与数据口径
 
@@ -246,3 +246,8 @@ VERIFIED / ANALYZED。跨源RX余弦关系SIG指导G从零单阶段30轮/7410步
 ## 小权重粗恢复监督：新增完整实测
 
 VERIFIED / ANALYZED。小权重粗恢复监督G从零单阶段30轮/7410步，L189000/U1701000，无G祖先；完整G266951参数、推理图、原四物理项与SIG alpha1/IQcap.5保持。只增加全30轮alpha×coarse-clean逐包NMSE，alpha=.02071440650605139=.25/历史源32批梯度中位比12.068895139571893；该统计是旧noVarE20/coarseclean对finalIQ，不称当前SIG训练实际比例或cap。旧梯度分离主FAIL18/32未达24保持，本版不detach/预训练/复制G或用R17IQ教师；aux直接只更新coarse，原联合路径保持，无新G/F前向、训练参数VJP或推理模块。源SIG40.32MB只读复用、新缓存F0，历史63000prefix/0.847077秒与F50/11100源监督知识成本保留，F-guided。训练prefix/VJP各1.89m、完整F后续0，F不变，0直接TX/V/target/classloss/新头/sourceRX输入。每role全七景固定后truth-last，126正式/105源V/252双对照配对分组/14IQ独立复算；30轮loss/alpha/曝光/视图/cap核对。六星地较SIG提高0/6、纯G提高2/6、默认DURA提高0/6。clean 84.612500%，低城区 67.280357%；低城区较SIG -1.554762、纯G -0.092262、默认DURA -1.609524个百分点。六景3pp通过0/6，clean严格保持=False，R17逐景1pp=False，旧低城区70%=False。G训练及保存1020.983031秒、含worker准备1022.027162秒、控制器至自动分析1194.541898秒。ConvLinearMAC25068072/2prior4CG27FFT，同卡G+F B1默认4.591921ms、本版4.587787ms。共享GPU单次墙钟不证明因果加速，coarse更似clean不等于真实身份增强，有限模型成绩不认证物理恢复极限。默认DURA保持，完整目标ACTIVE。 这是本次可达质量，不认证物理极限。详见[完整分析](../20261031-phase1-DURA-coarseAnchor-E30-s2026092701-r01/analysis.md)。
+
+
+## 原SIG训练期执行优化：新增完整实测
+
+VERIFIED / ANALYZED。原SIG训练期插值执行优化G从零单阶段30轮/7410步，L189000/U1701000，无G祖先；完整G266951、原四物理项与SIG alpha1/IQcap.5保持，无新增loss/增强/参数。仅训练四Core12/15固定二倍插值采用既有半像素slice（另3次native），train factory try/finally恢复、冻结加载逐次原native Core断言，profile/源V/正式预测均为原native。既有源B256完整前向/梯度容差和同卡步骤14.437%收益证据复用，不重做CUPTI，不当作当前整轮速度保证或7410步逐位轨迹等价。源SIG40.32MB只读复用、新缓存F0，历史63000prefix/0.847077秒与F50/11100源监督知识成本保留，F-guided。训练prefix/VJP各1.89m、完整F后续0，F不变，0直接TX/V/target/classloss/新头/sourceRX输入。每role全七景固定后truth-last，126正式/105源V/252双对照配对分组/14IQ独立复算；30轮原loss/曝光/视图/cap核对，CPU scorer和原coarseAnchor同锁互斥且输出独立。六星地较SIG提高2/6、纯G提高6/6、默认DURA提高1/6。clean 84.867262%，低城区 69.287500%；低城区较SIG +0.452381、纯G +1.914881、默认DURA +0.397619个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=True，旧低城区70%=False。G训练及保存1021.596186秒、含worker准备1022.589685秒、控制器至自动分析1211.514897秒。ConvLinearMAC25068072/2prior4CG27FFT，同卡G+F B1默认4.684524ms、本版4.678386ms。共享GPU单次墙钟不证明因果加速，数值局部等价不能替代正式识别质量，有限模型成绩不认证物理恢复极限。默认DURA保持，完整目标ACTIVE。 这是本次可达质量，不认证物理极限。详见[完整分析](../20261031-phase1-DURA-SIGfastTrain-E30-s2026092701-r01/analysis.md)。

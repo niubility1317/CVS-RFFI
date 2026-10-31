@@ -290,3 +290,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 固定20点坐标的误差效用
 
 20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01。CPU2、复用defaultDURA/source512×01/20缓存，0G/TX/V/target/更新；仅F3072+4smoke。固定[80,160)/4×20对clean-native误差正交分解P/R，主R与同修正L2全窗最近clean控制比较。双view各较native+4/512、较等能量+2、5RX/clean保持/非clean最多−1及Fcos不高；P仅描述、不换主或坐标。旧repeatShrink保护与本恢复误差oracle不同，旧FAIL保持；源F选择代理非真TX，oracle非部署或恢复上限，PASS不自动训练，默认与完整目标保持。
+
+
+## 原SIG训练期执行优化：完整E30与七景
+
+20261031-phase1-DURA-SIGfastTrain-E30-s2026092701-r01/84d9d483。VERIFIED / ANALYZED。原SIG训练期插值执行优化G从零单阶段30轮/7410步，L189000/U1701000，无G祖先；完整G266951、原四物理项与SIG alpha1/IQcap.5保持，无新增loss/增强/参数。仅训练四Core12/15固定二倍插值采用既有半像素slice（另3次native），train factory try/finally恢复、冻结加载逐次原native Core断言，profile/源V/正式预测均为原native。既有源B256完整前向/梯度容差和同卡步骤14.437%收益证据复用，不重做CUPTI，不当作当前整轮速度保证或7410步逐位轨迹等价。源SIG40.32MB只读复用、新缓存F0，历史63000prefix/0.847077秒与F50/11100源监督知识成本保留，F-guided。训练prefix/VJP各1.89m、完整F后续0，F不变，0直接TX/V/target/classloss/新头/sourceRX输入。每role全七景固定后truth-last，126正式/105源V/252双对照配对分组/14IQ独立复算；30轮原loss/曝光/视图/cap核对，CPU scorer和原coarseAnchor同锁互斥且输出独立。六星地较SIG提高2/6、纯G提高6/6、默认DURA提高1/6。clean 84.867262%，低城区 69.287500%；低城区较SIG +0.452381、纯G +1.914881、默认DURA +0.397619个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=True，旧低城区70%=False。G训练及保存1021.596186秒、含worker准备1022.589685秒、控制器至自动分析1211.514897秒。ConvLinearMAC25068072/2prior4CG27FFT，同卡G+F B1默认4.684524ms、本版4.678386ms。共享GPU单次墙钟不证明因果加速，数值局部等价不能替代正式识别质量，有限模型成绩不认证物理恢复极限。默认DURA保持，完整目标ACTIVE。 单seed/已暴露工程基准，完整TX/RX/day、净纠错、源与正式差异及成本见run分析。

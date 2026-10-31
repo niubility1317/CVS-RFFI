@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-SIGfastTrain-E30-s2026092701-r01`
 - group_id：`phase1-dura-original-SIG-training-only-fixedgrid-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整结果见analysis.md/results.json，分组和成本保留。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -47,3 +47,10 @@ GPU4/6/7/free≥12000MiB/existing≤2新增1总≤3、own1/card、goal≤2GPUwor
 ## 实际启动证据
 
 VERIFIED / RUNNING，尚无性能结果。执行84d9d483ab2aad2ee4e433949d11f09238dbd6c5；真实2非clean L_s native/slice loss与全部裁剪梯度、初始化/原SIGcap/严格重载native/Core和F冻结检查PASS后进入GPU7 worker1896763/controller1896664。已核实1轮/247步、实际CWD/完整argv/commit/CUDA/compute PID和日志增长，准入前1个compute PID/剩余22883MiB，新增1个。归档SHA比较与远端编译通过；固定final30、原native profile/全部七景自动truth-last，CPU scorer共用当前coarseAnchor既有锁。
+
+
+## 完整训练与正式结果
+
+VERIFIED / ANALYZED。原SIG训练期插值执行优化G从零单阶段30轮/7410步，L189000/U1701000，无G祖先；完整G266951、原四物理项与SIG alpha1/IQcap.5保持，无新增loss/增强/参数。仅训练四Core12/15固定二倍插值采用既有半像素slice（另3次native），train factory try/finally恢复、冻结加载逐次原native Core断言，profile/源V/正式预测均为原native。既有源B256完整前向/梯度容差和同卡步骤14.437%收益证据复用，不重做CUPTI，不当作当前整轮速度保证或7410步逐位轨迹等价。源SIG40.32MB只读复用、新缓存F0，历史63000prefix/0.847077秒与F50/11100源监督知识成本保留，F-guided。训练prefix/VJP各1.89m、完整F后续0，F不变，0直接TX/V/target/classloss/新头/sourceRX输入。每role全七景固定后truth-last，126正式/105源V/252双对照配对分组/14IQ独立复算；30轮原loss/曝光/视图/cap核对，CPU scorer和原coarseAnchor同锁互斥且输出独立。六星地较SIG提高2/6、纯G提高6/6、默认DURA提高1/6。clean 84.867262%，低城区 69.287500%；低城区较SIG +0.452381、纯G +1.914881、默认DURA +0.397619个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=True，旧低城区70%=False。G训练及保存1021.596186秒、含worker准备1022.589685秒、控制器至自动分析1211.514897秒。ConvLinearMAC25068072/2prior4CG27FFT，同卡G+F B1默认4.684524ms、本版4.678386ms。共享GPU单次墙钟不证明因果加速，数值局部等价不能替代正式识别质量，有限模型成绩不认证物理恢复极限。默认DURA保持，完整目标ACTIVE。
+
+详见[完整分析](analysis.md)、[训练与七景图](training_and_formal.png)、results.json和transfer_diagnostics.json。controller1896664/worker1896763自然结束，无目标反馈或选择性重跑。
