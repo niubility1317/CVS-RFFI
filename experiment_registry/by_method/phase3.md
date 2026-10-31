@@ -86,3 +86,4 @@
 |PAMF 源重放与目标双视图的开放表征适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-signal-ssl-s2026092701-r01/report.md)|
 |PAMF P0开放表征与P1身份路径：匹配训练单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-star-raw-open-s2026092701-r01/report.md)|
 |PAMF 多模态共同方差密度比|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-tied-density-s2026092701-r01/report.md)|
+|PAMF第三阶段：非平衡传输混合先验适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-uot-prior-s2026092701-r01/report.md)|
