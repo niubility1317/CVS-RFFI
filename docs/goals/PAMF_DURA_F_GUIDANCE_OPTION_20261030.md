@@ -138,3 +138,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 精确非线性源域参考可达性
 
 20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01/b621e3d5。VERIFIED / ANALYZED，仅SOURCE_ONLY。固定原source10参考/beta.25/alpha不变，512源128L384U、8次GaussNewton重线性化/半步0.5。实际F相对偏移误差median 0.010535806/P95 0.205998719，IQ位移NMSEmean 0.013526%/P95 0.027196%，512原clean判决保持，固定可达性PASS。真实2Ls随机G/原F精确guide梯度注入、IQ cap、三模块梯度及F/G状态检查通过；G0优化/0保存权重，未使用失败clean-J或旧G误差。CPU2/PID1501100/CWD-argv-env-loggrowth已核实，主循环54.974718秒自然结束；F4608/VJP40960，加smokeF4/VJP2/G2。4096闭式IQ更新/2097152分量/4608非线性观测几何及最终判定独立复算，0TX/V/target/完整源J/新G训练。只支持另登记GPU步开销测量，不自动训练、不称目标识别收益或硬件细节恢复；旧10维局部近似FAIL保持，默认和完整目标保持。 后续另登记GPU步开销测量，若可行再登记Gscratchsinglejoint30/7410和全七景truth-last；本次未启动这些阶段。六景逐个距rawclean≤3pp、clean保持、同质量训练效率目标继续ACTIVE。
+
+
+## 精确非线性源约束GPU步成本
+
+20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01/6dd3eabf。VERIFIED / ANALYZED，仅SOURCE_ONLY。GPU4原cached5→exact10，cache01中位110.329→138.148ms、cache20中位115.832→144.347ms，中位比1.252144/1.246179、配对中位比1.244635/1.238350均≤1.5；P95比1.576407/1.310425完整保留。新峰值allocated1.292GiB，F共同驻留非独立部署显存。48计时/24配对/末4组加权loss独立复算；G/F状态不变、0优化/TX-V-target/新训练，GPU G15360/F7680/VJP7680、CPUsmoke另G2/F4/VJP2。controller1530960/worker1531466/CWD-argv-CUDA-GPU-loggrowth及自然结束核实；默认保持。只支持另登记scratchjoint30/全7正式，不声称整流程或同质量效率成功。 后续保护F加载的Torch/CUDA随机状态，再另登记GscratchsingleE30/7410与七景truth-last。当前六景3pp/clean/同质量效率目标继续ACTIVE。

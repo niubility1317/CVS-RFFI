@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01`
 - group_id：`phase1-dura-source-exact-reference-step-cost`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -34,3 +34,10 @@
 Source01/20、固定256=128L128U、同scratchG/原F50。cached5使用上版生产J5/offset5；exact10使用已通过非线性源可达性的同一10维参考、一次F reverse注入。每case/view3预热+12计时，顺序交替，无优化/模型更新。两景各自marginal median ratio和paired median ratio均≤1.5才通过成本条件；P95/显存完整描述，不按平均隐藏坏景，不反复重测。
 
 计时包含输入复制/物理forward/guide-Freverse/Gbackward-clip/指标复制，不含optimizer/cache生产/epochshuffle/排队。F两case共同驻留，显存不冒称独立部署占用。GPU G15360/F7680/VJP7680，CPU首步真实2Ls另G2/F4/VJP2；0训练/TX/V/target/保存G。3测试/入口/唯一P0P1通过，原资源授权4/6/7、总≤3/卡新增1、goal≤2，保留他人任务。通过只支持另登记单阶段30轮与七景正式，默认与完整目标保持。
+
+
+## 完成结果
+
+VERIFIED / ANALYZED，仅SOURCE_ONLY。GPU4原cached5→exact10，cache01中位110.329→138.148ms、cache20中位115.832→144.347ms，中位比1.252144/1.246179、配对中位比1.244635/1.238350均≤1.5；P95比1.576407/1.310425完整保留。新峰值allocated1.292GiB，F共同驻留非独立部署显存。48计时/24配对/末4组加权loss独立复算；G/F状态不变、0优化/TX-V-target/新训练，GPU G15360/F7680/VJP7680、CPUsmoke另G2/F4/VJP2。controller1530960/worker1531466/CWD-argv-CUDA-GPU-loggrowth及自然结束核实；默认保持。只支持另登记scratchjoint30/全7正式，不声称整流程或同质量效率成功。
+
+详见[完整分析](analysis.md)、results.json与paired_GPU_step_cost.png。整体目标保持ACTIVE。
