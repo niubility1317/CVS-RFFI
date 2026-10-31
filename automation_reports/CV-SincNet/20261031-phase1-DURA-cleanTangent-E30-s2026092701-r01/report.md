@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01`
 - group_id：`phase1-dura-source-clean-tangent-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整结果见下方、analysis.md与results.json；保留每row与RX/day/TX/scene/K/seed的对应关系。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -43,3 +43,10 @@
 VERIFIED / RUNNING，代码7dd799ebb294ffe8711f530872e4922f100ed498已push且远端OID核对。N607一次preflight、单archive本远SHA、remotecompile通过；实际controller1285659/worker1285750的CWD/完整命令/CUDA/GPU及日志增长已核实。GPU4启动前仅1个compute PID、free22883MiB，本任务增加1个；旧owner句柄均已消失，其他owner不变。真实2Ls源G/F梯度、F状态不变、strictreload和原头smoke通过，7聚焦检查及唯一P0P1通过。
 
 源63000×5×2×256 FP32敏感度缓存645120000bytes实际30.008929秒，独立完整readback确认finite/shape/ID顺序及原headbasis正交。F输入63000/VJP315000，Fstate不变、0TX/V/target，随后释放F并重置学生/探针seed。已至少完成第1轮，新增tangent项非零、加权总loss独立复算一致；训练阶段Fforward0。当前尚无新正式结果，固定训练满30轮后自动七景全部预测再独立truth-last。source资格与缓存成功不等于目标达标，默认DURA保持。见[启动状态](launch_status.json)。
+
+
+## 完整训练与正式结果
+
+VERIFIED / ANALYZED。scratch单阶段30/7410/L189000U1701000，完整30日志、缓存视图/F计数和加权loss独立复算；源J63000/645.12MB/315000VJP、Fstate不变，学生训练F前向0。全部七景168000预测后truth-last、126正式分组及126与pureG配对分组独立复算一致，actualworker/controller已自然结束，其他owner不变。
+
+相对pureG四星地提高（+0.526786至+1.577976pp），中/低城区−0.446429/−0.747619pp；七景均低于默认，clean84.586905%、lowurban66.625000%，六景3pp通过0/6、clean严格不下降=False、R17逐景1pp=False、旧lowurban70=False。训练1022.804362s/缓存30.008929s/G含准备1053.873159s/全分析1235.243895s。不能只凭减少F执行宣布同质量效率成功。详见[完整分析](analysis.md)、[训练与正式图](training_and_formal.png)、results.json及transfer_diagnostics.json。默认保持，完整目标ACTIVE。

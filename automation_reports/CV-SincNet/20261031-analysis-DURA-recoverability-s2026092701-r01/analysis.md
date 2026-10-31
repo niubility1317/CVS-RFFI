@@ -149,3 +149,6 @@ wideCoarse首步2Ls新coarse梯度/严格重载/F noquery、11项聚焦检查和
 
 
 完整两阶段源context诊断已结束：20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/97da8a29，主对照纯repeat源E30/7410、512源128L384U×clean/01/20，CPU36.665秒/0GPU/0优化TX-V-target。真实算子替换使主对照NMSE降低约11%，但Fclean选择−2/−5、clean−1；rank32真实算子表示误差很小而预测平滑后IQ略差、F选择+1/0。两项均未过事前固定源门槛，不据此启动新G或放宽。default换clean粗恢复反而恶化，提示潜在表示共同适配；该反事实不是可部署方案、真实TX准确率或恢复上限。六份完整NPZ/480分组case独立复算，G/F全state不变、所有计数闭合。见[完整诊断](../20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/analysis.md)（分析总报告相对路径）或automation_reports/CV-SincNet/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/analysis.md；默认保持/目标ACTIVE。
+
+
+源clean局部敏感度缓存版已完成30轮和完整七景：四景相对pureG提高，但中/低城区下降，clean84.586905%、lowurban66.625%，六星地全部低于默认，3pp0/6。一次性J缓存30.009秒、学生训练17.047分钟且训练时F前向0，全流程20.587分钟，尚未兼顾质量。低城区相对rawclean纠正6971条、损伤37297条，部分clean错误可被修复并不表示总体超过clean或达到恢复极限。源V低城区也−2.5pp，局部梯度方向对齐不能代替真实冻结身份评分。见[完整缓存式约束分析](../20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/analysis.md)。默认保持，目标ACTIVE。

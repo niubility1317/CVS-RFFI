@@ -1,0 +1,234 @@
+{
+  "status": "ANALYZED",
+  "scope": "Same-row descriptive analysis afterallformalpredictions/scoring;notselection/retuning",
+  "source_V_and_formal": {
+    "clean": {
+      "source_V_accuracy": 98.33333333333333,
+      "source_V_delta_pp": -0.11111111111111427,
+      "formal_IQ_NMSE": 0.0003280693490523845,
+      "formal_IQ_NMSE_delta": -0.00024881886201910675,
+      "formal_accuracy_delta_pp": -0.04345238095238095
+    },
+    "practical_high": {
+      "source_V_accuracy": 97.88888888888889,
+      "source_V_delta_pp": 0.0,
+      "formal_IQ_NMSE": 0.017213253304362297,
+      "formal_IQ_NMSE_delta": 0.000641603022813797,
+      "formal_accuracy_delta_pp": 1.5779761904761904
+    },
+    "practical_mid": {
+      "source_V_accuracy": 96.66666666666667,
+      "source_V_delta_pp": -0.27777777777777146,
+      "formal_IQ_NMSE": 0.023169003427028656,
+      "formal_IQ_NMSE_delta": 0.0013602077960968018,
+      "formal_accuracy_delta_pp": 1.1392857142857142
+    },
+    "practical_low_suburban": {
+      "source_V_accuracy": 95.72222222222221,
+      "source_V_delta_pp": -0.055555555555557135,
+      "formal_IQ_NMSE": 0.02973177656531334,
+      "formal_IQ_NMSE_delta": 0.002064889296889305,
+      "formal_accuracy_delta_pp": 0.5267857142857143
+    },
+    "practical_high_urban": {
+      "source_V_accuracy": 97.33333333333334,
+      "source_V_delta_pp": 0.11111111111112848,
+      "formal_IQ_NMSE": 0.023542305454611778,
+      "formal_IQ_NMSE_delta": 0.002034951001405716,
+      "formal_accuracy_delta_pp": 1.0285714285714285
+    },
+    "practical_mid_urban": {
+      "source_V_accuracy": 90.05555555555556,
+      "source_V_delta_pp": -1.2222222222222285,
+      "formal_IQ_NMSE": 0.05079707130789757,
+      "formal_IQ_NMSE_delta": 0.005513552576303482,
+      "formal_accuracy_delta_pp": -0.44642857142857145
+    },
+    "practical_low_urban": {
+      "source_V_accuracy": 82.83333333333334,
+      "source_V_delta_pp": -2.5,
+      "formal_IQ_NMSE": 0.07449556887149811,
+      "formal_IQ_NMSE_delta": 0.006587035953998566,
+      "formal_accuracy_delta_pp": -0.7476190476190476
+    }
+  },
+  "low_urban_groups": {
+    "RX": [
+      {
+        "value": "1-1",
+        "count": 24000,
+        "tangent_accuracy": 61.958333333333336,
+        "repeat_accuracy": 65.90833333333333,
+        "delta_pp": -3.95,
+        "repairs": 1410,
+        "damages": 2358,
+        "net_repaired": -948
+      },
+      {
+        "value": "14-7",
+        "count": 24000,
+        "tangent_accuracy": 61.358333333333334,
+        "repeat_accuracy": 58.391666666666666,
+        "delta_pp": 2.966666666666667,
+        "repairs": 2683,
+        "damages": 1971,
+        "net_repaired": 712
+      },
+      {
+        "value": "2-1",
+        "count": 24000,
+        "tangent_accuracy": 72.275,
+        "repeat_accuracy": 72.92083333333333,
+        "delta_pp": -0.6458333333333334,
+        "repairs": 1937,
+        "damages": 2092,
+        "net_repaired": -155
+      },
+      {
+        "value": "20-1",
+        "count": 24000,
+        "tangent_accuracy": 60.5,
+        "repeat_accuracy": 61.925,
+        "delta_pp": -1.425,
+        "repairs": 2068,
+        "damages": 2410,
+        "net_repaired": -342
+      },
+      {
+        "value": "7-14",
+        "count": 24000,
+        "tangent_accuracy": 70.86666666666666,
+        "repeat_accuracy": 71.0625,
+        "delta_pp": -0.19583333333333333,
+        "repairs": 2159,
+        "damages": 2206,
+        "net_repaired": -47
+      },
+      {
+        "value": "7-7",
+        "count": 24000,
+        "tangent_accuracy": 68.4,
+        "repeat_accuracy": 68.32916666666667,
+        "delta_pp": 0.07083333333333333,
+        "repairs": 1952,
+        "damages": 1935,
+        "net_repaired": 17
+      },
+      {
+        "value": "8-8",
+        "count": 24000,
+        "tangent_accuracy": 71.01666666666667,
+        "repeat_accuracy": 73.07083333333334,
+        "delta_pp": -2.0541666666666667,
+        "repairs": 1610,
+        "damages": 2103,
+        "net_repaired": -493
+      }
+    ],
+    "TX": [
+      {
+        "value": "0",
+        "count": 28000,
+        "tangent_accuracy": 83.41785714285714,
+        "repeat_accuracy": 79.28928571428571,
+        "delta_pp": 4.128571428571429,
+        "repairs": 2365,
+        "damages": 1209,
+        "net_repaired": 1156
+      },
+      {
+        "value": "1",
+        "count": 28000,
+        "tangent_accuracy": 41.635714285714286,
+        "repeat_accuracy": 28.882142857142856,
+        "delta_pp": 12.753571428571428,
+        "repairs": 5309,
+        "damages": 1738,
+        "net_repaired": 3571
+      },
+      {
+        "value": "2",
+        "count": 28000,
+        "tangent_accuracy": 61.34285714285714,
+        "repeat_accuracy": 65.99642857142857,
+        "delta_pp": -4.6535714285714285,
+        "repairs": 2105,
+        "damages": 3408,
+        "net_repaired": -1303
+      },
+      {
+        "value": "3",
+        "count": 28000,
+        "tangent_accuracy": 45.15,
+        "repeat_accuracy": 58.27857142857143,
+        "delta_pp": -13.128571428571428,
+        "repairs": 1775,
+        "damages": 5451,
+        "net_repaired": -3676
+      },
+      {
+        "value": "4",
+        "count": 28000,
+        "tangent_accuracy": 92.575,
+        "repeat_accuracy": 94.12142857142857,
+        "delta_pp": -1.5464285714285715,
+        "repairs": 433,
+        "damages": 866,
+        "net_repaired": -433
+      },
+      {
+        "value": "5",
+        "count": 28000,
+        "tangent_accuracy": 75.62857142857143,
+        "repeat_accuracy": 77.66785714285714,
+        "delta_pp": -2.039285714285714,
+        "repairs": 1832,
+        "damages": 2403,
+        "net_repaired": -571
+      }
+    ],
+    "day": [
+      {
+        "value": "2021_03_01",
+        "count": 42000,
+        "tangent_accuracy": 64.77380952380952,
+        "repeat_accuracy": 67.06428571428572,
+        "delta_pp": -2.2904761904761903,
+        "repairs": 3130,
+        "damages": 4092,
+        "net_repaired": -962
+      },
+      {
+        "value": "2021_03_08",
+        "count": 42000,
+        "tangent_accuracy": 69.4452380952381,
+        "repeat_accuracy": 69.64285714285714,
+        "delta_pp": -0.1976190476190476,
+        "repairs": 3365,
+        "damages": 3448,
+        "net_repaired": -83
+      },
+      {
+        "value": "2021_03_15",
+        "count": 42000,
+        "tangent_accuracy": 65.54523809523809,
+        "repeat_accuracy": 66.08571428571429,
+        "delta_pp": -0.5404761904761904,
+        "repairs": 3523,
+        "damages": 3750,
+        "net_repaired": -227
+      },
+      {
+        "value": "2021_03_23",
+        "count": 42000,
+        "tangent_accuracy": 66.73571428571428,
+        "repeat_accuracy": 66.69761904761904,
+        "delta_pp": 0.0380952380952381,
+        "repairs": 3801,
+        "damages": 3785,
+        "net_repaired": 16
+      }
+    ]
+  },
+  "source_final_training_IQ_NMSE_relative_change_percent": 4.911246508616185
+}
