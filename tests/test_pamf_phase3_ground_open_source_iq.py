@@ -1,7 +1,7 @@
 """The released source loader binds storage by opaque ID, never Us labels."""
 import numpy as np
 import pytest
-from experiments.cric_dura_comparison.source_iq import aligned_source_iq
+from experiments.pamf_phase3_open_world.ground_open_source import aligned_source_iq
 
 
 def test_source_storage_reorders_without_opening_hidden_labels(tmp_path,monkeypatch,subtests):
@@ -26,3 +26,9 @@ def test_source_storage_reorders_without_opening_hidden_labels(tmp_path,monkeypa
     assert handle['reordered_positions']==3 and handle['U_TX_truth_reads']==0
     for ids in (np.asarray(['a','b','d']),np.asarray(['a','b','b'])):
         with subtests.test(ids=ids.tolist()),pytest.raises(ValueError):aligned_source_iq(tmp_path,'U_s',ids)
+
+
+def test_new_source_reader_does_not_shadow_frozen_model_package():
+    import subprocess,sys
+    code="import sys; from experiments.pamf_phase3_open_world import ground_open_data; assert not any(k.startswith('experiments.cric_dura_comparison') for k in sys.modules)"
+    subprocess.run([sys.executable,'-X','utf8','-B','-c',code],check=True,capture_output=True)

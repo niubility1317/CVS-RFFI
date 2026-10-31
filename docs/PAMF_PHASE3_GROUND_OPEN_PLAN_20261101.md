@@ -1,6 +1,6 @@
 # 先强化地面开放训练
 
-Run `20261101-phase3-ground-open-s2026092701-r02`，owner `codex-phase3-ground-open-20261101`。用户指定先强化地面训练；原 PCD＋DURA 基线及所有历史产物保留。完整 Phase3 目标 ACTIVE，ViM 草稿尚未发布，本轮不继续该方向。
+Run `20261101-phase3-ground-open-s2026092701-r03`，owner `codex-phase3-ground-open-20261101`。用户指定先强化地面训练；原 PCD＋DURA 基线及所有历史产物保留。完整 Phase3 目标 ACTIVE，ViM 草稿尚未发布，本轮不继续该方向。
 
 本轮固定两个完整原 F0 学生，检验地面 clean 源域训练及普通源域半监督能否改善开放识别。主方法预先固定 SSL_energy，SUP_energy 为配对监督控制，F0_energy 为原识别器控制；不依据查询结果选主方法、阈值、checkpoint 或重跑。没有新增目标无标签适应、未知发现或匿名注册。
 
@@ -43,4 +43,6 @@ source_ground_success要求SSL在源clean独立Q的24组全部CK≥95%、RU≥95
 
 ## 发布依赖的技术恢复
 
-原r01在首真实checkpoint smoke之前因cric包只有四个模块而缺bootstrap停止，数据值/训练更新/预测/真值读取均0，原root与日志保留。r02仅恢复完整已提交cric Python包依赖及独立run/output root，科学矩阵、采样、预算、模型与权限不变；不按测试分数重试。原F0加载链需要bootstrap、f_train、f_model、t1_model等，完整regular package随同代码commit封装，避免部分包遮蔽固定历史依赖。
+原r01在首真实checkpoint smoke之前因部分当前cric包缺bootstrap停止；r02补完整当前cric包后又在原F0加载前因load_F参数接口与固定历史版本不兼容停止。两者均无真实IQ值读取、训练更新、预测或真值读取，原root/log保留，不原地重启。
+
+r03将新源clean的只读数据加载与物理ID对齐放在本Phase3独立ground_open_source模块，不导入cric包，也不在新发布包内携带当前cric包。原NN继续通过原固定历史release激活和版本匹配的加载器构造，不修改旧API、架构、权重或继承合同。一次全新进程导入检查覆盖“数据读取不得预先缓存历史模型包”，首真实checkpoint无query smoke仍在data builder第一步、PASS即继续。独立r03 root，科学矩阵、采样、预算、模型和权限不变，不按分数重试。

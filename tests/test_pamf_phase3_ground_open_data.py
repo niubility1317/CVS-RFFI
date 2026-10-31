@@ -44,7 +44,7 @@ def test_split_is_balanced_disjoint_and_independent_of_input_order(monkeypatch):
 @pytest.fixture
 def fixture(tmp_path, monkeypatch):
     m = api()
-    from experiments.cric_dura_comparison.f_data import SourceDataset
+    from experiments.pamf_phase3_open_world.ground_open_source import SourceDataset
     from experiments.pamf_phase3_open_world import star_relative_source as native
     counts = dict(L=180, Us=90, OE=60, V=180, novel=45)
     monkeypatch.setattr(m, 'COUNTS', counts); monkeypatch.setattr(m, 'CELL_SIZE', 2)
