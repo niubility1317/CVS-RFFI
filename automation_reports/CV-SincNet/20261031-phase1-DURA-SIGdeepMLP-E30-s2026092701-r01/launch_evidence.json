@@ -1,0 +1,111 @@
+{
+  "status": "VERIFIED_RUNNING_NO_PERFORMANCE_RESULT",
+  "execution_commit": "df7fe90d16910f7373d79ee93291f265506a8434",
+  "controller_PID": 1971151,
+  "worker_PID": 1971318,
+  "GPU": 7,
+  "actual_CWD_argv_commit_CUDA_compute_PID_verified": true,
+  "controller_log_bytes": 403,
+  "worker_log_bytes": 1192,
+  "epoch_records": 1,
+  "latest_update": 247,
+  "smoke": {
+    "status": "PASS",
+    "real_nonclean_Ls": 2,
+    "G_inputs": 12,
+    "F_full_inputs": 4,
+    "F_prefix_inputs": 2,
+    "F_input_VJP_inputs": 2,
+    "smoke_aux_parameter_VJP_inputs": 2,
+    "deep_SIG_mode": "mlp",
+    "main_initial_parameters_and_IQ_matched": true,
+    "source_aux_gradient_norms": {
+      "prior0_deep_output": 0.016943398863077164,
+      "prior0_base_prediction": 0.04045988619327545,
+      "prior1_deep_output": 0.014697697013616562,
+      "prior1_base_prediction": 0.03783971443772316
+    },
+    "MLP_first_layer_zero_gradient_expected": true,
+    "actual_deep_inference_calls": 2,
+    "strict_E0_reload": true,
+    "native_optimized_match": true,
+    "G_parameters": 457575,
+    "SIG_IQ_gradient_cap": 0.5,
+    "aux_gradient_outside_output_cap": true,
+    "F_unchanged": true,
+    "F_updates": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "G_initialization_checkpoint_loads": 0,
+    "source_cache_reuse": {
+      "status": "SOURCE_ACTUAL_SIG_REUSED",
+      "count": 63000,
+      "shape": [
+        63000,
+        160
+      ],
+      "numeric_bytes": 40320000,
+      "source_contract": "original7/63/30",
+      "F_teacher": {
+        "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "seed": 2026092701,
+        "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "epoch": 50,
+        "updates": 11100
+      },
+      "reused_from_run": "20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01",
+      "original_metadata": {
+        "status": "SOURCE_ACTUAL_SIG_COMPLETE",
+        "count": 63000,
+        "shape": [
+          63000,
+          160
+        ],
+        "numeric_bytes": 40320000,
+        "source_contract": "original7/63/30",
+        "F_teacher": {
+          "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+          "seed": 2026092701,
+          "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+          "epoch": 50,
+          "updates": 11100
+        },
+        "actual_weighted_TripleSIG": true,
+        "full_F_inputs": 0,
+        "F_prefix_inputs": 63000,
+        "F_input_VJP_inputs": 0,
+        "F_updates": 0,
+        "model_optimizer_updates": 0,
+        "TX_labels_read": 0,
+        "V_reads": 0,
+        "target_reads": 0,
+        "seconds": 0.847077140584588,
+        "peak_allocated_bytes": 168638464
+      },
+      "new_F_prefix_inputs": 0,
+      "new_F_input_VJP_inputs": 0,
+      "new_numeric_bytes": 0,
+      "TX_labels_read": 0,
+      "V_reads": 0,
+      "target_reads": 0,
+      "seconds": 0.07736652391031384
+    },
+    "teacher_load": {
+      "F_load_RNG_restored": true,
+      "CPU_rng_restored": true,
+      "CUDA_rng_restored": null,
+      "F_checkpoint_loads": 1
+    }
+  },
+  "admission": {
+    "visible_GPU_compute_PIDs": 1,
+    "free_memory_MB": 22883,
+    "maximum_total_after_adding": 3
+  },
+  "archive_sha_match": true,
+  "remote_compile": true,
+  "CPU_scorer_common_lock": "runs/20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01/score.lock",
+  "default_DURA_changed": false,
+  "goal_complete": false
+}

@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-and-efficiency goal;explicit source frozen-F feature-guidance and scratchsingle-stage30epoch authorization;noTX/V/targetoptimization/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "df7fe90d16910f7373d79ee93291f265506a8434",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-SIGdeepPair-E30-r01"
@@ -101,7 +101,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.signature_deep_mlp run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.signature_deep_mlp run --root /home/szu2070436088/2510044040/CV-SincNet --commit df7fe90d16910f7373d79ee93291f265506a8434",
     "stop_rule": "Badsource/Fcache/roles-RNG/nonfinite/originalSIGcap>.5*(1+2e-5)/checkpoint/collision/smoke/nativeoptimized/deep-path/coverage:preservefailedrow/noautoretry/noothers. No performance stop;fixed30/all7regardlesssourcequality. InitialMLPfirstlayer-and-conditionerzero-gradexpected/newlastauxgradnonzerorequired."
   },
   "expected_artifacts": [
@@ -170,7 +170,7 @@
       "budget_ref": "Gscratchsingle30/7410/B256/L189000U1701000/noGancestor/main344295+113280=457575/25257512ConvLinearMAC/2prior4CG27FFT/native;sourceSIG40.32MBreuse/newcacheF0/onlineprefix-VJP1.89meach/2compositeSIGpredictions3.78m",
       "output_root": "runs/20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.signature_deep_mlp run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_direct_train.signature_deep_mlp run --root /home/szu2070436088/2510044040/CV-SincNet --commit df7fe90d16910f7373d79ee93291f265506a8434",
       "expected_artifacts": [
         "launch.json",
         "plan.json",

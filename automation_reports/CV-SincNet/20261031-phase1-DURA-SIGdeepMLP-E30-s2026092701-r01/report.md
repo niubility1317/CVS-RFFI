@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01`
 - group_id：`phase1-DURA-source-qualified-deep-SIG-predictor-pair-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -40,3 +40,8 @@
 6项聚焦检查和两个actual入口/全模型/别名/原main初值-IQ-SIG-随机流/损失与新梯度/路由-独立输出-共同CPU锁-七景检查PASS。每候选一次P0/P1在发布前完成；首步真实2非clean L_s smoke（G12/Ffull4/prefix2/VJP2）后直接训练。主对照固定main4452，新增两版互比，并列原SIG/pureG/default/R17。自动profile/源1800×7/正式168000×7，不因源表现取消；各角色全七景预测后独立truth-last，不按目标调参、选轮次或重跑。
 
 GPU4/6/7每卡本任务1个、总至多2个，显存余量≥12GB且既有compute≤2新增1总≤3；CPU评分共用线性新run锁、输出根独立。六景逐个≥137216正确、clean≥142256、R17逐景损失≤1680，low urban70%另列。完整参数、实际速度、总训练与测试成本一起报告，不由更深/更多参数推断有效。默认DURA和其他owner保持，完整目标ACTIVE。
+
+
+## 实际启动证据
+
+VERIFIED / RUNNING，尚无性能结果。执行 df7fe90d16910f7373d79ee93291f265506a8434，controller 1971151、GPU 7 worker 1971318。真实2非clean L_s smoke PASS：新增末层实际辅助梯度、原main初值与IQ、原SIG cap、三G模块、严格E0/nativeoptimized/F冻结、两个深层推理路径核实。已完成1轮/247步，实际CWD/argv/commit/CUDA/compute PID和日志增长通过。准入前1个compute、剩余22883MiB，新增1个。归档SHA/远端编译通过，固定单30轮与自动七景，CPU共同锁、独立输出。
