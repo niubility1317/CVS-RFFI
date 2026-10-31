@@ -6,7 +6,7 @@
 
 用户已明确允许 raw／DURA 同一条 query 融合，并要求保留仅 DURA 输出对照；support 仍严格 S0 raw、S1 G。新版 Q0=raw、QG（机器 Q1）=仅 G、QF（机器 Q2）=融合。当前主验收为全部 K1/5/10/20×N2/5/10/20、两 S 下 Q0 较匹配原 Q0 至少 +5pp，且同状态 QF>Q0。QG 完整单列，与原 QG 保持同输入配对；QF 与原 QG 的差须标明路径改变，不冒充同输入增益。早期角点、均值、单 support 的高收益不能代替全格。科学协议本轮例外已更新，旧 run 仍保留原 G-only 定义。
 
-R32 首 RX 四角点 36 行已完成：S0 raw+5为2/4、QF>Q0为4/4；S1 raw+5为4/4、QF>Q0为4/4。未达标组合：S0 K1/N20 raw差+4.0738pp、融合差+1.5445pp；S0 K20/N20 raw差+4.8005pp、融合差+3.9085pp。严格晋级 False。最终all16/七RX尚未完成，目标ACTIVE。R26/R27为此前历史结果。
+R33 首 RX 四角点 36 行已完成：S0 raw+5为2/4、QF>Q0为4/4；S1 raw+5为4/4、QF>Q0为4/4。未达标组合：S0 K1/N20 raw差+3.4940pp、融合差+1.4603pp；S0 K20/N2 raw差+4.8660pp、融合差+2.4876pp。严格晋级 False。最终all16/七RX尚未完成，目标ACTIVE。R26/R27为此前历史结果。
 
 ## 历史 G-only 阶段每格验收（覆盖旧均值口径）
 
@@ -267,3 +267,11 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R33 固定八相位RF轨道
 
 从固定R31独立分支：RF八等距相位moments，headprior仍原四偶数相位；G原received一次在前，F8/路径而非4，sourceCCA64/120K1规则，当前SUP R31gate/KRR和R26fusion保持。不带R32中心/R30度量，角度/数量不按目标选择，源合法数值后直接36角点，最终all16两Sraw+5/QF>raw目标不变。
+
+### R33 实际结果
+
+36行独立truth-last完成，所属进程退出。两S逐角点验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 2, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 4, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 3.4939674498645767, 'fusion_gain_pp': 1.4602964475262492}, {'S': 'S0', 'K': 20, 'N': 2, 'raw_gain_pp': 4.866037333333717, 'fusion_gain_pp': 2.48762460114772}]。RF8/head4及原SUPridge gate、statebytes/组数/物理OOF核实；F/G/head冻结，CCA64结构保持、源参数按C8重新拟合，G-only完整。不扩12KN或六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### 下一条待实现假设：双相位分辨率核
+
+固定使用同一条记录的C4与C8两种RF矩表征，原四相位head不变；从八次F中提取偶数四次即可同时得到C4，不额外增加F或G调用。两种RF各以合法源L拟合普通CCA64，在当前SUP的核内等权平均，保留PSD和旧新所有类竞争，不按真实query角色选分支，不按目标分数挑混合权重。源fold两编码器均排除held RX/两TX；目标物理OOF完整train-only。该机制旨在检验不同相位分辨率的互补，不代表平均一定涨分，也不复用任何target-adapted状态。若实现，作为新run一次审查/预登记/四角点36行证伪，最终16KN和七RX逐格目标不变；尚未实现或发布。
