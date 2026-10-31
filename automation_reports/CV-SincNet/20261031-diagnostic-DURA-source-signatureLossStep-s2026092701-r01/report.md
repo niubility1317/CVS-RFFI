@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-signatureLossStep-s2026092701-r01`
 - group_id：`phase1-dura-source-signature-loss-scaled-step`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -38,3 +38,10 @@
 两缓存均须SIG一致数相对native至少+4/512、相对IQ_oracle至少+2，五源RX不负，每非clean景最多少1、clean不少，平均SIG误差至少降10%、平均IQNMSE最多增1%。通过仅支持另登记scratch单阶段E30，不自动训练；失败不放宽或搜索。参照是源clean F选择代理，不是真实TX或部署可用的clean参考。
 
 5项聚焦检查和实际入口PASS，唯一P0/P1 PASS。首步真实2Ls完整F/原前缀的SIG输出和输入VJP、源缓存及原头smoke通过立即继续。CPU2/空CUDA；主完整F2048/前缀4096/VJP4096/显式原头3072，smoke另完整F2/前缀2/VJP4/原头2；0G读取/前向/模型优化/TX/V/target。一份归档SHA比较/远端编译、实际PID/CWD/argv/空CUDA/日志增长；独立全量NumPy复算。默认DURA与六景3pp/clean/同质量效率目标保持。
+
+
+## 完整损失缩步结果
+
+VERIFIED / ANALYZED，SOURCE_ONLY。CPU2/5.812552秒自然结束，原source512×01/20/defaultDURA。损失缩步IQ修正仍净增15/6条cleanF选择一致，clean84/81均保持，clean组SIG误差分别降低82.143%/77.978%，修复旧固定步幅的clean过冲。缓存01全部条件通过；缓存20 RX8净−1，其他条件通过，总判定FAIL，不更改旧FAIL/本次阈值，不直接部署或自动训练。总体SIG误差降64.598%/67.777%，IQNMSE降0.625%/0.605%，同球最近波形对照+3/+1；不是目标TX收益/物理极限。完整F2048/前缀4096/VJP4096/原头3072，smoke另F2/前缀2/VJP4/原头2；0G/模型更新/TX-V-target、F不变；1024观测/3072头输入/52组独立复算。
+
+详见[完整分析](analysis.md)，执行3cd8781b0046d6dec0c5bfd92e88f7da2ba30f7f。

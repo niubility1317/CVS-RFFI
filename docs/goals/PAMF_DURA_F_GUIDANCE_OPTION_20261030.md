@@ -170,3 +170,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 时序签名的有限 IQ 可达性源验证
 
 20261031-diagnostic-DURA-source-signatureIQ-s2026092701-r01/d8e47399。VERIFIED / ANALYZED，SOURCE_ONLY。defaultDURA原源512（128L/384U）×缓存01/20，CPU2主循环5.614998秒自然结束。1% nativeIQ RMS球内固定四步SIG修正使cleanF选择一致数486→501、498→504，净+15/+6；同球最近clean波形仅+3/+1。SIG平均相对误差降63.674%/66.793%，IQNMSE降0.620%/0.603%，五源RX均不负。缓存01clean84→83，故总判定FAIL，不放宽或自动训练。clean组SIG误差反而增约10.88/10.54倍，四步损失震荡支持固定归一化步长在小误差样本过冲的解释。不是目标TX效果/部署算法/恢复极限。完整F2048/前缀4096/VJP4096/原头3072，0G/模型更新/TX-V-target，F状态不变；1024源观测/3072原头输入/52组独立复算。默认与完整目标保持。 归一化固定步幅的clean过冲是新的源证据，后续仍须独立注册，不改本次FAIL或直接训练。完整分析见本run analysis.md/results.json。
+
+
+## 时序签名 IQ 损失缩步
+
+20261031-diagnostic-DURA-source-signatureLossStep-s2026092701-r01/3cd8781b。VERIFIED / ANALYZED，SOURCE_ONLY。CPU2/5.812552秒自然结束，原source512×01/20/defaultDURA。损失缩步IQ修正仍净增15/6条cleanF选择一致，clean84/81均保持，clean组SIG误差分别降低82.143%/77.978%，修复旧固定步幅的clean过冲。缓存01全部条件通过；缓存20 RX8净−1，其他条件通过，总判定FAIL，不更改旧FAIL/本次阈值，不直接部署或自动训练。总体SIG误差降64.598%/67.777%，IQNMSE降0.625%/0.605%，同球最近波形对照+3/+1；不是目标TX收益/物理极限。完整F2048/前缀4096/VJP4096/原头3072，smoke另F2/前缀2/VJP4/原头2；0G/模型更新/TX-V-target、F不变；1024观测/3072头输入/52组独立复算。 默认与完整目标ACTIVE，详细分析见本run analysis.md/results.json。
