@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-balancedTangent-E30-s2026092701-r01`
 - group_id：`phase1-dura-source-balanced-tangent-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整结果见下方、analysis.md 与 results.json；保留每 row 与 RX/day/TX/scene/K/seed 的对应关系。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -43,3 +43,10 @@
 VERIFIED / RUNNING。执行75da21407e7a6790f45e4a8ac4bcc2ea5b6d120e已push且独立核对远端OID，一次N607 preflight/单archive本远SHA/remotecompile通过。真实2Ls三模块G梯度、实际guide IQ梯度上界、F冻结/原默认头/严格重载均通过；7聚焦检查及唯一P0P1通过。实际controller1326970/worker1327059/GPU4/CWD-完整命令-CUDA/日志增长已核实。GPU4启动前1个compute PID/free22883MiB，新增本任务1个，旧own句柄全部消失，其他owner不动。
 
 原始source J缓存63000/645.12MB只读复用，句柄与ID核对0.081749秒，新F/cacheVJP/存储均0；历史F50/11100、缓存63000F/315000VJP/30.008929秒明确保留。源raw压力重复检查正缩放后方向一致、最大比1，不使用失败静态谱因子，不作新独立泛化证据。已至少完成2轮，完整前缀预算/加权loss/参考曝光/权重和上界核对通过，最大压力1.000000119，训练F加载/前向0。当前无新正式结果，满30后自动全七景预测再独立truth-last；默认保持/目标ACTIVE。见[状态证据](launch_status.json)。
+
+
+## 完整训练与正式结果
+
+VERIFIED / ANALYZED。单阶段 scratch E30/7410，L189000/U1701000；30 轮完整 loss/曝光/缓存视图/逐批次压力上界核对通过。复用 source J，无新增 F 前向/VJP/缓存；继承 F50 监督知识，仍为 F-guided。七景×168000 全部预测固定后 truth-last，126 正式与252 双对照配对分组独立复算。clean 84.814286%，low urban 67.031548%；低城区相对未平衡版 +0.406548、纯 G -0.341071、默认 DURA -1.858333 个百分点。六景3pp通过 0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。G训练 998.836772 秒，含源准备 999.795406 秒，全量分析 1180.638900 秒；266951 参数/25.068072m ConvLinear MAC/2prior4CG27FFT，默认保持。
+
+详见[完整分析](analysis.md)、[完整曲线与正式结果](training_and_formal.png)、results.json 与 transfer_diagnostics.json。当前控制器/worker 均已自然结束。结果不回流权重、epoch 或选择性重测；不将梯度上界通过解读为真实身份保真或恢复极限。

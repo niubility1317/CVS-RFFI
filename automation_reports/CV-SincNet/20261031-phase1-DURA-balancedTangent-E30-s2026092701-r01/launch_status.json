@@ -1,6 +1,6 @@
 {
-  "status": "RUNNING",
-  "phase": "SOURCE_TRAINING",
+  "status": "ANALYZED",
+  "phase": "COMPLETE",
   "code_commit": "75da21407e7a6790f45e4a8ac4bcc2ea5b6d120e",
   "controller_PID": 1326970,
   "worker_PID": 1327059,
@@ -110,7 +110,19 @@
   "fixed_budget_epochs": 30,
   "fixed_budget_updates": 7410,
   "automatic_seven_view_prediction_then_truth_last": true,
-  "formal_results_available": false,
+  "formal_results_available": true,
   "default_DURA_changed": false,
-  "goal_complete": false
+  "goal_complete": false,
+  "verified_completed_epochs": 30,
+  "row_and_controller_natural_exit_verified": true,
+  "all_seven_predictions_before_truth": true,
+  "independently_recomputed_target_groups": 126,
+  "independently_recomputed_paired_groups": 252,
+  "new_F_J_VJP_inputs": 0,
+  "new_cache_bytes": 0,
+  "training_seconds": 998.8367718392983,
+  "whole_pipeline_seconds": 1180.6388998031616,
+  "performance_acceptance": false,
+  "six_scene_gap3pp": false,
+  "clean_not_lower_than_raw": true
 }
