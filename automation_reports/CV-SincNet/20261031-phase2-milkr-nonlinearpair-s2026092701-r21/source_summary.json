@@ -1,0 +1,380 @@
+{
+  "status": "SOURCE_FROZEN",
+  "K1_rule": {
+    "config": [
+      "signature_historical",
+      "nearest",
+      0.5,
+      "single"
+    ],
+    "ridge": 0.01,
+    "outer_folds": 3,
+    "outer_strengths": [
+      0.0,
+      0.25,
+      0.5,
+      0.75
+    ],
+    "ridge_reference_classes": 6
+  },
+  "control_K1_rule": {
+    "config": [
+      "signature_historical",
+      "all",
+      0.0,
+      "single"
+    ],
+    "ridge": 0.1,
+    "outer_folds": 3,
+    "outer_strengths": [
+      0.0,
+      0.25,
+      0.5,
+      0.75
+    ],
+    "ridge_reference_classes": 6
+  },
+  "target_eligible": false,
+  "scientific_verdict": "NONLINEAR_SOURCE_GATE_FAILED",
+  "source_quality": {
+    "source_gain_pp": 0.26399672333853735,
+    "raw_gain_pp_by_S": [
+      -0.2505750728619749,
+      0.8588213382823673
+    ],
+    "query_gain_pp_each_K_S": [
+      13.457695380382706,
+      13.677987373580681,
+      9.243849537428305,
+      19.50873777824469
+    ],
+    "raw_component_gain_pp": [
+      0.23437499999999778,
+      -0.78125,
+      -0.07812500000000111,
+      1.4062499999999978
+    ],
+    "eligible": false
+  },
+  "source_summary": [
+    {
+      "k": 1,
+      "S": 0,
+      "Q": 0,
+      "H": 0.5876458889968965,
+      "old_accuracy": 0.584375,
+      "new_accuracy": 0.60625
+    },
+    {
+      "k": 1,
+      "S": 0,
+      "Q": 1,
+      "H": 0.7222228428007236,
+      "old_accuracy": 0.6625,
+      "new_accuracy": 0.809375
+    },
+    {
+      "k": 1,
+      "S": 1,
+      "Q": 0,
+      "H": 0.7106779468444968,
+      "old_accuracy": 0.7359375,
+      "new_accuracy": 0.7
+    },
+    {
+      "k": 1,
+      "S": 1,
+      "Q": 1,
+      "H": 0.8474578205803036,
+      "old_accuracy": 0.828125,
+      "new_accuracy": 0.878125
+    },
+    {
+      "k": 20,
+      "S": 0,
+      "Q": 0,
+      "H": 0.8066134729532536,
+      "old_accuracy": 0.81875,
+      "new_accuracy": 0.796875
+    },
+    {
+      "k": 20,
+      "S": 0,
+      "Q": 1,
+      "H": 0.8990519683275366,
+      "old_accuracy": 0.9125,
+      "new_accuracy": 0.8875
+    },
+    {
+      "k": 20,
+      "S": 1,
+      "Q": 0,
+      "H": 0.7334062939337314,
+      "old_accuracy": 0.8125,
+      "new_accuracy": 0.68125
+    },
+    {
+      "k": 20,
+      "S": 1,
+      "Q": 1,
+      "H": 0.9284936717161782,
+      "old_accuracy": 0.93125,
+      "new_accuracy": 0.928125
+    }
+  ],
+  "control_source_summary": [
+    {
+      "k": 1,
+      "S": 0,
+      "Q": 0,
+      "H": 0.5900542135505423,
+      "old_accuracy": 0.58125,
+      "new_accuracy": 0.615625
+    },
+    {
+      "k": 1,
+      "S": 0,
+      "Q": 1,
+      "H": 0.7145450472518172,
+      "old_accuracy": 0.6578125,
+      "new_accuracy": 0.8
+    },
+    {
+      "k": 1,
+      "S": 1,
+      "Q": 0,
+      "H": 0.7068558757769277,
+      "old_accuracy": 0.7359375,
+      "new_accuracy": 0.690625
+    },
+    {
+      "k": 1,
+      "S": 1,
+      "Q": 1,
+      "H": 0.8470288082418695,
+      "old_accuracy": 0.8203125,
+      "new_accuracy": 0.884375
+    },
+    {
+      "k": 20,
+      "S": 0,
+      "Q": 0,
+      "H": 0.8092166498568473,
+      "old_accuracy": 0.8171875,
+      "new_accuracy": 0.803125
+    },
+    {
+      "k": 20,
+      "S": 0,
+      "Q": 1,
+      "H": 0.9006917066226758,
+      "old_accuracy": 0.9125,
+      "new_accuracy": 0.890625
+    },
+    {
+      "k": 20,
+      "S": 1,
+      "Q": 0,
+      "H": 0.7200519382356532,
+      "old_accuracy": 0.8140625,
+      "new_accuracy": 0.6625
+    },
+    {
+      "k": 20,
+      "S": 1,
+      "Q": 1,
+      "H": 0.9260059287497043,
+      "old_accuracy": 0.9328125,
+      "new_accuracy": 0.921875
+    }
+  ],
+  "source_RX_TX_folds": [
+    {
+      "receiver": 1,
+      "held_TX_indices": [
+        0,
+        1
+      ],
+      "train_TX_indices": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "training_observations": 6720,
+      "eval_epoch": 91
+    },
+    {
+      "receiver": 3,
+      "held_TX_indices": [
+        1,
+        2
+      ],
+      "train_TX_indices": [
+        0,
+        3,
+        4,
+        5
+      ],
+      "training_observations": 6720,
+      "eval_epoch": 91
+    },
+    {
+      "receiver": 4,
+      "held_TX_indices": [
+        2,
+        3
+      ],
+      "train_TX_indices": [
+        0,
+        1,
+        4,
+        5
+      ],
+      "training_observations": 6720,
+      "eval_epoch": 91
+    },
+    {
+      "receiver": 6,
+      "held_TX_indices": [
+        3,
+        4
+      ],
+      "train_TX_indices": [
+        0,
+        1,
+        2,
+        5
+      ],
+      "training_observations": 6720,
+      "eval_epoch": 91
+    },
+    {
+      "receiver": 8,
+      "held_TX_indices": [
+        4,
+        5
+      ],
+      "train_TX_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "training_observations": 6720,
+      "eval_epoch": 91
+    }
+  ],
+  "source_training_audits": [
+    {
+      "receiver": 1,
+      "initial_alignment_loss": 0.7780436873435974,
+      "final_alignment_loss": 0.7175227403640747,
+      "optimizer_updates": 600,
+      "batch": 256,
+      "seed": 2026103101,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "anchor_weight": 0.1,
+      "residual_bound": 0.25,
+      "physical_pair_rows": 6720,
+      "TX_label_reads": 0,
+      "query_reads": 0,
+      "F_updates": 0,
+      "G_updates": 0,
+      "network_parameters": 342016,
+      "paired_exposures": 153600
+    },
+    {
+      "receiver": 3,
+      "initial_alignment_loss": 0.8147743940353394,
+      "final_alignment_loss": 0.7507612705230713,
+      "optimizer_updates": 600,
+      "batch": 256,
+      "seed": 2026103102,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "anchor_weight": 0.1,
+      "residual_bound": 0.25,
+      "physical_pair_rows": 6720,
+      "TX_label_reads": 0,
+      "query_reads": 0,
+      "F_updates": 0,
+      "G_updates": 0,
+      "network_parameters": 342016,
+      "paired_exposures": 153600
+    },
+    {
+      "receiver": 4,
+      "initial_alignment_loss": 0.8001576662063599,
+      "final_alignment_loss": 0.7382947206497192,
+      "optimizer_updates": 600,
+      "batch": 256,
+      "seed": 2026103103,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "anchor_weight": 0.1,
+      "residual_bound": 0.25,
+      "physical_pair_rows": 6720,
+      "TX_label_reads": 0,
+      "query_reads": 0,
+      "F_updates": 0,
+      "G_updates": 0,
+      "network_parameters": 342016,
+      "paired_exposures": 153600
+    },
+    {
+      "receiver": 6,
+      "initial_alignment_loss": 0.778290867805481,
+      "final_alignment_loss": 0.7176560163497925,
+      "optimizer_updates": 600,
+      "batch": 256,
+      "seed": 2026103104,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "anchor_weight": 0.1,
+      "residual_bound": 0.25,
+      "physical_pair_rows": 6720,
+      "TX_label_reads": 0,
+      "query_reads": 0,
+      "F_updates": 0,
+      "G_updates": 0,
+      "network_parameters": 342016,
+      "paired_exposures": 153600
+    },
+    {
+      "receiver": 8,
+      "initial_alignment_loss": 0.81827712059021,
+      "final_alignment_loss": 0.7547512054443359,
+      "optimizer_updates": 600,
+      "batch": 256,
+      "seed": 2026103105,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "anchor_weight": 0.1,
+      "residual_bound": 0.25,
+      "physical_pair_rows": 6720,
+      "TX_label_reads": 0,
+      "query_reads": 0,
+      "F_updates": 0,
+      "G_updates": 0,
+      "network_parameters": 342016,
+      "paired_exposures": 153600
+    }
+  ],
+  "final_training_audit": null,
+  "source_physical_rows": 6300,
+  "source_paired_observations": 12600,
+  "selected_rank": 64,
+  "pair_bound": 0.25,
+  "target_reads": 0,
+  "query_reads": 0,
+  "U_truth_reads": 0,
+  "F_updates": 0,
+  "G_updates": 0,
+  "seconds": 173.47662888932973,
+  "source_numerical_smoke": "PASS",
+  "scope": "bounded source-only MLP; source fold excludes RX/TX from bothCCA/NN; F saw allsource6; no trueF-novel claim; strict G-only query remains",
+  "code_commit": "e75ef87fcc07a2db679a8c3f89dcb2168fb780dd",
+  "K1_rules_per_mode": 120
+}

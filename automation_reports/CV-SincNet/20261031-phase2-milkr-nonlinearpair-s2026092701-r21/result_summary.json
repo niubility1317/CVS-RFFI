@@ -1,0 +1,28 @@
+{
+  "schema": "milkr_nonlinearpair_source_only_v1",
+  "target_rows": 0,
+  "source_gate_pass": false,
+  "source_quality": {
+    "source_gain_pp": 0.26399672333853735,
+    "raw_gain_pp_by_S": [
+      -0.2505750728619749,
+      0.8588213382823673
+    ],
+    "query_gain_pp_each_K_S": [
+      13.457695380382706,
+      13.677987373580681,
+      9.243849537428305,
+      19.50873777824469
+    ],
+    "raw_component_gain_pp": [
+      0.23437499999999778,
+      -0.78125,
+      -0.07812500000000111,
+      1.4062499999999978
+    ],
+    "eligible": false
+  },
+  "source_seconds": 173.47662888932973,
+  "goal_achieved": false,
+  "scope": "source-only scientific falsification; no target performance claim"
+}
