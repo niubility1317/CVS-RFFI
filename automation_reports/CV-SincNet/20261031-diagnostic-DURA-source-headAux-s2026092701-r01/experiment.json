@@ -1,0 +1,167 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-headAux-s2026092701-r01",
+  "group_id": "phase1-dura-source-head-aux-gradient",
+  "display_name": "原头5维与新增5维：源IQ梯度冲突及等步长诊断",
+  "description": "复用固定pureG源512×01/20 IQ，分解精确head5/aux5梯度并比较物理IQ+cap1的head/joint等IQ预算一步；0优化/新G/TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "head5-aux5",
+    "gradient-conflict",
+    "matched-local-IQ-step",
+    "single-stage-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-diagnostic-DURA-source-softReference10IQ-s2026092701-r01",
+    "20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-headAux-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Fixedsource512128L384U pairedclean/basis10/targetPhi10/Fcleanlogits pluspreviouspureGsource01/20restoredIQ;noGcheckpointloads",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsource63000L/U;512positions/IDs/roles/RX/day/clean exactmatchoriginalhandles",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "ExistingR07sourcecache01/20 alreadyprocessedbypureG8cf,read-onlycachedsourceIQ;nochannelredraw/target",
+    "target_panel": "None",
+    "actual_training_labels": "No optimizer/Gtraining/directTXtruth. FrozenF sourcefeatures/inputgradients,pairedsourceclean andcachedsourceG IQ only"
+  },
+  "permissions": {
+    "regime": "Source_only_frozenF_head_aux_gradient_diagnostic",
+    "query_use": "No target/query/truth/V. PairedsourceIQ localstepsareofflineoracles,notdeployment/gradientadaptation",
+    "external_method_exception": null,
+    "claim_scope": "Local source head/aux conflict andcleanFproxy only,nottrueTX/hardware/target/Gtraining efficacy;noautomatictraining"
+  },
+  "checkpoint": {
+    "initialization": "FrozenoriginalF50/defaulthead only;noGloaded/trained/initialized;oldpureGsourceIQdataonly",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261031-diagnostic-DURA-source-softReference10IQ-s2026092701-r01/feasibility.npz DATAONLYclean/basis/target/IDs/cleanlogits",
+      "runs/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01/source-{1,20}.npz DATAONLYpureG8cfrestoredsourceIQ"
+    ],
+    "contract_check_ref": "OriginalF4df7/source50/11100/7-63-30;pureG8cf/scratchE30/7410sourceonlyfixedfinal;originalsource63000L/Uroles/512IDs/clean/RX/day/basis/headspan;metadata0TX-V-target;real2LsFcache/defaulthead/fullgradientdecomposition",
+    "provenance_verdict": "Existingmatchedoriginalsource-onlyFandpureGdatahandles;noGcheckpoint/failedJ/GN-IQread. Source512excludedfromprototypefit62488butFtrainedallsource,notunseen/blind. F50knowledgecostretained.",
+    "selection_rule": "FixedpureG8cf/caches01and20/source512. Originalbasis10/beta.25/alpha.003313 unchanged. Splithead5/aux5exactgradients. Oneheadandonejointphysical+cap1stepatmatchedmin(.01cleanL2,.1errorL2)budget;no model/step/alpha/beta/dimensionsearch."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-head-aux",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPUworkers;allpriorownhandlesterminal;otherownersuntouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-headAux-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-headAux-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-headAux-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.gradient_components_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-headAux-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badprovenance/order/shape/nonfinite/Fstatechange/smoke/outputcollision:preserveandstop/noautoretry. Scientificfail no threshold/step/model/reference/alpha/betasearch. NoautomaticGtraining."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "source-1.npz PRIVATE",
+    "source-20.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "head_aux_cosine/joint_head_cosine/aux_head_norm_ratio",
+      "baseline/head/jointcleanFchoiceagreementandpairedIQNMSE",
+      "perRX/day/L-Ugroupsandfixedhypothesisdecision",
+      "actualF-VJPcounts/newG0/optimizer0/Funchanged/seconds"
+    ],
+    "dimensions": [
+      "512uniquesourcephysicalrecords128L384U",
+      "sourcecaches01and20",
+      "head5/joint10oneequalIQbudgetstep",
+      "overall/RX/day/role"
+    ],
+    "prediction_ref": "Noformal/Gnewprediction. SourcecachedIQ/gradientcomponents/matchedsteps/actualFlogits-Phi only",
+    "scorer_ref": "NoTXtruth. IndependentNumPyall1024head-auxgeometry/cap/stepbudget/inputIQ/actualFobservations/groupstats/decision;noextraNN"
+  },
+  "rows": [
+    {
+      "row_id": "source-head-aux",
+      "method": "Exacthead5/aux5gradientdecomposition;equalIQbudgetphysical+boundedguidanceonfixedsourceG IQ",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{gradient_components.py,gradient_components_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No newrandomdraw/modelinit. ExistingF/pureG2026092701/source8cf;fixedsourceindices128L384U;cachedAUG2026101912/RX2026101911;deterministicminnorm/offset, no support/evaluationrandomness.",
+      "k": null,
+      "scenario": "Source512128L384U×cached01/20;pairedsourcecleanIQoracle;notdeployable",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2;mainF3072/inputVJP2048;smokeF4/VJP6;0Gcheckpoint/newG/training/optimizer/TX-V-target/newJcache",
+      "output_root": "runs/20261031-diagnostic-DURA-source-headAux-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-headAux-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.gradient_components_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-headAux-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "source-1.npz PRIVATE",
+        "source-20.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Exact10E30changedbothdimensionandderivativemode. ThisdiagnosticisolatesgradientcomponentsatSAMEfixedpureGsourceIQ;itdoesnotcausallyidentifywhynewGtargetperformancechangedanddoesnotretuneusingtargetgroups.",
+    "OneFforwardpertwocomponentgradients. Head5andaux5rawgradientsbothincludealpha. Sumverifiedagainstfullexact10Fobjectiveonreal2Ls. ForheadandjointseparatelycapguideIQnormtooriginalIQgradientnorm,addphysicalIQgradient. OneIQstepinnormalizeddescentdirectionwithSAMEperpacketmin(.01cleanL2,.1restorationerrorL2)length. Zero-directionremainstationary. Normboundnotclaimloss/NMSEmonotonicity.",
+    "FixedruleBEFOREnewFaccess:eachcacheall512cosinesdefined,negativeheadauxfraction>=.25,medianjointheadcos<.9,headstepcleanFagreement>=jointstep+4of512,each5sourceRXheadagreement>=joint,headmeanIQNMSE<=1.02baseline. Bothviewsrequired. Thesearepreregisteredresearchcriteria,notuniversalphysicsconstants;failuredoesnotpermitthresholdorstepsizeadjustment.",
+    "ReferenceisoriginalcleanFchoice,nottrueTXtruthornewhead. Pairedsourcecleanisneededforphysicalgradient/stepbudget;IQstepsareofflineoracle,neverdeployment. NooptimizerorNNparameterupdate,nonewG/noGcheckpointread. PassonlysupportsseparatelyregisteredmatchedE30candidatewithmandatoryfullsevenformal,notautomatictrainingorperformanceclaim.",
+    "Firstreal2Lscheckpointsmoke:actualcleanFsource10Phi/defaultheadcacheagreementandhead+auxgradientequalsfull10gradient. F4/inputVJP6/newG0. MainF1024original+2048step=3072/inputVJP2048. AllFstateunchanged/gradNone;allsource-onlyroles/IDsmatched. All1024sourceobservationsindependentlyrecomputed.",
+    "Threefocusedtestsandactualmodule--helpPASS. OneindependentP0P1PASSincludingtargetedboolDLPackfix;onepreflight/archiveSHA/compile/postPID-CWD-argv-env-loggrowth. DefaultDURA/F/goalunchanged;noformalaccessinthisdiagnostic.",
+    "ActualN607Torch2.1boolDLPackfailed;castalloutputtensorsFP32beforeexistingownedFP32numpy_values. Syntheticbool->floatreadbackPASS;definedstored0/1,all()semanticsunchanged. OneP0P1directfixrereviewPASS."
+  ],
+  "registered_at": "2026-10-31T04:59:20+00:00"
+}
