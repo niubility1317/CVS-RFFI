@@ -450,6 +450,47 @@
       "reason": "Three-arm matched source-input and unlabeled-adaptation comparison; full target gate and confirmation remain required.",
       "global_history_unused_verified": false,
       "independent_blind_confirmation": false
+    },
+    {
+      "run_id": "20261031-phase3-native-identity-s2026092701-r01",
+      "code_commit": "c5e167a687e915993845056355afeee97a8da8a1",
+      "method": "TARGET_ID_predicted_ratio",
+      "score_artifact": "local_artifacts/pamf_phase3_native_identity_20261031_r01/score/results.json",
+      "metric_fractions": {
+        "source_DURA": {
+          "A_K": 0.8984814814814815,
+          "C_K": 0.9643703703703705,
+          "R_U": 0.638095238095238,
+          "H_score": 0.7462260068706749,
+          "original_F0_macro_closed_accuracy": 0.909814814814815,
+          "candidate_macro_closed_accuracy": 0.9127777777777778,
+          "original_closed_minus_new_open": 0.011333333333333417
+        },
+        "clean_DURA": {
+          "A_K": 0.276785440469791,
+          "C_K": 0.39367786567601143,
+          "R_U": 0.6072213607831047,
+          "H_score": 0.3802460152315869,
+          "original_F0_macro_closed_accuracy": 0.4856701533920565,
+          "candidate_macro_closed_accuracy": 0.4919378543978077,
+          "original_closed_minus_new_open": 0.20888471292226551
+        },
+        "star_DURA": {
+          "A_K": 0.24685489595563767,
+          "C_K": 0.4467365383008776,
+          "R_U": 0.48189693027327035,
+          "H_score": 0.32647222909760026,
+          "original_F0_macro_closed_accuracy": 0.4172105854906822,
+          "candidate_macro_closed_accuracy": 0.42957172186423853,
+          "original_closed_minus_new_open": 0.1703556895350445
+        }
+      },
+      "scientific_verdict": "NO_PROMOTION",
+      "primary_selection_changed": false,
+      "new_receiver_general_benefit_confirmed": false,
+      "reason": "Complete original F0 native identity initialization, source CE/KD versus fixed known-gated target identity PL; PCD frozen. Requires full joint gate and separate confirmation.",
+      "global_history_unused_verified": false,
+      "independent_blind_confirmation": false
     }
   ],
   "current_selection_confirmation": {
@@ -471,5 +512,11 @@
       "scientific_verdict": "NO_PROMOTION",
       "result_ref": "docs/PAMF_PHASE3_PAIRED_SIGNAL_RESULTS_20261031.md"
     }
+  },
+  "latest_native_identity_evaluation": {
+    "run_id": "20261031-phase3-native-identity-s2026092701-r01",
+    "state": "ANALYZED",
+    "scientific_verdict": "NO_PROMOTION",
+    "result_ref": "docs/PAMF_PHASE3_NATIVE_IDENTITY_RESULTS_20261031.md"
   }
 }

@@ -59,3 +59,8 @@ G10 沿用 MILKR 设置：600 km、25 MHz、2.45 GHz、residual/post_sync/no add
 ## 同记录接收与恢复信号候选的后续实测
 
 在上述方法选择之后，目标继续执行了已准备的三臂候选 `20261031-phase3-paired-signal-s2026092701-r01`：3×444 步、10×3 条件完整预测后独立评分，科学结论 `NO_PROMOTION`。主 TARGET_PAIR_predicted_ratio 星地 A_K/C_K/R_U/H 为 27.910624/48.533058/49.552823/35.708460%；本行具有独立新U576适配祖先，同记录两输入不增加物理样本。当前 PCD 研究基线保留，完整目标仍 ACTIVE；详细源输入作用与适应差分见[完整结果](PAMF_PHASE3_PAIRED_SIGNAL_RESULTS_20261031.md)。
+
+
+## 完整原生身份自训练候选的后续实测
+
+后续独立候选 `20261031-phase3-native-identity-s2026092701-r01` 完成完整原F0初值的SOURCE_ID/TARGET_ID各444步、固定PCD开放分支及6×3DURA评分，科学 `NO_PROMOTION`。主星地A_K/C_K/R_U/H为24.685490/44.673654/48.189693/32.647223%；原F0/student闭集为41.721059%/42.957172%。固定U门控接受290/576，非空PL批次444/444，不将伪标签预测数量视作真值准确率。当前PCD研究基线及完整目标ACTIVE保持，见[完整结果](PAMF_PHASE3_NATIVE_IDENTITY_RESULTS_20261031.md)。

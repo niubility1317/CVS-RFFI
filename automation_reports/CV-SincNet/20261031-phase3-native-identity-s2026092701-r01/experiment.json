@@ -1,0 +1,306 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-native-identity-s2026092701-r01",
+  "group_id": "pamf-phase3-native-identity",
+  "display_name": "PAMF第三阶段：完整原生身份网络的已知门控自训练",
+  "description": "Independent complete F0 identity students: source CE/KD versus source plus fixed known-gated target PL; existing PCD and DURA frozen.",
+  "kind": "cvs",
+  "stage": "Phase3-native-identity-UDA",
+  "aliases": [
+    "原生身份已知门控自训练"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "native_identity",
+    "known_PL",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-native-identity",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "c5e167a687e915993845056355afeee97a8da8a1",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-native-identity-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.native_identity_launch",
+      "experiments.pamf_phase3_open_world.native_identity_train",
+      "experiments.pamf_phase3_open_world.native_identity_run",
+      "experiments.pamf_phase3_open_world.native_identity_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_NATIVE_IDENTITY_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Original source star L/P1 teacher cache and RX3-2 fixed star U/future paired Q",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Complete original F0 native identity reader/default head; frozen final PCD open features and density",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 完整原生身份学生的已知门控自训练",
+    "physical_ids_ref": "Unchanged source L/V/NV and fresh U/Q VALIDATED_ONCE IDs/capsule/split",
+    "label_map_ref": "Originalsix L/V y; OE outside-six only; U trueTX/K/quotas forbidden; future trueTX scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE_new_training": 0,
+      "source_V_known_calibration": 27000,
+      "source_NV": 3150,
+      "original_U_s_new": 0,
+      "target_star_U": 576,
+      "target_future_Q_unique": 10238,
+      "target_future_known": 4508,
+      "target_future_unknown": 5730,
+      "U_truth_fit": 0
+    },
+    "train_ratio": "Original F0 L6300/63000=10%; no new source TX labels, no target TX labels. Old PCD OE6134 remains ancestor.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "Original source392005/native F0/PCD/DURA provenance; unchanged VALIDATED_ONCE handles",
+    "support_query_ref": "SOURCE identity student frozen before U; independent TARGET init; U03-01 versus Q03-15/23 physical-disjoint, no clean learning",
+    "leo_config_ref": "Same fixed G10 MIX01 source/U/future received and DURA v1R69, source3001/4001 receiver2027, future3133/3134, no redrawn channel"
+  },
+  "permissions": {
+    "regime": "SOURCE_ID and TARGET_ID independently copy original complete F0. Joint default head and reader CE/KD; TARGET only fixed originalF0-confidence and PCD-margin gated PL. PCD/G/originalF0/r03 frozen.",
+    "query_use": "Native students freeze before V thresholds; inherited PCD density frozen, all6x3 predictions before independentCPU3truth; Utruth0/Qfit0.",
+    "external_method_exception": null,
+    "claim_scope": "SOURCE_ID new identity weights use only source L, but fixed PCD has U576 ancestor so entire source-control system is not source-only. Existing dev exposed; no registration/blind claim."
+  },
+  "checkpoint": {
+    "initialization": "Complete original F0 reader plus default six-class head, exact native synthetic logits equivalence; no r03-body/F0-head merge, no source-student continuation.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Same source392005/F0 E50/11100; final PCD has explicit U576 ancestor; DURA fixedR69. No mismatched target-trained identity initialization.",
+    "selection_rule": "Two444-step final readers, independent identical initial F0; fixed pmax.95 and PCDmargin0 PL, no model/threshold/Q selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-native-identity-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-native-identity-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-native-identity-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_native_identity_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.native_identity_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-native-identity-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One serial two-arm train then frozen prediction then CPUscore; actualfree>=4096MiB/max2new/card; foreign processes unchanged.",
+    "stop_rule": "Illegal ancestor/role, nonfinite, frozenstatechange, collision or unablelegalprediction preserved technicalfailure; low scientific scores complete fullmatrix, no hotchange/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/{driver,train,predict,score}.log",
+    "train/{resolved_config,smoke,complete}.json",
+    "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+    "train/U_manifest.json",
+    "train/U_teacher.npz",
+    "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "Hscore",
+      "originalF0closed",
+      "studentclosed",
+      "originalclosedminusAK",
+      "AUROC/OSCR",
+      "paired_identity_correct/reject_events",
+      "sourceknown12/42",
+      "all888steps/gradients/mask_counts",
+      "AN/HOWNA"
+    ],
+    "dimensions": [
+      "6readouts",
+      "source5RX/cleanRX34/starRX34",
+      "sixrequiredscenes",
+      "trueTX/RX/day",
+      "sourceID-targetID-oldPCD"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-native-identity-s2026092701-r01/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.native_identity_score",
+    "targets_ref": "CleanRU95/starRU90/CK90/originalF0sameGgap2pp/requiredscene-rosters; sourceknown12; mainstarAK aboveSOURCE_ID/OLD_PCD withRU notlower. FullgoalACTIVE.",
+    "primary": [
+      "TARGET_ID_predicted_ratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "SOURCE_ID-s2026092701",
+      "method": "SOURCE_ID",
+      "purpose": "Source-only native identity CE/KD control",
+      "config_ref": "docs/PAMF_PHASE3_NATIVE_IDENTITY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-native-identity-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "L2026103160 matched across new arms; targetU2026103112; fixed cached phasegain views inherited seed2026103114, no new augmentation sampling. Original F0 complete initialization, no random head.",
+      "k": null,
+      "scenario": "All learning starP1, fixedPCD; source/clean/star tests allDURA; each own native default-head routing",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "444each/888new; reader232993/train232945/Sinc48frozen; no new density,24newtau. L128, U64/two cachedstrongviews onlytarget; actualnonemptymask costs recorded.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-native-identity-s2026092701-r01/train/SOURCE_ID",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-native-identity-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.native_identity_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-native-identity-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+        "train/U_manifest.json",
+        "train/U_teacher.npz",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "TARGET_ID-s2026092701",
+      "method": "TARGET_ID",
+      "purpose": "Native identity source CE/KD plus known-gated targetPL",
+      "config_ref": "docs/PAMF_PHASE3_NATIVE_IDENTITY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-native-identity-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026103114,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "L2026103160 matched across new arms; targetU2026103112; fixed cached phasegain views inherited seed2026103114, no new augmentation sampling. Original F0 complete initialization, no random head.",
+      "k": null,
+      "scenario": "All learning starP1, fixedPCD; source/clean/star tests allDURA; each own native default-head routing",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "444each/888new; reader232993/train232945/Sinc48frozen; no new density,24newtau. L128, U64/two cachedstrongviews onlytarget; actualnonemptymask costs recorded.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-native-identity-s2026092701-r01/train/TARGET_ID",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-native-identity-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.native_identity_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-native-identity-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+        "train/U_manifest.json",
+        "train/U_teacher.npz",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Student native initial logits equal originalF0 in actual noquery smoke; default head jointly optimized.",
+    "Frozen PCD has targetU576 ancestor; SOURCE identity weights source-only is not full-system source-only.",
+    "Mask/teacher fixed, no Utruth/K/quotas/EMA, empty PL batches valid and recorded.",
+    "Own closed routes inherited density and new sourceknown thresholds; original F0 sameG remains protection baseline.",
+    "No formal24-18 access/anonymous registry; PCD baseline and fullgoalACTIVE remain unless preregistered joint gate and confirmation pass."
+  ],
+  "registered_at": "2026-10-31T11:58:42+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "c5e167a687e915993845056355afeee97a8da8a1",
+    "primary_method": "TARGET_ID_predicted_ratio",
+    "adaptation_success": false,
+    "source_known_12_passed": true,
+    "target_protection_passed": false,
+    "metrics": {
+      "source_DURA": {
+        "A_K": 0.8984814814814815,
+        "C_K": 0.9643703703703705,
+        "R_U": 0.638095238095238,
+        "H_score": 0.7462260068706749,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "candidate_macro_closed_accuracy": 0.9127777777777778,
+        "original_closed_minus_new_open": 0.011333333333333417
+      },
+      "clean_DURA": {
+        "A_K": 0.276785440469791,
+        "C_K": 0.39367786567601143,
+        "R_U": 0.6072213607831047,
+        "H_score": 0.3802460152315869,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "candidate_macro_closed_accuracy": 0.4919378543978077,
+        "original_closed_minus_new_open": 0.20888471292226551
+      },
+      "star_DURA": {
+        "A_K": 0.24685489595563767,
+        "C_K": 0.4467365383008776,
+        "R_U": 0.48189693027327035,
+        "H_score": 0.32647222909760026,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "candidate_macro_closed_accuracy": 0.42957172186423853,
+        "original_closed_minus_new_open": 0.1703556895350445
+      }
+    },
+    "new_student_optimizer_updates": 888,
+    "target_optimizer_steps": 444,
+    "target_PL_nonempty_batches": 444,
+    "U_teacher_accepted": 290,
+    "source_sampling_matched": true,
+    "SOURCE_completed_before_U_open": true,
+    "original_models_unchanged": true,
+    "all_student_Sinc_unchanged": true,
+    "all_student_buffers_unchanged": true,
+    "all_students_initialized_from_original_F0": true,
+    "new_density_fits": 0,
+    "new_source_threshold_values": 24,
+    "identity_parameters": 232993,
+    "trainable_identity_parameters": 232945,
+    "unused_wrapper_parameters": 667729,
+    "deployed_neural_parameters": 834665,
+    "formal_target_accessed": false,
+    "target_REG": false,
+    "full_goal_status": "ACTIVE",
+    "result_ref": "docs/PAMF_PHASE3_NATIVE_IDENTITY_RESULTS_20261031.md"
+  }
+}

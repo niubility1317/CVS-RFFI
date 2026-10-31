@@ -1268,3 +1268,13 @@ Run `20261031-phase3-paired-signal-s2026092701-r01` / code `00e86deb914ff02f54fe
 ## 2026-10-31：同记录接收恢复开放信号完整结果
 
 Run `20261031-phase3-paired-signal-s2026092701-r01` / code `00e86deb914ff02f54fe57c101491220aee0a1a0`，SOURCE_P1/SOURCE_PAIR/TARGET_PAIR各444、共1332优化，全部10×3DURA预测及独立CPU3truth VERIFIED完成。唯一主TARGET_PAIR_pred：source_DURA: AK/CK/RU/H=89.711111/96.692593/64.888889/75.307300%；原F0同G损1.270370pp；clean_DURA: AK/CK/RU/H=31.689910/43.802347/62.134576/41.972819%；原F0同G损16.877106pp；star_DURA: AK/CK/RU/H=27.910624/48.533058/49.552823/35.708460%；原F0同G损13.810435pp。sourceknown12=True、target保护=False，科学NO_PROMOTION。源输入与UDA分别配对；同record P0/P1不增加物理样本，原F0/default只P1及G保持，source先封存再U576。3源GMM/36新tau/全60tau，部署386081学生＋原F0/G=886025，临时原型不部署；AN/HOWNA，开发已曝光/缺类日NA/正式24-18未读/原目标ACTIVE。详见`docs/PAMF_PHASE3_PAIRED_SIGNAL_RESULTS_20261031.md`。
+
+
+## 2026-10-31：完整原生身份已知门控自训练预登记
+
+Run `20261031-phase3-native-identity-s2026092701-r01` / code `c5e167a687e915993845056355afeee97a8da8a1`，SOURCE_ID/TARGET_ID独立完整F0 native reader/defaulthead各444，共888。源L128 CE+KD(T2)；TARGET仅原F0pmax.95且固定PCDmargin>=0的同record两strong PL，mask固定/U576无真TX。Sinc48/buffers/原F0/PCD/G保持，source先封存再U，PCD系统仍U576祖先。无新density/24新tau/6×3DURA全pred后CPU3truth，自己的预测路由密度与tau，保护仍原F0同G；主相对SOURCE_ID/OLDPCD及全部目标门槛保持，ANHOWNA/开发已曝/正式24-18未读/goalACTIVE。见`docs/PAMF_PHASE3_NATIVE_IDENTITY_PLAN_20261031.md`。
+
+
+## 2026-10-31：完整原生身份已知门控自训练结果
+
+Run `20261031-phase3-native-identity-s2026092701-r01` / code `c5e167a687e915993845056355afeee97a8da8a1`，两独立完整F0 native reader/defaulthead各444、共888步及6×3DURA预测后独立CPU3truth VERIFIED完成。主TARGET_ID_pred：source_DURA: AK/CK/RU/H=89.848148/96.437037/63.809524/74.622601%；原F0closed90.981481%/studentclosed91.277778%/原F0损1.133333pp；clean_DURA: AK/CK/RU/H=27.678544/39.367787/60.722136/38.024602%；原F0closed48.567015%/studentclosed49.193785%/原F0损20.888471pp；star_DURA: AK/CK/RU/H=24.685490/44.673654/48.189693/32.647223%；原F0closed41.721059%/studentclosed42.957172%/原F0损17.035569pp。sourceknown12=True、target保护=False，科学NO_PROMOTION；U576固定门控接受290，非空PL批次444/444，预测直方图不称准确率。PCD/G/原F0保持，源先封存再U，自己身份路由密度和新tau；无新density/24新tau，全36tau，部署834665，不含667729路径外wrapper参数。PCD研究基线保留，AN/HOWNA/开发已曝/缺类日NA/formal0/完整goalACTIVE。详见`docs/PAMF_PHASE3_NATIVE_IDENTITY_RESULTS_20261031.md`。
