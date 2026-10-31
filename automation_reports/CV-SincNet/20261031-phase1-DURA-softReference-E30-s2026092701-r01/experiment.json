@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "Active恢复性能/效率目标；用户允许独立源域冻结F特征指导和G从零单阶段30epoch；直接TX/V/target优化0，全七景正式/defaultDURA不变。",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "b6136c53106c9e8e6273a606262d5152a4e08d23",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-softReference-E30-r01"
@@ -107,7 +107,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-softReference-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-softReference-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-softReference-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.soft_reference run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.soft_reference run --root /home/szu2070436088/2510044040/CV-SincNet --commit b6136c53106c9e8e6273a606262d5152a4e08d23",
     "stop_rule": "Badsource/cache/F/checkpoint/shape/order/collision/nonfinite/gradientpressure>1+2e-5/smoke/coverage:preserveandstop/noautoretry/nootherownercontrol. No performancestop;fixedfinal30/allsevenformal."
   },
   "expected_artifacts": [
@@ -183,7 +183,7 @@
       "budget_ref": "Gscratch30/7410/B256/L189000U1701000/oneGforward-backward;rawJ1.89mrefs/19.3536GBreads plusoffset1.89mrefs/37.8MBreads;trainingFmodel0/newF-VJP0/newoffset1.26MB;upstreamF50/11100/rawJ30.009s/features3.782s/ref.213s/cal3.157s separate",
       "output_root": "runs/20261031-phase1-DURA-softReference-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-softReference-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.soft_reference run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_direct_train.soft_reference run --root /home/szu2070436088/2510044040/CV-SincNet --commit b6136c53106c9e8e6273a606262d5152a4e08d23",
       "expected_artifacts": [
         "launch.json",
         "plan.json",

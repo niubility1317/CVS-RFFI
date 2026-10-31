@@ -116,3 +116,10 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 
 
 软参考源IQ校准 20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01/cf018bed 全部PASS：beta.25/alpha.0033130025035573727/原rawJ不改；source512 minnorm位移IQNMSEmean.003394%/P95.010540%，FP32实际线性残差max6.492e-6，真实F相对偏移误差median.143853/p95.495730，512clean选择保持。纯G8cf源01/20 prototype/exact meancos.656546/.669879（IQ.0474/.0488，无偏移metric对同prototype精确梯度.4670/.4670），非负501/491、每RX正、实际梯度压力max1.000000358。BLOCKED/unlocked方向仍弱、线性误差中位约.5；guide值超IQ13/17，不能复用旧值上界。CPU3.156706s/F1536+2/inputVJP1024+2/0G-新完整J-TX-V-target-updates，512可达性/1024几何/2097152闭式分量/52分组独立复算；PID1392918自然结束。只支持另登记scratchjoint30/7410+完整七景，未自动训练/新正式收益，默认与完整目标ACTIVE。
+
+
+## 跨RX软参考30轮版本已启动
+
+20261031-phase1-DURA-softReference-E30-s2026092701-r01。VERIFIED / RUNNING。执行 b6136c53106c9e8e6273a606262d5152a4e08d23 已提交、推送并独立核对远端OID；一次N607 preflight/单archive传输SHA/remotecompile通过。真实2Ls G三模块梯度、实际附加IQ梯度cap、F冻结/原默认头/严格重载通过。实际controller 1410473/worker 1410565/GPU 4 的CWD、完整命令、CUDA、GPU和日志增长核实，旧own句柄全部消失，其他owner保持。至少E1完整前缀预算/加权loss/曝光/逐步cap核对通过，最大压力1.000000119。
+
+新增63000×5 FP32参考偏移缓存1.26MB，生产0.566940秒；独立复算63000条/315000分量、30个otherRX软中心与512校准条，最大偏移差0.0。新F前向/VJP0；原rawJ645.12MB只读复用核对0.075864秒，历史F50/11100、rawJ30.008929秒、F1603.782270秒、参考几何0.212823秒及IQ校准3.156706秒单列。训练中不加载F。当前正式成绩待产出，不将源域校准当作性能验收；满30后自动完成全七景预测/独立truth-last。默认DURA保持，目标ACTIVE。
