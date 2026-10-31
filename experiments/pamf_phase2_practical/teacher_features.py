@@ -82,6 +82,8 @@ class EpisodicMetricBridge(TeacherBridge):
 
 
 class OrbitEnsembleBridge:
+    encoder_type=OrbitCCA
+    schema='source_C4_C8_CCA_v1'
     def __init__(self,encoders):
         if len(encoders)!=2 or not all(isinstance(value,OrbitCCA) for value in encoders):raise ValueError('Two ordinary source CCA encoders required')
         self.encoders=tuple(encoders);self.rank=64
@@ -95,7 +97,7 @@ class OrbitEnsembleBridge:
     @classmethod
     def fit(cls,raw,restored):
         a=cls.split(raw);b=cls.split(restored)
-        return cls([OrbitCCA.fit(x,y) for x,y in zip(a,b)])
+        return cls([cls.encoder_type.fit(x,y) for x,y in zip(a,b)])
 
     def transform(self,features,*,restored,old_columns=None):
         values=[encoder.transform(part,restored=restored) for encoder,part in zip(self.encoders,self.split(features))]
@@ -105,7 +107,7 @@ class OrbitEnsembleBridge:
     def save(self,path):
         from pathlib import Path
         if Path(path).exists():raise FileExistsError('Frozen dual-orbit encoder exists')
-        payload=dict(schema=np.asarray('source_C4_C8_CCA_v1'),rank=np.asarray(64,np.int64))
+        payload=dict(schema=np.asarray(self.schema),rank=np.asarray(64,np.int64))
         for orbit,encoder in zip((4,8),self.encoders):
             for name,p in zip(BLOCKS,encoder.parameters):
                 for key,a in zip(('mean_raw','mean_restored','raw_projection','restored_projection'),p):payload[f'C{orbit}_'+name+'_'+key]=a
@@ -115,14 +117,20 @@ class OrbitEnsembleBridge:
     def load(cls,path):
         encoders=[]
         with np.load(path,allow_pickle=False) as z:
-            if str(z['schema'].item())!='source_C4_C8_CCA_v1' or int(z['rank'].item())!=64:raise ValueError('Wrong dual-orbit source checkpoint')
+            if str(z['schema'].item())!=cls.schema or int(z['rank'].item())!=64:raise ValueError('Wrong dual-orbit source checkpoint')
             for orbit in (4,8):
                 parameters=[tuple(np.array(z[f'C{orbit}_'+name+'_'+key],dtype=np.float64,copy=True) for key in ('mean_raw','mean_restored','raw_projection','restored_projection')) for name in BLOCKS]
-                encoders.append(OrbitCCA(parameters))
+                encoders.append(cls.encoder_type(parameters))
         return cls(encoders)
 
 
+class CorrelationEnsembleBridge(OrbitEnsembleBridge):
+    from .milkr.correlation_cca import CorrelationCCA as encoder_type
+    schema='source_C4_C8_correlation_weighted_CCA_v1'
+
+
 def bridge_type(method):
+    if method=='corr_orbit_ensemble':return CorrelationEnsembleBridge
     if method=='native_skip':return NativeSkipBridge
     if method=='residual_skip':return ResidualSkipBridge
     if method=='episodic_metric':return EpisodicMetricBridge

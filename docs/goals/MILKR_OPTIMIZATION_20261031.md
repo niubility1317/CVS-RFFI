@@ -323,3 +323,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R39 实际结果
 
 120行独立truth-last完成，所属进程退出。两S逐KN验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 11, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 16, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.951270096769211, 'fusion_gain_pp': 1.3870375975507665}, {'S': 'S0', 'K': 10, 'N': 2, 'raw_gain_pp': 4.542752733491517, 'fusion_gain_pp': 3.738796792809951}, {'S': 'S0', 'K': 20, 'N': 2, 'raw_gain_pp': 4.767061039023912, 'fusion_gain_pp': 2.9658397354685118}, {'S': 'S0', 'K': 20, 'N': 5, 'raw_gain_pp': 3.846181281562122, 'fusion_gain_pp': 3.7295036166338558}, {'S': 'S0', 'K': 20, 'N': 10, 'raw_gain_pp': 3.8747501861795874, 'fusion_gain_pp': 3.587759402317392}]。当前SUP旧类RF乘积方向/中性还原原p/两gate与各折train-only核实，双核/单残差KRR保持；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### R40 源CCA相关强度表示
+
+固定R34对照路线，将源配对CCA64每坐标乘sqrt(rho)，弱相关方向降权，无新rank/power搜索；双encoder仍557440FP64，源RX/TXheld保护rho。R31prior/融合及F/G/head保持，不混R38/39gate。首RXall16KN120预测后逐格通过才六RX；最终七RXall16目标不变，尚未发布。
