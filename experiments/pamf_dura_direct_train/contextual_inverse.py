@@ -183,7 +183,7 @@ def train(args, p):
         peak_allocated_bytes=torch.cuda.max_memory_allocated(), seconds=time.perf_counter()-start))
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def predict(args, p, role):
     from . import evaluation
     from experiments.pamf_fcrossrx_readout.frozen import load_reader
@@ -191,7 +191,8 @@ def predict(args, p, role):
     if (complete['status'], complete['epoch'], complete['updates'], complete['target_reads']) != ('SOURCE_TRAINED', EPOCHS, STEPS, 0):
         raise ValueError('Fixed source training must finish before prediction')
     folder, ids, _, _ = evaluation.reference(p, role)
-    model = load_model(p['output']/args.arm/'final.pt', 'cuda:0', arm=args.arm, commit=args.commit)
+    model = load_model(p['output']/args.arm/'final.pt', 'cuda:0', arm=args.arm,
+                       commit=getattr(args, 'checkpoint_commit', args.commit))
     reader = load_reader(p['reader'], p['source_cache'], 'cuda:0').eval().requires_grad_(False)
     output = p['output']/args.arm/(role+'_prediction')
     output.mkdir()
@@ -233,7 +234,8 @@ def profile(args, p):
     from experiments.pamf_fcrossrx_readout.frozen import load_reader
     from experiments.pamf_stage2_inference.engine import InferenceEngine
     from .evaluation import conv_linear_mac
-    student = load_model(p['output']/args.arm/'final.pt', 'cuda:0', arm=args.arm, commit=args.commit)
+    student = load_model(p['output']/args.arm/'final.pt', 'cuda:0', arm=args.arm,
+                         commit=getattr(args, 'checkpoint_commit', args.commit))
     baseline, _ = base.parent_model(p, 'cuda:0')
     baseline.eval().requires_grad_(False)
     reader = load_reader(p['reader'], p['source_cache'], 'cuda:0').eval().requires_grad_(False)
