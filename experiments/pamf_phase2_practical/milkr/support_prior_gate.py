@@ -19,6 +19,9 @@ class Gate:
     old_rows:int
     new_rows:int
 
+    @property
+    def state_bytes(self):return 16
+
     def values(self,probability):
         if self.mode=='old_only':return np.ones(len(probability),np.float64)
         if self.mode=='no_positive_gap':return np.zeros(len(probability),np.float64)
