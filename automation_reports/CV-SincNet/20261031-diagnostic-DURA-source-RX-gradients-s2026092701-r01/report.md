@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01`
 - group_id：`phase1-dura-source-receiver-gradient-geometry`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -40,3 +40,10 @@
 3项聚焦检查、实际入口/CPU拒绝于数据读取前/help/collector均值梯度与unused补0、零梯度处理及不积累param.grad通过，唯一P0/P1 PASS。首步真实2非clean L_s严格G加载、实际完整F clean SIG与缓存、原头及有限非零G梯度，G2/fullF4/prefix2/VJP2；PASS立即继续。主G840/Fprefix840/VJP840/完整F0，G/F全state逐张量不变、param.grad=None。CPU2/空CUDA；独立NumPy重放选样与10个完整梯度向量的参数布局、8组几何（80对角度/40均值角度）与判定，不新增NN反向。
 
 一次N607 preflight，实际源元数据RX为int64 1/3/4/6/8、7景unicode，每RX/景至少1711条，固定每格12容量足够。不可覆盖root、单归档SHA比较、远端编译与实际PID/CWD/argv/空CUDA/日志增长核实。旧G与其他owner保持，默认DURA和六景3pp/clean/效率完整目标保持。
+
+
+## 完整接收机梯度诊断
+
+VERIFIED / ANALYZED，SOURCE_ONLY。固定原SIG-only G E30/source47591与原F50，CPU2主循环5.791993秒自然结束。5RX×7景×12×缓存01/20，共840次观测/477条物理记录/两视图重合363，L86/U754。整体G梯度中cos<−0.05的RX对为3/10、1/10；5RX与未归一化等RX均值梯度全部同向，最小cos分别0.162204、0.286014，两个视图均无达到阈值的均值冲突。固定双视图主条件FAIL，不从action/prior分项换主，不自动增加接收机重加权训练。G/F全state保持、param.grad为空，0优化/TX/V/target；主G840/Fprefix840/VJP840/fullF0，smoke真实2Ls/G2/fullF4/prefix2/VJP2。完整选样与10梯度向量的8组几何/80对夹角/40均值夹角独立复算，0额外NN。仅是最终冻结点、有限源样本、固定cap的局部训练代理梯度，不代表AdamW/全轨迹/真实TX/硬件或恢复极限；默认和完整目标保持。
+
+详见[完整分析](analysis.md)、results.json。

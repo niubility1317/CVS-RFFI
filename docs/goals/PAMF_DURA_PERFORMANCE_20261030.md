@@ -424,3 +424,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 接收上下文FiLM：完整E30与七景
 
 20261031-phase1-DURA-contextFiLM-E30-s2026092701-r01/d32e98f9。VERIFIED / ANALYZED。接收上下文FiLM G从零单阶段30轮/7410步，L189000/U1701000，无G祖先；281415参数（新增14464），两prior四encoder层27D同record输入统计调制。原SIG-only物理4项/alpha1-cap0.5、原G初值及IQ、共享权重和数据/RNG/LR配对保持；不读取TX/RX/day/scene/state标签作为G输入，无新增增强/类别头/目标训练。最终8个新增参数张量全部发生变化=True，严格E30加载通过，不单独当作正确状态分工或硬件提取因果证明。源clean SIG40.32MB复用、新缓存F0；历史63000prefix/0.847077秒与F50/11100监督知识及成本保留，F-guided。训练prefix/VJP各1.89m、完整F后续0，F不变。每role全七景预测固定后truth-last，126正式/105源V/252双对照配对分组/14IQ误差独立复算，全30轮loss/曝光/视图/cap核对。六星地较SIG提高0/6、纯G提高6/6、默认DURA提高0/6。clean 84.945238%，低城区 68.210119%；低城区较SIG -0.625000、纯G +0.837500、默认DURA -0.679762个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=True，旧低城区70%=False。G训练及保存1141.237876秒、含worker准备1142.484089秒、控制器至自动分析1325.757887秒；ConvLinearMAC25082088/2prior4CG27FFT，统计/逐元素开销由实测体现。同卡G+F B1默认4.594755ms、本版4.695388ms。共享GPU单次墙钟不是因果加速证明，默认DURA保持，有限模型实测不认证物理恢复极限，完整目标仍按全部要求判断。 单seed/已暴露工程基准，完整TX/RX/day、净纠错、源与正式差异和实际成本见run分析。
+
+
+## 接收机场景均衡源梯度诊断
+
+20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01/495aedf6。VERIFIED / ANALYZED，SOURCE_ONLY。固定原SIG-only G E30/source47591与原F50，CPU2主循环5.791993秒自然结束。5RX×7景×12×缓存01/20，共840次观测/477条物理记录/两视图重合363，L86/U754。整体G梯度中cos<−0.05的RX对为3/10、1/10；5RX与未归一化等RX均值梯度全部同向，最小cos分别0.162204、0.286014，两个视图均无达到阈值的均值冲突。固定双视图主条件FAIL，不从action/prior分项换主，不自动增加接收机重加权训练。G/F全state保持、param.grad为空，0优化/TX/V/target；主G840/Fprefix840/VJP840/fullF0，smoke真实2Ls/G2/fullF4/prefix2/VJP2。完整选样与10梯度向量的8组几何/80对夹角/40均值夹角独立复算，0额外NN。仅是最终冻结点、有限源样本、固定cap的局部训练代理梯度，不代表AdamW/全轨迹/真实TX/硬件或恢复极限；默认和完整目标保持。 详见run analysis.md/results.json。

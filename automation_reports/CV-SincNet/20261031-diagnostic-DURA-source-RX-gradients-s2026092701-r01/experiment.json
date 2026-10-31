@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-and-efficiency goal;explicit source frozen-F feature-guidance and scratchsingle-stage30epoch authorization;noTX/V/targetoptimization/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "495aedf6b490f7bcc57f0d94cc6604a9be2cfc00",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01-release"
@@ -101,7 +101,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.receiver_gradient_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.receiver_gradient_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01 --commit 495aedf6b490f7bcc57f0d94cc6604a9be2cfc00",
     "stop_rule": "BadsourceG-F-cache-contract/layout/cohortcapacity/nonfinite/stateupdate/accumulatedparametergrad/collision/smoke:preserveandstop/noautoretry/noothers. Zero main directions are scientific undefined/fail,nottechnicalfailure. No threshold/parent/module search orautomaticG."
   },
   "expected_artifacts": [
@@ -157,7 +157,7 @@
       "budget_ref": "CPU2;mainG840/Fprefix840/inputVJP840/fullF0;smoke2noncleanLs/G2/fullF4/prefix2/VJP2;G-Fcheckpoint1each;0optimization/TX-V-target;historicalG30/F50/SIGcachecostretained",
       "output_root": "runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.receiver_gradient_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.receiver_gradient_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01 --commit 495aedf6b490f7bcc57f0d94cc6604a9be2cfc00",
       "expected_artifacts": [
         "launch.json",
         "smoke.json",
