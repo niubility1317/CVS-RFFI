@@ -1,0 +1,939 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-semantic-kn-s2026092701-r01",
+  "group_id": "phase2-milkr-semantic-residual-kn",
+  "display_name": "MILKR 改进：Tri-SIG-TIME SSL 固定基座 K/N 小规模验证",
+  "description": "身份优先多尺度核、冻结 B 带宽、默认头残差、B 函数继承及同物理双视图。主目标原版配对宏 H 提高 5 个百分点；固定单种子、P01/MIX01、全部七 RX 和全部 K/N 组合，不新增 F/G 训练。",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261030-phase2-group1-trisigtime-threepool-m4-r04"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User2026-10-31 goal in 01a18faf-43c4-7663-8298-b2065a8fd8c6: optimize MILKR +5pp, small matrix across K/N; explicitly Tri-SIG-TIME SSL base",
+  "code": {
+    "commit": "COMMIT_AT_RELEASE",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_only/partition/*/partition.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "read exact existing 7 VALIDATED_ONCE P01/MIX01 manifests",
+    "split_id": "read exact existing K/N split IDs",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P01/MIX01",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "paired developmental benchmark, not unseen blind confirmation; same K physical labels, SD adds computational views only"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092703/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092704/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/01a18faf-milkr-opt",
+    "gpu_policy": "GPUs0/2/4/6; at most2 new workers/card; pre-launch remaining memory >=4096MiB; never alter other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\milkr_opt_20261031",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_screen dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json",
+    "stop_rule": "query/protocol/split/output collision or launcher-wide failure: stop owned launch, preserve all; worker error marks technical failure, no blind retry; low scores are scientific results"
+  },
+  "expected_artifacts": [
+    "source_smoke.json",
+    "source_selection.json",
+    "predictions/<RX>/complete.json",
+    "scores/<RX>/metrics.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/predictions",
+    "scorer_ref": "experiments.pamf_phase2_practical.episodic_score",
+    "primary": "R3 S0Q0 minus original MILKR S0Q0; mean of cell H (not H of averaged accuracies)",
+    "success": ">=5pp pooled paired H and separately inspect all16 K/N deltas; only claim across all K/N if every cell mean >=5pp",
+    "secondary": "R1 geometry; R2 direct; R3 inherited; S1 strict; R4/R5 SD separate; Q1 protection; B old accuracy"
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R1/R2/R3 S0,S1 and R4/R5 SD; frozen Tri-SIG-TIME SSL F + DURA v1",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_semantic_screen_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FP64 Cholesky, no gradient updates",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "source lambda search 4 values on 5 RX x 2 existing source augmentation epochs; target all16 K/N",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/predictions/1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/logs/1-1.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json --capsule capsules/P01/MIX01/1-1",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "rx-14-7",
+      "method": "R1/R2/R3 S0,S1 and R4/R5 SD; frozen Tri-SIG-TIME SSL F + DURA v1",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_semantic_screen_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/14-7",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FP64 Cholesky, no gradient updates",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "source lambda search 4 values on 5 RX x 2 existing source augmentation epochs; target all16 K/N",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/predictions/14-7",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/logs/14-7.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json --capsule capsules/P01/MIX01/14-7",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "rx-2-1",
+      "method": "R1/R2/R3 S0,S1 and R4/R5 SD; frozen Tri-SIG-TIME SSL F + DURA v1",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_semantic_screen_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/2-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FP64 Cholesky, no gradient updates",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "source lambda search 4 values on 5 RX x 2 existing source augmentation epochs; target all16 K/N",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/predictions/2-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/logs/2-1.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json --capsule capsules/P01/MIX01/2-1",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "rx-20-1",
+      "method": "R1/R2/R3 S0,S1 and R4/R5 SD; frozen Tri-SIG-TIME SSL F + DURA v1",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_semantic_screen_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/20-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FP64 Cholesky, no gradient updates",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "source lambda search 4 values on 5 RX x 2 existing source augmentation epochs; target all16 K/N",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/predictions/20-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/logs/20-1.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json --capsule capsules/P01/MIX01/20-1",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "rx-7-14",
+      "method": "R1/R2/R3 S0,S1 and R4/R5 SD; frozen Tri-SIG-TIME SSL F + DURA v1",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_semantic_screen_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/7-14",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FP64 Cholesky, no gradient updates",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "source lambda search 4 values on 5 RX x 2 existing source augmentation epochs; target all16 K/N",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/predictions/7-14",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/logs/7-14.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json --capsule capsules/P01/MIX01/7-14",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "rx-7-7",
+      "method": "R1/R2/R3 S0,S1 and R4/R5 SD; frozen Tri-SIG-TIME SSL F + DURA v1",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_semantic_screen_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/7-7",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FP64 Cholesky, no gradient updates",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "source lambda search 4 values on 5 RX x 2 existing source augmentation epochs; target all16 K/N",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/predictions/7-7",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/logs/7-7.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json --capsule capsules/P01/MIX01/7-7",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "rx-8-8",
+      "method": "R1/R2/R3 S0,S1 and R4/R5 SD; frozen Tri-SIG-TIME SSL F + DURA v1",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_semantic_screen_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/8-8",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FP64 Cholesky, no gradient updates",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "source lambda search 4 values on 5 RX x 2 existing source augmentation epochs; target all16 K/N",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/predictions/8-8",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-semantic-kn-s2026092701-r01/logs/8-8.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release/runtime.json --capsule capsules/P01/MIX01/8-8",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No target truth until all7 worker predictions complete; scorer is separate process.",
+    "Original baseline predictions/scores reused via r08 authoritative jobs; do not rerun target baselines or select best query endpoints.",
+    "Source proxy labels from L_s only; known6 proxy is not novel-class evidence. V and U_s never opened in calibration.",
+    "Independent P0/P1 review once; optional full matrix is not an early gate."
+  ],
+  "registered_at": "2026-10-31T02:04:27+00:00"
+}
