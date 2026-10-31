@@ -1,0 +1,2 @@
+{"at": "2026-10-31T20:42:18+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-31T20:44:49+00:00", "status": "QUEUED", "note": "独立读回控制器 PID 2349731 和固定发布目录；真实 F/DURA 的两条 L_s CPU 检查通过，当前按共享资源限制等待 GPU，尚未开始正式训练。物化合法 6300 条 L_s 标签和源档案 512 条 IQ，实际检查仅用两条 L_s；未读取 U_s 标签、V 或测试 IQ。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-feature-conditioned-E30-s2026092701-r01/smoke.json"], "row_id": null}
