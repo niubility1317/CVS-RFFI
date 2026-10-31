@@ -1,1 +1,2 @@
 {"at": "2026-10-31T17:12:06+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-31T17:13:45+00:00", "status": "RUNNING", "note": "VERIFIED after prior profile complete: actual F0/G10 source smoke, strict checkpoint reload, independent rollout IQ and identity gradients; scratch controller PID 2142900, worker PID 2142992, GPU 4 training PID 2142996.", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-identity-rollout-source-E30-s2026092701-r01/smoke.json"], "row_id": null}
