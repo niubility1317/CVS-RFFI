@@ -1,0 +1,207 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-selective-uda-s2026092701-r01",
+  "group_id": "pamf-phase3-selective-known-affine-UDA",
+  "display_name": "PAMF第三阶段：仅适应已知密度的开放集无标签适应",
+  "description": "Known-only positive diagonal affine20MAPEM, fixedOE background and soft known responsibilities/Neff; matched sharedDIAG from previous run, original controls and thresholds unchanged.",
+  "kind": "cvs",
+  "stage": "Phase3-U-only-selective-affine-three-DURA-development",
+  "aliases": [
+    "固定OE背景选择性适应"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "UDA",
+    "selective_affine",
+    "all_DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-fixed-P1-original-shared-selective-ratio",
+  "parent_run_ids": [
+    "20261031-phase3-class-density-s2026092701-r01",
+    "20261031-phase3-diagonal-uda-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "0f1fda4c8c543394a938bd75dcb5cadbc29c6491",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-selective-uda-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_selective_uda_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_SELECTIVE_UDA_PLAN_20261031.md",
+      "configs/pamf_phase3_targets_20261029.json"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Existing original r03/DURA pre-adaptation public Ufeatures from completeddiagonalUDA; originalclassdensity Gaussian/tau and frozenpairedfuturefeature caches. OldtargetsharedDIAG usedonlymatchedcontrol.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-diagonal-uda-s2026092701-r01/predict/adaptation/U_features.npz:ids; /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-class-density-s2026092701-r01/predict/{known,novel}_predictions.npz:ids; targets/{clean_DURA,star_DURA}/predictions.npz:ids",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_new": 0,
+      "source_OE_new": 0,
+      "source_Us_new": 0,
+      "source_V_new_calibration": 0,
+      "source_V_diagnostic": 27000,
+      "source_novel_truthside_only": 3150,
+      "target_U_cached": 384,
+      "cross_clean_Q": 864,
+      "cross_star_Q": 864,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "OriginalsourceL6300/OE6134 fit and extraV27000 calibration inherited. U384 RX24-1/03-08 physicallydisjoint from source and futureQ864/03-15. clean/star same864 physicalrecords, old6/unknown3 each96; historicalexposure/source-dayoverlap/VALIDATED_ONCE retained.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Only original preadaptation starUfeatures fit known-only affine; OE raw white coordinate fixed for every U/Q, no true known/unknown routing. Source neural/GMM/tau frozen; previousshared targetstate onlymatchedcontrol, no initialization/teacher.",
+    "query_use": "Actual3CPsynthetic2 -> source/header/aggregatecontrols -> sourcefreeze -> U384 fourpublicfields -> new20selectiveMAPEM fromidentity -> freeze -> source/NV/twoQ sixcolumns -> all18pred -> independentCUDAempty3truth/Utruth0. No oldQ/score enters fit.",
+    "external_method_exception": null,
+    "claim_scope": "One historicaldevelopmentRX/seed/source-dayoverlap/highmissingunknown19-15NA; no formalblind or discovery/REG/fullgoal proof."
+  },
+  "checkpoint": {
+    "initialization": "OriginalF0 TriSIGTIME SSL E50/11100/default6/r03dc01 sourceonly/DURA R69/classdensity4af GMM/tau. OriginalUfeatures kept preadaptation through73f run. Newa1b0; oldDIAG targetstate iscontrolonly.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Contract392005/VALIDATED_ONCE/sameoriginalF0-r03-G-sourceGaussian; old73f header/Ucache chain and samecapsule/split checked, no targetadapted neural initialization or Qstate inherited.",
+    "selection_rule": "Primaryselective_predicted_ratio; fixed20EM/ridge160/mix0.5known+0.5OE. Only known components transform withJac; Mstep knownresponsibility/Neff, OE fixed. Identitystart and originaltwo6tau, no newcal/noQfit/earlystop/selection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-selective-uda-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-selective-uda-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-selective-uda-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_selective_uda_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_selective_uda_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-selective-uda-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "OneproducerGPU actual3CPsmoke/free>=4096MiB/<=2addedown/card; realGFsignal0. IndependentCUDAemptyCPUscorer. No foreignwork intervention.",
+    "stop_rule": "Illegalrole/ancestry/nonfinite/EMdecrease/outputcollision/unusableprediction preserve; no partialscore/overwrite/autorestart. UNKNOWN reconcileoriginalPID/root. Scientific failure doesnotstop healthyjob."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/*.log",
+    "predict/{complete,smoke}.json",
+    "predict/models/{density.npz,complete.json}",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/adaptation/{SELECTIVE.npz,SHARED.npz,U_features.npz,fit_diagnostics.json,shared_diagnostics.json,complete.json}",
+    "predict/{known,novel}_predictions.npz",
+    "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "originalpooled/predicted,inheritedSHAREDpooled/predicted,newSELECTIVEpooled/predicted",
+      "source_seenRX/clean_DURA/star_DURA",
+      "old6/unknown3TX",
+      "source5RX3day/devRX24-1",
+      "MIX6scene and missingcoverage",
+      "new21EMtrace and inheritedshared21trace/parametercost"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-selective-uda-s2026092701-r01/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.star_selective_uda_score.py",
+    "targets_ref": "Latest20261031 threeconditions allDURA; condition-specific targets remainclean95/star90, CK90/AKloss2pp. FullzeroTXlabelDA/discovery/futureanonymousREG stillrequired.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "CK90/cleanRU95/starRU90/sameDURAoriginalF0closedminusAK<=2pp",
+      "sourceknown12/maincoverage",
+      "starAKstrictgain and RUnotbelowselectedpredictedratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "selective-uda-s2026092701",
+      "method": "PAMF-OW known-only affine mixture with fixedOE",
+      "purpose": "Soleprimaryselective_predicted_ratio; compare originalselected and same320parameter20step sharedDIAG control.",
+      "config_ref": "docs/PAMF_PHASE3_SELECTIVE_UDA_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-selective-uda-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Deterministicidentitystart; inherited sourceGMM2026103019/G10receiver2027scene2026103001channel2026104001, no newchannel.",
+      "k": null,
+      "scenario": "Source seenRX starP1 plus futuredevRX cleanDURA/starDURA, one cachedstarU usedonlyforadaptation",
+      "optimizer": "Exact known-responsibility ridgeMAP-EM",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NewSELECTIVE20EM/320effectiveparameters/ridge160/knownJacincurratio/NeffMstep; U384cachedonce20fulliterations. SharedDIAG20 controlinherited from73f whose fullhistory40fits retained. NN/GMM/tau/sourceL-OE/newrealGFsignal0, actual3CPsynthetic2. NN834665/density364340B/cachetraininginherited; old12uniquetau96B/repeat288B/singlemain48B/no rowbankdeployment.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-selective-uda-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-selective-uda-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_selective_uda_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-selective-uda-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/*.log",
+        "predict/{complete,smoke}.json",
+        "predict/models/{density.npz,complete.json}",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/adaptation/{SELECTIVE.npz,SHARED.npz,U_features.npz,fit_diagnostics.json,shared_diagnostics.json,complete.json}",
+        "predict/{known,novel}_predictions.npz",
+        "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "FullgoalACTIVE/ANHOW N/A/no discoveryREG thisrun.",
+    "EveryU/Q is scored in bothdensitybranches; no trueknown/unknown routing. SourceoldRXidentity and newRX pairedQ samefrozenstarUstate.",
+    "Only matchedSHARED control uses oldDIAG targetstate; newfit alwaysfromidentity and originalsourceGMM/pre-adaptationU. OldQ/score notfit.",
+    "SourceVextra27000labels retained onlyoldcalibration/diagnostic, nonewthresholdfit; historicalNV/Q/source-dayoverlap/highmissing19-15NA/formaluntouched."
+  ],
+  "registered_at": "2026-10-31T00:10:38+00:00"
+}
