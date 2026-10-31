@@ -1,22 +1,23 @@
 """Sequential GPU work; never opens labels."""
 import argparse
+import contextlib
 import os
 from pathlib import Path
-import subprocess
 import sys
 
-from .experiment import RUN
+import torch
+from . import experiment
 
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--commit',required=True);a=p.parse_args()
-    if not os.environ.get('CUDA_VISIBLE_DEVICES'):raise ValueError('Assigned GPU required')
-    out=a.root/'runs'/RUN
+    if not os.environ.get('CUDA_VISIBLE_DEVICES') or Path('release_commit.txt').read_text(encoding='ascii').strip()!=a.commit:
+        raise ValueError('Assigned GPU and pinned release required')
+    torch.set_num_threads(2);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
+    out=a.root/'runs'/experiment.RUN
     for mode in ('train','predict'):
-        cmd=[sys.executable,'-u','-m','experiments.pamf_phase1_flow.experiment',mode,'--root',str(a.root),'--commit',a.commit]
-        with (out/'logs'/(mode+'.log')).open('xb') as log:
-            rc=subprocess.run(cmd,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT).returncode
-        if rc:raise RuntimeError(mode+' failed; no subsequent stage')
+        with (out/'logs'/(mode+'.log')).open('x',encoding='utf-8') as log, contextlib.redirect_stdout(log), contextlib.redirect_stderr(log):
+            getattr(experiment,mode)(a.root,out,a.commit)
 
 
 if __name__=='__main__':main()

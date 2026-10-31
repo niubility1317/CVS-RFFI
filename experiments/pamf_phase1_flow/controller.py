@@ -67,17 +67,27 @@ def main():
                     cmd=[sys.executable,'-u','-m','experiments.pamf_phase1_flow.worker',*common]
                     with (out/'logs/worker.log').open('xb') as log:
                         child=subprocess.Popen(cmd,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
-                    write(out/'submitted.json',dict(pid=child.pid,gpu=selected['index'],free_MB=selected['free'],existing_compute_pids=selected['pids']))
                     # Keep the shared admission lock until the child actually
                     # owns a CUDA context, so another scheduler cannot observe
                     # this card as idle during model loading.
-                    deadline=time.monotonic()+120
-                    while time.monotonic()<deadline and child.poll() is None:
-                        current=next(x for x in capacity() if x['index']==selected['index'])
-                        if any(owned(pid,child.pid) for pid in current['pids']):break
-                        time.sleep(1)
-                    else:
-                        raise RuntimeError('Worker did not establish a CUDA context; inspect its preserved process before any retry')
+                    try:
+                        write(out/'submitted.json',dict(pid=child.pid,gpu=selected['index'],free_MB=selected['free'],existing_compute_pids=selected['pids']))
+                        deadline=time.monotonic()+120
+                        while time.monotonic()<deadline and child.poll() is None:
+                            current=next(x for x in capacity() if x['index']==selected['index'])
+                            if any(owned(pid,child.pid) for pid in current['pids']):break
+                            time.sleep(1)
+                        else:raise RuntimeError('Worker did not establish a CUDA context')
+                    except BaseException:
+                        # Worker is a single process. Do not release the
+                        # reservation while an unconfirmed child remains live,
+                        # including when resource inspection itself fails.
+                        if child.poll() is None:
+                            child.terminate()
+                            try:child.wait(timeout=15)
+                            except subprocess.TimeoutExpired:
+                                child.kill();child.wait()
+                        raise
             if selected is None:print('WAITING_FOR_FREE_GPU',flush=True);time.sleep(20)
         if child.wait():raise RuntimeError('GPU training or prediction failed; outputs preserved')
         done=read(out/'flow/test_prediction/complete.json')
