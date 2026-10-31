@@ -44,7 +44,7 @@ def test_prior_three_fold_selection_excludes_held_physical_rows(monkeypatch):
     assert set(seen)=={16,24} and seen.count(24)==1 and state.selection['physical_OOF']
 
 
-@pytest.mark.parametrize('method',['prior_fusion','time_orbit'])
+@pytest.mark.parametrize('method',['prior_fusion','time_orbit','episodic_metric'])
 def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path,monkeypatch,method):
     import json,types,torch
     from experiments.pamf_phase2_practical import milkr_prior_fusion as worker
@@ -68,7 +68,11 @@ def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path
         monkeypatch.setattr(worker,'extract',wrong_extract)
     class Bridge:
         def transform(self,features,*,restored,old_columns):mapped.append(old_columns);return features
-    monkeypatch.setattr(worker.TeacherBridge,'load',lambda path:Bridge())
+    if method=='episodic_metric':
+        monkeypatch.setattr(worker.bridge_type(method),'load',lambda path:Bridge())
+        def wrong_bridge(path):raise AssertionError('Metric worker used ordinary CCA encoder')
+        monkeypatch.setattr(worker.TeacherBridge,'load',wrong_bridge)
+    else:monkeypatch.setattr(worker.TeacherBridge,'load',lambda path:Bridge())
     class State:
         def __init__(self,features,labels):
             support.append(features['restored'].tolist());self.count=len(labels);self.alpha=np.zeros((self.count,self.count));self.config=('signature','all',0.,'single');self.tau=1.;self.ridge=.1;self.selection={}
