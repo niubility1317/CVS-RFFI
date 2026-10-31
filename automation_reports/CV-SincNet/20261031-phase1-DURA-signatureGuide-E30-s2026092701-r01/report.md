@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01`
 - group_id：`phase1-dura-actual-signature-guidance-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -40,3 +40,8 @@ G保持原266951参数，从零单阶段30轮/7410步，完整coarse/action/prio
 5项新聚焦检查、已有精确前缀检查和实际入口通过，唯一P0/P1通过。首步真实2Ls核对完整F-vs-prefix的实际SIG和IQ输入VJP、真实G梯度cap、三个G模块反向、epoch0严格重载及原头state；PASS立即继续。smoke完整F4/前缀4/VJP6/G6、直接TX/V/target0。满30轮固定final后自动同卡profile/source1800×7/target168000×7，每role全七景预测固定后才独立truth-last，源成绩差也不取消正式测试。
 
 默认DURA保持，六景各≥137216正确/81.6761904762%、clean≥142256，原R17逐景1pp和低城区70%另列。完整参数/存储/延迟/显存/训练缓存和全流程时间如实报告，不凭前缀更短宣布同质量提速。其他owner不受影响。
+
+
+## 实际启动核实
+
+VERIFIED RUNNING。执行47591cdfe2e6e6dd7534cdea846badd942321b8f，controller1690298/worker1690393、GPU4；实际PID/CWD/完整argv/空CUDA控制器与workerCUDA4、GPU计算进程和日志增长均已核实。启动前该卡剩余22883MiB、已有1个计算PID，新增1条符合总数≤3；历史本goal训练/源诊断PID均不存在，其他owner保持。首步真实2Ls全部检查PASS并立即继续。新source SIG缓存40.32MB/0.847077秒、63000前缀输入已完成；当前完成源训练轮数2，正式性能结果尚无，不宣称优化成功。5项新检查及1项checkpoint权限负测试通过，唯一P0P1通过。launch_evidence.json只作聚合状态证据，实际源数据/权重/日志私有保存。

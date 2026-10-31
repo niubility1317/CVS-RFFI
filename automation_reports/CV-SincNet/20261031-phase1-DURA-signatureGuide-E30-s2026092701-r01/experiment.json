@@ -19,9 +19,9 @@
   "comparison_group_id": "DURA-signature-guide-vs-pureG-E30",
   "parent_run_ids": [],
   "replaces_run_id": null,
-  "authorization": "Active restoration-and-efficiency goal/user30epochbudget;independentprior-coordinatearchitecturetrial;no targetfeedback/defaultunchanged",
+  "authorization": "Active restoration-and-efficiency goal;explicit source frozen-F feature-guidance and scratchsingle-stage30epoch authorization;noTX/V/targetoptimization/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "47591cdfe2e6e6dd7534cdea846badd942321b8f",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-signatureGuide-E30-r01"
@@ -101,7 +101,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.signature_guided run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.signature_guided run --root /home/szu2070436088/2510044040/CV-SincNet --commit 47591cdfe2e6e6dd7534cdea846badd942321b8f",
     "stop_rule": "Badsource/roles/cache/Fstate-RNG/checkpoint/collision/nonfinite/actualguidepressure>0.5*(1+2e-5)/smoke/coverage:preservefailedrow/noautoretry/nootherownercontrol. No performance stop. Fixedfinal30/full7evenifsourceworse."
   },
   "expected_artifacts": [
@@ -174,7 +174,7 @@
       "budget_ref": "GscratchE30/7410/B256/L189000U1701000/0Gancestor;sourceSIGcache63000prefix/40.32MB;online1890000prefix+1890000inputVJP/0fullF-training/0Fupdates;F50knowledge/costseparate;266951G/2prior4CG27FFT",
       "output_root": "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.signature_guided run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_direct_train.signature_guided run --root /home/szu2070436088/2510044040/CV-SincNet --commit 47591cdfe2e6e6dd7534cdea846badd942321b8f",
       "expected_artifacts": [
         "launch.json",
         "plan.json",
