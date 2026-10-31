@@ -255,3 +255,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R31 实际结果
 
 36行独立truth-last完成，所属进程退出。两S逐角点验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 3, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 4, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.095765023241099, 'fusion_gain_pp': 1.5472148207863023}]。新gate仅当前SUP多维平衡岭回归，statebytes/组数/物理OOF核实；F/G/head/C4/CCA64保持，G-only完整。不扩12KN或六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### R32 当前SUP半中心化RF几何
+
+固定C4/CCA64后全部八RF block单位向量减去.5当前SUP均值再单位化；head概率/R31gate/priorcap/R26fusion不改。每物理OOF仅trainSUP中心/核/coef，query冻结逐条应用；纯S0/S1/各KN不借数据。源120K1规则后直接36角点证伪，无sourceH否决；旧R10前CCA SIG-only全center负结果保留。最终all16两Sraw+5/QF>raw目标不变，goalACTIVE。
