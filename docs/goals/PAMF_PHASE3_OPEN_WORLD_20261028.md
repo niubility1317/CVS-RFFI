@@ -1213,3 +1213,23 @@ Run `20261031-phase3-pcd-relative-metric-s2026092701-r01` / code `a24c413e5ab727
 ## 2026-10-31：冻结PCD相对马氏拒识完整结果
 
 Run `20261031-phase3-pcd-relative-metric-s2026092701-r01` / code `a24c413e5ab727ec283c07405eb9b1b2e68b036b`，源L统计/knownV四新tau/全6×3DURA预测/独立CPU三truth VERIFIED。唯一主RMD_pred：source_DURA: AK/CK/RU/H=89.974074/97.311111/46.158730/61.015257%；原F0同DURA闭集90.981481%/损失1.007407pp；clean_DURA: AK/CK/RU/H=32.619200/46.794910/53.900457/40.642551%；原F0同DURA闭集48.567015%/损失15.947815pp；star_DURA: AK/CK/RU/H=29.201764/52.810850/41.041863/34.123944%；原F0同DURA闭集41.721059%/损失12.519295pp。sourceknown12=True、目标保护=False，科学NO_PROMOTION。原F0身份保持，PCD继承targetU576；新NN/IQ/Ufit0，AN/HOW=N/A；sourceV校准非独立、Q已曝光/03-23缺类NA/正式24-18未读，完整goalACTIVE。见`docs/PAMF_PHASE3_PCD_RELATIVE_METRIC_RESULTS_20261031.md`。
+
+
+## 2026-10-31：接收机16参数输入状态预登记
+
+Run `20261031-phase3-receiver-input-s2026092701-r01` / code `ac8bbd27277fcb1f16806c7b8b94e8c3e27e390b`。冻结F0/PCD/G，P1后7复FIR+conjugate有界theta16；SOURCE源L先封存，TARGET同identity初值、同L128流再加合法U64，每臂200/Adam.01，conf.95&原PCDmargin0固定pseudo/PCDzanchor10，源CE+KD/参数prior.1。源RX不改，目标RX34仅input状态变化；旧density/τ不拟合，candidate自身F0c路由但保护baseline仍原同DURA F0。全6×3pred后独立3truth，PCD已有U576祖先如实保留。clean95/star90/CK90/origF0损2pp及对OLD/SOURCE相对门槛不降，REGoff/ANHOWNA，goalACTIVE。见`docs/PAMF_PHASE3_RECEIVER_INPUT_PLAN_20261031.md`。
+
+
+## 2026-10-31：输入状态训练完成与加载数值故障
+
+原receiver-input r01/ac8两theta各200完成/NN参数不变，预测在CPU派生系数与CUDA报告逐位比较中止，maxdiff4.66e−10，尚未Q/truth，FAILED_PRESERVED/NO_PERFORMANCE_RESULT保留。按单故障一次修复对派生报告允许2FP32ULP，theta/来源严格、训练数学与权重不变；只评估r02新root复用400步状态，不重训、不按分数改方法。完整goalACTIVE。
+
+
+## 2026-10-31：输入状态只评估恢复预登记
+
+Run `20261031-phase3-receiver-input-s2026092701-r02` / code `51b85e9040feea2d4cdf78c48c24370e0207e045`。只修CPU/CUDA派生报告2FP32ULP校验，theta仍strict，原r01两200状态复用、新训练0。predict→CPUscore新root，6×3三DURA与旧density/tau、原F0baseline和全部门槛不变；保留r01失败。无新LU IQfit，不借目标分数换主，goalACTIVE。见`docs/PAMF_PHASE3_RECEIVER_INPUT_RECOVERY_20261031.md`。
+
+
+## 2026-10-31：接收机输入状态完整评估结果
+
+Run `20261031-phase3-receiver-input-s2026092701-r02` / code `51b85e9040feea2d4cdf78c48c24370e0207e045`复用原r01/ac8两200theta，新优化0。2FP32ULP派生报告修复后全6×3DURA预测/独立CPU3truth VERIFIED，主TARGET_INPUT_pred：source_DURA: AK/CK/RU/H=89.733333/96.748148/64.285714/74.907247%；原F0损1.248148pp；clean_DURA: AK/CK/RU/H=31.634785/43.622079/61.961153/41.884889%；原F0损16.932231pp；star_DURA: AK/CK/RU/H=28.080527/48.571187/49.412149/35.810331%；原F0损13.640532pp。adaptation_success=False，sourceknown12=True，目标保护=False，科学NO_PROMOTION，完整goalACTIVE。原F0/PCD/G权重不改、theta改变target实际closed，原未变换F0同DURA保护基准保留，旧density/tau不拟合。r01 FAILED/NO_PERFORMANCE_RESULT不改，PCD继承U576/新θU训练576无TX；REGoff/ANHOWNA，单开发RXseed/Q已曝/03-23缺类NA/正式24-18未访问。见`docs/PAMF_PHASE3_RECEIVER_INPUT_RESULTS_20261031.md`。

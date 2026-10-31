@@ -1,0 +1,149 @@
+# 接收机输入状态只评估恢复
+
+ANALYZED，执行 VERIFIED；科学 NO_PROMOTION，完整目标 ACTIVE。
+
+# 接收机输入状态只评估恢复（2026-10-31）
+
+新 run `20261031-phase3-receiver-input-s2026092701-r02`，只执行预测与独立评分。原 run r01 / code `ac8bbd27277fcb1f16806c7b8b94e8c3e27e390b` 的 SOURCE_INPUT/TARGET_INPUT 已各完成200步，共400步；两个16参数状态、采样、损失、模型来源及训练产物全部保留，不重新训练或覆盖。
+
+r01 在预测加载器中止，尚未进入候选合成smoke、源预测或目标Q处理，truth读取0。加载器先在CPU重算系数，再与CUDA训练报告逐位比较；同一严格FP32 theta所得FIR最大差为SOURCE 4.656612873077393e−10、TARGET 1.1641532182693481e−10，gamma均相同。实际theta保持一致，问题是派生FP32报告跨设备的精确相等要求。r01保留FAILED_PRESERVED/NO_PERFORMANCE_RESULT，不能记作科学NO_PROMOTION。
+
+唯一数值修复是派生报告按每元素最多2个FP32 ULP比较，keys/shape/floating/finite仍检查；theta本身、arm、原配置、训练预算和checkpoint来源继续严格匹配。真实JSON已在本地复现旧拒绝/新接受，1至2ULP与大错/θ改变的针对性负测已保留。没有修改滤波公式、权重、损失或预算。
+
+r02使用新的Git代码、release/output root和唯一owner。训练配置仍原r01/run/code/输出，预测配置与新产物属于r02；加载器保留原训练身份。入口只有predict→score，不能再启动train。继承训练400步、新theta/NN优化0、新L/U IQ读取0；预测仍需原Q received经过固定DURA，再经两个已冻结输入状态、原F0/PCD。新真实Q F0/PCD各40952、G20476，smoke按实际调用另计。
+
+原[科学计划](PAMF_PHASE3_RECEIVER_INPUT_PLAN_20261031.md)的六方法、三个DURA条件、同物理未来Q、原F0未输入校正的同DURA基准、旧density/12unique tau及全部绝对/相对门槛不变。所有6×3预测后独立CPU三truth各一次；无新U训练、clean学习、未知真TX/K/配额、query拟合、匿名注册或按目标成绩调整。
+
+source V/NV三臂原样重复旧PCD，四未知与03-23缺类宏N/A按原计划；source校准/历史Q曝光、单RX/seed、正式RX24-18未访问保持。r02评估的是r01冻结状态第一次完整测试，不把r01加载故障解释为方法性能。
+
+复用原已通过14unique/41sub；本次仅原故障数值、跨训练/评估身份、eval-only入口及实际checkpoint→预测→CPU评分交接的定向验证，加一次原问题P1定向复核，不重复完整审查或原套件。单N607 preflight、单archive SHA/compile、真实checkpoint无query smoke、PID/CWD/argv/GPU/log增长和独立truth-last按最小流程执行。
+
+若相同技术故障经本次修复仍重现，保留r02并停止盲目重启；其他科学低分完成全矩阵。每卡新增≤2、实际free≥4096MiB，不停止或修改其他owner。完整Phase3目标ACTIVE，性能结论等待实际完整评分。
+
+
+实际code `51b85e9040feea2d4cdf78c48c24370e0207e045`，CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-receiver-input-s2026092701-r02-release`，命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.receiver_input_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-receiver-input-s2026092701-r02-release/runtime.json`；训练source为r01/ac8且只读。
+
+
+# Phase3 接收机输入适配结果（2026-10-31）
+
+**结论：NO_PROMOTION，完整目标保持 ACTIVE。** 唯一主方法 TARGET_INPUT_predicted_ratio 在星地条件较旧 PCD 的 AK/RU 分别增加 0.128804/0.104450 个百分点，但较同预算 SOURCE_INPUT 的 RU 降低 0.474287 个百分点；clean 与星地的绝对联合门槛均未满足。原 PCD 研究基线保留，不改选 pooled 或纯源控制。
+
+训练仅发生一次：r01（20261031-phase3-receiver-input-s2026092701-r01，代码 ac8bbd27277fcb1f16806c7b8b94e8c3e27e390b）完成两臂各 200 步。r02（同 ID 后缀 r02，代码 51b85e9040feea2d4cdf78c48c24370e0207e045）只恢复评估，新增训练和输入参数优化均为 0。
+
+## 方法与数据
+
+16 个 FP32 参数构成有界 7 抽头复 FIR 与共轭项：校正为 0.05·tanh(theta)，中心实系数加 1，reflect pad 3；不做第二次 RMS、不重抽信道。F0/default6、r03、最终 PCD 和 DURA 全冻结。它是接收端数字校正试验，不是 DeepFIR 原论文的发射端方法复现，也不证明识别了物理逆信道。
+
+SOURCE_INPUT 与 TARGET_INPUT 从同一恒等初值独立用 Adam（lr 0.01、wd 0、norm clip 5）优化 200 步。源损失为 CE＋KD(T=2、KL×4)＋0.1 prior；TARGET 再加固定掩码 PL＋10·PCD 特征锚定。掩码来自适配前 F0 置信度≥0.95 且 PCD predicted margin≥0；不使用真实目标 TX/K/配额。
+
+先封存 SOURCE，再打开星地 U。SOURCE 的新增输入参数只用源 L，但整个系统的 PCD 已有 U576 祖先，不能称系统纯源；TARGET 另用同一合法无标签 U576。r02 只继承这些状态，不再次读取 U IQ 或更新参数。
+
+源合同 392005：L6300、Us56700、OE6134 祖先、V27000、NV3150；源五 RX 索引 1/3/4/6/8，03-08/15/23，六旧 TX 为 14-10/14-7/20-15/20-19/6-15/8-20。本轮训练仅 L 的 P1/y/缓存教师与 U；Us、OE、V、NV、Q 均不进入参数拟合。源 V 是已有校准角色，不能当独立测试。
+
+目标 RX3-2/index34：U576 为 03-01 星地；未来 Q10238 为 03-15/23 的 5525/4713 条，旧类 4508（1491/1182/150/406/1186/93），未注册四类 5730（5-5/10-7/2-19/7-11 各 1454/1439/1427/1410）。7-11 整类不在早日 U。源/U/Q 物理互斥；clean/star 共用未来物理记录。
+
+三类测试全部 DURA；clean 只测试并共享星地 U 拟合的输入状态。G10 MIX01：600 km、25 MHz、2.45 GHz、residual/post_sync/noEQ/refSNR30 dB、reflect、一次 input RMS。固定 received 与恢复祖先保持，不把重复处理当新物理样本；详细句柄与种子见[计划](PAMF_PHASE3_RECEIVER_INPUT_PLAN_20261031.md)。
+
+## 全部 400 步训练证据
+
+已解析两份完整 steps.jsonl 的 1 至 200 步，连续且数值全有限。两臂每步 L128 索引严格匹配，各曝光 25600、实际 unique L6190；SOURCE U0，TARGET U64×200=12800 次、unique U576。源采样 seed2026103160、U seed2026103161；SOURCE 完成先于 U 打开。
+
+以下为全部步骤分成三段的均值；prior 与 z_anchor 列为乘权前值，两个总目标不同，不用总 loss 高低判定方法优劣。
+
+| 臂 | 步段 | 总 loss | CE | KD | prior | PL | z_anchor | 梯度范数 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| SOURCE_INPUT | 1–66 | 0.29901045 | 0.29548356 | 0.00336480 | 0.00162075 | 0.00000000 | 0.00000000 | 0.12975219 |
+| SOURCE_INPUT | 67–133 | 0.28035224 | 0.27734502 | 0.00275777 | 0.00249442 | 0.00000000 | 0.00000000 | 0.13677930 |
+| SOURCE_INPUT | 134–200 | 0.28753171 | 0.28506934 | 0.00214432 | 0.00318044 | 0.00000000 | 0.00000000 | 0.13679868 |
+| TARGET_INPUT | 1–66 | 0.30607939 | 0.29742664 | 0.00177648 | 0.00063505 | 0.00553382 | 0.00012789 | 0.14079020 |
+| TARGET_INPUT | 67–133 | 0.28735061 | 0.27974299 | 0.00114380 | 0.00049415 | 0.00528684 | 0.00011276 | 0.15213269 |
+| TARGET_INPUT | 134–200 | 0.29400799 | 0.28670305 | 0.00085318 | 0.00087207 | 0.00546588 | 0.00008987 | 0.14414663 |
+
+总损失方程的最大绝对残差为 SOURCE 2.74e−8、TARGET 3.54e−8。总 loss 全程范围分别为 0.092652 至 0.537690、0.099187 至 0.545889，三段均值先降后小幅回升，不能据首尾单点声称单调收敛。总目标/梯度首次分歧在第 1 步，CE 首次分歧在第 3 步，与新增 U 项及随后参数轨迹分开记录。
+
+梯度范数全程分别为 0.013720 至 0.387453、0.022732 至 0.422914；各调用裁剪 200 次，但超过 5 的次数均为 0。theta 最终 L2 为 0.219458/0.136553；最大 FIR 校正绝对值 0.004890/0.005359，共轭项最大绝对值 0.001160/0.001289。报告仅给聚合，不发布训练参数数组。
+
+所有步骤的原神经网络梯度均为 None；参数、buffers、eval 状态未变。训练合成梯度烟测到 theta 的范数 0.131313，未执行优化。固定 U 教师接受 290/576=50.347222%；全部 U 的六预测槽直方图为 [64,92,55,124,191,50]。TARGET 接受曝光 6479/12800，六槽接受曝光为 [775,1233,43,1032,3134,262]；这些是预测/掩码统计，不是伪标签真实精度或 U 的真实已知比例。
+
+## 六读出 × 三 DURA 条件
+
+所有值为逐真实 TX 等权宏指标（%），不是按条数加权；AK 为旧类正确且接收，CK 为旧类接收，RU 为四未注册类拒识，H 为 AK 与 RU 的调和均值。唯一主固定为最后一行方法；源域不应用目标 mapper，三臂各自两列逐条重复旧 PCD。
+
+| 方法 | 条件 | AK | CK | RU | H |
+|---|---|---:|---:|---:|---:|
+| OLD_PCD_pooled_ratio | 源 DURA | 89.770370 | 97.081481 | 63.619048 | 74.465443 |
+| OLD_PCD_pooled_ratio | clean＋DURA | 32.123647 | 44.791196 | 60.790839 | 42.034854 |
+| OLD_PCD_pooled_ratio | 星地＋DURA | 29.175335 | 50.230381 | 48.454372 | 36.420916 |
+| OLD_PCD_predicted_ratio | 源 DURA | 89.733333 | 96.748148 | 64.285714 | 74.907247 |
+| OLD_PCD_predicted_ratio | clean＋DURA | 31.661804 | 43.761391 | 61.979647 | 41.912794 |
+| OLD_PCD_predicted_ratio | 星地＋DURA | 27.951722 | 48.582412 | 49.307698 | 35.678111 |
+| SOURCE_INPUT_pooled_ratio | 源 DURA | 89.770370 | 97.081481 | 63.619048 | 74.465443 |
+| SOURCE_INPUT_pooled_ratio | clean＋DURA | 32.080163 | 44.362640 | 61.352318 | 42.130795 |
+| SOURCE_INPUT_pooled_ratio | 星地＋DURA | 29.090749 | 49.938972 | 49.190831 | 36.560277 |
+| SOURCE_INPUT_predicted_ratio | 源 DURA | 89.733333 | 96.748148 | 64.285714 | 74.907247 |
+| SOURCE_INPUT_predicted_ratio | clean＋DURA | 31.436139 | 43.133631 | 62.523281 | 41.837009 |
+| SOURCE_INPUT_predicted_ratio | 星地＋DURA | 28.022272 | 48.464834 | 49.886435 | 35.886393 |
+| TARGET_INPUT_pooled_ratio | 源 DURA | 89.770370 | 97.081481 | 63.619048 | 74.465443 |
+| TARGET_INPUT_pooled_ratio | clean＋DURA | 32.185382 | 44.765917 | 60.737843 | 42.074964 |
+| TARGET_INPUT_pooled_ratio | 星地＋DURA | 29.348113 | 50.371365 | 48.663027 | 36.614463 |
+| TARGET_INPUT_predicted_ratio | 源 DURA | 89.733333 | 96.748148 | 64.285714 | 74.907247 |
+| TARGET_INPUT_predicted_ratio | clean＋DURA | 31.634785 | 43.622079 | 61.961153 | 41.884889 |
+| TARGET_INPUT_predicted_ratio | 星地＋DURA | 28.080527 | 48.571187 | 49.412149 | 35.810331 |
+
+同 DURA 原 F0 闭集为源 90.981481%、clean 48.567015%、星地 41.721059%。SOURCE_INPUT 候选闭集为 90.981481/48.969966/42.265860%，TARGET_INPUT 为 90.981481/48.665160/41.993769%。分类器权重没变，但输入使预测改变；candidate closed 同时路由密度和旧阈值，不能声称 classification_unchanged。
+
+主方法相对原 F0 闭集的 AK 损伤为源 1.248148、clean 16.932231、星地 13.640532 个百分点。以候选自身闭集替换原 F0 保护基线会改变问题，故不这样判定。主 AUROC/OSCR 为源 94.730673/87.940433、clean 54.357756/33.788026、星地 51.011732/27.218402%；是固定分数曲线诊断，不据其选新阈值。
+
+## 同 ID 配对与分组
+
+下表均为主 TARGET_INPUT predicted 相对指定 predicted 控制；“增/失”按事件逐条计数，宏变化仍按 TX 等权。
+
+| 控制 | 条件 | 闭集纠错增/失 | 正确接收增/失 | 接收净增 | 未知拒对增/失 | ΔAK / ΔRU / ΔH（百分点） |
+|---|---|---:|---:|---:|---:|---|
+| OLD_PCD | clean＋DURA | 9/1 | 7/1 | -3 | 10/11 | -0.027019 / -0.018494 / -0.027905 |
+| OLD_PCD | 星地＋DURA | 15/3 | 13/2 | -1 | 11/5 | +0.128804 / +0.104450 / +0.132220 |
+| SOURCE_INPUT | clean＋DURA | 8/13 | 9/6 | +10 | 4/36 | +0.198646 / -0.562128 / +0.047880 |
+| SOURCE_INPUT | 星地＋DURA | 7/9 | 11/5 | +9 | 2/29 | +0.058255 / -0.474287 / -0.076063 |
+
+源域两套配对事件全为 0。星地主方法对旧 PCD 改变 27 条已知闭集预测，闭集净纠错 +12、正确接收净 +11、错误接收净 −12；对 SOURCE 改变 37 条预测，闭集净纠错 −2、正确接收净 +6、错误接收净 +3，未知拒对净 −27。因此不能把微小旧基线改善归结为可靠的 U 适应收益。clean 对旧控制正确接收净 +6，但宏 AK 下降 0.027019 个百分点，原因是各 TX 容量不等，净条数与宏指标不可混用。
+
+| 主方法星地场景 | AK | CK | RU | H | 原 F0 闭集−AK（百分点） |
+|---|---:|---:|---:|---:|---:|
+| high | 28.720515 | 43.158130 | 57.887577 | 38.392741 | 13.138692 |
+| mid | 26.258401 | 40.408688 | 55.771659 | 35.705803 | 22.718010 |
+| low_suburban | 31.362375 | 47.553460 | 51.233153 | 38.907514 | 15.623929 |
+| high_urban | 38.557773 | 53.651000 | 54.578756 | 45.190331 | 14.695897 |
+| mid_urban | 33.458754 | 47.393603 | 49.409051 | 39.898855 | 16.340304 |
+| low_urban | 22.828430 | 50.732758 | 44.848732 | 30.256178 | 10.103761 |
+
+未来六主景的整体所需类覆盖完整，但 CK、RU 与 2 pp 保护均未过，不能用某一场景或 pooled 项较高替换主。03-23 缺旧 20-19/8-20，该日完整宏 AK/CK/H 保持 N/A；RU 可定义：clean 62.245519%、星地 49.274436%。03-15 主 AK 为 clean 31.613915%、星地 28.070380%。
+
+星地主已知 TX 的 AK/CK 分别为：14-10 45.674044/64.185111%，14-7 12.013536/67.428088%，20-15 2.666667/28.000000%，20-19 2.216749/8.866995%，6-15 58.600337/62.731872%，8-20 47.311828/60.215054%。例如 20-15 候选闭集正确 63 条但仅正确接收 4 条；20-19 正确 22 条仅接收正确 9 条，身份误分与正确样本误拒同时存在。
+
+四未注册 TX 的 RU（clean/星地）依次为：5-5 35.144429/32.943604%，10-7 75.747047/59.972203%，2-19 70.357393/48.633497%，7-11 66.595745/56.099291%。源 NV 三 TX 19-15/19-16/7-1 的 RU 为 64.000000/59.904762/68.952381%，与未来四类是不同集合。
+
+源 known12（整体＋五 RX＋六场景）保护继承通过，known42 未全通过；RX3 的整体损伤恰为 2 pp。已有校准产物的下一 q 在 RX3 损伤 2.018519 pp 而被拒绝，本报告不重扫 q。五个交叉诊断超限为 RX3/high 3.143369、RX3/mid_urban 3.624502、RX3/low_urban 2.109184、RX4/high_urban 2.512911、RX8/low_urban 2.671227 pp，不能将 known12 通过写成 42 组通过。
+
+源五 RX 的主 AK 范围 83.148148% 至 92.518519%，RU 为 51.904762% 至 74.920635%；源三日 AK 为 89.822222/89.655556/89.722222%。目标仅 RX34；全 TX/RX/day/scene、逐类 Wilson 区间与两套完整配对见[固定评分](../local_artifacts/pamf_phase3_receiver_input_20261031_r02/score/results.json)，单 RX/seed 的这些区间不构成跨接收机总体置信保证。
+
+## 技术恢复、资源与范围
+
+r01 的两个 200 步训练完整完成。首次预测在 loader 对 CPU/GPU 派生系数报告作 exact 比较时退出；SOURCE/TARGET 最大差为 4.66e−10/1.16e−10，theta 逐值未变。失败发生在 candidate smoke、Q 前向和真值读取之前，保留 FAILED_PRESERVED/NO_PERFORMANCE_RESULT。仅将派生报告验证改为最多 2 个 FP32 ULP；theta、来源和 checkpoint 仍严格一致，网络/损失/矩阵未变。
+
+r02 独立不可覆盖输出只复用原两状态，优化 0；不把技术恢复记成第二次训练，也未按 Q 挑状态。全部 6×3 预测、状态与原控制重建完成后，独立 CPU 分别连接源 NV、clean Q、星地 Q 真值一次；U 真值读取 0。原密度/normalizer/阈值拟合 0，源 V/NV 只复用旧预测。新源训练输入与历史 PCD 的 U 祖先分别披露。
+
+真实前向按阶段列示：r01 训练 F0 64576、PCD 13376、r03/G 均 0，缓存 L 教师读 6300；r02 评估 F0/PCD 各 40952、G20476，旧 PCD 控制和源预测没有新增真实前向。全恢复链合计 F0 105528、PCD54328、G20476；不重复计入原 source cache、F0 E50/11100、r03+2220、PCD444/U576 与 G4940 的祖先训练成本。
+
+实际合成成本另列：r01 训练 F0/PCD 各 10、r03 2、G2、adapter 8；r02 评估 F0 6、PCD 6＋r03 2（合计 signal8）、G4、adapter4。r01 失败预测无 candidate smoke 或真实前向，保留其启动/loader 时间成本。
+
+每个输入状态 16 参数/64 B，两状态共 128 B；单主 F0 232993＋PCD334721＋G266951＋输入16=834681 参数。共享原 Gaussian 聚合 364340 B，不部署源/U 行 bank；唯一旧阈值 12 值/96 B，三臂重复保存 36 值/288 B，主单一读出 6 值/48 B，新阈值 0。此处不发布 theta 或完整滤波系数。
+
+r01 训练 61.166817 s、失败预测 4.506371 s；r02 预测 27.830217 s、CPU 评分 20.708208 s、pipeline 48.699433 s。它们是批量阶段时间，不是 B1 时延。r02 全部三个 stdout 共 6 行，warning/error 为 0；r01 train 14 行无 warning/error，失败 predict 的完整 traceback 保留。
+
+r02 共 5 次独立观测：driver1798000、predict1798021 的 CWD/full argv/CUDA5，以及 CPU1798802 的 CWD/full argv/CUDA 空均已捕获；GPU5/UUID ef5f59f2 的 376→578 MiB 为离散样本，不是峰值。预测日志 0→493→536→614 B，评分 44 B、driver21 B；最终所属 live/owned GPU 为空，foreign operations=0。
+
+验证继承 r01 的 14 unique/41 subtests；本次修复定向 6 unique/35 subtests、7 AST/3 CLI/runtime PASS。一次原完整 P0/P1 审查加一次原 P1 定点复审通过，不重复计数为新整套实验。r02 单包 805 文件/data0，SHA256 08388c3190559a486cc9d173939e1128f8c8937d25078eaeba5fca8a370febb0，archive comparison/remote compile/runtime 均 VERIFIED。
+
+判定保持 clean RU≥95%、星地 RU≥90%、CK≥90%、同 DURA 原 F0 闭集损伤≤2 pp及完整主景要求，并要求星地 AK 严格优于两个控制、RU 对两者不降。sourceknown12 虽通过，绝对目标与相对 SOURCE 的拒识保持均失败，adaptation_success=False。无发现/匿名注册，AN/HOW=N/A；正式 RX24-18 未访问，NV/Q 历史曝光、单 RX/seed、源/目标日期重合及 global physical history=UNKNOWN 均保持，不称独立盲测或普遍有效。
+
+证据：[完整聚合分析](../local_artifacts/pamf_phase3_receiver_input_20261031_r02/analysis.json)、[r01 技术失败](../local_artifacts/pamf_phase3_receiver_input_20261031_r01/technical_failure.json)、[r01 训练终态](../local_artifacts/pamf_phase3_receiver_input_20261031_r01/train/complete.json)、[r02 预测终态](../local_artifacts/pamf_phase3_receiver_input_20261031_r02/predict/complete.json)、[执行终态](../local_artifacts/pamf_phase3_receiver_input_20261031_r02/pipeline_state.json)。

@@ -1,0 +1,255 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-receiver-input-s2026092701-r02",
+  "group_id": "pamf-phase3-receiver-input",
+  "display_name": "PAMF第三阶段：已冻结输入状态的只评估恢复",
+  "description": "Reuse r01 two200-step theta states; only fix derived FP32 coefficient report comparison across CPU/CUDA, execute unchanged sixreadout threeDURA future matrix and independenttruth-last, no newtraining.",
+  "kind": "cvs",
+  "stage": "Phase3-receiver-input-evaluation-recovery",
+  "aliases": [
+    "输入状态评估恢复"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "DURA",
+    "bounded_IQ",
+    "unlabelled_UDA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-receiver-input",
+  "parent_run_ids": [
+    "20261031-phase3-receiver-input-s2026092701-r01",
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261031-phase3-receiver-input-s2026092701-r01",
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "51b85e9040feea2d4cdf78c48c24370e0207e045",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-receiver-input-s2026092701-r02-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.receiver_input_run",
+      "experiments.pamf_phase3_open_world.receiver_input_score",
+      "experiments.pamf_phase3_open_world.receiver_input_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_RECEIVER_INPUT_RECOVERY_20261031.md",
+      "docs/PAMF_PHASE3_RECEIVER_INPUT_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Originalsource L G10-DURA cache and fresh RX3-2 legalU/pairedfutureQ",
+    "version": "VALIDATED_ONCE originalsource392005 and freshcapsules, fixedreceived and cachedP1 reuse",
+    "representation": "P1 plus targetRX-only bounded7complexFIR/image term; no RMS or channel re-generation",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 开发域的时序发现与未来未知到达",
+    "physical_ids_ref": "Originalsource L ids/metadata and fresh public U/pairedQ ids; originalU_features.views[0] only",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "Private builder/scorer only: old6 and metadata-selected discover3/late1; algorithm registered roster only old6",
+    "roles": {
+      "source_L_IQ_new": 0,
+      "target_U_IQ_new": 0,
+      "inherited_source_L": 6300,
+      "inherited_target_U": 576,
+      "source_V_old_predictions": 27000,
+      "source_NV_old_predictions": 3150,
+      "future_Q_each": 10238,
+      "future_Q_known": 4508,
+      "future_Q_unknown": 5730
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "Existing originalsource/fresh VALIDATED_ONCE handles and same model/source identity, no newdata build",
+    "support_query_ref": "L only SOURCE first; TARGET independently identity-init with sameL plus earlyU; both freeze before all futureQ, no query data/GT fits.",
+    "leo_config_ref": "Fixed sourceMIX01/fresh G10 P1. OldU P1cached, future original received→same frozenDURA once percondition; samecanonical clean/star testonly"
+  },
+  "permissions": {
+    "regime": "Exact r01 theta and alloriginalNN frozen, no newfit. Only2FP32ULP derived-report tolerance; theta and source/arm/config strict. Source/Ulabel boundaries unchanged.",
+    "query_use": "No r01 Q processing or truth beforeloadfailure. r02 predicts entire unchanged6x3 then independent3truth once; no retraining, recalibration or targetselection.",
+    "external_method_exception": null,
+    "claim_scope": "First complete evaluation of frozen r01 SOURCE_INPUT/TARGET_INPUT; all400 optimization inherited, new0. Failure status retained, notblind, no anonymousREG."
+  },
+  "checkpoint": {
+    "initialization": "Strict r01 SOURCE_INPUT/TARGET_INPUT adapter.pt, originalconfig/runid/codeac8, no theta reinit or resume optimizer.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-receiver-input-s2026092701-r01/train/SOURCE_INPUT/adapter.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-receiver-input-s2026092701-r01/train/TARGET_INPUT/adapter.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Originalsource/freshPCD identities and r01 trainingcodeac8 retained; r02 eval identity newGit/run. Only derivedreport CPU/CUDA numericalcomparison fixed.",
+    "selection_rule": "Reuse both fixedfinal200 states without any method/hyperparameter/candidate changes. No new optimizer or targetIQfit."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-receiver-input-eval-recovery-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-receiver-input-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-receiver-input-s2026092701-r02/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_receiver_input_20261031_r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.receiver_input_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-receiver-input-s2026092701-r02-release/runtime.json",
+    "gpu_policy": "Single sequential train/predict worker, actualfree>=4096MiB/max2new percard across0..7, independent CPU scorer; foreign untouched",
+    "stop_rule": "Same technicalfingerprint afterthis onefix preserves and stops blindrestarts. Other illegalrole/frozenmutation/nonfinite/collision stop; sciencefailure completesalltests, foreign untouched."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/{predict,score}.log",
+    "predict/{complete,smoke}.json",
+    "predict/models/complete.json",
+    "predict/models/density.npz",
+    "predict/thresholds.npz",
+    "predict/calibration/complete.json",
+    "predict/source/<arm>/{known,novel}_predictions.npz",
+    "predict/targets/<condition>/<arm>/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro candidateclosed originalF0closed A_K C_K R_U H",
+      "sameDURA originalF0 gap",
+      "paired closed/correctaccept/accept/rejection vsOLD andSOURCE",
+      "source/U exposures and pseudo mask acceptance/hist without GT precision",
+      "all200x2 loss/grad/theta/inputbounds/source matching"
+    ],
+    "dimensions": [
+      "OLD_PCD/SOURCE_INPUT/TARGET_INPUT eachpooled/pred",
+      "source_DURA/clean_DURA/star_DURA",
+      "requiredTX/RX/day/sixscenes/03-23missingknownNA"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-receiver-input-s2026092701-r02/predict",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-receiver-input-s2026092701-r02/score",
+    "targets_ref": "Inheritedsourceknown12 +cleanRU95/starRU90 CK90 originalF0loss2pp allmaincoverage; TARGETstarAK strictly>OLDandSOURCE withRU notlower both",
+    "primary": [
+      "TARGET_INPUT_predicted_ratio fixed, scientific failure no seed expansion or swapping"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "receiver-input-eval-recovery-s2026092701",
+      "method": "Bounded16parameter receiver input UDA",
+      "purpose": "Evaluate originaltwo frozen200 states aftermetadata numericloadfix",
+      "config_ref": "docs/PAMF_PHASE3_RECEIVER_INPUT_RECOVERY_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-receiver-input-s2026092701-r02/configs/eval.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026103133
+      },
+      "seed_notes": "L streams2026103160 exact matched; U2026103161; fixed source/fresh scene/channel seeds inherited; no new stochastic views",
+      "k": null,
+      "scenario": "All learningP1 fixedstar; source inputpath unchanged, newRX34 state used same onclean/star futuretest",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Inheritedr01 400theta optimizersteps and original alltraining/data costs. Newtheta/NN updates0/LU IQ0. QF0PCD40952each/G20476, synthetic separate, originalsixmethods/gates unchanged.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-receiver-input-s2026092701-r02",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-receiver-input-s2026092701-r02/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.receiver_input_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-receiver-input-s2026092701-r02-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{predict,score}.log",
+        "predict/{complete,smoke}.json",
+        "predict/models/complete.json",
+        "predict/models/density.npz",
+        "predict/thresholds.npz",
+        "predict/calibration/complete.json",
+        "predict/source/<arm>/{known,novel}_predictions.npz",
+        "predict/targets/<condition>/<arm>/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Source theta control uses only L; entire system still inherits PCDtargetU576.",
+    "Source oldRX path unchanged, targetRX-only inputmaps frozen before queries; candidateclosed may differ, originalF0sameDURA baseline notreplaced.",
+    "Umodelpseudo acceptance is not GT accuracy; no realTX/K/quota/clean adaptation or query training.",
+    "Olddensity/12unique tau unchanged; sourceV/NV predictions allarms repeatold, no newsource calibration.",
+    "No anonymousREG in thisrow, AN/HOW N/A; singledevelopRXseed/Qalreadyexposed/formal24-18 untouched, fullgoalACTIVE.",
+    "r01 complete training retained with FAILED_PRESERVED/NO_PERFORMANCE_RESULT; no Q/truth beforeloadfailure.",
+    "Single2ULP derivedcoefficient metadata repair; strict theta/sourceidentity and liveforward unchanged.",
+    "Newr02 onlypredict/CPUscore; trainingrunid/code/root remain r01/ac8 read-only."
+  ],
+  "registered_at": "2026-10-31T09:32:18+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "51b85e9040feea2d4cdf78c48c24370e0207e045",
+    "primary": "TARGET_INPUT_predicted_ratio",
+    "adaptation_success": false,
+    "development_gate_passed": false,
+    "source_known_12_passed": true,
+    "target_protection_passed": false,
+    "metrics": {
+      "source_DURA": {
+        "A_K": 0.8973333333333334,
+        "C_K": 0.9674814814814816,
+        "R_U": 0.6428571428571429,
+        "H_score": 0.7490724709374229,
+        "candidate_macro_closed_accuracy": 0.909814814814815,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.012481481481481538
+      },
+      "clean_DURA": {
+        "A_K": 0.3163478459981846,
+        "C_K": 0.43622078981688106,
+        "R_U": 0.6196115338358582,
+        "H_score": 0.418848890898151,
+        "candidate_macro_closed_accuracy": 0.486651598684625,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "original_closed_minus_new_open": 0.16932230739387188
+      },
+      "star_DURA": {
+        "A_K": 0.2808052688414486,
+        "C_K": 0.4857118655431522,
+        "R_U": 0.49412148599202715,
+        "H_score": 0.35810330679353997,
+        "candidate_macro_closed_accuracy": 0.41993769009078213,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "original_closed_minus_new_open": 0.1364053166492336
+      }
+    },
+    "training_reused": true,
+    "training_run_id": "20261031-phase3-receiver-input-s2026092701-r01",
+    "training_code_commit": "ac8bbd27277fcb1f16806c7b8b94e8c3e27e390b",
+    "inherited_theta_optimizer_updates": 400,
+    "new_theta_optimizer_updates": 0,
+    "full_goal_status": "ACTIVE",
+    "result_ref": "docs/PAMF_PHASE3_RECEIVER_INPUT_RESULTS_20261031.md"
+  }
+}
