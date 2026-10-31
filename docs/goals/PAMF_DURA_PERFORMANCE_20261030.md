@@ -317,3 +317,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 20261031-phase1-DURA-softReference-E30-s2026092701-r01。VERIFIED / RUNNING。执行 b6136c53106c9e8e6273a606262d5152a4e08d23 已提交、推送并独立核对远端OID；一次N607 preflight/单archive传输SHA/remotecompile通过。真实2Ls G三模块梯度、实际附加IQ梯度cap、F冻结/原默认头/严格重载通过。实际controller 1410473/worker 1410565/GPU 4 的CWD、完整命令、CUDA、GPU和日志增长核实，旧own句柄全部消失，其他owner保持。至少E1完整前缀预算/加权loss/曝光/逐步cap核对通过，最大压力1.000000119。
 
 新增63000×5 FP32参考偏移缓存1.26MB，生产0.566940秒；独立复算63000条/315000分量、30个otherRX软中心与512校准条，最大偏移差0.0。新F前向/VJP0；原rawJ645.12MB只读复用核对0.075864秒，历史F50/11100、rawJ30.008929秒、F1603.782270秒、参考几何0.212823秒及IQ校准3.156706秒单列。训练中不加载F。当前正式成绩待产出，不将源域校准当作性能验收；满30后自动完成全七景预测/独立truth-last。默认DURA保持，目标ACTIVE。
+
+
+## 跨RX软参考：完整E30与七景
+
+20261031-phase1-DURA-softReference-E30-s2026092701-r01/b6136c531。VERIFIED / ANALYZED。G从零单阶段30轮/7410步，L189000/U1701000；30轮完整loss/曝光/缓存视图/逐批次压力检查通过。复用原source J和F160，新增固定soft跨RX/day参考偏移1.26MB/0.566940秒，新F前向/VJP0、训练F加载0；继承F50监督知识，属于F-guided。七景×168000全部预测固定后truth-last，126正式、105源V与252双对照配对分组独立复算，14个源/正式IQ场景误差重新核对。clean 84.888095%，low urban 68.655357%；低城区较实例特征约束 +1.623810、纯G +1.282738、默认DURA -0.234524 个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=True，旧低城区70%=False。G训练990.811749秒，含worker源准备991.736709秒，controller至全量分析1172.872900秒。266951参数/25.068072m ConvLinear MAC/2prior4CG27FFT，默认DURA保持；完整目标仍ACTIVE。 当前证据限单seed、已暴露工程基准，不称新盲测或恢复极限。完整源/正式/TX/RX/day/净纠错与全成本见本run的analysis.md/results.json；源校准通过不等于身份性能通过，不因目标结果改变固定参考或调类别权重。

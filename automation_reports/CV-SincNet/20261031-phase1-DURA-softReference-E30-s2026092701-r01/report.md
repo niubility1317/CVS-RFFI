@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-softReference-E30-s2026092701-r01`
 - group_id：`phase1-dura-source-soft-crossRX-reference-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整结果见下方、analysis.md与results.json；保留每row与RX/day/TX/scene/K/seed的对应关系。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -41,3 +41,10 @@
 VERIFIED / RUNNING。执行 b6136c53106c9e8e6273a606262d5152a4e08d23 已提交、推送并独立核对远端OID；一次N607 preflight/单archive传输SHA/remotecompile通过。真实2Ls G三模块梯度、实际附加IQ梯度cap、F冻结/原默认头/严格重载通过。实际controller 1410473/worker 1410565/GPU 4 的CWD、完整命令、CUDA、GPU和日志增长核实，旧own句柄全部消失，其他owner保持。至少E1完整前缀预算/加权loss/曝光/逐步cap核对通过，最大压力1.000000119。
 
 新增63000×5 FP32参考偏移缓存1.26MB，生产0.566940秒；独立复算63000条/315000分量、30个otherRX软中心与512校准条，最大偏移差0.0。新F前向/VJP0；原rawJ645.12MB只读复用核对0.075864秒，历史F50/11100、rawJ30.008929秒、F1603.782270秒、参考几何0.212823秒及IQ校准3.156706秒单列。训练中不加载F。当前正式成绩待产出，不将源域校准当作性能验收；满30后自动完成全七景预测/独立truth-last。默认DURA保持，目标ACTIVE。
+
+
+## 完整训练与正式结果
+
+VERIFIED / ANALYZED。G从零单阶段30轮/7410步，L189000/U1701000；30轮完整loss/曝光/缓存视图/逐批次压力检查通过。复用原source J和F160，新增固定soft跨RX/day参考偏移1.26MB/0.566940秒，新F前向/VJP0、训练F加载0；继承F50监督知识，属于F-guided。七景×168000全部预测固定后truth-last，126正式、105源V与252双对照配对分组独立复算，14个源/正式IQ场景误差重新核对。clean 84.888095%，low urban 68.655357%；低城区较实例特征约束 +1.623810、纯G +1.282738、默认DURA -0.234524 个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=True，旧低城区70%=False。G训练990.811749秒，含worker源准备991.736709秒，controller至全量分析1172.872900秒。266951参数/25.068072m ConvLinear MAC/2prior4CG27FFT，默认DURA保持；完整目标仍ACTIVE。
+
+详见[完整分析](analysis.md)、[完整曲线与正式结果](training_and_formal.png)、results.json与transfer_diagnostics.json。controller/worker已自然结束。源域局部校准不替代全量测试，不能由本版结果宣称理论恢复上限；未依据目标结果回调beta/alpha、选epoch或选择性重测。
