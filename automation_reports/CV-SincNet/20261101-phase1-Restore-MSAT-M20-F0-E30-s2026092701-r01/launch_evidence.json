@@ -1,0 +1,28 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "8720a8584803366d42d2879fb99502b8d220ac26",
+  "remote_compile": true,
+  "one_archive_SHA_comparison": true,
+  "unique_launch_owner": true,
+  "actual_source_smoke": {
+    "TF_M20": "PASS",
+    "MSAT_M20": "PASS"
+  },
+  "admitted_GPU": {
+    "TF_M20": {
+      "GPU": 7,
+      "free_memory_MB": 22883,
+      "existing_compute_PIDs": 1
+    },
+    "MSAT_M20": {
+      "GPU": 4,
+      "free_memory_MB": 20810,
+      "existing_compute_PIDs": 2
+    }
+  },
+  "PID_CWD_cmdline_CUDA_and_log_growth_checked": true,
+  "private_evidence_ref": "local_artifacts/pamf_phase3_restoration/20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01/observations.jsonl",
+  "separate_P0P1_review": "PASS for both arms",
+  "default_DURA_changed": false,
+  "performance_result_available": false
+}

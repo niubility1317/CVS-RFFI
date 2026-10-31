@@ -1,0 +1,128 @@
+{
+  "status": "PASS",
+  "count": 10240,
+  "source_IDs": 512,
+  "complete_draws": 20,
+  "all_144_scene_method_metric_cells_recomputed": true,
+  "max_abs_aggregate_error": 0.0,
+  "CG64_to128_per_record_max_abs": {
+    "nmse": 0.0,
+    "feature_cosine_distance": 0.0,
+    "clean_decision_agreement": 0.0
+  },
+  "labels_read": 0,
+  "new_neural_forwards": 0,
+  "new_updates": 0,
+  "extra": {
+    "ALL": {
+      "count": 10240,
+      "native_noise_nmse": 0.058704531068191804,
+      "state_counts": {
+        "BLOCKED": 1696,
+        "LOS": 5933,
+        "PARTIAL": 1032,
+        "clean": 1579
+      },
+      "lock_counts": {
+        "degraded": 950,
+        "locked": 6648,
+        "not_applicable": 1579,
+        "unlocked": 1063
+      }
+    },
+    "clean": {
+      "count": 1579,
+      "native_noise_nmse": 2.688186535035876e-13,
+      "state_counts": {
+        "clean": 1579
+      },
+      "lock_counts": {
+        "not_applicable": 1579
+      }
+    },
+    "practical_high": {
+      "count": 1427,
+      "native_noise_nmse": 0.0033506596580535415,
+      "state_counts": {
+        "BLOCKED": 16,
+        "LOS": 1365,
+        "PARTIAL": 46
+      },
+      "lock_counts": {
+        "degraded": 15,
+        "locked": 1409,
+        "unlocked": 3
+      }
+    },
+    "practical_mid": {
+      "count": 1484,
+      "native_noise_nmse": 0.015640630619482745,
+      "state_counts": {
+        "BLOCKED": 49,
+        "LOS": 1183,
+        "PARTIAL": 252
+      },
+      "lock_counts": {
+        "degraded": 76,
+        "locked": 1382,
+        "unlocked": 26
+      }
+    },
+    "practical_low_suburban": {
+      "count": 1465,
+      "native_noise_nmse": 0.03371379137597025,
+      "state_counts": {
+        "BLOCKED": 79,
+        "LOS": 1038,
+        "PARTIAL": 348
+      },
+      "lock_counts": {
+        "degraded": 169,
+        "locked": 1230,
+        "unlocked": 66
+      }
+    },
+    "practical_high_urban": {
+      "count": 1440,
+      "native_noise_nmse": 0.01667187968467058,
+      "state_counts": {
+        "BLOCKED": 152,
+        "LOS": 1241,
+        "PARTIAL": 47
+      },
+      "lock_counts": {
+        "degraded": 132,
+        "locked": 1289,
+        "unlocked": 19
+      }
+    },
+    "practical_mid_urban": {
+      "count": 1409,
+      "native_noise_nmse": 0.11790950288253323,
+      "state_counts": {
+        "BLOCKED": 579,
+        "LOS": 682,
+        "PARTIAL": 148
+      },
+      "lock_counts": {
+        "degraded": 309,
+        "locked": 796,
+        "unlocked": 304
+      }
+    },
+    "practical_low_urban": {
+      "count": 1436,
+      "native_noise_nmse": 0.23231867012067783,
+      "state_counts": {
+        "BLOCKED": 821,
+        "LOS": 424,
+        "PARTIAL": 191
+      },
+      "lock_counts": {
+        "degraded": 249,
+        "locked": 542,
+        "unlocked": 645
+      }
+    }
+  }
+}

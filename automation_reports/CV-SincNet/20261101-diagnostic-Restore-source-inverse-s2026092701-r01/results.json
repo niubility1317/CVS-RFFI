@@ -1,0 +1,321 @@
+{
+  "status": "SOURCE_INVERSE_DIAGNOSTIC_COMPLETE",
+  "run_id": "20261101-diagnostic-Restore-source-inverse-s2026092701-r01",
+  "code_commit": "f57276fe850b51cba9e7ffddac9f15c2a10ae99e",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "count": 10240,
+  "unique_source_packets": 512,
+  "L_s": 128,
+  "U_s": 384,
+  "existing_draws": 20,
+  "summary": {
+    "ALL": {
+      "count": 10240,
+      "methods": {
+        "received": {
+          "nmse": 1.7049953988404014,
+          "feature_cosine_distance": 0.0648153595335316,
+          "clean_decision_agreement": 0.85849609375
+        },
+        "DURA_v1": {
+          "nmse": 0.022287005297337625,
+          "feature_cosine_distance": 0.00838818894699216,
+          "clean_decision_agreement": 0.95146484375
+        },
+        "source_mean": {
+          "nmse": 0.3057431235356489,
+          "feature_cosine_distance": 0.1864962544059381,
+          "clean_decision_agreement": 0.203125
+        },
+        "oracle_white64": {
+          "nmse": 0.14238719323798182,
+          "feature_cosine_distance": 0.043928072141716255,
+          "clean_decision_agreement": 0.90048828125
+        },
+        "oracle_mean64": {
+          "nmse": 0.05886080652339278,
+          "feature_cosine_distance": 0.03426945842802524,
+          "clean_decision_agreement": 0.88095703125
+        },
+        "oracle_mean128": {
+          "nmse": 0.05886080652339278,
+          "feature_cosine_distance": 0.03426945842802524,
+          "clean_decision_agreement": 0.88095703125
+        }
+      }
+    },
+    "clean": {
+      "count": 1579,
+      "methods": {
+        "received": {
+          "nmse": 0.0,
+          "feature_cosine_distance": 9.512584220011677e-09,
+          "clean_decision_agreement": 1.0
+        },
+        "DURA_v1": {
+          "nmse": 2.4255140467358398e-05,
+          "feature_cosine_distance": 2.6390739752568348e-05,
+          "clean_decision_agreement": 1.0
+        },
+        "source_mean": {
+          "nmse": 0.29707077334790083,
+          "feature_cosine_distance": 0.18976953057566348,
+          "clean_decision_agreement": 0.20012666244458518
+        },
+        "oracle_white64": {
+          "nmse": 2.9045682670425024e-13,
+          "feature_cosine_distance": 6.190729413023472e-09,
+          "clean_decision_agreement": 1.0
+        },
+        "oracle_mean64": {
+          "nmse": 2.583248864514182e-13,
+          "feature_cosine_distance": 8.380133717629334e-09,
+          "clean_decision_agreement": 1.0
+        },
+        "oracle_mean128": {
+          "nmse": 2.583248864514182e-13,
+          "feature_cosine_distance": 8.380133717629334e-09,
+          "clean_decision_agreement": 1.0
+        }
+      }
+    },
+    "practical_high": {
+      "count": 1427,
+      "methods": {
+        "received": {
+          "nmse": 2.0190854481908938,
+          "feature_cosine_distance": 0.04103221326084845,
+          "clean_decision_agreement": 0.9593552908199019
+        },
+        "DURA_v1": {
+          "nmse": 0.008581076889109916,
+          "feature_cosine_distance": 0.002860022451631991,
+          "clean_decision_agreement": 0.9901892081289418
+        },
+        "source_mean": {
+          "nmse": 0.30607668247750025,
+          "feature_cosine_distance": 0.19074271768644796,
+          "clean_decision_agreement": 0.20672740014015417
+        },
+        "oracle_white64": {
+          "nmse": 0.10012736517189366,
+          "feature_cosine_distance": 0.019610392855194454,
+          "clean_decision_agreement": 0.9789768745620182
+        },
+        "oracle_mean64": {
+          "nmse": 0.03526559741495369,
+          "feature_cosine_distance": 0.015014413569302682,
+          "clean_decision_agreement": 0.9635599159074982
+        },
+        "oracle_mean128": {
+          "nmse": 0.03526559741495369,
+          "feature_cosine_distance": 0.015014413569302682,
+          "clean_decision_agreement": 0.9635599159074982
+        }
+      }
+    },
+    "practical_mid": {
+      "count": 1484,
+      "methods": {
+        "received": {
+          "nmse": 2.014776346336478,
+          "feature_cosine_distance": 0.04895364720063068,
+          "clean_decision_agreement": 0.9211590296495957
+        },
+        "DURA_v1": {
+          "nmse": 0.014064614812832834,
+          "feature_cosine_distance": 0.005097983781539526,
+          "clean_decision_agreement": 0.9750673854447439
+        },
+        "source_mean": {
+          "nmse": 0.30809311727388206,
+          "feature_cosine_distance": 0.17250645915774324,
+          "clean_decision_agreement": 0.20754716981132076
+        },
+        "oracle_white64": {
+          "nmse": 0.11311187120179603,
+          "feature_cosine_distance": 0.024778110921543563,
+          "clean_decision_agreement": 0.9582210242587601
+        },
+        "oracle_mean64": {
+          "nmse": 0.04346041447254566,
+          "feature_cosine_distance": 0.020088118965413692,
+          "clean_decision_agreement": 0.9299191374663073
+        },
+        "oracle_mean128": {
+          "nmse": 0.04346041447254566,
+          "feature_cosine_distance": 0.020088118965413692,
+          "clean_decision_agreement": 0.9299191374663073
+        }
+      }
+    },
+    "practical_low_suburban": {
+      "count": 1465,
+      "methods": {
+        "received": {
+          "nmse": 2.0173382521489374,
+          "feature_cosine_distance": 0.05812690388220569,
+          "clean_decision_agreement": 0.9119453924914676
+        },
+        "DURA_v1": {
+          "nmse": 0.017814612267745514,
+          "feature_cosine_distance": 0.007971718815813293,
+          "clean_decision_agreement": 0.967235494880546
+        },
+        "source_mean": {
+          "nmse": 0.3073907741405858,
+          "feature_cosine_distance": 0.17928263840008107,
+          "clean_decision_agreement": 0.2129692832764505
+        },
+        "oracle_white64": {
+          "nmse": 0.12872608804522215,
+          "feature_cosine_distance": 0.033837960767257744,
+          "clean_decision_agreement": 0.9337883959044369
+        },
+        "oracle_mean64": {
+          "nmse": 0.05216338884263417,
+          "feature_cosine_distance": 0.027289134202963663,
+          "clean_decision_agreement": 0.9133105802047782
+        },
+        "oracle_mean128": {
+          "nmse": 0.05216338884263417,
+          "feature_cosine_distance": 0.027289134202963663,
+          "clean_decision_agreement": 0.9133105802047782
+        }
+      }
+    },
+    "practical_high_urban": {
+      "count": 1440,
+      "methods": {
+        "received": {
+          "nmse": 2.0223134939041403,
+          "feature_cosine_distance": 0.052498351078894404,
+          "clean_decision_agreement": 0.9034722222222222
+        },
+        "DURA_v1": {
+          "nmse": 0.013861965830599527,
+          "feature_cosine_distance": 0.004591827094554901,
+          "clean_decision_agreement": 0.975
+        },
+        "source_mean": {
+          "nmse": 0.30445369069671463,
+          "feature_cosine_distance": 0.18607847520874607,
+          "clean_decision_agreement": 0.1986111111111111
+        },
+        "oracle_white64": {
+          "nmse": 0.11741768401568858,
+          "feature_cosine_distance": 0.027596469761596784,
+          "clean_decision_agreement": 0.9479166666666666
+        },
+        "oracle_mean64": {
+          "nmse": 0.04481834878032613,
+          "feature_cosine_distance": 0.022408468855751887,
+          "clean_decision_agreement": 0.9361111111111111
+        },
+        "oracle_mean128": {
+          "nmse": 0.04481834878032613,
+          "feature_cosine_distance": 0.022408468855751887,
+          "clean_decision_agreement": 0.9361111111111111
+        }
+      }
+    },
+    "practical_mid_urban": {
+      "count": 1409,
+      "methods": {
+        "received": {
+          "nmse": 2.015405801782547,
+          "feature_cosine_distance": 0.11263193531692917,
+          "clean_decision_agreement": 0.7033356990773598
+        },
+        "DURA_v1": {
+          "nmse": 0.04150064053657386,
+          "feature_cosine_distance": 0.014198879259879747,
+          "clean_decision_agreement": 0.9070262597586941
+        },
+        "source_mean": {
+          "nmse": 0.31118009499597415,
+          "feature_cosine_distance": 0.19666322974806733,
+          "clean_decision_agreement": 0.19091554293825408
+        },
+        "oracle_white64": {
+          "nmse": 0.22515163244910913,
+          "feature_cosine_distance": 0.08388366303264545,
+          "clean_decision_agreement": 0.7955997161107168
+        },
+        "oracle_mean64": {
+          "nmse": 0.0994503562840335,
+          "feature_cosine_distance": 0.0649944952060518,
+          "clean_decision_agreement": 0.7679205110007097
+        },
+        "oracle_mean128": {
+          "nmse": 0.0994503562840335,
+          "feature_cosine_distance": 0.0649944952060518,
+          "clean_decision_agreement": 0.7679205110007097
+        }
+      }
+    },
+    "practical_low_urban": {
+      "count": 1436,
+      "methods": {
+        "received": {
+          "nmse": 2.0060940851408127,
+          "feature_cosine_distance": 0.14836848832272553,
+          "clean_decision_agreement": 0.5905292479108635
+        },
+        "DURA_v1": {
+          "nmse": 0.06304283425528724,
+          "feature_cosine_distance": 0.025006757597737326,
+          "clean_decision_agreement": 0.8391364902506964
+        },
+        "source_mean": {
+          "nmse": 0.306796427152034,
+          "feature_cosine_distance": 0.19093701430183932,
+          "clean_decision_agreement": 0.20473537604456823
+        },
+        "oracle_white64": {
+          "nmse": 0.3289702351692763,
+          "feature_cosine_distance": 0.12365257071751407,
+          "clean_decision_agreement": 0.674791086350975
+        },
+        "oracle_mean64": {
+          "nmse": 0.1440334660922045,
+          "feature_cosine_distance": 0.09460925059730296,
+          "clean_decision_agreement": 0.6399721448467967
+        },
+        "oracle_mean128": {
+          "nmse": 0.1440334660922045,
+          "feature_cosine_distance": 0.09460925059730296,
+          "clean_decision_agreement": 0.6399721448467967
+        }
+      }
+    }
+  },
+  "source_mean_energy_fraction": 0.6851634349659456,
+  "source_mean_residual_NMSE": 0.3148365650340546,
+  "source_mean_real_prior_variance": 0.15741828252250745,
+  "source_ID_role_alignment": "same63000set/orderrealigned",
+  "labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "default_DURA_changed": false,
+  "physical_oracle_deployable": false,
+  "oracle": "True source simulator FIR/main/image/variance, Gaussian linear MAP;no clean per-record prior",
+  "agreement_is_TX_accuracy": false,
+  "theoretical_limit_established": false,
+  "seconds": 39.27230818895623
+}

@@ -1,0 +1,160 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-Restore-source-inverse-s2026092701-r01",
+  "group_id": "restoration-source-blind-vs-known-action",
+  "display_name": "恢复性能诊断：原L_s/U_s二十份信道的盲恢复与已知信道反演",
+  "description": "源端诊断已知信道时的可恢复程度，识别信道估计与细节去除问题；不训练G、不访问目标、TX或验证集，不称理论上限。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "known-channel-oracle",
+    "Tri-SIG-TIME-SSL",
+    "no-updates"
+  ],
+  "comparison_group_id": "source-received-DURAv1-mean-oracle-white-mean64-mean128",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Useractivegoal:performanceprimary/groundTriSIGSSLsixeach3pp+clean;originalLsUs-only/source-simulation-and-F0-guidanceallowed/OEonlyfrozendiagnostic/majorarchitecturefreedom. This source-only mechanism diagnostic uses no optimizer or target.",
+  "code": {
+    "commit": "f57276fe850b51cba9e7ffddac9f15c2a10ae99e",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "ExistingN607CVS-RFFI Torch2.1/NumPy2;FP32 TF32off CPUthreads2;actual3ff8F0/defaulthead andfixed47cDURA runtime",
+    "cwd": "releases/20261101-diagnostic-Restore-source-inverse-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005 Ls6300Us56700;existingR07twentytrainrealizations",
+    "representation": "Fixedrolewise-linspace128Ls384Us x20existingR07draws=10240 source cases;FP32 IQ2x256 andsimulatoraction/variance. R07fs25MHz/fc2.462GHz/post_sync/noEQ/reflect/refSNR30,notG10MIX01.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "R07cache/train/physical_ids.npy roles.npy;existing20261101LUcache IDs/roles forminimumcontractmatch",
+    "label_map_ref": "No labels read; F0 clean argmax agreement is not TX accuracy",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE sourcehandles. R07complete20/63000/0TX-target. Inputaudit same63000uniqueIDset (orderdiffers),roles/RX/day samebyID;clean maxabs4.76837158203125e-7 NMSE1.7667841088968941e-15. No repeateddatahash/revalidation.",
+    "support_query_ref": "No support/query/Utarget/V/OE/NV. 63000sourceclean only for one unlabeled empiricalmean andrealresidualvariance;fixed512 sourcepacketsx20draws evaluated.",
+    "leo_config_ref": "ExistingR07sourcecache20/clean15%+sixsceneuniform85%;no new simulator observations;2.462GHz retains own identity",
+    "actual_training_labels": "No training/updates. Never fetch y/TX,oldR07validation or target. Known simulator kernel/main/image/noise only diagnostic oracle inputs,not deployment.",
+    "augmentation": "No newaugmentation. Each sourcepacket has20saved independenttrain-draws;alltwenty used,clean cases retained."
+  },
+  "permissions": {
+    "regime": "original_LsUs_only_frozen_source_mechanism_diagnostic",
+    "query_use": "No target/Utarget/query/OE/V/NV/labelscorer. SourceF/defaulthead frozen. Independent NumPy aggregatecheck afterallsource records fixed.",
+    "external_method_exception": null,
+    "claim_scope": "Source diagnosis only,not primaryMain test/newG/theoreticalcapacity/deployableoracle/TXaccuracy. Maingoal/defaultDURAunchanged."
+  },
+  "checkpoint": {
+    "initialization": "No newG/no learnedinitialization/no optimizer. DefaultDURA andgroundTriSSL F0 frozen.",
+    "sources": [
+      "OriginalTriSIGSSL3ff8/main3view2026092701/defaulthead/50-11100/232993",
+      "DefaultDURA R69 stage2fixed20-4940/sourceb2a2/runtime47c/266951;benchmarkonly",
+      "DATAONLY R07sourcecache20draws/63000train and20261101LUsourcecacheIDs;noGteacherweights or IQteacher"
+    ],
+    "contract_check_ref": "ExistingstrictF0load/defaultDURAschema;original63000source IDset/rolealignment enforced,minimumdatahandlesreused",
+    "provenance_verdict": "Source-only F0 andDURA sourceorig392005 matching;no PCD/targetancestor/newG. R07cacheclean/probesonlydata;cache validation folderneveropened.",
+    "selection_rule": "Fixedsource512indices x20draws/all6methods/no candidate selection/optimization/targetresultused."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-inverse-performance-diagnostic",
+    "gpu_policy": "GPU4/6/7/free>=12000MiB/existingcompute<=2/addONE total<=3/own1card/thisdiagnostic1worker/globalown<=2;nootherownerchanges",
+    "remote_run_root": "runs/20261101-diagnostic-Restore-source-inverse-s2026092701-r01",
+    "remote_log_root": "runs/20261101-diagnostic-Restore-source-inverse-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-Restore-source-inverse-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_inverse run --root /home/szu2070436088/2510044040/CV-SincNet --commit f57276fe850b51cba9e7ffddac9f15c2a10ae99e --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-source-inverse-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrongsource/F/checkpoint/IDrole/outputcollision/nonfinite/unlaunchable:preservefailedrun/noautoretry;no sourcequality stop. Source smoke PASS immediatelycontinues;0targetreads/0updates."
+  },
+  "expected_artifacts": [
+    "submitted.json",
+    "smoke.json",
+    "source_records.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "logs/worker.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Per-scene NMSE, originalF0fused160cosdistance, agreement withF0cleanargmax (notTXaccuracy)",
+      "received/defaultDURA/source-only-globalmean/trueaction-white64CG/mean64CG/mean128CG",
+      "Knownkernel F0fidelity vs DURA/source mean;sourcecommonenergyfraction/residualvariance;nativeaction-noise NMSE",
+      "Full10240 sourcecase coverage/allscenes,0neuralupdates/TX-V-OE-target/no modelstate changes"
+    ],
+    "dimensions": [
+      "7sourceconditions clean+6practical",
+      "source128Ls384Us",
+      "20savedcorruptiondraws",
+      "6fixedmethods"
+    ],
+    "prediction_ref": "Source-only percaseIQerror/F0featureanddecision agreement;no truth/queryprediction",
+    "scorer_ref": "Independent NumPy reaggregation ofcompleteprivate source_records;no TX truth"
+  },
+  "rows": [
+    {
+      "row_id": "source-512x20",
+      "method": "source-frozen-DURA-vs-known-action",
+      "purpose": "source-mechanism-only/no-newG",
+      "config_ref": "experiments/pamf_phase3_restoration/source_inverse.py",
+      "resolved_config_ref": "Actualreleaseinputs.json PRIVATE+sourceR07cachecomplete",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101911
+      },
+      "seed_notes": "No new RNG. SourceR07 originaldata/augmentation/receiverseeds andfrozenmodelseed disclosed;fixedlinspace panel/20draws.",
+      "k": null,
+      "scenario": "existing source clean+6practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0optimization;512x20=10240 fixedsourcecases/6fixedmethods;globalmean63000sourceclean;oracleCG64/64/128 percase;no wallclock gate",
+      "output_root": "runs/20261101-diagnostic-Restore-source-inverse-s2026092701-r01",
+      "log_path": "runs/20261101-diagnostic-Restore-source-inverse-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_inverse worker --root /home/szu2070436088/2510044040/CV-SincNet --commit f57276fe850b51cba9e7ffddac9f15c2a10ae99e --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-source-inverse-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "submitted.json",
+        "smoke.json",
+        "source_records.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "logs/worker.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Performanceprimary/efficiencysecondary/MainTriSSLsixeach3pp remainsACTIVE andNOTmet. NotnewGtrain;no automaticnewtargetrun forunchangedcheckpoints.",
+    "Oracle actualsimulatoraction/variance not observable fromdeploymentIQ;knownactionGaussianMAP finite numericalreference cannot establish informationtheoreticceiling. Source-onlymean isnotperrecordcleanoracle.",
+    "Priorrealvariance=.5white(unitcomplexpower), or empiricalall63000sourcecleanminusglobalmean realMSE. No TX-specificmean/prototype/headfit. Fixed64/128CG comparison testsnumericalconvergencewithoutchoosingbestonquery.",
+    "4focusedtestsPASS;one P0/P1 review beforelaunch. No extra hashes/seals/reportgate. OnearchiveSHA/compile/preflight/source2smoke/poststate."
+  ],
+  "registered_at": "2026-10-31T19:20:17+00:00"
+}
