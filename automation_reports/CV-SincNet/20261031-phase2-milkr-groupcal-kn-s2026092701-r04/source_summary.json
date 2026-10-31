@@ -1,0 +1,38 @@
+{
+  "K1_rule": {
+    "config": [
+      "identity",
+      "all",
+      0.5,
+      "single"
+    ],
+    "ridge": 0.001,
+    "old_new_beta": 0.0
+  },
+  "K1_beta_objective": {
+    "-0.5": 0.7493015611591909,
+    "0.0": 0.7761898686109211,
+    "0.5": 0.775059758719219,
+    "1.0": 0.7290743609392143
+  },
+  "source_mean_H_gain": -0.0117352636791154,
+  "source_byK_H_gain": {
+    "5": -0.019873041164899883,
+    "10": -0.011951662643031557,
+    "20": -0.0033810872294147616
+  },
+  "target_eligible": false,
+  "scientific_verdict": "SOURCE_PROXY_GAIN_NOT_ESTABLISHED",
+  "seconds": 7.303824759088457,
+  "target_reads": 0,
+  "query_reads": 0,
+  "U_truth_reads": 0,
+  "completion": {
+    "status": "SOURCE_ONLY_SCIENTIFIC_STOP",
+    "target_rows": 0,
+    "reason": "SOURCE_PROXY_GAIN_NOT_ESTABLISHED"
+  },
+  "target_prediction_files": 0,
+  "processes_remaining": 0,
+  "code_commit": "e144ae51dda60fe5838294bd33e133e76a7753df"
+}

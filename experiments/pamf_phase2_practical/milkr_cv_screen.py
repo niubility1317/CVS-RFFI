@@ -16,6 +16,9 @@ from .milkr.support_calibrated import fit,CONFIGS,LAMBDAS,target_and_score
 
 
 def fit_function(rt):
+    if rt.get('kernel_method')=='signature_kernel':
+        from .milkr.signature_kernel import fit as signature_fit
+        return signature_fit
     if rt.get('kernel_method')=='group_calibrated':
         from .milkr.group_calibrated import fit as group_fit
         return group_fit
@@ -24,6 +27,17 @@ def fit_function(rt):
         return metric_fit
     require(rt.get('kernel_method','support_calibrated')=='support_calibrated','Unknown kernel method')
     return fit
+
+
+def kernel_configs(rt):
+    if rt.get('kernel_method')=='signature_kernel':
+        from .milkr.signature_kernel import CONFIGS as signature_configs
+        return signature_configs
+    return CONFIGS
+
+
+def extract_for_method(rt,reader,raw,device,engine=None,batch=128):
+    return extract(reader,raw,device,engine,batch,descriptor=rt.get('kernel_method')=='signature_kernel')
 
 
 def source_episodes(rt):
@@ -39,7 +53,7 @@ def source_episodes(rt):
             chosen=[rng.permutation(np.flatnonzero((m['rx_i']==rx)&(m['y']==c)))[:52] for c in range(6)]
             require(all(len(x)==52 for x in chosen),'Insufficient source physical count')
             indices=np.concatenate(chosen);features=[]
-            for g in (None,engine):features.append(extract(reader,np.asarray(bank[indices]),'cuda:0',g)[0])
+            for g in (None,engine):features.append(extract_for_method(rt,reader,np.asarray(bank[indices]),'cuda:0',g)[0])
             source.append((rx,episode,features))
     return source
 
@@ -50,7 +64,7 @@ def calibration(rt):
         return calibrate(rt)
     fit=fit_function(rt);started=time.perf_counter();source=source_episodes(rt)
     quality={};records=[]
-    for config in CONFIGS:
+    for config in kernel_configs(rt):
         for ridge in LAMBDAS:
             rule=dict(config=list(config),ridge=ridge);values=[]
             for rx,ep,features in source:
@@ -92,7 +106,7 @@ def worker(rt,capname):
         for n in [0]+rt['N']:
             stage='C' if n else 'B';s=specs[k,n];task=load_task(cap,s['split_id'],stage=stage)
             for sp,g in enumerate((None,engine)):
-                f,_=extract(reader,task['support_x'],'cuda:0',g,batch=k);begin=time.perf_counter()
+                f,_=extract_for_method(rt,reader,task['support_x'],'cuda:0',g,batch=k);begin=time.perf_counter()
                 state=fit(f,task['support_y'],task['support_ids'],fixed=rule)
                 write(root/f'{stage}-K{k}-N{n}-S{sp}-fit.json',dict(selection=state.selection,config=state.config,ridge=state.ridge,tau=state.tau,
                     seconds=time.perf_counter()-begin,F_updates=0,G_updates=0,query_fit=False,B_function_inherited=False,
@@ -101,7 +115,7 @@ def worker(rt,capname):
         print('FIT_K_COMPLETE',m['receiver'],k,flush=True)
     bank=np.load(cap/'received.npy',mmap_mode='r');allrows=np.load(cap/'stage_rows/N20.npy');pos=np.full(len(bank),-1,np.int64);pos[allrows]=np.arange(len(allrows))
     for qp,g in enumerate((None,engine)):
-        f,_=extract(reader,np.asarray(bank[allrows]),'cuda:0',g)
+        f,_=extract_for_method(rt,reader,np.asarray(bank[allrows]),'cuda:0',g)
         for s,stage,sp,state in states:
             query=split_rows(cap,s);positions=pos[query];require((positions>=0).all(),'Invalid query bank mapping')
             prediction=[];restricted=[];classes=s['registered_classes']
