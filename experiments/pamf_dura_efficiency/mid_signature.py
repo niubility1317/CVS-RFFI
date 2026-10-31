@@ -55,3 +55,14 @@ def auxiliary_loss(model,h,target):
     error=(prediction-target.detach()).square().sum(1)/target.detach().square().sum(1).clamp_min(1e-4)
     if not torch.isfinite(error).all():raise FloatingPointError('Nonfinite G middle SIG objective')
     return error
+
+
+def auxiliary_gradient_parameters(model):
+    return {
+        # The existing spectral output is zero-initialized. Its encoder's
+        # initial derivative is therefore zero; the output is the first
+        # trainable spectral parameter that receives the auxiliary signal.
+        'coarse_spectral_output':model.frozen.coarse.spectral.out.weight,
+        'temporal_shallow':model.frozen.coarse.temporal.encoder.blocks[0][0].net[0].weight,
+        'temporal_middle':model.frozen.coarse.temporal.encoder.blocks[1][0].net[0].weight,
+        'aux_projection':model.mid_signature_aux.projection.weight}

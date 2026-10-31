@@ -4,8 +4,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 import torch
-from experiments.pamf_reception_restore.models import Core
-from experiments.pamf_dura_efficiency.mid_signature import attach,capture,auxiliary_loss,PARAMETERS
+from experiments.pamf_reception_restore.models import Core,ComplexTFUNet
+from experiments.pamf_dura_efficiency.mid_signature import attach,capture,auxiliary_loss,auxiliary_gradient_parameters,PARAMETERS
 from experiments.pamf_dura_direct_train import mid_signature as m
 
 
@@ -41,6 +41,18 @@ def test_failure_cleans_capture_and_wrong_feature_shape_is_rejected():
     assert not model.frozen.coarse.temporal.encoder.blocks[1]._forward_hooks
     with pytest.raises(ValueError):model.mid_signature_aux(torch.zeros(2,16,64))
     with pytest.raises(ValueError):auxiliary_loss(model,torch.zeros(2,16,128),torch.zeros(1,160))
+
+
+def test_initial_smoke_checks_real_aux_paths_past_zero_initialized_spectral_output():
+    torch.set_num_threads(2);torch.manual_seed(64);model=Model();coarse=ComplexTFUNet()
+    coarse.spectral=Core(incoming=4,outgoing=4,widths=(8,12,16,28));coarse.temporal=Core(incoming=4,widths=(12,16,28,40))
+    model.frozen.coarse=coarse;attach(model,2026092701);x=torch.randn(2,2,256);target=.02*torch.randn(2,160)
+    _,h=capture(model,lambda:coarse(x));error=.01*auxiliary_loss(model,h,target)
+    selected=auxiliary_gradient_parameters(model)
+    gradients=torch.autograd.grad(error.sum(),list(selected.values()),retain_graph=True)
+    assert all(torch.isfinite(v).all() and v.abs().sum()>0 for v in gradients)
+    initial_hidden=torch.autograd.grad(error.sum(),coarse.spectral.encoder.blocks[0][0].net[0].weight)[0]
+    assert torch.count_nonzero(coarse.spectral.out.weight)==0 and torch.count_nonzero(initial_hidden)==0
 
 
 def test_new_middle_loss_is_weighted_once_and_original_SIG_objective_retained(monkeypatch):

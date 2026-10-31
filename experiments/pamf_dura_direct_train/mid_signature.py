@@ -4,10 +4,10 @@ import numpy as np
 import torch
 from . import signature_guided as parent,f_guided
 from experiments.pamf_dura_efficiency.model import scratch_model as original_factory
-from experiments.pamf_dura_efficiency.mid_signature import attach,capture,auxiliary_loss,WEIGHT,PARAMETERS,METRIC,GUIDE
+from experiments.pamf_dura_efficiency.mid_signature import attach,capture,auxiliary_loss,auxiliary_gradient_parameters,WEIGHT,PARAMETERS,METRIC,GUIDE
 
 base=parent.base
-RUN='20261031-phase1-DURA-midSIG-E30-s2026092701-r01'
+RUN='20261031-phase1-DURA-midSIG-E30-s2026092701-r02'
 MODULE='experiments.pamf_dura_direct_train.mid_signature'
 _SIG_OBJECTIVE=parent.objective
 
@@ -53,14 +53,11 @@ def smoke(args,p):
     actual=torch.autograd.grad(terms[parent.GUIDE].sum(),restored,retain_graph=True)[0]
     iqnorm=2*(restored.detach()-x).flatten(1).norm(dim=1)/(512*x.square().mean((1,2)).clamp_min(1e-4))
     if not actual.abs().sum()>0 or not torch.isfinite(actual).all() or (actual.flatten(1).norm(dim=1)>parent.CAP*iqnorm*(1+2e-5)).any():raise ValueError('Online SIG input-gradient cap failed')
-    selected={
-        'coarse_spectral':student.frozen.coarse.spectral.encoder.blocks[0][0].net[0].weight,
-        'temporal_shallow':student.frozen.coarse.temporal.encoder.blocks[0][0].net[0].weight,
-        'temporal_middle':student.frozen.coarse.temporal.encoder.blocks[1][0].net[0].weight,
-        'aux_projection':student.mid_signature_aux.projection.weight}
+    selected=auxiliary_gradient_parameters(student)
     gradients=torch.autograd.grad(terms[GUIDE].sum(),list(selected.values()),retain_graph=True)
-    if not all(torch.isfinite(v).all() and v.abs().sum()>0 for v in gradients):raise ValueError('Actual auxiliary shared G gradients missing')
-    norms={k:float(v.norm()) for k,v in zip(selected,gradients)};loss.mean().backward()
+    norms={k:float(v.norm()) for k,v in zip(selected,gradients)}
+    if not all(torch.isfinite(v).all() and v.abs().sum()>0 for v in gradients):raise ValueError('Actual auxiliary shared G gradients missing: '+json.dumps(norms))
+    loss.mean().backward()
     for prefix in ['frozen.coarse.','frozen.estimator.','prior.','mid_signature_aux.']:
         gs=[v.grad for k,v in student.named_parameters() if k.startswith(prefix) and v.grad is not None]
         if not gs or not all(torch.isfinite(v).all() for v in gs) or not any(v.abs().sum()>0 for v in gs):raise ValueError('Actual joint gradients missing: '+prefix)
@@ -80,6 +77,7 @@ def smoke(args,p):
     if scores.shape!=(2,6) or not torch.isfinite(scores).all() or any(v.grad is not None for v in reader.parameters()) or any(not torch.equal(v,before[k]) for k,v in reader.state_dict().items()):raise ValueError('Frozen original F/defaulthead changed')
     base.write_json(p['output']/'smoke.json',dict(status='PASS',real_Ls=2,F_prefix_inputs=4,F_input_VJP_inputs=2,full_F_inputs=2,G_inputs=8,
         actual_mid_aux_gradient_norms=norms,aux_projection_parameters=PARAMETERS,complete_G_parameters=287591,
+        initial_spectral_output_zero_init_blocks_encoder_gradient=True,
         base_initial_G_state_matched=True,aux_train_only_no_inference_call=True,hook_cleanup=True,strict_E0_reload=True,native_optimized_close=True,
         online_SIG_input_gradient_cap=.5,aux_gradient_not_in_online_cap=True,F_unchanged=True,F_updates=0,TX_labels_read=0,V_reads=0,target_reads=0,
         initialization_checkpoint_loads=0,source_cache_reuse=reuse,teacher_load=rng_info))
