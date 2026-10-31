@@ -57,3 +57,25 @@ def test_private_config_and_sampling_mismatch_never_complete(tmp_path,monkeypatc
         with pytest.raises(ValueError,match='sampling'):m.train(c,'cpu')
         assert not Path(c['output_root'],'complete.json').exists() and not Path(c['output_root'],'final.pt').exists()
 
+
+def test_actual_training_completion_hands_off_to_launcher_terminal(tmp_path,monkeypatch):
+    launch=importlib.import_module('experiments.pamf_phase3_open_world.star_common_transport_launch')
+    with fixture(tmp_path,monkeypatch) as (m,c,pm,b,U,events,old):
+        c['output_root']=str(tmp_path/'handoff/train');checked=[];controls=m._controls;cache=m.body._source_cache
+        def frozen_controls(*a):
+            result=controls(*a);checked.append(True);return result
+        def source_cache(*a):
+            assert checked;return cache(*a)
+        monkeypatch.setattr(m,'_controls',frozen_controls);monkeypatch.setattr(m.body,'_source_cache',source_cache)
+        done=m.train(c,'cpu');read=launch._read
+        def tiny_budget(path):
+            actual=read(path)
+            assert actual['updates']==actual['total_optimizer_updates']==m.STEPS==2
+            # The launcher fixes production's 444 steps. Adapt only these two
+            # counters; all completion flags come from the actual toy train.
+            return dict(actual,updates=444,total_optimizer_updates=444)
+        monkeypatch.setattr(launch,'_read',tiny_budget)
+        handed=launch._terminal(dict(run_root=str(tmp_path/'handoff'),code_commit=c['code_commit']),'train')
+        assert handed['controls_frozen_before_training'] is True
+        assert read(Path(c['output_root'])/'complete.json')==done and len(checked)==1
+

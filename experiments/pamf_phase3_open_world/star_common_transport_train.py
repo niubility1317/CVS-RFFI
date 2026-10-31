@@ -173,7 +173,7 @@ def train(c,device='cuda:0'):
         done=dict(schema=SCHEMA,status=STATUS,run_id=RUN_ID,code_commit=c['code_commit'],config=c,arm=ARM,identity=identity,updates=STEPS,total_optimizer_updates=STEPS,
             parent_signal_identity=parent_identity,parent_F0_identity=parent_identity['parent_F0_identity'],dura_identity=parent_identity['dura_identity'],source_feature_manifest=m,
             parent_old_control_prediction=controls['prediction'],control_training_run_id=body.RUN_ID,control_training_code_commit=reference.TRAIN_CODE,
-            source_only=False,target_U_used=True,target_U_reads=U_COUNT,U_manifest=U_manifest,source_sampling_matched=True,U_sampling_matched=True,
+            source_only=False,target_U_used=True,target_U_reads=U_COUNT,U_manifest=U_manifest,controls_frozen_before_training=True,source_sampling_matched=True,U_sampling_matched=True,
             original_models_unchanged=True,all_student_buffers_unchanged=True,all_student_Sinc_unchanged=True,all_student_bodies_changed=True,all_student_projections_changed=True,original_OE_teacher_unchanged=True,
             initial_state_equal_to_parent=True,student_encoder_unchanged=False,student_Sinc_unchanged=True,student_body_changed=True,student_projection_changed=True,model_buffers_unchanged=True,
             source_L_exposures=192*STEPS,source_OE_exposures=64*STEPS,real_parent_signal_forward_rows=sum(COUNTS.values())+U_COUNT,
