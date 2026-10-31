@@ -3,6 +3,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from .io import read, tensor
+from .source_iq import aligned_source_iq
 
 
 class SourceDataset(torch.utils.data.Dataset):
@@ -18,11 +19,11 @@ class SourceDataset(torch.utils.data.Dataset):
             if names != allowed:
                 raise ValueError('U truth or missing physical metadata: ' + repr(names))
             self.metadata = {k: values[k].copy() for k in names}
-        x = np.load(root / (role + '_x.npy'), mmap_mode='r', allow_pickle=False)
-        if x.shape != (contract['counts'][role], 2, 256):
-            raise ValueError('Source role count differs')
         if list(self.metadata['ids']) != contract['role_ids'][role]:
             raise ValueError('Source role physical order differs')
+        x,self.iq_binding = aligned_source_iq(root,role,self.metadata['ids'])
+        if x.shape != (contract['counts'][role], 2, 256):
+            raise ValueError('Source role count differs')
         self.x = tensor(x)
         self.role = role
 
@@ -65,6 +66,8 @@ class FixedEpochLoader:
 
 
 def context(c):
+    from .core_groups import validate_config
+    validate_config(c)
     if any(c.get(k) for k in ('target_truth', 'truth', 'dataset_path', 'target_inputs', 'views_root')):
         raise ValueError('Source worker rejects dataset/target inputs')
     contract = read(c['source_contract'])
