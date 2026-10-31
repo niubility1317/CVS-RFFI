@@ -11,3 +11,32 @@ R21 固定完整 Tri-SIG-TIME SSL 和 DURA v1.0。R20 四角点失败产物保�
 源GPU4/targetGPU0，启动前核实容量、最多每卡两个本owner训练/预测，不动其他owner。完整commit/命令/环境/CWD、checkpoint/data契约、路径/停止条件见experiment.json；技术失败保留产物，不盲重试。
 
 唯一独立 P0/P1 审查 PASS。新核 PSD/相位顺序不变/逐query独立/K1物理标签数、phase encoder配对保存重载、K2正则方程一致及旧orbit、K1/源隔离、非法输入共15项相关检查通过。真实checkpoint无query smoke为发布第一步，PASS后继续。
+
+## 实际完成证据
+
+**VERIFIED**：真实 F/G no-query smoke PASS；C4 不变性、独立逐包、G先于orbit核实。archive传输/compile、PID/CWD/argv/GPU与日志增长核实。24行预测固定后独立truth-last评分完成，所属进程均退出。代码commit `bc2dc0976cf8922d376c18e272ed76e7bf726b11`。
+
+源K1唯一规则：{'config': ['signature_historical', 'all', 0.0, 'multi'], 'ridge': 10.0, 'outer_folds': 3, 'outer_strengths': [0.0, 0.25, 0.5, 0.75], 'ridge_reference_classes': 6}。source L6300物理记录/12600raw-G配对/50400计算型phasepairs，rank64固定、120个source核规则，无classmetric/F/G/head更新；K>1物理support条件LOO，无Fisher/nested。源流程71.47秒；target worker（support提取/拟合+query预测）{'1-1': 166.76214851764962}秒。新增encoder139360个FP64参数（约1.06MiB），每条四次F前向、G路径仍一次G；没有将计算开销忽略为免费。
+
+| 路径 | 当前角点均值H | 原版匹配均值H | 配对差 | Q1−Q0 |
+|---|---:|---:|---:|---:|
+| S0Q0 | 51.9768% | 46.1190% | +5.8579pp | -9.0958pp |
+| S1Q0 | 44.4843% | 18.0209% | +26.4634pp | +19.3658pp |
+| S0Q1 | 42.8810% | 42.3927% | +0.4883pp | -9.0958pp |
+| S1Q1 | 63.8501% | 58.3040% | +5.5462pp | +19.3658pp |
+
+## 角点逐格判断
+
+- S0：Q0≥原版+5pp为2/4，Q1>Q0为1/4，全部角点通过False。
+- S1：Q0≥原版+5pp为4/4，Q1>Q0为4/4，全部角点通过True。
+
+角点晋级：False；四路对原版逐格+5全部通过：False。未通过，不扩展其余12KN或其他六RX。
+
+| K | N | S0Q0 H%（差pp） | S0 Q1−Q0 pp | S1Q0 H%（差pp） | S1 Q1−Q0 pp |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 2 | 43.950 (+12.830) | -4.625 | 42.180 (+5.588) | +13.264 |
+| 1 | 20 | 27.231 (+1.256) | +0.207 | 26.730 (+10.825) | +12.609 |
+| 20 | 2 | 69.673 (+4.113) | -20.004 | 55.602 (+51.610) | +26.229 |
+| 20 | 20 | 67.052 (+5.232) | -11.961 | 53.425 (+37.831) | +25.362 |
+
+仅首RX、单seed、P01/MIX01四角点，开发基准已曝光，不代表七RX/全部16格或新盲测。原版同case分数复用；raw仍为practical received。goal ACTIVE。

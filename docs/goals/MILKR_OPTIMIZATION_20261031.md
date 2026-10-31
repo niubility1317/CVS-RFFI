@@ -165,3 +165,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R21 完整C4分布核
 
 新候选保留同记录四相位完整分布、source同phase raw/G PairedCCA64；16phasepair核值均值而非moment压缩，物理K/标签数不变，G仍原包先执行一次。source-heldRX/TX只选K1规则，K>1物理support条件LOO，无Fisher；无query统计/selfdiag校准。固定同四角点24行证伪，每cornerbothS Q0+5/Q1>Q0才补12KN，最终all16目标不变。R20失败保留不扩展。
+
+### R21 C4完整分布核实际结果
+
+真实checkpoint smoke及独立审查/测试通过；source rank64和C4固定、source120核规则选唯一K1。目标24行评分完成，所属进程退出。S0角点Q0+5为2/4，Q1>Q0为1/4；S1角点Q0+5为4/4，Q1>Q0为4/4；角点晋级False。不扩其余KN/RX，不用目标结果调rank或相位数。基座仍Tri-SIG-TIME SSL，goal ACTIVE。详见本run result_summary/report。
