@@ -300,3 +300,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 周期坐标残差效用：固定源判定
 
 20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01/58da3da0。VERIFIED / ANALYZED_SOURCE_ONLY，主假设FAIL。固定defaultDURA/source512（128L/384U）×缓存01/20、1024次观测/512物理记录，0G加载/前向、0优化/TX/V/target。固定窗口80:160/四个20点周期，将pairedclean−native误差分为周期均值P和窗口残差R；主R与同修正L2的全窗最近clean控制比较。R的clean F选择一致数485/498，相对native486/498净−1/0、相对同能量全窗496/504净−11/−6；两view额外效用失败，第一view源RX保护也失败，其他clean/scene/Fcos条件通过。periodic修正492/501净+6/+3仅描述，修正能量不同且没有其单独同能量控制，不换主/窗口/period/阈值或据此加训练loss。clean窗口周期间残差能量约6.03%，窗口恢复误差中残差占44.14%/56.69%，高相对误差不自动意味着更高身份效用。CPU2主循环3.079785秒、F完整输入3072+真实2非cleanLs clean/native缓存logits smoke4，F全state保持、grad为空。独立dense80×80投影/全部1024×3IQ与同能量/窗口外实际bits/原cache配对、36组144case统计和判定复算，最大IQ公式差1.338257e−7、指标差0、0新增NN。复核中FP32先减再升精度与FP64先升再减的标量分别重算并保留原2e−6约束，无模型重跑或判据变化。F50/source4df7/50轮11100步知识及旧defaultG/缓存历史成本披露；这是源训练池Fclean选择代理，非真TX、RX噪声/硬件因果、可部署修复或物理上限。默认DURA及完整目标ACTIVE保持。 详见run分析和独立复算。
+
+
+## 两 prior 的发射机特征预测与解码条件：匹配单阶段 E30
+
+20261031-phase1-DURA-SIGcontextPrior-E30-s2026092701-r01 与 20261031-phase1-DURA-SIGpriorAux-E30-s2026092701-r01。共同保留原四物理+输出 SIG alpha1/cap.5，新增 .01×两个 prior 中层 SIG 相对 MSE 均值；主版预测参与三个解码层调制，对照只训练约束、推理跳过预测头。主版 344295 参数、对照 308231；同源 F-only 缓存、同初值与随机流、原生执行、从零单 30 轮/7410，全七景自动正式测试，不源筛取消。两新版互为调制消融，共同主基线为原 SIG47591。一次 P0/P1 每候选 PASS；旧中层/FiLM/period20 等负结果保留，无资格或收益预判。F-guided、0 TX/V/target 训练、默认保持，完整目标 ACTIVE。

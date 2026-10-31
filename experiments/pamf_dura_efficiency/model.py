@@ -23,7 +23,7 @@ def supervised_action(kernel,coefficients):
                   torch.complex(coefficients[:,2],coefficients[:,3]))
 
 
-def direct_objective(model,received,clean,actual_action,actual_variance,probes,*,return_restored=False,return_coarse=False):
+def direct_objective(model,received,clean,actual_action,actual_variance,probes,*,return_restored=False,return_coarse=False,return_prior_signatures=False):
     """All source targets enter one joint update; no learned teacher is needed.
 
     Source simulator action/variance supervision is explicitly additional to IQ
@@ -38,11 +38,15 @@ def direct_objective(model,received,clean,actual_action,actual_variance,probes,*
     observed,current=complex_iq(received),base
     variance=native[:,None].expand(-1,256)
     logvar=native.log().clamp(-16,4)[:,None,None].expand(-1,1,256)/8
-    priors=[]
+    priors=[];prior_signatures=[]
     for core in model.prior:
         innovation=pair(action.adjoint(observed-action(complex_iq(current))))
         innovation=innovation/(innovation.square().mean((1,2),keepdim=True)+1e-6).sqrt()
-        prior=base+SCALE*core(torch.cat((received,base,current,innovation,logvar),1))
+        inputs=torch.cat((received,base,current,innovation,logvar),1)
+        if return_prior_signatures:
+            delta,signature=core.forward_with_signature(inputs);prior_signatures.append(signature)
+        else:delta=core(inputs)
+        prior=base+SCALE*delta
         current=pair(weighted_map(action,observed,complex_iq(prior),variance,steps=2,initial=complex_iq(current)))
         priors.append(prior)
     energy=clean.detach().square().mean((1,2)).clamp_min(1e-4)
@@ -59,5 +63,6 @@ def direct_objective(model,received,clean,actual_action,actual_variance,probes,*
     loss=paired+.1*prior_error+.05*spectral+.05*action_error+.001*noise_error
     terms=dict(iq_nmse=paired,prior_nmse=prior_error,spectral_error=spectral,
                action_probe_nmse=action_error,log_variance_mse=noise_error)
+    if return_prior_signatures:return loss,terms,current,tuple(prior_signatures)
     if return_coarse:return loss,terms,current,base
     return (loss,terms,current) if return_restored else (loss,terms)
