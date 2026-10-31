@@ -35,3 +35,9 @@
 真实 Phase1 Tri-SIG-TIME SSL 和 DURA 权重的 CPU 检查通过：实际使用两条 L_s 记录，均为基座错误样本；梯度非零，冻结模型未变，临时权重重载一致。源档案物化 512 条 IQ（L128/U384），合法 L_s 标签表物化 6300 条；未读取 U_s 标签、V 或测试 IQ。这仅证明训练链路可运行，不是性能结果。
 
 控制器 PID 2349731 已独立核验，正在遵守共享资源限制等待 GPU；GPU 批次检查和正式 E30 训练尚未启动。候选构思前已有 Phase1 开发测试结果被观察，后续同集不是独立盲测。
+
+## GPU 初始化失败
+
+控制器提交 GPU 1、worker PID 2359903；worker 在 GPU B128 检查加载冻结 Tri-SIG-TIME 时，PyTorch CUDA 初始化报 `CUDA unknown error`，尚未开始正式训练或测试。控制器和 worker 已退出；`complete.json` 与完整 `logs/worker.log` 保留，失败为技术故障。
+
+独立设备查询发现 GPU 7（PCI `0000:C2:00.0`）的设备句柄返回 `Unknown Error`，`nvidia-smi -L` 非零退出且设备清单不完整。这是与 CUDA 初始化失败同时出现的设备层异常；现有证据尚不足以证明二者的因果关系。边界学生的原 worker 仍存活，不中断该进程。恢复完整设备清单及确定初始化能力前不重启或增加 GPU 任务。
