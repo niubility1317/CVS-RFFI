@@ -1,0 +1,36 @@
+{
+  "run_id": "20261031-phase2-milkr-nonlinearpair-s2026092701-r21",
+  "kernel_method": "nonlinear_pair",
+  "arm": "R22",
+  "K": [
+    1,
+    20
+  ],
+  "N": [
+    2,
+    20
+  ],
+  "model_seeds": [
+    2026092701
+  ],
+  "capsules": [
+    "capsules/P01/MIX01/1-1"
+  ],
+  "orbit_quarters": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "orbit_rank": 64,
+  "pair_steps": 600,
+  "pair_batch": 256,
+  "pair_bound": 0.25,
+  "pair_seed": 2026103101,
+  "pair_hidden": 64,
+  "pair_loss": "pairedlatent_MSE + .1anchor",
+  "source_gate": "H+.5pp/rawSmeans>=-.25pp/everyKquery>=0/rawoldnew>=-1pp",
+  "target_query": "strictG-only Q1",
+  "query_fit": false,
+  "target_goal": "unchanged every16KN bothS Q0+5pp/Q1>Q0; sourcegate then4corners"
+}

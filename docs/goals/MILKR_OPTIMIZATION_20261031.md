@@ -169,3 +169,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R21 C4完整分布核实际结果
 
 真实checkpoint smoke及独立审查/测试通过；source rank64和C4固定、source120核规则选唯一K1。目标24行评分完成，所属进程退出。S0角点Q0+5为2/4，Q1>Q0为1/4；S1角点Q0+5为4/4，Q1>Q0为4/4；角点晋级False。不扩其余KN/RX，不用目标结果调rank或相位数。基座仍Tri-SIG-TIME SSL，goal ACTIVE。详见本run result_summary/report。
+
+### R22 有界非线性配对编码
+
+新source-only非线性残差：C4moments/CCA64不变，八block raw/G2d-64-64有界MLP初始等价CCA、幅度≤.25。只同记录配对MSE+.1anchor，固定600step/256/AdamW1e-3，F/G/head不更新。每sourcefoldCCA/NN均excludeheldRX/twoTX，source四H+.5/rawguard/querygain门槛失败target0，通过才全sourcefit及严格G-only4corner24rows。待询问的dual-query口径不影响本run，不热改。最终16KN两S每格+5/Q1更高不变。
