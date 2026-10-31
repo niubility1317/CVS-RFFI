@@ -10,8 +10,14 @@
 
 启动命令、1932逐行矩阵、环境、不可变root、checkpoint来源、停止规则见 experiment.json。GPU0/2/3/4/6每卡最多两个新增本任务预测进程、source每卡一个，启动前剩余显存至少6000MiB，外部owner GPU1/5/7及其他健康任务不改。任一技术/权限/输出错误停止新入队并排空健康本任务，不盲重试；科学低分不停止。真实源checkpoint smoke首步通过即继续，无额外seal/hash链。
 
-当前状态：RUNNING（见下方启动证据）。代码提交、一次P0/P1、真实source smoke、归档传输、远端编译及启动后PID/CWD/argv/GPU/log证据按项目最小流程完成。
+当前状态：FAILED（外部 CUDA 环境故障，见末尾最新证据）。代码提交、一次P0/P1、真实source smoke、归档传输、远端编译及启动后PID/CWD/argv/GPU/log证据按项目最小流程完成。
 
 启动后独立读回（2026-11-01T01:31:29.902910+08:00）：VERIFIED RUNNING: four actual source checkpoint smokes PASS, newNN/F/Gupdates0; controller2148792; predictions7/1932, active10, no failures; complete208row newly computed units observed. silent logs0 with actual fit/prediction/resource artifact growth. Code14af25d0ff68d0d4de80357849d8a7c69018ebd3.
 
 归档传输SHA比对、远端编译、代码双仓库push及remote OID均VERIFIED；真实PID/CWD/argv、GPU和日志/产物增长已核实。最终分数尚待完整冻结与独立评分，不宣称+5pp达标。
+
+最新故障核实（2026-11-01T05:38:20.760136+08:00）：VERIFIED EXTERNAL_CUDA_ENVIRONMENT_FAILURE: GPU7 handle C2:00.0 unavailable/NVML failure; fresh UUID-pinned CUDA probes on0/2/4 all returned0 devices and allocation failed; own controllers/workers all exited, no new admissions or blind restart. {"R42_completed_units": 37, "R42_prediction_rows": 7696, "MoPC_completed": {"source": 4, "predict": 398, "score": 397}}
+
+故障来自 N607 GPU/NVML/CUDA 环境：GPU7（PCI C2:00.0）设备句柄不可用；分别绑定剩余GPU0/2/4 UUID的新进程探测均无法初始化CUDA。不能凭剩余显存空闲判断可运行，也不将其归因于方法性能。两条本run均已按停止规则退出，无存活owned worker；无需新增终止操作。
+
+已完成prediction、评分、四个MoPC源模型及R42四源状态全部保留，未按分数改变矩阵。等待GPU环境恢复后新建不可变恢复run，复用全部闭合产物，不覆盖旧root，不重训已完成源模型。本任务不执行管理员GPU重置、驱动操作或服务器重启；其他owner的输出和控制器未修改。原r10控制器独立读回也已退出，其旧RUNNING计数已过时，不冒充仍在评分。
