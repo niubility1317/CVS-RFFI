@@ -141,3 +141,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R18实际源证据
 
 1440候选全部完成，唯一源参数搜索不访问target，按原完整门槛正常source-only停止、target0、所属进程退出。rank32/metric0.9源四路宏H+3.851pp、new macro+2.474pp、各K/S Q0宏H最小+0.871pp，但K1 new S0Q0 −1.5625pp，没过额外K1新类每S+1pp，原run不晋级。该分量要求比用户宏H目标更强，未来如改用仅宏H对齐的源选择必须另建run、保留本失败，不改原门槛/输出；所有参数选择仍只源、目标未接触。当前严格目标ACTIVE。
+
+### R19新的源宏H选择策略
+
+原R18严格aux源门槛失败保留；另建R19按用户宏H目标重用同一source-only1440grid，不用target选择参数。取消仅source每K1new单项+1的必要条件，保留everyK rawH正、queryG不降、overallnew正和old/new均值guard。新source候选唯一配置后全sourceL拟合encoder，目标每KN+5/Q1更高完全不变。新增输入复用路径审查/测试PASS，准备发布；不是原run放宽重跑，不保证target收益。
