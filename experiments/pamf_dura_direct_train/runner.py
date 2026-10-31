@@ -236,7 +236,7 @@ def worker(args,p):
             predict(args,p,role)
             # Independent truth-side process; training state is already gone.
             import fcntl
-            with (p['output']/'score.lock').open('a') as lock:
+            with p.get('score_lock',p['output']/'score.lock').open('a') as lock:
                 fcntl.flock(lock,fcntl.LOCK_EX)
                 subprocess.run(command(args,'score',args.arm,role),env=dict(os.environ,CUDA_VISIBLE_DEVICES=''),check=True)
         write_json(p['output']/args.arm/'complete.json',dict(status='ANALYZED',all_seven_predictions_before_truth=True,target_feedback=False))
@@ -294,6 +294,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.context_film worker',
                 'pamf_dura_direct_train.relation_signature worker',
                 'pamf_dura_direct_train.coarse_anchor worker',
+                'pamf_dura_direct_train.signature_fast_train worker',
                 'pamf_dura_direct_train.identity_init worker','pamf_dura_direct_train.no_variance worker',
                 'pamf_dura_direct_train.fast_interp worker','pamf_dura_direct_train.strong_action worker',
                 'pamf_dura_direct_train.f_guided worker','pamf_dura_direct_train.head_guided worker',

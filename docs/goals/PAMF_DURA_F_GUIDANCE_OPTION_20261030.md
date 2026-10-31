@@ -275,3 +275,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 弱粗恢复clean监督：固定单E30对照
 
 20261031-phase1-DURA-coarseAnchor-E30-s2026092701-r01。原SIG-only主体/四物理项/alpha1-cap.5保持，仅加全30轮coarse-cleanNMSE固定alpha=0.02071440650605139（历史源32批coarse/finalIQ梯度中位比12.068895139571893，固定压力.25；不是当前动态cap）。旧梯度分离FAIL保持，不detach/预训练/复制G，不用R17IQ教师；原F-onlySIG40.32MB复用、新F缓存0，0新推理模块/参数/额外训练G-Fforward或VJP，0TX/V/target。全部原七景自动truth-last，无源或目标成绩选模，默认与完整目标保持。
+
+
+## 原SIG训练期执行优化：单E30独立对照
+
+20261031-phase1-DURA-SIGfastTrain-E30-s2026092701-r01。原SIG四物理+特征alpha1/cap.5、266951、初值/RNG/单30轮预算不变，只训练四Core的12/15插值采用已有源等价/同卡步骤14.437%证据支持的slice实现。训练工厂try/finally还原，冻结加载逐次native类断言，profile/全部原七景仍native。无新增loss/参数/教师IQ/增强，旧G非祖先，F-onlySIG40.32MB复用和F50知识成本披露；0TX/V/target。与coarseAnchor各自匹配原SIG，GPU单任务总≤2、每卡own1，CPUscore共用当前coarseAnchor锁而输出独立。完整目标ACTIVE、默认保持，不承诺整轮提速或位级长轨迹一致。
