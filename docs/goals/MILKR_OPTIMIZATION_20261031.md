@@ -299,3 +299,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R36 实际结果
 
 36行独立truth-last完成，所属进程退出。两S逐角点验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 3, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 4, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.725180215955088, 'fusion_gain_pp': 1.3670789974981945}]。核密度正对角归一化/状态(physicalSUP+1)*8bytes、单KRR/R31gate与物理OOF核实；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩12KN或六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### R37 源CCA正交余量保留
+
+从R31分叉，源CCA64与raw/G投影联合span正交余量PCA各半能量，余量d−64维、输出d不变，编码器404768FP64参数；FFT/f_emb明确原CCA-only，其余六块各半余量。五RX/TXheld同时保护CCA/PCA，目标SUP不拟合源编码器；F/G/head/R31prior/融合保持。源120K1后先36角点，最终all16/七RX目标不变，尚未发布。

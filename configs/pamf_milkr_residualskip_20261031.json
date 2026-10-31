@@ -1,0 +1,50 @@
+{
+  "run_id": "20261031-phase2-milkr-residualskip-s2026092701-r36",
+  "kernel_method": "residual_skip",
+  "arm": "R37",
+  "K": [
+    1,
+    20
+  ],
+  "N": [
+    2,
+    20
+  ],
+  "model_seeds": [
+    2026092701
+  ],
+  "capsules": [
+    "capsules/P01/MIX01/1-1"
+  ],
+  "orbit_quarters": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "orbit_rank": 64,
+  "prior_weight": 0.5,
+  "fusion_policy": "rf_distance_margin_half_v1",
+  "confidence_rule": "support_balanced_ridge_v1",
+  "query_paths": [
+    0,
+    1,
+    2
+  ],
+  "primary_query_paths": [
+    0,
+    2
+  ],
+  "calibration_ridge_fraction": 0.1,
+  "residual_skip_weight": 0.5,
+  "source_encoder_parameters": 404768,
+  "RF_forward_views": 4,
+  "DURA_calls_per_record": 1,
+  "query_fit": false,
+  "target_rows_pilot": 36,
+  "target_goal": "all16KN bothS raworiginal+5/QF>raw",
+  "FFT_complement": false,
+  "FFT_rule": "original_CCA_only",
+  "frequency_embedding_complement": false,
+  "frequency_embedding_rule": "original_CCA_only"
+}

@@ -69,6 +69,10 @@ class NativeSkipBridge(TeacherBridge):
     from .milkr.native_skip import NativeSkip as encoder_type
 
 
+class ResidualSkipBridge(TeacherBridge):
+    from .milkr.residual_skip import ResidualSkip as encoder_type
+
+
 class EpisodicMetricBridge(TeacherBridge):
     from .milkr.episodic_metric import EpisodicMetric as encoder_type
 
@@ -120,6 +124,7 @@ class OrbitEnsembleBridge:
 
 def bridge_type(method):
     if method=='native_skip':return NativeSkipBridge
+    if method=='residual_skip':return ResidualSkipBridge
     if method=='episodic_metric':return EpisodicMetricBridge
     if method in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble'):return OrbitEnsembleBridge
     return TeacherBridge
