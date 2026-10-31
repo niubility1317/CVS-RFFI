@@ -137,3 +137,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R18当前实现
 
 已实现adapter-TX/RX-heldout源代理、rank16/32/64/96×metric0/.5/.9、每表示K1 24核×5ridge重新校准，K1按support类数/6缩放lambda、K>1原R14不变。F本身仍见过六sourceTX，不能冒称F-novel。源gate同时要求held-new和每个sourceK收益，不能只改善K1。sourcepass才首RX全16KN四路80行，仍按每格验收；唯一审查/针对性检查PASS，准备发布，不保证收益。
+
+### R18实际源证据
+
+1440候选全部完成，唯一源参数搜索不访问target，按原完整门槛正常source-only停止、target0、所属进程退出。rank32/metric0.9源四路宏H+3.851pp、new macro+2.474pp、各K/S Q0宏H最小+0.871pp，但K1 new S0Q0 −1.5625pp，没过额外K1新类每S+1pp，原run不晋级。该分量要求比用户宏H目标更强，未来如改用仅宏H对齐的源选择必须另建run、保留本失败，不改原门槛/输出；所有参数选择仍只源、目标未接触。当前严格目标ACTIVE。
