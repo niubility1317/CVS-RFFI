@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-midSIG-E30-s2026092701-r02`
 - group_id：`phase1-dura-middle-signature-aux-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -38,3 +38,8 @@ r01在CPU真实2Ls首步检查中断，未创建GPU worker、训练更新或正�
 原主体266951＋训练专用连续SIG投影20640，完整G287591；投影挂在实际时域encoder第2层B16×128，经8格池化/Linear128→160回归同源clean F签名，不是分类头，推理不调用但参数/存储计入。保留原四项物理损失及onlineSIG输入梯度cap0.5；aux普通参数梯度不受该在线输出空间cap约束，全G仍clip1。缓存40.32MB只读复用，历史63000F前缀/0.847077秒与F50/11100知识披露，无新缓存或旧G祖先，单阶段从零联合30轮。
 
 首步真实2Ls完成实际源cache/F/aux梯度/onlinecap/全部G模块/原主体初值/严格E0/无推理aux/原生优化输出/原F原头state检查后立即继续。固定最后30轮，自动同卡profile、source1800×7、formal168000×7，每role全部预测固定后独立truth-last；源差也不取消新G正式测试。默认DURA保持，六景各≥137216正确及clean≥142256、R17逐景1pp和低城区70%继续分别报告，目标ACTIVE。
+
+
+## r02实际启动核实
+
+VERIFIED RUNNING。执行5464a942132110ff6d04331deb71f50f77baa4e6，controller1732041/worker1732131/GPU4，实际PID/CWD/完整argv/CPU控制器空CUDA、workerCUDA4、GPU计算PID与日志增长核实。启动前该卡剩余22883MiB、已有1个计算PID，新增1条，符合总数≤3。首步真实2Ls全部检查PASS：spectral output及temporal shallow/middle/projection实际aux梯度非零，原F和原头不变、strictE0和优化推理通过、aux不在推理中执行。r01 PID和旧本goal NN均不存在，其他owner保持。当前已完成4/30轮，aux实际累计输入252000；源签名数值40.32MB只读复用，读取0.075166秒，新F缓存/复制0。正式结果尚无，不宣称新性能收益。
