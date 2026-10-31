@@ -315,3 +315,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R38 实际结果
 
 36行独立truth-last完成，所属进程退出。两S逐角点验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 3, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 4, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.837843949657822, 'fusion_gain_pp': 1.4034094058156699}]。双RF核及当前SUP RF证据门控/neutral.5/各折train-only核实，R31gate/单残差KRR保持；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩12KN或六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### R39 RF旧类先验方向与全KN验证
+
+保留R38成员gate，旧类prior方向以normalize(originalp*currentSUP_RBF_oldclassmean)校准，headgate仍输入originalp，中性RF还原原p，无新权重。每物理OOF均train-only，F/G/head冻结。新候选首RX覆盖all16KN/120三路预测，逐格通过才六RX；最终七RX等权all16目标不变，旧失败不改，尚未发布。

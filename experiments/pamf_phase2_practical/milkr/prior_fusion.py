@@ -20,11 +20,15 @@ def normalize(features):
     p.flags.writeable=False;out['teacher_probs']=p;return out
 
 
-def prior(probability,count,gate=None):
+def prior(probability,count,gate=None,calibrated_probability=None):
     from .support_class_prior import Gate as ClassGate
     p=np.asarray(probability,np.float64);value=np.zeros((len(p),count),np.float64)
     weight=1. if gate is None else gate.values(p)[:,None]
     calibrated=gate.calibrated_probabilities(p) if isinstance(gate,ClassGate) else p
+    if calibrated_probability is not None:
+        if isinstance(gate,ClassGate):raise ValueError('Choose one old-class prior calibration')
+        calibrated=np.asarray(calibrated_probability,np.float64)
+        if calibrated.shape!=p.shape or not np.isfinite(calibrated).all() or (calibrated<0).any() or not np.allclose(calibrated.sum(1),1):raise ValueError('Invalid calibrated old-class probabilities')
     value[:,:p.shape[1]]=PRIOR_WEIGHT*weight*(calibrated-1/p.shape[1]);return value
 
 
