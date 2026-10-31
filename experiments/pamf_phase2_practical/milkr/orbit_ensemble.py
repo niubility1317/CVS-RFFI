@@ -30,7 +30,7 @@ def make_kernel(similarity,tau,mix,scales):
     return WEIGHT*base.make_kernel(similarity[0],tau[0],mix,scales)+(1-WEIGHT)*base.make_kernel(similarity[1],tau[1],mix,scales)
 
 
-def context(features,labels,config,confidence_rule=RULE):
+def context(features,labels,config,confidence_rule=RULE,density_rule=None):
     geometry,band,mix,scales=config;y=np.asarray(labels,np.int64);similarity=similarities(features,features,geometry);taus=[]
     for sim in similarity:
         distance=np.maximum(2-2*sim,0)
@@ -39,10 +39,15 @@ def context(features,labels,config,confidence_rule=RULE):
         if not np.isfinite(tau) or tau<=0:raise FloatingPointError('No positive ensemble SUP scale')
         taus.append(tau)
     if confidence_rule not in (RULE,CLASS_RULE):raise ValueError('Wrong ensemble prior calibration')
-    K=make_kernel(similarity,taus,mix,scales);eig,U,Y,_,_,mean=base.decompose(K,y)
+    K=make_kernel(similarity,taus,mix,scales);density=None
+    if density_rule is not None:
+        from .kernel_density import Density,RULE as DENSITY_RULE
+        if density_rule!=DENSITY_RULE:raise ValueError('Wrong support kernel density rule')
+        affinity=make_kernel(similarity,taus,0.,scales);density=Density.fit(affinity);K=density.cross(K,affinity)
+    eig,U,Y,_,_,mean=base.decompose(K,y)
     gate=(fit_gate if confidence_rule==RULE else fit_class_gate)(features['teacher_probs'],y)
     target=Y-prior.prior(features['teacher_probs'],Y.shape[1],gate);average=target.mean(0)
-    return dict(tau=tuple(taus),parts=(eig,U,target,average,target-average,mean),gate=gate)
+    return dict(tau=tuple(taus),parts=(eig,U,target,average,target-average,mean),gate=gate,density=density)
 
 
 @dataclass(frozen=True)
@@ -55,12 +60,15 @@ class State:
     ridge:float
     selection:dict
     prior_gate:object
+    kernel_density:object=None
 
     def evaluate(self,features):
         x=normalize(features)
         if x['teacher_probs'].shape[1]!=self.features['teacher_probs'].shape[1]:raise ValueError('Old-head columns differ')
         geometry,_,mix,scales=self.config;sim=similarities(x,self.features,geometry)
-        score=prior.prior(x['teacher_probs'],self.alpha.shape[1],self.prior_gate)+make_kernel(sim,self.tau,mix,scales)@self.alpha+self.intercept
+        kernel=make_kernel(sim,self.tau,mix,scales)
+        if self.kernel_density is not None:kernel=self.kernel_density.cross(kernel,make_kernel(sim,self.tau,0.,scales))
+        score=prior.prior(x['teacher_probs'],self.alpha.shape[1],self.prior_gate)+kernel@self.alpha+self.intercept
         distance=WEIGHT*np.maximum(2-2*sim[0],0)+(1-WEIGHT)*np.maximum(2-2*sim[1],0)
         return score,distance.min(1)
 
@@ -72,8 +80,15 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
     if fixed.get('prior_weight')!=prior.PRIOR_WEIGHT or fixed.get('fusion_policy')!=prior.FUSION_POLICY or fixed.get('ridge_reference_classes')!=6 or tuple(fixed.get('config',())) not in sig.CONFIGS:raise ValueError('Wrong frozen ensemble source rule')
     if fixed.get('support_center_strength') is not None:raise ValueError('Ensemble has no support center')
     confidence_rule=fixed['confidence_rule']
+    density_rule=fixed.get('kernel_density_rule')
+    if density_rule is not None:
+        from .kernel_density import RULE as DENSITY_RULE
+        if density_rule!=DENSITY_RULE:raise ValueError('Wrong frozen kernel density rule')
     def build(features,labels,config):
-        return context(features,labels,config) if confidence_rule==RULE else context(features,labels,config,confidence_rule=confidence_rule)
+        options={}
+        if confidence_rule!=RULE:options['confidence_rule']=confidence_rule
+        if density_rule is not None:options['density_rule']=density_rule
+        return context(features,labels,config,**options)
     reference=float(fixed['ridge'])
     if not np.isfinite(reference) or reference<=0:raise ValueError('Positive source ridge required')
     x=normalize(features);y=np.asarray(labels,np.int64);ids=tuple(map(str,ids))
@@ -88,7 +103,9 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
             geometry,_,mix,scales=config;predictions={lam:np.zeros((len(y),count)) for lam in base.LAMBDAS}
             for train,held in split:
                 tx={key:value[train] for key,value in x.items()};hx={key:value[held] for key,value in x.items()};ctx=build(tx,y[train],config)
-                cross=make_kernel(similarities(hx,tx,geometry),ctx['tau'],mix,scales);bias=prior.prior(hx['teacher_probs'],count,ctx['gate'])
+                sim=similarities(hx,tx,geometry);cross=make_kernel(sim,ctx['tau'],mix,scales)
+                if ctx['density'] is not None:cross=ctx['density'].cross(cross,make_kernel(sim,ctx['tau'],0.,scales))
+                bias=prior.prior(hx['teacher_probs'],count,ctx['gate'])
                 for lam in base.LAMBDAS:
                     alpha,intercept,_=base.coefficients(ctx['parts'],lam);predictions[lam][held]=bias+cross@alpha+intercept
             for lam,scores in predictions.items():
@@ -101,6 +118,7 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
     selection=dict(rule='source_fixed' if not audit else 'three_physical_fold_OOF',prior_weight=prior.PRIOR_WEIGHT,fusion_policy=prior.FUSION_POLICY,old_head_columns=old_count,
         physical_OOF=bool(audit),folds=audit,physical_K=k,physical_count=len(y),candidate_count=len(records) if audit else 1,records=records,query_fit=False,
         bandwidth_scope='registered',bandwidth_physical_count=len(y),frozen_default_head_updates=0,K1_current_class_scaling=bool(k==1),
-        extra_state_bytes=x['teacher_probs'].nbytes+ctx['gate'].state_bytes+extra,prior_confidence_gate=ctx['gate'].audit(),support_center=None,
+        extra_state_bytes=x['teacher_probs'].nbytes+ctx['gate'].state_bytes+extra+(ctx['density'].support_degree.nbytes+8 if ctx['density'] is not None else 0),prior_confidence_gate=ctx['gate'].audit(),support_center=None,
         orbit_ensemble=dict(orbits=[4,8],weights=[WEIGHT,1-WEIGHT],kernel='arithmetic_mean_after_separate_bandwidths',extra_feature_bytes=extra,query_fit=False))
-    return State(x,alpha,intercept,config,ctx['tau'],float(ridge),selection,ctx['gate'])
+    if ctx['density'] is not None:selection['kernel_density']=ctx['density'].audit()
+    return State(x,alpha,intercept,config,ctx['tau'],float(ridge),selection,ctx['gate'],ctx['density'])

@@ -1,0 +1,219 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-density-s2026092701-r35",
+  "group_id": "phase2-milkr-kernel-density",
+  "display_name": "MILKR 当前support核密度归一化",
+  "description": "R36 positive diagonal degree normalization on R34 dual C4/C8 kernels; R31 membership prior unchanged. CurrentSUP-only all folds, queries per record.",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-milkr-orbitmix-s2026092701-r33",
+    "20261031-phase2-milkr-ridgeprior-s2026092701-r30",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "authorization": "User2026-10-31 MILKR goal +5pp; Tri-SIG-TIME SSL; support S0/S1 separate; each Q1 must exceed its Q0; User2026-10-31 explicitly permits same-query raw/G fusion with G-only retained, strict support S0/S1",
+  "code": {
+    "commit": "COMMIT_AT_RELEASE",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-density-s2026092701-r35-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_only/partition/*/partition.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one existing P01/MIX01/1-1 VALIDATED_ONCE capsule",
+    "split_id": "read exact existing K/N split IDs",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P01/MIX01/1-1",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        20
+      ],
+      "N": [
+        2,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement",
+      "receiver": "1-1"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "User-authorized queryfusion extension; finalall16KN twoS Q0original+5 andQF>Q0; QG-only separatelyreported, QFvsoriginalQG notsameinputpair"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092703/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092704/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/01a18faf-milkr-density",
+    "gpu_policy": "source numerical smoke on physicalGPU4, one target worker on physicalGPU0; existing owners untouched; >=4GiB checked before launch",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-density-s2026092701-r35",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-density-s2026092701-r35/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\milkr_density_20261031",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_cv_screen dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-density-s2026092701-r35-release/runtime.json",
+    "stop_rule": "query/protocol/split/output collision or launcher-wide failure: stop owned launch, preserve all; worker error marks technical failure, no blind retry; low scores are scientific results"
+  },
+  "expected_artifacts": [
+    "source_smoke.json realF/G head dualRF noquery",
+    "source_selection.json fixed120K1/densityrule",
+    "source_orbit_cca.npz fresh2CCA64",
+    "36fixedpredictionrows",
+    "12fit density/group/gate/OOFaudits",
+    "12fusion audits/cache0",
+    "independent scores",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-density-s2026092701-r35/predictions",
+    "scorer_ref": "experiments.pamf_phase2_practical.episodic_score",
+    "primary": "Finalevery16KN bothS Q0 matchedoriginalQ0>=+5pp andsame-stateQF>Q0; sourceprior/fusion fixed beforetarget",
+    "success": "allcorners twoS Q0+5 andQF>Q0 plusoldnewrawmeanguard before remaining12KN; all16 then6RXconfirmation",
+    "secondary": "macroH old/new, hub degree min/max/mean/statebytes, PSD/normal equations and query independence; strictSUP, Gonly matchedcontrol/QF crosspath, time/cache0",
+    "scientific_source_rule": "Dual similarities/scales asR34. A=.5RBF4+.5RBF8, linearweight excluded onlyfrom A, positive. d(x)=mean_j A(x,Sj) including self for SUP. dbar=mean_i d(Si). Knew=dbar*Kold/sqrt(d(x)d(y)); PSD positive diagonal congruence, no tunable strength. Fit/cross perphysicalfold TRAINonly; query computes own affinities againstfixedSUP, no query batchstatistics. R31membership prior/R26fusion unchanged. Source120K1 then36cornerfalsification/nosourcegainveto.",
+    "promotion_rule": "PerKN/perS raw+5 andfusionpositive, nevermean-only; QGcontrol retained notrequiredtoexceedraw innewuserauthorizedfusiondefinition"
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R36 currentSUP positive kernel-density normalization",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_density_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-density-s2026092701-r35-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FrozenneuralF/G/head; fresh2sourceCCA64; currentSUPdegree normalized residualKRR/physicalOOF",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "source6300physical ep91/92=12600pairs8F/Gonce; 120sourceK1rules; density8*(physicalSUP+1)bytes; target36",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-density-s2026092701-r35/predictions/1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-density-s2026092701-r35/logs/1-1.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_cv_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-density-s2026092701-r35-release/runtime.json --capsule capsules/P01/MIX01/1-1",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Hypothesis: support hubs overattract queries in high-way sparse registration. Degree normalization downweights kernel hubs with no query aggregate/roles. New mechanism fixed before target; not retuning failed R34/R35 weights/thresholds. ParentR34 simpleR31membership prior, not R35 classcalibrator.",
+    "A is equal arithmetic RBF4/RBF8 after each SUP tau; use same scales asselectedkernel but omitlinearpart fromA to ensure positive density. d(x)=mean A(x,currenttrainSUP), selfincludedforSUP, dbar=mean dSUP. K=dbar*parentK/sqrt(dxdSUP). PSD positive diagonal congruence; factor dbar preserves constant-degree baseline exactly. No fitted strength, floors, retries, fallback or query batchstats.",
+    "EveryOOF TRAINonly bothsourceencoder? Sourceencoders freeze beforeSUP; currenttau,density,dbar,gate,KRR fitonlyTRAIN. Held/query ownrows independentlyagainstTRAIN. Densitystate=oneFP64perphysicalSUP+one scalar; not stored perquery. Allrows compete againstallregisteredclasses. FinalRFdistance andfusionconditionunchanged, F/G/defaulthead frozen.",
+    "FreshdualCCA64 sourceL6300/ep91/92/12600pairs; 557440FP64 parameters. FiveRX/twoTXheld excludesbothencodersheldRX/TX; heldheadcolscropbeforesoftmax. F sawallsource6, source3scenes/new2 vs target6scenes/new20 andexposedbenchmark disclosed. 120K1 Q0QF sourceH/ref6scale, currentSUPphysicalOOF forK>1.",
+    "P01MIX01/firstRX1-1/seed2026092701 K1/20 x N2/20 B12+C24=36allfixedthenindependenttruthlast. PureS0/S1; Q0raw/QGonlyG/QFsamerecordfusion. Everycornerraworiginal+5/QF>raw/oldnewmeanguard>=-1 required to frozenmethod remaining12KN then sixRX. Finalall16/sevenRXunchanged. SourceGPU4 targetGPU0capacitypreflight/otherownersprotected.",
+    "REJECTED_EXTRA_GATE separate generic designapproval/documenthash/seal/futuremachinery; minimalprereg+oneP0P1review+focusednegative+realcheckpointsmoke firstPASScontinue. Immutable root, onearchiveSHA/remotecompile/actualPIDCWDargvGPUloggrowth. Privatefolderabsent prechecked."
+  ],
+  "registered_at": "2026-10-31T12:02:55+00:00"
+}
