@@ -30,7 +30,7 @@ def make_kernel(similarity,tau,mix,scales):
     return WEIGHT*base.make_kernel(similarity[0],tau[0],mix,scales)+(1-WEIGHT)*base.make_kernel(similarity[1],tau[1],mix,scales)
 
 
-def context(features,labels,config,confidence_rule=RULE,density_rule=None):
+def context(features,labels,config,confidence_rule=RULE,density_rule=None,rf_gate_rule=None,old_count=None):
     geometry,band,mix,scales=config;y=np.asarray(labels,np.int64);similarity=similarities(features,features,geometry);taus=[]
     for sim in similarity:
         distance=np.maximum(2-2*sim,0)
@@ -46,8 +46,13 @@ def context(features,labels,config,confidence_rule=RULE,density_rule=None):
         affinity=make_kernel(similarity,taus,0.,scales);density=Density.fit(affinity);K=density.cross(K,affinity)
     eig,U,Y,_,_,mean=base.decompose(K,y)
     gate=(fit_gate if confidence_rule==RULE else fit_class_gate)(features['teacher_probs'],y)
-    target=Y-prior.prior(features['teacher_probs'],Y.shape[1],gate);average=target.mean(0)
-    return dict(tau=tuple(taus),parts=(eig,U,target,average,target-average,mean),gate=gate,density=density)
+    bias=prior.prior(features['teacher_probs'],Y.shape[1],gate);rf_gate=None
+    if rf_gate_rule is not None:
+        from .support_kernel_gate import fit as fit_rf_gate,RULE as RF_RULE
+        if rf_gate_rule!=RF_RULE or old_count!=features['teacher_probs'].shape[1]:raise ValueError('Wrong RF prior evidence rule')
+        rf_gate=fit_rf_gate(K,y,old_count);bias*=rf_gate.factors(K)[:,None]
+    target=Y-bias;average=target.mean(0)
+    return dict(tau=tuple(taus),parts=(eig,U,target,average,target-average,mean),gate=gate,density=density,rf_gate=rf_gate)
 
 
 @dataclass(frozen=True)
@@ -61,6 +66,7 @@ class State:
     selection:dict
     prior_gate:object
     kernel_density:object=None
+    rf_gate:object=None
 
     def evaluate(self,features):
         x=normalize(features)
@@ -68,7 +74,9 @@ class State:
         geometry,_,mix,scales=self.config;sim=similarities(x,self.features,geometry)
         kernel=make_kernel(sim,self.tau,mix,scales)
         if self.kernel_density is not None:kernel=self.kernel_density.cross(kernel,make_kernel(sim,self.tau,0.,scales))
-        score=prior.prior(x['teacher_probs'],self.alpha.shape[1],self.prior_gate)+kernel@self.alpha+self.intercept
+        bias=prior.prior(x['teacher_probs'],self.alpha.shape[1],self.prior_gate)
+        if self.rf_gate is not None:bias*=self.rf_gate.factors(kernel)[:,None]
+        score=bias+kernel@self.alpha+self.intercept
         distance=WEIGHT*np.maximum(2-2*sim[0],0)+(1-WEIGHT)*np.maximum(2-2*sim[1],0)
         return score,distance.min(1)
 
@@ -81,6 +89,10 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
     if fixed.get('support_center_strength') is not None:raise ValueError('Ensemble has no support center')
     confidence_rule=fixed['confidence_rule']
     density_rule=fixed.get('kernel_density_rule')
+    rf_gate_rule=fixed.get('rf_prior_gate_rule')
+    if rf_gate_rule is not None:
+        from .support_kernel_gate import RULE as RF_RULE
+        if rf_gate_rule!=RF_RULE:raise ValueError('Wrong frozen RF prior evidence rule')
     if density_rule is not None:
         from .kernel_density import RULE as DENSITY_RULE
         if density_rule!=DENSITY_RULE:raise ValueError('Wrong frozen kernel density rule')
@@ -88,6 +100,7 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
         options={}
         if confidence_rule!=RULE:options['confidence_rule']=confidence_rule
         if density_rule is not None:options['density_rule']=density_rule
+        if rf_gate_rule is not None:options.update(rf_gate_rule=rf_gate_rule,old_count=old_count)
         return context(features,labels,config,**options)
     reference=float(fixed['ridge'])
     if not np.isfinite(reference) or reference<=0:raise ValueError('Positive source ridge required')
@@ -106,6 +119,7 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
                 sim=similarities(hx,tx,geometry);cross=make_kernel(sim,ctx['tau'],mix,scales)
                 if ctx['density'] is not None:cross=ctx['density'].cross(cross,make_kernel(sim,ctx['tau'],0.,scales))
                 bias=prior.prior(hx['teacher_probs'],count,ctx['gate'])
+                if ctx['rf_gate'] is not None:bias*=ctx['rf_gate'].factors(cross)[:,None]
                 for lam in base.LAMBDAS:
                     alpha,intercept,_=base.coefficients(ctx['parts'],lam);predictions[lam][held]=bias+cross@alpha+intercept
             for lam,scores in predictions.items():
@@ -121,4 +135,6 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
         extra_state_bytes=x['teacher_probs'].nbytes+ctx['gate'].state_bytes+extra+(ctx['density'].support_degree.nbytes+8 if ctx['density'] is not None else 0),prior_confidence_gate=ctx['gate'].audit(),support_center=None,
         orbit_ensemble=dict(orbits=[4,8],weights=[WEIGHT,1-WEIGHT],kernel='arithmetic_mean_after_separate_bandwidths',extra_feature_bytes=extra,query_fit=False))
     if ctx['density'] is not None:selection['kernel_density']=ctx['density'].audit()
-    return State(x,alpha,intercept,config,ctx['tau'],float(ridge),selection,ctx['gate'],ctx['density'])
+    if ctx['rf_gate'] is not None:
+        selection['rf_prior_gate']=ctx['rf_gate'].audit();selection['extra_state_bytes']+=ctx['rf_gate'].state_bytes
+    return State(x,alpha,intercept,config,ctx['tau'],float(ridge),selection,ctx['gate'],ctx['density'],ctx['rf_gate'])
