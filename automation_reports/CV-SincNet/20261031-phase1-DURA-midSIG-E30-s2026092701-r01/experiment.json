@@ -1,0 +1,210 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase1-DURA-midSIG-E30-s2026092701-r01",
+  "group_id": "phase1-dura-middle-signature-aux-E30",
+  "display_name": "中层签名辅助监督：从零单阶段30轮",
+  "description": "保留物理四项与原onlineSIG指导，仅增加G粗恢复时域encoder第2层的源cleanSIG回归，权重.01；投影仅训练执行。完整G287591/新增20640，复用原40.32MB源特征，完整七景。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "E30",
+    "single-stage",
+    "scratch",
+    "middle-SIG-aux",
+    "F-guided",
+    "training-efficiency"
+  ],
+  "comparison_group_id": "DURA-middle-SIG-aux-vs-output-SIG-E30",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-performance-and-efficiency goal;explicit sourcefrozenFfeature-guidance/scratchsingle-stage30epoch;sourcefeatureauxiliaryprojectionnotclassificationhead;noTX-V-targettraining/defaultunchanged",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-DURA-midSIG-E30-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source63000/20received-clean-actionviews/repeat01..10;reusepreviousactualweightedsourcecleanSIG63000x160FP32/40.32MB;no newchannel/Gteacher/Jcache/featureproduction",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "SourcepairedcleanIQ/action plusoriginalfrozenF50sourceSIG,onlineIQguidanceandGmiddlefeatureregression;no classloss/directTX/V/target. F50source-supervisedknowledgeinherited/notF-free",
+    "augmentation": "OriginalR07 15percentclean/6practical;epoch01..20then01..10;sourceIDs/roles/onceunitRMS/receiver-day/Vpanel unchanged"
+  },
+  "permissions": {
+    "regime": "Authorized_source_F_guided_SIG_output_and_middle_feature_aux",
+    "query_use": "Gtraining sourceonly;cacheandoriginalF50strictmatching;noTX/V/target/classloss/hardpseudoTX. F/defaultheadunchanged;eachsource-targetroleall7predictionsbeforeindependenttruthlast.",
+    "external_method_exception": null,
+    "claim_scope": "Middleauxiscontinuous160Dfeatureprojection jointlytrainedwithG,notidentity/receiverclassifierorFheadreplacement. Train-onlyprojectionnotexecutedinIQinferencebutfullGparameters-storageincludeit. OnlineSIGIQcap0.5doesNOTboundauxgradient/Gparameter/globalenergy. Exposedbenchmarknotnewblindtest."
+  },
+  "checkpoint": {
+    "initialization": "AllGparametersrandomsingle-stage/noGancestors/noIQteacher. BaseGinitialstatematchesoriginalSIGcontrol;newprojectionCPU-onlyfork_rng/smallrandomweights1e-3,bias0.",
+    "sources": [
+      "NoGinitializationcheckpoint",
+      "OriginalF50 source4df7/50/11100/defaulthead onlysourcefeatureteacherandpostfreezeassessment",
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/source_signature_cache/targets.npy,physical_ids.npy,complete.json DATAONLY,producedbyfrozenFbeforeoldGoptimizersteps;notoldGweightsorrestoredIQ",
+      "OldSIGcontrol47591/pureG8cf frozenoutputs onlypostfreezepairedcomparison",
+      "R69defaultsource-finalonlypostfreezesamecardprofile/baselinepredictions"
+    ],
+    "contract_check_ref": "Original7/63/30 source63000L6300U56700physicalroles/VALIDATED_ONCEhandles;source_ids exactFroles;actualSIGcacheFteacher-sourcecontract-count-dtype-shape-IDs/0TX-V-target;newfactory287591/strictaliases/fixedfinal30/fGuidedschema",
+    "provenance_verdict": "Ginitialization0checkpoint/noancestor;originalF50strictsame-sourcefrozen;cachederivedonlyfromsourcecleanFbeforeoldGtraining/targetaccessandindependentofoldGweights. ReusecachedoesnotinheritoldG30epochs;F50knowledgeandoriginalcache63000prefix0.847sretained. No failedoracleIQorPAguideused.",
+    "selection_rule": "Fixedlast30/7410,onlyaddactualGtemporalencoderlevel2B16x128->8binavgpool->Linear128to160auxregressionweight.01. Physical4andonlineSIGalpha1/inputcap0.5/data/LR/baseinit/CPU-CUDAprobe/npshufflematch47591control. No targetTXweights/layer-weightsearch/epochselection/earlystop."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-midSIG-E30",
+    "gpu_policy": "GPU4/6/7/free>=12000MiB/existingcomputePIDs<=2/addone<=3total;own1/card/goal<=2GPUworkers/ownCPUtruthscorer<=1;oldownNNandPA-SIGdiagnosticterminal;otherownersuntouched",
+    "remote_run_root": "runs/20261031-phase1-DURA-midSIG-E30-s2026092701-r01",
+    "remote_log_root": "logs/20261031-phase1-DURA-midSIG-E30-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-midSIG-E30-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.mid_signature run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badsource/cache/IDs/Fstate-RNG/actualmidshape-hook/gradient/nonfinite/checkpoint/collision/onlineSIGpressure>0.5*(1+2e-5)/smoke/coverage:preservefailedrow/noautoretry/nootherownercontrol. Noperformancestop;fixedfinal30/all7evenifsourceworse."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-scratch_joint.json",
+    "scratch_joint/launch.json",
+    "scratch_joint/resolved_config.json",
+    "scratch_joint/initialization.json",
+    "scratch_joint/training.jsonl",
+    "scratch_joint/training_complete.json",
+    "scratch_joint/final.pt",
+    "scratch_joint/matched_profile.json",
+    "scratch_joint/source_prediction/complete.json",
+    "scratch_joint/source_summary.json",
+    "scratch_joint/target_prediction/complete.json",
+    "scratch_joint/target_summary.json",
+    "scratch_joint/complete.json",
+    "complete.json",
+    "scratch_joint/teacher_load.json",
+    "scratch_joint/source_reference.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy/MacroF1/repairs-damages-net",
+      "TX/RX/day",
+      "eachsixscene3pp/cleanpreservation/R17each1pp/oldlowurban70",
+      "complete30physical-onlineSIG-middleauxlosses/weights/cap/clip/L-Ucounts/vieworder",
+      "actualauxsharedshallow-middle-spectralgradients/projectiongrad/baseinitandRNG/noinferenceauxcall",
+      "newFcache0/copy0/reused40.32MB-historical63000prefix0.847s/online1890000prefix+VJP/Ffrozenstate",
+      "fullG287591/aux20640train-onlyparameters-storage/inferenceConvLinearMAC-FFT-CG/samecardB1-B128medianP95throughputVRAM/actualtraining-and-fullpipelinecost"
+    ],
+    "dimensions": [
+      "fixedmodelseed2026092701",
+      "sourceV1800x7",
+      "formal168000x7",
+      "overall/TX/RX/day",
+      "matchedSIGcontrol47591/pureG8cf/defaultDURA"
+    ],
+    "prediction_ref": "Eachsource/target roleall7predictionsfixedbeforeCPUtruth;targetforwardonlyreceivedIQ",
+    "scorer_ref": "ExistingindependentCPUtruthlastplusindependent126formal/105source/252two-controlpaired/14source-formalIQrecompute;noresultfeedback"
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "ScratchjointE30/fourphysical+unchangedonlineSIG+train-onlycoarsemiddleSIGfeatureaux.01",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/mid_signature.py and experiments/pamf_dura_efficiency/mid_signature.py",
+      "resolved_config_ref": "scratch_joint/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "GandCUDAprobe2026092701/privateNumpyorder2026103004/cache2026101912/eval2027;no teacherload/cache;priorwrappingdrawsnoRNGandpreservesinitialweights",
+      "k": null,
+      "scenario": "Originalsourcecache15percentclean/85percentpractical;01..20then01..10;no teacherIQ;formalclean+sixpractical",
+      "optimizer": "resetAdamW/W1e-4/globalclip1/warm247cos2e-5",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Gscratch30/7410/B256/L189000U1701000;G287591/aux20640train-only;2prior4CG27FFT/noaddedinferenceprojection;cache40.32MBreusednewF0-copy0;main1890000Fprefix+VJP/1890000auxfeaturetargets/F50knowledgecostseparate",
+      "output_root": "runs/20261031-phase1-DURA-midSIG-E30-s2026092701-r01/scratch_joint",
+      "log_path": "runs/20261031-phase1-DURA-midSIG-E30-s2026092701-r01/logs/scratch_joint.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.mid_signature run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-scratch_joint.json",
+        "scratch_joint/launch.json",
+        "scratch_joint/resolved_config.json",
+        "scratch_joint/initialization.json",
+        "scratch_joint/training.jsonl",
+        "scratch_joint/training_complete.json",
+        "scratch_joint/final.pt",
+        "scratch_joint/matched_profile.json",
+        "scratch_joint/source_prediction/complete.json",
+        "scratch_joint/source_summary.json",
+        "scratch_joint/target_prediction/complete.json",
+        "scratch_joint/target_summary.json",
+        "scratch_joint/complete.json",
+        "complete.json",
+        "scratch_joint/teacher_load.json",
+        "scratch_joint/source_reference.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-mechanismhypothesis:finalIQF-guidancehasalongphysicalinversegradientpath;directactualSIGregressionatGcoarsetemporalencoderlevel2maypreserveidentityearlier. ChosenfromsourceSIGmechanismandactualGarchitecture,nottargetTX/RXresultstochooselayerorweight. OldSIGmodelisfixedmatchedcontrol,notGinitialization;oldPAjoint/sourceIQFAILspreserved/nopromotion.",
+    "Hookactualcoarse.temporal.encoder.blocks[1],oneB16x128tensorperGsourceforward;8contiguousavgpoolbinsflatten128->Linear160. ProjectioninitN(0,1e-3)/bias0withinCPUfork_rngonly,baseGweightsandprobeRNGunchanged. New20640trainableparams/full287591. Featurecontinuousregressionnotclassification/noTXorreceiverseparatehead. TargetactualweightedFTripleSIG160,teacherreferenceenergyfloor1e-4.",
+    "PhysicalIQ1/priorIQ.1/STFT.05/actionprobe.05 plusoriginalonlineSIGalpha1/detachedper-recordIQgradientcap0.5UNCHANGED. Add .01middlefeatureMSEonce. Auxgradientgoesdirectlyintocoarsespectralandtemporalshallow-middle/projection;itdoesNOTfallundertheonlineIQ-outputcap. GlobalAdamWgradientclip1stillapplies;no globalGgradient/cleanprotectionguarantee.",
+    "Auxcalledonlyinsourceobjective,temporaryhookremovedinfinally. NormalGforward/optimizedTensorPipelineignoreauxprojection;sourceprojectionparametersremaininstoredfullGandparametercount,noillusorycompressionclaim. DeployactualMACmeasured;expectedoriginal25068072/2prior4CG27FFT,butmustreadactualprofile. OnlineFtrainingprefixsame1890000+inputVJP1890000/fullF0.",
+    "ReuseactualsourcecleanSIGcachefrom47591run/read-only40.32MB/63000x160FP32/IDs/meta;newFcacheproduction0/newcopy0. Originalproduction63000Fprefix/.847077s disclosed. ItsvaluesdependonlyonF50/sourceclean,notoldGorformalresults;oldG30epochsarenotthisGancestor. F50source50/11100knowledgeinherited/notF-free. FloadandextraFpathCPU-CUDARNGisolationretained.",
+    "SameGmodelseed/CUDAprobe2026092701/npshuffle2026103004/source01..20then01..10/AdamW.001warm247cos2e-5WD1e-4clip1/scratchjoint30/7410. AllGparametersincludingauxtrainedinoneoptimizer/schedule;noauxpretraining/resume/curriculum/Fheadrefit/targetTXweights.",
+    "6focusedtestsPASS:initG-state/RNG/noinferenceaux;actualCoremid-gradienttoshallow-middle/projection/targetdetach;exceptionhookcleanup/shape;auxweightonce/originalSIGretained;rejectwrongF/source/V-cachepermissions;E30config-andscore-route. Actualfactory287591/20640/allbaseinitialstatematch/aliasesPASS,actualmodule--helpPASS. OneP0P1PASS. Firstreal2Lsactualspectral-shallow-middle-projectionauxgradients/cachevsrealF/onlinecap/all4Ggroups/strictE0reload/noinferenceaux/nativeoptimized/defaulthead/Fstate thenimmediatecontinue. SmokeG8/prefixF4/fullF2/FinputVJP2,newcache0/0TX-V-target.",
+    "Final30thenautomaticprofile/source1800x7/formal168000x7,eachroleall7predictionfixedbeforeindependentCPUtruthlast,evenifsourceworse. PrimarySIGcontrol47591,secondarypureG8cf/defaultDURA sameoriginalF50/defaulthead/physicalrecords. Eachsix>=137216correct/81.6761904762%,clean>=142256;R17loss<=1680each andoldlowurban70separate. Fullparameter/storage/training-caching-walltimeandlatencyreported;no same-qualityefficiencyclaimwithoutactualformalquality. DefaultDURA/P2/P3unchanged/goalACTIVE."
+  ],
+  "registered_at": "2026-10-31T07:30:16+00:00"
+}

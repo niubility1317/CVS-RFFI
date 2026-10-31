@@ -122,7 +122,8 @@ def train(args,p):
                 for key,value in dict(loss=loss,**terms).items():totals[key]+=float(value.detach().sum())
             record=dict(epoch=epoch,source_cache_view=view,updates=updates,losses={k:v/63000 for k,v in totals.items()},L_exposures=seen_l,U_exposures=seen_u,
                 clip_fraction=clipped/247,maximum_balanced_IQ_pressure=maximum_pressure,seconds=time.perf_counter()-started,
-                F_prefix_inputs=seen_l+seen_u,F_input_VJP_inputs=seen_l+seen_u,F_full_inputs=0,F_updates=0,TX_labels_read=0,initialization_checkpoint_loads=0)
+                F_prefix_inputs=seen_l+seen_u,F_input_VJP_inputs=seen_l+seen_u,F_full_inputs=0,F_updates=0,TX_labels_read=0,initialization_checkpoint_loads=0,
+                mid_aux_feature_inputs=seen_l+seen_u if hasattr(student,'mid_signature_aux') else 0)
             stream.write(json.dumps(record,allow_nan=False)+'\n');stream.flush();print(json.dumps(dict(event='SOURCE_SIGNATURE_GUIDE_EPOCH_COMPLETE',**record)),flush=True)
     if (updates,seen_l,seen_u)!=(7410,189000,1701000):raise ValueError('Incomplete single E30 budget')
     if any(v.grad is not None for v in reader.parameters()) or any(not torch.equal(v.detach().cpu(),beforeF[k]) for k,v in reader.state_dict().items()):
@@ -132,12 +133,14 @@ def train(args,p):
     f_guided.save_model(row/'final.pt',student,args.arm,30,7410,args.commit)
     base.write_json(row/'training_complete.json',dict(status='SOURCE_TRAINED',arm=args.arm,epoch=30,updates=7410,L_exposures=seen_l,U_exposures=seen_u,
         training_TX_labels_read=0,training_F_access=True,V_reads=0,target_reads=0,F_updates=0,F_unchanged=True,F_teacher=f_guided.teacher_reference(),
-        F_loaded_in_training=True,F_clean_teacher_inputs=63000,F_clean_J_VJP_inputs=0,F_restored_training_inputs=1890000,
+        F_loaded_in_training=True,F_clean_teacher_inputs=cache.get('new_F_prefix_inputs',63000),F_clean_J_VJP_inputs=0,F_restored_training_inputs=1890000,
         F_prefix_training_inputs=1890000,F_full_training_inputs=0,F_input_VJP_inputs=1890000,F_J_reference_inputs=0,source_reference=cache,teacher_load=rng_info,
-        initialization_checkpoint_loads=0,G_ancestor_epochs=0,cumulative_G_epochs=30,F_reused_teacher_epochs=50,head_fit_updates=0,parameters=266951,
+        initialization_checkpoint_loads=0,G_ancestor_epochs=0,cumulative_G_epochs=30,F_reused_teacher_epochs=50,head_fit_updates=0,parameters=sum(v.numel() for v in student.parameters()),
         changed_state_tensors=changed,seconds=time.perf_counter()-started,source_preparation_seconds=preparation,
         total_G_training_pipeline_seconds=time.perf_counter()-started_total,peak_allocated_bytes=torch.cuda.max_memory_allocated(),
-        training_regime='source_F_guided_actual_SIG_prefix_single_joint_E30'))
+        training_mid_aux_feature_inputs=1890000 if hasattr(student,'mid_signature_aux') else 0,
+        mid_aux_parameters=sum(v.numel() for v in student.mid_signature_aux.parameters()) if hasattr(student,'mid_signature_aux') else 0,
+        training_regime=base.configuration().get('training_regime','source_F_guided_actual_SIG_prefix_single_joint_E30')))
 
 
 def configure():
