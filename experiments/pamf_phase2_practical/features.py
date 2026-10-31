@@ -57,6 +57,10 @@ def load_G(rt,device):
 def source_smoke(rt,out,device='cuda:0'):
     import torch
     activate(rt)
+    reuse_metadata=None;reuse_context=None
+    if rt.get('kernel_method')=='adaptive_residual_ensemble':
+        from .milkr_adaptive_source import parent_metadata
+        reuse_metadata=parent_metadata(rt)
     from experiments.cric_dura_comparison.f_data import SourceDataset
     c=read(rt['source_contract'])
     # Two legal source L samples; no target or query input handle is consumed.
@@ -77,16 +81,16 @@ def source_smoke(rt,out,device='cuda:0'):
             sv,sl=capture(reader,x)
             require(torch.equal(sv['z_id'],v['z_id']) and torch.equal(sl,logits),'Descriptor hook changed frozen F')
             v=sv
-        if rt.get('kernel_method') in ('phase_orbit','phase_kernel','nonlinear_pair','registered_scale','local_anchor','teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+        if rt.get('kernel_method') in ('phase_orbit','phase_kernel','nonlinear_pair','registered_scale','local_anchor','teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
             from .phase_orbit import extract,rotate,moments,stack_views
             options=dict(aggregate=stack_views if rt['kernel_method']=='phase_kernel' else moments)
-            if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+            if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
                 from .teacher_features import extract,probabilities
                 if rt['kernel_method']=='time_orbit':
                     from .teacher_features import extract_time as extract
                 elif rt['kernel_method']=='phase8_prior':
                     from .teacher_features import extract_phase8 as extract
-                elif rt['kernel_method'] in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+                elif rt['kernel_method'] in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
                     from .teacher_features import extract_orbit_ensemble as extract
                 options={}
             iq=np.asarray(x.cpu().tolist(),np.float32)
@@ -94,18 +98,18 @@ def source_smoke(rt,out,device='cuda:0'):
             base,_=extract(reader,iq,device,**options);shift,_=extract(reader,rotate(iq,1),device,**options)
             single=[extract(reader,iq[i:i+1],device,**options)[0] for i in range(2)]
             require(all(np.allclose(np.roll(value,-1,axis=1) if rt['kernel_method']=='phase_kernel' or key=='teacher_phase_logits' else value,shift[key],rtol=2e-4,atol=2e-5) for key,value in base.items()),'C4 orbit invariance failed')
-            if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+            if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
                 probability=probabilities(base['teacher_phase_logits'])
                 require(probability.shape==(2,6) and np.allclose(probability.sum(1),1),'Frozen default-head probabilities differ')
             require(all(np.allclose(value,np.concatenate([s[key] for s in single]),rtol=2e-4,atol=2e-5) for key,value in base.items()),'Orbit feature depends on other packets')
-            if rt['kernel_method'] in ('phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+            if rt['kernel_method'] in ('phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
                 from .phase_orbit import rotate_eighth
                 from .teacher_features import extract as extract_C4
                 turned,_=extract(reader,rotate_eighth(iq,1),device)
                 require(all(np.allclose(value,turned[key],rtol=2e-4,atol=2e-5) for key,value in base.items() if key!='teacher_phase_logits' and not key.startswith('C4_')),'C8 RF invariance failed')
                 old_C4,_=extract_C4(reader,iq,device)
                 require(np.allclose(base['teacher_phase_logits'],old_C4['teacher_phase_logits'],rtol=2e-4,atol=2e-5),'C8 changed original C4 head prior')
-                if rt['kernel_method'] in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+                if rt['kernel_method'] in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
                     require(all(np.allclose(base['C4_'+key],value,rtol=2e-4,atol=2e-5) for key,value in old_C4.items() if key!='teacher_phase_logits'),'Ensemble changed original C4 RF component')
             if rt['kernel_method']=='time_orbit':
                 shifted,_=extract(reader,np.roll(iq,64,axis=2),device)
@@ -114,11 +118,25 @@ def source_smoke(rt,out,device='cuda:0'):
             direct,_=extract(reader,np.asarray(restored.cpu().tolist(),np.float32),device,**options)
             require(all(np.allclose(value,direct[key],rtol=2e-4,atol=2e-5) for key,value in via_G.items()),'G must precede the orbit')
             require(all(torch.equal(g_before[k],value) for k,value in engine.pipeline.model.state_dict().items()),'Frozen G changed')
+            if reuse_metadata is not None:
+                from .teacher_features import AdaptiveResidualBridge
+                from .milkr.adaptive_residual import blend,STRENGTHS
+                from .milkr.orbit_ensemble import normalize
+                frozen=AdaptiveResidualBridge.load(rt['source_reuse_checkpoint'])
+                for frame,restored_path in ((base,False),(via_G,True)):
+                    encoded=frozen.transform(frame,restored=restored_path)
+                    individual=[frozen.transform({k:v[i:i+1] for k,v in frame.items()},restored=restored_path) for i in range(2)]
+                    require(all(np.allclose(v,np.concatenate([r[k] for r in individual]),rtol=2e-4,atol=2e-5) for k,v in encoded.items()),'Reused encoder depends on another packet')
+                    for strength in STRENGTHS:normalize(blend(encoded,strength))
+                reuse_context=(*reuse_metadata,frozen)
             v=base
         require(all(torch.equal(before[k],value) for k,value in reader.state_dict().items()),'Frozen F state changed')
-    write(out,dict(status='PASS',real_checkpoint=True,source_rows=2,target_rows=0,query_rows=0,
+    result=dict(status='PASS',real_checkpoint=True,source_rows=2,target_rows=0,query_rows=0,
         optimizer_updates=0,PAMF_parameters=232993,DURA_parameters=266951,branch_dimensions={k:list(v.shape) for k,v in v.items()},
-        actual_composite_joint=True,DURA_individual_packet_check=True))
+        actual_composite_joint=True,DURA_individual_packet_check=True)
+    if reuse_context is not None:result.update(frozen_source_encoder=True,support_residual_strengths=list(STRENGTHS),source_encoder_updates=0)
+    write(out,result)
+    return reuse_context
 
 def export(rt,seed,input_path,output,device='cuda:0'):
     import torch

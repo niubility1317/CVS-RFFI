@@ -16,10 +16,13 @@ from .milkr.support_calibrated import fit,CONFIGS,LAMBDAS,target_and_score
 
 
 def fit_function(rt):
-    if rt.get('kernel_method') in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+    if rt.get('kernel_method')=='adaptive_residual_ensemble':
+        from .milkr.adaptive_residual import fit as adaptive_fit
+        return adaptive_fit
+    if rt.get('kernel_method') in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
         from .milkr.orbit_ensemble import fit as ensemble_fit
         return ensemble_fit
-    if rt.get('kernel_method') in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+    if rt.get('kernel_method') in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
         from .milkr.prior_fusion import fit as prior_fit
         return prior_fit
     if rt.get('kernel_method')=='teacher_kernel':
@@ -70,7 +73,7 @@ def kernel_configs(rt):
 
 
 def extract_for_method(rt,reader,raw,device,engine=None,batch=128):
-    if rt.get('kernel_method') in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+    if rt.get('kernel_method') in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
         from .teacher_features import extract_orbit_ensemble
         return extract_orbit_ensemble(reader,raw,device,engine,batch)
     if rt.get('kernel_method')=='phase8_prior':
@@ -79,7 +82,7 @@ def extract_for_method(rt,reader,raw,device,engine=None,batch=128):
     if rt.get('kernel_method')=='time_orbit':
         from .teacher_features import extract_time
         return extract_time(reader,raw,device,engine,batch)
-    if rt.get('kernel_method') in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+    if rt.get('kernel_method') in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
         from .teacher_features import extract as teacher_extract
         return teacher_extract(reader,raw,device,engine,batch)
     if rt.get('kernel_method')=='phase_kernel':
@@ -109,11 +112,14 @@ def source_episodes(rt):
     return source
 
 
-def calibration(rt):
+def calibration(rt,source_context=None):
+    if rt.get('kernel_method')=='adaptive_residual_ensemble':
+        from .milkr_adaptive_source import freeze
+        return freeze(rt,source_context)
     if rt.get('kernel_method')=='nonlinear_pair':
         from .milkr_nonlinear_source import calibrate
         return calibrate(rt)
-    if rt.get('kernel_method') in ('phase_orbit','phase_kernel','registered_scale','local_anchor','teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+    if rt.get('kernel_method') in ('phase_orbit','phase_kernel','registered_scale','local_anchor','teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
         from .milkr_orbit_source import calibrate
         return calibrate(rt)
     if rt.get('kernel_method')=='identity_holdout':
@@ -180,7 +186,7 @@ def calibration(rt):
 
 
 def worker(rt,capname):
-    if rt.get('kernel_method') in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+    if rt.get('kernel_method') in ('prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','residual_skip','center_prior','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
         from .milkr_prior_fusion import worker as fusion_worker
         return fusion_worker(rt,capname)
     fit=fit_function(rt);arm=rt.get('arm','R6')
@@ -254,7 +260,10 @@ def worker(rt,capname):
 def dispatch(rt):
     root=Path(rt['run_root']);root.mkdir(parents=True,exist_ok=False);(root/'logs').mkdir()
     write(root/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),argv=sys.argv))
-    source_smoke(rt,root/'source_smoke.json');calibration(rt);active=[]
+    source_context=source_smoke(rt,root/'source_smoke.json')
+    if rt.get('kernel_method')=='adaptive_residual_ensemble':calibration(rt,source_context)
+    else:calibration(rt)
+    active=[]
     selection=read(root/'source_selection.json')
     if selection.get('target_eligible') is False:
         write(root/'complete.json',dict(status='SOURCE_ONLY_SCIENTIFIC_STOP',target_rows=0,reason=selection['scientific_verdict']))

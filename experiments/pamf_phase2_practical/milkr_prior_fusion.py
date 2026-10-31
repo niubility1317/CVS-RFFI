@@ -18,16 +18,18 @@ def worker(rt,capname):
         from .teacher_features import extract_time as extract_features
     elif rt.get('kernel_method')=='phase8_prior':
         from .teacher_features import extract_phase8 as extract_features
-    elif rt.get('kernel_method') in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
+    elif rt.get('kernel_method') in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble'):
         from .teacher_features import extract_orbit_ensemble as extract_features
         from .milkr.orbit_ensemble import fit as fit_model
+    if rt.get('kernel_method')=='adaptive_residual_ensemble':
+        from .milkr.adaptive_residual import fit as fit_model
     reader,engine=initialize(rt);before={key:value.detach().clone() for key,value in reader.state_dict().items()}
     g_before={key:value.detach().clone() for key,value in engine.pipeline.model.state_dict().items()}
     cap=Path(rt['data_root'])/capname;m=read(cap/'manifest.json');root=Path(rt['run_root'])/'predictions'/m['receiver'];root.mkdir(parents=True,exist_ok=False)
     specs={(s['k'],s['new_count']):s for s in (read(p) for p in (cap/'splits').glob('*.json'))};old_names=specs[rt['K'][0],0]['registered_classes']
     columns=head_columns(read(rt['source_contract'])['classes'],old_names)
     require(all(spec['registered_classes'][:6]==old_names for spec in specs.values()),'Old class order changes across rows')
-    bridge=(bridge_type(rt['kernel_method']) if rt.get('kernel_method') in ('native_skip','residual_skip','episodic_metric','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble') else TeacherBridge).load(Path(rt['run_root'])/'source_orbit_cca.npz');rule=read(Path(rt['run_root'])/'source_selection.json')['K1_rule']
+    bridge=(bridge_type(rt['kernel_method']) if rt.get('kernel_method') in ('native_skip','residual_skip','episodic_metric','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble','adaptive_residual_ensemble') else TeacherBridge).load(Path(rt['run_root'])/'source_orbit_cca.npz');rule=read(Path(rt['run_root'])/'source_selection.json')['K1_rule']
     states=[];rows=[];started=time.perf_counter();arm=rt['arm']
     for k in rt['K']:
         for n in [0]+rt['N']:

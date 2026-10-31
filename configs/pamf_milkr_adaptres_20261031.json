@@ -1,0 +1,54 @@
+{
+  "run_id": "20261031-phase2-milkr-adaptres-s2026092701-r41",
+  "kernel_method": "adaptive_residual_ensemble",
+  "arm": "R42",
+  "K": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "N": [
+    2,
+    5,
+    10,
+    20
+  ],
+  "model_seeds": [
+    2026092701
+  ],
+  "capsules": [
+    "capsules/P01/MIX01/1-1"
+  ],
+  "prior_weight": 0.5,
+  "fusion_policy": "rf_distance_margin_half_v1",
+  "confidence_rule": "support_balanced_ridge_v1",
+  "RF_phase_eighths": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "orbit_ensemble_weight": 0.5,
+  "support_residual_strengths": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "K1_residual_strength": 1.0,
+  "source_reuse_runtime": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-crossrxres-s2026092701-r40-release/runtime.json",
+  "source_reuse_selection": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-crossrxres-s2026092701-r40/source_selection.json",
+  "source_reuse_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-crossrxres-s2026092701-r40/source_orbit_cca.npz",
+  "source_CCA_parameters": 557440,
+  "source_NN_parameters": 684032,
+  "source_new_optimizer_updates": 0,
+  "query_fit": false,
+  "target_rows_pilot": 120,
+  "target_goal": "all16KN bothS raworiginal+5/QF>raw"
+}

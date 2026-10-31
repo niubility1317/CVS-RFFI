@@ -345,3 +345,7 @@ R41的源NN与源K1规则在目标预测前已冻结，checkpoint只含合法源
 ### R41 实际结果
 
 120行独立truth-last完成，所属进程退出。两S逐KN验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 14, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 16, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 10, 'N': 2, 'raw_gain_pp': 4.365037257552196, 'fusion_gain_pp': 3.729269009027014}, {'S': 'S0', 'K': 20, 'N': 5, 'raw_gain_pp': 4.836417069276388, 'fusion_gain_pp': 3.955103107146263}]。源crossRX SupCon有界NN/每orbit600步/源heldRXTX/684032FP32参数及CCA rho摘要核实，R31gate/双核/各折train-only单残差KRR保持；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### R42 当前SUP残差强度选择
+
+已实现同路径base/full表示单位化插值，K1沿源fullNN规则，K>1固定五强度×24核×5ridge物理OOF600候选，按H/平方误差/ridge/弱强度tie-break选择，query不参与。复用R41纯源NN/K1规则，新NN更新0；一次合并真实F/G/NN无query smoke后保存同权重到新root，不继承目标SUP状态。首RXall16KN120预测，逐格通过才六RX，最终目标不变，尚未发布。
