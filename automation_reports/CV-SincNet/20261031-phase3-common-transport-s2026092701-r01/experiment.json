@@ -1,0 +1,205 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-common-transport-s2026092701-r01",
+  "group_id": "pamf-phase3-common-transport",
+  "display_name": "PAMF第三阶段：公共类传输对齐",
+  "description": "New source-r03 TARGET_CCD444 adds partial common alignment to fixed PCD objective; reuse exact completed SOURCE/PCD controls and six prior readouts without re-training them.",
+  "kind": "cvs",
+  "stage": "Phase3-common-transport-three-DURA-development",
+  "aliases": [
+    "公共类传输对齐"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "common_alignment",
+    "unlabelled_DA",
+    "all_DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-fixed-Sinc-source-vs-target-PCD",
+  "parent_run_ids": [
+    "20261031-phase3-body-prototype-s2026092701-r02",
+    "20261031-phase3-body-prototype-s2026092701-r01",
+    "20261031-phase3-class-density-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "4038105cb7f7c2defe75eb7fbfa825e7f932b40f",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-common-transport-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_common_transport_launch",
+      "experiments.pamf_phase3_open_world.star_common_transport_train",
+      "experiments.pamf_phase3_open_world.star_common_transport_run",
+      "experiments.pamf_phase3_open_world.star_common_transport_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_COMMON_TRANSPORT_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Same fixed G10 P1 source IQ and U384 with original two phasegain views; parent source-z anchors and fixed six source-class means. Old controls raw predictions reused only after new neural state freezes.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/ids.npy; /home/szu2070436088/2510044040/CV-SincNet/releases/20261029-phase3-star-relative-s2026092701-r01-release/data/star_g10/discovery/public/ids.npy; Q:/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-class-density-s2026092701-r01/predict/targets/{clean_DURA,star_DURA}/predictions.npz:ids",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_train": 6300,
+      "source_OE_train": 6134,
+      "source_Us_new": 0,
+      "source_V_known_tau": 27000,
+      "source_novel_truthside_only": 3150,
+      "star_U": 384,
+      "cross_clean_Q": 864,
+      "cross_star_Q": 864,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Original source contract392005; same source5RX/3day and RX24-1 U03-08/futureQ03-15 physical isolation. Controls r01/a336 complete before new training; no query logits/statistics used for NN.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Independent open body/projection target-U learning only; source known labels and OE membership/public metadata. Original F0/defaulthead/G/Sinc/buffers fixed; no target TX/K/quota.",
+    "query_use": "Actualcheckpoint/syntheticCCDsmoke before source/U; fixed444train; newsourceGMMfreeze; V2new6tau+old36exactfreeze; all8x3predictions; independent3truth/Utruth0.",
+    "external_method_exception": null,
+    "claim_scope": "PAMF fixed-source-prototype CCD variant inspired by UniOT, not full reproduction/discovery/REG. HistoricNV/Q/oneRXseed/source-day overlap/highmissing19-15NA/formalRXunread preserved."
+  },
+  "checkpoint": {
+    "initialization": "New TARGET_CCD strictly from original source-only r03; original F0/default6/G lineage unchanged. SOURCE/PCD r01/a336 weights and r02/4273 predictions/statistics are frozen comparisons, not new initialization.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original matching392005/roles; independent new target-U student; reused control identities remain their original runs/commits, all derived target weights/densities marked U ancestry.",
+    "selection_rule": "Fixed444; first100 source+PCD only, then .1CCD. reg.01/rho.5/gamma.7/mu.7/log400/fillseed2026103120; no Q tuning/earlystop or true class count."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-common-transport-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-common-transport-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-common-transport-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_common_transport_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_common_transport_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-common-transport-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One GPUworker at a time for train/predict, physicalGPU0to7 actualfree>=4096MiB and <=2newowned/card; independentCPUscorer CUDAempty. No foreignprocess changes.",
+    "stop_rule": "Illegal ancestry/roles/nonfinite/changed frozen Sinc,buffers,F0,G/outputcollision or unable legal prediction: preserve, no overwrite or blind retry. Scientific low score does not cancel Q. No foreign-process changes."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/*.log",
+    "train/{final.pt,complete.json,smoke.json,steps.jsonl,U_features.npz}",
+    "predict/{complete,smoke}.json",
+    "predict/models/*",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/source/source_DURA/{known,novel}_predictions.npz",
+    "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "eightreadouts/threeDURA",
+      "sixknown/threeunregistered",
+      "TX/RX/day/MIX6scene",
+      "all444curves/CCDselection,fill,beta,UOTresidual/source-Uindices"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-common-transport-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_common_transport_score.py",
+    "targets_ref": "Latest20261031 threeconditions allDURA; condition-specific targets remainclean95/star90, CK90/AKloss2pp. FullzeroTXlabelDA/discovery/futureanonymousREG stillrequired.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "cleanRU95/starRU90 CK90 originalsameGclosedminusAK2pp/sourceknown12/coverage",
+      "starAKstrictlyaboveE0,SOURCE,PCD and RUnotbelowall"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "common-transport-s2026092701",
+      "method": "PAMF-OW common-class transport plus target PCD",
+      "purpose": "One new444 TARGET_CCD against exact E0/SOURCE/PCD controls, all8x3 outputs, uniqueCCDpredicted main.",
+      "config_ref": "docs/PAMF_PHASE3_COMMON_TRANSPORT_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-common-transport-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": 2026103114,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Original source streams2026103017/18/Ubatch2026103112/proto2026103113; fill2026103120. G10receiver2027/scene2026103001/channel2026104001 fixed, no physical regeneration.",
+      "k": null,
+      "scenario": "Source seenRX starP1, targetstarU learning only; futurepairedcrossRX cleanDURA/starDURA",
+      "optimizer": "AdamW body+projection+PCD auxiliary prototypes, Sinc48 fixed",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "New444 body/projection updates, CCD active101to444; source-parent12818/student340992/G384. New evalCCD44312signal/F0G1728; totalnew398122signal/2112G/1728F0. New1sourceGMM/2new6tau vs36oldexact, total48tau384B. Controls historical training888 and eval costs separately inherited; deployNN834665, no aux16/common6/beta6 banks.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-common-transport-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-common-transport-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_common_transport_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-common-transport-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/{final.pt,complete.json,smoke.json,steps.jsonl,U_features.npz}",
+        "predict/{complete,smoke}.json",
+        "predict/models/*",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/source/source_DURA/{known,novel}_predictions.npz",
+        "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Frozen original baseline remains until absolute and relative gates pass; H-only improvement does not promote.",
+    "Source prototypes fixed from sourceL only; no source/target identity head replacement.",
+    "NewPOTpackage not required; fixedFP64logsolver, adaptivefill features not new IQ and no true unknown K.",
+    "No anonymousREG/AN-HOW remainNA/fullgoalACTIVE; oldquery never converted to training."
+  ],
+  "registered_at": "2026-10-31T03:35:17+00:00"
+}

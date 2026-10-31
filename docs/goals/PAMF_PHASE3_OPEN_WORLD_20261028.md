@@ -1107,3 +1107,8 @@ Run `20261031-phase3-body-prototype-s2026092701-r02` / evalcode `4273e88392abe07
 Sinc48/所有buffers、F0/defaulthead/G/r03保持，body231985+projection102688各444×2实训练且actualchanged；训练signal父12818/学生454656、eval90352，总557826/G2112/F01728，祖先训练成本和r01失败IO分列。仅U384无标签学习、V/NV/Q不神经训练，全部τ冻后全pred再3truth，Utruth0；TARGET权重和密度含U祖先，不冒称sourceonly。历史Q/单RX单seed/日期重合/high缺19-15宏RUHNA/正式RX24-18未访问不变；无匿名REG、AN/HOWNA，完整goalACTIVE。
 
 driver1415050/predict1415080及CPU1415842独立live/CWD/fullargv（predictCUDA1、CPUempty），预测GPU304/392MiB为离散非peak，log509→1597B；终态owned空/foreign0。完整source888曲线/18点/两配对/场景/实际成本与r01失败到r02修复证据见`docs/PAMF_PHASE3_BODY_PROTOTYPE_RESULTS_20261031.md`。另只读metadata发现非正式R_dev3-2早03-01/未来03-15+23具有容量，但尚未完成packet角色排除/建池，独立MIX场景覆盖不保证；不将它作为本轮测试证据。
+
+
+### 2026-10-31 公共类传输对齐预登记
+
+Run `20261031-phase3-common-transport-s2026092701-r01` / actualcode `4038105cb7f7c2defe75eb7fbfa825e7f932b40f`，只新训source-r03 TARGET_CCD444，SOURCE/PCD(a336/r01)与六列冻结readouts(4273/r02)精确复用，不从U适配权重初始化。原source+PCD配方/Sinc48/buffers/F0/G冻结保持，前100步同PCD，第101起额外.1CCD：源L父z六固定mean、reg.01/rho.5/gamma.7/mu.7/log400、adaptive填充/六beta及统计均值筛选，不读目标TX/K/配额；fillseed2026103120，其余源/U/aug/proto seeds保持并核全索引。神经冻→源GMM1冻→V12新τ/旧36exact全冻→八列三DURA全pred→独立CPU3truth/Utruth0，唯一CCD_predicted_ratio，starAK须高于E0/SOURCE/PCD且RU均不降并满足绝对门槛/coverage。新NN444/父12818+学生340992/eval44312，总398122signal/G2112/F01728，旧888等历史成本另列。原基线保持，不是完整UniOT/未知发现/匿名REG；formalRX未读/历史开发曝光/单RXseed/high缺类保持，goalACTIVE。见`docs/PAMF_PHASE3_COMMON_TRANSPORT_PLAN_20261031.md`。
