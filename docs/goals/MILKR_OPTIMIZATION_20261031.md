@@ -2,6 +2,12 @@
 
 用户目标：固定 **Tri-SIG-TIME SSL** 基座，优化 MILKR，使宏 H 比匹配原版提高至少 5 个百分点；可用适当小矩阵，覆盖各 K/N。状态：**ACTIVE，未达成**。不得把实验技术完成写成科学目标完成。
 
+## 最新用户验收：每个K/N格（覆盖旧均值口径）
+
+用户已明确回复“每个K/N格都至少+5个百分点”。K1/5/10/20×N2/5/10/20每格分别列support S0/S1，Q0与匹配原MILKR差至少5pp，且接入query DURA的Q1高于当前Q0。完整四路各自对原版+5pp结果也逐格检验；均值通过不能替代单格，不用跨support或K/N的高收益弥补失败格。多RX表格的每个K/N先对固定RX等权汇总，并保留每RX；不擅自把要求扩大成每条query都提高。
+
+R14七RX S0Q0仅6/16格≥5pp、Q1>Q0仅11/16，严格目标明确未达成；mean+4.110也未达。R15source-only停止。R16在用户答复时源阶段健康运行，现已按源门槛正常停止，参数/C选择/矩阵不热改，只按最新逐格要求分析和决定是否扩展；不能再用mean-only先导晋级。goal保持ACTIVE。
+
 ## 当前最新结果：R14七RX确认
 
 - S0：Q0较原版+4.1100pp；Q1相对当前Q0增量+0.9372pp；均值验收False，每格验收False。
@@ -101,3 +107,7 @@ source-only停止，target0。目标仍ACTIVE，当前七RX R14 S0Q0+4.110pp；�
 ### R16当前下一步
 
 R15校准源最佳+0.1547pp未过0.5pp，正常source-only停止target0。R16是明确的同核C-SVC分类目标对照（不冒充原ridge未改）：固定CCA16/F/G/神经默认头，source四C选择，通过才target首RX全KN四路80行。sourcegate/用户5pp门槛不改，source六类已见F和目标26类外推局限保留。新候选审查/针对性检查PASS。当前七RX最佳主路径仍R14+4.110pp，goal ACTIVE。
+
+### R16实际证据
+
+核C-SVC四C均未通过源门槛，正常source-only停止，target0，F/G更新0，所有所属进程退出。非ridge分类目标对照不晋级。用户已明确每K/N格≥5pp；R14七RX raw仅6/16满足、Q1高于Q0仅11/16，不能以mean过关，goal ACTIVE。下一步优先研究源L类内噪声协方差形成的冻结线性metric，作用于R14共同空间且保持ridge判决，先source K1及多shot验证，未实现/未发布，不保证收益。
