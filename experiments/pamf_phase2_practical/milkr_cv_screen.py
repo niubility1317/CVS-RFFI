@@ -19,7 +19,7 @@ def fit_function(rt):
     if rt.get('kernel_method')=='phase_kernel':
         from .milkr.phase_kernel import fit as phase_fit
         return phase_fit
-    if rt.get('kernel_method') in ('identity_holdout','phase_orbit'):
+    if rt.get('kernel_method') in ('identity_holdout','phase_orbit','nonlinear_pair'):
         from .milkr.calibrated_k1 import fit as calibrated_fit
         return calibrated_fit
     if rt.get('kernel_method')=='kernel_margin':
@@ -61,7 +61,7 @@ def extract_for_method(rt,reader,raw,device,engine=None,batch=128):
     if rt.get('kernel_method')=='phase_kernel':
         from .phase_orbit import extract as orbit_extract,stack_views
         return orbit_extract(reader,raw,device,engine,batch,aggregate=stack_views)
-    if rt.get('kernel_method')=='phase_orbit':
+    if rt.get('kernel_method') in ('phase_orbit','nonlinear_pair'):
         from .phase_orbit import extract as orbit_extract
         return orbit_extract(reader,raw,device,engine,batch)
     return extract(reader,raw,device,engine,batch,descriptor=rt.get('kernel_method') in ('signature_kernel','task_signature','fisher_signature','nested_fisher','source_bridge','paired_cca','balanced_h','kernel_margin','class_whiten','identity_holdout'))
@@ -86,6 +86,9 @@ def source_episodes(rt):
 
 
 def calibration(rt):
+    if rt.get('kernel_method')=='nonlinear_pair':
+        from .milkr_nonlinear_source import calibrate
+        return calibrate(rt)
     if rt.get('kernel_method') in ('phase_orbit','phase_kernel'):
         from .milkr_orbit_source import calibrate
         return calibrate(rt)
@@ -166,6 +169,9 @@ def worker(rt,capname):
         from .milkr.source_bridge import FeatureBridge
         bridge=FeatureBridge.load(Path(rt['run_root'])/'source_bridge.npz')
         rules.append(('R12C',selected['control_K1_rule']))
+    elif rt.get('kernel_method')=='nonlinear_pair':
+        from .milkr.bounded_pair import BoundedPairEncoder
+        bridge=BoundedPairEncoder.load(Path(rt['run_root'])/'source_nonlinear_pair.npz',device='cuda:0')
     elif rt.get('kernel_method')=='phase_kernel':
         from .milkr.phase_encoder import PhaseEncoder
         bridge=PhaseEncoder.load(Path(rt['run_root'])/'source_phase_cca.npz')
@@ -183,19 +189,19 @@ def worker(rt,capname):
             for sp,g in enumerate((None,engine)):
                 f,_=extract_for_method(rt,reader,task['support_x'],'cuda:0',g,batch=k);begin=time.perf_counter()
                 for state_arm,rule in rules:
-                    if bridge is not None and state_arm==arm and rt.get('kernel_method') in ('paired_cca','balanced_h','kernel_margin','class_whiten','identity_holdout','phase_orbit','phase_kernel'):features=bridge.transform(f,restored=bool(sp))
+                    if bridge is not None and state_arm==arm and rt.get('kernel_method') in ('paired_cca','balanced_h','kernel_margin','class_whiten','identity_holdout','phase_orbit','phase_kernel','nonlinear_pair'):features=bridge.transform(f,restored=bool(sp))
                     else:features=bridge.transform(f) if bridge is not None and sp==0 and state_arm==arm else f
                     begin=time.perf_counter();state=fit(features,task['support_y'],task['support_ids'],fixed=rule)
                     write(root/f'{stage}-K{k}-N{n}-S{sp}-{state_arm}-fit.json',dict(selection=state.selection,config=state.config,ridge=state.ridge,tau=state.tau,
                         seconds=time.perf_counter()-begin,F_updates=0,G_updates=0,query_fit=False,B_function_inherited=False,
                         coefficient_bytes=state.alpha.nbytes,physical_labels=len(task['support_y']),arm=state_arm,
-                        source_bridge=bridge is not None and state_arm==arm and (sp==0 or rt.get('kernel_method') in ('paired_cca','balanced_h','kernel_margin','class_whiten','identity_holdout','phase_orbit','phase_kernel'))))
+                        source_bridge=bridge is not None and state_arm==arm and (sp==0 or rt.get('kernel_method') in ('paired_cca','balanced_h','kernel_margin','class_whiten','identity_holdout','phase_orbit','phase_kernel','nonlinear_pair'))))
                     states.append((s,stage,sp,state,state_arm))
         print('FIT_K_COMPLETE',m['receiver'],k,flush=True)
     bank=np.load(cap/'received.npy',mmap_mode='r');allrows=np.load(cap/'stage_rows/N20.npy');pos=np.full(len(bank),-1,np.int64);pos[allrows]=np.arange(len(allrows))
     for qp,g in enumerate((None,engine)):
         f,_=extract_for_method(rt,reader,np.asarray(bank[allrows]),'cuda:0',g)
-        if rt.get('kernel_method') in ('paired_cca','balanced_h','kernel_margin','class_whiten','identity_holdout','phase_orbit','phase_kernel'):bridged=bridge.transform(f,restored=bool(qp))
+        if rt.get('kernel_method') in ('paired_cca','balanced_h','kernel_margin','class_whiten','identity_holdout','phase_orbit','phase_kernel','nonlinear_pair'):bridged=bridge.transform(f,restored=bool(qp))
         else:bridged=bridge.transform(f) if bridge is not None and qp==0 else f
         for s,stage,sp,state,state_arm in states:
             query=split_rows(cap,s);positions=pos[query];require((positions>=0).all(),'Invalid query bank mapping')
