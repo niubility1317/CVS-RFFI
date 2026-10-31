@@ -1,0 +1,219 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-c8prior-s2026092701-r32",
+  "group_id": "phase2-milkr-C8-RF-prior",
+  "display_name": "MILKR 八相位RF轨道与原四相位先验",
+  "description": "R33 fixed8equallyspaced RFphase moments/sourceCCA64; originalC4head/R31gate/prior/fusion unchanged; independent branch noR32center.",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-milkr-ridgeprior-s2026092701-r30",
+    "20261031-phase2-milkr-phaseorbit-s2026092701-r19",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "authorization": "User2026-10-31 MILKR goal +5pp; Tri-SIG-TIME SSL; support S0/S1 separate; each Q1 must exceed its Q0; User2026-10-31 explicitly permits same-query raw/G fusion with G-only retained, strict support S0/S1",
+  "code": {
+    "commit": "COMMIT_AT_RELEASE",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-c8prior-s2026092701-r32-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_only/partition/*/partition.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one existing P01/MIX01/1-1 VALIDATED_ONCE capsule",
+    "split_id": "read exact existing K/N split IDs",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P01/MIX01/1-1",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        20
+      ],
+      "N": [
+        2,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement",
+      "receiver": "1-1"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "User-authorized queryfusion extension; finalall16KN twoS Q0original+5 andQF>Q0; QG-only separatelyreported, QFvsoriginalQG notsameinputpair"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092703/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092704/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/01a18faf-milkr-c8prior",
+    "gpu_policy": "source numerical smoke on physicalGPU4, one target worker on physicalGPU0; existing owners untouched; >=4GiB checked before launch",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-c8prior-s2026092701-r32",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-c8prior-s2026092701-r32/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\milkr_c8prior_20261031",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_cv_screen dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-c8prior-s2026092701-r32-release/runtime.json",
+    "stop_rule": "query/protocol/split/output collision or launcher-wide failure: stop owned launch, preserve all; worker error marks technical failure, no blind retry; low scores are scientific results"
+  },
+  "expected_artifacts": [
+    "source_smoke.json realC8RFinvariance/originalC4head/Gonce",
+    "source_selection.json RF8/head4/source120K1rule",
+    "source_orbit_cca.npz sourceC8moments ordinaryCCA64",
+    "36fixedpredictionrows",
+    "12fit R31gate audits/noSUPcenter",
+    "12fusion audits/cache0",
+    "independent scores",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-c8prior-s2026092701-r32/predictions",
+    "scorer_ref": "experiments.pamf_phase2_practical.episodic_score",
+    "primary": "Finalevery16KN bothS Q0 matchedoriginalQ0>=+5pp andsame-stateQF>Q0; sourceprior/fusion fixed beforetarget",
+    "success": "allcorners twoS Q0+5 andQF>Q0 plusoldnewrawmeanguard before remaining12KN; all16 then6RXconfirmation",
+    "secondary": "realC8RF/perrecord invariance andheadC4 equality, rawmatchedH/oldnew percorner; matchedG-only andQFpathchange; forwardcost8F/path vs4; gate/count/cache0",
+    "scientific_source_rule": "Fixed8RFphases eighth0..7, evenphases exactC4 sign/swap, odd sqrt(.5)rotations. G originalrecordonce beforeaction. RFunitblock moments8 input2d -> ordinarysourceCCA64. Headprior only even4 originalC4 logits, sameprobabilities/gate/priorcap.5/fusion asR31. Source5RXTXheld K1grid120 Q0QF H/ref6classscale, no sourcegainveto; fixednewmechanism direct36corner test. NoR32center/nonewNN.",
+    "promotion_rule": "PerKN/perS raw+5 andfusionpositive, nevermean-only; QGcontrol retained notrequiredtoexceedraw innewuserauthorizedfusiondefinition"
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R33 C8RF moments + originalC4head R31prior/fusion",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_c8prior_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-c8prior-s2026092701-r32-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FrozenF/G/head; sourceCCA64 onC8moments; currentSUP R31ridgegate/KRR physicalOOF",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "source6300physical ep91/92=12600pairs,8F/path/head4among8/Gonce; source120K1rules; target36",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-c8prior-s2026092701-r32/predictions/1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-c8prior-s2026092701-r32/logs/1-1.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_cv_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-c8prior-s2026092701-r32-release/runtime.json --capsule capsules/P01/MIX01/1-1",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "IndependentnewRFfeature hypothesis fromfixedR31, notR32center or targettuninganglegrid. Fixed8equallyspaced rotations0/45/90/135/180/225/270/315degrees. RFmoments8, headprior onlyevens0/90/180/270; evens calloriginalrotate functionexactsignswap. No changeoriginalheadprobabilityfunction orneuralweights; oddlogits discarded.",
+    "Originalreceived Goncebeforeallphaseactions; noG8times/no secondobservation/rechannel/timeorbit. FFToriginalonce reused acrossconstantphase actions. RFviewmoments/perrecordnormalize no querystats. F8/pathvsF4 compute disclosed, no impliedspeedgain. Fullclassifier not claimedC8invariant becauseoriginalC4headprior retained.",
+    "SameRFmoment2d schema sourceCCA64 fittedsourceonly, fiveRX/TXheld excludeheldRX/twoTX. Sourceheldnewheadcolumns removed beforesoftmax. F saw source6, source3scenes/new2 vs target6scenes/new20 limits. Only finalencoderweights reach target, no sourceexamples/covariancebank. R31currentSUPbalancedridgegate.1/priorcap.5/R26fusion unchanged; noR30gains/R32center.",
+    "Source120K1rule Q0QF H/ref6classscale, K20physicalOOF. Fixednewmechanism directcornerfalsification asR31, sourcelegal/numeric only,no Hgainveto. SupportpureS0raw/S1G, allstateparams currentSUP andtrain-onlyOOF; queryperrecord/frozen, no labels/batchstats/update.",
+    "FirstRX1-1/P01/MIX01/seed2026092701 K1/20×N2/20 B12+C24=36 allfixedthen independenttruth. EverycornerbothS Q0matchedoriginal>=+5/QF>Q0 plusoldnewguard to remaining12KN then6RX; finalall16/sevenRX unchanged. Gonly matchedcontrol complete; QFvsoriginalG pathchanged explicit.",
+    "SourceGPU4 targetGPU0 actualfree checked, protectotherowners/oldroots; no blindretry. REJECTED_EXTRA_GATE genericseparate designapproval/spec/builderreview; minimalprereg andone actualP0/P1review only. Privatefolder precheckedabsent."
+  ],
+  "registered_at": "2026-10-31T11:03:02+00:00"
+}

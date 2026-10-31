@@ -15,6 +15,8 @@ def worker(rt,capname):
     extract_features=extract
     if rt.get('kernel_method')=='time_orbit':
         from .teacher_features import extract_time as extract_features
+    elif rt.get('kernel_method')=='phase8_prior':
+        from .teacher_features import extract_phase8 as extract_features
     reader,engine=initialize(rt);before={key:value.detach().clone() for key,value in reader.state_dict().items()}
     g_before={key:value.detach().clone() for key,value in engine.pipeline.model.state_dict().items()}
     cap=Path(rt['data_root'])/capname;m=read(cap/'manifest.json');root=Path(rt['run_root'])/'predictions'/m['receiver'];root.mkdir(parents=True,exist_ok=False)
