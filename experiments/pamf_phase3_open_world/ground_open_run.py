@@ -14,7 +14,7 @@ from . import ground_open_data as data
 from . import fresh_world_run as fresh
 from . import star_dura_best_run as utilities
 
-RUN_ID='20261101-phase3-ground-open-s2026092701-r01'
+RUN_ID='20261101-phase3-ground-open-s2026092701-r02'
 SCHEMA='pamf_phase3_ground_open_prediction_v1'
 STATUS='GROUND_OPEN_PREDICTIONS_COMPLETE'
 CALIBRATION_STATUS='GROUND_OPEN_THRESHOLDS_FROZEN'

@@ -13,7 +13,7 @@ from torch.nn import functional as F
 from . import logit_energy_train as base
 
 core,identity=base.core,base.identity
-RUN_ID='20261101-phase3-ground-open-s2026092701-r01'
+RUN_ID='20261101-phase3-ground-open-s2026092701-r02'
 SCHEMA='pamf_phase3_ground_open_train_v1'
 STATUS='GROUND_OPEN_TRAIN_COMPLETE'
 ROW_STATUS='GROUND_OPEN_STUDENT_FROZEN'

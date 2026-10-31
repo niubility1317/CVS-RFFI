@@ -22,7 +22,7 @@ from . import source_diverse_export as diverse
 from . import source_open_export as auxiliary
 
 
-RUN_ID = '20261101-phase3-ground-open-s2026092701-r01'
+RUN_ID = '20261101-phase3-ground-open-s2026092701-r02'
 SCHEMA = 'pamf_phase3_ground_open_data_v1'
 STATUS = 'GROUND_OPEN_DATA_COMPLETE'
 ROLE_STATUS = 'GROUND_OPEN_ROLE_COMPLETE'

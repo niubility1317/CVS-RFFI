@@ -1,6 +1,6 @@
 # 先强化地面开放训练
 
-Run `20261101-phase3-ground-open-s2026092701-r01`，owner `codex-phase3-ground-open-20261101`。用户指定先强化地面训练；原 PCD＋DURA 基线及所有历史产物保留。完整 Phase3 目标 ACTIVE，ViM 草稿尚未发布，本轮不继续该方向。
+Run `20261101-phase3-ground-open-s2026092701-r02`，owner `codex-phase3-ground-open-20261101`。用户指定先强化地面训练；原 PCD＋DURA 基线及所有历史产物保留。完整 Phase3 目标 ACTIVE，ViM 草稿尚未发布，本轮不继续该方向。
 
 本轮固定两个完整原 F0 学生，检验地面 clean 源域训练及普通源域半监督能否改善开放识别。主方法预先固定 SSL_energy，SUP_energy 为配对监督控制，F0_energy 为原识别器控制；不依据查询结果选主方法、阈值、checkpoint 或重跑。没有新增目标无标签适应、未知发现或匿名注册。
 
@@ -39,3 +39,8 @@ source_ground_success要求SSL在源clean独立Q的24组全部CK≥95%、RU≥95
 实际commit、完整命令、Python/CWD、输入和不可覆盖路径、GPU及预期产物记录在同run登记/runtime。N607卡0至7启动前free≥4096MiB，每卡本任务最多新增2worker，不停止或修改其他用户/owner任务。单driver依次data→train→predict→CPUscore；每GPU阶段首真实checkpoint无query smoke PASS即继续。一次独立P0/P1、一次发布包本地/远端SHA比较、远端compile、实际PID/CWD/argv/GPU/log增长读回。
 
 仅协议/模型来源不符、不可覆盖路径冲突、非有限、无法执行或不能产出合法预测构成技术停止；保存产物，不按低分重跑。产物为data公开角色及私有TESTtruth、两个CP/完整步日志、18阈值/校准、四条件完整预测、CPU score、pipeline、同row报告登记/Git交付。数据、权重、实际日志和运行时不提交Git。
+
+
+## 发布依赖的技术恢复
+
+原r01在首真实checkpoint smoke之前因cric包只有四个模块而缺bootstrap停止，数据值/训练更新/预测/真值读取均0，原root与日志保留。r02仅恢复完整已提交cric Python包依赖及独立run/output root，科学矩阵、采样、预算、模型与权限不变；不按测试分数重试。原F0加载链需要bootstrap、f_train、f_model、t1_model等，完整regular package随同代码commit封装，避免部分包遮蔽固定历史依赖。
