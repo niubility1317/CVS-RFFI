@@ -1,0 +1,378 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-paired-signal-s2026092701-r01",
+  "group_id": "pamf-phase3-paired-signal",
+  "display_name": "PAMF第三阶段：同记录接收与恢复信号的端到端开放学习",
+  "description": "Three independent pure-r03 shared encoders: sourceP1/P1, sourceP0/P1, targetP0/P1+PCD; exact source streams, frozen P1 F0 identity, same observation and DURA.",
+  "kind": "cvs",
+  "stage": "Phase3-paired-signal-open-adaptation",
+  "aliases": [
+    "同记录接收恢复开放表征"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "paired_signal",
+    "source_control",
+    "UDA",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-paired-signal",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-body-prototype-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "00e86deb914ff02f54fe57c101491220aee0a1a0",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-paired-signal-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.paired_signal_launch",
+      "experiments.pamf_phase3_open_world.paired_signal_train",
+      "experiments.pamf_phase3_open_world.paired_signal_run",
+      "experiments.pamf_phase3_open_world.paired_signal_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_PAIRED_SIGNAL_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Original source G10 received/restored L/OE/V/NV and fixed RX3-2 star U/future pairedQ",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Same-record P0/P1 to shared SignalOpen plus zero-init bounded difference/product residual; F0 default identity uses P1 only",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 同记录接收与恢复信号的联合开放表征",
+    "physical_ids_ref": "Unchanged source ids.npy/received.npy/restored.npy and existing public U/Q IDs; one received percanonical",
+    "label_map_ref": "Originalsix L/V y; OE outside-six only; U trueTX/K/quotas forbidden; future trueTX scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "source_V_known_calibration": 27000,
+      "source_NV": 3150,
+      "original_U_s_new": 0,
+      "target_star_U": 576,
+      "target_future_Q_unique": 10238,
+      "target_future_known": 4508,
+      "target_future_unknown": 5730,
+      "U_truth_fit": 0
+    },
+    "train_ratio": "OriginalF0 L6300/63000=10%; source labels/membership unchanged, targetTXlabels0. Additional P0 evidence, not new physical records.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "Unchanged VALIDATED_ONCE source/fresh handles; original r03/F0/DURA ancestry; P0/P1 share ID/order",
+    "support_query_ref": "Source P1 andPAIR controls complete before U; U03-01 vs future03-15/23 disjoint; paired clean/star Q, clean learning0; missingold day macroNA",
+    "leo_config_ref": "Same fixed G10 MIX01 source/U/future received and DURA v1R69, source3001/4001 receiver2027, future3133/3134, no redrawn channel"
+  },
+  "permissions": {
+    "regime": "Original pure-r03 initialization for all3 students; sourceL realy/OE membership, raw/restoredsameobservation. SourceP1 control masks P0. TARGET_PAIR uses only legal U and synchronized phase/gain; 16capacity notK.",
+    "query_use": "All neural/source density states freeze before Vknown tau. NV and pairedfuture Q fixed10x3 predictions then independent3truth; no Qfit/Utruth/EMA or default identity update.",
+    "external_method_exception": null,
+    "claim_scope": "Source input effect SOURCE_PAIR-SOURCE_P1; matched UDA TARGET_PAIR-SOURCE_PAIR; extraP0/adapter vsoldPCD not single-factor. Exposed devRX/seed/globalhistoryUNKNOWN, fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "All3 PairedSignal students independently from pure-source r03 plus samezero Linear320to160; SOURCE controls not used as target initialization, no target PCDFresh init",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Same source392005 and pureF0/r03/G; SOURCE444 original control and newtwoSOURCE sealed before U, exact sourceindices; targetstateexplicitU576.",
+    "selection_rule": "444each/1332new; zero-init adapter51360, fixed deltaL2<=.1, PCD unchanged eps.05/temp.1/16slots; onlyfinal states, no Qselection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-paired-signal-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_paired_signal_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.paired_signal_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-paired-signal-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One serial3arm train then prediction then CPUscore, actualfree>=4096MiB/max2new/card, foreignuntouched",
+    "stop_rule": "Illegal ancestor/role, nonfinite, frozenstatechange, collision or unablelegalprediction preserved technicalfailure; low scientific scores complete fullmatrix, no hotchange/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/{driver,train,predict,score}.log",
+    "train/{resolved_config,smoke,complete}.json",
+    "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+    "train/{U_manifest,U_cache_reference,prototype_initialization}.json",
+    "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "Hscore",
+      "origF0P1closedminusAK",
+      "AUROC/OSCR",
+      "sourcepairinputeffect",
+      "targetpairUDAeffect",
+      "pairedcorrect/rejectevents",
+      "sourceknown12/42",
+      "fulltraininggradients/adapterbound",
+      "AN/HOWNA"
+    ],
+    "dimensions": [
+      "10readouts",
+      "source5RX/cleanRX34/starRX34",
+      "sixrequiredscenes",
+      "trueTX/RX/day",
+      "sourceP1-sourcePAIR-targetPAIR andoldPCD"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.paired_signal_score",
+    "targets_ref": "CleanRU95/starRU90/CK90/origF0P1gap2pp/requiredscene-rosters; sourceknown12; mainstarAKaboveSOURCE_PAIR/OLDPCD,RUnotlower. FullgoalACTIVE.",
+    "primary": [
+      "TARGET_PAIR_predicted_ratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "SOURCE_P1-s2026092701",
+      "method": "SOURCE_P1",
+      "purpose": "P1-only input control",
+      "config_ref": "docs/PAMF_PHASE3_PAIRED_SIGNAL_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All source streams2026103017/18; TARGET only U2026103112/phasegain3114/prototype3113, inherited future3133/3134; sourcecontrols U/augmentation/prototype unused.",
+      "k": null,
+      "scenario": "All learning starP0/P1; alltesting throughfrozenDURA; defaultidentity P1 only",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "444each;1332new. Base334721+adapter51360=386081; Sinc48frozen,train386033. Targetauxproto2560trainonly. Source2x227328base/target852480base/parent12434; Gtrain0; sourceGMM3/newtau36.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/train/SOURCE_P1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.paired_signal_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-paired-signal-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+        "train/{U_manifest,U_cache_reference,prototype_initialization}.json",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "SOURCE_PAIR-s2026092701",
+      "method": "SOURCE_PAIR",
+      "purpose": "same-record P0/P1 source learning",
+      "config_ref": "docs/PAMF_PHASE3_PAIRED_SIGNAL_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All source streams2026103017/18; TARGET only U2026103112/phasegain3114/prototype3113, inherited future3133/3134; sourcecontrols U/augmentation/prototype unused.",
+      "k": null,
+      "scenario": "All learning starP0/P1; alltesting throughfrozenDURA; defaultidentity P1 only",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "444each;1332new. Base334721+adapter51360=386081; Sinc48frozen,train386033. Targetauxproto2560trainonly. Source2x227328base/target852480base/parent12434; Gtrain0; sourceGMM3/newtau36.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/train/SOURCE_PAIR",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.paired_signal_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-paired-signal-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+        "train/{U_manifest,U_cache_reference,prototype_initialization}.json",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "TARGET_PAIR-s2026092701",
+      "method": "TARGET_PAIR",
+      "purpose": "same-record pair plus unlabeled PCD",
+      "config_ref": "docs/PAMF_PHASE3_PAIRED_SIGNAL_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026103114,
+        "support": 2026103113,
+        "evaluation": null
+      },
+      "seed_notes": "All source streams2026103017/18; TARGET only U2026103112/phasegain3114/prototype3113, inherited future3133/3134; sourcecontrols U/augmentation/prototype unused.",
+      "k": null,
+      "scenario": "All learning starP0/P1; alltesting throughfrozenDURA; defaultidentity P1 only",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "444each;1332new. Base334721+adapter51360=386081; Sinc48frozen,train386033. Targetauxproto2560trainonly. Source2x227328base/target852480base/parent12434; Gtrain0; sourceGMM3/newtau36.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/train/TARGET_PAIR",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-paired-signal-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.paired_signal_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-paired-signal-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+        "train/{U_manifest,U_cache_reference,prototype_initialization}.json",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "One received percanonical, P0/P1 are sameobservation, no new clean reference/channel.",
+    "Two sourcecontrols first and all3 independentlyinitialize pure-r03/zeroresidual; source exactstreams; target16slots nottrueK.",
+    "Source input and UDA effects separately paired; SOURCE_P1 nominalarchitecture same but information differs.",
+    "F0/default/G/Sinc/buffers frozen, P0onlyopenbranch, all10x3predictions before independent3truth, thresholds sourceonly.",
+    "No discovery/anonymous registration; oldPCD baseline retained unless preregistered jointgate passes; formal24-18 unopened, fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-31T11:09:00+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "00e86deb914ff02f54fe57c101491220aee0a1a0",
+    "primary_method": "TARGET_PAIR_predicted_ratio",
+    "adaptation_success": false,
+    "development_gate_passed": false,
+    "source_known_12_passed": true,
+    "target_protection_passed": false,
+    "metrics": {
+      "source_DURA": {
+        "A_K": 0.8971111111111111,
+        "C_K": 0.966925925925926,
+        "R_U": 0.6488888888888888,
+        "H_score": 0.753073004008752,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.012703703703703884
+      },
+      "clean_DURA": {
+        "A_K": 0.3168990969769297,
+        "C_K": 0.4380234667326591,
+        "R_U": 0.6213457565391747,
+        "H_score": 0.4197281944469135,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "original_closed_minus_new_open": 0.1687710564151268
+      },
+      "star_DURA": {
+        "A_K": 0.27910624013534857,
+        "C_K": 0.4853305786581414,
+        "R_U": 0.49552823481878594,
+        "H_score": 0.35708460434675693,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "original_closed_minus_new_open": 0.1381043453553336
+      }
+    },
+    "source_pair_input_effect": {
+      "source_DURA": {
+        "A_K": -0.00014814814814823052,
+        "C_K": -0.00044444444444458053,
+        "R_U": 0.0019047619047619646,
+        "H_score": 0.001288364833384903,
+        "original_F0_macro_closed_accuracy": 0.0,
+        "candidate_macro_closed_accuracy": 0.0,
+        "original_closed_minus_new_open": 0.00014814814814823052,
+        "candidate_closed_minus_open": 0.00014814814814823052,
+        "auroc_known_macro": 0.0001725690770136845,
+        "oscr_auc_macro": 0.0001088183421518174
+      },
+      "clean_DURA": {
+        "A_K": -0.0017921146953405187,
+        "C_K": -0.0017921146953405187,
+        "R_U": -2.590580591932401e-06,
+        "H_score": -0.0016496607266592855,
+        "original_F0_macro_closed_accuracy": 0.0,
+        "candidate_macro_closed_accuracy": 0.0,
+        "original_closed_minus_new_open": 0.0017921146953405187,
+        "candidate_closed_minus_open": 0.0017921146953405187,
+        "auroc_known_macro": -0.002019466469153075,
+        "oscr_auc_macro": -0.001845406220745749
+      },
+      "star_DURA": {
+        "A_K": -0.000112257363299062,
+        "C_K": -0.0013931190073321886,
+        "R_U": 0.0010477446808780932,
+        "H_score": 0.00013857444820497555,
+        "original_F0_macro_closed_accuracy": 0.0,
+        "candidate_macro_closed_accuracy": 0.0,
+        "original_closed_minus_new_open": 0.000112257363299062,
+        "candidate_closed_minus_open": 0.000112257363299062,
+        "auroc_known_macro": -0.0016429618704696392,
+        "oscr_auc_macro": -0.0015146914245799947
+      }
+    },
+    "new_student_optimizer_updates": 1332,
+    "new_target_UDA_updates": 444,
+    "source_control_updates": 888,
+    "unique_target_U_records": 576,
+    "source_sampling_matched": true,
+    "SOURCE_completed_before_U_open": true,
+    "original_models_unchanged": true,
+    "all_student_Sinc_unchanged": true,
+    "all_student_buffers_unchanged": true,
+    "new_source_density_models": 3,
+    "new_source_threshold_values": 36,
+    "pair_model_parameters": 386081,
+    "pair_adapter_parameters": 51360,
+    "deployed_neural_parameters": 886025,
+    "formal_target_accessed": false,
+    "target_REG": false,
+    "full_goal_status": "ACTIVE",
+    "result_ref": "docs/PAMF_PHASE3_PAIRED_SIGNAL_RESULTS_20261031.md"
+  }
+}

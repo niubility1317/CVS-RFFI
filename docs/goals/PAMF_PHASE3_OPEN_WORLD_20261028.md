@@ -1263,3 +1263,8 @@ Run `20261031-phase3-paired-signal-s2026092701-r01` / code `00e86deb914ff02f54fe
 ## 2026-10-31：先确认已有优选研究方法
 
 按用户“先选取前面性能好的方法”，确认 DURA v1.0＋原 PAMF 默认身份头＋PCD_predicted_ratio 为当前研究基线，原 E0、同预算 SOURCE 与 pooled 读出保留对照。原 RX24-1 星地 AK/CK/RU/H=65.277778/87.152778/78.125000/71.125908%；新增 RX3-2 为27.951722/48.582412/49.307698/35.678111%，未确认跨新接收机普遍收益，不作为部署晋级。两组均含 DURA，不混合未知集合或将差异归为单一接收机效应；原 clean RU95/star RU90/CK90/同 DURA 原闭集保护2pp及逐景要求保持，完整目标 ACTIVE。本次没有新增训练、预测、评分或阈值拟合；paired-signal 仅代码、预登记与本地包已准备，未发布或启动，不列入性能证据。详见 `docs/PAMF_PHASE3_METHOD_SELECTION_20261031.md` 和选择配置。
+
+
+## 2026-10-31：同记录接收恢复开放信号完整结果
+
+Run `20261031-phase3-paired-signal-s2026092701-r01` / code `00e86deb914ff02f54fe57c101491220aee0a1a0`，SOURCE_P1/SOURCE_PAIR/TARGET_PAIR各444、共1332优化，全部10×3DURA预测及独立CPU3truth VERIFIED完成。唯一主TARGET_PAIR_pred：source_DURA: AK/CK/RU/H=89.711111/96.692593/64.888889/75.307300%；原F0同G损1.270370pp；clean_DURA: AK/CK/RU/H=31.689910/43.802347/62.134576/41.972819%；原F0同G损16.877106pp；star_DURA: AK/CK/RU/H=27.910624/48.533058/49.552823/35.708460%；原F0同G损13.810435pp。sourceknown12=True、target保护=False，科学NO_PROMOTION。源输入与UDA分别配对；同record P0/P1不增加物理样本，原F0/default只P1及G保持，source先封存再U576。3源GMM/36新tau/全60tau，部署386081学生＋原F0/G=886025，临时原型不部署；AN/HOWNA，开发已曝光/缺类日NA/正式24-18未读/原目标ACTIVE。详见`docs/PAMF_PHASE3_PAIRED_SIGNAL_RESULTS_20261031.md`。

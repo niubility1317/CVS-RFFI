@@ -51,6 +51,11 @@ G10 沿用 MILKR 设置：600 km、25 MHz、2.45 GHz、residual/post_sync/no add
 
 该结果未通过绝对目标和适应晋级条件。原身份网络的闭集准确率也显著下降，说明后续需要同时解决身份泛化与拒识，不能仅调拒识阈值。两个接收机的样本、日期、未知设备和无标签适应状态不同，这里并列报告，不将分数相减归因为接收机的单一因果效应。后续固定/动量原型教师等既有对照未取得预登记的联合收益，因此未替换 PCD。
 
-当前只完成已有方法选择。已准备的 `20261031-phase3-paired-signal-s2026092701-r01` 保留代码、预登记和本地发布包，本次未发布或启动；它不属于已完成的性能证据。匿名发现与注册也未完成，完整目标保持 ACTIVE。
+方法选择完成时，`20261031-phase3-paired-signal-s2026092701-r01` 仅准备了代码、预登记和本地发布包，尚未发布或启动；其后续实测结果见下节。匿名发现与注册仍未完成，完整目标保持 ACTIVE。
 
 证据：[PCD完整结果](PAMF_PHASE3_BODY_PROTOTYPE_RESULTS_20261031.md)、[CCD完整结果](PAMF_PHASE3_COMMON_TRANSPORT_RESULTS_20261031.md)、[原条件密度结果](PAMF_PHASE3_CLASS_DENSITY_RESULTS_20261031.md)、[DURA前后配对](PAMF_PHASE3_DURA_BEST_RESULTS_20261031.md)、[新增开发池结果](PAMF_PHASE3_FRESH_DEVELOPMENT_RESULTS_20261031.md)、[动量教师结果](PAMF_PHASE3_MOMENTUM_PROTOTYPE_RESULTS_20261031.md)。两个接收机的原始评分分别为 `local_artifacts/pamf_phase3_body_prototype_20261031_r02/score/results.json` 和 `local_artifacts/pamf_phase3_fresh_development_20261031_r01/score/results.json`，本选择直接提取其中冻结指标。
+
+
+## 同记录接收与恢复信号候选的后续实测
+
+在上述方法选择之后，目标继续执行了已准备的三臂候选 `20261031-phase3-paired-signal-s2026092701-r01`：3×444 步、10×3 条件完整预测后独立评分，科学结论 `NO_PROMOTION`。主 TARGET_PAIR_predicted_ratio 星地 A_K/C_K/R_U/H 为 27.910624/48.533058/49.552823/35.708460%；本行具有独立新U576适配祖先，同记录两输入不增加物理样本。当前 PCD 研究基线保留，完整目标仍 ACTIVE；详细源输入作用与适应差分见[完整结果](PAMF_PHASE3_PAIRED_SIGNAL_RESULTS_20261031.md)。

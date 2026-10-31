@@ -412,6 +412,44 @@
       "reason": "Joint identity variant hurts target closed/AK relative to original F0/OLD_PCD; target PCD gains small AK vs matched SOURCE_JOINT but lowers rejection.",
       "global_history_unused_verified": false,
       "independent_blind_confirmation": false
+    },
+    {
+      "run_id": "20261031-phase3-paired-signal-s2026092701-r01",
+      "code_commit": "00e86deb914ff02f54fe57c101491220aee0a1a0",
+      "method": "TARGET_PAIR_predicted_ratio",
+      "score_artifact": "local_artifacts/pamf_phase3_paired_signal_20261031_r01/score/results.json",
+      "metric_fractions": {
+        "source_DURA": {
+          "A_K": 0.8971111111111111,
+          "C_K": 0.966925925925926,
+          "R_U": 0.6488888888888888,
+          "H_score": 0.753073004008752,
+          "original_F0_macro_closed_accuracy": 0.909814814814815,
+          "original_closed_minus_new_open": 0.012703703703703884
+        },
+        "clean_DURA": {
+          "A_K": 0.3168990969769297,
+          "C_K": 0.4380234667326591,
+          "R_U": 0.6213457565391747,
+          "H_score": 0.4197281944469135,
+          "original_F0_macro_closed_accuracy": 0.4856701533920565,
+          "original_closed_minus_new_open": 0.1687710564151268
+        },
+        "star_DURA": {
+          "A_K": 0.27910624013534857,
+          "C_K": 0.4853305786581414,
+          "R_U": 0.49552823481878594,
+          "H_score": 0.35708460434675693,
+          "original_F0_macro_closed_accuracy": 0.4172105854906822,
+          "original_closed_minus_new_open": 0.1381043453553336
+        }
+      },
+      "scientific_verdict": "NO_PROMOTION",
+      "primary_selection_changed": false,
+      "new_receiver_general_benefit_confirmed": false,
+      "reason": "Three-arm matched source-input and unlabeled-adaptation comparison; full target gate and confirmation remain required.",
+      "global_history_unused_verified": false,
+      "independent_blind_confirmation": false
     }
   ],
   "current_selection_confirmation": {
@@ -427,9 +465,11 @@
     "threshold_refitting": false,
     "pending_candidate": {
       "run_id": "20261031-phase3-paired-signal-s2026092701-r01",
-      "state": "PREPARED_NOT_LAUNCHED",
+      "state": "ANALYZED",
       "code_commit": "00e86deb914ff02f54fe57c101491220aee0a1a0",
-      "performance_evidence_available": false
+      "performance_evidence_available": true,
+      "scientific_verdict": "NO_PROMOTION",
+      "result_ref": "docs/PAMF_PHASE3_PAIRED_SIGNAL_RESULTS_20261031.md"
     }
   }
 }
