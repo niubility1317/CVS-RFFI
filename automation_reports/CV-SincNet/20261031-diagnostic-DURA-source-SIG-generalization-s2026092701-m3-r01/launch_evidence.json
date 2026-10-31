@@ -1,0 +1,41 @@
+{
+  "status": "VERIFIED_ANALYZED_SOURCE_ONLY",
+  "execution_commit": "f19f47ffd1c021477898a08e9115a16d07ecbdea",
+  "controller_PID": 2021178,
+  "worker_PIDs": {
+    "context": 2021258,
+    "linear": 2021846,
+    "mlp": 2022692
+  },
+  "actual_CWD_argv_commit_verified": true,
+  "CPU2_CUDAempty_verified": true,
+  "archive_sha_match": true,
+  "remote_compile": true,
+  "initial_log_bytes": 75,
+  "final_log_bytes": 20811,
+  "all_three_workers_natural_exit_and_artifacts_verified": true,
+  "all_smokes_PASS": true,
+  "G_state_unchanged": true,
+  "F_state_unchanged": true,
+  "main_G_inputs": 40872,
+  "F_prefix_restored_inputs": 40872,
+  "new_F_clean_V_prefix_inputs": 1800,
+  "G_smoke_inputs": 12,
+  "F_smoke_full_inputs": 12,
+  "V_diagnostic_IQ_inputs": 37800,
+  "V_labels_read": 0,
+  "V_training": false,
+  "TX_labels_read": 0,
+  "target_reads": 0,
+  "optimizer_updates": 0,
+  "independent_group_cells": 318,
+  "independent_private_NPZ": 27,
+  "independent_new_NN_inputs": 0,
+  "FP64_head_basis_hypothesis_invariant": true,
+  "hypotheses": {
+    "generalization_failure": "FAIL",
+    "head_direction_tradeoff": "FAIL"
+  },
+  "default_DURA_changed": false,
+  "goal_complete": false
+}

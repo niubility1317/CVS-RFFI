@@ -338,3 +338,8 @@ VERIFIED / ANALYZED。深层MLP SIG预测，单阶段从零30轮/7410，L189000/
 ## 冻结SIG预测器的源训练/验证泛化诊断
 
 20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01。固定main4452与deepLinear/MLPdf7全部三模型final30，不选取目标分数较好的权重。原source训练512×01/20和既有V1800×七景，仅冻结特征/IQ机制诊断，无V标签、TX标签、target或训练更新。观察实际条件SIG，分解整体与原head对比span/正交误差；H1训练改善而V不改善与H2整体改善而head方向不改善分别事前固定，结果不自动触发训练。F50知识和缓存成本披露，V派生特征仅诊断、不能进入G训练；完整目标/default保持。
+
+
+## 冻结SIG训练/源验证泛化：两条退步解释未获支持
+
+20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 / f19f47ffd1c021477898a08e9115a16d07ecbdea。冻结三G的source-train512×01/20与sourceV1800×七景已完整完成。独立318cell/27NPZ/2312物理记录/40872G观察复算通过，0新增NN。两深层版在源V六景整体SIG预测误差均低约15.8%至19.5%，原head对比方向误差均低约18.0%至23.6%，因此H1训练改善但源V不改善、H2整体改善但head方向不改善均FAIL。只在已见源RX上诊断，不证明未见RX泛化、梯度冲突或解码因果。V只诊断，0V/TX标签、target、训练或模型选择。新增VcleanSIG1800/1.152MB一次后复用；原F50知识和训练SIG缓存成本披露。FP32basis舍入已独立验证，FP64复算判定相同，无NN重跑或改科学阈值；默认DURA和完整目标保持。 详见该run完整分析。

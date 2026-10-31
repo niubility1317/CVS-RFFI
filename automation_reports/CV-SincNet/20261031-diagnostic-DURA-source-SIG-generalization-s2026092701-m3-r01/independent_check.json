@@ -1,0 +1,542 @@
+{
+  "status": "INDEPENDENTLY_VERIFIED_SOURCE_SIG_GENERALIZATION",
+  "group_cells": 318,
+  "private_NPZ": 27,
+  "observations": 40872,
+  "unique_physical_records": 2312,
+  "head_contrast_rank": 5,
+  "maximum_metric_difference": 0.0,
+  "maximum_projector_difference": 2.8995565792139244e-09,
+  "maximum_error_decomposition_difference": 2.3853311881261163e-08,
+  "recorded_basis_FP32_matches_independent_FP64_SVD_rounded_exactly": true,
+  "maximum_rounded_basis_decomposition_formula_difference": 2.4836597480043317e-15,
+  "FP64_head_basis_hypothesis_invariant": true,
+  "maximum_FP64_basis_relative_gain_difference": 3.7445047063044967e-10,
+  "hypotheses": {
+    "generalization_failure": "FAIL",
+    "head_direction_tradeoff": "FAIL",
+    "cells": {
+      "linear": {
+        "train_relative_gains": {
+          "1": {
+            "practical_high": 0.20839497956742137,
+            "practical_mid": 0.15000928298307714,
+            "practical_low_suburban": 0.1506291754814053,
+            "practical_high_urban": 0.20190658051806876,
+            "practical_mid_urban": 0.19746799410658666,
+            "practical_low_urban": 0.16572539203237502
+          },
+          "20": {
+            "practical_high": 0.13505806702456524,
+            "practical_mid": 0.13209097706844097,
+            "practical_low_suburban": 0.1903292421767585,
+            "practical_high_urban": 0.2114650637901837,
+            "practical_mid_urban": 0.17021816539982237,
+            "practical_low_urban": 0.17008086919319576
+          }
+        },
+        "V_relative_gains": {
+          "practical_high": 0.16664857163569602,
+          "practical_mid": 0.16608331112947794,
+          "practical_low_suburban": 0.171276108419958,
+          "practical_high_urban": 0.17770267191889844,
+          "practical_mid_urban": 0.17506573571142503,
+          "practical_low_urban": 0.15834919198367858
+        },
+        "V_head_visible_relative_gains": {
+          "practical_high": 0.21071472349144005,
+          "practical_mid": 0.2058375629549657,
+          "practical_low_suburban": 0.20780307634605244,
+          "practical_high_urban": 0.2231612896173395,
+          "practical_mid_urban": 0.20809586842949046,
+          "practical_low_urban": 0.17981318411015668
+        },
+        "train_scenes_atleast10percent_gain": {
+          "1": 6,
+          "20": 6
+        },
+        "V_scenes_no_gain": 0,
+        "V_scenes_atleast10percent_gain": 6,
+        "V_head_visible_scenes_no_gain": 0,
+        "generalization_failure": false,
+        "head_direction_tradeoff": false
+      },
+      "mlp": {
+        "train_relative_gains": {
+          "1": {
+            "practical_high": 0.19552865490231586,
+            "practical_mid": 0.21531493797842005,
+            "practical_low_suburban": 0.18563015517052517,
+            "practical_high_urban": 0.19713364773410114,
+            "practical_mid_urban": 0.22304548012502023,
+            "practical_low_urban": 0.1076430084021599
+          },
+          "20": {
+            "practical_high": 0.16072270960047652,
+            "practical_mid": 0.10574408270318547,
+            "practical_low_suburban": 0.2196517953104713,
+            "practical_high_urban": 0.2221448000146572,
+            "practical_mid_urban": 0.21252894990153193,
+            "practical_low_urban": 0.23625726736467723
+          }
+        },
+        "V_relative_gains": {
+          "practical_high": 0.17255551181558682,
+          "practical_mid": 0.17980761816985202,
+          "practical_low_suburban": 0.18449138808820598,
+          "practical_high_urban": 0.18774144839576346,
+          "practical_mid_urban": 0.19521307920988606,
+          "practical_low_urban": 0.170355358159329
+        },
+        "V_head_visible_relative_gains": {
+          "practical_high": 0.21476069623889926,
+          "practical_mid": 0.22195750219795296,
+          "practical_low_suburban": 0.22636563664036646,
+          "practical_high_urban": 0.23591102499112981,
+          "practical_mid_urban": 0.23211034564881805,
+          "practical_low_urban": 0.1945298381934154
+        },
+        "train_scenes_atleast10percent_gain": {
+          "1": 6,
+          "20": 6
+        },
+        "V_scenes_no_gain": 0,
+        "V_scenes_atleast10percent_gain": 6,
+        "V_head_visible_scenes_no_gain": 0,
+        "generalization_failure": false,
+        "head_direction_tradeoff": false
+      }
+    }
+  },
+  "summary": {
+    "context": {
+      "train": {
+        "1": {
+          "count": 512,
+          "SIG_relative_MSE": 0.214833657482987,
+          "prior0_SIG_relative_MSE": 0.22721938976633047,
+          "prior1_SIG_relative_MSE": 0.20244792519964352,
+          "SIG_head_visible_MSE": 0.13641733187783042,
+          "prior0_SIG_head_visible_MSE": 0.14925357811586057,
+          "prior1_SIG_head_visible_MSE": 0.12358108563980028,
+          "SIG_head_orthogonal_MSE": 0.07841632497596868,
+          "prior0_SIG_head_orthogonal_MSE": 0.07796581094988297,
+          "prior1_SIG_head_orthogonal_MSE": 0.07886683900205436,
+          "restored_SIG_relative_MSE": 0.12670303722683773,
+          "restored_SIG_head_visible_MSE": 0.08202668636687438,
+          "iq_nmse": 0.020467926455350866
+        },
+        "20": {
+          "count": 512,
+          "SIG_relative_MSE": 0.19766716326027547,
+          "prior0_SIG_relative_MSE": 0.2080729988336525,
+          "prior1_SIG_relative_MSE": 0.1872613276868985,
+          "SIG_head_visible_MSE": 0.12126501428461986,
+          "prior0_SIG_head_visible_MSE": 0.13194529174536612,
+          "prior1_SIG_head_visible_MSE": 0.11058473682387357,
+          "SIG_head_orthogonal_MSE": 0.0764021484466218,
+          "prior0_SIG_head_orthogonal_MSE": 0.07612770652463346,
+          "prior1_SIG_head_orthogonal_MSE": 0.07667659036861012,
+          "restored_SIG_relative_MSE": 0.10913388141616416,
+          "restored_SIG_head_visible_MSE": 0.0664639978974219,
+          "iq_nmse": 0.019441551787207745
+        }
+      },
+      "V": {
+        "clean": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.14591605164989468,
+          "prior0_SIG_relative_MSE": 0.15715173315689732,
+          "prior1_SIG_relative_MSE": 0.13468037014289208,
+          "SIG_head_visible_MSE": 0.07632501000110621,
+          "prior0_SIG_head_visible_MSE": 0.08819197514060834,
+          "prior1_SIG_head_visible_MSE": 0.06445804486160406,
+          "SIG_head_orthogonal_MSE": 0.06959104125294922,
+          "prior0_SIG_head_orthogonal_MSE": 0.06895975756235123,
+          "prior1_SIG_head_orthogonal_MSE": 0.0702223249435472,
+          "restored_SIG_relative_MSE": 0.00085929003240809,
+          "restored_SIG_head_visible_MSE": 0.00044936183546601696,
+          "iq_nmse": 0.00017057686436524537
+        },
+        "practical_high": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.13926057902646738,
+          "prior0_SIG_relative_MSE": 0.14301944653935686,
+          "prior1_SIG_relative_MSE": 0.13550171151357793,
+          "SIG_head_visible_MSE": 0.07169953625896897,
+          "prior0_SIG_head_visible_MSE": 0.07682946761319312,
+          "prior1_SIG_head_visible_MSE": 0.06656960490474484,
+          "SIG_head_orthogonal_MSE": 0.06756104242370185,
+          "prior0_SIG_head_orthogonal_MSE": 0.06618997856870808,
+          "prior1_SIG_head_orthogonal_MSE": 0.06893210627869564,
+          "restored_SIG_relative_MSE": 0.04878645367638009,
+          "restored_SIG_head_visible_MSE": 0.026247579882435288,
+          "iq_nmse": 0.009550237240771524
+        },
+        "practical_mid": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.16390241784592563,
+          "prior0_SIG_relative_MSE": 0.17020815780596774,
+          "prior1_SIG_relative_MSE": 0.1575966778858835,
+          "SIG_head_visible_MSE": 0.09107906681254006,
+          "prior0_SIG_head_visible_MSE": 0.09844550953079005,
+          "prior1_SIG_head_visible_MSE": 0.08371262409429008,
+          "SIG_head_orthogonal_MSE": 0.07282335062220117,
+          "prior0_SIG_head_orthogonal_MSE": 0.07176264785432071,
+          "prior1_SIG_head_orthogonal_MSE": 0.07388405339008162,
+          "restored_SIG_relative_MSE": 0.08468988792390005,
+          "restored_SIG_head_visible_MSE": 0.04854667600707132,
+          "iq_nmse": 0.013826528895713092
+        },
+        "practical_low_suburban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.1830786510075091,
+          "prior0_SIG_relative_MSE": 0.19132021403543775,
+          "prior1_SIG_relative_MSE": 0.17483708797958047,
+          "SIG_head_visible_MSE": 0.1063382283013649,
+          "prior0_SIG_head_visible_MSE": 0.11504604029085648,
+          "prior1_SIG_head_visible_MSE": 0.09763041631187333,
+          "SIG_head_orthogonal_MSE": 0.07674042219255117,
+          "prior0_SIG_head_orthogonal_MSE": 0.07627417320292162,
+          "prior1_SIG_head_orthogonal_MSE": 0.07720667118218068,
+          "restored_SIG_relative_MSE": 0.11356996150885589,
+          "restored_SIG_head_visible_MSE": 0.06644407185827801,
+          "iq_nmse": 0.018688119489866938
+        },
+        "practical_high_urban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.16187618642802865,
+          "prior0_SIG_relative_MSE": 0.16933909088764537,
+          "prior1_SIG_relative_MSE": 0.15441328196841192,
+          "SIG_head_visible_MSE": 0.09022163651383466,
+          "prior0_SIG_head_visible_MSE": 0.09863688097398186,
+          "prior1_SIG_head_visible_MSE": 0.08180639205368748,
+          "SIG_head_orthogonal_MSE": 0.07165454948243108,
+          "prior0_SIG_head_orthogonal_MSE": 0.07070220945877799,
+          "prior1_SIG_head_orthogonal_MSE": 0.07260688950608417,
+          "restored_SIG_relative_MSE": 0.06724711771108827,
+          "restored_SIG_head_visible_MSE": 0.03708930914895425,
+          "iq_nmse": 0.01311944797735138
+        },
+        "practical_mid_urban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.2790131957324427,
+          "prior0_SIG_relative_MSE": 0.2945841051885892,
+          "prior1_SIG_relative_MSE": 0.26344228627629634,
+          "SIG_head_visible_MSE": 0.18542771506812528,
+          "prior0_SIG_head_visible_MSE": 0.19950250007067477,
+          "prior1_SIG_head_visible_MSE": 0.1713529300655758,
+          "SIG_head_orthogonal_MSE": 0.09358547990801538,
+          "prior0_SIG_head_orthogonal_MSE": 0.09508160432340299,
+          "prior1_SIG_head_orthogonal_MSE": 0.09208935549262781,
+          "restored_SIG_relative_MSE": 0.2152108605347027,
+          "restored_SIG_head_visible_MSE": 0.14226006651008838,
+          "iq_nmse": 0.03784634750081194
+        },
+        "practical_low_urban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.3809408102902931,
+          "prior0_SIG_relative_MSE": 0.3984418953156018,
+          "prior1_SIG_relative_MSE": 0.3634397252649843,
+          "SIG_head_visible_MSE": 0.27015819251941264,
+          "prior0_SIG_head_visible_MSE": 0.2858176438062186,
+          "prior1_SIG_head_visible_MSE": 0.25449874123260674,
+          "SIG_head_orthogonal_MSE": 0.11078261668105008,
+          "prior0_SIG_head_orthogonal_MSE": 0.11262425039802285,
+          "prior1_SIG_head_orthogonal_MSE": 0.10894098296407735,
+          "restored_SIG_relative_MSE": 0.340072466557156,
+          "restored_SIG_head_visible_MSE": 0.23081551686127535,
+          "iq_nmse": 0.05681985031281719
+        }
+      }
+    },
+    "linear": {
+      "train": {
+        "1": {
+          "count": 512,
+          "SIG_relative_MSE": 0.1759503805847243,
+          "prior0_SIG_relative_MSE": 0.176763466065593,
+          "prior1_SIG_relative_MSE": 0.17513729510385556,
+          "SIG_head_visible_MSE": 0.10637664454859963,
+          "prior0_SIG_head_visible_MSE": 0.10886949936520457,
+          "prior1_SIG_head_visible_MSE": 0.10388378973199468,
+          "SIG_head_orthogonal_MSE": 0.06957373551209789,
+          "prior0_SIG_head_orthogonal_MSE": 0.06789396616718246,
+          "prior1_SIG_head_orthogonal_MSE": 0.07125350485701329,
+          "restored_SIG_relative_MSE": 0.12865931153630134,
+          "restored_SIG_head_visible_MSE": 0.08422594811408686,
+          "iq_nmse": 0.020088198990964125
+        },
+        "20": {
+          "count": 512,
+          "SIG_relative_MSE": 0.1630664187386392,
+          "prior0_SIG_relative_MSE": 0.16403758061384238,
+          "prior1_SIG_relative_MSE": 0.16209525686343604,
+          "SIG_head_visible_MSE": 0.09461599970322791,
+          "prior0_SIG_head_visible_MSE": 0.09723392567545845,
+          "prior1_SIG_head_visible_MSE": 0.09199807373099737,
+          "SIG_head_orthogonal_MSE": 0.06845041862388657,
+          "prior0_SIG_head_orthogonal_MSE": 0.06680365451523804,
+          "prior1_SIG_head_orthogonal_MSE": 0.0700971827325351,
+          "restored_SIG_relative_MSE": 0.10986754551643181,
+          "restored_SIG_head_visible_MSE": 0.06959223297501256,
+          "iq_nmse": 0.019029241523423085
+        }
+      },
+      "V": {
+        "clean": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.11890834158410418,
+          "prior0_SIG_relative_MSE": 0.11833832995405623,
+          "prior1_SIG_relative_MSE": 0.11947835321415214,
+          "SIG_head_visible_MSE": 0.05696303192337652,
+          "prior0_SIG_head_visible_MSE": 0.05811440631882468,
+          "prior1_SIG_head_visible_MSE": 0.05581165752792837,
+          "SIG_head_orthogonal_MSE": 0.06194530934930973,
+          "prior0_SIG_head_orthogonal_MSE": 0.06022392331312855,
+          "prior1_SIG_head_orthogonal_MSE": 0.06366669538549091,
+          "restored_SIG_relative_MSE": 0.0008148603300639818,
+          "restored_SIG_head_visible_MSE": 0.00032193713569023255,
+          "iq_nmse": 0.00020863024350407857
+        },
+        "practical_high": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.11605300244654662,
+          "prior0_SIG_relative_MSE": 0.11152279594772979,
+          "prior1_SIG_relative_MSE": 0.12058320894536345,
+          "SIG_head_visible_MSE": 0.05659138830169584,
+          "prior0_SIG_head_visible_MSE": 0.05486458923183344,
+          "prior1_SIG_head_visible_MSE": 0.05831818737155825,
+          "SIG_head_orthogonal_MSE": 0.05946161385869106,
+          "prior0_SIG_head_orthogonal_MSE": 0.056658206431686876,
+          "prior1_SIG_head_orthogonal_MSE": 0.06226502128569524,
+          "restored_SIG_relative_MSE": 0.048576109625876635,
+          "restored_SIG_head_visible_MSE": 0.025597790671281425,
+          "iq_nmse": 0.01093980538934277
+        },
+        "practical_mid": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.13668096158794707,
+          "prior0_SIG_relative_MSE": 0.1348196376279526,
+          "prior1_SIG_relative_MSE": 0.13854228554794154,
+          "SIG_head_visible_MSE": 0.07233157366363432,
+          "prior0_SIG_head_visible_MSE": 0.07252357353957903,
+          "prior1_SIG_head_visible_MSE": 0.07213957378768959,
+          "SIG_head_orthogonal_MSE": 0.06434938758743614,
+          "prior0_SIG_head_orthogonal_MSE": 0.062296063754666925,
+          "prior1_SIG_head_orthogonal_MSE": 0.06640271142020535,
+          "restored_SIG_relative_MSE": 0.08535130964100744,
+          "restored_SIG_head_visible_MSE": 0.04833295276814186,
+          "iq_nmse": 0.014914619130406051
+        },
+        "practical_low_suburban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.15172165212816732,
+          "prior0_SIG_relative_MSE": 0.15022832451681867,
+          "prior1_SIG_relative_MSE": 0.15321497973951598,
+          "SIG_head_visible_MSE": 0.08424081732715241,
+          "prior0_SIG_head_visible_MSE": 0.08471055898097012,
+          "prior1_SIG_head_visible_MSE": 0.08377107567333474,
+          "SIG_head_orthogonal_MSE": 0.06748083439035316,
+          "prior0_SIG_head_orthogonal_MSE": 0.06551776512444783,
+          "prior1_SIG_head_orthogonal_MSE": 0.06944390365625848,
+          "restored_SIG_relative_MSE": 0.11495551769705706,
+          "restored_SIG_head_visible_MSE": 0.06716847149794358,
+          "iq_nmse": 0.018604990642022732
+        },
+        "practical_high_urban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.13311035557972623,
+          "prior0_SIG_relative_MSE": 0.1315876158333581,
+          "prior1_SIG_relative_MSE": 0.13463309532609433,
+          "SIG_head_visible_MSE": 0.07008765975802048,
+          "prior0_SIG_head_visible_MSE": 0.07068157448409132,
+          "prior1_SIG_head_visible_MSE": 0.06949374503194963,
+          "SIG_head_orthogonal_MSE": 0.06302269547391225,
+          "prior0_SIG_head_orthogonal_MSE": 0.06090604099666791,
+          "prior1_SIG_head_orthogonal_MSE": 0.06513934995115658,
+          "restored_SIG_relative_MSE": 0.06854110537321423,
+          "restored_SIG_head_visible_MSE": 0.03750364921268878,
+          "iq_nmse": 0.014159455448426759
+        },
+        "practical_mid_urban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.2301675453483468,
+          "prior0_SIG_relative_MSE": 0.24244064052699582,
+          "prior1_SIG_relative_MSE": 0.21789445016969777,
+          "SIG_head_visible_MSE": 0.14684097367012763,
+          "prior0_SIG_head_visible_MSE": 0.1575371803358134,
+          "prior1_SIG_head_visible_MSE": 0.13614476700444184,
+          "SIG_head_orthogonal_MSE": 0.08332657109435015,
+          "prior0_SIG_head_orthogonal_MSE": 0.08490345954987948,
+          "prior1_SIG_head_orthogonal_MSE": 0.08174968263882085,
+          "restored_SIG_relative_MSE": 0.21004893199688407,
+          "restored_SIG_head_visible_MSE": 0.13733359905518994,
+          "iq_nmse": 0.03747056579919039
+        },
+        "practical_low_urban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.32061914078721737,
+          "prior0_SIG_relative_MSE": 0.34464001067995015,
+          "prior1_SIG_relative_MSE": 0.29659827089448476,
+          "SIG_head_visible_MSE": 0.22158018770905236,
+          "prior0_SIG_head_visible_MSE": 0.24164440342329208,
+          "prior1_SIG_head_visible_MSE": 0.20151597199481264,
+          "SIG_head_orthogonal_MSE": 0.0990389522759153,
+          "prior0_SIG_head_orthogonal_MSE": 0.1029956063588338,
+          "prior1_SIG_head_orthogonal_MSE": 0.0950822981929968,
+          "restored_SIG_relative_MSE": 0.33841963468340525,
+          "restored_SIG_head_visible_MSE": 0.22739559814340787,
+          "iq_nmse": 0.057045894531244756
+        }
+      }
+    },
+    "mlp": {
+      "train": {
+        "1": {
+          "count": 512,
+          "SIG_relative_MSE": 0.17592031227472477,
+          "prior0_SIG_relative_MSE": 0.1743356535830614,
+          "prior1_SIG_relative_MSE": 0.17750497096638812,
+          "SIG_head_visible_MSE": 0.1076277792115181,
+          "prior0_SIG_head_visible_MSE": 0.10807092077917371,
+          "prior1_SIG_head_visible_MSE": 0.10718463764386249,
+          "SIG_head_orthogonal_MSE": 0.06829253258173654,
+          "prior0_SIG_head_orthogonal_MSE": 0.06626473231838588,
+          "prior1_SIG_head_orthogonal_MSE": 0.07032033284508721,
+          "restored_SIG_relative_MSE": 0.13004744989257488,
+          "restored_SIG_head_visible_MSE": 0.0864999804881054,
+          "iq_nmse": 0.02049104950643528
+        },
+        "20": {
+          "count": 512,
+          "SIG_relative_MSE": 0.15790519548824772,
+          "prior0_SIG_relative_MSE": 0.1561013467425139,
+          "prior1_SIG_relative_MSE": 0.1597090442339815,
+          "SIG_head_visible_MSE": 0.09206297746832666,
+          "prior0_SIG_head_visible_MSE": 0.09226769233881638,
+          "prior1_SIG_head_visible_MSE": 0.09185826259783691,
+          "SIG_head_orthogonal_MSE": 0.06584221759807976,
+          "prior0_SIG_head_orthogonal_MSE": 0.06383365400216931,
+          "prior1_SIG_head_orthogonal_MSE": 0.06785078119399018,
+          "restored_SIG_relative_MSE": 0.11248160588464019,
+          "restored_SIG_head_visible_MSE": 0.07081352273675406,
+          "iq_nmse": 0.019193906627027316
+        }
+      },
+      "V": {
+        "clean": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.11620543206267632,
+          "prior0_SIG_relative_MSE": 0.11461014462678751,
+          "prior1_SIG_relative_MSE": 0.11780071949856512,
+          "SIG_head_visible_MSE": 0.055920843258561254,
+          "prior0_SIG_head_visible_MSE": 0.05682189430902754,
+          "prior1_SIG_head_visible_MSE": 0.05501979220809497,
+          "SIG_head_orthogonal_MSE": 0.06028458849431576,
+          "prior0_SIG_head_orthogonal_MSE": 0.057788249999357014,
+          "prior1_SIG_head_orthogonal_MSE": 0.0627809269892745,
+          "restored_SIG_relative_MSE": 0.0021757366116067507,
+          "restored_SIG_head_visible_MSE": 0.0010814745903552764,
+          "iq_nmse": 0.001402231159677034
+        },
+        "practical_high": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.11523039853682032,
+          "prior0_SIG_relative_MSE": 0.10889008100351363,
+          "prior1_SIG_relative_MSE": 0.12157071607012702,
+          "SIG_head_visible_MSE": 0.05630129393198659,
+          "prior0_SIG_head_visible_MSE": 0.053462586992159424,
+          "prior1_SIG_head_visible_MSE": 0.059140000871813744,
+          "SIG_head_orthogonal_MSE": 0.058929104312231084,
+          "prior0_SIG_head_orthogonal_MSE": 0.05542749373860174,
+          "prior1_SIG_head_orthogonal_MSE": 0.06243071488586044,
+          "restored_SIG_relative_MSE": 0.04922636910570174,
+          "restored_SIG_head_visible_MSE": 0.026073739365082477,
+          "iq_nmse": 0.01046171927297483
+        },
+        "practical_mid": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.1344315144807699,
+          "prior0_SIG_relative_MSE": 0.13123979434545732,
+          "prior1_SIG_relative_MSE": 0.13762323461608247,
+          "SIG_head_visible_MSE": 0.0708633846403082,
+          "prior0_SIG_head_visible_MSE": 0.07039226078547874,
+          "prior1_SIG_head_visible_MSE": 0.07133450849513766,
+          "SIG_head_orthogonal_MSE": 0.06356812949193316,
+          "prior0_SIG_head_orthogonal_MSE": 0.060847533222230826,
+          "prior1_SIG_head_orthogonal_MSE": 0.0662887257616355,
+          "restored_SIG_relative_MSE": 0.08234516024951599,
+          "restored_SIG_head_visible_MSE": 0.046325344484586195,
+          "iq_nmse": 0.014197011150042824
+        },
+        "practical_low_suburban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.14930221655381753,
+          "prior0_SIG_relative_MSE": 0.14733993876289578,
+          "prior1_SIG_relative_MSE": 0.15126449434473935,
+          "SIG_head_visible_MSE": 0.0822669075527178,
+          "prior0_SIG_head_visible_MSE": 0.08265891284136155,
+          "prior1_SIG_head_visible_MSE": 0.08187490226407404,
+          "SIG_head_orthogonal_MSE": 0.06703530858197919,
+          "prior0_SIG_head_orthogonal_MSE": 0.06468102551301755,
+          "prior1_SIG_head_orthogonal_MSE": 0.06938959165094084,
+          "restored_SIG_relative_MSE": 0.11286938854190343,
+          "restored_SIG_head_visible_MSE": 0.0656088195722002,
+          "iq_nmse": 0.01864645756327294
+        },
+        "practical_high_urban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.13148531672724792,
+          "prior0_SIG_relative_MSE": 0.12851655189937802,
+          "prior1_SIG_relative_MSE": 0.1344540815551178,
+          "SIG_head_visible_MSE": 0.06893735776747878,
+          "prior0_SIG_head_visible_MSE": 0.06868885137680852,
+          "prior1_SIG_head_visible_MSE": 0.06918586415814904,
+          "SIG_head_orthogonal_MSE": 0.06254795860583358,
+          "prior0_SIG_head_orthogonal_MSE": 0.05982770017740699,
+          "prior1_SIG_head_orthogonal_MSE": 0.06526821703426017,
+          "restored_SIG_relative_MSE": 0.0671750961141485,
+          "restored_SIG_head_visible_MSE": 0.03700860078753599,
+          "iq_nmse": 0.01353544366546912
+        },
+        "practical_mid_urban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.22454617065332194,
+          "prior0_SIG_relative_MSE": 0.23471509039431854,
+          "prior1_SIG_relative_MSE": 0.21437725091232532,
+          "SIG_head_visible_MSE": 0.14238802403079218,
+          "prior0_SIG_head_visible_MSE": 0.1517593842525348,
+          "prior1_SIG_head_visible_MSE": 0.13301666380904967,
+          "SIG_head_orthogonal_MSE": 0.08215814604625327,
+          "prior0_SIG_head_orthogonal_MSE": 0.08295570553359592,
+          "prior1_SIG_head_orthogonal_MSE": 0.0813605865589106,
+          "restored_SIG_relative_MSE": 0.20661801664652324,
+          "restored_SIG_head_visible_MSE": 0.13525386293697672,
+          "iq_nmse": 0.03777419079749967
+        },
+        "practical_low_urban": {
+          "count": 1800,
+          "SIG_relative_MSE": 0.3160455021157852,
+          "prior0_SIG_relative_MSE": 0.3370077467617429,
+          "prior1_SIG_relative_MSE": 0.2950832574698274,
+          "SIG_head_visible_MSE": 0.21760436304198574,
+          "prior0_SIG_head_visible_MSE": 0.23589641062944336,
+          "prior1_SIG_head_visible_MSE": 0.19931231545452818,
+          "SIG_head_orthogonal_MSE": 0.09844113827280948,
+          "prior0_SIG_head_orthogonal_MSE": 0.1011113352800773,
+          "prior1_SIG_head_orthogonal_MSE": 0.09577094126554166,
+          "restored_SIG_relative_MSE": 0.3333801791255015,
+          "restored_SIG_head_visible_MSE": 0.22768716111130163,
+          "iq_nmse": 0.05723589673018885
+        }
+      }
+    }
+  },
+  "new_G_F_forwards": 0,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_labels_read": 0,
+  "target_reads": 0,
+  "seconds": 1.3697419101372361
+}

@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-performance-efficiency goal and explicit independent frozen-source-F guidance; source-only CPU association/latent intervention; no G training or target use",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "f19f47ffd1c021477898a08e9115a16d07ecbdea",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01-release"
@@ -89,7 +89,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe run --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe run --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit f19f47ffd1c021477898a08e9115a16d07ecbdea",
     "stop_rule": "Badrole/IDs/overlap/sourceVmetadata/Gstrictconfig/cache-order/shape/nonfinite/state-grad-or-hook-change/collision/smoke/execute/missingfixedmatrix:preservefailedrun/stopremaining/noautoretry. ScientifichypothesisFAILdoesnotstop/reselect/refit/retune."
   },
   "expected_artifacts": [
@@ -147,7 +147,7 @@
       "budget_ref": "CPU2/G13624-restoredSIGprefix13624/newVcleanprefix1800onlycontext,0otherrows/smokeG4-Ffull4;trainunique512-Vunique1800/0optimizer-TX-Vlabels-target/headfit",
       "output_root": "runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/context",
       "log_path": "logs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit PENDING_CODE_COMMIT --key context",
+      "command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit f19f47ffd1c021477898a08e9115a16d07ecbdea --key context",
       "expected_artifacts": [
         "context/launch.json",
         "context/smoke.json",
@@ -181,7 +181,7 @@
       "budget_ref": "CPU2/G13624-restoredSIGprefix13624/newVcleanprefix1800onlycontext,0otherrows/smokeG4-Ffull4;trainunique512-Vunique1800/0optimizer-TX-Vlabels-target/headfit",
       "output_root": "runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/linear",
       "log_path": "logs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit PENDING_CODE_COMMIT --key linear",
+      "command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit f19f47ffd1c021477898a08e9115a16d07ecbdea --key linear",
       "expected_artifacts": [
         "linear/launch.json",
         "linear/smoke.json",
@@ -215,7 +215,7 @@
       "budget_ref": "CPU2/G13624-restoredSIGprefix13624/newVcleanprefix1800onlycontext,0otherrows/smokeG4-Ffull4;trainunique512-Vunique1800/0optimizer-TX-Vlabels-target/headfit",
       "output_root": "runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/mlp",
       "log_path": "logs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit PENDING_CODE_COMMIT --key mlp",
+      "command": "python -u -m experiments.pamf_dura_efficiency.signature_generalization_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 --commit f19f47ffd1c021477898a08e9115a16d07ecbdea --key mlp",
       "expected_artifacts": [
         "mlp/launch.json",
         "mlp/smoke.json",
@@ -233,7 +233,8 @@
     "TrainSIG40.32MBproofread-onlyreuse/newtraincacheF0. FirstcontextworkerafteractualLs-smoke computesVcleanSIG1800/1.152MBonce;remainingworkersmetadata-IDreuse/noNNduplicate. MainG40872/restoredprefix40872/newVprefix1800/smokeG12-fullF12/Fupdates0;F50source4df7-50/11100+oldcache63000prefix/.847077s costdisclosed/F-guided. All3originalGsingle30-7410/noancestor andscientificnegativeversionspreserved.",
     "H1 andH2 explicitinselectionrule/independentlyreported/cleanonlydescriptive/noindicatorfallback. Counts>=4/6 applyseparately,scene-wisegainsalsofullyreported. Zero-baselinerelativegainundefinedexplicitNone/notreplacedbydefault. FAILnotblockgoal orautomaticallyrunG;PASSonlysupportsseparatelegalhypothesis/notgoalachievement.",
     "3focusedtestsPASS:perrecordMSEdecomposition/floor/shape-boundary;bothmodels-and-cachedviews/H1;H2separate. ThreeactualCLI-CPU-beforedata-guard/344295-406055-457575factory/twoobservers/exactIQ/exceptioncleanup/state-grad/decompositionPASS/0dataNN. OneP0P1PASS. Eachfreshworkerstrictfinal30real2noncleanLs G4/fullF4 smoke-originalSIG-defaulthead-frozenstate,thencontinueswhole9views;noquery.",
-    "27privateNPZs/fullIQ-andSIG/IDs-RX-day-role/headbasis-W retainedN607;Gitonlyaggregates. IndependentNumPycomplete318groupcells/ID-role-targetcache/algebra/headprojection/twofixedhypotheses,0extraNN. Oneimmutableoutput/preflight/archiveSHA/compile/postPID-CWD-argv-CUDAempty-loggrowth. CPU2seqworkers/noGPU/otherowners-defaultDURA-previousartifactsunchanged/completegoalACTIVE."
+    "27privateNPZs/fullIQ-andSIG/IDs-RX-day-role/headbasis-W retainedN607;Gitonlyaggregates. IndependentNumPycomplete318groupcells/ID-role-targetcache/algebra/headprojection/twofixedhypotheses,0extraNN. Oneimmutableoutput/preflight/archiveSHA/compile/postPID-CWD-argv-CUDAempty-loggrowth. CPU2seqworkers/noGPU/otherowners-defaultDURA-previousartifactsunchanged/completegoalACTIVE.",
+    "Existing numpy_values stores head_basis as FP32. Independent verification now checks exact FP32 rounding of independent FP64 SVD and its derived rounding error identity; originalNNresults/thresholds unchanged. FullFP64headbasis givesidentical scientificflags,0NNrerun."
   ],
   "registered_at": "2026-10-31T15:04:33+00:00"
 }

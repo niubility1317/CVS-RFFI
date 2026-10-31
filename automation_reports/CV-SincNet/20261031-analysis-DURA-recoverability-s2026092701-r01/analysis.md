@@ -300,3 +300,8 @@ VERIFIED / ANALYZED。深层线性SIG预测，单阶段从零30轮/7410，L18900
 VERIFIED / ANALYZED。深层MLP SIG预测，单阶段从零30轮/7410，L189000/U1701000，G祖先0；原main344295架构增加从encoder2pool4+encoder3pool2形成的192维特征残差预测，原128→160浅预测保留。线性192→160零初始化、MLP192→160-SiLU-160→160末层零初始化；初始main权重/别名/SIG/IQ/随机流保持，MLP首层初始梯度0预期，真实新增末层辅助梯度非零。原四物理+输出SIGalpha1/cap.5+.01mean2priorSIG辅助、conditionerbound.1不改。完整G457575/ConvLinearMAC25257512/两prior四CG27FFT，native全部路径。源F-onlySIG40.32MB复用/newFcache0，F50/source4df7/50-11100及历史缓存成本披露，F-guided；在线prefix/VJP各1.89m，完整F训练0，0TX/V/target训练或分类头改动。源条件oracle两视图主条件PASS仅为学习假设证据，不自动继承为本版资格/目标收益/恢复极限；本版固定final30，每角色全七景预测后truth-last，126正式105源V378三对照配对14IQ独立复算，全30轮loss/均值权重/曝光/视图/cap/deep配置和来源核对。六星地较原特征条件版提高0/6、较另一深层版提高0/6、较原SIG提高0/6、较默认DURA提高0/6。clean84.927381%、低城区68.705357%，3pp通过0/6、clean严格保持=True、R17逐景1pp=True、旧lowU70%=False。G训练保存1114.365791秒、含准备1115.550746秒、控制器至自动分析1301.024889秒；同卡G+F B1默认4.619074ms、本版4.708815ms。共享GPU墙钟不作因果提速或等质量速度比，源代理和更深预测不能代替真实TX净纠错。默认DURA和完整3pp/clean/同质量效率目标保持ACTIVE。
 
 这些固定版本分别验证，未依据目标结果改参数、选轮次或重跑。源oracle和源训练误差不替代六景逐个3pp/clean/真实净纠错，有限候选不认证信息恢复极限。
+
+
+## 冻结SIG训练/源验证泛化：两条退步解释未获支持
+
+20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 / f19f47ffd1c021477898a08e9115a16d07ecbdea。冻结三G的source-train512×01/20与sourceV1800×七景已完整完成。独立318cell/27NPZ/2312物理记录/40872G观察复算通过，0新增NN。两深层版在源V六景整体SIG预测误差均低约15.8%至19.5%，原head对比方向误差均低约18.0%至23.6%，因此H1训练改善但源V不改善、H2整体改善但head方向不改善均FAIL。只在已见源RX上诊断，不证明未见RX泛化、梯度冲突或解码因果。V只诊断，0V/TX标签、target、训练或模型选择。新增VcleanSIG1800/1.152MB一次后复用；原F50知识和训练SIG缓存成本披露。FP32basis舍入已独立验证，FP64复算判定相同，无NN重跑或改科学阈值；默认DURA和完整目标保持。 [完整分析](../20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/analysis.md)。

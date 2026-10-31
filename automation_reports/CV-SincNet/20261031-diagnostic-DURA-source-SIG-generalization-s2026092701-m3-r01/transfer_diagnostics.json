@@ -1,0 +1,58 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "scope": "Postfreeze descriptor metrics only/no training or new qualification;sourceVnotunseenRX",
+  "relative_changes": {
+    "linear": {
+      "practical_high": {
+        "restored_SIG_relative_MSE": 0.4311525734146504,
+        "iq_nmse": -14.550090364655578
+      },
+      "practical_mid": {
+        "restored_SIG_relative_MSE": -0.7809925521471195,
+        "iq_nmse": -7.869583486209053
+      },
+      "practical_low_suburban": {
+        "restored_SIG_relative_MSE": -1.2200023402254345,
+        "iq_nmse": 0.44482189815449047
+      },
+      "practical_high_urban": {
+        "restored_SIG_relative_MSE": -1.9242276935723668,
+        "iq_nmse": -7.927219749419212
+      },
+      "practical_mid_urban": {
+        "restored_SIG_relative_MSE": 2.3985446296685753,
+        "iq_nmse": 0.9929140496675148
+      },
+      "practical_low_urban": {
+        "restored_SIG_relative_MSE": 0.4860234321477974,
+        "iq_nmse": -0.3978261420667373
+      }
+    },
+    "mlp": {
+      "practical_high": {
+        "restored_SIG_relative_MSE": -0.9017163498699521,
+        "iq_nmse": -9.544077379691052
+      },
+      "practical_mid": {
+        "restored_SIG_relative_MSE": 2.7686040587170946,
+        "iq_nmse": -2.6795029838949658
+      },
+      "practical_low_suburban": {
+        "restored_SIG_relative_MSE": 0.6168646688304413,
+        "iq_nmse": 0.22293268520992005
+      },
+      "practical_high_urban": {
+        "restored_SIG_relative_MSE": 0.1070999016629881,
+        "iq_nmse": -3.170832254801348
+      },
+      "practical_mid_urban": {
+        "restored_SIG_relative_MSE": 3.9927556940342557,
+        "iq_nmse": 0.1906569803353575
+      },
+      "practical_low_urban": {
+        "restored_SIG_relative_MSE": 1.9679004005840994,
+        "iq_nmse": -0.7322201925579641
+      }
+    }
+  }
+}
