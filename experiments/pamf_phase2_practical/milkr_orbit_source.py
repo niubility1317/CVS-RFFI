@@ -30,6 +30,11 @@ def calibrate(rt):
         from .milkr.local_anchor import fit as local_fit,POLICY
         require(rt.get('local_anchor_policy')==POLICY,'Frozen local-anchor policy differs')
         fit_K1=local_fit;fit_many=local_fit
+    if rt['kernel_method']=='teacher_kernel':
+        from .teacher_features import TeacherBridge
+        from .milkr.teacher_kernel import fit as teacher_fit,WEIGHT
+        require(rt.get('teacher_weight')==WEIGHT,'Frozen teacher kernel weight differs')
+        encoder_type=TeacherBridge;fit_K1=teacher_fit;fit_many=teacher_fit
     require(rt['source_cache_epochs']==[91,92] and rt['orbit_quarters']==[0,1,2,3] and rt['orbit_rank']==64,'Wrong preregistered orbit configuration')
     if rt['kernel_method']=='registered_scale':require(rt.get('bandwidth_scope')=='registered','Registered support scale required')
     for epoch in rt['source_cache_epochs']:
@@ -48,7 +53,8 @@ def calibrate(rt):
         groups=[rng.permutation(np.flatnonzero((m['rx_i']==rx)&(m['y']==c)))[:52] for c in old_tx+held_tx]
         require(all(len(g)==52 for g in groups),'Insufficient source holdout count')
         positions=np.concatenate(groups);held=np.concatenate([np.arange(c*52+20,(c+1)*52) for c in range(6)])
-        mapped=[encoder.transform(subset(f,positions),restored=bool(path)) for path,f in enumerate(features)]
+        options=dict(old_columns=old_tx) if rt['kernel_method']=='teacher_kernel' else {}
+        mapped=[encoder.transform(subset(f,positions),restored=bool(path),**options) for path,f in enumerate(features)]
         frames.append(dict(rx=int(rx),mapped=mapped,ids=[str(m['ids'][int(p)]) for p in positions],held=held))
         folds.append(dict(receiver=int(rx),held_TX_indices=held_tx,train_TX_indices=old_tx,training_observations=len(train),eval_epoch=91))
         print('ORBIT_SOURCE_FOLD',rx,flush=True)
@@ -58,6 +64,7 @@ def calibrate(rt):
             rule=dict(config=list(config),ridge=ridge,outer_folds=3,outer_strengths=[0.,.25,.5,.75],ridge_reference_classes=6);rows=[]
             if rt['kernel_method']=='registered_scale':rule['bandwidth_scope']='registered'
             if rt['kernel_method']=='local_anchor':rule['local_anchor_policy']=rt['local_anchor_policy']
+            if rt['kernel_method']=='teacher_kernel':rule['teacher_weight']=rt['teacher_weight']
             for frame in frames:
                 support=np.arange(6)*52
                 for sp in (0,1):
@@ -79,6 +86,6 @@ def calibrate(rt):
     write(Path(rt['run_root'])/'source_selection.json',dict(status='SOURCE_FROZEN',K1_rule=best['K1_rule'],target_eligible=True,
         scientific_verdict='FIXED_FEATURE_CORNER_FALSIFICATION_NO_SOURCE_GAIN_GATE',selected_rank=64,orbit_quarters=[0,1,2,3],source_K1_grid=grid,source_summary=validation,
         source_RX_TX_folds=folds,source_physical_rows=len(m['ids']),source_paired_observations=len(features[0]['z_id']),
-        source_phase_pairs=len(features[0]['z_id'])*(4 if distribution else 1),feature_method=rt['kernel_method'],
+        source_phase_pairs=len(features[0]['z_id'])*(4 if distribution else 1),feature_method=rt['kernel_method'],source_held_new_head_columns_removed_before_softmax=rt['kernel_method']=='teacher_kernel',
         target_reads=0,query_reads=0,U_truth_reads=0,F_updates=0,G_updates=0,seconds=time.perf_counter()-started,source_numerical_smoke='PASS',
         scope='source old4/new2; encoder fit excludes held RX/TX but F saw all source6; fixed C4/rank64 not targetselected; no source examples/statistics used by target worker'))
