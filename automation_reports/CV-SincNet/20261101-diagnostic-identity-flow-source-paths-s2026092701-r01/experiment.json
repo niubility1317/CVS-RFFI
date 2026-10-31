@@ -1,0 +1,156 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-identity-flow-source-paths-s2026092701-r01",
+  "group_id": "phase3-identity-flow-source-paths",
+  "display_name": "生成流源训练样本积分路径诊断",
+  "description": "冻结 E20、F0，比较原源 L_s/U_s 与 G10 L_s 的 1/2/4/8/16 步反向噪声轨迹，不读取类别标签、V/OE 或目标 IQ。",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-trajectory-diagnostic",
+  "aliases": [],
+  "tags": [
+    "conditional-flow",
+    "source-only",
+    "trajectory",
+    "frozen-F0"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261101-phase3-identity-flow-source-E20-s2026092701-r01",
+    "20261029-phase3-star-representation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求探索更强恢复网络；已完成先导实验源验证波形误差大，授权对合法源训练输入做冻结路径诊断。",
+  "code": {
+    "commit": "fa13e07dda4d51d9451b6c7a3f81471f735fd00b",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Torch, one admitted GPU, CPU2, FP32 and TF32 off",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-identity-flow-source-paths-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Fixed first 128 original source R07 L_s, 128 U_s, 128 G10 L_s matched by exact physical ID, and the same 128 L_s clean; G10/R07 records may overlap, not new observations",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07 source physical ID roles and G10 L_s IDs; F0 role contract equality",
+    "label_map_ref": "No TX labels read",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Completed E20 source checkpoint, role contracts and existing G10 L_s manifest",
+    "support_query_ref": null,
+    "leo_config_ref": "Existing R07 2.462 GHz view01 and fixed G10 2.45 GHz MIX01 source observations",
+    "target_panel": "none"
+  },
+  "permissions": {
+    "regime": "Frozen E20 and original Phase3 F0 on legal source training IQ only; no update, no label",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-training sample path/step sensitivity and F0 prediction self-agreement, not TX accuracy, target selection or a performance guarantee"
+  },
+  "checkpoint": {
+    "initialization": "Frozen E20 flow and original frozen F0; no new optimizer",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-identity-flow-source-E20-s2026092701-r01/identity_flow/final.pt"
+    ],
+    "contract_check_ref": "Exact E20 checkpoint commit/epoch/updates/roles and F0 original role IDs; G10/source L_s physical IDs matched",
+    "provenance_verdict": "E20 F0-guided source model fixed, no heldout or target training; F0 retains supervised source knowledge",
+    "selection_rule": "All five fixed step counts, same first 128 per group; no target data or classifier truth used"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/identity-flow-source-paths",
+    "gpu_policy": "CPU controller and shared restoration admission lock; <=2 known goal workers, GPU4/6/7 free>=12GB and total compute PIDs<3; do not alter other jobs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-source-paths-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-identity-flow-source-paths-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_identity_flow/20261101-diagnostic-identity-flow-source-paths-s2026092701-r01",
+    "launch_command": "python -u tools/identity_flow_trajectory_controller.py --code-commit fa13e07dda4d51d9451b6c7a3f81471f735fd00b",
+    "stop_rule": "Mismatched source physical IDs, checkpoint/F0, nonfinite output or state update, output collision: fail, retain partial artifacts and do not blindly retry"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "complete.json",
+    "logs/submitted.json",
+    "logs/probe.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "paired source IQ NMSE",
+      "F0 feature cosine",
+      "F0 clean/restored argmax agreement (not TX accuracy)",
+      "output-to-clean power ratio",
+      "antithetic path difference"
+    ],
+    "dimensions": [
+      "R07 L_s",
+      "R07 U_s",
+      "G10 L_s",
+      "clean L_s",
+      "1/2/4/8/16 fixed Euler steps"
+    ],
+    "prediction_ref": "aggregate source training record metrics, no per-record TX predictions saved",
+    "scorer_ref": "direct no-grad frozen inference with input/reference and model state checks"
+  },
+  "rows": [
+    {
+      "row_id": "source-paths",
+      "method": "Same frozen E20 flow with identical opposite noise and fixed Euler step schedule",
+      "purpose": "diagnostic only",
+      "config_ref": "experiments/pamf_identity_flow/trajectory_probe.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-source-paths-s2026092701-r01/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original E20 fixed inference template seed 2026110103, same source IDs/paths/steps, no random target data",
+      "k": null,
+      "scenario": "128 records per fixed source group only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "E20/F0 synthetic-scope actual source smoke2, then 4 groups x128 x5 step counts x2 opposite paths; no optimizer/label/target",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-source-paths-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-identity-flow-source-paths-s2026092701-r01/probe.log",
+      "command": "python -u tools/identity_flow_trajectory_controller.py --code-commit fa13e07dda4d51d9451b6c7a3f81471f735fd00b",
+      "expected_artifacts": [
+        "smoke.json",
+        "complete.json",
+        "logs/submitted.json",
+        "logs/probe.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Scientific trigger: fixed E20 source V nonclean IQ NMSE ~0.92 and target seven-view/Phase3 accuracy degraded; check source-training path integration rather than tune against held-out or target outcomes.",
+    "Source V, OE and target IQ not opened by this diagnostic. F0 argmax agreement is a clean-versus-restored consistency diagnostic and uses no TX truth.",
+    "G10 L_s first 128 only by physical-ID alignment; metadata for complete role IDs is audited. Two-source actual checkpoint smoke precedes full groups; no new records or neural updates.",
+    "Fixed F0 and E20 state snapshots, strict checkpoint ancestry, all 1/2/4/8/16 steps reported. Any subsequent candidate is separately preregistered; E30 already running unchanged.",
+    "Focused antithetic and identity metric test passed; independent review corrected over-reading G10 clean and GPU worker inventory before launch."
+  ],
+  "registered_at": "2026-10-31T17:06:27+00:00"
+}
