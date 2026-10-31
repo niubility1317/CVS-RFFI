@@ -1,0 +1,1580 @@
+{
+  "schema": "milkr_class_calibrated_prior_corners_v1",
+  "new_rows": 36,
+  "original_rows": 24,
+  "model_seed": 2026092701,
+  "capsule": "P01/MIX01/1-1",
+  "query_paths": {
+    "Q0": "raw",
+    "Q1": "DURA_only",
+    "Q2": "same_record_fusion"
+  },
+  "summary": [
+    {
+      "path": "S0Q0",
+      "cells": 4,
+      "H": 0.5566248066681828,
+      "old_macro": 0.6296630610379693,
+      "new_macro": 0.5086544882980013,
+      "gain_vs_original_raw_pp": 9.543521832014601,
+      "gain_vs_original_G_pp": 13.26979000272653,
+      "raw_original_gain_pp": 9.543521832014601,
+      "fusion_minus_raw_pp": 2.8281605867953683,
+      "G_only_minus_raw_pp": -0.9518470535780921,
+      "matched_original_gain_pp": 9.543521832014601
+    },
+    {
+      "path": "S0Q1",
+      "cells": 4,
+      "H": 0.5471063361324019,
+      "old_macro": 0.726973485899971,
+      "new_macro": 0.45284401877310265,
+      "gain_vs_original_raw_pp": 8.59167477843651,
+      "gain_vs_original_G_pp": 12.317942949148438,
+      "raw_original_gain_pp": 9.543521832014601,
+      "fusion_minus_raw_pp": 2.8281605867953683,
+      "G_only_minus_raw_pp": -0.9518470535780921,
+      "matched_original_gain_pp": 12.317942949148438
+    },
+    {
+      "path": "S0Q2",
+      "cells": 4,
+      "H": 0.5849064125361365,
+      "old_macro": 0.7019919738256231,
+      "new_macro": 0.5135500987493792,
+      "gain_vs_original_raw_pp": 12.37168241880997,
+      "gain_vs_original_G_pp": 16.097950589521897,
+      "raw_original_gain_pp": 9.543521832014601,
+      "fusion_minus_raw_pp": 2.8281605867953683,
+      "G_only_minus_raw_pp": -0.9518470535780921,
+      "matched_original_gain_pp": null
+    },
+    {
+      "path": "S1Q0",
+      "cells": 4,
+      "H": 0.5021845652154776,
+      "old_macro": 0.5918888365829725,
+      "new_macro": 0.4415408570742972,
+      "gain_vs_original_raw_pp": 32.1975285208774,
+      "gain_vs_original_G_pp": -8.085515079482537,
+      "raw_original_gain_pp": 32.1975285208774,
+      "fusion_minus_raw_pp": 12.834925166699316,
+      "G_only_minus_raw_pp": 15.379394771375162,
+      "matched_original_gain_pp": 32.1975285208774
+    },
+    {
+      "path": "S1Q1",
+      "cells": 4,
+      "H": 0.6559785129292293,
+      "old_macro": 0.7462237885491656,
+      "new_macro": 0.5961168168128632,
+      "gain_vs_original_raw_pp": 47.576923292252566,
+      "gain_vs_original_G_pp": 7.293879691892625,
+      "raw_original_gain_pp": 32.1975285208774,
+      "fusion_minus_raw_pp": 12.834925166699316,
+      "G_only_minus_raw_pp": 15.379394771375162,
+      "matched_original_gain_pp": 7.293879691892625
+    },
+    {
+      "path": "S1Q2",
+      "cells": 4,
+      "H": 0.6305338168824708,
+      "old_macro": 0.7266692496137355,
+      "new_macro": 0.5676595434799504,
+      "gain_vs_original_raw_pp": 45.03245368757672,
+      "gain_vs_original_G_pp": 4.749410087216778,
+      "raw_original_gain_pp": 32.1975285208774,
+      "fusion_minus_raw_pp": 12.834925166699316,
+      "G_only_minus_raw_pp": 15.379394771375162,
+      "matched_original_gain_pp": null
+    }
+  ],
+  "cells": [
+    {
+      "path": "S0Q0",
+      "k": 1,
+      "N": 2,
+      "H": 0.5067935353195056,
+      "old_macro": 0.6016760949601887,
+      "new_macro": 0.43776005547850205,
+      "macro_f1": 0.5661632999272368,
+      "floor": 0.23076923076923078,
+      "matched_input": true,
+      "matched_original_gain_pp": 19.559367218853378,
+      "original_raw_H": 0.31119986313097175,
+      "original_G_H": 0.33795588275335325,
+      "gain_vs_original_raw_pp": 19.559367218853378,
+      "gain_vs_original_G_pp": 16.88376525661523,
+      "raw_original_gain_pp": 19.559367218853378,
+      "fusion_minus_raw_pp": 2.935445936284753,
+      "G_only_minus_raw_pp": 1.167500561372814,
+      "raw_old_gain_pp": 17.51475256233587,
+      "raw_new_gain_pp": 19.279585846530978
+    },
+    {
+      "path": "S1Q0",
+      "k": 1,
+      "N": 2,
+      "H": 0.47904160734190515,
+      "old_macro": 0.5957841351219488,
+      "new_macro": 0.4005539786472277,
+      "macro_f1": 0.5348397026816178,
+      "floor": 0.15742024965325938,
+      "matched_input": true,
+      "matched_original_gain_pp": 11.311974819714916,
+      "original_raw_H": 0.365921859144756,
+      "original_G_H": 0.4922451258466976,
+      "gain_vs_original_raw_pp": 11.311974819714916,
+      "gain_vs_original_G_pp": -1.3203518504792455,
+      "raw_original_gain_pp": 11.311974819714916,
+      "fusion_minus_raw_pp": 10.516758996980736,
+      "G_only_minus_raw_pp": 13.927733778989705,
+      "raw_old_gain_pp": 12.60177667274262,
+      "raw_new_gain_pp": 10.087733445150471
+    },
+    {
+      "path": "S0Q0",
+      "k": 1,
+      "N": 20,
+      "H": 0.3056027503520869,
+      "old_macro": 0.450298396390294,
+      "new_macro": 0.23128370807602602,
+      "macro_f1": 0.24957980195328608,
+      "floor": 0.02039274924471299,
+      "matched_input": true,
+      "matched_original_gain_pp": 4.585342794301766,
+      "original_raw_H": 0.2597493224090692,
+      "original_G_H": 0.2427888391458696,
+      "gain_vs_original_raw_pp": 4.585342794301766,
+      "gain_vs_original_G_pp": 6.28139112062173,
+      "raw_original_gain_pp": 4.585342794301766,
+      "fusion_minus_raw_pp": 1.3888308036236918,
+      "G_only_minus_raw_pp": -1.0741513492055876,
+      "raw_old_gain_pp": 16.308600676747403,
+      "raw_new_gain_pp": -0.5796184782484642
+    },
+    {
+      "path": "S1Q0",
+      "k": 1,
+      "N": 20,
+      "H": 0.2813043387200299,
+      "old_macro": 0.40529863501986024,
+      "new_macro": 0.21540485005935142,
+      "macro_f1": 0.22135304049590257,
+      "floor": 0.008264462809917356,
+      "matched_input": true,
+      "matched_original_gain_pp": 12.22455590731595,
+      "original_raw_H": 0.1590587796468704,
+      "original_G_H": 0.34757133805083984,
+      "gain_vs_original_raw_pp": 12.22455590731595,
+      "gain_vs_original_G_pp": -6.626699933080992,
+      "raw_original_gain_pp": 12.22455590731595,
+      "fusion_minus_raw_pp": 7.17386815849782,
+      "G_only_minus_raw_pp": 10.453851775821343,
+      "raw_old_gain_pp": 20.51933727116337,
+      "raw_new_gain_pp": 8.34194944166707
+    },
+    {
+      "path": "S0Q0",
+      "k": 20,
+      "N": 2,
+      "H": 0.7161521963313732,
+      "old_macro": 0.7522198234391664,
+      "new_macro": 0.6833850752110446,
+      "macro_f1": 0.7335783517501202,
+      "floor": 0.6289646918013165,
+      "matched_input": true,
+      "matched_original_gain_pp": 6.054346728905569,
+      "original_raw_H": 0.6556087290423175,
+      "original_G_H": 0.5911305510140825,
+      "gain_vs_original_raw_pp": 6.054346728905569,
+      "gain_vs_original_G_pp": 12.502164531729065,
+      "raw_original_gain_pp": 6.054346728905569,
+      "fusion_minus_raw_pp": 3.028057086465741,
+      "G_only_minus_raw_pp": -3.059065832432195,
+      "raw_old_gain_pp": 3.4460134859586655,
+      "raw_new_gain_pp": 8.002170490228355
+    },
+    {
+      "path": "S1Q0",
+      "k": 20,
+      "N": 2,
+      "H": 0.6232468015399093,
+      "old_macro": 0.6992359233920568,
+      "new_macro": 0.5621548935362682,
+      "macro_f1": 0.6653282676074863,
+      "floor": 0.4314827828531272,
+      "matched_input": true,
+      "matched_original_gain_pp": 58.33340289765248,
+      "original_raw_H": 0.03991277256338448,
+      "original_G_H": 0.7561047437315076,
+      "gain_vs_original_raw_pp": 58.33340289765248,
+      "gain_vs_original_G_pp": -13.285794219159829,
+      "raw_original_gain_pp": 58.33340289765248,
+      "fusion_minus_raw_pp": 17.448975497863263,
+      "G_only_minus_raw_pp": 19.495089142102163,
+      "raw_old_gain_pp": 45.40695777172914,
+      "raw_new_gain_pp": 54.043012474388505
+    },
+    {
+      "path": "S0Q0",
+      "k": 20,
+      "N": 20,
+      "H": 0.6979507446697655,
+      "old_macro": 0.7144579293622281,
+      "new_macro": 0.6821891144264326,
+      "macro_f1": 0.6440999236455556,
+      "floor": 0.5233082706766917,
+      "matched_input": true,
+      "matched_original_gain_pp": 7.975030585997689,
+      "original_raw_H": 0.6182004388097886,
+      "original_G_H": 0.5238323536503645,
+      "gain_vs_original_raw_pp": 7.975030585997689,
+      "gain_vs_original_G_pp": 17.411839101940096,
+      "raw_original_gain_pp": 7.975030585997689,
+      "fusion_minus_raw_pp": 3.9603085208072875,
+      "G_only_minus_raw_pp": -0.8416715940473996,
+      "raw_old_gain_pp": 9.506862376964186,
+      "raw_new_gain_pp": 6.51729872787813
+    },
+    {
+      "path": "S1Q0",
+      "k": 20,
+      "N": 20,
+      "H": 0.6251455132600662,
+      "old_macro": 0.6672366527980245,
+      "new_macro": 0.5880497060543414,
+      "macro_f1": 0.5589656784913062,
+      "floor": 0.18215339233038347,
+      "matched_input": true,
+      "matched_original_gain_pp": 46.92018045882625,
+      "original_raw_H": 0.15594370867180365,
+      "original_G_H": 0.736237656412167,
+      "gain_vs_original_raw_pp": 46.92018045882625,
+      "gain_vs_original_G_pp": -11.109214315210082,
+      "raw_original_gain_pp": 46.92018045882625,
+      "fusion_minus_raw_pp": 16.200098013455445,
+      "G_only_minus_raw_pp": 17.64090438858744,
+      "raw_old_gain_pp": 51.08256707198247,
+      "raw_new_gain_pp": 43.257048717261114
+    },
+    {
+      "path": "S0Q1",
+      "k": 1,
+      "N": 2,
+      "H": 0.5184685409332337,
+      "old_macro": 0.7190907309045521,
+      "new_macro": 0.4053720607683127,
+      "macro_f1": 0.6261979216521918,
+      "floor": 0.16272189349112426,
+      "matched_input": true,
+      "matched_original_gain_pp": 18.051265817988043,
+      "original_raw_H": 0.31119986313097175,
+      "original_G_H": 0.33795588275335325,
+      "gain_vs_original_raw_pp": 20.726867780226193,
+      "gain_vs_original_G_pp": 18.051265817988043,
+      "raw_original_gain_pp": 19.559367218853378,
+      "fusion_minus_raw_pp": 2.935445936284753,
+      "G_only_minus_raw_pp": 1.167500561372814,
+      "raw_old_gain_pp": 17.51475256233587,
+      "raw_new_gain_pp": 19.279585846530978
+    },
+    {
+      "path": "S0Q2",
+      "k": 1,
+      "N": 2,
+      "H": 0.5361479946823531,
+      "old_macro": 0.6801284143209246,
+      "new_macro": 0.4424773409024933,
+      "macro_f1": 0.6114797794562634,
+      "floor": 0.1757396449704142,
+      "matched_input": false,
+      "matched_original_gain_pp": null,
+      "original_raw_H": 0.31119986313097175,
+      "original_G_H": 0.33795588275335325,
+      "gain_vs_original_raw_pp": 22.494813155138132,
+      "gain_vs_original_G_pp": 19.81921119289998,
+      "raw_original_gain_pp": 19.559367218853378,
+      "fusion_minus_raw_pp": 2.935445936284753,
+      "G_only_minus_raw_pp": 1.167500561372814,
+      "raw_old_gain_pp": 17.51475256233587,
+      "raw_new_gain_pp": 19.279585846530978
+    },
+    {
+      "path": "S1Q1",
+      "k": 1,
+      "N": 2,
+      "H": 0.6183189451318022,
+      "old_macro": 0.7375840356520403,
+      "new_macro": 0.5322549430700255,
+      "macro_f1": 0.6810265024922402,
+      "floor": 0.3881656804733728,
+      "matched_input": true,
+      "matched_original_gain_pp": 12.607381928510458,
+      "original_raw_H": 0.365921859144756,
+      "original_G_H": 0.4922451258466976,
+      "gain_vs_original_raw_pp": 25.23970859870462,
+      "gain_vs_original_G_pp": 12.607381928510458,
+      "raw_original_gain_pp": 11.311974819714916,
+      "fusion_minus_raw_pp": 10.516758996980736,
+      "G_only_minus_raw_pp": 13.927733778989705,
+      "raw_old_gain_pp": 12.60177667274262,
+      "raw_new_gain_pp": 10.087733445150471
+    },
+    {
+      "path": "S1Q2",
+      "k": 1,
+      "N": 2,
+      "H": 0.5842091973117125,
+      "old_macro": 0.7208628694361184,
+      "new_macro": 0.4911097313163242,
+      "macro_f1": 0.6527638445253052,
+      "floor": 0.32524271844660196,
+      "matched_input": false,
+      "matched_original_gain_pp": null,
+      "original_raw_H": 0.365921859144756,
+      "original_G_H": 0.4922451258466976,
+      "gain_vs_original_raw_pp": 21.82873381669565,
+      "gain_vs_original_G_pp": 9.196407146501489,
+      "raw_original_gain_pp": 11.311974819714916,
+      "fusion_minus_raw_pp": 10.516758996980736,
+      "G_only_minus_raw_pp": 13.927733778989705,
+      "raw_old_gain_pp": 12.60177667274262,
+      "raw_new_gain_pp": 10.087733445150471
+    },
+    {
+      "path": "S0Q1",
+      "k": 1,
+      "N": 20,
+      "H": 0.294861236860031,
+      "old_macro": 0.5932059871784577,
+      "new_macro": 0.19619012551467602,
+      "macro_f1": 0.25558688325688544,
+      "floor": 0.0,
+      "matched_input": true,
+      "matched_original_gain_pp": 5.207239771416142,
+      "original_raw_H": 0.2597493224090692,
+      "original_G_H": 0.2427888391458696,
+      "gain_vs_original_raw_pp": 3.5111914450961788,
+      "gain_vs_original_G_pp": 5.207239771416142,
+      "raw_original_gain_pp": 4.585342794301766,
+      "fusion_minus_raw_pp": 1.3888308036236918,
+      "G_only_minus_raw_pp": -1.0741513492055876,
+      "raw_old_gain_pp": 16.308600676747403,
+      "raw_new_gain_pp": -0.5796184782484642
+    },
+    {
+      "path": "S0Q2",
+      "k": 1,
+      "N": 20,
+      "H": 0.3194910583883238,
+      "old_macro": 0.5235144406713822,
+      "new_macro": 0.22989620258154636,
+      "macro_f1": 0.26192251237565983,
+      "floor": 0.00510204081632653,
+      "matched_input": false,
+      "matched_original_gain_pp": null,
+      "original_raw_H": 0.2597493224090692,
+      "original_G_H": 0.2427888391458696,
+      "gain_vs_original_raw_pp": 5.974173597925459,
+      "gain_vs_original_G_pp": 7.670221924245421,
+      "raw_original_gain_pp": 4.585342794301766,
+      "fusion_minus_raw_pp": 1.3888308036236918,
+      "G_only_minus_raw_pp": -1.0741513492055876,
+      "raw_old_gain_pp": 16.308600676747403,
+      "raw_new_gain_pp": -0.5796184782484642
+    },
+    {
+      "path": "S1Q1",
+      "k": 1,
+      "N": 20,
+      "H": 0.38584285647824335,
+      "old_macro": 0.5598452742220829,
+      "new_macro": 0.2943557664029893,
+      "macro_f1": 0.33242530146384097,
+      "floor": 0.03581267217630854,
+      "matched_input": true,
+      "matched_original_gain_pp": 3.8271518427403506,
+      "original_raw_H": 0.1590587796468704,
+      "original_G_H": 0.34757133805083984,
+      "gain_vs_original_raw_pp": 22.678407683137294,
+      "gain_vs_original_G_pp": 3.8271518427403506,
+      "raw_original_gain_pp": 12.22455590731595,
+      "fusion_minus_raw_pp": 7.17386815849782,
+      "G_only_minus_raw_pp": 10.453851775821343,
+      "raw_old_gain_pp": 20.51933727116337,
+      "raw_new_gain_pp": 8.34194944166707
+    },
+    {
+      "path": "S1Q2",
+      "k": 1,
+      "N": 20,
+      "H": 0.3530430203050081,
+      "old_macro": 0.5202531675212755,
+      "new_macro": 0.2671731649492889,
+      "macro_f1": 0.2961830711231638,
+      "floor": 0.02203856749311295,
+      "matched_input": false,
+      "matched_original_gain_pp": null,
+      "original_raw_H": 0.1590587796468704,
+      "original_G_H": 0.34757133805083984,
+      "gain_vs_original_raw_pp": 19.39842406581377,
+      "gain_vs_original_G_pp": 0.5471682254168275,
+      "raw_original_gain_pp": 12.22455590731595,
+      "fusion_minus_raw_pp": 7.17386815849782,
+      "G_only_minus_raw_pp": 10.453851775821343,
+      "raw_old_gain_pp": 20.51933727116337,
+      "raw_new_gain_pp": 8.34194944166707
+    },
+    {
+      "path": "S0Q1",
+      "k": 20,
+      "N": 2,
+      "H": 0.6855615380070512,
+      "old_macro": 0.8212145676223935,
+      "new_macro": 0.5883709759200121,
+      "macro_f1": 0.7611581142546449,
+      "floor": 0.4729444834855938,
+      "matched_input": true,
+      "matched_original_gain_pp": 9.44309869929687,
+      "original_raw_H": 0.6556087290423175,
+      "original_G_H": 0.5911305510140825,
+      "gain_vs_original_raw_pp": 2.9952808964733735,
+      "gain_vs_original_G_pp": 9.44309869929687,
+      "raw_original_gain_pp": 6.054346728905569,
+      "fusion_minus_raw_pp": 3.028057086465741,
+      "G_only_minus_raw_pp": -3.059065832432195,
+      "raw_old_gain_pp": 3.4460134859586655,
+      "raw_new_gain_pp": 8.002170490228355
+    },
+    {
+      "path": "S0Q2",
+      "k": 20,
+      "N": 2,
+      "H": 0.7464327671960306,
+      "old_macro": 0.8270196091293124,
+      "new_macro": 0.6801566192539088,
+      "macro_f1": 0.7880167424257329,
+      "floor": 0.634574841883345,
+      "matched_input": false,
+      "matched_original_gain_pp": null,
+      "original_raw_H": 0.6556087290423175,
+      "original_G_H": 0.5911305510140825,
+      "gain_vs_original_raw_pp": 9.08240381537131,
+      "gain_vs_original_G_pp": 15.530221618194807,
+      "raw_original_gain_pp": 6.054346728905569,
+      "fusion_minus_raw_pp": 3.028057086465741,
+      "G_only_minus_raw_pp": -3.059065832432195,
+      "raw_old_gain_pp": 3.4460134859586655,
+      "raw_new_gain_pp": 8.002170490228355
+    },
+    {
+      "path": "S1Q1",
+      "k": 20,
+      "N": 2,
+      "H": 0.8181976929609309,
+      "old_macro": 0.8647554209087628,
+      "new_macro": 0.7763971048269687,
+      "macro_f1": 0.8413816828977377,
+      "floor": 0.7266338721011947,
+      "matched_input": true,
+      "matched_original_gain_pp": 6.209294922942332,
+      "original_raw_H": 0.03991277256338448,
+      "original_G_H": 0.7561047437315076,
+      "gain_vs_original_raw_pp": 77.82849203975465,
+      "gain_vs_original_G_pp": 6.209294922942332,
+      "raw_original_gain_pp": 58.33340289765248,
+      "fusion_minus_raw_pp": 17.448975497863263,
+      "G_only_minus_raw_pp": 19.495089142102163,
+      "raw_old_gain_pp": 45.40695777172914,
+      "raw_new_gain_pp": 54.043012474388505
+    },
+    {
+      "path": "S1Q2",
+      "k": 20,
+      "N": 2,
+      "H": 0.7977365565185419,
+      "old_macro": 0.8519095559915613,
+      "new_macro": 0.7500413638506631,
+      "macro_f1": 0.8248537059160728,
+      "floor": 0.6823612087139845,
+      "matched_input": false,
+      "matched_original_gain_pp": null,
+      "original_raw_H": 0.03991277256338448,
+      "original_G_H": 0.7561047437315076,
+      "gain_vs_original_raw_pp": 75.78237839551575,
+      "gain_vs_original_G_pp": 4.163181278703432,
+      "raw_original_gain_pp": 58.33340289765248,
+      "fusion_minus_raw_pp": 17.448975497863263,
+      "G_only_minus_raw_pp": 19.495089142102163,
+      "raw_old_gain_pp": 45.40695777172914,
+      "raw_new_gain_pp": 54.043012474388505
+    },
+    {
+      "path": "S0Q1",
+      "k": 20,
+      "N": 20,
+      "H": 0.6895340287292915,
+      "old_macro": 0.7743826578944805,
+      "new_macro": 0.6214429128894099,
+      "macro_f1": 0.6553903860009697,
+      "floor": 0.4160224877020379,
+      "matched_input": true,
+      "matched_original_gain_pp": 16.570167507892698,
+      "original_raw_H": 0.6182004388097886,
+      "original_G_H": 0.5238323536503645,
+      "gain_vs_original_raw_pp": 7.133358991950289,
+      "gain_vs_original_G_pp": 16.570167507892698,
+      "raw_original_gain_pp": 7.975030585997689,
+      "fusion_minus_raw_pp": 3.9603085208072875,
+      "G_only_minus_raw_pp": -0.8416715940473996,
+      "raw_old_gain_pp": 9.506862376964186,
+      "raw_new_gain_pp": 6.51729872787813
+    },
+    {
+      "path": "S0Q2",
+      "k": 20,
+      "N": 20,
+      "H": 0.7375538298778384,
+      "old_macro": 0.7773054311808733,
+      "new_macro": 0.7016702322595683,
+      "macro_f1": 0.6965211141115161,
+      "floor": 0.5473684210526316,
+      "matched_input": false,
+      "matched_original_gain_pp": null,
+      "original_raw_H": 0.6182004388097886,
+      "original_G_H": 0.5238323536503645,
+      "gain_vs_original_raw_pp": 11.935339106804976,
+      "gain_vs_original_G_pp": 21.372147622747384,
+      "raw_original_gain_pp": 7.975030585997689,
+      "fusion_minus_raw_pp": 3.9603085208072875,
+      "G_only_minus_raw_pp": -0.8416715940473996,
+      "raw_old_gain_pp": 9.506862376964186,
+      "raw_new_gain_pp": 6.51729872787813
+    },
+    {
+      "path": "S1Q1",
+      "k": 20,
+      "N": 20,
+      "H": 0.8015545571459406,
+      "old_macro": 0.8227104234137762,
+      "new_macro": 0.7814594529514693,
+      "macro_f1": 0.7644161670487103,
+      "floor": 0.5954887218045113,
+      "matched_input": true,
+      "matched_original_gain_pp": 6.53169007337736,
+      "original_raw_H": 0.15594370867180365,
+      "original_G_H": 0.736237656412167,
+      "gain_vs_original_raw_pp": 64.5610848474137,
+      "gain_vs_original_G_pp": 6.53169007337736,
+      "raw_original_gain_pp": 46.92018045882625,
+      "fusion_minus_raw_pp": 16.200098013455445,
+      "G_only_minus_raw_pp": 17.64090438858744,
+      "raw_old_gain_pp": 51.08256707198247,
+      "raw_new_gain_pp": 43.257048717261114
+    },
+    {
+      "path": "S1Q2",
+      "k": 20,
+      "N": 20,
+      "H": 0.7871464933946206,
+      "old_macro": 0.8136514055059867,
+      "new_macro": 0.7623139138035253,
+      "macro_f1": 0.7398383720506689,
+      "floor": 0.6268446943078004,
+      "matched_input": false,
+      "matched_original_gain_pp": null,
+      "original_raw_H": 0.15594370867180365,
+      "original_G_H": 0.736237656412167,
+      "gain_vs_original_raw_pp": 63.1202784722817,
+      "gain_vs_original_G_pp": 5.090883698245364,
+      "raw_original_gain_pp": 46.92018045882625,
+      "fusion_minus_raw_pp": 16.200098013455445,
+      "G_only_minus_raw_pp": 17.64090438858744,
+      "raw_old_gain_pp": 51.08256707198247,
+      "raw_new_gain_pp": 43.257048717261114
+    }
+  ],
+  "acceptance": [
+    {
+      "support": "S0",
+      "cells_Q0_gain_at_least5": 3,
+      "cells_QF_gt_Q0": 4,
+      "every_KN_criteria_pass": false,
+      "raw_old_new_mean_guard_pass": true
+    },
+    {
+      "support": "S1",
+      "cells_Q0_gain_at_least5": 4,
+      "cells_QF_gt_Q0": 4,
+      "every_KN_criteria_pass": true,
+      "raw_old_new_mean_guard_pass": true
+    }
+  ],
+  "promotion_pass": false,
+  "all_pure_matched_5pp": false,
+  "source_rule": {
+    "config": [
+      "signature_identity",
+      "all",
+      0.5,
+      "single"
+    ],
+    "ridge": 0.01,
+    "outer_folds": 3,
+    "outer_strengths": [
+      0.0,
+      0.25,
+      0.5,
+      0.75
+    ],
+    "ridge_reference_classes": 6,
+    "prior_weight": 0.5,
+    "fusion_policy": "rf_distance_margin_half_v1",
+    "confidence_rule": "support_class_ridge_v1",
+    "orbit_ensemble_weight": 0.5
+  },
+  "source_seconds": 106.37358927633613,
+  "fusion_audits": [
+    {
+      "file": "C-K1-N2-S0-fusion.json",
+      "query_count": 13002,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 3835,
+      "mean_G_weight": 0.14747731118289495,
+      "raw_G_disagreement_count": 4963,
+      "changed_from_raw_count": 1935,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "C-K20-N20-S1-fusion.json",
+      "query_count": 26081,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 23380,
+      "mean_G_weight": 0.448219010007285,
+      "raw_G_disagreement_count": 10438,
+      "changed_from_raw_count": 7996,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "C-K20-N2-S0-fusion.json",
+      "query_count": 12850,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 2807,
+      "mean_G_weight": 0.10922178988326849,
+      "raw_G_disagreement_count": 3820,
+      "changed_from_raw_count": 1484,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "C-K20-N20-S0-fusion.json",
+      "query_count": 26081,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 5929,
+      "mean_G_weight": 0.11366512020244622,
+      "raw_G_disagreement_count": 9409,
+      "changed_from_raw_count": 3870,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "C-K1-N2-S1-fusion.json",
+      "query_count": 13002,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 8951,
+      "mean_G_weight": 0.3442162744193201,
+      "raw_G_disagreement_count": 5062,
+      "changed_from_raw_count": 3167,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "B-K1-N0-S0-fusion.json",
+      "query_count": 10356,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 3135,
+      "mean_G_weight": 0.15136152954808807,
+      "raw_G_disagreement_count": 3338,
+      "changed_from_raw_count": 1407,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "B-K20-N0-S1-fusion.json",
+      "query_count": 10242,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 9008,
+      "mean_G_weight": 0.4397578597930092,
+      "raw_G_disagreement_count": 2508,
+      "changed_from_raw_count": 1891,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "C-K1-N20-S1-fusion.json",
+      "query_count": 26575,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 17304,
+      "mean_G_weight": 0.32556914393226716,
+      "raw_G_disagreement_count": 15352,
+      "changed_from_raw_count": 8793,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "B-K20-N0-S0-fusion.json",
+      "query_count": 10242,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 2477,
+      "mean_G_weight": 0.1209236477250537,
+      "raw_G_disagreement_count": 2480,
+      "changed_from_raw_count": 1107,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "C-K1-N20-S0-fusion.json",
+      "query_count": 26575,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 7461,
+      "mean_G_weight": 0.14037629350893696,
+      "raw_G_disagreement_count": 14528,
+      "changed_from_raw_count": 4641,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "C-K20-N2-S1-fusion.json",
+      "query_count": 12850,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 11047,
+      "mean_G_weight": 0.4298443579766537,
+      "raw_G_disagreement_count": 4148,
+      "changed_from_raw_count": 3253,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "file": "B-K1-N0-S1-fusion.json",
+      "query_count": 10356,
+      "rule": "rf_distance_margin_half_v1",
+      "nonzero_G_weight_count": 6924,
+      "mean_G_weight": 0.3342989571263036,
+      "raw_G_disagreement_count": 3254,
+      "changed_from_raw_count": 1985,
+      "query_fit": false,
+      "query_truth_read": false,
+      "weight_values": [
+        0.0,
+        0.5
+      ]
+    }
+  ],
+  "fit_audits": [
+    {
+      "file": "B-K1-N0-S1-R35-fit.json",
+      "physical_labels": 6,
+      "support_paths": [
+        1
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": false,
+        "folds": [],
+        "extra_state_bytes": 52312,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "old_only",
+          "old_count": 6,
+          "old_rows": 6,
+          "new_rows": 0,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 1.591739293209482,
+          "ridge": 0.019896741165118526,
+          "coefficient_norm": 1.7099813003814741,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 51456,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "B-K1-N0-S0-R35-fit.json",
+      "physical_labels": 6,
+      "support_paths": [
+        0
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": false,
+        "folds": [],
+        "extra_state_bytes": 52312,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "old_only",
+          "old_count": 6,
+          "old_rows": 6,
+          "new_rows": 0,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 1.1792353806761822,
+          "ridge": 0.014740442258452278,
+          "coefficient_norm": 2.447553765629587,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 51456,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "C-K20-N2-S1-R35-fit.json",
+      "physical_labels": 160,
+      "support_paths": [
+        1
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": true,
+        "folds": [
+          {
+            "train": 104,
+            "held": 56
+          },
+          {
+            "train": 104,
+            "held": 56
+          },
+          {
+            "train": 112,
+            "held": 48
+          }
+        ],
+        "extra_state_bytes": 1380408,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "balanced_class_ridge",
+          "old_count": 6,
+          "old_rows": 120,
+          "new_rows": 40,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 1.2240454305263497,
+          "ridge": 0.015300567881579373,
+          "coefficient_norm": 1.2632726410973165,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 1372160,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "B-K20-N0-S0-R35-fit.json",
+      "physical_labels": 120,
+      "support_paths": [
+        0
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": true,
+        "folds": [
+          {
+            "train": 78,
+            "held": 42
+          },
+          {
+            "train": 78,
+            "held": 42
+          },
+          {
+            "train": 84,
+            "held": 36
+          }
+        ],
+        "extra_state_bytes": 1035448,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "old_only",
+          "old_count": 6,
+          "old_rows": 120,
+          "new_rows": 0,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 1.2882041565509965,
+          "ridge": 0.016102551956887458,
+          "coefficient_norm": 1.2468359415456025,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 1029120,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "B-K20-N0-S1-R35-fit.json",
+      "physical_labels": 120,
+      "support_paths": [
+        1
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": true,
+        "folds": [
+          {
+            "train": 78,
+            "held": 42
+          },
+          {
+            "train": 78,
+            "held": 42
+          },
+          {
+            "train": 84,
+            "held": 36
+          }
+        ],
+        "extra_state_bytes": 1035448,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "old_only",
+          "old_count": 6,
+          "old_rows": 120,
+          "new_rows": 0,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 1.7351073371445844,
+          "ridge": 0.021688841714307308,
+          "coefficient_norm": 1.2981780905160882,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 1029120,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "C-K1-N20-S1-R35-fit.json",
+      "physical_labels": 26,
+      "support_paths": [
+        1
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": false,
+        "folds": [],
+        "extra_state_bytes": 224792,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "balanced_class_ridge",
+          "old_count": 6,
+          "old_rows": 6,
+          "new_rows": 20,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 1.3481117906681084,
+          "ridge": 0.016851397383351355,
+          "coefficient_norm": 1.329337798921433,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 222976,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "C-K1-N2-S1-R35-fit.json",
+      "physical_labels": 8,
+      "support_paths": [
+        1
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": false,
+        "folds": [],
+        "extra_state_bytes": 69560,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "balanced_class_ridge",
+          "old_count": 6,
+          "old_rows": 6,
+          "new_rows": 2,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 1.2377134023007825,
+          "ridge": 0.015471417528759782,
+          "coefficient_norm": 2.049642327436416,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 68608,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "C-K20-N2-S0-R35-fit.json",
+      "physical_labels": 160,
+      "support_paths": [
+        0
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": true,
+        "folds": [
+          {
+            "train": 104,
+            "held": 56
+          },
+          {
+            "train": 104,
+            "held": 56
+          },
+          {
+            "train": 112,
+            "held": 48
+          }
+        ],
+        "extra_state_bytes": 1380408,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "balanced_class_ridge",
+          "old_count": 6,
+          "old_rows": 120,
+          "new_rows": 40,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 0.9285091517607298,
+          "ridge": 0.011606364397009123,
+          "coefficient_norm": 0.9629411013657082,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 1372160,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "C-K1-N20-S0-R35-fit.json",
+      "physical_labels": 26,
+      "support_paths": [
+        0
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": false,
+        "folds": [],
+        "extra_state_bytes": 224792,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "balanced_class_ridge",
+          "old_count": 6,
+          "old_rows": 6,
+          "new_rows": 20,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 0.9029848746260867,
+          "ridge": 0.011287310932826084,
+          "coefficient_norm": 2.0225171669159914,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 222976,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "C-K20-N20-S0-R35-fit.json",
+      "physical_labels": 520,
+      "support_paths": [
+        0
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": true,
+        "folds": [
+          {
+            "train": 338,
+            "held": 182
+          },
+          {
+            "train": 338,
+            "held": 182
+          },
+          {
+            "train": 364,
+            "held": 156
+          }
+        ],
+        "extra_state_bytes": 4485048,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "balanced_class_ridge",
+          "old_count": 6,
+          "old_rows": 120,
+          "new_rows": 400,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 1.0664104369357836,
+          "ridge": 0.013330130461697296,
+          "coefficient_norm": 0.8861128018482779,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 4459520,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "C-K1-N2-S0-R35-fit.json",
+      "physical_labels": 8,
+      "support_paths": [
+        0
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": false,
+        "folds": [],
+        "extra_state_bytes": 69560,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "balanced_class_ridge",
+          "old_count": 6,
+          "old_rows": 6,
+          "new_rows": 2,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 0.9699995678946551,
+          "ridge": 0.01212499459868319,
+          "coefficient_norm": 2.3502307036082684,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 68608,
+          "query_fit": false
+        }
+      }
+    },
+    {
+      "file": "C-K20-N20-S1-R35-fit.json",
+      "physical_labels": 520,
+      "support_paths": [
+        1
+      ],
+      "head_columns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selection": {
+        "prior_weight": 0.5,
+        "fusion_policy": "rf_distance_margin_half_v1",
+        "old_head_columns": 6,
+        "physical_OOF": true,
+        "folds": [
+          {
+            "train": 338,
+            "held": 182
+          },
+          {
+            "train": 338,
+            "held": 182
+          },
+          {
+            "train": 364,
+            "held": 156
+          }
+        ],
+        "extra_state_bytes": 4485048,
+        "prior_confidence_gate": {
+          "rule": "support_class_ridge_v1",
+          "mode": "balanced_class_ridge",
+          "old_count": 6,
+          "old_rows": 120,
+          "new_rows": 400,
+          "feature_dimension": 8,
+          "output_dimension": 7,
+          "ridge_fraction": 0.1,
+          "covariance_trace": 1.4453680027859825,
+          "ridge": 0.01806710003482478,
+          "coefficient_norm": 0.9197753048047008,
+          "state_bytes": 568,
+          "fit_scope": "current_SUP_only",
+          "group_weights": "old/new each .5 when both present; old-only total1",
+          "class_target": "old onehot, new uniform over old columns",
+          "class_projection": "Euclidean simplex",
+          "query_fit": false
+        },
+        "orbit_ensemble": {
+          "orbits": [
+            4,
+            8
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ],
+          "kernel": "arithmetic_mean_after_separate_bandwidths",
+          "extra_feature_bytes": 4459520,
+          "query_fit": false
+        }
+      }
+    }
+  ],
+  "worker_cost": [
+    {
+      "status": "PREDICTIONS_COMPLETE",
+      "capsule_id": "20261029-phase2-threepool-episodes-s2026102901-r01:P01:MIX01:1-1",
+      "truth_read": false,
+      "query_fit": false,
+      "rows": 36,
+      "seconds": 150.62550117215142,
+      "raw_score_cache_bytes": 28777056,
+      "raw_score_cache_final_rows": 0,
+      "support_paths_strict": true,
+      "query_paths": [
+        "Q0_raw",
+        "Q1_DURA_only",
+        "Q2_fusion"
+      ]
+    }
+  ],
+  "target_feedback": false,
+  "scope": "single RX fourcorners developmental test; finalall16 unchanged; QFvsoriginalG pathchanged notmatched"
+}
