@@ -1,0 +1,262 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase3-ground-uniform-s2026092701-r01",
+  "group_id": "pamf-phase3-ground-uniform",
+  "display_name": "PAMF第三阶段：地面均匀OE置信度训练",
+  "description": "Planned complete originalF0 student UNIFORM: known CE/KD plus equal-public-domain uniform outside-six posterior; CPAIR cached controls. Real execution awaits usable CUDA.",
+  "kind": "cvs",
+  "stage": "Phase3-ground-uniform",
+  "aliases": [
+    "地面均匀OE训练"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_clean",
+    "uniform_OE",
+    "default_head",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-ground-centered-rank-vs-uniform",
+  "parent_run_ids": [
+    "20261101-phase3-ground-centered-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "d1e029abe74726f245e54f4bc5d7f91e1ae239f4",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-ground-uniform-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.ground_uniform_launch",
+      "experiments.pamf_phase3_open_world.ground_uniform_train",
+      "experiments.pamf_phase3_open_world.ground_uniform_run",
+      "experiments.pamf_phase3_open_world.ground_uniform_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_GROUND_UNIFORM_PLAN_20261101.md"
+    ]
+  },
+  "data": {
+    "dataset": "Planned unchanged D7 source392005 G(clean) L6300/OE6134/CAL13500/sourceQ16650, paired RX34futureQ10238",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Complete native232993/default6 joint; stable KL(U6||softmaxOE) equal15publicRXday domains; no pair-risk in objective, no new head or projection.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 先强化预部署地面开放能力",
+    "physical_ids_ref": "Reuse VALIDATED_ONCE 20261101-phase3-ground-open-s2026092701-r03-source-clean-v1 / sourceV-half-y-rx-day-s2026110101; this preparation has not read real IQ.",
+    "label_map_ref": "Originalsix L/V y; OE outside-six only; U trueTX/K/quotas forbidden; future trueTX scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "source_Us_new": 0,
+      "source_CAL": 13500,
+      "source_known_TEST": 13500,
+      "source_NV": 3150,
+      "source_Q": 16650,
+      "target_U_new": 0,
+      "target_U_ID_new": 0,
+      "target_clean_Q": 10238,
+      "target_star_Q": 10238,
+      "future_known": 4508,
+      "future_unknown": 5730,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 labeled source6300/63000=10%; sourceOE outside-six membership allowed, OEtrueTXhidden; no new source labels or targetTXlabels.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "Same source392005/F0/pure-r03/DURA ancestry, existing VALIDATED_ONCE data, no new physical data validation",
+    "support_query_ref": "Planned exact D7 disjoint knownCAL/TEST and source16,650/RX34future10,238 paired clean/star. Historical exposure retained, no new blind claim.",
+    "leo_config_ref": "Same fixed G10 MIX01 source/U/future received and DURA v1R69, source3001/4001 receiver2027, future3133/3134, no redrawn channel"
+  },
+  "permissions": {
+    "regime": "Planned sourceL true6y/cached sameGcleanF0teacher and OEoutside6/publicRXday only; no OE TX/K, newUs/U/CAL/TEST/NV/Q training. Original models untouched.",
+    "query_use": "Only after healthy CUDA: realCP noquery smoke then2220source updates, finalfreeze and CAL12new+12oldtau; all16 beforeCPU4truth once. This preparation has no realdata/checkpoint smoke or execution.",
+    "external_method_exception": null,
+    "claim_scope": "Local synthetic readiness only until execution; no actual metrics or scientific verdict. Formal95CK/RU/gap2/allmainScenes/fullgoalACTIVE/ANHOWNA unchanged."
+  },
+  "checkpoint": {
+    "initialization": "Planned complete originalF0 E50/11100 independently copied, fresh AdamW; not CPAIR/contrast/PCD weights. Default6joint/Sinc48 and buffersfixed.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Expected matching originalF0 source392005 and unchanged D7 roles; source ancestry guards and strict loaders tested synthetically. No actual weights read by this preparation.",
+    "selection_rule": "Fixedfinal2220/UNIFORM_centered main, no NV/Q/CAL neural selection or sweep; future actualCP smoke remains pending."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-ground-uniform-20261101",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-uniform-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-uniform-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_ground_uniform_20261101_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.ground_uniform_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-ground-uniform-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Planned one owned train/predict worker, free>=4096MiB/max2added/card; CPUscore CUDAempty. No real launch while N607 CUDA unavailable; no resets or foreign job operations.",
+    "stop_rule": "Illegal ancestor/role, nonfinite, frozenstatechange, collision or unablelegalprediction preserved technicalfailure; low scientific scores complete fullmatrix, no hotchange/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/*.log",
+    "train/{resolved_config,complete,smoke}.json",
+    "train/rows/UNIFORM/{final.pt,complete.json,steps.jsonl}",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/queries/*/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "H-score",
+      "canonicalF0/studentclosed",
+      "AUROC/OSCR",
+      "pairedcorrectaccept/reject",
+      "full2220uniform-and-pairdiagnostics/gradients",
+      "ANHOWNA"
+    ],
+    "dimensions": [
+      "4methods x4DURAconditions",
+      "source24groups",
+      "sixmainstarScenes",
+      "TX/RX/day/scene/day_scene"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-uniform-s2026092701-r01/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.ground_uniform_score",
+    "targets_ref": "Formal all4 CK95/RU95/originalF0gap2pp and complete main scenes95; sourceclean24groups; fullgoalACTIVE. No measured result in preparation.",
+    "primary": [
+      "UNIFORM_centered"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "UNIFORM-s2026092701",
+      "method": "UNIFORM",
+      "purpose": "CE/KD plus equal15domain uniformOE, same originalF0/sourcebatch/budget as cached CPAIR; rank only diagnostic",
+      "config_ref": "docs/PAMF_PHASE3_GROUND_UNIFORM_PLAN_20261101.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-uniform-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110101,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Same L2026103017/OE2026103018 streams, planned2220sourceindices compare oldCPAIR; no newchannel RNG, existing source3001/channel4001/future3133/3134/receiver2027.",
+      "k": null,
+      "scenario": "Planned G(clean) source training and four source/cross clean/star DURA frozen conditions",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Planned2220x256=568320 train+67276predict=635596student rows/G20476/F00/legacy0. AdamW1e-4/wd1e-4/clip5, deploy499944+6tau48B, all24tau192B. Actual real counts currently0.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-uniform-s2026092701-r01/train/rows/UNIFORM",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-uniform-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.ground_uniform_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-ground-uniform-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/{resolved_config,complete,smoke}.json",
+        "train/rows/UNIFORM/{final.pt,complete.json,steps.jsonl}",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/queries/*/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Current state is local preparation, no real checkpoint smoke/NNupdates/predictions/scores. N607 CUDA health evidence kept private.",
+    "Single uniform student independently originalF0; pair risk is diagnostic, no SupCon, PCD, newsourceUs or targetU.",
+    "Two controls exact from oldCPAIR cols2/3; canonical originalF0 separate baseline_logits.",
+    "12new+12old thresholds=24FP64/192B; main centered index3 fixed.",
+    "Local toy validation cannot establish real-weight compatibility or performance. Resource recovery precedes actual launch."
+  ],
+  "registered_at": "2026-10-31T21:19:06+00:00",
+  "preparation": {
+    "status": "LOCAL_VERIFIED",
+    "execution": "NOT_LAUNCHED_CUDA_UNAVAILABLE",
+    "scientific": "NOT_EVALUATED",
+    "full_goal_status": "ACTIVE",
+    "code_commit": "d1e029abe74726f245e54f4bc5d7f91e1ae239f4",
+    "run_id": "20261101-phase3-ground-uniform-s2026092701-r01",
+    "independent_P0_P1_review": "PASS",
+    "local_validation_only": true,
+    "actual_checkpoint_smoke_executed": false,
+    "real_checkpoint_reads": 0,
+    "real_IQ_reads": 0,
+    "real_optimizer_updates": 0,
+    "real_train_forward_rows": 0,
+    "real_prediction_forward_rows": 0,
+    "real_truth_reads": 0,
+    "release_archive_transferred": false,
+    "remote_compile_executed": false,
+    "actual_training_launched": false,
+    "foreign_job_operations": 0,
+    "health_observed_at": "2026-11-01T04:57:27+08:00",
+    "health_followup_observed_at": "2026-11-01T05:18:27+08:00",
+    "health": "Device7 handle Unknown Error; one healthy-GPU1 full-UUID CUDA init also failed before model/data load. Later read-only enumeration still failed; root cause unproven.",
+    "validation": {
+      "core": {
+        "unique": 3,
+        "subtests": 10
+      },
+      "train": {
+        "unique": 2,
+        "subtests": 11
+      },
+      "predict": {
+        "unique": 3,
+        "subtests": 12
+      },
+      "score": {
+        "unique": 4,
+        "subtests": 38
+      },
+      "launch": {
+        "unique": 3,
+        "subtests": 14
+      },
+      "total_unique": 15,
+      "total_subtests": 85,
+      "note": "Module-level synthetic GREEN evidence, including targeted core float-tolerance assertion correction; no claim of actual checkpoint compatibility or scientific performance."
+    },
+    "next_step": "After device recovery or information for another authorized node: fresh resource preflight, release transfer/compile, first actual-checkpoint no-query smoke; PASS continues fixed train/predict/truth-last score automatically.",
+    "status_ref": "docs/PAMF_PHASE3_GROUND_UNIFORM_STATUS_20261101.md"
+  }
+}
