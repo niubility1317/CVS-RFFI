@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-SIGpriorAux-E30-s2026092701-r01`
 - group_id：`phase1-DURA-source-SIG-prior-context-pair-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -44,3 +44,8 @@
 4 项聚焦测试和两版真实构造/CLI/严格别名/初值 IQ/默认 objective 兼容/辅助项权重/独立输出与共同评分锁检查通过。每候选仅一次独立 P0/P1 审查均 PASS。首步真实 2 条非 clean L_s smoke 检查原 F、原 SIG 上限、真实辅助梯度和推理路径，PASS 直接训练。固定 final30，无提前退出或目标选模；无论源域成绩，自动完成源 1800×7、正式 168000×7，各角色全部预测完成后独立评分。
 
 GPU 4/6/7 仅在显存余量至少 12000 MiB、既有计算进程不超过 2 时新增 1 个；每卡本任务 1 个、总至多 2 个，CPU 评分共同锁至多 1 个。主控制器先创建共享锁所在目录，再启动对照，输出根独立，不修改其他 owner。六景逐个至少 137216 正确（距 raw clean 至多 3 个百分点），clean 至少 142256；R17 逐景容忍和 low urban 70% 另列。默认 DURA 和完整目标状态保持。
+
+
+## 实际启动证据
+
+VERIFIED / RUNNING，尚无性能结果。执行 4452e09285b650536ab5e9dcc2acbfd9268c00e8，controller 1934545、GPU 4 worker 1934703。真实 2 条非 clean L_s smoke PASS，浅/中层/预测头辅助梯度有效、原 SIG 上限、严格重载、优化推理路径与原 F 冻结通过；推理预测头实际调用 0 次。已核实 2 轮/494 步及实际 CWD、完整 argv、CUDA、compute PID 和日志增长。准入前剩余 23127 MiB、1 个计算进程，新增 1 个。归档 SHA 与远端编译通过，固定 final30 后自动全七景评分，共同 CPU 评分锁、独立输出根。
