@@ -42,3 +42,8 @@ G从零单阶段30轮/7410步，B256、L189000/U1701000，原四物理项与SIG 
 3项聚焦检查、实际factory/config参数、aliases/初始IQ、syntheticMAC/all7入口路由通过，唯一P0/P1 PASS。launcher首步真实2非clean L_s（按variance>1e−8取前2，不读TX）检查cache/F/cap、coarse/action/prior实际梯度、conditioner连接/有限、严格E0与native/optimized原头状态；G12/fullF2/prefix4/VJP2，0模型优化，PASS立即继续。E0原prior.out和FiLM末层均零造成上游modulation梯度暂为零属预期，非零fixture已验证全参数梯度；最终学习状态再核实。
 
 一次N607 preflight、归档SHA比较、远端编译及实际PID/CWD/argv/GPU/log增长。GPU4/6/7剩余≥12000MiB、已有compute进程≤2才加1，总≤3，每卡own1、goal≤2GPUworker；保留其他owner。固定最终训练后自动profile/source1800×7/formal168000×7，各role全7预测固定后独立CPU truth-last。主SIG47591/次pureG8cf/defaultDURA/R17对照，六景每景≥137216正确、clean≥142256、R17每景最多少1680、旧lowU70%分列；实际成本与同质量目标一起验收，不预设有效。
+
+
+## 实际启动证据
+
+VERIFIED / RUNNING，尚无性能结果。执行d32e98f97047afc78bdd89dec51f7f804358cf3a；真实2Ls smoke PASS后立即进入GPU4单worker1804637，controller1804542，已有2轮/494步。实际CWD/完整argv/commit/CUDA设备/compute PID/两份日志增长核实。准入前已有1个compute PID、剩余22883MiB，新增1个，不干预其他owner。归档SHA比较与远端编译通过。详见launch_evidence.json；固定最终30轮及全部七景自动闭环保持。
