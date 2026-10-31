@@ -1,0 +1,322 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-source-style-s2026092701-r02",
+  "group_id": "pamf-phase3-source-style",
+  "display_name": "PAMF第三阶段：同TX跨RX浅中层统计混合",
+  "description": "Two pure-source native F0 identity/open students, same source pairs and budgets, versus temporary shallow/middle MixStyle. No new target adaptation.",
+  "kind": "cvs",
+  "stage": "Phase3-source-style-generalization",
+  "aliases": [
+    "源端同TX跨RX风格混合"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_style",
+    "domain_generalization",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-source-style",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261030-phase3-star-signal-open-s2026092701-r03",
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261031-phase3-source-style-s2026092701-r01",
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "57d887a1e1ac34e4e98a235ad698ef8f628dfb44",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-source-style-s2026092701-r02-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.source_style_launch",
+      "experiments.pamf_phase3_open_world.source_style_train",
+      "experiments.pamf_phase3_open_world.source_style_run",
+      "experiments.pamf_phase3_open_world.source_style_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_SOURCE_STYLE_RECOVERY_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Original source star L/OE P1, source knownV/NV and fixed RX3-2 pairedfutureQ",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "NativeF0 reader/defaulthead plus pure-r03 projection, sameTX/diffRX source style at time_down/t2.pool only; ordinary frozen inference",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 同 TX 跨 RX 的源端中间特征统计混合",
+    "physical_ids_ref": "Unchanged VALIDATED_ONCE source392005 and fresh future public capsule/split/opaque IDs",
+    "label_map_ref": "Originalsix L/V y; OE outside-six only; U trueTX/K/quotas forbidden; future trueTX scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "source_V_known_calibration": 27000,
+      "source_NV": 3150,
+      "original_U_s_new": 0,
+      "target_U_new": 0,
+      "target_future_Q_unique": 10238,
+      "target_future_known": 4508,
+      "target_future_unknown": 5730,
+      "U_truth_fit": 0
+    },
+    "train_ratio": "Original F0 labeled source6300/63000=10%; sourceOE outside-six membership allowed, OEtrueTXhidden; no new source labels or targetTXlabels.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "Same source392005/F0/pure-r03/DURA ancestry, existing VALIDATED_ONCE data, no new physical data validation",
+    "support_query_ref": "New students use only sourceL/OE, no Uvalues/UID arrays; oldPCD U576 only comparator; future pairedclean/starQ neverfit",
+    "leo_config_ref": "Same fixed G10 MIX01 source/U/future received and DURA v1R69, source3001/4001 receiver2027, future3133/3134, no redrawn channel"
+  },
+  "permissions": {
+    "regime": "Both students originalF0 complete reader/default6 plus pure-source-r03 projection. Source L real labels/publicRX sameTXdifferentRX pairs, OE untouched without TX. No target teacher or target U training.",
+    "query_use": "Two sourceL/OE densities freeze before Vknown tau, all8x3 source/clean/star predictions before independent CPU3truth; no Qfit or Utruth/K/quotas.",
+    "external_method_exception": null,
+    "claim_scope": "Source domain-generalization candidate only, scientific/source_style_success may pass but adaptation_success=None and new_target_DA=False. OldPCD control U576 ancestor separate; development exposed/no registration/formal0."
+  },
+  "checkpoint": {
+    "initialization": "Both independent complete originalF0 reader/defaulthead plus only projection from pure-source r03; native initial logits equal F0, initial openz r03 equivalence not claimed.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Native F0 and pure-r03 same source392005; PCD targetU576 only frozen comparison/synthetic smoke, not training teacher or initialization. DURA fixedR69.",
+    "selection_rule": "Fixed final444each/888total, source pairs and objective matched, style p.5/Beta.1/eps1e-6 at two predetermined layers; no Qselection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-source-style-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-style-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-style-s2026092701-r02/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_style_20261031_r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_style_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-source-style-s2026092701-r02-release/runtime.json",
+    "gpu_policy": "One serial2arm train then8x3 frozenprediction thenCPUscore; actualfree4096MiB/max2new/card; foreign untouched.",
+    "stop_rule": "Illegal ancestor/role, nonfinite, frozenstatechange, collision or unablelegalprediction preserved technicalfailure; low scientific scores complete fullmatrix, no hotchange/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/{driver,train,predict,score}.log",
+    "train/{resolved_config,smoke,complete}.json",
+    "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+    "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "Hscore",
+      "originalF0closed",
+      "studentclosed",
+      "originalclosedminusAK",
+      "AUROC/OSCR",
+      "paired_identity/reject_events",
+      "sourceknown12/42",
+      "all888steps/gradient/stylehooks/sourcepairs",
+      "AN/HOWNA"
+    ],
+    "dimensions": [
+      "8readouts",
+      "source5RX/cleanRX34/starRX34",
+      "sixrequiredscenes",
+      "trueTX/RX/day",
+      "STYLE_NATIVE-SOURCE_NATIVE andoldPCD"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-style-s2026092701-r02/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.source_style_score",
+    "targets_ref": "CleanRU95/starRU90/CK90/originalF0sameGgap2pp/requiredscene-rosters/sourceknown12; starAK above matchedSOURCE/OLDPCD,RU notbelowallcontrols. FullgoalACTIVE.",
+    "primary": [
+      "STYLE_NATIVE_predicted_ratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "SOURCE_NATIVE-s2026092701",
+      "method": "SOURCE_NATIVE",
+      "purpose": "Pure source native identity/open matched control",
+      "config_ref": "docs/PAMF_PHASE3_SOURCE_STYLE_RECOVERY_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-style-s2026092701-r02/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103160,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Lanchors3160/partners3170/OEdomain3018 matched acrossnewarms; STYLE independent3171 p.5 per site/Beta.1; no new IQ augmentation/channel/U sampling.",
+      "k": null,
+      "scenario": "SourceG10DURAP1, sameTXdifferentRX L only mixing; OEpassthrough; alltests DURA ordinary frozen inference",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "444each/888total. Lanchors128+Lpartners128+OE64;335681/train335633; reader232993+projection102688;2newdensity/24newtau. Source parent12434/student284160.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-style-s2026092701-r02/train/SOURCE_NATIVE",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-style-s2026092701-r02/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_style_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-source-style-s2026092701-r02-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "STYLE_NATIVE-s2026092701",
+      "method": "STYLE_NATIVE",
+      "purpose": "SameTXcrossRX shallowmiddle source statistics mixing",
+      "config_ref": "docs/PAMF_PHASE3_SOURCE_STYLE_RECOVERY_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-style-s2026092701-r02/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103160,
+        "augmentation": 2026103171,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Lanchors3160/partners3170/OEdomain3018 matched acrossnewarms; STYLE independent3171 p.5 per site/Beta.1; no new IQ augmentation/channel/U sampling.",
+      "k": null,
+      "scenario": "SourceG10DURAP1, sameTXdifferentRX L only mixing; OEpassthrough; alltests DURA ordinary frozen inference",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "444each/888total. Lanchors128+Lpartners128+OE64;335681/train335633; reader232993+projection102688;2newdensity/24newtau. Source parent12434/student284160.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-style-s2026092701-r02/train/STYLE_NATIVE",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-style-s2026092701-r02/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_style_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-source-style-s2026092701-r02-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt}",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "MixStyle is a project RF variant with sameTXdiffRX pairs, not new proof of literature performance or first project operator.",
+    "Native identity initial F0 equivalence, original r03 projection only; initial openz not promised r03.",
+    "Both new students/source densities sourceonly U0; target-adapted oldPCD is comparison only.",
+    "Temporary two-layer hooks remove in finally, OE exactpassthrough, no inference hooks or query stats.",
+    "Full8x3 before CPU3truth; no discovery/registration/formal24-18; PCD baseline/fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-31T13:18:17+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "57d887a1e1ac34e4e98a235ad698ef8f628dfb44",
+    "primary_method": "STYLE_NATIVE_predicted_ratio",
+    "metrics": {
+      "source_DURA": {
+        "A_K": 0.8977037037037038,
+        "C_K": 0.9614814814814814,
+        "R_U": 0.6971428571428572,
+        "H_score": 0.7848124581157565,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "candidate_macro_closed_accuracy": 0.9164444444444445,
+        "original_closed_minus_new_open": 0.012111111111111184
+      },
+      "clean_DURA": {
+        "A_K": 0.25861631120839146,
+        "C_K": 0.3656900661507218,
+        "R_U": 0.7030953808558311,
+        "H_score": 0.378142296334797,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "candidate_macro_closed_accuracy": 0.46501379965562634,
+        "original_closed_minus_new_open": 0.22705384218366503
+      },
+      "star_DURA": {
+        "A_K": 0.23730708960815836,
+        "C_K": 0.4129626108473232,
+        "R_U": 0.55697350755632,
+        "H_score": 0.33281377522978206,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "candidate_macro_closed_accuracy": 0.40954328764534936,
+        "original_closed_minus_new_open": 0.17990349588252383
+      }
+    },
+    "source_style_success": false,
+    "scientific_success": false,
+    "adaptation_success": null,
+    "new_target_DA": false,
+    "new_target_UDA_updates": 0,
+    "source_known_12_passed": true,
+    "source_known_42_passed": false,
+    "target_protection_passed": false,
+    "star_A_K_gain_over_both_controls": false,
+    "star_R_U_not_lower_than_all_controls": true,
+    "total_optimizer_updates": 888,
+    "source_sampling_matched": true,
+    "all888_A_B_OE_indices_equal": true,
+    "all_source_pairs_same_TX_different_RX": true,
+    "original_models_unchanged": true,
+    "all_style_hooks_removed": true,
+    "all_student_Sinc_unchanged": true,
+    "all_student_buffers_unchanged": true,
+    "source_L": 6300,
+    "source_OE": 6134,
+    "new_training_target_U": 0,
+    "new_training_original_Us": 0,
+    "new_source_density_models": 2,
+    "new_source_threshold_values": 24,
+    "reused_threshold_values": 24,
+    "all_threshold_values": 48,
+    "all_threshold_bytes": 384,
+    "parent_source_feature_rows": 12434,
+    "student_training_rows": 284160,
+    "student_prediction_rows": 126120,
+    "combined_signal_rows_including_parent_cache": 422714,
+    "reader_parameters": 232993,
+    "projection_parameters": 102688,
+    "student_parameters": 335681,
+    "trainable_student_parameters": 335633,
+    "deployed_neural_parameters": 602632,
+    "discarded_wrapper_parameters_not_deployed": 667729,
+    "formal_target_accessed": false,
+    "target_REG": false,
+    "full_goal_status": "ACTIVE",
+    "result_ref": "docs/PAMF_PHASE3_SOURCE_STYLE_RESULTS_20261031.md",
+    "primary_selection_changed": false,
+    "prior_failed_run": "20261031-phase3-source-style-s2026092701-r01"
+  }
+}

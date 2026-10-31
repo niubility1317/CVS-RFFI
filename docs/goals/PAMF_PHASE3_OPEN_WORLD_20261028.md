@@ -1278,3 +1278,23 @@ Run `20261031-phase3-native-identity-s2026092701-r01` / code `c5e167a687e9159938
 ## 2026-10-31：完整原生身份已知门控自训练结果
 
 Run `20261031-phase3-native-identity-s2026092701-r01` / code `c5e167a687e915993845056355afeee97a8da8a1`，两独立完整F0 native reader/defaulthead各444、共888步及6×3DURA预测后独立CPU3truth VERIFIED完成。主TARGET_ID_pred：source_DURA: AK/CK/RU/H=89.848148/96.437037/63.809524/74.622601%；原F0closed90.981481%/studentclosed91.277778%/原F0损1.133333pp；clean_DURA: AK/CK/RU/H=27.678544/39.367787/60.722136/38.024602%；原F0closed48.567015%/studentclosed49.193785%/原F0损20.888471pp；star_DURA: AK/CK/RU/H=24.685490/44.673654/48.189693/32.647223%；原F0closed41.721059%/studentclosed42.957172%/原F0损17.035569pp。sourceknown12=True、target保护=False，科学NO_PROMOTION；U576固定门控接受290，非空PL批次444/444，预测直方图不称准确率。PCD/G/原F0保持，源先封存再U，自己身份路由密度和新tau；无新density/24新tau，全36tau，部署834665，不含667729路径外wrapper参数。PCD研究基线保留，AN/HOWNA/开发已曝/缺类日NA/formal0/完整goalACTIVE。详见`docs/PAMF_PHASE3_NATIVE_IDENTITY_RESULTS_20261031.md`。
+
+
+## 2026-10-31：同TX跨RX源端浅中层统计混合预登记
+
+Run `20261031-phase3-source-style-s2026092701-r01` / code `7554e15883ef1770781e84ff79dc65fd2a69bf31`，SOURCE_NATIVE/STYLE_NATIVE独立完整F0reader/defaulthead+pure-r03projection335681/train335633各444，源A128/B128同TX异RX+OE64逐步匹配。STYLE仅time_down/t2.pool临时p.5/Beta.1统计mix，OE透传/教师及eval无hook。源CE/KD+crossset/OEKL/10平衡anchor，原F0/r03/PCD/G冻结，训练U/Q/V/NV/Us0。新2source density/24tau+old24全48，8×3DURA预测后CPU3truth；sourceDG成功不标新UDA，ANHOWNA/开发已曝光/正式24-18未读/完整ACTIVE。见`docs/PAMF_PHASE3_SOURCE_STYLE_PLAN_20261031.md`。
+
+
+## 2026-10-31：源端统计混合首步骤技术失败与恢复
+
+原r01在真实checkpoint无query smoke的浅层梯度诊断停止：time_down实际AvgPool无参数，旧合成fixture把Conv合入pool导致漏检；尚未进入源cache与训练，optimizer0/无prediction/truth，产物保留。修复只诊断实际上游time_fuse参数并分离忠实fixture，层位/模型/源数据/444×2/种子与正式矩阵不变。新r02独立不可覆盖root，原F0+pure-r03初始化，不继承失败权重，不盲重启；目标ACTIVE。恢复计划`docs/PAMF_PHASE3_SOURCE_STYLE_RECOVERY_20261031.md`。
+
+
+## 2026-10-31：同TX跨RX源端统计混合r02恢复预登记
+
+Run `20261031-phase3-source-style-s2026092701-r02` / code `57d887a1e1ac34e4e98a235ad698ef8f628dfb44`，SOURCE_NATIVE/STYLE_NATIVE独立完整F0reader/defaulthead+pure-r03projection335681/train335633各444，源A128/B128同TX异RX+OE64逐步匹配。STYLE仅time_down/t2.pool临时p.5/Beta.1统计mix，OE透传/教师及eval无hook。源CE/KD+crossset/OEKL/10平衡anchor，原F0/r03/PCD/G冻结，训练U/Q/V/NV/Us0。新2source density/24tau+old24全48，8×3DURA预测后CPU3truth；sourceDG成功不标新UDA，ANHOWNA/开发已曝光/正式24-18未读/完整ACTIVE。见`docs/PAMF_PHASE3_SOURCE_STYLE_RECOVERY_20261031.md`。
+
+
+## 2026-10-31：同TX跨RX源端统计混合r02实测结果
+
+Run `20261031-phase3-source-style-s2026092701-r02` / code `57d887a1e1ac34e4e98a235ad698ef8f628dfb44`，两独立完整原F0 reader/default head＋纯源r03 projection学生SOURCE_NATIVE/STYLE_NATIVE各444，共888步；L同TX异RX配对、OE与全部采样逐步匹配，浅time_down/中t2.pool仅源训练临时统计混合，OE透传。8×3 DURA预测及独立CPU3truth VERIFIED完成。主STYLE_NATIVE_predicted_ratio：source_DURA: AK/CK/RU/H=89.770370/96.148148/69.714286/78.481246%；原F0closed=90.981481%/studentclosed=91.644444%/原F0损=1.211111pp；clean_DURA: AK/CK/RU/H=25.861631/36.569007/70.309538/37.814230%；原F0closed=48.567015%/studentclosed=46.501380%/原F0损=22.705384pp；star_DURA: AK/CK/RU/H=23.730709/41.296261/55.697351/33.281378%；原F0closed=41.721059%/studentclosed=40.954329%/原F0损=17.990350pp。sourceknown12=True/42=False、目标保护=False、星地AK高于双控制=False、RU不低于控制=True，科学NO_PROMOTION。此行纯源DG，无新U训练或U ID读取；adaptation_success=None/new_target_DA=False。2新源密度/24新tau＋24旧tau共48/384B，部署335681＋DURA266951=602632；不含路径外667729参数。r01首真实无query检查的无参数AvgPool梯度诊断错误保持FAILED_PRESERVED，0优化/源训练值/Q/truth；r02仅修正上游time_fuse参数诊断及独立run，不改变科学矩阵。保留PCD研究基线，AN/HOWNA/正式RX24-18未读/完整目标ACTIVE。详见`docs/PAMF_PHASE3_SOURCE_STYLE_RESULTS_20261031.md`。

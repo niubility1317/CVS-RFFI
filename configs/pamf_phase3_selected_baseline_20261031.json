@@ -491,6 +491,50 @@
       "reason": "Complete original F0 native identity initialization, source CE/KD versus fixed known-gated target identity PL; PCD frozen. Requires full joint gate and separate confirmation.",
       "global_history_unused_verified": false,
       "independent_blind_confirmation": false
+    },
+    {
+      "run_id": "20261031-phase3-source-style-s2026092701-r02",
+      "code_commit": "57d887a1e1ac34e4e98a235ad698ef8f628dfb44",
+      "method": "STYLE_NATIVE_predicted_ratio",
+      "score_artifact": "local_artifacts/pamf_phase3_source_style_20261031_r02/score/results.json",
+      "metric_fractions": {
+        "source_DURA": {
+          "A_K": 0.8977037037037038,
+          "C_K": 0.9614814814814814,
+          "R_U": 0.6971428571428572,
+          "H_score": 0.7848124581157565,
+          "original_F0_macro_closed_accuracy": 0.909814814814815,
+          "candidate_macro_closed_accuracy": 0.9164444444444445,
+          "original_closed_minus_new_open": 0.012111111111111184
+        },
+        "clean_DURA": {
+          "A_K": 0.25861631120839146,
+          "C_K": 0.3656900661507218,
+          "R_U": 0.7030953808558311,
+          "H_score": 0.378142296334797,
+          "original_F0_macro_closed_accuracy": 0.4856701533920565,
+          "candidate_macro_closed_accuracy": 0.46501379965562634,
+          "original_closed_minus_new_open": 0.22705384218366503
+        },
+        "star_DURA": {
+          "A_K": 0.23730708960815836,
+          "C_K": 0.4129626108473232,
+          "R_U": 0.55697350755632,
+          "H_score": 0.33281377522978206,
+          "original_F0_macro_closed_accuracy": 0.4172105854906822,
+          "candidate_macro_closed_accuracy": 0.40954328764534936,
+          "original_closed_minus_new_open": 0.17990349588252383
+        }
+      },
+      "scientific_verdict": "NO_PROMOTION",
+      "source_style_success": false,
+      "adaptation_success": null,
+      "new_target_DA": false,
+      "primary_selection_changed": false,
+      "new_receiver_general_benefit_confirmed": false,
+      "reason": "Source-only same-TX cross-RX shallow/middle statistics mixing improved the matched source control but failed the joint absolute gate and star A_K versus old PCD. No new U adaptation.",
+      "global_history_unused_verified": false,
+      "independent_blind_confirmation": false
     }
   ],
   "current_selection_confirmation": {
@@ -518,5 +562,11 @@
     "state": "ANALYZED",
     "scientific_verdict": "NO_PROMOTION",
     "result_ref": "docs/PAMF_PHASE3_NATIVE_IDENTITY_RESULTS_20261031.md"
+  },
+  "latest_source_style_evaluation": {
+    "run_id": "20261031-phase3-source-style-s2026092701-r02",
+    "state": "ANALYZED",
+    "scientific_verdict": "NO_PROMOTION",
+    "result_ref": "docs/PAMF_PHASE3_SOURCE_STYLE_RESULTS_20261031.md"
   }
 }

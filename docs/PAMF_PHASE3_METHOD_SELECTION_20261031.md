@@ -64,3 +64,8 @@ G10 沿用 MILKR 设置：600 km、25 MHz、2.45 GHz、residual/post_sync/no add
 ## 完整原生身份自训练候选的后续实测
 
 后续独立候选 `20261031-phase3-native-identity-s2026092701-r01` 完成完整原F0初值的SOURCE_ID/TARGET_ID各444步、固定PCD开放分支及6×3DURA评分，科学 `NO_PROMOTION`。主星地A_K/C_K/R_U/H为24.685490/44.673654/48.189693/32.647223%；原F0/student闭集为41.721059%/42.957172%。固定U门控接受290/576，非空PL批次444/444，不将伪标签预测数量视作真值准确率。当前PCD研究基线及完整目标ACTIVE保持，见[完整结果](PAMF_PHASE3_NATIVE_IDENTITY_RESULTS_20261031.md)。
+
+
+## 源端同TX跨RX统计混合候选的后续实测
+
+后续候选 `20261031-phase3-source-style-s2026092701-r02` 完成两组纯源学生各444步及8×3 DURA预测后独立评分，科学NO_PROMOTION。主星地A_K/C_K/R_U/H为23.730709/41.296261/55.697351/33.281378%；统计混合相对匹配纯源控制有收益，但星地A_K仍低于旧PCD，绝对指标未通过，因此保留PCD研究基线。新学生未读目标U，adaptation_success=None，不解释为新无标签适应成功。r01仅为首真实无query检查故障，0优化更新；r02同矩阵技术恢复结果单独保留。完整目标ACTIVE，见[完整结果](PAMF_PHASE3_SOURCE_STYLE_RESULTS_20261031.md)。
