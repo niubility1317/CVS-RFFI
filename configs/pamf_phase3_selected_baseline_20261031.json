@@ -3,46 +3,53 @@
   "decision_date": "2026-10-31",
   "decision_status": "EXISTING_DEVELOPMENT_BASELINE_SELECTED_NO_NEW_EXPERIMENT",
   "user_instruction": "先选取前面性能好的方法",
-  "selection_basis": "Retrospective comparison of existing historical development results; preserve known correct acceptance and evaluate all three DURA conditions. No claim of global optimality or independent confirmation.",
+  "selection_basis": "Retrospective research-baseline selection from completed three-condition DURA results. PCD improves star A_K/C_K/R_U/H over the frozen and matched source-only controls and improves clean A_K/C_K/H, with clean R_U still above 95%. Historical NO_PROMOTION verdicts, exposed development data, and unmet absolute targets remain unchanged. This is neither an independent confirmation nor deployment promotion.",
   "primary": {
-    "role": "current_development_baseline",
-    "run_id": "20261031-phase3-class-density-s2026092701-r01",
-    "code_commit": "4af0668331682636ee212077b38cd912857a1b31",
-    "method": "predicted_ratio",
-    "score_artifact": "local_artifacts/pamf_phase3_class_density_20261031_r01/score/results.json",
+    "role": "current_development_research_baseline",
+    "run_id": "20261031-phase3-body-prototype-s2026092701-r02",
+    "code_commit": "4273e88392abe0717c1bd94fca1370d19c67cbb3",
+    "training_run_id": "20261031-phase3-body-prototype-s2026092701-r01",
+    "training_code_commit": "a33612e978948da25bd733bcb9edba3ac9d74e9a",
+    "training_arm": "TARGET_PCD",
+    "method": "PCD_predicted_ratio",
+    "score_artifact": "local_artifacts/pamf_phase3_body_prototype_20261031_r02/score/results.json",
     "metrics_fraction": {
       "source": {
         "known_count": 27000,
         "unknown_count": 3150,
-        "A_K": 0.8974444444444444,
-        "C_K": 0.9675925925925926,
-        "R_U": 0.6193650793650793,
-        "H_score": 0.732914371691253,
+        "A_K": 0.8974074074074073,
+        "C_K": 0.9672962962962964,
+        "R_U": 0.6552380952380953,
+        "H_score": 0.7574369284943488,
         "original_F0_macro_closed_accuracy": 0.909814814814815,
-        "original_closed_minus_new_open": 0.012370370370370587
+        "original_closed_minus_new_open": 0.012407407407407645
       },
       "clean_DURA": {
         "known_count": 576,
         "unknown_count": 288,
-        "A_K": 0.7083333333333334,
-        "C_K": 0.873263888888889,
-        "R_U": 1.0,
-        "H_score": 0.8292682926829269,
+        "A_K": 0.7309027777777778,
+        "C_K": 0.8975694444444445,
+        "R_U": 0.9930555555555555,
+        "H_score": 0.8420471075304913,
         "original_F0_macro_closed_accuracy": 0.8003472222222223,
-        "original_closed_minus_new_open": 0.09201388888888895
+        "original_closed_minus_new_open": 0.06944444444444453
       },
       "star_DURA": {
         "known_count": 576,
         "unknown_count": 288,
-        "A_K": 0.6406250000000001,
-        "C_K": 0.8559027777777778,
-        "R_U": 0.7708333333333334,
-        "H_score": 0.6997232472324724,
+        "A_K": 0.6527777777777778,
+        "C_K": 0.8715277777777777,
+        "R_U": 0.78125,
+        "H_score": 0.7112590799031477,
         "original_F0_macro_closed_accuracy": 0.7291666666666666,
-        "original_closed_minus_new_open": 0.08854166666666652
+        "original_closed_minus_new_open": 0.07638888888888884
       }
     },
-    "historical_run_verdict": "NO_PROMOTION"
+    "historical_run_verdict": "NO_PROMOTION",
+    "historical_adaptation_success": false,
+    "historical_eligible_primary": false,
+    "selected_as_research_starting_point_only": true,
+    "target_U_ancestry": true
   },
   "control": {
     "role": "frozen_comparison",
@@ -127,14 +134,22 @@
   "method": {
     "restorer": "DURA v1.0 R69 frozen; reuse=True graph=True native=False FP32 TF32off",
     "identity": "Original Tri-SIG-TIME SSL F0 E50/11100 and its jointly trained default six-class head, frozen",
-    "open_branch": "P1 signal-open r03; headless232033 plus projection102688, frozen",
-    "score": "log p(z | predicted identity c, 15 source RX/day modes) - log p_OE(z,32 modes) - tau[c]",
+    "open_branch": "TARGET_PCD from source-only signal-open r03: freeze Sinc48 and buffers; adapt body231985 + projection102688 for 444 steps on source L/OE and legal star U384. Original r03, F0/default head, and DURA remain frozen.",
+    "score": "log p(z_PCD | F0 predicted identity c, 15 source RX/day modes) - log p_OE(z_PCD,32 modes) - tau[c]",
     "class_routing": "Original F0 predicted identity only; no true TX or target RX/day routing",
-    "thresholds": "Existing six source-star known-V thresholds, shared unchanged across source/clean/star",
-    "normalizer_and_density": "Existing source-only known90/OE32 density11 aggregates frozen",
-    "target_U_adaptation_enabled": false,
+    "thresholds": "Six PCD source-star known-V thresholds, frozen before Q and shared across source/clean/star; no target truth calibration",
+    "normalizer_and_density": "Known90/OE32 source-observation fits after PCD weights freeze; these aggregates retain the target-U neural ancestor",
+    "target_U_adaptation_enabled": true,
     "anonymous_registration_enabled": false,
-    "active_neural_parameters_with_DURA": 834665
+    "active_neural_parameters_with_DURA": 834665,
+    "target_U_optimizer_steps": 444,
+    "training_only_prototypes": {
+      "count": 16,
+      "dimension": 160,
+      "deployed": false,
+      "true_K_used": false
+    },
+    "new_receiver_initialization": "Use original source-only r03 and independent new-U adaptation; do not relabel the existing RX24-1-adapted PCD checkpoint as source-only"
   },
   "data": {
     "source_L": 6300,
@@ -162,11 +177,6 @@
       "6-15",
       "8-20"
     ],
-    "strict_unknown_TX": [
-      "19-15",
-      "19-16",
-      "7-1"
-    ],
     "development_Q_receiver": "24-1",
     "development_Q_receiver_index": 26,
     "development_Q_day": "2021-03-15",
@@ -181,7 +191,19 @@
     "model_seed": 2026092701,
     "development_target_receiver_count": 1,
     "formal_RX24_18_accessed": false,
-    "high_scene_missing_unknown_TX": "19-15"
+    "high_scene_missing_unknown_TX": "19-15",
+    "unregistered_TX": [
+      "19-15",
+      "19-16",
+      "7-1"
+    ],
+    "target_discovery_U_count": 384,
+    "target_discovery_U_receiver": "24-1",
+    "target_discovery_U_day": "2021-03-08",
+    "target_discovery_U_true_TX_or_K_used": false,
+    "U_Q_physical_records_disjoint": true,
+    "unregistered_devices_may_appear_unlabelled_in_U": true,
+    "strict_training_unseen_unknown_claim": false
   },
   "targets_unchanged": {
     "cross_receiver_clean_R_U_min": 0.95,
@@ -199,6 +221,99 @@
     "private_truth_reads": 0,
     "threshold_refitting": false,
     "native_energy_draft": "Deferred before training module completion; no run registered, no experiment launched. Preserve local drafts; do not auto-launch.",
-    "historical_results_relabelled_as_promoted": false
+    "historical_results_relabelled_as_promoted": false,
+    "fresh_development_drafts": "Preserved only; no real data build or experiment launched during this selection"
+  },
+  "decision_revision": 2,
+  "selection_history": [
+    {
+      "revision": 1,
+      "method": "predicted_ratio",
+      "run_id": "20261031-phase3-class-density-s2026092701-r01",
+      "reason": "Earlier selection before the completed body-PCD and CCD comparisons."
+    }
+  ],
+  "frozen_reference": {
+    "role": "original_source_only_frozen_comparison",
+    "run_id": "20261031-phase3-class-density-s2026092701-r01",
+    "code_commit": "4af0668331682636ee212077b38cd912857a1b31",
+    "method": "predicted_ratio",
+    "score_artifact": "local_artifacts/pamf_phase3_class_density_20261031_r01/score/results.json",
+    "metrics_fraction": {
+      "source": {
+        "known_count": 27000,
+        "unknown_count": 3150,
+        "A_K": 0.8974444444444444,
+        "C_K": 0.9675925925925926,
+        "R_U": 0.6193650793650793,
+        "H_score": 0.732914371691253,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.012370370370370587
+      },
+      "clean_DURA": {
+        "known_count": 576,
+        "unknown_count": 288,
+        "A_K": 0.7083333333333334,
+        "C_K": 0.873263888888889,
+        "R_U": 1.0,
+        "H_score": 0.8292682926829269,
+        "original_F0_macro_closed_accuracy": 0.8003472222222223,
+        "original_closed_minus_new_open": 0.09201388888888895
+      },
+      "star_DURA": {
+        "known_count": 576,
+        "unknown_count": 288,
+        "A_K": 0.6406250000000001,
+        "C_K": 0.8559027777777778,
+        "R_U": 0.7708333333333334,
+        "H_score": 0.6997232472324724,
+        "original_F0_macro_closed_accuracy": 0.7291666666666666,
+        "original_closed_minus_new_open": 0.08854166666666652
+      }
+    },
+    "historical_run_verdict": "NO_PROMOTION"
+  },
+  "matched_source_control": {
+    "role": "same_budget_source_only_control",
+    "run_id": "20261031-phase3-body-prototype-s2026092701-r02",
+    "code_commit": "4273e88392abe0717c1bd94fca1370d19c67cbb3",
+    "training_run_id": "20261031-phase3-body-prototype-s2026092701-r01",
+    "training_code_commit": "a33612e978948da25bd733bcb9edba3ac9d74e9a",
+    "training_arm": "SOURCE",
+    "method": "SOURCE_predicted_ratio",
+    "score_artifact": "local_artifacts/pamf_phase3_body_prototype_20261031_r02/score/results.json",
+    "metrics_fraction": {
+      "source": {
+        "known_count": 27000,
+        "unknown_count": 3150,
+        "A_K": 0.8974074074074073,
+        "C_K": 0.9674444444444444,
+        "R_U": 0.6117460317460318,
+        "H_score": 0.7275408929246183,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.012407407407407645
+      },
+      "clean_DURA": {
+        "known_count": 576,
+        "unknown_count": 288,
+        "A_K": 0.7083333333333334,
+        "C_K": 0.875,
+        "R_U": 1.0,
+        "H_score": 0.8292682926829269,
+        "original_F0_macro_closed_accuracy": 0.8003472222222223,
+        "original_closed_minus_new_open": 0.09201388888888895
+      },
+      "star_DURA": {
+        "known_count": 576,
+        "unknown_count": 288,
+        "A_K": 0.6440972222222222,
+        "C_K": 0.8645833333333334,
+        "R_U": 0.7534722222222222,
+        "H_score": 0.6945048309178744,
+        "original_F0_macro_closed_accuracy": 0.7291666666666666,
+        "original_closed_minus_new_open": 0.08506944444444442
+      }
+    },
+    "target_U_ancestry": false
   }
 }

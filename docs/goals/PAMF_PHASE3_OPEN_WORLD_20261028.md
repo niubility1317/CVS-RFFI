@@ -1121,3 +1121,9 @@ Run `20261031-phase3-common-transport-s2026092701-r01` / actualcode `4038105cb7f
 全444 L/OE/U索引exact，前100标量最大total差1.516342e−4（跨GPU是可能非已证解释），101..444实344 CCD，各400UOT且有限；伪hist只分配到0/3/5，不当真类构成/纯度。新父signal12818/学生340992、eval44312，共398122/G2112/F01728；新增444、旧888继承、1GMM/12新τ+36旧τ。Sinc48/buffers/原F0默认头/G不变，无匿名REG/AN-HOW NA/正式RX未访问。完整训练/24点/三配对/分组/成本/发布前P1修复及Win206本地传输修复见`docs/PAMF_PHASE3_COMMON_TRANSPORT_RESULTS_20261031.md`。
 
 source-only聚合几何诊断说明六质心并非近共线、gamma.7源L阳性99.460317%/OE8.493642%，源域区分不能证明目标纯度。未来3-2 metadata审计在排除原known/OE/NV/formal共34TX后列5-5/10-7/2-19/7-11四未来未知候选，早期也有记录须从U整类排除；尚未完成packet历史排除/新池构建，不进当前实验，不宣称独立盲测。
+
+## 2026-10-31：已有方法选择更新
+
+按用户“先选取前面性能好的方法”，结合已经完成的三类 DURA 比较，将 `PCD_predicted_ratio` 选作下一步研究起点，原 source-only `predicted_ratio`、同预算 SOURCE 和 pooled 读出保留对照。所选 PCD 的跨接收机 clean A_K/C_K/R_U/H 为 73.090278%/89.756944%/99.305556%/84.204711%，星地为 65.277778%/87.152778%/78.125000%/71.125908%；星地四项均高于 E0/SOURCE 及后续 CCD。指标直接取自 body-prototype r02 冻结评分，训练仍为原 r01 的 444 步，不新增实验或调阈值。
+
+这是依据历史开发结果更新研究起点，原实验的 NO_PROMOTION 和未达绝对目标不追改。所选 PCD 有目标 U384 的神经适配祖先，不能当作纯源权重；其他新 RX 的研究需从原 source-only r03 独立初始化。保留单种子、单目标 RX、历史曝光、逐景缺类和未完成发现/匿名注册的限制。clean R_U≥95%、星地 R_U≥90%、C_K≥90%、同 DURA 原 F0 闭集减 A_K≤2 个百分点不降低，完整目标 ACTIVE。方法与证据见 `docs/PAMF_PHASE3_METHOD_SELECTION_20261031.md` 和 `configs/pamf_phase3_selected_baseline_20261031.json`。
