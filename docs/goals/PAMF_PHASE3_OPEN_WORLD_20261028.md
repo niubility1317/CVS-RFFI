@@ -1151,3 +1151,15 @@ Run `20261031-phase3-joint-identity-s2026092701-r01` / actualcode `f540589c0478b
 Run `20261031-phase3-joint-identity-s2026092701-r01` / actualcode `f540589c0478bed77a9fb4e664481c80ffe7eecc`，真实2×444联合训练、8×3DURA预测和独立三truth评分均VERIFIED完成。主TARGET_JOINT宏AK/CK/RU/H：source_DURA: 89.718519/95.888889/67.777778/77.219871%; 原F0闭集90.981481, 学生闭集91.581481, 原F0损1.262963pp；clean_DURA: 21.147817/34.325475/63.883173/31.776407%; 原F0闭集48.567015, 学生闭集42.228981, 原F0损27.419198pp；star_DURA: 21.357750/40.113129/52.561046/30.373484%; 原F0闭集41.721059, 学生闭集38.639796, 原F0损20.363309pp。star较SOURCE_JOINT AK+0.664492pp/RU−5.012763pp，较OLD_PCD AK−6.593973pp，绝对保护/拒识与相对晋级条件失败，NO_PROMOTION、不扩seed，完整目标ACTIVE。
 
 两学生body/head/projection联合训练、Sinc/buffers/原F0G冻结；SOURCE先完成再开U576，源L/OE全444索引匹配，默认头960原生复制无替换/另训，各模型ownclosed路由/τ，原F0同G闭集独立保护。新888、真实signal679034/G21052/F020476、2源GMM/24新τ+24旧τ、单主602632参数，不部署原型/行bank。初始r03body与F0W的完整分类并不等原F0，无初始组合Q读出，因此不能唯一归因CE；后续先诊断源端初始化和身份保真，不依据Q重挑参数或简单数据。V校准非blind、已曝光Q/缺类日N/A/global historyUNKNOWN、formal0/REG0保持。完整888步/24点/分组见新结果文档。
+
+
+## 2026-10-31：身份初始化源端诊断预登记
+
+Run `20261031-phase3-identity-source-diagnostic-s2026092701-r01` / actualcode `602a57b1fbb61c05c6fd7ac780dc7656a93238f8`。固定F0/未训练r03+F0W初值INIT/纯源SOURCE_JOINT444三个冻结模型，仅读源G10 P1 L6300/OE6134，V/NV/U/Q/private truth0，不加载TARGET适配权重，无优化/新head或adapter拟合/阈值。诊断原生身份和raw/z/W漂移、source TX-RX-day几何及OE无TX置信度，L缺scene保留N/A。真实F012434/signal24868/G0，合成smoke另计。此为已训练源角色诊断，不是目标或blind测试，不更改旧候选/指标，完整goalACTIVE。见`docs/PAMF_PHASE3_IDENTITY_SOURCE_DIAGNOSTIC_PLAN_20261031.md`。
+
+
+## 2026-10-31：身份初始化源端诊断完整结果
+
+Run `20261031-phase3-identity-source-diagnostic-s2026092701-r01` / actualcode `602a57b1fbb61c05c6fd7ac780dc7656a93238f8`，冻结 source-only F0/INIT(r03+原W)/SOURCE_JOINT444、L6300/OE6134全量诊断VERIFIED完成。F0: macroL=91.777778%, CE=0.293837；INIT: macroL=96.746032%, CE=0.110546；SOURCE: macroL=98.000000%, CE=0.066901；INIT对F0正确净+313、SOURCE对INIT净+79，INITW逐值相同且其余state等r03。源端不支持gross头接错/语义置换作为唯一解释；未测目标初值，不宣称已经定位目标退化或推广原因。
+
+rawcos INIT/F0均值.925550、SOURCE/INIT .999043，z SOURCE/INIT .998893；SOURCE W相对L2 .072261。五种source质心几何及全TX/RX/day/OE无TX置信度见诊断报告，源L/OE本为训练角色，scene无metadata保持N/A。新F012434/signal24868/G0、opt/fit/τ0，V/NV/Us/U/Q/truth/TARGETCP0，全模型/buffer不变；无目标性能结论，完整目标ACTIVE。后续核查源覆盖与Phase1身份表征保真，避免继续把修复明显head拼接故障当作既定方向；新候选仍需源端固定选择及全三DURA评测，不从Q调参。
