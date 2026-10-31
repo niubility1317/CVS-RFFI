@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整结果见analysis.md/results.json，完整分组和成本保留。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -47,3 +47,10 @@ G从零固定最终30轮后，自动同卡profile/source1800×7/target168000×7�
 ## 实际启动核实
 
 VERIFIED RUNNING。执行9925a6c6c4e73e3fa1f76f9b2c4105bfbfa91801，controller1774712/worker1774802/GPU4实际PID/CWD/完整命令、空CUDA控制器与CUDA4 worker、计算PID和日志增长已核实。启动前free22883MiB/已有1计算PID，新增1个符合总数≤3。首步真实2非cleanLs强制正负两路，实际RMS/Action-probe/variance/原F和SIGcache/guidecap/三G模块梯度/严格E0/native-optimized全部PASS。已完成2/30轮/494步；本轮requested=0.498095、effective=0.423016、功率比=1.000000000，数值clean跳过。SIGcache40.32MB只读复用，句柄核对与mmap打开0.054573秒（不是完整数值读完耗时），新F缓存/存储0；F50上游知识/原缓存成本披露。固定30后自动全部七景与独立truth-last，当前没有正式性能结论，默认保持。
+
+
+## 完整训练与正式结果
+
+VERIFIED / ANALYZED。原SIG-only主体266951参数，G从零单阶段30轮/7410步，L189000/U1701000，无G祖先/新可训练分支/推理增强。源残差符号请求944502、有效802880、请求clean跳过141622；全30轮独立重放专用NumPy2026103107和shuffle2026103004，计数一致，重复视图有效符号变化267569，不冒充新独立物理数据或完整模拟器重抽。源receivedRMS与cA/c²variance一致，额外Aclean1.89m/调整后Aprobe3.78m，原四物理项及SIG alpha1/cap.5保持；旧F成对梯度方差FAIL保留。clean SIG40.32MB只读复用/新缓存F0，历史63000前缀/0.847077秒与F50/11100监督知识披露，F-guided；online前缀/VJP各1.89m、完整F后续路径0、F状态不变。每role全七景预测固定后truth-last，126正式/105源V/252双对照配对分组/14IQ误差独立复算；原SIGcache证明复用，未重复NN检查。六星地较原SIG提高0/6、纯G提高2/6、默认DURA提高0/6。clean 84.866667%，low urban 67.717262%；低城区较原SIG -1.117857、纯G +0.344643、默认DURA -1.172619个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。G训练及保存1080.461290秒，含worker准备1081.536184秒，控制器至自动全量分析1263.754893秒；25.068072m ConvLinearMAC/2prior4CG27FFT。共享GPU单次时间不是因果速度比或同质量效率证明；默认DURA保持，完整目标ACTIVE，有限模型不认证恢复极限。
+
+详见[完整分析](analysis.md)、[训练与七景图](training_and_formal.png)、results.json及transfer_diagnostics.json。controller1774712/worker1774802自然结束，无目标反馈或选择性重跑。
