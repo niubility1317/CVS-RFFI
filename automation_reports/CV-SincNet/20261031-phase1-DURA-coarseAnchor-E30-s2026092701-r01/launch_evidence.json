@@ -1,0 +1,105 @@
+{
+  "status": "VERIFIED_RUNNING_NO_PERFORMANCE_RESULT",
+  "execution_commit": "28555c9cdc8870930dffe295fd466111c97c0091",
+  "controller_PID": 1884336,
+  "worker_PID": 1884426,
+  "GPU": 4,
+  "actual_CWD_and_argv_and_commit_verified": true,
+  "CUDA_visible_GPU_verified": true,
+  "compute_PID_verified": true,
+  "controller_log_bytes": 276,
+  "worker_log_bytes": 1053,
+  "epoch_records": 1,
+  "latest_update": 247,
+  "smoke": {
+    "status": "PASS",
+    "real_nonclean_Ls": 2,
+    "G_inputs": 8,
+    "F_full_inputs": 4,
+    "F_prefix_inputs": 2,
+    "F_input_VJP_inputs": 2,
+    "smoke_only_coarse_aux_parameter_VJP_inputs": 2,
+    "actual_anchor_coarse_only_nonzero_gradient": true,
+    "coarse_clean_alpha": 0.02071440650605139,
+    "SIG_IQ_gradient_cap": 0.5,
+    "joint_G_gradients": true,
+    "strict_E0_reload": true,
+    "native_optimized_match": true,
+    "G_parameters": 266951,
+    "F_unchanged": true,
+    "F_updates": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "G_initialization_checkpoint_loads": 0,
+    "source_cache_reuse": {
+      "status": "SOURCE_ACTUAL_SIG_REUSED",
+      "count": 63000,
+      "shape": [
+        63000,
+        160
+      ],
+      "numeric_bytes": 40320000,
+      "source_contract": "original7/63/30",
+      "F_teacher": {
+        "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "seed": 2026092701,
+        "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "epoch": 50,
+        "updates": 11100
+      },
+      "reused_from_run": "20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01",
+      "original_metadata": {
+        "status": "SOURCE_ACTUAL_SIG_COMPLETE",
+        "count": 63000,
+        "shape": [
+          63000,
+          160
+        ],
+        "numeric_bytes": 40320000,
+        "source_contract": "original7/63/30",
+        "F_teacher": {
+          "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+          "seed": 2026092701,
+          "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+          "epoch": 50,
+          "updates": 11100
+        },
+        "actual_weighted_TripleSIG": true,
+        "full_F_inputs": 0,
+        "F_prefix_inputs": 63000,
+        "F_input_VJP_inputs": 0,
+        "F_updates": 0,
+        "model_optimizer_updates": 0,
+        "TX_labels_read": 0,
+        "V_reads": 0,
+        "target_reads": 0,
+        "seconds": 0.847077140584588,
+        "peak_allocated_bytes": 168638464
+      },
+      "new_F_prefix_inputs": 0,
+      "new_F_input_VJP_inputs": 0,
+      "new_numeric_bytes": 0,
+      "TX_labels_read": 0,
+      "V_reads": 0,
+      "target_reads": 0,
+      "seconds": 0.09352635499089956
+    },
+    "teacher_load": {
+      "F_load_RNG_restored": true,
+      "CPU_rng_restored": true,
+      "CUDA_rng_restored": null,
+      "F_checkpoint_loads": 1
+    }
+  },
+  "archive_sha_match": true,
+  "remote_compile": true,
+  "admission": {
+    "visible_GPU_compute_PIDs": 1,
+    "free_memory_MB": 23271,
+    "maximum_total_after_adding": 3
+  },
+  "default_DURA_changed": false,
+  "target_feedback": false,
+  "goal_complete": false
+}

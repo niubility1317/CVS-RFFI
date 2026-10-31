@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-and-efficiency goal;explicit source frozen-F feature-guidance and scratchsingle-stage30epoch authorization;noTX/V/targetoptimization/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "28555c9cdc8870930dffe295fd466111c97c0091",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-DURA-coarseAnchor-E30-r01"
@@ -101,7 +101,7 @@
     "remote_run_root": "runs/20261031-phase1-DURA-coarseAnchor-E30-s2026092701-r01",
     "remote_log_root": "logs/20261031-phase1-DURA-coarseAnchor-E30-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-coarseAnchor-E30-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_direct_train.coarse_anchor run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.coarse_anchor run --root /home/szu2070436088/2510044040/CV-SincNet --commit 28555c9cdc8870930dffe295fd466111c97c0091",
     "stop_rule": "Badsource/Fcache/roles/RNG/nonfinite/actualSIGcap>.5*(1+2e-5)/collision/checkpoint/smoke/coverage:preservefailedrow/noautoretry/noothers. No performance stop;fixed30/all7evenifsourceworse. Fixedcoarsealphaisnotdynamicgradientcap."
   },
   "expected_artifacts": [
@@ -169,7 +169,7 @@
       "budget_ref": "Gscratch30/7410/B256/L189000U1701000/Gancestor0;sourceSIG40.32MBreuse/newFcache0;onlineFprefix-VJP1.89meach/fullF0;G266951/25068072ConvLinearMAC/2prior4CG27FFT;coarseauxusesexistingGforward/onejointbackward",
       "output_root": "runs/20261031-phase1-DURA-coarseAnchor-E30-s2026092701-r01/scratch_joint",
       "log_path": "runs/20261031-phase1-DURA-coarseAnchor-E30-s2026092701-r01/logs/scratch_joint.log",
-      "command": "python -u -m experiments.pamf_dura_direct_train.coarse_anchor run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_direct_train.coarse_anchor run --root /home/szu2070436088/2510044040/CV-SincNet --commit 28555c9cdc8870930dffe295fd466111c97c0091",
       "expected_artifacts": [
         "launch.json",
         "plan.json",

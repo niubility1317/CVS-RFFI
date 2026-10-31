@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-coarseAnchor-E30-s2026092701-r01`
 - group_id：`phase1-dura-weak-coarse-clean-anchor-SIG-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -42,3 +42,8 @@ G从零单阶段30轮/7410，原266951参数、source01..20后01..10、model/CUD
 固定final30后自动同卡profile、source1800×7和正式168000×7，各role全部预测完成后独立CPU truth-last。源差不能取消正式测试，不按目标成绩改系数、轮次、候选排序或选择性重跑。主对照原SIG47591，次pureG8cf/defaultDURA/R17；六景各≥137216正确、clean≥142256、R17逐景最多少1680，旧lowU70%单列。完整126正式/105源/252双对照配对分组/14IQ及30轮loss组成/曝光/视图/cap/aux固定权重复核。
 
 GPU4/6/7/free≥12000MiB/existing≤2新增1总≤3，own1/card、goal≤2GPUworker、ownCPUtruthscorer≤1，其他owner不变。一次preflight/不可覆盖输出/单归档SHA/远端compile/实际PID-CWD-argv-CUDA-compute-loggrowth。默认DURA与Phase2/3保持，完整目标ACTIVE，既有曝光工程基准不称新盲测。
+
+
+## 实际启动证据
+
+VERIFIED / RUNNING，尚无性能结果。执行28555c9cdc8870930dffe295fd466111c97c0091；真实2非clean L_s smoke PASS后进入GPU4 worker1884426/controller1884336，已核实1轮/247步、两日志增长。实际CWD/完整argv/commit/CUDA/compute PID核对，准入前1个compute PID/剩余23271MiB，新增1个。归档SHA比较与远端编译通过；固定final30/profile/全部七景自动truth-last保持。详见launch_evidence.json。
