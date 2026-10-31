@@ -6,7 +6,7 @@
 
 用户已明确允许 raw／DURA 同一条 query 融合，并要求保留仅 DURA 输出对照；support 仍严格 S0 raw、S1 G。新版 Q0=raw、QG（机器 Q1）=仅 G、QF（机器 Q2）=融合。当前主验收为全部 K1/5/10/20×N2/5/10/20、两 S 下 Q0 较匹配原 Q0 至少 +5pp，且同状态 QF>Q0。QG 完整单列，与原 QG 保持同输入配对；QF 与原 QG 的差须标明路径改变，不冒充同输入增益。早期角点、均值、单 support 的高收益不能代替全格。科学协议本轮例外已更新，旧 run 仍保留原 G-only 定义。
 
-R27 首 RX 四角点 36 行已完成：融合 QF>Q0 在两 S 均 4/4，但 raw+5 在 S0 仅 2/4、S1 为 4/4；因此未晋级，最终目标仍 ACTIVE。R26 为此前两 S raw 均 3/4 的历史结果。以下 G-only 阶段的验收文字与结果均为历史记录。当前最广证据仍是 R14 七 RX，全格目标未通过。
+R31 首 RX 四角点 36 行已完成：S0 raw+5为3/4、QF>Q0为4/4；S1 raw+5为4/4、QF>Q0为4/4。未达标组合：S0 K1/N20 raw差+4.0958pp、融合差+1.5472pp。严格晋级 False。最终all16/七RX尚未完成，目标ACTIVE。R26/R27为此前历史结果。以下 G-only 阶段的验收文字与结果均为历史记录。当前最广证据仍是 R14 七 RX，全格目标未通过。
 
 ## 历史 G-only 阶段每格验收（覆盖旧均值口径）
 
@@ -251,3 +251,7 @@ source 主宏H相对 R27 CCA 对照 -0.2114pp，各K/S raw差 [{'k': 1, 'S': 0, 
 ### R31 当前SUP多维平衡岭回归先验
 
 q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge=.1trace(cov)/d，g=clip(.5+centeredq·beta,0,1)，B g1/C零方差明确g.5。所有OOF仅trainSUP拟合；query冻结应用。原C4/CCA64/F/G/head/priorcap.5/R26fusion保持，不使用R30度量。新固定机制沿R26/R27 source120K1选择后直接36角点证伪，无sourceH收益否决，不重开R30旧gate。最终all16两Sraw+5/QF>raw保持，goal ACTIVE。
+
+### R31 实际结果
+
+36行独立truth-last完成，所属进程退出。两S逐角点验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 3, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 4, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.095765023241099, 'fusion_gain_pp': 1.5472148207863023}]。新gate仅当前SUP多维平衡岭回归，statebytes/组数/物理OOF核实；F/G/head/C4/CCA64保持，G-only完整。不扩12KN或六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。

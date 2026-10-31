@@ -15,3 +15,36 @@ sourceGPU4/targetGPU0启动前核实容量，其他owner不动。commit/命令/�
 ## 发布前核验
 
 21项相关检查与4项非法协议输入检查通过，本地compile/diff检查通过。唯一独立P0/P1审查PASS：加权中心化ridge与0.5截距一致，B全开/零方差0.5均有明确模式；OOF gate/cov/核/系数仅trainSUP，query冻结应用；普通CCA路由，不加载R30 gains或进入其源收益门槛。实际F/G noquery smoke将在launcher首步运行，PASS直接继续。
+
+## 实际完成与结果
+
+**VERIFIED**：release archive传输/remotecompile通过，发布后实际source与target进程PID/CWD/argv/GPU均已读取，源/target日志增长、36个prediction与SCORED_COMPLETE及全部所属进程退出核实。真实F/G/head无query smoke PASS。代码commit `c0aa35cc871432ad857981b52fa7dbcd1093b186`。source固定Q0/QF选择K1规则：{'config': ['signature_identity', 'all', 0.5, 'single'], 'ridge': 0.01, 'outer_folds': 3, 'outer_strengths': [0.0, 0.25, 0.5, 0.75], 'ridge_reference_classes': 6, 'prior_weight': 0.5, 'fusion_policy': 'rf_distance_margin_half_v1', 'confidence_rule': 'support_balanced_ridge_v1'}；源流程42.955秒。
+
+target worker [84.6971016060561]秒，raw每行score/distance临时缓存[28777056]字节，最终缓存0行；12个fit记录均严格单SUP路径，head6列合法映射、prior.5、物理OOF状态与allocatedK核实；每个多维平衡ridge gate仅从本组SUP拟合，old_rows/new_rows、statebytes、ridge_fraction=.1核实。融合没有额外F/G参数更新。
+
+| 路径 | 当前角点平均宏H% | 同输入原版差pp | QF−Q0 pp | QG−Q0 pp |
+|---|---:|---:|---:|---:|
+| S0Q0 | 54.6420 | +8.5231 | +3.1900 | -0.6078 |
+| S0Q1 | 54.0342 | +11.6415 | +3.1900 | -0.6078 |
+| S0Q2 | 57.8320 | 不适用：融合新路径 | +3.1900 | -0.6078 |
+| S1Q0 | 46.9921 | +28.9712 | +14.1279 | +17.2994 |
+| S1Q1 | 64.2916 | +5.9876 | +14.1279 | +17.2994 |
+| S1Q2 | 61.1201 | 不适用：融合新路径 | +14.1279 | +17.2994 |
+
+Q0/Q1分别为raw/G-only同输入对照；Q2为用户允许的同记录融合，不把Q2对原G-only的差冒充同输入配对。Q2对原raw/G的跨路径差单独保留result_summary字段。
+
+## 逐角点验收
+
+- S0：raw较原raw至少+5为3/4，QF>raw为4/4，全部角点通过False。
+- S1：raw较原raw至少+5为4/4，QF>raw为4/4，全部角点通过True。
+
+严格晋级 False；是否补其余12KN/六RX由严格逐格晋级决定，不以均值代替。纯raw/G四路对原版逐格+5全部通过 False，作为控制单列，不用融合隐藏原G-only下降。
+
+| K | N | S0 raw H%（对原差pp） | S0 QF−raw pp | S0 G−raw pp | S1 raw H%（对原差pp） | S1 QF−raw pp | S1 G−raw pp |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 2 | 48.559 (+17.439) | +3.144 | +0.379 | 43.501 (+6.909) | +11.103 | +16.221 |
+| 1 | 20 | 30.071 (+4.096) | +1.547 | -0.356 | 27.096 (+11.190) | +7.797 | +10.870 |
+| 20 | 2 | 72.481 (+6.920) | +4.117 | -0.149 | 58.190 (+54.199) | +19.261 | +22.037 |
+| 20 | 20 | 67.457 (+5.637) | +3.952 | -2.304 | 59.181 (+43.587) | +18.350 | +20.069 |
+
+实际失败组合：[{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.095765023241099, 'fusion_gain_pp': 1.5472148207863023}]。角点晋级 False；不扩剩余12KN/其他六RX，保留本负结果。 源partial-novelty、单RX/单seed/P01MIX01已曝光开发边界保持，最终all16目标仍ACTIVE。
