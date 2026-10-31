@@ -215,3 +215,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R26 实际结果与下一步缺口
 
 36行独立truthlast完成、所有所属进程退出；QF>Q0两S均4/4，均值S0+2.9507pp、S1+14.2197pp；G-only相对raw均值S0−2.0680、S1+18.2062，完整控制保留。raw+5两S均3/4，S0 K1N20仅+3.7906、S1 K1N2仅+4.3524；严格不扩。冻结head函数prior使knownold召回增加但new受损，下一步应解决raw旧新平衡，不能只优化融合或回调本run规则。最终16KN全部逐格目标仍ACTIVE。
+
+### R27 当前SUP置信度先验校准
+
+保持R26融合规则和.5先验上限，只用当前SUP旧/新熵置信度均值a/b拟合g：B全开，C正gap线性clip，否则明确关闭；query逐条应用冻结a/b，无真实角色/批统计/跨KNS借用。物理OOF每折gate/tau/coef均train-only。source规则Q0/QF选择、F/G/head/C4moments/CCA64保持，首四corner三路径36行allfixedthen独立truth；最终all16两S raw+5/QF>raw不变。

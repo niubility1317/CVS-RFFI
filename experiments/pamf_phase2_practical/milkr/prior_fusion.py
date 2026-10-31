@@ -20,19 +20,25 @@ def normalize(features):
     p.flags.writeable=False;out['teacher_probs']=p;return out
 
 
-def prior(probability,count):
+def prior(probability,count,gate=None):
     p=np.asarray(probability,np.float64);value=np.zeros((len(p),count),np.float64)
-    value[:,:p.shape[1]]=PRIOR_WEIGHT*(p-1/p.shape[1]);return value
+    weight=1. if gate is None else gate.values(p)[:,None]
+    value[:,:p.shape[1]]=PRIOR_WEIGHT*weight*(p-1/p.shape[1]);return value
 
 
-def context(features,labels,config):
+def context(features,labels,config,confidence_rule=None):
     geometry,band,mix,scales=config;y=np.asarray(labels,np.int64);sim=sig.similarity(features,features,geometry);d=np.maximum(2-2*sim,0)
     if band=='nearest':tau=float(np.median(np.min(np.where(y[:,None]!=y[None,:],d,np.inf),axis=1)))
     else:tau=float(np.median(d[y[:,None]!=y[None,:]]))
     if not np.isfinite(tau) or tau<=0:raise FloatingPointError('No positive prior-kernel support scale')
     K=base.make_kernel(sim,tau,mix,scales);eig,U,Y,_,_,mean=base.decompose(K,y)
-    target=Y-prior(features['teacher_probs'],Y.shape[1]);average=target.mean(0)
-    return dict(tau=tau,parts=(eig,U,target,average,target-average,mean))
+    gate=None
+    if confidence_rule is not None:
+        from . import support_prior_gate
+        if confidence_rule!=support_prior_gate.RULE:raise ValueError('Wrong support-confidence rule')
+        gate=support_prior_gate.fit(features['teacher_probs'],y)
+    target=Y-prior(features['teacher_probs'],Y.shape[1],gate);average=target.mean(0)
+    return dict(tau=tau,parts=(eig,U,target,average,target-average,mean),gate=gate)
 
 
 def fuse(raw,restored):
@@ -53,12 +59,13 @@ class State:
     tau:float
     ridge:float
     selection:dict
+    prior_gate:object=None
 
     def evaluate(self,features):
         x=normalize(features)
         if x['teacher_probs'].shape[1]!=self.features['teacher_probs'].shape[1]:raise ValueError('Old-head dimensions differ')
         geometry,_,mix,scales=self.config;sim=sig.similarity(x,self.features,geometry)
-        scores=prior(x['teacher_probs'],self.alpha.shape[1])+base.make_kernel(sim,self.tau,mix,scales)@self.alpha+self.intercept
+        scores=prior(x['teacher_probs'],self.alpha.shape[1],self.prior_gate)+base.make_kernel(sim,self.tau,mix,scales)@self.alpha+self.intercept
         return scores,np.maximum(2-2*sim,0).min(1)
 
     def score(self,features):return self.evaluate(features)[0]
@@ -67,6 +74,12 @@ class State:
 def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
     if fixed is None or fixed.get('prior_weight')!=PRIOR_WEIGHT or fixed.get('fusion_policy')!=FUSION_POLICY:raise ValueError('Frozen function-prior/fusion rule required')
     if fixed.get('ridge_reference_classes')!=6 or tuple(fixed.get('config',())) not in sig.CONFIGS:raise ValueError('Frozen source rule required')
+    confidence_rule=fixed.get('confidence_rule')
+    if confidence_rule is not None:
+        from .support_prior_gate import RULE
+        if confidence_rule!=RULE:raise ValueError('Wrong frozen confidence rule')
+    def build(features,labels,config):
+        return context(features,labels,config) if confidence_rule is None else context(features,labels,config,confidence_rule=confidence_rule)
     reference=float(fixed['ridge'])
     if not np.isfinite(reference) or reference<=0:raise ValueError('Positive source ridge required')
     x=normalize(features);y=np.asarray(labels,np.int64);ids=tuple(map(str,ids))
@@ -80,8 +93,8 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
         for config in sig.CONFIGS:
             geometry,_,mix,scales=config;predictions={lam:np.zeros((len(y),count)) for lam in base.LAMBDAS}
             for train,held in split:
-                tx={key:value[train] for key,value in x.items()};hx={key:value[held] for key,value in x.items()};ctx=context(tx,y[train],config)
-                cross=base.make_kernel(sig.similarity(hx,tx,geometry),ctx['tau'],mix,scales);bias=prior(hx['teacher_probs'],count)
+                tx={key:value[train] for key,value in x.items()};hx={key:value[held] for key,value in x.items()};ctx=build(tx,y[train],config)
+                cross=base.make_kernel(sig.similarity(hx,tx,geometry),ctx['tau'],mix,scales);bias=prior(hx['teacher_probs'],count,ctx['gate'])
                 for lam in base.LAMBDAS:
                     alpha,intercept,_=base.coefficients(ctx['parts'],lam);predictions[lam][held]=bias+cross@alpha+intercept
             for lam,scores in predictions.items():
@@ -89,8 +102,9 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
                 records.append(dict(config=list(config),ridge=lam,physical_OOF_H=objective,OOF_loss=loss))
                 if best is None or rank>best[0]:best=(rank,config,lam)
         _,config,ridge=best
-    ctx=context(x,y,config);alpha,intercept,_=base.coefficients(ctx['parts'],ridge);alpha.flags.writeable=False;intercept.flags.writeable=False
+    ctx=build(x,y,config);alpha,intercept,_=base.coefficients(ctx['parts'],ridge);alpha.flags.writeable=False;intercept.flags.writeable=False
     return State(x,alpha,intercept,config,ctx['tau'],float(ridge),dict(rule='source_fixed' if not audit else 'three_physical_fold_OOF',
         prior_weight=PRIOR_WEIGHT,fusion_policy=FUSION_POLICY,old_head_columns=old_count,physical_OOF=bool(audit),folds=audit,physical_K=k,physical_count=len(y),
         candidate_count=len(records) if audit else 1,records=records,query_fit=False,bandwidth_scope='registered',bandwidth_physical_count=len(y),
-        frozen_default_head_updates=0,extra_state_bytes=x['teacher_probs'].nbytes,K1_current_class_scaling=bool(k==1)))
+        frozen_default_head_updates=0,extra_state_bytes=x['teacher_probs'].nbytes+(16 if ctx['gate'] is not None else 0),K1_current_class_scaling=bool(k==1),
+        prior_confidence_gate=ctx['gate'].audit() if ctx['gate'] is not None else None),ctx['gate'])
