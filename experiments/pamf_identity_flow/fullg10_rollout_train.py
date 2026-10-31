@@ -16,7 +16,7 @@ from .rollout_objective import rollout_objective
 from experiments.pamf_dura_direct_train import runner as source
 from experiments.pamf_phase3_open_world import star_relative_source as f0
 
-RUN='20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r01'
+RUN='20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r02'
 ARM='identity_rollout_fullg10'
 EPOCHS=30
 BATCH=128

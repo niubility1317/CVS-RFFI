@@ -18,7 +18,7 @@ from experiments.pamf_phase3_open_world import fresh_dura_score as reference_sco
 from experiments.pamf_phase3_open_world import fresh_world_score as world_score
 from . import fullg10_rollout_train as candidate
 
-RUN = '20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r01'
+RUN = '20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r02'
 STATUS = 'IDENTITY_FULLG10_ROLLOUT_PHASE3_PREDICTIONS_COMPLETE'
 FIELDS = {'run_id', 'code_commit', 'candidate_code_commit', 'reference_runtime', 'candidate_checkpoint', 'output_root'}
 
