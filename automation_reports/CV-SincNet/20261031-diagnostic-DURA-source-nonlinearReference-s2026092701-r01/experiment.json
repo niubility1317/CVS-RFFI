@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01",
+  "group_id": "phase1-dura-source-exact-nonlinear-reference",
+  "display_name": "精确非线性源域特征约束：IQ可达性与梯度注入",
+  "description": "同source10目标，固定8次半步GaussNewton重线性化检验实际IQ可达性；2Ls随机G检查一次F reverse的精确梯度注入。0优化/新G训练/TX-V-target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "exact-nonlinear-F",
+    "gradient-injection",
+    "IQ-feasibility",
+    "single-stage-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-diagnostic-DURA-source-softReference10IQ-s2026092701-r01",
+    "20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Fixedsource512128L384U pairedclean/basis10/targetPhi10/originalFcleanlogits fromlegalpreviousgeometry;source01first2Lsreceived/action forGsmokeonly",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Original63000source L/U andfixed512 physicalpositions/IDs/roles/clean/RX/day matched",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07cache01 usedonlyreal2LsGsmoke;GNoperatespairedsourceclean/notnewchannel/target",
+    "target_panel": "None",
+    "actual_training_labels": "Nooptimizer/Gtraining/TXtruth. FrozenF sourcefeatures/inputgradients andpairedsourceclean only"
+  },
+  "permissions": {
+    "regime": "Source_only_exact_frozenF_nonlinear_reference_diagnostic",
+    "query_use": "No target/query/labels. Sourceclean minIQpath isofflineoracle,notdeployabletest-timeadaptation",
+    "external_method_exception": null,
+    "claim_scope": "Exactsource10 targetlocalreachability/Ggradientflow only;nottrueTXhardware/targetbenefit/GPUefficiency guarantee;noautomaticGtraining"
+  },
+  "checkpoint": {
+    "initialization": "OriginalsourceF50/defaulthead frozen;randomG scratch smokeonly/nooptimizer/nosavedG/noancestor",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261031-diagnostic-DURA-source-softReference10IQ-s2026092701-r01/feasibility.npz DATAONLY selectedclean/basis/targetPhi/IDs;NOTfailedJ oroldGerrors",
+      "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/epochs/01 DATAONLY first2LsGsmoke"
+    ],
+    "contract_check_ref": "OriginalF4df7/source50/11100/7-63-30;oldsource10legalmetadata/geometryeligible/Fteacher/source512IDsrolescleanRXday;basisorthonormal/head5exact/actualFspan;real2Lsphi/defaulthead/Ggradcap/F-Gstate",
+    "provenance_verdict": "SameoriginalsourceL/U. Failedsource10tangentnotused:onlylegalF-derivedbasis/featuretargetandpairedsourceclean. OriginalF50sourceknowledge;nooldGweight/error/Jread. 512excludedfromprototypefit62488 butFhistoricallytrainedallsource;notunseen/blinddata.",
+    "selection_rule": "Samebeta.25/dimension10/alpha.003313/cap1. Eightiterations/halfstep.5/eigencut1e-10fixedbeforenewFaccess;final8only/noearlystop/step-size/iteration/dimension/reference search. Differentexactnonlinearalgorithm,oldfailedtangentdecisionremainsFAIL."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-nonlinear-reference",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU;previoussource10PID1465120terminal;otherowners untouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.nonlinear_reference_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badsource/provenance/shape/order/nonfinite/F-Gstatechange/smoke/collision:preserveandstop/noautoretry;scientificfail no steps/damping/dimension/beta/alpha/thresholdsearch. NoautomaticGPU/newGtraining."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "nonlinear_path.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "actualFrelativeoffseterrorafterfixed8/512cleanheadchoices",
+      "IQshiftNMSEmean/P95",
+      "all8inputerror/outputIQenergy/rank/seconds",
+      "exactgradientinjection/actualIQcap/Gthree-modulegradients/F-Gfrozenstate",
+      "actualF-G/VJPcounts/sourceonlycost"
+    ],
+    "dimensions": [
+      "512uniquesourcephysicalrecords128L384U",
+      "fixed8nonlinearsteps plusfinal",
+      "real2LsF/Gsmoke"
+    ],
+    "prediction_ref": "Noformal/Gpredictions;privatesource8stepIQ-J-Fpath/actualfinalFlogits only",
+    "scorer_ref": "NoTXtruth. IndependentNumPy all8basis-alignedGramsteps/IQpath/NN-observationerrors/choices/groupstats/decision;NNoutputsnotrerun"
+  },
+  "rows": [
+    {
+      "row_id": "source-nonlinear-reference",
+      "method": "ExactF relinearizedrank10minnorm IQpath8xhalfstep.5;oneFreverse/step-localscalarcap gradientinjection Gsmoke",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{exact_reference.py,nonlinear_reference_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No newrandomdraw/modelinit. ExistingF/pureG2026092701/source8cf;fixedsourceindices128L384U;cachedAUG2026101912/RX2026101911;deterministicminnorm/offset, no support/evaluationrandomness.",
+      "k": null,
+      "scenario": "Source512 pairedclean-onlyofflineIQoracle;source01first2LsrandomGsmoke",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2;mainF8x512+final512=4608/VJP8x512x10=40960;smokeF4/VJP2/G2;0optimizer/initcheckpoint/TX-V-target/fullsourceJ/newGtraining",
+      "output_root": "runs/20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.nonlinear_reference_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "nonlinear_path.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Oldsinglelinearization10DFAILED remainsFAIL. Newcandidate recomputesactualFand10JacobiancolumnsatcurrentIQ eachof8fixedsteps,solvesJdelta=targetPhi-currentPhi byFP64Gram eigencut1e-10,updatesIQ+.5delta. Noearlystopping/linesearch/variableiteration;fixedfinal8actualF/decision. Reference/basis/head5/beta.25/alphaunchanged. IQpathusespairedsourceclean,neverdeploymentruleorGtrainingstage.",
+    "Finalsameactualnonlinearqualificationmedian<=.5/P95<=1,IQshiftNMSEmean<=.001/P95<=.005,512originalcleanheadchoicespreserved. Oldclean-JdirectioncosruleisnotreinterpretedasPASS;newtraininggradientisexactFinputderivative andisindependentlycomparedtocompleteFobjectiveinG-paramtests. SourcepassonlysupportsseparatelyregisteredGPUcostbenchmark,notGtraining/performanceclaim.",
+    "Exactsourceguidealpha||Phi(F(restored))-target||² obtainsrawIQgradientwithoneautograd.grad/Freverse,thenfreesFgraph. Computeperpacketdetacheds=min(1,||gIQ||/||gF||),returnactualweightedvalue+(restored*(s*gF)).sum-detachedsamezero-valueinjection. SubsequentGphysical+proxybackwarddoesnotrerunF;no secondorderorFparametergradient. OnlystepIQ-outputgradientcap1,notguidevalueorGparametergradientbound/globalfixedenergyderivative.",
+    "Firstreal2Ls cleanFcache/defaultheadcheck andrandomsourceG:exactguideweightedIQgradientverified,allcoarse/action/priorgradientsfinite/nonzero,FandGstatesunchanged/nooptimizer. SourceF4/VJP2/G2smoke. MainGNF4608/VJP40960. 512sourcephysicalrecords reused8timesnotmoreindependentdata. FinaldecisiondoesnotmeasuretrueTXaccuracy/hardwareidentity orGPUthroughput.",
+    "Readslegalfailedcalibrationclean/basis/targetPhi/IDs only,notitsJ/oldGerrororGweights. Sourceprototypefit62488excludes512butFtrainedsourceall;F50/11100andoldfeaturecache/geometrycostremainupstream. RandomGsmokeGancestor0/initcheckpoint0;noGtrainedcheckpointsave. Main8GNiterationsarenot8Gtrainingstages.",
+    "3focusedtestsPASS:independentfullF-lossGgradientequivalence,actualsingleF-reversehook/referenceisolation/strongcap,weakguideandcleanstationarity,frozen-eval/source10contract;actualmodule--helpPASS;uniqueP0P1PASS. Onepreflight/archiveSHA/remotecompile/postPID-CWD-argv-env-loggrowth;fullsourcepathindependentrecomputation. DefaultDURA/F/P2/P3unchanged;activegoalnotcomplete."
+  ],
+  "registered_at": "2026-10-31T03:47:14+00:00"
+}
