@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING_NO_PERFORMANCE_RESULT",
+  "status": "ANALYZED",
   "execution_commit": "d32e98f97047afc78bdd89dec51f7f804358cf3a",
   "controller_PID": 1804542,
   "worker_PID": 1804637,
@@ -10,7 +10,7 @@
   "controller_log_bytes": 497,
   "worker_log_bytes": 1942,
   "epoch_records": 2,
-  "latest_update": 494,
+  "latest_update": 7410,
   "smoke": {
     "status": "PASS",
     "real_nonclean_Ls": 2,
@@ -102,5 +102,100 @@
   },
   "default_DURA_changed": false,
   "target_feedback": false,
-  "goal_complete": false
+  "goal_complete": false,
+  "external_state": "VERIFIED_ANALYZED",
+  "phase": "COMPLETE",
+  "observed_epochs": 30,
+  "formal_results_available": true,
+  "row_and_controller_natural_exit_verified": true,
+  "all_seven_predictions_before_truth": true,
+  "independently_recomputed_target_groups": 126,
+  "independently_recomputed_source_groups": 105,
+  "independently_recomputed_paired_groups": 252,
+  "independently_recomputed_paired_IQ_scenes": 14,
+  "independent_context_state_check": {
+    "status": "VERIFIED_STRICT_FINAL_CONTEXT_CHECKPOINT",
+    "execution_commit": "d32e98f97047afc78bdd89dec51f7f804358cf3a",
+    "complete_G_parameters": 281415,
+    "new_context_parameters": 14464,
+    "new_context_parameter_tensors": [
+      {
+        "name": "prior.0.conditioner.0.weight",
+        "parameters": 864,
+        "initial_norm": 3.3046202659606934,
+        "final_norm": 5.396610260009766,
+        "change_norm": 3.6548070907592773,
+        "changed_scalars": 864
+      },
+      {
+        "name": "prior.0.conditioner.0.bias",
+        "parameters": 32,
+        "initial_norm": 0.6439248919487,
+        "final_norm": 1.1540218591690063,
+        "change_norm": 0.7157379388809204,
+        "changed_scalars": 32
+      },
+      {
+        "name": "prior.0.conditioner.2.weight",
+        "parameters": 6144,
+        "initial_norm": 0.0,
+        "final_norm": 5.698990345001221,
+        "change_norm": 5.698990345001221,
+        "changed_scalars": 6144
+      },
+      {
+        "name": "prior.0.conditioner.2.bias",
+        "parameters": 192,
+        "initial_norm": 0.0,
+        "final_norm": 0.9674103260040283,
+        "change_norm": 0.9674103260040283,
+        "changed_scalars": 192
+      },
+      {
+        "name": "prior.1.conditioner.0.weight",
+        "parameters": 864,
+        "initial_norm": 3.290703058242798,
+        "final_norm": 7.707235813140869,
+        "change_norm": 6.360711574554443,
+        "changed_scalars": 864
+      },
+      {
+        "name": "prior.1.conditioner.0.bias",
+        "parameters": 32,
+        "initial_norm": 0.6044834852218628,
+        "final_norm": 0.8672342896461487,
+        "change_norm": 0.4340991973876953,
+        "changed_scalars": 32
+      },
+      {
+        "name": "prior.1.conditioner.2.weight",
+        "parameters": 6144,
+        "initial_norm": 0.0,
+        "final_norm": 5.8892130851745605,
+        "change_norm": 5.8892130851745605,
+        "changed_scalars": 6144
+      },
+      {
+        "name": "prior.1.conditioner.2.bias",
+        "parameters": 192,
+        "initial_norm": 0.0,
+        "final_norm": 0.6651671528816223,
+        "change_norm": 0.6651671528816223,
+        "changed_scalars": 192
+      }
+    ],
+    "all_new_context_tensors_changed": true,
+    "no_new_model_forward": true,
+    "new_G_F_inputs": 0,
+    "optimizer_updates": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "scope": "EndpointparameterlearningandstrictE30load/notcausalproofofstateconditioningorhardwareextraction"
+  },
+  "training_seconds": 1141.237875559833,
+  "whole_pipeline_seconds": 1325.7578873634338,
+  "performance_acceptance": false,
+  "six_scene_gap3pp": false,
+  "clean_not_lower_than_raw": true
 }
