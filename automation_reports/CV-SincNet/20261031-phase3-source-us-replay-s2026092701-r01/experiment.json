@@ -1,0 +1,254 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-source-us-replay-s2026092701-r01",
+  "group_id": "pamf-phase3-source-us-replay",
+  "display_name": "PAMF第三阶段：原源域Us星地无标签重放",
+  "description": "Materialize original hidden-label sourceUs56700 through fixed G10/DURA, frozen F0-confidence PL against fixed r03 L anchors for444 source-only steps, matched SOURCE reused, full three-condition score.",
+  "kind": "cvs",
+  "stage": "Phase3-source-unlabelled-replay",
+  "aliases": [
+    "源Us星地重放PL"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "DURA",
+    "source_Us",
+    "confidence_PL",
+    "source_only_increment",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-source-Us-replay",
+  "parent_run_ids": [
+    "20261031-phase3-body-prototype-s2026092701-r01",
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "3988af354d00a3453384d7f61a799a4a237084fc",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-source-us-replay-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.source_us_cache",
+      "experiments.pamf_phase3_open_world.source_us_train",
+      "experiments.pamf_phase3_open_world.source_us_run",
+      "experiments.pamf_phase3_open_world.source_us_score",
+      "experiments.pamf_phase3_open_world.source_us_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_SOURCE_US_REPLAY_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Original ManySig source392005 Us56700 plus existing source and freshRX34 future",
+    "version": "Original Us IDs and roles retained, new one-observation G10/DURA cache validated once, all prior roles reused",
+    "representation": "Raw ManySig layout-only then one RMS/fixed G10 and DURA P1; sourceUs public TX-blind metadata only",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 开发域的时序发现与未来未知到达",
+    "physical_ids_ref": "Original F0 source_contract.role_ids U_s; newcache/U_s/ids.npy; old L/V/Q roles unchanged",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "Private builder/scorer only: old6 and metadata-selected discover3/late1; algorithm registered roster only old6",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "new_star_source_Us": 56700,
+      "Us_ground_truth_labels": 0,
+      "source_V_tau": 27000,
+      "source_NV": 3150,
+      "target_U_new": 0,
+      "old_PCD_target_U_ancestor": 576,
+      "cross_clean_Q": 10238,
+      "cross_star_Q": 10238,
+      "unique_future_physical": 10238,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": "pamf-source-Us392005-G10-MIX01-20261031-r01",
+    "split_id": "392005-Us-source5rx-3day-eq1",
+    "validation_ref": "Original source392005 VALIDATED_ONCE; this row source_input_audit.json and cache/complete.json after build",
+    "support_query_ref": "Original L/U/V physical IDs disjoint; sourceUs remains source role, never futureQ/support. FutureQ no training or selection.",
+    "leo_config_ref": "Original sourceMIX01 scene2026103001/channel2026104001/receiver2027,600km25MHz2.45GHz residual/post_sync/noEQ/refSNR30dB reflect; one received/record; clean futuretestonly"
+  },
+  "permissions": {
+    "regime": "Builder TX coordinates solely physical lookup via original opaqueIDs, noUs y read/export. Learner source L labels, OE membership, sourceUs P1 and originalF0 model pseudo-labels only, confidence0.95. No target newU/GT/K/quota.",
+    "query_use": "Cache→newsource444→newsource L/OE density+Vtau freeze→all6x3 predictions→CPU3truth once each. OriginalF0 same-DURA defaulthead stays identity. NoUs truth file exists.",
+    "external_method_exception": null,
+    "claim_scope": "Source-only increment with cleanUs inherited Phase1 ancestry; sourceUs56700 is extra data/compute vs matched SOURCE and old targetPCD U576. Not equalunlabelbudget, independentblind, newtargetUDA or anonymousREG."
+  },
+  "checkpoint": {
+    "initialization": "New SOURCE_US from original source-onlyr03. Exact SOURCE444/a336 pure-source control reused, old freshPCD U576 readouts reused only controls. No oldTARGET initializer.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-body-prototype-s2026092701-r01/train/SOURCE/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Source392005 matches original hiddenUs physicalrole; newstudent source-only incremental lineage and originalcleanUs ancestor explicitly retained. Original/defaultF0/G frozen.",
+    "selection_rule": "Fixed444 final/source loss stream exact; frozen F0 conf0.95 sourceUs PL/temp0.1 weight1, L/OE source seeds3017/18, Usperm3150/strongaug3151; no sourceV earlystop or target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-source-us-replay-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-us-replay-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-us-replay-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_us_replay_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_us_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-source-us-replay-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Single sequential cache/train/predict worker with actualfree>=4096MiB, max2new/card across0..7; independent CPUscore; foreign untouched",
+    "stop_rule": "Illegal role/ancestor/Us-label exposure, frozen-state mutation, nonfinite, output collision or illegal prediction closure stops preserved. Low source score never cancels registered target tests; no auto restart."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{cache,train,eval}.json",
+    "logs/{cache,train,predict,score}.log",
+    "cache/{builder_report,complete}.json",
+    "cache/U_s/{manifest.json,ids.npy,received.npy,restored.npy,metadata.npz}",
+    "train/{final.pt,steps.jsonl,complete.json}",
+    "predict/{complete.json,models/*,thresholds.npz,calibration/complete.json,source/*,targets/*}",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K C_K R_U H",
+      "same-DURA originalF0 closed loss",
+      "paired vs SOURCE444 and OLD_PCD",
+      "sourceUs PL acceptance/predictedclass histogram without GT accuracy",
+      "all444 losses/gradient/clip/source indices/Us unique exposure",
+      "all required TX RX day sixscene coverage"
+    ],
+    "dimensions": [
+      "SOURCE/OLD_PCD/SOURCE_US x pooled/predicted",
+      "source_DURA/clean_DURA/star_DURA",
+      "fourtarget unknown complete;03-23missingknownNA",
+      "sourceUs source5RX3day/G10"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-us-replay-s2026092701-r01/predict",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-us-replay-s2026092701-r01/score",
+    "targets_ref": "sourceknown12 +targetcleanRU95/starRU90 CK90 origF0gap2pp/allmainScene rosters, starAK>both controls/RU not lower; notsourceUs GT or newtargetUDA/REG claim",
+    "primary": [
+      "SOURCE_US_predicted_ratio; scientific failures preserved and no seed expansion"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-us-replay-s2026092701",
+      "method": "Frozen-F0 confidence sourceUs PL into source metric branch",
+      "purpose": "Test broader TX-blind source-star P1 regularization against exact444 SOURCE control and existing targetPCD reference",
+      "config_ref": "docs/PAMF_PHASE3_SOURCE_US_REPLAY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-us-replay-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026103151,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "Originalsource scene3001/channel4001 with202610prefix/receiver2027; L/OE streams2026103017/18 unchanged; Us full permutation2026103150, strongphasegain2026103151; originalfresh future seeds inherited",
+      "k": null,
+      "scenario": "OriginalsourceUs new fixedG10/DURA, sourceonly train444, then threeDURA futuretest; no targetnewU or Us labels",
+      "optimizer": "AdamW; frozen Sinc48/buffers, oldmodels; ordinarynormclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "New444 optimizer, SOURCE444 reused. CacheG56700; train F0teacher56700/parentr0312434/student170496; newevalsignal63060/F0G20476 each. Actual/synthetic counters recorded; moreUsdata not equalinputbudget. No oldclassifier/G update.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-us-replay-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-us-replay-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_us_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-source-us-replay-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{cache,train,eval}.json",
+        "logs/{cache,train,predict,score}.log",
+        "cache/{builder_report,complete}.json",
+        "cache/U_s/{manifest.json,ids.npy,received.npy,restored.npy,metadata.npz}",
+        "train/{final.pt,steps.jsonl,complete.json}",
+        "predict/{complete.json,models/*,thresholds.npz,calibration/complete.json,source/*,targets/*}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Phase1 F0 already trained on clean hiddenUs; sourceUs starP1 is new Phase3 increment, not a never-seen physical dataset.",
+    "PublicUs fivefiles/meta3 and noGT file; builder physicalTX lookup does not become training label.",
+    "Us128x444=56832 exposures/full56700 once+132 repeats, PLmask source model prediction only; never report Us GT precision.",
+    "SourceV27000 extra known calibration, not independent test.",
+    "OldPCD targetU576 vs new sourceUs56700 permissions and total costs differ; no newtargetUDA/REG, AN/HOW N/A.",
+    "All registered threeDURA tests run regardless source scientific score, formalRX untouched, full goal ACTIVE.",
+    "Cache56700, source-only444, all6x3 predictions, then independent3truth completed; no new targetUDA or anonymousREG.",
+    "All results retained without threshold refitting, target-driven rerun, or seed expansion; selected PCD remains historical research reference."
+  ],
+  "registered_at": "2026-10-31T08:09:11+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "3988af354d00a3453384d7f61a799a4a237084fc",
+    "primary": "SOURCE_US_predicted_ratio",
+    "source_US_regularization_success": false,
+    "new_target_UDA_success": null,
+    "source_known_12_passed": true,
+    "target_protection_passed": false,
+    "metrics": {
+      "source_DURA": {
+        "A_K": 0.8977037037037037,
+        "C_K": 0.9686296296296297,
+        "R_U": 0.6695238095238095,
+        "H_score": 0.7670028741258899,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.012111111111111295
+      },
+      "clean_DURA": {
+        "A_K": 0.31175964603832756,
+        "C_K": 0.42939812682223294,
+        "R_U": 0.6362548285405951,
+        "H_score": 0.4184716277124296,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "original_closed_minus_new_open": 0.17391050735372893
+      },
+      "star_DURA": {
+        "A_K": 0.2749004025755668,
+        "C_K": 0.4799269146714377,
+        "R_U": 0.49835371736384176,
+        "H_score": 0.35434053048197234,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "original_closed_minus_new_open": 0.14231018291511538
+      }
+    },
+    "source_Us_count": 56700,
+    "source_Us_teacher_accepted": 47668,
+    "source_Us_teacher_acceptance": 0.840705467372134,
+    "source_Us_truth_reads": 0,
+    "source_sampling_matched": true,
+    "optimizer_updates": 444,
+    "all_four_stages_complete": true,
+    "full_goal_status": "ACTIVE",
+    "result_ref": "docs/PAMF_PHASE3_SOURCE_US_REPLAY_RESULTS_20261031.md"
+  }
+}

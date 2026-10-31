@@ -1193,3 +1193,13 @@ Run `20261031-phase3-prototype-identity-s2026092701-r01` / actualcode `894835339
 ## 2026-10-31：源原型身份条件拒识完整结果
 
 Run `20261031-phase3-prototype-identity-s2026092701-r01` / actualcode `89483533937a8b97b51700b984e404d10ecab4c5`，source六均值/两组sourceVτ、4×3DURA预测与独立3truth均 VERIFIED。主PROTO_pred：source_DURA: AK/CK/RU/H=89.966667/96.337037/61.555556/73.097504%；原F0闭集90.981481%/原型闭集91.585185%；原F0损1.014815pp；clean_DURA: AK/CK/RU/H=27.478806/40.621900/63.408169/38.341705%；原F0闭集48.567015%/原型闭集44.875988%；原F0损21.088209pp；star_DURA: AK/CK/RU/H=24.072020/42.895457/54.440791/33.383082%；原F0闭集41.721059%/原型闭集39.383539%；原F0损17.649039pp。sourceknown12过但目标绝对/相对门槛失败，star宏AK较OLDpred−3.879703pp、RU+5.133092pp，NO_PROMOTION/不扩seed/旧PCD保持。当前prototype闭集本身较origF0 clean少3.691028pp、star少2.337520pp，即使无拒识亦不能满足当前2pp保护；结论限本冻结分类器和数据。sourceL训练角色的97.9%几何诊断不代表V或target泛化，新prototype只是复合判决而无新UDA，PCD继承U576。本行真IQ/NN/G0、source6means7680B/new12tau96B，AN/HOW=N/A，sourceV校准非独立、Q已曝光/03-23缺类N/A/正式24-18未读，完整目标ACTIVE。见`docs/PAMF_PHASE3_PROTOTYPE_IDENTITY_RESULTS_20261031.md`。
+
+
+## 2026-10-31：原源Us星地重放预登记
+
+Run `20261031-phase3-source-us-replay-s2026092701-r01` / actualcode `3988af354d00a3453384d7f61a799a4a237084fc`。原source392005 U_s56700按原IDs从raw生成一次G10/DURA，新公共Us仅IQ/IDs/RX-day-domain无TX/y；原cleanUs祖先保留。SOURCE_US由r03纯源独立444，Sinc/buffers固定，匹配a336SOURCE L192/OE64索引，Us128独立全排列+F0conf0.95伪标签/原r03L6固定proto temp.1 CE权1。无新神经head/targetU，SOURCE444控制只复用；新NNsourceweight冻后L/OE密度与Vtau，六读出三DURA全pred后CPU3truth。新增Us数据/计算预算与OLDPCD不同如实报告；sourceV校准非独立、unknown4/fullroster及clean95/star90/CK90/原F0损2pp/相对两控制门槛不变，AN/HOW=N/A，完整goalACTIVE。见`docs/PAMF_PHASE3_SOURCE_US_REPLAY_PLAN_20261031.md`。
+
+
+## 2026-10-31：原源Us星地重放完整结果
+
+Run `20261031-phase3-source-us-replay-s2026092701-r01` / code `3988af354d00a3453384d7f61a799a4a237084fc`，cache56700/固定444/六方法三DURA预测/独立CPU三truth均 VERIFIED。SOURCE_US_pred主：source_DURA: AK/CK/RU/H=89.770370/96.862963/66.952381/76.700287%；原F0同DURA闭集90.981481%/损失1.211111pp；clean_DURA: AK/CK/RU/H=31.175965/42.939813/63.625483/41.847163%；原F0同DURA闭集48.567015%/损失17.391051pp；star_DURA: AK/CK/RU/H=27.490040/47.992691/49.835372/35.434053%；原F0同DURA闭集41.721059%/损失14.231018pp。源Us教师接受47668/56700=84.070547%，这是预测置信度筛选、非真值准确率。sourceKnown12=True、目标保护=False、对两控制starAK均增=False/RU均不降=False，科学NO_PROMOTION；完整目标ACTIVE。SOURCE444精确复用，Us比SOURCE多56700源记录/PL计算，OLDPCD另有targetU576祖先；非等输入预算。无新targetUDA/REG，AN/HOW=N/A；sourceV校准非独立、未来Q已曝光/03-23缺类N/A/正式24-18未访问。见`docs/PAMF_PHASE3_SOURCE_US_REPLAY_RESULTS_20261031.md`。
