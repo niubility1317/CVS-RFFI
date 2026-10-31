@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01",
+  "group_id": "phase1-dura-source-quarter-orbit",
+  "display_name": "源域四相位恢复与逆旋转 IQ 合成检验",
+  "description": "默认R69主对照、pureG E30描述控制；source512×clean/01/20，四个直角旋转经同一G后逆旋转IQ平均，原F只读native或合成一个IQ；0TX/V/target/更新。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "quarter-turn-IQ-orbit",
+    "identity-preservation",
+    "inference-cost"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase1-DURA-repeatViews-E30-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07 source512128L384U xclean/cache01/20;deterministicC4receivedviews/outputinversephase beforeIQaverage;sourceclean referenceunchanged",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "source_indices128L384U;source_ids exact L/U physical membership withoriginalF sourcecache;full63000Ffeatureorder exactmatch",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30;fourcomputationalrotations arenotnewphysicalobservations",
+    "target_panel": "None",
+    "actual_training_labels": "No training;pairedsourceclean andsamefrozenFcleanfeature proxy only;0directTX/V/target"
+  },
+  "permissions": {
+    "regime": "Source_only_frozenG_F_quarter_turn_IQ_projection",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source training-pool IQ/cleanF-choice proxy;not Fphaseinvariance/trueTXaccuracy/targetbenefit/recoverylimit;noautomaticruntime/training"
+  },
+  "checkpoint": {
+    "initialization": "No newnetwork oroptimizer;strict load fixed source-final pureG E30 and originaldefaultR69 for comparison;originalF50/head frozen",
+    "sources": [
+      "runs/20261031-phase1-DURA-repeatViews-E30-s2026092701-r01/scratch_joint/final.pt",
+      "runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01/scratch_joint/source_feature_cache DATAONLY"
+    ],
+    "contract_check_ref": "Existing provenance context_oracle.validate_source/repeatViews strictcommit8cf E30/source roles;runner.parent_model sourceR69 contract;load_reader originalF50/defaulthead;source_ids actual L/U agreement/Fcache physical order",
+    "provenance_verdict": "Reuse unchangedoriginal7/63/30 sourcecontract. PureG8cf scratch30/7410 noTX-F-V-target/init ancestors. DefaultR69 sourcefixednative20/4940 historical120componentepochs diagnosticreferenceonly,notnewteacher/init. F50 original4df7/source50/11100 supervision explicit;featurecache producedsourceclean before its Gtraining/target.",
+    "selection_rule": "Primary defaultR69 fixed before newsourceaccess. pureG repeatE30/8cf diagnosticcontrol notselectable;no model/weight updates or newGparent. Sourcefinals/contract proven inprevioussourcechecks,benchmarkhistory exposed,notusedbythisdiagnostic."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-quarter-orbit",
+    "gpu_policy": "CPU2/CUDAempty/0GPU;prior ownnoisePID1349938 actualabsent andANALYZED_SOURCE_ONLY;otherowners untouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.quarter_orbit_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Bad source/checkpoint/Fcache/roles/order/shape/nonfinite/statechange/replay-equivariancefailure/outputcollision:preserveandstop/noautoretry;scientificfailure no relaxation."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "results.json",
+    "complete.json",
+    "DURA_default-{clean,1,20}.npz PRIVATE",
+    "pureG_E30-{clean,1,20}.npz PRIVATE",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source nativevsC4IQNMSE/meanrouteerror/disagreement andvarianceidentity",
+      "sourceclean-Fchoice/cosinefidelity andper-scene protection",
+      "defaultprimaryfixedsourceeligibility/pureGdescriptivecontrol",
+      "actualsourceCPUtime/forwardcounts/frozenstate;structural4Gcost,latencynotyetmeasured"
+    ],
+    "dimensions": [
+      "2models xclean/cache01/20 xnative/C4IQ",
+      "all/role/RX/day/scene/state/lock"
+    ],
+    "prediction_ref": "No target/newtrainedG predictions;privatepaired sourceIQ/routes/Foutputs",
+    "scorer_ref": "NoTXtruth. Independent completeNPZ IQmean/routeerroridentity/Fmetrics/groupstatistics anddefaulteligibility arithmetic aftercompletion"
+  },
+  "rows": [
+    {
+      "row_id": "source-quarter-orbit",
+      "method": "ExactC4IQrotations[0,90,180,270],sameGbatched4views,inversequarterturn output,IQmean,nativereadout retained",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{quarter_orbit.py,quarter_orbit_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No newrandomdraw. Exactquarterturns0/1/2/3;sourceindicesfixed128Ls384Us;existingmodel2026092701,AUG2026101912/RX2026101911;F50/defaulthead existing4df7.",
+      "k": null,
+      "scenario": "source512 xfullclean/cache01/20 including7scenes;defaultprimary/pureGdescriptive",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2models x3sourceviews x4G x512=12288G;2readoutsx512x3x2=6144F;smoke36G+8F;existing63000sourceFfeaturecache reused;CPU2/0TX-V-target-updates",
+      "output_root": "runs/20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.quarter_orbit_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-quarterOrbit-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "results.json",
+        "complete.json",
+        "DURA_default-{clean,1,20}.npz PRIVATE",
+        "pureG_E30-{clean,1,20}.npz PRIVATE",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "DefaultR69 primary fixedbeforeallsourceforward. BOTHcache01/20 meanIQNMSE<=.9native andcleanFchoicegain>=6/512;every nonclean scene loses<=1choice,clean scene loses0;full512clean-input choicecount maynotfall. Failure notloosened. PureG control cannotreplacedefault/selectablecandidate. Passonlysupportsseparateregistrationoffullsevenformalruntime,notautomaticdeployment/training.",
+    "gC4(y)=mean_k R^-k G(R^k y),k0..3. Exactsign/channel swaps,allroutesbackinoriginalinputphase beforeIQaverage. FseesnativeoroneaveragedIQ,notrotatedIQ/logitensemble. Earlier Fphaseinvariance/phaseanchor failures remainfailed,notrequiredorreinterpretedhere.",
+    "FiniteC4symmetrization isquarterturnequivariant fordeterministicpersampleG up toFP32rounding. Meanroute squaredIQerror decomposes intoaggregateIQerror+route-disagreement;this doesNOTguarantee improvement overunrotatednative route orFchoice. Sourcefullclean/sceneprotection explicitlytested.",
+    "One shared266951Gweightset but4Ginputviews,8prior16CG108FFT inaggregate vsnative2prior4CG27FFT;Foneinput perreadout. No inferredinferenceacceleration orunchangedlatency/memory. ActualGPUruntimecost onlyifseparatelyreleased;CPUdiagnosticelapsedreported.",
+    "SourceF63000cleanfeatures onlyread,40.32MB/historical3.782s plusF50/11100sourceknowledge explicit. NoG/Fweight updates,TX/V/target/newphysicalrecords. Diagnosticroutes/features/IQ storedprivately;no newfulltrainingreferencecache.",
+    "4focusedchecks exactrotationgroup/inversepower/identitybiascancellation/nocrosssamplemix/nonlinearequivariance/errorvarianceidentity/bothsourceviewsfullcleanprotection PASS;realmodule--help PASS;oneindependentP0P1 beforelaunch. Firstremote2Ls/model nativebatchreplay/C4equivariance/originalheadsmoke PASS thenimmediatelycontinue.",
+    "OneN607preflight/archiveSHA/compile/actualPID-CWD-argv-CUDAempty-loggrowth. SixfullNPZ/3072sourcepacketvectors andallgroups independentlyrecomputed aftercomplete. Scope sourceonly,nottrueTXaccuracy/targetbenefit/recoverylimit. No defaultF/DURA/P2/P3 change;goal remainsACTIVE."
+  ],
+  "registered_at": "2026-10-31T01:49:18+00:00"
+}
