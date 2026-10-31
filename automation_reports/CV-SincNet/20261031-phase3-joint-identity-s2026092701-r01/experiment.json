@@ -1,0 +1,253 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-joint-identity-s2026092701-r01",
+  "group_id": "pamf-phase3-joint-identity",
+  "display_name": "PAMF第三阶段：身份与拒识共享骨干联合适应",
+  "description": "Joint original six-class head and shared r03 features with legal source CE; source-only and target-PCD matched444 controls, existing data and frozen E0/OLD_PCD.",
+  "kind": "cvs",
+  "stage": "Phase3-joint-identity-eight-readouts-three-DURA",
+  "aliases": [
+    "身份拒识联合适应"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "joint_identity",
+    "source_CE",
+    "unlabelled_PCD",
+    "all_DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-source-CE-plus-unlabelled-PCD",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-class-density-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "f540589c0478bed77a9fb4e664481c80ffe7eecc",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-joint-identity-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.joint_identity_model",
+      "experiments.pamf_phase3_open_world.joint_identity_train",
+      "experiments.pamf_phase3_open_world.joint_identity_run",
+      "experiments.pamf_phase3_open_world.joint_identity_score",
+      "experiments.pamf_phase3_open_world.joint_identity_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_JOINT_IDENTITY_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Existing source G10 P1 roles and completed RX3-2 U576/futureQ10238; no new Full reads or channel generation",
+    "version": "All existing VALIDATED_ONCE public handles exactly reused from f4b5 fresh run",
+    "representation": "Star restored P1 learning; one shared joint student produces native six-class logits and z160; future clean only frozen test",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 独立学生的身份与拒识联合适应",
+    "physical_ids_ref": "Existing source cache and fresh f4b5 public ids; runtime eval/reference config exact handles; no canonical changes",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "Private builder/scorer only: old6 and metadata-selected discover3/late1; algorithm registered roster only old6",
+    "roles": {
+      "source_L_train": 6300,
+      "source_OE_train": 6134,
+      "source_Us_new": 0,
+      "source_V_known_tau": 27000,
+      "source_novel_truthside_only": 3150,
+      "star_U": 576,
+      "cross_clean_Q": 10238,
+      "cross_star_Q": 10238,
+      "unique_new_canonical": 10814,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "Existing f4b5 pool complete/manifest and source role manifests; reuse minimal handles, no Full validation repeated",
+    "support_query_ref": "Same original source roles, early03-01 U and future03-15/23 Q disjoint. Late7-11 wholly excluded from U; Q already exposed development, never training.",
+    "leo_config_ref": "Existing MIX01 episode scene2026103133/channel2026103134/receiver2027, unchanged fixed received",
+    "derived_public_handles": {
+      "discovery": {
+        "count": 576,
+        "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+        "split_id": "077495132350495f37a33d84"
+      },
+      "future_star": {
+        "count": 10238,
+        "capsule_id": "p3fresh-e56d8e305e37c68dd40db030",
+        "split_id": "b9888c49e89d418cc25ab5ff"
+      },
+      "future_clean": {
+        "count": 10238,
+        "capsule_id": "p3fresh-97a3ca8706dbe966ac510a61",
+        "split_id": "7fdd29104962ba0d92969faf"
+      }
+    }
+  },
+  "permissions": {
+    "regime": "Source L known labels train original six-class default head jointly with shared body; source OE membership only. SOURCE_JOINT opens no U; TARGET_JOINT only U PCD, no true TX/K/quota/Q. Original F0/G frozen.",
+    "query_use": "Actualcheckpoint/head-gradient no-query smoke; SOURCE444 before targetU; TARGET444 from identical pure source init; two source density fits then V four new six-threshold sets; all8x3 frozen before independent3truth/Utruth0.",
+    "external_method_exception": null,
+    "claim_scope": "New joint variant, not original frozen-identity PCD. New student closed and original F0 closed separately reported. Re-exposed development data, no anonymous registration or blind confirmation."
+  },
+  "checkpoint": {
+    "initialization": "SOURCE_JOINT and TARGET_JOINT independently copy source-only r03 body/projection and same-contract original F0 default W960; never initialize from target-adapted OLD_PCD. E0/OLD_PCD only exact frozen readout controls.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Matching source contract392005 and original L/U_s roles; native W restored from original F0, r03 lacks W. New TARGET_JOINT gets target U576 ancestry; SOURCE_JOINT remains source-only.",
+    "selection_rule": "Both444 fixed, source old metric+OE_KL+10anchor+CE1, target additionally existingPCD.1. No Q-based schedule/candidate/head-only refitting or true new-class roster."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-joint-identity-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-identity-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-identity-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_joint_identity_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.joint_identity_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-joint-identity-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One GPUworker at a time for train/predict, physicalGPU0to7 actualfree>=4096MiB and <=2newowned/card; independentCPUscorer CUDAempty. No foreignprocess changes.",
+    "stop_rule": "Illegal ancestry/roles/nonfinite/changed frozen Sinc,buffers,F0,G/outputcollision or unable legal prediction: preserve, no overwrite or blind retry. Scientific low score does not cancel Q. No foreign-process changes."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/*.log",
+    "train/complete.json",
+    "train/{SOURCE_JOINT,TARGET_JOINT}/{final.pt,steps.jsonl,complete.json}",
+    "predict/{complete,smoke}.json",
+    "predict/models/*",
+    "predict/thresholds.npz",
+    "predict/calibration/complete.json",
+    "predict/source/{E0,OLD_PCD,SOURCE_JOINT,TARGET_JOINT}/{known,novel}_predictions.npz",
+    "predict/targets/{clean_DURA,star_DURA}/{arm}/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "four models x two readouts x three DURA conditions",
+      "six known / four unregistered (only scorer uses true roster)",
+      "perTX/RX/day/MIX6scene, fixed-roster missing day N/A",
+      "all888 training curves, matched source444 and head/body changes",
+      "original F0 closed / student closed / correct acceptance separated"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-identity-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/joint_identity_score.py",
+    "targets_ref": "Latest20261031 threeconditions allDURA; condition-specific targets remainclean95/star90, CK90/AKloss2pp. FullzeroTXlabelDA/discovery/futureanonymousREG stillrequired.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "cleanRU95/starRU90 CK90 originalsameGclosedminusAK2pp/sourceknown12/coverage",
+      "star AK strictly above SOURCE_JOINT and OLD_PCD; RU not below E0/SOURCE_JOINT/OLD_PCD, plus absolute v3 targets and coverage"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "joint-identity-s2026092701",
+      "method": "Joint default identity CE plus open metric PCD",
+      "purpose": "Two matched444 shared-head students, frozen E0/OLD_PCD, mainTARGET_JOINT_predicted_ratio",
+      "config_ref": "docs/PAMF_PHASE3_JOINT_IDENTITY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-identity-s2026092701-r01/configs/train.json",
+      "data_overrides": {
+        "public_handles": {
+          "discovery": {
+            "count": 576,
+            "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+            "split_id": "077495132350495f37a33d84"
+          },
+          "future_star": {
+            "count": 10238,
+            "capsule_id": "p3fresh-e56d8e305e37c68dd40db030",
+            "split_id": "b9888c49e89d418cc25ab5ff"
+          },
+          "future_clean": {
+            "count": 10238,
+            "capsule_id": "p3fresh-97a3ca8706dbe966ac510a61",
+            "split_id": "7fdd29104962ba0d92969faf"
+          }
+        }
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103131,
+        "augmentation": 2026103114,
+        "support": null,
+        "evaluation": 2026103134
+      },
+      "seed_notes": "model2026092701/source split392005; source batches2026103017/18, Ubatch2026103112/proto2026103113/aug2026103114; original data selection2026103131/scene3133/channel3134/shuffle3135 reused, no redraw",
+      "k": null,
+      "scenario": "source seenRX starDURA, Ustar576 only, paired fresh future cleanDURA/starDURA",
+      "optimizer": "AdamW joint body231985 + projection102688 + original default head960, Sinc48 frozen; target temporary prototype2560",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "New two444 total888. Train parent13010/student539904 signal552914/G576/F0real0; evaluation signal126120/F0G20476; chain signal679034/G21052/F020476. Synthetic separate, old controls and ancestors inherited. Active mainNN602632, no aux/bank deployed.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-identity-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-joint-identity-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.joint_identity_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-joint-identity-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/complete.json",
+        "train/{SOURCE_JOINT,TARGET_JOINT}/{final.pt,steps.jsonl,complete.json}",
+        "predict/{complete,smoke}.json",
+        "predict/models/*",
+        "predict/thresholds.npz",
+        "predict/calibration/complete.json",
+        "predict/source/{E0,OLD_PCD,SOURCE_JOINT,TARGET_JOINT}/{known,novel}_predictions.npz",
+        "predict/targets/{clean_DURA,star_DURA}/{arm}/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Independent joint student default head copied from F0, trained with legal source CE jointly; original F0/G immutable.",
+    "Only TARGET_JOINT receives U; no target TX/K/quota or query fitting.",
+    "Source V27000 provides calibration labels, not independent known test; allQ development exposure disclosed.",
+    "Original F0 same-DURA closed remains protection baseline even if student closed changes; own predicted class routes each new readout.",
+    "Historical PCDrun no-promotion unchanged; new candidate must pass relative rejection and absolute protections. No anonymousREG or multi-seed expansion before pass."
+  ],
+  "registered_at": "2026-10-31T05:10:02+00:00"
+}

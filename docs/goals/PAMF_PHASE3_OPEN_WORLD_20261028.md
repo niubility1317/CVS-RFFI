@@ -1139,3 +1139,15 @@ Run `20261031-phase3-fresh-development-rx3-2-s2026092701-r01` / actualcode `f4b5
 Run `20261031-phase3-fresh-development-rx3-2-s2026092701-r01` / actualcode `f4b5a0b80cafcf237c3ae9dac8ecd5b24c91bff7`，数据池与新PCD444、六读出三DURA/独立三truth均 VERIFIED 完成。主PCD宏AK/CK/RU/H：source_DURA: 89.733333/96.748148/64.285714/74.907247%; 同G闭集损1.248148pp；clean_DURA: 31.661804/43.761391/61.979647/41.912794%; 同G闭集损16.905211pp；star_DURA: 27.951722/48.582412/49.307698/35.678111%; 同G闭集损13.769336pp。star相对E0/SOURCE宏AK+1.511126/+1.200385pp，但RU−3.350826/−2.962281pp、未知拒对−190/−168；绝对保护和拒识均失败，NO_PROMOTION，不扩seed。所选PCD仅研究起点，不能称已在新RX确认普遍收益，旧RX24-1负结果和既定门槛保持。
 
 RX3-2早U576/两未来日Q10238，旧4508/未知5730，后来7-11整类不进U；10814唯一canonical、同Qclean/star配对、cleanU0，03-23缺20-19/8-20时AK/CK/H=N/A而RU独立可报。合并六景覆盖完整仍未通过性能门槛。原F0同G闭集clean48.567015%/star41.721059%，该测试组合身份识别本身也弱；这支持下一阶段同时关注跨RX身份适应和拒识表征，但不是单因素原因证明，不能据Q调阈值或挑简单数据。sourceV仍非known盲测，全局packet历史UNKNOWN，无发现/REG、AN/HOW NA、formal0，完整目标ACTIVE。全444步/18点/分组/成本见新结果文档。
+
+
+## 2026-10-31：共享身份与拒识联合适应预登记
+
+Run `20261031-phase3-joint-identity-s2026092701-r01` / actualcode `f540589c0478bed77a9fb4e664481c80ffe7eecc`。新SOURCE_JOINT/TARGET_JOINT各444，从原纯源r03 body/projection与原F0默认W960相同初值独立训练；固定Sinc/buffers/G及原模型，源旧metric/OE/anchor10增加CE1，target另原PCD.1，SOURCE先完成再开U576。四模型八读出三DURA，E0/OLD_PCD精确复用，两个新sourcefit与四new6tau24＋旧24共48tau384B全冻后独立三truth/Utruth0。新学生native身份与各自密度/阈值路由相配，保护基准仍原F0同G闭集。既有RX3-2未来Q10238已曝光，不新建数据或回收Q；03-23缺旧类仍N/A。新训练888，单主部署602632，科学门槛和正式RX边界不变，无发现/匿名REG，完整goalACTIVE。见`docs/PAMF_PHASE3_JOINT_IDENTITY_PLAN_20261031.md`。
+
+
+## 2026-10-31：共享身份与拒识联合适应完整结果
+
+Run `20261031-phase3-joint-identity-s2026092701-r01` / actualcode `f540589c0478bed77a9fb4e664481c80ffe7eecc`，真实2×444联合训练、8×3DURA预测和独立三truth评分均VERIFIED完成。主TARGET_JOINT宏AK/CK/RU/H：source_DURA: 89.718519/95.888889/67.777778/77.219871%; 原F0闭集90.981481, 学生闭集91.581481, 原F0损1.262963pp；clean_DURA: 21.147817/34.325475/63.883173/31.776407%; 原F0闭集48.567015, 学生闭集42.228981, 原F0损27.419198pp；star_DURA: 21.357750/40.113129/52.561046/30.373484%; 原F0闭集41.721059, 学生闭集38.639796, 原F0损20.363309pp。star较SOURCE_JOINT AK+0.664492pp/RU−5.012763pp，较OLD_PCD AK−6.593973pp，绝对保护/拒识与相对晋级条件失败，NO_PROMOTION、不扩seed，完整目标ACTIVE。
+
+两学生body/head/projection联合训练、Sinc/buffers/原F0G冻结；SOURCE先完成再开U576，源L/OE全444索引匹配，默认头960原生复制无替换/另训，各模型ownclosed路由/τ，原F0同G闭集独立保护。新888、真实signal679034/G21052/F020476、2源GMM/24新τ+24旧τ、单主602632参数，不部署原型/行bank。初始r03body与F0W的完整分类并不等原F0，无初始组合Q读出，因此不能唯一归因CE；后续先诊断源端初始化和身份保真，不依据Q重挑参数或简单数据。V校准非blind、已曝光Q/缺类日N/A/global historyUNKNOWN、formal0/REG0保持。完整888步/24点/分组见新结果文档。
