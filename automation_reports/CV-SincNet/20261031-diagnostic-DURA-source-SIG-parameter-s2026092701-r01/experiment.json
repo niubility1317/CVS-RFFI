@@ -1,0 +1,184 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
+  "group_id": "phase1-dura-source-SIG-parameter-contribution",
+  "display_name": "物理损失与识别签名在恢复器参数上的梯度分解",
+  "description": "固定原SIG-only G/source47591与原F50，复用原RX均衡840观测/477物理记录；物理4项与cappedSIG参数梯度分解、重放旧总梯度，0优化/TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "SIG-parameter-gradient",
+    "physical-feature-contribution",
+    "frozen-SIG-G",
+    "F-guided"
+  ],
+  "comparison_group_id": "DURA-physical-vs-SIG-parameter-contribution",
+  "parent_run_ids": [
+    "20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01",
+    "20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-and-efficiency goal;explicit source frozen-F feature-guidance and scratchsingle-stage30epoch authorization;noTX/V/targetoptimization/defaultunchanged",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "SameoriginalRX-gradientcohortcache01and20/5RXx7scene12/840visits477uniqueL86U754;actualsourcecleanSIG40.32MBreuse",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "No target or sourceV predictions in this diagnostic",
+    "actual_training_labels": "No training. ExactpairedsourceIQ/action/frozenFactualSIG used to separate local G parameter derivatives;noTX/V/target/newcohortselection",
+    "augmentation": "No new views/draws/augmentation;originalR07 caches01and20 only"
+  },
+  "permissions": {
+    "regime": "Source_only_physical_vs_SIG_parameter_gradient_decomposition",
+    "query_use": "No target/V/TXtruth/model update;exactprevioussourcecohortonly/originalF50frozen/Gsnapshotreadonly",
+    "external_method_exception": null,
+    "claim_scope": "Localfixedcaprawbatchmeanparametercontribution,possiblyJacobianpluswithinbatchcancellation;notAdamWstep/wholetrajectory/TXimportance/hardware/recoverylimit. Smallratioisnotproofboostinghelps;oldRX-FailandSIGformalbenefitsunchanged;noautomaticGtraining"
+  },
+  "checkpoint": {
+    "initialization": "No learner/newG initialized;read-only originalSIG-onlyG final30 snapshot for gradients;G eval requiresgrad temporarily,nooptimizer;originalF50frozen",
+    "sources": [
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/scratch_joint/final.pt executed47591cdfe2e6e6dd7534cdea846badd942321b8f/source-onlyscratchE30/7410/noGancestor",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth/source4df7/50-11100/defaulthead",
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/source_signature_cache F-only63000x160 cleanSIG DATAONLY producedbeforeoldGoptimizer",
+      "runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01/source_plan.npz and gradients-{1,20}.npz DATAONLY/sourceidentity-and-totalgradientreference/notnewmodelancestor"
+    ],
+    "contract_check_ref": "SamepreviousSIG-onlyG/source47591strictE30/F50source4df7/defaulthead/original7-63-30roles;F-onlySIGcachemetadata-order;oldsourceRX-Fail/G-Funchanged/0TX-V-target;exactparameterlayout/cohortIDsroles/oldtotalgradientreplay;real2noncleanLssmoke",
+    "provenance_verdict": "No new G learner or initialization;strictsourceSIG-GE30snapshot and originalF50read-only. OldRXsourceplan/gradientdataalreadyindependentlyverified;noTX/V/target. OriginalG30/F50/cachecostretained. OldRXFAILnotrelabelled;newspecificphysical-SIGdecompositionfixedbeforeoutputs.",
+    "selection_rule": "FixedSIG-onlyG/source47591E30/7410 andoriginalF50;reuseexactoldRXcohort/cache01and20/840visits477unique. PrimaryfullGsmallSIGcontributionBOTHviews:all5RXphysicalnormsandraw equalRXpooldefined,atleast4of5RX SIG/physicalnormratio<.1andpooledratio<.1. Coarse/action/priordescriptiveonly;noalternateprimary/threshold/parentsearch. PG+SGreplayoldtotalgradientrelL2<=2e-5. Passsupportsonlyseparateparameter-balancinglearninghypothesis,noautomaticGtraining."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-SIG-parameter",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU;oldRXdiagnostic1833552naturallyended/ANALYZED;noownliveNN;otherownersuntouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.signature_parameter_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "BadsourceG-F-cache-contract/cohort-layout/oldtotalreplayrelativeL2>2e-5/nonfinite/stateupdate/accumulatedgrad/collision/smoke:preserveandstop/noautoretry. UndefinedphysicalnormisscientificFAIL,noalternateprimary/threshold/automaticG."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "source_plan.npz PRIVATE",
+    "decomposition-{1,20}.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "physical-SIG-totalGgradientnorms/ratio/angles/definedflags",
+      "raw equalRXpooledcontribution/crossRXnormretention",
+      "bothviewfullGfixedsmallSIGcontributionhypothesis",
+      "sumofcomponentsreplaysoldtotalgradient",
+      "physical4-SIGlossmeans/inputcap/loggedpressure/unusedparametercounts",
+      "G-Funchanged/gradNone/nooptimizer/counters/CPUcost"
+    ],
+    "dimensions": [
+      "fixed5RXx7scene12x2/840visits477records",
+      "full266951primary/coarse106138-action79477-prior81336descriptive",
+      "10perRX-viewcells/2rawpooledviews"
+    ],
+    "prediction_ref": "No new G version/formal/sourceV prediction;privatephysical/SIGparametergradientvectors;0trueTX",
+    "scorer_ref": "No truth. IndependentNumPyexactoldcohort/layout/20componentgradientvectors/component-sumreplay/8group-summaries-with-5RX-plus-pool=48normratios/96angles/16crossRXnormretention/decision;noextraNN"
+  },
+  "rows": [
+    {
+      "row_id": "source-SIG-parameter",
+      "method": "SameSIG-onlyG/samesourcecohort:physical4andcappedSIGrawparameterderivativessplitandoldtotalreplay",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_efficiency/{signature_parameters.py,signature_parameter_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103111,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "fixedsourceGmodel2026092701;split392005/sourcephysicalrolesunchanged;cohortpermutation2026103111;CPUactionprobe2026103112resetforeachRX/view;originalcachedchannelaugmentation2026101912;noTXselection/noevaluationtruth/supportN/A",
+      "k": null,
+      "scenario": "Source-only840observations/cache01and20/5RXx7scene12;notTX-balanced or newformaldata",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2;mainG840/Fprefix840/FinputVJP840/fullF0/GparameterVJP1680sample-count;smoke2Ls/G2/fullF4/prefix2/FVJP2/GparamVJP4;G-Fcheckpoint1each;0optimizer/TX-V-target;historicalG30/F50/SIGcachecostretained",
+      "output_root": "runs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.signature_parameter_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "source_plan.npz PRIVATE",
+        "decomposition-{1,20}.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "PreviousRX-gradienthypothesisFAILEDandpreserved. Newquestionisphysical4versusactualcappedSIGeffectiveGparameterderivative,notRXconflictoroldIQ-outputgeometry. OldSIGformalbenefitsarepreserved;gradientmagnitudeisnottaskimportanceorproofthatalargerweighthelps.",
+    "Reuseexactprevioussource_plan andtotalGgradients asDATAONLY:5RXx7scene12x2=840visits477unique/363overlap/L86U754;originalsource7-63-30roles/F50sourcecontractsame. No sample/model/parentsearch ornewTX/V/target. Scene-balancednotTX/day/state/lock-balanced.",
+    "SameGforwardandoriginalsourcephysical4plusSIGalpha1/outputcap.5. AutogradSIGmeanretainGraphthenphysicalmean;uniqueGparameters/unusedzeros;twoparameterVJPs per input. Physical=IQ+.1prior+.05STFT+.05action,varianceauxnotweighted. PG+SGmustreplayoldtotalgradientrelL2<=2e-5;replayisnumericalsourceobjectivecheck,notextraidentityseals.",
+    "FixedSIG-onlyG/source47591E30/7410 andoriginalF50;reuseexactoldRXcohort/cache01and20/840visits477unique. PrimaryfullGsmallSIGcontributionBOTHviews:all5RXphysicalnormsandraw equalRXpooldefined,atleast4of5RX SIG/physicalnormratio<.1andpooledratio<.1. Coarse/action/priordescriptiveonly;noalternateprimary/threshold/parentsearch. PG+SGreplayoldtotalgradientrelL2<=2e-5. Passsupportsonlyseparateparameter-balancinglearninghypothesis,noautomaticGtraining.",
+    "Normratiosandanglesuse rawvectors;equalRXpoolaveragesrawcomponentsinfloat64,notratiosordirections. Reportphysical/SIGcrossRXnormretentionseparately. BatchmeancontributionmaycombineJacobianmappingandwithinbatchcancellation;cannotattributetotalattenuationtoJacobianalone. FixedcaplocalderivativesnotAdamW-preconditionedsteporwholetrainingtrajectory.",
+    "No new learner/optimizer/G-Fweightupdate. OriginalGscratch30/7410/F50/11100/sourceSIGcache63000prefix/.847077s/40.32MBknowledge-costretained. NewFcache0/VJP0/bytes0. MainG840/Fprefix840/FinputVJP840/fullF0/GparameterVJP1680sample-count;smokeG2/fullF4/prefix2/FVJP2/GparamVJP4. F-guidednotF-free.",
+    "3focusedtestsPASS:splitmeanparameterderivatives/unusedzero/noaccumulation;rawratio-angle/undefinedhandling;bothviews-and-rawpooldecisionincludingphysicalcancellationcounterexample. Actualentry/CPUrejection-before-data/help/collector4physicalweights-and-SIGsplit/varianceexcludedPASS. OneP0P1PASS. Firstreal2noncleanLsinsidefixedcohort/strictG/actualFcleanSIG-cache/head/physical-SIGnonzero-finite gradientsmokePASScontinuesimmediately.",
+    "OneCPU2immutableoutput/preflight/releasearchiveSHA/remotecompile/postPID-CWD-argv-emptyCUDA-loggrowth;independentcohort-and-saved-componentgeometryreplay/48ratios96angles16retention,notfinite-differenceofeveryautogradcomponent. Noautomatictraining/defaultDURAunchanged/whole6sat3pp+clean+efficiencygoalACTIVE."
+  ],
+  "registered_at": "2026-10-31T10:52:31+00:00"
+}
