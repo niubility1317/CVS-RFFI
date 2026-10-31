@@ -91,7 +91,7 @@
     "gpu_policy": "CPU2/0GPU",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-anchor-source-paired-s2026092701-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-anchor-source-paired-s2026092701-r01",
-    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-diagnostic-phase1-anchor-source-paired-s2026092701-r01",
     "launch_command": "python -u -m experiments.pamf_phase1_flow.anchor_source_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --commit 0c9520f15bd133d60544837e03c9516dfc1a6716",
     "stop_rule": "On mismatched source IQ/checkpoint or nonfinite output stop and preserve log; no automatic retry"
   },
