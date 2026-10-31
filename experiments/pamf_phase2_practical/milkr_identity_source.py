@@ -59,6 +59,9 @@ def assess(summary,control):
 
 
 def calibrate(rt):
+    if rt.get('source_identity_grid_runtime'):
+        from .milkr_identity_reuse_source import calibrate as reuse_grid
+        return reuse_grid(rt)
     from .milkr_cv_screen import extract_for_method
     from experiments.cric_dura_comparison.f_data import SourceDataset
     started=time.perf_counter();prior=read(rt['prior_source_selection'])

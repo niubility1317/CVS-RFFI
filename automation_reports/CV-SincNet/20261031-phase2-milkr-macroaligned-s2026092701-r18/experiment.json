@@ -1,0 +1,279 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-macroaligned-s2026092701-r18",
+  "group_id": "phase2-milkr-source-macro-objective",
+  "display_name": "MILKR源宏H目标对齐先导",
+  "description": "R19保留原R18停止记录，另按源宏H/各K收益选择完整方案；不再要求源每K1新类单项+1，目标每格+5/Q1>Q0不改。",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-milkr-signature-kn-s2026092701-r05",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261031-phase2-milkr-sourcebridge-s2026092701-r11",
+    "20261031-phase2-milkr-pairedcca-confirm-s2026092701-r13",
+    "20261031-phase2-milkr-pairedcca-s2026092701-r12",
+    "20261031-phase2-milkr-physicalH-s2026092701-r14",
+    "20261031-phase2-milkr-kernelmargin-s2026092701-r15",
+    "20261031-phase2-milkr-classwhiten-s2026092701-r16",
+    "20261031-phase2-milkr-identityheld-s2026092701-r17"
+  ],
+  "authorization": "User2026-10-31 MILKR goal +5pp; Tri-SIG-TIME SSL; support S0/S1 separate; each Q1 must exceed its Q0",
+  "code": {
+    "commit": "COMMIT_AT_RELEASE",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-macroaligned-s2026092701-r18-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_only/partition/*/partition.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one existing P01/MIX01/1-1 VALIDATED_ONCE capsule",
+    "split_id": "read exact existing K/N split IDs",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P01/MIX01/1-1",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement",
+      "receiver": "1-1"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "source adapter-TX/RX-held selection only; F has seen allsourceTX/RX; no targettuning; currentK all16KNstrictcriteria"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092703/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092704/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/01a18faf-milkr-macroaligned",
+    "gpu_policy": "source numerical smoke on physicalGPU4, one target worker on physicalGPU0; existing owners untouched; >=4GiB checked before launch",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-macroaligned-s2026092701-r18",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-macroaligned-s2026092701-r18/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\milkr_macro_20261031",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_cv_screen dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-macroaligned-s2026092701-r18-release/runtime.json",
+    "stop_rule": "query/protocol/split/output collision or launcher-wide failure: stop owned launch, preserve all; worker error marks technical failure, no blind retry; low scores are scientific results"
+  },
+  "expected_artifacts": [
+    "source_smoke.json",
+    "source_selection.json with originalstop preserved/sourcegridreuse",
+    "source_identity_cca.npz ifnewsourcegatePASS",
+    "complete.json",
+    "80targetrows onlyifnewsourcegatePASS"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-physicalH-s2026092701-r14/predictions",
+    "scorer_ref": "experiments.pamf_phase2_practical.episodic_score",
+    "primary": "Unchanged: everytarget16KN twoS Q0-original>=5pp andQ1>Q0; not meansubstitution",
+    "success": "all16KN twoS meet Q0+5pp/Q1increment; matching-original gain for all4case also explicitly reported percell; no pooledmean-only success",
+    "secondary": "all4originalpaired5flags/old-new/F1/floor and samecaseR14/R17; sourceoldauxgate failure retained",
+    "scientific_source_rule": "Reuse original source-only1440grid after matching data/F/G/seed/augmentation/versions and rejecting targetancestry; do not modifyparent. New macro gate: H>=control+.5pp,newmacrooverall>=1pp,everyK/S Q0H>=.25pp,eachK/S Q1-Q0>=0/mean>0,rawold/newmeans eachS>=control-1pp. AuxiliaryK1newcomponent+1 diagnostic notgate. SameH/new/regularity tie; fullsourcefit onlyafterchoice.",
+    "promotion_rule": "Strict user: every16targetKN bothS Q0-original>=5pp andQ1>Q0, plus preexistingmean old/newguard>=original-1pp; all4matched5flag reported. Mean-only cannot expand; onlyallcell pass unchangedother6RX confirmation."
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R19 macro-H-aligned source-selected encoder/K1rule, sameR18 ridgealgorithm",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_macroaligned_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-macroaligned-s2026092701-r18-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "source analytical CCA/metric + sourceK1grid; K1ridge=ref_lambda*currentSupportClassCount/6; K>1unchanged nestedridge",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "reuse1440sourcevalidation summaries/no newCV; fullsource6300physical/12600pairsfitonce; target80rows onlysourcepass; F/G training0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-macroaligned-s2026092701-r18/predictions/1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-macroaligned-s2026092701-r18/logs/1-1.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_cv_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-macroaligned-s2026092701-r18-release/runtime.json --capsule capsules/P01/MIX01/1-1",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source selection policy changed in a NEW run beforetarget access. Old R18 failed auxiliaryconjunctivegate, root/events/labelsunchanged. User goal ismacroH; a smallsourcecomponent decrease doesnot implyharmonicHdecrease. TargeteveryKN+5/Q1>Q0 requirements not relaxed.",
+    "No targetfeedback in newparameterselection: read immutableR18sourcegrid only; F/G/model/data/augmentation/seed/version handlesmustmatch, parent sourcefrozen/targeteligiblefalse andtarget/query/Utruth/F/Gupdates0, source_onlygrid/completecandidatecount required.",
+    "Newgate retains source fourH+.5/newmacrooverall+1/everyK rawH+.25/nonnegativeeachqueryincrement/positivemeanincrement andrawold/newmean-1 guards; perK1newcomponent+1 removed asanauxiliarycondition, stillreported. HighesteligibleH/newgain/regularity deterministictie.",
+    "SourceadapterheldRX/TX proxy unchanged, F stillsawsource6, old4/new2 and3sourcechannels not targetold6/new20/6channels; no freshblindclaim. No sourcecov/classmeans/examples senttarget, onlyfinalordinaryPairedCCAencoderparameters.",
+    "Finalnewencoderretrainedonce alllegalsourceL oncached91/92 pairs withsourcechosenrank/metric; no F/G or neuraldefaultheadupdates. K1reference6 ridge scaledallocatedsupportclasses/6, K>1sameR14nested. CurrentKlabels only, fourstrictS/Q independent, allclassescompete.",
+    "UniqueindependentP0/P1review ofnewsourcegridreusePASS. Testsrejectparenttargetfeedback/contractmismatch andverify trueHgain canpass withoutallcomponentgain, oldK1/subsettestsPASS. Source realcheckpointsmoke firststep; transferredarchive/compile/PID checks unchangedminimalworkflow.",
+    "Sourcegatepass onlyfirstRX1-1 P01/MIX01 all16KN80rows, allfixedbeforetruthlast, original/R14/R17historicalbaselinesreuse. EveryKNpass required forexpandremaining6RX, nevermean-only; technicalfail preserve/no blindretry/otherownersprotected."
+  ],
+  "registered_at": "2026-10-31T05:16:53+00:00"
+}
