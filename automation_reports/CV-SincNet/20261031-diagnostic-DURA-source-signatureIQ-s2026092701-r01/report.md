@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-signatureIQ-s2026092701-r01`
 - group_id：`phase1-dura-source-signature-iq-feasibility`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整SOURCE_ONLY结果见analysis.md/results.json；本次没有G训练或正式预测。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -40,3 +40,10 @@
 两缓存均须：最终SIG一致数相对native至少+4/512、相对IQ_oracle至少+2；五个源RX均不下降；每个非clean景最多少1、clean不少；平均SIG相对MSE至少下降10%，平均IQNMSE最多增加1%。通过仅支持另登记从零单阶段E30候选；不自动训练。不通过不调整步数/步长/阈值或更换主对象。这里一致数是clean F选择代理，不是真实TX准确率。
 
 CPU2、空CUDA、单进程。主完整F2048、前缀4096、输入VJP4096、显式原头3072；smoke另完整F2/前缀2/VJP4/原头2。0G权重读取/前向/模型优化。源512重复用于两份缓存，不能当作1024个独立物理样本。一次N607 preflight、单归档SHA比较、远端编译及实际PID/CWD/完整命令/空CUDA/日志增长核实。完整数组随后用独立NumPy复核，不新增神经网络前向。默认DURA及六景3pp/clean/同质量效率目标保持。
+
+
+## 完整源 IQ 诊断结果
+
+VERIFIED / ANALYZED，SOURCE_ONLY。defaultDURA原源512（128L/384U）×缓存01/20，CPU2主循环5.614998秒自然结束。1% nativeIQ RMS球内固定四步SIG修正使cleanF选择一致数486→501、498→504，净+15/+6；同球最近clean波形仅+3/+1。SIG平均相对误差降63.674%/66.793%，IQNMSE降0.620%/0.603%，五源RX均不负。缓存01clean84→83，故总判定FAIL，不放宽或自动训练。clean组SIG误差反而增约10.88/10.54倍，四步损失震荡支持固定归一化步长在小误差样本过冲的解释。不是目标TX效果/部署算法/恢复极限。完整F2048/前缀4096/VJP4096/原头3072，0G/模型更新/TX-V-target，F状态不变；1024源观测/3072原头输入/52组独立复算。默认与完整目标保持。
+
+详见[完整分析](analysis.md)。执行d8e47399ffdf5ae0507dfc6efbfaf0bd7132a6ee，PID1677577已自然结束。
