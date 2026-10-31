@@ -1,0 +1,169 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01",
+  "group_id": "phase3-independent-restoration-source-pairs",
+  "display_name": "Phase3恢复器原L_s/U_s全量G10-clean配对缓存",
+  "description": "仅制备63000条原源配对和可选实际F0 clean特征；0优化，不训练G，不打开OE/V/目标。",
+  "kind": "diagnostic",
+  "stage": "Phase3",
+  "aliases": [],
+  "tags": [
+    "Phase3",
+    "source-only",
+    "data-cache",
+    "P3-Restore-TF",
+    "no-updates"
+  ],
+  "comparison_group_id": "P3Restore-TF-IQ-vs-F0-guided-single30",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User20261101:majorarchitecture/Phase3/scratchsingle30/onlyoriginalLsUs/OEonlyfrozendiagnostic/sourceFguidanceallowed/defaultDURAunchanged",
+  "code": {
+    "commit": "53410ce889adc94c53c1783741f970fbdaf51453",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Torch2.1 NumPy2;FP32 TF32off CPU2;actualF0 original3ff8 E50/11100",
+    "cwd": "releases/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 L_s6300/U_s56700/V27000;source G10 MIX01",
+    "representation": "Originalroleorder L_s then U_s;P0 unchanged plus samepacket rawFP64->FP32->oneRMS clean;optional F0clean fused160 stored separately",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract.json/392005",
+    "physical_ids_ref": "OriginalL_s/U_smetadata IDs matched role_ids and completed received caches",
+    "label_map_ref": "No y read;source sixTX namespace only private locator/not G input",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse originalL d319 and Us VALIDATED_ONCE capsule pamf-source-Us392005-G10-MIX01-20261031-r01/split392005-Us-source5rx-3day-eq1;no rehash/revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "ExistingG10 MIX01 scene2026103001/channel2026104001/receiver2027/25MHz2.45GHz600km/refSNR30/reflect/post_sync-noEQ",
+    "actual_training_labels": "No optimizer. No TX/V/OE/novel/target inputs;raw PKL wholefile includes otherroles but only originalLsUs packetvalues indexed.",
+    "augmentation": "No new views;first2Ls canonical observe audit bitwise equals P0;one raw RMS perrecord/no postchannel RMS."
+  },
+  "permissions": {
+    "regime": "source_only_data_cache_zero_optimization",
+    "query_use": "0query/targetU/V/OE/novel;originalsource pairedIQ and frozenF0 cleanfeatures only",
+    "external_method_exception": null,
+    "claim_scope": "Data preparation,not learned G/performance or samequality speed. PureIQ optimization consumer never opens optional F0array."
+  },
+  "checkpoint": {
+    "initialization": "TFscratch identity only real2Ls no-update smoke/no Gancestor/noDURAmodelloaded",
+    "sources": [
+      "OriginalTriSIGSSL F0 main_split-repl-shuffled_time-3view-s2026092701/final_ssdg.pth/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/E50-11100/232993",
+      "OriginalLd319 P0 and validatedUs56700 G10 P0;not restoredIQ or logits",
+      "RawManySig2.359GB wholepickle;onlyoriginalLsUs packetvalues indexed"
+    ],
+    "contract_check_ref": "OriginalF0 strictancestry/data392005/fullroleIDs and source-only complete metadata;source P0 contract-order and producer identities",
+    "provenance_verdict": "F0 sourceonly verifiedr02;no PCD/r03 teacher/init;newTF smoke random/no learnupdates;no oldnormalizedIQ or teacherIQ",
+    "selection_rule": "No checkpoint selection. All63000 originalsource records;F0clean features once;complete manifest only after all arrays,smoke and frozenF0 check."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/p3restore-LU-cache",
+    "gpu_policy": "Oneworker GPU4/6/7/free>=12000MiB/existing<=2/addONE total<=3/own1card/goal<=2GPUworkers/CPU2/no truthscorer;othersuntouched",
+    "remote_run_root": "runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01",
+    "remote_log_root": "runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.cache run --root /home/szu2070436088/2510044040/CV-SincNet --commit 53410ce889adc94c53c1783741f970fbdaf51453 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01-release/inputs.json",
+    "stop_rule": "Badsource IDs/roles/contract/F0ancestry/nonfinite/canonicalfirst2G10 mismatch/RMS/gradientcap/modelstate/collision:preservefailedroot/no autoretry/no otherownerstop. No optimization or formal prediction here."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "GPU_runtime.json",
+    "cache/manifest.json",
+    "cache/clean.npy PRIVATE",
+    "cache/received.npy PRIVATE",
+    "cache/F0_features.npy PRIVATE",
+    "cache/{ids,roles,rx,day}.npy PRIVATE",
+    "results.json",
+    "complete.json",
+    "controller_complete.json",
+    "logs/worker.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "63000IDrole alignment/oneRMS/finiteFP32 IQ/F0fused160",
+      "2Lsactualsmoke/inputVJPcap.5/unchangedG-F0/no labels-noOE-V-target/0updates",
+      "pairpreparation/F0featurecache/wholewallseconds/F0rows63004/head2/Grows2"
+    ],
+    "dimensions": [
+      "L_s6300/U_s56700/source5RX3day/oneMIX01"
+    ],
+    "prediction_ref": "No newtrainedG or deploymentprediction;only sourcepaired data cache",
+    "scorer_ref": "No truth. Independent arrays/metadata/RMS/counts and exact prior512 cachedpairs consistency;no NN rerun."
+  },
+  "rows": [
+    {
+      "row_id": "source_pairs",
+      "method": "OriginalLsUs63000G10P0-clean-pairs-and-separateF0clean-fused160",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_phase3_restoration/cache.py",
+      "resolved_config_ref": "inputs.json PRIVATE_RUNTIME",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026104001,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelonlyscratchsmoke;fixedsplit392005/scene2026103001/channel2026104001/receiver2027;no sampling/support/evaluation randomseed",
+      "k": null,
+      "scenario": "OriginalLsUs oneG10MIX01/0V-OE-target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "63000sourcepairs/F0features63004/head2/G2/0optimizer/0truth",
+      "output_root": "runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01",
+      "log_path": "runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.cache worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 53410ce889adc94c53c1783741f970fbdaf51453 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01-release/inputs.json",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "smoke.json",
+        "GPU_runtime.json",
+        "cache/manifest.json",
+        "cache/clean.npy PRIVATE",
+        "cache/received.npy PRIVATE",
+        "cache/F0_features.npy PRIVATE",
+        "cache/{ids,roles,rx,day}.npy PRIVATE",
+        "results.json",
+        "complete.json",
+        "controller_complete.json",
+        "logs/worker.log"
+      ]
+    }
+  ],
+  "notes": [
+    "NewG remains single30 pending full automatic evaluation;this cache does not constitute training or qualify sixscene gap.",
+    "24focused source/cache tests PASS;one independent P0/P1 PASS. Existing architecture/objective not re-reviewed.",
+    "RawwholePKL reads other-role bytes/namespace;only originalLsUs raw packetvalues indexed. Privatecoordinates never G inputs. No y/V/OE/target arrays opened.",
+    "PureIQ cache consumer does not open or return F0feature array;guidance consumer validates actualoriginal F0 ancestry/dimension/order. F0knowledgeE50-11100 disclosed.",
+    "One Git identity/archive transfer SHA/remotecompile/preflight/firstactualsmoke continues. No extra seals/datarehash/approval. DefaultDURA/otherowners unchanged."
+  ],
+  "registered_at": "2026-10-31T17:21:38+00:00"
+}
