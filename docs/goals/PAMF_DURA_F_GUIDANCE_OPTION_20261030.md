@@ -113,3 +113,6 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 
 
 源软坐标跨RX参考 20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01/210e2380 几何资格PASS：sourceF63000缓存，fit62488（L6172/U56316）排除512；按RX/day软6坐标均值，其他4RX×3day等权、beta.25混原unitfeature。90单元最小有效N684.292、512/512原头判断保持，head可见RX关联离散度比.523619、软坐标间离散度比1.014648。不同于旧headnull RXcanonical；softF输出不是真TX/硬伪标签，无另训头。CPU统计.212823s/新F骨干2/head-only63512+2smoke/0G-TX-V-target-updates，378000软概率/90cell/30reference/512probe/11groups独立复算。只支持另登记IQ梯度/可达性校准，未启动新G或正式预测；F历史50/11100及40.32MB缓存3.782s披露。实际PID1374175/CWD/env/log与launchargv/commit/完整产物核对，直接proc cmdline短暂为空保留UNKNOWN，未重复启动；默认和完整目标ACTIVE。
+
+
+软参考源IQ校准 20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01/cf018bed 全部PASS：beta.25/alpha.0033130025035573727/原rawJ不改；source512 minnorm位移IQNMSEmean.003394%/P95.010540%，FP32实际线性残差max6.492e-6，真实F相对偏移误差median.143853/p95.495730，512clean选择保持。纯G8cf源01/20 prototype/exact meancos.656546/.669879（IQ.0474/.0488，无偏移metric对同prototype精确梯度.4670/.4670），非负501/491、每RX正、实际梯度压力max1.000000358。BLOCKED/unlocked方向仍弱、线性误差中位约.5；guide值超IQ13/17，不能复用旧值上界。CPU3.156706s/F1536+2/inputVJP1024+2/0G-新完整J-TX-V-target-updates，512可达性/1024几何/2097152闭式分量/52分组独立复算；PID1392918自然结束。只支持另登记scratchjoint30/7410+完整七景，未自动训练/新正式收益，默认与完整目标ACTIVE。

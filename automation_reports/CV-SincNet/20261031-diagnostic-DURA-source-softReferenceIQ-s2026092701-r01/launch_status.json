@@ -1,0 +1,23 @@
+{
+  "status": "ANALYZED",
+  "artifact_scope": "SOURCE_ONLY",
+  "run": "20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01",
+  "execution_commit": "cf018bed9a9dc84d68bc3a12451864ffc6b4c4ef",
+  "pid": 1392918,
+  "post_launch_PID_CWD_argv_environment_log_verified": true,
+  "natural_exit_verified": true,
+  "CPU_threads": 2,
+  "GPU_workers": 0,
+  "real_Ls": 2,
+  "F_inputs": 1536,
+  "F_smoke_inputs": 2,
+  "F_input_VJP_inputs": 1024,
+  "F_smoke_VJP_inputs": 2,
+  "new_G_inputs": 0,
+  "seconds": 3.156705676112324,
+  "eligible": true,
+  "G_training_started": false,
+  "formal_predictions_started": false,
+  "default_DURA_changed": false,
+  "goal_complete": false
+}

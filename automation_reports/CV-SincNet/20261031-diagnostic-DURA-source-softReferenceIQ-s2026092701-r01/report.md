@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01`
 - group_id：`phase1-dura-source-soft-reference-IQ-calibration`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整源IQ校准结果见下方、analysis.md 与 results.json；本次没有新G或正式预测。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -36,3 +36,8 @@
 最小IQ位移由FP64 Gram特征分解的1e-10相对截断伪逆给出，实际FP32可表示位移再检查。固定线性相对残差max≤1e-3，IQ NMSE均值≤0.001/P95≤0.005，真实F相对参考偏移误差中位≤0.5/P95≤1，512个原clean选择保持。两源缓存都要求512个prototype/IQ梯度cos定义，prototype/exact平均≥0.5且比IQ平均高≥0.1、至少384非负、每RX均值非负、实际梯度压力max≤1+2e-5。失败不调beta/alpha/门槛，通过也仅支持另登记scratchjoint30及完整七景。
 
 偏移损失为alpha*s*||Jdelta-offset||²，s每步detach以限制附加IQ输出梯度。它不再具有guide损失值≤IQ的旧性质，也不保证G参数梯度或全局固定能量；会报告损失值超出IQ的记录。源clean最小位移只是可达性参照，不是可部署算法、真实TX准确率或恢复极限。Fsource1536+smoke2、inputVJP1024+smoke2，0G/新完整J/更新；历史F50与缓存成本披露，默认与完整目标保持。
+
+
+## 完成结果
+
+VERIFIED / ANALYZED，仅SOURCE_ONLY。执行 cf018bed9a9dc84d68bc3a12451864ffc6b4c4ef，CPU2/PID1392918实际CWD/cmdline/env/log增长与真实F2Ls检查核实，完整3.156706秒自然结束。最小IQ位移平均NMSE0.003394%/P950.010540%，真实F相对偏移误差中位0.143853/P950.495730，512clean判断保持；两源缓存prototype/exact梯度cos0.656546/0.669879，非负501/491、每RX正、实际压力max1.000000358。固定资格PASS，支持另登记scratchsingleE30/完整七景，不自动训练。512可达性/1024梯度几何/2097152闭式分量/52分组独立复算；guide值超IQ13/17条，未误用旧值上界。0G/新完整J/TX-V-target/更新，原F50与缓存成本披露，默认和完整目标保持。详见[完整分析](analysis.md)、results.json 与 source_soft_reference_IQ.png。
