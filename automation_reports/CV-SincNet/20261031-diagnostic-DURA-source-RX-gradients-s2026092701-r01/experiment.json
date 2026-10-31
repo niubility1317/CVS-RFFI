@@ -1,0 +1,183 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01",
+  "group_id": "phase1-dura-source-receiver-gradient-geometry",
+  "display_name": "接收机场景均衡的恢复器源梯度冲突诊断",
+  "description": "固定原SIG-only G E30/source47591与原F50；5RX×7scene×12×2缓存，实际局部训练代理参数梯度、等RX均值及模块分解，0模型更新/TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "RX-gradient-conflict",
+    "scene-balanced",
+    "frozen-SIG-G",
+    "F-guided"
+  ],
+  "comparison_group_id": "DURA-source-RX-raw-gradient-conflict",
+  "parent_run_ids": [
+    "20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-and-efficiency goal;explicit source frozen-F feature-guidance and scratchsingle-stage30epoch authorization;noTX/V/targetoptimization/defaultunchanged",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalsourceR07training63000L6300U56700;fixedpermutation2026103111/perRX-scene12/cache01and20;source840visits/uniqueactualreported;actualFcleanSIG40.32MBreuse",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "No target or sourceV predictions in this diagnostic",
+    "actual_training_labels": "No training or optimizer. Pairedsourceclean/action plus frozenFactualSIG targets only for local G parameter derivatives. RX/scenes used only to balance diagnostic cohorts;noTX/V/target",
+    "augmentation": "No new views/draws/augmentation;originalR07 caches01and20 only"
+  },
+  "permissions": {
+    "regime": "Source_only_frozen_SIG_G_and_F_parameter_gradient_diagnostic",
+    "query_use": "No target/V/TXtruth/model update. SourceknownRX andsimulatedscene metadata for fixedcohorts only;actualsourceIQ/action/frozenFsignature for derivatives",
+    "external_method_exception": null,
+    "claim_scope": "ScenebalancednotTXbalanced;rawlocalfixedcaptraining-surrogategradients/notAdamWstep/fulltrajectory/TXaccuracy/hardware/recoverylimit. OldFAILspreserved;passonlysupportsseparatelearninghypothesis,noautomaticGtraining"
+  },
+  "checkpoint": {
+    "initialization": "No learner/newG initialized;read-only originalSIG-onlyG final30 snapshot for gradients;G eval requiresgrad temporarily,nooptimizer;originalF50frozen",
+    "sources": [
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/scratch_joint/final.pt executed47591cdfe2e6e6dd7534cdea846badd942321b8f/source-onlyscratchE30/7410/noGancestor",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth/source4df7/50-11100/defaulthead",
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/source_signature_cache F-only63000x160 cleanSIG DATAONLY producedbeforeoldGoptimizer"
+    ],
+    "contract_check_ref": "Original7/63/30source63000andFroles/VALIDATED_ONCEhandles;strictSIG-GE30payload/config/source-onlydone;originalF50source4df7/50-11100/defaulthead;SIGcachemetadata/order;actual2noncleanLsGgradient-fullF/SIG-headsmoke",
+    "provenance_verdict": "OriginalSIG-onlyG wasalreadyfixedmatchedcontrolbeforecontextFiLMformaltest;notnewGparentortraininginitialization. Gscratch30/F50sourceknowledgeandhistoricalcachecostretained. SamefullsourceL/Uroles,0V-target-TX;oldPA/PA-SIG/response-SIG/common/tailandcontextFiLMresultsunchanged",
+    "selection_rule": "FixedoriginalSIG-onlyG/source47591E30/7410,notnewcontextFiLMparentselection. Fixedsourcepermutation2026103111;eachview01/20 RX1/3/4/6/8x7scene12/420perview. Full266951-parametergradientprimary:bothviewsallpair-meandirectionsdefined,>=3of10RXpaircos<-.05and>=1of5RXcoswithequalrawRXmean<-.05. Coarse/action/prior descriptiveonly;nothreshold/module/parentsearch. Passonlysupportsseparatereceiver-balancedlearninghypothesis,noautomatictraining."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-RX-gradients",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU. contextFiLMcontroller1804542-worker1804637naturallyended/ANALYZED;otherownersuntouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.receiver_gradient_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "BadsourceG-F-cache-contract/layout/cohortcapacity/nonfinite/stateupdate/accumulatedparametergrad/collision/smoke:preserveandstop/noautoretry/noothers. Zero main directions are scientific undefined/fail,nottechnicalfailure. No threshold/parent/module search orautomaticG."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "source_plan.npz PRIVATE",
+    "gradients-{1,20}.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "fixedcohortRX-scene/sourceL-U/uniquephysicalcounts",
+      "full-Grawgradientnorm/paircos/equalrawRXmeancos/definedflags",
+      "coarse-action-prior geometry descriptiveonly",
+      "bothviewfixedprimaryconflictverdict",
+      "physical4-SIGlossmeans/unusedparametercounts",
+      "G-Funchanged/gradNone/nooptimizer/counters/CPUcost"
+    ],
+    "dimensions": [
+      "5sourceRX1/3/4/6/8",
+      "7simulatedscenes/12recordspercell/84perRX",
+      "cache01and20/840visits",
+      "full266951primary/coarse-action-priordescriptive"
+    ],
+    "prediction_ref": "No new G version/formal/sourceV prediction;privatefixedsourceparametergradientvectorsonly;notTXaccuracy",
+    "scorer_ref": "No truth. IndependentNumPyreplayselectionorder/10rawvectors/parameterlayout/fullplus3module8geometrysummaries/80pairand40meanangles/norms/decisions/statecounters;noextraNN"
+  },
+  "rows": [
+    {
+      "row_id": "source-RX-gradient",
+      "method": "OriginalSIG-GE30actualsourcephysical4+SIGsurrogaterawGparameterderivatives,matched7sceneRXcohorts",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_efficiency/{receiver_gradients.py,receiver_gradient_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103111,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "fixedsourceGmodel2026092701;split392005/sourcephysicalrolesunchanged;cohortpermutation2026103111;CPUactionprobe2026103112resetforeachRX/view;originalcachedchannelaugmentation2026101912;noTXselection/noevaluationtruth/supportN/A",
+      "k": null,
+      "scenario": "Source-only840observations/cache01and20/5RXx7scene12;notTX-balanced or newformaldata",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2;mainG840/Fprefix840/inputVJP840/fullF0;smoke2noncleanLs/G2/fullF4/prefix2/VJP2;G-Fcheckpoint1each;0optimization/TX-V-target;historicalG30/F50/SIGcachecostretained",
+      "output_root": "runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.receiver_gradient_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "source_plan.npz PRIVATE",
+        "gradients-{1,20}.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "NewquestionisrawparametergradientconflictbetweensourceRX,notoldIQoutput/head-aux/modulelossconflicttests. FixedpreexistingSIG-onlyE30matchedcontrol,nocandidateorparentrankingfromnewtargetresults. SourceFGroupDROhistoricalexperimentsarenotG evidence orinitialization. Oldsourcequalificationsandformalresultsnotrelabelled.",
+    "Metadatafirst:eachsourceRXx7scenehasatleast1711cache01/20records. Onefixedpermutation2026103111;takefirst12ineachcell,eachRX84/view420/840visits,physicaloverlapandL/Uactualreported. NoIQscore/TXusedtoselect. Scenesbalanced,TXandrolesnotbalanced;cannotisolatepureRXhardwarecause.",
+    "Gactualfourphysical+SIGalpha1/inputcap.5step-localsurrogate;flattenuniqueGparametersintofixedmatchedlayout. EqualRXmeanoftheRAWvectors,notnormalizeddirections. Same2complexprobesCPU2026103112resetforeachRX/view. OriginalG/Fstatebitwiseandparam.gradNonechecks;nooptimizer/update/finite-stepAdamWsimulation.",
+    "FixedoriginalSIG-onlyG/source47591E30/7410,notnewcontextFiLMparentselection. Fixedsourcepermutation2026103111;eachview01/20 RX1/3/4/6/8x7scene12/420perview. Full266951-parametergradientprimary:bothviewsallpair-meandirectionsdefined,>=3of10RXpaircos<-.05and>=1of5RXcoswithequalrawRXmean<-.05. Coarse/action/prior descriptiveonly;nothreshold/module/parentsearch. Passonlysupportsseparatereceiver-balancedlearninghypothesis,noautomatictraining.",
+    "Capweightsareheldfixedintheactualtrainingbackprop;thesearelocaltraining-surrogatederivatives,notderivativesofarecomputedglobaladaptive-capriskorAdamWmomentum-preconditionedstep. NegativecosdoesnotproveactualTXloss,wholetrajectoryfailure,causalRXshortcut,orphysicalrecoverylimit. PassdoesnotauthorizeautomaticGtraining;laterGstillmustfixedsingleE30/all7formal.",
+    "StrictsourceSIG-G47591E30/7410/Gancestor0 andoriginalF50/source4df7/50-11100/defaulthead. ReuseF-onlycleanSIG63000x160/40.32MB;newcacheF/VJP/bytes0,original63000prefix/.847077s andG30/F50upstreamcostretained. F-relateddiagnosticnotF-free. NoV/target/trueTX/classloss/changedhead.",
+    "3focusedtestsPASS:deterministicuniqueRX-scene-balancedselection/badorder-shortcellrejection;rawmeangeometry/finite/zero-definedhandling;bothviewprimarydecision. Actualentry/CPUrejection-before-data/help/actualcollectortoymean-gradient-unusedzero-noaccumulation/zero-mainhandlingPASS. OneP0P1PASS. Firstreal2noncleanLsstrictG/actualFcleanSIG/head/nonzeroGgradsmokePASScontinuesimmediately. Main840G/prefix/VJP;smokeG2/fullF4/prefix2/VJP2.",
+    "SingleCPU2immutableoutput/preflight/releasearchiveSHA/remotecompile/postPID-CWD-argv-emptyCUDA-loggrowth;independentNumPymetadata/10gradientvectors/8geometrymatrices/80pair40meanangles/decisionreplay,noadditionalNN. DefaultDURAunchanged/complete6sat3pp+clean+efficiencygoalACTIVE."
+  ],
+  "registered_at": "2026-10-31T10:29:19+00:00"
+}
