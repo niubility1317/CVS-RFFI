@@ -49,3 +49,8 @@ def test_missing_coordinate_mass_rejected_and_fixed_eligibility_not_relaxed():
     assert eligible(32,512,dict(RX_scatter=1,class_spread=1),dict(RX_scatter=.8,class_spread=.9))
     assert not eligible(32,511,dict(RX_scatter=1,class_spread=1),dict(RX_scatter=.8,class_spread=.9))
     assert not eligible(31.9,512,dict(RX_scatter=1,class_spread=1),dict(RX_scatter=.8,class_spread=.9))
+
+
+def test_unknown_rx_cannot_leave_a_reference_row_uninitialized():
+    with pytest.raises(ValueError):
+        make_reference(np.ones((2,160)),np.full((2,6),1/6),np.array([1,24]),np.ones((5,6,160)))

@@ -25,7 +25,8 @@ def fit_references(features,probabilities,rx,day,fit_mask):
 
 
 def make_reference(features,probabilities,rx,centroids,beta=BETA):
-    if features.shape!=(len(rx),160) or probabilities.shape!=(len(rx),6) or centroids.shape!=(5,6,160) or not 0<=beta<=1:
+    if (features.shape!=(len(rx),160) or probabilities.shape!=(len(rx),6) or centroids.shape!=(5,6,160)
+        or not np.isin(rx,RX).all() or not 0<=beta<=1):
         raise ValueError('Paired original features and fixed leave-RX soft centroids required')
     result=np.empty_like(features,dtype=np.float64)
     for i,r in enumerate(RX):
