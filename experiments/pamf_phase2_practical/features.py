@@ -72,7 +72,7 @@ def source_smoke(rt,out,device='cuda:0'):
         a=engine(x[:1])[0];b=engine(x[1:])[0]
         require(torch.allclose(restored,torch.cat((a,b)),rtol=2e-4,atol=2e-5),'DURA depends on query batch')
         vr,_=branches(reader,restored)
-        if rt.get('kernel_method') in ('signature_kernel','task_signature','fisher_signature'):
+        if rt.get('kernel_method') in ('signature_kernel','task_signature','fisher_signature','nested_fisher'):
             from .signature_features import capture
             sv,sl=capture(reader,x)
             require(torch.equal(sv['z_id'],v['z_id']) and torch.equal(sl,logits),'Descriptor hook changed frozen F')

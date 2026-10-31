@@ -16,6 +16,9 @@ from .milkr.support_calibrated import fit,CONFIGS,LAMBDAS,target_and_score
 
 
 def fit_function(rt):
+    if rt.get('kernel_method')=='nested_fisher':
+        from .milkr.nested_fisher import fit as nested_fit
+        return nested_fit
     if rt.get('kernel_method')=='fisher_signature':
         from .milkr.fisher_signature import fit as fisher_fit
         return fisher_fit
@@ -36,14 +39,14 @@ def fit_function(rt):
 
 
 def kernel_configs(rt):
-    if rt.get('kernel_method') in ('signature_kernel','task_signature','fisher_signature'):
+    if rt.get('kernel_method') in ('signature_kernel','task_signature','fisher_signature','nested_fisher'):
         from .milkr.signature_kernel import CONFIGS as signature_configs
         return signature_configs
     return CONFIGS
 
 
 def extract_for_method(rt,reader,raw,device,engine=None,batch=128):
-    return extract(reader,raw,device,engine,batch,descriptor=rt.get('kernel_method') in ('signature_kernel','task_signature','fisher_signature'))
+    return extract(reader,raw,device,engine,batch,descriptor=rt.get('kernel_method') in ('signature_kernel','task_signature','fisher_signature','nested_fisher'))
 
 
 def source_episodes(rt):
@@ -65,6 +68,9 @@ def source_episodes(rt):
 
 
 def calibration(rt):
+    if rt.get('kernel_method')=='nested_fisher':
+        from .milkr_nested_source import calibrate
+        return calibrate(rt)
     if rt.get('kernel_method')=='fisher_signature':
         from .milkr_fisher_source import calibrate
         return calibrate(rt)
