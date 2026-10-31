@@ -77,7 +77,7 @@ def source_smoke(rt,out,device='cuda:0'):
             sv,sl=capture(reader,x)
             require(torch.equal(sv['z_id'],v['z_id']) and torch.equal(sl,logits),'Descriptor hook changed frozen F')
             v=sv
-        if rt.get('kernel_method') in ('phase_orbit','phase_kernel','nonlinear_pair'):
+        if rt.get('kernel_method') in ('phase_orbit','phase_kernel','nonlinear_pair','registered_scale'):
             from .phase_orbit import extract,rotate,moments,stack_views
             options=dict(aggregate=stack_views if rt['kernel_method']=='phase_kernel' else moments)
             iq=np.asarray(x.cpu().tolist(),np.float32)

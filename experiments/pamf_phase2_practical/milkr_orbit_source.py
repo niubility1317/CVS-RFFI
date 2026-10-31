@@ -27,6 +27,7 @@ def calibrate(rt):
     fit_K1=phase_fit if distribution else signature_kernel.fit
     fit_many=phase_fit if distribution else nested_fisher.fit
     require(rt['source_cache_epochs']==[91,92] and rt['orbit_quarters']==[0,1,2,3] and rt['orbit_rank']==64,'Wrong preregistered orbit configuration')
+    if rt['kernel_method']=='registered_scale':require(rt.get('bandwidth_scope')=='registered','Registered support scale required')
     for epoch in rt['source_cache_epochs']:
         folder=Path(rt['augmentation_cache'])/'F0'/f'stage1-epoch{epoch:03d}-p80'
         require(read(folder/'complete.json')['status']=='L_AUGMENTATION_READY','Missing source augmentation')
@@ -51,6 +52,7 @@ def calibrate(rt):
     for config in signature_kernel.CONFIGS:
         for ridge in LAMBDAS:
             rule=dict(config=list(config),ridge=ridge,outer_folds=3,outer_strengths=[0.,.25,.5,.75],ridge_reference_classes=6);rows=[]
+            if rt['kernel_method']=='registered_scale':rule['bandwidth_scope']='registered'
             for frame in frames:
                 support=np.arange(6)*52
                 for sp in (0,1):

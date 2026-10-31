@@ -94,16 +94,19 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True,
         if fixed is None:raise ValueError('K1 requires a frozen source rule')
         configs=[tuple(fixed['config'])];lambdas=[float(fixed['ridge'])]
     else:lambdas=LAMBDAS
-    best=None;records=[];old=y<old_count;sim_cache={}
+    scope='old' if fixed is None else fixed.get('bandwidth_scope','old')
+    if scope not in ('old','registered'):raise ValueError('Invalid frozen bandwidth scope')
+    scale_mask=y<old_count if scope=='old' else np.ones(len(y),bool)
+    best=None;records=[];sim_cache={}
     for config in configs:
         geometry,band,mix,scales=config
         if geometry not in sim_cache:sim_cache[geometry]=similarity_fn(x,x,geometry)
         sim=sim_cache[geometry];d=np.maximum(2-2*sim,0)
-        # B/C bandwidth is estimated from old support; labels never from query.
-        od=d[np.ix_(old,old)];oy=y[old]
+        # The scope is frozen before query access; every row is current support.
+        od=d[np.ix_(scale_mask,scale_mask)];oy=y[scale_mask]
         if band=='nearest':tau=float(np.median(np.min(np.where(oy[:,None]!=oy[None,:],od,np.inf),axis=1)))
         else:tau=float(np.median(od[oy[:,None]!=oy[None,:]]))
-        if not np.isfinite(tau) or tau<=0:raise FloatingPointError('No positive old-support scale')
+        if not np.isfinite(tau) or tau<=0:raise FloatingPointError('No positive support bandwidth scale')
         K=make_kernel(sim,tau,mix,scales);parts=decompose(K,y)
         for ridge in lambdas:
             alpha,intercept,loo=coefficients(parts,ridge)
@@ -117,4 +120,5 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True,
     return State(x,alpha,intercept,config,tau,ridge,dict(rule='source_fixed' if k==1 or not conditional_loo else 'support_conditional_LOO',
         objective='old_macro_B_or_old_new_H_C_then_lower_squared_loss_then_larger_ridge',
         kernel_geometry_conditioned_on_full_support=True,not_unbiased_nested_cross_validation=True,
-        physical_count=len(y),candidate_count=len(records),query_fit=False,records=records),normalizer,similarity_fn)
+        physical_count=len(y),bandwidth_scope=scope,bandwidth_physical_count=int(scale_mask.sum()),
+        candidate_count=len(records),query_fit=False,records=records),normalizer,similarity_fn)

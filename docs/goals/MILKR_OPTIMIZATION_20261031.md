@@ -177,3 +177,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R22 实际结果
 
 五sourcefold各600step有界配对NN完成，F/G/head更新0；source四H相对control+0.2640pp，gate=False。源科学停止、target0、最终checkpoint未拟合；不能用pairMSE代替分类H。全部所属进程退出；strictG-only Q1保持；最终每16KN+5及queryDURA收益目标仍ACTIVE。
+
+### R23 全注册support带宽
+
+新结构变体tau由当前全部注册物理support估计，old_count仍只定义old/new宏H角色，query不入尺度。C4moments/CCA64固定，freshsource五RX/TXheld只选K1规则，原nested训练折尺度；旧默认old不变，同配置B同公式但新source规则可改实际B。无R22NN/不改旧stop，源仅合法数值门槛后同四角点24行，最终16KN两S每格+5/query收益不变，strictG-only保持。
