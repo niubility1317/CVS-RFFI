@@ -265,3 +265,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 跨RX签名关系指导对照
 
 20261031-phase1-DURA-relationSIG-E30-s2026092701-r01：G原266951从零单阶段30轮/7410，原物理4项/初始化/RNG/LR/数据保持，指导改为源cross-RX相对余弦距离关系，实例误差仅日志。all-pair SUM inputVJP包含两端，再逐IQ detached cap0.5，1prefix/VJP每访问；F-only sourceSIG40.32MB与源RX仅训练loss，0新持久缓存/额外Fpass/新G参数/推理关系输入，0TX/V/target。原F50知识和缓存成本披露，原G非祖先。关系共同旋转自由度由物理锚点约束，真实TX收益只凭完整原七景truth-last验收；默认与旧FAIL保持。
+
+
+## 跨源RX签名关系：完整E30与七景
+
+20261031-phase1-DURA-relationSIG-E30-s2026092701-r01/53aec992。VERIFIED / ANALYZED。跨源RX余弦关系SIG指导G从零单阶段30轮/7410步，L189000/U1701000，无G祖先；完整G266951参数、推理路径和物理4损失保持。只改变F指导，源RX仅用于batch训练损失、不进入G。SUM关系VJP含两端，逐record IQ梯度cap0.5后detached注入，是局部预条件代理导数；实例SIG误差只记录。源SIG40.32MB只读复用、逐batch161列临时上下文，新完整数组复制/缓存F0；历史63000prefix/0.847077秒与F50/11100源监督知识成本保留，F-guided。训练prefix/VJP各1.89m、完整F后续0，F不变，0直接TX/V/target/classloss/新头。每role全七景固定后truth-last，126正式/105源V/252双对照配对分组/14IQ独立复算。全30轮loss/曝光/视图/cap核对，按实际shuffle独立重放跨RX有向配对数与active记录数一致。六星地较SIG提高0/6、纯G提高3/6、默认DURA提高0/6。clean 84.842857%，低城区 68.009524%；低城区较SIG -0.825595、纯G +0.636905、默认DURA -0.880357个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。G训练及保存1026.200308秒、含worker准备1027.364699秒、控制器至自动分析1196.162898秒。ConvLinearMAC25068072/2prior4CG27FFT，同卡G+F B1默认4.592008ms、本版4.585469ms。共享GPU单次墙钟不证明因果加速，特征关系不保证纯TX/硬件不变性，有限模型成绩不认证物理恢复极限。默认DURA保持，完整目标ACTIVE。 单seed/已暴露工程基准，完整TX/RX/day、净纠错、源与正式差异及成本见run分析。

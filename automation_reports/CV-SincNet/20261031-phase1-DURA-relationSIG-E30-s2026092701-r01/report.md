@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-relationSIG-E30-s2026092701-r01`
 - group_id：`phase1-dura-cross-RX-relation-SIG-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整结果见analysis.md/results.json，分组和成本保留。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -47,3 +47,10 @@ F为原F50/source4df7/defaulthead，源clean实际weighted SIG160缓存63000×16
 ## 实际启动证据
 
 VERIFIED / RUNNING，尚无性能结果。执行53aec99292cde105ab6b582ac8fd56df1e71e798；真实2非clean L_s RX1/3 smoke PASS后进入GPU4 worker1865565/controller1865475，已核实3轮/741步、两日志增长。实际CWD/完整argv/commit/CUDA/compute PID核对，准入前0个compute PID/剩余24124MiB，单任务新增1个。归档SHA比较与远端编译通过；固定最终30轮/profile/全部七景自动truth-last保持。详见launch_evidence.json。
+
+
+## 完整训练与正式结果
+
+VERIFIED / ANALYZED。跨源RX余弦关系SIG指导G从零单阶段30轮/7410步，L189000/U1701000，无G祖先；完整G266951参数、推理路径和物理4损失保持。只改变F指导，源RX仅用于batch训练损失、不进入G。SUM关系VJP含两端，逐record IQ梯度cap0.5后detached注入，是局部预条件代理导数；实例SIG误差只记录。源SIG40.32MB只读复用、逐batch161列临时上下文，新完整数组复制/缓存F0；历史63000prefix/0.847077秒与F50/11100源监督知识成本保留，F-guided。训练prefix/VJP各1.89m、完整F后续0，F不变，0直接TX/V/target/classloss/新头。每role全七景固定后truth-last，126正式/105源V/252双对照配对分组/14IQ独立复算。全30轮loss/曝光/视图/cap核对，按实际shuffle独立重放跨RX有向配对数与active记录数一致。六星地较SIG提高0/6、纯G提高3/6、默认DURA提高0/6。clean 84.842857%，低城区 68.009524%；低城区较SIG -0.825595、纯G +0.636905、默认DURA -0.880357个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。G训练及保存1026.200308秒、含worker准备1027.364699秒、控制器至自动分析1196.162898秒。ConvLinearMAC25068072/2prior4CG27FFT，同卡G+F B1默认4.592008ms、本版4.585469ms。共享GPU单次墙钟不证明因果加速，特征关系不保证纯TX/硬件不变性，有限模型成绩不认证物理恢复极限。默认DURA保持，完整目标ACTIVE。
+
+详见[完整分析](analysis.md)、[训练与七景图](training_and_formal.png)、results.json和transfer_diagnostics.json。controller1865475/worker1865565自然结束，无目标反馈或选择性重跑。

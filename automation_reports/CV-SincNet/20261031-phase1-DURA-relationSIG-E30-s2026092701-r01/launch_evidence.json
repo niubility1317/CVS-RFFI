@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING_NO_PERFORMANCE_RESULT",
+  "status": "ANALYZED",
   "execution_commit": "53aec99292cde105ab6b582ac8fd56df1e71e798",
   "controller_PID": 1865475,
   "worker_PID": 1865565,
@@ -10,7 +10,7 @@
   "controller_log_bytes": 608,
   "worker_log_bytes": 3616,
   "epoch_records": 3,
-  "latest_update": 741,
+  "latest_update": 7410,
   "smoke": {
     "status": "PASS",
     "real_nonclean_Ls": 2,
@@ -109,5 +109,21 @@
   },
   "default_DURA_changed": false,
   "target_feedback": false,
-  "goal_complete": false
+  "goal_complete": false,
+  "external_state": "VERIFIED_ANALYZED",
+  "phase": "COMPLETE",
+  "observed_epochs": 30,
+  "formal_results_available": true,
+  "row_and_controller_natural_exit_verified": true,
+  "all_seven_predictions_before_truth": true,
+  "independently_recomputed_target_groups": 126,
+  "independently_recomputed_source_groups": 105,
+  "independently_recomputed_paired_groups": 252,
+  "independently_recomputed_paired_IQ_scenes": 14,
+  "training_seconds": 1026.2003084481694,
+  "whole_pipeline_seconds": 1196.1628983020782,
+  "performance_acceptance": false,
+  "six_scene_gap3pp": false,
+  "clean_not_lower_than_raw": true,
+  "RX_peer_active_shuffle_replayed": true
 }
