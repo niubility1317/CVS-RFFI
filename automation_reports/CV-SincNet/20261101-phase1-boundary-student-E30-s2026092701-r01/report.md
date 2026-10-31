@@ -41,3 +41,7 @@
 GPU 5 的 worker PID 2332138 在第 9 轮期间报 `CUDA error: unknown error` 并退出。已完成 8 轮、3944 次更新；日志、失败状态和错误栈均保留。独立读回确认控制器和 worker 均已退出，`flow/final.pt` 和 `training_complete.json` 不存在，也没有固定预测或性能结果。本次不具备恢复训练的最终权重。
 
 同时期同机另一实验的最小 `torch.cuda.init()` 检查也失败，设备管理工具无法取得 GPU 7 的句柄；这些现象提示设备层异常，但尚不能证明具体因果。未重置设备或重启其他作业。环境及完整设备清单恢复前不新开 GPU 任务；如之后重跑，须使用新的独立 run 并重新执行固定预算。
+
+## CUDA 驱动层只读探测
+
+在 N607 上以 `CUDA_VISIBLE_DEVICES=1` 直接调用 CUDA Driver API `cuInit(0)`，未导入 PyTorch、加载实验模型或创建训练任务，返回 `999 / CUDA_ERROR_UNKNOWN`。这独立复现了驱动初始化失败，具体硬件或驱动根因仍未确定。未重置设备、重启服务或终止其他作业。

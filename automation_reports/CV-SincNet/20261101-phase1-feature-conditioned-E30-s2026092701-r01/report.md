@@ -45,3 +45,7 @@
 ## 独立初始化复现
 
 同一 N607 Python 环境（PyTorch `2.1.0+cu121`）以 `CUDA_VISIBLE_DEVICES=1` 单独调用 `torch.cuda.init()`，未加载模型或实验数据，也返回同一 `CUDA unknown error`。这将失败层缩小到 CUDA 初始化，不能证明 GPU 7 设备句柄异常就是根因。只读查询确认 PCI `c2:00.0` 仍可由 `lspci` 枚举，内核日志读取被系统拒绝；未重置设备或终止其他作业。
+
+## CUDA 驱动层只读探测
+
+在 N607 上以 `CUDA_VISIBLE_DEVICES=1` 直接调用 CUDA Driver API `cuInit(0)`，未导入 PyTorch、加载实验模型或创建训练任务，返回 `999 / CUDA_ERROR_UNKNOWN`。这独立复现了驱动初始化失败，具体硬件或驱动根因仍未确定。未重置设备、重启服务或终止其他作业。
