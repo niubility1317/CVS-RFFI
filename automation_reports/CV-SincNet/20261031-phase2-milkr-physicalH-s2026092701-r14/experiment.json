@@ -1,0 +1,277 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-physicalH-s2026092701-r14",
+  "group_id": "phase2-milkr-physical-OOF-H-calibration",
+  "display_name": "MILKR物理支持留出H校准先导",
+  "description": "R15固定R14源CCA16，在当前支持物理OOF分数上校准旧新组阈值；全局收缩由源不对称组数代理事前选定。K1/B保持R14。",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-milkr-signature-kn-s2026092701-r05",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261031-phase2-milkr-sourcebridge-s2026092701-r11",
+    "20261031-phase2-milkr-pairedcca-confirm-s2026092701-r13",
+    "20261031-phase2-milkr-pairedcca-s2026092701-r12"
+  ],
+  "authorization": "User2026-10-31 MILKR goal +5pp; Tri-SIG-TIME SSL; support S0/S1 separate; each Q1 must exceed its Q0",
+  "code": {
+    "commit": "COMMIT_AT_RELEASE",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-physicalH-s2026092701-r14-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_only/partition/*/partition.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one existing P01/MIX01/1-1 VALIDATED_ONCE capsule",
+    "split_id": "read exact existing K/N split IDs",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P01/MIX01/1-1",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "N": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement",
+      "receiver": "1-1"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "exposed developmental research; source selects K1, per-row support selects K>1; no query tuning within run; no blind independent claim"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092703/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092704/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/01a18faf-milkr-physicalH",
+    "gpu_policy": "source numerical smoke on physicalGPU4, one target worker on physicalGPU0; existing owners untouched; >=4GiB checked before launch",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-physicalH-s2026092701-r14",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-physicalH-s2026092701-r14/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\milkr_h_20261031",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_cv_screen dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-physicalH-s2026092701-r14-release/runtime.json",
+    "stop_rule": "query/protocol/split/output collision or launcher-wide failure: stop owned launch, preserve all; worker error marks technical failure, no blind retry; low scores are scientific results"
+  },
+  "expected_artifacts": [
+    "source_smoke.json",
+    "source_cca_provenance.json",
+    "source_cca.npz sameR14arrays",
+    "source_selection.json",
+    "complete.json",
+    "80pilotpredictions/scores only if sourcegatePASS"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-physicalH-s2026092701-r14/predictions",
+    "scorer_ref": "experiments.pamf_phase2_practical.episodic_score",
+    "primary": "C macro H equal-weight across 16 KN cells, separately for S0Q0/S1Q0, paired with matching original",
+    "success": "both S: Q0-original Q0 >=5pp and new Q1-new Q0 >0; report every KN cell and stricter every-cell pass separately",
+    "secondary": "samecase R14 frozen80 and original80 historicalcontrols; all4paths and all16KN",
+    "scientific_source_rule": "source5heldRX x2episodes x4K xoldcount2/3/4/5 x4paths; sourceCCA shadow excludesheldRX, supportprefix<=20 and held32 disjoint. kappa0/5/20/none; none exactR14. Pass sourcefourpathH>=none+.5pp, bothS Q0>=none-.5pp, eachKmean>=none-.5pp, bothS Q1>Q0; bestsourceH thenlargerkappa. Nonepass=>target0.",
+    "promotion_rule": "samefirstRX allKN pilot: bothS Q0-original>=5pp,Q1>Q0,Q0old/new>=original-1pp; onlyunchangedparameter further6RX confirmation; eachcell strictercriterion separately"
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R15 R14CCA16 + physicalsupport OOF H threshold/Kshrink",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_physicalH_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-physicalH-s2026092701-r14-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 5
+          },
+          {
+            "K": 1,
+            "N": 10
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 5,
+            "N": 2
+          },
+          {
+            "K": 5,
+            "N": 5
+          },
+          {
+            "K": 5,
+            "N": 10
+          },
+          {
+            "K": 5,
+            "N": 20
+          },
+          {
+            "K": 10,
+            "N": 2
+          },
+          {
+            "K": 10,
+            "N": 5
+          },
+          {
+            "K": 10,
+            "N": 10
+          },
+          {
+            "K": 10,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 5
+          },
+          {
+            "K": 20,
+            "N": 10
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          5,
+          10,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FP64 Cholesky, no gradient updates",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "source6300physical/12600pairs; 5heldRXx2epx4Kx4oldcountsx4pathsx4kappa=2560sourceH values; 80targetrows only ifsourcegatePASS; noextra targetlabels",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-physicalH-s2026092701-r14/predictions/1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-physicalH-s2026092701-r14/logs/1-1.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_cv_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-physicalH-s2026092701-r14-release/runtime.json --capsule capsules/P01/MIX01/1-1",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "R14 fixedrank16 projection unchanged, exact source-only parametercopy from r12; F/G/defaulthead updates0. Historical r13 targetresults operational evidence only, no targettrained checkpointancestor.",
+    "New hypothesis: classcount-asymmetric old/new H differs from overallclass macro objective. Sourceold2/3/4/5 of6 (new/old0.2..2), targetold6 withN20 ratio3.33 is source-ratio extrapolation. No singleold sourceproxy or bandwidthfallback.",
+    "CandidateuniqueP0/P1review foundold_count1 backendscale undefined; fixed before registration/release by source2..5 and40expected perK/S/Q. Addedreal6class K1/K2 allkappa boundarytest PASS; targeted originalP1fix reviewPASS, nootherP0/P1.",
+    "Eachstrength0/.25/.5/.75 physicalOOF excludes held from featureweights/kernel/ridge/coefficients. Perrow score standardization across registeredclass axis, no querybatch stats. ScanOOF margin thresholds exactly for H, closestzero tie; beta shrunkK/(K+kappa); selectstrength by shrunkOOFH thenfullKrefit.",
+    "K1 and B exactR14, kappa none exactR14 at allK; tests coefficient/decisionidentity and querybatchindependence/JSONPASS. Final query oldgroupbeta fixedbefore anyquery, allregisteredclasses compete; notruequeryroles/quotas/Hungarian.",
+    "Sourceglobal kappa chosenonlylegalL; eachheldsourceRX projector trainedwithoutthatRX. Source6classes alreadyseenF, cannotclaim true novel proxy. Queryheld32/class excludesmax20support physicalIDs. NoU/Vtruth.",
+    "StrictS0/Q0 rawonly, S1/Q1 actualGonly, no dualinput mixing. SamecurrentK labels. Exposeddevelopmentalbenchmark, no newblindclaim, noquerytuningwithinrun.",
+    "Sourcegatefail stopsbefore target. Pilotpass onlypermits unchangedremaining6RX confirmation; originalbaseline andR14samecase reused. Technicalfailure preserveall/no blindretry/otherowners protected."
+  ],
+  "registered_at": "2026-10-31T03:59:39+00:00"
+}
