@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01`
 - group_id：`phase1-dura-source-SIG-parameter-contribution`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -40,3 +40,10 @@
 源参数梯度固定当前cap权重，不是AdamW预条件步、全训练轨迹、真实TX/硬件或物理恢复上限。0优化，G/F全state逐张量保持、param.grad为空。主G840/Fprefix840/FinputVJP840/fullF0/GparameterVJP样本口径1680；真实2非clean L_s smoke G2/fullF4/prefix2/FVJP2/GparamVJP4，严格旧G、实际F clean SIG与cache/原头及双分量非零有限检查，PASS立即继续。上游G30/F50/11100与40.32MB缓存原生产63000prefix/0.847077秒成本保留，F-guided，不称F-free。
 
 3项聚焦检查及实际入口/CPU于读数据前拒绝/help/collector物理4权重与SIG拆分、unused补零及不积累grad通过，唯一P0/P1 PASS。一次N607 preflight、单归档SHA比较/远端编译/不可覆盖root/实际PID-CWD-argv-空CUDA-日志增长；独立NumPy重放20个分量向量、旧总梯度、8组含5RX与汇总的统计（48比值/96夹角/16跨RX保留率）和主判定，不新增NN。默认DURA及完整六星地3pp/clean/同质量效率目标保持。
+
+
+## 完整参数梯度分解
+
+VERIFIED / ANALYZED，SOURCE_ONLY。固定原SIG-only G/source47591 E30与原F50，复用840次源观测/477物理/L86U754，CPU2主循环9.601164秒。完整G的SIG/四物理项梯度范数比，等RX汇总为0.133067、0.126745，各RX仅1/5、0/5低于0.1；固定双视图主假设FAIL。SIG与物理汇总梯度cos为0.262249、0.229477，总方向与物理方向cos为0.992390、0.992891，指导已进入参数空间，不用范数直接判断任务重要性。分量和重现旧总梯度relativeL2误差1.883058e−6、1.520253e−6；20分量向量/48比值/96夹角/16跨RX保留率独立复算。G/F状态保持，0优化/TX/V/target；主G840/prefix840/FVJP840/fullF0/GparamVJP样本数1680，smokeG2/fullF4/prefix2/FVJP2/GparamVJP4。不据此新增参数归一化或放大指导训练，不从action/prior分项换主；原SIG真实收益与旧RX等FAIL保持。这是局部固定cap的raw批均值参数梯度，不是AdamW实际更新、TX重要性、硬件或恢复极限；默认与完整目标保持。
+
+详见[完整分析](analysis.md)、results.json。

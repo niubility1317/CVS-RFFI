@@ -255,3 +255,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 接收机场景均衡源梯度诊断
 
 20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01/495aedf6。VERIFIED / ANALYZED，SOURCE_ONLY。固定原SIG-only G E30/source47591与原F50，CPU2主循环5.791993秒自然结束。5RX×7景×12×缓存01/20，共840次观测/477条物理记录/两视图重合363，L86/U754。整体G梯度中cos<−0.05的RX对为3/10、1/10；5RX与未归一化等RX均值梯度全部同向，最小cos分别0.162204、0.286014，两个视图均无达到阈值的均值冲突。固定双视图主条件FAIL，不从action/prior分项换主，不自动增加接收机重加权训练。G/F全state保持、param.grad为空，0优化/TX/V/target；主G840/Fprefix840/VJP840/fullF0，smoke真实2Ls/G2/fullF4/prefix2/VJP2。完整选样与10梯度向量的8组几何/80对夹角/40均值夹角独立复算，0额外NN。仅是最终冻结点、有限源样本、固定cap的局部训练代理梯度，不代表AdamW/全轨迹/真实TX/硬件或恢复极限；默认和完整目标保持。 详见run analysis.md/results.json。
+
+
+## 物理与签名参数梯度分解
+
+20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01/81c0a94f。VERIFIED / ANALYZED，SOURCE_ONLY。固定原SIG-only G/source47591 E30与原F50，复用840次源观测/477物理/L86U754，CPU2主循环9.601164秒。完整G的SIG/四物理项梯度范数比，等RX汇总为0.133067、0.126745，各RX仅1/5、0/5低于0.1；固定双视图主假设FAIL。SIG与物理汇总梯度cos为0.262249、0.229477，总方向与物理方向cos为0.992390、0.992891，指导已进入参数空间，不用范数直接判断任务重要性。分量和重现旧总梯度relativeL2误差1.883058e−6、1.520253e−6；20分量向量/48比值/96夹角/16跨RX保留率独立复算。G/F状态保持，0优化/TX/V/target；主G840/prefix840/FVJP840/fullF0/GparamVJP样本数1680，smokeG2/fullF4/prefix2/FVJP2/GparamVJP4。不据此新增参数归一化或放大指导训练，不从action/prior分项换主；原SIG真实收益与旧RX等FAIL保持。这是局部固定cap的raw批均值参数梯度，不是AdamW实际更新、TX重要性、硬件或恢复极限；默认与完整目标保持。 详见run analysis.md/results.json。

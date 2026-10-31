@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-and-efficiency goal;explicit source frozen-F feature-guidance and scratchsingle-stage30epoch authorization;noTX/V/targetoptimization/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "81c0a94fbcb283a12447bbb9ad517f212e8a684c",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01-release"
@@ -103,7 +103,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.signature_parameter_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.signature_parameter_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01 --commit 81c0a94fbcb283a12447bbb9ad517f212e8a684c",
     "stop_rule": "BadsourceG-F-cache-contract/cohort-layout/oldtotalreplayrelativeL2>2e-5/nonfinite/stateupdate/accumulatedgrad/collision/smoke:preserveandstop/noautoretry. UndefinedphysicalnormisscientificFAIL,noalternateprimary/threshold/automaticG."
   },
   "expected_artifacts": [
@@ -158,7 +158,7 @@
       "budget_ref": "CPU2;mainG840/Fprefix840/FinputVJP840/fullF0/GparameterVJP1680sample-count;smoke2Ls/G2/fullF4/prefix2/FVJP2/GparamVJP4;G-Fcheckpoint1each;0optimizer/TX-V-target;historicalG30/F50/SIGcachecostretained",
       "output_root": "runs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.signature_parameter_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.signature_parameter_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01 --commit 81c0a94fbcb283a12447bbb9ad517f212e8a684c",
       "expected_artifacts": [
         "launch.json",
         "smoke.json",

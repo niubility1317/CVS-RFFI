@@ -1,0 +1,1887 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "run": "20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
+  "rule": "Fixed original SIG-onlyG/source47591/E30/7410 andoriginalF50/defaulthead;reuseRX-gradientcohort840visits/477records/cache01and20. SplitactualfourphysicaltermsandcappedSIGsurrogateparameterderivativesfromsameGforward;sumreplayoldfullgradientrelL2<=2e-5. PrimarysmallSIGcontributiononlyifBOTHviews:fullGphysicalnormdefinedforall5RXandraw equalRXpool;atleast4of5RX SIG/physicalnormratio<.1andpooledratio<.1. Modulesdescriptiveonly/noalternateprimary/threshold/parentsearch. Nooptimizer/TX-V-target/G-Fstateupdate. Passsupportsseparateparameterbalancinghypothesisonly/notautomaticGtraining. Localfixedcaps/rawgradient-notAdamWstep/trajectory/TXimportance/hardware/physicalceiling;smallratioisnotproofboostinghelps.",
+  "source_cohort_run": "20261031-diagnostic-DURA-source-RX-gradients-s2026092701-r01",
+  "source_G_run": "20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01",
+  "source_G_commit": "47591cdfe2e6e6dd7534cdea846badd942321b8f",
+  "G_parameters": 266951,
+  "parameter_group_counts": {
+    "coarse": 106138,
+    "action": 79477,
+    "prior": 81336
+  },
+  "source_views": [
+    "1",
+    "20"
+  ],
+  "source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_scenes": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "source_observations": 840,
+  "source_unique_physical_records": 477,
+  "source_L_visits": 86,
+  "source_U_visits": 754,
+  "results": {
+    "1": {
+      "components": {
+        "full": {
+          "per_RX": {
+            "physical_norm": [
+              0.06406342401182682,
+              0.25682950863343734,
+              0.10505506447079639,
+              0.06459809598791211,
+              0.1394397107493955
+            ],
+            "SIG_norm": [
+              0.008697197050940866,
+              0.030886618216617756,
+              0.009737869203039573,
+              0.011800442263135924,
+              0.02257778498381826
+            ],
+            "total_norm": [
+              0.06640480260508555,
+              0.26638882802072616,
+              0.10783862515934038,
+              0.06883683103256892,
+              0.14552471730486266
+            ],
+            "ratio_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.1357591665618008,
+              0.12026117396307841,
+              0.09269300106656489,
+              0.18267476901090207,
+              0.1619178988716895
+            ],
+            "physical_SIG_cosine": [
+              0.20625065924228522,
+              0.25512634987344335,
+              0.24328951009968025,
+              0.27964885009118085,
+              0.19443468618414209
+            ],
+            "physical_SIG_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "total_physical_cosine": [
+              0.9917539703988187,
+              0.9936959472579014,
+              0.9961568569692968,
+              0.986362606745227,
+              0.9883517930919304
+            ],
+            "total_physical_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "equal_RX_pool": {
+            "physical_norm": [
+              0.06128252269518027
+            ],
+            "SIG_norm": [
+              0.008154663476423577
+            ],
+            "total_norm": [
+              0.06390741410577276
+            ],
+            "ratio_defined": [
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.1330667067507148
+            ],
+            "physical_SIG_cosine": [
+              0.2622486883542396
+            ],
+            "physical_SIG_cosine_defined": [
+              true
+            ],
+            "total_physical_cosine": [
+              0.9923899031632659
+            ],
+            "total_physical_cosine_defined": [
+              true
+            ]
+          },
+          "physical_cross_RX_norm_retention": 0.4863801876196248,
+          "SIG_cross_RX_norm_retention": 0.4871369221954325
+        },
+        "coarse": {
+          "per_RX": {
+            "physical_norm": [
+              0.030942620303283673,
+              0.1472188973609585,
+              0.046549737563792624,
+              0.03242043156230649,
+              0.06408655160021517
+            ],
+            "SIG_norm": [
+              0.0029152895978564906,
+              0.01382252234961402,
+              0.0032040453260843826,
+              0.006552383664695384,
+              0.011151352838350167
+            ],
+            "total_norm": [
+              0.03248125499442165,
+              0.1505994971738166,
+              0.047640434024835275,
+              0.036441271783013714,
+              0.06634892544251017
+            ],
+            "ratio_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.0942159897669402,
+              0.09389095148378461,
+              0.06883057765241962,
+              0.20210661453111226,
+              0.17400456975614093
+            ],
+            "physical_SIG_cosine": [
+              0.49379515173688904,
+              0.2004344325004119,
+              0.3099850803392866,
+              0.5506448161112393,
+              0.11945758298469214
+            ],
+            "physical_SIG_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "total_physical_cosine": [
+              0.99694966152554,
+              0.995948921467574,
+              0.9979536245791352,
+              0.9886720714625513,
+              0.9859792727762422
+            ],
+            "total_physical_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "equal_RX_pool": {
+            "physical_norm": [
+              0.036148664760439986
+            ],
+            "SIG_norm": [
+              0.003622461590968393
+            ],
+            "total_norm": [
+              0.03823934541436078
+            ],
+            "ratio_defined": [
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.1002101077584671
+            ],
+            "physical_SIG_cosine": [
+              0.5437283138593393
+            ],
+            "physical_SIG_cosine_defined": [
+              true
+            ],
+            "total_physical_cosine": [
+              0.9968345242385377
+            ],
+            "total_physical_cosine_defined": [
+              true
+            ]
+          },
+          "physical_cross_RX_norm_retention": 0.5626807640431715,
+          "SIG_cross_RX_norm_retention": 0.4811269032526224
+        },
+        "action": {
+          "per_RX": {
+            "physical_norm": [
+              0.03735203807837583,
+              0.17284474058203145,
+              0.047481657635079194,
+              0.031226694667589833,
+              0.07035556730703219
+            ],
+            "SIG_norm": [
+              0.002283200408935267,
+              0.013462106754664081,
+              0.002634618796789534,
+              0.0027364353291463982,
+              0.006657296107199664
+            ],
+            "total_norm": [
+              0.03808607215457422,
+              0.18017270354574935,
+              0.04857276229069161,
+              0.03198781203683804,
+              0.07204964928530154
+            ],
+            "ratio_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.06112652820026647,
+              0.0778855446184376,
+              0.05548708549810805,
+              0.08763128337071624,
+              0.09462358647677699
+            ],
+            "physical_SIG_cosine": [
+              0.2940891894440598,
+              0.5169361885832153,
+              0.39115621442700244,
+              0.2377159819540602,
+              0.21022185608918031
+            ],
+            "physical_SIG_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "total_physical_cosine": [
+              0.998357154858498,
+              0.9979524489536287,
+              0.9987532695743894,
+              0.9965417153945892,
+              0.9959115299379994
+            ],
+            "total_physical_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "equal_RX_pool": {
+            "physical_norm": [
+              0.03476391249565738
+            ],
+            "SIG_norm": [
+              0.002972311375283343
+            ],
+            "total_norm": [
+              0.035976694976932774
+            ],
+            "ratio_defined": [
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.08549990958741013
+            ],
+            "physical_SIG_cosine": [
+              0.37239403277454763
+            ],
+            "physical_SIG_cosine_defined": [
+              true
+            ],
+            "total_physical_cosine": [
+              0.9970561091940249
+            ],
+            "total_physical_cosine_defined": [
+              true
+            ]
+          },
+          "physical_cross_RX_norm_retention": 0.4838257101744023,
+          "SIG_cross_RX_norm_retention": 0.5350954202439261
+        },
+        "prior": {
+          "per_RX": {
+            "physical_norm": [
+              0.04185094737610705,
+              0.12005285676671647,
+              0.081333761083149,
+              0.04633274395839965,
+              0.10191389005810012
+            ],
+            "SIG_norm": [
+              0.007869518345881484,
+              0.024118307205929446,
+              0.008810163106294394,
+              0.009424894036838898,
+              0.018468462664532687
+            ],
+            "total_norm": [
+              0.04363504315162734,
+              0.1257799508755864,
+              0.08366746611218806,
+              0.04886023842081514,
+              0.107629510252299
+            ],
+            "ratio_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.18803680297030118,
+              0.2008974034894938,
+              0.10832110785197308,
+              0.20341756674936284,
+              0.18121634503406744
+            ],
+            "physical_SIG_cosine": [
+              0.1375235406481222,
+              0.14267362508068582,
+              0.21452748669311678,
+              0.17377792705397022,
+              0.22755010637548267
+            ],
+            "physical_SIG_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "total_physical_cosine": [
+              0.9839154106720561,
+              0.9818250224055407,
+              0.9946970680348021,
+              0.9817918220879126,
+              0.9859414063415386
+            ],
+            "total_physical_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "equal_RX_pool": {
+            "physical_norm": [
+              0.03521777976983905
+            ],
+            "SIG_norm": [
+              0.0066739548637997715
+            ],
+            "total_norm": [
+              0.03643607358792475
+            ],
+            "ratio_defined": [
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.1895052699919326
+            ],
+            "physical_SIG_cosine": [
+              0.09094926915180616
+            ],
+            "physical_SIG_cosine_defined": [
+              true
+            ],
+            "total_physical_cosine": [
+              0.9832226021995533
+            ],
+            "total_physical_cosine_defined": [
+              true
+            ]
+          },
+          "physical_cross_RX_norm_retention": 0.44979822733568786,
+          "SIG_cross_RX_norm_retention": 0.4857929939261998
+        }
+      },
+      "losses": {
+        "1": {
+          "loss": 0.01013459824025631,
+          "physical_loss": 0.009750964120030403,
+          "iq_nmse": 0.007129299454391003,
+          "prior_nmse": 0.018368154764175415,
+          "spectral_error": 0.0015543188201263547,
+          "action_probe_nmse": 0.014142659492790699,
+          "log_variance_mse": 18.913354873657227,
+          "F_signature_relative_error": 0.07538700103759766,
+          "F_signature_guide": 0.0003836337709799409,
+          "F_balance_weight": 0.01028059609234333,
+          "F_balance_limited": 1.0,
+          "F_raw_pressure": 90.22547149658203,
+          "F_balanced_pressure": 0.5,
+          "F_pressure_defined_fraction": 1.0,
+          "F_guide_value_exceeds_IQ": 0.0
+        },
+        "3": {
+          "loss": 0.06395237147808075,
+          "physical_loss": 0.062473636120557785,
+          "iq_nmse": 0.05338193103671074,
+          "prior_nmse": 0.06469681859016418,
+          "spectral_error": 0.018166478723287582,
+          "action_probe_nmse": 0.03427397087216377,
+          "log_variance_mse": 17.79500961303711,
+          "F_signature_relative_error": 0.17905399203300476,
+          "F_signature_guide": 0.0014787366380915046,
+          "F_balance_weight": 0.012728165835142136,
+          "F_balance_limited": 1.0,
+          "F_raw_pressure": 80.03111267089844,
+          "F_balanced_pressure": 0.5,
+          "F_pressure_defined_fraction": 1.0,
+          "F_guide_value_exceeds_IQ": 0.0
+        },
+        "4": {
+          "loss": 0.01228850893676281,
+          "physical_loss": 0.011730560101568699,
+          "iq_nmse": 0.00921116303652525,
+          "prior_nmse": 0.018441107124090195,
+          "spectral_error": 0.0018361883703619242,
+          "action_probe_nmse": 0.011669576168060303,
+          "log_variance_mse": 19.06731605529785,
+          "F_signature_relative_error": 0.10015919059515,
+          "F_signature_guide": 0.0005579493008553982,
+          "F_balance_weight": 0.007599210366606712,
+          "F_balance_limited": 1.0,
+          "F_raw_pressure": 142.66957092285156,
+          "F_balanced_pressure": 0.5,
+          "F_pressure_defined_fraction": 1.0,
+          "F_guide_value_exceeds_IQ": 0.0
+        },
+        "6": {
+          "loss": 0.012716840021312237,
+          "physical_loss": 0.012271176092326641,
+          "iq_nmse": 0.009497321210801601,
+          "prior_nmse": 0.018679045140743256,
+          "spectral_error": 0.0021981203462928534,
+          "action_probe_nmse": 0.01592085137963295,
+          "log_variance_mse": 19.57718849182129,
+          "F_signature_relative_error": 0.07898210734128952,
+          "F_signature_guide": 0.00044566424912773073,
+          "F_balance_weight": 0.0116404565051198,
+          "F_balance_limited": 1.0,
+          "F_raw_pressure": 99.85752868652344,
+          "F_balanced_pressure": 0.5,
+          "F_pressure_defined_fraction": 1.0,
+          "F_guide_value_exceeds_IQ": 0.0
+        },
+        "8": {
+          "loss": 0.03879178315401077,
+          "physical_loss": 0.037666477262973785,
+          "iq_nmse": 0.032052673399448395,
+          "prior_nmse": 0.04507845267653465,
+          "spectral_error": 0.009027433581650257,
+          "action_probe_nmse": 0.013091710396111012,
+          "log_variance_mse": 18.138608932495117,
+          "F_signature_relative_error": 0.11858034133911133,
+          "F_signature_guide": 0.001125306822359562,
+          "F_balance_weight": 0.030525440350174904,
+          "F_balance_limited": 1.0,
+          "F_raw_pressure": 73.7904281616211,
+          "F_balanced_pressure": 0.5,
+          "F_pressure_defined_fraction": 1.0,
+          "F_guide_value_exceeds_IQ": 0.0
+        }
+      },
+      "unused_parameter_tensors": [
+        {
+          "physical": 0,
+          "SIG": 0
+        },
+        {
+          "physical": 0,
+          "SIG": 0
+        },
+        {
+          "physical": 0,
+          "SIG": 0
+        },
+        {
+          "physical": 0,
+          "SIG": 0
+        },
+        {
+          "physical": 0,
+          "SIG": 0
+        }
+      ],
+      "total_gradient_replay_relative_L2_error": 1.883057982651976e-06,
+      "total_gradient_replay_maximum_abs_error": 6.135087460279465e-08
+    },
+    "20": {
+      "components": {
+        "full": {
+          "per_RX": {
+            "physical_norm": [
+              0.09432838100673971,
+              0.19346157396074565,
+              0.08992482786775528,
+              0.08467200807084496,
+              0.1858163090934119
+            ],
+            "SIG_norm": [
+              0.012334925188426325,
+              0.024862000906027304,
+              0.017066990867390056,
+              0.016173986565037345,
+              0.027547860754798217
+            ],
+            "total_norm": [
+              0.09811508372325406,
+              0.20157104613258112,
+              0.09764199280433324,
+              0.08918885217153345,
+              0.19419184193289546
+            ],
+            "ratio_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.13076578922249288,
+              0.12851131311002326,
+              0.18979175464743744,
+              0.19101928646247046,
+              0.1482531909561803
+            ],
+            "physical_SIG_cosine": [
+              0.24776931645486583,
+              0.26876008021713665,
+              0.3766752777941429,
+              0.19120507787651903,
+              0.2367611860776395
+            ],
+            "physical_SIG_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "total_physical_cosine": [
+              0.9925547968127256,
+              0.9929178379466554,
+              0.9868043310722295,
+              0.9840305631783729,
+              0.9904565061290458
+            ],
+            "total_physical_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "equal_RX_pool": {
+            "physical_norm": [
+              0.06819844398020461
+            ],
+            "SIG_norm": [
+              0.008643816909450507
+            ],
+            "total_norm": [
+              0.07068446706664488
+            ],
+            "ratio_defined": [
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.12674507518029993
+            ],
+            "physical_SIG_cosine": [
+              0.2294765987507017
+            ],
+            "physical_SIG_cosine_defined": [
+              true
+            ],
+            "total_physical_cosine": [
+              0.9928913748283338
+            ],
+            "total_physical_cosine_defined": [
+              true
+            ]
+          },
+          "physical_cross_RX_norm_retention": 0.5260576814601586,
+          "SIG_cross_RX_norm_retention": 0.44107513845593754
+        },
+        "coarse": {
+          "per_RX": {
+            "physical_norm": [
+              0.04044824356812591,
+              0.11546087676700283,
+              0.03226138159044385,
+              0.04789653315343726,
+              0.096424873355969
+            ],
+            "SIG_norm": [
+              0.00534989294571959,
+              0.014558684899662193,
+              0.0066501923500304275,
+              0.009026091801276004,
+              0.015821647635240972
+            ],
+            "total_norm": [
+              0.04349985750482056,
+              0.12041323305127077,
+              0.03643143029002727,
+              0.05048342351599023,
+              0.10187234598880862
+            ],
+            "ratio_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.132265148589429,
+              0.12609193094073984,
+              0.20613476615645876,
+              0.18844979389971261,
+              0.16408263847889787
+            ],
+            "physical_SIG_cosine": [
+              0.5257911019795013,
+              0.28441431210625556,
+              0.5645155977097399,
+              0.20011614872833808,
+              0.2719893617755363
+            ],
+            "physical_SIG_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "total_physical_cosine": [
+              0.9945129054901249,
+              0.9932593958920214,
+              0.9885837205151896,
+              0.9845370305964252,
+              0.988768759772895
+            ],
+            "total_physical_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "equal_RX_pool": {
+            "physical_norm": [
+              0.03805280872523115
+            ],
+            "SIG_norm": [
+              0.003327024470219823
+            ],
+            "total_norm": [
+              0.03861230220639792
+            ],
+            "ratio_defined": [
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.08743177131137284
+            ],
+            "physical_SIG_cosine": [
+              0.12568672164296946
+            ],
+            "physical_SIG_cosine_defined": [
+              true
+            ],
+            "total_physical_cosine": [
+              0.9963397499086318
+            ],
+            "total_physical_cosine_defined": [
+              true
+            ]
+          },
+          "physical_cross_RX_norm_retention": 0.5722366132809612,
+          "SIG_cross_RX_norm_retention": 0.32359952990791746
+        },
+        "action": {
+          "per_RX": {
+            "physical_norm": [
+              0.04135986306715336,
+              0.13028991492480504,
+              0.04136452133401186,
+              0.04154594489310652,
+              0.10259823740905755
+            ],
+            "SIG_norm": [
+              0.0031664093727334325,
+              0.00648423242980255,
+              0.00422927978322899,
+              0.004473695575496061,
+              0.006397583341685657
+            ],
+            "total_norm": [
+              0.04330096382375998,
+              0.13462007479511012,
+              0.04350960405112468,
+              0.04303593532040534,
+              0.10484073255426038
+            ],
+            "ratio_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.07655754003808804,
+              0.049767723261964145,
+              0.1022441369278333,
+              0.10768067947440896,
+              0.062355684690552665
+            ],
+            "physical_SIG_cosine": [
+              0.5891355612308475,
+              0.6540115861584965,
+              0.4692271907951252,
+              0.2851878017242883,
+              0.32317507376437743
+            ],
+            "physical_SIG_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "total_physical_cosine": [
+              0.9982527780669097,
+              0.999335933113922,
+              0.9963090989025096,
+              0.9950239952043223,
+              0.9983312242047365
+            ],
+            "total_physical_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "equal_RX_pool": {
+            "physical_norm": [
+              0.04084184279180543
+            ],
+            "SIG_norm": [
+              0.0023196600614817913
+            ],
+            "total_norm": [
+              0.04191297497060759
+            ],
+            "ratio_defined": [
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.05679616547437501
+            ],
+            "physical_SIG_cosine": [
+              0.43941965348824896
+            ],
+            "physical_SIG_cosine_defined": [
+              true
+            ],
+            "total_physical_cosine": [
+              0.998763438805963
+            ],
+            "total_physical_cosine_defined": [
+              true
+            ]
+          },
+          "physical_cross_RX_norm_retention": 0.5717607853749511,
+          "SIG_cross_RX_norm_retention": 0.4685954649362624
+        },
+        "prior": {
+          "per_RX": {
+            "physical_norm": [
+              0.07450600501082434,
+              0.08438426751742396,
+              0.07303871781274396,
+              0.05611778261451711,
+              0.12125817994651071
+            ],
+            "SIG_norm": [
+              0.01065377287901735,
+              0.019081889655900578,
+              0.015138372154573088,
+              0.012653598543447633,
+              0.021624778048762457
+            ],
+            "total_norm": [
+              0.07654644722660191,
+              0.08949287908701117,
+              0.07945831612322765,
+              0.059615296467255614,
+              0.1278315977898799
+            ],
+            "ratio_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.14299213704277333,
+              0.2261308916612979,
+              0.20726503158755766,
+              0.2254828675318022,
+              0.17833665372762117
+            ],
+            "physical_SIG_cosine": [
+              0.12264945145849362,
+              0.1627588553207871,
+              0.3390648492495391,
+              0.17227664042139748,
+              0.22304716231120136
+            ],
+            "physical_SIG_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "total_physical_cosine": [
+              0.9904141492807065,
+              0.9776198388936338,
+              0.9838064975349166,
+              0.97789838372843,
+              0.9863095471366625
+            ],
+            "total_physical_cosine_defined": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "equal_RX_pool": {
+            "physical_norm": [
+              0.039178506694507
+            ],
+            "SIG_norm": [
+              0.007633194360019095
+            ],
+            "total_norm": [
+              0.04181729943373467
+            ],
+            "ratio_defined": [
+              true
+            ],
+            "SIG_to_physical_ratio": [
+              0.19483117157932162
+            ],
+            "physical_SIG_cosine": [
+              0.2599260470586883
+            ],
+            "physical_SIG_cosine_defined": [
+              true
+            ],
+            "total_physical_cosine": [
+              0.9843431615225483
+            ],
+            "total_physical_cosine_defined": [
+              true
+            ]
+          },
+          "physical_cross_RX_norm_retention": 0.47859800396656327,
+          "SIG_cross_RX_norm_retention": 0.4821833116904537
+        }
+      },
+      "losses": {
+        "1": {
+          "loss": 0.013022219762206078,
+          "physical_loss": 0.012531825341284275,
+          "iq_nmse": 0.009254838339984417,
+          "prior_nmse": 0.023252543061971664,
+          "spectral_error": 0.0022796853445470333,
+          "action_probe_nmse": 0.016754940152168274,
+          "log_variance_mse": 19.123397827148438,
+          "F_signature_relative_error": 0.07213079184293747,
+          "F_signature_guide": 0.0004903955850750208,
+          "F_balance_weight": 0.010089477524161339,
+          "F_balance_limited": 1.0,
+          "F_raw_pressure": 92.78214263916016,
+          "F_balanced_pressure": 0.5,
+          "F_pressure_defined_fraction": 1.0,
+          "F_guide_value_exceeds_IQ": 0.0
+        },
+        "3": {
+          "loss": 0.029504483565688133,
+          "physical_loss": 0.028487157076597214,
+          "iq_nmse": 0.024193545803427696,
+          "prior_nmse": 0.033670131117105484,
+          "spectral_error": 0.005462944507598877,
+          "action_probe_nmse": 0.013069069012999535,
+          "log_variance_mse": 18.243547439575195,
+          "F_signature_relative_error": 0.141560897231102,
+          "F_signature_guide": 0.0010173225309699774,
+          "F_balance_weight": 0.013599999248981476,
+          "F_balance_limited": 1.0,
+          "F_raw_pressure": 75.31314086914062,
+          "F_balanced_pressure": 0.5,
+          "F_pressure_defined_fraction": 1.0,
+          "F_guide_value_exceeds_IQ": 0.0
+        },
+        "4": {
+          "loss": 0.015708886086940765,
+          "physical_loss": 0.014961445704102516,
+          "iq_nmse": 0.011918182484805584,
+          "prior_nmse": 0.0233587846159935,
+          "spectral_error": 0.002648082096129656,
+          "action_probe_nmse": 0.011499600484967232,
+          "log_variance_mse": 18.79104995727539,
+          "F_signature_relative_error": 0.1455514281988144,
+          "F_signature_guide": 0.0007474413723684847,
+          "F_balance_weight": 0.008341193199157715,
+          "F_balance_limited": 1.0,
+          "F_raw_pressure": 125.19632720947266,
+          "F_balanced_pressure": 0.5,
+          "F_pressure_defined_fraction": 1.0,
+          "F_guide_value_exceeds_IQ": 0.0
+        },
+        "6": {
+          "loss": 0.015559355728328228,
+          "physical_loss": 0.015066388063132763,
+          "iq_nmse": 0.011517554521560669,
+          "prior_nmse": 0.026675168424844742,
+          "spectral_error": 0.0026047280989587307,
+          "action_probe_nmse": 0.015021581202745438,
+          "log_variance_mse": 19.00990867614746,
+          "F_signature_relative_error": 0.10109062492847443,
+          "F_signature_guide": 0.0004929663264192641,
+          "F_balance_weight": 0.01139855943620205,
+          "F_balance_limited": 1.0,
+          "F_raw_pressure": 116.7065200805664,
+          "F_balanced_pressure": 0.5,
+          "F_pressure_defined_fraction": 1.0,
+          "F_guide_value_exceeds_IQ": 0.0
+        },
+        "8": {
+          "loss": 0.039263561367988586,
+          "physical_loss": 0.038168828934431076,
+          "iq_nmse": 0.03243597596883774,
+          "prior_nmse": 0.045609887689352036,
+          "spectral_error": 0.010111224837601185,
+          "action_probe_nmse": 0.013326114043593407,
+          "log_variance_mse": 18.609182357788086,
+          "F_signature_relative_error": 0.10310083627700806,
+          "F_signature_guide": 0.0010947274276986718,
+          "F_balance_weight": 0.028820743784308434,
+          "F_balance_limited": 1.0,
+          "F_raw_pressure": 68.14241790771484,
+          "F_balanced_pressure": 0.5,
+          "F_pressure_defined_fraction": 1.0,
+          "F_guide_value_exceeds_IQ": 0.0
+        }
+      },
+      "unused_parameter_tensors": [
+        {
+          "physical": 0,
+          "SIG": 0
+        },
+        {
+          "physical": 0,
+          "SIG": 0
+        },
+        {
+          "physical": 0,
+          "SIG": 0
+        },
+        {
+          "physical": 0,
+          "SIG": 0
+        },
+        {
+          "physical": 0,
+          "SIG": 0
+        }
+      ],
+      "total_gradient_replay_relative_L2_error": 1.52025256378654e-06,
+      "total_gradient_replay_maximum_abs_error": 7.078051567077637e-08
+    }
+  },
+  "records": [
+    {
+      "view": "1",
+      "RX": 1,
+      "source_records": 84,
+      "losses": {
+        "loss": 0.01013459824025631,
+        "physical_loss": 0.009750964120030403,
+        "iq_nmse": 0.007129299454391003,
+        "prior_nmse": 0.018368154764175415,
+        "spectral_error": 0.0015543188201263547,
+        "action_probe_nmse": 0.014142659492790699,
+        "log_variance_mse": 18.913354873657227,
+        "F_signature_relative_error": 0.07538700103759766,
+        "F_signature_guide": 0.0003836337709799409,
+        "F_balance_weight": 0.01028059609234333,
+        "F_balance_limited": 1.0,
+        "F_raw_pressure": 90.22547149658203,
+        "F_balanced_pressure": 0.5,
+        "F_pressure_defined_fraction": 1.0,
+        "F_guide_value_exceeds_IQ": 0.0
+      }
+    },
+    {
+      "view": "1",
+      "RX": 3,
+      "source_records": 84,
+      "losses": {
+        "loss": 0.06395237147808075,
+        "physical_loss": 0.062473636120557785,
+        "iq_nmse": 0.05338193103671074,
+        "prior_nmse": 0.06469681859016418,
+        "spectral_error": 0.018166478723287582,
+        "action_probe_nmse": 0.03427397087216377,
+        "log_variance_mse": 17.79500961303711,
+        "F_signature_relative_error": 0.17905399203300476,
+        "F_signature_guide": 0.0014787366380915046,
+        "F_balance_weight": 0.012728165835142136,
+        "F_balance_limited": 1.0,
+        "F_raw_pressure": 80.03111267089844,
+        "F_balanced_pressure": 0.5,
+        "F_pressure_defined_fraction": 1.0,
+        "F_guide_value_exceeds_IQ": 0.0
+      }
+    },
+    {
+      "view": "1",
+      "RX": 4,
+      "source_records": 84,
+      "losses": {
+        "loss": 0.01228850893676281,
+        "physical_loss": 0.011730560101568699,
+        "iq_nmse": 0.00921116303652525,
+        "prior_nmse": 0.018441107124090195,
+        "spectral_error": 0.0018361883703619242,
+        "action_probe_nmse": 0.011669576168060303,
+        "log_variance_mse": 19.06731605529785,
+        "F_signature_relative_error": 0.10015919059515,
+        "F_signature_guide": 0.0005579493008553982,
+        "F_balance_weight": 0.007599210366606712,
+        "F_balance_limited": 1.0,
+        "F_raw_pressure": 142.66957092285156,
+        "F_balanced_pressure": 0.5,
+        "F_pressure_defined_fraction": 1.0,
+        "F_guide_value_exceeds_IQ": 0.0
+      }
+    },
+    {
+      "view": "1",
+      "RX": 6,
+      "source_records": 84,
+      "losses": {
+        "loss": 0.012716840021312237,
+        "physical_loss": 0.012271176092326641,
+        "iq_nmse": 0.009497321210801601,
+        "prior_nmse": 0.018679045140743256,
+        "spectral_error": 0.0021981203462928534,
+        "action_probe_nmse": 0.01592085137963295,
+        "log_variance_mse": 19.57718849182129,
+        "F_signature_relative_error": 0.07898210734128952,
+        "F_signature_guide": 0.00044566424912773073,
+        "F_balance_weight": 0.0116404565051198,
+        "F_balance_limited": 1.0,
+        "F_raw_pressure": 99.85752868652344,
+        "F_balanced_pressure": 0.5,
+        "F_pressure_defined_fraction": 1.0,
+        "F_guide_value_exceeds_IQ": 0.0
+      }
+    },
+    {
+      "view": "1",
+      "RX": 8,
+      "source_records": 84,
+      "losses": {
+        "loss": 0.03879178315401077,
+        "physical_loss": 0.037666477262973785,
+        "iq_nmse": 0.032052673399448395,
+        "prior_nmse": 0.04507845267653465,
+        "spectral_error": 0.009027433581650257,
+        "action_probe_nmse": 0.013091710396111012,
+        "log_variance_mse": 18.138608932495117,
+        "F_signature_relative_error": 0.11858034133911133,
+        "F_signature_guide": 0.001125306822359562,
+        "F_balance_weight": 0.030525440350174904,
+        "F_balance_limited": 1.0,
+        "F_raw_pressure": 73.7904281616211,
+        "F_balanced_pressure": 0.5,
+        "F_pressure_defined_fraction": 1.0,
+        "F_guide_value_exceeds_IQ": 0.0
+      }
+    },
+    {
+      "view": "20",
+      "RX": 1,
+      "source_records": 84,
+      "losses": {
+        "loss": 0.013022219762206078,
+        "physical_loss": 0.012531825341284275,
+        "iq_nmse": 0.009254838339984417,
+        "prior_nmse": 0.023252543061971664,
+        "spectral_error": 0.0022796853445470333,
+        "action_probe_nmse": 0.016754940152168274,
+        "log_variance_mse": 19.123397827148438,
+        "F_signature_relative_error": 0.07213079184293747,
+        "F_signature_guide": 0.0004903955850750208,
+        "F_balance_weight": 0.010089477524161339,
+        "F_balance_limited": 1.0,
+        "F_raw_pressure": 92.78214263916016,
+        "F_balanced_pressure": 0.5,
+        "F_pressure_defined_fraction": 1.0,
+        "F_guide_value_exceeds_IQ": 0.0
+      }
+    },
+    {
+      "view": "20",
+      "RX": 3,
+      "source_records": 84,
+      "losses": {
+        "loss": 0.029504483565688133,
+        "physical_loss": 0.028487157076597214,
+        "iq_nmse": 0.024193545803427696,
+        "prior_nmse": 0.033670131117105484,
+        "spectral_error": 0.005462944507598877,
+        "action_probe_nmse": 0.013069069012999535,
+        "log_variance_mse": 18.243547439575195,
+        "F_signature_relative_error": 0.141560897231102,
+        "F_signature_guide": 0.0010173225309699774,
+        "F_balance_weight": 0.013599999248981476,
+        "F_balance_limited": 1.0,
+        "F_raw_pressure": 75.31314086914062,
+        "F_balanced_pressure": 0.5,
+        "F_pressure_defined_fraction": 1.0,
+        "F_guide_value_exceeds_IQ": 0.0
+      }
+    },
+    {
+      "view": "20",
+      "RX": 4,
+      "source_records": 84,
+      "losses": {
+        "loss": 0.015708886086940765,
+        "physical_loss": 0.014961445704102516,
+        "iq_nmse": 0.011918182484805584,
+        "prior_nmse": 0.0233587846159935,
+        "spectral_error": 0.002648082096129656,
+        "action_probe_nmse": 0.011499600484967232,
+        "log_variance_mse": 18.79104995727539,
+        "F_signature_relative_error": 0.1455514281988144,
+        "F_signature_guide": 0.0007474413723684847,
+        "F_balance_weight": 0.008341193199157715,
+        "F_balance_limited": 1.0,
+        "F_raw_pressure": 125.19632720947266,
+        "F_balanced_pressure": 0.5,
+        "F_pressure_defined_fraction": 1.0,
+        "F_guide_value_exceeds_IQ": 0.0
+      }
+    },
+    {
+      "view": "20",
+      "RX": 6,
+      "source_records": 84,
+      "losses": {
+        "loss": 0.015559355728328228,
+        "physical_loss": 0.015066388063132763,
+        "iq_nmse": 0.011517554521560669,
+        "prior_nmse": 0.026675168424844742,
+        "spectral_error": 0.0026047280989587307,
+        "action_probe_nmse": 0.015021581202745438,
+        "log_variance_mse": 19.00990867614746,
+        "F_signature_relative_error": 0.10109062492847443,
+        "F_signature_guide": 0.0004929663264192641,
+        "F_balance_weight": 0.01139855943620205,
+        "F_balance_limited": 1.0,
+        "F_raw_pressure": 116.7065200805664,
+        "F_balanced_pressure": 0.5,
+        "F_pressure_defined_fraction": 1.0,
+        "F_guide_value_exceeds_IQ": 0.0
+      }
+    },
+    {
+      "view": "20",
+      "RX": 8,
+      "source_records": 84,
+      "losses": {
+        "loss": 0.039263561367988586,
+        "physical_loss": 0.038168828934431076,
+        "iq_nmse": 0.03243597596883774,
+        "prior_nmse": 0.045609887689352036,
+        "spectral_error": 0.010111224837601185,
+        "action_probe_nmse": 0.013326114043593407,
+        "log_variance_mse": 18.609182357788086,
+        "F_signature_relative_error": 0.10310083627700806,
+        "F_signature_guide": 0.0010947274276986718,
+        "F_balance_weight": 0.028820743784308434,
+        "F_balance_limited": 1.0,
+        "F_raw_pressure": 68.14241790771484,
+        "F_balanced_pressure": 0.5,
+        "F_pressure_defined_fraction": 1.0,
+        "F_guide_value_exceeds_IQ": 0.0
+      }
+    }
+  ],
+  "decision": {
+    "supports_small_SIG_parameter_contribution": false,
+    "checks": {
+      "1": {
+        "physical_directions_defined": true,
+        "at_least_four_RX_below_one_tenth": false,
+        "pooled_below_one_tenth": false
+      },
+      "20": {
+        "physical_directions_defined": true,
+        "at_least_four_RX_below_one_tenth": false,
+        "pooled_below_one_tenth": false
+      }
+    },
+    "automatic_training": false
+  },
+  "G_inputs": 840,
+  "F_full_inputs": 0,
+  "F_prefix_inputs": 840,
+  "F_input_VJP_inputs": 840,
+  "G_parameter_VJP_inputs": 1680,
+  "G_smoke_inputs": 2,
+  "F_smoke_full_inputs": 4,
+  "F_smoke_prefix_inputs": 2,
+  "F_smoke_VJP_inputs": 2,
+  "G_smoke_parameter_VJP_inputs": 4,
+  "G_checkpoint_reads": 1,
+  "F_checkpoint_reads": 1,
+  "F_teacher": {
+    "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "seed": 2026092701,
+    "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+    "epoch": 50,
+    "updates": 11100
+  },
+  "G_unchanged": true,
+  "F_unchanged": true,
+  "source_SIG_cache": {
+    "status": "SOURCE_ACTUAL_SIG_REUSED",
+    "count": 63000,
+    "shape": [
+      63000,
+      160
+    ],
+    "numeric_bytes": 40320000,
+    "source_contract": "original7/63/30",
+    "F_teacher": {
+      "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+      "seed": 2026092701,
+      "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+      "epoch": 50,
+      "updates": 11100
+    },
+    "reused_from_run": "20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01",
+    "original_metadata": {
+      "status": "SOURCE_ACTUAL_SIG_COMPLETE",
+      "count": 63000,
+      "shape": [
+        63000,
+        160
+      ],
+      "numeric_bytes": 40320000,
+      "source_contract": "original7/63/30",
+      "F_teacher": {
+        "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "seed": 2026092701,
+        "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "epoch": 50,
+        "updates": 11100
+      },
+      "actual_weighted_TripleSIG": true,
+      "full_F_inputs": 0,
+      "F_prefix_inputs": 63000,
+      "F_input_VJP_inputs": 0,
+      "F_updates": 0,
+      "model_optimizer_updates": 0,
+      "TX_labels_read": 0,
+      "V_reads": 0,
+      "target_reads": 0,
+      "seconds": 0.847077140584588,
+      "peak_allocated_bytes": 168638464
+    },
+    "new_F_prefix_inputs": 0,
+    "new_F_input_VJP_inputs": 0,
+    "new_numeric_bytes": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "seconds": 0.1599307842552662
+  },
+  "teacher_load": {
+    "F_load_RNG_restored": true,
+    "CPU_rng_restored": true,
+    "CUDA_rng_restored": null,
+    "F_checkpoint_loads": 1
+  },
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "seconds": 9.601163684856147,
+  "scope": "Fixedcaprawlocalbatchmeanparameterderivatives/mayincludeJacobianandwithinbatchcancellation/notAdamW/TXimportance/trajectory/hardware/recoverylimit;oldFAILspreserved",
+  "execution_commit": "81c0a94fbcb283a12447bbb9ad517f212e8a684c",
+  "independent_check": {
+    "status": "INDEPENDENTLY_RECOMPUTED",
+    "run": "20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01",
+    "source_observations": 840,
+    "unique_physical_records": 477,
+    "L_visits": 86,
+    "U_visits": 754,
+    "component_gradient_vectors": 20,
+    "component_summaries": 8,
+    "norm_ratios": 48,
+    "angles": 96,
+    "cross_RX_norm_retention": 16,
+    "maximum_numeric_difference": 3.608224830031759e-14,
+    "details": {
+      "1": {
+        "modules": {
+          "full": {
+            "per_RX": [
+              {
+                "physical_norm": 0.06406342401182687,
+                "SIG_norm": 0.008697197050940872,
+                "total_norm": 0.06640480260508558,
+                "SIG_to_physical_ratio": 0.1357591665618008,
+                "physical_SIG_cosine": 0.20625065924228508,
+                "total_physical_cosine": 0.991753970398818
+              },
+              {
+                "physical_norm": 0.2568295086334378,
+                "SIG_norm": 0.030886618216617784,
+                "total_norm": 0.2663888280207262,
+                "SIG_to_physical_ratio": 0.12026117396307831,
+                "physical_SIG_cosine": 0.2551263498734426,
+                "total_physical_cosine": 0.9936959472578992
+              },
+              {
+                "physical_norm": 0.1050550644707965,
+                "SIG_norm": 0.00973786920303958,
+                "total_norm": 0.10783862515934044,
+                "SIG_to_physical_ratio": 0.09269300106656485,
+                "physical_SIG_cosine": 0.24328951009967983,
+                "total_physical_cosine": 0.9961568569692953
+              },
+              {
+                "physical_norm": 0.06459809598791214,
+                "SIG_norm": 0.01180044226313593,
+                "total_norm": 0.06883683103256898,
+                "SIG_to_physical_ratio": 0.18267476901090207,
+                "physical_SIG_cosine": 0.27964885009118046,
+                "total_physical_cosine": 0.986362606745226
+              },
+              {
+                "physical_norm": 0.13943971074939562,
+                "SIG_norm": 0.022577784983818273,
+                "total_norm": 0.14552471730486277,
+                "SIG_to_physical_ratio": 0.16191789887168948,
+                "physical_SIG_cosine": 0.19443468618414175,
+                "total_physical_cosine": 0.9883517930919289
+              }
+            ],
+            "equal_RX_pool": {
+              "physical_norm": 0.061282522695180294,
+              "SIG_norm": 0.008154663476423582,
+              "total_norm": 0.06390741410577276,
+              "SIG_to_physical_ratio": 0.13306670675071483,
+              "physical_SIG_cosine": 0.2622486883542393,
+              "total_physical_cosine": 0.9923899031632655
+            },
+            "cross_RX_norm_retention": {
+              "physical": 0.4863801876196244,
+              "SIG": 0.4871369221954324
+            }
+          },
+          "coarse": {
+            "per_RX": [
+              {
+                "physical_norm": 0.03094262030328324,
+                "SIG_norm": 0.0029152895978564516,
+                "total_norm": 0.0324812549944216,
+                "SIG_to_physical_ratio": 0.09421598976694026,
+                "physical_SIG_cosine": 0.49379515173690475,
+                "total_physical_cosine": 0.9969496615255476
+              },
+              {
+                "physical_norm": 0.14721889736095578,
+                "SIG_norm": 0.01382252234961377,
+                "total_norm": 0.15059949717381826,
+                "SIG_to_physical_ratio": 0.09389095148378465,
+                "physical_SIG_cosine": 0.2004344325004165,
+                "total_physical_cosine": 0.9959489214675775
+              },
+              {
+                "physical_norm": 0.04654973756379164,
+                "SIG_norm": 0.0032040453260843513,
+                "total_norm": 0.0476404340248351,
+                "SIG_to_physical_ratio": 0.0688305776524204,
+                "physical_SIG_cosine": 0.3099850803392978,
+                "total_physical_cosine": 0.9979536245791544
+              },
+              {
+                "physical_norm": 0.03242043156230609,
+                "SIG_norm": 0.006552383664695343,
+                "total_norm": 0.03644127178301366,
+                "SIG_to_physical_ratio": 0.2021066145311135,
+                "physical_SIG_cosine": 0.5506448161112507,
+                "total_physical_cosine": 0.9886720714625672
+              },
+              {
+                "physical_norm": 0.0640865516002143,
+                "SIG_norm": 0.01115135283835009,
+                "total_norm": 0.06634892544251,
+                "SIG_to_physical_ratio": 0.17400456975614212,
+                "physical_SIG_cosine": 0.11945758298469325,
+                "total_physical_cosine": 0.9859792727762636
+              }
+            ],
+            "equal_RX_pool": {
+              "physical_norm": 0.03614866476044,
+              "SIG_norm": 0.0036224615909683936,
+              "total_norm": 0.03823934541436078,
+              "SIG_to_physical_ratio": 0.10021010775846707,
+              "physical_SIG_cosine": 0.5437283138593381,
+              "total_physical_cosine": 0.996834524238536
+            },
+            "cross_RX_norm_retention": {
+              "physical": 0.5626807640431812,
+              "SIG": 0.48112690325262797
+            }
+          },
+          "action": {
+            "per_RX": [
+              {
+                "physical_norm": 0.0373520380783752,
+                "SIG_norm": 0.002283200408935241,
+                "total_norm": 0.03808607215457386,
+                "SIG_to_physical_ratio": 0.0611265282002668,
+                "physical_SIG_cosine": 0.29408918944406676,
+                "total_physical_cosine": 0.9983571548585253
+              },
+              {
+                "physical_norm": 0.1728447405820286,
+                "SIG_norm": 0.013462106754663927,
+                "total_norm": 0.18017270354574907,
+                "SIG_to_physical_ratio": 0.07788554461843798,
+                "physical_SIG_cosine": 0.5169361885832472,
+                "total_physical_cosine": 0.9979524489536648
+              },
+              {
+                "physical_norm": 0.04748165763507859,
+                "SIG_norm": 0.002634618796789489,
+                "total_norm": 0.048572762290691344,
+                "SIG_to_physical_ratio": 0.055487085498107803,
+                "physical_SIG_cosine": 0.3911562144270176,
+                "total_physical_cosine": 0.99875326957441
+              },
+              {
+                "physical_norm": 0.031226694667589303,
+                "SIG_norm": 0.0027364353291463605,
+                "total_norm": 0.031987812036838106,
+                "SIG_to_physical_ratio": 0.08763128337071652,
+                "physical_SIG_cosine": 0.23771598195406635,
+                "total_physical_cosine": 0.996541715394605
+              },
+              {
+                "physical_norm": 0.07035556730703099,
+                "SIG_norm": 0.006657296107199547,
+                "total_norm": 0.07204964928530143,
+                "SIG_to_physical_ratio": 0.09462358647677693,
+                "physical_SIG_cosine": 0.2102218560891894,
+                "total_physical_cosine": 0.9959115299380086
+              }
+            ],
+            "equal_RX_pool": {
+              "physical_norm": 0.03476391249565748,
+              "SIG_norm": 0.0029723113752833452,
+              "total_norm": 0.03597669497693281,
+              "SIG_to_physical_ratio": 0.08549990958740994,
+              "physical_SIG_cosine": 0.3723940327745474,
+              "total_physical_cosine": 0.9970561091940204
+            },
+            "cross_RX_norm_retention": {
+              "physical": 0.48382571017441156,
+              "SIG": 0.5350954202439339
+            }
+          },
+          "prior": {
+            "per_RX": [
+              {
+                "physical_norm": 0.041850947376106,
+                "SIG_norm": 0.007869518345881336,
+                "total_norm": 0.04363504315162682,
+                "SIG_to_physical_ratio": 0.18803680297030237,
+                "physical_SIG_cosine": 0.13752354064812583,
+                "total_physical_cosine": 0.9839154106720749
+              },
+              {
+                "physical_norm": 0.1200528567667143,
+                "SIG_norm": 0.024118307205929116,
+                "total_norm": 0.12577995087558647,
+                "SIG_to_physical_ratio": 0.2008974034894947,
+                "physical_SIG_cosine": 0.14267362508068931,
+                "total_physical_cosine": 0.9818250224055585
+              },
+              {
+                "physical_norm": 0.08133376108314808,
+                "SIG_norm": 0.008810163106294223,
+                "total_norm": 0.08366746611218755,
+                "SIG_to_physical_ratio": 0.10832110785197221,
+                "physical_SIG_cosine": 0.21452748669312302,
+                "total_physical_cosine": 0.994697068034836
+              },
+              {
+                "physical_norm": 0.046332743958398565,
+                "SIG_norm": 0.009424894036838756,
+                "total_norm": 0.04886023842081523,
+                "SIG_to_physical_ratio": 0.2034175667493645,
+                "physical_SIG_cosine": 0.17377792705397815,
+                "total_physical_cosine": 0.9817918220879369
+              },
+              {
+                "physical_norm": 0.10191389005809842,
+                "SIG_norm": 0.018468462664532205,
+                "total_norm": 0.10762951025229832,
+                "SIG_to_physical_ratio": 0.18121634503406572,
+                "physical_SIG_cosine": 0.22755010637549167,
+                "total_physical_cosine": 0.9859414063415513
+              }
+            ],
+            "equal_RX_pool": {
+              "physical_norm": 0.03521777976983912,
+              "SIG_norm": 0.006673954863799779,
+              "total_norm": 0.03643607358792474,
+              "SIG_to_physical_ratio": 0.18950526999193246,
+              "physical_SIG_cosine": 0.09094926915180589,
+              "total_physical_cosine": 0.9832226021995524
+            },
+            "cross_RX_norm_retention": {
+              "physical": 0.44979822733569663,
+              "SIG": 0.4857929939262094
+            }
+          }
+        },
+        "total_gradient_replay_relative_L2_error": 1.883057982651976e-06,
+        "total_gradient_replay_maximum_abs_error": 6.135087460279465e-08
+      },
+      "20": {
+        "modules": {
+          "full": {
+            "per_RX": [
+              {
+                "physical_norm": 0.09432838100673982,
+                "SIG_norm": 0.012334925188426334,
+                "total_norm": 0.09811508372325413,
+                "SIG_to_physical_ratio": 0.13076578922249282,
+                "physical_SIG_cosine": 0.2477693164548654,
+                "total_physical_cosine": 0.9925547968127238
+              },
+              {
+                "physical_norm": 0.1934615739607459,
+                "SIG_norm": 0.02486200090602732,
+                "total_norm": 0.20157104613258117,
+                "SIG_to_physical_ratio": 0.12851131311002317,
+                "physical_SIG_cosine": 0.2687600802171362,
+                "total_physical_cosine": 0.9929178379466541
+              },
+              {
+                "physical_norm": 0.08992482786775537,
+                "SIG_norm": 0.017066990867390074,
+                "total_norm": 0.09764199280433329,
+                "SIG_to_physical_ratio": 0.18979175464743747,
+                "physical_SIG_cosine": 0.3766752777941422,
+                "total_physical_cosine": 0.9868043310722278
+              },
+              {
+                "physical_norm": 0.08467200807084509,
+                "SIG_norm": 0.016173986565037355,
+                "total_norm": 0.08918885217153352,
+                "SIG_to_physical_ratio": 0.1910192864624703,
+                "physical_SIG_cosine": 0.19120507787651864,
+                "total_physical_cosine": 0.9840305631783703
+              },
+              {
+                "physical_norm": 0.18581630909341215,
+                "SIG_norm": 0.027547860754798245,
+                "total_norm": 0.1941918419328956,
+                "SIG_to_physical_ratio": 0.14825319095618025,
+                "physical_SIG_cosine": 0.2367611860776391,
+                "total_physical_cosine": 0.9904565061290439
+              }
+            ],
+            "equal_RX_pool": {
+              "physical_norm": 0.06819844398020465,
+              "SIG_norm": 0.00864381690945051,
+              "total_norm": 0.0706844670666449,
+              "SIG_to_physical_ratio": 0.1267450751802999,
+              "physical_SIG_cosine": 0.2294765987507014,
+              "total_physical_cosine": 0.992891374828333
+            },
+            "cross_RX_norm_retention": {
+              "physical": 0.5260576814601583,
+              "SIG": 0.4410751384559373
+            }
+          },
+          "coarse": {
+            "per_RX": [
+              {
+                "physical_norm": 0.040448243568124834,
+                "SIG_norm": 0.005349892945719536,
+                "total_norm": 0.04349985750482064,
+                "SIG_to_physical_ratio": 0.1322651485894312,
+                "physical_SIG_cosine": 0.5257911019795223,
+                "total_physical_cosine": 0.9945129054901555
+              },
+              {
+                "physical_norm": 0.11546087676700197,
+                "SIG_norm": 0.014558684899662092,
+                "total_norm": 0.12041323305127109,
+                "SIG_to_physical_ratio": 0.1260919309407399,
+                "physical_SIG_cosine": 0.28441431210626283,
+                "total_physical_cosine": 0.9932593958920192
+              },
+              {
+                "physical_norm": 0.03226138159044338,
+                "SIG_norm": 0.0066501923500303746,
+                "total_norm": 0.036431430290027156,
+                "SIG_to_physical_ratio": 0.20613476615646015,
+                "physical_SIG_cosine": 0.564515597709754,
+                "total_physical_cosine": 0.9885837205152065
+              },
+              {
+                "physical_norm": 0.04789653315343645,
+                "SIG_norm": 0.00902609180127598,
+                "total_norm": 0.05048342351599022,
+                "SIG_to_physical_ratio": 0.1884497938997153,
+                "physical_SIG_cosine": 0.2001161487283419,
+                "total_physical_cosine": 0.9845370305964513
+              },
+              {
+                "physical_norm": 0.09642487335596657,
+                "SIG_norm": 0.015821647635240885,
+                "total_norm": 0.10187234598880804,
+                "SIG_to_physical_ratio": 0.1640826384789011,
+                "physical_SIG_cosine": 0.2719893617755449,
+                "total_physical_cosine": 0.9887687597729272
+              }
+            ],
+            "equal_RX_pool": {
+              "physical_norm": 0.03805280872523119,
+              "SIG_norm": 0.003327024470219826,
+              "total_norm": 0.03861230220639791,
+              "SIG_to_physical_ratio": 0.08743177131137282,
+              "physical_SIG_cosine": 0.12568672164296923,
+              "total_physical_cosine": 0.9963397499086313
+            },
+            "cross_RX_norm_retention": {
+              "physical": 0.5722366132809715,
+              "SIG": 0.3235995299079197
+            }
+          },
+          "action": {
+            "per_RX": [
+              {
+                "physical_norm": 0.041359863067152634,
+                "SIG_norm": 0.0031664093727333973,
+                "total_norm": 0.043300963823759565,
+                "SIG_to_physical_ratio": 0.07655754003808854,
+                "physical_SIG_cosine": 0.5891355612308525,
+                "total_physical_cosine": 0.9982527780669415
+              },
+              {
+                "physical_norm": 0.13028991492480407,
+                "SIG_norm": 0.0064842324298024666,
+                "total_norm": 0.13462007479511068,
+                "SIG_to_physical_ratio": 0.04976772326196388,
+                "physical_SIG_cosine": 0.6540115861585237,
+                "total_physical_cosine": 0.9993359331139287
+              },
+              {
+                "physical_norm": 0.041364521334011216,
+                "SIG_norm": 0.004229279783228955,
+                "total_norm": 0.043509604051124515,
+                "SIG_to_physical_ratio": 0.10224413692783403,
+                "physical_SIG_cosine": 0.46922719079512987,
+                "total_physical_cosine": 0.9963090989025316
+              },
+              {
+                "physical_norm": 0.04154594489310614,
+                "SIG_norm": 0.004473695575495983,
+                "total_norm": 0.043035935320405484,
+                "SIG_to_physical_ratio": 0.10768067947440807,
+                "physical_SIG_cosine": 0.28518780172429614,
+                "total_physical_cosine": 0.9950239952043318
+              },
+              {
+                "physical_norm": 0.10259823740905566,
+                "SIG_norm": 0.00639758334168556,
+                "total_norm": 0.10484073255426087,
+                "SIG_to_physical_ratio": 0.062355684690552866,
+                "physical_SIG_cosine": 0.3231750737643875,
+                "total_physical_cosine": 0.9983312242047454
+              }
+            ],
+            "equal_RX_pool": {
+              "physical_norm": 0.040841842791805485,
+              "SIG_norm": 0.002319660061481792,
+              "total_norm": 0.041912974970607565,
+              "SIG_to_physical_ratio": 0.05679616547437495,
+              "physical_SIG_cosine": 0.43941965348824796,
+              "total_physical_cosine": 0.9987634388059603
+            },
+            "cross_RX_norm_retention": {
+              "physical": 0.5717607853749593,
+              "SIG": 0.46859546493626875
+            }
+          },
+          "prior": {
+            "per_RX": [
+              {
+                "physical_norm": 0.07450600501082284,
+                "SIG_norm": 0.010653772879017177,
+                "total_norm": 0.07654644722660181,
+                "SIG_to_physical_ratio": 0.1429921370427739,
+                "physical_SIG_cosine": 0.12264945145849718,
+                "total_physical_cosine": 0.99041414928073
+              },
+              {
+                "physical_norm": 0.08438426751742177,
+                "SIG_norm": 0.0190818896559003,
+                "total_norm": 0.08949287908701065,
+                "SIG_to_physical_ratio": 0.2261308916613005,
+                "physical_SIG_cosine": 0.16275885532079531,
+                "total_physical_cosine": 0.9776198388936596
+              },
+              {
+                "physical_norm": 0.07303871781274245,
+                "SIG_norm": 0.01513837215457284,
+                "total_norm": 0.0794583161232275,
+                "SIG_to_physical_ratio": 0.20726503158755857,
+                "physical_SIG_cosine": 0.3390648492495559,
+                "total_physical_cosine": 0.9838064975349305
+              },
+              {
+                "physical_norm": 0.056117782614515804,
+                "SIG_norm": 0.012653598543447482,
+                "total_norm": 0.059615296467255025,
+                "SIG_to_physical_ratio": 0.22548286753180474,
+                "physical_SIG_cosine": 0.17227664042140034,
+                "total_physical_cosine": 0.977898383728457
+              },
+              {
+                "physical_norm": 0.12125817994650759,
+                "SIG_norm": 0.021624778048762047,
+                "total_norm": 0.1278315977898786,
+                "SIG_to_physical_ratio": 0.17833665372762236,
+                "physical_SIG_cosine": 0.22304716231121371,
+                "total_physical_cosine": 0.9863095471366751
+              }
+            ],
+            "equal_RX_pool": {
+              "physical_norm": 0.039178506694507086,
+              "SIG_norm": 0.0076331943600191085,
+              "total_norm": 0.04181729943373465,
+              "SIG_to_physical_ratio": 0.19483117157932156,
+              "physical_SIG_cosine": 0.25992604705868744,
+              "total_physical_cosine": 0.984343161522546
+            },
+            "cross_RX_norm_retention": {
+              "physical": 0.47859800396657565,
+              "SIG": 0.4821833116904623
+            }
+          }
+        },
+        "total_gradient_replay_relative_L2_error": 1.52025256378654e-06,
+        "total_gradient_replay_maximum_abs_error": 7.078051567077637e-08
+      }
+    },
+    "decision": {
+      "supports_small_SIG_parameter_contribution": false,
+      "checks": {
+        "1": {
+          "physical_directions_defined": true,
+          "at_least_four_RX_below_one_tenth": false,
+          "pooled_below_one_tenth": false
+        },
+        "20": {
+          "physical_directions_defined": true,
+          "at_least_four_RX_below_one_tenth": false,
+          "pooled_below_one_tenth": false
+        }
+      },
+      "automatic_training": false
+    },
+    "new_G_F_inputs": 0,
+    "new_neural_network_backward": 0,
+    "optimizer_updates": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "scope": "Savedcomponentgeometry-and-originaltotalreplay/notfinite-differenceofeveryautogradcomponent;batchmeanrawfixedcapgradient/notAdamW/TXimportance/causalJacobianattenuation"
+  },
+  "external_state": "VERIFIED",
+  "process_naturally_ended": true,
+  "scientific_verdict": "SMALL_SIG_PARAMETER_CONTRIBUTION_PRIMARY_NOT_SUPPORTED",
+  "new_G_training": false,
+  "old_RX_and_other_FAILs_preserved": true,
+  "old_SIG_formal_benefits_preserved": true,
+  "norm_ratio_not_actual_update_or_TX_information": true,
+  "default_DURA_changed": false,
+  "goal_complete": false
+}
