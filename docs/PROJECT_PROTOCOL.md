@@ -1,5 +1,13 @@
 # CVS项目场景与数据协议
 
+## Phase3 原源域 U_s 的星地无标签重放（2026-10-31）
+
+在现有 Phase3 降低标签依赖及源 L_s/U_s 授权内，可保持原 source contract392005 的 U_s56700物理角色，独立生成固定 G10 received 并经冻结 DURA 得到P1，用于源端无标签表征训练。原L/U/V划分、TX/RX/day、checkpoint祖先和历史缓存保持；Phase1已有clean Us祖先不能声称本次模型首次接触这些物理记录。
+
+可信离线builder可按原sample_id用原始TX/RX/day/eq/packet坐标定位，但这些坐标不作为训练标签；不读取Us y、不输出TX/eq/sig/base_index/原始路径或定位表到训练公共接口。只输出opaque IDs、固定received/恢复P1及RX/day/domain，无Us真值文件。输入须从原始IQ执行一次既定RMS和信道，不能把已归一化clean缓存再当raw重放。新角色单独VALIDATED_ONCE，旧角色不重验或覆盖。
+
+冻结源模型可为这些合法Us提供置信度伪标签或表征锚点；模型推断不是Us真TX。原型若用于训练仅由合法L产生，不新增目标标签/真实未知K/配额/查询拟合。源/目标方法、对照、成本及后续三DURA测试按run预登记，所有预测后再独立truth-last。该授权不扩展DURA训练或其他owner权限，不追改原run的Us_reads0声明。
+
 ## Phase3 源原型复合身份与条件拒识（2026-10-31）
 
 在已授权的 Phase3 再优化范围内，可由合法源 L 的冻结单位化开放表征计算已注册类均值，作为独立的非参数身份判决；原 F0/default head、开放神经权重和 DURA 不更新。均值是源统计，不是冻结骨干后另训神经分类头；不得追认为 Phase1 默认头结果。
