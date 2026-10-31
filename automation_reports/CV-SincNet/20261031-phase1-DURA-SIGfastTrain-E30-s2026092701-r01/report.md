@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-SIGfastTrain-E30-s2026092701-r01`
 - group_id：`phase1-dura-original-SIG-training-only-fixedgrid-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -42,3 +42,8 @@
 源F-only SIG63000×160/40.32MB只读复用，新缓存F0；原F50/source4df7/50轮11100步及缓存63000prefix/0.847077秒知识成本披露，F-guided。在线prefix/VJP各1.89m、完整F训练0，G祖先0，0直接TX/V/target/classloss/另训头/sourceRX输入。固定final30，自动native profile/source1800×7/正式168000×7，各role全七景预测完成后独立CPU truth-last，源差不取消测试，不按目标结果选模或重跑。
 
 GPU4/6/7/free≥12000MiB/existing≤2新增1总≤3、own1/card、goal≤2GPUworker。新CPU评分与当前coarseAnchor旧worker锁定同一既有run score.lock，保证own CPUscorer≤1，各自输出根完全独立；旧健康进程无需修改。其他owner保持。主原SIG47591，次pureG8cf/defaultDURA/R17；六景各≥137216正确、clean≥142256、R17逐景最多少1680，旧lowU70%单列。126正式/105源/252双对照/14IQ和全30轮loss/曝光/视图/cap均复核，默认与完整目标保持。
+
+
+## 实际启动证据
+
+VERIFIED / RUNNING，尚无性能结果。执行84d9d483ab2aad2ee4e433949d11f09238dbd6c5；真实2非clean L_s native/slice loss与全部裁剪梯度、初始化/原SIGcap/严格重载native/Core和F冻结检查PASS后进入GPU7 worker1896763/controller1896664。已核实1轮/247步、实际CWD/完整argv/commit/CUDA/compute PID和日志增长，准入前1个compute PID/剩余22883MiB，新增1个。归档SHA比较与远端编译通过；固定final30、原native profile/全部七景自动truth-last，CPU scorer共用当前coarseAnchor既有锁。
