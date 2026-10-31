@@ -85,3 +85,7 @@ R13仅映射raw仍残留单侧失配。新R14拟合source-only配对CCA，两路
 ### R14固定参数确认
 
 首RX四路均值门槛通过，r13按事前规则确认其余六RX全部K/N。直接复用r12源rank16参数，无目标反馈重训/改参。分别报告confirm6与combined7，逐KN/每RX保留。pilot S0每格尚未全部达标，不能外推每格均+5pp。
+
+### R15当前下一步
+
+固定R14源CCA16，校准当前support物理OOF旧/新组H阈值，并按K收缩；none/K1/B保持R14。源oldcounts2..5的组数不对称代理选择全局kappa，sourcegate失败target0，通过才首RX全KN四路80行。sourceold1带宽P1在发布前被独立审查发现并移除，边界测试/定点复审PASS；目标old6不改。当前最佳R14七RX S0Q0仍+4.110pp，goal ACTIVE、未达+5。

@@ -10,7 +10,7 @@ from .milkr import nested_fisher
 from .milkr.support_calibrated import target_and_score
 
 
-def reuse_source_checkpoint(rt):
+def reuse_source_checkpoint(rt,selection_name='source_selection.json'):
     """Reuse source-frozen parameters; target predictions never select the map."""
     parent=read(rt['reuse_source_runtime'])
     require(parent['kernel_method']=='paired_cca','Wrong source checkpoint method')
@@ -22,7 +22,7 @@ def reuse_source_checkpoint(rt):
     adapter=PairedCCA.load(root/'source_cca.npz')
     require(adapter.rank==selection['selected_rank'],'CCA rank differs from frozen source choice')
     adapter.save(Path(rt['run_root'])/'source_cca.npz')
-    write(Path(rt['run_root'])/'source_selection.json',dict(selection,reused_source_run=parent['run_id'],
+    write(Path(rt['run_root'])/selection_name,dict(selection,reused_source_run=parent['run_id'],
         reuse_no_new_source_fit=True,new_source_fit_seconds=0,source_parameter_copy='same frozen arrays'))
 
 
