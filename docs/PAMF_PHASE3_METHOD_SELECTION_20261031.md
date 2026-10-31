@@ -1,6 +1,6 @@
 # Phase3 已有方法选择（2026-10-31，更新）
 
-**下一步研究起点选为 DURA v1.0＋原 PAMF 默认身份头＋PCD 原型适配条件密度比（`PCD_predicted_ratio`）。** 在已完成、同一开发池且覆盖三类 DURA 输入的比较中，它兼顾了已知类正确接收与未知拒识；原 source-only `predicted_ratio`（E0）、同预算 SOURCE 和 `pooled_ratio` 保留为对照。本次只更新已有证据的选择，不新增训练、预测、评分或阈值拟合。
+**下一步研究起点选为 DURA v1.0＋原 PAMF 默认身份头＋PCD 原型适配条件密度比（`PCD_predicted_ratio`）。** 在原 RX24-1 开发池且覆盖三类 DURA 输入的比较中，它兼顾了已知类正确接收与未知拒识；原 source-only `predicted_ratio`（E0）、同预算 SOURCE 和 `pooled_ratio` 保留为对照。本次只更新已有证据的选择，不新增训练、预测、评分或阈值拟合。
 
 机读定义见[选择配置](../configs/pamf_phase3_selected_baseline_20261031.json)。本次是基于已曝光开发结果选择研究起点，不能视为独立确认、正式部署晋级或全局最优证明。各历史 run 的 `NO_PROMOTION`、`adaptation_success=False` 和未达目标均保留；先前选择的原 E0 作为冻结参考保留在配置及 Git 历史中。
 
@@ -38,4 +38,19 @@ G10 沿用 MILKR 设置：600 km、25 MHz、2.45 GHz、residual/post_sync/no add
 
 **当前仍未达完整目标。** clean 的 R_U 达 95% 单项，但 C_K=89.756944% 未达 90%，闭集损失 6.944444 个百分点超过 2；星地 C_K=87.152778%、R_U=78.125000% 未达 90%，闭集损失 7.638889 个百分点超过 2，且场景覆盖不完整。下一步以 PCD 作为有相对收益的研究起点，95% clean 拒识、90% 星地拒识、C_K≥90% 及 2 个百分点保护要求均不降低，完整目标保持 ACTIVE。
 
-证据：[PCD完整结果](PAMF_PHASE3_BODY_PROTOTYPE_RESULTS_20261031.md)、[CCD完整结果](PAMF_PHASE3_COMMON_TRANSPORT_RESULTS_20261031.md)、[原条件密度结果](PAMF_PHASE3_CLASS_DENSITY_RESULTS_20261031.md)、[DURA前后配对](PAMF_PHASE3_DURA_BEST_RESULTS_20261031.md)。原始评分为 `local_artifacts/pamf_phase3_body_prototype_20261031_r02/score/results.json`，本选择直接提取其中冻结指标。
+## 当前选择与新增接收机证据
+
+用户要求“先选取前面性能好的方法”，本次确认保留上述 PCD 研究基线。原 RX24-1 的相对收益是选择依据；不能把该接收机的较好结果解释为任意接收机的性能保证，也不依据新增 Q 的成绩改阈值、训练轮次或主读出。
+
+已完成的新增开发 RX3-2 使用独立纯源 r03 初始化和该接收机的无标签星地 U576 适应，未继承 RX24-1 适配权重。未来两日 Q 共 10238 条，已知 4508、未知 5730；未知集合与原开发池不同。相同 Q 的 clean 与星地输入均经过 DURA。其既有 PCD 结果如下，仍为真实 TX 宏平均百分比。
+
+| 新增开发条件 | A_K | C_K | R_U | H-score | 原 F0 闭集 | 闭集−A_K（百分点） |
+|---|---:|---:|---:|---:|---:|---:|
+| RX3-2 clean＋DURA | 31.661804 | 43.761391 | 61.979647 | 41.912794 | 48.567015 | 16.905211 |
+| RX3-2 星地＋DURA | 27.951722 | 48.582412 | 49.307698 | 35.678111 | 41.721059 | 13.769336 |
+
+该结果未通过绝对目标和适应晋级条件。原身份网络的闭集准确率也显著下降，说明后续需要同时解决身份泛化与拒识，不能仅调拒识阈值。两个接收机的样本、日期、未知设备和无标签适应状态不同，这里并列报告，不将分数相减归因为接收机的单一因果效应。后续固定/动量原型教师等既有对照未取得预登记的联合收益，因此未替换 PCD。
+
+当前只完成已有方法选择。已准备的 `20261031-phase3-paired-signal-s2026092701-r01` 保留代码、预登记和本地发布包，本次未发布或启动；它不属于已完成的性能证据。匿名发现与注册也未完成，完整目标保持 ACTIVE。
+
+证据：[PCD完整结果](PAMF_PHASE3_BODY_PROTOTYPE_RESULTS_20261031.md)、[CCD完整结果](PAMF_PHASE3_COMMON_TRANSPORT_RESULTS_20261031.md)、[原条件密度结果](PAMF_PHASE3_CLASS_DENSITY_RESULTS_20261031.md)、[DURA前后配对](PAMF_PHASE3_DURA_BEST_RESULTS_20261031.md)、[新增开发池结果](PAMF_PHASE3_FRESH_DEVELOPMENT_RESULTS_20261031.md)、[动量教师结果](PAMF_PHASE3_MOMENTUM_PROTOTYPE_RESULTS_20261031.md)。两个接收机的原始评分分别为 `local_artifacts/pamf_phase3_body_prototype_20261031_r02/score/results.json` 和 `local_artifacts/pamf_phase3_fresh_development_20261031_r01/score/results.json`，本选择直接提取其中冻结指标。

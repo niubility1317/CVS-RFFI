@@ -1253,3 +1253,13 @@ Run `20261031-phase3-momentum-prototype-s2026092701-r01` / code `fe1f38519edc849
 ## 2026-10-31：固定与动量原型教师适应完整结果
 
 Run `20261031-phase3-momentum-prototype-s2026092701-r01` / code `fe1f38519edc849fffd3070350da956ea8869066`，FIXED/EMA纯r03独立2×444/同L-OE-U流、8×3DURA预测与CPU3truth VERIFIED完成。唯一主EMA_pred：source_DURA: AK/CK/RU/H=89.670370/96.614815/64.190476/74.820643%；原F0同G损1.311111pp；clean_DURA: AK/CK/RU/H=31.273249/43.015944/63.014974/41.801254%；原F0同G损17.293766pp；star_DURA: AK/CK/RU/H=27.402862/47.470498/50.134827/35.436644%；原F0同G损14.318196pp。sourceknown12=True、target保护=False，科学NO_PROMOTION，不扩seed/不换PCD。固定与动量教师同recordsoftCE，无neighbor/Sinkhorn/真TX；新U576祖先明确，F0/default/G保持，部署无teacher/head/center；newopt888/sourceGMM2/newtau24，ANHOWNA，开发已曝/单RXseed/缺old日NA/全局historyUNKNOWN/正式24-18未读，完整goalACTIVE。全888步/24读出/分组/配对/成本见`docs/PAMF_PHASE3_MOMENTUM_PROTOTYPE_RESULTS_20261031.md`。
+
+
+## 2026-10-31：同记录接收恢复开放信号学习预登记
+
+Run `20261031-phase3-paired-signal-s2026092701-r01` / code `00e86deb914ff02f54fe57c101491220aee0a1a0`，pure-r03三独立SOURCE_P1/SOURCE_PAIR/TARGET_PAIR各444，共享base两槽+zeroLinear320to160/51360、deltaL2<=.1；全386081，F0/default仍同P1、G/Sinc/buffers冻结。两source先封存再U576，TARGET保持原PCDglobal/local，P0P1同record同步phasegain，无新观测或clean参考。3源GMM/6新6tau/10×3DURA全pred后CPU3truth；源input/UDA差分别报，不以extraP0换源基准。原门槛/开发已曝/缺类日NA/formal0/ANHOWNA保持，goalACTIVE。见`docs/PAMF_PHASE3_PAIRED_SIGNAL_PLAN_20261031.md`。
+
+
+## 2026-10-31：先确认已有优选研究方法
+
+按用户“先选取前面性能好的方法”，确认 DURA v1.0＋原 PAMF 默认身份头＋PCD_predicted_ratio 为当前研究基线，原 E0、同预算 SOURCE 与 pooled 读出保留对照。原 RX24-1 星地 AK/CK/RU/H=65.277778/87.152778/78.125000/71.125908%；新增 RX3-2 为27.951722/48.582412/49.307698/35.678111%，未确认跨新接收机普遍收益，不作为部署晋级。两组均含 DURA，不混合未知集合或将差异归为单一接收机效应；原 clean RU95/star RU90/CK90/同 DURA 原闭集保护2pp及逐景要求保持，完整目标 ACTIVE。本次没有新增训练、预测、评分或阈值拟合；paired-signal 仅代码、预登记与本地包已准备，未发布或启动，不列入性能证据。详见 `docs/PAMF_PHASE3_METHOD_SELECTION_20261031.md` 和选择配置。

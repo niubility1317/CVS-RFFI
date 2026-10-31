@@ -224,13 +224,19 @@
     "historical_results_relabelled_as_promoted": false,
     "fresh_development_drafts": "Preserved only; no real data build or experiment launched during this selection"
   },
-  "decision_revision": 2,
+  "decision_revision": 3,
   "selection_history": [
     {
       "revision": 1,
       "method": "predicted_ratio",
       "run_id": "20261031-phase3-class-density-s2026092701-r01",
       "reason": "Earlier selection before the completed body-PCD and CCD comparisons."
+    },
+    {
+      "revision": 2,
+      "method": "PCD_predicted_ratio",
+      "run_id": "20261031-phase3-body-prototype-s2026092701-r02",
+      "reason": "Research baseline selected from original RX24-1 results. New RX3-2 evidence subsequently failed absolute targets; original selection was not a deployment promotion."
     }
   ],
   "frozen_reference": {
@@ -407,5 +413,23 @@
       "global_history_unused_verified": false,
       "independent_blind_confirmation": false
     }
-  ]
+  ],
+  "current_selection_confirmation": {
+    "user_instruction": "先选取前面性能好的方法",
+    "selected_method": "PCD_predicted_ratio",
+    "scope": "Research starting point supported by original RX24-1 comparison; no confirmed general benefit across new receivers.",
+    "all_three_test_conditions_use_DURA": true,
+    "new_receiver_validation_passed": false,
+    "full_targets_met": false,
+    "new_training": false,
+    "new_predictions": false,
+    "new_scoring": false,
+    "threshold_refitting": false,
+    "pending_candidate": {
+      "run_id": "20261031-phase3-paired-signal-s2026092701-r01",
+      "state": "PREPARED_NOT_LAUNCHED",
+      "code_commit": "00e86deb914ff02f54fe57c101491220aee0a1a0",
+      "performance_evidence_available": false
+    }
+  }
 }
