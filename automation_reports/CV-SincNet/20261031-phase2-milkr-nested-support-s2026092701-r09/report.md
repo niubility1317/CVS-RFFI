@@ -19,3 +19,9 @@ pilot S0Q0平均H相对原MILKR>=+5pp，旧/新宏各不低于原版超过1pp，
 ## 技术替代范围
 
 替代r08源Tensor NumPy索引兼容性错误。仅取样索引先转换Python int列表；本地边界回归修复前FAIL/修复后PASS，原问题唯一一次定点复审PASS。科学方法、完整160行先导、K/N/seed、所有预算和晋级条件不变。旧root保留，不原地重启；同指纹再次发生则停止盲重试。
+
+## 技术失败（无性能结果）
+
+**FAILED / VERIFIED**。源checkpoint与12行数值检查均已PASS，源索引修复真实验证。目标worker在B/K1首个拟合记录JSON写入时遇到numpy.bool_字段，指纹`TypeError: Object of type bool is not JSON serializable`。尚无prediction/评分，已接触该B支持集；不写成target未访问。所有所属进程退出，部分fit JSON保留。
+
+本机原生json.dumps(selection)精确复现相同指纹，修复前FAIL。仅将K1_uniform审计字段转换Python bool，数值/分支/系数不变；Fisher及nested完整selection序列化等四测试PASS，问题定点复审PASS。新r10替代，原root不覆盖、不原地启动。
