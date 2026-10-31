@@ -189,3 +189,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R24 局部support核
 
 固定当前每SUP一centre局部RBF显式特征，tau由其他类SUP定、列norm仅SUP、逐record行unit，形成PSD核；预合并localW查询不拟合。K1源120规则，K>1真实物理三折OOF全train-only，再当前全SUP重拟合，无Fisher。F/G/head/C4moments/CCA64保持，strictG-only，四角点24行每格两S+5/query收益才扩，最终16KN不变。
+
+### R24 局部support核实际结果
+
+真实checkpoint smoke及独立审查/测试通过；source rank64和C4固定、source120核规则选唯一K1。目标24行评分完成，所属进程退出。S0角点Q0+5为3/4，Q1>Q0为0/4；S1角点Q0+5为4/4，Q1>Q0为4/4；角点晋级False。不扩其余KN/RX，不用目标结果调rank或相位数。基座仍Tri-SIG-TIME SSL，goal ACTIVE。详见本run result_summary/report。
