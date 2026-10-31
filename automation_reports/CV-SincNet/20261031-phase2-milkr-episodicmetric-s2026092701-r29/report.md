@@ -17,3 +17,20 @@ sourceGPU4/targetGPU0启动前核实容量，source metric训练CPU1thread，其
 21项相关检查与4项非法协议输入检查通过，新增metric worker加载路由回归通过，本地compile/diff检查通过。唯一独立P0/P1审查PASS：episode类别顺序与CE标签一致、物理支持去重、support/held RX不同；两轮metadata和特征索引对齐；训练/部署sqrt(gains)一致，边界/加载/旧Torch转换一致；源失败仍停止target。实际F/G noquery smoke将在launcher首步运行，PASS直接继续。
 
 本地准备目录纠正：最初与历史pooledmetric私有辅助目录重名，delivery guard在提交/发布前阻止继续。现改为独立 `local_artifacts/milkr_epmetric_20261031`，旧runtime由其原package恢复、旧spec由原实验记录恢复；科学结果/包/远端不可变run未改。旧未版本化辅助脚本内容未完全恢复，已明确标记停用该旧辅助目录。独立远端核实原run仍SCORED_COMPLETE，R30新run/release均不存在，尚未启动；算法/预算/来源和review不变。
+
+## 实际结果
+
+**VERIFIED**：实际 checkpoint 无 query smoke PASS；release archive 传输比较与 remotecompile PASS；所属 PID/CWD/argv/GPU 与日志增长已读取，当前全部所属进程退出。执行 commit `c5ca02ecc735a7d22f531993d4547bb6fc3ac6f1`，源流程 58.276 秒。
+
+候选和 C4 对照均完成 120 个 K1 规则及 K20 物理 OOF 源验证（对照复用已冻结 R27 源结果）。候选 source 主宏H差 -0.2114 个百分点，源门槛 False。
+
+| 源 K | support | raw 宏H配对差（百分点） |
+|---:|---|---:|
+| 1 | S0 | -1.1507 |
+| 1 | S1 | +0.4378 |
+| 20 | S0 | +1.0119 |
+| 20 | S1 | +0.4050 |
+
+源度量训练审计：5组，每组600步；逐fold已核实4TX/4RX、6720观察/3360物理ID，held RX/两TX均不在训练中。未启动最终全源组。512权重均在[.25,4]；原F/G/head更新0。训练loss与源验证H分别保留，不用loss冒充科学收益。
+
+按预登记科学门槛 source-only 停止，未拟合最终 encoder，target IQ/预测/评分均 0；没有把失败源参数送入目标再挑结果。F/G/head 更新 0。这个负结果不能替代最终每16KN宏H要求，goal ACTIVE。

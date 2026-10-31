@@ -243,3 +243,7 @@ source 主宏H相对 R27 C4 对照 -0.6884pp，各K/S raw差 [{'k': 1, 'S': 0, '
 ### R30 源域跨RX回合式度量候选
 
 固定C4/CCA64后八block各64轴共512个正权重g∈[.25,4]，源L标签监督4way跨RX原型CE，K1/5/20、8held/class、四raw/G路径轮转、physicalSUP唯一，Adam.01/600CPUsteps。五RX/TXheld同时排除CCA和g训练，source主H对R27≥+.5pp且每K/Sraw≥−.25pp才finalfit及36角点，失败target0。F/G/head与R27SUPgate/OOF/fusion冻结保持，最终all16两Sraw+5/QF>raw不变，goal ACTIVE。
+
+### R30 实际结果
+
+source 主宏H相对 R27 CCA 对照 -0.2114pp，各K/S raw差 [{'k': 1, 'S': 0, 'delta_pp': -1.150652321579726}, {'k': 1, 'S': 1, 'delta_pp': 0.4377809248833242}, {'k': 20, 'S': 0, 'delta_pp': 1.0119175790536006}, {'k': 20, 'S': 1, 'delta_pp': 0.4049722062355321}]，源门槛 False。按预登记 source-only 停止，target0、未拟合最终encoder。 所属进程已退出，所有旧run保持；最终16KN逐格目标未达，goal ACTIVE。
