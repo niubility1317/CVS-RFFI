@@ -260,3 +260,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 物理与签名参数梯度分解
 
 20261031-diagnostic-DURA-source-SIG-parameter-s2026092701-r01/81c0a94f。VERIFIED / ANALYZED，SOURCE_ONLY。固定原SIG-only G/source47591 E30与原F50，复用840次源观测/477物理/L86U754，CPU2主循环9.601164秒。完整G的SIG/四物理项梯度范数比，等RX汇总为0.133067、0.126745，各RX仅1/5、0/5低于0.1；固定双视图主假设FAIL。SIG与物理汇总梯度cos为0.262249、0.229477，总方向与物理方向cos为0.992390、0.992891，指导已进入参数空间，不用范数直接判断任务重要性。分量和重现旧总梯度relativeL2误差1.883058e−6、1.520253e−6；20分量向量/48比值/96夹角/16跨RX保留率独立复算。G/F状态保持，0优化/TX/V/target；主G840/prefix840/FVJP840/fullF0/GparamVJP样本数1680，smokeG2/fullF4/prefix2/FVJP2/GparamVJP4。不据此新增参数归一化或放大指导训练，不从action/prior分项换主；原SIG真实收益与旧RX等FAIL保持。这是局部固定cap的raw批均值参数梯度，不是AdamW实际更新、TX重要性、硬件或恢复极限；默认与完整目标保持。 详见run analysis.md/results.json。
+
+
+## 跨RX签名关系指导对照
+
+20261031-phase1-DURA-relationSIG-E30-s2026092701-r01：G原266951从零单阶段30轮/7410，原物理4项/初始化/RNG/LR/数据保持，指导改为源cross-RX相对余弦距离关系，实例误差仅日志。all-pair SUM inputVJP包含两端，再逐IQ detached cap0.5，1prefix/VJP每访问；F-only sourceSIG40.32MB与源RX仅训练loss，0新持久缓存/额外Fpass/新G参数/推理关系输入，0TX/V/target。原F50知识和缓存成本披露，原G非祖先。关系共同旋转自由度由物理锚点约束，真实TX收益只凭完整原七景truth-last验收；默认与旧FAIL保持。
