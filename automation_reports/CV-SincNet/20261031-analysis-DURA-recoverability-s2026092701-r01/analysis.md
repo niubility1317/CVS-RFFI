@@ -1,6 +1,6 @@
 # 星地 IQ 能恢复几成：全量证据与 30 轮新方向
 
-默认 DURA 的六星地平均能量拟合约 9.3 至 9.8 成、识别准确率约 raw clean 的 8.1 至 9.8 成，这是已达到的水平，真实极限仍未知。默认仅两景距 raw clean≤3 个百分点。新增 prior 特征参与解码和匹配辅助对照均完成从零单阶段 30 轮与七景：主版 clean 84.799405%、低城区 69.658333%，对照 clean 84.966071%、低城区 69.476786%；六景 3pp 分别通过 1/6 与 1/6，默认保持。最新详见[特征参与解码](../20261031-phase1-DURA-SIGcontextPrior-E30-s2026092701-r01/analysis.md)和[匹配辅助对照](../20261031-phase1-DURA-SIGpriorAux-E30-s2026092701-r01/analysis.md)。历史训练执行优化 clean84.867262%/低城区69.287500% 和其他各版结果保留。波形恢复、固定 F 可识别性和真实硬件特质分别判断。
+默认 DURA 的六星地平均能量拟合约9.3至9.8成、识别准确率约raw clean的8.1至9.8成，这是已达到的水平，真实极限仍未知。默认仅两景距raw clean≤3个百分点。最新深层线性与MLP预测器均完成从零单阶段30轮/7410及七景：线性clean 84.833929%、低城区 68.905952%，MLP clean 84.927381%、低城区 68.705357%；3pp分别通过0/6和0/6。详见[深层线性](../20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01/analysis.md)与[深层MLP](../20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01/analysis.md)。源clean-SIG条件oracle已PASS，但不可部署或当恢复极限；旧原条件版及所有历史结果保留，默认DURA保持。波形、固定F可识别性和真实硬件特质分别判断。
 
 ## 指标与数据口径
 
@@ -291,3 +291,12 @@ VERIFIED / ANALYZED。prior 特征仅训练约束，从零单阶段30轮/7410步
 ## 固定权重的特征条件源检验：配对特征用途通过
 
 20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01 / 9d266929d4e0eea27057eebeda8239fd24f0b6d9。固定 main SIGcontextPrior final30 的 source512×01/20 四路径干预已闭合，主条件PASS。正常与clean F选择一致487/500、关闭481/497、本条clean SIG498/505、循环移位480/498；同权重关闭净−6/−3、理想配对特征净+11/+5，5RX与全部场景保护通过。144组case/实际线性/输入置换独立复算，0新增NN；主CPU2 14.107593秒，G4096/F4096、smoke G12/F4，0TX/V/target/训练。源特权参照不可部署、不是真实TX准确率或恢复极限，固定权重可能有分布共同适配边界。支持另行登记更强内部特征预测假设，不自动加训；默认DURA和完整3pp/clean/同质量效率目标保持。 详见[完整分析](../20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01/analysis.md)。
+
+
+## 深层SIG预测学习检验：新增完整单E30七景
+
+VERIFIED / ANALYZED。深层线性SIG预测，单阶段从零30轮/7410，L189000/U1701000，G祖先0；原main344295架构增加从encoder2pool4+encoder3pool2形成的192维特征残差预测，原128→160浅预测保留。线性192→160零初始化、MLP192→160-SiLU-160→160末层零初始化；初始main权重/别名/SIG/IQ/随机流保持，MLP首层初始梯度0预期，真实新增末层辅助梯度非零。原四物理+输出SIGalpha1/cap.5+.01mean2priorSIG辅助、conditionerbound.1不改。完整G406055/ConvLinearMAC25206312/两prior四CG27FFT，native全部路径。源F-onlySIG40.32MB复用/newFcache0，F50/source4df7/50-11100及历史缓存成本披露，F-guided；在线prefix/VJP各1.89m，完整F训练0，0TX/V/target训练或分类头改动。源条件oracle两视图主条件PASS仅为学习假设证据，不自动继承为本版资格/目标收益/恢复极限；本版固定final30，每角色全七景预测后truth-last，126正式105源V378三对照配对14IQ独立复算，全30轮loss/均值权重/曝光/视图/cap/deep配置和来源核对。六星地较原特征条件版提高0/6、较另一深层版提高6/6、较原SIG提高4/6、较默认DURA提高1/6。clean84.833929%、低城区68.905952%，3pp通过0/6、clean严格保持=True、R17逐景1pp=True、旧lowU70%=False。G训练保存1065.143283秒、含准备1066.391048秒、控制器至自动分析1238.358895秒；同卡G+F B1默认4.643276ms、本版4.709474ms。共享GPU墙钟不作因果提速或等质量速度比，源代理和更深预测不能代替真实TX净纠错。默认DURA和完整3pp/clean/同质量效率目标保持ACTIVE。
+
+VERIFIED / ANALYZED。深层MLP SIG预测，单阶段从零30轮/7410，L189000/U1701000，G祖先0；原main344295架构增加从encoder2pool4+encoder3pool2形成的192维特征残差预测，原128→160浅预测保留。线性192→160零初始化、MLP192→160-SiLU-160→160末层零初始化；初始main权重/别名/SIG/IQ/随机流保持，MLP首层初始梯度0预期，真实新增末层辅助梯度非零。原四物理+输出SIGalpha1/cap.5+.01mean2priorSIG辅助、conditionerbound.1不改。完整G457575/ConvLinearMAC25257512/两prior四CG27FFT，native全部路径。源F-onlySIG40.32MB复用/newFcache0，F50/source4df7/50-11100及历史缓存成本披露，F-guided；在线prefix/VJP各1.89m，完整F训练0，0TX/V/target训练或分类头改动。源条件oracle两视图主条件PASS仅为学习假设证据，不自动继承为本版资格/目标收益/恢复极限；本版固定final30，每角色全七景预测后truth-last，126正式105源V378三对照配对14IQ独立复算，全30轮loss/均值权重/曝光/视图/cap/deep配置和来源核对。六星地较原特征条件版提高0/6、较另一深层版提高0/6、较原SIG提高0/6、较默认DURA提高0/6。clean84.927381%、低城区68.705357%，3pp通过0/6、clean严格保持=True、R17逐景1pp=True、旧lowU70%=False。G训练保存1114.365791秒、含准备1115.550746秒、控制器至自动分析1301.024889秒；同卡G+F B1默认4.619074ms、本版4.708815ms。共享GPU墙钟不作因果提速或等质量速度比，源代理和更深预测不能代替真实TX净纠错。默认DURA和完整3pp/clean/同质量效率目标保持ACTIVE。
+
+这些固定版本分别验证，未依据目标结果改参数、选轮次或重跑。源oracle和源训练误差不替代六景逐个3pp/clean/真实净纠错，有限候选不认证信息恢复极限。

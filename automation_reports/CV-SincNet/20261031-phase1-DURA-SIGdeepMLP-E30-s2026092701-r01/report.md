@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01`
 - group_id：`phase1-DURA-source-qualified-deep-SIG-predictor-pair-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整结果见analysis.md/results.json，分组和成本保留。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -45,3 +45,10 @@ GPU4/6/7每卡本任务1个、总至多2个，显存余量≥12GB且既有comput
 ## 实际启动证据
 
 VERIFIED / RUNNING，尚无性能结果。执行 df7fe90d16910f7373d79ee93291f265506a8434，controller 1971151、GPU 7 worker 1971318。真实2非clean L_s smoke PASS：新增末层实际辅助梯度、原main初值与IQ、原SIG cap、三G模块、严格E0/nativeoptimized/F冻结、两个深层推理路径核实。已完成1轮/247步，实际CWD/argv/commit/CUDA/compute PID和日志增长通过。准入前1个compute、剩余22883MiB，新增1个。归档SHA/远端编译通过，固定单30轮与自动七景，CPU共同锁、独立输出。
+
+
+## 完整训练与正式结果
+
+VERIFIED / ANALYZED。深层MLP SIG预测，单阶段从零30轮/7410，L189000/U1701000，G祖先0；原main344295架构增加从encoder2pool4+encoder3pool2形成的192维特征残差预测，原128→160浅预测保留。线性192→160零初始化、MLP192→160-SiLU-160→160末层零初始化；初始main权重/别名/SIG/IQ/随机流保持，MLP首层初始梯度0预期，真实新增末层辅助梯度非零。原四物理+输出SIGalpha1/cap.5+.01mean2priorSIG辅助、conditionerbound.1不改。完整G457575/ConvLinearMAC25257512/两prior四CG27FFT，native全部路径。源F-onlySIG40.32MB复用/newFcache0，F50/source4df7/50-11100及历史缓存成本披露，F-guided；在线prefix/VJP各1.89m，完整F训练0，0TX/V/target训练或分类头改动。源条件oracle两视图主条件PASS仅为学习假设证据，不自动继承为本版资格/目标收益/恢复极限；本版固定final30，每角色全七景预测后truth-last，126正式105源V378三对照配对14IQ独立复算，全30轮loss/均值权重/曝光/视图/cap/deep配置和来源核对。六星地较原特征条件版提高0/6、较另一深层版提高0/6、较原SIG提高0/6、较默认DURA提高0/6。clean84.927381%、低城区68.705357%，3pp通过0/6、clean严格保持=True、R17逐景1pp=True、旧lowU70%=False。G训练保存1114.365791秒、含准备1115.550746秒、控制器至自动分析1301.024889秒；同卡G+F B1默认4.619074ms、本版4.708815ms。共享GPU墙钟不作因果提速或等质量速度比，源代理和更深预测不能代替真实TX净纠错。默认DURA和完整3pp/clean/同质量效率目标保持ACTIVE。
+
+详见[完整分析](analysis.md)、[训练七景图](training_and_formal.png)、results.json、transfer_diagnostics.json；控制器和worker自然退出、产物独立读回。

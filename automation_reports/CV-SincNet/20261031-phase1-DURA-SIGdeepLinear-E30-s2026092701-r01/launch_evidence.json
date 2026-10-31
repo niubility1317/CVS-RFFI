@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING_NO_PERFORMANCE_RESULT",
+  "status": "ANALYZED",
   "execution_commit": "df7fe90d16910f7373d79ee93291f265506a8434",
   "controller_PID": 1971150,
   "worker_PID": 1971312,
@@ -8,7 +8,7 @@
   "controller_log_bytes": 406,
   "worker_log_bytes": 1193,
   "epoch_records": 1,
-  "latest_update": 247,
+  "latest_update": 7410,
   "smoke": {
     "status": "PASS",
     "real_nonclean_Ls": 2,
@@ -107,5 +107,20 @@
   "remote_compile": true,
   "CPU_scorer_common_lock": "runs/20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01/score.lock",
   "default_DURA_changed": false,
-  "goal_complete": false
+  "goal_complete": false,
+  "external_state": "VERIFIED_ANALYZED",
+  "phase": "COMPLETE",
+  "observed_epochs": 30,
+  "row_and_controller_natural_exit_verified": true,
+  "formal_results_available": true,
+  "all_seven_predictions_before_truth": true,
+  "independently_recomputed_target_groups": 126,
+  "independently_recomputed_source_groups": 105,
+  "independently_recomputed_paired_groups": 378,
+  "independently_recomputed_paired_IQ_scenes": 14,
+  "training_seconds": 1065.14328316506,
+  "whole_pipeline_seconds": 1238.3588950634003,
+  "performance_acceptance": false,
+  "six_scene_gap3pp": false,
+  "clean_not_lower_than_raw": true
 }
