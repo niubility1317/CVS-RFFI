@@ -16,6 +16,9 @@ from .milkr.support_calibrated import fit,CONFIGS,LAMBDAS,target_and_score
 
 
 def fit_function(rt):
+    if rt.get('kernel_method')=='fisher_signature':
+        from .milkr.fisher_signature import fit as fisher_fit
+        return fisher_fit
     if rt.get('kernel_method')=='task_signature':
         from .milkr.task_signature import fit as task_fit
         return task_fit
@@ -33,14 +36,14 @@ def fit_function(rt):
 
 
 def kernel_configs(rt):
-    if rt.get('kernel_method') in ('signature_kernel','task_signature'):
+    if rt.get('kernel_method') in ('signature_kernel','task_signature','fisher_signature'):
         from .milkr.signature_kernel import CONFIGS as signature_configs
         return signature_configs
     return CONFIGS
 
 
 def extract_for_method(rt,reader,raw,device,engine=None,batch=128):
-    return extract(reader,raw,device,engine,batch,descriptor=rt.get('kernel_method') in ('signature_kernel','task_signature'))
+    return extract(reader,raw,device,engine,batch,descriptor=rt.get('kernel_method') in ('signature_kernel','task_signature','fisher_signature'))
 
 
 def source_episodes(rt):
@@ -62,6 +65,9 @@ def source_episodes(rt):
 
 
 def calibration(rt):
+    if rt.get('kernel_method')=='fisher_signature':
+        from .milkr_fisher_source import calibrate
+        return calibrate(rt)
     if rt.get('kernel_method')=='task_signature':
         from .milkr_task_source import calibrate
         return calibrate(rt)
@@ -107,31 +113,35 @@ def worker(rt,capname):
     reader,engine=initialize(rt);before={k:v.detach().clone() for k,v in reader.state_dict().items()}
     cap=Path(rt['data_root'])/capname;m=read(cap/'manifest.json');root=Path(rt['run_root'])/'predictions'/m['receiver'];root.mkdir(parents=True,exist_ok=False)
     specs={(s['k'],s['new_count']):s for s in (read(p) for p in (cap/'splits').glob('*.json'))}
-    rule=read(Path(rt['run_root'])/'source_selection.json')['K1_rule'];states=[];rows=[];started=time.perf_counter()
+    selected=read(Path(rt['run_root'])/'source_selection.json')
+    rules=[(arm,selected['K1_rule'])]
+    if rt.get('include_R9_control'):rules.append(('R9C',selected['control_K1_rule']))
+    states=[];rows=[];started=time.perf_counter()
     for k in rt['K']:
         for n in [0]+rt['N']:
             stage='C' if n else 'B';s=specs[k,n];task=load_task(cap,s['split_id'],stage=stage)
             for sp,g in enumerate((None,engine)):
                 f,_=extract_for_method(rt,reader,task['support_x'],'cuda:0',g,batch=k);begin=time.perf_counter()
-                state=fit(f,task['support_y'],task['support_ids'],fixed=rule)
-                write(root/f'{stage}-K{k}-N{n}-S{sp}-fit.json',dict(selection=state.selection,config=state.config,ridge=state.ridge,tau=state.tau,
-                    seconds=time.perf_counter()-begin,F_updates=0,G_updates=0,query_fit=False,B_function_inherited=False,
-                    coefficient_bytes=state.alpha.nbytes,physical_labels=len(task['support_y'])))
-                states.append((s,stage,sp,state))
+                for state_arm,rule in rules:
+                    begin=time.perf_counter();state=fit(f,task['support_y'],task['support_ids'],fixed=rule)
+                    write(root/f'{stage}-K{k}-N{n}-S{sp}-{state_arm}-fit.json',dict(selection=state.selection,config=state.config,ridge=state.ridge,tau=state.tau,
+                        seconds=time.perf_counter()-begin,F_updates=0,G_updates=0,query_fit=False,B_function_inherited=False,
+                        coefficient_bytes=state.alpha.nbytes,physical_labels=len(task['support_y']),arm=state_arm))
+                    states.append((s,stage,sp,state,state_arm))
         print('FIT_K_COMPLETE',m['receiver'],k,flush=True)
     bank=np.load(cap/'received.npy',mmap_mode='r');allrows=np.load(cap/'stage_rows/N20.npy');pos=np.full(len(bank),-1,np.int64);pos[allrows]=np.arange(len(allrows))
     for qp,g in enumerate((None,engine)):
         f,_=extract_for_method(rt,reader,np.asarray(bank[allrows]),'cuda:0',g)
-        for s,stage,sp,state in states:
+        for s,stage,sp,state,state_arm in states:
             query=split_rows(cap,s);positions=pos[query];require((positions>=0).all(),'Invalid query bank mapping')
             prediction=[];restricted=[];classes=s['registered_classes']
             order=np.asarray(sorted(range(len(classes)),key=lambda i:classes[i]));old=order[order<6]
             for start in range(0,len(positions),rt['decision_batch']):
                 scores=state.score(subset(f,positions[start:start+rt['decision_batch']]))
                 prediction.extend(order[scores[:,order].argmax(1)].tolist());restricted.extend(old[scores[:,old].argmax(1)].tolist())
-            name=f'{stage}-K{s["k"]}-N{s["new_count"]}-S{sp}Q{qp}-{arm}.npz'
+            name=f'{stage}-K{s["k"]}-N{s["new_count"]}-S{sp}Q{qp}-{state_arm}.npz'
             np.savez_compressed(root/name,query_indices=query,predicted_indices=np.asarray(prediction,np.int16),old_restricted_indices=np.asarray(restricted,np.int16))
-            rows.append(dict(split_id=s['split_id'],stage=stage,arm=arm,input_path=f'S{sp}Q{qp}',prediction=name,
+            rows.append(dict(split_id=s['split_id'],stage=stage,arm=state_arm,input_path=f'S{sp}Q{qp}',prediction=name,
                 k=s['k'],new_count=s['new_count'],registered_classes=s['registered_classes']))
         print('QUERY_PATH_COMPLETE',m['receiver'],qp,flush=True)
     require(all(torch.equal(before[k],v) for k,v in reader.state_dict().items()),'Frozen F changed')
