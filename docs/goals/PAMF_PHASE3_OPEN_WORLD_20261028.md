@@ -1203,3 +1203,13 @@ Run `20261031-phase3-source-us-replay-s2026092701-r01` / actualcode `3988af354d0
 ## 2026-10-31：原源Us星地重放完整结果
 
 Run `20261031-phase3-source-us-replay-s2026092701-r01` / code `3988af354d00a3453384d7f61a799a4a237084fc`，cache56700/固定444/六方法三DURA预测/独立CPU三truth均 VERIFIED。SOURCE_US_pred主：source_DURA: AK/CK/RU/H=89.770370/96.862963/66.952381/76.700287%；原F0同DURA闭集90.981481%/损失1.211111pp；clean_DURA: AK/CK/RU/H=31.175965/42.939813/63.625483/41.847163%；原F0同DURA闭集48.567015%/损失17.391051pp；star_DURA: AK/CK/RU/H=27.490040/47.992691/49.835372/35.434053%；原F0同DURA闭集41.721059%/损失14.231018pp。源Us教师接受47668/56700=84.070547%，这是预测置信度筛选、非真值准确率。sourceKnown12=True、目标保护=False、对两控制starAK均增=False/RU均不降=False，科学NO_PROMOTION；完整目标ACTIVE。SOURCE444精确复用，Us比SOURCE多56700源记录/PL计算，OLDPCD另有targetU576祖先；非等输入预算。无新targetUDA/REG，AN/HOW=N/A；sourceV校准非独立、未来Q已曝光/03-23缺类N/A/正式24-18未访问。见`docs/PAMF_PHASE3_SOURCE_US_REPLAY_RESULTS_20261031.md`。
+
+
+## 2026-10-31：冻结PCD相对马氏拒识预登记
+
+Run `20261031-phase3-pcd-relative-metric-s2026092701-r01` / code `a24c413e5ab727ec283c07405eb9b1b2e68b036b`。L6300单位PCD拟合6mean/sharedwithin/globalcov、固定shrink.1、FP64Cholesky；MD与RMD四新分数，原PCD两列精确复用，唯一主RMD_pred。原F0身份不变，四新6tau只sourceV校准，全6×3DURA完整pred后独立3truth。新NN/IQ/Ufit0，PCD继承U576非纯源；非新UDA/REG。clean95/star90/CK90/原F0损2pp/完整主景及对oldPCD相对门槛保持，goalACTIVE。见`docs/PAMF_PHASE3_PCD_RELATIVE_METRIC_PLAN_20261031.md`。
+
+
+## 2026-10-31：冻结PCD相对马氏拒识完整结果
+
+Run `20261031-phase3-pcd-relative-metric-s2026092701-r01` / code `a24c413e5ab727ec283c07405eb9b1b2e68b036b`，源L统计/knownV四新tau/全6×3DURA预测/独立CPU三truth VERIFIED。唯一主RMD_pred：source_DURA: AK/CK/RU/H=89.974074/97.311111/46.158730/61.015257%；原F0同DURA闭集90.981481%/损失1.007407pp；clean_DURA: AK/CK/RU/H=32.619200/46.794910/53.900457/40.642551%；原F0同DURA闭集48.567015%/损失15.947815pp；star_DURA: AK/CK/RU/H=29.201764/52.810850/41.041863/34.123944%；原F0同DURA闭集41.721059%/损失12.519295pp。sourceknown12=True、目标保护=False，科学NO_PROMOTION。原F0身份保持，PCD继承targetU576；新NN/IQ/Ufit0，AN/HOW=N/A；sourceV校准非独立、Q已曝光/03-23缺类NA/正式24-18未读，完整goalACTIVE。见`docs/PAMF_PHASE3_PCD_RELATIVE_METRIC_RESULTS_20261031.md`。

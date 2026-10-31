@@ -1,0 +1,249 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-pcd-relative-metric-s2026092701-r01",
+  "group_id": "pamf-phase3-pcd-relative-metric",
+  "display_name": "PAMF第三阶段：冻结PCD的相对马氏拒识",
+  "description": "Fit source-L class/sharedwithin and class-agnostic background Gaussians on final frozen PCD units, compare routed RMD with same-statistic MD and exact old-PCD controls; originalF0 remains identity.",
+  "kind": "cvs",
+  "stage": "Phase3-PCD-relative-distance-three-DURA",
+  "aliases": [
+    "PCD相对马氏拒识"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "DURA",
+    "RMD",
+    "frozen_PCD",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-pcd-relative-metric",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-source-cluster-geometry-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "a24c413e5ab727ec283c07405eb9b1b2e68b036b",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-relative-metric-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.pcd_relative_metric_core",
+      "experiments.pamf_phase3_open_world.pcd_relative_metric_run",
+      "experiments.pamf_phase3_open_world.pcd_relative_metric_score",
+      "experiments.pamf_phase3_open_world.pcd_relative_metric_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_PCD_RELATIVE_METRIC_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Existing source G10 P1 and fresh RX3-2 future feature caches",
+    "version": "VALIDATED_ONCE original roles and exact frozen source_geometry074/freshf4b5 PCD identities",
+    "representation": "FP32 PCD unit160 converted to FP64 unit; source L fits six arithmeticmeans/sharedwithin+global cov shrunk0.1/Cholesky, originalF0 identity",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 开发域的时序发现与未来未知到达",
+    "physical_ids_ref": "source_geometry source_features.ids matched original source L metadata; fresh paired sourceV/NV/future IDs",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "Private builder/scorer only: old6 and metadata-selected discover3/late1; algorithm registered roster only old6",
+    "roles": {
+      "source_L_features_and_labels": 6300,
+      "source_OE_values_new": 0,
+      "original_Us_values_new": 0,
+      "source_V_threshold_calibration": 27000,
+      "source_novel_cached_features": 3150,
+      "target_U_values_new": 0,
+      "PCD_inherited_target_U_count": 576,
+      "future_Q_each": 10238,
+      "future_Q_known": 4508,
+      "future_Q_unknown": 5730
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 and inherited fresh public Q capsule/split; source metadata handles reused",
+    "validation_ref": "local_artifacts/pamf_phase2_full_eq_validation_20261029_r02/summary.json; pool/complete.json after construction",
+    "support_query_ref": "Source metric freezes before V. Four new source-known tau sets freeze before NV/Q. No target U/GT/K/quota or query fitting.",
+    "leo_config_ref": "Existing sourceMIX01/freshG10-DURA cached features; paired samecanonical clean/star; no actual IQ/channel regeneration"
+  },
+  "permissions": {
+    "regime": "Source L known labels fit Gaussian aggregates only; source V known labels calibrate rejection. No new neural/identity/prototype/U/G updates. Source input statistics over PCD retains U576 ancestor.",
+    "query_use": "All6x3 predictions before independent CPU connects sourceNV/cleanQ/starQ truth once each. Actual F0 predicted class routes distances and tau, never true TX.",
+    "external_method_exception": null,
+    "claim_scope": "Additional source-statistic RMD readout, not new targetUDA or anonymousREG, not source-only model or independent blind. Original F0 default identity unchanged; AN/HOW N/A."
+  },
+  "checkpoint": {
+    "initialization": "No training: exact final fresh TARGET_PCD444 with U576 ancestry; originalF0/default6, originalr03 and DURA only actualCP smoke.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Source392005 and source_geometry074 PCD sourcefeatures match exact freshf4b5 TARGET_PCD. PCDtargetU576 inherited, all new statistics L-only; actualF0 unchanged.",
+    "selection_rule": "One fixed source-L Gaussian/shrink0.1 candidate, routedRMD primary. No target tuning, shrink search or replacing primary with pooled/MD."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-pcd-relative-metric-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-relative-metric-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-relative-metric-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_pcd_relative_metric_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.pcd_relative_metric_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-relative-metric-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One sequential predictor then CPU scorer; >=4096MiB actualfree across0..7, max2new/card, no foreign operations",
+    "stop_rule": "Illegal source/ancestry, frozen mutation, nonfinite/degenerate covariance, output collision or illegal prediction closure preserves and stops. Scientific failure completes all conditions; no auto restart."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/{predict,score}.log",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/models/{metric,density}.npz",
+    "predict/models/complete.json",
+    "predict/thresholds.npz",
+    "predict/calibration/complete.json",
+    "predict/source/source_DURA/{known,novel}_predictions.npz",
+    "predict/targets/<condition>/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K C_K R_U H",
+      "originalF0 sameDURA closed gap",
+      "AUROC OSCR",
+      "paired RMDpred vsOLDPCDpred and MDpred"
+    ],
+    "dimensions": [
+      "OLDPCD pooled/pred +MD pooled/pred +RMD pooled/pred",
+      "source_DURA/clean_DURA/star_DURA",
+      "all required TX RX day sixscene;03-23missingknownNA"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-relative-metric-s2026092701-r01/predict",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-relative-metric-s2026092701-r01/score",
+    "targets_ref": "sourceknown12/cal and cleanRU95/starRU90 CK90 origF0loss2pp/full main-scene coverage; starAK>OLDPCDpred and RU notlower",
+    "primary": [
+      "RMD_predicted fixed; MD matched mechanism control, no primary swaps; science failure no seed expansion"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "pcd-relative-metric-s2026092701",
+      "method": "Routed relative Mahalanobis over frozen PCD units",
+      "purpose": "Test class-agnostic source background cancellation vs receiver-local GMM evidence",
+      "config_ref": "docs/PAMF_PHASE3_PCD_RELATIVE_METRIC_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-relative-metric-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103131,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026103133
+      },
+      "seed_notes": "No stochastic new training/data/channel; inherited fixed source/fresh episode only",
+      "k": null,
+      "scenario": "ThreeDURA conditions, all existing star features and pairedclean futuretestonly",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "RealF0/signal/G0; actualCP synthetic separate. Fit6300sourcefeatures/fourFP64arrays52320values418560B+schema; 4x6newtau192B+old96B. New NN/U updates0; deploy834665params. No B1 timing claim.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-relative-metric-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-relative-metric-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.pcd_relative_metric_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-relative-metric-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/{predict,score}.log",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/models/{metric,density}.npz",
+        "predict/models/complete.json",
+        "predict/thresholds.npz",
+        "predict/calibration/complete.json",
+        "predict/source/source_DURA/{known,novel}_predictions.npz",
+        "predict/targets/<condition>/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Current final PCD targetU576 ancestor preserved; no loading it as source-only initializer.",
+    "MD/RMD fit full within-class RX/day variation; differs from oldF0 multibranch/MetricNet/nuisance projection RMD and oldknown90/OE32.",
+    "Whole six-condition readout roster is fixed before target access; originalF0 default head never replaced by nearestclass.",
+    "OldPCD raw/margin/calibration and original12tau exact reused; new4x6tau sourceV only, all36freeze before novel/Q.",
+    "No new targetUDA/discovery/anonymousREG or blind confirmation; sourceV calibration/oldNVQ exposure/singleRXseed/formal24-18 untouched; goalACTIVE.",
+    "All6x3 DURA predictions completed before independent3truth; no new realNN/IQ/Ufit or anonymousREG.",
+    "Fixed primary and shrink retained, no target-based threshold changes, reruns or seed expansion."
+  ],
+  "registered_at": "2026-10-31T08:40:57+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "a24c413e5ab727ec283c07405eb9b1b2e68b036b",
+    "primary": "RMD_predicted",
+    "development_gate_passed": false,
+    "new_target_UDA_success": null,
+    "source_known_12_passed": true,
+    "target_protection_passed": false,
+    "metrics": {
+      "source_DURA": {
+        "A_K": 0.8997407407407407,
+        "C_K": 0.9731111111111111,
+        "R_U": 0.46158730158730155,
+        "H_score": 0.6101525682765602,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.010074074074074235
+      },
+      "clean_DURA": {
+        "A_K": 0.32619199914254676,
+        "C_K": 0.4679491000788392,
+        "R_U": 0.5390045660880918,
+        "H_score": 0.406425508433143,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "original_closed_minus_new_open": 0.15947815424950973
+      },
+      "star_DURA": {
+        "A_K": 0.29201763790965307,
+        "C_K": 0.5281084989307449,
+        "R_U": 0.4104186251695296,
+        "H_score": 0.34123943701529313,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "original_closed_minus_new_open": 0.1251929475810291
+      }
+    },
+    "source_L_feature_reads": 6300,
+    "source_metric_fits": 1,
+    "new_threshold_sets_fitted": 4,
+    "source_only": false,
+    "inherited_PCD_target_U": 576,
+    "full_goal_status": "ACTIVE",
+    "result_ref": "docs/PAMF_PHASE3_PCD_RELATIVE_METRIC_RESULTS_20261031.md"
+  }
+}
