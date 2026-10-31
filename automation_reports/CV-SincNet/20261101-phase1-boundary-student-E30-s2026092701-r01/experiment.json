@@ -1,0 +1,186 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-boundary-student-E30-s2026092701-r01",
+  "group_id": "phase1-bounded-boundary-student",
+  "display_name": "Phase1 受限边界校正学生恢复网络",
+  "description": "冻结原 DURA 和 Tri-SIG-TIME SSL；仅在源训练中蒸馏特权输入梯度反事实，推理由受限学生从接收和 DURA IQ 预测校正。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "source-distillation",
+    "bounded-boundary",
+    "truth-last"
+  ],
+  "comparison_group_id": "phase1-trisigtime-frozen-raw-clean",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261101-diagnostic-phase1-boundary-oracle-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发不同于另一个对话的星地恢复网络；只看 Phase1 地面训练测试集；地面基座 Tri-SIG-TIME SSL；每个星地视图相对同一冻结基座 clean 损失不超过 3 个百分点。",
+  "code": {
+    "commit": "49a6c379b83447d0efc36e8df1f83356e15b7561",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch, FP32, TF32 off; original Phase1 Tri-SIG-TIME immutable release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-boundary-student-E30-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/boundary_student.py",
+      "experiments/pamf_phase1_flow/boundary_student_experiment.py",
+      "experiments/pamf_phase1_flow/boundary_student_controller.py",
+      "experiments/pamf_phase1_flow/boundary_student_worker.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Phase1 R07 source paired received/clean IQ; DURA anchor from received, clean teacher target training only",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "No TX labels, V or test IQ during training; clean teacher pseudo-class source only",
+    "augmentation": "Source 20 views then repeat first 10; fixed randomized order with 25% clean identity"
+  },
+  "permissions": {
+    "regime": "Phase1 L_s/U_s source IQ, frozen DURA and Tri-SIG-TIME SSL",
+    "query_use": "Fixed student per-record prediction without target adaptation",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed Phase1 development test previously observed, not blind"
+  },
+  "checkpoint": {
+    "initialization": "Original frozen DURA E20, frozen Tri-SIG-TIME E50, zero-output student field",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "DURA original 7/63/30 source-only metadata and pinned release; F exact original checkpoint ancestry and matching L_s/U_s IDs; DURA SHA bound into field checkpoint",
+    "provenance_verdict": "Both inherited Phase1 models are source-only and frozen; generation field from scratch",
+    "selection_rule": "Fixed E30, source-paired oracle distillation; no target-dependent selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-boundary-student",
+    "gpu_policy": "CPU true F/G source smoke; shared lock, at most 2 same-user restoration workers and 2 same-user compute processes per card, >=12000 MB; legacy capacity marker; persistent GPU B128 smoke then fresh E30 and prediction",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-boundary-student-E30-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-boundary-student-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-phase1-boundary-student-E30-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.boundary_student_controller --root /home/szu2070436088/2510044040/CV-SincNet --commit 49a6c379b83447d0efc36e8df1f83356e15b7561",
+    "stop_rule": "Source or checkpoint mismatch, smoke failure, nonfinite gradient, resource ambiguity, changed frozen weights or incomplete prediction: preserve artifacts; no automatic retry or performance-based stop"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "smoke.pt",
+    "gpu_smoke.json",
+    "gpu_smoke.pt",
+    "submitted.json",
+    "logs/{smoke,worker,gpu_smoke,train,predict,score}.log",
+    "flow/{training.jsonl,final.pt,training_complete.json,test_prediction,test_summary.json}",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Tri-SIG-TIME raw clean, per-scene raw and restored accuracy, macro F1 and clean-relative gap",
+      "per-TX, RX, day accuracy"
+    ],
+    "dimensions": [
+      "168000 Phase1 ground test physical records x seven views",
+      "TX/RX/day and six practical scenes"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-boundary-student-E30-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU experiments.pamf_phase1_flow.boundary_student_experiment score",
+    "targets_ref": "Each of six restored practical scenes within 3 percentage points of same reader raw clean; restored clean degradation at most 1 percentage point"
+  },
+  "notes": [
+    "源反事实显示，在使用配对 clean 基座类别和 clean 范数的特权条件下，2% L2 半径到达源视图 01/20 的 20/21、20/20 个基座困难判断；结果可能是对抗扰动，不是准确率或可部署证明。",
+    "源训练计算冻结 F(clean) 伪类别与 F(DURA(received))；仅二者不一致时，以 DURA 输出为起点、干净伪类别为目标进行 12 步输入梯度投影，约束半径为 DURA 自身 L2 的 5%，每步为半径的四分之一。",
+    "同意的源记录以 DURA 输出作为零校正目标；学生蒸馏逐条目标，教师不一致记录权重 8，其余权重 1。无 TX 标签、V、测试 IQ，F 和 DURA 权重冻结。",
+    "学生网络以接收 IQ 与 DURA 输出为条件，单次 Transformer 校正，逐条 L2 范数不超过 DURA L2 的 5%；推理不接收 clean、类别目标、信道标签或信道方差。该上限不保证物理保真或性能提升。",
+    "CPU 实际权重小样本和 GPU B128 smoke 通过后丢弃临时学生权重；归档会物化 512 条 L128/U384 源 IQ，实际 smoke 只选择 L_s。正式训练重新初始化，固定 E30、14790 更新，20 个源视图后重复前 10，25% clean 身份样本。",
+    "候选设计时此前 Phase1 开发测试已观察，后续同集非独立盲测。固定 E30，七视图全部 raw/restored 预测保存后才连接真值；不因性能中途停止。"
+  ],
+  "rows": [
+    {
+      "row_id": "flow",
+      "method": "DURA anchor plus one-pass 5% bounded Transformer student distilled from 12-step source teacher-boundary oracle",
+      "purpose": "Learn input-only bounded correction from privileged source oracle without clean signal at inference",
+      "config_ref": "experiments/pamf_phase1_flow/boundary_student_experiment.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/boundary_student_experiment.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110104,
+        "augmentation": 2026110105,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model 2026092701, order 2026110104, training noise 2026110105, fixed inference noise template 2026110103; existing Phase1 split and views",
+      "k": null,
+      "scenario": "Phase1 R07 L_s/U_s training; fixed Phase1 clean and six practical received views",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "E30 x63000, batch128, 14790 updates; 12 teacher input-gradient steps on source teacher-disagreement rows only; mismatch weight 8; 25% clean identity",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-boundary-student-E30-s2026092701-r01/flow",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-boundary-student-E30-s2026092701-r01/logs/train.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.boundary_student_controller --root /home/szu2070436088/2510044040/CV-SincNet --commit 49a6c379b83447d0efc36e8df1f83356e15b7561",
+      "expected_artifacts": [
+        "smoke.json",
+        "smoke.pt",
+        "gpu_smoke.json",
+        "gpu_smoke.pt",
+        "submitted.json",
+        "logs/{smoke,worker,gpu_smoke,train,predict,score}.log",
+        "flow/{training.jsonl,final.pt,training_complete.json,test_prediction,test_summary.json}",
+        "complete.json"
+      ]
+    }
+  ],
+  "registered_at": "2026-10-31T20:24:13+00:00"
+}
