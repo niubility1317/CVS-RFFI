@@ -240,3 +240,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## response＋SIG源互补诊断
 
 20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01/a7164335：VERIFIED SOURCE_ONLY，联合相对SIG额外+2/0，第二缓存纠2损2（RX1−1/RX3+1，低城区+2/中城区−2），未达双视图各+2，主FAIL；其他原保护条件通过，不增加response训练版。主F0/head5120、smoke2Ls/F2/head2、0G/优化/TX-V-target；CPU0.067106秒，1024观测/52分组独立复算。潜在分量oracle不是可实现IQ、真实TX或物理上限；默认与完整目标ACTIVE。详见本run analysis.md/results.json。
+
+
+## 接收上下文调制多尺度先验对照
+
+20261031-phase1-DURA-contextFiLM-E30-s2026092701-r01：G从零单阶段30轮/7410，保留原SIG-only四物理项/alpha1-cap0.5与配对数据、初始化、随机数、LR。新增两prior各27D同record输入统计→32→192、四层有界FiLM，末层零初值；281415参数（+14464），不读RX/scene/state标签或F作G输入，0TX/V/target。复用原F-only SIG40.32MB，F50知识/成本披露；SIG47591主对照、pureG8cf次对照，自动原七景truth-last、实际训练与推理成本，默认及完整目标保持。
