@@ -1,0 +1,335 @@
+{
+  "status": "ANALYZED",
+  "full_source": {
+    "all": {
+      "count": 63000,
+      "raw_relative_max": {
+        "count": 63000,
+        "mean": 10.118494684194525,
+        "median": 6.3837409019470215,
+        "p95": 29.209746837615963,
+        "p99": 39.23817089080811,
+        "maximum": 13104.1826171875
+      },
+      "clipped_fraction": 0.9855079365079366,
+      "trace_concentration": {
+        "0.01": 0.06386232653359232,
+        "0.05": 0.19078502099118655,
+        "0.1": 0.31721232373897523
+      }
+    },
+    "role:L_s": {
+      "count": 6300,
+      "raw_relative_max": {
+        "count": 6300,
+        "mean": 9.66621164532881,
+        "median": 6.284941911697388,
+        "p95": 28.32151365280148,
+        "p99": 39.67340049743658,
+        "maximum": 247.52691650390625
+      },
+      "clipped_fraction": 0.9850793650793651,
+      "trace_concentration": {
+        "0.01": 0.05073545450079397,
+        "0.05": 0.1791239195919312,
+        "0.1": 0.30656867224169626
+      }
+    },
+    "role:U_s": {
+      "count": 56700,
+      "raw_relative_max": {
+        "count": 56700,
+        "mean": 10.168748355179604,
+        "median": 6.391172647476196,
+        "p95": 29.2753921508789,
+        "p99": 39.15387115478516,
+        "maximum": 13104.1826171875
+      },
+      "clipped_fraction": 0.9855555555555555,
+      "trace_concentration": {
+        "0.01": 0.06527363842145568,
+        "0.05": 0.19202492695739115,
+        "0.1": 0.3183294453206093
+      }
+    },
+    "rx:1": {
+      "count": 12600,
+      "raw_relative_max": {
+        "count": 12600,
+        "mean": 11.92672140660267,
+        "median": 8.048434257507324,
+        "p95": 33.521580696105936,
+        "p99": 42.36047988891602,
+        "maximum": 247.52691650390625
+      },
+      "clipped_fraction": 0.9995238095238095,
+      "trace_concentration": {
+        "0.01": 0.03711820134957713,
+        "0.05": 0.15286935782691785,
+        "0.1": 0.27255586619120753
+      }
+    },
+    "rx:3": {
+      "count": 12600,
+      "raw_relative_max": {
+        "count": 12600,
+        "mean": 6.512483467560203,
+        "median": 3.9121826887130737,
+        "p95": 19.92003011703491,
+        "p99": 30.52327182769777,
+        "maximum": 1093.440673828125
+      },
+      "clipped_fraction": 0.9784920634920635,
+      "trace_concentration": {
+        "0.01": 0.06540238513292511,
+        "0.05": 0.18889404068565352,
+        "0.1": 0.3062955017737058
+      }
+    },
+    "rx:4": {
+      "count": 12600,
+      "raw_relative_max": {
+        "count": 12600,
+        "mean": 12.761779383614895,
+        "median": 8.350624561309814,
+        "p95": 32.81723403930664,
+        "p99": 42.02620609283448,
+        "maximum": 772.2023315429688
+      },
+      "clipped_fraction": 0.9958730158730159,
+      "trace_concentration": {
+        "0.01": 0.040520338050165194,
+        "0.05": 0.14756198201106452,
+        "0.1": 0.26063107603484975
+      }
+    },
+    "rx:6": {
+      "count": 12600,
+      "raw_relative_max": {
+        "count": 12600,
+        "mean": 12.954607738526095,
+        "median": 9.06357479095459,
+        "p95": 29.842667865753175,
+        "p99": 36.61202186584474,
+        "maximum": 13104.1826171875
+      },
+      "clipped_fraction": 0.9970634920634921,
+      "trace_concentration": {
+        "0.01": 0.08025594557450007,
+        "0.05": 0.18211583862395475,
+        "0.1": 0.290246870316654
+      }
+    },
+    "rx:8": {
+      "count": 12600,
+      "raw_relative_max": {
+        "count": 12600,
+        "mean": 6.436881424668762,
+        "median": 3.7160897254943848,
+        "p95": 16.689927196502683,
+        "p99": 28.66330402374268,
+        "maximum": 2963.03076171875
+      },
+      "clipped_fraction": 0.9565873015873015,
+      "trace_concentration": {
+        "0.01": 0.10287631461305863,
+        "0.05": 0.21962231979727867,
+        "0.1": 0.328596585709535
+      }
+    },
+    "day:1": {
+      "count": 21000,
+      "raw_relative_max": {
+        "count": 21000,
+        "mean": 10.042083590016478,
+        "median": 6.382941722869873,
+        "p95": 30.002778530120832,
+        "p99": 41.08845993041991,
+        "maximum": 2963.03076171875
+      },
+      "clipped_fraction": 0.9833333333333333,
+      "trace_concentration": {
+        "0.01": 0.061170621343787736,
+        "0.05": 0.1932781788077503,
+        "0.1": 0.3238428189497381
+      }
+    },
+    "day:2": {
+      "count": 21000,
+      "raw_relative_max": {
+        "count": 21000,
+        "mean": 10.478611979276652,
+        "median": 6.448748588562012,
+        "p95": 29.147994422912596,
+        "p99": 38.80388072967525,
+        "maximum": 13104.1826171875
+      },
+      "clipped_fraction": 0.9863333333333333,
+      "trace_concentration": {
+        "0.01": 0.07441364704411003,
+        "0.05": 0.19847192703834518,
+        "0.1": 0.3219290733164192
+      }
+    },
+    "day:3": {
+      "count": 21000,
+      "raw_relative_max": {
+        "count": 21000,
+        "mean": 9.834788483290446,
+        "median": 6.318946838378906,
+        "p95": 28.57724514007568,
+        "p99": 37.86919631957992,
+        "maximum": 874.3809814453125
+      },
+      "clipped_fraction": 0.9868571428571429,
+      "trace_concentration": {
+        "0.01": 0.054971369436689684,
+        "0.05": 0.17938838451784186,
+        "0.1": 0.3053709275257343
+      }
+    }
+  },
+  "summary": {
+    "1": {
+      "count": 512,
+      "defined": 512,
+      "raw_pressure_p95": 1.6103771924972534,
+      "raw_mean_cosine": 0.6438630732263846,
+      "bounded_mean_cosine": 0.5750310481462293,
+      "bounded_nonnegative": 496,
+      "rx_bounded_mean": {
+        "1": 0.6478255595831037,
+        "3": 0.5119269602639857,
+        "4": 0.6241272893168178,
+        "6": 0.5487950779634583,
+        "8": 0.5420896369349031
+      },
+      "maximum_bounded_pressure": 0.28110411763191223,
+      "raw_pressure": {
+        "count": 512,
+        "mean": 0.42538588883326156,
+        "median": 0.24697580188512802,
+        "p95": 1.610378682613372,
+        "p99": 2.508844089508055,
+        "maximum": 3.5007705688476562
+      },
+      "bounded_pressure": {
+        "count": 512,
+        "mean": 0.08324953219926101,
+        "median": 0.07495719939470291,
+        "p95": 0.16618710905313488,
+        "p99": 0.19030022129416463,
+        "maximum": 0.28110411763191223
+      }
+    },
+    "20": {
+      "count": 512,
+      "defined": 512,
+      "raw_pressure_p95": 1.3493328094482422,
+      "raw_mean_cosine": 0.6610820508835786,
+      "bounded_mean_cosine": 0.5874054267378597,
+      "bounded_nonnegative": 494,
+      "rx_bounded_mean": {
+        "1": 0.6553076377265084,
+        "3": 0.5231768432182863,
+        "4": 0.6725273829446557,
+        "6": 0.5603022960325083,
+        "8": 0.5256526848545424
+      },
+      "maximum_bounded_pressure": 0.2758268713951111,
+      "raw_pressure": {
+        "count": 512,
+        "mean": 0.4102168878507655,
+        "median": 0.24999985098838806,
+        "p95": 1.3493328332901,
+        "p99": 2.0032282602787004,
+        "maximum": 3.481764793395996
+      },
+      "bounded_pressure": {
+        "count": 512,
+        "mean": 0.08418844100015122,
+        "median": 0.07680721580982208,
+        "p95": 0.15770578458905218,
+        "p99": 0.19765882611274704,
+        "maximum": 0.2758268713951111
+      }
+    }
+  },
+  "decision": {
+    "eligible": false,
+    "full_source_pressure_qualified": true,
+    "views": [
+      {
+        "view": "1",
+        "passed": false
+      },
+      {
+        "view": "20",
+        "passed": false
+      }
+    ],
+    "automatic_training": false
+  },
+  "rule": "Fixedweightalphaunchanged. Complete63000source records musthave>=5percent rawrelativeoperatorlambda>1; actualFP32 boundedfactors mustallhaverelativelambda<=1+2e-5. BOTHfixedrepeatE30sourceviews01/20 need512defined cosines,rawrealizedguide/IQgradientpressurep95>1,bounded/exactheadfeature mean cosine>=.5 and>=rawmean-.02, >=384nonnegative,every5sourceRXmean>=0,andmaxboundedrealizedpressure<=1+2e-5. Onlythen supports separate scratchjointE30 with spectralcap1 andsamealpha;noautomatictraining/no targetTXclaim/no thresholdrelaxation.",
+  "source_records": 63000,
+  "probe_records": 512,
+  "source_views": [
+    1,
+    20
+  ],
+  "F_teacher": {
+    "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "seed": 2026092701,
+    "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+    "epoch": 50,
+    "updates": 11100
+  },
+  "F_unchanged": true,
+  "source_derivative_cache_run": "20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01",
+  "source_error_checkpoint": "20261031-phase1-DURA-repeatViews-E30-s2026092701-r01",
+  "source_error_commit": "8cf8e22c9ffb54d271b22e621401de8e34c69068",
+  "weight": 0.0033130025035573727,
+  "maximum_actual_relative_eigenvalue": 1.0,
+  "new_F_inputs": 1024,
+  "smoke_F_inputs": 2,
+  "new_F_VJP_inputs": 1024,
+  "reused_clean_feature_references": 512,
+  "new_G_inputs": 0,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "metric_cache_seconds": 4.855202334932983,
+  "seconds": 7.342812587041408,
+  "scope": "SOURCE_ONLY",
+  "code_commit": "aa284ea1382f8fbdf842de2d16a6735d7bc5293b",
+  "independent_metric_check": {
+    "status": "INDEPENDENT_SOURCE_METRIC_RECOMPUTED",
+    "records": 63000,
+    "all_finite": true,
+    "physical_ID_order_match": true,
+    "maximum_actual_relative_eigenvalue": 1.0000001877136548,
+    "roundoff_boundary_records": 0,
+    "new_G_F_forwards": 0,
+    "optimizer_updates": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "independent_gradient_geometry_records": 2048,
+  "actual_pressure_counts": {
+    "1": {
+      "raw_actual_fraction_over_IQ": 0.09765625,
+      "bounded_actual_fraction_over_IQ": 0.0,
+      "raw_median": 0.24697580933570862,
+      "bounded_median": 0.07495719939470291
+    },
+    "20": {
+      "raw_actual_fraction_over_IQ": 0.103515625,
+      "bounded_actual_fraction_over_IQ": 0.0,
+      "raw_median": 0.24999985098838806,
+      "bounded_median": 0.07680721580982208
+    }
+  },
+  "goal_complete": false
+}

@@ -282,3 +282,6 @@ sourceclean局部敏感度诊断20261031-diagnostic-DURA-source-cleanTangent-s20
 
 
 clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd799eb 已完整结案：scratchsingle30/7410/L189000U1701000、F50 sourceJ63000/315000VJP/645.12MB缓存30.008929s，学生训练F0/直接TX-V-target0，完整30曲线/全部loss与缓存计数核对通过。全7×168000固定后truth-last，126正式及126pureG配对分组独立一致，worker1285750/controller1285659自然结束。相对pureG四星地+0.526786至+1.577976pp，中/低城区−0.446429/−0.747619pp、clean−.043452pp；七景均低于默认，clean84.586905/lowurban66.625，3pp0/6/clean严格保持False/R17逐景1ppFalse/旧lowurban70False。源V低城区也−2.5pp，不能仅归因目标RX；局部梯度代理不等于完整身份保真。训练1022.804362s/含准备G1053.873159s/全分析1235.243895s，266951参数/25.068072m ConvLinearMAC/2prior4CG27FFT，F上游50轮成本披露；同质量效率未达。默认保持/目标ACTIVE，不回调alpha/选epoch/重测。
+
+
+源特征度量压力诊断20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01/aa284ea1完整完成：全63000 sourcecleanJ/纯repeatE30 source512×01/20，CPU7.343s/因子4.855s645.12MB/新增F1024+2/VJP1024/0G-TX-V-target-updates/F不变。98.55%源因子的最强相对方向谱值>1，不是实际98.55%梯度超界；当前实际guide/IQ p95为1.610/1.349、中位.25。固定谱cap1满足输出loss/梯度上界，但cos.643863→.575031/.661082→.587405，下降超过预定.02，两资格FAIL，不放宽/不训练该G。全63000谱/trace/finite/ID和2048条几何独立复算一致；强度与方向需同时处理，不把上界当身份收益，后续如研究方向保持的梯度平衡须独立固定验证。默认保持/完整目标ACTIVE。

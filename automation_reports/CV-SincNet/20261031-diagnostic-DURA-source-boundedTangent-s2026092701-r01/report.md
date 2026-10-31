@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01`
 - group_id：`phase1-dura-source-bounded-feature-metric`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -36,3 +36,8 @@
 先固定资格：全source至少5%实际需要cap、实际FP32因子的最大相对谱值≤1+2e-5；缓存01/20都要求旧实际guide/IQ梯度比p95>1、512cos可定义、新平均cos≥0.5且比旧最多低0.02、至少384条非负、每源RX均值非负、实际新梯度比max≤1+2e-5。失败不放宽，无自动训练。全63000谱压力/role-RX-day/trace集中度及双512数组保存，不以部分样本代替。
 
 CPU2/CUDA空，新增F1024+首步2Ls、1024次输入VJP，0G/optimizer/TX/V/target。F状态保持，旧clean特征512引用按同head子空间变换。新因子缓存645.12MB只作源训练参考，不是新恢复网络或oracle部署。4聚焦检查和唯一审查后按一次最小发布流程执行；通过也需独立登记singlejoint30和全七景正式测试。默认保持，完整目标ACTIVE。
+
+
+## 完整诊断结果
+
+VERIFIED / ANALYZED / SOURCE_ONLY。全63000因子谱上界和2048条几何独立复算；旧实际压力p95=1.610377/1.349333，谱限制后平均cos.575031/.587405低于旧.643863/.661082超过.02，双源资格FAIL，不启动该G、不放宽规则。CPU7.343秒、源因子制备4.855秒/645.12MB，F1024+2smoke、G新前向/训练/TX-V-target0，F不变。见[完整分析](analysis.md)与results.json；默认保持/目标ACTIVE。

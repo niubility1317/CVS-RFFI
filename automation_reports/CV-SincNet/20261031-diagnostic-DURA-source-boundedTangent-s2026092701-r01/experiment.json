@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "aa284ea1382f8fbdf842de2d16a6735d7bc5293b",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01-release"
@@ -87,7 +87,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.tangent_bound_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.tangent_bound_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01 --commit aa284ea1382f8fbdf842de2d16a6735d7bc5293b",
     "stop_rule": "Badsource/F/cache/order/basis/shape/nonfinite/PSD/statechange/collision:preserveandstop/noautorerun;failedscientificrule doesnotrelax orautotrain"
   },
   "expected_artifacts": [
@@ -142,7 +142,7 @@
       "budget_ref": "CPU2/all63000cacheeigensystems/newderived645.12MBfactor;F1024restored+2smoke/1024inputVJP;0newFcleanJ/G/optimizer/TX-V-target",
       "output_root": "runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.tangent_bound_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.tangent_bound_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01 --commit aa284ea1382f8fbdf842de2d16a6735d7bc5293b",
       "expected_artifacts": [
         "launch.json",
         "smoke.json",
