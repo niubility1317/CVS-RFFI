@@ -1,0 +1,250 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-prototype-identity-s2026092701-r01",
+  "group_id": "pamf-phase3-prototype-identity",
+  "display_name": "PAMF第三阶段：源原型身份与PCD条件拒识",
+  "description": "Source L unit-PCD centroids provide semantic identity, same PCD GMM and newly source-known-calibrated rejection; original F0 remains baseline, no target clustering or new UDA.",
+  "kind": "cvs",
+  "stage": "Phase3-prototype-identity-three-DURA",
+  "aliases": [
+    "源原型身份拒识"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "DURA",
+    "source_prototype_identity",
+    "conditional_density",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-prototype-identity",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-source-cluster-geometry-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "89483533937a8b97b51700b984e404d10ecab4c5",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-prototype-identity-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.prototype_identity_run",
+      "experiments.pamf_phase3_open_world.prototype_identity_score",
+      "experiments.pamf_phase3_open_world.prototype_identity_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_PROTOTYPE_IDENTITY_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Existing source G10 P1 and fresh RX3-2 future feature caches",
+    "version": "VALIDATED_ONCE physical roles and frozen source_geometry074/freshf4b5 final-PCD caches reused",
+    "representation": "Unit-PCD160 six source means for identity, original white PCD known90/OE32 for rejection; all same frozen DURA input",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 开发域的时序发现与未来未知到达",
+    "physical_ids_ref": "source_geometry source_features.ids matched original L ids/metadata; original fresh sourceV/NV/future paired IDs",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "Private builder/scorer only: old6 and metadata-selected discover3/late1; algorithm registered roster only old6",
+    "roles": {
+      "source_L_features_and_labels": 6300,
+      "source_OE_values_new": 0,
+      "source_V_threshold_calibration": 27000,
+      "source_novel_prediction_reuse": 3150,
+      "target_U_values_new": 0,
+      "future_Q_each": 10238,
+      "future_Q_known": 4508,
+      "future_Q_unknown": 5730
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original source roles and inherited fresh Q capsule/split handles",
+    "validation_ref": "local_artifacts/pamf_phase2_full_eq_validation_20261029_r02/summary.json; pool/complete.json after construction",
+    "support_query_ref": "Source L means freeze before V; source-only knownV tau freeze before NV/Q; Q never fits. No target U or private Utruth values.",
+    "leo_config_ref": "Original G10 MIX01/DURA cached features, paired same-physical future clean/star; no channel/IQ regeneration"
+  },
+  "permissions": {
+    "regime": "Source L labels fit six non-neural identity means; V known calibrates twelve new tau with original F0 protection. No neural/head/GMM updates, no actual target U fit. PCD targetU576 ancestry retained.",
+    "query_use": "Means before V; all tau before NV/Q; all4x3 predictions before CPU opens sourceNV/clean/star truths once each. New prototype c routes both density and tau, never true TX.",
+    "external_method_exception": null,
+    "claim_scope": "Previously exposed RX34 development, no independent blind or newUDA success claim. Original F0 logits are baseline; prototype distances are distinct evidence. AN/HOW N/A, REG off."
+  },
+  "checkpoint": {
+    "initialization": "No training: fresh TARGET_PCD444 with U576 ancestry, original F0/default6/r03/DURA; source geometry was read-only final-PCD encoding",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Source392005 matched; source_geometry074 sourcefeatures have exact freshf4b5PCD identity. Composite not a source-only model, inherited U576 remains.",
+    "selection_rule": "Fixed nearest unit-PCD six source means, fixed existing density, two new source-known calibrations, no target-based candidate/threshold selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-prototype-identity-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-prototype-identity-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-prototype-identity-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_prototype_identity_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.prototype_identity_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-prototype-identity-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One sequential predictor then independent CPU score, actualfree>=4096MiB across0..7, max2new/card; foreign untouched",
+    "stop_rule": "Illegal source/ancestry, frozen mutation, nonfinite or collision preserves and stops; low scientific score completes every preregistered condition, no auto restart."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/{predict,score}.log",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/models/{density,prototypes}.npz",
+    "predict/thresholds.npz",
+    "predict/calibration/complete.json",
+    "predict/source/<arm>/{known,novel}_predictions.npz",
+    "predict/targets/<condition>/<arm>/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro C_K",
+      "macro R_U full4target unknown",
+      "H-score",
+      "originalF0 and source-prototype closed accuracy",
+      "original F0 gap",
+      "paired identity/correctaccept/rejection changes"
+    ],
+    "dimensions": [
+      "OLD_PCD/PROTO each pooled and predicted",
+      "source_DURA/clean_DURA/star_DURA",
+      "required TX/RX/day/sixscene;03-23missingoldNA"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-prototype-identity-s2026092701-r01/predict",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-prototype-identity-s2026092701-r01/score",
+    "targets_ref": "source known12; targetcleanRU95/starRU90 CK90 originalF0gap2pp and complete main-scene coverage; starAK improves OLD_PCDpred and RU notlower",
+    "primary": [
+      "PROTO_predicted_ratio; absolute and relative simultaneous criteria, no newUDA or registration success claim"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "prototype-identity-s2026092701",
+      "method": "PCD source-prototype semantic identity plus frozen density",
+      "purpose": "Improve identity routing independently of failed target clusters while preserving open rejection",
+      "config_ref": "docs/PAMF_PHASE3_PROTOTYPE_IDENTITY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-prototype-identity-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103131,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026103133
+      },
+      "seed_notes": "No new samples/channel or stochastic optimization; original fresh episode and fixed source data reused",
+      "k": null,
+      "scenario": "Three same-DURA conditions, starlearning ancestors and clean futuretestonly",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "RealNN/G0, synthetic actual checkpoint smoke separate. One six-mean fit6300features +2x6sourceVtau; oldGMM/tau/NN unchanged. Main minNN601672; full comparison1169386. Cached runtime notB1.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-prototype-identity-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-prototype-identity-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.prototype_identity_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-prototype-identity-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/{predict,score}.log",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/models/{density,prototypes}.npz",
+        "predict/thresholds.npz",
+        "predict/calibration/complete.json",
+        "predict/source/<arm>/{known,novel}_predictions.npz",
+        "predict/targets/<condition>/<arm>/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Original F0 same-DURA remains original baseline, even if new prototype closed accuracy changes.",
+    "No target U/private Utruth/class quota/K read; inherited PCD targetU576 lineage is explicit.",
+    "No clustering/anonymousREG in this row, AN/HOW N/A, newUDA updates0.",
+    "Fixed original control2columns exactreuse; all4x3 prediction then independent3truth.",
+    "All scene/known/unknown completeness required, no score-based threshold or candidate switches. Full goal ACTIVE.",
+    "All4x3 predictions then independent3truth complete; no promotion, selected oldPCD preserved.",
+    "Prototype closed ceiling on this fixed future data already exceeds2pp original-F0 loss; rejection-only tau changes cannot repair identity ceiling.",
+    "No new neural/GMM/UDA/REG; inherited PCD U576 remains, AN/HOW N/A."
+  ],
+  "registered_at": "2026-10-31T07:05:58+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "89483533937a8b97b51700b984e404d10ecab4c5",
+    "primary": "PROTO_predicted_ratio",
+    "full_goal_status": "ACTIVE",
+    "primary_composite_success": false,
+    "new_UDA_success": null,
+    "source_known_12_passed": true,
+    "target_protection_passed": false,
+    "metrics": {
+      "source_DURA": {
+        "A_K": 0.8996666666666666,
+        "C_K": 0.9633703703703703,
+        "R_U": 0.6155555555555555,
+        "H_score": 0.7309750433868641,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "candidate_macro_closed_accuracy": 0.9158518518518518,
+        "original_closed_minus_new_open": 0.01014814814814835
+      },
+      "clean_DURA": {
+        "A_K": 0.2747880641262554,
+        "C_K": 0.40621899668328315,
+        "R_U": 0.6340816867866629,
+        "H_score": 0.38341704965976364,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "candidate_macro_closed_accuracy": 0.44875987573665754,
+        "original_closed_minus_new_open": 0.2108820892658011
+      },
+      "star_DURA": {
+        "A_K": 0.24072019967976221,
+        "C_K": 0.4289545680162903,
+        "R_U": 0.5444079070582287,
+        "H_score": 0.33383082065111086,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "candidate_macro_closed_accuracy": 0.3938353900785531,
+        "original_closed_minus_new_open": 0.17649038581091997
+      }
+    },
+    "classification_ceiling_meets_2pp": {
+      "clean_DURA": false,
+      "star_DURA": false
+    },
+    "result_ref": "docs/PAMF_PHASE3_PROTOTYPE_IDENTITY_RESULTS_20261031.md"
+  }
+}

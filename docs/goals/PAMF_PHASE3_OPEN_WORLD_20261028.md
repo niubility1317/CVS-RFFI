@@ -1183,3 +1183,13 @@ Run `20261031-phase3-source-cluster-geometry-s2026092701-r01` / actualcode `074a
 ## 2026-10-31：源端簇几何排障完整结果
 
 Run `20261031-phase3-source-cluster-geometry-s2026092701-r01` / actualcode `074a84caa44387e5ad8472ab8f217c92150421fd`，sourceL6300三模型同P1前向及20组原型留出/早日HDB/后日预测评价 VERIFIED 完整完成。F0_unit 后日宏正确接收五RX均值56.785714%（范围27.142857%至71.190476%），source-screen=False；r03_unit 后日宏正确接收五RX均值81.285714%（范围68.333333%至85.595238%），source-screen=False；PCD_unit 后日宏正确接收五RX均值82.928571%（范围66.785714%至89.523810%），source-screen=False；PCD_white 后日宏正确接收五RX均值56.095238%（范围16.071429%至80.476190%），source-screen=False。只作模型已见六TX五RX及训练L记录的统计排障，不能当真实unknown或未见RX性能。PCD仍有U576祖先，本行targetU/Q/private等值0读，AN/RU/HOW均N/A；不更换PCD、不自动扩seed或target。新F06300/signal12600/G0、NN/GMM/旧τ更新0，统计支持20/HDB20，合成另列、foreign0，完整goalACTIVE。见`docs/PAMF_PHASE3_SOURCE_CLUSTER_GEOMETRY_RESULTS_20261031.md`。
+
+
+## 2026-10-31：源原型身份条件拒识预登记
+
+Run `20261031-phase3-prototype-identity-s2026092701-r01` / actualcode `89483533937a8b97b51700b984e404d10ecab4c5`。冻结现有f4b5PCD/F0/DURA和GMM，source_geometry074的L6300单位PCD均值6个提供新身份c，同时路由密度及源V两组新6tau。原F0仍原始保护baseline，四读出三DURA/独立三truth全完成；newNN/GMM/UDA0，新U/Q拟合0，仅source统计和已知Vτ。PCD继承U576，非新UDA；无聚类注册AN/HOW=N/A。clean95/star90/CK90/原F0损2pp/coverage及对OLDpred相对收益门槛保持，完整goalACTIVE。见`docs/PAMF_PHASE3_PROTOTYPE_IDENTITY_PLAN_20261031.md`。
+
+
+## 2026-10-31：源原型身份条件拒识完整结果
+
+Run `20261031-phase3-prototype-identity-s2026092701-r01` / actualcode `89483533937a8b97b51700b984e404d10ecab4c5`，source六均值/两组sourceVτ、4×3DURA预测与独立3truth均 VERIFIED。主PROTO_pred：source_DURA: AK/CK/RU/H=89.966667/96.337037/61.555556/73.097504%；原F0闭集90.981481%/原型闭集91.585185%；原F0损1.014815pp；clean_DURA: AK/CK/RU/H=27.478806/40.621900/63.408169/38.341705%；原F0闭集48.567015%/原型闭集44.875988%；原F0损21.088209pp；star_DURA: AK/CK/RU/H=24.072020/42.895457/54.440791/33.383082%；原F0闭集41.721059%/原型闭集39.383539%；原F0损17.649039pp。sourceknown12过但目标绝对/相对门槛失败，star宏AK较OLDpred−3.879703pp、RU+5.133092pp，NO_PROMOTION/不扩seed/旧PCD保持。当前prototype闭集本身较origF0 clean少3.691028pp、star少2.337520pp，即使无拒识亦不能满足当前2pp保护；结论限本冻结分类器和数据。sourceL训练角色的97.9%几何诊断不代表V或target泛化，新prototype只是复合判决而无新UDA，PCD继承U576。本行真IQ/NN/G0、source6means7680B/new12tau96B，AN/HOW=N/A，sourceV校准非独立、Q已曝光/03-23缺类N/A/正式24-18未读，完整目标ACTIVE。见`docs/PAMF_PHASE3_PROTOTYPE_IDENTITY_RESULTS_20261031.md`。
