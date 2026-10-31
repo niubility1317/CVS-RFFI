@@ -1,0 +1,356 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase3-ground-contrast-s2026092701-r01",
+  "group_id": "pamf-phase3-ground-contrast",
+  "display_name": "PAMF第三阶段：地面原生特征已知未知对比训练",
+  "description": "Complete originalF0 students KCON/OECON: same known crossRX/day positives, with or without outside-six OE negatives in native160 SupCon; prior CPAIR controls cached.",
+  "kind": "cvs",
+  "stage": "Phase3-ground-contrast",
+  "aliases": [
+    "地面原生特征对比"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_clean",
+    "native160",
+    "SupCon",
+    "OE",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-native-known-vs-OE-contrast",
+  "parent_run_ids": [
+    "20261101-phase3-ground-centered-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "f465589cce842b80d76d17a3c02262c6b75114f4",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-ground-contrast-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.ground_contrast_launch",
+      "experiments.pamf_phase3_open_world.ground_contrast_train",
+      "experiments.pamf_phase3_open_world.ground_contrast_run",
+      "experiments.pamf_phase3_open_world.ground_contrast_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_GROUND_CONTRAST_PLAN_20261101.md"
+    ]
+  },
+  "data": {
+    "dataset": "Same D7 source392005 G(clean) L6300/OE6134/CAL13500/sourceQ16650 and RX34 paired futureQ10238",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Actual native160 classifier coordinates normalizeeps1e-4; T.1 source SupCon with sameTX crossRX-and-day positives. No projection or replacement head.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 先强化预部署地面开放能力",
+    "physical_ids_ref": "VALIDATED_ONCE 20261101-phase3-ground-open-s2026092701-r03-source-clean-v1 / sourceV-half-y-rx-day-s2026110101, no data rebuild.",
+    "label_map_ref": "Originalsix L/V y; OE outside-six only; U trueTX/K/quotas forbidden; future trueTX scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "source_Us_new": 0,
+      "source_CAL": 13500,
+      "source_known_TEST": 13500,
+      "source_NV": 3150,
+      "source_Q": 16650,
+      "target_U_new": 0,
+      "target_U_ID_new": 0,
+      "target_clean_Q": 10238,
+      "target_star_Q": 10238,
+      "future_known": 4508,
+      "future_unknown": 5730,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 labeled source6300/63000=10%; sourceOE outside-six membership allowed, OEtrueTXhidden; no new source labels or targetTXlabels.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "Same source392005/F0/pure-r03/DURA ancestry, existing VALIDATED_ONCE data, no new physical data validation",
+    "support_query_ref": "Exact unchanged D7 CAL/TEST split and source16,650/RX34future10,238 paired records; historically exposed development, not blind.",
+    "leo_config_ref": "Same fixed G10 MIX01 source/U/future received and DURA v1R69, source3001/4001 receiver2027, future3133/3134, no redrawn channel"
+  },
+  "permissions": {
+    "regime": "L true six-class labels/public RXday; OE outside-six only, no OE TX/trueK/positive pairs. Cached sameG(clean)originalF0 teacher. NewUs/targetU/CAL/TEST/NV/Q training0; original F0/G/CPAIR untouched.",
+    "query_use": "RealCP synthetic firstsmoke, two source-only2220step arms, finalfreeze, CAL24known groups sets24new+12oldtau; all24 points then independentCPU4truth once. No query updates/batch fit/quota or targetclean learning.",
+    "external_method_exception": null,
+    "claim_scope": "Native160 source contrast variation, not standard SupCon reproduction or unknown-cluster guarantee. Formal95CK/RU/gap2/requiredscenes, fullACTIVE/ANHOWNA/formal0."
+  },
+  "checkpoint": {
+    "initialization": "Each complete originalF0 E50/11100 native reader/default6 copied independently; fresh AdamW/Sinc48 and buffersfixed, headbody joint. CPAIR reference not loaded into new students.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Matched originalF0 source392005 and unchanged D7 roles; oldCPAIR has source-only ancestry and supplies only source sampling trace plus frozen calibration/query controls. No targetPCD initialization or teacher.",
+    "selection_rule": "Fixedfinal2220 each; .1 SupCon/T.1 and mainOECON_centered predetermined, no sourceNV/Q/CAL neuralcheckpoint selection or hyperparameter sweep."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-ground-contrast-20261101",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-contrast-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-contrast-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_ground_contrast_20261101_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.ground_contrast_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-ground-contrast-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One owned trainworker runs two arms sequentially, thenpredict; independentCPUscore CUDAempty. free>=4096MiB/max2added/card/no foreign operations.",
+    "stop_rule": "Illegal ancestor/role, nonfinite, frozenstatechange, collision or unablelegalprediction preserved technicalfailure; low scientific scores complete fullmatrix, no hotchange/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/*.log",
+    "train/{resolved_config,complete,smoke}.json",
+    "train/rows/*/{final.pt,complete.json,steps.jsonl}",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/queries/*/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "H-score",
+      "canonicalF0/studentclosed",
+      "AUROC/OSCR",
+      "pairedcorrectaccept/reject",
+      "full4440loss/gradients/positive-negativecounts/nativegeometry",
+      "ANHOWNA"
+    ],
+    "dimensions": [
+      "6methods x4DURAconditions",
+      "source24groups",
+      "sixstarScenes",
+      "TX/RX/day/scene/day_scene"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-contrast-s2026092701-r01/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.ground_contrast_score",
+    "targets_ref": "Formal all4conditions CK95/RU95/canonicalF0gap2pp and complete main scenes95; sourceclean24groups. Groundstage/frozenrejection distinct, fullACTIVE.",
+    "primary": [
+      "OECON_centered"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "KCON-s2026092701",
+      "method": "KCON",
+      "purpose": "CE/KD/centeredpair plus .1 native160 known-crossRXday SupCon known negatives only",
+      "config_ref": "docs/PAMF_PHASE3_GROUND_CONTRAST_PLAN_20261101.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-contrast-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110101,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Both reset L2026103017/OE2026103018 and originalF0; all2220 indices compare priorCPAIR. No new views/channel RNG; existing source3001/channel4001/future3133/3134/receiver2027.",
+      "k": null,
+      "scenario": "SourceG(clean) training only, all4DURA source/cross clean/star frozen conditions",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Each2220xL192OE64=568320, total1136640train+134552prediction=1271192newstudent rows/G20476/F00/oldCPAIR0. AdamW1e-4/wd1e-4/clip5. Deploy499944+6tau48B, all36tau288B.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-contrast-s2026092701-r01/train/rows/KCON",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-contrast-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.ground_contrast_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-ground-contrast-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/{resolved_config,complete,smoke}.json",
+        "train/rows/*/{final.pt,complete.json,steps.jsonl}",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/queries/*/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "OECON-s2026092701",
+      "method": "OECON",
+      "purpose": "CE/KD/centeredpair plus .1 native160 known-crossRXday SupCon known and outside-six OE negatives",
+      "config_ref": "docs/PAMF_PHASE3_GROUND_CONTRAST_PLAN_20261101.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-contrast-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110101,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Both reset L2026103017/OE2026103018 and originalF0; all2220 indices compare priorCPAIR. No new views/channel RNG; existing source3001/channel4001/future3133/3134/receiver2027.",
+      "k": null,
+      "scenario": "SourceG(clean) training only, all4DURA source/cross clean/star frozen conditions",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Each2220xL192OE64=568320, total1136640train+134552prediction=1271192newstudent rows/G20476/F00/oldCPAIR0. AdamW1e-4/wd1e-4/clip5. Deploy499944+6tau48B, all36tau288B.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-contrast-s2026092701-r01/train/rows/OECON",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-contrast-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.ground_contrast_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-ground-contrast-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/{resolved_config,complete,smoke}.json",
+        "train/rows/*/{final.pt,complete.json,steps.jsonl}",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/queries/*/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "KCON versus OECON isolates OE inclusion in contrastive denominator; oldCPAIR measures adding contrast, all same originalF0/sourcebatch/budget.",
+    "Known sameTX but non-crossRXday pairs excluded; OE has no positive pair or trueidentity, no claim of internal unknown separation.",
+    "Two old controls exact from currentCPAIR cols2/3; canonical originalF0 remains separate baseline_logits, not parentcol0DMEAN.",
+    "Three classifier pairs each energy/centered, fixed mainindex5; methods6/classes6 axes validated, no test-driven readout switch.",
+    "24new+12oldtau=36FP64/288B; sourceUs/F0/G/reference costs inherited. Original/knownCAL labels retained, no full-system unlabeled claim."
+  ],
+  "registered_at": "2026-10-31T20:32:58+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "f465589cce842b80d76d17a3c02262c6b75114f4",
+    "primary_method": "OECON_centered",
+    "metrics_fraction": {
+      "source_clean_DURA": {
+        "A_K": 0.9796296296296295,
+        "C_K": 0.9859259259259258,
+        "R_U": 0.6796825396825397,
+        "H_score": 0.802545978905151,
+        "original_F0_macro_closed_accuracy": 0.9841481481481482,
+        "candidate_macro_closed_accuracy": 0.9845925925925926,
+        "original_closed_minus_new_open": 0.004518518518518699
+      },
+      "source_star_DURA": {
+        "A_K": 0.8978518518518519,
+        "C_K": 0.9691111111111111,
+        "R_U": 0.44222222222222224,
+        "H_score": 0.5925792444370743,
+        "original_F0_macro_closed_accuracy": 0.9091851851851852,
+        "candidate_macro_closed_accuracy": 0.9102222222222222,
+        "original_closed_minus_new_open": 0.011333333333333306
+      },
+      "cross_clean_DURA": {
+        "A_K": 0.35411711540470076,
+        "C_K": 0.5309787315257344,
+        "R_U": 0.5396163400607972,
+        "H_score": 0.4276160427899487,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "candidate_macro_closed_accuracy": 0.4886425488025529,
+        "original_closed_minus_new_open": 0.13155303798735574
+      },
+      "cross_star_DURA": {
+        "A_K": 0.31778065504328207,
+        "C_K": 0.5933562637507936,
+        "R_U": 0.42172208585281323,
+        "H_score": 0.3624465827567668,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "candidate_macro_closed_accuracy": 0.42628442187977217,
+        "original_closed_minus_new_open": 0.09942993044740012
+      }
+    },
+    "ground_source_success": false,
+    "cross_clean_success": false,
+    "ground_stage_success": false,
+    "frozen_rejection_success": false,
+    "scientific_success": false,
+    "formal_C_K_minimum": 0.95,
+    "formal_R_U_minimum": 0.95,
+    "original_F0_loss_maximum": 0.02,
+    "total_optimizer_updates": 4440,
+    "steps_per_arm": 2220,
+    "all_4440_steps_analyzed": true,
+    "all_4440_source_indices_match_CPAIR": true,
+    "contrast_weight": 0.1,
+    "contrast_temperature": 0.1,
+    "contrast_dimension": 160,
+    "real_training_student_forward_rows": 1136640,
+    "real_prediction_student_forward_rows": 134552,
+    "combined_student_forward_rows": 1271192,
+    "new_legacy_CAL_forward_rows": 0,
+    "total_new_real_NN_forward_rows": 1271192,
+    "new_G_forward_rows": 20476,
+    "new_F0_forward_rows": 0,
+    "source_L": 6300,
+    "source_OE": 6134,
+    "new_source_Us": 0,
+    "source_Us_GT_reads": 0,
+    "new_target_U": 0,
+    "source_CAL": 13500,
+    "source_known_TEST": 13500,
+    "source_novel_TEST": 3150,
+    "source_Q": 16650,
+    "cross_future_Q": 10238,
+    "new_data_exports": 0,
+    "inherited_data_G_forward_rows": 99284,
+    "inherited_data_F0_forward_rows": 36450,
+    "original_models_unchanged": true,
+    "student_default_head_jointly_trained": true,
+    "student_Sinc_and_buffers_fixed": true,
+    "source_teacher": "same_cached_G(clean)_original_F0",
+    "student_initialization": "complete_original_F0_independent_from_old_CPAIR",
+    "legacy_energy_overall_exact": true,
+    "new_threshold_values": 24,
+    "reused_threshold_values": 12,
+    "threshold_values": 36,
+    "threshold_bytes": 288,
+    "primary_deployed_neural_parameters": 499944,
+    "main_threshold_values": 6,
+    "extra_deployed_heads": 0,
+    "source_bank_deployed": false,
+    "adaptation_success": null,
+    "new_target_DA": false,
+    "formal_target_accessed": false,
+    "registration_success": null,
+    "A_N": null,
+    "H_OW": null,
+    "full_goal_status": "ACTIVE",
+    "primary_selection_changed": false,
+    "result_ref": "docs/PAMF_PHASE3_GROUND_CONTRAST_RESULTS_20261101.md"
+  }
+}
