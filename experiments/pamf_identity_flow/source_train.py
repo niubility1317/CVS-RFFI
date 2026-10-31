@@ -15,9 +15,9 @@ from experiments.pamf_dura_direct_train import runner as source
 from experiments.pamf_dura_direct_train.f_guided import source_ids
 from experiments.pamf_phase3_open_world import star_relative_source as f0
 
-RUN='20261101-phase3-identity-flow-source-E20-s2026092701-r01'
+RUN='20261101-phase3-identity-flow-source-E30-s2026092701-r01'
 ARM='identity_flow'
-EPOCHS=20
+EPOCHS=30
 BATCH=128
 STEPS=EPOCHS*math.ceil(63000/BATCH)
 G10_RUN='20261029-phase3-star-representation-s2026092701-r01'
@@ -34,12 +34,12 @@ def config():
         seed_order=2026110104,seed_flow=2026110105,seed_inference=2026110103,
         source_examples_per_epoch=63000,source_mix=dict(r07=31500,g10_L=15750,clean=15750),
         g10_sample_rule='two full random permutations of L_s plus half of a third, each epoch',
-        R07_views='one original source view per epoch 01 through 20, 2.462 GHz',
+        R07_views='original source views 01 through 20, then repeat 01 through 10; 2.462 GHz',
         G10_view='one fixed MIX01 source L_s view, 2.45 GHz, repeated; not independent observations',
         objective='mean(two flow losses)+F0 feature anchor+0.25*F0 path agreement',
         time='uniform[0,1)',noise='two independent Gaussian starts, scale 0.02',
         optimizer='AdamW',peak_lr=.0003,final_lr=.00002,warmup=493,weight_decay=.0001,
-        gradient_clip=1.,final_checkpoint='fixed E20; no target-dependent selection',
+        gradient_clip=1.,final_checkpoint='fixed E30; no target-dependent selection',
         inference='mean of two antithetic fixed common noise templates, scale 0.02, 4 Euler steps each',
         teacher='original Phase3 source F0 E50/11100 frozen; gradients only through input',
         source_scope='L_s/U_s only, no TX labels, V/OE/novel/target IQ or threshold updates')
@@ -87,6 +87,11 @@ def learning_rate(update):
     if update<493:return .0003*(update+1)/493
     fraction=(update-493)/(STEPS-493-1)
     return .00002+(.0003-.00002)*.5*(1+math.cos(math.pi*fraction))
+
+
+def source_view(epoch):
+    if type(epoch) is not int or not 1<=epoch<=EPOCHS:raise ValueError('Fixed 30-epoch view schedule required')
+    return (epoch-1)%20+1
 
 
 def save(path,model,commit,epoch,updates):
@@ -142,7 +147,8 @@ def train(root,runtime,commit,output):
     torch.cuda.reset_peak_memory_stats()
     with (row/'training.jsonl').open('x',encoding='utf-8') as log:
         for epoch in range(1,EPOCHS+1):
-            original=np.load(p['cache']/'epochs'/f'{epoch:02d}'/'received.npy',mmap_mode='r',allow_pickle=False)
+            view=source_view(epoch)
+            original=np.load(p['cache']/'epochs'/f'{view:02d}'/'received.npy',mmap_mode='r',allow_pickle=False)
             if original.shape!=(63000,2,256) or original.dtype!=np.float32:raise ValueError('Original source view required')
             order=rng.permutation(63000)
             g_order=np.concatenate([rng.permutation(6300) for _ in range(3)])[:15750]
@@ -158,10 +164,10 @@ def train(root,runtime,commit,output):
                 loss.mean().backward();norm=torch.nn.utils.clip_grad_norm_(model.parameters(),1.,error_if_nonfinite=True)
                 optimizer.step();updates+=1;clipped+=int(norm>1)
                 for key,value in dict(loss=loss,**terms).items():totals[key]+=float(value.detach().sum())
-            record=dict(epoch=epoch,updates=updates,source_mix=counts,losses={k:v/63000 for k,v in totals.items()},
+            record=dict(epoch=epoch,source_cache_view=view,updates=updates,source_mix=counts,losses={k:v/63000 for k,v in totals.items()},
                 clipped_fraction=clipped/math.ceil(63000/BATCH),seconds=time.perf_counter()-start)
             log.write(json.dumps(record,allow_nan=False)+'\n');log.flush();print(json.dumps(record),flush=True)
-    if updates!=STEPS:raise ValueError('Fixed E20 source budget incomplete')
+    if updates!=STEPS:raise ValueError('Fixed E30 source budget incomplete')
     if any(v.grad is not None for v in teacher.parameters()) or any(not torch.equal(v.detach().cpu(),before[k]) for k,v in teacher.state_dict().items()):
         raise ValueError('F0 must remain frozen throughout training')
     save(row/'final.pt',model,commit,EPOCHS,updates)

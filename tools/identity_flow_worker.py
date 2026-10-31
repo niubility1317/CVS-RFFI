@@ -1,4 +1,4 @@
-"""Sequential fixed GPU work: train, predict all panels, then profile."""
+"""Sequential fixed GPU work: E30 train, predict all panels, then profile."""
 import argparse
 import json
 import os

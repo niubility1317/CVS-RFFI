@@ -5,11 +5,18 @@ from torch import nn
 
 from experiments.pamf_identity_flow.training import align_g10, mix_epoch, objective, FixedAntitheticFlow
 from experiments.pamf_identity_flow.model import IdentityConditionalFlow
+from experiments.pamf_identity_flow.source_train import source_view, EPOCHS, STEPS
 
 
 class Reader(nn.Module):
     def features(self, x):
         return torch.cat((x.mean(2), x.square().mean(2), x[:, :, :64].mean(2)), 1)
+
+
+def test_full_thirty_epoch_budget_reuses_declared_source_views():
+    assert EPOCHS==30 and STEPS==14790
+    assert [source_view(i) for i in range(1,31)]==list(range(1,21))+list(range(1,11))
+    with pytest.raises(ValueError):source_view(31)
 
 
 def test_g10_alignment_rejects_duplicate_or_non_source_ids():

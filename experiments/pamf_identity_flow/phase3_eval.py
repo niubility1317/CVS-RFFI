@@ -18,7 +18,7 @@ from experiments.pamf_phase3_open_world import fresh_dura_score as reference_sco
 from experiments.pamf_phase3_open_world import fresh_world_score as world_score
 from . import source_train as candidate
 
-RUN = '20261101-phase3-identity-flow-source-E20-s2026092701-r01'
+RUN = '20261101-phase3-identity-flow-source-E30-s2026092701-r01'
 STATUS = 'IDENTITY_FLOW_PHASE3_PREDICTIONS_COMPLETE'
 FIELDS = {'run_id', 'code_commit', 'candidate_code_commit', 'reference_runtime', 'candidate_checkpoint', 'output_root'}
 
@@ -83,7 +83,7 @@ def predict(c, device='cuda:0'):
     completed = _read(Path(c['candidate_checkpoint']).parent/'training_complete.json')
     if (completed.get('status'), completed.get('epoch'), completed.get('updates'),
         completed.get('F0_frozen'), completed.get('target_IQ_reads')) != ('SOURCE_TRAINED', candidate.EPOCHS, candidate.STEPS, True, 0):
-        raise ValueError('Complete fixed source-only E30 candidate required')
+        raise ValueError('Complete fixed source-only E30 conditional-flow candidate required')
     # Validate the original six-path artifact and its exact inherited DURA
     # values before using any control or reading the new received records.
     old_done, _, old_rows = reference_score._prediction(old['output_root'])
