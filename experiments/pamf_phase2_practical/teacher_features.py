@@ -126,5 +126,5 @@ def bridge_type(method):
     if method=='native_skip':return NativeSkipBridge
     if method=='residual_skip':return ResidualSkipBridge
     if method=='episodic_metric':return EpisodicMetricBridge
-    if method in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble'):return OrbitEnsembleBridge
+    if method in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble'):return OrbitEnsembleBridge
     return TeacherBridge
