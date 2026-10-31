@@ -39,3 +39,19 @@
 ## 输入来源补充核验
 
 旧 Phase1 DURA run 的原始 `launch.json` 将 `--formal-reference` 指向 `20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference`；原预测代码从该目录逐视图读取 received IQ，再写出恢复 IQ。本次候选同样从该正式参考目录读取输入；两份恢复结果／参考的 168000 条物理 ID 已独立核实逐项同序。该检查支持输入对应关系，不替代即将进行的同基座识别和评分。
+
+## 完整同基座对照结果
+
+状态 VERIFIED／ANALYZED，七视图每视图 168000 条。DURA 旧恢复 IQ 与新候选同序物理 ID，均由原始 Phase1 三视图 Tri-SIG-TIME SSL 固定基座识别；没有使用旧分类器分数。独立 CPU 复算总体、TX、RX、day 和 Macro-F1，结果与原评分一致。
+
+| Phase1 视图 | DURA＋Tri-SIG-TIME | 新轨迹候选＋Tri-SIG-TIME | 新候选减 DURA |
+|---|---:|---:|---:|
+| clean | 86.6155% | 86.2345% | -0.3810 pp |
+| practical_high | 84.3435% | 75.5155% | -8.8280 pp |
+| practical_mid | 83.0161% | 74.0077% | -9.0083 pp |
+| practical_low_suburban | 81.3220% | 72.5411% | -8.7810 pp |
+| practical_high_urban | 83.0494% | 72.1893% | -10.8601 pp |
+| practical_mid_urban | 75.7060% | 60.5143% | -15.1917 pp |
+| practical_low_urban | 68.8012% | 51.0363% | -17.7649 pp |
+
+同视图逐样本配对验证了两方法原始预测完全一致，差值等于净修复数除以 168000。新轨迹候选六个场景全部低于 DURA；两个模型均未满足六场景距原始地面 clean 86.5387% 不超过 3 个百分点的目标。DURA 仅 practical_high 差距 2.1952 pp，low_urban 差距 17.7375 pp。单模型 seed，固定测试集已知，不构成独立盲测。
