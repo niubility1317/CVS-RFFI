@@ -1,0 +1,3 @@
+{"at": "2026-10-31T15:45:54+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-31T15:47:59+00:00", "status": "RUNNING", "note": "VERIFIED driver2062626/train2062719 CWD argv CUDA0 GPU338MiB log0to492; matched source-only arms, other owners untouched.", "evidence": ["local_artifacts/pamf_phase3_logit_energy_20261031_r01/observations.jsonl"], "row_id": null}
+{"at": "2026-10-31T16:05:00+00:00", "status": "ANALYZED", "note": "VERIFIED all4440 source-only steps/matched indices and8x3DURA before CPU3truth; NO_PROMOTION; native energy main/direct ownhead; sourceDG newDAFalse; fullgoalACTIVE.", "evidence": ["E:\\type10-7\\local_artifacts\\pamf_phase3_logit_energy_20261031_r01\\score\\complete.json"], "row_id": null}

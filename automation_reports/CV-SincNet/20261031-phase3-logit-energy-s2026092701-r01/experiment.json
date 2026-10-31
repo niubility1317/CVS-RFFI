@@ -1,0 +1,332 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-logit-energy-s2026092701-r01",
+  "group_id": "pamf-phase3-source-logit-energy",
+  "display_name": "PAMF第三阶段：原生默认头域内能量排序",
+  "description": "Two source-only complete original-F0 readers, common CE+source KD, matched sourceL/OE: uniform OE versus public RX/day energy ranking; original PCD+DURA frozen baseline.",
+  "kind": "cvs",
+  "stage": "Phase3-source-logit-energy",
+  "aliases": [
+    "原生头源域能量排序"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_only",
+    "logit_energy",
+    "default_head",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-logit-energy-uniform-vs-rxpair",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "b554068df92e6ea02f114a85face49b7707b58da",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-logit-energy-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.logit_energy_launch",
+      "experiments.pamf_phase3_open_world.logit_energy_train",
+      "experiments.pamf_phase3_open_world.logit_energy_run",
+      "experiments.pamf_phase3_open_world.logit_energy_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_LOGIT_ENERGY_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Original source392005 sameDURA P1 L/OE and frozen RX34 future canonical",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Fullnative reader/default6 joint learning; energy direct6logits, diagnostic density uses unit(rawnative160). Same P1 and originalF0 teacher sourceL.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 原生默认头的源域开放能量学习",
+    "physical_ids_ref": "Source392005 VALIDATED_ONCE P1 roles, unchanged originalphysicalIDs; public freshfuture capsule/split fixed; no new data builder.",
+    "label_map_ref": "Originalsix L/V y; OE outside-six only; U trueTX/K/quotas forbidden; future trueTX scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "target_U_ID_new": 0,
+      "source_V": 27000,
+      "source_NV": 3150,
+      "target_clean_Q": 10238,
+      "target_star_Q": 10238,
+      "future_known": 4508,
+      "future_unknown": 5730,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 labeled source6300/63000=10%; sourceOE outside-six membership allowed, OEtrueTXhidden; no new source labels or targetTXlabels.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "Same source392005/F0/pure-r03/DURA ancestry, existing VALIDATED_ONCE data, no new physical data validation",
+    "support_query_ref": "Source roles originaldisjoint; futureRX34 03-15/23 same10238; sourceV knownthreshold calibration only. ExistingPCD comparison U576ancestor, newstudents/teacher noU.",
+    "leo_config_ref": "Same fixed G10 MIX01 source/U/future received and DURA v1R69, source3001/4001 receiver2027, future3133/3134, no redrawn channel"
+  },
+  "permissions": {
+    "regime": "L truey/defaultF0teacher, OE outside-six only/publicRXday; noOEtrueTX/K. Jointnative body+defaulthead source-only; Sinc/buffers frozen. U/UID/Us/Q/V/NV/truth training0.",
+    "query_use": "Synthetic actualCP smoke precedes source values. Train4440 then2source densities; V calibrates24newtau; all8x3 before independentCPU3truth. No Qupdates/ranking/quota; per-sample allsix.",
+    "external_method_exception": null,
+    "claim_scope": "Pure-source candidate, not new targetUDA/discovery/registration. Directenergy RXPAIRprimary, auxratio diagnostic only. SameG originalF0 identityprotection; exposeddevelopment/singleRXseed/formal0/fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Complete originalF0 E50/11100 reader/default6, not r03body+oldhead. No PCD student initialization/teacher. DURA R69 unchanged.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Originalsource392005 F0 ancestry exact, sourceLteacher sameP1. SourceL/OE P1 handles inherited VALIDATED_ONCE; oldPCD comparison retainsU576 ancestry, not transferred into newstudent.",
+    "selection_rule": "Fixedfinal2220perarm, same sourceindices/modelinitialization, no sourceV/neural checkpoint selection; energy primary predetermined."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-logit-energy-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-logit-energy-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-logit-energy-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_logit_energy_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.logit_energy_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-logit-energy-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One owned trainworker sequentialtwoarms thenonepredictor; CPUscore separate CUDAempty. Cardfree4096MiB/max2added; otherusers untouched.",
+    "stop_rule": "Illegal ancestor/role, nonfinite, frozenstatechange, collision or unablelegalprediction preserved technicalfailure; low scientific scores complete fullmatrix, no hotchange/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/*.log",
+    "train/{complete,smoke}.json",
+    "train/rows/*/{final.pt,complete.json,steps.jsonl}",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/models/*",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/source/*",
+    "predict/targets/*",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "H-score",
+      "originalF0/studentclosed",
+      "AUROC/OSCR",
+      "crosscolumn pairedcorrectaccept/reject",
+      "sourcefull4440loss/gradient",
+      "ANHOWNA"
+    ],
+    "dimensions": [
+      "8readouts x3DURAconditions",
+      "TX/RX/day/scene/day_scene",
+      "identityandrejectionseparate"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-logit-energy-s2026092701-r01/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.logit_energy_score",
+    "targets_ref": "Sourceknown12; cleanRU95/starRU90/CK90/sameoriginalGgap2pp/fullscenes; starAK>UNIFORMenergy/OLDPCDpred,RU>=E0/UNIFORM/OLDPCD. FullgoalACTIVE.",
+    "primary": [
+      "RXPAIR_energy"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "UNIFORM-s2026092701",
+      "method": "UNIFORM",
+      "purpose": "CE+KD+uniformOE control",
+      "config_ref": "docs/PAMF_PHASE3_LOGIT_ENERGY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-logit-energy-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Shared L2026103017/OE2026103018 sampling reset eacharm; sourceGscene3001/channel4001/future3133/3134/receiver2027 inherited. No random newchannel/U augmentation.",
+      "k": null,
+      "scenario": "SourceG10P1 training; source/clean/starDURA future evaluation",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220steps perarm, AdamW1e-4/wd1e-4/eps1e-8 clip5; sourceL192/OE64/256forward, both1136640training+126120prediction. Reader232993/train232945/Sinc48frozen; deploy499944+main6tau48B. No projection. source-only newU0.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-logit-energy-s2026092701-r01/train/rows/UNIFORM",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-logit-energy-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.logit_energy_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-logit-energy-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/{complete,smoke}.json",
+        "train/rows/*/{final.pt,complete.json,steps.jsonl}",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/models/*",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/source/*",
+        "predict/targets/*",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "RXPAIR-s2026092701",
+      "method": "RXPAIR",
+      "purpose": "CE+KD+same-publicRXday softplus energy ranking",
+      "config_ref": "docs/PAMF_PHASE3_LOGIT_ENERGY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-logit-energy-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Shared L2026103017/OE2026103018 sampling reset eacharm; sourceGscene3001/channel4001/future3133/3134/receiver2027 inherited. No random newchannel/U augmentation.",
+      "k": null,
+      "scenario": "SourceG10P1 training; source/clean/starDURA future evaluation",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220steps perarm, AdamW1e-4/wd1e-4/eps1e-8 clip5; sourceL192/OE64/256forward, both1136640training+126120prediction. Reader232993/train232945/Sinc48frozen; deploy499944+main6tau48B. No projection. source-only newU0.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-logit-energy-s2026092701-r01/train/rows/RXPAIR",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-logit-energy-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.logit_energy_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-logit-energy-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/{complete,smoke}.json",
+        "train/rows/*/{final.pt,complete.json,steps.jsonl}",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/models/*",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/source/*",
+        "predict/targets/*",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "EnergyOOD inspired custom sameRX/day rank, not exact paper reproduction.",
+    "s=logsumexp6 T1; higheraccept. Pair primaryenergycol0 vs E0/OLDPCD ratio1, UNIFORMenergy0.",
+    "Raw160 sourceGaussian2 is diagnostic; defaultheadjointlytrained, no new/frozen head.",
+    "Sourceonly newstudent, OLDPCDhasU576ancestor comparison; formal0/ANHOWNA/fullgoalACTIVE.",
+    "Fixedbudget2220updates not20epochs; all4440numericlogs/sourcegradient evidence; stagewallclock notB1."
+  ],
+  "registered_at": "2026-10-31T15:45:54+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "b554068df92e6ea02f114a85face49b7707b58da",
+    "primary_method": "RXPAIR_energy",
+    "metrics_fraction": {
+      "source_DURA": {
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "candidate_macro_closed_accuracy": 0.915962962962963,
+        "A_K": 0.8975185185185185,
+        "C_K": 0.9632592592592593,
+        "R_U": 0.7374603174603175,
+        "H_score": 0.809654873846634,
+        "original_closed_minus_new_open": 0.012296296296296472
+      },
+      "clean_DURA": {
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "candidate_macro_closed_accuracy": 0.4584042267365193,
+        "A_K": 0.31243856380856966,
+        "C_K": 0.4555454456640084,
+        "R_U": 0.6962386045563791,
+        "H_score": 0.43132093497921375,
+        "original_closed_minus_new_open": 0.17323158958348683
+      },
+      "star_DURA": {
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "candidate_macro_closed_accuracy": 0.4140074861044128,
+        "A_K": 0.2930569376521617,
+        "C_K": 0.49446428741288145,
+        "R_U": 0.5691987211319806,
+        "H_score": 0.3869099203493282,
+        "original_closed_minus_new_open": 0.12415364783852051
+      }
+    },
+    "scientific_success": false,
+    "source_logit_energy_success": false,
+    "adaptation_success": null,
+    "new_target_DA": false,
+    "source_known_12_passed": true,
+    "target_protection_passed": false,
+    "star_A_K_gain_over_both_controls": true,
+    "star_R_U_not_lower_than_all_controls": false,
+    "all_4440_steps_analyzed": true,
+    "all_source_indices_matched": true,
+    "total_optimizer_updates": 4440,
+    "updates_per_arm": 2220,
+    "reader_parameters": 232993,
+    "trainable_parameters": 232945,
+    "default_head_parameters": 960,
+    "new_target_U": 0,
+    "new_target_U_ID": 0,
+    "new_Us": 0,
+    "source_density_fits": 2,
+    "new_threshold_values": 24,
+    "reused_threshold_values": 24,
+    "threshold_values": 48,
+    "threshold_bytes": 384,
+    "real_training_student_forward_rows": 1136640,
+    "real_prediction_student_forward_rows": 126120,
+    "combined_student_forward_rows": 1262760,
+    "real_F_forward_rows": 20476,
+    "real_G_forward_rows": 20476,
+    "deployed_neural_parameters": 499944,
+    "main_threshold_values": 6,
+    "main_threshold_bytes": 48,
+    "new_projection_parameters": 0,
+    "primary_Gaussian_deployment": false,
+    "OLD_PCD_comparison_U_ancestor": true,
+    "formal_target_accessed": false,
+    "registration_success": null,
+    "A_N": null,
+    "H_OW": null,
+    "full_goal_status": "ACTIVE",
+    "result_ref": "docs/PAMF_PHASE3_LOGIT_ENERGY_RESULTS_20261031.md",
+    "primary_selection_changed": false
+  }
+}

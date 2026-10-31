@@ -1328,3 +1328,13 @@ Run `20261031-phase3-pcd-moment-s2026092701-r01` / code `35c0060f573b2acc61a523d
 ## 2026-10-31：冻结PCD目标类内矩校正结果
 
 Run `20261031-phase3-pcd-moment-s2026092701-r01` / code `35c0060f573b2acc61a523df745568e39eb6e1cf`，U576最终PCD五成员统计拟合、SHIFT/CORAL及原E0/PCD共8×3DURA完整后独立CPU3truth执行VERIFIED。主CORAL_predicted_ratio：source_DURA: AK/CK/RU/H=89.733333/96.748148/64.285714/74.907247%；原F0同Gclosed=90.981481%/损=1.248148pp；clean_DURA: AK/CK/RU/H=27.094153/36.282220/62.609794/37.821286%；原F0同Gclosed=48.567015%/损=21.472863pp；star_DURA: AK/CK/RU/H=24.770213/41.660529/49.326805/32.979342%；原F0同Gclosed=41.721059%/损=16.950846pp。adaptation_success=False、科学NO_PROMOTION；core290/576、预测类core[36, 52, 2, 49, 140, 11]、类等权n_eff=54.097213，160维源model-implied类内Cs，.1shrink与标准化响应.5..2，SHIFT共用平移。身份预测不变，原四读出×三条件的12个overall精确保持；新NN/density/τfit0、真实F/open/G0，合成各2行；新Ufeature/ID576/576，source30150/Q20476 cache读取，主神经834665+适配26560FP64/212480B。PCD研究baseline与正式RX24-18保持，AN/HOWNA/完整ACTIVE。详见`docs/PAMF_PHASE3_PCD_MOMENT_RESULTS_20261031.md`。
+
+
+## 2026-10-31：原生默认头源域能量排序预登记
+
+Run `20261031-phase3-logit-energy-s2026092701-r01` / code `b554068df92e6ea02f114a85face49b7707b58da`，两独立完整原F0reader/default6/Sinc48冻结，UNIFORM vs RXPAIR同L192/OE64、相同索引各2220，CE+KD共同、OEuniform vs域内softplus能量排序。新U/UID/Us/Q/V/NV训练0，主RXPAIRenergy固定；两源密度仅辅助，V定24newtau+old24，8×3DURA后CPU3truth。主部署499944+6τ48B，不声称目标UDA，PCDbaseline/ANHOWNA/formal0/完整ACTIVE。见`docs/PAMF_PHASE3_LOGIT_ENERGY_PLAN_20261031.md`。
+
+
+## 2026-10-31：原生默认头源域能量排序结果
+
+Run `20261031-phase3-logit-energy-s2026092701-r01` / code `b554068df92e6ea02f114a85face49b7707b58da`，UNIFORM/RXPAIR原native reader/defaulthead各2220共4440步，sourceL192/OE64索引逐步完全一致，全4440日志分析，8×3DURA后独立CPU3truth执行VERIFIED。主RXPAIR_energy：source_DURA: AK/CK/RU/H=89.751852/96.325926/73.746032/80.965487%；原F0/studentclosed=90.981481%/91.596296%/原F0损=1.229630pp；clean_DURA: AK/CK/RU/H=31.243856/45.554545/69.623860/43.132093%；原F0/studentclosed=48.567015%/45.840423%/原F0损=17.323159pp；star_DURA: AK/CK/RU/H=29.305694/49.446429/56.919872/38.690992%；原F0/studentclosed=41.721059%/41.400749%/原F0损=12.415365pp。科学NO_PROMOTION、source_logit_energy_success=False；主energy列0对E0/PCD ratio列1及UNIFORMenergy列0，原四读出×三条件12个overall精确保持。新U/UID/Us/Q/V/NV训练0，sourceonly/newDAFalse/adaptationNone；新2density为辅助、24tau+old24=48/384B，主部署499944+6τ48B不部署Gaussian/projection。真实student训练1136640+评估126120=1262760，原F0/G各20476新Q前向；祖先/cache成本另存。原PCD研究baseline与正式RX24-18保持，AN/HOWNA/完整ACTIVE。详见`docs/PAMF_PHASE3_LOGIT_ENERGY_RESULTS_20261031.md`。

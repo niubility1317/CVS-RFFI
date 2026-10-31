@@ -84,3 +84,8 @@ G10 沿用 MILKR 设置：600 km、25 MHz、2.45 GHz、residual/post_sync/no add
 ## 冻结PCD目标类内矩校正的后续实测
 
 候选 `20261031-phase3-pcd-moment-s2026092701-r01` 完成U576最终PCD特征的一次类均衡矩估计，SHIFT/CORAL与原读出8×3DURA后独立评分。主CORAL星地AK/CK/RU/H=24.770213/41.660529/49.326805/32.979342%，原F0闭集保持41.721059%；科学NO_PROMOTION、adaptation_success=False。这是目标无标签统计适应尝试（new_target_DA=True），新NN/密度/阈值拟合0，不等同于全系统纯源；原PCD研究基线保持。160维core290条按预测类均衡后有效样本仅54.097213，不能从core预测数断言真实类构成。完整目标ACTIVE，见[完整结果](PAMF_PHASE3_PCD_MOMENT_RESULTS_20261031.md)。
+
+
+## 原生默认头源域能量排序的后续实测
+
+候选 `20261031-phase3-logit-energy-s2026092701-r01` 完成两原生reader/defaulthead各2220步及8×3DURA独立评分，主RXPAIR_energy星地AK/CK/RU/H=29.305694/49.446429/56.919872/38.690992%，原F0/student闭集=41.721059%/41.400749%；科学NO_PROMOTION。CE+KD共同、均匀OE与域内能量软排序同源曝光，主能量/辅助密度不混列，新U/UID0，sourceDG不是新目标UDA；原PCD研究基线与完整目标ACTIVE保持，见[完整结果](PAMF_PHASE3_LOGIT_ENERGY_RESULTS_20261031.md)。
