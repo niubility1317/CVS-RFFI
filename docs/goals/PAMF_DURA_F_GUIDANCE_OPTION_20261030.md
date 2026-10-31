@@ -358,3 +358,12 @@ VERIFIED / ANALYZED。深层MLP SIG预测，单阶段从零30轮/7410，L189000/
 ## Phase3独立恢复网络：用户最新指定（2026-11-01）
 
 用户允许大幅重做，不拘束DURA；新网络为Phase3准备。用户选择保持原L_s/U_s训练范围，OE只作冻结诊断。主线见[Phase3独立恢复器](PAMF_PHASE3_RESTORATION_20261101.md)：实际三视图Tri-SIG-TIME SSL F0/defaulthead用于新主线，旧F50成绩保留历史语义；G不读TX/V/OE/target训练或含U祖先PCD教师。新时频直接残差架构已实现并通过9项检查，尚无真实新训练或性能结果。当前43577dc71两版按原30轮/七景完成，不热改。默认DURA、其他owner和完整目标保持。
+
+
+## 全采样率IQ分支：无引导与特征引导完整单E30七景
+
+20261031-phase1-DURA-SIGfullRatePlain-E30-s2026092701-r01 与 20261031-phase1-DURA-SIGfullRateContext-E30-s2026092701-r01；执行43577dc71dfdab6382dcf94e75c3b699b2c5122e。
+
+VERIFIED / ANALYZED。全率无引导版，从零单阶段30轮/7410步，L189000/U1701000，G祖先0。保留原main344295随机架构及SIG预测/原条件解码，每prior新增全率9→12 k3/GN3/SiLU、三DW膨胀2/4/8-PW-GN-SiLU残差与12→2零输出；新增delta在原SCALE内相加。无引导分支不使用SIG，特征引导分支使用同prior预测SIG的160→72零初始化映射/三块bound0.1调制。共有新分支初值匹配，旧初值IQ/SIG/RNG保持；真实新输出有非零梯度，初始内部零梯度符合零输出设计。完整G346363参数/ConvLinear MAC 25599528/两prior四CG27FFT，native全部路径，原四物理+输出SIGalpha1/cap0.5+0.01mean2priorSIG辅助保持。F-only缓存40.32MB只读复用/newFcache0，F50/source4df7/50轮11100步及历史缓存成本披露，F-guided；在线prefix/VJP各1.89m、完整F训练0、0TX/V/target训练或新分类头。源泛化f19的两条解释FAIL只支持独立输出路径假设，不证明某一解码模块因果失效；原UNet已有全率skip。固定final30，各角色七景预测后独立truth-last，126正式/105源V/378配对分组/14IQ独立复算，30轮loss/曝光/视图/cap/来源及配置核验。六星地较原条件版提高0/6、较另一全率版提高6/6、较原输出SIG提高2/6、较默认DURA提高1/6。clean 84.622024%、low urban 69.242857%，3pp通过0/6、clean严格保持=False、R17逐景1pp容忍=True、旧lowU70%=False。G训练保存1292.232175秒、含准备1293.332898秒、控制器至自动分析1504.395872秒；同卡G+F B1默认5.303729ms、本版5.081636ms。共享负载墙钟不作因果提速或同质量速度比；波形和固定F可识别性分别判断。默认DURA保持，完整目标继续逐项验收。
+
+VERIFIED / ANALYZED。全率特征引导版，从零单阶段30轮/7410步，L189000/U1701000，G祖先0。保留原main344295随机架构及SIG预测/原条件解码，每prior新增全率9→12 k3/GN3/SiLU、三DW膨胀2/4/8-PW-GN-SiLU残差与12→2零输出；新增delta在原SCALE内相加。无引导分支不使用SIG，特征引导分支使用同prior预测SIG的160→72零初始化映射/三块bound0.1调制。共有新分支初值匹配，旧初值IQ/SIG/RNG保持；真实新输出有非零梯度，初始内部零梯度符合零输出设计。完整G369547参数/ConvLinear MAC 25622568/两prior四CG27FFT，native全部路径，原四物理+输出SIGalpha1/cap0.5+0.01mean2priorSIG辅助保持。F-only缓存40.32MB只读复用/newFcache0，F50/source4df7/50轮11100步及历史缓存成本披露，F-guided；在线prefix/VJP各1.89m、完整F训练0、0TX/V/target训练或新分类头。源泛化f19的两条解释FAIL只支持独立输出路径假设，不证明某一解码模块因果失效；原UNet已有全率skip。固定final30，各角色七景预测后独立truth-last，126正式/105源V/378配对分组/14IQ独立复算，30轮loss/曝光/视图/cap/来源及配置核验。六星地较原条件版提高0/6、较另一全率版提高0/6、较原输出SIG提高0/6、较默认DURA提高0/6。clean 84.758929%、low urban 68.304167%，3pp通过0/6、clean严格保持=True、R17逐景1pp容忍=False、旧lowU70%=False。G训练保存1246.039412秒、含准备1247.141547秒、控制器至自动分析1439.785878秒；同卡G+F B1默认5.067270ms、本版5.305742ms。共享负载墙钟不作因果提速或同质量速度比；波形和固定F可识别性分别判断。默认DURA保持，完整目标继续逐项验收。

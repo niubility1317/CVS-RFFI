@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-SIGfullRatePlain-E30-s2026092701-r01`
 - group_id：`phase1-DURA-full-rate-IQ-residual-pair-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整结果见analysis.md/results.json，保留全部分组和成本。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -50,3 +50,10 @@ GPU4/6/7中启动前显存余量≥12GB、既有compute≤2时单卡新增1个�
 ## 实际启动证据
 
 VERIFIED / RUNNING，尚无正式性能结果。执行43577dc71dfdab6382dcf94e75c3b699b2c5122e，controller 2054412、GPU 4 worker 2054711。真实2条非clean L_s smoke PASS：原main初值IQ、原SIG cap、三个G模块与新增输出实际非零梯度、初始内部零梯度、严格E0/nativeoptimized/F冻结、新分支两次及六块B×12×256均核实。已完成1轮/247步；实际CWD/argv/commit/CUDA/compute PID与日志增长通过。准入前compute 2个、剩余22898MiB，新增1个。归档SHA、远端编译和预检通过；单阶段30轮与自动七景保持，CPU共同锁、独立输出，默认DURA不变。
+
+
+## 完整训练与正式结果
+
+VERIFIED / ANALYZED。全率无引导版，从零单阶段30轮/7410步，L189000/U1701000，G祖先0。保留原main344295随机架构及SIG预测/原条件解码，每prior新增全率9→12 k3/GN3/SiLU、三DW膨胀2/4/8-PW-GN-SiLU残差与12→2零输出；新增delta在原SCALE内相加。无引导分支不使用SIG，特征引导分支使用同prior预测SIG的160→72零初始化映射/三块bound0.1调制。共有新分支初值匹配，旧初值IQ/SIG/RNG保持；真实新输出有非零梯度，初始内部零梯度符合零输出设计。完整G346363参数/ConvLinear MAC 25599528/两prior四CG27FFT，native全部路径，原四物理+输出SIGalpha1/cap0.5+0.01mean2priorSIG辅助保持。F-only缓存40.32MB只读复用/newFcache0，F50/source4df7/50轮11100步及历史缓存成本披露，F-guided；在线prefix/VJP各1.89m、完整F训练0、0TX/V/target训练或新分类头。源泛化f19的两条解释FAIL只支持独立输出路径假设，不证明某一解码模块因果失效；原UNet已有全率skip。固定final30，各角色七景预测后独立truth-last，126正式/105源V/378配对分组/14IQ独立复算，30轮loss/曝光/视图/cap/来源及配置核验。六星地较原条件版提高0/6、较另一全率版提高6/6、较原输出SIG提高2/6、较默认DURA提高1/6。clean 84.622024%、low urban 69.242857%，3pp通过0/6、clean严格保持=False、R17逐景1pp容忍=True、旧lowU70%=False。G训练保存1292.232175秒、含准备1293.332898秒、控制器至自动分析1504.395872秒；同卡G+F B1默认5.303729ms、本版5.081636ms。共享负载墙钟不作因果提速或同质量速度比；波形和固定F可识别性分别判断。默认DURA保持，完整目标继续逐项验收。
+
+详见[完整分析](analysis.md)、[训练七景图](training_and_formal.png)、results.json与transfer_diagnostics.json；控制器和worker自然退出，产物独立读回。
