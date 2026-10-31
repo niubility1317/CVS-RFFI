@@ -1,0 +1,145 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-identity-flow-F0-source-s2026092701-r01",
+  "group_id": "phase3-identity-flow-source-gradient",
+  "display_name": "生成式恢复网络接入真实冻结 F0 的源域梯度诊断",
+  "description": "两条源 L_s 记录检查独立 F0 身份梯度与流匹配梯度；无优化、无目标数据。",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-F0-gradient-feasibility",
+  "aliases": [],
+  "tags": [
+    "Phase3",
+    "conditional-flow",
+    "source-only",
+    "frozen-F0",
+    "gradient"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase3-fresh-dura-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求探索不同于另一对话的更强星地恢复网络；仅以合法源特征指导，不向恢复网络提供 TX 标签或目标数据。",
+  "code": {
+    "commit": "881e6f6db099fa6eb57de58c4ebb736f367c5e24",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPU 2 threads; immutable layered releases; FP32; no GPU",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-identity-flow-F0-probe-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Two fixed nonclean original R07 epoch01 source L_s paired IQ, 2.462 GHz, not G10; no target or held-out IQ",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07 cache train IDs checked against original source cache and F0 contract",
+    "label_map_ref": "No per-record TX labels read",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "R07 source cache completion and F0 source physical role contracts",
+    "support_query_ref": null,
+    "leo_config_ref": "Existing R07 source epoch01 view; no new satellite views",
+    "target_panel": "none"
+  },
+  "permissions": {
+    "regime": "source-only F0 feature-guided feasibility; no optimization",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Two-source gradient compatibility only; no accuracy, generalization, loss-weight, or deployment claim"
+  },
+  "checkpoint": {
+    "initialization": "Random scratch conditional flow, zero output; original Phase3 F0 frozen, no updates",
+    "sources": [
+      "Original Phase3 F0 from fixed fresh-DURA reference runtime"
+    ],
+    "contract_check_ref": "Original Phase3 F0 loader and exact original source L_s/U_s physical role sets",
+    "provenance_verdict": "Original source F0 E50/11100, 232993 parameters; inherited supervised identity information disclosed; no DURA or target model read",
+    "selection_rule": "Fixed first two nonclean source L_s records, fixed seeds, no outcome selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/identity-flow-F0-probe",
+    "gpu_policy": "CPU 2 threads, CUDA disabled, other jobs untouched",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-F0-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-F0-source-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_identity_flow/20261101-diagnostic-identity-flow-F0-source-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_identity_flow.f0_probe --root /home/szu2070436088/2510044040/CV-SincNet --reference-runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-dura-s2026092701-r01-release/runtime.json --code-commit 881e6f6db099fa6eb57de58c4ebb736f367c5e24",
+    "stop_rule": "Any source role/checkpoint mismatch, nonfinite or zero F0 or flow gradient, F0 state change, or output collision fails without automatic retry."
+  },
+  "expected_artifacts": [
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "F0-to-endpoint gradient norms",
+      "F0-to-flow-field gradient norm",
+      "flow-to-flow-field gradient norm",
+      "F0 state unchanged"
+    ],
+    "dimensions": [
+      "two source L_s records",
+      "two fixed noise paths"
+    ],
+    "prediction_ref": "none; no classification accuracy",
+    "scorer_ref": "Direct numerical gradient audit with separate identity and flow gradients"
+  },
+  "rows": [
+    {
+      "row_id": "real-F0-source-gradient",
+      "method": "Two-noise conditional flow plus original frozen F0 feature anchor and agreement",
+      "purpose": "source gradient feasibility",
+      "config_ref": "experiments/pamf_identity_flow/f0_probe.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-F0-source-s2026092701-r01/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed flow seed 2026092701 and noise seed 2026110102; first two nonclean source L_s",
+      "k": null,
+      "scenario": "two source L_s R07 epoch01 paired observations",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "F0 forward 6 rows, flow forward 4 rows, no updates, CPU2",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-F0-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-F0-source-s2026092701-r01/complete.json",
+      "command": "python -u -m experiments.pamf_identity_flow.f0_probe --root /home/szu2070436088/2510044040/CV-SincNet --reference-runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-dura-s2026092701-r01-release/runtime.json --code-commit 881e6f6db099fa6eb57de58c4ebb736f367c5e24",
+      "expected_artifacts": [
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "New route differs from other chat deterministic full-rate time-frequency residual: a conditional Transformer velocity field and explicit Gaussian paths. Earlier R20 conditional flow had different coarse DURA/MAP structure and failed; novelty is not asserted.",
+    "Only a two-record numerical feasibility diagnostic, not training or a 3pp result. R07 source 2.462 GHz differs from G10 2.45 GHz.",
+    "Frozen original F0 carries its source supervised knowledge; no TX labels, V/OE/target IQ, threshold fitting, model update or source performance assessment.",
+    "Separate F0 and flow gradient checks prevent one loss from masking a zero gradient in the other. Focused tests pass and independent P0/P1 review completed."
+  ],
+  "registered_at": "2026-10-31T16:34:29+00:00"
+}
