@@ -15,3 +15,11 @@
 源PASS后运行P01/MIX01、seed2026092701、全部七RX、K1/5/10/20×N2/5/10/20，全补集query和四严格S/Q，560行指标。全部预测固定后独立scorer接truth，匹配原MILKR同split预测复用。主S0Q0平均宏H至少+5pp才达到主性能目标；全部16格均+5pp才称各K/N均达标。P01已曝光，不声称盲测或跨池R9单项因果增益。
 
 两项定向测试PASS：none精确R9，支持统计冻结/查询批次独立/核PSD/schema；一次独立P0/P1审查PASS。真实source-checkpoint无query smoke继续核对实际336及原z/logits不变。每卡GPU0/2/4/6最多2新worker，启动前检查显存，不修改其他owner。独立不可覆盖run root，源科学失败正常停止，技术错误保留产物不原地盲重启。
+
+## 已核实源端结果
+
+**SOURCE_ONLY_SCIENTIFIC_STOP / VERIFIED**。全部六模式完成，选择none（精确R9）。最佳非空模式std0.01相对none平均H变化-0.2285pp。源筛选用时81.340秒，目标IQ/预测/评分0。实际commit `e5ea21ef47427ead33f3965f68827f9eef81234d`，归档匹配与远端compile PASS。
+
+真实F/G checkpoint无query smoke PASS，336捕获及F原z/logits一致。PID1406029曾独立核实存活/CWD/argv/GPU；日志由128增至254字节，后续完整source_selection和正常终态确认结束。无技术故障，不降低原门槛。
+
+对源K5/10/20按路径分解也未发现被混合路径掩盖的正均值：最佳std0.01在S0Q0/S1Q1平均分别-0.3947/-0.3059pp。其他模式同路径平均亦负。该结论限当前源代理与模式集合，不声称所有特征归一化无效；没有目标性能结果。见[source_summary.json](source_summary.json)与[source_path_analysis.json](source_path_analysis.json)。

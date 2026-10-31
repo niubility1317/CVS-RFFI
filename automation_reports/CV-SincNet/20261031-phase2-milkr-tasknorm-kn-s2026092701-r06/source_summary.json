@@ -1,0 +1,157 @@
+{
+  "K1_rule": {
+    "config": [
+      "signature_identity",
+      "all",
+      0.5,
+      "single"
+    ],
+    "ridge": 0.001,
+    "task_mode": "none"
+  },
+  "selected_task_mode": "none",
+  "mode_objectives": {
+    "none": 0.7228550536894782,
+    "center": 0.6993067145201826,
+    "std0.01": 0.7205696093831218,
+    "std0.1": 0.7199489413679147,
+    "std1": 0.7139038267385497,
+    "std10": 0.7041874181417809
+  },
+  "source_rules": {
+    "none": {
+      "rule": {
+        "config": [
+          "signature_identity",
+          "all",
+          0.5,
+          "single"
+        ],
+        "ridge": 0.001,
+        "task_mode": "none"
+      },
+      "K1_H": 0.5869255431471887,
+      "H_byK": {
+        "5": 0.736919535364397,
+        "10": 0.7768901219567754,
+        "20": 0.7906850142895518,
+        "1": 0.5869255431471887
+      }
+    },
+    "center": {
+      "rule": {
+        "config": [
+          "signature_identity",
+          "nearest",
+          0.5,
+          "single"
+        ],
+        "ridge": 0.001,
+        "task_mode": "center"
+      },
+      "K1_H": 0.5311397159765214,
+      "H_byK": {
+        "5": 0.7070750128986903,
+        "10": 0.7673192567033473,
+        "20": 0.791692872502171,
+        "1": 0.5311397159765214
+      }
+    },
+    "std0.01": {
+      "rule": {
+        "config": [
+          "signature_identity",
+          "all",
+          0.5,
+          "single"
+        ],
+        "ridge": 0.001,
+        "task_mode": "std0.01"
+      },
+      "K1_H": 0.5733633889521901,
+      "H_byK": {
+        "5": 0.7254034535467049,
+        "10": 0.7861617199853301,
+        "20": 0.7973498750482622,
+        "1": 0.5733633889521901
+      }
+    },
+    "std0.1": {
+      "rule": {
+        "config": [
+          "signature_identity",
+          "all",
+          0.5,
+          "single"
+        ],
+        "ridge": 0.001,
+        "task_mode": "std0.1"
+      },
+      "K1_H": 0.5696858912127615,
+      "H_byK": {
+        "5": 0.732333255415712,
+        "10": 0.7821822903757132,
+        "20": 0.7955943284674719,
+        "1": 0.5696858912127615
+      }
+    },
+    "std1": {
+      "rule": {
+        "config": [
+          "signature_identity",
+          "all",
+          0.5,
+          "single"
+        ],
+        "ridge": 0.001,
+        "task_mode": "std1"
+      },
+      "K1_H": 0.5521881037080444,
+      "H_byK": {
+        "5": 0.7210411464217751,
+        "10": 0.787868020114318,
+        "20": 0.794518036710061,
+        "1": 0.5521881037080444
+      }
+    },
+    "std10": {
+      "rule": {
+        "config": [
+          "signature_identity",
+          "all",
+          0.5,
+          "single"
+        ],
+        "ridge": 0.001,
+        "task_mode": "std10"
+      },
+      "K1_H": 0.5420827608545016,
+      "H_byK": {
+        "5": 0.7123444513126961,
+        "10": 0.7674849558917767,
+        "20": 0.7948375045081488,
+        "1": 0.5420827608545016
+      }
+    }
+  },
+  "source_mean_H_gain": 0.0,
+  "source_byK_H_gain": {
+    "1": 0.0,
+    "5": 0.0,
+    "10": 0.0,
+    "20": 0.0
+  },
+  "target_eligible": false,
+  "scientific_verdict": "SOURCE_PROXY_GAIN_NOT_ESTABLISHED",
+  "seconds": 81.33953910926357,
+  "target_reads": 0,
+  "query_reads": 0,
+  "U_truth_reads": 0,
+  "completion": {
+    "status": "SOURCE_ONLY_SCIENTIFIC_STOP",
+    "target_rows": 0,
+    "reason": "SOURCE_PROXY_GAIN_NOT_ESTABLISHED"
+  },
+  "source_code_commit": "e5ea21ef47427ead33f3965f68827f9eef81234d",
+  "processes_remaining": 0
+}
