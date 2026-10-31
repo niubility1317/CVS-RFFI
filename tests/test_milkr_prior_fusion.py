@@ -44,7 +44,7 @@ def test_prior_three_fold_selection_excludes_held_physical_rows(monkeypatch):
     assert set(seen)=={16,24} and seen.count(24)==1 and state.selection['physical_OOF']
 
 
-@pytest.mark.parametrize('method',['prior_fusion','residual_skip','time_orbit','episodic_metric','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'])
+@pytest.mark.parametrize('method',['prior_fusion','residual_skip','time_orbit','episodic_metric','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'])
 def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path,monkeypatch,method):
     import json,types,torch
     from experiments.pamf_phase2_practical import milkr_prior_fusion as worker
@@ -65,12 +65,12 @@ def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path
     monkeypatch.setattr(teacher_features,'extract_time',extract)
     monkeypatch.setattr(teacher_features,'extract_phase8',extract)
     monkeypatch.setattr(teacher_features,'extract_orbit_ensemble',extract)
-    if method in ('time_orbit','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):
+    if method in ('time_orbit','phase8_prior','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
         def wrong_extract(*args,**kwargs):raise AssertionError('Time worker used ordinary C4 extraction')
         monkeypatch.setattr(worker,'extract',wrong_extract)
     class Bridge:
         def transform(self,features,*,restored,old_columns):mapped.append(old_columns);return features
-    if method in ('episodic_metric','residual_skip','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):
+    if method in ('episodic_metric','residual_skip','orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
         monkeypatch.setattr(worker.bridge_type(method),'load',lambda path:Bridge())
         def wrong_bridge(path):raise AssertionError('Metric worker used ordinary CCA encoder')
         monkeypatch.setattr(worker.TeacherBridge,'load',wrong_bridge)
@@ -84,7 +84,7 @@ def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path
             if not restored:scores[rows,(code+1)%self.count]=.6
             return scores,np.full(len(code),.1 if restored else .5)
     monkeypatch.setattr(worker,'fit',lambda f,y,ids,fixed:State(f,y))
-    if method in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble'):
+    if method in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble','kernel_gate_ensemble','rf_class_ensemble','corr_orbit_ensemble','crossrx_residual_ensemble'):
         from experiments.pamf_phase2_practical.milkr import orbit_ensemble
         monkeypatch.setattr(orbit_ensemble,'fit',lambda f,y,ids,fixed:State(f,y))
         def wrong_fit(*args,**kwargs):raise AssertionError('Ensemble worker used single-orbit fitter')

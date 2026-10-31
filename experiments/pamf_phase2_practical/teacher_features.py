@@ -129,7 +129,41 @@ class CorrelationEnsembleBridge(OrbitEnsembleBridge):
     schema='source_C4_C8_correlation_weighted_CCA_v1'
 
 
+class CrossRXResidualBridge(CorrelationEnsembleBridge):
+    from .milkr.crossrx_residual import CrossRXResidualCCA as encoder_type
+    schema='source_C4_C8_crossrx_residual_v1'
+
+    @classmethod
+    def fit(cls,raw,restored,*,labels,receivers,physical_ids,seed,**training_options):
+        a=cls.split(raw);b=cls.split(restored)
+        return cls([cls.encoder_type.fit(x,y,labels=labels,receivers=receivers,physical_ids=physical_ids,seed=seed+orbit*100003,**training_options) for orbit,x,y in zip((4,8),a,b)])
+
+    def save(self,path):
+        from pathlib import Path
+        if Path(path).exists():raise FileExistsError('Frozen cross-RX source encoder exists')
+        payload=dict(schema=np.asarray(self.schema),rank=np.asarray(64,np.int64),bound=np.asarray(.25),canonical_power=np.asarray(.5))
+        for orbit,encoder in zip((4,8),self.encoders):
+            for name,p in zip(BLOCKS,encoder.parameters):
+                for key,a in zip(('mean_raw','mean_restored','raw_projection','restored_projection'),p):payload[f'C{orbit}_'+name+'_'+key]=a
+            for path_index,path_parameters in enumerate(encoder.neural):
+                for block_index,p in enumerate(path_parameters):
+                    for key,a in zip(('w1','b1','w2','b2'),p):payload[f'C{orbit}_network_{path_index}_{block_index}_{key}']=a
+        np.savez_compressed(path,**payload)
+
+    @classmethod
+    def load(cls,path):
+        encoders=[]
+        with np.load(path,allow_pickle=False) as z:
+            if str(z['schema'].item())!=cls.schema or int(z['rank'].item())!=64 or float(z['bound'].item())!=.25 or float(z['canonical_power'].item())!=.5:raise ValueError('Wrong source cross-RX residual checkpoint')
+            for orbit in (4,8):
+                parameters=[tuple(np.array(z[f'C{orbit}_'+name+'_'+key],np.float64,copy=True) for key in ('mean_raw','mean_restored','raw_projection','restored_projection')) for name in BLOCKS]
+                neural=tuple(tuple(tuple(np.array(z[f'C{orbit}_network_{path_index}_{block_index}_{key}'],np.float32,copy=True) for key in ('w1','b1','w2','b2')) for block_index in range(8)) for path_index in (0,1))
+                encoders.append(cls.encoder_type(parameters,neural))
+        return cls(encoders)
+
+
 def bridge_type(method):
+    if method=='crossrx_residual_ensemble':return CrossRXResidualBridge
     if method=='corr_orbit_ensemble':return CorrelationEnsembleBridge
     if method=='native_skip':return NativeSkipBridge
     if method=='residual_skip':return ResidualSkipBridge

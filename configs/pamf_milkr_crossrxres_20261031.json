@@ -1,0 +1,68 @@
+{
+  "run_id": "20261031-phase2-milkr-crossrxres-s2026092701-r40",
+  "kernel_method": "crossrx_residual_ensemble",
+  "arm": "R41",
+  "K": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "N": [
+    2,
+    5,
+    10,
+    20
+  ],
+  "model_seeds": [
+    2026092701
+  ],
+  "capsules": [
+    "capsules/P01/MIX01/1-1"
+  ],
+  "orbit_quarters": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "orbit_rank": 64,
+  "prior_weight": 0.5,
+  "fusion_policy": "rf_distance_margin_half_v1",
+  "confidence_rule": "support_balanced_ridge_v1",
+  "query_paths": [
+    0,
+    1,
+    2
+  ],
+  "primary_query_paths": [
+    0,
+    2
+  ],
+  "calibration_ridge_fraction": 0.1,
+  "RF_phase_eighths": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "orbit_ensemble_weight": 0.5,
+  "canonical_correlation_power": 0.5,
+  "source_residual_steps": 600,
+  "source_residual_bound": 0.25,
+  "source_contrastive_temperature": 0.1,
+  "source_pair_weight": 1.0,
+  "source_anchor_weight": 0.1,
+  "source_CCA_parameters": 557440,
+  "source_NN_parameters": 684032,
+  "source_encoder_total_parameters": 1241472,
+  "source_encoder_uncompressed_bytes": 7195648,
+  "encoder_schema": "source_C4_C8_crossrx_residual_v1",
+  "query_fit": false,
+  "target_rows_pilot": 120,
+  "target_goal": "all16KN bothS raworiginal+5/QF>raw"
+}
