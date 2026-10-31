@@ -1,0 +1,2393 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "run": "20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01",
+  "rule": "New source boundary hypothesis from earlier source tail24/prefix232 per-sample NMSE3.20x. FixeddefaultDURA/source512128L384U/caches01and20;no source/model/segment/length search. Tail24pairedcleanreplacement versus closestglobalpairedclean IQ at EXACTSAME correctionL2energy. Allclean cached positive control tautological/notaccuracyceiling. BOTHviews tail vsnative cleanF agreement>=4, versus equalenergyglobal>=2;each5RX/cleanscene no loss versusglobal; eachnoncleansceneloss<=1versusglobal;meanfullFrelativeMSE<=native. PASS onlysupports separately registered boundary-aware G/sourcefeasibility hypothesis;noautomatictraining. PairedcleanIQoracles notdeployableinputs/trueTXaccuracy/physicalceiling. No G/TX/V/target/modelupdates.",
+  "source_run": "20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01",
+  "source_records": 512,
+  "source_L": 128,
+  "source_U": 384,
+  "views": [
+    "1",
+    "20"
+  ],
+  "cases": [
+    "native",
+    "tail24_clean",
+    "equal_energy_global",
+    "all_clean"
+  ],
+  "results": {
+    "1": {
+      "overall": {
+        "native": {
+          "count": 512,
+          "cleanF_agreement": 486,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -20,
+          "reference_margin_mean": 6.157804479822516,
+          "feature_relative_MSE_mean": 0.02580687618721278,
+          "IQ_NMSE_mean": 0.02021282658773149
+        },
+        "tail24_clean": {
+          "count": 512,
+          "cleanF_agreement": 494,
+          "gain_vs_native": 8,
+          "gain_vs_equal_energy_global": -12,
+          "reference_margin_mean": 6.42815796402283,
+          "feature_relative_MSE_mean": 0.02031567123253808,
+          "IQ_NMSE_mean": 0.014812433071921483
+        },
+        "equal_energy_global": {
+          "count": 512,
+          "cleanF_agreement": 506,
+          "gain_vs_native": 20,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.821536476491019,
+          "feature_relative_MSE_mean": 0.008448890265432496,
+          "IQ_NMSE_mean": 0.006271562445968382
+        },
+        "all_clean": {
+          "count": 512,
+          "cleanF_agreement": 512,
+          "gain_vs_native": 26,
+          "gain_vs_equal_energy_global": 6,
+          "reference_margin_mean": 7.110862581292167,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      },
+      "geometry": {
+        "tail24_aggregate_error_energy_fraction": 0.26717655708136634,
+        "tail24_prefix232_per_sample_error_ratio": 3.5243232778785014
+      },
+      "decision": {
+        "eligible": false,
+        "checks": {
+          "native_gain": true,
+          "equal_energy_gain": false,
+          "RX_protection": false,
+          "clean_protection": true,
+          "scene_protection": false,
+          "feature_error": true
+        }
+      }
+    },
+    "20": {
+      "overall": {
+        "native": {
+          "count": 512,
+          "cleanF_agreement": 498,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -10,
+          "reference_margin_mean": 6.359405535506085,
+          "feature_relative_MSE_mean": 0.021910093747028014,
+          "IQ_NMSE_mean": 0.019439707979819865
+        },
+        "tail24_clean": {
+          "count": 512,
+          "cleanF_agreement": 504,
+          "gain_vs_native": 6,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 6.544725297484547,
+          "feature_relative_MSE_mean": 0.016684160747388432,
+          "IQ_NMSE_mean": 0.014603406531772833
+        },
+        "equal_energy_global": {
+          "count": 512,
+          "cleanF_agreement": 508,
+          "gain_vs_native": 10,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.900548876496032,
+          "feature_relative_MSE_mean": 0.006689050341694092,
+          "IQ_NMSE_mean": 0.006953111469205631
+        },
+        "all_clean": {
+          "count": 512,
+          "cleanF_agreement": 512,
+          "gain_vs_native": 14,
+          "gain_vs_equal_energy_global": 4,
+          "reference_margin_mean": 7.110862581292167,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      },
+      "geometry": {
+        "tail24_aggregate_error_energy_fraction": 0.24878466658891582,
+        "tail24_prefix232_per_sample_error_ratio": 3.201370281904005
+      },
+      "decision": {
+        "eligible": false,
+        "checks": {
+          "native_gain": true,
+          "equal_energy_gain": false,
+          "RX_protection": false,
+          "clean_protection": true,
+          "scene_protection": false,
+          "feature_error": true
+        }
+      }
+    }
+  },
+  "records": [
+    {
+      "view": "1",
+      "dimension": "overall",
+      "value": "all",
+      "cases": {
+        "native": {
+          "count": 512,
+          "cleanF_agreement": 486,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -20,
+          "reference_margin_mean": 6.157804479822516,
+          "feature_relative_MSE_mean": 0.02580687618721278,
+          "IQ_NMSE_mean": 0.02021282658773149
+        },
+        "tail24_clean": {
+          "count": 512,
+          "cleanF_agreement": 494,
+          "gain_vs_native": 8,
+          "gain_vs_equal_energy_global": -12,
+          "reference_margin_mean": 6.42815796402283,
+          "feature_relative_MSE_mean": 0.02031567123253808,
+          "IQ_NMSE_mean": 0.014812433071921483
+        },
+        "equal_energy_global": {
+          "count": 512,
+          "cleanF_agreement": 506,
+          "gain_vs_native": 20,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.821536476491019,
+          "feature_relative_MSE_mean": 0.008448890265432496,
+          "IQ_NMSE_mean": 0.006271562445968382
+        },
+        "all_clean": {
+          "count": 512,
+          "cleanF_agreement": 512,
+          "gain_vs_native": 26,
+          "gain_vs_equal_energy_global": 6,
+          "reference_margin_mean": 7.110862581292167,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "RX",
+      "value": "1",
+      "cases": {
+        "native": {
+          "count": 103,
+          "cleanF_agreement": 97,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -6,
+          "reference_margin_mean": 6.943567824595183,
+          "feature_relative_MSE_mean": 0.032717760398916704,
+          "IQ_NMSE_mean": 0.007073337074010304
+        },
+        "tail24_clean": {
+          "count": 103,
+          "cleanF_agreement": 101,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 7.370559766454604,
+          "feature_relative_MSE_mean": 0.022629375450564006,
+          "IQ_NMSE_mean": 0.0054297002153423785
+        },
+        "equal_energy_global": {
+          "count": 103,
+          "cleanF_agreement": 103,
+          "gain_vs_native": 6,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.784528713781857,
+          "feature_relative_MSE_mean": 0.007184629627781495,
+          "IQ_NMSE_mean": 0.0020634755763579765
+        },
+        "all_clean": {
+          "count": 103,
+          "cleanF_agreement": 103,
+          "gain_vs_native": 6,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 8.061857436467143,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "RX",
+      "value": "3",
+      "cases": {
+        "native": {
+          "count": 102,
+          "cleanF_agreement": 95,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 4.713031090942084,
+          "feature_relative_MSE_mean": 0.019678183455929612,
+          "IQ_NMSE_mean": 0.0314995800665344
+        },
+        "tail24_clean": {
+          "count": 102,
+          "cleanF_agreement": 94,
+          "gain_vs_native": -1,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 4.847324652999055,
+          "feature_relative_MSE_mean": 0.01578417864777079,
+          "IQ_NMSE_mean": 0.021875249127235437
+        },
+        "equal_energy_global": {
+          "count": 102,
+          "cleanF_agreement": 99,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 5.201631983121236,
+          "feature_relative_MSE_mean": 0.006003376044503181,
+          "IQ_NMSE_mean": 0.00966993648590937
+        },
+        "all_clean": {
+          "count": 102,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 7,
+          "gain_vs_equal_energy_global": 3,
+          "reference_margin_mean": 5.518425534753239,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "RX",
+      "value": "4",
+      "cases": {
+        "native": {
+          "count": 102,
+          "cleanF_agreement": 98,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -3,
+          "reference_margin_mean": 6.6872799139396815,
+          "feature_relative_MSE_mean": 0.02621610809275772,
+          "IQ_NMSE_mean": 0.0101834861045919
+        },
+        "tail24_clean": {
+          "count": 102,
+          "cleanF_agreement": 101,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.164943372502046,
+          "feature_relative_MSE_mean": 0.01966357340661132,
+          "IQ_NMSE_mean": 0.008067894629363638
+        },
+        "equal_energy_global": {
+          "count": 102,
+          "cleanF_agreement": 101,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.449151427138085,
+          "feature_relative_MSE_mean": 0.00913522068731254,
+          "IQ_NMSE_mean": 0.0034499838125268568
+        },
+        "all_clean": {
+          "count": 102,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 7.6874221095851825,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "RX",
+      "value": "6",
+      "cases": {
+        "native": {
+          "count": 102,
+          "cleanF_agreement": 100,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 6.597522557950487,
+          "feature_relative_MSE_mean": 0.03169751495282552,
+          "IQ_NMSE_mean": 0.020194625861249198
+        },
+        "tail24_clean": {
+          "count": 102,
+          "cleanF_agreement": 101,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 6.802624933859882,
+          "feature_relative_MSE_mean": 0.027908032246712393,
+          "IQ_NMSE_mean": 0.01662652429841086
+        },
+        "equal_energy_global": {
+          "count": 102,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.273313019789901,
+          "feature_relative_MSE_mean": 0.014401398155421382,
+          "IQ_NMSE_mean": 0.008048213461170146
+        },
+        "all_clean": {
+          "count": 102,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.700358921406316,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "RX",
+      "value": "8",
+      "cases": {
+        "native": {
+          "count": 103,
+          "cleanF_agreement": 96,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 5.843003731329464,
+          "feature_relative_MSE_mean": 0.018726475957380688,
+          "IQ_NMSE_mean": 0.032125135019351075
+        },
+        "tail24_clean": {
+          "count": 103,
+          "cleanF_agreement": 97,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 5.950778056116937,
+          "feature_relative_MSE_mean": 0.01561658253339577,
+          "IQ_NMSE_mean": 0.022083499699344863
+        },
+        "equal_energy_global": {
+          "count": 103,
+          "cleanF_agreement": 101,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.3938095396004835,
+          "feature_relative_MSE_mean": 0.005560538696521937,
+          "IQ_NMSE_mean": 0.008149051888263007
+        },
+        "all_clean": {
+          "count": 103,
+          "cleanF_agreement": 103,
+          "gain_vs_native": 7,
+          "gain_vs_equal_energy_global": 2,
+          "reference_margin_mean": 6.5821092811602995,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "day",
+      "value": "1",
+      "cases": {
+        "native": {
+          "count": 171,
+          "cleanF_agreement": 162,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -6,
+          "reference_margin_mean": 6.251432499690362,
+          "feature_relative_MSE_mean": 0.025653624015703508,
+          "IQ_NMSE_mean": 0.021886646072387692
+        },
+        "tail24_clean": {
+          "count": 171,
+          "cleanF_agreement": 163,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 6.43041017320421,
+          "feature_relative_MSE_mean": 0.020457258090110578,
+          "IQ_NMSE_mean": 0.016795466818767472
+        },
+        "equal_energy_global": {
+          "count": 171,
+          "cleanF_agreement": 168,
+          "gain_vs_native": 6,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.867487409658599,
+          "feature_relative_MSE_mean": 0.009188002734996795,
+          "IQ_NMSE_mean": 0.007199614288360038
+        },
+        "all_clean": {
+          "count": 171,
+          "cleanF_agreement": 171,
+          "gain_vs_native": 9,
+          "gain_vs_equal_energy_global": 3,
+          "reference_margin_mean": 7.264151741886697,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "day",
+      "value": "2",
+      "cases": {
+        "native": {
+          "count": 170,
+          "cleanF_agreement": 158,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -9,
+          "reference_margin_mean": 5.907940488703111,
+          "feature_relative_MSE_mean": 0.03160003718412554,
+          "IQ_NMSE_mean": 0.02267068372279669
+        },
+        "tail24_clean": {
+          "count": 170,
+          "cleanF_agreement": 163,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 6.269294559254366,
+          "feature_relative_MSE_mean": 0.023869483449315713,
+          "IQ_NMSE_mean": 0.01678538546506495
+        },
+        "equal_energy_global": {
+          "count": 170,
+          "cleanF_agreement": 167,
+          "gain_vs_native": 9,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.638694965839386,
+          "feature_relative_MSE_mean": 0.010021078863249332,
+          "IQ_NMSE_mean": 0.0072294348253696145
+        },
+        "all_clean": {
+          "count": 170,
+          "cleanF_agreement": 170,
+          "gain_vs_native": 12,
+          "gain_vs_equal_energy_global": 3,
+          "reference_margin_mean": 6.907877652084126,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "day",
+      "value": "3",
+      "cases": {
+        "native": {
+          "count": 171,
+          "cleanF_agreement": 166,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 6.312579258143553,
+          "feature_relative_MSE_mean": 0.02020084549629416,
+          "IQ_NMSE_mean": 0.016095523401548486
+        },
+        "tail24_clean": {
+          "count": 171,
+          "cleanF_agreement": 168,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": -3,
+          "reference_margin_mean": 6.583840133851035,
+          "feature_relative_MSE_mean": 0.01664105468577144,
+          "IQ_NMSE_mean": 0.010867984665225261
+        },
+        "equal_energy_global": {
+          "count": 171,
+          "cleanF_agreement": 171,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.95735780537477,
+          "feature_relative_MSE_mean": 0.00614678328341871,
+          "IQ_NMSE_mean": 0.004391239817037488
+        },
+        "all_clean": {
+          "count": 171,
+          "cleanF_agreement": 171,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.159371303536042,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "role",
+      "value": "L_s",
+      "cases": {
+        "native": {
+          "count": 128,
+          "cleanF_agreement": 121,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 6.173964815214276,
+          "feature_relative_MSE_mean": 0.0310547133971113,
+          "IQ_NMSE_mean": 0.02400439909221319
+        },
+        "tail24_clean": {
+          "count": 128,
+          "cleanF_agreement": 124,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 6.482306573539972,
+          "feature_relative_MSE_mean": 0.023877319625327686,
+          "IQ_NMSE_mean": 0.018317195098813244
+        },
+        "equal_energy_global": {
+          "count": 128,
+          "cleanF_agreement": 126,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.767073519527912,
+          "feature_relative_MSE_mean": 0.01033756306560818,
+          "IQ_NMSE_mean": 0.008195541925431371
+        },
+        "all_clean": {
+          "count": 128,
+          "cleanF_agreement": 128,
+          "gain_vs_native": 7,
+          "gain_vs_equal_energy_global": 2,
+          "reference_margin_mean": 7.097457930445671,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "role",
+      "value": "U_s",
+      "cases": {
+        "native": {
+          "count": 384,
+          "cleanF_agreement": 365,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -15,
+          "reference_margin_mean": 6.152417701358597,
+          "feature_relative_MSE_mean": 0.024057597117246605,
+          "IQ_NMSE_mean": 0.018948969086237593
+        },
+        "tail24_clean": {
+          "count": 384,
+          "cleanF_agreement": 370,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": -10,
+          "reference_margin_mean": 6.410108427517116,
+          "feature_relative_MSE_mean": 0.01912845510160821,
+          "IQ_NMSE_mean": 0.013644179062957562
+        },
+        "equal_energy_global": {
+          "count": 384,
+          "cleanF_agreement": 380,
+          "gain_vs_native": 15,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.839690795478721,
+          "feature_relative_MSE_mean": 0.007819332665373935,
+          "IQ_NMSE_mean": 0.0056302359528140515
+        },
+        "all_clean": {
+          "count": 384,
+          "cleanF_agreement": 384,
+          "gain_vs_native": 19,
+          "gain_vs_equal_energy_global": 4,
+          "reference_margin_mean": 7.115330798241,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "scene",
+      "value": "clean",
+      "cases": {
+        "native": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.223477326688313,
+          "feature_relative_MSE_mean": 0.0008048705926631513,
+          "IQ_NMSE_mean": 3.566850185030662e-05
+        },
+        "tail24_clean": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.223838956583114,
+          "feature_relative_MSE_mean": 0.0007965682092444261,
+          "IQ_NMSE_mean": 3.2452762736413986e-05
+        },
+        "equal_energy_global": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.251330968879518,
+          "feature_relative_MSE_mean": 8.182522442655768e-05,
+          "IQ_NMSE_mean": 1.8479659618584438e-05
+        },
+        "all_clean": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.245121930326734,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "scene",
+      "value": "practical_high",
+      "cases": {
+        "native": {
+          "count": 62,
+          "cleanF_agreement": 62,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.268037461465405,
+          "feature_relative_MSE_mean": 0.011355338098045679,
+          "IQ_NMSE_mean": 0.009654062549440911
+        },
+        "tail24_clean": {
+          "count": 62,
+          "cleanF_agreement": 62,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.431670877241319,
+          "feature_relative_MSE_mean": 0.008926924545272824,
+          "IQ_NMSE_mean": 0.0044409885745300285
+        },
+        "equal_energy_global": {
+          "count": 62,
+          "cleanF_agreement": 62,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.5412637898998875,
+          "feature_relative_MSE_mean": 0.0028577250639265856,
+          "IQ_NMSE_mean": 0.0011363265209271753
+        },
+        "all_clean": {
+          "count": 62,
+          "cleanF_agreement": 62,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.532776299984224,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "scene",
+      "value": "practical_high_urban",
+      "cases": {
+        "native": {
+          "count": 79,
+          "cleanF_agreement": 77,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 6.507809445827822,
+          "feature_relative_MSE_mean": 0.01242381340788701,
+          "IQ_NMSE_mean": 0.013642435018091073
+        },
+        "tail24_clean": {
+          "count": 79,
+          "cleanF_agreement": 77,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 6.612390714355662,
+          "feature_relative_MSE_mean": 0.010441029334552822,
+          "IQ_NMSE_mean": 0.007420446782275634
+        },
+        "equal_energy_global": {
+          "count": 79,
+          "cleanF_agreement": 78,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.834365829636779,
+          "feature_relative_MSE_mean": 0.003017631558151739,
+          "IQ_NMSE_mean": 0.0022221530145336284
+        },
+        "all_clean": {
+          "count": 79,
+          "cleanF_agreement": 79,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 6.91082959235469,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "scene",
+      "value": "practical_low_suburban",
+      "cases": {
+        "native": {
+          "count": 68,
+          "cleanF_agreement": 60,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -8,
+          "reference_margin_mean": 5.384571138550253,
+          "feature_relative_MSE_mean": 0.040451540666468,
+          "IQ_NMSE_mean": 0.01519256885683931
+        },
+        "tail24_clean": {
+          "count": 68,
+          "cleanF_agreement": 63,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 5.765225238659802,
+          "feature_relative_MSE_mean": 0.027812539955929798,
+          "IQ_NMSE_mean": 0.010340300510185496
+        },
+        "equal_energy_global": {
+          "count": 68,
+          "cleanF_agreement": 68,
+          "gain_vs_native": 8,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.530894714243272,
+          "feature_relative_MSE_mean": 0.009035637121033849,
+          "IQ_NMSE_mean": 0.0037476958591201657
+        },
+        "all_clean": {
+          "count": 68,
+          "cleanF_agreement": 68,
+          "gain_vs_native": 8,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.84933267621433,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "scene",
+      "value": "practical_low_urban",
+      "cases": {
+        "native": {
+          "count": 66,
+          "cleanF_agreement": 56,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 4.431020603035435,
+          "feature_relative_MSE_mean": 0.06734901883949836,
+          "IQ_NMSE_mean": 0.06673888918929592
+        },
+        "tail24_clean": {
+          "count": 66,
+          "cleanF_agreement": 57,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 4.730588766661557,
+          "feature_relative_MSE_mean": 0.059072638590199254,
+          "IQ_NMSE_mean": 0.05552399103092312
+        },
+        "equal_energy_global": {
+          "count": 66,
+          "cleanF_agreement": 61,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 5.886651916937395,
+          "feature_relative_MSE_mean": 0.029237441824741174,
+          "IQ_NMSE_mean": 0.026103369652418856
+        },
+        "all_clean": {
+          "count": 66,
+          "cleanF_agreement": 66,
+          "gain_vs_native": 10,
+          "gain_vs_equal_energy_global": 5,
+          "reference_margin_mean": 7.036776531826366,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "scene",
+      "value": "practical_mid",
+      "cases": {
+        "native": {
+          "count": 77,
+          "cleanF_agreement": 77,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.647034598635389,
+          "feature_relative_MSE_mean": 0.015708005415614356,
+          "IQ_NMSE_mean": 0.012096209509007923
+        },
+        "tail24_clean": {
+          "count": 77,
+          "cleanF_agreement": 77,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.770328382392982,
+          "feature_relative_MSE_mean": 0.011692648381599552,
+          "IQ_NMSE_mean": 0.006969507454059921
+        },
+        "equal_energy_global": {
+          "count": 77,
+          "cleanF_agreement": 77,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.126937971486674,
+          "feature_relative_MSE_mean": 0.0034176515923777457,
+          "IQ_NMSE_mean": 0.0020630915386355845
+        },
+        "all_clean": {
+          "count": 77,
+          "cleanF_agreement": 77,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.219277787518192,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "scene",
+      "value": "practical_mid_urban",
+      "cases": {
+        "native": {
+          "count": 76,
+          "cleanF_agreement": 70,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -6,
+          "reference_margin_mean": 5.40616668525495,
+          "feature_relative_MSE_mean": 0.04019398461892515,
+          "IQ_NMSE_mean": 0.030268385701530957
+        },
+        "tail24_clean": {
+          "count": 76,
+          "cleanF_agreement": 74,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 6.259243212248149,
+          "feature_relative_MSE_mean": 0.029816059380353085,
+          "IQ_NMSE_mean": 0.02388562100838355
+        },
+        "equal_energy_global": {
+          "count": 76,
+          "cleanF_agreement": 76,
+          "gain_vs_native": 6,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.508520107520254,
+          "feature_relative_MSE_mean": 0.014422802535735076,
+          "IQ_NMSE_mean": 0.01088107348062438
+        },
+        "all_clean": {
+          "count": 76,
+          "cleanF_agreement": 76,
+          "gain_vs_native": 6,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.014703531014292,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "state",
+      "value": "BLOCKED",
+      "cases": {
+        "native": {
+          "count": 83,
+          "cleanF_agreement": 65,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -13,
+          "reference_margin_mean": 3.683666206267943,
+          "feature_relative_MSE_mean": 0.09505396757095334,
+          "IQ_NMSE_mean": 0.07991900149710386
+        },
+        "tail24_clean": {
+          "count": 83,
+          "cleanF_agreement": 72,
+          "gain_vs_native": 7,
+          "gain_vs_equal_energy_global": -6,
+          "reference_margin_mean": 4.867797686393002,
+          "feature_relative_MSE_mean": 0.07277151496789183,
+          "IQ_NMSE_mean": 0.06708697517436132
+        },
+        "equal_energy_global": {
+          "count": 83,
+          "cleanF_agreement": 78,
+          "gain_vs_native": 13,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 5.933335648961814,
+          "feature_relative_MSE_mean": 0.03693704953114221,
+          "IQ_NMSE_mean": 0.03140122728725245
+        },
+        "all_clean": {
+          "count": 83,
+          "cleanF_agreement": 83,
+          "gain_vs_native": 18,
+          "gain_vs_equal_energy_global": 5,
+          "reference_margin_mean": 7.459239287548755,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "state",
+      "value": "LOS",
+      "cases": {
+        "native": {
+          "count": 288,
+          "cleanF_agreement": 283,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 6.617082690199216,
+          "feature_relative_MSE_mean": 0.012033866425352042,
+          "IQ_NMSE_mean": 0.008625446378775652
+        },
+        "tail24_clean": {
+          "count": 288,
+          "cleanF_agreement": 283,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 6.7368006416493,
+          "feature_relative_MSE_mean": 0.009637537330086666,
+          "IQ_NMSE_mean": 0.0039087573417822975
+        },
+        "equal_energy_global": {
+          "count": 288,
+          "cleanF_agreement": 287,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.934289259629117,
+          "feature_relative_MSE_mean": 0.0025760499697121807,
+          "IQ_NMSE_mean": 0.0009448236463261613
+        },
+        "all_clean": {
+          "count": 288,
+          "cleanF_agreement": 288,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 6.98906667654713,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "state",
+      "value": "PARTIAL",
+      "cases": {
+        "native": {
+          "count": 57,
+          "cleanF_agreement": 54,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -3,
+          "reference_margin_mean": 5.869468216310468,
+          "feature_relative_MSE_mean": 0.03140839717857409,
+          "IQ_NMSE_mean": 0.02155377855115946
+        },
+        "tail24_clean": {
+          "count": 57,
+          "cleanF_agreement": 55,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 5.968221271247194,
+          "feature_relative_MSE_mean": 0.02665027101899971,
+          "IQ_NMSE_mean": 0.015566642927169277
+        },
+        "equal_energy_global": {
+          "count": 57,
+          "cleanF_agreement": 57,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.911801911236947,
+          "feature_relative_MSE_mean": 0.008969842012064825,
+          "IQ_NMSE_mean": 0.005808361507788824
+        },
+        "all_clean": {
+          "count": 57,
+          "cleanF_agreement": 57,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.021111153719718,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "state",
+      "value": "clean",
+      "cases": {
+        "native": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.223477326688313,
+          "feature_relative_MSE_mean": 0.0008048705926631513,
+          "IQ_NMSE_mean": 3.566850185030662e-05
+        },
+        "tail24_clean": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.223838956583114,
+          "feature_relative_MSE_mean": 0.0007965682092444261,
+          "IQ_NMSE_mean": 3.2452762736413986e-05
+        },
+        "equal_energy_global": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.251330968879518,
+          "feature_relative_MSE_mean": 8.182522442655768e-05,
+          "IQ_NMSE_mean": 1.8479659618584438e-05
+        },
+        "all_clean": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.245121930326734,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "lock",
+      "value": "degraded",
+      "cases": {
+        "native": {
+          "count": 49,
+          "cleanF_agreement": 44,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 4.609332931285002,
+          "feature_relative_MSE_mean": 0.054307554962531646,
+          "IQ_NMSE_mean": 0.04390322508252397
+        },
+        "tail24_clean": {
+          "count": 49,
+          "cleanF_agreement": 45,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 5.439885492227515,
+          "feature_relative_MSE_mean": 0.04220520741097173,
+          "IQ_NMSE_mean": 0.03479171013554596
+        },
+        "equal_energy_global": {
+          "count": 49,
+          "cleanF_agreement": 49,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.485423905508859,
+          "feature_relative_MSE_mean": 0.01687223267532429,
+          "IQ_NMSE_mean": 0.014387937661792551
+        },
+        "all_clean": {
+          "count": 49,
+          "cleanF_agreement": 49,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.327432909790351,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "lock",
+      "value": "locked",
+      "cases": {
+        "native": {
+          "count": 332,
+          "cleanF_agreement": 326,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 6.54216703090323,
+          "feature_relative_MSE_mean": 0.014035885465956932,
+          "IQ_NMSE_mean": 0.010196324947524356
+        },
+        "tail24_clean": {
+          "count": 332,
+          "cleanF_agreement": 326,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 6.653851973723216,
+          "feature_relative_MSE_mean": 0.011487381500703933,
+          "IQ_NMSE_mean": 0.005340610677709506
+        },
+        "equal_energy_global": {
+          "count": 332,
+          "cleanF_agreement": 331,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.925426097160362,
+          "feature_relative_MSE_mean": 0.003343548049668747,
+          "IQ_NMSE_mean": 0.001574289070158995
+        },
+        "all_clean": {
+          "count": 332,
+          "cleanF_agreement": 332,
+          "gain_vs_native": 6,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 6.9726076323583905,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "lock",
+      "value": "not_applicable",
+      "cases": {
+        "native": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.223477326688313,
+          "feature_relative_MSE_mean": 0.0008048705926631513,
+          "IQ_NMSE_mean": 3.566850185030662e-05
+        },
+        "tail24_clean": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.223838956583114,
+          "feature_relative_MSE_mean": 0.0007965682092444261,
+          "IQ_NMSE_mean": 3.2452762736413986e-05
+        },
+        "equal_energy_global": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.251330968879518,
+          "feature_relative_MSE_mean": 8.182522442655768e-05,
+          "IQ_NMSE_mean": 1.8479659618584438e-05
+        },
+        "all_clean": {
+          "count": 84,
+          "cleanF_agreement": 84,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.245121930326734,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "dimension": "lock",
+      "value": "unlocked",
+      "cases": {
+        "native": {
+          "count": 47,
+          "cleanF_agreement": 32,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -10,
+          "reference_margin_mean": 3.1524900071164397,
+          "feature_relative_MSE_mean": 0.123926112983138,
+          "IQ_NMSE_mean": 0.10233049249236888
+        },
+        "tail24_clean": {
+          "count": 47,
+          "cleanF_agreement": 39,
+          "gain_vs_native": 7,
+          "gain_vs_equal_energy_global": -3,
+          "reference_margin_mean": 4.442152358115988,
+          "feature_relative_MSE_mean": 0.09474140681088605,
+          "IQ_NMSE_mean": 0.087305599130056
+        },
+        "equal_energy_global": {
+          "count": 47,
+          "cleanF_agreement": 42,
+          "gain_vs_native": 10,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 5.669949764901019,
+          "feature_relative_MSE_mean": 0.05068427964827006,
+          "IQ_NMSE_mean": 0.042166271578877215
+        },
+        "all_clean": {
+          "count": 47,
+          "cleanF_agreement": 47,
+          "gain_vs_native": 15,
+          "gain_vs_equal_energy_global": 5,
+          "reference_margin_mean": 7.621733041519814,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "overall",
+      "value": "all",
+      "cases": {
+        "native": {
+          "count": 512,
+          "cleanF_agreement": 498,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -10,
+          "reference_margin_mean": 6.359405535506085,
+          "feature_relative_MSE_mean": 0.021910093747028014,
+          "IQ_NMSE_mean": 0.019439707979819865
+        },
+        "tail24_clean": {
+          "count": 512,
+          "cleanF_agreement": 504,
+          "gain_vs_native": 6,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 6.544725297484547,
+          "feature_relative_MSE_mean": 0.016684160747388432,
+          "IQ_NMSE_mean": 0.014603406531772833
+        },
+        "equal_energy_global": {
+          "count": 512,
+          "cleanF_agreement": 508,
+          "gain_vs_native": 10,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.900548876496032,
+          "feature_relative_MSE_mean": 0.006689050341694092,
+          "IQ_NMSE_mean": 0.006953111469205631
+        },
+        "all_clean": {
+          "count": 512,
+          "cleanF_agreement": 512,
+          "gain_vs_native": 14,
+          "gain_vs_equal_energy_global": 4,
+          "reference_margin_mean": 7.110862581292167,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "RX",
+      "value": "1",
+      "cases": {
+        "native": {
+          "count": 103,
+          "cleanF_agreement": 101,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 7.306135140576409,
+          "feature_relative_MSE_mean": 0.017346457185693314,
+          "IQ_NMSE_mean": 0.0052688003325713295
+        },
+        "tail24_clean": {
+          "count": 103,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.532122174512993,
+          "feature_relative_MSE_mean": 0.014024883940965965,
+          "IQ_NMSE_mean": 0.004216268273409599
+        },
+        "equal_energy_global": {
+          "count": 103,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.8761340298698945,
+          "feature_relative_MSE_mean": 0.005205824165444125,
+          "IQ_NMSE_mean": 0.0017200158290683408
+        },
+        "all_clean": {
+          "count": 103,
+          "cleanF_agreement": 103,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 8.061857436467143,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "RX",
+      "value": "3",
+      "cases": {
+        "native": {
+          "count": 102,
+          "cleanF_agreement": 99,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 5.03861496962753,
+          "feature_relative_MSE_mean": 0.0222002509774885,
+          "IQ_NMSE_mean": 0.03831232146991598
+        },
+        "tail24_clean": {
+          "count": 102,
+          "cleanF_agreement": 100,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 5.170911857894823,
+          "feature_relative_MSE_mean": 0.015953460991915885,
+          "IQ_NMSE_mean": 0.02825654809293173
+        },
+        "equal_energy_global": {
+          "count": 102,
+          "cleanF_agreement": 101,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 5.478883732767666,
+          "feature_relative_MSE_mean": 0.006472628840806554,
+          "IQ_NMSE_mean": 0.014645001665585636
+        },
+        "all_clean": {
+          "count": 102,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 5.518425534753239,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "RX",
+      "value": "4",
+      "cases": {
+        "native": {
+          "count": 102,
+          "cleanF_agreement": 100,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 7.115596574895522,
+          "feature_relative_MSE_mean": 0.015312923124802896,
+          "IQ_NMSE_mean": 0.006245533123011924
+        },
+        "tail24_clean": {
+          "count": 102,
+          "cleanF_agreement": 100,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 7.273393509434719,
+          "feature_relative_MSE_mean": 0.012928216228918281,
+          "IQ_NMSE_mean": 0.004878930640429376
+        },
+        "equal_energy_global": {
+          "count": 102,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.6026712936513565,
+          "feature_relative_MSE_mean": 0.004161419846526519,
+          "IQ_NMSE_mean": 0.0020113557212630886
+        },
+        "all_clean": {
+          "count": 102,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.6874221095851825,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "RX",
+      "value": "6",
+      "cases": {
+        "native": {
+          "count": 102,
+          "cleanF_agreement": 98,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -3,
+          "reference_margin_mean": 6.3750133140414365,
+          "feature_relative_MSE_mean": 0.027531469708229256,
+          "IQ_NMSE_mean": 0.018018040404727157
+        },
+        "tail24_clean": {
+          "count": 102,
+          "cleanF_agreement": 100,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 6.565423254873238,
+          "feature_relative_MSE_mean": 0.023287937261664088,
+          "IQ_NMSE_mean": 0.015030272347062505
+        },
+        "equal_energy_global": {
+          "count": 102,
+          "cleanF_agreement": 101,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.141535137213912,
+          "feature_relative_MSE_mean": 0.010450010836982127,
+          "IQ_NMSE_mean": 0.007803169909535944
+        },
+        "all_clean": {
+          "count": 102,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 7.700358921406316,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "RX",
+      "value": "8",
+      "cases": {
+        "native": {
+          "count": 103,
+          "cleanF_agreement": 100,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 5.9563376614191,
+          "feature_relative_MSE_mean": 0.027152711064842964,
+          "IQ_NMSE_mean": 0.02939517244322435
+        },
+        "tail24_clean": {
+          "count": 103,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.175713095850157,
+          "feature_relative_MSE_mean": 0.01724685999542292,
+          "IQ_NMSE_mean": 0.02067730001847858
+        },
+        "equal_energy_global": {
+          "count": 103,
+          "cleanF_agreement": 102,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.398874009697183,
+          "feature_relative_MSE_mean": 0.007165240916761938,
+          "IQ_NMSE_mean": 0.008620967549592306
+        },
+        "all_clean": {
+          "count": 103,
+          "cleanF_agreement": 103,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 6.5821092811602995,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "day",
+      "value": "1",
+      "cases": {
+        "native": {
+          "count": 171,
+          "cleanF_agreement": 168,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 6.526375739895112,
+          "feature_relative_MSE_mean": 0.020501088268656795,
+          "IQ_NMSE_mean": 0.015117082011800034
+        },
+        "tail24_clean": {
+          "count": 171,
+          "cleanF_agreement": 169,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 6.680320034250181,
+          "feature_relative_MSE_mean": 0.016143842118402738,
+          "IQ_NMSE_mean": 0.011015988436964917
+        },
+        "equal_energy_global": {
+          "count": 171,
+          "cleanF_agreement": 170,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.959320450386806,
+          "feature_relative_MSE_mean": 0.0063280326775655565,
+          "IQ_NMSE_mean": 0.0046971991159461945
+        },
+        "all_clean": {
+          "count": 171,
+          "cleanF_agreement": 171,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 7.264151741886697,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "day",
+      "value": "2",
+      "cases": {
+        "native": {
+          "count": 170,
+          "cleanF_agreement": 166,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 6.4221741430899675,
+          "feature_relative_MSE_mean": 0.01796684701976654,
+          "IQ_NMSE_mean": 0.019841619672222484
+        },
+        "tail24_clean": {
+          "count": 170,
+          "cleanF_agreement": 168,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 6.576498303693883,
+          "feature_relative_MSE_mean": 0.014026890002584396,
+          "IQ_NMSE_mean": 0.014984867610158235
+        },
+        "equal_energy_global": {
+          "count": 170,
+          "cleanF_agreement": 170,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.887176459677079,
+          "feature_relative_MSE_mean": 0.005778488463203543,
+          "IQ_NMSE_mean": 0.008064550523656233
+        },
+        "all_clean": {
+          "count": 170,
+          "cleanF_agreement": 170,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.907877652084126,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "day",
+      "value": "3",
+      "cases": {
+        "native": {
+          "count": 171,
+          "cleanF_agreement": 164,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 6.130033791413781,
+          "feature_relative_MSE_mean": 0.027239286030279062,
+          "IQ_NMSE_mean": 0.02336277261621136
+        },
+        "tail24_clean": {
+          "count": 171,
+          "cleanF_agreement": 167,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 6.377543361563432,
+          "feature_relative_MSE_mean": 0.019866210526179307,
+          "IQ_NMSE_mean": 0.017811594314735613
+        },
+        "equal_energy_global": {
+          "count": 171,
+          "cleanF_agreement": 168,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.855071518156263,
+          "feature_relative_MSE_mean": 0.007955304961047148,
+          "IQ_NMSE_mean": 0.008104084411607742
+        },
+        "all_clean": {
+          "count": 171,
+          "cleanF_agreement": 171,
+          "gain_vs_native": 7,
+          "gain_vs_equal_energy_global": 3,
+          "reference_margin_mean": 7.159371303536042,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "role",
+      "value": "L_s",
+      "cases": {
+        "native": {
+          "count": 128,
+          "cleanF_agreement": 126,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 6.36417649872601,
+          "feature_relative_MSE_mean": 0.021502547847745745,
+          "IQ_NMSE_mean": 0.019042354447684318
+        },
+        "tail24_clean": {
+          "count": 128,
+          "cleanF_agreement": 128,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 6.596168788149953,
+          "feature_relative_MSE_mean": 0.016915556789172115,
+          "IQ_NMSE_mean": 0.01347457901850646
+        },
+        "equal_energy_global": {
+          "count": 128,
+          "cleanF_agreement": 127,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.860664706677198,
+          "feature_relative_MSE_mean": 0.00715944856038675,
+          "IQ_NMSE_mean": 0.006134484441504995
+        },
+        "all_clean": {
+          "count": 128,
+          "cleanF_agreement": 128,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 7.097457930445671,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "role",
+      "value": "U_s",
+      "cases": {
+        "native": {
+          "count": 384,
+          "cleanF_agreement": 372,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -9,
+          "reference_margin_mean": 6.357815214432776,
+          "feature_relative_MSE_mean": 0.022045942380122103,
+          "IQ_NMSE_mean": 0.01957215915719838
+        },
+        "tail24_clean": {
+          "count": 384,
+          "cleanF_agreement": 376,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 6.527577467262745,
+          "feature_relative_MSE_mean": 0.016607028733460538,
+          "IQ_NMSE_mean": 0.014979682369528291
+        },
+        "equal_energy_global": {
+          "count": 384,
+          "cleanF_agreement": 381,
+          "gain_vs_native": 9,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.913843599768977,
+          "feature_relative_MSE_mean": 0.006532250935463206,
+          "IQ_NMSE_mean": 0.007225987145105843
+        },
+        "all_clean": {
+          "count": 384,
+          "cleanF_agreement": 384,
+          "gain_vs_native": 12,
+          "gain_vs_equal_energy_global": 3,
+          "reference_margin_mean": 7.115330798241,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "scene",
+      "value": "clean",
+      "cases": {
+        "native": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.1736732883217895,
+          "feature_relative_MSE_mean": 0.00013032626159173682,
+          "IQ_NMSE_mean": 2.4928340589673254e-05
+        },
+        "tail24_clean": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.170691563759321,
+          "feature_relative_MSE_mean": 0.0001298419230784301,
+          "IQ_NMSE_mean": 2.239840967062556e-05
+        },
+        "equal_energy_global": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.1704234311610096,
+          "feature_relative_MSE_mean": 6.190357097929573e-05,
+          "IQ_NMSE_mean": 1.1984770054245198e-05
+        },
+        "all_clean": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.161979825408371,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "scene",
+      "value": "practical_high",
+      "cases": {
+        "native": {
+          "count": 83,
+          "cleanF_agreement": 83,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.795584489064044,
+          "feature_relative_MSE_mean": 0.012385175556382052,
+          "IQ_NMSE_mean": 0.0074971440866735415
+        },
+        "tail24_clean": {
+          "count": 83,
+          "cleanF_agreement": 83,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.901902388377362,
+          "feature_relative_MSE_mean": 0.008774913088642958,
+          "IQ_NMSE_mean": 0.003829219652738153
+        },
+        "equal_energy_global": {
+          "count": 83,
+          "cleanF_agreement": 83,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.063964978758111,
+          "feature_relative_MSE_mean": 0.002303517304985196,
+          "IQ_NMSE_mean": 0.0010358985265671676
+        },
+        "all_clean": {
+          "count": 83,
+          "cleanF_agreement": 83,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.065318170800267,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "scene",
+      "value": "practical_high_urban",
+      "cases": {
+        "native": {
+          "count": 68,
+          "cleanF_agreement": 67,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 6.7646134355488945,
+          "feature_relative_MSE_mean": 0.014483106428729919,
+          "IQ_NMSE_mean": 0.010194021734230988
+        },
+        "tail24_clean": {
+          "count": 68,
+          "cleanF_agreement": 68,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.893574237823486,
+          "feature_relative_MSE_mean": 0.01216429369079004,
+          "IQ_NMSE_mean": 0.004730027473723406
+        },
+        "equal_energy_global": {
+          "count": 68,
+          "cleanF_agreement": 68,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.053624191704919,
+          "feature_relative_MSE_mean": 0.0026807303715138593,
+          "IQ_NMSE_mean": 0.0012738621463701267
+        },
+        "all_clean": {
+          "count": 68,
+          "cleanF_agreement": 68,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.0851793744984795,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "scene",
+      "value": "practical_low_suburban",
+      "cases": {
+        "native": {
+          "count": 71,
+          "cleanF_agreement": 69,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 6.025781441742266,
+          "feature_relative_MSE_mean": 0.02033262492590387,
+          "IQ_NMSE_mean": 0.014143061515888278
+        },
+        "tail24_clean": {
+          "count": 71,
+          "cleanF_agreement": 69,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 6.164170589245541,
+          "feature_relative_MSE_mean": 0.016842131158599342,
+          "IQ_NMSE_mean": 0.008792136290805861
+        },
+        "equal_energy_global": {
+          "count": 71,
+          "cleanF_agreement": 71,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.723045359195118,
+          "feature_relative_MSE_mean": 0.004832952749189055,
+          "IQ_NMSE_mean": 0.003352382944234398
+        },
+        "all_clean": {
+          "count": 71,
+          "cleanF_agreement": 71,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.99023819137627,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "scene",
+      "value": "practical_low_urban",
+      "cases": {
+        "native": {
+          "count": 70,
+          "cleanF_agreement": 64,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -4,
+          "reference_margin_mean": 4.974790487970624,
+          "feature_relative_MSE_mean": 0.05434313406502562,
+          "IQ_NMSE_mean": 0.06834821521936517
+        },
+        "tail24_clean": {
+          "count": 70,
+          "cleanF_agreement": 66,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 5.516287549904415,
+          "feature_relative_MSE_mean": 0.042778455017001504,
+          "IQ_NMSE_mean": 0.059106547155949686
+        },
+        "equal_energy_global": {
+          "count": 70,
+          "cleanF_agreement": 68,
+          "gain_vs_native": 4,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.402181858675821,
+          "feature_relative_MSE_mean": 0.021790685309471362,
+          "IQ_NMSE_mean": 0.032259787836769
+        },
+        "all_clean": {
+          "count": 70,
+          "cleanF_agreement": 70,
+          "gain_vs_native": 6,
+          "gain_vs_equal_energy_global": 2,
+          "reference_margin_mean": 7.096409460476466,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "scene",
+      "value": "practical_mid",
+      "cases": {
+        "native": {
+          "count": 77,
+          "cleanF_agreement": 77,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.008950162243534,
+          "feature_relative_MSE_mean": 0.01459098086607727,
+          "IQ_NMSE_mean": 0.009601920239881358
+        },
+        "tail24_clean": {
+          "count": 77,
+          "cleanF_agreement": 77,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.935960682955655,
+          "feature_relative_MSE_mean": 0.011977400859007491,
+          "IQ_NMSE_mean": 0.005813031449805123
+        },
+        "equal_energy_global": {
+          "count": 77,
+          "cleanF_agreement": 77,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.271440567908349,
+          "feature_relative_MSE_mean": 0.0035588362852059297,
+          "IQ_NMSE_mean": 0.001883726322198704
+        },
+        "all_clean": {
+          "count": 77,
+          "cleanF_agreement": 77,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.244708169590343,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "scene",
+      "value": "practical_mid_urban",
+      "cases": {
+        "native": {
+          "count": 62,
+          "cleanF_agreement": 57,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -3,
+          "reference_margin_mean": 5.405901493564729,
+          "feature_relative_MSE_mean": 0.045539507773825,
+          "IQ_NMSE_mean": 0.03399636389522423
+        },
+        "tail24_clean": {
+          "count": 62,
+          "cleanF_agreement": 60,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 5.977212521337694,
+          "feature_relative_MSE_mean": 0.0300603277414226,
+          "IQ_NMSE_mean": 0.026231602814439082
+        },
+        "equal_energy_global": {
+          "count": 62,
+          "cleanF_agreement": 60,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.46663410048331,
+          "feature_relative_MSE_mean": 0.014577096343630054,
+          "IQ_NMSE_mean": 0.012018852222207633
+        },
+        "all_clean": {
+          "count": 62,
+          "cleanF_agreement": 62,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 2,
+          "reference_margin_mean": 7.121444632930141,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "state",
+      "value": "BLOCKED",
+      "cases": {
+        "native": {
+          "count": 62,
+          "cleanF_agreement": 52,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -6,
+          "reference_margin_mean": 3.674306538797194,
+          "feature_relative_MSE_mean": 0.09411229727970015,
+          "IQ_NMSE_mean": 0.10088487961629947
+        },
+        "tail24_clean": {
+          "count": 62,
+          "cleanF_agreement": 55,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": -3,
+          "reference_margin_mean": 4.5701486468315125,
+          "feature_relative_MSE_mean": 0.06952263081386205,
+          "IQ_NMSE_mean": 0.08857222340790735
+        },
+        "equal_energy_global": {
+          "count": 62,
+          "cleanF_agreement": 58,
+          "gain_vs_native": 6,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 5.637704143601079,
+          "feature_relative_MSE_mean": 0.03635634034271202,
+          "IQ_NMSE_mean": 0.04824435899049164
+        },
+        "all_clean": {
+          "count": 62,
+          "cleanF_agreement": 62,
+          "gain_vs_native": 10,
+          "gain_vs_equal_energy_global": 4,
+          "reference_margin_mean": 6.88802860629174,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "state",
+      "value": "LOS",
+      "cases": {
+        "native": {
+          "count": 330,
+          "cleanF_agreement": 328,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 6.8087845401330425,
+          "feature_relative_MSE_mean": 0.012637433225895759,
+          "IQ_NMSE_mean": 0.00777922493500889
+        },
+        "tail24_clean": {
+          "count": 330,
+          "cleanF_agreement": 330,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.893288771672682,
+          "feature_relative_MSE_mean": 0.009842288353706173,
+          "IQ_NMSE_mean": 0.0037535735400689935
+        },
+        "equal_energy_global": {
+          "count": 330,
+          "cleanF_agreement": 330,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.116990637779236,
+          "feature_relative_MSE_mean": 0.0025829230829251836,
+          "IQ_NMSE_mean": 0.0009770242792938282
+        },
+        "all_clean": {
+          "count": 330,
+          "cleanF_agreement": 330,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.170875131361412,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "state",
+      "value": "PARTIAL",
+      "cases": {
+        "native": {
+          "count": 39,
+          "cleanF_agreement": 37,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 5.1344152352748775,
+          "feature_relative_MSE_mean": 0.03082297885647187,
+          "IQ_NMSE_mean": 0.028951398085038632
+        },
+        "tail24_clean": {
+          "count": 39,
+          "cleanF_agreement": 38,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 5.434328843385745,
+          "feature_relative_MSE_mean": 0.024959354864385646,
+          "IQ_NMSE_mean": 0.01910186547618837
+        },
+        "equal_energy_global": {
+          "count": 39,
+          "cleanF_agreement": 39,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.516209217218252,
+          "feature_relative_MSE_mean": 0.008033894027810162,
+          "IQ_NMSE_mean": 0.006293693237985747
+        },
+        "all_clean": {
+          "count": 39,
+          "cleanF_agreement": 39,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 6.851146380106608,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "state",
+      "value": "clean",
+      "cases": {
+        "native": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.1736732883217895,
+          "feature_relative_MSE_mean": 0.00013032626159173682,
+          "IQ_NMSE_mean": 2.4928340589673254e-05
+        },
+        "tail24_clean": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.170691563759321,
+          "feature_relative_MSE_mean": 0.0001298419230784301,
+          "IQ_NMSE_mean": 2.239840967062556e-05
+        },
+        "equal_energy_global": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.1704234311610096,
+          "feature_relative_MSE_mean": 6.190357097929573e-05,
+          "IQ_NMSE_mean": 1.1984770054245198e-05
+        },
+        "all_clean": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.161979825408371,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "lock",
+      "value": "degraded",
+      "cases": {
+        "native": {
+          "count": 38,
+          "cleanF_agreement": 35,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 4.2915884256362915,
+          "feature_relative_MSE_mean": 0.06469989664803602,
+          "IQ_NMSE_mean": 0.08894895699708477
+        },
+        "tail24_clean": {
+          "count": 38,
+          "cleanF_agreement": 36,
+          "gain_vs_native": 1,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 4.655483374470158,
+          "feature_relative_MSE_mean": 0.05199735430314353,
+          "IQ_NMSE_mean": 0.07692737078392192
+        },
+        "equal_energy_global": {
+          "count": 38,
+          "cleanF_agreement": 37,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 5.998987552366759,
+          "feature_relative_MSE_mean": 0.022660400828738745,
+          "IQ_NMSE_mean": 0.04276450976766156
+        },
+        "all_clean": {
+          "count": 38,
+          "cleanF_agreement": 38,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 1,
+          "reference_margin_mean": 6.446098377830104,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "lock",
+      "value": "locked",
+      "cases": {
+        "native": {
+          "count": 355,
+          "cleanF_agreement": 352,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -3,
+          "reference_margin_mean": 6.73734321493498,
+          "feature_relative_MSE_mean": 0.013352230535885712,
+          "IQ_NMSE_mean": 0.008993187328820235
+        },
+        "tail24_clean": {
+          "count": 355,
+          "cleanF_agreement": 354,
+          "gain_vs_native": 2,
+          "gain_vs_equal_energy_global": -1,
+          "reference_margin_mean": 6.829868562120787,
+          "feature_relative_MSE_mean": 0.010503266745863457,
+          "IQ_NMSE_mean": 0.004504088682457018
+        },
+        "equal_energy_global": {
+          "count": 355,
+          "cleanF_agreement": 355,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.080444577714087,
+          "feature_relative_MSE_mean": 0.0027878278066925982,
+          "IQ_NMSE_mean": 0.0011989711783160243
+        },
+        "all_clean": {
+          "count": 355,
+          "cleanF_agreement": 355,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.1361837867280125,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "lock",
+      "value": "not_applicable",
+      "cases": {
+        "native": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.1736732883217895,
+          "feature_relative_MSE_mean": 0.00013032626159173682,
+          "IQ_NMSE_mean": 2.4928340589673254e-05
+        },
+        "tail24_clean": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.170691563759321,
+          "feature_relative_MSE_mean": 0.0001298419230784301,
+          "IQ_NMSE_mean": 2.239840967062556e-05
+        },
+        "equal_energy_global": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.1704234311610096,
+          "feature_relative_MSE_mean": 6.190357097929573e-05,
+          "IQ_NMSE_mean": 1.1984770054245198e-05
+        },
+        "all_clean": {
+          "count": 81,
+          "cleanF_agreement": 81,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 7.161979825408371,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "dimension": "lock",
+      "value": "unlocked",
+      "cases": {
+        "native": {
+          "count": 38,
+          "cleanF_agreement": 30,
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -5,
+          "reference_margin_mean": 3.1608130618145593,
+          "feature_relative_MSE_mean": 0.10549404364275305,
+          "IQ_NMSE_mean": 0.08890709006472637
+        },
+        "tail24_clean": {
+          "count": 38,
+          "cleanF_agreement": 33,
+          "gain_vs_native": 3,
+          "gain_vs_equal_energy_global": -2,
+          "reference_margin_mean": 4.43583231223257,
+          "feature_relative_MSE_mean": 0.07440036706822484,
+          "IQ_NMSE_mean": 0.07770890265850253
+        },
+        "equal_energy_global": {
+          "count": 38,
+          "cleanF_agreement": 35,
+          "gain_vs_native": 5,
+          "gain_vs_equal_energy_global": 0,
+          "reference_margin_mean": 5.5462467043023365,
+          "feature_relative_MSE_mean": 0.04128961796921335,
+          "IQ_NMSE_mean": 0.039693057010146346
+        },
+        "all_clean": {
+          "count": 38,
+          "cleanF_agreement": 38,
+          "gain_vs_native": 8,
+          "gain_vs_equal_energy_global": 3,
+          "reference_margin_mean": 7.430112976776926,
+          "feature_relative_MSE_mean": 0.0,
+          "IQ_NMSE_mean": 0.0
+        }
+      }
+    }
+  ],
+  "decision": {
+    "eligible": false,
+    "automatic_training": false
+  },
+  "F_teacher": {
+    "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "seed": 2026092701,
+    "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+    "epoch": 50,
+    "updates": 11100
+  },
+  "F_unchanged": true,
+  "main_F_inputs": 2048,
+  "head_only_inputs": 4096,
+  "smoke_F_inputs": 2,
+  "smoke_head_inputs": 2,
+  "new_G_inputs": 0,
+  "G_checkpoint_reads": 0,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "seconds": 1.46174395410344,
+  "scope": "Source tailclean IQ oracle and equal-energy closestglobalclean control;notdeployableIQ/trueTXaccuracy/causalboundaryproof/physicalceiling"
+}

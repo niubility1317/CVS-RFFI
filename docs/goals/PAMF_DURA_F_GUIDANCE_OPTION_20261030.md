@@ -215,3 +215,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 固定尾24点身份效用
 
 20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01：由已有源inverse尾部单位采样误差3.20倍提出，固定defaultDURA/source512×01/20；sourceclean尾24替换对比同L2修正能量的最近全窗口clean IQ，接原F默认头，无G/TX/V/target。两view尾部较native至少+4/512、较全窗口+2，RX/clean及场景保护、F特征误差条件预先固定；PASS仅支持另登记边界结构研究，不自动训练。配对clean oracle不可部署，不是真实TX或物理上限，默认及全部旧负结果保持。
+
+
+## 固定尾24点效用：完整源判定
+
+20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01/28628057。VERIFIED / ANALYZED_SOURCE_ONLY，科学判定FAIL。固定defaultDURA/source512（128L/384U）×01/20，以源inverse尾24点单位误差3.20倍为研究依据。尾24点sourceclean修复将clean F选择一致数486/498变成494/504，净+8/+6；完全相同逐条L2修正能量的最近全窗口clean IQ为506/508，净+20/+10。尾部相对全窗口净−12/−4，额外收益、源RX和场景保护均失败；较native收益、clean保护和完整特征误差条件通过，不加对应边界网络或调整片段/阈值。尾24点占该两组总IQ误差约26.72%/24.88%，单位采样误差约3.52/3.20倍；高误差位置并不自动成为最有利的身份修复位置。CPU2主循环1.461744秒，独立检查0.369215秒；1024源观察/4096IQ和原头特征行/52组、精确尾部支持域/等能量全窗口公式复算通过。主完整F2048/原头4096，真实2Ls另F2/原头2，0G加载/前向/模型更新/TX/V/target。源clean F一致代理不是真实TX，两个配对clean oracle不可部署或称物理上限。默认DURA及完整3pp/clean/同质量效率目标ACTIVE保持。 详见本run analysis.md/results.json。

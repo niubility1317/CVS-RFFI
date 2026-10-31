@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-performance-efficiency goal and explicit independent frozen-source-F guidance; source-only CPU association/latent intervention; no G training or target use",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "2862805722cc433eb7789a890a9fe8c975a85ce7",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01-release"
@@ -84,7 +84,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.boundary_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.boundary_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01 --commit 2862805722cc433eb7789a890a9fe8c975a85ce7",
     "stop_rule": "Badsource/order/collision/nonfinite/Fstate/real2Ls smoke/equalenergy mismatch:preserveandstop/noautoretry. ScientificFAILnotsegment-length/threshold/model search;noautomaticGtraining"
   },
   "expected_artifacts": [
@@ -138,7 +138,7 @@
       "budget_ref": "CPU2;mainfullF2048/head4096;real2Ls smokeF2/head2;0Gcheckpoint-forward-modeloptimizer/TX-V-target",
       "output_root": "runs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.boundary_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.boundary_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01 --commit 2862805722cc433eb7789a890a9fe8c975a85ce7",
       "expected_artifacts": [
         "launch.json",
         "smoke.json",
