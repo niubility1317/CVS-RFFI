@@ -1,0 +1,26 @@
+{
+  "run_id": "20261101-phase2-mopc-author-group1-m4-r01",
+  "method_profiles": [
+    "mopc_hr"
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "allowed_gpus": [
+    1,
+    5
+  ],
+  "max_own_workers_per_GPU": 1,
+  "max_total_GPU_processes": 3,
+  "architecture": "author-attention-resnet-WiSig256",
+  "source_epochs": 200,
+  "source_PL_start": 101,
+  "source_concat_CE": 0.68,
+  "target_C_epochs_per5classsession": 20,
+  "target_old_labels": 0,
+  "input_path": "P0",
+  "jobs": 3870
+}

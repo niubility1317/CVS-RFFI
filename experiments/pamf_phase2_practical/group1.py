@@ -19,7 +19,7 @@ def catalog():
         ('radionet_ada_knn','DA',200,'radionet_ada',None),
         ('tweak','DA',100,'tweak','native_M10_observation_tracks_unbound'),
         ('csil','CIL',200,'csil','author_MATLAB_Fisher_path_unbound'),
-        ('mopc_hr','CIL',200,'mopc_hr','original_encoder_binding_unresolved_no_generic_encoder_substitution'),
+        ('mopc_hr','CIL',200,'mopc_hr',None),
         ('orthogonal','CIL',200,'orthogonal',None),
         ('issl','CIL',300,'issl_author_behavior',None),
         ('lora_triplet_knn','CIL',1000,'lora_triplet_knn',None),
@@ -27,7 +27,8 @@ def catalog():
     return [dict(id=i,category=c,epochs=e,PL_start_epoch=14 if m=='pamf' else e//2+1,method=m,
                  B='native' if c!='CIL' else None,C='native' if c!='DA' else None,
                  active=reason is None,unavailable_reason=reason,
-                 native_scope='original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter')
+                 native_scope='MoPC-HR author attention ResNet WiSig256/input adaptation' if m=='mopc_hr'
+                     else 'original_task_mechanism_with_declared_WiSig_input_and_source_PL_adapter')
             for i,c,e,m,reason in rows]
 
 

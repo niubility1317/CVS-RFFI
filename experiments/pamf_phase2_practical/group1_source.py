@@ -21,6 +21,9 @@ EXTRA={'poster_ft','feature_separation_hu2024','issl_author_behavior','lora_trip
 
 
 def model_for(method,device):
+    if method=='mopc_hr':
+        from .mopc_author import MoPCAuthorWiSig256
+        return MoPCAuthorWiSig256(num_classes=6).to(device)
     if method in EXTRA:return extra.NativeModel(method,6,5).to(device)
     return nets.factory(method,6,5).to(device)
 
@@ -49,7 +52,7 @@ def recipe(profile):
             full_REPL_epochs=[21,50],REPL_weight=6.,PL_threshold=.95,EMA=False,
             satellite_concat=False,source_policy='reuse_exact_original_complete_Tri_SIG_TIME_SSL',
             target_contact=False,U_TX_truth_read=False)
-    return dict(schema='group1_source_concat_midPL_v1',profile=profile,method=r['method'],epochs=r['epochs'],
+    result=dict(schema='group1_source_concat_midPL_v1',profile=profile,method=r['method'],epochs=r['epochs'],
         PL_start_epoch=r['PL_start_epoch'],PL_threshold=.95,PL_weight=1.,U_batch_ratio=2,
         satellite_concat=True,satellite_weight=.68,satellite_on='L_only',
         U_objective='ordinary_clean_source_PL',source_channel='practical_residual_post_sync_noeq',
@@ -58,6 +61,15 @@ def recipe(profile):
         source_fc_hz=2462e6,source_fs_hz=25e6,
         metric_temperature=.1,no_added_classifier=True,EMA=False,early_stopping=False,selection='fixed_final_epoch',
         native_supervised_objective_retained=True,target_contact=False,U_TX_truth_read=False)
+    if r['method']=='mopc_hr':
+        from .mopc_author import architecture_metadata
+        result.update(architecture=architecture_metadata(),
+            native_supervised_objective='source_TX_CE_native_linear_fc',
+            source_metadata='frozen_A_clean_L_s_old6_prototypes_only',
+            source_optimizer='Adam',source_learning_rate=.001,L_batch=128,U_batch=256,
+            C_initialization='A_no_B',C_semantics='paper',C_new_classes_per_session=5,
+            C_epochs_per_session=20,C_optimizer='SGD',C_learning_rate=.01)
+    return result
 
 
 @torch.no_grad()
@@ -65,6 +77,23 @@ def extract(model,method,x,device,batch=128):
     model.eval()
     return torch.cat([embedding(model,method,x[i:i+batch].to(device)).detach().cpu()
                       for i in range(0,len(x),batch)])
+
+
+@torch.no_grad()
+def mopc_source_metadata(model,x,y,device):
+    """Freeze only class aggregates of final-A clean L_s, without U or V."""
+    from .mopc_author import architecture_metadata
+    from .vendor_native.paper_reproduction.mopc_hr_non_exemplar_cil_sei.algorithm import compute_class_prototypes
+    require(not model.training,'MoPC source metadata requires final A in eval mode')
+    require(y.unique(sorted=True).tolist()==list(range(6)),'MoPC source L_s must cover old six classes')
+    features=extract(model,'mopc_hr',x,device)
+    prototypes,ids=compute_class_prototypes(features,y.cpu())
+    require(prototypes.shape==(6,model.out_dim) and bool(torch.isfinite(prototypes).all()),
+            'MoPC source prototypes are invalid')
+    return dict(source_role='L_s',source_rows=len(x),source_class_ids=ids.tolist(),
+        computed_after_A_freeze=True,computed_before_target_adaptation=True,
+        source_metadata=dict(architecture=architecture_metadata(),input_path='clean_L_s'),
+        old_prototypes=prototypes.detach().clone())
 
 
 def augment(reader,indices,epoch,epochs,device):
@@ -240,9 +269,11 @@ def _train_native(c,profile,seed,out,device):
             model.source_prototypes.copy_(torch.stack([z[y==i].mean(0) for i in range(6)]).to(device));model.prototypes_ready.fill_(True)
         if method=='lora_triplet_knn':native=dict(source_enrollment_features=extract(model,method,x,device),source_enrollment_y=y)
         if method=='issl_author_behavior':native=dict(source_replay_x=x,source_replay_y=y)
+        registration={}
+        if method=='mopc_hr':registration['base_metadata']=mopc_source_metadata(model,x,y,device)
         torch.save(dict(schema='group1_A_v1',model=model.state_dict(),method=method,profile=profile,
             seed=seed,recipe=spec,source_contract=read(c['source_contract']),native_state=native,
-            ancestors=[],initialization='scratch',target_contact=False),out/'source.pt')
+            ancestors=[],initialization='scratch',target_contact=False,**registration),out/'source.pt')
         probe.result.update(actual_epochs=r['epochs'],native_L_update_steps=steps,PL_seen=seen,PL_accepted=accepted,
             L_anchor_exposure=Ls_seen,satellite_seen=sat_seen,satellite_actually_applied=sat_applied,
             augmentation_wait_seconds=reader.wait_seconds,source_roles=dict(L_s=len(L),U_s=len(U),V=len(V)),
@@ -389,14 +420,23 @@ def load_source(c,profile,seed,device):
     require(payload['source_contract']==expected and payload['seed']==seed and not payload['target_contact'] and payload['ancestors']==[],
             'CHECKPOINT_DATA_CONTRACT_MISMATCH_OR_PROVENANCE')
     model=model_for(r['method'],device);model.load_state_dict(payload['model'],strict=True);model.eval().requires_grad_(False)
-    native=payload['native_state'];score=lambda net,x:logits(net,r['method'],x)
+    native=payload['native_state'];score=lambda net,x:logits(net,r['method'],x);base_metadata={}
+    if r['method']=='mopc_hr':
+        base_metadata=dict(payload['base_metadata'])
+        require(base_metadata['source_role']=='L_s' and base_metadata['source_class_ids']==list(range(6))
+            and base_metadata['computed_after_A_freeze'] and base_metadata['computed_before_target_adaptation'],
+            'MoPC source prototype provenance mismatch')
+        prototypes=base_metadata['old_prototypes']
+        require(prototypes.shape==(6,model.out_dim) and bool(torch.isfinite(prototypes).all()),
+                'MoPC source prototype dimensions mismatch')
+        base_metadata['old_prototypes']=prototypes.to(device)
     if r['method']=='lora_triplet_knn':
         base=dict(model=model,profile=r['method'],native_state=native,resources={},classes=tuple(range(6)))
         base=extra._metric_state(base,native['source_enrollment_features'],native['source_enrollment_y'],source=True)
         score=base['score_fn']
     return dict(model=model,profile=profile,method=r['method'],classes=tuple(range(6)),
         score_fn=score,features_fn=lambda net,x:embedding(net,r['method'],x),native_state=native,
-        base_metadata={},source_contract=expected,resources={},source_path=str(folder),source_checkpoint=str(folder/'source.pt'),
+        base_metadata=base_metadata,source_contract=expected,resources={},source_path=str(folder),source_checkpoint=str(folder/'source.pt'),
         provenance=dict(recipe=recipe(profile),source_only=True))
 
 

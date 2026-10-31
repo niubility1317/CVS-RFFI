@@ -116,10 +116,12 @@ def dispatch(rt):
                 if scorer:launch(scorer,None)
             from .runner import occupancy
             devices=occupancy()
-            for slot in (0,1):
+            per_gpu=rt.get('max_own_workers_per_GPU',2)
+            for slot in range(per_gpu):
                 for gpu in rt['allowed_gpus']:
                     own=sum(item['gpu']==gpu for _,item in active.values())
-                    if own>=2 or devices[gpu]['free']<rt.get('minimum_free_MiB',6000):continue
+                    if own>=per_gpu or devices[gpu]['free']<rt.get('minimum_free_MiB',6000):continue
+                    if len(devices[gpu]['pids'])>=rt.get('max_total_GPU_processes',10**6):continue
                     job=next((j for j in available if j['gpu']),None)
                     if job is None:continue
                     launch(job,gpu);devices[gpu]['free']-=rt.get('minimum_free_MiB',6000)

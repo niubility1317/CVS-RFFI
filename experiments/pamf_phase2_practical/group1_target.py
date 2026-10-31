@@ -37,6 +37,20 @@ def fit_C(rt,bundle,x,y,new_ids,seed,logger):
     """Every call starts at A, never a previous target-adapted checkpoint."""
     profile=bundle['profile'];method=bundle['method']
     require(row(profile)['category']=='CIL','DA has no C in Group1')
+    if method=='mopc_hr':
+        from .vendor_native.comparison_suite import registration as cil
+        anchor=registration_anchor(bundle)
+        cfg=dict(seed=seed,old_adaptation_epochs=0,mopc_epochs=20,mopc_stage_size=5,
+            mopc_batch_size=16,mopc_lr=.01,mopc_momentum=.9,mopc_weight_decay=.0002,
+            mopc_noise_std=.05,mopc_alpha=.97,mopc_beta=1.,mopc_lambda_max=1.,mopc_semantics='paper')
+        state=cil.register_new_classes(anchor,x,y,new_ids,config=cfg,logger=logger)
+        state.protocol_metadata.update(C_initialization='A_no_B',C_inherits_B_state=False,B_executed=False,
+            source_base_metadata_fixed_before_B=True,actual_target_old_labels=0,actual_target_new_labels=len(y))
+        state.resource.update(C_initialization='A_no_B',C_inherits_B=False,actual_target_old_labels=0,
+            actual_target_new_labels=len(y),source_prototype_count=len(anchor.prototypes),
+            C_epochs_per_session=20,C_new_classes_per_session=5,mopc_semantics='paper')
+        return dict(model=state.model,score_fn=lambda model,iq:state.score(iq),classes=state.classes,
+                    resources=state.resource,native_state=state,profile=profile)
     if method=='orthogonal':
         from .vendor_native.comparison_suite import registration as cil
         anchor=registration_anchor(bundle)
