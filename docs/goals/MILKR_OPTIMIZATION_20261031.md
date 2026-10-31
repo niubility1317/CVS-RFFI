@@ -145,3 +145,11 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R19新的源宏H选择策略
 
 原R18严格aux源门槛失败保留；另建R19按用户宏H目标重用同一source-only1440grid，不用target选择参数。取消仅source每K1new单项+1的必要条件，保留everyK rawH正、queryG不降、overallnew正和old/new均值guard。新source候选唯一配置后全sourceL拟合encoder，目标每KN+5/Q1更高完全不变。新增输入复用路径审查/测试PASS，准备发布；不是原run放宽重跑，不保证target收益。
+
+### R19实际结果与当前结论
+
+源宏H策略选rank32/metric0.9/K1 signature_identity-nearest-mix0-single/refλ10（当前support类数/6缩放），源old/new raw均值guard通过，原R18aux失败不改。首RX1-1全部80预测/评分完成、所属进程退出。S0Q0对原版均值+7.3475pp，但每格+5仅11/16、Q1>Q0仅11/16；S1均16/16。严格不晋级，无其他六RX实验。S0 K1/N20仍仅+1.849pp，K20四N约+3.886/+3.095/+3.285/+3.180pp；queryG在K5/N2、K10/N2、K20/N2,N5,N20仍低于Q0。不能按这些目标分数挑另一个source候选重跑。R14七RX仍为最广证据，R19只是单RX；goal ACTIVE。
+
+下一步待实现的物理假设：现有线性raw/G共同空间不能完全消除G引起的相位/表征变化，且source6类监督metric可能丢失未知硬件细节。考虑固定复相位群的计算型特征：同一个received记录（S1/Q1仅一次G输出）在F内部做若干固定相位旋转，共享原F权重，逐记录取神经特征轨道均值和标准差，再用source paired线性encoder映射回原6字段、保留ridge头。旋转是当前同一观测的确定性计算，不重抽信道、不增加K/物理观测、不混入S0/S1数据，G只在原始输入运行一次，源/目标query不得跨记录统计。
+
+若实施，优先C8（八等分相位）或先C4原型，需证明群旋转不变性/逐query独立及G先于轨道、S0不调用G，FFT相位不变可复用一次，F/G/neuraldefaulthead冻结。均值+std保留分布形状，避免简单均值抵消RF信息；新输入维度是原来的2倍，可训练专用paired encoder输出原schema，rank64作为事前固定表示预算而非target选rank，源不使用TX类内监督metric；K1核仍只source校准。源F见过六TX、代理不是真F-novel，不能因source无正收益自动排除一个固定物理先验对照；具体方法/停止规则须在运行前登记。可先目标四corner(K1/K20×N2/N20)四路24行（含B），若未过每格+5与Q1>Q0不扩；通过才同冻结模型补全16格，最终要求不缩小。此方法尚未实现/登记/发布，不保证收益。
