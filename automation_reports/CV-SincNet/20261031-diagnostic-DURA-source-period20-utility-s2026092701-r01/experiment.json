@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
+  "group_id": "phase1-dura-source-period20-error-utility",
+  "display_name": "恢复误差的周期与周期间残差：固定源端等能量检验",
+  "description": "复用defaultDURA/source512x01/20的nativeIQ/F缓存，固定[80,160)四个20点周期的误差正交分解；主残差oracle与同修正能量全窗控制，0G/优化/TX-V-target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "period20-error-utility",
+    "equal-energy-control",
+    "F-guided",
+    "no-training"
+  ],
+  "comparison_group_id": "DURA-source-period20-residual-vs-equal-energy-global",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-performance-efficiency goal and explicit independent frozen-source-F guidance; source-only CPU association/latent intervention; no G training or target use",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source-training-pool512L128U384/cache01and20/defaultDURA-nativeIQ-and-clean-nativeFcacheonly;1024visits512unique",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07source63000 and fixedsource_indices512/128L384U/IDs/RX/day, no position search",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07cache01/20;0newchannelobservations;onlytemporarysourceIQcounterfactuals",
+    "target_panel": "None",
+    "actual_training_labels": "No training. Paired source clean/native IQ and existing originalF50 clean choice are counterfactual references only. No TX/V/target labels or model fitting",
+    "augmentation": "No new draw/augmentation/observation;source cached01/20 reused;fixed20point coordinate of existing project public-response path"
+  },
+  "permissions": {
+    "regime": "Source_only_frozen_F_periodic_residual_IQ_counterfactual",
+    "query_use": "No query/V/TX truth/model updates;fixedsourceL-U only/originalF50frozen/defaultGnativeIQDATAONLY/noGload",
+    "external_method_exception": null,
+    "claim_scope": "SourcecleanFchoiceagreementnotTXtruth;oraclecomponentutilitynotrecoverability/noise-hardwareseparation/targetbenefit/recoverybound. Equal-energycomparisononly;noautomaticG/defaultunchanged"
+  },
+  "checkpoint": {
+    "initialization": "No learner/Ginitialization. Load original frozen F50/source4df7/defaulthead only;defaultDURA read-only existing sourceIQ/F outputs as data",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth source4df7/50-11100/frozenFonly",
+      "runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01/DURA_default-{1,20}.npz sourceclean-nativeIQ+Ffeatures/logits/IDsrolesDATAONLY/noGancestor",
+      "OriginalR07source_training handles/role-physical-order reuse;olddefaultG sourceR69 provenance alreadyverified/source20+historical120componentepochs retained,notnewGtraining"
+    ],
+    "contract_check_ref": "Original7/63/30/VALIDATED_ONCEsourceR07handles;fixed512indices/IDs/roles128L384U/RX1-3-4-6-8/days1-2-3;actualF50source4df7andoldsourcecacheFteacher/F-Gunchanged;onlyoldclean-nativeFrows0-1/real2noncleanLsFcachelogitreplay",
+    "provenance_verdict": "No G load orlearner/checkpointinheritance. ExistingdefaultDURA sourceIQ cache and originalF50 reference share originalsourcecontract;oldsourcecache only/frozenFweights unchanged. SourcepoolnotV/target/notunseenGrecords;F50knowledgeanddefaultGhistoricalcostretained.",
+    "selection_rule": "FixeddefaultDURA/source512x01and20,window[80,160)/4x20;P=cyclemean projection of source(clean-native)error;R=windowerror-P. Mainresidualoracle only. BOTHviews require gain>=4/512vsnative and>=2vssamecorrectionL2globalclosestclean,each5RXnet>=0,clean-scenenet>=0,eachnoncleanscenenet>=-1,overallFcoserrornotabove native. Periodic descriptive/noalternateprimary-window-period-threshold. PASSonlyseparatelearninghypothesis/notautomatictraining."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-period20-utility",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU/0truthscorer. HealthySIGfastTrainGPU7keepsfixedplan;otherownersuntouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.periodic_utility_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wrongsource-Fcache/roles-ID-order/shape/nonfinite/Fstatechange/collision/smoke/execute:preserveandstop/noautoretry. Actualmatchedcorrectionnormdifference<=2e-6*max(cleanIQnorm,1)FP32tolerance. ScientificFAILdoesnotchangeprimary/window/period/threshold orstartG."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "view1.npz PRIVATE",
+    "view20.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "SourcecleanFchoiceagreement/repair-damage-net/fullfeaturecosine/IQNMSE",
+      "primaryresidualvsnativeandmatched-global/BOTHviewRX-clean-sceneprotection",
+      "P-R-windowenergy-orthogonality/sourcecleanresidualfraction/actualequalenergynormdifference",
+      "Funchanged/gradNone/sourcecache-ID-role-order/Ffullinputs3072plus4smoke/CPUcost/noG-TX-V-target-updates"
+    ],
+    "dimensions": [
+      "source512L128U384/2cachedviews1024visits512unique",
+      "overall/5RX/3days/roles/7scene=18groupsperview",
+      "native+periodic+residual+matchedglobal=4cases/144group-casecells"
+    ],
+    "prediction_ref": "No formal/sourceV prediction or newGversion;sourceIQcounterfactuals plus3072frozenFfeatures/logits;native-and-cleanFcachedrowsreused",
+    "scorer_ref": "No truth. IndependentNumPyfixed80x80denseorthogonalprojection/all1024x3IQ-formulas/controlenergy/exactsupport-domain/Fchoice-cosine-NMSE/144casegroups/decision;0extraNN"
+  },
+  "rows": [
+    {
+      "row_id": "source-period20-utility",
+      "method": "FixedP20andwindowresidualpairedcleanoracles;primaryresidualvsnativeandequal-energyglobalcontrol",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{periodic_utility.py,periodic_utility_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "No new model/optimizer/augmentation RNG. F model2026092701 frozen;originalsource_indices2026101901 andsplit392005/cacheaugmentation2026101912/eval2027 reused;supportN/A",
+      "k": null,
+      "scenario": "Source-training-pool512L128U384/cache01and20/4x20fixedwindow80:160/pairedcleanoracles/0V-target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "CPU2/0Gload-forward/0optimizer/0TX-V-target;mainFfull3072/real2noncleanLs clean-nativeFfull4smoke;source1024visits512records/128L384Uunique;originalF50anddefaultG/cachecostretained",
+      "output_root": "runs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.periodic_utility_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "view1.npz PRIVATE",
+        "view20.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Motivationisexistingprojectnominal20samplepublic-responsecoordinate/fixedfourcyclewindow80:160. Itdoesnotassertentire256IQisstrictlyperiodic;noCFOcompensationorperiodfit. ResidualcanincludelegitimateTX/RX/channel/CFO/nonperiodiccontent,notprovennoiseorhardware. ThisdiagnosesrestorationERROR components,notshrinkingtheobservedcleanresidual.",
+    "OldF-repeatShrink20261018 used differentfrozenE20classifiers/sourceV/ordinaryandlambda.1taperedIQshrinkidentityprotection;notthisoriginalF50/defaultDURA/source-training-pool pairedcleanerrororacle. Oldprotection/nonstrength-efficacyboundary preserved. Oldtail24/Q-power/phase/RX-subspaceFAILsremain,noalternatecoordinate rescue.",
+    "P20 isorthogonalprojectionoferrorinsidefixed80points onto4repeated20pointmeans,R=windowerror-P. Oraclecasesnative/native+P/native+R. Primaryresidualcontrolnative+||R||/||clean-native||*(clean-native),samecorrectionL2/closestcleanalldirections,zeroerrorunchanged. NoafterRMSnormalization. OutsidewindowexactlyunchangedforP/R,matchedglobal allowedwholeframe. ExactP/Renergyidentityiswithinwindowonly,notwholeerror.",
+    "Bothsourceviewsrequirementsfixedinselectionrule. Periodicmeanscaseandday/role/energyfiguresdescriptiveonly,nofallbackprimary. TeacherFcleanchoice maybewrongtrueTX;sourceGtrainingpoolnotindependentV/crossRXtarget. Unavailableclean oracle cannotdeploy orbephysicalceiling. PASSonlymotivateseparatelearninghypothesis,noautomaticGtraining.",
+    "Source512positions/IDs/roles andclean pairedwithoriginalR07;sourcecacheDURA_default-{1,20}onlyclean/nativeFrows0/1 consumed. OlddefaultGnotloaded ornewancestor. OriginalF50source4df7/50-11100knowledgecostretained/F-guided. MainF3072 andsmokeF4/allfrozen/noG/TX-V-target/updates;newFcacheproduction0. CPU2/headfeaturesbatch32.",
+    "3focusedtestsPASS:dense80x80orthogonalprojection/idempotence/window-support;pairedP-R-energy/equal-radius-global/zeroerror;BOTHviewextrautilityandRXprotectiondecision. Actualentry/help/CPU-path rejectionbeforedataPASS. OneP0P1beforelaunch;firstreal2noncleanLs actualF clean/nativecachelogitsr3e-5/atol3e-5 smokeF4,0G;PASScontinuesall2views/all3cases.",
+    "PrivateNPZskeepfullIQ/Fvectors/physicalIDs;Gitonlyaggregateevidence/results. Independentall1024recordprojectionand3newIQcases/144group-casecellrecountwithownNumPydefinition,0NN. Fstate/gradNone/nooptimizerandactualPID-CWD-argv-CUDAempty-loggrowth readback;immutableoutput/onearchiveSHA/compile/preflight.",
+    "CurrentSIGfastTrain84d9/1896664-1896763/GPU7fixed30andall7remainshealthy;nohotchange/stop. OwnCPUtruthscorer<=1;thisdiagnosticnottruthscoring. DefaultDURAandwhole6satgap3pp+clean+samequalityefficiencygoalACTIVE."
+  ],
+  "registered_at": "2026-10-31T12:36:20+00:00"
+}
