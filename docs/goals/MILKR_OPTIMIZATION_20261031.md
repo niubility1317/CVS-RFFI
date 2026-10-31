@@ -6,7 +6,7 @@
 
 用户已明确允许 raw／DURA 同一条 query 融合，并要求保留仅 DURA 输出对照；support 仍严格 S0 raw、S1 G。新版 Q0=raw、QG（机器 Q1）=仅 G、QF（机器 Q2）=融合。当前主验收为全部 K1/5/10/20×N2/5/10/20、两 S 下 Q0 较匹配原 Q0 至少 +5pp，且同状态 QF>Q0。QG 完整单列，与原 QG 保持同输入配对；QF 与原 QG 的差须标明路径改变，不冒充同输入增益。早期角点、均值、单 support 的高收益不能代替全格。科学协议本轮例外已更新，旧 run 仍保留原 G-only 定义。
 
-R36 首 RX 四角点 36 行已完成：S0 raw+5为3/4、QF>Q0为4/4；S1 raw+5为4/4、QF>Q0为4/4。未达标组合：S0 K1/N20 raw差+4.7252pp、融合差+1.3671pp。严格晋级 False。最终all16/七RX尚未完成，目标ACTIVE。R26/R27为此前历史结果。
+R37 首 RX 四角点 36 行已完成：S0 raw+5为2/4、QF>Q0为4/4；S1 raw+5为4/4、QF>Q0为4/4。未达标组合：S0 K1/N20 raw差+4.1904pp、融合差+0.0872pp；S0 K20/N2 raw差+3.6149pp、融合差+0.0542pp。严格晋级 False。最终all16/七RX尚未完成，目标ACTIVE。R26/R27为此前历史结果。
 
 ## 历史 G-only 阶段每格验收（覆盖旧均值口径）
 
@@ -303,3 +303,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R37 源CCA正交余量保留
 
 从R31分叉，源CCA64与raw/G投影联合span正交余量PCA各半能量，余量d−64维、输出d不变，编码器404768FP64参数；FFT/f_emb明确原CCA-only，其余六块各半余量。五RX/TXheld同时保护CCA/PCA，目标SUP不拟合源编码器；F/G/head/R31prior/融合保持。源120K1后先36角点，最终all16/七RX目标不变，尚未发布。
+
+### R37 实际结果
+
+36行独立truth-last完成，所属进程退出。两S逐角点验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 2, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 4, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.190412441485291, 'fusion_gain_pp': 0.08721451450550699}, {'S': 'S0', 'K': 20, 'N': 2, 'raw_gain_pp': 3.6149159952980847, 'fusion_gain_pp': 0.054222622747379656}]。源正交余量/404768参数/各半能量核实，R31成员gate当前SUP拟合；F/G/head/C4保持，G-only完整。不扩12KN或六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
