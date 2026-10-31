@@ -1,0 +1,156 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-identity-flow-phase3-profile-s2026092701-r01",
+  "group_id": "phase3-identity-flow-matched-latency",
+  "display_name": "条件流与 DURA 的完整 Phase3 系统延迟对照",
+  "description": "仅待 E30 固定预测和评分完成后，在同 GPU 用两条合成 G10 输入比较完整 G+F0+E0+PCD+密度阈值计算；不读目标 IQ 或真值。",
+  "kind": "diagnostic",
+  "stage": "Phase3-fixed-system-synthetic-profile",
+  "aliases": [],
+  "tags": [
+    "Phase3",
+    "conditional-flow",
+    "matched-profile",
+    "synthetic-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261101-phase3-identity-flow-source-E30-s2026092701-r01",
+    "20261031-phase3-fresh-dura-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求更强的星地恢复网络及项目完整性能与成本比较；本诊断只运行已冻结模型，不训练、不读目标数据。",
+  "code": {
+    "commit": "ce7574630cc1ba0f41c3ead6eb9036004a4c6201",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI PyTorch; same exclusive GPU, FP32, TF32 off; CPU controller and 2 threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-identity-flow-phase3-profile-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Exactly two deterministic synthetic G10 signals, repeated to batch 1 and 128; no real IQ or truth reads",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "synthetic inputs only; no physical IDs",
+    "label_map_ref": "none",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Fixed E30 training and all its seven-view and Phase3 evaluations must complete first",
+    "support_query_ref": null,
+    "leo_config_ref": "Canonical G10 synthetic observer, fixed seeds",
+    "target_panel": "none"
+  },
+  "permissions": {
+    "regime": "Frozen same F0/E0/PCD/density/threshold and original DURA vs fixed E30 flow; synthetic benchmark only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Hardware-specific timing of fixed already-evaluated systems; no new quality, target generalization, registration or blind-test claim; PCD target-U ancestry disclosed"
+  },
+  "checkpoint": {
+    "initialization": "Frozen scratch-trained E30 flow vs original DURA graph; same original F0, E0, PCD, density and thresholds",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-identity-flow-source-E30-s2026092701-r01/identity_flow/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-dura-s2026092701-r01-release/runtime.json"
+    ],
+    "contract_check_ref": "Exact E30 completed Phase3 prediction identity, runtime path, checkpoint and F0/E0/PCD ancestry",
+    "provenance_verdict": "Fixed E30 trained with source F0 guidance; baseline F0 source E50 and PCD historical target-U576 ancestry; no parameter changes",
+    "selection_rule": "Fixed final E30 and DURA; all timing cases reported; no target-dependent choice"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/identity-flow-phase3-profile",
+    "gpu_policy": "CPU wait for all E30 scores; shared admission lock, no active known goal workers and one exclusive empty GPU4/6/7 >=12GB; check same-card compute PIDs before/after each timing block",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-phase3-profile-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-phase3-profile-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_identity_flow/20261101-diagnostic-identity-flow-phase3-profile-s2026092701-r01",
+    "launch_command": "python -u tools/identity_flow_profile_controller.py --profile-commit ce7574630cc1ba0f41c3ead6eb9036004a4c6201",
+    "stop_rule": "Failed E30, checkpoint/runtime mismatch, invalid or nonfinite output, any other sampled same-GPU compute process, output collision or profile failure preserves evidence; no automatic retry."
+  },
+  "expected_artifacts": [
+    "submitted.json",
+    "logs/profile.log",
+    "profile/smoke.json",
+    "profile/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "full G+F0+E0+PCD+CPU density and threshold median and p95 latency",
+      "throughput",
+      "shared resident peak GPU allocation"
+    ],
+    "dimensions": [
+      "batch 1",
+      "batch 128",
+      "DURA CUDA graph",
+      "conditional flow eager"
+    ],
+    "prediction_ref": "none; two synthetic inputs only",
+    "scorer_ref": "24 timed repeats per case after warmup; alternating order; synchronized; exclusive-GPU occupancy snapshots"
+  },
+  "rows": [
+    {
+      "row_id": "full-phase3-profile",
+      "method": "Same frozen Phase3 systems with synthetic G10 inputs; original DURA graph vs E30 conditional-flow eager",
+      "purpose": "matched timing only",
+      "config_ref": "experiments/pamf_identity_flow/phase3_profile.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-phase3-profile-s2026092701-r01/profile/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "fixed G10 synthetic phases and canonical channel seeds; same exact arrays to both pipelines",
+      "k": null,
+      "scenario": "two deterministic synthetic observations repeated to batch sizes 1 and 128",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "real model synthetic smoke; 3 rounds x 2 models x 2 batches x (2 warmups + 8 timing iterations); 0 updates, target reads 0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-phase3-profile-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-identity-flow-phase3-profile-s2026092701-r01/logs/profile.log",
+      "command": "python -u tools/identity_flow_profile_controller.py --profile-commit ce7574630cc1ba0f41c3ead6eb9036004a4c6201",
+      "expected_artifacts": [
+        "submitted.json",
+        "logs/profile.log",
+        "profile/smoke.json",
+        "profile/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Full-system timing includes host input conversion, G, F0, E0, PCD, host output conversion and fixed CPU source-density/threshold scores. Loading, capture/setup and queue excluded.",
+    "The two paths use DURA CUDA graph vs flow eager, and flow uses eight velocity evaluations; no claim of equal-quality speedup before comparing quality.",
+    "Only exclusive GPU at admission; repeated compute-PID checks outside each timing block reject observed interference, but cannot rule out transient unobserved processes.",
+    "Wait for E30 ANALYZED and verify exact prediction runtime/checkpoint/F0/E0/PCD identity before actual-checkpoint synthetic smoke; CPU no real IQ, truth or target state changes.",
+    "Three focused tests and independent P0/P1 review passed; actual timing pending."
+  ],
+  "registered_at": "2026-10-31T16:57:34+00:00"
+}
