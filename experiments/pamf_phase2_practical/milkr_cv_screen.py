@@ -15,7 +15,16 @@ from .episodic_experiment import split_rows
 from .milkr.support_calibrated import fit,CONFIGS,LAMBDAS,target_and_score
 
 
+def fit_function(rt):
+    if rt.get('kernel_method','support_calibrated')=='pooled_metric':
+        from .milkr.pooled_metric import fit as metric_fit
+        return metric_fit
+    require(rt.get('kernel_method','support_calibrated')=='support_calibrated','Unknown kernel method')
+    return fit
+
+
 def calibration(rt):
+    fit=fit_function(rt)
     from experiments.cric_dura_comparison.f_data import SourceDataset
     reader,engine=initialize(rt);ds=SourceDataset(rt['source_cache'],'L_s',read(rt['source_contract']));m=ds.metadata
     source=[];started=time.perf_counter()
@@ -63,6 +72,7 @@ def calibration(rt):
 
 
 def worker(rt,capname):
+    fit=fit_function(rt);arm=rt.get('arm','R6')
     import torch
     reader,engine=initialize(rt);before={k:v.detach().clone() for k,v in reader.state_dict().items()}
     cap=Path(rt['data_root'])/capname;m=read(cap/'manifest.json');root=Path(rt['run_root'])/'predictions'/m['receiver'];root.mkdir(parents=True,exist_ok=False)
@@ -89,9 +99,9 @@ def worker(rt,capname):
             for start in range(0,len(positions),rt['decision_batch']):
                 scores=state.score(subset(f,positions[start:start+rt['decision_batch']]))
                 prediction.extend(order[scores[:,order].argmax(1)].tolist());restricted.extend(old[scores[:,old].argmax(1)].tolist())
-            name=f'{stage}-K{s["k"]}-N{s["new_count"]}-S{sp}Q{qp}-R6.npz'
+            name=f'{stage}-K{s["k"]}-N{s["new_count"]}-S{sp}Q{qp}-{arm}.npz'
             np.savez_compressed(root/name,query_indices=query,predicted_indices=np.asarray(prediction,np.int16),old_restricted_indices=np.asarray(restricted,np.int16))
-            rows.append(dict(split_id=s['split_id'],stage=stage,arm='R6',input_path=f'S{sp}Q{qp}',prediction=name,
+            rows.append(dict(split_id=s['split_id'],stage=stage,arm=arm,input_path=f'S{sp}Q{qp}',prediction=name,
                 k=s['k'],new_count=s['new_count'],registered_classes=s['registered_classes']))
         print('QUERY_PATH_COMPLETE',m['receiver'],qp,flush=True)
     require(all(torch.equal(before[k],v) for k,v in reader.state_dict().items()),'Frozen F changed')

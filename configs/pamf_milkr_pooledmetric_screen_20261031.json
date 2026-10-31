@@ -1,0 +1,27 @@
+{
+  "run_id": "20261031-phase2-milkr-pooledmetric-kn-s2026092701-r03",
+  "base": "full frozen Tri-SIG-TIME SSL",
+  "kernel_method": "pooled_metric",
+  "arm": "R7",
+  "K": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "N": [
+    2,
+    5,
+    10,
+    20
+  ],
+  "pool": "P03",
+  "episode": "MIX01",
+  "source_cache_epochs": [
+    91,
+    92
+  ],
+  "model_seed": 2026092701,
+  "query_fit": false,
+  "target_gain_pp": 5
+}
