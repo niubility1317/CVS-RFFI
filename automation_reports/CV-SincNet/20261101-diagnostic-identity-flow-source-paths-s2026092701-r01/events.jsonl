@@ -1,1 +1,2 @@
 {"at": "2026-10-31T17:06:27+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-31T17:07:49+00:00", "status": "ANALYZED", "note": "VERIFIED fixed source-train samples, F0/E20 states unchanged, no TX/V/OE/target IQ. G10 L_s mean NMSE 0.8920/0.9001/0.9289/0.9726/1.0145 at 1/2/4/8/16 steps; no step meets source reconstruction quality.", "evidence": ["local_artifacts/pamf_identity_flow/20261101-diagnostic-identity-flow-source-paths-s2026092701-r01/complete.json"], "row_id": null}
