@@ -305,3 +305,12 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 两 prior 的发射机特征预测与解码条件：匹配单阶段 E30
 
 20261031-phase1-DURA-SIGcontextPrior-E30-s2026092701-r01 与 20261031-phase1-DURA-SIGpriorAux-E30-s2026092701-r01。共同保留原四物理+输出 SIG alpha1/cap.5，新增 .01×两个 prior 中层 SIG 相对 MSE 均值；主版预测参与三个解码层调制，对照只训练约束、推理跳过预测头。主版 344295 参数、对照 308231；同源 F-only 缓存、同初值与随机流、原生执行、从零单 30 轮/7410，全七景自动正式测试，不源筛取消。两新版互为调制消融，共同主基线为原 SIG47591。一次 P0/P1 每候选 PASS；旧中层/FiLM/period20 等负结果保留，无资格或收益预判。F-guided、0 TX/V/target 训练、默认保持，完整目标 ACTIVE。
+
+
+## prior 发射机特征参与解码及匹配辅助对照：完整 E30 七景
+
+20261031-phase1-DURA-SIGcontextPrior-E30-s2026092701-r01 与 20261031-phase1-DURA-SIGpriorAux-E30-s2026092701-r01，执行 4452e09285b650536ab5e9dcc2acbfd9268c00e8。
+
+VERIFIED / ANALYZED。发射机特征参与 prior 解码，从零单阶段30轮/7410步，L189000/U1701000、无G祖先。保留四物理+输出SIG alpha1/cap.5，新增 .01×两个prior中层SIG相对MSE均值，辅助梯度位于输出cap之外、全G裁剪1；主版预测参与三个解码层有界调制，对照推理跳过预测头。完整G344295参数/ConvLinearMAC25144872/两prior四CG27FFT，训练与冻结推理均native。源F-onlySIG40.32MB复用、新缓存F0，F50/source4df7/50轮11100步及历史缓存成本披露，F-guided；在线prefix/VJP各1.89m、辅助预测3.78m、完整F训练0，F不变，0TX/V/target训练/新分类头。每角色全七景预测后truth-last，126正式/105源/378三对照配对/14IQ独立复算，全30轮损失、辅助均值和权重、曝光、视图及原cap核对。六星地较匹配新版提高6/6、较原SIG提高6/6、较纯G提高6/6、较默认提高2/6。clean 84.799405%、低城区 69.658333%，3pp通过1/6、clean严格保持=True、R17逐景1pp=True、旧低城区70%=False。G训练保存1104.903494秒、含准备1105.953533秒、控制器至自动分析1292.594890秒；同卡G+F B1默认5.036128ms、本版5.133852ms。共享GPU墙钟不作因果加速或等质量速度比，有限模型不认证恢复极限，实际F表征不等于纯硬件特质。旧midSIG/FiLM/period20等负结果保留；默认DURA保持，完整目标ACTIVE。
+
+VERIFIED / ANALYZED。prior 特征仅训练约束，从零单阶段30轮/7410步，L189000/U1701000、无G祖先。保留四物理+输出SIG alpha1/cap.5，新增 .01×两个prior中层SIG相对MSE均值，辅助梯度位于输出cap之外、全G裁剪1；主版预测参与三个解码层有界调制，对照推理跳过预测头。完整G308231参数/ConvLinearMAC25068072/两prior四CG27FFT，训练与冻结推理均native。源F-onlySIG40.32MB复用、新缓存F0，F50/source4df7/50轮11100步及历史缓存成本披露，F-guided；在线prefix/VJP各1.89m、辅助预测3.78m、完整F训练0，F不变，0TX/V/target训练/新分类头。每角色全七景预测后truth-last，126正式/105源/378三对照配对/14IQ独立复算，全30轮损失、辅助均值和权重、曝光、视图及原cap核对。六星地较匹配新版提高0/6、较原SIG提高6/6、较纯G提高6/6、较默认提高2/6。clean 84.966071%、低城区 69.476786%，3pp通过1/6、clean严格保持=True、R17逐景1pp=True、旧低城区70%=False。G训练保存1044.993129秒、含准备1046.173709秒、控制器至自动分析1216.978897秒；同卡G+F B1默认4.593904ms、本版4.594088ms。共享GPU墙钟不作因果加速或等质量速度比，有限模型不认证恢复极限，实际F表征不等于纯硬件特质。旧midSIG/FiLM/period20等负结果保留；默认DURA保持，完整目标ACTIVE。

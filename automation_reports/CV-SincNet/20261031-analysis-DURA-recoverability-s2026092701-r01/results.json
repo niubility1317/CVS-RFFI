@@ -1014,5 +1014,73 @@
       }
     ],
     "max_NMSE_absolute_delta": 4.975098250037391e-09
+  },
+  "additional_accuracy_recovery_ratios": {
+    "formula": "100*(restored_correct-received_correct)/(raw_clean_correct-received_correct)",
+    "new_G_F_forwards": 0,
+    "new_truth_access": 0,
+    "source": "Existing verified case aggregate counts only",
+    "cases": {
+      "practical_high": {
+        "raw_received_correct": 68431,
+        "restored_correct": 139146,
+        "raw_clean_correct": 142256,
+        "restored_minus_received_correct": 70715,
+        "clean_minus_received_correct": 73825,
+        "accuracy_gap_recovered_percent": 95.78733491364714,
+        "clean_accuracy_retention_percent": 97.81380047238781,
+        "scope": "Descriptive fixedF paired engineering population; not individual repair fraction, identity information, or physical upper bound"
+      },
+      "practical_mid": {
+        "raw_received_correct": 67060,
+        "restored_correct": 137022,
+        "raw_clean_correct": 142256,
+        "restored_minus_received_correct": 69962,
+        "clean_minus_received_correct": 75196,
+        "accuracy_gap_recovered_percent": 93.03952337890313,
+        "clean_accuracy_retention_percent": 96.32071757957485,
+        "scope": "Descriptive fixedF paired engineering population; not individual repair fraction, identity information, or physical upper bound"
+      },
+      "practical_low_suburban": {
+        "raw_received_correct": 65570,
+        "restored_correct": 134498,
+        "raw_clean_correct": 142256,
+        "restored_minus_received_correct": 68928,
+        "clean_minus_received_correct": 76686,
+        "accuracy_gap_recovered_percent": 89.88342070260543,
+        "clean_accuracy_retention_percent": 94.54645146777641,
+        "scope": "Descriptive fixedF paired engineering population; not individual repair fraction, identity information, or physical upper bound"
+      },
+      "practical_high_urban": {
+        "raw_received_correct": 66693,
+        "restored_correct": 137333,
+        "raw_clean_correct": 142256,
+        "restored_minus_received_correct": 70640,
+        "clean_minus_received_correct": 75563,
+        "accuracy_gap_recovered_percent": 93.48490663419928,
+        "clean_accuracy_retention_percent": 96.53933753233608,
+        "scope": "Descriptive fixedF paired engineering population; not individual repair fraction, identity information, or physical upper bound"
+      },
+      "practical_mid_urban": {
+        "raw_received_correct": 57932,
+        "restored_correct": 126817,
+        "raw_clean_correct": 142256,
+        "restored_minus_received_correct": 68885,
+        "clean_minus_received_correct": 84324,
+        "accuracy_gap_recovered_percent": 81.69085906740666,
+        "clean_accuracy_retention_percent": 89.14703070520751,
+        "scope": "Descriptive fixedF paired engineering population; not individual repair fraction, identity information, or physical upper bound"
+      },
+      "practical_low_urban": {
+        "raw_received_correct": 50903,
+        "restored_correct": 115735,
+        "raw_clean_correct": 142256,
+        "restored_minus_received_correct": 64832,
+        "clean_minus_received_correct": 91353,
+        "accuracy_gap_recovered_percent": 70.96866003305857,
+        "clean_accuracy_retention_percent": 81.35684962321449,
+        "scope": "Descriptive fixedF paired engineering population; not individual repair fraction, identity information, or physical upper bound"
+      }
+    }
   }
 }
