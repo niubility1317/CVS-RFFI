@@ -1,0 +1,348 @@
+{
+  "status": "VERIFIED_CPU_POSTHOC_SOURCE_REANALYSIS",
+  "parent_run": "20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01",
+  "source_cases": 10240,
+  "source_packets": 512,
+  "draws": 20,
+  "summaries": {
+    "ALL": {
+      "count": 10240,
+      "source_packets": 512,
+      "cross_counts": {
+        "DURA_agree_MSAT_agree": 9578,
+        "DURA_agree_MSAT_disagree": 165,
+        "DURA_disagree_MSAT_agree": 266,
+        "DURA_disagree_MSAT_disagree": 231
+      },
+      "agreement_percent": {
+        "DURA_v1": 95.146484375,
+        "MSAT": 96.1328125,
+        "DURA_oracle16": 95.48828125,
+        "DURA_oracle64": 95.48828125,
+        "MSAT_oracle16": 96.171875,
+        "MSAT_oracle64": 96.171875
+      },
+      "MSAT_lower_IQ_NMSE_count": 8749,
+      "MSAT_lower_IQ_but_DURA_only_Fclean_agreement": 99,
+      "MSAT_higher_IQ_but_MSAT_only_Fclean_agreement": 39,
+      "oracle_choose_two_Fclean_agreements": 10009,
+      "oracle_choose_six_Fclean_agreements": 10026,
+      "oracle_choose_six_disagreements": 214,
+      "oracle_lower_IQ_of_two_agreements": 9871,
+      "IQ_selector_misses_existing_Fclean_agreement": 138,
+      "MSAT_MAP": {
+        "repairs": 42,
+        "damage": 38,
+        "repairs_with_IQ_NMSE_decrease": 31,
+        "damage_with_IQ_NMSE_decrease": 21
+      },
+      "MSAT_packet_error_concentration": {
+        "total_disagreements": 396,
+        "packets_with_any_disagreement": 190,
+        "top10percent_packet_count": 52,
+        "top10percent_packet_disagreements": 217,
+        "top10percent_share": 0.547979797979798
+      }
+    },
+    "clean": {
+      "count": 1579,
+      "source_packets": 485,
+      "cross_counts": {
+        "DURA_agree_MSAT_agree": 1579,
+        "DURA_agree_MSAT_disagree": 0,
+        "DURA_disagree_MSAT_agree": 0,
+        "DURA_disagree_MSAT_disagree": 0
+      },
+      "agreement_percent": {
+        "DURA_v1": 100.0,
+        "MSAT": 100.0,
+        "DURA_oracle16": 100.0,
+        "DURA_oracle64": 100.0,
+        "MSAT_oracle16": 100.0,
+        "MSAT_oracle64": 100.0
+      },
+      "MSAT_lower_IQ_NMSE_count": 886,
+      "MSAT_lower_IQ_but_DURA_only_Fclean_agreement": 0,
+      "MSAT_higher_IQ_but_MSAT_only_Fclean_agreement": 0,
+      "oracle_choose_two_Fclean_agreements": 1579,
+      "oracle_choose_six_Fclean_agreements": 1579,
+      "oracle_choose_six_disagreements": 0,
+      "oracle_lower_IQ_of_two_agreements": 1579,
+      "IQ_selector_misses_existing_Fclean_agreement": 0,
+      "MSAT_MAP": {
+        "repairs": 0,
+        "damage": 0,
+        "repairs_with_IQ_NMSE_decrease": 0,
+        "damage_with_IQ_NMSE_decrease": 0
+      },
+      "MSAT_packet_error_concentration": {
+        "total_disagreements": 0,
+        "packets_with_any_disagreement": 0,
+        "top10percent_packet_count": 49,
+        "top10percent_packet_disagreements": 0,
+        "top10percent_share": null
+      }
+    },
+    "practical_high": {
+      "count": 1427,
+      "source_packets": 482,
+      "cross_counts": {
+        "DURA_agree_MSAT_agree": 1404,
+        "DURA_agree_MSAT_disagree": 9,
+        "DURA_disagree_MSAT_agree": 11,
+        "DURA_disagree_MSAT_disagree": 3
+      },
+      "agreement_percent": {
+        "DURA_v1": 99.01892081289418,
+        "MSAT": 99.15907498248073,
+        "DURA_oracle16": 99.15907498248073,
+        "DURA_oracle64": 99.15907498248073,
+        "MSAT_oracle16": 99.36930623686054,
+        "MSAT_oracle64": 99.36930623686054
+      },
+      "MSAT_lower_IQ_NMSE_count": 1317,
+      "MSAT_lower_IQ_but_DURA_only_Fclean_agreement": 7,
+      "MSAT_higher_IQ_but_MSAT_only_Fclean_agreement": 0,
+      "oracle_choose_two_Fclean_agreements": 1424,
+      "oracle_choose_six_Fclean_agreements": 1424,
+      "oracle_choose_six_disagreements": 3,
+      "oracle_lower_IQ_of_two_agreements": 1417,
+      "IQ_selector_misses_existing_Fclean_agreement": 7,
+      "MSAT_MAP": {
+        "repairs": 4,
+        "damage": 1,
+        "repairs_with_IQ_NMSE_decrease": 4,
+        "damage_with_IQ_NMSE_decrease": 1
+      },
+      "MSAT_packet_error_concentration": {
+        "total_disagreements": 12,
+        "packets_with_any_disagreement": 8,
+        "top10percent_packet_count": 49,
+        "top10percent_packet_disagreements": 12,
+        "top10percent_share": 1.0
+      }
+    },
+    "practical_high_urban": {
+      "count": 1440,
+      "source_packets": 481,
+      "cross_counts": {
+        "DURA_agree_MSAT_agree": 1387,
+        "DURA_agree_MSAT_disagree": 17,
+        "DURA_disagree_MSAT_agree": 21,
+        "DURA_disagree_MSAT_disagree": 15
+      },
+      "agreement_percent": {
+        "DURA_v1": 97.5,
+        "MSAT": 97.77777777777777,
+        "DURA_oracle16": 97.98611111111111,
+        "DURA_oracle64": 97.98611111111111,
+        "MSAT_oracle16": 98.19444444444444,
+        "MSAT_oracle64": 98.19444444444444
+      },
+      "MSAT_lower_IQ_NMSE_count": 1311,
+      "MSAT_lower_IQ_but_DURA_only_Fclean_agreement": 12,
+      "MSAT_higher_IQ_but_MSAT_only_Fclean_agreement": 5,
+      "oracle_choose_two_Fclean_agreements": 1425,
+      "oracle_choose_six_Fclean_agreements": 1429,
+      "oracle_choose_six_disagreements": 11,
+      "oracle_lower_IQ_of_two_agreements": 1408,
+      "IQ_selector_misses_existing_Fclean_agreement": 17,
+      "MSAT_MAP": {
+        "repairs": 7,
+        "damage": 1,
+        "repairs_with_IQ_NMSE_decrease": 6,
+        "damage_with_IQ_NMSE_decrease": 1
+      },
+      "MSAT_packet_error_concentration": {
+        "total_disagreements": 32,
+        "packets_with_any_disagreement": 24,
+        "top10percent_packet_count": 49,
+        "top10percent_packet_disagreements": 32,
+        "top10percent_share": 1.0
+      }
+    },
+    "practical_low_suburban": {
+      "count": 1465,
+      "source_packets": 488,
+      "cross_counts": {
+        "DURA_agree_MSAT_agree": 1401,
+        "DURA_agree_MSAT_disagree": 16,
+        "DURA_disagree_MSAT_agree": 34,
+        "DURA_disagree_MSAT_disagree": 14
+      },
+      "agreement_percent": {
+        "DURA_v1": 96.7235494880546,
+        "MSAT": 97.95221843003414,
+        "DURA_oracle16": 97.06484641638225,
+        "DURA_oracle64": 97.06484641638225,
+        "MSAT_oracle16": 97.95221843003414,
+        "MSAT_oracle64": 97.95221843003414
+      },
+      "MSAT_lower_IQ_NMSE_count": 1379,
+      "MSAT_lower_IQ_but_DURA_only_Fclean_agreement": 9,
+      "MSAT_higher_IQ_but_MSAT_only_Fclean_agreement": 3,
+      "oracle_choose_two_Fclean_agreements": 1451,
+      "oracle_choose_six_Fclean_agreements": 1452,
+      "oracle_choose_six_disagreements": 13,
+      "oracle_lower_IQ_of_two_agreements": 1439,
+      "IQ_selector_misses_existing_Fclean_agreement": 12,
+      "MSAT_MAP": {
+        "repairs": 8,
+        "damage": 8,
+        "repairs_with_IQ_NMSE_decrease": 4,
+        "damage_with_IQ_NMSE_decrease": 3
+      },
+      "MSAT_packet_error_concentration": {
+        "total_disagreements": 30,
+        "packets_with_any_disagreement": 25,
+        "top10percent_packet_count": 49,
+        "top10percent_packet_disagreements": 30,
+        "top10percent_share": 1.0
+      }
+    },
+    "practical_low_urban": {
+      "count": 1436,
+      "source_packets": 485,
+      "cross_counts": {
+        "DURA_agree_MSAT_agree": 1141,
+        "DURA_agree_MSAT_disagree": 64,
+        "DURA_disagree_MSAT_agree": 114,
+        "DURA_disagree_MSAT_disagree": 117
+      },
+      "agreement_percent": {
+        "DURA_v1": 83.91364902506963,
+        "MSAT": 87.39554317548746,
+        "DURA_oracle16": 84.54038997214485,
+        "DURA_oracle64": 84.54038997214485,
+        "MSAT_oracle16": 86.83844011142061,
+        "MSAT_oracle64": 86.83844011142061
+      },
+      "MSAT_lower_IQ_NMSE_count": 1224,
+      "MSAT_lower_IQ_but_DURA_only_Fclean_agreement": 39,
+      "MSAT_higher_IQ_but_MSAT_only_Fclean_agreement": 18,
+      "oracle_choose_two_Fclean_agreements": 1319,
+      "oracle_choose_six_Fclean_agreements": 1325,
+      "oracle_choose_six_disagreements": 111,
+      "oracle_lower_IQ_of_two_agreements": 1262,
+      "IQ_selector_misses_existing_Fclean_agreement": 57,
+      "MSAT_MAP": {
+        "repairs": 7,
+        "damage": 15,
+        "repairs_with_IQ_NMSE_decrease": 2,
+        "damage_with_IQ_NMSE_decrease": 6
+      },
+      "MSAT_packet_error_concentration": {
+        "total_disagreements": 181,
+        "packets_with_any_disagreement": 129,
+        "top10percent_packet_count": 49,
+        "top10percent_packet_disagreements": 101,
+        "top10percent_share": 0.5580110497237569
+      }
+    },
+    "practical_mid": {
+      "count": 1484,
+      "source_packets": 488,
+      "cross_counts": {
+        "DURA_agree_MSAT_agree": 1439,
+        "DURA_agree_MSAT_disagree": 8,
+        "DURA_disagree_MSAT_agree": 24,
+        "DURA_disagree_MSAT_disagree": 13
+      },
+      "agreement_percent": {
+        "DURA_v1": 97.50673854447439,
+        "MSAT": 98.58490566037736,
+        "DURA_oracle16": 98.18059299191376,
+        "DURA_oracle64": 98.18059299191376,
+        "MSAT_oracle16": 98.78706199460916,
+        "MSAT_oracle64": 98.78706199460916
+      },
+      "MSAT_lower_IQ_NMSE_count": 1405,
+      "MSAT_lower_IQ_but_DURA_only_Fclean_agreement": 5,
+      "MSAT_higher_IQ_but_MSAT_only_Fclean_agreement": 3,
+      "oracle_choose_two_Fclean_agreements": 1471,
+      "oracle_choose_six_Fclean_agreements": 1474,
+      "oracle_choose_six_disagreements": 10,
+      "oracle_lower_IQ_of_two_agreements": 1463,
+      "IQ_selector_misses_existing_Fclean_agreement": 8,
+      "MSAT_MAP": {
+        "repairs": 6,
+        "damage": 3,
+        "repairs_with_IQ_NMSE_decrease": 5,
+        "damage_with_IQ_NMSE_decrease": 2
+      },
+      "MSAT_packet_error_concentration": {
+        "total_disagreements": 21,
+        "packets_with_any_disagreement": 16,
+        "top10percent_packet_count": 49,
+        "top10percent_packet_disagreements": 21,
+        "top10percent_share": 1.0
+      }
+    },
+    "practical_mid_urban": {
+      "count": 1409,
+      "source_packets": 485,
+      "cross_counts": {
+        "DURA_agree_MSAT_agree": 1227,
+        "DURA_agree_MSAT_disagree": 51,
+        "DURA_disagree_MSAT_agree": 62,
+        "DURA_disagree_MSAT_disagree": 69
+      },
+      "agreement_percent": {
+        "DURA_v1": 90.70262597586941,
+        "MSAT": 91.4833215046132,
+        "DURA_oracle16": 90.84457061745918,
+        "DURA_oracle64": 90.84457061745918,
+        "MSAT_oracle16": 91.4833215046132,
+        "MSAT_oracle64": 91.4833215046132
+      },
+      "MSAT_lower_IQ_NMSE_count": 1227,
+      "MSAT_lower_IQ_but_DURA_only_Fclean_agreement": 27,
+      "MSAT_higher_IQ_but_MSAT_only_Fclean_agreement": 10,
+      "oracle_choose_two_Fclean_agreements": 1340,
+      "oracle_choose_six_Fclean_agreements": 1343,
+      "oracle_choose_six_disagreements": 66,
+      "oracle_lower_IQ_of_two_agreements": 1303,
+      "IQ_selector_misses_existing_Fclean_agreement": 37,
+      "MSAT_MAP": {
+        "repairs": 10,
+        "damage": 10,
+        "repairs_with_IQ_NMSE_decrease": 10,
+        "damage_with_IQ_NMSE_decrease": 8
+      },
+      "MSAT_packet_error_concentration": {
+        "total_disagreements": 120,
+        "packets_with_any_disagreement": 88,
+        "top10percent_packet_count": 49,
+        "top10percent_packet_disagreements": 81,
+        "top10percent_share": 0.675
+      }
+    }
+  },
+  "partial_failed_VarF29_epoch_guide": {
+    "original": {
+      "epoch_mean_min": 0.8438900701734755,
+      "epoch_mean_max": 0.8924303651839968,
+      "E29_mean": 0.8760059549240838,
+      "E29_minimum_capped_record_fraction": 0.12399404507591616
+    },
+    "VarF": {
+      "epoch_mean_min": 0.1992123984382266,
+      "epoch_mean_max": 0.2993740027594188,
+      "E29_mean": 0.2301494277015565,
+      "E29_minimum_capped_record_fraction": 0.7698505722984434
+    }
+  },
+  "VarF_training_complete": false,
+  "VarF_trained_checkpoint_exists": false,
+  "new_neural_forwards": 0,
+  "new_optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "new_target_inputs": 0,
+  "source_Fclean_agreement_is_TX_accuracy": false,
+  "oracle_selectors_require_unavailable_clean_reference": true,
+  "oracle_six_is_theoretical_recovery_ceiling": false,
+  "per_record_IQ_gradient_cap_is_parameter_gradient_bound": false,
+  "cap_claim": "For the F-guide alone, ||g_F|| <= 0.5 ||g_IQ|| in restored-IQ space; IQ+F direction differs from IQ by at most 30 degrees when g_IQ is nonzero. STFT and parameter-Jacobian effects are excluded.",
+  "capped_fraction_bound": "Since 0<=w<=1 and uncapped w=1, P(w<1)>=1-E[w]. Epoch means do not identify the exact capped fraction or gradient alignment.",
+  "no_new_model_or_hyperparameter_selection": true
+}
