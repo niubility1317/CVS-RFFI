@@ -1,0 +1,42 @@
+{
+  "run_id": "20261031-phase2-milkr-tasknorm-kn-s2026092701-r06",
+  "kernel_method": "task_signature",
+  "arm": "R10",
+  "model_seeds": [
+    2026092701
+  ],
+  "K": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "N": [
+    2,
+    5,
+    10,
+    20
+  ],
+  "capsules": [
+    "capsules/P01/MIX01/1-1",
+    "capsules/P01/MIX01/14-7",
+    "capsules/P01/MIX01/2-1",
+    "capsules/P01/MIX01/20-1",
+    "capsules/P01/MIX01/7-14",
+    "capsules/P01/MIX01/7-7",
+    "capsules/P01/MIX01/8-8"
+  ],
+  "task_modes": [
+    "none",
+    "center",
+    "std0.01",
+    "std0.1",
+    "std1",
+    "std10"
+  ],
+  "source_min_H_gain": 0.005,
+  "source_max_perK_loss": 0.005,
+  "base": "full frozen Tri-SIG-TIME SSL",
+  "query_fit": false,
+  "target_macro_H_gain_pp": 5
+}

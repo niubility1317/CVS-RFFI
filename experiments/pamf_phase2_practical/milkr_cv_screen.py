@@ -16,6 +16,9 @@ from .milkr.support_calibrated import fit,CONFIGS,LAMBDAS,target_and_score
 
 
 def fit_function(rt):
+    if rt.get('kernel_method')=='task_signature':
+        from .milkr.task_signature import fit as task_fit
+        return task_fit
     if rt.get('kernel_method')=='signature_kernel':
         from .milkr.signature_kernel import fit as signature_fit
         return signature_fit
@@ -30,14 +33,14 @@ def fit_function(rt):
 
 
 def kernel_configs(rt):
-    if rt.get('kernel_method')=='signature_kernel':
+    if rt.get('kernel_method') in ('signature_kernel','task_signature'):
         from .milkr.signature_kernel import CONFIGS as signature_configs
         return signature_configs
     return CONFIGS
 
 
 def extract_for_method(rt,reader,raw,device,engine=None,batch=128):
-    return extract(reader,raw,device,engine,batch,descriptor=rt.get('kernel_method')=='signature_kernel')
+    return extract(reader,raw,device,engine,batch,descriptor=rt.get('kernel_method') in ('signature_kernel','task_signature'))
 
 
 def source_episodes(rt):
@@ -59,6 +62,9 @@ def source_episodes(rt):
 
 
 def calibration(rt):
+    if rt.get('kernel_method')=='task_signature':
+        from .milkr_task_source import calibrate
+        return calibrate(rt)
     if rt.get('kernel_method')=='group_calibrated':
         from .milkr_group_source import calibrate
         return calibrate(rt)
