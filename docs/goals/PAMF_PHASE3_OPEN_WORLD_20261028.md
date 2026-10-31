@@ -1098,3 +1098,12 @@ Run `20261031-phase3-body-prototype-s2026092701-r01` / code `a33612e978948da25bd
 ### 2026-10-31 原型骨干技术失败与冻结评估恢复
 
 r01在a336下两臂444训练全部完成，但首次eval加载把6个nonpersistent缓存误判为缺失，FAILED_PRESERVED/无性能结论，未读Q/truth。实际权重persistent/Sinc差异0；一次定点RED→GREEN修复后独立r02 `20261031-phase3-body-prototype-s2026092701-r02` / evalcode `4273e88392abe0717c1bd94fca1370d19c67cbb3` 精确复用旧两CP，训练仍a336/r01，不重训或改科学配方。r02只predict→CPUscore/新optimizer0，继承888训练成本，原六列三DURA/τ/数据/主读出/门槛不变；原基线保留，完整goalACTIVE，匿名注册未完成。见`docs/PAMF_PHASE3_BODY_PROTOTYPE_RECOVERY_20261031.md`。
+
+
+### 2026-10-31 原型骨干恢复后完整结果
+
+Run `20261031-phase3-body-prototype-s2026092701-r02` / evalcode `4273e88392abe0717c1bd94fca1370d19c67cbb3`，精确复用r01/a336两臂444训练，r02新optimizer0；首次加载故障一次定点修复后实际smoke、六列三DURA全预测和独立3truth评分均VERIFIED完成。主PCD_predicted_ratio宏AK/CK/RU/H：source_DURA: 89.740741/96.729630/65.523810/75.743693%; F0loss1.240741pp；clean_DURA: 73.090278/89.756944/99.305556/84.204711%; F0loss6.944444pp；star_DURA: 65.277778/87.152778/78.125000/71.125908%; F0loss7.638889pp。star对E0pred正确+7/未知+3，对同预算SOURCEpred正确+5/未知+8，严格AKgain两对照和RU均不降通过，sourceknown12通过；但绝对联合CK90/starRU90/同G原F0损2pp/coverage失败，科学NO_PROMOTION，原所选baseline保持，不能以相对改善宣布完整UDA成功。clean对E0正确+13/未知−2，源正确−1/未知+113，源V校准复用非known盲测。
+
+Sinc48/所有buffers、F0/defaulthead/G/r03保持，body231985+projection102688各444×2实训练且actualchanged；训练signal父12818/学生454656、eval90352，总557826/G2112/F01728，祖先训练成本和r01失败IO分列。仅U384无标签学习、V/NV/Q不神经训练，全部τ冻后全pred再3truth，Utruth0；TARGET权重和密度含U祖先，不冒称sourceonly。历史Q/单RX单seed/日期重合/high缺19-15宏RUHNA/正式RX24-18未访问不变；无匿名REG、AN/HOWNA，完整goalACTIVE。
+
+driver1415050/predict1415080及CPU1415842独立live/CWD/fullargv（predictCUDA1、CPUempty），预测GPU304/392MiB为离散非peak，log509→1597B；终态owned空/foreign0。完整source888曲线/18点/两配对/场景/实际成本与r01失败到r02修复证据见`docs/PAMF_PHASE3_BODY_PROTOTYPE_RESULTS_20261031.md`。另只读metadata发现非正式R_dev3-2早03-01/未来03-15+23具有容量，但尚未完成packet角色排除/建池，独立MIX场景覆盖不保证；不将它作为本轮测试证据。

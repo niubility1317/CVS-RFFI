@@ -71,7 +71,7 @@
 |PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r02/report.md)|
 |PAMF 独立信号级开放分支：固定单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261030-phase3-star-signal-open-s2026092701-r03/report.md)|
 |PAMF 冻结Sinc的目标原型骨干适配|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-body-prototype-s2026092701-r01/report.md)|
-|PAMF第三阶段：原型骨干加载技术恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-body-prototype-s2026092701-r02/report.md)|
+|PAMF 原型骨干加载技术恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-body-prototype-s2026092701-r02/report.md)|
 |PAMF 固定 GMM 已知类竞争与 OE 背景|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-class-competition-s2026092701-r01/report.md)|
 |PAMF 预测身份条件密度：三条件 DURA 测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-class-density-s2026092701-r01/report.md)|
 |PAMF 源域类别联合偏移的无标签适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-class-shift-s2026092701-r01/report.md)|
