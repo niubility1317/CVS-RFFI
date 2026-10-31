@@ -1233,3 +1233,13 @@ Run `20261031-phase3-receiver-input-s2026092701-r02` / code `51b85e9040feea2d4cd
 ## 2026-10-31：接收机输入状态完整评估结果
 
 Run `20261031-phase3-receiver-input-s2026092701-r02` / code `51b85e9040feea2d4cdf78c48c24370e0207e045`复用原r01/ac8两200theta，新优化0。2FP32ULP派生报告修复后全6×3DURA预测/独立CPU3truth VERIFIED，主TARGET_INPUT_pred：source_DURA: AK/CK/RU/H=89.733333/96.748148/64.285714/74.907247%；原F0损1.248148pp；clean_DURA: AK/CK/RU/H=31.634785/43.622079/61.961153/41.884889%；原F0损16.932231pp；star_DURA: AK/CK/RU/H=28.080527/48.571187/49.412149/35.810331%；原F0损13.640532pp。adaptation_success=False，sourceknown12=True，目标保护=False，科学NO_PROMOTION，完整goalACTIVE。原F0/PCD/G权重不改、theta改变target实际closed，原未变换F0同DURA保护基准保留，旧density/tau不拟合。r01 FAILED/NO_PERFORMANCE_RESULT不改，PCD继承U576/新θU训练576无TX；REGoff/ANHOWNA，单开发RXseed/Q已曝/03-23缺类NA/正式24-18未访问。见`docs/PAMF_PHASE3_RECEIVER_INPUT_RESULTS_20261031.md`。
+
+
+## 2026-10-31：源接收机幅频补偿证伪预登记
+
+Run `20261031-phase3-source-spectral-calibration-s2026092701-r01` / code `c8b192edd0b4c34c32b67fb6e777fdfaa7269232`，原源L6300星地DURA P1，早日2100无y拟合五RX谱/other4RX参考，固定17点平滑/gain[.5,2]，全两路预测后评价后日4200的F0身份和纯源r03几何。模型已见这些RX/TX/记录，非独立未见RX测试；targetU/Q/V/NV/OE/Us/private0，无targetCP、NN/GMM/tau更新0。源筛选每RX闭集损2pp/r03域差减10%/类间保留95%，不自动目标访问、不改PCD，完整goalACTIVE。见`docs/PAMF_PHASE3_SOURCE_SPECTRAL_CALIBRATION_PLAN_20261031.md`。
+
+
+## 2026-10-31：源接收机幅频补偿证伪完整结果
+
+Run `20261031-phase3-source-spectral-calibration-s2026092701-r01` / code `c8b192edd0b4c34c32b67fb6e777fdfaa7269232`，原源L2100早日无y谱拟合、全两路6300预测及后日4200源标签诊断 VERIFIED 完成。后日F0宏92.142857→91.857143%，净正确−12，各RX下降≤0.952381pp身份保护通过；r03同TX跨RX距离.007290349→.018584697（增154.921901%）未减10%，类间保留97.199814%通过。联合SOURCE_SCREEN_FAILED，不进入目标预测，不改PCD，不扩seed；source模型已见RX/TX/记录非独立未见RX证据。新F0/r03各12600/G0，NN/GMM/tau0，V/NV/OE/Us/targetU/Q/private0，开放与注册指标NA，正式24-18未访问，完整goalACTIVE。见`docs/PAMF_PHASE3_SOURCE_SPECTRAL_CALIBRATION_RESULTS_20261031.md`。
