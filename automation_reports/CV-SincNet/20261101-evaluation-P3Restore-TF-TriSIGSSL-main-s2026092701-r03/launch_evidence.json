@@ -1,0 +1,35 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "d4c995c1139fc62779a2a254c269006324b0415f",
+  "controller_PID": 2216307,
+  "tasks": {
+    "cross_rx": {
+      "worker_PID": 2216740,
+      "admission": {
+        "GPU": 7,
+        "free_memory_MB": 22136,
+        "existing_compute_PIDs": 2
+      },
+      "real_source_smoke": "PASS",
+      "PID_CWD_cmdline_CUDA_NVML_independently_matched": true
+    },
+    "cross_both": {
+      "worker_PID": 2216741,
+      "admission": {
+        "GPU": 4,
+        "free_memory_MB": 21436,
+        "existing_compute_PIDs": 2
+      },
+      "real_source_smoke": "PASS",
+      "PID_CWD_cmdline_CUDA_NVML_independently_matched": true
+    }
+  },
+  "terminal_no_owned_live_process": true,
+  "both_task_exit_codes": [
+    0,
+    0
+  ],
+  "source_only_checkpoints": true,
+  "all56_cells_before_truth": true,
+  "official_raw_1176000_decisions_identical": true
+}

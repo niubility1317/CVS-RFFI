@@ -1,5 +1,7 @@
 # 星地 IQ 能恢复几成：全量证据与 30 轮新方向
 
+本页为旧F50和原历史观测的恢复分析。当前主性能基座已按用户明确固定为地面Tri-SIG-TIME SSL；正确Main split结果见[当前主报告](../20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03/analysis.md)。下列历史F50识别保留率与阈值不改标为新基座结果。
+
 默认 DURA 的六星地平均能量拟合约9.3至9.8成、识别准确率约raw clean的8.1至9.8成，这是已达到的水平，真实极限仍未知。默认两景距raw clean≤3个百分点。最新全采样率IQ残差两版均完成从零单阶段30轮/7410和七景：无引导clean 84.622024%、low urban 69.242857%，特征引导clean 84.758929%、low urban 68.304167%；3pp分别通过0/6和0/6。详见[全率无引导](../20261031-phase1-DURA-SIGfullRatePlain-E30-s2026092701-r01/analysis.md)与[全率特征引导](../20261031-phase1-DURA-SIGfullRateContext-E30-s2026092701-r01/analysis.md)。原条件版、深层预测版及历史负结果保留，默认DURA保持。波形拟合、固定F可识别性与真实硬件特质分别判断。
 
 ## 指标与数据口径

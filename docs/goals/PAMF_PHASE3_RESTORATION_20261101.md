@@ -76,3 +76,12 @@ VERIFIED / ANALYZED。原 L_s6300/U_s56700 的完整 G10 MIX01 P0-clean 配对�
 ## 独立TF单阶段30轮匹配组已运行
 
 两臂 20261101-phase3-P3Restore-TF-IQ-E30-s2026092701-r01 与 20261101-phase3-P3Restore-TF-F0-E30-s2026092701-r01；执行 b33839dd1010dea36b68526043bbc4abe5eb1095。同初值/原63000源顺序/15%clean保持/30轮7410/B256尾24；IQNMSE+.05三尺度STFT，指导臂另加.1实际F0 fused160 cos/IQ梯度cap.5，全局clip1。AdamW.001/warm247/cos2e-5/WD1e-4。无TX/OE/V/target训练，固定final30，不选模早停。两臂实际真实源smoke、E0严格重载和teacher冻结通过，GPU7/4实际PID-CWD-argv-CUDA-NVML及日志核实。主Phase3四个角色与历史168000七景freshprocess全部预测后，独立CPU共同锁评分；固定PCD/密度/tau是输入切换诊断，非匹配部署。21聚焦检查+唯一P0P1两臂PASS，阶段资源修复一次定点PASS。完整目标与默认DURA保持，结果未定。
+
+
+## 正确主基座全量七景已完成：性能未通过
+
+20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03，执行d4c995c1139fc62779a2a254c269006324b0415f。同一地面Tri-SIG-TIME SSL原3ff8/E50-11100/232993/defaulthead；原Main split cross_rx126000与cross_both42000官方observations/positions/IDs，raw+DURAv1+两TF共56单元。1176000条raw决定与原正式记录差异0。source2实模smoke通过，1736评分/1302raw配对/1302额外配对独立0NN复算PASS，最大差1.24e-14。
+
+合并raw clean86.538690%（145385/168000）；3pp阈值140345正确、83.538690%。默认DURA六景84.343452/83.016071/81.322024/83.049405/75.705952/68.801190，仅1/6，低城区差17.737500pp。两TF均0/6，各版clean均保持。F0指导较同结构纯IQ六景+1.404167/+1.863690/+2.373214/+2.470238/+6.370238/+8.314286pp，但指导版仍六景低于默认，不晋级。跨RX默认1/6、跨RX+日期3/6，两TF两组均0/6；不以合并均值掩盖差距。
+
+性能主线与效率支线保持。后续先基于原L_s/U_s的源拟合与模拟覆盖诊断，设计更强的按包条件恢复和数据一致性结构；允许容量和计算增加，不以小网络或DURA结构作为前提。仍从零联合30轮、冻结原F0/defaulthead、不直接用TX/OE/V/目标优化；所有新版完整主测试，目标分数不回流调参/选模。Phase3开放和旧F50只辅助，其他owner与默认DURA保持。完整目标ACTIVE，六景逐个3pp尚未实现。

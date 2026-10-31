@@ -33,3 +33,7 @@
 纯IQ模型已完整30/7410，首次自动Phase3测试在真实输入前的synthetic smoke因缺既有配置文件失败。归档只含三个代码目录，缺少被_synthetic按release根定位的configs JSON；文件本来就在同一b338 Git提交中。新release加上这一个既有文件，执行代码、模型、训练预算和测试矩阵保持原状。原失败root/log不覆盖。F0训练保持健康完成，原owner终止后交接缺失测试；没有重训或根据成绩筛选。
 
 方法沿用唯一P0/P1审查。发布包修复仅一次定点复核。实际新测试的PID/CWD/argv/GPU/日志与所有预测完成后独立truth-last另行记录；旧训练run的原定输出目录尚不存在时才写入其声明的预测产物。
+
+## 恢复完成
+
+VERIFIED：两版全部既定Phase3及旧F50预测、独立评分完成，8个阶段均已退出，0重训。主性能口径由用户明确改回原Main split地面Tri-SIG-TIME SSL，见 20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03；本run仅辅助归档，不将其弱clean/开放指标移作主结果。

@@ -1,0 +1,150 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261101-evaluation-P3Restore-TF-frozen-E30-s2026092701-r02",
+  "rows": {
+    "IQ": {
+      "status": "ANALYZED_AUXILIARY_MATRIX",
+      "run_id": "20261101-phase3-P3Restore-TF-IQ-E30-s2026092701-r01",
+      "training_commit": "b33839dd1010dea36b68526043bbc4abe5eb1095",
+      "source_training_E30": 242.79995491309091,
+      "epochs": 30,
+      "updates": 7410,
+      "source_Ls_exposures": 189000,
+      "source_Us_exposures": 1701000,
+      "training_TX_OE_V_target_reads": 0,
+      "source_schedule_and_initial_state_paired": true,
+      "Phase3_RX34_auxiliary": {
+        "source": {
+          "A_K": 0.7134444444444444,
+          "C_K": 0.8340740740740742,
+          "R_U": 0.7009523809523811,
+          "H_score": 0.7071432472570431,
+          "candidate_macro_closed_accuracy": 0.775962962962963
+        },
+        "clean": {
+          "A_K": 0.31635026220628365,
+          "C_K": 0.43587425398235996,
+          "R_U": 0.6094667291311526,
+          "H_score": 0.41650771452815943,
+          "candidate_macro_closed_accuracy": 0.47942449552548644
+        },
+        "star": {
+          "A_K": 0.24655237310815048,
+          "C_K": 0.4321168634510461,
+          "R_U": 0.5290673844564956,
+          "H_score": 0.33635764922091765,
+          "candidate_macro_closed_accuracy": 0.40665624196271205
+        }
+      },
+      "historical_F50_auxiliary": {
+        "clean": {
+          "accuracy": 84.65,
+          "paired_iq_nmse": 0.0010035532428001597
+        },
+        "practical_high": {
+          "accuracy": 76.69345238095238,
+          "paired_iq_nmse": 0.023538278326660132
+        },
+        "practical_mid": {
+          "accuracy": 74.70297619047619,
+          "paired_iq_nmse": 0.029966577277541817
+        },
+        "practical_low_suburban": {
+          "accuracy": 72.74702380952381,
+          "paired_iq_nmse": 0.03618897227243245
+        },
+        "practical_high_urban": {
+          "accuracy": 73.00595238095238,
+          "paired_iq_nmse": 0.033004427303342306
+        },
+        "practical_mid_urban": {
+          "accuracy": 58.613095238095234,
+          "paired_iq_nmse": 0.0695731882875563
+        },
+        "practical_low_urban": {
+          "accuracy": 47.69226190476191,
+          "paired_iq_nmse": 0.09789977370555096
+        }
+      },
+      "primary_main_run": "20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03",
+      "primary_classifier": "Ground-trained Tri-SIG-TIME SSL, never F50 or PCD",
+      "original_package_failure_preserved": true,
+      "new_training_for_recovery": 0,
+      "default_DURA_changed": false
+    },
+    "F0": {
+      "status": "ANALYZED_AUXILIARY_MATRIX",
+      "run_id": "20261101-phase3-P3Restore-TF-F0-E30-s2026092701-r01",
+      "training_commit": "b33839dd1010dea36b68526043bbc4abe5eb1095",
+      "source_training_E30": 660.3958884808235,
+      "epochs": 30,
+      "updates": 7410,
+      "source_Ls_exposures": 189000,
+      "source_Us_exposures": 1701000,
+      "training_TX_OE_V_target_reads": 0,
+      "source_schedule_and_initial_state_paired": true,
+      "Phase3_RX34_auxiliary": {
+        "source": {
+          "A_K": 0.7295185185185186,
+          "C_K": 0.8188888888888889,
+          "R_U": 0.7314285714285714,
+          "H_score": 0.7304722963649731,
+          "candidate_macro_closed_accuracy": 0.8141481481481483
+        },
+        "clean": {
+          "A_K": 0.3158437395834644,
+          "C_K": 0.43567474488202773,
+          "R_U": 0.614041412569805,
+          "H_score": 0.41712922408980146,
+          "candidate_macro_closed_accuracy": 0.48009433698961734
+        },
+        "star": {
+          "A_K": 0.2510160258464662,
+          "C_K": 0.41673405104466266,
+          "R_U": 0.5309928478979935,
+          "H_score": 0.3408854270260018,
+          "candidate_macro_closed_accuracy": 0.4002406884077059
+        }
+      },
+      "historical_F50_auxiliary": {
+        "clean": {
+          "accuracy": 84.76011904761904,
+          "paired_iq_nmse": 0.0010872978071958263
+        },
+        "practical_high": {
+          "accuracy": 78.02440476190476,
+          "paired_iq_nmse": 0.023445301048771256
+        },
+        "practical_mid": {
+          "accuracy": 76.24166666666666,
+          "paired_iq_nmse": 0.02990391181712631
+        },
+        "practical_low_suburban": {
+          "accuracy": 74.49107142857143,
+          "paired_iq_nmse": 0.036147729382107946
+        },
+        "practical_high_urban": {
+          "accuracy": 75.17023809523809,
+          "paired_iq_nmse": 0.033174421543991764
+        },
+        "practical_mid_urban": {
+          "accuracy": 63.29285714285714,
+          "paired_iq_nmse": 0.07021225348900402
+        },
+        "practical_low_urban": {
+          "accuracy": 53.66428571428571,
+          "paired_iq_nmse": 0.09862807715671575
+        }
+      },
+      "primary_main_run": "20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03",
+      "primary_classifier": "Ground-trained Tri-SIG-TIME SSL, never F50 or PCD",
+      "original_package_failure_preserved": true,
+      "new_training_for_recovery": 0,
+      "default_DURA_changed": false
+    }
+  },
+  "primary_performance_benchmark": false,
+  "primary_main_run": "20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03",
+  "source_weights_reused_no_training": true,
+  "original_failure_preserved": true
+}

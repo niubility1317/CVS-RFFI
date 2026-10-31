@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "coverage": {
+    "cross_rx": 126000,
+    "cross_both": 42000
+  },
+  "unique_physical_records": 168000,
+  "official_raw_decision_disagreements": 0,
+  "checked_score_groups": 1736,
+  "checked_raw_paired_groups": 1302,
+  "extra_paired_groups": 1302,
+  "maximum_metric_abs_error": 1.2434497875801753e-14,
+  "all56cells_before_truth": true,
+  "independent_NN_calls": 0,
+  "new_optimizer_updates": 0,
+  "seconds": 2.9236240559257567
+}
