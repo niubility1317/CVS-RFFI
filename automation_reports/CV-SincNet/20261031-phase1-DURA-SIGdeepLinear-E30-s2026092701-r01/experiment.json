@@ -1,0 +1,210 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01",
+  "group_id": "phase1-DURA-source-qualified-deep-SIG-predictor-pair-E30",
+  "display_name": "更深特征的线性SIG预测：从零单阶段30轮",
+  "description": "保留main两prior条件结构与原四物理+输出SIG+.01mean2priorSIG辅助；原预测加192维深层特征残差，Linear192→160零初始化。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "E30",
+    "scratch",
+    "single-stage",
+    "F-guided",
+    "deep-SIG-linear"
+  ],
+  "comparison_group_id": "DURA-deep-SIG-linear-vs-MLP-vs-original-context-E30",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-and-efficiency goal;explicit source frozen-F feature-guidance and scratchsingle-stage30epoch authorization;noTX/V/targetoptimization/defaultunchanged",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-DURA-SIGdeepPair-E30-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source63000/20cachedreceived-clean-actionviews/repeat01..10;actualweightedcleanSIG160cache40.32MBreuse",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Pairedsourceclean/action and frozenFactualSIG only. NoTX/V/target/pseudoTX/newclassifier/headfit. NoRX/scene/F inputtoG.",
+    "augmentation": "OriginalR07cached15percentclean/85percentsixpractical;01..20then01..10;noaugmentationorRNGchange"
+  },
+  "permissions": {
+    "regime": "Authorized_source_F_guided_deeper_prior_SIG_prediction",
+    "query_use": "F50sourceSIGguidanceonly/frozenF-defaulthead. G trainingonlyLsUsIQ+pairedsimulator+sourceSIG. TestG receivesIQonly;eachroleall7beforeindependenttruthlast.",
+    "external_method_exception": null,
+    "claim_scope": "Sourceclean-SIG-at-conditionerutilityPASSmotivatesnewlearninghypothesis/notqualificationorperformanceclaimfornewG. F-guided/notF-free/nooracledeployed/noTX-V-targettraining;defaultunchanged."
+  },
+  "checkpoint": {
+    "initialization": "Gscratch/406055params/originalmain344295randomfactory+61760deepSIGparameters/noGcheckpoint-ancestor/noIQteacher;originalmaininitialweightsandSIGpredictionpreserved",
+    "sources": [
+      "NoGinitializationcheckpoint/main344295ARCHITECTURE randomfactoryonly/nottrainedweights",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth originalsource4df7/50/11100/Fteacherandpostfreezeassessment",
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/source_signature_cache actualF-onlycleanSIG DATAONLY/producedbeforeoldGoptimizer/notGancestor",
+      "Source-only diagnostic 20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01 exec9d266929d4e0eea27057eebeda8239fd24f0b6d9/closure8fae9fd0d35d63aa8377262829c277e0f331da84/PASS/nondeployable/noIQteacher",
+      "Originalmain4452/originalSIG47591/pureG8cf/defaultDURA/R17 frozencomparisononly;matchedotherdeep 20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01"
+    ],
+    "contract_check_ref": "Original7/63/30source63000L6300U56700/VALIDATED_ONCEhandles/matchingF50source4df7-50-11100/defaulthead/existingF-onlySIGcachemetadata-order/strictE0-final30aliases",
+    "provenance_verdict": "Original7/63/30VALIDATED_ONCE handles/F50source4df7-50/11100/defaulthead/F-onlySIG40.32MBmatchingroles-order. Gscratch noancestor;sourceoracleonlymechanism-evidence/notGcheckpoint-inheritance-or-training-IQ. ExistingcachebeforeoldGoptimizer/newFcache0.",
+    "selection_rule": "Fixedbothnewarchitectures/final30-7410/all7formalregardlesssourcequality. Baseprediction128to160+deepresidual:encoder2pool4(28x4)and3pool2(40x2)=192. Linear192to160zero vs192to160-SiLU-160to160zero-last. Sameheadseedoffset2026103121,source-matrix/loss/conditionerbound.1 andaux.01 unchanged. Noearlystop/targetfeedback/ranking/grid/nativeallpaths."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-SIG-deep-pair-E30",
+    "gpu_policy": "GPU4/6/7/free>=12000MiB/existingcomputePIDs<=2/addONE<=3total/own1percard/goal<=2GPUworkers/ownCPUtruthscorer<=1/sharedlock:runs/20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01/score.lock;linearcontrollerfirst/otherownersuntouched",
+    "remote_run_root": "runs/20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01",
+    "remote_log_root": "logs/20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.signature_deep_prior run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badsource/Fcache/roles-RNG/nonfinite/originalSIGcap>.5*(1+2e-5)/checkpoint/collision/smoke/nativeoptimized/deep-path/coverage:preservefailedrow/noautoretry/noothers. No performance stop;fixed30/all7regardlesssourcequality. InitialMLPfirstlayer-and-conditionerzero-gradexpected/newlastauxgradnonzerorequired."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-scratch_joint.json",
+    "scratch_joint/launch.json",
+    "scratch_joint/resolved_config.json",
+    "scratch_joint/initialization.json",
+    "scratch_joint/training.jsonl",
+    "scratch_joint/training_complete.json",
+    "scratch_joint/final.pt",
+    "scratch_joint/matched_profile.json",
+    "scratch_joint/source_prediction/complete.json",
+    "scratch_joint/source_summary.json",
+    "scratch_joint/target_prediction/complete.json",
+    "scratch_joint/target_summary.json",
+    "scratch_joint/complete.json",
+    "complete.json",
+    "source_signature_cache/targets.npy",
+    "source_signature_cache/physical_ids.npy",
+    "source_signature_cache/complete.json",
+    "scratch_joint/teacher_load.json",
+    "scratch_joint/source_reference.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy-MacroF1-correct-repair-damage-net/overall-TX-RX-day/sixeachgap3pp-clean-R17each1pp-lowU70",
+      "full30physical4-outputSIGalpha1cap.5-.01mean2priorSIGaux/perpriorpredictionerrors/views-exposures-RNG-Ffreeze",
+      "completeGparams-storage-ConvLinearMAC-2prior4CG27FFT/samecardnativeG-F-latency-throughput-VRAM/train-and-wholecost"
+    ],
+    "dimensions": [
+      "fixedmodelseed2026092701",
+      "sourceV1800x7",
+      "formal168000x7",
+      "overall/TX/RX/day",
+      "matchedpureGanddefaultDURA"
+    ],
+    "prediction_ref": "Eachsource/target roleall7predictionsfixedbeforeCPUtruth;targetforwardonlyreceivedIQ",
+    "scorer_ref": "Eachroleall7predictionbeforeindependentCPUtruthlast/commongoalCPUlock. Independent126target105source/378pairedgroups againstotherdeep-main4452-originalSIG/14IQ;pureG-default-R17officialcomparison;noresultfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "G406055/mainSIGcontext+deep192-residual-linear/unchangedfourphysical-outputSIG-.01mean2aux",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/signature_deep_prior.py;experiments/pamf_dura_efficiency/signature_deep_prior.py",
+      "resolved_config_ref": "scratch_joint/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model-CUDAprobe2026092701/split392005/sourcecacheaugmentation2026101912/receiver2026101911/shuffleNumPy2026103004/baseheadmodel+2026103113+i/deepheadmodel+2026103121+i/CPUforkpreserved/eval2027/supportN/A",
+      "k": null,
+      "scenario": "Originalsourcecache15percentclean/85percentpractical;01..20then01..10;no teacherIQ;formalclean+sixpractical",
+      "optimizer": "resetAdamW/W1e-4/globalclip1/warm247cos2e-5",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Gscratchsingle30/7410/B256/L189000U1701000/noGancestor/main344295+61760=406055/25206312ConvLinearMAC/2prior4CG27FFT/native;sourceSIG40.32MBreuse/newcacheF0/onlineprefix-VJP1.89meach/2compositeSIGpredictions3.78m",
+      "output_root": "runs/20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01/scratch_joint",
+      "log_path": "runs/20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01/logs/scratch_joint.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.signature_deep_prior run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-scratch_joint.json",
+        "scratch_joint/launch.json",
+        "scratch_joint/resolved_config.json",
+        "scratch_joint/initialization.json",
+        "scratch_joint/training.jsonl",
+        "scratch_joint/training_complete.json",
+        "scratch_joint/final.pt",
+        "scratch_joint/matched_profile.json",
+        "scratch_joint/source_prediction/complete.json",
+        "scratch_joint/source_summary.json",
+        "scratch_joint/target_prediction/complete.json",
+        "scratch_joint/target_summary.json",
+        "scratch_joint/complete.json",
+        "complete.json",
+        "source_signature_cache/targets.npy",
+        "source_signature_cache/physical_ids.npy",
+        "source_signature_cache/complete.json",
+        "scratch_joint/teacher_load.json",
+        "scratch_joint/source_reference.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Sourcebasis 20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01:fixedmainE30G/source512rolewise-linspace128L384U/01and20. LearnedcleanFagreement487/500,disabled481/497,sourcecleanSIG498/505,globalshift1SIG480/498. BOTHviewspredefinedprimarygain>=4vslearned>=2vsshift/allRX-clean-noncleansceneprotection/fullFcosPASS. Independent144case/input-linear-zero/SIGerrorsPASS,0extraNN. SourcepoolseenbyG/notTXtruth/targetbenefit/recoverybound;cleanSIGprivilegedandnotdeployed.",
+    "NewseparatelearninghypothesisafteroraclePASS:notautomaticinheritance. Existingmainpriorpredictiononlyencoder1pool8(16x8=128). KeepthatLinear128to160 andaddresidualfromalreadycomputedencoder2pool4(28x4)+encoder3pool2(40x2)=192;noextraencoder/Gstage/FFT/teacherinput. BothdecoderconditionerssameLinear160to112/bound.1. Outputactualsignature=baseprediction+deepresidual;aux.01mean2relativeMSEandoriginaloutputSIGcap.5allunchanged.",
+    "Linearnewbranch192to160/allzero-init;MLP192to160-SiLU-160to160/lastzero-init. Preserveallmain344295initialstate/SIG/IQ/alias/CPU-CUDA RNG. ExtrasdedicatedCPUfork/model+2026103121+priorindex. MLPinitialfirstlayergradzeroexpected;newlastweightsgetnonzeroactualsourceauxgrad;gradthroughdeepencoderfromnewbranchbeginsafterlastweightmoves. Originalphysical-and-shallowSIGsignalsremainactive.",
+    "Full406055parameters/new61760/25206312ConvLinearMAC/2prior4CG27FFT;allauxheadsretainedandcounted. Nativeeverytraining-and-frozenpath/noSIGfastTrainslices. Params/MACcannotproveactualspeed. SourceF-onlySIG40.32MBreuse/noGancestor/newFcache0/F50source4df7-50/11100-andcache63000prefix-.847077s knowledgedisclosed/F-guided/onlineprefix-VJP1.89meach/fullFtraining0/noTX-V-target/classifier.",
+    "6focusedtestsPASS init-SIG-IQ-RNG-state-extra-count/actualdeep-feature-input-and-decoder-grad/aux-newlast-grad-and-detach/MLPfirst-dormancy. BothactualCLI/factory/fullG-alias-mainstate-IQ-RNG/defaultobjective-newreturn/physical-outputSIG-.01mean2aux/leaf-target/deepgrad/routes-independentoutputs-commonCPUlock-sevenviewsPASS. OneP0P1eachbeforelaunch. Firstreal2noncleanLs strictE0-nativeoptimized/Ffreeze-originalSIGcap/allGmodule/newdeep-outputauxgrad/MLPzero-first/2deepinferencecalls;G12fullF4prefix2VJP2/PASScontinues.",
+    "Single30-7410/B256/source01..20then01..10/L189000U1701000/AdamW.001-warm247-cos2e-5-WD1e-4-clip1-FP32TF32off. Fixedbothversions/main4452baseline/otherdeepmatched/secondaryoriginalSIG-pureG-default-R17. Automaticnativeprofile/source1800x7/formal168000x7/eachroleall7thentruthlast/sourceworsecannotcancel. Sixeach>=137216correct,clean>=142256,R17eachloss<=1680/oldlowU70separate.",
+    "Oneimmutableoutputs/onearchiveSHA/preflight/compile/PID-CWD-argv-GPU-loggrowth;ownGPU<=2one/card,totalcard<=3/free>=12GB/sharedCPUlocklinearrun/score.lock withindependentoutputs. NohealthyoldownNN;otherowners/defaultDURAunchanged. Singlemodelseed/exposedengineeringbenchmark/notnewblindtest/noformalTX-RXpatternsforhyperparameters/fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-31T14:09:44+00:00"
+}

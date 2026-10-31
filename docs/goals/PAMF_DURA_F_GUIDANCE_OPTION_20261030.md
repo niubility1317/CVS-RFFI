@@ -319,3 +319,8 @@ VERIFIED / ANALYZED。prior 特征仅训练约束，从零单阶段30轮/7410步
 ## 固定权重的特征条件源检验：配对特征用途通过
 
 20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01 / 9d266929d4e0eea27057eebeda8239fd24f0b6d9。固定 main SIGcontextPrior final30 的 source512×01/20 四路径干预已闭合，主条件PASS。正常与clean F选择一致487/500、关闭481/497、本条clean SIG498/505、循环移位480/498；同权重关闭净−6/−3、理想配对特征净+11/+5，5RX与全部场景保护通过。144组case/实际线性/输入置换独立复算，0新增NN；主CPU2 14.107593秒，G4096/F4096、smoke G12/F4，0TX/V/target/训练。源特权参照不可部署、不是真实TX准确率或恢复极限，固定权重可能有分布共同适配边界。支持另行登记更强内部特征预测假设，不自动加训；默认DURA和完整3pp/clean/同质量效率目标保持。 详见该run完整分析。
+
+
+## 更深特征改善SIG预测：固定线性与非线性单E30对照
+
+20261031-phase1-DURA-SIGdeepLinear-E30-s2026092701-r01 与 20261031-phase1-DURA-SIGdeepMLP-E30-s2026092701-r01。源固定权重条件oracle两视图主条件PASS后，独立登记两个从零单阶段30轮假设；读取已算出的encoder2pool4+encoder3pool2=192维，原浅层预测加深层零初始化残差，线性192→160与192→160-SiLU-160→160比较。406055/457575参数，原四物理+输出SIGalpha1cap.5+.01mean2aux及conditionerbound.1不改；初始main参数/SIG/IQ/RNG保留，G祖先0、F-only缓存复用，0TX/V/target训练。固定final30与全七景自动truth-last，新增两版互比并匹配main4452；默认保持、完整目标ACTIVE，不用源代理替代正式TX收益。
