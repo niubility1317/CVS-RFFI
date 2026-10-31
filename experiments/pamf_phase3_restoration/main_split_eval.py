@@ -146,7 +146,7 @@ def finalize(args):
         code_commit=args.commit))
 
 
-def summary(scores):
+def summary(scores,*,streams=STREAMS):
     cells={}
     for row in scores['results']:
         if row['dimension']=='overall' and row['stratum']=='ALL':
@@ -155,14 +155,14 @@ def summary(scores):
     output={}
     for task in [*COUNTS,'combined']:
         table={}
-        for name in STREAMS:
+        for name in streams:
             table[name]={}
             for view in VIEWS:
                 rows=[cells[t][name][view] for t in COUNTS] if task=='combined' else [cells[task][name][view]]
                 cm=np.sum([r['confusion'] for r in rows],axis=0);n=int(cm.sum());correct=int(np.trace(cm))
                 table[name][view]=dict(count=n,correct=correct,accuracy=100*correct/n)
         raw=table['raw']['clean'];acceptance={}
-        for name in STREAMS:
+        for name in streams:
             for view in VIEWS:
                 cell=table[name][view];cell['raw_clean_gap_pp']=raw['accuracy']-cell['accuracy']
                 cell['clean_accuracy_retention_percent']=100*cell['correct']/raw['correct']
