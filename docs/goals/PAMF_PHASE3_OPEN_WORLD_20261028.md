@@ -1366,3 +1366,13 @@ Run `20261031-phase3-logit-energy-s2026092701-r01` / code `b554068df92e6ea02f114
 ## 2026-11-01：地面开放训练实测结果
 
 `20261101-phase3-ground-open-s2026092701-r03` / code `d7e0f875397b2f9801df4605ba0051d221aa4e2a` 完成SUP/普通源Us PL两完整原F0学生各2220、总4440更新，源L/OE索引匹配，源G(clean)数据和V13500CAL/13500TEST物理分离，3方法×4DURA条件后独立CPU4truth各一次，执行VERIFIED。主SSL_energy：source_clean_DURA: AK/CK/RU/H=97.755556/98.303704/69.365079/81.148828%；source_star_DURA: AK/CK/RU/H=90.059259/98.014815/38.380952/53.823644%；cross_clean_DURA: AK/CK/RU/H=37.155045/53.978578/55.609637/44.546664%；cross_star_DURA: AK/CK/RU/H=35.447581/62.520184/40.971269/38.009794%。sourceground=False、crossclean=False、联合ground_training_success=False、科学NO_PROMOTION。真实学生训练1420800+预测134552=1555352，G119760、F0数据教师/基线36450，合成成本另报；源Us56700/曝光284160、TX隐藏，OE6134仅outside-six成员监督，目标U新增0，无新目标UDA/发现/匿名注册，AN/HOWNA/正式RX24-18未读，PCD研究基线不改/完整ACTIVE。r01缺依赖、r02历史API遮蔽均在真实数据前失败并保留，r03独立源IO保留历史NN路径。详见`docs/PAMF_PHASE3_GROUND_OPEN_RESULTS_20261101.md`。
+
+
+## 2026-11-01：地面困难配对的尾部损失候选
+
+上一轮是实测进展，仍未达标。新run `20261101-phase3-ground-tail-s2026092701-r01` 固定DMEAN/DTAIL两完整原F0独立学生，共同CE/KD与同L192/OE64/2220步，两者等权15公共RX/day均值，仅DTAIL改各域最难ceil(N/4)配对聚合。无需新Us/目标U/数据派生，直接复用旧D7 G(clean)源胶囊；OLD_SSL固定比较精确复用，无新学生继承其状态。主DTAIL预先固定，12点四DURA条件后CPU4truth；正式95%RU/95%CK/原F0损2pp及每主景95均保留，阶段源ground/跨RX/完整拒识分开，无新UDA/注册、AN/HOWNA/formal0/完整ACTIVE。细节 `docs/PAMF_PHASE3_GROUND_TAIL_PLAN_20261101.md`，尚无本行科学成绩。
+
+
+## 2026-11-01：地面困难配对尾部损失实测结果
+
+`20261101-phase3-ground-tail-s2026092701-r01` / code `315f8ec1be994c40a97cbede4e27942e14267f12` 完成DMEAN/DTAIL完整原F0独立学生各2220更新、4440全步/2220对L/OE索引匹配；15域每步均值或ceil(N/4)尾部，缓存旧D7 G(clean)复用、source数据新增0、newUs/U/UID0。3读出×4DURA全部12点后CPU4truth各一次，旧SSL四overall exact，执行VERIFIED。主DTAIL：source_clean_DURA: AK/CK/RU/H=97.696296/98.251852/70.444444/81.861913%；source_star_DURA: AK/CK/RU/H=89.940741/98.007407/41.396825/56.697581%；cross_clean_DURA: AK/CK/RU/H=36.627207/53.515359/51.234229/42.716505%；cross_star_DURA: AK/CK/RU/H=35.021150/62.265436/38.993927/36.900919%。sourceground=False、crossclean=False、frozen4condition=False，正式95%CK/95%RU/原F0损2pp及主景95未通过，科学NO_PROMOTION。配对DTAIL对DMEAN源clean RU+0.920635pp，但跨RXclean−5.804708pp、跨RX星地−2.788199pp，不将源小幅收益称为跨域改善；不按结果改主/调参/扩seed。新增student1136640+134552=1271192/G20476/F00，旧dataG99284/F036450与旧SSL的Us祖先单列；new12tau+old6=18/144B，主部署499944+6tau48B。无新目标UDA/发现/匿名注册，AN/HOWNA/正式RX24-18未读，完整ACTIVE、研究基线未替换。详见`docs/PAMF_PHASE3_GROUND_TAIL_RESULTS_20261101.md`。
