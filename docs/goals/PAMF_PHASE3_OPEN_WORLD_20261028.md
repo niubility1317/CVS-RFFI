@@ -1112,3 +1112,12 @@ driver1415050/predict1415080及CPU1415842独立live/CWD/fullargv（predictCUDA1�
 ### 2026-10-31 公共类传输对齐预登记
 
 Run `20261031-phase3-common-transport-s2026092701-r01` / actualcode `4038105cb7f7c2defe75eb7fbfa825e7f932b40f`，只新训source-r03 TARGET_CCD444，SOURCE/PCD(a336/r01)与六列冻结readouts(4273/r02)精确复用，不从U适配权重初始化。原source+PCD配方/Sinc48/buffers/F0/G冻结保持，前100步同PCD，第101起额外.1CCD：源L父z六固定mean、reg.01/rho.5/gamma.7/mu.7/log400、adaptive填充/六beta及统计均值筛选，不读目标TX/K/配额；fillseed2026103120，其余源/U/aug/proto seeds保持并核全索引。神经冻→源GMM1冻→V12新τ/旧36exact全冻→八列三DURA全pred→独立CPU3truth/Utruth0，唯一CCD_predicted_ratio，starAK须高于E0/SOURCE/PCD且RU均不降并满足绝对门槛/coverage。新NN444/父12818+学生340992/eval44312，总398122signal/G2112/F01728，旧888等历史成本另列。原基线保持，不是完整UniOT/未知发现/匿名REG；formalRX未读/历史开发曝光/单RXseed/high缺类保持，goalACTIVE。见`docs/PAMF_PHASE3_COMMON_TRANSPORT_PLAN_20261031.md`。
+
+
+### 2026-10-31 公共类传输对齐完整结果
+
+Run `20261031-phase3-common-transport-s2026092701-r01` / actualcode `4038105cb7f7c2defe75eb7fbfa825e7f932b40f`，新TARGET_CCD444＋旧SOURCE/PCD control精确复用，八列三DURA全预测/独立3truth均VERIFIED完成、Utruth0。主CCD_predicted_ratio宏AK/CK/RU/H：source_DURA: 89.755556/96.785185/65.904762/76.002910%; F0loss1.225926pp；clean_DURA: 69.965278/86.631944/99.652778/82.210992%; F0loss10.069444pp；star_DURA: 64.583333/86.458333/77.430556/70.425835%; F0loss8.333333pp。对PCD：source正确+4/未知+12，clean正确−18/未知+1，star正确−4/未知−2（AK/CK/RU各−.694444pp、H−.700073pp）；比E0/SOURCE少量增益不替代胜PCD/绝对保护，sourceknown12通过而target保护和coverage失败，NO_PROMOTION/不扩seed，原基线和PCD比较保留，完整goalACTIVE。
+
+全444 L/OE/U索引exact，前100标量最大total差1.516342e−4（跨GPU是可能非已证解释），101..444实344 CCD，各400UOT且有限；伪hist只分配到0/3/5，不当真类构成/纯度。新父signal12818/学生340992、eval44312，共398122/G2112/F01728；新增444、旧888继承、1GMM/12新τ+36旧τ。Sinc48/buffers/原F0默认头/G不变，无匿名REG/AN-HOW NA/正式RX未访问。完整训练/24点/三配对/分组/成本/发布前P1修复及Win206本地传输修复见`docs/PAMF_PHASE3_COMMON_TRANSPORT_RESULTS_20261031.md`。
+
+source-only聚合几何诊断说明六质心并非近共线、gamma.7源L阳性99.460317%/OE8.493642%，源域区分不能证明目标纯度。未来3-2 metadata审计在排除原known/OE/NV/formal共34TX后列5-5/10-7/2-19/7-11四未来未知候选，早期也有记录须从U整类排除；尚未完成packet历史排除/新池构建，不进当前实验，不宣称独立盲测。

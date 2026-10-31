@@ -75,7 +75,7 @@
 |PAMF 固定 GMM 已知类竞争与 OE 背景|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-class-competition-s2026092701-r01/report.md)|
 |PAMF 预测身份条件密度：三条件 DURA 测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-class-density-s2026092701-r01/report.md)|
 |PAMF 源域类别联合偏移的无标签适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-class-shift-s2026092701-r01/report.md)|
-|PAMF第三阶段：公共类传输对齐|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-common-transport-s2026092701-r01/report.md)|
+|PAMF 公共类传输对齐|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-common-transport-s2026092701-r01/report.md)|
 |PAMF 固定密度拒识边界配对训练|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-density-boundary-s2026092701-r01/report.md)|
 |PAMF 无标签正对角仿射域适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-diagonal-uda-s2026092701-r01/report.md)|
 |已有较好开放方案：DURA 接入前后配对测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-dura-best-s2026092701-r01/report.md)|
