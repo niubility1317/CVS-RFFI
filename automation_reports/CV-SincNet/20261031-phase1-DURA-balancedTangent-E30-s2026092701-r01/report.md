@@ -47,6 +47,6 @@ VERIFIED / RUNNING。执行75da21407e7a6790f45e4a8ac4bcc2ea5b6d120e已push且独
 
 ## 完整训练与正式结果
 
-VERIFIED / ANALYZED。单阶段 scratch E30/7410，L189000/U1701000；30 轮完整 loss/曝光/缓存视图/逐批次压力上界核对通过。复用 source J，无新增 F 前向/VJP/缓存；继承 F50 监督知识，仍为 F-guided。七景×168000 全部预测固定后 truth-last，126 正式与252 双对照配对分组独立复算。clean 84.814286%，low urban 67.031548%；低城区相对未平衡版 +0.406548、纯 G -0.341071、默认 DURA -1.858333 个百分点。六景3pp通过 0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。G训练 998.836772 秒，含源准备 999.795406 秒，全量分析 1180.638900 秒；266951 参数/25.068072m ConvLinear MAC/2prior4CG27FFT，默认保持。
+VERIFIED / ANALYZED。单阶段 scratch E30/7410，L189000/U1701000；30 轮完整 loss/曝光/缓存视图/逐批次压力上界核对通过。复用 source J，缓存复用与 G 训练期间新增 F 前向/VJP/缓存均为 0（真实模型检查另有 2 条 F 输入，冻结后预测仍正常执行 F）；继承 F50 监督知识，仍为 F-guided。七景×168000 全部预测固定后 truth-last，126 正式与252 双对照配对分组独立复算。clean 84.814286%，low urban 67.031548%；低城区相对未平衡版 +0.406548、纯 G -0.341071、默认 DURA -1.858333 个百分点。六景3pp通过 0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。G训练 998.836772 秒，含源准备 999.795406 秒，全量分析 1180.638900 秒；266951 参数/25.068072m ConvLinear MAC/2prior4CG27FFT，默认保持。
 
 详见[完整分析](analysis.md)、[完整曲线与正式结果](training_and_formal.png)、results.json 与 transfer_diagnostics.json。当前控制器/worker 均已自然结束。结果不回流权重、epoch 或选择性重测；不将梯度上界通过解读为真实身份保真或恢复极限。
