@@ -3,9 +3,7 @@
 
 def paths(run_id):
     return ['experiments/pamf_phase2_practical',
-            'experiments/practical_full_2x2/__init__.py',
-            'experiments/practical_full_2x2/cache.py',
-            'experiments/practical_full_2x2/plan.py',
+            'experiments/practical_full_2x2',
             'code/leo_practical',
             'configs/pamf_phase2_mopc_author_20261101.json',
             'automation_reports/CV-SincNet/'+run_id]
