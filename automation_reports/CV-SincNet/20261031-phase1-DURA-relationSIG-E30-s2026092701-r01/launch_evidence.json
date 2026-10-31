@@ -1,0 +1,113 @@
+{
+  "status": "VERIFIED_RUNNING_NO_PERFORMANCE_RESULT",
+  "execution_commit": "53aec99292cde105ab6b582ac8fd56df1e71e798",
+  "controller_PID": 1865475,
+  "worker_PID": 1865565,
+  "GPU": 4,
+  "actual_CWD_and_argv_and_commit_verified": true,
+  "CUDA_visible_GPU_verified": true,
+  "compute_PID_verified": true,
+  "controller_log_bytes": 608,
+  "worker_log_bytes": 3616,
+  "epoch_records": 3,
+  "latest_update": 741,
+  "smoke": {
+    "status": "PASS",
+    "real_nonclean_Ls": 2,
+    "source_RX": [
+      1,
+      3
+    ],
+    "G_inputs": 8,
+    "F_full_inputs": 4,
+    "F_prefix_inputs": 2,
+    "F_input_VJP_inputs": 2,
+    "actual_cross_RX_relation_endpoints": true,
+    "IQ_gradient_cap": 0.5,
+    "joint_G_gradients": true,
+    "strict_E0_reload": true,
+    "native_optimized_match": true,
+    "G_parameters": 266951,
+    "G_inference_RX_or_pair_inputs": false,
+    "F_unchanged": true,
+    "F_updates": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "G_initialization_checkpoint_loads": 0,
+    "source_cache_reuse": {
+      "status": "SOURCE_ACTUAL_SIG_REUSED",
+      "count": 63000,
+      "shape": [
+        63000,
+        160
+      ],
+      "numeric_bytes": 40320000,
+      "source_contract": "original7/63/30",
+      "F_teacher": {
+        "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "seed": 2026092701,
+        "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "epoch": 50,
+        "updates": 11100
+      },
+      "reused_from_run": "20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01",
+      "original_metadata": {
+        "status": "SOURCE_ACTUAL_SIG_COMPLETE",
+        "count": 63000,
+        "shape": [
+          63000,
+          160
+        ],
+        "numeric_bytes": 40320000,
+        "source_contract": "original7/63/30",
+        "F_teacher": {
+          "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+          "seed": 2026092701,
+          "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+          "epoch": 50,
+          "updates": 11100
+        },
+        "actual_weighted_TripleSIG": true,
+        "full_F_inputs": 0,
+        "F_prefix_inputs": 63000,
+        "F_input_VJP_inputs": 0,
+        "F_updates": 0,
+        "model_optimizer_updates": 0,
+        "TX_labels_read": 0,
+        "V_reads": 0,
+        "target_reads": 0,
+        "seconds": 0.847077140584588,
+        "peak_allocated_bytes": 168638464
+      },
+      "new_F_prefix_inputs": 0,
+      "new_F_input_VJP_inputs": 0,
+      "new_numeric_bytes": 0,
+      "TX_labels_read": 0,
+      "V_reads": 0,
+      "target_reads": 0,
+      "seconds": 0.12109553394839168,
+      "relation_RX_context_count": 63000,
+      "relation_RX_training_loss_only": true,
+      "relation_target_batch_columns": 161,
+      "relation_target_full_array_copy_bytes": 0,
+      "relation_extra_F_inputs": 0
+    },
+    "teacher_load": {
+      "F_load_RNG_restored": true,
+      "CPU_rng_restored": true,
+      "CUDA_rng_restored": null,
+      "F_checkpoint_loads": 1
+    }
+  },
+  "archive_sha_match": true,
+  "remote_compile": true,
+  "admission": {
+    "visible_GPU_compute_PIDs": 0,
+    "free_memory_MB": 24124,
+    "maximum_total_after_adding": 3
+  },
+  "default_DURA_changed": false,
+  "target_feedback": false,
+  "goal_complete": false
+}

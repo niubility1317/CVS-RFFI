@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-relationSIG-E30-s2026092701-r01`
 - group_id：`phase1-dura-cross-RX-relation-SIG-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -42,3 +42,8 @@ F为原F50/source4df7/defaulthead，源clean实际weighted SIG160缓存63000×16
 3项聚焦检查、实际factory/config/单E30-all7入口、有效新训练hook/161列targetwrapper、物理4权重/实例误差仅诊断/RNG隔离通过，唯一P0/P1 PASS。launcher首步真实2非clean L_s RX1/3检查实际F/cache、两端active/非零cap、三G模块梯度、严格E0/nativeoptimized/F原头state，G8/fullF4/prefix2/VJP2，PASS立即继续。每row最终30后自动同卡profile、sourceV1800×7/formal168000×7，各role全七景固定后独立CPU truth-last。
 
 单seed2026092701、AdamW0.001/warm247/cos2e−5/WD1e−4/clip1/FP32/TF32off，model-CUDAprobe2026092701/NumPy shuffle2026103004，所有pair确定性，无新随机流。GPU4/6/7/free≥12000MiB/existing≤2加1总≤3、每卡own1/goal≤2GPUworker/ownCPUtruthscorer≤1，其他owner保持；一次preflight/单归档SHA/compile/实际PID-CWD-argv-GPU-loggrowth。主SIG47591、次pureG8cf/defaultDURA/R17：六景各≥137216正确、clean≥142256、R17每景最多少1680及旧lowU70%分列。完整目标ACTIVE，已有曝光工程基准不称新盲测。
+
+
+## 实际启动证据
+
+VERIFIED / RUNNING，尚无性能结果。执行53aec99292cde105ab6b582ac8fd56df1e71e798；真实2非clean L_s RX1/3 smoke PASS后进入GPU4 worker1865565/controller1865475，已核实3轮/741步、两日志增长。实际CWD/完整argv/commit/CUDA/compute PID核对，准入前0个compute PID/剩余24124MiB，单任务新增1个。归档SHA比较与远端编译通过；固定最终30轮/profile/全部七景自动truth-last保持。详见launch_evidence.json。
