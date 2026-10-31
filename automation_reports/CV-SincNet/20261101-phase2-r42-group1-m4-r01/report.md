@@ -10,4 +10,8 @@
 
 启动命令、1932逐行矩阵、环境、不可变root、checkpoint来源、停止规则见 experiment.json。GPU0/2/3/4/6每卡最多两个新增本任务预测进程、source每卡一个，启动前剩余显存至少6000MiB，外部owner GPU1/5/7及其他健康任务不改。任一技术/权限/输出错误停止新入队并排空健康本任务，不盲重试；科学低分不停止。真实源checkpoint smoke首步通过即继续，无额外seal/hash链。
 
-当前状态：PREPARED，尚未发布。代码提交、一次P0/P1、真实source smoke、归档传输、远端编译及启动后PID/CWD/argv/GPU/log证据按项目最小流程完成。
+当前状态：RUNNING（见下方启动证据）。代码提交、一次P0/P1、真实source smoke、归档传输、远端编译及启动后PID/CWD/argv/GPU/log证据按项目最小流程完成。
+
+启动后独立读回（2026-11-01T01:31:29.902910+08:00）：VERIFIED RUNNING: four actual source checkpoint smokes PASS, newNN/F/Gupdates0; controller2148792; predictions7/1932, active10, no failures; complete208row newly computed units observed. silent logs0 with actual fit/prediction/resource artifact growth. Code14af25d0ff68d0d4de80357849d8a7c69018ebd3.
+
+归档传输SHA比对、远端编译、代码双仓库push及remote OID均VERIFIED；真实PID/CWD/argv、GPU和日志/产物增长已核实。最终分数尚待完整冻结与独立评分，不宣称+5pp达标。
