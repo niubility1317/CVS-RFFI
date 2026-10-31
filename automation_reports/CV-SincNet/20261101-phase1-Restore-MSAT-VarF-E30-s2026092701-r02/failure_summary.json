@@ -1,0 +1,41 @@
+{
+  "status": "FAILED",
+  "performance_result": "NO_PERFORMANCE_RESULT",
+  "fault_layer": "authorized_GPU_CUDA_initialization",
+  "source_smoke_completed": false,
+  "epochs": 0,
+  "optimizer_updates": 0,
+  "prediction_views_completed": 0,
+  "driver_health_exact_cause": "UNKNOWN",
+  "GPU7_device_query": "FAILED",
+  "independent_fresh_process_probes": [
+    {
+      "physical_GPU": 4,
+      "visibility": "numeric",
+      "status": "FAILED"
+    },
+    {
+      "physical_GPU": 4,
+      "visibility": "UUID",
+      "status": "FAILED"
+    },
+    {
+      "physical_GPU": 6,
+      "visibility": "numeric",
+      "status": "FAILED"
+    }
+  ],
+  "probe_Torch": "2.1.0+cu121",
+  "probe_CUDA": "12.1",
+  "probe_real_IQ_rows": 0,
+  "probe_model_loads": 0,
+  "only_one_technical_recovery_attempt": true,
+  "further_training_resubmission": false,
+  "old_failed_attempt_preserved": true,
+  "trained_checkpoint_available": false,
+  "default_DURA_changed": false,
+  "device_reset_or_other_owner_change": false,
+  "local_option": "RTX5070Ti/Torch2.10+cu128 device-onlyprobePASS;datasetsandoriginalFbundleabsent;requiresmigrationandbenchmarkrecheck",
+  "recovery_path_selection": "AWAITING_USER_OR_EXTERNAL_PLATFORM_RESTORE",
+  "goal_complete": false
+}

@@ -37,3 +37,9 @@
 ## 启动已核实
 
 VERIFIED：方法3729a7135728500ab6013894ac060d85e3db8a67，6聚焦检查/唯一P0P1 PASS；一次archive SHA/remote compile/preflight完成。GPU7原compute0、剩余24124MiB，新增单个本任务NNworker。实际PID/CWD/命令/CUDA与日志增长已读回，真实source smoke/严格E0重载PASS。当前训练中，无新版正式性能结果。所有旧模型/输出及其他owner保持。
+
+## 技术失败：无正式性能结果
+
+FAILED / NO_PERFORMANCE_RESULT。第30轮CUDA异步launch failure；进程退出后独立设备查询确认GPU7句柄不可用（exit6），GPU4/6仍可查询。故障层在设备/驱动，具体硬件原因UNKNOWN。29轮完成日志保留，已完成更新至少7163、至多7409；只保存E0，无训练态或final30可续训/测试。未读取目标或产生正式预测，不能把该尝试当作性能负结果或达标模型。
+
+新独立r02仅作技术恢复，科学配方/数据/种子/预算不变，从零30；避开GPU7，按容量只选4/6并用UUID绑定CUDA。新增每完整epoch的模型/优化器/RNG恢复快照（不选模、PRIVATE），防止同类故障再次丢失全部进度。保留本失败root，记录已耗训练成本；不重置设备或干预其他owner。
