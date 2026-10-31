@@ -205,3 +205,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## IQ与时序签名共同步进源检验
 
 20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01：固定defaultDURA/source512×01/20与原SIG-only损失缩步控制，四步单位IQ/SIG导数角平分方向，精确IQ线最小与SIG局部缩步、每步0.25%/总1%原RMS球。只用源配对clean/冻结F，0G模型训练/TX/V/target；有限IQ界不是非线性SIG或G参数保证。双view相对SIG-only至少+2一致、RX/clean保护、非clean每景最多−1、SIG≤.9native与逐包IQ保护预先固定。PASS仅支持另登记E30，默认与全部旧负结果保持。
+
+
+## IQ与签名共同步进：完整源判定
+
+20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01/88029b4a。VERIFIED / ANALYZED_SOURCE_ONLY，科学判定FAIL。固定defaultDURA/source512（128L/384U）×01/20，四步共同IQ-SIG方向与旧SIG-only对照。一致数501/504与旧SIG-only501/504相同，IQ误差相对旧控制下降6.417819%/6.112685%，但源RX保护失败、第一缓存场景保护也失败。IQ输出空间负余弦仅0.927734%/0.634766%，cap0.5合成方向对SIG的一阶预测增加比例均为0，未支持此处大规模方向冲突这一假设。所有逐包IQ相对anchor保护通过，非线性SIG误差没有自动同等改善；不启动该G、不改阈值。CPU2主循环5.335702秒，独立复算0.491907秒，完整4096step-record/1024观察/4096原头特征行/52组通过；独立最大IQ步进差1.19456782244e-07。主完整F1024/前缀4096/VJP4096/原头4096，真实2Ls另F2/前缀2/VJP2/原头2；0G加载/前向/模型更新/TX/V/target。源clean F选择代理不是TX准确率，输出空间结论不是G参数或全轨迹结论。默认DURA/完整目标ACTIVE保持。 完整结果见run analysis.md/results.json。

@@ -1,0 +1,125 @@
+{
+  "status": "INDEPENDENTLY_RECOMPUTED",
+  "source_observations": 1024,
+  "step_records": 4096,
+  "head_rows": 4096,
+  "group_records": 52,
+  "maximum_step_IQ_difference": 1.1945678224378753e-07,
+  "maximum_head_logit_difference": 8.650359673012531e-06,
+  "details": {
+    "1": {
+      "overall": {
+        "native": {
+          "count": 512,
+          "cleanF_agreement": 486,
+          "gain_vs_native": 0,
+          "gain_vs_SIG_control": -15,
+          "reference_margin_mean": 6.157804663524122,
+          "signature_relative_MSE_mean": 0.15078693015638173,
+          "IQ_NMSE_mean": 0.020212826231806494
+        },
+        "IQ_oracle": {
+          "count": 512,
+          "cleanF_agreement": 489,
+          "gain_vs_native": 3,
+          "gain_vs_SIG_control": -12,
+          "reference_margin_mean": 6.28138842376363,
+          "signature_relative_MSE_mean": 0.13391904170682054,
+          "IQ_NMSE_mean": 0.01826457479147764
+        },
+        "SIG_control": {
+          "count": 512,
+          "cleanF_agreement": 501,
+          "gain_vs_native": 15,
+          "gain_vs_SIG_control": 0,
+          "reference_margin_mean": 6.5135793730421305,
+          "signature_relative_MSE_mean": 0.0533820184965778,
+          "IQ_NMSE_mean": 0.020086499165008757
+        },
+        "common_SIG": {
+          "count": 512,
+          "cleanF_agreement": 501,
+          "gain_vs_native": 15,
+          "gain_vs_SIG_control": 0,
+          "reference_margin_mean": 6.528728523979811,
+          "signature_relative_MSE_mean": 0.06301956843831276,
+          "IQ_NMSE_mean": 0.018797384055002003
+        }
+      },
+      "geometry": {
+        "negative_IQ_SIG_cosine_fraction": 0.00927734375,
+        "cap_half_baseline_SIG_increase_first_order_fraction": 0.0,
+        "common_active_fraction": 1.0,
+        "IQ_NMSE_violations": 0
+      },
+      "decision": {
+        "extra_agreement": false,
+        "RX_protection": false,
+        "clean_protection": true,
+        "scene_protection": false,
+        "signature_error": true,
+        "IQ_protection": true
+      }
+    },
+    "20": {
+      "overall": {
+        "native": {
+          "count": 512,
+          "cleanF_agreement": 498,
+          "gain_vs_native": 0,
+          "gain_vs_SIG_control": -6,
+          "reference_margin_mean": 6.359405566647984,
+          "signature_relative_MSE_mean": 0.13541671299617375,
+          "IQ_NMSE_mean": 0.019439707877292677
+        },
+        "IQ_oracle": {
+          "count": 512,
+          "cleanF_agreement": 499,
+          "gain_vs_native": 1,
+          "gain_vs_SIG_control": -5,
+          "reference_margin_mean": 6.486726977937817,
+          "signature_relative_MSE_mean": 0.1176124390752,
+          "IQ_NMSE_mean": 0.017650533294466378
+        },
+        "SIG_control": {
+          "count": 512,
+          "cleanF_agreement": 504,
+          "gain_vs_native": 6,
+          "gain_vs_SIG_control": 0,
+          "reference_margin_mean": 6.695881304354895,
+          "signature_relative_MSE_mean": 0.04363512371253135,
+          "IQ_NMSE_mean": 0.019322029084056315
+        },
+        "common_SIG": {
+          "count": 512,
+          "cleanF_agreement": 504,
+          "gain_vs_native": 6,
+          "gain_vs_SIG_control": 0,
+          "reference_margin_mean": 6.712547686268605,
+          "signature_relative_MSE_mean": 0.051546723790999296,
+          "IQ_NMSE_mean": 0.01814093427294289
+        }
+      },
+      "geometry": {
+        "negative_IQ_SIG_cosine_fraction": 0.00634765625,
+        "cap_half_baseline_SIG_increase_first_order_fraction": 0.0,
+        "common_active_fraction": 1.0,
+        "IQ_NMSE_violations": 0
+      },
+      "decision": {
+        "extra_agreement": false,
+        "RX_protection": false,
+        "clean_protection": true,
+        "scene_protection": true,
+        "signature_error": true,
+        "IQ_protection": true
+      }
+    }
+  },
+  "new_neural_network_inputs": 0,
+  "derivative_scope": "RecordedactualFderivativesreused;independentcombination/step/projection/finiteIQ/head/group/arithmetic;noindependentrepeatedFJacobian",
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "seconds": 0.4919069614261389
+}
