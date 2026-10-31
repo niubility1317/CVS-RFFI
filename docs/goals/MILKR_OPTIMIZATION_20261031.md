@@ -63,3 +63,14 @@ R13是否扩展：False。完整四路/各K/N及同head R12C控制见sourcebridg
 ### R14待验证机制
 
 R13仅映射raw仍残留单侧失配。新R14拟合source-only配对CCA，两路各自编码到共同空间，严格Q0只raw/Q1只G，无混合query。rank由留一sourceRX的四路H事前门槛选择；未通过则source-only停止、目标0。通过才P01首RX全部K/N/四路80行。没有降低用户+5pp与Q1>Q0要求。
+
+### R14实际源端证据
+
+- rank16：源四路较R13 +1.483pp，源晋级True。
+- rank32：源四路较R13 -0.276pp，源晋级False。
+- rank64：源四路较R13 -1.546pp，源晋级False。
+- rank96：源四路较R13 -2.268pp，源晋级False。
+- S0：Q0较原版+7.070pp，Q1增量+0.592pp；均值验收True，每格验收False。
+- S1：Q0较原版+38.763pp，Q1增量+15.916pp；均值验收True，每格验收True。
+
+首RX先导晋级：True。不以singleRX声明goal完成；详见pairedcca r12报告。
