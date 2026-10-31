@@ -6,7 +6,6 @@ import numpy as np
 import torch
 from torch import nn
 from torch.nn import functional as F
-from experiments.pamf_ssl_research.u_mixstyle_objective import mix_moments
 from . import source_open_embedding_train as native
 from . import star_signal_open_model as signal
 
@@ -15,6 +14,21 @@ SITE_SHAPES = ((48,128), (96,32))
 SINC_PREFIX = 'reader.core.id_backbone.sinc.'
 HEAD_WEIGHT = 'reader.core.id_backbone.cls_head.weight'
 L_SEED, PAIR_SEED, OE_SEED, STYLE_SEED = 2026103160,2026103170,2026103018,2026103171
+
+
+def mix_moments(h,partner,valid,lam,eps):
+    """The existing pure MixStyle operator, without its unused SSL imports."""
+    n=len(h);lam=lam.detach()
+    if (h.ndim!=3 or partner.shape!=(n,) or valid.shape!=(n,) or lam.shape!=(n,1,1)
+        or bool(((partner<0)|(partner>=n)).any()) or not bool(torch.isfinite(lam).all())
+        or bool(((lam<0)|(lam>1)).any()) or eps<=0):
+        raise ValueError('Aligned temporal features and bounded style plan required')
+    mean=h.mean(-1,keepdim=True).detach()
+    std=(h.var(-1,unbiased=False,keepdim=True)+eps).sqrt().detach()
+    mixed_mean=lam*mean+(1-lam)*mean[partner]
+    mixed_std=lam*std+(1-lam)*std[partner]
+    mixed=(h-mean)/std*mixed_std+mixed_mean
+    return torch.where(valid[:,None,None],mixed,h)
 
 
 class NativeOpen(nn.Module):
