@@ -81,10 +81,10 @@
     "split_id": null,
     "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
     "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
-    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "leo_config_ref": "Reused R07 2.462 GHz source epochs and existing fixed G10 MIX01 2.45 GHz source L_s, residual/post_sync/noEQ/25MHz; no new physical records",
     "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
     "actual_training_labels": "No TX labels; original frozen source F0 features guide G. No V/OE/novel or target IQ in G training; truth only after all predictions.",
-    "augmentation": "Existing R07 source views 01..20 then 01..10; no newly generated training observations"
+    "augmentation": "Existing R07 source views 01..20; fixed G10 L_s view repeated; no new physical observations"
   },
   "permissions": {
     "regime": "Source L_s/U_s training with frozen original supervised source F0 feature knowledge; no target adaptation or training on heldout source data",
@@ -153,8 +153,8 @@
       "seeds": {
         "model": 2026092701,
         "split": 392005,
-        "data": 2026103004,
-        "augmentation": 2026101912,
+        "data": 2026110104,
+        "augmentation": 2026110105,
         "support": null,
         "evaluation": 2027
       },
@@ -190,7 +190,8 @@
     "Fixed two opposite common noise templates, 4 Euler steps each and mean IQ; no prediction-, target-, label- or confidence-based choice. No posterior calibration claimed.",
     "Two-source actual F0 gradient test VERIFIED; 14 focused tests passed; independent source and execution P0/P1 review found no unresolved issue; actual G10/F0 source checkpoint smoke runs before GPU admission.",
     "All historical source/target seven-view predictions and Phase3 source V/novel and clean/star complete before any CPU scorer reads truth. Poor metrics do not cancel predeclared evaluations.",
-    "Fixed downstream F0/E0/PCD and DURA reference; PCD contains historical target-U576 ancestry and thresholds calibrated for DURA, therefore compare fixed system only and do not claim open-world registration completed."
+    "Fixed downstream F0/E0/PCD and DURA reference; PCD contains historical target-U576 ancestry and thresholds calibrated for DURA, therefore compare fixed system only and do not claim open-world registration completed.",
+    "Registry seed correction: data-order=2026110104 and flow-noise/time=2026110105, as fixed in code and seed_notes; evaluation receiver seed=2027, fixed inference template seed=2026110103."
   ],
   "registered_at": "2026-10-31T16:41:26+00:00"
 }
