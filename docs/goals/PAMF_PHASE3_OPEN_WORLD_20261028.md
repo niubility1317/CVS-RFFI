@@ -1127,3 +1127,15 @@ source-only聚合几何诊断说明六质心并非近共线、gamma.7源L阳性9
 按用户“先选取前面性能好的方法”，结合已经完成的三类 DURA 比较，将 `PCD_predicted_ratio` 选作下一步研究起点，原 source-only `predicted_ratio`、同预算 SOURCE 和 pooled 读出保留对照。所选 PCD 的跨接收机 clean A_K/C_K/R_U/H 为 73.090278%/89.756944%/99.305556%/84.204711%，星地为 65.277778%/87.152778%/78.125000%/71.125908%；星地四项均高于 E0/SOURCE 及后续 CCD。指标直接取自 body-prototype r02 冻结评分，训练仍为原 r01 的 444 步，不新增实验或调阈值。
 
 这是依据历史开发结果更新研究起点，原实验的 NO_PROMOTION 和未达绝对目标不追改。所选 PCD 有目标 U384 的神经适配祖先，不能当作纯源权重；其他新 RX 的研究需从原 source-only r03 独立初始化。保留单种子、单目标 RX、历史曝光、逐景缺类和未完成发现/匿名注册的限制。clean R_U≥95%、星地 R_U≥90%、C_K≥90%、同 DURA 原 F0 闭集减 A_K≤2 个百分点不降低，完整目标 ACTIVE。方法与证据见 `docs/PAMF_PHASE3_METHOD_SELECTION_20261031.md` 和 `configs/pamf_phase3_selected_baseline_20261031.json`。
+
+
+## 2026-10-31：新开发接收机固定 PCD 验证预登记
+
+Run `20261031-phase3-fresh-development-rx3-2-s2026092701-r01` / actualcode `f4b5a0b80cafcf237c3ae9dac8ecd5b24c91bff7`。本机 CPU 已完成 RX3-2 的早日星地 U576 和双未来日期 Q10238，共10814个唯一 canonical 记录；future clean/star同ID同顺序，U无clean，后来未知整类未进入U。接收机已核实排除source/compact/Phase2/旧开发/正式角色，但全项目packet历史未用仍UNKNOWN。PCD从原source-only r03独立训练444，source-only SOURCE444仅复用对照；六读出三DURA预测全冻后CPU三truth/Utruth0。仍按cleanRU95/starRU90/CK90/原F0同G损2pp及覆盖、相对两控制收益验收，低分不省略测试，无发现或匿名REG，完整目标ACTIVE。矩阵、角色、种子、成本与技术停止规则见`docs/PAMF_PHASE3_FRESH_DEVELOPMENT_PLAN_20261031.md`；公共句柄与精确命令见本run登记。
+
+
+## 2026-10-31：新开发接收机固定 PCD 验证完整结果
+
+Run `20261031-phase3-fresh-development-rx3-2-s2026092701-r01` / actualcode `f4b5a0b80cafcf237c3ae9dac8ecd5b24c91bff7`，数据池与新PCD444、六读出三DURA/独立三truth均 VERIFIED 完成。主PCD宏AK/CK/RU/H：source_DURA: 89.733333/96.748148/64.285714/74.907247%; 同G闭集损1.248148pp；clean_DURA: 31.661804/43.761391/61.979647/41.912794%; 同G闭集损16.905211pp；star_DURA: 27.951722/48.582412/49.307698/35.678111%; 同G闭集损13.769336pp。star相对E0/SOURCE宏AK+1.511126/+1.200385pp，但RU−3.350826/−2.962281pp、未知拒对−190/−168；绝对保护和拒识均失败，NO_PROMOTION，不扩seed。所选PCD仅研究起点，不能称已在新RX确认普遍收益，旧RX24-1负结果和既定门槛保持。
+
+RX3-2早U576/两未来日Q10238，旧4508/未知5730，后来7-11整类不进U；10814唯一canonical、同Qclean/star配对、cleanU0，03-23缺20-19/8-20时AK/CK/H=N/A而RU独立可报。合并六景覆盖完整仍未通过性能门槛。原F0同G闭集clean48.567015%/star41.721059%，该测试组合身份识别本身也弱；这支持下一阶段同时关注跨RX身份适应和拒识表征，但不是单因素原因证明，不能据Q调阈值或挑简单数据。sourceV仍非known盲测，全局packet历史UNKNOWN，无发现/REG、AN/HOW NA、formal0，完整目标ACTIVE。全444步/18点/分组/成本见新结果文档。
