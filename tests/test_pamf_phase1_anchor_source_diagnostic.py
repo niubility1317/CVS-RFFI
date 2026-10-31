@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
+import torch
 
-from experiments.pamf_phase1_flow.anchor_source_diagnostic import paired_counts
+from experiments.pamf_phase1_flow.anchor_source_diagnostic import masked_mean, paired_counts
 
 
 def test_repairs_and_damages_count_against_same_clean_teacher():
@@ -18,3 +19,10 @@ def test_repairs_and_damages_count_against_same_clean_teacher():
 def test_rejects_misaligned_rows():
     with pytest.raises(ValueError):
         paired_counts(np.array([0, 1]), np.array([0]), np.array([0, 1]), np.array([True, True]))
+
+
+def test_masked_mean_uses_boolean_selection_with_no_numpy_torch_bridge(monkeypatch):
+    def unavailable(*args, **kwargs):
+        raise TypeError('NumPy bridge unavailable')
+    monkeypatch.setattr(torch, 'from_numpy', unavailable)
+    assert masked_mean(torch.tensor([1., 5., 9.]), np.array([True, False, True])) == 5.

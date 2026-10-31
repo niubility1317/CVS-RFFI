@@ -10,7 +10,7 @@ from torch.nn import functional as F
 from . import anchor_balanced as anchor, experiment as core
 from .dura_source_trisig_diagnostic import PARENT
 
-RUN = '20261101-diagnostic-phase1-anchor-source-paired-s2026092701-r01'
+RUN = '20261101-diagnostic-phase1-anchor-source-paired-s2026092701-r02'
 MODEL_RUN = '20261101-phase1-dura-anchored-balanced-E30-s2026092701-r02'
 MODEL_COMMIT = 'f16f514179428d16bd019a23aca56dd82aa93b1b'
 MODEL_DURA_SHA = '14200ac0f8eef01f57aa82e8fb5122ff855fc81208983d9234d6c5caef2e28ee'
@@ -25,6 +25,11 @@ def paired_counts(reference, dura, candidate, mask):
     return dict(count=int(mask.sum()), dura_matches=int((mask & before).sum()),
                 candidate_matches=int((mask & after).sum()),
                 repairs=int((mask & ~before & after).sum()), damages=int((mask & before & ~after).sum()))
+
+
+def masked_mean(values, mask):
+    # N607's NumPy bridge can reject ndarray even when NumPy itself is loaded.
+    return float(values[torch.tensor(mask.tolist(), dtype=torch.bool)].mean())
 
 
 @torch.no_grad()
@@ -97,7 +102,7 @@ def main():
                 raise AssertionError('Paired count identity violated')
             counts['group'] = label
             for metric in ('dura_nmse', 'candidate_nmse', 'candidate_delta', 'dura_kl', 'candidate_kl'):
-                counts[metric] = float(observed[metric][torch.from_numpy(mask)].mean())
+                counts[metric] = masked_mean(observed[metric], mask)
             groups.append(counts)
         results.append(dict(source_view=view, count=len(ix), groups=groups))
     out = args.root / 'runs' / RUN
