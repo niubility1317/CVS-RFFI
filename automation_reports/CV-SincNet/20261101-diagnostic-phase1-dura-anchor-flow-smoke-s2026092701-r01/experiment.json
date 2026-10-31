@@ -1,0 +1,160 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-phase1-dura-anchor-flow-smoke-s2026092701-r01",
+  "group_id": "phase1-frozen-dura-anchor-flow-smoke",
+  "display_name": "Phase1 冻结恢复器锚定生成轨迹真实权重检查",
+  "description": "真实冻结 Phase1 DURA 与 Tri-SIG-TIME SSL，使用两条 L_s 源训练 IQ 验证锚定轨迹初始恒等、梯度和严格重载。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "anchored-flow",
+    "source-only",
+    "smoke"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261101-diagnostic-phase1-dura-trisig-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发更强星地恢复网络并严格限定 Phase1 地面训练、测试与 Tri-SIG-TIME SSL 基座。",
+  "code": {
+    "commit": "55476b9cb115d33d3dd4b6cc65437509459c85af",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch CPU only, original Phase1 frozen Tri-SIG-TIME release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-phase1-dura-anchor-flow-smoke-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/anchor_source_smoke.py",
+      "experiments/pamf_phase1_flow/anchor_flow.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Two source R07 L_s clean/received IQ pairs; native DURA computed from received only",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "none",
+    "actual_training_labels": "One generator smoke step; no TX labels, U_s IQ, V or test IQ",
+    "augmentation": "Original Phase1 source view01"
+  },
+  "permissions": {
+    "regime": "Two L_s source IQ records; frozen Phase1 DURA and Tri-SIG-TIME SSL",
+    "query_use": "No test or V access",
+    "external_method_exception": null,
+    "claim_scope": "Two-record source numerical smoke, no accuracy or generalization claim"
+  },
+  "checkpoint": {
+    "initialization": "Phase1 native frozen DURA E20/4940 and Tri-SIG-TIME SSL E50/11100; new zero-output random field",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "Original frozen DURA release 47c264286ca689f060a3f36aafb763fe209a6f06; both original source role contracts",
+    "provenance_verdict": "Validated Phase1 source-only checkpoints; no target-trained weights",
+    "selection_rule": "Fixed source rows, one numerical smoke update; no evaluation or candidate ranking"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-anchor-smoke",
+    "gpu_policy": "CPU2/0GPU, real Phase1 source checkpoints",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-dura-anchor-flow-smoke-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-dura-anchor-flow-smoke-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.anchor_source_smoke --root /home/szu2070436088/2510044040/CV-SincNet --commit 55476b9cb115d33d3dd4b6cc65437509459c85af",
+    "stop_rule": "Wrong checkpoint provenance, nonfinite result or gradient, frozen state change, strict reload mismatch or collision stops with preserved log; no automatic retry"
+  },
+  "expected_artifacts": [
+    "complete.json",
+    "field-smoke.pt",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "zero-field anchor identity error",
+      "IQ and semantic field gradient norms",
+      "strict checkpoint reload and finite frozen-F inference"
+    ],
+    "dimensions": [
+      "two original L_s source records"
+    ],
+    "prediction_ref": "source smoke only",
+    "scorer_ref": "anchor_source_smoke.py",
+    "targets_ref": "No target performance claim"
+  },
+  "notes": [
+    "源 DURA 原生恢复在预先固定的两源视图中对 Tri-SIG clean 判断保持一致的比例分别约 95.90%／96.09%，是源内一致性而非 TX 准确率。",
+    "流模型以冻结 DURA 输出±固定噪声为起点，四步速度场以接收 IQ 为条件；零输出初始化时两条轨迹均值保持原 DURA 输出。",
+    "真实两个源 L_s 受扰样本，不读取 U_s IQ、TX 标签、V 或测试 IQ；一次检查性质的 field 优化，旧 G 与 F 永久冻结。",
+    "验证源码／路径、固定 release、源契约、真实梯度与严格重载，仅为数值可行性，不能推断星地性能。",
+    "此设计时已有 Phase1 开发测试结果被研究过程观察；未来如沿用该测试集必须披露不是独立盲测。"
+  ],
+  "rows": [
+    {
+      "row_id": "source_smoke",
+      "method": "DURA-anchored conditional trajectories, fixed four steps and two antithetic paths",
+      "purpose": "Test source-only numerical compatibility and frozen-model gradients",
+      "config_ref": "experiments/pamf_phase1_flow/anchor_source_smoke.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/anchor_source_smoke.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026110112,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Two fixed L_s; generator init 2026092701 and source perturbation 2026110112",
+      "k": null,
+      "scenario": "Phase1 source view01, first two L_s nonclean",
+      "optimizer": "AdamW for a single smoke step",
+      "lr": 0.0003,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Two source records, one generator update and strict reload, no target IQ",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-dura-anchor-flow-smoke-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-dura-anchor-flow-smoke-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.anchor_source_smoke --root /home/szu2070436088/2510044040/CV-SincNet --commit 55476b9cb115d33d3dd4b6cc65437509459c85af",
+      "expected_artifacts": [
+        "complete.json",
+        "field-smoke.pt",
+        "stdout.log"
+      ]
+    }
+  ],
+  "registered_at": "2026-10-31T18:49:51+00:00"
+}
