@@ -3,7 +3,7 @@
 - run_id：`20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02`
 - group_id：`phase3-independent-restoration-source-cost`；类别：`diagnostic`；阶段：`Phase3`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -32,3 +32,8 @@
 ## 固定技术恢复
 
 r01独立poststate为FAILED：真实smoke误解包DURA生产接口返回值，0成本计时/0optimizer/0target，旧root保留。实际47c InferenceEngine内部验证valid后只返回网络输出，reader=None时(restored_IQ,)；本r02取[0]，与既有Phase3缓存_restore一致。新root/新执行commit，所有模型、512源ID/G10、归一化、损失、96步、阈值和权限保持。直接问题一次针对性P0P1 PASS；首步真实smoke后自动继续完整成本矩阵，无新性能承诺。
+
+
+## 实际完整源结果
+
+VERIFIED / ANALYZED_SOURCE_COST_ONLY。真实2Ls smoke和固定96步完整通过，权重更新/target0。纯IQ resident步骤128.642678→31.555337ms（减少75.470553%），实际F0指导172.115650→69.454961ms（减少59.646342%）；两目标各3/3块更快、预定成本条件PASS。独立96时序/512ID与归一化/完整计数复算差0、新NN0。未训练新G，不认证质量或同质量全训练提速。r01单输出适配失败保留，r02直接修复；默认和完整目标保持。完整数据、成本及未捕获liveGPU的限制见analysis.md/results.json/independent_check.json。

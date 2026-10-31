@@ -20,7 +20,7 @@
   "replaces_run_id": "20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r01",
   "authorization": "User20261101:independentPhase3restorer/majorarchitecturechange/scratchsingle30;explicitretainoriginalLsUs/OEonlyfrozendiagnostic;sourceFguidanceallowed/noTX-targettraining/defaultunchanged",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "b19c2ef6d9b75c5afecbafb4ecd3d44716e73c31",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Torch2.1/NumPy2; FP32 TF32off CPUthreads2; actual originalTriSIGSSL F0 base3ff8/50-11100 and DURA47c runtime",
     "cwd": "releases/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02-release"
@@ -87,7 +87,7 @@
     "remote_run_root": "runs/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02",
     "remote_log_root": "runs/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02/logs",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02",
-    "launch_command": "python -u -m experiments.pamf_phase3_restoration.cost_probe run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --inputs RELEASE/inputs.json",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.cost_probe run --root /home/szu2070436088/2510044040/CV-SincNet --commit b19c2ef6d9b75c5afecbafb4ecd3d44716e73c31 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02-release/inputs.json",
     "stop_rule": "BadoriginalsourceorF0-R69ancestry/ID-order/canonicalG10reproduction/nonfinite/statechange/gradientcap-or-VJP/missingrealLs-smoke/collision/namespace-load/actualcounts:preservefailedrun/noautoretry/nootherownerstop. CostthresholdFAILonlyscientificresult/no goalcompletion."
   },
   "expected_artifacts": [
@@ -143,7 +143,7 @@
       "budget_ref": "OneGPU/CPU2/96zero-updateB256steps(24warm72timed)/TF-R69ref12290each/F0features12806inclsmoke6+cache512+guided12288/F0head4/R69productionlogical2/0optimizer-TX-OE-V-target",
       "output_root": "runs/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02",
       "log_path": "runs/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02/logs/worker.log",
-      "command": "python -u -m experiments.pamf_phase3_restoration.cost_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --inputs RELEASE/inputs.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.cost_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --commit b19c2ef6d9b75c5afecbafb4ecd3d44716e73c31 --inputs /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02/inputs.json",
       "expected_artifacts": [
         "launch.json",
         "inputs.json PRIVATE_RUNTIME",

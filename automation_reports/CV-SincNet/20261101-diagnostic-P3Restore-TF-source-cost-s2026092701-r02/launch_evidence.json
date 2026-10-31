@@ -1,0 +1,61 @@
+{
+  "status": "ANALYZED",
+  "external_state": "VERIFIED_SOURCE_COST_COMPLETE",
+  "execution_commit": "b19c2ef6d9b75c5afecbafb4ecd3d44716e73c31",
+  "controller_PID": 2124791,
+  "worker_PID": 2124809,
+  "GPU": 4,
+  "admission": {
+    "GPU": 4,
+    "free_memory_MB": 23189,
+    "existing_compute_PIDs": 1
+  },
+  "controller_at_submit_live_CWD_cmdline_verified": true,
+  "worker_runtime_header_PID_CWD_argv_CUDA_verified": true,
+  "owned_terminal_PID_absence_verified": true,
+  "worker_log_header_PASS_result_sequence_verified": true,
+  "live_worker_proc_snapshot_captured": false,
+  "live_nvidia_GPU_PID_snapshot_captured": false,
+  "GPU_execution_artifact_verified": true,
+  "GPU_name": "NVIDIA GeForce RTX 3090",
+  "resident_system_peak_allocated_bytes": 1518903296,
+  "archive_sha_match": true,
+  "remote_compile": true,
+  "real_Ls_smoke": {
+    "status": "PASS",
+    "real_L_s": 2,
+    "paired_G10_received": true,
+    "TF_identity": true,
+    "actual_original_F0_input_VJP": true,
+    "F0_default_head": true,
+    "output_gradient_nonzero": true,
+    "gradient_norms": {
+      "TF": 3.280764579772949,
+      "DURA_reference": 0.9352568984031677
+    },
+    "actual_input_gradient_cap": 0.5,
+    "native_production_DURA_match": true,
+    "models_unchanged": true,
+    "counts": {
+      "F0_feature_rows": 6,
+      "F0_head_rows": 4,
+      "TF_rows": 2,
+      "DURA_reference_rows": 2,
+      "DURA_production_logical_rows": 2
+    },
+    "TX_labels_read": 0,
+    "OE_reads": 0,
+    "V_reads": 0,
+    "target_inputs": 0,
+    "optimizer_updates": 0,
+    "seconds": 1.8030074662528932
+  },
+  "independently_verified_timing_rows": 96,
+  "independently_verified_source_records": 512,
+  "cost_primary": "PASS",
+  "scientific_scope": "Zero-update step cost only/no equal-quality or actualtraining performance claim",
+  "optimizer_updates": 0,
+  "target_inputs": 0,
+  "default_DURA_changed": false,
+  "goal_complete": false
+}
