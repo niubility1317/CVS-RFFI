@@ -1,0 +1,157 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-phase1-boundary-oracle-s2026092701-r01",
+  "group_id": "phase1-source-boundary-reachability",
+  "display_name": "Phase1 源训练样本受限分类边界可达性反事实",
+  "description": "对固定源样本中 DURA 与 clean 基座判断不一致的记录，研究受限波形改动是否能到达 clean 判断。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "source-only",
+    "oracle",
+    "boundary"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261101-diagnostic-phase1-anchor-source-paired-s2026092701-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发更强星地恢复网络并严格限定 Phase1 地面训练、测试与 Tri-SIG-TIME SSL 基座。",
+  "code": {
+    "commit": "68b084737052726ae536f24bab87cace608c81b5",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch CPU only, original Phase1 frozen Tri-SIG-TIME release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-phase1-boundary-oracle-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/boundary_source_oracle.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Fixed Phase1 source clean and precomputed original DURA native IQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "none",
+    "actual_training_labels": "No TX labels; source clean teacher pseudo-class is privileged diagnostic only",
+    "augmentation": "Source views 01 and 20"
+  },
+  "permissions": {
+    "regime": "Phase1 source clean and DURA native, frozen Tri-SIG-TIME only",
+    "query_use": "No V or test access",
+    "external_method_exception": null,
+    "claim_scope": "Source-only target-directed waveform counterfactual; not deployable or accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Fixed original DURA native source IQ and frozen Tri-SIG-TIME SSL E50",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01/DURA_default-{1,20}.npz"
+    ],
+    "contract_check_ref": "Exact field metadata, DURA SHA256 and source ID/native IQ alignment",
+    "provenance_verdict": "Exact Phase1 original DURA and trained anchored field",
+    "selection_rule": "Fixed source IDs and original teacher mismatch; no model update or target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-boundary-oracle",
+    "gpu_policy": "CPU2/0GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-boundary-oracle-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-boundary-oracle-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-diagnostic-phase1-boundary-oracle-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.boundary_source_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit 68b084737052726ae536f24bab87cace608c81b5",
+    "stop_rule": "Source/checkpoint mismatch, nonfinite output or budget violation stops with preserved log"
+  },
+  "expected_artifacts": [
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "initial teacher disagreements",
+      "target reached by epsilon",
+      "normalized IQ perturbation",
+      "IQ NMSE before/after"
+    ],
+    "dimensions": [
+      "fixed source views 01/20; same 512 IDs",
+      "source scene, state and role",
+      "2% and 5% source-clean L2 radii"
+    ],
+    "prediction_ref": "aggregate source oracle only",
+    "scorer_ref": "boundary_source_oracle.py",
+    "targets_ref": "source teacher class, not TX truth"
+  },
+  "notes": [
+    "固定 512 个 Phase1 源训练 ID（L128/U384），在源视图 01 与 20 各一次；仅处理 DURA 基座判断与 clean 基座判断不一致的记录。",
+    "每条记录以 clean 基座类别为目标，DURA 输出为起点，输入梯度下降 12 步；L2 范数分别约束在 clean L2 的 2% 和 5%，步长为半径的四分之一。",
+    "clean 目标类别及 clean 范数在实际推理中不可用，因此这是带源数据特权信息的不可部署反事实，并非新模型或准确率上界。",
+    "冻结 Tri-SIG-TIME，不更新模型；只读原 DURA native IQ 与源 clean、scene、state、role，不读取 TX、V 或测试 IQ。",
+    "源样本已用于训练；此前 Phase1 开发测试已观察。目标到达可由非物理扰动产生，不代表语义保真或泛化。"
+  ],
+  "rows": [
+    {
+      "row_id": "source_oracle",
+      "method": "Frozen teacher target-directed projected input gradients",
+      "purpose": "Check whether small source-only targeted perturbations can cross difficult teacher decision boundaries",
+      "config_ref": "experiments/pamf_phase1_flow/boundary_source_oracle.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/boundary_source_oracle.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source rows and views; deterministic fixed model",
+      "k": null,
+      "scenario": "Phase1 source views 01 and 20",
+      "optimizer": "input-only normalized gradient, 12 steps per epsilon; frozen network",
+      "lr": "radius/4 per step",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512 IDs x 2 views; teacher-disagreement rows only; 2 and 5 percent L2 budgets",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-boundary-oracle-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-boundary-oracle-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.boundary_source_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit 68b084737052726ae536f24bab87cace608c81b5",
+      "expected_artifacts": [
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "registered_at": "2026-10-31T20:18:09+00:00"
+}
