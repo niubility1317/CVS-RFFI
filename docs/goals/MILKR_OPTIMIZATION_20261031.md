@@ -59,3 +59,7 @@ goal保持ACTIVE。没有候选满足最新四路条件与原+5pp要求；不能
 - S1 Q0较原版+27.024pp，query接入DURA增量+25.389pp；均值验收True，每格验收False。
 
 R13是否扩展：False。完整四路/各K/N及同head R12C控制见sourcebridge r11报告和result_summary.json。该单RX证据不代表goal完成；不进行目标反馈调参或选择性重跑。
+
+### R14待验证机制
+
+R13仅映射raw仍残留单侧失配。新R14拟合source-only配对CCA，两路各自编码到共同空间，严格Q0只raw/Q1只G，无混合query。rank由留一sourceRX的四路H事前门槛选择；未通过则source-only停止、目标0。通过才P01首RX全部K/N/四路80行。没有降低用户+5pp与Q1>Q0要求。
