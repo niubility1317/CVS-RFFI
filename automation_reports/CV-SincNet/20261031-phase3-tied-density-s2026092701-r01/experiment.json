@@ -1,0 +1,204 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-tied-density-s2026092701-r01",
+  "group_id": "pamf-phase3-tied-density",
+  "display_name": "PAMF第三阶段：多模态共同方差密度比",
+  "description": "Fixed original means/weights/whitener with a common original pooled source variance in both known and OE likelihoods; source-V-only threshold calibration.",
+  "kind": "cvs",
+  "stage": "Phase3-tied-density-three-DURA-development",
+  "aliases": [
+    "多模态共同方差密度比"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "tied_density",
+    "all_DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-fixed-P1-tied-variance-ratio",
+  "parent_run_ids": [
+    "20261031-phase3-class-density-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "9a80e2bef7eee4d8c2ec4d4725e0ca552552443b",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-tied-density-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.star_tied_density_launch"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_TIED_DENSITY_PLAN_20261031.md",
+      "configs/pamf_phase3_selected_baseline_20261031.json",
+      "configs/pamf_phase3_targets_20261029.json"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig original source L/V physical roles, Full WiSig sourceOE21, and source heldout novel3; target U/Q not opened",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Original source known90/OE32 aggregate state and genuineDURA P1 signal160/default-head prediction caches. Only the new scoring distribution uses common pooled_L_variance; original arrays unchanged.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 离开 Phase1 后统一星地观测",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-class-density-s2026092701-r01/predict/{known,novel}_predictions.npz:ids; targets/{clean_DURA,star_DURA}/predictions.npz:ids",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_new": 0,
+      "source_OE_new": 0,
+      "source_Us_new": 0,
+      "source_V_knownrisk": 27000,
+      "source_novel_truthside_only": 3150,
+      "cross_clean_Q": 864,
+      "cross_star_Q": 864,
+      "target_U_new": 0,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Original source L6300/OE6134 fit inherited; V27000 extra known calibration labels; NV3150 truthside. U384 unread, Q864/03-15 disjoint from U/source. clean/star same physical records, historical development exposure; unchanged VALIDATED_ONCE.",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json; MIX01 seed3001/4001 receiver2027 sameformula"
+  },
+  "permissions": {
+    "regime": "Source-only fixed tied-variance score operator; no new learned density parameters, neural changes, targetTX/K/quota/query fitting or clean learning.",
+    "query_use": "Actual3CP synthetic2 smoke first; freeze source aggregates and fixed shared variance policy; Vonly2new6tau+2oldexact; freeze all24tau; all4x3DURApredictions; independentCPU3truth joins. Source scientific failure still tests allQ.",
+    "external_method_exception": null,
+    "claim_scope": "One exposed developmentRX/modelseed; sourceV used calibration, sourceNV/Q historical; high unknown missing19-15 NA. No formalblind or targetDA/discovery/REG claim, fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original TriSIGTIME SSL F0 E50/11100/default6, source-only r03 dc01a402 independent signal334721, DURA R69 E20/4940 and original4af density160/thresholds. No new students/target adapted ancestors.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original contract392005/VALIDATED_ONCE F0/G/r03/cache identities inherited unchanged; no new checkpoint or fitted density parameters.",
+    "selection_rule": "Uniqueprimary tied_predicted_ratio; common s=original positive pooled_L_variance, fixed means/weights/whitener; conditional15 equal modes routed by original F0 c. No s search; sourceknown12 calibration only."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-tied-density-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-tied-density-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-tied-density-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_tied_density_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_tied_density_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-tied-density-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Oneproducer GPU synthetic3CPsmoke, >=4096MiBfree, <=2newownworkers/card. No new realNNforward. IndependentCPUscorer CUDAempty; foreignwork preserved.",
+    "stop_rule": "Illegalroles/ancestry, invalid s/nonfinite, outputcollision or unusable prediction: preserve, no automatic restart/overwrite/partial truth. UNKNOWN reconcile originalPID/root. Source scientific failure doesnotcancelQ."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/*.log",
+    "predict/{complete,smoke}.json",
+    "predict/models/density.npz",
+    "predict/models/complete.json",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/{known,novel}_predictions.npz",
+    "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro R_U",
+      "H-score",
+      "macro C_K",
+      "original sameP1 F0 closed minus open AK",
+      "AUROC",
+      "OSCR AUC",
+      "knowncorrect rejected",
+      "source novel crossRX/day geometry"
+    ],
+    "dimensions": [
+      "oldpooled/oldpredicted/tiedpooled/tiedpredicted",
+      "source_seenRX/clean_DURA/star_DURA",
+      "old6/unknown3TX",
+      "source5RX3day/devRX24-1",
+      "MIX6scene and complete TX coverage"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-tied-density-s2026092701-r01/predict",
+    "scorer_ref": "experiments/pamf_phase3_open_world/star_tied_density_score.py",
+    "targets_ref": "Latest20261031 threeconditions allDURA; condition-specific targets remainclean95/star90, CK90/AKloss2pp. FullzeroTXlabelDA/discovery/futureanonymousREG stillrequired.",
+    "primary": [
+      "macro A_K",
+      "macro R_U",
+      "macro H-score",
+      "CK90, cleanRU95/starRU90, sameDURAoriginalF0closedminusAK<=2pp",
+      "sourceknown12/maincoverage",
+      "primary starAK/RUnotbelowselectedpredicted"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "tied-density-s2026092701",
+      "method": "PAMF-OW fixed common-variance mixture density ratio",
+      "purpose": "Uniqueprimary tied_predicted_ratio versus exact selected controls; tiedpooled diagnostic.",
+      "config_ref": "docs/PAMF_PHASE3_TIED_DENSITY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-tied-density-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026104001
+      },
+      "seed_notes": "No new stochastic fitting; inherited GMMseed2026103019/G10receiver2027scene2026103001channel2026104001; no new channel.",
+      "k": null,
+      "scenario": "Source seenRX starP1 plus paired crossRX cleanDURA/starDURA",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NN/newrealF0Gsignal/sourceIQ/U0; actualCPsynthetic2each. New variance/densityparameters0, Vonly12newtau and12oldexact=24/192B. Ancestral costs inherited; density11 364340B and deployedNN834665; no source rowbank.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-tied-density-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-tied-density-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_tied_density_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-tied-density-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/*.log",
+        "predict/{complete,smoke}.json",
+        "predict/models/density.npz",
+        "predict/models/complete.json",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/{known,novel}_predictions.npz",
+        "predict/targets/{clean_DURA,star_DURA}/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "GoalACTIVE; source-only candidate, no targetDA/discovery/REG.",
+    "Selected baseline and control unchanged; new common variance scoring distribution, original density arrays unchanged, no fitted s.",
+    "All three genuine DURA caches; actual CP smoke first, all predictions before3truth, source failure doesnotcancelQ.",
+    "Historical sourceNV/devQ, oneRXseed, source day overlap, high missing unknown19-15 NA; formal RX unread."
+  ],
+  "registered_at": "2026-10-31T01:01:23+00:00"
+}
