@@ -1,0 +1,481 @@
+{
+  "status": "PASS",
+  "source_cases": 10240,
+  "source_packets": 512,
+  "draws": 20,
+  "source_moment_rows": 63000,
+  "max_abs_aggregate_error": 0.0,
+  "max_abs_per_dimension_aggregate_error": 7.616459074544224e-09,
+  "source_geometry_floor": 0.002340572395601796,
+  "CG16_to64_max_abs": {
+    "DURA": {
+      "nmse": 7.450580596923828e-09,
+      "feature_cosine_distance": 2.384185791015625e-07,
+      "feature_standardized_mse": 1.4901161193847656e-07,
+      "clean_decision_agreement": 0.0
+    },
+    "MSAT": {
+      "nmse": 1.4901161193847656e-08,
+      "feature_cosine_distance": 2.384185791015625e-07,
+      "feature_standardized_mse": 1.1175870895385742e-07,
+      "clean_decision_agreement": 0.0
+    }
+  },
+  "paired_agreement_changes": {
+    "ALL": {
+      "DURA_v1": {
+        "repairs": 76,
+        "damage": 41,
+        "net": 35,
+        "delta_pp": 0.341796875,
+        "IQ_nmse_delta": -0.0019366782283738865,
+        "cos_delta": -0.0005666543380357325
+      },
+      "MSAT": {
+        "repairs": 42,
+        "damage": 38,
+        "net": 4,
+        "delta_pp": 0.03906249999999778,
+        "IQ_nmse_delta": -0.0012632906227176167,
+        "cos_delta": 0.00013192016631364823
+      }
+    },
+    "clean": {
+      "DURA_v1": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0,
+        "delta_pp": 0.0,
+        "IQ_nmse_delta": -2.4255140200079533e-05,
+        "cos_delta": -2.6379264254144208e-05
+      },
+      "MSAT": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0,
+        "delta_pp": 0.0,
+        "IQ_nmse_delta": -2.8304634651334706e-05,
+        "cos_delta": -2.101873430441723e-05
+      }
+    },
+    "practical_high": {
+      "DURA_v1": {
+        "repairs": 5,
+        "damage": 3,
+        "net": 2,
+        "delta_pp": 0.14015416958654825,
+        "IQ_nmse_delta": -0.0025889898158662733,
+        "cos_delta": -0.0010364256543384704
+      },
+      "MSAT": {
+        "repairs": 4,
+        "damage": 1,
+        "net": 3,
+        "delta_pp": 0.21023125437981127,
+        "IQ_nmse_delta": -0.0018201250008076687,
+        "cos_delta": -0.0002470717784317541
+      }
+    },
+    "practical_mid": {
+      "DURA_v1": {
+        "repairs": 15,
+        "damage": 5,
+        "net": 10,
+        "delta_pp": 0.6738544474393593,
+        "IQ_nmse_delta": -0.002355815030193845,
+        "cos_delta": -0.0007624069474778085
+      },
+      "MSAT": {
+        "repairs": 6,
+        "damage": 3,
+        "net": 3,
+        "delta_pp": 0.20215633423180668,
+        "IQ_nmse_delta": -0.0012260641934809205,
+        "cos_delta": 0.0003281905243017603
+      }
+    },
+    "practical_low_suburban": {
+      "DURA_v1": {
+        "repairs": 10,
+        "damage": 5,
+        "net": 5,
+        "delta_pp": 0.34129692832765013,
+        "IQ_nmse_delta": -0.001914645776982219,
+        "cos_delta": -0.00025910391335601284
+      },
+      "MSAT": {
+        "repairs": 8,
+        "damage": 8,
+        "net": 0,
+        "delta_pp": 0.0,
+        "IQ_nmse_delta": -0.0006257942015521305,
+        "cos_delta": 0.0007473187641885907
+      }
+    },
+    "practical_high_urban": {
+      "DURA_v1": {
+        "repairs": 13,
+        "damage": 6,
+        "net": 7,
+        "delta_pp": 0.4861111111111094,
+        "IQ_nmse_delta": -0.0029477884589545686,
+        "cos_delta": -0.0011327234407265982
+      },
+      "MSAT": {
+        "repairs": 7,
+        "damage": 1,
+        "net": 6,
+        "delta_pp": 0.4166666666666652,
+        "IQ_nmse_delta": -0.002267880636100017,
+        "cos_delta": -0.00039889261954360536
+      }
+    },
+    "practical_mid_urban": {
+      "DURA_v1": {
+        "repairs": 14,
+        "damage": 12,
+        "net": 2,
+        "delta_pp": 0.14194464158977516,
+        "IQ_nmse_delta": -0.0025636111608375264,
+        "cos_delta": -0.0005965790400021122
+      },
+      "MSAT": {
+        "repairs": 10,
+        "damage": 10,
+        "net": 0,
+        "delta_pp": 0.0,
+        "IQ_nmse_delta": -0.002010068590093452,
+        "cos_delta": 0.0002194072355861948
+      }
+    },
+    "practical_low_urban": {
+      "DURA_v1": {
+        "repairs": 19,
+        "damage": 10,
+        "net": 9,
+        "delta_pp": 0.6267409470752106,
+        "IQ_nmse_delta": -0.0013515798400628347,
+        "cos_delta": -0.00020836169175118789
+      },
+      "MSAT": {
+        "repairs": 7,
+        "damage": 15,
+        "net": -8,
+        "delta_pp": -0.5571030640668551,
+        "IQ_nmse_delta": -0.0010166309571978675,
+        "cos_delta": 0.000292497466533629
+      }
+    }
+  },
+  "AUROC_for_Fclean_disagreement": {
+    "ALL": {
+      "DURA_v1": {
+        "count": 10240,
+        "disagreements": 497,
+        "cosine": 0.9787327062033496,
+        "standardized": 0.980370161025684
+      },
+      "MSAT": {
+        "count": 10240,
+        "disagreements": 396,
+        "cosine": 0.9846332586326492,
+        "standardized": 0.9860852018765469
+      },
+      "DURA_oracle16": {
+        "count": 10240,
+        "disagreements": 462,
+        "cosine": 0.9794614688509146,
+        "standardized": 0.9790637875113228
+      },
+      "DURA_oracle64": {
+        "count": 10240,
+        "disagreements": 462,
+        "cosine": 0.9794615795331688,
+        "standardized": 0.9790637875113228
+      },
+      "MSAT_oracle16": {
+        "count": 10240,
+        "disagreements": 392,
+        "cosine": 0.9835029437241997,
+        "standardized": 0.9853513196505247
+      },
+      "MSAT_oracle64": {
+        "count": 10240,
+        "disagreements": 392,
+        "cosine": 0.98350320276364,
+        "standardized": 0.9853513196505247
+      }
+    },
+    "clean": {
+      "DURA_v1": {
+        "count": 1579,
+        "disagreements": 0,
+        "cosine": null,
+        "standardized": null
+      },
+      "MSAT": {
+        "count": 1579,
+        "disagreements": 0,
+        "cosine": null,
+        "standardized": null
+      },
+      "DURA_oracle16": {
+        "count": 1579,
+        "disagreements": 0,
+        "cosine": null,
+        "standardized": null
+      },
+      "DURA_oracle64": {
+        "count": 1579,
+        "disagreements": 0,
+        "cosine": null,
+        "standardized": null
+      },
+      "MSAT_oracle16": {
+        "count": 1579,
+        "disagreements": 0,
+        "cosine": null,
+        "standardized": null
+      },
+      "MSAT_oracle64": {
+        "count": 1579,
+        "disagreements": 0,
+        "cosine": null,
+        "standardized": null
+      }
+    },
+    "practical_high": {
+      "DURA_v1": {
+        "count": 1427,
+        "disagreements": 14,
+        "cosine": 0.913658881811748,
+        "standardized": 0.9199272065514104
+      },
+      "MSAT": {
+        "count": 1427,
+        "disagreements": 12,
+        "cosine": 0.9813898704358068,
+        "standardized": 0.9835689045936395
+      },
+      "DURA_oracle16": {
+        "count": 1427,
+        "disagreements": 12,
+        "cosine": 0.9337455830388692,
+        "standardized": 0.9176089517078916
+      },
+      "DURA_oracle64": {
+        "count": 1427,
+        "disagreements": 12,
+        "cosine": 0.9337455830388692,
+        "standardized": 0.9176089517078916
+      },
+      "MSAT_oracle16": {
+        "count": 1427,
+        "disagreements": 9,
+        "cosine": 0.9486757561510735,
+        "standardized": 0.9703024604293998
+      },
+      "MSAT_oracle64": {
+        "count": 1427,
+        "disagreements": 9,
+        "cosine": 0.9486757561510735,
+        "standardized": 0.9703024604293998
+      }
+    },
+    "practical_mid": {
+      "DURA_v1": {
+        "count": 1484,
+        "disagreements": 37,
+        "cosine": 0.9732904985151012,
+        "standardized": 0.9719830404004557
+      },
+      "MSAT": {
+        "count": 1484,
+        "disagreements": 21,
+        "cosine": 0.987012987012987,
+        "standardized": 0.989031019106207
+      },
+      "DURA_oracle16": {
+        "count": 1484,
+        "disagreements": 27,
+        "cosine": 0.9695976003457129,
+        "standardized": 0.9747070337324284
+      },
+      "DURA_oracle64": {
+        "count": 1484,
+        "disagreements": 27,
+        "cosine": 0.9695976003457129,
+        "standardized": 0.9747070337324284
+      },
+      "MSAT_oracle16": {
+        "count": 1484,
+        "disagreements": 18,
+        "cosine": 0.9791571926633318,
+        "standardized": 0.9804077611035319
+      },
+      "MSAT_oracle64": {
+        "count": 1484,
+        "disagreements": 18,
+        "cosine": 0.9791571926633318,
+        "standardized": 0.9804077611035319
+      }
+    },
+    "practical_low_suburban": {
+      "DURA_v1": {
+        "count": 1465,
+        "disagreements": 48,
+        "cosine": 0.9634791813690896,
+        "standardized": 0.9651258527405316
+      },
+      "MSAT": {
+        "count": 1465,
+        "disagreements": 30,
+        "cosine": 0.9788153310104529,
+        "standardized": 0.9764924506387921
+      },
+      "DURA_oracle16": {
+        "count": 1465,
+        "disagreements": 43,
+        "cosine": 0.9704477807215517,
+        "standardized": 0.9750269845942499
+      },
+      "DURA_oracle64": {
+        "count": 1465,
+        "disagreements": 43,
+        "cosine": 0.9704477807215517,
+        "standardized": 0.9750269845942499
+      },
+      "MSAT_oracle16": {
+        "count": 1465,
+        "disagreements": 30,
+        "cosine": 0.9811382113821138,
+        "standardized": 0.9768176538908246
+      },
+      "MSAT_oracle64": {
+        "count": 1465,
+        "disagreements": 30,
+        "cosine": 0.9811382113821138,
+        "standardized": 0.9768176538908246
+      }
+    },
+    "practical_high_urban": {
+      "DURA_v1": {
+        "count": 1440,
+        "disagreements": 36,
+        "cosine": 0.9587685976574866,
+        "standardized": 0.9668803418803419
+      },
+      "MSAT": {
+        "count": 1440,
+        "disagreements": 32,
+        "cosine": 0.97802734375,
+        "standardized": 0.9835094105113636
+      },
+      "DURA_oracle16": {
+        "count": 1440,
+        "disagreements": 29,
+        "cosine": 0.9673256922212176,
+        "standardized": 0.9581856839121191
+      },
+      "DURA_oracle64": {
+        "count": 1440,
+        "disagreements": 29,
+        "cosine": 0.9673256922212176,
+        "standardized": 0.9581856839121191
+      },
+      "MSAT_oracle16": {
+        "count": 1440,
+        "disagreements": 26,
+        "cosine": 0.972989881405723,
+        "standardized": 0.9788107931672289
+      },
+      "MSAT_oracle64": {
+        "count": 1440,
+        "disagreements": 26,
+        "cosine": 0.973003481666848,
+        "standardized": 0.9788107931672289
+      }
+    },
+    "practical_mid_urban": {
+      "DURA_v1": {
+        "count": 1409,
+        "disagreements": 131,
+        "cosine": 0.9790464585647899,
+        "standardized": 0.9841773286026592
+      },
+      "MSAT": {
+        "count": 1409,
+        "disagreements": 120,
+        "cosine": 0.9754525471942074,
+        "standardized": 0.9783100594776313
+      },
+      "DURA_oracle16": {
+        "count": 1409,
+        "disagreements": 129,
+        "cosine": 0.9800569282945737,
+        "standardized": 0.9827156007751938
+      },
+      "DURA_oracle64": {
+        "count": 1409,
+        "disagreements": 129,
+        "cosine": 0.9800569282945737,
+        "standardized": 0.9827156007751938
+      },
+      "MSAT_oracle16": {
+        "count": 1409,
+        "disagreements": 120,
+        "cosine": 0.9825122834238428,
+        "standardized": 0.9855120248254461
+      },
+      "MSAT_oracle64": {
+        "count": 1409,
+        "disagreements": 120,
+        "cosine": 0.9825122834238428,
+        "standardized": 0.9855120248254461
+      }
+    },
+    "practical_low_urban": {
+      "DURA_v1": {
+        "count": 1436,
+        "disagreements": 231,
+        "cosine": 0.9699376695227317,
+        "standardized": 0.9735876847910043
+      },
+      "MSAT": {
+        "count": 1436,
+        "disagreements": 181,
+        "cosine": 0.9793753164139024,
+        "standardized": 0.9830820364949043
+      },
+      "DURA_oracle16": {
+        "count": 1436,
+        "disagreements": 222,
+        "cosine": 0.9677820324443059,
+        "standardized": 0.9693812428573548
+      },
+      "DURA_oracle64": {
+        "count": 1436,
+        "disagreements": 222,
+        "cosine": 0.9677820324443059,
+        "standardized": 0.9693812428573548
+      },
+      "MSAT_oracle16": {
+        "count": 1436,
+        "disagreements": 189,
+        "cosine": 0.9770199802276787,
+        "standardized": 0.9807707810915509
+      },
+      "MSAT_oracle64": {
+        "count": 1436,
+        "disagreements": 189,
+        "cosine": 0.9770199802276787,
+        "standardized": 0.9807707810915509
+      }
+    }
+  },
+  "default_DURA_matches_previous_source_casewise": true,
+  "new_neural_forwards": 0,
+  "new_updates": 0,
+  "TX_labels_read": 0,
+  "target_inputs": 0
+}

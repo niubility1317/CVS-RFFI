@@ -1,0 +1,166 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01",
+  "group_id": "restoration-source-learned-prior-vs-known-action-and-Fgeometry",
+  "display_name": "恢复性能源端诊断：强先验与真实信道校正、F特征误差几何",
+  "description": "原L_s/U_s冻结DURA与MSAT，分别加入真实模拟action的MAP校正，并分析源F0特征逐维标准化误差；0训练/0目标/0TX标签，不称可部署oracle或理论上限。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "frozen-learned-priors",
+    "true-action-counterfactual",
+    "F-feature-geometry",
+    "no-updates"
+  ],
+  "comparison_group_id": "DURA-MSAT-and-trueActionMAP16-64-with-source-Fvariance",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Useractivegoal:performanceprimary/groundTriSIGSSLsixeach3pp+clean;originalLsUs-only/source-simulation-and-F0-guidanceallowed/OEonlyfrozendiagnostic/majorarchitecturefreedom. This source-only mechanism diagnostic uses no optimizer or target.",
+  "code": {
+    "commit": "f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "ExistingN607CVS-RFFI Torch2.1/NumPy2;FP32 TF32off CPUthreads2;actual3ff8F0/defaulthead andfixed47cDURA runtime",
+    "cwd": "releases/20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005 Ls6300Us56700;existingR07twentytrainrealizations",
+    "representation": "ExistingR07sourceFP32clean/received andsource-simulatorAction/noise. Fixed128Ls384Us x20draws=10240;additionaloriginal63000clean F0fused160 momentrows forunlabeledmetricnormalizationonly.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "R07cache/train/physical_ids.npy roles.npy;existing20261101LUcache IDs/roles forminimumcontractmatch",
+    "label_map_ref": "No labels read; F0 clean argmax agreement is not TX accuracy",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE sourcehandles. R07complete20/63000/0TX-target. Inputaudit same63000uniqueIDset (orderdiffers),roles/RX/day samebyID;clean maxabs4.76837158203125e-7 NMSE1.7667841088968941e-15. No repeateddatahash/revalidation.",
+    "support_query_ref": "None. Source-onlyin-samplemechanismtest;63000originalLsUsforFvariance,512packetspanel20draws. No query orvalidation.",
+    "leo_config_ref": "ExistingR07sourcecache20/clean15%+sixsceneuniform85%;no new simulator observations;2.462GHz retains own identity",
+    "actual_training_labels": "No newGtraining/updates. No TX/y/V/OE/novel/target reads. F0cleanargmaxagreement onlyfrozendiagnostic/notTXaccuracy/nottrainingpseudo-labels.",
+    "augmentation": "Nonewobservations. OriginalR07fs25MHz2.462GHz/post_sync/noEQ/reflect/refSNR30/receiver2026101911/sixuniform85%clean15%;20storedtrainingdraws. NotG10MIX01."
+  },
+  "permissions": {
+    "regime": "source-only-zero-update-learned-prior-physics-counterfactual",
+    "query_use": "No target/Utarget/query/OE/V/NV/TX. Allmodelparametersfrozen;truekernel/main/image/noise usedonlysourceoracle. SourceFvariancefitmetriconly/notGoptimizer. No prototype/CE/newhead.",
+    "external_method_exception": null,
+    "claim_scope": "Identifywhetherknownphysicscanrepairfrozenlearnedpriorandwherelow globalcos hidesfeaturescale errors. Sourcein-sampleassociation,notMainperformance/newG/deployablemethod/theoreticalrecoverabilityceiling. GoalACTIVE/defaultunchanged."
+  },
+  "checkpoint": {
+    "initialization": "No newG/no optimizer. FrozenoriginalF0,defaultDURAv1 andMSATfixedfinal30. No neuralIQteacher or learnedinitialization fornewnetwork.",
+    "sources": [
+      "OriginalTriSIGSSL3ff8/main3view2026092701/defaulthead/50-11100/232993/sourceonlyoriginal392005",
+      "DefaultDURA R69 stage2fixed20-4940/sourceb2a2/runtime47c/266951 benchmarkonly",
+      "FrozenMSAT_M20 20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01/rows/MSAT_M20/training/final.pt/8720a8584803366d42d2879fb99502b8d220ac26/fixed30-7410/4249922;source-onlyFguidedoriginalLsUs",
+      "DATAONLYR07sourcecache20train-draws/63000train and20261101LUsourcecacheIDs forminimumrolecheck;no cachevalidation folder orG10receivedoptimization"
+    ],
+    "contract_check_ref": "ExistingstrictoriginalF0/DURAschema plusMSATexactarm-config-commit-final30-7410;R07sameoriginal63000IDs/roles/source5RX3day. No newdatahash/revalidation.",
+    "provenance_verdict": "Allmodelsoriginalsourceonlymatching392005;MSATF-guided/F0sourceknowledgeexplicit. Diagnostic0updates;no PCD/targetmodelteacher/V-OEtrain. DefaultDURA andMSATnotnewGancestors.",
+    "selection_rule": "Sixfixedpaths/all10240cases;16/64CG compareconvergence,notselection. No checkpoint choice ornewtrainingselectedbytarget. Sourcevariancefloor=.01meanvar or1e-10;physicalrealpriorvarfixed.01."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-learned-prior-physics",
+    "gpu_policy": "GPU4/6/7/free>=12000MiB/existingcompute<=2/addONE total<=3/own1card/thisdiagnostic1worker/globalown<=2;nootherownerchanges",
+    "remote_run_root": "runs/20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01",
+    "remote_log_root": "runs/20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.prior_physics run --root /home/szu2070436088/2510044040/CV-SincNet --commit f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrongsource/F/Gcheckpoint/IDrole/collision/nonfinite/stateupdate/unlaunchable:preservefailedrun/noautoretry/othersuntouched. No scientificqualitystop. Source2actualsmokePASSimmediatelycontinues;0targetreads/0updates."
+  },
+  "expected_artifacts": [
+    "submitted.json",
+    "smoke.json",
+    "source_records.npz PRIVATE",
+    "feature_geometry.json PRIVATE",
+    "per_dimension_errors.json PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Per-sceneIQNMSE,F0cosdistance,featurevariance-standardizedMSE andfourvariancebands,Fcleanargmaxagreement(notTXaccuracy)",
+      "DURA/MSAT vsfixedtrueActionMAP16/64CG atrealpriorvariance.01;pairedpercaseimprove/damage/convergence",
+      "Full63000sourcecleanF0variance,perdimrelativefeatureerrors,0TX-V-OE-target/modelupdates"
+    ],
+    "dimensions": [
+      "source512packetsx20draws",
+      "clean+6nativepractical",
+      "DURA-MSAT-each16and64oracle=6fixedpaths",
+      "160Ffeatures/four40dimsourcevariancebands"
+    ],
+    "prediction_ref": "Source-onlyprivate percasearrays/perdimaggregates;no targetpredictions or newG",
+    "scorer_ref": "Source metrics only/no truth;independentNumPyaggregate/convergence/paired recomputationaftercomplete"
+  },
+  "rows": [
+    {
+      "row_id": "source-prior-physics-512x20",
+      "method": "frozenDURA-MSAT-trueAction-MAP16-64",
+      "purpose": "source-onlymechanismdiagnosis",
+      "config_ref": "experiments/pamf_phase3_restoration/prior_physics.py",
+      "resolved_config_ref": "releaseinputs.json PRIVATE andstrictGcheckpointconfigs",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101911
+      },
+      "seed_notes": "No newRNG;originalR07data/augmentation/receiverseeds plusfixedsourcepanel. OriginalF0/MSAT/DURAseed disclosed.",
+      "k": null,
+      "scenario": "source-clean+sixpractical-R07",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0updates;source2smoke+63000F0sourcecleanmomentrows+512sourceFcleanreferences+10240casesx6paths;DURA/MSATeach10240rows;trueAction16/64eachbase;allscenes retained",
+      "output_root": "runs/20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01",
+      "log_path": "runs/20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.prior_physics worker --root /home/szu2070436088/2510044040/CV-SincNet --commit f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "submitted.json",
+        "smoke.json",
+        "source_records.npz PRIVATE",
+        "feature_geometry.json PRIVATE",
+        "per_dimension_errors.json PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "PerformancegoalstillgroundTriSSLMain6each3pp+clean/efficiencysecondary;priorlargerMSATfullmainfailedandbothrowsclosed. ThisstudyisnotnewGtrainingorprimarytest.",
+    "PrevioussourceknownActionwhite/globalmeansGaussianpriorweakerDURA/64to128CG0change;thisnewcounterfactualusesstronglearnedpriorsinstead. Doesnotproveestimatedchannelorprioristheonlycause.",
+    "Fixedrealpriorvariance.01 chosenfromsourceMSATfinalIQNMSE.0185xunitrealpower.5~.0093 order,notfromtarget. No per-recordcleanoraclevariance/gridsearch.",
+    "Featurepopulationvarianceoveroriginal63000cleanwithoutTX/grouping;floor=.01meanvarianceor1e-10. Fourvariancequartilesonlystatisticalbands/noassumedbranchsemantics/identityprototypes.",
+    "3focusedchecksPASS;one P0P1 beforelaunch. OneGitidentity/archiveSHA/compile/preflight/source2smoke/poststate only. Sourcein-sample outcomescannotestablishunseenRXgeneralizationorinformationlimit."
+  ],
+  "registered_at": "2026-10-31T20:11:38+00:00"
+}

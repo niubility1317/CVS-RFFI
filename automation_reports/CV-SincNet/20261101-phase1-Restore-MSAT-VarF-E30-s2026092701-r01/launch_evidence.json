@@ -1,0 +1,26 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "3729a7135728500ab6013894ac060d85e3db8a67",
+  "P0P1": "PASS",
+  "focused_checks": 6,
+  "actual_source_smoke": "PASS",
+  "strict_E0_reload": "PASS",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "PID_CWD_cmdline_GPU_and_log_growth_checked": true,
+  "admission": {
+    "GPU": 7,
+    "free_memory_MB": 24124,
+    "existing_compute_PIDs": 0
+  },
+  "source_feature_variance_run": "20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01",
+  "source_only_Fmoments": 63000,
+  "geometry_uses_G_outputs": false,
+  "newG_initialization": "scratch",
+  "budget": "single30/7410/B256/sourceoriginal63000",
+  "current_stage": "SOURCE_TRAINING",
+  "new_performance_result_available": false,
+  "default_DURA_changed": false,
+  "goal_complete": false,
+  "private_evidence_ref": "local_artifacts/pamf_phase3_restoration/20261101-phase1-Restore-MSAT-VarF-E30-s2026092701-r01/observations.jsonl"
+}

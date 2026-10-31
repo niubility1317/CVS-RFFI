@@ -103,3 +103,19 @@ VERIFIED / ANALYZED。原 L_s6300/U_s56700 的完整 G10 MIX01 P0-clean 配对�
 原raw clean86.538690%，3pp门槛83.538690%。TF_M20六景0/6、clean86.642262%；MSAT_M20六景0/6、clean86.426786%（较raw下降0.111905pp）。MSAT六景为77.389286/75.841667/74.149405/76.324405/70.504167/65.055357%，全部低于DURA；低档城区相对匹配TF提高12.676190pp，仍低DURA3.745833pp。默认DURA保持，完整性能目标ACTIVE。
 
 源端最终IQ NMSE TF0.045520→MSAT0.018515、F0cos距离0.027277→0.006411，不能代替跨RX正式性能。单纯扩大网络容量的本次检验未达目标；下一步需以原LsUs源证据区分物理反演、先验迁移和F细节约束，不能据目标误分类选择新超参或盲目扩种子。既有模型/失败结果保留，OE仍只作冻结诊断，无新训练已登记或启动。主报告 automation_reports/CV-SincNet/20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01/analysis.md。
+
+
+## 强先验与真实信道的源端反事实已完成（2026-11-01）
+
+20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01，执行f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9。原LsUs128/384包×20draw=10240、额外63000源clean F0方差，DURA/MSAT及各自真实Action16/64CG共六路，0G更新/TX/V/OE/target，全部进程已退出。独立聚合差0、逐维差≤7.62e-9、DURA基线逐实例等于旧source_inverse。
+
+MSAT源NMSE0.018428/F一致率96.133%，真实Action后0.017164/96.172%；低档城区NMSE略降，F一致率87.396%→86.838%（修复7、损伤15、净−8）。16→64CG判决逐条差0。源方差标准化误差揭示低/中方差方向较大相对误差，与Fclean判决偏离关联略好（MSAT总AUROC.986085 vs cosine.984633），不足以证明新训练或Main收益。不可把oracle或1−NMSE称理论恢复成数。
+
+完整目标继续ACTIVE，性能主/效率次/正确Main TriSSL六景逐个3pp+clean/OE仅冻结诊断/默认DURA保持。候选设计必须来自原源证据，不因本诊断盲目扩大CG或继续扩容。暂无新G训练。
+
+
+## 受控F特征尺度实验已启动（2026-11-01）
+
+20261101-phase1-Restore-MSAT-VarF-E30-s2026092701-r01，方法3729a7135728500ab6013894ac060d85e3db8a67。MSAT结构/初值/原R07源数据与20+10draw/shuffle/优化器和30轮7410步均同旧MSAT。唯一方法变化是把.1cos源F约束改为.1(cos+逐维源方差归一化特征MSE)，保留统一.5 IQ梯度cap。方差是原63000源clean的F0-only moments，来自已闭合f57诊断，非G输出/身份原型/新分类头/神经IQ教师。新G仍随机从零联合单阶段30；源TX/V/OE/novel/目标均不学习或选模。
+
+6聚焦检查/唯一P0P1 PASS，单archive SHA/remote compile/preflight及source2真实smoke/严格E0重载PASS；GPU7原0compute/24124MiB余量，仅新增1NNworker。全部原Main cross_rx126000/cross_both42000七景自动测试和独立truth-last保持，无源负结果取消测试。当前尚无新正式成绩，性能目标ACTIVE/效率次级/默认DURA保持。
