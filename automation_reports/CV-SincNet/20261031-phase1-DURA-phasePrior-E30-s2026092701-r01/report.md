@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-phasePrior-E30-s2026092701-r01`
 - group_id：`phase1-dura-phase-canonical-prior-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -36,3 +36,8 @@
 原纯G8cf对应的初始参数逐项一致，权重共享和CPU/CUDA探针随机流保持；只改prior输入输出坐标。无F/教师/TX/V/target训练，物理四项finalIQ1/prior0.1/STFT0.05/action0.05、AdamW与源01..20后01..10保持，固定最终30轮。研发使用过源F诊断，不能将整条研发路线称完全F-free。3个聚焦检查、实际factory/预算/入口检查与唯一P0P1通过。首步真实2Ls三模块梯度、严格重载、native/optimized一致、prior等变及原F默认头smoke后立即继续。
 
 自动profile、源1800×7、正式168000×7；每role全七景预测固定后独立CPU truth-last。即使源分数较差也完成新G正式矩阵。与同预算纯G配对，默认DURA保持；逐六景≥137216正确、clean≥142256及实际同质量效率仍为验收，R17每景1pp和旧低城区70%单列。无额外设计审批gate，方法与矩阵只在本最小登记维护。
+
+
+## 实际启动证据
+
+VERIFIED / RUNNING。执行12c7421528c51ee6a0fac4b5bffdbe5057432ff0已提交推送并独立核对远端OID；一次N607 preflight/单归档传输SHA/remotecompile通过。实际controller1643978/worker1644071/GPU4的CWD、完整命令、CUDA、nvidia PID与日志增长已核实；旧own句柄均消失，其他owner保持。启动前同卡1个计算进程、free22883MiB，新增本任务1个。3项聚焦检查、实际factory/预算/入口及唯一P0P1通过。真实2Ls三G模块梯度/strictreload/native-optimized一致/两个prior共同相位对应关系/原F默认头通过；smokeG8、prior-only8、F2。至少完成1轮/247步，完整前缀loss/曝光/源视图/无F-TX-teacher-init计数核对通过，首轮34.008975秒。新G仍从零单阶段30/7410，266951参数与初始权重匹配pureG；prior内部坐标操作不增加参数或Core调用，但实际训练/推理成本待测，不预称加速或泛化收益。不读取F/教师/TX/V/target训练，研发曾用源F诊断明确披露。固定最终30后自动profile/source1800×7/target168000×7，逐role全预测固定后独立truth-last；源表现较差也不取消。默认DURA保持、完整目标ACTIVE。

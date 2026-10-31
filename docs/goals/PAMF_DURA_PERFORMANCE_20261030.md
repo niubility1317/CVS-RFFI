@@ -354,3 +354,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 原头5维与新增5维源梯度分解
 
 20261031-diagnostic-DURA-source-headAux-s2026092701-r01/31d61413。VERIFIED / ANALYZED，SOURCE_ONLY，固定科学判定FAIL。source512（128L/384U）×01/20、CPU2、主循环5.400632秒自然结束。head/aux负cos比例19.53125%/20.3125%，两者均未达事前25%；joint/head cos中位0.820375/0.815878。相同IQ修正预算下，head相对joint与clean F判断一致数+3/−1，未达双视图至少+4，第二缓存还有源RX损伤。不据此启动删aux5的E30、不改阈值或步长。主F3072/输入VJP2048、smokeF4/VJP6，0新G/优化/TX/V/target，F状态不变；1024条几何、2048步及22分组独立复算。默认DURA与完整3pp/clean/同质量效率目标保持。 本次局部等步长检查不能隔离完整G训练轨迹或证明目标因果，不按结果放宽门槛。详见本run分析与结果。
+
+
+## 先验内部相位坐标恢复器已启动
+
+20261031-phase1-DURA-phasePrior-E30-s2026092701-r01。VERIFIED / RUNNING。执行12c7421528c51ee6a0fac4b5bffdbe5057432ff0已提交推送并独立核对远端OID；一次N607 preflight/单归档传输SHA/remotecompile通过。实际controller1643978/worker1644071/GPU4的CWD、完整命令、CUDA、nvidia PID与日志增长已核实；旧own句柄均消失，其他owner保持。启动前同卡1个计算进程、free22883MiB，新增本任务1个。3项聚焦检查、实际factory/预算/入口及唯一P0P1通过。真实2Ls三G模块梯度/strictreload/native-optimized一致/两个prior共同相位对应关系/原F默认头通过；smokeG8、prior-only8、F2。至少完成1轮/247步，完整前缀loss/曝光/源视图/无F-TX-teacher-init计数核对通过，首轮34.008975秒。新G仍从零单阶段30/7410，266951参数与初始权重匹配pureG；prior内部坐标操作不增加参数或Core调用，但实际训练/推理成本待测，不预称加速或泛化收益。不读取F/教师/TX/V/target训练，研发曾用源F诊断明确披露。固定最终30后自动profile/source1800×7/target168000×7，逐role全预测固定后独立truth-last；源表现较差也不取消。默认DURA保持、完整目标ACTIVE。
