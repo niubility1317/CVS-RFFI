@@ -47,7 +47,7 @@ def main():
         source_view='Phase1 R07 epoch01',source_only=True,seed=2026110111,variance_cutpoints=cuts.tolist(),
         F_run=core.F_RUN,F_row=core.F_ROW,F_updates=0,TX_labels_read=0,test_IQ_reads=0,results=result,
         interpretation='Agreement and confidence are not accuracy; no source or test TX labels used.'))
-    print(json.dumps(dict(status='ANALYZED',run=RUN,results=result),flush=True))
+    print(json.dumps(dict(status='ANALYZED',run=RUN,results=result)),flush=True)
 
 
 if __name__=='__main__':main()
