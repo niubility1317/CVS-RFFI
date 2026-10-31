@@ -1,0 +1,217 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase1-DURA-balancedTangent-E30-s2026092701-r01",
+  "group_id": "phase1-dura-source-balanced-tangent-E30",
+  "display_name": "保留特征方向的梯度平衡：单阶段30轮",
+  "description": "原266951G/noVar四物理项＋同alpha源clean切线项，每步逐样本detach缩放过强附加IQ梯度、保持方向；复用原raw J缓存，训练F加载/前向/VJP0；scratch联合30/7410及全七景。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "E30",
+    "single-stage",
+    "scratch",
+    "F-guided",
+    "cache-reuse",
+    "direction-preserving",
+    "gradient-balance",
+    "training-efficiency"
+  ],
+  "comparison_group_id": "DURA-source-tangent-balance-vs-uncapped-and-pureG-E30",
+  "parent_run_ids": [
+    "20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01",
+    "20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active恢复性能/效率目标；用户允许独立source冻结F特征指导和scratch单阶段30epoch；固定全七景正式测试/defaultDURA不变。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-DURA-balancedTangent-E30-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source63000/20views+repeat01..10;readonly rawsourcecleanJ645.12MB fromoldF50cache,no newcorruptions/cachegeneration",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Sourcepairedclean/action andfixedFsource derivatives/step-local weights;0directTX/V/target;Fsourceknowledge inherited",
+    "augmentation": "OriginalR07 15percentclean/6practical;epoch01..20then01..10;sourceIDs/roles/onceunitRMS/receiver-day/Vpanel unchanged"
+  },
+  "permissions": {
+    "regime": "Authorized_source_F_guided_direction_preserving_step_balance",
+    "query_use": "Gtraining reads source only,notFmodel/target;source2LsFsmoke andpostfreezeoriginalF/defaulthead formal;allsevenpredictions beforetruth",
+    "external_method_exception": "Explicituserpermission2026-10-30 onlysourceFweights/featuresforG;notF-free;frozenFnoheadtraining/updates",
+    "claim_scope": "F-guided cachedderivativeknowledge;step-local detached weighting notglobal fixedenergytotalderivative;IQ-outputboundnotGparametergradientbound;notnewblindtest"
+  },
+  "checkpoint": {
+    "initialization": "Gscratch/noGancestor/nolearnedIQteacher;existingrawFsourceJ dataonly,no producerGload",
+    "sources": [
+      "runs/20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/scratch_joint/source_clean_J_cache DATAONLY",
+      "runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01/source-{1,20}.npz RAWsourcegeometry ONLY",
+      "OriginalF50/defaulthead source4df7/final50/11100 onlyrealnoquerysmoke/postfreezeeval;R69onlyprofile"
+    ],
+    "contract_check_ref": "source_training/source_ids/cacheFteacher63000/315000VJP/shape/dtype/physicalorder/TX-V-target0;sourcegeometrypure repeat8cf/source0targets/IDsrolesmatch;f_guided newconfig schema/epoch30/aliases",
+    "provenance_verdict": "RawJcachecomputed byoriginalF sourceclean BEFOREcacheproducerGtrainingandtarget;notreadGweights/targetresult. F source4df7/defaulthead original7/63/30,sourceL/Uexact. NewGancestor0;historicalF50/cachecostdisclosed.",
+    "selection_rule": "Fixedfinal30/7410;alpha.0033130025035573727 unchanged. Stepnormcap1 fromIQ gradientbound;reuse source pressure evidence/raw directions,not target-basedTXweights/epochselection. Static spectralcap failed andnotpromoted."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-balancedTangent-E30",
+    "gpu_policy": "Allowed4/6/7/free>=12000MiB/own1card/existingcomputePIDs<=2/addone<=3total;goal<=2workers/CPUscorer<=1;alloldownhandles terminal;otherowners untouched",
+    "remote_run_root": "runs/20261031-phase1-DURA-balancedTangent-E30-s2026092701-r01",
+    "remote_log_root": "logs/20261031-phase1-DURA-balancedTangent-E30-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-balancedTangent-E30-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.balanced_tangent run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badsource/cache/F/checkpoint/shape/order/collision/nonfinite/bound>1+2e-5/smoke/coverage:preserveandstop/noautoretry/nootherownercontrol. No performance stop;fixedfinal30/allsevenformal."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-scratch_joint.json",
+    "scratch_joint/launch.json",
+    "scratch_joint/resolved_config.json",
+    "scratch_joint/initialization.json",
+    "scratch_joint/training.jsonl",
+    "scratch_joint/training_complete.json",
+    "scratch_joint/final.pt",
+    "scratch_joint/matched_profile.json",
+    "scratch_joint/source_prediction/complete.json",
+    "scratch_joint/source_summary.json",
+    "scratch_joint/target_prediction/complete.json",
+    "scratch_joint/target_summary.json",
+    "scratch_joint/complete.json",
+    "complete.json",
+    "source_balance_check.json",
+    "scratch_joint/cache_reuse.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy/MacroF1/correct-repair-damage-net",
+      "TX/RX/day",
+      "eachscene rawclean_gap3pp",
+      "cleanpreservation/R17eachscene1pp/oldlowurban70",
+      "complete30sourcecurves/alllosses/cacheviews/clip",
+      "stepweight/limitedfraction/raw-balancedIQpressure/epochmaxbound",
+      "new-historicalFcounts/cachetime-bytes/sourceexposures",
+      "actualGpreparation-training-wholepipelinecost",
+      "fullGparams-bytes-ConvLinearMAC-FFT-CG/VRAM/samecardB1-B128latencyP95throughput"
+    ],
+    "dimensions": [
+      "arm",
+      "clean/sixpractical",
+      "TX",
+      "RX",
+      "day",
+      "originalF50seed2026092701"
+    ],
+    "prediction_ref": "scratch_joint/{source,target}_prediction;7viewsfixedbeforetruth",
+    "scorer_ref": "IndependentCPU originaldirectevaluation aftercomplete7;sourcefixed1800 andformal168000;noadaptation"
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "Scratchjoint30/noVarfourlosses+samealphatangentloss*detachedperpacketstepweight,min(1,IQgradnorm/rawguidegradnorm)",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/balanced_tangent.py",
+      "resolved_config_ref": "scratch_joint/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model/CUDAprobe2026092701/npshuffle2026103004/AUG2026101912/RX2026101911/split392005/data2026101901/eval2027;no newsupport/observations",
+      "k": null,
+      "scenario": "Unchangedoriginalsourcecache15percentclean/85percentpractical;first10sourceviews matchedteacherIQ;formalclean+sixpractical",
+      "optimizer": "AdamWreset/weightdecay1e-4/clip1",
+      "lr": "warm247/peak.001/cosinefinal.00002/7410updates",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Gscratch30/7410/B256/L189000U1701000/oneGforward-backward perupdate;readonly63000rawJ/1.89mrefs/19.3536GBreads;trainingFloadedFalse/Fforward-VJP0/newcache0;historicF50/11100/cache63000-315000VJP/30.009s separate",
+      "output_root": "runs/20261031-phase1-DURA-balancedTangent-E30-s2026092701-r01/scratch_joint",
+      "log_path": "runs/20261031-phase1-DURA-balancedTangent-E30-s2026092701-r01/logs/scratch_joint.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.balanced_tangent run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-scratch_joint.json",
+        "scratch_joint/launch.json",
+        "scratch_joint/resolved_config.json",
+        "scratch_joint/initialization.json",
+        "scratch_joint/training.jsonl",
+        "scratch_joint/training_complete.json",
+        "scratch_joint/final.pt",
+        "scratch_joint/matched_profile.json",
+        "scratch_joint/source_prediction/complete.json",
+        "scratch_joint/source_summary.json",
+        "scratch_joint/target_prediction/complete.json",
+        "scratch_joint/target_summary.json",
+        "scratch_joint/complete.json",
+        "complete.json",
+        "source_balance_check.json",
+        "scratch_joint/cache_reuse.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Newupdatealgorithm,notfailedstatic spectralcap withloosenedthreshold:originalalpha/J/directionsretained,perstep sampleweight s=min(1,||gIQ||/||gfeature||),sdetach. Guidegradient=s*oldgradient,soactualdirectionpreserved. Cauchy givesweightedguidevalue<=IQNMSE aswellasIQ-outputgradnormbound. NotGparametergradientbound.",
+    "Lossvalue isstep-local surrogate withweightsheldfixedinbackward,notcomplete derivativeofaglobalenergyrecomputings(IQ). Do notclaim gradcheck ofgloballyvaryingweightfunction. No separateoptimizer/pretrain/head/network;allGmodulesjoint fromfirststep through30.",
+    "Rawsourcepressurep95 1.610/1.349 and9.77/10.35percent >IQ,source512trainedpool notindependentV. Startup reusesRAWsourceBound geometry:both512defined/cos>=.5/nonnegative>=384/everyRXpositive/p95>1,verifypositive scalar preservescos andcapsactualpressure1. No failedstaticfactor used,itsrelativecosrule remainsFAIL. Notanewblindsourcequalification or trueTXaccuracy.",
+    "Trainreadonly rawJcache fromoriginalFsourceclean63000 computedbeforeproducerGtraining/target. No sourceproducerGweight ortargetoutput loaded,sourceFknowledge inherited. Existingcache645.12MB/63000Finputs/315000VJP/30.008929s andF50/11100 upstream disclosed;thisrunnewFcacheinputs/VJP/storage0/trainingFmodelnotloaded,1.89mreferences≈19.3536GBnumericreads.",
+    "SameordinaryGfactory/CUDAprobe2026092701/npshuffle2026103004/nativeinterp/noVarIQ1-prior.1-STFT.05-action.05 asuncappedE30 andpureG E30. Model/cachedJ/inputorders matcholduncapped exactly;reusechangespreparationcost aswellasstepweight,sofullpipelinechangesnotattributedsolelytobalancing. Runtimefloatingnotbitwiseguaranteed.",
+    "7focusedchecks pass:helperarbitraryerrorIQloss/inputgradientbounds,positive scalardirection/reference isolation,unchangedweakrecords/zeroboundaries;integrationobjective/cachepermission/config-owner. OneP0P1PASS beforelaunch;real2Lscoarse-action-priorgradient/actualguidebound/Fstate/defaulthead/strictreload firstthenimmediatelycontinue.",
+    "Perbatch actualbalanced pressuremax loggedandchecked<=1+2e-5,all30means/rawtangent/weights/limitedfraction/clip/sourceviews/exposures saved. Nonfinite/technicalboundfailure preserveandstop,notretryorlowerbudget. ScalarweightusesonlypairedsourceIQ/J/currentGoutput,noTX/Fconfidence/target.",
+    "Fixedfinal30/7410 allGscratch,thenunchangedprofile/defaultcomparison/source1800x7/target168000x7 eachall7beforeindependentCPUtruthlast. EverynewGformal evenifsourceworse. ReuseoldpureG anduncapped frozenoutputs withsameF50/defaulthead/IDs;no additionalteacher/head/refittedF.",
+    "OriginalF50seed2026092701/rawclean84.6761904762%=142256/168000,eachsixsatellite>=137216correct/81.6761904762%,cleanpreserve;oldR17atmost1680loss/lowurban70 separately. Fullquality/actualcost together,defaultDURA/P2/P3unchanged;notengineeringbenchmarkasnewblindtest."
+  ],
+  "registered_at": "2026-10-31T01:07:04+00:00"
+}
