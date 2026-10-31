@@ -1,5 +1,11 @@
 # PAMF Phase3：跨接收机星地无标签开放世界识别
 
+## 已有方法优先选择（2026-10-31，用户最新指定）
+
+用户要求“先选取前面性能好的方法”。当前开发主基线固定为 DURA v1.0＋原 PAMF 默认身份头＋P1 signal r03 的预测身份条件密度比 `predicted_ratio`（class-density r01/code4af0668）；原 `pooled_ratio` 保留冻结对照。联合特征 `joint_predicted_ratio` 仅作为历史比较，不因星地 H 微增而替换已知接收更好的主基线。最近正对角与选择性无标签适应的星地拒识退步，不接入所选主基线。方法和三条件数据/指标见 `configs/pamf_phase3_selected_baseline_20261031.json`、`docs/PAMF_PHASE3_METHOD_SELECTION_20261031.md`。
+
+本次是历史开发结果上的研究基线选择，不改各原 run 的 NO_PROMOTION，不宣称独立确认或达到指标。native-energy 实现草稿在实际训练/发布前延后，现有未完成草稿保留，不自动启动。本次新增训练、预测、评分、私有 truth 读取和阈值拟合均为0；下方完整 Phase3 目标及三类 DURA 验收保持 ACTIVE。
+
 ## 当前执行范围（2026-10-31，用户最新指定）
 
 后续新候选默认同时完成三类测试：源域已知接收机、跨接收机 clean、跨接收机星地，全部接入同一冻结 DURA v1.0→PAMF。clean 输入也先经过 DURA，必须重新计算原 F0 在相同 DURA(clean) 输出上的闭集基线，不能挪用历史绕过恢复器的 clean 成绩。clean 仅为冻结测试对照，Phase3 训练、无标签适应、发现和注册仍使用星地样本。原 C_K≥90%、同条件原闭集减 A_K≤2pp 保持；跨 RX clean 的 R_U≥95%、跨 RX 星地的 R_U≥90%，主报逐 TX 宏 A_K/R_U/H-score。三类结果分别验收，源侧未通过不取消已登记的跨 RX 测试，旧实验不追溯补测或改判。

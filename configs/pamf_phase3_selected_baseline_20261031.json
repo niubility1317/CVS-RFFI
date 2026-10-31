@@ -1,0 +1,204 @@
+{
+  "schema": "pamf_phase3_selected_baseline_v1",
+  "decision_date": "2026-10-31",
+  "decision_status": "EXISTING_DEVELOPMENT_BASELINE_SELECTED_NO_NEW_EXPERIMENT",
+  "user_instruction": "先选取前面性能好的方法",
+  "selection_basis": "Retrospective comparison of existing historical development results; preserve known correct acceptance and evaluate all three DURA conditions. No claim of global optimality or independent confirmation.",
+  "primary": {
+    "role": "current_development_baseline",
+    "run_id": "20261031-phase3-class-density-s2026092701-r01",
+    "code_commit": "4af0668331682636ee212077b38cd912857a1b31",
+    "method": "predicted_ratio",
+    "score_artifact": "local_artifacts/pamf_phase3_class_density_20261031_r01/score/results.json",
+    "metrics_fraction": {
+      "source": {
+        "known_count": 27000,
+        "unknown_count": 3150,
+        "A_K": 0.8974444444444444,
+        "C_K": 0.9675925925925926,
+        "R_U": 0.6193650793650793,
+        "H_score": 0.732914371691253,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.012370370370370587
+      },
+      "clean_DURA": {
+        "known_count": 576,
+        "unknown_count": 288,
+        "A_K": 0.7083333333333334,
+        "C_K": 0.873263888888889,
+        "R_U": 1.0,
+        "H_score": 0.8292682926829269,
+        "original_F0_macro_closed_accuracy": 0.8003472222222223,
+        "original_closed_minus_new_open": 0.09201388888888895
+      },
+      "star_DURA": {
+        "known_count": 576,
+        "unknown_count": 288,
+        "A_K": 0.6406250000000001,
+        "C_K": 0.8559027777777778,
+        "R_U": 0.7708333333333334,
+        "H_score": 0.6997232472324724,
+        "original_F0_macro_closed_accuracy": 0.7291666666666666,
+        "original_closed_minus_new_open": 0.08854166666666652
+      }
+    },
+    "historical_run_verdict": "NO_PROMOTION"
+  },
+  "control": {
+    "role": "frozen_comparison",
+    "run_id": "20261031-phase3-class-density-s2026092701-r01",
+    "code_commit": "4af0668331682636ee212077b38cd912857a1b31",
+    "method": "pooled_ratio",
+    "score_artifact": "local_artifacts/pamf_phase3_class_density_20261031_r01/score/results.json",
+    "metrics_fraction": {
+      "source": {
+        "known_count": 27000,
+        "unknown_count": 3150,
+        "A_K": 0.8977037037037037,
+        "C_K": 0.9710740740740741,
+        "R_U": 0.6088888888888889,
+        "H_score": 0.7256132990259545,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.012111111111111295
+      },
+      "clean_DURA": {
+        "known_count": 576,
+        "unknown_count": 288,
+        "A_K": 0.6892361111111112,
+        "C_K": 0.8541666666666666,
+        "R_U": 0.9965277777777778,
+        "H_score": 0.814874413548461,
+        "original_F0_macro_closed_accuracy": 0.8003472222222223,
+        "original_closed_minus_new_open": 0.11111111111111116
+      },
+      "star_DURA": {
+        "known_count": 576,
+        "unknown_count": 288,
+        "A_K": 0.6302083333333334,
+        "C_K": 0.8489583333333334,
+        "R_U": 0.7638888888888888,
+        "H_score": 0.6906392694063928,
+        "original_F0_macro_closed_accuracy": 0.7291666666666666,
+        "original_closed_minus_new_open": 0.09895833333333326
+      }
+    },
+    "historical_run_verdict": "NO_PROMOTION"
+  },
+  "auxiliary_reference": {
+    "role": "archive_comparison_only_not_primary",
+    "run_id": "20261031-phase3-joint-feature-s2026092701-r01",
+    "code_commit": "b7f81eca9a2a0bb55afc361acd50f3fbd739b68a",
+    "method": "joint_predicted_ratio",
+    "score_artifact": "local_artifacts/pamf_phase3_joint_feature_20261031_r01/score/results.json",
+    "metrics_fraction": {
+      "source": {
+        "known_count": 27000,
+        "unknown_count": 3150,
+        "A_K": 0.8972222222222221,
+        "C_K": 0.9678518518518517,
+        "R_U": 0.6666666666666666,
+        "H_score": 0.7649496743635287,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.012592592592592822
+      },
+      "clean_DURA": {
+        "known_count": 576,
+        "unknown_count": 288,
+        "A_K": 0.6770833333333334,
+        "C_K": 0.842013888888889,
+        "R_U": 1.0,
+        "H_score": 0.8074534161490683,
+        "original_F0_macro_closed_accuracy": 0.8003472222222223,
+        "original_closed_minus_new_open": 0.12326388888888895
+      },
+      "star_DURA": {
+        "known_count": 576,
+        "unknown_count": 288,
+        "A_K": 0.6336805555555556,
+        "C_K": 0.8472222222222222,
+        "R_U": 0.7847222222222223,
+        "H_score": 0.7011593907248742,
+        "original_F0_macro_closed_accuracy": 0.7291666666666666,
+        "original_closed_minus_new_open": 0.09548611111111105
+      }
+    },
+    "historical_run_verdict": "NO_PROMOTION"
+  },
+  "method": {
+    "restorer": "DURA v1.0 R69 frozen; reuse=True graph=True native=False FP32 TF32off",
+    "identity": "Original Tri-SIG-TIME SSL F0 E50/11100 and its jointly trained default six-class head, frozen",
+    "open_branch": "P1 signal-open r03; headless232033 plus projection102688, frozen",
+    "score": "log p(z | predicted identity c, 15 source RX/day modes) - log p_OE(z,32 modes) - tau[c]",
+    "class_routing": "Original F0 predicted identity only; no true TX or target RX/day routing",
+    "thresholds": "Existing six source-star known-V thresholds, shared unchanged across source/clean/star",
+    "normalizer_and_density": "Existing source-only known90/OE32 density11 aggregates frozen",
+    "target_U_adaptation_enabled": false,
+    "anonymous_registration_enabled": false,
+    "active_neural_parameters_with_DURA": 834665
+  },
+  "data": {
+    "source_L": 6300,
+    "original_hidden_source_U": 56700,
+    "source_OE": 6134,
+    "source_V_known_calibration": 27000,
+    "source_novel_evaluation": 3150,
+    "source_receiver_indices": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "known_TX": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "strict_unknown_TX": [
+      "19-15",
+      "19-16",
+      "7-1"
+    ],
+    "development_Q_receiver": "24-1",
+    "development_Q_receiver_index": 26,
+    "development_Q_day": "2021-03-15",
+    "development_Q_unique_physical_records": 864,
+    "development_Q_known_per_TX": 96,
+    "development_Q_unknown_per_TX": 96,
+    "clean_star_paired_same_physical_records": true,
+    "all_three_conditions_through_DURA": true,
+    "Phase3_learning_input": "Fixed G10 star received through frozen DURA; clean is test only",
+    "source_V_is_independent_test": false,
+    "source_novel_and_development_Q_previously_exposed": true,
+    "model_seed": 2026092701,
+    "development_target_receiver_count": 1,
+    "formal_RX24_18_accessed": false,
+    "high_scene_missing_unknown_TX": "19-15"
+  },
+  "targets_unchanged": {
+    "cross_receiver_clean_R_U_min": 0.95,
+    "cross_receiver_star_R_U_min": 0.9,
+    "C_K_min": 0.9,
+    "original_same_DURA_closed_minus_A_K_max": 0.02,
+    "averaging": "Macro over required true TX; total and preregistered main scenes reported separately",
+    "full_goal_status": "ACTIVE",
+    "selected_baseline_meets_full_targets": false
+  },
+  "actions_this_selection": {
+    "new_training": false,
+    "new_predictions": false,
+    "new_scoring": false,
+    "private_truth_reads": 0,
+    "threshold_refitting": false,
+    "native_energy_draft": "Deferred before training module completion; no run registered, no experiment launched. Preserve local drafts; do not auto-launch.",
+    "historical_results_relabelled_as_promoted": false
+  }
+}
