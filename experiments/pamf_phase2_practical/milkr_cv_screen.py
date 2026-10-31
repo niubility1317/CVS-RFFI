@@ -16,6 +16,9 @@ from .milkr.support_calibrated import fit,CONFIGS,LAMBDAS,target_and_score
 
 
 def fit_function(rt):
+    if rt.get('kernel_method')=='group_calibrated':
+        from .milkr.group_calibrated import fit as group_fit
+        return group_fit
     if rt.get('kernel_method','support_calibrated')=='pooled_metric':
         from .milkr.pooled_metric import fit as metric_fit
         return metric_fit
@@ -23,11 +26,10 @@ def fit_function(rt):
     return fit
 
 
-def calibration(rt):
-    fit=fit_function(rt)
+def source_episodes(rt):
     from experiments.cric_dura_comparison.f_data import SourceDataset
     reader,engine=initialize(rt);ds=SourceDataset(rt['source_cache'],'L_s',read(rt['source_contract']));m=ds.metadata
-    source=[];started=time.perf_counter()
+    source=[]
     for rx in sorted(np.unique(m['rx_i']).tolist()):
         for episode,epoch in enumerate(rt['source_cache_epochs']):
             folder=Path(rt['augmentation_cache'])/'F0'/f'stage1-epoch{epoch:03d}-p80'
@@ -39,6 +41,14 @@ def calibration(rt):
             indices=np.concatenate(chosen);features=[]
             for g in (None,engine):features.append(extract(reader,np.asarray(bank[indices]),'cuda:0',g)[0])
             source.append((rx,episode,features))
+    return source
+
+
+def calibration(rt):
+    if rt.get('kernel_method')=='group_calibrated':
+        from .milkr_group_source import calibrate
+        return calibrate(rt)
+    fit=fit_function(rt);started=time.perf_counter();source=source_episodes(rt)
     quality={};records=[]
     for config in CONFIGS:
         for ridge in LAMBDAS:
@@ -113,6 +123,10 @@ def dispatch(rt):
     root=Path(rt['run_root']);root.mkdir(parents=True,exist_ok=False);(root/'logs').mkdir()
     write(root/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),argv=sys.argv))
     source_smoke(rt,root/'source_smoke.json');calibration(rt);active=[]
+    selection=read(root/'source_selection.json')
+    if selection.get('target_eligible') is False:
+        write(root/'complete.json',dict(status='SOURCE_ONLY_SCIENTIFIC_STOP',target_rows=0,reason=selection['scientific_verdict']))
+        return
     for i,cap in enumerate(rt['capsules']):
         gpu=rt['allowed_gpus'][i%len(rt['allowed_gpus'])];rx=cap.split('/')[-1]
         free=int(subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip());require(free>=4096,'Insufficient GPU memory')
