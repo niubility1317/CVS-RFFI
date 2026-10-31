@@ -1,0 +1,196 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r01",
+  "group_id": "phase3-identity-rollout-fullg10",
+  "display_name": "全量 G10 源配对的完整轨迹恢复网络",
+  "description": "独立从零训练两条四步生成轨迹，使用原 63,000 条 L_s/U_s 的固定 G10/clean 配对；完整七景与 Phase3 truth-last 对照。",
+  "kind": "cvs",
+  "stage": "Phase3-restoration-source",
+  "aliases": [],
+  "tags": [
+    "Phase3",
+    "conditional-rollout",
+    "full-G10",
+    "frozen-F0",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "phase3-restoration-fixed-F0-and-DURA",
+  "parent_run_ids": [
+    "20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01",
+    "20261101-diagnostic-identity-rollout-phase3-profile-s2026092701-r01",
+    "20261101-diagnostic-identity-flow-source-paths-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发不同于另一对话时频残差路线的新星地恢复网络，六场景各不超过同识别器 raw clean 3 个百分点；合法源数据和冻结 F0 指导，不向 G 提供 TX 标签或目标数据。",
+  "code": {
+    "commit": "10aa7103d5f4cf18d198fed03b9d6570f2b3ab05",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI existing Python/Torch; FP32 TF32off; historical immutable runtime base 47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-identity-rollout-fullG10-E30-r01",
+    "entrypoints": [
+      "tools/identity_fullg10_rollout_controller.py",
+      "tools/identity_fullg10_rollout_worker.py",
+      "experiments/pamf_identity_flow/fullg10_rollout_train.py",
+      "experiments/pamf_identity_flow/fullg10_rollout_historical_eval.py",
+      "experiments/pamf_identity_flow/fullg10_rollout_phase3_eval.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Fixed full 63000 original source L_s/U_s G10 2.45 GHz MIX01 received and corresponding one-RMS clean; each physical ID appears once per epoch",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache/ids.npy; exact role/order equals F0 contract",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "P3_RESTORE_SOURCE_CACHE_COMPLETE, exact G10 source manifest and F0 source role order; clean sample agreement verified",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "Existing G10 2.45GHz 600km 25MHz residual post-sync MIX01 source view; repeated, not new physical records",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "No TX labels; frozen original source F0 feature guidance; no V/OE/novel/target IQ in G training.",
+    "augmentation": "One fixed source observation per ID; 75% received/25% clean sampled per epoch; independent opposite training noise"
+  },
+  "permissions": {
+    "regime": "Source L_s/U_s training with frozen original supervised source F0 feature knowledge; no target adaptation or training on heldout source data",
+    "query_use": "Independent frozen per-record prediction; no target U, selection, tuning or threshold fitting",
+    "external_method_exception": null,
+    "claim_scope": "Development RX34 fixed Phase3 G10 and historical F50 full seven-view tests; original Phase3 PCD has target-U576 ancestry and DURA-calibrated thresholds; no blind or new registration claim."
+  },
+  "checkpoint": {
+    "initialization": "Scratch full-trajectory attention velocity field, no E20/E30 weights; frozen original source F0 as identity guide",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache"
+    ],
+    "contract_check_ref": "OriginalvalidatedsourceR07cache;randomfactorygraphonly;F50/R69weightsforpostfreezeevalreferenceonly",
+    "provenance_verdict": "Full source G10 cache commit 53410ce889adc94c53c1783741f970fbdaf51453, role IDs equal original F0 contract; clean paired RMS once; PCD target-U ancestry downstream only",
+    "selection_rule": "One fixed E30/14790 final checkpoint and two fixed antithetic inference paths; no model, path, or threshold selection from target results."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/identity-fullg10-rollout",
+    "gpu_policy": "CPU controller waits until preceding rollout full Phase3 profile ANALYZED; then actual source smoke and shared admission lock; <=2 known goal workers incl other Phase3 restoration workers, GPU4/6/7 >=12GB, total PIDs<3",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_identity_flow/20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r01",
+    "launch_command": "python -u tools/identity_fullg10_rollout_controller.py --code-commit 10aa7103d5f4cf18d198fed03b9d6570f2b3ab05",
+    "stop_rule": "Wrong roles/F0/checkpoint, nonfinite gradient/output, incomplete prediction or collision fails and preserves evidence; no automated rerun. Predeclared source/target seven-view and Phase3 predictions complete before CPU truth; poor numerical performance never cancels remaining predictions."
+  },
+  "expected_artifacts": [
+    "plan.json",
+    "smoke.json",
+    "smoke.pt",
+    "submitted.json",
+    "logs/{smoke,worker,train,predict-source,predict-target,predict-phase3,profile,score-source,score-target,score-phase3}.log",
+    "identity_rollout_fullg10/{config.json,training.jsonl,final.pt,training_complete.json,source_prediction,target_prediction,source_summary.json,target_summary.json,matched_profile.json}",
+    "phase3_config.json",
+    "phase3_predict/complete.json",
+    "phase3_score/results.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "historical F50 accuracy and raw-clean gap by scene, TX, RX and day",
+      "historical clean damage and paired DURA repairs/damages",
+      "Phase3 original-F0 same-ID per-scene raw-clean gap",
+      "fixed PCD A_K/C_K/R_U/H-score and paired DURA changes",
+      "matched latency, throughput, memory and 8 velocity-field calls"
+    ],
+    "dimensions": [
+      "source V and full 168000 historical target physical records x seven views",
+      "Phase3 source V/novel and same 10238 clean/star physical records",
+      "TX/RX/day/six fixed scenes"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r01/identity_rollout_fullg10/{source_prediction,target_prediction} and phase3_predict",
+    "scorer_ref": "independent CPU experiments.pamf_dura_direct_train.evaluation and experiments.pamf_identity_flow.phase3_eval",
+    "targets_ref": "Every six scenes raw-clean minus restored star F0 macro <=3pp; clean degradation <=1pp; Phase3 CK>=90%, clean RU>=95%, star RU>=90%, same-G closed-open loss<=2pp; registration independent."
+  },
+  "rows": [
+    {
+      "row_id": "identity_rollout_fullg10",
+      "method": "Scratch four-step two-path conditional Transformer trained through its actual paths on full G10 source pairs",
+      "purpose": "Source-only true-rollout training and mandatory same-system evaluation",
+      "config_ref": "experiments/pamf_identity_flow/fullg10_rollout_train.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r01/identity_rollout_fullg10/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110104,
+        "augmentation": 2026110105,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model 2026092701, source-order 2026110104, flow 2026110105, fixed antithetic output template 2026110103; original source split and fixed evaluation seeds retained",
+      "k": null,
+      "scenario": "All 6300 source L_s and 56700 source U_s, fixed G10 MIX01/clean; historical seven-view and Phase3 fixed-system evaluation",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "30 epochs x 63000 = 1,890,000 source exposures; each epoch 47250 G10 and 15750 clean, 6300 L_s plus 56700 U_s; 14790 optimizer steps, 2 x 4 field calls plus frozen F0 in training, 8 calls per inference",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r01/identity_rollout_fullg10",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-identity-rollout-fullG10-E30-s2026092701-r01/logs/train.log",
+      "command": "python -u tools/identity_fullg10_rollout_controller.py --code-commit 10aa7103d5f4cf18d198fed03b9d6570f2b3ab05",
+      "expected_artifacts": [
+        "plan.json",
+        "smoke.json",
+        "smoke.pt",
+        "submitted.json",
+        "logs/{smoke,worker,train,predict-source,predict-target,predict-phase3,profile,score-source,score-target,score-phase3}.log",
+        "identity_rollout_fullg10/{config.json,training.jsonl,final.pt,training_complete.json,source_prediction,target_prediction,source_summary.json,target_summary.json,matched_profile.json}",
+        "phase3_config.json",
+        "phase3_predict/complete.json",
+        "phase3_score/results.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Independent full-source G10 comparison was preregistered while the original mixed-source rollout was still training, before its target results. The user requested a route different from the other chat; only its authorized source cache is reused, not its time/frequency architecture or weights.",
+    "Validated source cache role/order matches frozen F0 exactly, with 6300 L_s and 56700 U_s. Independent 256-row role-stratified clean comparison max absolute difference 2.3841858e-7 against historical normalized source. Whole original dataset was unpickled in cache construction, but only L_s/U_s values indexed; this G training opens cache clean/received/IDs/roles, no TX/V/OE/target IQ.",
+    "All records use one fixed G10 MIX01 input repeatedly; no new physical observation is created by repeated epochs. Data differs from mixed-source arm both in full physical-record coverage and channel distribution; effects cannot be separately attributed.",
+    "Each source sample is used once per epoch, randomly assigned 75% G10 received or 25% clean. Full four-step opposite-noise paths receive mean paired IQ NMSE plus frozen F0 feature anchor plus 0.25 feature agreement. Same initialization, optimizer, noise scale, inference rule and 30-epoch budget as mixed-source rollout.",
+    "F0 retains supervised source knowledge; no labels fed to G. Fixed final E30/14790; full historical seven-view and Phase3 frozen predictions finish before any CPU scorer opens truth. No target-based selection or threshold fit.",
+    "Actual F0/G10 smoke required. 11 focused tests and independent P0/P1 review passed; role and clean comparison read-back verified. Batch128 GPU memory still needs actual run.",
+    "CPU controller waits for the previous rollout profile to complete; shared lock also accounts for known other Phase3 restoration workers before GPU admission, and no running jobs are modified."
+  ],
+  "registered_at": "2026-10-31T17:27:19+00:00"
+}
