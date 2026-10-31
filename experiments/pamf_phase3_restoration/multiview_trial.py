@@ -51,6 +51,22 @@ def save(path,G,arm,commit,epoch):
         updates=0 if epoch==0 else 7410,state=state),f)
 
 
+def save_recovery(folder,G,optimizer,arm,commit,epoch,updates):
+    """Immutable epoch boundaries preserve a trained state if a GPU disappears."""
+    if not 1<=epoch<=30 or updates!=247*epoch:raise ValueError('Completed fixed-budget epoch boundary required')
+    folder.mkdir(exist_ok=True);path=folder/('E'+str(epoch).zfill(2)+'.pt')
+    if path.exists():raise FileExistsError(path)
+    state={k:v.detach().cpu().clone() for k,v in G.state_dict().items()}
+    if not all(torch.isfinite(v).all() for v in state.values()):raise ValueError('Nonfinite recovery model state')
+    payload=dict(config=configuration(arm),code_commit=commit,epoch=epoch,updates=updates,state=state,
+        optimizer=optimizer.state_dict(),torch_rng_cpu=torch.get_rng_state(),
+        torch_rng_cuda=torch.cuda.get_rng_state() if next(G.parameters()).is_cuda else None,
+        selection_use='technical_recovery_only/not_source_or_target_model_selection')
+    temporary=folder/(path.name+'.partial')
+    with temporary.open('xb') as f:torch.save(payload,f)
+    temporary.rename(path)
+
+
 def load(path,arm,commit,device,epoch=30):
     if epoch not in (0,30):raise ValueError('Only E0 or fixed final30 allowed')
     p=torch.load(path,map_location='cpu',weights_only=False)
@@ -136,6 +152,7 @@ def train(args,out):
                     sums.setdefault('feature_standardized_error',0.)
                     sums['feature_standardized_error']+=float(info['feature_standardized_error'].detach().sum())
             check_F0_state(F,frozen);torch.cuda.synchronize()
+            save_recovery(out/'recovery',G,optimizer,args.arm,args.commit,epoch,update)
             row=dict(epoch=epoch,draw=draw,updates=update,steps=247,count=63000,L_s=6300,U_s=56700,
                 seconds=time.perf_counter()-begin,last_learning_rate=learning_rate(update),metrics={k:v/63000 for k,v in sums.items()})
             log.write(json.dumps(row,allow_nan=False)+'\n');print('MSAT_M20_EPOCH',args.arm,json.dumps(row),flush=True)
@@ -248,7 +265,7 @@ def controller(args):
                 admission=choices.pop(0);gpu=admission['GPU']
                 cmd=command(args,'train' if stage=='train' else 'predict',arm,None if stage=='train' else stage)
             with (out/'logs'/(arm+'-'+stage+'.log')).open('xb') as log:
-                p=subprocess.Popen(cmd,cwd=Path.cwd(),env=dict(os.environ,CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu)),
+                p=subprocess.Popen(cmd,cwd=Path.cwd(),env=dict(os.environ,CUDA_VISIBLE_DEVICES='' if gpu is None else str(admission.get('CUDA_ID',gpu))),
                     stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
             active[arm]=(p,gpu,stage)
             write(out/('submitted-'+arm+'-'+stage+'.json'),dict(pid=p.pid,command=cmd,CWD=os.getcwd(),admission=admission))

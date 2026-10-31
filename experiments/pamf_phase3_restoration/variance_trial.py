@@ -1,18 +1,46 @@
 """Single controlled source F-fidelity variant; unchanged MSAT/data/single30 budget."""
 import argparse
 import copy
+import json
+import subprocess
 from pathlib import Path
 import torch
 from . import multiview_trial as trial
 from .source_pair import read
 from .main_split_eval import valid_identity
 
-RUN='20261101-phase1-Restore-MSAT-VarF-E30-s2026092701-r01'
+RUN='20261101-phase1-Restore-MSAT-VarF-E30-s2026092701-r02'
 MODULE='experiments.pamf_phase3_restoration.variance_trial'
 ARM='MSAT_VarF'
 GEOMETRY_RUN='20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01'
 GEOMETRY_COMMIT='f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9'
 TEMPLATE=trial.configuration('MSAT_M20')
+
+
+def recovery_gpu_choice(runner=None):
+    """Query admitted healthy cards separately; GPU7 is unavailable after r01."""
+    if runner is None:runner=subprocess.run
+    result=[]
+    for gpu in (4,6):
+        p=runner(['nvidia-smi','-i',str(gpu),'--query-gpu=index,uuid,memory.free','--format=csv,noheader,nounits'],capture_output=True,text=True)
+        q=runner(['nvidia-smi','-i',str(gpu),'--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],capture_output=True,text=True)
+        if p.returncode or q.returncode:
+            print('RECOVERY_GPU_UNAVAILABLE',json.dumps(dict(GPU=gpu,gpu_exit=p.returncode,compute_exit=q.returncode,
+                detail=(p.stderr+q.stderr)[-800:])),flush=True)
+            continue
+        fields=[x.strip() for x in p.stdout.strip().split(',')]
+        if len(fields)!=3 or int(fields[0])!=gpu or not fields[1].startswith('GPU-'):
+            raise ValueError('Unrecognized admitted GPU identity query')
+        uuid=fields[1];pids=set()
+        for line in q.stdout.splitlines():
+            if not line.strip():continue
+            identity,pid=[x.strip() for x in line.split(',')]
+            if identity!=uuid:raise ValueError('Scoped compute query returned another GPU')
+            pids.add(int(pid))
+        free=int(fields[2])
+        if free>=12000 and len(pids)<=2:
+            result.append(dict(GPU=gpu,CUDA_ID=uuid,free_memory_MB=free,existing_compute_PIDs=len(pids)))
+    return sorted(result,key=lambda x:(x['existing_compute_PIDs'],-x['free_memory_MB'],x['GPU']))
 
 
 def configuration(arm):
@@ -66,6 +94,7 @@ def install(scale):
         return variance_feature_guide(reader,restored,clean,target,by_device[restored.device])
     trial.RUN=RUN;trial.MODULE=MODULE;trial.ARMS=(ARM,)
     trial.configuration=configuration;trial.feature_guide=guided
+    trial.gpu_choice=recovery_gpu_choice
 
 
 def main():
