@@ -1,0 +1,195 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-contextual-inverse-eval-s2026092701-r02",
+  "group_id": "phase1-contextual-inverse-evaluation-recovery",
+  "display_name": "动态逆变换恢复器：复用已训练权重的评测恢复",
+  "description": "原E30训练完成但首个预测因inference_mode的Sinc缓存版本计数失败；修复加载上下文，固定原权重，不新增训练。",
+  "kind": "cvs",
+  "stage": "Phase1-evaluation-recovery",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "technical-recovery",
+    "no-retraining",
+    "truth-last"
+  ],
+  "comparison_group_id": "DURA-v1-and-historical-F50",
+  "parent_run_ids": [
+    "20261101-phase1-contextual-inverse-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261101-phase1-contextual-inverse-E30-s2026092701-r01",
+  "authorization": "用户要求研发更强的Phase3星地恢复网络、六星地各距raw clean不超过3个百分点；用户允许大胆重构并明确仅L_s/U_s训练，OE仅冻结诊断。",
+  "code": {
+    "commit": "c4a2ce98fd7af2023853af51f5302d79ef0b752e",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI existing Python/Torch; FP32 TF32off; historical immutable runtime base 47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261101-contextual-inverse-eval-r02"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Same original R07 source V1800x7 and fixed formal168000x7; original G checkpoint, no additional training data",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Zero new optimizer updates; original G was source L_s/U_s IQ only, no TX/F/OE/V/target in training",
+    "augmentation": "Existing R07 source views 01..20 then 01..10; no newly generated training observations"
+  },
+  "permissions": {
+    "regime": "technical_evaluation_recovery_no_retraining",
+    "query_use": "allsevenpredictionsbeforeindependenttruthlast",
+    "external_method_exception": null,
+    "claim_scope": "Original fixed G and historical F50 same-row Phase1 regression; separate Phase3 F0/open-world evaluation still required"
+  },
+  "checkpoint": {
+    "initialization": "Strict reuse and byte-identical copy of original E30/7410 G checkpoint",
+    "sources": [
+      "runs/20261101-phase1-contextual-inverse-E30-s2026092701-r01/contextual_inverse/final.pt"
+    ],
+    "contract_check_ref": "OriginalvalidatedsourceR07cache;randomfactorygraphonly;F50/R69weightsforpostfreezeevalreferenceonly",
+    "provenance_verdict": "Original scratch source L_s/U_s only; model commit 9959956a0572de08fbcac3258fd30a5c0769763a; no new updates or target feedback",
+    "selection_rule": "Original fixed final E30 checkpoint only; no reranking or performance-based choice"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/contextual-inverse-recovery",
+    "gpu_policy": "Original full goal worker inventory and CUDA device exclusions under common lock; at most two tracked goal workers; GPU4/6/7 >=12GB free, at most two existing compute PIDs, add one",
+    "remote_run_root": "runs/20261101-phase1-contextual-inverse-eval-s2026092701-r02",
+    "remote_log_root": "runs/20261101-phase1-contextual-inverse-eval-s2026092701-r02/logs",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261101-phase1-contextual-inverse-eval-s2026092701-r02",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.contextual_recovery run --root /home/szu2070436088/2510044040/CV-SincNet --execution-commit c4a2ce98fd7af2023853af51f5302d79ef0b752e",
+    "stop_rule": "Preserve failed parent and new output; no automatic retry or retraining. Repeated same fingerprint after this one repair stops blind retries."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "launch.json",
+    "submitted.json",
+    "contextual_inverse/final.pt",
+    "contextual_inverse/matched_profile.json",
+    "contextual_inverse/source_prediction/complete.json",
+    "contextual_inverse/source_summary.json",
+    "contextual_inverse/target_prediction/complete.json",
+    "contextual_inverse/target_summary.json",
+    "contextual_inverse/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "MacroF1",
+      "correct",
+      "repair_damage_net",
+      "TX/RX/day",
+      "six_scene_rawclean_gap_pp",
+      "clean_damage",
+      "DURA_delta_pp",
+      "same_GPU_eager_candidate_vs_graph_DURA_G_and_GplusF_B1_B128",
+      "parameters",
+      "checkpoint_bytes",
+      "conv_linear_MAC",
+      "FFT_IFFT",
+      "shared_peak_VRAM",
+      "full_training_curves"
+    ],
+    "dimensions": [
+      "fixed candidate",
+      "clean and six practical",
+      "TX",
+      "RX",
+      "day",
+      "historical F50 seed2026092701"
+    ],
+    "prediction_ref": "contextual_inverse/{source,target}_prediction; all seven views fixed before independent truth-last scoring",
+    "scorer_ref": "Independent CPU truth-last scorer after complete current and matching baseline predictions; no feedback to training or selection"
+  },
+  "rows": [
+    {
+      "row_id": "contextual_inverse",
+      "method": "Evaluation of exact original contextual inverse E30 checkpoint; no new optimization",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/contextual_recovery.py;experiments/pamf_dura_direct_train/contextual_inverse.py",
+      "resolved_config_ref": "Original parent resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701; original split392005; source shuffle2026103004; source corruption2026101912; receiver2026101911; evaluation2027; support not applicable",
+      "k": null,
+      "scenario": "clean+sixpracticalfixedoriginalreceived",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 new epochs/updates; original source G 30 epochs/7410 updates retained and disclosed",
+      "output_root": "runs/20261101-phase1-contextual-inverse-eval-s2026092701-r02/contextual_inverse",
+      "log_path": "runs/20261101-phase1-contextual-inverse-eval-s2026092701-r02/logs/worker.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.contextual_recovery worker --root /home/szu2070436088/2510044040/CV-SincNet --execution-commit c4a2ce98fd7af2023853af51f5302d79ef0b752e",
+      "expected_artifacts": [
+        "smoke.json",
+        "launch.json",
+        "submitted.json",
+        "contextual_inverse/final.pt",
+        "contextual_inverse/matched_profile.json",
+        "contextual_inverse/source_prediction/complete.json",
+        "contextual_inverse/source_summary.json",
+        "contextual_inverse/target_prediction/complete.json",
+        "contextual_inverse/target_summary.json",
+        "contextual_inverse/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original run FAILED_TECHNICAL on first source prediction, after 30 complete source training epochs and completed same-card profile. Reader was constructed inside inference_mode, creating Sinc tensors without version counters.",
+    "The same failure was reproduced locally with a reader accessing a buffer version counter. Prediction now uses no_grad; the regression failed before the fix and passes after. Frozen weights and mathematical forward are unchanged.",
+    "Independent P0/P1 review checked no retraining, source checkpoint versus execution commit, original full worker admission inventory/device exclusion, output isolation and prediction-before-truth.",
+    "An actual original G and F50 checkpoint two-L_s no-query smoke precedes worker dispatch. The original profile is copied without remeasurement and with its original cost scope.",
+    "Both seven-view source and target sets remain fixed and independently scored. Phase3 Tri-SIG-TIME F0/open-set/registration and the six-scene <=3pp target are not yet proven."
+  ],
+  "registered_at": "2026-10-31T16:20:42+00:00"
+}
