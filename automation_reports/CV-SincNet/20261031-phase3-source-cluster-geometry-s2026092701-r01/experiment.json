@@ -1,0 +1,232 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-source-cluster-geometry-s2026092701-r01",
+  "group_id": "pamf-phase3-source-cluster-geometry",
+  "display_name": "PAMF第三阶段：四种冻结表征的源端簇几何排障",
+  "description": "Source L only, fixed four coordinates x five prototype receiver leaveouts, early-day discovery and later-day class transfer; no target access or neural fitting.",
+  "kind": "diagnostic",
+  "stage": "Phase3-source-cluster-diagnostic",
+  "aliases": [
+    "源端簇几何排障"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_diagnostic",
+    "clustering",
+    "frozen_features",
+    "no_target"
+  ],
+  "comparison_group_id": "phase3-source-cluster-geometry",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-pcd-cluster-registry-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "074a84caa44387e5ad8472ab8f217c92150421fd",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-source-cluster-geometry-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.source_cluster_geometry"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_SOURCE_CLUSTER_GEOMETRY_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Existing source G10 P1 L6300 only",
+    "version": "Unchanged VALIDATED_ONCE source role and physical IDs",
+    "representation": "Four frozen160D coordinates from F0 raw, originalr03 z, freshPCD z and existing PCD whitening",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 独立学生的身份与拒识联合适应",
+    "physical_ids_ref": "Original source cache L ids.npy only",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [],
+    "tx_sets_ref": "All original six registered source classes; no actual unknown or unseen RX claims",
+    "roles": {
+      "source_L": 6300,
+      "support_per_case": 5040,
+      "early_discovery_per_case": 420,
+      "later_inference_per_case": 840,
+      "source_V_new": 0,
+      "source_NV_new": 0,
+      "source_OE_new": 0,
+      "original_U_s_new": 0,
+      "target_U_new": 0,
+      "target_Q_new": 0,
+      "private_truth_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 unchanged source roles; five receiver-based prototype exclusions only",
+    "validation_ref": "Original source L/OE P1 manifest identities/counts reused",
+    "support_query_ref": "Other4RX x all3days support; heldRX day1 early420/day2+3 later840; all these source L records and RX were seen during original model training, not independent test",
+    "leo_config_ref": "Existing G10 P1 cached source L through frozen DURA, no new channel or restored input generation"
+  },
+  "permissions": {
+    "regime": "Legal source L y/rx/day only. U/future labels of this source statistical episode withheld from fit/predict, all20 predictions before metrics. PCD has inherited targetU576 neural ancestry, despite zero new target input.",
+    "query_use": "No actual target/query values or private truths. Fixed20 source tasks; later source labels never remap clusters. No optimizer/head/GMM/threshold update.",
+    "external_method_exception": null,
+    "claim_scope": "Source training-role statistical diagnostic only. All six devices/five receivers seen by model training; source prototype holdout is not unseen-receiver validation. AN/RU/HOW=N/A."
+  },
+  "checkpoint": {
+    "initialization": "Frozen original F0/default6, source-onlyr03, fresh TARGET_PCD444 and DURA; no new train or model selection",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Matching source392005, fixed original models, explicit inherited PCD targetU576. Source-only input claim does not imply source-only model lineage.",
+    "selection_rule": "All four fixed coordinate choices, all five source RX cases, no parameter scan or target-based choice"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-source-cluster-geometry-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-cluster-geometry-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-cluster-geometry-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_source_cluster_geometry_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_cluster_geometry --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-cluster-geometry-s2026092701-r01/configs/diagnostic.json --device cuda:0",
+    "gpu_policy": "One prediction/statistics process, max2new/card, actualfree>=4096MiB across0..7, foreign untouched",
+    "stop_rule": "Illegal role/ancestor, frozen model state mutation, nonfinite or output collision stops preserved; scientific low score completes all20 cases."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "configs/diagnostic.json",
+    "logs/diagnostic.log",
+    "diagnostic/{resolved_config,smoke,summary,complete}.json",
+    "diagnostic/cases/<repr>/RX<rx>/{state,predictions}.npz",
+    "diagnostic/cases/<repr>/RX<rx>/metrics.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source later six-class macro correct accepted",
+      "source later macro acceptance",
+      "same P1 original F0 baseline gap",
+      "source centroid nearest-class accuracy",
+      "early cluster strict-majority matches/purity/noise/ARI",
+      "geometry within/between source identities",
+      "AN/RU/HOW not applicable"
+    ],
+    "dimensions": [
+      "four frozen160D coordinates",
+      "five sourceRX prototype exclusions",
+      "source early day1 vs later days2/3",
+      "six TX complete denominator"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-cluster-geometry-s2026092701-r01/diagnostic/cases",
+    "scorer_ref": null,
+    "targets_ref": "Source-screen all5: latermacroacc80/accept90/F0gap2pp/all6earlymatched; does not certify unknown or newRX target goal",
+    "primary": [
+      "All four representations separately; eligibility for future research only, no automatic target access or baseline change"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "source-cluster-geometry-s2026092701",
+      "method": "Four fixed frozen source cluster coordinates",
+      "purpose": "Separate representation failure from global whitening/cluster support failure using source-only inputs",
+      "config_ref": "docs/PAMF_PHASE3_SOURCE_CLUSTER_GEOMETRY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-cluster-geometry-s2026092701-r01/configs/diagnostic.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new stochastic sample/channel; fixed existing ID order and deterministic HDBSCAN brute parameters",
+      "k": null,
+      "scenario": "Source G10 P1 only, all model-training RX and devices seen, no clean or actual target inputs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "F0 real6300/r03 real6300/PCD real6300/G0. Synthetic separate. No NN/GMM/threshold updates;20support fits+20HDBSCAN source tasks.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-cluster-geometry-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-cluster-geometry-s2026092701-r01/logs/diagnostic.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.source_cluster_geometry --config /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-source-cluster-geometry-s2026092701-r01/configs/diagnostic.json --device cuda:0",
+      "expected_artifacts": [
+        "launch.json",
+        "configs/diagnostic.json",
+        "logs/diagnostic.log",
+        "diagnostic/{resolved_config,smoke,summary,complete}.json",
+        "diagnostic/cases/<repr>/RX<rx>/{state,predictions}.npz",
+        "diagnostic/cases/<repr>/RX<rx>/metrics.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "No source V/NV/OE/U_s or actual targetU/Q values.",
+    "All20 source predictions fixed before early/later labels used for evaluation; mapping early-only strict-majority Hungarian.",
+    "Model training has seen every source class/receiver/record; diagnostic eligibility is not independent generalization.",
+    "Existing PCD research baseline and prior NO_PROMOTION results remain unchanged, full goal ACTIVE.",
+    "All20 source tasks complete, no real target or private truth reads.",
+    "Source-screen results are not unknown registration or independent unseen-RX validation. PCD baseline unchanged."
+  ],
+  "registered_at": "2026-10-31T06:42:40+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_scope": "SOURCE_TRAINING_DIAGNOSTIC_ONLY",
+    "code_commit": "074a84caa44387e5ad8472ab8f217c92150421fd",
+    "source_screen": {
+      "F0_unit": {
+        "mean_macro_correct_acceptance": 0.5678571428571428,
+        "min_macro_correct_acceptance": 0.2714285714285714,
+        "max_macro_correct_acceptance": 0.7119047619047619,
+        "mean_macro_acceptance": 0.7995238095238095,
+        "source_screen_eligible": false
+      },
+      "r03_unit": {
+        "mean_macro_correct_acceptance": 0.812857142857143,
+        "min_macro_correct_acceptance": 0.6833333333333332,
+        "max_macro_correct_acceptance": 0.855952380952381,
+        "mean_macro_acceptance": 0.830952380952381,
+        "source_screen_eligible": false
+      },
+      "PCD_unit": {
+        "mean_macro_correct_acceptance": 0.8292857142857143,
+        "min_macro_correct_acceptance": 0.6678571428571428,
+        "max_macro_correct_acceptance": 0.8952380952380953,
+        "mean_macro_acceptance": 0.8414285714285714,
+        "source_screen_eligible": false
+      },
+      "PCD_white": {
+        "mean_macro_correct_acceptance": 0.5609523809523809,
+        "min_macro_correct_acceptance": 0.16071428571428573,
+        "max_macro_correct_acceptance": 0.8047619047619047,
+        "mean_macro_acceptance": 0.6702380952380953,
+        "source_screen_eligible": false
+      }
+    },
+    "full_goal_status": "ACTIVE",
+    "eligible_primary": false,
+    "A_N": null,
+    "R_U": null,
+    "H_OW": null,
+    "comparison_loaded_parameters": 1169386,
+    "result_ref": "docs/PAMF_PHASE3_SOURCE_CLUSTER_GEOMETRY_RESULTS_20261031.md"
+  }
+}

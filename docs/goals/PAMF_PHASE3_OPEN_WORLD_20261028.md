@@ -1173,3 +1173,13 @@ Run `20261031-phase3-pcd-cluster-registry-s2026092701-r01` / actualcode `16e6f04
 ## 2026-10-31：PCD 全簇匿名注册完整结果
 
 Run `20261031-phase3-pcd-cluster-registry-s2026092701-r01` / actualcode `16e6f04e7475827e7c8e24b398fb029a39a8138c`，完整4×3 DURA预测及独立四truth评分 VERIFIED。主predicted_REG1：source: AK/CK/RU/H=33.437037/92.818519/69.301587/45.109417%；AN=N/A；原F0损57.544444pp；clean_DURA: AK/CK/RU/H=7.414701/33.905864/68.865248/13.387928%；AN=0.000000%；原F0损41.152314pp；star_DURA: AK/CK/RU/H=4.221721/38.168624/54.042553/7.831647%；AN=0.000000%；原F0损37.499337pp。全U HDBSCAN3簇378/25/26、147噪声，两个匿名槽分别混合旧212+新166及纯旧26，严格多数U-only匹配为空，未来三到达类AN全0，不能称发现成功。source旧AK由89.733333降33.437037%、clean31.661804降7.414701%、star27.951722降4.221721%；主源/旧保护、注册及原REG0门槛皆失败，NO_PROMOTION、不扩seed，所选PCD基线保留。REG1主RU是仅未来9类，不能与REG0四未知直接作收益；同later1410 clean66.666667→68.865248%、star56.028369→54.042553%，actual仍未注册6..9另报。新NN/GMM/τ更新0，signal6876/F0576/G0，合成4/2/2另列；predict9.193640s/score4.929865s非B1，foreign0。源V仍校准非独立、Q已曝光、03-23缺oldN/A、正式24-18未读，完整goalACTIVE。见`docs/PAMF_PHASE3_PCD_CLUSTER_REGISTRY_RESULTS_20261031.md`。
+
+
+## 2026-10-31：源端簇几何排障预登记
+
+Run `20261031-phase3-source-cluster-geometry-s2026092701-r01` / actualcode `074a84caa44387e5ad8472ab8f217c92150421fd`。只读sourceL6300 G10 P1，冻结F0/r03/freshPCD四坐标，五RX原型留出×早日420/后日840共20stat任务，other4RX5040支持，原HDBSCAN16/8固定。全20pred先于评价，early-only严格多数匹配；模型已见六TX五RX及L记录，不称未知/未见RX验证，AN/RU/HOW=N/A。PCD有U576祖先但本行U/Q/V/NV/OE等新读0。真实F06300/signal12600/G0，无NN/GMM/τ更新，统计新拟合20组，筛选仅future研究资格、不自动访问target，原PCD与完整目标ACTIVE保持。见`docs/PAMF_PHASE3_SOURCE_CLUSTER_GEOMETRY_PLAN_20261031.md`。
+
+
+## 2026-10-31：源端簇几何排障完整结果
+
+Run `20261031-phase3-source-cluster-geometry-s2026092701-r01` / actualcode `074a84caa44387e5ad8472ab8f217c92150421fd`，sourceL6300三模型同P1前向及20组原型留出/早日HDB/后日预测评价 VERIFIED 完整完成。F0_unit 后日宏正确接收五RX均值56.785714%（范围27.142857%至71.190476%），source-screen=False；r03_unit 后日宏正确接收五RX均值81.285714%（范围68.333333%至85.595238%），source-screen=False；PCD_unit 后日宏正确接收五RX均值82.928571%（范围66.785714%至89.523810%），source-screen=False；PCD_white 后日宏正确接收五RX均值56.095238%（范围16.071429%至80.476190%），source-screen=False。只作模型已见六TX五RX及训练L记录的统计排障，不能当真实unknown或未见RX性能。PCD仍有U576祖先，本行targetU/Q/private等值0读，AN/RU/HOW均N/A；不更换PCD、不自动扩seed或target。新F06300/signal12600/G0、NN/GMM/旧τ更新0，统计支持20/HDB20，合成另列、foreign0，完整goalACTIVE。见`docs/PAMF_PHASE3_SOURCE_CLUSTER_GEOMETRY_RESULTS_20261031.md`。
