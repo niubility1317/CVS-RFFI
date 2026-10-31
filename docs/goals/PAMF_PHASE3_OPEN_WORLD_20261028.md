@@ -1045,3 +1045,14 @@ pU=.5pKnown(a*w+b)prod(a)+.5pOE(w)，每U/Q同时算两密度，无trueknownunkn
 ### 2026-10-31 多模态共同方差密度比预登记
 
 Run `20261031-phase3-tied-density-s2026092701-r01` / actualcode `9a80e2bef7eee4d8c2ec4d4725e0ca552552443b`。沿用户选定predicted_ratio基线做单候选假设检验：known90/OE32评分统一为原pooled_L_variance，中心/权重/白化及原11arrays冻结，query共有二次项/体积/Jacobian抵消；不称任意域偏移不变，也不称首次相对距离。固定四列oldpooled/oldpredicted/tiedpooled/tiedpredicted，唯一主最后。actual3CPsynthetic2→scorepolicy冻→V27000两new6tau+两oldexact→全τ冻→NV3150/clean864/star864三DURA全pred→独立CPU3truth。新NN/variancefit/densityfit/realGFsignal/sourceIQ/U0；12newtau实际fit、旧12复用192B，祖先成本继承。sourceknown12/clean95star90/CK90/原F0同G损2pp/主景coverage及starAK/RU不低于oldpred固定，source失败仍Q。历史NV/Q/单seedRX/source日期重合/high缺19-15宏RU/H NA/正式RX未读不变；无DA/发现/REG，AN/HOW N/A。原所选基线和延后的native-energy状态保持，完整目标ACTIVE；当前无新性能。见`docs/PAMF_PHASE3_TIED_DENSITY_PLAN_20261031.md`。
+
+
+### 2026-10-31 多模态共同方差密度比完整结果
+
+Run `20261031-phase3-tied-density-s2026092701-r01` / actualcode `9a80e2bef7eee4d8c2ec4d4725e0ca552552443b`，四列×三DURA预测和独立三truth评分COMPLETE，执行VERIFIED、科学NO_PROMOTION。唯一主tied_predicted_ratio source/clean/star宏AK/CK/RU/H分别89.625926/96.388889/63.301587/74.198073%、72.048611/88.888889/98.611111/83.262688%、63.888889/83.680556/76.736111/69.725652%；原F0同G闭集损1.355556/7.986111/9.027778pp。源known12和cleanRU单项不替代跨RX综合门槛；星地AK/RU相对所选pred均下降，不能晋级。
+
+对原pred同ID：source正确90增122失/net−32、unknown拒对254增211失/net+43；clean正确18增11失/net+7、unknown0增4失/net−4；star正确10增11失/net−1、unknown18增19失/net−1。starAK−0.173611pp/RU−0.347222pp/H−0.246673pp，cleanAK+1.215278pp/RU−1.388889pp/H+0.335859pp。原F0身份完全不变，均是接收集合差异；不按Q调s或重选运行点，原predicted_ratio主基线及pooled冻结对照保持。
+
+固定共同s=原pooled_L_variance0.54650927979218，两侧query共有二次项/体积/Jacobian抵消；known90/OE32中心/权重/白化11arrays逐值不变，新评分分布明确不同。newNN/variancefit/densityfit/normalizer/realF0Gsignal/sourceIQ/U0；V27000实际新2×6τ，旧12精确复用，总24/192B，祖先NN834665/density364340B及训练缓存成本继承。真实3CPsynthetic2each首步PASS，不部署source/U行bank。该单候选未支持预期星地收益，不推广为所有共同方差或域消除方法无效。
+
+三DURA路径、sourceL6300/隐藏Us56700/OE6134/V27000/NV3150、source五RX三日、目标RX24-1/03-15同864物理Q（old576/unknown288）保持；sourceV校准非独立test，NV/Q历史曝光、单seed/RX/source日期重合/high缺未知19-15宏RU/H NA、正式RX24-18未读。无DA/发现/匿名REG，AN/HOW=N/A，完整目标ACTIVE。独立driver1323759/predictor1323782 CWD/fullargv/CUDA4/GPU_UUID95d925a1及10/406MiB离散样本（非peak）、log487→629B已核；CPU1324080仅pipeline/gpuNone/代码CUDAempty和产物，未独立捕获live；终态owned空foreign0。10unique34subPASS/workerAST6+launcherimport/一次P0P1PASS；688files/data0单archiveSHA/compile/runtimeVERIFIED，详细报告`docs/PAMF_PHASE3_TIED_DENSITY_RESULTS_20261031.md`。
