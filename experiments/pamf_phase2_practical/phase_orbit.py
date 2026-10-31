@@ -41,6 +41,12 @@ def eighth_moments(phases):
     return _moments(phases)
 
 
+def ensemble_moments(phases):
+    if len(phases)!=8:raise ValueError('Exactly eight phases for C4/C8 ensemble required')
+    full=eighth_moments(phases);even=moments(phases[::2])
+    return dict(full,**{'C4_'+key:value for key,value in even.items()})
+
+
 def _moments(phases):
     normalized=[blocks(f) for f in phases];values=[]
     for index in range(8):
