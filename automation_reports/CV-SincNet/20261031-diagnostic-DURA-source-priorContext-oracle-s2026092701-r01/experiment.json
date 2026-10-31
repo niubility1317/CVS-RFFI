@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01",
+  "group_id": "phase1-dura-source-fixedweight-prior-context-oracle",
+  "display_name": "固定已训练恢复器的特征条件路径：源域匹配干预",
+  "description": "固定SIGcontextPrior final30权重，源512×缓存01/20比较正常、关闭调制、cleanSIG条件及全512循环移位1的cleanSIG条件；主cleanSIG utility，0训练/TX-V-target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "fixed-weight-context",
+    "clean-SIG-oracle",
+    "F-guided",
+    "no-training"
+  ],
+  "comparison_group_id": "DURA-source-fixedweight-clean-SIG-context-vs-learned-shifted",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-performance-efficiency goal and explicit independent frozen-source-F guidance; source-only CPU association/latent intervention; no G training or target use",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source512128L384U/cache01and20/1024visits512unique;receivedIQ-cleanSIG-Fcleanref;noVtarget",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07source63000 and fixedsource_indices512/128L384U/IDs/RX/day, no position search",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07cache01/20;0newchannelobservations;onlytemporarysourceIQcounterfactuals",
+    "target_panel": "None",
+    "actual_training_labels": "No training. Source pairedcleanIQ and actualweightedcleanSIG/frozenFcleanchoice are counterfactual references. No TX/V/target labels or fitting",
+    "augmentation": "No new observation/RNG/augmentation;original512sourcepositions2026101901/source01and20;shiftedSIG=np.roll(all512cleanSIG,1,axis0)beforebatching"
+  },
+  "permissions": {
+    "regime": "Source_only_fixed_weight_prior_SIG_conditioner_counterfactual",
+    "query_use": "Noquery/V/TXtruth/modelupdates. FixedsourceL-U/frozenoriginalF50/defaulthead. SourcecleanSIGinjectedonlyat2conditioners/notGinput. Noformaltest/newdeploymentversion.",
+    "external_method_exception": null,
+    "claim_scope": "FixedweightsourcecleanFchoiceutilitynotTXaccuracy/recoverybound/targetbenefit. Oracleprivileged/notdeployable;interventionmayleavelearnedcontextdistribution. NoautomaticG/defaultunchanged."
+  },
+  "checkpoint": {
+    "initialization": "No learner ortraining initialization. Strictload mainSIGcontextPrior final30/7410/source-onlyF-guided provenance/config/344295params+originalfrozenF50;weightsandgradunchanged",
+    "sources": [
+      "runs/20261031-phase1-DURA-SIGcontextPrior-E30-s2026092701-r01/scratch_joint/final.pt execution4452e09285b650536ab5e9dcc2acbfd9268c00e8/Gscratch30-7410/noancestor/sourceF-guided/noTX-V-target",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth/source4df7/50-11100/frozenFonly",
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/source_signature_cache F-only63000x160FP32/40.32MB/producedbeforeGoptimizer/DATAONLY",
+      "runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01/DURA_default-{1,20}.npz onlycleanFfeatures-logits row0/sourceIDs-RX-day-scene-clean;nooldnativeGdataorGload"
+    ],
+    "contract_check_ref": "Original7/63/30/VALIDATED_ONCEsourceR07handles/fixed512128L384U/RX1-3-4-6-8/day1-2-3/order/scene;mainGstrictmetadata/config4452/sourceF50source4df7/defaulthead;sourceSIGcachemetadata-orderandpriorindependentproofreuse",
+    "provenance_verdict": "MainGsourceonlyF-guided/scratch30-7410/noTX-V-target/finalfixed;notinitializer. F-onlySIGcache40.32MB exactsameSOURCE-F/matchingroles/order/newFcache0. F50/11100/oldcache63000prefix-.847077s knowledgecostretained. OlddefaultGnotloaded/onlycleancachedF row0.",
+    "selection_rule": "FixedmainG final30/source512x01and20. Caseslearned/disabled/clean_SIG/shifted_SIG. Primaryclean_SIG BOTHviews:gain>=4/512vslearnedand>=2vsfixedglobal512cyclicshift1SIG;5RXnet>=0/clean-scenenet>=0/eachnoncleanscenenet>=-1/fullFcosnotworse. Disabledonlydescriptive/noalternateprimary-threshold. PASSonlyseparatelearninghypothesis/noautomaticGtraining."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-prior-context-oracle",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU/0truthscorer;previouspairedGnaturallyended/nootherschanged",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.prior_context_oracle_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badsource/Fcache/roles-ID-scene-order/Gstrictpayload-config/Fstate-or-Gstate-change/gradpopulation/hookrestoration/nonfinite/collision/smoke/execute:preservefailedrun/noautoretry. ScientificFAILdoesnotchangeprimary/threshold/donor orstartG."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "view1.npz PRIVATE",
+    "view20.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "SourcecleanFchoiceagreement/repair-damage-net/fullFfeaturecosine/IQNMSE",
+      "Primaryoracleutilityvslearnedandshifted/BOTHviews/all5RX-clean-and-nonclean-scene-protection",
+      "ActualpriorSIGpredictions-inputs/rawconditioner-linearoutput/boundedmodulation/SIGrelativeMSE/percaseandprior",
+      "G-F-state-grad-unchanged/hook-restored/mainG4096-fullF4096/smokeG12-F4/CPUcost/noTX-V-target-updates"
+    ],
+    "dimensions": [
+      "source512128L384U/1024visits512unique/2cachedviews",
+      "overall/5RX/3days/2roles/7scene=18groupsperview",
+      "4casesx36groups=144group-casecells"
+    ],
+    "prediction_ref": "Noformal/sourceVprediction;source4IQreadouts+4096frozenFfeatures/logits. CleanFfullref160cachedrow0;actualSIG160independentcache. Differentfeaturesexplicit.",
+    "scorer_ref": "No truth. IndependentNumPyallsourceorder/144casegroups/conditionerlinearW-input-bias-vsactual/disabledzero/actualoracle-shiftedinputs/SIGerrors/modulation-and-rule. NoextraNN/noGversionselection."
+  },
+  "rows": [
+    {
+      "row_id": "source-prior-context-oracle",
+      "method": "FixedlearnedGweights/conditioner-disabled-cleanSIG-globalshift1SIG/sourcecleanFchoiceutility",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{prior_context_oracle.py,prior_context_oracle_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "No new model/optimizer/augmentation RNG. MainG-Fseed2026092701/fixedsourceindices2026101901/split392005/cacheaugmentation2026101912;globalSIGshift1deterministic/supportN/A",
+      "k": null,
+      "scenario": "Source-training-pool512L128U384/cache01and20/4x20fixedwindow80:160/pairedcleanoracles/0V-target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "CPU2/0optimizer/0TX-V-target/mainG4096-F4096+real2noncleanLs-smokeG12-F4/source1024visits512unique/128L384U;mainG30-7410/F50knowledgecostretained",
+      "output_root": "runs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.prior_context_oracle_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-priorContext-oracle-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "view1.npz PRIVATE",
+        "view20.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "PreviousgoalturnPROGRESS:pairedE30closed/all7/main-vs-auxsixpositive,butindependenttrainingdifferenceincludestrajectoryandconditioning. Thisdiagnosticisolatesdecodercontextatidenticaltrainedweights/sourceobservations;notmotivatedbytargetTXpatterns. OldmidSIG/FiLM/period20/RX-parameter-physicsFAILspreserved/nofallbackprimary.",
+    "MainGfixedfinal30/344295/execution4452/sourceonlytrainingandstrictpayload/sourceconfig. No G learner ornewdeploymentmodel. SourcepoolrecordsGtrainedon/notunseenV;sourcecleanFchoicecanbewrongTX. Interventionsmaydepartlearnedconditionerinputdistribution;FAILdoesnotproveallbetterpredictorsuseless/PASSnotdeployableorinformationceiling.",
+    "NormalpredictedSIGheadsremaincomputedallcases. DisabledhookszeroonlytwoLinearmodulationoutputs,identityscale1shift0. clean_SIG prehooksreplaceonlytwoLinearconditionerinputswithsame-recordcachedcleanSIG. Shiftedusesnp.roll(all512SIG,1)beforebatching/preservespooledinputmarginalsbutnotperrecordnorm;notclaimedknownwrongTXormatchedIQenergy. Allhooksexception-safe/remove;allG-Fstatefixed/gradNone.",
+    "CacheactualweightedSIG160andfullcleanFfeatures160 aredistinctreferences;formeronlyconditionerinput-and-descriptorerrors/latteronlyFcos-reference. OriginalSIG63000x160/40.32MBexistingcacheindependentproofreused/newcacheF0;oldphasecacheonlycleanFrow0. MainG30-7410/F50source4df7-50/11100/cache63000prefix-.847077s costdisclosed/F-guided.",
+    "3focusedtestsPASS:actualfixedvalues/zero-disabled/perrecord/negativeboundary/exceptionsrestoreandstatefixed;BOTHviewsgain-vs-shift-and-RXprotection. ActualmoduleCLI/help/CPUoutputguardbeforedata/actualG344295fourpaths/oracleinputs/nonzero-disabled-effect/exceptionhookrestoration/nativeIQ-state-gradpreservedPASS. OneP0P1beforelaunch. Firstreal2noncleanLssmoke strictmainfinal30/sourceSIG-and-cleanFcache/originalhead/4paths/exactnativeIQrestored;G12-F4,0updates;PASScontinues.",
+    "Bothviewsfixed1/20/source128L384U/5RX/7scene/512unique1024visits/4case144groups. Actualconditionerinput-and-output/learnedpredictions/W-bias/fullIQ-F/IDs-privateNPZs retained for independentNumPycompletecheck;0extraNN. Gitaggregatesonly. MainF4096/G4096 plus4F/12Gsmoke,0TX-V-target/optimizer/formalprediction.",
+    "Oneimmutableoutput/preflight/archiveSHA/remotecompile/PID-CWD-argv-CUDAempty-loggrowth. CPU2 noGPU/truthscorer;oldpairedGended/otherowners/defaultDURAunchanged. CompletegoalACTIVE:all6gap3pp+clean+R17guard+actualquality-efficiency. ScientificFAILnotblockgoal."
+  ],
+  "registered_at": "2026-10-31T13:53:04+00:00"
+}
