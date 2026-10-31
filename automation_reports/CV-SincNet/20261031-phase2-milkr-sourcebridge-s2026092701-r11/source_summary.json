@@ -1,0 +1,47 @@
+{
+  "status": "SOURCE_FROZEN",
+  "source_numerical_smoke": "PASS",
+  "source_physical_rows": 6300,
+  "source_paired_observations": 12600,
+  "bridge_rank": 8,
+  "ridge_fraction": 0.01,
+  "leave_one_source_RX_out": [
+    {
+      "receiver": 1,
+      "held_observations": 2520,
+      "unbridged_pair_MSE": 0.004236362642768302,
+      "bridged_pair_MSE": 0.002402327032347502
+    },
+    {
+      "receiver": 3,
+      "held_observations": 2520,
+      "unbridged_pair_MSE": 0.004075134982199539,
+      "bridged_pair_MSE": 0.0025753645815901533
+    },
+    {
+      "receiver": 4,
+      "held_observations": 2520,
+      "unbridged_pair_MSE": 0.004114120395858114,
+      "bridged_pair_MSE": 0.0022881098374264476
+    },
+    {
+      "receiver": 6,
+      "held_observations": 2520,
+      "unbridged_pair_MSE": 0.0041474860161888494,
+      "bridged_pair_MSE": 0.00235714059354734
+    },
+    {
+      "receiver": 8,
+      "held_observations": 2520,
+      "unbridged_pair_MSE": 0.004007868232609155,
+      "bridged_pair_MSE": 0.0026322607258978605
+    }
+  ],
+  "target_reads": 0,
+  "query_reads": 0,
+  "U_truth_reads": 0,
+  "F_updates": 0,
+  "G_updates": 0,
+  "seconds": 15.213212369009852,
+  "code_commit": "cddc9041ca8a325a9030c17b779da58303780b81"
+}
