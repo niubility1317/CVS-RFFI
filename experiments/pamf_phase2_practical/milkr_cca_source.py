@@ -10,6 +10,22 @@ from .milkr import nested_fisher
 from .milkr.support_calibrated import target_and_score
 
 
+def reuse_source_checkpoint(rt):
+    """Reuse source-frozen parameters; target predictions never select the map."""
+    parent=read(rt['reuse_source_runtime'])
+    require(parent['kernel_method']=='paired_cca','Wrong source checkpoint method')
+    for key in ('source_contract','source_cache','DURA','PAMF_sources','model_seeds','source_cache_epochs','augmentation_cache'):
+        require(parent[key]==rt[key],'CCA source ancestry/data contract differs: '+key)
+    root=Path(parent['run_root']);selection=read(root/'source_selection.json')
+    require(selection['status']=='SOURCE_FROZEN' and selection['target_reads']==0 and selection['query_reads']==0
+            and selection['U_truth_reads']==0 and selection['target_eligible'] is True,'CCA parent not source-only frozen')
+    adapter=PairedCCA.load(root/'source_cca.npz')
+    require(adapter.rank==selection['selected_rank'],'CCA rank differs from frozen source choice')
+    adapter.save(Path(rt['run_root'])/'source_cca.npz')
+    write(Path(rt['run_root'])/'source_selection.json',dict(selection,reused_source_run=parent['run_id'],
+        reuse_no_new_source_fit=True,new_source_fit_seconds=0,source_parameter_copy='same frozen arrays'))
+
+
 def aggregate(records):
     result=[]
     for mode in ('R13',)+RANKS:
@@ -23,6 +39,7 @@ def aggregate(records):
 
 
 def calibrate(rt):
+    if rt.get('reuse_source_runtime'):return reuse_source_checkpoint(rt)
     from .milkr_cv_screen import extract_for_method
     from experiments.cric_dura_comparison.f_data import SourceDataset
     started=time.perf_counter();prior=read(rt['prior_source_selection'])

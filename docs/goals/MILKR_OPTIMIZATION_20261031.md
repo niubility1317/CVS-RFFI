@@ -74,3 +74,7 @@ R13仅映射raw仍残留单侧失配。新R14拟合source-only配对CCA，两路
 - S1：Q0较原版+38.763pp，Q1增量+15.916pp；均值验收True，每格验收True。
 
 首RX先导晋级：True。不以singleRX声明goal完成；详见pairedcca r12报告。
+
+### R14固定参数确认
+
+首RX四路均值门槛通过，r13按事前规则确认其余六RX全部K/N。直接复用r12源rank16参数，无目标反馈重训/改参。分别报告confirm6与combined7，逐KN/每RX保留。pilot S0每格尚未全部达标，不能外推每格均+5pp。
