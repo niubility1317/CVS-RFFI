@@ -1,0 +1,34 @@
+{
+  "run_id": "20261031-phase2-milkr-teacherkernel-s2026092701-r24",
+  "kernel_method": "teacher_kernel",
+  "arm": "R25",
+  "K": [
+    1,
+    20
+  ],
+  "N": [
+    2,
+    20
+  ],
+  "model_seeds": [
+    2026092701
+  ],
+  "capsules": [
+    "capsules/P01/MIX01/1-1"
+  ],
+  "orbit_quarters": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "orbit_rank": 64,
+  "teacher_weight": 0.25,
+  "teacher_probability": "old_head_columns_before_softmax_T1_then_mean_C4_then_unit",
+  "source_old_head_columns": 4,
+  "target_old_head_columns": 6,
+  "K_gt1": "true3physicalfoldOOF registeredtrainSUPtau/coef",
+  "query_fit": false,
+  "target_query": "strictG-only",
+  "target_goal": "unchanged all16KN bothS Q0+5/Q1>Q0; cornersfirst"
+}

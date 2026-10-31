@@ -1,0 +1,218 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase2-milkr-teacherkernel-s2026092701-r24",
+  "group_id": "phase2-milkr-frozen-head-kernel",
+  "display_name": "MILKR 冻结分类头概率核角点验证",
+  "description": "R25 保留冻结TriSIGSSL原head的C4平均概率为固定.25PSD几何分量，C4moments/CCA64保持；首RX四角点。",
+  "kind": "cvs",
+  "stage": "Phase2-B-C",
+  "aliases": [],
+  "tags": [
+    "MILKR",
+    "Tri-SIG-TIME-SSL",
+    "Phase2",
+    "K-N",
+    "small-screen",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-milkr-localanchor-s2026092701-r23",
+    "20261031-phase2-milkr-phaseorbit-s2026092701-r19",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "authorization": "User2026-10-31 MILKR goal +5pp; Tri-SIG-TIME SSL; support S0/S1 separate; each Q1 must exceed its Q0",
+  "code": {
+    "commit": "COMMIT_AT_RELEASE",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-teacherkernel-s2026092701-r24-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_only/partition/*/partition.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "one existing P01/MIX01/1-1 VALIDATED_ONCE capsule",
+    "split_id": "read exact existing K/N split IDs",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P01/MIX01/1-1",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "K": [
+        1,
+        20
+      ],
+      "N": [
+        2,
+        20
+      ],
+      "physical_pool": "P01",
+      "episode": "MIX01",
+      "query": "all_registered_complement",
+      "receiver": "1-1"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "fixed-feature development on exposed benchmark; source adapter-held TX/RX only, F saw6 source TX; one-RX corner falsification, no full-grid success claim"
+  },
+  "checkpoint": {
+    "initialization": "reuse original full source-only Tri-SIG-TIME SSL",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092703/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092704/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "MATCHING_SOURCE_ONLY_REUSE",
+    "selection_rule": "fixed final E50/11100; model seed first predeclared numeric order; no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/01a18faf-milkr-teacherkernel",
+    "gpu_policy": "source numerical smoke on physicalGPU4, one target worker on physicalGPU0; existing owners untouched; >=4GiB checked before launch",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-teacherkernel-s2026092701-r24",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-teacherkernel-s2026092701-r24/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\milkr_teacher_20261031",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_cv_screen dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-teacherkernel-s2026092701-r24-release/runtime.json",
+    "stop_rule": "query/protocol/split/output collision or launcher-wide failure: stop owned launch, preserve all; worker error marks technical failure, no blind retry; low scores are scientific results"
+  },
+  "expected_artifacts": [
+    "source_smoke.json including actualheadpayload",
+    "source_selection.json old4headcrop before softmax",
+    "source_orbit_cca.npz (ordinaryCCAonly)",
+    "24 fixedpredictionrows",
+    "fit.json teacherweight/headcolumns/physicalOOF",
+    "independent scores",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "RX",
+      "K",
+      "N",
+      "arm",
+      "S/Q"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-teacherkernel-s2026092701-r24/predictions",
+    "scorer_ref": "experiments.pamf_phase2_practical.episodic_score",
+    "primary": "Corner screen: each K1/20 N2/20 both S Q0-original>=5pp and Q1>Q0; final acceptance remains all16KN, not mean-only",
+    "success": "All four corner KN pass before any supplementary target matrix; all16 required before 6RX confirmation",
+    "secondary": "all4original/old-new/F1/floor/samecaseR20; teacherprobmemory/actualheadcolumncount/physicalOOF andtiming; no headtraining",
+    "scientific_source_rule": "Fixedteacherweight.25/T1/mean4phaseprobabilities; sourceheldRX/TX fitCCA excludesheld2TX, old4headcolumns selected BEFOREsoftmax, no heldnewheadconfidence. sourceK1grid120 fourH/larger ridge/order. K>1true3physicalOOF120rules registeredSUPtau/coef trainonly, noFisher/localanchor. sourcelegal/numeric/actualsmoke only; fixedmethodcornerfalsification.",
+    "promotion_rule": "Every corner both S Q0+5 and Q1>Q0 plus raw mean old/new guard>=original-1pp -> frozen-model remaining12KN supplement; all16 pass then same model other6RX. Failure stops expansion."
+  },
+  "rows": [
+    {
+      "row_id": "rx-1-1",
+      "method": "R25 frozen default-head probability geometry + C4momentsCCA64",
+      "purpose": "paired_KN_screen",
+      "config_ref": "configs/pamf_milkr_teacherkernel_20261031.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-teacherkernel-s2026092701-r24-release/runtime.json",
+      "data_overrides": {
+        "capsule": "capsules/P01/MIX01/1-1",
+        "workpoints": [
+          {
+            "K": 1,
+            "N": 2
+          },
+          {
+            "K": 1,
+            "N": 20
+          },
+          {
+            "K": 20,
+            "N": 2
+          },
+          {
+            "K": 20,
+            "N": 20
+          }
+        ],
+        "B_K": [
+          1,
+          20
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "split/support/evaluation are fixed existing split IDs and physical complement, not redrawn; augmentation per existing MIX01/physical seed; source proxy seed2026103101",
+      "k": [
+        1,
+        20
+      ],
+      "scenario": "MIX01 fixed six-practical residual received",
+      "optimizer": "FrozenF/G/head; sourceCCA64; currentphysical3foldOOFKRR",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "sourceL6300physical ep91/92=12600pairs, sourceK1grid120; currentK>1true3fold120rules; fourexistingFheadforwards/noNNtraining; target24rows",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-teacherkernel-s2026092701-r24/predictions/1-1",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-teacherkernel-s2026092701-r24/logs/1-1.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.milkr_cv_screen worker --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-teacherkernel-s2026092701-r24-release/runtime.json --capsule capsules/P01/MIX01/1-1",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Newkernel uses frozenoriginaldefaulthead outputs, notfit/retrain/replaceanyneuralclassifier. C4eachphase alreadycomputeshead6logits; opt-inpreservesall4, defaultoldextractunchanged. Perphase softmaxoveroldheadcolumns T1, average4 thenunitcos. geometry .75originalsig+.25probsim fixedbeforetarget; PSD.",
+    "Sourceold4/new2 proxies selectonlyold_tx4headcolumns BEFOREsoftmax/mean. Heldnew2headcolumns excluded entirely; excludedlogit changescannotaffectprob. Fbackbone stilltrainedall6, sourceproxyonlyadapterTX/RXheld, nottrueF-novel. Targetall6sourceheadcolumns; no querytrueclass/role orbatchgroup.",
+    "TeacherBridge CCAfitfilters phasedlogitspayload; sourcefoldCCA excludes heldRX/twoTXep91/92 and transform usesold_tx4crop. FinalcheckpointonlyordinaryOrbitCCA params, noheadprobs/sourceexamples/cov/classmeans uploaded. TargetFheadweightsalreadyoriginalfrozencheckpoint.",
+    "K1 source120rules fourH/larger ridge/order, reference6 lambdaclasscount/6. K>1 truephysical3foldOOF120rules, globalbandwidthcurrentregisteredtrainSUP only, heldexcludedtau/coefficients; finalallSUPrefit. NoFishergrid/R24localbasis. Supportprobabilities arefrozenrecordfeatures, nottrainablehead or extraK.",
+    "Fixednewmechanism sourcelegal/numeric/realcheckpointsmoke only, priornegativevariantrootsunchanged/no targetparameterselection. ExactstrictS0/S1support, Q1G-only, GonceoriginalIQbeforeC4/rawnoG, noquerycrossstats. Pendingdualqueryquestionnotassumed.",
+    "FirstRX1-1/P01/MIX01/seed2026092701 same4corners K1/20 N2/20 B8+C16=24rows allpredfixedbeforeindependenttruthlast. EverycornerbothS Q0original+5/Q1>Q0 plusoldnewmeanguard>=-1 beforefrozenremaining12KN; finalall16neededbeforeother6RX. SourceGPU4/targetGPU0freechecked, protectotherowners; technicalfailurepreserve/no blindretry."
+  ],
+  "registered_at": "2026-10-31T06:49:06+00:00"
+}

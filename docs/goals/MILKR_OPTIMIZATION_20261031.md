@@ -193,3 +193,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R24 局部support核实际结果
 
 真实checkpoint smoke及独立审查/测试通过；source rank64和C4固定、source120核规则选唯一K1。目标24行评分完成，所属进程退出。S0角点Q0+5为3/4，Q1>Q0为0/4；S1角点Q0+5为4/4，Q1>Q0为4/4；角点晋级False。不扩其余KN/RX，不用目标结果调rank或相位数。基座仍Tri-SIG-TIME SSL，goal ACTIVE。详见本run result_summary/report。
+
+### R25 冻结原head概率核
+
+保留既有四phase原head输出，先old列softmax再C4概率平均/unit，固定.25概率cos+.75原RF几何；原head/F/G不训练。源old4/new2先剔除heldnew两head列再softmax，CCA不读payload且checkpoint仍普通参数；F见源6曝光边界保留。K1源120规则、K>1真实物理三折OOF全注册trainSUP尺度，无局部basis/Fisher。strictG-only、同四corner24预测全部固定才truthlast，每格两S+5/query更高才扩，最终16KN不变。
