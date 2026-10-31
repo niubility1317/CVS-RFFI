@@ -283,3 +283,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R34 实际结果
 
 36行独立truth-last完成，所属进程退出。两S逐角点验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 3, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 4, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.7588828060873, 'fusion_gain_pp': 1.3959961256561737}]。双RF核分别SUP尺度后等权、单KRR/R31gate与物理OOF核实；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩12KN或六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### R35 当前SUP类别校准先验
+
+保留R34等权双RF核，F/G/原C4head不变。在MILKR prior中用当前SUP联合ridge成员+类别目标（old onehot/new uniform），成员与R31二组ridge一致，类别输出单纯形投影后prior=.5g(p)(pcal-u)。每fold仅trainSUP，targetgate568bytes，无神经头更新或query拟合；最终判决会改变。源120K1后首36角点，最终all16/七RX逐格目标不变，尚未发布。

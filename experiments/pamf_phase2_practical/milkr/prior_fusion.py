@@ -21,9 +21,11 @@ def normalize(features):
 
 
 def prior(probability,count,gate=None):
+    from .support_class_prior import Gate as ClassGate
     p=np.asarray(probability,np.float64);value=np.zeros((len(p),count),np.float64)
     weight=1. if gate is None else gate.values(p)[:,None]
-    value[:,:p.shape[1]]=PRIOR_WEIGHT*weight*(p-1/p.shape[1]);return value
+    calibrated=gate.calibrated_probabilities(p) if isinstance(gate,ClassGate) else p
+    value[:,:p.shape[1]]=PRIOR_WEIGHT*weight*(calibrated-1/p.shape[1]);return value
 
 
 def context(features,labels,config,confidence_rule=None,center_strength=None):

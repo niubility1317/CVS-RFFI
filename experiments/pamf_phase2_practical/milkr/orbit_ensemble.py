@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 from . import prior_fusion as prior,signature_kernel as sig,support_calibrated as base
 from .support_ridge_prior import fit as fit_gate,RULE
+from .support_class_prior import fit as fit_class_gate,RULE as CLASS_RULE
 from .nested_fisher import folds
 
 WEIGHT=.5
@@ -29,7 +30,7 @@ def make_kernel(similarity,tau,mix,scales):
     return WEIGHT*base.make_kernel(similarity[0],tau[0],mix,scales)+(1-WEIGHT)*base.make_kernel(similarity[1],tau[1],mix,scales)
 
 
-def context(features,labels,config):
+def context(features,labels,config,confidence_rule=RULE):
     geometry,band,mix,scales=config;y=np.asarray(labels,np.int64);similarity=similarities(features,features,geometry);taus=[]
     for sim in similarity:
         distance=np.maximum(2-2*sim,0)
@@ -37,7 +38,9 @@ def context(features,labels,config):
         else:tau=float(np.median(distance[y[:,None]!=y[None,:]]))
         if not np.isfinite(tau) or tau<=0:raise FloatingPointError('No positive ensemble SUP scale')
         taus.append(tau)
-    K=make_kernel(similarity,taus,mix,scales);eig,U,Y,_,_,mean=base.decompose(K,y);gate=fit_gate(features['teacher_probs'],y)
+    if confidence_rule not in (RULE,CLASS_RULE):raise ValueError('Wrong ensemble prior calibration')
+    K=make_kernel(similarity,taus,mix,scales);eig,U,Y,_,_,mean=base.decompose(K,y)
+    gate=(fit_gate if confidence_rule==RULE else fit_class_gate)(features['teacher_probs'],y)
     target=Y-prior.prior(features['teacher_probs'],Y.shape[1],gate);average=target.mean(0)
     return dict(tau=tuple(taus),parts=(eig,U,target,average,target-average,mean),gate=gate)
 
@@ -65,9 +68,12 @@ class State:
 
 
 def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
-    if fixed is None or fixed.get('orbit_ensemble_weight')!=WEIGHT or fixed.get('confidence_rule')!=RULE:raise ValueError('Frozen equal orbit ensemble/ridge gate required')
+    if fixed is None or fixed.get('orbit_ensemble_weight')!=WEIGHT or fixed.get('confidence_rule') not in (RULE,CLASS_RULE):raise ValueError('Frozen equal orbit ensemble/ridge gate required')
     if fixed.get('prior_weight')!=prior.PRIOR_WEIGHT or fixed.get('fusion_policy')!=prior.FUSION_POLICY or fixed.get('ridge_reference_classes')!=6 or tuple(fixed.get('config',())) not in sig.CONFIGS:raise ValueError('Wrong frozen ensemble source rule')
     if fixed.get('support_center_strength') is not None:raise ValueError('Ensemble has no support center')
+    confidence_rule=fixed['confidence_rule']
+    def build(features,labels,config):
+        return context(features,labels,config) if confidence_rule==RULE else context(features,labels,config,confidence_rule=confidence_rule)
     reference=float(fixed['ridge'])
     if not np.isfinite(reference) or reference<=0:raise ValueError('Positive source ridge required')
     x=normalize(features);y=np.asarray(labels,np.int64);ids=tuple(map(str,ids))
@@ -81,7 +87,7 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
         for config in sig.CONFIGS:
             geometry,_,mix,scales=config;predictions={lam:np.zeros((len(y),count)) for lam in base.LAMBDAS}
             for train,held in split:
-                tx={key:value[train] for key,value in x.items()};hx={key:value[held] for key,value in x.items()};ctx=context(tx,y[train],config)
+                tx={key:value[train] for key,value in x.items()};hx={key:value[held] for key,value in x.items()};ctx=build(tx,y[train],config)
                 cross=make_kernel(similarities(hx,tx,geometry),ctx['tau'],mix,scales);bias=prior.prior(hx['teacher_probs'],count,ctx['gate'])
                 for lam in base.LAMBDAS:
                     alpha,intercept,_=base.coefficients(ctx['parts'],lam);predictions[lam][held]=bias+cross@alpha+intercept
@@ -90,7 +96,7 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
                 records.append(dict(config=list(config),ridge=lam,physical_OOF_H=objective,OOF_loss=loss))
                 if best is None or rank>best[0]:best=(rank,config,lam)
         _,config,ridge=best
-    ctx=context(x,y,config);alpha,intercept,_=base.coefficients(ctx['parts'],ridge);alpha.flags.writeable=False;intercept.flags.writeable=False
+    ctx=build(x,y,config);alpha,intercept,_=base.coefficients(ctx['parts'],ridge);alpha.flags.writeable=False;intercept.flags.writeable=False
     extra=sum(x[PREFIX+key].nbytes for key in RF)
     selection=dict(rule='source_fixed' if not audit else 'three_physical_fold_OOF',prior_weight=prior.PRIOR_WEIGHT,fusion_policy=prior.FUSION_POLICY,old_head_columns=old_count,
         physical_OOF=bool(audit),folds=audit,physical_K=k,physical_count=len(y),candidate_count=len(records) if audit else 1,records=records,query_fit=False,
