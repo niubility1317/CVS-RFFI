@@ -195,3 +195,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 源时序签名与接收机均值方向
 
 20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01：独立CPU源诊断，排除固定512后用其余62488源clean SIG和公共RX估计五均值rank4 span。只比较源latent完整SIG与正交补修正，不将均值span视为已证实噪声、不使用TX/V/target、不加载或训练G。双view各较完整SIG至少+2、逐RX/clean保护、非clean每景最多−1及特征误差条件预先固定；PASS仅支持另登记源IQ可达性。原F50知识/缓存成本、旧FAIL、默认与完整目标保持，实际结果见run。
+
+
+## 源SIG接收机均值方向：完整判定
+
+20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01/67073970。VERIFIED / ANALYZED_SOURCE_ONLY，科学判定FAIL。固定512源记录全部排除后，以62488源clean SIG和公共RX拟合rank4均值span；该4/160维承载31.347992%拟合源签名中心化能量。两个缓存的完整SIG修正与clean F选择一致数507/509，正交补修正502/505，分别净−5/−4；接收机与场景保护也未通过，clean及整体特征误差条件通过。不把RX均值span视为已证实噪声，不放宽条件或改选描述分支，不启动相应G训练。CPU2主循环0.157431秒；主完整F0/原头4096，真实2Ls检查另F2/原头2，0G加载/前向/模型优化/TX/V/target。独立62488统计/谱投影、1024源观察、4096原头特征行及52分组复算通过（3.768744秒，0新增NN）；最大logit差7.53699822731e-06。源clean F选择代理不是真实TX准确率，latent混合特征不保证IQ可达或目标泛化。默认DURA及完整3pp/clean/同质量效率目标保持ACTIVE。 详见本run analysis.md/results.json。

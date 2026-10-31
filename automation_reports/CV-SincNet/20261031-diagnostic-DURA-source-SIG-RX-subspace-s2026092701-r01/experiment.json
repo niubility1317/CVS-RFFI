@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-performance-efficiency goal and explicit independent frozen-source-F guidance; source-only CPU association/latent intervention; no G training or target use",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "6707397066c3bf979bbe9d8060c523361545e31d",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01-release"
@@ -85,7 +85,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.receiver_signature --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.receiver_signature --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01 --commit 6707397066c3bf979bbe9d8060c523361545e31d",
     "stop_rule": "Bad source handles/order/exclusion/rank/nonfinite/Fstate/smoke/originalhead replay/collision: preserve and stop/no automatic retry. Scientific FAIL does not change rank/threshold/model or start G"
   },
   "expected_artifacts": [
@@ -140,7 +140,7 @@
       "budget_ref": "CPU2;mainfullF0/head4096;real2Ls smokeF2/head2;0G/TX-V-target/modeloptimizer. Reuse40.32MBsignaturecache/newFcache0",
       "output_root": "runs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.receiver_signature --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.receiver_signature --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01 --commit 6707397066c3bf979bbe9d8060c523361545e31d",
       "expected_artifacts": [
         "launch.json",
         "smoke.json",
