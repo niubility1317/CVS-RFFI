@@ -5,9 +5,9 @@ import torch
 ALPHA=.0033130025035573727
 
 
-def minimum_shift(jacobian,offset):
-    if jacobian.ndim!=4 or jacobian.shape[1:]!=(5,2,256) or offset.shape!=(len(jacobian),5):
-        raise ValueError('Paired source rank5 IQ Jacobian and reference offset required')
+def minimum_shift(jacobian,offset,*,dimension=5):
+    if dimension not in (5,10) or jacobian.ndim!=4 or jacobian.shape[1:]!=(dimension,2,256) or offset.shape!=(len(jacobian),dimension):
+        raise ValueError('Paired source rank5 or explicit source10 IQ Jacobian and reference offset required')
     j=jacobian.detach().double().flatten(2);d=offset.detach().double()
     gram=j@j.transpose(1,2);values,vectors=torch.linalg.eigh(gram)
     defined=values>values[:,-1:].clamp_min(0)*1e-10
@@ -19,9 +19,9 @@ def minimum_shift(jacobian,offset):
     return shift.to(jacobian),dict(rank=defined.sum(1),relative_residual=relative)
 
 
-def prototype_tangent_loss(restored,clean,jacobian,offset,alpha=ALPHA):
+def prototype_tangent_loss(restored,clean,jacobian,offset,alpha=ALPHA,*,dimension=5):
     if (restored.ndim!=3 or restored.shape[1:]!=(2,256) or clean.shape!=restored.shape
-        or jacobian.shape!=(len(restored),5,2,256) or offset.shape!=(len(restored),5)
+        or dimension not in (5,10) or jacobian.shape!=(len(restored),dimension,2,256) or offset.shape!=(len(restored),dimension)
         or not math.isfinite(alpha) or alpha<=0):raise ValueError('Matched source IQ/J/offset and positive fixed alpha required')
     delta=restored-clean.detach();j=jacobian.detach();d=offset.detach()
     residual=(j*delta[:,None]).sum((2,3))-d;raw=residual.square().sum(1)
