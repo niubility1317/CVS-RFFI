@@ -247,3 +247,7 @@ source 主宏H相对 R27 C4 对照 -0.6884pp，各K/S raw差 [{'k': 1, 'S': 0, '
 ### R30 实际结果
 
 source 主宏H相对 R27 CCA 对照 -0.2114pp，各K/S raw差 [{'k': 1, 'S': 0, 'delta_pp': -1.150652321579726}, {'k': 1, 'S': 1, 'delta_pp': 0.4377809248833242}, {'k': 20, 'S': 0, 'delta_pp': 1.0119175790536006}, {'k': 20, 'S': 1, 'delta_pp': 0.4049722062355321}]，源门槛 False。按预登记 source-only 停止，target0、未拟合最终encoder。 所属进程已退出，所有旧run保持；最终16KN逐格目标未达，goal ACTIVE。
+
+### R31 当前SUP多维平衡岭回归先验
+
+q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge=.1trace(cov)/d，g=clip(.5+centeredq·beta,0,1)，B g1/C零方差明确g.5。所有OOF仅trainSUP拟合；query冻结应用。原C4/CCA64/F/G/head/priorcap.5/R26fusion保持，不使用R30度量。新固定机制沿R26/R27 source120K1选择后直接36角点证伪，无sourceH收益否决，不重开R30旧gate。最终all16两Sraw+5/QF>raw保持，goal ACTIVE。

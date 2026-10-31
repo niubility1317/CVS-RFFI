@@ -34,9 +34,11 @@ def context(features,labels,config,confidence_rule=None):
     K=base.make_kernel(sim,tau,mix,scales);eig,U,Y,_,_,mean=base.decompose(K,y)
     gate=None
     if confidence_rule is not None:
-        from . import support_prior_gate
-        if confidence_rule!=support_prior_gate.RULE:raise ValueError('Wrong support-confidence rule')
-        gate=support_prior_gate.fit(features['teacher_probs'],y)
+        from . import support_prior_gate,support_ridge_prior
+        if confidence_rule==support_prior_gate.RULE:calibrator=support_prior_gate
+        elif confidence_rule==support_ridge_prior.RULE:calibrator=support_ridge_prior
+        else:raise ValueError('Wrong support-confidence rule')
+        gate=calibrator.fit(features['teacher_probs'],y)
     target=Y-prior(features['teacher_probs'],Y.shape[1],gate);average=target.mean(0)
     return dict(tau=tau,parts=(eig,U,target,average,target-average,mean),gate=gate)
 
@@ -77,7 +79,8 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
     confidence_rule=fixed.get('confidence_rule')
     if confidence_rule is not None:
         from .support_prior_gate import RULE
-        if confidence_rule!=RULE:raise ValueError('Wrong frozen confidence rule')
+        from .support_ridge_prior import RULE as RIDGE_RULE
+        if confidence_rule not in (RULE,RIDGE_RULE):raise ValueError('Wrong frozen confidence rule')
     def build(features,labels,config):
         return context(features,labels,config) if confidence_rule is None else context(features,labels,config,confidence_rule=confidence_rule)
     reference=float(fixed['ridge'])
@@ -106,5 +109,5 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
     return State(x,alpha,intercept,config,ctx['tau'],float(ridge),dict(rule='source_fixed' if not audit else 'three_physical_fold_OOF',
         prior_weight=PRIOR_WEIGHT,fusion_policy=FUSION_POLICY,old_head_columns=old_count,physical_OOF=bool(audit),folds=audit,physical_K=k,physical_count=len(y),
         candidate_count=len(records) if audit else 1,records=records,query_fit=False,bandwidth_scope='registered',bandwidth_physical_count=len(y),
-        frozen_default_head_updates=0,extra_state_bytes=x['teacher_probs'].nbytes+(16 if ctx['gate'] is not None else 0),K1_current_class_scaling=bool(k==1),
+        frozen_default_head_updates=0,extra_state_bytes=x['teacher_probs'].nbytes+(ctx['gate'].state_bytes if ctx['gate'] is not None else 0),K1_current_class_scaling=bool(k==1),
         prior_confidence_gate=ctx['gate'].audit() if ctx['gate'] is not None else None),ctx['gate'])
