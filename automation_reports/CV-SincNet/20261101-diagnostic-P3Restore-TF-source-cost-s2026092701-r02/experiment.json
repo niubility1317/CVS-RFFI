@@ -1,0 +1,174 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02",
+  "group_id": "phase3-independent-restoration-source-cost",
+  "display_name": "Phase3独立时频恢复器：实际F0与源G10零更新成本：单输出接口技术修复r02",
+  "description": "原L_s/U_s512条G10配对，独立TF和R69图的纯IQ/实际F0指导步骤交替计时，不更新任何权重。",
+  "kind": "diagnostic",
+  "stage": "Phase3",
+  "aliases": [],
+  "tags": [
+    "Phase3",
+    "independent-restorer",
+    "P3-Restore-TF",
+    "source-only",
+    "no-updates",
+    "training-cost"
+  ],
+  "comparison_group_id": "P3Restore-TF-vs-DURA-native-step-IQ-and-F0",
+  "parent_run_ids": [],
+  "replaces_run_id": "20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r01",
+  "authorization": "User20261101:independentPhase3restorer/majorarchitecturechange/scratchsingle30;explicitretainoriginalLsUs/OEonlyfrozendiagnostic;sourceFguidanceallowed/noTX-targettraining/defaultunchanged",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Torch2.1/NumPy2; FP32 TF32off CPUthreads2; actual originalTriSIGSSL F0 base3ff8/50-11100 and DURA47c runtime",
+    "cwd": "releases/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30 source392005 + existingG10MIX01sourceP0",
+    "representation": "512rolewise-linspace128Ls384Us;existingG10P0received plus matching rawFP64->FP32->oneRMS cleanreference;no oldnormalizedIQ or P1teacher",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract.json/split392005/roles6300-56700-27000",
+    "physical_ids_ref": "OriginalL_s/U_smetadataIDs andexistingL/UsG10publicIDs;no V/target metadata",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "pamf-source-Us392005-G10-MIX01-20261031-r01",
+    "split_id": "392005-Us-source5rx-3day-eq1",
+    "validation_ref": "Reuse L d319 producer andUs VALIDATED_ONCE capsule pamf-source-Us392005-G10-MIX01-20261031-r01 /392005-Us-source5rx-3day-eq1. No datarehash/revalidation.",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07cache01/20;0newchannelobservations;onlytemporarysourceIQcounterfactuals",
+    "target_panel": "None/noformalprediction/newtrainedG;zero-updatecostonly",
+    "actual_training_labels": "No optimization. TX/y arrays neverfetched, only sourcepairedIQ and frozenF0 clean/restored fused160;OE/V/novel/target inputs0.",
+    "augmentation": "ExistingMIX01scene2026103001/channel2026104001/receiver2027/25MHz2.45GHz/refSNR30/reflect/post_sync-noEQ;first2canonicalreplaysmustequalcachedP0;no secondpostchannelRMS"
+  },
+  "permissions": {
+    "regime": "Source_only_zero_update_Phase3_G_training_cost",
+    "query_use": "0targetU-Q/0V-OE-novel/0TXlabels/0optimization. OfflinebuilderrawPKLwholefilecontainsotherroles;onlyselected512sourcevaluesindexed. Privatecoordinatesnotexported.",
+    "external_method_exception": null,
+    "claim_scope": "ActualF0 ratherthanoldF50;purecostatdifferentinitialstates/notqualityequal-speed-ornewGperformance. F0sourceknowledge50/11100 disclosed;DURAtrainedcopycostonly/notTFancestor/defaultunchanged."
+  },
+  "checkpoint": {
+    "initialization": "TFscratch196898params/zeroresidualidentity/noGcheckpoint;DURAreference=deepcopyfrozenR69finalweightswithautograd/evalonly/0updates/notnewGancestor",
+    "sources": [
+      "OriginalTriSIGSSL F0 20261027-phase1-pamf-repl-shuffled-views-m16-r02/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth/code3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/fixed50-11100",
+      "DURA v1 R69 final20-4940/sourceb2a2ce937a64654e17e84c2aa817b9da4257a48f/runtime47c264286ca689f060a3f36aafb763fe209a6f06/frozenrealcheckpoint/referencecopycostonly",
+      "ExistingG10L6300d319+Us56700sourcecache/sourceP0only;originalrawManySig2.359GB/onlyselectedLsUsvalueindexing/noP1IQteacher",
+      "NewindependentTFarchitecturec961b6480a6b38cd52634226356f45f1528338b9/randomfactoryonly/noDURAweights"
+    ],
+    "contract_check_ref": "ExistingF0 strictsource-onlyscratch/ownREPLchain/defaulthead/fullcontractsource_roles;G10sourcecacheF0identity+L/UsIDorder;R69loadexistingstrictschema/aliases",
+    "provenance_verdict": "OriginalF0TriSIGSSL/232993/50-11100/original392005sourceL-Uonly/no targetancestry. R69onlybenchmarkreference. TFnewrandom/noancestor. SourceOEonlyfrozendiagnosticandnotopenedhere. No PCD/r03Gteacher.",
+    "selection_rule": "No checkpointselection/learning. Fixed2objectives( IQNMSE+.05mean3STFTrelativeL1; plus.1fullF0cos withdetachedperrecordIQgradientcap.5). FixedB256/3blocks/(2warm+6timed)/twoarchitecturesalternatingorder=96steps. Predefineddescriptivecostsupport=TFmedianwall>=10%lessAND3/3blockspositiveforeachobjective;notqualitygateorautomatictraining."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/p3restore-source-cost",
+    "gpu_policy": "ControllerCUDAempty/CPU2;oneworker GPU4/6/7/free>=12000MiB/existingcompute<=2/addONE<=3total/own1card/goal<=2GPUworkers;oldexactfullratehandlesmustterminal;otherownersuntouched;0truthscorer",
+    "remote_run_root": "runs/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02",
+    "remote_log_root": "runs/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02",
+    "launch_command": "python -u -m experiments.pamf_phase3_restoration.cost_probe run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --inputs RELEASE/inputs.json",
+    "stop_rule": "BadoriginalsourceorF0-R69ancestry/ID-order/canonicalG10reproduction/nonfinite/statechange/gradientcap-or-VJP/missingrealLs-smoke/collision/namespace-load/actualcounts:preservefailedrun/noautoretry/nootherownerstop. CostthresholdFAILonlyscientificresult/no goalcompletion."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "inputs.json PRIVATE_RUNTIME",
+    "submitted.json",
+    "smoke.json",
+    "source_pair.json",
+    "source_pair.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "controller_complete.json",
+    "logs/worker.log",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "GPUresident sourceforward-objective-backward-clip wall/CUDAeventmedians/threeblockpairedratios/IQandIQplusF0",
+      "TF196898params/19646464ConvLinearMAC/6rFFT6irFFT(each64channels=768realtransformrows)/0CG;R69full266951/referenceevalautograd",
+      "actualsourcecleanF0cache512/327680bytes;newF0featureRows12806/headRows4/TFrows12290/R69refrows12290/productionlogicalR69rows2;0optimizer-state-target-TX"
+    ],
+    "dimensions": [
+      "oneactualmodelseed2026092701",
+      "source512unique128Ls384Us/1MIX01sourceview/noV-OE-target",
+      "2objectives*3blocks*6timed*2models=72timed+24warm;zerooptimization"
+    ],
+    "prediction_ref": "No test/deployablepredictions/newtrainedG;onlysourcepairedprivatearraysandcostmetrics. Allobservations repeatedsame512physicalrecords.",
+    "scorer_ref": "No truth. Independentlyrecompute96steprecords/medians-threeblockratios/counters/costhypothesisandstateidentityfromsavedartifacts;0newNN."
+  },
+  "rows": [
+    {
+      "row_id": "source_cost",
+      "method": "P3-Restore-TF-scratch-vs-fixed-R69-copy/actualfrozenTriSIGSSL-F0/zero-updatepairedGPUcost",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_phase3_restoration/{model,objective,source_pair,cost_probe}.py",
+      "resolved_config_ref": "inputs.json PRIVATE_RUNTIME",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026104001,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model2026092701/source392005/rolewiselinspace512/scene2026103001/channel2026104001/receiver2027/no new randomsampling oraugmentation;benchmark25-75rolemixture notfuturefulltrain10-90",
+      "k": null,
+      "scenario": "ExistingG10sourceMIX01/P0only/128Ls384Us/noV-OE-target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "OneGPU/CPU2/96zero-updateB256steps(24warm72timed)/TF-R69ref12290each/F0features12806inclsmoke6+cache512+guided12288/F0head4/R69productionlogical2/0optimizer-TX-OE-V-target",
+      "output_root": "runs/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02",
+      "log_path": "runs/20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02/logs/worker.log",
+      "command": "python -u -m experiments.pamf_phase3_restoration.cost_probe worker --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT --inputs RELEASE/inputs.json",
+      "expected_artifacts": [
+        "launch.json",
+        "inputs.json PRIVATE_RUNTIME",
+        "submitted.json",
+        "smoke.json",
+        "source_pair.json",
+        "source_pair.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "controller_complete.json",
+        "logs/worker.log",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "PreviousgoalturnPROGRESS:oldfullratepairall30-sevenclosedff853negative/defaultDURAkept. User20261101 explicitlynewGisforPhase3/majorarchitectureallowed/LsUs-only/OEfrozendiagnostic. NewindependentTFc961 sourcegoalimplemented9checks,nottrained/notqualified. ThisdiagnosticusesactualF0,notF50;no newGweights or target feedback.",
+    "SourceG10originalprimitiveL6300d319andvalidatedUs56700exactIDs/P0only;no metadata_y/teacher_logits/restored/oldnormalizedIQ. Trustedbuilderus._locate enumeratesrawsourcecoordinates/sampleIDswithouttruth;originalrawManySigwholefileincludesotherrolesandTXnamesbutonlyselected512sourcepacketvaluesindexed. BuilderlocatorsnotpublicGinputs. NewrawRMS512,canonicalobserve2firstLsforaudit,postchannelRMS0.",
+    "FirstnewNNworkreal2Ls smoke:strictF0+fixedR69load/newTFidentity/outheadgradient/fullF0existingautograd-inputVJPcap.5/sourcephysicalanddefaulthead/nativeR69-productionclose/stateunchanged;callbackPASScontinueswhole512/benchmark. OriginalF0param-buffers/defaultheadfixed;DURAcopyautogradonly/referenceNOTnewGancestor. F0source50/11100knowledgecostexplicit;0target-PCD/r03teacher/0TXobjective.",
+    "PurephysicalIQNMSE+.05mean3STFTrelativeL1(32/64/128 complexfullSTFT);guided+.1cosfullF0fused160,detachedreference/perrecordIQgradientcap.5/globalclip1. Threeblocks2warm6timed/arch-objective/alternatingarchorder/B256resident/interleaved51225Ls75Us. 96forwardbackwardclip/0optimizerstep. Evalnormalizationstatepreserved;differentTFidentityinit-vsR69trainedweights/noquality-equivalentclaim.",
+    "Timingincludesobjective/optionalF0inputVJP/backward/clip1;excludesoptimizer.step/IO-transfers-cache-load-eval,thosepreparationtimesseparate. AllmodelsresidentpeaknotTFsinglemodelVRAM. CUDAeventsandwallreported/pairedsameGPUsharedload. Costprimary>=10%medianwallreductionand3blockspositiveBOTHobjectives;scientificFAILdoesnotcompletegoal orcancelalreadyregisteredtrainedversions.",
+    "23focusedchecksacrossmodel9/objective3/source9/cost2:actualtime-frequencygategradient/HermitianDFTforward-paramVJP/recordindependence/state-MAC/roleexpansion/shape/Fcap-and-targetdetach;FakeLstorethrowsifyfetchedandbothmetadatarolesPASS;GPUcapandactualCLI. SourceprivacytestinitialfixtureusedWindowswrongsplitseparator/fixedpath.name/targetedPASS/no productionchange. UniqueindependentP0P1PASS/noP0P1.",
+    "Strictmetadata-onlyF0readobservedoriginal3ff8main3view/final50-11100/232993 andoriginal392005roles;sourceG10UsCOMPLETE-VALIDATED_ONCE/noUslabels-or-secondRMS/Ld319producer. RuntimeprivateinputsnotGit;code/configidentityonecommit/onearchivewithinputs/oneSHA/remotecompile/preflight/postPID-CWD-argv-CUDA-GPU-loggrowth;noextra hashes/reviews/datarevalidation.",
+    "Privateall96timingrows/sourcepairretained;Gitonlyaggregates/report. IndependentNumPymedian/block/counter复算0NN/0truth. Scientificsourcecostnotactuallearning/Phase3AK-RU/registersuccess. Nextfromscratchsingle30fixedmatrixafterrealcost/F0binding;allactualnewGversionsmustformaltest. Fullsixgap3pp-clean-Phase3open-efficiencygoalACTIVE/defaultDURAandothersunchanged.",
+    "r01 code7b49在首个real2Ls smokeDURA接口适配失败/0cost0optimizer0target，已独立确认PID退出。实际47cengine.py36-42内部验证valid后return result[:-1]，readerNone公共输出为单项。r02仅取engine(x)[0]、新RUNroot，模型/数据/矩阵/科学阈值全保持；一次直接问题针对性P0P1复审PASS，不覆盖旧产物。"
+  ],
+  "registered_at": "2026-10-31T16:50:21+00:00"
+}

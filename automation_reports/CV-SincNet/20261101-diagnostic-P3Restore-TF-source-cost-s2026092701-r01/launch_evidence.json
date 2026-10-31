@@ -1,0 +1,33 @@
+{
+  "status": "FAILED",
+  "external_state": "VERIFIED_TECHNICAL_FAILURE",
+  "execution_commit": "7b49cf9c74162e27dbf9e6e271cf5d621928a417",
+  "controller_PID": 2119396,
+  "worker_PID": 2119420,
+  "admission": {
+    "GPU": 4,
+    "free_memory_MB": 23189,
+    "existing_compute_PIDs": 1
+  },
+  "actual_CWD_argv_CUDA_at_first_postlaunch_observed": true,
+  "terminal_owned_PID_absence_verified": true,
+  "archive_sha_match": true,
+  "remote_compile": true,
+  "failure_layer": "REAL_SOURCE_SMOKE_DURA_PUBLIC_RETURN_ADAPTER",
+  "failure": {
+    "status": "FAILED_PRESERVED",
+    "error": "not enough values to unpack (expected 2, got 1)",
+    "type": "ValueError",
+    "target_inputs": 0,
+    "optimizer_updates": 0
+  },
+  "real_source_smoke_attempted": true,
+  "real_source_smoke_completed": false,
+  "cost_measurements_completed": 0,
+  "optimizer_updates": 0,
+  "target_inputs": 0,
+  "live_nvidia_GPU_PID_capture": "UNKNOWN/not captured; no telemetry rerun",
+  "new_performance_results": false,
+  "default_DURA_changed": false,
+  "goal_complete": false
+}

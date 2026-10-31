@@ -44,3 +44,6 @@
 ## 首次真实源F0与GPU成本诊断
 
 20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r01：原Tri-SIG-TIME SSL F0/3ff8/50-11100、L_s6300/U_s56700同392005合同。固定128Ls384Us的现成G10 MIX01 P0及原raw配对clean，0TX/V/OE/target/optimizer。新TF与固定R69只读图拷贝对照，两种损失/三块/每块2warm6timed/B256交替，共96次forward-backward-clip，0step。原R69不是新TF祖先或教师IQ；F0指导.1cos fused160、IQ输入梯度cap.5。首2Ls真实smoke后继续，参数状态不变；只证明成本与输入梯度接口，不冒充等质量提速或新性能。23聚焦检查和唯一P0P1 PASS，默认与完整目标保持。
+
+
+首个源成本r01在真实smoke的DURA公共返回值适配处技术失败（engine reader=None仅返回IQ单项），旧root保留且PID已退出，无96步计时/优化/target。新20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02仅修正取[0]并隔离root；来源、数据、96步与科学条件不改，一次直接问题针对性复审PASS。

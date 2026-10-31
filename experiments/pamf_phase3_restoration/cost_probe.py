@@ -8,7 +8,7 @@ import subprocess
 import sys
 import time
 
-RUN = '20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r01'
+RUN = '20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r02'
 MODULE = 'experiments.pamf_phase3_restoration.cost_probe'
 MODEL_SEED = 2026092701
 
@@ -127,8 +127,9 @@ def worker(args):
             if name=='TF':torch.testing.assert_close(restored,x,rtol=0,atol=0)
             else:
                 with torch.no_grad():
-                    production,valid=b['dura'][1](x);counts['DURA_production_logical_rows']+=len(x)
-                    if not valid:raise ValueError('Fixed production DURA is invalid')
+                    # InferenceEngine validates and removes its validity flag;
+                    # without a reader its public return is (restored_IQ,).
+                    production=b['dura'][1](x)[0];counts['DURA_production_logical_rows']+=len(x)
                     torch.testing.assert_close(restored.detach(),production,rtol=3e-5,atol=3e-5)
             physical,terms=objective(restored,y);guide,info=feature_guide(reader,restored,y,target)
             with torch.no_grad():

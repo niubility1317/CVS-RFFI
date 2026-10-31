@@ -3,7 +3,7 @@
 - run_id：`20261101-diagnostic-P3Restore-TF-source-cost-s2026092701-r01`
 - group_id：`phase3-independent-restoration-source-cost`；类别：`diagnostic`；阶段：`Phase3`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：FAILED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -48,3 +48,10 @@ Strictmetadata-onlyF0readobservedoriginal3ff8main3view/final50-11100/232993 ando
 Privateall96timingrows/sourcepairretained;Gitonlyaggregates/report. IndependentNumPymedian/block/counter复算0NN/0truth. Scientificsourcecostnotactuallearning/Phase3AK-RU/registersuccess. Nextfromscratchsingle30fixedmatrixafterrealcost/F0binding;allactualnewGversionsmustformaltest. Fullsixgap3pp-clean-Phase3open-efficiencygoalACTIVE/defaultDURAandothersunchanged.
 
 速度阈值只检验零更新resident步骤成本，不能替代30轮训练质量、六景逐个3pp、clean保持或实际Phase3开放指标。固定96步完整执行，技术失败保留产物；无训练后选择或目标访问。
+
+
+## 实际技术失败与保留
+
+VERIFIED / FAILED。执行7b49cf9c74162e27dbf9e6e271cf5d621928a417，controller2119396/worker2119420、GPU4准入前1个compute和23189MiB。实际进程CWD/argv/CUDA已观察，现均退出；归档SHA和远端编译通过。真实2Ls smoke在DURA生产接口返回值适配处失败：把InferenceEngine(reader=None)的(restored_IQ,)误解包为两项。引擎内部已验证并移除valid，正确公共调用为engine(x)[0]。未完成smoke、未进入96步成本循环，无优化、target或新性能结果；不宣称完整状态检查通过。未捕获live nvidia PID样本，不伪造GPU峰值或为遥测重跑。旧root/权重/数据/日志全保留。
+
+仅修正返回值并改用独立r02 root，其他模型、512源ID、G10配对、损失、96步矩阵、权限和资源不改。唯一直接问题的针对性P0/P1复审PASS；不重审无改动部分、不热改r01。
