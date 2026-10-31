@@ -28,10 +28,11 @@ def extract(reader,raw,device,engine=None,batch=128):
 
 
 class TeacherBridge:
+    encoder_type=OrbitCCA
     def __init__(self,cca):self.cca=cca;self.rank=64
 
     @classmethod
-    def fit(cls,raw,restored):return cls(OrbitCCA.fit(ordinary(raw),ordinary(restored)))
+    def fit(cls,raw,restored):return cls(cls.encoder_type.fit(ordinary(raw),ordinary(restored)))
 
     def transform(self,features,*,restored,old_columns=None):
         out=self.cca.transform(ordinary(features),restored=restored)
@@ -41,4 +42,11 @@ class TeacherBridge:
     def save(self,path):self.cca.save(path)
 
     @classmethod
-    def load(cls,path):return cls(OrbitCCA.load(path))
+    def load(cls,path):return cls(cls.encoder_type.load(path))
+
+
+class NativeSkipBridge(TeacherBridge):
+    from .milkr.native_skip import NativeSkip as encoder_type
+
+
+def bridge_type(method):return NativeSkipBridge if method=='native_skip' else TeacherBridge
