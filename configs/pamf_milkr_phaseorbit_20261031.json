@@ -1,0 +1,30 @@
+{
+  "run_id": "20261031-phase2-milkr-phaseorbit-s2026092701-r19",
+  "kernel_method": "phase_orbit",
+  "arm": "R20",
+  "K": [
+    1,
+    20
+  ],
+  "N": [
+    2,
+    20
+  ],
+  "model_seeds": [
+    2026092701
+  ],
+  "capsules": [
+    "capsules/P01/MIX01/1-1"
+  ],
+  "orbit_quarters": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "orbit_rank": 64,
+  "source_K1_rule": "RX/TX-held source fourpath H chooses120kernelrules; no sourcegain gate",
+  "K1_reference_classes": 6,
+  "query_fit": false,
+  "target_goal": "every16KN twoS Q0+5pp/Q1>Q0; corner first"
+}

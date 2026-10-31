@@ -153,3 +153,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 下一步待实现的物理假设：现有线性raw/G共同空间不能完全消除G引起的相位/表征变化，且source6类监督metric可能丢失未知硬件细节。考虑固定复相位群的计算型特征：同一个received记录（S1/Q1仅一次G输出）在F内部做若干固定相位旋转，共享原F权重，逐记录取神经特征轨道均值和标准差，再用source paired线性encoder映射回原6字段、保留ridge头。旋转是当前同一观测的确定性计算，不重抽信道、不增加K/物理观测、不混入S0/S1数据，G只在原始输入运行一次，源/目标query不得跨记录统计。
 
 若实施，优先C8（八等分相位）或先C4原型，需证明群旋转不变性/逐query独立及G先于轨道、S0不调用G，FFT相位不变可复用一次，F/G/neuraldefaulthead冻结。均值+std保留分布形状，避免简单均值抵消RF信息；新输入维度是原来的2倍，可训练专用paired encoder输出原schema，rank64作为事前固定表示预算而非target选rank，源不使用TX类内监督metric；K1核仍只source校准。源F见过六TX、代理不是真F-novel，不能因source无正收益自动排除一个固定物理先验对照；具体方法/停止规则须在运行前登记。可先目标四corner(K1/K20×N2/N20)四路24行（含B），若未过每格+5与Q1>Q0不扩；通过才同冻结模型补全16格，最终要求不缩小。此方法尚未实现/登记/发布，不保证收益。
+
+### R20 固定 C4 相位轨道特征
+
+四相位同记录计算、G先于orbit、每相位单位特征的均值/标准差；source unsupervised pairedCCA rank64 固定，无classmetric，source RX/TXheld只选K1规则，F/G不更新。先K1/20 N2/20四角点四S/Q24rows，每格两S Q0+5/Q1更高才同模型补剩余12KN；最终仍需16KN全过再扩RX。源门槛仅数值/合法性，不以重复修改旧gate代替新特征验证。
