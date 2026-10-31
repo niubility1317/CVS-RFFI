@@ -160,3 +160,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 原头5维与新增5维源梯度分解
 
 20261031-diagnostic-DURA-source-headAux-s2026092701-r01/31d61413。VERIFIED / ANALYZED，SOURCE_ONLY，固定科学判定FAIL。source512（128L/384U）×01/20、CPU2、主循环5.400632秒自然结束。head/aux负cos比例19.53125%/20.3125%，两者均未达事前25%；joint/head cos中位0.820375/0.815878。相同IQ修正预算下，head相对joint与clean F判断一致数+3/−1，未达双视图至少+4，第二缓存还有源RX损伤。不据此启动删aux5的E30、不改阈值或步长。主F3072/输入VJP2048、smokeF4/VJP6，0新G/优化/TX/V/target，F状态不变；1024条几何、2048步及22分组独立复算。默认DURA与完整3pp/clean/同质量效率目标保持。 本次局部等步长检查不能隔离完整G训练轨迹或证明目标因果，不按结果放宽门槛。详见本run分析与结果。
+
+
+## 恢复后原F四分支源损伤诊断
+
+20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01/ac309dd9。VERIFIED / ANALYZED，SOURCE_ONLY。固定defaultDURA主对象/pureG描述、source512（128L/384U）×缓存01/20；CPU2主循环2.426344秒自然结束。主PA替换clean分量后与clean F选择一致数净增10/3，第二视图不足事前双视图各+6且RX3净−1，主科学判定FAIL，不放宽、不改主。描述性的时序签名替换净增21/11，五源RX均正；它仅定位源特征损伤，不自动晋级或直接启动新G。F主2560/显式原头12800，smokeF4/head4，0新G/权重加载/优化/TX/V/target；F状态不变。2048恢复观测、12800原头特征行及104分组独立复算。默认DURA与完整目标保持。 只读native源IQ与实际F分量，时序签名描述结果不能替换原PA主判定或证明IQ可实现性；后续须独立源验证，不以目标分组调参。详见本run analysis.md/results.json。

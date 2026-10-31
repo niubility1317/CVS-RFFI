@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-and-efficiency goal; explicit source frozen-F feature guidance permission; source-only CPU diagnosis/no G or target optimization",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "ac309dd9540295bfc2456fc697258b07c1f9a1f3",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01-release"
@@ -86,7 +86,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.branch_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.branch_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01 --commit ac309dd9540295bfc2456fc697258b07c1f9a1f3",
     "stop_rule": "Badcontract/order/shape/Ffeaturedecomposition-or-original-logitreplay/nonfinite/Fstatechange/smoke/collision:preserveandstop/noautoretry. Scientificfail no threshold/model/reference/branchsubstitutionsearch. NoautomaticGtraining."
   },
   "expected_artifacts": [
@@ -141,7 +141,7 @@
       "budget_ref": "CPU2;mainF2560/head-only12800;smokeF4/head-only4;0newG/Gcheckpoint/optimizer/TX-V-target/newJcache",
       "output_root": "runs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.branch_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.branch_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01 --commit ac309dd9540295bfc2456fc697258b07c1f9a1f3",
       "expected_artifacts": [
         "launch.json",
         "smoke.json",

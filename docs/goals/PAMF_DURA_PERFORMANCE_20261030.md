@@ -364,3 +364,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 先验相位坐标：完整E30与七景
 
 20261031-phase1-DURA-phasePrior-E30-s2026092701-r01/12c74215。VERIFIED / ANALYZED。G从零单阶段30轮/7410步，L189000/U1701000；完整30条loss/曝光/源视图/clip/F-TX-teacher-init计数核对通过。仅包裹两个prior的相位坐标，不增参数/Core调用、保留共享别名与初值；训练F/教师/TX/V/target0。研发曾使用源F诊断披露，先验相位性质不冒称整体G或F不变性。七景×168000全部预测固定后truth-last，126正式、105源V、126pureG配对分组与14个源/正式IQ误差独立复算。clean 84.792857%，low urban 65.272024%；低城区较纯G -2.100595、默认DURA -3.617857个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。训练及保存1013.246842秒、控制器至自动全量分析1195.450898秒；266951参数/25.068072m ConvLinear MAC/两prior四CG27FFT，坐标操作另有非卷积成本，实测时延完整保留。默认DURA保持，同质量实际效率仍未证明，完整目标ACTIVE。 仅单seed、已暴露工程基准，不称新的盲测或恢复极限。完整TX/RX/day、净纠错、source/formal与成本见本run分析。
+
+
+## 恢复后原F四分支源损伤诊断
+
+20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01/ac309dd9。VERIFIED / ANALYZED，SOURCE_ONLY。固定defaultDURA主对象/pureG描述、source512（128L/384U）×缓存01/20；CPU2主循环2.426344秒自然结束。主PA替换clean分量后与clean F选择一致数净增10/3，第二视图不足事前双视图各+6且RX3净−1，主科学判定FAIL，不放宽、不改主。描述性的时序签名替换净增21/11，五源RX均正；它仅定位源特征损伤，不自动晋级或直接启动新G。F主2560/显式原头12800，smokeF4/head4，0新G/权重加载/优化/TX/V/target；F状态不变。2048恢复观测、12800原头特征行及104分组独立复算。默认DURA与完整目标保持。 只读native源IQ与实际F分量，时序签名描述结果不能替换原PA主判定或证明IQ可实现性；后续须独立源验证，不以目标分组调参。详见本run analysis.md/results.json。
