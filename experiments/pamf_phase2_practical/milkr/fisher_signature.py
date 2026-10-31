@@ -43,7 +43,7 @@ def fit(features,labels,ids,*,old_count=6,fixed=None,conditional_loo=True):
     strength=float(fixed['fisher_strength'])
     if strength==0 or counts[0]==1:
         state=sig.fit(features,y,ids,old_count=old_count,fixed=fixed,conditional_loo=conditional_loo)
-        return replace(state,selection=dict(state.selection,fisher_weighting=dict(strength=strength,applied=False,K1_uniform=counts[0]==1)))
+        return replace(state,selection=dict(state.selection,fisher_weighting=dict(strength=strength,applied=False,K1_uniform=bool(counts[0]==1))))
     normalizer,uniform=make_normalizer(features,y,strength)
     state=base.fit(features,y,ids,old_count=old_count,fixed=fixed,conditional_loo=conditional_loo,
                    normalizer=normalizer,similarity_fn=sig.similarity,configs=sig.CONFIGS)

@@ -1,0 +1,14 @@
+{
+  "status": "FAILED",
+  "layer": "target_K1_fit_audit_JSON",
+  "fingerprint": "TypeError: Object of type bool is not JSON serializable",
+  "source_checkpoint_smoke": "PASS",
+  "source_numerical_smoke": "PASS",
+  "target_support_contact": true,
+  "target_predictions": 0,
+  "truth_scoring": 0,
+  "owned_processes_remaining": 0,
+  "cause": "numpy.bool_ in fisher_weighting.K1_uniform",
+  "local_reproduction": "native json.dumps(selection) FAIL before fix; Python bool cast plus full Fisher/nested selection JSON tests PASS",
+  "code_commit": "b2472a5b87fdcd51d00ab2ee9ae3139c1dc8e0e6"
+}

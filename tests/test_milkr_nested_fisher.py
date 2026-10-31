@@ -1,4 +1,5 @@
 import numpy as np
+import json
 import pytest
 from tests.test_milkr_semantic_residual import example
 from experiments.pamf_phase2_practical.milkr import nested_fisher as n,signature_kernel as s
@@ -21,6 +22,8 @@ def test_control_exact_R9_and_nested_K2_tie_uniform_query_independent():
     control=n.fit(x,y,ids,fixed=dict(rule,force_uniform=True))
     assert np.array_equal(ref.alpha,control.alpha) and np.array_equal(ref.score(x),control.score(x))
     state=n.fit(x,y,ids,fixed=rule)
+    json.dumps(state.selection,allow_nan=False)
+    json.dumps(control.selection,allow_nan=False)
     assert state.selection['outer_support_selection']['selected_strength']==0.
     all_scores=state.score(x);individual=np.concatenate([state.score({k:v[i:i+1] for k,v in x.items()}) for i in range(len(y))])
     assert np.allclose(all_scores,individual)
