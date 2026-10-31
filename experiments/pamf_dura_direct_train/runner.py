@@ -293,6 +293,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.runner worker','pamf_dura_direct_train.fast_lr worker',
                 'pamf_dura_direct_train.context_film worker',
                 'pamf_dura_direct_train.relation_signature worker',
+                'pamf_dura_direct_train.coarse_anchor worker',
                 'pamf_dura_direct_train.identity_init worker','pamf_dura_direct_train.no_variance worker',
                 'pamf_dura_direct_train.fast_interp worker','pamf_dura_direct_train.strong_action worker',
                 'pamf_dura_direct_train.f_guided worker','pamf_dura_direct_train.head_guided worker',
