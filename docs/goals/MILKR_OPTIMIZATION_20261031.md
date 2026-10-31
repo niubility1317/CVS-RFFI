@@ -307,3 +307,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R37 实际结果
 
 36行独立truth-last完成，所属进程退出。两S逐角点验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 2, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 4, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.190412441485291, 'fusion_gain_pp': 0.08721451450550699}, {'S': 'S0', 'K': 20, 'N': 2, 'raw_gain_pp': 3.6149159952980847, 'fusion_gain_pp': 0.054222622747379656}]。源正交余量/404768参数/各半能量核实，R31成员gate当前SUP拟合；F/G/head/C4保持，G-only完整。不扩12KN或六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### R38 当前SUP RF先验证据
+
+保留R34双核/R31成员先验，当前SUP平衡binary核ridge给旧类先验乘min(2clip(r,0,1),1)；中性r.5保持父先验，RF新类证据才减弱。每OOF仅trainSUP，F/G/head/融合保持。源120K1后首36角点，最终all16/七RX逐格目标不变，尚未发布。
