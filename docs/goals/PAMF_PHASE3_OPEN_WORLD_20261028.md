@@ -1318,3 +1318,13 @@ Run `20261031-phase3-source-meta-s2026092701-r01` / code `e4a035b6f01a7ece98ec0d
 ## 2026-10-31：源RX留一二阶联合泛化结果
 
 Run `20261031-phase3-source-meta-s2026092701-r01` / code `e4a035b6f01a7ece98ec0dff2a6ea44867b8d536`，ERM/META各444共888真实源训练及8×3DURA后独立CPU3truth执行VERIFIED。主META_NATIVE_predicted_ratio：source_DURA: AK/CK/RU/H=89.825926/96.274074/68.603175/77.793078%；原F0closed=90.981481%/studentclosed=91.596296%/原F0损=1.155556pp；clean_DURA: AK/CK/RU/H=23.871772/34.733272/67.296960/35.242295%；原F0closed=48.567015%/studentclosed=45.134730%/原F0损=24.695244pp；star_DURA: AK/CK/RU/H=22.781346/41.166133/50.548954/31.407841%；原F0closed=41.721059%/studentclosed=39.252284%/原F0损=18.939712pp。source_meta_success=False、target保护=False，科学NO_PROMOTION；exact二阶alpha0/.001/beta.5，heldRX锚点与其他RX候选同virtualθ，4索引流匹配，不直接写回虚拟参数。新U/UID/Us/Q/V/NV训练0；parent12434/base170496/virtual255744/eval126120，信号合计564794。新2density/24tau+old24共48/384B，部署602632；PCD研究baseline及原模型保留，sourceDG不是新UDA，AN/HOWNA/formal0/完整ACTIVE。详见`docs/PAMF_PHASE3_SOURCE_META_RESULTS_20261031.md`。
+
+
+## 2026-10-31：冻结PCD目标类内矩校正预登记
+
+Run `20261031-phase3-pcd-moment-s2026092701-r01` / code `35c0060f573b2acc61a523df745568e39eb6e1cf`，finalPCD U576五合法cache字段，禁assignment/true/K/query/parent_z；conf.95+margin0 core类均衡，源model-implied类内Cs、目标nu/Ct.1shrink及.5..2响应，SHIFT/CORAL两态。F0/PCD/G/源密度/tau冻，新NN/密度/τfit0，targetstatfit一次；源状态恒等，8×3DURA后CPU3truth，formal0/ANHOWNA/完整ACTIVE。见`docs/PAMF_PHASE3_PCD_MOMENT_PLAN_20261031.md`。
+
+
+## 2026-10-31：冻结PCD目标类内矩校正结果
+
+Run `20261031-phase3-pcd-moment-s2026092701-r01` / code `35c0060f573b2acc61a523df745568e39eb6e1cf`，U576最终PCD五成员统计拟合、SHIFT/CORAL及原E0/PCD共8×3DURA完整后独立CPU3truth执行VERIFIED。主CORAL_predicted_ratio：source_DURA: AK/CK/RU/H=89.733333/96.748148/64.285714/74.907247%；原F0同Gclosed=90.981481%/损=1.248148pp；clean_DURA: AK/CK/RU/H=27.094153/36.282220/62.609794/37.821286%；原F0同Gclosed=48.567015%/损=21.472863pp；star_DURA: AK/CK/RU/H=24.770213/41.660529/49.326805/32.979342%；原F0同Gclosed=41.721059%/损=16.950846pp。adaptation_success=False、科学NO_PROMOTION；core290/576、预测类core[36, 52, 2, 49, 140, 11]、类等权n_eff=54.097213，160维源model-implied类内Cs，.1shrink与标准化响应.5..2，SHIFT共用平移。身份预测不变，原四读出×三条件的12个overall精确保持；新NN/density/τfit0、真实F/open/G0，合成各2行；新Ufeature/ID576/576，source30150/Q20476 cache读取，主神经834665+适配26560FP64/212480B。PCD研究baseline与正式RX24-18保持，AN/HOWNA/完整ACTIVE。详见`docs/PAMF_PHASE3_PCD_MOMENT_RESULTS_20261031.md`。

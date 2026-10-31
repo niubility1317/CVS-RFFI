@@ -1,0 +1,3 @@
+{"at": "2026-10-31T15:13:25+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-31T15:15:14+00:00", "status": "RUNNING", "note": "VERIFIED driver2029997/predict2030018 CWD argv CUDA3 GPU346MiB log0to481; one shared U fit, foreign untouched.", "evidence": ["local_artifacts/pamf_phase3_pcd_moment_20261031_r01/observations.jsonl"], "row_id": null}
+{"at": "2026-10-31T15:24:21+00:00", "status": "ANALYZED", "note": "VERIFIED shared U576 moment fit and8x3DURA before CPU3truth; NO_PROMOTION; genuine target-stat DA/adaptation_success=False; originalPCD baseline/fullgoalACTIVE.", "evidence": ["E:\\type10-7\\local_artifacts\\pamf_phase3_pcd_moment_20261031_r01\\score\\complete.json"], "row_id": null}

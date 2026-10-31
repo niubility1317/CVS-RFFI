@@ -1,0 +1,307 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-pcd-moment-s2026092701-r01",
+  "group_id": "pamf-phase3-pcd-moment",
+  "display_name": "PAMF第三阶段：冻结PCD目标类内矩无标签校正",
+  "description": "FinalPCD U576 frozen features, confidence/source-margin core, source-model class-residual covariance, SHIFT vs bounded full CORAL; all NN/source density/tau frozen.",
+  "kind": "cvs",
+  "stage": "Phase3-PCD-target-moment-unlabelled-adaptation",
+  "aliases": [
+    "PCD目标类内矩校正"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "CORAL_variant",
+    "unlabelled_UDA",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-frozen-PCD-moment-adaptation",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-pcd-cluster-registry-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "35c0060f573b2acc61a523df745568e39eb6e1cf",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-moment-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.pcd_moment_launch",
+      "experiments.pamf_phase3_open_world.pcd_moment_run",
+      "experiments.pamf_phase3_open_world.pcd_moment_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_PCD_MOMENT_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Original source/future frozen PCD predictions and finalPCD U576 features",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Canonical source/future sameDURA finalfeatures; Uonly cached finalPCD features, not r03 parent_z. New classconditional affine in existing white coordinates, no postunit.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 目标类内矩的无标签校正",
+    "physical_ids_ref": "Source392005 original IDs; fresh VALIDATED_ONCE U/future capsule/split; savedUids provefuturedisjoint.",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_IQ_new": 0,
+      "source_OE_IQ_new": 0,
+      "source_Us_new": 0,
+      "source_V_prediction": 27000,
+      "source_NV_prediction": 3150,
+      "target_U_features": 576,
+      "target_U_ID": 576,
+      "source_prediction_rows": 30150,
+      "target_clean_Q": 10238,
+      "target_star_Q": 10238,
+      "future_known": 4508,
+      "future_unknown": 5730,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Existing earlyRX34starU576 disjointfutureQ10238; sameearly U as oldPCD neuralancestor, currentmomentsfit only its features. sourceV oldcalibration, cleanonlytest, missing03-23two oldfullNA.",
+    "leo_config_ref": "Inherited fixedG10/source3001/4001/future3133/3134/receiver2027; no redraw",
+    "derived_public_handles": {
+      "clean_DURA": {
+        "public_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-development-rx3-2-s2026092701-r01-release/data/fresh/future_clean/public",
+        "capsule_id": "p3fresh-97a3ca8706dbe966ac510a61",
+        "split_id": "7fdd29104962ba0d92969faf",
+        "expected_count": 10238,
+        "view_family": "clean_cross_receiver"
+      },
+      "star_DURA": {
+        "public_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-development-rx3-2-s2026092701-r01-release/data/fresh/future_star/public",
+        "capsule_id": "p3fresh-e56d8e305e37c68dd40db030",
+        "split_id": "b9888c49e89d418cc25ab5ff",
+        "expected_count": 10238,
+        "view_family": "practical_cross_receiver"
+      }
+    },
+    "U_feature_reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-cluster-registry-s2026092701-r01/predict/discovery/U.npz"
+  },
+  "permissions": {
+    "regime": "Frozen originalF0/finalPCD/r03/DURA and sourceE0/PCD densities/tau. Fit SHIFT/CORAL once from finalPCD U IDs/features/logits/closed/base_scores only; no assignment/registry/trueTX/K/quotas/parent_z/query.",
+    "query_use": "Actual4CPnoquerysmoke thenUstatstatesfreeze before anynewsourceNV/futurecachedfeature arrays; all8x3 fixed beforeCPU3truth; no Utruth or refit in scorer.",
+    "external_method_exception": null,
+    "claim_scope": "Genuine targetU statistical adaptation attempt, not NNtraining or rawCORALbenchmark reproduction. Source readouts unchanged, currentadapter and oldPCD retainUancestor; formal0/ANHOWNA/fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "No new neural model; exact existing finalfreshPCD/source-r03/originalF0/DURAR69.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Originalsource392005 andoldPCD U576 neuralancestor preserved. U cache modelID must equal finalPCD16e6 exporter and f4b5 reference; no registrationassignment/targettruth learning.",
+    "selection_rule": "SoleCORALpred fixed; source confidence.95/margin0, classbalancedpseudo core, Cs model-implied residual covariance, shrink.1/eigenresponse.5..2 fixed before U. No Qselection."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-pcd-moment-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-moment-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-moment-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_pcd_moment_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.pcd_moment_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-moment-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "Onepredictor foractualCPsmoke/frozenstatfit thenCPUscore; free4096MiB/max2newpercard; foreignuntouched.",
+    "stop_rule": "Invalidrole/ancestry/nonfinite/collision/unusablepred preserve, no partialtruthscore/autorestart. UNKNOWN reconcileoriginalPID/root. Scientificsourcefaildoesnotcancel Q; no foreign actions."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/eval.json",
+    "logs/*.log",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/models/*",
+    "predict/adapters/*",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/source/*",
+    "predict/targets/*",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "H-score",
+      "originalF0sameGclosed",
+      "AUROC/OSCR",
+      "PCD/SHIFT/E0 pairedrejecteffects",
+      "corepredictionhist/neff/shift/spectra",
+      "ANHOWNA"
+    ],
+    "dimensions": [
+      "8readouts x3DURAconditions",
+      "TX/RX/day/scene/day_scene",
+      "sourceunchanged/targetstatfit"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-moment-s2026092701-r01/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.pcd_moment_score",
+    "targets_ref": "Source12, cleanRU95/starRU90/CK90/originalsameGgap2pp/fullscenes; starAKabovePCD/SHIFT,RUnotbelowE0/PCD/SHIFT. FullgoalACTIVE.",
+    "primary": [
+      "CORAL_predicted_ratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "SHIFT_CORAL_shared_fit-s2026092701",
+      "method": "SHIFT_CORAL_shared_fit",
+      "purpose": "Same core/mean plus full source-normalized covariance correction",
+      "config_ref": "docs/PAMF_PHASE3_PCD_MOMENT_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-moment-s2026092701-r01/configs/eval.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Deterministic moments/eigh, no random sampling/channel/redraw. Inherit source3001/4001,future3133/3134,receiver2027 and model2701.",
+      "k": null,
+      "scenario": "sourceunchanged, RX34earlystarU fit sharedfutureclean/starDURA",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NN/density/tauupdates0. Ufeature/ID576, sharedonefit/twoadapters, cachedsource30150/Q20476, realF/open/G0. Tau48copied24unique FP64/384B. Mainneural834665+adapter26560FP64/212480B; parentcostsinherited.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-moment-s2026092701-r01/predict",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-moment-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.pcd_moment_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-moment-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/eval.json",
+        "logs/*.log",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/models/*",
+        "predict/adapters/*",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/source/*",
+        "predict/targets/*",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "CORAL-inspired target-to-source class-residual moment variant, original classifier frozen.",
+    "Source Cs model-implied from90Gaussians, not empiricalglobalcovariance or identity.",
+    "Core conf.95+PCDmargin0, predicted classbalanced, no trueK or quota. NO_CORE explicitidentity.",
+    "Sameclosed source/target, Jacobian ratios cancel; densitypooled stilltransformconditionedonpredc.",
+    "NNreal0, cachedUnew576/notnewphysicaldata; onlysyntheticCPsmoke; fullsource/futureDURAchain preserved.",
+    "All8x3 before CPU3truth, no discovery/registration/formalblind; goalACTIVE."
+  ],
+  "registered_at": "2026-10-31T15:13:25+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "35c0060f573b2acc61a523df745568e39eb6e1cf",
+    "primary_method": "CORAL_predicted_ratio",
+    "metrics_fraction": {
+      "source_DURA": {
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "A_K": 0.8973333333333334,
+        "C_K": 0.9674814814814816,
+        "R_U": 0.6428571428571429,
+        "H_score": 0.7490724709374229,
+        "auroc_known_macro": 0.9473067254559288,
+        "oscr_auc_macro": 0.8794043268668309,
+        "original_closed_minus_new_open": 0.012481481481481538
+      },
+      "clean_DURA": {
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "A_K": 0.27094152635147073,
+        "C_K": 0.36282220009622806,
+        "R_U": 0.6260979357440387,
+        "H_score": 0.3782128602452351,
+        "auroc_known_macro": 0.483600863032876,
+        "oscr_auc_macro": 0.30240618355310445,
+        "original_closed_minus_new_open": 0.21472862704058576
+      },
+      "star_DURA": {
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "A_K": 0.24770212909847591,
+        "C_K": 0.4166052898984825,
+        "R_U": 0.4932680545482151,
+        "H_score": 0.32979342495680103,
+        "auroc_known_macro": 0.45266842086693615,
+        "oscr_auc_macro": 0.24109087720809805,
+        "original_closed_minus_new_open": 0.16950845639220627
+      }
+    },
+    "scientific_success": false,
+    "adaptation_success": false,
+    "new_target_DA": true,
+    "source_known_12_passed": true,
+    "target_protection_passed": false,
+    "star_A_K_gain_over_both_controls": false,
+    "star_R_U_not_lower_than_all_controls": false,
+    "target_statistics_status": "FITTED",
+    "new_target_U_features": 576,
+    "new_target_U_ID": 576,
+    "new_target_statistics_fit_calls": 1,
+    "new_neural_updates": 0,
+    "new_density_fits": 0,
+    "new_threshold_fits": 0,
+    "new_source_IQ": 0,
+    "new_target_IQ": 0,
+    "real_F_forward_rows": 0,
+    "real_open_forward_rows": 0,
+    "real_G_forward_rows": 0,
+    "synthetic_F_forward_rows": 2,
+    "synthetic_r03_forward_rows": 2,
+    "synthetic_PCD_forward_rows": 2,
+    "synthetic_G_forward_rows": 2,
+    "source_prediction_cache_rows": 30150,
+    "target_prediction_cache_rows": 20476,
+    "threshold_values": 48,
+    "threshold_bytes": 384,
+    "unique_inherited_threshold_values": 24,
+    "unique_inherited_threshold_bytes": 192,
+    "deployed_neural_parameters": 834665,
+    "adapter_numeric_values": 26560,
+    "adapter_numeric_bytes": 212480,
+    "PCD_inherits_target_U_neural_ancestor": true,
+    "formal_target_accessed": false,
+    "registration_success": null,
+    "A_N": null,
+    "H_OW": null,
+    "full_goal_status": "ACTIVE",
+    "result_ref": "docs/PAMF_PHASE3_PCD_MOMENT_RESULTS_20261031.md",
+    "primary_selection_changed": false
+  }
+}

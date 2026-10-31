@@ -655,6 +655,51 @@
       "reason": "Exact second-order source RX holdout joint native identity/open representation versus matched alpha-zero ERM; target U is not newly trained.",
       "independent_blind_confirmation": false,
       "global_history_unused_verified": false
+    },
+    {
+      "run_id": "20261031-phase3-pcd-moment-s2026092701-r01",
+      "code_commit": "35c0060f573b2acc61a523df745568e39eb6e1cf",
+      "method": "CORAL_predicted_ratio",
+      "score_artifact": "local_artifacts/pamf_phase3_pcd_moment_20261031_r01/score/results.json",
+      "metric_fractions": {
+        "source_DURA": {
+          "original_F0_macro_closed_accuracy": 0.909814814814815,
+          "A_K": 0.8973333333333334,
+          "C_K": 0.9674814814814816,
+          "R_U": 0.6428571428571429,
+          "H_score": 0.7490724709374229,
+          "auroc_known_macro": 0.9473067254559288,
+          "oscr_auc_macro": 0.8794043268668309,
+          "original_closed_minus_new_open": 0.012481481481481538
+        },
+        "clean_DURA": {
+          "original_F0_macro_closed_accuracy": 0.4856701533920565,
+          "A_K": 0.27094152635147073,
+          "C_K": 0.36282220009622806,
+          "R_U": 0.6260979357440387,
+          "H_score": 0.3782128602452351,
+          "auroc_known_macro": 0.483600863032876,
+          "oscr_auc_macro": 0.30240618355310445,
+          "original_closed_minus_new_open": 0.21472862704058576
+        },
+        "star_DURA": {
+          "original_F0_macro_closed_accuracy": 0.4172105854906822,
+          "A_K": 0.24770212909847591,
+          "C_K": 0.4166052898984825,
+          "R_U": 0.4932680545482151,
+          "H_score": 0.32979342495680103,
+          "auroc_known_macro": 0.45266842086693615,
+          "oscr_auc_macro": 0.24109087720809805,
+          "original_closed_minus_new_open": 0.16950845639220627
+        }
+      },
+      "scientific_verdict": "NO_PROMOTION",
+      "adaptation_success": false,
+      "new_target_DA": true,
+      "primary_selection_changed": false,
+      "reason": "One final-PCD U576 class-balanced moment fit; SHIFT mean-control and bounded full residual CORAL keep original F0/DURA/source density/tau fixed.",
+      "independent_blind_confirmation": false,
+      "global_history_unused_verified": false
     }
   ],
   "current_selection_confirmation": {
@@ -699,5 +744,11 @@
     "state": "ANALYZED",
     "scientific_verdict": "NO_PROMOTION",
     "result_ref": "docs/PAMF_PHASE3_SOURCE_META_RESULTS_20261031.md"
+  },
+  "latest_pcd_moment_evaluation": {
+    "run_id": "20261031-phase3-pcd-moment-s2026092701-r01",
+    "state": "ANALYZED",
+    "scientific_verdict": "NO_PROMOTION",
+    "result_ref": "docs/PAMF_PHASE3_PCD_MOMENT_RESULTS_20261031.md"
   }
 }

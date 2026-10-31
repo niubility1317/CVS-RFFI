@@ -1,0 +1,194 @@
+# 冻结PCD目标类内矩校正
+
+ANALYZED，执行VERIFIED；科学NO_PROMOTION，完整目标ACTIVE。
+
+# 冻结 PCD 的目标类内矩校正
+
+Run `20261031-phase3-pcd-moment-s2026092701-r01`，唯一owner `codex-phase3-pcd-moment-20261031`。本轮在当前PCD研究基线上检验新的无标签统计适应：神经网络、源密度和阈值均不改，用合法目标U估计共同偏移与完整协方差校正。两项固定适配为SHIFT平移控制和CORAL主候选，旧E0/PCD作为冻结控制；不替换默认模型或追改历史失败。完整目标ACTIVE。
+
+参考[Sun等CORAL原论文](https://arxiv.org/abs/1511.05547)的二阶统计对齐思想。本行使用原模型筛选的伪已知core、类内残差、目标到源变换与固定分类器，是自选RFFI变体，不是原论文的source→target后重训分类器复现。既有正对角MAP-EM、混合先验UOT、低秩平移及源PCD-RMD均不等于此完整协方差目标矩校正；不重复其旧RX24-1实验。
+
+## 固定输入与标签边界
+
+原F0为Tri-SIG-TIME SSL E50/11100、232993参数；最终RX34 PCD为fresh-development f4b5的独立r03初始化＋U576/444步模型，334721参数；DURA v1.0 R69 E20/4940、266951参数，reuse/graph开/native关、FP32/TF32off保持。r03和全部原参数/buffers不更新。PCD与其源密度有既有U576神经祖先，本轮适配器另有同一U的统计祖先，不能称整体纯源。
+
+U使用`20261031-phase3-pcd-cluster-registry-s2026092701-r01`/`16e6f04e7475827e7c8e24b398fb029a39a8138c`已经导出的最终PCD特征，读`discovery/U.npz`的ids/features/default_logits/closed/base_scores五个member，**不读assignment、注册状态、true TX/K、配额或真值**。原fresh训练cache中的parent_z是r03而非最终PCD，禁止混用。对应模型身份、原F0/G、U的VALIDATED_ONCE capsule/split/count必须与fresh最终PCD一致；新Ufeature/ID各读576，不重新生成IQ或神经前向。
+
+源原合同392005保留L6300/Us56700及OE6134祖先，源RX1/3/4/6/8（1-19/18-2/19-2/2-19/3-19）、03-08/15/23、eq1、旧六TX14-10/14-7/20-15/20-19/6-15/8-20。新L/OE/Us IQ读取0；源参考矩只由冻结known90高斯聚合推导，不用V或NV拟合。
+
+目标为RX3-2/index34早日03-01的星地U576，与future03-15/23 Q物理互斥。Q为5525＋4713＝10238条，已知4508、未知5730；四未知5-5/10-7/2-19/7-11仅builder/scorer，后来7-11整类不在早日U。03-23缺20-19/8-20，完整名单AK/CK/H/闭集保持N/A。源V27000已有阈值校准用途，不是独立已知测试；NV3150的19-15/19-16/7-1各1050只评分，不能当作目标四未知。
+
+三类主输入均经过既有DURA。source/clean/star预测只消费已冻结fresh的同记录features/logits；clean只测试，不能参与core或矩估计。G10保持600km/25MHz/2.45GHz、residual/post_sync/noEQ/refSNR30dB/reflect、input RMS一次/output RMS无，源scene3001/channel4001/future3133/3134/receiver2027不重抽。NV/Q历史曝光、单RX/seed、global physical history UNKNOWN及正式RX24-18未读保持。
+
+## 确切统计方法
+
+令w＝(unit(z_PCD)−origin)W，沿用原源密度坐标。known90按六类×十五RX/day模式排列，m_c为该类十五均值的平均。源model-implied类内协方差为：Cs＝mean(known_variances)I＋mean_{c,g}[(mu_cg−m_c)^T(mu_cg−m_c)]。它来自既有等权球形高斯模型，既不是经验全局总协方差，也不能因已有残差白化器就设为I。
+
+Cs的对称特征分解给P＝Cs^(−1/2)、R＝Cs^(1/2)。只用适配前冻结F0 softmax置信度≥0.95且原PCD predicted margin≥0的U记录作为core。每个非空预测旧类等权，类内core记录等权，权重和为1；这是预测筛选，不是已知真值或真实类别配额。空预测类不补样本，算法不接收真实未知K或U类别构成。
+
+对core计算v_i＝(w_i−m_closed_i)P，nu＝sum a_i v_i，Ct＝sum a_i(v_i−nu)^T(v_i−nu)（population covariance）。使用Ct_reg＝0.9Ct＋0.1I；其逆平方根响应按特征值截到[0.5,2]，得到对称B。A＝PBR，delta＝nu R。SHIFT使用h＝w−delta；CORAL使用h＝m_c＋(w−m_c−delta)A，c始终为原F0在该记录上的预测，校正后不再次单位化。
+
+两适配共享同一core、权重和delta，差异为是否增加完整矩阵校正。若core少于2条或有效样本数≤1，显式记录NO_CORE、两态恒等和fit_succeeded=False，不伪报适应成功。保存core数量、预测类直方图、有效样本数、平移范数、Cs/Ct谱、裁剪数量与矩匹配诊断；它们不是伪标签准确率，也不能把全部矩差解释为纯接收机变化。
+
+部署用h＝wA＋offset[c]，CORAL offset_c＝m_c−(m_c＋delta)A；SHIFT为单位矩阵和重复−delta。适配器平坦状态含schema/kind/matrix160×160/offset6×160，主数值26560个FP64／212480B。原source统计的Cs/P/R只在拟合中使用，不额外部署逐条source/U bank。目标估计量为160个均值与12880个对称协方差自由数；不称神经训练参数。
+
+新score仍为原known90/OE32在h上的pooled或predicted density ratio，原F0预测选择同类15模式，已知与背景的同一线性Jacobian在比值中抵消。pooled指密度边缘化，CORAL变换本身仍依赖预测c；不得称该读出完全不依赖身份。source RX不应用目标适配器，新SHIFT/CORAL源读出严格等于PCD；target clean/star共享唯一星地U状态，不按场景拟合或使用query批统计。
+
+## 预登记评估与执行
+
+固定8方法×3DURA：E0、PCD、SHIFT、CORAL各pooled/predicted，唯一主CORAL_predicted_ratio。原E0/PCD四读出精确复用；新48个FP64阈值384B仅由既有四组六τ24个唯一值192B复制，不新增校准、normalizer、GMM或神经更新。统计适配器先于任何新source NV/Q特征消费冻结；原F0身份及同G闭集全部保持，AK变化只来自拒识变化。
+
+全部三条件预测固定后，独立CPU scorer读取NV/clean/star三truth各一次；Utruth0，scorer只用存下的U IDs核实未来Q互斥，不重新估计U矩。完整报告逐TX宏AK/CK/RU/H、闭集损伤、AUROC/OSCR、TX/RX/day/scene/day×scene/覆盖/CI与主对E0/PCD/SHIFT配对。source known12与42诊断分报；cleanRU≥95%、starRU≥90%、CK≥90%、同G原F0closed−AK≤2pp和各必需主景完整，且starAK高于PCD/SHIFT、RU不低于E0/PCD/SHIFT，才adaptation_success=True，否则NO_PROMOTION、不扩seed或换主。即使通过当前开发单元，也不意味着未知发现、匿名注册或整个目标完成，AN/H_OW仍N/A。
+
+首步骤实际F0/r03/PCD/G无query synthetic smoke PASS立即继续；真实新F0/open/G前向均0，合成F0/r03/PCD/G各2行另列。新读source缓存预测30150行、target Q缓存预测20476行、U最终PCD特征576行；真实记录数不因反复读特征增加。继承原F0/r03/PCD/G训练、source fit/τ及缓存生成成本；主神经部署仍834665参数，另有212480B适配数值状态，阶段墙钟不是B1推理延迟。
+
+实际commit/命令/环境CWD/路径/GPU见本run登记。默认N607，卡0至7free≥4096MiB、每卡新增最多2本任务worker，不干预其他owner。单不可覆盖run/release/output，单包一次SHA比较、remote compile及PID/CWD/argv/GPU/log增长核实。停止仅协议/祖先/输出冲突、非有限、无法执行或无法生成合法prediction；不按低分中止，不盲重启。预期smoke、源state/τ、两适配器及U IDs、完整三条件prediction、独立score、pipeline/logs、同row报告与登记Git交付。
+
+
+实际code `35c0060f573b2acc61a523df745568e39eb6e1cf`；环境 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-moment-s2026092701-r01-release`；命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.pcd_moment_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-moment-s2026092701-r01-release/runtime.json`。
+
+
+# 冻结 PCD 的目标类内矩校正结果
+
+**本轮 CORAL 主候选不晋级，保留原 PCD 与 DURA 组合。** 星地宏 A_K 为 24.770213%，比 PCD predicted 低 3.181510 个百分点；R_U 为 49.326805%，仅高 0.019107 个百分点，H 下降 2.698769 个百分点。SHIFT 平移控制也未改善星地联合表现，不能据某个 pooled 指标较高改换主方法。
+
+Run：20261031-phase3-pcd-moment-s2026092701-r01；实际代码：35c0060f573b2acc61a523df745568e39eb6e1cf。执行 VERIFIED，pipeline 为 ANALYZED_DEVELOPMENT；科学结论 NO_PROMOTION，adaptation_success=False、new_target_DA=True，完整目标 ACTIVE。没有未知发现或匿名注册，A_N、H_OW 均 N/A。依据：[冻结计划](PAMF_PHASE3_PCD_MOMENT_PLAN_20261031.md)、[完整分析](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/analysis.json)、[独立评分及全部分组](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/score/results.json)。本报告仅整理已有 JSON 和日志，没有读取 IQ、权重、数组文件或原始真值，也没有重新拟合、评分或选阈值。
+
+## 方法及冻结边界
+
+本轮借鉴 [Sun 等的 CORAL 二阶统计对齐思想](https://arxiv.org/abs/1511.05547)，检验“伪已知核心＋预测类残差＋目标到源变换”的 RFFI 变体，并非原论文完整复现。原 F0 默认身份头、r03、最终 PCD、DURA、源 known90/OE32 高斯、单位化与白化器、全部源阈值均冻结。
+
+在原密度坐标 w=(unit(z_PCD)−origin)W 中，m_c 是每类 15 个 RX/day 模式均值的平均。源模型隐含类内协方差 Cs=mean(known_variances)I+mean[(μ_cg−m_c)ᵀ(μ_cg−m_c)]，不是经验总协方差，也不能因已有白化器就假定 Cs=I；记 P=Cs⁻¹ᐟ²、R=Cs¹ᐟ²。
+
+仅以冻结原 F0 置信度≥0.95 且原 PCD predicted margin≥0 的 U 记录构成核心。非空预测类等权、每类内部记录等权；计算 v_i=(w_i−m_closed_i)P、加权均值 ν 和 population 协方差 Ct，再取 Ct_reg=0.9Ct+0.1I。没有使用真实已知/未知身份、真实 K、配额、分配结果或 query 统计。
+
+Ct_reg 的逆平方根响应截到 [0.5,2]，得到对称 B；A=PBR、δ=νR。SHIFT 用 h=w−δ；CORAL 用 h=m_c+(w−m_c−δ)A。两者共用同一核心、权重和 δ，校正后不再单位化。**[0.5,2] 约束的是源标准化空间中的 B，不是 A 的奇异值界。**
+
+每条记录始终由原 F0 的预测 c 选择变换分支及旧六类阈值。pooled 只表示对 known 模式做密度边缘化，其 CORAL 变换仍依赖 c；固定分支内 known/OE 共同线性变换的 Jacobian 在密度比中抵消。没有改变身份预测，闭集得失全为 0，开放变化来自拒识决策。源 RX 不应用新目标适配器，SHIFT/CORAL 的 source 两读出精确重复 PCD。原 E0/PCD 四读出×三条件共 12 个 overall 与 fresh 参考精确相同；这同时保留了旧基线和本轮源端校准诊断，不能称源域适应增益。
+
+## 实际核心与矩估计
+
+[适配冻结记录](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/predict/adapters/complete.json)记录一次共享矩拟合成功；不是两套独立 U 筛选或两次统计拟合。U 共 576 条，满足置信度者 334 条，PCD margin 接收者 415 条，交集 290 条。
+
+原预测六类直方图为 [64,92,55,124,191,50]，核心为 [36,52,2,49,140,11]；每类质量均为 1/6。由此 n_eff=54.0972133693，不能把 290 条视作等权独立样本，更不能把核心接收率或直方图当伪标签准确率。第三预测类仅 2 条却承担 1/6 质量，限制了 160 维矩估计的代表性。
+
+| 冻结诊断 | 实际值 |
+|---|---:|
+| Cs 特征值范围 | 0.5666720113 至 3.0200110539 |
+| Ct 特征值范围 | 0.0158557503 至 37.5627562859 |
+| Ct_reg 特征值范围 | 0.1142701753 至 33.9064806573 |
+| ν 范数 / δ 范数 | 4.3519402927 / 3.6994651454 |
+| 逆平方根响应下界 / 上界裁剪数 | 16 / 45 |
+| 重着色协方差相对残差 | 0.8294207546 |
+
+这些诊断说明本次校正受到核心代表性、有效样本量和固定响应约束的共同限制；重着色后也没有达到精确矩匹配。它们不能证明伪标签污染、纯接收机偏移或本轮退化的唯一原因，也不能据此推断放宽约束一定有效。
+
+## 数据与读取权限
+
+源合同 392005：L6300、Us56700、OE6134 为继承训练角色；六旧 TX 为 14-10、14-7、20-15、20-19、6-15、8-20，五源 RX 索引 1/3/4/6/8 对应 1-19、18-2、19-2、2-19、3-19，日期 03-08/15/23。V27000 每旧类 4500 条，已用于旧阈值校准，不是独立已知测试；NV3150 为 19-15、19-16、7-1 各 1050 条，只在评分侧使用。
+
+本轮只读旧 cluster-registry 导出的最终 PCD U 缓存五个成员：ids、features、default_logits、closed、base_scores，共 576 条。该 U 为目标 RX3-2/index34、早日 03-01 星地记录；不混用 fresh 训练缓存中的 r03 parent_z，不读 assignment、注册状态或 U 真值。PCD 原有 U576 神经祖先，本轮又用其最终特征估计目标矩，整体 source_only=False。
+
+同 RX 的未来 Q 为 03-15 的 5525 条及 03-23 的 4713 条，共 10238 条，与 U 物理互斥。已知 4508 条按六旧类依次为 1491/1182/150/406/1186/93；未知 5730 条为 5-5/10-7/2-19/7-11，依次 1454/1439/1427/1410。前三未知早日可出现，后来整类 7-11 不在 U；这些真名单和容量不进入适配。
+
+source、clean、star 均沿同一 DURA v1.0 路径；clean 只测试，同一星地 U 适配器用于两种目标条件。G10 的固定物理记录、信道和恢复输出不重抽；600 km、25 MHz、2.45 GHz、residual/post_sync/noEQ、refSNR30 dB 等沿计划。不同池、日期、容量和未知集合的跨运行差额不能解释为纯 RX 因果。
+
+## 全部 24 个固定运行点
+
+下表全部为百分比，保留六位小数。闭集为同输入、同 DURA 的原 F0 默认头宏准确率；A_K 为旧类正确接收宏准确率，C_K 为旧类接收率，R_U 为完整未知名单宏拒识率，H 为 A_K 与 R_U 的调和均值。AUROC、OSCR 仅作固定分数诊断，不选新运行点。
+
+| 方法 | 条件 | 闭集 | A_K | C_K | R_U | H | AUROC | OSCR |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| E0 pooled | source | 90.981481 | 89.770370 | 97.107407 | 60.888889 | 72.561330 | 94.985255 | 87.944738 |
+| E0 pooled | clean | 48.567015 | 31.187288 | 43.537692 | 62.980616 | 41.716859 | 53.846068 | 32.740387 |
+| E0 pooled | star | 41.721059 | 26.867357 | 47.141720 | 51.837083 | 35.391279 | 51.396572 | 26.658213 |
+| E0 predicted | source | 90.981481 | 89.744444 | 96.759259 | 61.936508 | 73.291437 | 94.734250 | 87.937558 |
+| E0 predicted | clean | 48.567015 | 30.999690 | 42.654045 | 64.187968 | 41.808091 | 53.862200 | 33.089825 |
+| E0 predicted | star | 41.721059 | 26.440597 | 46.197372 | 52.658525 | 35.204508 | 51.242710 | 26.543484 |
+| PCD pooled | source | 90.981481 | 89.770370 | 97.081481 | 63.619048 | 74.465443 | 94.961329 | 87.937604 |
+| PCD pooled | clean | 48.567015 | 32.123647 | 44.791196 | 60.790839 | 42.034854 | 54.164696 | 33.247293 |
+| PCD pooled | star | 41.721059 | 29.175335 | 50.230381 | 48.454372 | 36.420916 | 51.015031 | 26.992789 |
+| PCD predicted | source | 90.981481 | 89.733333 | 96.748148 | 64.285714 | 74.907247 | 94.730673 | 87.940433 |
+| PCD predicted | clean | 48.567015 | 31.661804 | 43.761391 | 61.979647 | 41.912794 | 54.364758 | 33.693180 |
+| PCD predicted | star | 41.721059 | 27.951722 | 48.582412 | 49.307698 | 35.678111 | 50.997190 | 27.001261 |
+| SHIFT pooled | source | 90.981481 | 89.770370 | 97.081481 | 63.619048 | 74.465443 | 94.961329 | 87.937604 |
+| SHIFT pooled | clean | 48.567015 | 32.413117 | 45.038828 | 60.488089 | 42.208440 | 54.588094 | 33.687969 |
+| SHIFT pooled | star | 41.721059 | 29.084026 | 50.248193 | 47.926147 | 36.200031 | 51.337585 | 27.390700 |
+| SHIFT predicted | source | 90.981481 | 89.733333 | 96.748148 | 64.285714 | 74.907247 | 94.730673 | 87.940433 |
+| SHIFT predicted | clean | 48.567015 | 32.199438 | 44.251390 | 61.956817 | 42.375829 | 54.799640 | 34.109653 |
+| SHIFT predicted | star | 41.721059 | 27.905290 | 48.754540 | 49.006153 | 35.561182 | 51.353822 | 27.401057 |
+| CORAL pooled | source | 90.981481 | 89.770370 | 97.081481 | 63.619048 | 74.465443 | 94.961329 | 87.937604 |
+| CORAL pooled | clean | 48.567015 | 26.643580 | 35.859848 | 62.249551 | 37.315614 | 47.396820 | 29.364415 |
+| CORAL pooled | star | 41.721059 | 24.952960 | 41.954387 | 49.120234 | 33.094164 | 44.783568 | 23.821225 |
+| CORAL predicted | source | 90.981481 | 89.733333 | 96.748148 | 64.285714 | 74.907247 | 94.730673 | 87.940433 |
+| CORAL predicted | clean | 48.567015 | 27.094153 | 36.282220 | 62.609794 | 37.821286 | 48.360086 | 30.240618 |
+| CORAL predicted | star | 41.721059 | 24.770213 | 41.660529 | 49.326805 | 32.979342 | 45.266842 | 24.109088 |
+
+主方法同 G 原 F0 闭集减 A_K 的损伤为 source 1.248148、clean 21.472863、star 16.950846 个百分点。clean R_U≥95%、star R_U≥90%、C_K≥90%、闭集损伤≤2 个百分点及必需场景保护均未满足；star A_K 高于 PCD/SHIFT 和 R_U 不低于全部控制的两项相对要求也均为 False。
+
+## 同记录配对：身份不变，变化来自拒识
+
+下表比较 CORAL predicted 与各 predicted 控制。正确接收和未知拒对按“新增/丢失/净值”计条数，Δ 为逐 TX 宏指标的百分点差；源/目标类别容量不同，净条数不能直接代替宏差。全部配对的 closed 变化均为 0。
+
+| 控制 | 条件 | 正确接收 增/失/净 | 未知拒对 增/失/净 | ΔA_K | ΔR_U | ΔH |
+|---|---|---:|---:|---:|---:|---:|
+| E0 predicted | source | 35/38/−3 | 155/81/+74 | −0.011111 | +2.349206 | +1.615810 |
+| E0 predicted | clean | 3/221/−218 | 383/467/−84 | −3.905537 | −1.578174 | −3.986805 |
+| E0 predicted | star | 37/162/−125 | 379/563/−184 | −1.670384 | −3.331719 | −2.225165 |
+| PCD predicted | source | 0/0/0 | 0/0/0 | 0.000000 | 0.000000 | 0.000000 |
+| PCD predicted | clean | 1/210/−209 | 382/341/+41 | −4.567651 | +0.630146 | −4.091508 |
+| PCD predicted | star | 17/148/−131 | 370/364/+6 | −3.181510 | +0.019107 | −2.698769 |
+| SHIFT predicted | source | 0/0/0 | 0/0/0 | 0.000000 | 0.000000 | 0.000000 |
+| SHIFT predicted | clean | 0/212/−212 | 362/320/+42 | −5.105286 | +0.652977 | −4.554543 |
+| SHIFT predicted | star | 16/145/−129 | 357/334/+23 | −3.135077 | +0.320653 | −2.581840 |
+
+星地主方法接收已知 2334 条：正确 1433、错误 901；原 F0 已正确的 1944 条中有 511 条被拒。相对 PCD，总接收净减 299，其中正确净减 131、错误净减 168；减少错误接收没有抵消正确已知误拒。未知拒对虽净增 6，但宏 R_U 只增 0.019107 个百分点，不等于 6/5730 的 pooled 比例。
+
+clean 主方法正确接收 1438、错误接收 641；原 F0 正确 2142 条中 704 条被拒。相对 PCD 接收净减 391，包含正确净减 209、错误净减 182。CORAL 相对 SHIFT 的星地正确接收再净减 129；本次完整矩校正未带来优于同 δ 平移控制的联合收益。
+
+## 场景、TX、RX 与日期
+
+下表为主方法星地六主景，均有完整六旧类与四未知覆盖；仍全部未过绝对联合要求。括号内样本量依次为已知/未知，百分比口径同上。
+
+| 场景 | 样本量 | 原闭集 | A_K | C_K | R_U | H |
+|---|---:|---:|---:|---:|---:|---:|
+| high | 206/256 | 41.859207 | 26.856317 | 37.411873 | 56.709828 | 36.450578 |
+| mid | 293/443 | 48.976411 | 21.650059 | 32.559378 | 54.303758 | 30.957748 |
+| low suburban | 1715/2167 | 46.986303 | 27.491488 | 41.221131 | 51.611774 | 35.874234 |
+| high urban | 197/244 | 53.253670 | 36.149990 | 50.282299 | 51.454777 | 42.465490 |
+| mid urban | 315/397 | 49.799057 | 28.977035 | 42.093489 | 50.748060 | 36.889973 |
+| low urban | 1782/2223 | 32.932191 | 20.636303 | 43.118415 | 44.957972 | 28.288027 |
+
+六旧 TX 按前述顺序，clean A_K 为 39.839034/9.729272/0/0/57.082631/55.913978%，star 为 39.771965/9.221658/1.333333/0.246305/58.263069/39.784946%。star C_K 为 55.533199/57.614213/18.666667/6.650246/60.961214/50.537634%；20-15、20-19 的低接收与低原身份准确率需要分开看，不能把接收者都算作识别正确。
+
+四未知按 5-5/10-7/2-19/7-11 顺序，clean R_U 为 40.784044/91.660876/60.476524/57.517730%，star 为 37.207703/75.399583/39.593553/45.106383%。未来未在 U 出现的 7-11 也远未满足拒识目标；未发现或注册任何类别，不能将其称为新类识别性能。
+
+03-15 的 clean/star A_K 为 26.701095/24.005253%，R_U 为 62.451274/49.615580%。03-23 缺旧类 20-19、8-20，完整名单闭集、A_K、C_K、H、AUROC、OSCR 均 N/A；R_U 可定义，为 62.812043/49.052575%。day×scene 中 03-15 六景 A_K 为 19.184982% 至 34.214382%，03-23 六景同样保持已知缺类 N/A，不补零或仅用 present-only 均值认证。
+
+源五 RX 的 A_K/R_U 依次为 92.518519/74.126984、83.148148/55.079365、90.537037/65.396825、92.092593/74.920635、90.370370/51.904762%；源三日 A_K 为 89.822222/89.655556/89.722222%，R_U 为 69.523810/62.285714/61.047619%。NV 三类拒识率为 64.000000/59.904762/68.952381%，仅是已曝光源诊断。
+
+继承 source known12 通过，known42 未全过。五个 RX×scene 的原闭集减 A_K 超过 2 个百分点：RX3 high 3.143369、mid urban 3.624502、low urban 2.109184；RX4 high urban 2.512911；RX8 low urban 2.671227。旧校准保存的下一 common-tail 候选会令 RX3 损伤达 2.018519 个百分点；这里只解释已有记录，没有重新扫描或调整 τ。
+
+评分保存逐真类 95% Wilson 区间，而非多 seed 或跨 RX 置信区间。例如 star 的 20-15 正确接收 2/150，A_K=1.333333%，区间 [0.366413%,4.730691%]；20-19 为 1/406，区间 [0.043492%,1.381805%]。主星地 AUROC 45.266842%、OSCR 24.109088%，均低于 PCD 的 50.997190%、27.001261%；全部 TX/RX/day/scene/day×scene、CI 和配对细分保留在完整评分文件。
+
+## 真值时序与实际成本
+
+[预测完成标记](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/predict/complete.json)、[实际 checkpoint 合成 smoke](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/predict/smoke.json)及[评分完成标记](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/score/complete.json)确认：适配器在新 Q 前冻结，继承 τ 在本轮 U 特征读取及 Q 消费前已冻结，全部 8×3 预测完成后才独立 CPU 连接 source NV、clean Q、star Q 真值，各一次；U 真值读取 0。scorer 仅读 U 的 576 个 ID 核对物理互斥，U feature 读取及统计重拟合均为 0。
+
+新增神经/优化器更新、源 GMM/normalizer 拟合、τ 拟合、L/OE/Us IQ 读取、真实 F0/r03/PCD/G 前向均为 0；新增的是一次 U 矩统计拟合，不能泛称“无适应或无统计学习”。消费 source 缓存预测 30150 条、两 Q 缓存预测 20476 条及 U 特征 576 条，不增加独立物理样本。四个实际 checkpoint 的合成前向各 2 行：F0 2、r03 2、PCD 2、G 2，open 合计 4。
+
+主部署神经参数仍为 F0 232993＋PCD 334721＋G 266951＝834665；另部署 26560 个 FP64 适配数值（矩阵 160×160＋六类 offset），212480 B。两态是统计变换，不是新增神经参数；不部署 source/U 行 bank。八读出的 48 个 τ 占 384 B，实际继承的唯一 24 值占 192 B，单主六 τ 为 48 B；本轮新增 τ 为 0。
+
+原 F0 E50/11100、r03 源训练 2220、PCD 的源/U576 444 步、DURA E20/4940，以及源密度、旧 V 校准和缓存生成成本全部继承，没有因本轮真实前向为 0 而消失。本轮无训练曲线；pipeline 墙钟 40.474535 s（预测 11.148699 s、CPU 评分 29.176162 s），包括加载、统计拟合、缓存评分和独立评测，不是 B1 推理延迟或加速证明。
+
+## 执行证据与解释边界
+
+[四次独立观测](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/observations.jsonl)捕获 driver2029997、predict2030018、CPUscore2030228 的实际存活、CWD 和完整 argv。预测 CUDA_VISIBLE_DEVICES=3，GPU UUID7b4bacb3-4901-6845-a414-0dfdfeeade97 的 346 MiB 是离散样本，不是峰值；CPU 的 CUDA 环境为空。预测日志从 0→481→729 B，终态 owned 进程/GPU 均空，foreign 操作 0。
+
+三份完整生产 stdout 共 9 行、790 B，warning/error 均 0；predict、score 均 return0。首登记 validator 因两个适配共用一次拟合的重复 output root 拒绝，改为一个 shared-fit 行后登记完成；算法未改，也没有发生真实预测失败。阶段及时间见 [pipeline](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/pipeline_state.json)。
+
+[测试证据](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/test_evidence.json)共 22 个唯一测试、27 个子项：run/core6项15子项、scorer3项12子项、launcher13项，另 7 AST 和实际参考配置接口 PASS。初次缺接口参数和合成损坏 writer 问题保留 RED；受影响定向修复后通过，不写初轮全绿、不把重验计为新唯一项。保存测试日志中的旧 trapz warnings 与本次生产零 warning 分开；未再次运行测试。
+
+[唯一独立 P0/P1 审查](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/review.json) PASS。单包 860 个 code/runtime 文件、数据 0，[一次 archive SHA 比较及远端 compile/runtime](../local_artifacts/pamf_phase3_pcd_moment_20261031_r01/release_verification.json) VERIFIED；SHA256 为 be6846338f3b11594dc5c2d9a0e7ab322cc390a6c269693f2faf210a0efd345c，发布与实际代码身份一致。
+
+本结论限于固定 PCD、核心规则、矩估计与本开发单元，不推广为所有协方差适应无效，也不据本 Q 选择更大矩阵响应、阈值或其他主方法。源 RX/训练角色已见、V 已校准、NV/Q 历史曝光、单目标 RX/单 seed、global physical history UNKNOWN；正式 RX24-18 未读。保持原 PCD＋DURA 研究基线，无注册成果，完整目标仍 ACTIVE。
