@@ -337,3 +337,10 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 精确非线性源约束GPU步成本
 
 20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01/6dd3eabf。VERIFIED / ANALYZED，仅SOURCE_ONLY。GPU4原cached5→exact10，cache01中位110.329→138.148ms、cache20中位115.832→144.347ms，中位比1.252144/1.246179、配对中位比1.244635/1.238350均≤1.5；P95比1.576407/1.310425完整保留。新峰值allocated1.292GiB，F共同驻留非独立部署显存。48计时/24配对/末4组加权loss独立复算；G/F状态不变、0优化/TX-V-target/新训练，GPU G15360/F7680/VJP7680、CPUsmoke另G2/F4/VJP2。controller1530960/worker1531466/CWD-argv-CUDA-GPU-loggrowth及自然结束核实；默认保持。只支持另登记scratchjoint30/全7正式，不声称整流程或同质量效率成功。 后续保护F加载的Torch/CUDA随机状态，再另登记GscratchsingleE30/7410与七景truth-last。当前六景3pp/clean/同质量效率目标继续ACTIVE。
+
+
+## 精确非线性source10恢复器E30已启动
+
+20261031-phase1-DURA-exactReference-E30-s2026092701-r01。VERIFIED / RUNNING。执行cc6440f3be59239e54cf4e6c900d75d3c8314ce8已提交推送并独立核对远端OID；一次N607 preflight/单归档传输SHA/remotecompile通过。实际controller 1570379/worker 1570547/GPU 4 的CWD、完整命令、CUDA、GPU和日志增长核实，旧own句柄全部消失。启动前同卡1个计算进程、free 22883MiB，新增本任务1个，其他owner保持。真实2Ls精确IQ梯度cap/三个G模块梯度/原F默认头冻结/严格epoch0重载通过；F加载后CPU/CUDA RNG恢复已实际核实，F路径也隔离随机流。至少完成2轮，完整前缀预算/加权loss/源视图/Fforward-VJP-targetrefs/逐批次cap核对通过，已验证F输入126000/输入VJP126000，最大压力1.000000119。
+
+新增source target cache63000×10 FP32/2.52MB，生产0.509850秒；独立复算630000分量、basis10与512资格记录，最大差0.0。生产新F/VJP0，不读J或GN修改IQ；训练在线F完整预算1890000前向+1890000输入反向，原F50及缓存/源资格成本保留，是F-guided。当前正式结果待产出；固定最终30轮后自动profile/source1800×7/target168000×7/全部预测后独立truth-last。默认DURA保持，目标ACTIVE。

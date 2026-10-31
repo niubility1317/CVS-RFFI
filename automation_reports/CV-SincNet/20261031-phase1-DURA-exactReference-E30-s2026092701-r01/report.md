@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-exactReference-E30-s2026092701-r01`
 - group_id：`phase1-dura-source-exact-reference-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -36,3 +36,10 @@
 新特征目标63000×10 FP32/2.52MB由已有source F160/软RX均值/合法基底生成，生产F0/VJP0，不读J或GN修改IQ。训练在线F1890000输入+1890000输入反向，一次reverse后注入detach限幅梯度，F50历史知识/成本与新增缓存/真实时耗全部披露，不称F-free。F加载及额外F路径隔离Torch/CUDA随机流，避免扰动G/probe；固定最后30轮。
 
 4项新集成测试、实际入口、唯一P0P1通过；真实2Ls三个G模块/精确IQcap/F冻结原头/严格epoch0重载后立即继续。满30自动profile、source1800×7和target168000×7，每role全预测固定后独立truth-last，即使源成绩差仍完成新G正式矩阵。每六星地≥137216正确且clean≥142256，R17每景1pp及旧低城区70%另列。默认DURA与完整目标保持。
+
+
+## 实际启动证据
+
+VERIFIED / RUNNING。执行cc6440f3be59239e54cf4e6c900d75d3c8314ce8已提交推送并独立核对远端OID；一次N607 preflight/单归档传输SHA/remotecompile通过。实际controller 1570379/worker 1570547/GPU 4 的CWD、完整命令、CUDA、GPU和日志增长核实，旧own句柄全部消失。启动前同卡1个计算进程、free 22883MiB，新增本任务1个，其他owner保持。真实2Ls精确IQ梯度cap/三个G模块梯度/原F默认头冻结/严格epoch0重载通过；F加载后CPU/CUDA RNG恢复已实际核实，F路径也隔离随机流。至少完成2轮，完整前缀预算/加权loss/源视图/Fforward-VJP-targetrefs/逐批次cap核对通过，已验证F输入126000/输入VJP126000，最大压力1.000000119。
+
+新增source target cache63000×10 FP32/2.52MB，生产0.509850秒；独立复算630000分量、basis10与512资格记录，最大差0.0。生产新F/VJP0，不读J或GN修改IQ；训练在线F完整预算1890000前向+1890000输入反向，原F50及缓存/源资格成本保留，是F-guided。当前正式结果待产出；固定最终30轮后自动profile/source1800×7/target168000×7/全部预测后独立truth-last。默认DURA保持，目标ACTIVE。
