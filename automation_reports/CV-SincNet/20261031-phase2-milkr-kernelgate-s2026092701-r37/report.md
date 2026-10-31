@@ -15,3 +15,36 @@ sourceGPU4/targetGPU0事前检查余量，其他owner保持。实际commit、命
 ## 发布前核验
 
 31项相关检查及4项非法协议输入检查通过，compile/diff检查通过。唯一独立P0/P1审查PASS，独立新增4项+worker alias共5项PASS：加权RKHS方程及截距sum(alpha)=0、方差尺度一致；B和常量核factor=1，其他factor有界0..1且prior零和保持；源old4/目标old6一致；各物理OOF两tau/两gate/KRR只trainSUP，held/query冻结crosskernel；源120规则保留RFmarker，源/worker真实双CCA/fitter，无density/center串入。真实F/G无query smoke为launcher首步PASS继续。
+
+## 实际完成与结果
+
+**VERIFIED**：release archive传输/remotecompile通过，发布后实际source与target进程PID/CWD/argv/GPU均已读取，源/target日志增长、36个prediction与SCORED_COMPLETE及全部所属进程退出核实。真实F/G/head无query smoke PASS。代码commit `17eeb89296da5751f0f7e0420c6a84aaa22c7eca`。source固定Q0/QF选择K1规则：{'config': ['signature_identity', 'nearest', 0.5, 'single'], 'ridge': 0.01, 'outer_folds': 3, 'outer_strengths': [0.0, 0.25, 0.5, 0.75], 'ridge_reference_classes': 6, 'prior_weight': 0.5, 'fusion_policy': 'rf_distance_margin_half_v1', 'confidence_rule': 'support_balanced_ridge_v1', 'orbit_ensemble_weight': 0.5, 'rf_prior_gate_rule': 'support_balanced_kernel_evidence_v1'}；源流程77.974秒。
+
+target worker [142.1365523613058]秒，raw每行score/distance临时缓存[28777056]字节，最终缓存0行；12个fit记录均严格单SUP路径，head6列合法映射、prior.5、物理OOF状态与allocatedK核实；R31多维ridge gate仅当前SUP拟合，组数/ridge.1核实；两路核独立SUP带宽后各半权，第二路RF实际存储每物理SUP8576bytes，RFgate额外状态按实际SUP计数核实，全部物理OOF train-only。融合没有额外F/G参数更新。
+
+| 路径 | 当前角点平均宏H% | 同输入原版差pp | QF−Q0 pp | QG−Q0 pp |
+|---|---:|---:|---:|---:|
+| S0Q0 | 55.5016 | +9.3827 | +2.8977 | -0.6536 |
+| S0Q1 | 54.8480 | +12.4553 | +2.8977 | -0.6536 |
+| S0Q2 | 58.3993 | 不适用：融合新路径 | +2.8977 | -0.6536 |
+| S1Q0 | 48.9262 | +30.9053 | +13.4694 | +16.3920 |
+| S1Q1 | 65.3182 | +7.0142 | +13.4694 | +16.3920 |
+| S1Q2 | 62.3956 | 不适用：融合新路径 | +13.4694 | +16.3920 |
+
+Q0/Q1分别为raw/G-only同输入对照；Q2为用户允许的同记录融合，不把Q2对原G-only的差冒充同输入配对。Q2对原raw/G的跨路径差单独保留result_summary字段。
+
+## 逐角点验收
+
+- S0：raw较原raw至少+5为3/4，QF>raw为4/4，全部角点通过False。
+- S1：raw较原raw至少+5为4/4，QF>raw为4/4，全部角点通过True。
+
+严格晋级 False；是否补其余12KN/六RX由严格逐格晋级决定，不以均值代替。纯raw/G四路对原版逐格+5全部通过 False，作为控制单列，不用融合隐藏原G-only下降。
+
+| K | N | S0 raw H%（对原差pp） | S0 QF−raw pp | S0 G−raw pp | S1 raw H%（对原差pp） | S1 QF−raw pp | S1 G−raw pp |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 2 | 50.493 (+19.373) | +3.263 | +2.398 | 45.930 (+9.338) | +11.144 | +15.564 |
+| 1 | 20 | 30.813 (+4.838) | +1.403 | -0.314 | 28.435 (+12.529) | +7.327 | +10.249 |
+| 20 | 2 | 71.410 (+5.849) | +2.974 | -3.412 | 60.633 (+56.641) | +18.521 | +20.872 |
+| 20 | 20 | 69.291 (+7.471) | +3.950 | -1.287 | 60.707 (+45.113) | +16.886 | +18.883 |
+
+实际失败组合：[{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.837843949657822, 'fusion_gain_pp': 1.4034094058156699}]。角点晋级 False；不扩剩余12KN/其他六RX，保留本负结果。 源partial-novelty、单RX/单seed/P01MIX01已曝光开发边界保持，最终all16目标仍ACTIVE。
