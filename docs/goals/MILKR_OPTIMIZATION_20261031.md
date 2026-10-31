@@ -97,3 +97,7 @@ R13仅映射raw仍残留单侧失配。新R14拟合source-only配对CCA，两路
 - kappa20.0源四路较none+0.155pp，源通过False。
 
 source-only停止，target0。目标仍ACTIVE，当前七RX R14 S0Q0+4.110pp；不扩展R15。
+
+### R16当前下一步
+
+R15校准源最佳+0.1547pp未过0.5pp，正常source-only停止target0。R16是明确的同核C-SVC分类目标对照（不冒充原ridge未改）：固定CCA16/F/G/神经默认头，source四C选择，通过才target首RX全KN四路80行。sourcegate/用户5pp门槛不改，source六类已见F和目标26类外推局限保留。新候选审查/针对性检查PASS。当前七RX最佳主路径仍R14+4.110pp，goal ACTIVE。
