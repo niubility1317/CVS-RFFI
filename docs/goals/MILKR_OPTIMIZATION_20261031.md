@@ -157,3 +157,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R20 固定 C4 相位轨道特征
 
 四相位同记录计算、G先于orbit、每相位单位特征的均值/标准差；source unsupervised pairedCCA rank64 固定，无classmetric，source RX/TXheld只选K1规则，F/G不更新。先K1/20 N2/20四角点四S/Q24rows，每格两S Q0+5/Q1更高才同模型补剩余12KN；最终仍需16KN全过再扩RX。源门槛仅数值/合法性，不以重复修改旧gate代替新特征验证。
+
+### R20 C4 实际结果
+
+真实checkpoint smoke及独立审查/测试通过；source rank64和C4固定、source120核规则选唯一K1。目标24行评分完成，所属进程退出。S0角点Q0+5为3/4，Q1>Q0为1/4；S1角点Q0+5为4/4，Q1>Q0为4/4；角点晋级False。不扩其余KN/RX，不用目标结果调rank或相位数。基座仍Tri-SIG-TIME SSL，goal ACTIVE。详见本run result_summary/report。
