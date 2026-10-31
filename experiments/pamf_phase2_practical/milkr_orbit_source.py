@@ -26,6 +26,10 @@ def calibrate(rt):
     encoder_type=PhaseEncoder if distribution else OrbitCCA
     fit_K1=phase_fit if distribution else signature_kernel.fit
     fit_many=phase_fit if distribution else nested_fisher.fit
+    if rt['kernel_method']=='local_anchor':
+        from .milkr.local_anchor import fit as local_fit,POLICY
+        require(rt.get('local_anchor_policy')==POLICY,'Frozen local-anchor policy differs')
+        fit_K1=local_fit;fit_many=local_fit
     require(rt['source_cache_epochs']==[91,92] and rt['orbit_quarters']==[0,1,2,3] and rt['orbit_rank']==64,'Wrong preregistered orbit configuration')
     if rt['kernel_method']=='registered_scale':require(rt.get('bandwidth_scope')=='registered','Registered support scale required')
     for epoch in rt['source_cache_epochs']:
@@ -53,6 +57,7 @@ def calibrate(rt):
         for ridge in LAMBDAS:
             rule=dict(config=list(config),ridge=ridge,outer_folds=3,outer_strengths=[0.,.25,.5,.75],ridge_reference_classes=6);rows=[]
             if rt['kernel_method']=='registered_scale':rule['bandwidth_scope']='registered'
+            if rt['kernel_method']=='local_anchor':rule['local_anchor_policy']=rt['local_anchor_policy']
             for frame in frames:
                 support=np.arange(6)*52
                 for sp in (0,1):
