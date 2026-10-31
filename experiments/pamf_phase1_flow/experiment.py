@@ -12,7 +12,7 @@ import torch
 from experiments.pamf_identity_flow.model import IdentityConditionalFlow
 from experiments.pamf_identity_flow.rollout_objective import rollout_objective
 
-RUN = '20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r01'
+RUN = '20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02'
 F_RUN = '20261027-phase1-pamf-repl-shuffled-views-m16-r02'
 F_ROW = 'main_split-repl-shuffled_time-3view-s2026092701'
 VIEWS = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',

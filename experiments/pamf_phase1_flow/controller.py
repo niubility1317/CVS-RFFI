@@ -33,6 +33,11 @@ def owned(pid, worker):
     except (FileNotFoundError,ProcessLookupError,StopIteration):return False
 
 
+def same_user(pid):
+    try:return (Path('/proc')/str(pid)).stat().st_uid==os.getuid()
+    except FileNotFoundError:return False
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--commit',required=True);a=p.parse_args()
     root=a.root;out=root/'runs'/RUN;release=Path.cwd()
@@ -54,8 +59,8 @@ def main():
             with (root/'runs/receiver_residual_capacity4.lock').open('a') as lock:
                 fcntl.flock(lock,fcntl.LOCK_EX)
                 for gpu in capacity():
-                    # A free card avoids affecting any other owner's compute.
-                    if gpu['free']>=12000 and not gpu['pids']:
+                    # At most two compute processes; never share with a foreign user.
+                    if gpu['free']>=12000 and len(gpu['pids'])<2 and all(same_user(pid) for pid in gpu['pids']):
                         selected=gpu;break
                 if selected is not None:
                     env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(selected['index']))
