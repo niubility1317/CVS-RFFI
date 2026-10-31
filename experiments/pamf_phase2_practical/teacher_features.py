@@ -56,4 +56,15 @@ class NativeSkipBridge(TeacherBridge):
     from .milkr.native_skip import NativeSkip as encoder_type
 
 
-def bridge_type(method):return NativeSkipBridge if method=='native_skip' else TeacherBridge
+class EpisodicMetricBridge(TeacherBridge):
+    from .milkr.episodic_metric import EpisodicMetric as encoder_type
+
+    @classmethod
+    def fit(cls,raw,restored,**source_metadata):
+        return cls(cls.encoder_type.fit(ordinary(raw),ordinary(restored),**source_metadata))
+
+
+def bridge_type(method):
+    if method=='native_skip':return NativeSkipBridge
+    if method=='episodic_metric':return EpisodicMetricBridge
+    return TeacherBridge

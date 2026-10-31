@@ -21,7 +21,7 @@ def worker(rt,capname):
     specs={(s['k'],s['new_count']):s for s in (read(p) for p in (cap/'splits').glob('*.json'))};old_names=specs[rt['K'][0],0]['registered_classes']
     columns=head_columns(read(rt['source_contract'])['classes'],old_names)
     require(all(spec['registered_classes'][:6]==old_names for spec in specs.values()),'Old class order changes across rows')
-    bridge=(bridge_type('native_skip') if rt.get('kernel_method')=='native_skip' else TeacherBridge).load(Path(rt['run_root'])/'source_orbit_cca.npz');rule=read(Path(rt['run_root'])/'source_selection.json')['K1_rule']
+    bridge=(bridge_type(rt['kernel_method']) if rt.get('kernel_method') in ('native_skip','episodic_metric') else TeacherBridge).load(Path(rt['run_root'])/'source_orbit_cca.npz');rule=read(Path(rt['run_root'])/'source_selection.json')['K1_rule']
     states=[];rows=[];started=time.perf_counter();arm=rt['arm']
     for k in rt['K']:
         for n in [0]+rt['N']:
