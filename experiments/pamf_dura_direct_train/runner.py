@@ -314,6 +314,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.balanced_tangent worker',
                 'pamf_dura_direct_train.soft_reference worker',
                 'pamf_dura_direct_train.exact_reference worker',
+                'pamf_dura_direct_train.phase_prior worker',
                 'pamf_dura_efficiency.nonlinear_profile worker',
                 'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
