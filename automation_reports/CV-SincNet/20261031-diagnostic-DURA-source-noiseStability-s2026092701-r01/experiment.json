@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01",
+  "group_id": "phase1-dura-source-noise-stability",
+  "display_name": "单阶段恢复器源域噪声敏感性：与默认 DURA 配对诊断",
+  "description": "固定pureG repeatE30与默认R69/source512×cache01/20，按缓存标量噪声方差生成同一正负高斯扰动，clean不扰动；全模型冻结，只读源IQ/Fclean引用，不读TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "noise-stability",
+    "frozen-source-diagnostic",
+    "training-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase1-DURA-repeatViews-E30-s2026092701-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07 source512(128L384U) x cached01/20;originalreceived and controlled +/-isotropicnoise;sourceclean referenceunchanged",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "source_indices128L384U;source_ids exact L/U physical membership withoriginalF sourcecache;full63000Ffeatureorder exactmatch",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30;additionalisotropicstress isnot a fresh nativechannel realization",
+    "target_panel": "None",
+    "actual_training_labels": "No training;pairedsourceclean/cachevariance andsamefrozenFcleanfeature proxy only;0directTX/V/target"
+  },
+  "permissions": {
+    "regime": "Source_only_frozenG_F_noise_stress",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source training-pool noise amplification/IQ andFclean-choice proxy;notcausal overfitting proof/actualTXaccuracy/targetbenefit/recoveryceiling;no automatictraining"
+  },
+  "checkpoint": {
+    "initialization": "No newnetwork oroptimizer;strict load fixed source-final pureG E30 and originaldefaultR69 for comparison;originalF50/head frozen",
+    "sources": [
+      "runs/20261031-phase1-DURA-repeatViews-E30-s2026092701-r01/scratch_joint/final.pt",
+      "runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01/scratch_joint/source_feature_cache DATAONLY"
+    ],
+    "contract_check_ref": "Existing provenance context_oracle.validate_source/repeatViews strictcommit8cf E30/source roles;runner.parent_model sourceR69 contract;load_reader originalF50/defaulthead;source_ids actual L/U agreement/Fcache physical order",
+    "provenance_verdict": "Reuse unchangedoriginal7/63/30 sourcecontract. PureG8cf scratch30/7410 noTX-F-V-target/init ancestors. DefaultR69 sourcefixednative20/4940 historical120componentepochs diagnosticreferenceonly,notnewteacher/init. F50 original4df7/source50/11100 supervision explicit;featurecache producedsourceclean before its Gtraining/target.",
+    "selection_rule": "No model selection/weight updates. FixedpureG anddefault references from existing sourcehypothesis;no candidateparent selectedbytarget. Previouslyexposedbenchmark disclosed;newdiagnosticdoesnotconsume target outputs."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-noise-stability",
+    "gpu_policy": "CPU2/CUDAempty/0GPU;allpriorownGworkers terminal bylast verifiedpoststate;no otherowner changes",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.noise_stability_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Bad source/checkpoint/Fcache/roles/order/shape/nonfinite/statechange/outputcollision:preserveandstop/noautoretry. Scientificfailuredoesnot relaxorautotrain."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "results.json",
+    "complete.json",
+    "pureG_E30-{1,20}.npz PRIVATE",
+    "DURA_default-{1,20}.npz PRIVATE",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "paired native/antithetic IQNMSE andMSEincrease",
+      "meanoutputdrift/meaninputnoise andprimary/defaultnoisegainratio",
+      "sourceclean-Fchoice/cosinefidelity descriptive",
+      "all source role/RX/day/scene/state/lock statistics",
+      "fixedtwo-vieweligibility andactualCPUtime/forwardcounts/frozenstate"
+    ],
+    "dimensions": [
+      "2models x cache01/20 x native/plus/minus",
+      "all/nonclean/role/RX/day/scene/state/lock"
+    ],
+    "prediction_ref": "No target/newtrainedG predictions;privatepaired sourceIQ/Foutputs",
+    "scorer_ref": "NoTXtruth. Independent completeNPZ IQ/noise/Fmetrics/groupmeans andeligibility recomputation aftercompletion"
+  },
+  "rows": [
+    {
+      "row_id": "source-noise-stability",
+      "method": "FrozenG(y),G(y+epsilon),G(y-epsilon);sameepsilon acrossmodels fromcachedscalarvariance;cleanmaskzero",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{noise_stability.py,noise_stability_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103113
+      },
+      "seed_notes": "Sourceindicesfixed128Ls384Us;model2026092701;originalAUG2026101912/RX2026101911;epsilonCPUgenerator2026103113+cacheview,identicalacrossmodels;no support/newphysicalrecords",
+      "k": null,
+      "scenario": "source512 x nativecache01/20 including7scenes;controlledisotropicnoisestress",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2models x2views x3inputs x512=6144G+6144F;smoke2Ls/model=4G+4F;existing63000sourceFfeaturecache reused;CPU2/0updates/TX-V-target",
+      "output_root": "runs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.noise_stability_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "results.json",
+        "complete.json",
+        "pureG_E30-{1,20}.npz PRIVATE",
+        "DURA_default-{1,20}.npz PRIVATE",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixednoise_stability RULE beforeallnewsourceforward:Bothcache01/20 noncleanprimary/defaultoutput-driftgainratio>=1.25 andprimaryantithetic/nativeIQMSE>=1.10. Passsupports only separatelyregistered scratchjointE30 noisesourceaugmentation study;notautomatictraining. Failure notloosened.",
+    "epsilon perrealcomponent sigma=sqrt(cachedscalarvariance),one seeded bank512x2x256/view sharedacrossmodels,+/-antithetic pair;clean scene epsilon0. Independentisotropicstress isnotnativechannelredrawing,not a claim of exactphysicalnoisedoubling/SNRshift. Cleanreference,actualA andoriginalreceived untouched.",
+    "Native/allperturbed512/2views permodel retained. Gain is ratioofmeanoutputdriftNMSE tomeaninputnoiseNMSE overnonclean;notmean unstableperrecordratios. MSEratio usesmeanpairperturbederror/nativeerror. AllFmetrics descriptive/notgate;sourcecleanFagreement isnotrealTXaccuracy.",
+    "OriginalF source63000cleanfeatures reused,40.32MB/historicalgenerationcost retained inmetadata,notusingproducerGweights. F50 supervision50/11100 explicit. Models eval/no_grad andallstate/p.grad checked;0training/TX/V/target/newcachecreation.",
+    "5targetedtests antithetic algebra/cleanmask/referencepreservation/identityresponseunitgain/invalidvariance/bothviewsthresholds PASS;realmodule --help importslegacyfixture PASS;oneindependentP0P1 PASS. Remote firststep eachmodel2Ls originalF/defaulthead smoke thenimmediatecontinue.",
+    "OneCPU2preflight/archiveSHA/remotecompile/actualPID-CWD-argv-CUDAempty-loggrowth. EntireprivateNPZ independentarithmetic recheck;no datarehash,seal orsourceapprovaltoken. DefaultDURA/currentF/Phase2/3 unchanged;completegoal remainsACTIVE."
+  ],
+  "registered_at": "2026-10-31T01:38:27+00:00"
+}
