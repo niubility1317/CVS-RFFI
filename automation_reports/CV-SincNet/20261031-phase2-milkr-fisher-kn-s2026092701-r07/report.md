@@ -15,3 +15,11 @@ R11不中心化descriptor。对当前support中三112维块分别估计类均值
 主R11 S0Q0平均宏H至少+5pp才满足主目标；仅全部16格均+5pp才称各K/N均达。另给R11−R9C同池配对效应与逐RX负差。P03已有曝光，不声称盲测。源选择或目标适应均不读取query真实组别/配额/统计。
 
 两个定向测试及一次独立P0/P1审查PASS：权重公式、eta0/K1精确R9、统计冻结/查询分批独立。真实checkpoint无query smoke核对实际336及F原输出不变。GPU0/2/4/6每卡最多2新增worker，启动核实显存、不触碰其他owner。不可覆盖run root，科学低收益不算技术失败，技术失败保留且不原地盲重启。
+
+## 已核实源端结果
+
+**SOURCE_ONLY_SCIENTIFIC_STOP / VERIFIED**。四强度全部完成，eta0原R9胜出，未通过预登记+0.5pp门槛，目标IQ/预测/评分0。源目标分别{"0.0": 0.7228550536894782, "0.25": 0.7136107691347389, "0.5": 0.7015141791456654, "0.75": 0.6980128522905621}。源数据处理用时17.577秒。
+
+真实checkpoint无query smoke PASS，归档比较与远端compile PASS，实际commit `cbb91b43da036c03b4aa5bd244f399c6d6a8f312`；首次读取时PID1412355已退出，完整source_selection、四模式日志及正常完成artifact证明执行结束，不声称曾观察到存活进程。没有技术失败、未降低原门槛。
+
+该源代理六类均被F见过，负结果限全局强度选择，不能证明当前目标support真实物理留出选择也无效。原候选保留，不据query调强度或补跑目标。见[source_summary.json](source_summary.json)。

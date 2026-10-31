@@ -1,0 +1,65 @@
+{
+  "K1_rule": {
+    "config": [
+      "signature_identity",
+      "all",
+      0.5,
+      "single"
+    ],
+    "ridge": 0.001,
+    "fisher_strength": 0.0
+  },
+  "selected_fisher_strength": 0.0,
+  "strength_objectives": {
+    "0.0": 0.7228550536894782,
+    "0.25": 0.7136107691347389,
+    "0.5": 0.7015141791456654,
+    "0.75": 0.6980128522905621
+  },
+  "strength_H_byK": {
+    "0.0": {
+      "1": 0.5869255431471887,
+      "5": 0.736919535364397,
+      "10": 0.7768901219567754,
+      "20": 0.7906850142895518
+    },
+    "0.25": {
+      "1": 0.5869255431471887,
+      "5": 0.7066018881292423,
+      "10": 0.7761504720896497,
+      "20": 0.7847651731728743
+    },
+    "0.5": {
+      "1": 0.5869255431471887,
+      "5": 0.7039125849881678,
+      "10": 0.7488504399501643,
+      "20": 0.766368148497141
+    },
+    "0.75": {
+      "1": 0.5869255431471887,
+      "5": 0.6968321722194768,
+      "10": 0.7374822844094902,
+      "20": 0.7708114093860926
+    }
+  },
+  "source_mean_H_gain": 0.0,
+  "source_byK_H_gain": {
+    "1": 0.0,
+    "5": 0.0,
+    "10": 0.0,
+    "20": 0.0
+  },
+  "target_eligible": false,
+  "scientific_verdict": "SOURCE_PROXY_GAIN_NOT_ESTABLISHED",
+  "seconds": 17.576575584243983,
+  "target_reads": 0,
+  "query_reads": 0,
+  "U_truth_reads": 0,
+  "completion": {
+    "status": "SOURCE_ONLY_SCIENTIFIC_STOP",
+    "target_rows": 0,
+    "reason": "SOURCE_PROXY_GAIN_NOT_ESTABLISHED"
+  },
+  "code_commit": "cbb91b43da036c03b4aa5bd244f399c6d6a8f312",
+  "processes_remaining": 0
+}
