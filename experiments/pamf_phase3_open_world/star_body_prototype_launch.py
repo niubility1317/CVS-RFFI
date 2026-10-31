@@ -8,7 +8,9 @@ import subprocess
 import time
 from .star_representation_launch import _read,_write,_env,_gpu_free,_job
 
-RUN='20261031-phase3-body-prototype-s2026092701-r01'
+RUN='20261031-phase3-body-prototype-s2026092701-r02'
+TRAIN_RUN='20261031-phase3-body-prototype-s2026092701-r01'
+TRAIN_CODE='a33612e978948da25bd733bcb9edba3ac9d74e9a'
 FIELDS={'run_id','code_commit','run_root','release_root','python','launch_owner','allowed_gpus','minimum_free_mb','max_added_workers_per_gpu',
     'train_config','eval_config','source_novel_truth','clean_truth','star_truth'}
 
@@ -20,9 +22,9 @@ def validate(r):
             or any(not isinstance(r.get(k),str) or not r[k].strip() for k in ('code_commit','run_root','release_root','python','launch_owner','source_novel_truth','clean_truth','star_truth'))
             or re.fullmatch('[0-9a-f]{40}',r['code_commit']) is None or r['allowed_gpus']!=list(range(8)) or r['minimum_free_mb']!=4096 or r['max_added_workers_per_gpu']!=2):raise ValueError('Exact matched prototype runtime required')
     t=train.validate_config(r['train_config']);e=predict.validate_config(r['eval_config'])
-    if (t['run_id']!=RUN or e['run_id']!=RUN or t['code_commit']!=r['code_commit'] or e['code_commit']!=r['code_commit'] or e['train_config']!=t
-            or Path(t['output_root'])!=Path(r['run_root'])/'train' or Path(e['output_root'])!=Path(r['run_root'])/'predict'):
-        raise ValueError('Actual neural/evaluation identity and immutable roots must agree')
+    if (t['run_id']!=TRAIN_RUN or t['code_commit']!=TRAIN_CODE or e['run_id']!=RUN or e['code_commit']!=r['code_commit'] or e['train_config']!=t
+            or Path(t['output_root'])!=Path(r['run_root']).parent/TRAIN_RUN/'train' or Path(e['output_root'])!=Path(r['run_root'])/'predict'):
+        raise ValueError('Only exact completed r01 training may feed the independent r02 evaluation')
     return r
 
 
@@ -37,14 +39,15 @@ def start(runtime):
 
 def _command(r,stage):
     root=Path(r['run_root']);p=[r['python'],'-B','-u','-m']
-    if stage=='train':return p+[__package__+'.star_body_prototype_train','--config',str(root/'configs/train.json'),'--device','cuda:0']
+    if stage=='train':raise ValueError('Recovery reuses frozen r01 training; new optimization is forbidden')
     if stage=='predict':return p+[__package__+'.star_body_prototype_run','--config',str(root/'configs/eval.json'),'--device','cuda:0']
     return p+[__package__+'.star_body_prototype_score','--prediction-root',str(root/'predict'),'--source-novel-truth',r['source_novel_truth'],'--clean-truth',r['clean_truth'],'--star-truth',r['star_truth'],'--output',str(root/'score')]
 
 
 def _terminal(r,stage):
-    m=_read(Path(r['run_root'])/stage/'complete.json' if stage!='predict' else Path(r['run_root'])/'predict/complete.json')
-    expected=dict(run_id=RUN,code_commit=r['code_commit'],final_phase3_complete=False)
+    path=Path(r['train_config']['output_root'])/'complete.json' if stage=='train' else Path(r['run_root'])/stage/'complete.json'
+    m=_read(path)
+    expected=dict(run_id=TRAIN_RUN if stage=='train' else RUN,code_commit=TRAIN_CODE if stage=='train' else r['code_commit'],final_phase3_complete=False)
     if stage=='train':expected.update(status='BODY_PROTOTYPE_TRAINING_COMPLETE',updates_per_arm=444,total_optimizer_updates=888,SOURCE_completed_before_U_open=True,
         source_sampling_matched=True,original_models_unchanged=True,all_student_buffers_unchanged=True,all_student_Sinc_unchanged=True,all_student_bodies_changed=True,all_student_projections_changed=True,target_Q_reads=0,private_truth_reads=0,U_truth_reads=0)
     elif stage=='predict':expected.update(status='BODY_PROTOTYPE_PREDICTIONS_COMPLETE',source_models_frozen_before_V=True,all_thresholds_frozen_before_novel_and_Q=True,
@@ -58,9 +61,10 @@ def _terminal(r,stage):
 def driver(runtime):
     r=validate(_read(runtime));root=Path(r['run_root']);path=root/'pipeline_state.json'
     if path.exists():raise FileExistsError('Observe original pipeline; never restart')
-    state=dict(run_id=RUN,code_commit=r['code_commit'],pid=os.getpid(),status='RUNNING',started_at=time.time(),jobs={});_write(path,state)
+    state=dict(run_id=RUN,code_commit=r['code_commit'],pid=os.getpid(),status='RUNNING',started_at=time.time(),jobs={},training_reused=True,training_run_id=TRAIN_RUN,this_run_optimizer_updates=0);_write(path,state)
     try:
-        for stage in ('train','predict','score'):
+        _terminal(r,'train')
+        for stage in ('predict','score'):
             gpu=None
             if stage!='score':
                 available=_gpu_free(r)

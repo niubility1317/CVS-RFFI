@@ -280,8 +280,10 @@ def load_trained_model(c,arm,device='cuda:0'):
             or value.get('parent_signal_identity')!=parent_identity or value.get('source_feature_manifest')!=done['source_feature_manifest']):raise ValueError('Strict source r03 ancestry and body-prototype identity required')
     network=value.get('network')
     if not isinstance(network,dict) or any(not torch.is_tensor(v) or not bool(torch.isfinite(v).all()) for v in network.values()):raise ValueError('Complete finite SignalOpen state required')
-    fixed=set(dict(model.named_buffers()))|{n for n,p in model.named_parameters() if n.startswith(signalcore.SINC_PREFIX)}
-    if any(k not in network or not torch.equal(model.state_dict()[k].detach().cpu(),network[k]) for k in fixed):raise ValueError('Frozen source Sinc/buffers cannot be replaced')
+    original=model.state_dict()
+    # Runtime/nonpersistent caches are reconstructed, never checkpoint entries.
+    fixed=(set(dict(model.named_buffers()))&set(original))|{n for n,p in model.named_parameters() if n.startswith(signalcore.SINC_PREFIX)}
+    if any(k not in network or not torch.equal(original[k].detach().cpu(),network[k]) for k in fixed):raise ValueError('Frozen source Sinc/buffers cannot be replaced')
     try:model.load_state_dict(network,strict=True)
     except RuntimeError as exc:raise ValueError('Strict full SignalOpen body/projection checkpoint required') from exc
     model.eval().requires_grad_(False);model._body_prototype_identity=identity

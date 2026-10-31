@@ -36,14 +36,18 @@ def test_actual_synthetic_models_to_CPU_score_and_reconstruction_failures(tmp_pa
         assert reads==['source','clean_DURA_truth.npz','star_DURA_truth.npz'] and result['truth_last']
         assert result['primary_method']=='PCD_predicted_ratio' and result['full_goal_status']=='ACTIVE' and not result['final_phase3_complete']
         assert not result['eligible_primary'] and len(result['methods'])==6
+        assert result['training_reused'] and result['training_run_id']==m.TRAIN_RUN_ID and result['this_run_optimizer_updates']==0
         files=[out/'complete.json',out/'thresholds.npz',out/'targets/star_DURA/predictions.npz',out/'models/TARGET_PCD.npz'];saved={p:p.read_bytes() for p in files}
-        for defect in ('partial_Q','identity','new_readout','old_control','old_baseline','tau','density','private_Q'):
+        for defect in ('partial_Q','identity','mixed_eval_identity','new_readout','old_control','old_baseline','tau','density','private_Q'):
             with subtests.test(defect=defect):
                 for p,data in saved.items():p.write_bytes(data)
                 reads.clear()
                 if defect=='partial_Q':(out/'targets/star_DURA/predictions.npz').unlink()
-                elif defect=='identity':
-                    p=out/'complete.json';a=m._read(p);a['model_identities']['TARGET_PCD']['projection_updates']=443;p.unlink();m._write(p,a)
+                elif defect in ('identity','mixed_eval_identity'):
+                    p=out/'complete.json';a=m._read(p)
+                    if defect=='identity':a['model_identities']['TARGET_PCD']['projection_updates']=443
+                    else:a['model_identities']['TARGET_PCD']['run_id']=m.RUN_ID;a['model_identities']['TARGET_PCD']['code_commit']=c['code_commit']
+                    p.unlink();m._write(p,a)
                 else:
                     p=out/'thresholds.npz' if defect=='tau' else out/'models/TARGET_PCD.npz' if defect=='density' else out/'targets/star_DURA/predictions.npz'
                     with np.load(p,allow_pickle=False) as z:a={k:z[k].copy() for k in z.files}

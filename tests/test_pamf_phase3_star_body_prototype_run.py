@@ -20,15 +20,15 @@ def fixture(root,mp):
         m=api();pc['code_commit']=m.PARENT_CODE;pm=parent.run(pc,'cpu')
         mp.setattr(m,'COUNTS',dict(parent.COUNTS));mp.setattr(m,'Q_COUNT',parent.Q_COUNT)
         mp.setattr(m.source_eval,'COUNTS',dict(m.COUNTS));mp.setattr(m.source_eval.IQ,'COUNTS',dict(m.COUNTS))
-        tc=dict(run_id=m.RUN_ID,code_commit='f'*40,reference_config=deepcopy(pc),U_public_root=str(root/'discovery/public'),U_capsule_id=m.U_CAPSULE_ID,
+        tc=dict(run_id=m.TRAIN_RUN_ID,code_commit=m.TRAIN_CODE,reference_config=deepcopy(pc),U_public_root=str(root/'discovery/public'),U_capsule_id=m.U_CAPSULE_ID,
             U_split_id=m.U_SPLIT_ID,output_root=str(root/'body_train'),steps=444,lr=.0001)
-        c=dict(run_id=m.RUN_ID,code_commit=tc['code_commit'],train_config=tc,reference_config=deepcopy(pc),output_root=str(root/'prototype_predict'),batch_size=128)
+        c=dict(run_id=m.RUN_ID,code_commit='f'*40,train_config=tc,reference_config=deepcopy(pc),output_root=str(root/'prototype_predict'),batch_size=128)
         students={};identities={'E0':pm['model_identity']};events=[];inputs={name:[] for name in m.MODEL_NAMES}
         for index,arm in enumerate(m.MODEL_NAMES[1:]):
             model=deepcopy(backend['model'])
             with torch.no_grad():model.projection.network[2].bias.add_(.005*(index+1))
             model.eval().requires_grad_(False);students[arm]=model
-            identities[arm]=dict(run_id=m.RUN_ID,code_commit=tc['code_commit'],arm=arm,updates=444,projection_updates=444,projection_cumulative_updates=2664,
+            identities[arm]=dict(run_id=tc['run_id'],code_commit=tc['code_commit'],arm=arm,updates=444,projection_updates=444,projection_cumulative_updates=2664,
                 open_signal_updates=444,signal_encoder_updates=444,native_updates=0,encoder_frozen=False,Sinc_frozen=True,signal_parameters=334721,signal_feature_parameters=232033,metric_parameters=102688,
                 signal_feature_cumulative_updates=13764,trainable_parameters=334673,body_trainable_parameters=231985,trainable_projection_parameters=102688,
                 new_body_updates=444,new_projection_updates=444,Sinc_optimizer_steps=0,input_path='cached_P1_IQ_only',
@@ -86,27 +86,27 @@ def test_strict_config_and_frozen_checkpoint_failure_precede_IQ(tmp_path,monkeyp
 
 
 def test_complete_training_metadata_and_target_U_ancestry(tmp_path,subtests):
-    m=api();root=tmp_path/'train';tc=dict(output_root=str(root),U_capsule_id=m.U_CAPSULE_ID,U_split_id=m.U_SPLIT_ID)
+    m=api();root=tmp_path/'train';tc=dict(run_id=m.TRAIN_RUN_ID,code_commit=m.TRAIN_CODE,output_root=str(root),U_capsule_id=m.U_CAPSULE_ID,U_split_id=m.U_SPLIT_ID)
     c=dict(code_commit='f'*40,train_config=tc);pm=dict(model_identity=dict(model='r03'),parent_F0_identity=dict(model='F0'),dura_identity=dict(model='G'))
     manifest=dict(count=384,capsule_id=m.U_CAPSULE_ID,split_id=m.U_SPLIT_ID);rows={};identities={}
     for arm in m.MODEL_NAMES[1:]:
-        i=dict(run_id=m.RUN_ID,code_commit=c['code_commit'],arm=arm,updates=444,projection_updates=444,projection_cumulative_updates=2664,
+        i=dict(run_id=tc['run_id'],code_commit=tc['code_commit'],arm=arm,updates=444,projection_updates=444,projection_cumulative_updates=2664,
             open_signal_updates=444,signal_encoder_updates=444,native_updates=0,encoder_frozen=False,Sinc_frozen=True,signal_parameters=334721,signal_feature_parameters=232033,metric_parameters=102688,
             signal_feature_cumulative_updates=13764,trainable_parameters=334673,body_trainable_parameters=231985,trainable_projection_parameters=102688,
             new_body_updates=444,new_projection_updates=444,Sinc_optimizer_steps=0,input_path='cached_P1_IQ_only',
             parent_signal_identity=pm['model_identity'],parent_F0_identity=pm['parent_F0_identity'],dura_identity=pm['dura_identity'],
             source_only=arm=='SOURCE',target_U_used=arm=='TARGET_PCD',target_U_reads=384 if arm=='TARGET_PCD' else 0)
-        identities[arm]=i;rows[arm]=dict(schema='pamf_phase3_body_prototype_train_v1',status='BODY_PROTOTYPE_STUDENT_FROZEN',identity=i,updates=444,
+        identities[arm]=i;rows[arm]=dict(schema='pamf_phase3_body_prototype_train_v1',status='BODY_PROTOTYPE_STUDENT_FROZEN',run_id=tc['run_id'],code_commit=tc['code_commit'],arm=arm,identity=i,updates=444,
             source_only=i['source_only'],target_U_used=i['target_U_used'],target_U_reads=i['target_U_reads'],U_manifest=manifest if arm=='TARGET_PCD' else None,
             initial_state_equal_to_parent=True,student_Sinc_unchanged=True,student_body_changed=True,student_projection_changed=True,model_buffers_unchanged=True)
         (root/arm).mkdir(parents=True);m._write(root/arm/'complete.json',rows[arm])
-    done=dict(schema='pamf_phase3_body_prototype_train_v1',status='BODY_PROTOTYPE_TRAINING_COMPLETE',run_id=m.RUN_ID,code_commit=c['code_commit'],
+    done=dict(schema='pamf_phase3_body_prototype_train_v1',status='BODY_PROTOTYPE_TRAINING_COMPLETE',run_id=tc['run_id'],code_commit=tc['code_commit'],
         config=tc,arms=['SOURCE','TARGET_PCD'],updates_per_arm=444,total_optimizer_updates=888,rows=rows,identities=identities,U_manifest=manifest,
         source_sampling_matched=True,SOURCE_completed_before_U_open=True,original_models_unchanged=True,all_student_buffers_unchanged=True,all_student_Sinc_unchanged=True,all_student_bodies_changed=True,all_student_projections_changed=True)
     m._write(root/'complete.json',done);ids=np.asarray(['opaque'+str(i) for i in range(384)]);np.savez(root/'U_features.npz',ids=ids)
     saved=(root/'complete.json').read_bytes();actual,loaded=m._training_metadata(c,pm)
     assert actual==dict(E0=pm['model_identity'],**identities);np.testing.assert_array_equal(loaded,ids)
-    for defect in ('partial_arm','wrong_U_split','encoder_updates','duplicate_U_ids'):
+    for defect in ('partial_arm','wrong_U_split','encoder_updates','duplicate_U_ids','mixed_eval_global','mixed_eval_identity'):
         with subtests.test(defect=defect):
             (root/'complete.json').write_bytes(saved);np.savez(root/'U_features.npz',ids=ids)
             if defect=='partial_arm':
@@ -115,6 +115,11 @@ def test_complete_training_metadata_and_target_U_ancestry(tmp_path,subtests):
                 a=deepcopy(done);a['U_manifest']['split_id']='wrong';(root/'complete.json').unlink();m._write(root/'complete.json',a)
             elif defect=='encoder_updates':
                 a=deepcopy(done);a['identities']['TARGET_PCD']['open_signal_updates']=0;(root/'complete.json').unlink();m._write(root/'complete.json',a)
+            elif defect=='mixed_eval_global':
+                a=deepcopy(done);a['run_id']=m.RUN_ID;a['code_commit']=c['code_commit'];(root/'complete.json').unlink();m._write(root/'complete.json',a)
+            elif defect=='mixed_eval_identity':
+                row=deepcopy(rows['TARGET_PCD']);row['identity']['run_id']=m.RUN_ID;row['identity']['code_commit']=c['code_commit']
+                (root/'TARGET_PCD/complete.json').unlink();m._write(root/'TARGET_PCD/complete.json',row)
             else:np.savez(root/'U_features.npz',ids=np.repeat(ids[:1],384))
             with pytest.raises(ValueError):m._training_metadata(c,pm)
 
@@ -131,6 +136,7 @@ def test_frozen_students_source_fit_then_calibration_then_all_DURA_predictions(t
         assert done['all_three_DURA_conditions_complete'] and done['classification_unchanged']
         assert done['combined_real_signal_forward_rows']==done['training_costs']['real_parent_signal_forward_rows']+454656+done['real_signal_forward_rows']
         assert done['combined_G_forward_rows']==384+done['G_forward_rows'] and done['inherited_new_body_updates_total']==888
+        assert done['training_reused'] and done['training_run_id']==m.TRAIN_RUN_ID and done['this_run_optimizer_updates']==0
         with np.load(out/'thresholds.npz') as z:tau=z['conditional']
         np.testing.assert_array_equal(tau[:2],m._reference(c)[2])
         for role in ('known','novel'):
@@ -150,6 +156,8 @@ def test_identity_mismatch_and_partial_query_never_complete(tmp_path,monkeypatch
     with fixture(tmp_path,monkeypatch) as (m,c,pm,b,events,students,identities,*_):
         for delta in (dict(truth='forbidden'),dict(batch_size=True),dict(output_root=c['train_config']['output_root']),dict(reference_config=dict(c['reference_config'],code_commit='b'*40))):
             with subtests.test(delta=delta),pytest.raises(ValueError):m.validate_config(dict(c,**delta))
+        for train_delta in (dict(run_id=m.RUN_ID),dict(code_commit=c['code_commit'])):
+            with subtests.test(train_delta=train_delta),pytest.raises(ValueError):m.validate_config(dict(c,train_config=dict(c['train_config'],**train_delta)))
         identities['TARGET_PCD']['Sinc_frozen']=False
         with pytest.raises(ValueError):m.run(c,'cpu')
         assert 'L' not in events and not Path(c['output_root']).exists()

@@ -92,3 +92,24 @@ def test_failed_U_keeps_source_but_never_publishes_partial_global(tmp_path,monke
         assert Path(c['output_root'],'SOURCE/final.pt').is_file() and not Path(c['output_root'],'complete.json').exists()
         assert not Path(c['output_root'],'TARGET_PCD/final.pt').exists()
         with pytest.raises(ValueError):t.load_trained_model(c,'SOURCE','cpu')
+
+
+def test_reload_omits_nonpersistent_cache_but_rejects_saved_buffer_and_Sinc_changes(tmp_path,monkeypatch,subtests):
+    with fixture(tmp_path,monkeypatch) as (t,c,pm,b,u,events,created):
+        done=t.train(c,'cpu');original_loader=t.base.load_trained_model
+        def rebuilt_parent(*args,**kwargs):
+            model,identity=original_loader(*args,**kwargs)
+            model.register_buffer('runtime_feature_cache',torch.tensor([3.]),persistent=False)
+            return model,identity
+        monkeypatch.setattr(t.base,'load_trained_model',rebuilt_parent)
+        loaded,identity=t.load_trained_model(c,'TARGET_PCD','cpu')
+        assert identity==done['identities']['TARGET_PCD']
+        assert 'runtime_feature_cache' in dict(loaded.named_buffers()) and 'runtime_feature_cache' not in loaded.state_dict()
+        path=Path(c['output_root'])/'TARGET_PCD/final.pt';saved=path.read_bytes();payload=torch.load(path,weights_only=False)
+        buffer_key=next(k for k in dict(loaded.named_buffers()) if k in loaded.state_dict() and not k.startswith(t.signalcore.SINC_PREFIX))
+        sinc_key=next(k for k in dict(loaded.named_parameters()) if k.startswith(t.signalcore.SINC_PREFIX))
+        for key in (buffer_key,sinc_key):
+            with subtests.test(frozen_key=key):
+                payload['network'][key]+=1;torch.save(payload,path)
+                with pytest.raises(ValueError,match='Frozen source Sinc/buffers'):t.load_trained_model(c,'TARGET_PCD','cpu')
+                payload['network'][key]-=1;path.write_bytes(saved)

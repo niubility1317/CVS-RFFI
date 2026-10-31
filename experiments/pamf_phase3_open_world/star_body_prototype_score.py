@@ -10,7 +10,7 @@ from . import star_consensus_score as common
 from .star_crossset_metric_score import paired_counts
 from .scoring import _truth as _target_truth
 
-RUN_ID='20261031-phase3-body-prototype-s2026092701-r01'
+RUN_ID='20261031-phase3-body-prototype-s2026092701-r02'
 SCHEMA='pamf_phase3_body_prototype_scores_v1'
 STATUS='BODY_PROTOTYPE_SCORES_COMPLETE'
 METHODS=('E0_pooled_ratio','E0_predicted_ratio','SOURCE_pooled_ratio','SOURCE_predicted_ratio','PCD_pooled_ratio','PCD_predicted_ratio')
@@ -57,6 +57,7 @@ def _prediction(root):
         new_neural_updates=0,inherited_new_SOURCE_updates=STEPS,inherited_new_TARGET_PCD_updates=STEPS,real_F_forward_rows=2*Q_COUNT,G_forward_rows=2*Q_COUNT,
         real_signal_forward_rows=2*sum(COUNTS.values())+6*Q_COUNT,real_signal_forward_rows_by_arm=dict(E0=2*Q_COUNT,SOURCE=sum(COUNTS.values())+2*Q_COUNT,TARGET_PCD=sum(COUNTS.values())+2*Q_COUNT),
         synthetic_F_forward_rows=2,G_synthetic_forward_rows=2,synthetic_signal_forward_rows=6,
+        training_reused=True,training_run_id=evaluation.TRAIN_RUN_ID,training_code_commit=evaluation.TRAIN_CODE,this_run_optimizer_updates=0,
         formal_target_accessed=False,final_phase3_complete=False)
     if any(m.get(k)!=v for k,v in required.items()):raise ValueError('Both trained arms and every six-column three-condition prediction must complete before truth')
     c=evaluation.validate_config(m['config']);pm,old_state,old_tau,old_cal=evaluation._reference(c)
@@ -153,10 +154,12 @@ def score(prediction_root,source_novel_truth,clean_truth,star_truth,output):
         classification_unchanged=True,source_E0_controls_reused_exactly=True,target_fit_input='Unlabelled star U balanced prototype objective; clean and Q are test only',source_unknown_diagnostic_only=True,
         SOURCE_weights_source_only=True,TARGET_PCD_weights_source_only=False,TARGET_PCD_weights_use_target_U=True,
         new_projection_optimizer_updates_total=2*STEPS,projection_updates_per_arm=STEPS,new_body_optimizer_updates_total=2*STEPS,Sinc_optimizer_steps=0,new_source_density_models=2,new_source_threshold_sets=4,prototypes_deployed=False,original_F0_updates=0,G_updates=0,threshold_values=36,threshold_bytes=288,
+        training_reused=True,training_run_id=m['training_run_id'],training_code_commit=m['training_code_commit'],this_run_optimizer_updates=0,
+        candidate_training_cost_scope='inherited_candidate_training_cost',inherited_candidate_training_cost=m['inherited_candidate_training_cost'],
         costs={k:m[k] for k in ('source_IQ_reads','target_Q_IQ_reads','target_U_reads','U_ID_metadata_reads','training_target_U_count','real_F_forward_rows','G_forward_rows','real_signal_forward_rows','real_signal_forward_rows_by_arm','synthetic_F_forward_rows','G_synthetic_forward_rows','synthetic_signal_forward_rows')},per_record_source_rows_deployed=0,
         training_costs=m['training_costs'],combined_real_signal_forward_rows=m['combined_real_signal_forward_rows'],combined_G_forward_rows=m['combined_G_forward_rows'],combined_real_F_forward_rows=m['combined_real_F_forward_rows'],
         source_bank_deployed=False,U_bank_deployed=False,formal_target_accessed=False,target_REG=False,registration_success=None,A_N=None,H_OW=None,full_goal_status='ACTIVE',full_goal_passed=False,final_phase3_complete=False,
-        inherited_cost_scope='Original F0 E50/11100, r03 signal 2220 and DURA training remain inherited; SOURCE/TARGET_PCD independently add444 body/projection updates each with Sinc frozen, two new source densities and four source-known threshold sets',
+        inherited_cost_scope='Original F0/r03/DURA and completed r01 SOURCE/TARGET_PCD 444 body/projection updates each remain inherited; r02 performs zero optimizer updates and only rebuilds densities/calibration/predictions/score',
         original_F0_parameters=232993,open_signal_parameters_per_arm=334721,existing_restorer_parameters=266951,primary_deployed_neural_parameters=834665,scope='TARGET_PCD body/projection and derived density have target-U ancestry; SOURCE is source-only. This is a limited prototype candidate, not a full SwAV/UniOT reproduction. Historical source/Q exposure, one development RX/seed, no U true TX/K, no registration or full Phase3 completion')
     out.mkdir(parents=True);_write(out/'results.json',result);_write(out/'complete.json',{k:v for k,v in result.items() if k not in ('methods','paired_primary_vs_E0_predicted_ratio','paired_primary_vs_SOURCE_predicted_ratio')});print(STATUS,result['next_step'],flush=True);return result
 

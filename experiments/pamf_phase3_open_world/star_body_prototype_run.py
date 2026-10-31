@@ -17,7 +17,9 @@ from . import star_class_density_run as parent
 from . import star_class_density_core as class_density
 from .star_local_cov_run import _reference as source_reference
 
-RUN_ID='20261031-phase3-body-prototype-s2026092701-r01'
+RUN_ID='20261031-phase3-body-prototype-s2026092701-r02'
+TRAIN_RUN_ID='20261031-phase3-body-prototype-s2026092701-r01'
+TRAIN_CODE='a33612e978948da25bd733bcb9edba3ac9d74e9a'
 SCHEMA='pamf_phase3_body_prototype_prediction_v1'
 STATUS='BODY_PROTOTYPE_PREDICTIONS_COMPLETE'
 MODELS_STATUS='BODY_PROTOTYPE_DENSITIES_FROZEN'
@@ -48,8 +50,8 @@ def validate_config(c):
             or type(c.get('batch_size')) is not int or c['batch_size']!=128 or not isinstance(c.get('output_root'),str) or not c['output_root'].strip()):
         raise ValueError('Exact six-field frozen TARGET-PROTOTYPE evaluation required; no truth or role overrides')
     t=_train().validate_config(c['train_config']);p=parent.validate_config(c['reference_config'])
-    if t['run_id']!=RUN_ID or t['code_commit']!=c['code_commit'] or t['reference_config']!=p or p['code_commit']!=PARENT_CODE:
-        raise ValueError('Actual training and original selected 4af identity must match exactly')
+    if t['run_id']!=TRAIN_RUN_ID or t['code_commit']!=TRAIN_CODE or t['reference_config']!=p or p['code_commit']!=PARENT_CODE:
+        raise ValueError('The exact completed r01 training and original selected 4af identity must be reused')
     out=Path(c['output_root']).resolve()
     roots=[t['output_root'],t['U_public_root'],p['output_root'],p['reference_prediction_root'],p['train_config']['IQ_root'],p['train_config']['output_root']]+[a['public_root'] for a in p['Q_conditions'].values()]
     if any(out.is_relative_to(Path(v).resolve()) or Path(v).resolve().is_relative_to(out) for v in roots):raise ValueError('Immutable prediction output cannot overlap model/source/public inputs')
@@ -64,7 +66,7 @@ def _public(c,name):return parent._public(c['reference_config'],name)
 
 
 def _identity(i,arm,c,pm):
-    expected=dict(run_id=RUN_ID,code_commit=c['code_commit'],arm=arm,updates=444,projection_updates=444,projection_cumulative_updates=2664,
+    expected=dict(run_id=c['train_config']['run_id'],code_commit=c['train_config']['code_commit'],arm=arm,updates=444,projection_updates=444,projection_cumulative_updates=2664,
         open_signal_updates=444,signal_encoder_updates=444,native_updates=0,encoder_frozen=False,Sinc_frozen=True,signal_parameters=334721,signal_feature_parameters=232033,metric_parameters=102688,
         signal_feature_cumulative_updates=13764,trainable_parameters=334673,body_trainable_parameters=231985,trainable_projection_parameters=102688,
         new_body_updates=444,new_projection_updates=444,Sinc_optimizer_steps=0,input_path='cached_P1_IQ_only',
@@ -77,7 +79,7 @@ def _identity(i,arm,c,pm):
 
 def _training_metadata(c,pm):
     root=Path(c['train_config']['output_root']);m=_read(root/'complete.json')
-    expected=dict(schema='pamf_phase3_body_prototype_train_v1',status='BODY_PROTOTYPE_TRAINING_COMPLETE',run_id=RUN_ID,code_commit=c['code_commit'],
+    expected=dict(schema='pamf_phase3_body_prototype_train_v1',status='BODY_PROTOTYPE_TRAINING_COMPLETE',run_id=c['train_config']['run_id'],code_commit=c['train_config']['code_commit'],
         config=c['train_config'],arms=['SOURCE','TARGET_PCD'],updates_per_arm=444,total_optimizer_updates=888,
         source_sampling_matched=True,SOURCE_completed_before_U_open=True,original_models_unchanged=True,
         all_student_buffers_unchanged=True,all_student_Sinc_unchanged=True,all_student_bodies_changed=True,all_student_projections_changed=True)
@@ -89,7 +91,7 @@ def _training_metadata(c,pm):
     for arm in MODEL_NAMES[1:]:
         row=_read(root/arm/'complete.json');identity=row.get('identity',{})
         _identity(identity,arm,c,pm)
-        required=dict(schema='pamf_phase3_body_prototype_train_v1',status='BODY_PROTOTYPE_STUDENT_FROZEN',updates=444,
+        required=dict(schema='pamf_phase3_body_prototype_train_v1',status='BODY_PROTOTYPE_STUDENT_FROZEN',run_id=c['train_config']['run_id'],code_commit=c['train_config']['code_commit'],arm=arm,updates=444,
             source_only=arm=='SOURCE',target_U_used=arm=='TARGET_PCD',target_U_reads=U_COUNT if arm=='TARGET_PCD' else 0,
             initial_state_equal_to_parent=True,student_Sinc_unchanged=True,student_body_changed=True,student_projection_changed=True,model_buffers_unchanged=True)
         if (any(row.get(k)!=v for k,v in required.items()) or m.get('rows',{}).get(arm,{}).get('identity')!=identity
@@ -269,6 +271,8 @@ def evaluate(c,device='cuda:0'):
         threshold_values=36,threshold_bytes=288,new_threshold_values=24,reused_threshold_values=12,
         private_truth_reads=0,U_truth_reads=0,source_novel_truth_reads=0,target_truth_reads=0,original_U_s_reads=0,
         new_neural_updates=0,inherited_new_SOURCE_updates=_train().STEPS,inherited_new_TARGET_PCD_updates=_train().STEPS,
+        training_reused=True,training_run_id=c['train_config']['run_id'],training_code_commit=c['train_config']['code_commit'],this_run_optimizer_updates=0,
+        candidate_training_cost_scope='inherited_candidate_training_cost',inherited_candidate_training_cost=dict(optimizer_updates=888,body_updates=888,projection_updates=888,costs=training_costs),
         real_F_forward_rows=2*Q_COUNT,G_forward_rows=2*Q_COUNT,real_signal_forward_rows=2*sum(COUNTS.values())+6*Q_COUNT,
         real_signal_forward_rows_by_arm=dict(E0=2*Q_COUNT,SOURCE=sum(COUNTS.values())+2*Q_COUNT,TARGET_PCD=sum(COUNTS.values())+2*Q_COUNT),
         synthetic_F_forward_rows=2,G_synthetic_forward_rows=2,synthetic_signal_forward_rows=6,
