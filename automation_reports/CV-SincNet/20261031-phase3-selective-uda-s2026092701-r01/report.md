@@ -15,3 +15,14 @@ newtarget统计20EM/320参数，U384每步全量曝光另报；旧SHARED20及上
 N607解释器`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，CWD`/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-selective-uda-s2026092701-r01-release`，唯一owner`codex-phase3-selective-uda-20261031`，不可覆盖root`/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-selective-uda-s2026092701-r01`。命令`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.star_selective_uda_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-selective-uda-s2026092701-r01-release/runtime.json`；singleproducer GPU显存≥4096MiB/每卡本任务新增≤2，独立CPU，其他owner健康工作保持。
 
 9unique+29sub通过，7+22sub8.17s完整log/696旧trapzwarnings、rootlauncher2+7sub.032s console，AST7/镜像8、唯一直接P0P1 PASS。一次preflight/archiveSHA/compile及postlaunch PID-CWD-argv-GPU-log读回。非法角色/祖先/非有限/EM退步/输出碰撞/无法合法pred保留，无partialtruth/覆盖/自动重发；UNKNOWN核原PID/root，科学低分不停健康任务，缺遥测不补实验重跑。IQ/weights/pred/rawlogs/private runtime不进Git。
+
+## 最终结果（ANALYZED_DEVELOPMENT / NO_PROMOTION）
+
+唯一主selective_predicted_ratio，clean AK74.826389/CK91.666667/RU98.263889/H84.958347%，star66.319444/88.888889/63.194444/64.719243%；source原predicted两列重复，不称源适应收益。
+主−原pred clean正确23增0失/接受+25(2错)/未知−5；star正确13增0失/接受+19(6错)/未知1增41失净−40，AK+2.256944pp/RU−13.888889pp/H−5.253081pp。对SHARED星地正确2增4失净−2、未知19增15失净+4，不能以弱控制改善晋级。
+同DURA原F0损clean5.208333/star6.597222pp，starCK88.888889/RU63.194444及主景覆盖失败；sourceknown12通过但42未全过，high缺19-15的RU/H N/A。NO_PROMOTION，原predicted重点/pooled对照保留，目标ACTIVE。
+新known-only混合每record同时算两分支，OE(w)固定、known affine Jac不消去，Neff是软责任非真known。新21records和继承SHARED21全有限/非下降；新目标181695.052814→183843.675666，post.50756→.65166非真实比例，不从Q/GT推构成。
+新20统计updates/320参数/U384×20=7680条次，SHARED旧20包含于上轮两臂40成本而不重计。新NN/GMM/normalizer/τ/realGFsignal/sourceL-OEIQ0，三CPsynthetic各2；Utruth0、部署state带U祖先非source-only。
+SELECTIVE2740B/SHARED2716B，NN834665/density364340B继承；原12uniqueτ96B无新V校准、six重复288B/单主48B，无source/U行bank。
+predict/score/pipeline=10.401474/5.277220/15.790489s，三生产stdout无warning/error；独立driver/predictorCUDA1/256与406MiB两样本非peak，CPU仅pipeline/产物未捕live，终态空foreign0。
+9unique+29sub、一次review、单包677filesdata0/SHA-compile-runtime VERIFIED。完整18点/三pair见[公报](../../../docs/PAMF_PHASE3_SELECTIVE_UDA_RESULTS_20261031.md)，无发现REG，AN/HOW N/A。

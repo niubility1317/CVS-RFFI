@@ -81,7 +81,7 @@
 |PAMF 源模式局部协方差与三类 DURA 测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-local-cov-s2026092701-r01/report.md)|
 |PAMF 背景混合锚定的无标签域偏移|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-mixture-uda-s2026092701-r01/report.md)|
 |PAMF 源 RX／日期扰动积分|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-nuisance-marginal-s2026092701-r01/report.md)|
-|PAMF第三阶段：仅适应已知密度的开放集无标签适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-selective-uda-s2026092701-r01/report.md)|
+|PAMF 选择性已知密度无标签适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-selective-uda-s2026092701-r01/report.md)|
 |PAMF 当前开放表征的无标签匿名注册|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-signal-register-s2026092701-r01/report.md)|
 |PAMF 源重放与目标双视图的开放表征适应|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-signal-ssl-s2026092701-r01/report.md)|
 |PAMF P0开放表征与P1身份路径：匹配训练单候选|managed_run|[打开](../../automation_reports/CV-SincNet/20261031-phase3-star-raw-open-s2026092701-r01/report.md)|
