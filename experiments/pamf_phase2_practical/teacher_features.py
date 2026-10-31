@@ -162,7 +162,19 @@ class CrossRXResidualBridge(CorrelationEnsembleBridge):
         return cls(encoders)
 
 
+class AdaptiveResidualBridge(CrossRXResidualBridge):
+    # Parameter schema is identical: only the frozen output views differ.
+    def transform(self,features,*,restored,old_columns=None):
+        from .milkr.orbit_cca import OrbitCCA
+        full=super().transform(features,restored=restored,old_columns=old_columns)
+        base=[OrbitCCA.transform(encoder,part,restored=restored) for encoder,part in zip(self.encoders,self.split(features))]
+        full.update({'BASE_'+k:v for k,v in base[1].items()})
+        full.update({'BASE_C4_'+k:v for k,v in base[0].items()})
+        return full
+
+
 def bridge_type(method):
+    if method=='adaptive_residual_ensemble':return AdaptiveResidualBridge
     if method=='crossrx_residual_ensemble':return CrossRXResidualBridge
     if method=='corr_orbit_ensemble':return CorrelationEnsembleBridge
     if method=='native_skip':return NativeSkipBridge
