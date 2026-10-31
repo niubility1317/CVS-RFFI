@@ -6,7 +6,7 @@
 
 用户已明确允许 raw／DURA 同一条 query 融合，并要求保留仅 DURA 输出对照；support 仍严格 S0 raw、S1 G。新版 Q0=raw、QG（机器 Q1）=仅 G、QF（机器 Q2）=融合。当前主验收为全部 K1/5/10/20×N2/5/10/20、两 S 下 Q0 较匹配原 Q0 至少 +5pp，且同状态 QF>Q0。QG 完整单列，与原 QG 保持同输入配对；QF 与原 QG 的差须标明路径改变，不冒充同输入增益。早期角点、均值、单 support 的高收益不能代替全格。科学协议本轮例外已更新，旧 run 仍保留原 G-only 定义。
 
-R26 首 RX 四角点 36 行已完成：融合 QF>Q0 在两 S 均 4/4，但 raw+5 在两 S 均仅 3/4；因此未晋级，最终目标仍 ACTIVE。以下 G-only 阶段的验收文字与结果均为历史记录。当前最广证据仍是 R14 七 RX，全格目标未通过。
+R27 首 RX 四角点 36 行已完成：融合 QF>Q0 在两 S 均 4/4，但 raw+5 在 S0 仅 2/4、S1 为 4/4；因此未晋级，最终目标仍 ACTIVE。R26 为此前两 S raw 均 3/4 的历史结果。以下 G-only 阶段的验收文字与结果均为历史记录。当前最广证据仍是 R14 七 RX，全格目标未通过。
 
 ## 历史 G-only 阶段每格验收（覆盖旧均值口径）
 
@@ -219,3 +219,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R27 当前SUP置信度先验校准
 
 保持R26融合规则和.5先验上限，只用当前SUP旧/新熵置信度均值a/b拟合g：B全开，C正gap线性clip，否则明确关闭；query逐条应用冻结a/b，无真实角色/批统计/跨KNS借用。物理OOF每折gate/tau/coef均train-only。source规则Q0/QF选择、F/G/head/C4moments/CCA64保持，首四corner三路径36行allfixedthen独立truth；最终all16两S raw+5/QF>raw不变。
+
+### R27 实际结果与缺口
+
+36 行独立 truth-last 完成，所有所属进程退出；QF>Q0 两 S 均 4/4，平均 S0 +2.9604pp、S1 +14.9396pp；G-only 相对 raw 平均 S0 −2.7961pp、S1 +18.4050pp，完整对照保留。raw+5：S0 为 2/4、S1 为 4/4。S0 K1/N20 仅 +3.8179pp、K20/N2 仅 +2.8660pp，严格不扩。12 个当前 support 置信度门控记录完整，训练/验证折严格分离；没有 query 拟合或跨 support 借用。该机制解决此前 S1 K1/N2 的缺口，却未达到整个方法的逐格目标。冻结 R27 不回调，goal ACTIVE。
