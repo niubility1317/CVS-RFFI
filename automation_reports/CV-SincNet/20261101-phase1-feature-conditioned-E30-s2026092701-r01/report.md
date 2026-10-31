@@ -41,3 +41,7 @@
 控制器提交 GPU 1、worker PID 2359903；worker 在 GPU B128 检查加载冻结 Tri-SIG-TIME 时，PyTorch CUDA 初始化报 `CUDA unknown error`，尚未开始正式训练或测试。控制器和 worker 已退出；`complete.json` 与完整 `logs/worker.log` 保留，失败为技术故障。
 
 独立设备查询发现 GPU 7（PCI `0000:C2:00.0`）的设备句柄返回 `Unknown Error`，`nvidia-smi -L` 非零退出且设备清单不完整。这是与 CUDA 初始化失败同时出现的设备层异常；现有证据尚不足以证明二者的因果关系。边界学生的原 worker 仍存活，不中断该进程。恢复完整设备清单及确定初始化能力前不重启或增加 GPU 任务。
+
+## 独立初始化复现
+
+同一 N607 Python 环境（PyTorch `2.1.0+cu121`）以 `CUDA_VISIBLE_DEVICES=1` 单独调用 `torch.cuda.init()`，未加载模型或实验数据，也返回同一 `CUDA unknown error`。这将失败层缩小到 CUDA 初始化，不能证明 GPU 7 设备句柄异常就是根因。只读查询确认 PCI `c2:00.0` 仍可由 `lspci` 枚举，内核日志读取被系统拒绝；未重置设备或终止其他作业。
