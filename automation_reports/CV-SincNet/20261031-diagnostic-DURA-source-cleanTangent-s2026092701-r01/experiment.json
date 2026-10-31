@@ -1,0 +1,169 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01",
+  "group_id": "phase1-dura-source-clean-tangent",
+  "display_name": "源clean局部身份敏感度与缓存训练可行性诊断",
+  "description": "固定pure repeat E30源误差，原F50冻结，在源clean计算原头可见5D特征Jacobian，检验固定局部误差梯度是否比普通IQ更贴近exact特征误差；CPU2/0G新前向/0训练TX-V-target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "clean-tangent",
+    "F-guided-research",
+    "training-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01",
+    "20261031-phase1-DURA-repeatViews-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07 source512128Ls384Us clean plus fixedpure repeatE30 nativeIQ01/20 fromfullcontext diagnostic",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Original source_indices fixed128Ls384Us;contextNPZ exact positions/physicalIDs/roles/clean/RX matched;allfiveRX",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "None",
+    "actual_training_labels": "No training;frozenF sourceclean features and input derivatives;0directTX/V/target"
+  },
+  "permissions": {
+    "regime": "Authorized_source_F_clean_local_derivative_diagnostic",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source localmetric gradientalignment only;notnewrestorer,notTXaccuracy,notgloballyexactfeatureloss,notrecoverabilitybound;noautomatictraining"
+  },
+  "checkpoint": {
+    "initialization": "No G load/newinitialization;reuse immutable pure repeatE30 source nativeIQ;originalF50/defaulthead frozen",
+    "sources": [
+      "runs/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/repeat_E30-{1,20}.npz",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Context complete result source_checkpointrepeatE30/source_commit8cf8e22/F_teacher exact/G-Funchanged/optimizer-TX-V-target0;physicalmatch;original load_reader source4df7/final50/11100/defaulthead plus headrank5",
+    "provenance_verdict": "Originalsource7/63/30;pure repeat scratchfinal30 sourceoutputs fixed beforethisdiagnostic,not selected fromtargetranking;originalF source provenance verified by existingstrictloader;no new modelancestor/optimizer",
+    "selection_rule": "Fixedpure repeat30 source nativeIQ only,not defaultR69 teacher/target-selected parent. Sourceprobe trainingpool not independentV;target benchmark exposure disclosed."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-clean-tangent",
+    "gpu_policy": "CPU2/CUDAempty/0GPU,nottruthscorer;otherowners untouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.tangent_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Wronginput/source/F/shape/order/nonfinite/collision/batch-singleJmismatch/statechange/persistentgrad:preserveandstop,noautorerun. Undefinedcosineexplicitmasked/scientificrulefails;no rule relaxation."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "results.json",
+    "complete.json",
+    "source_clean_jacobian.npz PRIVATE",
+    "source-{1,20}.npz PRIVATE",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "perpacket tangent/exactheadfeature IQgradient cosines/norms/dots/definedflags",
+      "ordinaryIQ/exactfeature gradientcosine",
+      "localfeaturelinearization relativeerror",
+      "frozen source eligibility andcalibratedweight",
+      "actualCPU/Jcachetime/memory/Fcounts/stateunchanged"
+    ],
+    "dimensions": [
+      "original512sourcepositions128L384U",
+      "cached01/20",
+      "allfiveRX",
+      "cleanJacobian/tangent/exactnonlinearfeatureloss/plainIQNMSE"
+    ],
+    "prediction_ref": "No target/newG predictions;three private sourceNPZ",
+    "scorer_ref": "NoTXtruth;independent fullrawvectors/geometry reaggregation aftercomplete"
+  },
+  "rows": [
+    {
+      "row_id": "source-clean-tangent",
+      "method": "Frozen sourceclean originalhead rank5 normalizedfeature Jacobian;fixedlinearquadratic IQmetric vs currentrestored exactnonlinearfeaturegrad",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/tangent_probe.py + clean_tangent.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "No stochastic probes/newinitialization. Fixed source_indices128L384U;cachedsourceAUG2026101912/RX2026101911;pure repeat model2026092701 fixedfinal30;original F seed2026092701.",
+      "k": null,
+      "scenario": "512sourceclean refs andfixedprimaryrepeat native received01/20 errors",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512cleanF forward+5VJP perpacket;1024restoredF forward+oneVJP;smokeF6/JVJP20;sourceJVJP2560/restoredVJP1024;Gnew0;CPU2/0updates-TX-V-target",
+      "output_root": "runs/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.tangent_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "results.json",
+        "complete.json",
+        "source_clean_jacobian.npz PRIVATE",
+        "source-{1,20}.npz PRIVATE",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Hypothesis:exactF loss differentiates atcurrentrestored IQ,while fixedJ atsourceclean defineslocalfidelity directions independentofcurrentF confidence. It may avoid changing nonlinear sensitivity andremove repeated trainingF afteraone-timecache;no guaranteeoutsideclean neighbourhood.",
+    "phi(x)=sqrt(160/(2*5))*normalize(F.features(x),eps1e-4)@Q;Q original frozenhead contrastbasis160x5,notfitted. Jclean=derivativephi wrt clean2x256. Tangent=sum((Jclean*(restored-clean))^2),reference/J detach. No hardpseudoTX/logitconfidence maximization orheadfit.",
+    "F sourceclean/derivatives inherit originalsupervisedF knowledge;notF-free. Existing F upstream50/11100 disclosed;source-J cache hypothetical63000x5x512xFP32=645120000bytes and30passes19353600000numericbytes,not measuredtiming andnot independentdata.",
+    "Only fixedprimaryrepeatE30 sourceerrors used,fromcompletecontextNPZ positions/IDs/roles/clean/RX matched. NoGcheckpoint loaded andno newGinputs. SameF originalstrictload/defaulthead frozen/eval/statefull equality/p.gradNone.",
+    "First real2LsF source-noquery smoke verifies nonzeroJ/finite6logits andJvalue batchvssingle close2e-5. Sourceclean512 F/J cachedonce;restored1024F derivatives exactheadfeatureloss. FiveVJPs eachcleanrecord exploit existingperpacket inference contract,actualsmoke tests batching.",
+    "Fixedsourceeligibility BEFOREresults:bothviews require512defined tangent/exact andIQ/exact cosines;mean tangent>=.5 and>=plainIQmean+.1;>=384/512nonnegative;eachsourceRXmeantangent>=0. Ifeligible alpha=.25/max(two median tangent-to-IQNMSE inputgradientnormratios). ElseNone. Noautomatictraining/nochangingthresholds.",
+    "Undefinedcos stored0onlywith explicitdefinedmask,excludedfromstatistics andcausesrulefail;notmeasuredzero. Locallinearizationerror reported descriptively,notclaimglobalexactness. NoTXtruth,sourcechoice/gradientsnot targetefficacy.",
+    "Four focusedtests include centralfinite-diff/perpacket J,analyticloss/inputgrad anddetach,sourcefrozen/shape boundaries,andbothview/RX/definedflags fixedrule. One requiredP0P1 beforelaunch;onepreflight/archiveSHA/remotecompile/actualPID-CWD-argv-CUDA-loggrowth.",
+    "Prior Jacobian-distillation literature motivates derivativeinformation only;this is a new source-clean IQmetric study,not direct replication or proof of performance: https://proceedings.mlr.press/v80/srinivas18a.html .",
+    "AnylaterG requires independentregistration/fromscratchsinglejoint30/fixedfinal/fullseven168000 predictionsbeforetruthlast. Goal sixscenes<=3pp/rawclean preservation/samequality actualefficiency remainsACTIVE/defaultDURAunchanged."
+  ],
+  "registered_at": "2026-10-31T00:01:34+00:00"
+}
