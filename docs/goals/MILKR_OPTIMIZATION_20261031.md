@@ -201,3 +201,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R25 冻结head概率核实际结果
 
 真实checkpoint smoke及独立审查/测试通过；source rank64和C4固定、source120核规则选唯一K1。目标24行评分完成，所属进程退出。S0角点Q0+5为3/4，Q1>Q0为1/4；S1角点Q0+5为4/4，Q1>Q0为4/4；角点晋级False。不扩其余KN/RX，不用目标结果调rank或相位数。基座仍Tri-SIG-TIME SSL，goal ACTIVE。详见本run result_summary/report。
+
+### 用户授权query融合与R26
+
+用户明确允许同记录raw/Gquery融合，保留G-only对照，SUP仍pureS0/S1。已先更新PROJECT_PROTOCOL仅本轮新run，旧结果不改。主验收all16KN两S Q0较原Q0+5保持，新增QF>Q0；QG单列，QFvs原QG不称matched。R26固定冻结head函数prior.5+当前SUP残差KRR，纯RF核/真实物理OOF；fusion只在G最近SUP距离更小且margin更大时取半权，否则raw，规则不读query标签/批统计。首4corner三query共36行allfixedthen独立truth，rawscorecache只同物理row配对不更新state。角点全过才12KN/六RX。
