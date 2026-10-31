@@ -343,3 +343,8 @@ VERIFIED / ANALYZED。深层MLP SIG预测，单阶段从零30轮/7410，L189000/
 ## 冻结SIG训练/源验证泛化：两条退步解释未获支持
 
 20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01 / f19f47ffd1c021477898a08e9115a16d07ecbdea。冻结三G的source-train512×01/20与sourceV1800×七景已完整完成。独立318cell/27NPZ/2312物理记录/40872G观察复算通过，0新增NN。两深层版在源V六景整体SIG预测误差均低约15.8%至19.5%，原head对比方向误差均低约18.0%至23.6%，因此H1训练改善但源V不改善、H2整体改善但head方向不改善均FAIL。只在已见源RX上诊断，不证明未见RX泛化、梯度冲突或解码因果。V只诊断，0V/TX标签、target、训练或模型选择。新增VcleanSIG1800/1.152MB一次后复用；原F50知识和训练SIG缓存成本披露。FP32basis舍入已独立验证，FP64复算判定相同，无NN重跑或改科学阈值；默认DURA和完整目标保持。 详见该run完整分析。
+
+
+## 全采样率IQ分支：固定无引导与特征引导单E30对照
+
+20261031-phase1-DURA-SIGfullRatePlain-E30-s2026092701-r01 与 20261031-phase1-DURA-SIGfullRateContext-E30-s2026092701-r01。源泛化诊断f19表明深层SIG预测更准却未同步改善输出IQ，两条训练/验证及head方向解释均FAIL；本次另测轻量全率输出分支，不声称已证明解码因果瓶颈。保留原main344295随机架构/初值与SIG损失，每prior加9→12 k3/GN3/SiLU＋三DW膨胀2/4/8-PW-GN残差＋12→2零输出；在原SCALE内相加。无引导346363参数/25599528 MAC，SIG引导369547/25622568 MAC（160→72零初始化、三块bound.1调制）。共有分支初值、旧IQ/SIG/RNG保持，无G祖先；各自从零单阶段30/7410、全七景自动truth-last，原四物理＋输出SIGcap.5＋.01mean2aux不改，F-guided/0TX-V-target训练。两新版互比、原main为主对照，默认保持，完整目标ACTIVE。

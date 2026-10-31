@@ -299,6 +299,8 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.signature_aux_prior worker',
                 'pamf_dura_direct_train.signature_deep_prior worker',
                 'pamf_dura_direct_train.signature_deep_mlp worker',
+                'pamf_dura_direct_train.signature_full_rate worker',
+                'pamf_dura_direct_train.signature_full_rate_context worker',
                 'pamf_dura_direct_train.identity_init worker','pamf_dura_direct_train.no_variance worker',
                 'pamf_dura_direct_train.fast_interp worker','pamf_dura_direct_train.strong_action worker',
                 'pamf_dura_direct_train.f_guided worker','pamf_dura_direct_train.head_guided worker',

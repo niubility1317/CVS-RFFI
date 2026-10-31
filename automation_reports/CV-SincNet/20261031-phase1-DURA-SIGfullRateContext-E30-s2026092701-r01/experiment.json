@@ -1,0 +1,210 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase1-DURA-SIGfullRateContext-E30-s2026092701-r01",
+  "group_id": "phase1-DURA-full-rate-IQ-residual-pair-E30",
+  "display_name": "预测特征引导的全采样率IQ残差分支：从零单阶段30轮",
+  "description": "保留原main344295工厂及全部损失，两个prior各新增全率9→12卷积、三膨胀深度卷积残差与零输出映射；由同prior预测SIG经零初始化160→72映射调制三个新块。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "E30",
+    "scratch",
+    "single-stage",
+    "F-guided",
+    "full-rate-conditioned"
+  ],
+  "comparison_group_id": "DURA-full-rate-plain-vs-SIGconditioned-vs-original-context-E30",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-and-efficiency goal;explicit source frozen-F feature-guidance and scratchsingle-stage30epoch authorization;noTX/V/targetoptimization/defaultunchanged",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-DURA-SIGfullRatePair-E30-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source63000/20cachedreceived-clean-actionviews/repeat01..10;actualweightedcleanSIG160cache40.32MBreuse",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Pairedsourceclean/action and frozenFactualSIG only. NoTX/V/target/pseudoTX/newclassifier/headfit. NoRX/scene/F inputtoG.",
+    "augmentation": "OriginalR07cached15percentclean/85percentsixpractical;01..20then01..10;noaugmentationorRNGchange"
+  },
+  "permissions": {
+    "regime": "Authorized_source_F_guided_full_rate_IQ_residual_path",
+    "query_use": "F50sourceSIGguidanceonly/frozenF-defaulthead. G trainingonlyLsUsIQ+pairedsimulator+sourceSIG. TestG receivesIQonly;eachroleall7beforeindependenttruthlast.",
+    "external_method_exception": null,
+    "claim_scope": "New source-motivated decoder hypothesis;source predictor gains did not imply output IQ gains. Not proof of decoder/high-frequency causal bottleneck;originalUNethasfullrateskip. F-guided/notF-free/noTX-V-targettraining/defaultunchanged."
+  },
+  "checkpoint": {
+    "initialization": "Gscratch/369547params/originalmain344295randomfactory+25252fullrateparameters/noGcheckpoint-ancestor/noIQteacher;originalmaininitialstate-SIG-IQ-RNGpreserved",
+    "sources": [
+      "NoGinitializationcheckpoint/main344295ARCHITECTURE randomfactoryonly/nottrainedweights",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth originalsource4df7/50/11100/Fteacherandpostfreezeassessment",
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/source_signature_cache actualF-onlycleanSIG DATAONLY/producedbeforeoldGoptimizer/notGancestor",
+      "Frozen source mechanism diagnostic 20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01/execf19f47ffd1c021477898a08e9115a16d07ecbdea/closure9009938a2eb1639a69c38ab7cc3478c72fd4913f/no training or IQteacher",
+      "Originalmain4452/originalSIG47591/pureG8cf/defaultDURA/R17 frozencomparisononly;matchedfullrate 20261031-phase1-DURA-SIGfullRatePlain-E30-s2026092701-r01"
+    ],
+    "contract_check_ref": "Original7/63/30source63000L6300U56700/VALIDATED_ONCEhandles/matchingF50source4df7-50-11100/defaulthead/existingF-onlySIGcachemetadata-order/strictE0-final30aliases",
+    "provenance_verdict": "Original7/63/30VALIDATED_ONCE handles/F50source4df7-50/11100/defaulthead/F-onlySIG40.32MBmatchingroles-order. Gscratchnoancestor;diagnosticsonlymotivatenewhypothesis/noVtraining. ExistingcachebeforeoldGoptimizer/newFcache0.",
+    "selection_rule": "Fixedbotharchitectures/final30-7410/all7formalregardlesssourcequality. Originalmain344295unchanged;newbranch9to12k3-GN3-SiLU,3residualblocksDWk3dilation2/4/8-PWk1-GN3-SiLU,out12to2zero. Plainunconditioned;otherLinear160to72zero/threeblockscale-shiftbound.1. Samebranchseed/model+2026103131+i/commoninit/insideoriginalSCALE. Noearlystop/targetfeedback/ranking/grid/nativeallpaths."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-SIG-full-rate-pair-E30",
+    "gpu_policy": "GPU4/6/7/free>=12000MiB/existingcomputePIDs<=2/addONE<=3total/own1percard/goal<=2GPUworkers/ownCPUtruthscorer<=1/sharedlock:runs/20261031-phase1-DURA-SIGfullRatePlain-E30-s2026092701-r01/score.lock;plaincontrollerfirst/otherownersuntouched",
+    "remote_run_root": "runs/20261031-phase1-DURA-SIGfullRateContext-E30-s2026092701-r01",
+    "remote_log_root": "logs/20261031-phase1-DURA-SIGfullRateContext-E30-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-phase1-DURA-SIGfullRateContext-E30-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.signature_full_rate_context run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badsource/Fcache/roles-RNG/nonfinite/originalSIGcap>.5*(1+2e-5)/checkpoint/collision/smoke/fullrate-inference-shapes/nativeoptimized/coverage:preservefailedrow/noautoretry/noothers. No performance stop;fixed30/all7regardlesssourcequality. Newoutputactualsourcegradientnonzero;zero-outputinitialinternal-and-conditionergradientzeroexpected."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-scratch_joint.json",
+    "scratch_joint/launch.json",
+    "scratch_joint/resolved_config.json",
+    "scratch_joint/initialization.json",
+    "scratch_joint/training.jsonl",
+    "scratch_joint/training_complete.json",
+    "scratch_joint/final.pt",
+    "scratch_joint/matched_profile.json",
+    "scratch_joint/source_prediction/complete.json",
+    "scratch_joint/source_summary.json",
+    "scratch_joint/target_prediction/complete.json",
+    "scratch_joint/target_summary.json",
+    "scratch_joint/complete.json",
+    "complete.json",
+    "source_signature_cache/targets.npy",
+    "source_signature_cache/physical_ids.npy",
+    "source_signature_cache/complete.json",
+    "scratch_joint/teacher_load.json",
+    "scratch_joint/source_reference.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy-MacroF1-correct-repair-damage-net/overall-TX-RX-day/sixeachgap3pp-clean-R17each1pp-lowU70",
+      "full30physical4-outputSIGalpha1cap.5-.01mean2priorSIGaux/perpriorpredictionerrors/views-exposures-RNG-Ffreeze",
+      "completeGparams-storage-ConvLinearMAC-2prior4CG27FFT/samecardnativeG-F-latency-throughput-VRAM/train-and-wholecost"
+    ],
+    "dimensions": [
+      "fixedmodelseed2026092701",
+      "sourceV1800x7",
+      "formal168000x7",
+      "overall/TX/RX/day",
+      "matchedpureGanddefaultDURA"
+    ],
+    "prediction_ref": "Eachsource/target roleall7predictionsfixedbeforeCPUtruth;targetforwardonlyreceivedIQ",
+    "scorer_ref": "Eachroleall7predictionbeforeindependentCPUtruthlast/commongoalCPUlock. Independent126target105source/378pairedgroups againstotherfullrate-main4452-originalSIG/14IQ;pureG-default-R17officialcomparison;noresultfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "scratch_joint",
+      "method": "G369547/mainSIGcontext+fullrate12channel-conditioned/unchangedfourphysical-outputSIG-.01mean2aux",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/signature_full_rate_context.py;experiments/pamf_dura_efficiency/signature_full_rate.py",
+      "resolved_config_ref": "scratch_joint/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model-CUDAprobe2026092701/split392005/sourcecacheaugmentation2026101912/receiver2026101911/shuffleNumPy2026103004/baseSIGheadmodel+2026103113+i/fullratebranchmodel+2026103131+i/CPUforkpreserved/eval2027/supportN/A",
+      "k": null,
+      "scenario": "Originalsourcecache15percentclean/85percentpractical;01..20then01..10;no teacherIQ;formalclean+sixpractical",
+      "optimizer": "resetAdamW/W1e-4/globalclip1/warm247cos2e-5",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Gscratchsingle30/7410/B256/L189000U1701000/noGancestor/main344295+25252=369547/25622568ConvLinearMAC/2prior4CG27FFT/native;sourceSIG40.32MBreuse/newcacheF0/onlineprefix-VJP1.89meach/2SIGpredictions3.78m",
+      "output_root": "runs/20261031-phase1-DURA-SIGfullRateContext-E30-s2026092701-r01/scratch_joint",
+      "log_path": "runs/20261031-phase1-DURA-SIGfullRateContext-E30-s2026092701-r01/logs/scratch_joint.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.signature_full_rate_context run --root /home/szu2070436088/2510044040/CV-SincNet --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-scratch_joint.json",
+        "scratch_joint/launch.json",
+        "scratch_joint/resolved_config.json",
+        "scratch_joint/initialization.json",
+        "scratch_joint/training.jsonl",
+        "scratch_joint/training_complete.json",
+        "scratch_joint/final.pt",
+        "scratch_joint/matched_profile.json",
+        "scratch_joint/source_prediction/complete.json",
+        "scratch_joint/source_summary.json",
+        "scratch_joint/target_prediction/complete.json",
+        "scratch_joint/target_summary.json",
+        "scratch_joint/complete.json",
+        "complete.json",
+        "source_signature_cache/targets.npy",
+        "source_signature_cache/physical_ids.npy",
+        "source_signature_cache/complete.json",
+        "scratch_joint/teacher_load.json",
+        "scratch_joint/source_reference.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Frozen source diagnostic 20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01:sameknown5RX/source512cache01-20/heldV1800x7. Both deeper predictors improve all6 sourceV total error15.8-19.5% and head-visible18.0-23.6%, but restored-IQ SIG gains small/mixed and IQ NMSE often worse. H1train-only and H2wrong-head-directions bothFAIL. No decoder causal claim/unseenRX exclusion or Vtraining. New architecture is a separate predeclared hypothesis;no new lossweights/featurecapacity/targetpatternselection.",
+    "Keep originalmain shallow128to160 predictors/threelevelSIGconditionedUNet;originalalreadyhasfullrateskip. Addparallel9channelpriorinputto12fullratek3-GN3-SiLU;threeDWk3dilation2/4/8-PWk1-GN3 residualblocks/SiLU;out12to2zero. Addrawdelta tooriginaldelta INSIDEexistingSCALE beforeexistingCG. PlainbranchhasnoSIGconditioner;conditioneduses samepriorpredSIG/Linear160to72zero/bounded.1 scale-shift atthreeblocks. No downsampling/newprior/CG/FFT or new Ginputs.",
+    "Originalmain344295randomfactory/nottrainedG. Bothcommonrawbranchinitialstatesmatch,alloldstate-SIG-IQ-andCPU-CUDA-RNGpreserved;dedicatedCPUforkmodel+2026103131+priorindex. Newoutgetsnonzeroactualsourcejointgradient;zerooutmeansinitialinternal/conditionergradientzeroexpected. ExistingSIGauxactive. No extraTX/targetclassifier/headfit/oracleinput.",
+    "CompleteG369547/new25252/25622568ConvLinearMAC independentlyhookcounted/fullratebranchGN-SiLUtimeincludedinactualprofile. Same2prior4CG27FFT/nativealltrain-and-frozenpaths;nofastTrainslices. 5focusedtests and bothactualCLI/fullG/aliases/state-IQ-RNG/commoninit/MAC/physicalobjective/auxdetach/newgrad/routes-independentroots-commonlock-sevenviewsPASS;oneindependentP0P1eachPASS/noP0P1. Firstreal2noncleanLs/G12-fullF4-prefix2-VJP2 smoke passes then immediatelytrains.",
+    "Originalfourphysical+outputSIGalpha1/IQgradientcap.5+.01mean2priorSIGrelativeMSE;auxoutsideoutputcap/globalclip1. Nooptimizer/augmentation/randomorderchange. Scratchsingle30-7410/B256/source01..20then01..10/L189000U1701000/AdamW.001-warm247-cos2e-5-WD1e-4-FP32TF32off. SourceSIG40.32MBreuse/newFcache0/F50source4df7-50/11100+producer63000prefix-.847077s disclosed/F-guided/onlineprefix-VJP1.89meach.",
+    "Fixedbothnewversions/source1800x7/formal168000x7/final30regardlesssourcequality/eachroleall7beforeindependenttruthlast/pairedotherfullrate-originalmain-originalSIG pluspureG-default-R17. Sixeach>=137216correct/clean>=142256/R17eachloss<=1680/oldlowU70separate. Sourceproxy/params/MACcannotreplaceactualidentitybenefitorspeed. Singlemodelseed/exposedengineeringbenchmark/notnewblindtest/noformalTX-RXpatternsforhyperparameters.",
+    "Oneimmutableoutputroot/onearchiveSHA/preflight/compile/postlaunchPID-CWD-argv-GPU-loggrowth. GPU4/6/7free>=12GB/existingcompute<=2/addONE<=3total/own1card/goal<=2workers. SharedCPUtruthlockplainrun/score.lockwithindependentoutputs. OtherownersanddefaultDURAunchanged/fullgoalACTIVE."
+  ],
+  "registered_at": "2026-10-31T15:39:04+00:00"
+}
