@@ -1,0 +1,176 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02",
+  "group_id": "phase1-trisigtime-flow",
+  "display_name": "Tri-SIG-TIME SSL 引导的生成轨迹星地恢复",
+  "description": "只用 Phase1 源域训练数据，从接收 IQ 出发完整训练两条四步恢复轨迹，冻结 Tri-SIG-TIME SSL 并对 Phase1 测试集进行七视图预测。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "conditional-rollout",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "phase1-trisigtime-frozen-raw-clean",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": "20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r01",
+  "authorization": "用户要求大胆研发不同于另一个对话的星地恢复网络；只看 Phase1 地面训练测试集；地面基座 Tri-SIG-TIME SSL；每个星地视图相对同一冻结基座 clean 损失不超过 3 个百分点。",
+  "code": {
+    "commit": "42eede565ba414513f6b9b7f5a2193e0c4fcb9d0",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch, FP32, TF32 off; original Phase1 Tri-SIG-TIME immutable release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-trisigtime-source-rollout-E30-r02",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/controller.py",
+      "experiments/pamf_phase1_flow/worker.py",
+      "experiments/pamf_phase1_flow/experiment.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "R07 paired Phase1 ground clean and corresponding simulated received IQ; 75% received, 25% clean per epoch",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Source paired IQ only; frozen classifier feature guidance; no transmitter labels and no test records",
+    "augmentation": "R07 epochs 01..20 then repeat 01..10"
+  },
+  "permissions": {
+    "regime": "Phase1 source L_s/U_s; frozen Tri-SIG-TIME SSL features; no target adaptation",
+    "query_use": "Fixed per-record prediction; labels opened only after all seven predictions complete",
+    "external_method_exception": null,
+    "claim_scope": "Single seed fixed Phase1 six practical channel views; no unobserved generalization claim"
+  },
+  "checkpoint": {
+    "initialization": "Scratch conditional velocity field; frozen Phase1 Tri-SIG-TIME SSL E50/11100 for feature guidance",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache"
+    ],
+    "contract_check_ref": "Full original Tri-SIG-TIME source checkpoint ancestry and exact L_s/U_s physical ID sets",
+    "provenance_verdict": "Phase1 source-only model and source cache; fixed final E50 reader",
+    "selection_rule": "Fixed final E30; two fixed antithetic four-step paths, no target-based selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-trisigtime-flow",
+    "gpu_policy": "CPU real checkpoint source smoke; shared lock; >=12000 MB free; at most one existing same-user CUDA process and no foreign user; single worker keeps context across stages",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.controller --root /home/szu2070436088/2510044040/CV-SincNet --commit 42eede565ba414513f6b9b7f5a2193e0c4fcb9d0",
+    "stop_rule": "Wrong source roles/checkpoint, nonfinite output, incomplete prediction or collision stops and preserves artifacts; no performance-based early stop or retry"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "smoke.pt",
+    "submitted.json",
+    "logs/{smoke,worker,train,predict,score}.log",
+    "flow/{training.jsonl,final.pt,training_complete.json,test_prediction,test_summary.json}",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Tri-SIG-TIME raw clean, per-scene raw and restored accuracy, macro F1 and clean-relative gap",
+      "per-TX, RX, day accuracy"
+    ],
+    "dimensions": [
+      "168000 Phase1 ground test physical records x seven views",
+      "TX/RX/day and six practical scenes"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02/flow/test_prediction",
+    "scorer_ref": "independent CPU experiments.pamf_phase1_flow.experiment score",
+    "targets_ref": "Each of six restored practical scenes within 3 percentage points of same reader raw clean; restored clean degradation at most 1 percentage point"
+  },
+  "notes": [
+    "r01 stopped before GPU submission and training because no wholly idle GPU was available. r02 changes only admission policy and owner continuity; r01 smoke preserved.",
+    "Full two-path trajectory IQ NMSE + frozen Tri-SIG-TIME source feature anchor + 0.25 path agreement; clean enters only source loss and clean identity augmentation.",
+    "Three-view classifier parameters remain frozen, but transfer its source identity information to G; G does not read TX labels.",
+    "All clean and six scene predictions, both raw and restored, are fixed before any CPU scorer opens test truth; no test feedback affects G."
+  ],
+  "rows": [
+    {
+      "row_id": "flow",
+      "method": "Scratch conditional Transformer velocity field, two antithetic four-step trajectories",
+      "purpose": "Phase1-only source training and fixed Tri-SIG-TIME evaluation",
+      "config_ref": "experiments/pamf_phase1_flow/experiment.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/experiment.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110104,
+        "augmentation": 2026110105,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model 2026092701, order 2026110104, training noise 2026110105, fixed inference noise template 2026110103; existing Phase1 split and views",
+      "k": null,
+      "scenario": "Phase1 R07 L_s/U_s training; fixed Phase1 clean and six practical received views",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "30 epochs x 63000, batch 128, 14790 updates; 47250 received + 15750 clean per epoch; two four-step trajectories and frozen feature guidance",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02/flow",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-trisigtime-source-rollout-E30-s2026092701-r02/logs/train.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.controller --root /home/szu2070436088/2510044040/CV-SincNet --commit 42eede565ba414513f6b9b7f5a2193e0c4fcb9d0",
+      "expected_artifacts": [
+        "smoke.json",
+        "smoke.pt",
+        "submitted.json",
+        "logs/{smoke,worker,train,predict,score}.log",
+        "flow/{training.jsonl,final.pt,training_complete.json,test_prediction,test_summary.json}",
+        "complete.json"
+      ]
+    }
+  ],
+  "registered_at": "2026-10-31T17:48:46+00:00"
+}
