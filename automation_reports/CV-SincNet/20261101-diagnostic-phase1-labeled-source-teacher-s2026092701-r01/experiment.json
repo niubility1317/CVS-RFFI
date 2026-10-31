@@ -1,0 +1,155 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-phase1-labeled-source-teacher-s2026092701-r01",
+  "group_id": "phase1-labeled-source-teacher-dura",
+  "display_name": "Phase1 合法有标签源集的基座与恢复判断诊断",
+  "description": "仅使用 L_s 合法训练标签，比较 clean 基座与冻结 DURA 恢复后基座判断，核实物理 ID 对齐。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "L_s",
+    "source-label",
+    "diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发更强星地恢复网络并严格限定 Phase1 地面训练、测试与 Tri-SIG-TIME SSL 基座。",
+  "code": {
+    "commit": "1bad97c5eb131ac3ddd89050f8f3d707ef8086a6",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch CPU only, original Phase1 frozen Tri-SIG-TIME release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-phase1-labeled-source-teacher-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/labeled_source_probe.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Phase1 L_s ground source clean/received IQ and legal source L_s labels",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "none",
+    "actual_training_labels": "Exactly 6300 legal L_s labels; no U_s labels, V or test IQ",
+    "augmentation": "Source views 01 and 20"
+  },
+  "permissions": {
+    "regime": "Phase1 labeled L_s source only, frozen Tri-SIG-TIME SSL and DURA",
+    "query_use": "No U_s labels, V or test access",
+    "external_method_exception": null,
+    "claim_scope": "Labeled training-source diagnosis only, no independent test claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA E20 and original Tri-SIG-TIME SSL E50",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "L_s ID joins across metadata, source IQ storage and R07; clean IQ allclose; six class labels",
+    "provenance_verdict": "Exact source-only frozen models and authorized L_s ground labels",
+    "selection_rule": "All 6300 L_s IDs; fixed views 01/20"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-labeled-source-teacher",
+    "gpu_policy": "CPU2/0GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-labeled-source-teacher-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-labeled-source-teacher-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-diagnostic-phase1-labeled-source-teacher-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.labeled_source_probe --root /home/szu2070436088/2510044040/CV-SincNet --commit 1bad97c5eb131ac3ddd89050f8f3d707ef8086a6",
+    "stop_rule": "Mismatch in physical IDs, class labels, source IQ or frozen state stops and preserves log"
+  },
+  "expected_artifacts": [
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean teacher and DURA correct counts versus labeled L_s",
+      "disagreement clean-only/dura-only/both wrong"
+    ],
+    "dimensions": [
+      "all 6300 L_s IDs, source views 01/20",
+      "source scene and state"
+    ],
+    "prediction_ref": "aggregate source counts only",
+    "scorer_ref": "labeled_source_probe.py",
+    "targets_ref": "legal L_s labels, not target test truth"
+  },
+  "notes": [
+    "只读取 Phase1 合法有标签 L_s 的 6300 个训练标签；绝不读取 U_s 标签、V 或测试数据；两个源视图共用同一批物理 ID。",
+    "源标签 metadata 顺序、DURA 源 IQ 顺序及底层 F IQ 存储顺序不同，按物理 ID 重排，核对 6300 个 ID、clean IQ 在 rtol 1e-5 atol 1e-6 下匹配，检查标签值 0 至 5。",
+    "固定 Tri-SIG-TIME SSL 和原 DURA；统计 source clean 与 DURA 的训练标签正确数、两者不同意时各自正确数，按源场景及状态分组。",
+    "有标签数据是训练集，不是独立测试；不改变当前已登记且运行中的无 TX 标签学生训练。该诊断不读取目标或测试 IQ，结果不能作为未见数据性能。"
+  ],
+  "rows": [
+    {
+      "row_id": "labeled_source",
+      "method": "Frozen Tri-SIG-TIME and DURA source-label comparison",
+      "purpose": "Determine whether clean pseudo-labels are reliable where DURA and clean teacher disagree",
+      "config_ref": "experiments/pamf_phase1_flow/labeled_source_probe.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/labeled_source_probe.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source rows and views; deterministic fixed model",
+      "k": null,
+      "scenario": "Phase1 source views 01 and 20",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "6300 unique L_s IDs, clean once plus 2 source views, no model updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-labeled-source-teacher-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-labeled-source-teacher-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.labeled_source_probe --root /home/szu2070436088/2510044040/CV-SincNet --commit 1bad97c5eb131ac3ddd89050f8f3d707ef8086a6",
+      "expected_artifacts": [
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "registered_at": "2026-10-31T20:34:38+00:00"
+}
