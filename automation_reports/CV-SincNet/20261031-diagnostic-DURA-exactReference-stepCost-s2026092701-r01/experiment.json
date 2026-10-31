@@ -1,0 +1,172 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01",
+  "group_id": "phase1-dura-source-exact-reference-step-cost",
+  "display_name": "精确源域F约束：GPU训练步实际开销",
+  "description": "同GPU/同scratchG/源256和两个缓存，原生产cached5与精确exact10交替3预热+12计时；0优化，记录实际F/G计数、状态、时延与显存。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "GPU-step-cost",
+    "exact-nonlinear-F",
+    "single-stage-efficiency",
+    "no-update"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01",
+    "20261031-phase1-DURA-softReference-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Fixedsource512first256=128L128U;originalcache01/20/clean/action;oldproductionrawJ5/offset5;qualifiedbasis10/targetPhi10samefirst5",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsource63000L/U handles;fixedsource256 physicalpositions/IDs/roles matchprototype/J/offset inputs",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07sourcecache01/20;no newchannel/target",
+    "target_panel": "None",
+    "actual_training_labels": "Nooptimizer/newGtraining/TXtruth;sourcepairedIQ/action/frozenF/sourcefeaturetargets only"
+  },
+  "permissions": {
+    "regime": "Source_only_exact_frozenF_GPU_step_cost_diagnostic",
+    "query_use": "No target/query/labels. Sourceclean minIQpath isofflineoracle,notdeployabletest-timeadaptation",
+    "external_method_exception": null,
+    "claim_scope": "Shared-card no-update step costs/physicalinputinvariance/frozenstates only;differentguideobjectives/notgradient-equivalencebetweenmethods;notendtoendE30quality orspeedproof"
+  },
+  "checkpoint": {
+    "initialization": "Gscratch same2026092701/0ancestor/0optimizer/nosavedG;originalF50/defaulthead frozen",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261031-diagnostic-DURA-source-softReference10IQ-s2026092701-r01/feasibility.npz sourcebasis/target/IDs DATAONLY",
+      "runs/20261031-diagnostic-DURA-source-nonlinearReference-s2026092701-r01/results.json qualificationONLY",
+      "runs/20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/scratch_joint/source_clean_J_cache DATAONLY",
+      "runs/20261031-phase1-DURA-softReference-E30-s2026092701-r01/source_soft_reference_cache DATAONLY"
+    ],
+    "contract_check_ref": "Sourceoriginal7/63/30/F4df7/50/11100;sourceNFeligible/frozen/meta0TX-V-target;fixed256128L128U;oldJ/offsetphysicalorder/first5basis-targetsame;CPUreal2Ls F/G/state smoke",
+    "provenance_verdict": "SameoriginalsourceL/U. NooldGweightload;rawJ/Ffeature/offsetdataproducedlegallysourceonly,teacherFknowledgeexplicit. ProfilepositionsfixedwithoutTX/IQselection,notindependentnewsourceobservations.",
+    "selection_rule": "Source01/20,B256,3warm+12timedpercase/view,alternatecaseorder;bothmarginalmedianratioandmedianpairedratio exact10/cached5<=1.5 eachview. P95/memorydescriptive;no average masking/search/targetfeedback."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-exact-reference-step-cost",
+    "gpu_policy": "CPUcontroller2threads;GPUallowed4/6/7/free>=12000MiB/existingcomputePIDs<=2/addone<=3total/own1card/goal<2workers;previousPID1501100terminal;otherowners untouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.nonlinear_profile run --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badsource/cache/provenance/order/shape/nonfinite/cap1+2e-5/F-Gstatechange/coverage/collision:preserveandstop/noautoretry. Costfail no repeats/thresholdrelaxation;noautomaticE30training."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "submitted.json",
+    "worker.json",
+    "gpu.log",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "cached5/exact10 perview12timings/pairedorders",
+      "median/P95/min-max/pairedmedianratio",
+      "samephysicalobjectivemetrics/gradientcap/frozenF-Gstate",
+      "peakallocated/sharedresidentincrementbytes",
+      "actualF-G/VJPexposures/nooptimizer/TX-V-target"
+    ],
+    "dimensions": [
+      "source256128L128U",
+      "cache01/20",
+      "cached5/exact10",
+      "3warmup+12timed percase/view"
+    ],
+    "prediction_ref": "Noformalpredictions/trainedGcheckpoint;sourcecostscalarrecords only",
+    "scorer_ref": "NoTXtruth;independentfulltiming/pairedratio/metricweightedloss/decision andactualPID-GPU checks"
+  },
+  "rows": [
+    {
+      "row_id": "source-exact-reference-step-cost",
+      "method": "Same-scratchG/RNG/source no-update physical4loss+cached5 vs exact10 oneFreverse;alternatingpairedstepcost",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/nonlinear_profile.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No newrandomdraw/modelinit. ExistingF/pureG2026092701/source8cf;fixedsourceindices128L384U;cachedAUG2026101912/RX2026101911;deterministicminnorm/offset, no support/evaluationrandomness.",
+      "k": null,
+      "scenario": "Source256cache01/20,sameGPUoldcached5/newexact10,nooptimizer",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "GPUoneworker:60B256Gsteps=15360Ginputs/30exactFsteps=7680F+7680inputVJP;CPUreal2Ls smokeG2/F4/VJP2;noinitcheckpoint/updates/TX-V-target",
+      "output_root": "runs/20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01",
+      "log_path": "runs/20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01/gpu.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.nonlinear_profile run --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-exactReference-stepCost-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "submitted.json",
+        "worker.json",
+        "gpu.log",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Prereadcostrule:bothfixedsourceviews exact10/cached5 marginalmedian andpairedmedianratios<=1.5;12timedpairsperview,3warmupspercase/view,caseorderalternates. No repeat-until-fast/P95-basedselection/thresholdsearch. ScientificcostpassonlysupportsnewpreregisteredGscratchsingleE30/7410/all7formal;noautomatictraining/defaultswap.",
+    "SameGfactory/initialseed2026092701 andCUDAprobe,resetprobeRNG2026103004eachstep,sameB256source128L128U,cache01/20. AllGparameters/stateunchanged,nooldGcheckpoint/optimizer. CurrentphysicalIQ1/prior.1/STFT.05/action.05,varerrorloggedonly. Bothcasesphysicalvaluesmustmatchwithin2e-5relative/2e-6absolute. Guideobjectivesdiffer,donotassertGgradientsequivalent.",
+    "cached5exactlyusesoriginalrawJ5andproductionsoftReferenceE30offset5,IDs/basis/targetprefixchecked. exact10usesqualifiedsame10target andexactoneFforward/inputreverse,detachedstepcap1/alpha.003313unchanged. BoundedIQgradientmaxchecked<=1+2e-5everycall,finiteGbackward/clip1. No guide-loss-valueorGparameterbound/globalfixedenergyclaim.",
+    "Eachview15stepspercase (3warm+12timed),2views2cases=60Gsteps15360inputs;exact30stepsF7680/inputVJP7680. CPUfirstreal2Ls smokeF4/VJP2/G2separate. FixedFsource50/11100,oldF16040.32MB/3.782s/rawJ645.12MB/30.009s/oldoffset1.26MBcostsdisclosed. No newfullsourceJ/targetmatrix.",
+    "Timingincludesdata-gather-copy/RNGprobes/physicalforward/guide-Freverse/Gbackward-clip/scalarcopy,excludesoptimizer/cacheproduction/epochshuffle/queue;teacherFresidentinbothcases sopeakallocnotstandalonebaseline/deploymentmemory. Recordincrementoverstartandabsolutepeak,FP32/TF32off. Sharedcardload/singletrialnotcausalendtoendtrainingacceleration.",
+    "Qualification sourceNF8stepPASS/54.975s supportsactualsmallIQreachability,notGlearning/targetgain. Prototypefitexcludes512butFtrainedsourceall;benchmarkreuses256physicalrecords60times,not15360independentrecords. NoTX/V/target/oldGerrorsorweights. Currentrawclean84.676/eachsat81.676goal/defaultDURAremainunchanged.",
+    "3focusedtestsPASS:perviewcostnomasking/pairedcriterionindependentofmarginals/incompletenonfiniterejection;actualmodule--helpPASS;uniqueP0P1PASS. Onepreflight/archiveSHA/compile/firstCPUreal2Lscontinue/postlaunchcontroller-workerPID-CWD-argv-CUDA-GPU-loggrowth. Noextraartifacts/gates;goalACTIVE."
+  ],
+  "registered_at": "2026-10-31T04:02:38+00:00"
+}
