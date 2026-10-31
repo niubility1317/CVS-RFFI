@@ -1,0 +1,66 @@
+{
+  "run_id": "20261031-phase2-milkr-identityheld-s2026092701-r17",
+  "kernel_method": "identity_holdout",
+  "arm": "R18",
+  "K": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "N": [
+    2,
+    5,
+    10,
+    20
+  ],
+  "capsules": [
+    "capsules/P01/MIX01/1-1"
+  ],
+  "model_seeds": [
+    2026092701
+  ],
+  "source_ranks": [
+    16,
+    32,
+    64,
+    96
+  ],
+  "source_metrics": [
+    0,
+    0.5,
+    0.9
+  ],
+  "source_K": [
+    1,
+    5,
+    20
+  ],
+  "source_held_TX_pairs": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      4,
+      5
+    ]
+  ],
+  "K1_reference_classes": 6,
+  "K1_ridge_scaling": "allocated support class count/6",
+  "source_gate": "held-new and everyK raw gains, not K1-only",
+  "target_goal": "everyKN twoS Q0+5pp/Q1>Q0",
+  "query_fit": false
+}

@@ -133,3 +133,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 源选择必须同时看held新TX macro而非仅已见类平均H：例如四路H≥control+0.5pp、new macro≥control+1pp、各源K/S Q0均有正收益并保留Q1优势，具体门槛在运行前固定。不要将只改变K1而K>1数学上等于R14的候选当作能解决已知K20所有失败格的完整方案。全局source候选固定后，首RX全16格；按用户每格Q0+5pp/Q1>Q0决定晋级，不再mean-only。
 
 这只是下一条可证伪假设，不代表已实现或保证收益。R17旧root/模型/预测保留；当前无所属远端进程。goal ACTIVE，尚未达标。
+
+### R18当前实现
+
+已实现adapter-TX/RX-heldout源代理、rank16/32/64/96×metric0/.5/.9、每表示K1 24核×5ridge重新校准，K1按support类数/6缩放lambda、K>1原R14不变。F本身仍见过六sourceTX，不能冒称F-novel。源gate同时要求held-new和每个sourceK收益，不能只改善K1。sourcepass才首RX全16KN四路80行，仍按每格验收；唯一审查/针对性检查PASS，准备发布，不保证收益。
