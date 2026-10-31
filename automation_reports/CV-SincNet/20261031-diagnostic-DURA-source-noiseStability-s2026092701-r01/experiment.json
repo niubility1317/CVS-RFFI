@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "7475398c2b188ad37358ec8c8e10b1691b4ec65c",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01-release"
@@ -88,7 +88,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.noise_stability_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.noise_stability_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01 --commit 7475398c2b188ad37358ec8c8e10b1691b4ec65c",
     "stop_rule": "Bad source/checkpoint/Fcache/roles/order/shape/nonfinite/statechange/outputcollision:preserveandstop/noautoretry. Scientificfailuredoesnot relaxorautotrain."
   },
   "expected_artifacts": [
@@ -141,7 +141,7 @@
       "budget_ref": "2models x2views x3inputs x512=6144G+6144F;smoke2Ls/model=4G+4F;existing63000sourceFfeaturecache reused;CPU2/0updates/TX-V-target",
       "output_root": "runs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.noise_stability_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.noise_stability_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01 --commit 7475398c2b188ad37358ec8c8e10b1691b4ec65c",
       "expected_artifacts": [
         "launch.json",
         "smoke.json",

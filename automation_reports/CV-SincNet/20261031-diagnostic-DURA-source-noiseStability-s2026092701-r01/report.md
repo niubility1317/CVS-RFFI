@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01`
 - group_id：`phase1-dura-source-noise-stability`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -36,3 +36,8 @@
 固定资格：两个缓存的非clean总体均满足 pureG/default 输出噪声增益比≥1.25，且 pureG 扰动配对平均MSE/native MSE≥1.10，才支持另登记 scratch 单阶段E30噪声增强对照；不自动训练，失败不放宽。噪声增益采用平均输出变化/平均输入扰动的能量比，不用不稳定逐条小分母。F选择与特征指标仅描述，不参与门槛或权重选择。
 
 CPU2、CUDA空；6144 G/F分析输入和首步4 G/F真实2Ls检查，0优化/TX/V/target。源Fclean缓存只读复用，历史F50监督知识与缓存成本披露；两模型状态冻结。全部4份NPZ及role/RX/day/scene/state/lock聚合保存并独立复算。这只是源训练池噪声稳定性，不是真实TX准确率、目标收益、过拟合的因果证明或恢复极限。默认保持，目标ACTIVE。
+
+
+## 完成结果
+
+VERIFIED / ANALYZED，仅 SOURCE_ONLY。执行 7475398c2b188ad37358ec8c8e10b1691b4ec65c，CPU2/PID1349938真实2Ls和实际CWD/argv/CUDA空/日志增长核实，20.558967秒完整结束。两个缓存 primary/default 噪声增益比1.111890/1.005703，未达事先1.25门槛，不放宽、不训练噪声增强新版。22528逐条指标和108分组独立复算一致，0TX/V/target/更新；默认与完整目标保持。详见[完整分析](analysis.md)、results.json 与 source_noise_stability.png。

@@ -104,3 +104,6 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 逐条平衡局部身份约束：完整 E30 与七景
 
 20261031-phase1-DURA-balancedTangent-E30-s2026092701-r01/75da2140。VERIFIED / ANALYZED。单阶段 scratch E30/7410，L189000/U1701000；30 轮完整 loss/曝光/缓存视图/逐批次压力上界核对通过。复用 source J，缓存复用与 G 训练期间新增 F 前向/VJP/缓存均为 0（真实模型检查另有 2 条 F 输入，冻结后预测仍正常执行 F）；继承 F50 监督知识，仍为 F-guided。七景×168000 全部预测固定后 truth-last，126 正式与252 双对照配对分组独立复算。clean 84.814286%，low urban 67.031548%；低城区相对未平衡版 +0.406548、纯 G -0.341071、默认 DURA -1.858333 个百分点。六景3pp通过 0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。G训练 998.836772 秒，含源准备 999.795406 秒，全量分析 1180.638900 秒；266951 参数/25.068072m ConvLinear MAC/2prior4CG27FFT，默认保持。 当前完整目标继续 ACTIVE；单 seed 已暴露工程基准，不称新盲测或物理恢复极限。完整源/正式/TX/RX/day/净纠错与成本见该 run 的 analysis.md/results.json。没有采用失败的静态谱因子，不依据目标结果回调 alpha 或调类别权重。
+
+
+源噪声稳定性诊断 20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01/7475398c 完整结束：固定pureG repeatE30/defaultR69、source512×cache01/20，按缓存标量方差作同一±各向同性扰动（不是原生噪声重抽），clean不扰动；两缓存增益比1.111890/1.005703均低于事先1.25，不能明确定位为单阶段特异噪声放大，不放宽、不启动该训练。CPU20.558967秒/G-F各6144+4smoke/0TX-V-target-updates，22528逐条指标和108分组独立复算，PID1349938自然结束；默认与完整目标ACTIVE。

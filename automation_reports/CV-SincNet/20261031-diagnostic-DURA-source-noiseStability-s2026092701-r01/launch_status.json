@@ -1,0 +1,27 @@
+{
+  "status": "ANALYZED",
+  "artifact_scope": "SOURCE_ONLY",
+  "run": "20261031-diagnostic-DURA-source-noiseStability-s2026092701-r01",
+  "execution_commit": "7475398c2b188ad37358ec8c8e10b1691b4ec65c",
+  "pid": 1349938,
+  "post_launch_live_verified": true,
+  "CWD_argv_CUDA_verified": true,
+  "observed_log_growth_bytes": [
+    807,
+    938
+  ],
+  "natural_exit_verified": true,
+  "CPU_threads": 2,
+  "GPU_workers": 0,
+  "real_Ls_per_model": 2,
+  "G_inputs": 6144,
+  "G_smoke_inputs": 4,
+  "F_inputs": 6144,
+  "F_smoke_inputs": 4,
+  "seconds": 20.558966641314328,
+  "independent_groups": 108,
+  "independent_packet_metrics": 22528,
+  "training_contrast_eligible": false,
+  "default_DURA_changed": false,
+  "goal_complete": false
+}
