@@ -54,20 +54,27 @@ def test_actual_input_grad_training_source_before_U_frozenNN_and_strict_reload(t
         assert all(not r['U_indices'] for r in traces['SOURCE_INPUT']) and all(len(r['U_indices'])==64 for r in traces['TARGET_INPUT'])
         assert all(rows[0]['gradient_norm_before_clip']>0 for rows in traces.values()) and all(r['NN_gradients_none'] for rows in traces.values() for r in rows)
         for model,snapshot in before:m.reg.fresh.best._check_model(model,snapshot);assert all(p.grad is None for p in model.parameters())
-        from experiments.pamf_phase3_open_world import receiver_input_launch as launch
-        monkeypatch.setattr(launch,'STEPS',m.STEPS);monkeypatch.setattr(launch,'SOURCE_COUNT',m.L_COUNT)
-        assert launch._terminal(dict(run_root=str(tmp_path/'receiver'),code_commit=c['code_commit']),'train')==done
+        # r01 training terminal was verified at release; the recovery launcher
+        # now runs prediction/scoring only and must not relabel these weights.
+        # Same strict FP32 theta, but CUDA's derived tanh report can differ
+        # from CPU by one FP32 ULP. Only this numerical report is perturbed.
+        for arm in m.ARMS:
+            path=out/arm/'complete.json';row=m._read(path);fir=np.asarray(row['coefficients']['fir'],np.float32)
+            fir[0,0]=np.nextafter(fir[0,0],np.float32(np.inf));row['coefficients']['fir']=fir.tolist()
+            path.unlink();m._write(path,row);done['rows'][arm]=row
+        (out/'complete.json').unlink();m._write(out/'complete.json',done)
         monkeypatch.setattr(m,'_U',lambda *a:pytest.fail('Loader cannot read U'));monkeypatch.setattr(m,'_L',lambda *a:pytest.fail('Loader cannot read L'));monkeypatch.setattr(m,'_models',lambda *a:pytest.fail('Loader cannot load NN'))
         adapters,loaded=m.load_adapters(c,'cpu');assert loaded==done and all(not p.requires_grad for a in adapters.values() for p in a.parameters())
         assert all(set(a.state_dict())=={'theta'} and a.theta.shape==(16,) for a in adapters.values())
         assert loaded['identities']['SOURCE_INPUT']['adapter_source_only'] and not loaded['identities']['TARGET_INPUT']['adapter_source_only']
         cp=out/'TARGET_INPUT/adapter.pt';saved=cp.read_bytes()
-        for defect in ('shape','dtype','nan','wrong_arm','identity'):
+        for defect in ('shape','dtype','nan','theta_value','wrong_arm','identity'):
             with subtests.test(defect=defect):
                 payload=torch.load(cp,weights_only=False)
                 if defect=='shape':payload['state']['theta']=torch.zeros(15)
                 elif defect=='dtype':payload['state']['theta']=payload['state']['theta'].double()
                 elif defect=='nan':payload['state']['theta'][0]=torch.nan
+                elif defect=='theta_value':payload['state']['theta'][0]=torch.nextafter(payload['state']['theta'][0],torch.tensor(torch.inf))
                 elif defect=='wrong_arm':payload['arm']='SOURCE_INPUT'
                 else:payload['identity']['parent_PCD_identity']={'wrong':True}
                 torch.save(payload,cp)
@@ -94,3 +101,29 @@ def test_U_teacher_mask_is_fixed_from_unadapted_F0_and_PCD():
     m=api();logits=np.zeros((4,6),np.float32);logits[:,0]=[20.,20.,0.,20.];margin=np.asarray([1.,-1.,1.,0.])
     mask,pred,confidence=m.fixed_mask(logits,margin)
     np.testing.assert_array_equal(mask,[True,False,False,True]);np.testing.assert_array_equal(pred,np.zeros(4,np.int64));assert confidence[2]<.95
+
+
+def test_derived_coefficient_reports_allow_only_two_FP32_ULP(subtests):
+    m=api();model=m.core.BoundedIQ()
+    with torch.no_grad():model.theta.copy_(torch.linspace(-.7,.8,16))
+    expected=m._coefficients(model)
+    for steps in (0,1,2):
+        with subtests.test(steps=steps):
+            report={k:np.asarray(v,np.float32).copy() for k,v in expected.items()}
+            for _ in range(steps):report={k:np.nextafter(v,np.float32(np.inf)) for k,v in report.items()}
+            assert m._coefficient_reports_equal({k:v.tolist() for k,v in report.items()},expected)
+    zero=dict(fir=np.zeros((7,2),np.float32),gamma=np.zeros(2,np.float32));tiny=np.nextafter(np.float32(0),np.float32(1))
+    assert m._coefficient_reports_equal(dict(fir=zero['fir']+2*tiny,gamma=zero['gamma']-2*tiny),zero)
+    for defect in ('three_ULP','large','shape','nan','strings','extra','near_zero_three_ULP'):
+        with subtests.test(defect=defect):
+            report={k:np.asarray(v,np.float32).copy() for k,v in expected.items()}
+            if defect=='three_ULP':
+                for _ in range(3):report['fir'][0,0]=np.nextafter(report['fir'][0,0],np.float32(np.inf))
+            elif defect=='large':report['fir'][0,0]+=.001
+            elif defect=='shape':report['fir']=report['fir'][:-1]
+            elif defect=='nan':report['gamma'][0]=np.nan
+            elif defect=='strings':report['fir']=report['fir'].astype(str)
+            elif defect=='extra':report['other']=np.zeros(1)
+            else:
+                report={k:v.copy() for k,v in zero.items()};report['gamma'][0]=3*tiny
+            assert not m._coefficient_reports_equal(report,zero if defect=='near_zero_three_ULP' else expected)

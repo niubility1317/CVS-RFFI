@@ -10,7 +10,7 @@ def setup(root,mp):
     mp.setattr(train,'validate_config',lambda c:c);mp.setattr(run,'validate_config',lambda c:c)
     root.mkdir();(root/'logs').mkdir()
     ref={'train_config':{'source':'reference'},'output_root':'FROZEN_REFERENCE'}
-    t=dict(run_id=m.RUN,code_commit='a'*40,reference_config=ref['train_config'],reference_prediction_root=ref['output_root'],output_root=str(root/'train'))
+    t=dict(run_id=m.TRAIN_RUN,code_commit=m.TRAIN_CODE,reference_config=ref['train_config'],reference_prediction_root=ref['output_root'],output_root=str(root.parent/'frozen_train'))
     c=dict(run_id=m.RUN,code_commit='a'*40,train_config=t,reference_config=ref,output_root=str(root/'predict'))
     r=dict(run_id=m.RUN,code_commit='a'*40,run_root=str(root),release_root=str(root.parent/'release'),python='python',launch_owner='input-owner',
         allowed_gpus=list(range(8)),minimum_free_mb=4096,max_added_workers_per_gpu=2,train_config=t,eval_config=c,
@@ -32,23 +32,24 @@ def terminal(r,stage):
     out=Path(r['run_root'])/stage;out.mkdir(exist_ok=True);return a,out/'complete.json'
 
 
-def test_source_and_U_fit_then_predict_then_CPU_truth_no_restart(tmp_path,monkeypatch):
+def test_frozen_r01_only_predict_then_CPU_truth_no_restart(tmp_path,monkeypatch):
     r,path=setup(tmp_path/'run',monkeypatch);events=[]
     def job(r,state,p,stage,argv,gpu):
         events.append((stage,argv,gpu));a,out=terminal(r,stage);m._write(out,a);return True
     monkeypatch.setattr(m,'_job',job);m.driver(path)
-    assert [e[0] for e in events]==['train','predict','score'] and [e[2] for e in events]==[5,5,None]
+    assert [e[0] for e in events]==['predict','score'] and [e[2] for e in events]==[5,None]
     for private in ('PRIVATE_SOURCE','PRIVATE_CLEAN','PRIVATE_STAR'):
-        assert all(private not in e[1] for e in events[:2]) and private in events[2][1]
+        assert private not in events[0][1] and private in events[1][1]
     assert m._read(Path(r['run_root'])/'pipeline_state.json')['status']=='ANALYZED_DEVELOPMENT'
     with pytest.raises(FileExistsError):m.start(path)
     with pytest.raises(FileExistsError):m.driver(path)
     with pytest.raises(ValueError):m.validate(dict(r,quota=2))
+    with pytest.raises(ValueError):m.validate(dict(r,train_config=dict(r['train_config'],code_commit=r['code_commit'])))
+    with pytest.raises(ValueError):m.validate(dict(r,train_config=dict(r['train_config'],run_id=m.RUN)))
 
 
 def test_illegal_fit_or_predict_stops_before_truth(tmp_path,monkeypatch,subtests):
-    cases=(('train','source_completed_before_U_open',False),('train','source_sampling_matched',False),('train','target_Q_reads',1),('train','NN_optimizer_updates',1),('train','target_U_reads',0),
-        ('predict','all_adapters_frozen_before_Q',False),('predict','all_thresholds_inherited_unchanged',False),('predict','classification_unchanged',True),('predict','private_truth_reads',1))
+    cases=(('predict','all_adapters_frozen_before_Q',False),('predict','all_thresholds_inherited_unchanged',False),('predict','classification_unchanged',True),('predict','private_truth_reads',1))
     for stage,field,value in cases:
         with subtests.test(stage=stage,field=field):
             r,path=setup(tmp_path/(stage+field),monkeypatch);events=[]

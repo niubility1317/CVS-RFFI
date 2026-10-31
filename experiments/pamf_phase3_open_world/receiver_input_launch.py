@@ -1,4 +1,4 @@
-"""Bounded receiver input state, paired source/U fit, three DURA tests."""
+"""Evaluation-only recovery of frozen source/U input states and DURA tests."""
 import argparse
 import json
 import os
@@ -8,7 +8,9 @@ import subprocess
 import time
 from .star_representation_launch import _read,_write,_env,_gpu_free,_job
 
-RUN='20261031-phase3-receiver-input-s2026092701-r01'
+RUN='20261031-phase3-receiver-input-s2026092701-r02'
+TRAIN_RUN='20261031-phase3-receiver-input-s2026092701-r01'
+TRAIN_CODE='ac8bbd27277fcb1f16806c7b8b94e8c3e27e390b'
 SOURCE_COUNT=6300
 U_COUNT=576
 STEPS=200
@@ -23,8 +25,8 @@ def validate(r):
             or any(not isinstance(r.get(k),str) or not r[k].strip() for k in ('code_commit','run_root','release_root','python','launch_owner','source_novel_truth','clean_truth','star_truth'))
             or re.fullmatch('[0-9a-f]{40}',r['code_commit']) is None or r['allowed_gpus']!=list(range(8)) or r['minimum_free_mb']!=4096 or r['max_added_workers_per_gpu']!=2):raise ValueError('Exact receiver-input runtime required')
     t=train.validate_config(r['train_config']);e=predict.validate_config(r['eval_config'])
-    if (t['run_id']!=RUN or e['run_id']!=RUN or t['code_commit']!=r['code_commit'] or e['code_commit']!=r['code_commit'] or e['train_config']!=t or e['reference_config']['train_config']!=t['reference_config'] or e['reference_config']['output_root']!=t['reference_prediction_root']
-            or Path(t['output_root'])!=Path(r['run_root'])/'train' or Path(e['output_root'])!=Path(r['run_root'])/'predict'):
+    if (t['run_id']!=TRAIN_RUN or t['code_commit']!=TRAIN_CODE or e['run_id']!=RUN or e['code_commit']!=r['code_commit'] or e['train_config']!=t or e['reference_config']['train_config']!=t['reference_config'] or e['reference_config']['output_root']!=t['reference_prediction_root']
+            or Path(t['output_root']).resolve().is_relative_to(Path(r['run_root']).resolve()) or Path(e['output_root'])!=Path(r['run_root'])/'predict'):
         raise ValueError('Actual neural/evaluation identity and immutable roots must agree')
     return r
 
@@ -40,7 +42,6 @@ def start(runtime):
 
 def _command(r,stage):
     root=Path(r['run_root']);p=[r['python'],'-B','-u','-m']
-    if stage=='train':return p+[__package__+'.receiver_input_train','--config',str(root/'configs/train.json'),'--device','cuda:0']
     if stage=='predict':return p+[__package__+'.receiver_input_run','--config',str(root/'configs/eval.json'),'--device','cuda:0']
     return p+[__package__+'.receiver_input_score','--prediction-root',str(root/'predict'),'--source-novel-truth',r['source_novel_truth'],'--clean-truth',r['clean_truth'],'--star-truth',r['star_truth'],'--output',str(root/'score')]
 
@@ -48,11 +49,7 @@ def _command(r,stage):
 def _terminal(r,stage):
     m=_read(Path(r['run_root'])/stage/'complete.json' if stage!='predict' else Path(r['run_root'])/'predict/complete.json')
     expected=dict(run_id=RUN,code_commit=r['code_commit'],final_phase3_complete=False)
-    if stage=='train':expected.update(status='RECEIVER_INPUT_TRAINING_COMPLETE',updates_per_arm=STEPS,total_optimizer_updates=2*STEPS,
-        source_completed_before_U_open=True,source_sampling_matched=True,original_models_unchanged=True,all_adapters_changed=True,
-        NN_optimizer_updates=0,target_Q_reads=0,validation_reads=0,novel_validation_reads=0,private_truth_reads=0,U_truth_reads=0,
-        source_L_reads=SOURCE_COUNT,target_U_reads=U_COUNT)
-    elif stage=='predict':expected.update(status='RECEIVER_INPUT_PREDICTIONS_COMPLETE',all_adapters_frozen_before_Q=True,
+    if stage=='predict':expected.update(status='RECEIVER_INPUT_PREDICTIONS_COMPLETE',all_adapters_frozen_before_Q=True,
         all_three_DURA_conditions_complete=True,all_conditions_through_DURA=True,all_thresholds_inherited_unchanged=True,
         controls_reused_exactly=True,original_models_unchanged=True,classification_unchanged=False,new_density_fits=0,new_threshold_sets_fitted=0,
         private_truth_reads=0,U_truth_reads=0,target_U_reads=0)
@@ -67,7 +64,7 @@ def driver(runtime):
     if path.exists():raise FileExistsError('Observe original pipeline; never restart')
     state=dict(run_id=RUN,code_commit=r['code_commit'],pid=os.getpid(),status='RUNNING',started_at=time.time(),jobs={});_write(path,state)
     try:
-        for stage in ('train','predict','score'):
+        for stage in ('predict','score'):
             gpu=None
             if stage!='score':
                 available=_gpu_free(r)

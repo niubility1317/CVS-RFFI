@@ -12,7 +12,9 @@ import torch
 from . import pcd_cluster_registry_run as parent
 from . import star_consensus_score as common
 
-RUN_ID='20261031-phase3-receiver-input-s2026092701-r01'
+RUN_ID='20261031-phase3-receiver-input-s2026092701-r02'
+TRAIN_RUN_ID='20261031-phase3-receiver-input-s2026092701-r01'
+TRAIN_CODE='ac8bbd27277fcb1f16806c7b8b94e8c3e27e390b'
 SCHEMA='pamf_phase3_receiver_input_prediction_v1'
 STATUS='RECEIVER_INPUT_PREDICTIONS_COMPLETE'
 MODELS_STATUS='RECEIVER_INPUT_MODELS_FROZEN'
@@ -45,7 +47,7 @@ def validate_config(c):
             or type(c.get('batch_size')) is not int or c['batch_size']!=128 or not isinstance(c.get('output_root'),str) or not c['output_root'].strip()):
         raise ValueError('Exact six-field receiver-input configuration required; no truth or query fitting')
     r=parent.fresh.validate_config(c['reference_config']);t=_train().validate_config(c['train_config'])
-    if (r['code_commit']!=parent.REFERENCE_CODE or t['run_id']!=RUN_ID or t['code_commit']!=c['code_commit']
+    if (r['code_commit']!=parent.REFERENCE_CODE or t['run_id']!=TRAIN_RUN_ID or t['code_commit']!=TRAIN_CODE
             or t['reference_config']!=r['train_config'] or t['reference_prediction_root']!=r['output_root']):raise ValueError('Exact fresh PCD training and prediction reference required')
     out=Path(c['output_root']).resolve();roots=[r['output_root'],t['output_root'],r['train_config']['output_root'],r['train_config']['U_public_root'],
         r['source_control_config']['output_root'],r['source_control_config']['reference_config']['train_config']['IQ_root']]+[v['public_root'] for v in r['Q_conditions'].values()]
@@ -55,13 +57,13 @@ def validate_config(c):
 
 def _training(c,pm):
     t=_train();done=_read(Path(c['train_config']['output_root'])/'complete.json')
-    if (done.get('schema')!=t.SCHEMA or done.get('status')!=t.STATUS or done.get('run_id')!=RUN_ID or done.get('code_commit')!=c['code_commit']
+    if (done.get('schema')!=t.SCHEMA or done.get('status')!=t.STATUS or done.get('run_id')!=TRAIN_RUN_ID or done.get('code_commit')!=TRAIN_CODE
             or done.get('config')!=c['train_config'] or set(done.get('identities',{}))!=set(ARMS[1:])
             or any(done.get(k) is not True for k in ('source_completed_before_U_open','source_sampling_matched','original_models_unchanged','all_adapters_changed'))
             or done.get('NN_optimizer_updates')!=0 or done.get('total_optimizer_updates')!=2*t.STEPS):raise ValueError('Both completed receiver adapter checkpoints required')
     for arm in ARMS[1:]:
         i=done['identities'][arm];target=arm=='TARGET_INPUT'
-        expected=dict(run_id=RUN_ID,code_commit=c['code_commit'],arm=arm,updates=t.STEPS,adapter_parameters=16,adapter_source_only=not target,
+        expected=dict(run_id=TRAIN_RUN_ID,code_commit=TRAIN_CODE,arm=arm,updates=t.STEPS,adapter_parameters=16,adapter_source_only=not target,
             target_U_used=target,target_U_reads=U_COUNT if target else 0,parent_F0_identity=pm['parent_F0_identity'],parent_PCD_identity=pm['model_identities']['TARGET_PCD'],
             dura_identity=pm['dura_identity'],system_PCD_has_target_U_ancestor=True)
         if any(i.get(k)!=v for k,v in expected.items()):raise ValueError('Actual source/target input-adapter ancestry differs')
@@ -184,25 +186,28 @@ def run(c,device='cuda:0'):
         finally:
             if hasattr(iq,'_mmap'):iq._mmap.close()
     done=dict(schema=SCHEMA,status=STATUS,run_id=RUN_ID,code_commit=c['code_commit'],config=c,method_names=list(METHODS),primary_method=PRIMARY_METHOD,arm_order=list(ARMS),conditions=list(CONDITIONS),
-        reference_prediction_identity=pm,training_identity=training,adapter_identities=training['identities'],model_identity=identity,parent_F0_identity=pm['parent_F0_identity'],dura_identity=pm['dura_identity'],
+        reference_prediction_identity=pm,training_identity=training,training_run_id=TRAIN_RUN_ID,training_code_commit=TRAIN_CODE,training_reused=True,
+        adapter_identities=training['identities'],model_identity=identity,parent_F0_identity=pm['parent_F0_identity'],dura_identity=pm['dura_identity'],
         known_count=COUNTS['V'],novel_count=COUNTS['novel'],Q_counts={name:Q_COUNT for name in CONDITIONS[1:]},Q_manifests=manifests,
         all_adapters_frozen_before_Q=True,all_three_DURA_conditions_complete=True,all_conditions_through_DURA=True,all_thresholds_inherited_unchanged=True,controls_reused_exactly=True,
         original_models_unchanged=True,source_states_unchanged=True,classification_unchanged=False,identity_baseline_path='original_F0_same_DURA',classification_path='same_original_F0_head_after_receiver_adapter',
         new_density_fits=0,new_threshold_sets_fitted=0,optimizer_updates=0,private_truth_reads=0,U_truth_reads=0,target_U_reads=0,target_truth_reads=0,source_novel_truth_reads=0,source_IQ_reads=0,
         target_Q_IQ_reads=2*Q_COUNT,real_F_forward_rows=4*Q_COUNT,real_signal_forward_rows=4*Q_COUNT,G_forward_rows=2*Q_COUNT,
         synthetic_F_forward_rows=smoke['synthetic_F_forward_rows'],synthetic_signal_forward_rows=smoke['synthetic_signal_forward_rows'],G_synthetic_forward_rows=smoke['G_synthetic_forward_rows'],synthetic_adapter_forward_rows=smoke['synthetic_adapter_forward_rows'],
-        threshold_values=36,threshold_bytes=tau.nbytes,new_threshold_values=0,unique_threshold_values=12,adapter_parameters_per_arm=16,new_neural_updates=0,inherited_adapter_optimizer_updates=2*_train().STEPS,
-        PCD_U_ancestor=576,source_only=False,new_target_DA=True,target_REG=False,source_bank_deployed=False,U_bank_deployed=False,formal_target_accessed=False,full_goal_status='ACTIVE',final_phase3_complete=False,A_N=None,H_OW=None)
+        threshold_values=36,threshold_bytes=tau.nbytes,new_threshold_values=0,unique_threshold_values=12,adapter_parameters_per_arm=16,new_neural_updates=0,new_adapter_optimizer_updates=0,inherited_adapter_optimizer_updates=2*_train().STEPS,
+        PCD_U_ancestor=576,source_only=False,new_target_DA=False,target_DA_inherited=True,evaluation_only_recovery=True,target_REG=False,source_bank_deployed=False,U_bank_deployed=False,formal_target_accessed=False,full_goal_status='ACTIVE',final_phase3_complete=False,A_N=None,H_OW=None)
     check();_write(out/'complete.json',done);print(STATUS,flush=True);return done
 
 
 def _prediction_gate(root):
     root=Path(root);done=_read(root/'complete.json');c=validate_config(done['config']);pm,state,old_tau,old_cal=_reference(c);training=_training(c,pm)
     expected=dict(schema=SCHEMA,status=STATUS,run_id=RUN_ID,code_commit=c['code_commit'],method_names=list(METHODS),primary_method=PRIMARY_METHOD,arm_order=list(ARMS),conditions=list(CONDITIONS),
-        reference_prediction_identity=pm,training_identity=training,adapter_identities=training['identities'],model_identity=pm['model_identities']['TARGET_PCD'],parent_F0_identity=pm['parent_F0_identity'],dura_identity=pm['dura_identity'],
+        reference_prediction_identity=pm,training_identity=training,training_run_id=TRAIN_RUN_ID,training_code_commit=TRAIN_CODE,training_reused=True,
+        adapter_identities=training['identities'],model_identity=pm['model_identities']['TARGET_PCD'],parent_F0_identity=pm['parent_F0_identity'],dura_identity=pm['dura_identity'],
         known_count=COUNTS['V'],novel_count=COUNTS['novel'],Q_counts={name:Q_COUNT for name in CONDITIONS[1:]},all_adapters_frozen_before_Q=True,all_three_DURA_conditions_complete=True,all_conditions_through_DURA=True,
         all_thresholds_inherited_unchanged=True,controls_reused_exactly=True,original_models_unchanged=True,source_states_unchanged=True,classification_unchanged=False,new_density_fits=0,new_threshold_sets_fitted=0,
-        optimizer_updates=0,private_truth_reads=0,U_truth_reads=0,target_U_reads=0,source_IQ_reads=0,real_F_forward_rows=4*Q_COUNT,real_signal_forward_rows=4*Q_COUNT,G_forward_rows=2*Q_COUNT,final_phase3_complete=False)
+        optimizer_updates=0,new_adapter_optimizer_updates=0,evaluation_only_recovery=True,new_target_DA=False,target_DA_inherited=True,
+        private_truth_reads=0,U_truth_reads=0,target_U_reads=0,source_IQ_reads=0,real_F_forward_rows=4*Q_COUNT,real_signal_forward_rows=4*Q_COUNT,G_forward_rows=2*Q_COUNT,final_phase3_complete=False)
     if Path(c['output_root']).resolve()!=root.resolve() or any(done.get(k)!=v for k,v in expected.items()):raise ValueError('Complete frozen three-arm/three-DURA predictions required before truth')
     fit=_read(root/'models/complete.json');cal=_read(root/'calibration/complete.json');saved=_npz(root/'thresholds.npz');tau=saved.get('conditional');theta=_npz(root/'models/adapters.npz')
     if (not _same(_npz(root/'models/density.npz'),state) or fit.get('status')!=MODELS_STATUS or fit.get('schema')!=SCHEMA or fit.get('run_id')!=RUN_ID or fit.get('code_commit')!=c['code_commit']

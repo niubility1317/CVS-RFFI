@@ -121,6 +121,21 @@ def _gradient_smoke(b,pcd,models,device):
 def _coefficients(adapter):return {k:np.asarray(v.detach().cpu().tolist(),np.float32).tolist() for k,v in adapter.components().items()}
 
 
+def _coefficient_reports_equal(reported,computed):
+    """Compare derived FP32 metadata within two local CPU/CUDA ULPs."""
+    if not isinstance(reported,dict) or not isinstance(computed,dict) or set(reported)!=set(computed) or set(reported)!={'fir','gamma'}:return False
+    for key,shape in (('fir',(7,2)),('gamma',(2,))):
+        try:a,b=np.asarray(reported[key]),np.asarray(computed[key])
+        except (TypeError,ValueError):return False
+        if a.shape!=shape or b.shape!=shape or a.dtype.kind!='f' or b.dtype.kind!='f' or not np.isfinite(a).all() or not np.isfinite(b).all():return False
+        with np.errstate(over='ignore',invalid='ignore'):
+            a,b=a.astype(np.float32),b.astype(np.float32)
+            spacing=np.maximum(np.abs(np.spacing(a)).astype(np.float64),np.abs(np.spacing(b)).astype(np.float64))
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or not np.isfinite(spacing).all():return False
+        if not np.all(np.abs(a.astype(np.float64)-b.astype(np.float64))<=2*spacing):return False
+    return True
+
+
 def _identity(c,arm,pm):
     target=arm=='TARGET_INPUT'
     return dict(run_id=RUN_ID,code_commit=c['code_commit'],arm=arm,checkpoint=str(Path(c['output_root'])/arm/'adapter.pt'),updates=STEPS,adapter_parameters=16,
@@ -217,7 +232,7 @@ def load_adapters(c,device='cuda:0'):
         state=payload.get('state');theta=state.get('theta') if isinstance(state,dict) else None
         if not isinstance(state,dict) or set(state)!={'theta'} or not torch.is_tensor(theta) or theta.dtype!=torch.float32 or theta.shape!=(16,) or not bool(torch.isfinite(theta).all()) or not bool(theta.ne(0).any()):raise ValueError('Only finite learned FP32 theta[16] allowed')
         model=core.BoundedIQ();model.load_state_dict(state,strict=True)
-        if row.get('theta')!=theta.tolist() or row.get('coefficients')!=_coefficients(model):raise ValueError('Stored adapter parameters and coefficient report differ')
+        if row.get('theta')!=theta.tolist() or not _coefficient_reports_equal(row.get('coefficients'),_coefficients(model)):raise ValueError('Stored adapter parameters and coefficient report differ')
         adapters[arm]=model.to(device).eval().requires_grad_(False)
     return adapters,done
 

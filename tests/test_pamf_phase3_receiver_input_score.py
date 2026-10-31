@@ -23,7 +23,8 @@ def test_primary_cannot_borrow_SOURCE_improvement_or_missing_day_coverage(tmp_pa
     s=api();_,_,oldcal,oldrows,paths=fixture(tmp_path)
     rows={k:{a:dict(v['PROTO']) for a in s.ARMS} for k,v in oldrows.items()}
     for k in rows:rows[k]['OLD_PCD']=oldrows[k]['OLD_PCD']
-    done=dict(code_commit='b'*40,inherited_adapter_optimizer_updates=400)
+    done=dict(code_commit='b'*40,inherited_adapter_optimizer_updates=400,training_run_id=s.evaluation.TRAIN_RUN_ID,
+        training_code_commit=s.evaluation.TRAIN_CODE,training_reused=True,training_identity={})
     cal=dict(methods={name:dict(constraints_passed=True) for name in s.METHODS})
     monkeypatch.setattr(s,'_prediction',lambda *a:(done,cal,rows))
     result=s.score(tmp_path/'pred',*paths,tmp_path/'score')
@@ -49,6 +50,8 @@ def test_actual_trained_theta_producer_gate_three_truths_and_launcher(tmp_path,m
         assert done['real_F_forward_rows']==done['real_signal_forward_rows']==4*p.Q_COUNT and done['G_forward_rows']==2*p.Q_COUNT
         assert done['new_density_fits']==done['new_threshold_sets_fitted']==done['source_IQ_reads']==0
         assert not done['classification_unchanged'] and done['training_identity']==trained
+        assert done['run_id']==p.RUN_ID and done['code_commit']=='a'*40 and trained['run_id']==p.TRAIN_RUN_ID and trained['code_commit']==p.TRAIN_CODE
+        assert done['training_reused'] and done['new_adapter_optimizer_updates']==0 and done['target_U_reads']==0
         for arm in p.ARMS:
             a=p._target_rows(out,'star_DURA',arm);np.testing.assert_array_equal(a['closed'],a['default_logits'].argmax(1))
             old=p._target_rows(out,'star_DURA','OLD_PCD');np.testing.assert_array_equal(a['baseline_logits'],old['default_logits'])
@@ -65,11 +68,12 @@ def test_actual_trained_theta_producer_gate_three_truths_and_launcher(tmp_path,m
                 scenario=np.asarray(['clean' if condition=='clean_DURA' else 'practical_low_urban']*len(y)))
         reads=[];st=s._source_truth;ft=s._future_truth
         monkeypatch.setattr(s,'_source_truth',lambda *a:(reads.append('source'),st(*a))[1]);monkeypatch.setattr(s,'_future_truth',lambda *a:(reads.append('future'),ft(*a))[1])
-        result=s.score(out,*paths,tmp_path/'receiver/score')
+        result=s.score(out,*paths,tmp_path/'receiver_r02/score')
         assert reads==['source','future','future'] and result['truth_last'] and result['all_three_predictions_before_truth']
         assert type(result['adaptation_success']) is bool and set(result['methods'])==set(s.METHODS)
         from experiments.pamf_phase3_open_world import receiver_input_launch as launch
-        r=dict(run_root=str(tmp_path/'receiver'),code_commit=c['code_commit'])
+        assert result['training_identity']==trained and result['training_run_id']==p.TRAIN_RUN_ID and result['training_reused']
+        r=dict(run_root=str(tmp_path/'receiver_r02'),code_commit=c['code_commit'])
         assert launch._terminal(r,'predict')==done and launch._terminal(r,'score')['status']==s.STATUS
         main=out/'targets/star_DURA/TARGET_INPUT/predictions.npz';oldpath=out/'targets/star_DURA/OLD_PCD/predictions.npz'
         taupath=out/'thresholds.npz';density=out/'models/density.npz';trainpath=Path(c['train_config']['output_root'])/'complete.json';complete=out/'complete.json'

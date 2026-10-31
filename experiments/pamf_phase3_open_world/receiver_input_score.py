@@ -74,12 +74,15 @@ def score(prediction_root,source_novel_truth,clean_truth,star_truth,output):
         truth_last=True,all_three_predictions_before_truth=True,source_truth_reads=1,target_truth_reads=2,U_truth_reads=0,classification_unchanged=False,original_F0_weights_unchanged=True,original_default_head_unchanged=True,
         identity_baseline_path='same_DURA_output_original_F0_without_input_adapter',candidate_identity_path='same_original_F0_head_after_own_input_adapter',old_density_and_thresholds_unchanged=True,
         prediction_costs={k:v for k,v in done.items() if k.endswith('_reads') or k.endswith('_forward_rows')},new_density_fits=0,new_threshold_sets_fitted=0,new_neural_weight_updates=0,
-        inherited_adapter_optimizer_updates=done['inherited_adapter_optimizer_updates'],adapter_parameters_per_arm=16,primary_adapter_bytes=64,threshold_values=36,threshold_bytes=288,unique_threshold_values=12,
+        training_run_id=done['training_run_id'],training_code_commit=done['training_code_commit'],training_reused=done['training_reused'],training_identity=done['training_identity'],
+        inherited_training_costs={k:v for k,v in done['training_identity'].items() if k.endswith('_forward_rows') or k.endswith('_reads')},
+        inherited_adapter_optimizer_updates=done['inherited_adapter_optimizer_updates'],new_adapter_optimizer_updates=0,evaluation_only_recovery=True,
+        adapter_parameters_per_arm=16,primary_adapter_bytes=64,threshold_values=36,threshold_bytes=288,unique_threshold_values=12,
         PCD_has_inherited_target_U_ancestor=True,inherited_PCD_target_U_count=576,SOURCE_INPUT_adapter_source_only=True,SOURCE_INPUT_system_source_only=False,TARGET_INPUT_uses_target_U=True,
-        new_target_DA=True,source_only=False,target_REG=False,registration_success=None,A_N=None,H_OW=None,source_bank_deployed=False,U_bank_deployed=False,
+        new_target_DA=False,target_DA_inherited=True,source_only=False,target_REG=False,registration_success=None,A_N=None,H_OW=None,source_bank_deployed=False,U_bank_deployed=False,
         formal_target_accessed=False,full_goal_status='ACTIVE',full_goal_passed=False,final_phase3_complete=False,primary_deployed_neural_parameters=834681,
         source_RX_seen=True,source_novel_historically_exposed=True,fresh_development_RX=34,global_physical_history='UNKNOWN',new_blind_confirmation=False,
-        scope='Frozen DURA/F0/PCD with source-only or unlabelled-star-U receiver input adapters. Source rows are inherited calibration diagnostics; clean/Q are test only, no discovery or registration')
+        scope='Evaluation-only recovery reuses exact r01 trained input adapters and source-before-U evidence. No new optimization or U IQ reads; source rows are inherited calibration diagnostics, clean/Q are test only, no discovery or registration')
     out.mkdir(parents=True);_write(out/'results.json',result);_write(out/'complete.json',{k:v for k,v in result.items() if k not in ('methods','paired_primary_vs_OLD_PCD_predicted_ratio','paired_primary_vs_SOURCE_INPUT_predicted_ratio')})
     print(STATUS,result['next_step'],flush=True);return result
 
