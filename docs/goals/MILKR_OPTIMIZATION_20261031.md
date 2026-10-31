@@ -223,3 +223,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R27 实际结果与缺口
 
 36 行独立 truth-last 完成，所有所属进程退出；QF>Q0 两 S 均 4/4，平均 S0 +2.9604pp、S1 +14.9396pp；G-only 相对 raw 平均 S0 −2.7961pp、S1 +18.4050pp，完整对照保留。raw+5：S0 为 2/4、S1 为 4/4。S0 K1/N20 仅 +3.8179pp、K20/N2 仅 +2.8660pp，严格不扩。12 个当前 support 置信度门控记录完整，训练/验证折严格分离；没有 query 拟合或跨 support 借用。该机制解决此前 S1 K1/N2 的缺口，却未达到整个方法的逐格目标。冻结 R27 不回调，goal ACTIVE。
+
+### R28 原始细节保留候选
+
+固定每block CCA64与共享native PCA d−64各半能量，保留原输出维度；只source L训练，五RX/TX-held同时排除两组件。候选与CCA-only source主H至少+.5pp、各K/Sraw不低于−.25pp才拟合最终encoder并进入同36行角点，失败target0。R27当前SUP先验/物理OOF/R26融合保持，最终all16两Sraw+5/QF>raw不变，goal ACTIVE。
