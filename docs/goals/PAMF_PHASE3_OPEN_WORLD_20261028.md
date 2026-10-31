@@ -1088,3 +1088,8 @@ Run `20261031-phase3-target-prototype-s2026092701-r01` / actualcode `35d41680b20
 原数据sourceL6300/Us56700/OE6134/V27000(extra sourcecal)/NV3150、source5RX3day、starU24-1/03-08与future同RX03-15同864物理Q（old576/nonold288）保持；两臂实际NN训练unique各L6300/OE5913，密度拟合仍全OE6134。全部三DURA，clean仅测试，U无标签接触设备不冒称严格未见。历史NV/Q/单seedRX/source日期重合/high缺19-15宏RU/HNA/正式RX未读不变；无匿名REG，AN/HOW=N/A，完整目标ACTIVE。全部888步与18点/分组/成本详见`docs/PAMF_PHASE3_TARGET_PROTOTYPE_RESULTS_20261031.md`，不以训练loss下降代替测试成功。
 
 实际train79.466468s/predict39.882487s/CPUscore13.978042s/pipeline133.502019s是过程时间非B1。独立driver1375698/train1375719/predict1377133 live-CWD-fullargv-CUDA1/UUIDa2d039ff，20/406MiB训练初段和446MiB预测离散样本非peak，日志train517→1485/pred769→1655B；CPU1378094未独立live，终态owned空foreign0。23测试例25子项/workerAST8/2CLI+launcherimport/一次P0P1PASS，708files/data0单archiveSHA/compile/runtimeVERIFIED。Git登记时HEAD并发推进已在启动前无破坏恢复，不改实际code35d身份/不重写别人历史，实际三阶段无技术失败。
+
+
+### 2026-10-31 冻结Sinc的目标原型骨干适配预登记
+
+Run `20261031-phase3-body-prototype-s2026092701-r01` / code `a33612e978948da25bd733bcb9edba3ac9d74e9a`，主PCD_predicted_ratio，SOURCE/TARGET各444，从原r03独立初始化；只固定Sinc48/buffers，body231985＋projection102688更新。源原crossset/OE＋KD10，source indices matched；同上轮target.1 global/local/K16/全部seeds，SOURCE先完成才开U384。全部三DURA/六列预测后独立truthlast；原4af基线保持，目标/门槛不降低。真实学生IQ454656、父12818、G384；完整方案与数据/祖先/指标/停止规则见`docs/PAMF_PHASE3_BODY_PROTOTYPE_PLAN_20261031.md`。无匿名REG或formalRX，完整目标ACTIVE。
