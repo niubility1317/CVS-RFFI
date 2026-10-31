@@ -155,3 +155,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 精确非线性特征参考：完整E30与七景
 
 20261031-phase1-DURA-exactReference-E30-s2026092701-r01/cc6440f3。VERIFIED / ANALYZED。G从零单阶段30轮/7410步，L189000/U1701000；完整30轮loss/曝光/缓存视图/逐批次压力检查通过。source10跨RX/day软参考目标2.52MB/0.509850秒，生产新F/VJP0、训练在线F1890000前向+1890000输入VJP，训练不读旧J；F最终状态不变、原默认头保持。继承F50监督知识，属于F-guided；约束5→10维与导数方式同时改变，不作单因素因果归因。七景×168000全部预测固定后truth-last，126正式、105源V与252双对照配对分组独立复算，14个源/正式IQ场景误差重新核对。clean 84.970238%，low urban 68.219048%；低城区较缓存5维 -0.436310、纯G +0.846429、默认DURA -0.670833 个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。G训练1261.405657秒，含worker源准备1262.390721秒，controller至全量分析1441.549878秒。266951参数/25.068072m ConvLinear MAC/2prior4CG27FFT，默认DURA保持；完整目标仍ACTIVE。 当前证据限单seed、已暴露工程基准，不称新盲测或恢复极限。完整源/正式/TX/RX/day/净纠错与成本见本run的analysis.md/results.json；同质量实际效率仍未证明，目标继续ACTIVE。
+
+
+## 原头5维与新增5维源梯度分解
+
+20261031-diagnostic-DURA-source-headAux-s2026092701-r01/31d61413。VERIFIED / ANALYZED，SOURCE_ONLY，固定科学判定FAIL。source512（128L/384U）×01/20、CPU2、主循环5.400632秒自然结束。head/aux负cos比例19.53125%/20.3125%，两者均未达事前25%；joint/head cos中位0.820375/0.815878。相同IQ修正预算下，head相对joint与clean F判断一致数+3/−1，未达双视图至少+4，第二缓存还有源RX损伤。不据此启动删aux5的E30、不改阈值或步长。主F3072/输入VJP2048、smokeF4/VJP6，0新G/优化/TX/V/target，F状态不变；1024条几何、2048步及22分组独立复算。默认DURA与完整3pp/clean/同质量效率目标保持。 本次局部等步长检查不能隔离完整G训练轨迹或证明目标因果，不按结果放宽门槛。详见本run分析与结果。
