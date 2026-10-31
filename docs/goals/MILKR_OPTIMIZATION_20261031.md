@@ -6,7 +6,7 @@
 
 用户已明确允许 raw／DURA 同一条 query 融合，并要求保留仅 DURA 输出对照；support 仍严格 S0 raw、S1 G。新版 Q0=raw、QG（机器 Q1）=仅 G、QF（机器 Q2）=融合。当前主验收为全部 K1/5/10/20×N2/5/10/20、两 S 下 Q0 较匹配原 Q0 至少 +5pp，且同状态 QF>Q0。QG 完整单列，与原 QG 保持同输入配对；QF 与原 QG 的差须标明路径改变，不冒充同输入增益。早期角点、均值、单 support 的高收益不能代替全格。科学协议本轮例外已更新，旧 run 仍保留原 G-only 定义。
 
-R41 首 RX 全16格 120 行已完成：S0 raw+5为14/16、QF>Q0为16/16；S1 raw+5为16/16、QF>Q0为16/16。未达标组合：S0 K10/N2 raw差+4.3650pp、融合差+3.7293pp；S0 K20/N5 raw差+4.8364pp、融合差+3.9551pp。严格晋级 False。最终七RX all16尚未完成，目标ACTIVE。R26/R27为此前历史结果。
+R42 首 RX 全16格 120 行已完成：S0 raw+5为14/16、QF>Q0为16/16；S1 raw+5为16/16、QF>Q0为16/16。未达标组合：S0 K10/N2 raw差+4.3650pp、融合差+3.7293pp；S0 K20/N5 raw差+4.7436pp、融合差+3.6856pp。严格晋级 False。最终七RX all16尚未完成，目标ACTIVE。R26/R27为此前历史结果。
 
 ## 历史 G-only 阶段每格验收（覆盖旧均值口径）
 
@@ -349,3 +349,7 @@ R41的源NN与源K1规则在目标预测前已冻结，checkpoint只含合法源
 ### R42 当前SUP残差强度选择
 
 已实现同路径base/full表示单位化插值，K1沿源fullNN规则，K>1固定五强度×24核×5ridge物理OOF600候选，按H/平方误差/ridge/弱强度tie-break选择，query不参与。复用R41纯源NN/K1规则，新NN更新0；一次合并真实F/G/NN无query smoke后保存同权重到新root，不继承目标SUP状态。首RXall16KN120预测，逐格通过才六RX，最终目标不变，尚未发布。
+
+### R42 实际结果
+
+120行独立truth-last完成，所属进程退出。两S逐KN验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 14, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 16, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 10, 'N': 2, 'raw_gain_pp': 4.365037257552196, 'fusion_gain_pp': 3.729269009027014}, {'S': 'S0', 'K': 20, 'N': 5, 'raw_gain_pp': 4.743612515503626, 'fusion_gain_pp': 3.6856378337208784}]。R41纯源NN参数复用/新NN更新0、K1full及K>1当前SUP五强度600候选、各折train-only核实，R31gate/双核保持；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
