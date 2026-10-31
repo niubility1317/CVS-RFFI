@@ -1338,3 +1338,31 @@ Run `20261031-phase3-logit-energy-s2026092701-r01` / code `b554068df92e6ea02f114
 ## 2026-10-31：原生默认头源域能量排序结果
 
 Run `20261031-phase3-logit-energy-s2026092701-r01` / code `b554068df92e6ea02f114a85face49b7707b58da`，UNIFORM/RXPAIR原native reader/defaulthead各2220共4440步，sourceL192/OE64索引逐步完全一致，全4440日志分析，8×3DURA后独立CPU3truth执行VERIFIED。主RXPAIR_energy：source_DURA: AK/CK/RU/H=89.751852/96.325926/73.746032/80.965487%；原F0/studentclosed=90.981481%/91.596296%/原F0损=1.229630pp；clean_DURA: AK/CK/RU/H=31.243856/45.554545/69.623860/43.132093%；原F0/studentclosed=48.567015%/45.840423%/原F0损=17.323159pp；star_DURA: AK/CK/RU/H=29.305694/49.446429/56.919872/38.690992%；原F0/studentclosed=41.721059%/41.400749%/原F0损=12.415365pp。科学NO_PROMOTION、source_logit_energy_success=False；主energy列0对E0/PCD ratio列1及UNIFORMenergy列0，原四读出×三条件12个overall精确保持。新U/UID/Us/Q/V/NV训练0，sourceonly/newDAFalse/adaptationNone；新2density为辅助、24tau+old24=48/384B，主部署499944+6τ48B不部署Gaussian/projection。真实student训练1136640+评估126120=1262760，原F0/G各20476新Q前向；祖先/cache成本另存。原PCD研究baseline与正式RX24-18保持，AN/HOWNA/完整ACTIVE。详见`docs/PAMF_PHASE3_LOGIT_ENERGY_RESULTS_20261031.md`。
+
+
+## 2026-11-01：优先强化地面开放能力
+
+用户最新指定“先强化地面训练的能力”。完整 Phase3 目标保持 ACTIVE，跨接收机要求不取消；当前先做完整六类、预部署源 clean 的已知识别与未知拒识。ViM 读出草稿搁置于发布前：只有本地数学/合成代码与日志，没有登记、runtime、发布包、真实数据拟合或 GPU 实验，不能称已完成 ViM 实验或取得性能。
+
+地面新行拟定为 `20261101-phase3-ground-open-s2026092701-r01`，不覆盖原 F0/PCD/DURA。只复用已验证的 clean L6300、TX 标签隐藏的 Us56700、OE6134、V27000、NV3150；固定 DURA 派生 G(clean)，禁止把现有 G10/P1 当作 clean。来源与ID不变，目标 clean 仍只测试，不参与学习；新数据派生按对应句柄一次验证，不重跑 Full 审核。
+
+原 V 按六类×五RX×三日的固定 opaque-ID 顺序和 seed2026110101，每格150校准/150测试，得到13500校准与13500已知测试，物理互斥；NV3150只评分。源已知测试与NV打散合成16650条role-blind source Q，clean和原固定G10星地同物理ID；训练不读source Q/test标签。原V与开发基准全历史已曝光，不声称新盲测。F0原L/Us训练合同不改变，初始化仍须核对原祖先。
+
+监督控制与普通PL0.95/权1的地面半监督学生从相同完整原F0/default6独立初始化，公共CE/KD与同RX/day源OE能量排序一致，L/OE逐步采样一致、各2220步；仅半监督读取Us128/步，Us真TX始终隐藏，无EMA或另训头。源L192/OE64，监督256/步、SSL额外Us128为384/步；额外计算如实单列，不冒充等前向成本。
+
+首要地面验收使用独立source clean Q：宏RU≥95%、CK≥95%、原F0同DURA闭集−AK≤2pp，并逐源RX/day/RX×day检查。跨RX clean RU≥95%、CK≥90%、同基准2pp要求保留；source/cross星地对照同时报告，原跨RX星地90%拒识及完整注册目标不降低。源校准仅13500已知、不读NV/target选择阈值，所有模型与阈值冻结后全矩阵预测，再独立truth-last；单seed未联合达标不扩多seed，不将地面子目标改称完整Phase3成功。
+
+
+## 2026-11-01：地面训练发布的技术恢复
+
+原 `20261101-phase3-ground-open-s2026092701-r01` 在任何真实IQ值读取或训练之前因部分cric包缺bootstrap停止，保留FAILED_PRESERVED，训练/预测/truth均0。独立 `20261101-phase3-ground-open-s2026092701-r02` 使用同科学矩阵、同采样/预算与完整已提交cric Python包依赖，code52b9a0ca45685aa7974f83bd2644f804930b0e71；源clean G(clean)监督/普通Us PL配对、V13500CAL/13500TEST及四DURA条件保持，完整Phase3 ACTIVE。
+
+
+## 2026-11-01：地面数据读取与历史模型版本分离
+
+`20261101-phase3-ground-open-s2026092701-r02` 因当前cric包覆盖固定历史load_F接口而在首NN构造前停止，真实IQ/训练/预测/truth均0，FAILED_PRESERVED。恢复 `20261101-phase3-ground-open-s2026092701-r03` / code d7e0f875397b2f9801df4605ba0051d221aa4e2a；独立ground_open_source只读原source metadata和存储ID，不导入/发布当前cric包，不改原F0/DURA加载器、API、权重或祖先。源数据与fresh进程import隔离测试6项/12sub通过，原科学矩阵/预算/权限保持，完整ACTIVE。
+
+
+## 2026-11-01：地面开放训练实测结果
+
+`20261101-phase3-ground-open-s2026092701-r03` / code `d7e0f875397b2f9801df4605ba0051d221aa4e2a` 完成SUP/普通源Us PL两完整原F0学生各2220、总4440更新，源L/OE索引匹配，源G(clean)数据和V13500CAL/13500TEST物理分离，3方法×4DURA条件后独立CPU4truth各一次，执行VERIFIED。主SSL_energy：source_clean_DURA: AK/CK/RU/H=97.755556/98.303704/69.365079/81.148828%；source_star_DURA: AK/CK/RU/H=90.059259/98.014815/38.380952/53.823644%；cross_clean_DURA: AK/CK/RU/H=37.155045/53.978578/55.609637/44.546664%；cross_star_DURA: AK/CK/RU/H=35.447581/62.520184/40.971269/38.009794%。sourceground=False、crossclean=False、联合ground_training_success=False、科学NO_PROMOTION。真实学生训练1420800+预测134552=1555352，G119760、F0数据教师/基线36450，合成成本另报；源Us56700/曝光284160、TX隐藏，OE6134仅outside-six成员监督，目标U新增0，无新目标UDA/发现/匿名注册，AN/HOWNA/正式RX24-18未读，PCD研究基线不改/完整ACTIVE。r01缺依赖、r02历史API遮蔽均在真实数据前失败并保留，r03独立源IO保留历史NN路径。详见`docs/PAMF_PHASE3_GROUND_OPEN_RESULTS_20261101.md`。

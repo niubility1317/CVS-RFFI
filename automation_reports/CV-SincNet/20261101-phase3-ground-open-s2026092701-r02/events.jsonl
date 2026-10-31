@@ -1,0 +1,2 @@
+{"at": "2026-10-31T17:41:28+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-31T17:45:24+00:00", "status": "FAILED", "note": "Current CRIC package shadows fixed historical load_F API before smoke/data. No training/prediction/truth. r03 isolates new data reader and preserves historical NN versions.", "evidence": ["E:\\type10-7\\local_artifacts\\pamf_phase3_ground_open_20261101_r02\\technical_failure.json"], "row_id": null}
