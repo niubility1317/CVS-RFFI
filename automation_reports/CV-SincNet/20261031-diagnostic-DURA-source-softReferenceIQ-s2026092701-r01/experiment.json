@@ -1,0 +1,166 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01",
+  "group_id": "phase1-dura-source-soft-reference-IQ-calibration",
+  "display_name": "软跨接收机特征参考的源 IQ 可达性与缓存梯度校准",
+  "description": "固定beta.25软RX参考与alpha.003313，原source512/63k rawJ缓存、pureG8cf源IQ；最小IQ位移真实F检验及两源view梯度对照，0G/训练/TX-V-target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "soft-reference-IQ-feasibility",
+    "cached-gradient",
+    "training-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01",
+    "20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01",
+    "20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Fixedsource512128L384U;pairedclean/rawcleanJ/prototypeoffset,oldpureG8cf restoredIQ cache01/20;FP32minimum-shift sourceIQ only",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "source_ids full63000L/U;rawJcache63000IDs;softref/errorarchives fixed512positions/IDs/roles/clean/RX/day matched",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 sourcecached01/20 errors andsourceclean;no newchannel/target observations;minshift is source-only pairedclean diagnostic",
+    "target_panel": "None",
+    "actual_training_labels": "NoGtraining/TXtruth;authorizedfrozenFsoftreference andsourceinputgradients only"
+  },
+  "permissions": {
+    "regime": "Source_only_frozenF_soft_reference_IQ_gradient_calibration",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source min-IQ shift/localcachegradient only;notdeployablepairedcleanoracle/trueTX/targetbenefit/globalexactloss/parametergradientbound;no automaticGtraining"
+  },
+  "checkpoint": {
+    "initialization": "OriginalF50/defaulthead frozen;noGload oroptimizer. ExistingrawsourceJ andpureGsourceIQ reused asdata,notGteacher/ancestor.",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01/reference_geometry.npz DATAONLY",
+      "runs/20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/scratch_joint/source_clean_J_cache DATAONLY",
+      "runs/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01/source-{1,20}.npz DATAONLY"
+    ],
+    "contract_check_ref": "Originalload_reader/Fsource4df7 contract;qualifiedsoftrefbeta.25/Fsame;source_ids physicalroles;rawJcacheFteacher/frozen/count63000/5x2x256/IDorder;allsource512archive metadata/clean/RX/IDs;real2Ls phi/cacheheadcheck",
+    "provenance_verdict": "Sameoriginal7/63/30 source. F50/11100 sourceknowledge;rawJsourceclean producedbeforeproducerGtraining/target. OlderrorIQ fromfixedscratchpureG8cf E30/7410,notnewGinitializer ornewtrainingteacher. Softref fit62488 excludes512 butF/Gcontrol historicallytrainedallsource;noindependentunseenF/G claim.",
+    "selection_rule": "Beta.25/alpha.0033130025035573727 fixed from prior source-only records. No targetusedfornewparent/offset/weight/epoch selection;source-only eligibility asfixed inRULE."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-soft-reference-IQ",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU;previoussourcegeometryterminal;otherowners untouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.soft_reference_IQ_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badsource/Fcache/provenance/order/shape/nonfinite/statechange/smokefailure/outputcollision:preserveandstop/noautoretry;scientificfailure no beta-alpha-threshold search orautotraining."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "feasibility.npz PRIVATE",
+    "source-{1,20}.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "rank5 minimumIQshift/FP32linearresidual/trueFnonlinearoffseterror/cleanFchoicepreservation",
+      "both512sourceprototype-exact/IQ-exact/instance-exactgradientcosines byRX",
+      "actualstepbalancedIQpressure andlossvalueexceedances descriptive",
+      "allrole/RX/day/scene/state/lock groupstats;fixedeligibility/cost/forwardcounts/frozenstate"
+    ],
+    "dimensions": [
+      "source512minimumshift",
+      "source512xcache01/20",
+      "sourceall/role/RX/day/scene/state/lock"
+    ],
+    "prediction_ref": "NoG/targetpredictions;privatesource minshift/Fgradient arrays",
+    "scorer_ref": "NoTXtruth. Independent fullNPZ pinv/linear/energy/actualFcoordinates/cosine/pressure/groupstats andfixeddecision arithmetic."
+  },
+  "rows": [
+    {
+      "row_id": "source-soft-reference-IQ",
+      "method": "FP64Gram eigencut1e-10 minnormshift/FP32Fcheck;cachedrawJ offsetquadratic,exactFprototypeinputgradient,detachedstepcap1",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{soft_reference_tangent.py,soft_reference_IQ_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No newrandomdraw/modelinit. ExistingF/pureG2026092701/source8cf;fixedsourceindices128L384U;cachedAUG2026101912/RX2026101911;deterministicminnorm/offset, no support/evaluationrandomness.",
+      "k": null,
+      "scenario": "source512 cleanminshift +fixedpureGsourcecache01/20 restoredIQ gradientcalibration",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2/0G;sourceF512minshift+1024restored=1536+2smoke;inputVJP1024+2smoke;0newfullcleanJ/optimizer/TX-V-target;rawJ512rows reused",
+      "output_root": "runs/20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.soft_reference_IQ_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-softReferenceIQ-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "feasibility.npz PRIVATE",
+        "source-{1,20}.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixedfeasibility before newFsourceaccess:FP64 JJ^T eigencut lambda_max*1e-10,minimumIQshift castFP32 andactualrepresented(x+shift)-x rechecked;linearrelativeerror max<=1e-3,shiftIQNMSEmean<=.001/p95<=.005,actualFtargetoffseterror median<=.5/p95<=1,512originalcleanchoices preserved. Zero requestedoffset explicitlyexcludedfromrelativequantiles,absolutevalues retained.",
+    "Bothsourcecached01/20 require512 prototype/exactandIQ/exactcosinesdefined,meanprototypecos>=.5 and>=IQmean+.1,>=384nonnegative,each5RXmean>=0,actualguideIQpressuremax<=1+2e-5. InstancecleanJgradientcontrol descriptive. Failure no thresholdrelaxation/beta-alpha search;passsupports onlynewpreregistered scratchsinglejoint30/7410/full7formal.",
+    "Keep originalrawJbasis/arrays unchanged. Project originalunitclean/prototypeunitreference into samecachebasis;verify sameoriginalrank5headspan. alpha=.0033130025035573727 unchanged. q=J(restored-clean)-offset,guide alpha*s||q||²,s=detach min(1,||gIQ||/||graw||). Directionretained;actualIQgradientcap checked. Withnonzerooffset no guide-loss-value<=IQ claim andnoGparametergradientbound/globalfixedenergyclaim.",
+    "Source minnorm modification usespairedclean solelyfordiagnostic,notdeployable restoration rule orhardwaretruth. FullFnonlinearresponse tested,notonlylinearalgebra. Fsource2Ls actualphi/cache/defaulthead/inputgradient smoke first,thencontinues full512+bothviews evenifscientificfeasibilityfails.",
+    "NoGNNforward/weightload. Sourceerror datafromfixedpureG8cf scratch30/7410 onlyresearchcontrol,notnewteacher/init. OriginalFsource50/11100 andoldfeaturecache40.32MB/3.782s/rawJ645.12MB/30.009s/63000F+315000VJP explicit;currentrawJreadsubset512/newfullcleanJ0.",
+    "4focusedchecks minimumnorm/unreachable-direction reporting/actualcappedgradient/referenceisolation/zero-offsetoldbalanced-equivalence/cleanstationarity/fixedtwo-viewfeasibility PASS;actualmodule--help PASS;oneP0P1 PASS. Onepreflight/archiveSHA/remotecompile/postlaunchPID-CWD-argv-env-loggrowth;independentfullsourcearray recomputation. No defaultF/DURA/P2/P3 change;goal remainsACTIVE."
+  ],
+  "registered_at": "2026-10-31T02:32:18+00:00"
+}
