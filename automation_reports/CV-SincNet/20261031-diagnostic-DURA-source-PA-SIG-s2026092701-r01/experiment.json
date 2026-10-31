@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-performance-and-efficiency goal;explicit same-source frozen-F feature-guidance;independentCPUsourcefeaturediagnosis/noGtrainingorquery",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "0cffd8b3be53e6fc1de8747b2b54a9ddb0652a79",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01-release"
@@ -86,7 +86,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.joint_branch_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.joint_branch_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01 --commit 0cffd8b3be53e6fc1de8747b2b54a9ddb0652a79",
     "stop_rule": "Badcontract/order/shape/Fsourcecomponents-or-originalheadreplay/nonfinite/Fstate/smoke/collision:preserveandstop/noautoretry. Scientificfailnoparent/branch/thresholdsearch;noautomaticGtraining."
   },
   "expected_artifacts": [
@@ -141,7 +141,7 @@
       "budget_ref": "CPU2;mainfullF0/head5120;smokerealLs2/F2/head2;0Gweightloads/forwards/modeloptimizer/TX-V-target",
       "output_root": "runs/20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.joint_branch_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.joint_branch_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01 --commit 0cffd8b3be53e6fc1de8747b2b54a9ddb0652a79",
       "expected_artifacts": [
         "launch.json",
         "smoke.json",

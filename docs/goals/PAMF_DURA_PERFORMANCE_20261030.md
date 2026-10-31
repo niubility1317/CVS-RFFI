@@ -384,3 +384,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 实际时序签名指导：完整E30与七景
 
 20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/47591cdf。VERIFIED / ANALYZED。G从零单阶段30轮/7410步，L189000/U1701000；完整30条物理+SIGloss/曝光/源视图/clip/F-TX-init计数与实际逐batchcap0.5核对通过。新增实际加权TripleSIG源缓存40.32MB/0.847077秒/63000前缀输入；训练1890000前缀+1890000输入VJP、完整F后续路径0，F全state不变、加载和路径RNG隔离。F50源监督知识继承、属于F-guided；原源oracle资格FAIL保持，不称其晋级或物理上限。七景×168000全部预测固定后truth-last，126正式、105源V、126pureG配对分组与14个源/正式IQ误差独立复算；512缓存签名与完整F误差8.047e-7。clean 84.769048%，low urban 68.835119%；低城区较纯G +1.462500、默认DURA -0.054762个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=True，旧低城区70%=False。G训练及保存1112.173977秒，含worker准备1113.944462秒，控制器至自动全量分析1298.002890秒；266951参数/25.068072m ConvLinear MAC/两prior四CG27FFT。默认DURA保持，同质量实际效率须结合正式质量判断，完整目标ACTIVE。 单seed、已暴露工程基准，完整TX/RX/day、净纠错、source/formal与成本见本run分析。
+
+
+## PA＋SIG源互补诊断
+
+20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01/0cffd8b3：VERIFIED SOURCE_ONLY，联合相对SIG额外+5/0，第二缓存纠1损1（RX1+1/RX8−1），未达双视图各+2，主FAIL；其他保护通过，不自动增加PA训练版。主完整F0/head5120、smoke2Ls/F2/head2、0G/优化/TX-V-target；CPU0.053669秒，1024观测/52分组独立复算。潜在特征oracle不等于可实现IQ、真实TX或物理上限；默认与完整目标ACTIVE。详见本run analysis.md/results.json。

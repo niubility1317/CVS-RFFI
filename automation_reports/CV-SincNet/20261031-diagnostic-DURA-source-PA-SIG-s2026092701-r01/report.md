@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01`
 - group_id：`phase1-dura-source-PA-SIG-complementarity`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -36,3 +36,10 @@
 主联合案例须两视图均较native净增≥6/512、较SIG净增≥2；五源RX较native不负，每RX较SIG最多损失1且至少4/5不负；各非clean场景较native最多损失1、clean不损失。仅支持后续独立学习假设，不自动启动G；不放宽标准、换主或搜索阈值。源clean F选择不是真实TX，潜在混合特征可能没有对应IQ，pairedclean不可用于部署，allclean只是构造性正控制，不称恢复极限。
 
 2项聚焦检查和实际入口通过，唯一P0/P1通过。首步真实2Ls核对实际完整F四加权分量、原source缓存与原头，F2/head2，PASS立即继续。主环完整F0/G0、仅原头5120输入；CPU2/空CUDA，0模型优化/TX/V/target。一次N607 preflight/归档SHA比较/远端编译，实际PID/CWD/argv/空CUDA/日志增长核实；全部1024源观测、5120头输入和分组独立复算。默认DURA与完整六景3pp/clean/效率目标保持。
+
+
+## 完整PA＋SIG源诊断
+
+VERIFIED / ANALYZED，SOURCE_ONLY。固定默认DURA/source512（128L/384U）×01/20，CPU2主循环0.053669秒自然结束。PA＋SIG联合clean分量替换后的cleanF选择一致数为512/509，单独SIG为507/509；额外净增+5/0。第一缓存多纠正5且无新增损伤；第二缓存纠1损1，RX1+1/RX8−1，总体无额外收益，未达到两缓存均至少+2的原条件，主判定FAIL。两缓存其他保护条件通过，但不能用更小特征误差或更大margin覆盖判定。主完整F0/原头5120，smoke真实2Ls/F2/head2，0G权重读取/前向/模型优化/TX-V-target，F不变；1024观测/5120头输入/52组独立复算。潜在源特征oracle不是可部署IQ、真实TX准确率或物理上限；本次不自动新增PA训练版，默认与完整目标保持。
+
+详见[完整分析](analysis.md)，执行0cffd8b3be53e6fc1de8747b2b54a9ddb0652a79。
