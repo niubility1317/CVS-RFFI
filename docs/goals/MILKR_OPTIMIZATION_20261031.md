@@ -111,3 +111,7 @@ R15校准源最佳+0.1547pp未过0.5pp，正常source-only停止target0。R16是
 ### R16实际证据
 
 核C-SVC四C均未通过源门槛，正常source-only停止，target0，F/G更新0，所有所属进程退出。非ridge分类目标对照不晋级。用户已明确每K/N格≥5pp；R14七RX raw仅6/16满足、Q1高于Q0仅11/16，不能以mean过关，goal ACTIVE。下一步优先研究源L类内噪声协方差形成的冻结线性metric，作用于R14共同空间且保持ridge判决，先source K1及多shot验证，未实现/未发布，不保证收益。
+
+### R17当前候选
+
+源L类内噪声metric融合入R14原CCA16两路projection权重，保留ridge/nested头与F/G。原σ候选0/.25/.5/.75/.9，源五heldRX×固定epoch91×K1/5/20优先验证K1；训练用两epoch并排除heldRX，无target泄漏。无cov/classmeans/prototypes上传，仅冻结encoder参数。sourcegate未过target0；通过才首RX全部16KN四路80行。按用户每格Q0+5且Q1>Q0判定，mean不能晋级。唯一审查/合成检查PASS，准备发布；不保证收益。
