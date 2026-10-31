@@ -1,0 +1,3088 @@
+{
+  "code_commit": "fbc667ececf79d5eb06e4affdffa86facc0f6cb9",
+  "source": [
+    {
+      "model_seed": 2026092701,
+      "status": "SOURCE_FROZEN",
+      "source_checkpoint_reused": true,
+      "source_new_optimizer_updates": 0,
+      "source_stage_method": null,
+      "source_metric_training": [],
+      "inherited_source_metric_training": [
+        {
+          "held_RX": 1,
+          "C4": {
+            "steps": 600,
+            "seed": 2026513416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.165656161308289,
+            "mean_last50": 4.677045178413391,
+            "last_contrast": 4.73974084854126,
+            "last_pair": 0.6451064944267273,
+            "last_anchor": 0.047033414244651794,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026913428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.17418664932251,
+            "mean_last50": 4.766185312271118,
+            "last_contrast": 4.775672912597656,
+            "last_pair": 0.630730152130127,
+            "last_anchor": 0.04559381306171417,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 3,
+          "C4": {
+            "steps": 600,
+            "seed": 2026533416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.147395601272583,
+            "mean_last50": 4.7338216543197635,
+            "last_contrast": 4.432300090789795,
+            "last_pair": 0.7054778933525085,
+            "last_anchor": 0.045030783861875534,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026933428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.125991492271424,
+            "mean_last50": 4.7084600591659544,
+            "last_contrast": 4.910880088806152,
+            "last_pair": 0.7196651697158813,
+            "last_anchor": 0.045868247747421265,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 4,
+          "C4": {
+            "steps": 600,
+            "seed": 2026543416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.258768558502197,
+            "mean_last50": 4.708210434913635,
+            "last_contrast": 4.67508602142334,
+            "last_pair": 0.6640526652336121,
+            "last_anchor": 0.0432438999414444,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026943428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.28557692527771,
+            "mean_last50": 4.83750819683075,
+            "last_contrast": 4.623909950256348,
+            "last_pair": 0.7417730689048767,
+            "last_anchor": 0.04182852804660797,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 6,
+          "C4": {
+            "steps": 600,
+            "seed": 2026563416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.283957138061523,
+            "mean_last50": 4.829613652229309,
+            "last_contrast": 4.596165657043457,
+            "last_pair": 0.7015042901039124,
+            "last_anchor": 0.04589647799730301,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026963428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.350830764770508,
+            "mean_last50": 4.87045536518097,
+            "last_contrast": 5.005666255950928,
+            "last_pair": 0.6192258596420288,
+            "last_anchor": 0.04561643302440643,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 8,
+          "C4": {
+            "steps": 600,
+            "seed": 2026583416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.407097940444946,
+            "mean_last50": 5.054438257217408,
+            "last_contrast": 4.9455156326293945,
+            "last_pair": 0.7184246778488159,
+            "last_anchor": 0.043634142726659775,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026983428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.424631328582763,
+            "mean_last50": 5.104505944252014,
+            "last_contrast": 4.779636383056641,
+            "last_pair": 0.6953294277191162,
+            "last_anchor": 0.04444285109639168,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": null,
+          "C4": {
+            "steps": 600,
+            "seed": 2026503416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 12600,
+            "train_physical_ids": 6300,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.265625410079956,
+            "mean_last50": 4.87018039226532,
+            "last_contrast": 5.095751762390137,
+            "last_pair": 0.7988170981407166,
+            "last_anchor": 0.044871971011161804,
+            "network_parameters": 342016,
+            "source_L_label_rows": 12600,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026903428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 12600,
+            "train_physical_ids": 6300,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.173572325706482,
+            "mean_last50": 4.974197764396667,
+            "last_contrast": 5.482295036315918,
+            "last_pair": 0.7333644032478333,
+            "last_anchor": 0.04336246848106384,
+            "network_parameters": 342016,
+            "source_L_label_rows": 12600,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        }
+      ],
+      "source_physical_rows": 0,
+      "source_paired_observations": null,
+      "inherited_source_physical_rows": 6300,
+      "inherited_source_paired_observations": 12600,
+      "source_correlation_weighting": {
+        "power": 0.5,
+        "schema": "source_C4_C8_crossrx_residual_v1",
+        "parameters": 557440,
+        "C4": [
+          {
+            "min": 0.42597512388745506,
+            "mean": 0.6437472919323987,
+            "max": 0.9526443357050185
+          },
+          {
+            "min": 0.23999293718608078,
+            "mean": 0.5067234544403767,
+            "max": 0.9732667325360485
+          },
+          {
+            "min": 0.4154334817381901,
+            "mean": 0.6078757914722721,
+            "max": 0.9363123701685452
+          },
+          {
+            "min": 0.0009826861748605824,
+            "mean": 0.19397682763289814,
+            "max": 0.8130082937680287
+          },
+          {
+            "min": 0.42291676653986854,
+            "mean": 0.6436382328678294,
+            "max": 0.9545164913065779
+          },
+          {
+            "min": 0.3643363614173228,
+            "mean": 0.562203413635173,
+            "max": 0.919819825704271
+          },
+          {
+            "min": 0.36887022180362167,
+            "mean": 0.5662245230444811,
+            "max": 0.9223284816284176
+          },
+          {
+            "min": 0.372362490091136,
+            "mean": 0.5756000953262698,
+            "max": 0.9177222779982586
+          }
+        ],
+        "C8": [
+          {
+            "min": 0.4381830896006207,
+            "mean": 0.6561902493208925,
+            "max": 0.9558334891146372
+          },
+          {
+            "min": 0.23999293718608136,
+            "mean": 0.5067234544403773,
+            "max": 0.9732667325360526
+          },
+          {
+            "min": 0.43640221030455917,
+            "mean": 0.6345602314645286,
+            "max": 0.948103472775248
+          },
+          {
+            "min": 0.0009826950474770486,
+            "mean": 0.1939768421808417,
+            "max": 0.8130083464591709
+          },
+          {
+            "min": 0.40373042478793114,
+            "mean": 0.6315534487638483,
+            "max": 0.9567503817819052
+          },
+          {
+            "min": 0.37946065373521004,
+            "mean": 0.5794752817940129,
+            "max": 0.9333954510491779
+          },
+          {
+            "min": 0.3781663922831418,
+            "mean": 0.5843901693863078,
+            "max": 0.9361219408652154
+          },
+          {
+            "min": 0.387907297796982,
+            "mean": 0.593645799619754,
+            "max": 0.9331726615614542
+          }
+        ],
+        "source_examples_retained": 0
+      },
+      "seconds": 0.26006211107596755,
+      "target_reads": 0,
+      "query_reads": 0,
+      "U_truth_reads": 0,
+      "F_updates": 0,
+      "G_updates": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "status": "SOURCE_FROZEN",
+      "source_checkpoint_reused": false,
+      "source_new_optimizer_updates": 7200,
+      "source_stage_method": "crossrx_residual_ensemble",
+      "source_metric_training": [
+        {
+          "held_RX": 1,
+          "C4": {
+            "steps": 600,
+            "seed": 2026513416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.149875702857972,
+            "mean_last50": 4.658839545249939,
+            "last_contrast": 4.7692694664001465,
+            "last_pair": 0.6373003125190735,
+            "last_anchor": 0.042315639555454254,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026913428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.160587778091431,
+            "mean_last50": 4.7941286706924435,
+            "last_contrast": 4.88599967956543,
+            "last_pair": 0.6300226449966431,
+            "last_anchor": 0.0453902967274189,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 3,
+          "C4": {
+            "steps": 600,
+            "seed": 2026533416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.114295754432678,
+            "mean_last50": 4.691812314987183,
+            "last_contrast": 4.398787021636963,
+            "last_pair": 0.6975038647651672,
+            "last_anchor": 0.042374640703201294,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026933428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.134942092895508,
+            "mean_last50": 4.7340810680389405,
+            "last_contrast": 4.993350028991699,
+            "last_pair": 0.7285417914390564,
+            "last_anchor": 0.045766472816467285,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 4,
+          "C4": {
+            "steps": 600,
+            "seed": 2026543416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.234418716430664,
+            "mean_last50": 4.713083295822144,
+            "last_contrast": 4.643910884857178,
+            "last_pair": 0.6474710702896118,
+            "last_anchor": 0.043049391359090805,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026943428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.270679273605347,
+            "mean_last50": 4.896988000869751,
+            "last_contrast": 4.661753177642822,
+            "last_pair": 0.7424752712249756,
+            "last_anchor": 0.043258048593997955,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 6,
+          "C4": {
+            "steps": 600,
+            "seed": 2026563416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.262726707458496,
+            "mean_last50": 4.831689062118531,
+            "last_contrast": 4.580998420715332,
+            "last_pair": 0.7045485377311707,
+            "last_anchor": 0.041853465139865875,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026963428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.3322101402282716,
+            "mean_last50": 4.856362361907959,
+            "last_contrast": 4.962588310241699,
+            "last_pair": 0.6166531443595886,
+            "last_anchor": 0.04752536863088608,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 8,
+          "C4": {
+            "steps": 600,
+            "seed": 2026583416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.388780679702759,
+            "mean_last50": 5.061002020835876,
+            "last_contrast": 4.892679691314697,
+            "last_pair": 0.7146061062812805,
+            "last_anchor": 0.0452156662940979,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026983428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.416464595794678,
+            "mean_last50": 5.12966685295105,
+            "last_contrast": 4.778168678283691,
+            "last_pair": 0.698011577129364,
+            "last_anchor": 0.042289309203624725,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": null,
+          "C4": {
+            "steps": 600,
+            "seed": 2026503416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 12600,
+            "train_physical_ids": 6300,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.252084159851075,
+            "mean_last50": 4.874025464057922,
+            "last_contrast": 5.1277008056640625,
+            "last_pair": 0.7981947064399719,
+            "last_anchor": 0.04039634019136429,
+            "network_parameters": 342016,
+            "source_L_label_rows": 12600,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026903428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 12600,
+            "train_physical_ids": 6300,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.151905255317688,
+            "mean_last50": 4.9851388216018675,
+            "last_contrast": 5.469621181488037,
+            "last_pair": 0.7249719500541687,
+            "last_anchor": 0.04482295364141464,
+            "network_parameters": 342016,
+            "source_L_label_rows": 12600,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        }
+      ],
+      "inherited_source_metric_training": null,
+      "source_physical_rows": 6300,
+      "source_paired_observations": 12600,
+      "inherited_source_physical_rows": null,
+      "inherited_source_paired_observations": null,
+      "source_correlation_weighting": {
+        "power": 0.5,
+        "schema": "source_C4_C8_crossrx_residual_v1",
+        "parameters": 557440,
+        "C4": [
+          {
+            "min": 0.48336602938214934,
+            "mean": 0.6833475086634825,
+            "max": 0.9562921706054129
+          },
+          {
+            "min": 0.23999293718608078,
+            "mean": 0.5067234544403767,
+            "max": 0.9732667325360485
+          },
+          {
+            "min": 0.4610772807055574,
+            "mean": 0.6422505732729223,
+            "max": 0.9400479520442198
+          },
+          {
+            "min": 0.000716748393681092,
+            "mean": 0.20233611383646447,
+            "max": 0.8114423944047056
+          },
+          {
+            "min": 0.4487130188704725,
+            "mean": 0.6593775101840434,
+            "max": 0.954632680650041
+          },
+          {
+            "min": 0.3636211905484528,
+            "mean": 0.5647795619235085,
+            "max": 0.9170953112569068
+          },
+          {
+            "min": 0.36054521853230914,
+            "mean": 0.5617336554032573,
+            "max": 0.9125284330161394
+          },
+          {
+            "min": 0.36030343220159083,
+            "mean": 0.557270863976551,
+            "max": 0.9128445923974434
+          }
+        ],
+        "C8": [
+          {
+            "min": 0.4785291315461439,
+            "mean": 0.6820702433071419,
+            "max": 0.9578714564386256
+          },
+          {
+            "min": 0.23999293718608136,
+            "mean": 0.5067234544403773,
+            "max": 0.9732667325360526
+          },
+          {
+            "min": 0.4707302999395314,
+            "mean": 0.6625894233550749,
+            "max": 0.9516703683442175
+          },
+          {
+            "min": 0.0007167425883271884,
+            "mean": 0.20233611784067945,
+            "max": 0.8114423995995912
+          },
+          {
+            "min": 0.4281211714696321,
+            "mean": 0.649067640892415,
+            "max": 0.9569666606018964
+          },
+          {
+            "min": 0.37591706288171184,
+            "mean": 0.5814779602537199,
+            "max": 0.9296773495098135
+          },
+          {
+            "min": 0.37431631377179614,
+            "mean": 0.5791485254507138,
+            "max": 0.9262411161337907
+          },
+          {
+            "min": 0.37062220314881444,
+            "mean": 0.5743713105365188,
+            "max": 0.9258293485224237
+          }
+        ],
+        "source_examples_retained": 0
+      },
+      "seconds": 360.3677710988559,
+      "target_reads": 0,
+      "query_reads": 0,
+      "U_truth_reads": 0,
+      "F_updates": 0,
+      "G_updates": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "status": "SOURCE_FROZEN",
+      "source_checkpoint_reused": false,
+      "source_new_optimizer_updates": 7200,
+      "source_stage_method": "crossrx_residual_ensemble",
+      "source_metric_training": [
+        {
+          "held_RX": 1,
+          "C4": {
+            "steps": 600,
+            "seed": 2026513416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.169845094680786,
+            "mean_last50": 4.69868082523346,
+            "last_contrast": 4.786888122558594,
+            "last_pair": 0.6310950517654419,
+            "last_anchor": 0.04365278780460358,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026913428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.168127746582031,
+            "mean_last50": 4.810871396064758,
+            "last_contrast": 4.877516269683838,
+            "last_pair": 0.6116889119148254,
+            "last_anchor": 0.04720710963010788,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 3,
+          "C4": {
+            "steps": 600,
+            "seed": 2026533416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.134846034049988,
+            "mean_last50": 4.731364154815674,
+            "last_contrast": 4.475961208343506,
+            "last_pair": 0.6899124383926392,
+            "last_anchor": 0.042696550488471985,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026933428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.119053883552551,
+            "mean_last50": 4.727580890655518,
+            "last_contrast": 4.993426322937012,
+            "last_pair": 0.7051578760147095,
+            "last_anchor": 0.04626438021659851,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 4,
+          "C4": {
+            "steps": 600,
+            "seed": 2026543416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.246820855140686,
+            "mean_last50": 4.696455512046814,
+            "last_contrast": 4.662935256958008,
+            "last_pair": 0.6385266780853271,
+            "last_anchor": 0.041758663952350616,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026943428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.275534477233887,
+            "mean_last50": 4.877571053504944,
+            "last_contrast": 4.650289058685303,
+            "last_pair": 0.7316523194313049,
+            "last_anchor": 0.044067464768886566,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 6,
+          "C4": {
+            "steps": 600,
+            "seed": 2026563416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.276617784500122,
+            "mean_last50": 4.8498228788375854,
+            "last_contrast": 4.599458694458008,
+            "last_pair": 0.6909574866294861,
+            "last_anchor": 0.04479937255382538,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026963428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.337587251663208,
+            "mean_last50": 4.866909322738647,
+            "last_contrast": 5.016360759735107,
+            "last_pair": 0.6066747903823853,
+            "last_anchor": 0.04801702871918678,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 8,
+          "C4": {
+            "steps": 600,
+            "seed": 2026583416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.412060132026673,
+            "mean_last50": 5.072182822227478,
+            "last_contrast": 4.905539035797119,
+            "last_pair": 0.7086241841316223,
+            "last_anchor": 0.04220269247889519,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026983428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.429682369232178,
+            "mean_last50": 5.118518824577332,
+            "last_contrast": 4.801887035369873,
+            "last_pair": 0.6911700367927551,
+            "last_anchor": 0.0436161644756794,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": null,
+          "C4": {
+            "steps": 600,
+            "seed": 2026503416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 12600,
+            "train_physical_ids": 6300,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.281800045967102,
+            "mean_last50": 4.886575922966004,
+            "last_contrast": 5.120572090148926,
+            "last_pair": 0.7903698682785034,
+            "last_anchor": 0.0397697389125824,
+            "network_parameters": 342016,
+            "source_L_label_rows": 12600,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026903428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 12600,
+            "train_physical_ids": 6300,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.181067848205567,
+            "mean_last50": 4.997576007843017,
+            "last_contrast": 5.501979351043701,
+            "last_pair": 0.7202862501144409,
+            "last_anchor": 0.045912742614746094,
+            "network_parameters": 342016,
+            "source_L_label_rows": 12600,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        }
+      ],
+      "inherited_source_metric_training": null,
+      "source_physical_rows": 6300,
+      "source_paired_observations": 12600,
+      "inherited_source_physical_rows": null,
+      "inherited_source_paired_observations": null,
+      "source_correlation_weighting": {
+        "power": 0.5,
+        "schema": "source_C4_C8_crossrx_residual_v1",
+        "parameters": 557440,
+        "C4": [
+          {
+            "min": 0.5023355682749817,
+            "mean": 0.695968146276029,
+            "max": 0.9585439124860846
+          },
+          {
+            "min": 0.23999293718608078,
+            "mean": 0.5067234544403767,
+            "max": 0.9732667325360485
+          },
+          {
+            "min": 0.45674980513232183,
+            "mean": 0.6389649193189126,
+            "max": 0.9365934394763434
+          },
+          {
+            "min": 0.0006917255839369238,
+            "mean": 0.18874664263113933,
+            "max": 0.797998895180662
+          },
+          {
+            "min": 0.47167697758534255,
+            "mean": 0.675408689957925,
+            "max": 0.9651873275409536
+          },
+          {
+            "min": 0.3609020541055451,
+            "mean": 0.5643168883618115,
+            "max": 0.9143400358314846
+          },
+          {
+            "min": 0.3561557155495268,
+            "mean": 0.5562016981224509,
+            "max": 0.9238171988775192
+          },
+          {
+            "min": 0.37035406376338087,
+            "mean": 0.5771420081513526,
+            "max": 0.9175414475336338
+          }
+        ],
+        "C8": [
+          {
+            "min": 0.4918158685342566,
+            "mean": 0.6939557972421693,
+            "max": 0.9605642397377389
+          },
+          {
+            "min": 0.23999293718608136,
+            "mean": 0.5067234544403773,
+            "max": 0.9732667325360526
+          },
+          {
+            "min": 0.464303290090388,
+            "mean": 0.6501372390663882,
+            "max": 0.9494094471275142
+          },
+          {
+            "min": 0.0006917243513859348,
+            "mean": 0.18874665254838818,
+            "max": 0.7979989277207035
+          },
+          {
+            "min": 0.4528124816467407,
+            "mean": 0.6692319648729792,
+            "max": 0.9693919494554546
+          },
+          {
+            "min": 0.37392938276404103,
+            "mean": 0.5812196873449416,
+            "max": 0.9334807797354896
+          },
+          {
+            "min": 0.363589797293119,
+            "mean": 0.5729866048209636,
+            "max": 0.9393653346407722
+          },
+          {
+            "min": 0.3748053164333656,
+            "mean": 0.5919134443188383,
+            "max": 0.9327296550115366
+          }
+        ],
+        "source_examples_retained": 0
+      },
+      "seconds": 356.96401090733707,
+      "target_reads": 0,
+      "query_reads": 0,
+      "U_truth_reads": 0,
+      "F_updates": 0,
+      "G_updates": 0
+    },
+    {
+      "model_seed": 2026092704,
+      "status": "SOURCE_FROZEN",
+      "source_checkpoint_reused": false,
+      "source_new_optimizer_updates": 7200,
+      "source_stage_method": "crossrx_residual_ensemble",
+      "source_metric_training": [
+        {
+          "held_RX": 1,
+          "C4": {
+            "steps": 600,
+            "seed": 2026513416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.160202436447143,
+            "mean_last50": 4.705837225914001,
+            "last_contrast": 4.825019359588623,
+            "last_pair": 0.6401728391647339,
+            "last_anchor": 0.04426757991313934,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026913428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.15660984992981,
+            "mean_last50": 4.786021251678466,
+            "last_contrast": 4.8300395011901855,
+            "last_pair": 0.6157721281051636,
+            "last_anchor": 0.04660872742533684,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 3,
+          "C4": {
+            "steps": 600,
+            "seed": 2026533416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.118094453811645,
+            "mean_last50": 4.718082737922669,
+            "last_contrast": 4.404834270477295,
+            "last_pair": 0.6888228058815002,
+            "last_anchor": 0.04562714695930481,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026933428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.100167598724365,
+            "mean_last50": 4.70762463092804,
+            "last_contrast": 5.049158573150635,
+            "last_pair": 0.7165568470954895,
+            "last_anchor": 0.0467640645802021,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 4,
+          "C4": {
+            "steps": 600,
+            "seed": 2026543416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.238048915863037,
+            "mean_last50": 4.701452407836914,
+            "last_contrast": 4.63594388961792,
+            "last_pair": 0.6404019594192505,
+            "last_anchor": 0.042525261640548706,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026943428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.272258315086365,
+            "mean_last50": 4.860995407104492,
+            "last_contrast": 4.612351894378662,
+            "last_pair": 0.7186649441719055,
+            "last_anchor": 0.04513133317232132,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 6,
+          "C4": {
+            "steps": 600,
+            "seed": 2026563416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.285790348052979,
+            "mean_last50": 4.870399584770203,
+            "last_contrast": 4.562108516693115,
+            "last_pair": 0.7132347226142883,
+            "last_anchor": 0.042667657136917114,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026963428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.355214080810547,
+            "mean_last50": 4.8772967290878295,
+            "last_contrast": 5.031224250793457,
+            "last_pair": 0.6131271719932556,
+            "last_anchor": 0.04875665903091431,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": 8,
+          "C4": {
+            "steps": 600,
+            "seed": 2026583416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.4157026720046995,
+            "mean_last50": 5.073994913101196,
+            "last_contrast": 4.9002790451049805,
+            "last_pair": 0.724751889705658,
+            "last_anchor": 0.045130401849746704,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026983428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 6720,
+            "train_physical_ids": 3360,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.429419641494751,
+            "mean_last50": 5.129266195297241,
+            "last_contrast": 4.78201961517334,
+            "last_pair": 0.6930705904960632,
+            "last_anchor": 0.04084456339478493,
+            "network_parameters": 342016,
+            "source_L_label_rows": 6720,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        },
+        {
+          "held_RX": null,
+          "C4": {
+            "steps": 600,
+            "seed": 2026503416,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 12600,
+            "train_physical_ids": 6300,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.273005495071411,
+            "mean_last50": 4.895610318183899,
+            "last_contrast": 5.0662713050842285,
+            "last_pair": 0.7857336401939392,
+            "last_anchor": 0.043299343436956406,
+            "network_parameters": 342016,
+            "source_L_label_rows": 12600,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          },
+          "C8": {
+            "steps": 600,
+            "seed": 2026903428,
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "temperature": 0.1,
+            "pair_weight": 1.0,
+            "anchor_weight": 0.1,
+            "residual_bound": 0.25,
+            "train_observations": 12600,
+            "train_physical_ids": 6300,
+            "source_TX": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_support_K": [
+              1,
+              5,
+              20
+            ],
+            "other_RX_per_class": 8,
+            "ways": 4,
+            "physical_records_per_step": [
+              36,
+              52,
+              112
+            ],
+            "physical_unique_within_step": true,
+            "paired_exposures": 40000,
+            "processing_views": 2,
+            "positive": "same_TX_different_RX",
+            "excluded": "same_TX_same_RX",
+            "mean_first50": 5.164325122833252,
+            "mean_last50": 4.996212763786316,
+            "last_contrast": 5.49497652053833,
+            "last_pair": 0.7245274782180786,
+            "last_anchor": 0.04435059055685997,
+            "network_parameters": 342016,
+            "source_L_label_rows": 12600,
+            "target_reads": 0,
+            "query_reads": 0,
+            "U_truth_reads": 0,
+            "F_updates": 0,
+            "G_updates": 0
+          }
+        }
+      ],
+      "inherited_source_metric_training": null,
+      "source_physical_rows": 6300,
+      "source_paired_observations": 12600,
+      "inherited_source_physical_rows": null,
+      "inherited_source_paired_observations": null,
+      "source_correlation_weighting": {
+        "power": 0.5,
+        "schema": "source_C4_C8_crossrx_residual_v1",
+        "parameters": 557440,
+        "C4": [
+          {
+            "min": 0.49986608340228356,
+            "mean": 0.6930745099880381,
+            "max": 0.9557743559784234
+          },
+          {
+            "min": 0.23999293718608078,
+            "mean": 0.5067234544403767,
+            "max": 0.9732667325360485
+          },
+          {
+            "min": 0.4477265293242358,
+            "mean": 0.6327404987965448,
+            "max": 0.9210246430554121
+          },
+          {
+            "min": 0.0006990309030822249,
+            "mean": 0.19000745991144571,
+            "max": 0.8052788838071678
+          },
+          {
+            "min": 0.4684459497070653,
+            "mean": 0.6734445741935996,
+            "max": 0.9561563161725032
+          },
+          {
+            "min": 0.36460852675899524,
+            "mean": 0.5703453581810398,
+            "max": 0.91678057915958
+          },
+          {
+            "min": 0.36383827730672463,
+            "mean": 0.5635484658724885,
+            "max": 0.9061362170731375
+          },
+          {
+            "min": 0.36491660419442873,
+            "mean": 0.5633997519531884,
+            "max": 0.9042494989577791
+          }
+        ],
+        "C8": [
+          {
+            "min": 0.4893905586524321,
+            "mean": 0.6916791081954115,
+            "max": 0.9580512056411092
+          },
+          {
+            "min": 0.23999293718608136,
+            "mean": 0.5067234544403773,
+            "max": 0.9732667325360526
+          },
+          {
+            "min": 0.45448282751630154,
+            "mean": 0.6460507114411354,
+            "max": 0.9397202365288249
+          },
+          {
+            "min": 0.0006990178607580626,
+            "mean": 0.1900074631191409,
+            "max": 0.8052789148441102
+          },
+          {
+            "min": 0.44691701755974816,
+            "mean": 0.6627893778724591,
+            "max": 0.9617202142042044
+          },
+          {
+            "min": 0.37494537742613143,
+            "mean": 0.587219478305979,
+            "max": 0.9319866177430723
+          },
+          {
+            "min": 0.3716497580398099,
+            "mean": 0.5822283436656619,
+            "max": 0.92350278573476
+          },
+          {
+            "min": 0.3751235838068463,
+            "mean": 0.5819446485544308,
+            "max": 0.9236427923916221
+          }
+        ],
+        "source_examples_retained": 0
+      },
+      "seconds": 363.1049460689537,
+      "target_reads": 0,
+      "query_reads": 0,
+      "U_truth_reads": 0,
+      "F_updates": 0,
+      "G_updates": 0
+    }
+  ],
+  "F_G_new_updates": 0,
+  "source_new_optimizer_updates": 21600,
+  "query_fit": false
+}
