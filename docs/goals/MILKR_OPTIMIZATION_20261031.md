@@ -227,3 +227,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R28 原始细节保留候选
 
 固定每block CCA64与共享native PCA d−64各半能量，保留原输出维度；只source L训练，五RX/TX-held同时排除两组件。候选与CCA-only source主H至少+.5pp、各K/Sraw不低于−.25pp才拟合最终encoder并进入同36行角点，失败target0。R27当前SUP先验/物理OOF/R26融合保持，最终all16两Sraw+5/QF>raw不变，goal ACTIVE。
+
+### R28 实际结果
+
+source 主宏H相对 CCA-only -1.5595pp，各K/S raw差 [{'k': 1, 'S': 0, 'delta_pp': -5.141878965716229}, {'k': 1, 'S': 1, 'delta_pp': -0.7225802969615058}, {'k': 20, 'S': 0, 'delta_pp': 1.5401789024587442}, {'k': 20, 'S': 1, 'delta_pp': -8.879950739822384}]，源门槛 False。按预登记 source-only 停止，target0、未拟合最终encoder。 所属进程已退出，所有旧run保持；最终16KN逐格目标未达，goal ACTIVE。
