@@ -1376,3 +1376,13 @@ Run `20261031-phase3-logit-energy-s2026092701-r01` / code `b554068df92e6ea02f114
 ## 2026-11-01：地面困难配对尾部损失实测结果
 
 `20261101-phase3-ground-tail-s2026092701-r01` / code `315f8ec1be994c40a97cbede4e27942e14267f12` 完成DMEAN/DTAIL完整原F0独立学生各2220更新、4440全步/2220对L/OE索引匹配；15域每步均值或ceil(N/4)尾部，缓存旧D7 G(clean)复用、source数据新增0、newUs/U/UID0。3读出×4DURA全部12点后CPU4truth各一次，旧SSL四overall exact，执行VERIFIED。主DTAIL：source_clean_DURA: AK/CK/RU/H=97.696296/98.251852/70.444444/81.861913%；source_star_DURA: AK/CK/RU/H=89.940741/98.007407/41.396825/56.697581%；cross_clean_DURA: AK/CK/RU/H=36.627207/53.515359/51.234229/42.716505%；cross_star_DURA: AK/CK/RU/H=35.021150/62.265436/38.993927/36.900919%。sourceground=False、crossclean=False、frozen4condition=False，正式95%CK/95%RU/原F0损2pp及主景95未通过，科学NO_PROMOTION。配对DTAIL对DMEAN源clean RU+0.920635pp，但跨RXclean−5.804708pp、跨RX星地−2.788199pp，不将源小幅收益称为跨域改善；不按结果改主/调参/扩seed。新增student1136640+134552=1271192/G20476/F00，旧dataG99284/F036450与旧SSL的Us祖先单列；new12tau+old6=18/144B，主部署499944+6tau48B。无新目标UDA/发现/匿名注册，AN/HOWNA/正式RX24-18未读，完整ACTIVE、研究基线未替换。详见`docs/PAMF_PHASE3_GROUND_TAIL_RESULTS_20261101.md`。
+
+
+## 2026-11-01：源Us统计子空间候选
+
+上一轮尾部损失是已完成实证进展，但不能晋级。新run `20261101-phase3-ground-geometry-s2026092701-r01` 固定原F0/default6/G，源Us56700 hiddenTX拟合standard与源域均值正交约束ViM，两者80残差、原点0和源alpha，主F0_domain_vim预先固定。无新增神经训练、L/OE值或目标U；CAL13500仍需已知标签，源TEST13500/NV3150分开。旧F0/SSL两energy控制精确复用、16点四DURA后CPU4truth，正式95/95/2pp及主景95保持，完整ACTIVE/无UDA注册/ANHOWNA/formal0。此前vim-readout旧草稿仅复用已验证数学core，无历史真实ViM拟合，不改标其旧r01完成。见`docs/PAMF_PHASE3_GROUND_GEOMETRY_PLAN_20261101.md`，目前没有本行科学分数。
+
+
+## 2026-11-01：源Us统计子空间实测结果
+
+`20261101-phase3-ground-geometry-s2026092701-r01` / code `9e0a97852a1a8688e4a5410490fc0d8a7a49ef34` 完成原F0/G冻结、Us56700 TX隐藏的两统计子空间拟合，CAL13500只校准，固定四读出×四DURA条件16点后独立CPU四truth各一次。执行VERIFIED、旧F0/SSL八overall exact。主F0_domain_vim：source_clean_DURA: AK/CK/RU/H=97.874074/98.866667/26.349206/41.520465%；source_star_DURA: AK/CK/RU/H=90.133333/98.022222/16.857143/28.402350%；cross_clean_DURA: AK/CK/RU/H=36.674881/63.548753/31.916523/34.130653%；cross_star_DURA: AK/CK/RU/H=32.778756/65.775654/31.046922/31.889343%。地面源=False、跨RXclean=False、四条件冻结拒识=False，正式95%CK/95%RU/原F0损2pp和主景95保持，科学NO_PROMOTION。不按标准ViM或Q结果改主、调参、扩seed或替换研究基线。新NN优化0/L0/OE0/目标U0，F0123976/G20476/SSL0；原F0/defaulthead保持，fresh与cached canonical重放差独立报告。统计部署12961 FP64/103688B＋主六阈值48B，神经499944；全部阈值24/192B，源域方向审计不部署。不称全系统无标签：原F0有标签祖先、CAL已知标签和旧SSL的Us祖先仍保留。无目标UDA、发现或匿名注册，AN/HOWNA，正式RX24-18未读，完整ACTIVE；详见`docs/PAMF_PHASE3_GROUND_GEOMETRY_RESULTS_20261101.md`。
