@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-SIGfullRatePlain-E30-s2026092701-r01`
 - group_id：`phase1-DURA-full-rate-IQ-residual-pair-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -45,3 +45,8 @@ GPU4/6/7中启动前显存余量≥12GB、既有compute≤2时单卡新增1个�
 
 
 额外聚焦权限反例与资源边界检查2项PASS：错误教师/源合同/训练标签权限/目标训练/F更新或schema在建模前拒绝；新增进程计入总容量并保持显存门槛。
+
+
+## 实际启动证据
+
+VERIFIED / RUNNING，尚无正式性能结果。执行43577dc71dfdab6382dcf94e75c3b699b2c5122e，controller 2054412、GPU 4 worker 2054711。真实2条非clean L_s smoke PASS：原main初值IQ、原SIG cap、三个G模块与新增输出实际非零梯度、初始内部零梯度、严格E0/nativeoptimized/F冻结、新分支两次及六块B×12×256均核实。已完成1轮/247步；实际CWD/argv/commit/CUDA/compute PID与日志增长通过。准入前compute 2个、剩余22898MiB，新增1个。归档SHA、远端编译和预检通过；单阶段30轮与自动七景保持，CPU共同锁、独立输出，默认DURA不变。
