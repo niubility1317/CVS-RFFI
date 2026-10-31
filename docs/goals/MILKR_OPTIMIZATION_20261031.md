@@ -181,3 +181,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R23 全注册support带宽
 
 新结构变体tau由当前全部注册物理support估计，old_count仍只定义old/new宏H角色，query不入尺度。C4moments/CCA64固定，freshsource五RX/TXheld只选K1规则，原nested训练折尺度；旧默认old不变，同配置B同公式但新source规则可改实际B。无R22NN/不改旧stop，源仅合法数值门槛后同四角点24行，最终16KN两S每格+5/query收益不变，strictG-only保持。
+
+### R23 全注册support带宽实际结果
+
+真实checkpoint smoke及独立审查/测试通过；source rank64和C4固定、source120核规则选唯一K1。目标24行评分完成，所属进程退出。S0角点Q0+5为3/4，Q1>Q0为1/4；S1角点Q0+5为4/4，Q1>Q0为4/4；角点晋级False。不扩其余KN/RX，不用目标结果调rank或相位数。基座仍Tri-SIG-TIME SSL，goal ACTIVE。详见本run result_summary/report。
