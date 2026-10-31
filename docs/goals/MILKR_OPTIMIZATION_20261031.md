@@ -6,7 +6,7 @@
 
 用户已明确允许 raw／DURA 同一条 query 融合，并要求保留仅 DURA 输出对照；support 仍严格 S0 raw、S1 G。新版 Q0=raw、QG（机器 Q1）=仅 G、QF（机器 Q2）=融合。当前主验收为全部 K1/5/10/20×N2/5/10/20、两 S 下 Q0 较匹配原 Q0 至少 +5pp，且同状态 QF>Q0。QG 完整单列，与原 QG 保持同输入配对；QF 与原 QG 的差须标明路径改变，不冒充同输入增益。早期角点、均值、单 support 的高收益不能代替全格。科学协议本轮例外已更新，旧 run 仍保留原 G-only 定义。
 
-R40 首 RX 全16格 120 行已完成：S0 raw+5为13/16、QF>Q0为16/16；S1 raw+5为16/16、QF>Q0为16/16。未达标组合：S0 K1/N20 raw差+4.7993pp、融合差+1.6152pp；S0 K10/N2 raw差+4.9862pp、融合差+3.8129pp；S0 K20/N5 raw差+4.7036pp、融合差+3.6601pp。严格晋级 False。最终七RX all16尚未完成，目标ACTIVE。R26/R27为此前历史结果。
+R41 首 RX 全16格 120 行已完成：S0 raw+5为14/16、QF>Q0为16/16；S1 raw+5为16/16、QF>Q0为16/16。未达标组合：S0 K10/N2 raw差+4.3650pp、融合差+3.7293pp；S0 K20/N5 raw差+4.8364pp、融合差+3.9551pp。严格晋级 False。最终七RX all16尚未完成，目标ACTIVE。R26/R27为此前历史结果。
 
 ## 历史 G-only 阶段每格验收（覆盖旧均值口径）
 
@@ -335,3 +335,13 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R41 源跨RX对比残差
 
 源L监督SupCon同TX跨RX正对、raw/G配对和base锚点，CorrCCA上有界.25的64维残差。每orbit600固定步，五验证加最终共7200更新、最终两orbit1200；CCA557440FP64+新增NN684032FP32。两个CCA及NN同时heldRX/TX保护，F/G/原head冻结、target不训NN。首RXall16KN120预测，逐格通过才六RX，最终目标不变，尚未发布。
+
+### 下一项待实现：当前SUP选择源残差收缩
+
+R41的源NN与源K1规则在目标预测前已冻结，checkpoint只含合法源CCA/NN参数；target SUP KRR状态另存，不继承到下一任务。可检验当前SUP是否足以选择残差可靠性：保留完整源NN作为K1先验；K>1时在相同物理OOF中联合比较原CorrCCA与完整NN表示的单位化插值，预定强度网格0/.25/.5/.75/1，连同24核×5ridge用当前SUP old/new H、平方误差、ridge及偏弱强度tie-break选择。不是按已曝光K/N分数手设强度，不设N特例，不跨K/S借标签，query只应用本格冻结强度。K1无类内物理留出，沿用源冻结fullNN规则。
+
+该机制尚未实现、登记或发布，不声称有效。优先直接复用R41唯一固定600步/每orbit的纯源checkpoint及K1源规则，明确新源NN更新0；不得继承任何目标SUP适应状态。需实际新桥同时输出同一处理路径的base/full表示，逐记录插值不混S0/S1；物理OOF每折两表示带宽/gate/KRR仅trainSUP，目标query无统计。源模型复用与真实checkpoint无query smoke按最小流程核实，首RXall16KN120行独立truth-last，仍每格+5及融合收益才六RX，最终七RX/all16目标不缩小。后续若该假设不能成立，另查源增强3景与目标6景的覆盖差异，不热改本已完成run。
+
+### R41 实际结果
+
+120行独立truth-last完成，所属进程退出。两S逐KN验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 14, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 16, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 10, 'N': 2, 'raw_gain_pp': 4.365037257552196, 'fusion_gain_pp': 3.729269009027014}, {'S': 'S0', 'K': 20, 'N': 5, 'raw_gain_pp': 4.836417069276388, 'fusion_gain_pp': 3.955103107146263}]。源crossRX SupCon有界NN/每orbit600步/源heldRXTX/684032FP32参数及CCA rho摘要核实，R31gate/双核/各折train-only单残差KRR保持；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
