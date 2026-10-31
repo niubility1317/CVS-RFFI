@@ -119,3 +119,17 @@ R15校准源最佳+0.1547pp未过0.5pp，正常source-only停止target0。R16是
 ### R17实际结果
 
 源s0.9门槛PASS，源K1两S Q0+9.5492/+4.5899pp，实际首RX80预测/评分完成。S0Q0相对原版均值+6.7692pp，但Q0≥5仅11/16，Q1>Q0仅10/16；S1两项均16/16。按最新逐格要求不晋级，无其他六RX实验。源known6收益不能外推new20，goal仍ACTIVE。原R14七RX证据保持，source class-noise model不改默认。下一步需要更接近未见类别的源验证或新的支持集几何，不以目标分数选择σ重跑。所有所属进程退出。
+
+### 下一步：适配器TX留出源代理与K1重新校准（尚未实现/登记/发布）
+
+R17单RX同case分析显示：K1/N20对原版仅+0.652pp，K20四N增益为+4.248/+3.161/+3.103/+3.622pp；源known-six K1+9.55pp不能代表未见20类。不能按这些目标数值挑σ重跑。下一候选应改变源验证方式，减少已见身份对源超参数的偏好，并校准新增编码器真实几何下的K1核。
+
+建议事前固定五折，每折同时留一个source RX和两个source TX不参加CCA/类内metric训练；RX按原排序，held TX对按源码类序循环(0,1),(1,2),(2,3),(3,4),(4,5)，不据IQ/成绩选择。source F本身已见六TX，这只能叫adapter-TX-heldout，不能声称F从未见或真novel。每fold在其它RX的四个old TX上训练source encoder，以heldRX的old4+new2合法support/query评价。仍仅source L与既有ep91/92；评估固定ep91、sourceK1/5/20，target仍全16KN四路。
+
+可预先比较CCA rank16/32/64/96与metric强度0/0.5/0.9；原R17 helper只接受rank16/完整六类，需要参数化rank并显式允许source class子集，类均值索引改为unique inverse，保留现有六类默认合同和旧行为。最终encoder只用全source L训练，输出普通PairedCCA参数，不上传源cov/类均值/样本。每fold的held TX从CCA与metric训练均完全排除，而不只隐去标签。
+
+K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mix0.5/single/ridge0.001，新增几何未重新校准。可在adapter-heldout源代理上对既有24核×5ridge完整重选K1规则，K>1保持当前support R14 nested选择。新的K1 ridge可明确定义为mean-loss归一化（以source6个支持类为reference，target K1按当前support类数/6缩放），必须测试/披露，不能按目标N逐格手设。若不采用该归一化则明确保持绝对lambda，二者不混称。
+
+源选择必须同时看held新TX macro而非仅已见类平均H：例如四路H≥control+0.5pp、new macro≥control+1pp、各源K/S Q0均有正收益并保留Q1优势，具体门槛在运行前固定。不要将只改变K1而K>1数学上等于R14的候选当作能解决已知K20所有失败格的完整方案。全局source候选固定后，首RX全16格；按用户每格Q0+5pp/Q1>Q0决定晋级，不再mean-only。
+
+这只是下一条可证伪假设，不代表已实现或保证收益。R17旧root/模型/预测保留；当前无所属远端进程。goal ACTIVE，尚未达标。
