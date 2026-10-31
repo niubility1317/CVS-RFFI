@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "User2026-10-31 goal in 01a18faf-43c4-7663-8298-b2065a8fd8c6: optimize MILKR +5pp, small matrix across K/N; explicitly Tri-SIG-TIME SSL base",
   "code": {
-    "commit": "COMMIT_AT_RELEASE",
+    "commit": "164354a80ce28723719e789213d19c069b5180db",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-semantic-kn-s2026092701-r01-release"
@@ -933,7 +933,8 @@
     "No target truth until all7 worker predictions complete; scorer is separate process.",
     "Original baseline predictions/scores reused via r08 authoritative jobs; do not rerun target baselines or select best query endpoints.",
     "Source proxy labels from L_s only; known6 proxy is not novel-class evidence. V and U_s never opened in calibration.",
-    "Independent P0/P1 review once; optional full matrix is not an early gate."
+    "Independent P0/P1 review once; optional full matrix is not an early gate.",
+    "Source cached epochs fixed91/92 p80 after pre-launch missing41/42; no run started"
   ],
   "registered_at": "2026-10-31T02:04:27+00:00"
 }

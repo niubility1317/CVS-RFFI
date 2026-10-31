@@ -42,5 +42,9 @@
   "primary_arm": "R3-S0Q0",
   "target_H_gain_pp": 5,
   "query": "all_registered_complement",
-  "source_selection": "source L proxy only before target"
+  "source_selection": "source L proxy only before target",
+  "source_cache_epochs": [
+    91,
+    92
+  ]
 }

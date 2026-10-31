@@ -52,7 +52,7 @@ def calibration(rt):
     for rx in sorted(np.unique(m['rx_i']).tolist()):
         for episode in range(rt['source_episodes_per_rx']):
             # Existing source-only, physically keyed augmentation; no new IQ view.
-            epoch=41+episode
+            epoch=rt['source_cache_epochs'][episode]
             folder=Path(rt['augmentation_cache'])/'F0'/f'stage1-epoch{epoch:03d}-p80'
             require(read(folder/'complete.json')['status']=='L_AUGMENTATION_READY','Missing source cache')
             require(np.array_equal(np.load(folder/'ids.npy'),m['ids']),'Source augmentation row order differs')
