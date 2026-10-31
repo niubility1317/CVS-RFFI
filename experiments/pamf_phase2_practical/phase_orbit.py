@@ -21,6 +21,15 @@ def rotate(iq,quarter):
 
 def moments(phases):
     if len(phases)!=4:raise ValueError('Exactly four per-record phases required')
+    return _moments(phases)
+
+
+def spacetime_moments(phases):
+    if len(phases)!=16:raise ValueError('Exactly sixteen per-record spacetime views required')
+    return _moments(phases)
+
+
+def _moments(phases):
     normalized=[blocks(f) for f in phases];values=[]
     for index in range(8):
         a=np.stack([f[index] for f in normalized])
@@ -33,19 +42,24 @@ def stack_views(phases):
     return {key:np.stack([f[key] for f in phases],axis=1) for key in phases[0]}
 
 
-def extract(reader,raw,device,engine=None,batch=128,*,aggregate=moments,return_phase_logits=False):
+def extract(reader,raw,device,engine=None,batch=128,*,aggregate=moments,return_phase_logits=False,time_shifts=(0,)):
     import torch
+    if time_shifts not in ((0,),(0,64,128,192)):raise ValueError('Unregistered cyclic time orbit')
     output=[];logits=[]
     with torch.inference_mode():
         for start in range(0,len(raw),batch):
             base=np.asarray(raw[start:start+batch],np.float32)
             if engine is not None:base=np.asarray(engine(tensor(base,device))[0].cpu().tolist(),np.float32)
             spectral=fft96(base);phases=[];phase_logits=[]
-            for quarter in range(4):
-                f,l=capture(reader,tensor(rotate(base,quarter),device))
-                phases.append(dict({key:np.asarray(value.cpu().tolist(),np.float32) for key,value in f.items()},fft=spectral))
-                if return_phase_logits:phase_logits.append(np.asarray(l.cpu().tolist(),np.float32))
-                elif quarter==0:logits.append(np.asarray(l.cpu().tolist(),np.float32))
+            for shift in time_shifts:
+                shifted=base if shift==0 else np.roll(base,shift,axis=2)
+                if shift!=0:spectral=fft96(shifted)
+                for quarter in range(4):
+                    f,l=capture(reader,tensor(rotate(shifted,quarter),device))
+                    phases.append(dict({key:np.asarray(value.cpu().tolist(),np.float32) for key,value in f.items()},fft=spectral))
+                    if shift==0:
+                        if return_phase_logits:phase_logits.append(np.asarray(l.cpu().tolist(),np.float32))
+                        elif quarter==0:logits.append(np.asarray(l.cpu().tolist(),np.float32))
             output.append(aggregate(phases))
             if return_phase_logits:logits.append(np.stack(phase_logits,axis=1))
     return {key:np.concatenate([value[key] for value in output]) for key in output[0]},np.concatenate(logits)

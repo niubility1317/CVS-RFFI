@@ -16,7 +16,7 @@ from .milkr.support_calibrated import fit,CONFIGS,LAMBDAS,target_and_score
 
 
 def fit_function(rt):
-    if rt.get('kernel_method') in ('prior_fusion','confidence_prior','native_skip'):
+    if rt.get('kernel_method') in ('prior_fusion','confidence_prior','native_skip','time_orbit'):
         from .milkr.prior_fusion import fit as prior_fit
         return prior_fit
     if rt.get('kernel_method')=='teacher_kernel':
@@ -67,7 +67,10 @@ def kernel_configs(rt):
 
 
 def extract_for_method(rt,reader,raw,device,engine=None,batch=128):
-    if rt.get('kernel_method') in ('teacher_kernel','prior_fusion','confidence_prior','native_skip'):
+    if rt.get('kernel_method')=='time_orbit':
+        from .teacher_features import extract_time
+        return extract_time(reader,raw,device,engine,batch)
+    if rt.get('kernel_method') in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit'):
         from .teacher_features import extract as teacher_extract
         return teacher_extract(reader,raw,device,engine,batch)
     if rt.get('kernel_method')=='phase_kernel':
@@ -101,7 +104,7 @@ def calibration(rt):
     if rt.get('kernel_method')=='nonlinear_pair':
         from .milkr_nonlinear_source import calibrate
         return calibrate(rt)
-    if rt.get('kernel_method') in ('phase_orbit','phase_kernel','registered_scale','local_anchor','teacher_kernel','prior_fusion','confidence_prior','native_skip'):
+    if rt.get('kernel_method') in ('phase_orbit','phase_kernel','registered_scale','local_anchor','teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit'):
         from .milkr_orbit_source import calibrate
         return calibrate(rt)
     if rt.get('kernel_method')=='identity_holdout':
@@ -168,7 +171,7 @@ def calibration(rt):
 
 
 def worker(rt,capname):
-    if rt.get('kernel_method') in ('prior_fusion','confidence_prior','native_skip'):
+    if rt.get('kernel_method') in ('prior_fusion','confidence_prior','native_skip','time_orbit'):
         from .milkr_prior_fusion import worker as fusion_worker
         return fusion_worker(rt,capname)
     fit=fit_function(rt);arm=rt.get('arm','R6')

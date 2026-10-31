@@ -15,7 +15,7 @@ from .milkr_identity_source import source_train_indices,scores
 
 
 def query_scores(rt,state,pair,held):
-    if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip'):
+    if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit'):
         from .milkr.prior_fusion import fuse
         raw=state.evaluate(subset(pair[0],held));restored=state.evaluate(subset(pair[1],held));fused,_=fuse(raw,restored)
         return {0:raw[0],1:restored[0],2:fused}
@@ -30,14 +30,14 @@ def evaluate_frames(rt,frames,fit_K1,fit_many):
             if rt['kernel_method']=='registered_scale':rule['bandwidth_scope']='registered'
             if rt['kernel_method']=='local_anchor':rule['local_anchor_policy']=rt['local_anchor_policy']
             if rt['kernel_method']=='teacher_kernel':rule['teacher_weight']=rt['teacher_weight']
-            if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip'):rule.update(prior_weight=rt['prior_weight'],fusion_policy=rt['fusion_policy'])
-            if rt['kernel_method'] in ('confidence_prior','native_skip'):rule['confidence_rule']=rt['confidence_rule']
+            if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit'):rule.update(prior_weight=rt['prior_weight'],fusion_policy=rt['fusion_policy'])
+            if rt['kernel_method'] in ('confidence_prior','native_skip','time_orbit'):rule['confidence_rule']=rt['confidence_rule']
             for frame in frames:
                 support=np.arange(6)*52
                 for sp in (0,1):
                     state=fit_K1(subset(frame['mapped'][sp],support),np.arange(6),[frame['ids'][i] for i in support],old_count=4,fixed=rule,conditional_loo=False)
                     for qp,prediction in query_scores(rt,state,frame['mapped'],frame['held']).items():rows.append(dict(rx=frame['rx'],k=1,S=sp,Q=qp,**scores(np.repeat(np.arange(6),32),prediction.argmax(1))))
-            objective=[r['H'] for r in rows if rt['kernel_method'] not in ('prior_fusion','confidence_prior','native_skip') or r['Q'] in (0,2)]
+            objective=[r['H'] for r in rows if rt['kernel_method'] not in ('prior_fusion','confidence_prior','native_skip','time_orbit') or r['Q'] in (0,2)]
             grid.append(dict(K1_rule=rule,source_H=float(np.mean(objective)),rows=rows))
     best=max(enumerate(grid),key=lambda item:(item[1]['source_H'],item[1]['K1_rule']['ridge'],-item[0]))[1]
     validation=list(best['rows'])
@@ -71,16 +71,17 @@ def calibrate(rt):
         from .milkr.teacher_kernel import fit as teacher_fit,WEIGHT
         require(rt.get('teacher_weight')==WEIGHT,'Frozen teacher kernel weight differs')
         encoder_type=TeacherBridge;fit_K1=teacher_fit;fit_many=teacher_fit
-    if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip'):
+    if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit'):
         from .teacher_features import TeacherBridge
         from .milkr.prior_fusion import fit as prior_fit,PRIOR_WEIGHT,FUSION_POLICY
         require(rt.get('prior_weight')==PRIOR_WEIGHT and rt.get('fusion_policy')==FUSION_POLICY,'Frozen prior/fusion settings differ')
-        if rt['kernel_method'] in ('confidence_prior','native_skip'):
+        if rt['kernel_method'] in ('confidence_prior','native_skip','time_orbit'):
             from .milkr.support_prior_gate import RULE
             require(rt.get('confidence_rule')==RULE,'Frozen support-confidence rule differs')
         from .teacher_features import bridge_type
         encoder_type=bridge_type(rt['kernel_method']);fit_K1=prior_fit;fit_many=prior_fit
     require(rt['source_cache_epochs']==[91,92] and rt['orbit_quarters']==[0,1,2,3] and rt['orbit_rank']==64,'Wrong preregistered orbit configuration')
+    if rt['kernel_method']=='time_orbit':require(rt.get('time_shifts')==[0,64,128,192],'Fixed four cyclic shifts required')
     if rt['kernel_method']=='native_skip':require(rt.get('native_skip_weight')==.5,'Fixed equal native/CCA energy required')
     if rt['kernel_method']=='registered_scale':require(rt.get('bandwidth_scope')=='registered','Registered support scale required')
     for epoch in rt['source_cache_epochs']:
@@ -99,7 +100,7 @@ def calibrate(rt):
         groups=[rng.permutation(np.flatnonzero((m['rx_i']==rx)&(m['y']==c)))[:52] for c in old_tx+held_tx]
         require(all(len(g)==52 for g in groups),'Insufficient source holdout count')
         positions=np.concatenate(groups);held=np.concatenate([np.arange(c*52+20,(c+1)*52) for c in range(6)])
-        options=dict(old_columns=old_tx) if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip') else {}
+        options=dict(old_columns=old_tx) if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit') else {}
         mapped=[encoder.transform(subset(f,positions),restored=bool(path),**options) for path,f in enumerate(features)]
         frames.append(dict(rx=int(rx),mapped=mapped,ids=[str(m['ids'][int(p)]) for p in positions],held=held))
         if rt['kernel_method']=='native_skip':
@@ -111,8 +112,14 @@ def calibrate(rt):
         print('ORBIT_SOURCE_FOLD',rx,flush=True)
     best,validation,grid=evaluate_frames(rt,frames,fit_K1,fit_many)
     eligible=True;control_evidence=None
-    if rt['kernel_method']=='native_skip':
-        control_best,control_validation,_=evaluate_frames(rt,control_frames,fit_K1,fit_many)
+    if rt['kernel_method'] in ('native_skip','time_orbit'):
+        if rt['kernel_method']=='native_skip':
+            control_best,control_validation,_=evaluate_frames(rt,control_frames,fit_K1,fit_many)
+        else:
+            control=read(rt['source_control_ref'])
+            require(control['status']=='SOURCE_FROZEN' and control['feature_method']=='confidence_prior' and control['source_primary_query_paths']==[0,2], 'Wrong source-only temporal control')
+            require(all(control[key]==0 for key in ('target_reads','query_reads','U_truth_reads','F_updates','G_updates')), 'Control is not source-only frozen')
+            control_best=dict(K1_rule=control['K1_rule']);control_validation=control['source_summary']
         primary=lambda rows:np.mean([r['H'] for r in rows if r['Q'] in (0,2)])
         gain=100*float(primary(validation)-primary(control_validation));raw_gains=[]
         for k in (1,20):
@@ -129,9 +136,9 @@ def calibrate(rt):
             small=subset(features[sp],slice(0,12))
             require(all(np.array_equal(value,loaded.transform(small,restored=bool(sp))[key]) for key,value in final.transform(small,restored=bool(sp)).items()),'Orbit encoder reload differs')
     write(Path(rt['run_root'])/'source_selection.json',dict(status='SOURCE_FROZEN',K1_rule=best['K1_rule'],target_eligible=eligible,
-        scientific_verdict=('SOURCE_NATIVE_SKIP_GATE_PASS' if eligible else 'SOURCE_NATIVE_SKIP_GATE_FAIL') if rt['kernel_method']=='native_skip' else 'FIXED_FEATURE_CORNER_FALSIFICATION_NO_SOURCE_GAIN_GATE',source_control=control_evidence,encoder_checkpoint_created=bool(path),selected_rank=64,orbit_quarters=[0,1,2,3],source_K1_grid=grid,source_summary=validation,
+        scientific_verdict=('SOURCE_FEATURE_GATE_PASS' if eligible else 'SOURCE_FEATURE_GATE_FAIL') if rt['kernel_method'] in ('native_skip','time_orbit') else 'FIXED_FEATURE_CORNER_FALSIFICATION_NO_SOURCE_GAIN_GATE',source_control=control_evidence,time_shifts=rt.get('time_shifts',[0]),source_control_ref=rt.get('source_control_ref'),encoder_checkpoint_created=bool(path),selected_rank=64,orbit_quarters=[0,1,2,3],source_K1_grid=grid,source_summary=validation,
         source_RX_TX_folds=folds,source_physical_rows=len(m['ids']),source_paired_observations=len(features[0]['z_id']),
-        source_phase_pairs=len(features[0]['z_id'])*(4 if distribution else 1),feature_method=rt['kernel_method'],source_held_new_head_columns_removed_before_softmax=rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip'),
-        source_primary_query_paths=[0,2] if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip') else [0,1],
+        source_phase_pairs=len(features[0]['z_id'])*(4 if distribution else 1),feature_method=rt['kernel_method'],source_held_new_head_columns_removed_before_softmax=rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit'),
+        source_primary_query_paths=[0,2] if rt['kernel_method'] in ('prior_fusion','confidence_prior','native_skip','time_orbit') else [0,1],
         target_reads=0,query_reads=0,U_truth_reads=0,F_updates=0,G_updates=0,seconds=time.perf_counter()-started,source_numerical_smoke='PASS',
         scope='source old4/new2; encoder fit excludes held RX/TX but F saw all source6; fixed C4/rank64 not targetselected; no source examples/statistics used by target worker'))
