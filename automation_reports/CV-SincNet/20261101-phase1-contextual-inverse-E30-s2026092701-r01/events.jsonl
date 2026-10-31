@@ -1,1 +1,2 @@
 {"at": "2026-10-31T16:11:13+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-31T16:12:56+00:00", "status": "RUNNING", "note": "Release and real two-Ls checkpoint smoke verified; GPU7 worker reached E2/30; no training TX, F, OE, V or target access. Seven-view F50 and Phase3 evaluation remain incomplete.", "evidence": ["N607 runs/20261101-phase1-contextual-inverse-E30-s2026092701-r01/contextual_inverse/training.jsonl; /proc/2092089,2092179; GPU7"], "row_id": "contextual_inverse"}
