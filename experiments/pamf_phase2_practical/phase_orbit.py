@@ -29,7 +29,11 @@ def moments(phases):
     return result
 
 
-def extract(reader,raw,device,engine=None,batch=128):
+def stack_views(phases):
+    return {key:np.stack([f[key] for f in phases],axis=1) for key in phases[0]}
+
+
+def extract(reader,raw,device,engine=None,batch=128,*,aggregate=moments):
     import torch
     output=[];logits=[]
     with torch.inference_mode():
@@ -41,5 +45,5 @@ def extract(reader,raw,device,engine=None,batch=128):
                 f,l=capture(reader,tensor(rotate(base,quarter),device))
                 phases.append(dict({key:np.asarray(value.cpu().tolist(),np.float32) for key,value in f.items()},fft=spectral))
                 if quarter==0:logits.append(np.asarray(l.cpu().tolist(),np.float32))
-            output.append(moments(phases))
+            output.append(aggregate(phases))
     return {key:np.concatenate([value[key] for value in output]) for key in output[0]},np.concatenate(logits)
