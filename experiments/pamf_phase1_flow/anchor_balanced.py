@@ -13,7 +13,7 @@ from .anchor_flow import FixedAnchoredFlow,source_objective
 from .anchor_source_smoke import DURA,frozen_dura
 from .gradient_balance import balance_gradients
 
-RUN='20261101-phase1-dura-anchored-balanced-E30-s2026092701-r01'
+RUN='20261101-phase1-dura-anchored-balanced-E30-s2026092701-r02'
 KL_WEIGHT=.01
 TRUST_WEIGHT=.05
 MAX_AUX_RATIO=1.
@@ -87,7 +87,7 @@ def smoke(root,out,commit):
         raise ValueError('Real frozen networks and nonzero source gradients required')
     digest=sha(root/DURA);save(out/'smoke.pt',field,commit,0,digest);restored=load(out/'smoke.pt','cpu',commit,digest,epoch=0)
     with torch.no_grad():
-        a=restored(x,baseline);b=FixedAnchoredFlow(field)(x,baseline);torch.testing.assert_close(a,b,rtol=0,atol=0)
+        a=restored(x,baseline);b=FixedAnchoredFlow(field).eval().requires_grad_(False)(x,baseline);torch.testing.assert_close(a,b,rtol=0,atol=0)
         logits=f.classify_features(f.features(a))
     if logits.shape!=(2,6) or not torch.isfinite(logits).all():raise ValueError('Finite actual frozen pipeline required')
     write(out/'smoke.json',dict(status='PASS',F_run=core.F_RUN,F_row=core.F_ROW,DURA_checkpoint=DURA,DURA_sha256=digest,

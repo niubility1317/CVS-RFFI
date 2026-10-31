@@ -28,6 +28,12 @@ def test_step_updates_field_only_and_balances_gradient():
 
 
 def test_checkpoint_binds_dura_digest(tmp_path):
-    field=a.core.make_model();path=tmp_path/'field.pt';a.save(path,field,'a'*40,0,'d'*64)
-    a.load(path,'cpu','a'*40,'d'*64,epoch=0)
+    field=a.core.make_model()
+    with torch.no_grad():field.output.weight.fill_(.003)
+    path=tmp_path/'field.pt';a.save(path,field,'a'*40,0,'d'*64)
+    restored=a.load(path,'cpu','a'*40,'d'*64,epoch=0)
+    x=torch.randn(2,2,256);anchor=torch.randn_like(x)
+    with torch.no_grad():
+        actual=restored(x,anchor);expected=a.FixedAnchoredFlow(field).eval().requires_grad_(False)(x,anchor)
+    torch.testing.assert_close(actual,expected,rtol=0,atol=0)
     with pytest.raises(ValueError):a.load(path,'cpu','a'*40,'e'*64,epoch=0)
