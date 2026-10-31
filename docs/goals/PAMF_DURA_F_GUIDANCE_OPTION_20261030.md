@@ -96,3 +96,6 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 下一独立候选的数学原型：保留原方向的逐样本步内梯度平衡，代码 `experiments/pamf_dura_efficiency/tangent_balance.py`。原alpha不变，令s=min(1,||g_IQ||/||g_feature||)，每步把s视为固定权重（detach），附加项为alpha*s*原tangentLoss。这样在当前IQ输出点保留原特征梯度方向，未过强样本完全不变，并由Cauchy不等式同时得到附加loss≤IQNMSE与附加IQ梯度范数≤IQ梯度范数。它是动态重加权的步内surrogate，不宣称是对随IQ重算权重的全局固定标量能量求完整导数；也不保证G参数梯度范数。4项针对任意误差、方向/参考隔离、未限幅恒等、零/非法边界的测试通过。
 
 该原型不是刚才失败的静态谱裁剪方案，不放宽其已失败判据。目前没有新模型训练、正式预测或性能结论。后续若进入实验，单独登记source方向/压力校验、scratch单阶段30/7410及完整七景truth-last；原F50的既有sourceclean J缓存可只读复用，学生训练不需要F前反向，F源知识和历史缓存成本继续披露。目标仍为逐六景距rawclean≤3pp、clean保持及同等质量效率，默认DURA保持。
+
+
+保留方向的动态平衡G 20261031-phase1-DURA-balancedTangent-E30-s2026092701-r01 已真实RUNNING，执行75da21407e7a6790f45e4a8ac4bcc2ea5b6d120e/release20261031-DURA-balancedTangent-E30-r01。Gscratchsingle30/7410/266951/两prior四CG，原alpha不变，步内detach scalar缩放过强IQ附加梯度，非全局固定能量完整导数/非参数梯度上界。rawsourceJ63000/645.12MB只读复用，核对.081749s，新F前向/VJP/cache存储0，F源50轮及旧30.009s缓存成本披露；未读producerG/target。7tests/唯一P0P1/实际2LsG三模块梯度-实际IQ界-F冻结-严格重载通过，actualcontroller1326970/worker1327059/GPU4/CWD-argv-CUDA-loggrowth核实，至少E2全前缀检查通过/压力max1.000000119。source构造保留旧方向不是泛化保证，不放宽失败静态谱门槛；自动满30并七景全部预测后truth-last。默认不变/六景3pp-clean-同质量效率目标ACTIVE。

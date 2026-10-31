@@ -1,0 +1,116 @@
+{
+  "status": "RUNNING",
+  "phase": "SOURCE_TRAINING",
+  "code_commit": "75da21407e7a6790f45e4a8ac4bcc2ea5b6d120e",
+  "controller_PID": 1326970,
+  "worker_PID": 1327059,
+  "GPU": 4,
+  "actual_PID_CWD_argv_CUDA_GPU_verified": true,
+  "old_owned_handles_absent": true,
+  "real_source_smoke": "PASS",
+  "focused_checks_passed": 7,
+  "independent_P0_P1": "PASS",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "source_balance_check": {
+    "status": "SOURCE_BALANCE_CHECK_PASS",
+    "rows": {
+      "1": {
+        "count": 512,
+        "raw_mean_cosine": 0.6438630731567968,
+        "balanced_mean_cosine": 0.6438630731567968,
+        "limited_fraction": 0.09765625,
+        "maximum_balanced_pressure": 1.0,
+        "rx_mean_cosine": {
+          "1": 0.7577837195241106,
+          "3": 0.5380522210670337,
+          "4": 0.719833955332453,
+          "6": 0.6314574156737405,
+          "8": 0.5717779024643436
+        }
+      },
+      "20": {
+        "count": 512,
+        "raw_mean_cosine": 0.6610820517251581,
+        "balanced_mean_cosine": 0.6610820517251581,
+        "limited_fraction": 0.103515625,
+        "maximum_balanced_pressure": 1.0,
+        "rx_mean_cosine": {
+          "1": 0.7651209745577418,
+          "3": 0.5435741984781018,
+          "4": 0.7754327018748435,
+          "6": 0.6658528934447591,
+          "8": 0.555445156664735
+        }
+      }
+    },
+    "source_geometry_run": "20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01",
+    "alpha": 0.0033130025035573727,
+    "new_G_F_inputs": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "scope": "Reused source geometry/step-local scalar construction;not targetaccuracy or independentheldout qualification;static spectral variant remains failed"
+  },
+  "cache_reuse": {
+    "source_cache_run": "20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01",
+    "cache_kind": "raw_source_clean_F_J",
+    "source_metadata": {
+      "status": "SOURCE_F_CLEAN_J_COMPLETE",
+      "count": 63000,
+      "shape": [
+        63000,
+        5,
+        2,
+        256
+      ],
+      "numeric_bytes": 645120000,
+      "F_teacher": {
+        "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "seed": 2026092701,
+        "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "epoch": 50,
+        "updates": 11100
+      },
+      "F_inputs": 63000,
+      "F_J_VJP_inputs": 315000,
+      "F_updates": 0,
+      "F_unchanged": true,
+      "TX_labels_read": 0,
+      "V_reads": 0,
+      "target_reads": 0,
+      "seconds": 30.008929308038205
+    },
+    "cache_reference_count": 63000,
+    "numeric_bytes": 645120000,
+    "new_F_inputs": 0,
+    "new_F_VJP_inputs": 0,
+    "new_cache_bytes": 0,
+    "F_teacher": {
+      "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+      "seed": 2026092701,
+      "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+      "epoch": 50,
+      "updates": 11100
+    },
+    "historical_cache_F_inputs": 63000,
+    "historical_cache_F_VJP_inputs": 315000,
+    "historical_cache_seconds": 30.008929308038205,
+    "seconds": 0.08174899499863386
+  },
+  "verified_complete_epochs": 2,
+  "complete_prefix_budget_loss_balance_verified": true,
+  "last_verified_maximum_balanced_IQ_pressure": 1.0000001192092896,
+  "training_F_forward_inputs": 0,
+  "new_F_cache_inputs": 0,
+  "new_F_cache_VJP_inputs": 0,
+  "training_TX_labels_read": 0,
+  "training_V_reads": 0,
+  "training_target_reads": 0,
+  "fixed_budget_epochs": 30,
+  "fixed_budget_updates": 7410,
+  "automatic_seven_view_prediction_then_truth_last": true,
+  "formal_results_available": false,
+  "default_DURA_changed": false,
+  "goal_complete": false
+}
