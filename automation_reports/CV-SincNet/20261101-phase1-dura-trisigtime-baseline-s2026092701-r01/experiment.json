@@ -1,0 +1,175 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-dura-trisigtime-baseline-s2026092701-r01",
+  "group_id": "phase1-dura-trisigtime-matched-baseline",
+  "display_name": "Phase1 既有恢复网络的 Tri-SIG-TIME 同基座对照",
+  "description": "将已有 Phase1 DURA 恢复 IQ 经冻结 Tri-SIG-TIME SSL 重新识别，与新候选的同输入原始预测按同物理 ID 对照。",
+  "kind": "cvs",
+  "stage": "Phase1-baseline-evaluation",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "frozen-evaluation",
+    "truth-last"
+  ],
+  "comparison_group_id": "phase1-trisigtime-frozen-raw-clean",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-stage2-graph-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发不同于另一个对话的星地恢复网络；只看 Phase1 地面训练测试集；地面基座 Tri-SIG-TIME SSL；每个星地视图相对同一冻结基座 clean 损失不超过 3 个百分点。",
+  "code": {
+    "commit": "5dc285d0bbd44462178f3715f495bf32dc9ac918",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch, FP32, TF32 off; original Phase1 Tri-SIG-TIME immutable release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-dura-trisigtime-baseline-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/dura_trisig_baseline.py",
+      "experiments/pamf_phase1_flow/dura_trisig_controller.py",
+      "experiments/pamf_phase1_flow/dura_trisig_worker.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Existing Phase1 fixed DURA restored IQ plus fixed raw Tri-SIG-TIME decisions; exact identical ordered physical IDs",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "No training or label access before all predictions",
+    "augmentation": "No new augmentation"
+  },
+  "permissions": {
+    "regime": "Frozen Phase1 DURA outputs and frozen Tri-SIG-TIME SSL only",
+    "query_use": "Per-record frozen prediction, no adaptation or training",
+    "external_method_exception": null,
+    "claim_scope": "Matched single-seed Phase1 seven-view DURA baseline"
+  },
+  "checkpoint": {
+    "initialization": "Existing Phase1 DURA restored IQ, no G checkpoint loaded; frozen Tri-SIG-TIME SSL E50/11100",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-stage2-graph-s2026092701-r01/stage2_residual_graph/target_confirmation/native_map_prior/prediction",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "DURA complete IQ manifest and exact ordered 168000 Phase1 physical IDs; original Tri-SIG-TIME source checkpoint ancestry",
+    "provenance_verdict": "Original fixed Phase1 IQ reconstruction, reader loaded directly from original Phase1 release",
+    "selection_rule": "No selection, no optimization"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-dura-trisigtime-baseline",
+    "gpu_policy": "CPU true reader smoke; wait until first candidate controller and GPU worker exit; shared lock and same-user max two processes/card, >=12000 MB",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-dura-trisigtime-baseline-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-dura-trisigtime-baseline-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-phase1-dura-trisigtime-baseline-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.dura_trisig_controller --root /home/szu2070436088/2510044040/CV-SincNet --commit 5dc285d0bbd44462178f3715f495bf32dc9ac918",
+    "stop_rule": "Missing prior frozen predictions, physical-ID mismatch, nonfinite IQ or output collision stops and preserves evidence; no auto-retry"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "submitted.json",
+    "logs/{smoke,worker,predict,score}.log",
+    "flow/{test_prediction,test_summary.json}",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Tri-SIG-TIME raw clean, per-scene raw and restored accuracy, macro F1 and clean-relative gap",
+      "per-TX, RX, day accuracy"
+    ],
+    "dimensions": [
+      "168000 Phase1 ground test physical records x seven views",
+      "TX/RX/day and six practical scenes"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-dura-trisigtime-baseline-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU experiments.pamf_phase1_flow.dura_trisig_baseline score",
+    "targets_ref": "Each of six restored practical scenes within 3 percentage points of same reader raw clean; restored clean degradation at most 1 percentage point"
+  },
+  "notes": [
+    "重用已有 Phase1 DURA 七视图恢复 IQ，不使用旧识别器 logits、features 或旧分数；Tri-SIG-TIME SSL 重新产生分类决策，训练更新为零。",
+    "正式参考、原始预测和 DURA IQ 的完整 168000 条物理 ID 必须严格同序；固定 clean 与六场景全部预测完成后才允许 CPU scorer 连接 truth。",
+    "原始预测采用当前候选完整冻结的同一 Tri-SIG-TIME 原始输入预测；等待前序控制器及 GPU worker 均退出，不以其测试分数决定运行。",
+    "本对照仅作为有真实样本对应的基准，不对测试数据执行任何拟合、模型选择或参数更新。"
+  ],
+  "rows": [
+    {
+      "row_id": "flow",
+      "method": "Existing Phase1 DURA IQ followed by frozen Tri-SIG-TIME SSL",
+      "purpose": "Matched same-ground-reader baseline for stronger recovery comparison",
+      "config_ref": "experiments/pamf_phase1_flow/dura_trisig_baseline.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/dura_trisig_baseline.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110104,
+        "augmentation": 2026110105,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model 2026092701, order 2026110104, training noise 2026110105, fixed inference noise template 2026110103; existing Phase1 split and views",
+      "k": null,
+      "scenario": "Phase1 R07 L_s/U_s training; fixed Phase1 clean and six practical received views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "No training; 168000 fixed IQ records per view x seven views, one frozen reader pass",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-dura-trisigtime-baseline-s2026092701-r01/flow",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-dura-trisigtime-baseline-s2026092701-r01/logs/predict.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.dura_trisig_controller --root /home/szu2070436088/2510044040/CV-SincNet --commit 5dc285d0bbd44462178f3715f495bf32dc9ac918",
+      "expected_artifacts": [
+        "smoke.json",
+        "submitted.json",
+        "logs/{smoke,worker,predict,score}.log",
+        "flow/{test_prediction,test_summary.json}",
+        "complete.json"
+      ]
+    }
+  ],
+  "registered_at": "2026-10-31T18:12:54+00:00"
+}
