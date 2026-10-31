@@ -37,3 +37,9 @@
 ## 启动已核实
 
 VERIFIED：实际代码8720a8584803366d42d2879fb99502b8d220ac26；一次归档SHA比对与远端编译完成；两臂唯一P0/P1审查PASS。实际source2 smoke与严格E0重载均PASS。按启动时容量分别在GPU7/4新增一条本任务训练进程，原compute数为1/2、显存余量22883/20810 MiB，符合单卡总≤3。实际PID/CWD/命令/CUDA与日志增长已读回；其他owner保持。当前训练进行中，尚无新模型正式性能结果。
+
+## 全组已完成，主目标未达成
+
+VERIFIED / ANALYZED：两臂各30轮/7410步；两个原Main总体全七景，84个readout-view-population单元固定后逐row独立评分，八个GPU/CPU阶段均正常退出。本任务控制器/worker已退出。独立复算2604评分组、1736个raw配对及1302个额外配对，最大绝对差1.199040866595169e-14，复用raw/DURA逐条差0。
+
+TF_M20达标0/6、clean保持；MSAT_M20达标0/6、clean未保持。MSAT低档城区65.055357%，较匹配TF提高12.676190pp、仍低DURA3.745833pp；MSAT clean较raw clean下降0.111905pp。MSAT所有六景均低DURA，本组不具备替换依据，默认DURA保持，完整目标ACTIVE。结果、全训练日志汇总、完整分组与配对表、两张已查看图见analysis.md/results.json/training_analysis.json/all_score_groups.csv/paired_changes.csv。

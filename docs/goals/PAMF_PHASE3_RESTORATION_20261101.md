@@ -94,3 +94,12 @@ VERIFIED / ANALYZED。原 L_s6300/U_s56700 的完整 G10 MIX01 P0-clean 配对�
 新run 20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01，实际方法commit8720a8584803366d42d2879fb99502b8d220ac26。MSAT为4249922参数、四时间尺度/四个8头包内注意模块/全率跳连，不受DURA或小模型约束。TF_M20为196898参数原TF，同R07原Ls6300Us56700二十份模拟、同shuffle/损失/actualF0指导/AdamW，从零单阶段30轮/7410；21到30轮复用draw1到10。R07为2.462GHz六景均衡配方，不能改标G10，也不把旧TF到新TF的差异单独归因于覆盖。
 
 两臂已在N607各通过真实源smoke并训练；每条final30冻结后自动完成正确地面Tri-SIG-TIME SSL/Main split cross_rx126000与cross_both42000的clean+六景，再独立truth-last。r03相同IQ/ID的raw与DURA预测精确复用；全部新G均实际推理，源差也不取消测试。性能主线/效率支线、六景逐个3pp+clean、OE仅冻结诊断和默认DURA保持；目前无新性能成绩，完整目标ACTIVE。
+
+
+## MSAT 与匹配 TF 全量测试已完成（2026-11-01）
+
+20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01，实际代码8720a8584803366d42d2879fb99502b8d220ac26；两臂均从零单阶段30轮/7410步，正确地面Tri-SIG-TIME SSL/Main split两总体七景完整，独立truth-last后再NumPy全组复算。84单元/2604评分组/1736raw配对/1302额外配对，指标差≤1.20e-14，raw与DURA复用决定逐条差0，全部本任务进程已退出；登记ANALYZED。
+
+原raw clean86.538690%，3pp门槛83.538690%。TF_M20六景0/6、clean86.642262%；MSAT_M20六景0/6、clean86.426786%（较raw下降0.111905pp）。MSAT六景为77.389286/75.841667/74.149405/76.324405/70.504167/65.055357%，全部低于DURA；低档城区相对匹配TF提高12.676190pp，仍低DURA3.745833pp。默认DURA保持，完整性能目标ACTIVE。
+
+源端最终IQ NMSE TF0.045520→MSAT0.018515、F0cos距离0.027277→0.006411，不能代替跨RX正式性能。单纯扩大网络容量的本次检验未达目标；下一步需以原LsUs源证据区分物理反演、先验迁移和F细节约束，不能据目标误分类选择新超参或盲目扩种子。既有模型/失败结果保留，OE仍只作冻结诊断，无新训练已登记或启动。主报告 automation_reports/CV-SincNet/20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01/analysis.md。
