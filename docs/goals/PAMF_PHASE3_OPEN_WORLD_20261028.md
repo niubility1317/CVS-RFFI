@@ -1061,3 +1061,14 @@ Run `20261031-phase3-tied-density-s2026092701-r01` / actualcode `9a80e2bef7eee4d
 ### 2026-10-31 非平衡传输混合先验适应预登记
 
 Run `20261031-phase3-uot-prior-s2026092701-r01` / actualcode `c0b7cc09a808e832d4d64a18080239e72e910250`。沿所选predicted_ratio检验UOT目标结构先验适应，非完整UniOT复现。source122模式到starU384，costwhitedist²/(160variance)，a=.5known+.5OE/buniform不是U真比例；eps.05/rho1/固定200，knownmass跨六类汇为shared15RXday、OE32分别归一，均.5source+.5learned；新target47权重/45DOF，原F0/defaulthead/G/r03/mean/variance/白化/density11/two6tau不改。actual3CPsynthetic2→sourcefreeze→d72原sourceonlyUcache只featuresfit1→adapterfreeze→sourceidentity/pairedcleanstar sameadapter全4x3pred→独立CPU3truth/Utruth0，source失败仍Q。newNN/sourceGMM/tau/realGFsignal/sourceIQ0，200targetstat与祖先成本分列；source12uniqueτ96B/重复24值192B。sourceknown12/clean95star90/CK90/同G原F0损2pp/主景coverage及starAKstrictgain/RU不低于oldpred固定。历史NV/Q/单seedRX/source日期重合/high缺19-15宏RUHNA/正式RX未读不变，无未知发现或匿名REG，AN/HOW N/A；原baseline和延后native-energy状态保持，完整目标ACTIVE，当前无新性能。见`docs/PAMF_PHASE3_UOT_PRIOR_PLAN_20261031.md`。
+
+
+### 2026-10-31 非平衡传输混合先验适应完整结果
+
+Run `20261031-phase3-uot-prior-s2026092701-r01` / actualcode `c0b7cc09a808e832d4d64a18080239e72e910250`，四列×三DURA预测和独立三truth评分COMPLETE，执行VERIFIED、科学NO_PROMOTION。主UOT_predicted_ratio宏AK/CK/RU/H：source: 89.744444/96.759259/61.936508/73.291437%；clean_DURA: 70.659722/87.152778/100.000000/82.807731%；star_DURA: 64.062500/85.590278/77.430556/70.115031%；同DURA原F0闭集损1.237037/9.375000/8.854167pp。source与原pred全ID不变；clean正确0增1失/net−1、unknown拒对0；star known接收及正确接收全0变化、unknown拒对1增0失/net+1。starRU+0.347222pp/H+0.142706pp但没有预登记starAKstrictgain，绝对门槛和coverage仍未过，不替换所选predicted_ratio主基线或pooled对照。
+
+source122→starU384一次200步logUOT（eps.05/rho1）完结，KKT2.1826436214e−9/scaling2.2930457533e−9；sourceknownmass跨class汇15域/OE32分别归一后各.5source+.5learned，47权重45自由度/数值376B/含schema数组504B。means/vars/白化/原11arrays/NN/two6tau均不改；sourceprior适配只用于新RX，两Q同starUstate，entireadapter target派生非source-only。known transport fraction.6356480不是U真实设备比例。新增NN/sourceGMMgeometry/τ/realGFsignal/sourceIQ0但新targetpriorfit1/200，祖先NN834665/density364340B/训练缓存成本继承；12uniqueτ96B重复24值192B/单主48B，actual3CPsynthetic2各首步PASS。
+
+仅由U派生先验与源聚合得到的全输入分数变化界为[-0.913254410,0.702078218]；known域权重相对uniform仅0.9494521至1.0394007，当前先验适配没有改变表征域偏移，不能因1条未知改善宣布UDA完成，也不据Q调eps/rho/blend或扩种子。sourceL6300/Us56700/OE6134/V27000/NV3150、source5RX3day、U RX24-1/03-08与future同RX03-15的864物理Q、三DURA/clean只测试保持；NV/Q历史曝光、单seedRX/source日期重合/high缺19-15宏RU/HNA、正式RX未读不变。无未知发现/匿名REG，AN/HOW=N/A，完整目标ACTIVE。
+
+独立driver1341003/predict1341026 live/CWD/fullargv/CUDA1/UUIDa2d039ff及两次406MiB离散样本（非peak）、日志472→497→599B已核；CPU仅pipeline/gpuNone、代码CUDAempty及产物，未独立live，终态owned空foreign0。11unique33sub/workerAST6+launchimport/唯一P0P1PASS，697files/data0单archiveSHA/compile/runtimeVERIFIED。详见`docs/PAMF_PHASE3_UOT_PRIOR_RESULTS_20261031.md`。
