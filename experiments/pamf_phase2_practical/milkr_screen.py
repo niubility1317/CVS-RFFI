@@ -15,16 +15,20 @@ from .episodic_experiment import split_rows
 from .milkr.semantic_residual import fit, NAMES
 
 
-def extract(reader, raw, device, engine=None, batch=128):
+def extract(reader, raw, device, engine=None, batch=128, descriptor=False):
     import torch
-    features={k:[] for k in NAMES};logits=[]
+    names=NAMES+('sig_views',) if descriptor else NAMES
+    features={k:[] for k in names};logits=[]
     with torch.inference_mode():
         for start in range(0,len(raw),batch):
             x=np.asarray(raw[start:start+batch],np.float32)
             if engine is not None:
                 x=np.asarray(engine(tensor(x,device))[0].cpu().tolist(),np.float32)
-            v,l=branches(reader,tensor(x,device))
-            for k in NAMES:
+            if descriptor:
+                from .signature_features import capture
+                v,l=capture(reader,tensor(x,device))
+            else:v,l=branches(reader,tensor(x,device))
+            for k in names:
                 features[k].append(fft96(x) if k=='fft' else np.asarray(v[k].cpu().tolist(),np.float32))
             logits.append(np.asarray(l.cpu().tolist(),np.float32))
     return {k:np.concatenate(a) for k,a in features.items()},np.concatenate(logits)

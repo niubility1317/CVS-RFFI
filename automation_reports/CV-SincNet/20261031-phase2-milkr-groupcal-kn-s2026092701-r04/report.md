@@ -17,3 +17,11 @@ K>1先按原R6支持条件LOO选择核和ridge，再用同一LOO分数的全部�
 源PASS才跑P01/MIX01、seed2026092701、七RX、K1/5/10/20×N2/5/10/20、四严格S/Q、全补集query，560行指标。原MILKR同数据冻结预测复用，主目标S0Q0均值+5pp；全16格均达才称各K/N都+5pp。该池已有研发曝光，不声称盲测。全部目标预测固定后独立scorer，源失败不启动目标worker。
 
 两个针对性测试通过：阈值与全部分组决策穷举一致；K1缺源系数拒绝，beta0还原原模型，查询分批独立。一次独立P0/P1审查PASS。GPU0/2/4/6每卡至多2新worker，启动前核实余量，不触碰其他owner。新不可覆盖输出root，技术错误保留，不原地重启；源科学门槛失败不记技术故障。
+
+## 已核实源端结果
+
+**SOURCE_ONLY_SCIENTIFIC_STOP / VERIFIED**。真实checkpoint无query smoke PASS，独立终态artifact、完整十episode日志及source_selection确认已运行并正常完成；首次读取时PID1391796已退出，不声称曾读到其存活状态。归档比较及远端compile PASS。执行commit `e144ae51dda60fe5838294bd33e133e76a7753df`。
+
+K1选择beta=0.0。K5/10/20总体held H变化为-1.1735pp；逐K为{"5": -1.9873041164899883, "10": -1.1951662643031558, "20": -0.33810872294147615}pp。未通过预登记科学门槛，目标IQ/预测/评分全部0。源分析用时7.304秒。
+
+这否定了当前未收缩offset规则的源端收益，不能推广为所有旧/新校准均无效；不根据该负结果临时降低门槛或重跑。本候选没有目标性能结果，未实现5pp目标。详见[source_summary.json](source_summary.json)。
