@@ -1,5 +1,5 @@
 {
-  "run_id": "20261101-phase2-mopc-author-group1-m4-r02",
+  "run_id": "20261101-phase2-mopc-author-group1-m4-r03",
   "method_profiles": [
     "mopc_hr"
   ],
@@ -23,6 +23,6 @@
   "target_old_labels": 0,
   "input_path": "P0",
   "jobs": 3870,
-  "replaces_run_id": "20261101-phase2-mopc-author-group1-m4-r01",
-  "release_dependencies": "mopc_release.paths includes source cache/plan and leo_practical"
+  "replaces_run_id": "20261101-phase2-mopc-author-group1-m4-r02",
+  "release_dependencies": "complete practical_full_2x2 package including compat and code/leo_practical"
 }

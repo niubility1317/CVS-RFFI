@@ -1,1 +1,2 @@
 {"at": "2026-10-31T17:27:23+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-31T17:30:17+00:00", "status": "FAILED", "note": "FAILED_PRELAUNCH: real activate/import check caught missing practical_full_2x2.compat before controller or training submission; no remote run root or workers created. Preserve release; package entire existing dependency directory in r03.", "evidence": ["E:\\type10-7\\local_artifacts\\phase2_mopc_author_recovery_20261101\\submission.stderr"], "row_id": null}

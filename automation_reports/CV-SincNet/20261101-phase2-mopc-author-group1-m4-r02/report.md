@@ -11,3 +11,5 @@ GPU1/5每卡最多一条新增本run训练/预测，启动前实际free>=6000MiB
 24项定向本地检查通过；一次独立P0/P1未发现阻断。当前PREPARED，尚未发布，无正式性能证据。
 
 本r02仅修复r01发布包漏带源增强cache模块的技术错误，明确包含 practical_full_2x2 cache/plan 与 leo_practical。隔离Python先复现旧边界缺依赖、补齐后通过；一次直接问题定向复查。科学网络、源E200/PL/增强、种子、directC/session预算与目标矩阵保持；新run从零训练，不加载失败产物，全部旧产物保留。
+
+启动前检查：FAILED_PRELAUNCH。实际activate导入发现同包compat未包含，启动检查在任何controller/worker创建前阻止执行；没有run root或新训练。保存r02 release，改为r03携带整个既有practical_full_2x2目录，覆盖源激活和增强入口。
