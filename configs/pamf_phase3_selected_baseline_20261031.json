@@ -612,6 +612,49 @@
       "reason": "Fixed same-ID raw/DURA diagnostic, not a new candidate or target adaptation.",
       "global_history_unused_verified": false,
       "independent_blind_confirmation": false
+    },
+    {
+      "run_id": "20261031-phase3-source-meta-s2026092701-r01",
+      "code_commit": "e4a035b6f01a7ece98ec0dff2a6ea44867b8d536",
+      "method": "META_NATIVE_predicted_ratio",
+      "score_artifact": "local_artifacts/pamf_phase3_source_meta_20261031_r01/score/results.json",
+      "metric_fractions": {
+        "source_DURA": {
+          "A_K": 0.8982592592592592,
+          "C_K": 0.9627407407407408,
+          "R_U": 0.686031746031746,
+          "H_score": 0.7779307790813612,
+          "original_F0_macro_closed_accuracy": 0.909814814814815,
+          "candidate_macro_closed_accuracy": 0.915962962962963,
+          "original_closed_minus_new_open": 0.011555555555555763
+        },
+        "clean_DURA": {
+          "A_K": 0.2387177160685795,
+          "C_K": 0.3473327155759985,
+          "R_U": 0.6729696015466753,
+          "H_score": 0.35242294844031347,
+          "original_F0_macro_closed_accuracy": 0.4856701533920565,
+          "candidate_macro_closed_accuracy": 0.4513472969735955,
+          "original_closed_minus_new_open": 0.246952437323477
+        },
+        "star_DURA": {
+          "A_K": 0.22781346294538754,
+          "C_K": 0.41166132567410396,
+          "R_U": 0.5054895355150464,
+          "H_score": 0.31407841454381186,
+          "original_F0_macro_closed_accuracy": 0.4172105854906822,
+          "candidate_macro_closed_accuracy": 0.3925228394332652,
+          "original_closed_minus_new_open": 0.18939712254529464
+        }
+      },
+      "scientific_verdict": "NO_PROMOTION",
+      "source_meta_success": false,
+      "adaptation_success": null,
+      "new_target_DA": false,
+      "primary_selection_changed": false,
+      "reason": "Exact second-order source RX holdout joint native identity/open representation versus matched alpha-zero ERM; target U is not newly trained.",
+      "independent_blind_confirmation": false,
+      "global_history_unused_verified": false
     }
   ],
   "current_selection_confirmation": {
@@ -650,5 +693,11 @@
     "run_id": "20261031-phase3-fresh-dura-s2026092701-r01",
     "state": "ANALYZED",
     "result_ref": "docs/PAMF_PHASE3_FRESH_DURA_RESULTS_20261031.md"
+  },
+  "latest_source_meta_evaluation": {
+    "run_id": "20261031-phase3-source-meta-s2026092701-r01",
+    "state": "ANALYZED",
+    "scientific_verdict": "NO_PROMOTION",
+    "result_ref": "docs/PAMF_PHASE3_SOURCE_META_RESULTS_20261031.md"
   }
 }

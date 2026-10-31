@@ -1308,3 +1308,13 @@ Run `20261031-phase3-fresh-dura-s2026092701-r01` / code `0305e98dc27469d29e88d1d
 ## 2026-10-31：新接收机固定PCD恢复前后诊断结果
 
 Run `20261031-phase3-fresh-dura-s2026092701-r01` / code `0305e98dc27469d29e88d1d85aea2908eae64056`，固定E0/PCD四读出×六raw/DURA路径全部完成后独立CPU三truth评分，执行VERIFIED。主PCDpred：source raw AK/CK/RU/H=29.800000/30.425926/97.206349/45.615817%→DURA 89.733333/96.748148/64.285714/74.907247%；clean raw AK/CK/RU/H=31.658929/43.665705/62.171856/41.954128%→DURA 31.661804/43.761391/61.979647/41.912794%；star raw AK/CK/RU/H=7.472827/11.137376/86.758183/13.760414%→DURA 27.951722/48.582412/49.307698/35.678111%。全部12个DURA method/condition overall与原fresh评分字典精确一致；主DURA全部旧预测复用，raw自身原F0身份路由。新训练/fit/tau/U/UID/Us/L/OE0，真实F050626/open101252/G0；24FP64tau192B，PCD原U576祖先保留。冻结诊断NO_PROMOTION、adaptation_success=None/new_target_DA=False；保留PCD/DURA默认，正式24-18未读/ANHOWNA/完整ACTIVE。详见`docs/PAMF_PHASE3_FRESH_DURA_RESULTS_20261031.md`。
+
+
+## 2026-10-31：源RX留一二阶联合泛化预登记
+
+Run `20261031-phase3-source-meta-s2026092701-r01` / code `e4a035b6f01a7ece98ec0dff2a6ea44867b8d536`，ERM/META完整原F0 NativeOpen+纯源r03projection335681/train335633各444。heldRX循环，F其他4RX L128/OE64；G heldL64/OE32及虚拟同state4RX候选bank，共base192+virtual288=480行每步；alpha0/.001、beta.5、exact二阶。sourceCE/KD/crossset/OEKL/10balancedanchor，无新U/UID/Us/Q/V/NV训练；新2density/24tau+old24，8x3DURA后CPU3truth。PCD研究baseline保留，sourceDG不当UDA/注册/正式0/完整ACTIVE。见`docs/PAMF_PHASE3_SOURCE_META_PLAN_20261031.md`。
+
+
+## 2026-10-31：源RX留一二阶联合泛化结果
+
+Run `20261031-phase3-source-meta-s2026092701-r01` / code `e4a035b6f01a7ece98ec0dff2a6ea44867b8d536`，ERM/META各444共888真实源训练及8×3DURA后独立CPU3truth执行VERIFIED。主META_NATIVE_predicted_ratio：source_DURA: AK/CK/RU/H=89.825926/96.274074/68.603175/77.793078%；原F0closed=90.981481%/studentclosed=91.596296%/原F0损=1.155556pp；clean_DURA: AK/CK/RU/H=23.871772/34.733272/67.296960/35.242295%；原F0closed=48.567015%/studentclosed=45.134730%/原F0损=24.695244pp；star_DURA: AK/CK/RU/H=22.781346/41.166133/50.548954/31.407841%；原F0closed=41.721059%/studentclosed=39.252284%/原F0损=18.939712pp。source_meta_success=False、target保护=False，科学NO_PROMOTION；exact二阶alpha0/.001/beta.5，heldRX锚点与其他RX候选同virtualθ，4索引流匹配，不直接写回虚拟参数。新U/UID/Us/Q/V/NV训练0；parent12434/base170496/virtual255744/eval126120，信号合计564794。新2density/24tau+old24共48/384B，部署602632；PCD研究baseline及原模型保留，sourceDG不是新UDA，AN/HOWNA/formal0/完整ACTIVE。详见`docs/PAMF_PHASE3_SOURCE_META_RESULTS_20261031.md`。
