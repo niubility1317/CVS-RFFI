@@ -1,0 +1,200 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-contextual-inverse-E30-s2026092701-r01",
+  "group_id": "phase1-contextual-inverse",
+  "display_name": "动态频域逆变换与时域残差独立恢复网络",
+  "description": "从零训练条件化复数频域和共轭镜像校正，加条件化时域残差；只用L_s/U_s配对源信号，固定30轮。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "scratch",
+    "F-free",
+    "adaptive-spectral",
+    "E30"
+  ],
+  "comparison_group_id": "DURA-v1-and-historical-F50",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发更强的Phase3星地恢复网络、六星地各距raw clean不超过3个百分点；用户允许大胆重构并明确仅L_s/U_s训练，OE仅冻结诊断。",
+  "code": {
+    "commit": "9959956a0572de08fbcac3258fd30a5c0769763a",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI existing Python/Torch; FP32 TF32off; historical immutable runtime base 47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261101-contextual-inverse-E30-r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original R07 source clean and received epochs01..20, source V1800x7, fixed formal168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy;R07cachevalidationphysical_ids;R05formalreferencephysical_ids",
+    "label_map_ref": "F50originalsource6TXmap; restorationTXhidden;labelsindependenttruthlastonly",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": "Phase1fixedformalpopulation;noPhase2support",
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "Eachnewversionall168000x7regardlesssourceperformance",
+    "actual_training_labels": "Paired source L_s/U_s clean and received IQ only; no TX/OE/V/F/target inputs to training",
+    "augmentation": "Existing R07 source views 01..20 then 01..10; no newly generated training observations"
+  },
+  "permissions": {
+    "regime": "source_TX_hidden_F_free_training_frozen_F50_evaluation",
+    "query_use": "allsevenpredictionsbeforeindependenttruthlast",
+    "external_method_exception": null,
+    "claim_scope": "Historical F50 same-row Phase1 regression only; Phase3 Tri-SIG-TIME F0, open-world and future registration remain separate uncompleted requirements."
+  },
+  "checkpoint": {
+    "initialization": "Random scratch, context spectral and time output zero, no learned ancestor",
+    "sources": [],
+    "contract_check_ref": "OriginalvalidatedsourceR07cache;randomfactorygraphonly;F50/R69weightsforpostfreezeevalreferenceonly",
+    "provenance_verdict": "NO_INITIALIZATION_CHECKPOINTS_OR_ANCESTOR_WEIGHTS",
+    "selection_rule": "Fixed final E30/7410; no source ranking, early stopping or target feedback"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/contextual-inverse-E30",
+    "gpu_policy": "GPU4/6/7 free>=12000MiB, at most two pre-existing compute PIDs; one own worker, total admitted <=3; aggregate existing tracked restoration workers <=2; preserve other owners",
+    "remote_run_root": "runs/20261101-phase1-contextual-inverse-E30-s2026092701-r01",
+    "remote_log_root": "logs/20261101-phase1-contextual-inverse-E30-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261101-phase1-contextual-inverse-E30-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_direct_train.contextual_inverse run --root /home/szu2070436088/2510044040/CV-SincNet --commit 9959956a0572de08fbcac3258fd30a5c0769763a",
+    "stop_rule": "Bad contract, source role, output collision, nonfinite, checkpoint, smoke or prediction coverage: preserve failed artifacts; no performance stop or automatic retry."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "plan.json",
+    "smoke.json",
+    "submitted-ARM.json",
+    "ARM/final.pt",
+    "ARM/training.jsonl",
+    "ARM/training_complete.json",
+    "ARM/matched_profile.json",
+    "ARM/source_prediction/complete.json",
+    "ARM/source_summary.json",
+    "ARM/target_prediction/complete.json",
+    "ARM/target_summary.json",
+    "ARM/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "MacroF1",
+      "correct",
+      "repair_damage_net",
+      "TX/RX/day",
+      "six_scene_rawclean_gap_pp",
+      "clean_damage",
+      "DURA_delta_pp",
+      "same_GPU_eager_candidate_vs_graph_DURA_G_and_GplusF_B1_B128",
+      "parameters",
+      "checkpoint_bytes",
+      "conv_linear_MAC",
+      "FFT_IFFT",
+      "shared_peak_VRAM",
+      "full_training_curves"
+    ],
+    "dimensions": [
+      "fixed candidate",
+      "clean and six practical",
+      "TX",
+      "RX",
+      "day",
+      "historical F50 seed2026092701"
+    ],
+    "prediction_ref": "contextual_inverse/{source,target}_prediction; each seven-view set complete before truth",
+    "scorer_ref": "Independent CPU truth-last scorer after complete current and matching baseline predictions; no feedback to training or selection"
+  },
+  "rows": [
+    {
+      "row_id": "contextual_inverse",
+      "method": "Input-conditioned widely-linear complex FFT correction plus conditional full-rate TCN residual",
+      "purpose": "primary",
+      "config_ref": "experiments/pamf_dura_direct_train/contextual_inverse.py;experiments/pamf_dura_direct_train/contextual_model.py",
+      "resolved_config_ref": "contextual_inverse/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103004,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701; original split392005; source shuffle2026103004; source corruption2026101912; receiver2026101911; evaluation2027; support not applicable",
+      "k": null,
+      "scenario": "clean+sixpracticalfixedoriginalreceived",
+      "optimizer": "reset AdamW weight_decay=1e-4",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratch E30/7410/B256, L189000/U1701000 exposures; source IQ NMSE + 0.05 multiscale log-power error; no G/F ancestor or teacher; source views01..20 then01..10",
+      "output_root": "runs/20261101-phase1-contextual-inverse-E30-s2026092701-r01/contextual_inverse",
+      "log_path": "runs/20261101-phase1-contextual-inverse-E30-s2026092701-r01/logs/contextual_inverse.log",
+      "command": "python -u -m experiments.pamf_dura_direct_train.contextual_inverse worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 9959956a0572de08fbcac3258fd30a5c0769763a --arm contextual_inverse",
+      "expected_artifacts": [
+        "launch.json",
+        "plan.json",
+        "smoke.json",
+        "submitted-ARM.json",
+        "ARM/final.pt",
+        "ARM/training.jsonl",
+        "ARM/training_complete.json",
+        "ARM/matched_profile.json",
+        "ARM/source_prediction/complete.json",
+        "ARM/source_summary.json",
+        "ARM/target_prediction/complete.json",
+        "ARM/target_summary.json",
+        "ARM/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original fixed data and source corruption cache reused; no source labels, target queries, source OE, V or F in restoration training.",
+    "Global per-window context generates direct and conjugate-complex frequency corrections bounded componentwise; six context-modulated full-rate temporal blocks add a separate residual. Both outputs zero-initialized. Output is one IQ window; no runtime clean, channel truth, TX/RX or other-query input.",
+    "This is a research hypothesis. Dynamic complex per-bin gains may erase identity, overfit source signal statistics or fail due to phase ambiguity. They are not oracle channels or a guarantee of exact recovery. Old rotated-source performance was poor.",
+    "First real two-source-L_s checkpoint and frozen historical F50 no-query smoke must pass before GPU training. Candidate receives source IQ plus 0.05 spectral loss, not source simulator truth or F guidance.",
+    "Each frozen version must complete source1800x7 and exposed formal168000x7 predictions before independent CPU scoring. Six individual gaps <=3pp and clean damage <=1pp are required; target results must not change training or select candidates.",
+    "This run measures historical F50 only. Phase3 Tri-SIG-TIME F0, known/unknown open-set and registration-related evaluation are required separately and remain incomplete.",
+    "N607 output roots and immutable release must be absent before launch. Other users and processes are preserved. Low performance alone does not stop the fixed schedule."
+  ],
+  "registered_at": "2026-10-31T16:11:13+00:00"
+}
