@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01",
+  "group_id": "phase1-dura-source-soft-crossRX-reference",
+  "display_name": "冻结 F 源域软坐标跨接收机参考：身份方向几何检查",
+  "description": "原source63000clean F特征，fit62488排除probe512，按其他RX/day软6坐标等权构造参考，原头与F冻结；只检查几何，不加载G或读TX/V/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "soft-crossRX-reference",
+    "F-guided-research",
+    "training-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original63000sourceclean160DFcache;source512128L384U excludedfrom62488referencefit;soft6D actualoriginalheadoutputs;sourceRX/day only",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "source_ids exact L/U physicalmembership withoriginalF sourcecache;full63000Fcachephysicalorder;source_indicesfixed128L384U exclusion",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "No newcorruption/target/receivedreads. Originalsourceclean unitRMS andFfeaturecache unchanged;R07 cache usedonlysourcehandle/roles/clean2Ls.",
+    "target_panel": "None",
+    "actual_training_labels": "No Gtraining orTXtruth;originalFsoftposteriorcoordinates only,no hardpseudoTX. ReferencegeometryfittedfromsourceL/U withFsupervision inherited."
+  },
+  "permissions": {
+    "regime": "Source_only_frozenF_soft_RXday_feature_reference",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "SourceF-informed featuregeometry only,notactualTX/hardware invariance/unseenRXgeneralization/reachableIQ/targetbenefit;notnewclassifierhead/Gtraining"
+  },
+  "checkpoint": {
+    "initialization": "OriginalF50/defaulthead frozen;noGload/newnetwork/optimizer;sourceFfeaturecache dataonly,notproducerGweights",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261030-phase1-DURA-source-Fguide-cos010-s2026092701-r01/scratch_joint/source_feature_cache DATAONLY"
+    ],
+    "contract_check_ref": "load_reader originalF50 source4df7 scratch50/11100/defaultjointhead;source_training/source_ids original7/63/30 physical L/U agreement;Fcacheteacher/count63000/dimension160/TX-V-target0/IDorder;2Ls realFcachematch",
+    "provenance_verdict": "Fsourceoriginal4df7/50/11100;rawsourcecleanfeaturecache producedbeforeproducerGtraining/target,notusingGweights. Same63000L6300U56700 roles;noV/targetread. Prototypeprobe512 excludedfromfit butFpreviouslytrainedonallsource,notunseenFdata.",
+    "selection_rule": "Fixedbeta.25/equalother4RXx3day means/softactualFhead coordinates before source stats. No weights/epoch/newparent selected usingtarget;benchmarkhistory disclosed."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-softRX-reference",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU;prior ownquarterOrbitPID1357440 terminal;otherowners untouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.soft_rx_reference_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Bad source/Fcache/order/roles/shape/nonfinite/missingsoftmass/Fstatechange/cachematchfailure/outputcollision:preserveandstop/noautoretry;scientificfailure doesnotrelax beta/criteria orautotrain."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "reference_geometry.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "all90RX/day/softcoordinate effectiveN/mass",
+      "all512 originalheadchoice preservation",
+      "originalhead-visible conditional RXscatter/soft-coordinate spread beforeafter",
+      "role/RX/day referencechange/margin descriptives",
+      "sourcefixedeligibility/Fcounts/cost/stateunchanged"
+    ],
+    "dimensions": [
+      "source63000/fit62488/probe512128L384U",
+      "5RXx3dayx6softcoordinates",
+      "probeall/role/RX/day"
+    ],
+    "prediction_ref": "NoG/targetprediction;private referencegeometry andoriginalFsoftcoordinates",
+    "scorer_ref": "NoTXtruth. Independentlyrecompute all63000softprobabilities fromoriginalhead/cachedfeatures,90cellmeans/mass/effectiveN/leaveRX refs,probegeometry/choices/groups/eligibility."
+  },
+  "rows": [
+    {
+      "row_id": "source-softRX-reference",
+      "method": "UnitFclean features;soft6D posterior RX/daymeans;equalother4RXx3daymean;normalize(.75original+.25softreference);originalhead unchanged",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{soft_rx_reference.py,soft_rx_reference_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No newrandomdraw/modelinitialization. ExistingFmodel2026092701/source4df7;sourceindices128L384U fixed;RX/daymeans deterministic;no support/evaluationrandomness.",
+      "k": null,
+      "scenario": "OriginalsourcecleanFfeaturegeometry,notnewwaveform/network/targetruntime",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2/0G;2realLsFfeatureinputs and2smokehead;63000cacheheadinputs+512referenceheadinputs;0TX/V/target/neuralupdates;90celland30leaveRXmeans fittedbyarithmetic",
+      "output_root": "runs/20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.soft_rx_reference_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-softRXreference-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "reference_geometry.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Beforeallsource stats:beta=.25 fixed;all90RX/day/soft-coordinate fit cells effectiveN=(sum p)^2/sum(p^2)>=32;all512originalheadargmax preserved;probehead-visibleRXscatter<=.8original andsoft-coordinateclassspread>=.9original. Failure no beta/threshold search. Passsupports onlyseparatelyregisteredIQgradient/reachabilitycalibration,notautomaticGtraining/formalruntime.",
+    "Factualsoft6D posterior only,notTXtruth orhardpseudo labels. Fit62488 excludesprobe512;referenceforRXr averages90cellmeans acrossother4RXx3days equally,thenmixesbysampleoriginalsoftposterior. OriginalphysicalIQ unchanged. No auxiliaryclassifier fitted,originalhead/state frozen.",
+    "Currentreference changesoriginalhead-visible geometry;oldRXcanonical onlyshrankheadnullRX directions anditsformalresult remains unchanged. Head-choicepreservation/algebradoesnotprovewaveformreachability/trueTXimprovement. RXassociation isnotcausalRXhardware effect;Fhasseenbothfit/probe source historically.",
+    "SourceFcache40320000bytes/history3.7822696287s/63000Finputs andF50/11100sourceknowledge explicit. CurrentnewFbackbone2Ls only;sourcehead-only63000+reference512,smokehead2. NoGcheckpoint orG/Foptimizer updates,TX/V/target0. Newcentroid/reference arrays arefittedsourceaggregates,notuntrainedzero-costknowledge.",
+    "4geometry checks excludeownRX/probe,day-RXequalweights despiteimbalance,zero-mixture/geometry,missingmass/fixedeligibility PASS. OneP0P1 found actualheadexport .s wrong;fixedtoResidualPhysicalHead.scale,one targetedrealheadscoreexportregression andone targetedrereview PASS. Realmodule--help PASS. No remote launchbeforefix.",
+    "One N607preflight/archiveSHA/compile/actualPID-CWD-argv-CUDAempty-loggrowth;remote firststepactual2Ls originalF/cachematchsmoke thenimmediatecontinue. No extra datahash/seal/token. Entire sourcegeometry recomputed independently aftercomplete. DefaultF/DURA/P2/P3 andcompletegoal remain unchanged."
+  ],
+  "registered_at": "2026-10-31T02:11:05+00:00"
+}
