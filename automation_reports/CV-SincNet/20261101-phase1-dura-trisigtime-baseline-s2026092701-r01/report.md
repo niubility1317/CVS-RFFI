@@ -35,3 +35,7 @@
 代码版本 `5dc285d0bbd44462178f3715f495bf32dc9ac918` 已发布，归档两端 SHA-256 一致。真实 Tri-SIG-TIME 权重与两条源训练记录的 CPU smoke 已通过；未训练或更新模型，未读测试 IQ 或 TX 标签。
 
 控制器 PID 2197520 已独立读回，正等待第一条新候选控制器与 GPU worker 结束。七视图对照预测尚未开始；全部预测固定后才独立评分。当前没有同基座 DURA 新分数。
+
+## 输入来源补充核验
+
+旧 Phase1 DURA run 的原始 `launch.json` 将 `--formal-reference` 指向 `20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference`；原预测代码从该目录逐视图读取 received IQ，再写出恢复 IQ。本次候选同样从该正式参考目录读取输入；两份恢复结果／参考的 168000 条物理 ID 已独立核实逐项同序。该检查支持输入对应关系，不替代即将进行的同基座识别和评分。
