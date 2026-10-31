@@ -1,0 +1,166 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01",
+  "group_id": "phase1-dura-source-SIG-receiver-mean-subspace",
+  "display_name": "时序签名中的接收机均值方向：留出源样本诊断",
+  "description": "排除固定512源样本，用其余62488源clean SIG与公共RX拟合rank4均值span；比较正交补与完整SIG修正，原F原头/source512×01/20，0G/TX-V-target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "SIG",
+    "receiver-mean-subspace",
+    "held-out512",
+    "F-guided"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-performance-efficiency goal and explicit independent frozen-source-F guidance; source-only CPU association/latent intervention; no G training or target use",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source63000L-U clean actual weightedSIG cache; exclude fixed512128L384U before fitting five publicRX means/rank4. DefaultDURA cached source512×01/20 observations",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07source63000 IDs/source_indices512 exclusion/62488 fit; original7/63/30 VALIDATED_ONCE reused",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07cache01/20 native source observations DATAONLY, no channel redraw",
+    "target_panel": "None",
+    "actual_training_labels": "0 TX truth/V/target/model optimization. Public source RX for mean statistics only; no identity classes/heads fitted. Held-out cleanF choices diagnostic proxy"
+  },
+  "permissions": {
+    "regime": "Source_only_frozenF_cleanSIG_receiver_mean_statistics",
+    "query_use": "No query/target/V/TX. SourceL-U cleanSIG mean statistics and latent sourceclean feature counterfactual only",
+    "external_method_exception": null,
+    "claim_scope": "SourceRX association may include device/composition differences; not causal RX nuisance. CleanF choice proxy not trueTX/realizableIQ/hardware/recovery ceiling. OriginalF/head frozen"
+  },
+  "checkpoint": {
+    "initialization": "OriginalfrozenF50/defaulthead only, no G reads/initialization/forward/optimizer. Fit62488 source-only nonparametric RX means, not a classifier",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/source_signature_cache DATAONLY; source clean F produced before oldG optimizer",
+      "runs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01/clean_components.npz and DURA_default-{1,20}.npz DATAONLY"
+    ],
+    "contract_check_ref": "Originalsame-sourceF50/source4df7/50-11100/defaulthead; sourcecache63000order and original independent512actualfullF proof reused, no new cache/NN. Fixed512positions excluded from mean fit. Real2Ls actualweightedSIG/sourcecomponents/originalhead match",
+    "provenance_verdict": "Same original source F50 and immutable source-only caches. No G checkpoint ancestor/target feedback. Existing F50/11100 and cache63000prefix/.847077s/40.32MB cost disclosed",
+    "selection_rule": "Fit on remaining62488 only, equal-five-RX mean center and FP64 SVD fixedrank4/no rank threshold search. DefaultDURA source512/caches01and20; native/fullSIG/orthogonalSIG/RXmeanSIG. BOTH orthogonal vsfullSIG>=2, allRX andclean>=0, eachnonclean>=-1, fullfeatureMSE<=1.01native. PASS onlysupportsseparatelyregistered source IQ feasibility, never automatic G"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-SIG-RX-subspace",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU. LastownmidSIGcontroller1732041-worker1732131naturallyended; no interference with other owners",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.receiver_signature --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Bad source handles/order/exclusion/rank/nonfinite/Fstate/smoke/originalhead replay/collision: preserve and stop/no automatic retry. Scientific FAIL does not change rank/threshold/model or start G"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "source_basis.npz PRIVATE",
+    "reference.npz PRIVATE",
+    "DURA_default-{1,20}.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "rank4/heldout512/sourcefit62488/fiveRXcounts",
+      "sourceSIGcenteredvariance/errorenergyinRXspan",
+      "cleanFagreement/deltavsfullSIG/margin/featureMSE/sourceRX-day-role-scene-state-lock",
+      "fixedbothvieweligibility/Fstate/CPUcost"
+    ],
+    "dimensions": [
+      "62488sourcefit+512heldoutuniquephysicalrecords",
+      "defaultDURA source512128L384U",
+      "caches01and20",
+      "native/fullSIG/RXorthogonalSIG/RXmeanSIG"
+    ],
+    "prediction_ref": "No formal/newG prediction. Private source latent features/logits/statistics. RXmean-only descriptive, not selectable alternative if primary FAIL",
+    "scorer_ref": "No truth connection. Independent NumPy refit62488/heldoutbasisprojector/1024observations/4096headrows/52groups/criteria, 0 extra NN"
+  },
+  "rows": [
+    {
+      "row_id": "source-SIG-RX-subspace",
+      "method": "Fixedrank4 sourceRX-mean span; sourceclean SIG correction orthogonal complement versus fullSIG",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/receiver_signature.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "OriginalF/model2026092701;fixedsourceindices2026101901/split392005/cache2026101912;no modelseedscan/support/targetevaluation",
+      "k": null,
+      "scenario": "Source62488fit/512heldout×01-20; latentoracle only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2;mainfullF0/head4096;real2Ls smokeF2/head2;0G/TX-V-target/modeloptimizer. Reuse40.32MBsignaturecache/newFcache0",
+      "output_root": "runs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.receiver_signature --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "source_basis.npz PRIVATE",
+        "reference.npz PRIVATE",
+        "DURA_default-{1,20}.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "New source hypothesis: raw continuous SIG may mix RX-related and identity-related variation. Fit span only from publicsourceRX and sourcecleanSIG, not target outcomes/TX. Not a claim that RXmeans are causally receiver-only; unobserved class-composition/device shifts may contribute.",
+    "Fixed512indices excluded before statistics. Remaining62488 fit equal-five-RX centered mean matrix, fixed4rightsingularvectors. No learned classifier/labels/rank/weight/threshold search; source-only nonparametric mean fit, not G pretraining. Report fit counts/orthogonality/variance fraction and independent refit projector.",
+    "Four latent cases: native; actual+(cleanSIG-nativeSIG); actual+(cleanSIG-nativeSIG)(I-P_RX); actual+(cleanSIG-nativeSIG)P_RX. All same originalhead. Last descriptive only. Sourcepairedclean unavailabledeployment, mixed features may be unrealizableIQ; no trueTXaccuracy or ceiling claim.",
+    "BOTH cacheviews orthogonal case adds>=2cleanF agreements versus fullSIG; every5sourceRX andclean no loss, eachnonclean scene at most1 loss; fullfeature relativeMSE<=1.01native. PASS supports only separate sourceIQfeasibility registration/no automaticG. Prior PA/sourceIQ/PA+SIG failures unchanged.",
+    "Previously verified SIGcache source63000x160/40.32MB and old63000prefix/.847077s cost referenced; no new Fcache/NN production. Cache produced before oldG optimizer, no G model ancestor. OriginalF50/11100 source supervision inherited, F-guided/sourceF-informed, not F-free.",
+    "3 focused tests PASS: exactmean-span/orthogonality and heldout independence; correction decomposition/zero-change/unchangedinputs; invalid duplicate/out-of-range/exhaustedRX/rank/nonfinite rejection. OneP0P1PASS. First real2Ls weightedSIG/component/head match PASS continues immediately. CPU2/fullFsmoke2/headsmoke2/mainF0/head4096/G0/TX-V-target0.",
+    "OneN607preflight/archiveSHAcompare/remotecompile/postPID-CWD-argv-emptyCUDA-loggrowth. Output immutable/oneowner; independent source arrays/statistics/head/groups recomputation. DefaultDURA and complete3pp-clean-efficiency goal stay unchanged."
+  ],
+  "registered_at": "2026-10-31T08:10:03+00:00"
+}
