@@ -18,6 +18,17 @@ from experiments.pamf_phase3_open_world import star_relative_source as original_
 RUN='20261101-diagnostic-identity-flow-F0-source-s2026092701-r01'
 
 
+def audit_gradients(anchor, agreement, end_a, end_b, flow_loss, output_weight):
+    gradients=torch.autograd.grad((anchor+agreement).sum(),(end_a,end_b),retain_graph=True)
+    identity_grad=torch.autograd.grad((anchor+agreement).sum(),output_weight,retain_graph=True)[0]
+    flow_grad=torch.autograd.grad(flow_loss.sum(),output_weight)[0]
+    if (not all(torch.isfinite(v).all() and v.abs().sum()>0 for v in gradients)
+            or not torch.isfinite(identity_grad).all() or not identity_grad.abs().sum()>0
+            or not torch.isfinite(flow_grad).all() or not flow_grad.abs().sum()>0):
+        raise ValueError('Actual F0 guidance and source flow gradients must be finite and nonzero')
+    return gradients,identity_grad,flow_grad
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--root',type=Path,required=True)
@@ -61,11 +72,8 @@ def main():
     loss_b,end_b=source_flow_loss(model,x,y,t,noise_b)
     before={k:v.detach().clone() for k,v in teacher.state_dict().items()}
     anchor,agreement=frozen_identity_consistency(teacher,x,end_a,end_b)
-    gradients=torch.autograd.grad((anchor+agreement).sum(),(end_a,end_b),retain_graph=True)
-    field_grad=torch.autograd.grad((loss_a+loss_b+anchor+agreement).sum(),model.output.weight)[0]
-    if (not all(torch.isfinite(v).all() and v.abs().sum()>0 for v in gradients)
-            or not torch.isfinite(field_grad).all() or not field_grad.abs().sum()>0):
-        raise ValueError('Actual F0 guidance and source flow gradients must be finite and nonzero')
+    gradients,identity_grad,flow_grad=audit_gradients(anchor,agreement,end_a,end_b,
+                                                       loss_a+loss_b,model.output.weight)
     if any(v.grad is not None for v in teacher.parameters()) or any(not torch.equal(v,before[k]) for k,v in teacher.state_dict().items()):
         raise ValueError('Frozen F0 parameters and buffers must remain unchanged')
     out.mkdir()
@@ -76,7 +84,8 @@ def main():
         source_flow_loss=[float(loss_a.detach().mean()),float(loss_b.detach().mean())],
         feature_anchor=float(anchor.detach().mean()),feature_agreement=float(agreement.detach().mean()),
         endpoint_gradient_norms=[float(v.detach().norm()) for v in gradients],
-        field_gradient_norm=float(field_grad.detach().norm()),
+        F0_to_field_gradient_norm=float(identity_grad.detach().norm()),
+        flow_to_field_gradient_norm=float(flow_grad.detach().norm()),
         F_forward_rows=6,G_forward_rows=4,TX_labels_read=0,V_IQ_reads=0,OE_IQ_reads=0,target_IQ_reads=0,
         caveat='Two-source numerical compatibility only; no performance or loss-weight claim')
     with (out/'complete.json').open('x',encoding='utf-8') as f:
