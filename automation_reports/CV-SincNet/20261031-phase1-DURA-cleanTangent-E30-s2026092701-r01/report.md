@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01`
 - group_id：`phase1-dura-source-clean-tangent-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -35,4 +35,11 @@
 
 同纯repeat E30对照的源20缓存后01..10、G初始化/CUDAprobe2026092701/npshuffle2026103004、LR/AdamW/B256/clip全部匹配。原F50不是当前Tri-SIG-TIME，默认DURA不改。源判据通过仅支持研究，局部近似误差中位约0.53，不宣称全局准确。7聚焦检查与唯一P0P1后发布，首步2Ls真实G/F梯度、冻结、strictreload smoke PASS后立即继续。GPU4/6/7自动择容量，每卡新增1/总数≤3、显存≥12GB，其他owner不动。
 
-固定final30后自动source1800×7、target168000×7、全部七景预测固定后独立truth-last，逐TX/RX/day及净纠错；源差也不取消正式测试。逐六景≥81.6761904762%且clean保持，原R17每景≤1pp损失与lowurban70%单列。缓存/G训练/全流程/时延显存及完整网络计算共同报告，不能只凭源fit或训练更快晋级。当前PLANNED，完整目标ACTIVE。
+固定final30后自动source1800×7、target168000×7、全部七景预测固定后独立truth-last，逐TX/RX/day及净纠错；源差也不取消正式测试。逐六景≥81.6761904762%且clean保持，原R17每景≤1pp损失与lowurban70%单列。缓存/G训练/全流程/时延显存及完整网络计算共同报告，不能只凭源fit或训练更快晋级。预登记时PLANNED；实际状态见下方，完整目标ACTIVE。
+
+
+## 实际启动证据
+
+VERIFIED / RUNNING，代码7dd799ebb294ffe8711f530872e4922f100ed498已push且远端OID核对。N607一次preflight、单archive本远SHA、remotecompile通过；实际controller1285659/worker1285750的CWD/完整命令/CUDA/GPU及日志增长已核实。GPU4启动前仅1个compute PID、free22883MiB，本任务增加1个；旧owner句柄均已消失，其他owner不变。真实2Ls源G/F梯度、F状态不变、strictreload和原头smoke通过，7聚焦检查及唯一P0P1通过。
+
+源63000×5×2×256 FP32敏感度缓存645120000bytes实际30.008929秒，独立完整readback确认finite/shape/ID顺序及原headbasis正交。F输入63000/VJP315000，Fstate不变、0TX/V/target，随后释放F并重置学生/探针seed。已至少完成第1轮，新增tangent项非零、加权总loss独立复算一致；训练阶段Fforward0。当前尚无新正式结果，固定训练满30轮后自动七景全部预测再独立truth-last。source资格与缓存成功不等于目标达标，默认DURA保持。见[启动状态](launch_status.json)。

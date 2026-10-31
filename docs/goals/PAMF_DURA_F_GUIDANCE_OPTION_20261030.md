@@ -82,3 +82,6 @@ headFeature r02完整七景仍未达3pp后，另登记源阶段对照`20261030-d
 
 
 sourceclean局部敏感度诊断20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01/ff6926fa已完成：固定repeatE30/source512×01/20，head-visible5D Jclean二次型与exact特征IQ梯度mean cos.643863/.661080，普通IQ约.071；493/484条非负、五RX均正，全部源门槛通过。alpha按预定.25/maxmedian normratio固定0.0033130025035573727。局部线性近似误差中位仍约.53，不称globallyexact或目标收益；仅支持另登记scratchsingleE30，不自动训练。CPU5.796s/cache3.691s，F1536+6smoke/0G新前向/0TX-V-target-updates、Fstate不变，2048条几何及IQ-J算术独立复算。全源缓存估计645.12MB/30轮读19.3536GB，实耗待真实训练；原F50知识/成本披露，默认保持/目标ACTIVE。
+
+
+独立新G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01 已真实RUNNING：代码7dd799ebb294ffe8711f530872e4922f100ed498/release20261031-DURA-cleanTangent-E30-r01，sourcequalified固定alpha.0033130025035573727，原noVar四loss+clean局部身份敏感度二次型，266951参数/两prior四CG，scratchsinglejoint30/7410，不直接读TX/V/target。源Fclean63000×5VJP缓存645.12MB实际30.008929秒，完整独立readback finite/IDs/basis通过，Fstate不变后释放，学生训练0Fforward；F50知识/成本明确继承。7tests/唯一P0P1/真实2Ls G-F梯度与strictreload PASS，一次archiveSHA/compile、controller1285659/worker1285750/GPU4/CWD-argv-CUDA-loggrowth已核实，至少E2并实际执行新loss。全30后自动source1800×7/target168000×7/allviews固定后truth-last；当前无正式收益结论，默认保持/完整目标ACTIVE。登记event已成功写入，之后index刷新遇另一owner短暂build锁；核实event唯一且锁自然消失后仅重建managed索引，没有重复record、重复launch或操作其他进程。
