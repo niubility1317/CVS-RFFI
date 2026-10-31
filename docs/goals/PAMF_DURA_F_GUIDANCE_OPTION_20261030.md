@@ -200,3 +200,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 源SIG接收机均值方向：完整判定
 
 20261031-diagnostic-DURA-source-SIG-RX-subspace-s2026092701-r01/67073970。VERIFIED / ANALYZED_SOURCE_ONLY，科学判定FAIL。固定512源记录全部排除后，以62488源clean SIG和公共RX拟合rank4均值span；该4/160维承载31.347992%拟合源签名中心化能量。两个缓存的完整SIG修正与clean F选择一致数507/509，正交补修正502/505，分别净−5/−4；接收机与场景保护也未通过，clean及整体特征误差条件通过。不把RX均值span视为已证实噪声，不放宽条件或改选描述分支，不启动相应G训练。CPU2主循环0.157431秒；主完整F0/原头4096，真实2Ls检查另F2/原头2，0G加载/前向/模型优化/TX/V/target。独立62488统计/谱投影、1024源观察、4096原头特征行及52分组复算通过（3.768744秒，0新增NN）；最大logit差7.53699822731e-06。源clean F选择代理不是真实TX准确率，latent混合特征不保证IQ可达或目标泛化。默认DURA及完整3pp/clean/同质量效率目标保持ACTIVE。 详见本run analysis.md/results.json。
+
+
+## IQ与时序签名共同步进源检验
+
+20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01：固定defaultDURA/source512×01/20与原SIG-only损失缩步控制，四步单位IQ/SIG导数角平分方向，精确IQ线最小与SIG局部缩步、每步0.25%/总1%原RMS球。只用源配对clean/冻结F，0G模型训练/TX/V/target；有限IQ界不是非线性SIG或G参数保证。双view相对SIG-only至少+2一致、RX/clean保护、非clean每景最多−1、SIG≤.9native与逐包IQ保护预先固定。PASS仅支持另登记E30，默认与全部旧负结果保持。

@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01",
+  "group_id": "phase1-dura-source-common-IQ-signature-step",
+  "display_name": "波形与时序签名共同下降：固定源IQ步进对照",
+  "description": "固定defaultDURA/source512×01/20，同球四步共同IQ-SIG方向，对比原SIG损失缩步；源配对clean，只读原三组控制输出，0G/TX-V-target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "common-descent",
+    "SIG",
+    "paired-IQ",
+    "F-guided"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-and-efficiency goal and explicit frozen-source-F guidance; source-only CPU feasibility/no G training or target use",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source512128L384U;actualdefaultDURA/native-IQoracle-SIGcontrol source IQ/features/logits from immutable signatureLossStep run; original pairedclean",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07source63000L/U roles/512indices/IDs/RX/day/clean exactlymatchedprevioussourcecache",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07cache01and20;no redraw/new target/source observation. Four source IQ updates only",
+    "target_panel": "None",
+    "actual_training_labels": "0 TX/V/target/G/modeloptimizer. Temporary source IQ steps use clean and frozenactualSIG;cleanFchoice is proxy nottruth"
+  },
+  "permissions": {
+    "regime": "Source_only_common_IQ_SIG_descent_diagnostic",
+    "query_use": "No query/target/V/TX;pairedsourceclean oracle only. No G inference or optimization",
+    "external_method_exception": null,
+    "claim_scope": "Local source IQ first-order SIG and finite quadratic IQ geometry; not Gparametergradient guarantee/trueTX/hardware/physicalceiling"
+  },
+  "checkpoint": {
+    "initialization": "FrozenoriginalF50/defaulthead only, noGcheckpoint/initialization/optimizer. Old source three control cases reused as DATAONLY",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261031-diagnostic-DURA-source-signatureLossStep-s2026092701-r01/reference.npz and DURA_default-{1,20}.npz source IQ/features/logits DATAONLY"
+    ],
+    "contract_check_ref": "SameoriginalF50/source4df7/50-11100/defaulthead; fixedsource512 indices/IDs/roles/clean/RX/day/cached01-20 and immutableSIGcontrolFAIL; real2Ls component/SIG/head/commonderivative finiteIQ smoke",
+    "provenance_verdict": "Originalsame-sourceF50 and previoussource-only cachedDURA/control observations, no Gcheckpoint reads or newteacher. F50knowledge and oldcontrol/cachecost disclosed; no targetfeedback",
+    "selection_rule": "DefaultDURA/source512/caches01-20/final4commonsteps;unitgIQ+unitgSIG,min(exactIQline-minimum,SIGloss/directionalderivative),stepcap.25percenttotal1percentnativeRMS;zero/opposed no step. BOTHcommon>=SIGcontrol+2cleanFagreements;everyRX/clean no loss,noncleaneach>=-1;SIGMSE<=.9native andperrecordIQ<=native tolerance3e-5+1e-10. NoautomaticG"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-commonSIG-step",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU;previous ownRXsubspace1750361naturallyended;otherownerspreserved",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.signature_cone_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badcontract/controlorder/nonfinite/Fstate/smoke/IQbound/immutablecollision:preserveandstop/noautoretry. ScientificFAILdoesnotrelaxsteps/threshold/reference. No automaticGtraining"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "reference.npz PRIVATE",
+    "DURA_default-{1,20}.npz PRIVATE with complete4step IQ/derivative trace",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "sourcecleanFagreement/margin/vsSIGcontrol",
+      "SIGrelativeMSE/IQNMSE/RMSball",
+      "all4096step-records IQ-SIGcosine/cap-half first-orderSIGincrease/commonactivity/finiteIQbound",
+      "sourceRX/day/role/scene/state/lock",
+      "fixedbothviewcriteria/Fstate/CPUcost"
+    ],
+    "dimensions": [
+      "512sourcephysicalrecords128L384U",
+      "defaultDURAonly/caches01and20",
+      "native/IQoracle/SIGcontrol/commonSIG",
+      "4steptraces"
+    ],
+    "prediction_ref": "No newG/formal prediction. SourceIQsteps use pairedclean unavailabledeployment; 4case fullarrays and traceprivate",
+    "scorer_ref": "IndependentNumPy all4096step-record derivative/direction/stepcap/projection/IQbound;1024observations/4096originalheadrows/52groups/criteria;0extraNN/TX"
+  },
+  "rows": [
+    {
+      "row_id": "source-commonSIG-step",
+      "method": "Four common IQ-SIG descent steps; exact IQ line minimum/localSIGshrink; fixed same nativeRMSball",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{signature_cone.py,signature_cone_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "OriginalF/model2026092701;fixedsourceindices2026101901/split392005/cache2026101912;no modelseedscan/support/targetevaluation",
+      "k": null,
+      "scenario": "Source512128L384U×01/20;pairedcleanIQ oracle, notdeployableinference",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2;mainfullF1024/prefix4096/VJP4096/head4096;real2Ls smokeF2/prefix2/VJP2/head2;0G/TX-V-target/modeloptimizer",
+      "output_root": "runs/20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.signature_cone_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-commonSIG-step-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "reference.npz PRIVATE",
+        "DURA_default-{1,20}.npz PRIVATE with complete4step IQ/derivative trace",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "New source hypothesis from output-space cap does not ensure common descent, not selected by target classes/scenes or ranking Gparents. FixeddefaultDURA and previousSIGsourcecontrol; priorPA/SIGstep/RXsubspace scientificFAILs all preserved.",
+    "Eachstep unitgIQ+unitgSIG;undefined/zero/exactopposition inactive. Scale=min(nonnegative dot(error,direction)/||direction||², SIGloss/dot(gSIG,direction));perstep<=.0025nativeRMS,totalproject<=.01nativeRMS. No line search/iterations/weight tuning. QuadraticIQ and convex projection imply finalIQrisk<=anchor;nonlinearSIGonlylocalfirst-order,notglobalmonotonic or Gparameterguarantee.",
+    "Bothviewscommon adds>=2cleanFagreements versus previousSIG-only control; every5RX/cleanscene no loss,eachnonclean最多-1;meanSIGrelativeMSE<=.9native;everyIQNMSE<=native*(1+3e-5)+1e-10. PASS onlysupports separately registered scratchjointE30 hypothesis/no automaticG. SourcecleanF proxy notTXaccuracy/physicalceiling.",
+    "Reuseoldnative/IQoracle/SIGcontrol actualsourceIQ/features/signatures/logits without additionalFbackbone or G. RecomputeSAMEoriginalhead for4cases. MainfullF1024/prefix4096/VJP4096/head4096;smokefullF2/prefix2/VJP2/head2. F50/11100 knowledge and historicalsourcecache/controlcost disclosed.",
+    "Record complete per-step preIQ, exactSIGinputgradient and loss for independentNumPy arithmetic;no need further neural derivatives. TemporarysourceIQnotpersistentGweights, no modeloptimizer/labels/V/target/Gcheckpoint. Fstatebitwise andgradNone checked.",
+    "3focusedtestsPASS for commonfirstderivatives/finiteIQline-minimum,zero-opposed boundaries and foursteps IQball-anchor/Ffreeze. Actualmoduleentry with pinned47base PASS; OneP0P1PASS. Real2Ls firstsmoke continuesonPASS; onepreflight/archiveSHAcompare/remotecompile/postPID-CWD-argv-CUDAempty-loggrowth.",
+    "Related multiobjective/gradient-conflict literature: Sener-Koltun NeurIPS2018 and Yuetal NeurIPS2020. This normalized-bisector plus exactIQline-minimum SOURCEprobe is not their reported algorithm or a guarantee for this IQ task. DefaultDURA/full3pp-clean-efficiency goal unchanged."
+  ],
+  "registered_at": "2026-10-31T08:24:04+00:00"
+}
