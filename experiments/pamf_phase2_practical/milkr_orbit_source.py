@@ -14,6 +14,14 @@ from .milkr.support_calibrated import LAMBDAS
 from .milkr_identity_source import source_train_indices,scores
 
 
+def query_scores(rt,state,pair,held):
+    if rt['kernel_method']=='prior_fusion':
+        from .milkr.prior_fusion import fuse
+        raw=state.evaluate(subset(pair[0],held));restored=state.evaluate(subset(pair[1],held));fused,_=fuse(raw,restored)
+        return {0:raw[0],1:restored[0],2:fused}
+    return {path:state.score(subset(features,held)) for path,features in enumerate(pair)}
+
+
 def calibrate(rt):
     from .milkr_cv_screen import extract_for_method
     from experiments.cric_dura_comparison.f_data import SourceDataset
@@ -35,6 +43,11 @@ def calibrate(rt):
         from .milkr.teacher_kernel import fit as teacher_fit,WEIGHT
         require(rt.get('teacher_weight')==WEIGHT,'Frozen teacher kernel weight differs')
         encoder_type=TeacherBridge;fit_K1=teacher_fit;fit_many=teacher_fit
+    if rt['kernel_method']=='prior_fusion':
+        from .teacher_features import TeacherBridge
+        from .milkr.prior_fusion import fit as prior_fit,PRIOR_WEIGHT,FUSION_POLICY
+        require(rt.get('prior_weight')==PRIOR_WEIGHT and rt.get('fusion_policy')==FUSION_POLICY,'Frozen prior/fusion settings differ')
+        encoder_type=TeacherBridge;fit_K1=prior_fit;fit_many=prior_fit
     require(rt['source_cache_epochs']==[91,92] and rt['orbit_quarters']==[0,1,2,3] and rt['orbit_rank']==64,'Wrong preregistered orbit configuration')
     if rt['kernel_method']=='registered_scale':require(rt.get('bandwidth_scope')=='registered','Registered support scale required')
     for epoch in rt['source_cache_epochs']:
@@ -53,7 +66,7 @@ def calibrate(rt):
         groups=[rng.permutation(np.flatnonzero((m['rx_i']==rx)&(m['y']==c)))[:52] for c in old_tx+held_tx]
         require(all(len(g)==52 for g in groups),'Insufficient source holdout count')
         positions=np.concatenate(groups);held=np.concatenate([np.arange(c*52+20,(c+1)*52) for c in range(6)])
-        options=dict(old_columns=old_tx) if rt['kernel_method']=='teacher_kernel' else {}
+        options=dict(old_columns=old_tx) if rt['kernel_method'] in ('teacher_kernel','prior_fusion') else {}
         mapped=[encoder.transform(subset(f,positions),restored=bool(path),**options) for path,f in enumerate(features)]
         frames.append(dict(rx=int(rx),mapped=mapped,ids=[str(m['ids'][int(p)]) for p in positions],held=held))
         folds.append(dict(receiver=int(rx),held_TX_indices=held_tx,train_TX_indices=old_tx,training_observations=len(train),eval_epoch=91))
@@ -65,19 +78,21 @@ def calibrate(rt):
             if rt['kernel_method']=='registered_scale':rule['bandwidth_scope']='registered'
             if rt['kernel_method']=='local_anchor':rule['local_anchor_policy']=rt['local_anchor_policy']
             if rt['kernel_method']=='teacher_kernel':rule['teacher_weight']=rt['teacher_weight']
+            if rt['kernel_method']=='prior_fusion':rule.update(prior_weight=rt['prior_weight'],fusion_policy=rt['fusion_policy'])
             for frame in frames:
                 support=np.arange(6)*52
                 for sp in (0,1):
                     state=fit_K1(subset(frame['mapped'][sp],support),np.arange(6),[frame['ids'][i] for i in support],old_count=4,fixed=rule,conditional_loo=False)
-                    for qp in (0,1):rows.append(dict(rx=frame['rx'],k=1,S=sp,Q=qp,**scores(np.repeat(np.arange(6),32),state.score(subset(frame['mapped'][qp],frame['held'])).argmax(1))))
-            grid.append(dict(K1_rule=rule,source_H=float(np.mean([r['H'] for r in rows])),rows=rows))
+                    for qp,prediction in query_scores(rt,state,frame['mapped'],frame['held']).items():rows.append(dict(rx=frame['rx'],k=1,S=sp,Q=qp,**scores(np.repeat(np.arange(6),32),prediction.argmax(1))))
+            objective=[r['H'] for r in rows if rt['kernel_method']!='prior_fusion' or r['Q'] in (0,2)]
+            grid.append(dict(K1_rule=rule,source_H=float(np.mean(objective)),rows=rows))
     best=max(enumerate(grid),key=lambda item:(item[1]['source_H'],item[1]['K1_rule']['ridge'],-item[0]))[1]
     validation=list(best['rows'])
     for frame in frames:
         support=np.concatenate([np.arange(c*52,c*52+20) for c in range(6)])
         for sp in (0,1):
             state=fit_many(subset(frame['mapped'][sp],support),np.repeat(np.arange(6),20),[frame['ids'][i] for i in support],old_count=4,fixed=best['K1_rule'])
-            for qp in (0,1):validation.append(dict(rx=frame['rx'],k=20,S=sp,Q=qp,**scores(np.repeat(np.arange(6),32),state.score(subset(frame['mapped'][qp],frame['held'])).argmax(1))))
+            for qp,prediction in query_scores(rt,state,frame['mapped'],frame['held']).items():validation.append(dict(rx=frame['rx'],k=20,S=sp,Q=qp,**scores(np.repeat(np.arange(6),32),prediction.argmax(1))))
         print('ORBIT_SOURCE_VALIDATION',frame['rx'],flush=True)
     final=encoder_type.fit(*features);path=Path(rt['run_root'])/('source_phase_cca.npz' if distribution else 'source_orbit_cca.npz');final.save(path);loaded=encoder_type.load(path)
     for sp in (0,1):
@@ -86,6 +101,7 @@ def calibrate(rt):
     write(Path(rt['run_root'])/'source_selection.json',dict(status='SOURCE_FROZEN',K1_rule=best['K1_rule'],target_eligible=True,
         scientific_verdict='FIXED_FEATURE_CORNER_FALSIFICATION_NO_SOURCE_GAIN_GATE',selected_rank=64,orbit_quarters=[0,1,2,3],source_K1_grid=grid,source_summary=validation,
         source_RX_TX_folds=folds,source_physical_rows=len(m['ids']),source_paired_observations=len(features[0]['z_id']),
-        source_phase_pairs=len(features[0]['z_id'])*(4 if distribution else 1),feature_method=rt['kernel_method'],source_held_new_head_columns_removed_before_softmax=rt['kernel_method']=='teacher_kernel',
+        source_phase_pairs=len(features[0]['z_id'])*(4 if distribution else 1),feature_method=rt['kernel_method'],source_held_new_head_columns_removed_before_softmax=rt['kernel_method'] in ('teacher_kernel','prior_fusion'),
+        source_primary_query_paths=[0,2] if rt['kernel_method']=='prior_fusion' else [0,1],
         target_reads=0,query_reads=0,U_truth_reads=0,F_updates=0,G_updates=0,seconds=time.perf_counter()-started,source_numerical_smoke='PASS',
         scope='source old4/new2; encoder fit excludes held RX/TX but F saw all source6; fixed C4/rank64 not targetselected; no source examples/statistics used by target worker'))

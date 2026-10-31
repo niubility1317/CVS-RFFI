@@ -16,6 +16,9 @@ from .milkr.support_calibrated import fit,CONFIGS,LAMBDAS,target_and_score
 
 
 def fit_function(rt):
+    if rt.get('kernel_method')=='prior_fusion':
+        from .milkr.prior_fusion import fit as prior_fit
+        return prior_fit
     if rt.get('kernel_method')=='teacher_kernel':
         from .milkr.teacher_kernel import fit as teacher_fit
         return teacher_fit
@@ -64,7 +67,7 @@ def kernel_configs(rt):
 
 
 def extract_for_method(rt,reader,raw,device,engine=None,batch=128):
-    if rt.get('kernel_method')=='teacher_kernel':
+    if rt.get('kernel_method') in ('teacher_kernel','prior_fusion'):
         from .teacher_features import extract as teacher_extract
         return teacher_extract(reader,raw,device,engine,batch)
     if rt.get('kernel_method')=='phase_kernel':
@@ -98,7 +101,7 @@ def calibration(rt):
     if rt.get('kernel_method')=='nonlinear_pair':
         from .milkr_nonlinear_source import calibrate
         return calibrate(rt)
-    if rt.get('kernel_method') in ('phase_orbit','phase_kernel','registered_scale','local_anchor','teacher_kernel'):
+    if rt.get('kernel_method') in ('phase_orbit','phase_kernel','registered_scale','local_anchor','teacher_kernel','prior_fusion'):
         from .milkr_orbit_source import calibrate
         return calibrate(rt)
     if rt.get('kernel_method')=='identity_holdout':
@@ -165,6 +168,9 @@ def calibration(rt):
 
 
 def worker(rt,capname):
+    if rt.get('kernel_method')=='prior_fusion':
+        from .milkr_prior_fusion import worker as fusion_worker
+        return fusion_worker(rt,capname)
     fit=fit_function(rt);arm=rt.get('arm','R6')
     import torch
     reader,engine=initialize(rt);before={k:v.detach().clone() for k,v in reader.state_dict().items()}
