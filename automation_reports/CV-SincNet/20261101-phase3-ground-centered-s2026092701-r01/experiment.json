@@ -1,0 +1,310 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase3-ground-centered-s2026092701-r01",
+  "group_id": "pamf-phase3-ground-centered",
+  "display_name": "PAMF第三阶段：地面中心化证据训练",
+  "description": "One original-F0 native student learns shift-invariant centered evidence rank risk; matched existing DMEAN controls, same2220steps and source indices.",
+  "kind": "cvs",
+  "stage": "Phase3-ground-centered",
+  "aliases": [
+    "地面中心化证据排序"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "source_clean",
+    "centered_energy",
+    "default_head",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-raw-vs-centered-rank-evidence",
+  "parent_run_ids": [
+    "20261101-phase3-ground-tail-s2026092701-r01",
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "1ae125733a0f25eb9c887351eb63f11f730d8cea",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-ground-centered-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.ground_centered_launch",
+      "experiments.pamf_phase3_open_world.ground_centered_train",
+      "experiments.pamf_phase3_open_world.ground_centered_run",
+      "experiments.pamf_phase3_open_world.ground_centered_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_GROUND_CENTERED_PLAN_20261101.md"
+    ]
+  },
+  "data": {
+    "dataset": "Unchanged D7 source392005 G(clean) L6300/OE6134, CAL13500/sourceQ16650, RX34 futureQ10238 paired clean/star",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Full native reader232993/default6 joint, centered evidence LSE(z)-mean(z)-log6 in equal15 RX/day pairwise risk; no replacement classifier.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 先强化预部署地面开放能力",
+    "physical_ids_ref": "VALIDATED_ONCE 20261101-phase3-ground-open-s2026092701-r03-source-clean-v1 / sourceV-half-y-rx-day-s2026110101; unchanged source392005 and G10 observations.",
+    "label_map_ref": "Originalsix L/V y; OE outside-six only; U trueTX/K/quotas forbidden; future trueTX scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "source_Us_new": 0,
+      "source_CAL": 13500,
+      "source_known_TEST": 13500,
+      "source_NV": 3150,
+      "source_Q": 16650,
+      "target_U_new": 0,
+      "target_U_ID_new": 0,
+      "target_clean_Q": 10238,
+      "target_star_Q": 10238,
+      "future_known": 4508,
+      "future_unknown": 5730,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 labeled source6300/63000=10%; sourceOE outside-six membership allowed, OEtrueTXhidden; no new source labels or targetTXlabels.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "Same source392005/F0/pure-r03/DURA ancestry, existing VALIDATED_ONCE data, no new physical data validation",
+    "support_query_ref": "Same D7 CAL/TEST physical split; source16,650 and RX34 future10,238 clean/star matched; historically exposed development, not blind.",
+    "leo_config_ref": "Same fixed G10 MIX01 source/U/future received and DURA v1R69, source3001/4001 receiver2027, future3133/3134, no redrawn channel"
+  },
+  "permissions": {
+    "regime": "Source L true labels and cached sameG(clean)F0 teacher; OE outside-six/public RXday only; no OE TX/K, newUs/targetU or CAL/TEST/NV/Q training. Original F0/G untouched.",
+    "query_use": "Synthetic actualCP firstsmoke then2220source-only updates, fixedfinal, knownCAL freezes18new+6oldtau; all16 before independentCPU4truth once. No query statistics/tuning/updates or targetclean learning.",
+    "external_method_exception": null,
+    "claim_scope": "Centered pair-risk variant, not original paper reproduction or proof of shortcut removal in prior model. Formal95CK/RU/gap2 and six scenes, sourceground/crossclean/frozen4 distinct/fullACTIVE/formal0/ANHOWNA."
+  },
+  "checkpoint": {
+    "initialization": "Complete original F0 E50/11100/native default6 copied independently; no DMEAN/SSL/PCD initialization. Sinc48 and buffers fixed, head/body joint.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Original source392005 F0 and unchanged D7 G(clean) source roles verified; old315f DMEAN reference retains original F0 plus2220 source-only ancestry. OldDMEAN used only CAL forward and cached Q, not new student ancestor.",
+    "selection_rule": "Fixedfinal2220, CP centered main fixed; no sourceNV/Q checkpoint/parameter selection. OldDMEAN matching reference chosen by shared objective/sampling, not current test ranking."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-ground-centered-20261101",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-centered-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-centered-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_ground_centered_20261101_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.ground_centered_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-ground-centered-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One owned worker source train thenpredict, independentCPUscore CUDAempty; free>=4096MiB andmax2added/card, no foreign operations.",
+    "stop_rule": "Illegal ancestor/role, nonfinite, frozenstatechange, collision or unablelegalprediction preserved technicalfailure; low scientific scores complete fullmatrix, no hotchange/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/*.log",
+    "train/{resolved_config,complete,smoke}.json",
+    "train/rows/CPAIR/{final.pt,complete.json,steps.jsonl}",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/calibration/complete.json",
+    "predict/thresholds.npz",
+    "predict/queries/*/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "H-score",
+      "originalF0/studentclosed",
+      "AUROC/OSCR",
+      "pairedcorrectaccept/reject",
+      "full2220loss/gradient/domainrisk/commonlogitmean",
+      "ANHOWNA"
+    ],
+    "dimensions": [
+      "4methods x4DURAconditions",
+      "source24groups",
+      "sixmainstarScenes",
+      "TX/RX/day/scene/day_scene"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-centered-s2026092701-r01/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.ground_centered_score",
+    "targets_ref": "Formal all4 CK95/RU95/originalF0gap2pp, complete main scenes95; sourceclean24groups; groundstage/frozenrejection separate, fullACTIVE.",
+    "primary": [
+      "CPAIR_centered"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "CPAIR-s2026092701",
+      "method": "CPAIR",
+      "purpose": "Same originalF0/sourcebatch/budget as DMEAN, centered evidence instead raw energy in equal-domain pair-risk",
+      "config_ref": "docs/PAMF_PHASE3_GROUND_CENTERED_PLAN_20261101.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-centered-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110101,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Same L2026103017/OE2026103018 streams, all2220 indices compared oldDMEAN; no newchannel/RNG. Existing source3001/channel4001/future3133/3134/receiver2027.",
+      "k": null,
+      "scenario": "SourceG(clean) only training; four source/cross clean/star DURA frozen conditions",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2220xL192OE64=568320 train; newstudent67276 predict, oldDMEAN CAL13500, G20476/F00; student635596 and totalNN649096, synthetic separate. AdamW1e-4/wd1e-4/clip5. Deploy499944+6tau48B.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-centered-s2026092701-r01/train/rows/CPAIR",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase3-ground-centered-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.ground_centered_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase3-ground-centered-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/*.log",
+        "train/{resolved_config,complete,smoke}.json",
+        "train/rows/CPAIR/{final.pt,complete.json,steps.jsonl}",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/calibration/complete.json",
+        "predict/thresholds.npz",
+        "predict/queries/*/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "One new neural student; four methods factor old/new training and energy/centered readout, mainCPAIR_centered predetermined.",
+    "Exact oldDMEANenergy col1/threshold1 reused. Canonical originalF0 is oldtail.baseline_logits, not its SSL col0.",
+    "18new+6old thresholds=24FP64/192B; no fitted auxiliary density/bank/projection.",
+    "Algebraic shift invariance is verified; empirical improvement and prior shortcut use remain hypotheses.",
+    "Old source Us/F0/DMEAN/G training and data derivation costs retained; no full-system unlabeled claim or targetUDA/registry success."
+  ],
+  "registered_at": "2026-10-31T20:02:30+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "1ae125733a0f25eb9c887351eb63f11f730d8cea",
+    "primary_method": "CPAIR_centered",
+    "metrics_fraction": {
+      "source_clean_DURA": {
+        "A_K": 0.9797037037037036,
+        "C_K": 0.9863703703703703,
+        "R_U": 0.7396825396825397,
+        "H_score": 0.8429400042944928,
+        "original_F0_macro_closed_accuracy": 0.9841481481481482,
+        "candidate_macro_closed_accuracy": 0.9851851851851853,
+        "original_closed_minus_new_open": 0.004444444444444584
+      },
+      "source_star_DURA": {
+        "A_K": 0.8998518518518518,
+        "C_K": 0.9751111111111112,
+        "R_U": 0.40698412698412695,
+        "H_score": 0.5604764886671993,
+        "original_F0_macro_closed_accuracy": 0.9091851851851852,
+        "candidate_macro_closed_accuracy": 0.9094074074074073,
+        "original_closed_minus_new_open": 0.009333333333333416
+      },
+      "cross_clean_DURA": {
+        "A_K": 0.35113860204916775,
+        "C_K": 0.5144029798612969,
+        "R_U": 0.5951125823240168,
+        "H_score": 0.44167342386482583,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "candidate_macro_closed_accuracy": 0.4851047108673119,
+        "original_closed_minus_new_open": 0.13453155134288874
+      },
+      "cross_star_DURA": {
+        "A_K": 0.3173129942608794,
+        "C_K": 0.5708117359498822,
+        "R_U": 0.45573458898950486,
+        "H_score": 0.37413093360301664,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "candidate_macro_closed_accuracy": 0.4182634337719044,
+        "original_closed_minus_new_open": 0.0998975912298028
+      }
+    },
+    "ground_source_success": false,
+    "cross_clean_success": false,
+    "ground_stage_success": false,
+    "frozen_rejection_success": false,
+    "scientific_success": false,
+    "formal_C_K_minimum": 0.95,
+    "formal_R_U_minimum": 0.95,
+    "original_F0_loss_maximum": 0.02,
+    "total_optimizer_updates": 2220,
+    "all_2220_steps_analyzed": true,
+    "all_2220_source_indices_match_DMEAN": true,
+    "real_training_student_forward_rows": 568320,
+    "real_prediction_student_forward_rows": 67276,
+    "combined_student_forward_rows": 635596,
+    "new_legacy_CAL_forward_rows": 13500,
+    "total_new_real_NN_forward_rows": 649096,
+    "new_G_forward_rows": 20476,
+    "new_F0_forward_rows": 0,
+    "source_L": 6300,
+    "source_OE": 6134,
+    "new_source_Us": 0,
+    "source_Us_GT_reads": 0,
+    "new_target_U": 0,
+    "source_CAL": 13500,
+    "source_known_TEST": 13500,
+    "source_novel_TEST": 3150,
+    "source_Q": 16650,
+    "cross_future_Q": 10238,
+    "new_data_exports": 0,
+    "inherited_data_G_forward_rows": 99284,
+    "inherited_data_F0_forward_rows": 36450,
+    "original_models_unchanged": true,
+    "student_default_head_jointly_trained": true,
+    "student_Sinc_and_buffers_fixed": true,
+    "source_teacher": "same_cached_G(clean)_original_F0",
+    "student_initialization": "complete_original_F0_independent_from_old_DMEAN",
+    "legacy_energy_overall_exact": true,
+    "new_threshold_values": 18,
+    "reused_threshold_values": 6,
+    "threshold_values": 24,
+    "threshold_bytes": 192,
+    "primary_deployed_neural_parameters": 499944,
+    "main_threshold_values": 6,
+    "extra_deployed_heads": 0,
+    "source_bank_deployed": false,
+    "adaptation_success": null,
+    "new_target_DA": false,
+    "formal_target_accessed": false,
+    "registration_success": null,
+    "A_N": null,
+    "H_OW": null,
+    "full_goal_status": "ACTIVE",
+    "primary_selection_changed": false,
+    "result_ref": "docs/PAMF_PHASE3_GROUND_CENTERED_RESULTS_20261101.md"
+  }
+}
