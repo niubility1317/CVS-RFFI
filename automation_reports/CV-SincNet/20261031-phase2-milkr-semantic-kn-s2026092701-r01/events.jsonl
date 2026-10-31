@@ -1,1 +1,3 @@
 {"at": "2026-10-31T02:04:27+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-31T02:07:19+00:00", "status": "RUNNING", "note": "VERIFIED PID1368899 exact CWD/argv/GPU and log growth; real Tri-SIG-TIME SSL source smoke PASS; source proxy running; no target predictions yet", "evidence": ["E:/type10-7/local_artifacts/milkr_opt_20261031/last_status.json"], "row_id": null}
+{"at": "2026-10-31T02:10:44+00:00", "status": "ANALYZED", "note": "VERIFIED all1960 predictions scored; reused560 paired baseline metric rows; primary R3 S0Q0 H delta -2.24pp, +5pp goal not achieved; all negative results retained", "evidence": ["E:/type10-7/local_artifacts/milkr_opt_20261031/public_summary.json"], "row_id": null}
