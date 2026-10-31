@@ -50,3 +50,12 @@ R9与R6在同一P02/seed/split/处理路径实际配对：S0Q0增加0.7111pp、S
 - 新R13（sourcebridge r11）：合法sourceL paired raw/restored特征学习固定rank8残差映射；目标raw路映射到restored特征空间，真实G路不映射。严格S0/S1分别处理，不混入另一支持路。R12头与同head无映射R12C控制，首RX1-1覆盖全部K/N/四路，共160行。先导未达到两个S的Q0+5pp且Q1>Q0则不扩展。映射是离线参数checkpoint，目标不访问源样本特征；不改F/G或默认分类头。
 
 goal保持ACTIVE。没有候选满足最新四路条件与原+5pp要求；不能以技术发布完成代替科学达成。新run状态以其报告和独立post-state为准。
+
+### R13先导实际证据
+
+源6300物理记录/12600配对观察，五源RX留出pair MSE均下降，实际checkpoint/数值smoke通过。P01/MIX01/首RX1-1全部160预测与评分完成，所属进程退出。
+
+- S0 Q0较原版+6.032pp，query接入DURA增量-9.471pp；均值验收False，每格验收False。
+- S1 Q0较原版+27.024pp，query接入DURA增量+25.389pp；均值验收True，每格验收False。
+
+R13是否扩展：False。完整四路/各K/N及同head R12C控制见sourcebridge r11报告和result_summary.json。该单RX证据不代表goal完成；不进行目标反馈调参或选择性重跑。
