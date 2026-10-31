@@ -44,7 +44,7 @@ def test_prior_three_fold_selection_excludes_held_physical_rows(monkeypatch):
     assert set(seen)=={16,24} and seen.count(24)==1 and state.selection['physical_OOF']
 
 
-@pytest.mark.parametrize('method',['prior_fusion','time_orbit','episodic_metric'])
+@pytest.mark.parametrize('method',['prior_fusion','time_orbit','episodic_metric','phase8_prior'])
 def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path,monkeypatch,method):
     import json,types,torch
     from experiments.pamf_phase2_practical import milkr_prior_fusion as worker
@@ -63,7 +63,8 @@ def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path
     monkeypatch.setattr(worker,'extract',extract)
     from experiments.pamf_phase2_practical import teacher_features
     monkeypatch.setattr(teacher_features,'extract_time',extract)
-    if method=='time_orbit':
+    monkeypatch.setattr(teacher_features,'extract_phase8',extract)
+    if method in ('time_orbit','phase8_prior'):
         def wrong_extract(*args,**kwargs):raise AssertionError('Time worker used ordinary C4 extraction')
         monkeypatch.setattr(worker,'extract',wrong_extract)
     class Bridge:

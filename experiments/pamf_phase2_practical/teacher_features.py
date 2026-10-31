@@ -34,6 +34,13 @@ def extract_time(reader,raw,device,engine=None,batch=128):
     return dict(features,teacher_phase_logits=logits),logits[:,0,:]
 
 
+def extract_phase8(reader,raw,device,engine=None,batch=128):
+    from .phase_orbit import extract as orbit_extract,eighth_moments
+    features,logits=orbit_extract(reader,raw,device,engine,batch,aggregate=eighth_moments,return_phase_logits=True,phase_eighths=True)
+    # RF uses C8, while the function prior keeps the original four even phases.
+    return dict(features,teacher_phase_logits=logits),logits[:,0,:]
+
+
 class TeacherBridge:
     encoder_type=OrbitCCA
     def __init__(self,cca):self.cca=cca;self.rank=64

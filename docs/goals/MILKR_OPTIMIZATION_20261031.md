@@ -263,3 +263,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R32 实际结果
 
 36行独立truth-last完成，所属进程退出。两S逐角点验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 2, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 4, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.073811082583179, 'fusion_gain_pp': 1.5445105739453402}, {'S': 'S0', 'K': 20, 'N': 20, 'raw_gain_pp': 4.800539131205339, 'fusion_gain_pp': 3.9085337309138213}]。RF八中心仅当前SUP半中心化，8576bytes与物理OOF核实；原多维ridge gate保持，F/G/head/C4/CCA64保持，G-only完整。不扩12KN或六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### R33 固定八相位RF轨道
+
+从固定R31独立分支：RF八等距相位moments，headprior仍原四偶数相位；G原received一次在前，F8/路径而非4，sourceCCA64/120K1规则，当前SUP R31gate/KRR和R26fusion保持。不带R32中心/R30度量，角度/数量不按目标选择，源合法数值后直接36角点，最终all16两Sraw+5/QF>raw目标不变。

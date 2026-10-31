@@ -77,23 +77,32 @@ def source_smoke(rt,out,device='cuda:0'):
             sv,sl=capture(reader,x)
             require(torch.equal(sv['z_id'],v['z_id']) and torch.equal(sl,logits),'Descriptor hook changed frozen F')
             v=sv
-        if rt.get('kernel_method') in ('phase_orbit','phase_kernel','nonlinear_pair','registered_scale','local_anchor','teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','center_prior'):
+        if rt.get('kernel_method') in ('phase_orbit','phase_kernel','nonlinear_pair','registered_scale','local_anchor','teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','center_prior','phase8_prior'):
             from .phase_orbit import extract,rotate,moments,stack_views
             options=dict(aggregate=stack_views if rt['kernel_method']=='phase_kernel' else moments)
-            if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','center_prior'):
+            if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','center_prior','phase8_prior'):
                 from .teacher_features import extract,probabilities
                 if rt['kernel_method']=='time_orbit':
                     from .teacher_features import extract_time as extract
+                elif rt['kernel_method']=='phase8_prior':
+                    from .teacher_features import extract_phase8 as extract
                 options={}
             iq=np.asarray(x.cpu().tolist(),np.float32)
             g_before={k:v.detach().clone() for k,v in engine.pipeline.model.state_dict().items()}
             base,_=extract(reader,iq,device,**options);shift,_=extract(reader,rotate(iq,1),device,**options)
             single=[extract(reader,iq[i:i+1],device,**options)[0] for i in range(2)]
             require(all(np.allclose(np.roll(value,-1,axis=1) if rt['kernel_method']=='phase_kernel' or key=='teacher_phase_logits' else value,shift[key],rtol=2e-4,atol=2e-5) for key,value in base.items()),'C4 orbit invariance failed')
-            if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','center_prior'):
+            if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior','native_skip','time_orbit','episodic_metric','ridge_prior','center_prior','phase8_prior'):
                 probability=probabilities(base['teacher_phase_logits'])
                 require(probability.shape==(2,6) and np.allclose(probability.sum(1),1),'Frozen default-head probabilities differ')
             require(all(np.allclose(value,np.concatenate([s[key] for s in single]),rtol=2e-4,atol=2e-5) for key,value in base.items()),'Orbit feature depends on other packets')
+            if rt['kernel_method']=='phase8_prior':
+                from .phase_orbit import rotate_eighth
+                from .teacher_features import extract as extract_C4
+                turned,_=extract(reader,rotate_eighth(iq,1),device)
+                require(all(np.allclose(value,turned[key],rtol=2e-4,atol=2e-5) for key,value in base.items() if key!='teacher_phase_logits'),'C8 RF invariance failed')
+                old_C4,_=extract_C4(reader,iq,device)
+                require(np.allclose(base['teacher_phase_logits'],old_C4['teacher_phase_logits'],rtol=2e-4,atol=2e-5),'C8 changed original C4 head prior')
             if rt['kernel_method']=='time_orbit':
                 shifted,_=extract(reader,np.roll(iq,64,axis=2),device)
                 require(all(np.allclose(value,shifted[key],rtol=2e-4,atol=2e-5) for key,value in base.items() if key!='teacher_phase_logits'),'Temporal orbit RF invariance failed')
