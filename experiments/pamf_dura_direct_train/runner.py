@@ -317,6 +317,7 @@ def dispatch(args,p):
                 'pamf_dura_direct_train.phase_prior worker',
                 'pamf_dura_direct_train.signature_guided worker',
                 'pamf_dura_direct_train.mid_signature worker',
+                'pamf_dura_direct_train.antithetic_noise worker',
                 'pamf_dura_efficiency.nonlinear_profile worker',
                 'pamf_dura_efficiency.gpu_profile worker',
                 'pamf_dura_efficiency.interp_profile worker')
