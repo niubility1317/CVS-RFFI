@@ -40,8 +40,7 @@
       8
     ],
     "target_receivers": [
-      3,
-      4
+      34
     ],
     "source_days": [
       1,
@@ -49,8 +48,8 @@
       3
     ],
     "target_days": [
-      "2019-08-21",
-      "2019-08-22"
+      "2021_03_15",
+      "2021_03_23"
     ],
     "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
     "roles": {
@@ -62,7 +61,7 @@
     "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
     "split_id": "392005-LsUs-source5rx-3day-eq1",
     "validation_ref": "Reuse originalL d319 and Us VALIDATED_ONCE capsule pamf-source-Us392005-G10-MIX01-20261031-r01/split392005-Us-source5rx-3day-eq1;no rehash/revalidation",
-    "support_query_ref": "Existing exposed Phase3 RX3-2 development fixedpublicclean/star10238 each/no newformalRX24-18. Additional originalhistoricalPhase1 168000x7/source5RX target7RX0/2/5/7/9/10/11 days0..3.",
+    "support_query_ref": "Existing exposed Phase3 RX34 (RX3-2) fixedpublic clean/star10238 each/2021_03_15 and2021_03_23/noformalRX24-18. HistoricalPhase1 168000x7 remains distinct RX0/2/5/7/9/10/11 days0..3.",
     "leo_config_ref": "ExistingG10 MIX01 scene2026103001/channel2026104001/receiver2027/25MHz2.45GHz600km/refSNR30/reflect/post_sync-noEQ",
     "actual_training_labels": "NoTX/y/V/OE/novel/targettraining. IQ supervision rawsourcepair;optimizationF0feature/parameterreads0;separate realcheckpointsmoke and frozen eval Faccess.",
     "augmentation": "FixedoneG10MIX01 perphysical source;30fullpasses;15%clean mask eachEpoch. NumPydefault_rng2026110101 independent of model/teacher. Originalhistorical received views retain R07/2.462GHz identity,notG10."
@@ -196,7 +195,8 @@
     "Model freeze isfinal30 forbotharms;noV/OE/novel ortarget selection. Everyversion completesalltests evenifsourceworse. No healthyotherownerstop/hotchange.",
     "Main3pp usesactualPhase3F0,not old142256F50correctcount. MissingknownTXscene=N/A. OriginalDURAclosedprotect independentlyreported;no maskingbynewG-ownbaseline.",
     "Historicalold168000seven views retainoldcarrier2.462GHz andoldF50 metadata;rawcleanonlyfrozenevaluation input,notGtraining. Additionaldiagnosticnot mainPhase3G10.",
-    "DefaultDURA unchanged. No extra hash/seal/review/approval. FullgoalACTIVE untilsixscene-clean-open-quality-and-efficiency validated."
+    "DefaultDURA unchanged. No extra hash/seal/review/approval. FullgoalACTIVE untilsixscene-clean-open-quality-and-efficiency validated.",
+    "Metadata-only correction: target RX34 and days2021_03_15/2021_03_23 verified in existing fresh_world_score.py and frozenruntime. Initial registry [3,4]/2019dates were incorrect;actualprogram always consumed unchanged validatedreference_runtime/Q_conditions. No training/testinput/method/budget change."
   ],
   "registered_at": "2026-10-31T17:38:51+00:00"
 }

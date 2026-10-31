@@ -41,3 +41,7 @@ NewGPhase3actualF0/defaulthead. Fixedsource-r03 E0/finalPCD/density/tau retained
 {"status": "VERIFIED_RUNNING", "code_commit": "b33839dd1010dea36b68526043bbc4abe5eb1095", "controller_PID": 2167531, "row_PID": 2167549, "training_PID": 2167559, "GPU": 4, "admission": {"GPU": 4, "free_memory_MB": 21806, "existing_compute_PIDs": 2}, "independent_PID_CWD_cmdline_CUDA_NVML_match": true, "real_source_smoke_PASS": true, "log_bytes": 40, "epochs_seen": 0, "new_target_reads": 0}
 
 真实源smoke通过后已进入原定训练，尚无冻结测试成绩。只有优化期纯IQ不读取F0目标/参数；smoke与冻结评测的F访问另计。阶段间重复核实原GPU资源，其他owner保持。
+
+## 登记字段更正
+
+目标代码 receiver=34（RX3-2），日期2021_03_15、2021_03_23；初版登记误写为[3,4]和2019日期，现按原冻结fresh_world_score及runtime更正。实际程序始终绑定同一个reference_runtime/Q_conditions，没有改变任何训练、测试输入、方法、预算或结果权限。
