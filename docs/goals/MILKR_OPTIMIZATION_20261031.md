@@ -6,7 +6,7 @@
 
 用户已明确允许 raw／DURA 同一条 query 融合，并要求保留仅 DURA 输出对照；support 仍严格 S0 raw、S1 G。新版 Q0=raw、QG（机器 Q1）=仅 G、QF（机器 Q2）=融合。当前主验收为全部 K1/5/10/20×N2/5/10/20、两 S 下 Q0 较匹配原 Q0 至少 +5pp，且同状态 QF>Q0。QG 完整单列，与原 QG 保持同输入配对；QF 与原 QG 的差须标明路径改变，不冒充同输入增益。早期角点、均值、单 support 的高收益不能代替全格。科学协议本轮例外已更新，旧 run 仍保留原 G-only 定义。
 
-R39 首 RX 全16格 120 行已完成：S0 raw+5为11/16、QF>Q0为16/16；S1 raw+5为16/16、QF>Q0为16/16。未达标组合：S0 K1/N20 raw差+4.9513pp、融合差+1.3870pp；S0 K10/N2 raw差+4.5428pp、融合差+3.7388pp；S0 K20/N2 raw差+4.7671pp、融合差+2.9658pp；S0 K20/N5 raw差+3.8462pp、融合差+3.7295pp；S0 K20/N10 raw差+3.8748pp、融合差+3.5878pp。严格晋级 False。最终七RX all16尚未完成，目标ACTIVE。R26/R27为此前历史结果。
+R40 首 RX 全16格 120 行已完成：S0 raw+5为13/16、QF>Q0为16/16；S1 raw+5为16/16、QF>Q0为16/16。未达标组合：S0 K1/N20 raw差+4.7993pp、融合差+1.6152pp；S0 K10/N2 raw差+4.9862pp、融合差+3.8129pp；S0 K20/N5 raw差+4.7036pp、融合差+3.6601pp。严格晋级 False。最终七RX all16尚未完成，目标ACTIVE。R26/R27为此前历史结果。
 
 ## 历史 G-only 阶段每格验收（覆盖旧均值口径）
 
@@ -327,3 +327,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R40 源CCA相关强度表示
 
 固定R34对照路线，将源配对CCA64每坐标乘sqrt(rho)，弱相关方向降权，无新rank/power搜索；双encoder仍557440FP64，源RX/TXheld保护rho。R31prior/融合及F/G/head保持，不混R38/39gate。首RXall16KN120预测后逐格通过才六RX；最终七RXall16目标不变，尚未发布。
+
+### R40 实际结果
+
+120行独立truth-last完成，所属进程退出。两S逐KN验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 13, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 16, 'cells_QF_gt_Q0': 16, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.7993016847533205, 'fusion_gain_pp': 1.6151794290816979}, {'S': 'S0', 'K': 10, 'N': 2, 'raw_gain_pp': 4.986189782680784, 'fusion_gain_pp': 3.8128501672164528}, {'S': 'S0', 'K': 20, 'N': 5, 'raw_gain_pp': 4.703615703764131, 'fusion_gain_pp': 3.6600810159622243}]。源CCA方向sqrt(rho)加权/557440参数及rho摘要核实，R31gate/双核/各折train-only单残差KRR保持；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
