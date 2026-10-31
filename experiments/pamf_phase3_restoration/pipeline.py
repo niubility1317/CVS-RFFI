@@ -37,6 +37,10 @@ def row(args):
             base=args.root/'releases/pamf_stage2_inference_20261021_r01'
             env['PYTHONPATH']=':'.join(map(str,[Path.cwd(),base,base/'code']))
         if stage.endswith('_score'):env['CUDA_VISIBLE_DEVICES']=''
+        else:
+            gpu=int(os.environ['CUDA_VISIBLE_DEVICES'])
+            while not any(a['GPU']==gpu for a in gpu_choice()):
+                print('WAIT_ALLOWED_GPU_FOR_STAGE',args.arm,stage,gpu,flush=True);time.sleep(20)
         begin=time.perf_counter()
         # Both prediction processes must terminate successfully before either
         # independent scorer is started. Failed output roots are never reused.
