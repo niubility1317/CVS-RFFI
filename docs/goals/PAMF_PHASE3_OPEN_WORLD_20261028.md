@@ -1243,3 +1243,13 @@ Run `20261031-phase3-source-spectral-calibration-s2026092701-r01` / code `c8b192
 ## 2026-10-31：源接收机幅频补偿证伪完整结果
 
 Run `20261031-phase3-source-spectral-calibration-s2026092701-r01` / code `c8b192edd0b4c34c32b67fb6e777fdfaa7269232`，原源L2100早日无y谱拟合、全两路6300预测及后日4200源标签诊断 VERIFIED 完成。后日F0宏92.142857→91.857143%，净正确−12，各RX下降≤0.952381pp身份保护通过；r03同TX跨RX距离.007290349→.018584697（增154.921901%）未减10%，类间保留97.199814%通过。联合SOURCE_SCREEN_FAILED，不进入目标预测，不改PCD，不扩seed；source模型已见RX/TX/记录非独立未见RX证据。新F0/r03各12600/G0，NN/GMM/tau0，V/NV/OE/Us/targetU/Q/private0，开放与注册指标NA，正式24-18未访问，完整goalACTIVE。见`docs/PAMF_PHASE3_SOURCE_SPECTRAL_CALIBRATION_RESULTS_20261031.md`。
+
+
+## 2026-10-31：固定与动量原型教师无标签适应预登记
+
+Run `20261031-phase3-momentum-prototype-s2026092701-r01` / code `fe1f38519edc849fffd3070350da956ea8869066`，纯源r03独立FIXED/EMA两学生各444，源L192/OE64严格SOURCE444索引，合法U576原三view，同记录16slot softCE/.1，不用nearest/Sinkhorn/硬TX；teacher固定或.996EMA、center.9、T.04/.1，Sinc/buffers/F0/default/G冻结，teacher/head不部署。新888优化，2源GMM/4新6tau，8×3DURA全pred后CPU3truth/Utruth0；SOURCE/OLDPCD精确复用。原门槛/开发已曝光/缺类日NA/正式24-18不读/ANHOWNA保持，goalACTIVE。见`docs/PAMF_PHASE3_MOMENTUM_PROTOTYPE_PLAN_20261031.md`。
+
+
+## 2026-10-31：固定与动量原型教师适应完整结果
+
+Run `20261031-phase3-momentum-prototype-s2026092701-r01` / code `fe1f38519edc849fffd3070350da956ea8869066`，FIXED/EMA纯r03独立2×444/同L-OE-U流、8×3DURA预测与CPU3truth VERIFIED完成。唯一主EMA_pred：source_DURA: AK/CK/RU/H=89.670370/96.614815/64.190476/74.820643%；原F0同G损1.311111pp；clean_DURA: AK/CK/RU/H=31.273249/43.015944/63.014974/41.801254%；原F0同G损17.293766pp；star_DURA: AK/CK/RU/H=27.402862/47.470498/50.134827/35.436644%；原F0同G损14.318196pp。sourceknown12=True、target保护=False，科学NO_PROMOTION，不扩seed/不换PCD。固定与动量教师同recordsoftCE，无neighbor/Sinkhorn/真TX；新U576祖先明确，F0/default/G保持，部署无teacher/head/center；newopt888/sourceGMM2/newtau24，ANHOWNA，开发已曝/单RXseed/缺old日NA/全局historyUNKNOWN/正式24-18未读，完整goalACTIVE。全888步/24读出/分组/配对/成本见`docs/PAMF_PHASE3_MOMENTUM_PROTOTYPE_RESULTS_20261031.md`。

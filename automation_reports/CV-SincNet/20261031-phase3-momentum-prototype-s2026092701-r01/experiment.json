@@ -1,0 +1,290 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-momentum-prototype-s2026092701-r01",
+  "group_id": "pamf-phase3-momentum-prototype",
+  "display_name": "PAMF第三阶段：固定教师与动量教师的无标签开放表征适应",
+  "description": "Matched fixed/EMA source-r03 teachers on same U576 weak/strong records, source replay and frozen F0 identity; two new students, exact SOURCE/PCD controls, eight readouts and three DURA conditions.",
+  "kind": "cvs",
+  "stage": "Phase3-unsupervised-open-adaptation",
+  "aliases": [
+    "动量原型无标签适应"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "UDA",
+    "momentum_teacher",
+    "prototype",
+    "DURA",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-momentum-prototype",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-body-prototype-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "fe1f38519edc849fffd3070350da956ea8869066",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-momentum-prototype-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.momentum_prototype_launch",
+      "experiments.pamf_phase3_open_world.momentum_prototype_train",
+      "experiments.pamf_phase3_open_world.momentum_prototype_run",
+      "experiments.pamf_phase3_open_world.momentum_prototype_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_MOMENTUM_PROTOTYPE_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Original source G10 P1 L/OE/V/NV and fixed RX3-2 star U/future paired Q",
+    "version": "Unchanged VALIDATED_ONCE source392005 and fresh development handles",
+    "representation": "Frozen DURA P1 -> original F0 default identity plus new SignalOpen student; train-only16slot cosine/center/teacher",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 独立开放表征的无标签神经适配",
+    "physical_ids_ref": "Unchanged source ids.npy, originalfresh U_features ids and public future capsule IDs",
+    "label_map_ref": "Originalsix L/V y; OE outside-six only; U trueTX/K/quotas forbidden; future trueTX scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2/index34"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01 U",
+      "2021-03-15/23 futureQ"
+    ],
+    "tx_sets_ref": "Old14-10/14-7/20-15/20-19/6-15/8-20; future unregistered5-5/10-7/2-19/7-11 only builder/scorer; later7-11 not inU",
+    "roles": {
+      "source_L": 6300,
+      "source_OE": 6134,
+      "source_V_known_calibration": 27000,
+      "source_NV": 3150,
+      "original_U_s_new": 0,
+      "target_star_U": 576,
+      "target_future_Q_unique": 10238,
+      "target_future_known": 4508,
+      "target_future_unknown": 5730,
+      "U_truth_fit": 0
+    },
+    "train_ratio": "Original F0 L6300/63000=10%; sourceL/OE replay and knownV labels retained, target TX labels0",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "Existing source VALIDATED_ONCE; unchanged fresh public U/Q capsule/split; source F0/r03/G ancestry",
+    "support_query_ref": "U03-01 vs future03-15/23 physicaldisjoint; Qclean/star paired IDs/order, no clean U; 03-23 absent old classes AK/CK/H NA",
+    "leo_config_ref": "Same fixed G10 MIX01 source/U/future received and DURA v1R69, source3001/4001 receiver2027, future3133/3134, no redrawn channel"
+  },
+  "permissions": {
+    "regime": "Pure-source r03 initialization, sourceL real y/OE membership replay. U only existing starP1+fixedphase/gain,16capacity nottrueK, no neighbor/hardpseudo/Sinkhorn. Teacher/center fit onlyU, noquery.",
+    "query_use": "KnownV only four new6tau after both nets and sourceGMMfreeze. NV and pairedQ only frozen prediction, independent3truth after all8x3. No target truth feedback/registration.",
+    "external_method_exception": null,
+    "claim_scope": "One exposed development RX/seed, not blind confirmation. SourceV calibrated and globalphysicalhistoryUNKNOWN. FixedvsEMA isolates teacher update; PCDeffect is multi-component comparison. FullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Each student/teacher independently from original pure-source r03, never target-adapted PCDFresh or SOURCE444 as init; original F0/default/G frozen",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Same source392005 F0/r03/G ancestors; SOURCE444 pure-source control precedes U and exactsourceindicesmatch; new students haveU576 ancestor; oldPCDU576 explicit",
+    "selection_rule": "Fixed444 each, noQ/sourceNV checkpointselection; teacher .996/.9 center/.04/.1 temperatures/auxweight.1 fixedbefore training; onlyfinalstudentdeploys"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-momentum-prototype-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-momentum-prototype-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-momentum-prototype-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_momentum_prototype_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.momentum_prototype_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-momentum-prototype-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One serialtwoarm train, oneprediction, CPUscore; actualfree>=4096MiB, max2newtaskGPUworkers/card, foreign untouched",
+    "stop_rule": "Illegal ancestor/role, nonfinite, frozenstatechange, collision or unablelegalprediction preserved technicalfailure; low scientific scores complete fullmatrix, no hotchange/restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/{train,eval}.json",
+    "logs/{driver,train,predict,score}.log",
+    "train/{resolved_config,smoke,complete}.json",
+    "train/<ARM>/{steps.jsonl,complete.json,final.pt,aux_teacher.pt}",
+    "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "Hscore",
+      "origF0sameDURAclosedminusAK",
+      "AUROC/OSCR",
+      "EMA_FIXED pairedchanges",
+      "sourceknown12/42",
+      "Uteacherentropy/slotmass/gradients",
+      "AN/HOWNA"
+    ],
+    "dimensions": [
+      "8readouts",
+      "source5RX/cleanRX34/starRX34",
+      "requiredsixscenes",
+      "trueTX/receiver/day",
+      "fixedvsEMA and source/oldPCD matchedIDs"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-momentum-prototype-s2026092701-r01/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.momentum_prototype_score",
+    "targets_ref": "CleanRU95/starRU90/CK90/origF0gap2pp/fullrosterandscenes; sourceknown12; starAKaboveSOURCEandOLDPCD/RUnotlower; no goalrelaxation",
+    "primary": [
+      "EMA_TEACHER_predicted_ratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "FIXED_TEACHER-s2026092701",
+      "method": "FIXED_TEACHER",
+      "purpose": "Same-record soft prototype consistency, teacher frozen",
+      "config_ref": "docs/PAMF_PHASE3_MOMENTUM_PROTOTYPE_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-momentum-prototype-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026103114,
+        "support": 2026103113,
+        "evaluation": null
+      },
+      "seed_notes": "SourceL/OE2026103017/18 andU2026103112 exactpaired; views inheritedfixed3114; headinit3113; Qscene/channel inherited3133/3134, no new draw",
+      "k": null,
+      "scenario": "Source starreplay + targetstarU576, then source/clean/starDURA frozen tests",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "444each,888newtotal; body334673+head2560 train, frozenSinc48,teacher255744/student170496rows each, pureparent12434once; sourceGMM2/newtau24; no teacher/headdeploy",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-momentum-prototype-s2026092701-r01/train/FIXED_TEACHER",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-momentum-prototype-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.momentum_prototype_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-momentum-prototype-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt,aux_teacher.pt}",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    },
+    {
+      "row_id": "EMA_TEACHER-s2026092701",
+      "method": "EMA_TEACHER",
+      "purpose": "Same-record soft prototype consistency, teacher EMA.996",
+      "config_ref": "docs/PAMF_PHASE3_MOMENTUM_PROTOTYPE_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-momentum-prototype-s2026092701-r01/configs/train.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026103114,
+        "support": 2026103113,
+        "evaluation": null
+      },
+      "seed_notes": "SourceL/OE2026103017/18 andU2026103112 exactpaired; views inheritedfixed3114; headinit3113; Qscene/channel inherited3133/3134, no new draw",
+      "k": null,
+      "scenario": "Source starreplay + targetstarU576, then source/clean/starDURA frozen tests",
+      "optimizer": "AdamW ordinaryclip5",
+      "lr": 0.0001,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "444each,888newtotal; body334673+head2560 train, frozenSinc48,teacher255744/student170496rows each, pureparent12434once; sourceGMM2/newtau24; no teacher/headdeploy",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-momentum-prototype-s2026092701-r01/train/EMA_TEACHER",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-momentum-prototype-s2026092701-r01/logs/train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.momentum_prototype_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-momentum-prototype-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/{train,eval}.json",
+        "logs/{driver,train,predict,score}.log",
+        "train/{resolved_config,smoke,complete}.json",
+        "train/<ARM>/{steps.jsonl,complete.json,final.pt,aux_teacher.pt}",
+        "predict/{models,calibration,source,targets,thresholds.npz,complete.json}",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "No targetTX/K/quota or query fitting; all Uteacher probabilities remain predictions, not accuracy.",
+    "Both new branches independently initialize pure-source r03 and match completed SOURCE444 sampling; fixedcontrol precedes U.",
+    "Teacher/head/center are trainingonly, originalF0 closed prediction unchanged in all frozen tests.",
+    "All8x3 predictions before independent3truth; main fixedlastcolumn, no after-score selection; formal24-18 unaccessed.",
+    "No discovery/anonymous registration in this candidate; fullgoalACTIVE and PCD researchbaseline retained unless preregistered jointgate passes."
+  ],
+  "registered_at": "2026-10-31T10:29:08+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "fe1f38519edc849fffd3070350da956ea8869066",
+    "primary_method": "EMA_TEACHER_predicted_ratio",
+    "adaptation_success": false,
+    "development_gate_passed": false,
+    "source_known_12_passed": true,
+    "target_protection_passed": false,
+    "metrics": {
+      "source_DURA": {
+        "A_K": 0.8967037037037037,
+        "C_K": 0.9661481481481483,
+        "R_U": 0.6419047619047619,
+        "H_score": 0.7482064349586366,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.013111111111111295
+      },
+      "clean_DURA": {
+        "A_K": 0.31273249221581007,
+        "C_K": 0.43015943664762674,
+        "R_U": 0.630149738086657,
+        "H_score": 0.4180125401191678,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "original_closed_minus_new_open": 0.17293766117624643
+      },
+      "star_DURA": {
+        "A_K": 0.2740286232786031,
+        "C_K": 0.47470497748976687,
+        "R_U": 0.5013482661589738,
+        "H_score": 0.35436644302955744,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "original_closed_minus_new_open": 0.14318196221207907
+      }
+    },
+    "new_student_optimizer_updates": 888,
+    "EMA_teacher_updates": 444,
+    "fixed_teacher_updates": 0,
+    "unique_target_U_records": 576,
+    "all888_source_U_indices_equal": true,
+    "original_F0_G_r03_unchanged": true,
+    "new_source_density_models": 2,
+    "new_source_threshold_values": 24,
+    "formal_target_accessed": false,
+    "target_REG": false,
+    "full_goal_status": "ACTIVE",
+    "result_ref": "docs/PAMF_PHASE3_MOMENTUM_PROTOTYPE_RESULTS_20261031.md"
+  }
+}
