@@ -44,7 +44,8 @@ def test_prior_three_fold_selection_excludes_held_physical_rows(monkeypatch):
     assert set(seen)=={16,24} and seen.count(24)==1 and state.selection['physical_OOF']
 
 
-def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path,monkeypatch):
+@pytest.mark.parametrize('method',['prior_fusion','time_orbit'])
+def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path,monkeypatch,method):
     import json,types,torch
     from experiments.pamf_phase2_practical import milkr_prior_fusion as worker
     cap=tmp_path/'capsule';(cap/'splits').mkdir(parents=True);(cap/'stage_rows').mkdir()
@@ -60,6 +61,11 @@ def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path
     monkeypatch.setattr(worker,'split_rows',lambda cap,s:np.arange(1,len(s['registered_classes'])*2,2))
     def extract(reader,raw,device,engine=None,batch=128):return dict(code=np.asarray(raw)[:,0,0].astype(int),restored=np.full(len(raw),engine is not None)),None
     monkeypatch.setattr(worker,'extract',extract)
+    from experiments.pamf_phase2_practical import teacher_features
+    monkeypatch.setattr(teacher_features,'extract_time',extract)
+    if method=='time_orbit':
+        def wrong_extract(*args,**kwargs):raise AssertionError('Time worker used ordinary C4 extraction')
+        monkeypatch.setattr(worker,'extract',wrong_extract)
     class Bridge:
         def transform(self,features,*,restored,old_columns):mapped.append(old_columns);return features
     monkeypatch.setattr(worker.TeacherBridge,'load',lambda path:Bridge())
@@ -72,7 +78,7 @@ def test_worker_emits_aligned_raw_G_and_fusion_rows_with_strict_support(tmp_path
             if not restored:scores[rows,(code+1)%self.count]=.6
             return scores,np.full(len(code),.1 if restored else .5)
     monkeypatch.setattr(worker,'fit',lambda f,y,ids,fixed:State(f,y))
-    rt=dict(run_root=str(run),data_root=str(tmp_path),source_contract=str(contract),K=[1],N=[2],arm='test',model_seeds=[1],decision_batch=3)
+    rt=dict(run_root=str(run),data_root=str(tmp_path),source_contract=str(contract),K=[1],N=[2],arm='test',model_seeds=[1],decision_batch=3,kernel_method=method)
     worker.worker(rt,'capsule');root=run/'predictions/rx';payload=json.loads((root/'predictions.json').read_text())
     assert len(payload['rows'])==12 and support==[[False]*6,[True]*6,[False]*8,[True]*8]
     assert all(value==[5,4,3,2,1,0] for value in mapped)

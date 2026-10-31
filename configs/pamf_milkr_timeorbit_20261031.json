@@ -1,0 +1,50 @@
+{
+  "run_id": "20261031-phase2-milkr-timeorbit-s2026092701-r28",
+  "kernel_method": "time_orbit",
+  "arm": "R29",
+  "K": [
+    1,
+    20
+  ],
+  "N": [
+    2,
+    20
+  ],
+  "model_seeds": [
+    2026092701
+  ],
+  "capsules": [
+    "capsules/P01/MIX01/1-1"
+  ],
+  "orbit_quarters": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "orbit_rank": 64,
+  "prior_weight": 0.5,
+  "fusion_policy": "rf_distance_margin_half_v1",
+  "confidence_rule": "support_entropy_means_v1",
+  "query_paths": [
+    0,
+    1,
+    2
+  ],
+  "primary_query_paths": [
+    0,
+    2
+  ],
+  "time_shifts": [
+    0,
+    64,
+    128,
+    192
+  ],
+  "source_control_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-confprior-s2026092701-r26/source_selection.json",
+  "source_primary_gain_min_pp": 0.5,
+  "source_each_raw_K_S_gain_min_pp": -0.25,
+  "query_fit": false,
+  "target_rows_pilot": 36,
+  "target_goal": "all16KN bothS Q0original+5/QF>Q0"
+}

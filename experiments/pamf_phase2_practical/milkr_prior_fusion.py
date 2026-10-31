@@ -12,6 +12,9 @@ from .milkr.prior_fusion import fit,fuse,head_columns
 
 def worker(rt,capname):
     import torch
+    extract_features=extract
+    if rt.get('kernel_method')=='time_orbit':
+        from .teacher_features import extract_time as extract_features
     reader,engine=initialize(rt);before={key:value.detach().clone() for key,value in reader.state_dict().items()}
     g_before={key:value.detach().clone() for key,value in engine.pipeline.model.state_dict().items()}
     cap=Path(rt['data_root'])/capname;m=read(cap/'manifest.json');root=Path(rt['run_root'])/'predictions'/m['receiver'];root.mkdir(parents=True,exist_ok=False)
@@ -24,7 +27,7 @@ def worker(rt,capname):
         for n in [0]+rt['N']:
             stage='C' if n else 'B';spec=specs[k,n];task=load_task(cap,spec['split_id'],stage=stage)
             for sp,g in enumerate((None,engine)):
-                features,_=extract(reader,task['support_x'],'cuda:0',g,batch=k)
+                features,_=extract_features(reader,task['support_x'],'cuda:0',g,batch=k)
                 features=bridge.transform(features,restored=bool(sp),old_columns=columns);begin=time.perf_counter();state=fit(features,task['support_y'],task['support_ids'],fixed=rule)
                 write(root/f'{stage}-K{k}-N{n}-S{sp}-{arm}-fit.json',dict(selection=state.selection,config=state.config,ridge=state.ridge,tau=state.tau,
                     seconds=time.perf_counter()-begin,F_updates=0,G_updates=0,query_fit=False,B_function_inherited=False,
@@ -40,7 +43,7 @@ def worker(rt,capname):
         rows.append(dict(split_id=spec['split_id'],stage=stage,arm=arm,input_path=f'S{sp}Q{qp}',prediction=name,k=spec['k'],new_count=spec['new_count'],registered_classes=classes,
             query_semantics={0:'raw',1:'DURA_only',2:'same_record_raw_DURA_gated_half_fusion'}[qp]))
     for qp,g in enumerate((None,engine)):
-        features,_=extract(reader,np.asarray(bank[allrows]),'cuda:0',g);features=bridge.transform(features,restored=bool(qp),old_columns=columns)
+        features,_=extract_features(reader,np.asarray(bank[allrows]),'cuda:0',g);features=bridge.transform(features,restored=bool(qp),old_columns=columns)
         for spec,stage,sp,state in states:
             query=split_rows(cap,spec);positions=pos[query];require((positions>=0).all(),'Invalid query bank mapping');score_parts=[];distance_parts=[]
             for begin in range(0,len(positions),rt['decision_batch']):

@@ -27,6 +27,13 @@ def extract(reader,raw,device,engine=None,batch=128):
     return dict(features,teacher_phase_logits=logits),logits[:,0,:]
 
 
+def extract_time(reader,raw,device,engine=None,batch=128):
+    from .phase_orbit import extract as orbit_extract,spacetime_moments
+    features,logits=orbit_extract(reader,raw,device,engine,batch,aggregate=spacetime_moments,return_phase_logits=True,time_shifts=(0,64,128,192))
+    # The neural-head prior keeps its original unshifted C4 probability function.
+    return dict(features,teacher_phase_logits=logits),logits[:,0,:]
+
+
 class TeacherBridge:
     encoder_type=OrbitCCA
     def __init__(self,cca):self.cca=cca;self.rank=64

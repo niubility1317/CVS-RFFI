@@ -231,3 +231,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R28 实际结果
 
 source 主宏H相对 CCA-only -1.5595pp，各K/S raw差 [{'k': 1, 'S': 0, 'delta_pp': -5.141878965716229}, {'k': 1, 'S': 1, 'delta_pp': -0.7225802969615058}, {'k': 20, 'S': 0, 'delta_pp': 1.5401789024587442}, {'k': 20, 'S': 1, 'delta_pp': -8.879950739822384}]，源门槛 False。按预登记 source-only 停止，target0、未拟合最终encoder。 所属进程已退出，所有旧run保持；最终16KN逐格目标未达，goal ACTIVE。
+
+### R29 时间相位轨道候选
+
+固定同received移位0/64/128/192×四相位，共16RF视图，G先原包一次，headprior仍未移位原C4。每移位重算HanningFFT，源CCA64五RX/TXheld，源主H对R27sourcecontrol≥+.5pp且每K/Sraw≥−.25pp才进36行角点；失败target0。当前SUP prior/OOF/fusion不变，最终all16两Sraw+5/QF>raw保持，goal ACTIVE。
