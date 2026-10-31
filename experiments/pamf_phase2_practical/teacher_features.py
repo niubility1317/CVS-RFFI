@@ -121,5 +121,5 @@ class OrbitEnsembleBridge:
 def bridge_type(method):
     if method=='native_skip':return NativeSkipBridge
     if method=='episodic_metric':return EpisodicMetricBridge
-    if method in ('orbit_ensemble','class_orbit_ensemble'):return OrbitEnsembleBridge
+    if method in ('orbit_ensemble','class_orbit_ensemble','density_orbit_ensemble'):return OrbitEnsembleBridge
     return TeacherBridge

@@ -291,3 +291,7 @@ q包含已知head全概率、熵和top2margin；旧/新SUP各总权重.5，ridge
 ### R35 实际结果
 
 36行独立truth-last完成，所属进程退出。两S逐角点验收 [{'support': 'S0', 'cells_Q0_gain_at_least5': 3, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': False, 'raw_old_new_mean_guard_pass': True}, {'support': 'S1', 'cells_Q0_gain_at_least5': 4, 'cells_QF_gt_Q0': 4, 'every_KN_criteria_pass': True, 'raw_old_new_mean_guard_pass': True}]；严格晋级 False，实际失败组合 [{'S': 'S0', 'K': 1, 'N': 20, 'raw_gain_pp': 4.585342794301766, 'fusion_gain_pp': 1.3888308036236918}]。类别校准prior/568bytes和双RF核/单KRR物理OOF核实；F/G/head冻结、双sourceCCA64重新拟合，G-only完整。不扩12KN或六RX，不按本run目标结果回调参数。 最终all16逐格目标仍ACTIVE。
+
+### R36 当前SUP核密度归一化
+
+在R34双核上作正对角密度归一化，A取双RBF均值，d(x)=meanA(x,trainSUP)，Knew=mean(dSUP)*Kparent/sqrt(dx*dSUP)。每物理OOF只trainSUP，query逐记录，不更新F/G/head。R31成员prior和融合保持，源选120K1规则，先36角点；最终all16/七RX逐格目标不变。尚未发布。
