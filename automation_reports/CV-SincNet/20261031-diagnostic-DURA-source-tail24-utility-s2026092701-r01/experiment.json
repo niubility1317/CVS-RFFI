@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01",
+  "group_id": "phase1-dura-source-tail24-identity-utility",
+  "display_name": "窗口尾部误差是否值得优先恢复：等能量源IQ对照",
+  "description": "固定defaultDURA/source512×01/20，尾24点sourceclean替换对比同L2修正能量的全窗口最近clean IQ；原F默认头，0G/TX-V-target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "tail24",
+    "equal-energy",
+    "identity-utility",
+    "F-guided"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active restoration-performance-efficiency goal and explicit independent frozen-source-F guidance; source-only CPU association/latent intervention; no G training or target use",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "OriginalR07source512128L384U/cache01and20/defaultDURA nativeIQ and sourceclean F from branchFeatures immutable observations",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07source63000 and fixedsource_indices512/128L384U/IDs/RX/day, no position search",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07cache01/20;0newchannelobservations;onlytemporarysourceIQcounterfactuals",
+    "target_panel": "None",
+    "actual_training_labels": "No G/model training/TX/V/target. SourcecleanIQ oracles at fixedtail24 or nearestglobal equal-energy repair. SamecleanFchoices diagnostic proxy"
+  },
+  "permissions": {
+    "regime": "Source_only_tail24_equal_energy_IQ_utility",
+    "query_use": "No query/target/V/TX. PairedsourcecleanIQ unavailabledeployment;originalF/head frozen",
+    "external_method_exception": null,
+    "claim_scope": "Source window-location utility at equal correctionenergy only,notcausalboundarymechanism/trueTX/deployableIQ/recoveryceiling"
+  },
+  "checkpoint": {
+    "initialization": "OriginalfrozenF50/defaulthead only, no G checkpoint/init/forward/optimizer. ExistingdefaultDURA source nativeIQ as DATAONLY",
+    "sources": [
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "runs/20261031-diagnostic-DURA-source-branchFeatures-s2026092701-r01/clean_components.npz and DURA_default-{1,20}.npz DATAONLY"
+    ],
+    "contract_check_ref": "SameF50/source4df7/50-11100/defaulthead;fixedsource512 positions/IDs/clean/L-U/RX/day/sourcecache01-20;oldbranchFeatures unchangedF/0TX-V-target/PAFAIL;real2Ls fullfeatures/defaulthead replay",
+    "provenance_verdict": "Originalsame-sourceF50 and immutabledefaultDURA source observations. No newGparent or target-drivenselection. F50/11100 and historicalG/cachecosts explicit",
+    "selection_rule": "Fixedtail24[232:256] from earlier SOURCE inverse per-sample tail3.20x error,not targetattribution. Tailcleanrepair vs closestglobalclean in sameL2ball radius||tailerror||. Bothviews tail cleanFgain>=4vsnative and>=2vsglobal,allRX/clean>=global,eachnonclean>=global-1,fullfeatureMSE<=native. Allcleanpositive descriptive. PASS onlysupports independentboundarylearninghypothesis registration/noautomaticG"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-tail24-utility",
+    "gpu_policy": "CPU2/OMP-MKL-OPENBLAS2/CUDAempty/0GPU;oldowncommonSIG1757624naturallyended;otherownersuntouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.boundary_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badsource/order/collision/nonfinite/Fstate/real2Ls smoke/equalenergy mismatch:preserveandstop/noautoretry. ScientificFAILnotsegment-length/threshold/model search;noautomaticGtraining"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "reference.npz PRIVATE",
+    "DURA_default-{1,20}.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "tail24/full errorenergy andprefix232 per-sample ratio",
+      "exacttailIQsupport/equalcorrectionenergy/globalclosestclean",
+      "cleanFchoiceagreement/vsnative-vsglobal/margin/fullfeatureMSE/IQNMSE",
+      "sourceRX/day/role/scene/state/lock",
+      "fixedbothviewcriteria/Fstate/cost"
+    ],
+    "dimensions": [
+      "512sourcephysicalrecords128L384U",
+      "fixeddefaultDURA/caches01and20",
+      "native/tail24clean/equalenergyglobal/allclean"
+    ],
+    "prediction_ref": "No newG/formalpredictions. SourcepairedcleanIQ counterfactuals unavailabledeployment;privateallIQ/features/logits",
+    "scorer_ref": "IndependentNumPy exacttail/globalIQ/support/equalenergy/1024sourceobservations/4096headrows/52groups/criteria;0extraNN/TX"
+  },
+  "rows": [
+    {
+      "row_id": "source-tail24-utility",
+      "method": "Tail24 sourceclean IQ replacement versus closestglobalclean at exactly equal correctionL2energy",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/boundary_probe.py",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "OriginalF/model2026092701;fixedsourceindices2026101901/split392005/cache2026101912;no modelseedscan/support/targetevaluation",
+      "k": null,
+      "scenario": "Source512128L384U×01/20/defaultDURA;pairedcleanIQoracles only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2;mainfullF2048/head4096;real2Ls smokeF2/head2;0Gcheckpoint-forward-modeloptimizer/TX-V-target",
+      "output_root": "runs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.boundary_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-tail24-utility-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "reference.npz PRIVATE",
+        "DURA_default-{1,20}.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only motivation: earlier defaultDURA sourceinverse cached20 tail24 per-sample error .0515872 versusprefix232 .0161141 (~3.20x). Do not derive method from targettailattribution. New question is whether this error location has useful identity utility,not whether replacing clean is deployable.",
+    "FixeddefaultDURA/source512128L384U/cache01and20. Fourcases native;exactsourcecleanlast24;nearestglobalclean at exactsameL2correctionenergy;allclean. If e=clean-native and et=last24 e, global=native+(||et||/||e||)e, withzeroe givingzero. This globalcase is nearestclean in ballradius||et||, not an algorithmic performance ceiling.",
+    "BOTH tail agreements>=native+4andglobal+2;all5sourceRXandclean>=global;eachnonclean>=global-1;meanfullfeatureMSE<=native. Allclean512 tautology/nottrueTX100percent;not selectableprimary. Nosegmentlength/indices/control/threshold search;PASSonlysupports separateboundaryGhypothesis registration,notautomatictraining.",
+    "Reuseactualnative/cleanFfeatures. Onlytail/globalnewFforward2048,all4casesoriginalhead4096;smokeF2/head2. No Gcheckpoint/load/forward/modeloptimizer/TX/V/target. SourceF50supervisedknowledge and historicalG/cachecosts disclosed,notF-free.",
+    "2focusedtestsPASS:fixedtailexactclean/prefixunchanged/equalL2energy/globalclosestclean/unchangedinputs;zeroerror-zero-tail identity and malformedIQ rejection. ActualmoduleentryPASS. OneP0P1PASS. Firstreal2Ls actualfullF/defaulthead/cachematch PASScontinues.",
+    "OneN607preflight/singlearchiveSHAcompare/remotecompile/postPID-CWD-argv-CUDAempty-loggrowth. FullprivateIQ/features/logits independentlyrecomputedmetrics/head/arithmetic/52groups,notrepeatedNN. DefaultDURA and full3pp-clean-efficiency goal unchanged."
+  ],
+  "registered_at": "2026-10-31T08:36:41+00:00"
+}
