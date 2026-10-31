@@ -1,0 +1,97 @@
+{
+  "status": "ANALYZED",
+  "summary": {
+    "1": {
+      "count": 512,
+      "defined_tangent": 512,
+      "defined_IQ": 512,
+      "mean_tangent_cosine": 0.6438632966910518,
+      "mean_IQ_cosine": 0.07103923889508224,
+      "nonnegative_tangent": 493,
+      "rx_mean_tangent": {
+        "1": 0.7577838109245578,
+        "3": 0.5380530275094012,
+        "4": 0.7198339063929868,
+        "6": 0.6314570260252438,
+        "8": 0.5717785579414623
+      },
+      "median_tangent_to_IQ_norm": 74.54737854003906,
+      "mean_tangent_loss": 0.0982869792986154,
+      "mean_exact_loss": 0.1412586023875093,
+      "median_linearization_relative_error": 0.5315914154052734
+    },
+    "20": {
+      "count": 512,
+      "defined_tangent": 512,
+      "defined_IQ": 512,
+      "mean_tangent_cosine": 0.6610803371077054,
+      "mean_IQ_cosine": 0.07094647660096598,
+      "nonnegative_tangent": 484,
+      "rx_mean_tangent": {
+        "1": 0.7651209229404486,
+        "3": 0.5435707700968373,
+        "4": 0.7754287725570155,
+        "6": 0.6658551734415632,
+        "8": 0.5554417135392867
+      },
+      "median_tangent_to_IQ_norm": 75.46025085449219,
+      "mean_tangent_loss": 0.08815399793662237,
+      "mean_exact_loss": 0.10080555166474525,
+      "median_linearization_relative_error": 0.525912880897522
+    }
+  },
+  "decision": {
+    "eligible": true,
+    "views": [
+      {
+        "view": "1",
+        "passed": true
+      },
+      {
+        "view": "20",
+        "passed": true
+      }
+    ],
+    "fixed_source_weight": 0.0033130025035573727,
+    "automatic_training": false
+  },
+  "rule": "PrimaryfixedrepeatE30 sourceerrors only. Bothcached01/20 musthave512definedperpacketIQgradcosines, mean tangent/exact-head-feature gradient cosine>=.5 and>=plainIQmean+.1,atleast384/512nonnegative, every5sourceRXmeantangentcosine>=0. Onlythen qualifies separate scratchjointE30 with fixedweight .25/max(two median tangent/IQ NMSE IQgradientnormratios). Noautomatictraining, no target/TXaccuracyclaim. Clean Jacobian is exactlocalderivative,notgloballyexactfeatureloss.",
+  "F_teacher": {
+    "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "seed": 2026092701,
+    "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+    "epoch": 50,
+    "updates": 11100
+  },
+  "source_context_run": "20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01",
+  "source_checkpoint": "20261031-phase1-DURA-repeatViews-E30-s2026092701-r01",
+  "source_commit": "8cf8e22c9ffb54d271b22e621401de8e34c69068",
+  "source_records": 512,
+  "L_s": 128,
+  "U_s": 384,
+  "source_views": [
+    1,
+    20
+  ],
+  "source_F_inputs": 1536,
+  "smoke_F_inputs": 6,
+  "new_G_inputs": 0,
+  "source_clean_J_VJP_inputs": 2560,
+  "smoke_J_VJP_inputs": 20,
+  "source_restored_VJP_inputs": 1024,
+  "F_unchanged": true,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "source_J_numeric_bytes": 5242880,
+  "full63000_J_estimated_numeric_bytes": 645120000,
+  "fullE30_cached_J_estimated_numeric_read_bytes": 19353600000,
+  "source_J_cache_seconds": 3.690888814162463,
+  "seconds": 5.796346447896212,
+  "scope": "SOURCE_ONLY",
+  "code_commit": "ff6926facd886afa7843ca67e1942153994d86e7",
+  "independent_geometry_records": 2048,
+  "independent_tangent_and_IQ_vector_max_abs": 2.9670997196973303e-06,
+  "goal_complete": false
+}

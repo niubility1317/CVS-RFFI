@@ -273,3 +273,6 @@ Fresh30本行正式结案：32a/30轮7410/L189000U1701000，实际sourceview1..3
 
 
 完整两阶段源context诊断已结束：20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/97da8a29，主对照纯repeat源E30/7410、512源128L384U×clean/01/20，CPU36.665秒/0GPU/0优化TX-V-target。真实算子替换使主对照NMSE降低约11%，但Fclean选择−2/−5、clean−1；rank32真实算子表示误差很小而预测平滑后IQ略差、F选择+1/0。两项均未过事前固定源门槛，不据此启动新G或放宽。default换clean粗恢复反而恶化，提示潜在表示共同适配；该反事实不是可部署方案、真实TX准确率或恢复上限。六份完整NPZ/480分组case独立复算，G/F全state不变、所有计数闭合。见automation_reports/CV-SincNet/20261031-diagnostic-DURA-source-context-oracles-s2026092701-r01/analysis.md；默认保持/目标ACTIVE。
+
+
+sourceclean局部敏感度诊断20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01/ff6926fa已完成：固定repeatE30/source512×01/20，head-visible5D Jclean二次型与exact特征IQ梯度mean cos.643863/.661080，普通IQ约.071；493/484条非负、五RX均正，全部源门槛通过。alpha按预定.25/maxmedian normratio固定0.0033130025035573727。局部线性近似误差中位仍约.53，不称globallyexact或目标收益；仅支持另登记scratchsingleE30，不自动训练。CPU5.796s/cache3.691s，F1536+6smoke/0G新前向/0TX-V-target-updates、Fstate不变，2048条几何及IQ-J算术独立复算。全源缓存估计645.12MB/30轮读19.3536GB，实耗待真实训练；原F50知识/成本披露，默认保持/目标ACTIVE。

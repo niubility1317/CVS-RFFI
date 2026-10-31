@@ -79,3 +79,6 @@ headFeature r02完整七景仍未达3pp后，另登记源阶段对照`20261030-d
 
 
 独立source phase-only oracle诊断：20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01。固定noVar/defaultR69与同F50/source512×3views，原clean仅用于counterfactual单位相位对齐；0更新/TX/V/target，oracle不可部署或作为准确率上界。sourceF信息只用于phaseweight研究资格；只noVar按预定双视图/全部scene/clean条件晋级，不改默认或目标权限。
+
+
+sourceclean局部敏感度诊断20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01/ff6926fa已完成：固定repeatE30/source512×01/20，head-visible5D Jclean二次型与exact特征IQ梯度mean cos.643863/.661080，普通IQ约.071；493/484条非负、五RX均正，全部源门槛通过。alpha按预定.25/maxmedian normratio固定0.0033130025035573727。局部线性近似误差中位仍约.53，不称globallyexact或目标收益；仅支持另登记scratchsingleE30，不自动训练。CPU5.796s/cache3.691s，F1536+6smoke/0G新前向/0TX-V-target-updates、Fstate不变，2048条几何及IQ-J算术独立复算。全源缓存估计645.12MB/30轮读19.3536GB，实耗待真实训练；原F50知识/成本披露，默认保持/目标ACTIVE。

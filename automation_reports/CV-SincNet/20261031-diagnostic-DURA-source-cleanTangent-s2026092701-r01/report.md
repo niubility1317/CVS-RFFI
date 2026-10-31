@@ -3,7 +3,7 @@
 - run_id：`20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01`
 - group_id：`phase1-dura-source-clean-tangent`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -36,3 +36,8 @@
 事前门槛：缓存01/20都必须512个cos可定义，tangent/exact平均cos≥0.5且比IQ/exact高≥0.1，至少384条非负，各五源RX均值非负。只有全部满足才支持另登记单阶段scratch30，权重固定为0.25除以两view tangent/IQ输入梯度范数比中位数的较大值；失败不放宽，无自动训练。局部近似误差描述性报告，不能作为真实身份准确率或目标收益。估计全63000源J为645.12MB、30次读取19.3536GB，尚无GPU加速结论。
 
 相关[Jacobian知识迁移研究](https://proceedings.mlr.press/v80/srinivas18a.html)仅支持研究导数信息，不证明本IQ度量有效，也不将本方法称为该文复现。4聚焦测试与唯一审查后发布，默认DURA与完整目标保持。
+
+
+## 诊断完成
+
+VERIFIED / ANALYZED / SOURCE_ONLY。两个缓存固定源判据均通过，tangent/exact平均cos0.643863/0.661080，IQ约0.071，五RX均正；alpha固定0.0033130025035573727。独立复算2048条几何与IQ/J算术一致，F状态不变，0G新前向/0优化TX-V-target。CPU循环5.796秒，源J缓存3.691秒；仅支持另登记scratchjoint30，未证明正式收益。详见[完整分析](analysis.md)。
