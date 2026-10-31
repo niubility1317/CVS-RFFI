@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "code_commit": "b33839dd1010dea36b68526043bbc4abe5eb1095",
+  "controller_PID": 2167531,
+  "row_PID": 2167548,
+  "training_PID": 2167558,
+  "GPU": 7,
+  "admission": {
+    "GPU": 7,
+    "free_memory_MB": 22883,
+    "existing_compute_PIDs": 1
+  },
+  "independent_PID_CWD_cmdline_CUDA_NVML_match": true,
+  "real_source_smoke_PASS": true,
+  "log_bytes": 847,
+  "epochs_seen": 2,
+  "new_target_reads": 0
+}

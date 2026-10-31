@@ -65,3 +65,8 @@ VERIFIED / ANALYZED。原 L_s6300/U_s56700 的完整 G10 MIX01 P0-clean 配对�
 真实源 smoke PASS，G 恒等初值、实际 F0 输入 VJP、0.5 梯度上限及模型状态保持。GPU 7 以原 1 个 compute 进程、22883 MiB 余量准入，新增本任务 1 个；worker 内 NVML 记录了自身 PID。首次独立读回时任务已自然退出，完整进度、smoke、manifest、结果及 controller 终态相互吻合；未为补遥测重跑。24 项聚焦检查及唯一独立 P0/P1 审查 PASS。
 
 这只证明源训练数据已备好。尚无新 TF 的实际学习或正式性能结果，不能据此判断能恢复 clean 的几成、六景 3pp 或 Phase3 开放指标达标。下一步为独立纯 IQ / F0 指导、同初值和源顺序的从零单阶段 30 轮匹配组；自动冻结测试与独立评分已在实现核验中。默认 DURA 和完整目标保持。
+
+
+## 独立TF单阶段30轮匹配组已运行
+
+两臂 20261101-phase3-P3Restore-TF-IQ-E30-s2026092701-r01 与 20261101-phase3-P3Restore-TF-F0-E30-s2026092701-r01；执行 b33839dd1010dea36b68526043bbc4abe5eb1095。同初值/原63000源顺序/15%clean保持/30轮7410/B256尾24；IQNMSE+.05三尺度STFT，指导臂另加.1实际F0 fused160 cos/IQ梯度cap.5，全局clip1。AdamW.001/warm247/cos2e-5/WD1e-4。无TX/OE/V/target训练，固定final30，不选模早停。两臂实际真实源smoke、E0严格重载和teacher冻结通过，GPU7/4实际PID-CWD-argv-CUDA-NVML及日志核实。主Phase3四个角色与历史168000七景freshprocess全部预测后，独立CPU共同锁评分；固定PCD/密度/tau是输入切换诊断，非匹配部署。21聚焦检查+唯一P0P1两臂PASS，阶段资源修复一次定点PASS。完整目标与默认DURA保持，结果未定。
