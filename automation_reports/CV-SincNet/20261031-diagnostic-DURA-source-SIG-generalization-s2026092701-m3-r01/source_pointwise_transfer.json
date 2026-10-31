@@ -1,0 +1,3467 @@
+{
+  "status": "VERIFIED_SAVED_SOURCE_POINTWISE_REANALYSIS",
+  "parent_run": "20261031-diagnostic-DURA-source-SIG-generalization-s2026092701-m3-r01",
+  "posthoc": true,
+  "prespecified_primary": false,
+  "original_H1_H2_changed": false,
+  "records": [
+    {
+      "model": "linear",
+      "scene": "practical_high",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1443,
+        "output_improves": 895,
+        "quadrants": {
+          "both_improve": 729,
+          "predictor_improves_output_worsens": 714,
+          "predictor_worsens_output_improves": 166,
+          "both_worsen": 191,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.48024948024948,
+        "Pearson_paired_error_improvement": 0.12528120221749772,
+        "Pearson_after_RX_day_mean_removal": 0.12921696082835082,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.15431527082099755,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.15837379648546918
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1443,
+        "output_improves": 906,
+        "quadrants": {
+          "both_improve": 736,
+          "predictor_improves_output_worsens": 707,
+          "predictor_worsens_output_improves": 170,
+          "both_worsen": 187,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 48.995148995148995,
+        "Pearson_paired_error_improvement": -0.08855721636478295,
+        "Pearson_after_RX_day_mean_removal": -0.08835197630162972,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": -0.06895712536705526,
+        "Pearson_absolute_error_after_RX_day_mean_removal": -0.0685355876569368
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1331,
+        "output_improves": 895,
+        "quadrants": {
+          "both_improve": 684,
+          "predictor_improves_output_worsens": 647,
+          "predictor_worsens_output_improves": 211,
+          "both_worsen": 258,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 48.61006761833208,
+        "Pearson_paired_error_improvement": 0.11538774936955187,
+        "Pearson_after_RX_day_mean_removal": 0.11884223120466188,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.1568608006451184,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.1602606766205229
+      }
+    },
+    {
+      "model": "mlp",
+      "scene": "practical_high",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1435,
+        "output_improves": 901,
+        "quadrants": {
+          "both_improve": 728,
+          "predictor_improves_output_worsens": 707,
+          "predictor_worsens_output_improves": 173,
+          "both_worsen": 192,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.26829268292683,
+        "Pearson_paired_error_improvement": 0.15207700197633575,
+        "Pearson_after_RX_day_mean_removal": 0.15369422547611156,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.1989687128504155,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.20074333999989755
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1435,
+        "output_improves": 944,
+        "quadrants": {
+          "both_improve": 760,
+          "predictor_improves_output_worsens": 675,
+          "predictor_worsens_output_improves": 184,
+          "both_worsen": 181,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 47.038327526132406,
+        "Pearson_paired_error_improvement": -0.13684916806572484,
+        "Pearson_after_RX_day_mean_removal": -0.133277321021905,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": -0.10183564085797012,
+        "Pearson_absolute_error_after_RX_day_mean_removal": -0.09785208153753892
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1289,
+        "output_improves": 901,
+        "quadrants": {
+          "both_improve": 652,
+          "predictor_improves_output_worsens": 637,
+          "predictor_worsens_output_improves": 249,
+          "both_worsen": 262,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.418153607447636,
+        "Pearson_paired_error_improvement": 0.10776028210892954,
+        "Pearson_after_RX_day_mean_removal": 0.11028546419584036,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.1755098207862174,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.17823959991856164
+      }
+    },
+    {
+      "model": "linear",
+      "scene": "practical_mid",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1440,
+        "output_improves": 894,
+        "quadrants": {
+          "both_improve": 728,
+          "predictor_improves_output_worsens": 712,
+          "predictor_worsens_output_improves": 166,
+          "both_worsen": 194,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.44444444444444,
+        "Pearson_paired_error_improvement": 0.22710113703348778,
+        "Pearson_after_RX_day_mean_removal": 0.22290873013242563,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.24886580207571743,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.2449567540885132
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1440,
+        "output_improves": 893,
+        "quadrants": {
+          "both_improve": 727,
+          "predictor_improves_output_worsens": 713,
+          "predictor_worsens_output_improves": 166,
+          "both_worsen": 194,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.513888888888886,
+        "Pearson_paired_error_improvement": -0.04572506890109416,
+        "Pearson_after_RX_day_mean_removal": -0.04500308504094707,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": -0.03327241443399887,
+        "Pearson_absolute_error_after_RX_day_mean_removal": -0.03242957391093091
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1314,
+        "output_improves": 894,
+        "quadrants": {
+          "both_improve": 672,
+          "predictor_improves_output_worsens": 642,
+          "predictor_worsens_output_improves": 222,
+          "both_worsen": 264,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 48.858447488584474,
+        "Pearson_paired_error_improvement": 0.22159793641757017,
+        "Pearson_after_RX_day_mean_removal": 0.21848379000604487,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.25254781701487816,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.24971997856066552
+      }
+    },
+    {
+      "model": "mlp",
+      "scene": "practical_mid",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1432,
+        "output_improves": 919,
+        "quadrants": {
+          "both_improve": 748,
+          "predictor_improves_output_worsens": 684,
+          "predictor_worsens_output_improves": 171,
+          "both_worsen": 197,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 47.76536312849162,
+        "Pearson_paired_error_improvement": 0.27199033360362945,
+        "Pearson_after_RX_day_mean_removal": 0.27061223155587366,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.3160933333378761,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.3152792443692559
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1432,
+        "output_improves": 897,
+        "quadrants": {
+          "both_improve": 719,
+          "predictor_improves_output_worsens": 713,
+          "predictor_worsens_output_improves": 178,
+          "both_worsen": 190,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.79050279329609,
+        "Pearson_paired_error_improvement": -0.10026582318292425,
+        "Pearson_after_RX_day_mean_removal": -0.0985908935381764,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": -0.06260447264036798,
+        "Pearson_absolute_error_after_RX_day_mean_removal": -0.06055063338403798
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1302,
+        "output_improves": 919,
+        "quadrants": {
+          "both_improve": 677,
+          "predictor_improves_output_worsens": 625,
+          "predictor_worsens_output_improves": 242,
+          "both_worsen": 256,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 48.003072196620586,
+        "Pearson_paired_error_improvement": 0.28047889083872196,
+        "Pearson_after_RX_day_mean_removal": 0.28007526222560447,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.3271337111239162,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.32724981040849
+      }
+    },
+    {
+      "model": "linear",
+      "scene": "practical_low_suburban",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1422,
+        "output_improves": 892,
+        "quadrants": {
+          "both_improve": 723,
+          "predictor_improves_output_worsens": 699,
+          "predictor_worsens_output_improves": 169,
+          "both_worsen": 209,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.15611814345991,
+        "Pearson_paired_error_improvement": 0.18295470454679585,
+        "Pearson_after_RX_day_mean_removal": 0.18288490658048107,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.20782726655455497,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.2083083818776033
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1422,
+        "output_improves": 896,
+        "quadrants": {
+          "both_improve": 737,
+          "predictor_improves_output_worsens": 685,
+          "predictor_worsens_output_improves": 159,
+          "both_worsen": 219,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 48.171589310829816,
+        "Pearson_paired_error_improvement": 0.16616892173151743,
+        "Pearson_after_RX_day_mean_removal": 0.16566202660514986,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.16446217323670156,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.1638964808444567
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1301,
+        "output_improves": 892,
+        "quadrants": {
+          "both_improve": 653,
+          "predictor_improves_output_worsens": 648,
+          "predictor_worsens_output_improves": 239,
+          "both_worsen": 260,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.80784012298232,
+        "Pearson_paired_error_improvement": 0.18824083115333787,
+        "Pearson_after_RX_day_mean_removal": 0.18904725796263494,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.21005944400355045,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.21132038209796938
+      }
+    },
+    {
+      "model": "mlp",
+      "scene": "practical_low_suburban",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1419,
+        "output_improves": 886,
+        "quadrants": {
+          "both_improve": 725,
+          "predictor_improves_output_worsens": 694,
+          "predictor_worsens_output_improves": 161,
+          "both_worsen": 220,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 48.907681465821,
+        "Pearson_paired_error_improvement": 0.21263055033488934,
+        "Pearson_after_RX_day_mean_removal": 0.21179052576431817,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.22648266446279128,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.22576045393486635
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1419,
+        "output_improves": 889,
+        "quadrants": {
+          "both_improve": 726,
+          "predictor_improves_output_worsens": 693,
+          "predictor_worsens_output_improves": 163,
+          "both_worsen": 218,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 48.83720930232558,
+        "Pearson_paired_error_improvement": 0.11151644658596585,
+        "Pearson_after_RX_day_mean_removal": 0.11329818069819432,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.1148792169325144,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.11661240302544319
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1302,
+        "output_improves": 886,
+        "quadrants": {
+          "both_improve": 667,
+          "predictor_improves_output_worsens": 635,
+          "predictor_worsens_output_improves": 219,
+          "both_worsen": 279,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 48.77112135176651,
+        "Pearson_paired_error_improvement": 0.20338603228134888,
+        "Pearson_after_RX_day_mean_removal": 0.2032735652346041,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.21829041046313455,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.21852697132728055
+      }
+    },
+    {
+      "model": "linear",
+      "scene": "practical_high_urban",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1466,
+        "output_improves": 925,
+        "quadrants": {
+          "both_improve": 776,
+          "predictor_improves_output_worsens": 690,
+          "predictor_worsens_output_improves": 149,
+          "both_worsen": 185,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 47.0668485675307,
+        "Pearson_paired_error_improvement": 0.16778015739899926,
+        "Pearson_after_RX_day_mean_removal": 0.16788651677114402,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.2041616406223684,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.20376015145916193
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1466,
+        "output_improves": 898,
+        "quadrants": {
+          "both_improve": 737,
+          "predictor_improves_output_worsens": 729,
+          "predictor_worsens_output_improves": 161,
+          "both_worsen": 173,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.727148703956345,
+        "Pearson_paired_error_improvement": -0.0420797616224313,
+        "Pearson_after_RX_day_mean_removal": -0.03806288312406733,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": -0.029467579473509673,
+        "Pearson_absolute_error_after_RX_day_mean_removal": -0.025352189717805187
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1339,
+        "output_improves": 925,
+        "quadrants": {
+          "both_improve": 711,
+          "predictor_improves_output_worsens": 628,
+          "predictor_worsens_output_improves": 214,
+          "both_worsen": 247,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 46.90067214339059,
+        "Pearson_paired_error_improvement": 0.16186950464098235,
+        "Pearson_after_RX_day_mean_removal": 0.16195031987529845,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.20917802734032456,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.20890988370414035
+      }
+    },
+    {
+      "model": "mlp",
+      "scene": "practical_high_urban",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1457,
+        "output_improves": 937,
+        "quadrants": {
+          "both_improve": 780,
+          "predictor_improves_output_worsens": 677,
+          "predictor_worsens_output_improves": 157,
+          "both_worsen": 186,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 46.465339739190114,
+        "Pearson_paired_error_improvement": 0.23533849361637413,
+        "Pearson_after_RX_day_mean_removal": 0.238692195326345,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.26615229505577853,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.2693544355817782
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1457,
+        "output_improves": 949,
+        "quadrants": {
+          "both_improve": 774,
+          "predictor_improves_output_worsens": 683,
+          "predictor_worsens_output_improves": 175,
+          "both_worsen": 168,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 46.877144818119426,
+        "Pearson_paired_error_improvement": -0.05521221198612103,
+        "Pearson_after_RX_day_mean_removal": -0.05067045416061805,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": -0.0317893786532986,
+        "Pearson_absolute_error_after_RX_day_mean_removal": -0.026970894488317035
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1344,
+        "output_improves": 937,
+        "quadrants": {
+          "both_improve": 710,
+          "predictor_improves_output_worsens": 634,
+          "predictor_worsens_output_improves": 227,
+          "both_worsen": 229,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 47.17261904761905,
+        "Pearson_paired_error_improvement": 0.23524756597464427,
+        "Pearson_after_RX_day_mean_removal": 0.2391219589487077,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.27378079583783976,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.2774547102930608
+      }
+    },
+    {
+      "model": "linear",
+      "scene": "practical_mid_urban",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1402,
+        "output_improves": 877,
+        "quadrants": {
+          "both_improve": 701,
+          "predictor_improves_output_worsens": 701,
+          "predictor_worsens_output_improves": 176,
+          "both_worsen": 222,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 50.0,
+        "Pearson_paired_error_improvement": 0.33344296249200894,
+        "Pearson_after_RX_day_mean_removal": 0.3353988584687093,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.33646020424862066,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.33828072206953197
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1402,
+        "output_improves": 889,
+        "quadrants": {
+          "both_improve": 711,
+          "predictor_improves_output_worsens": 691,
+          "predictor_worsens_output_improves": 178,
+          "both_worsen": 220,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.2867332382311,
+        "Pearson_paired_error_improvement": 0.20454527282935048,
+        "Pearson_after_RX_day_mean_removal": 0.20512767692054318,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.20212562883080215,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.20286322968060969
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1314,
+        "output_improves": 877,
+        "quadrants": {
+          "both_improve": 668,
+          "predictor_improves_output_worsens": 646,
+          "predictor_worsens_output_improves": 209,
+          "both_worsen": 277,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 49.16286149162862,
+        "Pearson_paired_error_improvement": 0.33108978124115424,
+        "Pearson_after_RX_day_mean_removal": 0.3327117121123809,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.3358746016980527,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.3373384542327986
+      }
+    },
+    {
+      "model": "mlp",
+      "scene": "practical_mid_urban",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1401,
+        "output_improves": 942,
+        "quadrants": {
+          "both_improve": 758,
+          "predictor_improves_output_worsens": 643,
+          "predictor_worsens_output_improves": 184,
+          "both_worsen": 215,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 45.89578872234119,
+        "Pearson_paired_error_improvement": 0.3556550880785945,
+        "Pearson_after_RX_day_mean_removal": 0.3560900361798591,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.36217099898189725,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.3627090347444886
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1401,
+        "output_improves": 951,
+        "quadrants": {
+          "both_improve": 763,
+          "predictor_improves_output_worsens": 638,
+          "predictor_worsens_output_improves": 188,
+          "both_worsen": 211,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 45.53890078515346,
+        "Pearson_paired_error_improvement": 0.15555670075533162,
+        "Pearson_after_RX_day_mean_removal": 0.15428812250117763,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.15491305826225332,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.15379026393988587
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1306,
+        "output_improves": 942,
+        "quadrants": {
+          "both_improve": 709,
+          "predictor_improves_output_worsens": 597,
+          "predictor_worsens_output_improves": 233,
+          "both_worsen": 261,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 45.71209800918836,
+        "Pearson_paired_error_improvement": 0.34937865402618756,
+        "Pearson_after_RX_day_mean_removal": 0.3496839361866471,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.3591839084744491,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.35950345115073995
+      }
+    },
+    {
+      "model": "linear",
+      "scene": "practical_low_urban",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1362,
+        "output_improves": 933,
+        "quadrants": {
+          "both_improve": 750,
+          "predictor_improves_output_worsens": 612,
+          "predictor_worsens_output_improves": 183,
+          "both_worsen": 255,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 44.93392070484582,
+        "Pearson_paired_error_improvement": 0.33840331086084013,
+        "Pearson_after_RX_day_mean_removal": 0.34234654546296683,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.3475266504623484,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.3516521761650896
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1362,
+        "output_improves": 907,
+        "quadrants": {
+          "both_improve": 723,
+          "predictor_improves_output_worsens": 639,
+          "predictor_worsens_output_improves": 184,
+          "both_worsen": 254,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 46.91629955947136,
+        "Pearson_paired_error_improvement": 0.1445018387189406,
+        "Pearson_after_RX_day_mean_removal": 0.14316894578765632,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.14588373473580907,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.14478619486636782
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1285,
+        "output_improves": 933,
+        "quadrants": {
+          "both_improve": 711,
+          "predictor_improves_output_worsens": 574,
+          "predictor_worsens_output_improves": 222,
+          "both_worsen": 293,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 44.6692607003891,
+        "Pearson_paired_error_improvement": 0.3360142718535836,
+        "Pearson_after_RX_day_mean_removal": 0.3401724215532263,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.34643096156562275,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.3507728885062476
+      }
+    },
+    {
+      "model": "mlp",
+      "scene": "practical_low_urban",
+      "count": 1800,
+      "internal_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1372,
+        "output_improves": 933,
+        "quadrants": {
+          "both_improve": 745,
+          "predictor_improves_output_worsens": 627,
+          "predictor_worsens_output_improves": 188,
+          "both_worsen": 240,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 45.6997084548105,
+        "Pearson_paired_error_improvement": 0.39323262134006465,
+        "Pearson_after_RX_day_mean_removal": 0.39325828221076314,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.4054432295389173,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.40570859155021216
+      },
+      "internal_SIG_to_IQ": {
+        "count": 1800,
+        "predictor_improves": 1372,
+        "output_improves": 929,
+        "quadrants": {
+          "both_improve": 747,
+          "predictor_improves_output_worsens": 625,
+          "predictor_worsens_output_improves": 182,
+          "both_worsen": 246,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 45.55393586005831,
+        "Pearson_paired_error_improvement": 0.20177304219227288,
+        "Pearson_after_RX_day_mean_removal": 0.20148462744465556,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.20843225730331197,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.20838207632962166
+      },
+      "internal_head_SIG_to_output_SIG": {
+        "count": 1800,
+        "predictor_improves": 1311,
+        "output_improves": 933,
+        "quadrants": {
+          "both_improve": 708,
+          "predictor_improves_output_worsens": 603,
+          "predictor_worsens_output_improves": 225,
+          "both_worsen": 264,
+          "any_exact_tie": 0
+        },
+        "output_worsens_among_predictor_improvers_percent": 45.995423340961096,
+        "Pearson_paired_error_improvement": 0.3939605612969191,
+        "Pearson_after_RX_day_mean_removal": 0.39455938058167117,
+        "RX_day_strata": [
+          {
+            "rx": "1",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "1",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "3",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "4",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "6",
+            "day": "3",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "1",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "2",
+            "count": 120
+          },
+          {
+            "rx": "8",
+            "day": "3",
+            "count": 120
+          }
+        ],
+        "Pearson_absolute_error_improvement": 0.40777595226511393,
+        "Pearson_absolute_error_after_RX_day_mean_removal": 0.40848770402544976
+      }
+    }
+  ],
+  "source_V_unique_records": 1800,
+  "scene_observations_per_model": 10800,
+  "unique_model_seeds": 1,
+  "private_NPZ_opened": 18,
+  "maximum_original_aggregate_difference": 5.551115123125783e-17,
+  "new_G_F_forwards": 0,
+  "TX_labels_read": 0,
+  "V_labels_read": 0,
+  "target_reads": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "independent_scalar_crosschecks": "Contingency via signed bins; Pearson via numpy.corrcoef; positive per-record scale changes preserve quadrants.",
+  "scope": "Paired association across separately trained fixed models, not intervention on prediction quality. Positive deltas mean lower error; strict zero defines ties. Relative SIG errors share a reference-energy denominator, so absolute-error correlations also retained. RX-day mean removal is descriptive only/no fitted deployment state. Same known source RX; no causal/target/identity-information claim.",
+  "seconds": 0.8831544001586735
+}
