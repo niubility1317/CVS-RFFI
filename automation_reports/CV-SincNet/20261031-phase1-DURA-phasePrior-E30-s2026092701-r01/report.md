@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-phasePrior-E30-s2026092701-r01`
 - group_id：`phase1-dura-phase-canonical-prior-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整结果见下方、analysis.md与results.json；保留每row与RX/day/TX/scene/K/seed的对应关系。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -41,3 +41,10 @@
 ## 实际启动证据
 
 VERIFIED / RUNNING。执行12c7421528c51ee6a0fac4b5bffdbe5057432ff0已提交推送并独立核对远端OID；一次N607 preflight/单归档传输SHA/remotecompile通过。实际controller1643978/worker1644071/GPU4的CWD、完整命令、CUDA、nvidia PID与日志增长已核实；旧own句柄均消失，其他owner保持。启动前同卡1个计算进程、free22883MiB，新增本任务1个。3项聚焦检查、实际factory/预算/入口及唯一P0P1通过。真实2Ls三G模块梯度/strictreload/native-optimized一致/两个prior共同相位对应关系/原F默认头通过；smokeG8、prior-only8、F2。至少完成1轮/247步，完整前缀loss/曝光/源视图/无F-TX-teacher-init计数核对通过，首轮34.008975秒。新G仍从零单阶段30/7410，266951参数与初始权重匹配pureG；prior内部坐标操作不增加参数或Core调用，但实际训练/推理成本待测，不预称加速或泛化收益。不读取F/教师/TX/V/target训练，研发曾用源F诊断明确披露。固定最终30后自动profile/source1800×7/target168000×7，逐role全预测固定后独立truth-last；源表现较差也不取消。默认DURA保持、完整目标ACTIVE。
+
+
+## 完整训练与正式结果
+
+VERIFIED / ANALYZED。G从零单阶段30轮/7410步，L189000/U1701000；完整30条loss/曝光/源视图/clip/F-TX-teacher-init计数核对通过。仅包裹两个prior的相位坐标，不增参数/Core调用、保留共享别名与初值；训练F/教师/TX/V/target0。研发曾使用源F诊断披露，先验相位性质不冒称整体G或F不变性。七景×168000全部预测固定后truth-last，126正式、105源V、126pureG配对分组与14个源/正式IQ误差独立复算。clean 84.792857%，low urban 65.272024%；低城区较纯G -2.100595、默认DURA -3.617857个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。训练及保存1013.246842秒、控制器至自动全量分析1195.450898秒；266951参数/25.068072m ConvLinear MAC/两prior四CG27FFT，坐标操作另有非卷积成本，实测时延完整保留。默认DURA保持，同质量实际效率仍未证明，完整目标ACTIVE。
+
+详见[完整分析](analysis.md)、[曲线与七景](training_and_formal.png)、results.json与transfer_diagnostics.json。controller/worker已自然结束；没有根据目标结果修改锚点、选epoch或选择性重跑。
