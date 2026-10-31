@@ -1,0 +1,2959 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "run": "20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
+  "rule": "FixeddefaultDURA/source512L128U384/cache01and20/nativeIQ-and-Fcache;window80:160/four20pointcycles. PrimaryresidualoracleBOTHviews:cleanFchoicegain>=4vsnativeand>=2vsequalcorrectionenergyglobalnearestclean;each5RXnet>=0,clean-scenenet>=0,eachnoncleanscenenet>=-1,overallFcosineerrornotabove native. Periodicmeanoracle descriptiveonly/noalternateprimary-window-period-threshold. NoG/TX-V-target/updates;sourceclean counterfactualnotdeployable/notTXtruth/hardware/noiseattribution/recoverybound;PASSonlyseparatelearninghypothesis/notautomaticG.",
+  "source_cache_run": "20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01",
+  "source_G_identity": "DefaultDURA_R69/nativeIQcacheonly/noGload",
+  "F_teacher": {
+    "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "seed": 2026092701,
+    "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+    "epoch": 50,
+    "updates": 11100
+  },
+  "F_unchanged": true,
+  "source_records": 512,
+  "source_views": [
+    1,
+    20
+  ],
+  "source_observations": 1024,
+  "source_unique_physical_records": 512,
+  "source_L_unique": 128,
+  "source_U_unique": 384,
+  "window": [
+    80,
+    160
+  ],
+  "period": 20,
+  "cases": [
+    "native",
+    "periodic",
+    "residual",
+    "matched_global"
+  ],
+  "summary": {
+    "1": {
+      "all": {
+        "count": 512,
+        "cases": {
+          "native": {
+            "teacher_correct": 486,
+            "iq_nmse": 0.020212826231806494,
+            "feature_cosine_error": 0.012825454647313864,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 492,
+            "iq_nmse": 0.01838524497547938,
+            "feature_cosine_error": 0.008624040722423345,
+            "repaired": 7,
+            "damaged": 1,
+            "net_repaired": 6
+          },
+          "residual": {
+            "teacher_correct": 485,
+            "iq_nmse": 0.018768832957169412,
+            "feature_cosine_error": 0.012238692274908619,
+            "repaired": 1,
+            "damaged": 2,
+            "net_repaired": -1
+          },
+          "matched_global": {
+            "teacher_correct": 496,
+            "iq_nmse": 0.011478146544899356,
+            "feature_cosine_error": 0.008560001542046298,
+            "repaired": 10,
+            "damaged": 0,
+            "net_repaired": 10
+          }
+        }
+      },
+      "rx:1": {
+        "count": 103,
+        "cases": {
+          "native": {
+            "teacher_correct": 97,
+            "iq_nmse": 0.007073336982126281,
+            "feature_cosine_error": 0.01783774248994536,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 99,
+            "iq_nmse": 0.0062236721248820105,
+            "feature_cosine_error": 0.012261173703841964,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          },
+          "residual": {
+            "teacher_correct": 97,
+            "iq_nmse": 0.006772512895283507,
+            "feature_cosine_error": 0.017355391134637483,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 100,
+            "iq_nmse": 0.004552252387001633,
+            "feature_cosine_error": 0.012681356440911893,
+            "repaired": 3,
+            "damaged": 0,
+            "net_repaired": 3
+          }
+        }
+      },
+      "rx:3": {
+        "count": 102,
+        "cases": {
+          "native": {
+            "teacher_correct": 95,
+            "iq_nmse": 0.0314995794587517,
+            "feature_cosine_error": 0.009762937307656018,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 95,
+            "iq_nmse": 0.0292847994534558,
+            "feature_cosine_error": 0.007466755508313362,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 96,
+            "iq_nmse": 0.028378262717268666,
+            "feature_cosine_error": 0.009096811485463098,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          },
+          "matched_global": {
+            "teacher_correct": 99,
+            "iq_nmse": 0.015578220187011393,
+            "feature_cosine_error": 0.004939594677635182,
+            "repaired": 4,
+            "damaged": 0,
+            "net_repaired": 4
+          }
+        }
+      },
+      "rx:4": {
+        "count": 102,
+        "cases": {
+          "native": {
+            "teacher_correct": 98,
+            "iq_nmse": 0.010183485722015505,
+            "feature_cosine_error": 0.012525971459652592,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 99,
+            "iq_nmse": 0.009084788918829311,
+            "feature_cosine_error": 0.007851116114596091,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          },
+          "residual": {
+            "teacher_correct": 98,
+            "iq_nmse": 0.00979049817126575,
+            "feature_cosine_error": 0.01212264738798054,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 98,
+            "iq_nmse": 0.0067482360676796,
+            "feature_cosine_error": 0.009046485927778774,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          }
+        }
+      },
+      "rx:6": {
+        "count": 102,
+        "cases": {
+          "native": {
+            "teacher_correct": 100,
+            "iq_nmse": 0.020194625358654187,
+            "feature_cosine_error": 0.014819319099476418,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 101,
+            "iq_nmse": 0.018212630331059527,
+            "feature_cosine_error": 0.008757790250462985,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          },
+          "residual": {
+            "teacher_correct": 98,
+            "iq_nmse": 0.01932765593143364,
+            "feature_cosine_error": 0.013591781274115164,
+            "repaired": 0,
+            "damaged": 2,
+            "net_repaired": -2
+          },
+          "matched_global": {
+            "teacher_correct": 101,
+            "iq_nmse": 0.013212613108141178,
+            "feature_cosine_error": 0.010727308385361931,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          }
+        }
+      },
+      "rx:8": {
+        "count": 103,
+        "cases": {
+          "native": {
+            "teacher_correct": 96,
+            "iq_nmse": 0.03212513482043627,
+            "feature_cosine_error": 0.009168020005322845,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 98,
+            "iq_nmse": 0.02913418340622757,
+            "feature_cosine_error": 0.0067659266728256505,
+            "repaired": 3,
+            "damaged": 1,
+            "net_repaired": 2
+          },
+          "residual": {
+            "teacher_correct": 96,
+            "iq_nmse": 0.029586787672036843,
+            "feature_cosine_error": 0.009008336532374314,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 98,
+            "iq_nmse": 0.017310135535130295,
+            "feature_cosine_error": 0.005395877660724649,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          }
+        }
+      },
+      "day:1": {
+        "count": 171,
+        "cases": {
+          "native": {
+            "teacher_correct": 162,
+            "iq_nmse": 0.021886645751618968,
+            "feature_cosine_error": 0.012296760116705501,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 166,
+            "iq_nmse": 0.020194495543207243,
+            "feature_cosine_error": 0.008138564107828055,
+            "repaired": 4,
+            "damaged": 0,
+            "net_repaired": 4
+          },
+          "residual": {
+            "teacher_correct": 162,
+            "iq_nmse": 0.019983123941948167,
+            "feature_cosine_error": 0.011653078402707405,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 167,
+            "iq_nmse": 0.011563620820345838,
+            "feature_cosine_error": 0.0077161825092477675,
+            "repaired": 5,
+            "damaged": 0,
+            "net_repaired": 5
+          }
+        }
+      },
+      "day:2": {
+        "count": 170,
+        "cases": {
+          "native": {
+            "teacher_correct": 158,
+            "iq_nmse": 0.022670683183363193,
+            "feature_cosine_error": 0.016237981052425847,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 160,
+            "iq_nmse": 0.01998136057587392,
+            "feature_cosine_error": 0.011498155696134181,
+            "repaired": 3,
+            "damaged": 1,
+            "net_repaired": 2
+          },
+          "residual": {
+            "teacher_correct": 158,
+            "iq_nmse": 0.02128685967486638,
+            "feature_cosine_error": 0.01538715415780404,
+            "repaired": 1,
+            "damaged": 1,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 161,
+            "iq_nmse": 0.013536804403943272,
+            "feature_cosine_error": 0.011511343083669573,
+            "repaired": 3,
+            "damaged": 0,
+            "net_repaired": 3
+          }
+        }
+      },
+      "day:3": {
+        "count": 171,
+        "cases": {
+          "native": {
+            "teacher_correct": 166,
+            "iq_nmse": 0.01609552319290256,
+            "feature_cosine_error": 0.009961579067576975,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 166,
+            "iq_nmse": 0.014989212816715992,
+            "feature_cosine_error": 0.006252210053212544,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 165,
+            "iq_nmse": 0.015051240557136351,
+            "feature_cosine_error": 0.009694256322009116,
+            "repaired": 0,
+            "damaged": 1,
+            "net_repaired": -1
+          },
+          "matched_global": {
+            "teacher_correct": 168,
+            "iq_nmse": 0.009346053345257168,
+            "feature_cosine_error": 0.006469738340482506,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          }
+        }
+      },
+      "roles:L_s": {
+        "count": 128,
+        "cases": {
+          "native": {
+            "teacher_correct": 121,
+            "iq_nmse": 0.024004398733126854,
+            "feature_cosine_error": 0.01664387359639391,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 123,
+            "iq_nmse": 0.02171379544039849,
+            "feature_cosine_error": 0.011410369757900206,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          },
+          "residual": {
+            "teacher_correct": 120,
+            "iq_nmse": 0.022214893198650172,
+            "feature_cosine_error": 0.01568704540665338,
+            "repaired": 0,
+            "damaged": 1,
+            "net_repaired": -1
+          },
+          "matched_global": {
+            "teacher_correct": 124,
+            "iq_nmse": 0.013586963110499952,
+            "feature_cosine_error": 0.01149167180551703,
+            "repaired": 3,
+            "damaged": 0,
+            "net_repaired": 3
+          }
+        }
+      },
+      "roles:U_s": {
+        "count": 384,
+        "cases": {
+          "native": {
+            "teacher_correct": 365,
+            "iq_nmse": 0.018948968731366374,
+            "feature_cosine_error": 0.011552648330953848,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 369,
+            "iq_nmse": 0.01727572815383967,
+            "feature_cosine_error": 0.007695264377264391,
+            "repaired": 5,
+            "damaged": 1,
+            "net_repaired": 4
+          },
+          "residual": {
+            "teacher_correct": 365,
+            "iq_nmse": 0.017620146210009156,
+            "feature_cosine_error": 0.011089241230993696,
+            "repaired": 1,
+            "damaged": 1,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 372,
+            "iq_nmse": 0.010775207689699159,
+            "feature_cosine_error": 0.007582778120889387,
+            "repaired": 7,
+            "damaged": 0,
+            "net_repaired": 7
+          }
+        }
+      },
+      "scene:clean": {
+        "count": 84,
+        "cases": {
+          "native": {
+            "teacher_correct": 84,
+            "iq_nmse": 3.5668502048133946e-05,
+            "feature_cosine_error": 0.00040552702090298776,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 84,
+            "iq_nmse": 2.988868977994017e-05,
+            "feature_cosine_error": 4.572094082496201e-05,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 84,
+            "iq_nmse": 3.089790876519594e-05,
+            "feature_cosine_error": 0.00040508312812066803,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 84,
+            "iq_nmse": 1.687307821006688e-05,
+            "feature_cosine_error": 4.744919709806902e-05,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          }
+        }
+      },
+      "scene:practical_high": {
+        "count": 62,
+        "cases": {
+          "native": {
+            "teacher_correct": 62,
+            "iq_nmse": 0.009654062582167298,
+            "feature_cosine_error": 0.005443064691526369,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 61,
+            "iq_nmse": 0.008726885479904611,
+            "feature_cosine_error": 0.002709469045653612,
+            "repaired": 0,
+            "damaged": 1,
+            "net_repaired": -1
+          },
+          "residual": {
+            "teacher_correct": 62,
+            "iq_nmse": 0.009205022435792003,
+            "feature_cosine_error": 0.005349440983146033,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 62,
+            "iq_nmse": 0.006036971564233097,
+            "feature_cosine_error": 0.0035022501624165613,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          }
+        }
+      },
+      "scene:practical_high_urban": {
+        "count": 79,
+        "cases": {
+          "native": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.013642435086054469,
+            "feature_cosine_error": 0.006080964262103992,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.012704665869887463,
+            "feature_cosine_error": 0.003183784999631505,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.012806292502083682,
+            "feature_cosine_error": 0.005837814284411809,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 78,
+            "iq_nmse": 0.008031548727967191,
+            "feature_cosine_error": 0.003944777103345137,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          }
+        }
+      },
+      "scene:practical_low_suburban": {
+        "count": 68,
+        "cases": {
+          "native": {
+            "teacher_correct": 60,
+            "iq_nmse": 0.015192568531013022,
+            "feature_cosine_error": 0.022407328430074373,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 62,
+            "iq_nmse": 0.01366749765213408,
+            "feature_cosine_error": 0.017669141279322703,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          },
+          "residual": {
+            "teacher_correct": 60,
+            "iq_nmse": 0.014133694760462487,
+            "feature_cosine_error": 0.021677533207977797,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 63,
+            "iq_nmse": 0.008641099740510362,
+            "feature_cosine_error": 0.01574776539613951,
+            "repaired": 3,
+            "damaged": 0,
+            "net_repaired": 3
+          }
+        }
+      },
+      "scene:practical_low_urban": {
+        "count": 66,
+        "cases": {
+          "native": {
+            "teacher_correct": 56,
+            "iq_nmse": 0.06673888802778252,
+            "feature_cosine_error": 0.031690148562750625,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 59,
+            "iq_nmse": 0.060945890296856174,
+            "feature_cosine_error": 0.02253420295088995,
+            "repaired": 3,
+            "damaged": 0,
+            "net_repaired": 3
+          },
+          "residual": {
+            "teacher_correct": 55,
+            "iq_nmse": 0.06125100973055374,
+            "feature_cosine_error": 0.03067593825907068,
+            "repaired": 0,
+            "damaged": 1,
+            "net_repaired": -1
+          },
+          "matched_global": {
+            "teacher_correct": 60,
+            "iq_nmse": 0.036359062653611954,
+            "feature_cosine_error": 0.02118340679449121,
+            "repaired": 4,
+            "damaged": 0,
+            "net_repaired": 4
+          }
+        }
+      },
+      "scene:practical_mid": {
+        "count": 77,
+        "cases": {
+          "native": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.012096209200611477,
+            "feature_cosine_error": 0.007689400333350337,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.011036941291342748,
+            "feature_cosine_error": 0.004771123539814705,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.011277155739140262,
+            "feature_cosine_error": 0.007364537834784839,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.006830122822110047,
+            "feature_cosine_error": 0.004600236186260228,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          }
+        }
+      },
+      "scene:practical_mid_urban": {
+        "count": 76,
+        "cases": {
+          "native": {
+            "teacher_correct": 70,
+            "iq_nmse": 0.030268384818823556,
+            "feature_cosine_error": 0.019833820500439768,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 72,
+            "iq_nmse": 0.027162318350759374,
+            "feature_cosine_error": 0.01231614053594251,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          },
+          "residual": {
+            "teacher_correct": 70,
+            "iq_nmse": 0.02832420622643356,
+            "feature_cosine_error": 0.018073384158525024,
+            "repaired": 1,
+            "damaged": 1,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 72,
+            "iq_nmse": 0.017807851725413132,
+            "feature_cosine_error": 0.013510356237124077,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          }
+        }
+      }
+    },
+    "20": {
+      "all": {
+        "count": 512,
+        "cases": {
+          "native": {
+            "teacher_correct": 498,
+            "iq_nmse": 0.019439707877292677,
+            "feature_cosine_error": 0.010978604396986055,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 501,
+            "iq_nmse": 0.01804155571993831,
+            "feature_cosine_error": 0.007569097663708163,
+            "repaired": 4,
+            "damaged": 1,
+            "net_repaired": 3
+          },
+          "residual": {
+            "teacher_correct": 498,
+            "iq_nmse": 0.01760991091048575,
+            "feature_cosine_error": 0.010189314530591832,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 504,
+            "iq_nmse": 0.01046598387100125,
+            "feature_cosine_error": 0.005985979441896052,
+            "repaired": 6,
+            "damaged": 0,
+            "net_repaired": 6
+          }
+        }
+      },
+      "rx:1": {
+        "count": 103,
+        "cases": {
+          "native": {
+            "teacher_correct": 101,
+            "iq_nmse": 0.005268800236010431,
+            "feature_cosine_error": 0.008507397296591154,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 101,
+            "iq_nmse": 0.004708177382599098,
+            "feature_cosine_error": 0.004560169329475533,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 101,
+            "iq_nmse": 0.0050200041834445415,
+            "feature_cosine_error": 0.0083298078507532,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 101,
+            "iq_nmse": 0.0033457843877545794,
+            "feature_cosine_error": 0.0054099067445402904,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          }
+        }
+      },
+      "rx:3": {
+        "count": 102,
+        "cases": {
+          "native": {
+            "teacher_correct": 99,
+            "iq_nmse": 0.03831232150372044,
+            "feature_cosine_error": 0.01096638943030423,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 100,
+            "iq_nmse": 0.035527630877337665,
+            "feature_cosine_error": 0.007709494486122032,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          },
+          "residual": {
+            "teacher_correct": 99,
+            "iq_nmse": 0.032624952426102596,
+            "feature_cosine_error": 0.008652059929517847,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 101,
+            "iq_nmse": 0.016121522604399315,
+            "feature_cosine_error": 0.004895153219772946,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          }
+        }
+      },
+      "rx:4": {
+        "count": 102,
+        "cases": {
+          "native": {
+            "teacher_correct": 100,
+            "iq_nmse": 0.006245533167438865,
+            "feature_cosine_error": 0.00738758173431613,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 102,
+            "iq_nmse": 0.005685521460740549,
+            "feature_cosine_error": 0.003937112657882001,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          },
+          "residual": {
+            "teacher_correct": 100,
+            "iq_nmse": 0.005966323289976545,
+            "feature_cosine_error": 0.007215350191668648,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 101,
+            "iq_nmse": 0.004007371739202035,
+            "feature_cosine_error": 0.004478849631817933,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          }
+        }
+      },
+      "rx:6": {
+        "count": 102,
+        "cases": {
+          "native": {
+            "teacher_correct": 98,
+            "iq_nmse": 0.01801804051455157,
+            "feature_cosine_error": 0.013558083514655955,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 98,
+            "iq_nmse": 0.01666245257325057,
+            "feature_cosine_error": 0.007652388368293051,
+            "repaired": 1,
+            "damaged": 1,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 98,
+            "iq_nmse": 0.017472795386964383,
+            "feature_cosine_error": 0.013285616571319964,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 100,
+            "iq_nmse": 0.012922350473129826,
+            "feature_cosine_error": 0.009084083217091584,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          }
+        }
+      },
+      "rx:8": {
+        "count": 103,
+        "cases": {
+          "native": {
+            "teacher_correct": 100,
+            "iq_nmse": 0.029395171843905506,
+            "feature_cosine_error": 0.014463630606036755,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 100,
+            "iq_nmse": 0.0276604131771376,
+            "feature_cosine_error": 0.013953233209983467,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 100,
+            "iq_nmse": 0.026996880609354162,
+            "feature_cosine_error": 0.013450001052425048,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 101,
+            "iq_nmse": 0.015948941540847944,
+            "feature_cosine_error": 0.006066760199587549,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          }
+        }
+      },
+      "day:1": {
+        "count": 171,
+        "cases": {
+          "native": {
+            "teacher_correct": 168,
+            "iq_nmse": 0.015117081801756329,
+            "feature_cosine_error": 0.01003990091690486,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 168,
+            "iq_nmse": 0.013995052594603387,
+            "feature_cosine_error": 0.006169385722660044,
+            "repaired": 1,
+            "damaged": 1,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 168,
+            "iq_nmse": 0.014123366133311766,
+            "feature_cosine_error": 0.009655226943507437,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 169,
+            "iq_nmse": 0.008851897119812423,
+            "feature_cosine_error": 0.006122727052369901,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          }
+        }
+      },
+      "day:2": {
+        "count": 170,
+        "cases": {
+          "native": {
+            "teacher_correct": 166,
+            "iq_nmse": 0.01984161982508587,
+            "feature_cosine_error": 0.008863192083505162,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 168,
+            "iq_nmse": 0.01827135967565055,
+            "feature_cosine_error": 0.005510281876992954,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          },
+          "residual": {
+            "teacher_correct": 166,
+            "iq_nmse": 0.017251266441196903,
+            "feature_cosine_error": 0.007724793357876512,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 167,
+            "iq_nmse": 0.00926126517659753,
+            "feature_cosine_error": 0.004995324288931666,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          }
+        }
+      },
+      "day:3": {
+        "count": 171,
+        "cases": {
+          "native": {
+            "teacher_correct": 164,
+            "iq_nmse": 0.023362772367303632,
+            "feature_cosine_error": 0.014020349358305562,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 165,
+            "iq_nmse": 0.021859598772342947,
+            "feature_cosine_error": 0.01101558553306965,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          },
+          "residual": {
+            "teacher_correct": 164,
+            "iq_nmse": 0.021453002820870877,
+            "feature_cosine_error": 0.013173510885872744,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 168,
+            "iq_nmse": 0.013277744178030033,
+            "feature_cosine_error": 0.0068340936793984935,
+            "repaired": 4,
+            "damaged": 0,
+            "net_repaired": 4
+          }
+        }
+      },
+      "roles:L_s": {
+        "count": 128,
+        "cases": {
+          "native": {
+            "teacher_correct": 126,
+            "iq_nmse": 0.01904235437974028,
+            "feature_cosine_error": 0.010485195388579015,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 126,
+            "iq_nmse": 0.01773268322693488,
+            "feature_cosine_error": 0.006671196127140853,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 126,
+            "iq_nmse": 0.017930555504711516,
+            "feature_cosine_error": 0.009599954265788491,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 127,
+            "iq_nmse": 0.011901557418682577,
+            "feature_cosine_error": 0.006381508973925971,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          }
+        }
+      },
+      "roles:U_s": {
+        "count": 384,
+        "cases": {
+          "native": {
+            "teacher_correct": 372,
+            "iq_nmse": 0.019572159043143477,
+            "feature_cosine_error": 0.011143074066455066,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 375,
+            "iq_nmse": 0.018144513217606125,
+            "feature_cosine_error": 0.007868398175897268,
+            "repaired": 4,
+            "damaged": 1,
+            "net_repaired": 3
+          },
+          "residual": {
+            "teacher_correct": 372,
+            "iq_nmse": 0.017503029379077162,
+            "feature_cosine_error": 0.010385767952192945,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 377,
+            "iq_nmse": 0.009987459355107475,
+            "feature_cosine_error": 0.005854136264552746,
+            "repaired": 5,
+            "damaged": 0,
+            "net_repaired": 5
+          }
+        }
+      },
+      "scene:clean": {
+        "count": 81,
+        "cases": {
+          "native": {
+            "teacher_correct": 81,
+            "iq_nmse": 2.4928340314275887e-05,
+            "feature_cosine_error": 6.391595228207568e-05,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 81,
+            "iq_nmse": 2.0929055257353888e-05,
+            "feature_cosine_error": 3.680149201058922e-05,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 81,
+            "iq_nmse": 2.2847165759660524e-05,
+            "feature_cosine_error": 5.975859769592459e-05,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 81,
+            "iq_nmse": 1.3973098249759834e-05,
+            "feature_cosine_error": 4.001798090812072e-05,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          }
+        }
+      },
+      "scene:practical_high": {
+        "count": 83,
+        "cases": {
+          "native": {
+            "teacher_correct": 83,
+            "iq_nmse": 0.007497143861911243,
+            "feature_cosine_error": 0.006018964047908075,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 83,
+            "iq_nmse": 0.006740035852154033,
+            "feature_cosine_error": 0.003558726815259482,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 83,
+            "iq_nmse": 0.007200078043164955,
+            "feature_cosine_error": 0.0057248822604615765,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 83,
+            "iq_nmse": 0.0049070408760785575,
+            "feature_cosine_error": 0.003895295107684488,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          }
+        }
+      },
+      "scene:practical_high_urban": {
+        "count": 68,
+        "cases": {
+          "native": {
+            "teacher_correct": 67,
+            "iq_nmse": 0.010194021500684736,
+            "feature_cosine_error": 0.007122261120488011,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 67,
+            "iq_nmse": 0.009389930128587774,
+            "feature_cosine_error": 0.004910820839078338,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 67,
+            "iq_nmse": 0.009753265691528191,
+            "feature_cosine_error": 0.006487212669140975,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 67,
+            "iq_nmse": 0.006564925010615225,
+            "feature_cosine_error": 0.004118874599533886,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          }
+        }
+      },
+      "scene:practical_low_suburban": {
+        "count": 71,
+        "cases": {
+          "native": {
+            "teacher_correct": 69,
+            "iq_nmse": 0.014143061498282315,
+            "feature_cosine_error": 0.009736234733241589,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 70,
+            "iq_nmse": 0.013080147104977659,
+            "feature_cosine_error": 0.005742092028094855,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          },
+          "residual": {
+            "teacher_correct": 69,
+            "iq_nmse": 0.013215310365858064,
+            "feature_cosine_error": 0.009370779594529073,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 71,
+            "iq_nmse": 0.008215517223954756,
+            "feature_cosine_error": 0.0055996459993393035,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          }
+        }
+      },
+      "scene:practical_low_urban": {
+        "count": 70,
+        "cases": {
+          "native": {
+            "teacher_correct": 64,
+            "iq_nmse": 0.06834821551002251,
+            "feature_cosine_error": 0.02714314283679605,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 65,
+            "iq_nmse": 0.06382990627851151,
+            "feature_cosine_error": 0.018149081359267065,
+            "repaired": 2,
+            "damaged": 1,
+            "net_repaired": 1
+          },
+          "residual": {
+            "teacher_correct": 64,
+            "iq_nmse": 0.05989290161450293,
+            "feature_cosine_error": 0.024385980136755008,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 66,
+            "iq_nmse": 0.03365215779074111,
+            "feature_cosine_error": 0.015116114605269982,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          }
+        }
+      },
+      "scene:practical_mid": {
+        "count": 77,
+        "cases": {
+          "native": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.009601920288950329,
+            "feature_cosine_error": 0.00713038551081879,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.008626616131997352,
+            "feature_cosine_error": 0.0041423910300261435,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "residual": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.009006438411419383,
+            "feature_cosine_error": 0.0069190869639411965,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 77,
+            "iq_nmse": 0.005523646214181133,
+            "feature_cosine_error": 0.004274947737429723,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          }
+        }
+      },
+      "scene:practical_mid_urban": {
+        "count": 62,
+        "cases": {
+          "native": {
+            "teacher_correct": 57,
+            "iq_nmse": 0.033996363237006486,
+            "feature_cosine_error": 0.02405884093521827,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "periodic": {
+            "teacher_correct": 58,
+            "iq_nmse": 0.03188080200881938,
+            "feature_cosine_error": 0.02009675164171638,
+            "repaired": 1,
+            "damaged": 0,
+            "net_repaired": 1
+          },
+          "residual": {
+            "teacher_correct": 57,
+            "iq_nmse": 0.031117892168792648,
+            "feature_cosine_error": 0.022430310437449415,
+            "repaired": 0,
+            "damaged": 0,
+            "net_repaired": 0
+          },
+          "matched_global": {
+            "teacher_correct": 59,
+            "iq_nmse": 0.01837869517441035,
+            "feature_cosine_error": 0.010859890112693971,
+            "repaired": 2,
+            "damaged": 0,
+            "net_repaired": 2
+          }
+        }
+      }
+    }
+  },
+  "records": [
+    {
+      "view": "1",
+      "group": "all",
+      "count": 512,
+      "cases": {
+        "native": {
+          "teacher_correct": 486,
+          "iq_nmse": 0.020212826231806494,
+          "feature_cosine_error": 0.012825454647313864,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 492,
+          "iq_nmse": 0.01838524497547938,
+          "feature_cosine_error": 0.008624040722423345,
+          "repaired": 7,
+          "damaged": 1,
+          "net_repaired": 6
+        },
+        "residual": {
+          "teacher_correct": 485,
+          "iq_nmse": 0.018768832957169412,
+          "feature_cosine_error": 0.012238692274908619,
+          "repaired": 1,
+          "damaged": 2,
+          "net_repaired": -1
+        },
+        "matched_global": {
+          "teacher_correct": 496,
+          "iq_nmse": 0.011478146544899356,
+          "feature_cosine_error": 0.008560001542046298,
+          "repaired": 10,
+          "damaged": 0,
+          "net_repaired": 10
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "rx:1",
+      "count": 103,
+      "cases": {
+        "native": {
+          "teacher_correct": 97,
+          "iq_nmse": 0.007073336982126281,
+          "feature_cosine_error": 0.01783774248994536,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 99,
+          "iq_nmse": 0.0062236721248820105,
+          "feature_cosine_error": 0.012261173703841964,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        },
+        "residual": {
+          "teacher_correct": 97,
+          "iq_nmse": 0.006772512895283507,
+          "feature_cosine_error": 0.017355391134637483,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 100,
+          "iq_nmse": 0.004552252387001633,
+          "feature_cosine_error": 0.012681356440911893,
+          "repaired": 3,
+          "damaged": 0,
+          "net_repaired": 3
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "rx:3",
+      "count": 102,
+      "cases": {
+        "native": {
+          "teacher_correct": 95,
+          "iq_nmse": 0.0314995794587517,
+          "feature_cosine_error": 0.009762937307656018,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 95,
+          "iq_nmse": 0.0292847994534558,
+          "feature_cosine_error": 0.007466755508313362,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 96,
+          "iq_nmse": 0.028378262717268666,
+          "feature_cosine_error": 0.009096811485463098,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        },
+        "matched_global": {
+          "teacher_correct": 99,
+          "iq_nmse": 0.015578220187011393,
+          "feature_cosine_error": 0.004939594677635182,
+          "repaired": 4,
+          "damaged": 0,
+          "net_repaired": 4
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "rx:4",
+      "count": 102,
+      "cases": {
+        "native": {
+          "teacher_correct": 98,
+          "iq_nmse": 0.010183485722015505,
+          "feature_cosine_error": 0.012525971459652592,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 99,
+          "iq_nmse": 0.009084788918829311,
+          "feature_cosine_error": 0.007851116114596091,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        },
+        "residual": {
+          "teacher_correct": 98,
+          "iq_nmse": 0.00979049817126575,
+          "feature_cosine_error": 0.01212264738798054,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 98,
+          "iq_nmse": 0.0067482360676796,
+          "feature_cosine_error": 0.009046485927778774,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "rx:6",
+      "count": 102,
+      "cases": {
+        "native": {
+          "teacher_correct": 100,
+          "iq_nmse": 0.020194625358654187,
+          "feature_cosine_error": 0.014819319099476418,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 101,
+          "iq_nmse": 0.018212630331059527,
+          "feature_cosine_error": 0.008757790250462985,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        },
+        "residual": {
+          "teacher_correct": 98,
+          "iq_nmse": 0.01932765593143364,
+          "feature_cosine_error": 0.013591781274115164,
+          "repaired": 0,
+          "damaged": 2,
+          "net_repaired": -2
+        },
+        "matched_global": {
+          "teacher_correct": 101,
+          "iq_nmse": 0.013212613108141178,
+          "feature_cosine_error": 0.010727308385361931,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "rx:8",
+      "count": 103,
+      "cases": {
+        "native": {
+          "teacher_correct": 96,
+          "iq_nmse": 0.03212513482043627,
+          "feature_cosine_error": 0.009168020005322845,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 98,
+          "iq_nmse": 0.02913418340622757,
+          "feature_cosine_error": 0.0067659266728256505,
+          "repaired": 3,
+          "damaged": 1,
+          "net_repaired": 2
+        },
+        "residual": {
+          "teacher_correct": 96,
+          "iq_nmse": 0.029586787672036843,
+          "feature_cosine_error": 0.009008336532374314,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 98,
+          "iq_nmse": 0.017310135535130295,
+          "feature_cosine_error": 0.005395877660724649,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "day:1",
+      "count": 171,
+      "cases": {
+        "native": {
+          "teacher_correct": 162,
+          "iq_nmse": 0.021886645751618968,
+          "feature_cosine_error": 0.012296760116705501,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 166,
+          "iq_nmse": 0.020194495543207243,
+          "feature_cosine_error": 0.008138564107828055,
+          "repaired": 4,
+          "damaged": 0,
+          "net_repaired": 4
+        },
+        "residual": {
+          "teacher_correct": 162,
+          "iq_nmse": 0.019983123941948167,
+          "feature_cosine_error": 0.011653078402707405,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 167,
+          "iq_nmse": 0.011563620820345838,
+          "feature_cosine_error": 0.0077161825092477675,
+          "repaired": 5,
+          "damaged": 0,
+          "net_repaired": 5
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "day:2",
+      "count": 170,
+      "cases": {
+        "native": {
+          "teacher_correct": 158,
+          "iq_nmse": 0.022670683183363193,
+          "feature_cosine_error": 0.016237981052425847,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 160,
+          "iq_nmse": 0.01998136057587392,
+          "feature_cosine_error": 0.011498155696134181,
+          "repaired": 3,
+          "damaged": 1,
+          "net_repaired": 2
+        },
+        "residual": {
+          "teacher_correct": 158,
+          "iq_nmse": 0.02128685967486638,
+          "feature_cosine_error": 0.01538715415780404,
+          "repaired": 1,
+          "damaged": 1,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 161,
+          "iq_nmse": 0.013536804403943272,
+          "feature_cosine_error": 0.011511343083669573,
+          "repaired": 3,
+          "damaged": 0,
+          "net_repaired": 3
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "day:3",
+      "count": 171,
+      "cases": {
+        "native": {
+          "teacher_correct": 166,
+          "iq_nmse": 0.01609552319290256,
+          "feature_cosine_error": 0.009961579067576975,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 166,
+          "iq_nmse": 0.014989212816715992,
+          "feature_cosine_error": 0.006252210053212544,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 165,
+          "iq_nmse": 0.015051240557136351,
+          "feature_cosine_error": 0.009694256322009116,
+          "repaired": 0,
+          "damaged": 1,
+          "net_repaired": -1
+        },
+        "matched_global": {
+          "teacher_correct": 168,
+          "iq_nmse": 0.009346053345257168,
+          "feature_cosine_error": 0.006469738340482506,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "roles:L_s",
+      "count": 128,
+      "cases": {
+        "native": {
+          "teacher_correct": 121,
+          "iq_nmse": 0.024004398733126854,
+          "feature_cosine_error": 0.01664387359639391,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 123,
+          "iq_nmse": 0.02171379544039849,
+          "feature_cosine_error": 0.011410369757900206,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        },
+        "residual": {
+          "teacher_correct": 120,
+          "iq_nmse": 0.022214893198650172,
+          "feature_cosine_error": 0.01568704540665338,
+          "repaired": 0,
+          "damaged": 1,
+          "net_repaired": -1
+        },
+        "matched_global": {
+          "teacher_correct": 124,
+          "iq_nmse": 0.013586963110499952,
+          "feature_cosine_error": 0.01149167180551703,
+          "repaired": 3,
+          "damaged": 0,
+          "net_repaired": 3
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "roles:U_s",
+      "count": 384,
+      "cases": {
+        "native": {
+          "teacher_correct": 365,
+          "iq_nmse": 0.018948968731366374,
+          "feature_cosine_error": 0.011552648330953848,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 369,
+          "iq_nmse": 0.01727572815383967,
+          "feature_cosine_error": 0.007695264377264391,
+          "repaired": 5,
+          "damaged": 1,
+          "net_repaired": 4
+        },
+        "residual": {
+          "teacher_correct": 365,
+          "iq_nmse": 0.017620146210009156,
+          "feature_cosine_error": 0.011089241230993696,
+          "repaired": 1,
+          "damaged": 1,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 372,
+          "iq_nmse": 0.010775207689699159,
+          "feature_cosine_error": 0.007582778120889387,
+          "repaired": 7,
+          "damaged": 0,
+          "net_repaired": 7
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "scene:clean",
+      "count": 84,
+      "cases": {
+        "native": {
+          "teacher_correct": 84,
+          "iq_nmse": 3.5668502048133946e-05,
+          "feature_cosine_error": 0.00040552702090298776,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 84,
+          "iq_nmse": 2.988868977994017e-05,
+          "feature_cosine_error": 4.572094082496201e-05,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 84,
+          "iq_nmse": 3.089790876519594e-05,
+          "feature_cosine_error": 0.00040508312812066803,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 84,
+          "iq_nmse": 1.687307821006688e-05,
+          "feature_cosine_error": 4.744919709806902e-05,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "scene:practical_high",
+      "count": 62,
+      "cases": {
+        "native": {
+          "teacher_correct": 62,
+          "iq_nmse": 0.009654062582167298,
+          "feature_cosine_error": 0.005443064691526369,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 61,
+          "iq_nmse": 0.008726885479904611,
+          "feature_cosine_error": 0.002709469045653612,
+          "repaired": 0,
+          "damaged": 1,
+          "net_repaired": -1
+        },
+        "residual": {
+          "teacher_correct": 62,
+          "iq_nmse": 0.009205022435792003,
+          "feature_cosine_error": 0.005349440983146033,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 62,
+          "iq_nmse": 0.006036971564233097,
+          "feature_cosine_error": 0.0035022501624165613,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "scene:practical_high_urban",
+      "count": 79,
+      "cases": {
+        "native": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.013642435086054469,
+          "feature_cosine_error": 0.006080964262103992,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.012704665869887463,
+          "feature_cosine_error": 0.003183784999631505,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.012806292502083682,
+          "feature_cosine_error": 0.005837814284411809,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 78,
+          "iq_nmse": 0.008031548727967191,
+          "feature_cosine_error": 0.003944777103345137,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "scene:practical_low_suburban",
+      "count": 68,
+      "cases": {
+        "native": {
+          "teacher_correct": 60,
+          "iq_nmse": 0.015192568531013022,
+          "feature_cosine_error": 0.022407328430074373,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 62,
+          "iq_nmse": 0.01366749765213408,
+          "feature_cosine_error": 0.017669141279322703,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        },
+        "residual": {
+          "teacher_correct": 60,
+          "iq_nmse": 0.014133694760462487,
+          "feature_cosine_error": 0.021677533207977797,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 63,
+          "iq_nmse": 0.008641099740510362,
+          "feature_cosine_error": 0.01574776539613951,
+          "repaired": 3,
+          "damaged": 0,
+          "net_repaired": 3
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "scene:practical_low_urban",
+      "count": 66,
+      "cases": {
+        "native": {
+          "teacher_correct": 56,
+          "iq_nmse": 0.06673888802778252,
+          "feature_cosine_error": 0.031690148562750625,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 59,
+          "iq_nmse": 0.060945890296856174,
+          "feature_cosine_error": 0.02253420295088995,
+          "repaired": 3,
+          "damaged": 0,
+          "net_repaired": 3
+        },
+        "residual": {
+          "teacher_correct": 55,
+          "iq_nmse": 0.06125100973055374,
+          "feature_cosine_error": 0.03067593825907068,
+          "repaired": 0,
+          "damaged": 1,
+          "net_repaired": -1
+        },
+        "matched_global": {
+          "teacher_correct": 60,
+          "iq_nmse": 0.036359062653611954,
+          "feature_cosine_error": 0.02118340679449121,
+          "repaired": 4,
+          "damaged": 0,
+          "net_repaired": 4
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "scene:practical_mid",
+      "count": 77,
+      "cases": {
+        "native": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.012096209200611477,
+          "feature_cosine_error": 0.007689400333350337,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.011036941291342748,
+          "feature_cosine_error": 0.004771123539814705,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.011277155739140262,
+          "feature_cosine_error": 0.007364537834784839,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.006830122822110047,
+          "feature_cosine_error": 0.004600236186260228,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        }
+      }
+    },
+    {
+      "view": "1",
+      "group": "scene:practical_mid_urban",
+      "count": 76,
+      "cases": {
+        "native": {
+          "teacher_correct": 70,
+          "iq_nmse": 0.030268384818823556,
+          "feature_cosine_error": 0.019833820500439768,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 72,
+          "iq_nmse": 0.027162318350759374,
+          "feature_cosine_error": 0.01231614053594251,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        },
+        "residual": {
+          "teacher_correct": 70,
+          "iq_nmse": 0.02832420622643356,
+          "feature_cosine_error": 0.018073384158525024,
+          "repaired": 1,
+          "damaged": 1,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 72,
+          "iq_nmse": 0.017807851725413132,
+          "feature_cosine_error": 0.013510356237124077,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "all",
+      "count": 512,
+      "cases": {
+        "native": {
+          "teacher_correct": 498,
+          "iq_nmse": 0.019439707877292677,
+          "feature_cosine_error": 0.010978604396986055,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 501,
+          "iq_nmse": 0.01804155571993831,
+          "feature_cosine_error": 0.007569097663708163,
+          "repaired": 4,
+          "damaged": 1,
+          "net_repaired": 3
+        },
+        "residual": {
+          "teacher_correct": 498,
+          "iq_nmse": 0.01760991091048575,
+          "feature_cosine_error": 0.010189314530591832,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 504,
+          "iq_nmse": 0.01046598387100125,
+          "feature_cosine_error": 0.005985979441896052,
+          "repaired": 6,
+          "damaged": 0,
+          "net_repaired": 6
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "rx:1",
+      "count": 103,
+      "cases": {
+        "native": {
+          "teacher_correct": 101,
+          "iq_nmse": 0.005268800236010431,
+          "feature_cosine_error": 0.008507397296591154,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 101,
+          "iq_nmse": 0.004708177382599098,
+          "feature_cosine_error": 0.004560169329475533,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 101,
+          "iq_nmse": 0.0050200041834445415,
+          "feature_cosine_error": 0.0083298078507532,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 101,
+          "iq_nmse": 0.0033457843877545794,
+          "feature_cosine_error": 0.0054099067445402904,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "rx:3",
+      "count": 102,
+      "cases": {
+        "native": {
+          "teacher_correct": 99,
+          "iq_nmse": 0.03831232150372044,
+          "feature_cosine_error": 0.01096638943030423,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 100,
+          "iq_nmse": 0.035527630877337665,
+          "feature_cosine_error": 0.007709494486122032,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        },
+        "residual": {
+          "teacher_correct": 99,
+          "iq_nmse": 0.032624952426102596,
+          "feature_cosine_error": 0.008652059929517847,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 101,
+          "iq_nmse": 0.016121522604399315,
+          "feature_cosine_error": 0.004895153219772946,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "rx:4",
+      "count": 102,
+      "cases": {
+        "native": {
+          "teacher_correct": 100,
+          "iq_nmse": 0.006245533167438865,
+          "feature_cosine_error": 0.00738758173431613,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 102,
+          "iq_nmse": 0.005685521460740549,
+          "feature_cosine_error": 0.003937112657882001,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        },
+        "residual": {
+          "teacher_correct": 100,
+          "iq_nmse": 0.005966323289976545,
+          "feature_cosine_error": 0.007215350191668648,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 101,
+          "iq_nmse": 0.004007371739202035,
+          "feature_cosine_error": 0.004478849631817933,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "rx:6",
+      "count": 102,
+      "cases": {
+        "native": {
+          "teacher_correct": 98,
+          "iq_nmse": 0.01801804051455157,
+          "feature_cosine_error": 0.013558083514655955,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 98,
+          "iq_nmse": 0.01666245257325057,
+          "feature_cosine_error": 0.007652388368293051,
+          "repaired": 1,
+          "damaged": 1,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 98,
+          "iq_nmse": 0.017472795386964383,
+          "feature_cosine_error": 0.013285616571319964,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 100,
+          "iq_nmse": 0.012922350473129826,
+          "feature_cosine_error": 0.009084083217091584,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "rx:8",
+      "count": 103,
+      "cases": {
+        "native": {
+          "teacher_correct": 100,
+          "iq_nmse": 0.029395171843905506,
+          "feature_cosine_error": 0.014463630606036755,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 100,
+          "iq_nmse": 0.0276604131771376,
+          "feature_cosine_error": 0.013953233209983467,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 100,
+          "iq_nmse": 0.026996880609354162,
+          "feature_cosine_error": 0.013450001052425048,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 101,
+          "iq_nmse": 0.015948941540847944,
+          "feature_cosine_error": 0.006066760199587549,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "day:1",
+      "count": 171,
+      "cases": {
+        "native": {
+          "teacher_correct": 168,
+          "iq_nmse": 0.015117081801756329,
+          "feature_cosine_error": 0.01003990091690486,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 168,
+          "iq_nmse": 0.013995052594603387,
+          "feature_cosine_error": 0.006169385722660044,
+          "repaired": 1,
+          "damaged": 1,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 168,
+          "iq_nmse": 0.014123366133311766,
+          "feature_cosine_error": 0.009655226943507437,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 169,
+          "iq_nmse": 0.008851897119812423,
+          "feature_cosine_error": 0.006122727052369901,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "day:2",
+      "count": 170,
+      "cases": {
+        "native": {
+          "teacher_correct": 166,
+          "iq_nmse": 0.01984161982508587,
+          "feature_cosine_error": 0.008863192083505162,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 168,
+          "iq_nmse": 0.01827135967565055,
+          "feature_cosine_error": 0.005510281876992954,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        },
+        "residual": {
+          "teacher_correct": 166,
+          "iq_nmse": 0.017251266441196903,
+          "feature_cosine_error": 0.007724793357876512,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 167,
+          "iq_nmse": 0.00926126517659753,
+          "feature_cosine_error": 0.004995324288931666,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "day:3",
+      "count": 171,
+      "cases": {
+        "native": {
+          "teacher_correct": 164,
+          "iq_nmse": 0.023362772367303632,
+          "feature_cosine_error": 0.014020349358305562,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 165,
+          "iq_nmse": 0.021859598772342947,
+          "feature_cosine_error": 0.01101558553306965,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        },
+        "residual": {
+          "teacher_correct": 164,
+          "iq_nmse": 0.021453002820870877,
+          "feature_cosine_error": 0.013173510885872744,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 168,
+          "iq_nmse": 0.013277744178030033,
+          "feature_cosine_error": 0.0068340936793984935,
+          "repaired": 4,
+          "damaged": 0,
+          "net_repaired": 4
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "roles:L_s",
+      "count": 128,
+      "cases": {
+        "native": {
+          "teacher_correct": 126,
+          "iq_nmse": 0.01904235437974028,
+          "feature_cosine_error": 0.010485195388579015,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 126,
+          "iq_nmse": 0.01773268322693488,
+          "feature_cosine_error": 0.006671196127140853,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 126,
+          "iq_nmse": 0.017930555504711516,
+          "feature_cosine_error": 0.009599954265788491,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 127,
+          "iq_nmse": 0.011901557418682577,
+          "feature_cosine_error": 0.006381508973925971,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "roles:U_s",
+      "count": 384,
+      "cases": {
+        "native": {
+          "teacher_correct": 372,
+          "iq_nmse": 0.019572159043143477,
+          "feature_cosine_error": 0.011143074066455066,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 375,
+          "iq_nmse": 0.018144513217606125,
+          "feature_cosine_error": 0.007868398175897268,
+          "repaired": 4,
+          "damaged": 1,
+          "net_repaired": 3
+        },
+        "residual": {
+          "teacher_correct": 372,
+          "iq_nmse": 0.017503029379077162,
+          "feature_cosine_error": 0.010385767952192945,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 377,
+          "iq_nmse": 0.009987459355107475,
+          "feature_cosine_error": 0.005854136264552746,
+          "repaired": 5,
+          "damaged": 0,
+          "net_repaired": 5
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "scene:clean",
+      "count": 81,
+      "cases": {
+        "native": {
+          "teacher_correct": 81,
+          "iq_nmse": 2.4928340314275887e-05,
+          "feature_cosine_error": 6.391595228207568e-05,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 81,
+          "iq_nmse": 2.0929055257353888e-05,
+          "feature_cosine_error": 3.680149201058922e-05,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 81,
+          "iq_nmse": 2.2847165759660524e-05,
+          "feature_cosine_error": 5.975859769592459e-05,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 81,
+          "iq_nmse": 1.3973098249759834e-05,
+          "feature_cosine_error": 4.001798090812072e-05,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "scene:practical_high",
+      "count": 83,
+      "cases": {
+        "native": {
+          "teacher_correct": 83,
+          "iq_nmse": 0.007497143861911243,
+          "feature_cosine_error": 0.006018964047908075,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 83,
+          "iq_nmse": 0.006740035852154033,
+          "feature_cosine_error": 0.003558726815259482,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 83,
+          "iq_nmse": 0.007200078043164955,
+          "feature_cosine_error": 0.0057248822604615765,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 83,
+          "iq_nmse": 0.0049070408760785575,
+          "feature_cosine_error": 0.003895295107684488,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "scene:practical_high_urban",
+      "count": 68,
+      "cases": {
+        "native": {
+          "teacher_correct": 67,
+          "iq_nmse": 0.010194021500684736,
+          "feature_cosine_error": 0.007122261120488011,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 67,
+          "iq_nmse": 0.009389930128587774,
+          "feature_cosine_error": 0.004910820839078338,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 67,
+          "iq_nmse": 0.009753265691528191,
+          "feature_cosine_error": 0.006487212669140975,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 67,
+          "iq_nmse": 0.006564925010615225,
+          "feature_cosine_error": 0.004118874599533886,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "scene:practical_low_suburban",
+      "count": 71,
+      "cases": {
+        "native": {
+          "teacher_correct": 69,
+          "iq_nmse": 0.014143061498282315,
+          "feature_cosine_error": 0.009736234733241589,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 70,
+          "iq_nmse": 0.013080147104977659,
+          "feature_cosine_error": 0.005742092028094855,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        },
+        "residual": {
+          "teacher_correct": 69,
+          "iq_nmse": 0.013215310365858064,
+          "feature_cosine_error": 0.009370779594529073,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 71,
+          "iq_nmse": 0.008215517223954756,
+          "feature_cosine_error": 0.0055996459993393035,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "scene:practical_low_urban",
+      "count": 70,
+      "cases": {
+        "native": {
+          "teacher_correct": 64,
+          "iq_nmse": 0.06834821551002251,
+          "feature_cosine_error": 0.02714314283679605,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 65,
+          "iq_nmse": 0.06382990627851151,
+          "feature_cosine_error": 0.018149081359267065,
+          "repaired": 2,
+          "damaged": 1,
+          "net_repaired": 1
+        },
+        "residual": {
+          "teacher_correct": 64,
+          "iq_nmse": 0.05989290161450293,
+          "feature_cosine_error": 0.024385980136755008,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 66,
+          "iq_nmse": 0.03365215779074111,
+          "feature_cosine_error": 0.015116114605269982,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "scene:practical_mid",
+      "count": 77,
+      "cases": {
+        "native": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.009601920288950329,
+          "feature_cosine_error": 0.00713038551081879,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.008626616131997352,
+          "feature_cosine_error": 0.0041423910300261435,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "residual": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.009006438411419383,
+          "feature_cosine_error": 0.0069190869639411965,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 77,
+          "iq_nmse": 0.005523646214181133,
+          "feature_cosine_error": 0.004274947737429723,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        }
+      }
+    },
+    {
+      "view": "20",
+      "group": "scene:practical_mid_urban",
+      "count": 62,
+      "cases": {
+        "native": {
+          "teacher_correct": 57,
+          "iq_nmse": 0.033996363237006486,
+          "feature_cosine_error": 0.02405884093521827,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 58,
+          "iq_nmse": 0.03188080200881938,
+          "feature_cosine_error": 0.02009675164171638,
+          "repaired": 1,
+          "damaged": 0,
+          "net_repaired": 1
+        },
+        "residual": {
+          "teacher_correct": 57,
+          "iq_nmse": 0.031117892168792648,
+          "feature_cosine_error": 0.022430310437449415,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 59,
+          "iq_nmse": 0.01837869517441035,
+          "feature_cosine_error": 0.010859890112693971,
+          "repaired": 2,
+          "damaged": 0,
+          "net_repaired": 2
+        }
+      }
+    }
+  ],
+  "energy_summary": {
+    "1": {
+      "window_error_energy": 428.8118209801482,
+      "periodic_error_energy": 239.54473355014318,
+      "residual_error_energy": 189.2670874087687,
+      "residual_fraction_of_window_error": 0.44137562946878467,
+      "orthogonality_dot": 4.889835047980162e-08,
+      "maximum_equal_energy_norm_difference_relative_input": 1.7074494007766425e-08,
+      "source_clean_residual_fraction": 0.06032473269551995
+    },
+    "20": {
+      "window_error_energy": 423.09374362912683,
+      "periodic_error_energy": 183.25859741074274,
+      "residual_error_energy": 239.83514616255684,
+      "residual_fraction_of_window_error": 0.5668605356944021,
+      "orthogonality_dot": 5.580660940103548e-07,
+      "maximum_equal_energy_norm_difference_relative_input": 1.7611268729120363e-08,
+      "source_clean_residual_fraction": 0.06032473269551995
+    }
+  },
+  "decision": {
+    "eligible": false,
+    "views": [
+      {
+        "view": "1",
+        "gain_vs_native": -1,
+        "gain_vs_equal_energy_global": -11,
+        "RX_preserved": false,
+        "clean_scene_preserved": true,
+        "scene_protection": true,
+        "feature_error_not_higher": true,
+        "passed": false
+      },
+      {
+        "view": "20",
+        "gain_vs_native": 0,
+        "gain_vs_equal_energy_global": -6,
+        "RX_preserved": true,
+        "clean_scene_preserved": true,
+        "scene_protection": true,
+        "feature_error_not_higher": true,
+        "passed": false
+      }
+    ],
+    "automatic_G_training": false,
+    "primary": "residual only;periodic descriptive;no alternate window/period/threshold"
+  },
+  "F_full_inputs": 3072,
+  "F_smoke_full_inputs": 4,
+  "G_inputs": 0,
+  "G_checkpoint_reads": 0,
+  "F_checkpoint_reads": 1,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "seconds": 3.0797854573465884,
+  "scope": "Source-training-pool pairedclean oracle/notdeployable/notTXtruth/RXnoise-hardwareattribution orrecoverybound;equal-energyutilitynotobservationrecoverability;noautomatictraining",
+  "execution_commit": "58da3da07023b93e55667f924e07af5db9ff745c",
+  "external_state": "VERIFIED_ANALYZED_SOURCE_ONLY",
+  "independent_check": {
+    "status": "INDEPENDENTLY_RECOMPUTED",
+    "run": "20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
+    "source_observations": 1024,
+    "unique_physical_records": 512,
+    "fixed_dense_projection": true,
+    "all_three_IQ_counterfactuals_checked": true,
+    "actual_window_bits_unchanged": true,
+    "original_cache_pairs_replayed": true,
+    "group_records": 36,
+    "case_group_records": 144,
+    "maximum_IQ_formula_abs_error": 1.33825654113906e-07,
+    "maximum_metric_abs_error": 0.0,
+    "maximum_FP64_energy_norm_difference_relative_input": 1.7074046546253188e-08,
+    "reported_FP32_subtraction_statistic_separately_replayed": true,
+    "decision": {
+      "eligible": false,
+      "views": [
+        {
+          "view": "1",
+          "gain_vs_native": -1,
+          "gain_vs_equal_energy_global": -11,
+          "RX_preserved": false,
+          "clean_scene_preserved": true,
+          "scene_protection": true,
+          "feature_error_not_higher": true,
+          "passed": false
+        },
+        {
+          "view": "20",
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -6,
+          "RX_preserved": true,
+          "clean_scene_preserved": true,
+          "scene_protection": true,
+          "feature_error_not_higher": true,
+          "passed": false
+        }
+      ],
+      "automatic_G_training": false,
+      "primary": "residual only;periodic descriptive;no alternate window/period/threshold"
+    },
+    "overall": {
+      "1": {
+        "native": {
+          "teacher_correct": 486,
+          "iq_nmse": 0.020212826231806494,
+          "feature_cosine_error": 0.012825454647313864,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 492,
+          "iq_nmse": 0.01838524497547938,
+          "feature_cosine_error": 0.008624040722423345,
+          "repaired": 7,
+          "damaged": 1,
+          "net_repaired": 6
+        },
+        "residual": {
+          "teacher_correct": 485,
+          "iq_nmse": 0.018768832957169412,
+          "feature_cosine_error": 0.012238692274908619,
+          "repaired": 1,
+          "damaged": 2,
+          "net_repaired": -1
+        },
+        "matched_global": {
+          "teacher_correct": 496,
+          "iq_nmse": 0.011478146544899356,
+          "feature_cosine_error": 0.008560001542046298,
+          "repaired": 10,
+          "damaged": 0,
+          "net_repaired": 10
+        }
+      },
+      "20": {
+        "native": {
+          "teacher_correct": 498,
+          "iq_nmse": 0.019439707877292677,
+          "feature_cosine_error": 0.010978604396986055,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "periodic": {
+          "teacher_correct": 501,
+          "iq_nmse": 0.01804155571993831,
+          "feature_cosine_error": 0.007569097663708163,
+          "repaired": 4,
+          "damaged": 1,
+          "net_repaired": 3
+        },
+        "residual": {
+          "teacher_correct": 498,
+          "iq_nmse": 0.01760991091048575,
+          "feature_cosine_error": 0.010189314530591832,
+          "repaired": 0,
+          "damaged": 0,
+          "net_repaired": 0
+        },
+        "matched_global": {
+          "teacher_correct": 504,
+          "iq_nmse": 0.01046598387100125,
+          "feature_cosine_error": 0.005985979441896052,
+          "repaired": 6,
+          "damaged": 0,
+          "net_repaired": 6
+        }
+      }
+    },
+    "new_F_G_inputs": 0,
+    "optimizer_updates": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "default_DURA_changed": false,
+  "goal_complete": false
+}

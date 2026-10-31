@@ -1,0 +1,63 @@
+{
+  "status": "VERIFIED_ANALYZED_SOURCE_ONLY",
+  "execution_commit": "58da3da07023b93e55667f924e07af5db9ff745c",
+  "PID": 1915074,
+  "CPU_threads": 2,
+  "CUDA_visible_empty": true,
+  "actual_PID_CWD_argv_commit_and_environment_verified": true,
+  "archive_sha_match": true,
+  "remote_compile": true,
+  "initial_log_bytes": 0,
+  "first_progress_log_bytes": 53,
+  "final_log_bytes": 1647,
+  "PID_natural_exit_verified": true,
+  "smoke": {
+    "status": "PASS",
+    "real_nonclean_Ls": 2,
+    "F_full_inputs": 4,
+    "G_inputs": 0,
+    "original_F_clean_and_native_logits_replayed": true,
+    "optimizer_updates": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "source_complete": {
+    "status": "ANALYZED_SOURCE_ONLY",
+    "decision": {
+      "eligible": false,
+      "views": [
+        {
+          "view": "1",
+          "gain_vs_native": -1,
+          "gain_vs_equal_energy_global": -11,
+          "RX_preserved": false,
+          "clean_scene_preserved": true,
+          "scene_protection": true,
+          "feature_error_not_higher": true,
+          "passed": false
+        },
+        {
+          "view": "20",
+          "gain_vs_native": 0,
+          "gain_vs_equal_energy_global": -6,
+          "RX_preserved": true,
+          "clean_scene_preserved": true,
+          "scene_protection": true,
+          "feature_error_not_higher": true,
+          "passed": false
+        }
+      ],
+      "automatic_G_training": false,
+      "primary": "residual only;periodic descriptive;no alternate window/period/threshold"
+    },
+    "formal_predictions": 0,
+    "goal_complete": false
+  },
+  "independent_case_groups": 144,
+  "new_G_inputs": 0,
+  "training_updates": 0,
+  "target_reads": 0,
+  "default_DURA_changed": false,
+  "goal_complete": false
+}

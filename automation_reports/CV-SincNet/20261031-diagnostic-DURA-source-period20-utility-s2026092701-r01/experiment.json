@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "Active restoration-performance-efficiency goal and explicit independent frozen-source-F guidance; source-only CPU association/latent intervention; no G training or target use",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "58da3da07023b93e55667f924e07af5db9ff745c",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing CVS-RFFI Python/Torch/NumPy;CPU2 OMP/MKL/OPENBLAS2 CUDAempty FP32F/FP64geometry;immutablebase47c264286ca689f060a3f36aafb763fe209a6f06",
     "cwd": "releases/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01-release"
@@ -86,7 +86,7 @@
     "remote_run_root": "runs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
     "remote_log_root": "logs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
-    "launch_command": "python -u -m experiments.pamf_dura_efficiency.periodic_utility_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.periodic_utility_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01 --commit 58da3da07023b93e55667f924e07af5db9ff745c",
     "stop_rule": "Wrongsource-Fcache/roles-ID-order/shape/nonfinite/Fstatechange/collision/smoke/execute:preserveandstop/noautoretry. Actualmatchedcorrectionnormdifference<=2e-6*max(cleanIQnorm,1)FP32tolerance. ScientificFAILdoesnotchangeprimary/window/period/threshold orstartG."
   },
   "expected_artifacts": [
@@ -139,7 +139,7 @@
       "budget_ref": "CPU2/0Gload-forward/0optimizer/0TX-V-target;mainFfull3072/real2noncleanLs clean-nativeFfull4smoke;source1024visits512records/128L384Uunique;originalF50anddefaultG/cachecostretained",
       "output_root": "runs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
       "log_path": "logs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01/stdout.log",
-      "command": "python -u -m experiments.pamf_dura_efficiency.periodic_utility_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "command": "python -u -m experiments.pamf_dura_efficiency.periodic_utility_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01 --commit 58da3da07023b93e55667f924e07af5db9ff745c",
       "expected_artifacts": [
         "launch.json",
         "smoke.json",

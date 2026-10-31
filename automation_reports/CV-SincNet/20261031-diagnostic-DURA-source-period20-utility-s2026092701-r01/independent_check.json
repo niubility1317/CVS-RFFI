@@ -1,0 +1,118 @@
+{
+  "status": "INDEPENDENTLY_RECOMPUTED",
+  "run": "20261031-diagnostic-DURA-source-period20-utility-s2026092701-r01",
+  "source_observations": 1024,
+  "unique_physical_records": 512,
+  "fixed_dense_projection": true,
+  "all_three_IQ_counterfactuals_checked": true,
+  "actual_window_bits_unchanged": true,
+  "original_cache_pairs_replayed": true,
+  "group_records": 36,
+  "case_group_records": 144,
+  "maximum_IQ_formula_abs_error": 1.33825654113906e-07,
+  "maximum_metric_abs_error": 0.0,
+  "maximum_FP64_energy_norm_difference_relative_input": 1.7074046546253188e-08,
+  "reported_FP32_subtraction_statistic_separately_replayed": true,
+  "decision": {
+    "eligible": false,
+    "views": [
+      {
+        "view": "1",
+        "gain_vs_native": -1,
+        "gain_vs_equal_energy_global": -11,
+        "RX_preserved": false,
+        "clean_scene_preserved": true,
+        "scene_protection": true,
+        "feature_error_not_higher": true,
+        "passed": false
+      },
+      {
+        "view": "20",
+        "gain_vs_native": 0,
+        "gain_vs_equal_energy_global": -6,
+        "RX_preserved": true,
+        "clean_scene_preserved": true,
+        "scene_protection": true,
+        "feature_error_not_higher": true,
+        "passed": false
+      }
+    ],
+    "automatic_G_training": false,
+    "primary": "residual only;periodic descriptive;no alternate window/period/threshold"
+  },
+  "overall": {
+    "1": {
+      "native": {
+        "teacher_correct": 486,
+        "iq_nmse": 0.020212826231806494,
+        "feature_cosine_error": 0.012825454647313864,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0
+      },
+      "periodic": {
+        "teacher_correct": 492,
+        "iq_nmse": 0.01838524497547938,
+        "feature_cosine_error": 0.008624040722423345,
+        "repaired": 7,
+        "damaged": 1,
+        "net_repaired": 6
+      },
+      "residual": {
+        "teacher_correct": 485,
+        "iq_nmse": 0.018768832957169412,
+        "feature_cosine_error": 0.012238692274908619,
+        "repaired": 1,
+        "damaged": 2,
+        "net_repaired": -1
+      },
+      "matched_global": {
+        "teacher_correct": 496,
+        "iq_nmse": 0.011478146544899356,
+        "feature_cosine_error": 0.008560001542046298,
+        "repaired": 10,
+        "damaged": 0,
+        "net_repaired": 10
+      }
+    },
+    "20": {
+      "native": {
+        "teacher_correct": 498,
+        "iq_nmse": 0.019439707877292677,
+        "feature_cosine_error": 0.010978604396986055,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0
+      },
+      "periodic": {
+        "teacher_correct": 501,
+        "iq_nmse": 0.01804155571993831,
+        "feature_cosine_error": 0.007569097663708163,
+        "repaired": 4,
+        "damaged": 1,
+        "net_repaired": 3
+      },
+      "residual": {
+        "teacher_correct": 498,
+        "iq_nmse": 0.01760991091048575,
+        "feature_cosine_error": 0.010189314530591832,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0
+      },
+      "matched_global": {
+        "teacher_correct": 504,
+        "iq_nmse": 0.01046598387100125,
+        "feature_cosine_error": 0.005985979441896052,
+        "repaired": 6,
+        "damaged": 0,
+        "net_repaired": 6
+      }
+    }
+  },
+  "new_F_G_inputs": 0,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "target_reads": 0
+}
