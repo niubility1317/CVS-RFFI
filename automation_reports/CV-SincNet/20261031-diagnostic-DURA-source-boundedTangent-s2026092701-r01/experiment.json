@@ -1,0 +1,169 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01",
+  "group_id": "phase1-dura-source-bounded-feature-metric",
+  "display_name": "源特征约束压力与有界度量检验",
+  "description": "完整source63000既有F导数缓存谱压力，固定alpha谱裁剪使附加loss/IQ输出梯度不超过重建项；纯repeat固定512×两view验证特征方向保留；CPU2/0新G训练TX-V-target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "DURA",
+    "source-only",
+    "bounded-local-metric",
+    "F-guided-research",
+    "training-efficiency"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01",
+    "20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权优化恢复性能及单阶段30epoch效率；独立源F指导对照允许，F50/defaulthead冻结，0直接TX/V/target优化。",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI Python/Torch; CPUthreads2 FP32 TF32off; immutable runtime base47c264286ca689f060a3f36aafb763fe209a6f06",
+    "cwd": "releases/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original7/63/30",
+    "representation": "Original63000sourceclean/FcleanJcache plusfixedpure repeatE30 source512128L384U/native01and20 errors",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Originalsource IDs/roles;fullsourceJexactorder;old512source positions/clean/RX/roles paired",
+    "label_map_ref": "Not read; no TX labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source sixTX,hidden and unused",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing R07 ACTION_SOURCE_CACHE_COMPLETE; reuse unchanged source cache",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 residual/post_sync/noEQ/25MHz/2.462GHz/reflect/referenceSNR30; no new observations",
+    "target_panel": "None",
+    "actual_training_labels": "No training;sourceclean andfrozenF featurederivatives/inputgradients only;0TX/V/target"
+  },
+  "permissions": {
+    "regime": "Authorized_source_F_fixed_metric_pressure_diagnostic",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source operatorpressure/localfeaturegradient only;boundedIQ-outputloss/gradient notGparametergradient ortrueTX/targetbenefit;noautomatictraining"
+  },
+  "checkpoint": {
+    "initialization": "NoGload/newinitialization/updates;originalF50/defaulthead frozen;reuse its sourceclean derivativecache only,notproducerG",
+    "sources": [
+      "runs/20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/scratch_joint/source_clean_J_cache DATAONLY",
+      "runs/20261031-diagnostic-DURA-source-cleanTangent-s2026092701-r01/source_clean_jacobian.npz andsource-{1,20}.npz DATAONLY",
+      "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "source_training/source_ids;cache metadataFteacher/count63000/shape5x2x256/finite/frozen/TX-V-target0 andphysicalorder;oldsourceprobe repeat8cf/errorIQrefs+sameF;basis headspan;strictoriginalload_reader",
+    "provenance_verdict": "OnlyoriginalFsource4df7/final50/11100 knowledge;cacheproducedsourceclean beforeproducerGtraining/target,notusingproducerGcheckpoint/targetoutputs;pure repeat sourceerrors fixedfinal30;all7/63/30 unchanged",
+    "selection_rule": "Source-only derivativecache pressure/analyticbound hypothesis,notselectingnewGparent bytarget. Fixedalpha fromoriginalsourceprobe. NoGweights loaded;benchmarkexposed history disclosed."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/dura-source-bounded-metric",
+    "gpu_policy": "CPU2/CUDAempty/0GPU/nottruthscorer;oldownGworker/controller actualabsent;otherowners untouched",
+    "remote_run_root": "runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01",
+    "remote_log_root": "logs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_dura_efficiency.tangent_bound_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+    "stop_rule": "Badsource/F/cache/order/basis/shape/nonfinite/PSD/statechange/collision:preserveandstop/noautorerun;failedscientificrule doesnotrelax orautotrain"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "results.json",
+    "complete.json",
+    "full_source_geometry.npz PRIVATE",
+    "source-{1,20}.npz PRIVATE",
+    "source_metric_cache/{metric_factor.npy,physical_ids.npy,complete.json} PRIVATE",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "complete63000relativePSD eigenvaluepressure/traceconcentration/counts byrole-RX-day",
+      "actualFP32boundedfactor eigenvaluebound",
+      "both512views guide-IQgradientpressure/guide-exactfeaturecosine",
+      "fixedsourcequalification",
+      "actualCPUcachetime/bytes/Fcounts/stateunchanged"
+    ],
+    "dimensions": [
+      "all63000/L6300U56700/fiveRX/threedays",
+      "pure repeatE30 source512x01/20",
+      "rawvsboundedrank5featuremetric"
+    ],
+    "prediction_ref": "No target/newG predictions;private source referencefactors/geometry",
+    "scorer_ref": "NoTXtruth;complete rawgeometry/pressure andselectedfactor spectrum independentlyrecomputed aftercomplete"
+  },
+  "rows": [
+    {
+      "row_id": "source-bounded-metric",
+      "method": "Fixedsourceclean rank5 metric eigenvaluecap1/(alpha Eclean) inFP64/recastFP32,retainsweakeigendirections;alphaunchanged",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/pamf_dura_efficiency/{bounded_tangent.py,tangent_bound_probe.py}",
+      "resolved_config_ref": "results.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026103005
+      },
+      "seed_notes": "No newrandomprobes/modelinitialization;sourceindices128L384U fixed;sourcecacheAUG2026101912/RX2026101911;F50seed2026092701;pure repeat errorsseed2026092701",
+      "k": null,
+      "scenario": "source63000staticcleanJ plus fixedrepeat native source512x01/20 errors",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "CPU2/all63000cacheeigensystems/newderived645.12MBfactor;F1024restored+2smoke/1024inputVJP;0newFcleanJ/G/optimizer/TX-V-target",
+      "output_root": "runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01",
+      "log_path": "logs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_dura_efficiency.tangent_bound_probe --root /home/szu2070436088/2510044040/CV-SincNet --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261031-diagnostic-DURA-source-boundedTangent-s2026092701-r01 --commit PENDING_CODE_COMMIT",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "results.json",
+        "complete.json",
+        "full_source_geometry.npz PRIVATE",
+        "source-{1,20}.npz PRIVATE",
+        "source_metric_cache/{metric_factor.npy,physical_ids.npy,complete.json} PRIVATE",
+        "stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "PreviousGtarget/sourceVfailuredoesnotselectanewparent/alpha orperTXweights. Specificmissingproperty:globalalpha calibratedmedian inputgradientratio.25 doesnotboundindividualsamples/directions. DiagnoseonlysourcefixedoriginalFcache andpure repeat sourceerrors.",
+    "alpha=.0033130025035573727 unchanged. E=512*max(mean(sourcecleanIQ²),1e-4),samereconstructionnormalizer. JJT5x5eigh inFP64,lambda_i clippedat1/(alpha E),rotatedfactorcastFP32. Guide=alpha||factor delta||²<=||delta||²/E andIQ-outputguidegradnorm<=IQgradnorm foranydelta;not aGparametergradientbound.",
+    "Full63000cachedJfromsourceclean/originalF beforeproducerGtrainandtarget. It inheritsFsource50/11100 knowledge;producerGweights/results notconsumed. NoFcleanNN/VJP recomputation,0Gnew,originalsourceIDsrolesexactreuse. Derivedfactor645120000bytes/cachecostreported,rawsourceIQ/normdataunchanged.",
+    "OldsourcecleanPhi512 reusesoriginalFsameheadspan;rotateoldcoordinatebasis byoldQ.T@cacheQ. Originalrank5headspan checked,notnewfit/alternatehead. Samepure-repeat512errors/positions/IDs/clean/RX,oldsourcebaseline8cf not newGparent.",
+    "Fixedeligibility BEFORE source stats:fullfractionneedingcap>=.05 andallactualFP32factor maxrelativeeigen<=1+2e-5. BOTHviews rawactualguide/IQinputgradnormp95>1,512defined, boundedmeanfeaturegradcos>=.5 AND>=rawmean-.02,>=384nonnegative,eachRXmean>=0,maxboundedactualpressure<=1+2e-5. Elsefail/no thresholdrelaxation;noautomatictraining.",
+    "ActualFsource2Ls/defaulthead smoke first,thenimmediatelycontinue. MainnewFinput1024/newinputVJP1024,smoke2;cleanPhiref512reused/Fstateunchanged. NoTXtruth/V/target/optimizer orGcheckpoint loaded. Full63000statistics andbothsourceviews notsampletail analysis.",
+    "Fourfocusedchecks proveweakmetricpreservation/PSDrelativebound/arbitraryerrorloss-andIQgradientbound/zeroandinvalidsourceboundaries/fixedtwo-vieweligibility. One requiredP0P1 beforelaunch,onepreflight/archiveSHA/compile/actualPID-CWD-argv-CUDAempty-loggrowth.",
+    "A derivedsourcefactorcache isnotnewdeployableG/version. Passing onlysupports separatelypreregistered scratchjoint30/fullsevenformal168000 predictionsbeforetruthlast. No defaultDURA/P2/P3change orsourceproxyasrealTXaccuracy;fullgoal remainsACTIVE."
+  ],
+  "registered_at": "2026-10-31T00:46:58+00:00"
+}
