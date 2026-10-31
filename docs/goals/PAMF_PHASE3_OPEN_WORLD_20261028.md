@@ -2,9 +2,9 @@
 
 ## 已有方法优先选择（2026-10-31，用户最新指定）
 
-用户要求“先选取前面性能好的方法”。当前开发主基线固定为 DURA v1.0＋原 PAMF 默认身份头＋P1 signal r03 的预测身份条件密度比 `predicted_ratio`（class-density r01/code4af0668）；原 `pooled_ratio` 保留冻结对照。联合特征 `joint_predicted_ratio` 仅作为历史比较，不因星地 H 微增而替换已知接收更好的主基线。最近正对角与选择性无标签适应的星地拒识退步，不接入所选主基线。方法和三条件数据/指标见 `configs/pamf_phase3_selected_baseline_20261031.json`、`docs/PAMF_PHASE3_METHOD_SELECTION_20261031.md`。
+用户要求“先选取前面性能好的方法”。当前研究主基线为 DURA v1.0＋原 PAMF 默认身份头＋PCD 无标签原型适配条件密度比 `PCD_predicted_ratio`（body-prototype r02/code4273e88，训练复用 r01/a33612e）；原 source-only `predicted_ratio`（class-density r01/4af0668）、同预算 SOURCE 和 `pooled_ratio` 保留对照。选择依据为旧 RX24-1 同一开发集三类 DURA 的已完成比较，后续 RX3-2 的 PCD 验证与联合身份变体均未达标，不能称已确认普遍收益；具体失败指标保留在下方时间记录和各报告。方法和三条件数据/指标见 `configs/pamf_phase3_selected_baseline_20261031.json`、`docs/PAMF_PHASE3_METHOD_SELECTION_20261031.md`。
 
-本次是历史开发结果上的研究基线选择，不改各原 run 的 NO_PROMOTION，不宣称独立确认或达到指标。native-energy 实现草稿在实际训练/发布前延后，现有未完成草稿保留，不自动启动。本次新增训练、预测、评分、私有 truth 读取和阈值拟合均为0；下方完整 Phase3 目标及三类 DURA 验收保持 ACTIVE。
+此次基线选择本身不新增训练、预测、评分、私有 truth 读取或阈值拟合，不改各原 run 的 NO_PROMOTION，不宣称独立确认或达到指标。native-energy 实现草稿保留，不自动启动。后续已授权的独立实验仍各自预登记并保留实际完整结果；固定 PCD 的全簇已知关联与匿名注册本行已完成且 NO_PROMOTION，不能替换所选基线；具体失败指标见本行结果及下方时间记录。下方完整 Phase3 目标及三类 DURA 验收保持 ACTIVE。
 
 ## 当前执行范围（2026-10-31，用户最新指定）
 
@@ -1163,3 +1163,13 @@ Run `20261031-phase3-identity-source-diagnostic-s2026092701-r01` / actualcode `6
 Run `20261031-phase3-identity-source-diagnostic-s2026092701-r01` / actualcode `602a57b1fbb61c05c6fd7ac780dc7656a93238f8`，冻结 source-only F0/INIT(r03+原W)/SOURCE_JOINT444、L6300/OE6134全量诊断VERIFIED完成。F0: macroL=91.777778%, CE=0.293837；INIT: macroL=96.746032%, CE=0.110546；SOURCE: macroL=98.000000%, CE=0.066901；INIT对F0正确净+313、SOURCE对INIT净+79，INITW逐值相同且其余state等r03。源端不支持gross头接错/语义置换作为唯一解释；未测目标初值，不宣称已经定位目标退化或推广原因。
 
 rawcos INIT/F0均值.925550、SOURCE/INIT .999043，z SOURCE/INIT .998893；SOURCE W相对L2 .072261。五种source质心几何及全TX/RX/day/OE无TX置信度见诊断报告，源L/OE本为训练角色，scene无metadata保持N/A。新F012434/signal24868/G0、opt/fit/τ0，V/NV/Us/U/Q/truth/TARGETCP0，全模型/buffer不变；无目标性能结论，完整目标ACTIVE。后续核查源覆盖与Phase1身份表征保真，避免继续把修复明显head拼接故障当作既定方向；新候选仍需源端固定选择及全三DURA评测，不从Q调参。
+
+
+## 2026-10-31：PCD 全簇匿名注册预登记
+
+Run `20261031-phase3-pcd-cluster-registry-s2026092701-r01` / actualcode `16e6f04e7475827e7c8e24b398fb029a39a8138c`。复用 fresh PCD444/DURA/F0及GMM/τ，sourceL6300新源中心支持域、全U576固定HDBSCAN形成旧类关联/匿名支持原型；注册先于V/NV/Q，预测四读出三DURA后独立四truth。无神经更新/新GMM或阈值，signal6876/F0576/G0，clean不学习、Q不拟合；AN完整三到达类、later9独立拒识、sourceNV独立命名空间。所有保护与原95/90/90/2pp门槛不降低，03-23缺old类N/A；目标ACTIVE，无晋级承诺。见`docs/PAMF_PHASE3_PCD_CLUSTER_REGISTRY_PLAN_20261031.md`。
+
+
+## 2026-10-31：PCD 全簇匿名注册完整结果
+
+Run `20261031-phase3-pcd-cluster-registry-s2026092701-r01` / actualcode `16e6f04e7475827e7c8e24b398fb029a39a8138c`，完整4×3 DURA预测及独立四truth评分 VERIFIED。主predicted_REG1：source: AK/CK/RU/H=33.437037/92.818519/69.301587/45.109417%；AN=N/A；原F0损57.544444pp；clean_DURA: AK/CK/RU/H=7.414701/33.905864/68.865248/13.387928%；AN=0.000000%；原F0损41.152314pp；star_DURA: AK/CK/RU/H=4.221721/38.168624/54.042553/7.831647%；AN=0.000000%；原F0损37.499337pp。全U HDBSCAN3簇378/25/26、147噪声，两个匿名槽分别混合旧212+新166及纯旧26，严格多数U-only匹配为空，未来三到达类AN全0，不能称发现成功。source旧AK由89.733333降33.437037%、clean31.661804降7.414701%、star27.951722降4.221721%；主源/旧保护、注册及原REG0门槛皆失败，NO_PROMOTION、不扩seed，所选PCD基线保留。REG1主RU是仅未来9类，不能与REG0四未知直接作收益；同later1410 clean66.666667→68.865248%、star56.028369→54.042553%，actual仍未注册6..9另报。新NN/GMM/τ更新0，signal6876/F0576/G0，合成4/2/2另列；predict9.193640s/score4.929865s非B1，foreign0。源V仍校准非独立、Q已曝光、03-23缺oldN/A、正式24-18未读，完整goalACTIVE。见`docs/PAMF_PHASE3_PCD_CLUSTER_REGISTRY_RESULTS_20261031.md`。

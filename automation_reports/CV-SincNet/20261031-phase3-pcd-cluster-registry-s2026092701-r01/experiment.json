@@ -1,0 +1,374 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-pcd-cluster-registry-s2026092701-r01",
+  "group_id": "pamf-phase3-pcd-cluster-registry",
+  "display_name": "PAMF第三阶段：PCD无标签全簇关联与匿名注册",
+  "description": "Frozen fresh PCD plus all-U HDBSCAN clusters, old/anonymous association, and source support fallback; future-only unknown continues rejection.",
+  "kind": "cvs",
+  "stage": "Phase3-unlabeled-discovery-registration",
+  "aliases": [
+    "PCD全簇匿名注册"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "DURA",
+    "unlabeled_registration",
+    "HDBSCAN",
+    "future_only_unknown"
+  ],
+  "comparison_group_id": "phase3-pcd-cluster-registration",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261031-phase3-body-prototype-s2026092701-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "16e6f04e7475827e7c8e24b398fb029a39a8138c",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-cluster-registry-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.pcd_cluster_registry_launch",
+      "experiments.pamf_phase3_open_world.pcd_cluster_registry_run",
+      "experiments.pamf_phase3_open_world.pcd_cluster_registry_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_PCD_CLUSTER_REGISTRY_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "FullWiSig eq1 existing fresh RX3-2 temporal development pool",
+    "version": "Existing VALIDATED_ONCE received and f4b5 PCD states reused; no IQ regeneration",
+    "representation": "Frozen DURA v1.0 P1 and PCD z160; clean only future testing",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 开发域的时序发现与未来未知到达",
+    "physical_ids_ref": "Existing fresh discovery U ids and future clean/star ids, source original roles retained",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-01",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "Private builder/scorer only: old6 and metadata-selected discover3/late1; algorithm registered roster only old6",
+    "roles": {
+      "source_L_support_statistics": 6300,
+      "source_OE_new": 0,
+      "source_V_calibration_prediction_reuse": 27000,
+      "source_novel_prediction_reuse": 3150,
+      "target_discovery_U": 576,
+      "future_Q_each": 10238,
+      "future_Q_known": 4508,
+      "future_Q_discoverable": 4320,
+      "future_Q_later": 1410
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+    "split_id": "077495132350495f37a33d84",
+    "validation_ref": "local_artifacts/pamf_phase2_full_eq_validation_20261029_r02/summary.json; pool/complete.json after construction",
+    "support_query_ref": "U RX3-2/03-01 physical disjoint from future03-15/23; later TX absent U; future query never fit or rematch",
+    "leo_config_ref": "Original G10 MIX01 practical residual/post_sync/noEQ/25MHz DURA route; original source and future observations unchanged",
+    "derived_public_handles": {
+      "discovery": {
+        "count": 576,
+        "capsule_id": "p3fresh-b14665c51b89f44f2b76c137",
+        "split_id": "077495132350495f37a33d84"
+      },
+      "future_star": {
+        "count": 10238,
+        "capsule_id": "p3fresh-e56d8e305e37c68dd40db030",
+        "split_id": "b9888c49e89d418cc25ab5ff"
+      },
+      "future_clean": {
+        "count": 10238,
+        "capsule_id": "p3fresh-97a3ca8706dbe966ac510a61",
+        "split_id": "7fdd29104962ba0d92969faf"
+      }
+    }
+  },
+  "permissions": {
+    "regime": "Target U zero TX labels/K/quota, legal source L labels for six centers. Neural weights, GMM and old thresholds frozen. All-U clusters may associate predicted old identity or anonymous slot.",
+    "query_use": "Registry frozen before source V/NV and future feature values. Four readouts across three DURA conditions fixed before independent CPU opens U/sourceNV/clean/star truths each once.",
+    "external_method_exception": null,
+    "claim_scope": "Historical development pool only, not a new blind confirmation. Global packet-history unused UNKNOWN; formal RX24-18 untouched. Source NV is a distinct unknown identity namespace."
+  },
+  "checkpoint": {
+    "initialization": "Exact fresh f4b5 TARGET_PCD444 with U576 ancestry plus original F0/default6 and frozen DURA; no new neural training",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Existing matching392005 source and phase3 fresh U handles. PCD is target-U adapted, never labelled source-only.",
+    "selection_rule": "Fixed completed fresh model and preregistered source/U statistics, no candidate or threshold selection by future scores"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-pcd-cluster-registry-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-cluster-registry-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-cluster-registry-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_pcd_cluster_registry_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.pcd_cluster_registry_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-cluster-registry-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "One sequential prediction worker, actual free>=4096MiB across physical0..7, max2new task workers/card, foreign untouched",
+    "stop_rule": "Illegal role/provenance, frozen-state mutation, nonfinite or output collision: preserve and stop. Low score does not cancel any condition; no auto restart."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/run.json",
+    "logs/predict.log",
+    "logs/score.log",
+    "predict/{resolved_config,smoke,registry,complete}.json",
+    "predict/registry.npz",
+    "predict/discovery/U.npz",
+    "predict/predictions/{source_V,source_NV,Q_clean_DURA,Q_star_DURA}.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macro A_K",
+      "macro C_K old and expected registered",
+      "macro R_U",
+      "H-score",
+      "A_N complete arrived roster",
+      "H_KN",
+      "H_OW",
+      "same later cohort REG0/REG1 rejection",
+      "original F0 gap and REG0 old drop",
+      "strict-majority U-only mapping/discovery diagnostics"
+    ],
+    "dimensions": [
+      "pooled_REG0/predicted_REG0/pooled_REG1/predicted_REG1",
+      "source_DURA/clean_DURA/star_DURA",
+      "required TX/RX/day/six-scene coverage"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-cluster-registry-s2026092701-r01/predict",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-cluster-registry-s2026092701-r01/score",
+    "targets_ref": "Original targets unchanged: REG0 cleanRU95/starRU90; REG1 old/registeredCK90, originalclosedgap<=2pp/oldprepostdrop<=2pp, overallAN80, laterRU95, required scene coverage; sourceknown12 protection",
+    "primary": [
+      "predicted_REG1; all conditions and defined protection gates, NO_PROMOTION if incomplete/fail"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "pcd-cluster-registry-s2026092701",
+      "method": "PCD all-cluster anonymous registry",
+      "purpose": "Future discovery/registration while preserving old identities and rejecting future-only unknown",
+      "config_ref": "docs/PAMF_PHASE3_PCD_CLUSTER_REGISTRY_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-cluster-registry-s2026092701-r01/configs/run.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026103131,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026103133
+      },
+      "seed_notes": "All original deterministic samples/channel reused; HDBSCAN/brute deterministic ID order; no seed scan",
+      "k": null,
+      "scenario": "Three DURA conditions from existing source/fresh temporal pool",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NN/GMM/threshold optimizer0. New real PCD6876/F0576/G0; synthetic smoke separate. New source6means/radius and U HDBSCAN/prototypes. V/NV/Q reused features0forward.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-cluster-registry-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-pcd-cluster-registry-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.pcd_cluster_registry_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-pcd-cluster-registry-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/run.json",
+        "logs/predict.log",
+        "logs/score.log",
+        "predict/{resolved_config,smoke,registry,complete}.json",
+        "predict/registry.npz",
+        "predict/discovery/U.npz",
+        "predict/predictions/{source_V,source_NV,Q_clean_DURA,Q_star_DURA}.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "Anonymous slots are not operational TX names. Mapping scorer-only from U strict-majority Hungarian, no future rematch.",
+    "Unmatched anonymous acceptance remains wrong accepted identity, missed arrivals remain zero in AN.",
+    "REG0 unknown roster all4 vs REG1 main later1 never directly treated as matched gains; same-cohort later is explicitly paired.",
+    "SourceV is historical calibration data, not an independent known test. SourceNV names differ from target discoveries.",
+    "Single seed/RX, already exposed Q, global history UNKNOWN; full goal ACTIVE regardless row finish.",
+    "All stages completed with return0; primary and REG0 protection fail; no promotion or seed expansion.",
+    "Two anonymous clusters map to no real arrival: mixed378 has no new majority,26 is old-only; all3 arrivals remain in AN denominator."
+  ],
+  "registered_at": "2026-10-31T06:18:59+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "code_commit": "16e6f04e7475827e7c8e24b398fb029a39a8138c",
+    "primary": "predicted_REG1",
+    "full_goal_status": "ACTIVE",
+    "registration_success": false,
+    "source_known_12_passed": false,
+    "predicted_REG0_gates_passed": false,
+    "metrics": {
+      "source": {
+        "A_K": 0.3343703703703704,
+        "C_K": 0.9281851851851853,
+        "R_U": 0.693015873015873,
+        "H_score": 0.45109417344173436,
+        "A_N": null,
+        "registered_macro_acceptance": 0.9281851851851853,
+        "original_closed_minus_new_open": 0.5754444444444446,
+        "old_loss_from_REG0": 0.5629629629629631,
+        "planned_later_macro_rejection": null,
+        "actual_unregistered_macro_rejection": 0.693015873015873
+      },
+      "clean_DURA": {
+        "A_K": 0.07414701199478448,
+        "C_K": 0.3390586447010389,
+        "R_U": 0.6886524822695036,
+        "H_score": 0.1338792808517087,
+        "A_N": 0.0,
+        "registered_macro_acceptance": 0.3352001199993204,
+        "original_closed_minus_new_open": 0.41152314139727203,
+        "old_loss_from_REG0": 0.242471028208677,
+        "planned_later_macro_rejection": 0.6886524822695036,
+        "actual_unregistered_macro_rejection": 0.6765508176204635
+      },
+      "star_DURA": {
+        "A_K": 0.04221721390871764,
+        "C_K": 0.38168624246303584,
+        "R_U": 0.5404255319148936,
+        "H_score": 0.07831646560820874,
+        "A_N": 0.0,
+        "registered_macro_acceptance": 0.41087833145495034,
+        "original_closed_minus_new_open": 0.37499337158196455,
+        "old_loss_from_REG0": 0.23730001081920604,
+        "planned_later_macro_rejection": 0.5404255319148936,
+        "actual_unregistered_macro_rejection": 0.5331595008996389
+      }
+    },
+    "U_matching": {
+      "mapping": {},
+      "mapping_source": "U truth only; strict new-class majority before maximum-count one-to-one Hungarian",
+      "strict_majority_required": true,
+      "majority_denominator": "all U members of the frozen cluster, including known contamination",
+      "Q_truth_used": false,
+      "old_classes_renamed": false,
+      "known_associated_cluster_count": 1,
+      "known_associated_cluster_indices": [
+        1
+      ],
+      "anonymous_count": 2,
+      "contingency": {
+        "anonymous_indices": [
+          0,
+          1
+        ],
+        "true_arrival_labels": [
+          6,
+          7,
+          8
+        ],
+        "counts": [
+          [
+            54,
+            53,
+            59
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "eligible": [
+          [
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false
+          ]
+        ]
+      },
+      "clusters": [
+        {
+          "cluster_index": 0,
+          "anonymous_index": 0,
+          "size": 378,
+          "old_count": 212,
+          "composition": {
+            "0": 49,
+            "1": 52,
+            "2": 5,
+            "3": 42,
+            "4": 51,
+            "5": 13,
+            "6": 54,
+            "7": 53,
+            "8": 59
+          },
+          "strict_majority_true_arrivals": []
+        },
+        {
+          "cluster_index": 2,
+          "anonymous_index": 1,
+          "size": 26,
+          "old_count": 26,
+          "composition": {
+            "5": 26
+          },
+          "strict_majority_true_arrivals": []
+        }
+      ],
+      "matched_count": 0,
+      "unmatched_anonymous_indices": [
+        0,
+        1
+      ],
+      "unmatched_true_arrivals": [
+        6,
+        7,
+        8
+      ],
+      "U_noise_count": 147,
+      "U_labels_used_for_deployment": false
+    },
+    "prediction_costs": {
+      "source_L_reads": 6300,
+      "target_U_reads": 576,
+      "real_signal_forward_rows": 6876,
+      "real_F_forward_rows": 576,
+      "G_forward_rows": 0,
+      "synthetic_signal_forward_rows": 4,
+      "synthetic_F_forward_rows": 2,
+      "G_synthetic_forward_rows": 2,
+      "optimizer_updates": 0,
+      "new_density_fits": 0,
+      "new_threshold_fits": 0
+    },
+    "result_ref": "docs/PAMF_PHASE3_PCD_CLUSTER_REGISTRY_RESULTS_20261031.md"
+  }
+}
