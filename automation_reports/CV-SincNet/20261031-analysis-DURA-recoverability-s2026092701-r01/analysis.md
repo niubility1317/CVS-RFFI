@@ -67,7 +67,7 @@ low urban 约 22.68% 的样本 NMSE 超过 10%，最差约 10% 超过 18.37%，�
 
 ## 恢复之外，突出发射机特征是否有依据
 
-有依据开展独立试验，但尚无目标域稳定提升的证据。下表比较两个既有同一源数据单阶段 E20，展示 NMSE 与识别不完全同步：
+已有同一模型种子下六个正式星地场景的匹配实验证据：从零单阶段30轮的SIG指导G较同预算纯G逐景提高1.44至2.16个百分点，同时六景IQ NMSE均变差。这说明固定F的可识别性可以与波形误差分离；尚未证明跨种子稳定、超越默认DURA或还原出真实硬件特质，SIG版六景仍全部低于默认。详见[SIG指导完整测试](../20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/analysis.md)。以下较早E20结果保留为历史背景：
 
 | 场景 | noVar→RXcanonical NMSE | noVar→RXcanonical 识别率 | 识别变化（百分点） |
 |---|---:|---:|---:|
@@ -209,3 +209,8 @@ VERIFIED / ANALYZED_SOURCE_ONLY，科学判定FAIL。固定defaultDURA/source512
 ## 源噪声覆盖：新增完整实测
 
 VERIFIED / ANALYZED。原SIG-only主体266951参数，G从零单阶段30轮/7410步，L189000/U1701000，无G祖先/新可训练分支/推理增强。源残差符号请求944502、有效802880、请求clean跳过141622；全30轮独立重放专用NumPy2026103107和shuffle2026103004，计数一致，重复视图有效符号变化267569，不冒充新独立物理数据或完整模拟器重抽。源receivedRMS与cA/c²variance一致，额外Aclean1.89m/调整后Aprobe3.78m，原四物理项及SIG alpha1/cap.5保持；旧F成对梯度方差FAIL保留。clean SIG40.32MB只读复用/新缓存F0，历史63000前缀/0.847077秒与F50/11100监督知识披露，F-guided；online前缀/VJP各1.89m、完整F后续路径0、F状态不变。每role全七景预测固定后truth-last，126正式/105源V/252双对照配对分组/14IQ误差独立复算；原SIGcache证明复用，未重复NN检查。六星地较原SIG提高0/6、纯G提高2/6、默认DURA提高0/6。clean 84.866667%，low urban 67.717262%；低城区较原SIG -1.117857、纯G +0.344643、默认DURA -1.172619个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。G训练及保存1080.461290秒，含worker准备1081.536184秒，控制器至自动全量分析1263.754893秒；25.068072m ConvLinearMAC/2prior4CG27FFT。共享GPU单次时间不是因果速度比或同质量效率证明；默认DURA保持，完整目标ACTIVE，有限模型不认证恢复极限。 这是本次实测质量，不认证物理极限。详见[完整分析](../20261031-phase1-DURA-antitheticNoise-E30-s2026092701-r01/analysis.md)。
+
+
+## 参考响应与签名的额外源互补诊断
+
+VERIFIED / ANALYZED，SOURCE_ONLY。默认DURA/source512（128L/384U）×缓存01/20，CPU2主循环0.067106秒自然结束。response＋SIG联合替换的clean F选择一致数509/509，单独SIG507/509，额外净增+2/0。第二视图纠2损2、RX1−1/RX3+1，低城区+2与中城区−2抵消。未达到两视图均较SIG至少+2的固定要求，主判定FAIL；其他事前保护条件通过。不以更低特征误差或更高margin覆盖判定。主完整F0/head5120，smoke真实2Ls/F2/head2，0G/优化/TX-V-target；F不变，1024观测/5120头输入/52组独立复算。不新增response训练约束；潜在分量oracle不是可实现IQ、真实TX或恢复上限，默认DURA与完整目标保持。详见[完整源诊断](../20261031-diagnostic-DURA-source-response-SIG-s2026092701-r01/analysis.md)。
