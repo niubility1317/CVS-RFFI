@@ -77,10 +77,10 @@ def source_smoke(rt,out,device='cuda:0'):
             sv,sl=capture(reader,x)
             require(torch.equal(sv['z_id'],v['z_id']) and torch.equal(sl,logits),'Descriptor hook changed frozen F')
             v=sv
-        if rt.get('kernel_method') in ('phase_orbit','phase_kernel','nonlinear_pair','registered_scale','local_anchor','teacher_kernel','prior_fusion'):
+        if rt.get('kernel_method') in ('phase_orbit','phase_kernel','nonlinear_pair','registered_scale','local_anchor','teacher_kernel','prior_fusion','confidence_prior'):
             from .phase_orbit import extract,rotate,moments,stack_views
             options=dict(aggregate=stack_views if rt['kernel_method']=='phase_kernel' else moments)
-            if rt['kernel_method'] in ('teacher_kernel','prior_fusion'):
+            if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior'):
                 from .teacher_features import extract,probabilities
                 options={}
             iq=np.asarray(x.cpu().tolist(),np.float32)
@@ -88,7 +88,7 @@ def source_smoke(rt,out,device='cuda:0'):
             base,_=extract(reader,iq,device,**options);shift,_=extract(reader,rotate(iq,1),device,**options)
             single=[extract(reader,iq[i:i+1],device,**options)[0] for i in range(2)]
             require(all(np.allclose(np.roll(value,-1,axis=1) if rt['kernel_method']=='phase_kernel' or key=='teacher_phase_logits' else value,shift[key],rtol=2e-4,atol=2e-5) for key,value in base.items()),'C4 orbit invariance failed')
-            if rt['kernel_method'] in ('teacher_kernel','prior_fusion'):
+            if rt['kernel_method'] in ('teacher_kernel','prior_fusion','confidence_prior'):
                 probability=probabilities(base['teacher_phase_logits'])
                 require(probability.shape==(2,6) and np.allclose(probability.sum(1),1),'Frozen default-head probabilities differ')
             require(all(np.allclose(value,np.concatenate([s[key] for s in single]),rtol=2e-4,atol=2e-5) for key,value in base.items()),'Orbit feature depends on other packets')
