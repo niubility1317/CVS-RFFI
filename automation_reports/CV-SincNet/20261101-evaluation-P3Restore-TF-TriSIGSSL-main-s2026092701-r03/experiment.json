@@ -1,0 +1,234 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03",
+  "group_id": "restoration-ground-TriSIGTIME-SSL-main-seven",
+  "display_name": "地面Tri-SIG-TIME SSL主验收：默认DURA与两版独立TF全量七景",
+  "description": "按用户澄清，性能主线回到原Main split同一冻结Tri-SIG-TIME SSL。四路相同received/同F0/原六景加clean，两原总体完整预测后独立评分；0训练。",
+  "kind": "diagnostic",
+  "stage": "Phase3",
+  "aliases": [],
+  "tags": [
+    "primary-performance",
+    "Tri-SIG-TIME-SSL",
+    "Main-split",
+    "full-seven",
+    "no-updates"
+  ],
+  "comparison_group_id": "restoration-TriSIGTIME-SSL-main-raw-DURA-TFIQ-TFF0",
+  "parent_run_ids": [
+    "20261101-phase3-P3Restore-TF-IQ-E30-s2026092701-r01",
+    "20261101-phase3-P3Restore-TF-F0-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Userlatest20261101:performanceprimary/efficiencysecondary/groundtrainedTriSIGTIME SSL base/6sceneeachrawcleangap<=3pp+cleanpreserved/noPhase3open-work-as-main. Existing frozenGboth30 andall sourcepermissions retained.",
+  "code": {
+    "commit": "d4c995c1139fc62779a2a254c269006324b0415f",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Torch2.1 NumPy2;FP32 TF32off CPU2;actualF0 original3ff8 E50/11100",
+    "cwd": "releases/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "OriginalMain split392005/source7-63-30/officialcross_rx126000+cross_both42000",
+    "representation": "Exact officialMain split wrapper manifests/index IDs/positions/observations;FP32 2x256/noRMS ornewchannel;fourreadouts sameIQ",
+    "contract_ref": "Original3ff8F0source_contract andofficial20261027predict/scoreconfig",
+    "physical_ids_ref": "VALIDATED_ONCE 20261023full2x2/data/views/F0-cross_rx,index.npz andF0-cross_both/index.npz",
+    "label_map_ref": "OriginalF0sixclassorder;truthonly originalscoreconfig afterall56cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": "Main-split392005",
+    "validation_ref": "Reuse originalMain split two VALIDATED_ONCE manifests/source_target_disjoint/receiver_disjoint/IDspositions. ActualoriginalF0strictsourceancestry andsource2cachefeature smoke. No datarehash/revalidation.",
+    "support_query_ref": "Groundtrained closedset originalMain split;no Phase3 U/Q,OE/NV,PCD,registration orunknownK. cross_rx/source3dates126000;cross_both/day0 42000.",
+    "leo_config_ref": "ExistingG10 MIX01 scene2026103001/channel2026104001/receiver2027/25MHz2.45GHz600km/refSNR30/reflect/post_sync-noEQ",
+    "actual_training_labels": "No newtraining. PredictorreceivesIQ only/no TXtruth. ExistingGoriginalLsUs63000/scratch30-7410. FrozenF0 sourceknowledge50-11100 disclosed.",
+    "augmentation": "No newobservations;official receivedcache original residual/post_sync/noEQ/receiver2027. TF sourceG10oneMIX01/15%clean trainingidentity preserved,not silentlyrelabeled. DefaultDURAoriginaltrainingunchanged."
+  },
+  "permissions": {
+    "regime": "frozen_primary_ground_TriSIGTIME_SSL_performance_test",
+    "query_use": "All4readouts x7views x2populations before independentCPUtruth. FrozenF/defaulthead/no optimizer/headfit/selection. SameIQ raw/DURA/TFIQ/TFF0. No Phase3open/PCD/taskadaptation.",
+    "external_method_exception": null,
+    "claim_scope": "Userprimaryrestorationgoal. Phase3RX34 andoldF50 diagnostics remainsecondary/no primaryclaim. Fulltest eachscene againstsameF0rawclean/perpopulation+combined;performancefirst,efficiencysecondary."
+  },
+  "checkpoint": {
+    "initialization": "No newGtraining/init. FixedoriginalTriSIGSSL F0/defaulthead plusfixedDURAv1 andbothoriginalTFfinal30states.",
+    "sources": [
+      "OriginalTriSIGSSL F0 20261027-main3view-s2026092701/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/50-11100/232993/defaulthead",
+      "DefaultDURA R69 stage2/20-4940/sourceb2a2ce937a64654e17e84c2aa817b9da4257a48f/runtime47c264286ca689f060a3f36aafb763fe209a6f06/266951",
+      "TF_IQ andTF_F0 original20261101phase3-P3Restore-TF-{IQ,F0}-E30-s2026092701-r01/training/final.pt/b33839dd1010dea36b68526043bbc4abe5eb1095/fixed30-7410/196898each",
+      "DATAONLY sharedsourceclean/F0cache53410ce/63000/actualF0source2smoke;no Gancestor or IQteacher"
+    ],
+    "contract_check_ref": "ExistingoriginalF0strictdata392005/fullancestry+teacherFcacheidentity;strictDURAv1runtime/R69metadata;TFnewstandalonecheckpoint schemas withsourcecapsule/split and0TX-OE-V-targettraining;officialMain split handles exactpositions/IDs/classes.",
+    "provenance_verdict": "SourceonlyF0 andGoriginalstates frozen. TF_F0 isF-guided;TF_IQ optimizationF-free butsmoke/evalFaccess explicit. No PCD/E0/Phase3targetadaptedweights loaded.",
+    "selection_rule": "Both fixedfinal30versions anddefaultDURA+raw acrossalltwo-pop sevenviews;0selection/earlystop/newoptimization. Officialrawfrozenpublicpredictiondecision comparisons recorded;per-scene pass cannotbe replacedbymean."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/trisig-main-restoration-primary",
+    "gpu_policy": "GPU4/6/7/free>=12000MiB/existingcompute<=2/addONE total<=3/own1card/<=2workers;twoofficialpopworkers;one independentCUDAemptyCPUscorer/sharedoriginalIQscore.lock;otherownersuntouched.",
+    "remote_run_root": "runs/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03",
+    "remote_log_root": "runs/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.main_split_eval run --root /home/szu2070436088/2510044040/CV-SincNet --commit d4c995c1139fc62779a2a254c269006324b0415f --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "BadoriginalF0identity/sourcecache-smoke/checkpoint/provenance/classes/physicalIDpositions/shape/nonfinite/modelstate/collision:preservefailedrun/noautoretry/noothers. No performance stop. Everyreadoutfullseven/twopop beforetruth;officialrawdecisiondifferences descriptive diagnostic. UnchangedfrozenGweights/no newlearning."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-cross_rx.json",
+    "submitted-cross_both.json",
+    "terminal-*.json",
+    "prediction/<task>/smoke.json",
+    "prediction/<task>/predictions.npz PRIVATE",
+    "prediction/<task>/complete.json",
+    "prediction/complete.json",
+    "score/scores.json",
+    "score/complete.json",
+    "results.json",
+    "complete.json",
+    "logs/*.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "PrimarysameTriSSL rawcleanaccuracy/each6rawcleangappp/cleanpreservation/6each3pp",
+      "SameF0 raw-DURAv1-TFIQ-TFF0 accuracy-MacroF1/confusions/pairedrepair-damage-net/byTX-RX-date-RXdate",
+      "cross_rx126000/cross_both42000 separately andcombined168000/no grouporviewmeanmask",
+      "Allofficialrawpublicdecisions comparisons/F0stateunchanged/0neuralupdates-headfit/allpredictionsbeforetruth",
+      "SourceGtrainingcostalreadyreported/efficiencysecondary/notperformancecompensation"
+    ],
+    "dimensions": [
+      "modelseed2026092701",
+      "2originalMain split populations",
+      "4readoutsx7viewsx2=56cells/168000uniquephysicalrecords"
+    ],
+    "prediction_ref": "New run/prediction pertask full4x7fromsameofficialIQ/positions;zero newchannel;no Phase3open path. Originalpublicrawpredictions same F0compared.",
+    "scorer_ref": "IndependentCPUCUDAempty originalpamf_repl_view_shuffle.evaluation.score withalltasks/readouts/views preflightbeforetruth;originalprivateMain splittruth/classmap. No G/F updates,targetfeedback orselection."
+  },
+  "rows": [
+    {
+      "row_id": "cross_rx",
+      "method": "SamegroundTriSIGSSL F0/raw-defaultDURA-TFIQ-TFF0",
+      "purpose": "primaryperformance",
+      "config_ref": "experiments/pamf_phase3_restoration/main_split_eval.py",
+      "resolved_config_ref": "OriginalF0predict/scoreconfig + inputs.json PRIVATE_RUNTIME",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixedmodelseeds/physicalsplit392005/officialreceivedseed2027;no sampling/channel generation/augmentation/support/newmodelseed.",
+      "k": null,
+      "scenario": "cross_rx/clean+sixpractical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training/126000x7receivedrows/4readouts;F0mainforwardrows3528000;Glogicalrowseach882002;sourceF0smoke10/DURAcaptureinternalsseparate",
+      "output_root": "runs/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03/prediction/cross_rx",
+      "log_path": "runs/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03/logs/cross_rx.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.main_split_eval predict --root /home/szu2070436088/2510044040/CV-SincNet --commit d4c995c1139fc62779a2a254c269006324b0415f --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --task cross_rx",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-cross_rx.json",
+        "submitted-cross_both.json",
+        "terminal-*.json",
+        "prediction/<task>/smoke.json",
+        "prediction/<task>/predictions.npz PRIVATE",
+        "prediction/<task>/complete.json",
+        "prediction/complete.json",
+        "score/scores.json",
+        "score/complete.json",
+        "results.json",
+        "complete.json",
+        "logs/*.log"
+      ]
+    },
+    {
+      "row_id": "cross_both",
+      "method": "SamegroundTriSIGSSL F0/raw-defaultDURA-TFIQ-TFF0",
+      "purpose": "primaryperformance",
+      "config_ref": "experiments/pamf_phase3_restoration/main_split_eval.py",
+      "resolved_config_ref": "OriginalF0predict/scoreconfig + inputs.json PRIVATE_RUNTIME",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixedmodelseeds/physicalsplit392005/officialreceivedseed2027;no sampling/channel generation/augmentation/support/newmodelseed.",
+      "k": null,
+      "scenario": "cross_both/clean+sixpractical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0training/42000x7receivedrows/4readouts;F0mainforwardrows1176000;Glogicalrowseach294002;sourceF0smoke10/DURAcaptureinternalsseparate",
+      "output_root": "runs/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03/prediction/cross_both",
+      "log_path": "runs/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03/logs/cross_both.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.main_split_eval predict --root /home/szu2070436088/2510044040/CV-SincNet --commit d4c995c1139fc62779a2a254c269006324b0415f --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-evaluation-P3Restore-TF-TriSIGSSL-main-s2026092701-r03-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --task cross_both",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-cross_rx.json",
+        "submitted-cross_both.json",
+        "terminal-*.json",
+        "prediction/<task>/smoke.json",
+        "prediction/<task>/predictions.npz PRIVATE",
+        "prediction/<task>/complete.json",
+        "prediction/complete.json",
+        "score/scores.json",
+        "score/complete.json",
+        "results.json",
+        "complete.json",
+        "logs/*.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Userlatestexplicitpriorityperformancefirst/efficiencysecondary;Main splitgroundTriSSL main,oldF50andPhase3RX34 aux only. No defaultreplacement.",
+    "BothnewTFs alreadyfixed30-7410 andallauxiliarytestscompleted;newmainreadoutnotretrain orpickfromresults. Correctofficialobservations useddirectly;do notassumeoldF50cache identical.",
+    "Newadapter5focusedchecksPASS/wrongF0base rejected/partialpopulationcannotopentruth/meanimprovementcannothideonescenefail/cleanlossremainsfail. One independentP0P1PASS.",
+    "ExactactualF0loaded3ff8 completeoriginalREPL3view mainrow;fullsource-only provenance/directoriginaljointhead retained. No oldF50 orsource/targetopenstudents inclassifierpath.",
+    "RawcleanperpopulationisownfrozenF0reference. Full6each+cleanpass reportedbothpop andcombined;no sourceV/OE/targetselection orneuralfit. RXdate/TX granularityoriginalscorerkept.",
+    "ExistingdataVALIDATED_ONCE reused/minimumhandles,onecodecommit/archiveSHA/remotecompile/preflight/sourcecheckpointsmoke continues;no extra datarehash/seals/reviews.",
+    "G newarchitectureunconstrainedbyDURA;trainingefficiencysecondary andqualitycurrentlyunverifiedoncorrectmainbenchmark. FullrestorationgoalACTIVE."
+  ],
+  "registered_at": "2026-10-31T18:34:38+00:00"
+}
