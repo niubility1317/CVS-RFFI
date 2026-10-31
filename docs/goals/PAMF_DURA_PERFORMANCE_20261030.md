@@ -389,3 +389,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## PA＋SIG源互补诊断
 
 20261031-diagnostic-DURA-source-PA-SIG-s2026092701-r01/0cffd8b3：VERIFIED SOURCE_ONLY，联合相对SIG额外+5/0，第二缓存纠1损1（RX1+1/RX8−1），未达双视图各+2，主FAIL；其他保护通过，不自动增加PA训练版。主完整F0/head5120、smoke2Ls/F2/head2、0G/优化/TX-V-target；CPU0.053669秒，1024观测/52分组独立复算。潜在特征oracle不等于可实现IQ、真实TX或物理上限；默认与完整目标ACTIVE。详见本run analysis.md/results.json。
+
+
+## 中层签名辅助监督：完整E30与七景
+
+20261031-phase1-DURA-midSIG-E30-s2026092701-r02/5464a942。VERIFIED / ANALYZED。输出端SIG＋中层连续特征辅助G从零单阶段30轮/7410步，L189000/U1701000。完整287591参数（原主体266951＋训练专用投影20640），权重0.01；投影推理不调用但参数/存储完整计入。原四项物理损失与输出端SIG保持；全部30条损失加和/曝光/源视图/计数和online输入空间cap0.5核对通过，aux普通参数梯度不受该输出空间cap约束，全G仍clip1。只读复用40.32MB源clean签名，新增缓存F/复制0；历史63000F前缀/0.847077秒与F50源监督知识披露，旧G不是初始化祖先。训练1890000前缀＋1890000输入VJP、完整F后续路径0，中层目标1890000；F全state不变。F-guided，不称F-free。每role全部七景预测固定后独立truth-last，126正式/105源V/252双对照配对分组/14源正式IQ误差复算；同一缓存原独立512完整F比对证据复用，本轮不重复NN检查。六星地较原SIG提高0/6、较纯G提高6/6、较默认DURA提高0/6。clean 84.819643%，low urban 67.922619%；低城区较原SIG -0.912500、纯G +0.550000、默认DURA -0.967262个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=False，旧低城区70%=False。G训练及保存1060.800148秒，含worker准备1061.919420秒，控制器至自动全量分析1246.813894秒；25.068072m ConvLinear MAC/两prior四CG27FFT。共享GPU单次时间不证明因果加速或同质量效率。r01首步错误检查已保留FAILED且训练/正式0；r02自然完成，未按目标分数改层位/权重/轮次或选择性重跑。默认DURA保持，完整目标ACTIVE，有限模型不认证物理极限。 单seed、已暴露工程基准，完整TX/RX/day、纠错、source/formal与成本见本run分析。
