@@ -9,3 +9,5 @@ C直接从A开始，无B10，不读取目标旧标签。当前NK新类SUP按每5
 GPU1/5每卡最多一条新增本run训练/预测，启动前实际free>=6000MiB且总GPU进程<3，R42 GPU0/2/3/4/6和其他owner不改。独立source增强缓存/服务和不可变root。任一技术/权限/输出错误停止本profile新入队，排空健康owned进程，无盲重试；固定预算不按target分数改。精确环境、命令和逐行矩阵见experiment.json。
 
 24项定向本地检查通过；一次独立P0/P1未发现阻断。当前PREPARED，尚未发布，无正式性能证据。
+
+启动核实：FAILED。增强服务因发布包缺少 `experiments.practical_full_2x2` 导入失败，controller已退出；仅精确核实PID/CWD/argv的两条本run源worker被停止，保留所有产物。尚无完成源checkpoint或目标prediction。定向隔离导入回归已复现并修复，使用新r02 root；R42及其他owner未改变。
