@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "layer": "source_numerical_smoke_tensor_index",
+  "fingerprint": "RuntimeError: Could not infer dtype of numpy.int64",
+  "code_commit": "e40d7a9dd54d799394f07178ceb352dd7bf47434",
+  "source_checkpoint_smoke": "PASS",
+  "target_workers": 0,
+  "target_predictions": 0,
+  "owned_processes_remaining": 0,
+  "local_reproduction": "old Torch index boundary simulation: before fix FAIL same fingerprint, after native-list index fix PASS; native local Torch2.10 does not fail"
+}

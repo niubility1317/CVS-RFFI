@@ -7,6 +7,10 @@ from .milkr_screen import initialize
 from .milkr import nested_fisher
 
 
+def source_iq_rows(data,positions):
+    return np.asarray(data.x[np.asarray(positions,dtype=np.int64).tolist()].tolist(),np.float32)
+
+
 def calibrate(rt):
     from .milkr_cv_screen import extract_for_method
     from experiments.cric_dura_comparison.f_data import SourceDataset
@@ -15,7 +19,7 @@ def calibrate(rt):
     rule=dict(prior['K1_rule'],outer_folds=3,outer_strengths=[0.,.25,.5,.75])
     reader,_=initialize(rt);data=SourceDataset(rt['source_cache'],'L_s',read(rt['source_contract']))
     positions=np.concatenate([np.flatnonzero(data.metadata['y']==c)[:2] for c in range(6)])
-    raw=np.asarray(data.x[positions].tolist(),np.float32);features,_=extract_for_method(rt,reader,raw,'cuda:0')
+    raw=source_iq_rows(data,positions);features,_=extract_for_method(rt,reader,raw,'cuda:0')
     y=np.repeat(np.arange(6),2);ids=data.metadata['ids'][positions].tolist()
     state=nested_fisher.fit(features,y,ids,old_count=3,fixed=rule)
     require(state.selection['outer_support_selection']['selected_strength']==0.,'K2 folds must tie at K1-uniform training')
