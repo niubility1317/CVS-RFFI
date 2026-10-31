@@ -132,6 +132,9 @@ def train(args,out):
                 optimizer.step();update+=1
                 for key,value in [('loss',loss),*terms.items(),('feature_error',info['feature_error']),('guide_weight',info['weight'])]:
                     sums[key]+=float(value.detach().sum())
+                if 'feature_standardized_error' in info:
+                    sums.setdefault('feature_standardized_error',0.)
+                    sums['feature_standardized_error']+=float(info['feature_standardized_error'].detach().sum())
             check_F0_state(F,frozen);torch.cuda.synchronize()
             row=dict(epoch=epoch,draw=draw,updates=update,steps=247,count=63000,L_s=6300,U_s=56700,
                 seconds=time.perf_counter()-begin,last_learning_rate=learning_rate(update),metrics={k:v/63000 for k,v in sums.items()})
