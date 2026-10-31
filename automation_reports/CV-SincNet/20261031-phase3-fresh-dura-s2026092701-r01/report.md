@@ -1,0 +1,148 @@
+# 新接收机固定PCD的DURA前后配对
+
+ANALYZED，执行VERIFIED；冻结诊断完成，科学NO_PROMOTION，完整目标ACTIVE。
+
+# 新接收机固定 PCD 系统的 DURA 配对诊断
+
+Run：`20261031-phase3-fresh-dura-s2026092701-r01`。唯一 owner：`codex-phase3-fresh-dura-20261031`。本轮不训练新候选，不因辅助 raw 分数改变 PCD 研究基线或 DURA 默认；完整 Phase3 目标保持 ACTIVE。
+
+研究问题是：在新增开发 RX3-2 上，同一份固定观测经 DURA 后，原 F0 身份纠错、正确接收、错误接收与未知拒识分别如何变化。考虑的路线包括继续目标伪标签训练、继续纯源统计增强和先补输入路径配对；前两条已有联合指标负结果，本轮采用冻结配对诊断以区分后续需要解决的环节。它不会证明任意恢复器或 raw 训练系统的一般优劣。
+
+复用 `20261031-phase3-fresh-development-rx3-2-s2026092701-r01` 的全部三类 DURA 预测、E0 与 TARGET_PCD 的冻结权重、两套源密度及四组六类阈值（24 个 FP64/192 B）。从旧六读出选列 0/1/4/5、三个开放表征选 0/2。固定四方法 E0 pooled/predicted、PCD pooled/predicted，唯一主为 `PCD_predicted_ratio`；新拟合与神经更新均为 0。E0 纯源，PCD 明确保留该 RX 的无标签星地 U576 适配祖先；当前新 U 值、U IDs、Us、L/OE 读取均为 0。
+
+矩阵是四方法×六路径：source_raw/source_DURA、clean_raw/clean_DURA、star_raw/star_DURA。三条 DURA 是主测试，精确复用旧产物，不重新前向；raw 仅为辅助。只新增源 V27000/NV3150、未来 clean/star 各10238的原固定 received 冻结预测。源 V 已用于阈值校准，不能视为独立已知测试。所有路径按自己的原 F0 预测身份路由冻结密度和阈值，不能用 DURA 身份替代 raw 身份。主保护基准始终为原 F0 同 DURA 闭集。
+
+数据保持 source contract392005 与已有 VALIDATED_ONCE handles：源五 RX 为1-19/18-2/19-2/2-19/3-19，日期2021-03-08/15/23；已注册六 TX 为14-10/14-7/20-15/20-19/6-15/8-20。NV 的19-15/19-16/7-1各1050，仅评分端读取。目标 RX3-2/index34 的未来03-15/23共10238条，已知4508、未知5730；四未知5-5/10-7/2-19/7-11仅评分端可用，后者未在早日 U 出现。03-23缺少两个旧类，所需完整名单的A_K/C_K/H/闭集保持N/A。源/Q、早日U/未来Q互斥，clean/star是同物理记录的配对输入，不增加独立样本。
+
+恢复器保持 DURA v1.0 R69、FP32/TF32off、reuse/graph开启/native关闭；G10仍为600km/25MHz/2.45GHz、residual/post_sync/noEQ、refSNR30dB、reflect、input RMS一次/output RMS关闭，既有canonical received不重抽。source/channel/scene、future与receiver种子继承reference，模型seed2026092701；其余本轮无新随机采样。已有源和开发Q曝光、单seed/单开发RX、global physical history UNKNOWN保留；正式RX24-18不读。
+
+先做一次实际F0/E0/PCD/G合成无query smoke，PASS立即继续。全部六路径及状态固定后，独立CPU scorer才读取NV/clean/star三truth各一次；不读Utruth。报告4×6逐TX宏A_K/C_K/R_U/H、原闭集、AUROC/OSCR、TX/RX/day/scene/day×scene、完整覆盖与逐类Wilson区间。DURA−raw记录数分别报告闭集纠错、正确接收增失、错误接收、未知拒识与宏差，不混淆宏平均和净条数。
+
+主DURA绝对目标继续为clean R_U≥95%、star R_U≥90%、C_K≥90%、原F0同G闭集−A_K≤2个百分点，各预定主景完整名单分别核对。源known12与额外42诊断分报，不取消既定测试。辅助raw不用于调阈值、换主或判定新方法晋级；本诊断固定`NO_PROMOTION`、`diagnostic_completed=True`、`adaptation_success=None`、`new_target_DA=False`，A_N/H_OW仍N/A。
+
+新增真实F0行数30150＋2×10238＝50626，E0/PCD合计101252；真实G0，因为DURA结果全部精确复用。合成smoke和既有模型/源统计/缓存/适应成本另列，不能以阶段墙钟宣称B1时延。部署PCD系统仍F0 232993＋open334721＋G266951＝834665，无source/U行bank或训练原型。
+
+环境/CWD/实际commit/命令/路径/GPU写入本run登记。默认N607，GPU0至7实际free≥4096MiB，每卡本任务新增最多2worker，其他owner保持。不可覆盖run/output/release root；一次单包SHA本地远端比较、remote compile、启动后PID/CWD/argv/GPU/log核验。停止规则限协议越界、错误数据/祖先/输出碰撞、无法执行或合法prediction无法闭合；技术失败保留原root，不按低分停止、不盲目重发。预期产物为configs/eval、smoke、models与τ、source/targets六路径prediction、complete、CPU score、pipeline/logs及最终报告登记。
+
+
+实际code `0305e98dc27469d29e88d1d85aea2908eae64056`；环境 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-dura-s2026092701-r01-release`；命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.fresh_dura_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-dura-s2026092701-r01-release/runtime.json`。
+
+
+# 新开发接收机上的固定 PCD：raw 与 DURA 配对结果
+
+**冻结配对诊断完成，执行 VERIFIED，科学结论为 NO_PROMOTION。** 主方法 `PCD_predicted_ratio` 的星地 A_K 从 raw 的 7.472827% 升至 DURA 的 27.951722%，H 从 13.760414% 升至 35.678111%；同时 R_U 从 86.758183% 降至 49.307698%。DURA 明显改善了本固定系统的已知接收和联合表现，但绝对身份保护、接收率与拒识目标仍未达到。raw 的高拒识伴随大量已知误拒，不能单独视为成功；原 PCD＋DURA 默认保留，完整目标 ACTIVE。
+
+Run `20261031-phase3-fresh-dura-s2026092701-r01`，实际代码 `0305e98dc27469d29e88d1d85aea2908eae64056`。本轮没有新模型、适应或模型间重新竞选，`diagnostic_completed=True`、`adaptation_success=None`、`new_target_DA=False`。依据[原计划](PAMF_PHASE3_FRESH_DURA_PLAN_20261031.md)、[完整分析](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/analysis.json)及[固定评分](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/score/results.json)，只整理已有结果，未重读真值或数组、重评分、拟合或扫描阈值。
+
+## 固定系统、输入与数据
+
+复用 fresh-development（代码 `f4b5a0b80cafcf237c3ae9dac8ecd5b24c91bff7`）的 E0、最终 TARGET_PCD、原 F0 默认头、两套源 known90/OE32 密度及四组六类阈值。四方法为 E0 pooled/predicted、PCD pooled/predicted，唯一主为最后一项；旧 SOURCE 不在本矩阵。三条 DURA 是主测试，raw 是同模型、同阈值、同记录的辅助输入路径，不是另训 raw 系统。
+
+每条路径均用其实际输入上的原 F0 argmax 路由冻结密度及 τ，不能以 DURA 类别替代 raw 类别。分类器权重不变不意味着预测身份不变。表中闭集为各自输入路径上的原 F0；主 DURA 的 2 pp 保护始终使用原 F0 同 DURA 闭集。全部 12 个 DURA 方法×条件的 overall 与原 fresh 评分逐值一致，相关预测、特征、状态与阈值按原产物精确复用，不是重新前向取得的近似控制。
+
+沿用 contract392005/VALIDATED_ONCE：源祖先 L6300、Us56700、OE6134；本轮 L/OE/Us 新读均为 0。源五 RX 为 1-19、18-2、19-2、2-19、3-19，日期 2021-03-08/15/23；旧六 TX 为 14-10、14-7、20-15、20-19、6-15、8-20。V27000 已用于原阈值校准，本轮只是冻结预测与源诊断，不能称独立已知测试。NV3150 为 19-15、19-16、7-1 各 1050 条。
+
+目标开发 RX3-2/index34：future Q 为 03-15 的 5525 条、03-23 的 4713 条，共 10238；旧类 4508，四未注册类 5730。六旧类容量依次为 1491/1182/150/406/1186/93；5-5、10-7、2-19、7-11 依次为 1454/1439/1427/1410。后来专有 7-11 整类不在早日 U。PCD 明确保留 03-01 星地 U576 的适应祖先，当前 U 值和 U ID 新读均为 0；E0 为纯源，不能把整个 PCD 系统改标为纯源。
+
+源、早日 U、future Q 保持原物理互斥；clean/star Q 同 canonical 和顺序，不是更多独立样本。03-23 缺旧 20-19、8-20，完整闭集/A_K/C_K/H 保持 N/A。三种 DURA 条件均已完成；clean 只作冻结测试，不建立 clean U 或参与学习。
+
+沿用固定 G10 received：600 km/25 MHz/2.45 GHz、residual/post_sync/noEQ、refSNR30dB、reflect、一次 input RMS、output RMS 关闭，源/future/receiver 种子继承 reference，模型 seed2026092701。DURA v1.0 R69 E20/4940、266951 参数，FP32/TF32off、reuse/graph 开、native 关；不重抽信道。已有 NV/Q 曝光、单 RX/seed、源日期重合及 global physical history UNKNOWN 保留，正式 RX24-18 未读，无盲测或注册完成声明。
+
+## 完整四方法×六路径
+
+以下均为百分比。A_K 为含拒识的旧类宏准确率，C_K 为旧类宏接收率，R_U 为未知宏拒识率，H 为 A_K/R_U 调和均值；按所需真实 TX 等权，不按样本数加权。AUROC/OSCR 仅为固定 margin 的宏加权曲线诊断，不选择新阈值。
+
+| 方法 | 路径 | 闭集 | A_K | C_K | R_U | H | AUROC | OSCR |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| E0 pooled | source raw | 75.811111 | 25.333333 | 25.911111 | 97.650794 | 40.229909 | 69.340267 | 60.667666 |
+| E0 pooled | source DURA | 90.981481 | 89.770370 | 97.107407 | 60.888889 | 72.561330 | 94.985255 | 87.944738 |
+| E0 pooled | clean raw | 48.902813 | 31.140583 | 43.361767 | 62.786361 | 41.632439 | 53.877113 | 32.962626 |
+| E0 pooled | clean DURA | 48.567015 | 31.187288 | 43.537692 | 62.980616 | 41.716859 | 53.846068 | 32.740387 |
+| E0 pooled | star raw | 39.689884 | 5.637189 | 9.181632 | 87.092709 | 10.588991 | 49.933545 | 23.691042 |
+| E0 pooled | star DURA | 41.721059 | 26.867357 | 47.141720 | 51.837083 | 35.391279 | 51.396572 | 26.658213 |
+| E0 predicted | source raw | 75.811111 | 27.625926 | 28.088889 | 97.460317 | 43.049203 | 70.192389 | 61.319297 |
+| E0 predicted | source DURA | 90.981481 | 89.744444 | 96.759259 | 61.936508 | 73.291437 | 94.734250 | 87.937558 |
+| E0 predicted | clean raw | 48.902813 | 30.902523 | 42.495238 | 64.047878 | 41.689998 | 53.879970 | 33.255849 |
+| E0 predicted | clean DURA | 48.567015 | 30.999690 | 42.654045 | 64.187968 | 41.808091 | 53.862200 | 33.089825 |
+| E0 predicted | star raw | 39.689884 | 6.667792 | 9.801518 | 87.704858 | 12.393374 | 48.816435 | 22.883089 |
+| E0 predicted | star DURA | 41.721059 | 26.440597 | 46.197372 | 52.658525 | 35.204508 | 51.242710 | 26.543484 |
+| PCD pooled | source raw | 75.811111 | 27.870370 | 28.559259 | 97.396825 | 43.339129 | 69.980921 | 61.029218 |
+| PCD pooled | source DURA | 90.981481 | 89.770370 | 97.081481 | 63.619048 | 74.465443 | 94.961329 | 87.937604 |
+| PCD pooled | clean raw | 48.902813 | 32.095588 | 44.662071 | 61.052035 | 42.073021 | 54.207520 | 33.466129 |
+| PCD pooled | clean DURA | 48.567015 | 32.123647 | 44.791196 | 60.790839 | 42.034854 | 54.164696 | 33.247293 |
+| PCD pooled | star raw | 39.689884 | 6.919351 | 10.842530 | 86.248743 | 12.810938 | 49.580412 | 23.207983 |
+| PCD pooled | star DURA | 41.721059 | 29.175335 | 50.230381 | 48.454372 | 36.420916 | 51.015031 | 26.992789 |
+| **PCD predicted** | source raw | 75.811111 | 29.800000 | 30.425926 | 97.206349 | 45.615817 | 70.924615 | 61.637766 |
+| **PCD predicted** | source DURA | 90.981481 | 89.733333 | 96.748148 | 64.285714 | 74.907247 | 94.730673 | 87.940433 |
+| **PCD predicted** | clean raw | 48.902813 | 31.658929 | 43.665705 | 62.171856 | 41.954128 | 54.386027 | 33.848071 |
+| **PCD predicted** | clean DURA | 48.567015 | 31.661804 | 43.761391 | 61.979647 | 41.912794 | 54.364758 | 33.693180 |
+| **PCD predicted** | star raw | 39.689884 | 7.472827 | 11.137376 | 86.758183 | 13.760414 | 48.802173 | 22.639732 |
+| **PCD predicted** | star DURA | 41.721059 | 27.951722 | 48.582412 | 49.307698 | 35.678111 | 50.997190 | 27.001261 |
+
+## 主 PCD 的 DURA−raw 同 ID 配对
+
+“增/失/净”表示记录数；正误按各路径自身原 F0 预测分别判断。分类纠错、正确接收、错误接收与未知拒识是不同事件，不能用其中一个净数代替联合收益。
+
+| 条件 | 闭集纠错增/失/净 | 正确接收增/失/净 | 错误接收增/失/净 | 未知拒对增/失/净 | 接收净数 |
+|---|---|---|---|---|---:|
+| source | 4658/562/+4096 | 16213/31/+16182 | 1856/131/+1725 | 49/1086/−1037 | +17907 |
+| clean | 36/46/−10 | 4/4/0 | 11/4/+7 | 22/33/−11 | +7 |
+| star | 705/387/+318 | 1197/41/+1156 | 911/95/+816 | 115/2268/−2153 | +1972 |
+
+source 主宏 A_K/C_K/H 增 59.933333/66.322222/29.291430 pp，R_U 降 32.920635 pp。raw 中 20469 条闭集正确仅 8046 条接收，DURA 中 24565 条闭集正确有 24228 条接收；“闭集正确但拒绝”由 12423 降至 337，说明源 raw 的高未知拒识同时严重误拒已知。源 V 本身是校准角色，仍不能据此称独立泛化成功。
+
+星地主闭集正确由 1626 增至 1944，正确接收由 408 增至 1564，闭集正确但拒绝由 1218 降至 380；同时错误接收由 253 增至 1069，未知拒对由 4974 降至 2821。宏闭集增 2.031175 pp、A_K 增 20.478896 pp、C_K 增 37.445037 pp、H 增 21.917697 pp，R_U 降 37.450485 pp。DURA 帮助本系统接收更多已知，也接收更多未知，不能只称“身份纠错”或只称“拒识变差”。
+
+clean 主正确接收净数为 0，宏 A_K 仍微增 0.002875 pp；闭集降 0.335798 pp，R_U 降 0.192209 pp、H 降 0.041334 pp。原因是各 TX 容量不同、指标逐类等权；宏变化与总条数必须分开。此 clean 配对没有证明恢复普遍提升，也不能用星地收益覆盖 clean 细小损伤。
+
+## TX、RX、日期、场景与覆盖
+
+主星地逐旧 TX 的 A_K/C_K（raw→DURA，%）如下，身份不正确的接收不会计为 A_K。
+
+| 旧 TX（容量） | A_K raw→DURA | C_K raw→DURA |
+|---|---|---|
+| 14-10（1491） | 4.761905→45.070423 | 12.005366→64.252180 |
+| 14-7（1182） | 4.568528→11.844332 | 15.905245→67.512690 |
+| 20-15（150） | 0.666667→2.666667 | 2.000000→28.000000 |
+| 20-19（406） | 0.246305→2.216749 | 0.738916→8.866995 |
+| 6-15（1186） | 22.765599→58.600337 | 23.271501→62.647555 |
+| 8-20（93） | 11.827957→47.311828 | 12.903226→60.215054 |
+
+四未知 5-5/10-7/2-19/7-11 的星地 R_U 为 88.308116→32.943604、96.664350→59.555247、82.060266→48.703574、80.000000→56.028369%；clean 为 35.144429→35.075653、76.025017→75.538568、70.567624→70.637701、66.950355→66.666667%。源 NV 三类 R_U 为 98.761905→64.000000、99.428571→59.904762、93.428571→68.952381%，不能与目标四类混合平均或替代其证据。
+
+目标只有 RX34。源五 RX 的主 A_K 范围由 raw26.759259%–31.314815% 变为 DURA83.148148%–92.518519%；R_U 由92.063492%–98.888889%变为51.904762%–74.920635%。源三日 A_K 为 raw29.700000%–29.977778%、DURA89.655556%–89.822222%，R_U 为 raw96.571429%–98.380952%、DURA61.047619%–69.523810%；这仍是训练见过的源 RX。
+
+03-15 的主星地 A_K 为 7.539002→27.957368%，R_U86.520203→49.505315%；clean A_K31.814827% 两路相同，R_U61.967365→61.753558%。03-23 缺两旧类，所有 raw/DURA 路径的完整闭集/A_K/C_K/H 为 N/A，R_U 仍可报：star87.005165→49.136802%，clean62.384632→62.211551%。
+
+| 星地主场景 | 已知/未知数 | A_K raw→DURA | C_K raw→DURA | R_U raw→DURA | H raw→DURA |
+|---|---:|---|---|---|---|
+| practical_high | 206/256 | 7.133964→28.720515 | 10.673759→43.158130 | 85.321137→57.887577 | 13.166994→38.392741 |
+| practical_mid | 293/443 | 6.979544→26.258401 | 11.308874→40.408688 | 77.992673→55.771659 | 12.812501→35.705803 |
+| practical_low_suburban | 1715/2167 | 10.456131→31.321362 | 15.083279→47.590746 | 83.365602→51.231701 | 18.581657→38.875520 |
+| practical_high_urban | 197/244 | 6.605249→37.468029 | 10.118520→53.651000 | 82.973814→54.578756 | 12.236402→44.433022 |
+| practical_mid_urban | 315/397 | 11.739249→32.929816 | 16.649842→47.393603 | 85.454202→49.168666 | 20.642711→39.443241 |
+| practical_low_urban | 1782/2223 | 3.434074→22.764154 | 5.949379→50.725117 | 92.680199→44.635122 | 6.622756→30.151090 |
+
+合并两日后六场景旧六类/未知四类均完整，仍全部未过绝对约束。day×scene 细分中，03-15 六场景均完整，DURA 的 A_K22.682378%–36.006362%、R_U45.464515%–56.927846%；03-23 六场景旧类覆盖均不完整，A_K/C_K/H 为 N/A，DURA R_U43.914478%–59.791083% 仍可描述，不能删缺类后认证。逐格结果及配对在固定 score artifact 中完整保留。
+
+原 source known12 通过，额外 known42 未全过：PCD predicted 的 RX3/high、RX3/mid_urban、RX3/low_urban、RX4/high_urban、RX8/low_urban 五交叉组超出原 F0 2 pp 保护。原已存下一 common-tail 候选会令 RX3 损伤达2.018519 pp，因此拒绝；本轮没有重校准。源 unknown90 也未过，仅为诊断。
+
+评分保留逐真实类 Wilson95% 区间，例如星地 DURA 的20-15 A_K4/150，区间约1.041794%–6.655389%；5-5 R_U479/1454，区间约30.575456%–35.401640%。这些是单 RX 固定结果的不确定性描述，不是跨 RX/seed 证明。全部24点的TX/RX/day/scene/day×scene、曲线与区间见[评分结果](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/score/results.json)，没有只保留有利子组。
+
+## 目标判定与解释范围
+
+主 DURA 的 source/clean/star 原 F0 闭集−A_K 为1.248148/16.905211/13.769336 pp。clean/star C_K43.761391/48.582412% 均低于90%，R_U61.979647/49.307698% 均低于clean95%/star90%；六星地主景同样失败，源known12不能抵消这些目标差距。raw也不能救主：星地闭集仅39.689884%，不是良好身份系统只被DURA破坏；但本配对不能将所有失败唯一归因于接收机、DURA或开放阈值。
+
+本轮比较的是 Phase1 原 F0 与按 P1 学习、校准的 PCD 组成的固定系统，在同观测 raw/P1 上的运行差异，不代表从零训练 raw 系统、其他恢复器或所有目标域的一般排序。没有新方法晋级、目标适应、发现或匿名注册，A_N/H_OW为N/A；不从当前Q调整阈值、mask、恢复器或主方法，旧困难结果及PCD＋G默认保持。
+
+## 冻结顺序、实际成本与执行
+
+实际 F0/E0/PCD/G checkpoint 首步骤无 query smoke PASS 后才打开新 raw 输入；两模型和四组六阈值先于所有新输入冻结。sourceDURA30150 与两Q的20476条DURA输出精确复用，全部六路径四读出完整后独立CPU才连接NV/clean/star三truth各一次，Utruth0；见[预测完成](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/predict/complete.json)、[模型冻结](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/predict/models/complete.json)、[校准继承](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/predict/calibration/complete.json)与[评分完成](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/score/complete.json)。
+
+新增真实前向为F0 50626行（source30150＋两Q20476），E0/PCD各50626行、合计open101252；真实G0，因为复用已完成DURA结果。合成F0 4行、open8行、G2行另计。新增神经/密度/归一化/阈值拟合均0，两个源密度和24个FP64阈值192B全部继承，单主六τ48B；本轮没有训练曲线。部署PCD仍F0 232993＋PCD334721＋G266951＝834665参数，E0只是比较分支不额外部署，无source/U行bank。原F0 E50/11100、r03/2220、PCD444/U576、DURA E20/4940及缓存成本不删除。
+
+predict/CPUscore实际耗时32.096779/26.873113 s，pipeline59.081772 s，均return0、终态ANALYZED_DEVELOPMENT；不是B1推理延迟或受控加速证据。5次观测独立捕获driver1960504、predict1960527和CPUscore1961242的完整argv/CWD；predict CUDA5、GPU UUID `ef5f59f2-e03e-fe6e-ea6b-3e03afc9b331` 的356/446MiB为离散样本非峰值，CPU的CUDA可见为空。本轮两个实际作业都具有独立live证据，终态owned进程/GPU空、foreign0。
+
+完整三stdout共8行/720B，warning/error0；predict日志0→473→659B、score0→40B、driver0→21B。合成验证18项＋18子项、6AST及实际reference配置接口通过，一次独立P0/P1 PASS；模块尚未落盘时的预期RED保留，就绪后相关测试通过，不写初轮全绿。scorer测试日志保留不同批次1607/1505条pytest警告，未在本任务逐类归因，不能将其写成生产告警。见[测试证据](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/test_evidence.json)、[审查](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/review.json)、[流水线](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/pipeline_state.json)与[观测](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/observations.jsonl)。
+
+单包844文件/data0，SHA `98eff602f7cfd35c13eb9b868983367bfc5da05e8072aba1223bd7424174c951`，单次本地/远端比较、remote compile/runtime为VERIFIED。登记record成功后共享index锁错误，独立核实既有record后只做一次managed-only索引重建，return0；无重复登记、删锁、干预foreign或额外审查，不属于实际模型运行故障。见[发布核实](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/release_verification.json)与[登记调和](../local_artifacts/pamf_phase3_fresh_dura_20261031_r01/registration_reconciliation.json)。本轮诊断已完成，科学NO_PROMOTION，完整目标ACTIVE。

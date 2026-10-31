@@ -1,0 +1,428 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261031-phase3-fresh-dura-s2026092701-r01",
+  "group_id": "pamf-phase3-fresh-DURA-paired",
+  "display_name": "PAMF第三阶段：新接收机固定PCD的DURA前后配对",
+  "description": "Frozen E0/PCD four readouts, exact three DURA outputs reused, new raw source and future RX34 paired diagnostics. No fitting or new U/ID reads.",
+  "kind": "cvs",
+  "stage": "Phase3-fresh-DURA-six-path-diagnostic",
+  "aliases": [
+    "新接收机DURA配对诊断"
+  ],
+  "tags": [
+    "PAMF",
+    "phase3",
+    "DURA_paired",
+    "fixed_PCD",
+    "truth_last"
+  ],
+  "comparison_group_id": "phase3-fresh-PCD-DURA-versus-raw",
+  "parent_run_ids": [
+    "20261031-phase3-fresh-development-rx3-2-s2026092701-r01",
+    "20261030-phase3-star-signal-open-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户完整Phase3自主执行目标，最新要求Phase1之后全部样本星地、按引用MILKR设置；target零TXlabels、未知真实K与配额隐藏。",
+  "code": {
+    "commit": "0305e98dc27469d29e88d1d85aea2908eae64056",
+    "checkout": "E:\\type10-7\\github_publish\\CVS-RFFI-repo",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-dura-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments.pamf_phase3_open_world.fresh_dura_launch",
+      "experiments.pamf_phase3_open_world.fresh_dura_run",
+      "experiments.pamf_phase3_open_world.fresh_dura_score"
+    ],
+    "configs": [
+      "docs/PAMF_PHASE3_FRESH_DURA_PLAN_20261031.md"
+    ]
+  },
+  "data": {
+    "dataset": "Existing source star V/NV and fixed RX3-2 future paired clean/star public IQ",
+    "version": "Existing VALIDATED_ONCE physical roles; L/V G10 deterministic reconstruction for the same IDs and episode, plus fixed G10 OE/novel; no independent physical replication",
+    "representation": "Same fixed received, raw-only new F0/E0/PCD forwards; main DURA source/clean/star outputs exactreuse; fixed shared density/tau.",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md:Phase3 固定系统的恢复前后配对诊断",
+    "physical_ids_ref": "Unchanged source392005 and VALIDATED_ONCE fresh future public capsule/split opaque IDs",
+    "label_map_ref": "originalsix source L; OE outside-six membership; novel TX independent scorer only",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "3-2"
+    ],
+    "source_days": [
+      "2021-03-08",
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "target_days": [
+      "2021-03-15",
+      "2021-03-23"
+    ],
+    "tx_sets_ref": "configs/pamf_phase3_unlabeled_registration_20261029.json; initial old6 only in algorithm, true target unknown count/quotas/TX absent",
+    "roles": {
+      "source_L_new": 0,
+      "source_OE_new": 0,
+      "source_V_raw_forward_DURA_reuse": 27000,
+      "source_NV_raw_forward_DURA_reuse": 3150,
+      "cross_clean_Q": 10238,
+      "cross_star_Q": 10238,
+      "known_future": 4508,
+      "unknown_future": 5730,
+      "source_Us_new": 0,
+      "target_U_new": 0,
+      "target_U_ID_new": 0,
+      "formal_RX24_18_new": 0
+    },
+    "train_ratio": "Original F0 L6300/(L6300+Us56700)=10%; no Us newuse, original labels unchanged; R0/R1 additional binary OE member supervision disclosed.",
+    "capsule_id": null,
+    "split_id": "392005 original F0 source split; derived role handles unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase3-star-representation-s2026092701-r01/cache/{L,OE,V,novel}/manifest.json; existing VALIDATED_ONCE source handles reused",
+    "support_query_ref": "Source V/NV separate; old RX34 U576 ancestor retained, no new U/ID open; future03-15/23 shared10238clean/star paired IDs. 03-23 lacks2old givesfullrosterNA, lateTX notearlyU, sourceNV historical/exposed.",
+    "leo_config_ref": "Inherited fixedG10/source3001/4001/future3133/3134/receiver2027; no redraw",
+    "derived_public_handles": {
+      "clean_DURA": {
+        "public_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-development-rx3-2-s2026092701-r01-release/data/fresh/future_clean/public",
+        "capsule_id": "p3fresh-97a3ca8706dbe966ac510a61",
+        "split_id": "7fdd29104962ba0d92969faf",
+        "expected_count": 10238,
+        "view_family": "clean_cross_receiver"
+      },
+      "star_DURA": {
+        "public_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-development-rx3-2-s2026092701-r01-release/data/fresh/future_star/public",
+        "capsule_id": "p3fresh-e56d8e305e37c68dd40db030",
+        "split_id": "b9888c49e89d418cc25ab5ff",
+        "expected_count": 10238,
+        "view_family": "practical_cross_receiver"
+      }
+    }
+  },
+  "permissions": {
+    "regime": "All F0/E0/PCD/G and two source densities/four six-tau frozen. No new sourceL/OE/Us/U/U_ID or fit. PCD has inherited U576 ancestor; E0source-only.",
+    "query_use": "Actual4checkpoint no-query smoke then six paths fixed before CPU sourceNV/clean/star truth eachonce. Raw routes own originalF0predictedclass; no query fitting/statistics.",
+    "external_method_exception": null,
+    "claim_scope": "ThreeDURA main outputs exactreuse; raw diagnostic samefrozenP1trainedsystem only, no newmodel/adapter/registration/formal or blind claim; fullgoalACTIVE."
+  },
+  "checkpoint": {
+    "initialization": "Strict same originalF0/pure-source r03 plus frozen fresh RX34TARGET_PCD444 and fixedDURAR69; no new initialization/training.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-phase3-star-signal-open-s2026092701-r03/rows/E_SIGNAL/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-development-rx3-2-s2026092701-r01/train/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Originalsource392005 pure-r03 remains; freshPCDindependent U576 ancestor explicit; source-only E0 and PCD density/threshold identities exactreference.",
+    "selection_rule": "No new checkpoint, fit, thresholds or Q-based selection. PCDpred primary unchanged; raw auxiliary only."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-phase3-fresh-dura-20261031",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-dura-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-dura-s2026092701-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_phase3_fresh_dura_20261031_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.fresh_dura_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-dura-s2026092701-r01-release/runtime.json",
+    "gpu_policy": "OneGPUproducer free>=4096MiB/start allowed0..7 <=2addedown/card, thenCUDAemptyCPUscore; foreign preserved.",
+    "stop_rule": "Invalidrole/ancestry/nonfinite/collision/unusablepred preserve, no partialtruthscore/autorestart. UNKNOWN reconcileoriginalPID/root. Scientificsourcefaildoesnotcancel Q; no foreign actions."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "pipeline_state.json",
+    "configs/eval.json",
+    "logs/*.log",
+    "predict/{resolved_config,smoke,complete}.json",
+    "predict/models/*",
+    "predict/thresholds.npz",
+    "predict/source/{source_raw,source_DURA}/{known,novel}_predictions.npz",
+    "predict/targets/{clean_raw,clean_DURA,star_raw,star_DURA}/predictions.npz",
+    "score/{results,complete}.json",
+    "observations.jsonl"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "macroAK",
+      "macroCK",
+      "macroRU",
+      "H-score",
+      "originalF0closed",
+      "AUROC/OSCR",
+      "DURA-minus-raw separateidentity/correctaccept/wrongaccept/unknownreject",
+      "sourceknown12/42",
+      "AN/HOWNA"
+    ],
+    "dimensions": [
+      "4methods x6paths",
+      "TX/RX/day/scene/day_scene",
+      "frozenmainDURA/rawauxiliary"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-dura-s2026092701-r01/predict",
+    "scorer_ref": "experiments.pamf_phase3_open_world.fresh_dura_score",
+    "targets_ref": "DURA cleanRU95/starRU90/CK90/origF0sameGgap2pp+scene rosters. Fixed diagnostic NO_PROMOTION; no newUDA; fullgoalACTIVE.",
+    "primary": [
+      "PCD_predicted_ratio"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "fresh-DURA-paired-s2026092701",
+      "method": "Fixed E0/PCD pooled/predicted density ratios",
+      "purpose": "Separate DURA identity correction and reject tradeoffs on RX34 fixed development pool.",
+      "config_ref": "docs/PAMF_PHASE3_FRESH_DURA_PLAN_20261031.md",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-dura-s2026092701-r01/configs/eval.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new random sampling/fit or channel; inherited source3001/4001,future3133/3134,receiver2027,density3019.",
+      "k": null,
+      "scenario": "source5RX plusRX34future2dates eachraw/DURA",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "NN/fit/tauupdates0. New F050626/signal101252/G0; DURAexactreuse,24FP64tau192B; syntheticseparate. L/OE/Us/U/U_ID0. Deployment834665.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-dura-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase3-fresh-dura-s2026092701-r01/logs/predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -B -u -m experiments.pamf_phase3_open_world.fresh_dura_launch start --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase3-fresh-dura-s2026092701-r01-release/runtime.json",
+      "expected_artifacts": [
+        "launch.json",
+        "pipeline_state.json",
+        "configs/eval.json",
+        "logs/*.log",
+        "predict/{resolved_config,smoke,complete}.json",
+        "predict/models/*",
+        "predict/thresholds.npz",
+        "predict/source/{source_raw,source_DURA}/{known,novel}_predictions.npz",
+        "predict/targets/{clean_raw,clean_DURA,star_raw,star_DURA}/predictions.npz",
+        "score/{results,complete}.json",
+        "observations.jsonl"
+      ]
+    }
+  ],
+  "notes": [
+    "PCD research baseline retained; no new model candidate.",
+    "Only sourceV/NV andpairedfutureIQ raw newreads; mainDURAexactreuse.",
+    "SourceV calibration notindependenttest, NV/Qexposed/globalhistoryUNKNOWN/03-23missingNA.",
+    "OldPCD U576 ancestor disclosed; current U/IDreads0; no formalRX24-18/AN/HOW.",
+    "Allsixfixedbefore CPU3truth; no Qfeedback."
+  ],
+  "registered_at": "2026-10-31T13:49:57+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "execution_verdict": "VERIFIED",
+    "scientific_verdict": "NO_PROMOTION",
+    "diagnostic_completed": true,
+    "code_commit": "0305e98dc27469d29e88d1d85aea2908eae64056",
+    "primary_method": "PCD_predicted_ratio",
+    "metrics_fraction": {
+      "source_raw": {
+        "A_K": 0.29800000000000004,
+        "C_K": 0.3042592592592593,
+        "R_U": 0.9720634920634921,
+        "H_score": 0.4561581723198441,
+        "original_F0_macro_closed_accuracy": 0.758111111111111,
+        "original_closed_minus_new_open": 0.4601111111111109,
+        "auroc_known_macro": 0.7092461493241166,
+        "oscr_auc_macro": 0.6163776602000304
+      },
+      "source_DURA": {
+        "A_K": 0.8973333333333334,
+        "C_K": 0.9674814814814816,
+        "R_U": 0.6428571428571429,
+        "H_score": 0.7490724709374229,
+        "original_F0_macro_closed_accuracy": 0.909814814814815,
+        "original_closed_minus_new_open": 0.012481481481481538,
+        "auroc_known_macro": 0.9473067254559288,
+        "oscr_auc_macro": 0.8794043268668309
+      },
+      "clean_raw": {
+        "A_K": 0.31658929361865,
+        "C_K": 0.4366570544563802,
+        "R_U": 0.6217185638271644,
+        "H_score": 0.4195412825113427,
+        "original_F0_macro_closed_accuracy": 0.4890281286041622,
+        "original_closed_minus_new_open": 0.1724388349855122,
+        "auroc_known_macro": 0.5438602729466439,
+        "oscr_auc_macro": 0.33848071274697256
+      },
+      "clean_DURA": {
+        "A_K": 0.31661804020346146,
+        "C_K": 0.43761390882421325,
+        "R_U": 0.6197964748965298,
+        "H_score": 0.4191279439657097,
+        "original_F0_macro_closed_accuracy": 0.4856701533920565,
+        "original_closed_minus_new_open": 0.16905211318859503,
+        "auroc_known_macro": 0.543647577927304,
+        "oscr_auc_macro": 0.33693179756489083
+      },
+      "star_raw": {
+        "A_K": 0.07472826734374528,
+        "C_K": 0.11137375629856927,
+        "R_U": 0.8675818301986886,
+        "H_score": 0.13760414351655378,
+        "original_F0_macro_closed_accuracy": 0.39689883796133385,
+        "original_closed_minus_new_open": 0.3221705706175886,
+        "auroc_known_macro": 0.4880217288063655,
+        "oscr_auc_macro": 0.22639731584311837
+      },
+      "star_DURA": {
+        "A_K": 0.2795172247279237,
+        "C_K": 0.4858241229064512,
+        "R_U": 0.493076983190479,
+        "H_score": 0.3567811109792217,
+        "original_F0_macro_closed_accuracy": 0.4172105854906822,
+        "original_closed_minus_new_open": 0.1376933607627585,
+        "auroc_known_macro": 0.509971895922739,
+        "oscr_auc_macro": 0.2700126111294452
+      }
+    },
+    "paired_DURA_minus_raw": {
+      "source": {
+        "counts": {
+          "known_count": 27000,
+          "unknown_count": 3150,
+          "known_closed_prediction_changed": 6454,
+          "known_correct_accepted_gained": 16213,
+          "known_correct_accepted_lost": 31,
+          "known_correct_accepted_net": 16182,
+          "known_accepted_gained": 17922,
+          "known_accepted_lost": 15,
+          "known_accepted_net": 17907,
+          "known_correct_rejected_gained": 193,
+          "known_correct_rejected_lost": 12279,
+          "known_correct_rejected_net": -12086,
+          "known_wrong_accepted_gained": 1856,
+          "known_wrong_accepted_lost": 131,
+          "known_wrong_accepted_net": 1725,
+          "known_closed_correct_gained": 4658,
+          "known_closed_correct_lost": 562,
+          "known_closed_correct_net": 4096,
+          "unknown_rejected_gained": 49,
+          "unknown_rejected_lost": 1086,
+          "unknown_rejected_net": -1037
+        },
+        "delta": {
+          "A_K": 0.5993333333333334,
+          "C_K": 0.6632222222222224,
+          "R_U": -0.32920634920634917,
+          "H_score": 0.2929142986175788,
+          "original_F0_macro_closed_accuracy": 0.151703703703704,
+          "candidate_macro_closed_accuracy": 0.151703703703704,
+          "original_closed_minus_new_open": -0.4476296296296294,
+          "candidate_closed_minus_open": -0.4476296296296294,
+          "auroc_known_macro": 0.2380605761318122,
+          "oscr_auc_macro": 0.2630266666668005
+        }
+      },
+      "clean": {
+        "counts": {
+          "known_count": 4508,
+          "unknown_count": 5730,
+          "known_closed_prediction_changed": 192,
+          "known_correct_accepted_gained": 4,
+          "known_correct_accepted_lost": 4,
+          "known_correct_accepted_net": 0,
+          "known_accepted_gained": 13,
+          "known_accepted_lost": 6,
+          "known_accepted_net": 7,
+          "known_correct_rejected_gained": 37,
+          "known_correct_rejected_lost": 47,
+          "known_correct_rejected_net": -10,
+          "known_wrong_accepted_gained": 11,
+          "known_wrong_accepted_lost": 4,
+          "known_wrong_accepted_net": 7,
+          "known_closed_correct_gained": 36,
+          "known_closed_correct_lost": 46,
+          "known_closed_correct_net": -10,
+          "unknown_rejected_gained": 22,
+          "unknown_rejected_lost": 33,
+          "unknown_rejected_net": -11
+        },
+        "delta": {
+          "A_K": 2.874658481144543e-05,
+          "C_K": 0.0009568543678330488,
+          "R_U": -0.0019220889306346134,
+          "H_score": -0.0004133385456330241,
+          "original_F0_macro_closed_accuracy": -0.003357975212105735,
+          "candidate_macro_closed_accuracy": -0.003357975212105735,
+          "original_closed_minus_new_open": -0.0033867217969171803,
+          "candidate_closed_minus_open": -0.0033867217969171803,
+          "auroc_known_macro": -0.00021269501933984802,
+          "oscr_auc_macro": -0.0015489151820817226
+        }
+      },
+      "star": {
+        "counts": {
+          "known_count": 4508,
+          "unknown_count": 5730,
+          "known_closed_prediction_changed": 2202,
+          "known_correct_accepted_gained": 1197,
+          "known_correct_accepted_lost": 41,
+          "known_correct_accepted_net": 1156,
+          "known_accepted_gained": 1998,
+          "known_accepted_lost": 26,
+          "known_accepted_net": 1972,
+          "known_correct_rejected_gained": 189,
+          "known_correct_rejected_lost": 1027,
+          "known_correct_rejected_net": -838,
+          "known_wrong_accepted_gained": 911,
+          "known_wrong_accepted_lost": 95,
+          "known_wrong_accepted_net": 816,
+          "known_closed_correct_gained": 705,
+          "known_closed_correct_lost": 387,
+          "known_closed_correct_net": 318,
+          "unknown_rejected_gained": 115,
+          "unknown_rejected_lost": 2268,
+          "unknown_rejected_net": -2153
+        },
+        "delta": {
+          "A_K": 0.2047889573841784,
+          "C_K": 0.37445036660788195,
+          "R_U": -0.37450484700820963,
+          "H_score": 0.21917696746266793,
+          "original_F0_macro_closed_accuracy": 0.020311747529348334,
+          "candidate_macro_closed_accuracy": 0.020311747529348334,
+          "original_closed_minus_new_open": -0.18447720985483007,
+          "candidate_closed_minus_open": -0.18447720985483007,
+          "auroc_known_macro": 0.02195016711637343,
+          "oscr_auc_macro": 0.04361529528632682
+        }
+      }
+    },
+    "DURA_primary_absolute_goals_passed": false,
+    "source_known_12_passed": true,
+    "source_known_42_passed": false,
+    "target_protection_passed": false,
+    "adaptation_success": null,
+    "new_target_DA": false,
+    "new_U_ID_reads": 0,
+    "new_target_U_reads": 0,
+    "new_training_updates": 0,
+    "new_density_fits": 0,
+    "new_threshold_fits": 0,
+    "real_F0_forward_rows": 50626,
+    "real_open_forward_rows": 101252,
+    "real_G_forward_rows": 0,
+    "all_DURA_outputs_exact_reuse": true,
+    "all_12_DURA_overall_exact_reference": true,
+    "threshold_values": 24,
+    "threshold_bytes": 192,
+    "deployed_neural_parameters": 834665,
+    "inherited_PCD_target_U_count": 576,
+    "formal_target_accessed": false,
+    "registration_success": null,
+    "A_N": null,
+    "H_OW": null,
+    "full_goal_status": "ACTIVE",
+    "result_ref": "docs/PAMF_PHASE3_FRESH_DURA_RESULTS_20261031.md"
+  }
+}

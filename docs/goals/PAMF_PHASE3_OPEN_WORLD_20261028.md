@@ -1298,3 +1298,13 @@ Run `20261031-phase3-source-style-s2026092701-r02` / code `57d887a1e1ac34e4e98a2
 ## 2026-10-31：同TX跨RX源端统计混合r02实测结果
 
 Run `20261031-phase3-source-style-s2026092701-r02` / code `57d887a1e1ac34e4e98a235ad698ef8f628dfb44`，两独立完整原F0 reader/default head＋纯源r03 projection学生SOURCE_NATIVE/STYLE_NATIVE各444，共888步；L同TX异RX配对、OE与全部采样逐步匹配，浅time_down/中t2.pool仅源训练临时统计混合，OE透传。8×3 DURA预测及独立CPU3truth VERIFIED完成。主STYLE_NATIVE_predicted_ratio：source_DURA: AK/CK/RU/H=89.770370/96.148148/69.714286/78.481246%；原F0closed=90.981481%/studentclosed=91.644444%/原F0损=1.211111pp；clean_DURA: AK/CK/RU/H=25.861631/36.569007/70.309538/37.814230%；原F0closed=48.567015%/studentclosed=46.501380%/原F0损=22.705384pp；star_DURA: AK/CK/RU/H=23.730709/41.296261/55.697351/33.281378%；原F0closed=41.721059%/studentclosed=40.954329%/原F0损=17.990350pp。sourceknown12=True/42=False、目标保护=False、星地AK高于双控制=False、RU不低于控制=True，科学NO_PROMOTION。此行纯源DG，无新U训练或U ID读取；adaptation_success=None/new_target_DA=False。2新源密度/24新tau＋24旧tau共48/384B，部署335681＋DURA266951=602632；不含路径外667729参数。r01首真实无query检查的无参数AvgPool梯度诊断错误保持FAILED_PRESERVED，0优化/源训练值/Q/truth；r02仅修正上游time_fuse参数诊断及独立run，不改变科学矩阵。保留PCD研究基线，AN/HOWNA/正式RX24-18未读/完整目标ACTIVE。详见`docs/PAMF_PHASE3_SOURCE_STYLE_RESULTS_20261031.md`。
+
+
+## 2026-10-31：新接收机固定PCD恢复前后诊断预登记
+
+Run `20261031-phase3-fresh-dura-s2026092701-r01` / code `0305e98dc27469d29e88d1d85aea2908eae64056`，PCD/E0固定4读出×6raw/DURA路径；主DURA全部精确复用，仅新增sourceV/NV及RX34futureclean/star raw。新训练/密度/tau/U/U_ID0，原PCD U576祖先保留，CPU3truth最后，未完成注册/正式24-18未读/完整ACTIVE。见`docs/PAMF_PHASE3_FRESH_DURA_PLAN_20261031.md`。登记CLI在写入实际record/event后遇共享索引锁，已独立核实PLANNED并补齐本段，没有重复登记。
+
+
+## 2026-10-31：新接收机固定PCD恢复前后诊断结果
+
+Run `20261031-phase3-fresh-dura-s2026092701-r01` / code `0305e98dc27469d29e88d1d85aea2908eae64056`，固定E0/PCD四读出×六raw/DURA路径全部完成后独立CPU三truth评分，执行VERIFIED。主PCDpred：source raw AK/CK/RU/H=29.800000/30.425926/97.206349/45.615817%→DURA 89.733333/96.748148/64.285714/74.907247%；clean raw AK/CK/RU/H=31.658929/43.665705/62.171856/41.954128%→DURA 31.661804/43.761391/61.979647/41.912794%；star raw AK/CK/RU/H=7.472827/11.137376/86.758183/13.760414%→DURA 27.951722/48.582412/49.307698/35.678111%。全部12个DURA method/condition overall与原fresh评分字典精确一致；主DURA全部旧预测复用，raw自身原F0身份路由。新训练/fit/tau/U/UID/Us/L/OE0，真实F050626/open101252/G0；24FP64tau192B，PCD原U576祖先保留。冻结诊断NO_PROMOTION、adaptation_success=None/new_target_DA=False；保留PCD/DURA默认，正式24-18未读/ANHOWNA/完整ACTIVE。详见`docs/PAMF_PHASE3_FRESH_DURA_RESULTS_20261031.md`。
