@@ -379,3 +379,8 @@ clean局部敏感度G 20261031-phase1-DURA-cleanTangent-E30-s2026092701-r01/7dd7
 ## 时序签名 IQ 损失缩步
 
 20261031-diagnostic-DURA-source-signatureLossStep-s2026092701-r01/3cd8781b。VERIFIED / ANALYZED，SOURCE_ONLY。CPU2/5.812552秒自然结束，原source512×01/20/defaultDURA。损失缩步IQ修正仍净增15/6条cleanF选择一致，clean84/81均保持，clean组SIG误差分别降低82.143%/77.978%，修复旧固定步幅的clean过冲。缓存01全部条件通过；缓存20 RX8净−1，其他条件通过，总判定FAIL，不更改旧FAIL/本次阈值，不直接部署或自动训练。总体SIG误差降64.598%/67.777%，IQNMSE降0.625%/0.605%，同球最近波形对照+3/+1；不是目标TX收益/物理极限。完整F2048/前缀4096/VJP4096/原头3072，smoke另F2/前缀2/VJP4/原头2；0G/模型更新/TX-V-target、F不变；1024观测/3072头输入/52组独立复算。 默认与完整目标ACTIVE，详细分析见本run analysis.md/results.json。
+
+
+## 实际时序签名指导：完整E30与七景
+
+20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01/47591cdf。VERIFIED / ANALYZED。G从零单阶段30轮/7410步，L189000/U1701000；完整30条物理+SIGloss/曝光/源视图/clip/F-TX-init计数与实际逐batchcap0.5核对通过。新增实际加权TripleSIG源缓存40.32MB/0.847077秒/63000前缀输入；训练1890000前缀+1890000输入VJP、完整F后续路径0，F全state不变、加载和路径RNG隔离。F50源监督知识继承、属于F-guided；原源oracle资格FAIL保持，不称其晋级或物理上限。七景×168000全部预测固定后truth-last，126正式、105源V、126pureG配对分组与14个源/正式IQ误差独立复算；512缓存签名与完整F误差8.047e-7。clean 84.769048%，low urban 68.835119%；低城区较纯G +1.462500、默认DURA -0.054762个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=True，旧低城区70%=False。G训练及保存1112.173977秒，含worker准备1113.944462秒，控制器至自动全量分析1298.002890秒；266951参数/25.068072m ConvLinear MAC/两prior四CG27FFT。默认DURA保持，同质量实际效率须结合正式质量判断，完整目标ACTIVE。 单seed、已暴露工程基准，完整TX/RX/day、净纠错、source/formal与成本见本run分析。

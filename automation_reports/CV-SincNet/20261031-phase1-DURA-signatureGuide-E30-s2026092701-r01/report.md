@@ -3,7 +3,7 @@
 - run_id：`20261031-phase1-DURA-signatureGuide-E30-s2026092701-r01`
 - group_id：`phase1-dura-actual-signature-guidance-E30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整结果见analysis.md/results.json；完整分组与成本保留。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -45,3 +45,10 @@ G保持原266951参数，从零单阶段30轮/7410步，完整coarse/action/prio
 ## 实际启动核实
 
 VERIFIED RUNNING。执行47591cdfe2e6e6dd7534cdea846badd942321b8f，controller1690298/worker1690393、GPU4；实际PID/CWD/完整argv/空CUDA控制器与workerCUDA4、GPU计算进程和日志增长均已核实。启动前该卡剩余22883MiB、已有1个计算PID，新增1条符合总数≤3；历史本goal训练/源诊断PID均不存在，其他owner保持。首步真实2Ls全部检查PASS并立即继续。新source SIG缓存40.32MB/0.847077秒、63000前缀输入已完成；当前完成源训练轮数2，正式性能结果尚无，不宣称优化成功。5项新检查及1项checkpoint权限负测试通过，唯一P0P1通过。launch_evidence.json只作聚合状态证据，实际源数据/权重/日志私有保存。
+
+
+## 完整训练与正式结果
+
+VERIFIED / ANALYZED。G从零单阶段30轮/7410步，L189000/U1701000；完整30条物理+SIGloss/曝光/源视图/clip/F-TX-init计数与实际逐batchcap0.5核对通过。新增实际加权TripleSIG源缓存40.32MB/0.847077秒/63000前缀输入；训练1890000前缀+1890000输入VJP、完整F后续路径0，F全state不变、加载和路径RNG隔离。F50源监督知识继承、属于F-guided；原源oracle资格FAIL保持，不称其晋级或物理上限。七景×168000全部预测固定后truth-last，126正式、105源V、126pureG配对分组与14个源/正式IQ误差独立复算；512缓存签名与完整F误差8.047e-7。clean 84.769048%，low urban 68.835119%；低城区较纯G +1.462500、默认DURA -0.054762个百分点。六景3pp通过0/6，clean严格保持=True，R17逐景1pp=True，旧低城区70%=False。G训练及保存1112.173977秒，含worker准备1113.944462秒，控制器至自动全量分析1298.002890秒；266951参数/25.068072m ConvLinear MAC/两prior四CG27FFT。默认DURA保持，同质量实际效率须结合正式质量判断，完整目标ACTIVE。
+
+详见[完整分析](analysis.md)、[曲线与七景](training_and_formal.png)、results.json与transfer_diagnostics.json。controller/worker已自然结束；无目标反馈、换轮次、调cap或选择性重跑。
