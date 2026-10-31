@@ -173,3 +173,7 @@ K1目前一直沿用R9在额外336维但未CCA前选的signature_identity/all/mi
 ### R22 有界非线性配对编码
 
 新source-only非线性残差：C4moments/CCA64不变，八block raw/G2d-64-64有界MLP初始等价CCA、幅度≤.25。只同记录配对MSE+.1anchor，固定600step/256/AdamW1e-3，F/G/head不更新。每sourcefoldCCA/NN均excludeheldRX/twoTX，source四H+.5/rawguard/querygain门槛失败target0，通过才全sourcefit及严格G-only4corner24rows。待询问的dual-query口径不影响本run，不热改。最终16KN两S每格+5/Q1更高不变。
+
+### R22 实际结果
+
+五sourcefold各600step有界配对NN完成，F/G/head更新0；source四H相对control+0.2640pp，gate=False。源科学停止、target0、最终checkpoint未拟合；不能用pairMSE代替分类H。全部所属进程退出；strictG-only Q1保持；最终每16KN+5及queryDURA收益目标仍ACTIVE。
