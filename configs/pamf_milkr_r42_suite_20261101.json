@@ -1,0 +1,75 @@
+{
+  "run_id": "20261101-phase2-r42-group1-m4-r01",
+  "kernel_method": "adaptive_residual_ensemble",
+  "arm": "R42",
+  "K": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "N": [
+    2,
+    5,
+    10,
+    20
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703,
+    2026092704
+  ],
+  "target_receivers": [
+    "1-1",
+    "14-7",
+    "2-1",
+    "20-1",
+    "7-14",
+    "7-7",
+    "8-8"
+  ],
+  "allowed_gpus": [
+    0,
+    2,
+    3,
+    4,
+    6
+  ],
+  "support_residual_strengths": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "K1_residual_strength": 1.0,
+  "source_reuse_by_seed": {
+    "2026092701": {
+      "source_reuse_runtime": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-phase2-milkr-crossrxres-s2026092701-r40-release/runtime.json",
+      "source_reuse_selection": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-crossrxres-s2026092701-r40/source_selection.json",
+      "source_reuse_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-crossrxres-s2026092701-r40/source_orbit_cca.npz"
+    },
+    "2026092702": {
+      "source_reuse_runtime": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-r42-group1-m4-r01-release/source_parent_s2026092702.json",
+      "source_reuse_selection": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-r42-main-m4-r01/sources/s2026092702/source_selection.json",
+      "source_reuse_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-r42-main-m4-r01/sources/s2026092702/source_orbit_cca.npz"
+    },
+    "2026092703": {
+      "source_reuse_runtime": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-r42-group1-m4-r01-release/source_parent_s2026092703.json",
+      "source_reuse_selection": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-r42-main-m4-r01/sources/s2026092703/source_selection.json",
+      "source_reuse_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-r42-main-m4-r01/sources/s2026092703/source_orbit_cca.npz"
+    },
+    "2026092704": {
+      "source_reuse_runtime": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-r42-group1-m4-r01-release/source_parent_s2026092704.json",
+      "source_reuse_selection": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-r42-main-m4-r01/sources/s2026092704/source_selection.json",
+      "source_reuse_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-milkr-r42-main-m4-r01/sources/s2026092704/source_orbit_cca.npz"
+    }
+  },
+  "task_units": 1932,
+  "MIX_KN_units": 672,
+  "scene_units": 1260,
+  "desired_rows": 167496,
+  "new_source_neural_updates": 0,
+  "query_fit": false
+}
