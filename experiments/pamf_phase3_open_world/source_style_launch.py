@@ -7,7 +7,7 @@ import subprocess
 import time
 from .star_representation_launch import _read,_write,_env,_gpu_free,_job
 
-RUN='20261031-phase3-source-style-s2026092701-r01'
+RUN='20261031-phase3-source-style-s2026092701-r02'
 FIELDS={'run_id','code_commit','run_root','release_root','python','launch_owner','allowed_gpus','minimum_free_mb','max_added_workers_per_gpu',
         'train_config','eval_config','source_novel_truth','clean_truth','star_truth'}
 

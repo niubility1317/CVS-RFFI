@@ -14,7 +14,7 @@ from . import star_density_core as density
 from . import star_macro12_risk as risk
 from . import star_dura_best_run as best
 
-RUN_ID='20261031-phase3-source-style-s2026092701-r01'
+RUN_ID='20261031-phase3-source-style-s2026092701-r02'
 CONTROL_CODE='f4b5a0b80cafcf237c3ae9dac8ecd5b24c91bff7'
 SCHEMA='pamf_phase3_source_style_prediction_v1'
 STATUS='SOURCE_STYLE_PREDICTIONS_COMPLETE'

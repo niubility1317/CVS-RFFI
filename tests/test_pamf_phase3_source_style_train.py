@@ -26,7 +26,8 @@ class Reader(nn.Module):
     def __init__(self):
         super().__init__();self.core=nn.Module();self.core.id_backbone=nn.Module();b=self.core.id_backbone
         b.sinc=nn.Module();b.sinc.low_coordinate=nn.Parameter(torch.full((24,1),.01));b.sinc.band_coordinate=nn.Parameter(torch.full((24,1),.02))
-        b.time_down=nn.Sequential(nn.Conv1d(2,48,1),nn.AvgPool1d(2));b.t2=nn.Module();b.t2.pool=nn.Sequential(nn.Conv1d(48,96,1),nn.AvgPool1d(4))
+        b.time_fuse=nn.Sequential(nn.Conv1d(2,48,1),nn.GroupNorm(6,48),nn.ReLU())
+        b.time_down=nn.AvgPool1d(2);b.t2=nn.Module();b.t2.pool=nn.Sequential(nn.Conv1d(48,96,1),nn.AvgPool1d(4))
         b.cls_head=nn.Module();h=b.cls_head;h.weight=nn.Parameter(torch.randn(6,160)*.1);h.scale=30.
         h.base_norm=nn.LayerNorm(160);h.pa_norm=nn.LayerNorm(160);h.gain=nn.Parameter(torch.tensor(.2))
         self.middle=nn.Linear(96,160);self.response=Mask29(512,29);self.response_projection=nn.Linear(29,160)
@@ -36,7 +37,7 @@ class Reader(nn.Module):
 
     def features(self,x):
         b=self.core.id_backbone;h=b.cls_head;flat=x.flatten(1)
-        z=self.middle(b.t2.pool(torch.tanh(b.time_down(x))).mean(2))
+        z=self.middle(b.t2.pool(torch.tanh(b.time_down(b.time_fuse(x)))).mean(2))
         z=z+(b.sinc.low_coordinate.sum()+b.sinc.band_coordinate.sum())*x[:,0].mean(1)[:,None]
         return h.base_norm(z)+h.gain.tanh()*h.pa_norm(z.square())+self.response_gain.tanh()*self.response_projection(self.response(flat))+self.sequence_pool(flat)
 
@@ -104,6 +105,8 @@ def test_source_sampler_sameTX_differentRX_and_full444_matched_trajectory(tmp_pa
 
 def test_two_source_students_joint_body_head_projection_strict_load(tmp_path,monkeypatch,subtests):
     with fixture(tmp_path,monkeypatch) as (m,c,pm,b,parent,banks,events):
+        backbone=parent.id_backbone.encoder.core.id_backbone
+        assert list(backbone.time_down.parameters())==[] and sum(p.numel() for p in backbone.time_fuse.parameters())>0
         monkeypatch.setattr(torch,'from_numpy',lambda *a:pytest.fail('No NumPy ABI bridge'));monkeypatch.setattr(torch.Tensor,'numpy',lambda *a:pytest.fail('No NumPy ABI bridge'))
         before=m.identity._snapshot(parent);done=m.train(c,'cpu');out=Path(c['output_root'])
         assert events==['checkpoint','L_OE'] and done['source_only'] and done['total_optimizer_updates']==4 and done['target_U_reads']==0
@@ -111,6 +114,7 @@ def test_two_source_students_joint_body_head_projection_strict_load(tmp_path,mon
         assert done['real_parent_signal_forward_rows']==406 and done['real_student_forward_rows']==1280
         assert done['synthetic_student_forward_rows']==8
         smoke=m._read(out/'smoke.json')['native_open_style']
+        assert smoke['gradient_norms']['shallow']>0
         assert all(v['shape'][0]==4 and v['valid_rows']==2 and v['OE_exact_passthrough'] for v in smoke['style_sites'].values())
         assert done['G_forward_rows']==done['real_F_forward_rows']==done['real_PCD_forward_rows']==0
         trace={a:[json.loads(v) for v in (out/a/'steps.jsonl').read_text().splitlines()] for a in m.ARMS}
@@ -118,7 +122,7 @@ def test_two_source_students_joint_body_head_projection_strict_load(tmp_path,mon
             assert all(source[k]==style[k] for k in ('A_indices','B_indices','OE_indices'))
             assert source['style_sites']=={} and all(v['invocations']==1 and v['OE_exact_passthrough'] for v in style['style_sites'].values())
             for row in (source,style):
-                assert row['gradient_norms']['head']>0 and row['gradient_norms']['projection']>0 and row['gradient_norms']['Sinc']==0
+                assert row['gradient_norms']['head']>0 and row['gradient_norms']['projection']>0 and row['gradient_norms']['shallow']>0 and row['gradient_norms']['Sinc']==0
                 assert abs(row['loss_total']-sum(row[k] for k in ('crossset_metric','OE_KL','CE','KD'))-10*row['source_anchor'])<3e-5
         m.identity._unchanged(parent,before,'Parent')
         monkeypatch.setattr(m,'_source_cache',lambda *a:pytest.fail('Loader cannot read source IQ'))

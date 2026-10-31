@@ -16,7 +16,7 @@ from . import native_identity_train as identity
 from . import fresh_pcd_train as fresh
 
 body=fresh.body
-RUN_ID='20261031-phase3-source-style-s2026092701-r01'
+RUN_ID='20261031-phase3-source-style-s2026092701-r02'
 SCHEMA='pamf_phase3_source_style_train_v1'
 STATUS='SOURCE_STYLE_TRAIN_COMPLETE'
 ROW_STATUS='SOURCE_STYLE_STUDENT_FROZEN'
@@ -74,7 +74,7 @@ def _gradients(model):
     norm=lambda ps:sum(float(p.grad.detach().double().square().sum().cpu()) for p in ps if p.grad is not None)**.5
     g=dict(head=norm([b.cls_head.weight]),projection=norm(model.projection.parameters()),
            projection_hidden=norm(model.projection.network[0].parameters()),projection_last=norm(model.projection.network[-1].parameters()),
-           shallow=norm(b.time_down.parameters()),middle=norm(b.t2.parameters()),Sinc=norm(b.sinc.parameters()),
+           shallow=norm(b.time_fuse.parameters()),middle=norm(b.t2.parameters()),Sinc=norm(b.sinc.parameters()),
            body=norm(p for n,p in r.named_parameters() if n!=identity.READER_HEAD and not n.startswith(identity.READER_SINC)))
     if any(p.grad is not None for p in b.sinc.parameters()) or any(not np.isfinite(v) for v in g.values()) or any(p.grad is not None and not bool(torch.isfinite(p.grad).all()) for p in model.parameters()):
         raise FloatingPointError('Nonfinite source-style gradients or frozen Sinc received a gradient')
@@ -98,7 +98,8 @@ def _smoke(model,b,device):
                 z,logits=model(sx)
                 loss=F.cross_entropy(logits[:2],torch.tensor([0,0],device=device))+(z*torch.linspace(.1,1.,160,device=device)).sum(1).mean()
             loss.backward();g=_gradients(model)
-            if any(g[k]<=0 for k in ('head','projection','body','shallow','middle')):raise ValueError('Native head/body/projection and style content gradients must be live')
+            if any(g[k]<=0 for k in ('head','projection','body','shallow','middle')):
+                raise ValueError('Native head/body/projection and style content gradients must be live: '+json.dumps(g,sort_keys=True))
             if any(len(model.reader.get_submodule(path)._forward_hooks)!=count for path,count in counts.items()):raise ValueError('Source style hooks leaked after context exit')
             with torch.no_grad():_,after=model(x)
             if not torch.equal(initial,after):raise ValueError('Exiting style context must restore initial same-input logits exactly')
