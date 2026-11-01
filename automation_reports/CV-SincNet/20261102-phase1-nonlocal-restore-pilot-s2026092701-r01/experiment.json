@@ -1,0 +1,149 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-nonlocal-restore-pilot-s2026092701-r01",
+  "group_id": "phase1-nonlocal-restore",
+  "display_name": "噪声条件跨时间 IQ 恢复网络源域原型",
+  "description": "固定盲信道后验，利用跨时间注意力、噪声估计和信道反投影学习受限 IQ 残差。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "noise_conditioned",
+    "nonlocal_attention",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-identity-student-pilot-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "277d0056b5047f9ce7b0b5ba853bced0d5146d37",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2 source-only training, CPU 2 threads TF32 disabled; mixed L_s and U_s gradient preflight",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], blind posterior and backprojection, input-predicted log noise, full-time attention",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Only L_s fit labels enter training; U_s uses high-confidence frozen clean F pseudo labels, no U_s truth, V or test",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "384 fixed RX8 source heldout IDs, 64 per impaired view; previously explored, no true-label evaluation",
+    "support_query_ref": null,
+    "leo_config_ref": "Fresh source cache epoch21/22/23 training; source cache epoch19 evaluation"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source L_s true labels only fit IDs, U_s clean F pseudo targets, no U_s truth/V/test",
+    "external_method_exception": null,
+    "claim_scope": "Source source IDs used by F and seen in other channel views, pseudo targets not independent test; bounded correction may exploit classifier"
+  },
+  "checkpoint": {
+    "initialization": "Zero-initialized full-time attention corrector, global 20% L2 correction bound, fixed blind parent and frozen F. DURA comparison only after training.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-action-full-s2026092701-r01/checkpoint_epoch10.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01/source_prior.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Blind action SHA256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338 and source prior SHA256 5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fixed 4096 source fit IDs, source views 21/22/23, epoch3 final; fixed 384 RX8 source diagnostic. No automatic test."
+  },
+  "execution": {
+    "host": "N607 GPU2",
+    "launch_owner": "Codex noise-conditioned nonlocal source pilot GPU2 owner",
+    "gpu_policy": "GPU2 single owner, TF32 disabled, source-only training; real L_s/U_s gradient preflight",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-nonlocal-restore-pilot-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-nonlocal-restore-pilot-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-nonlocal-restore-pilot-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-nonlocal-restore-pilot-s2026092701-r01-release/experiments/phase1_nonlocal_restore/train_nonlocal.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-nonlocal-restore-pilot-s2026092701-r01 --commit 277d0056b5047f9ce7b0b5ba853bced0d5146d37 --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "checkpoint_epoch03.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source clean-F pseudo target agreement",
+      "direct normalized IQ MSE",
+      "correction norm",
+      "L_s and source hard exposures"
+    ],
+    "dimensions": [
+      "six source RX8 heldout scenarios"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_nonlocal_restore/train_nonlocal.py",
+    "scientific_rule": "L_s truth only source fit, U_s pseudo targets, no target; L2 bound does not guarantee physical fidelity."
+  },
+  "rows": [
+    {
+      "row_id": "nonlocal_restore_pilot_s2026092701",
+      "method": "noise-conditioned full-time self-attention IQ residual around fixed blind posterior",
+      "purpose": "test long-range source signal context without DURA inference",
+      "config_ref": "experiments/phase1_nonlocal_restore/train_nonlocal.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-nonlocal-restore-pilot-s2026092701-r01/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026121254,
+        "split": 392005,
+        "data": 2026121255,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "4096 fit IDs disjoint from fixed 8192 prior IDs; source fit/order seed 2026121255; same previously observed RX8 source probe",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0003,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "4096 source fit IDs, batch16, three fresh source views, 384 RX8 diagnostic",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-nonlocal-restore-pilot-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-nonlocal-restore-pilot-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-nonlocal-restore-pilot-s2026092701-r01-release/experiments/phase1_nonlocal_restore/train_nonlocal.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-nonlocal-restore-pilot-s2026092701-r01 --commit 277d0056b5047f9ce7b0b5ba853bced0d5146d37 --device cuda:0",
+      "expected_artifacts": [
+        "checkpoint_epoch03.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source L_s metadata 6300 labels loaded for ID verification; only L_s fit IDs enter loss.",
+    "U_s uses high-confidence clean F pseudo targets; no U_s truth, V or test.",
+    "Blind parent and F frozen; DURA loaded only after training.",
+    "20% L2 cap is not physical-fidelity proof; source sample previously explored."
+  ],
+  "registered_at": "2026-11-01T23:05:40+00:00"
+}
