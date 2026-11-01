@@ -1,0 +1,41 @@
+{
+  "G_parameters": 4677538,
+  "dense_real_MACs_per_record": 1043189760,
+  "per_core_dense_real_MACs": 260797440,
+  "components": {
+    "conv": 764674048,
+    "attention": 142606336,
+    "linear": 135909376
+  },
+  "per_core_components": {
+    "conv": 191168512,
+    "attention": 35651584,
+    "linear": 33977344
+  },
+  "input_shape": [
+    1,
+    2,
+    256
+  ],
+  "inference_core_calls": 4,
+  "training_core_calls_per_record": 1,
+  "torch": "2.10.0+cu128",
+  "device": "CPU/synthetic-only",
+  "trained_checkpoints_loaded": 0,
+  "source_or_target_IQ_read": 0,
+  "includes_MHA_QKV_output_QK_AV": true,
+  "complex_FFT_IFFT": 0,
+  "CG_iterations": 0,
+  "excludes": [
+    "F0",
+    "normalization",
+    "activation",
+    "softmax",
+    "interpolation",
+    "feature/time FiLM pointwise operations",
+    "unit-power projection",
+    "bridge convex updates",
+    "memory"
+  ],
+  "not_measured_N607_latency": true
+}
