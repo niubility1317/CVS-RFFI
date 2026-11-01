@@ -1,0 +1,227 @@
+{
+  "status": "COMPLETE_SOURCE_ONLY_PROX_ORACLE_DIAGNOSTIC",
+  "commit": "abdfc0525ae11bbf13deab2a34a8a33d1347af0a",
+  "model_sha256": "5f23bc370ea445dbffe21e1a125f1066321a9df46a1c90e0b617648255323642",
+  "scenes": {
+    "practical_high": {
+      "count": 64,
+      "valid_count": 60,
+      "mean_action_relative_mse": 0.004780817311257124,
+      "mean_predicted_action_observation_mse": 0.006550082005560398,
+      "mean_oracle_action_observation_mse": 0.0020201646257191896,
+      "parent": {
+        "correct": 60,
+        "mean_iq_nmse": 0.024204615503549576
+      },
+      "pred_0.1": {
+        "correct": 60,
+        "mean_iq_nmse": 0.02398274838924408
+      },
+      "pred_1.0": {
+        "correct": 60,
+        "mean_iq_nmse": 0.02384680137038231
+      },
+      "pred_10.0": {
+        "correct": 60,
+        "mean_iq_nmse": 0.03060338646173477
+      },
+      "true_0.1": {
+        "correct": 60,
+        "mean_iq_nmse": 0.01958516612648964
+      },
+      "true_1.0": {
+        "correct": 60,
+        "mean_iq_nmse": 0.019876303151249886
+      },
+      "true_10.0": {
+        "correct": 60,
+        "mean_iq_nmse": 0.0289850402623415
+      }
+    },
+    "practical_mid": {
+      "count": 64,
+      "valid_count": 61,
+      "mean_action_relative_mse": 0.006339691579341888,
+      "mean_predicted_action_observation_mse": 0.019470378756523132,
+      "mean_oracle_action_observation_mse": 0.014001225121319294,
+      "parent": {
+        "correct": 61,
+        "mean_iq_nmse": 0.01901351287961006
+      },
+      "pred_0.1": {
+        "correct": 60,
+        "mean_iq_nmse": 0.04485562443733215
+      },
+      "pred_1.0": {
+        "correct": 60,
+        "mean_iq_nmse": 0.030495580285787582
+      },
+      "pred_10.0": {
+        "correct": 57,
+        "mean_iq_nmse": 0.02749871276319027
+      },
+      "true_0.1": {
+        "correct": 60,
+        "mean_iq_nmse": 0.03669865429401398
+      },
+      "true_1.0": {
+        "correct": 59,
+        "mean_iq_nmse": 0.024075359106063843
+      },
+      "true_10.0": {
+        "correct": 57,
+        "mean_iq_nmse": 0.02531600557267666
+      }
+    },
+    "practical_low_suburban": {
+      "count": 64,
+      "valid_count": 61,
+      "mean_action_relative_mse": 0.014412096701562405,
+      "mean_predicted_action_observation_mse": 0.05409809201955795,
+      "mean_oracle_action_observation_mse": 0.04319573566317558,
+      "parent": {
+        "correct": 59,
+        "mean_iq_nmse": 0.0425482876598835
+      },
+      "pred_0.1": {
+        "correct": 57,
+        "mean_iq_nmse": 0.1592549830675125
+      },
+      "pred_1.0": {
+        "correct": 57,
+        "mean_iq_nmse": 0.09302255511283875
+      },
+      "pred_10.0": {
+        "correct": 59,
+        "mean_iq_nmse": 0.050625577569007874
+      },
+      "true_0.1": {
+        "correct": 56,
+        "mean_iq_nmse": 0.1117505133152008
+      },
+      "true_1.0": {
+        "correct": 58,
+        "mean_iq_nmse": 0.06360773742198944
+      },
+      "true_10.0": {
+        "correct": 59,
+        "mean_iq_nmse": 0.04544205218553543
+      }
+    },
+    "practical_high_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "mean_action_relative_mse": 0.008970670402050018,
+      "mean_predicted_action_observation_mse": 0.024760328233242035,
+      "mean_oracle_action_observation_mse": 0.01615065522491932,
+      "parent": {
+        "correct": 61,
+        "mean_iq_nmse": 0.026452314108610153
+      },
+      "pred_0.1": {
+        "correct": 61,
+        "mean_iq_nmse": 0.06139840930700302
+      },
+      "pred_1.0": {
+        "correct": 60,
+        "mean_iq_nmse": 0.03949872776865959
+      },
+      "pred_10.0": {
+        "correct": 60,
+        "mean_iq_nmse": 0.03392549976706505
+      },
+      "true_0.1": {
+        "correct": 59,
+        "mean_iq_nmse": 0.0413750559091568
+      },
+      "true_1.0": {
+        "correct": 59,
+        "mean_iq_nmse": 0.02873188443481922
+      },
+      "true_10.0": {
+        "correct": 60,
+        "mean_iq_nmse": 0.030934829264879227
+      }
+    },
+    "practical_mid_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "mean_action_relative_mse": 0.01946903020143509,
+      "mean_predicted_action_observation_mse": 0.12496885657310486,
+      "mean_oracle_action_observation_mse": 0.11436775326728821,
+      "parent": {
+        "correct": 57,
+        "mean_iq_nmse": 0.05285666137933731
+      },
+      "pred_0.1": {
+        "correct": 53,
+        "mean_iq_nmse": 0.35932493209838867
+      },
+      "pred_1.0": {
+        "correct": 55,
+        "mean_iq_nmse": 0.13714918494224548
+      },
+      "pred_10.0": {
+        "correct": 58,
+        "mean_iq_nmse": 0.06372296810150146
+      },
+      "true_0.1": {
+        "correct": 50,
+        "mean_iq_nmse": 0.3294220268726349
+      },
+      "true_1.0": {
+        "correct": 58,
+        "mean_iq_nmse": 0.1257912665605545
+      },
+      "true_10.0": {
+        "correct": 59,
+        "mean_iq_nmse": 0.05954677239060402
+      }
+    },
+    "practical_low_urban": {
+      "count": 64,
+      "valid_count": 63,
+      "mean_action_relative_mse": 0.03917911276221275,
+      "mean_predicted_action_observation_mse": 0.2068319320678711,
+      "mean_oracle_action_observation_mse": 0.1882084459066391,
+      "parent": {
+        "correct": 59,
+        "mean_iq_nmse": 0.08946338295936584
+      },
+      "pred_0.1": {
+        "correct": 45,
+        "mean_iq_nmse": 0.6578450798988342
+      },
+      "pred_1.0": {
+        "correct": 53,
+        "mean_iq_nmse": 0.2934666574001312
+      },
+      "pred_10.0": {
+        "correct": 59,
+        "mean_iq_nmse": 0.10718557238578796
+      },
+      "true_0.1": {
+        "correct": 47,
+        "mean_iq_nmse": 0.5860514044761658
+      },
+      "true_1.0": {
+        "correct": 56,
+        "mean_iq_nmse": 0.24760586023330688
+      },
+      "true_10.0": {
+        "correct": 59,
+        "mean_iq_nmse": 0.09726530313491821
+      }
+    }
+  },
+  "probe_ids": 384,
+  "known_simulator_action": true,
+  "known_action_not_deployable": true,
+  "same_initial_blind_posterior": true,
+  "source_only": true,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Simulator action and paired ground IQ used for source diagnosis only; ground F pseudo targets are not truth; source IDs seen in other views; not an accuracy upper bound."
+}
