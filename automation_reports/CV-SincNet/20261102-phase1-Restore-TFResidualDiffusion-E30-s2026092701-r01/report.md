@@ -1,9 +1,11 @@
 # 时频联合Transformer条件残差扩散恢复网络
 
+**六景0/6，clean85.913690%。** cross_rx clean净变化-821，cross_both净变化-229。完整目标未达到，保持 ACTIVE 和默认 DURA。[完整结果](analysis.md)。
+
 - run_id：`20261102-phase1-Restore-TFResidualDiffusion-E30-s2026092701-r01`
 - group_id：`restoration-time-frequency-residual-diffusion-single30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（真实源训练已开始，完整性能待原Main七景）
+- 当前登记状态：ANALYZED（原Main完整七景与独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原Main168000×七景完整，六景0/6，两个clean总体存在损伤。详见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -65,3 +67,8 @@ VERIFIED / RUNNING。源Ls2真实G/F0无更新smoke通过，固定15调用sample
 ## 新时频扩散已冻结 final30
 
 VERIFIED / SOURCE_COMPLETE / Main性能PENDING。完整30轮/7410更新，训练593.290977秒，worker597.716530秒，轮时中位数19.699457秒，峰值2509.326172MiB。全30结构化日志与stdout一致、源draw/L-U曝光/LR/sigma统计/加权loss复算PASS，30技术快照及E30模型-优化器-CPU/CUDA RNG保存，final同E30逐tensor一致；0TX/V/OE/target更新/F0更新。源误差是加噪residual单步去噪输出，不是部署15调用sampler质量。已固定final30并自动进入原Main七景队列，当前不宣称正式性能达标。
+
+
+## 时频残差扩散完整七景完成
+
+VERIFIED / ANALYZED。全G从零单阶段30/7410，训练每记录1denoiser，部署固定15调用，两个Main总体各七景全部预测后独立truth-last；4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对/868相对clean配对复算PASS，最大指标差1.2e-14、raw/DURA判决差0。60完整训练日志/stdout/源顺序draw/LR/加权loss/每轮sigma统计、scratchE0/15调用配置/骨干更新、30技术快照存在与E30-final一致性核实。完整目标未达到，保持 ACTIVE 和默认 DURA。

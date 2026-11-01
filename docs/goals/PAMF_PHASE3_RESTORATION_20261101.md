@@ -344,3 +344,11 @@ VERIFIED / RUNNING。源Ls2真实G/F0无更新smoke通过，固定15调用sample
 整体Fclean一致率第4步90.869141%→末步87.294922%，低档城区69.428969%→62.465181%，对应同条一致判决净减少366/10240和100/1436；低档城区IQ NMSE .14207185→.25313855。第1步到末步的总变化另列，不能笼统声称每步改善或全面退化。训练单步noised-clean误差与实际sampler测量不同，不作同条件质量对比。源内轨迹不等于TX准确率、跨RX泛化或理论上限，不能借此热改正在测试的完整采样版本。
 
 全92160行/108组/首步与received配对独立复算PASS，最大误差0，原source面板顺序/draw/scene-lock/既有Fclean参考差0；worker23.809560秒、GPU6 live快照已捕获，exit0/liveempty。图、完整分组和边界见analysis.md。后续可独立检验部署尺度训练覆盖与缩短采样，需新预登记及完整Main，不据目标成绩选step。原Main六景3pp+两个clean保持为主线，默认DURA与目标ACTIVE保持。
+
+## 时频残差扩散原 Main 七景完成（2026-11-02）
+
+`20261102-phase1-Restore-TFResidualDiffusion-E30-s2026092701-r01`，实际代码`5e5921c975678367a5d0a00ee72d4619e5f6927e`。全新联合时频Transformer/条件残差扩散，从零单阶段30/7410，1614608参数，训练1denoiser/记录、部署固定8步Heun共15调用，无DURA/旧G祖先。原Ls6300Us56700/R07/源顺序draw/LR保持，F0仅连续特征指导，0TX/V/OE/target更新或选模，OE仅冻结诊断。
+
+原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景全部预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对/868相对clean配对复算PASS，最大差1.2e-14、raw/DURA判决差0，60完整日志及源顺序/LR/加权loss/噪声统计/从零E0/30快照与E30-final核实。
+
+六景依次73.621429/71.008333/68.463095/70.593452/58.003571/48.688095%，达标0/6，相对DURA依次-10.722024/-12.007738/-12.858929/-12.455952/-17.702381/-20.113095个百分点；clean85.913690%，cross_rx净变化-821、cross_both净变化-229。完整分组与双向纠错见analysis.md。新训练曲线是加噪residual单步输出，含clean信息，与完整部署sampler不同，不能把低训练误差视作恢复性能。系统比较不冒充同E0/同计算量单因素，静态MAC与FFT不冒充实测时延。完整目标未达到，保持 ACTIVE 和默认 DURA。
