@@ -1,0 +1,9 @@
+{
+  "status": "VERIFIED_COUNTS",
+  "primary_sha256": "c44c2cf943c463294b0d175fa3b762d49a019c8d44800dbb445940d337f75272",
+  "replay_sha256": "ff1c99a39a4d8e208f089afc2bbcd9e242a17d20b6484babe85520b8d5d70048",
+  "exact_bytes": false,
+  "pseudo_correct_counts_equal": true,
+  "counts_differences": [],
+  "caveat": "GPU retraining produces small numerical differences; source-only pseudo targets and previously observed source views."
+}
