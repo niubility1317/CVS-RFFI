@@ -1,0 +1,130 @@
+{
+  "status": "SOURCE_ONLY_HELDOUT_THRESHOLD_PROBE",
+  "checkpoint_epoch": 14,
+  "checkpoint_sha256": "df5893f3358580b663c87cadc586eca5ea1ff9cd6caf850e7b23698a2ae75496",
+  "source_ids": 4096,
+  "train_ids": 2456,
+  "validation_ids": 820,
+  "heldout_ids": 820,
+  "source_L_s_ids": 1024,
+  "source_U_s_ids": 3072,
+  "thresholds": [
+    0.95,
+    0.9,
+    0.8,
+    0.7,
+    0.6,
+    0.5
+  ],
+  "validation": [
+    {
+      "threshold": 0.95,
+      "accepted": 0,
+      "net": 0,
+      "clean_net": 0,
+      "clean_count": 820
+    },
+    {
+      "threshold": 0.9,
+      "accepted": 2,
+      "net": 0,
+      "clean_net": 0,
+      "clean_count": 820
+    },
+    {
+      "threshold": 0.8,
+      "accepted": 5,
+      "net": 1,
+      "clean_net": 0,
+      "clean_count": 820
+    },
+    {
+      "threshold": 0.7,
+      "accepted": 17,
+      "net": 4,
+      "clean_net": 0,
+      "clean_count": 820
+    },
+    {
+      "threshold": 0.6,
+      "accepted": 29,
+      "net": 1,
+      "clean_net": 0,
+      "clean_count": 820
+    },
+    {
+      "threshold": 0.5,
+      "accepted": 33,
+      "net": -3,
+      "clean_net": 0,
+      "clean_count": 820
+    }
+  ],
+  "selected": {
+    "kind": "verified_candidate",
+    "threshold": 0.7,
+    "validation_net": 4
+  },
+  "heldout": [
+    {
+      "view": 1,
+      "mixed_reference": {
+        "count": 795,
+        "accepted": 3,
+        "before": 766,
+        "after": 765,
+        "repairs": 1,
+        "damages": 2,
+        "L_s_count": 205,
+        "L_s_reference_before": 197,
+        "L_s_reference_after": 197
+      },
+      "teacher_confident_U_count": 590
+    },
+    {
+      "view": 20,
+      "mixed_reference": {
+        "count": 795,
+        "accepted": 6,
+        "before": 764,
+        "after": 762,
+        "repairs": 2,
+        "damages": 4,
+        "L_s_count": 205,
+        "L_s_reference_before": 195,
+        "L_s_reference_after": 194
+      },
+      "teacher_confident_U_count": 590
+    }
+  ],
+  "clean_holdout": {
+    "teacher": {
+      "count": 820,
+      "accepted": 0,
+      "before": 818,
+      "after": 818,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_count": 205,
+      "L_s_reference_before": 204,
+      "L_s_reference_after": 204
+    },
+    "L_s_truth": {
+      "count": 205,
+      "accepted": 0,
+      "before": 204,
+      "after": 204,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_count": 205,
+      "L_s_reference_before": 204,
+      "L_s_reference_after": 204
+    }
+  },
+  "source_L_s_labels_materialized": 6300,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "truth_read_after_proposals": true,
+  "caveat": "Source threshold selection only; E14 parent model saw the source records. U_s targets are high-confidence clean-teacher pseudo-labels. This is an exploratory comparison on source IDs also used in an earlier gate probe."
+}
