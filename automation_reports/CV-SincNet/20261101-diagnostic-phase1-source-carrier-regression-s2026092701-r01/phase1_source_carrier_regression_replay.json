@@ -1,0 +1,74 @@
+{
+  "heldout": {
+    "clean": {
+      "valid_count": 280,
+      "L_s_count": 68,
+      "U_confident_count": 212,
+      "baseline": 280,
+      "student": 280,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_baseline": 68,
+      "L_s_student": 68
+    },
+    "practical_low_suburban": {
+      "valid_count": 280,
+      "L_s_count": 68,
+      "U_confident_count": 212,
+      "baseline": 269,
+      "student": 270,
+      "repairs": 1,
+      "damages": 0,
+      "L_s_baseline": 65,
+      "L_s_student": 65
+    },
+    "practical_mid_urban": {
+      "valid_count": 280,
+      "L_s_count": 68,
+      "U_confident_count": 212,
+      "baseline": 261,
+      "student": 262,
+      "repairs": 1,
+      "damages": 0,
+      "L_s_baseline": 63,
+      "L_s_student": 63
+    },
+    "practical_low_urban": {
+      "valid_count": 280,
+      "L_s_count": 68,
+      "U_confident_count": 212,
+      "baseline": 244,
+      "student": 246,
+      "repairs": 2,
+      "damages": 0,
+      "L_s_baseline": 60,
+      "L_s_student": 60
+    }
+  },
+  "heldout_clean_teacher_net": 0,
+  "source_ids": 288,
+  "quality": {
+    "clean": {
+      "correlation_weighted_before": 1.958460273954188e-07,
+      "correlation_weighted_after": 1.958460273954188e-07,
+      "applied": 0
+    },
+    "practical_low_suburban": {
+      "correlation_weighted_before": 0.0014433362521231174,
+      "correlation_weighted_after": 0.0014646797208115458,
+      "applied": 288
+    },
+    "practical_mid_urban": {
+      "correlation_weighted_before": 0.004848172888159752,
+      "correlation_weighted_after": 0.004887019284069538,
+      "applied": 288
+    },
+    "practical_low_urban": {
+      "correlation_weighted_before": 0.005005208775401115,
+      "correlation_weighted_after": 0.005039379466325045,
+      "applied": 288
+    }
+  },
+  "test_IQ_reads": 0,
+  "predictions_before_source_tx_labels": true
+}
