@@ -1,0 +1,13 @@
+{
+  "G_parameters": 1614608,
+  "core_real_MAC": 176971776,
+  "deployed_denoiser_calls": 7,
+  "deployed_real_MAC": 1238802432,
+  "deployed_complex_FFT256": 21,
+  "CG_steps": 0,
+  "new_training_epochs": 0,
+  "ancestral_G_training_epochs": 30,
+  "static_MAC_not_measured_latency": true,
+  "source": "Samefixedcorestaticcount;samplingcallsactualtestverified",
+  "precision": "FP32 TF32off"
+}

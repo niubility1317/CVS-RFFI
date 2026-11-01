@@ -1,0 +1,192 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01",
+  "group_id": "restoration-diffusion-source-motivated-fixes",
+  "display_name": "冻结扩散第4去噪读出：原Main七景独立推理对照",
+  "description": "根据合法源轨迹固定第4denoised读出，7core；原G权重不变/0新训练，自动完整Main2pop7/四路预测后truth-last。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "source-only-hypothesis",
+    "automatic-Main7",
+    "frozen-early-readout"
+  ],
+  "comparison_group_id": "frozen-full8-control/source-defined-early4-vs-sigma-coverage",
+  "parent_run_ids": [
+    "20261102-phase1-Restore-TFResidualDiffusion-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "3e5ecb4ffcc5658693bd9b6dc509711b4509a231",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32 TF32off/CPUthreads2;actualoriginalTriSSL F0 3ff8 defaulthead",
+    "cwd": "releases/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "OriginalR07FP32clean/receivedIQ2x256 unchanged;noisedresidual=(clean-received)+sigma*independentN(0,I)onlyduringtraining. DeploymentfixedGaussianlatentandeachsingleoriginalreceived;outputlearnedpower/nohardprojection.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "VALIDATED_ONCE handles reused. R07 complete20/63000/0TX-target;roles andIDs compatible. This cachecapsule isminimaloriginalsourceIDcheck,notincorrectclaimR07 IQisG10. F0targets recomputedfromactualR07clean eacharm.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "OriginalLs6300Us56700 IQonly/TXhidden. F0sourcecleancontinuous160features loss-only. AdditionalrawRMS/sourcecleanRMSanchor usesdetachedsameclean,noV/OE/novel/target. No extra augmentation.",
+    "augmentation": "OriginalR07fs25MHz/fc2.462GHz/post_sync/noEQ/reflect/refSNR30/receiver2026101911/sixuniform85%+clean15%,20independentstoredtrainviews,then10repeats;notG10MIX01. Newshuffle RNG2026110102,matchedbotharms. Mainobservationsunchanged/no RMS."
+  },
+  "permissions": {
+    "regime": "frozen-source-trained-G-inference-only",
+    "query_use": "Onlyfrozenper-recordMaininference;0newtraining/adaptation/stepselection/queryfit. Source2smoke beforetarget. NoTX/V-OE-novel-targetIQtraining. ExistingG/F0source-only ancestry retained.",
+    "external_method_exception": null,
+    "claim_scope": "SamefixedGweights/inheritedscratch30cost,notnewfromscratchnetwork. Sourceexploratorydiagnosisselectedglobalreadout4;no per-scene/query selection orMain feedback. FullMainactualTXrequired."
+  },
+  "checkpoint": {
+    "initialization": "FrozenstrictloadoriginalsourceGfinal30,1614608parameters;0newGtraining/0updates. Totalmodelancestraltraining30/7410 plusF0/sourcegeometrycost.",
+    "sources": [
+      "FROZENINFERENCEONLYoriginalTFResidualDiffusion/5e5921c975678367a5d0a00ee72d4619e5f6927e/scratch30-7410/sourceonly/1614608/no new G training",
+      "OriginalTriSIGSSL3ff8/E50-11100/232993/main3view-s2026092701/defaulthead/sourceonly392005",
+      "DATAONLYR07originalLs6300Us56700/20draw+repeat1..10/noV-OE-targettraining",
+      "DATAONLYf57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9/original63000F0sourcefeaturevariance",
+      "SOURCEBASISONLY20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01/1a7434baa2c579e78fc1119cb09c24a0ae6512b4/92160rows108groups/0TX-target/0updates",
+      "EVALONLYfixedfull8/5e5921c975678367a5d0a00ee72d4619e5f6927e/originalMain2pop7/no targetfeedback"
+    ],
+    "contract_check_ref": "OriginalsourceIDrolecheck/strict3ff8F0 reused;variancecalibrationrequiresoriginalF0identity/63000/sourceonly/0TX-V-OE-target-updates/positivefiniteflooredscale. Ownnewarm-config-commit-final30-7410 strictstate. No datarehash.",
+    "provenance_verdict": "SamelegaloriginalsourceG/F0/data-contract and frozen weights;new inferencealgorithm only,notnewtraining. GroundTriSIGSSLMain remainsprimary.",
+    "selection_rule": "Globalfourthdenoisedreadoutfixedaftersource-onlyexploratorytrajectory;notpreclaimedblindselection. 7core/record,0newweights or target-dependentchoices. AllMain2pop7 beforetruth."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/diffusion-early4-evaluation",
+    "gpu_policy": "GPU4only/free>=12000MiB/existingcompute<=2/addONEtotal<=3/oneownNN. Parentfull8alreadytechnicallycomplete;SigmaMixon6,globalownNN<=2;othersuntouched.",
+    "remote_run_root": "runs/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01",
+    "remote_log_root": "runs/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.diffusion_early_eval run --root /home/szu2070436088/2510044040/CV-SincNet --commit 3e5ecb4ffcc5658693bd9b6dc509711b4509a231 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Parentincomplete/wrongG-F0-config/source-collision/nonfinite/illegalcoverage/statechange/workerfailure:preserve/noautoretry. Firstsource2actualG-F0+exactfourthreadoutPASSthenallMain. Noqualityskip."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "OriginalgroundTriSIGSSLMain2pop7/sixeachgap<=3pp/combinedthreshold140345correct83.538690476%/bothcleanpreserved",
+      "Eachpopulation-and-combinedaccuracy-MacroF1-confusion/TX-RX-day-RXday/repair-damage-net/Fcleanagreement/allpredictionsbeforeCPUtruthlast",
+      "56predictioncells/4streams raw-DURA-full8-exactreuse+early4fresh/source2exactreadout/0modelupdates/inherited30trainingcost",
+      "1614608params/7core/1238802432realMAC+21complexFFT256/0newtraining/notmeasuredlatency"
+    ],
+    "dimensions": [
+      "originalMaincross_rx126000/cross_both42000x7",
+      "allscene/TX-RX-day-RXday/sameIQ-ID",
+      "source-onlyglobalreadout4",
+      "oneactualmodelseed2026092701"
+    ],
+    "prediction_ref": "Eachrow newcandidateactualG+sameF0 onallofficialIQ;raw/DURA exactr03predreusewithsameIDs. Completebothpop beforeCPUtruth.",
+    "scorer_ref": "Originalpamf_repl_view_shuffle.evaluation.score independentCUDAemptyCPU/allreadoutsalltasks preflightbeforetruth;sharedoriginalTFscore.lock;no sourcecandidatefeedback"
+  },
+  "rows": [
+    {
+      "row_id": "TF_DiffusionEarly4",
+      "method": "TF_DiffusionEarly4",
+      "purpose": "Freeze source-chosen readout4;evaluate real TX effect without retraining",
+      "config_ref": "experiments/pamf_phase3_restoration/diffusion_early_eval.py::FrozenEarly4",
+      "resolved_config_ref": "runs/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01/rows/TF_DiffusionEarly4/prediction/cross_rx/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "No new RNG in inference;parentGmodel2026092701/savedlatent2026110204/sourceR07seeds andMainreceived2027. Globalreadout4 fixedsource-only.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newGtraining;reuse30-7410sourceG/fullF0ancestry. Fourthdenoisedreadout=7core/record;full8/raw/DURAexactpredreuse,early4freshallMain.",
+      "output_root": "runs/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01/rows/TF_DiffusionEarly4",
+      "log_path": "runs/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01/logs/TF_DiffusionEarly4-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.diffusion_early_eval predict --root /home/szu2070436088/2510044040/CV-SincNet --commit 3e5ecb4ffcc5658693bd9b6dc509711b4509a231 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm TF_DiffusionEarly4 --task cross_rx",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Sourcehypothesisfrom92160pathrows/108groupsindependentPASS0error:step4 overallFclean90.869141%vsfinal87.294922%;lowurban69.428969%vs62.465181%,IQ.14207185vs.25313855. NotTXaccuracy/targetscore/unknownidentityproof.",
+    "Source-onlydiagnosisledtofixedearly4and50percentdeploymentsigmatraininghypotheses before reading currentMain detailed groups/mistakes. Benchmarkalreadyexposed;no newblindholdoutclaim. Currentfull8resultpreserved;nohotchangeorselectivererun.",
+    "A isfrozeninferenceevaluation/reusesfixedscratch30weights,notnewfromscratchmodel. B independentlytrainsallGfromscratchsingle30;theyseparate inference-taildamage fromtraining-sigma coverage. No outcome-dependentcombination ofbothfixes.",
+    "5focusedchecksPASS/oneP0P1PASSforeachcandidate. No designapproval/hashchain/datavalidationrepeat. Actualsource2checkpoint noquerysmoke-first,then automaticwholematrix.",
+    "PinA-GPU4/B-GPU6;eachoneNN/global<=2/admitfree12GB-existing<=2-add1total<=3;allotherownersuntouched. SharedoriginalCPUtruthlock;allrowpredictionsfixedbeforeindependentscore.",
+    "F-guidedancestryoriginalF0/3ff8/source63000/R07/sourcefeaturevariance,0TX-logits-CE-newhead/V-OE-novel-targetupdatesorselection/OEonlyfrozendiagnostic. DefaultDURAunchanged/goalACTIVE/performanceprimary.",
+    "Globalfourthdenoisedreadout equals source trajectory[3];first3Heuncorrections+fourthdenoiser=7calls. No fourthcorrection/final8/no best-of-query. F0only downstream;noF0/clean/truechannel-SNR/batchstats insideG."
+  ],
+  "record_type": "diagnostic",
+  "registered_at": "2026-11-01T18:00:44+00:00"
+}
