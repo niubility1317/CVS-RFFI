@@ -25,7 +25,7 @@
   "code": {
     "commit": "6f042d472a827985a254fd0951d878bf312688b2",
     "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
-    "environment": "N607 CVS-RFFI Python GPU0 if idle, two CPU threads",
+    "environment": "N607 CVS-RFFI Python CPU, two CPU threads",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
   },
   "data": {
@@ -81,13 +81,13 @@
     "selection_rule": "RX4/6 source cache19 pseudo-target vs DURA: per-cell loss <=max(1,ceil(.5% valid)), clean IQ <= DURA+.001, impaired IQ <=1.2*DURA+1e-6, aggregate impaired net >=10; epochs1/3/5, alpha .5/1 in aligned coordinates, gate threshold .8/.99; RX8 heldout not used"
   },
   "execution": {
-    "host": "N607 GPU0",
-    "launch_owner": "Codex phase-shift independent restorer single owner",
-    "gpu_policy": "GPU0 only if idle; one worker, two CPU threads",
+    "host": "N607 CPU",
+    "launch_owner": "Codex phase-shift independent restorer single CPU owner",
+    "gpu_policy": "CPU only; CUDA disabled; one worker, two CPU threads",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-phase-shift-student-s2026092701-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-phase-shift-student-s2026092701-r01.log",
     "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-phase-shift-student-s2026092701-r01",
-    "launch_command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-phase-shift-student-s2026092701-r01-release/experiments/phase1_phase_shift_restorer/phase_shift_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-phase-shift-student-s2026092701-r01 --commit 6f042d472a827985a254fd0951d878bf312688b2 --device cuda:0",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-phase-shift-student-s2026092701-r01-release/experiments/phase1_phase_shift_restorer/phase_shift_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-phase-shift-student-s2026092701-r01 --commit 6f042d472a827985a254fd0951d878bf312688b2 --device cpu",
     "stop_rule": "Stop only for provenance, role, output collision, nonfinite or technical execution failure; preserve partial results"
   },
   "expected_artifacts": [
@@ -139,7 +139,7 @@
       "budget_ref": "47143 source training IDs gate-active subset batch32 five epochs; 7840 RX4/6 source selection and 3921 RX8 heldout",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-phase-shift-student-s2026092701-r01",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-phase-shift-student-s2026092701-r01.log",
-      "command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-phase-shift-student-s2026092701-r01-release/experiments/phase1_phase_shift_restorer/phase_shift_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-phase-shift-student-s2026092701-r01 --commit 6f042d472a827985a254fd0951d878bf312688b2 --device cuda:0",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-phase-shift-student-s2026092701-r01-release/experiments/phase1_phase_shift_restorer/phase_shift_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-phase-shift-student-s2026092701-r01 --commit 6f042d472a827985a254fd0951d878bf312688b2 --device cpu",
       "expected_artifacts": [
         "source_smoke/result.json",
         "source/checkpoint_epoch01.pt",
