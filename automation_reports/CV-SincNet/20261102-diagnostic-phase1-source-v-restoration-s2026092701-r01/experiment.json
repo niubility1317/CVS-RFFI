@@ -83,7 +83,7 @@
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01.log",
     "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01",
-    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01-release/experiments/phase1_v_restoration_diagnostic/phase1_source_v_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01 --commit e0fdb622c58e25943b9f66f4c57a014ff23758dc",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01-release/experiments/phase1_v_restoration_diagnostic/phase1_source_v_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01 --commit e0fdb622c58e25943b9f66f4c57a014ff23758dc",
     "stop_rule": "Only role/ID/provenance violation, output collision, nonfinite result or technical failure; do not stop for poor performance"
   },
   "expected_artifacts": [
@@ -135,7 +135,7 @@
       "budget_ref": "4096 V IDs; no optimizer or model updates",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01-release/experiments/phase1_v_restoration_diagnostic/phase1_source_v_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01 --commit e0fdb622c58e25943b9f66f4c57a014ff23758dc",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01-release/experiments/phase1_v_restoration_diagnostic/phase1_source_v_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01 --commit e0fdb622c58e25943b9f66f4c57a014ff23758dc",
       "expected_artifacts": [
         "source_smoke.json",
         "prediction/complete.json",
@@ -148,7 +148,8 @@
   "notes": [
     "V role remains a single validation role and is not split into method roles; sampled IDs do not update any model or persistent statistics.",
     "Predictions for all views are sealed before scorer reads V y; labels are not read by predictor.",
-    "No target IQ or truth; independent source V evaluation is not an independent blind target test."
+    "No target IQ or truth; independent source V evaluation is not an independent blind target test.",
+    "发布前纠正登记命令中的本机解释器路径；尚未启动诊断，代码与数据规则不变。"
   ],
   "registered_at": "2026-11-01T16:23:16+00:00"
 }
