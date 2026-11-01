@@ -221,3 +221,9 @@ CPU控制器已独立核实PID/CWD/命令/CUDA空、WAIT_PARENT_COMPLETE，当�
 `20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01`，实际代码1b8b3625a3d7eb043129c034ad8639504b8576fa。原FeatureCond/c865/30-7410和原F0/defaulthead冻结；原R07 Ls128/Us384固定512包×20draw=10240相关案例。正常/zero-feature/无FiLM/sourceclean特征oracle/raw投影前五IQ路径及latent全部完成，复用旧source-style/ac801 identity DURA/Full源控制，不新增Main/V/OE/target推理或训练。3测试/一次P0P1/真实Ls2actual-latent-raw精确重放PASS，worker/controller结束0，模型state不变，独立预测/配对/20draw/源控制/均值复算PASS（差0）。
 
 低档城区Fclean一致率正常88.718663%、zero特征29.874652%、无FiLM28.899721%、预测latent86.559889%、sourceclean特征oracle97.493036%（修复129/损伤3/净126）；IQ NMSE正常.071576/oracle.066893。条件确已使用；cleanoracle额外信息和off-support输入不代表可达上限或TX准确率。raw平均复功率75.827557，低档城区88.494702，实际输出单位功率；投影前尺度未被独立训练，不直接切换部署。下一项源端假设只加强连续latent回归权重.1→1，结构/源顺序/优化器/预算保持，另建scratch单阶段30对照并自动原Main七景。当前Main0/6负结果、默认DURA和完整性能目标ACTIVE保持；效率次级。
+
+## 连续源特征回归权重1对照已运行（2026-11-01）
+
+`20261101-phase1-Restore-FeatureStrong-E30-s2026092701-r01`，实际代码`3e5416df5b13dfcf9e16995988e988c5494f68b2`，结构/4670178参数/260546560实数MAC和原FeatureCond相同，唯一科学变化为连续latent回归权重.1→1；IQ/输出F指导/全局clip1/单位功率/源顺序/30-7410全部保持。实际E0与原FeatureCond逐张量一致，G从零单阶段无旧G祖先，源F0特征loss-only，部署只IQ，无TX/logits/CE/新身份头/V-OE-target训练或选模，默认DURA保持。
+
+3针对性检查/一次P0P1及真实Ls2F0G梯度/E0严格重载PASS；首轮247更新完成，E01模型/优化器/RNG及同源初值独立CPU读回PASS。GPU4准入free23482MiB/原1compute/只新增1个，PID-CWD-CUDA-GPU与日志增长核实，其他owner不改。固定final30后自动原Main168000×七景/全部预测后独立truth-last；当前正式性能PENDING，六景3pp+clean目标ACTIVE，效率次级。

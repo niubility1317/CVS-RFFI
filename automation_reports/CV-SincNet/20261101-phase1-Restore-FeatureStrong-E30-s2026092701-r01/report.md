@@ -39,3 +39,7 @@
 固定final30后自动原Main cross_rx126000及cross_both42000各七景，所有42单元预测固定后独立CPU truth-last/原共享锁。原raw/DURA同IQ-ID预测精确复用，新G全量推理。逐景至少140345/168000正确=83.538690%，距raw clean86.538690%≤3pp且保持clean；源指标不取消测试，默认DURA不变。旧FeatureCond仅冻结对照，无权重继承。
 
 3项针对性检查及一次P0/P1通过，真实Ls2 smoke/E0严格重载为launcher第一步。静态推理结构完全相同，复用260546560实数Conv/Linear/attention MAC（含QKV/out/QK/AV）、0FFT/CG；排除F0、norm、activation、softmax、FiLM逐点、插值、投影和内存，不是实测时延。N607原CVS-RFFI/Torch2.1+cu121/FP32-TF32off，GPU4/6 UUID准入free>=12GB、原compute<=2，只新增1条本任务NN/单卡总<=3，其他owner不改。固定所有30恢复文件仅技术用途，不据测试或源质量选checkpoint。
+
+## 启动后独立读回
+
+VERIFIED / RUNNING。实际Ls2源F0/G梯度、单位投影初值、encoder/regressor参与及严格E0重载PASS。首轮247更新完成（65.016343秒），E01的模型/优化器/CPU-CUDA RNG独立CPU加载PASS；输出功率平均绝对误差5.8e-08。GPU4准入余量23482MiB、已有1个compute，仅新增1个本任务GPUworker，PID/CWD/命令/CUDA/GPU及进度增长核实，其他owner保持。当前只源训练，无正式性能结果。
