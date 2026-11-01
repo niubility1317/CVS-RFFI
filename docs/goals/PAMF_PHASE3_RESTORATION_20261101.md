@@ -287,3 +287,7 @@ VERIFIED / RUNNING：12重点相关检查/一次P0P1、真实源2训练梯度与
 `20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01`，代码`128cc49df04f346f29c93d8173192cc56bd3bd77`。两版固定final30原source512×20，各4步共81920轨迹行；源2轨迹末步逐值等于实际G.forward、F0/defaulthead检查PASS，G/F0终态不变，0训练/新头/TX/V/OE/目标IQ-truth或选模。只等父Main技术完成、不读其分数后运行，不阻塞/热改两版。
 
 DirectBridge低档城区Fclean一致率84.749304%→84.749304%，相对首步净变化+0；StateBridge低档城区Fclean一致率86.350975%→81.615599%，相对首步净变化-68。这些是源训练面板F(clean)一致，不是TX准确率、目标泛化或理论上限；原Main六景3pp+clean仍主线，默认DURA保持。独立全81920行/96组/配对复算PASS，误差0，旧源Fclean参考差异{'DirectBridge': 0, 'StateBridge': 0}单列非门槛；实时workerGPU快照捕获=True，完整产物与进程结束核实。图表/完整组/证据边界见analysis.md。
+
+## 九个新恢复器的原 Main 同口径性能核对
+
+只复用九版完整公开结果及固定raw/DURA，同一原地面Tri-SIG-TIME SSL/defaulthead、Main168000×七景，按研发顺序汇总，不排序选模或拼接最佳场景。正确数、六景3pp差距和两个clean总体分列；新神经前向/训练或目标原始数据/真值读取均0。准确率保留比例不作波形恢复率或理论上限，原默认DURA和完整目标ACTIVE保持。见[性能核对](../PAMF_RESTORATION_MAIN_PERFORMANCE_AUDIT_20261101.md)及同名JSON/CSV。

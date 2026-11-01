@@ -1,0 +1,882 @@
+{
+  "status": "PUBLISHED_RESULTS_ONLY",
+  "baseline_F0": "Original full Tri-SIG-TIME SSL/3ff8/E50-11100/defaulthead",
+  "split": "Main/126000 cross_rx+42000 cross_both",
+  "count": 168000,
+  "raw_clean_correct": 145385,
+  "raw_clean_accuracy": 86.53869047619047,
+  "each_scene_threshold_correct": 140345,
+  "each_scene_threshold_accuracy": 83.53869047619048,
+  "rows": [
+    {
+      "name": "Raw received",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145385,
+          "accuracy": 86.53869047619048,
+          "raw_clean_gap_pp": 0.0,
+          "clean_accuracy_retention_percent": 100.0
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 135434,
+          "accuracy": 80.61547619047619,
+          "raw_clean_gap_pp": 5.923214285714295,
+          "clean_accuracy_retention_percent": 93.15541493276473
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 131221,
+          "accuracy": 78.10773809523809,
+          "raw_clean_gap_pp": 8.430952380952391,
+          "clean_accuracy_retention_percent": 90.25759191113251
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 127251,
+          "accuracy": 75.74464285714286,
+          "raw_clean_gap_pp": 10.794047619047618,
+          "clean_accuracy_retention_percent": 87.52691130446745
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 129444,
+          "accuracy": 77.05,
+          "raw_clean_gap_pp": 9.488690476190484,
+          "clean_accuracy_retention_percent": 89.03532001238092
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 105497,
+          "accuracy": 62.795833333333334,
+          "raw_clean_gap_pp": 23.742857142857147,
+          "clean_accuracy_retention_percent": 72.563882106132
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 86696,
+          "accuracy": 51.60476190476191,
+          "raw_clean_gap_pp": 34.933928571428574,
+          "clean_accuracy_retention_percent": 59.63201155552498
+        }
+      },
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.0,
+        "practical_high": 93.15541493276473,
+        "practical_mid": 90.25759191113251,
+        "practical_low_suburban": 87.52691130446745,
+        "practical_high_urban": 89.03532001238091,
+        "practical_mid_urban": 72.563882106132,
+        "practical_low_urban": 59.63201155552499
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 4911,
+        "practical_mid": 9124,
+        "practical_low_suburban": 13094,
+        "practical_high_urban": 10901,
+        "practical_mid_urban": 34848,
+        "practical_low_urban": 53649
+      }
+    },
+    {
+      "name": "DURA v1.0（固定默认）",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145514,
+          "accuracy": 86.61547619047619,
+          "raw_clean_gap_pp": -0.07678571428570535,
+          "clean_accuracy_retention_percent": 100.0887299239949
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 141697,
+          "accuracy": 84.34345238095239,
+          "raw_clean_gap_pp": 2.1952380952380963,
+          "clean_accuracy_retention_percent": 97.46328713416102
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 139467,
+          "accuracy": 83.01607142857142,
+          "raw_clean_gap_pp": 3.5226190476190595,
+          "clean_accuracy_retention_percent": 95.92942875812498
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 136621,
+          "accuracy": 81.32202380952381,
+          "raw_clean_gap_pp": 5.216666666666669,
+          "clean_accuracy_retention_percent": 93.97186779929153
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 139523,
+          "accuracy": 83.04940476190477,
+          "raw_clean_gap_pp": 3.489285714285714,
+          "clean_accuracy_retention_percent": 95.96794717474292
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 127186,
+          "accuracy": 75.70595238095238,
+          "raw_clean_gap_pp": 10.8327380952381,
+          "clean_accuracy_retention_percent": 87.4822024280359
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 115586,
+          "accuracy": 68.80119047619047,
+          "raw_clean_gap_pp": 17.73750000000001,
+          "clean_accuracy_retention_percent": 79.50338755717577
+        }
+      },
+      "scenes_passed": 1,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.08872992399492,
+        "practical_high": 97.46328713416102,
+        "practical_mid": 95.92942875812498,
+        "practical_low_suburban": 93.97186779929153,
+        "practical_high_urban": 95.96794717474293,
+        "practical_mid_urban": 87.4822024280359,
+        "practical_low_urban": 79.50338755717577
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 0,
+        "practical_mid": 878,
+        "practical_low_suburban": 3724,
+        "practical_high_urban": 822,
+        "practical_mid_urban": 13159,
+        "practical_low_urban": 24759
+      }
+    },
+    {
+      "name": "MSAT-M20",
+      "run_id": "20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01",
+      "arm": "MSAT_M20",
+      "code_commit": "8720a8584803366d42d2879fb99502b8d220ac26",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145197,
+          "accuracy": 86.42678571428571,
+          "raw_clean_gap_pp": 0.11190476190476772,
+          "clean_accuracy_retention_percent": 99.87068817278261
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 130014,
+          "accuracy": 77.38928571428572,
+          "raw_clean_gap_pp": 9.149404761904762,
+          "clean_accuracy_retention_percent": 89.42738246724215
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 127414,
+          "accuracy": 75.84166666666667,
+          "raw_clean_gap_pp": 10.697023809523813,
+          "clean_accuracy_retention_percent": 87.6390274099804
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 124571,
+          "accuracy": 74.14940476190476,
+          "raw_clean_gap_pp": 12.38928571428572,
+          "clean_accuracy_retention_percent": 85.68352993775149
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 128225,
+          "accuracy": 76.32440476190476,
+          "raw_clean_gap_pp": 10.214285714285722,
+          "clean_accuracy_retention_percent": 88.19685662207243
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 118447,
+          "accuracy": 70.50416666666666,
+          "raw_clean_gap_pp": 16.03452380952382,
+          "clean_accuracy_retention_percent": 81.47126594903187
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 109293,
+          "accuracy": 65.05535714285715,
+          "raw_clean_gap_pp": 21.483333333333334,
+          "clean_accuracy_retention_percent": 75.17488048973415
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": -111,
+        "cross_both": -77
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 99.87068817278261,
+        "practical_high": 89.42738246724214,
+        "practical_mid": 87.6390274099804,
+        "practical_low_suburban": 85.68352993775149,
+        "practical_high_urban": 88.19685662207243,
+        "practical_mid_urban": 81.47126594903187,
+        "practical_low_urban": 75.17488048973415
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 10331,
+        "practical_mid": 12931,
+        "practical_low_suburban": 15774,
+        "practical_high_urban": 12120,
+        "practical_mid_urban": 21898,
+        "practical_low_urban": 31052
+      }
+    },
+    {
+      "name": "VarF",
+      "run_id": "20261101-phase1-Restore-MSAT-VarF-E30-s2026092701-r03",
+      "arm": "MSAT_VarF",
+      "code_commit": "9fdb1f5b164484f2bc438cb1e45d1ee805d2473a",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145463,
+          "accuracy": 86.58511904761905,
+          "raw_clean_gap_pp": -0.046428571428563714,
+          "clean_accuracy_retention_percent": 100.05365065171786
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 130188,
+          "accuracy": 77.49285714285715,
+          "raw_clean_gap_pp": 9.045833333333334,
+          "clean_accuracy_retention_percent": 89.54706469030505
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 127628,
+          "accuracy": 75.96904761904761,
+          "raw_clean_gap_pp": 10.569642857142867,
+          "clean_accuracy_retention_percent": 87.7862227877704
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 124494,
+          "accuracy": 74.10357142857143,
+          "raw_clean_gap_pp": 12.435119047619054,
+          "clean_accuracy_retention_percent": 85.63056711490181
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 128476,
+          "accuracy": 76.47380952380952,
+          "raw_clean_gap_pp": 10.06488095238096,
+          "clean_accuracy_retention_percent": 88.369501667985
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 118940,
+          "accuracy": 70.79761904761905,
+          "raw_clean_gap_pp": 15.74107142857143,
+          "clean_accuracy_retention_percent": 81.81036558104344
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 109623,
+          "accuracy": 65.25178571428572,
+          "raw_clean_gap_pp": 21.286904761904765,
+          "clean_accuracy_retention_percent": 75.40186401623276
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 79,
+        "cross_both": -1
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-MSAT-VarF-E30-s2026092701-r03/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.05365065171785,
+        "practical_high": 89.54706469030505,
+        "practical_mid": 87.78622278777041,
+        "practical_low_suburban": 85.63056711490181,
+        "practical_high_urban": 88.369501667985,
+        "practical_mid_urban": 81.81036558104343,
+        "practical_low_urban": 75.40186401623275
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 10157,
+        "practical_mid": 12717,
+        "practical_low_suburban": 15851,
+        "practical_high_urban": 11869,
+        "practical_mid_urban": 21405,
+        "practical_low_urban": 30722
+      }
+    },
+    {
+      "name": "PHY-MSAT",
+      "run_id": "20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01",
+      "arm": "PHY_MSat",
+      "code_commit": "8198a2e70c655f24ebaf321f232a676cfb46d916",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 146523,
+          "accuracy": 87.21607142857142,
+          "raw_clean_gap_pp": -0.6773809523809433,
+          "clean_accuracy_retention_percent": 100.7827492519861
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 134373,
+          "accuracy": 79.98392857142858,
+          "raw_clean_gap_pp": 6.554761904761904,
+          "clean_accuracy_retention_percent": 92.4256285036283
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 129314,
+          "accuracy": 76.97261904761905,
+          "raw_clean_gap_pp": 9.566071428571433,
+          "clean_accuracy_retention_percent": 88.94590225951784
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 124430,
+          "accuracy": 74.06547619047619,
+          "raw_clean_gap_pp": 12.473214285714292,
+          "clean_accuracy_retention_percent": 85.58654606733845
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 131462,
+          "accuracy": 78.25119047619047,
+          "raw_clean_gap_pp": 8.287500000000009,
+          "clean_accuracy_retention_percent": 90.4233586683633
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 117026,
+          "accuracy": 69.65833333333333,
+          "raw_clean_gap_pp": 16.88035714285715,
+          "clean_accuracy_retention_percent": 80.49386112735151
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 105557,
+          "accuracy": 62.83154761904762,
+          "raw_clean_gap_pp": 23.707142857142863,
+          "clean_accuracy_retention_percent": 72.60515183822265
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 998,
+        "cross_both": 140
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.78274925198612,
+        "practical_high": 92.4256285036283,
+        "practical_mid": 88.94590225951782,
+        "practical_low_suburban": 85.58654606733845,
+        "practical_high_urban": 90.4233586683633,
+        "practical_mid_urban": 80.49386112735152,
+        "practical_low_urban": 72.60515183822265
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 5972,
+        "practical_mid": 11031,
+        "practical_low_suburban": 15915,
+        "practical_high_urban": 8883,
+        "practical_mid_urban": 23319,
+        "practical_low_urban": 34788
+      }
+    },
+    {
+      "name": "FullFGrad",
+      "run_id": "20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01",
+      "arm": "MSAT_FullFGrad",
+      "code_commit": "940fa78ba450b686b1b03c7530c47af4360faafc",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145294,
+          "accuracy": 86.48452380952381,
+          "raw_clean_gap_pp": 0.054166666666674246,
+          "clean_accuracy_retention_percent": 99.93740757299584
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 131600,
+          "accuracy": 78.33333333333333,
+          "raw_clean_gap_pp": 8.205357142857153,
+          "clean_accuracy_retention_percent": 90.51827905217182
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 129300,
+          "accuracy": 76.96428571428571,
+          "raw_clean_gap_pp": 9.574404761904773,
+          "clean_accuracy_retention_percent": 88.93627265536334
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 126836,
+          "accuracy": 75.49761904761905,
+          "raw_clean_gap_pp": 11.041071428571428,
+          "clean_accuracy_retention_percent": 87.24146232417374
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 129694,
+          "accuracy": 77.19880952380953,
+          "raw_clean_gap_pp": 9.339880952380952,
+          "clean_accuracy_retention_percent": 89.20727722942532
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 119967,
+          "accuracy": 71.40892857142858,
+          "raw_clean_gap_pp": 15.129761904761907,
+          "clean_accuracy_retention_percent": 82.51676582866183
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 110627,
+          "accuracy": 65.84940476190476,
+          "raw_clean_gap_pp": 20.689285714285717,
+          "clean_accuracy_retention_percent": 76.09244419988308
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": -75,
+        "cross_both": -16
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 99.93740757299584,
+        "practical_high": 90.51827905217182,
+        "practical_mid": 88.93627265536335,
+        "practical_low_suburban": 87.24146232417375,
+        "practical_high_urban": 89.20727722942532,
+        "practical_mid_urban": 82.51676582866183,
+        "practical_low_urban": 76.09244419988308
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 8745,
+        "practical_mid": 11045,
+        "practical_low_suburban": 13509,
+        "practical_high_urban": 10651,
+        "practical_mid_urban": 20378,
+        "practical_low_urban": 29718
+      }
+    },
+    {
+      "name": "FeatureCond",
+      "run_id": "20261101-phase1-Restore-FeatureCond-E30-s2026092701-r01",
+      "arm": "MSAT_FeatureCond",
+      "code_commit": "c8659b15bb3d316325867b154eede51f1a61e247",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145520,
+          "accuracy": 86.61904761904762,
+          "raw_clean_gap_pp": -0.0803571428571388,
+          "clean_accuracy_retention_percent": 100.09285689720397
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 130883,
+          "accuracy": 77.90654761904761,
+          "raw_clean_gap_pp": 8.632142857142867,
+          "clean_accuracy_retention_percent": 90.02510575368848
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 128540,
+          "accuracy": 76.51190476190476,
+          "raw_clean_gap_pp": 10.026785714285722,
+          "clean_accuracy_retention_percent": 88.41352271554837
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 125799,
+          "accuracy": 74.88035714285714,
+          "raw_clean_gap_pp": 11.658333333333346,
+          "clean_accuracy_retention_percent": 86.52818378787357
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 128762,
+          "accuracy": 76.64404761904763,
+          "raw_clean_gap_pp": 9.894642857142856,
+          "clean_accuracy_retention_percent": 88.5662207242838
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 118176,
+          "accuracy": 70.34285714285714,
+          "raw_clean_gap_pp": 16.19583333333334,
+          "clean_accuracy_retention_percent": 81.28486432575575
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 108146,
+          "accuracy": 64.37261904761905,
+          "raw_clean_gap_pp": 22.166071428571428,
+          "clean_accuracy_retention_percent": 74.38594077793445
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 68,
+        "cross_both": 67
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-FeatureCond-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.09285689720397,
+        "practical_high": 90.02510575368848,
+        "practical_mid": 88.41352271554838,
+        "practical_low_suburban": 86.52818378787359,
+        "practical_high_urban": 88.5662207242838,
+        "practical_mid_urban": 81.28486432575576,
+        "practical_low_urban": 74.38594077793445
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 9462,
+        "practical_mid": 11805,
+        "practical_low_suburban": 14546,
+        "practical_high_urban": 11583,
+        "practical_mid_urban": 22169,
+        "practical_low_urban": 32199
+      }
+    },
+    {
+      "name": "FeatureStrong",
+      "run_id": "20261101-phase1-Restore-FeatureStrong-E30-s2026092701-r01",
+      "arm": "MSAT_FeatureStrong",
+      "code_commit": "3e5416df5b13dfcf9e16995988e988c5494f68b2",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145862,
+          "accuracy": 86.82261904761904,
+          "raw_clean_gap_pp": -0.28392857142856087,
+          "clean_accuracy_retention_percent": 100.32809437012071
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 127645,
+          "accuracy": 75.97916666666667,
+          "raw_clean_gap_pp": 10.55952380952381,
+          "clean_accuracy_retention_percent": 87.79791587852942
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 126161,
+          "accuracy": 75.09583333333333,
+          "raw_clean_gap_pp": 11.44285714285715,
+          "clean_accuracy_retention_percent": 86.77717783815386
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 124387,
+          "accuracy": 74.03988095238095,
+          "raw_clean_gap_pp": 12.498809523809527,
+          "clean_accuracy_retention_percent": 85.55696942600682
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 125917,
+          "accuracy": 74.95059523809523,
+          "raw_clean_gap_pp": 11.58809523809525,
+          "clean_accuracy_retention_percent": 86.60934759431854
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 116959,
+          "accuracy": 69.61845238095238,
+          "raw_clean_gap_pp": 16.920238095238105,
+          "clean_accuracy_retention_percent": 80.44777659318362
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 107519,
+          "accuracy": 63.99940476190476,
+          "raw_clean_gap_pp": 22.539285714285718,
+          "clean_accuracy_retention_percent": 73.95467207758709
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 515,
+        "cross_both": -38
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-FeatureStrong-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.32809437012071,
+        "practical_high": 87.79791587852942,
+        "practical_mid": 86.77717783815386,
+        "practical_low_suburban": 85.55696942600682,
+        "practical_high_urban": 86.60934759431854,
+        "practical_mid_urban": 80.44777659318362,
+        "practical_low_urban": 73.95467207758709
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 12700,
+        "practical_mid": 14184,
+        "practical_low_suburban": 15958,
+        "practical_high_urban": 14428,
+        "practical_mid_urban": 23386,
+        "practical_low_urban": 32826
+      }
+    },
+    {
+      "name": "PowerAnchor",
+      "run_id": "20261101-phase1-Restore-PowerAnchor-E30-s2026092701-r01",
+      "arm": "MSAT_PowerAnchor",
+      "code_commit": "42ea957db57d7d90df67dadbeffe11fc014909a0",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145563,
+          "accuracy": 86.64464285714286,
+          "raw_clean_gap_pp": -0.10595238095237391,
+          "clean_accuracy_retention_percent": 100.12243353853562
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 132704,
+          "accuracy": 78.99047619047619,
+          "raw_clean_gap_pp": 7.548214285714295,
+          "clean_accuracy_retention_percent": 91.27764212263989
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 130561,
+          "accuracy": 77.71488095238095,
+          "raw_clean_gap_pp": 8.82380952380953,
+          "clean_accuracy_retention_percent": 89.8036248581353
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 127960,
+          "accuracy": 76.16666666666667,
+          "raw_clean_gap_pp": 10.37202380952381,
+          "clean_accuracy_retention_percent": 88.01458197200536
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 130703,
+          "accuracy": 77.79940476190477,
+          "raw_clean_gap_pp": 8.739285714285714,
+          "clean_accuracy_retention_percent": 89.90129655741652
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 120177,
+          "accuracy": 71.53392857142858,
+          "raw_clean_gap_pp": 15.004761904761907,
+          "clean_accuracy_retention_percent": 82.66120989097912
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 109929,
+          "accuracy": 65.43392857142857,
+          "raw_clean_gap_pp": 21.104761904761915,
+          "clean_accuracy_retention_percent": 75.6123396498951
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 176,
+        "cross_both": 2
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-PowerAnchor-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.1224335385356,
+        "practical_high": 91.27764212263989,
+        "practical_mid": 89.8036248581353,
+        "practical_low_suburban": 88.01458197200537,
+        "practical_high_urban": 89.90129655741652,
+        "practical_mid_urban": 82.66120989097912,
+        "practical_low_urban": 75.6123396498951
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 7641,
+        "practical_mid": 9784,
+        "practical_low_suburban": 12385,
+        "practical_high_urban": 9642,
+        "practical_mid_urban": 20168,
+        "practical_low_urban": 30416
+      }
+    },
+    {
+      "name": "DirectBridge",
+      "run_id": "20261101-phase1-Restore-DirectBridge-E30-s2026092701-r01",
+      "arm": "MSAT_DirectBridge",
+      "code_commit": "84a063c9ba1f9974cfe361e293a9e11fa93920b4",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145494,
+          "accuracy": 86.60357142857143,
+          "raw_clean_gap_pp": -0.06488095238094616,
+          "clean_accuracy_retention_percent": 100.07497334663135
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 130475,
+          "accuracy": 77.66369047619048,
+          "raw_clean_gap_pp": 8.875,
+          "clean_accuracy_retention_percent": 89.74447157547202
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 128337,
+          "accuracy": 76.39107142857142,
+          "raw_clean_gap_pp": 10.14761904761906,
+          "clean_accuracy_retention_percent": 88.27389345530833
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 125838,
+          "accuracy": 74.90357142857142,
+          "raw_clean_gap_pp": 11.635119047619057,
+          "clean_accuracy_retention_percent": 86.55500911373251
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 128452,
+          "accuracy": 76.45952380952382,
+          "raw_clean_gap_pp": 10.079166666666666,
+          "clean_accuracy_retention_percent": 88.35299377514875
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 118082,
+          "accuracy": 70.28690476190476,
+          "raw_clean_gap_pp": 16.251785714285717,
+          "clean_accuracy_retention_percent": 81.22020841214706
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 107867,
+          "accuracy": 64.20654761904763,
+          "raw_clean_gap_pp": 22.332142857142856,
+          "clean_accuracy_retention_percent": 74.1940365237129
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 163,
+        "cross_both": -54
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-DirectBridge-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.07497334663135,
+        "practical_high": 89.74447157547202,
+        "practical_mid": 88.27389345530831,
+        "practical_low_suburban": 86.55500911373251,
+        "practical_high_urban": 88.35299377514875,
+        "practical_mid_urban": 81.22020841214706,
+        "practical_low_urban": 74.1940365237129
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 9870,
+        "practical_mid": 12008,
+        "practical_low_suburban": 14507,
+        "practical_high_urban": 11893,
+        "practical_mid_urban": 22263,
+        "practical_low_urban": 32478
+      }
+    },
+    {
+      "name": "StateBridge",
+      "run_id": "20261101-phase1-Restore-StateBridge-E30-s2026092701-r01",
+      "arm": "MSAT_StateBridge",
+      "code_commit": "c50a9159b1fb891c6f1a6f8ad4bfa2d7eb66222e",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 144660,
+          "accuracy": 86.10714285714286,
+          "raw_clean_gap_pp": 0.4315476190476204,
+          "clean_accuracy_retention_percent": 99.50132407057124
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 120545,
+          "accuracy": 71.75297619047619,
+          "raw_clean_gap_pp": 14.785714285714292,
+          "clean_accuracy_retention_percent": 82.91433091446848
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 119183,
+          "accuracy": 70.9422619047619,
+          "raw_clean_gap_pp": 15.596428571428575,
+          "clean_accuracy_retention_percent": 81.97750799601059
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 117408,
+          "accuracy": 69.88571428571429,
+          "raw_clean_gap_pp": 16.652976190476195,
+          "clean_accuracy_retention_percent": 80.75661175499536
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 118762,
+          "accuracy": 70.69166666666666,
+          "raw_clean_gap_pp": 15.847023809523819,
+          "clean_accuracy_retention_percent": 81.68793204250782
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 109740,
+          "accuracy": 65.32142857142857,
+          "raw_clean_gap_pp": 21.217261904761912,
+          "clean_accuracy_retention_percent": 75.48233999380955
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 100187,
+          "accuracy": 59.63511904761905,
+          "raw_clean_gap_pp": 26.903571428571432,
+          "clean_accuracy_retention_percent": 68.91151081610896
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": -551,
+        "cross_both": -174
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-StateBridge-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 99.50132407057124,
+        "practical_high": 82.91433091446848,
+        "practical_mid": 81.97750799601059,
+        "practical_low_suburban": 80.75661175499536,
+        "practical_high_urban": 81.68793204250782,
+        "practical_mid_urban": 75.48233999380955,
+        "practical_low_urban": 68.91151081610896
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 19800,
+        "practical_mid": 21162,
+        "practical_low_suburban": 22937,
+        "practical_high_urban": 21583,
+        "practical_mid_urban": 30605,
+        "practical_low_urban": 40158
+      }
+    }
+  ],
+  "new_neural_forwards": 0,
+  "training_or_query_inputs_read": 0,
+  "new_truth_reads": 0,
+  "candidate_selection": false,
+  "default_DURA_changed": false,
+  "theoretical_limit_estimated": false
+}
