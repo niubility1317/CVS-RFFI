@@ -1,0 +1,158 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-adaptive-phase-factor-s2026092701-r01",
+  "group_id": "phase1-input-adaptive-phase-factor",
+  "display_name": "输入自适应相位因子的源域可行性",
+  "description": "以单独的旋转不变量网络，学习不变与抵消输入相位的混合规则；源域冻结 DURA 仅提供复增益相位代理目标。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "complex_phase",
+    "physics",
+    "feasibility",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-teacher-student-s2026092701-r01",
+    "20261102-phase1-blind-gate-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "f8a2f526d67e21757c6972124403b6c3078e8d5b",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python GPU3 if idle, two CPU threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256]; source L_s/U_s paired clean and simulated post_sync residual channel",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels or U_s truth read; frozen DURA and Tri-SIG-TIME SSL predictions guide source training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "7840 RX4/6 day3 source IDs for selection and 3921 RX8 day3 heldout; cache16; physical IDs previously seen in other source experiments",
+    "support_query_ref": null,
+    "leo_config_ref": "Fixed source cache epochs1–3 training, epoch16 selection; six impaired Phase1 simulated scenes"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source-only phase proxy experiment; no V, no test IQ, no Phase3",
+    "external_method_exception": null,
+    "claim_scope": "Single seed, source heldout and Phase1 development previously observed, no independent-blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Random input adaptive phase factor; frozen source gate and DURA source teacher only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Pinned parent release a90a5e381c19e94455bfafd9c67321833c764491, gate c905f3ab3d7f0d121e2c44c3b0bfb26188fa5825",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Source RX4/6 source-epoch16 active impaired scenes: mean cosine loss <=95% of identity, each scene/receiver loss <=identity+.05; best of epochs1–3; heldout RX8 not used"
+  },
+  "execution": {
+    "host": "N607 GPU3",
+    "launch_owner": "Codex source phase-factor single owner",
+    "gpu_policy": "GPU3 only if idle; one worker, two CPU threads",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-adaptive-phase-factor-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-adaptive-phase-factor-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-adaptive-phase-factor-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=3 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-adaptive-phase-factor-s2026092701-r01-release/experiments/phase1_adaptive_phase_factor/phase_factor_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-adaptive-phase-factor-s2026092701-r01 --commit f8a2f526d67e21757c6972124403b6c3078e8d5b --device cuda:0",
+    "stop_rule": "Stop only for provenance, role, output collision, nonfinite or technical execution failure; preserve partial results"
+  },
+  "expected_artifacts": [
+    "source_smoke/result.json",
+    "source/checkpoint_epoch01.pt",
+    "source/checkpoint_epoch02.pt",
+    "source/checkpoint_epoch03.pt",
+    "source/source_selection.json",
+    "source/selected.pt if selected",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "mean phase cosine loss",
+      "per-cell phase cosine loss"
+    ],
+    "dimensions": [
+      "source receiver and impaired scene",
+      "source RX8 heldout"
+    ],
+    "prediction_ref": "none; phase-only source feasibility",
+    "scorer_ref": "experiments/phase1_adaptive_phase_factor/phase_factor_source.py",
+    "scientific_rule": "Proxy alignment to source DURA phase is not Phase1 classification improvement or satisfaction of 3% goal."
+  },
+  "rows": [
+    {
+      "row_id": "adaptive_phase_factor_s2026092701",
+      "method": "input-only invariant/equivariant phase-factor mixture; DURA used only to derive source proxy target",
+      "purpose": "test source feasibility of condition-adaptive phase behavior",
+      "config_ref": "experiments/phase1_adaptive_phase_factor/phase_factor_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-adaptive-phase-factor-s2026092701-r01/source/source_selection.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026111454,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026111455
+      },
+      "seed_notes": "Fixed source split seed 2026110551; model 2026111454; shuffle 2026111455; training cache1–3, selection cache16",
+      "k": null,
+      "scenario": "source six impaired simulated scenes; no Phase1 target data",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0003,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "47143 source training IDs, gate-active subset, batch32, 3 epochs; 7840/3921 source selection and heldout physical IDs",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-adaptive-phase-factor-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-adaptive-phase-factor-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=3 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-adaptive-phase-factor-s2026092701-r01-release/experiments/phase1_adaptive_phase_factor/phase_factor_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-adaptive-phase-factor-s2026092701-r01 --commit f8a2f526d67e21757c6972124403b6c3078e8d5b --device cuda:0",
+      "expected_artifacts": [
+        "source_smoke/result.json",
+        "source/checkpoint_epoch01.pt",
+        "source/checkpoint_epoch02.pt",
+        "source/checkpoint_epoch03.pt",
+        "source/source_selection.json",
+        "source/selected.pt if selected",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "DURA source teacher and frozen gate only; model deploy input is IQ alone.",
+    "F is not loaded here; eventual network must use frozen Tri-SIG-TIME SSL.",
+    "No TX labels, U_s truth, V or test IQ.",
+    "Source phase proxy is not classification accuracy; RX4/6 and RX8 identities previously examined under other views."
+  ],
+  "registered_at": "2026-11-01T18:02:01+00:00"
+}
