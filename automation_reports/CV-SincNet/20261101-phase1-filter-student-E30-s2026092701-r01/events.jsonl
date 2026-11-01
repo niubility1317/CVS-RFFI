@@ -1,0 +1,2 @@
+{"at": "2026-11-01T06:45:20+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T06:46:40+00:00", "status": "QUEUED", "note": "独立核实真实 F 与 DURA 的 CPU 源域 smoke 通过，控制器 124459 正按共享容量规则等待 GPU；GPU smoke 和正式训练尚未运行。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-filter-student-E30-s2026092701-r01/smoke.json"], "row_id": "flow"}

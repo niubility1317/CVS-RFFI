@@ -1,0 +1,188 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-filter-student-E30-s2026092701-r01",
+  "group_id": "phase1-learned-widely-linear-fir",
+  "display_name": "Phase1 可学习复数滤波系数恢复网络",
+  "description": "学习从接收 IQ、DURA 输出及冻结地面基座特征预测逐窗复数与共轭 FIR 校正系数。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "widely-linear-FIR",
+    "source-only",
+    "truth-last"
+  ],
+  "comparison_group_id": "phase1-trisigtime-frozen-raw-clean",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261101-diagnostic-phase1-source-fir-oracle-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发不同于另一个对话的星地恢复网络；只看 Phase1 地面训练测试集；地面基座 Tri-SIG-TIME SSL；每个星地视图相对同一冻结基座 clean 损失不超过 3 个百分点。",
+  "code": {
+    "commit": "b0c93a3aaac27deebaf2e751d42523f485bfd17d",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch, FP32, TF32 off; original Phase1 Tri-SIG-TIME immutable release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-filter-student-E30-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/filter_student.py",
+      "experiments/pamf_phase1_flow/filter_student_experiment.py",
+      "experiments/pamf_phase1_flow/filter_student_controller.py",
+      "experiments/pamf_phase1_flow/filter_student_worker.py",
+      "experiments/pamf_phase1_flow/source_fir_oracle.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Phase1 source paired received and clean IQ, frozen DURA anchor and Tri-SIG-TIME features",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "No TX labels; source paired L_s/U_s IQ only; no U_s labels, V or test IQ",
+    "augmentation": "Source 20 views then repeat first 10; random order with 25% clean identity"
+  },
+  "permissions": {
+    "regime": "Phase1 L_s/U_s source paired IQ and frozen DURA/Tri-SIG-TIME SSL; no source TX labels/V/test during training",
+    "query_use": "Frozen per-record received IQ, DURA and F only; no clean or label at inference",
+    "external_method_exception": null,
+    "claim_scope": "Previously observed single-seed Phase1 development test, not blind"
+  },
+  "checkpoint": {
+    "initialization": "Frozen original DURA E20 and Tri-SIG-TIME SSL E50; new zero-output FIR-coefficient Transformer",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "DURA original 7/63/30 source-only metadata and pinned release; F exact original checkpoint ancestry and matching L_s/U_s IDs; DURA SHA bound into field checkpoint",
+    "provenance_verdict": "Both inherited Phase1 models are source-only and frozen; generation field from scratch",
+    "selection_rule": "Fixed E30, no target-dependent model selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-filter-student",
+    "gpu_policy": "CPU real F/DURA source smoke; shared lock, at most two same-user restoration workers and two same-user compute processes per GPU, >=12000 MB; GPU B128 smoke then fresh E30 and predictions",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-filter-student-E30-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-filter-student-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-phase1-filter-student-E30-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.filter_student_controller --root /home/szu2070436088/2510044040/CV-SincNet --commit b0c93a3aaac27deebaf2e751d42523f485bfd17d",
+    "stop_rule": "Source ID/IQ mismatch, smoke failure, nonfinite gradient, resource ambiguity, frozen weight change or incomplete predictions preserves artifacts; no automatic retry or performance-based stop"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "smoke.pt",
+    "gpu_smoke.json",
+    "gpu_smoke.pt",
+    "submitted.json",
+    "logs/{smoke,worker,gpu_smoke,train,predict,score}.log",
+    "flow/{training.jsonl,checkpoints,final.pt,training_complete.json,test_prediction,test_summary.json}",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Tri-SIG-TIME raw clean, per-scene raw and restored accuracy, macro F1 and clean-relative gap",
+      "per-TX, RX, day accuracy"
+    ],
+    "dimensions": [
+      "168000 Phase1 ground test physical records x seven views",
+      "TX/RX/day and six practical scenes"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-filter-student-E30-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU experiments.pamf_phase1_flow.filter_student_experiment score",
+    "targets_ref": "Each of six restored practical scenes within 3 percentage points of same reader raw clean; restored clean degradation at most 1 percentage point"
+  },
+  "notes": [
+    "输入接收 IQ、冻结 DURA 输出、Tri-SIG-TIME SSL 对 DURA 的冻结特征和类别分数；Transformer 预测 9 tap 复数直通滤波器与共轭滤波器的系数，作用于 DURA IQ。",
+    "只在源训练阶段，使用每条源 clean IQ 求逐窗 9 tap 特权 ridge 滤波目标，ridge 0.0001；特权目标和预测校正均截断至 DURA 范数 20%。推理不提供 clean 或滤波真系数。",
+    "损失为 0.7×预测波形对截断特权目标的归一化均方差 + 0.3×预测波形对源 clean 的归一化均方差。无标签训练，F 和 DURA 全程冻结。",
+    "在此前固定源域小样本分析中，20% 截断保留了 9 tap 特权波形的教师一致性结果；特权拟合使用 clean 且不等于可部署模型或测试性能。",
+    "CPU 实际权重两条 L_s 和 GPU B128 L_s smoke 后丢弃临时权重，正式重新初始化；不读取任何 TX 标签、U_s 标签、V 或测试 IQ 训练。",
+    "固定 E30、14790 更新，20 个源视图重复前 10 个，25% clean 身份输入。七视图全部预测固定后才连接真值。",
+    "Phase1 开发测试先前已经观察，非独立盲测；逐场景同时报告百分点与相对百分比下降和 clean 防护。"
+  ],
+  "rows": [
+    {
+      "row_id": "flow",
+      "method": "Source-distilled widely-linear bounded nine-tap FIR coefficient prediction",
+      "purpose": "Predict physically structured paired-source FIR correction without privileged clean IQ at inference",
+      "config_ref": "experiments/pamf_phase1_flow/filter_student_experiment.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/filter_student_experiment.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110104,
+        "augmentation": 2026110105,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model 2026092701, order 2026110104, training noise 2026110105, fixed inference noise template 2026110103; existing Phase1 split and views",
+      "k": null,
+      "scenario": "Phase1 R07 L_s/U_s training; fixed Phase1 clean and six practical received views",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "E30 x63000 B128 14790 updates; 9 tap direct/conjugate; ridge .0001; 20% L2; 70% oracle and 30% clean IQ loss; 25% clean identity",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-filter-student-E30-s2026092701-r01/flow",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-filter-student-E30-s2026092701-r01/logs/train.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.filter_student_controller --root /home/szu2070436088/2510044040/CV-SincNet --commit b0c93a3aaac27deebaf2e751d42523f485bfd17d",
+      "expected_artifacts": [
+        "smoke.json",
+        "smoke.pt",
+        "gpu_smoke.json",
+        "gpu_smoke.pt",
+        "submitted.json",
+        "logs/{smoke,worker,gpu_smoke,train,predict,score}.log",
+        "flow/{training.jsonl,checkpoints,final.pt,training_complete.json,test_prediction,test_summary.json}",
+        "complete.json"
+      ]
+    }
+  ],
+  "registered_at": "2026-11-01T06:45:20+00:00"
+}
