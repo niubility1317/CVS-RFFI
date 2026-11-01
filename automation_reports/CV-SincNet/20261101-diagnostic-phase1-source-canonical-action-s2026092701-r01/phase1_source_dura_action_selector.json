@@ -1,0 +1,156 @@
+{
+  "status": "SOURCE_ONLY_DURA_ACTION_SELECTOR",
+  "source_ids": 1615,
+  "validation_ids": 1051,
+  "heldout_ids": 564,
+  "phase_count": 8,
+  "gate_db": 10.0,
+  "thresholds": [
+    0.0,
+    0.01,
+    0.05,
+    0.1
+  ],
+  "validation": [
+    {
+      "threshold": 0.0,
+      "net": -157,
+      "per_view": {
+        "practical_low_suburban": -13,
+        "practical_mid_urban": -53,
+        "practical_low_urban": -91
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 523,
+          "net": -63,
+          "per_view": {
+            "practical_low_suburban": -6,
+            "practical_mid_urban": -23,
+            "practical_low_urban": -34
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 528,
+          "net": -94,
+          "per_view": {
+            "practical_low_suburban": -7,
+            "practical_mid_urban": -30,
+            "practical_low_urban": -57
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "threshold": 0.01,
+      "net": -138,
+      "per_view": {
+        "practical_low_suburban": -9,
+        "practical_mid_urban": -52,
+        "practical_low_urban": -77
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 523,
+          "net": -55,
+          "per_view": {
+            "practical_low_suburban": -3,
+            "practical_mid_urban": -23,
+            "practical_low_urban": -29
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 528,
+          "net": -83,
+          "per_view": {
+            "practical_low_suburban": -6,
+            "practical_mid_urban": -29,
+            "practical_low_urban": -48
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "threshold": 0.05,
+      "net": -97,
+      "per_view": {
+        "practical_low_suburban": -5,
+        "practical_mid_urban": -39,
+        "practical_low_urban": -53
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 523,
+          "net": -44,
+          "per_view": {
+            "practical_low_suburban": -2,
+            "practical_mid_urban": -20,
+            "practical_low_urban": -22
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 528,
+          "net": -53,
+          "per_view": {
+            "practical_low_suburban": -3,
+            "practical_mid_urban": -19,
+            "practical_low_urban": -31
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "threshold": 0.1,
+      "net": -26,
+      "per_view": {
+        "practical_low_suburban": -3,
+        "practical_mid_urban": -10,
+        "practical_low_urban": -13
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 523,
+          "net": -10,
+          "per_view": {
+            "practical_low_suburban": -2,
+            "practical_mid_urban": -2,
+            "practical_low_urban": -6
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 528,
+          "net": -16,
+          "per_view": {
+            "practical_low_suburban": -1,
+            "practical_mid_urban": -8,
+            "practical_low_urban": -7
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    }
+  ],
+  "selected": {
+    "kind": "dura",
+    "validation_net": 0
+  },
+  "heldout": null,
+  "heldout_clean_teacher_net": null,
+  "quality": null,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "decisions_before_source_tx_labels": true,
+  "caveat": "Each candidate uses DURA on a phase-rotated received IQ signal; the per-candidate score is DURA internal estimated forward residual divided by its estimated variance. These are model self-consistency scores, not true channel likelihoods. Inference uses only received IQ and fixed DURA; no source clean IQ, simulator truth, source targets or cross-view signals. Fresh IDs exclude the phase-orbit and proxy sample but may overlap other diagnostics; frozen models saw source records. Simulated satellite is not a validated real link."
+}

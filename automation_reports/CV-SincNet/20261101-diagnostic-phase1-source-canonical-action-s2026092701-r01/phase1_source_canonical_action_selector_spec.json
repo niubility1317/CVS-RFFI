@@ -1,0 +1,16 @@
+{
+  "status": "SOURCE_POSTHOC_CORRECTED_PHASE_COORDINATE",
+  "script": "phase1_source_canonical_action_selector.py",
+  "script_sha256": "b05e5e79f829037a2a63b8fe2722f3d4bf563a41013bd03d65d1c1a67f0a869c",
+  "source_sample_seed": 2026110481,
+  "channel_seed": 2026110482,
+  "hardware_seed": 2026110483,
+  "phase_count": 8,
+  "thresholds": [
+    0,
+    0.01,
+    0.05,
+    0.1
+  ],
+  "note": "Posthoc correction on previously examined source validation. Same source sample and channel seed as inverse-coordinate action selector. Inference uses received IQ and fixed model only; selection completed before source labels; no Phase1 test reads."
+}

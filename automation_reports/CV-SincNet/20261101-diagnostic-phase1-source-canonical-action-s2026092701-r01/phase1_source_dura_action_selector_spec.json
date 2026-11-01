@@ -1,0 +1,31 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_FIXED_BEFORE_EXECUTION",
+  "created_utc": "2026-11-01T14:44:27.392Z",
+  "script": "phase1_source_dura_action_selector.py",
+  "script_sha256": "9f5df253997a53802af6491debb059404b6f59160f27dc2ab96468924d2163fb",
+  "phase_count": 8,
+  "relative_cost_improvements": [
+    0,
+    0.01,
+    0.05,
+    0.1
+  ],
+  "blind_snr_gate_db": 10,
+  "source_sample_seed": 2026110481,
+  "excluded_source_sample_seeds": [
+    2026110471,
+    2026110451
+  ],
+  "channel_seed": 2026110482,
+  "hardware_seed": 2026110483,
+  "validation_receivers": [
+    4,
+    6
+  ],
+  "heldout_receiver": 8,
+  "day": 3,
+  "source_clean_iq_used_for_inference": false,
+  "simulator_snr_used_for_inference": false,
+  "test_iq_reads": 0,
+  "caveat": "The scoring concept follows inspected phase-orbit source findings. The fresh IDs exclude the two named source samples but may overlap other diagnostics; frozen models saw source data."
+}
