@@ -118,6 +118,7 @@ def test_failed_smoke_restores_paused_predecessor_without_killing_it(tmp_path, m
     monkeypatch.setattr(takeover.signal, 'SIGCONT', 18, raising=False)
     monkeypatch.setattr(takeover.os, 'kill', lambda pid, sig: signals.append((pid, sig)))
     monkeypatch.setattr(takeover, 'proc', lambda pid: dict(info))
+    monkeypatch.setattr(takeover, 'process_running', lambda pid,start: True, raising=False)
     monkeypatch.setattr(takeover, 'predecessor_workers', lambda *args: {})
     monkeypatch.setattr(takeover.subprocess, 'check_output', lambda *args, **kwargs: '16000')
     def fail(*args, **kwargs):
@@ -157,3 +158,71 @@ def test_worker_failure_during_smoke_restores_predecessor(tmp_path, monkeypatch)
     with pytest.raises(ValueError, match='failed'):
         takeover.transfer_owner(runtime, old, 123, {'a': {'key': 'a'}}, tmp_path/'takeover.json')
     assert signals == [(123, signal.SIGSTOP), (123, signal.SIGCONT)]
+
+
+def test_transfer_does_not_read_exiting_controller_environment(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import r42_fast_takeover as takeover
+    old=dict(release_root='old-release',runtime_file='old-runtime',allowed_gpus=[0])
+    info=dict(pid=123,uid=1,cwd='old-release',start='9',state='T',
+              argv=['python','-m',takeover.suite.__package__+'.milkr_r42_suite','dispatch','--runtime','old-runtime'])
+    signals=[]
+    monkeypatch.setattr(takeover.os,'getuid',lambda:1,raising=False)
+    for name,value in [('SIGSTOP',19),('SIGCONT',18),('SIGKILL',9)]:monkeypatch.setattr(takeover.signal,name,value,raising=False)
+    monkeypatch.setattr(takeover.os,'kill',lambda pid,sig:signals.append((pid,sig)))
+    def proc(pid):
+        if signals and signals[-1][1]==signal.SIGKILL:raise PermissionError('exiting environ')
+        return dict(info)
+    monkeypatch.setattr(takeover,'proc',proc)
+    monkeypatch.setattr(takeover,'process_running',lambda pid,start:False,raising=False)
+    monkeypatch.setattr(takeover,'predecessor_workers',lambda *args:{})
+    monkeypatch.setattr(takeover.subprocess,'check_output',lambda *args,**kwargs:'16000')
+    def smoke(cmd,**kwargs):takeover.write(cmd[cmd.index('--smoke-output')+1],dict(status='PASS',seed=1,query_rows=0))
+    monkeypatch.setattr(takeover.subprocess,'run',smoke)
+    rt=dict(allowed_gpus=[0],minimum_free_MiB=6000,poll_seconds=1,model_seeds=[1],runtime_file='new-runtime')
+    assert takeover.transfer_owner(rt,old,123,{},tmp_path/'takeover.json')=={}
+    assert signals==[(123,signal.SIGSTOP),(123,signal.SIGKILL)]
+
+
+def test_proc_identity_marks_linux_exiting_flag_as_not_running():
+    from experiments.pamf_phase2_practical.r42_fast_takeover import running_stat_fields
+    fields=['0']*20;fields[0]='R';fields[6]='0';fields[19]='42'
+    assert running_stat_fields(fields,'42')
+    assert not running_stat_fields(fields,'43')
+    fields[6]=str(4)
+    assert not running_stat_fields(fields,'42')
+    fields[6]='0';fields[0]='Z'
+    assert not running_stat_fields(fields,'42')
+
+
+def test_adoption_rejects_disappeared_unclosed_worker(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import r42_fast_takeover as takeover
+    oldroot=tmp_path/'old';oldroot.mkdir()
+    takeover.write(oldroot/'worker_state.json',dict(status='RUNNING',failed=[],predecessor_active=[],
+        active=[dict(key='a',pid=24,gpu=0)]))
+    transfer=tmp_path/'takeover.json'
+    takeover.write(transfer,dict(status='PAUSED_BEFORE_TRANSFER',predecessor_controller=23,
+        predecessor_start='1',inherited_workers={'a':dict(pid=24,start='2',gpu=0)}))
+    monkeypatch.setattr(takeover,'proc',lambda pid:None)
+    monkeypatch.setattr(takeover,'closed_ref',lambda *args:None)
+    rt=dict(failed_takeover_file=str(transfer),failed_controller_pid=25,predecessor_controller_pid=23)
+    with pytest.raises(ValueError,match='without complete'):
+        takeover.adopt_orphans(rt,dict(run_root=str(oldroot)),{'a':dict(key='a')})
+
+
+def test_adoption_keeps_owned_orphan_and_reuses_completed_stale_worker(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import r42_fast_takeover as takeover
+    oldroot=tmp_path/'old';oldroot.mkdir()
+    takeover.write(oldroot/'worker_state.json',dict(status='RUNNING',failed=[],predecessor_active=[],
+        active=[dict(key='a',pid=24,gpu=0),dict(key='b',pid=26,gpu=0)]))
+    transfer=tmp_path/'takeover.json'
+    takeover.write(transfer,dict(status='PAUSED_BEFORE_TRANSFER',predecessor_controller=23,
+        predecessor_start='1',inherited_workers={'a':dict(pid=24,start='2',gpu=0)}))
+    argv=['python','-m',takeover.suite.__package__+'.milkr_r42_suite','worker',
+          '--runtime','old-runtime','--key','a']
+    info=dict(pid=24,start='2',uid=1,cwd='old-release',argv=argv,env=['CUDA_VISIBLE_DEVICES=0'])
+    monkeypatch.setattr(takeover.os,'getuid',lambda:1,raising=False)
+    monkeypatch.setattr(takeover,'proc',lambda pid:info if pid==24 else None)
+    monkeypatch.setattr(takeover,'closed_ref',lambda old,task: {'prediction':'done'} if task['key']=='b' else None)
+    rt=dict(failed_takeover_file=str(transfer),failed_controller_pid=25,predecessor_controller_pid=23)
+    old=dict(run_root=str(oldroot),release_root='old-release',runtime_file='old-runtime',allowed_gpus=[0])
+    assert takeover.adopt_orphans(rt,old,{'a':dict(key='a'),'b':dict(key='b')})=={'a':dict(pid=24,start='2',gpu=0)}

@@ -43,6 +43,24 @@ def proc(pid):
                     env=(folder/'environ').read_bytes().decode().rstrip('\0').split('\0'))
     except (FileNotFoundError, ProcessLookupError):
         return None
+    except PermissionError:
+        # A same-user process can lose /proc/environ access as it exits.
+        # Only treat it as gone when its original stat identity has ended.
+        if 'stat' in locals() and not process_running(pid,stat[19]):return None
+        raise
+
+
+def running_stat_fields(stat,start):
+    # Linux PF_EXITING is set before /proc/<pid>/environ becomes unreadable.
+    return stat[0] not in ('Z','X','x') and not (int(stat[6]) & 4) and (start is None or stat[19]==start)
+
+
+def process_running(pid,start):
+    try:
+        stat=(Path('/proc')/str(pid)/'stat').read_text().split(') ',1)[1].split()
+        return running_stat_fields(stat,start)
+    except (FileNotFoundError,ProcessLookupError):
+        return False
 
 
 def predecessor_workers(controller, old, tasks):
@@ -66,8 +84,7 @@ def predecessor_workers(controller, old, tasks):
 
 
 def alive(record):
-    value = proc(record['pid'])
-    return value is not None and value['start'] == record['start']
+    return process_running(record['pid'],record['start'])
 
 
 def controller_command_matches(argv, runtime_file):
@@ -189,7 +206,7 @@ def transfer_owner(rt, old, pid, task_by_key, output):
         os.kill(pid, signal.SIGKILL)
         terminated = True
         for _ in range(100):
-            if proc(pid) is None: break
+            if not process_running(pid,info['start']): break
             time.sleep(.05)
         else: raise RuntimeError('Predecessor controller did not exit')
         atomic(output, dict(predecessor_controller=pid, predecessor_start=info['start'],
@@ -197,6 +214,71 @@ def transfer_owner(rt, old, pid, task_by_key, output):
         return workers
     finally:
         if not terminated and alive(info): os.kill(pid, signal.SIGCONT)
+
+
+def adopt_orphans(rt, old, task_by_key):
+    transfer=read(rt['failed_takeover_file'])
+    require(transfer['status']=='PAUSED_BEFORE_TRANSFER' and transfer['predecessor_controller']==rt['predecessor_controller_pid'],
+            'Wrong failed takeover record')
+    require(not process_running(rt['predecessor_controller_pid'],transfer['predecessor_start']), 'Predecessor controller still active')
+    require(not process_running(rt['failed_controller_pid'],None), 'Failed takeover controller still active')
+    state=read(Path(old['run_root'])/'worker_state.json')
+    validate_predecessor_state(state)
+    recorded=transfer['inherited_workers'];require(set(recorded)<=set(task_by_key), 'Unknown orphan worker')
+    candidates=dict(recorded)
+    for item in state.get('active',[]):
+        key=item['key'];require(key in task_by_key,'Unknown worker in predecessor state')
+        if key in candidates:
+            require(candidates[key]['pid']==item['pid'] and candidates[key]['gpu']==item['gpu'], 'Worker snapshots disagree')
+        else:
+            info=proc(item['pid'])
+            if info is None:
+                require(closed_ref(old,task_by_key[key]) is not None,'Predecessor worker exited without complete prediction')
+                continue
+            candidates[key]=dict(pid=item['pid'],start=info['start'],gpu=item['gpu'])
+    inherited={}
+    for key,record in candidates.items():
+        info=proc(record['pid'])
+        if info is None or info['start']!=record['start']:
+            require(closed_ref(old,task_by_key[key]) is not None,'Predecessor worker exited without complete prediction')
+            continue
+        argv=info['argv']
+        require(info['uid']==os.getuid() and info['cwd']==old['release_root'], 'Wrong orphan owner/CWD')
+        require(suite.__package__+'.milkr_r42_suite' in argv and 'worker' in argv and '--key' in argv
+                and argv[argv.index('--key')+1]==key and old['runtime_file'] in argv, 'Wrong orphan worker command')
+        gpu=[x.split('=',1)[1] for x in info['env'] if x.startswith('CUDA_VISIBLE_DEVICES=')]
+        require(len(gpu)==1 and gpu[0].isdigit() and int(gpu[0])==record['gpu'] and record['gpu'] in old['allowed_gpus'], 'Wrong orphan GPU')
+        inherited[key]=record
+    return inherited
+
+
+def smoke_adopted(rt,old,workers,task_by_key,output):
+    while True:
+        for key,record in list(workers.items()):
+            if not alive(record):
+                require(closed_ref(old,task_by_key[key]) is not None,'Predecessor worker exited without complete prediction')
+                del workers[key]
+        available=[gpu for gpu in rt['allowed_gpus'] if sum(w['gpu']==gpu for w in workers.values())<2]
+        available=[gpu for gpu in available if int(subprocess.check_output(
+            ['nvidia-smi','-i',str(gpu),'--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip())>=rt['minimum_free_MiB']]
+        if available:break
+        time.sleep(rt['poll_seconds'])
+    smoke_dir=output.parent/'smoke';smoke_dir.mkdir()
+    for seed in rt['model_seeds']:
+        destination=smoke_dir/f'cuda-{seed}.json'
+        env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(available[0]),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
+        cmd=[sys.executable,'-u','-m',__package__+'.r42_fast_takeover','--runtime',rt['runtime_file'],
+             '--smoke-seed',str(seed),'--smoke-output',str(destination)]
+        subprocess.run(cmd,env=env,stdin=subprocess.DEVNULL,check=True)
+        smoke=read(destination)
+        require(smoke['status']=='PASS' and smoke['seed']==seed and smoke['query_rows']==0,'Source smoke failed')
+    for key,record in list(workers.items()):
+        if not alive(record):
+            require(closed_ref(old,task_by_key[key]) is not None,'Predecessor worker exited without complete prediction')
+            del workers[key]
+    write(output,dict(status='TRANSFERRED',mode='RECOVERED_ORPHANS',inherited_workers=workers,
+                      predecessor_controller=rt['predecessor_controller_pid'],failed_controller=rt['failed_controller_pid']))
+    return workers
 
 
 def score_queue(rt, tasks, limit):
@@ -252,7 +334,11 @@ def dispatch(rt):
         require(done['model_seed'] == seed and done['source_new_optimizer_updates'] == 0, 'Wrong frozen source')
         for name in ('source_orbit_cca.npz','source_selection.json','suite_source_complete.json'):
             os.link(parent/name, src/name)
-    predecessor = transfer_owner(rt, old, rt['predecessor_controller_pid'], by_key, root/'takeover.json')
+    if rt.get('failed_takeover_file'):
+        predecessor=adopt_orphans(rt,old,by_key)
+        predecessor=smoke_adopted(rt,old,predecessor,by_key,root/'takeover.json')
+    else:
+        predecessor = transfer_owner(rt, old, rt['predecessor_controller_pid'], by_key, root/'takeover.json')
     oldrefs = read(old['prediction_reuse_refs_file']) if old.get('prediction_reuse_refs_file') else []
     inherited = {}; active = {}; finished = set(); failed = []
     for task in tasks:
