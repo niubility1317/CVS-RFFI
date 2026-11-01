@@ -163,3 +163,9 @@ raw clean 86.538690%，每景门槛 83.538690%。VarF clean 86.585119%（保持�
 `20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01`，实际代码`8198a2e70c655f24ebaf321f232a676cfb46d916`；8613449参数、两次不共享先验和16CG/81复数FFT-IFFT，额外源模拟监督，全部从零单阶段30/7410。原地面Tri-SIG-TIME SSL/default head，168000×七景完整预测后独立truth-last，4阶段均退出；与旧VarF84单元复算，2604评分组/1736raw配对/1302额外配对，最大误差1.24e-14，raw/DURA判决差0，全部30恢复文件和final30一致。
 
 raw clean86.538690%，各景门槛83.538690%。PHY-MSAT六景依次79.983929/76.972619/74.065476/78.251190/69.658333/62.831548%，达标0/6；相对VarF依次+2.491071/+1.003571/-0.038095/+1.777381/-1.139286/-2.420238个百分点；合并clean 87.216071%（保持）。完整性能目标仍未达到，继续保持ACTIVE，默认DURA不变。结构、容量、物理求解与额外监督共同变化，不作纯结构归因；source误差或效率不代替正式指标。每个子总体clean净变化为{"cross_rx": {"count": 126000, "raw_correct": 111019, "PHY_correct": 112017, "net_correct": 998, "accuracy_change_pp": 0.792063492063491}, "cross_both": {"count": 42000, "raw_correct": 34366, "PHY_correct": 34506, "net_correct": 140, "accuracy_change_pp": 0.3333333333333286}, "combined": {"count": 168000, "raw_correct": 145385, "PHY_correct": 146523, "net_correct": 1138, "accuracy_change_pp": 0.6773809523809433}}。完整分组、配对、成本和限制见该run analysis.md。
+
+## 联合 PHY-MSAT 源端四路替换完成（2026-11-01）
+
+`20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01`，执行ca5cf38aff632f4f037b15f056a320a5a0b88509。原Ls128/Us384固定512包×20 R07 draw=10240实例，冻结原F0与PHY-MSAT final30，0TX/V/OE/novel/目标/更新；blind/真实H/真实noise/二者同时替换全部完成。真实source2 smoke的blind逐点等于原G，原源面板/实际variance与20draw日志核对，独立汇总差0；全部进程退出，登记ANALYZED。
+
+全体Fclean一致率97.509766%→真实H97.714844%（净21）；低档城区90.250696%→真实H91.643454%（修复38/损伤18/净20），仅真实noise净2，同时替换净14。真实H仍有可检验收益，但收益不是独立部件贡献之和：替换也改变学习先验的context与迭代输入。来源为训练源分布，Fclean一致率不是真TX准确率、Main泛化或理论恢复成数；20draw相关，不能当作10240独立包。默认DURA与性能主目标ACTIVE保持，OE仍仅冻结诊断。

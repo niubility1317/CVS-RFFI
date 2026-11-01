@@ -1,0 +1,470 @@
+{
+  "status": "SOURCE_FACTORIAL_COMPLETE",
+  "run_id": "20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01",
+  "code_commit": "ca5cf38aff632f4f037b15f056a320a5a0b88509",
+  "parent_code": "8198a2e70c655f24ebaf321f232a676cfb46d916",
+  "parent_run": "20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "count": 10240,
+  "source_packets": 512,
+  "source_draws": 20,
+  "source_Ls": 128,
+  "source_Us": 384,
+  "summary": {
+    "ALL": {
+      "count": 10240,
+      "methods": {
+        "blind": {
+          "nmse": 0.015780623542045548,
+          "feature_cosine_distance": 0.0045434287865646185,
+          "feature_standardized_mse": 0.05202436644548527,
+          "clean_decision_agreement": 0.97509765625
+        },
+        "true_H": {
+          "nmse": 0.014128010823122632,
+          "feature_cosine_distance": 0.004326961009064689,
+          "feature_standardized_mse": 0.0499136530235186,
+          "clean_decision_agreement": 0.9771484375
+        },
+        "true_noise": {
+          "nmse": 0.015948735258884385,
+          "feature_cosine_distance": 0.004597494594054297,
+          "feature_standardized_mse": 0.0525508857696451,
+          "clean_decision_agreement": 0.9755859375
+        },
+        "true_H_noise": {
+          "nmse": 0.014568580958302735,
+          "feature_cosine_distance": 0.0043661255796905605,
+          "feature_standardized_mse": 0.05018405645841455,
+          "clean_decision_agreement": 0.97685546875
+        }
+      },
+      "paired_against_blind": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_H": {
+          "repairs": 67,
+          "damage": 46,
+          "net": 21
+        },
+        "true_noise": {
+          "repairs": 22,
+          "damage": 17,
+          "net": 5
+        },
+        "true_H_noise": {
+          "repairs": 68,
+          "damage": 50,
+          "net": 18
+        }
+      },
+      "estimated_action_forward_nmse": 0.024371336192973558,
+      "estimated_noise_log_mse": 0.11519885066878384
+    },
+    "clean": {
+      "count": 1579,
+      "methods": {
+        "blind": {
+          "nmse": 0.00029917922260604596,
+          "feature_cosine_distance": 0.00019445730357928092,
+          "feature_standardized_mse": 0.0019749382286392415,
+          "clean_decision_agreement": 1.0
+        },
+        "true_H": {
+          "nmse": 5.515152519285872e-10,
+          "feature_cosine_distance": 7.813908466438163e-09,
+          "feature_standardized_mse": 5.396932629520259e-09,
+          "clean_decision_agreement": 1.0
+        },
+        "true_noise": {
+          "nmse": 0.000299179231407236,
+          "feature_cosine_distance": 0.00019445673735402972,
+          "feature_standardized_mse": 0.0019749395274184112,
+          "clean_decision_agreement": 1.0
+        },
+        "true_H_noise": {
+          "nmse": 5.515159436207345e-10,
+          "feature_cosine_distance": 7.285431565326403e-09,
+          "feature_standardized_mse": 5.392412688206481e-09,
+          "clean_decision_agreement": 1.0
+        }
+      },
+      "paired_against_blind": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_H": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_noise": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_H_noise": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      },
+      "estimated_action_forward_nmse": 0.0016447607948497278,
+      "estimated_noise_log_mse": 0.0
+    },
+    "practical_high": {
+      "count": 1427,
+      "methods": {
+        "blind": {
+          "nmse": 0.005195818031975215,
+          "feature_cosine_distance": 0.001305537075117575,
+          "feature_standardized_mse": 0.014844596703711717,
+          "clean_decision_agreement": 1.0
+        },
+        "true_H": {
+          "nmse": 0.004546631564132963,
+          "feature_cosine_distance": 0.0013982328653502649,
+          "feature_standardized_mse": 0.015465630583540805,
+          "clean_decision_agreement": 0.9985984583041345
+        },
+        "true_noise": {
+          "nmse": 0.005367266934221616,
+          "feature_cosine_distance": 0.001348027793694478,
+          "feature_standardized_mse": 0.01535736846302903,
+          "clean_decision_agreement": 1.0
+        },
+        "true_H_noise": {
+          "nmse": 0.0045486979534720305,
+          "feature_cosine_distance": 0.0013924251508278369,
+          "feature_standardized_mse": 0.015469670154214018,
+          "clean_decision_agreement": 0.9985984583041345
+        }
+      },
+      "paired_against_blind": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_H": {
+          "repairs": 0,
+          "damage": 2,
+          "net": -2
+        },
+        "true_noise": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_H_noise": {
+          "repairs": 0,
+          "damage": 2,
+          "net": -2
+        }
+      },
+      "estimated_action_forward_nmse": 0.007896917436531984,
+      "estimated_noise_log_mse": 0.20323214728088224
+    },
+    "practical_mid": {
+      "count": 1484,
+      "methods": {
+        "blind": {
+          "nmse": 0.00953056864357915,
+          "feature_cosine_distance": 0.0023259051405194633,
+          "feature_standardized_mse": 0.029095622336769957,
+          "clean_decision_agreement": 0.9912398921832885
+        },
+        "true_H": {
+          "nmse": 0.008545291426378512,
+          "feature_cosine_distance": 0.002515614595053331,
+          "feature_standardized_mse": 0.02963610730216163,
+          "clean_decision_agreement": 0.9905660377358491
+        },
+        "true_noise": {
+          "nmse": 0.00971741482110743,
+          "feature_cosine_distance": 0.002326790373923001,
+          "feature_standardized_mse": 0.029164025140094703,
+          "clean_decision_agreement": 0.9898921832884097
+        },
+        "true_H_noise": {
+          "nmse": 0.008814164893405143,
+          "feature_cosine_distance": 0.002536280939199854,
+          "feature_standardized_mse": 0.029977427310413227,
+          "clean_decision_agreement": 0.9905660377358491
+        }
+      },
+      "paired_against_blind": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_H": {
+          "repairs": 3,
+          "damage": 4,
+          "net": -1
+        },
+        "true_noise": {
+          "repairs": 0,
+          "damage": 2,
+          "net": -2
+        },
+        "true_H_noise": {
+          "repairs": 3,
+          "damage": 4,
+          "net": -1
+        }
+      },
+      "estimated_action_forward_nmse": 0.013589353546209324,
+      "estimated_noise_log_mse": 0.07959699539559327
+    },
+    "practical_low_suburban": {
+      "count": 1465,
+      "methods": {
+        "blind": {
+          "nmse": 0.011884308311692519,
+          "feature_cosine_distance": 0.0038068242854225757,
+          "feature_standardized_mse": 0.04532031870070438,
+          "clean_decision_agreement": 0.9822525597269625
+        },
+        "true_H": {
+          "nmse": 0.010862566388463252,
+          "feature_cosine_distance": 0.004103104693897755,
+          "feature_standardized_mse": 0.04736091804121694,
+          "clean_decision_agreement": 0.9815699658703072
+        },
+        "true_noise": {
+          "nmse": 0.012109377316784102,
+          "feature_cosine_distance": 0.0038757406403993992,
+          "feature_standardized_mse": 0.04529844916563913,
+          "clean_decision_agreement": 0.9843003412969283
+        },
+        "true_H_noise": {
+          "nmse": 0.011294660578106781,
+          "feature_cosine_distance": 0.004161733368557874,
+          "feature_standardized_mse": 0.047880808624149694,
+          "clean_decision_agreement": 0.9808873720136518
+        }
+      },
+      "paired_against_blind": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_H": {
+          "repairs": 5,
+          "damage": 6,
+          "net": -1
+        },
+        "true_noise": {
+          "repairs": 5,
+          "damage": 2,
+          "net": 3
+        },
+        "true_H_noise": {
+          "repairs": 6,
+          "damage": 8,
+          "net": -2
+        }
+      },
+      "estimated_action_forward_nmse": 0.018893413722384785,
+      "estimated_noise_log_mse": 0.09306030289261423
+    },
+    "practical_high_urban": {
+      "count": 1440,
+      "methods": {
+        "blind": {
+          "nmse": 0.009646357191640063,
+          "feature_cosine_distance": 0.002287012669775221,
+          "feature_standardized_mse": 0.02982771472201825,
+          "clean_decision_agreement": 0.9868055555555556
+        },
+        "true_H": {
+          "nmse": 0.007542334550897875,
+          "feature_cosine_distance": 0.0022242232329315608,
+          "feature_standardized_mse": 0.0278779493173109,
+          "clean_decision_agreement": 0.9895833333333334
+        },
+        "true_noise": {
+          "nmse": 0.009616519788121676,
+          "feature_cosine_distance": 0.002360514510009024,
+          "feature_standardized_mse": 0.03064919636445767,
+          "clean_decision_agreement": 0.9861111111111112
+        },
+        "true_H_noise": {
+          "nmse": 0.007871497541135695,
+          "feature_cosine_distance": 0.0021927339335282643,
+          "feature_standardized_mse": 0.027790668674424524,
+          "clean_decision_agreement": 0.9895833333333334
+        }
+      },
+      "paired_against_blind": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_H": {
+          "repairs": 5,
+          "damage": 1,
+          "net": 4
+        },
+        "true_noise": {
+          "repairs": 1,
+          "damage": 2,
+          "net": -1
+        },
+        "true_H_noise": {
+          "repairs": 5,
+          "damage": 1,
+          "net": 4
+        }
+      },
+      "estimated_action_forward_nmse": 0.014458779827974569,
+      "estimated_noise_log_mse": 0.19095138187267904
+    },
+    "practical_mid_urban": {
+      "count": 1409,
+      "methods": {
+        "blind": {
+          "nmse": 0.029367582191492717,
+          "feature_cosine_distance": 0.0069079561128609565,
+          "feature_standardized_mse": 0.08564636243505283,
+          "clean_decision_agreement": 0.9595457771469127
+        },
+        "true_H": {
+          "nmse": 0.026435417372700637,
+          "feature_cosine_distance": 0.0065486115965968416,
+          "feature_standardized_mse": 0.08186239282804825,
+          "clean_decision_agreement": 0.9602555003548616
+        },
+        "true_noise": {
+          "nmse": 0.0296212690376321,
+          "feature_cosine_distance": 0.007084996333098564,
+          "feature_standardized_mse": 0.08610857344842916,
+          "clean_decision_agreement": 0.9616749467707594
+        },
+        "true_H_noise": {
+          "nmse": 0.027563530716429033,
+          "feature_cosine_distance": 0.006626341256628314,
+          "feature_standardized_mse": 0.08228265951085846,
+          "clean_decision_agreement": 0.9630943931866572
+        }
+      },
+      "paired_against_blind": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_H": {
+          "repairs": 16,
+          "damage": 15,
+          "net": 1
+        },
+        "true_noise": {
+          "repairs": 8,
+          "damage": 5,
+          "net": 3
+        },
+        "true_H_noise": {
+          "repairs": 20,
+          "damage": 15,
+          "net": 5
+        }
+      },
+      "estimated_action_forward_nmse": 0.04266031235153241,
+      "estimated_noise_log_mse": 0.10884599609053783
+    },
+    "practical_low_urban": {
+      "count": 1436,
+      "methods": {
+        "blind": {
+          "nmse": 0.04657604146166218,
+          "feature_cosine_distance": 0.01552883849004517,
+          "feature_standardized_mse": 0.16380782808325692,
+          "clean_decision_agreement": 0.9025069637883009
+        },
+        "true_H": {
+          "nmse": 0.04281298722050342,
+          "feature_cosine_distance": 0.014024160491058753,
+          "feature_standardized_mse": 0.15333861902362309,
+          "clean_decision_agreement": 0.9164345403899722
+        },
+        "true_noise": {
+          "nmse": 0.04696275570816075,
+          "feature_cosine_distance": 0.015553512613089304,
+          "feature_standardized_mse": 0.16572716704833718,
+          "clean_decision_agreement": 0.903899721448468
+        },
+        "true_H_noise": {
+          "nmse": 0.043796940442303735,
+          "feature_cosine_distance": 0.0141833507998076,
+          "feature_standardized_mse": 0.1540548700588291,
+          "clean_decision_agreement": 0.9122562674094707
+        }
+      },
+      "paired_against_blind": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "true_H": {
+          "repairs": 38,
+          "damage": 18,
+          "net": 20
+        },
+        "true_noise": {
+          "repairs": 8,
+          "damage": 6,
+          "net": 2
+        },
+        "true_H_noise": {
+          "repairs": 34,
+          "damage": 20,
+          "net": 14
+        }
+      },
+      "estimated_action_forward_nmse": 0.07445823768634365,
+      "estimated_noise_log_mse": 0.14403528787295383
+    }
+  },
+  "G_parameters": 8613449,
+  "prior_variance": 0.01,
+  "CG_steps_each": 8,
+  "noise_floor": 1e-07,
+  "G_training_updates": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "target_inputs": 0,
+  "agreement_is_TX_accuracy": false,
+  "oracle_deployable": false,
+  "theoretical_ceiling": false,
+  "default_DURA_changed": false,
+  "intervention_also_changes_learned_prior_context": true,
+  "source_in_sample": true,
+  "seconds": 59.716835266001,
+  "goal_complete": false
+}

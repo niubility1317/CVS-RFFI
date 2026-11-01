@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "ca5cf38aff632f4f037b15f056a320a5a0b88509",
+  "source_smoke": "PASS",
+  "exact_blind_replay": true,
+  "controller_PID_CWD_cmdline_CUDA": true,
+  "worker_PID_CWD_cmdline_CUDA_GPU": true,
+  "log_growth": true,
+  "GPU": 4,
+  "free_memory_MiB": 22583,
+  "existing_compute": 2,
+  "added_task_GPU_workers": 1,
+  "archive_local_remote_SHA_match": true,
+  "remote_compile": true,
+  "one_independent_P0P1": "PASS",
+  "focused_tests_passed": 3,
+  "other_owner_changes": false,
+  "optimizer_updates": 0,
+  "target_inputs": 0
+}

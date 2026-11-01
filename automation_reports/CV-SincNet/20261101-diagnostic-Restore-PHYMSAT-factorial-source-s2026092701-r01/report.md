@@ -35,3 +35,7 @@
 零训练、TX/V/OE/novel/目标读取或模型更新，原f57源F0尺度仅作指标归一化。不使用父模型的目标误分类选择面板或超参；父模型固定final30已独立完成Main全七景。真实H/noise也改变学习先验上下文，结果只定位共适应系统敏感性，不能分解独立因果贡献或作为理论上限、Main准确率或部署方法。
 
 环境为原N607 CVS-RFFI Python/Torch2.1.0+cu121、FP32/TF32off，CWD/commit/命令/路径/产物与停止规则见登记表。GPU4/6用UUID准入，free>=16000MiB、原compute<=2，只新增一个本任务NN进程、单卡总<=3；不改其他owner。失败保留root，不自动重试。完整源记录、所有20draw与各场景结果后独立NumPy复算，默认DURA及性能目标保持。
+
+## 完整执行与独立复算完成
+
+VERIFIED / ANALYZED。源2条真实smoke及blind逐点重放PASS；固定512包×20draw×四路径全部完成，0更新/TX/V/OE/目标。20draw日志与既有固定面板/variance一致，独立聚合差0，模型状态保持，controller/worker均退出。真实H与noise会同时改变先验context；不能作为理论上限、Main准确率或可部署oracle。详见analysis.md。
