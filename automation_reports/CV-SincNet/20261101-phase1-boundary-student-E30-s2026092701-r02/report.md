@@ -3,7 +3,7 @@
 - run_id：`20261101-phase1-boundary-student-E30-s2026092701-r02`
 - group_id：`phase1-bounded-boundary-student`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：TRAINING_COMPLETE；七视图预测进行中，实际状态见 events.jsonl 和远端记录。
 
 ## 目的与对照
 
@@ -39,3 +39,9 @@
 ## GPU 检查与正式训练
 
 GPU 4 worker PID 50451 独立核验，真实 F/DURA 的 128 条 L_s 源记录 GPU 检查通过；7 条教师判断不一致，特权训练目标到达 7 条 clean 教师类别。模型冻结，无 TX 标签、V 或测试 IQ；临时学生权重丢弃，正式 E30 从头初始化，首轮进行中。检查数字不是可部署学生准确率。
+
+## 固定训练完成
+
+已完成预先登记的 30 轮和 14790 次更新。独立使用真实冻结 Tri-SIG-TIME SSL 和 DURA 在两条源记录上重载最终学生，确认输出确定且满足 5% 校正约束；最终检查点 SHA-256 为 `951bd2dc49753db8b21af0cba6afcf0124ea05f43d59203957a0dd603b8eb0a7`。训练未读取 TX 标签、V 或测试 IQ。
+
+七个 Phase1 视图的预测正在生成，全部固定后才接入真值。此时没有测试准确率或 3% 目标结论；所用测试此前已被观察，不属于独立盲测。
