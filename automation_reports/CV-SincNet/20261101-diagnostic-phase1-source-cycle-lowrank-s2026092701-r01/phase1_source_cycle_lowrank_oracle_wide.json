@@ -1,0 +1,469 @@
+{
+  "status": "SOURCE_ONLY_LABEL_ASSISTED_CYCLE_LOWRANK_ORACLE",
+  "source_ids": 822,
+  "validation_ids": 557,
+  "heldout_ids": 265,
+  "validation": [
+    {
+      "candidate": 0,
+      "alpha": [
+        4,
+        0.25
+      ],
+      "per_view": {
+        "practical_low_suburban": 1,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 1
+      },
+      "net": 1
+    },
+    {
+      "candidate": 1,
+      "alpha": [
+        4,
+        0.5
+      ],
+      "per_view": {
+        "practical_low_suburban": 1,
+        "practical_mid_urban": 0,
+        "practical_low_urban": 2
+      },
+      "net": 3
+    },
+    {
+      "candidate": 2,
+      "alpha": [
+        4,
+        1.0
+      ],
+      "per_view": {
+        "practical_low_suburban": 1,
+        "practical_mid_urban": 2,
+        "practical_low_urban": 3
+      },
+      "net": 6
+    },
+    {
+      "candidate": 3,
+      "alpha": [
+        8,
+        0.25
+      ],
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 0
+      },
+      "net": -1
+    },
+    {
+      "candidate": 4,
+      "alpha": [
+        8,
+        0.5
+      ],
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 0
+      },
+      "net": -1
+    },
+    {
+      "candidate": 5,
+      "alpha": [
+        8,
+        1.0
+      ],
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": -2,
+        "practical_low_urban": 0
+      },
+      "net": -2
+    }
+  ],
+  "results": {
+    "clean": {
+      "valid_count": 256,
+      "L_s_count": 81,
+      "baseline_correct": 256,
+      "L_s_baseline_correct": 81,
+      "class_oracle_correct": 256,
+      "L_s_class_oracle_correct": 81,
+      "fidelity_class_oracle_correct": 256,
+      "L_s_fidelity_class_oracle_correct": 81,
+      "aligned_mse_baseline": 3.5020988255553014e-05,
+      "aligned_mse_oracle": 3.5020988255553014e-05,
+      "quality_oracle_improved": 0,
+      "all_count": 265,
+      "per_alpha": [
+        {
+          "alpha": [
+            4,
+            0.25
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 256,
+          "L_s_correct": 81,
+          "aligned_mse": 3.5020988255553014e-05,
+          "quality_improved": 0,
+          "quality_worsened": 0
+        },
+        {
+          "alpha": [
+            4,
+            0.5
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 256,
+          "L_s_correct": 81,
+          "aligned_mse": 3.5020988255553014e-05,
+          "quality_improved": 0,
+          "quality_worsened": 0
+        },
+        {
+          "alpha": [
+            4,
+            1.0
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 256,
+          "L_s_correct": 81,
+          "aligned_mse": 3.5020988255553014e-05,
+          "quality_improved": 0,
+          "quality_worsened": 0
+        },
+        {
+          "alpha": [
+            8,
+            0.25
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 256,
+          "L_s_correct": 81,
+          "aligned_mse": 3.5020988255553014e-05,
+          "quality_improved": 0,
+          "quality_worsened": 0
+        },
+        {
+          "alpha": [
+            8,
+            0.5
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 256,
+          "L_s_correct": 81,
+          "aligned_mse": 3.5020988255553014e-05,
+          "quality_improved": 0,
+          "quality_worsened": 0
+        },
+        {
+          "alpha": [
+            8,
+            1.0
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 256,
+          "L_s_correct": 81,
+          "aligned_mse": 3.5020988255553014e-05,
+          "quality_improved": 0,
+          "quality_worsened": 0
+        }
+      ]
+    },
+    "practical_low_suburban": {
+      "valid_count": 256,
+      "L_s_count": 81,
+      "baseline_correct": 250,
+      "L_s_baseline_correct": 78,
+      "class_oracle_correct": 251,
+      "L_s_class_oracle_correct": 79,
+      "fidelity_class_oracle_correct": 250,
+      "L_s_fidelity_class_oracle_correct": 78,
+      "aligned_mse_baseline": 0.01622196039447384,
+      "aligned_mse_oracle": 0.016023932429517374,
+      "quality_oracle_improved": 24,
+      "all_count": 265,
+      "per_alpha": [
+        {
+          "alpha": [
+            4,
+            0.25
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 250,
+          "L_s_correct": 78,
+          "aligned_mse": 0.016257285930730246,
+          "quality_improved": 9,
+          "quality_worsened": 20
+        },
+        {
+          "alpha": [
+            4,
+            0.5
+          ],
+          "repairs": 1,
+          "repairs_with_better_iq": 0,
+          "correct": 251,
+          "L_s_correct": 79,
+          "aligned_mse": 0.016717086383935154,
+          "quality_improved": 3,
+          "quality_worsened": 26
+        },
+        {
+          "alpha": [
+            4,
+            1.0
+          ],
+          "repairs": 1,
+          "repairs_with_better_iq": 0,
+          "correct": 249,
+          "L_s_correct": 79,
+          "aligned_mse": 0.01892946431531473,
+          "quality_improved": 3,
+          "quality_worsened": 26
+        },
+        {
+          "alpha": [
+            8,
+            0.25
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 250,
+          "L_s_correct": 78,
+          "aligned_mse": 0.016184810352987213,
+          "quality_improved": 24,
+          "quality_worsened": 5
+        },
+        {
+          "alpha": [
+            8,
+            0.5
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 250,
+          "L_s_correct": 78,
+          "aligned_mse": 0.01617170200358242,
+          "quality_improved": 22,
+          "quality_worsened": 7
+        },
+        {
+          "alpha": [
+            8,
+            1.0
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 250,
+          "L_s_correct": 78,
+          "aligned_mse": 0.01621788196012643,
+          "quality_improved": 17,
+          "quality_worsened": 12
+        }
+      ]
+    },
+    "practical_mid_urban": {
+      "valid_count": 256,
+      "L_s_count": 81,
+      "baseline_correct": 236,
+      "L_s_baseline_correct": 75,
+      "class_oracle_correct": 241,
+      "L_s_class_oracle_correct": 76,
+      "fidelity_class_oracle_correct": 238,
+      "L_s_fidelity_class_oracle_correct": 75,
+      "aligned_mse_baseline": 0.03872257878660504,
+      "aligned_mse_oracle": 0.038082797221045746,
+      "quality_oracle_improved": 94,
+      "all_count": 265,
+      "per_alpha": [
+        {
+          "alpha": [
+            4,
+            0.25
+          ],
+          "repairs": 1,
+          "repairs_with_better_iq": 0,
+          "correct": 235,
+          "L_s_correct": 74,
+          "aligned_mse": 0.03852170974686425,
+          "quality_improved": 59,
+          "quality_worsened": 44
+        },
+        {
+          "alpha": [
+            4,
+            0.5
+          ],
+          "repairs": 3,
+          "repairs_with_better_iq": 1,
+          "correct": 237,
+          "L_s_correct": 74,
+          "aligned_mse": 0.03993281683982571,
+          "quality_improved": 29,
+          "quality_worsened": 74
+        },
+        {
+          "alpha": [
+            4,
+            1.0
+          ],
+          "repairs": 4,
+          "repairs_with_better_iq": 0,
+          "correct": 237,
+          "L_s_correct": 75,
+          "aligned_mse": 0.04767744047067036,
+          "quality_improved": 5,
+          "quality_worsened": 98
+        },
+        {
+          "alpha": [
+            8,
+            0.25
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 235,
+          "L_s_correct": 75,
+          "aligned_mse": 0.03860277338037739,
+          "quality_improved": 89,
+          "quality_worsened": 14
+        },
+        {
+          "alpha": [
+            8,
+            0.5
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 235,
+          "L_s_correct": 75,
+          "aligned_mse": 0.038580564842636694,
+          "quality_improved": 72,
+          "quality_worsened": 31
+        },
+        {
+          "alpha": [
+            8,
+            1.0
+          ],
+          "repairs": 1,
+          "repairs_with_better_iq": 1,
+          "correct": 235,
+          "L_s_correct": 74,
+          "aligned_mse": 0.038829911468601486,
+          "quality_improved": 45,
+          "quality_worsened": 58
+        }
+      ]
+    },
+    "practical_low_urban": {
+      "valid_count": 256,
+      "L_s_count": 81,
+      "baseline_correct": 221,
+      "L_s_baseline_correct": 70,
+      "class_oracle_correct": 230,
+      "L_s_class_oracle_correct": 72,
+      "fidelity_class_oracle_correct": 223,
+      "L_s_fidelity_class_oracle_correct": 70,
+      "aligned_mse_baseline": 0.07383221561553577,
+      "aligned_mse_oracle": 0.07239388710743223,
+      "quality_oracle_improved": 142,
+      "all_count": 265,
+      "per_alpha": [
+        {
+          "alpha": [
+            4,
+            0.25
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 219,
+          "L_s_correct": 70,
+          "aligned_mse": 0.07322501587571478,
+          "quality_improved": 97,
+          "quality_worsened": 60
+        },
+        {
+          "alpha": [
+            4,
+            0.5
+          ],
+          "repairs": 6,
+          "repairs_with_better_iq": 2,
+          "correct": 221,
+          "L_s_correct": 71,
+          "aligned_mse": 0.07493568905479132,
+          "quality_improved": 54,
+          "quality_worsened": 103
+        },
+        {
+          "alpha": [
+            4,
+            1.0
+          ],
+          "repairs": 9,
+          "repairs_with_better_iq": 0,
+          "correct": 220,
+          "L_s_correct": 70,
+          "aligned_mse": 0.08548405688470431,
+          "quality_improved": 12,
+          "quality_worsened": 145
+        },
+        {
+          "alpha": [
+            8,
+            0.25
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 221,
+          "L_s_correct": 70,
+          "aligned_mse": 0.07361596361700912,
+          "quality_improved": 129,
+          "quality_worsened": 28
+        },
+        {
+          "alpha": [
+            8,
+            0.5
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 219,
+          "L_s_correct": 69,
+          "aligned_mse": 0.0735452457842328,
+          "quality_improved": 123,
+          "quality_worsened": 34
+        },
+        {
+          "alpha": [
+            8,
+            1.0
+          ],
+          "repairs": 0,
+          "repairs_with_better_iq": 0,
+          "correct": 217,
+          "L_s_correct": 68,
+          "aligned_mse": 0.07384232187856495,
+          "quality_improved": 87,
+          "quality_worsened": 70
+        }
+      ]
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "candidates_before_source_tx_labels": true,
+  "caveat": "Alignment uses shifts within ±64 samples on the central 128 samples. Oracles use paired source clean IQ and/or mixed source targets per record and cannot run at inference. They are bounds only for DURA and six fixed low-rank waveforms and this source sample, not for new restoration networks or target performance. The 20-sample period was selected after earlier source inspection; fixed experts saw source data and simulator is not validated satellite data."
+}

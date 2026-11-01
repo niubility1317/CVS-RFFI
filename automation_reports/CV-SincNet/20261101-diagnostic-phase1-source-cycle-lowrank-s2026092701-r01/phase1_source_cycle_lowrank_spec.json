@@ -1,0 +1,32 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_FIXED_BEFORE_FULL_RUN",
+  "script": "phase1_source_cycle_lowrank_probe.py",
+  "script_sha256": "50f35b707dec7bbe2371f3918093a5646e8a661819cfc8d34bfc258e01f06b58",
+  "source_sample_seed": 2026110521,
+  "channel_seed": 2026110522,
+  "hardware_seed": 2026110523,
+  "period": 20,
+  "matrix_shape": [
+    12,
+    20
+  ],
+  "tail_samples_preserved": 16,
+  "retained_ranks": [
+    4,
+    8
+  ],
+  "blend": [
+    0.25,
+    0.5,
+    1
+  ],
+  "gate": "existing fixed blind estimated SNR < 10dB and normalized input/output difference > .2",
+  "val_receivers": [
+    4,
+    6
+  ],
+  "heldout_receiver": 8,
+  "day": 3,
+  "scope": "DURA output cycle mean preserved; only residual cycle matrix is low-rank approximated; candidate inference uses received IQ and frozen model only",
+  "caveat": "Period and blind gate follow earlier source findings; source IDs may overlap other diagnostics; frozen experts saw source records. Simulated satellite is not validated real satellite."
+}
