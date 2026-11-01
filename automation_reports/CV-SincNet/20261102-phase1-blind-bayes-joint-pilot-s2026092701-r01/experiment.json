@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01",
+  "group_id": "phase1-blind-bayes-joint",
+  "display_name": "任务指导的可微盲信道后验源域原型",
+  "description": "固定地面基座和源条件先验，通过可微高斯后验联合优化盲信道估计，使用源干净 IQ 和冻结 Tri-SIG-TIME SSL 特征指导。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "blind_channel",
+    "differentiable_posterior",
+    "pilot",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-blind-bayes-source-validation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "6b972a9d22e9b48ab7c9aa63cd7f86dc1a091981",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2 one source-only training process, CPU 2 threads, TF32 disabled, full-loss zero-gradient source smoke required",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ float32 [2,256], source simulation action/noise labels for physics loss, conditional prior posterior and frozen F features; inference receives IQ only",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels, U_s truth, V or test read; F clean pseudo targets for source evaluation",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "384 RX8 source heldout IDs, 64 per scene, same previously observed pilot cohort; no checkpoint selection",
+    "support_query_ref": null,
+    "leo_config_ref": "Source cache epoch20 training, epoch19 evaluation"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source training and source holdout only, no V or test IQ",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed source feasibility, previously observed source IDs, no independent blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed pretrained blind action estimator, source Gaussian prior and frozen Tri-SIG-TIME SSL; only blind estimator weights updated; DURA loaded after updates for source comparator.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-action-full-s2026092701-r01/checkpoint_epoch10.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01/source_prior.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Blind action SHA256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338 and source prior SHA256 5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "One fixed pass over 4096 train IDs, final checkpoint only; report same 384 source RX8 records with no selection and no target access."
+  },
+  "execution": {
+    "host": "N607 GPU2",
+    "launch_owner": "Codex differentiable posterior pilot GPU2 owner",
+    "gpu_policy": "GPU2 only; source-only training and prediction, no TF32, independent resource preflight",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01-release/experiments/phase1_blind_bayes_joint/blind_bayes_joint_pilot.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01 --commit 6b972a9d22e9b48ab7c9aa63cd7f86dc1a091981 --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "checkpoint.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean-F pseudo-target agreement",
+      "direct normalized IQ MSE",
+      "training loss"
+    ],
+    "dimensions": [
+      "six source RX8 heldout scenarios"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_blind_bayes_joint/blind_bayes_joint_pilot.py",
+    "scientific_rule": "Frozen F pseudo targets not truth; source samples previously observed; DURA source comparator only; no target predictions."
+  },
+  "rows": [
+    {
+      "row_id": "blind_bayes_joint_pilot_s2026092701",
+      "method": "differentiate conditional Gaussian posterior through blind action estimate and fixed ground F, regularize physics and paired IQ",
+      "purpose": "test whether downstream-aware blind channel updates improve restoration before full source selection",
+      "config_ref": "experiments/phase1_blind_bayes_joint/blind_bayes_joint_pilot.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120554,
+        "split": 392005,
+        "data": 2026120555,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "fixed prior and RX8 same as parent; fit subset and order seed2026120555",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 2e-05,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "4096 train source IDs, batch8 one pass, fixed 8192 source prior IDs, 384 source RX8 heldout",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01-release/experiments/phase1_blind_bayes_joint/blind_bayes_joint_pilot.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-joint-pilot-s2026092701-r01 --commit 6b972a9d22e9b48ab7c9aa63cd7f86dc1a091981 --device cuda:0",
+      "expected_artifacts": [
+        "checkpoint.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "F frozen during joint optimization, DURA loaded only after optimization for source comparator.",
+    "Fixed parent action model, prior, and RX8 source IDs previously observed; no independent blind claim.",
+    "No TX labels, U_s truth, V or test read; source action/noise and paired IQ are training supervision."
+  ],
+  "registered_at": "2026-11-01T21:01:17+00:00"
+}
