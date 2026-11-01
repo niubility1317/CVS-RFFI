@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "actual_code_commit": "1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6",
+  "scratch_learned_state_equals_factory": true,
+  "physical_actual_E0_equals_fixedBFcontrol": true,
+  "detail_output_initial_zero": true,
+  "prior_unchanged": true,
+  "E01_bothbranches_updated": {
+    "physical.time_patch.": 2,
+    "physical.frequency_patch.": 2,
+    "physical.encoder.": 72,
+    "physical.kernel_head.": 2,
+    "physical.coefficient_head.": 2,
+    "physical.noise_head.": 2,
+    "detail.": 161
+  },
+  "optimizer_finite": true,
+  "source_orders_draws_exact_control": true,
+  "source_budget_E01": 247,
+  "all_source_role_counts_matched": true,
+  "source_fullfeature_rows_E01": 63000,
+  "posterior_calls_E01": 1969,
+  "weighted_record_objective_error": 4.002514319978445e-09,
+  "physical_E01_state_max_abs_difference_from_BF": 0.0004180071409791708,
+  "physical_E01_parity_descriptive_not_gate": true,
+  "epoch1_seconds": 230.6885926360046,
+  "epoch1_metrics": {
+    "loss": 0.6275467658165902,
+    "physical_loss": 0.04496272472812543,
+    "detail_loss": 0.5825840396606733,
+    "action_matrix_relative_mse": 0.3682623033310686,
+    "noise_log_mse": 8.136493224704076,
+    "iq_nmse": 0.56311032415004,
+    "spectral_error": 0.25384830287903076,
+    "feature_error": 0.08317142092519336,
+    "feature_standardized_error": 0.5949584753021361,
+    "base_iq_nmse": 0.8154005614954328,
+    "predicted_noise": 0.009761631007498455,
+    "relative_solve_residual": 4.6427461485594646e-14
+  },
+  "new_neural_forwards": 0,
+  "new_IQ_or_truth_reads": 0
+}
