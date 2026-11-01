@@ -7,3 +7,5 @@ The clean-source feature memory contains 1,577 training features across six clas
 A two-layer shared feature embedding was trained using class-supervised contrastive and paired clean/degraded alignment objectives, on 1,612 source training IDs (1,577 usable memory IDs). The strongest validation combination had aggregate +1 correct across three impaired views, but receiver 6 low urban was -4 and its clean view was -1. The predeclared per-receiver protections rejected all 20 epoch/retrieval combinations, retaining DURA. The receiver-8 holdout was not evaluated for this learned network. Source validation observations informed the next action but do not establish target performance.
 
 The independent complete reruns reproduced both JSON artifacts exactly; the smoke runs exercised source sampling, model training and retrieval. Protocol manifests record source code and dependency SHA-256 values before full execution.
+
+Independent physical-ID audit: among 4,096 sampled source records, all physical IDs were unique and train/validation/holdout pairwise intersections were zero.
