@@ -184,8 +184,9 @@ def paired_cells(physical_values,guided_values,labels,mask):
     return {f:{e:int((mask&fm&em).sum()) for e,em in events.items()} for f,fm in feature.items()}
 
 
-def score(args):
+def score(args,*,comparison='guided'):
     if os.environ.get('CUDA_VISIBLE_DEVICES','')!='':raise ValueError('Independent CPU truth scorer required')
+    if comparison not in METHODS or comparison in ('received','physical'):raise ValueError('Registered feature comparison method required')
     out=args.root/'runs'/RUN;done,ref,data,error=fixed_predictions(out,args.commit)
     # First truth read follows complete seven-view validation. Never load U_s labels or IQ here.
     c=validate_source(read(args.inputs));contract=read(Path(c['source_contract']))
@@ -204,7 +205,7 @@ def score(args):
         for key,v in [('RX',ref['rx']),('day',ref['day']),('TX',labels)]:masks.extend((key,str(x),v==x) for x in np.unique(v))
         for dim,value,mask in masks:
             n=int(mask.sum());pv={m:{k:a[m+'__'+k] for k in METRICS} for m in METHODS}
-            conditional.append(dict(scene=scene,dimension=dim,stratum=value,count=n,cells=paired_cells(pv['physical'],pv['guided'],labels,mask)))
+            conditional.append(dict(scene=scene,dimension=dim,stratum=value,count=n,cells=paired_cells(pv['physical'],pv[comparison],labels,mask)))
             for m in METHODS:
                 correct=pv[m]['prediction']==labels;base=pv['physical']['prediction']==labels
                 records.append(dict(scene=scene,dimension=dim,stratum=value,method=m,count=n,correct=int((correct&mask).sum()),accuracy_percent=100*float(correct[mask].mean()),
@@ -212,7 +213,7 @@ def score(args):
                     metrics={k:float(pv[m][k][mask].mean()) for k in METRICS if k!='prediction'},
                     physical_errors={} if m=='received' else {k:float(a[m+'__'+k][mask].mean()) for k in ['action_matrix_relative_mse','noise_log_mse','predicted_noise','true_noise','relative_solve_residual']}))
     write(out/'results.json',dict(status='SOURCE_V_GUIDANCE_ANALYZED',run_id=RUN,code_commit=args.commit,F0_identity=done['F0_identity'],
-        count=12600,source_V_packets=1800,source_V_views=7,records=records,conditional=conditional,max_metric_recomputation_error=error,
+        count=12600,source_V_packets=1800,source_V_views=7,records=records,conditional=conditional,conditional_comparison_vs_physical=comparison,max_metric_recomputation_error=error,
         source_TX_labels_scored=1800,truth_last=True,prediction_TX_labels_read=0,training_TX_labels_read=0,target_inputs=0,OE_reads=0,novel_reads=0,
         optimizer_updates=0,model_state_updates=0,checkpoint_selection=False,V_training_rows=0,V_historically_exposed=True,
         source_receiver_seed=2026101902,training_receiver_seed=2026101911,agreement_is_TX_accuracy=False,theoretical_ceiling=False,default_DURA_changed=False,goal_complete=False))
