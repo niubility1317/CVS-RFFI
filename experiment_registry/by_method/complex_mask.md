@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |无标签多尺度复数频谱恢复与 Tri-SIG-TIME SSL 配对验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261101-phase1-complex-mask-source-s2026092701-r01/report.md)|
+|无标签多尺度复数频谱恢复与 Tri-SIG-TIME SSL 配对验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261102-phase1-complex-mask-source-s2026092701-r02/report.md)|
