@@ -13,3 +13,15 @@ The 256 source IDs are the same as the earlier spectral search; each view has 25
 The best-of-four columns use source labels for this summary and are not deployable. In low urban even the privileged phase-fitted variants reach at most 164/251, versus DURA 217/251. A repeated run reproduces all counts. On all 256 records, the mean aligned paired-clean IQ MSE for the best-noise-regularization inverse (multiplier 1) is about 0.3198 versus 0.0575 for DURA; alignment independently fits integer shifts from -16 to +16 and complex gain over the central 224 samples. The phase fit cannot improve this gain-invariant metric by construction.
 
 The inverse uses a frequency-domain reflected-padding approximation, while the simulator applies finite linear convolution with reflected prehistory. Its poor result does not rule out a better boundary-aware or nonlinear channel model. No true U_s transmitter labels, validation IQ, or test IQ were read. Earlier Phase1 test analysis motivated this experiment, so further test development is not blind.
+
+## Exact reflected-boundary source check
+
+The follow-up uses a subset of 64 source IDs (63 valid, 16 L_s true and 47 U_s pseudo-targets). It builds the complete finite linear FIR operator with exactly the simulator's reflected prehistory, then solves a regularized inverse using the same privileged channel, frequency, AGC, clean RMS and phase fit. DURA and FFT-pad inverse use the identical subset. Best-of-four columns are descriptive, selected after source labels, and do not represent deployable inference.
+
+| Source view | Valid | DURA correct | Best FFT-pad correct | Best exact-reflect correct | DURA aligned MSE | Exact aligned MSE, multiplier 1 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| practical_low_suburban | 63 | 60 | 59 | 57 | 0.0095 | 0.0805 |
+| practical_mid_urban | 63 | 57 | 50 | 48 | 0.0208 | 0.1642 |
+| practical_low_urban | 63 | 53 | 42 | 42 | 0.0379 | 0.2842 |
+
+The exact reflected operator still performs worse on this small source subset. This diagnostic has not been independently repeated, and its privileged inputs and finite linear model prevent a general conclusion about learned or nonlinear channel-aware recovery. No test IQ was read.
