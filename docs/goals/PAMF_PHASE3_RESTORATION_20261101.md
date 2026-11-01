@@ -183,3 +183,15 @@ PHY同row冻结预测补充（无新增NN/预测/目标IQ/TX读取）：低档�
 `20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01`，实际代码27197d5a45c720dabd624425eb30cf586263a171，4针对性检查及一次P0/P1通过。复用R07原V1800×七景，原5源RX×3日期每格120，角色V、唯一ID1800、与训练63000交集0及七景trace已核实；仅冻结验证，0训练/TX/OE/novel/目标/状态或统计拟合。固定四G final30、原F0/defaulthead、默认DURA/raw和PHY真实H读出；Fclean一致率不是TX准确率或理论上限，V历史曝光及训练/验证信道种子差异披露。
 
 CPU控制器已独立核实PID/CWD/命令/CUDA空、WAIT_PARENT_COMPLETE，当前0GPUworker/模型加载/V神经前向，真实源2条smoke尚待执行。等待FullFGrad整个Main ARTIFACTS_COMPLETE后才按GPU4/6 UUID原准入运行，不按科学分数作条件，父健康任务不改。此项不能改变当前训练配方、checkpoint或主验收；完成后只作源验证与机制诊断。默认DURA和完整性能目标ACTIVE保持。
+
+## 未限幅特征指导原 Main 七景完成（2026-11-01）
+
+`20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01`，实际代码940fa78ba450b686b1b03c7530c47af4360faafc。MSAT4249922参数，与VarF同scratch初值/原LsUs/R07/sourceorder/优化器/30-7410；只移除逐记录F输入梯度cap，全局参数clip1保留。原地面Tri-SIG-TIME SSL/defaulthead/168000×七景全部固定预测后truth-last，4阶段exit0/liveempty。与既有VarF84单元、2604组/1736raw配对/1302额外配对复算PASS，最大差1.24e-14、raw/DURA判决差0；同E0/源顺序/draw/60日志/30恢复文件E30-final一致。
+
+六景依次78.333333/76.964286/75.497619/77.198810/71.408929/65.849405%，达标0/6；相对VarF依次+0.840476/+0.995238/+1.394048/+0.725000/+0.611310/+0.597619个百分点。合并clean 86.484524%（未保持），各子总体损伤详见完整报告，不以合并均值掩盖。完整目标未达到，保持ACTIVE和默认DURA。本轮来源于源端特征误差与限幅证据，不据目标误分类调参/选模或取消测试；OE仅冻结诊断，V/OE/目标不训练，默认DURA保持。完整TX/RX/day/配对/成本见analysis.md。
+
+## 原固定源 V 冻结验证完成（2026-11-01）
+
+`20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01`，实际代码27197d5a45c720dabd624425eb30cf586263a171。全部父模型Main完成后，原V1800×七景/七读出完成，原Ls2条真实smoke与4项测试/一次P0P1通过，独立49单元/88200F0行/索引/RXday/日志及全部保存判决一致率复算PASS，汇总差0；0更新/TX/OE/novel/目标，所有状态保持、进程退出，登记ANALYZED。
+
+低档城区Fclean判决一致率：received 60.611111%；DURA_v1 86.111111%；MSAT_M20 88.055556%；MSAT_VarF 86.388889%；PHY_MSat 91.166667%；MSAT_FullFGrad 89.555556%；PHY_true_H 91.833333%。这是原源V验证，不是TX准确率或Main。V历史曝光、原F0/DURA验证知识、1800包七次相关复用，以及训练/V物理包与receiverseed1911/1902差异均披露，不能单因称过拟合或理论恢复上限。默认DURA与六景逐个3pp+clean主目标不因源验证收益自动改变；完整方法/分场景/源面板对比见analysis.md。

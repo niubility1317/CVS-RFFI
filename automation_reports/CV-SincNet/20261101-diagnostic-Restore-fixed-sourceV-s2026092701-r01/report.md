@@ -39,3 +39,7 @@
 ## 排队后独立核实
 
 VERIFIED / QUEUED。独立核实本run CPU控制器PID/CWD/命令和CUDA为空，waiting状态为WAIT_PARENT_COMPLETE，尚无GPU worker、模型加载或源V神经前向；真实源2条smoke尚未执行。只依赖FullFGrad全部Main工序技术完成，不读取或依据其分数启动。单archive SHA与remote compile已通过，父健康训练未改。
+
+## 冻结验证与独立复算完成
+
+VERIFIED / ANALYZED。父完整Main结束后执行，原Ls2条真实checkpoint smoke PASS，原V1800×七景×七读出全部完成，0更新/TX/OE/novel/目标。全部49单元、88200F0特征行、源索引/RXday/日志与逐条判决一致率复算PASS；所有模型状态保持、进程退出。原V历史曝光及采样/receiverseed差异分别披露，本项不代替Main或建立理论恢复上限。详见analysis.md。

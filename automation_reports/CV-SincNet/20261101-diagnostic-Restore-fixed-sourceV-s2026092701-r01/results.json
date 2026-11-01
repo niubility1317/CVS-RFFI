@@ -1,0 +1,386 @@
+{
+  "status": "SOURCE_V_VALIDATION_COMPLETE",
+  "run_id": "20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01",
+  "code_commit": "27197d5a45c720dabd624425eb30cf586263a171",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "source_V_packets": 1800,
+  "source_V_views": 7,
+  "count": 12600,
+  "methods": [
+    "received",
+    "DURA_v1",
+    "MSAT_M20",
+    "MSAT_VarF",
+    "PHY_MSat",
+    "MSAT_FullFGrad",
+    "PHY_true_H"
+  ],
+  "summary": {
+    "clean": {
+      "count": 1800,
+      "methods": {
+        "received": {
+          "nmse": 0.0,
+          "feature_cosine_distance": 8.675787183973524e-09,
+          "feature_standardized_mse": 0.0,
+          "clean_decision_agreement": 1.0
+        },
+        "DURA_v1": {
+          "nmse": 8.020987674752986e-05,
+          "feature_cosine_distance": 4.056933853361342e-05,
+          "feature_standardized_mse": 0.0004870886863353816,
+          "clean_decision_agreement": 0.9988888888888889
+        },
+        "MSAT_M20": {
+          "nmse": 0.0010454782076808695,
+          "feature_cosine_distance": 4.1941338115268284e-05,
+          "feature_standardized_mse": 0.00045681752877044343,
+          "clean_decision_agreement": 0.9988888888888889
+        },
+        "MSAT_VarF": {
+          "nmse": 0.0014248329663170505,
+          "feature_cosine_distance": 6.639970673455132e-05,
+          "feature_standardized_mse": 0.0007947499026310349,
+          "clean_decision_agreement": 0.9983333333333333
+        },
+        "PHY_MSat": {
+          "nmse": 0.00048435403709542395,
+          "feature_cosine_distance": 0.0002303308579656813,
+          "feature_standardized_mse": 0.0022236043955975522,
+          "clean_decision_agreement": 0.9972222222222222
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.0010291914876400673,
+          "feature_cosine_distance": 4.567497306399875e-05,
+          "feature_standardized_mse": 0.00043927093199979734,
+          "clean_decision_agreement": 0.9988888888888889
+        },
+        "PHY_true_H": {
+          "nmse": 5.502225495440044e-10,
+          "feature_cosine_distance": 6.887647840711805e-09,
+          "feature_standardized_mse": 4.765939700082347e-09,
+          "clean_decision_agreement": 1.0
+        }
+      }
+    },
+    "practical_high": {
+      "count": 1800,
+      "methods": {
+        "received": {
+          "nmse": 2.0154648982154,
+          "feature_cosine_distance": 0.043114040229055614,
+          "feature_standardized_mse": 0.3382427980357574,
+          "clean_decision_agreement": 0.965
+        },
+        "DURA_v1": {
+          "nmse": 0.009609564007259905,
+          "feature_cosine_distance": 0.00292314029402203,
+          "feature_standardized_mse": 0.03298239256371744,
+          "clean_decision_agreement": 0.9894444444444445
+        },
+        "MSAT_M20": {
+          "nmse": 0.00814510823927574,
+          "feature_cosine_distance": 0.0017247036099433898,
+          "feature_standardized_mse": 0.020420046176877805,
+          "clean_decision_agreement": 0.9916666666666667
+        },
+        "MSAT_VarF": {
+          "nmse": 0.00811506529791384,
+          "feature_cosine_distance": 0.0017178259293238322,
+          "feature_standardized_mse": 0.020297737848337015,
+          "clean_decision_agreement": 0.9905555555555555
+        },
+        "PHY_MSat": {
+          "nmse": 0.00689706617419789,
+          "feature_cosine_distance": 0.0015695942441622415,
+          "feature_standardized_mse": 0.017862426325057943,
+          "clean_decision_agreement": 0.995
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.009066788655537594,
+          "feature_cosine_distance": 0.001728703048494127,
+          "feature_standardized_mse": 0.01986301845857977,
+          "clean_decision_agreement": 0.9927777777777778
+        },
+        "PHY_true_H": {
+          "nmse": 0.005116035124907891,
+          "feature_cosine_distance": 0.0015706124239497714,
+          "feature_standardized_mse": 0.016995423986744654,
+          "clean_decision_agreement": 0.995
+        }
+      }
+    },
+    "practical_mid": {
+      "count": 1800,
+      "methods": {
+        "received": {
+          "nmse": 2.0157973559035196,
+          "feature_cosine_distance": 0.05575873063670264,
+          "feature_standardized_mse": 0.421679323443936,
+          "clean_decision_agreement": 0.9238888888888889
+        },
+        "DURA_v1": {
+          "nmse": 0.013925307155328078,
+          "feature_cosine_distance": 0.005525778465800815,
+          "feature_standardized_mse": 0.06049043148781897,
+          "clean_decision_agreement": 0.9794444444444445
+        },
+        "MSAT_M20": {
+          "nmse": 0.011302803677746043,
+          "feature_cosine_distance": 0.003168439997567071,
+          "feature_standardized_mse": 0.03435345281969704,
+          "clean_decision_agreement": 0.9872222222222222
+        },
+        "MSAT_VarF": {
+          "nmse": 0.011097803971497342,
+          "feature_cosine_distance": 0.003104711804125044,
+          "feature_standardized_mse": 0.03429527658322412,
+          "clean_decision_agreement": 0.985
+        },
+        "PHY_MSat": {
+          "nmse": 0.009328144938432767,
+          "feature_cosine_distance": 0.0026624042789141337,
+          "feature_standardized_mse": 0.030006954757134535,
+          "clean_decision_agreement": 0.9888888888888889
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.0128629414669639,
+          "feature_cosine_distance": 0.0028215693434079487,
+          "feature_standardized_mse": 0.03196887401320661,
+          "clean_decision_agreement": 0.9888888888888889
+        },
+        "PHY_true_H": {
+          "nmse": 0.00817616824752703,
+          "feature_cosine_distance": 0.0028340102235476176,
+          "feature_standardized_mse": 0.03041854106827587,
+          "clean_decision_agreement": 0.9922222222222222
+        }
+      }
+    },
+    "practical_low_suburban": {
+      "count": 1800,
+      "methods": {
+        "received": {
+          "nmse": 2.014924929406908,
+          "feature_cosine_distance": 0.06466452651553684,
+          "feature_standardized_mse": 0.47001082257264193,
+          "clean_decision_agreement": 0.9111111111111111
+        },
+        "DURA_v1": {
+          "nmse": 0.018620829585060065,
+          "feature_cosine_distance": 0.006791603267192841,
+          "feature_standardized_mse": 0.07785688871466037,
+          "clean_decision_agreement": 0.9683333333333334
+        },
+        "MSAT_M20": {
+          "nmse": 0.014884053096854283,
+          "feature_cosine_distance": 0.0043426906400256685,
+          "feature_standardized_mse": 0.04838028188587891,
+          "clean_decision_agreement": 0.9733333333333334
+        },
+        "MSAT_VarF": {
+          "nmse": 0.014498815389751042,
+          "feature_cosine_distance": 0.003931888739267985,
+          "feature_standardized_mse": 0.04604220489149965,
+          "clean_decision_agreement": 0.9761111111111112
+        },
+        "PHY_MSat": {
+          "nmse": 0.012738435264295226,
+          "feature_cosine_distance": 0.003576692740122477,
+          "feature_standardized_mse": 0.04025581634674583,
+          "clean_decision_agreement": 0.9816666666666667
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.01669852293549209,
+          "feature_cosine_distance": 0.0039895916647381255,
+          "feature_standardized_mse": 0.04224578703313859,
+          "clean_decision_agreement": 0.9833333333333333
+        },
+        "PHY_true_H": {
+          "nmse": 0.011620638500381674,
+          "feature_cosine_distance": 0.0038192478484577602,
+          "feature_standardized_mse": 0.04145516074210819,
+          "clean_decision_agreement": 0.9827777777777778
+        }
+      }
+    },
+    "practical_high_urban": {
+      "count": 1800,
+      "methods": {
+        "received": {
+          "nmse": 2.0148770848910016,
+          "feature_cosine_distance": 0.05532601253853904,
+          "feature_standardized_mse": 0.4078665933944285,
+          "clean_decision_agreement": 0.9238888888888889
+        },
+        "DURA_v1": {
+          "nmse": 0.013983081311453134,
+          "feature_cosine_distance": 0.004458224011792077,
+          "feature_standardized_mse": 0.04801668449046297,
+          "clean_decision_agreement": 0.9794444444444445
+        },
+        "MSAT_M20": {
+          "nmse": 0.012121829267044732,
+          "feature_cosine_distance": 0.0026302069425582887,
+          "feature_standardized_mse": 0.032076704973975814,
+          "clean_decision_agreement": 0.9888888888888889
+        },
+        "MSAT_VarF": {
+          "nmse": 0.011362868863507174,
+          "feature_cosine_distance": 0.002651468879646725,
+          "feature_standardized_mse": 0.03232891905768257,
+          "clean_decision_agreement": 0.9872222222222222
+        },
+        "PHY_MSat": {
+          "nmse": 0.009816444787300295,
+          "feature_cosine_distance": 0.002029698888460795,
+          "feature_standardized_mse": 0.02225204750950474,
+          "clean_decision_agreement": 0.9938888888888889
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.0133727485494617,
+          "feature_cosine_distance": 0.0024451197187105814,
+          "feature_standardized_mse": 0.02821656842437935,
+          "clean_decision_agreement": 0.9916666666666667
+        },
+        "PHY_true_H": {
+          "nmse": 0.007799088365928684,
+          "feature_cosine_distance": 0.002178143329090542,
+          "feature_standardized_mse": 0.023178112884213786,
+          "clean_decision_agreement": 0.9922222222222222
+        }
+      }
+    },
+    "practical_mid_urban": {
+      "count": 1800,
+      "methods": {
+        "received": {
+          "nmse": 2.0113510333829456,
+          "feature_cosine_distance": 0.10417528781625959,
+          "feature_standardized_mse": 0.7569762845213215,
+          "clean_decision_agreement": 0.7355555555555555
+        },
+        "DURA_v1": {
+          "nmse": 0.03742874496561449,
+          "feature_cosine_distance": 0.013103578984737397,
+          "feature_standardized_mse": 0.15015973016399786,
+          "clean_decision_agreement": 0.925
+        },
+        "MSAT_M20": {
+          "nmse": 0.033460203391296094,
+          "feature_cosine_distance": 0.010003420246971978,
+          "feature_standardized_mse": 0.1174557393714915,
+          "clean_decision_agreement": 0.9355555555555556
+        },
+        "MSAT_VarF": {
+          "nmse": 0.03476847612758219,
+          "feature_cosine_distance": 0.010832226673762003,
+          "feature_standardized_mse": 0.12416710827169784,
+          "clean_decision_agreement": 0.9283333333333333
+        },
+        "PHY_MSat": {
+          "nmse": 0.02775070755829802,
+          "feature_cosine_distance": 0.007384524014261034,
+          "feature_standardized_mse": 0.08622934237989183,
+          "clean_decision_agreement": 0.9544444444444444
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.03780969030602137,
+          "feature_cosine_distance": 0.00905255632268058,
+          "feature_standardized_mse": 0.10323894930909672,
+          "clean_decision_agreement": 0.9466666666666667
+        },
+        "PHY_true_H": {
+          "nmse": 0.024640786982717044,
+          "feature_cosine_distance": 0.007010180287890964,
+          "feature_standardized_mse": 0.07963943572365678,
+          "clean_decision_agreement": 0.9616666666666667
+        }
+      }
+    },
+    "practical_low_urban": {
+      "count": 1800,
+      "methods": {
+        "received": {
+          "nmse": 2.0086763050821093,
+          "feature_cosine_distance": 0.13813770565721722,
+          "feature_standardized_mse": 1.0306756797453596,
+          "clean_decision_agreement": 0.6061111111111112
+        },
+        "DURA_v1": {
+          "nmse": 0.05814593309323148,
+          "feature_cosine_distance": 0.024678039285871717,
+          "feature_standardized_mse": 0.2552046637859247,
+          "clean_decision_agreement": 0.8611111111111112
+        },
+        "MSAT_M20": {
+          "nmse": 0.052655484499409794,
+          "feature_cosine_distance": 0.022211277816030713,
+          "feature_standardized_mse": 0.2182517907723862,
+          "clean_decision_agreement": 0.8805555555555555
+        },
+        "MSAT_VarF": {
+          "nmse": 0.053479976365666114,
+          "feature_cosine_distance": 0.02305011000898149,
+          "feature_standardized_mse": 0.22435154822596814,
+          "clean_decision_agreement": 0.8638888888888889
+        },
+        "PHY_MSat": {
+          "nmse": 0.04290515868601182,
+          "feature_cosine_distance": 0.01384110192457835,
+          "feature_standardized_mse": 0.14957498595661795,
+          "clean_decision_agreement": 0.9116666666666666
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.058596358749685655,
+          "feature_cosine_distance": 0.01952409737639957,
+          "feature_standardized_mse": 0.19099591810010477,
+          "clean_decision_agreement": 0.8955555555555555
+        },
+        "PHY_true_H": {
+          "nmse": 0.03849329428792569,
+          "feature_cosine_distance": 0.011697168449560801,
+          "feature_standardized_mse": 0.1335209906215702,
+          "clean_decision_agreement": 0.9183333333333333
+        }
+      }
+    }
+  },
+  "source_V_validation_only": true,
+  "V_training_rows": 0,
+  "TX_labels_read": 0,
+  "OE_reads": 0,
+  "novel_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "checkpoint_selection": false,
+  "agreement_is_TX_accuracy": false,
+  "oracle_deployable": false,
+  "theoretical_ceiling": false,
+  "source_receiver_seed": 2026101902,
+  "training_receiver_seed": 2026101911,
+  "V_historically_exposed": true,
+  "default_DURA_changed": false,
+  "seconds": 80.1380057309998,
+  "goal_complete": false,
+  "F0_feature_row_cost": {
+    "V_readouts": 88200,
+    "V_clean_references": 1800,
+    "V_total": 90000,
+    "source_Ls_smoke": 10,
+    "request_rows_not_internal_forward_calls": true
+  }
+}

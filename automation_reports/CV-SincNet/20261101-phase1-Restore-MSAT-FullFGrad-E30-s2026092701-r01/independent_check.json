@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "run_id": "20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01",
+  "coverage": {
+    "MSAT_VarF": {
+      "cross_rx": 126000,
+      "cross_both": 42000
+    },
+    "MSAT_FullFGrad": {
+      "cross_rx": 126000,
+      "cross_both": 42000
+    }
+  },
+  "prediction_cells_checked": 84,
+  "score_groups": 2604,
+  "raw_pairs": 1736,
+  "baseline_decision_differences": 0,
+  "max_abs_metric_error": 1.2434497875801753e-14,
+  "epoch_recovery_files": 30,
+  "final_matches_E30_recovery": true,
+  "matched_source_orders_and_draws": true,
+  "same_scratch_initial_state_and_only_cap_change_checked": true,
+  "control_is_exact_existing_VarF_not_new_training": true,
+  "source_epochs_checked": 60,
+  "source_update_budget_each": 7410,
+  "neural_forwards": 0,
+  "optimizer_updates": 0,
+  "all_predictions_checked_before_truth": true
+}

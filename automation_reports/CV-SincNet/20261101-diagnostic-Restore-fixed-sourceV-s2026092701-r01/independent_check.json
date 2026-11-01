@@ -1,0 +1,282 @@
+{
+  "status": "PASS",
+  "source_V_packets": 1800,
+  "views": 7,
+  "readouts": 7,
+  "prediction_cells": 49,
+  "F0_readout_rows": 88200,
+  "F0_clean_reference_rows": 1800,
+  "F0_total_V_rows": 90000,
+  "source_Ls_smoke_F0_rows": 10,
+  "max_abs_aggregate_error": 0.0,
+  "source_RX_day_cells": 15,
+  "per_cell": 120,
+  "all_source_indices_and_logs_checked": true,
+  "agreement_recomputed_from_all_saved_decisions": true,
+  "paired_Fclean_changes_against_DURA": {
+    "clean": {
+      "received": {
+        "repairs": 2,
+        "damage": 0,
+        "net": 2
+      },
+      "DURA_v1": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "MSAT_M20": {
+        "repairs": 1,
+        "damage": 1,
+        "net": 0
+      },
+      "MSAT_VarF": {
+        "repairs": 1,
+        "damage": 2,
+        "net": -1
+      },
+      "PHY_MSat": {
+        "repairs": 1,
+        "damage": 4,
+        "net": -3
+      },
+      "MSAT_FullFGrad": {
+        "repairs": 1,
+        "damage": 1,
+        "net": 0
+      },
+      "PHY_true_H": {
+        "repairs": 2,
+        "damage": 0,
+        "net": 2
+      }
+    },
+    "practical_high": {
+      "received": {
+        "repairs": 9,
+        "damage": 53,
+        "net": -44
+      },
+      "DURA_v1": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "MSAT_M20": {
+        "repairs": 13,
+        "damage": 9,
+        "net": 4
+      },
+      "MSAT_VarF": {
+        "repairs": 10,
+        "damage": 8,
+        "net": 2
+      },
+      "PHY_MSat": {
+        "repairs": 12,
+        "damage": 2,
+        "net": 10
+      },
+      "MSAT_FullFGrad": {
+        "repairs": 13,
+        "damage": 7,
+        "net": 6
+      },
+      "PHY_true_H": {
+        "repairs": 14,
+        "damage": 4,
+        "net": 10
+      }
+    },
+    "practical_mid": {
+      "received": {
+        "repairs": 14,
+        "damage": 114,
+        "net": -100
+      },
+      "DURA_v1": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "MSAT_M20": {
+        "repairs": 24,
+        "damage": 10,
+        "net": 14
+      },
+      "MSAT_VarF": {
+        "repairs": 22,
+        "damage": 12,
+        "net": 10
+      },
+      "PHY_MSat": {
+        "repairs": 21,
+        "damage": 4,
+        "net": 17
+      },
+      "MSAT_FullFGrad": {
+        "repairs": 22,
+        "damage": 5,
+        "net": 17
+      },
+      "PHY_true_H": {
+        "repairs": 27,
+        "damage": 4,
+        "net": 23
+      }
+    },
+    "practical_low_suburban": {
+      "received": {
+        "repairs": 27,
+        "damage": 130,
+        "net": -103
+      },
+      "DURA_v1": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "MSAT_M20": {
+        "repairs": 29,
+        "damage": 20,
+        "net": 9
+      },
+      "MSAT_VarF": {
+        "repairs": 33,
+        "damage": 19,
+        "net": 14
+      },
+      "PHY_MSat": {
+        "repairs": 36,
+        "damage": 12,
+        "net": 24
+      },
+      "MSAT_FullFGrad": {
+        "repairs": 40,
+        "damage": 13,
+        "net": 27
+      },
+      "PHY_true_H": {
+        "repairs": 39,
+        "damage": 13,
+        "net": 26
+      }
+    },
+    "practical_high_urban": {
+      "received": {
+        "repairs": 17,
+        "damage": 117,
+        "net": -100
+      },
+      "DURA_v1": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "MSAT_M20": {
+        "repairs": 24,
+        "damage": 7,
+        "net": 17
+      },
+      "MSAT_VarF": {
+        "repairs": 21,
+        "damage": 7,
+        "net": 14
+      },
+      "PHY_MSat": {
+        "repairs": 30,
+        "damage": 4,
+        "net": 26
+      },
+      "MSAT_FullFGrad": {
+        "repairs": 29,
+        "damage": 7,
+        "net": 22
+      },
+      "PHY_true_H": {
+        "repairs": 27,
+        "damage": 4,
+        "net": 23
+      }
+    },
+    "practical_mid_urban": {
+      "received": {
+        "repairs": 32,
+        "damage": 373,
+        "net": -341
+      },
+      "DURA_v1": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "MSAT_M20": {
+        "repairs": 70,
+        "damage": 51,
+        "net": 19
+      },
+      "MSAT_VarF": {
+        "repairs": 65,
+        "damage": 59,
+        "net": 6
+      },
+      "PHY_MSat": {
+        "repairs": 86,
+        "damage": 33,
+        "net": 53
+      },
+      "MSAT_FullFGrad": {
+        "repairs": 74,
+        "damage": 35,
+        "net": 39
+      },
+      "PHY_true_H": {
+        "repairs": 89,
+        "damage": 23,
+        "net": 66
+      }
+    },
+    "practical_low_urban": {
+      "received": {
+        "repairs": 61,
+        "damage": 520,
+        "net": -459
+      },
+      "DURA_v1": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "MSAT_M20": {
+        "repairs": 115,
+        "damage": 80,
+        "net": 35
+      },
+      "MSAT_VarF": {
+        "repairs": 90,
+        "damage": 85,
+        "net": 5
+      },
+      "PHY_MSat": {
+        "repairs": 140,
+        "damage": 49,
+        "net": 91
+      },
+      "MSAT_FullFGrad": {
+        "repairs": 129,
+        "damage": 67,
+        "net": 62
+      },
+      "PHY_true_H": {
+        "repairs": 149,
+        "damage": 46,
+        "net": 103
+      }
+    }
+  },
+  "new_neural_forwards": 0,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "target_inputs": 0,
+  "not_Main_TX_accuracy": true
+}

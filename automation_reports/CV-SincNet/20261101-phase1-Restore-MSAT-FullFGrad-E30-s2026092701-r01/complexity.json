@@ -1,0 +1,17 @@
+{
+  "G_parameters": 4249922,
+  "dense_real_MACs_per_record": 260128768,
+  "complex_FFT_IFFT": 0,
+  "CG": 0,
+  "inherited_unchanged_architecture_count": "20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01/analysis.md",
+  "includes_attention_QKV_out_QK_AV": true,
+  "excludes": [
+    "F0",
+    "norm",
+    "activation",
+    "softmax",
+    "interpolation",
+    "memory"
+  ],
+  "not_measured_latency": true
+}
