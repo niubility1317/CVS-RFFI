@@ -1,0 +1,220 @@
+{
+  "status": "SOURCE_PAIRED_COMPLETE",
+  "count": 279,
+  "commit": "2d21b5f947e1866a41313a147d10a8612c8b4ed2",
+  "model_commit": "bc9ac03f23271614f332fd06bd86e77a0cd2cca5",
+  "valid_count": 273,
+  "L_s_count": 69,
+  "views": {
+    "clean": {
+      "iq_count": 43,
+      "iq_normalized_mse": {
+        "raw": 5.8558780010643536e-15,
+        "dura": 2.717870484048035e-05,
+        "direct": 9.881922596832737e-05
+      },
+      "classification": {
+        "count": 43,
+        "baseline": 43,
+        "candidate": 43,
+        "repairs": 0,
+        "damages": 0
+      },
+      "L_s_classification": {
+        "count": 13,
+        "baseline": 13,
+        "candidate": 13,
+        "repairs": 0,
+        "damages": 0
+      },
+      "raw_vs_direct": {
+        "count": 43,
+        "baseline": 43,
+        "candidate": 43,
+        "repairs": 0,
+        "damages": 0
+      }
+    },
+    "practical_high": {
+      "iq_count": 53,
+      "iq_normalized_mse": {
+        "raw": 0.007578492630273104,
+        "dura": 0.002976538147777319,
+        "direct": 0.006130547262728214
+      },
+      "classification": {
+        "count": 53,
+        "baseline": 52,
+        "candidate": 51,
+        "repairs": 1,
+        "damages": 2
+      },
+      "L_s_classification": {
+        "count": 13,
+        "baseline": 13,
+        "candidate": 11,
+        "repairs": 0,
+        "damages": 2
+      },
+      "raw_vs_direct": {
+        "count": 53,
+        "baseline": 51,
+        "candidate": 51,
+        "repairs": 0,
+        "damages": 0
+      }
+    },
+    "practical_mid": {
+      "iq_count": 49,
+      "iq_normalized_mse": {
+        "raw": 0.046906985342502594,
+        "dura": 0.01395638007670641,
+        "direct": 0.039978355169296265
+      },
+      "classification": {
+        "count": 47,
+        "baseline": 47,
+        "candidate": 42,
+        "repairs": 0,
+        "damages": 5
+      },
+      "L_s_classification": {
+        "count": 13,
+        "baseline": 13,
+        "candidate": 13,
+        "repairs": 0,
+        "damages": 0
+      },
+      "raw_vs_direct": {
+        "count": 47,
+        "baseline": 42,
+        "candidate": 42,
+        "repairs": 0,
+        "damages": 0
+      }
+    },
+    "practical_low_suburban": {
+      "iq_count": 39,
+      "iq_normalized_mse": {
+        "raw": 0.08431641012430191,
+        "dura": 0.02376859076321125,
+        "direct": 0.07071346044540405
+      },
+      "classification": {
+        "count": 38,
+        "baseline": 37,
+        "candidate": 34,
+        "repairs": 0,
+        "damages": 3
+      },
+      "L_s_classification": {
+        "count": 7,
+        "baseline": 7,
+        "candidate": 7,
+        "repairs": 0,
+        "damages": 0
+      },
+      "raw_vs_direct": {
+        "count": 38,
+        "baseline": 35,
+        "candidate": 34,
+        "repairs": 0,
+        "damages": 1
+      }
+    },
+    "practical_high_urban": {
+      "iq_count": 37,
+      "iq_normalized_mse": {
+        "raw": 0.07031633704900742,
+        "dura": 0.012505526654422283,
+        "direct": 0.06547620892524719
+      },
+      "classification": {
+        "count": 37,
+        "baseline": 37,
+        "candidate": 33,
+        "repairs": 0,
+        "damages": 4
+      },
+      "L_s_classification": {
+        "count": 10,
+        "baseline": 10,
+        "candidate": 9,
+        "repairs": 0,
+        "damages": 1
+      },
+      "raw_vs_direct": {
+        "count": 37,
+        "baseline": 33,
+        "candidate": 33,
+        "repairs": 0,
+        "damages": 0
+      }
+    },
+    "practical_mid_urban": {
+      "iq_count": 26,
+      "iq_normalized_mse": {
+        "raw": 0.2612245976924896,
+        "dura": 0.06185321509838104,
+        "direct": 0.23333552479743958
+      },
+      "classification": {
+        "count": 25,
+        "baseline": 22,
+        "candidate": 18,
+        "repairs": 2,
+        "damages": 6
+      },
+      "L_s_classification": {
+        "count": 7,
+        "baseline": 5,
+        "candidate": 5,
+        "repairs": 1,
+        "damages": 1
+      },
+      "raw_vs_direct": {
+        "count": 25,
+        "baseline": 18,
+        "candidate": 18,
+        "repairs": 1,
+        "damages": 1
+      }
+    },
+    "practical_low_urban": {
+      "iq_count": 32,
+      "iq_normalized_mse": {
+        "raw": 0.3840445578098297,
+        "dura": 0.12411562353372574,
+        "direct": 0.3404162526130676
+      },
+      "classification": {
+        "count": 30,
+        "baseline": 24,
+        "candidate": 18,
+        "repairs": 2,
+        "damages": 8
+      },
+      "L_s_classification": {
+        "count": 6,
+        "baseline": 4,
+        "candidate": 2,
+        "repairs": 0,
+        "damages": 2
+      },
+      "raw_vs_direct": {
+        "count": 30,
+        "baseline": 18,
+        "candidate": 18,
+        "repairs": 2,
+        "damages": 2
+      }
+    }
+  },
+  "predictions_before_source_labels": true,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "ground_reader": "Tri-SIG-TIME SSL",
+  "DURA_used_only_for_comparison": true,
+  "nonblind_development": true
+}
