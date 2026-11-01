@@ -1,0 +1,232 @@
+{
+  "status": "COMPLETE_SOURCE_ONLY_POSTERIOR_HYPOTHESES",
+  "commit": "d5551b442c9e2acdfc6f4e1851be0abf24ae1072",
+  "scenes": {
+    "practical_high": {
+      "count": 64,
+      "valid_count": 60,
+      "parent_correct": 60,
+      "parent_mean_iq_nmse": 0.024205170571804047,
+      "dura_correct": 60,
+      "dura_mean_iq_nmse": 0.015550384297966957,
+      "oracle_union_correct": 60,
+      "oracle_extra": 0,
+      "mean_hypothesis_spread": 0.008425102569162846,
+      "map": {
+        "correct": 60,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.024234911426901817,
+        "chosen_class_matches_clean_F": 54,
+        "classifier_agrees_chosen": 54
+      },
+      "self": {
+        "correct": 60,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.025441402569413185,
+        "chosen_class_matches_clean_F": 60,
+        "classifier_agrees_chosen": 60
+      },
+      "product": {
+        "correct": 60,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.02423127368092537,
+        "chosen_class_matches_clean_F": 57,
+        "classifier_agrees_chosen": 57
+      }
+    },
+    "practical_mid": {
+      "count": 64,
+      "valid_count": 61,
+      "parent_correct": 61,
+      "parent_mean_iq_nmse": 0.01901342160999775,
+      "dura_correct": 60,
+      "dura_mean_iq_nmse": 0.021471310406923294,
+      "oracle_union_correct": 61,
+      "oracle_extra": 0,
+      "mean_hypothesis_spread": 0.006243841722607613,
+      "map": {
+        "correct": 61,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.019037455320358276,
+        "chosen_class_matches_clean_F": 52,
+        "classifier_agrees_chosen": 52
+      },
+      "self": {
+        "correct": 60,
+        "repairs": 0,
+        "damages": 1,
+        "mean_iq_nmse": 0.019422968849539757,
+        "chosen_class_matches_clean_F": 60,
+        "classifier_agrees_chosen": 61
+      },
+      "product": {
+        "correct": 61,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.019189558923244476,
+        "chosen_class_matches_clean_F": 54,
+        "classifier_agrees_chosen": 54
+      }
+    },
+    "practical_low_suburban": {
+      "count": 64,
+      "valid_count": 61,
+      "parent_correct": 59,
+      "parent_mean_iq_nmse": 0.0425482802093029,
+      "dura_correct": 60,
+      "dura_mean_iq_nmse": 0.032062217593193054,
+      "oracle_union_correct": 61,
+      "oracle_extra": 2,
+      "mean_hypothesis_spread": 0.012699333019554615,
+      "map": {
+        "correct": 59,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.04262479394674301,
+        "chosen_class_matches_clean_F": 49,
+        "classifier_agrees_chosen": 50
+      },
+      "self": {
+        "correct": 59,
+        "repairs": 1,
+        "damages": 1,
+        "mean_iq_nmse": 0.044002775102853775,
+        "chosen_class_matches_clean_F": 59,
+        "classifier_agrees_chosen": 61
+      },
+      "product": {
+        "correct": 59,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.042591165751218796,
+        "chosen_class_matches_clean_F": 50,
+        "classifier_agrees_chosen": 51
+      }
+    },
+    "practical_high_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "parent_correct": 61,
+      "parent_mean_iq_nmse": 0.02645229734480381,
+      "dura_correct": 61,
+      "dura_mean_iq_nmse": 0.02210511639714241,
+      "oracle_union_correct": 62,
+      "oracle_extra": 1,
+      "mean_hypothesis_spread": 0.008543162606656551,
+      "map": {
+        "correct": 61,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.02649490348994732,
+        "chosen_class_matches_clean_F": 47,
+        "classifier_agrees_chosen": 48
+      },
+      "self": {
+        "correct": 60,
+        "repairs": 0,
+        "damages": 1,
+        "mean_iq_nmse": 0.026885785162448883,
+        "chosen_class_matches_clean_F": 60,
+        "classifier_agrees_chosen": 62
+      },
+      "product": {
+        "correct": 61,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.026458697393536568,
+        "chosen_class_matches_clean_F": 48,
+        "classifier_agrees_chosen": 49
+      }
+    },
+    "practical_mid_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "parent_correct": 57,
+      "parent_mean_iq_nmse": 0.052856605499982834,
+      "dura_correct": 60,
+      "dura_mean_iq_nmse": 0.050538405776023865,
+      "oracle_union_correct": 61,
+      "oracle_extra": 4,
+      "mean_hypothesis_spread": 0.015091759152710438,
+      "map": {
+        "correct": 58,
+        "repairs": 1,
+        "damages": 0,
+        "mean_iq_nmse": 0.05251230299472809,
+        "chosen_class_matches_clean_F": 51,
+        "classifier_agrees_chosen": 54
+      },
+      "self": {
+        "correct": 58,
+        "repairs": 2,
+        "damages": 1,
+        "mean_iq_nmse": 0.05438966304063797,
+        "chosen_class_matches_clean_F": 58,
+        "classifier_agrees_chosen": 62
+      },
+      "product": {
+        "correct": 58,
+        "repairs": 1,
+        "damages": 0,
+        "mean_iq_nmse": 0.05219348520040512,
+        "chosen_class_matches_clean_F": 53,
+        "classifier_agrees_chosen": 56
+      }
+    },
+    "practical_low_urban": {
+      "count": 64,
+      "valid_count": 63,
+      "parent_correct": 59,
+      "parent_mean_iq_nmse": 0.08946344256401062,
+      "dura_correct": 60,
+      "dura_mean_iq_nmse": 0.0826321616768837,
+      "oracle_union_correct": 62,
+      "oracle_extra": 3,
+      "mean_hypothesis_spread": 0.03377529978752136,
+      "map": {
+        "correct": 59,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.09020937234163284,
+        "chosen_class_matches_clean_F": 53,
+        "classifier_agrees_chosen": 56
+      },
+      "self": {
+        "correct": 58,
+        "repairs": 1,
+        "damages": 2,
+        "mean_iq_nmse": 0.08930793404579163,
+        "chosen_class_matches_clean_F": 58,
+        "classifier_agrees_chosen": 63
+      },
+      "product": {
+        "correct": 59,
+        "repairs": 0,
+        "damages": 0,
+        "mean_iq_nmse": 0.08972101658582687,
+        "chosen_class_matches_clean_F": 53,
+        "classifier_agrees_chosen": 57
+      }
+    }
+  },
+  "probe_ids": 384,
+  "fixed_blind_sha256": "0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338",
+  "fixed_prior_sha256": "5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9",
+  "input_only_selectors": [
+    "map",
+    "self",
+    "product"
+  ],
+  "oracle_union_uses_clean_F_pseudo": true,
+  "oracle_not_deployable": true,
+  "source_only": true,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Source physical IDs previously explored; clean F pseudo targets not true accuracy. Oracle needs unavailable clean F target, no universal bound; class-conditioned priors may hallucinate identity."
+}
