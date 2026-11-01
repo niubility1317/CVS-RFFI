@@ -1,0 +1,15 @@
+PS     PID    PPID     ELAPSED %CPU COMMAND
+ 752686       1       00:06  0.2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-curriculum-blind-gate-s2026092701-r01-release/experiments/phase1_curriculum_blind_gate/phase1_blind_gate_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-curriculum-blind-gate-s2026092701-r01 --commit 3a7f72e591a90bc3f4cc14f031bf76e7fbe8b2db --device cuda:0
+ 752778  752686       00:03  109 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-curriculum-blind-gate-s2026092701-r01-release/experiments/phase1_curriculum_blind_gate/phase1_curriculum_gate_source.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-curriculum-blind-gate-s2026092701-r01/source --commit 3a7f72e591a90bc3f4cc14f031bf76e7fbe8b2db --device cuda:0
+
+CWD /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release
+LOG PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-curriculum-blind-gate-s2026092701-r01-release/experiments/phase1_curriculum_blind_gate/phase1_curriculum_gate_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-curriculum-blind-gate-s2026092701-r01/source_smoke", "--commit", "3a7f72e591a90bc3f4cc14f031bf76e7fbe8b2db", "--device", "cuda:0", "--smoke"]
+CURRICULUM_GATE_SOURCE_SMOKE PASS
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-curriculum-blind-gate-s2026092701-r01-release/experiments/phase1_curriculum_blind_gate/phase1_curriculum_gate_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-curriculum-blind-gate-s2026092701-r01/source", "--commit", "3a7f72e591a90bc3f4cc14f031bf76e7fbe8b2db", "--device", "cuda:0"]
+
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-curriculum-blind-gate-s2026092701-r01/source_smoke/result.json True
+DATA {"status": "PASS", "count": 16, "source_only": true, "F_frozen": true, "DURA_used": false, "TX_labels_read": 0, "V_reads": 0, "test_reads": 0}
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-curriculum-blind-gate-s2026092701-r01/source/source_selection.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-curriculum-blind-gate-s2026092701-r01/source/prediction_smoke.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-curriculum-blind-gate-s2026092701-r01/source/flow/test_prediction/complete.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-curriculum-blind-gate-s2026092701-r01/completion.json False
