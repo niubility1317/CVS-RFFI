@@ -29,3 +29,5 @@ Frozen R42 and original LocalRidge fixed matrix; retain live predecessor workers
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 独立 P0/P1 审查完成，修复了 smoke 期间旧 worker 失败可能被重跑的问题，并完成唯一一次定向复核；24 项定向测试通过。新 run 实际启动前依次对四个真实源 checkpoint 做无 query CPU/CUDA 判决比较，失败恢复原控制器；成功后仅精确接管原调度器，旧 worker 自然完成。新旧预测全矩阵冻结后才独立评分。局部合成基准不代表正式吞吐。
+
+2026-11-01 交接核验：VERIFIED TRANSFERRED：真实源 checkpoint 四种子无 query smoke 全 PASS，CPU/CUDA 最大分数差 6.94e-17；前代 controller 已退出，9 个旧 worker 自然运行；180 个闭合旧单元已纳入复用索引，新 root 已完成复用单元。全预测完成后独立评分。 代码版本 4b2fcc7600f45ffbe810d51c734a900d47ba2cae；归档传输校验与远端编译通过。
