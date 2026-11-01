@@ -1,0 +1,45 @@
+{
+  "status": "SOURCE_ONLY_CYCLE_CHANNEL_IDENTIFIABILITY_WIDE",
+  "source_ids": 280,
+  "receiver": 8,
+  "day": 3,
+  "results": {
+    "practical_low_suburban": {
+      "count": 280,
+      "pseudo_pilot_shape_nmse": 0.12927681572765765,
+      "pseudo_pilot_shape_nmse_median": 0.084165825197325,
+      "flat_channel_shape_nmse": 0.03325518066906405,
+      "flat_channel_shape_nmse_median": 0.006659145611301569,
+      "pseudo_pilot_better": 0,
+      "kernel_peak_index_min": 24,
+      "kernel_peak_index_median": 24.0,
+      "kernel_peak_index_max": 32
+    },
+    "practical_mid_urban": {
+      "count": 280,
+      "pseudo_pilot_shape_nmse": 0.20706222394046545,
+      "pseudo_pilot_shape_nmse_median": 0.11803133632090124,
+      "flat_channel_shape_nmse": 0.10998023677196038,
+      "flat_channel_shape_nmse_median": 0.009769978728539132,
+      "pseudo_pilot_better": 5,
+      "kernel_peak_index_min": 24,
+      "kernel_peak_index_median": 24.0,
+      "kernel_peak_index_max": 32
+    },
+    "practical_low_urban": {
+      "count": 280,
+      "pseudo_pilot_shape_nmse": 0.30291594770202207,
+      "pseudo_pilot_shape_nmse_median": 0.2623426876763266,
+      "flat_channel_shape_nmse": 0.19565498308151255,
+      "flat_channel_shape_nmse_median": 0.10886688795145105,
+      "pseudo_pilot_better": 4,
+      "kernel_peak_index_min": 24,
+      "kernel_peak_index_median": 24.0,
+      "kernel_peak_index_max": 32
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "caveat": "The channel estimator uses received IQ and frozen DURA only; true residual simulator kernels are privileged source-only diagnostic references and are never inference inputs. Frequency-shape NMSE permits the best source-oracle complex gain and integer shift over ±96, covering the 62-tap kernel and possible inference alignment offsets, and ignores nonconvolutional effects and residual CFO. Flat-response comparison does not assess classification. Simulator is not validated real satellite data."
+}
