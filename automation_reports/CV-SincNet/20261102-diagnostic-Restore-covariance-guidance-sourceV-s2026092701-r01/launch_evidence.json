@@ -1,0 +1,33 @@
+{
+  "status": "VERIFIED",
+  "actual_code": "4178f020951d4799e912a941240bea36f45bedf1",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "source_smoke": {
+    "status": "PASS",
+    "actual_Ls": 2,
+    "both_final30": true,
+    "actual_original_F0": true,
+    "optimizer_updates": 0,
+    "TX_labels_read": 0,
+    "target_inputs": 0
+  },
+  "worker_PID": 1034985,
+  "controller_PID": 1034966,
+  "GPU": 4,
+  "admission_free_MiB": 24110,
+  "admission_existing_compute": 0,
+  "actual_PID_CWD_command_CUDA_GPU_verified": true,
+  "log_bytes_first": 97,
+  "log_bytes_final": 498,
+  "initial_preflight": "FAILED: helper parent completion path pointed to rows/complete.json; no remote mutation or worker launched. Corrected explicit parent run path; immutable paths verified absent before one actual launch.",
+  "terminal_worker": {
+    "pid": 1034985,
+    "exit_code": 0
+  },
+  "terminal_score": {
+    "pid": 1035240,
+    "exit_code": 0
+  },
+  "default_DURA_changed": false
+}
