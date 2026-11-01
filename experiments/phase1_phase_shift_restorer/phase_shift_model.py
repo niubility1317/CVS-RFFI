@@ -5,6 +5,9 @@ from torch.nn import functional as F
 from phase_factor_model import AdaptivePhaseFactor
 from phase1_axial_spectral_mask import AxialSpectralMask
 
+def configure_training_backend(device):
+ if torch.device(device).type=='cpu':torch.backends.mkldnn.enabled=False
+
 class PhaseShiftRestorer(nn.Module):
  def __init__(self,phase):
   super().__init__();self.phase=phase.eval().requires_grad_(False);self.body=AxialSpectralMask()

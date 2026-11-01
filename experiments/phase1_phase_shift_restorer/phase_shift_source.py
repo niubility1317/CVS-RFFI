@@ -7,7 +7,7 @@ sys.path.insert(0,str(DEPENDENCY/'experiments/phase1_teacher_student'))
 import numpy as np
 import torch
 from torch.nn import functional as F
-from phase_shift_model import PhaseShiftRestorer
+from phase_shift_model import PhaseShiftRestorer,configure_training_backend
 from phase_factor_model import AdaptivePhaseFactor
 from phase1_blind_gate_model import BlindGate
 from phase1_blind_gate_source import source_contract,epoch_data,new_splits,align,VIEWS
@@ -55,7 +55,7 @@ def smoke(model,gate,dura,teacher,clean,received,scene,training,device):
     for p in (model.body.phase_head[2].weight,model.body.temporal_output.weight,model.body.output.weight):
         if p.grad is None or not torch.isfinite(p.grad).all() or not p.grad.abs().sum()>0:raise ValueError('Finite student gradients required')
     if any(p.requires_grad or p.grad is not None for p in list(teacher.parameters())+list(dura.parameters())+list(gate.parameters())+list(model.phase.parameters())):raise ValueError('All source teachers and gate must stay frozen')
-    model.zero_grad(set_to_none=True);return dict(status='PASS',count=len(index),active=int(active.sum()),DURA_teacher_frozen=True,F_frozen=True,gate_frozen=True,TX_labels_read=0,U_s_labels_read=0,V_reads=0,test_reads=0)
+    model.zero_grad(set_to_none=True);return dict(status='PASS',count=len(index),active=int(active.sum()),DURA_teacher_frozen=True,F_frozen=True,gate_frozen=True,mkldnn_enabled=torch.backends.mkldnn.enabled,TX_labels_read=0,U_s_labels_read=0,V_reads=0,test_reads=0)
 
 
 def evaluate(model,gate,dura,teacher,clean,received,scene,rx,validation,heldout,device):
@@ -101,7 +101,7 @@ def choose(results):
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--root',type=Path,required=True);ap.add_argument('--out',type=Path,required=True);ap.add_argument('--commit',required=True);ap.add_argument('--device',default='cuda:0');ap.add_argument('--smoke',action='store_true');args=ap.parse_args()
     if args.out.exists():raise FileExistsError('Immutable output root exists')
-    args.out.mkdir(parents=True);torch.set_num_threads(2);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
+    args.out.mkdir(parents=True);torch.set_num_threads(2);configure_training_backend(args.device);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
     torch.manual_seed(2026111554);rng=np.random.default_rng(2026111555)
     cache,clean,rx,training,prior_valid,prior_hold=source_contract(args.root);validation,heldout=new_splits(cache,rx,training,prior_valid,prior_hold)
     model,gate=initial_models(args.root,args.device);dura=prior.frozen_dura(args.root,args.device);teacher,_=core.teacher(args.root,args.device)
@@ -134,7 +134,7 @@ def main():
     selected=choose(results)
     if selected['kind']!='dura':
         with (args.out/'selected.pt').open('xb') as f:torch.save(dict(commit=args.commit,selected=selected,model=states[selected['epoch']],gate=gate.state_dict()),f)
-    result=dict(selected=selected,validation=results,train_ids=len(training),validation_ids=len(validation),heldout_ids=len(heldout),active_counts=counts,losses=losses,source_only=True,DURA_teacher_training_only=True,F_frozen=True,gate_frozen=True,TX_labels_read=0,U_s_labels_read=0,V_reads=0,test_reads=0,source_cache_epoch=19,source_caveat='source physical IDs were previously used in gate source evaluation; channel view is new')
+    result=dict(selected=selected,validation=results,train_ids=len(training),validation_ids=len(validation),heldout_ids=len(heldout),active_counts=counts,losses=losses,source_only=True,DURA_teacher_training_only=True,F_frozen=True,gate_frozen=True,mkldnn_enabled=torch.backends.mkldnn.enabled,TX_labels_read=0,U_s_labels_read=0,V_reads=0,test_reads=0,source_cache_epoch=19,source_caveat='source physical IDs were previously used in gate source evaluation; channel view is new')
     with (args.out/'source_selection.json').open('x',encoding='utf8') as f:json.dump(result,f,indent=2,allow_nan=False);f.write('\n')
     print('PHASE_SHIFT_STUDENT_SELECTION_FIXED',json.dumps(selected),flush=True)
 if __name__=='__main__':main()

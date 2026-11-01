@@ -1,0 +1,6 @@
+{
+  "status": 1,
+  "signal": null,
+  "out": "STEP 0 loss 1.3264126777648926 hard 1\nSTEP 1 loss 1.149645447731018 hard 0\nSTEP 2 loss 1.507598876953125 hard 1\nSTEP 3 loss 1.5453708171844482 hard 1\nSTEP 4 loss 0.9182832837104797 hard 0\nSTEP 5 loss 1.6976585388183594 hard 3\nSTEP 6 loss 1.85101318359375 hard 1\nSTEP 7 loss 0.887008011341095 hard 1\nSTEP 8 loss 3.2023324966430664 hard 2\nSTEP 9 loss 1.1651169061660767 hard 0\nSTEP 10 loss 1.6045565605163574 hard 1\nSTEP 11 loss 1.965878963470459 hard 3\nSTEP 12 loss 1.7353427410125732 hard 2\nSTEP 13 loss 4.92570161819458 hard 1\nSTEP 14 loss 1.3484084606170654 hard 0\nSTEP 15 loss 1.7020587921142578 hard 3\n",
+  "err": "<stdin>:28: UserWarning: Anomaly Detection has been enabled. This mode will increase the runtime and should only be enabled for debugging.\nTraceback (most recent call last):\n  File \"<stdin>\", line 29, in <module>\n  File \"/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/utils/clip_grad.py\", line 64, in clip_grad_norm_\n    raise RuntimeError(\nRuntimeError: The total norm of order 2.0 for gradients from `parameters` is non-finite, so it cannot be clipped. To disable this error and scale the gradients by the non-finite norm anyway, set `error_if_nonfinite=False`\n"
+}
