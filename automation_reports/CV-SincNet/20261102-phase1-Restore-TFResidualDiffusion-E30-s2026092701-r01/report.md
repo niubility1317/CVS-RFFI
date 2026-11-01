@@ -60,3 +60,8 @@ CPU队列仅等待健康SoftPower整个Main技术ARTIFACTS_COMPLETE且terminal�
 ## 时频残差扩散源训练已核实
 
 VERIFIED / RUNNING。源Ls2真实G/F0无更新smoke通过，固定15调用sampler有限、实际output-head梯度与严格E0重载PASS；不是恒等E0。E01模型/优化器/CPU-CUDA RNG独立CPU读回，全部E0 tensor等于scratch factory，源顺序draw同原FullFGrad；E01时/频输入与attention骨干及双输出head确已更新，固定latent/schedule/坐标不变，加权loss和63000条sigma histogram复算PASS。首轮247步19.601430秒。GPU4准入free24110MiB/原0compute/新增1个，PID/CWD/CUDA/GPU/日志核实。SoftPower完整Main技术完成后才启动，0TX/V/OE/target更新或选模；固定final30自动原Main七景后truth-last，性能PENDING，默认DURA不变，目标ACTIVE。
+
+
+## 新时频扩散已冻结 final30
+
+VERIFIED / SOURCE_COMPLETE / Main性能PENDING。完整30轮/7410更新，训练593.290977秒，worker597.716530秒，轮时中位数19.699457秒，峰值2509.326172MiB。全30结构化日志与stdout一致、源draw/L-U曝光/LR/sigma统计/加权loss复算PASS，30技术快照及E30模型-优化器-CPU/CUDA RNG保存，final同E30逐tensor一致；0TX/V/OE/target更新/F0更新。源误差是加噪residual单步去噪输出，不是部署15调用sampler质量。已固定final30并自动进入原Main七景队列，当前不宣称正式性能达标。
