@@ -21,7 +21,7 @@ def training_pairs(teacher,ground,labels,parent,states,pl,cl,features):
     return features[mask],positive[mask].float(),dict(eligible=int(eligible.sum().item()),labeled=int(known.sum().item()),pairs=int(mask.sum().item()),positive=int((positive&mask).sum().item()),negative=int((~positive&mask).sum().item()))
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--commit',required=True);p.add_argument('--device',default='cuda:0');p.add_argument('--smoke',action='store_true');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--commit',required=True);p.add_argument('--device',default='cuda:0');p.add_argument('--smoke',action='store_true');p.add_argument('--balanced-pairs',action='store_true');a=p.parse_args()
     if a.out.exists():raise FileExistsError('Immutable source output required')
     a.out.mkdir(parents=True);torch.set_num_threads(2);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False;torch.manual_seed(2026121354)
     cp=a.root/'runs'/SOURCE/'checkpoint_epoch10.pt';pp=a.root/'runs'/PRIOR_RUN/'source_prior.pt'
@@ -52,11 +52,12 @@ def main():
         with (a.out/'result.json').open('x',encoding='utf8') as f:json.dump(smoke,f,indent=2)
         return
     if counts['pairs']<100 or counts['positive']<10 or counts['negative']<10:raise ValueError('Insufficient source repair/harm pairs for selector pilot')
+    pos_weight=torch.tensor(counts['negative']/counts['positive'],device=a.device) if a.balanced_pairs else None
     opt=torch.optim.AdamW(net.parameters(),lr=.001,weight_decay=.001);g=torch.Generator().manual_seed(2026121356);losses=[];net.train()
     for epoch in range(1,11):
         order=torch.randperm(len(sample),generator=g);total=0.
         for start in range(0,len(order),256):
-            ix=order[start:start+256];v=sample[ix].to(a.device);y=target[ix].to(a.device);loss=F.binary_cross_entropy_with_logits(net.net(v).squeeze(-1),y)
+            ix=order[start:start+256];v=sample[ix].to(a.device);y=target[ix].to(a.device);loss=F.binary_cross_entropy_with_logits(net.net(v).squeeze(-1),y,pos_weight=pos_weight)
             if not torch.isfinite(loss):raise FloatingPointError('Finite selector training loss required')
             opt.zero_grad(set_to_none=True);loss.backward();torch.nn.utils.clip_grad_norm_(net.parameters(),1.,error_if_nonfinite=True);opt.step();total+=float(loss.detach())*len(ix)
         losses.append(total/len(sample));print('UTILITY_EPOCH',epoch,'pairs',len(sample),'loss',losses[-1],flush=True)
@@ -79,6 +80,6 @@ def main():
         for i,threshold in enumerate((.5,.75,.9)):
             good=rows[:,7+3*i]==y;cell[str(threshold)]=dict(correct=int((valid&good).sum().item()),repairs=int((valid&good&~base).sum().item()),damages=int((valid&~good&base).sum().item()),selected=int((rows[:,9+3*i]>0).sum().item()),mean_iq_nmse=float(rows[:,8+3*i].mean().item()))
         results[view]=cell
-    result=dict(status='COMPLETE_SOURCE_ONLY_POSTERIOR_UTILITY_PILOT',commit=a.commit,fit_ids=len(fit),fit_L_s_labels=int(np.count_nonzero(labels[fit]>=0)),L_s_metadata_labels=6300,pair_counts=counts,epoch_losses=losses,scenes=results,probe_ids=len(ids),thresholds=[.5,.75,.9],F_frozen=True,blind_parent_frozen=True,DURA_loaded_after_training=True,U_s_truth_reads=0,V_reads=0,test_reads=0,caveat='Source L_s fit truth and U_s high-confidence clean-F pseudo labels; source physical IDs previously explored, pseudo target diagnostic not test truth; output is a conditional waveform and class hallucination remains possible.')
+    result=dict(status='COMPLETE_SOURCE_ONLY_POSTERIOR_UTILITY_PILOT',commit=a.commit,balanced_pairs=a.balanced_pairs,positive_weight=float(pos_weight.item()) if pos_weight is not None else None,fit_ids=len(fit),fit_L_s_labels=int(np.count_nonzero(labels[fit]>=0)),L_s_metadata_labels=6300,pair_counts=counts,epoch_losses=losses,scenes=results,probe_ids=len(ids),thresholds=[.5,.75,.9],F_frozen=True,blind_parent_frozen=True,DURA_loaded_after_training=True,U_s_truth_reads=0,V_reads=0,test_reads=0,caveat='Source L_s fit truth and U_s high-confidence clean-F pseudo labels; source physical IDs previously explored, pseudo target diagnostic not test truth; output is a conditional waveform and class hallucination remains possible.')
     core.write(a.out/'result.json',result);print('UTILITY_COMPLETE',json.dumps(result),flush=True)
 if __name__=='__main__':main()
