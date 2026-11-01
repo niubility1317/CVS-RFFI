@@ -1,0 +1,61 @@
+{
+  "selected": {
+    "kind": "adaptive_phase_factor",
+    "epoch": 3,
+    "validation_loss": 0.03301774627850662,
+    "baseline_loss": 0.1976718523293199
+  },
+  "independent_recompute": [
+    {
+      "epoch": 1,
+      "part": "1",
+      "n": 6690,
+      "base": 0.1976718523293199,
+      "candidate": 0.04256845222513215,
+      "violations": []
+    },
+    {
+      "epoch": 1,
+      "part": "2",
+      "n": 3309,
+      "base": 0.17503746371940296,
+      "candidate": 0.05163340364636594,
+      "violations": []
+    },
+    {
+      "epoch": 2,
+      "part": "1",
+      "n": 6690,
+      "base": 0.1976718523293199,
+      "candidate": 0.035494409453524736,
+      "violations": []
+    },
+    {
+      "epoch": 2,
+      "part": "2",
+      "n": 3309,
+      "base": 0.17503746371940296,
+      "candidate": 0.041617438110730355,
+      "violations": []
+    },
+    {
+      "epoch": 3,
+      "part": "1",
+      "n": 6690,
+      "base": 0.1976718523293199,
+      "candidate": 0.03301774627850662,
+      "violations": []
+    },
+    {
+      "epoch": 3,
+      "part": "2",
+      "n": 3309,
+      "base": 0.17503746371940296,
+      "candidate": 0.03977342265432638,
+      "violations": []
+    }
+  ],
+  "source_only": true,
+  "classification_accuracy_measured": false,
+  "target_predictions": false
+}
