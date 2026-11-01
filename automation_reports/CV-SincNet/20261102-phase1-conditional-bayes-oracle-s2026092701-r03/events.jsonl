@@ -1,1 +1,2 @@
 {"at": "2026-11-01T20:27:00+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T20:34:15+00:00", "status": "FAILED", "note": "Use float confidence DLPack then NumPy comparison; new run ID.", "evidence": ["N607 preflight: torch Bool dtype unsupported by DLPack, before prior fit completed; no formal run or test read"], "row_id": null}
