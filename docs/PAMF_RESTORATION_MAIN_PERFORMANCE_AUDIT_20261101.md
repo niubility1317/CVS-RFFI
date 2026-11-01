@@ -110,3 +110,12 @@
 [完整C真实信道源诊断](../automation_reports/CV-SincNet/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01/analysis.md)的原定支持条件满足后，CovarianceMAP已从零单阶段30并完整Main验证，纳入上表。[冻结四路参数归因](../automation_reports/CV-SincNet/20261102-diagnostic-Restore-covariance-parameter-source-s2026092701-r01/analysis.md)进一步表明：低档城区盲Fclean82.242340%，仅换真实Action87.325905%，仅换缓存真实噪声方差标量82.660167%；同条净变化分别+73/1436、+6/1436。估计Action值得优先研究，但这是源内Fclean参考，不是Main已证明的原因或严格恢复上限；本版真实盲源表现和Main均未超过DURA。
 
 [RF细节敏感性证据](PAMF_RESTORATION_RF_DETAIL_ANALYSIS_20261101.md)来自历史R17固定源面板，说明部分可观察硬件方向和随机方向均被衰减。它不证明发射机真特征的逐样本恢复上限，也不能继承为新扩散模型证据。扩散多尺度训练是待检验假设；单条观测中已丢失的细节可能被先验合成，最终仍需同一冻结F0的真实TX净纠错及clean损伤，未来未知设备保真另作冻结诊断。
+
+
+## 原 R17 IQ 教师路线的历史边界
+
+原 [R17 最终 IQ 源缓存](../automation_reports/CV-SincNet/20261031-source-DURA-R17-nativeIQ-cache-s2026092701-r01/analysis.md)已有完成证据：原 R07 63000 个 L_s/U_s 物理记录×20 份源扰动，共1260000次教师输入，缓存生成972.193282秒。原教师4665073参数，历史 coarse/action/prior 各20轮、共60组件轮次，目标访问前曾按源V/F选择；缓存生产本身没有训练、F/TX/V/目标读取或状态更新。已有一次完整 ID/角色/shape/dtype/finiteness 验证沿用，本次只读公开报告，没有重新加载教师或重验数据。
+
+后续 [nativeIQhint 从零单阶段30轮对照](../automation_reports/CV-SincNet/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01/analysis.md)也已完成，使用冻结 R17 最终 IQ 缓存指导紧凑266951参数学生，不复制教师权重。旧 F50/defaulthead 的 low urban 为67.375595%，相对匹配E30 physical提高0.668452个百分点，相对当时DURA低1.514286个百分点；六星地0/6超过当时DURA。教师IQ还带有自身误差，不能等同clean或认为权重更大必然更好。
+
+这些是旧F50证据，**不纳入上表原完整Tri-SIG-TIME SSL/Main的15个已完成候选计数，也不改标成本基座成绩**。source-only来源合规与方法有效性是两个问题；历史教师、源V/F选择、缓存和学生成本均须披露。当前CovarianceFeature继续自己的固定scratch30配方，只增加原Tri-SIG-TIME SSL对实际恢复IQ的连续源特征指导，没有R17教师输入，也没有因这次历史检索更改训练或新增候选。当前候选尚无完整Main成绩，不提前纳入完成表。
