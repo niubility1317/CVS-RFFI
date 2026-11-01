@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "source_rows": 2,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "F_frozen": true,
+  "DURA_frozen": true,
+  "asset_sha256": "4e90a750e3d3b6f1f70e45d2b14e0a2053b3fc0d1c9068f9edf3ac55184eca16",
+  "boundary_sha256": "951bd2dc49753db8b21af0cba6afcf0124ea05f43d59203957a0dd603b8eb0a7",
+  "feature_sha256": "4b66b90ced7ba4bc31bf7bad1b49483473d9b42b139a4faef2676bbbeaa4b8f9",
+  "deterministic": true,
+  "device": "cpu",
+  "choice_counts": [
+    0,
+    2,
+    0,
+    0
+  ]
+}
