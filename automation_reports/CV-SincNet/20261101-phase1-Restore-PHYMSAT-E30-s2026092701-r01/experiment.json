@@ -1,0 +1,209 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01",
+  "group_id": "restoration-joint-physical-MSAT-scratch30",
+  "display_name": "恢复性能主线：物理信道估计与双先验联合恢复，从零单阶段30轮",
+  "description": "新8613449参数PHY-MSAT：仅IQ输入估计source-compatible真实线性信道与噪声，两个不共享context-MSAT先验分别8CG，全部从零同次30轮联合训练。原LsUs模拟trace仅源监督，原F0特征指导；固定final30自动完整原Main七景。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "scratch-single30",
+    "joint-physical-restoration",
+    "two-unshared-priors",
+    "source-F-guided",
+    "source-simulator-supervision"
+  ],
+  "comparison_group_id": "new-PHYMSAT-vs-frozen-VarF-and-DURA",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User activegoal/performanceprimary/majorarchitecturechangesallowed/newGscratchsingle30/originalLsUs-only/OEonlyfrozendiagnostic/sourceF0featuresallowed. ExistinglegalR07source-simulatorAction/noise supervision retained;notTXlabelsupervision ornewtargetpermissions.",
+  "code": {
+    "commit": "8198a2e70c655f24ebaf321f232a676cfb46d916",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32 TF32off/CPUthreads2;actualoriginalTriSSL F0 3ff8 defaulthead",
+    "cwd": "releases/20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "OriginalR07clean/receivedFP32 plus kernel[63000,2,64],coefficients[63000,4,256],realnoisevariance[63000] source-onlytraces;20saveddraws+repeat1..10. ExistingLUcache onlyID/rolecompatibility;sourceF0featuresrecomputedfromR07clean.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow21cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "VALIDATED_ONCE handles reused. R07 complete20/63000/0TX-target;roles andIDs compatible. This cachecapsule isminimaloriginalsourceIDcheck,notincorrectclaimR07 IQisG10. F0targets recomputedfromactualR07clean eacharm.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "No TX/y used forG. PairedsourceIQ,mathematicalsourceH(clean) noiselessresponse andtrue-source-noise scalar aretrainingtargets. F0fused160featuresonly/no headlogitCE/prototype;V/OE/targetexcluded.",
+    "augmentation": "OriginalR07fs25MHz/fc2.462GHz/post_sync/noEQ/reflect/refSNR30/receiver2026101911/sixuniform85%+clean15%,20independentstoredtrainviews,then10repeats;notG10MIX01. Newshuffle RNG2026110102,matchedbotharms. Mainobservationsunchanged/no RMS."
+  },
+  "permissions": {
+    "regime": "source-only-paired-IQ+simulatorAction-noise+frozen-F0-feature-guided",
+    "query_use": "OriginalLsUs-only/noTX/V/OE/targetlearning-or-selection. Sourceclean+simulatortrace onlyintrainingloss;deploymentonlycurrentreceivedIQ. AllactualnewGfullMain2pop7viewsfixedbeforeCPUtruth.",
+    "external_method_exception": null,
+    "claim_scope": "Newjointphysicalsystem/capacityandadditionallegal-simulatorlosseschange together;notpurearchitectureorlossablation. ComparefrozenexistingVarF/DURA;newone-seedMainisexposeddevelopmentbenchmark/notblindconfirmation/notinformationceiling."
+  },
+  "checkpoint": {
+    "initialization": "All8613449Gparametersrandom/zero-outputheads underseed2026092701;onejointAdamWfromstep1through7410. No learnedG/coarse/R17/DURA/MSATancestor orneuralIQteacher.",
+    "sources": [
+      "FrozenoriginalF0 3ff8/main3view/50-11100/defaulthead/sourceonly392005;featuresguidanceonly",
+      "ExistingR07sourceL_s/U_sclean+20receiveddraws+mathematicalFIR/main-image/noisetraces;notlearnedGstate",
+      "Existing63000source-onlyF0variancefromf57 geometry;data-onlyfixedVarFscales/bands",
+      "FrozenoldVarF9fdb/source-onlyfinal30 anddefaultDURA:comparisononly/notloadedbynewGoptimizer"
+    ],
+    "contract_check_ref": "ReuseexistingVALIDATED_ONCE/capsule/split. R07same63000sourceIDs/roles/RX/day frompreviousminimumaudit;strictoriginalF0identity. No newdatahash or revalidation.",
+    "provenance_verdict": "Matchingoriginalsource392005/F0. AllGscratch;oldGonlyfrozenbenchmark. Mathematicalsimulatortrace labels containnoTX/targetknowledge. Sourcecache/checkpoint/teacherpermissionsunchanged.",
+    "selection_rule": "Fixedfinal30/7410only. EveryepochPRIVATErecoverymodeloptimizerRNGonlytechnical;no source/target checkpointselection orscientificearlystop."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/PHYMSAT-single30",
+    "gpu_policy": "GPU4/6ONLY;UUID;free>=16000MiB forlargerjointG;existingcompute<=2/addONEtotal<=3/own1card/thisrun1NN/globalown<=2;oneCPUtruthscorer originalsharedlock;othersunchanged.",
+    "remote_run_root": "runs/20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.physical_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 8198a2e70c655f24ebaf321f232a676cfb46d916 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrongcontract/F0/trace/checkpoint/shape/nonfinite/gradientfailure/outputcollision/unlaunchable:preservefailedrow/checkpoints/noautoretry,neverotherownerreset/stop. Source2actualF0+newphysicsGsmoke/E0reloadPASSimmediatelycontinue30/fullMain7;qualitynotstoprule."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/PHY_MSat/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "PrimaryMain each6rawcleangappp andcleanpreservation/perpopulation+combined;originalrawclean145385/168000=86.538690476%/threshold140345correct",
+      "Accuracy/MacroF1/confusion/netrepair-damage/byTX-RX-date-RXdate fromoriginalscorer",
+      "Sourceall30epochs IQNMSE/STFT/F0featurecos/guideweight/all7410updates/roleexposure/pairedschedule",
+      "Trainingfeaturecache/fulltrainingwallclock/peakmemory/parameters;performanceprimary,efficiencysecondary/notqualityclaim",
+      "Newsourceper-feature standardizedMSE andsamecos,raw/compositeguidegradientcap.5;exactoriginalMSATcontrolafternewfinal30",
+      "Sourcevariancefloor/160dimsource-F-onlydependency;no Goutputsinmetric/no classifierguidance",
+      "Model8613449parameters/twounsharedpriors/16CG/81complexFFT-IFFT;actualsourceoperatorandnoise losses;alltrainingandrecoverycosts"
+    ],
+    "dimensions": [
+      "singlemodelseed2026092701",
+      "oneNEWPHY_MSat/frozenoldVarFonlycomparison",
+      "Maincross_rx126000/cross_both42000/7views",
+      "raw+DURAexactreuse+newcandidate",
+      "source-action-forward/noise-lossmetrics inall30epochs"
+    ],
+    "prediction_ref": "Eachrow newcandidateactualG+sameF0 onallofficialIQ;raw/DURA exactr03predreusewithsameIDs. Completebothpop beforeCPUtruth.",
+    "scorer_ref": "Originalpamf_repl_view_shuffle.evaluation.score independentCUDAemptyCPU/allreadoutsalltasks preflightbeforetruth;sharedoriginalTFscore.lock;no sourcecandidatefeedback"
+  },
+  "rows": [
+    {
+      "row_id": "PHY_MSat",
+      "method": "PHY_MSat",
+      "purpose": "Jointsourcephysics+learnedpriors/fulloriginalMainperformance",
+      "config_ref": "experiments/pamf_phase3_restoration/physical_trial.py::configuration",
+      "resolved_config_ref": "runs/20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01/rows/PHY_MSat/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "2026110102 controlsnewmatchedshuffle only;sourceR07databuilder2026101901/receiver2026101911/augmentation2026101912unchanged. Testoriginalreceived2027. No supportsampling.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratchsingle30/7410/247perE/B256tail24/Ls189000Us1701000. 8613449parameters/twounsharedMSATpriors+ActionEncoder. IQNMSE+.05STFT+.1(F0cos+source-varMSE)withsame.5IQcap +.1sourceH-forwardNMSE+.001source-noise-logMSE. Same63000source/dataorder/draws/LR asfrozenVarF;morephysics/parameters/trace-supervision—notpureablation.",
+      "output_root": "runs/20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01/rows/PHY_MSat",
+      "log_path": "runs/20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01/logs/PHY_MSat-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.physical_trial train --root /home/szu2070436088/2510044040/CV-SincNet --commit 8198a2e70c655f24ebaf321f232a676cfb46d916 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm PHY_MSat",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/PHY_MSat/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "SourceFgeometryRXdaydiagnosticafd4completed0NN:RXmeanfeatureenergyfraction.890638%->.612513%underVarFscale,notamplified. NotcausalRXnuisanceandnotrestorationerror/gradientenergy;nofeaturedeletion orheadfitselected.",
+    "SourceknownActionpostcorrectionofoldMSAThadsmallmixedagreementchanges and16to64nobenefit;thisdoesNOTestablishtheoreticalceilingorjointphysicalnetworkbenefit. NewcandidatejointlylearnsH/noise+priors fromscratchratherthanappendingoracleafterfrozenG.",
+    "SourceActionteacher ismathematicalH(clean)fromexistingR07kernel/main/image/noise—notneuralIQteacher. It entersloss only. ActualestimatedH/sourcecleanforwardNMSE(.1)andnoise-logMSE(.001)fixedbeforeanynewtargetaccess. Sourcevariancelabelsbelow1e-7(includingclean1e-8sentinel)floored1e-7onlyforlogtarget/cacheunaltered;deploymentnoise strictlypositive1e-7..1.",
+    "Twointernalunrollupdates areoneforwardarchitecture,notmultipletrainingstages. AllActionandbothpriorparameters shareoneAdamW/same30schedule fromstep1;F0frozen. No warmstart/EMA/headCE/prototype/TX/OE/V/targettraining.",
+    "2priorsx8CG and81complexFFT-IFFT reflectgenericreal-linearoperator calls atNfft512,not actuallatency. Morecapacity/solvercostallowedforperformance;efficiencysecondary. Fullrealcostandfailuresreported,notassumedfasterthanDURA.",
+    "13focusedchecksPASS andoneindependentP0P1PASS(existingdura_diagnostic_review). OldMSATdefaultcontext0/state/parametercount remains;newcontext5. OldVarFr03actual4stagesended0/liveemptyreconfirmedbeforelaunch;nootherownNNpending.",
+    "Firstrealworknewsource2NNsmoke withactualF0/newphysics/allpriorgradients/E0reload;PASScontinuesimmediately. OriginalcompleteMain7allnewG regardlesssourcequality;independentCPUtruthafterallpredictions. BaselineVarFandDURAonlycomparison/defaultDURAunchanged.",
+    "Checkpointrecovery~3.1GB/30epochs plusfinal/E0. Newoutputspacepreflight>=5GiB. OnlyoneNNworker/sourcebatch256;GPUfree>=16GB;do notinterruptotherowners. Currentcode/configbeforetargetfixedbyactualGitcommit."
+  ],
+  "registered_at": "2026-11-01T06:33:04+00:00"
+}
