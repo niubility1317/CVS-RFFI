@@ -24,7 +24,8 @@ def load_renderer(path: Path):
 
 def configure_renderer(module,style):
     base=module.panel_render
-    ink='#21364B'; light='#F6F1E7'; deep='#15263B'; plot='#FFFFFF'
+    ink='#000000' if style=='paper' else '#21364B'
+    light='#F6F1E7'; deep='#15263B'; plot='#FFFFFF'
     # Preserve every experimental series color from the historical renderer.
     plt.rcParams.update({'figure.facecolor':deep if style=='space' else 'white',
         'savefig.facecolor':deep if style=='space' else 'white',
@@ -51,7 +52,8 @@ def configure_renderer(module,style):
         for spine in ax.spines.values():spine.set_color(ink)
         ax.set_facecolor(plot)
         for grid in ax.get_xgridlines()+ax.get_ygridlines():
-            grid.set_color('#DAE3EA');grid.set_linewidth(.55)
+            if style=='space':grid.set_color('#DAE3EA')
+            grid.set_linewidth(.55)
         ax.xaxis.label.set_fontsize(max(9.3,ax.xaxis.label.get_fontsize()))
         ax.yaxis.label.set_fontsize(max(9.3,ax.yaxis.label.get_fontsize()))
         ax.title.set_color(light if style=='space' else ink)
