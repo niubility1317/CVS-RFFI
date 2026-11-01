@@ -1,0 +1,5 @@
+# Blind class-conditional waveform hypotheses
+
+Fixed source-only diagnostic after prior Gaussian-mixture results: instead of averaging six class-conditioned posterior IQ waveforms, compare input-only posterior MAP, the candidate whose frozen Tri-SIG-TIME SSL most favors its assumed class, and the product of those two scores. These choices use only current received IQ, the fixed source-trained blind channel estimator, source Gaussian priors and frozen F. DURA is comparison only.
+
+Run on the same previously explored 384 RX8 source records (64 per impaired scene), with clean F high-confidence pseudo targets only for evaluation. Report per-selector agreement, repairs/damages, waveform NMSE, class consistency, and hypothetical union-oracle agreement among parent and six hypotheses. That oracle requires the unavailable clean F output, is not deployable and is not a bound on other networks. Class-conditioned outputs may hallucinate identity; no clean waveform guarantee. No TX labels, U_s truth, V or Phase1 test. Fixed checkpoint and three selectors, no target adaptation.
