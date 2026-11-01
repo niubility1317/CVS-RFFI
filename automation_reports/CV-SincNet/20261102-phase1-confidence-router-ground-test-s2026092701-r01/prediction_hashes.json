@@ -1,0 +1,33 @@
+{
+  "status": "FIXED_PREDICTION_HASHES",
+  "hashes": {
+    "physical_ids.npy": "c7ab2af197a32bfacf05a3524393188103df14d9731da02e76a91b240b224b22",
+    "clean.raw.npy": "af63efb8b7ece72c71daf7bbae0ce64dc9d5f07f4e3bd9328e95681c013f0b43",
+    "clean.restored.npy": "7d3fc61b2248ec01b92400e6a989f37f15648f64ec4ae915e7a3b0f18c1f9e6d",
+    "practical_high.raw.npy": "dc1378cb1d92f3e22bf74ce05cd77b45f37df2af3b00e0fde54d91e94f7c3b72",
+    "practical_high.restored.npy": "8bd8115868de10bfd8422696bb186d1fc00dfd931be777978024a2ff4b82978a",
+    "practical_mid.raw.npy": "ea642c9e529d47ea6a49feb524b3b1e8ce9a7c222b6d3b7e74407a8c0f5d38da",
+    "practical_mid.restored.npy": "7844b32d1efc9c5e3138a8d238429ae530a3dfed0a4ea71e409123add04a2eda",
+    "practical_low_suburban.raw.npy": "32e0bb48871888b2203674bfee5f94bb93d78457c88d1845c3e4d0613812bebb",
+    "practical_low_suburban.restored.npy": "5b92d99c26c5cd75564ff02ba82fe4b1486695a3d3a8fb26655f0129a02bd89b",
+    "practical_high_urban.raw.npy": "de61f7844facf5eb9e47f3cfae7f6a177ab537a7a95608aec468a38a99628a36",
+    "practical_high_urban.restored.npy": "8bdd3a386a80049b18ea481866dbcde845ce2398fbceeecf2889f8d53a786e11",
+    "practical_mid_urban.raw.npy": "32bf553d4de88b7c3dc82a1f9144cf035f6df7b29da6905544f6e652947a18ac",
+    "practical_mid_urban.restored.npy": "196d118366b295f683bc9c6ab7de4f5343dd639091b5808cb6c53f0c6dd95f4f",
+    "practical_low_urban.raw.npy": "8d1792e836e14da408dffa17fd75c6bc9f16aad861dc9bbf7597a827fcc5bd5b",
+    "practical_low_urban.restored.npy": "c0ef245123a45a50979d9693d21103c773b746299d0693585fb0c16c7a0e89bb"
+  },
+  "selected_by_view": {
+    "clean": 224,
+    "practical_high": 21434,
+    "practical_mid": 25646,
+    "practical_low_suburban": 29443,
+    "practical_high_urban": 24172,
+    "practical_mid_urban": 35883,
+    "practical_low_urban": 42483
+  },
+  "batch": 32,
+  "source_selection_sha256": "2d3cac93b1e177258003891ff203d9b392f57b023cef8fcc387166ae0e017a24",
+  "source_truth_reads_during_prediction": 0,
+  "TX_truth_reads": 0
+}
