@@ -3,7 +3,7 @@
 - run_id：`20261102-diagnostic-Restore-covariance-parameter-source-s2026092701-r01`
 - group_id：`restoration-covariance-frozen-source-parameter-attribution`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：QUEUED（等待父最后GPU阶段，诊断worker未启动）
 
 ## 目的与对照
 
@@ -37,3 +37,8 @@
 首步实际source2盲后验逐值等于G.forward、原F0输出有限，PASS立即四路全量。10240 G估计器记录、40960后验/F0输出、512 clean参考；额外smoke为4估计器/4后验/2 F0记录。3针对性检查与一次独立P0/P1通过。
 
 控制器先CUDA空等待：只在父最后GPU阶段cross_both已经从/proc PID/cmdline核实在4或6运行后，选另一卡；或该阶段exit0后从4/6准入。父后续只有CPU评分，不会回到GPU。实际free≥12000MiB/existing compute≤2/新增1总≤3，整体至多两条本任务NN且分卡。父训练/部署/Main矩阵和其他owner均保持，诊断不按源质量取消或改变父测试。技术失败保留且不自动重试。完整路径/代码/命令/CWD/GPU/停止规则/产物见登记。
+
+
+## 实际等待控制器已核实
+
+VERIFIED / QUEUED。实际CPU控制器PID/CWD/cmdline/CUDA空与等待日志已核实，尚无submitted子worker或源smoke/结果；不以发布返回值冒充诊断已运行。代码`5d7d9a2c4dd8e5d58b2843e47b1769d93d434c29`，一次archive SHA比对和远端compile通过。父仍按既定30轮和完整Main运行；到最后GPU阶段才在另一卡按预算准入，未知源结果不影响父。
