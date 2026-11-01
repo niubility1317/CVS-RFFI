@@ -1,18 +1,20 @@
 {
-  "status": "VERIFIED_WAITING_FOR_PARENT_TECHNICAL_COMPLETION",
+  "status": "VERIFIED_ARTIFACTS_COMPLETE",
   "code_commit": "128cc49df04f346f29c93d8173192cc56bd3bd77",
-  "controller_PID": 548918,
-  "PID_CWD_cmdline_CUDA_verified": true,
-  "controller_log_growth": true,
-  "CUDA_empty": true,
-  "diagnostic_GPU_worker_started": false,
-  "parent_condition": "Both fixed DirectBridge/StateBridge complete Main artifacts with zero technical failures;no performance/scores inspected",
+  "all_source_trajectory_rows": 81920,
+  "source_smoke": "PASS",
+  "worker_exit_code": 0,
+  "all_owned_processes_ended": true,
+  "worker_live_GPU_snapshot_captured": true,
+  "admission": {
+    "GPU": 4,
+    "free_memory_MB": 20781,
+    "existing_compute_PIDs": 2
+  },
   "archive_SHA_match": true,
   "remote_compile": true,
-  "focused_checks": 3,
-  "one_P0P1": "PASS",
-  "new_training_updates": 0,
-  "target_IQ_truth_reads": 0,
-  "other_owner_changes": 0,
-  "performance_not_inferred": true
+  "independent_check": "PASS",
+  "optimizer_updates": 0,
+  "TX_V_OE_target_IQ_truth_reads": 0,
+  "evidence_limit": null
 }

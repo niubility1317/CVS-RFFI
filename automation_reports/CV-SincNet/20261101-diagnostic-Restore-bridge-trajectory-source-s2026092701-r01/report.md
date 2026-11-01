@@ -3,7 +3,7 @@
 - run_id：`20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01`
 - group_id：`restoration-frozen-source-four-step-trajectory`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（完整源轨迹与独立复算核实）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+两版各4步、81920源轨迹完整并独立复算；详见analysis.md，源Fclean一致不是Main TX准确率。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -42,3 +42,8 @@
 ## 已核实等待父任务
 
 VERIFIED：控制器PID548918、CWD/命令/Git版本/CUDA空可见与WAITING日志已独立读回。当前没有诊断GPU worker，不读取父任务评分或预测；仅等两版固定Main技术完成后自动源2检查/完整源轨迹，父计划保持。
+
+
+## 冻结轨迹完整分析完成
+
+VERIFIED / ANALYZED。实际源2与真实四步forward一致检查PASS，20draw/两模型/4步/81920条完整，96组均值和首步配对复算PASS，误差0；0TX/V/OE/目标IQ/更新或选模。worker exit0及本run进程退出核实，其他owner/父计划保持。实时worker PID/CWD/命令/CUDA/GPU及日志增长曾捕获。

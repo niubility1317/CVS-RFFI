@@ -281,3 +281,9 @@ VERIFIED / RUNNING：12重点相关检查/一次P0P1、真实源2训练梯度与
 原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景固定预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对复算PASS，最大指标差1.24e-14、raw/DURA判决差0；60完整日志/源顺序draw/从零E0/固定4步与time协议/各轮与各t总loss重组/30快照E30-final一致性核实。
 
 六景依次71.752976/70.942262/69.885714/70.691667/65.321429/59.635119%，达标0/6，相对DirectBridge依次-5.910714/-5.448810/-5.017857/-5.767857/-4.965476/-4.571429个百分点。合并clean 86.107143%（未保持），cross_rx净变化-551、cross_both净变化-174，不掩盖子总体损伤。完整TX/RX/day/净纠错/相对clean/各time训练与成本见analysis.md。完整目标未达到，保持 ACTIVE 和默认 DURA。配对代数捷径是源端解析限制，不以其预判实际模型或取消测试；性能主线、效率支线保持。
+
+## 冻结四步源轨迹完整分析（2026-11-01）
+
+`20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01`，代码`128cc49df04f346f29c93d8173192cc56bd3bd77`。两版固定final30原source512×20，各4步共81920轨迹行；源2轨迹末步逐值等于实际G.forward、F0/defaulthead检查PASS，G/F0终态不变，0训练/新头/TX/V/OE/目标IQ-truth或选模。只等父Main技术完成、不读其分数后运行，不阻塞/热改两版。
+
+DirectBridge低档城区Fclean一致率84.749304%→84.749304%，相对首步净变化+0；StateBridge低档城区Fclean一致率86.350975%→81.615599%，相对首步净变化-68。这些是源训练面板F(clean)一致，不是TX准确率、目标泛化或理论上限；原Main六景3pp+clean仍主线，默认DURA保持。独立全81920行/96组/配对复算PASS，误差0，旧源Fclean参考差异{'DirectBridge': 0, 'StateBridge': 0}单列非门槛；实时workerGPU快照捕获=True，完整产物与进程结束核实。图表/完整组/证据边界见analysis.md。

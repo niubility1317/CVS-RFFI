@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "source_cases": 10240,
+  "trajectory_rows": 81920,
+  "source_packets": 512,
+  "source_draws": 20,
+  "models": 2,
+  "steps": 4,
+  "summary_groups": 96,
+  "paired_groups": 96,
+  "max_abs_aggregate_error": 0.0,
+  "all_cases_align_original_source_panel": true,
+  "all_predictions_agreements_and_pairs_checked": true,
+  "unit_output_max_abs_error": 3.5762786865234375e-07,
+  "Fclean_reference_differences_from_old_source_diagnostic": {
+    "DirectBridge": 0,
+    "StateBridge": 0
+  },
+  "old_reference_comparison_nonblocking": true,
+  "full_worker_log_scanned": true,
+  "all20draws_checked": true,
+  "new_neural_forwards": 0,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "target_IQ_truth_reads": 0
+}

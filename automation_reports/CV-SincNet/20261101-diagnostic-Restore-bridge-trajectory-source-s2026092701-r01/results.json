@@ -1,0 +1,2480 @@
+{
+  "status": "BRIDGE_TRAJECTORY_COMPLETE",
+  "run_id": "20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01",
+  "code_commit": "128cc49df04f346f29c93d8173192cc56bd3bd77",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "methods": [
+    "DirectBridge",
+    "StateBridge"
+  ],
+  "parent_code_commits": [
+    "84a063c9ba1f9974cfe361e293a9e11fa93920b4",
+    "c50a9159b1fb891c6f1a6f8ad4bfa2d7eb66222e"
+  ],
+  "source_packets": 512,
+  "source_draws": 20,
+  "source_cases": 10240,
+  "trajectory_rows": 81920,
+  "summary": [
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.029097903445858365,
+        "feature_cosine_distance": 0.007911269826581701,
+        "feature_standardized_mse": 0.08024828728974498,
+        "clean_decision_agreement": 0.95869140625,
+        "latent_cosine_distance": 0.010964089166373014,
+        "latent_standardized_mse": 0.10738883222720688,
+        "latent_clean_decision_agreement": 0.94951171875,
+        "raw_complex_power": 1.0041492888936774,
+        "output_power_abs_error": 6.229965947568416e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 9.150286740142344e-05,
+        "feature_cosine_distance": 5.285289938348694e-05,
+        "feature_standardized_mse": 0.0004758748685400458,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004268759825019764,
+        "latent_standardized_mse": 0.04935208370141152,
+        "latent_clean_decision_agreement": 0.9968334388853705,
+        "raw_complex_power": 0.9737634934376432,
+        "output_power_abs_error": 6.447418193563469e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.01082031706689231,
+        "feature_cosine_distance": 0.0021787281210136813,
+        "feature_standardized_mse": 0.026035249698988717,
+        "clean_decision_agreement": 0.9908899789768746,
+        "latent_cosine_distance": 0.004585351280674871,
+        "latent_standardized_mse": 0.05412268819164722,
+        "latent_clean_decision_agreement": 0.9901892081289418,
+        "raw_complex_power": 1.0004193111993085,
+        "output_power_abs_error": 6.198548903060945e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.019051770531142313,
+        "feature_cosine_distance": 0.0046484577986929156,
+        "feature_standardized_mse": 0.05033990586638942,
+        "clean_decision_agreement": 0.9770833333333333,
+        "latent_cosine_distance": 0.007466530137591892,
+        "latent_standardized_mse": 0.07994511847727052,
+        "latent_clean_decision_agreement": 0.9708333333333333,
+        "raw_complex_power": 1.0021938902222447,
+        "output_power_abs_error": 6.411638524797228e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.019155344613247676,
+        "feature_cosine_distance": 0.0055912718837985405,
+        "feature_standardized_mse": 0.05650695723373405,
+        "clean_decision_agreement": 0.9829351535836177,
+        "latent_cosine_distance": 0.0072803858604040565,
+        "latent_standardized_mse": 0.07583833729384194,
+        "latent_clean_decision_agreement": 0.9808873720136518,
+        "raw_complex_power": 1.0084498269159232,
+        "output_power_abs_error": 6.224921945825779e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.08396485952036534,
+        "feature_cosine_distance": 0.026261466085744766,
+        "feature_standardized_mse": 0.24987547382035274,
+        "clean_decision_agreement": 0.8474930362116991,
+        "latent_cosine_distance": 0.029977759320423795,
+        "latent_standardized_mse": 0.26198973090739397,
+        "latent_clean_decision_agreement": 0.8217270194986073,
+        "raw_complex_power": 1.0262899877799254,
+        "output_power_abs_error": 5.9438615124205695e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.018150637658399835,
+        "feature_cosine_distance": 0.0034338586895934975,
+        "feature_standardized_mse": 0.03977433804389983,
+        "clean_decision_agreement": 0.9851752021563343,
+        "latent_cosine_distance": 0.006295109895683042,
+        "latent_standardized_mse": 0.0657177119480692,
+        "latent_clean_decision_agreement": 0.9838274932614556,
+        "raw_complex_power": 1.0058326911974467,
+        "output_power_abs_error": 6.273750346304593e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.056331612366177945,
+        "feature_cosine_distance": 0.014284314501784726,
+        "feature_standardized_mse": 0.1495530867643094,
+        "clean_decision_agreement": 0.9212207239176721,
+        "latent_cosine_distance": 0.017871562008150425,
+        "latent_standardized_mse": 0.17355227319793373,
+        "latent_clean_decision_agreement": 0.8949609652235628,
+        "raw_complex_power": 1.0151678286096235,
+        "output_power_abs_error": 6.083142596665133e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.07655140969926785,
+        "feature_cosine_distance": 0.016101176425030356,
+        "feature_standardized_mse": 0.19563436337452578,
+        "clean_decision_agreement": 0.88,
+        "latent_cosine_distance": 0.018444037876631084,
+        "latent_standardized_mse": 0.2104676274220018,
+        "latent_clean_decision_agreement": 0.8526315789473684,
+        "raw_complex_power": 1.0283856848666542,
+        "output_power_abs_error": 5.753416764108758e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.01111307779897414,
+        "feature_cosine_distance": 0.002173563023910339,
+        "feature_standardized_mse": 0.025616395934451978,
+        "clean_decision_agreement": 0.9962394705174489,
+        "latent_cosine_distance": 0.0045093585491610775,
+        "latent_standardized_mse": 0.05257062613025473,
+        "latent_clean_decision_agreement": 0.9948856799037304,
+        "raw_complex_power": 1.0021455812343047,
+        "output_power_abs_error": 6.290405952830033e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 9.150286740142344e-05,
+        "feature_cosine_distance": 5.285289938348694e-05,
+        "feature_standardized_mse": 0.0004758748685400458,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004268759825019764,
+        "latent_standardized_mse": 0.04935208370141152,
+        "latent_clean_decision_agreement": 0.9968334388853705,
+        "raw_complex_power": 0.9737634934376432,
+        "output_power_abs_error": 6.447418193563469e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.1422525567601865,
+        "feature_cosine_distance": 0.04814862061085167,
+        "feature_standardized_mse": 0.4372912606317287,
+        "clean_decision_agreement": 0.7328316086547507,
+        "latent_cosine_distance": 0.054592520867668,
+        "latent_standardized_mse": 0.4443094386427417,
+        "latent_clean_decision_agreement": 0.6820319849482597,
+        "raw_complex_power": 1.0401561029767048,
+        "output_power_abs_error": 5.9548572673061944e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.029429374383254724,
+        "feature_cosine_distance": 0.00799206379451789,
+        "feature_standardized_mse": 0.08167473255027886,
+        "clean_decision_agreement": 0.95859375,
+        "latent_cosine_distance": 0.010580861655762419,
+        "latent_standardized_mse": 0.11001624123573492,
+        "latent_clean_decision_agreement": 0.95224609375,
+        "raw_complex_power": 0.9884576584678143,
+        "output_power_abs_error": 6.529153324663639e-08,
+        "change_from_first_nmse": 0.00038981010557943564
+      },
+      "paired_against_first": {
+        "repairs": 28,
+        "damage": 29,
+        "net": -1
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00016337006167030762,
+        "feature_cosine_distance": 7.927051596131183e-05,
+        "feature_standardized_mse": 0.0007644304134305702,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004055978490854835,
+        "latent_standardized_mse": 0.04789434332858259,
+        "latent_clean_decision_agreement": 0.9974667511082964,
+        "raw_complex_power": 0.9953974586185433,
+        "output_power_abs_error": 7.342054090445521e-08,
+        "change_from_first_nmse": 5.053782345910999e-05
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.011153142275143487,
+        "feature_cosine_distance": 0.0022635401005333925,
+        "feature_standardized_mse": 0.027055750523492194,
+        "clean_decision_agreement": 0.9915907498248073,
+        "latent_cosine_distance": 0.004542683836623515,
+        "latent_standardized_mse": 0.05428304851966236,
+        "latent_clean_decision_agreement": 0.9901892081289418,
+        "raw_complex_power": 0.9893303794215923,
+        "output_power_abs_error": 6.561940920962766e-08,
+        "change_from_first_nmse": 0.00033312252104433223
+      },
+      "paired_against_first": {
+        "repairs": 1,
+        "damage": 0,
+        "net": 1
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.019422456378379138,
+        "feature_cosine_distance": 0.0047548763453960415,
+        "feature_standardized_mse": 0.05179768946772027,
+        "clean_decision_agreement": 0.9736111111111111,
+        "latent_cosine_distance": 0.007291477670272191,
+        "latent_standardized_mse": 0.08112767400840919,
+        "latent_clean_decision_agreement": 0.9715277777777778,
+        "raw_complex_power": 0.9879801199667984,
+        "output_power_abs_error": 6.014274226294624e-08,
+        "change_from_first_nmse": 0.000383226688778551
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 5,
+        "net": -5
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.019512607325972996,
+        "feature_cosine_distance": 0.005527339575640578,
+        "feature_standardized_mse": 0.057210550978843366,
+        "clean_decision_agreement": 0.9843003412969283,
+        "latent_cosine_distance": 0.0068687620423352755,
+        "latent_standardized_mse": 0.07547729232892038,
+        "latent_clean_decision_agreement": 0.9802047781569966,
+        "raw_complex_power": 0.9895579442229288,
+        "output_power_abs_error": 6.5707509428161e-08,
+        "change_from_first_nmse": 0.0003854996212927979
+      },
+      "paired_against_first": {
+        "repairs": 4,
+        "damage": 2,
+        "net": 2
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.08442150129810816,
+        "feature_cosine_distance": 0.026550887852990195,
+        "feature_standardized_mse": 0.2535529542400782,
+        "clean_decision_agreement": 0.8488857938718662,
+        "latent_cosine_distance": 0.029288462070037397,
+        "latent_standardized_mse": 0.27826922413183525,
+        "latent_clean_decision_agreement": 0.8279944289693594,
+        "raw_complex_power": 0.9810995158212763,
+        "output_power_abs_error": 6.529116032847454e-08,
+        "change_from_first_nmse": 0.000699977842866999
+      },
+      "paired_against_first": {
+        "repairs": 13,
+        "damage": 11,
+        "net": 2
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.018482983308923343,
+        "feature_cosine_distance": 0.0035065830637502544,
+        "feature_standardized_mse": 0.040382634976852405,
+        "clean_decision_agreement": 0.9865229110512129,
+        "latent_cosine_distance": 0.005865413384296181,
+        "latent_standardized_mse": 0.06548084538320777,
+        "latent_clean_decision_agreement": 0.9838274932614556,
+        "raw_complex_power": 0.9906018486402105,
+        "output_power_abs_error": 6.490640563142268e-08,
+        "change_from_first_nmse": 0.0003484287239277396
+      },
+      "paired_against_first": {
+        "repairs": 2,
+        "damage": 0,
+        "net": 2
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.05675725217784191,
+        "feature_cosine_distance": 0.014342139636987994,
+        "feature_standardized_mse": 0.1519529219894261,
+        "clean_decision_agreement": 0.9190915542938254,
+        "latent_cosine_distance": 0.01713005979489231,
+        "latent_standardized_mse": 0.1769431991941534,
+        "latent_clean_decision_agreement": 0.907735982966643,
+        "raw_complex_power": 0.9843815294371335,
+        "output_power_abs_error": 6.10852427648432e-08,
+        "change_from_first_nmse": 0.0005661111672536449
+      },
+      "paired_against_first": {
+        "repairs": 8,
+        "damage": 11,
+        "net": -3
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.07700280116601406,
+        "feature_cosine_distance": 0.016281630992889404,
+        "feature_standardized_mse": 0.1989152582430918,
+        "clean_decision_agreement": 0.8757894736842106,
+        "latent_cosine_distance": 0.017209674935591848,
+        "latent_standardized_mse": 0.20669914295112615,
+        "latent_clean_decision_agreement": 0.8673684210526316,
+        "raw_complex_power": 0.9857452312896127,
+        "output_power_abs_error": 6.148689671566612e-08,
+        "change_from_first_nmse": 0.0006774295531182647
+      },
+      "paired_against_first": {
+        "repairs": 8,
+        "damage": 12,
+        "net": -4
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.011459822644420104,
+        "feature_cosine_distance": 0.00224121497713128,
+        "feature_standardized_mse": 0.026399584412692443,
+        "clean_decision_agreement": 0.9962394705174489,
+        "latent_cosine_distance": 0.004452089414843296,
+        "latent_standardized_mse": 0.052227325132144696,
+        "latent_clean_decision_agreement": 0.9950361010830325,
+        "raw_complex_power": 0.989654695433615,
+        "output_power_abs_error": 6.382753702707669e-08,
+        "change_from_first_nmse": 0.00033499744634581563
+      },
+      "paired_against_first": {
+        "repairs": 3,
+        "damage": 3,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00016337006167030762,
+        "feature_cosine_distance": 7.927051596131183e-05,
+        "feature_standardized_mse": 0.0007644304134305702,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004055978490854835,
+        "latent_standardized_mse": 0.04789434332858259,
+        "latent_clean_decision_agreement": 0.9974667511082964,
+        "raw_complex_power": 0.9953974586185433,
+        "output_power_abs_error": 7.342054090445521e-08,
+        "change_from_first_nmse": 5.053782345910999e-05
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.1427669523135774,
+        "feature_cosine_distance": 0.04830330997172775,
+        "feature_standardized_mse": 0.44277355897039705,
+        "clean_decision_agreement": 0.735653809971778,
+        "latent_cosine_distance": 0.05267822361171862,
+        "latent_standardized_mse": 0.4772998107770705,
+        "latent_clean_decision_agreement": 0.6933207902163687,
+        "raw_complex_power": 0.9730869713865802,
+        "output_power_abs_error": 6.577257603154582e-08,
+        "change_from_first_nmse": 0.0009795250791365497
+      },
+      "paired_against_first": {
+        "repairs": 17,
+        "damage": 14,
+        "net": 3
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.029537101906847597,
+        "feature_cosine_distance": 0.008022287138737738,
+        "feature_standardized_mse": 0.08212654682389982,
+        "clean_decision_agreement": 0.95849609375,
+        "latent_cosine_distance": 0.010391997650731354,
+        "latent_standardized_mse": 0.10733313928903954,
+        "latent_clean_decision_agreement": 0.95380859375,
+        "raw_complex_power": 1.0003857069415971,
+        "output_power_abs_error": 6.445334292948246e-08,
+        "change_from_first_nmse": 0.0004962316960352098
+      },
+      "paired_against_first": {
+        "repairs": 29,
+        "damage": 31,
+        "net": -2
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.0002647589478234995,
+        "feature_cosine_distance": 0.00014299059910741012,
+        "feature_standardized_mse": 0.001357338233721542,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004010082838881083,
+        "latent_standardized_mse": 0.047361027494195594,
+        "latent_clean_decision_agreement": 0.9974667511082964,
+        "raw_complex_power": 1.0137584435554756,
+        "output_power_abs_error": 7.330729585421697e-08,
+        "change_from_first_nmse": 0.00012495213643515168
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.011245368737495716,
+        "feature_cosine_distance": 0.0022786173606637317,
+        "feature_standardized_mse": 0.027188599187966903,
+        "clean_decision_agreement": 0.9915907498248073,
+        "latent_cosine_distance": 0.004502795673201948,
+        "latent_standardized_mse": 0.053741342937945795,
+        "latent_clean_decision_agreement": 0.9915907498248073,
+        "raw_complex_power": 0.998152721613207,
+        "output_power_abs_error": 6.348918013916872e-08,
+        "change_from_first_nmse": 0.0004369305694514031
+      },
+      "paired_against_first": {
+        "repairs": 1,
+        "damage": 0,
+        "net": 1
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.019521484532217276,
+        "feature_cosine_distance": 0.004805177988277541,
+        "feature_standardized_mse": 0.051988352398782606,
+        "clean_decision_agreement": 0.9743055555555555,
+        "latent_cosine_distance": 0.007093258947134018,
+        "latent_standardized_mse": 0.07809748051998516,
+        "latent_clean_decision_agreement": 0.9722222222222222,
+        "raw_complex_power": 0.997217467923959,
+        "output_power_abs_error": 6.010135014851888e-08,
+        "change_from_first_nmse": 0.0004947261033622554
+      },
+      "paired_against_first": {
+        "repairs": 1,
+        "damage": 5,
+        "net": -4
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.019599499746778846,
+        "feature_cosine_distance": 0.005547217500901466,
+        "feature_standardized_mse": 0.0576604212521426,
+        "clean_decision_agreement": 0.9829351535836177,
+        "latent_cosine_distance": 0.006767068665995939,
+        "latent_standardized_mse": 0.07425177296140444,
+        "latent_clean_decision_agreement": 0.9795221843003413,
+        "raw_complex_power": 0.9991539214658249,
+        "output_power_abs_error": 6.25340198087204e-08,
+        "change_from_first_nmse": 0.0004819879690765279
+      },
+      "paired_against_first": {
+        "repairs": 2,
+        "damage": 2,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.0845644304113434,
+        "feature_cosine_distance": 0.026545988857580093,
+        "feature_standardized_mse": 0.2541765574825354,
+        "clean_decision_agreement": 0.8495821727019499,
+        "latent_cosine_distance": 0.02910567537821767,
+        "latent_standardized_mse": 0.272225338513937,
+        "latent_clean_decision_agreement": 0.834958217270195,
+        "raw_complex_power": 0.9980774214672843,
+        "output_power_abs_error": 6.292523779908927e-08,
+        "change_from_first_nmse": 0.0008375276137837488
+      },
+      "paired_against_first": {
+        "repairs": 14,
+        "damage": 11,
+        "net": 3
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.018593384269391177,
+        "feature_cosine_distance": 0.0035910921678388857,
+        "feature_standardized_mse": 0.04100969171771564,
+        "clean_decision_agreement": 0.9851752021563343,
+        "latent_cosine_distance": 0.005786931940487453,
+        "latent_standardized_mse": 0.06440793745868621,
+        "latent_clean_decision_agreement": 0.9824797843665768,
+        "raw_complex_power": 0.9985651514440212,
+        "output_power_abs_error": 6.450475708172327e-08,
+        "change_from_first_nmse": 0.0004448246929701669
+      },
+      "paired_against_first": {
+        "repairs": 1,
+        "damage": 1,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.056879644270553704,
+        "feature_cosine_distance": 0.014319020903135886,
+        "feature_standardized_mse": 0.1524789267010733,
+        "clean_decision_agreement": 0.9198012775017743,
+        "latent_cosine_distance": 0.01642657231573859,
+        "latent_standardized_mse": 0.17025067629669366,
+        "latent_clean_decision_agreement": 0.9119943222143364,
+        "raw_complex_power": 0.9964496893100996,
+        "output_power_abs_error": 6.34541995479673e-08,
+        "change_from_first_nmse": 0.0006950218311301201
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 12,
+        "net": -2
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.07716820928047559,
+        "feature_cosine_distance": 0.01633154185194718,
+        "feature_standardized_mse": 0.1991178015952832,
+        "clean_decision_agreement": 0.8768421052631579,
+        "latent_cosine_distance": 0.016503135907022577,
+        "latent_standardized_mse": 0.1965488980195828,
+        "latent_clean_decision_agreement": 0.8747368421052631,
+        "raw_complex_power": 0.9943066626473477,
+        "output_power_abs_error": 6.267898961117392e-08,
+        "change_from_first_nmse": 0.0008187950888225858
+      },
+      "paired_against_first": {
+        "repairs": 9,
+        "damage": 12,
+        "net": -3
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.011555538825947743,
+        "feature_cosine_distance": 0.0022687313071800626,
+        "feature_standardized_mse": 0.026711589154930535,
+        "clean_decision_agreement": 0.9960890493381468,
+        "latent_cosine_distance": 0.004447026265657335,
+        "latent_standardized_mse": 0.05216227089149864,
+        "latent_clean_decision_agreement": 0.9945848375451264,
+        "raw_complex_power": 0.9984036050154127,
+        "output_power_abs_error": 6.29399227321363e-08,
+        "change_from_first_nmse": 0.0004326596536544232
+      },
+      "paired_against_first": {
+        "repairs": 3,
+        "damage": 4,
+        "net": -1
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.0002647589478234995,
+        "feature_cosine_distance": 0.00014299059910741012,
+        "feature_standardized_mse": 0.001357338233721542,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004010082838881083,
+        "latent_standardized_mse": 0.047361027494195594,
+        "latent_clean_decision_agreement": 0.9974667511082964,
+        "raw_complex_power": 1.0137584435554756,
+        "output_power_abs_error": 7.330729585421697e-08,
+        "change_from_first_nmse": 0.00012495213643515168
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.14290766530212012,
+        "feature_cosine_distance": 0.0482831116229548,
+        "feature_standardized_mse": 0.44411293150347186,
+        "clean_decision_agreement": 0.7347130761994356,
+        "latent_cosine_distance": 0.05159014620426569,
+        "latent_standardized_mse": 0.4617234749775573,
+        "latent_clean_decision_agreement": 0.7046095954844779,
+        "raw_complex_power": 0.9983504807623848,
+        "output_power_abs_error": 6.235217778949612e-08,
+        "change_from_first_nmse": 0.0011570427395045926
+      },
+      "paired_against_first": {
+        "repairs": 17,
+        "damage": 15,
+        "net": 2
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.029556403850036616,
+        "feature_cosine_distance": 0.008001414494356141,
+        "feature_standardized_mse": 0.08209178413163584,
+        "clean_decision_agreement": 0.958203125,
+        "latent_cosine_distance": 0.010435692855389788,
+        "latent_standardized_mse": 0.10729725528653944,
+        "latent_clean_decision_agreement": 0.9529296875,
+        "raw_complex_power": 0.9880091697094031,
+        "output_power_abs_error": 6.980844773352146e-08,
+        "change_from_first_nmse": 0.0005202794793945032
+      },
+      "paired_against_first": {
+        "repairs": 26,
+        "damage": 31,
+        "net": -5
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.0003485787183227636,
+        "feature_cosine_distance": 0.00017962533511112883,
+        "feature_standardized_mse": 0.0017888928502334336,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004112412915945506,
+        "latent_standardized_mse": 0.04835360600424906,
+        "latent_clean_decision_agreement": 0.9949335022165928,
+        "raw_complex_power": 0.9912598949583971,
+        "output_power_abs_error": 7.5421203458664e-08,
+        "change_from_first_nmse": 0.00018035384425636118
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.01126695296347119,
+        "feature_cosine_distance": 0.0023118123861151137,
+        "feature_standardized_mse": 0.027516852676628265,
+        "clean_decision_agreement": 0.9908899789768746,
+        "latent_cosine_distance": 0.00452317160664527,
+        "latent_standardized_mse": 0.05392042906451044,
+        "latent_clean_decision_agreement": 0.9908899789768746,
+        "raw_complex_power": 0.9876309548463534,
+        "output_power_abs_error": 6.708133112072694e-08,
+        "change_from_first_nmse": 0.00045548927012761467
+      },
+      "paired_against_first": {
+        "repairs": 1,
+        "damage": 1,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.019538111006841063,
+        "feature_cosine_distance": 0.004774426172176997,
+        "feature_standardized_mse": 0.05192797816044832,
+        "clean_decision_agreement": 0.9756944444444444,
+        "latent_cosine_distance": 0.0071496193193727065,
+        "latent_standardized_mse": 0.07854403473449767,
+        "latent_clean_decision_agreement": 0.9743055555555555,
+        "raw_complex_power": 0.987321993129121,
+        "output_power_abs_error": 6.730357805887858e-08,
+        "change_from_first_nmse": 0.0005105899851362967
+      },
+      "paired_against_first": {
+        "repairs": 1,
+        "damage": 3,
+        "net": -2
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.01961951595123177,
+        "feature_cosine_distance": 0.005518014032279265,
+        "feature_standardized_mse": 0.05753952024358328,
+        "clean_decision_agreement": 0.9815699658703072,
+        "latent_cosine_distance": 0.006775140314785694,
+        "latent_standardized_mse": 0.075106022384895,
+        "latent_clean_decision_agreement": 0.9795221843003413,
+        "raw_complex_power": 0.9876892424687591,
+        "output_power_abs_error": 6.945059974852682e-08,
+        "change_from_first_nmse": 0.0005055542480806047
+      },
+      "paired_against_first": {
+        "repairs": 1,
+        "damage": 3,
+        "net": -2
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.0845390813896033,
+        "feature_cosine_distance": 0.026374980516752494,
+        "feature_standardized_mse": 0.25337251069067657,
+        "clean_decision_agreement": 0.8474930362116991,
+        "latent_cosine_distance": 0.029657391120464355,
+        "latent_standardized_mse": 0.27399718594636174,
+        "latent_clean_decision_agreement": 0.8286908077994429,
+        "raw_complex_power": 0.9871456227511749,
+        "output_power_abs_error": 6.827969404980333e-08,
+        "change_from_first_nmse": 0.0008517574315546855
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 10,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.018607205145310165,
+        "feature_cosine_distance": 0.003633579113734058,
+        "feature_standardized_mse": 0.04124474088486279,
+        "clean_decision_agreement": 0.9851752021563343,
+        "latent_cosine_distance": 0.005832040767785353,
+        "latent_standardized_mse": 0.0649777663619988,
+        "latent_clean_decision_agreement": 0.9804582210242587,
+        "raw_complex_power": 0.9876724130140161,
+        "output_power_abs_error": 7.044915561727436e-08,
+        "change_from_first_nmse": 0.00046660120949061114
+      },
+      "paired_against_first": {
+        "repairs": 1,
+        "damage": 1,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.05687760377555261,
+        "feature_cosine_distance": 0.014283983017046288,
+        "feature_standardized_mse": 0.15216951908803472,
+        "clean_decision_agreement": 0.9205110007097232,
+        "latent_cosine_distance": 0.015933026566921693,
+        "latent_standardized_mse": 0.164945635817366,
+        "latent_clean_decision_agreement": 0.915542938254081,
+        "raw_complex_power": 0.9870189961767772,
+        "output_power_abs_error": 7.009573910065455e-08,
+        "change_from_first_nmse": 0.0007107548203093421
+      },
+      "paired_against_first": {
+        "repairs": 12,
+        "damage": 13,
+        "net": -1
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.077148946661159,
+        "feature_cosine_distance": 0.016285541685003985,
+        "feature_standardized_mse": 0.19864050295056873,
+        "clean_decision_agreement": 0.8768421052631579,
+        "latent_cosine_distance": 0.016050920611933656,
+        "latent_standardized_mse": 0.19188810670552284,
+        "latent_clean_decision_agreement": 0.8757894736842106,
+        "raw_complex_power": 0.9864258972594613,
+        "output_power_abs_error": 6.688268561112253e-08,
+        "change_from_first_nmse": 0.0008294649451885274
+      },
+      "paired_against_first": {
+        "repairs": 7,
+        "damage": 10,
+        "net": -3
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.011575201678037404,
+        "feature_cosine_distance": 0.0022931867576104496,
+        "feature_standardized_mse": 0.026978980928741254,
+        "clean_decision_agreement": 0.9957882069795427,
+        "latent_cosine_distance": 0.004471202359661442,
+        "latent_standardized_mse": 0.05241776460177342,
+        "latent_clean_decision_agreement": 0.9942839951865222,
+        "raw_complex_power": 0.9876508489968401,
+        "output_power_abs_error": 6.923391500534995e-08,
+        "change_from_first_nmse": 0.0004530795055731844
+      },
+      "paired_against_first": {
+        "repairs": 2,
+        "damage": 5,
+        "net": -3
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.0003485787183227636,
+        "feature_cosine_distance": 0.00017962533511112883,
+        "feature_standardized_mse": 0.0017888928502334336,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004112412915945506,
+        "latent_standardized_mse": 0.04835360600424906,
+        "latent_clean_decision_agreement": 0.9949335022165928,
+        "raw_complex_power": 0.9912598949583971,
+        "output_power_abs_error": 7.5421203458664e-08,
+        "change_from_first_nmse": 0.00018035384425636118
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "DirectBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.14286333917634017,
+        "feature_cosine_distance": 0.047915791018549724,
+        "feature_standardized_mse": 0.44189131202269083,
+        "clean_decision_agreement": 0.7337723424270931,
+        "latent_cosine_distance": 0.05211201032600869,
+        "latent_standardized_mse": 0.4624708841115881,
+        "latent_clean_decision_agreement": 0.7008466603951082,
+        "raw_complex_power": 0.986836384908276,
+        "output_power_abs_error": 6.767902751072106e-08,
+        "change_from_first_nmse": 0.0011691617101968834
+      },
+      "paired_against_first": {
+        "repairs": 17,
+        "damage": 16,
+        "net": 1
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.02687188491830419,
+        "feature_cosine_distance": 0.007240276277298108,
+        "feature_standardized_mse": 0.0739336179190122,
+        "clean_decision_agreement": 0.96162109375,
+        "latent_cosine_distance": 0.00960319634177722,
+        "latent_standardized_mse": 0.0977570566120903,
+        "latent_clean_decision_agreement": 0.95625,
+        "raw_complex_power": 1.0085973514826037,
+        "output_power_abs_error": 6.105401553213597e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00012204377643977165,
+        "feature_cosine_distance": 5.037011490206389e-05,
+        "feature_standardized_mse": 0.0004622784864739773,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004279984334664227,
+        "latent_standardized_mse": 0.04897710350752019,
+        "latent_clean_decision_agreement": 0.9924002533248891,
+        "raw_complex_power": 0.9917867231248224,
+        "output_power_abs_error": 6.38324599842847e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.010084388097538498,
+        "feature_cosine_distance": 0.00214931316616323,
+        "feature_standardized_mse": 0.02386834663528226,
+        "clean_decision_agreement": 0.9929922915206727,
+        "latent_cosine_distance": 0.004605097042236115,
+        "latent_standardized_mse": 0.05216569123566464,
+        "latent_clean_decision_agreement": 0.9915907498248073,
+        "raw_complex_power": 1.0040974248600072,
+        "output_power_abs_error": 6.131718187124978e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.01762281580478076,
+        "feature_cosine_distance": 0.0037257518619298936,
+        "feature_standardized_mse": 0.043875788801880033,
+        "clean_decision_agreement": 0.9819444444444444,
+        "latent_cosine_distance": 0.006220252191027006,
+        "latent_standardized_mse": 0.07057704143905236,
+        "latent_clean_decision_agreement": 0.9798611111111111,
+        "raw_complex_power": 1.005308328030838,
+        "output_power_abs_error": 6.167425049675836e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.01907178355593857,
+        "feature_cosine_distance": 0.005251774161342061,
+        "feature_standardized_mse": 0.05428755722777861,
+        "clean_decision_agreement": 0.9781569965870307,
+        "latent_cosine_distance": 0.007029339274448747,
+        "latent_standardized_mse": 0.07385190749674425,
+        "latent_clean_decision_agreement": 0.9795221843003413,
+        "raw_complex_power": 1.0109139610069198,
+        "output_power_abs_error": 5.931984442492801e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.07612306083056233,
+        "feature_cosine_distance": 0.02441078611237093,
+        "feature_standardized_mse": 0.23117045554932997,
+        "clean_decision_agreement": 0.8635097493036211,
+        "latent_cosine_distance": 0.026539397687965118,
+        "latent_standardized_mse": 0.23580922177748906,
+        "latent_clean_decision_agreement": 0.8419220055710307,
+        "raw_complex_power": 1.0247485475785885,
+        "output_power_abs_error": 6.180453765359098e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.016683543627489247,
+        "feature_cosine_distance": 0.00353345841249687,
+        "feature_standardized_mse": 0.03939620500136759,
+        "clean_decision_agreement": 0.9845013477088949,
+        "latent_cosine_distance": 0.00563152226797654,
+        "latent_standardized_mse": 0.06241824386096647,
+        "latent_clean_decision_agreement": 0.9824797843665768,
+        "raw_complex_power": 1.0077840558120184,
+        "output_power_abs_error": 6.060876614963913e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.05194951090208176,
+        "feature_cosine_distance": 0.012517637906978112,
+        "feature_standardized_mse": 0.1342462948954752,
+        "clean_decision_agreement": 0.9247693399574166,
+        "latent_cosine_distance": 0.013686488629064296,
+        "latent_standardized_mse": 0.14775178946701398,
+        "latent_clean_decision_agreement": 0.9205110007097232,
+        "raw_complex_power": 1.0173422425160432,
+        "output_power_abs_error": 5.85470747829245e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.07047113551880772,
+        "feature_cosine_distance": 0.013906171321868896,
+        "feature_standardized_mse": 0.17059947115908328,
+        "clean_decision_agreement": 0.9010526315789473,
+        "latent_cosine_distance": 0.014363527486198827,
+        "latent_standardized_mse": 0.1733164939519606,
+        "latent_clean_decision_agreement": 0.891578947368421,
+        "raw_complex_power": 1.030741168386058,
+        "output_power_abs_error": 5.8914485730622946e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.01017661894890493,
+        "feature_cosine_distance": 0.0020209029944508227,
+        "feature_standardized_mse": 0.023826289379322862,
+        "clean_decision_agreement": 0.9950361010830325,
+        "latent_cosine_distance": 0.004363314429058208,
+        "latent_standardized_mse": 0.05049715184009265,
+        "latent_clean_decision_agreement": 0.9950361010830325,
+        "raw_complex_power": 1.005336349370534,
+        "output_power_abs_error": 6.080606210389579e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00012204377643977165,
+        "feature_cosine_distance": 5.037011490206389e-05,
+        "feature_standardized_mse": 0.0004622784864739773,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004279984334664227,
+        "latent_standardized_mse": 0.04897710350752019,
+        "latent_clean_decision_agreement": 0.9924002533248891,
+        "raw_complex_power": 0.9917867231248224,
+        "output_power_abs_error": 6.38324599842847e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 1,
+      "time": 1.0,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.13205423605385624,
+        "feature_cosine_distance": 0.04460495654300822,
+        "feature_standardized_mse": 0.4100504613035514,
+        "clean_decision_agreement": 0.7497648165569144,
+        "latent_cosine_distance": 0.046026312172244656,
+        "latent_standardized_mse": 0.3982518142823442,
+        "latent_clean_decision_agreement": 0.7177798682972719,
+        "raw_complex_power": 1.034172608453153,
+        "output_power_abs_error": 6.03896542079922e-08,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.03236510007005115,
+        "feature_cosine_distance": 0.00890860315412283,
+        "feature_standardized_mse": 0.08557495766087655,
+        "clean_decision_agreement": 0.95419921875,
+        "latent_cosine_distance": 0.010588498110882938,
+        "latent_standardized_mse": 0.10337220906776565,
+        "latent_clean_decision_agreement": 0.95302734375,
+        "raw_complex_power": 1.0064518368977589,
+        "output_power_abs_error": 6.273039616644383e-08,
+        "change_from_first_nmse": 0.008331408597335254
+      },
+      "paired_against_first": {
+        "repairs": 69,
+        "damage": 145,
+        "net": -76
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00014660103244993713,
+        "feature_cosine_distance": 5.8384693597524205e-05,
+        "feature_standardized_mse": 0.0005275407019083446,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004246783717060633,
+        "latent_standardized_mse": 0.048596937953128215,
+        "latent_clean_decision_agreement": 0.9930335655478151,
+        "raw_complex_power": 1.008612565899137,
+        "output_power_abs_error": 6.14920622793612e-08,
+        "change_from_first_nmse": 1.936737739559109e-05
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.01565026478705172,
+        "feature_cosine_distance": 0.0029144318436273094,
+        "feature_standardized_mse": 0.030604815718338688,
+        "clean_decision_agreement": 0.9852838121934128,
+        "latent_cosine_distance": 0.0047201475398725955,
+        "latent_standardized_mse": 0.05338288579343674,
+        "latent_clean_decision_agreement": 0.9908899789768746,
+        "raw_complex_power": 1.0015889465516483,
+        "output_power_abs_error": 6.645479315882725e-08,
+        "change_from_first_nmse": 0.0073765556911666065
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 11,
+        "net": -11
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.023241976670882045,
+        "feature_cosine_distance": 0.004280793045957883,
+        "feature_standardized_mse": 0.049775342705349127,
+        "clean_decision_agreement": 0.9798611111111111,
+        "latent_cosine_distance": 0.006349975325995022,
+        "latent_standardized_mse": 0.07269249038492692,
+        "latent_clean_decision_agreement": 0.9770833333333333,
+        "raw_complex_power": 1.002055621561077,
+        "output_power_abs_error": 6.659991211361355e-08,
+        "change_from_first_nmse": 0.007796503296524154
+      },
+      "paired_against_first": {
+        "repairs": 4,
+        "damage": 7,
+        "net": -3
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.025078343532052932,
+        "feature_cosine_distance": 0.006457293765943612,
+        "feature_standardized_mse": 0.06317896212565588,
+        "clean_decision_agreement": 0.9706484641638226,
+        "latent_cosine_distance": 0.007487092571453836,
+        "latent_standardized_mse": 0.07592335087072372,
+        "latent_clean_decision_agreement": 0.9781569965870307,
+        "raw_complex_power": 1.005092661494688,
+        "output_power_abs_error": 6.473105108371773e-08,
+        "change_from_first_nmse": 0.008012934308737492
+      },
+      "paired_against_first": {
+        "repairs": 4,
+        "damage": 15,
+        "net": -11
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.08547184048186467,
+        "feature_cosine_distance": 0.030854354703326745,
+        "feature_standardized_mse": 0.26550755101777507,
+        "clean_decision_agreement": 0.8433147632311978,
+        "latent_cosine_distance": 0.0308188170111611,
+        "latent_standardized_mse": 0.25833447682210775,
+        "latent_clean_decision_agreement": 0.8328690807799443,
+        "raw_complex_power": 1.0130766427616555,
+        "output_power_abs_error": 5.985368925216802e-08,
+        "change_from_first_nmse": 0.015158020052548127
+      },
+      "paired_against_first": {
+        "repairs": 36,
+        "damage": 65,
+        "net": -29
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.022353896673287407,
+        "feature_cosine_distance": 0.003946948083584521,
+        "feature_standardized_mse": 0.04576448609878628,
+        "clean_decision_agreement": 0.9811320754716981,
+        "latent_cosine_distance": 0.005720899272157818,
+        "latent_standardized_mse": 0.0640345472570087,
+        "latent_clean_decision_agreement": 0.9851752021563343,
+        "raw_complex_power": 1.0044332312123794,
+        "output_power_abs_error": 5.9484150210480805e-08,
+        "change_from_first_nmse": 0.00818231365348638
+      },
+      "paired_against_first": {
+        "repairs": 3,
+        "damage": 8,
+        "net": -5
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.058719126018679006,
+        "feature_cosine_distance": 0.015035210051715923,
+        "feature_standardized_mse": 0.1549783491888437,
+        "clean_decision_agreement": 0.9127040454222853,
+        "latent_cosine_distance": 0.015703838035686375,
+        "latent_standardized_mse": 0.15877857045624127,
+        "latent_clean_decision_agreement": 0.907735982966643,
+        "raw_complex_power": 1.0102358575489945,
+        "output_power_abs_error": 6.066221476785674e-08,
+        "change_from_first_nmse": 0.012690783683451043
+      },
+      "paired_against_first": {
+        "repairs": 22,
+        "damage": 39,
+        "net": -17
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.07768691048295678,
+        "feature_cosine_distance": 0.015252100605713694,
+        "feature_standardized_mse": 0.18363233417370603,
+        "clean_decision_agreement": 0.888421052631579,
+        "latent_cosine_distance": 0.01451954584372671,
+        "latent_standardized_mse": 0.17644043682927363,
+        "latent_clean_decision_agreement": 0.8842105263157894,
+        "raw_complex_power": 1.018549678137428,
+        "output_power_abs_error": 5.929093611867804e-08,
+        "change_from_first_nmse": 0.01584533205010781
+      },
+      "paired_against_first": {
+        "repairs": 13,
+        "damage": 25,
+        "net": -12
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.01572481494300928,
+        "feature_cosine_distance": 0.0024397912582048583,
+        "feature_standardized_mse": 0.028583431303848272,
+        "clean_decision_agreement": 0.9926293622141997,
+        "latent_cosine_distance": 0.004430533217537417,
+        "latent_standardized_mse": 0.05131213964878163,
+        "latent_clean_decision_agreement": 0.9959386281588448,
+        "raw_complex_power": 1.0022863038018723,
+        "output_power_abs_error": 6.380960542515871e-08,
+        "change_from_first_nmse": 0.007350329734927357
+      },
+      "paired_against_first": {
+        "repairs": 9,
+        "damage": 25,
+        "net": -16
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00014660103244993713,
+        "feature_cosine_distance": 5.8384693597524205e-05,
+        "feature_standardized_mse": 0.0005275407019083446,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004246783717060633,
+        "latent_standardized_mse": 0.048596937953128215,
+        "latent_clean_decision_agreement": 0.9930335655478151,
+        "raw_complex_power": 1.008612565899137,
+        "output_power_abs_error": 6.14920622793612e-08,
+        "change_from_first_nmse": 1.936737739559109e-05
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 2,
+      "time": 0.75,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.1437874007404993,
+        "feature_cosine_distance": 0.0568416547573409,
+        "feature_standardized_mse": 0.48069728213175783,
+        "clean_decision_agreement": 0.7046095954844779,
+        "latent_cosine_distance": 0.055007333757736046,
+        "latent_standardized_mse": 0.4450191311881661,
+        "latent_clean_decision_agreement": 0.6867356538099718,
+        "raw_complex_power": 1.018481680501326,
+        "output_power_abs_error": 6.089430312895035e-08,
+        "change_from_first_nmse": 0.020098763332460846
+      },
+      "paired_against_first": {
+        "repairs": 47,
+        "damage": 95,
+        "net": -48
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.04855990686131619,
+        "feature_cosine_distance": 0.010884877550415695,
+        "feature_standardized_mse": 0.10788850867177616,
+        "clean_decision_agreement": 0.94931640625,
+        "latent_cosine_distance": 0.012132808758178727,
+        "latent_standardized_mse": 0.11809617778640132,
+        "latent_clean_decision_agreement": 0.94833984375,
+        "raw_complex_power": 0.9934129205998034,
+        "output_power_abs_error": 6.365589797496795e-08,
+        "change_from_first_nmse": 0.026265204371672367
+      },
+      "paired_against_first": {
+        "repairs": 95,
+        "damage": 221,
+        "net": -126
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00022366213615631456,
+        "feature_cosine_distance": 9.764369489876359e-05,
+        "feature_standardized_mse": 0.0009122613948669451,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.0042223837497945525,
+        "latent_standardized_mse": 0.048688806469851256,
+        "latent_clean_decision_agreement": 0.9955668144395187,
+        "raw_complex_power": 1.002710375021801,
+        "output_power_abs_error": 6.122782382880532e-08,
+        "change_from_first_nmse": 7.55406813434848e-05
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.03263124058671823,
+        "feature_cosine_distance": 0.003759170631136022,
+        "feature_standardized_mse": 0.04231987042680837,
+        "clean_decision_agreement": 0.9887876664330764,
+        "latent_cosine_distance": 0.004935966727611646,
+        "latent_standardized_mse": 0.05577927690812536,
+        "latent_clean_decision_agreement": 0.9908899789768746,
+        "raw_complex_power": 0.9841976598918062,
+        "output_power_abs_error": 6.691425433088702e-08,
+        "change_from_first_nmse": 0.025007602795906306
+      },
+      "paired_against_first": {
+        "repairs": 2,
+        "damage": 8,
+        "net": -6
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.04055224238549676,
+        "feature_cosine_distance": 0.005718528148200777,
+        "feature_standardized_mse": 0.06691924405297162,
+        "clean_decision_agreement": 0.975,
+        "latent_cosine_distance": 0.006920870931612121,
+        "latent_standardized_mse": 0.07916739832758644,
+        "latent_clean_decision_agreement": 0.9736111111111111,
+        "raw_complex_power": 0.9861198803202973,
+        "output_power_abs_error": 6.510979599422879e-08,
+        "change_from_first_nmse": 0.02645798112227769
+      },
+      "paired_against_first": {
+        "repairs": 5,
+        "damage": 15,
+        "net": -10
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.043543754979759874,
+        "feature_cosine_distance": 0.007794381327189683,
+        "feature_standardized_mse": 0.07904439134612272,
+        "clean_decision_agreement": 0.9720136518771331,
+        "latent_cosine_distance": 0.008274106238889207,
+        "latent_standardized_mse": 0.08372490170694659,
+        "latent_clean_decision_agreement": 0.9767918088737202,
+        "raw_complex_power": 0.9888277730437269,
+        "output_power_abs_error": 6.326636356705285e-08,
+        "change_from_first_nmse": 0.02767272539408607
+      },
+      "paired_against_first": {
+        "repairs": 9,
+        "damage": 18,
+        "net": -9
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.10861452135478256,
+        "feature_cosine_distance": 0.037005200276467795,
+        "feature_standardized_mse": 0.3251232029001091,
+        "clean_decision_agreement": 0.8231197771587744,
+        "latent_cosine_distance": 0.03707470626552125,
+        "latent_standardized_mse": 0.3111481637104407,
+        "latent_clean_decision_agreement": 0.8147632311977716,
+        "raw_complex_power": 1.005248659334475,
+        "output_power_abs_error": 6.163850800240604e-08,
+        "change_from_first_nmse": 0.04306129271442279
+      },
+      "paired_against_first": {
+        "repairs": 44,
+        "damage": 102,
+        "net": -58
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.039556486271098985,
+        "feature_cosine_distance": 0.005148397181233306,
+        "feature_standardized_mse": 0.05986652928410786,
+        "clean_decision_agreement": 0.9831536388140162,
+        "latent_cosine_distance": 0.006309504819044848,
+        "latent_standardized_mse": 0.06960109909092681,
+        "latent_clean_decision_agreement": 0.9824797843665768,
+        "raw_complex_power": 0.9880304448607797,
+        "output_power_abs_error": 6.591052700567117e-08,
+        "change_from_first_nmse": 0.026662317019620706
+      },
+      "paired_against_first": {
+        "repairs": 7,
+        "damage": 9,
+        "net": -2
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.08053683112661313,
+        "feature_cosine_distance": 0.018104678523548957,
+        "feature_standardized_mse": 0.19521988600206933,
+        "clean_decision_agreement": 0.8956706884315118,
+        "latent_cosine_distance": 0.018338530938451048,
+        "latent_standardized_mse": 0.18883845155246984,
+        "latent_clean_decision_agreement": 0.8970901348474095,
+        "raw_complex_power": 0.9981540056557584,
+        "output_power_abs_error": 6.167748196062422e-08,
+        "change_from_first_nmse": 0.03769172074299585
+      },
+      "paired_against_first": {
+        "repairs": 28,
+        "damage": 69,
+        "net": -41
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.09946862782645774,
+        "feature_cosine_distance": 0.018025156949695788,
+        "feature_standardized_mse": 0.22070458597944756,
+        "clean_decision_agreement": 0.868421052631579,
+        "latent_cosine_distance": 0.016551915595405982,
+        "latent_standardized_mse": 0.19878421898245027,
+        "latent_clean_decision_agreement": 0.8736842105263158,
+        "raw_complex_power": 1.0119164243497347,
+        "output_power_abs_error": 6.111044632761102e-08,
+        "change_from_first_nmse": 0.04267001029447113
+      },
+      "paired_against_first": {
+        "repairs": 23,
+        "damage": 54,
+        "net": -31
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.033250707976991326,
+        "feature_cosine_distance": 0.00337932524232084,
+        "feature_standardized_mse": 0.040722509375982104,
+        "clean_decision_agreement": 0.9941335740072202,
+        "latent_cosine_distance": 0.004598452403657273,
+        "latent_standardized_mse": 0.05394561904948765,
+        "latent_clean_decision_agreement": 0.9944344163658243,
+        "raw_complex_power": 0.9851421367390492,
+        "output_power_abs_error": 6.522620197667972e-08,
+        "change_from_first_nmse": 0.025548486263086808
+      },
+      "paired_against_first": {
+        "repairs": 17,
+        "damage": 23,
+        "net": -6
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00022366213615631456,
+        "feature_cosine_distance": 9.764369489876359e-05,
+        "feature_standardized_mse": 0.0009122613948669451,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.0042223837497945525,
+        "latent_standardized_mse": 0.048688806469851256,
+        "latent_clean_decision_agreement": 0.9955668144395187,
+        "raw_complex_power": 1.002710375021801,
+        "output_power_abs_error": 6.122782382880532e-08,
+        "change_from_first_nmse": 7.55406813434848e-05
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 3,
+      "time": 0.5,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.17060619066859248,
+        "feature_cosine_distance": 0.06746689878537311,
+        "feature_standardized_mse": 0.58602565291109,
+        "clean_decision_agreement": 0.6660395108184384,
+        "latent_cosine_distance": 0.06705360898182063,
+        "latent_standardized_mse": 0.5502819864934456,
+        "latent_clean_decision_agreement": 0.6566321730950141,
+        "raw_complex_power": 1.0147912479859977,
+        "output_power_abs_error": 5.971678898004799e-08,
+        "change_from_first_nmse": 0.05498924513013643
+      },
+      "paired_against_first": {
+        "repairs": 55,
+        "damage": 144,
+        "net": -89
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.053297267158551875,
+        "feature_cosine_distance": 0.011799449112731963,
+        "feature_standardized_mse": 0.1194968614653618,
+        "clean_decision_agreement": 0.9490234375,
+        "latent_cosine_distance": 0.012702996045118198,
+        "latent_standardized_mse": 0.12612299716734016,
+        "latent_clean_decision_agreement": 0.94892578125,
+        "raw_complex_power": 1.0077477325277868,
+        "output_power_abs_error": 5.968031473457813e-08,
+        "change_from_first_nmse": 0.03127267441474757
+      },
+      "paired_against_first": {
+        "repairs": 100,
+        "damage": 229,
+        "net": -129
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.0004883833455690891,
+        "feature_cosine_distance": 0.00018640901560719968,
+        "feature_standardized_mse": 0.0018140352823784217,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004251475836975504,
+        "latent_standardized_mse": 0.04963503696467961,
+        "latent_clean_decision_agreement": 0.9981000633312223,
+        "raw_complex_power": 0.969694910357465,
+        "output_power_abs_error": 6.232252598110825e-08,
+        "change_from_first_nmse": 0.00028778004278649295
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.03694909032179368,
+        "feature_cosine_distance": 0.004264093147096052,
+        "feature_standardized_mse": 0.04837570924862707,
+        "clean_decision_agreement": 0.9943938332165382,
+        "latent_cosine_distance": 0.005118393154518539,
+        "latent_standardized_mse": 0.05735055735131129,
+        "latent_clean_decision_agreement": 0.9922915206727401,
+        "raw_complex_power": 1.007603589019829,
+        "output_power_abs_error": 5.826803045667128e-08,
+        "change_from_first_nmse": 0.028996054770159173
+      },
+      "paired_against_first": {
+        "repairs": 3,
+        "damage": 1,
+        "net": 2
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.04519636505517863,
+        "feature_cosine_distance": 0.0064621415817075305,
+        "feature_standardized_mse": 0.07585615432083917,
+        "clean_decision_agreement": 0.9736111111111111,
+        "latent_cosine_distance": 0.007050283418761359,
+        "latent_standardized_mse": 0.08182757691570765,
+        "latent_clean_decision_agreement": 0.975,
+        "raw_complex_power": 1.0101286808235779,
+        "output_power_abs_error": 5.977021323310004e-08,
+        "change_from_first_nmse": 0.030990542589057035
+      },
+      "paired_against_first": {
+        "repairs": 4,
+        "damage": 16,
+        "net": -12
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.04834861862067921,
+        "feature_cosine_distance": 0.00865086841908738,
+        "feature_standardized_mse": 0.08939806640739378,
+        "clean_decision_agreement": 0.9726962457337884,
+        "latent_cosine_distance": 0.008706082744403097,
+        "latent_standardized_mse": 0.0884344569327939,
+        "latent_clean_decision_agreement": 0.9774744027303754,
+        "raw_complex_power": 1.0122467358771445,
+        "output_power_abs_error": 6.269676286612762e-08,
+        "change_from_first_nmse": 0.032443572560590675
+      },
+      "paired_against_first": {
+        "repairs": 11,
+        "damage": 19,
+        "net": -8
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.11645158179032014,
+        "feature_cosine_distance": 0.03949955545760131,
+        "feature_standardized_mse": 0.3552296059014805,
+        "clean_decision_agreement": 0.8161559888579387,
+        "latent_cosine_distance": 0.0391653003300797,
+        "latent_standardized_mse": 0.3417007770067636,
+        "latent_clean_decision_agreement": 0.8161559888579387,
+        "raw_complex_power": 1.0272428343970132,
+        "output_power_abs_error": 5.711420000761664e-08,
+        "change_from_first_nmse": 0.05252745870568415
+      },
+      "paired_against_first": {
+        "repairs": 45,
+        "damage": 113,
+        "net": -68
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.04412384153567468,
+        "feature_cosine_distance": 0.005774110234329964,
+        "feature_standardized_mse": 0.06784979435000217,
+        "clean_decision_agreement": 0.9831536388140162,
+        "latent_cosine_distance": 0.006732752099834041,
+        "latent_standardized_mse": 0.0729708275603974,
+        "latent_clean_decision_agreement": 0.9804582210242587,
+        "raw_complex_power": 1.011199683673941,
+        "output_power_abs_error": 5.896200709587159e-08,
+        "change_from_first_nmse": 0.03116974577692405
+      },
+      "paired_against_first": {
+        "repairs": 7,
+        "damage": 9,
+        "net": -2
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.08775639621229582,
+        "feature_cosine_distance": 0.019288865025793092,
+        "feature_standardized_mse": 0.2134503365492328,
+        "clean_decision_agreement": 0.8956706884315118,
+        "latent_cosine_distance": 0.019107208935566368,
+        "latent_standardized_mse": 0.20221952323598893,
+        "latent_clean_decision_agreement": 0.8956706884315118,
+        "raw_complex_power": 1.019922205029522,
+        "output_power_abs_error": 5.8293257984732636e-08,
+        "change_from_first_nmse": 0.045818923065019806
+      },
+      "paired_against_first": {
+        "repairs": 30,
+        "damage": 71,
+        "net": -41
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.10826303362454238,
+        "feature_cosine_distance": 0.019311401781282926,
+        "feature_standardized_mse": 0.23898224130076798,
+        "clean_decision_agreement": 0.8673684210526316,
+        "latent_cosine_distance": 0.016979206173043503,
+        "latent_standardized_mse": 0.20509521629465255,
+        "latent_clean_decision_agreement": 0.8757894736842106,
+        "raw_complex_power": 1.0340945807883615,
+        "output_power_abs_error": 5.483627319335938e-08,
+        "change_from_first_nmse": 0.05304791537824234
+      },
+      "paired_against_first": {
+        "repairs": 25,
+        "damage": 57,
+        "net": -32
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.03752982238787476,
+        "feature_cosine_distance": 0.003935385499907171,
+        "feature_standardized_mse": 0.047813241764097264,
+        "clean_decision_agreement": 0.9954873646209387,
+        "latent_cosine_distance": 0.004677258019484624,
+        "latent_standardized_mse": 0.055489638195696446,
+        "latent_clean_decision_agreement": 0.9947352587244284,
+        "raw_complex_power": 1.0082239662661305,
+        "output_power_abs_error": 5.970326858593956e-08,
+        "change_from_first_nmse": 0.02953753381631397
+      },
+      "paired_against_first": {
+        "repairs": 21,
+        "damage": 18,
+        "net": 3
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.0004883833455690891,
+        "feature_cosine_distance": 0.00018640901560719968,
+        "feature_standardized_mse": 0.0018140352823784217,
+        "clean_decision_agreement": 1.0,
+        "latent_cosine_distance": 0.004251475836975504,
+        "latent_standardized_mse": 0.04963503696467961,
+        "latent_clean_decision_agreement": 0.9981000633312223,
+        "raw_complex_power": 0.969694910357465,
+        "output_power_abs_error": 6.232252598110825e-08,
+        "change_from_first_nmse": 0.00028778004278649295
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "method": "StateBridge",
+      "step": 4,
+      "time": 0.25,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.18122739155504322,
+        "feature_cosine_distance": 0.07151810402928493,
+        "feature_standardized_mse": 0.6358306107346954,
+        "clean_decision_agreement": 0.6556914393226717,
+        "latent_cosine_distance": 0.0716283555762003,
+        "latent_standardized_mse": 0.6109032901424497,
+        "latent_clean_decision_agreement": 0.6547507055503292,
+        "raw_complex_power": 1.0377476370121552,
+        "output_power_abs_error": 5.994107738936272e-08,
+        "change_from_first_nmse": 0.06868931034738451
+      },
+      "paired_against_first": {
+        "repairs": 54,
+        "damage": 154,
+        "net": -100
+      }
+    }
+  ],
+  "G_core_rows": 81920,
+  "F0_output_feature_rows": 81920,
+  "F0_clean_feature_rows": 512,
+  "latent_defaulthead_rows": 81920,
+  "smoke_extra_G_core_rows": 32,
+  "smoke_extra_F0_feature_rows": 4,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "novel_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "checkpoint_selection": false,
+  "source_in_sample": true,
+  "agreement_is_TX_accuracy": false,
+  "theoretical_ceiling": false,
+  "default_DURA_changed": false,
+  "seconds": 54.03884916399693,
+  "goal_complete": false,
+  "independent_check": {
+    "status": "PASS",
+    "source_cases": 10240,
+    "trajectory_rows": 81920,
+    "source_packets": 512,
+    "source_draws": 20,
+    "models": 2,
+    "steps": 4,
+    "summary_groups": 96,
+    "paired_groups": 96,
+    "max_abs_aggregate_error": 0.0,
+    "all_cases_align_original_source_panel": true,
+    "all_predictions_agreements_and_pairs_checked": true,
+    "unit_output_max_abs_error": 3.5762786865234375e-07,
+    "Fclean_reference_differences_from_old_source_diagnostic": {
+      "DirectBridge": 0,
+      "StateBridge": 0
+    },
+    "old_reference_comparison_nonblocking": true,
+    "full_worker_log_scanned": true,
+    "all20draws_checked": true,
+    "new_neural_forwards": 0,
+    "optimizer_updates": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "OE_reads": 0,
+    "target_IQ_truth_reads": 0
+  }
+}
