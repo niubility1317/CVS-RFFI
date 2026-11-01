@@ -1,0 +1,146 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-bayes-residual-scale-s2026092701-r01",
+  "group_id": "phase1-bayes-residual-scale",
+  "display_name": "固定物理后验残差的源域幅度诊断",
+  "description": "固定已训练残差网络，在先验和残差训练 ID 之外的源记录上检查修正幅度、方向及伪标签一致数。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "residual_scale",
+    "diagnostic",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-bayes-residual-pilot-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "fb13322d9a9258dd512712e02b63d19adaab8825",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU0 single process, CPU 2 threads, TF32 disabled, source-only fixed-state smoke",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "source IQ [2,256]; no truth labels; fixed residual scales 0,1,4,16",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels, U_s truth, V or target read; residual parent previously used legitimate L_s training labels.",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "448 source train role records, 64 each clean and six impaired, disjoint from parent residual fit and prior IDs; earlier source views seen",
+    "support_query_ref": null,
+    "leo_config_ref": "Source cache epoch19"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source-only fixed scaling diagnostic, no V/test/truth or automatic model selection",
+    "external_method_exception": null,
+    "claim_scope": "Source physical IDs observed in previous channel views, RX8 same prior pilot; no independent blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed blind estimator, conditional prior, trained residual corrector and frozen F; DURA source comparison only.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-pilot-s2026092701-r01/checkpoint.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-action-full-s2026092701-r01/checkpoint_epoch10.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01/source_prior.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Residual SHA256 d42175ea409bb3dbe159a2009146e0e50fd863c087c4cd57d61199d2654f76f9; parent SHA256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338; prior SHA256 5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "No selection: fixed scale0,1,4,16 only; source classification pseudo agreement and IQ errors reported separately."
+  },
+  "execution": {
+    "host": "N607 GPU0",
+    "launch_owner": "Codex residual scaling source diagnostic GPU0 owner",
+    "gpu_policy": "physical GPU0 only, no TF32, resource preflight",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-scale-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-bayes-residual-scale-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-bayes-residual-scale-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-bayes-residual-scale-s2026092701-r01-release/experiments/phase1_bayes_residual_gain/residual_scale_probe.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-scale-s2026092701-r01 --commit fb13322d9a9258dd512712e02b63d19adaab8825 --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source clean-F pseudo target agreement",
+      "direct normalized IQ MSE",
+      "relative residual amplitude"
+    ],
+    "dimensions": [
+      "source clean and six impaired scenes"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_bayes_residual_gain/residual_scale_probe.py",
+    "scientific_rule": "Fixed scales source-only, not deployed; source F pseudo target not truth; no target access."
+  },
+  "rows": [
+    {
+      "row_id": "bayes_residual_scale_s2026092701",
+      "method": "fixed residual IQ direction extrapolated at four scales, no fitting",
+      "purpose": "diagnose small residual magnitude and direction on different source train IDs",
+      "config_ref": "experiments/phase1_bayes_residual_gain/residual_scale_probe.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-scale-s2026092701-r01/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120654,
+        "split": 392005,
+        "data": 2026120755,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120755
+      },
+      "seed_notes": "source diagnostic cohort fixed with 2026120755; prior IDs and residual fit IDs reconstructed and excluded",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "448 source IDs, 64 per seven scenes, excluded prior and residual training IDs",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-scale-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-bayes-residual-scale-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-bayes-residual-scale-s2026092701-r01-release/experiments/phase1_bayes_residual_gain/residual_scale_probe.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-scale-s2026092701-r01 --commit fb13322d9a9258dd512712e02b63d19adaab8825 --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed parent residual trained using legal L_s labels, diagnostic reads no labels.",
+    "384 impaired and 64 clean source IDs, different from residual fit and prior IDs; earlier source views observed.",
+    "No automatic selection or Phase1 test."
+  ],
+  "registered_at": "2026-11-01T21:23:05+00:00"
+}

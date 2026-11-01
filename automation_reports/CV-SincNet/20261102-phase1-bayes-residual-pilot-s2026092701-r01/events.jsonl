@@ -1,1 +1,3 @@
 {"at": "2026-11-01T21:16:21+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T21:17:56+00:00", "status": "RUNNING", "note": "Train L_s labels 361, U_s truth/V/test reads zero; fixed parent and F frozen.", "evidence": ["N607 PID 985555 GPU2; real 4 L_s and 4 U_s source zero-gradient and finite nonzero gradient smoke passed"], "row_id": null}
+{"at": "2026-11-01T21:23:31+00:00", "status": "ANALYZED", "note": "Residual correction did not improve pseudo correct counts vs parent; no U_s truth, V or test.", "evidence": ["N607 source result and independent GPU replay; all six scene pseudo-correct counts match"], "row_id": null}
