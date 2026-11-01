@@ -1,0 +1,210 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-Restore-SoftPower-E30-s2026092701-r01",
+  "group_id": "restoration-learned-power-single30",
+  "display_name": "放开单位功率投影的源IQ恢复单因素对照",
+  "description": "固定PowerAnchor同结构和随机E0，保留.1软RMS约束，删除hard单位功率投影；从零单阶段30并自动原Main七景。先等待Rollout完整Main技术完成，不读其分数。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "learned-power",
+    "no-hard-unit-projection",
+    "source-F0-features",
+    "matched-control",
+    "scratch-single30",
+    "automatic-Main7",
+    "wait-technical-completion"
+  ],
+  "comparison_group_id": "fixed-power-anchor-hard-vs-soft-output-power",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "1dd40c07970b664f18c57149a0a2ab02f000b114",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32 TF32off/CPUthreads2;actualoriginalTriSSL F0 3ff8 defaulthead",
+    "cwd": "releases/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "OriginalR07FP32clean/receivedIQ2x256. Sourcecleanunitpowerunchanged;newGreturnsrawresidualIQwithoutpost-RMSprojection. No new source data or target input generation.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "VALIDATED_ONCE handles reused. R07 complete20/63000/0TX-target;roles andIDs compatible. This cachecapsule isminimaloriginalsourceIDcheck,notincorrectclaimR07 IQisG10. F0targets recomputedfromactualR07clean eacharm.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "OriginalLs6300Us56700 IQonly/TXhidden. F0sourcecleancontinuous160features loss-only. AdditionalrawRMS/sourcecleanRMSanchor usesdetachedsameclean,noV/OE/novel/target. No extra augmentation.",
+    "augmentation": "OriginalR07fs25MHz/fc2.462GHz/post_sync/noEQ/reflect/refSNR30/receiver2026101911/sixuniform85%+clean15%,20independentstoredtrainviews,then10repeats;notG10MIX01. Newshuffle RNG2026110102,matchedbotharms. Mainobservationsunchanged/no RMS."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-G-variance-normalized-F-features",
+    "query_use": "OnlyoriginalLsUspairedIQ/frozenF0continuousfeaturesandRMSloss-only. NoTX-logits-CE-prototypes-newhead/V-OE-novel-targettrainingorselection. DeploymentonecurrentreceivedIQ/noF0insideG/noqueryfit.",
+    "external_method_exception": null,
+    "claim_scope": "Onlyhardpowerprojectionremoved/sameGweightsatE0/losscoefficients/order/optimizer/30budget. SoftRMSis mathematicallysamepositive formula via vectornorm/finitezero-subgradient. No claimMMSEcounterexamplepredictsF0gain;fullMainmandatory."
+  },
+  "checkpoint": {
+    "initialization": "All4670178Gparametersscratchsingle30/samePowerAnchorrandomfactoryweights/no learnedGinitialization.",
+    "sources": [
+      "OriginalTriSIGSSL3ff8/E50-11100/232993/main3view-s2026092701/defaulthead/source-only392005",
+      "DATAONLYR07original63000LsUs/20storedsource-draws+repeat1..10/noV-OE-targettraining",
+      "DATAONLYf57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9/original63000sourceF0-onlyfeaturevariance/noGoutputsfitted",
+      "EVALONLYfixedPowerAnchor/42ea957db57d7d90df67dadbeffe11fc014909a0/final30-complete/noinitialization-or-IQteacher",
+      "MOTIVATIONONLYconditional-mean-norm-geometry/synthetic-unit-clean-two-point-counterexample/no-real-IQ-or-labels"
+    ],
+    "contract_check_ref": "OriginalsourceIDrolecheck/strict3ff8F0 reused;variancecalibrationrequiresoriginalF0identity/63000/sourceonly/0TX-V-OE-target-updates/positivefiniteflooredscale. Ownnewarm-config-commit-final30-7410 strictstate. No datarehash.",
+    "provenance_verdict": "Gscratch/noGteacherancestors. OriginalfrozenF0continuousfeaturesloss-only/notF-free. ExactPowerAnchorE0weightmatchingbyfactory,notcheckpoint. Sourcecleanstillunitpower;restoredIQhaslearnedpower.",
+    "selection_rule": "Final30only/7410/sameR07sourceorder-draws/losscoefficients/LR/soft.1RMS. Onlyhardoutputprojectionremoved. NoV-OE-targetselection. EverynewGfullMain2pop7regardlesssourcequality."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/soft-power-restoration",
+    "gpu_policy": "CPUqueuewaitsRolloutBridgeentireMainARTIFACTS_COMPLETE/terminal0beforeGorF0loads;thenGPU4/6UUID/free>=12000MiB/existingcompute<=2/addONEtotal<=3/oneownNNworker/othersuntouched",
+    "remote_run_root": "runs/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.soft_power_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 1dd40c07970b664f18c57149a0a2ab02f000b114 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Queuechecksparenttechnicalmarkers,notpredictionsorscores. Parentnonzero->ownqueue_terminal/raise/noNN/noretry. Afterready,source/F0/config/roles/collision/nonfinitefailurepreserveroot+recovery/noautoretry. Noqualityearlystop. RealLs2identity/E0reload/gradientPASSimmediately30andMain7."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/MSAT_SoftPower/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "OriginalgroundTriSIGSSLMain6eachrawcleangap<=3pp+two-popclean/requiredcombined140345correct83.538690476%",
+      "Eachpopulation+combinedaccuracy/MacroF1/confusion/TX-RX-day-RXday/repair-damage-net/pairedrawclean decisions/allpredictionsfixedbeforeCPUtruthlast",
+      "All30epochs IQ-F0output-latent-softRMS-weightedloss/rawandoutputpower/RMS/sourceorderdraw/LR/actualsameE0/recovery30/final30",
+      "Parameters4670178/deployed260546560realConv-Linear-attentionMAC/0FFT-CG/nohardpowerprojection;actualtrainingwallandpeakmem/sourceF0knowledgeandcache/notstaticlatency",
+      "ExactfixedPowerAnchorfinalcontrol/noinit;strictsameinitialtensors andlosscoefficients/source/optimizer;forward equals old raw_restored in synthetic same-weight tests"
+    ],
+    "dimensions": [
+      "oneactualnewGseed2026092701",
+      "PowerAnchorfrozencompletedcontrol/noinitialization",
+      "originalMaincross_rx126000/cross_both42000/7views",
+      "raw-DURAexactreuse/freshnewGsinglecore",
+      "learned-output-power-not-unit-constraint"
+    ],
+    "prediction_ref": "Eachrow newcandidateactualG+sameF0 onallofficialIQ;raw/DURA exactr03predreusewithsameIDs. Completebothpop beforeCPUtruth.",
+    "scorer_ref": "Originalpamf_repl_view_shuffle.evaluation.score independentCUDAemptyCPU/allreadoutsalltasks preflightbeforetruth;sharedoriginalTFscore.lock;no sourcecandidatefeedback"
+  },
+  "rows": [
+    {
+      "row_id": "MSAT_SoftPower",
+      "method": "MSAT_SoftPower",
+      "purpose": "Isolatehardunitpowerprojection/retainsoftRMSanchor andallotherarchitecture-data-loss-settings",
+      "config_ref": "experiments/pamf_phase3_restoration/soft_power_trial.py::configuration",
+      "resolved_config_ref": "runs/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01/rows/MSAT_SoftPower/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "2026110102 controlsnewmatchedshuffle only;sourceR07databuilder2026101901/receiver2026101911/augmentation2026101912unchanged. Testoriginalreceived2027. No supportsampling.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratchsingle30/7410/B256tail24/247steps/4670178params/oneGcoretraininganddeployment. SamePowerAnchoractualE0/order/draws/LR/losscoefficients. Outputpowerlearned,notforcedto1.",
+      "output_root": "runs/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01/rows/MSAT_SoftPower",
+      "log_path": "runs/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01/logs/MSAT_SoftPower-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.soft_power_trial train --root /home/szu2070436088/2510044040/CV-SincNet --commit 1dd40c07970b664f18c57149a0a2ab02f000b114 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm MSAT_SoftPower",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/MSAT_SoftPower/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Performanceprimary/efficiencysecondary/Main6each3pp+cleanunmet/defaultDURAunchanged. CurrentRolloutBridgehealthyandunchanged.",
+    "Analyticmotivation:unitnormclean doesnotimplyunitnormconditionalmean. Syntheticorthogonalcleanmixturehasmeanpower.5/hardunitprojectionincreasesIQMSE. ThisisnotMain-or-identityproof.",
+    "FixedPowerAnchorchosenbecauseituniquelyisolateshardprojectionwhilepreservingsame.1RMS;notchosenbytargetranking. Olderbenchmarkalreadyexposed;newcandidatefixedbeforeRolloutMainaccess.",
+    "8focusedchecksPASS(new5+PowerAnchor3)/oneP0P1PASS. Equalinitialweights/rawvsprojectedfunction/finitezeroRMSgradient/conditionalmeanexample/technicalwaitnegativecovered.",
+    "CPUqueuedrunloadsnoG/F0andusesnoGPUuntilRolloutfullMaintechnicalcompletion;no prediction/score read,qualitygatingorchangeofparent. Queue failure preserved with original exception.",
+    "RealLs2firstNNsource smoke/rawidentityinitialoutput/fullG-F0grad/E0strictreload thenimmediatefull30. Fixedfinal30only/E01..30technicalrecovery only.",
+    "F-guided/notF-free;originalF0sourcecontinuous160andvariance/RMSonlyloss/0TX-logits-CE-newhead/V-OE-novel-targetupdatesorselection/OEonlyfrozendiagnostic/no learnedG-or-IQteacherancestors.",
+    "AllMain168000x7/newGsinglecore/rawDURAexactsameIQ-ID/allpredictionsbeforeindependentCPUtruthsharedlock. Reportbothcleanpopulationsandallscenes,notmeansalone;nogainorlatencypromise."
+  ],
+  "registered_at": "2026-11-01T15:28:22+00:00"
+}
