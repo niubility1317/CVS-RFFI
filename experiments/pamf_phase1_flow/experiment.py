@@ -202,11 +202,21 @@ def predict(root,out,commit):
           commit=commit,TX_truth_reads=0,model_updates=0))
 
 
+def validate_prediction_manifest(done, *, count, commit):
+    expected=dict(status='PREDICTIONS_COMPLETE',count=count,views=list(VIEWS),F_run=F_RUN,F_row=F_ROW,
+                  commit=commit,TX_truth_reads=0,model_updates=0)
+    if not isinstance(done,dict) or any(done.get(k)!=v for k,v in expected.items()) or set(done)-set(expected)-{'accepted_by_view'}:
+        raise ValueError('All predictions required before truth')
+    if 'accepted_by_view' in done:
+        counts=done['accepted_by_view']
+        if not isinstance(counts,dict) or set(counts)!=set(VIEWS) or any(type(v) is not int or v<0 or v>count for v in counts.values()):
+            raise ValueError('Valid per-view accepted counts required')
+
+
 def score(root,out,commit):
     if os.environ.get('CUDA_VISIBLE_DEVICES')!='':raise ValueError('CPU truth scorer required')
     folder,ids=reference(root);dst=out/'flow/test_prediction';done=read(dst/'complete.json')
-    if done!=dict(status='PREDICTIONS_COMPLETE',count=len(ids),views=list(VIEWS),F_run=F_RUN,F_row=F_ROW,commit=commit,TX_truth_reads=0,model_updates=0):
-        raise ValueError('All predictions required before truth')
+    validate_prediction_manifest(done,count=len(ids),commit=commit)
     if not np.array_equal(ids,np.load(dst/'physical_ids.npy',allow_pickle=False)):raise ValueError('IDs differ')
     pred={}
     for view in VIEWS:
