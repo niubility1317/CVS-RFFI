@@ -1,0 +1,19 @@
+{
+  "G_parameters": 1230341,
+  "state_bytes": 5973268,
+  "source_prior_buffer_bytes": 1050624,
+  "estimator_real_MAC": 176636032,
+  "dense_posterior_real_MAC": 269221888,
+  "posterior_real_dimension": 512,
+  "Cholesky_approx_FLOPs": 44739242.666666664,
+  "additional_triangular_solve_approx_FLOPs": 524288,
+  "complex_FFT_count": 2,
+  "complex_FFT_length": 256,
+  "CG_iterations": 0,
+  "measured_latency": false,
+  "training_posterior_calls": 7410,
+  "training_F0_forward_rows": 236880,
+  "training_posterior_rows": 236880,
+  "F0_clean_target_rows": 63000,
+  "additional_frozen_F0_parameters_not_G_parameters": 232993
+}

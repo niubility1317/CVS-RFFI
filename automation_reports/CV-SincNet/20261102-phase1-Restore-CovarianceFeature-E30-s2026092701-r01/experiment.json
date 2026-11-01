@@ -1,0 +1,208 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01",
+  "group_id": "restoration-covariance-actual-IQ-feature-guidance",
+  "display_name": "物理后验的源特征指导：同初值单阶段30轮、首微批采样",
+  "description": "同物理恢复架构/实际初值/源mu-C/数据顺序draw/LR/30；增加原冻结F0连续160特征在实际后验IQ上的.01约束。每逻辑batch只首微批32或末批24，控制额外后验与F0成本。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "original-ground-TriSIGSSL-Main",
+    "source-F-guided",
+    "actual-physical-posterior",
+    "MC-firstmicro",
+    "scratch-single30",
+    "automatic-Main7"
+  ],
+  "comparison_group_id": "matched-covariance-operator-only-vs-actual-posterior-F0-guidance",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "5359a1b82b1fa5d640a394c3e3a77ce3b945fe1e",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32G-F0/FP64posterior/TF32off/CPUthreads2;actualoriginal3ff8F0defaulthead",
+    "cwd": "releases/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "OriginalR07FP32clean-receivedIQ2x256/FIR64/main-image256/realnoisevariance;fixedsourceIQmu/fullC. SourceF0cleancontinuous160cache63000 andvariancegeometryonly;no new channel orlabels.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow42cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "VALIDATED_ONCE originalIDrolecapsule reused/R07complete63000x20/0TX-target. OriginalsourcefullC a3a90b55 andF0variance f57c54ca/source63000-3ff8/dataonly. No datahash/revalidation.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "OriginalLs6300Us56700 TXhidden. Allrecords sourceActionmatrix(.1)+noiseLogMSE(.001);firstmicro actualposteriorIQ F0continuouscos+sourcevarMSE(.01). No logits/CE/prototypes/identityhead/V-OE-novel-target.",
+    "augmentation": "SameR07fs25MHz2.462GHz/post_sync/noEQ/reflect/refSNR30/15percentclean+sixuniform;draw1..20+1..10/sameorder2026110102. First32ofeachshuffledB256,last24all;noTX-ID-quality-basedsampling."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-G-actual-posterior-F-feature-guidance",
+    "query_use": "OriginalLsUs/sourceActiontraces+cleancontinuousF0features/sourcevarianceonly. F0frozen/readfeatureloss;defaultheadonlysmoke/eval. 0TX-logits-CE-prototypes-newhead/V-OE-novel-targettrainingorselection. NotF-free.",
+    "external_method_exception": null,
+    "claim_scope": "MatchednewF-guidedcandidate,notnewGarchitectureorDURAdefaultreplacement. SourcephysicalattributionmotivatesRF-sensitiveestimation;doesnotproveMaingain orstrictceiling. Onefixedlambda/micro-sampling/no targetselection."
+  },
+  "checkpoint": {
+    "initialization": "All1230341Gparametersscratchsingle30/samefactoryandFP32mu-Casexistingcontrol,notloadedcontrolweights. NoGteacherancestor;originalF0continuousfeatureknowledgeexplicit.",
+    "sources": [
+      "OriginalTriSIGTIME_SSLF0/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/sourceonlyE50-11100/232993/defaulthead/FROZEN_FEATURE_GUIDANCE",
+      "DATAONLYR07originalLs6300Us56700/20sourceActiondraws+repeat1..10/0TX-V-OE-target",
+      "DATAONLY20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01/a3a90b55a73702954c453eec9c1ad17fec24d87f/original63000IQmu-C/.001sametrace/full512",
+      "DATAONLY20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01/f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9/source63000cleanF0variance160",
+      "EVAL_CONTROL_ONLY20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/TF_CovarianceMAP/bf29554a03e28a012eaaa134f5c7b3f7856f2268/no initialization",
+      "SOURCE_BASIS_ONLY20261102-diagnostic-Restore-covariance-parameter-source-s2026092701-r01/5d7d9a2c4dd8e5d58b2843e47b1769d93d434c29/48groups/0TX-target"
+    ],
+    "contract_check_ref": "SameoriginalLsUs/F0physicalcontract/3ff8identity andexistingR07/capsule handles. FrozenfullC sourcea3a90b55/63000/.001;sourceFfeaturevariancef57/63000/160. Strictownconfig-commit-final30;actualE0anddataordersmatchcontrolcheckedafterlaunch/noGinitloads. No extra hashes.",
+    "provenance_verdict": "Gscratch/noGancestors;sourceF0continuousfeatureloss explicitlyallowed/notF-free. SourceIQstatistics andFvariance dataonly/source63000,0TX-V-OE-target update/selection.",
+    "selection_rule": "Final30only/7410/fullMainregardlesssourcequality;noV-OE-targetearlystop/selection. Featurelambda.01 andfirstmicro samplefixedbeforetarget,not scanned. Allpriorparameters/sourceordersdraws/LR/inferencepreserved."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/covariance-feature-scratch30",
+    "gpu_policy": "GPU4/6only/scopedUUID/free>=12000MiB/existingcompute<=2/addONEtotal<=3. Oneactualrow/oneownNN,stagessequential;previousownNNcompleted. Otherownerstasksuntouched/noGPU7/reset/migration.",
+    "remote_run_root": "runs/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_feature_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 5359a1b82b1fa5d640a394c3e3a77ce3b945fe1e --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrongsource-prior-F0-variance-config/collision/nonfinite/Cholesky-or-gradient/strictreloadfailure/workererror:preserve/noautomaticretry. Source2actualposterior-F0/physical+featuregradient/frozenF/E0reloadthen30andautomaticfullMain. Noqualitygate or targetfeedback."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/TF_CovarianceFeature/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "OriginalgroundTriSIGSSLMain2pop7/sixeachgap<=3pp/bothcleanpreserved/combinedthreshold140345correct83.538690476percent",
+      "Eachpop+combinedaccuracy-MacroF1-confusion/TX-RX-day-RXday/repair-damage-net-vsraw-DURA-fixedCovarianceMAP/Fcleanagreement/allpredictionsbeforetruth",
+      "Full30logs/stepobjectivevsphysicalrecordmeans/samplefeaturemeans/7896FrowsperEpoch/actualLsUsfeatureexposures/sourceordersdraws-LR/actualE0-control/30recovery-final",
+      "1230341Gparams+1050624priorbytes/samefullFP64deploycost;actualtrainwall-memory/236880sampledposterior-F0rows+63000targetcache/extraF0knowledge/notmeasuredlatency"
+    ],
+    "dimensions": [
+      "OriginalMaincross_rx126000/cross_both42000x7",
+      "allscene/TX-RX-day-RXday/sameIQ-ID",
+      "oneactualmodelseed2026092701",
+      "matchedcontrolsamefactory-source-muC-data-LR-budget-inference"
+    ],
+    "prediction_ref": "FreshcandidateallMain2pop7;raw-DURAexactr03predreuse;fixedCovarianceMAPexistingpredictionsforpairedanalysisonlyafterallnewpredictionsfixed.",
+    "scorer_ref": "OriginalindependentCUDAemptyCPUscore/fullrowalltasks7beforetruth/sharedscore.lock;independentNumPyallgroups-pairsaftercomplete."
+  },
+  "rows": [
+    {
+      "row_id": "TF_CovarianceFeature",
+      "method": "TF_CovarianceFeature",
+      "purpose": "Falsify whether actual-sourceF0posterior-featuregradients improve physicalestimation and Main identity preservation",
+      "config_ref": "experiments/pamf_phase3_restoration/covariance_feature_trial.py::configuration",
+      "resolved_config_ref": "runs/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01/rows/TF_CovarianceFeature/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Scratchmodel2026092701/order2026110102/R07builder2026101901-receiver2026101911-aug2026101912/Mainreceived2027. No newRNG/channel;firstmicro sampling inheriteduniformrecordshuffle,notTX-ID-qualityselection.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratchsingle30/7410/logical256micro32/247updates. Physicalall63000perEpoch;Fguide7896perEpoch=236880total/7410posteriorbatchcalls,63000cleanF0targetcache. No secondGtrainingstage/controlretrain;allMain7automatic.",
+      "output_root": "runs/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01/rows/TF_CovarianceFeature",
+      "log_path": "runs/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01/logs/TF_CovarianceFeature-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_feature_trial train --root /home/szu2070436088/2510044040/CV-SincNet --commit 5359a1b82b1fa5d640a394c3e3a77ce3b945fe1e --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm TF_CovarianceFeature",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/TF_CovarianceFeature/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Source48groupattribution:lowurbanblindFclean82.242340percent/onlytrueAction87.325905percent/net+73of1436/onlycachedtruevariance82.660167percent/net+6. Thesearein-sampleFclean/sourceScalarVarianceoracle,notMain/TXaccuracy/strictbound.",
+    "NewguideonactualcurrentreceivedphysicalposteriorIQ,notlatentregressionornoisedcleaninput. All512physicalmatrixlossretained;fixed.01sourcefeatureterm(cos+varianceMSE),no CE/logits/prototypes/newidentityhead. Weightengineeringfixed/not claimedgradientcalibratedoroptimal.",
+    "Firstmin32ofeachshuffledlogicalbatch/last24all:7896featureexposuresperEpoch. Firstmicro reusesG.estimate;othermicrobatchesactuallyskipF0/posterior. Featureguide.mean addedwithout1/8scaling;MCestimate ofperbatchsourcefeatureobjective. No guaranteeeverypacketgetsfeaturegrad;actualcoverageandroleexposuresreport.",
+    "Onejointoptimizer/all30/unchangedphysicalcoefficients/sourceprior/source20+10/sourceorder/LR/inference. Stepnormalizedloss loggedseparatelyfromrecordweightedphysicalmetrics andsampledfeaturemetrics,includinglastpartialbatch.",
+    "ExtraF0E50knowledge/sourcevariance andsourceIQpriorfitexplicit;notF-free. Gparamsinitrandom/sameactualE0-controltoverify/0Gcheckpoint initialization;sourceF0targets recomputedfromactualR07clean.",
+    "3newtargetedchecksPASS/oneindependentP0P1PASS. Source2actualfullposterior/defaultheadfinite+jointfeature-physicalgradients/F0stateunchanged/strictE0reload thenimmediate30 andMain. No extragates/revalidation/hashes.",
+    "Originalperformance6each3pp+bothcleanstillunmet;allpublishednegativecontrolresultspreserved/notnewblindbenchmark. No targetfeedback orselectivererun/defaultDURAchange;OEonlyfrozendiagnostic."
+  ],
+  "record_type": "managed_run",
+  "registered_at": "2026-11-01T20:44:22+00:00"
+}

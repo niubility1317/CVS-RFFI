@@ -410,3 +410,9 @@ GPU4/6按实际free12GB/existingcompute≤2/新增1总≤3准入，一row一NN�
 原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景全部固定后独立CPU truth-last。六景依次83.500595/82.139286/80.539286/82.183333/75.047619/67.198214%，0/6，相对DURA依次-0.842857/-0.876786/-0.782738/-0.866071/-0.658333/-1.602976个百分点；clean86.572619%，cross_rx净+82、cross_both净-25。全部TX/RX/day/RX×day及真实TX修复/损伤、Fclean一致分别报告，不将源算子误差或Fclean参考当Main准确率。
 
 42单元/1302组/868raw配对/434DURA配对/434clean配对复算PASS，最大差1.2e-14、raw/DURA判决差0；分组key覆盖、source30日志/顺序/LR/loss/E0-prior-E01-E30-final核实，4阶段exit0/liveempty。源审计按既有证据复用，0新增NN或训练。静态MAC/FP64Cholesky不是实测时延，详见analysis.md。本版未达到完整性能目标，目标ACTIVE、默认DURA保持。
+
+## 实际后验 IQ 的源特征指导对照已固定（2026-11-02）
+
+`20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01`，代码 `5359a1b82b1fa5d640a394c3e3a77ce3b945fe1e`。沿新时频 Transformer/源完整协方差后验架构，与已完成 CovarianceMAP 物理估计对照保持 scratch 初值、原 L_s/U_s、源统计、顺序、draw、LR、单阶段 30/7410 和部署路径。新增原冻结 Tri-SIG-TIME SSL 的连续源特征约束，梯度通过实际恢复 IQ 后验回到信道与噪声估计，明确不是 F-free；不加载旧 G 权重，不使用 TX/logits/CE/原型/新分类头或 V/OE/novel/目标训练与选模。
+
+全源物理监督保留；每逻辑 batch 首微批 32（末批 24）执行额外后验与 F0，固定 .01×(cos+源方差 MSE)，每轮 7896、累计 236880 条，另 63000 clean 源特征缓存。单阶段联合启用，采样项按所选记录均值计算，不额外缩小 1/8。3 项针对性检查和唯一独立 P0/P1 通过，实际 source2/full-posterior/F0/梯度/E0 重载通过后自动训练与原 Main 双总体七景，全部预测固定后独立 CPU truth-last。主性能目标仍未达成；训练速度是支线，默认 DURA 保持。
