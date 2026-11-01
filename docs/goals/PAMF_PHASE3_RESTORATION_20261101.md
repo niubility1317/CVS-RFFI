@@ -227,3 +227,11 @@ CPU控制器已独立核实PID/CWD/命令/CUDA空、WAIT_PARENT_COMPLETE，当�
 `20261101-phase1-Restore-FeatureStrong-E30-s2026092701-r01`，实际代码`3e5416df5b13dfcf9e16995988e988c5494f68b2`，结构/4670178参数/260546560实数MAC和原FeatureCond相同，唯一科学变化为连续latent回归权重.1→1；IQ/输出F指导/全局clip1/单位功率/源顺序/30-7410全部保持。实际E0与原FeatureCond逐张量一致，G从零单阶段无旧G祖先，源F0特征loss-only，部署只IQ，无TX/logits/CE/新身份头/V-OE-target训练或选模，默认DURA保持。
 
 3针对性检查/一次P0P1及真实Ls2F0G梯度/E0严格重载PASS；首轮247更新完成，E01模型/优化器/RNG及同源初值独立CPU读回PASS。GPU4准入free23482MiB/原1compute/只新增1个，PID-CWD-CUDA-GPU与日志增长核实，其他owner不改。固定final30后自动原Main168000×七景/全部预测后独立truth-last；当前正式性能PENDING，六景3pp+clean目标ACTIVE，效率次级。
+
+## 连续latent回归权重1原 Main 七景完成（2026-11-01）
+
+`20261101-phase1-Restore-FeatureStrong-E30-s2026092701-r01`，实际代码3e5416df5b13dfcf9e16995988e988c5494f68b2。4670178参数/结构/源顺序/预算与FeatureCond相同，唯一科学变化为latent回归权重.1→1。实际E0逐张量一致，全模型scratch单阶段30/7410；IQ/输出F指导/单位功率/globalclip1保持。原F0/defaulthead冻结，teacher loss-only，0TX/V/OE/目标训练或选模，OE仅冻结诊断。
+
+原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景全部固定预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736 raw配对/1302额外配对复算PASS，最大指标差1.24e-14、raw/DURA判决差0。完整60日志/同E0源顺序draw/仅latent权重配置变化/逐轮总loss权重/30恢复文件E30-final一致性核实。
+
+六景依次75.979167/75.095833/74.039881/74.950595/69.618452/63.999405%，达标0/6，相对FeatureCond依次-1.927381/-1.416071/-0.840476/-1.693452/-0.724405/-0.373214个百分点。合并clean 86.822619%（保持），cross_rx clean净变化+515、cross_both净变化-38，不以合并掩盖损伤；完整TX/RX/day/配对/成本见analysis.md。完整目标未达到，保持ACTIVE和默认DURA。本项源端假设来自冻结source512×20路径诊断，不据Main误分类调参或选模；性能主线、效率支线和默认DURA保持。

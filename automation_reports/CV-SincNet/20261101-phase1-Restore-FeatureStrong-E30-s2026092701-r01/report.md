@@ -1,9 +1,11 @@
 # 连续源特征回归权重1：从零单阶段30轮
 
+**六景0/6，合并clean保持，clean准确率86.822619%。** cross_rx clean净变化+515条，cross_both clean净变化-38条，保留子总体损伤。完整目标未达到，保持ACTIVE和默认DURA。[完整性能与分组](analysis.md)。
+
 - run_id：`20261101-phase1-Restore-FeatureStrong-E30-s2026092701-r01`
 - group_id：`restoration-feature-strong-single30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（完整七景与独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原Main168000×七景覆盖完整，六景0/6、合并clean保持。与固定FeatureCond对照的84单元及完整分组/配对独立复算PASS；完整性能、训练和成本见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -43,3 +45,7 @@
 ## 启动后独立读回
 
 VERIFIED / RUNNING。实际Ls2源F0/G梯度、单位投影初值、encoder/regressor参与及严格E0重载PASS。首轮247更新完成（65.016343秒），E01的模型/优化器/CPU-CUDA RNG独立CPU加载PASS；输出功率平均绝对误差5.8e-08。GPU4准入余量23482MiB、已有1个compute，仅新增1个本任务GPUworker，PID/CWD/命令/CUDA/GPU及进度增长核实，其他owner保持。当前只源训练，无正式性能结果。
+
+## 连续latent权重1七景完成
+
+VERIFIED / ANALYZED。新G scratch单阶段30/7410，所有Main预测固定后独立truth-last，4阶段exit0/本run进程退出。84单元、2604评分组、1736 raw配对和1302额外配对复算PASS，最大指标误差1.24e-14、raw/DURA判决差0。60轮完整日志、同E0/源顺序/draw/配置仅latent权重变化、各轮总loss权重复算和30恢复文件/E30-final一致性通过。完整目标未达到，保持ACTIVE和默认DURA。原F0/defaulthead、DURA、历史模型和数据保持。
