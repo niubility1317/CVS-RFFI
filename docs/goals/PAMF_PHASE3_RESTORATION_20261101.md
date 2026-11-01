@@ -312,3 +312,7 @@ VERIFIED/RUNNING：9重点检查/一次P0P1、真实Ls2四步训练部署精确�
 ## 固定30轮源训练完成，正式预测已接续（2026-11-02）
 
 VERIFIED。30/7410完整源训练、189000L/1701000U、7560000 Gcore行、训练进程exit0并退出、final与E30文件存在已核实。全部训练状态/真实source2与实际E0的完整核对仍按既有证据及最终复算，当前不把源末轮指标当性能验收。实际Main预测进程已存活，跨接收机clean126000完成日志已观察；这不是准确率结果。全部两总体七景prediction完成后才独立CPU评分。SoftPower继续只在CPU等整个Main技术完成，原训练计划/默认DURA/源权限和完整性能目标ACTIVE保持。
+
+## 可学习功率源训练已核实
+
+VERIFIED / RUNNING。源2真实G/F0梯度/raw恒等E0与严格重载PASS，首轮247更新耗时45.930482秒。E01模型/优化器/CPU-CUDA RNG独立CPU读回，同PowerAnchor实际E0全部tensor/sourceorders/draws一致，配置仅投影/版本定义差异及加权loss复算PASS。GPU4准入free24110MiB/原0compute/新增1个，PID-CWD-CUDA-GPU与日志核实。原Rollout完整Main技术完成后才启动，0TX/V/OE/target更新或选模；固定final30自动原Main七景后truth-last，性能PENDING，默认DURA及完整目标ACTIVE保持。

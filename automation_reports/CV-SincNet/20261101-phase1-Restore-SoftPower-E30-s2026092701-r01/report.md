@@ -3,7 +3,7 @@
 - run_id：`20261101-phase1-Restore-SoftPower-E30-s2026092701-r01`
 - group_id：`restoration-learned-power-single30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：LANDED（CPU等待父Main技术完成；尚未开始G训练）
+- 当前登记状态：RUNNING（源训练已开始；完整性能待七景测试）
 
 ## 目的与对照
 
@@ -46,3 +46,8 @@ CPU控制器先等当前RolloutBridge整个原Main的技术ARTIFACTS_COMPLETE与
 ## CPU等待队列已独立核实
 
 VERIFIED / LANDED。所属CPU PID/CWD/命令/CUDA空、等待日志增长核实，GPU上无该PID；当前0新增GPU worker/模型加载/IQ读取/训练更新，真实源2与实际E0检查待首个GPU阶段。等待的是Rollout完整Main技术结束，不是其分数或质量；当前健康父任务、其他owner、数据和默认DURA保持。固定新G从零单阶段30后自动原Main七景，性能尚待验证。
+
+
+## 可学习功率源训练已核实
+
+VERIFIED / RUNNING。源2真实G/F0梯度/raw恒等E0与严格重载PASS，首轮247更新耗时45.930482秒。E01模型/优化器/CPU-CUDA RNG独立CPU读回，同PowerAnchor实际E0全部tensor/sourceorders/draws一致，配置仅投影/版本定义差异及加权loss复算PASS。GPU4准入free24110MiB/原0compute/新增1个，PID-CWD-CUDA-GPU与日志核实。原Rollout完整Main技术完成后才启动，0TX/V/OE/target更新或选模；固定final30自动原Main七景后truth-last，性能PENDING，默认DURA及完整目标ACTIVE保持。
