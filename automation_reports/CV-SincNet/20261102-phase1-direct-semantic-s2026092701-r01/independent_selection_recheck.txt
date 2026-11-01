@@ -1,0 +1,10 @@
+CAND 1 0.25 net 6 classification_violations 0 IQ_violations 2 cls_examples [] iq_examples [('1:4:clean', 0.0012059534201398492, 0.001), ('1:6:clean', 0.001281294389627874, 0.001)]
+CAND 1 0.5 net 11 classification_violations 0 IQ_violations 3 cls_examples [] iq_examples [('1:4:clean', 0.004676464945077896, 0.001), ('1:6:clean', 0.0050168586894869804, 0.001)]
+CAND 1 1.0 net 8 classification_violations 1 IQ_violations 8 cls_examples [('1:6:practical_low_urban', -2)] iq_examples [('1:4:clean', 0.017461959272623062, 0.001), ('1:4:practical_high', 0.02997441776096821, 0.013532447108834982)]
+CAND 3 0.25 net 9 classification_violations 0 IQ_violations 2 cls_examples [] iq_examples [('1:4:clean', 0.0014803794911131263, 0.001), ('1:6:clean', 0.001582456985488534, 0.001)]
+CAND 3 0.5 net 9 classification_violations 0 IQ_violations 3 cls_examples [] iq_examples [('1:4:clean', 0.00593862310051918, 0.001), ('1:6:clean', 0.006391411181539297, 0.001)]
+CAND 3 1.0 net 0 classification_violations 2 IQ_violations 10 cls_examples [('1:4:practical_high', -2), ('1:4:practical_high_urban', -3)] iq_examples [('1:4:clean', 0.023634979501366615, 0.001), ('1:4:practical_high', 0.04219232127070427, 0.013532447108834982)]
+CAND 5 0.25 net 9 classification_violations 0 IQ_violations 2 cls_examples [] iq_examples [('1:4:clean', 0.0014916093787178397, 0.001), ('1:6:clean', 0.0016846968792378902, 0.001)]
+CAND 5 0.5 net 15 classification_violations 0 IQ_violations 3 cls_examples [] iq_examples [('1:4:clean', 0.005709951277822256, 0.001), ('1:6:clean', 0.006455083843320608, 0.001)]
+CAND 5 1.0 net -2 classification_violations 4 IQ_violations 10 cls_examples [('1:4:clean', -1), ('1:4:practical_high', -2)] iq_examples [('1:4:clean', 0.02080036699771881, 0.001), ('1:4:practical_high', 0.03236105293035507, 0.013532447108834982)]
+INDEPENDENT_SELECTION_RECOMPUTED None selected {'kind': 'raw', 'validation_net': 0}
