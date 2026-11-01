@@ -1,0 +1,163 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01",
+  "group_id": "restoration-source-feature-condition-paths",
+  "display_name": "冻结特征条件恢复器源端路径诊断",
+  "description": "原Ls128Us384×20draw，冻结FeatureCond/F0，检验正常、zero-feature、无FiLM、源clean特征oracle、投影前raw及连续latent。旧DURA/Full源控制精确复用。0更新/TX/V/OE/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "frozen-model",
+    "feature-condition",
+    "zero-updates"
+  ],
+  "comparison_group_id": "source-feature-latent-decoder-projection-counterfactuals",
+  "parent_run_ids": [
+    "20261101-phase1-Restore-FeatureCond-E30-s2026092701-r01",
+    "20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Useractivegoal:performanceprimary/groundTriSIGSSLsixeach3pp+clean;originalLsUs-only/source-simulation-and-F0-guidanceallowed/OEonlyfrozendiagnostic/majorarchitecturefreedom. This source-only mechanism diagnostic uses no optimizer or target.",
+  "code": {
+    "commit": "1b8b3625a3d7eb043129c034ad8639504b8576fa",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "ExistingN607CVS-RFFI Torch2.1/NumPy2;FP32 TF32off CPUthreads2;actual3ff8F0/defaulthead andfixed47cDURA runtime",
+    "cwd": "releases/20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005 Ls6300Us56700;existingR07twentytrainrealizations",
+    "representation": "OriginalR07 sourceFP32clean/received;fixed512trainingpackets(128Ls384Us)x20storednative draws=10240correlatedcases.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "R07cache/train/physical_ids.npy roles.npy;existing20261101LUcache IDs/roles forminimumcontractmatch",
+    "label_map_ref": "No labels read; F0 clean argmax agreement is not TX accuracy",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE sourcehandles. R07complete20/63000/0TX-target. Inputaudit same63000uniqueIDset (orderdiffers),roles/RX/day samebyID;clean maxabs4.76837158203125e-7 NMSE1.7667841088968941e-15. No repeateddatahash/revalidation.",
+    "support_query_ref": "None. OriginalR07LsUs in-sample;canonical63000ID-role compatibility only/f57sourcevariance. Existing source-style identity DURA/FullFGrad controls exact samepanel/draws.",
+    "leo_config_ref": "ExistingR07sourcecache20/clean15%+sixsceneuniform85%;no new simulator observations;2.462GHz retains own identity",
+    "actual_training_labels": "No training,TXlabels,V,OE,novel,target. FrozenoriginalF0features/defaulthead onlydiagnostic. No data/statisticsfit.",
+    "augmentation": "No newchannel/transforms/normalization of observations. Internalpathcounterfactuals only;originalreceived andclean remainfixed."
+  },
+  "permissions": {
+    "regime": "source-only-frozen-feature-path-diagnostic",
+    "query_use": "OnlyoriginalLsUs/sourceF0;0TX/V/OE/novel/target/updates/statisticsfit. No Mainpredictions/truth. Cleanfeatureoracle onlythissourcecounterfactual,nevertraining/deployment. Latentreadout usesunchangedF0defaulthead,nonewhead/fit.",
+    "external_method_exception": null,
+    "claim_scope": "Sourcein-samplemechanismvalidation,notTXaccuracy/Maincausalpartition/theoreticalceiling. Cleanoracle off-support/coadapteddecoder,notanattainableperformancebound. Allpaths/allcases/noqualityselection."
+  },
+  "checkpoint": {
+    "initialization": "No newG. FrozenFeatureCond/c8659b15bb3d316325867b154eede51f1a61e247 strictfinal30/7410 andoriginalF0/defaulthead. No IQteacher/newoptimizer.",
+    "sources": [
+      "OriginalTriSIGSSL3ff8/E50-11100/232993/main3view-s2026092701/defaulthead/source-only392005",
+      "FeatureCond/c8659b15bb3d316325867b154eede51f1a61e247 strictfinal30/7410/originalLsUs/noV-OE-targettraining;allMaincomplete",
+      "Source-style/ac8015d9dcdcd9c5d1f05d7c09882a0591825d7d fixedidentityDURA/FullFGradperrecordsourcepredictions/metrics;noGloads ornewNNforcontrols",
+      "Existingf57source-only63000F0featurevariance;R07original512x20/ID-rolehandles"
+    ],
+    "contract_check_ref": "ExistingVALIDATED_ONCEsourcehandles/strictoriginalF0identity/parentexactconfiguration-commit-final30-sourceflags/source-controlidentitycasealignment.",
+    "provenance_verdict": "Frozenparentsmatchingoriginal392005source-only;F-guidedexplicit/notF-free. No targetPCD/V-OEteacher ornewtraining. Cachedsourcecontrols retainownprior/teacherancestry.",
+    "selection_rule": "Fixedfinal30alreadytested;all5IQpaths+latent/all10240cases. No qualitycancellation/checkpointselection/newtraining. No V/OE/novel/target feedback."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-feature-condition-paths",
+    "gpu_policy": "GPU4/6UUID/free>=12GB/existingcompute<=2/addONEtotal<=3/own1card/thisoneNN/globalown<=2/othersuntouched",
+    "remote_run_root": "runs/20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01",
+    "remote_log_root": "runs/20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_condition_diagnostic run --root /home/szu2070436088/2510044040/CV-SincNet --commit 1b8b3625a3d7eb043129c034ad8639504b8576fa --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrongsource/F0/G/config/shape/collision/nonfinite/statechange/referencealignment/technicalfailure:preserveroot/noautoretry. RealLs2smokefirst/actual-latent-rawexact/PASSimmediatelyallcases. No scientificqualitygate."
+  },
+  "expected_artifacts": [
+    "submitted.json",
+    "smoke.json",
+    "source_records.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "5IQpaths:IQNMSE/Fcos/sourcevarMSE/Fcleanagreement/complexpower;latentFcos/sourcevarMSE/defaultheadagreement(noTXtruth)",
+      "Sourcepairedrepair/damage/netagainstactual;cachedDURA/Fullsourcecontrols exactsamecases",
+      "F0/Gallstateunchanged/0updates/TX-V-OE-novel-target"
+    ],
+    "dimensions": [
+      "512sourcepacketsx20R07stored draws=10240correlatedcases",
+      "5IQpaths+continuouslatent",
+      "7source-scenes+ALL"
+    ],
+    "prediction_ref": "Privatefullsource_records.npz;cachedsource-controlartifact/no Mainprediction",
+    "scorer_ref": "NoTXtruth. IndependentNumPyallcasecoverage/predictions/means/pairs/power/oldcontrols aftercompletion. SourceevidencecanmotivatefutureresearchbutdoesnotpromotecurrentfailedMainG."
+  },
+  "rows": [
+    {
+      "row_id": "feature-paths-512x20",
+      "method": "frozen-feature-condition-counterfactuals",
+      "purpose": "source-onlymechanismdiagnosis",
+      "config_ref": "experiments/pamf_phase3_restoration/feature_condition_diagnostic.py",
+      "resolved_config_ref": "fixedPATHS/parentexactconfig/releaseinputs PRIVATE",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101911
+      },
+      "seed_notes": "No newtraining/channelRNG. OriginalR07storedobservations/fixedsourcepanel. Seedusedonlyscratchconstructorbeforestrictcheckpointload.",
+      "k": null,
+      "scenario": "source-R07clean+six/internalfrozenpaths",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0updates. Gencoder10240/4decoders40960;5IQpaths51200 F0features+clean512=51712;latentdefaulthead10240(noF0encoder). SourceLs2smokeextra12F0feature rows/10heads/4Gencoder+10decoderrows. NoDURA/FullNNrepeat. Requestrowsnotinternal3view/capturecalls.",
+      "output_root": "runs/20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01",
+      "log_path": "runs/20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_condition_diagnostic worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 1b8b3625a3d7eb043129c034ad8639504b8576fa --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "submitted.json",
+        "smoke.json",
+        "source_records.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "PreviousgoalturnPROGRESS:FeatureCondcompleted30/Main7/independent84PASS,performance0of6/defaultDURAunchanged. ThisdiagnosticlooksinsidefixedsourcearchitecturewithoutMainfeedback.",
+    "zero_feature preservesFiLMbias;no_FiLM bypassesallFiLM;clean_feature_oracle usesdetachedsourcecleanF0onlyasexplicitfrozendiagnostic;actualrawbeforeunitprojectionisnottrainedasindependentoutput.",
+    "Allpathscoadapted/frozen,notsingle-factorretraining. No generalization/TX/optimalityclaimfromsourceagreement. V/OE/novelunused.",
+    "Interpretation:comparelatentpredictionvsF0(G),andactual/zero/noFiLM/oracle tolocateconditioninglimitations;raw/unitpower comparisononlyfrozenmodeltradeoff. No modechosenforMain/noqualitycancel.",
+    "ThreefocusedtestsPASS andoneP0P1PASS;oneGit/archiveSHA/compile/preflight/realLs2smoke/poststate. Mainperformancefirst;efficiencysecondary."
+  ],
+  "registered_at": "2026-11-01T10:44:48+00:00"
+}
