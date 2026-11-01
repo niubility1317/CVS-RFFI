@@ -1,0 +1,3763 @@
+{
+  "status": "ANALYZED_FROZEN_SOURCE_ARTIFACTS",
+  "source_cases": 10240,
+  "source_packets": 512,
+  "stored_source_draws": 20,
+  "source_only": true,
+  "groups": [
+    {
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "methods": {
+        "received": {
+          "nmse": 1.7049953988404014,
+          "feature_cosine_distance": 0.0648153595335316,
+          "clean_decision_agreement": 0.85849609375,
+          "agreement_count": 8791
+        },
+        "DURA_v1": {
+          "nmse": 0.022287005297337625,
+          "feature_cosine_distance": 0.00838818894699216,
+          "clean_decision_agreement": 0.95146484375,
+          "agreement_count": 9743
+        },
+        "oracle_mean128": {
+          "nmse": 0.05886080652339278,
+          "feature_cosine_distance": 0.03426945842802524,
+          "clean_decision_agreement": 0.88095703125,
+          "agreement_count": 9021
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.020882440396640157,
+          "feature_cosine_distance": 0.004868574085412547,
+          "clean_decision_agreement": 0.97158203125,
+          "agreement_count": 9949
+        },
+        "FeatureCond": {
+          "nmse": 0.024694895287510742,
+          "feature_cosine_distance": 0.005728281469782814,
+          "clean_decision_agreement": 0.96787109375,
+          "agreement_count": 9911
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.023896758308475617,
+          "feature_cosine_distance": 0.0027702466468326747,
+          "clean_decision_agreement": 0.99091796875,
+          "agreement_count": 10147
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 302,
+          "damage": 134,
+          "net": 168
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 95,
+          "damage": 133,
+          "net": -38
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 258,
+          "damage": 22,
+          "net": 236
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.058704531068191804,
+        "median": 0.0021422653226181865,
+        "p90": 0.24810498803853992,
+        "p99": 0.6668891137838374
+      }
+    },
+    {
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "methods": {
+        "received": {
+          "nmse": 0.0,
+          "feature_cosine_distance": 9.512584220011677e-09,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "DURA_v1": {
+          "nmse": 2.4255140467358398e-05,
+          "feature_cosine_distance": 2.6390739752568348e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "oracle_mean128": {
+          "nmse": 2.583248864514182e-13,
+          "feature_cosine_distance": 8.380133717629334e-09,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 5.7118173128719346e-05,
+          "feature_cosine_distance": 3.261385724995996e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "FeatureCond": {
+          "nmse": 7.554879518994082e-05,
+          "feature_cosine_distance": 3.87690654655587e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 8.485830187056551e-05,
+          "feature_cosine_distance": 5.89921400470021e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 2.688186535035876e-13,
+        "median": 2.7563032151817213e-13,
+        "p90": 3.0719258517150627e-13,
+        "p99": 3.240770282339489e-13
+      }
+    },
+    {
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "methods": {
+        "received": {
+          "nmse": 2.0190854481908938,
+          "feature_cosine_distance": 0.04103221326084845,
+          "clean_decision_agreement": 0.9593552908199019,
+          "agreement_count": 1369
+        },
+        "DURA_v1": {
+          "nmse": 0.008581076889109916,
+          "feature_cosine_distance": 0.002860022451631991,
+          "clean_decision_agreement": 0.9901892081289418,
+          "agreement_count": 1413
+        },
+        "oracle_mean128": {
+          "nmse": 0.03526559741495369,
+          "feature_cosine_distance": 0.015014413569302682,
+          "clean_decision_agreement": 0.9635599159074982,
+          "agreement_count": 1375
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.00702382063104157,
+          "feature_cosine_distance": 0.0015669500986512258,
+          "clean_decision_agreement": 0.9957953749124037,
+          "agreement_count": 1421
+        },
+        "FeatureCond": {
+          "nmse": 0.008923395972173712,
+          "feature_cosine_distance": 0.0018332248061540333,
+          "clean_decision_agreement": 0.9922915206727401,
+          "agreement_count": 1416
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.00935675574877099,
+          "feature_cosine_distance": 0.0015726506334129713,
+          "clean_decision_agreement": 0.9887876664330764,
+          "agreement_count": 1411
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 10,
+          "damage": 7,
+          "net": 3
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 1,
+          "damage": 6,
+          "net": -5
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 5,
+          "damage": 10,
+          "net": -5
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.0033506596580535415,
+        "median": 0.0010256003588438034,
+        "p90": 0.0016805971506983041,
+        "p99": 0.07114878624677663
+      }
+    },
+    {
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "methods": {
+        "received": {
+          "nmse": 2.0223134939041403,
+          "feature_cosine_distance": 0.052498351078894404,
+          "clean_decision_agreement": 0.9034722222222222,
+          "agreement_count": 1301
+        },
+        "DURA_v1": {
+          "nmse": 0.013861965830599527,
+          "feature_cosine_distance": 0.004591827094554901,
+          "clean_decision_agreement": 0.975,
+          "agreement_count": 1404
+        },
+        "oracle_mean128": {
+          "nmse": 0.04481834878032613,
+          "feature_cosine_distance": 0.022408468855751887,
+          "clean_decision_agreement": 0.9361111111111111,
+          "agreement_count": 1348
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.012824124151625762,
+          "feature_cosine_distance": 0.002712634826699893,
+          "clean_decision_agreement": 0.9826388888888888,
+          "agreement_count": 1415
+        },
+        "FeatureCond": {
+          "nmse": 0.016225902944057048,
+          "feature_cosine_distance": 0.003045404412680202,
+          "clean_decision_agreement": 0.9854166666666667,
+          "agreement_count": 1419
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.016387910013872898,
+          "feature_cosine_distance": 0.002019477304485109,
+          "clean_decision_agreement": 0.9965277777777778,
+          "agreement_count": 1435
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 25,
+          "damage": 10,
+          "net": 15
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 11,
+          "damage": 7,
+          "net": 4
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 16,
+          "damage": 0,
+          "net": 16
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.01667187968467058,
+        "median": 0.0010653919307515025,
+        "p90": 0.04613239690661466,
+        "p99": 0.27683240950107546
+      }
+    },
+    {
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "methods": {
+        "received": {
+          "nmse": 2.0173382521489374,
+          "feature_cosine_distance": 0.05812690388220569,
+          "clean_decision_agreement": 0.9119453924914676,
+          "agreement_count": 1336
+        },
+        "DURA_v1": {
+          "nmse": 0.017814612267745514,
+          "feature_cosine_distance": 0.007971718815813293,
+          "clean_decision_agreement": 0.967235494880546,
+          "agreement_count": 1417
+        },
+        "oracle_mean128": {
+          "nmse": 0.05216338884263417,
+          "feature_cosine_distance": 0.027289134202963663,
+          "clean_decision_agreement": 0.9133105802047782,
+          "agreement_count": 1338
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.014484824545152243,
+          "feature_cosine_distance": 0.0041665638266163065,
+          "clean_decision_agreement": 0.9815699658703072,
+          "agreement_count": 1438
+        },
+        "FeatureCond": {
+          "nmse": 0.016048025607795745,
+          "feature_cosine_distance": 0.00523061715702148,
+          "clean_decision_agreement": 0.9815699658703072,
+          "agreement_count": 1438
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.01574316147898416,
+          "feature_cosine_distance": 0.0025632077109691634,
+          "clean_decision_agreement": 0.9938566552901024,
+          "agreement_count": 1456
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 32,
+          "damage": 11,
+          "net": 21
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 9,
+          "damage": 9,
+          "net": 0
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 22,
+          "damage": 4,
+          "net": 18
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.03371379137597025,
+        "median": 0.00549357058480382,
+        "p90": 0.04684561938047412,
+        "p99": 0.5841801309585568
+      }
+    },
+    {
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "methods": {
+        "received": {
+          "nmse": 2.0060940851408127,
+          "feature_cosine_distance": 0.14836848832272553,
+          "clean_decision_agreement": 0.5905292479108635,
+          "agreement_count": 848
+        },
+        "DURA_v1": {
+          "nmse": 0.06304283425528724,
+          "feature_cosine_distance": 0.025006757597737326,
+          "clean_decision_agreement": 0.8391364902506964,
+          "agreement_count": 1205
+        },
+        "oracle_mean128": {
+          "nmse": 0.1440334660922045,
+          "feature_cosine_distance": 0.09460925059730296,
+          "clean_decision_agreement": 0.6399721448467967,
+          "agreement_count": 919
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.061618532798057464,
+          "feature_cosine_distance": 0.015574812847591709,
+          "clean_decision_agreement": 0.899025069637883,
+          "agreement_count": 1291
+        },
+        "FeatureCond": {
+          "nmse": 0.07157566177805148,
+          "feature_cosine_distance": 0.01860795940031248,
+          "clean_decision_agreement": 0.8871866295264624,
+          "agreement_count": 1274
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.0668925395985147,
+          "feature_cosine_distance": 0.006744237787876289,
+          "clean_decision_agreement": 0.9749303621169917,
+          "agreement_count": 1400
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 129,
+          "damage": 60,
+          "net": 69
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 42,
+          "damage": 59,
+          "net": -17
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 129,
+          "damage": 3,
+          "net": 126
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.23231867012067783,
+        "median": 0.19797059148550034,
+        "p90": 0.5810030102729797,
+        "p99": 0.8044148802757264
+      }
+    },
+    {
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "methods": {
+        "received": {
+          "nmse": 2.014776346336478,
+          "feature_cosine_distance": 0.04895364720063068,
+          "clean_decision_agreement": 0.9211590296495957,
+          "agreement_count": 1367
+        },
+        "DURA_v1": {
+          "nmse": 0.014064614812832834,
+          "feature_cosine_distance": 0.005097983781539526,
+          "clean_decision_agreement": 0.9750673854447439,
+          "agreement_count": 1447
+        },
+        "oracle_mean128": {
+          "nmse": 0.04346041447254566,
+          "feature_cosine_distance": 0.020088118965413692,
+          "clean_decision_agreement": 0.9299191374663073,
+          "agreement_count": 1380
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.01193848887234556,
+          "feature_cosine_distance": 0.00238670468973021,
+          "clean_decision_agreement": 0.9898921832884097,
+          "agreement_count": 1469
+        },
+        "FeatureCond": {
+          "nmse": 0.014842103578001536,
+          "feature_cosine_distance": 0.002687773012086709,
+          "clean_decision_agreement": 0.9858490566037735,
+          "agreement_count": 1463
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.01495373511188469,
+          "feature_cosine_distance": 0.002037246191919332,
+          "clean_decision_agreement": 0.9939353099730458,
+          "agreement_count": 1475
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 23,
+          "damage": 7,
+          "net": 16
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 5,
+          "damage": 11,
+          "net": -6
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 16,
+          "damage": 4,
+          "net": 12
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.015640630619482745,
+        "median": 0.0026062759570777416,
+        "p90": 0.017428424768149854,
+        "p99": 0.3477787089347854
+      }
+    },
+    {
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "methods": {
+        "received": {
+          "nmse": 2.015405801782547,
+          "feature_cosine_distance": 0.11263193531692917,
+          "clean_decision_agreement": 0.7033356990773598,
+          "agreement_count": 991
+        },
+        "DURA_v1": {
+          "nmse": 0.04150064053657386,
+          "feature_cosine_distance": 0.014198879259879747,
+          "clean_decision_agreement": 0.9070262597586941,
+          "agreement_count": 1278
+        },
+        "oracle_mean128": {
+          "nmse": 0.0994503562840335,
+          "feature_cosine_distance": 0.0649944952060518,
+          "clean_decision_agreement": 0.7679205110007097,
+          "agreement_count": 1082
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.04104689191211368,
+          "feature_cosine_distance": 0.00826767380987185,
+          "clean_decision_agreement": 0.9481902058197303,
+          "agreement_count": 1336
+        },
+        "FeatureCond": {
+          "nmse": 0.048501604234431575,
+          "feature_cosine_distance": 0.0093842815895974,
+          "clean_decision_agreement": 0.9382540809084458,
+          "agreement_count": 1322
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.0470584610436109,
+          "feature_cosine_distance": 0.004725946907966673,
+          "clean_decision_agreement": 0.9872249822569198,
+          "agreement_count": 1391
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 83,
+          "damage": 39,
+          "net": 44
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 27,
+          "damage": 41,
+          "net": -14
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 70,
+          "damage": 1,
+          "net": 69
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.11790950288253323,
+        "median": 0.007199238520115614,
+        "p90": 0.3656628608703614,
+        "p99": 0.6542480802536019
+      }
+    },
+    {
+      "dimension": "state",
+      "stratum": "BLOCKED",
+      "count": 1696,
+      "methods": {
+        "received": {
+          "nmse": 1.9990084934628234,
+          "feature_cosine_distance": 0.2073729293034324,
+          "clean_decision_agreement": 0.35672169811320753,
+          "agreement_count": 605
+        },
+        "DURA_v1": {
+          "nmse": 0.08985044636855886,
+          "feature_cosine_distance": 0.034185688872382325,
+          "clean_decision_agreement": 0.7706367924528302,
+          "agreement_count": 1307
+        },
+        "oracle_mean128": {
+          "nmse": 0.19805222083067628,
+          "feature_cosine_distance": 0.13760953930751332,
+          "clean_decision_agreement": 0.4805424528301887,
+          "agreement_count": 815
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.09095965595619385,
+          "feature_cosine_distance": 0.021789989873485745,
+          "clean_decision_agreement": 0.8502358490566038,
+          "agreement_count": 1442
+        },
+        "FeatureCond": {
+          "nmse": 0.10656666485916709,
+          "feature_cosine_distance": 0.026112935277369787,
+          "clean_decision_agreement": 0.8272405660377359,
+          "agreement_count": 1403
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.10030659639363326,
+          "feature_cosine_distance": 0.009348111332587476,
+          "clean_decision_agreement": 0.9669811320754716,
+          "agreement_count": 1640
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 211,
+          "damage": 115,
+          "net": 96
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 75,
+          "damage": 114,
+          "net": -39
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 240,
+          "damage": 3,
+          "net": 237
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.3292172743569849,
+        "median": 0.29297664761543274,
+        "p90": 0.5962802469730377,
+        "p99": 0.8047294795513152
+      }
+    },
+    {
+      "dimension": "state",
+      "stratum": "LOS",
+      "count": 5933,
+      "methods": {
+        "received": {
+          "nmse": 2.0190200412854082,
+          "feature_cosine_distance": 0.03908456189624781,
+          "clean_decision_agreement": 0.9642676554862633,
+          "agreement_count": 5721
+        },
+        "DURA_v1": {
+          "nmse": 0.008436195331693689,
+          "feature_cosine_distance": 0.003041208041532032,
+          "clean_decision_agreement": 0.9914040114613181,
+          "agreement_count": 5882
+        },
+        "oracle_mean128": {
+          "nmse": 0.034978867149630055,
+          "feature_cosine_distance": 0.014347061587690042,
+          "clean_decision_agreement": 0.9625821675375021,
+          "agreement_count": 5711
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.0066671314178834915,
+          "feature_cosine_distance": 0.0014915891467630813,
+          "clean_decision_agreement": 0.997134670487106,
+          "agreement_count": 5916
+        },
+        "FeatureCond": {
+          "nmse": 0.008361257226550919,
+          "feature_cosine_distance": 0.0017004149590618752,
+          "clean_decision_agreement": 0.9966290241024777,
+          "agreement_count": 5913
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.008796692819957515,
+          "feature_cosine_distance": 0.0015334666589048647,
+          "clean_decision_agreement": 0.9954491825383448,
+          "agreement_count": 5906
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 44,
+          "damage": 13,
+          "net": 31
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 10,
+          "damage": 13,
+          "net": -3
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 9,
+          "damage": 16,
+          "net": -7
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.0023700604469561065,
+        "median": 0.0017102749552577734,
+        "p90": 0.004819602146744729,
+        "p99": 0.009140327051281934
+      }
+    },
+    {
+      "dimension": "state",
+      "stratum": "PARTIAL",
+      "count": 1032,
+      "methods": {
+        "received": {
+          "nmse": 2.0251827270023584,
+          "feature_cosine_distance": 0.07763185346311377,
+          "clean_decision_agreement": 0.8585271317829457,
+          "agreement_count": 886
+        },
+        "DURA_v1": {
+          "nmse": 0.024944119606516324,
+          "feature_cosine_distance": 0.009526131977868635,
+          "clean_decision_agreement": 0.9447674418604651,
+          "agreement_count": 975
+        },
+        "oracle_mean128": {
+          "nmse": 0.05746945103832571,
+          "feature_cosine_distance": 0.03140731202077496,
+          "clean_decision_agreement": 0.8875968992248062,
+          "agreement_count": 916
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.01930458610679985,
+          "feature_cosine_distance": 0.003873333450435668,
+          "clean_decision_agreement": 0.9806201550387597,
+          "agreement_count": 1012
+        },
+        "FeatureCond": {
+          "nmse": 0.021717086695960376,
+          "feature_cosine_distance": 0.004089424141155657,
+          "clean_decision_agreement": 0.9844961240310077,
+          "agreement_count": 1016
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.02156787580981275,
+          "feature_cosine_distance": 0.003218723417714585,
+          "clean_decision_agreement": 0.9903100775193798,
+          "agreement_count": 1022
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 47,
+          "damage": 6,
+          "net": 41
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 10,
+          "damage": 6,
+          "net": 4
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 9,
+          "damage": 3,
+          "net": 6
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.027829779260293237,
+        "median": 0.018771284259855747,
+        "p90": 0.05862775184214114,
+        "p99": 0.15324924081563937
+      }
+    },
+    {
+      "dimension": "state",
+      "stratum": "clean",
+      "count": 1579,
+      "methods": {
+        "received": {
+          "nmse": 0.0,
+          "feature_cosine_distance": 9.512584220011677e-09,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "DURA_v1": {
+          "nmse": 2.4255140467358398e-05,
+          "feature_cosine_distance": 2.6390739752568348e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "oracle_mean128": {
+          "nmse": 2.583248864514182e-13,
+          "feature_cosine_distance": 8.380133717629334e-09,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 5.7118173128719346e-05,
+          "feature_cosine_distance": 3.261385724995996e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "FeatureCond": {
+          "nmse": 7.554879518994082e-05,
+          "feature_cosine_distance": 3.87690654655587e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 8.485830187056551e-05,
+          "feature_cosine_distance": 5.89921400470021e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 2.688186535035876e-13,
+        "median": 2.7563032151817213e-13,
+        "p90": 3.0719258517150627e-13,
+        "p99": 3.240770282339489e-13
+      }
+    },
+    {
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "methods": {
+        "received": {
+          "nmse": 2.0072829094686004,
+          "feature_cosine_distance": 0.16276701538186325,
+          "clean_decision_agreement": 0.5442105263157895,
+          "agreement_count": 517
+        },
+        "DURA_v1": {
+          "nmse": 0.05630513023241962,
+          "feature_cosine_distance": 0.018000561438108745,
+          "clean_decision_agreement": 0.8610526315789474,
+          "agreement_count": 818
+        },
+        "oracle_mean128": {
+          "nmse": 0.12411060732054083,
+          "feature_cosine_distance": 0.08849335099521437,
+          "clean_decision_agreement": 0.7094736842105264,
+          "agreement_count": 674
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.05440321165014451,
+          "feature_cosine_distance": 0.010241262159849468,
+          "clean_decision_agreement": 0.9284210526315789,
+          "agreement_count": 882
+        },
+        "FeatureCond": {
+          "nmse": 0.06713573211313863,
+          "feature_cosine_distance": 0.010626695908998188,
+          "clean_decision_agreement": 0.911578947368421,
+          "agreement_count": 866
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.0657713782723601,
+          "feature_cosine_distance": 0.005986884832382202,
+          "clean_decision_agreement": 0.9821052631578947,
+          "agreement_count": 933
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 89,
+          "damage": 41,
+          "net": 48
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 20,
+          "damage": 36,
+          "net": -16
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 67,
+          "damage": 0,
+          "net": 67
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.12280996932991241,
+        "median": 0.11864558979868889,
+        "p90": 0.21349529623985292,
+        "p99": 0.2728226792812347
+      }
+    },
+    {
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "methods": {
+        "received": {
+          "nmse": 2.0198108152039214,
+          "feature_cosine_distance": 0.0421445294766363,
+          "clean_decision_agreement": 0.9568291215403129,
+          "agreement_count": 6361
+        },
+        "DURA_v1": {
+          "nmse": 0.009450451333368762,
+          "feature_cosine_distance": 0.003461307620743982,
+          "clean_decision_agreement": 0.9884175691937425,
+          "agreement_count": 6571
+        },
+        "oracle_mean128": {
+          "nmse": 0.03609684300028958,
+          "feature_cosine_distance": 0.015439424605504414,
+          "clean_decision_agreement": 0.9559265944645006,
+          "agreement_count": 6355
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.007348620448781306,
+          "feature_cosine_distance": 0.0016420531018259436,
+          "clean_decision_agreement": 0.9962394705174489,
+          "agreement_count": 6623
+        },
+        "FeatureCond": {
+          "nmse": 0.009096527448655712,
+          "feature_cosine_distance": 0.0018481436924096624,
+          "clean_decision_agreement": 0.9963898916967509,
+          "agreement_count": 6624
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.00951232234473877,
+          "feature_cosine_distance": 0.0016602839373509376,
+          "clean_decision_agreement": 0.9951865222623345,
+          "agreement_count": 6616
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 67,
+          "damage": 14,
+          "net": 53
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 14,
+          "damage": 13,
+          "net": 1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 10,
+          "damage": 18,
+          "net": -8
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.0036654793331914394,
+        "median": 0.0019540457287803292,
+        "p90": 0.00806972458958626,
+        "p99": 0.025965604782104468
+      }
+    },
+    {
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "methods": {
+        "received": {
+          "nmse": 0.0,
+          "feature_cosine_distance": 9.512584220011677e-09,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "DURA_v1": {
+          "nmse": 2.4255140467358398e-05,
+          "feature_cosine_distance": 2.6390739752568348e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "oracle_mean128": {
+          "nmse": 2.583248864514182e-13,
+          "feature_cosine_distance": 8.380133717629334e-09,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 5.7118173128719346e-05,
+          "feature_cosine_distance": 3.261385724995996e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "FeatureCond": {
+          "nmse": 7.554879518994082e-05,
+          "feature_cosine_distance": 3.87690654655587e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 8.485830187056551e-05,
+          "feature_cosine_distance": 5.89921400470021e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 2.688186535035876e-13,
+        "median": 2.7563032151817213e-13,
+        "p90": 3.0719258517150627e-13,
+        "p99": 3.240770282339489e-13
+      }
+    },
+    {
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "methods": {
+        "received": {
+          "nmse": 1.9986188341061797,
+          "feature_cosine_distance": 0.2153375070832971,
+          "clean_decision_agreement": 0.3142050799623706,
+          "agreement_count": 334
+        },
+        "DURA_v1": {
+          "nmse": 0.10523439434892301,
+          "feature_cosine_distance": 0.04303111703689661,
+          "clean_decision_agreement": 0.729068673565381,
+          "agreement_count": 775
+        },
+        "oracle_mean128": {
+          "nmse": 0.23034597326311881,
+          "feature_cosine_distance": 0.1544771992924745,
+          "clean_decision_agreement": 0.3885230479774224,
+          "agreement_count": 413
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.10649983090789233,
+          "feature_cosine_distance": 0.0274290999823433,
+          "clean_decision_agreement": 0.8137347130761995,
+          "agreement_count": 865
+        },
+        "FeatureCond": {
+          "nmse": 0.12088784215461922,
+          "feature_cosine_distance": 0.034068264831155395,
+          "clean_decision_agreement": 0.7920978363123237,
+          "agreement_count": 842
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.11180440782085727,
+          "feature_cosine_distance": 0.010864599123386874,
+          "clean_decision_agreement": 0.9586077140169332,
+          "agreement_count": 1019
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 146,
+          "damage": 79,
+          "net": 67
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 61,
+          "damage": 84,
+          "net": -23
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 181,
+          "damage": 4,
+          "net": 177
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.43282861774918724,
+        "median": 0.40322786569595337,
+        "p90": 0.6636823892593384,
+        "p99": 0.8465235888957975
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "clean|not_applicable",
+      "count": 1579,
+      "methods": {
+        "received": {
+          "nmse": 0.0,
+          "feature_cosine_distance": 9.512584220011677e-09,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "DURA_v1": {
+          "nmse": 2.4255140467358398e-05,
+          "feature_cosine_distance": 2.6390739752568348e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "oracle_mean128": {
+          "nmse": 2.583248864514182e-13,
+          "feature_cosine_distance": 8.380133717629334e-09,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 5.7118173128719346e-05,
+          "feature_cosine_distance": 3.261385724995996e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "FeatureCond": {
+          "nmse": 7.554879518994082e-05,
+          "feature_cosine_distance": 3.87690654655587e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 8.485830187056551e-05,
+          "feature_cosine_distance": 5.89921400470021e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 2.688186535035876e-13,
+        "median": 2.7563032151817213e-13,
+        "p90": 3.0719258517150627e-13,
+        "p99": 3.240770282339489e-13
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_high|degraded",
+      "count": 15,
+      "methods": {
+        "received": {
+          "nmse": 2.008840815226237,
+          "feature_cosine_distance": 0.25080824295679727,
+          "clean_decision_agreement": 0.4,
+          "agreement_count": 6
+        },
+        "DURA_v1": {
+          "nmse": 0.04285026540358861,
+          "feature_cosine_distance": 0.017386106650034587,
+          "clean_decision_agreement": 0.9333333333333333,
+          "agreement_count": 14
+        },
+        "oracle_mean128": {
+          "nmse": 0.10663496553897858,
+          "feature_cosine_distance": 0.14693996906280518,
+          "clean_decision_agreement": 0.8,
+          "agreement_count": 12
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.04199188919737935,
+          "feature_cosine_distance": 0.013312268257141113,
+          "clean_decision_agreement": 0.8666666666666667,
+          "agreement_count": 13
+        },
+        "FeatureCond": {
+          "nmse": 0.05171091550340255,
+          "feature_cosine_distance": 0.016916918754577636,
+          "clean_decision_agreement": 0.8,
+          "agreement_count": 12
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.04949932970727484,
+          "feature_cosine_distance": 0.008156510194142659,
+          "clean_decision_agreement": 0.9333333333333333,
+          "agreement_count": 14
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 0,
+          "damage": 2,
+          "net": -2
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 1,
+          "net": -1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 2,
+          "damage": 0,
+          "net": 2
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.11300798704226812,
+        "median": 0.09520359337329865,
+        "p90": 0.18930282294750211,
+        "p99": 0.2250301459431648
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_high|locked",
+      "count": 1409,
+      "methods": {
+        "received": {
+          "nmse": 2.0194027161581283,
+          "feature_cosine_distance": 0.038264004536094694,
+          "clean_decision_agreement": 0.9659332860184529,
+          "agreement_count": 1361
+        },
+        "DURA_v1": {
+          "nmse": 0.008044982424977178,
+          "feature_cosine_distance": 0.002683649129102719,
+          "clean_decision_agreement": 0.9907735982966643,
+          "agreement_count": 1396
+        },
+        "oracle_mean128": {
+          "nmse": 0.034123668831827964,
+          "feature_cosine_distance": 0.013097365838234266,
+          "clean_decision_agreement": 0.9666430092264017,
+          "agreement_count": 1362
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.006476515080486315,
+          "feature_cosine_distance": 0.0013899783279305235,
+          "clean_decision_agreement": 0.9971611071682044,
+          "agreement_count": 1405
+        },
+        "FeatureCond": {
+          "nmse": 0.008264973403402948,
+          "feature_cosine_distance": 0.0016091337349501123,
+          "clean_decision_agreement": 0.9950319375443577,
+          "agreement_count": 1402
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.00872579888001777,
+          "feature_cosine_distance": 0.0014699953003417016,
+          "clean_decision_agreement": 0.9893541518807665,
+          "agreement_count": 1394
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 10,
+          "damage": 4,
+          "net": 6
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 1,
+          "damage": 4,
+          "net": -3
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 2,
+          "damage": 10,
+          "net": -8
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.0012960690117458965,
+        "median": 0.001019289018586278,
+        "p90": 0.0016355316853150727,
+        "p99": 0.00879606995731594
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_high|unlocked",
+      "count": 3,
+      "methods": {
+        "received": {
+          "nmse": 1.9212984244028728,
+          "feature_cosine_distance": 0.2922874291737874,
+          "clean_decision_agreement": 0.6666666666666666,
+          "agreement_count": 2
+        },
+        "DURA_v1": {
+          "nmse": 0.08902083430439234,
+          "feature_cosine_distance": 0.013066271940867106,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 3
+        },
+        "oracle_mean128": {
+          "nmse": 0.21474454800287882,
+          "feature_cosine_distance": 0.2557600537935893,
+          "clean_decision_agreement": 0.3333333333333333,
+          "agreement_count": 1
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.08923465137680371,
+          "feature_cosine_distance": 0.02595810095469157,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 3
+        },
+        "FeatureCond": {
+          "nmse": 0.10422493144869804,
+          "feature_cosine_distance": 0.0316628615061442,
+          "clean_decision_agreement": 0.6666666666666666,
+          "agreement_count": 2
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.10498329531401396,
+          "feature_cosine_distance": 0.016867140928904217,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 3
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 0,
+          "damage": 1,
+          "net": -1
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 1,
+          "net": -1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 1,
+          "damage": 0,
+          "net": 1
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.42003676295280457,
+        "median": 0.34534507989883423,
+        "p90": 0.5978515267372131,
+        "p99": 0.6546654772758483
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_high_urban|degraded",
+      "count": 132,
+      "methods": {
+        "received": {
+          "nmse": 2.008309376962257,
+          "feature_cosine_distance": 0.15257048335942355,
+          "clean_decision_agreement": 0.4318181818181818,
+          "agreement_count": 57
+        },
+        "DURA_v1": {
+          "nmse": 0.06043296569436224,
+          "feature_cosine_distance": 0.018649652148738052,
+          "clean_decision_agreement": 0.8560606060606061,
+          "agreement_count": 113
+        },
+        "oracle_mean128": {
+          "nmse": 0.1246899865906347,
+          "feature_cosine_distance": 0.08721678500825708,
+          "clean_decision_agreement": 0.6893939393939394,
+          "agreement_count": 91
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.06343947227508055,
+          "feature_cosine_distance": 0.012624005928184048,
+          "clean_decision_agreement": 0.8939393939393939,
+          "agreement_count": 118
+        },
+        "FeatureCond": {
+          "nmse": 0.08128782261558103,
+          "feature_cosine_distance": 0.012138314770929741,
+          "clean_decision_agreement": 0.9090909090909091,
+          "agreement_count": 120
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.0806031492715137,
+          "feature_cosine_distance": 0.006283502235557094,
+          "clean_decision_agreement": 0.9848484848484849,
+          "agreement_count": 130
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 14,
+          "damage": 7,
+          "net": 7
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 5,
+          "damage": 3,
+          "net": 2
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 10,
+          "damage": 0,
+          "net": 10
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.11764493344746756,
+        "median": 0.11271469667553902,
+        "p90": 0.18683144301176074,
+        "p99": 0.23029244124889373
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_high_urban|locked",
+      "count": 1289,
+      "methods": {
+        "received": {
+          "nmse": 2.0237730624973542,
+          "feature_cosine_distance": 0.03989523288535924,
+          "clean_decision_agreement": 0.9619860356865787,
+          "agreement_count": 1240
+        },
+        "DURA_v1": {
+          "nmse": 0.008069332182382814,
+          "feature_cosine_distance": 0.0028113004678529396,
+          "clean_decision_agreement": 0.9906904577191621,
+          "agreement_count": 1277
+        },
+        "oracle_mean128": {
+          "nmse": 0.03435695373805065,
+          "feature_cosine_distance": 0.01377167777556426,
+          "clean_decision_agreement": 0.9689681923972071,
+          "agreement_count": 1249
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.006447372348396407,
+          "feature_cosine_distance": 0.0014414933414030112,
+          "clean_decision_agreement": 0.9945694336695112,
+          "agreement_count": 1282
+        },
+        "FeatureCond": {
+          "nmse": 0.008227087478855151,
+          "feature_cosine_distance": 0.0016492770289708886,
+          "clean_decision_agreement": 0.9961210240496509,
+          "agreement_count": 1284
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.00867545168875385,
+          "feature_cosine_distance": 0.001474720919381934,
+          "clean_decision_agreement": 0.9976726144297905,
+          "agreement_count": 1286
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 9,
+          "damage": 2,
+          "net": 7
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 5,
+          "damage": 3,
+          "net": 2
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 2,
+          "damage": 0,
+          "net": 2
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.0013791144268910196,
+        "median": 0.001007949816994369,
+        "p90": 0.001698419847525657,
+        "p99": 0.00929661251604555
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_high_urban|unlocked",
+      "count": 19,
+      "methods": {
+        "received": {
+          "nmse": 2.0205850475712825,
+          "feature_cosine_distance": 0.2122824505755776,
+          "clean_decision_agreement": 0.21052631578947367,
+          "agreement_count": 4
+        },
+        "DURA_v1": {
+          "nmse": 0.08330053375347664,
+          "feature_cosine_distance": 0.027721612077010304,
+          "clean_decision_agreement": 0.7368421052631579,
+          "agreement_count": 14
+        },
+        "oracle_mean128": {
+          "nmse": 0.19964371817676643,
+          "feature_cosine_distance": 0.1580993093942341,
+          "clean_decision_agreement": 0.42105263157894735,
+          "agreement_count": 8
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.09379292004986813,
+          "feature_cosine_distance": 0.02009160267679315,
+          "clean_decision_agreement": 0.7894736842105263,
+          "agreement_count": 15
+        },
+        "FeatureCond": {
+          "nmse": 0.10687325757585074,
+          "feature_cosine_distance": 0.03458982706069946,
+          "clean_decision_agreement": 0.7894736842105263,
+          "agreement_count": 15
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.09349039417544477,
+          "feature_cosine_distance": 0.00935314517272146,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 19
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 2,
+          "damage": 1,
+          "net": 1
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 1,
+          "damage": 1,
+          "net": 0
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 4,
+          "damage": 0,
+          "net": 4
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.3526682649788104,
+        "median": 0.35930877923965454,
+        "p90": 0.4353342771530151,
+        "p99": 0.5128186774253846
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_low_suburban|degraded",
+      "count": 169,
+      "methods": {
+        "received": {
+          "nmse": 2.0125901311106937,
+          "feature_cosine_distance": 0.11568058383535351,
+          "clean_decision_agreement": 0.7751479289940828,
+          "agreement_count": 131
+        },
+        "DURA_v1": {
+          "nmse": 0.035795015875338274,
+          "feature_cosine_distance": 0.012321786414942092,
+          "clean_decision_agreement": 0.9349112426035503,
+          "agreement_count": 158
+        },
+        "oracle_mean128": {
+          "nmse": 0.08586072776268219,
+          "feature_cosine_distance": 0.05494169405931552,
+          "clean_decision_agreement": 0.8816568047337278,
+          "agreement_count": 149
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.02768857104527439,
+          "feature_cosine_distance": 0.00575252926561254,
+          "clean_decision_agreement": 0.9822485207100592,
+          "agreement_count": 166
+        },
+        "FeatureCond": {
+          "nmse": 0.02932000533159624,
+          "feature_cosine_distance": 0.005906633018741946,
+          "clean_decision_agreement": 0.9763313609467456,
+          "agreement_count": 165
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.028994403658269424,
+          "feature_cosine_distance": 0.004169617884257841,
+          "clean_decision_agreement": 0.9940828402366864,
+          "agreement_count": 168
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 11,
+          "damage": 4,
+          "net": 7
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 1,
+          "damage": 2,
+          "net": -1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 3,
+          "damage": 0,
+          "net": 3
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.06645359479155413,
+        "median": 0.04621327668428421,
+        "p90": 0.13840014934539802,
+        "p99": 0.24364466965198503
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_low_suburban|locked",
+      "count": 1230,
+      "methods": {
+        "received": {
+          "nmse": 2.0175453377933037,
+          "feature_cosine_distance": 0.04405463449354094,
+          "clean_decision_agreement": 0.9634146341463414,
+          "agreement_count": 1185
+        },
+        "DURA_v1": {
+          "nmse": 0.010938594268343404,
+          "feature_cosine_distance": 0.004039710081689726,
+          "clean_decision_agreement": 0.9869918699186991,
+          "agreement_count": 1214
+        },
+        "oracle_mean128": {
+          "nmse": 0.03852086712992409,
+          "feature_cosine_distance": 0.01808395608653867,
+          "clean_decision_agreement": 0.9504065040650407,
+          "agreement_count": 1169
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.008228814514208116,
+          "feature_cosine_distance": 0.0018694030560129056,
+          "clean_decision_agreement": 0.9959349593495935,
+          "agreement_count": 1225
+        },
+        "FeatureCond": {
+          "nmse": 0.009869931096294365,
+          "feature_cosine_distance": 0.002052263612669658,
+          "clean_decision_agreement": 0.9983739837398374,
+          "agreement_count": 1228
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.01025879526964192,
+          "feature_cosine_distance": 0.001868747501838498,
+          "clean_decision_agreement": 0.9959349593495935,
+          "agreement_count": 1225
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 14,
+          "damage": 0,
+          "net": 14
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 3,
+          "damage": 0,
+          "net": 3
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 0,
+          "damage": 3,
+          "net": -3
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.006595517731578339,
+        "median": 0.004674807656556368,
+        "p90": 0.013897036761045459,
+        "p99": 0.028399819582700738
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_low_suburban|unlocked",
+      "count": 66,
+      "methods": {
+        "received": {
+          "nmse": 2.0256369962836756,
+          "feature_cosine_distance": 0.17301053170001868,
+          "clean_decision_agreement": 0.30303030303030304,
+          "agreement_count": 20
+        },
+        "DURA_v1": {
+          "nmse": 0.09991785362503972,
+          "feature_cosine_distance": 0.07011125394792268,
+          "clean_decision_agreement": 0.6818181818181818,
+          "agreement_count": 45
+        },
+        "oracle_mean128": {
+          "nmse": 0.22012477413271414,
+          "feature_cosine_distance": 0.12803286855871027,
+          "clean_decision_agreement": 0.30303030303030304,
+          "agreement_count": 20
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.09726450908364671,
+          "feature_cosine_distance": 0.04291625456376509,
+          "clean_decision_agreement": 0.7121212121212122,
+          "agreement_count": 47
+        },
+        "FeatureCond": {
+          "nmse": 0.09720092978695351,
+          "feature_cosine_distance": 0.06273255926190001,
+          "clean_decision_agreement": 0.6818181818181818,
+          "agreement_count": 45
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.08402059343643486,
+          "feature_cosine_distance": 0.011392037073771158,
+          "clean_decision_agreement": 0.9545454545454546,
+          "agreement_count": 63
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 7,
+          "damage": 7,
+          "net": 0
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 5,
+          "damage": 7,
+          "net": -2
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 19,
+          "damage": 1,
+          "net": 18
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.45526606115427887,
+        "median": 0.4258871525526047,
+        "p90": 0.6707035005092621,
+        "p99": 0.822853499650955
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_low_urban|degraded",
+      "count": 249,
+      "methods": {
+        "received": {
+          "nmse": 2.0120559796750785,
+          "feature_cosine_distance": 0.18268876094894715,
+          "clean_decision_agreement": 0.5502008032128514,
+          "agreement_count": 137
+        },
+        "DURA_v1": {
+          "nmse": 0.056621295261574556,
+          "feature_cosine_distance": 0.01874326797853033,
+          "clean_decision_agreement": 0.8393574297188755,
+          "agreement_count": 209
+        },
+        "oracle_mean128": {
+          "nmse": 0.13430316058028655,
+          "feature_cosine_distance": 0.10248374938964844,
+          "clean_decision_agreement": 0.6626506024096386,
+          "agreement_count": 165
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.05246204683504789,
+          "feature_cosine_distance": 0.01154628408003045,
+          "clean_decision_agreement": 0.9116465863453815,
+          "agreement_count": 227
+        },
+        "FeatureCond": {
+          "nmse": 0.06520021540378351,
+          "feature_cosine_distance": 0.011895656825069443,
+          "clean_decision_agreement": 0.8795180722891566,
+          "agreement_count": 219
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.06319769889482832,
+          "feature_cosine_distance": 0.006129008220381526,
+          "clean_decision_agreement": 0.9718875502008032,
+          "agreement_count": 242
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 27,
+          "damage": 17,
+          "net": 10
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 4,
+          "damage": 12,
+          "net": -8
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 23,
+          "damage": 0,
+          "net": 23
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.14506828723602505,
+        "median": 0.16278940439224243,
+        "p90": 0.2242116242647171,
+        "p99": 0.27710722565650947
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_low_urban|locked",
+      "count": 542,
+      "methods": {
+        "received": {
+          "nmse": 2.0164002523211098,
+          "feature_cosine_distance": 0.04808499804282101,
+          "clean_decision_agreement": 0.9391143911439115,
+          "agreement_count": 509
+        },
+        "DURA_v1": {
+          "nmse": 0.010922621790623822,
+          "feature_cosine_distance": 0.004504956662434933,
+          "clean_decision_agreement": 0.977859778597786,
+          "agreement_count": 530
+        },
+        "oracle_mean128": {
+          "nmse": 0.03892063552245663,
+          "feature_cosine_distance": 0.017062358310741692,
+          "clean_decision_agreement": 0.9391143911439115,
+          "agreement_count": 509
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.008407810696154126,
+          "feature_cosine_distance": 0.0018709631863555345,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 542
+        },
+        "FeatureCond": {
+          "nmse": 0.010095327328680069,
+          "feature_cosine_distance": 0.002128397736602164,
+          "clean_decision_agreement": 0.9981549815498155,
+          "agreement_count": 541
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.010474998396958785,
+          "feature_cosine_distance": 0.0018878593436026485,
+          "clean_decision_agreement": 0.9981549815498155,
+          "agreement_count": 541
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 12,
+          "damage": 1,
+          "net": 11
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 1,
+          "net": -1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 1,
+          "damage": 1,
+          "net": 0
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.0071476148755024995,
+        "median": 0.004502574214711785,
+        "p90": 0.017150627076625825,
+        "p99": 0.031151880174875263
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_low_urban|unlocked",
+      "count": 645,
+      "methods": {
+        "received": {
+          "nmse": 1.995132140410963,
+          "feature_cosine_distance": 0.21938849428827448,
+          "clean_decision_agreement": 0.31317829457364343,
+          "agreement_count": 202
+        },
+        "DURA_v1": {
+          "nmse": 0.10931898675960049,
+          "feature_cosine_distance": 0.04465262584908064,
+          "clean_decision_agreement": 0.7224806201550388,
+          "agreement_count": 466
+        },
+        "oracle_mean128": {
+          "nmse": 0.23611718739650045,
+          "feature_cosine_distance": 0.1567327628764071,
+          "clean_decision_agreement": 0.3798449612403101,
+          "agreement_count": 245
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.10986686827715977,
+          "feature_cosine_distance": 0.0286454952964487,
+          "clean_decision_agreement": 0.8093023255813954,
+          "agreement_count": 522
+        },
+        "FeatureCond": {
+          "nmse": 0.12569942521797708,
+          "feature_cosine_distance": 0.03504716213359389,
+          "clean_decision_agreement": 0.7968992248062016,
+          "agreement_count": 514
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.11572714838372587,
+          "feature_cosine_distance": 0.011062608763229015,
+          "clean_decision_agreement": 0.9565891472868217,
+          "agreement_count": 617
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 90,
+          "damage": 42,
+          "net": 48
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 38,
+          "damage": 46,
+          "net": -8
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 105,
+          "damage": 2,
+          "net": 103
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.45521488295969115,
+        "median": 0.4292161166667938,
+        "p90": 0.6932147145271301,
+        "p99": 0.8712706375122069
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_mid|degraded",
+      "count": 76,
+      "methods": {
+        "received": {
+          "nmse": 2.0133163646647803,
+          "feature_cosine_distance": 0.12283255630417873,
+          "clean_decision_agreement": 0.6052631578947368,
+          "agreement_count": 46
+        },
+        "DURA_v1": {
+          "nmse": 0.056043734645323924,
+          "feature_cosine_distance": 0.023966802578223378,
+          "clean_decision_agreement": 0.8421052631578947,
+          "agreement_count": 64
+        },
+        "oracle_mean128": {
+          "nmse": 0.11292986062012221,
+          "feature_cosine_distance": 0.06302528632314582,
+          "clean_decision_agreement": 0.7763157894736842,
+          "agreement_count": 59
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.0537026538421694,
+          "feature_cosine_distance": 0.008165635560688219,
+          "clean_decision_agreement": 0.9473684210526315,
+          "agreement_count": 72
+        },
+        "FeatureCond": {
+          "nmse": 0.06220921021150915,
+          "feature_cosine_distance": 0.0106468224211743,
+          "clean_decision_agreement": 0.9342105263157895,
+          "agreement_count": 71
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.0592515271242806,
+          "feature_cosine_distance": 0.005394327013116134,
+          "clean_decision_agreement": 0.9868421052631579,
+          "agreement_count": 75
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 7,
+          "damage": 0,
+          "net": 7
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 2,
+          "damage": 3,
+          "net": -1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 4,
+          "damage": 0,
+          "net": 4
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.09291783328119077,
+        "median": 0.06345126405358315,
+        "p90": 0.2021806314587593,
+        "p99": 0.2695845514535904
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_mid|locked",
+      "count": 1382,
+      "methods": {
+        "received": {
+          "nmse": 2.014808134214923,
+          "feature_cosine_distance": 0.04247028813003286,
+          "clean_decision_agreement": 0.951519536903039,
+          "agreement_count": 1315
+        },
+        "DURA_v1": {
+          "nmse": 0.00996288078270688,
+          "feature_cosine_distance": 0.003624628490718505,
+          "clean_decision_agreement": 0.9884225759768451,
+          "agreement_count": 1366
+        },
+        "oracle_mean128": {
+          "nmse": 0.036051489397958894,
+          "feature_cosine_distance": 0.015846211166699268,
+          "clean_decision_agreement": 0.9450072358900145,
+          "agreement_count": 1306
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.007610433443536033,
+          "feature_cosine_distance": 0.0016935500066980783,
+          "clean_decision_agreement": 0.9963820549927641,
+          "agreement_count": 1377
+        },
+        "FeatureCond": {
+          "nmse": 0.00932927837542443,
+          "feature_cosine_distance": 0.00186123072497234,
+          "clean_decision_agreement": 0.9956584659913169,
+          "agreement_count": 1376
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.009718396993683834,
+          "feature_cosine_distance": 0.001685710960807745,
+          "clean_decision_agreement": 0.9956584659913169,
+          "agreement_count": 1376
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 14,
+          "damage": 4,
+          "net": 10
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 2,
+          "damage": 3,
+          "net": -1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 4,
+          "damage": 4,
+          "net": 0
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.00403042126221376,
+        "median": 0.002474538399837911,
+        "p90": 0.008756147883832454,
+        "p99": 0.024682433046400568
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_mid|unlocked",
+      "count": 26,
+      "methods": {
+        "received": {
+          "nmse": 2.0173543370687046,
+          "feature_cosine_distance": 0.1776153834966513,
+          "clean_decision_agreement": 0.23076923076923078,
+          "agreement_count": 6
+        },
+        "DURA_v1": {
+          "nmse": 0.10937935798070751,
+          "feature_cosine_distance": 0.028257475449488714,
+          "clean_decision_agreement": 0.6538461538461539,
+          "agreement_count": 17
+        },
+        "oracle_mean128": {
+          "nmse": 0.23420874315958756,
+          "feature_cosine_distance": 0.12005319045140193,
+          "clean_decision_agreement": 0.5769230769230769,
+          "agreement_count": 15
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.11991141444573608,
+          "feature_cosine_distance": 0.022338282603483934,
+          "clean_decision_agreement": 0.7692307692307693,
+          "agreement_count": 20
+        },
+        "FeatureCond": {
+          "nmse": 0.16941226995550096,
+          "feature_cosine_distance": 0.023356760923679058,
+          "clean_decision_agreement": 0.6153846153846154,
+          "agreement_count": 16
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.16374623843540365,
+          "feature_cosine_distance": 0.010909690306736873,
+          "clean_decision_agreement": 0.9230769230769231,
+          "agreement_count": 24
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 2,
+          "damage": 3,
+          "net": -1
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 1,
+          "damage": 5,
+          "net": -4
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 8,
+          "damage": 0,
+          "net": 8
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.40688070482932603,
+        "median": 0.38808512687683105,
+        "p90": 0.6472114324569702,
+        "p99": 0.7575867176055908
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_mid_urban|degraded",
+      "count": 309,
+      "methods": {
+        "received": {
+          "nmse": 1.99853591972956,
+          "feature_cosine_distance": 0.1823703648588804,
+          "clean_decision_agreement": 0.45307443365695793,
+          "agreement_count": 140
+        },
+        "DURA_v1": {
+          "nmse": 0.06622195544330144,
+          "feature_cosine_distance": 0.0187930584339648,
+          "clean_decision_agreement": 0.8414239482200647,
+          "agreement_count": 260
+        },
+        "oracle_mean128": {
+          "nmse": 0.1401678150742764,
+          "feature_cosine_distance": 0.09954189849131316,
+          "clean_decision_agreement": 0.6407766990291263,
+          "agreement_count": 198
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.06749301789250092,
+          "feature_cosine_distance": 0.010988206346443942,
+          "clean_decision_agreement": 0.9255663430420712,
+          "agreement_count": 286
+        },
+        "FeatureCond": {
+          "nmse": 0.0852927335825806,
+          "feature_cosine_distance": 0.011229617310187578,
+          "clean_decision_agreement": 0.9029126213592233,
+          "agreement_count": 279
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.08401717283102927,
+          "feature_cosine_distance": 0.006779978383320435,
+          "clean_decision_agreement": 0.9838187702265372,
+          "agreement_count": 304
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 30,
+          "damage": 11,
+          "net": 19
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 8,
+          "damage": 15,
+          "net": -7
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 25,
+          "damage": 0,
+          "net": 25
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.14573075557218015,
+        "median": 0.14841556549072266,
+        "p90": 0.2222438484430313,
+        "p99": 0.29145477771759065
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_mid_urban|locked",
+      "count": 796,
+      "methods": {
+        "received": {
+          "nmse": 2.0286254411067195,
+          "feature_cosine_distance": 0.045093827660958374,
+          "clean_decision_agreement": 0.9434673366834171,
+          "agreement_count": 751
+        },
+        "DURA_v1": {
+          "nmse": 0.009983188243806316,
+          "feature_cosine_distance": 0.0040024857425210465,
+          "clean_decision_agreement": 0.9899497487437185,
+          "agreement_count": 788
+        },
+        "oracle_mean128": {
+          "nmse": 0.03681738711378757,
+          "feature_cosine_distance": 0.016388047280623087,
+          "clean_decision_agreement": 0.9547738693467337,
+          "agreement_count": 760
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.007815906745290977,
+          "feature_cosine_distance": 0.001816445633993676,
+          "clean_decision_agreement": 0.9949748743718593,
+          "agreement_count": 792
+        },
+        "FeatureCond": {
+          "nmse": 0.00969711786130766,
+          "feature_cosine_distance": 0.002064290283313349,
+          "clean_decision_agreement": 0.9962311557788944,
+          "agreement_count": 793
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.010092988870593358,
+          "feature_cosine_distance": 0.0017763784333090088,
+          "clean_decision_agreement": 0.9974874371859297,
+          "agreement_count": 794
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 8,
+          "damage": 3,
+          "net": 5
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 3,
+          "damage": 2,
+          "net": 1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 1,
+          "damage": 0,
+          "net": 1
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.004029812332287773,
+        "median": 0.002372519113123417,
+        "p90": 0.008773183450102806,
+        "p99": 0.025532564613968085
+      }
+    },
+    {
+      "dimension": "scene|lock",
+      "stratum": "practical_mid_urban|unlocked",
+      "count": 304,
+      "methods": {
+        "received": {
+          "nmse": 1.99793856708627,
+          "feature_cosine_distance": 0.2185896950724878,
+          "clean_decision_agreement": 0.32894736842105265,
+          "agreement_count": 100
+        },
+        "DURA_v1": {
+          "nmse": 0.09889868566441644,
+          "feature_cosine_distance": 0.03622758937509436,
+          "clean_decision_agreement": 0.756578947368421,
+          "agreement_count": 230
+        },
+        "oracle_mean128": {
+          "nmse": 0.22206268751209504,
+          "feature_cosine_distance": 0.15715102459255018,
+          "clean_decision_agreement": 0.40789473684210525,
+          "agreement_count": 124
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.10117850791491372,
+          "feature_cosine_distance": 0.022394427343418722,
+          "clean_decision_agreement": 0.8486842105263158,
+          "agreement_count": 258
+        },
+        "FeatureCond": {
+          "nmse": 0.11271184168320983,
+          "feature_cosine_distance": 0.02667541429400444,
+          "clean_decision_agreement": 0.8223684210526315,
+          "agreement_count": 250
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.1062830462653533,
+          "feature_cosine_distance": 0.010361344210411372,
+          "clean_decision_agreement": 0.9638157894736842,
+          "agreement_count": 293
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 45,
+          "damage": 25,
+          "net": 20
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 16,
+          "damage": 24,
+          "net": -8
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 44,
+          "damage": 1,
+          "net": 43
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.38781564300389665,
+        "median": 0.3519924283027649,
+        "p90": 0.5674196362495421,
+        "p99": 0.7295155364274976
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "clean|clean",
+      "count": 1579,
+      "methods": {
+        "received": {
+          "nmse": 0.0,
+          "feature_cosine_distance": 9.512584220011677e-09,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "DURA_v1": {
+          "nmse": 2.4255140467358398e-05,
+          "feature_cosine_distance": 2.6390739752568348e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "oracle_mean128": {
+          "nmse": 2.583248864514182e-13,
+          "feature_cosine_distance": 8.380133717629334e-09,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 5.7118173128719346e-05,
+          "feature_cosine_distance": 3.261385724995996e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "FeatureCond": {
+          "nmse": 7.554879518994082e-05,
+          "feature_cosine_distance": 3.87690654655587e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 8.485830187056551e-05,
+          "feature_cosine_distance": 5.89921400470021e-05,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 1579
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 2.688186535035876e-13,
+        "median": 2.7563032151817213e-13,
+        "p90": 3.0719258517150627e-13,
+        "p99": 3.240770282339489e-13
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_high|BLOCKED",
+      "count": 16,
+      "methods": {
+        "received": {
+          "nmse": 1.9941687732934952,
+          "feature_cosine_distance": 0.2782747969031334,
+          "clean_decision_agreement": 0.4375,
+          "agreement_count": 7
+        },
+        "DURA_v1": {
+          "nmse": 0.03975258086575195,
+          "feature_cosine_distance": 0.014926481992006302,
+          "clean_decision_agreement": 0.9375,
+          "agreement_count": 15
+        },
+        "oracle_mean128": {
+          "nmse": 0.1228968515060842,
+          "feature_cosine_distance": 0.18227704614400864,
+          "clean_decision_agreement": 0.6875,
+          "agreement_count": 11
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.04213904679636471,
+          "feature_cosine_distance": 0.015426162630319595,
+          "clean_decision_agreement": 0.875,
+          "agreement_count": 14
+        },
+        "FeatureCond": {
+          "nmse": 0.04682743380544707,
+          "feature_cosine_distance": 0.020020171999931335,
+          "clean_decision_agreement": 0.75,
+          "agreement_count": 12
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.04573193096439354,
+          "feature_cosine_distance": 0.009151697158813477,
+          "clean_decision_agreement": 0.9375,
+          "agreement_count": 15
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 0,
+          "damage": 3,
+          "net": -3
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 2,
+          "net": -2
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 3,
+          "damage": 0,
+          "net": 3
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.17861098609864712,
+        "median": 0.1416827142238617,
+        "p90": 0.2995660752058029,
+        "p99": 0.6136331796646117
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_high|LOS",
+      "count": 1365,
+      "methods": {
+        "received": {
+          "nmse": 2.0196500649819007,
+          "feature_cosine_distance": 0.03759013296483637,
+          "clean_decision_agreement": 0.9677655677655678,
+          "agreement_count": 1321
+        },
+        "DURA_v1": {
+          "nmse": 0.007766595460950387,
+          "feature_cosine_distance": 0.0025959811804495453,
+          "clean_decision_agreement": 0.9904761904761905,
+          "agreement_count": 1352
+        },
+        "oracle_mean128": {
+          "nmse": 0.03378573642231715,
+          "feature_cosine_distance": 0.0128082553982298,
+          "clean_decision_agreement": 0.967032967032967,
+          "agreement_count": 1320
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.006311937768844676,
+          "feature_cosine_distance": 0.001348552031394763,
+          "clean_decision_agreement": 0.9970695970695971,
+          "agreement_count": 1361
+        },
+        "FeatureCond": {
+          "nmse": 0.0080718287807717,
+          "feature_cosine_distance": 0.0015655175233498598,
+          "clean_decision_agreement": 0.9948717948717949,
+          "agreement_count": 1358
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.008538674356521623,
+          "feature_cosine_distance": 0.0014332235951126713,
+          "clean_decision_agreement": 0.989010989010989,
+          "agreement_count": 1350
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 10,
+          "damage": 4,
+          "net": 6
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 1,
+          "damage": 4,
+          "net": -3
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 2,
+          "damage": 10,
+          "net": -8
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.001065390565494014,
+        "median": 0.0010011997073888779,
+        "p90": 0.0015478443587198854,
+        "p99": 0.0022023337893187995
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_high|PARTIAL",
+      "count": 46,
+      "methods": {
+        "received": {
+          "nmse": 2.0109977281611897,
+          "feature_cosine_distance": 0.06065304512562959,
+          "clean_decision_agreement": 0.8913043478260869,
+          "agreement_count": 41
+        },
+        "DURA_v1": {
+          "nmse": 0.021907665711098714,
+          "feature_cosine_distance": 0.006498130767241768,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 46
+        },
+        "oracle_mean128": {
+          "nmse": 0.04869842762127519,
+          "feature_cosine_distance": 0.02230145231537197,
+          "clean_decision_agreement": 0.9565217391304348,
+          "agreement_count": 44
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.015934179071336985,
+          "feature_cosine_distance": 0.0032270796920942225,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 46
+        },
+        "FeatureCond": {
+          "nmse": 0.02100871360111658,
+          "feature_cosine_distance": 0.0034512527610944667,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 46
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.020980196987258514,
+          "feature_cosine_distance": 0.0030738063480543055,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 46
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.010203422447059142,
+        "median": 0.008165090810507536,
+        "p90": 0.01945062354207039,
+        "p99": 0.0489836562424898
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_high_urban|BLOCKED",
+      "count": 152,
+      "methods": {
+        "received": {
+          "nmse": 2.0089072545892313,
+          "feature_cosine_distance": 0.1592135950922966,
+          "clean_decision_agreement": 0.40131578947368424,
+          "agreement_count": 61
+        },
+        "DURA_v1": {
+          "nmse": 0.06232318600431379,
+          "feature_cosine_distance": 0.019794368038052006,
+          "clean_decision_agreement": 0.8421052631578947,
+          "agreement_count": 128
+        },
+        "oracle_mean128": {
+          "nmse": 0.13305667535352864,
+          "feature_cosine_distance": 0.09562024905493385,
+          "clean_decision_agreement": 0.6578947368421053,
+          "agreement_count": 100
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.06614402519220389,
+          "feature_cosine_distance": 0.013459988330539904,
+          "clean_decision_agreement": 0.881578947368421,
+          "agreement_count": 134
+        },
+        "FeatureCond": {
+          "nmse": 0.08314605116672617,
+          "feature_cosine_distance": 0.014773261390234294,
+          "clean_decision_agreement": 0.8947368421052632,
+          "agreement_count": 136
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.08088463561082455,
+          "feature_cosine_distance": 0.006623806137787669,
+          "clean_decision_agreement": 0.9868421052631579,
+          "agreement_count": 150
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 16,
+          "damage": 8,
+          "net": 8
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 6,
+          "damage": 4,
+          "net": 2
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 14,
+          "damage": 0,
+          "net": 14
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.14626164099593697,
+        "median": 0.12554452195763588,
+        "p90": 0.2749163627624512,
+        "p99": 0.4535281160473829
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_high_urban|LOS",
+      "count": 1241,
+      "methods": {
+        "received": {
+          "nmse": 2.024349338579908,
+          "feature_cosine_distance": 0.038326970230274676,
+          "clean_decision_agreement": 0.9653505237711523,
+          "agreement_count": 1198
+        },
+        "DURA_v1": {
+          "nmse": 0.007757814210730002,
+          "feature_cosine_distance": 0.002707115447300274,
+          "clean_decision_agreement": 0.9903303787268332,
+          "agreement_count": 1229
+        },
+        "oracle_mean128": {
+          "nmse": 0.03410120187349779,
+          "feature_cosine_distance": 0.013494890606470591,
+          "clean_decision_agreement": 0.9685737308622079,
+          "agreement_count": 1202
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.006195601642861254,
+          "feature_cosine_distance": 0.001384751485491068,
+          "clean_decision_agreement": 0.9951651893634166,
+          "agreement_count": 1235
+        },
+        "FeatureCond": {
+          "nmse": 0.007949715463721698,
+          "feature_cosine_distance": 0.0015900690261631796,
+          "clean_decision_agreement": 0.9959709911361805,
+          "agreement_count": 1236
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.008410431760260843,
+          "feature_cosine_distance": 0.0014170885182118627,
+          "clean_decision_agreement": 0.9975825946817083,
+          "agreement_count": 1238
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 9,
+          "damage": 2,
+          "net": 7
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 4,
+          "damage": 3,
+          "net": 1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 2,
+          "damage": 0,
+          "net": 2
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.0010672957698516638,
+        "median": 0.000989989610388875,
+        "p90": 0.0015818837564438581,
+        "p99": 0.002211168501526117
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_high_urban|PARTIAL",
+      "count": 47,
+      "methods": {
+        "received": {
+          "nmse": 2.0119148797177253,
+          "feature_cosine_distance": 0.08156146901719113,
+          "clean_decision_agreement": 0.8936170212765957,
+          "agreement_count": 42
+        },
+        "DURA_v1": {
+          "nmse": 0.018311895487057243,
+          "feature_cosine_distance": 0.005190570303734312,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 47
+        },
+        "oracle_mean128": {
+          "nmse": 0.0424301290409045,
+          "feature_cosine_distance": 0.02099485219793117,
+          "clean_decision_agreement": 0.9787234042553191,
+          "agreement_count": 46
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.015406495964580632,
+          "feature_cosine_distance": 0.0030170070364120157,
+          "clean_decision_agreement": 0.9787234042553191,
+          "agreement_count": 46
+        },
+        "FeatureCond": {
+          "nmse": 0.018329863225981752,
+          "feature_cosine_distance": 0.0035440630101143044,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 47
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.018442127503147547,
+          "feature_cosine_distance": 0.003034509242849147,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 47
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 1,
+          "damage": 0,
+          "net": 1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.00960049498207035,
+        "median": 0.007112312130630016,
+        "p90": 0.01947672180831432,
+        "p99": 0.04285940960049627
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_low_suburban|BLOCKED",
+      "count": 79,
+      "methods": {
+        "received": {
+          "nmse": 2.023538099059576,
+          "feature_cosine_distance": 0.18403115529048292,
+          "clean_decision_agreement": 0.34177215189873417,
+          "agreement_count": 27
+        },
+        "DURA_v1": {
+          "nmse": 0.08170277945390797,
+          "feature_cosine_distance": 0.06015983186190641,
+          "clean_decision_agreement": 0.7341772151898734,
+          "agreement_count": 58
+        },
+        "oracle_mean128": {
+          "nmse": 0.20399645847987524,
+          "feature_cosine_distance": 0.1292447938194758,
+          "clean_decision_agreement": 0.379746835443038,
+          "agreement_count": 30
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.07845094904916573,
+          "feature_cosine_distance": 0.037028491497039795,
+          "clean_decision_agreement": 0.759493670886076,
+          "agreement_count": 60
+        },
+        "FeatureCond": {
+          "nmse": 0.08508892158706542,
+          "feature_cosine_distance": 0.05352283278598061,
+          "clean_decision_agreement": 0.7215189873417721,
+          "agreement_count": 57
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.07393955260727413,
+          "feature_cosine_distance": 0.010085349595999415,
+          "clean_decision_agreement": 0.9746835443037974,
+          "agreement_count": 77
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 7,
+          "damage": 8,
+          "net": -1
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 4,
+          "damage": 7,
+          "net": -3
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 20,
+          "damage": 0,
+          "net": 20
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.40688590153674536,
+        "median": 0.3745346665382385,
+        "p90": 0.6662790775299072,
+        "p99": 0.817084400653839
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_low_suburban|LOS",
+      "count": 1038,
+      "methods": {
+        "received": {
+          "nmse": 2.0139978680766846,
+          "feature_cosine_distance": 0.03966386642070175,
+          "clean_decision_agreement": 0.9691714836223507,
+          "agreement_count": 1006
+        },
+        "DURA_v1": {
+          "nmse": 0.009414891106626539,
+          "feature_cosine_distance": 0.003467920887676967,
+          "clean_decision_agreement": 0.9903660886319846,
+          "agreement_count": 1028
+        },
+        "oracle_mean128": {
+          "nmse": 0.0366300015902301,
+          "feature_cosine_distance": 0.016920423863710465,
+          "clean_decision_agreement": 0.953757225433526,
+          "agreement_count": 990
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.0072579231994834,
+          "feature_cosine_distance": 0.0016355432986294373,
+          "clean_decision_agreement": 0.9971098265895953,
+          "agreement_count": 1035
+        },
+        "FeatureCond": {
+          "nmse": 0.008818843918771758,
+          "feature_cosine_distance": 0.0018404520086240676,
+          "clean_decision_agreement": 0.9990366088631984,
+          "agreement_count": 1037
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.009215073610500295,
+          "feature_cosine_distance": 0.0016874318407679798,
+          "clean_decision_agreement": 0.9971098265895953,
+          "agreement_count": 1035
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 9,
+          "damage": 0,
+          "net": 9
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 2,
+          "damage": 0,
+          "net": 2
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 0,
+          "damage": 2,
+          "net": -2
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.004711545866430487,
+        "median": 0.004171817097812891,
+        "p90": 0.007552210660651326,
+        "p99": 0.01222214285284275
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_low_suburban|PARTIAL",
+      "count": 348,
+      "methods": {
+        "received": {
+          "nmse": 2.025894375025541,
+          "feature_cosine_distance": 0.08461597578964014,
+          "clean_decision_agreement": 0.8706896551724138,
+          "agreement_count": 303
+        },
+        "DURA_v1": {
+          "nmse": 0.028365604674454307,
+          "feature_cosine_distance": 0.009558159386974642,
+          "clean_decision_agreement": 0.9511494252873564,
+          "agreement_count": 331
+        },
+        "oracle_mean128": {
+          "nmse": 0.0640278815629025,
+          "feature_cosine_distance": 0.03507138771572332,
+          "clean_decision_agreement": 0.9137931034482759,
+          "agreement_count": 318
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.021519881329598204,
+          "feature_cosine_distance": 0.004255951821118936,
+          "clean_decision_agreement": 0.985632183908046,
+          "agreement_count": 343
+        },
+        "FeatureCond": {
+          "nmse": 0.02193785265045262,
+          "feature_cosine_distance": 0.0043797734482535,
+          "clean_decision_agreement": 0.9885057471264368,
+          "agreement_count": 344
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.022003622135166184,
+          "feature_cosine_distance": 0.003467823068300883,
+          "clean_decision_agreement": 0.9885057471264368,
+          "agreement_count": 344
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 16,
+          "damage": 3,
+          "net": 13
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 3,
+          "damage": 2,
+          "net": 1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 2,
+          "damage": 2,
+          "net": 0
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.035506130847812296,
+        "median": 0.027497666887938976,
+        "p90": 0.06945373490452768,
+        "p99": 0.16875996172428132
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_low_urban|BLOCKED",
+      "count": 821,
+      "methods": {
+        "received": {
+          "nmse": 1.9968410585161829,
+          "feature_cosine_distance": 0.2205703560530631,
+          "clean_decision_agreement": 0.341047503045067,
+          "agreement_count": 280
+        },
+        "DURA_v1": {
+          "nmse": 0.09987052936100115,
+          "feature_cosine_distance": 0.03940018652127228,
+          "clean_decision_agreement": 0.7442143727161997,
+          "agreement_count": 611
+        },
+        "oracle_mean128": {
+          "nmse": 0.21903153910924397,
+          "feature_cosine_distance": 0.1506305679624467,
+          "clean_decision_agreement": 0.4287454323995128,
+          "agreement_count": 352
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.09973345382930882,
+          "feature_cosine_distance": 0.02552095857810742,
+          "clean_decision_agreement": 0.8270401948842875,
+          "agreement_count": 679
+        },
+        "FeatureCond": {
+          "nmse": 0.11565075694196535,
+          "feature_cosine_distance": 0.030647967532549357,
+          "clean_decision_agreement": 0.8087697929354446,
+          "agreement_count": 664
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.10732512738914132,
+          "feature_cosine_distance": 0.010152756369215562,
+          "clean_decision_agreement": 0.9598051157125457,
+          "agreement_count": 788
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 111,
+          "damage": 58,
+          "net": 53
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 41,
+          "damage": 56,
+          "net": -15
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 126,
+          "damage": 2,
+          "net": 124
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.39654127218455404,
+        "median": 0.3649195432662964,
+        "p90": 0.6616038680076599,
+        "p99": 0.8611157894134513
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_low_urban|LOS",
+      "count": 424,
+      "methods": {
+        "received": {
+          "nmse": 2.016874744925859,
+          "feature_cosine_distance": 0.04146905805704729,
+          "clean_decision_agreement": 0.9551886792452831,
+          "agreement_count": 405
+        },
+        "DURA_v1": {
+          "nmse": 0.009227654896401975,
+          "feature_cosine_distance": 0.0037516515772297696,
+          "clean_decision_agreement": 0.9882075471698113,
+          "agreement_count": 419
+        },
+        "oracle_mean128": {
+          "nmse": 0.03755143811082784,
+          "feature_cosine_distance": 0.01457675630753895,
+          "clean_decision_agreement": 0.9599056603773585,
+          "agreement_count": 407
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.007289722093566593,
+          "feature_cosine_distance": 0.0016566242249506824,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 424
+        },
+        "FeatureCond": {
+          "nmse": 0.008857120452684851,
+          "feature_cosine_distance": 0.0019092368629743468,
+          "clean_decision_agreement": 0.9976415094339622,
+          "agreement_count": 423
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.009274454356581939,
+          "feature_cosine_distance": 0.001640508900273521,
+          "clean_decision_agreement": 1.0,
+          "agreement_count": 424
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 5,
+          "damage": 1,
+          "net": 4
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 0,
+          "damage": 1,
+          "net": -1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 1,
+          "damage": 0,
+          "net": 1
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.004288387926897245,
+        "median": 0.0038625095039606094,
+        "p90": 0.006816033460199833,
+        "p99": 0.010189963160082697
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_low_urban|PARTIAL",
+      "count": 191,
+      "methods": {
+        "received": {
+          "nmse": 2.021935630219145,
+          "feature_cosine_distance": 0.07531940468942931,
+          "clean_decision_agreement": 0.8534031413612565,
+          "agreement_count": 163
+        },
+        "DURA_v1": {
+          "nmse": 0.024205652927414206,
+          "feature_cosine_distance": 0.010321730406496537,
+          "clean_decision_agreement": 0.9162303664921466,
+          "agreement_count": 175
+        },
+        "oracle_mean128": {
+          "nmse": 0.05803850230746244,
+          "feature_cosine_distance": 0.03146933448252254,
+          "clean_decision_agreement": 0.837696335078534,
+          "agreement_count": 160
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.018388509615056257,
+          "feature_cosine_distance": 0.003718929765112113,
+          "clean_decision_agreement": 0.9842931937172775,
+          "agreement_count": 188
+        },
+        "FeatureCond": {
+          "nmse": 0.021350574827172758,
+          "feature_cosine_distance": 0.003924250914788371,
+          "clean_decision_agreement": 0.9790575916230366,
+          "agreement_count": 187
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.021002034710949354,
+          "feature_cosine_distance": 0.003422705290829324,
+          "clean_decision_agreement": 0.9842931937172775,
+          "agreement_count": 188
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 13,
+          "damage": 1,
+          "net": 12
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 1,
+          "damage": 2,
+          "net": -1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 2,
+          "damage": 1,
+          "net": 1
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.03262277145952922,
+        "median": 0.024556711316108704,
+        "p90": 0.06690919399261475,
+        "p99": 0.12136994227766977
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_mid|BLOCKED",
+      "count": 49,
+      "methods": {
+        "received": {
+          "nmse": 2.0112255276465905,
+          "feature_cosine_distance": 0.16344233556669585,
+          "clean_decision_agreement": 0.3469387755102041,
+          "agreement_count": 17
+        },
+        "DURA_v1": {
+          "nmse": 0.08798237061318086,
+          "feature_cosine_distance": 0.02456263255099861,
+          "clean_decision_agreement": 0.7551020408163265,
+          "agreement_count": 37
+        },
+        "oracle_mean128": {
+          "nmse": 0.19876156017488364,
+          "feature_cosine_distance": 0.09957861413761061,
+          "clean_decision_agreement": 0.5714285714285714,
+          "agreement_count": 28
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.09562249092993383,
+          "feature_cosine_distance": 0.017062587397439138,
+          "clean_decision_agreement": 0.8775510204081632,
+          "agreement_count": 43
+        },
+        "FeatureCond": {
+          "nmse": 0.12207917242824119,
+          "feature_cosine_distance": 0.01976319965051145,
+          "clean_decision_agreement": 0.7755102040816326,
+          "agreement_count": 38
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.11775027271550224,
+          "feature_cosine_distance": 0.009239769711786387,
+          "clean_decision_agreement": 0.9591836734693877,
+          "agreement_count": 47
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 4,
+          "damage": 3,
+          "net": 1
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 1,
+          "damage": 6,
+          "net": -5
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 9,
+          "damage": 0,
+          "net": 9
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.2981468861808582,
+        "median": 0.2668474614620209,
+        "p90": 0.4921911716461182,
+        "p99": 0.7562532091140747
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_mid|LOS",
+      "count": 1183,
+      "methods": {
+        "received": {
+          "nmse": 2.0127566635659058,
+          "feature_cosine_distance": 0.03897238780357832,
+          "clean_decision_agreement": 0.9628064243448858,
+          "agreement_count": 1139
+        },
+        "DURA_v1": {
+          "nmse": 0.008622687702722192,
+          "feature_cosine_distance": 0.0030851896697952903,
+          "clean_decision_agreement": 0.9932375316990701,
+          "agreement_count": 1175
+        },
+        "oracle_mean128": {
+          "nmse": 0.03459486644085267,
+          "feature_cosine_distance": 0.014575157342880132,
+          "clean_decision_agreement": 0.9535080304311073,
+          "agreement_count": 1128
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.006698122660624334,
+          "feature_cosine_distance": 0.001523149487131849,
+          "clean_decision_agreement": 0.9983093829247676,
+          "agreement_count": 1181
+        },
+        "FeatureCond": {
+          "nmse": 0.008335174120894129,
+          "feature_cosine_distance": 0.0016900157888159345,
+          "clean_decision_agreement": 0.9966187658495351,
+          "agreement_count": 1179
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.008747582214076342,
+          "feature_cosine_distance": 0.0015442289745817724,
+          "clean_decision_agreement": 0.9957734573119188,
+          "agreement_count": 1178
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 8,
+          "damage": 4,
+          "net": 4
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 1,
+          "damage": 3,
+          "net": -2
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 3,
+          "damage": 4,
+          "net": -1
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.002499519181758597,
+        "median": 0.002246120246127248,
+        "p90": 0.004020218178629873,
+        "p99": 0.005822429871186621
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_mid|PARTIAL",
+      "count": 252,
+      "methods": {
+        "received": {
+          "nmse": 2.0249480718658086,
+          "feature_cosine_distance": 0.07354842552116939,
+          "clean_decision_agreement": 0.8373015873015873,
+          "agreement_count": 211
+        },
+        "DURA_v1": {
+          "nmse": 0.025238542340784556,
+          "feature_cosine_distance": 0.010762141100944035,
+          "clean_decision_agreement": 0.9325396825396826,
+          "agreement_count": 235
+        },
+        "oracle_mean128": {
+          "nmse": 0.05488179217920535,
+          "feature_cosine_distance": 0.03051192585438017,
+          "clean_decision_agreement": 0.8888888888888888,
+          "agreement_count": 224
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.020267207632839148,
+          "feature_cosine_distance": 0.0035869727532068887,
+          "clean_decision_agreement": 0.9722222222222222,
+          "agreement_count": 245
+        },
+        "FeatureCond": {
+          "nmse": 0.024536870141875826,
+          "feature_cosine_distance": 0.004051467019414145,
+          "clean_decision_agreement": 0.9761904761904762,
+          "agreement_count": 246
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.024099959459226016,
+          "feature_cosine_distance": 0.002951197444446503,
+          "clean_decision_agreement": 0.9920634920634921,
+          "agreement_count": 250
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 11,
+          "damage": 0,
+          "net": 11
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 3,
+          "damage": 2,
+          "net": 1
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 4,
+          "damage": 0,
+          "net": 4
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.022399076287420317,
+        "median": 0.01425545709207654,
+        "p90": 0.04710184931755066,
+        "p99": 0.10920104131102576
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_mid_urban|BLOCKED",
+      "count": 579,
+      "methods": {
+        "received": {
+          "nmse": 1.9952361521943245,
+          "feature_cosine_distance": 0.20624564225191896,
+          "clean_decision_agreement": 0.36787564766839376,
+          "agreement_count": 213
+        },
+        "DURA_v1": {
+          "nmse": 0.08552302440808561,
+          "feature_cosine_distance": 0.02837238657659817,
+          "clean_decision_agreement": 0.7910189982728842,
+          "agreement_count": 458
+        },
+        "oracle_mean128": {
+          "nmse": 0.1865728358787988,
+          "feature_cosine_distance": 0.13329478578452209,
+          "clean_decision_agreement": 0.5077720207253886,
+          "agreement_count": 294
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.08769458946361752,
+          "feature_cosine_distance": 0.017183180300065274,
+          "clean_decision_agreement": 0.8842832469775475,
+          "agreement_count": 512
+        },
+        "FeatureCond": {
+          "nmse": 0.10310267561174839,
+          "feature_cosine_distance": 0.019625212141475116,
+          "clean_decision_agreement": 0.8566493955094991,
+          "agreement_count": 496
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.09908271911883781,
+          "feature_cosine_distance": 0.008836350292739473,
+          "clean_decision_agreement": 0.9723661485319517,
+          "agreement_count": 563
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 73,
+          "damage": 35,
+          "net": 38
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 23,
+          "damage": 39,
+          "net": -16
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 68,
+          "damage": 1,
+          "net": 67
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.27797821069551254,
+        "median": 0.2440982162952423,
+        "p90": 0.49648510217666625,
+        "p99": 0.7152996110916138
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_mid_urban|LOS",
+      "count": 682,
+      "methods": {
+        "received": {
+          "nmse": 2.027903555949762,
+          "feature_cosine_distance": 0.0412845974269151,
+          "clean_decision_agreement": 0.9560117302052786,
+          "agreement_count": 652
+        },
+        "DURA_v1": {
+          "nmse": 0.008705681035413934,
+          "feature_cosine_distance": 0.0033728170080268836,
+          "clean_decision_agreement": 0.9956011730205279,
+          "agreement_count": 679
+        },
+        "oracle_mean128": {
+          "nmse": 0.03551762265117724,
+          "feature_cosine_distance": 0.014522482048381458,
+          "clean_decision_agreement": 0.9736070381231672,
+          "agreement_count": 664
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.006896053449830445,
+          "feature_cosine_distance": 0.0015958355319115422,
+          "clean_decision_agreement": 0.9970674486803519,
+          "agreement_count": 680
+        },
+        "FeatureCond": {
+          "nmse": 0.00872992068072344,
+          "feature_cosine_distance": 0.0018462765076992448,
+          "clean_decision_agreement": 0.9970674486803519,
+          "agreement_count": 680
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.009167356855615623,
+          "feature_cosine_distance": 0.0016263163159669668,
+          "clean_decision_agreement": 0.998533724340176,
+          "agreement_count": 681
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 3,
+          "damage": 2,
+          "net": 1
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 2,
+          "damage": 2,
+          "net": 0
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 1,
+          "damage": 0,
+          "net": 1
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.0023709738667531326,
+        "median": 0.002158049843274057,
+        "p90": 0.0036345569184049963,
+        "p99": 0.0054886983847245545
+      }
+    },
+    {
+      "dimension": "scene|state",
+      "stratum": "practical_mid_urban|PARTIAL",
+      "count": 148,
+      "methods": {
+        "received": {
+          "nmse": 2.036721739414576,
+          "feature_cosine_distance": 0.0751761794090271,
+          "clean_decision_agreement": 0.8513513513513513,
+          "agreement_count": 126
+        },
+        "DURA_v1": {
+          "nmse": 0.02040065484863983,
+          "feature_cosine_distance": 0.008637485471931664,
+          "clean_decision_agreement": 0.9527027027027027,
+          "agreement_count": 141
+        },
+        "oracle_mean128": {
+          "nmse": 0.05322203636672851,
+          "feature_cosine_distance": 0.030373175804679457,
+          "clean_decision_agreement": 0.8378378378378378,
+          "agreement_count": 124
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.015924290215873438,
+          "feature_cosine_distance": 0.004133318727080886,
+          "clean_decision_agreement": 0.972972972972973,
+          "agreement_count": 144
+        },
+        "FeatureCond": {
+          "nmse": 0.01816557623552964,
+          "feature_cosine_distance": 0.004056042916065938,
+          "clean_decision_agreement": 0.9864864864864865,
+          "agreement_count": 146
+        },
+        "FeatureCond_clean_feature_oracle": {
+          "nmse": 0.01813743152101902,
+          "feature_cosine_distance": 0.0029288151779690305,
+          "clean_decision_agreement": 0.9932432432432432,
+          "agreement_count": 147
+        }
+      },
+      "pairs": {
+        "FeatureCond__minus__DURA_v1": {
+          "repairs": 7,
+          "damage": 2,
+          "net": 5
+        },
+        "FeatureCond__minus__MSAT_FullFGrad": {
+          "repairs": 2,
+          "damage": 0,
+          "net": 2
+        },
+        "FeatureCond_clean_feature_oracle__minus__FeatureCond": {
+          "repairs": 1,
+          "damage": 0,
+          "net": 1
+        }
+      },
+      "added_noise_energy_relative_to_clean_power": {
+        "mean": 0.02410879318690481,
+        "median": 0.016729863360524178,
+        "p90": 0.04858558997511866,
+        "p99": 0.11106952540576458
+      }
+    }
+  ],
+  "persistence": {
+    "received": {
+      "packet_error_count_histogram": [
+        63,
+        105,
+        101,
+        90,
+        72,
+        41,
+        12,
+        4,
+        6,
+        3,
+        1,
+        1,
+        4,
+        2,
+        3,
+        1,
+        0,
+        2,
+        1,
+        0,
+        0
+      ],
+      "total_disagreements": 1449,
+      "packets_with_any_disagreement": 449,
+      "packets_with_at_least10of20": 15,
+      "maximum_draw_failures": 18
+    },
+    "DURA_v1": {
+      "packet_error_count_histogram": [
+        298,
+        87,
+        56,
+        38,
+        13,
+        12,
+        2,
+        1,
+        2,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "total_disagreements": 497,
+      "packets_with_any_disagreement": 214,
+      "packets_with_at_least10of20": 3,
+      "maximum_draw_failures": 14
+    },
+    "oracle_mean128": {
+      "packet_error_count_histogram": [
+        88,
+        146,
+        101,
+        78,
+        39,
+        20,
+        10,
+        9,
+        5,
+        0,
+        1,
+        1,
+        4,
+        2,
+        1,
+        4,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      "total_disagreements": 1219,
+      "packets_with_any_disagreement": 424,
+      "packets_with_at_least10of20": 16,
+      "maximum_draw_failures": 17
+    },
+    "MSAT_FullFGrad": {
+      "packet_error_count_histogram": [
+        343,
+        97,
+        46,
+        15,
+        4,
+        5,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "total_disagreements": 291,
+      "packets_with_any_disagreement": 169,
+      "packets_with_at_least10of20": 0,
+      "maximum_draw_failures": 9
+    },
+    "FeatureCond": {
+      "packet_error_count_histogram": [
+        325,
+        109,
+        41,
+        25,
+        6,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "total_disagreements": 329,
+      "packets_with_any_disagreement": 187,
+      "packets_with_at_least10of20": 1,
+      "maximum_draw_failures": 12
+    },
+    "FeatureCond_clean_feature_oracle": {
+      "packet_error_count_histogram": [
+        471,
+        24,
+        6,
+        5,
+        1,
+        1,
+        2,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "total_disagreements": 93,
+      "packets_with_any_disagreement": 41,
+      "packets_with_at_least10of20": 1,
+      "maximum_draw_failures": 12
+    }
+  },
+  "partition_recombination_checked": {
+    "scene": true,
+    "state": true,
+    "lock": true
+  },
+  "new_neural_forwards": 0,
+  "optimizer_updates": 0,
+  "new_TX_reads": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "target_reads": 0,
+  "interpretation": "Frozen F(clean) agreement, not TX accuracy. Lock/state are simulator proxies, not independent causal factors. Repeated errors are descriptive and scene assignments vary. Oracles are off-support diagnostics, not performance ceilings.",
+  "method_selection": false,
+  "target_feedback": false
+}

@@ -87,3 +87,5 @@
 3项针对性测试与一次P0/P1通过。真实源L_s2smoke核actual/latent/raw与原G逐值一致，PASS立即完整矩阵；PID/CWD/命令/CUDA/GPU及新日志独立读回。GPU4准入剩余24110MiB、已有compute0、只新增1条本任务NN，其他owner保持；完整20draw日志、所有预测及配对、源面板和缓存控制对齐、模型状态不变独立核实。最终worker/controller均退出0，独立均值复算误差0，实际单位功率逐记录最大误差2.98e-7。
 
 这是源内机制诊断，Fclean一致率不是TX准确率，512包×20draw不能当作10240条独立物理样本。没有新增Main、V/OE或Phase3结果。默认DURA、所有历史权重和原Main负结果保持；六景逐个距raw clean≤3pp+clean的完整目标仍ACTIVE。
+
+补充同版分析：[已冻结源样本的失锁、噪声与重复错误分析](source_difficulty.md)。只复算既有源数组，新增模型前向、TX/V/OE/目标读取均为0。
