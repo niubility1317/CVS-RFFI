@@ -1,0 +1,30 @@
+PROCESS     PID    PPID     ELAPSED %CPU COMMAND
+ 741848       1       00:06  0.2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-curriculum-s2026092701-r01-release/experiments/phase1_direct_curriculum/phase1_axial_spectral_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01 --commit d850c782a2ca1982688b4ec07fa52a0353e864ad --device cuda:0
+ 741936  741848       00:02  112 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-curriculum-s2026092701-r01-release/experiments/phase1_direct_curriculum/phase1_axial_spectral_source.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01/source --commit d850c782a2ca1982688b4ec07fa52a0353e864ad --device cuda:0
+
+CWD /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release
+LOG PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-curriculum-s2026092701-r01-release/experiments/phase1_direct_curriculum/phase1_axial_spectral_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01/source_smoke", "--commit", "d850c782a2ca1982688b4ec07fa52a0353e864ad", "--device", "cuda:0", "--smoke"]
+CURRICULUM_SOURCE_SMOKE {"status": "PASS", "records": 16, "finite_loss": 1.0840609073638916, "source_only": true, "DURA_used": false, "F_frozen": true, "L_s_labels_used": 16, "U_s_labels_read": 0, "V_reads": 0, "test_reads": 0}
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-curriculum-s2026092701-r01-release/experiments/phase1_direct_curriculum/phase1_axial_spectral_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01/source", "--commit", "d850c782a2ca1982688b4ec07fa52a0353e864ad", "--device", "cuda:0"]
+
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01/source_smoke/result.json True
+{
+  "status": "PASS",
+  "records": 16,
+  "finite_loss": 1.0840609073638916,
+  "source_only": true,
+  "DURA_used": false,
+  "F_frozen": true,
+  "L_s_labels_used": 16,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_reads": 0
+}
+
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01/source/source_selection.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01/completion.json False
+GPU2 6 %, 327 MiB
+
+
+Independent mixed real source check:
+VERIFIED MIXED_SOURCE_SMOKE count=16 L_s=8 U_s=8 U_s_truth_reads=0 V_reads=0 target_reads=0 F_frozen=True finite_loss= 0.8581346273422241
