@@ -1,5 +1,6 @@
 {
   "status": "PUBLISHED_RESULTS_ONLY",
+  "as_of": "2026-11-02",
   "baseline_F0": "Original full Tri-SIG-TIME SSL/3ff8/E50-11100/defaulthead",
   "split": "Main/126000 cross_rx+42000 cross_both",
   "count": 168000,
@@ -870,6 +871,166 @@
         "practical_high_urban": 21583,
         "practical_mid_urban": 30605,
         "practical_low_urban": 40158
+      }
+    },
+    {
+      "name": "RolloutBridge",
+      "run_id": "20261101-phase1-Restore-RolloutBridge-E30-s2026092701-r01",
+      "arm": "MSAT_RolloutBridge",
+      "code_commit": "7250d0a88160d6ab949dafbdc73edb7f302e290f",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145446,
+          "accuracy": 86.575,
+          "raw_clean_gap_pp": -0.03630952380952124,
+          "clean_accuracy_retention_percent": 100.04195756095883
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 127613,
+          "accuracy": 75.96011904761905,
+          "raw_clean_gap_pp": 10.578571428571436,
+          "clean_accuracy_retention_percent": 87.77590535474774
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 124202,
+          "accuracy": 73.9297619047619,
+          "raw_clean_gap_pp": 12.608928571428578,
+          "clean_accuracy_retention_percent": 85.42972108539395
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 120751,
+          "accuracy": 71.87559523809524,
+          "raw_clean_gap_pp": 14.663095238095238,
+          "clean_accuracy_retention_percent": 83.05602366131306
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 125096,
+          "accuracy": 74.46190476190476,
+          "raw_clean_gap_pp": 12.07678571428572,
+          "clean_accuracy_retention_percent": 86.04464009354473
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 113350,
+          "accuracy": 67.4702380952381,
+          "raw_clean_gap_pp": 19.06845238095238,
+          "clean_accuracy_retention_percent": 77.96540220793067
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 103403,
+          "accuracy": 61.54940476190476,
+          "raw_clean_gap_pp": 24.98928571428572,
+          "clean_accuracy_retention_percent": 71.1235684561681
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 41,
+        "cross_both": 20
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-RolloutBridge-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.04195756095883,
+        "practical_high": 87.77590535474774,
+        "practical_mid": 85.42972108539395,
+        "practical_low_suburban": 83.05602366131306,
+        "practical_high_urban": 86.04464009354473,
+        "practical_mid_urban": 77.96540220793067,
+        "practical_low_urban": 71.1235684561681
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 12732,
+        "practical_mid": 16143,
+        "practical_low_suburban": 19594,
+        "practical_high_urban": 15249,
+        "practical_mid_urban": 26995,
+        "practical_low_urban": 36942
+      }
+    },
+    {
+      "name": "SoftPower",
+      "run_id": "20261101-phase1-Restore-SoftPower-E30-s2026092701-r01",
+      "arm": "MSAT_SoftPower",
+      "code_commit": "1dd40c07970b664f18c57149a0a2ab02f000b114",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145379,
+          "accuracy": 86.53511904761905,
+          "raw_clean_gap_pp": 0.0035714285714334437,
+          "clean_accuracy_retention_percent": 99.99587302679093
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 132575,
+          "accuracy": 78.91369047619048,
+          "raw_clean_gap_pp": 7.625,
+          "clean_accuracy_retention_percent": 91.18891219864497
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 130325,
+          "accuracy": 77.57440476190476,
+          "raw_clean_gap_pp": 8.964285714285722,
+          "clean_accuracy_retention_percent": 89.64129724524538
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 127855,
+          "accuracy": 76.10416666666667,
+          "raw_clean_gap_pp": 10.43452380952381,
+          "clean_accuracy_retention_percent": 87.94235994084671
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 130545,
+          "accuracy": 77.70535714285714,
+          "raw_clean_gap_pp": 8.833333333333343,
+          "clean_accuracy_retention_percent": 89.79261959624445
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 120247,
+          "accuracy": 71.57559523809523,
+          "raw_clean_gap_pp": 14.96309523809525,
+          "clean_accuracy_retention_percent": 82.70935791175155
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 110085,
+          "accuracy": 65.52678571428571,
+          "raw_clean_gap_pp": 21.011904761904773,
+          "clean_accuracy_retention_percent": 75.71964095333081
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 22,
+        "cross_both": -28
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 99.99587302679093,
+        "practical_high": 91.18891219864497,
+        "practical_mid": 89.64129724524538,
+        "practical_low_suburban": 87.94235994084671,
+        "practical_high_urban": 89.79261959624445,
+        "practical_mid_urban": 82.70935791175155,
+        "practical_low_urban": 75.71964095333081
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 7770,
+        "practical_mid": 10020,
+        "practical_low_suburban": 12490,
+        "practical_high_urban": 9800,
+        "practical_mid_urban": 20098,
+        "practical_low_urban": 30260
       }
     }
   ],
