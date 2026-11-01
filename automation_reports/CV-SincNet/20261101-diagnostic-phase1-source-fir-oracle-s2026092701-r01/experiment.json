@@ -1,0 +1,157 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-phase1-source-fir-oracle-s2026092701-r01",
+  "group_id": "phase1-source-fir-oracle-diagnostic",
+  "display_name": "Phase1 源域复数短滤波配对拟合诊断",
+  "description": "源域配对 clean 和接收 IQ 上拟合逐窗复数及共轭滤波器，检查静态信道可解释程度。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "source-only",
+    "privileged-oracle",
+    "widely-linear-FIR"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261101-diagnostic-phase1-dura-trisig-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发更强星地恢复网络并严格限定 Phase1 地面训练、测试与 Tri-SIG-TIME SSL 基座。",
+  "code": {
+    "commit": "227422fc62554a138aa5df58712a6465ce3d2f79",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch CPU only, original Phase1 frozen Tri-SIG-TIME release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-phase1-source-fir-oracle-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/source_fir_diagnostic.py",
+      "experiments/pamf_phase1_flow/source_fir_oracle.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Fixed Phase1 L_s/U_s source received/clean IQ, frozen DURA and Tri-SIG-TIME",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "none",
+    "actual_training_labels": "No training; source diagnostic loads 6300 legal L_s labels and scores fixed 128; no U_s labels, V or test IQ",
+    "augmentation": "Source views 01 and 20"
+  },
+  "permissions": {
+    "regime": "Phase1 source paired IQ and legitimate L_s labels, frozen Tri-SIG-TIME SSL and DURA",
+    "query_use": "No test or V access; oracle uses privileged source clean per window",
+    "external_method_exception": null,
+    "claim_scope": "Paired in-training source diagnostic; teacher agreement is not independent test accuracy; no deployable inference"
+  },
+  "checkpoint": {
+    "initialization": "Original frozen DURA and frozen Tri-SIG-TIME SSL E50",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Exact F, DURA SHA, role IDs and source IQ/native alignment",
+    "provenance_verdict": "Fixed original Phase1 frozen models",
+    "selection_rule": "Fixed source rows, views, bases and FIR taps; no model selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-source-fir-oracle",
+    "gpu_policy": "CPU2/0GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-source-fir-oracle-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-source-fir-oracle-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-diagnostic-phase1-source-fir-oracle-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.source_fir_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --commit 227422fc62554a138aa5df58712a6465ce3d2f79",
+    "stop_rule": "On mismatched source IQ/checkpoint or nonfinite output stop and preserve log; no automatic retry"
+  },
+  "expected_artifacts": [
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean-teacher agreement",
+      "paired repair/damage counts",
+      "IQ NMSE",
+      "clean-to-output KL"
+    ],
+    "dimensions": [
+      "source views 01/20; same 512 IDs",
+      "source scene, state, role"
+    ],
+    "prediction_ref": "aggregate source diagnostic only",
+    "scorer_ref": "source_fir_diagnostic.py",
+    "targets_ref": "Paired source clean teacher and 128 L_s true labels; not test accuracy"
+  },
+  "notes": [
+    "固定 512 条源训练 ID（L_s 128、U_s 384），每条分别使用视图 01 与 20；两视图共享物理记录，不视为独立样本。",
+    "分别从 received 或冻结 DURA 输出拟合配对 clean；广义复数线性 FIR 取 1、9、33 个中心对称 tap，以均方 IQ 损失和归一 ridge 0.0001 独立逐窗求解。每个 oracle 直接使用当前干净波形，属于不可部署的特权信息。",
+    "计算干净教师一致性、相对 DURA 的逐条修复与损伤、相对源 clean IQ NMSE；对 128 条 L_s 使用合法真实标签统计，按全部、BLOCKED、L_s 分组。",
+    "标签加载全部 6300 条合法 L_s，统计固定的 128 条；不读取 U_s 标签、V 或测试 IQ，不更新任何模型。精确重算 DURA 并与保存输出核验。",
+    "IQ 拟合最优不等于分类准确率上限；含中心未来采样的滤波器不是因果接收机，源训练样本结论不能外推测试集。"
+  ],
+  "rows": [
+    {
+      "row_id": "paired_source",
+      "method": "Per-window privileged paired complex plus conjugate FIR: raw or DURA, 1/9/33 taps",
+      "purpose": "Evaluate whether short widely-linear channel fitting can approach clean signal and frozen F decisions on source",
+      "config_ref": "experiments/pamf_phase1_flow/source_fir_diagnostic.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/source_fir_diagnostic.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source rows and views; deterministic fixed model",
+      "k": null,
+      "scenario": "Phase1 source views 01 and 20",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512 source IDs x 2 views x 2 bases x 3 tap lengths, frozen F inference, CPU only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-source-fir-oracle-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-source-fir-oracle-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.source_fir_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --commit 227422fc62554a138aa5df58712a6465ce3d2f79",
+      "expected_artifacts": [
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "registered_at": "2026-11-01T06:37:52+00:00"
+}

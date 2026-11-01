@@ -1,0 +1,955 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "run": "20261101-diagnostic-phase1-source-fir-oracle-s2026092701-r01",
+  "commit": "227422fc62554a138aa5df58712a6465ce3d2f79",
+  "source_unique_records": 512,
+  "source_observations": 1024,
+  "source_views": [
+    1,
+    20
+  ],
+  "materialized_L_s_labels": 6300,
+  "evaluated_L_s_labels": 128,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "DURA_sha256": "14200ac0f8eef01f57aa82e8fb5122ff855fc81208983d9234d6c5caef2e28ee",
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "taps": [
+    1,
+    9,
+    33
+  ],
+  "ridge": 0.0001,
+  "widely_linear": true,
+  "privileged_clean_for_each_window": true,
+  "network_updates": 0,
+  "results": [
+    {
+      "source_view": 1,
+      "count": 512,
+      "groups": [
+        {
+          "group": "all",
+          "method": "raw",
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 444,
+            "repairs": 6,
+            "damages": 53
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 112,
+            "repairs": 2,
+            "damages": 11
+          },
+          "mean_iq_nmse": 1.687607765197754
+        },
+        {
+          "group": "all",
+          "method": "dura",
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 491,
+            "repairs": 0,
+            "damages": 0
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 121,
+            "repairs": 0,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.020212827250361443
+        },
+        {
+          "group": "all",
+          "method": "raw_fir1",
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 183,
+            "repairs": 3,
+            "damages": 311
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 45,
+            "repairs": 0,
+            "damages": 76
+          },
+          "mean_iq_nmse": 0.8251287341117859
+        },
+        {
+          "group": "all",
+          "method": "raw_fir9",
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 242,
+            "repairs": 5,
+            "damages": 254
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 64,
+            "repairs": 2,
+            "damages": 59
+          },
+          "mean_iq_nmse": 0.4845816195011139
+        },
+        {
+          "group": "all",
+          "method": "raw_fir33",
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 283,
+            "repairs": 6,
+            "damages": 214
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 77,
+            "repairs": 3,
+            "damages": 47
+          },
+          "mean_iq_nmse": 0.3037218749523163
+        },
+        {
+          "group": "all",
+          "method": "dura_fir1",
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 492,
+            "repairs": 7,
+            "damages": 6
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 124,
+            "repairs": 4,
+            "damages": 1
+          },
+          "mean_iq_nmse": 0.018005723133683205
+        },
+        {
+          "group": "all",
+          "method": "dura_fir9",
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 498,
+            "repairs": 10,
+            "damages": 3
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 125,
+            "repairs": 4,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.014902974478900433
+        },
+        {
+          "group": "all",
+          "method": "dura_fir33",
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 501,
+            "repairs": 13,
+            "damages": 3
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 125,
+            "repairs": 4,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.010265546850860119
+        },
+        {
+          "group": "blocked",
+          "method": "raw",
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 35,
+            "repairs": 6,
+            "damages": 36
+          },
+          "labeled_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 9,
+            "repairs": 2,
+            "damages": 8
+          },
+          "mean_iq_nmse": 2.011532783508301
+        },
+        {
+          "group": "blocked",
+          "method": "dura",
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 65,
+            "repairs": 0,
+            "damages": 0
+          },
+          "labeled_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 15,
+            "repairs": 0,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.0799190029501915
+        },
+        {
+          "group": "blocked",
+          "method": "raw_fir1",
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 12,
+            "repairs": 3,
+            "damages": 56
+          },
+          "labeled_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 0,
+            "repairs": 0,
+            "damages": 15
+          },
+          "mean_iq_nmse": 0.989757239818573
+        },
+        {
+          "group": "blocked",
+          "method": "raw_fir9",
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 18,
+            "repairs": 5,
+            "damages": 52
+          },
+          "labeled_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 5,
+            "repairs": 2,
+            "damages": 12
+          },
+          "mean_iq_nmse": 0.7095677852630615
+        },
+        {
+          "group": "blocked",
+          "method": "raw_fir33",
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 33,
+            "repairs": 6,
+            "damages": 38
+          },
+          "labeled_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 9,
+            "repairs": 3,
+            "damages": 9
+          },
+          "mean_iq_nmse": 0.4466181695461273
+        },
+        {
+          "group": "blocked",
+          "method": "dura_fir1",
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 68,
+            "repairs": 7,
+            "damages": 4
+          },
+          "labeled_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 18,
+            "repairs": 4,
+            "damages": 1
+          },
+          "mean_iq_nmse": 0.07337561249732971
+        },
+        {
+          "group": "blocked",
+          "method": "dura_fir9",
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 73,
+            "repairs": 9,
+            "damages": 1
+          },
+          "labeled_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 19,
+            "repairs": 4,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.0607040710747242
+        },
+        {
+          "group": "blocked",
+          "method": "dura_fir33",
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 75,
+            "repairs": 11,
+            "damages": 1
+          },
+          "labeled_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 19,
+            "repairs": 4,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.04184972867369652
+        },
+        {
+          "group": "labeled",
+          "method": "raw",
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 112,
+            "repairs": 2,
+            "damages": 11
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 112,
+            "repairs": 2,
+            "damages": 11
+          },
+          "mean_iq_nmse": 1.6098308563232422
+        },
+        {
+          "group": "labeled",
+          "method": "dura",
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 121,
+            "repairs": 0,
+            "damages": 0
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 121,
+            "repairs": 0,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.02400439977645874
+        },
+        {
+          "group": "labeled",
+          "method": "raw_fir1",
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 45,
+            "repairs": 0,
+            "damages": 76
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 45,
+            "repairs": 0,
+            "damages": 76
+          },
+          "mean_iq_nmse": 0.7864224910736084
+        },
+        {
+          "group": "labeled",
+          "method": "raw_fir9",
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 64,
+            "repairs": 2,
+            "damages": 59
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 64,
+            "repairs": 2,
+            "damages": 59
+          },
+          "mean_iq_nmse": 0.46451398730278015
+        },
+        {
+          "group": "labeled",
+          "method": "raw_fir33",
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 77,
+            "repairs": 3,
+            "damages": 47
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 77,
+            "repairs": 3,
+            "damages": 47
+          },
+          "mean_iq_nmse": 0.29287993907928467
+        },
+        {
+          "group": "labeled",
+          "method": "dura_fir1",
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 124,
+            "repairs": 4,
+            "damages": 1
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 124,
+            "repairs": 4,
+            "damages": 1
+          },
+          "mean_iq_nmse": 0.020758792757987976
+        },
+        {
+          "group": "labeled",
+          "method": "dura_fir9",
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 125,
+            "repairs": 4,
+            "damages": 0
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 125,
+            "repairs": 4,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.01712610013782978
+        },
+        {
+          "group": "labeled",
+          "method": "dura_fir33",
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 125,
+            "repairs": 4,
+            "damages": 0
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 125,
+            "repairs": 4,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.011862524785101414
+        }
+      ]
+    },
+    {
+      "source_view": 20,
+      "count": 512,
+      "groups": [
+        {
+          "group": "all",
+          "method": "raw",
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 456,
+            "repairs": 2,
+            "damages": 38
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 115,
+            "repairs": 0,
+            "damages": 10
+          },
+          "mean_iq_nmse": 1.6993472576141357
+        },
+        {
+          "group": "all",
+          "method": "dura",
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 492,
+            "repairs": 0,
+            "damages": 0
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 0,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.019439708441495895
+        },
+        {
+          "group": "all",
+          "method": "raw_fir1",
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 186,
+            "repairs": 3,
+            "damages": 309
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 50,
+            "repairs": 0,
+            "damages": 75
+          },
+          "mean_iq_nmse": 0.8310118913650513
+        },
+        {
+          "group": "all",
+          "method": "raw_fir9",
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 246,
+            "repairs": 4,
+            "damages": 250
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 64,
+            "repairs": 1,
+            "damages": 62
+          },
+          "mean_iq_nmse": 0.4775421917438507
+        },
+        {
+          "group": "all",
+          "method": "raw_fir33",
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 295,
+            "repairs": 3,
+            "damages": 200
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 73,
+            "repairs": 1,
+            "damages": 53
+          },
+          "mean_iq_nmse": 0.29887789487838745
+        },
+        {
+          "group": "all",
+          "method": "dura_fir1",
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 494,
+            "repairs": 5,
+            "damages": 3
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 1,
+            "damages": 1
+          },
+          "mean_iq_nmse": 0.01734795980155468
+        },
+        {
+          "group": "all",
+          "method": "dura_fir9",
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 501,
+            "repairs": 11,
+            "damages": 2
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 126,
+            "repairs": 2,
+            "damages": 1
+          },
+          "mean_iq_nmse": 0.014398803934454918
+        },
+        {
+          "group": "all",
+          "method": "dura_fir33",
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 507,
+            "repairs": 17,
+            "damages": 2
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 127,
+            "repairs": 3,
+            "damages": 1
+          },
+          "mean_iq_nmse": 0.00988847203552723
+        },
+        {
+          "group": "blocked",
+          "method": "raw",
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 23,
+            "repairs": 2,
+            "damages": 27
+          },
+          "labeled_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 4,
+            "repairs": 0,
+            "damages": 9
+          },
+          "mean_iq_nmse": 2.013204336166382
+        },
+        {
+          "group": "blocked",
+          "method": "dura",
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 48,
+            "repairs": 0,
+            "damages": 0
+          },
+          "labeled_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 13,
+            "repairs": 0,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.10088487714529037
+        },
+        {
+          "group": "blocked",
+          "method": "raw_fir1",
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 12,
+            "repairs": 2,
+            "damages": 38
+          },
+          "labeled_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 1,
+            "repairs": 0,
+            "damages": 12
+          },
+          "mean_iq_nmse": 0.98734050989151
+        },
+        {
+          "group": "blocked",
+          "method": "raw_fir9",
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 15,
+            "repairs": 3,
+            "damages": 36
+          },
+          "labeled_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 6,
+            "repairs": 1,
+            "damages": 8
+          },
+          "mean_iq_nmse": 0.7152041792869568
+        },
+        {
+          "group": "blocked",
+          "method": "raw_fir33",
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 28,
+            "repairs": 3,
+            "damages": 23
+          },
+          "labeled_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 7,
+            "repairs": 1,
+            "damages": 7
+          },
+          "mean_iq_nmse": 0.4524950385093689
+        },
+        {
+          "group": "blocked",
+          "method": "dura_fir1",
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 53,
+            "repairs": 5,
+            "damages": 0
+          },
+          "labeled_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 14,
+            "repairs": 1,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.09306415170431137
+        },
+        {
+          "group": "blocked",
+          "method": "dura_fir9",
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 56,
+            "repairs": 8,
+            "damages": 0
+          },
+          "labeled_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 15,
+            "repairs": 2,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.07708948850631714
+        },
+        {
+          "group": "blocked",
+          "method": "dura_fir33",
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 58,
+            "repairs": 11,
+            "damages": 1
+          },
+          "labeled_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 16,
+            "repairs": 3,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.052811045199632645
+        },
+        {
+          "group": "labeled",
+          "method": "raw",
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 115,
+            "repairs": 0,
+            "damages": 10
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 115,
+            "repairs": 0,
+            "damages": 10
+          },
+          "mean_iq_nmse": 1.6553308963775635
+        },
+        {
+          "group": "labeled",
+          "method": "dura",
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 0,
+            "damages": 0
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 0,
+            "damages": 0
+          },
+          "mean_iq_nmse": 0.019042355939745903
+        },
+        {
+          "group": "labeled",
+          "method": "raw_fir1",
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 50,
+            "repairs": 0,
+            "damages": 75
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 50,
+            "repairs": 0,
+            "damages": 75
+          },
+          "mean_iq_nmse": 0.8098374605178833
+        },
+        {
+          "group": "labeled",
+          "method": "raw_fir9",
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 64,
+            "repairs": 1,
+            "damages": 62
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 64,
+            "repairs": 1,
+            "damages": 62
+          },
+          "mean_iq_nmse": 0.47116944193840027
+        },
+        {
+          "group": "labeled",
+          "method": "raw_fir33",
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 73,
+            "repairs": 1,
+            "damages": 53
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 73,
+            "repairs": 1,
+            "damages": 53
+          },
+          "mean_iq_nmse": 0.2946663498878479
+        },
+        {
+          "group": "labeled",
+          "method": "dura_fir1",
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 1,
+            "damages": 1
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 1,
+            "damages": 1
+          },
+          "mean_iq_nmse": 0.0170300230383873
+        },
+        {
+          "group": "labeled",
+          "method": "dura_fir9",
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 126,
+            "repairs": 2,
+            "damages": 1
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 126,
+            "repairs": 2,
+            "damages": 1
+          },
+          "mean_iq_nmse": 0.014006000943481922
+        },
+        {
+          "group": "labeled",
+          "method": "dura_fir33",
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 127,
+            "repairs": 3,
+            "damages": 1
+          },
+          "labeled_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 127,
+            "repairs": 3,
+            "damages": 1
+          },
+          "mean_iq_nmse": 0.009894011542201042
+        }
+      ]
+    }
+  ],
+  "interpretation": "Noncausal paired clean oracle, not a deployable receiver or classifier-accuracy upper bound."
+}
