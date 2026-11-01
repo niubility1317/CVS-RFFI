@@ -1,0 +1,31 @@
+{
+  "status": "SOURCE_FIXED_MODEL_FRESH_EVALUATION_PROTOCOL",
+  "script": "phase1_source_spectral_shrinkage_fresh.py",
+  "script_sha256": "6f0d5a6738faf1d6b9eac53b1dc48260a5216f5f1dca807b1988ee0e9828b365",
+  "fixed_model_result": "phase1_source_spectral_shrinkage_network.json",
+  "fixed_model_result_sha256": "b8b3acab56b42c4cf322745c2bd075d85817e5f19f9929cf39c35c7eb6aa2e5e",
+  "dependencies": {
+    "phase1_source_cycle_lowrank_probe.py": "50f35b707dec7bbe2371f3918093a5646e8a661819cfc8d34bfc258e01f06b58",
+    "phase1_source_spectral_shrinkage_network.py": "2e837368a6f966779b09cf1909df6d7ed90cd0ca37dd30bdeec5febc5444666b"
+  },
+  "source_sample_seed": 2026110541,
+  "excluded_complete_sample_seeds": [
+    2026110531,
+    2026110521
+  ],
+  "channel_seed": 2026110542,
+  "hardware_seed": 2026110543,
+  "validation_receivers": [
+    4,
+    6
+  ],
+  "heldout_receiver": 8,
+  "day": 3,
+  "chosen_model": {
+    "kind": "spectral_shrinkage_network",
+    "epoch": 5,
+    "alpha": 0.25,
+    "validation_net": 4
+  },
+  "caveat": "Fixed model, no tuning. Source IDs exclude the complete named model/low-rank samples but may overlap other source work. Frozen teacher and DURA saw source records; simulation not validated real satellite."
+}

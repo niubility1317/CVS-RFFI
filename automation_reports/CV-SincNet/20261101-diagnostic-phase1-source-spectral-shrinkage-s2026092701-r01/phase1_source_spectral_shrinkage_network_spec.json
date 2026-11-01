@@ -1,0 +1,44 @@
+{
+  "status": "SOURCE_TRAINING_PROTOCOL_FIXED_BEFORE_FULL_RUN",
+  "script": "phase1_source_spectral_shrinkage_network.py",
+  "script_sha256": "2e837368a6f966779b09cf1909df6d7ed90cd0ca37dd30bdeec5febc5444666b",
+  "dependency": "phase1_source_cycle_lowrank_probe.py",
+  "dependency_sha256": "50f35b707dec7bbe2371f3918093a5646e8a661819cfc8d34bfc258e01f06b58",
+  "source_sample_seed": 2026110531,
+  "channel_seed": 2026110532,
+  "hardware_seed": 2026110533,
+  "model_seed": 2026110534,
+  "training_seed": 2026110535,
+  "architecture": "frozen DURA and Tri-SIG-TIME SSL; sample-dependent attenuation of 12 singular components of period-20 residual; 16 trailing samples preserved",
+  "train_signal": "paired clean source waveform aligned to DURA within ±16; frozen teacher features and soft probabilities from original unaligned clean waveform",
+  "training_loss": "normalized IQ MSE + 0.1 cosine feature loss + 0.1 KL distillation + 0.02 shrinkage penalty",
+  "fixed_gate": "existing blind noise proxy <10dB and normalized input/output difference >0.2",
+  "epochs": [
+    2,
+    5,
+    10
+  ],
+  "blends": [
+    0.25,
+    0.5,
+    1
+  ],
+  "train_rx": [
+    1,
+    3,
+    4
+  ],
+  "train_days": [
+    1,
+    2
+  ],
+  "validation_rx": [
+    4,
+    6
+  ],
+  "heldout_rx": [
+    8
+  ],
+  "evaluation_day": 3,
+  "caveat": "Source simulator SNR and labels are not inference inputs; teacher and DURA saw source records; source IDs may overlap earlier diagnostics. ±64 IQ alignment used for selected holdout quality."
+}

@@ -1,0 +1,161 @@
+{
+  "status": "SOURCE_ONLY_FRESH_FIXED_SPECTRAL_NETWORK",
+  "source_ids": 791,
+  "validation_ids": 522,
+  "heldout_ids": 269,
+  "results": {
+    "1": {
+      "clean": {
+        "valid_count": 514,
+        "L_s_count": 121,
+        "baseline": 513,
+        "student": 513,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_baseline": 120,
+        "L_s_student": 120
+      },
+      "practical_low_suburban": {
+        "valid_count": 514,
+        "L_s_count": 121,
+        "baseline": 500,
+        "student": 501,
+        "repairs": 2,
+        "damages": 1,
+        "L_s_baseline": 115,
+        "L_s_student": 117
+      },
+      "practical_mid_urban": {
+        "valid_count": 514,
+        "L_s_count": 121,
+        "baseline": 476,
+        "student": 476,
+        "repairs": 1,
+        "damages": 1,
+        "L_s_baseline": 112,
+        "L_s_student": 113
+      },
+      "practical_low_urban": {
+        "valid_count": 514,
+        "L_s_count": 121,
+        "baseline": 444,
+        "student": 446,
+        "repairs": 4,
+        "damages": 2,
+        "L_s_baseline": 103,
+        "L_s_student": 103
+      }
+    },
+    "2": {
+      "clean": {
+        "valid_count": 259,
+        "L_s_count": 67,
+        "baseline": 259,
+        "student": 259,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_baseline": 67,
+        "L_s_student": 67
+      },
+      "practical_low_suburban": {
+        "valid_count": 259,
+        "L_s_count": 67,
+        "baseline": 257,
+        "student": 257,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_baseline": 67,
+        "L_s_student": 67
+      },
+      "practical_mid_urban": {
+        "valid_count": 259,
+        "L_s_count": 67,
+        "baseline": 242,
+        "student": 242,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_baseline": 64,
+        "L_s_student": 64
+      },
+      "practical_low_urban": {
+        "valid_count": 259,
+        "L_s_count": 67,
+        "baseline": 238,
+        "student": 239,
+        "repairs": 1,
+        "damages": 0,
+        "L_s_baseline": 60,
+        "L_s_student": 60
+      }
+    }
+  },
+  "quality": {
+    "1": {
+      "clean": {
+        "count": 522,
+        "aligned_mse_before": 2.3800276460259388e-05,
+        "aligned_mse_after": 2.3800276460259388e-05,
+        "improved": 0,
+        "worsened": 0
+      },
+      "practical_low_suburban": {
+        "count": 522,
+        "aligned_mse_before": 0.008022993444489254,
+        "aligned_mse_after": 0.008038737409663984,
+        "improved": 24,
+        "worsened": 35
+      },
+      "practical_mid_urban": {
+        "count": 522,
+        "aligned_mse_before": 0.017955998441697506,
+        "aligned_mse_after": 0.018031227811712423,
+        "improved": 81,
+        "worsened": 130
+      },
+      "practical_low_urban": {
+        "count": 522,
+        "aligned_mse_before": 0.030798262529748037,
+        "aligned_mse_after": 0.030842199866311384,
+        "improved": 158,
+        "worsened": 165
+      }
+    },
+    "2": {
+      "clean": {
+        "count": 269,
+        "aligned_mse_before": 3.997198699227686e-05,
+        "aligned_mse_after": 3.997198699227686e-05,
+        "improved": 0,
+        "worsened": 0
+      },
+      "practical_low_suburban": {
+        "count": 269,
+        "aligned_mse_before": 0.020351226995464475,
+        "aligned_mse_after": 0.02032704610103145,
+        "improved": 17,
+        "worsened": 15
+      },
+      "practical_mid_urban": {
+        "count": 269,
+        "aligned_mse_before": 0.05256444785116803,
+        "aligned_mse_after": 0.05283954419850386,
+        "improved": 47,
+        "worsened": 78
+      },
+      "practical_low_urban": {
+        "count": 269,
+        "aligned_mse_before": 0.08163965948652697,
+        "aligned_mse_after": 0.08199682943399232,
+        "improved": 66,
+        "worsened": 86
+      }
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "decisions_before_source_tx_labels": true,
+  "candidate_inference_uses_clean_target": false,
+  "candidate_inference_uses_simulator_snr": false,
+  "caveat": "Fresh source IDs exclude both earlier spectral network and fixed low-rank samples, but may overlap other probes. Fixed teacher and DURA saw source records. Simulated satellite is not a validated real link."
+}
