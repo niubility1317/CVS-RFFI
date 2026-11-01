@@ -89,13 +89,20 @@ def _timed(function,device):
     return result,time.perf_counter()-begin
 
 
-def _restore(engine,raw,device,batch):
+def _restore(engine,raw,device,batch,fast_transfer=False):
     import torch
+    if fast_transfer:
+        from .fast_transfer import to_tensor,to_numpy
+        input_tensor=lambda value:to_tensor(value,device,np.float32)
+        output_array=lambda value:to_numpy(value,np.float32)
+    else:
+        input_tensor=lambda value:tensor(value,device)
+        output_array=lambda value:np.asarray(value.cpu().tolist(),np.float32)
     parts=[]
     with torch.inference_mode():
         for start in range(0,len(raw),batch):
-            value=engine(tensor(np.asarray(raw[start:start+batch]),device))[0]
-            parts.append(np.asarray(value.cpu().tolist(),np.float32))
+            value=engine(input_tensor(np.asarray(raw[start:start+batch])))[0]
+            parts.append(output_array(value))
     return np.concatenate(parts)
 
 
@@ -105,11 +112,26 @@ def _decisions(scores,classes):
     return order[scores[:,order].argmax(1)],old[scores[:,old].argmax(1)]
 
 
-def local_ridge_scorer(state, device, enabled):
+def local_ridge_scorer(state, device, enabled, pair_budget=2048, fast_transfer=False):
     if not enabled:
         return state
     from .milkr.cuda_local_ridge import CudaLocalRidge
-    return CudaLocalRidge(state, device)
+    return CudaLocalRidge(state, device, pair_budget=pair_budget, fast_transfer=fast_transfer)
+
+
+def orbit_features(reader, iq, device, batch, fast_transfer):
+    if not fast_transfer:
+        return extract_orbit_ensemble(reader,iq,device,None,batch=batch)
+    from .phase_orbit import extract,ensemble_moments
+    features,logits=extract(reader,iq,device,None,batch,aggregate=ensemble_moments,
+                            return_phase_logits=True,phase_eighths=True,fast_transfer=True)
+    return dict(features,teacher_phase_logits=logits),logits[:,0,:]
+
+
+def baseline_features(reader, iq, device, batch, fast_transfer):
+    if fast_transfer:
+        return extract_baseline(reader,iq,device,None,batch=batch,fast_transfer=True)
+    return extract_baseline(reader,iq,device,None,batch=batch)
 
 
 def run(rt,job):
@@ -123,6 +145,7 @@ def run(rt,job):
     entries=read(job['reuse_file']) if job.get('reuse_file') else []
     rows=_reuse(entries,wanted,specs,manifest,job,root);reused=len(rows);states=[];query_times=[]
     missing=set(wanted)-set(rows);device=rt.get('device','cuda:0');batch=rt.get('batch_size',128);decision_batch=rt.get('decision_batch',512)
+    fast_transfer=rt.get('fast_dlpack_transfer',False);pair_budget=rt.get('local_ridge_pair_budget',2048)
     reader=engine=before=g_before=bridge=None
     if missing:
         reader,engine=initialize(rt)
@@ -144,14 +167,14 @@ def run(rt,job):
             tag=f'{arm}-{stage}-K{k}-N{n}-S{sp}'
             with Measure(root/(tag+'-resources.json'),context=context,model=reader) as measure:
                 iq=task['support_x'];g_seconds=0.
-                if sp:iq,g_seconds=_timed(lambda:_restore(engine,iq,device,k),device)
+                if sp:iq,g_seconds=_timed(lambda:_restore(engine,iq,device,k,fast_transfer=True) if fast_transfer else _restore(engine,iq,device,k),device)
                 if arm=='R42':
-                    (features,_),f_seconds=_timed(lambda:extract_orbit_ensemble(reader,iq,device,None,batch=k),device)
+                    (features,_),f_seconds=_timed(lambda:orbit_features(reader,iq,device,k,fast_transfer),device)
                     mapped,nn_seconds=_timed(lambda:bridge.transform(features,restored=bool(sp),old_columns=columns),device)
                     state,fit_seconds=_timed(lambda:fit_r42(mapped,task['support_y'],task['support_ids'],fixed=rule),device)
                     audit=state.selection
                 else:
-                    (features,_),f_seconds=_timed(lambda:extract_baseline(reader,iq,device,None,batch=k),device);nn_seconds=0.
+                    (features,_),f_seconds=_timed(lambda:baseline_features(reader,iq,device,k,fast_transfer),device);nn_seconds=0.
                     state,fit_seconds=_timed(lambda:fit_branch_local_ridge(**features,support_labels=np.asarray(task['support_y'],np.int64),
                         support_ids=list(map(str,task['support_ids'])),classes=spec['registered_classes'],old_classes=old_names,arm='local_ridge'),device)
                     require(list(state.classes)==spec['registered_classes'],'LocalRidge class order differs');audit=state.audit_dict()
@@ -182,12 +205,12 @@ def run(rt,job):
                          shared_scope='same canonical processed IQ shared across active methods; G cost recorded once',query_bank_rows=len(allrows))
             with Measure(root/f'query-Q{qp}-resources.json',context=context,model=reader) as measure:
                 iq=np.asarray(bank[allrows]);g_seconds=0.
-                if qp:iq,g_seconds=_timed(lambda:_restore(engine,iq,device,batch),device)
+                if qp:iq,g_seconds=_timed(lambda:_restore(engine,iq,device,batch,fast_transfer=True) if fast_transfer else _restore(engine,iq,device,batch),device)
                 orbit=base_features=logits=None;f_orbit=f_native=nn_seconds=head_seconds=0.
                 if use_r42:
-                    (orbit,_),f_orbit=_timed(lambda:extract_orbit_ensemble(reader,iq,device,None,batch=batch),device)
+                    (orbit,_),f_orbit=_timed(lambda:orbit_features(reader,iq,device,batch,fast_transfer),device)
                     orbit,nn_seconds=_timed(lambda:bridge.transform(orbit,restored=bool(qp),old_columns=columns),device)
-                if use_native:(base_features,logits),f_native=_timed(lambda:extract_baseline(reader,iq,device,None,batch=batch),device)
+                if use_native:(base_features,logits),f_native=_timed(lambda:baseline_features(reader,iq,device,batch,fast_transfer),device)
                 for row in a0:
                     spec=specs[row['k'],0];query=split_rows(cap,spec);pos=positions[query];require((pos>=0).all(),'A0 query bank mapping differs')
                     (pred,restricted),elapsed=_timed(lambda:_decisions(logits[pos][:,columns],spec['registered_classes']),device)
@@ -199,7 +222,7 @@ def run(rt,job):
                         def evaluate_local():
                             key=(stage,k,n,sp)
                             if key not in local_heads:
-                                local_heads[key]=local_ridge_scorer(state,device,rt.get('local_ridge_cuda',False))
+                                local_heads[key]=local_ridge_scorer(state,device,rt.get('local_ridge_cuda',False),pair_budget,fast_transfer)
                             return decide(local_heads[key],subset(base_features,pos),spec['registered_classes'],decision_batch)
                         (pred,restricted),elapsed=_timed(evaluate_local,device)
                         head_seconds+=elapsed;save(row,query,pred,restricted)

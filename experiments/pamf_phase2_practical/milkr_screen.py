@@ -15,22 +15,29 @@ from .episodic_experiment import split_rows
 from .milkr.semantic_residual import fit, NAMES
 
 
-def extract(reader, raw, device, engine=None, batch=128, descriptor=False):
+def extract(reader, raw, device, engine=None, batch=128, descriptor=False, fast_transfer=False):
     import torch
+    if fast_transfer:
+        from .fast_transfer import to_tensor,to_numpy
+        input_tensor=lambda value:to_tensor(value,device,np.float32)
+        output_array=lambda value:to_numpy(value,np.float32)
+    else:
+        input_tensor=lambda value:tensor(value,device)
+        output_array=lambda value:np.asarray(value.cpu().tolist(),np.float32)
     names=NAMES+('sig_views',) if descriptor else NAMES
     features={k:[] for k in names};logits=[]
     with torch.inference_mode():
         for start in range(0,len(raw),batch):
             x=np.asarray(raw[start:start+batch],np.float32)
             if engine is not None:
-                x=np.asarray(engine(tensor(x,device))[0].cpu().tolist(),np.float32)
+                x=output_array(engine(input_tensor(x))[0])
             if descriptor:
                 from .signature_features import capture
-                v,l=capture(reader,tensor(x,device))
-            else:v,l=branches(reader,tensor(x,device))
+                v,l=capture(reader,input_tensor(x))
+            else:v,l=branches(reader,input_tensor(x))
             for k in names:
-                features[k].append(fft96(x) if k=='fft' else np.asarray(v[k].cpu().tolist(),np.float32))
-            logits.append(np.asarray(l.cpu().tolist(),np.float32))
+                features[k].append(fft96(x) if k=='fft' else output_array(v[k]))
+            logits.append(output_array(l))
     return {k:np.concatenate(a) for k,a in features.items()},np.concatenate(logits)
 
 

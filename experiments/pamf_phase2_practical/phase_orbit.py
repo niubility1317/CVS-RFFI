@@ -60,26 +60,33 @@ def stack_views(phases):
     return {key:np.stack([f[key] for f in phases],axis=1) for key in phases[0]}
 
 
-def extract(reader,raw,device,engine=None,batch=128,*,aggregate=moments,return_phase_logits=False,time_shifts=(0,),phase_eighths=False):
+def extract(reader,raw,device,engine=None,batch=128,*,aggregate=moments,return_phase_logits=False,time_shifts=(0,),phase_eighths=False,fast_transfer=False):
     import torch
+    if fast_transfer:
+        from .fast_transfer import to_tensor,to_numpy
+        input_tensor=lambda value:to_tensor(value,device,np.float32)
+        output_array=lambda value:to_numpy(value,np.float32)
+    else:
+        input_tensor=lambda value:tensor(value,device)
+        output_array=lambda value:np.asarray(value.cpu().tolist(),np.float32)
     if time_shifts not in ((0,),(0,64,128,192)):raise ValueError('Unregistered cyclic time orbit')
     if phase_eighths and time_shifts!=(0,):raise ValueError('C8 is a phase-only orbit')
     output=[];logits=[]
     with torch.inference_mode():
         for start in range(0,len(raw),batch):
             base=np.asarray(raw[start:start+batch],np.float32)
-            if engine is not None:base=np.asarray(engine(tensor(base,device))[0].cpu().tolist(),np.float32)
+            if engine is not None:base=output_array(engine(input_tensor(base))[0])
             spectral=fft96(base);phases=[];phase_logits=[]
             for shift in time_shifts:
                 shifted=base if shift==0 else np.roll(base,shift,axis=2)
                 if shift!=0:spectral=fft96(shifted)
                 for quarter in range(8 if phase_eighths else 4):
                     phase=rotate_eighth(shifted,quarter) if phase_eighths else rotate(shifted,quarter)
-                    f,l=capture(reader,tensor(phase,device))
-                    phases.append(dict({key:np.asarray(value.cpu().tolist(),np.float32) for key,value in f.items()},fft=spectral))
+                    f,l=capture(reader,input_tensor(phase))
+                    phases.append(dict({key:output_array(value) for key,value in f.items()},fft=spectral))
                     if shift==0 and (not phase_eighths or quarter%2==0):
-                        if return_phase_logits:phase_logits.append(np.asarray(l.cpu().tolist(),np.float32))
-                        elif quarter==0:logits.append(np.asarray(l.cpu().tolist(),np.float32))
+                        if return_phase_logits:phase_logits.append(output_array(l))
+                        elif quarter==0:logits.append(output_array(l))
             output.append(aggregate(phases))
             if return_phase_logits:logits.append(np.stack(phase_logits,axis=1))
     return {key:np.concatenate([value[key] for value in output]) for key in output[0]},np.concatenate(logits)

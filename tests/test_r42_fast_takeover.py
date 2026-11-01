@@ -27,6 +27,84 @@ def test_scheduler_never_admits_running_or_completed_tasks():
         pending_tasks(tasks, {'a'}, {'a'}, set())
 
 
+def test_controller_identity_accepts_existing_takeover_only_not_smoke():
+    from experiments.pamf_phase2_practical.r42_fast_takeover import controller_command_matches
+    runtime = '/release/runtime.json'
+    legacy = ['python','-m','experiments.pamf_phase2_practical.milkr_r42_suite','dispatch','--runtime',runtime]
+    fast = ['python','-m','experiments.pamf_phase2_practical.r42_fast_takeover','--runtime',runtime]
+    assert controller_command_matches(legacy,runtime)
+    assert controller_command_matches(fast,runtime)
+    assert not controller_command_matches(fast+['--smoke-seed','1','--smoke-output','x'],runtime)
+    assert not controller_command_matches(legacy,'/different/runtime.json')
+
+
+def test_retakeover_rejects_live_inherited_predecessor_workers():
+    from experiments.pamf_phase2_practical.r42_fast_takeover import validate_predecessor_state
+    validate_predecessor_state({'status':'RUNNING','failed':[],'predecessor_active':[]})
+    with pytest.raises(ValueError, match='inherited'):
+        validate_predecessor_state({'status':'RUNNING','failed':[],
+                                    'predecessor_active':[{'key':'still-running'}]})
+    with pytest.raises(ValueError, match='failed'):
+        validate_predecessor_state({'status':'RUNNING','failed':[{'key':'bad'}],'predecessor_active':[]})
+
+
+def test_parallel_score_requires_global_prediction_barrier(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import r42_fast_takeover as takeover
+    invoked=[]
+    monkeypatch.setattr(takeover.subprocess,'Popen',lambda *a,**k: invoked.append(a))
+    with pytest.raises(FileNotFoundError):
+        takeover.score_queue(dict(run_root=str(tmp_path)),[dict(key='x')],2)
+    assert invoked==[]
+
+
+def test_parallel_score_honors_limit_and_reports_completion(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import r42_fast_takeover as takeover
+    root=tmp_path/'run'; (root/'logs').mkdir(parents=True)
+    takeover.write(root/'predictions_complete.json',dict(status='ALL_PREDICTIONS_FIXED'))
+    tasks=[dict(key=str(i),seed=1,capsule='capsules/P01/LS01/rx') for i in range(3)]
+    runtime=dict(run_root=str(root),runtime_file='runtime',poll_seconds=0)
+    active=set(); peak=[]
+    class Child:
+        def __init__(self,key):
+            self.key=key;self.pid=100+int(key);self.polls=0
+            active.add(key);peak.append(len(active))
+            output=root/'tasks'/key/'scores'/'rx'/'complete.json'
+            takeover.write(output,dict(status='SCORED_COMPLETE'))
+        def poll(self):
+            self.polls+=1
+            if self.polls==1:return None
+            active.remove(self.key);return 0
+    def launch(cmd,**kwargs):return Child(cmd[cmd.index('--key')+1])
+    monkeypatch.setattr(takeover.subprocess,'Popen',launch)
+    monkeypatch.setattr(takeover.time,'sleep',lambda _:None)
+    takeover.score_queue(runtime,tasks,2)
+    result=takeover.read(root/'score_state.json')
+    assert max(peak)==2 and result['completed']==3 and result['status']=='COMPLETE'
+
+
+def test_parallel_score_failure_drains_active_and_stops_admission(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import r42_fast_takeover as takeover
+    root=tmp_path/'run';(root/'logs').mkdir(parents=True)
+    takeover.write(root/'predictions_complete.json',dict(status='ALL_PREDICTIONS_FIXED'))
+    tasks=[dict(key=str(i),seed=1,capsule='capsules/P01/LS01/rx') for i in range(3)]
+    runtime=dict(run_root=str(root),runtime_file='runtime',poll_seconds=0)
+    launched=[];drained=[]
+    class Child:
+        def __init__(self,key):
+            self.key=key;self.pid=100+int(key);self.polls=0;launched.append(key)
+            if key=='1':takeover.write(root/'tasks'/key/'scores'/'rx'/'complete.json',dict(status='SCORED_COMPLETE'))
+        def poll(self):
+            self.polls+=1
+            if self.key=='1' and self.polls<3:return None
+            drained.append(self.key);return 1 if self.key=='0' else 0
+    monkeypatch.setattr(takeover.subprocess,'Popen',lambda cmd,**kw:Child(cmd[cmd.index('--key')+1]))
+    monkeypatch.setattr(takeover.time,'sleep',lambda _:None)
+    with pytest.raises(ValueError,match='Independent scoring failed'):
+        takeover.score_queue(runtime,tasks,2)
+    assert launched==['0','1'] and drained==['0','1']
+    assert takeover.read(root/'score_state.json')['status']=='FAILED'
+
+
 def test_failed_smoke_restores_paused_predecessor_without_killing_it(tmp_path, monkeypatch):
     from experiments.pamf_phase2_practical import r42_fast_takeover as takeover
 
