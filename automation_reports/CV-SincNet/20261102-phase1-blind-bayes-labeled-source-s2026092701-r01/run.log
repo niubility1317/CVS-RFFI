@@ -1,0 +1,5 @@
+LABELED_SOURCE_PREDICT 256 seconds 3.0
+LABELED_SOURCE_PREDICT 512 seconds 5.2
+LABELED_SOURCE_PREDICT 768 seconds 7.5
+LABELED_SOURCE_PREDICT 1024 seconds 9.6
+LABELED_SOURCE_PREDICTIONS_FIXED {"status": "SOURCE_PREDICTIONS_FIXED", "commit": "f4a6ed404fd412a0046b9411330e7bfd8c579ddb", "count": 1047, "source_only": true, "role": "L_s", "threshold": 0.99, "checkpoint_sha256": "0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338", "prior_sha256": "5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9", "predictions_sha256": "dbf9d06e940cb71475b96ddf682ffb256faee263c9ec3a6d5e34a69d10dfdafc", "TX_truth_reads": 0, "U_s_truth_reads": 0, "V_reads": 0, "test_reads": 0}

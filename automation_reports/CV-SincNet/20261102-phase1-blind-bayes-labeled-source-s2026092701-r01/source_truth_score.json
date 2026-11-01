@@ -1,0 +1,336 @@
+{
+  "status": "SOURCE_LS_TRUTH_LAST_COMPLETE",
+  "commit": "f4a6ed404fd412a0046b9411330e7bfd8c579ddb",
+  "predictions_sha256": "dbf9d06e940cb71475b96ddf682ffb256faee263c9ec3a6d5e34a69d10dfdafc",
+  "source_counts": {
+    "1:clean": {
+      "count": 83,
+      "clean": {
+        "correct": 83,
+        "repairs": 0,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 83,
+        "repairs": 0,
+        "damages": 0
+      },
+      "dura": {
+        "correct": 83,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 83,
+        "repairs": 0,
+        "damages": 0
+      }
+    },
+    "1:practical_high": {
+      "count": 97,
+      "clean": {
+        "correct": 97,
+        "repairs": 1,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 96,
+        "repairs": 0,
+        "damages": 0
+      },
+      "dura": {
+        "correct": 96,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 96,
+        "repairs": 0,
+        "damages": 0
+      }
+    },
+    "1:practical_mid": {
+      "count": 91,
+      "clean": {
+        "correct": 91,
+        "repairs": 2,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 87,
+        "repairs": 2,
+        "damages": 4
+      },
+      "dura": {
+        "correct": 89,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 90,
+        "repairs": 1,
+        "damages": 0
+      }
+    },
+    "1:practical_low_suburban": {
+      "count": 107,
+      "clean": {
+        "correct": 107,
+        "repairs": 4,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 97,
+        "repairs": 1,
+        "damages": 7
+      },
+      "dura": {
+        "correct": 103,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 103,
+        "repairs": 3,
+        "damages": 3
+      }
+    },
+    "1:practical_high_urban": {
+      "count": 108,
+      "clean": {
+        "correct": 107,
+        "repairs": 1,
+        "damages": 1
+      },
+      "raw": {
+        "correct": 101,
+        "repairs": 0,
+        "damages": 6
+      },
+      "dura": {
+        "correct": 107,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 105,
+        "repairs": 0,
+        "damages": 2
+      }
+    },
+    "1:practical_mid_urban": {
+      "count": 108,
+      "clean": {
+        "correct": 108,
+        "repairs": 10,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 84,
+        "repairs": 4,
+        "damages": 18
+      },
+      "dura": {
+        "correct": 98,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 94,
+        "repairs": 4,
+        "damages": 8
+      }
+    },
+    "1:practical_low_urban": {
+      "count": 102,
+      "clean": {
+        "correct": 102,
+        "repairs": 10,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 57,
+        "repairs": 2,
+        "damages": 37
+      },
+      "dura": {
+        "correct": 92,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 80,
+        "repairs": 4,
+        "damages": 16
+      }
+    },
+    "2:clean": {
+      "count": 54,
+      "clean": {
+        "correct": 54,
+        "repairs": 0,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 54,
+        "repairs": 0,
+        "damages": 0
+      },
+      "dura": {
+        "correct": 54,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 54,
+        "repairs": 0,
+        "damages": 0
+      }
+    },
+    "2:practical_high": {
+      "count": 51,
+      "clean": {
+        "correct": 51,
+        "repairs": 0,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 50,
+        "repairs": 0,
+        "damages": 1
+      },
+      "dura": {
+        "correct": 51,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 51,
+        "repairs": 0,
+        "damages": 0
+      }
+    },
+    "2:practical_mid": {
+      "count": 37,
+      "clean": {
+        "correct": 37,
+        "repairs": 3,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 33,
+        "repairs": 0,
+        "damages": 1
+      },
+      "dura": {
+        "correct": 34,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 36,
+        "repairs": 3,
+        "damages": 1
+      }
+    },
+    "2:practical_low_suburban": {
+      "count": 44,
+      "clean": {
+        "correct": 44,
+        "repairs": 2,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 41,
+        "repairs": 2,
+        "damages": 3
+      },
+      "dura": {
+        "correct": 42,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 41,
+        "repairs": 2,
+        "damages": 3
+      }
+    },
+    "2:practical_high_urban": {
+      "count": 58,
+      "clean": {
+        "correct": 58,
+        "repairs": 0,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 54,
+        "repairs": 0,
+        "damages": 4
+      },
+      "dura": {
+        "correct": 58,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 55,
+        "repairs": 0,
+        "damages": 3
+      }
+    },
+    "2:practical_mid_urban": {
+      "count": 51,
+      "clean": {
+        "correct": 51,
+        "repairs": 1,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 40,
+        "repairs": 0,
+        "damages": 10
+      },
+      "dura": {
+        "correct": 50,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 48,
+        "repairs": 1,
+        "damages": 3
+      }
+    },
+    "2:practical_low_urban": {
+      "count": 56,
+      "clean": {
+        "correct": 55,
+        "repairs": 5,
+        "damages": 0
+      },
+      "raw": {
+        "correct": 34,
+        "repairs": 0,
+        "damages": 16
+      },
+      "dura": {
+        "correct": 50,
+        "repairs": 0,
+        "damages": 0
+      },
+      "blind": {
+        "correct": 50,
+        "repairs": 5,
+        "damages": 5
+      }
+    }
+  },
+  "source_only": true,
+  "threshold": 0.99,
+  "truth_role": "L_s",
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "The frozen ground F previously trained on source IDs; the same source physical IDs have been explored in other channel views; not independent blind or target test."
+}
