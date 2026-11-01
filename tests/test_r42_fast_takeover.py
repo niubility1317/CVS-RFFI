@@ -27,6 +27,17 @@ def test_scheduler_never_admits_running_or_completed_tasks():
         pending_tasks(tasks, {'a'}, {'a'}, set())
 
 
+def test_gpu_concurrency_map_keeps_gpu7_at_two_and_validates_all_devices():
+    from experiments.pamf_phase2_practical.r42_fast_takeover import gpu_worker_limit
+    rt={'allowed_gpus':[0,1,2,3,4,5,6,7], 'max_workers_by_gpu':{'0':3,'1':2,'2':3,'3':3,'4':2,'5':2,'6':3,'7':2}}
+    assert [gpu_worker_limit(rt,i) for i in range(8)] == [3,2,3,3,2,2,3,2]
+    assert gpu_worker_limit({'allowed_gpus':[7]},7)==2
+    with pytest.raises(ValueError, match='map'):
+        gpu_worker_limit(dict(rt,max_workers_by_gpu={'7':2}),7)
+    with pytest.raises(ValueError, match='limit'):
+        gpu_worker_limit(dict(rt,max_workers_by_gpu=dict(rt['max_workers_by_gpu'],**{'7':4})),7)
+
+
 def test_mix_only_keeps_original_keys_and_complete_kn_matrix():
     from experiments.pamf_phase2_practical import milkr_r42_suite as suite
     from experiments.pamf_phase2_practical.r42_fast_takeover import selected_tasks
