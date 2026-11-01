@@ -3,7 +3,7 @@
 - run_id：`20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01`
 - group_id：`restoration-diffusion-source-motivated-fixes`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（真实源模型检查及实际worker已核实）
 
 ## 目的与对照
 
@@ -45,3 +45,8 @@
 先按原全局CUDA seed2026110203抽原lognormal sigma和Gaussian epsilon；再用私有Generator(seed2026110205+当前0基update)，以50%保留原sigma、50%均匀选择固定8个部署sigma。私有抽样不推进原全局随机流，update已在技术快照中保存，恢复时无需额外随机状态。9项mixture计数与5项sigma区间统计、全30日志/顺序/LR/加权loss/30恢复快照完整保留；实际E0与原模型及E01全局CPU/CUDA RNG将独立读回核实。
 
 源2 smoke实际运行CUDA mixture并验证全局CUDA RNG未变，同时检查真实G/F0梯度、完整sampler有限及严格E0重载。零head初值是Gaussian residual prior，不是恒等。固定final30后自动全Main七景，无源质量筛选。1614608参数、训练1core/部署15core、2654576640静态实数MAC及45个complex256 FFT/IFFT；实际训练墙钟/显存另报，静态计数不等于实测时延。
+
+
+## 源驱动对照实际运行已核实
+
+VERIFIED / RUNNING。源2真实G/F0、CUDA mixture不改变全局RNG与严格E0重载PASS。E01独立CPU读回模型/优化器/RNG，实际E0逐tensor同原full8工厂/真实初值，全部30轮sourceorder/draw相同，E01全局CPU/CUDA RNG状态同原full8，配置仅sigma抽样与版本差异；9项mixture计数/5项sigma区间/加权loss复算PASS。 实际PID/CWD/commit/CUDA/GPU及日志增长核实；GPU6准入free24110MiB/原0compute/新增1，两项分别在4/6同时运行。archive单次SHA和远端编译通过，其他owner保持。原Main完整矩阵自动继续，全prediction固定后独立truth-last，正式性能PENDING，默认DURA与目标ACTIVE保持。

@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "actual_code_commit": "3e5ecb4ffcc5658693bd9b6dc509711b4509a231",
+  "physical_GPU": 4,
+  "admitted_free_MiB": 24110,
+  "existing_compute_at_admission": 0,
+  "added_task_GPU_workers": 1,
+  "PID_CWD_cmdline_CUDA_GPU_log_growth_verified": true,
+  "source2_smoke": "PASS",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "focused_checks": 5,
+  "one_P0P1": "PASS",
+  "new_G_training_updates_observed": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "target_training_inputs": 0,
+  "formal_performance": "PENDING"
+}

@@ -3,7 +3,7 @@
 - run_id：`20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01`
 - group_id：`restoration-diffusion-source-motivated-fixes`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（真实源模型检查及实际worker已核实）
 
 ## 目的与对照
 
@@ -43,3 +43,8 @@
 严格加载原5e5921c9从零单阶段30/7410的固定final模型，不更新或另训G。全局固定第4denoised估计，前三次完整Heun更新各2denoiser加第4次denoiser，共7调用；不执行第4次correction及后续步。权重、配置与保存latent全部继承，外包模块不增加参数。源2用真实parent和F0检查，且新输出逐值等于源轨迹[3]。
 
 原full8、raw、DURA的同IQ/ID预测精确复用；early4全量新推理，四路各七景/两个总体共56单元完整后评分。新训练成本0，祖先G30轮/F0 E50/源尺度成本仍计入系统，不能称系统没有训练，也不冒充一个新从零网络。1614608参数、7×176971776=1238802432静态实数MAC、21个complex256 FFT/IFFT；不是实测时延或已证明性能收益。
+
+
+## 源驱动对照实际运行已核实
+
+VERIFIED / RUNNING。源2实际冻结parentG/F0检查PASS，输出逐值等于固定第4内部读出、每记录7core、0新G训练；当前原Main跨接收机预测已产生首景完成日志。 实际PID/CWD/commit/CUDA/GPU及日志增长核实；GPU4准入free24110MiB/原0compute/新增1，两项分别在4/6同时运行。archive单次SHA和远端编译通过，其他owner保持。原Main完整矩阵自动继续，全prediction固定后独立truth-last，正式性能PENDING，默认DURA与目标ACTIVE保持。
