@@ -12,8 +12,6 @@ from phase1_complex_multires_mask import ComplexMultiResolutionMask
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.pamf_phase1_flow import anchor_source_smoke as prior
 from experiments.pamf_phase1_flow import feature_conditioned_experiment as label_reader
-from leo_practical.channel import Config, receiver_for_session, stable_seed, normalize_input
-from leo_practical.residual import ResidualChannel
 
 VIEWS = ('clean', 'practical_low_suburban', 'practical_mid_urban', 'practical_low_urban')
 EPOCHS = (2, 5, 10)
@@ -43,6 +41,12 @@ def iq(z):
 
 def source_inputs(root, smoke=False):
     """Build immutable source views without loading F or transmitter labels."""
+    from experiments.cric_dura_comparison.bootstrap import activate
+    runtime=core.read(root/'releases'/(core.F_RUN+'-release')/'runtime.json')
+    if runtime['code_commit']!='3ff8f4b7e85b5608f5b45350aa18081499a7ef1d':raise ValueError('Exact Phase1 runtime required')
+    activate(runtime)
+    from leo_practical.channel import Config, receiver_for_session, stable_seed, normalize_input
+    from leo_practical.residual import ResidualChannel
     complete = core.read(root/'runs'/core.F_RUN/'F'/core.F_ROW/'source/complete.json')
     contract = core.read(complete['config']['source_contract'])
     cache, clean, roles = core.data(root, contract)

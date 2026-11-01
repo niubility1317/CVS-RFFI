@@ -1,1 +1,2 @@
 {"at": "2026-11-01T15:54:13+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T15:58:03+00:00", "status": "FAILED", "note": "真实源 smoke 在训练前因 leo_practical 未初始化而退出；保留 r01 原目录，无性能结果。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-phase1-complex-mask-source-s2026092701-r01.log"], "row_id": null}
