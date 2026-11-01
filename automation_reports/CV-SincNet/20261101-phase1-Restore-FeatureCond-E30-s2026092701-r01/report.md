@@ -39,3 +39,7 @@
 主验收仍是原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000物理包的clean+六景，各practical至少140345正确=83.538690%，距raw clean86.538690%≤3pp并保持clean。每次训练冻结后自动126000/42000两总体七景，所有42单元预测固定后独立CPU truth-last/原共享锁，原raw/DURA同IQ-ID预测精确复用。源质量不取消测试，不依据目标反馈改参数；默认DURA保持。
 
 7项针对性检查及一次独立P0/P1通过。静态合成CPU输入profile为260546560实数Conv/Linear/attention MAC（含QKV/out/QK/AV），0FFT/CG；未计F0、FiLM逐点、norm、activation、softmax、插值和内存，不是N607时延。环境原N607 CVS-RFFI Torch2.1+cu121/FP32-TF32off，独占CWD/commit/命令/路径/产物见登记。GPU4/6 UUID free>=12GB、原compute<=2、只新增1个本任务GPUworker/单卡总<=3/自身每卡1/整体<=2，其他owner不改；出错保留root与恢复文件，不自动重试。完整质量与成本仍待真实运行。
+
+## 启动后独立读回
+
+VERIFIED / RUNNING。实际Ls2源F0/G梯度、单位投影初值、encoder/regressor参与及严格E0重载PASS。首轮247更新完成（59.658356秒），E01的模型/优化器/CPU-CUDA RNG独立CPU加载PASS；输出功率平均绝对误差5.83e-08。GPU4准入余量23484MiB、已有1个compute，仅新增1个本任务GPUworker，PID/CWD/命令/CUDA/GPU及进度增长核实，其他owner保持。当前只源训练，无正式性能结果。

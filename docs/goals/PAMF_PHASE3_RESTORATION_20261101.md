@@ -201,3 +201,9 @@ CPU控制器已独立核实PID/CWD/命令/CUDA空、WAIT_PARENT_COMPLETE，当�
 `20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01`，实际代码ac8015d9dcdcd9c5d1f05d7c09882a0591825d7d。原Ls128Us384固定512包×20draw×五T，冻结DURA/PHY/FullFGrad与原F0，比较G(Ty)与T G(y)，均对T clean评分。4项检查/一次P0P1/实际Ls2smoke通过；51200行/全部源面板/20日志/保存判决配对独立复算差0，identity差异0、phase/gain参考IQ不变性误差≤2.39e-7；0更新/TX/V/OE/目标，全状态保持、进程结束，ANALYZED。
 
 低档城区对应1436源实例中，+90°使F0(clean)判决本身仅78.690808%保持；gain.7/1.4则将原clean单位功率变为.49/1.96。源等变差异不能直接解释Main下降或认定恢复器缺陷，结果不自动支持相位群平均/硬相位或增益等变结构。反射FIR也非native新信道，语义一致率与波形差异不单调。下一步改造需尊重原clean约定和冻结F0特征语义，仍仅原LsUs/单阶段30，所有新G完整Main七景；默认DURA和六景3pp+clean目标ACTIVE不变。
+
+## 连续源特征条件恢复器已运行（2026-11-01）
+
+`20261101-phase1-Restore-FeatureCond-E30-s2026092701-r01`，实际代码`c8659b15bb3d316325867b154eede51f1a61e247`，4670178参数、260546560 Conv/Linear/attention MAC（不含FiLM逐点/归一化/F0等，非时延）、0FFT/CG。共享encoder预测连续160维F0源clean特征，四FiLM用预测latent调decoder，输出原clean单位复功率；teacher仅loss、部署只IQ。全模型scratch单阶段30/7410，原LsUs/R07/order/LR/seed保持，输出F指导加连续latent回归，无TX/logit/CE/六类原型/新分类头/旧G或IQ教师祖先；OE仅冻结诊断，V/目标不训练选模。结构/辅助损失/功率约束共同变化，非单因素。
+
+7项检查/一次P0P1及实际Ls2F0/G梯度/E0重载PASS；首轮247更新完成，E01模型/优化器/RNG独立CPU读回PASS。GPU4准入free23484MiB/原1compute/新增1个，自身PID-CWD-CUDA-GPU与日志核实，未改其他owner。固定final30后自动原Main168000×七景、全部预测后独立truth-last，不因源质量取消。当前性能PENDING，六景3pp+clean主目标ACTIVE、效率次级、默认DURA不变。
