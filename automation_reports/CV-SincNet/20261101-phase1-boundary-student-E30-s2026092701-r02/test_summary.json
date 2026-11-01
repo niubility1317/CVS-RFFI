@@ -1,0 +1,1009 @@
+{
+  "status": "ANALYZED",
+  "count": 168000,
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "raw_clean_accuracy": 86.53869047619047,
+  "views": {
+    "clean": {
+      "raw_accuracy": 86.53869047619047,
+      "restored_accuracy": 86.51785714285715,
+      "raw_clean_gap_pp": 0.020833333333314386,
+      "macro_f1": 86.29411233602717
+    },
+    "practical_high": {
+      "raw_accuracy": 80.61547619047619,
+      "restored_accuracy": 84.00833333333333,
+      "raw_clean_gap_pp": 2.5303571428571416,
+      "macro_f1": 83.68531816537651
+    },
+    "practical_mid": {
+      "raw_accuracy": 78.1077380952381,
+      "restored_accuracy": 82.40059523809524,
+      "raw_clean_gap_pp": 4.138095238095232,
+      "macro_f1": 82.15706334700612
+    },
+    "practical_low_suburban": {
+      "raw_accuracy": 75.74464285714285,
+      "restored_accuracy": 80.46964285714286,
+      "raw_clean_gap_pp": 6.069047619047609,
+      "macro_f1": 80.34289102813204
+    },
+    "practical_high_urban": {
+      "raw_accuracy": 77.05,
+      "restored_accuracy": 82.56369047619047,
+      "raw_clean_gap_pp": 3.9749999999999943,
+      "macro_f1": 82.38050900956617
+    },
+    "practical_mid_urban": {
+      "raw_accuracy": 62.79583333333333,
+      "restored_accuracy": 74.68809523809524,
+      "raw_clean_gap_pp": 11.850595238095224,
+      "macro_f1": 75.05511816801041
+    },
+    "practical_low_urban": {
+      "raw_accuracy": 51.60476190476191,
+      "restored_accuracy": 67.54523809523809,
+      "raw_clean_gap_pp": 18.993452380952377,
+      "macro_f1": 68.2522512347289
+    }
+  },
+  "groups": [
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "raw": 97.78571428571429,
+      "restored": 97.82857142857144
+    },
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "raw": 69.55357142857143,
+      "restored": 69.32857142857142
+    },
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "raw": 82.22142857142856,
+      "restored": 82.17142857142858
+    },
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "raw": 72.94285714285714,
+      "restored": 72.97857142857143
+    },
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "raw": 99.83571428571429,
+      "restored": 99.83928571428572
+    },
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "raw": 96.89285714285715,
+      "restored": 96.96071428571429
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "raw": 81.04583333333333,
+      "restored": 81.07083333333334
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "raw": 78.92916666666666,
+      "restored": 79.02916666666667
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "raw": 92.6875,
+      "restored": 92.675
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "raw": 83.87083333333332,
+      "restored": 83.81666666666666
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "raw": 95.12916666666666,
+      "restored": 95.075
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "raw": 85.75833333333334,
+      "restored": 85.66666666666667
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "raw": 88.35,
+      "restored": 88.29166666666667
+    },
+    {
+      "view": "clean",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "raw": 81.82380952380952,
+      "restored": 81.88809523809523
+    },
+    {
+      "view": "clean",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "raw": 88.38571428571429,
+      "restored": 88.43571428571428
+    },
+    {
+      "view": "clean",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "raw": 86.04285714285714,
+      "restored": 85.9452380952381
+    },
+    {
+      "view": "clean",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "raw": 89.90238095238095,
+      "restored": 89.80238095238096
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "raw": 86.02499999999999,
+      "restored": 95.5
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "raw": 58.45357142857143,
+      "restored": 54.69642857142857
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "raw": 75.6392857142857,
+      "restored": 86.06428571428572
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "raw": 71.62857142857143,
+      "restored": 69.73214285714285
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "raw": 98.34642857142856,
+      "restored": 99.85000000000001
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "raw": 93.60000000000001,
+      "restored": 98.20714285714286
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "raw": 76.58749999999999,
+      "restored": 76.33333333333333
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "raw": 68.59583333333333,
+      "restored": 87.30833333333334
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "raw": 85.58333333333333,
+      "restored": 87.16666666666667
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "raw": 81.12083333333334,
+      "restored": 74.53333333333333
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "raw": 86.48333333333333,
+      "restored": 93.0375
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "raw": 85.10416666666667,
+      "restored": 81.18333333333332
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "raw": 80.83333333333333,
+      "restored": 88.49583333333332
+    },
+    {
+      "view": "practical_high",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "raw": 79.30238095238096,
+      "restored": 80.90238095238095
+    },
+    {
+      "view": "practical_high",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "raw": 81.77142857142857,
+      "restored": 85.42142857142856
+    },
+    {
+      "view": "practical_high",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "raw": 80.75714285714287,
+      "restored": 83.88571428571429
+    },
+    {
+      "view": "practical_high",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "raw": 80.63095238095238,
+      "restored": 85.82380952380953
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "raw": 83.52142857142857,
+      "restored": 94.14642857142857
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "raw": 57.599999999999994,
+      "restored": 53.449999999999996
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "raw": 72.99642857142857,
+      "restored": 84.40357142857144
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "raw": 66.79285714285714,
+      "restored": 67.28571428571428
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "raw": 94.85357142857143,
+      "restored": 99.74285714285715
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "raw": 92.88214285714285,
+      "restored": 95.375
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "raw": 74.29583333333333,
+      "restored": 75.52916666666667
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "raw": 67.77916666666667,
+      "restored": 84.93333333333334
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "raw": 82.74583333333332,
+      "restored": 84.47083333333333
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "raw": 77.95416666666667,
+      "restored": 73.29166666666667
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "raw": 83.64166666666667,
+      "restored": 90.39166666666667
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "raw": 81.6125,
+      "restored": 80.0625
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "raw": 78.725,
+      "restored": 88.125
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "raw": 76.90714285714286,
+      "restored": 79.55714285714286
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "raw": 79.46666666666667,
+      "restored": 84.01190476190476
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "raw": 78.07857142857144,
+      "restored": 82.04047619047618
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "raw": 77.97857142857143,
+      "restored": 83.99285714285715
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "raw": 81.32857142857142,
+      "restored": 91.86785714285715
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "raw": 56.971428571428575,
+      "restored": 51.378571428571426
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "raw": 70.3,
+      "restored": 82.55714285714286
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "raw": 61.75000000000001,
+      "restored": 65.21428571428571
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "raw": 91.88214285714285,
+      "restored": 99.325
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "raw": 92.2357142857143,
+      "restored": 92.475
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "raw": 71.97916666666667,
+      "restored": 74.57916666666667
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "raw": 65.75833333333333,
+      "restored": 82.19166666666666
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "raw": 80.28333333333333,
+      "restored": 81.64583333333333
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "raw": 75.67916666666666,
+      "restored": 71.68333333333334
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "raw": 80.52083333333333,
+      "restored": 87.08333333333333
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "raw": 78.9625,
+      "restored": 78.69166666666668
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "raw": 77.02916666666667,
+      "restored": 87.41250000000001
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "raw": 74.47380952380952,
+      "restored": 77.76428571428572
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "raw": 77.01904761904763,
+      "restored": 82.20476190476191
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "raw": 75.90238095238095,
+      "restored": 80.11666666666667
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "raw": 75.58333333333334,
+      "restored": 81.79285714285714
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "raw": 81.53214285714286,
+      "restored": 93.76785714285715
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "raw": 56.45714285714286,
+      "restored": 55.421428571428564
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "raw": 71.98571428571428,
+      "restored": 84.01428571428572
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "raw": 67.02142857142857,
+      "restored": 67.73928571428571
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "raw": 92.66071428571429,
+      "restored": 99.76071428571429
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "raw": 92.64285714285714,
+      "restored": 94.67857142857142
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "raw": 73.39583333333334,
+      "restored": 75.89166666666667
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "raw": 66.02083333333333,
+      "restored": 85.27916666666667
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "raw": 81.86250000000001,
+      "restored": 85.40833333333333
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "raw": 77.10833333333333,
+      "restored": 73.275
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "raw": 82.96249999999999,
+      "restored": 90.5625
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "raw": 80.57083333333334,
+      "restored": 79.87083333333334
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "raw": 77.42916666666667,
+      "restored": 87.65833333333333
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "raw": 75.79523809523809,
+      "restored": 79.5904761904762
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "raw": 78.4452380952381,
+      "restored": 84.25238095238096
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "raw": 76.88333333333334,
+      "restored": 82.41190476190476
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "raw": 77.07619047619048,
+      "restored": 84.0
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "raw": 65.33214285714286,
+      "restored": 84.03214285714286
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "raw": 47.85357142857143,
+      "restored": 52.621428571428574
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "raw": 56.78214285714286,
+      "restored": 74.5
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "raw": 48.97142857142857,
+      "restored": 59.36785714285714
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "raw": 70.38214285714287,
+      "restored": 98.275
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "raw": 87.45357142857144,
+      "restored": 79.33214285714286
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "raw": 60.425,
+      "restored": 72.62916666666666
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "raw": 54.90416666666667,
+      "restored": 74.04166666666666
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "raw": 66.77083333333333,
+      "restored": 77.22083333333333
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "raw": 61.21666666666666,
+      "restored": 66.30833333333334
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "raw": 67.52916666666667,
+      "restored": 77.29583333333333
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "raw": 65.18333333333334,
+      "restored": 73.72083333333333
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "raw": 63.541666666666664,
+      "restored": 81.6
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "raw": 61.56904761904762,
+      "restored": 72.83333333333334
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "raw": 64.49285714285715,
+      "restored": 77.60000000000001
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "raw": 62.811904761904756,
+      "restored": 73.55714285714285
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "raw": 62.30952380952382,
+      "restored": 74.76190476190476
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "raw": 52.714285714285715,
+      "restored": 74.64642857142857
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "raw": 40.846428571428575,
+      "restored": 49.05357142857143
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "raw": 45.52142857142857,
+      "restored": 66.325
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "raw": 35.69285714285714,
+      "restored": 53.96428571428571
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "raw": 54.75714285714286,
+      "restored": 94.93214285714285
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "raw": 80.09642857142858,
+      "restored": 66.35
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "raw": 49.85,
+      "restored": 67.42916666666666
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "raw": 45.708333333333336,
+      "restored": 65.77083333333333
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "raw": 55.137499999999996,
+      "restored": 69.49583333333334
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "raw": 49.725,
+      "restored": 59.28333333333333
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "raw": 55.175,
+      "restored": 67.5
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "raw": 52.50833333333333,
+      "restored": 67.34166666666667
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "raw": 53.12916666666667,
+      "restored": 75.99583333333332
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "raw": 50.56904761904762,
+      "restored": 66.37142857142857
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "raw": 53.37619047619048,
+      "restored": 71.0952380952381
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "raw": 51.661904761904765,
+      "restored": 66.13571428571429
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "raw": 50.811904761904756,
+      "restored": 66.57857142857144
+    }
+  ],
+  "six_scene_gap_at_most_3pp": false,
+  "clean_damage_at_most_1pp": true,
+  "all_predictions_before_truth": true,
+  "target_feedback": false
+}
