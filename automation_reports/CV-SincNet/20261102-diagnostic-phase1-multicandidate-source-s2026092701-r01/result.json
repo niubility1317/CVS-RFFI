@@ -1,0 +1,364 @@
+{
+  "status": "SOURCE_MULTICANDIDATE_COMPLETE",
+  "count": 3921,
+  "valid_count": 3786,
+  "L_s_count": 351,
+  "views": {
+    "clean": {
+      "all_valid": {
+        "count": 579,
+        "oracle_any_correct": 579,
+        "raw": {
+          "correct": 579,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "dura": {
+          "correct": 579,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 579,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "curriculum": {
+          "correct": 579,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        }
+      },
+      "L_s_only": {
+        "count": 54,
+        "oracle_any_correct": 54,
+        "raw": {
+          "correct": 54,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "dura": {
+          "correct": 54,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 54,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "curriculum": {
+          "correct": 54,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        }
+      }
+    },
+    "practical_high": {
+      "all_valid": {
+        "count": 541,
+        "oracle_any_correct": 541,
+        "raw": {
+          "correct": 526,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 15
+        },
+        "dura": {
+          "correct": 539,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 530,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 11
+        },
+        "curriculum": {
+          "correct": 526,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 15
+        }
+      },
+      "L_s_only": {
+        "count": 53,
+        "oracle_any_correct": 53,
+        "raw": {
+          "correct": 51,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 2
+        },
+        "dura": {
+          "correct": 53,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 51,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 2
+        },
+        "curriculum": {
+          "correct": 51,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 2
+        }
+      }
+    },
+    "practical_mid": {
+      "all_valid": {
+        "count": 544,
+        "oracle_any_correct": 544,
+        "raw": {
+          "correct": 517,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 24
+        },
+        "dura": {
+          "correct": 540,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 524,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 18
+        },
+        "curriculum": {
+          "correct": 516,
+          "repairs_vs_dura": 3,
+          "damages_vs_dura": 27
+        }
+      },
+      "L_s_only": {
+        "count": 54,
+        "oracle_any_correct": 54,
+        "raw": {
+          "correct": 51,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 3
+        },
+        "dura": {
+          "correct": 54,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 53,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 1
+        },
+        "curriculum": {
+          "correct": 51,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 3
+        }
+      }
+    },
+    "practical_low_suburban": {
+      "all_valid": {
+        "count": 536,
+        "oracle_any_correct": 528,
+        "raw": {
+          "correct": 497,
+          "repairs_vs_dura": 5,
+          "damages_vs_dura": 29
+        },
+        "dura": {
+          "correct": 521,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 508,
+          "repairs_vs_dura": 6,
+          "damages_vs_dura": 19
+        },
+        "curriculum": {
+          "correct": 497,
+          "repairs_vs_dura": 7,
+          "damages_vs_dura": 31
+        }
+      },
+      "L_s_only": {
+        "count": 55,
+        "oracle_any_correct": 54,
+        "raw": {
+          "correct": 47,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 6
+        },
+        "dura": {
+          "correct": 51,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 50,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 3
+        },
+        "curriculum": {
+          "correct": 49,
+          "repairs_vs_dura": 3,
+          "damages_vs_dura": 5
+        }
+      }
+    },
+    "practical_high_urban": {
+      "all_valid": {
+        "count": 541,
+        "oracle_any_correct": 535,
+        "raw": {
+          "correct": 506,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 28
+        },
+        "dura": {
+          "correct": 532,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 515,
+          "repairs_vs_dura": 3,
+          "damages_vs_dura": 20
+        },
+        "curriculum": {
+          "correct": 506,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 28
+        }
+      },
+      "L_s_only": {
+        "count": 45,
+        "oracle_any_correct": 43,
+        "raw": {
+          "correct": 40,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 3
+        },
+        "dura": {
+          "correct": 43,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 41,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 2
+        },
+        "curriculum": {
+          "correct": 39,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 4
+        }
+      }
+    },
+    "practical_mid_urban": {
+      "all_valid": {
+        "count": 484,
+        "oracle_any_correct": 469,
+        "raw": {
+          "correct": 362,
+          "repairs_vs_dura": 8,
+          "damages_vs_dura": 102
+        },
+        "dura": {
+          "correct": 456,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 378,
+          "repairs_vs_dura": 11,
+          "damages_vs_dura": 89
+        },
+        "curriculum": {
+          "correct": 378,
+          "repairs_vs_dura": 9,
+          "damages_vs_dura": 87
+        }
+      },
+      "L_s_only": {
+        "count": 38,
+        "oracle_any_correct": 38,
+        "raw": {
+          "correct": 27,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 11
+        },
+        "dura": {
+          "correct": 37,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 28,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 10
+        },
+        "curriculum": {
+          "correct": 27,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 10
+        }
+      }
+    },
+    "practical_low_urban": {
+      "all_valid": {
+        "count": 561,
+        "oracle_any_correct": 532,
+        "raw": {
+          "correct": 367,
+          "repairs_vs_dura": 14,
+          "damages_vs_dura": 153
+        },
+        "dura": {
+          "correct": 506,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 391,
+          "repairs_vs_dura": 23,
+          "damages_vs_dura": 138
+        },
+        "curriculum": {
+          "correct": 379,
+          "repairs_vs_dura": 16,
+          "damages_vs_dura": 143
+        }
+      },
+      "L_s_only": {
+        "count": 52,
+        "oracle_any_correct": 48,
+        "raw": {
+          "correct": 32,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 13
+        },
+        "dura": {
+          "correct": 44,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "semantic": {
+          "correct": 35,
+          "repairs_vs_dura": 3,
+          "damages_vs_dura": 12
+        },
+        "curriculum": {
+          "correct": 36,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 10
+        }
+      }
+    }
+  },
+  "predictions_before_source_labels": true,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "source_cache_epoch": 18,
+  "source_caveat": "physical IDs and other channel views previously inspected; no independent blind claim"
+}

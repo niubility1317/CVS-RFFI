@@ -1,0 +1,11 @@
+VERIFIED clean valid 579 DURA 579 semantic 579 curriculum 579 oracle 579 L_s 54 DURA_L_s 54 oracle_L_s 54
+VERIFIED practical_high valid 541 DURA 539 semantic 530 curriculum 526 oracle 541 L_s 53 DURA_L_s 53 oracle_L_s 53
+VERIFIED practical_mid valid 544 DURA 540 semantic 524 curriculum 516 oracle 544 L_s 54 DURA_L_s 54 oracle_L_s 54
+VERIFIED practical_low_suburban valid 536 DURA 521 semantic 508 curriculum 497 oracle 528 L_s 55 DURA_L_s 51 oracle_L_s 54
+VERIFIED practical_high_urban valid 541 DURA 532 semantic 515 curriculum 506 oracle 535 L_s 45 DURA_L_s 43 oracle_L_s 43
+VERIFIED practical_mid_urban valid 484 DURA 456 semantic 378 curriculum 378 oracle 469 L_s 38 DURA_L_s 37 oracle_L_s 38
+VERIFIED practical_low_urban valid 561 DURA 506 semantic 391 curriculum 379 oracle 532 L_s 52 DURA_L_s 44 oracle_L_s 48
+INDEPENDENT_SOURCE_MULTICANDIDATE_VERIFIED U_s_truth_reads=0 V_reads=0 target_reads=0
+
+GROUP practical_mid_urban n 484 clean_correct 484 clean_pct 100.0 DURA 456 oracle 469 oracle_pct 96.90082644628099 gap_pp 3.0991735537190124 relative_pct 3.0991735537190124
+GROUP practical_low_urban n 561 clean_correct 561 clean_pct 100.0 DURA 506 oracle 532 oracle_pct 94.83065953654189 gap_pp 5.169340463458113 relative_pct 5.169340463458113
