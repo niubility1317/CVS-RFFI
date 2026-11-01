@@ -1,0 +1,16 @@
+PS     PID    PPID     ELAPSED %CPU COMMAND
+ 746683       1       00:09  0.2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-blind-gate-s2026092701-r01-release/experiments/phase1_blind_gate/phase1_blind_gate_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01 --commit c905f3ab3d7f0d121e2c44c3b0bfb26188fa5825 --device cuda:0
+ 747180  746683       00:06  102 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-blind-gate-s2026092701-r01-release/experiments/phase1_blind_gate/phase1_blind_gate_source.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source --commit c905f3ab3d7f0d121e2c44c3b0bfb26188fa5825 --device cuda:0
+
+CWD /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release
+LOG PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-blind-gate-s2026092701-r01-release/experiments/phase1_blind_gate/phase1_blind_gate_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source_smoke", "--commit", "c905f3ab3d7f0d121e2c44c3b0bfb26188fa5825", "--device", "cuda:0", "--smoke"]
+BLIND_GATE_SOURCE_SMOKE {"status": "PASS", "records": 16, "clean": 8, "impaired": 8, "TX_labels_read": 0, "V_reads": 0, "test_reads": 0, "F_loaded": false, "DURA_used": false}
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-blind-gate-s2026092701-r01-release/experiments/phase1_blind_gate/phase1_blind_gate_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source", "--commit", "c905f3ab3d7f0d121e2c44c3b0bfb26188fa5825", "--device", "cuda:0"]
+BLIND_GATE_EPOCH 1 records 47143 loss 0.4575808874729661
+
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source_smoke/result.json True
+DATA {"status": "PASS", "records": 16, "clean": 8, "impaired": 8, "TX_labels_read": 0, "V_reads": 0, "test_reads": 0, "F_loaded": false, "DURA_used": false}
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source/source_selection.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/completion.json False
+GPU3 35 %, 435 MiB
+
