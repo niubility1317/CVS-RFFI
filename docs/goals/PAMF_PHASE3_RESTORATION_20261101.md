@@ -448,3 +448,7 @@ low urban的特征改善组中42次TX修复、0次TX损伤；特征变差组中3
 诊断run `20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01`；实际代码 `4178f020951d4799e912a941240bea36f45bedf1`；源V七景、315分组和105条件分组完成独立CPU评分与计数核对，0训练／target读取，默认DURA不变。完整结果见 `automation_reports/CV-SincNet/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01/source_analysis.md`。
 
 下一版候选方向：从零单阶段30轮，分别设置物理参数估计和IQ细节修正分支；连续F特征梯度只作用于后者，避免为了特征拟合直接改写Action／噪声估计。仅为源端证据支持的待检验假设，尚未实现或启动；不改训练角色、F0、默认头或原Main七景验收。性能主线继续，训练效率仍为支线。
+
+## 2026-11-02 双分支恢复器已实际启动
+
+run `20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01`，实际代码 `1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6`。5481223参数（物理1230341、IQ细节4250882），全部scratch单阶段30/7410；物理只模拟参数监督，IQ／连续F特征梯度只到细节，独立梯度裁剪；1890000条完整源曝光，原Ls/Us范围和冻结Tri-SIG-TIME SSL不变。5项针对性检查和唯一P0/P1审查通过，真实source2完整网络/F0/梯度隔离/初始零细节/E0重载PASS，GPU4实际训练已核实。最终轮次后自动原Main双总体七景、独立truth-last；当前RUNNING，尚无新性能结论。默认DURA不变，原六景逐个3pp＋两总体clean保持的目标仍未达到。

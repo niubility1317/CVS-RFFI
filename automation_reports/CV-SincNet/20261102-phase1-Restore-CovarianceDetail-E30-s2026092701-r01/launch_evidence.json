@@ -1,0 +1,33 @@
+{
+  "status": "VERIFIED",
+  "actual_code_commit": "1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "controller_PID": 1041063,
+  "training_PID": 1041142,
+  "GPU": 4,
+  "admission_free_MiB": 24110,
+  "admission_existing_compute": 0,
+  "actual_PID_CWD_command_CUDA_GPU_verified": true,
+  "log_bytes_initial": 0,
+  "log_bytes_observed": 41,
+  "actual_source_smoke": {
+    "status": "PASS",
+    "source_rows": 2,
+    "actual_original_F0": true,
+    "actual_full_posterior": true,
+    "detail_initial_zero": true,
+    "detail_and_physical_gradient_isolation": true,
+    "strict_E0_reload": true,
+    "F0_frozen": true,
+    "optimizer_updates": 0,
+    "TX_labels_read": 0,
+    "V_reads": 0,
+    "OE_reads": 0,
+    "target_inputs": 0
+  },
+  "source_epochs_observed": 0,
+  "source_results_complete": false,
+  "Main_results_available": false,
+  "goal_complete": false
+}

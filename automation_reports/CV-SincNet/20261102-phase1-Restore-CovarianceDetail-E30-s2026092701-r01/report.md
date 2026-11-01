@@ -36,3 +36,7 @@
 原R07的20draw+重复1..10、sourceorder/LR/30预算及地面Tri-SIG-TIME SSL/Main保持。真实source2检查含完整G/F0、物理与细节梯度隔离、初始零细节、状态保持和严格重载；PASS立即全30，最终30固定后自动完整Main双总体七景，独立truth-last。所有源和目标结果均报告，不因源质量取消测试，不按目标选模或选择性重跑，默认DURA不变。
 
 源V上一诊断仅提供机制动机：low urban净增9/1800不构成稳定提升，同时物理误差加大；不能据此宣称该结构有效或Main唯一原因是域变化。新网络参数、总FP32状态22977820B（其中源统计1050624B）、额外F0知识及实际训练时间/峰值显存均报告；新细节分支的完整MAC与延迟尚待实测，不沿用DURA时延。
+
+## 实际启动核实
+
+VERIFIED：actual code `1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6`，release archive一次SHA一致、远端compile通过。controller 1041063 / training 1041142，GPU 4，准入free 24110 MiB、existing compute 0。实际PID/CWD/命令/CUDA/GPU和日志增长已核实。真实source2完整G/F0、两分支梯度隔离、初始零细节与严格E0重载通过，自动继续原30轮和完整Main七景。当前仅为RUNNING，尚无新正式识别结果，目标未完成。
