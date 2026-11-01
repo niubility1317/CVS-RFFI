@@ -1,0 +1,128 @@
+{
+  "status": "SOURCE_ONLY_ALIGNED_CLEAN_SEMANTICS",
+  "source_ids": 2442,
+  "train_ids": 1626,
+  "validation_ids": 536,
+  "heldout_ids": 280,
+  "results": {
+    "0": {
+      "clean": {
+        "valid_count": 1593,
+        "L_s_count": 411,
+        "reference_correct": 1592,
+        "aligned_correct": 1592,
+        "aligned_agreement_with_reference": 1593,
+        "L_s_reference_correct": 410,
+        "L_s_aligned_correct": 410
+      },
+      "practical_low_suburban": {
+        "valid_count": 1593,
+        "L_s_count": 411,
+        "reference_correct": 1592,
+        "aligned_correct": 1591,
+        "aligned_agreement_with_reference": 1592,
+        "L_s_reference_correct": 410,
+        "L_s_aligned_correct": 410
+      },
+      "practical_mid_urban": {
+        "valid_count": 1593,
+        "L_s_count": 411,
+        "reference_correct": 1592,
+        "aligned_correct": 1589,
+        "aligned_agreement_with_reference": 1590,
+        "L_s_reference_correct": 410,
+        "L_s_aligned_correct": 408
+      },
+      "practical_low_urban": {
+        "valid_count": 1593,
+        "L_s_count": 411,
+        "reference_correct": 1592,
+        "aligned_correct": 1576,
+        "aligned_agreement_with_reference": 1576,
+        "L_s_reference_correct": 410,
+        "L_s_aligned_correct": 401
+      }
+    },
+    "1": {
+      "clean": {
+        "valid_count": 532,
+        "L_s_count": 126,
+        "reference_correct": 532,
+        "aligned_correct": 532,
+        "aligned_agreement_with_reference": 532,
+        "L_s_reference_correct": 126,
+        "L_s_aligned_correct": 126
+      },
+      "practical_low_suburban": {
+        "valid_count": 532,
+        "L_s_count": 126,
+        "reference_correct": 532,
+        "aligned_correct": 531,
+        "aligned_agreement_with_reference": 531,
+        "L_s_reference_correct": 126,
+        "L_s_aligned_correct": 125
+      },
+      "practical_mid_urban": {
+        "valid_count": 532,
+        "L_s_count": 126,
+        "reference_correct": 532,
+        "aligned_correct": 531,
+        "aligned_agreement_with_reference": 531,
+        "L_s_reference_correct": 126,
+        "L_s_aligned_correct": 125
+      },
+      "practical_low_urban": {
+        "valid_count": 532,
+        "L_s_count": 126,
+        "reference_correct": 532,
+        "aligned_correct": 529,
+        "aligned_agreement_with_reference": 529,
+        "L_s_reference_correct": 126,
+        "L_s_aligned_correct": 124
+      }
+    },
+    "2": {
+      "clean": {
+        "valid_count": 272,
+        "L_s_count": 72,
+        "reference_correct": 272,
+        "aligned_correct": 272,
+        "aligned_agreement_with_reference": 272,
+        "L_s_reference_correct": 72,
+        "L_s_aligned_correct": 72
+      },
+      "practical_low_suburban": {
+        "valid_count": 272,
+        "L_s_count": 72,
+        "reference_correct": 272,
+        "aligned_correct": 272,
+        "aligned_agreement_with_reference": 272,
+        "L_s_reference_correct": 72,
+        "L_s_aligned_correct": 72
+      },
+      "practical_mid_urban": {
+        "valid_count": 272,
+        "L_s_count": 72,
+        "reference_correct": 272,
+        "aligned_correct": 269,
+        "aligned_agreement_with_reference": 269,
+        "L_s_reference_correct": 72,
+        "L_s_aligned_correct": 70
+      },
+      "practical_low_urban": {
+        "valid_count": 272,
+        "L_s_count": 72,
+        "reference_correct": 272,
+        "aligned_correct": 270,
+        "aligned_agreement_with_reference": 270,
+        "L_s_reference_correct": 72,
+        "L_s_aligned_correct": 72
+      }
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "predictions_before_source_tx_labels": true,
+  "caveat": "Clean-to-DURA alignment uses the paired source waveform only to construct a training target, never as restoration inference. This measures whether that privileged target preserves frozen-base labels. Only the new model receiver/day is held out; F and DURA saw source data. Source IDs were used in previous diagnostics and simulated satellite data is not a validated real link."
+}

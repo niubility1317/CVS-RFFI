@@ -1,0 +1,635 @@
+{
+  "status": "SOURCE_ONLY_BATCH_PROTOTYPE_PROBE",
+  "source_ids": 816,
+  "validation_ids": 536,
+  "heldout_ids": 280,
+  "seed_thresholds": [
+    0.9,
+    0.95,
+    0.99
+  ],
+  "margins": [
+    0.0,
+    0.005,
+    0.01,
+    0.02,
+    0.05
+  ],
+  "validation": [
+    {
+      "seed_threshold": 0.9,
+      "margin": 0.0,
+      "net": 4,
+      "per_view": {
+        "practical_low_suburban": 2,
+        "practical_mid_urban": -2,
+        "practical_low_urban": 4
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": -1,
+            "practical_mid_urban": -2,
+            "practical_low_urban": 3
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 4,
+          "per_view": {
+            "practical_low_suburban": 3,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 1
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.9,
+      "margin": 0.005,
+      "net": 6,
+      "per_view": {
+        "practical_low_suburban": 3,
+        "practical_mid_urban": 0,
+        "practical_low_urban": 3
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": -1,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": -1,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 7,
+          "per_view": {
+            "practical_low_suburban": 3,
+            "practical_mid_urban": 1,
+            "practical_low_urban": 3
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.9,
+      "margin": 0.01,
+      "net": 4,
+      "per_view": {
+        "practical_low_suburban": 2,
+        "practical_mid_urban": 1,
+        "practical_low_urban": 1
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 4,
+          "per_view": {
+            "practical_low_suburban": 2,
+            "practical_mid_urban": 1,
+            "practical_low_urban": 1
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.9,
+      "margin": 0.02,
+      "net": 0,
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": 0,
+        "practical_low_urban": 0
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.9,
+      "margin": 0.05,
+      "net": 0,
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": 0,
+        "practical_low_urban": 0
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.95,
+      "margin": 0.0,
+      "net": 4,
+      "per_view": {
+        "practical_low_suburban": 3,
+        "practical_mid_urban": -2,
+        "practical_low_urban": 3
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": -2,
+            "practical_low_urban": 2
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 4,
+          "per_view": {
+            "practical_low_suburban": 3,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 1
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.95,
+      "margin": 0.005,
+      "net": 3,
+      "per_view": {
+        "practical_low_suburban": 3,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 1
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": -2,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": -1,
+            "practical_low_urban": -1
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 5,
+          "per_view": {
+            "practical_low_suburban": 3,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 2
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.95,
+      "margin": 0.01,
+      "net": 4,
+      "per_view": {
+        "practical_low_suburban": 2,
+        "practical_mid_urban": 0,
+        "practical_low_urban": 2
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 4,
+          "per_view": {
+            "practical_low_suburban": 2,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 2
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.95,
+      "margin": 0.02,
+      "net": 0,
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": 0,
+        "practical_low_urban": 0
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.95,
+      "margin": 0.05,
+      "net": 0,
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": 0,
+        "practical_low_urban": 0
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.99,
+      "margin": 0.0,
+      "net": 1,
+      "per_view": {
+        "practical_low_suburban": 3,
+        "practical_mid_urban": -3,
+        "practical_low_urban": 1
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": -2,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": -2,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 3,
+          "per_view": {
+            "practical_low_suburban": 3,
+            "practical_mid_urban": -1,
+            "practical_low_urban": 1
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.99,
+      "margin": 0.005,
+      "net": 0,
+      "per_view": {
+        "practical_low_suburban": 3,
+        "practical_mid_urban": -3,
+        "practical_low_urban": 0
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": -2,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": -1,
+            "practical_low_urban": -1
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 2,
+          "per_view": {
+            "practical_low_suburban": 3,
+            "practical_mid_urban": -2,
+            "practical_low_urban": 1
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.99,
+      "margin": 0.01,
+      "net": 1,
+      "per_view": {
+        "practical_low_suburban": 2,
+        "practical_mid_urban": 0,
+        "practical_low_urban": -1
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 1,
+          "per_view": {
+            "practical_low_suburban": 2,
+            "practical_mid_urban": 0,
+            "practical_low_urban": -1
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.99,
+      "margin": 0.02,
+      "net": 0,
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": 0,
+        "practical_low_urban": 0
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "seed_threshold": 0.99,
+      "margin": 0.05,
+      "net": 0,
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": 0,
+        "practical_low_urban": 0
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 278,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 258,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    }
+  ],
+  "selected": {
+    "kind": "batch_prototype_selector",
+    "seed_threshold": 0.9,
+    "margin": 0.01,
+    "validation_net": 4
+  },
+  "heldout": {
+    "clean": {
+      "valid_count": 272,
+      "L_s_count": 72,
+      "U_confident_count": 200,
+      "baseline": 272,
+      "student": 272,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_baseline": 72,
+      "L_s_student": 72,
+      "choices": [
+        0,
+        272,
+        0,
+        0
+      ],
+      "prototype_correct": 272,
+      "prototype_available": 272
+    },
+    "practical_low_suburban": {
+      "valid_count": 272,
+      "L_s_count": 72,
+      "U_confident_count": 200,
+      "baseline": 268,
+      "student": 268,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_baseline": 72,
+      "L_s_student": 72,
+      "choices": [
+        0,
+        272,
+        0,
+        0
+      ],
+      "prototype_correct": 266,
+      "prototype_available": 272
+    },
+    "practical_mid_urban": {
+      "valid_count": 272,
+      "L_s_count": 72,
+      "U_confident_count": 200,
+      "baseline": 256,
+      "student": 256,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_baseline": 67,
+      "L_s_student": 67,
+      "choices": [
+        0,
+        272,
+        0,
+        0
+      ],
+      "prototype_correct": 255,
+      "prototype_available": 272
+    },
+    "practical_low_urban": {
+      "valid_count": 272,
+      "L_s_count": 72,
+      "U_confident_count": 200,
+      "baseline": 235,
+      "student": 236,
+      "repairs": 1,
+      "damages": 0,
+      "L_s_baseline": 58,
+      "L_s_student": 58,
+      "choices": [
+        0,
+        271,
+        0,
+        1
+      ],
+      "prototype_correct": 236,
+      "prototype_available": 272
+    }
+  },
+  "heldout_clean_teacher_net": 0,
+  "quality": {
+    "clean": {
+      "count": 280,
+      "aligned_mse_before": 4.0849299715068764e-05,
+      "aligned_mse_after": 4.0849299715068764e-05,
+      "improved": 0,
+      "worsened": 0
+    },
+    "practical_low_suburban": {
+      "count": 280,
+      "aligned_mse_before": 0.021819269398113076,
+      "aligned_mse_after": 0.024533171783735774,
+      "improved": 0,
+      "worsened": 1
+    },
+    "practical_mid_urban": {
+      "count": 280,
+      "aligned_mse_before": 0.05456680626782273,
+      "aligned_mse_after": 0.05554642775212167,
+      "improved": 0,
+      "worsened": 1
+    },
+    "practical_low_urban": {
+      "count": 280,
+      "aligned_mse_before": 0.10143244881215406,
+      "aligned_mse_after": 0.10241296396669584,
+      "improved": 0,
+      "worsened": 2
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "decisions_before_source_tx_labels": true,
+  "caveat": "Transductive batch inference uses other unlabeled waveforms from the same receiver/day and same channel view; no matched clean or cross-view IQ is used for inference. Each record is excluded from its own prototype. Receiver grouping and a sufficiently large batch are assumed. Source IDs overlap prior cycle diagnostics, and frozen experts saw source data. Simulated satellite is not validated real satellite; earlier Phase1 test results motivated exploration."
+}
