@@ -1,0 +1,186 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-multi-utility-router-s2026092701-r01",
+  "group_id": "phase1-multi-utility-router",
+  "display_name": "Phase1 多候选修复损伤效用恢复网络",
+  "description": "在物理信道模拟源记录上分别估计原始与特征候选相对 DURA 的修复和损伤概率，固定后进行 Phase1 地面开发测试。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "source-only",
+    "physical-channel",
+    "repair-damage-utility",
+    "expert-router",
+    "truth-last"
+  ],
+  "comparison_group_id": "phase1-trisigtime-frozen-raw-clean",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261101-phase1-boundary-student-E30-s2026092701-r02",
+    "20261101-phase1-feature-conditioned-E30-s2026092701-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发不同路线的星地恢复网络，只看 Phase1 地面训练测试、使用 Tri-SIG-TIME SSL；六场景下降不超过 3%，同时核对百分点和相对百分比口径。",
+  "code": {
+    "commit": "9404469fe2fbad3ccc247a11eaf5d542899dd4e5",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch, FP32, TF32 off; original Phase1 Tri-SIG-TIME immutable release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-multi-utility-router-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/multi_utility_experiment.py",
+      "experiments/pamf_phase1_flow/multi_utility_controller.py",
+      "experiments/pamf_phase1_flow/multi_utility_worker.py",
+      "experiments/pamf_phase1_flow/multi_utility_weights.json"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Phase1 physical-channel source IQ and frozen expert probabilities, embeddings and spectra",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Six Phase1 transmitter classes; L_s labels only, U_s teacher pseudo-labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Six original classes; L_s labels and high-confidence U_s clean-teacher pseudo-labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "L_s true labels; U_s teacher pseudo-labels with clean confidence >=0.95; no U_s labels, V or test IQ",
+    "augmentation": "Source clean and three independently seeded practical residual-channel views, 25 MHz and 2.462 GHz, 30 dB reference SNR, no equalization"
+  },
+  "permissions": {
+    "regime": "Phase1 L_s true labels, U_s clean teacher pseudo-labels and source IQ only; no V/test during source training",
+    "query_use": "Frozen per-record received IQ and frozen expert/F outputs only; no clean or label at inference",
+    "external_method_exception": null,
+    "claim_scope": "Previously observed single-seed Phase1 development test, not blind"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA, Tri-SIG-TIME SSL, source-trained boundary/feature experts and 698-128-4 source utility model",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-boundary-student-E30-s2026092701-r02/flow/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-feature-conditioned-E30-s2026092701-r02/flow/final.pt",
+      "experiments/pamf_phase1_flow/multi_utility_weights.json"
+    ],
+    "contract_check_ref": "Frozen F/DURA provenance and exact expert checkpoint and source router asset SHA-256",
+    "provenance_verdict": "Four frozen experts; source utility learns raw and feature repair/damage outcomes using L_s labels and U_s teacher pseudo-labels",
+    "selection_rule": "Source validation epoch 10; switch candidate with maximal estimated net utility only if >0.08 and class differs from DURA"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-multi-utility-router",
+    "gpu_policy": "CPU real-weight source smoke; shared lock, at most two same-user restoration GPU workers and two same-user compute processes per GPU, >=12000 MB; GPU B128 source smoke then fixed seven-view predictions",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-multi-utility-router-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-multi-utility-router-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-phase1-multi-utility-router-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.multi_utility_controller --root /home/szu2070436088/2510044040/CV-SincNet --commit 9404469fe2fbad3ccc247a11eaf5d542899dd4e5",
+    "stop_rule": "Source/model mismatch, smoke failure, nonfinite output, resource ambiguity or incomplete predictions preserves artifacts; no automatic retry or performance-based stop"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "gpu_smoke.json",
+    "submitted.json",
+    "logs/{smoke,worker,gpu_smoke,predict,score}.log",
+    "flow/{choice_counts.json,test_prediction,test_summary.json}",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Tri-SIG-TIME raw clean, per-scene raw and restored accuracy, macro F1 and clean-relative gap",
+      "per-TX, RX, day accuracy"
+    ],
+    "dimensions": [
+      "168000 Phase1 ground test physical records x seven views",
+      "TX/RX/day and six practical scenes"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-multi-utility-router-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU experiments.pamf_phase1_flow.multi_utility_experiment score",
+    "targets_ref": "Each of six restored practical scenes within 3 percentage points of same reader raw clean; restored clean degradation at most 1 percentage point"
+  },
+  "notes": [
+    "输入为四专家类别概率、原始与 DURA 对数能量、四个冻结 Tri-SIG-TIME SSL 归一化中间向量及原始/残差 16 桶频谱，共 698 维；网络估计原始和特征候选各自的修复与损伤概率。",
+    "训练用独立种子模拟低郊区、中城市和低城市源记录；L_s 真标签、U_s 高置信 clean 教师伪标签；模拟不是已验证的真实卫星链路。",
+    "源验证固定 epoch 10、净效用门限严格大于 0.08；源留出 1605 条有效记录，三个视图分别净修复 2、2、5 条，干净视图不变。源记录可能与此前源探针重叠，基础专家训练见过源记录。",
+    "测试只读取每条 Phase1 接收 IQ，不读取 clean 配对或标签；七视图全部预测固定后 CPU 才接入 TX 真值。",
+    "方案受先前已观察的 Phase1 测试专家互补分析启发；本轮测试非独立盲测，同时报告百分点与相对百分比下降。"
+  ],
+  "rows": [
+    {
+      "row_id": "flow",
+      "method": "Multi-candidate source repair/damage utility router with frozen F embeddings and spectra",
+      "purpose": "Select raw or restored IQ only when source-predicted net benefit exceeds fixed threshold",
+      "config_ref": "experiments/pamf_phase1_flow/multi_utility_weights.json",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/multi_utility_experiment.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110245,
+        "split": 2026110242,
+        "data": 2026110241,
+        "augmentation": 2026110243,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source sampling 2026110241, split 2026110242, physical channel 2026110243, RX/day hardware 2026110244, model 2026110245, fitting order 2026110246; fixed original Phase1 test views",
+      "k": null,
+      "scenario": "Source clean and independent practical low-suburban/mid-urban/low-urban views; fixed Phase1 clean and six practical received views",
+      "optimizer": "AdamW (completed source training)",
+      "lr": 0.0003,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Source validation selects epoch 10 and net-utility threshold 0.08; no target-time updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-multi-utility-router-s2026092701-r01/flow",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-multi-utility-router-s2026092701-r01/logs/predict.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.multi_utility_controller --root /home/szu2070436088/2510044040/CV-SincNet --commit 9404469fe2fbad3ccc247a11eaf5d542899dd4e5",
+      "expected_artifacts": [
+        "smoke.json",
+        "gpu_smoke.json",
+        "submitted.json",
+        "logs/{smoke,worker,gpu_smoke,predict,score}.log",
+        "flow/{choice_counts.json,test_prediction,test_summary.json}",
+        "complete.json"
+      ]
+    }
+  ],
+  "registered_at": "2026-11-01T10:19:20+00:00"
+}

@@ -1,0 +1,2 @@
+{"at": "2026-11-01T10:19:20+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T10:22:40+00:00", "status": "RUNNING", "note": "独立复核正式实现与源重放在 1640 条记录四视图逐条一致；真实冻结 F/DURA 与专家的 CPU、GPU 128 条源域检查通过，CPU/GPU 专家选择计数均为 [0,127,0,1]。GPU2 worker 323639 正进行七视图固定预测。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-multi-utility-router-s2026092701-r01/gpu_smoke.json"], "row_id": "flow"}
