@@ -1,0 +1,22 @@
+PS     PID    PPID     ELAPSED %CPU COMMAND
+ 769749       1       00:08  0.2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-student-hard-correct-s2026092701-r01-release/experiments/phase1_student_hard_correct/phase1_blind_gate_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01 --commit 32ca311f183b04549e05d775002e442e75f36389 --device cuda:0
+ 769834  769749       00:03  108 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-student-hard-correct-s2026092701-r01-release/experiments/phase1_student_hard_correct/phase1_teacher_student_source.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01/source --commit 32ca311f183b04549e05d775002e442e75f36389 --device cuda:0
+
+CWD /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release
+LOG PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-student-hard-correct-s2026092701-r01-release/experiments/phase1_student_hard_correct/phase1_teacher_student_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01/source_smoke", "--commit", "32ca311f183b04549e05d775002e442e75f36389", "--device", "cuda:0", "--smoke"]
+HARD_CORRECT_STUDENT_SOURCE_SMOKE {"status": "PASS", "count": 16, "active": 16, "hard": 0, "DURA_teacher_frozen": true, "F_frozen": true, "gate_frozen": true, "TX_labels_read": 0, "U_s_labels_read": 0, "V_reads": 0, "test_reads": 0}
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-student-hard-correct-s2026092701-r01-release/experiments/phase1_student_hard_correct/phase1_teacher_student_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01/source", "--commit", "32ca311f183b04549e05d775002e442e75f36389", "--device", "cuda:0"]
+
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01/source_smoke/result.json True
+DATA {"status": "PASS", "count": 16, "active": 16, "hard": 0, "DURA_teacher_frozen": true, "F_frozen": true, "gate_frozen": true, "TX_labels_read": 0, "U_s_labels_read": 0, "V_reads": 0, "test_reads": 0}
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01/source/source_selection.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01/source/prediction_smoke.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01/source/flow/test_prediction/complete.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01/completion.json False
+GPU2 0 %, 685 MiB
+
+
+Independent source real-disagreement gradient probe:
+VERIFIED REAL_DISAGREEMENT_GRADIENT checked= 192 hard= 8 finite_loss= 12.780939102172852 source_training_only=True F_frozen=True DURA_frozen=True TX_labels_read=0 U_s_truth_reads=0 V_reads=0 target_reads=0
+
+Initial read-only probe failed because PyTorch boolean DLPack export is unsupported; converted the diagnostic mask to int64 before export and independently reran. No remote mutation or new train process resulted from the probe.
