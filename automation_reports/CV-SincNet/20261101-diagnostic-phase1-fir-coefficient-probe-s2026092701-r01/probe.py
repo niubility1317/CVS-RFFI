@@ -1,4 +1,5 @@
 """Source-only held-out-ID ridge probe; all learned inputs are inference-available."""
+import json
 import subprocess
 from pathlib import Path
 
@@ -97,5 +98,9 @@ stdout=p.stdout.decode('utf8',errors='replace');print(stdout);print(p.stderr.dec
 if p.returncode==0:
  line=next(x[len('PROBE_RESULT '):] for x in stdout.splitlines() if x.startswith('PROBE_RESULT '))
  path=Path(__file__).parent/'phase1_source_fir_coefficient_probe.json'
- with path.open('x',encoding='utf8') as f:f.write(line+'\n')
+ if path.exists():
+  if json.loads(path.read_text(encoding='utf8'))!=json.loads(line):raise ValueError('Repeated source result differs from saved evidence')
+  print('VERIFIED_IDENTICAL_SAVED_EVIDENCE')
+ else:
+  with path.open('x',encoding='utf8') as f:f.write(line+'\n')
 raise SystemExit(p.returncode)
