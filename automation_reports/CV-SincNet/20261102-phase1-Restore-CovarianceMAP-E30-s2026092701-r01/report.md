@@ -54,3 +54,8 @@
 VERIFIED / RUNNING。实际source2完整FP64后验+原F0、算子head梯度与E0严格重载均通过，已进入固定单阶段30训练。CPU控制器和worker的PID/CWD/commit/CUDA/GPU与日志增长独立核实；GPU4准入free22885MiB/原2compute/新增1。固定源mu/C已绑定为额外数据统计buffer，更新只执行算子/噪声估计，不执行后验或F0；0TX/V/OE/novel/目标训练。archive单次SHA一致/远端编译通过。完整30后自动原Main2pop×7 truth-last，当前没有本版正式性能。
 
 E01 CPU独立检查PASS：实际E0全部学习状态等于新factory，mu/C等于原FP32源统计且E01不变，TF骨干及三个Action/noise输出head已更新，optimizer有限；30份sourceorder/draw与原M20完全一致，第一轮247更新/63000记录/微批32/LR和加权loss核实。首轮66.222361秒，不视为独立速度或性能结论。
+
+
+## 完整源训练与自动Main接续已核实
+
+VERIFIED / SOURCE_TRAINED。固定30/7410、全30日志/stdout/sourceorder-draw-LR/加权loss/实际scratch E0/固定mu-C/E01-E30状态与E30-final独立复核PASS，0新NN或truth读取。训练1932.094824秒，轮时中位数64.442973秒，峰值1003.646MiB。父训练已exit0，Main cross_rx预测worker已真实启动；全实验仍RUNNING，尚无正式性能。详见[source完整核实](source_training_completion.md)。
