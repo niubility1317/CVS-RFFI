@@ -1,0 +1,299 @@
+{
+  "status": "POSTHOC_FIXED_DECISION_SELECTOR_BOUND",
+  "count": 168000,
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "clean_raw_accuracy": 86.53869047619047,
+  "relative_three_percent_threshold": 83.94252976190475,
+  "three_percentage_point_threshold": 83.53869047619047,
+  "predictions_fixed_before_truth": true,
+  "models_updated": 0,
+  "runs": {
+    "dura": "20261101-phase1-dura-trisigtime-baseline-s2026092701-r01",
+    "boundary": "20261101-phase1-boundary-student-E30-s2026092701-r02",
+    "feature": "20261101-phase1-feature-conditioned-E30-s2026092701-r02"
+  },
+  "results": [
+    {
+      "view": "clean",
+      "count": 168000,
+      "accuracy": {
+        "raw": 86.53869047619047,
+        "dura": 86.61547619047619,
+        "boundary": 86.51785714285715,
+        "feature": 85.85654761904762
+      },
+      "oracle_selector": {
+        "dura_boundary": {
+          "correct": 145595,
+          "accuracy": 86.66369047619048,
+          "gain_pp": 0.048214285714285716,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "dura_feature": {
+          "correct": 146117,
+          "accuracy": 86.97440476190476,
+          "gain_pp": 0.35892857142857143,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "dura_boundary_feature": {
+          "correct": 146160,
+          "accuracy": 87.0,
+          "gain_pp": 0.3845238095238095,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "raw_dura_boundary_feature": {
+          "correct": 146271,
+          "accuracy": 87.06607142857142,
+          "gain_pp": 0.45059523809523816,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        }
+      }
+    },
+    {
+      "view": "practical_high",
+      "count": 168000,
+      "accuracy": {
+        "raw": 80.61547619047619,
+        "dura": 84.34345238095237,
+        "boundary": 84.00833333333333,
+        "feature": 84.29583333333333
+      },
+      "oracle_selector": {
+        "dura_boundary": {
+          "correct": 142552,
+          "accuracy": 84.85238095238095,
+          "gain_pp": 0.5089285714285715,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "dura_feature": {
+          "correct": 147171,
+          "accuracy": 87.60178571428571,
+          "gain_pp": 3.2583333333333333,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "dura_boundary_feature": {
+          "correct": 147413,
+          "accuracy": 87.74583333333334,
+          "gain_pp": 3.4023809523809527,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "raw_dura_boundary_feature": {
+          "correct": 152290,
+          "accuracy": 90.64880952380953,
+          "gain_pp": 6.305357142857143,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        }
+      }
+    },
+    {
+      "view": "practical_mid",
+      "count": 168000,
+      "accuracy": {
+        "raw": 78.1077380952381,
+        "dura": 83.01607142857142,
+        "boundary": 82.40059523809524,
+        "feature": 82.40535714285714
+      },
+      "oracle_selector": {
+        "dura_boundary": {
+          "correct": 140791,
+          "accuracy": 83.80416666666667,
+          "gain_pp": 0.7880952380952381,
+          "below_relative_three_percent": true,
+          "below_three_percentage_points": false
+        },
+        "dura_feature": {
+          "correct": 145887,
+          "accuracy": 86.8375,
+          "gain_pp": 3.8214285714285716,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "dura_boundary_feature": {
+          "correct": 146218,
+          "accuracy": 87.03452380952382,
+          "gain_pp": 4.018452380952381,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "raw_dura_boundary_feature": {
+          "correct": 151914,
+          "accuracy": 90.425,
+          "gain_pp": 7.4089285714285715,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        }
+      }
+    },
+    {
+      "view": "practical_low_suburban",
+      "count": 168000,
+      "accuracy": {
+        "raw": 75.74464285714285,
+        "dura": 81.32202380952381,
+        "boundary": 80.46964285714286,
+        "feature": 80.41428571428571
+      },
+      "oracle_selector": {
+        "dura_boundary": {
+          "correct": 138468,
+          "accuracy": 82.42142857142856,
+          "gain_pp": 1.0994047619047618,
+          "below_relative_three_percent": true,
+          "below_three_percentage_points": true
+        },
+        "dura_feature": {
+          "correct": 144061,
+          "accuracy": 85.75059523809524,
+          "gain_pp": 4.428571428571428,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "dura_boundary_feature": {
+          "correct": 144515,
+          "accuracy": 86.02083333333333,
+          "gain_pp": 4.6988095238095235,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "raw_dura_boundary_feature": {
+          "correct": 151405,
+          "accuracy": 90.12202380952381,
+          "gain_pp": 8.799999999999999,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        }
+      }
+    },
+    {
+      "view": "practical_high_urban",
+      "count": 168000,
+      "accuracy": {
+        "raw": 77.05,
+        "dura": 83.04940476190477,
+        "boundary": 82.56369047619047,
+        "feature": 82.25714285714287
+      },
+      "oracle_selector": {
+        "dura_boundary": {
+          "correct": 140959,
+          "accuracy": 83.90416666666667,
+          "gain_pp": 0.8547619047619047,
+          "below_relative_three_percent": true,
+          "below_three_percentage_points": false
+        },
+        "dura_feature": {
+          "correct": 146512,
+          "accuracy": 87.20952380952382,
+          "gain_pp": 4.160119047619048,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "dura_boundary_feature": {
+          "correct": 146821,
+          "accuracy": 87.39345238095238,
+          "gain_pp": 4.344047619047619,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        },
+        "raw_dura_boundary_feature": {
+          "correct": 152165,
+          "accuracy": 90.57440476190476,
+          "gain_pp": 7.5249999999999995,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        }
+      }
+    },
+    {
+      "view": "practical_mid_urban",
+      "count": 168000,
+      "accuracy": {
+        "raw": 62.79583333333333,
+        "dura": 75.70595238095238,
+        "boundary": 74.68809523809524,
+        "feature": 73.1529761904762
+      },
+      "oracle_selector": {
+        "dura_boundary": {
+          "correct": 130876,
+          "accuracy": 77.90238095238095,
+          "gain_pp": 2.196428571428571,
+          "below_relative_three_percent": true,
+          "below_three_percentage_points": true
+        },
+        "dura_feature": {
+          "correct": 140274,
+          "accuracy": 83.49642857142857,
+          "gain_pp": 7.79047619047619,
+          "below_relative_three_percent": true,
+          "below_three_percentage_points": true
+        },
+        "dura_boundary_feature": {
+          "correct": 140927,
+          "accuracy": 83.88511904761906,
+          "gain_pp": 8.179166666666667,
+          "below_relative_three_percent": true,
+          "below_three_percentage_points": false
+        },
+        "raw_dura_boundary_feature": {
+          "correct": 149615,
+          "accuracy": 89.05654761904762,
+          "gain_pp": 13.35059523809524,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        }
+      }
+    },
+    {
+      "view": "practical_low_urban",
+      "count": 168000,
+      "accuracy": {
+        "raw": 51.60476190476191,
+        "dura": 68.80119047619047,
+        "boundary": 67.54523809523809,
+        "feature": 65.16011904761905
+      },
+      "oracle_selector": {
+        "dura_boundary": {
+          "correct": 120480,
+          "accuracy": 71.71428571428572,
+          "gain_pp": 2.9130952380952384,
+          "below_relative_three_percent": true,
+          "below_three_percentage_points": true
+        },
+        "dura_feature": {
+          "correct": 132384,
+          "accuracy": 78.8,
+          "gain_pp": 9.998809523809523,
+          "below_relative_three_percent": true,
+          "below_three_percentage_points": true
+        },
+        "dura_boundary_feature": {
+          "correct": 133304,
+          "accuracy": 79.34761904761905,
+          "gain_pp": 10.546428571428573,
+          "below_relative_three_percent": true,
+          "below_three_percentage_points": true
+        },
+        "raw_dura_boundary_feature": {
+          "correct": 144521,
+          "accuracy": 86.02440476190476,
+          "gain_pp": 17.223214285714285,
+          "below_relative_three_percent": false,
+          "below_three_percentage_points": false
+        }
+      }
+    }
+  ],
+  "caveat": "Ground truth chooses among four already-fixed predicted labels, so this is not deployable; bound applies only to selectors restricted to those labels, not new networks, ensembles or waveforms. Previously observed single-seed Phase1 development test."
+}
