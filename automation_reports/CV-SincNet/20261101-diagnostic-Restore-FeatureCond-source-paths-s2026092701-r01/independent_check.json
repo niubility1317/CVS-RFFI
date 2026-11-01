@@ -1,0 +1,246 @@
+{
+  "status": "PASS",
+  "source_cases": 10240,
+  "source_packets": 512,
+  "draws": 20,
+  "IQ_paths": 5,
+  "latent_readouts": 1,
+  "max_abs_aggregate_error": 0.0,
+  "predictions_and_pairs_checked": true,
+  "source_panel_matches_original": true,
+  "all20draws_checked": true,
+  "cached_controls_exactly_aligned": true,
+  "reference_Fclean_prediction_differences": 0,
+  "unit_power_max_abs_error": {
+    "actual": 2.980232238769531e-07,
+    "zero_feature": 2.980232238769531e-07,
+    "no_FiLM": 2.980232238769531e-07,
+    "clean_feature_oracle": 2.980232238769531e-07,
+    "raw_preprojection": 123.8845443725586
+  },
+  "paired_changes": {
+    "ALL": {
+      "zero_feature": {
+        "repairs": 54,
+        "damage": 6120,
+        "net": -6066
+      },
+      "no_FiLM": {
+        "repairs": 51,
+        "damage": 6347,
+        "net": -6296
+      },
+      "clean_feature_oracle": {
+        "repairs": 258,
+        "damage": 22,
+        "net": 236
+      },
+      "raw_preprojection": {
+        "repairs": 82,
+        "damage": 3993,
+        "net": -3911
+      },
+      "latent": {
+        "repairs": 80,
+        "damage": 134,
+        "net": -54
+      }
+    },
+    "clean": {
+      "zero_feature": {
+        "repairs": 0,
+        "damage": 1003,
+        "net": -1003
+      },
+      "no_FiLM": {
+        "repairs": 0,
+        "damage": 1017,
+        "net": -1017
+      },
+      "clean_feature_oracle": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "raw_preprojection": {
+        "repairs": 0,
+        "damage": 4,
+        "net": -4
+      },
+      "latent": {
+        "repairs": 0,
+        "damage": 10,
+        "net": -10
+      }
+    },
+    "practical_high": {
+      "zero_feature": {
+        "repairs": 5,
+        "damage": 793,
+        "net": -788
+      },
+      "no_FiLM": {
+        "repairs": 5,
+        "damage": 848,
+        "net": -843
+      },
+      "clean_feature_oracle": {
+        "repairs": 5,
+        "damage": 10,
+        "net": -5
+      },
+      "raw_preprojection": {
+        "repairs": 2,
+        "damage": 666,
+        "net": -664
+      },
+      "latent": {
+        "repairs": 5,
+        "damage": 5,
+        "net": 0
+      }
+    },
+    "practical_mid": {
+      "zero_feature": {
+        "repairs": 5,
+        "damage": 846,
+        "net": -841
+      },
+      "no_FiLM": {
+        "repairs": 6,
+        "damage": 894,
+        "net": -888
+      },
+      "clean_feature_oracle": {
+        "repairs": 16,
+        "damage": 4,
+        "net": 12
+      },
+      "raw_preprojection": {
+        "repairs": 5,
+        "damage": 709,
+        "net": -704
+      },
+      "latent": {
+        "repairs": 10,
+        "damage": 5,
+        "net": 5
+      }
+    },
+    "practical_low_suburban": {
+      "zero_feature": {
+        "repairs": 3,
+        "damage": 875,
+        "net": -872
+      },
+      "no_FiLM": {
+        "repairs": 3,
+        "damage": 907,
+        "net": -904
+      },
+      "clean_feature_oracle": {
+        "repairs": 22,
+        "damage": 4,
+        "net": 18
+      },
+      "raw_preprojection": {
+        "repairs": 5,
+        "damage": 706,
+        "net": -701
+      },
+      "latent": {
+        "repairs": 10,
+        "damage": 8,
+        "net": 2
+      }
+    },
+    "practical_high_urban": {
+      "zero_feature": {
+        "repairs": 5,
+        "damage": 846,
+        "net": -841
+      },
+      "no_FiLM": {
+        "repairs": 4,
+        "damage": 886,
+        "net": -882
+      },
+      "clean_feature_oracle": {
+        "repairs": 16,
+        "damage": 0,
+        "net": 16
+      },
+      "raw_preprojection": {
+        "repairs": 7,
+        "damage": 670,
+        "net": -663
+      },
+      "latent": {
+        "repairs": 6,
+        "damage": 8,
+        "net": -2
+      }
+    },
+    "practical_mid_urban": {
+      "zero_feature": {
+        "repairs": 7,
+        "damage": 883,
+        "net": -876
+      },
+      "no_FiLM": {
+        "repairs": 6,
+        "damage": 909,
+        "net": -903
+      },
+      "clean_feature_oracle": {
+        "repairs": 70,
+        "damage": 1,
+        "net": 69
+      },
+      "raw_preprojection": {
+        "repairs": 23,
+        "damage": 622,
+        "net": -599
+      },
+      "latent": {
+        "repairs": 23,
+        "damage": 41,
+        "net": -18
+      }
+    },
+    "practical_low_urban": {
+      "zero_feature": {
+        "repairs": 29,
+        "damage": 874,
+        "net": -845
+      },
+      "no_FiLM": {
+        "repairs": 27,
+        "damage": 886,
+        "net": -859
+      },
+      "clean_feature_oracle": {
+        "repairs": 129,
+        "damage": 3,
+        "net": 126
+      },
+      "raw_preprojection": {
+        "repairs": 40,
+        "damage": 616,
+        "net": -576
+      },
+      "latent": {
+        "repairs": 26,
+        "damage": 57,
+        "net": -31
+      }
+    }
+  },
+  "source_model_states_unchanged": true,
+  "new_neural_forwards": 0,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "target_inputs": 0
+}

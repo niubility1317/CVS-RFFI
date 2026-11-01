@@ -3,7 +3,7 @@
 - run_id：`20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01`
 - group_id：`restoration-source-feature-condition-paths`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（完整源矩阵与独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+10240个源案例、五IQ路径与latent均完整。actual/latent/raw真实smoke逐值重放、20draw覆盖、同源控制及判决/配对/均值独立复算通过。机制结果与边界见 analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -37,3 +37,7 @@
 这是训练源内的机制诊断。source clean oracle不可部署，输入分布不同于训练时的预测latent，又与已学decoder耦合，不作可达性能界、理论极限或真实TX准确率。raw输出没有独立训练，关闭条件也不是同预算从零消融。结果只能指导合法源端机制研究，不改本版已完成Main负结果，不根据Main误分类调参。当前六景3pp+clean目标未达到，默认DURA保持。
 
 实际运行代码、数据句柄、祖先、命令、CWD、停止规则及产物见experiment.json。3项针对性检查和一次独立P0/P1通过，N607/原CVS-RFFI/FP32-TF32off，GPU4/6 UUID准入剩余>=12GB、原compute<=2、只新增1条本任务NN/单卡总<=3，其他owner保持。部署G代码和历史权重不改，未新增训练或目标访问。
+
+## 完整执行与源端机制复算完成
+
+VERIFIED / ANALYZED。20draw/512源包/五IQ路径+latent全部完成，worker/controller退出0。原模型状态未变，0更新/TX/V/OE/novel/target。独立复算均值最大差0，缓存源控制逐项对齐，单位输出功率逐记录最大差2.98e-7。低档城区Fclean一致率actual 88.718663%，关闭条件约29%，sourceclean特征oracle 97.493036%（额外clean信息/off-support/非可达上限）。条件确已使用，预测latent/输出保真仍需研究；raw尺度无独立监督，不直接取消投影。完整Main目标ACTIVE，默认DURA保持。

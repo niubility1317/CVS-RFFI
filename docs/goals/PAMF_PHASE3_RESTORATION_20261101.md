@@ -215,3 +215,9 @@ CPU控制器已独立核实PID/CWD/命令/CUDA空、WAIT_PARENT_COMPLETE，当�
 原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景全部固定预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736 raw配对/1302额外配对复算PASS，最大误差1.24e-14、raw/DURA判决差0；60日志、同sourceorder/draw、新E0零输出/FiLM及30恢复文件E30-final一致性通过。
 
 六景依次77.906548/76.511905/74.880357/76.644048/70.342857/64.372619%，达标0/6，相对FullFGrad依次-0.426786/-0.452381/-0.617262/-0.554762/-1.066071/-1.476786个百分点。合并clean 86.619048%（保持），分总体损伤和完整TX/RX/day/配对/成本见analysis.md。完整目标未达到，保持ACTIVE和默认DURA。性能为主线，训练效率为支线；源指标或训练完成不能替代逐景验收，不依据目标结果调参或重排候选，不把准确率保留比例解释为信息恢复上限。
+
+## 冻结连续特征条件路径源诊断完成（2026-11-01）
+
+`20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01`，实际代码1b8b3625a3d7eb043129c034ad8639504b8576fa。原FeatureCond/c865/30-7410和原F0/defaulthead冻结；原R07 Ls128/Us384固定512包×20draw=10240相关案例。正常/zero-feature/无FiLM/sourceclean特征oracle/raw投影前五IQ路径及latent全部完成，复用旧source-style/ac801 identity DURA/Full源控制，不新增Main/V/OE/target推理或训练。3测试/一次P0P1/真实Ls2actual-latent-raw精确重放PASS，worker/controller结束0，模型state不变，独立预测/配对/20draw/源控制/均值复算PASS（差0）。
+
+低档城区Fclean一致率正常88.718663%、zero特征29.874652%、无FiLM28.899721%、预测latent86.559889%、sourceclean特征oracle97.493036%（修复129/损伤3/净126）；IQ NMSE正常.071576/oracle.066893。条件确已使用；cleanoracle额外信息和off-support输入不代表可达上限或TX准确率。raw平均复功率75.827557，低档城区88.494702，实际输出单位功率；投影前尺度未被独立训练，不直接切换部署。下一项源端假设只加强连续latent回归权重.1→1，结构/源顺序/优化器/预算保持，另建scratch单阶段30对照并自动原Main七景。当前Main0/6负结果、默认DURA和完整性能目标ACTIVE保持；效率次级。

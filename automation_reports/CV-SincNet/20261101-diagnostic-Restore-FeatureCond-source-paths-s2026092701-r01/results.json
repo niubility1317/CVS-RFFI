@@ -1,0 +1,745 @@
+{
+  "status": "FEATURE_PATH_DIAGNOSTIC_COMPLETE",
+  "run_id": "20261101-diagnostic-Restore-FeatureCond-source-paths-s2026092701-r01",
+  "code_commit": "1b8b3625a3d7eb043129c034ad8639504b8576fa",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "parent_run": "20261101-phase1-Restore-FeatureCond-E30-s2026092701-r01",
+  "parent_commit": "c8659b15bb3d316325867b154eede51f1a61e247",
+  "count": 10240,
+  "source_Ls": 128,
+  "source_Us": 384,
+  "source_draws": 20,
+  "paths": [
+    "actual",
+    "zero_feature",
+    "no_FiLM",
+    "clean_feature_oracle",
+    "raw_preprojection"
+  ],
+  "latent_readout": "same frozen F0 defaulthead on predicted continuous latent;diagnostic only",
+  "summary": {
+    "ALL": {
+      "count": 10240,
+      "paths": {
+        "actual": {
+          "nmse": 0.024694895287510742,
+          "feature_cosine_distance": 0.005728281469782814,
+          "feature_standardized_mse": 0.0624064875225951,
+          "clean_decision_agreement": 0.96787109375,
+          "complex_power": 0.9999999844934792
+        },
+        "zero_feature": {
+          "nmse": 0.4083184333940153,
+          "feature_cosine_distance": 0.18730924382107333,
+          "feature_standardized_mse": 1.3232372079379275,
+          "clean_decision_agreement": 0.37548828125,
+          "complex_power": 0.9999999798252247
+        },
+        "no_FiLM": {
+          "nmse": 0.43499955629231407,
+          "feature_cosine_distance": 0.19275423042709008,
+          "feature_standardized_mse": 1.374563683733868,
+          "clean_decision_agreement": 0.35302734375,
+          "complex_power": 0.9999999804131221
+        },
+        "clean_feature_oracle": {
+          "nmse": 0.023896758308475617,
+          "feature_cosine_distance": 0.0027702466468326747,
+          "feature_standardized_mse": 0.033722402657347675,
+          "clean_decision_agreement": 0.99091796875,
+          "complex_power": 0.999999983527232
+        },
+        "raw_preprojection": {
+          "nmse": 60.77439593439558,
+          "feature_cosine_distance": 0.12106117247603834,
+          "feature_standardized_mse": 0.9454395275465686,
+          "clean_decision_agreement": 0.5859375,
+          "complex_power": 75.82755692885257
+        }
+      },
+      "latent": {
+        "feature_cosine_distance": 0.008421157277189196,
+        "feature_standardized_mse": 0.09106773313333179,
+        "clean_decision_agreement": 0.96259765625
+      },
+      "paired_against_actual": {
+        "zero_feature": {
+          "repairs": 54,
+          "damage": 6120,
+          "net": -6066
+        },
+        "no_FiLM": {
+          "repairs": 51,
+          "damage": 6347,
+          "net": -6296
+        },
+        "clean_feature_oracle": {
+          "repairs": 258,
+          "damage": 22,
+          "net": 236
+        },
+        "raw_preprojection": {
+          "repairs": 82,
+          "damage": 3993,
+          "net": -3911
+        },
+        "latent": {
+          "repairs": 80,
+          "damage": 134,
+          "net": -54
+        }
+      },
+      "frozen_source_controls": {
+        "DURA_v1": {
+          "nmse": 0.022287005297337625,
+          "feature_cosine_distance": 0.00838818894699216,
+          "feature_standardized_mse": 0.09627196360019141,
+          "clean_decision_agreement": 0.95146484375
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.020882440396640157,
+          "feature_cosine_distance": 0.004868574085412547,
+          "feature_standardized_mse": 0.05718490039653279,
+          "clean_decision_agreement": 0.97158203125
+        }
+      }
+    },
+    "clean": {
+      "count": 1579,
+      "paths": {
+        "actual": {
+          "nmse": 7.554879518994082e-05,
+          "feature_cosine_distance": 3.87690654655587e-05,
+          "feature_standardized_mse": 0.00039770292573632564,
+          "clean_decision_agreement": 1.0,
+          "complex_power": 0.9999999862218523
+        },
+        "zero_feature": {
+          "nmse": 0.15863882335512755,
+          "feature_cosine_distance": 0.1751278170382697,
+          "feature_standardized_mse": 1.1496158718892937,
+          "clean_decision_agreement": 0.3647878404053198,
+          "complex_power": 0.9999999762562878
+        },
+        "no_FiLM": {
+          "nmse": 0.18639813542856756,
+          "feature_cosine_distance": 0.17973129533377533,
+          "feature_standardized_mse": 1.191769719746688,
+          "clean_decision_agreement": 0.3559214692843572,
+          "complex_power": 0.9999999777662218
+        },
+        "clean_feature_oracle": {
+          "nmse": 8.485830187056551e-05,
+          "feature_cosine_distance": 5.89921400470021e-05,
+          "feature_standardized_mse": 0.0005632494856323686,
+          "clean_decision_agreement": 1.0,
+          "complex_power": 0.9999999830887392
+        },
+        "raw_preprojection": {
+          "nmse": 0.08531349679859776,
+          "feature_cosine_distance": 0.010471237468296701,
+          "feature_standardized_mse": 0.14403543698508822,
+          "clean_decision_agreement": 0.9974667511082964,
+          "complex_power": 1.6674171073894246
+        }
+      },
+      "latent": {
+        "feature_cosine_distance": 0.004575876928417648,
+        "feature_standardized_mse": 0.05192771535089559,
+        "clean_decision_agreement": 0.993666877770741
+      },
+      "paired_against_actual": {
+        "zero_feature": {
+          "repairs": 0,
+          "damage": 1003,
+          "net": -1003
+        },
+        "no_FiLM": {
+          "repairs": 0,
+          "damage": 1017,
+          "net": -1017
+        },
+        "clean_feature_oracle": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "raw_preprojection": {
+          "repairs": 0,
+          "damage": 4,
+          "net": -4
+        },
+        "latent": {
+          "repairs": 0,
+          "damage": 10,
+          "net": -10
+        }
+      },
+      "frozen_source_controls": {
+        "DURA_v1": {
+          "nmse": 2.4255140467358398e-05,
+          "feature_cosine_distance": 2.6390739752568348e-05,
+          "feature_standardized_mse": 0.0002813281107620847,
+          "clean_decision_agreement": 1.0
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 5.7118173128719346e-05,
+          "feature_cosine_distance": 3.261385724995996e-05,
+          "feature_standardized_mse": 0.0002597678074373471,
+          "clean_decision_agreement": 1.0
+        }
+      }
+    },
+    "practical_high": {
+      "count": 1427,
+      "paths": {
+        "actual": {
+          "nmse": 0.008923395972173712,
+          "feature_cosine_distance": 0.0018332248061540333,
+          "feature_standardized_mse": 0.02161606717639366,
+          "clean_decision_agreement": 0.9922915206727401,
+          "complex_power": 0.9999999847124738
+        },
+        "zero_feature": {
+          "nmse": 0.3598493456986707,
+          "feature_cosine_distance": 0.18304018178183296,
+          "feature_standardized_mse": 1.286296724709248,
+          "clean_decision_agreement": 0.4400840925017519,
+          "complex_power": 0.9999999810785536
+        },
+        "no_FiLM": {
+          "nmse": 0.38439571389637384,
+          "feature_cosine_distance": 0.18894080557686177,
+          "feature_standardized_mse": 1.347052772331672,
+          "clean_decision_agreement": 0.401541695865452,
+          "complex_power": 0.9999999822063219
+        },
+        "clean_feature_oracle": {
+          "nmse": 0.00935675574877099,
+          "feature_cosine_distance": 0.0015726506334129713,
+          "feature_standardized_mse": 0.01830633780064052,
+          "clean_decision_agreement": 0.9887876664330764,
+          "complex_power": 0.9999999814962455
+        },
+        "raw_preprojection": {
+          "nmse": 72.08015696252237,
+          "feature_cosine_distance": 0.1420088202784591,
+          "feature_standardized_mse": 1.0678764287416302,
+          "clean_decision_agreement": 0.52697967764541,
+          "complex_power": 89.80162462155637
+        }
+      },
+      "latent": {
+        "feature_cosine_distance": 0.004544973916412653,
+        "feature_standardized_mse": 0.05285342714665085,
+        "clean_decision_agreement": 0.9922915206727401
+      },
+      "paired_against_actual": {
+        "zero_feature": {
+          "repairs": 5,
+          "damage": 793,
+          "net": -788
+        },
+        "no_FiLM": {
+          "repairs": 5,
+          "damage": 848,
+          "net": -843
+        },
+        "clean_feature_oracle": {
+          "repairs": 5,
+          "damage": 10,
+          "net": -5
+        },
+        "raw_preprojection": {
+          "repairs": 2,
+          "damage": 666,
+          "net": -664
+        },
+        "latent": {
+          "repairs": 5,
+          "damage": 5,
+          "net": 0
+        }
+      },
+      "frozen_source_controls": {
+        "DURA_v1": {
+          "nmse": 0.008581076889109916,
+          "feature_cosine_distance": 0.002860022451631991,
+          "feature_standardized_mse": 0.034241037459514734,
+          "clean_decision_agreement": 0.9901892081289418
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.00702382063104157,
+          "feature_cosine_distance": 0.0015669500986512258,
+          "feature_standardized_mse": 0.018792318141615878,
+          "clean_decision_agreement": 0.9957953749124037
+        }
+      }
+    },
+    "practical_mid": {
+      "count": 1484,
+      "paths": {
+        "actual": {
+          "nmse": 0.014842103578001536,
+          "feature_cosine_distance": 0.002687773012086709,
+          "feature_standardized_mse": 0.031653085761330774,
+          "clean_decision_agreement": 0.9858490566037735,
+          "complex_power": 0.9999999827692773
+        },
+        "zero_feature": {
+          "nmse": 0.37846721869433986,
+          "feature_cosine_distance": 0.1692695334915202,
+          "feature_standardized_mse": 1.2625624893529397,
+          "clean_decision_agreement": 0.4191374663072776,
+          "complex_power": 0.999999981443837
+        },
+        "no_FiLM": {
+          "nmse": 0.40380097296078893,
+          "feature_cosine_distance": 0.1752128352052118,
+          "feature_standardized_mse": 1.3236262697093892,
+          "clean_decision_agreement": 0.38746630727762804,
+          "complex_power": 0.9999999816446613
+        },
+        "clean_feature_oracle": {
+          "nmse": 0.01495373511188469,
+          "feature_cosine_distance": 0.002037246191919332,
+          "feature_standardized_mse": 0.024174318915672947,
+          "clean_decision_agreement": 0.9939353099730458,
+          "complex_power": 0.9999999874685652
+        },
+        "raw_preprojection": {
+          "nmse": 72.11633664385649,
+          "feature_cosine_distance": 0.12960867133905302,
+          "feature_standardized_mse": 1.0629461586093807,
+          "clean_decision_agreement": 0.511455525606469,
+          "complex_power": 89.79772071504208
+        }
+      },
+      "latent": {
+        "feature_cosine_distance": 0.005164743353414407,
+        "feature_standardized_mse": 0.05912801500590583,
+        "clean_decision_agreement": 0.9892183288409704
+      },
+      "paired_against_actual": {
+        "zero_feature": {
+          "repairs": 5,
+          "damage": 846,
+          "net": -841
+        },
+        "no_FiLM": {
+          "repairs": 6,
+          "damage": 894,
+          "net": -888
+        },
+        "clean_feature_oracle": {
+          "repairs": 16,
+          "damage": 4,
+          "net": 12
+        },
+        "raw_preprojection": {
+          "repairs": 5,
+          "damage": 709,
+          "net": -704
+        },
+        "latent": {
+          "repairs": 10,
+          "damage": 5,
+          "net": 5
+        }
+      },
+      "frozen_source_controls": {
+        "DURA_v1": {
+          "nmse": 0.014064614812832834,
+          "feature_cosine_distance": 0.005097983781539526,
+          "feature_standardized_mse": 0.060172723810347876,
+          "clean_decision_agreement": 0.9750673854447439
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.01193848887234556,
+          "feature_cosine_distance": 0.00238670468973021,
+          "feature_standardized_mse": 0.029438785040475594,
+          "clean_decision_agreement": 0.9898921832884097
+        }
+      }
+    },
+    "practical_low_suburban": {
+      "count": 1465,
+      "paths": {
+        "actual": {
+          "nmse": 0.016048025607795745,
+          "feature_cosine_distance": 0.00523061715702148,
+          "feature_standardized_mse": 0.0502551059262452,
+          "clean_decision_agreement": 0.9815699658703072,
+          "complex_power": 0.9999999834408939
+        },
+        "zero_feature": {
+          "nmse": 0.39445706345522363,
+          "feature_cosine_distance": 0.17647708271957502,
+          "feature_standardized_mse": 1.3170942189445267,
+          "clean_decision_agreement": 0.3863481228668942,
+          "complex_power": 0.9999999814879772
+        },
+        "no_FiLM": {
+          "nmse": 0.4203267130021756,
+          "feature_cosine_distance": 0.1817341281285465,
+          "feature_standardized_mse": 1.3724343888588733,
+          "clean_decision_agreement": 0.36450511945392494,
+          "complex_power": 0.9999999799012325
+        },
+        "clean_feature_oracle": {
+          "nmse": 0.01574316147898416,
+          "feature_cosine_distance": 0.0025632077109691634,
+          "feature_standardized_mse": 0.030421840072110448,
+          "clean_decision_agreement": 0.9938566552901024,
+          "complex_power": 0.9999999823830641
+        },
+        "raw_preprojection": {
+          "nmse": 72.66000336136021,
+          "feature_cosine_distance": 0.13550292355208673,
+          "feature_standardized_mse": 1.0919924534628416,
+          "clean_decision_agreement": 0.5030716723549488,
+          "complex_power": 90.37374396991405
+        }
+      },
+      "latent": {
+        "feature_cosine_distance": 0.006861257919272465,
+        "feature_standardized_mse": 0.07236753778735576,
+        "clean_decision_agreement": 0.9829351535836177
+      },
+      "paired_against_actual": {
+        "zero_feature": {
+          "repairs": 3,
+          "damage": 875,
+          "net": -872
+        },
+        "no_FiLM": {
+          "repairs": 3,
+          "damage": 907,
+          "net": -904
+        },
+        "clean_feature_oracle": {
+          "repairs": 22,
+          "damage": 4,
+          "net": 18
+        },
+        "raw_preprojection": {
+          "repairs": 5,
+          "damage": 706,
+          "net": -701
+        },
+        "latent": {
+          "repairs": 10,
+          "damage": 8,
+          "net": 2
+        }
+      },
+      "frozen_source_controls": {
+        "DURA_v1": {
+          "nmse": 0.017814612267745514,
+          "feature_cosine_distance": 0.007971718815813293,
+          "feature_standardized_mse": 0.08913515795931322,
+          "clean_decision_agreement": 0.967235494880546
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.014484824545152243,
+          "feature_cosine_distance": 0.0041665638266163065,
+          "feature_standardized_mse": 0.04540684396645798,
+          "clean_decision_agreement": 0.9815699658703072
+        }
+      }
+    },
+    "practical_high_urban": {
+      "count": 1440,
+      "paths": {
+        "actual": {
+          "nmse": 0.016225902944057048,
+          "feature_cosine_distance": 0.003045404412680202,
+          "feature_standardized_mse": 0.03757304315084992,
+          "clean_decision_agreement": 0.9854166666666667,
+          "complex_power": 0.9999999850160546
+        },
+        "zero_feature": {
+          "nmse": 0.398724308796227,
+          "feature_cosine_distance": 0.18586378080977334,
+          "feature_standardized_mse": 1.3145772391930222,
+          "clean_decision_agreement": 0.4013888888888889,
+          "complex_power": 0.9999999792625507
+        },
+        "no_FiLM": {
+          "nmse": 0.42419173997930354,
+          "feature_cosine_distance": 0.19193049006991916,
+          "feature_standardized_mse": 1.372893074620515,
+          "clean_decision_agreement": 0.3729166666666667,
+          "complex_power": 0.999999978310532
+        },
+        "clean_feature_oracle": {
+          "nmse": 0.016387910013872898,
+          "feature_cosine_distance": 0.002019477304485109,
+          "feature_standardized_mse": 0.024109737858735672,
+          "clean_decision_agreement": 0.9965277777777778,
+          "complex_power": 0.9999999849746625
+        },
+        "raw_preprojection": {
+          "nmse": 71.53397497799662,
+          "feature_cosine_distance": 0.13891389034688473,
+          "feature_standardized_mse": 1.0648848945378429,
+          "clean_decision_agreement": 0.525,
+          "complex_power": 89.12476207945082
+        }
+      },
+      "latent": {
+        "feature_cosine_distance": 0.006020700807372729,
+        "feature_standardized_mse": 0.06729802534003587,
+        "clean_decision_agreement": 0.9840277777777777
+      },
+      "paired_against_actual": {
+        "zero_feature": {
+          "repairs": 5,
+          "damage": 846,
+          "net": -841
+        },
+        "no_FiLM": {
+          "repairs": 4,
+          "damage": 886,
+          "net": -882
+        },
+        "clean_feature_oracle": {
+          "repairs": 16,
+          "damage": 0,
+          "net": 16
+        },
+        "raw_preprojection": {
+          "repairs": 7,
+          "damage": 670,
+          "net": -663
+        },
+        "latent": {
+          "repairs": 6,
+          "damage": 8,
+          "net": -2
+        }
+      },
+      "frozen_source_controls": {
+        "DURA_v1": {
+          "nmse": 0.013861965830599527,
+          "feature_cosine_distance": 0.004591827094554901,
+          "feature_standardized_mse": 0.056721192168980555,
+          "clean_decision_agreement": 0.975
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.012824124151625762,
+          "feature_cosine_distance": 0.002712634826699893,
+          "feature_standardized_mse": 0.03552725010724518,
+          "clean_decision_agreement": 0.9826388888888888
+        }
+      }
+    },
+    "practical_mid_urban": {
+      "count": 1409,
+      "paths": {
+        "actual": {
+          "nmse": 0.048501604234431575,
+          "feature_cosine_distance": 0.0093842815895974,
+          "feature_standardized_mse": 0.11312260221423233,
+          "clean_decision_agreement": 0.9382540809084458,
+          "complex_power": 0.9999999834596053
+        },
+        "zero_feature": {
+          "nmse": 0.5616495644394771,
+          "feature_cosine_distance": 0.21401791114854507,
+          "feature_standardized_mse": 1.4531173566243933,
+          "clean_decision_agreement": 0.31653655074520937,
+          "complex_power": 0.9999999758027985
+        },
+        "no_FiLM": {
+          "nmse": 0.5898939876310194,
+          "feature_cosine_distance": 0.21971269746127917,
+          "feature_standardized_mse": 1.498578485252165,
+          "clean_decision_agreement": 0.29737402413058905,
+          "complex_power": 0.9999999849825061
+        },
+        "clean_feature_oracle": {
+          "nmse": 0.0470584610436109,
+          "feature_cosine_distance": 0.004725946907966673,
+          "feature_standardized_mse": 0.05861343476128803,
+          "clean_decision_agreement": 0.9872249822569198,
+          "complex_power": 0.9999999824866409
+        },
+        "raw_preprojection": {
+          "nmse": 71.18860124407972,
+          "feature_cosine_distance": 0.14998759598999348,
+          "feature_standardized_mse": 1.1025987266965416,
+          "clean_decision_agreement": 0.5131298793470547,
+          "complex_power": 88.44500427435611
+        }
+      },
+      "latent": {
+        "feature_cosine_distance": 0.011575535690640624,
+        "feature_standardized_mse": 0.13406583851446563,
+        "clean_decision_agreement": 0.9254790631653655
+      },
+      "paired_against_actual": {
+        "zero_feature": {
+          "repairs": 7,
+          "damage": 883,
+          "net": -876
+        },
+        "no_FiLM": {
+          "repairs": 6,
+          "damage": 909,
+          "net": -903
+        },
+        "clean_feature_oracle": {
+          "repairs": 70,
+          "damage": 1,
+          "net": 69
+        },
+        "raw_preprojection": {
+          "repairs": 23,
+          "damage": 622,
+          "net": -599
+        },
+        "latent": {
+          "repairs": 23,
+          "damage": 41,
+          "net": -18
+        }
+      },
+      "frozen_source_controls": {
+        "DURA_v1": {
+          "nmse": 0.04150064053657386,
+          "feature_cosine_distance": 0.014198879259879747,
+          "feature_standardized_mse": 0.17182806110098123,
+          "clean_decision_agreement": 0.9070262597586941
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.04104689191211368,
+          "feature_cosine_distance": 0.00826767380987185,
+          "feature_standardized_mse": 0.10236558978359239,
+          "clean_decision_agreement": 0.9481902058197303
+        }
+      }
+    },
+    "practical_low_urban": {
+      "count": 1436,
+      "paths": {
+        "actual": {
+          "nmse": 0.07157566177805148,
+          "feature_cosine_distance": 0.01860795940031248,
+          "feature_standardized_mse": 0.1904432404889144,
+          "clean_decision_agreement": 0.8871866295264624,
+          "complex_power": 0.99999998572145
+        },
+        "zero_feature": {
+          "nmse": 0.6351900056398845,
+          "feature_cosine_distance": 0.20988265958337066,
+          "feature_standardized_mse": 1.5010729641614684,
+          "clean_decision_agreement": 0.29874651810584957,
+          "complex_power": 0.9999999836460793
+        },
+        "no_FiLM": {
+          "nmse": 0.6647103790370202,
+          "feature_cosine_distance": 0.21460837960077195,
+          "feature_standardized_mse": 1.5377037261397393,
+          "clean_decision_agreement": 0.2889972144846797,
+          "complex_power": 0.9999999784161453
+        },
+        "clean_feature_oracle": {
+          "nmse": 0.0668925395985147,
+          "feature_cosine_distance": 0.006744237787876289,
+          "feature_standardized_mse": 0.08395393534831334,
+          "clean_decision_agreement": 0.9749303621169917,
+          "complex_power": 0.9999999826914089
+        },
+        "raw_preprojection": {
+          "nmse": 71.41748519926682,
+          "feature_cosine_distance": 0.15199593282343618,
+          "feature_standardized_mse": 1.1600503102463766,
+          "clean_decision_agreement": 0.4860724233983287,
+          "complex_power": 88.494702040319
+        }
+      },
+      "latent": {
+        "feature_cosine_distance": 0.020769987556263598,
+        "feature_standardized_mse": 0.20581166025362702,
+        "clean_decision_agreement": 0.8655988857938719
+      },
+      "paired_against_actual": {
+        "zero_feature": {
+          "repairs": 29,
+          "damage": 874,
+          "net": -845
+        },
+        "no_FiLM": {
+          "repairs": 27,
+          "damage": 886,
+          "net": -859
+        },
+        "clean_feature_oracle": {
+          "repairs": 129,
+          "damage": 3,
+          "net": 126
+        },
+        "raw_preprojection": {
+          "repairs": 40,
+          "damage": 616,
+          "net": -576
+        },
+        "latent": {
+          "repairs": 26,
+          "damage": 57,
+          "net": -31
+        }
+      },
+      "frozen_source_controls": {
+        "DURA_v1": {
+          "nmse": 0.06304283425528724,
+          "feature_cosine_distance": 0.025006757597737326,
+          "feature_standardized_mse": 0.27357600721780956,
+          "clean_decision_agreement": 0.8391364902506964
+        },
+        "MSAT_FullFGrad": {
+          "nmse": 0.061618532798057464,
+          "feature_cosine_distance": 0.015574812847591709,
+          "feature_standardized_mse": 0.176006984076619,
+          "clean_decision_agreement": 0.899025069637883
+        }
+      }
+    }
+  },
+  "source_reference": "20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01",
+  "reference_Fclean_prediction_differences": 0,
+  "neural_F0_feature_rows": 51712,
+  "latent_defaulthead_rows": 10240,
+  "encoder_rows": 10240,
+  "decoder_rows": 40960,
+  "smoke_rows_extra": true,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "novel_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "checkpoint_selection": false,
+  "source_in_sample": true,
+  "agreement_is_TX_accuracy": false,
+  "clean_oracle_deployable": false,
+  "oracle_off_support_not_performance_bound": true,
+  "theoretical_ceiling": false,
+  "default_DURA_changed": false,
+  "seconds": 19.268173131000367,
+  "goal_complete": false
+}
