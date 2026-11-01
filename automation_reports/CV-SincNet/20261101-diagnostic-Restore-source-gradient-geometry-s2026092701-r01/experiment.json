@@ -1,0 +1,163 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01",
+  "group_id": "restoration-source-objective-gradient-geometry",
+  "display_name": "冻结恢复器源端目标梯度几何诊断",
+  "description": "原Ls128Us384固定512×20draw/B256，对两个冻结G的物理/输出F/latent三目标求导；同theta权重.1/1的Gram与全局clip1，0更新/TX/V/OE/target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "frozen-model",
+    "gradient-geometry",
+    "zero-updates"
+  ],
+  "comparison_group_id": "frozen-FeatureCond-FeatureStrong-source-gradient-geometry",
+  "parent_run_ids": [
+    "20261101-phase1-Restore-FeatureCond-E30-s2026092701-r01",
+    "20261101-phase1-Restore-FeatureStrong-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Useractivegoal:performanceprimary/groundTriSIGSSLsixeach3pp+clean;originalLsUs-only/source-simulation-and-F0-guidanceallowed/OEonlyfrozendiagnostic/majorarchitecturefreedom. This source-only mechanism diagnostic uses no optimizer or target.",
+  "code": {
+    "commit": "96db4e5a0446c713cd2d36c2977703590c26d523",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "ExistingN607CVS-RFFI Torch2.1/NumPy2;FP32 TF32off CPUthreads2;actual3ff8F0/defaulthead andfixed47cDURA runtime",
+    "cwd": "releases/20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005 Ls6300Us56700;existingR07twentytrainrealizations",
+    "representation": "OriginalR07 FP32sourceclean/received;fixed512trainingpackets(128Ls384Us)x20stored draws. B256/40batches eachG,80total/20480Grows.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "R07cache/train/physical_ids.npy roles.npy;existing20261101LUcache IDs/roles forminimumcontractmatch",
+    "label_map_ref": "No labels read; F0 clean argmax agreement is not TX accuracy",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE sourcehandles. R07complete20/63000/0TX-target. Inputaudit same63000uniqueIDset (orderdiffers),roles/RX/day samebyID;clean maxabs4.76837158203125e-7 NMSE1.7667841088968941e-15. No repeateddatahash/revalidation.",
+    "support_query_ref": "None. OriginalR07LsUs in-sample;canonical63000ID-role compatibility/f57sourcevariance reused.",
+    "leo_config_ref": "ExistingR07sourcecache20/clean15%+sixsceneuniform85%;no new simulator observations;2.462GHz retains own identity",
+    "actual_training_labels": "No training/TX/V/OE/novel/target. OriginalF0continuousfeatures andsourcevariance only;no F0 headcalls,identitylabels orfitting.",
+    "augmentation": "No newchannel/transforms. Derivativecounterfactualweights.1/1at eachfrozenfinal30 theta;nooptimizerornewGversion."
+  },
+  "permissions": {
+    "regime": "source-only-frozen-objective-derivative-diagnostic",
+    "query_use": "OnlyoriginalLsUs/sourceF0continuousfeatures. TemporaryGrequires_grad forautograd.grad,neverbackward/optimizer/accumulated.grad;endflagsFalse/stateexact. F0alwaysfrozen. 0TX-V-OE-novel-target/updates/newMain.",
+    "external_method_exception": null,
+    "claim_scope": "Posttrainingfixedsourcepanelgradientgeometry,notactualtrainingstep/clipfrequency/AdamWstep/causalMainpartition orinformationceiling. Nullcosforzerogradexplicit. All80batches retained/noqualityselection."
+  },
+  "checkpoint": {
+    "initialization": "No newG. FrozenFeatureCond/c865 andFeatureStrong/3e541 strictfinal30/7410;originalF0/defaulthead(noheadcalls). No newoptimizer ormodelweights.",
+    "sources": [
+      "OriginalTriSIGSSL3ff8/E50-11100/232993/main3view-s2026092701/defaulthead/source-only392005",
+      "FeatureCond/c8659b15bb3d316325867b154eede51f1a61e247 andFeatureStrong/3e5416df5b13dfcf9e16995988e988c5494f68b2 strictfinal30/7410/originalLsUs/noV-OE-targettraining/bothMaincomplete",
+      "Existingf57source-only63000F0featurevariance;R07original512x20/ID-rolehandles"
+    ],
+    "contract_check_ref": "ExistingVALIDATED_ONCEsourcehandles/strictoriginalF0identity/parentexactconfig-code-final30-sourceflags.",
+    "provenance_verdict": "Allfrozenparentsmatchingoriginal392005source-only/F-guidedexplicit. No targetPCD/V-OEteacher/newtraining. Final30only,technicalrecoverycheckpoints notusedscientifically.",
+    "selection_rule": "Bothfixedfinal30/all40sourcebatches each/3objectives/5groups/2counterfactualweights. Noqualitycancel/checkpointselection/modeltraining."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-gradient-geometry",
+    "gpu_policy": "GPU4/6UUID/free>=12GB/existingcompute<=2/addONEtotal<=3/own1card/thisoneNN/globalown<=2/othersuntouched",
+    "remote_run_root": "runs/20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01",
+    "remote_log_root": "runs/20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_gradients run --root /home/szu2070436088/2510044040/CV-SincNet --commit 96db4e5a0446c713cd2d36c2977703590c26d523 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrongsource/F0/G/config/shape/collision/nonfinite/invalidGram/accumulated.grad/statechange/technicalfailure:preserveroot/noautoretry. Parenttechnicalcompletiononly;Ls2actualderivativesmokefirst/PASSall80batches. No scientificqualitygate."
+  },
+  "expected_artifacts": [
+    "waiting.json",
+    "submitted.json",
+    "smoke.json",
+    "gradient_records.json PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Gram/norm/dot/cosbetweenIQ+.05STFT,.1outputF,unitlatent objectives byencoder/latenthead/FiLM/decoder/all",
+      "Same-theta .1/1latentcounterfactualglobalclip1andmain-dot-total;groupglobalfactorcomesfromALL",
+      "Zeroauxcosundefinedexplicit/0updates-statechange-parameter.grad/TX-V-OE-novel-target"
+    ],
+    "dimensions": [
+      "2frozenGx20drawx2B256=80batches/512uniquephysicalsourcepackets",
+      "allsource-scenespooled in fixedbatches/notper-scenegradientdiagnosis",
+      "5parametergroups/3objectives/2weights"
+    ],
+    "prediction_ref": "Privategradient_records.json;noIQprediction/headreadout/Mainprediction",
+    "scorer_ref": "NoTXtruth. IndependentNumPyGramrelations/norms/dots/cos/globalclip/summaries/80sourcecoverage aftercomplete;notanAdamWupdateprediction."
+  },
+  "rows": [
+    {
+      "row_id": "source-gradient-2G-512x20",
+      "method": "frozen-source-objective-gradient-geometry",
+      "purpose": "source-onlymechanismdiagnosis",
+      "config_ref": "experiments/pamf_phase3_restoration/source_gradients.py",
+      "resolved_config_ref": "fixedSPECS/OBJECTIVES/sourcebatch256/weights01-1/releaseinputs PRIVATE",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101911
+      },
+      "seed_notes": "No newtraining/channelRNG. FixedR07observations/panel;seedonlyscratchconstructorbeforestrictload.",
+      "k": null,
+      "scenario": "source-R07mixture/posttraininggradient-geometry",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0updates/80derivativebatches B256. Gforward20480/F0outputfeatures20480+clean512=20992F0rows. 3autograd.grad perbatch. Ls2smokeextraG4/F0output4+clean2=6F0features. NoF0headcalls. Countsrequestrowsnotinternal3views.",
+      "output_root": "runs/20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01",
+      "log_path": "runs/20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_gradients worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 96db4e5a0446c713cd2d36c2977703590c26d523 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "waiting.json",
+        "submitted.json",
+        "smoke.json",
+        "gradient_records.json PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Sourcefull30curvesalreadyshowlatentfitimprovedbutIQ/outputFfitworse. Diagnosticdesign/codefrozenbeforeagentreadnewMainnumbers;algorithmneverconsumesMainresults.",
+    "Allsourcebatchesfixed256andmixedscene;notactual63000permutedtrainingbatches. Evalmode/final30theta/noAdamWmoments-weightdecay;dotdiagnosisnotproofactualoptimizerstep.",
+    "F0parametersalwaysfrozen/Gparametersunchanged;Gautogradflags temporarilypresentwithout.gradaccumulation thenrestoredFalse. No recoverycheckpointscientificscan.",
+    "3focusedtestsPASS/oneP0P1PASS. Parentcompletewaittechnicalonly,thenactualLs2derivative smoke/PASSimmediatelyallmatrix. OneGit/archiveSHA/compile/preflight/poststate. No newdeployableG orMainretest."
+  ],
+  "registered_at": "2026-11-01T11:45:17+00:00"
+}
