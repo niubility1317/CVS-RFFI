@@ -1,0 +1,14 @@
+{
+  "status": "VERIFIED_WITH_DIFFERENCE",
+  "primary_sha256": "5adff2c6c93e3d882ca7b0b537e87d59feac7c01415aad9483617910b23a6a31",
+  "replay_sha256": "2abc3227bfba809e6fa3e98f1bbf1682a00407f0515b2feeaf8b9867035d3bda",
+  "differences": [
+    {
+      "view": "practical_mid_urban",
+      "method": "joint",
+      "first": 56,
+      "replay": 57
+    }
+  ],
+  "caveat": "GPU retraining can alter predictions slightly; source pseudo targets are not truth."
+}
