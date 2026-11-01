@@ -1,0 +1,3 @@
+# Phase1 conditional transport pilot
+
+A source-trained continuous IQ velocity field transports the frozen blind posterior toward paired clean ground IQ. Each integration step recomputes the estimated channel backprojection; the model also observes time, initial posterior, and estimated noise. Training uses only L_s fit-ID labels and clean-F soft output on U_s, with paired IQ velocity matching and frozen-F feature supervision. No U_s truth, V, or Phase1 test is read. Inference uses neither true labels nor DURA. DURA is loaded only after training as a source reference. Evaluate fixed 1, 4, 8 step variants on previously explored RX8 source IDs; pseudo-label results are not test accuracy and bounded neural velocity is not a physical validity guarantee.
