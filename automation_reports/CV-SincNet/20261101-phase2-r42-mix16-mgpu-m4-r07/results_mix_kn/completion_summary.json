@@ -1,0 +1,78 @@
+{
+  "status": "VERIFIED_MIX_KN_COMPLETE",
+  "run_id": "20261101-phase2-r42-mix16-mgpu-m4-r07",
+  "scope": "MIX_ONLY",
+  "tasks": 672,
+  "prediction_rows": 139776,
+  "natural_score_rows": 139776,
+  "common_query_score_rows": 139776,
+  "K": [
+    1,
+    5,
+    10,
+    20
+  ],
+  "N": [
+    2,
+    5,
+    10,
+    20
+  ],
+  "units_per_cell": 672,
+  "seed_count": 4,
+  "truth_last": true,
+  "target_feedback": false,
+  "natural_matched_acceptance": {
+    "S0Q0": {
+      "passed": 16,
+      "total": 16,
+      "minimum_gain_pp": 6.096955700383328
+    },
+    "S0Q1": {
+      "passed": 16,
+      "total": 16,
+      "minimum_gain_pp": 9.070077224550033
+    },
+    "S1Q0": {
+      "passed": 16,
+      "total": 16,
+      "minimum_gain_pp": 12.970259200354477
+    },
+    "S1Q1": {
+      "passed": 12,
+      "total": 16,
+      "minimum_gain_pp": 2.5017400838843007
+    }
+  },
+  "common_matched_acceptance": {
+    "S0Q0": {
+      "passed": 16,
+      "total": 16,
+      "minimum_gain_pp": 6.097662568520531
+    },
+    "S0Q1": {
+      "passed": 16,
+      "total": 16,
+      "minimum_gain_pp": 9.068003354707255
+    },
+    "S1Q0": {
+      "passed": 16,
+      "total": 16,
+      "minimum_gain_pp": 12.971391295571326
+    },
+    "S1Q1": {
+      "passed": 12,
+      "total": 16,
+      "minimum_gain_pp": 2.493936434231766
+    }
+  },
+  "unit_gain_rows": 258048,
+  "unit_gain_aggregate_groups_checked": 384,
+  "profile_status": "VERIFIED",
+  "profile_concurrency": "observed_isolated_GPU0_snapshots",
+  "profile_query_head": "CPU reference head; not r07 CUDA execution latency",
+  "MACs": null,
+  "FLOPs": null,
+  "energy_joules": null,
+  "single_scene": "PAUSED_PENDING_PRIORITY_MIX_DELIVERY"
+}

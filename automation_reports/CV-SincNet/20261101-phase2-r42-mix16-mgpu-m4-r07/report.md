@@ -29,3 +29,9 @@ User-directed increase of R42 process concurrency across GPUs, leaving GPU7 unch
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 2026-11-01 用户并发调整：VERIFIED TRANSFERRED: four real-source no-query smokes PASS; prior MIX completed units indexed and predecessor workers retained. R42 per GPU max GPU0/2/3/6=3, GPU1/4/5=2, GPU7=2 unchanged; minimum free6000MiB; other owner unchanged. All 672 MIX predictions fixed before independent scoring.
+
+## MIX 全 K/N 评分与对照完成
+
+VERIFIED MIX_ONLY：672/672 单元、139776 行预测冻结后独立评分完成。自然 query 同输入平均配对收益 S0Q0/S0Q1/S1Q0 均为16/16格≥5pp；S1Q1为12/16，K=1的四格未达标。共同query口径分别同为16、16、16、12格。逐单元258048条比较与384组汇总逐组核对通过；仅DURA、融合及单元达标数见 [完整对比报告](results_mix_kn/report.md)。单场景按用户要求暂停，不计为已完成。
+
+资源profile按固定P01/MIX01/1-1/seed1/K5N20实测，GPU0采样孤立；profile查询核为CPU参考实现，不能冒充r07 CUDA实际预测延迟。MACs/FLOPs/能耗未测。MoPC及九原生独立评分已完成，但本报告仅R42与LocalRidge匹配对照。
