@@ -235,3 +235,9 @@ CPU控制器已独立核实PID/CWD/命令/CUDA空、WAIT_PARENT_COMPLETE，当�
 原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景全部固定预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736 raw配对/1302额外配对复算PASS，最大指标差1.24e-14、raw/DURA判决差0。完整60日志/同E0源顺序draw/仅latent权重配置变化/逐轮总loss权重/30恢复文件E30-final一致性核实。
 
 六景依次75.979167/75.095833/74.039881/74.950595/69.618452/63.999405%，达标0/6，相对FeatureCond依次-1.927381/-1.416071/-0.840476/-1.693452/-0.724405/-0.373214个百分点。合并clean 86.822619%（保持），cross_rx clean净变化+515、cross_both净变化-38，不以合并掩盖损伤；完整TX/RX/day/配对/成本见analysis.md。完整目标未达到，保持ACTIVE和默认DURA。本项源端假设来自冻结source512×20路径诊断，不据Main误分类调参或选模；性能主线、效率支线和默认DURA保持。
+
+## 冻结源端梯度几何完成（2026-11-01）
+
+`20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01`，实际代码96db4e5a0446c713cd2d36c2977703590c26d523。FeatureCond/c865与FeatureStrong/3e541固定final30/7410，原F0/3ff8冻结；原Ls128/Us384固定512×20draw/B256×2G=80批，仅autograd.grad，0TX/V/OE/target/更新或.grad积累，G最终导数标志恢复False/state逐值保持。3测试/一次P0P1/真实Ls2导数smokePASS，全部20draw/Gram分组/globalclip/点积cos/summary独立复算PASS，最大差2.78e-17，worker/controller结束0。
+
+末轮encoder主/aux平均cos .547769/.599657，负cos批数0/40与1/40；所有80批在w.1/1均无globalclip，main·total/physical·total负值0。该末轮源几何不支持据此启动PCGrad/分组裁剪，不代表早期无冲突，也不预测AdamW真实更新。sourceworker耗时27.118665秒，在两次读取间完成；中途GPU快照未捕获，如实记缺项、不补跑，完整产物/控制器初始存活/准入UUID和退出状态已独立核实。下一源端假设针对既有raw功率75.83的未约束尺度方向，单独检验单位clean幅度约束；不是已验证改进。Main0/6和子总体clean损伤事实保持，完整目标ACTIVE、效率次级、默认DURA不改。

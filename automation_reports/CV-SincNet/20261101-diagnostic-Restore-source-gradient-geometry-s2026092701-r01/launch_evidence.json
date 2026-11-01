@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED_ARTIFACTS_COMPLETE",
+  "code_commit": "96db4e5a0446c713cd2d36c2977703590c26d523",
+  "controller_PID_CWD_command_observed_live": true,
+  "source2_smoke": "PASS",
+  "all80batches_and_terminal0_independently_read": true,
+  "independent_statistics": "PASS",
+  "models_unchanged": true,
+  "GPU_admission": {
+    "physical_GPU": 4,
+    "admitted_free_MiB": 24110,
+    "existing_compute": 0
+  },
+  "worker_live_GPU_snapshot_captured": false,
+  "observation_limit": "Worker finished27.12s between observations; no liveworkerGPU snapshot. No rerun for telemetry. GPUassignment from submittedadmission/env isindirect.",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "focused_tests": 3,
+  "one_P0P1": "PASS",
+  "other_owner_changes": 0
+}

@@ -3,7 +3,7 @@
 - run_id：`20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01`
 - group_id：`restoration-source-objective-gradient-geometry`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（完整源梯度统计及独立复算已核实；GPU中途快照缺项如实保留）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+80批源端导数/全部20draw/五组/三目标/两权重均完成。独立Gram/点积/cos/全局clip/汇总复算PASS，0更新，state保持。完整解释和观测缺项见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -37,3 +37,7 @@
 该诊断基于final30/eval和固定源面板，混合七源景，不是实际训练批次/训练clip频率或AdamW更新预测；未计算动量、二阶矩及decoupled decay。main与aux的夹角只提供局部机制信号，不能据此分解Main性能百分点或建立理论界。零范数组的cos明确为null并报告有效批数。两G、全部80批/五组/两权重保留，未扫描checkpoint或根据质量取消。
 
 设计动机来自完整源曲线的latent/IQ/输出特征取舍，代码在读取新Main数值之前已固定；不消费Main结果优化。3项聚焦测试和一次P0/P1通过。原N607 CVS-RFFI/Torch2.1+cu121/FP32-TF32off，GPU4/6 UUID准入free>=12GB、原compute<=2、仅新增1条本任务NN/单卡总<=3，其他owner不改。所有父Main技术完成才运行，无质量门槛；当前性能目标ACTIVE、效率次级、默认DURA保持。
+
+## 完整梯度诊断已核实
+
+VERIFIED_ARTIFACTS_COMPLETE / ANALYZED。80批、20draw、两个冻结G的全部统计及模型状态保持核实，独立复算PASS（最大差2.78e-17）。编码器平均主/latent余弦.547769/.599657，负余弦0/40与1/40；两权重下全局clip激活0/80，main·total及physical·total负值0。限于末轮固定源点，不推断实际AdamW/早期轨迹。worker27.12秒内自然结束，未捕获中途GPU快照，不重跑补监控。暂不根据此证据启用PCGrad/分组裁剪，下一项源假设检验投影前幅度尺度约束。Main3pp+clean目标ACTIVE，默认DURA保持。

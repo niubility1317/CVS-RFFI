@@ -1,0 +1,312 @@
+{
+  "status": "SOURCE_GRADIENT_GEOMETRY_COMPLETE",
+  "run_id": "20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01",
+  "code_commit": "96db4e5a0446c713cd2d36c2977703590c26d523",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "models": [
+    "MSAT_FeatureCond",
+    "MSAT_FeatureStrong"
+  ],
+  "objectives": [
+    "physical",
+    "output_F",
+    "latent_unit"
+  ],
+  "source_packets": 512,
+  "L_s": 128,
+  "U_s": 384,
+  "draws": 20,
+  "batches": 80,
+  "batch_size": 256,
+  "gradient_groups": [
+    "encoder",
+    "latent_head",
+    "FiLM",
+    "decoder",
+    "all"
+  ],
+  "weights": [
+    0.1,
+    1.0
+  ],
+  "summary": {
+    "MSAT_FeatureCond": {
+      "encoder": {
+        "0.1": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.547769002263907,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.06861884778054358,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        },
+        "1.0": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.547769002263907,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.28841131983143253,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        }
+      },
+      "latent_head": {
+        "0.1": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.3531784977877934,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.01920501840774159,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        },
+        "1.0": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.3531784977877934,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.11850044128739376,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        }
+      },
+      "FiLM": {
+        "0.1": {
+          "batches": 40,
+          "cosine_defined_batches": 0,
+          "mean_main_latent_cosine": null,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.04373092549291165,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        },
+        "1.0": {
+          "batches": 40,
+          "cosine_defined_batches": 0,
+          "mean_main_latent_cosine": null,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.04373092549291165,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        }
+      },
+      "decoder": {
+        "0.1": {
+          "batches": 40,
+          "cosine_defined_batches": 0,
+          "mean_main_latent_cosine": null,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.13312215313777137,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        },
+        "1.0": {
+          "batches": 40,
+          "cosine_defined_batches": 0,
+          "mean_main_latent_cosine": null,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.13312215313777137,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        }
+      },
+      "all": {
+        "0.1": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.18860108290694405,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.15873349788177601,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        },
+        "1.0": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.18860108290694405,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.34514699051015424,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        }
+      }
+    },
+    "MSAT_FeatureStrong": {
+      "encoder": {
+        "0.1": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.5996565381977449,
+          "negative_main_latent_cosine_batches": 1,
+          "mean_total_gradient_norm": 0.07732870554136828,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        },
+        "1.0": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.5996565381977449,
+          "negative_main_latent_cosine_batches": 1,
+          "mean_total_gradient_norm": 0.27869276854291525,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        }
+      },
+      "latent_head": {
+        "0.1": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.3111599585405647,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.024165031140039282,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        },
+        "1.0": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.3111599585405647,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.10931181482716831,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        }
+      },
+      "FiLM": {
+        "0.1": {
+          "batches": 40,
+          "cosine_defined_batches": 0,
+          "mean_main_latent_cosine": null,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.05520655813263,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        },
+        "1.0": {
+          "batches": 40,
+          "cosine_defined_batches": 0,
+          "mean_main_latent_cosine": null,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.05520655813263,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        }
+      },
+      "decoder": {
+        "0.1": {
+          "batches": 40,
+          "cosine_defined_batches": 0,
+          "mean_main_latent_cosine": null,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.1331100990596897,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        },
+        "1.0": {
+          "batches": 40,
+          "cosine_defined_batches": 0,
+          "mean_main_latent_cosine": null,
+          "negative_main_latent_cosine_batches": 0,
+          "mean_total_gradient_norm": 0.1331100990596897,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        }
+      },
+      "all": {
+        "0.1": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.20553598594672332,
+          "negative_main_latent_cosine_batches": 1,
+          "mean_total_gradient_norm": 0.16774876818702472,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        },
+        "1.0": {
+          "batches": 40,
+          "cosine_defined_batches": 40,
+          "mean_main_latent_cosine": 0.20553598594672332,
+          "negative_main_latent_cosine_batches": 1,
+          "mean_total_gradient_norm": 0.3350286541875769,
+          "mean_clip1_factor": 1.0,
+          "clip_active_batches": 0,
+          "main_dot_total_negative_batches": 0,
+          "physical_dot_total_negative_batches": 0
+        }
+      }
+    }
+  },
+  "G_forward_rows": 20480,
+  "F0_output_feature_rows": 20480,
+  "F0_clean_feature_rows": 512,
+  "source2_smoke_extra": true,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "novel_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "parameter_gradients_accumulated": false,
+  "temporarily_enabled_G_derivatives_only": true,
+  "G_requires_grad_restored_false": true,
+  "source_in_sample": true,
+  "actual_training_step_statistics": false,
+  "AdamW_step_prediction": false,
+  "theoretical_ceiling": false,
+  "checkpoint_selection": false,
+  "default_DURA_changed": false,
+  "seconds": 27.118664589001128,
+  "goal_complete": false
+}

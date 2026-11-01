@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "source_batches": 80,
+  "source_forward_rows": 20480,
+  "groups": 5,
+  "objectives": 3,
+  "weights": 2,
+  "all_source_indices_match": true,
+  "all20draws_checked": true,
+  "Gram_and_global_clip_and_summary_checked": true,
+  "latent_decoder_FiLM_gradient_exact_zero": true,
+  "max_abs_metric_error": 2.7755575615628914e-17,
+  "max_abs_group_sum_Gram_error": 1.862645149230957e-08,
+  "models_unchanged": true,
+  "parameter_gradients_accumulated": false,
+  "new_neural_forwards": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0
+}

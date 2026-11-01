@@ -20,6 +20,7 @@ RUN='20261101-phase1-Restore-FeatureCond-E30-s2026092701-r01'
 MODULE='experiments.pamf_phase3_restoration.feature_conditioned_trial'
 ARM='MSAT_FeatureCond'
 TEMPLATE=full_configuration('MSAT_FullFGrad')
+OUTPUT_REGULARIZER=None
 
 
 def configuration(arm):
@@ -62,7 +63,9 @@ def train(args,out):
     torch.testing.assert_close(restored,unit_power(source2),atol=0,rtol=0)
     iq,_=objective(restored,clean[:2]);guide,_=trial.feature_guide(F,restored,clean[:2],target)
     latent,_=latent_feature_loss(aux['predicted_features'],target,scale)
-    (iq+guide+latent).mean().backward()
+    smoke_loss=iq+guide+latent
+    if OUTPUT_REGULARIZER is not None:smoke_loss=smoke_loss+OUTPUT_REGULARIZER(aux,clean[:2])[0]
+    smoke_loss.mean().backward()
     for name in ['output.weight','stem.weight','feature_regressor.3.weight']:
         p=dict(G.named_parameters())[name]
         if p.grad is None or not torch.isfinite(p.grad).all() or not p.grad.abs().sum()>0:raise ValueError('Real source output/encoder/feature-regressor gradient required')
@@ -71,10 +74,10 @@ def train(args,out):
     if any(not torch.equal(q,G.state_dict()[k]) for k,q in before.items()):raise ValueError('No-update smoke changed G')
     trial.save(out/'smoke_E0.pt',G,args.arm,args.commit,0);probe=trial.load(out/'smoke_E0.pt',args.arm,args.commit,device,epoch=0)
     with torch.no_grad():torch.testing.assert_close(probe(source2),restored,atol=2e-5,rtol=2e-5)
-    del probe,restored,aux,iq,guide,latent,before,source2
+    del probe,restored,aux,iq,guide,latent,smoke_loss,before,source2
     write(out/'smoke.json',dict(status='PASS',source_Ls=2,original_F0=True,unit_power_initial_output=True,
         output_encoder_feature_regressor_gradients=True,strict_E0_reload=True,clean_features_loss_only=True,
-        optimizer_updates=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0))
+        optimizer_updates=0,TX_labels_read=0,V_reads=0,OE_reads=0,target_inputs=0,output_regularizer_active=OUTPUT_REGULARIZER is not None))
     print('FEATURECOND_REAL_SOURCE_SMOKE_PASS',flush=True)
     cache_start=time.perf_counter()
     with torch.no_grad():features=torch.cat([F.features(clean[i:i+256]).detach() for i in range(0,63000,256)])
@@ -101,12 +104,15 @@ def train(args,out):
                 restored,aux=G(observed[take],return_aux=True)
                 loss,terms=objective(restored,clean[take]);guide,info=trial.feature_guide(F,restored,clean[take],features[take])
                 latent,latent_terms=latent_feature_loss(aux['predicted_features'],features[take],scale);loss=loss+guide+latent
+                extra_metrics={}
+                if OUTPUT_REGULARIZER is not None:
+                    extra_loss,extra_metrics=OUTPUT_REGULARIZER(aux,clean[take]);loss=loss+extra_loss
                 if not torch.isfinite(loss).all():raise ValueError('Nonfinite source loss; preserve run')
                 loss.mean().backward();torch.nn.utils.clip_grad_norm_(G.parameters(),1.,error_if_nonfinite=True)
                 optimizer.step();update+=1
                 power_error=(restored.detach().square().sum(1).mean(1)-1).abs()
                 metrics=dict(loss=loss,**terms,**latent_terms,feature_error=info['feature_error'],
-                    feature_standardized_error=info['feature_standardized_error'],guide_weight=info['weight'],output_power_abs_error=power_error)
+                    feature_standardized_error=info['feature_standardized_error'],guide_weight=info['weight'],output_power_abs_error=power_error,**extra_metrics)
                 for key,value in metrics.items():sums[key]=sums.get(key,0.)+float(value.detach().sum())
             check_F0_state(F,frozen);torch.cuda.synchronize();trial.save_recovery(out/'recovery',G,optimizer,args.arm,args.commit,epoch,update)
             row=dict(epoch=epoch,draw=draw,updates=update,steps=247,count=63000,L_s=6300,U_s=56700,seconds=time.perf_counter()-begin,
