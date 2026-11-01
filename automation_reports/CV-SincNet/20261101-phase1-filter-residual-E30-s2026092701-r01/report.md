@@ -3,7 +3,7 @@
 - run_id：`20261101-phase1-filter-residual-E30-s2026092701-r01`
 - group_id：`phase1-regularized-residual-fir`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING；实际状态按 events.jsonl 及远端记录更新。
+- 当前登记状态：TRAINING_COMPLETE；七视图预测进行中，实际状态按 events.jsonl 及远端记录更新。
 
 ## 目的与对照
 
@@ -32,4 +32,10 @@
 
 真实冻结 Tri-SIG-TIME SSL 与 DURA 的 CPU 2 条、GPU 128 条源记录检查均通过；GPU 4 的 worker PID 202717 已开始正式训练。独立重载首轮检查点，核对 493 次更新、训练配置、优化器及 GPU 随机状态，并在两条源记录检查确定输出、20% 校正约束和零残差身份。首轮检查点 SHA-256 为 `a73d88bafa6e9b8976c0ca00b8b2b092a057df9910969160e220077397c22445`。
 
-这些检查不代表真实 GPU 中断续训已验证，也不代表 Phase1 测试性能。固定 E30 训练和七视图预测仍待完成。
+这些检查不代表真实 GPU 中断续训已验证，也不代表 Phase1 测试性能。
+
+## 固定训练完成
+
+已完成预先登记的 30 轮和 14790 次更新。独立使用真实冻结 Tri-SIG-TIME SSL 和 DURA 在两条源记录上重载最终模型，确认输出确定且满足 20% 校正约束；最终检查点 SHA-256 为 `5cb013504f76e24c45f1648e4e4d62dd916bafde55e1e10d6609bb79960e7232`。训练未读取 TX 标签、V 或测试 IQ。
+
+七个 Phase1 视图正在预测，全部固定后才接入真值。尚无测试准确率或 3% 目标结论；该开发测试此前已被观察，不属于独立盲测。
