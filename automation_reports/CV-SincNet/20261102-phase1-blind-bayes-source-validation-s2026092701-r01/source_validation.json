@@ -1,0 +1,416 @@
+{
+  "status": "SOURCE_VALIDATION_COMPLETE",
+  "commit": "bcc0c56686ad57d0c101d7b0a7fc7822dd6e5ccb",
+  "checkpoint_sha256": "0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338",
+  "source_prior_counts": [
+    1272,
+    1366,
+    1373,
+    1247,
+    1312,
+    1300
+  ],
+  "source_prior_ids": 8192,
+  "validation_ids": 7840,
+  "heldout_ids": 3921,
+  "validation": {
+    "0.8": {
+      "1:4:clean": {
+        "count": 536,
+        "valid_count": 524,
+        "active": 1,
+        "baseline_correct": 524,
+        "candidate_correct": 524,
+        "baseline_iq": 1.6298008631565608e-05,
+        "candidate_iq": 0.0006901438464410603
+      },
+      "1:4:practical_high": {
+        "count": 605,
+        "valid_count": 583,
+        "active": 605,
+        "baseline_correct": 583,
+        "candidate_correct": 580,
+        "baseline_iq": 0.0025074449367821217,
+        "candidate_iq": 0.005249229725450277
+      },
+      "1:4:practical_mid": {
+        "count": 537,
+        "valid_count": 530,
+        "active": 537,
+        "baseline_correct": 521,
+        "candidate_correct": 513,
+        "baseline_iq": 0.004749916028231382,
+        "candidate_iq": 0.007037746254354715
+      },
+      "1:4:practical_low_suburban": {
+        "count": 579,
+        "valid_count": 567,
+        "active": 579,
+        "baseline_correct": 550,
+        "candidate_correct": 534,
+        "baseline_iq": 0.00631316751241684,
+        "candidate_iq": 0.010136743076145649
+      },
+      "1:4:practical_high_urban": {
+        "count": 532,
+        "valid_count": 512,
+        "active": 532,
+        "baseline_correct": 501,
+        "candidate_correct": 501,
+        "baseline_iq": 0.0033722040243446827,
+        "candidate_iq": 0.007406171876937151
+      },
+      "1:4:practical_mid_urban": {
+        "count": 560,
+        "valid_count": 536,
+        "active": 559,
+        "baseline_correct": 493,
+        "candidate_correct": 459,
+        "baseline_iq": 0.0141453193500638,
+        "candidate_iq": 0.025408731773495674
+      },
+      "1:4:practical_low_urban": {
+        "count": 582,
+        "valid_count": 566,
+        "active": 582,
+        "baseline_correct": 496,
+        "candidate_correct": 419,
+        "baseline_iq": 0.020665397867560387,
+        "candidate_iq": 0.03858456388115883
+      },
+      "1:6:clean": {
+        "count": 556,
+        "valid_count": 550,
+        "active": 2,
+        "baseline_correct": 550,
+        "candidate_correct": 550,
+        "baseline_iq": 2.3926668291096576e-05,
+        "candidate_iq": 0.0006197600741870701
+      },
+      "1:6:practical_high": {
+        "count": 601,
+        "valid_count": 593,
+        "active": 601,
+        "baseline_correct": 591,
+        "candidate_correct": 590,
+        "baseline_iq": 0.0033672843128442764,
+        "candidate_iq": 0.0033411304466426373
+      },
+      "1:6:practical_mid": {
+        "count": 554,
+        "valid_count": 548,
+        "active": 554,
+        "baseline_correct": 543,
+        "candidate_correct": 545,
+        "baseline_iq": 0.005936245433986187,
+        "candidate_iq": 0.006570222321897745
+      },
+      "1:6:practical_low_suburban": {
+        "count": 526,
+        "valid_count": 515,
+        "active": 526,
+        "baseline_correct": 504,
+        "candidate_correct": 504,
+        "baseline_iq": 0.010024373419582844,
+        "candidate_iq": 0.011430172249674797
+      },
+      "1:6:practical_high_urban": {
+        "count": 560,
+        "valid_count": 554,
+        "active": 560,
+        "baseline_correct": 551,
+        "candidate_correct": 549,
+        "baseline_iq": 0.006160602904856205,
+        "candidate_iq": 0.007574877701699734
+      },
+      "1:6:practical_mid_urban": {
+        "count": 542,
+        "valid_count": 538,
+        "active": 542,
+        "baseline_correct": 505,
+        "candidate_correct": 499,
+        "baseline_iq": 0.02003667503595352,
+        "candidate_iq": 0.022954892367124557
+      },
+      "1:6:practical_low_urban": {
+        "count": 570,
+        "valid_count": 564,
+        "active": 570,
+        "baseline_correct": 488,
+        "candidate_correct": 488,
+        "baseline_iq": 0.035013314336538315,
+        "candidate_iq": 0.043288704007864
+      },
+      "2:8:clean": {
+        "count": 608,
+        "valid_count": 592,
+        "active": 2,
+        "baseline_correct": 592,
+        "candidate_correct": 592,
+        "baseline_iq": 4.033619916299358e-05,
+        "candidate_iq": 0.00014746346278116107
+      },
+      "2:8:practical_high": {
+        "count": 537,
+        "valid_count": 516,
+        "active": 536,
+        "baseline_correct": 512,
+        "candidate_correct": 514,
+        "baseline_iq": 0.004132033791393042,
+        "candidate_iq": 0.0038325723726302385
+      },
+      "2:8:practical_mid": {
+        "count": 541,
+        "valid_count": 516,
+        "active": 541,
+        "baseline_correct": 508,
+        "candidate_correct": 510,
+        "baseline_iq": 0.011551246047019958,
+        "candidate_iq": 0.01043520774692297
+      },
+      "2:8:practical_low_suburban": {
+        "count": 568,
+        "valid_count": 544,
+        "active": 566,
+        "baseline_correct": 530,
+        "candidate_correct": 532,
+        "baseline_iq": 0.016746437177062035,
+        "candidate_iq": 0.016471682116389275
+      },
+      "2:8:practical_high_urban": {
+        "count": 568,
+        "valid_count": 547,
+        "active": 568,
+        "baseline_correct": 536,
+        "candidate_correct": 535,
+        "baseline_iq": 0.009234380908310413,
+        "candidate_iq": 0.010520292446017265
+      },
+      "2:8:practical_mid_urban": {
+        "count": 568,
+        "valid_count": 548,
+        "active": 568,
+        "baseline_correct": 512,
+        "candidate_correct": 511,
+        "baseline_iq": 0.04232886806130409,
+        "candidate_iq": 0.03881208971142769
+      },
+      "2:8:practical_low_urban": {
+        "count": 531,
+        "valid_count": 512,
+        "active": 531,
+        "baseline_correct": 462,
+        "candidate_correct": 455,
+        "baseline_iq": 0.07721950113773346,
+        "candidate_iq": 0.07835507392883301
+      }
+    },
+    "0.99": {
+      "1:4:clean": {
+        "count": 536,
+        "valid_count": 524,
+        "active": 0,
+        "baseline_correct": 524,
+        "candidate_correct": 524,
+        "baseline_iq": 1.6298008631565608e-05,
+        "candidate_iq": 2.7303090615205666e-15
+      },
+      "1:4:practical_high": {
+        "count": 605,
+        "valid_count": 583,
+        "active": 604,
+        "baseline_correct": 583,
+        "candidate_correct": 580,
+        "baseline_iq": 0.0025074449367821217,
+        "candidate_iq": 0.005135996267199516
+      },
+      "1:4:practical_mid": {
+        "count": 537,
+        "valid_count": 530,
+        "active": 537,
+        "baseline_correct": 521,
+        "candidate_correct": 513,
+        "baseline_iq": 0.004749916028231382,
+        "candidate_iq": 0.007037746254354715
+      },
+      "1:4:practical_low_suburban": {
+        "count": 579,
+        "valid_count": 567,
+        "active": 579,
+        "baseline_correct": 550,
+        "candidate_correct": 534,
+        "baseline_iq": 0.00631316751241684,
+        "candidate_iq": 0.010136743076145649
+      },
+      "1:4:practical_high_urban": {
+        "count": 532,
+        "valid_count": 512,
+        "active": 529,
+        "baseline_correct": 501,
+        "candidate_correct": 501,
+        "baseline_iq": 0.0033722040243446827,
+        "candidate_iq": 0.008268747478723526
+      },
+      "1:4:practical_mid_urban": {
+        "count": 560,
+        "valid_count": 536,
+        "active": 556,
+        "baseline_correct": 493,
+        "candidate_correct": 459,
+        "baseline_iq": 0.0141453193500638,
+        "candidate_iq": 0.028061745688319206
+      },
+      "1:4:practical_low_urban": {
+        "count": 582,
+        "valid_count": 566,
+        "active": 579,
+        "baseline_correct": 496,
+        "candidate_correct": 420,
+        "baseline_iq": 0.020665397867560387,
+        "candidate_iq": 0.04063192009925842
+      },
+      "1:6:clean": {
+        "count": 556,
+        "valid_count": 550,
+        "active": 0,
+        "baseline_correct": 550,
+        "candidate_correct": 550,
+        "baseline_iq": 2.3926668291096576e-05,
+        "candidate_iq": 2.9153232918157712e-15
+      },
+      "1:6:practical_high": {
+        "count": 601,
+        "valid_count": 593,
+        "active": 601,
+        "baseline_correct": 591,
+        "candidate_correct": 590,
+        "baseline_iq": 0.0033672843128442764,
+        "candidate_iq": 0.0033411304466426373
+      },
+      "1:6:practical_mid": {
+        "count": 554,
+        "valid_count": 548,
+        "active": 551,
+        "baseline_correct": 543,
+        "candidate_correct": 545,
+        "baseline_iq": 0.005936245433986187,
+        "candidate_iq": 0.006657747086137533
+      },
+      "1:6:practical_low_suburban": {
+        "count": 526,
+        "valid_count": 515,
+        "active": 521,
+        "baseline_correct": 504,
+        "candidate_correct": 504,
+        "baseline_iq": 0.010024373419582844,
+        "candidate_iq": 0.011052588932216167
+      },
+      "1:6:practical_high_urban": {
+        "count": 560,
+        "valid_count": 554,
+        "active": 559,
+        "baseline_correct": 551,
+        "candidate_correct": 549,
+        "baseline_iq": 0.006160602904856205,
+        "candidate_iq": 0.007586829364299774
+      },
+      "1:6:practical_mid_urban": {
+        "count": 542,
+        "valid_count": 538,
+        "active": 538,
+        "baseline_correct": 505,
+        "candidate_correct": 499,
+        "baseline_iq": 0.02003667503595352,
+        "candidate_iq": 0.024824241176247597
+      },
+      "1:6:practical_low_urban": {
+        "count": 570,
+        "valid_count": 564,
+        "active": 568,
+        "baseline_correct": 488,
+        "candidate_correct": 488,
+        "baseline_iq": 0.035013314336538315,
+        "candidate_iq": 0.043289560824632645
+      },
+      "2:8:clean": {
+        "count": 608,
+        "valid_count": 592,
+        "active": 0,
+        "baseline_correct": 592,
+        "candidate_correct": 592,
+        "baseline_iq": 4.033619916299358e-05,
+        "candidate_iq": 2.9235761455791067e-15
+      },
+      "2:8:practical_high": {
+        "count": 537,
+        "valid_count": 516,
+        "active": 531,
+        "baseline_correct": 512,
+        "candidate_correct": 514,
+        "baseline_iq": 0.004132033791393042,
+        "candidate_iq": 0.004830068442970514
+      },
+      "2:8:practical_mid": {
+        "count": 541,
+        "valid_count": 516,
+        "active": 539,
+        "baseline_correct": 508,
+        "candidate_correct": 510,
+        "baseline_iq": 0.011551246047019958,
+        "candidate_iq": 0.010459327138960361
+      },
+      "2:8:practical_low_suburban": {
+        "count": 568,
+        "valid_count": 544,
+        "active": 564,
+        "baseline_correct": 530,
+        "candidate_correct": 532,
+        "baseline_iq": 0.016746437177062035,
+        "candidate_iq": 0.015793073922395706
+      },
+      "2:8:practical_high_urban": {
+        "count": 568,
+        "valid_count": 547,
+        "active": 566,
+        "baseline_correct": 536,
+        "candidate_correct": 535,
+        "baseline_iq": 0.009234380908310413,
+        "candidate_iq": 0.011402915231883526
+      },
+      "2:8:practical_mid_urban": {
+        "count": 568,
+        "valid_count": 548,
+        "active": 559,
+        "baseline_correct": 512,
+        "candidate_correct": 509,
+        "baseline_iq": 0.04232886806130409,
+        "candidate_iq": 0.043187376111745834
+      },
+      "2:8:practical_low_urban": {
+        "count": 531,
+        "valid_count": 512,
+        "active": 525,
+        "baseline_correct": 462,
+        "candidate_correct": 454,
+        "baseline_iq": 0.07721950113773346,
+        "candidate_iq": 0.08080288767814636
+      }
+    }
+  },
+  "selected_primary": {
+    "kind": "dura",
+    "validation_net": 0
+  },
+  "selected_accuracy": {
+    "kind": "dura",
+    "validation_net": 0
+  },
+  "source_only": true,
+  "prior_uses_F_pseudo": true,
+  "DURA_inference": false,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "source physical IDs previously observed in other views; clean F pseudo targets are not true accuracy; no target predictions"
+}

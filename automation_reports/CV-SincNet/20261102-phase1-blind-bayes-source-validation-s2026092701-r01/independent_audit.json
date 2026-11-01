@@ -1,0 +1,58 @@
+{
+  "status": "VERIFIED",
+  "selection": {
+    "kind": "dura",
+    "validation_net": 0
+  },
+  "accuracy": {
+    "kind": "dura",
+    "validation_net": 0
+  },
+  "rows": [
+    {
+      "threshold": 0.8,
+      "impaired_net": -145,
+      "classification_violations": [
+        "1:4:practical_mid",
+        "1:4:practical_low_suburban",
+        "1:4:practical_mid_urban",
+        "1:4:practical_low_urban",
+        "1:6:practical_mid_urban"
+      ],
+      "waveform_violations": [
+        "1:4:practical_high",
+        "1:4:practical_mid",
+        "1:4:practical_low_suburban",
+        "1:4:practical_high_urban",
+        "1:4:practical_mid_urban",
+        "1:4:practical_low_urban",
+        "1:6:practical_high_urban",
+        "1:6:practical_low_urban"
+      ]
+    },
+    {
+      "threshold": 0.99,
+      "impaired_net": -144,
+      "classification_violations": [
+        "1:4:practical_mid",
+        "1:4:practical_low_suburban",
+        "1:4:practical_mid_urban",
+        "1:4:practical_low_urban",
+        "1:6:practical_mid_urban"
+      ],
+      "waveform_violations": [
+        "1:4:practical_high",
+        "1:4:practical_mid",
+        "1:4:practical_low_suburban",
+        "1:4:practical_high_urban",
+        "1:4:practical_mid_urban",
+        "1:4:practical_low_urban",
+        "1:6:practical_high_urban",
+        "1:6:practical_mid_urban",
+        "1:6:practical_low_urban"
+      ]
+    }
+  ],
+  "source_only": true,
+  "truth": "clean-F pseudo target, not true labels"
+}
