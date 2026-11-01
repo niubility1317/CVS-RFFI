@@ -1,0 +1,207 @@
+{
+  "status": "COMPLETE_SOURCE_ONLY_ORACLE_SMOKE",
+  "commit": "dff683121e48ba8ab4ae7619ea895dad690bd77c",
+  "scenes": {
+    "practical_high": {
+      "count": 2,
+      "valid_count": 2,
+      "class_map_agreement": 1,
+      "raw": {
+        "correct": 2,
+        "mean_iq_nmse": 2.049537181854248
+      },
+      "dura": {
+        "correct": 2,
+        "mean_iq_nmse": 0.006810009479522705
+      },
+      "global": {
+        "correct": 2,
+        "mean_iq_nmse": 0.00557996891438961
+      },
+      "mixture": {
+        "correct": 2,
+        "mean_iq_nmse": 0.004134300164878368
+      },
+      "map": {
+        "correct": 2,
+        "mean_iq_nmse": 0.004304989241063595
+      },
+      "oracle_class": {
+        "correct": 2,
+        "mean_iq_nmse": 0.004826957359910011
+      }
+    },
+    "practical_mid": {
+      "count": 2,
+      "valid_count": 2,
+      "class_map_agreement": 1,
+      "raw": {
+        "correct": 2,
+        "mean_iq_nmse": 1.986437201499939
+      },
+      "dura": {
+        "correct": 2,
+        "mean_iq_nmse": 0.012668013572692871
+      },
+      "global": {
+        "correct": 2,
+        "mean_iq_nmse": 0.008276106789708138
+      },
+      "mixture": {
+        "correct": 2,
+        "mean_iq_nmse": 0.010647699236869812
+      },
+      "map": {
+        "correct": 2,
+        "mean_iq_nmse": 0.010647699236869812
+      },
+      "oracle_class": {
+        "correct": 2,
+        "mean_iq_nmse": 0.008643020875751972
+      }
+    },
+    "practical_low_suburban": {
+      "count": 2,
+      "valid_count": 1,
+      "class_map_agreement": 1,
+      "raw": {
+        "correct": 1,
+        "mean_iq_nmse": 2.173253297805786
+      },
+      "dura": {
+        "correct": 1,
+        "mean_iq_nmse": 0.027322720736265182
+      },
+      "global": {
+        "correct": 1,
+        "mean_iq_nmse": 0.014593392610549927
+      },
+      "mixture": {
+        "correct": 1,
+        "mean_iq_nmse": 0.010831021703779697
+      },
+      "map": {
+        "correct": 1,
+        "mean_iq_nmse": 0.010831021703779697
+      },
+      "oracle_class": {
+        "correct": 1,
+        "mean_iq_nmse": 0.01674581505358219
+      }
+    },
+    "practical_high_urban": {
+      "count": 2,
+      "valid_count": 2,
+      "class_map_agreement": 2,
+      "raw": {
+        "correct": 2,
+        "mean_iq_nmse": 1.8709948062896729
+      },
+      "dura": {
+        "correct": 2,
+        "mean_iq_nmse": 0.06837429851293564
+      },
+      "global": {
+        "correct": 2,
+        "mean_iq_nmse": 0.03599591180682182
+      },
+      "mixture": {
+        "correct": 2,
+        "mean_iq_nmse": 0.03597594425082207
+      },
+      "map": {
+        "correct": 2,
+        "mean_iq_nmse": 0.03597594425082207
+      },
+      "oracle_class": {
+        "correct": 2,
+        "mean_iq_nmse": 0.03597594425082207
+      }
+    },
+    "practical_mid_urban": {
+      "count": 2,
+      "valid_count": 2,
+      "class_map_agreement": 1,
+      "raw": {
+        "correct": 2,
+        "mean_iq_nmse": 2.088183641433716
+      },
+      "dura": {
+        "correct": 2,
+        "mean_iq_nmse": 0.04908369481563568
+      },
+      "global": {
+        "correct": 2,
+        "mean_iq_nmse": 0.03775676339864731
+      },
+      "mixture": {
+        "correct": 2,
+        "mean_iq_nmse": 0.04012809321284294
+      },
+      "map": {
+        "correct": 2,
+        "mean_iq_nmse": 0.04012809321284294
+      },
+      "oracle_class": {
+        "correct": 2,
+        "mean_iq_nmse": 0.03991993889212608
+      }
+    },
+    "practical_low_urban": {
+      "count": 2,
+      "valid_count": 2,
+      "class_map_agreement": 2,
+      "raw": {
+        "correct": 1,
+        "mean_iq_nmse": 1.9399635791778564
+      },
+      "dura": {
+        "correct": 2,
+        "mean_iq_nmse": 0.04773317649960518
+      },
+      "global": {
+        "correct": 2,
+        "mean_iq_nmse": 0.050581127405166626
+      },
+      "mixture": {
+        "correct": 2,
+        "mean_iq_nmse": 0.0464196503162384
+      },
+      "map": {
+        "correct": 2,
+        "mean_iq_nmse": 0.0464196503162384
+      },
+      "oracle_class": {
+        "correct": 2,
+        "mean_iq_nmse": 0.0464196503162384
+      }
+    }
+  },
+  "fit_ids": 8192,
+  "fit_valid": 7870,
+  "class_counts": [
+    1272,
+    1366,
+    1373,
+    1247,
+    1312,
+    1300
+  ],
+  "shrink_to_global": 0.2,
+  "ridge": 1.444142102903146e-05,
+  "probe_ids": 12,
+  "probe_receivers": [
+    8
+  ],
+  "cache_epoch": 19,
+  "source_only": true,
+  "F_frozen": true,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "known_action_at_inference": true,
+  "known_action_is_simulator_only": true,
+  "oracle_class_uses_clean_F_target": true,
+  "source_caveat": "physical IDs may have appeared in other source views; AGC-dependent noise breaks exact likelihood; estimated mixture is not a certified upper bound"
+}

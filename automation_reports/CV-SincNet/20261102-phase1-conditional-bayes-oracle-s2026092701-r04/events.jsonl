@@ -1,1 +1,3 @@
 {"at": "2026-11-01T20:34:38+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T20:35:37+00:00", "status": "RUNNING", "note": "Known-action oracle source-only diagnostic; no V or test access.", "evidence": ["N607 PID 957071, GPU0, preflight 12 source records passed, prior fit counts 7870"], "row_id": null}
+{"at": "2026-11-01T20:37:27+00:00", "status": "ANALYZED", "note": "Known-action and clean-class oracle use unavailable simulation-only information; no V or test read.", "evidence": ["N607 result.json and independent-replay result.json SHA256 9fb520eb4cae7ac1c198fd6014825f1915d173f274557fd7861d78516324969c, 384 source records"], "row_id": null}
