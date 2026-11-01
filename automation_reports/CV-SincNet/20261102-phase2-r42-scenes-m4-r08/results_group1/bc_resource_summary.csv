@@ -1,0 +1,13 @@
+﻿method,support_path,stage,repeats,median_wall_ms,min_wall_ms,max_wall_ms,median_CPU_fit_ms,old_support_features_reused,B_coefficients_inherited,full_kernel_refit,C_geometry_matches_cold,concurrency
+LocalRidge,0,B_cold,3,96.87620699696708,68.26068900409155,129.27563300036127,12.733354997180868,False,False,True,,observed_isolated_GPU0_snapshots
+LocalRidge,0,C_after_B_incremental,3,350.093212997308,333.62453300651396,361.71925599774113,98.16920800221851,True,False,True,True,observed_isolated_GPU0_snapshots
+LocalRidge,0,C_from_A_cold,3,454.5668589998968,387.4032329986221,480.2694780009915,100.55322700645775,False,False,True,,observed_isolated_GPU0_snapshots
+LocalRidge,1,B_cold,3,413.6757939995732,355.07099499955075,459.1370790003566,11.462552996817976,False,False,True,,observed_isolated_GPU0_snapshots
+LocalRidge,1,C_after_B_incremental,3,593.6035089980578,591.8554849995417,597.1653769956902,95.12093100056518,True,False,True,True,observed_isolated_GPU0_snapshots
+LocalRidge,1,C_from_A_cold,3,982.6266509990091,967.3262780052028,1001.457695994759,98.92188599769725,False,False,True,,observed_isolated_GPU0_snapshots
+R42,0,B_cold,3,1002.4229570044554,994.8427109993645,1483.4028530021897,505.6491459981771,False,False,True,,observed_isolated_GPU0_snapshots
+R42,0,C_after_B_incremental,3,3243.9869539957726,3185.769754003559,3323.445834997983,1654.677783997613,True,False,True,True,observed_isolated_GPU0_snapshots
+R42,0,C_from_A_cold,3,3649.0034559974447,3625.108241001726,3918.825259002915,1683.0142680046265,False,False,True,,observed_isolated_GPU0_snapshots
+R42,1,B_cold,3,1349.0440509995096,1345.1447900006315,1548.9821309965919,503.2824599984451,False,False,True,,observed_isolated_GPU0_snapshots
+R42,1,C_after_B_incremental,3,3540.4098619983415,3501.880052004708,4543.035981005232,1693.6668569978792,True,False,True,True,observed_isolated_GPU0_snapshots
+R42,1,C_from_A_cold,3,4273.794572996849,4259.235879006155,5023.0556599999545,1712.9011630022433,False,False,True,,observed_isolated_GPU0_snapshots

@@ -29,3 +29,9 @@ After the user-prioritized MIX completion, resume original preregistered fixed L
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 2026-11-02 运行核实：VERIFIED RUNNING: original fixed single-scene K5/N20 scope; four actual-source no-query smokes PASS, 222 closed scene predictions indexed for exact reuse, no new source updates, single-scene scoring only after all 1260 predictions fixed. MIX outcome not used for method selection.
+
+## 原 Group1 完整对照已汇总
+
+VERIFIED：本run单场景1260任务/27720行与已交付r07的672 MIX任务/139776行均各自冻结预测后独立评分。三单场景每景420单元；原生10方法各1932个配对单元、46704个指标行，49728条逐单元配对与232组聚合及预算独立核对。原生DA仅B、CIL仅C；CIL旧类标签预算与R42不同，不声称标签等价。ISSL用户停止，Tweak/CSIL N/A，Hu scaled保持独立身份。完整 [Group1结果总览](results_group1/report.md)、[单场景与A/B/C/DURA因子](results_group1/scene_factor_report.md)、[外部方法](results_group1/external_report.md)。
+
+MIX及场景各自独立truth-last；单场景在MIX结果公开后执行但方法在此前固定，不作为新盲测。冷C/B后C仅固定资源点测量且全核重拟合，无新准确率测试；MACs/FLOPs/能耗未测。

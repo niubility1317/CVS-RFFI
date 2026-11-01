@@ -56904,5 +56904,45 @@
     "SCENE_ONLY resumes original previously paused LS/MU/LU matrix after MIX result disclosure. No score-dependent tuning; no claim of fresh blind evaluation. All existing closed scenes reused, not re-predicted."
   ],
   "replaces_run_id": "20261101-phase2-r42-group1-m4-r05",
-  "registered_at": "2026-11-01T18:00:52+00:00"
+  "registered_at": "2026-11-01T18:00:52+00:00",
+  "scoring_result": {
+    "status": "VERIFIED_GROUP1_COMPLETE",
+    "scene_run": "20261102-phase2-r42-scenes-m4-r08",
+    "mix_run": "20261101-phase2-r42-mix16-mgpu-m4-r07",
+    "scene_tasks": 1260,
+    "scene_prediction_score_rows": 27720,
+    "mix_tasks": 672,
+    "mix_prediction_score_rows": 139776,
+    "total_task_units": 1932,
+    "total_natural_prediction_score_rows": 167496,
+    "truth_last_scope": "MIX and scene independently frozen before their own scoring",
+    "scene_units_per_LS_MU_LU": 420,
+    "external_profiles": [
+      "protonet_cda",
+      "mrior_sda",
+      "dadda_sda",
+      "twostage",
+      "feature_separation_hu2024",
+      "poster_ft",
+      "radionet_ada_knn",
+      "orthogonal",
+      "lora_triplet_knn",
+      "mopc_hr"
+    ],
+    "external_units_per_profile": 1932,
+    "external_score_rows": 46704,
+    "external_unit_pair_rows": 49728,
+    "external_aggregate_groups_verified": 232,
+    "DA_scope": "B only",
+    "CIL_scope": "C only",
+    "CIL_target_label_equivalence": false,
+    "ISSL": "USER_STOPPED",
+    "Tweak": "N/A",
+    "CSIL": "N/A",
+    "Hu_scaled": "separate version not relabeled",
+    "MACs": null,
+    "FLOPs": null,
+    "energy_joules": null,
+    "development_evaluation": "Scene scoring occurred after MIX results disclosed; no score-dependent method changes."
+  }
 }
