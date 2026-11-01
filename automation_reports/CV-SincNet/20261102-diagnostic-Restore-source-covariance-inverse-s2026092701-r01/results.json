@@ -1,0 +1,797 @@
+{
+  "status": "SOURCE_COVARIANCE_INVERSE_COMPLETE",
+  "run_id": "20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
+  "code_commit": "a3a90b55a73702954c453eec9c1ad17fec24d87f",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "source_prior_fit_packets": 63000,
+  "source_prior_roles": {
+    "L_s": 6300,
+    "U_s": 56700
+  },
+  "source_prior_shrinkage": 0.001,
+  "source_real_prior_variance": 0.15741828252250745,
+  "source_covariance_min_eigenvalue": 0.0001574182825225396,
+  "source_covariance_max_eigenvalue": 18.671150508266344,
+  "source_covariance_trace": 80.5981606515238,
+  "covariance_top_energy_fraction": {
+    "16": 0.5909288323827641,
+    "32": 0.7092917556434867,
+    "64": 0.8461159887739641,
+    "128": 0.9533695905734386,
+    "256": 0.9945362348720258
+  },
+  "source_packets": 512,
+  "source_draws": 20,
+  "source_cases": 10240,
+  "methods": [
+    "isotropic",
+    "full_covariance"
+  ],
+  "summary": [
+    {
+      "method": "isotropic",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.058860806404936926,
+        "feature_cosine_distance": 0.03426946908002719,
+        "clean_decision_agreement": 0.88095703125,
+        "relative_solve_residual": 1.3926815895993246e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 181,
+          "damage": 903,
+          "net": -722
+        },
+        "received": {
+          "repairs": 706,
+          "damage": 476,
+          "net": 230
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 1.2665701267139352e-15,
+        "feature_cosine_distance": 1.1135763273426368e-08,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 7.640078307453312e-17
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.0352655993546108,
+        "feature_cosine_distance": 0.015014473925793012,
+        "clean_decision_agreement": 0.9635599159074982,
+        "relative_solve_residual": 2.6779176343090935e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 4,
+          "damage": 42,
+          "net": -38
+        },
+        "received": {
+          "repairs": 38,
+          "damage": 32,
+          "net": 6
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.04481836144760665,
+        "feature_cosine_distance": 0.022408518484897083,
+        "clean_decision_agreement": 0.9361111111111111,
+        "relative_solve_residual": 2.458466953879186e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 21,
+          "damage": 77,
+          "net": -56
+        },
+        "received": {
+          "repairs": 90,
+          "damage": 43,
+          "net": 47
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.05216339147385884,
+        "feature_cosine_distance": 0.027289132941704968,
+        "clean_decision_agreement": 0.9133105802047782,
+        "relative_solve_residual": 1.1755148311394362e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 18,
+          "damage": 97,
+          "net": -79
+        },
+        "received": {
+          "repairs": 72,
+          "damage": 70,
+          "net": 2
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.1440334641063342,
+        "feature_cosine_distance": 0.094609250099214,
+        "clean_decision_agreement": 0.6399721448467967,
+        "relative_solve_residual": 7.099598898485446e-16
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 66,
+          "damage": 352,
+          "net": -286
+        },
+        "received": {
+          "repairs": 235,
+          "damage": 164,
+          "net": 71
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.0434603964924973,
+        "feature_cosine_distance": 0.020088102859306848,
+        "clean_decision_agreement": 0.9299191374663073,
+        "relative_solve_residual": 1.6315602087149848e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 24,
+          "damage": 91,
+          "net": -67
+        },
+        "received": {
+          "repairs": 79,
+          "damage": 66,
+          "net": 13
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.09945035873825686,
+        "feature_cosine_distance": 0.06499447646591154,
+        "clean_decision_agreement": 0.7679205110007097,
+        "relative_solve_residual": 1.146894807737735e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 48,
+          "damage": 244,
+          "net": -196
+        },
+        "received": {
+          "repairs": 192,
+          "damage": 101,
+          "net": 91
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.12411060670488759,
+        "feature_cosine_distance": 0.08849335143440648,
+        "clean_decision_agreement": 0.7094736842105264,
+        "relative_solve_residual": 4.256233543237472e-16
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 60,
+          "damage": 204,
+          "net": -144
+        },
+        "received": {
+          "repairs": 259,
+          "damage": 102,
+          "net": 157
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.03609684282853845,
+        "feature_cosine_distance": 0.015439439963921456,
+        "clean_decision_agreement": 0.9559265944645006,
+        "relative_solve_residual": 2.0160761177781513e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 43,
+          "damage": 259,
+          "net": -216
+        },
+        "received": {
+          "repairs": 201,
+          "damage": 207,
+          "net": -6
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 1.2665701267139352e-15,
+        "feature_cosine_distance": 1.1135763273426368e-08,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 7.640078307453312e-17
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "isotropic",
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.2303459737467407,
+        "feature_cosine_distance": 0.1544772013671423,
+        "clean_decision_agreement": 0.3885230479774224,
+        "relative_solve_residual": 3.1345853567797175e-16
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 78,
+          "damage": 440,
+          "net": -362
+        },
+        "received": {
+          "repairs": 246,
+          "damage": 167,
+          "net": 79
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.019519898981265875,
+        "feature_cosine_distance": 0.006506191147491336,
+        "clean_decision_agreement": 0.966015625,
+        "relative_solve_residual": 2.0179298360086076e-14
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 972,
+          "damage": 101,
+          "net": 871
+        },
+        "DURA_v1": {
+          "repairs": 293,
+          "damage": 144,
+          "net": 149
+        },
+        "received": {
+          "repairs": 1180,
+          "damage": 79,
+          "net": 1101
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 1.3164874267275584e-14,
+        "feature_cosine_distance": 8.908610618741094e-09,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 5.348642750155624e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.0058908268320488405,
+        "feature_cosine_distance": 0.0012722124398464746,
+        "clean_decision_agreement": 0.9943938332165382,
+        "relative_solve_residual": 3.5782643494220465e-14
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 46,
+          "damage": 2,
+          "net": 44
+        },
+        "DURA_v1": {
+          "repairs": 10,
+          "damage": 4,
+          "net": 6
+        },
+        "received": {
+          "repairs": 54,
+          "damage": 4,
+          "net": 50
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.009988426869030162,
+        "feature_cosine_distance": 0.002724639491902457,
+        "clean_decision_agreement": 0.9888888888888889,
+        "relative_solve_residual": 3.2757614790262715e-14
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 81,
+          "damage": 5,
+          "net": 76
+        },
+        "DURA_v1": {
+          "repairs": 29,
+          "damage": 9,
+          "net": 20
+        },
+        "received": {
+          "repairs": 128,
+          "damage": 5,
+          "net": 123
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.014695668606557995,
+        "feature_cosine_distance": 0.00535425102344552,
+        "clean_decision_agreement": 0.9726962457337884,
+        "relative_solve_residual": 1.8505752558270185e-14
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 99,
+          "damage": 12,
+          "net": 87
+        },
+        "DURA_v1": {
+          "repairs": 27,
+          "damage": 19,
+          "net": 8
+        },
+        "received": {
+          "repairs": 99,
+          "damage": 10,
+          "net": 89
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.06096768409506973,
+        "feature_cosine_distance": 0.021845124184587207,
+        "clean_decision_agreement": 0.8774373259052924,
+        "relative_solve_residual": 9.429370537584341e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 392,
+          "damage": 51,
+          "net": 341
+        },
+        "DURA_v1": {
+          "repairs": 117,
+          "damage": 62,
+          "net": 55
+        },
+        "received": {
+          "repairs": 449,
+          "damage": 37,
+          "net": 412
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.010932950881897219,
+        "feature_cosine_distance": 0.003448001176841818,
+        "clean_decision_agreement": 0.9845013477088949,
+        "relative_solve_residual": 2.4563925288864845e-14
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 93,
+          "damage": 12,
+          "net": 81
+        },
+        "DURA_v1": {
+          "repairs": 24,
+          "damage": 10,
+          "net": 14
+        },
+        "received": {
+          "repairs": 99,
+          "damage": 5,
+          "net": 94
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.03675725550712678,
+        "feature_cosine_distance": 0.0117487902333332,
+        "clean_decision_agreement": 0.9396735273243435,
+        "relative_solve_residual": 1.6219547212237358e-14
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 261,
+          "damage": 19,
+          "net": 242
+        },
+        "DURA_v1": {
+          "repairs": 86,
+          "damage": 40,
+          "net": 46
+        },
+        "received": {
+          "repairs": 351,
+          "damage": 18,
+          "net": 333
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.04568409273989107,
+        "feature_cosine_distance": 0.015044612633554558,
+        "clean_decision_agreement": 0.9073684210526316,
+        "relative_solve_residual": 4.9660464596363006e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 219,
+          "damage": 31,
+          "net": 188
+        },
+        "DURA_v1": {
+          "repairs": 84,
+          "damage": 40,
+          "net": 44
+        },
+        "received": {
+          "repairs": 370,
+          "damage": 25,
+          "net": 345
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.006690157311520915,
+        "feature_cosine_distance": 0.0019199017314273958,
+        "clean_decision_agreement": 0.9936823104693141,
+        "relative_solve_residual": 2.88794762626937e-14
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 266,
+          "damage": 15,
+          "net": 251
+        },
+        "DURA_v1": {
+          "repairs": 59,
+          "damage": 24,
+          "net": 35
+        },
+        "received": {
+          "repairs": 256,
+          "damage": 11,
+          "net": 245
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 1.3164874267275584e-14,
+        "feature_cosine_distance": 8.908610618741094e-09,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 5.348642750155624e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "full_covariance",
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.10536943711971239,
+        "feature_cosine_distance": 0.0372224784301119,
+        "clean_decision_agreement": 0.7949200376293509,
+        "relative_solve_residual": 1.3941730703137158e-15
+      },
+      "pairs": {
+        "isotropic": {
+          "repairs": 487,
+          "damage": 55,
+          "net": 432
+        },
+        "DURA_v1": {
+          "repairs": 150,
+          "damage": 80,
+          "net": 70
+        },
+        "received": {
+          "repairs": 554,
+          "damage": 43,
+          "net": 511
+        }
+      }
+    }
+  ],
+  "F0_clean_feature_rows": 512,
+  "F0_output_feature_rows": 20480,
+  "smoke_extra_F0_feature_rows": 2,
+  "new_G_forwards": 0,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "novel_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "source_in_sample": true,
+  "physical_oracle_deployable": false,
+  "agreement_is_TX_accuracy": false,
+  "theoretical_ceiling": false,
+  "default_DURA_changed": false,
+  "seconds": 48.11385182000231,
+  "goal_complete": false,
+  "artifact_status": "ANALYZED",
+  "independent_check": {
+    "status": "PASS",
+    "run_id": "20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
+    "all_source_cases": 10240,
+    "posterior_paths": 2,
+    "groups": 24,
+    "all_scalar_and_paired_groups_checked": true,
+    "max_abs_scalar_error": 0.0,
+    "original_source_panel_and_draw_alignment": true,
+    "old_DURA_received_metric_differences": 0,
+    "prior_clean_reference_prediction_differences": 0,
+    "covariance_FP64_checked": true,
+    "covariance_spectrum_max_error": 3.552713678800501e-15,
+    "covariance_symmetry_max_error": 0.0,
+    "same_prior_trace_and_old_variance_checked": true,
+    "numerical_dense_isotropic_vs_old_CG128": {
+      "iq_nmse": 4.813075065612793e-06,
+      "feature_cosine_distance": 5.644559860229492e-05,
+      "clean_decision_agreement": 0.0
+    },
+    "dense_isotropic_vs_old_CG128_agreement_changes": 0,
+    "max_relative_solve_residual": {
+      "isotropic": 8.048017234479438e-15,
+      "full_covariance": 8.798014042614654e-14
+    },
+    "source_prior_hypothesis_conditions": {
+      "lowurban_at_least_DURA": true,
+      "lowurban_at_least_isotropic_plus3pp": true,
+      "allsource_at_least_DURA": true
+    },
+    "source_prior_hypothesis_supported": true,
+    "source_draws_log_complete": true,
+    "frozen_F0_state_unchanged_reported": true,
+    "new_neural_forwards": 0,
+    "new_IQ_or_truth_reads": 0,
+    "optimizer_updates": 0
+  },
+  "source_prior_hypothesis_supported": true
+}

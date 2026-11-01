@@ -374,3 +374,11 @@ SigmaMix E01模型/优化器/RNG独立CPU读回：全部E0 tensor同原full8实�
 原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景全部预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对/868相对clean配对复算PASS，最大差1.24e-14、raw/DURA判决差0，60完整日志及源顺序/LR/加权loss/5sigma-9mixture统计/同原full8实际E0/E01-E30全局CPU-CUDA Gaussian RNG/30快照与E30-final核实。
 
 六景依次73.260119/71.301190/69.273214/71.669048/63.918452/56.502976%，达标0/6，相对DURA依次-11.083333/-11.714881/-12.048810/-11.380357/-11.787500/-12.298214个百分点；clean86.718452%，cross_rx净变化+293、cross_both净变化+9。完整分组与双向纠错见analysis.md。新训练曲线是加噪residual单步输出，含clean信息，与完整部署sampler不同，不能把低训练误差视作恢复性能。sigma抽样改变期望训练风险，不做importance correction；损失系数/架构/E0/源顺序draw/LR/完整15调用部署保持，静态MAC与FFT不冒充实测时延。完整目标未达到，保持 ACTIVE 和默认 DURA。
+
+## 源端完整 IQ 协方差与真实信道后验诊断完成（2026-11-02）
+
+`20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01`，实际代码`a3a90b55a73702954c453eec9c1ad17fec24d87f`。原63000LsUs clean拟合统一512维实IQ均值/C（固定.001同trace收缩），原128Ls384Us×20=10240相关病例比较同mu/tauI与完整C，均用真实模拟Action/噪声，FP64 Cholesky，无G训练或新增G前向。原地面完整Tri-SIG-TIME SSL/defaulthead冻结；0TX/V/OE/novel/目标/optimizer，源统计是实际数据拟合，不称零先验学习。
+
+完整C整体Fclean一致96.601563%、低档城区87.743733%，相对DURA净+149/10240、+55/1436；相对各向同性净+871/10240、+341/1436。预固定三个支持条件全满足，支持另立学习未知信道/相关性先验的部署网络，但当前真实Action是oracle、先验拟合与诊断源包重叠，不是TX准确率、Main泛化、未知设备证明或理论上界。不会在Main使用真实A/噪声。
+
+24组/所有病例配对独立复算差0，FP64协方差PSD/对称/谱/tau核实；同各向同性较旧FP32 FFT CG128的Fclean事件差0，完整C最大相对求解残差8.80e-14。实际source2/PID-CWD-CUDA-GPU6/loggrowth捕获，worker48.113852秒、exit0/liveempty，私有均值/C/逐病例不提交Git。源证据和完整分组见analysis.md。原Main六景3pp+两个clean保持仍未达到，目标ACTIVE、默认DURA保持。

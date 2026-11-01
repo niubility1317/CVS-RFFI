@@ -3,7 +3,7 @@
 - run_id：`20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01`
 - group_id：`restoration-source-full-covariance-gaussian-inverse`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（真实源2 smoke和worker已捕获）
+- 当前登记状态：ANALYZED（完整源病例及独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+10240源病例×两个后验路径完整，24组及全部配对复算PASS，预固定源假设条件满足；Fclean一致不是TX准确率，详见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -42,3 +42,8 @@ CPU控制器CUDA空，完整SigmaMix结束后固定GPU6准入（free≥12000MiB�
 ## 真实源诊断执行已核实
 
 VERIFIED。实际source2 dense reflect Action与FP64后验/F0 smoke通过，全部source draw诊断已开始。控制器/worker的PID/CWD/commit/CUDA/GPU与日志增长独立核实；GPU6准入free22342MiB/原2compute/新增1，SigmaMix完整结束，无其他本任务NN。实际执行commit `a3a90b55a73702954c453eec9c1ad17fec24d87f`，archive一次SHA一致、远端编译通过。仅拟合原63000源IQ统一均值/C，无G训练或TX/V/OE/novel/目标读取；最终结果待完整病例和独立复算。
+
+
+## 完整源协方差诊断完成
+
+VERIFIED / ANALYZED。完整C整体Fclean一致96.601563%、低档城区87.743733%，相对DURA同条事件净+149/10240、+55/1436；相对各向同性净+871/10240、+341/1436。源内支持条件全部满足，但真实A/噪声是oracle，不提供Main或恢复上界。全部10240病例/24组/全部配对复算差0，FP64均值/C/谱及tau核实；同各向同性较旧CG128的Fclean事件差0。实际source2/PID-CWD-CUDA-GPU6/loggrowth已捕获，20draw/exit0/liveempty，0G前向/TX/V/OE/novel/目标/optimizer。

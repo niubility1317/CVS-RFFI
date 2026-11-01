@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING_OBSERVED",
+  "status": "VERIFIED_ARTIFACTS_COMPLETE",
   "actual_code_commit": "a3a90b55a73702954c453eec9c1ad17fec24d87f",
   "physical_GPU": 6,
   "admitted_free_MiB": 22342,
@@ -19,5 +19,11 @@
   "V_reads": 0,
   "OE_reads": 0,
   "target_inputs": 0,
-  "optimizer_updates": 0
+  "optimizer_updates": 0,
+  "worker_exit_code": 0,
+  "all_owned_processes_ended": true,
+  "source_cases": 10240,
+  "posterior_paths": 2,
+  "independent_check": "PASS",
+  "source_hypothesis_supported": true
 }
