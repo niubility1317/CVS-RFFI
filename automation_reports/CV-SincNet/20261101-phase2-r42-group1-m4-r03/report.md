@@ -33,3 +33,5 @@ Frozen R42 and original LocalRidge fixed matrix; retain live predecessor workers
 2026-11-01 交接核验：VERIFIED TRANSFERRED：真实源 checkpoint 四种子无 query smoke 全 PASS，CPU/CUDA 最大分数差 6.94e-17；前代 controller 已退出，9 个旧 worker 自然运行；180 个闭合旧单元已纳入复用索引，新 root 已完成复用单元。全预测完成后独立评分。 代码版本 4b2fcc7600f45ffbe810d51c734a900d47ba2cae；归档传输校验与远端编译通过。
 
 初步实际耗时观测：完整 MIX 单元、208 行（22 复用/186 新预测），r02 CPU 40 单元总耗时中位数 4560.54 秒，r03 CUDA 25 单元 616.47 秒。两组非配对且共享资源；范围与限制见 [耗时观测](performance_observation_20261101.md)。
+
+2026-11-01 故障核验：r04 attempted transfer stopped r03 controller; subsequent r04 technical failure did not alter r03 predictions. All nine recorded r03 workers have naturally closed; 312 closed prediction units retained. Replacement recovery r05 preregistered.
