@@ -1,5 +1,5 @@
 """Source-only diagnostic: conditional Gaussian IQ prior with known simulated action."""
-import argparse,json,sys,time
+import argparse,hashlib,importlib.util,json,sys,time
 from pathlib import Path
 import numpy as np
 import torch
@@ -12,7 +12,11 @@ sys.path.insert(0,str(DEP/'experiments/phase1_phase_shift_restorer'))
 import phase_shift_source as s
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.pamf_phase1_flow import anchor_source_smoke as source_prior
-from experiments.pamf_dura_efficiency.known_action_reference import real_operator,noise_covariance
+REFERENCE=Path('/home/szu2070436088/2510044040/CV-SincNet/releases/20261031-DURA-known-action-Gaussian-r01')
+reference_file=REFERENCE/'experiments/pamf_dura_efficiency/known_action_reference.py'
+if (REFERENCE/'release_commit.txt').read_text().strip()!='f443942e33318b9f72733908dc2735203addaa96' or hashlib.sha256(reference_file.read_bytes()).hexdigest()!='e01efc635b4bbdc17d41014d72c9e6bbe3ad631553da9c3cdb6489a3058f1427':raise ValueError('Exact known-action reference required')
+spec=importlib.util.spec_from_file_location('known_action_reference',reference_file);reference=importlib.util.module_from_spec(spec);spec.loader.exec_module(reference)
+real_operator,noise_covariance=reference.real_operator,reference.noise_covariance
 
 SCENES=('practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
 
