@@ -1,0 +1,150 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-bayes-residual-full-s2026092701-r01",
+  "group_id": "phase1-bayes-residual-full",
+  "display_name": "多源信道视图的物理后验残差网络",
+  "description": "固定盲信道与条件后验，在三个不同源信道视图上训练物理反投影条件残差网络。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "blind_channel",
+    "physics_residual",
+    "L_s_supervised",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-bayes-residual-pilot-s2026092701-r01",
+    "20261102-phase1-bayes-residual-scale-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "848c4b4c47b054f43c8303638e5aa549154ebfd4",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2, source training only, 2 CPU threads, TF32 disabled; real L_s/U_s full loss gradient smoke",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], fixed blind posterior and action-adjoint residual; source paired ground IQ, legal L_s labels and frozen F soft targets",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "L_s metadata contains 6300 truth labels; only fit-ID L_s truth enters loss; no U_s truth, V or test read",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "384 RX8 source records, 64 per impaired scene, previously used in pilot; no true labels for evaluation, no checkpoint selection",
+    "support_query_ref": null,
+    "leo_config_ref": "Fresh source cache epochs21,22,23 training; original cache epoch19 evaluation; source physical IDs identical"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "source L_s training labels only for optimizer; U_s truth, V and test inaccessible",
+    "external_method_exception": null,
+    "claim_scope": "Source physical IDs observed in previous channel views, RX8 same prior pilot; no independent blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Random identity-output residual corrector; blind estimator, source Gaussian prior, and F frozen; legal L_s labels enter source training; DURA loaded after training.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-action-full-s2026092701-r01/checkpoint_epoch10.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01/source_prior.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Blind action SHA256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338 and source prior SHA256 5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fixed final epoch3, no source holdout selection; evaluate identical 384 RX8 source records after training; no target IQ."
+  },
+  "execution": {
+    "host": "N607 GPU2",
+    "launch_owner": "Codex multi-view posterior residual full training GPU2 owner",
+    "gpu_policy": "GPU2 single source-only owner, TF32 disabled, resource preflight",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-full-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-bayes-residual-full-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-bayes-residual-full-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-bayes-residual-full-s2026092701-r01-release/experiments/phase1_bayes_residual_full/bayes_residual_full.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-full-s2026092701-r01 --commit 848c4b4c47b054f43c8303638e5aa549154ebfd4 --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "checkpoint_epoch03.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source clean-F pseudo-target agreement",
+      "direct normalized IQ MSE",
+      "L_s training exposure"
+    ],
+    "dimensions": [
+      "six source RX8 heldout scenarios"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_bayes_residual_full/bayes_residual_full.py",
+    "scientific_rule": "L_s labels train only, source F pseudo targets not actual test truth; fixed prior views and RX8 cohort previously observed, no clean-blind claim."
+  },
+  "rows": [
+    {
+      "row_id": "bayes_residual_full_s2026092701",
+      "method": "identity-initialized dilated residual network conditioned on blind posterior and action-adjoint residual; legal L_s truth and frozen F soft targets",
+      "purpose": "test if larger multi-view source training learns a more useful correction direction",
+      "config_ref": "experiments/phase1_bayes_residual_full/bayes_residual_full.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-full-s2026092701-r01/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120854,
+        "split": 392005,
+        "data": 2026120855,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "fixed prior and RX8 cohort; data-order seed 2026120855, fresh source views21–23",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.001,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "38951 source train IDs disjoint from 8192 prior IDs, 3 epochs batch16; 384 RX8 source heldout",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-full-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-bayes-residual-full-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-bayes-residual-full-s2026092701-r01-release/experiments/phase1_bayes_residual_full/bayes_residual_full.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-bayes-residual-full-s2026092701-r01 --commit 848c4b4c47b054f43c8303638e5aa549154ebfd4 --device cuda:0",
+      "expected_artifacts": [
+        "checkpoint_epoch03.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Metadata loads 6300 source L_s truth labels to verify IDs; only fit IDs enter loss; no U_s truth.",
+    "Source cache views21–23 share original physical IDs, provenance checked and no target reads.",
+    "Parent blind estimator and F frozen; DURA only after training; unprotected clean branch needs blind gate.",
+    "Budget and learning rate informed by prior source observations; RX8 previously seen; no independent blind or real satellite."
+  ],
+  "registered_at": "2026-11-01T21:30:16+00:00"
+}
