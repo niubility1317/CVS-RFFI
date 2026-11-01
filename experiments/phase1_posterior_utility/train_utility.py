@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from torch.nn import functional as F
-from utility_model import UtilityNet,build_features,select_candidate
+from utility_model import UtilityNet,build_features,select_candidate,pair_targets
 DEP=Path('/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-bayes-residual-full-s2026092701-r01-release')
 if (DEP/'release_commit.txt').read_text().strip()!='848c4b4c47b054f43c8303638e5aa549154ebfd4':raise ValueError('Exact source interface release required')
 sys.path.insert(0,str(DEP/'experiments/phase1_bayes_residual_full'))
@@ -17,9 +17,8 @@ def compute(blind,teacher,x,means,covs,priors,eye):
 
 def training_pairs(teacher,ground,labels,parent,states,pl,cl,features):
     with torch.no_grad():
-        conf,pseudo=F.softmax(teacher.classify_features(teacher.features(ground)),1).max(1);known=labels>=0;target=torch.where(known,labels,pseudo);eligible=known|(conf>=.95);bp=pl.argmax(1);cp=cl.argmax(2);base_good=bp==target;cand_good=cp==target[:,None];den=ground.flatten(1).square().sum(1).clamp_min(1e-12);base_iq=(parent-ground.flatten(1)).square().sum(1)/den;cand_iq=(states-ground.flatten(1)[:,None,:]).square().sum(2)/den[:,None];bad_iq=cand_iq>1.2*base_iq[:,None]+1e-6;different=cp!=bp[:,None];positive=cand_good&~base_good[:,None]&~bad_iq;negative=(base_good[:,None]&~cand_good)|bad_iq;mask=eligible[:,None]&different&(positive|negative)
-        if (positive&negative).any():raise ValueError('Pair labels must not conflict')
-    return features[mask],positive[mask].float(),dict(eligible=int(eligible.sum().item()),labeled=int(known.sum().item()),pairs=int(mask.sum().item()),positive=int((positive&mask).sum().item()),negative=int((negative&mask).sum().item()))
+        conf,pseudo=F.softmax(teacher.classify_features(teacher.features(ground)),1).max(1);known=labels>=0;target=torch.where(known,labels,pseudo);eligible=known|(conf>=.95);bp=pl.argmax(1);cp=cl.argmax(2);den=ground.flatten(1).square().sum(1).clamp_min(1e-12);base_iq=(parent-ground.flatten(1)).square().sum(1)/den;cand_iq=(states-ground.flatten(1)[:,None,:]).square().sum(2)/den[:,None];mask,positive=pair_targets(target,eligible,bp,cp,base_iq,cand_iq)
+    return features[mask],positive[mask].float(),dict(eligible=int(eligible.sum().item()),labeled=int(known.sum().item()),pairs=int(mask.sum().item()),positive=int((positive&mask).sum().item()),negative=int((~positive&mask).sum().item()))
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--commit',required=True);p.add_argument('--device',default='cuda:0');p.add_argument('--smoke',action='store_true');a=p.parse_args()

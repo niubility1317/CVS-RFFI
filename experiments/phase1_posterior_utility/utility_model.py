@@ -22,3 +22,10 @@ class UtilityNet(nn.Module):
 def select_candidate(scores,parent_pred,candidate_pred,threshold):
     if scores.ndim!=2 or scores.shape[1]!=6 or parent_pred.shape!=(len(scores),) or candidate_pred.shape!=scores.shape or not 0<=threshold<=1:raise ValueError('Matched candidate scores and threshold required')
     eligible=candidate_pred!=parent_pred[:,None];prob=torch.sigmoid(scores).masked_fill(~eligible,-1);best,index=prob.max(1);return torch.where(best>=threshold,index,torch.full_like(index,-1))
+
+def pair_targets(target,eligible,parent_pred,candidate_pred,parent_iq,candidate_iq):
+    n=len(target)
+    if target.shape!=(n,) or eligible.shape!=(n,) or eligible.dtype!=torch.bool or parent_pred.shape!=(n,) or candidate_pred.shape!=(n,6) or parent_iq.shape!=(n,) or candidate_iq.shape!=(n,6):raise ValueError('Matched source pair targets required')
+    base_good=parent_pred==target;cand_good=candidate_pred==target[:,None];bad_iq=candidate_iq>1.2*parent_iq[:,None]+1e-6;different=candidate_pred!=parent_pred[:,None];positive=cand_good&~base_good[:,None]&~bad_iq;negative=(base_good[:,None]&~cand_good)|bad_iq;mask=eligible[:,None]&different&(positive|negative)
+    if (positive&negative).any():raise ValueError('Pair labels must not conflict')
+    return mask,positive
