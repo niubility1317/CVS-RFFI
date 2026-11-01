@@ -25,10 +25,11 @@ class Attention(nn.Module):
 
 
 class MultiscaleAttentionRestorer(nn.Module):
-    def __init__(self):
+    def __init__(self,context_channels=0):
         super().__init__()
+        self.context_channels=context_channels
         self.register_buffer('coordinates',torch.linspace(-1,1,256)[None,None])
-        self.stem=nn.Conv1d(3,64,5,padding=2)
+        self.stem=nn.Conv1d(3+context_channels,64,5,padding=2)
         widths=(64,128,192,256)
         self.encoders=nn.ModuleList(nn.Sequential(Residual(w),Residual(w)) for w in widths[:3])
         self.down=nn.ModuleList(nn.Conv1d(a,b,4,stride=2,padding=1) for a,b in zip(widths[:-1],widths[1:]))
@@ -39,10 +40,17 @@ class MultiscaleAttentionRestorer(nn.Module):
         self.output=nn.Conv1d(64,2,3,padding=1)
         nn.init.zeros_(self.output.weight);nn.init.zeros_(self.output.bias)
 
-    def forward(self,received):
+    def forward(self,received,context=None):
         if received.ndim!=3 or received.shape[1:]!=(2,256) or received.dtype!=torch.float32:
             raise ValueError('Current per-packet FP32 [N,2,256] received IQ required')
-        x=self.stem(torch.cat((received,self.coordinates.expand(len(received),-1,-1)),dim=1));skips=[]
+        inputs=[received]
+        if self.context_channels:
+            if context is None or context.shape!=(len(received),self.context_channels,256) or context.dtype!=received.dtype:
+                raise ValueError('Matched per-record conditional prior context required')
+            inputs.append(context)
+        elif context is not None:raise ValueError('Unconditional prior does not consume context')
+        inputs.append(self.coordinates.expand(len(received),-1,-1))
+        x=self.stem(torch.cat(inputs,dim=1));skips=[]
         for encoder,down in zip(self.encoders,self.down):
             x=encoder(x);skips.append(x);x=down(x)
         x=self.bottleneck(x.transpose(1,2)+self.position).transpose(1,2)
