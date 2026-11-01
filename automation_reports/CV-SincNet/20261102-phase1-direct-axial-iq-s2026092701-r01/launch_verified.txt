@@ -1,0 +1,15 @@
+Independent N607 readback, 2026-11-02 Asia/Hong_Kong
+PROCESS     PID    PPID     ELAPSED %CPU COMMAND
+ 719479       1       00:06  0.3 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-axial-iq-s2026092701-r01-release/experiments/phase1_axial_spectral/phase1_axial_spectral_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-axial-iq-s2026092701-r01 --commit bc9ac03f23271614f332fd06bd86e77a0cd2cca5 --device cuda:0
+ 719565  719479       00:02  102 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-axial-iq-s2026092701-r01-release/experiments/phase1_axial_spectral/phase1_axial_spectral_source.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-axial-iq-s2026092701-r01/source --commit bc9ac03f23271614f332fd06bd86e77a0cd2cca5 --device cuda:0
+
+CWD /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release
+LOG PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-axial-iq-s2026092701-r01-release/experiments/phase1_axial_spectral/phase1_axial_spectral_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-axial-iq-s2026092701-r01/source_smoke", "--commit", "bc9ac03f23271614f332fd06bd86e77a0cd2cca5", "--device", "cuda:0", "--smoke"]
+AXIAL_SOURCE_SMOKE {"status": "PASS", "records": 32, "finite_loss": 0.13829073309898376, "source_only": true, "DURA_used": false, "F_loaded": false, "TX_labels_read": 0, "V_reads": 0, "test_reads": 0}
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-axial-iq-s2026092701-r01-release/experiments/phase1_axial_spectral/phase1_axial_spectral_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-axial-iq-s2026092701-r01/source", "--commit", "bc9ac03f23271614f332fd06bd86e77a0cd2cca5", "--device", "cuda:0"]
+
+ARTIFACT /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-axial-iq-s2026092701-r01/source_smoke/result.json True
+ARTIFACT /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-axial-iq-s2026092701-r01/source/source_selection.json False
+ARTIFACT /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-axial-iq-s2026092701-r01/completion.json False
+GPU2 0 %, 755 MiB
+
