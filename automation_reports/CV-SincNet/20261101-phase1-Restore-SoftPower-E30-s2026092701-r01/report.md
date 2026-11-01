@@ -1,9 +1,11 @@
 # 放开单位功率投影的源IQ恢复单因素对照
 
+**六景 0/6，合并 clean未保持，clean 准确率 86.535119%。** cross_rx clean 净变化 +22 条，cross_both 净变化 -28 条。完整目标未达到，保持 ACTIVE 和默认 DURA。[完整性能与分组](analysis.md)。
+
 - run_id：`20261101-phase1-Restore-SoftPower-E30-s2026092701-r01`
 - group_id：`restoration-learned-power-single30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（源训练已开始；完整性能待七景测试）
+- 当前登记状态：ANALYZED（完整七景与独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原 Main168000×七景完整，六景 0/6、合并 clean未保持。84单元与完整分组/配对独立复算 PASS，详见 analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -51,3 +53,7 @@ VERIFIED / LANDED。所属CPU PID/CWD/命令/CUDA空、等待日志增长核实�
 ## 可学习功率源训练已核实
 
 VERIFIED / RUNNING。源2真实G/F0梯度/raw恒等E0与严格重载PASS，首轮247更新耗时45.930482秒。E01模型/优化器/CPU-CUDA RNG独立CPU读回，同PowerAnchor实际E0全部tensor/sourceorders/draws一致，配置仅投影/版本定义差异及加权loss复算PASS。GPU4准入free24110MiB/原0compute/新增1个，PID-CWD-CUDA-GPU与日志核实。原Rollout完整Main技术完成后才启动，0TX/V/OE/target更新或选模；固定final30自动原Main七景后truth-last，性能PENDING，默认DURA及完整目标ACTIVE保持。
+
+## 可学习功率对照七景完成
+
+VERIFIED / ANALYZED。全 G scratch 单阶段30/7410，全部 Main 预测后独立 truth-last；4阶段 exit0，本 run 进程退出。84单元/2604组/1736 raw 配对/1302额外配对复算 PASS，最大指标误差 1.25e-14，raw/DURA 判决差0。完整60轮日志、同E0/源顺序/draw、仅移除硬单位功率投影、逐轮总loss及30恢复文件/E30-final一致性核实。完整目标未达到，保持 ACTIVE 和默认 DURA。

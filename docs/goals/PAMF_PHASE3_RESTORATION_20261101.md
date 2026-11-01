@@ -324,3 +324,15 @@ VERIFIED / RUNNING。源2真实G/F0梯度/raw恒等E0与严格重载PASS，首�
 原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景固定预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对复算PASS，最大指标差1.2e-14、raw/DURA判决差0；60完整日志/源顺序draw/从零E0/实际4步训练与最终loss协议/各轮加权loss复算/30快照E30-final一致性核实。
 
 六景依次75.960119/73.929762/71.875595/74.461905/67.470238/61.549405%，达标0/6，相对StateBridge依次+4.207143/+2.987500/+1.989881/+3.770238/+2.148810/+1.914286个百分点。合并clean 86.575000%（保持），cross_rx净变化+41、cross_both净变化+20，不掩盖子总体损伤。完整TX/RX/day/净纠错/相对clean/各time训练与成本见analysis.md。完整目标未达到，保持 ACTIVE 和默认 DURA。源端逐步退化是本项依据，不据Main错例热改模型或取消测试；性能主线、效率支线保持。
+
+## 时频残差扩散源训练已核实
+
+VERIFIED / RUNNING。源Ls2真实G/F0无更新smoke通过，固定15调用sampler有限、实际output-head梯度与严格E0重载PASS；不是恒等E0。E01模型/优化器/CPU-CUDA RNG独立CPU读回，全部E0 tensor等于scratch factory，源顺序draw同原FullFGrad；E01时/频输入与attention骨干及双输出head确已更新，固定latent/schedule/坐标不变，加权loss和63000条sigma histogram复算PASS。首轮247步19.601430秒。GPU4准入free24110MiB/原0compute/新增1个，PID/CWD/CUDA/GPU/日志核实。SoftPower完整Main技术完成后才启动，0TX/V/OE/target更新或选模；固定final30自动原Main七景后truth-last，性能PENDING，默认DURA不变，目标ACTIVE。
+
+## 可学习功率原 Main 七景完成（2026-11-02）
+
+`20261101-phase1-Restore-SoftPower-E30-s2026092701-r01`，实际代码1dd40c07970b664f18c57149a0a2ab02f000b114. 与固定PowerAnchor/42ea只改变硬单位功率投影，保留同结构/实际随机E0/原LsUs-R07/order/draw/LR/损失权重及.1软RMS；vector_norm对同一RMS数学式在零点选取有限的次梯度。4670178参数全从零单阶段30-7410，无旧G/IQ教师祖先，原F0/3ff8/defaulthead冻结features-only，0TX/V/OE/目标更新或选模，OE仅冻结诊断。
+
+原Main168000×七景全部预测固定后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对及868相对raw clean配对复算PASS，误差1.25e-14、raw/DURA判决差0；60完整日志、同E0实际工厂/旧控制、sourceorder/draw/LR、仅投影配置差异/加权loss/30恢复文件E30-final一致性核实。
+
+六景依次78.913690/77.574405/76.104167/77.705357/71.575595/65.526786%，达标0/6，相对PowerAnchor依次-0.076786/-0.140476/-0.062500/-0.094048/+0.041667/+0.092857个百分点。合并clean 86.535119%（未保持），cross_rx净变化+22、cross_both净变化-28，不以合并掩盖子总体损伤。完整TX/RX/day/净纠错/相对clean/功率与成本见analysis.md。完整目标未达到，保持 ACTIVE 和默认 DURA。解析MMSE例子不是F0收益或理论上限；性能主线、效率支线、默认DURA保持。
