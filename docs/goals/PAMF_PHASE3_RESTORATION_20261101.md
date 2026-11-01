@@ -390,3 +390,9 @@ SigmaMix E01模型/优化器/RNG独立CPU读回：全部E0 tensor同原full8实�
 从零单阶段30/7410，原Ls6300Us56700/R07/sourceorder-draw-LR，逻辑256/micro32。更新仅算完整Action矩阵相对误差(.1)+噪声logMSE(.001)，真实源模拟参数仅loss；G.estimate实际不执行后验或F0，0F0训练前向，不冒充F指导实验。部署只读单条received/state，不读真实Action或噪声/F0/clean。0TX/V/OE/novel/目标训练或选模，OE仅冻结诊断。5针对性检查、唯一独立P0/P1通过，源2实际smoke后立即完整30与原地面Tri-SIG-TIME SSL/defaulthead/Main2pop×7自动truth-last。
 
 GPU4/6按实际free12GB/existingcompute≤2/新增1总≤3准入，一row一NN，不改其他owner。训练/部署实际耗时显存和每景性能待运行；静态176636032估计器MAC+269221888后验MAC、FP64 Cholesky约44739243FLOPs及2FFT不是实测延迟。矩阵、停止规则和产物见预登记report.md。主性能六景3pp+两个clean保持仍未达到，目标ACTIVE、默认DURA不变。
+
+## 冻结相关性恢复器的源端参数归因已固定（2026-11-02）
+
+`20261102-diagnostic-Restore-covariance-parameter-source-s2026092701-r01`，实际实现`5d7d9a2c4dd8e5d58b2843e47b1769d93d434c29`。固定父CovarianceMAP final30/bf29554a及原3ff8 F0/defaulthead，原源512×20、同一保存mu/C与FP64后验，对照盲/仅真实噪声/仅真实Action/二者真实四路。全48组/所有同条纠错与参数误差报告，0训练、新统计拟合、TX/V/OE/novel/目标IQ-预测-评分或选模。源oracle不作为Main部署版本，Fclean不是TX准确率或恢复上限。
+
+父最后GPU阶段cross_both已从/proc核实liveon4/6后在另一卡准入，或该阶段exit0后选择4/6；父之后仅CPU评分，不会再占GPU。最多两条本任务NN且分卡，原compute≤2/新增1总≤3/free12GB，父健康训练/Main及其他owner不改。3项检查与唯一独立P0/P1通过，source2盲路径等于实际部署G/F0有限后立即全4路。当前父训练尚在运行，本项尚无新源结果。
