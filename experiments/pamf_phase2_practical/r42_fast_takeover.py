@@ -70,6 +70,22 @@ def alive(record):
     return value is not None and value['start'] == record['start']
 
 
+def controller_command_matches(argv, runtime_file):
+    if argv.count('-m') != 1 or argv.count('--runtime') != 1:
+        return False
+    if argv[argv.index('--runtime')+1] != runtime_file or '--smoke-seed' in argv:
+        return False
+    module = argv[argv.index('-m')+1]
+    return (module == suite.__package__+'.milkr_r42_suite' and 'dispatch' in argv
+            or module == suite.__package__+'.r42_fast_takeover' and 'dispatch' not in argv)
+
+
+def validate_predecessor_state(state):
+    require(state.get('status') == 'RUNNING', 'Predecessor is not in prediction phase')
+    require(not state.get('failed'), 'Predecessor has failed tasks')
+    require(not state.get('predecessor_active'), 'Predecessor still has inherited workers')
+
+
 def closed_ref(old, task):
     root = Path(old['run_root'])/'tasks'/task['key']
     folder = root/'predictions'/task['capsule'].split('/')[-1]
@@ -88,6 +104,8 @@ def source_smoke(rt, seed, output):
     from .milkr_screen import extract
     from .milkr.d92_branch_local_ridge import fit_branch_local_ridge
     from .milkr.cuda_local_ridge import CudaLocalRidge
+    from .r42_suite_worker import orbit_features, _restore
+    from .features import load_G
     local = dict(rt, model_seeds=[seed], **rt['source_reuse_by_seed'][str(seed)])
     activate(local)
     verify_source(local, Path(output).with_name(f'source-{seed}.json'))
@@ -98,9 +116,21 @@ def source_smoke(rt, seed, output):
     raw = np.asarray(samples.tolist(), dtype=np.float32)
     reader = load_reader(local, seed, 'cuda:0')
     features, _ = extract(reader, raw, 'cuda:0', batch=6)
+    if rt.get('fast_dlpack_transfer',False):
+        alternate, _ = extract(reader, raw, 'cuda:0', batch=6, fast_transfer=True)
+        require(all(np.array_equal(features[k],alternate[k]) for k in features), 'Fast baseline features differ')
+        original_orbit, original_logits = orbit_features(reader,raw,'cuda:0',6,False)
+        fast_orbit, fast_logits = orbit_features(reader,raw,'cuda:0',6,True)
+        require(all(np.array_equal(original_orbit[k],fast_orbit[k]) for k in original_orbit), 'Fast orbit features differ')
+        require(np.array_equal(original_logits,fast_logits), 'Fast orbit logits differ')
+        engine=load_G(local,'cuda:0')
+        require(np.array_equal(_restore(engine,raw,'cuda:0',6),_restore(engine,raw,'cuda:0',6,fast_transfer=True)), 'Fast DURA output differs')
     state = fit_branch_local_ridge(**features, support_labels=np.arange(6),
         support_ids=[f'source_smoke_{i}' for i in range(6)], classes=[f'c{i}' for i in range(6)])
-    cpu = state.score(**features); scorer = CudaLocalRidge(state); gpu = scorer.score(**features)
+    cpu = state.score(**features)
+    scorer = CudaLocalRidge(state,pair_budget=rt.get('local_ridge_pair_budget',2048),
+                            fast_transfer=rt.get('fast_dlpack_transfer',False))
+    gpu = scorer.score(**features)
     require(np.allclose(cpu, gpu, rtol=1e-10, atol=1e-10), 'CUDA scores differ on legal source')
     require(np.array_equal(cpu.argmax(1), gpu.argmax(1)), 'CUDA predictions differ on legal source')
     write(output, dict(status='PASS', actual_checkpoint=True, seed=seed, source_examples=2,
@@ -111,8 +141,7 @@ def source_smoke(rt, seed, output):
 def transfer_owner(rt, old, pid, task_by_key, output):
     info = proc(pid)
     require(info is not None and info['uid'] == os.getuid() and info['cwd'] == old['release_root'], 'Predecessor controller identity differs')
-    require(suite.__package__+'.milkr_r42_suite' in info['argv'] and 'dispatch' in info['argv']
-            and old['runtime_file'] in info['argv'], 'Wrong predecessor controller command')
+    require(controller_command_matches(info['argv'],old['runtime_file']), 'Wrong predecessor controller command')
     os.kill(pid, signal.SIGSTOP)
     terminated = False
     try:
@@ -121,6 +150,8 @@ def transfer_owner(rt, old, pid, task_by_key, output):
             if paused is not None and paused['start'] == info['start'] and paused['state'] in ('T','t'): break
             time.sleep(.05)
         else: raise RuntimeError('Could not pause predecessor controller')
+        if suite.__package__+'.r42_fast_takeover' in info['argv']:
+            validate_predecessor_state(read(Path(old['run_root'])/'worker_state.json'))
         workers = predecessor_workers(pid, old, task_by_key)
         original_workers = dict(workers)
         write(output, dict(predecessor_controller=pid, predecessor_start=info['start'],
@@ -166,6 +197,45 @@ def transfer_owner(rt, old, pid, task_by_key, output):
         return workers
     finally:
         if not terminated and alive(info): os.kill(pid, signal.SIGCONT)
+
+
+def score_queue(rt, tasks, limit):
+    root=Path(rt['run_root'])
+    require(read(root/'predictions_complete.json')['status']=='ALL_PREDICTIONS_FIXED', 'Global prediction closure required')
+    require(type(limit) is int and 1<=limit<=4, 'CPU scoring concurrency must be between 1 and 4')
+    pending=list(tasks);active={};completed=0;failed=[]
+    while pending or active:
+        for key,item in list(active.items()):
+            code=item['process'].poll()
+            if code is None:continue
+            item['log'].close();del active[key]
+            if code:
+                failed.append(dict(key=key,exit_code=code))
+                continue
+            task=item['task'];rx=task['capsule'].split('/')[-1]
+            try:
+                done=read(Path(suite.task_runtime(rt,task)['run_root'])/'scores'/rx/'complete.json')
+                require(done['status']=='SCORED_COMPLETE','Score did not close')
+            except (OSError,ValueError,KeyError) as exc:
+                failed.append(dict(key=key,error=str(exc)))
+                continue
+            completed+=1
+        atomic(root/'score_state.json',dict(status='FAILED' if failed else 'RUNNING',completed=completed,
+            total=len(tasks),pending=len(pending),active=[dict(key=k,pid=v['process'].pid) for k,v in active.items()],failed=failed))
+        if failed:
+            pending.clear()
+        while pending and len(active)<limit and not failed:
+            task=pending.pop(0);key=task['key']
+            cmd=[sys.executable,'-u','-m',suite.__package__+'.milkr_r42_suite','score','--runtime',rt['runtime_file'],'--key',key]
+            log=(root/'logs'/('score-'+key+'.log')).open('x')
+            env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
+            try:process=subprocess.Popen(cmd,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)
+            except OSError as exc:
+                log.close();failed.append(dict(key=key,error=str(exc)));break
+            active[key]=dict(task=task,process=process,log=log)
+        if active:time.sleep(rt['poll_seconds'])
+    require(not failed and completed==len(tasks), 'Independent scoring failed; outputs retained: '+str(failed))
+    atomic(root/'score_state.json',dict(status='COMPLETE',completed=completed,total=len(tasks),pending=0,active=[],failed=[]))
 
 
 def dispatch(rt):
@@ -233,13 +303,7 @@ def dispatch(rt):
     rows = sum(len(suite.desired_rows(t['points'])) for t in tasks)
     require(rows == 167496, 'Wrong total prediction rows')
     write(root/'predictions_complete.json',dict(status='ALL_PREDICTIONS_FIXED',tasks=len(tasks),rows=rows,truth_read=False,query_fit=False))
-    for i, task in enumerate(tasks):
-        cmd=[sys.executable,'-u','-m',suite.__package__+'.milkr_r42_suite','score','--runtime',rt['runtime_file'],'--key',task['key']]
-        with (root/'logs'/('score-'+task['key']+'.log')).open('x') as log:
-            subprocess.run(cmd,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,check=True)
-        done=read(Path(suite.task_runtime(rt,task)['run_root'])/'scores'/task['capsule'].split('/')[-1]/'complete.json')
-        require(done['status']=='SCORED_COMPLETE','Score did not close')
-        atomic(root/'score_state.json',dict(status='RUNNING',completed=i+1,total=len(tasks)))
+    score_queue(rt,tasks,rt.get('max_cpu_scorers',1))
     write(root/'complete.json',dict(status='SCORED_COMPLETE',tasks=len(tasks),rows=rows,truth_last=True,target_feedback=False))
 
 

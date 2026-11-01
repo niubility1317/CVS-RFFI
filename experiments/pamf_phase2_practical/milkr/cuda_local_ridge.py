@@ -11,7 +11,7 @@ from .d92_branch_local_ridge import _score_local
 
 
 class CudaLocalRidge:
-    def __init__(self, state, device='cuda:0', pair_budget=2048):
+    def __init__(self, state, device='cuda:0', pair_budget=2048, fast_transfer=False):
         self.state = state
         self.device = torch.device(device)
         if self.device.type != 'cuda' or not torch.cuda.is_available():
@@ -19,7 +19,11 @@ class CudaLocalRidge:
         if pair_budget < 1:
             raise ValueError('pair_budget must be positive')
         self.pair_budget = int(pair_budget)
+        self.fast_transfer = bool(fast_transfer)
         def tensor(value):
+            if self.fast_transfer:
+                from ..fast_transfer import to_tensor
+                return to_tensor(value, self.device, np.float64)
             # The N607 PyTorch 2.1 build cannot use its NumPy 2 array bridge.
             return torch.tensor(np.asarray(value).tolist(), dtype=torch.float64, device=self.device)
         self.background = tensor(state.support_background)
@@ -37,8 +41,13 @@ class CudaLocalRidge:
         result = []
         size = max(1, self.pair_budget // len(self.background))
         for start in range(0, len(b), size):
-            qb = torch.tensor(b[start:start+size].tolist(), dtype=torch.float64, device=self.device)[:, None, :]
-            qa = torch.tensor(a[start:start+size].tolist(), dtype=torch.float64, device=self.device)[:, None, :]
+            if self.fast_transfer:
+                from ..fast_transfer import to_tensor
+                qb = to_tensor(b[start:start+size], self.device, np.float64)[:, None, :]
+                qa = to_tensor(a[start:start+size], self.device, np.float64)[:, None, :]
+            else:
+                qb = torch.tensor(b[start:start+size].tolist(), dtype=torch.float64, device=self.device)[:, None, :]
+                qa = torch.tensor(a[start:start+size].tolist(), dtype=torch.float64, device=self.device)[:, None, :]
             db = qb-self.background[None, :, :]
             da = qa-self.auxiliary[None, :, :]
             # The rank-2 QR product R@[a_i, a_i-a_j] is evaluated by
@@ -63,7 +72,11 @@ class CudaLocalRidge:
             value = (state.trace_scale*(diff-diff.mean(1, keepdim=True)-self.mean+state.center_grand))@self.alpha
             if not bool(torch.isfinite(value).all()):
                 raise FloatingPointError('Nonfinite CUDA local-ridge score')
-            scores = np.asarray(value.cpu().tolist(), dtype=np.float64)
+            if self.fast_transfer:
+                from ..fast_transfer import to_numpy
+                scores = to_numpy(value, np.float64)
+            else:
+                scores = np.asarray(value.cpu().tolist(), dtype=np.float64)
             # Use the exact original routine for very close decisions, where
             # floating-point rearrangement could otherwise change a winner.
             if scores.shape[1] > 1:
