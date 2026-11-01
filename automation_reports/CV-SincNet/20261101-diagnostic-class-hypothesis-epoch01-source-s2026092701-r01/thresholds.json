@@ -1,0 +1,278 @@
+{
+  "status": "SOURCE_ONLY_DIAGNOSTIC",
+  "checkpoint_sha256": "ad3566219dc588b1b8154a571613e3d93dc593482c1406609f6299eb6f33517d",
+  "source_records": 512,
+  "source_views": [
+    1,
+    20
+  ],
+  "source_truth_labeled": 128,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "interpretation": "Source-only counterfactual thresholds; same source training records; no change to fixed run; clean-teacher agreement is not TX accuracy.",
+  "results": [
+    {
+      "view": 1,
+      "counterfactuals": [
+        {
+          "threshold": 0.5,
+          "accepted": 16,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 491,
+            "new_matches": 483,
+            "repairs": 4,
+            "damages": 12
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 121,
+            "new_matches": 121,
+            "repairs": 1,
+            "damages": 1
+          }
+        },
+        {
+          "threshold": 0.7,
+          "accepted": 10,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 491,
+            "new_matches": 487,
+            "repairs": 3,
+            "damages": 7
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 121,
+            "new_matches": 121,
+            "repairs": 1,
+            "damages": 1
+          }
+        },
+        {
+          "threshold": 0.8,
+          "accepted": 6,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 491,
+            "new_matches": 491,
+            "repairs": 3,
+            "damages": 3
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 121,
+            "new_matches": 121,
+            "repairs": 1,
+            "damages": 1
+          }
+        },
+        {
+          "threshold": 0.9,
+          "accepted": 5,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 491,
+            "new_matches": 490,
+            "repairs": 2,
+            "damages": 3
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 121,
+            "new_matches": 121,
+            "repairs": 1,
+            "damages": 1
+          }
+        },
+        {
+          "threshold": 0.95,
+          "accepted": 1,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 491,
+            "new_matches": 492,
+            "repairs": 1,
+            "damages": 0
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 121,
+            "new_matches": 122,
+            "repairs": 1,
+            "damages": 0
+          }
+        },
+        {
+          "threshold": 0.99,
+          "accepted": 0,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 491,
+            "new_matches": 491,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 121,
+            "new_matches": 121,
+            "repairs": 0,
+            "damages": 0
+          }
+        }
+      ],
+      "accepted": 1,
+      "proposed_disagreement": 46,
+      "confident_disagreement": 2,
+      "verified_disagreement": 17,
+      "clean_teacher_agreement": {
+        "count": 512,
+        "old_matches": 491,
+        "new_matches": 492,
+        "repairs": 1,
+        "damages": 0
+      },
+      "L_s_label_accuracy": {
+        "count": 128,
+        "old_matches": 121,
+        "new_matches": 122,
+        "repairs": 1,
+        "damages": 0
+      }
+    },
+    {
+      "view": 20,
+      "counterfactuals": [
+        {
+          "threshold": 0.5,
+          "accepted": 6,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 492,
+            "new_matches": 495,
+            "repairs": 4,
+            "damages": 1
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 125,
+            "new_matches": 126,
+            "repairs": 1,
+            "damages": 0
+          }
+        },
+        {
+          "threshold": 0.7,
+          "accepted": 1,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 492,
+            "new_matches": 493,
+            "repairs": 1,
+            "damages": 0
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 125,
+            "new_matches": 125,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "threshold": 0.8,
+          "accepted": 1,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 492,
+            "new_matches": 493,
+            "repairs": 1,
+            "damages": 0
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 125,
+            "new_matches": 125,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "threshold": 0.9,
+          "accepted": 0,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 492,
+            "new_matches": 492,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 125,
+            "new_matches": 125,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "threshold": 0.95,
+          "accepted": 0,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 492,
+            "new_matches": 492,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 125,
+            "new_matches": 125,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "threshold": 0.99,
+          "accepted": 0,
+          "clean_teacher_agreement": {
+            "count": 512,
+            "old_matches": 492,
+            "new_matches": 492,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_label_accuracy": {
+            "count": 128,
+            "old_matches": 125,
+            "new_matches": 125,
+            "repairs": 0,
+            "damages": 0
+          }
+        }
+      ],
+      "accepted": 0,
+      "proposed_disagreement": 29,
+      "confident_disagreement": 0,
+      "verified_disagreement": 6,
+      "clean_teacher_agreement": {
+        "count": 512,
+        "old_matches": 492,
+        "new_matches": 492,
+        "repairs": 0,
+        "damages": 0
+      },
+      "L_s_label_accuracy": {
+        "count": 128,
+        "old_matches": 125,
+        "new_matches": 125,
+        "repairs": 0,
+        "damages": 0
+      }
+    }
+  ]
+}
