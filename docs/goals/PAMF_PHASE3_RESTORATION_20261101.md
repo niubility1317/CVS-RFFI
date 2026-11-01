@@ -308,3 +308,7 @@ VERIFIED/RUNNING：9重点检查/一次P0P1、真实Ls2四步训练部署精确�
 `20261101-phase1-Restore-SoftPower-E30-s2026092701-r01`，代码`1dd40c07970b664f18c57149a0a2ab02f000b114`。解析动机是单位范数clean的条件均值不必仍单位范数，合成双点反例中硬投影增加IQ风险；不据此预判真实F0性能。相对固定PowerAnchor/42ea只取消末级硬单位功率投影，保留同4670178参数/随机初值/原LsUs-R07/损失权重与.1软RMS/order/LR/scratch单阶段30-7410，vector_norm使同一RMS数学式在零点选取有限的次梯度。部署1core/rawIQ，无旧G祖先，源F0/3ff8冻结features-only，0TX/V/OE/目标更新或选模，OE只冻结诊断。
 
 8针对性检查/一次P0P1通过；VERIFIED CPU等待进程PID-CWD-命令-CUDA空与日志增长，当前0GPU/模型加载/训练。源2及实际E0尚待首GPU步骤，不能把排队当训练完成。只等待当前Rollout整个Main技术ARTIFACTS_COMPLETE/terminal0，不读分数或预测，父任务与其他owner保持；此后按原4/6资源准入自动30及Main两总体七景/全部预测后truth-last。六景各3pp+两个clean总体仍主验收，性能主线/效率支线、默认DURA和完整目标ACTIVE保持。
+
+## 固定30轮源训练完成，正式预测已接续（2026-11-02）
+
+VERIFIED。30/7410完整源训练、189000L/1701000U、7560000 Gcore行、训练进程exit0并退出、final与E30文件存在已核实。全部训练状态/真实source2与实际E0的完整核对仍按既有证据及最终复算，当前不把源末轮指标当性能验收。实际Main预测进程已存活，跨接收机clean126000完成日志已观察；这不是准确率结果。全部两总体七景prediction完成后才独立CPU评分。SoftPower继续只在CPU等整个Main技术完成，原训练计划/默认DURA/源权限和完整性能目标ACTIVE保持。

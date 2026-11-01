@@ -46,3 +46,8 @@
 `20261101-phase1-Restore-RolloutBridge-E30-s2026092701-r01`，实际代码`7250d0a88160d6ab949dafbdc73edb7f302e290f`，4676898参数、与StateBridge/c50实际E0逐张量一致、全G从零单阶段30/7410。训练和部署均为当前received起点的四步state-only共享网络，clean只作最终loss参考，最终损失贯穿全部四步、不detach；0clean混合训练输入/时间抽样/旧G祖先，源F0连续特征loss-only，0TX/V/OE/目标更新或选模，OE仅冻结诊断。
 
 VERIFIED/RUNNING：9重点检查/一次P0P1、真实Ls2四步训练部署精确一致/四步梯度/E0重载PASS。E01/247耗时203.122173秒，模型/优化器/CPU-CUDA RNG独立CPU读回及同State实际E0/原加权loss复算PASS。GPU4准入free20452MiB/原2compute，只新增1条；PID/CWD/CUDA/GPU和日志核实，其他owner保持。训练core数4倍、epoch/更新仍30/7410，不称同训练计算量。固定final30后自动原地面Tri-SIG-TIME SSL/defaulthead/Main168000×七景，全部预测后独立truth-last；性能PENDING，六景逐个3pp+两个总体clean主目标ACTIVE，效率支线，默认DURA不变。
+
+
+## 固定30轮源训练完成，正式预测已接续（2026-11-02）
+
+VERIFIED。30/7410完整源训练、189000L/1701000U、7560000 Gcore行、训练进程exit0并退出、final与E30文件存在已核实。全部训练状态/真实source2与实际E0的完整核对仍按既有证据及最终复算，当前不把源末轮指标当性能验收。实际Main预测进程已存活，跨接收机clean126000完成日志已观察；这不是准确率结果。全部两总体七景prediction完成后才独立CPU评分。SoftPower继续只在CPU等整个Main技术完成，原训练计划/默认DURA/源权限和完整性能目标ACTIVE保持。

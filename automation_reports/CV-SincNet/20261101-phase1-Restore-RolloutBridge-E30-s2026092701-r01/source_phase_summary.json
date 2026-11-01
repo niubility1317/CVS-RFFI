@@ -1,0 +1,41 @@
+{
+  "status": "SOURCE_TRAINED_MAIN_PENDING_AT_THIS_SNAPSHOT",
+  "observed_at": 1793550009.332369,
+  "run_id": "20261101-phase1-Restore-RolloutBridge-E30-s2026092701-r01",
+  "code_commit": "7250d0a88160d6ab949dafbdc73edb7f302e290f",
+  "epochs": 30,
+  "updates": 7410,
+  "G_parameters": 4676898,
+  "training_G_core_rows": 7560000,
+  "source_Ls_exposures": 189000,
+  "source_Us_exposures": 1701000,
+  "training_seconds": 6110.924672729001,
+  "worker_seconds": 6117.282148377999,
+  "peak_allocated_MiB": 7710.52783203125,
+  "final_source_epoch_metrics": {
+    "loss": 0.04250724896835902,
+    "iq_nmse": 0.024423809565248943,
+    "spectral_error": 0.05608442691394261,
+    "latent_cosine_error": 0.007777901904923576,
+    "latent_standardized_error": 0.08204732855728694,
+    "feature_error": 0.005468949854373932,
+    "feature_standardized_error": 0.057217277921381454,
+    "guide_weight": 1.0,
+    "output_power_abs_error": 6.28374871753511e-08,
+    "raw_complex_power": 0.9996271560608394,
+    "raw_clean_RMS_ratio": 0.9996732189541772,
+    "raw_power_anchor_error": 0.000280721022747457
+  },
+  "source_training_exit_code": 0,
+  "training_process_ended": true,
+  "final_and_E30_checkpoint_bytes": {
+    "final.pt": 18766914,
+    "recovery/E30.pt": 56340916
+  },
+  "actual_Main_prediction_worker_live": true,
+  "target_scores_read_by_this_update": 0,
+  "new_neural_forwards": 0,
+  "formal_performance": "PENDING",
+  "default_DURA_changed": false,
+  "goal_complete": false
+}
