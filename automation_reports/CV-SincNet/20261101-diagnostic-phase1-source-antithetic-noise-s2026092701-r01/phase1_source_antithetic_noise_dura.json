@@ -1,0 +1,210 @@
+{
+  "status": "SOURCE_ONLY_EQUIVARIANT_DURA",
+  "source_ids": 795,
+  "validation_ids": 530,
+  "heldout_ids": 265,
+  "phase_count": 8,
+  "gate_db": 10.0,
+  "alphas": [
+    0.25,
+    0.5,
+    1.0
+  ],
+  "validation": [
+    {
+      "candidate": 0,
+      "alpha": 0.25,
+      "net": 1,
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": 0,
+        "practical_low_urban": 1
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 282,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 248,
+          "net": 1,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 1
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "candidate": 1,
+      "alpha": 0.5,
+      "net": 3,
+      "per_view": {
+        "practical_low_suburban": 2,
+        "practical_mid_urban": 1,
+        "practical_low_urban": 0
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 282,
+          "net": 1,
+          "per_view": {
+            "practical_low_suburban": 1,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 248,
+          "net": 2,
+          "per_view": {
+            "practical_low_suburban": 1,
+            "practical_mid_urban": 1,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "candidate": 2,
+      "alpha": 1.0,
+      "net": 5,
+      "per_view": {
+        "practical_low_suburban": 2,
+        "practical_mid_urban": 1,
+        "practical_low_urban": 2
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 282,
+          "net": 2,
+          "per_view": {
+            "practical_low_suburban": 1,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 1
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 248,
+          "net": 3,
+          "per_view": {
+            "practical_low_suburban": 1,
+            "practical_mid_urban": 1,
+            "practical_low_urban": 1
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    }
+  ],
+  "selected": {
+    "kind": "antithetic_noise_dura",
+    "candidate": 2,
+    "alpha": 1.0,
+    "validation_net": 5
+  },
+  "heldout": {
+    "clean": {
+      "valid_count": 260,
+      "L_s_count": 62,
+      "U_confident_count": 198,
+      "baseline": 260,
+      "student": 260,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_baseline": 62,
+      "L_s_student": 62,
+      "gate_enabled": 0,
+      "median_orbit_variation": 0.20538324117660522
+    },
+    "practical_low_suburban": {
+      "valid_count": 260,
+      "L_s_count": 62,
+      "U_confident_count": 198,
+      "baseline": 257,
+      "student": 257,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_baseline": 60,
+      "L_s_student": 60,
+      "gate_enabled": 26,
+      "median_orbit_variation": 0.1149306669831276
+    },
+    "practical_mid_urban": {
+      "valid_count": 260,
+      "L_s_count": 62,
+      "U_confident_count": 198,
+      "baseline": 233,
+      "student": 231,
+      "repairs": 0,
+      "damages": 2,
+      "L_s_baseline": 54,
+      "L_s_student": 54,
+      "gate_enabled": 123,
+      "median_orbit_variation": 0.10528291761875153
+    },
+    "practical_low_urban": {
+      "valid_count": 260,
+      "L_s_count": 62,
+      "U_confident_count": 198,
+      "baseline": 236,
+      "student": 235,
+      "repairs": 1,
+      "damages": 2,
+      "L_s_baseline": 55,
+      "L_s_student": 55,
+      "gate_enabled": 160,
+      "median_orbit_variation": 0.09412315487861633
+    }
+  },
+  "heldout_clean_teacher_net": 0,
+  "quality": {
+    "clean": {
+      "count": 265,
+      "aligned_mse_before": 4.218289409649214e-05,
+      "aligned_mse_after": 4.218289409649214e-05,
+      "improved": 0,
+      "worsened": 0
+    },
+    "practical_low_suburban": {
+      "count": 265,
+      "aligned_mse_before": 0.027797734795087115,
+      "aligned_mse_after": 0.02837401799665941,
+      "improved": 8,
+      "worsened": 18
+    },
+    "practical_mid_urban": {
+      "count": 265,
+      "aligned_mse_before": 0.06369727642296973,
+      "aligned_mse_after": 0.06420562711489142,
+      "improved": 48,
+      "worsened": 75
+    },
+    "practical_low_urban": {
+      "count": 265,
+      "aligned_mse_before": 0.10555911088600181,
+      "aligned_mse_after": 0.10574521605035685,
+      "improved": 75,
+      "worsened": 85
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "candidates_before_source_tx_labels": true,
+  "caveat": "Each candidate averages eight DURA outputs from four pairs of opposite independent Gaussian perturbations at 0.2 times the received per-channel RMS; perturbation and mixing use only received IQ; inference uses only received IQ and frozen DURA, not source clean IQ or simulator SNR. The blind gate threshold was chosen on earlier source data. Fresh IDs exclude the earlier cycle-network, noise-proxy, and gated-evaluation samples but may overlap other diagnostics; frozen experts saw source records. Simulated satellite is not a validated real link."
+}

@@ -1,0 +1,28 @@
+{
+  "status": "SOURCE_ONLY_DIAGNOSTIC_FIXED_BEFORE_FULL_RUN",
+  "script": "phase1_source_antithetic_noise_dura.py",
+  "script_sha256": "a96c716aa6ce2a3c9367211fb324c38561db2264deae9a27f3b0f955911125ab",
+  "source_sample_seed": 2026110491,
+  "source_excludes": [
+    2026110411,
+    2026110451,
+    2026110461
+  ],
+  "channel_seed": 2026110492,
+  "hardware_seed": 2026110493,
+  "perturbation_seed": 2026110494,
+  "perturbation": "four independent pairs +epsilon/-epsilon; Gaussian component std = 0.2 times input per-component RMS",
+  "blends": [
+    0.25,
+    0.5,
+    1
+  ],
+  "validation_receivers": [
+    4,
+    6
+  ],
+  "heldout_receiver": 8,
+  "day": 3,
+  "gate": "source-derived fixed no-label SNR proxy below 10 dB and input/output ratio > 0.2",
+  "caveat": "IDs may overlap other source probes; fixed teacher and DURA saw source records; no test IQ, U_s labels or true SNR used in inference."
+}
