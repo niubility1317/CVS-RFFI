@@ -74,6 +74,14 @@ def test_missing_scores_return_notcomplete_without_success_artifacts(tmp_path,mo
     assert result['status']=='NOT_COMPLETE' and result['completed_tasks']==2 and not out.exists()
 
 
+def test_scene_only_requires_all_1260_scene_scores_and_not_mix(tmp_path,monkeypatch):
+    jobs=[dict(key=f'j{i}',seed=1,capsule=f'capsules/P01/LS01/r{i}',points=[[5,20]]) for i in range(1260)]
+    jobs += [dict(key='mix',seed=1,capsule='capsules/P01/MIX01/rx',points=[[5,20]])]
+    monkeypatch.setattr(analysis,'tasks',lambda rt:jobs)
+    out=tmp_path/'analysis'; result=analysis.analyze(dict(run_root=str(tmp_path/'run'),scene_only=True),out)
+    assert result['status']=='NOT_COMPLETE' and result['expected_tasks']==1260 and result['missing_tasks']==1260 and not out.exists()
+
+
 def test_missing_source_cost_metadata_is_unknown_not_zero(tmp_path):
     rt=dict(run_root=str(tmp_path),model_seeds=[1,2])
     write(tmp_path/'sources/s1/source_selection.json',dict(status='SOURCE_FROZEN',inherited_source_metric_training=[dict(C4={'steps':600},C8={'steps':600})]))

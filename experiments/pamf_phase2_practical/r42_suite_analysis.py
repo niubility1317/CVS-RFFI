@@ -197,9 +197,13 @@ def _flat(record,stats):
 
 def analyze(rt,output):
     matrix=tasks(rt)
+    require(not (rt.get('mix_only') is True and rt.get('scene_only') is True),'Conflicting requested scopes')
     if rt.get('mix_only') is True:
         matrix=[task for task in matrix if '/MIX' in task['capsule']]
         require(len(matrix)==672,'Wrong MIX-only matrix')
+    elif rt.get('scene_only') is True:
+        matrix=[task for task in matrix if '/MIX' not in task['capsule']]
+        require(len(matrix)==1260 and all(task['points']==[[5,20]] for task in matrix),'Wrong scene-only matrix')
     require(len({t['key'] for t in matrix})==len(matrix) and len({(t['seed'],t['capsule']) for t in matrix})==len(matrix),'Duplicate task units')
     root=Path(rt['run_root']);missing=[];complete=0
     for task in matrix:
@@ -240,7 +244,8 @@ def analyze(rt,output):
         arm,stage,sp,qp=key
         measured.append(dict(arm=arm,stage=stage,support_path=sp,query_path=qp,measurements=bucket['count'],actual_sums=bucket['sums'],observed_peaks=bucket['peaks'],null_fields=sorted(bucket['null_fields'])))
     main=lambda r:r['stratum']=='all' and r['value']=='MIX' and r['stage']=='C' and r['k']==5 and r['new_count']==20
-    summary=dict(status='ANALYSIS_COMPLETE',scope='MIX_ONLY' if rt.get('mix_only') is True else 'GROUP1_FULL',run_id=rt.get('run_id'),completed_tasks=len(matrix),natural_score_rows=row_count,common_query_score_rows=common_rows,
+    scope='SCENE_ONLY' if rt.get('scene_only') is True else 'MIX_ONLY' if rt.get('mix_only') is True else 'GROUP1_FULL'
+    summary=dict(status='ANALYSIS_COMPLETE',scope=scope,run_id=rt.get('run_id'),completed_tasks=len(matrix),natural_score_rows=row_count,common_query_score_rows=common_rows,
         MIX_units_per_KN=mix_units,source_cost=_source_cost(rt),row_aggregates=rows,paired_comparisons=pairs,class_recall=classes,
         main_K5N20=dict(row_aggregates=[r for r in rows if main(r)],paired_comparisons=[r for r in pairs if main(r)]),
         resources=dict(actual_measurements_only=True,reused_rows_missing_costs_not_zero=True,shared_GPU_not_isolated=True,MACs=None,FLOPs=None,
@@ -273,6 +278,16 @@ def _fmt(value,scale=100):return '—' if value is None else f'{scale*value:.3f}
 
 
 def _report(out,summary):
+    if summary.get('scope')=='SCENE_ONLY':
+        lines=['# 冻结 R42 单场景 K5/N20 评分汇总','',f"已核对 {summary['completed_tasks']} 个任务、{summary['natural_score_rows']} 条自然 query 评分；LS、MU、LU 每景各 420 个等权任务单元。各场景在固定方法下独立报告。",'',
+               '| 场景 | 方法 | 路径 | 旧类宏准确率（%） | 新类宏准确率（%） | 宏 H（%） | 四 seed H 样本 SD（百分点） |', '|---|---|---|---:|---:|---:|---:|']
+        for r in summary['row_aggregates']:
+            if r['dataset']!='natural' or r['stratum']!='all' or r['value'] not in ('LS','MU','LU') or r['stage']!='C' or r['k']!=5 or r['new_count']!=20:continue
+            m=r['metrics'];h=m['H_macro']
+            lines.append(f"| {r['value']} | {r['arm']} | {r['input_path']} | {_fmt(m['old_macro_accuracy']['unit_equal_weight']['mean'])} | {_fmt(m['new_macro_accuracy']['unit_equal_weight']['mean'])} | {_fmt(h['unit_equal_weight']['mean'])} | {_fmt(h['seed_mean_statistics']['sample_SD'])} |")
+        lines.extend(['','按相同 support/query 路径配对的收益，以及融合与原输入路径的跨输入比较，分别见 paired.csv 和 summary.json。单场景已暴露于本次 MIX 结果汇报，不作为新的独立盲测。',''])
+        with (out/'report.md').open('x',encoding='utf-8') as handle:handle.write('\n'.join(lines)+'\n')
+        return
     lines=['# 冻结 R42 完整评分汇总','',f"已核对 {summary['completed_tasks']} 个任务、{summary['natural_score_rows']} 条自然 query 评分；每个 MIX K/N 包含 {summary['MIX_units_per_KN']} 个等权任务单元。自然 query 与共同 query 结果分别保存，不混合平均。",'',
            '## 主工作点 K5/N20（C 阶段）','', '| query 口径 | 方法 | 路径 | 旧类宏准确率（%） | 新类宏准确率（%） | 宏 H（%） | 四 seed H 均值的样本 SD（百分点） |','|---|---|---|---:|---:|---:|---:|']
     if summary.get('scope') == 'MIX_ONLY':
