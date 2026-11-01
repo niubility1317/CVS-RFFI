@@ -1,0 +1,178 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01",
+  "group_id": "restoration-covariance-feature-sourceV-mechanism",
+  "display_name": "冻结源 V：物理恢复与特征指导的真实识别收益",
+  "description": "同原1800源V七景，固定BF物理版与5359特征版final30，保存IQ/160特征/默认头输出；全部预测固定后独立CPU才读V TX，分析特征改善但识别损伤的病例。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-validation-only",
+    "zero-update",
+    "frozen-final30",
+    "truth-last",
+    "original-TriSIGSSL",
+    "not-new-Main-result"
+  ],
+  "comparison_group_id": "matched-covariance-physical-vs-source-feature-guidance-fixed-sourceV",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User performance-first architecture research; original source V validation only, no training or selection; original Main results remain unchanged.",
+  "code": {
+    "commit": "4178f020951d4799e912a941240bea36f45bedf1",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing CVS-RFFI/Torch2.1/NumPy2 bridge-safe, FP32 G/F0, FP64 posterior, TF32off, CPUthreads2",
+    "cwd": "releases/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 source contract; existing R07 fixed1800 V/7 frozen validation views",
+    "representation": "Same1800 V clean/received/FIR64/main-image/noise, 5 sourceRX x3day x120. No new augmentation or observations.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "OriginalR07 cache/validation/physical_ids.npy, rx.npy/day.npy; same fixed panel as27197d5a source_validation; disjoint originalLsUs",
+    "label_map_ref": "Original source_cache/V_metadata.npz y, exact source_contract role_ids[V] and opaqueID mapping; CPU scorer only after all7predictions complete",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six known sourceTX; V trueTX validation only, no train/selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "ReuseVALIDATED_ONCE R07/source family and fixedV manifest; parent G provenance strict config/state checked. No datahash/revalidation.",
+    "support_query_ref": "Fixed source V1800; no target support/query/OE/novel. V labels source validation after predictions only.",
+    "leo_config_ref": "ExistingR07 validation_actions7; receiver2026101902 vs trainingreceiver2026101911; no regenerated views.",
+    "actual_training_labels": "0 training/backward/optimizer/model updates. V y scored only after bothG andreceived full7 frozen predictions; Ls2 noquerysmoke labels hidden.",
+    "augmentation": "None generated; existing V7 reused, not new independent samples.",
+    "target_panel": "None"
+  },
+  "permissions": {
+    "regime": "source-V-frozen-validation-truth-last-no-training",
+    "query_use": "No target IQ/truth/prediction. Only fixed source V IQ validation, all7prediction files checked before independentCPU opens sourceV y.",
+    "external_method_exception": null,
+    "claim_scope": "Paired sourceV actualTX accuracy/defaulthead margins/continuous feature errors/physical errors. V is historically exposed, no model/epoch/weight selection; sourceV does not establish unseenRX cause or information ceiling."
+  },
+  "checkpoint": {
+    "initialization": "No new G. Strict BF CovarianceMAP and5359 CovarianceFeature final30/7410, original3ff8F0 E50/11100; bothG built before F0 bootstrap.",
+    "sources": [
+      "Frozen20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/TF_CovarianceMAP/bf29554a03e28a012eaaa134f5c7b3f7856f2268/final30",
+      "Frozen20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01/TF_CovarianceFeature/5359a1b82b1fa5d640a394c3e3a77ce3b945fe1e/final30",
+      "OriginalF0/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/fullTriSIGTIME_SSL/E50/11100/defaulthead",
+      "DATA_ONLY_R07 existing fixed1800 sourceV views/27197d5a prior validation handle;sourcevariance f57/63000-160;bothG saved sourceIQprior a3"
+    ],
+    "contract_check_ref": "Sameoriginal source-only ancestry; complete final30 metadata, strict configuration/state, originalF0 identity and same savedmu/C. Existing source audit reused.",
+    "provenance_verdict": "No initialization/resume/training; sameoriginal source contract and frozen parent identities. Guided parent is not F-free; physical parent had0F0 training gradients.",
+    "selection_rule": "Both fixed final30 parents reported in full.0checkpoint/weight/scene/TX/quality selection; sourceV never changes parent Main or selects its epoch."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/covariance-guidance-sourceV",
+    "gpu_policy": "GPU4/6 healthy pool;free>=12000MiB/existingcompute<=2/addONEtotal<=3. OneownNNworker, otherownersuntouched.",
+    "remote_run_root": "runs/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01",
+    "remote_log_root": "runs/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_guidance_source run --root /home/szu2070436088/2510044040/CV-SincNet --commit 4178f020951d4799e912a941240bea36f45bedf1 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01-release/inputs.json",
+    "stop_rule": "Wrongparent/F0/sourcehandle, missingcase, nonfinite, solve residual>1e-8, statechange, worker/scorer error:preserve,noautomaticretry; no qualitythreshold or Main feedback."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "source_records.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "SourceV actualTX accuracy/correct/repair-damage vsphysical andrawclean;clean_reference_agreement separately",
+      "IQNMSE/Fcos/std160MSE/.01(cos+stdMSE)/Fclean reference margin andmarginchange",
+      "Featurebetter/tied/worse xTXrepair/damage/unchanged withobjectiveepsilon1e-7;all cases retained",
+      "Action fullmatrix relativeMSE/noiselogMSE/pred-true scalar noise/solve residual;no true noise realization",
+      "IndependentCPUrecompute every saved source proxy from IQ/features/logits;rtol2e-5atol2e-5,0decisiondiff;allG-F0state unchanged"
+    ],
+    "dimensions": [
+      "scene7",
+      "method:received/physical/guided",
+      "overall",
+      "sourceRX5",
+      "day3",
+      "TX6"
+    ],
+    "prediction_ref": "runs/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01/references.npz and7 scene.npz PRIVATE; predictions_complete.json allmethods/allviews before scoring",
+    "scorer_ref": "experiments.pamf_phase3_restoration.covariance_guidance_source score, separateprocess CUDAempty, sourceV y only;0target labels/prediction/neuralforward"
+  },
+  "rows": [
+    {
+      "row_id": "frozen_sourceV_pair",
+      "method": "fixed_covariance_sourceV_pair",
+      "purpose": "Test whether source continuous feature gains correspond to actualTX gains after freezing",
+      "config_ref": "experiments.pamf_phase3_restoration.covariance_guidance_source.py::SPECS/METRICS",
+      "resolved_config_ref": "runs/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01/predictions_complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "FrozenG/F0 model2026092701/split392005. data/augmentation trace originalR07, evaluation2026101902 denotes cachedV receiver;0newRNG.",
+      "k": null,
+      "scenario": "OriginalsourceV1800 x7 frozenviews;0target",
+      "optimizer": "NONE/frozen inference only",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "25200G/posterior,37800F0output,1800F0clean;extraLs2 perG=4G/F0. Oneoriginal1800V repeated7views,0trainingepochs.",
+      "output_root": "runs/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01",
+      "log_path": "runs/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_guidance_source worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 4178f020951d4799e912a941240bea36f45bedf1 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-Restore-covariance-guidance-sourceV-s2026092701-r01-release/inputs.json",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-worker.json",
+        "terminal-worker.json",
+        "submitted-score.json",
+        "terminal-score.json",
+        "smoke.json",
+        "references.npz PRIVATE",
+        "seven scene.npz PRIVATE",
+        "predictions_complete.json",
+        "results.json",
+        "complete.json",
+        "logs/worker.log PRIVATE",
+        "logs/score.log PRIVATE",
+        "runtime_worker_observation.json PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Performance primary remains originalgroundTriSIGSSL/Main sixeach<=3pp plusbothclean, still unmet. This0target diagnostic is not a new Main candidate/result.",
+    "V onlyfrozenvalidation;0training/selection/calibration/normalizerupdates/earlystop. Both fixed sourcefinal30 models already completedMain unchanged. Labels never enter worker or G loss.",
+    "IQ/features/defaultheadlogits savedprivately enable independentCPU direct proxy recompute;clean-reference agreement/margin are nottrueTX accuracy or class-supervision losses.",
+    "All7views andbothGs before separateCPUsourceV labels. sourceV 1800disjointtraining, historicallyexposedanddifferentcachedreceiverseed. Cannot isolate unseenRX generalization or prove TXinformationceiling.",
+    "AllTX/RX/day/scene groups and featurebetter-butTXdamage cases reported regardless sign;fixed1e-7 featuretie. No new architecture or hyperparameter chosen fromtargetscores.",
+    "4focusednegative/metricchecks andoneP0P1;realLs2/frozenG/F0smokefirst andimmediatecontinue. OnearchiveSHA/remotecompile, oneactualPID-CWD-CUDA-GPU/loggrowth observation, no extra gates.",
+    "ExistingVALIDATED_ONCE data/statistics reused. AllG/F0states unchanged. DefaultDURA untouched;no DURA repeatedNN, no baselineMain rerun,0OE/novel/target.",
+    "Physical scalar noise errors use cachedaverage variance, notfullnoise covariance or realization. Fixedcovarianceposterior/muC same;sourceTXscore is boundedmechanism evidence,notBayeslimit."
+  ],
+  "registered_at": "2026-11-01T22:33:28+00:00"
+}
