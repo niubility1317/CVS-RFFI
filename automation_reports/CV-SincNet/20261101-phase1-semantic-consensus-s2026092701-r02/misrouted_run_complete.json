@@ -1,0 +1,5 @@
+{
+  "status": "FAILED_TECHNICAL_PRESERVED",
+  "error": "RuntimeError('GPU source smoke or prediction failed; outputs preserved')",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-semantic-consensus-s2026092701-r02-release/experiments/pamf_phase1_flow/semantic_consensus_controller.py\", line 109, in main\n    if child.wait():raise RuntimeError('GPU source smoke or prediction failed; outputs preserved')\nRuntimeError: GPU source smoke or prediction failed; outputs preserved\n"
+}

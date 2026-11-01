@@ -14,7 +14,7 @@ from . import experiment as core, anchor_balanced as prior
 from . import boundary_student_experiment as boundary_model
 from . import feature_conditioned_experiment as feature_model
 
-RUN='20261101-phase1-semantic-consensus-s2026092701-r01'
+RUN='20261101-phase1-semantic-consensus-s2026092701-r03'
 ASSET=Path(__file__).with_name('semantic_consensus_weights.json')
 ASSET_SHA='75dcc3b3c606867db4dd21860687ed25d40bdbcf551411f2db073ecfacfa33b6'
 BOUNDARY_RUN='20261101-phase1-boundary-student-E30-s2026092701-r02'
