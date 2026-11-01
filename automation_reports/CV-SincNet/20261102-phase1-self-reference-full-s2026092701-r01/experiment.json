@@ -1,0 +1,160 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-self-reference-full-s2026092701-r01",
+  "group_id": "phase1-self-reference",
+  "display_name": "输入自身重复结构的自参考恢复网络源域训练",
+  "description": "利用输入相隔80点的两段重复结构及轻量空洞卷积学习复数混合和全窗残差；固定 Tri-SIG-TIME SSL，相位锚点和输入保护门控；DURA 只在训练后源域对照。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "self_reference",
+    "independent_restorer",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-adaptive-phase-factor-s2026092701-r01",
+    "20261102-phase1-blind-gate-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "bb4686cb8faee5040259b6499d511bb4daae7e8c",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python CPU, MKL-DNN enabled, two CPU threads; SiLU; full-loss zero-gradient source smoke required",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256], within-input lag80 two 64-point segment complex alignment and learned per-position mixing plus full-window residual; no external IQ dictionary",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels or U_s truth read; frozen Tri-SIG-TIME SSL clean pseudo predictions and paired IQ guide source training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "7840 RX4/6 day3 source IDs for selection, 3921 RX8 day3 heldout; identities previously used in other source experiments, not blind",
+    "support_query_ref": null,
+    "leo_config_ref": "Fixed source cache epochs11–13 training, epoch19 source selection"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source-only training and candidate selection; no V, test IQ, Phase3; no automatic test predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single seed, source heldout and Phase1 development previously observed, no independent-blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Random self-reference network; fixed source phase factor and gate; frozen Tri-SIG-TIME SSL. DURA only loaded after all three checkpoints fixed for source evaluation.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-adaptive-phase-factor-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "Pinned r02 source dependency 284317bd819df974395d3388b1920a41300937cb; fixed phase checkpoint SHA256 8e9fd8f97a57263be320b8dd57e4dd615fb015d5aab2d276d43864ec8fe8e508",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Source RX4/6 cache19 vs DURA: per-cell F pseudo-target decrease <= max(1,ceil(.5% valid)), clean IQ <= DURA+.001, impaired IQ <=1.2*DURA+1e-6, aggregate impaired pseudo-correct net >=10; epochs1/2/3 alpha .5/1 threshold .8/.99; RX8 heldout not used"
+  },
+  "execution": {
+    "host": "N607 CPU",
+    "launch_owner": "Codex self-reference single CPU owner",
+    "gpu_policy": "CPU only; CUDA disabled; two CPU threads, MKL-DNN enabled",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-self-reference-full-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-self-reference-full-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-self-reference-full-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-self-reference-full-s2026092701-r01-release/experiments/phase1_self_reference/phase1_self_reference_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-self-reference-full-s2026092701-r01 --commit bb4686cb8faee5040259b6499d511bb4daae7e8c --device cpu",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "source_smoke/result.json",
+    "source/checkpoint_epoch01.pt",
+    "source/checkpoint_epoch02.pt",
+    "source/checkpoint_epoch03.pt",
+    "source/source_selection.json",
+    "source/selected.pt if selected",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source pseudo-target agreement",
+      "normalized aligned IQ MSE",
+      "source net gains"
+    ],
+    "dimensions": [
+      "source RX4/6 and scene",
+      "heldout RX8 and scene"
+    ],
+    "prediction_ref": "none; source-only training and selection",
+    "scorer_ref": "experiments/phase1_self_reference/phase1_self_reference_source.py",
+    "scientific_rule": "Source F pseudo-target agreement is not ground truth or 3% goal; selected network needs separately fixed inference and full Phase1 test."
+  },
+  "rows": [
+    {
+      "row_id": "self_reference_s2026092701",
+      "method": "self-referenced lag80 complex mixing and dilated temporal IQ residual, fixed input gate and source phase factor",
+      "purpose": "test source improvement and preservation vs DURA before any Phase1 test",
+      "config_ref": "experiments/phase1_self_reference/phase1_self_reference_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-self-reference-full-s2026092701-r01/source/source_selection.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120254,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120255
+      },
+      "seed_notes": "Model 2026120254, train shuffle 2026120255; fixed disjoint source splits; caches11–13 train, 19 source eval",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0003,
+      "epochs": 3,
+      "fl_rounds": null,
+      "budget_ref": "47143 training IDs, 3 epochs batch32; 7840 RX4/6 validation and 3921 RX8 holdout",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-self-reference-full-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-self-reference-full-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-self-reference-full-s2026092701-r01-release/experiments/phase1_self_reference/phase1_self_reference_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-self-reference-full-s2026092701-r01 --commit bb4686cb8faee5040259b6499d511bb4daae7e8c --device cpu",
+      "expected_artifacts": [
+        "source_smoke/result.json",
+        "source/checkpoint_epoch01.pt",
+        "source/checkpoint_epoch02.pt",
+        "source/checkpoint_epoch03.pt",
+        "source/source_selection.json",
+        "source/selected.pt if selected",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Training, validation, holdout physical IDs are disjoint; source IDs appeared in earlier channel views, no blind claim.",
+    "Phase factor previously trained from DURA source teacher; network inference does not call DURA.",
+    "DURA loaded only after all three checkpoints fixed; no TX labels, U_s truth, V or test IQ.",
+    "Pilot 64 updates: 246 confident source pseudo targets, self-reference 219, raw 214, anchor 214, DURA 231; no target result."
+  ],
+  "registered_at": "2026-11-01T19:51:46+00:00"
+}
