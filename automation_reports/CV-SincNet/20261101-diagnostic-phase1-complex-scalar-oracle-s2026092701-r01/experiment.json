@@ -1,0 +1,154 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-phase1-complex-scalar-oracle-s2026092701-r01",
+  "group_id": "phase1-privileged-complex-scalar-source",
+  "display_name": "Phase1 复数增益反事实源域诊断",
+  "description": "在源训练配对样本上，以干净 IQ 求最小二乘复数增益，诊断简单盲均衡路线的可能性。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "source-only",
+    "privileged-oracle"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发更强星地恢复网络并严格限定 Phase1 地面训练、测试与 Tri-SIG-TIME SSL 基座。",
+  "code": {
+    "commit": "0d2cb89799be6fc97dfeb50a59c9c1e1f0378e2a",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch CPU only, original Phase1 frozen Tri-SIG-TIME release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-phase1-complex-scalar-oracle-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/equalizer_source_oracle.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Paired Phase1 source clean and received IQ, fixed frozen DURA native outputs",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "none",
+    "actual_training_labels": "No TX labels, V or test IQ",
+    "augmentation": "Fixed source views 01 and 20"
+  },
+  "permissions": {
+    "regime": "Phase1 L_s/U_s source IQ only, no labels, frozen original teacher and DURA",
+    "query_use": "No target/query data",
+    "external_method_exception": null,
+    "claim_scope": "Privileged paired source counterfactual, not test accuracy or other-model ceiling"
+  },
+  "checkpoint": {
+    "initialization": "Frozen Tri-SIG-TIME SSL E50 and original DURA E20 source native predictions",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01/DURA_default-{1,20}.npz"
+    ],
+    "contract_check_ref": "Pinned source producer launch, exact 128 L +384 U deterministic positions, role IDs and clean arrays",
+    "provenance_verdict": "Phase1-only source outputs; no old classifier decisions consumed",
+    "selection_rule": "Fixed 512 source IDs and fixed views 01/20; no selection by test outcomes"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-scalar-source-oracle",
+    "gpu_policy": "CPU2/0GPU; frozen checkpoint only",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-complex-scalar-oracle-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-complex-scalar-oracle-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-diagnostic-phase1-complex-scalar-oracle-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.equalizer_source_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit 0d2cb89799be6fc97dfeb50a59c9c1e1f0378e2a",
+    "stop_rule": "Source ID mismatch, zero energy, nonfinite outputs, changed teacher or output collision stops and preserves evidence"
+  },
+  "expected_artifacts": [
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean teacher agreement",
+      "mean per-record IQ NMSE",
+      "oracle versus DURA repairs/damages"
+    ],
+    "dimensions": [
+      "512 source records, views 01/20",
+      "source state, scenario and role"
+    ],
+    "prediction_ref": "aggregate source-only counts",
+    "scorer_ref": "equalizer_source_oracle.py",
+    "targets_ref": "paired clean source IQ and teacher predictions only"
+  },
+  "notes": [
+    "固定 Phase1 源训练 512 个物理 ID（L_s 128、U_s 384），两个既有源视图 01/20；核对 ID、角色与干净 IQ 的物理配对。",
+    "每条接收 IQ 使用不可部署的配对 clean IQ 求最小二乘单个复数增益，比较原始、DURA、特权标量输出的相对 clean teacher 一致性及归一化 IQ 误差。",
+    "此实验使用特权 clean，只是源训练集反事实；teacher 一致性不是 TX 真值准确率，结果不是其他方法的性能上界。不读任何 TX 标签、V 或测试 IQ，不做模型更新。"
+  ],
+  "rows": [
+    {
+      "row_id": "scalar_oracle_source",
+      "method": "Privileged clean-paired complex scalar least squares",
+      "purpose": "Distinguish source mismatch explainable by one complex gain from residual impairments",
+      "config_ref": "experiments/pamf_phase1_flow/equalizer_source_oracle.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/equalizer_source_oracle.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed existing source positions and views; no stochastic sampling",
+      "k": null,
+      "scenario": "Phase1 source views 01 and 20",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512 fixed source records x two views; frozen teacher, no updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-complex-scalar-oracle-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-complex-scalar-oracle-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.equalizer_source_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit 0d2cb89799be6fc97dfeb50a59c9c1e1f0378e2a",
+      "expected_artifacts": [
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "registered_at": "2026-11-01T06:06:09+00:00"
+}
