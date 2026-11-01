@@ -25,7 +25,7 @@ def fit_prior(clean,fit,teacher,device):
  with torch.no_grad():
   for start in range(0,len(fit),128):
    x=core.tensor(clean[fit[start:start+128]],device);logits.append(teacher.classify_features(teacher.features(x)).cpu())
- p=torch.softmax(torch.cat(logits),1);confidence,labels=p.max(1);use=np.from_dlpack((confidence>=.95).contiguous());labels=np.from_dlpack(labels.contiguous())[use]
+ p=torch.softmax(torch.cat(logits),1);confidence,labels=p.max(1);use=np.from_dlpack(confidence.contiguous())>=.95;labels=np.from_dlpack(labels.contiguous())[use]
  values=np.asarray(clean[fit[use]],dtype=np.float64).reshape(-1,512);mean=values.mean(0);d=values-mean;global_cov=d.T@d/len(values);global_cov=(global_cov+global_cov.T)/2;ridge=1e-4*np.trace(global_cov)/512;global_cov+=ridge*np.eye(512)
  means=[];covs=[];counts=[]
  for c in range(6):
