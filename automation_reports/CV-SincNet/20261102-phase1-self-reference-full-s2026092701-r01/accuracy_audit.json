@@ -1,0 +1,18 @@
+{
+  "primary_selected": {
+    "kind": "dura",
+    "validation_net": 0
+  },
+  "accuracy_audit": {
+    "kind": "none",
+    "validation_net": 0
+  },
+  "source_only": true,
+  "validation_receivers": [
+    4,
+    6
+  ],
+  "heldout_used": false,
+  "IQ_impaired_limit": false,
+  "caveat": "Source pseudo-target agreement is not truth; impaired waveform quality is reported without a hard limit; no test accessed."
+}

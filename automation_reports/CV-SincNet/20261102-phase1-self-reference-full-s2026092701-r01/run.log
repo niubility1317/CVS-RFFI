@@ -1,0 +1,44 @@
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-self-reference-full-s2026092701-r01-release/experiments/phase1_self_reference/phase1_self_reference_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-self-reference-full-s2026092701-r01/source_smoke", "--commit", "bb4686cb8faee5040259b6499d511bb4daae7e8c", "--device", "cpu", "--smoke"]
+SELF_REFERENCE_SOURCE_SMOKE {"status": "PASS", "records": 32, "active": 32, "zero_gradient": true, "finite_nonzero_gate_gradient": true, "F_frozen": true, "phase_frozen": true, "gate_frozen": true, "DURA_loaded": false, "TX_labels_read": 0, "U_s_truth_reads": 0, "V_reads": 0, "test_reads": 0}
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-self-reference-full-s2026092701-r01-release/experiments/phase1_self_reference/phase1_self_reference_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-self-reference-full-s2026092701-r01/source", "--commit", "bb4686cb8faee5040259b6499d511bb4daae7e8c", "--device", "cpu"]
+SELF_REFERENCE_PROGRESS 1 batches 128 active 3451 loss 1.5389339609340944 elapsed 22.2
+SELF_REFERENCE_PROGRESS 1 batches 256 active 6942 loss 1.454017617660584 elapsed 44.9
+SELF_REFERENCE_PROGRESS 1 batches 384 active 10425 loss 1.4574575338546607 elapsed 66.8
+SELF_REFERENCE_PROGRESS 1 batches 512 active 13893 loss 1.402850246310174 elapsed 89.2
+SELF_REFERENCE_PROGRESS 1 batches 640 active 17377 loss 1.3967543013722739 elapsed 111.7
+SELF_REFERENCE_PROGRESS 1 batches 768 active 20849 loss 1.3717396503198322 elapsed 134.6
+SELF_REFERENCE_PROGRESS 1 batches 896 active 24321 loss 1.3663269703148826 elapsed 157.1
+SELF_REFERENCE_PROGRESS 1 batches 1024 active 27801 loss 1.3553781952366057 elapsed 179.9
+SELF_REFERENCE_PROGRESS 1 batches 1152 active 31333 loss 1.3458314657770578 elapsed 202.9
+SELF_REFERENCE_PROGRESS 1 batches 1280 active 34818 loss 1.3413671839303292 elapsed 225.5
+SELF_REFERENCE_PROGRESS 1 batches 1408 active 38301 loss 1.3289799935148359 elapsed 247.7
+SELF_REFERENCE_EPOCH 1 active 40067 loss 1.3247543438861085
+SELF_REFERENCE_PROGRESS 2 batches 128 active 3475 loss 1.237923609721575 elapsed 21.6
+SELF_REFERENCE_PROGRESS 2 batches 256 active 6923 loss 1.2167858868238985 elapsed 43.6
+SELF_REFERENCE_PROGRESS 2 batches 384 active 10412 loss 1.2265999402208279 elapsed 66.0
+SELF_REFERENCE_PROGRESS 2 batches 512 active 13914 loss 1.2219289204345896 elapsed 88.5
+SELF_REFERENCE_PROGRESS 2 batches 640 active 17383 loss 1.206142819456502 elapsed 112.5
+SELF_REFERENCE_PROGRESS 2 batches 768 active 20891 loss 1.2175125049004623 elapsed 135.2
+SELF_REFERENCE_PROGRESS 2 batches 896 active 24379 loss 1.2219209869828977 elapsed 160.0
+SELF_REFERENCE_PROGRESS 2 batches 1024 active 27882 loss 1.214812162665792 elapsed 183.7
+SELF_REFERENCE_PROGRESS 2 batches 1152 active 31363 loss 1.205939080234891 elapsed 209.4
+SELF_REFERENCE_PROGRESS 2 batches 1280 active 34882 loss 1.2030364602324024 elapsed 233.8
+SELF_REFERENCE_PROGRESS 2 batches 1408 active 38372 loss 1.2033972870311909 elapsed 257.8
+SELF_REFERENCE_EPOCH 2 active 40132 loss 1.2039895784728052
+SELF_REFERENCE_PROGRESS 3 batches 128 active 3486 loss 1.1233014028286428 elapsed 22.9
+SELF_REFERENCE_PROGRESS 3 batches 256 active 6971 loss 1.1359451775989646 elapsed 46.0
+SELF_REFERENCE_PROGRESS 3 batches 384 active 10459 loss 1.145187931690404 elapsed 67.9
+SELF_REFERENCE_PROGRESS 3 batches 512 active 13904 loss 1.140360846688973 elapsed 89.7
+SELF_REFERENCE_PROGRESS 3 batches 640 active 17433 loss 1.1461594000587787 elapsed 111.9
+SELF_REFERENCE_PROGRESS 3 batches 768 active 20898 loss 1.1444321344778154 elapsed 133.6
+SELF_REFERENCE_PROGRESS 3 batches 896 active 24401 loss 1.1469745489447962 elapsed 155.3
+SELF_REFERENCE_PROGRESS 3 batches 1024 active 27864 loss 1.1399928457412507 elapsed 176.9
+SELF_REFERENCE_PROGRESS 3 batches 1152 active 31347 loss 1.1379050683154937 elapsed 198.6
+SELF_REFERENCE_PROGRESS 3 batches 1280 active 34815 loss 1.138227685385012 elapsed 220.9
+SELF_REFERENCE_PROGRESS 3 batches 1408 active 38287 loss 1.1363589800926368 elapsed 243.1
+SELF_REFERENCE_EPOCH 3 active 40047 loss 1.1367646537959855
+SELF_REFERENCE_EVALUATED 1
+SELF_REFERENCE_EVALUATED 2
+SELF_REFERENCE_EVALUATED 3
+SELF_REFERENCE_SELECTION {"kind": "dura", "validation_net": 0}
+SELF_REFERENCE_PIPELINE_COMPLETE {"status": "SOURCE_SELECTION_COMPLETE", "selected": {"kind": "dura", "validation_net": 0}, "source_only": true, "target_predictions": false}

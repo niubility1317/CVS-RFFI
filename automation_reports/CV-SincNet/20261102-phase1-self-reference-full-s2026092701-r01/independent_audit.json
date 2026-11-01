@@ -1,0 +1,128 @@
+{
+  "method": "independent per-cell recomputation",
+  "primary": {
+    "kind": "dura",
+    "validation_net": 0
+  },
+  "accuracy_audit": {
+    "kind": "none",
+    "validation_net": 0
+  },
+  "rows": [
+    {
+      "epoch": 3,
+      "param": "1.0:0.8",
+      "impaired_net": -537,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 3,
+      "param": "1.0:0.99",
+      "impaired_net": -537,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 2,
+      "param": "1.0:0.8",
+      "impaired_net": -554,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 2,
+      "param": "1.0:0.99",
+      "impaired_net": -554,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 3,
+      "param": "0.5:0.8",
+      "impaired_net": -581,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 3,
+      "param": "0.5:0.99",
+      "impaired_net": -581,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 2,
+      "param": "0.5:0.8",
+      "impaired_net": -596,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 2,
+      "param": "0.5:0.99",
+      "impaired_net": -596,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 1,
+      "param": "1.0:0.8",
+      "impaired_net": -637,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 1,
+      "param": "1.0:0.99",
+      "impaired_net": -637,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 1,
+      "param": "0.5:0.8",
+      "impaired_net": -664,
+      "classification_violations": 12,
+      "iq_violations": 12
+    },
+    {
+      "epoch": 1,
+      "param": "0.5:0.99",
+      "impaired_net": -664,
+      "classification_violations": 12,
+      "iq_violations": 12
+    }
+  ],
+  "low_urban": {
+    "rx4": {
+      "count": 582,
+      "valid_count": 566,
+      "active": 582,
+      "baseline_correct": 496,
+      "candidate_correct": 352,
+      "baseline_iq": 0.020665397867560387,
+      "candidate_iq": 0.3190225064754486
+    },
+    "rx6": {
+      "count": 570,
+      "valid_count": 564,
+      "active": 570,
+      "baseline_correct": 488,
+      "candidate_correct": 380,
+      "baseline_iq": 0.035013314336538315,
+      "candidate_iq": 0.3252646028995514
+    },
+    "rx8": {
+      "count": 531,
+      "valid_count": 512,
+      "active": 531,
+      "baseline_correct": 462,
+      "candidate_correct": 362,
+      "baseline_iq": 0.07721949368715286,
+      "candidate_iq": 0.30919817090034485
+    }
+  },
+  "source_only": true,
+  "truth": "high-confidence clean-F pseudo targets, not true labels"
+}
