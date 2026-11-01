@@ -1,0 +1,166 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-complex-mask-source-s2026092701-r01",
+  "group_id": "phase1-complex-multires-f-free-restoration",
+  "display_name": "无标签多尺度复数频谱恢复与 Tri-SIG-TIME SSL 配对验证",
+  "description": "冻结 DURA，使用配对源域 IQ、双时频分辨率复数乘性滤波和低信噪比保护门；不使用发射机标签或分类器训练/选模，源波形选择后接冻结 Tri-SIG-TIME SSL。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "complex_mask",
+    "F_free_training",
+    "source_only_selection",
+    "truth_last",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261101-phase1-dura-trisigtime-baseline-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "本对话持续研发 Phase1 星地恢复网络，全部场景较 Tri-SIG-TIME SSL 干净基座下降不超过 3%；不使用 Phase3。",
+  "code": {
+    "commit": "fd048c6f5fd781444895285e0053506adcce6c4d",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python; CPU only, two threads; no CUDA workers",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256]; source L_s/U_s paired clean and simulated post_sync residual channel",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six registered Phase1 TX; no TX labels used in training or source IQ selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Source L_s/U_s holdout by receiver/day; no source V read",
+    "support_query_ref": null,
+    "leo_config_ref": "practical low suburban/mid urban/low urban, post_sync residual, no added equalization; final Phase1 clean plus six practical views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Phase1 test only after source-IQ selection frozen and all predictions sealed; no Phase3",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed Phase1 development evaluation; historical test observations mean not independent blind"
+  },
+  "checkpoint": {
+    "initialization": "new mask scratch; DURA frozen; Tri-SIG-TIME SSL used only after source IQ selection",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "prior.frozen_dura validates original 7/63/30 source-only lineage; core.data matches exact Tri-SIG-TIME role IDs",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Source IQ-only normalized MSE over receiver 4/6 day3; no per-receiver/per-scene regression; epochs 2/5/10 and alpha .25/.5/1; retain DURA if no passing improvement; no F or TX used"
+  },
+  "execution": {
+    "host": "N607 CPU",
+    "launch_owner": "Codex current chat phase1-complex-mask single owner",
+    "gpu_policy": "CPU only, two threads, CUDA_VISIBLE_DEVICES empty; preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-complex-mask-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-phase1-complex-mask-source-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261101-phase1-complex-mask-source-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-complex-mask-source-s2026092701-r01-release/experiments/phase1_complex_multires/phase1_complex_multires_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-complex-mask-source-s2026092701-r01 --commit fd048c6f5fd781444895285e0053506adcce6c4d --device cpu",
+    "stop_rule": "Only provenance/role violation, output collision, nonfinite or technical execution failure; preserve all partial outputs; no stop for low performance"
+  },
+  "expected_artifacts": [
+    "source_smoke/result.json",
+    "source/source_selection.json",
+    "source/result.json",
+    "source/selected.pt if selected",
+    "source/prediction_smoke.json if selected",
+    "source/flow/test_prediction/complete.json if selected",
+    "source/flow/test_summary.json and paired_dura.json if selected",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "repair/damage/net",
+      "raw clean gap pp",
+      "relative clean decline",
+      "aligned IQ MSE"
+    ],
+    "dimensions": [
+      "clean and six Phase1 practical scenes",
+      "receiver",
+      "day",
+      "TX",
+      "source real L_s and confident U_s pseudo targets"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-complex-mask-source-s2026092701-r01/source/flow/test_prediction",
+    "scorer_ref": "experiments/pamf_phase1_flow/experiment.py#score and phase1_complex_multires_compare.py",
+    "scientific_rule": "Target all six restored accuracies >= clean baseline minus 3 pp, also report relative 3% threshold; clean damage <=1 pp; source IQ selection fixed before F or source labels."
+  },
+  "rows": [
+    {
+      "row_id": "complex_multires_s2026092701",
+      "method": "two-resolution bounded complex multiplicative STFT masks with fixed blind gate, DURA frozen, no F or TX training",
+      "purpose": "source_IQ_selected_then_Phase1_test",
+      "config_ref": "experiments/phase1_complex_multires/phase1_complex_multires_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-complex-mask-source-s2026092701-r01/source/source_selection.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110554,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026110552,
+        "support": null,
+        "evaluation": 2026110553
+      },
+      "seed_notes": "Support null: Phase1 no support. Evaluation seed controls simulated receiver hardware; source sample/augmentation/model seeds fixed; baseline model seed 2026092701.",
+      "k": null,
+      "scenario": "source clean plus three impaired views; seven Phase1 final test views only if source IQ selects mask",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0003,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "4096 sampled L_s/U_s IDs; 10 source epochs, two CPU threads",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-complex-mask-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-phase1-complex-mask-source-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-complex-mask-source-s2026092701-r01-release/experiments/phase1_complex_multires/phase1_complex_multires_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-complex-mask-source-s2026092701-r01 --commit fd048c6f5fd781444895285e0053506adcce6c4d --device cpu",
+      "expected_artifacts": [
+        "source_smoke/result.json",
+        "source/source_selection.json",
+        "source/result.json",
+        "source/selected.pt if selected",
+        "source/prediction_smoke.json if selected",
+        "source/flow/test_prediction/complete.json if selected",
+        "source/flow/test_summary.json and paired_dura.json if selected",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No classifier weight/output or TX labels used during source model optimization or source IQ selection.",
+    "F and L_s labels only opened after source selection; confident U_s pseudo-targets used for source evaluation only.",
+    "Previous Phase1 development results observed, so final comparisons are nonblind and not clean generalization claims.",
+    "If source IQ selection retains DURA, no new mask checkpoint or target predictions are launched."
+  ],
+  "registered_at": "2026-11-01T15:54:13+00:00"
+}
