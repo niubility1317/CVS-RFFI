@@ -1,0 +1,94 @@
+{
+  "selected": {
+    "kind": "dura",
+    "validation_net": 0
+  },
+  "candidates": [
+    {
+      "epoch": 5,
+      "key": "1.0:0.99",
+      "net": -705,
+      "badcls": 12,
+      "badiq": 13
+    },
+    {
+      "epoch": 5,
+      "key": "1.0:0.8",
+      "net": -706,
+      "badcls": 12,
+      "badiq": 14
+    },
+    {
+      "epoch": 3,
+      "key": "1.0:0.99",
+      "net": -737,
+      "badcls": 12,
+      "badiq": 13
+    },
+    {
+      "epoch": 3,
+      "key": "1.0:0.8",
+      "net": -739,
+      "badcls": 12,
+      "badiq": 14
+    },
+    {
+      "epoch": 1,
+      "key": "1.0:0.99",
+      "net": -862,
+      "badcls": 12,
+      "badiq": 13
+    },
+    {
+      "epoch": 1,
+      "key": "1.0:0.8",
+      "net": -863,
+      "badcls": 12,
+      "badiq": 14
+    },
+    {
+      "epoch": 3,
+      "key": "0.5:0.8",
+      "net": -1021,
+      "badcls": 12,
+      "badiq": 13
+    },
+    {
+      "epoch": 3,
+      "key": "0.5:0.99",
+      "net": -1021,
+      "badcls": 12,
+      "badiq": 12
+    },
+    {
+      "epoch": 5,
+      "key": "0.5:0.8",
+      "net": -1064,
+      "badcls": 12,
+      "badiq": 13
+    },
+    {
+      "epoch": 5,
+      "key": "0.5:0.99",
+      "net": -1064,
+      "badcls": 12,
+      "badiq": 12
+    },
+    {
+      "epoch": 1,
+      "key": "0.5:0.8",
+      "net": -1225,
+      "badcls": 12,
+      "badiq": 13
+    },
+    {
+      "epoch": 1,
+      "key": "0.5:0.99",
+      "net": -1225,
+      "badcls": 12,
+      "badiq": 12
+    }
+  ],
+  "target_predictions": false,
+  "metric": "clean F pseudo-target only"
+}
