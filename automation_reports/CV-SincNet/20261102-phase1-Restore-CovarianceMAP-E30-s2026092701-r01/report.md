@@ -3,7 +3,7 @@
 - run_id：`20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01`
 - group_id：`restoration-physical-full-covariance-source-operator-learning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（真实源2 smoke与训练进程已核实）
 
 ## 目的与对照
 
@@ -47,3 +47,10 @@
 训练和两组预测依次运行，GPU4/6按实际UUID/free≥12000MiB/existing compute≤2/新增1总≤3准入，本row最多一条NN。其他owner和已存产物不改。5项针对性检查与一次独立P0/P1通过，一次archive SHA传输核实和远端compile；真实启动后检查PID/CWD/cmdline/GPU/log增长。技术失败保存产物，不自动重试、迁移或复位GPU。
 
 静态估计器176636032实MAC，后验额外269221888实MAC，512维Cholesky约44739243FLOPs、三角求解等操作另列，另2个complex256点FFT。不是实测时延，不以更少参数或关闭训练分支声称同质量提速。训练不执行后验会减少迭代成本，但实际轮时、峰值显存、完整预测耗时和正式性能仍须实测。完整配置/命令/路径/预算/停止规则/产物见登记。
+
+
+## 实际新模型训练已核实
+
+VERIFIED / RUNNING。实际source2完整FP64后验+原F0、算子head梯度与E0严格重载均通过，已进入固定单阶段30训练。CPU控制器和worker的PID/CWD/commit/CUDA/GPU与日志增长独立核实；GPU4准入free22885MiB/原2compute/新增1。固定源mu/C已绑定为额外数据统计buffer，更新只执行算子/噪声估计，不执行后验或F0；0TX/V/OE/novel/目标训练。archive单次SHA一致/远端编译通过。完整30后自动原Main2pop×7 truth-last，当前没有本版正式性能。
+
+E01 CPU独立检查PASS：实际E0全部学习状态等于新factory，mu/C等于原FP32源统计且E01不变，TF骨干及三个Action/noise输出head已更新，optimizer有限；30份sourceorder/draw与原M20完全一致，第一轮247更新/63000记录/微批32/LR和加权loss核实。首轮66.222361秒，不视为独立速度或性能结论。
