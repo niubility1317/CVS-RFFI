@@ -1,0 +1,190 @@
+{
+  "status": "SOURCE_RESIDUAL_SCALE_SMOKE",
+  "commit": "fb13322d9a9258dd512712e02b63d19adaab8825",
+  "scenes": {
+    "clean": {
+      "count": 4,
+      "valid_count": 4,
+      "baseline_dura_correct": 4,
+      "mean_relative_correction": 0.0018561824690550566,
+      "scales": {
+        "0.0": {
+          "correct": 0,
+          "mean_iq_nmse": 1.5447895526885986
+        },
+        "1.0": {
+          "correct": 0,
+          "mean_iq_nmse": 1.5451231002807617
+        },
+        "4.0": {
+          "correct": 0,
+          "mean_iq_nmse": 1.5461509227752686
+        },
+        "16.0": {
+          "correct": 0,
+          "mean_iq_nmse": 1.5506744384765625
+        }
+      }
+    },
+    "practical_high": {
+      "count": 4,
+      "valid_count": 3,
+      "baseline_dura_correct": 3,
+      "mean_relative_correction": 0.0018136224243789911,
+      "scales": {
+        "0.0": {
+          "correct": 3,
+          "mean_iq_nmse": 0.005160701926797628
+        },
+        "1.0": {
+          "correct": 3,
+          "mean_iq_nmse": 0.005151009652763605
+        },
+        "4.0": {
+          "correct": 3,
+          "mean_iq_nmse": 0.005160362459719181
+        },
+        "16.0": {
+          "correct": 3,
+          "mean_iq_nmse": 0.00577420461922884
+        }
+      }
+    },
+    "practical_mid": {
+      "count": 4,
+      "valid_count": 4,
+      "baseline_dura_correct": 4,
+      "mean_relative_correction": 0.001811291091144085,
+      "scales": {
+        "0.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.0046868594363331795
+        },
+        "1.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.004685163497924805
+        },
+        "4.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.004719061311334372
+        },
+        "16.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.005439429078251123
+        }
+      }
+    },
+    "practical_low_suburban": {
+      "count": 4,
+      "valid_count": 4,
+      "baseline_dura_correct": 4,
+      "mean_relative_correction": 0.0018101130845025182,
+      "scales": {
+        "0.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.010361901484429836
+        },
+        "1.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.010358378291130066
+        },
+        "4.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.010387081652879715
+        },
+        "16.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.011091001331806183
+        }
+      }
+    },
+    "practical_high_urban": {
+      "count": 4,
+      "valid_count": 4,
+      "baseline_dura_correct": 4,
+      "mean_relative_correction": 0.0018250185530632734,
+      "scales": {
+        "0.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.006093227304518223
+        },
+        "1.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.006073331460356712
+        },
+        "4.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.0060533806681632996
+        },
+        "16.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.006569626275449991
+        }
+      }
+    },
+    "practical_mid_urban": {
+      "count": 4,
+      "valid_count": 4,
+      "baseline_dura_correct": 4,
+      "mean_relative_correction": 0.0018540859455242753,
+      "scales": {
+        "0.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.06116854399442673
+        },
+        "1.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.06116517260670662
+        },
+        "4.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.061192259192466736
+        },
+        "16.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.061858467757701874
+        }
+      }
+    },
+    "practical_low_urban": {
+      "count": 4,
+      "valid_count": 4,
+      "baseline_dura_correct": 3,
+      "mean_relative_correction": 0.0020313637796789408,
+      "scales": {
+        "0.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.0459938570857048
+        },
+        "1.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.04599587991833687
+        },
+        "4.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.04604576900601387
+        },
+        "16.0": {
+          "correct": 4,
+          "mean_iq_nmse": 0.04690277576446533
+        }
+      }
+    }
+  },
+  "source_ids": 28,
+  "fit_excluded": 4096,
+  "prior_excluded": 8192,
+  "scales": [
+    0.0,
+    1.0,
+    4.0,
+    16.0
+  ],
+  "residual_sha256": "d42175ea409bb3dbe159a2009146e0e50fd863c087c4cd57d61199d2654f76f9",
+  "source_only": true,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Fixed residual model previously used source L_s training labels; source IDs and other views previously exposed; scale diagnostic is not a deployable selection or Phase1 test."
+}

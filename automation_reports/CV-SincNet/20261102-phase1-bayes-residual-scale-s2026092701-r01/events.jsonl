@@ -1,1 +1,3 @@
 {"at": "2026-11-01T21:23:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T21:26:14+00:00", "status": "RUNNING", "note": "Four fixed scales, source only; clean branch intentionally unprotected for mechanism diagnostic.", "evidence": ["N607 PID 991075 GPU0; fixed checkpoint and 28 source-record diagnostic smoke passed"], "row_id": null}
+{"at": "2026-11-01T21:27:50+00:00", "status": "ANALYZED", "note": "Fixed extrapolations show low-urban +1 pseudo target at scale4 but higher IQ error; clean unprotected.", "evidence": ["N607 source result and independent replay SHA256 35fb9d29b4c7271b23f5b88d29f0b70740527c74b5236b211ea2c755446eb515 identical"], "row_id": null}
