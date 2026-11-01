@@ -1,0 +1,15 @@
+{
+  "status": "VERIFIED_WITH_DIFFERENCE",
+  "primary_sha256": "226581a3fa129c7ac4bb312dbe1ed5b07292bbfc6f42053958a718ec43257824",
+  "replay_sha256": "991b4b070bf2438455f58d162d7979f53128700f48088ea75e78047905362f3e",
+  "counts_differences": [
+    {
+      "view": "practical_mid_urban",
+      "method": "blind_global",
+      "primary": 57,
+      "replay": 56
+    }
+  ],
+  "blind_mixture_counts_all_equal": true,
+  "caveat": "Independent GPU retraining has numeric variations; no true labels or test data."
+}
