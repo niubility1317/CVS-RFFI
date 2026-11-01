@@ -1,1 +1,2 @@
 {"at": "2026-11-01T23:48:15+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T23:49:15+00:00", "status": "RUNNING", "note": "Four-step rollout fine-tuning on physical GPU2; exact source pilot warm start; no U_s truth, V or test.", "evidence": ["N607 PID 1083791 independently verified; mixed L_s/U_s four-step gradient preflight PASS; archive SHA256 319d59bc65df77b25d5a898ea525818faa8edb676493bbf2a6dd6f04be7bccd7."], "row_id": null}
