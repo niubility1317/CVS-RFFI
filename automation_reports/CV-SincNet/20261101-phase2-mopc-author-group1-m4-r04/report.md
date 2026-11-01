@@ -25,3 +25,9 @@ Reuse fourfinalE200/10000step sourceA models,398completepredictiondirs and397sco
 启动后独立核实（2026-11-01T13:21:44.188663+08:00）：VERIFIED RUNNING: fourinheritedactualsource checkpointsmokesPASS, sourceupdates0;398predictiondirs/1172rows and397scoredirs/1170rows reused; newtargetpredictionandindependentscore processes/loggrowth observed; originalnativeC20epochs/5classsession unchanged.
 
 控制器实际PID/CWD/argv与子进程、GPU、日志/预测/拟合产物增长已核实。源代码/config commit b4903b6928d88f755b6609a6160a0dde0acf22b0，双仓库push和remoteOID VERIFIED；单一归档传输SHA比对、远端compile通过。25项定向测试和每个恢复入口唯一一次P0/P1均通过，无额外审查/签名/成员hash。全部矩阵仍在执行，宏H与+5pp逐格结论待最终独立评分。
+
+## 预测与独立评分完成
+
+核实时间 2026-11-01T22:33:17.168256+08:00。VERIFIED SCORED_COMPLETE：4 个源模型、1,933 个预测任务和 1,933 个评分任务全部闭合，预测及评分各覆盖 5,376 行；逐任务核对预测和评分的 capsule、seed、split、类别、输入路径与结果行一致。复用 398 个原预测及 397 个原评分，未新增源模型训练。
+
+MoPC 为论文原作者 attentionResNet 及原生 directAC 配方，模型与输入适配口径见上文。此状态仅表示 MoPC 原 Group1 预测评分完成；R42 的 MIX 全 K/N 对照仍在执行，整体对比及 +5pp 结论尚待 R42 独立评分。详见 [完成核查](completion_summary.json)。
