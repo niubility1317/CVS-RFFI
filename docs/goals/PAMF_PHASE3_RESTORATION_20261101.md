@@ -169,3 +169,9 @@ raw clean86.538690%，各景门槛83.538690%。PHY-MSAT六景依次79.983929/76.
 `20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01`，执行ca5cf38aff632f4f037b15f056a320a5a0b88509。原Ls128/Us384固定512包×20 R07 draw=10240实例，冻结原F0与PHY-MSAT final30，0TX/V/OE/novel/目标/更新；blind/真实H/真实noise/二者同时替换全部完成。真实source2 smoke的blind逐点等于原G，原源面板/实际variance与20draw日志核对，独立汇总差0；全部进程退出，登记ANALYZED。
 
 全体Fclean一致率97.509766%→真实H97.714844%（净21）；低档城区90.250696%→真实H91.643454%（修复38/损伤18/净20），仅真实noise净2，同时替换净14。真实H仍有可检验收益，但收益不是独立部件贡献之和：替换也改变学习先验的context与迭代输入。来源为训练源分布，Fclean一致率不是真TX准确率、Main泛化或理论恢复成数；20draw相关，不能当作10240独立包。默认DURA与性能主目标ACTIVE保持，OE仍仅冻结诊断。
+
+## 未限幅源特征指导候选已运行（2026-11-01）
+
+`20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01`，实际代码`940fa78ba450b686b1b03c7530c47af4360faafc`。相对固定已完成VarF r03，只移除每记录F特征输入梯度相对IQ的0.5限幅，原.1(cos+源方差标准化特征MSE)、IQ+.05STFT、全局参数clip1、MSAT4249922参数、同scratch初值/源R07/order/LR/30轮7410保持。非F-free，原F0源特征冻结，不读TX/logit/CE、不另训头；OE仍仅冻结诊断，V/OE/目标不训练或选模。依据为源端限制活跃及源反事实的剩余特征误差，并不预先证明扩大梯度有效。
+
+3项针对性检查、一次P0/P1与真实源2条F0/G梯度/E0重载PASS；首轮247更新完成，E01模型/优化器/RNG独立CPU读回PASS。GPU4以原2个compute和22583MiB余量准入，仅新增本任务1个；其他owner保持。固定final30后自动原Main两总体168000×七景，所有预测完成后独立truth-last，不以源好坏取消测试；六景3pp+clean、性能主线/效率支线与默认DURA不变。当前正式性能PENDING，完整目标ACTIVE。
