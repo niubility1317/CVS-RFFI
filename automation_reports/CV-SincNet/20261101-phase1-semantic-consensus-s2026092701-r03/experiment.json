@@ -1,0 +1,186 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-semantic-consensus-s2026092701-r03",
+  "group_id": "phase1-semantic-consensus",
+  "display_name": "Phase1 类别一致性恢复网络",
+  "description": "源域训练多候选特征类别预测器，只采用与高置信类别一致的恢复信号，固定后进行 Phase1 地面开发测试。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "source-only",
+    "physical-channel",
+    "semantic-consensus",
+    "expert-router",
+    "truth-last"
+  ],
+  "comparison_group_id": "phase1-trisigtime-frozen-raw-clean",
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261101-phase1-boundary-student-E30-s2026092701-r02",
+    "20261101-phase1-feature-conditioned-E30-s2026092701-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发不同路线的星地恢复网络，只看 Phase1 地面训练测试、使用 Tri-SIG-TIME SSL；六场景下降不超过 3%，同时核对百分点和相对百分比口径。",
+  "code": {
+    "commit": "ec534e9f460ad87d5d9c7a408060f019356943e9",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch, FP32, TF32 off; original Phase1 Tri-SIG-TIME immutable release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-semantic-consensus-s2026092701-r03-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/semantic_consensus_experiment.py",
+      "experiments/pamf_phase1_flow/semantic_consensus_controller.py",
+      "experiments/pamf_phase1_flow/semantic_consensus_worker.py",
+      "experiments/pamf_phase1_flow/semantic_consensus_weights.json"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Phase1 physical-channel source IQ and frozen expert probabilities, embeddings and spectra",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Six Phase1 transmitter classes; L_s labels only, U_s teacher pseudo-labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Six original classes; L_s labels and high-confidence U_s clean-teacher pseudo-labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "L_s true labels; U_s teacher pseudo-labels with clean confidence >=0.95; no U_s labels, V or test IQ",
+    "augmentation": "Source clean and three independently seeded practical residual-channel views, 25 MHz and 2.462 GHz, 30 dB reference SNR, no equalization"
+  },
+  "permissions": {
+    "regime": "Phase1 L_s true labels, U_s clean teacher pseudo-labels and source IQ only; no V/test during source training",
+    "query_use": "Frozen per-record received IQ and frozen expert/F outputs only; no clean or label at inference",
+    "external_method_exception": null,
+    "claim_scope": "Previously observed single-seed Phase1 development test, not blind"
+  },
+  "checkpoint": {
+    "initialization": "Frozen DURA, Tri-SIG-TIME SSL, source-trained boundary/feature experts and 698-256-6 source semantic consensus model",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-boundary-student-E30-s2026092701-r02/flow/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-feature-conditioned-E30-s2026092701-r02/flow/final.pt",
+      "experiments/pamf_phase1_flow/semantic_consensus_weights.json"
+    ],
+    "contract_check_ref": "Frozen F/DURA provenance and exact expert checkpoint and source router asset SHA-256",
+    "provenance_verdict": "Four frozen experts; source semantic model uses L_s labels and U_s teacher pseudo-labels",
+    "selection_rule": "Source validation epoch 20, confidence >=0.9; if class differs from DURA select matching feature, boundary, then raw expert; otherwise DURA"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-semantic-consensus",
+    "gpu_policy": "CPU real-weight source smoke; shared lock, at most two same-user restoration GPU workers and two same-user compute processes per GPU, >=12000 MB; GPU B128 source smoke then fixed seven-view predictions",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-semantic-consensus-s2026092701-r03",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-semantic-consensus-s2026092701-r03/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-phase1-semantic-consensus-s2026092701-r03",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.semantic_consensus_controller --root /home/szu2070436088/2510044040/CV-SincNet --commit ec534e9f460ad87d5d9c7a408060f019356943e9",
+    "stop_rule": "Source/model mismatch, smoke failure, nonfinite output, resource ambiguity or incomplete predictions preserves artifacts; no automatic retry or performance-based stop"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "gpu_smoke.json",
+    "submitted.json",
+    "logs/{smoke,worker,gpu_smoke,predict,score}.log",
+    "flow/{choice_counts.json,test_prediction,test_summary.json}",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Tri-SIG-TIME raw clean, per-scene raw and restored accuracy, macro F1 and clean-relative gap",
+      "per-TX, RX, day accuracy"
+    ],
+    "dimensions": [
+      "168000 Phase1 ground test physical records x seven views",
+      "TX/RX/day and six practical scenes"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-semantic-consensus-s2026092701-r03/flow/test_prediction",
+    "scorer_ref": "independent CPU experiments.pamf_phase1_flow.semantic_consensus_experiment score",
+    "targets_ref": "Each of six restored practical scenes within 3 percentage points of same reader raw clean; restored clean degradation at most 1 percentage point"
+  },
+  "notes": [
+    "输入为四专家类别概率、原始与 DURA 对数能量、四个冻结 Tri-SIG-TIME SSL 归一化中间向量及原始/残差频谱，共 698 维；类别预测器 698–256–6。",
+    "源域用 L_s 真标签和 U_s 高置信 clean 教师伪标签；源信道模拟不等于已验证的真实卫星链路。",
+    "源验证固定 epoch 20、类别置信度 0.9；源留出每视图 1596 条有效记录，三个视图分别净修复 6、5、21 条，干净混合目标不变。先前探针的源记录可能重叠，基础专家见过源记录。",
+    "测试只读取每条 Phase1 接收 IQ；全部七视图预测固定后才读取 TX 真值。",
+    "方案受先前已观察的 Phase1 测试结果启发；本轮测试非独立盲测，同时报告百分点与相对百分比下降。"
+  ],
+  "rows": [
+    {
+      "row_id": "flow",
+      "method": "Source semantic-consensus router with frozen classifier embeddings and spectra",
+      "purpose": "Select an expert only when its frozen classifier agrees with a high-confidence source-trained class estimate",
+      "config_ref": "experiments/pamf_phase1_flow/semantic_consensus_weights.json",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/semantic_consensus_experiment.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110255,
+        "split": 2026110252,
+        "data": 2026110251,
+        "augmentation": 2026110253,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source sampling 2026110251, split 2026110252, physical channel 2026110253, RX/day hardware 2026110254, model 2026110255, fitting order 2026110256; fixed original Phase1 test views",
+      "k": null,
+      "scenario": "Source clean and independent practical low-suburban/mid-urban/low-urban views; fixed Phase1 clean and six practical received views",
+      "optimizer": "AdamW (completed source training)",
+      "lr": 0.0003,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Source validation selects epoch 20 and confidence 0.9; no target-time updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-semantic-consensus-s2026092701-r03/flow",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-semantic-consensus-s2026092701-r03/logs/predict.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.semantic_consensus_controller --root /home/szu2070436088/2510044040/CV-SincNet --commit ec534e9f460ad87d5d9c7a408060f019356943e9",
+      "expected_artifacts": [
+        "smoke.json",
+        "gpu_smoke.json",
+        "submitted.json",
+        "logs/{smoke,worker,gpu_smoke,predict,score}.log",
+        "flow/{choice_counts.json,test_prediction,test_summary.json}",
+        "complete.json"
+      ]
+    }
+  ],
+  "registered_at": "2026-11-01T10:45:14+00:00"
+}
