@@ -1,0 +1,711 @@
+{
+  "actual_training_code": "1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6",
+  "kind": "static_dense_MAC_accounting_not_latency",
+  "G_parameters": 5481223,
+  "physical_parameters": 1230341,
+  "detail_parameters": 4250882,
+  "FP32_state_bytes": 22977820,
+  "source_prior_buffer_bytes": 1050624,
+  "estimator_FP32_MAC": 176636032,
+  "detail_FP32_MAC": 260374528,
+  "learned_FP32_MAC": 437010560,
+  "dense_posterior_FP64_MAC": 269221888,
+  "core_mixed_precision_MAC_subtotal": 706232448,
+  "Cholesky_approx_FP64_FLOPs": 44739242.666666664,
+  "triangular_solve_approx_FP64_FLOPs": 524288,
+  "FFT_count": 2,
+  "FFT_length": 256,
+  "CG_steps": 0,
+  "prior_calls": 1,
+  "neural_module_calls": [
+    {
+      "module": "physical.time_patch",
+      "kind": "Conv1d",
+      "real_MAC": 163840,
+      "input_shape": [
+        1,
+        5,
+        256
+      ]
+    },
+    {
+      "module": "physical.frequency_patch",
+      "kind": "Conv1d",
+      "real_MAC": 163840,
+      "input_shape": [
+        1,
+        5,
+        256
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.0.self_attn",
+      "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+      "real_MAC": 12582912,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.0.linear1",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.0.linear2",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        512
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.1.self_attn",
+      "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+      "real_MAC": 12582912,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.1.linear1",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.1.linear2",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        512
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.2.self_attn",
+      "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+      "real_MAC": 12582912,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.2.linear1",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.2.linear2",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        512
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.3.self_attn",
+      "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+      "real_MAC": 12582912,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.3.linear1",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.3.linear2",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        512
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.4.self_attn",
+      "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+      "real_MAC": 12582912,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.4.linear1",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.4.linear2",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        512
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.5.self_attn",
+      "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+      "real_MAC": 12582912,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.5.linear1",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "physical.encoder.layers.5.linear2",
+      "kind": "Linear",
+      "real_MAC": 8388608,
+      "input_shape": [
+        1,
+        128,
+        512
+      ]
+    },
+    {
+      "module": "physical.kernel_head",
+      "kind": "Linear",
+      "real_MAC": 16384,
+      "input_shape": [
+        1,
+        128
+      ]
+    },
+    {
+      "module": "physical.coefficient_head",
+      "kind": "ConvTranspose1d",
+      "real_MAC": 131072,
+      "input_shape": [
+        1,
+        128,
+        64
+      ]
+    },
+    {
+      "module": "physical.noise_head",
+      "kind": "Linear",
+      "real_MAC": 128,
+      "input_shape": [
+        1,
+        128
+      ]
+    },
+    {
+      "module": "detail.stem",
+      "kind": "Conv1d",
+      "real_MAC": 491520,
+      "input_shape": [
+        1,
+        6,
+        256
+      ]
+    },
+    {
+      "module": "detail.encoders.0.0.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 3145728,
+      "input_shape": [
+        1,
+        64,
+        256
+      ]
+    },
+    {
+      "module": "detail.encoders.0.0.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 3145728,
+      "input_shape": [
+        1,
+        64,
+        256
+      ]
+    },
+    {
+      "module": "detail.encoders.0.1.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 3145728,
+      "input_shape": [
+        1,
+        64,
+        256
+      ]
+    },
+    {
+      "module": "detail.encoders.0.1.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 3145728,
+      "input_shape": [
+        1,
+        64,
+        256
+      ]
+    },
+    {
+      "module": "detail.down.0",
+      "kind": "Conv1d",
+      "real_MAC": 4194304,
+      "input_shape": [
+        1,
+        64,
+        256
+      ]
+    },
+    {
+      "module": "detail.encoders.1.0.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 6291456,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "detail.encoders.1.0.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 6291456,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "detail.encoders.1.1.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 6291456,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "detail.encoders.1.1.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 6291456,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "detail.down.1",
+      "kind": "Conv1d",
+      "real_MAC": 6291456,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "detail.encoders.2.0.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 7077888,
+      "input_shape": [
+        1,
+        192,
+        64
+      ]
+    },
+    {
+      "module": "detail.encoders.2.0.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 7077888,
+      "input_shape": [
+        1,
+        192,
+        64
+      ]
+    },
+    {
+      "module": "detail.encoders.2.1.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 7077888,
+      "input_shape": [
+        1,
+        192,
+        64
+      ]
+    },
+    {
+      "module": "detail.encoders.2.1.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 7077888,
+      "input_shape": [
+        1,
+        192,
+        64
+      ]
+    },
+    {
+      "module": "detail.down.2",
+      "kind": "Conv1d",
+      "real_MAC": 6291456,
+      "input_shape": [
+        1,
+        192,
+        64
+      ]
+    },
+    {
+      "module": "detail.bottleneck.0.attention",
+      "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+      "real_MAC": 8912896,
+      "input_shape": [
+        1,
+        32,
+        256
+      ]
+    },
+    {
+      "module": "detail.bottleneck.0.ff.1",
+      "kind": "Linear",
+      "real_MAC": 4194304,
+      "input_shape": [
+        1,
+        32,
+        256
+      ]
+    },
+    {
+      "module": "detail.bottleneck.0.ff.3",
+      "kind": "Linear",
+      "real_MAC": 4194304,
+      "input_shape": [
+        1,
+        32,
+        512
+      ]
+    },
+    {
+      "module": "detail.bottleneck.1.attention",
+      "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+      "real_MAC": 8912896,
+      "input_shape": [
+        1,
+        32,
+        256
+      ]
+    },
+    {
+      "module": "detail.bottleneck.1.ff.1",
+      "kind": "Linear",
+      "real_MAC": 4194304,
+      "input_shape": [
+        1,
+        32,
+        256
+      ]
+    },
+    {
+      "module": "detail.bottleneck.1.ff.3",
+      "kind": "Linear",
+      "real_MAC": 4194304,
+      "input_shape": [
+        1,
+        32,
+        512
+      ]
+    },
+    {
+      "module": "detail.bottleneck.2.attention",
+      "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+      "real_MAC": 8912896,
+      "input_shape": [
+        1,
+        32,
+        256
+      ]
+    },
+    {
+      "module": "detail.bottleneck.2.ff.1",
+      "kind": "Linear",
+      "real_MAC": 4194304,
+      "input_shape": [
+        1,
+        32,
+        256
+      ]
+    },
+    {
+      "module": "detail.bottleneck.2.ff.3",
+      "kind": "Linear",
+      "real_MAC": 4194304,
+      "input_shape": [
+        1,
+        32,
+        512
+      ]
+    },
+    {
+      "module": "detail.bottleneck.3.attention",
+      "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+      "real_MAC": 8912896,
+      "input_shape": [
+        1,
+        32,
+        256
+      ]
+    },
+    {
+      "module": "detail.bottleneck.3.ff.1",
+      "kind": "Linear",
+      "real_MAC": 4194304,
+      "input_shape": [
+        1,
+        32,
+        256
+      ]
+    },
+    {
+      "module": "detail.bottleneck.3.ff.3",
+      "kind": "Linear",
+      "real_MAC": 4194304,
+      "input_shape": [
+        1,
+        32,
+        512
+      ]
+    },
+    {
+      "module": "detail.up.0",
+      "kind": "Conv1d",
+      "real_MAC": 16515072,
+      "input_shape": [
+        1,
+        448,
+        64
+      ]
+    },
+    {
+      "module": "detail.decoders.0.0.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 7077888,
+      "input_shape": [
+        1,
+        192,
+        64
+      ]
+    },
+    {
+      "module": "detail.decoders.0.0.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 7077888,
+      "input_shape": [
+        1,
+        192,
+        64
+      ]
+    },
+    {
+      "module": "detail.decoders.0.1.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 7077888,
+      "input_shape": [
+        1,
+        192,
+        64
+      ]
+    },
+    {
+      "module": "detail.decoders.0.1.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 7077888,
+      "input_shape": [
+        1,
+        192,
+        64
+      ]
+    },
+    {
+      "module": "detail.up.1",
+      "kind": "Conv1d",
+      "real_MAC": 15728640,
+      "input_shape": [
+        1,
+        320,
+        128
+      ]
+    },
+    {
+      "module": "detail.decoders.1.0.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 6291456,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "detail.decoders.1.0.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 6291456,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "detail.decoders.1.1.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 6291456,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "detail.decoders.1.1.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 6291456,
+      "input_shape": [
+        1,
+        128,
+        128
+      ]
+    },
+    {
+      "module": "detail.up.2",
+      "kind": "Conv1d",
+      "real_MAC": 9437184,
+      "input_shape": [
+        1,
+        192,
+        256
+      ]
+    },
+    {
+      "module": "detail.decoders.2.0.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 3145728,
+      "input_shape": [
+        1,
+        64,
+        256
+      ]
+    },
+    {
+      "module": "detail.decoders.2.0.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 3145728,
+      "input_shape": [
+        1,
+        64,
+        256
+      ]
+    },
+    {
+      "module": "detail.decoders.2.1.core.2",
+      "kind": "Conv1d",
+      "real_MAC": 3145728,
+      "input_shape": [
+        1,
+        64,
+        256
+      ]
+    },
+    {
+      "module": "detail.decoders.2.1.core.5",
+      "kind": "Conv1d",
+      "real_MAC": 3145728,
+      "input_shape": [
+        1,
+        64,
+        256
+      ]
+    },
+    {
+      "module": "detail.output",
+      "kind": "Conv1d",
+      "real_MAC": 98304,
+      "input_shape": [
+        1,
+        64,
+        256
+      ]
+    }
+  ],
+  "exclusions": [
+    "bias-add",
+    "GroupNorm/LayerNorm reductions andaffine",
+    "SiLU/GELU/softmax/attention-scaling",
+    "interpolation",
+    "FFT arithmetic",
+    "dense_action_build andpointwise IQ operations",
+    "sourceF0notdeployed"
+  ],
+  "counting_convention": "One realmultiply-accumulate=1MAC;densepaddedConv1d convention;ConvTranspose uses input elements x outchannels xkernel (no overlap doublecount). Attentionincludes QKV/outprojection andQK/AV;childoutprojection excluded fromLinear hooks.",
+  "counting_input": "SyntheticzeroIQ B1/2x256,zero3channelcontext;no source/target data ortrainedcheckpoint loaded. BackendMHAfastpath disabledonlyin thislocalcounter toobserve modules;runningN607release unchanged.",
+  "measurement_environment_torch": "2.10.0+cu128",
+  "latency_measured": false,
+  "quality_evaluation": false,
+  "training_or_model_updates": 0,
+  "source_IQ_reads": 0,
+  "target_IQ_reads": 0,
+  "truth_reads": 0,
+  "state_unchanged": true,
+  "static_MAC_not_full_FLOPs": true,
+  "actual_final30_latency_pending": true
+}
