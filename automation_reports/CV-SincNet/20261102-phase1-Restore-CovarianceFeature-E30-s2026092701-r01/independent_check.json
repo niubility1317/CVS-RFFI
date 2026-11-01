@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "run_id": "20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01",
+  "coverage": {
+    "TF_CovarianceFeature": {
+      "cross_rx": 126000,
+      "cross_both": 42000
+    }
+  },
+  "prediction_cells_checked": 42,
+  "score_groups": 1302,
+  "raw_pairs": 868,
+  "baseline_decision_differences": 0,
+  "max_abs_metric_error": 1.2434497875801753e-14,
+  "epoch_recovery_files": 30,
+  "E01_E30_states_checked": true,
+  "final_matches_E30_recovery": true,
+  "matched_CovarianceMAP_source_orders_and_draws": true,
+  "actual_scratch_E0_source_prior_FP32_buffers_and_operator_training_checked": true,
+  "actual_posterior_F0_guided_training_checked": true,
+  "all_epoch_weighted_loss_max_abs_error": 1.0844252162911516e-09,
+  "source_epochs_checked": 30,
+  "source_update_budget": 7410,
+  "all_score_group_key_coverage_checked": true,
+  "neural_forwards": 0,
+  "optimizer_updates": 0,
+  "all_predictions_checked_before_truth": true
+}

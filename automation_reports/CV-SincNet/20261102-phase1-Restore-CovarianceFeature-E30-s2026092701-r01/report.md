@@ -1,9 +1,11 @@
 # 物理后验的源特征指导：同初值单阶段30轮、首微批采样
 
+**六景 1/6，clean 86.742857%。** cross_rx clean 净变化 +377，cross_both 净变化 -34。完整主性能目标仍未达到；目标 ACTIVE，默认 DURA 保持。[完整结果](analysis.md)。
+
 - run_id：`20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01`
 - group_id：`restoration-covariance-actual-IQ-feature-guidance`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（真实源2与E01训练已核实）
+- 当前登记状态：ANALYZED（完整 Main 预测、评分与复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原 Main 168000×七景完整，六景 1/6，两个 clean 总体存在损伤，详见 analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -55,3 +57,8 @@ E01 独立 CPU 检查 PASS：实际全部 E0 张量（包括源 mu/C）与固定
 ## 固定单阶段30轮训练已核实
 
 VERIFIED / TRAINING_COMPLETE。独立CPU核实全部30轮/7410更新，原训练进程exit0，固定最终权重已产生，Main预测已自动启动。训练2813.737786秒，峰值allocated显存1549.052MiB；额外后验/F0累计236880条，实际不同包覆盖61862/63000。源顺序/draw/LR、完整日志/stdout、采样角色曝光/覆盖、步归一化、prior不变与E30-final核实PASS，复用E01控制初值/顺序证据。详见[source训练结案](source_training_completion.md)。当前正式七景尚未完成，不以源拟合代替性能结论；默认DURA保持。
+
+
+## 原 Main 完整七景结果已核实
+
+VERIFIED / ANALYZED。42单元/1302组/868raw配对/434DURA配对/434物理对照配对/434clean配对独立复算，最大指标差1.24e-14、raw/DURA判决差0，分组key全覆盖无重复。完整源30/7410、采样角色曝光/覆盖、步归一化、全部日志/stdout/顺序/draw/LR、prior与E30-final核实，E01控制匹配证据复用。4阶段exit0/liveempty，全部prediction先于独立CPU truth-last。完整主性能目标仍未达到；目标 ACTIVE，默认 DURA 保持。

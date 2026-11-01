@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ARTIFACTS_COMPLETE",
   "actual_code_commit": "5359a1b82b1fa5d640a394c3e3a77ce3b945fe1e",
   "physical_GPU": 4,
   "admitted_free_MiB": 24110,
@@ -73,5 +73,11 @@
     },
     "new_neural_forwards": 0,
     "new_IQ_or_truth_reads": 0
-  }
+  },
+  "Main_scoring_complete": true,
+  "all_owned_run_processes_ended": true,
+  "independent_Main_check": "PASS",
+  "independent_source_check": "PASS",
+  "scenes_passing_3pp": 1,
+  "clean_preserved_each_population": false
 }
