@@ -1,0 +1,661 @@
+{
+  "status": "SOURCE_ONLY_SHIFT_ORBIT_PROBE",
+  "source_records": 512,
+  "source_views": [
+    "clean_raw",
+    "clean_dura",
+    1,
+    20
+  ],
+  "shifts_samples": [
+    0,
+    -1,
+    1,
+    -2,
+    2,
+    -4,
+    4,
+    -8,
+    8
+  ],
+  "rules": [
+    "soft_mean",
+    "majority",
+    "max_confidence"
+  ],
+  "selector_source_sha256": "94220aa9c6c9be613f3c04f83c1b1c0ad00d639d2fde908138bdb7275708b1ff",
+  "shift_source_sha256": "1446fd2d446582c800a18ea0f3878b9a8ae94063a9197feca13a89d2e6830067",
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "source_L_s_labels_materialized": 6300,
+  "source_L_s_labels_scored": 128,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "all_candidate_predictions_before_source_labels": true,
+  "clean_raw_bypasses_DURA": true,
+  "clean_dura_uses_DURA": true,
+  "results": [
+    {
+      "view": "clean_raw",
+      "groups": [
+        {
+          "group": "all",
+          "rule": "soft_mean",
+          "shifted": 1,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 512,
+            "before": 512,
+            "after": 511,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "all",
+          "rule": "majority",
+          "shifted": 2,
+          "decision_changes": 2,
+          "clean_teacher": {
+            "count": 512,
+            "before": 512,
+            "after": 510,
+            "repairs": 0,
+            "damages": 2
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "all",
+          "rule": "max_confidence",
+          "shifted": 201,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 512,
+            "before": 512,
+            "after": 511,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "soft_mean",
+          "shifted": 1,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "majority",
+          "shifted": 1,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "max_confidence",
+          "shifted": 50,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        }
+      ]
+    },
+    {
+      "view": "clean_dura",
+      "groups": [
+        {
+          "group": "all",
+          "rule": "soft_mean",
+          "shifted": 1,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 512,
+            "before": 512,
+            "after": 511,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "all",
+          "rule": "majority",
+          "shifted": 2,
+          "decision_changes": 2,
+          "clean_teacher": {
+            "count": 512,
+            "before": 512,
+            "after": 510,
+            "repairs": 0,
+            "damages": 2
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "all",
+          "rule": "max_confidence",
+          "shifted": 202,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 512,
+            "before": 512,
+            "after": 511,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "soft_mean",
+          "shifted": 1,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "majority",
+          "shifted": 1,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "max_confidence",
+          "shifted": 50,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 127,
+            "repairs": 0,
+            "damages": 1
+          }
+        }
+      ]
+    },
+    {
+      "view": "01",
+      "groups": [
+        {
+          "group": "all",
+          "rule": "soft_mean",
+          "shifted": 9,
+          "decision_changes": 9,
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 484,
+            "repairs": 1,
+            "damages": 8
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 121,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "group": "all",
+          "rule": "majority",
+          "shifted": 9,
+          "decision_changes": 9,
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 482,
+            "repairs": 0,
+            "damages": 9
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 121,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "group": "all",
+          "rule": "max_confidence",
+          "shifted": 220,
+          "decision_changes": 12,
+          "clean_teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 479,
+            "repairs": 0,
+            "damages": 12
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 120,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "soft_mean",
+          "shifted": 0,
+          "decision_changes": 0,
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 121,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 121,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "majority",
+          "shifted": 0,
+          "decision_changes": 0,
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 121,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 121,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "max_confidence",
+          "shifted": 49,
+          "decision_changes": 1,
+          "clean_teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 120,
+            "repairs": 0,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 120,
+            "repairs": 0,
+            "damages": 1
+          }
+        },
+        {
+          "group": "blocked",
+          "rule": "soft_mean",
+          "shifted": 5,
+          "decision_changes": 5,
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 62,
+            "repairs": 1,
+            "damages": 4
+          },
+          "L_s_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 15,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "group": "blocked",
+          "rule": "majority",
+          "shifted": 6,
+          "decision_changes": 6,
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 59,
+            "repairs": 0,
+            "damages": 6
+          },
+          "L_s_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 15,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "group": "blocked",
+          "rule": "max_confidence",
+          "shifted": 50,
+          "decision_changes": 5,
+          "clean_teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 60,
+            "repairs": 0,
+            "damages": 5
+          },
+          "L_s_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 14,
+            "repairs": 0,
+            "damages": 1
+          }
+        }
+      ]
+    },
+    {
+      "view": "20",
+      "groups": [
+        {
+          "group": "all",
+          "rule": "soft_mean",
+          "shifted": 5,
+          "decision_changes": 5,
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 492,
+            "repairs": 2,
+            "damages": 2
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 1,
+            "damages": 1
+          }
+        },
+        {
+          "group": "all",
+          "rule": "majority",
+          "shifted": 3,
+          "decision_changes": 3,
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 493,
+            "repairs": 2,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 1,
+            "damages": 1
+          }
+        },
+        {
+          "group": "all",
+          "rule": "max_confidence",
+          "shifted": 228,
+          "decision_changes": 9,
+          "clean_teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 490,
+            "repairs": 3,
+            "damages": 5
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 124,
+            "repairs": 1,
+            "damages": 2
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "soft_mean",
+          "shifted": 2,
+          "decision_changes": 2,
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 1,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 1,
+            "damages": 1
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "majority",
+          "shifted": 2,
+          "decision_changes": 2,
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 1,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 1,
+            "damages": 1
+          }
+        },
+        {
+          "group": "L_s",
+          "rule": "max_confidence",
+          "shifted": 62,
+          "decision_changes": 3,
+          "clean_teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 124,
+            "repairs": 1,
+            "damages": 2
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 124,
+            "repairs": 1,
+            "damages": 2
+          }
+        },
+        {
+          "group": "blocked",
+          "rule": "soft_mean",
+          "shifted": 4,
+          "decision_changes": 4,
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 49,
+            "repairs": 2,
+            "damages": 1
+          },
+          "L_s_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 14,
+            "repairs": 1,
+            "damages": 0
+          }
+        },
+        {
+          "group": "blocked",
+          "rule": "majority",
+          "shifted": 2,
+          "decision_changes": 2,
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 50,
+            "repairs": 2,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 14,
+            "repairs": 1,
+            "damages": 0
+          }
+        },
+        {
+          "group": "blocked",
+          "rule": "max_confidence",
+          "shifted": 37,
+          "decision_changes": 7,
+          "clean_teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 48,
+            "repairs": 3,
+            "damages": 3
+          },
+          "L_s_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 13,
+            "repairs": 1,
+            "damages": 1
+          }
+        }
+      ]
+    }
+  ],
+  "caveat": "Source training records, not independent test. Clean teacher agreement differs from TX accuracy; cyclic shifts preserve energy but wrap window boundaries and may change IQ fidelity."
+}
