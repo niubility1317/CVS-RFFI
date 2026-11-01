@@ -1,0 +1,2763 @@
+{
+  "status": "DIFFUSION_SOURCE_PATH_COMPLETE",
+  "run_id": "20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01",
+  "code_commit": "1a7434baa2c579e78fc1119cb09c24a0ae6512b4",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "parent_G_commit": "5e5921c975678367a5d0a00ee72d4619e5f6927e",
+  "source_packets": 512,
+  "source_draws": 20,
+  "source_cases": 10240,
+  "path_rows": 92160,
+  "summary": [
+    {
+      "step": 0,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 1.7049953988404014,
+        "feature_cosine_distance": 0.0648153595335316,
+        "feature_standardized_mse": 0.4964905127817512,
+        "clean_decision_agreement": 0.85849609375,
+        "complex_power": 0.9999999938416295,
+        "output_power_abs_error": 7.55535438656807e-09,
+        "change_from_first_nmse": 1.4879865436810178
+      },
+      "paired_against_first": {
+        "repairs": 537,
+        "damage": 469,
+        "net": 68
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.0,
+        "feature_cosine_distance": 9.512584220011677e-09,
+        "feature_standardized_mse": 2.4993957694590692e-14,
+        "clean_decision_agreement": 1.0,
+        "complex_power": 0.9999999901476806,
+        "output_power_abs_error": 1.6496028984702787e-08,
+        "change_from_first_nmse": 0.005051182387744686
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 0,
+        "net": 10
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 2.0190854481908938,
+        "feature_cosine_distance": 0.04103221326084845,
+        "feature_standardized_mse": 0.33868733657747196,
+        "clean_decision_agreement": 0.9593552908199019,
+        "complex_power": 0.9999999944446968,
+        "output_power_abs_error": 5.8894568418570974e-09,
+        "change_from_first_nmse": 1.8693437111298354
+      },
+      "paired_against_first": {
+        "repairs": 39,
+        "damage": 30,
+        "net": 9
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 2.0223134939041403,
+        "feature_cosine_distance": 0.052498351078894404,
+        "feature_standardized_mse": 0.4211670346506354,
+        "clean_decision_agreement": 0.9034722222222222,
+        "complex_power": 0.9999999947018093,
+        "output_power_abs_error": 5.794896019829644e-09,
+        "change_from_first_nmse": 1.8268830083828005
+      },
+      "paired_against_first": {
+        "repairs": 56,
+        "damage": 54,
+        "net": 2
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 2.0173382521489374,
+        "feature_cosine_distance": 0.05812690388220569,
+        "feature_standardized_mse": 0.4680704580333859,
+        "clean_decision_agreement": 0.9119453924914676,
+        "complex_power": 0.999999994466736,
+        "output_power_abs_error": 6.184236181473976e-09,
+        "change_from_first_nmse": 1.8230669678783253
+      },
+      "paired_against_first": {
+        "repairs": 49,
+        "damage": 55,
+        "net": -6
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 2.0060940851408127,
+        "feature_cosine_distance": 0.14836848832272553,
+        "feature_standardized_mse": 1.0947803479663425,
+        "clean_decision_agreement": 0.5905292479108635,
+        "complex_power": 0.9999999943964992,
+        "output_power_abs_error": 6.1015896810462545e-09,
+        "change_from_first_nmse": 1.5339115955309117
+      },
+      "paired_against_first": {
+        "repairs": 167,
+        "damage": 156,
+        "net": 11
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 2.014776346336478,
+        "feature_cosine_distance": 0.04895364720063068,
+        "feature_standardized_mse": 0.40712115440186303,
+        "clean_decision_agreement": 0.9211590296495957,
+        "complex_power": 0.9999999941359312,
+        "output_power_abs_error": 6.024728245490966e-09,
+        "change_from_first_nmse": 1.8495687220617125
+      },
+      "paired_against_first": {
+        "repairs": 68,
+        "damage": 61,
+        "net": 7
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 2.015405801782547,
+        "feature_cosine_distance": 0.11263193531692917,
+        "feature_standardized_mse": 0.8036053214060913,
+        "clean_decision_agreement": 0.7033356990773598,
+        "complex_power": 0.9999999949659668,
+        "output_power_abs_error": 5.541666760522478e-09,
+        "change_from_first_nmse": 1.6412287010547537
+      },
+      "paired_against_first": {
+        "repairs": 148,
+        "damage": 113,
+        "net": 35
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 2.0072829094686004,
+        "feature_cosine_distance": 0.16276701538186325,
+        "feature_standardized_mse": 1.0716400993654602,
+        "clean_decision_agreement": 0.5442105263157895,
+        "complex_power": 0.9999999950434032,
+        "output_power_abs_error": 5.458530626798931e-09,
+        "change_from_first_nmse": 1.4745419730481348
+      },
+      "paired_against_first": {
+        "repairs": 159,
+        "damage": 145,
+        "net": 14
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 2.0198108152039214,
+        "feature_cosine_distance": 0.0421445294766363,
+        "feature_standardized_mse": 0.35036532537032156,
+        "clean_decision_agreement": 0.9568291215403129,
+        "complex_power": 0.9999999944501692,
+        "output_power_abs_error": 5.980189239648849e-09,
+        "change_from_first_nmse": 1.8745135393836474
+      },
+      "paired_against_first": {
+        "repairs": 182,
+        "damage": 174,
+        "net": 8
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.0,
+        "feature_cosine_distance": 9.512584220011677e-09,
+        "feature_standardized_mse": 2.4993957694590692e-14,
+        "clean_decision_agreement": 1.0,
+        "complex_power": 0.9999999901476806,
+        "output_power_abs_error": 1.6496028984702787e-08,
+        "change_from_first_nmse": 0.005051182387744686
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 0,
+        "net": 10
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 0,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 1.9986188341061797,
+        "feature_cosine_distance": 0.2153375070832971,
+        "feature_standardized_mse": 1.6338439072681168,
+        "clean_decision_agreement": 0.3142050799623706,
+        "complex_power": 0.9999999944488619,
+        "output_power_abs_error": 5.999714949169141e-09,
+        "change_from_first_nmse": 1.2854426209644
+      },
+      "paired_against_first": {
+        "repairs": 186,
+        "damage": 150,
+        "net": 36
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.10964562646959167,
+        "feature_cosine_distance": 0.04255543309263885,
+        "feature_standardized_mse": 0.35901628757665094,
+        "clean_decision_agreement": 0.85185546875,
+        "complex_power": 0.8846158292522887,
+        "output_power_abs_error": 0.11554186182911508,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 469,
+        "damage": 537,
+        "net": -68
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.005051182387744686,
+        "feature_cosine_distance": 0.00257266028309412,
+        "feature_standardized_mse": 0.029931239345529135,
+        "clean_decision_agreement": 0.993666877770741,
+        "complex_power": 0.9491015257451865,
+        "output_power_abs_error": 0.0508984742548135,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 10,
+        "net": -10
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.06689848506088306,
+        "feature_cosine_distance": 0.020785265981357416,
+        "feature_standardized_mse": 0.21232723563089811,
+        "clean_decision_agreement": 0.9530483531885073,
+        "complex_power": 0.9367166256979786,
+        "output_power_abs_error": 0.06351682048789588,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 30,
+        "damage": 39,
+        "net": -9
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.0916977409622632,
+        "feature_cosine_distance": 0.03253929275605413,
+        "feature_standardized_mse": 0.30376706857932734,
+        "clean_decision_agreement": 0.9020833333333333,
+        "complex_power": 0.9073040041037732,
+        "output_power_abs_error": 0.09294752507574028,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 54,
+        "damage": 56,
+        "net": -2
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.09322421007595778,
+        "feature_cosine_distance": 0.03055088007409418,
+        "feature_standardized_mse": 0.2944920006821587,
+        "clean_decision_agreement": 0.9160409556313993,
+        "complex_power": 0.9127881263710126,
+        "output_power_abs_error": 0.08734530385443783,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 55,
+        "damage": 49,
+        "net": 6
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.24803448451195212,
+        "feature_cosine_distance": 0.10855541110536847,
+        "feature_standardized_mse": 0.8214845604452624,
+        "clean_decision_agreement": 0.5828690807799443,
+        "complex_power": 0.7479971596000918,
+        "output_power_abs_error": 0.2521689025306436,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 156,
+        "damage": 167,
+        "net": -11
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.0799440286646916,
+        "feature_cosine_distance": 0.025164480398928702,
+        "feature_standardized_mse": 0.25900989811179653,
+        "clean_decision_agreement": 0.9164420485175202,
+        "complex_power": 0.9260777823044605,
+        "output_power_abs_error": 0.07407374406921254,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 61,
+        "damage": 68,
+        "net": -7
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.19581163011496586,
+        "feature_cosine_distance": 0.08318065975133708,
+        "feature_standardized_mse": 0.6339222961406152,
+        "clean_decision_agreement": 0.6784953867991483,
+        "complex_power": 0.8026717078440404,
+        "output_power_abs_error": 0.1975132611476419,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 113,
+        "damage": 148,
+        "net": -35
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.28034150523182594,
+        "feature_cosine_distance": 0.12247735707383407,
+        "feature_standardized_mse": 0.9087647397345618,
+        "clean_decision_agreement": 0.5294736842105263,
+        "complex_power": 0.7113902569758265,
+        "output_power_abs_error": 0.28863406218980486,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 145,
+        "damage": 159,
+        "net": -14
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.06641985073200372,
+        "feature_cosine_distance": 0.019930883166161685,
+        "feature_standardized_mse": 0.21238178520230297,
+        "clean_decision_agreement": 0.9556257521058965,
+        "complex_power": 0.9389594428949551,
+        "output_power_abs_error": 0.061279975505440384,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 174,
+        "damage": 182,
+        "net": -8
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.005051182387744686,
+        "feature_cosine_distance": 0.00257266028309412,
+        "feature_standardized_mse": 0.029931239345529135,
+        "clean_decision_agreement": 0.993666877770741,
+        "complex_power": 0.9491015257451865,
+        "output_power_abs_error": 0.0508984742548135,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 10,
+        "net": -10
+      }
+    },
+    {
+      "step": 1,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.38279567302142464,
+        "feature_cosine_distance": 0.17201449084932358,
+        "feature_standardized_mse": 1.2735886614163419,
+        "clean_decision_agreement": 0.28033866415804326,
+        "complex_power": 0.6037739058316931,
+        "output_power_abs_error": 0.39622609411223475,
+        "change_from_first_nmse": 0.0
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 150,
+        "damage": 186,
+        "net": -36
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.07882241487013744,
+        "feature_cosine_distance": 0.033435363083845,
+        "feature_standardized_mse": 0.2767457694201312,
+        "clean_decision_agreement": 0.8751953125,
+        "complex_power": 0.9204847145098028,
+        "output_power_abs_error": 0.08177208827692084,
+        "change_from_first_nmse": 0.009297638182927415
+      },
+      "paired_against_first": {
+        "repairs": 315,
+        "damage": 76,
+        "net": 239
+      },
+      "paired_against_received": {
+        "repairs": 574,
+        "damage": 403,
+        "net": 171
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.0044950558777433775,
+        "feature_cosine_distance": 0.0018243917262274832,
+        "feature_standardized_mse": 0.020217562850772332,
+        "clean_decision_agreement": 0.9911336288790373,
+        "complex_power": 0.9541294385052089,
+        "output_power_abs_error": 0.04587056155141356,
+        "change_from_first_nmse": 0.00029376218146625363
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 4,
+        "net": -4
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 14,
+        "net": -14
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.04281535653296934,
+        "feature_cosine_distance": 0.013164495786922163,
+        "feature_standardized_mse": 0.13420582060736735,
+        "clean_decision_agreement": 0.9705676243868255,
+        "complex_power": 0.9665668760259918,
+        "output_power_abs_error": 0.03677879661300756,
+        "change_from_first_nmse": 0.006697119256225692
+      },
+      "paired_against_first": {
+        "repairs": 27,
+        "damage": 2,
+        "net": 25
+      },
+      "paired_against_received": {
+        "repairs": 36,
+        "damage": 20,
+        "net": 16
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.061216817373901396,
+        "feature_cosine_distance": 0.022919470568497975,
+        "feature_standardized_mse": 0.2145995416924254,
+        "clean_decision_agreement": 0.9208333333333333,
+        "complex_power": 0.943020363834997,
+        "output_power_abs_error": 0.05991434136198626,
+        "change_from_first_nmse": 0.00897694667639573
+      },
+      "paired_against_first": {
+        "repairs": 36,
+        "damage": 9,
+        "net": 27
+      },
+      "paired_against_received": {
+        "repairs": 65,
+        "damage": 40,
+        "net": 25
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.06506370464943782,
+        "feature_cosine_distance": 0.021338671303446383,
+        "feature_standardized_mse": 0.20810978706010677,
+        "clean_decision_agreement": 0.9337883959044369,
+        "complex_power": 0.9476631327497268,
+        "output_power_abs_error": 0.05502725998289349,
+        "change_from_first_nmse": 0.007881968274216705
+      },
+      "paired_against_first": {
+        "repairs": 34,
+        "damage": 8,
+        "net": 26
+      },
+      "paired_against_received": {
+        "repairs": 64,
+        "damage": 32,
+        "net": 32
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.18862396651881547,
+        "feature_cosine_distance": 0.0940518895563641,
+        "feature_standardized_mse": 0.7007011036365228,
+        "clean_decision_agreement": 0.6190807799442897,
+        "complex_power": 0.8113100316406625,
+        "output_power_abs_error": 0.19006168028770384,
+        "change_from_first_nmse": 0.019111563375220998
+      },
+      "paired_against_first": {
+        "repairs": 82,
+        "damage": 30,
+        "net": 52
+      },
+      "paired_against_received": {
+        "repairs": 185,
+        "damage": 144,
+        "net": 41
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.054039570276381954,
+        "feature_cosine_distance": 0.016276167851252698,
+        "feature_standardized_mse": 0.170978772733235,
+        "clean_decision_agreement": 0.942722371967655,
+        "complex_power": 0.9580658309944877,
+        "output_power_abs_error": 0.04541273949281225,
+        "change_from_first_nmse": 0.00726078320363652
+      },
+      "paired_against_first": {
+        "repairs": 47,
+        "damage": 8,
+        "net": 39
+      },
+      "paired_against_received": {
+        "repairs": 72,
+        "damage": 40,
+        "net": 32
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.14507951648381054,
+        "feature_cosine_distance": 0.06900931893721636,
+        "feature_standardized_mse": 0.522780680962203,
+        "clean_decision_agreement": 0.7310149041873669,
+        "complex_power": 0.8565049319084524,
+        "output_power_abs_error": 0.14564979330202296,
+        "change_from_first_nmse": 0.015964571549507575
+      },
+      "paired_against_first": {
+        "repairs": 89,
+        "damage": 15,
+        "net": 74
+      },
+      "paired_against_received": {
+        "repairs": 152,
+        "damage": 113,
+        "net": 39
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.20642533636798985,
+        "feature_cosine_distance": 0.10126063905264202,
+        "feature_standardized_mse": 0.7616803813412001,
+        "clean_decision_agreement": 0.608421052631579,
+        "complex_power": 0.7865919574624614,
+        "output_power_abs_error": 0.21394998437479923,
+        "change_from_first_nmse": 0.0237707069207375
+      },
+      "paired_against_first": {
+        "repairs": 97,
+        "damage": 22,
+        "net": 75
+      },
+      "paired_against_received": {
+        "repairs": 183,
+        "damage": 122,
+        "net": 61
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.04327877827319871,
+        "feature_cosine_distance": 0.012039040346438273,
+        "feature_standardized_mse": 0.13223534285356475,
+        "clean_decision_agreement": 0.970517448856799,
+        "complex_power": 0.9683615755061165,
+        "output_power_abs_error": 0.035037163308811535,
+        "change_from_first_nmse": 0.00634915174125715
+      },
+      "paired_against_first": {
+        "repairs": 116,
+        "damage": 17,
+        "net": 99
+      },
+      "paired_against_received": {
+        "repairs": 198,
+        "damage": 107,
+        "net": 91
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.0044950558777433775,
+        "feature_cosine_distance": 0.0018243917262274832,
+        "feature_standardized_mse": 0.020217562850772332,
+        "clean_decision_agreement": 0.9911336288790373,
+        "complex_power": 0.9541294385052089,
+        "output_power_abs_error": 0.04587056155141356,
+        "change_from_first_nmse": 0.00029376218146625363
+      },
+      "paired_against_first": {
+        "repairs": 0,
+        "damage": 4,
+        "net": -4
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 14,
+        "net": -14
+      }
+    },
+    {
+      "step": 2,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.2974811359637208,
+        "feature_cosine_distance": 0.153588199548192,
+        "feature_standardized_mse": 1.1281808330725636,
+        "clean_decision_agreement": 0.34524929444967073,
+        "complex_power": 0.6907459827155744,
+        "output_power_abs_error": 0.30925401734049773,
+        "change_from_first_nmse": 0.02817745264164003
+      },
+      "paired_against_first": {
+        "repairs": 102,
+        "damage": 33,
+        "net": 69
+      },
+      "paired_against_received": {
+        "repairs": 193,
+        "damage": 160,
+        "net": 33
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.060061490428068964,
+        "feature_cosine_distance": 0.026261994813103227,
+        "feature_standardized_mse": 0.21238926012410958,
+        "clean_decision_agreement": 0.9009765625,
+        "complex_power": 0.9466414100388647,
+        "output_power_abs_error": 0.05912354387692176,
+        "change_from_first_nmse": 0.031041623609633008
+      },
+      "paired_against_first": {
+        "repairs": 601,
+        "damage": 98,
+        "net": 503
+      },
+      "paired_against_received": {
+        "repairs": 711,
+        "damage": 276,
+        "net": 435
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.003766427072084452,
+        "feature_cosine_distance": 0.0009932658051749889,
+        "feature_standardized_mse": 0.010337889014594044,
+        "clean_decision_agreement": 0.9930335655478151,
+        "complex_power": 0.9653170210526969,
+        "output_power_abs_error": 0.034682978815183826,
+        "change_from_first_nmse": 0.001471588174202624
+      },
+      "paired_against_first": {
+        "repairs": 3,
+        "damage": 4,
+        "net": -1
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 11,
+        "net": -11
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.02808105661850305,
+        "feature_cosine_distance": 0.00857391475211012,
+        "feature_standardized_mse": 0.08203288585504943,
+        "clean_decision_agreement": 0.9852838121934128,
+        "complex_power": 0.9824353881707623,
+        "output_power_abs_error": 0.025840778157021002,
+        "change_from_first_nmse": 0.022574342353910353
+      },
+      "paired_against_first": {
+        "repairs": 48,
+        "damage": 2,
+        "net": 46
+      },
+      "paired_against_received": {
+        "repairs": 45,
+        "damage": 8,
+        "net": 37
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.042834100309604155,
+        "feature_cosine_distance": 0.01601595559881793,
+        "feature_standardized_mse": 0.1488449424459961,
+        "clean_decision_agreement": 0.9479166666666666,
+        "complex_power": 0.9655333052492804,
+        "output_power_abs_error": 0.04183103156586488,
+        "change_from_first_nmse": 0.030017104513374054
+      },
+      "paired_against_first": {
+        "repairs": 72,
+        "damage": 6,
+        "net": 66
+      },
+      "paired_against_received": {
+        "repairs": 85,
+        "damage": 21,
+        "net": 64
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.047395792716650016,
+        "feature_cosine_distance": 0.01589196859366251,
+        "feature_standardized_mse": 0.15175652247805899,
+        "clean_decision_agreement": 0.9488054607508533,
+        "complex_power": 0.968950934987833,
+        "output_power_abs_error": 0.03886170590696888,
+        "change_from_first_nmse": 0.026692400868893077
+      },
+      "paired_against_first": {
+        "repairs": 55,
+        "damage": 7,
+        "net": 48
+      },
+      "paired_against_received": {
+        "repairs": 77,
+        "damage": 23,
+        "net": 54
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.1534636553349674,
+        "feature_cosine_distance": 0.07981427931187876,
+        "feature_standardized_mse": 0.5899326729511681,
+        "clean_decision_agreement": 0.6720055710306406,
+        "complex_power": 0.8648914360651399,
+        "output_power_abs_error": 0.13898814998795395,
+        "change_from_first_nmse": 0.0628373013999998
+      },
+      "paired_against_first": {
+        "repairs": 174,
+        "damage": 46,
+        "net": 128
+      },
+      "paired_against_received": {
+        "repairs": 236,
+        "damage": 119,
+        "net": 117
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.0373453167207524,
+        "feature_cosine_distance": 0.010820150134377081,
+        "feature_standardized_mse": 0.11256611358934154,
+        "clean_decision_agreement": 0.9696765498652291,
+        "complex_power": 0.9758116501079737,
+        "output_power_abs_error": 0.03288332929187065,
+        "change_from_first_nmse": 0.024818118908906964
+      },
+      "paired_against_first": {
+        "repairs": 84,
+        "damage": 5,
+        "net": 79
+      },
+      "paired_against_received": {
+        "repairs": 82,
+        "damage": 10,
+        "net": 72
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.115046562094868,
+        "feature_cosine_distance": 0.05543248111089973,
+        "feature_standardized_mse": 0.4191839001594261,
+        "clean_decision_agreement": 0.7757274662881476,
+        "complex_power": 0.8995510953656319,
+        "output_power_abs_error": 0.10520294298086715,
+        "change_from_first_nmse": 0.052473776049071205
+      },
+      "paired_against_first": {
+        "repairs": 165,
+        "damage": 28,
+        "net": 137
+      },
+      "paired_against_received": {
+        "repairs": 186,
+        "damage": 84,
+        "net": 102
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.16167253621706837,
+        "feature_cosine_distance": 0.0780894544877504,
+        "feature_standardized_mse": 0.6055706131399462,
+        "clean_decision_agreement": 0.6989473684210527,
+        "complex_power": 0.8530353784404303,
+        "output_power_abs_error": 0.14901599727178874,
+        "change_from_first_nmse": 0.07840845686040426
+      },
+      "paired_against_first": {
+        "repairs": 185,
+        "damage": 24,
+        "net": 161
+      },
+      "paired_against_received": {
+        "repairs": 237,
+        "damage": 90,
+        "net": 147
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.028823841185696763,
+        "feature_cosine_distance": 0.007488821629797939,
+        "feature_standardized_mse": 0.08047656844738225,
+        "clean_decision_agreement": 0.9866125150421179,
+        "complex_power": 0.9835506252379624,
+        "output_power_abs_error": 0.025036065721554878,
+        "change_from_first_nmse": 0.02151813841955546
+      },
+      "paired_against_first": {
+        "repairs": 216,
+        "damage": 10,
+        "net": 206
+      },
+      "paired_against_received": {
+        "repairs": 231,
+        "damage": 33,
+        "net": 198
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.003766427072084452,
+        "feature_cosine_distance": 0.0009932658051749889,
+        "feature_standardized_mse": 0.010337889014594044,
+        "clean_decision_agreement": 0.9930335655478151,
+        "complex_power": 0.9653170210526969,
+        "output_power_abs_error": 0.034682978815183826,
+        "change_from_first_nmse": 0.001471588174202624
+      },
+      "paired_against_first": {
+        "repairs": 3,
+        "damage": 4,
+        "net": -1
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 11,
+        "net": -11
+      }
+    },
+    {
+      "step": 3,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.24823393041192643,
+        "feature_cosine_distance": 0.1348859757493379,
+        "feature_standardized_mse": 0.9861168272772266,
+        "clean_decision_agreement": 0.40921919096895576,
+        "complex_power": 0.771725584624067,
+        "output_power_abs_error": 0.22827441526378872,
+        "change_from_first_nmse": 0.09219376275163435
+      },
+      "paired_against_first": {
+        "repairs": 197,
+        "damage": 60,
+        "net": 137
+      },
+      "paired_against_received": {
+        "repairs": 243,
+        "damage": 142,
+        "net": 101
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.05369699652207771,
+        "feature_cosine_distance": 0.02276427152683027,
+        "feature_standardized_mse": 0.1797203607606434,
+        "clean_decision_agreement": 0.90869140625,
+        "complex_power": 0.9597005020099459,
+        "output_power_abs_error": 0.04469397935899906,
+        "change_from_first_nmse": 0.05275164476452119
+      },
+      "paired_against_first": {
+        "repairs": 722,
+        "damage": 140,
+        "net": 582
+      },
+      "paired_against_received": {
+        "repairs": 772,
+        "damage": 258,
+        "net": 514
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.001872925361466669,
+        "feature_cosine_distance": 0.0004002106876747755,
+        "feature_standardized_mse": 0.004031063703480374,
+        "clean_decision_agreement": 0.9955668144395187,
+        "complex_power": 0.9833723964798368,
+        "output_power_abs_error": 0.01662760346354073,
+        "change_from_first_nmse": 0.0032512533169964056
+      },
+      "paired_against_first": {
+        "repairs": 7,
+        "damage": 4,
+        "net": 3
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 7,
+        "net": -7
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.02366484660582164,
+        "feature_cosine_distance": 0.00565773089949535,
+        "feature_standardized_mse": 0.05410479240089436,
+        "clean_decision_agreement": 0.9866853538892782,
+        "complex_power": 0.9843124313712036,
+        "output_power_abs_error": 0.0214905613940666,
+        "change_from_first_nmse": 0.03797708463103895
+      },
+      "paired_against_first": {
+        "repairs": 50,
+        "damage": 2,
+        "net": 48
+      },
+      "paired_against_received": {
+        "repairs": 46,
+        "damage": 7,
+        "net": 39
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.036763040317196606,
+        "feature_cosine_distance": 0.013169455031553904,
+        "feature_standardized_mse": 0.11686261450845956,
+        "clean_decision_agreement": 0.9520833333333333,
+        "complex_power": 0.9721832503461175,
+        "output_power_abs_error": 0.032983519302474125,
+        "change_from_first_nmse": 0.05053277963565456
+      },
+      "paired_against_first": {
+        "repairs": 83,
+        "damage": 11,
+        "net": 72
+      },
+      "paired_against_received": {
+        "repairs": 91,
+        "damage": 21,
+        "net": 70
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.04235032499551697,
+        "feature_cosine_distance": 0.012271826177733751,
+        "feature_standardized_mse": 0.12074607575897114,
+        "clean_decision_agreement": 0.9453924914675768,
+        "complex_power": 0.9752097757196264,
+        "output_power_abs_error": 0.03136212349751703,
+        "change_from_first_nmse": 0.045531374080036685
+      },
+      "paired_against_first": {
+        "repairs": 60,
+        "damage": 17,
+        "net": 43
+      },
+      "paired_against_received": {
+        "repairs": 75,
+        "damage": 26,
+        "net": 49
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.1420718522390226,
+        "feature_cosine_distance": 0.07400534287468637,
+        "feature_standardized_mse": 0.5364043556872371,
+        "clean_decision_agreement": 0.6942896935933147,
+        "complex_power": 0.8968250254029019,
+        "output_power_abs_error": 0.10640383522158546,
+        "change_from_first_nmse": 0.10660273357992343
+      },
+      "paired_against_first": {
+        "repairs": 222,
+        "damage": 62,
+        "net": 160
+      },
+      "paired_against_received": {
+        "repairs": 262,
+        "damage": 113,
+        "net": 149
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.03081170424839075,
+        "feature_cosine_distance": 0.00820211423535874,
+        "feature_standardized_mse": 0.08528625660995147,
+        "clean_decision_agreement": 0.9710242587601078,
+        "complex_power": 0.9793049307725822,
+        "output_power_abs_error": 0.02721762331830202,
+        "change_from_first_nmse": 0.04315118428138951
+      },
+      "paired_against_first": {
+        "repairs": 89,
+        "damage": 8,
+        "net": 81
+      },
+      "paired_against_received": {
+        "repairs": 85,
+        "damage": 11,
+        "net": 74
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.10532889002041773,
+        "feature_cosine_distance": 0.04898138770488579,
+        "feature_standardized_mse": 0.365328091121364,
+        "clean_decision_agreement": 0.8026969481902059,
+        "complex_power": 0.9227954799863275,
+        "output_power_abs_error": 0.08099055539808686,
+        "change_from_first_nmse": 0.08819110364493873
+      },
+      "paired_against_first": {
+        "repairs": 211,
+        "damage": 36,
+        "net": 175
+      },
+      "paired_against_received": {
+        "repairs": 213,
+        "damage": 73,
+        "net": 140
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.143287102399688,
+        "feature_cosine_distance": 0.06824039961162366,
+        "feature_standardized_mse": 0.5208405129297784,
+        "clean_decision_agreement": 0.7252631578947368,
+        "complex_power": 0.8913988555105109,
+        "output_power_abs_error": 0.11152094979035226,
+        "change_from_first_nmse": 0.13083282114055597
+      },
+      "paired_against_first": {
+        "repairs": 229,
+        "damage": 43,
+        "net": 186
+      },
+      "paired_against_received": {
+        "repairs": 260,
+        "damage": 88,
+        "net": 172
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.024773972330968792,
+        "feature_cosine_distance": 0.004850903348873956,
+        "feature_standardized_mse": 0.05415729069987045,
+        "clean_decision_agreement": 0.9882671480144405,
+        "complex_power": 0.9853028523882517,
+        "output_power_abs_error": 0.02101059583442736,
+        "change_from_first_nmse": 0.03674231987238092
+      },
+      "paired_against_first": {
+        "repairs": 233,
+        "damage": 16,
+        "net": 217
+      },
+      "paired_against_received": {
+        "repairs": 238,
+        "damage": 29,
+        "net": 209
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.001872925361466669,
+        "feature_cosine_distance": 0.0004002106876747755,
+        "feature_standardized_mse": 0.004031063703480374,
+        "clean_decision_agreement": 0.9955668144395187,
+        "complex_power": 0.9833723964798368,
+        "output_power_abs_error": 0.01662760346354073,
+        "change_from_first_nmse": 0.0032512533169964056
+      },
+      "paired_against_first": {
+        "repairs": 7,
+        "damage": 4,
+        "net": 3
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 7,
+        "net": -7
+      }
+    },
+    {
+      "step": 4,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.23149555964659993,
+        "feature_cosine_distance": 0.12737255189515237,
+        "feature_standardized_mse": 0.9211056338148306,
+        "clean_decision_agreement": 0.44590780809031044,
+        "complex_power": 0.8254617602333973,
+        "output_power_abs_error": 0.1747770643077251,
+        "change_from_first_nmse": 0.15662181637445263
+      },
+      "paired_against_first": {
+        "repairs": 253,
+        "damage": 77,
+        "net": 176
+      },
+      "paired_against_received": {
+        "repairs": 274,
+        "damage": 134,
+        "net": 140
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.059529366003629035,
+        "feature_cosine_distance": 0.024072037631412968,
+        "feature_standardized_mse": 0.1802897691710001,
+        "clean_decision_agreement": 0.90517578125,
+        "complex_power": 0.9737215010623913,
+        "output_power_abs_error": 0.029206095647532494,
+        "change_from_first_nmse": 0.0706249155534124
+      },
+      "paired_against_first": {
+        "repairs": 723,
+        "damage": 177,
+        "net": 546
+      },
+      "paired_against_received": {
+        "repairs": 756,
+        "damage": 278,
+        "net": 478
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00036679663639325425,
+        "feature_cosine_distance": 0.00018209687058422821,
+        "feature_standardized_mse": 0.0019193704974089416,
+        "clean_decision_agreement": 1.0,
+        "complex_power": 1.0002598466942625,
+        "output_power_abs_error": 0.0018021154056401703,
+        "change_from_first_nmse": 0.005101936855020168
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 0,
+        "net": 10
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.026945088314546433,
+        "feature_cosine_distance": 0.004812293396851527,
+        "feature_standardized_mse": 0.04552058621894466,
+        "clean_decision_agreement": 0.9852838121934128,
+        "complex_power": 0.9871756337118383,
+        "output_power_abs_error": 0.015772555537715022,
+        "change_from_first_nmse": 0.04702097061987556
+      },
+      "paired_against_first": {
+        "repairs": 48,
+        "damage": 2,
+        "net": 46
+      },
+      "paired_against_received": {
+        "repairs": 44,
+        "damage": 7,
+        "net": 37
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.039046817803157156,
+        "feature_cosine_distance": 0.013243871223595407,
+        "feature_standardized_mse": 0.10808265279128035,
+        "clean_decision_agreement": 0.9513888888888888,
+        "complex_power": 0.9793079922182693,
+        "output_power_abs_error": 0.0236874603976806,
+        "change_from_first_nmse": 0.06463233177136216
+      },
+      "paired_against_first": {
+        "repairs": 86,
+        "damage": 15,
+        "net": 71
+      },
+      "paired_against_received": {
+        "repairs": 90,
+        "damage": 21,
+        "net": 69
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.047289268965848785,
+        "feature_cosine_distance": 0.011388671154048256,
+        "feature_standardized_mse": 0.11098234462567666,
+        "clean_decision_agreement": 0.9460750853242321,
+        "complex_power": 0.981242992467034,
+        "output_power_abs_error": 0.022668973577714212,
+        "change_from_first_nmse": 0.059510751264392314
+      },
+      "paired_against_first": {
+        "repairs": 64,
+        "damage": 20,
+        "net": 44
+      },
+      "paired_against_received": {
+        "repairs": 78,
+        "damage": 28,
+        "net": 50
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.16059107197079583,
+        "feature_cosine_distance": 0.08112069296139529,
+        "feature_standardized_mse": 0.5685783256030794,
+        "clean_decision_agreement": 0.6733983286908078,
+        "complex_power": 0.9322655926507828,
+        "output_power_abs_error": 0.07007168079817196,
+        "change_from_first_nmse": 0.14959513349069442
+      },
+      "paired_against_first": {
+        "repairs": 208,
+        "damage": 78,
+        "net": 130
+      },
+      "paired_against_received": {
+        "repairs": 249,
+        "damage": 130,
+        "net": 119
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.0313402384333187,
+        "feature_cosine_distance": 0.007301105482558998,
+        "feature_standardized_mse": 0.07496328132178112,
+        "clean_decision_agreement": 0.9710242587601078,
+        "complex_power": 0.9839001161992711,
+        "output_power_abs_error": 0.01963884277003152,
+        "change_from_first_nmse": 0.05657057700467841
+      },
+      "paired_against_first": {
+        "repairs": 90,
+        "damage": 9,
+        "net": 81
+      },
+      "paired_against_received": {
+        "repairs": 88,
+        "damage": 14,
+        "net": 74
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.1191816927656608,
+        "feature_cosine_distance": 0.054125804313960184,
+        "feature_standardized_mse": 0.3777335229365458,
+        "clean_decision_agreement": 0.794889992902768,
+        "complex_power": 0.9483552784933276,
+        "output_power_abs_error": 0.05438642788644037,
+        "change_from_first_nmse": 0.11995819416439135
+      },
+      "paired_against_first": {
+        "repairs": 217,
+        "damage": 53,
+        "net": 164
+      },
+      "paired_against_received": {
+        "repairs": 207,
+        "damage": 78,
+        "net": 129
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.15012466380470676,
+        "feature_cosine_distance": 0.07471220003931146,
+        "feature_standardized_mse": 0.5300205078799474,
+        "clean_decision_agreement": 0.7126315789473684,
+        "complex_power": 0.9280749177932739,
+        "output_power_abs_error": 0.07537419068185906,
+        "change_from_first_nmse": 0.17708922080499562
+      },
+      "paired_against_first": {
+        "repairs": 234,
+        "damage": 60,
+        "net": 174
+      },
+      "paired_against_received": {
+        "repairs": 257,
+        "damage": 97,
+        "net": 160
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.028081499621065174,
+        "feature_cosine_distance": 0.0038573012544933782,
+        "feature_standardized_mse": 0.04420915416465113,
+        "clean_decision_agreement": 0.9869133574007221,
+        "complex_power": 0.9879811386455626,
+        "output_power_abs_error": 0.015346491128815927,
+        "change_from_first_nmse": 0.04648492626916442
+      },
+      "paired_against_first": {
+        "repairs": 220,
+        "damage": 12,
+        "net": 208
+      },
+      "paired_against_received": {
+        "repairs": 229,
+        "damage": 29,
+        "net": 200
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00036679663639325425,
+        "feature_cosine_distance": 0.00018209687058422821,
+        "feature_standardized_mse": 0.0019193704974089416,
+        "clean_decision_agreement": 1.0,
+        "complex_power": 1.0002598466942625,
+        "output_power_abs_error": 0.0018021154056401703,
+        "change_from_first_nmse": 0.005101936855020168
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 0,
+        "net": 10
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 5,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.26312069227938256,
+        "feature_cosine_distance": 0.14072455842878498,
+        "feature_standardized_mse": 0.983739050727264,
+        "clean_decision_agreement": 0.42521166509877706,
+        "complex_power": 0.8859154198770801,
+        "output_power_abs_error": 0.1153301270301905,
+        "change_from_first_nmse": 0.2237785770185467
+      },
+      "paired_against_first": {
+        "repairs": 259,
+        "damage": 105,
+        "net": 154
+      },
+      "paired_against_received": {
+        "repairs": 270,
+        "damage": 152,
+        "net": 118
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.07774459329188588,
+        "feature_cosine_distance": 0.027820820943452416,
+        "feature_standardized_mse": 0.21288301762828893,
+        "clean_decision_agreement": 0.8859375,
+        "complex_power": 1.0013632404385135,
+        "output_power_abs_error": 0.015297821629792452,
+        "change_from_first_nmse": 0.09466718131338894
+      },
+      "paired_against_first": {
+        "repairs": 605,
+        "damage": 256,
+        "net": 349
+      },
+      "paired_against_received": {
+        "repairs": 641,
+        "damage": 360,
+        "net": 281
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00019534559639400353,
+        "feature_cosine_distance": 0.00015132369838084052,
+        "feature_standardized_mse": 0.0015153626085707577,
+        "clean_decision_agreement": 1.0,
+        "complex_power": 0.9984747314468224,
+        "output_power_abs_error": 0.00218941740328334,
+        "change_from_first_nmse": 0.005189480112854951
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 0,
+        "net": 10
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.03130006575580039,
+        "feature_cosine_distance": 0.005890308432254912,
+        "feature_standardized_mse": 0.058085960545854486,
+        "clean_decision_agreement": 0.9740714786264891,
+        "complex_power": 0.9968460424429233,
+        "output_power_abs_error": 0.009763791875231074,
+        "change_from_first_nmse": 0.054966505431552494
+      },
+      "paired_against_first": {
+        "repairs": 41,
+        "damage": 11,
+        "net": 30
+      },
+      "paired_against_received": {
+        "repairs": 36,
+        "damage": 15,
+        "net": 21
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.047984443190701616,
+        "feature_cosine_distance": 0.015792744192812177,
+        "feature_standardized_mse": 0.13322326075237167,
+        "clean_decision_agreement": 0.9354166666666667,
+        "complex_power": 0.9976282353616424,
+        "output_power_abs_error": 0.012688151457243495,
+        "change_from_first_nmse": 0.07970311466682081
+      },
+      "paired_against_first": {
+        "repairs": 67,
+        "damage": 19,
+        "net": 48
+      },
+      "paired_against_received": {
+        "repairs": 77,
+        "damage": 31,
+        "net": 46
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.05700241940313753,
+        "feature_cosine_distance": 0.013913525818964727,
+        "feature_standardized_mse": 0.13581869850132244,
+        "clean_decision_agreement": 0.9344709897610921,
+        "complex_power": 0.9969283884702689,
+        "output_power_abs_error": 0.014546579753172683,
+        "change_from_first_nmse": 0.07630837769867414
+      },
+      "paired_against_first": {
+        "repairs": 56,
+        "damage": 29,
+        "net": 27
+      },
+      "paired_against_received": {
+        "repairs": 69,
+        "damage": 36,
+        "net": 33
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.21985557465206035,
+        "feature_cosine_distance": 0.09049300280786159,
+        "feature_standardized_mse": 0.650663516083395,
+        "clean_decision_agreement": 0.6455431754874652,
+        "complex_power": 1.0160660556930021,
+        "output_power_abs_error": 0.03210423924132642,
+        "change_from_first_nmse": 0.21934884029614393
+      },
+      "paired_against_first": {
+        "repairs": 189,
+        "damage": 99,
+        "net": 90
+      },
+      "paired_against_received": {
+        "repairs": 222,
+        "damage": 143,
+        "net": 79
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.03887162685508506,
+        "feature_cosine_distance": 0.009010740608539222,
+        "feature_standardized_mse": 0.09396918248692702,
+        "clean_decision_agreement": 0.9535040431266847,
+        "complex_power": 0.9970816447326758,
+        "output_power_abs_error": 0.012374714579222337,
+        "change_from_first_nmse": 0.06969404549054259
+      },
+      "paired_against_first": {
+        "repairs": 77,
+        "damage": 22,
+        "net": 55
+      },
+      "paired_against_received": {
+        "repairs": 73,
+        "damage": 25,
+        "net": 48
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.15977767828613654,
+        "feature_cosine_distance": 0.06373033225747861,
+        "feature_standardized_mse": 0.44714103091668106,
+        "clean_decision_agreement": 0.7416607523066004,
+        "complex_power": 1.0071283987094697,
+        "output_power_abs_error": 0.024990937530444478,
+        "change_from_first_nmse": 0.16876180814625397
+      },
+      "paired_against_first": {
+        "repairs": 165,
+        "damage": 76,
+        "net": 89
+      },
+      "paired_against_received": {
+        "repairs": 164,
+        "damage": 110,
+        "net": 54
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.20401549143324557,
+        "feature_cosine_distance": 0.09571268696534006,
+        "feature_standardized_mse": 0.6690346522099878,
+        "clean_decision_agreement": 0.6294736842105263,
+        "complex_power": 1.0100927672260687,
+        "output_power_abs_error": 0.03167860576980992,
+        "change_from_first_nmse": 0.2509606003722078
+      },
+      "paired_against_first": {
+        "repairs": 187,
+        "damage": 92,
+        "net": 95
+      },
+      "paired_against_received": {
+        "repairs": 213,
+        "damage": 132,
+        "net": 81
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.03200872586467796,
+        "feature_cosine_distance": 0.0044630050623316484,
+        "feature_standardized_mse": 0.055054667858522054,
+        "clean_decision_agreement": 0.9786401925391095,
+        "complex_power": 0.9958718515726347,
+        "output_power_abs_error": 0.01084680503814803,
+        "change_from_first_nmse": 0.054313393176906484
+      },
+      "paired_against_first": {
+        "repairs": 194,
+        "damage": 41,
+        "net": 153
+      },
+      "paired_against_received": {
+        "repairs": 198,
+        "damage": 53,
+        "net": 145
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00019534559639400353,
+        "feature_cosine_distance": 0.00015132369838084052,
+        "feature_standardized_mse": 0.0015153626085707577,
+        "clean_decision_agreement": 1.0,
+        "complex_power": 0.9984747314468224,
+        "output_power_abs_error": 0.00218941740328334,
+        "change_from_first_nmse": 0.005189480112854951
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 0,
+        "net": 10
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 6,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.36612178570295656,
+        "feature_cosine_distance": 0.15432658143909272,
+        "feature_standardized_mse": 1.106249286389278,
+        "clean_decision_agreement": 0.3659454374412041,
+        "complex_power": 1.0321954685006631,
+        "output_power_abs_error": 0.04796647980655013,
+        "change_from_first_nmse": 0.3402725675985259
+      },
+      "paired_against_first": {
+        "repairs": 214,
+        "damage": 123,
+        "net": 91
+      },
+      "paired_against_received": {
+        "repairs": 230,
+        "damage": 175,
+        "net": 55
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.0912509988840963,
+        "feature_cosine_distance": 0.03009372347733006,
+        "feature_standardized_mse": 0.24058443875437235,
+        "clean_decision_agreement": 0.87451171875,
+        "complex_power": 1.0170984770637006,
+        "output_power_abs_error": 0.022211937350220978,
+        "change_from_first_nmse": 0.10493706086999736
+      },
+      "paired_against_first": {
+        "repairs": 558,
+        "damage": 326,
+        "net": 232
+      },
+      "paired_against_received": {
+        "repairs": 599,
+        "damage": 435,
+        "net": 164
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 3.053274139346619e-05,
+        "feature_cosine_distance": 2.4627967300559994e-05,
+        "feature_standardized_mse": 0.000272476394173655,
+        "clean_decision_agreement": 1.0,
+        "complex_power": 0.999503110955983,
+        "output_power_abs_error": 0.0008452373112659804,
+        "change_from_first_nmse": 0.005072201326715938
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 0,
+        "net": 10
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.03945988109031824,
+        "feature_cosine_distance": 0.00800909829791309,
+        "feature_standardized_mse": 0.08415661457261643,
+        "clean_decision_agreement": 0.964260686755431,
+        "complex_power": 1.0056669489019137,
+        "output_power_abs_error": 0.011837333670511225,
+        "change_from_first_nmse": 0.06000623767954032
+      },
+      "paired_against_first": {
+        "repairs": 38,
+        "damage": 22,
+        "net": 16
+      },
+      "paired_against_received": {
+        "repairs": 31,
+        "damage": 24,
+        "net": 7
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.05875397110325543,
+        "feature_cosine_distance": 0.017975654991136656,
+        "feature_standardized_mse": 0.16259497926415253,
+        "clean_decision_agreement": 0.9243055555555556,
+        "complex_power": 1.0100460825694932,
+        "output_power_abs_error": 0.016042257183127934,
+        "change_from_first_nmse": 0.08702319441621917
+      },
+      "paired_against_first": {
+        "repairs": 60,
+        "damage": 28,
+        "net": 32
+      },
+      "paired_against_received": {
+        "repairs": 74,
+        "damage": 44,
+        "net": 30
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.07077261545177256,
+        "feature_cosine_distance": 0.016955249830317577,
+        "feature_standardized_mse": 0.17539224862454797,
+        "clean_decision_agreement": 0.9167235494880546,
+        "complex_power": 1.0127873757186603,
+        "output_power_abs_error": 0.0193427042342697,
+        "change_from_first_nmse": 0.0870863445840598
+      },
+      "paired_against_first": {
+        "repairs": 52,
+        "damage": 51,
+        "net": 1
+      },
+      "paired_against_received": {
+        "repairs": 62,
+        "damage": 55,
+        "net": 7
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.24935711320252274,
+        "feature_cosine_distance": 0.09336278324007656,
+        "feature_standardized_mse": 0.6847271787444996,
+        "clean_decision_agreement": 0.6274373259052924,
+        "complex_power": 1.0505973472153576,
+        "output_power_abs_error": 0.054725224136642096,
+        "change_from_first_nmse": 0.24312146875779028
+      },
+      "paired_against_first": {
+        "repairs": 171,
+        "damage": 107,
+        "net": 64
+      },
+      "paired_against_received": {
+        "repairs": 210,
+        "damage": 157,
+        "net": 53
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.049876019247710915,
+        "feature_cosine_distance": 0.01162635404465976,
+        "feature_standardized_mse": 0.1277883298352431,
+        "clean_decision_agreement": 0.9380053908355795,
+        "complex_power": 1.0099779565459635,
+        "output_power_abs_error": 0.016197982301930532,
+        "change_from_first_nmse": 0.07798781384264604
+      },
+      "paired_against_first": {
+        "repairs": 66,
+        "damage": 34,
+        "net": 32
+      },
+      "paired_against_received": {
+        "repairs": 68,
+        "damage": 43,
+        "net": 25
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.1828760396810797,
+        "feature_cosine_distance": 0.0671717581637283,
+        "feature_standardized_mse": 0.4819520220690591,
+        "clean_decision_agreement": 0.7331440738112136,
+        "complex_power": 1.0334430904232754,
+        "output_power_abs_error": 0.039150173144614636,
+        "change_from_first_nmse": 0.18677527082434903
+      },
+      "paired_against_first": {
+        "repairs": 161,
+        "damage": 84,
+        "net": 77
+      },
+      "paired_against_received": {
+        "repairs": 154,
+        "damage": 112,
+        "net": 42
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.2382854140942034,
+        "feature_cosine_distance": 0.10194841422532734,
+        "feature_standardized_mse": 0.7391856862761472,
+        "clean_decision_agreement": 0.5978947368421053,
+        "complex_power": 1.0471842334772412,
+        "output_power_abs_error": 0.051951831955658764,
+        "change_from_first_nmse": 0.2798095013005169
+      },
+      "paired_against_first": {
+        "repairs": 170,
+        "damage": 105,
+        "net": 65
+      },
+      "paired_against_received": {
+        "repairs": 194,
+        "damage": 143,
+        "net": 51
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.041058319939354215,
+        "feature_cosine_distance": 0.006720510586002386,
+        "feature_standardized_mse": 0.08469346224362026,
+        "clean_decision_agreement": 0.9673586040914561,
+        "complex_power": 1.0064385500876625,
+        "output_power_abs_error": 0.012979111749629539,
+        "change_from_first_nmse": 0.060545158436607065
+      },
+      "paired_against_first": {
+        "repairs": 174,
+        "damage": 96,
+        "net": 78
+      },
+      "paired_against_received": {
+        "repairs": 181,
+        "damage": 111,
+        "net": 70
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 3.053274139346619e-05,
+        "feature_cosine_distance": 2.4627967300559994e-05,
+        "feature_standardized_mse": 0.000272476394173655,
+        "clean_decision_agreement": 1.0,
+        "complex_power": 0.999503110955983,
+        "output_power_abs_error": 0.0008452373112659804,
+        "change_from_first_nmse": 0.005072201326715938
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 0,
+        "net": 10
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 7,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.4092522700170891,
+        "feature_cosine_distance": 0.15671861990375105,
+        "feature_standardized_mse": 1.1268916967642946,
+        "clean_decision_agreement": 0.354656632173095,
+        "complex_power": 1.08301457210408,
+        "output_power_abs_error": 0.08511404843119552,
+        "change_from_first_nmse": 0.374622067631076
+      },
+      "paired_against_first": {
+        "repairs": 204,
+        "damage": 125,
+        "net": 79
+      },
+      "paired_against_received": {
+        "repairs": 224,
+        "damage": 181,
+        "net": 43
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.0944059445160775,
+        "feature_cosine_distance": 0.031072383798891677,
+        "feature_standardized_mse": 0.2513711225725814,
+        "clean_decision_agreement": 0.87294921875,
+        "complex_power": 1.0193581539555452,
+        "output_power_abs_error": 0.02364462862024084,
+        "change_from_first_nmse": 0.10642140060665498
+      },
+      "paired_against_first": {
+        "repairs": 562,
+        "damage": 346,
+        "net": 216
+      },
+      "paired_against_received": {
+        "repairs": 595,
+        "damage": 447,
+        "net": 148
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00034157388790586094,
+        "feature_cosine_distance": 0.0002330271332531205,
+        "feature_standardized_mse": 0.0022796775873163873,
+        "clean_decision_agreement": 1.0,
+        "complex_power": 1.0013373155923038,
+        "output_power_abs_error": 0.001765767443852005,
+        "change_from_first_nmse": 0.005132508994551391
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 0,
+        "net": 10
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.0430395729293539,
+        "feature_cosine_distance": 0.009367407663100737,
+        "feature_standardized_mse": 0.10005285856382531,
+        "clean_decision_agreement": 0.9621583742116327,
+        "complex_power": 1.007393445305333,
+        "output_power_abs_error": 0.01287129786604338,
+        "change_from_first_nmse": 0.06127377995110385
+      },
+      "paired_against_first": {
+        "repairs": 37,
+        "damage": 24,
+        "net": 13
+      },
+      "paired_against_received": {
+        "repairs": 29,
+        "damage": 25,
+        "net": 4
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.06238227601311842,
+        "feature_cosine_distance": 0.019155454138914743,
+        "feature_standardized_mse": 0.17753464344811315,
+        "clean_decision_agreement": 0.9194444444444444,
+        "complex_power": 1.0120952908363607,
+        "output_power_abs_error": 0.017318428970045513,
+        "change_from_first_nmse": 0.0884397099712967
+      },
+      "paired_against_first": {
+        "repairs": 61,
+        "damage": 36,
+        "net": 25
+      },
+      "paired_against_received": {
+        "repairs": 72,
+        "damage": 49,
+        "net": 23
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.07442745725201513,
+        "feature_cosine_distance": 0.018103891224584483,
+        "feature_standardized_mse": 0.18947300159852354,
+        "clean_decision_agreement": 0.9160409556313993,
+        "complex_power": 1.0149205310352833,
+        "output_power_abs_error": 0.02053974057220355,
+        "change_from_first_nmse": 0.08895287726824601
+      },
+      "paired_against_first": {
+        "repairs": 55,
+        "damage": 55,
+        "net": 0
+      },
+      "paired_against_received": {
+        "repairs": 64,
+        "damage": 58,
+        "net": 6
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.25313854927273627,
+        "feature_cosine_distance": 0.09427402647922963,
+        "feature_standardized_mse": 0.6910118524550686,
+        "clean_decision_agreement": 0.6246518105849582,
+        "complex_power": 1.0538430293207381,
+        "output_power_abs_error": 0.05720376723490054,
+        "change_from_first_nmse": 0.2454288260865967
+      },
+      "paired_against_first": {
+        "repairs": 167,
+        "damage": 107,
+        "net": 60
+      },
+      "paired_against_received": {
+        "repairs": 208,
+        "damage": 159,
+        "net": 49
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.05353222469230637,
+        "feature_cosine_distance": 0.012884015463433176,
+        "feature_standardized_mse": 0.14316301525763744,
+        "clean_decision_agreement": 0.9380053908355795,
+        "complex_power": 1.011996768595716,
+        "output_power_abs_error": 0.01732698809907764,
+        "change_from_first_nmse": 0.07959786469413023
+      },
+      "paired_against_first": {
+        "repairs": 68,
+        "damage": 36,
+        "net": 32
+      },
+      "paired_against_received": {
+        "repairs": 67,
+        "damage": 42,
+        "net": 25
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.18661786768865699,
+        "feature_cosine_distance": 0.06802167065013293,
+        "feature_standardized_mse": 0.4894893444906669,
+        "clean_decision_agreement": 0.7324343506032647,
+        "complex_power": 1.036315001605503,
+        "output_power_abs_error": 0.04121958160332706,
+        "change_from_first_nmse": 0.1887757654339498
+      },
+      "paired_against_first": {
+        "repairs": 164,
+        "damage": 88,
+        "net": 76
+      },
+      "paired_against_received": {
+        "repairs": 155,
+        "damage": 114,
+        "net": 41
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.24211959071653455,
+        "feature_cosine_distance": 0.10257775112202293,
+        "feature_standardized_mse": 0.741743051045035,
+        "clean_decision_agreement": 0.6,
+        "complex_power": 1.0509324081947928,
+        "output_power_abs_error": 0.05457626361595957,
+        "change_from_first_nmse": 0.28243666255944655
+      },
+      "paired_against_first": {
+        "repairs": 169,
+        "damage": 102,
+        "net": 67
+      },
+      "paired_against_received": {
+        "repairs": 195,
+        "damage": 142,
+        "net": 53
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.04466418219147761,
+        "feature_cosine_distance": 0.008024825040972764,
+        "feature_standardized_mse": 0.1009798601020921,
+        "clean_decision_agreement": 0.9648014440433214,
+        "complex_power": 1.0082602399243346,
+        "output_power_abs_error": 0.014019867806514964,
+        "change_from_first_nmse": 0.062010968881507915
+      },
+      "paired_against_first": {
+        "repairs": 180,
+        "damage": 119,
+        "net": 61
+      },
+      "paired_against_received": {
+        "repairs": 177,
+        "damage": 124,
+        "net": 53
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 0.00034157388790586094,
+        "feature_cosine_distance": 0.0002330271332531205,
+        "feature_standardized_mse": 0.0022796775873163873,
+        "clean_decision_agreement": 1.0,
+        "complex_power": 1.0013373155923038,
+        "output_power_abs_error": 0.001765767443852005,
+        "change_from_first_nmse": 0.005132508994551391
+      },
+      "paired_against_first": {
+        "repairs": 10,
+        "damage": 0,
+        "net": 10
+      },
+      "paired_against_received": {
+        "repairs": 0,
+        "damage": 0,
+        "net": 0
+      }
+    },
+    {
+      "step": 8,
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.4132045458946184,
+        "feature_cosine_distance": 0.15711698948159492,
+        "feature_standardized_mse": 1.1236789047802156,
+        "clean_decision_agreement": 0.35371589840075257,
+        "complex_power": 1.0873151574623776,
+        "output_power_abs_error": 0.08869362056872133,
+        "change_from_first_nmse": 0.3773162370216476
+      },
+      "paired_against_first": {
+        "repairs": 203,
+        "damage": 125,
+        "net": 78
+      },
+      "paired_against_received": {
+        "repairs": 223,
+        "damage": 181,
+        "net": 42
+      }
+    }
+  ],
+  "G_core_rows": 153600,
+  "F0_output_feature_rows": 92160,
+  "F0_clean_feature_rows": 512,
+  "smoke_extra_G_core_rows": 60,
+  "smoke_extra_F0_feature_rows": 2,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "novel_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "checkpoint_selection": false,
+  "source_in_sample": true,
+  "agreement_is_TX_accuracy": false,
+  "theoretical_ceiling": false,
+  "default_DURA_changed": false,
+  "seconds": 23.809559720000834,
+  "goal_complete": false,
+  "independent_check": {
+    "status": "PASS",
+    "run_id": "20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01",
+    "all_path_rows": 92160,
+    "all_source_cases": 10240,
+    "source_steps": 9,
+    "groups": 108,
+    "all_scalar_and_paired_groups_checked": true,
+    "max_abs_scalar_error": 0.0,
+    "original_source_panel_and_draw_alignment": true,
+    "prior_clean_reference_prediction_differences": 0,
+    "final_path_equals_actual_deployment_smoke": true,
+    "frozen_model_states_unchanged_reported": true,
+    "source_draws_log_complete": true,
+    "new_neural_forwards": 0,
+    "new_IQ_or_truth_reads": 0,
+    "optimizer_updates": 0
+  },
+  "artifact_status": "ANALYZED"
+}

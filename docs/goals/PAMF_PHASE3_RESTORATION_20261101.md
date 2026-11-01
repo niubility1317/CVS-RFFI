@@ -336,3 +336,11 @@ VERIFIED / RUNNING。源Ls2真实G/F0无更新smoke通过，固定15调用sample
 原Main168000×七景全部预测固定后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对及868相对raw clean配对复算PASS，误差1.25e-14、raw/DURA判决差0；60完整日志、同E0实际工厂/旧控制、sourceorder/draw/LR、仅投影配置差异/加权loss/30恢复文件E30-final一致性核实。
 
 六景依次78.913690/77.574405/76.104167/77.705357/71.575595/65.526786%，达标0/6，相对PowerAnchor依次-0.076786/-0.140476/-0.062500/-0.094048/+0.041667/+0.092857个百分点。合并clean 86.535119%（未保持），cross_rx净变化+22、cross_both净变化-28，不以合并掩盖子总体损伤。完整TX/RX/day/净纠错/相对clean/功率与成本见analysis.md。完整目标未达到，保持 ACTIVE 和默认 DURA。解析MMSE例子不是F0收益或理论上限；性能主线、效率支线、默认DURA保持。
+
+## 冻结残差扩散源采样轨迹完成（2026-11-02）
+
+`20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01`，代码`1a7434baa2c579e78fc1119cb09c24a0ae6512b4`。原source固定128Ls+384Us、20draw、received+8内部clean读出，共92160行/108组；源2记录末步逐值等于真实部署G、F0/defaulthead有限检查PASS，G/F0终态不变，0更新/TX/V/OE/novel/目标IQ-预测-评分或选择。原fixedfinal30/5e5921c9，原Main完整8步/15调用保持。
+
+整体Fclean一致率第4步90.869141%→末步87.294922%，低档城区69.428969%→62.465181%，对应同条一致判决净减少366/10240和100/1436；低档城区IQ NMSE .14207185→.25313855。第1步到末步的总变化另列，不能笼统声称每步改善或全面退化。训练单步noised-clean误差与实际sampler测量不同，不作同条件质量对比。源内轨迹不等于TX准确率、跨RX泛化或理论上限，不能借此热改正在测试的完整采样版本。
+
+全92160行/108组/首步与received配对独立复算PASS，最大误差0，原source面板顺序/draw/scene-lock/既有Fclean参考差0；worker23.809560秒、GPU6 live快照已捕获，exit0/liveempty。图、完整分组和边界见analysis.md。后续可独立检验部署尺度训练覆盖与缩短采样，需新预登记及完整Main，不据目标成绩选step。原Main六景3pp+两个clean保持为主线，默认DURA与目标ACTIVE保持。

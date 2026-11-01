@@ -3,7 +3,7 @@
 - run_id：`20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01`
 - group_id：`restoration-frozen-source-diffusion-sampling-path`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（实际源smoke及worker已核实）
+- 当前登记状态：ANALYZED（完整源轨迹及独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+received与8个内部读出共92160行源记录完整，108组及全部配对复算PASS；Fclean一致不是TX准确率，详见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -42,3 +42,8 @@
 ## 实际冻结源诊断已运行
 
 VERIFIED / RUNNING。源2实际G/F0 smoke通过，记录末步逐值等于部署G，已开始逐源draw推理。CPU控制器与worker的PID/CWD/commit/CUDA/GPU和日志增长独立核实；GPU6准入free24110MiB/原0compute/新增1，父最后GPU阶段同时在4。archive单次SHA一致和远端编译通过。0更新/TX/V/OE/目标IQ-预测-评分，完整92160源行待完成复算；不改父部署或选step。
+
+
+## 冻结源扩散轨迹完整分析完成
+
+VERIFIED / ANALYZED。源2末步与真正部署G逐值一致及F0/defaulthead检查通过，512×20×9=92160行/108组/相对首步和received全部配对复算PASS，最大误差0，原源面板顺序/20draw/scene-lock和既有Fclean判决参考差0，完整draw1..20日志/exit0/liveempty核实。真实worker PID/CWD/CUDA/GPU6和日志增长已捕获，0训练/TX/V/OE/novel/目标IQ-预测-评分或选模；父完整部署及Main计划保持。

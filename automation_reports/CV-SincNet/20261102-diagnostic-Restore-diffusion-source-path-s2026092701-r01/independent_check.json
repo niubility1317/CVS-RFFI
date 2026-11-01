@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "run_id": "20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01",
+  "all_path_rows": 92160,
+  "all_source_cases": 10240,
+  "source_steps": 9,
+  "groups": 108,
+  "all_scalar_and_paired_groups_checked": true,
+  "max_abs_scalar_error": 0.0,
+  "original_source_panel_and_draw_alignment": true,
+  "prior_clean_reference_prediction_differences": 0,
+  "final_path_equals_actual_deployment_smoke": true,
+  "frozen_model_states_unchanged_reported": true,
+  "source_draws_log_complete": true,
+  "new_neural_forwards": 0,
+  "new_IQ_or_truth_reads": 0,
+  "optimizer_updates": 0
+}
