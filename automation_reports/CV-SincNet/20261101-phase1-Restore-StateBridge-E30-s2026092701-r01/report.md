@@ -1,9 +1,11 @@
 # 去除原观测代数捷径的四步IQ恢复对照
 
+**六景0/6，合并clean未保持，clean准确率86.107143%。** cross_rx clean净变化-551，cross_both净变化-174。完整目标未达到，保持 ACTIVE 和默认 DURA。[完整性能与分组](analysis.md)。
+
 - run_id：`20261101-phase1-Restore-StateBridge-E30-s2026092701-r01`
 - group_id：`restoration-state-only-direct-iteration-single30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（完整七景与独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原 Main168000×七景完整，六景0/6、合并clean未保持。84单元与完整分组/配对复算PASS，详见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -46,3 +48,7 @@
 `20261101-phase1-Restore-StateBridge-E30-s2026092701-r01`，实际代码`c50a9159b1fb891c6f1a6f8ad4bfa2d7eb66222e`，4676898参数，从零单阶段30/7410、训练每记录1次estimate、部署4次共享权重，received仅初始化state，估计器不读取原received条件，无额外观测或部署clean/F0。源IQ配对构造t1/.75/.5/.25状态，原F0连续160与rawRMS参考loss-only；0TX/V/OE/目标训练或选模，OE仅冻结诊断。结构/训练状态/执行共同变化的系统比较，不冒称单因素。
 
 VERIFIED / RUNNING：12重点相关检查/一次P0P1、真实源2训练梯度与完整四步E0/严格重载PASS。首轮247更新耗时78.104723秒，E01模型/AdamW/CPU-CUDA RNG独立CPU读回PASS，E0与固定seed factory逐张量一致；4个time实际计数和各项指标重组PASS，总loss确认原权重各加一次。GPU6准入free20513MiB/原2compute/仅新增1条，PID/CWD/命令/CUDA/GPU和日志核实，其他owner保持。固定final30后自动原Main168000×七景、全部预测后独立truth-last，当前性能PENDING；主验收仍六景各距raw clean≤3pp并保持clean，性能主线、效率支线和默认DURA不变。
+
+## StateBridge完整七景完成
+
+VERIFIED / ANALYZED。全G从零单阶段30/7410，部署固定4次共享权重，两个Main总体各七景全部预测后独立truth-last；4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对复算PASS，误差1.24e-14、raw/DURA判决差0。完整60轮/stdout/源顺序draw/固定时间协议/从零E0/总loss与每t重组/30快照E30-final核实。完整目标未达到，保持 ACTIVE 和默认 DURA。
