@@ -1,0 +1,81 @@
+import pytest
+import signal
+import subprocess
+
+
+def test_merge_old_closed_predictions_overrides_older_reference():
+    from experiments.pamf_phase2_practical.r42_fast_takeover import merge_refs
+    old = [{'seed': 1, 'capsule': 'a', 'prediction': 'earlier', 'metrics': None},
+           {'seed': 2, 'capsule': 'b', 'prediction': 'other', 'metrics': 'score'}]
+    closed = [{'seed': 1, 'capsule': 'a', 'prediction': 'closed', 'metrics': None}]
+    result = merge_refs(old, closed)
+    assert {(r['seed'], r['capsule']): r['prediction'] for r in result} == {(1, 'a'): 'closed', (2, 'b'): 'other'}
+
+
+def test_merge_rejects_duplicate_completed_task():
+    from experiments.pamf_phase2_practical.r42_fast_takeover import merge_refs
+    value = {'seed': 1, 'capsule': 'a', 'prediction': 'same', 'metrics': None}
+    with pytest.raises(ValueError):
+        merge_refs([], [value, value])
+
+
+def test_scheduler_never_admits_running_or_completed_tasks():
+    from experiments.pamf_phase2_practical.r42_fast_takeover import pending_tasks
+    tasks = [{'key': 'a'}, {'key': 'b'}, {'key': 'c'}, {'key': 'd'}]
+    assert [t['key'] for t in pending_tasks(tasks, {'a'}, {'b'}, {'c'})] == ['d']
+    with pytest.raises(ValueError):
+        pending_tasks(tasks, {'a'}, {'a'}, set())
+
+
+def test_failed_smoke_restores_paused_predecessor_without_killing_it(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import r42_fast_takeover as takeover
+
+    old = dict(release_root='old-release', runtime_file='old-runtime', allowed_gpus=[0])
+    info = dict(pid=123, uid=1, cwd='old-release', start='9', state='T',
+                argv=['python', '-m', takeover.suite.__package__+'.milkr_r42_suite',
+                      'dispatch', '--runtime', 'old-runtime'])
+    signals = []
+    monkeypatch.setattr(takeover.os, 'getuid', lambda: 1, raising=False)
+    monkeypatch.setattr(takeover.signal, 'SIGSTOP', 19, raising=False)
+    monkeypatch.setattr(takeover.signal, 'SIGCONT', 18, raising=False)
+    monkeypatch.setattr(takeover.os, 'kill', lambda pid, sig: signals.append((pid, sig)))
+    monkeypatch.setattr(takeover, 'proc', lambda pid: dict(info))
+    monkeypatch.setattr(takeover, 'predecessor_workers', lambda *args: {})
+    monkeypatch.setattr(takeover.subprocess, 'check_output', lambda *args, **kwargs: '16000')
+    def fail(*args, **kwargs):
+        raise subprocess.CalledProcessError(1, args[0])
+    monkeypatch.setattr(takeover.subprocess, 'run', fail)
+    runtime = dict(allowed_gpus=[0], minimum_free_MiB=6000, poll_seconds=1,
+                   model_seeds=[1], runtime_file='new-runtime')
+    with pytest.raises(subprocess.CalledProcessError):
+        takeover.transfer_owner(runtime, old, 123, {}, tmp_path/'takeover.json')
+    assert signals == [(123, signal.SIGSTOP), (123, signal.SIGCONT)]
+
+
+def test_worker_failure_during_smoke_restores_predecessor(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import r42_fast_takeover as takeover
+
+    old = dict(release_root='old-release', runtime_file='old-runtime', allowed_gpus=[0])
+    info = dict(pid=123, uid=1, cwd='old-release', start='9', state='T',
+                argv=['python', '-m', takeover.suite.__package__+'.milkr_r42_suite',
+                      'dispatch', '--runtime', 'old-runtime'])
+    signals = []
+    monkeypatch.setattr(takeover.os, 'getuid', lambda: 1, raising=False)
+    monkeypatch.setattr(takeover.os, 'kill', lambda pid, sig: signals.append((pid, sig)))
+    for name, value in [('SIGSTOP', 19), ('SIGCONT', 18), ('SIGKILL', 9)]:
+        monkeypatch.setattr(takeover.signal, name, value, raising=False)
+    monkeypatch.setattr(takeover, 'proc', lambda pid: dict(info))
+    values = iter([{'a': dict(pid=124, start='10', gpu=0)}, {}])
+    monkeypatch.setattr(takeover, 'predecessor_workers', lambda *args: next(values))
+    monkeypatch.setattr(takeover, 'alive', lambda item: True)
+    monkeypatch.setattr(takeover, 'closed_ref', lambda *args: None)
+    monkeypatch.setattr(takeover.subprocess, 'check_output', lambda *args, **kwargs: '16000')
+    def smoke(cmd, **kwargs):
+        output = cmd[cmd.index('--smoke-output')+1]
+        takeover.write(output, dict(status='PASS', seed=1, query_rows=0))
+    monkeypatch.setattr(takeover.subprocess, 'run', smoke)
+    runtime = dict(allowed_gpus=[0], minimum_free_MiB=6000, poll_seconds=1,
+                   model_seeds=[1], runtime_file='new-runtime')
+    with pytest.raises(ValueError, match='failed'):
+        takeover.transfer_owner(runtime, old, 123, {'a': {'key': 'a'}}, tmp_path/'takeover.json')
+    assert signals == [(123, signal.SIGSTOP), (123, signal.SIGCONT)]
