@@ -196,7 +196,11 @@ def _flat(record,stats):
 
 
 def analyze(rt,output):
-    matrix=tasks(rt);require(len({t['key'] for t in matrix})==len(matrix) and len({(t['seed'],t['capsule']) for t in matrix})==len(matrix),'Duplicate task units')
+    matrix=tasks(rt)
+    if rt.get('mix_only') is True:
+        matrix=[task for task in matrix if '/MIX' in task['capsule']]
+        require(len(matrix)==672,'Wrong MIX-only matrix')
+    require(len({t['key'] for t in matrix})==len(matrix) and len({(t['seed'],t['capsule']) for t in matrix})==len(matrix),'Duplicate task units')
     root=Path(rt['run_root']);missing=[];complete=0
     for task in matrix:
         score=Path(task_runtime(rt,task)['run_root'])/'scores'/task['capsule'].split('/')[-1]
@@ -236,7 +240,7 @@ def analyze(rt,output):
         arm,stage,sp,qp=key
         measured.append(dict(arm=arm,stage=stage,support_path=sp,query_path=qp,measurements=bucket['count'],actual_sums=bucket['sums'],observed_peaks=bucket['peaks'],null_fields=sorted(bucket['null_fields'])))
     main=lambda r:r['stratum']=='all' and r['value']=='MIX' and r['stage']=='C' and r['k']==5 and r['new_count']==20
-    summary=dict(status='ANALYSIS_COMPLETE',run_id=rt.get('run_id'),completed_tasks=len(matrix),natural_score_rows=row_count,common_query_score_rows=common_rows,
+    summary=dict(status='ANALYSIS_COMPLETE',scope='MIX_ONLY' if rt.get('mix_only') is True else 'GROUP1_FULL',run_id=rt.get('run_id'),completed_tasks=len(matrix),natural_score_rows=row_count,common_query_score_rows=common_rows,
         MIX_units_per_KN=mix_units,source_cost=_source_cost(rt),row_aggregates=rows,paired_comparisons=pairs,class_recall=classes,
         main_K5N20=dict(row_aggregates=[r for r in rows if main(r)],paired_comparisons=[r for r in pairs if main(r)]),
         resources=dict(actual_measurements_only=True,reused_rows_missing_costs_not_zero=True,shared_GPU_not_isolated=True,MACs=None,FLOPs=None,
@@ -271,6 +275,8 @@ def _fmt(value,scale=100):return '—' if value is None else f'{scale*value:.3f}
 def _report(out,summary):
     lines=['# 冻结 R42 完整评分汇总','',f"已核对 {summary['completed_tasks']} 个任务、{summary['natural_score_rows']} 条自然 query 评分；每个 MIX K/N 包含 {summary['MIX_units_per_KN']} 个等权任务单元。自然 query 与共同 query 结果分别保存，不混合平均。",'',
            '## 主工作点 K5/N20（C 阶段）','', '| query 口径 | 方法 | 路径 | 旧类宏准确率（%） | 新类宏准确率（%） | 宏 H（%） | 四 seed H 均值的样本 SD（百分点） |','|---|---|---|---:|---:|---:|---:|']
+    if summary.get('scope') == 'MIX_ONLY':
+        lines[0] = '# 冻结 R42 MIX 全 K/N 评分汇总（单场景暂停）'
     for r in summary['main_K5N20']['row_aggregates']:
         m=r['metrics'];h=m['H_macro']
         lines.append(f"| {r['dataset']} | {r['arm']} | {r['input_path']} | {_fmt(m['old_macro_accuracy']['unit_equal_weight']['mean'])} | {_fmt(m['new_macro_accuracy']['unit_equal_weight']['mean'])} | {_fmt(h['unit_equal_weight']['mean'])} | {_fmt(h['seed_mean_statistics']['sample_SD'])} |")
