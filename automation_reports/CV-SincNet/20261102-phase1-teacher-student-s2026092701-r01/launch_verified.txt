@@ -1,0 +1,17 @@
+PS     PID    PPID     ELAPSED %CPU COMMAND
+ 759825       1       00:07  0.5 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-teacher-student-s2026092701-r01-release/experiments/phase1_teacher_student/phase1_blind_gate_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-teacher-student-s2026092701-r01 --commit a90a5e381c19e94455bfafd9c67321833c764491 --device cuda:0
+ 759916  759825       00:02  110 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-teacher-student-s2026092701-r01-release/experiments/phase1_teacher_student/phase1_teacher_student_source.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-teacher-student-s2026092701-r01/source --commit a90a5e381c19e94455bfafd9c67321833c764491 --device cuda:0
+
+CWD /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release
+LOG PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-teacher-student-s2026092701-r01-release/experiments/phase1_teacher_student/phase1_teacher_student_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-teacher-student-s2026092701-r01/source_smoke", "--commit", "a90a5e381c19e94455bfafd9c67321833c764491", "--device", "cuda:0", "--smoke"]
+TEACHER_STUDENT_SOURCE_SMOKE {"status": "PASS", "count": 16, "active": 16, "DURA_teacher_frozen": true, "F_frozen": true, "gate_frozen": true, "TX_labels_read": 0, "U_s_labels_read": 0, "V_reads": 0, "test_reads": 0}
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-teacher-student-s2026092701-r01-release/experiments/phase1_teacher_student/phase1_teacher_student_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-teacher-student-s2026092701-r01/source", "--commit", "a90a5e381c19e94455bfafd9c67321833c764491", "--device", "cuda:0"]
+
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-teacher-student-s2026092701-r01/source_smoke/result.json True
+DATA {"status": "PASS", "count": 16, "active": 16, "DURA_teacher_frozen": true, "F_frozen": true, "gate_frozen": true, "TX_labels_read": 0, "U_s_labels_read": 0, "V_reads": 0, "test_reads": 0}
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-teacher-student-s2026092701-r01/source/source_selection.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-teacher-student-s2026092701-r01/source/prediction_smoke.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-teacher-student-s2026092701-r01/source/flow/test_prediction/complete.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-teacher-student-s2026092701-r01/completion.json False
+GPU3 0 %, 331 MiB
+
