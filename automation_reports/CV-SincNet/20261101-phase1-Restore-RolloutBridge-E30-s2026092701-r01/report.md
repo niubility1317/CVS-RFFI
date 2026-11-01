@@ -39,3 +39,10 @@
 9项相关检查（新4+State5）/一次独立P0P1 PASS；真实Ls2的actual四步训练=部署逐值相同、四步梯度/E0严格重载为launcher首步，PASS立即训练。技术快照E01..30不作模型选择，固定final30自动原地面完整Tri-SIG-TIME SSL/defaulthead/Main126000+42000各七景，全预测固定后独立CPU truth-last/原共享锁，raw/DURA按同IQ-ID精确复用；六景每景至少140345正确=83.538690476%，两个总体分别保持clean。所有版本完整测试，不因源质量取消，默认DURA不改，历史基准曝光和单seed限制披露。
 
 部署仍4×260633600=1042534400实数Conv/Linear/attention MAC，0FFT/CG；同函数/同结构复用State静态计数，不是新实测时延，F0/norm/activation/FiLM逐点/softmax/投影/更新/内存排除。训练由1core/记录变为4core/记录（7560000行），仍1890000在线F0输出特征与63000clean特征参考；30轮不等于相同训练计算量或全部系统历史成本。GPU4/6 UUID/free≥12000MiB/原compute≤2/add1总≤3，只新增一个本任务worker，其他owner保持，实际墙钟/峰值显存另测。源2smoke后的全批显存和第一轮真实耗时读回，技术失败保留产物/不自动重试。精确环境/CWD/命令/路径/停止规则和预期产物见登记矩阵。
+
+
+## 实际四步展开训练已运行（2026-11-01）
+
+`20261101-phase1-Restore-RolloutBridge-E30-s2026092701-r01`，实际代码`7250d0a88160d6ab949dafbdc73edb7f302e290f`，4676898参数、与StateBridge/c50实际E0逐张量一致、全G从零单阶段30/7410。训练和部署均为当前received起点的四步state-only共享网络，clean只作最终loss参考，最终损失贯穿全部四步、不detach；0clean混合训练输入/时间抽样/旧G祖先，源F0连续特征loss-only，0TX/V/OE/目标更新或选模，OE仅冻结诊断。
+
+VERIFIED/RUNNING：9重点检查/一次P0P1、真实Ls2四步训练部署精确一致/四步梯度/E0重载PASS。E01/247耗时203.122173秒，模型/优化器/CPU-CUDA RNG独立CPU读回及同State实际E0/原加权loss复算PASS。GPU4准入free20452MiB/原2compute，只新增1条；PID/CWD/CUDA/GPU和日志核实，其他owner保持。训练core数4倍、epoch/更新仍30/7410，不称同训练计算量。固定final30后自动原地面Tri-SIG-TIME SSL/defaulthead/Main168000×七景，全部预测后独立truth-last；性能PENDING，六景逐个3pp+两个总体clean主目标ACTIVE，效率支线，默认DURA不变。

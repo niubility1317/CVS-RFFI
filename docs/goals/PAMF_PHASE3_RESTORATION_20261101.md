@@ -291,3 +291,9 @@ DirectBridge低档城区Fclean一致率84.749304%→84.749304%，相对首步净
 ## 九个新恢复器的原 Main 同口径性能核对
 
 只复用九版完整公开结果及固定raw/DURA，同一原地面Tri-SIG-TIME SSL/defaulthead、Main168000×七景，按研发顺序汇总，不排序选模或拼接最佳场景。正确数、六景3pp差距和两个clean总体分列；新神经前向/训练或目标原始数据/真值读取均0。准确率保留比例不作波形恢复率或理论上限，原默认DURA和完整目标ACTIVE保持。见[性能核对](../PAMF_RESTORATION_MAIN_PERFORMANCE_AUDIT_20261101.md)及同名JSON/CSV。
+
+## 实际四步展开训练已运行（2026-11-01）
+
+`20261101-phase1-Restore-RolloutBridge-E30-s2026092701-r01`，实际代码`7250d0a88160d6ab949dafbdc73edb7f302e290f`，4676898参数、与StateBridge/c50实际E0逐张量一致、全G从零单阶段30/7410。训练和部署均为当前received起点的四步state-only共享网络，clean只作最终loss参考，最终损失贯穿全部四步、不detach；0clean混合训练输入/时间抽样/旧G祖先，源F0连续特征loss-only，0TX/V/OE/目标更新或选模，OE仅冻结诊断。
+
+VERIFIED/RUNNING：9重点检查/一次P0P1、真实Ls2四步训练部署精确一致/四步梯度/E0重载PASS。E01/247耗时203.122173秒，模型/优化器/CPU-CUDA RNG独立CPU读回及同State实际E0/原加权loss复算PASS。GPU4准入free20452MiB/原2compute，只新增1条；PID/CWD/CUDA/GPU和日志核实，其他owner保持。训练core数4倍、epoch/更新仍30/7410，不称同训练计算量。固定final30后自动原地面Tri-SIG-TIME SSL/defaulthead/Main168000×七景，全部预测后独立truth-last；性能PENDING，六景逐个3pp+两个总体clean主目标ACTIVE，效率支线，默认DURA不变。
