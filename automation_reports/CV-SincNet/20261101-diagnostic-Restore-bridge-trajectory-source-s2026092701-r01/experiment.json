@@ -1,0 +1,167 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01",
+  "group_id": "restoration-frozen-source-four-step-trajectory",
+  "display_name": "冻结四步恢复轨迹：原源面板逐步保真分析",
+  "description": "两版固定final30在原源512×20记录逐步分析，与首步配对；零训练和目标IQ/真值读取，等父Main技术完成后运行。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "frozen-final30",
+    "four-step-trajectory",
+    "no-TX-target",
+    "zero-update",
+    "performance-diagnostic"
+  ],
+  "comparison_group_id": "frozen-direct-vs-state-bridge-source-steps",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User goal performanceprimary/originalTriSIGSSLMain/originalLsUs-onlyG;boundedfrozen-source trajectory/defaultheaddiagnosis/noTX-targetIQ-truth/no updates or selection;otherowners andbothparentMainplansunchanged.",
+  "code": {
+    "commit": "128cc49df04f346f29c93d8173192cc56bd3bd77",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "ExistingN607CVS-RFFI Torch2.1/NumPy2/FP32 TF32off CPUthreads2;actual3ff8F0/defaulthead andtwofixedsource-onlyfinal30 G",
+    "cwd": "releases/20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005 Ls6300Us56700;existingR07twentytrainrealizations",
+    "representation": "R07FP32clean/received2x256;fixed128Ls+384Us sourcepanel/20storednativechanneltrain-draws. No new observation generation or training.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "R07cache/train/physical_ids.npy roles.npy;existing20261101LUcache IDs/roles forminimumcontractmatch",
+    "label_map_ref": "No source trueTX labels. SamefrozenF0 sixclassorder/defaulthead onlydiagnosticpredictions/agreement;notTXaccuracy/no new fittedhead.",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE sourcehandles. R07complete20/63000/0TX-target. Inputaudit same63000uniqueIDset (orderdiffers),roles/RX/day samebyID;clean maxabs4.76837158203125e-7 NMSE1.7667841088968941e-15. No repeateddatahash/revalidation.",
+    "support_query_ref": "None. OriginalR07LsUs in-sample;canonical63000ID-role compatibility/f57sourcevariance reused.",
+    "leo_config_ref": "ExistingR07sourcecache20/clean15%+sixsceneuniform85%;no new simulator observations;2.462GHz retains own identity",
+    "actual_training_labels": "No training. OriginalLsUs IQ and frozenF0cleanfeatures/defaulthead references only;noTX/V/OE/novel/targetIQ-truth.",
+    "augmentation": "No new RNG/channel;exact512records x20existingR07draws/parentfull4stepdeterministicmodels."
+  },
+  "permissions": {
+    "regime": "source-only-frozen-four-step-diagnostic",
+    "query_use": "0targetIQ-truth. Onlyparentcomplete/terminalmetadatawait;sourceLsUs IQ/frozenF0features anddefaultheaddiagnostic. 0TX/V/OE/novel/update/selection/newhead.",
+    "external_method_exception": null,
+    "claim_scope": "Frozen in-sample source mechanism comparison/eachstepvsfirst. Fclean agreement isnotTXaccuracy;no theoreticalceiling orunknownpreservation claim;Main2pop7 remainsprimary/defaultDURAunchanged."
+  },
+  "checkpoint": {
+    "initialization": "No training. Constructmatchingrandomfactoriesandstrictlyloadtwofixedsourcefinal30/E30-7410states for frozen inference only.",
+    "sources": [
+      "FrozenDirectBridge/84a063c9ba1f9974cfe361e293a9e11fa93920b4/sourceonlyscratch30-7410/4677538params",
+      "FrozenStateBridge/c50a9159b1fb891c6f1a6f8ad4bfa2d7eb66222e/sourceonlyscratch30-7410/4676898params",
+      "OriginalTriSIGTIME_SSLF0/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/sourceonlyE50-11100/232993/defaulthead",
+      "DATAONLYR07original63000LsUs/train63000/20draws/0TX-target",
+      "DATAONLYf57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9/originalsource63000F0featurevariance/nolearnedGancestor"
+    ],
+    "contract_check_ref": "ExactDirect84/Statec50 final30-7410/config/params/source-onlycomplete;original3ff8F0identity/R07roleIDalignment viaexistingVALIDATED_ONCE handles. No newdatahash/revalidation.",
+    "provenance_verdict": "BothGstrictfixedfinal30/config/code/parameters/zeroTX-V-OE-target-Fupdates. F0originalMaindataidentity. No adaptation/modelselection;source reference clean remains diagnostic only.",
+    "selection_rule": "AlltwoG/4steps/20drawsfixed before scores. WaitonlyparenttechnicalMaincompletion,notperformancethreshold/results. No checkpointfeedback/no newtraining."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/bridge-source-trajectory",
+    "gpu_policy": "Afterbothparentrunstechnicallycomplete:GPU4/6UUID/free>=12000MiB/existingcompute<=2/add1total<=3;one diagnosticNN/globaltask<=2/othersuntouched",
+    "remote_run_root": "runs/20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01",
+    "remote_log_root": "runs/20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.bridge_trajectory run --root /home/szu2070436088/2510044040/CV-SincNet --commit 128cc49df04f346f29c93d8173192cc56bd3bd77 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Parenttechnicalfailure/wrongsource-F0-G-config/shape/collision/nonfinite/coverage/statechange/technicalfailure:preserve/noautoretry. Source2actual4step-vsdeployment-smokePASSimmediatelyall81920trajectoryrows;no scientificqualitygate."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "source_records.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Eachsource4steps IQNMSE/F0featurecos+sourcevarMSE/latentcos+std/Fcleanagreement/latentdefaultheadagreement/rawcomplexpower/unitpowererror/changefromfirstNMSE",
+      "Samecasepairsagainstfirst:repair-damage-net usingFclean decisions/notTXaccuracy/permodel-step-scene-lock",
+      "Complete81920trajectoryrows/exactfrozenG.forwardequals4th/source512x20aligned/statesunchanged/0training-target"
+    ],
+    "dimensions": [
+      "DirectBridgefinal30",
+      "StateBridgefinal30",
+      "step1..4/t1-.75-.5-.25",
+      "overall/scene/lock",
+      "sourcein-sample128Ls384Us/20storeddraws"
+    ],
+    "prediction_ref": "PRIVATE source_records.npz/frozenbothmodels/4steps;noMainpredictionartifactread",
+    "scorer_ref": "Source-no-truth summarize per same records;independent source scalar/pair recheck after complete;no trueTX."
+  },
+  "rows": [
+    {
+      "row_id": "source-bridge-2G-4step-512x20",
+      "method": "frozen-source-four-step-trajectory",
+      "purpose": "source-onlyactualiterationdiagnosis/no newtraining",
+      "config_ref": "experiments/pamf_phase3_restoration/bridge_trajectory.py",
+      "resolved_config_ref": "fixedMETHODS/COMMITS/METRICS/twofinal30/sourcepanel512x20/releaseinputs PRIVATE",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101911
+      },
+      "seed_notes": "No newtraining/channelRNG. FixedR07observations/panel;seedonlyscratchconstructorbeforestrictload.",
+      "k": null,
+      "scenario": "sourceR07frozen2G4steps/pairedagainstsameGfirstprediction",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0updates/0TX-V-OE-novel-targetIQ. 2models*4steps*512*20=81920Gcore andF0outputfeaturerows;512F0cleanrows;81920samefrozendefaultheadlatentreadouts. Source2extraGcore32/F0features4. No newheadfit.",
+      "output_root": "runs/20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01",
+      "log_path": "runs/20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.bridge_trajectory worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 128cc49df04f346f29c93d8173192cc56bd3bd77 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "smoke.json",
+        "source_records.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Main6each3pp+cleanperformanceprimary/unmet/notreplacedbysourceagreement/defaultDURAunchanged.",
+    "Onlysource mechanism analysis for alreadyregisteredDirect/State. CPUcontrollerwaitsbothtargetprediction-scoringtechnicalcompletionwithoutreadingtheirscores;doesnotalter/blockparents. No thirdNNduringbothparentNNwork.",
+    "Firstsource2manualtrajectoryequalsactualGforward/allF0outputsfinite;thenall20draws/81920rows. OwnfactoriesloadedbeforeF0namespace bootstrap;G/F0evalrequires_gradFalse andexactendstatecheck.",
+    "SourcecleanonlyreferenceandFcleanfeatures/head indecisiondiagnostic;noTX/logitsloss/CE/newhead/optimizerupdates/modelselection/V-OE-novel-targetIQ. CurrentGtrainingparentsareF-guided;diagnosticreadoutdoesnotchangemethod.",
+    "Fourstepchangesandlatentdecisionsdo notproveactualalgebraicshortcut/oracleceiling/generalization/unknownidentity. Sourcein-sample/repeated512not10240independentsamples. FullMainbothnewG remainsseparateprimaryevidence.",
+    "3focusedchecksPASS/oneP0P1PASS. Oneimmutableoutput/releasearchiveSHA/remotecompile/source2smoke;alltechnicalfailurespreserved/noautoretry. No newcachevalidation/hashchain."
+  ],
+  "registered_at": "2026-11-01T13:47:17+00:00"
+}
