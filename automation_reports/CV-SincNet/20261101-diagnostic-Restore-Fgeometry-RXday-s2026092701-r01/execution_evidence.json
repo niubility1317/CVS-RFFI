@@ -1,0 +1,25 @@
+{
+  "status": "VERIFIED_COMPLETE",
+  "code_commit": "afd4af77ed637fd8a5a0908c264c1d8b0b90c72e",
+  "source_count": 63000,
+  "dimensions": 160,
+  "CPU_only": true,
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "actual_worker_CWD_and_argv_match_release": true,
+  "worker_normal_exit": true,
+  "worker_absent": true,
+  "independent_check": {
+    "status": "PASS",
+    "source_rows": 63000,
+    "dimensions": 160,
+    "independent_groupmask_recalculation": true,
+    "max_abs_variance_error": 1.494637746901617e-14,
+    "max_abs_aggregate_fraction_error": 4.518954654919582e-16,
+    "new_neural_forwards": 0,
+    "target_inputs": 0
+  },
+  "no_new_NN_or_model": true,
+  "upstream_real_checkpoint_smoke": "PASS",
+  "current_source_handle_smoke": "PASS"
+}
