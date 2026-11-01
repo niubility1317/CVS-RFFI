@@ -1,0 +1,58 @@
+{
+  "status": "SOURCE_ONLY_DIAGNOSTIC",
+  "checkpoint_sha256": "ad3566219dc588b1b8154a571613e3d93dc593482c1406609f6299eb6f33517d",
+  "source_records": 512,
+  "source_views": [
+    1,
+    20
+  ],
+  "source_truth_labeled": 128,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "interpretation": "Same source training records; view 20 is not used in epoch 1; clean-teacher agreement is not TX accuracy.",
+  "results": [
+    {
+      "view": 1,
+      "accepted": 1,
+      "proposed_disagreement": 46,
+      "confident_disagreement": 2,
+      "verified_disagreement": 17,
+      "clean_teacher_agreement": {
+        "count": 512,
+        "old_matches": 491,
+        "new_matches": 492,
+        "repairs": 1,
+        "damages": 0
+      },
+      "L_s_label_accuracy": {
+        "count": 128,
+        "old_matches": 121,
+        "new_matches": 122,
+        "repairs": 1,
+        "damages": 0
+      }
+    },
+    {
+      "view": 20,
+      "accepted": 0,
+      "proposed_disagreement": 29,
+      "confident_disagreement": 0,
+      "verified_disagreement": 6,
+      "clean_teacher_agreement": {
+        "count": 512,
+        "old_matches": 492,
+        "new_matches": 492,
+        "repairs": 0,
+        "damages": 0
+      },
+      "L_s_label_accuracy": {
+        "count": 128,
+        "old_matches": 125,
+        "new_matches": 125,
+        "repairs": 0,
+        "damages": 0
+      }
+    }
+  ]
+}
