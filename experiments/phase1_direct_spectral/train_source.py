@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from torch.nn import functional as F
-from model import DirectSpectralRestorer
+from direct_spectral_model import DirectSpectralRestorer
 DEP=Path('/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-bayes-residual-full-s2026092701-r01-release')
 if (DEP/'release_commit.txt').read_text().strip()!='848c4b4c47b054f43c8303638e5aa549154ebfd4':raise ValueError('Exact Phase1 source interface release required')
 sys.path.insert(0,str(DEP/'experiments/phase1_bayes_residual_full'))

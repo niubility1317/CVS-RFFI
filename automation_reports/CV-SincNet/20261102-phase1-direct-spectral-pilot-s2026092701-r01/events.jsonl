@@ -1,1 +1,2 @@
 {"at": "2026-11-01T21:45:44+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T21:47:05+00:00", "status": "FAILED", "note": "Preflight-only failure. Preserve immutable output and register a new release after renaming the direct model module.", "evidence": ["Remote source preflight traceback: generic local model.py was imported as model and collided with frozen classifier native model import; no training or target data access occurred."], "row_id": null}

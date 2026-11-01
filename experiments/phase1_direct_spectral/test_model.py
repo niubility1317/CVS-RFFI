@@ -1,5 +1,5 @@
 import torch
-from model import DirectSpectralRestorer
+from direct_spectral_model import DirectSpectralRestorer
 
 def test_identity_initialization_and_batch_independence():
     torch.manual_seed(1);model=DirectSpectralRestorer().eval();x=torch.randn(4,2,256)
