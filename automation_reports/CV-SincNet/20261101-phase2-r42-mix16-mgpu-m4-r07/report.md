@@ -27,3 +27,5 @@ User-directed increase of R42 process concurrency across GPUs, leaving GPU7 unch
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+2026-11-01 用户并发调整：VERIFIED TRANSFERRED: four real-source no-query smokes PASS; prior MIX completed units indexed and predecessor workers retained. R42 per GPU max GPU0/2/3/6=3, GPU1/4/5=2, GPU7=2 unchanged; minimum free6000MiB; other owner unchanged. All 672 MIX predictions fixed before independent scoring.
