@@ -1,0 +1,174 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-student-hard-correct-s2026092701-r01",
+  "group_id": "phase1-source-teacher-disagreement-correction",
+  "display_name": "独立学生网络的教师分歧纠错",
+  "description": "独立 IQ 恢复学生从固定第三轮阶段权重出发，对冻结 DURA 与高置信干净 Tri-SIG-TIME SSL 预测不一致的 Phase1 源训练样本加强纠错；推理不依赖 DURA。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_teacher",
+    "independent_student",
+    "teacher_disagreement",
+    "blind_gate",
+    "source_only_selection",
+    "truth_last",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-teacher-student-s2026092701-r01",
+    "20261102-phase1-blind-gate-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "32ca311f183b04549e05d775002e442e75f36389",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python GPU2 if idle, two CPU threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256]; source L_s/U_s paired clean and simulated post_sync residual channel",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels or U_s truth read; frozen DURA and Tri-SIG-TIME SSL predictions guide source training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "7840 RX4/6 day3 IDs and 3921 RX8 day3 exploratory heldout on source cache17; IDs previously used under other channel views; all excluded student training; no V",
+    "support_query_ref": null,
+    "leo_config_ref": "Fixed source cache epochs6–10 training, epoch17 selection; seven Phase1 simulated scenes"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "No target data until all source selection fixed; then seven-view predictions before truth; no Phase3",
+    "external_method_exception": null,
+    "claim_scope": "Single seed, source heldout and Phase1 development previously observed, no independent-blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed teacher-student parent checkpoint epoch3, frozen source gate, frozen DURA and Tri-SIG-TIME SSL; no DURA inference",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-teacher-student-s2026092701-r01/source/checkpoint_epoch03.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "Parent epoch3 commit a90a5e381c19e94455bfafd9c67321833c764491, SHA256 5ce15c46544323d554d60af22a22358d3334a8febdd4210df3da62912b14fa7f; core.data validates source IDs",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Source cache17 RX4/6 day3 clean F pseudo agreement and aligned IQ relative DURA; epochs1/3/5 alpha .5/1 gate thresholds .8/.99; <=0.5% loss per cell, clean IQ <=DURA+.001, impaired IQ <=1.2x DURA+1e-6, net impaired gain >=10; else retain DURA; RX8 heldout not used selection"
+  },
+  "execution": {
+    "host": "N607 GPU2",
+    "launch_owner": "Codex independent student disagreement correction single owner",
+    "gpu_policy": "GPU2 only if idle; one worker, two CPU threads",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-student-hard-correct-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-student-hard-correct-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-student-hard-correct-s2026092701-r01-release/experiments/phase1_student_hard_correct/phase1_blind_gate_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01 --commit 32ca311f183b04549e05d775002e442e75f36389 --device cuda:0",
+    "stop_rule": "Only provenance/role violation, output collision, nonfinite or technical execution failure; preserve all partial outputs; no stop for low performance"
+  },
+  "expected_artifacts": [
+    "source_smoke/result.json",
+    "source/checkpoint_epoch01.pt",
+    "source/checkpoint_epoch03.pt",
+    "source/checkpoint_epoch05.pt",
+    "source/source_selection.json",
+    "source/selected.pt if selected",
+    "source/prediction_smoke.json if selected",
+    "source/flow/test_prediction/complete.json if selected",
+    "source/flow/test_summary.json and paired_dura.json if selected",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "repair/damage/net",
+      "raw clean gap pp",
+      "relative clean decline",
+      "aligned IQ MSE"
+    ],
+    "dimensions": [
+      "source per receiver and scene F pseudo agreement",
+      "source clean preservation and gate rate",
+      "seven Phase1 development views",
+      "TX RX day post-truth scorer"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01/source/flow/test_prediction",
+    "scorer_ref": "experiments/pamf_phase1_flow/experiment.py#score and phase1_complex_multires_compare.py",
+    "scientific_rule": "Goal six scenario accuracies versus clean ground SSL <=3 pp and also <=3% relative, clean protection, no blind claim."
+  },
+  "rows": [
+    {
+      "row_id": "student_hard_correct_s2026092701",
+      "method": "fixed parent independent IQ student with confidence-qualified source teacher-disagreement correction; frozen DURA source teacher and frozen ground SSL, no DURA inference",
+      "purpose": "source hard-disagreement student training then DURA-relative Phase1 evaluation",
+      "config_ref": "experiments/phase1_student_hard_correct/phase1_teacher_student_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01/source/source_selection.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026111254,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026111255
+      },
+      "seed_notes": "Fixed prior source ID split 2026110551; student seed 2026111254 and shuffle seed 2026111255; cache 6–10 training and 17 source selection",
+      "k": null,
+      "scenario": "source clean + six simulated scenarios, followed by seven full Phase1 views if selected",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0001,
+      "epochs": 5,
+      "fl_rounds": null,
+      "budget_ref": "47143 source training IDs, gate-active subset, batch32, 5 epochs; fresh cache17 source eval 7840/3921 correlated identities",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-student-hard-correct-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-student-hard-correct-s2026092701-r01-release/experiments/phase1_student_hard_correct/phase1_blind_gate_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-student-hard-correct-s2026092701-r01 --commit 32ca311f183b04549e05d775002e442e75f36389 --device cuda:0",
+      "expected_artifacts": [
+        "source_smoke/result.json",
+        "source/checkpoint_epoch01.pt",
+        "source/checkpoint_epoch03.pt",
+        "source/checkpoint_epoch05.pt",
+        "source/source_selection.json",
+        "source/selected.pt if selected",
+        "source/prediction_smoke.json if selected",
+        "source/flow/test_prediction/complete.json if selected",
+        "source/flow/test_summary.json and paired_dura.json if selected",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Teacher disagreement is defined by DURA F prediction versus high-confidence clean F pseudo prediction; not asserted true error.",
+    "No TX labels, U_s truth, V or target IQ read during source training or selection.",
+    "DURA is source teacher/comparator, never inference input; ground F remains frozen.",
+    "Parent checkpoint chosen before parent final source selection; source validation IDs previously inspected under other views, not independent blind."
+  ],
+  "registered_at": "2026-11-01T17:49:58+00:00"
+}
