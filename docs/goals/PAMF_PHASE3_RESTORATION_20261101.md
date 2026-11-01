@@ -207,3 +207,11 @@ CPU控制器已独立核实PID/CWD/命令/CUDA空、WAIT_PARENT_COMPLETE，当�
 `20261101-phase1-Restore-FeatureCond-E30-s2026092701-r01`，实际代码`c8659b15bb3d316325867b154eede51f1a61e247`，4670178参数、260546560 Conv/Linear/attention MAC（不含FiLM逐点/归一化/F0等，非时延）、0FFT/CG。共享encoder预测连续160维F0源clean特征，四FiLM用预测latent调decoder，输出原clean单位复功率；teacher仅loss、部署只IQ。全模型scratch单阶段30/7410，原LsUs/R07/order/LR/seed保持，输出F指导加连续latent回归，无TX/logit/CE/六类原型/新分类头/旧G或IQ教师祖先；OE仅冻结诊断，V/目标不训练选模。结构/辅助损失/功率约束共同变化，非单因素。
 
 7项检查/一次P0P1及实际Ls2F0/G梯度/E0重载PASS；首轮247更新完成，E01模型/优化器/RNG独立CPU读回PASS。GPU4准入free23484MiB/原1compute/新增1个，自身PID-CWD-CUDA-GPU与日志核实，未改其他owner。固定final30后自动原Main168000×七景、全部预测后独立truth-last，不因源质量取消。当前性能PENDING，六景3pp+clean主目标ACTIVE、效率次级、默认DURA不变。
+
+## 连续特征条件恢复器原 Main 七景完成（2026-11-01）
+
+`20261101-phase1-Restore-FeatureCond-E30-s2026092701-r01`，实际代码c8659b15bb3d316325867b154eede51f1a61e247。新G4670178参数，全部scratch单阶段30/7410；连续源F0特征预测+四FiLM+辅助回归+单位复功率输出，是系统比较。teacher仅loss、部署只IQ、原F0/defaulthead冻结；无旧G/神经IQ教师祖先、TX/logits/CE/新分类头。原LsUs/R07/源顺序/20+10draw/优化器/预算匹配已完成FullFGrad对照。V/OE/novel/目标不训练、选模或早停，OE仅冻结诊断。
+
+原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景全部固定预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736 raw配对/1302额外配对复算PASS，最大误差1.24e-14、raw/DURA判决差0；60日志、同sourceorder/draw、新E0零输出/FiLM及30恢复文件E30-final一致性通过。
+
+六景依次77.906548/76.511905/74.880357/76.644048/70.342857/64.372619%，达标0/6，相对FullFGrad依次-0.426786/-0.452381/-0.617262/-0.554762/-1.066071/-1.476786个百分点。合并clean 86.619048%（保持），分总体损伤和完整TX/RX/day/配对/成本见analysis.md。完整目标未达到，保持ACTIVE和默认DURA。性能为主线，训练效率为支线；源指标或训练完成不能替代逐景验收，不依据目标结果调参或重排候选，不把准确率保留比例解释为信息恢复上限。
