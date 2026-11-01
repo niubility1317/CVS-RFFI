@@ -1,0 +1,26 @@
+PS     PID    PPID     ELAPSED %CPU COMMAND
+ 735221       1       00:08  0.2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-semantic-s2026092701-r01-release/experiments/phase1_direct_semantic/phase1_axial_spectral_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-semantic-s2026092701-r01 --commit c957ef168f4ff6ef5671331668481b40d111228c --device cuda:0
+ 735316  735221       00:03  109 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-semantic-s2026092701-r01-release/experiments/phase1_direct_semantic/phase1_axial_spectral_source.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-semantic-s2026092701-r01/source --commit c957ef168f4ff6ef5671331668481b40d111228c --device cuda:0
+
+CWD /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release
+LOG PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-semantic-s2026092701-r01-release/experiments/phase1_direct_semantic/phase1_axial_spectral_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-semantic-s2026092701-r01/source_smoke", "--commit", "c957ef168f4ff6ef5671331668481b40d111228c", "--device", "cuda:0", "--smoke"]
+SEMANTIC_SOURCE_SMOKE {"status": "PASS", "records": 16, "finite_loss": 0.9649933576583862, "source_only": true, "DURA_used": false, "F_frozen": true, "TX_labels_read": 0, "V_reads": 0, "test_reads": 0}
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-semantic-s2026092701-r01-release/experiments/phase1_direct_semantic/phase1_axial_spectral_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-semantic-s2026092701-r01/source", "--commit", "c957ef168f4ff6ef5671331668481b40d111228c", "--device", "cuda:0"]
+
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-semantic-s2026092701-r01/source_smoke/result.json True
+{
+  "status": "PASS",
+  "records": 16,
+  "finite_loss": 0.9649933576583862,
+  "source_only": true,
+  "DURA_used": false,
+  "F_frozen": true,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "test_reads": 0
+}
+
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-semantic-s2026092701-r01/source/source_selection.json False
+FILE /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-semantic-s2026092701-r01/completion.json False
+GPU3 9 %, 959 MiB
+
