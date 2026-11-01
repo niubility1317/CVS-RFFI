@@ -51,3 +51,21 @@ Action矩阵相对MSE下降只说明所登记的矩阵回归更好，不保证�
 实际worker65.861080秒；10240 G估计器、40960后验/F0输出、512 clean参考，smoke额外4估计器/4后验/2 F0。0新训练、统计拟合、TX/V/OE/novel/目标IQ-预测-评分或选模；独立复算0新神经前向/IQ或truth读取。实际worker运行中postlaunch快照捕获：True。父Main及其他owner未改变。
 
 原Main六景逐个距同F0 raw clean≤3个百分点、分别保持两个clean总体仍是最终验收。该源归因解释固定模型中的参数作用，不将源内优势外推为Main收益，也不据此选择本次候选或更换默认DURA。
+
+## 真实噪声路径只替换方差标量
+
+四路中的 true_noise 和 true_both 使用 R07 缓存的**平均实噪声方差标量**，并未获得实际噪声实现或完整 I/Q 噪声协方差。该标量的改善较小，只约束本次替换的作用，不能扩写成所有噪声结构建模均无价值；“二者真实”也不是完整信息 oracle。
+
+此处依据固定 R07 发布 c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b 的 experiments/pamf_action_restore/data.py 与 code/leo_practical/residual.py。生成器关闭均衡，冻结每条实际源样本的质量配置，以固定随机探针恢复主/镜像系数，并计入该条 AGC；源 Action 对实际 clean 的无噪声重放已在原构建器核对。没有发射机 PA 校正，不能把源算子监督描述成新增的非线性 PA 失真标签。
+
+按固定模拟公式，若原复白噪声 w 的复方差为 q，接收端噪声为 n=m w+i w*，m、i 包含 AGC 和主/镜像旋转，则每个时间点的实二维协方差为：
+
+```text
+Var(Re n) = q/2 (|m|² + |i|² + 2 Re(m i))
+Var(Im n) = q/2 (|m|² + |i|² - 2 Re(m i))
+Cov(Re n, Im n) = q Im(m i)
+```
+
+这是零均值 proper 复白噪声经过广义线性变换的代数展开。R07 保存的是 q/2×mean(|m|²+|i|²)，当前 Gaussian 后验使用该标量乘单位矩阵，未检验上述时变 I/Q 结构。本记录没有新增 IQ、神经前向、噪声协方差实验或 Main 访问，也没有因此修改已固定的新候选。
+
+当前源证据仍优先支持检查信道估计对 RF 特征的作用；已登记的实际后验源特征指导直接检验这一点。源内有限 Gaussian oracle、Fclean 一致率、1−IQ NMSE 与真实 TX 准确率是不同口径，均不能单独给出“极限能恢复 clean 几成”的可靠单值。

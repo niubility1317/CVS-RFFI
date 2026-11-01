@@ -1782,5 +1782,11 @@
       "both_true_net": 79,
       "actual_blind_vs_DURA_net": -24
     }
+  },
+  "oracle_information_scope": {
+    "true_noise": "R07 cached average real noise variance scalar only;not noise realization or full IQ covariance",
+    "true_action": "R07 frozen source simulated widely linear Action including actual-record AGC/quality;not transmitter PA labels",
+    "strict_recoverability_upper_bound": false,
+    "additional_experiment_or_target_access_for_clarification": false
   }
 }
