@@ -27,6 +27,24 @@ def test_scheduler_never_admits_running_or_completed_tasks():
         pending_tasks(tasks, {'a'}, {'a'}, set())
 
 
+def test_mix_only_keeps_original_keys_and_complete_kn_matrix():
+    from experiments.pamf_phase2_practical import milkr_r42_suite as suite
+    from experiments.pamf_phase2_practical.r42_fast_takeover import selected_tasks
+    rx=[f'r{i}' for i in range(7)]
+    eps=[f'MIX{i:02d}' for i in range(1,9)]+[f'{p}{i:02d}' for p in ('LS','MU','LU') for i in range(1,6)]
+    rt=dict(kernel_method='adaptive_residual_ensemble',arm='R42',K=[1,5,10,20],N=[2,5,10,20],
+            model_seeds=[2026092701,2026092702,2026092703,2026092704],target_receivers=rx,
+            capsules=[f'capsules/{p}/{e}/{r}' for p in ('P01','P02','P03') for e in eps for r in rx])
+    all_tasks=suite.tasks(rt); selected=selected_tasks(dict(rt,mix_only=True),all_tasks)
+    assert len(selected)==672 and len(all_tasks)==1932
+    assert selected==[t for t in all_tasks if '/MIX' in t['capsule']]
+    assert sum(len(suite.desired_rows(t['points'])) for t in selected)==139776
+    assert all(len(t['points'])==16 for t in selected)
+    assert selected_tasks(rt,all_tasks)==all_tasks
+    with pytest.raises(ValueError,match='MIX-only'):
+        selected_tasks(dict(rt,mix_only=True),all_tasks[:-1-315])
+
+
 def test_controller_identity_accepts_existing_takeover_only_not_smoke():
     from experiments.pamf_phase2_practical.r42_fast_takeover import controller_command_matches
     runtime = '/release/runtime.json'
@@ -105,7 +123,8 @@ def test_parallel_score_failure_drains_active_and_stops_admission(tmp_path, monk
     assert takeover.read(root/'score_state.json')['status']=='FAILED'
 
 
-def test_failed_smoke_restores_paused_predecessor_without_killing_it(tmp_path, monkeypatch):
+@pytest.mark.parametrize('keep_paused', [False, True])
+def test_failed_smoke_restores_paused_predecessor_without_killing_it(tmp_path, monkeypatch, keep_paused):
     from experiments.pamf_phase2_practical import r42_fast_takeover as takeover
 
     old = dict(release_root='old-release', runtime_file='old-runtime', allowed_gpus=[0])
@@ -125,10 +144,10 @@ def test_failed_smoke_restores_paused_predecessor_without_killing_it(tmp_path, m
         raise subprocess.CalledProcessError(1, args[0])
     monkeypatch.setattr(takeover.subprocess, 'run', fail)
     runtime = dict(allowed_gpus=[0], minimum_free_MiB=6000, poll_seconds=1,
-                   model_seeds=[1], runtime_file='new-runtime')
+                   model_seeds=[1], runtime_file='new-runtime', keep_predecessor_paused_on_failure=keep_paused)
     with pytest.raises(subprocess.CalledProcessError):
         takeover.transfer_owner(runtime, old, 123, {}, tmp_path/'takeover.json')
-    assert signals == [(123, signal.SIGSTOP), (123, signal.SIGCONT)]
+    assert signals == [(123, signal.SIGSTOP)] + ([] if keep_paused else [(123, signal.SIGCONT)])
 
 
 def test_worker_failure_during_smoke_restores_predecessor(tmp_path, monkeypatch):

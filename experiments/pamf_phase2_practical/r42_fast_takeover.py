@@ -213,7 +213,7 @@ def transfer_owner(rt, old, pid, task_by_key, output):
                             inherited_workers=workers, status='TRANSFERRED'))
         return workers
     finally:
-        if not terminated and alive(info): os.kill(pid, signal.SIGCONT)
+        if not terminated and alive(info) and not rt.get('keep_predecessor_paused_on_failure', False): os.kill(pid, signal.SIGCONT)
 
 
 def adopt_orphans(rt, old, task_by_key):
@@ -320,10 +320,19 @@ def score_queue(rt, tasks, limit):
     atomic(root/'score_state.json',dict(status='COMPLETE',completed=completed,total=len(tasks),pending=0,active=[],failed=[]))
 
 
+def selected_tasks(rt, all_tasks):
+    if rt.get('mix_only') is not True:
+        return all_tasks
+    selected = [item for item in all_tasks if '/MIX' in item['capsule']]
+    require(len(selected) == 672, 'Wrong MIX-only matrix')
+    return selected
+
+
 def dispatch(rt):
     old = read(rt['predecessor_runtime_file'])
-    tasks = suite.tasks(rt); by_key = {item['key']: item for item in tasks}
-    require(suite.tasks(old) == tasks and rt['local_ridge_cuda'] is True, 'Takeover matrix/backend differs')
+    all_tasks = suite.tasks(rt); by_key = {item['key']: item for item in all_tasks}
+    require(suite.tasks(old) == all_tasks and rt['local_ridge_cuda'] is True, 'Takeover matrix/backend differs')
+    tasks = selected_tasks(rt, all_tasks)
     root = Path(rt['run_root']); root.mkdir(parents=True, exist_ok=False)
     for name in ('logs', 'launches'): (root/name).mkdir()
     write(root/'owner.json', dict(pid=os.getpid(), cwd=str(Path.cwd()), argv=sys.argv, role='cuda_takeover'))
@@ -339,6 +348,14 @@ def dispatch(rt):
         predecessor=smoke_adopted(rt,old,predecessor,by_key,root/'takeover.json')
     else:
         predecessor = transfer_owner(rt, old, rt['predecessor_controller_pid'], by_key, root/'takeover.json')
+    # Do not relaunch or terminate a predecessor's already running single-scene
+    # task. Let it close in its original immutable root before dispatching MIX.
+    while any('/MIX' not in by_key[key]['capsule'] for key in predecessor):
+        for key, record in list(predecessor.items()):
+            if '/MIX' in by_key[key]['capsule'] or alive(record): continue
+            require(closed_ref(old, by_key[key]) is not None, 'Single-scene predecessor did not close')
+            del predecessor[key]
+        if any('/MIX' not in by_key[key]['capsule'] for key in predecessor): time.sleep(rt['poll_seconds'])
     oldrefs = read(old['prediction_reuse_refs_file']) if old.get('prediction_reuse_refs_file') else []
     inherited = {}; active = {}; finished = set(); failed = []
     for task in tasks:
@@ -387,10 +404,10 @@ def dispatch(rt):
     require(not predecessor and not active and not failed, 'Takeover predictions not closed')
     for task in tasks: suite.prediction_closed(rt,task)
     rows = sum(len(suite.desired_rows(t['points'])) for t in tasks)
-    require(rows == 167496, 'Wrong total prediction rows')
-    write(root/'predictions_complete.json',dict(status='ALL_PREDICTIONS_FIXED',tasks=len(tasks),rows=rows,truth_read=False,query_fit=False))
+    require(rows == (139776 if rt.get('mix_only') is True else 167496), 'Wrong total prediction rows')
+    write(root/'predictions_complete.json',dict(status='ALL_PREDICTIONS_FIXED',tasks=len(tasks),rows=rows,scope='MIX_ONLY' if rt.get('mix_only') is True else 'GROUP1_FULL',truth_read=False,query_fit=False))
     score_queue(rt,tasks,rt.get('max_cpu_scorers',1))
-    write(root/'complete.json',dict(status='SCORED_COMPLETE',tasks=len(tasks),rows=rows,truth_last=True,target_feedback=False))
+    write(root/'complete.json',dict(status='SCORED_COMPLETE',tasks=len(tasks),rows=rows,scope='MIX_ONLY' if rt.get('mix_only') is True else 'GROUP1_FULL',truth_last=True,target_feedback=False))
 
 
 if __name__ == '__main__':
