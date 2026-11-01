@@ -1,0 +1,196 @@
+{
+  "status": "COMPLETE_SOURCE_ONLY_ROUTER_FEASIBILITY",
+  "commit": "72fc85058206823ead84e7d763c244fe24ecaba5",
+  "model_sha256": "5f23bc370ea445dbffe21e1a125f1066321a9df46a1c90e0b617648255323642",
+  "scenes": {
+    "practical_high": {
+      "count": 64,
+      "valid_count": 60,
+      "parent_correct": 60,
+      "oracle_union_correct": 60,
+      "oracle_extra": 0,
+      "parent_mean_iq_nmse": 0.024205170571804047,
+      "0.0": {
+        "correct": 60,
+        "repaired": 0,
+        "harmed": 0,
+        "selected_candidate": 26,
+        "mean_iq_nmse": 0.022739270702004433
+      },
+      "0.05": {
+        "correct": 60,
+        "repaired": 0,
+        "harmed": 0,
+        "selected_candidate": 2,
+        "mean_iq_nmse": 0.021701224148273468
+      },
+      "0.15": {
+        "correct": 60,
+        "repaired": 0,
+        "harmed": 0,
+        "selected_candidate": 1,
+        "mean_iq_nmse": 0.022702833637595177
+      }
+    },
+    "practical_mid": {
+      "count": 64,
+      "valid_count": 61,
+      "parent_correct": 61,
+      "oracle_union_correct": 61,
+      "oracle_extra": 0,
+      "parent_mean_iq_nmse": 0.01901342160999775,
+      "0.0": {
+        "correct": 61,
+        "repaired": 0,
+        "harmed": 0,
+        "selected_candidate": 29,
+        "mean_iq_nmse": 0.020568329840898514
+      },
+      "0.05": {
+        "correct": 61,
+        "repaired": 0,
+        "harmed": 0,
+        "selected_candidate": 2,
+        "mean_iq_nmse": 0.019292054697871208
+      },
+      "0.15": {
+        "correct": 61,
+        "repaired": 0,
+        "harmed": 0,
+        "selected_candidate": 1,
+        "mean_iq_nmse": 0.01923818141222
+      }
+    },
+    "practical_low_suburban": {
+      "count": 64,
+      "valid_count": 61,
+      "parent_correct": 59,
+      "oracle_union_correct": 60,
+      "oracle_extra": 1,
+      "parent_mean_iq_nmse": 0.0425482802093029,
+      "0.0": {
+        "correct": 59,
+        "repaired": 1,
+        "harmed": 1,
+        "selected_candidate": 26,
+        "mean_iq_nmse": 0.04252951592206955
+      },
+      "0.05": {
+        "correct": 60,
+        "repaired": 1,
+        "harmed": 0,
+        "selected_candidate": 4,
+        "mean_iq_nmse": 0.0411013662815094
+      },
+      "0.15": {
+        "correct": 60,
+        "repaired": 1,
+        "harmed": 0,
+        "selected_candidate": 3,
+        "mean_iq_nmse": 0.042110417038202286
+      }
+    },
+    "practical_high_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "parent_correct": 61,
+      "oracle_union_correct": 61,
+      "oracle_extra": 0,
+      "parent_mean_iq_nmse": 0.02645229734480381,
+      "0.0": {
+        "correct": 61,
+        "repaired": 0,
+        "harmed": 0,
+        "selected_candidate": 28,
+        "mean_iq_nmse": 0.026384400203824043
+      },
+      "0.05": {
+        "correct": 61,
+        "repaired": 0,
+        "harmed": 0,
+        "selected_candidate": 2,
+        "mean_iq_nmse": 0.02500353381037712
+      },
+      "0.15": {
+        "correct": 61,
+        "repaired": 0,
+        "harmed": 0,
+        "selected_candidate": 1,
+        "mean_iq_nmse": 0.026495246216654778
+      }
+    },
+    "practical_mid_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "parent_correct": 57,
+      "oracle_union_correct": 59,
+      "oracle_extra": 2,
+      "parent_mean_iq_nmse": 0.052856605499982834,
+      "0.0": {
+        "correct": 58,
+        "repaired": 1,
+        "harmed": 0,
+        "selected_candidate": 32,
+        "mean_iq_nmse": 0.056064192205667496
+      },
+      "0.05": {
+        "correct": 58,
+        "repaired": 1,
+        "harmed": 0,
+        "selected_candidate": 4,
+        "mean_iq_nmse": 0.05335361883044243
+      },
+      "0.15": {
+        "correct": 58,
+        "repaired": 1,
+        "harmed": 0,
+        "selected_candidate": 2,
+        "mean_iq_nmse": 0.053088586777448654
+      }
+    },
+    "practical_low_urban": {
+      "count": 64,
+      "valid_count": 63,
+      "parent_correct": 59,
+      "oracle_union_correct": 60,
+      "oracle_extra": 1,
+      "parent_mean_iq_nmse": 0.08946344256401062,
+      "0.0": {
+        "correct": 59,
+        "repaired": 1,
+        "harmed": 1,
+        "selected_candidate": 30,
+        "mean_iq_nmse": 0.09435640275478363
+      },
+      "0.05": {
+        "correct": 59,
+        "repaired": 1,
+        "harmed": 1,
+        "selected_candidate": 6,
+        "mean_iq_nmse": 0.09047287702560425
+      },
+      "0.15": {
+        "correct": 59,
+        "repaired": 0,
+        "harmed": 0,
+        "selected_candidate": 3,
+        "mean_iq_nmse": 0.0900254100561142
+      }
+    }
+  },
+  "probe_ids": 384,
+  "margins": [
+    0.0,
+    0.05,
+    0.15
+  ],
+  "oracle_uses_clean_ground_F_pseudo": true,
+  "oracle_not_deployable": true,
+  "selectors_use_candidate_confidence_only": true,
+  "source_only": true,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Oracle union uses clean F pseudo-target, not available in deployment; sample previously explored; no test accuracy or general bound."
+}
