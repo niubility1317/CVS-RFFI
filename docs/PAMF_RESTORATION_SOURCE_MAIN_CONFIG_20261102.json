@@ -1,0 +1,240 @@
+{
+  "status": "STATIC_CODE_AND_CONFIGURATION_COMPARISON",
+  "source_code_commit": "c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b",
+  "Main_engine_code_commit": "7669a6de973959290089a04293cc542db26e5fe1",
+  "native_code_comparison": {
+    "channel.py": {
+      "whole_AST_equal": true,
+      "definitions_equal": true,
+      "changed_definitions": []
+    },
+    "residual.py": {
+      "whole_AST_equal": true,
+      "definitions_equal": true,
+      "changed_definitions": []
+    },
+    "equalization.py": {
+      "whole_AST_equal": true,
+      "definitions_equal": true,
+      "changed_definitions": []
+    }
+  },
+  "source_generator_overrides": {
+    "fs_hz": 25000000.0,
+    "fc_hz": 2462000000.0,
+    "scenario": {
+      "expression": "scene"
+    },
+    "processing_route": "residual",
+    "mode": "post_sync",
+    "equalization_enabled": false,
+    "reference_snr_db": 30.0,
+    "boundary": "reflect"
+  },
+  "populations": {
+    "cross_rx": {
+      "count": 126000,
+      "channel": "residual/post_sync/noeq",
+      "union_count": 288000,
+      "evidence": [
+        {
+          "scene": "practical_high",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        },
+        {
+          "scene": "practical_mid",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        },
+        {
+          "scene": "practical_low_suburban",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        },
+        {
+          "scene": "practical_high_urban",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        },
+        {
+          "scene": "practical_mid_urban",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        },
+        {
+          "scene": "practical_low_urban",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        }
+      ],
+      "coverage_warning": "Generated configs do not independently prove origin settings of all copied observations or their membership in each Main population."
+    },
+    "cross_both": {
+      "count": 42000,
+      "channel": "residual/post_sync/noeq",
+      "union_count": 288000,
+      "evidence": [
+        {
+          "scene": "practical_high",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        },
+        {
+          "scene": "practical_mid",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        },
+        {
+          "scene": "practical_low_suburban",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        },
+        {
+          "scene": "practical_high_urban",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        },
+        {
+          "scene": "practical_mid_urban",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        },
+        {
+          "scene": "practical_low_urban",
+          "copied_records_in_union": 168000,
+          "generated_records_in_union": 120000,
+          "differences": {
+            "fc_hz": {
+              "source": 2462000000.0,
+              "Main_generated": 2450000000.0
+            },
+            "input_processing_state": {
+              "source": "unknown_ground_recording_processing",
+              "Main_generated": "WiSig_equalized1_center256_unit_rms"
+            }
+          }
+        }
+      ],
+      "coverage_warning": "Generated configs do not independently prove origin settings of all copied observations or their membership in each Main population."
+    }
+  },
+  "new_neural_forwards": 0,
+  "IQ_reads": 0,
+  "prediction_reads": 0,
+  "truth_reads": 0,
+  "optimizer_updates": 0,
+  "data_revalidation": false,
+  "causal_performance_effect_estimated": false,
+  "new_run_required": false
+}
