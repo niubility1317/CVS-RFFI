@@ -1,0 +1,5 @@
+{
+  "status": "FAILED_TECHNICAL_PRESERVED",
+  "error": "RuntimeError('score failed; outputs preserved')",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-class-hypothesis-E30-s2026092701-r01-release/experiments/pamf_phase1_flow/class_hypothesis_controller.py\", line 116, in main\n    run('score',cpu)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-class-hypothesis-E30-s2026092701-r01-release/experiments/pamf_phase1_flow/class_hypothesis_controller.py\", line 70, in run\n    if rc:raise RuntimeError(mode+' failed; outputs preserved')\nRuntimeError: score failed; outputs preserved\n"
+}

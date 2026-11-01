@@ -1,0 +1,33 @@
+{
+  "status": "PREDICTIONS_VERIFIED_BEFORE_TRUTH",
+  "source_run": "20261101-phase1-class-hypothesis-E30-s2026092701-r01",
+  "source_failure": {
+    "status": "FAILED_TECHNICAL_PRESERVED",
+    "error": "RuntimeError('score failed; outputs preserved')",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-class-hypothesis-E30-s2026092701-r01-release/experiments/pamf_phase1_flow/class_hypothesis_controller.py\", line 116, in main\n    run('score',cpu)\n  File \"/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-class-hypothesis-E30-s2026092701-r01-release/experiments/pamf_phase1_flow/class_hypothesis_controller.py\", line 70, in run\n    if rc:raise RuntimeError(mode+' failed; outputs preserved')\nRuntimeError: score failed; outputs preserved\n"
+  },
+  "source_commit": "54e93c9b8ea1f6419d94a161cbcea5ffa63f444b",
+  "scorer_commit": "55298e435aaad6df23f2a2bafb73d20668ddb331",
+  "source_sha256": {
+    "complete.json": "82512d0543671a85ec02c11294b05e83978f37d8ea2ada3e88917196200f9db2",
+    "physical_ids.npy": "c7ab2af197a32bfacf05a3524393188103df14d9731da02e76a91b240b224b22",
+    "clean.raw.npy": "af63efb8b7ece72c71daf7bbae0ce64dc9d5f07f4e3bd9328e95681c013f0b43",
+    "clean.restored.npy": "720f270bbf5e5b2a040a37c3aaaa0ec17edae5e1d93b8dfe0eed3dc986b57bf2",
+    "practical_high.raw.npy": "dc1378cb1d92f3e22bf74ce05cd77b45f37df2af3b00e0fde54d91e94f7c3b72",
+    "practical_high.restored.npy": "b80b90683595e827bfb2b8abbe53451341b80b6946750983f39adf067a3a7e3b",
+    "practical_mid.raw.npy": "ea642c9e529d47ea6a49feb524b3b1e8ce9a7c222b6d3b7e74407a8c0f5d38da",
+    "practical_mid.restored.npy": "786abda8c199ff836825bfdfe016552e0847760fc6651dcf6bc4bf962153b5ce",
+    "practical_low_suburban.raw.npy": "32e0bb48871888b2203674bfee5f94bb93d78457c88d1845c3e4d0613812bebb",
+    "practical_low_suburban.restored.npy": "ab9558f9d6df233678c3ab2ab52c78fde26f9c88f4d57b3a4ba2a9dac2f3bc37",
+    "practical_high_urban.raw.npy": "de61f7844facf5eb9e47f3cfae7f6a177ab537a7a95608aec468a38a99628a36",
+    "practical_high_urban.restored.npy": "58e59d588f612c3219da85f0dadc931ce361bc93d02c3da360377cd5d0609791",
+    "practical_mid_urban.raw.npy": "32bf553d4de88b7c3dc82a1f9144cf035f6df7b29da6905544f6e652947a18ac",
+    "practical_mid_urban.restored.npy": "933d07dd7d12d7c13ffa15181898a8231ce4da1d0cfd1aff38072609a60e247a",
+    "practical_low_urban.raw.npy": "8d1792e836e14da408dffa17fd75c6bc9f16aad861dc9bbf7597a827fcc5bd5b",
+    "practical_low_urban.restored.npy": "031988e188d6ab81c9f1cd6d8d7b9c85a22c68eaf7f90c9badd92919e85675ab"
+  },
+  "identical_raw_baseline": true,
+  "accepted_counts_verified": true,
+  "truth_reads": 0,
+  "source_predictions_modified": false
+}
