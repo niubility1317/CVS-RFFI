@@ -1,0 +1,166 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01",
+  "group_id": "restoration-frozen-source-diffusion-sampling-path",
+  "display_name": "冻结残差扩散：源端真实采样轨迹保真诊断",
+  "description": "固定当前final30的received与8步内部clean估计，只用原源512×20面板，无更新或目标IQ/结果读取，不选新部署步数。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "frozen-final30",
+    "diffusion-sampling-path",
+    "no-TX-target",
+    "zero-update",
+    "performance-diagnostic"
+  ],
+  "comparison_group_id": "frozen-diffusion-source-actual8step-vs-first-received",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User goal performanceprimary/originalTriSIGSSLMain/originalLsUs-onlyG;boundedfrozen-diffusion source sampling path/defaultheaddiagnosis/noTX-targetIQ-truth/no updates or selection;otherowners andbothparentMainplansunchanged.",
+  "code": {
+    "commit": "1a7434baa2c579e78fc1119cb09c24a0ae6512b4",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32 TF32off CPUthreads2;actual3ff8F0/defaulthead/fixed5e5921c9final30G",
+    "cwd": "releases/20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005 Ls6300Us56700;existingR07twentytrainrealizations",
+    "representation": "OriginalR07FP32clean/received2x256;fixed128Ls+384Us panel/20storedtrain-draws. No new signals generated.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "R07cache/train/physical_ids.npy roles.npy;existing20261101LUcache IDs/roles forminimumcontractmatch",
+    "label_map_ref": "OriginalfrozenF0sixclass/defaulthead predictions only;0trueTX/notTXaccuracy/noheadfit",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE sourcehandles. R07complete20/63000/0TX-target. Inputaudit same63000uniqueIDset (orderdiffers),roles/RX/day samebyID;clean maxabs4.76837158203125e-7 NMSE1.7667841088968941e-15. No repeateddatahash/revalidation.",
+    "support_query_ref": "None. OriginalR07LsUs in-sample;canonical63000ID-role compatibility/f57sourcevariance reused.",
+    "leo_config_ref": "ExistingR07sourcecache20/clean15%+sixsceneuniform85%;no new simulator observations;2.462GHz retains own identity",
+    "actual_training_labels": "No training. Only originalLsUs IQ/Fcleanfeatures/defaulthead diagnostic;noTX/V-OE-novel-targetIQ-truth.",
+    "augmentation": "No new RNG/channel;fixed512x20 source observations and savedfixedlatent ofparentG."
+  },
+  "permissions": {
+    "regime": "source-only-frozen-diffusion-internal-path-diagnostic",
+    "query_use": "0targetIQ-truth-prediction-score. TechnicalparentlastGPUstage metadata only. SourceLsUs/frozenF0feature-defaulthead references;0TX/V-OE-novel/update/selection/newhead.",
+    "external_method_exception": null,
+    "claim_scope": "Frozen in-sample source internal path diagnosis,not alternative deployment candidates or checkpoint/step selection. FcleanagreementnotTXaccuracy/oraclebound/unknownidentityproof. Mainstillprimary/defaultDURAunchanged."
+  },
+  "checkpoint": {
+    "initialization": "No training. Strictlyloadoriginalresidualdiffusionfinal30/7410/source-only/config-code/1614608Gparameters for frozen inference.",
+    "sources": [
+      "FrozenTFResidualDiffusion/5e5921c975678367a5d0a00ee72d4619e5f6927e/sourceonlyscratchsingle30-7410/1614608params",
+      "OriginalTriSIGTIME_SSLF0/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/sourceonlyE50-11100/232993/defaulthead",
+      "DATAONLYR07original63000LsUs/trainonly/20draws/0TX-target",
+      "DATAONLYf57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9/originalsource63000F0featurevariance/noGancestor"
+    ],
+    "contract_check_ref": "ExactDirect84/Statec50 final30-7410/config/params/source-onlycomplete;original3ff8F0identity/R07roleIDalignment viaexistingVALIDATED_ONCE handles. No newdatahash/revalidation.",
+    "provenance_verdict": "StrictfixedGfinal30/config-code/parameters/0TX-V-OE-target-Fupdates;originalMaindataidentityF0. No adaptation,training,step orcheckpoint selection.",
+    "selection_rule": "Allreceived+8internalreadouts/all20drawsfixed. No readingMainprediction-score;no chosenstep/no new target run. Parentfinal30 already frozen;source result cannot alter healthyMain."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/diffusion-source-path",
+    "gpu_policy": "GPU6only/free>=12000MiB/existingcompute<=2/addONEtotal<=3. StartonlywhenparentlastGPUstagecross_both liveon4via/procPID-cmdline orlastGPUstageexit0;no futureparentNNcanmoveonto6. OwnNN<=2global,onepercard. Otherownersuntouched.",
+    "remote_run_root": "runs/20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01",
+    "remote_log_root": "runs/20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.diffusion_source_path run --root /home/szu2070436088/2510044040/CV-SincNet --commit 1a7434baa2c579e78fc1119cb09c24a0ae6512b4 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Parenttechnicalfailurebeforestart/wrongsource-F0-G-config/collision/nonfinite/coverage/statechange/workererror:preserve/noautoretry. Source2actualpath8th-vsdeployedG equality andF0finitePASSimmediatelyall92160rows. Noqualitygate."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "source_records.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Sourceeachreceived/8steps IQNMSE/F0cos+varianceMSE/Fcleanagreement/complexpower/unitpowererror/changefromfirstNMSE",
+      "Samecasepairs:firstandreceived repair-damage-net basedonlyFcleanagreement/notTXaccuracy/perstep-scene-lock",
+      "Full92160rows/actual8th exactGforward/source512x20alignment/modelstatesunchanged/0target-or-training"
+    ],
+    "dimensions": [
+      "OnefrozenTFResidualDiffusionfinal30/5e5921c9",
+      "receivedstep0+8internalreadouts/finalEuleractualoutput",
+      "overall/scene/lock",
+      "sourcein-sample128Ls384Us/20storeddraws"
+    ],
+    "prediction_ref": "PRIVATEsource_records.npz/received+8internalcleanestimates;0Mainpredictionartifactread",
+    "scorer_ref": "Source-no-truthsummaries/independentscalarandpairrecheckaftercomplete;no trueTX."
+  },
+  "rows": [
+    {
+      "row_id": "source-diffusion-8step-512x20",
+      "method": "frozen-source-diffusion-sampling-path",
+      "purpose": "Actualsourceinternalsamplingtrajectory/no newtraining/no chosenalternativeinference",
+      "config_ref": "experiments/pamf_phase3_restoration/diffusion_source_path.py",
+      "resolved_config_ref": "fixedG_COMMIT/METRICS/sourcepanel512x20/strictparentfinal30;releaseinputs PRIVATE",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101911
+      },
+      "seed_notes": "No diagnostic RNG/channel draws. Fixedoriginal512panel/20R07draws;parentmodel2026092701 andsavedlatent2026110204. Sourcebuilder2026101901/receiver2026101911/augmentation2026101912;no support/evaluation sampling.",
+      "k": null,
+      "scenario": "sourceR07frozenG/received+8internalcleanestimates/samecasepairsagainstfirstandreceived",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0updates/0TX-V-OE-novel-targetIQ. 512x20=10240sourcecasesx9readouts=92160pathrows/F0outputrows. 15denoisers/case=153600Gcore;512cleanF0refs;smokeextraGcore60/F0features2. No training/newheadfit.",
+      "output_root": "runs/20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01",
+      "log_path": "runs/20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.diffusion_source_path worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 1a7434baa2c579e78fc1119cb09c24a0ae6512b4 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "smoke.json",
+        "source_records.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Main6each3pp+bothcleanperformanceprimary/unmet/sourceagreementnotreplacement/defaultDURAunchanged.",
+    "DiagnosticfixedwithoutreadingparentMainpredictionsorscores. No alternative deployedversion/no source stepselection/candidate ranking;all8internalpointsreported. ParentMainfull15samplerremainshealthyunchanged.",
+    "CPUwaitonlylastGPUstagecross_both liveon4(actual/procPIDcmdline)orlastGPUstageexit0. ThenadmitGPU6only. No parent/otherownerstopormodification;max2ownNNdistinctcards.",
+    "Source2firstNNpathfinalEulerexactactualGforward/F0finite thenfull20draws. ModelsfactoriesloadedbeforeF0namespacebootstrap/allfrozenendstatecheck.",
+    "Steps1..7aredenoisedcleanestimatesatactualsamplerstates;step8usestheactualfinalFP32Eulerupdate,notan algebraicallysimplifiedreplacement. No new clean-conditionedoracleinput or noise draws.",
+    "NoTX/V-OE-novel-targetIQ-truth-prediction-score/optimizer/updates/newhead. Fcleanfeatures/defaultheadonlyreference. Repeated512not10240independentsamples;unknownidentityandMainperformanceunproven.",
+    "3focusedchecksPASS/oneindependentP0P1PASS;oneimmutableoutput/archiveSHA/remotecompile/source2smoke/no extra datarevalidation. Fullsourcearraysprivate/publicaggregateonly."
+  ],
+  "registered_at": "2026-11-01T17:33:55+00:00"
+}
