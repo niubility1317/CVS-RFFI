@@ -1307,5 +1307,14 @@
       "net_correct": 1138,
       "accuracy_change_pp": 0.6773809523809433
     }
+  },
+  "same_row_Fclean_agreement_analysis": {
+    "artifact": "frozen_Fclean_agreement.json",
+    "new_neural_forwards": 0,
+    "new_predictions": 0,
+    "truth_reads": 0,
+    "current_FullFGrad_plan_changed": false,
+    "not_TX_accuracy": true,
+    "not_causal_domain_partition": true
   }
 }

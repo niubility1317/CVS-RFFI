@@ -175,3 +175,5 @@ raw clean86.538690%，各景门槛83.538690%。PHY-MSAT六景依次79.983929/76.
 `20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01`，实际代码`940fa78ba450b686b1b03c7530c47af4360faafc`。相对固定已完成VarF r03，只移除每记录F特征输入梯度相对IQ的0.5限幅，原.1(cos+源方差标准化特征MSE)、IQ+.05STFT、全局参数clip1、MSAT4249922参数、同scratch初值/源R07/order/LR/30轮7410保持。非F-free，原F0源特征冻结，不读TX/logit/CE、不另训头；OE仍仅冻结诊断，V/OE/目标不训练或选模。依据为源端限制活跃及源反事实的剩余特征误差，并不预先证明扩大梯度有效。
 
 3项针对性检查、一次P0/P1与真实源2条F0/G梯度/E0重载PASS；首轮247更新完成，E01模型/优化器/RNG独立CPU读回PASS。GPU4以原2个compute和22583MiB余量准入，仅新增本任务1个；其他owner保持。固定final30后自动原Main两总体168000×七景，所有预测完成后独立truth-last，不以源好坏取消测试；六景3pp+clean、性能主线/效率支线与默认DURA不变。当前正式性能PENDING，完整目标ACTIVE。
+
+PHY同row冻结预测补充（无新增NN/预测/目标IQ/TX读取）：低档城区Fclean判决一致率源MSAT87.395543%→源PHY90.250696%，Main旧MSAT69.013690%→PHY66.810119%，默认DURA70.002381%。源512训练包×20draw和Main168000不同包×固定draw存在总体/采样/信道差异，不能拆分独立域偏移原因，也不能把一致率当TX准确率或理论上限。完整六景、clean和分总体见父PHY报告frozen_Fclean_agreement.json。这项补充统计前FullFGrad候选已固定并运行，未据此热改任何配置。

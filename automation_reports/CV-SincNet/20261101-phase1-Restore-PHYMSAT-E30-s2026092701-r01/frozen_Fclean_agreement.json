@@ -1,0 +1,989 @@
+{
+  "status": "COMPLETE",
+  "results": {
+    "MSAT_M20": {
+      "cross_rx": {
+        "count": 126000,
+        "views": {
+          "clean": {
+            "raw": {
+              "matched": 126000,
+              "agreement_percent": 100.0
+            },
+            "DURA_v1": {
+              "matched": 125562,
+              "agreement_percent": 99.65238095238095
+            },
+            "candidate": {
+              "matched": 125436,
+              "agreement_percent": 99.55238095238096
+            }
+          },
+          "practical_high": {
+            "raw": {
+              "matched": 107622,
+              "agreement_percent": 85.41428571428571
+            },
+            "DURA_v1": {
+              "matched": 112908,
+              "agreement_percent": 89.60952380952381
+            },
+            "candidate": {
+              "matched": 107776,
+              "agreement_percent": 85.53650793650793
+            }
+          },
+          "practical_mid": {
+            "raw": {
+              "matched": 103644,
+              "agreement_percent": 82.25714285714285
+            },
+            "DURA_v1": {
+              "matched": 110172,
+              "agreement_percent": 87.43809523809524
+            },
+            "candidate": {
+              "matched": 105082,
+              "agreement_percent": 83.3984126984127
+            }
+          },
+          "practical_low_suburban": {
+            "raw": {
+              "matched": 100114,
+              "agreement_percent": 79.45555555555555
+            },
+            "DURA_v1": {
+              "matched": 106933,
+              "agreement_percent": 84.86746031746031
+            },
+            "candidate": {
+              "matched": 102306,
+              "agreement_percent": 81.1952380952381
+            }
+          },
+          "practical_high_urban": {
+            "raw": {
+              "matched": 102710,
+              "agreement_percent": 81.51587301587301
+            },
+            "DURA_v1": {
+              "matched": 110678,
+              "agreement_percent": 87.83968253968254
+            },
+            "candidate": {
+              "matched": 105823,
+              "agreement_percent": 83.98650793650793
+            }
+          },
+          "practical_mid_urban": {
+            "raw": {
+              "matched": 82953,
+              "agreement_percent": 65.83571428571429
+            },
+            "DURA_v1": {
+              "matched": 98623,
+              "agreement_percent": 78.27222222222223
+            },
+            "candidate": {
+              "matched": 95947,
+              "agreement_percent": 76.1484126984127
+            }
+          },
+          "practical_low_urban": {
+            "raw": {
+              "matched": 67613,
+              "agreement_percent": 53.66111111111111
+            },
+            "DURA_v1": {
+              "matched": 87953,
+              "agreement_percent": 69.80396825396825
+            },
+            "candidate": {
+              "matched": 87009,
+              "agreement_percent": 69.0547619047619
+            }
+          }
+        }
+      },
+      "cross_both": {
+        "count": 42000,
+        "views": {
+          "clean": {
+            "raw": {
+              "matched": 42000,
+              "agreement_percent": 100.0
+            },
+            "DURA_v1": {
+              "matched": 41838,
+              "agreement_percent": 99.61428571428571
+            },
+            "candidate": {
+              "matched": 41761,
+              "agreement_percent": 99.43095238095238
+            }
+          },
+          "practical_high": {
+            "raw": {
+              "matched": 36292,
+              "agreement_percent": 86.4095238095238
+            },
+            "DURA_v1": {
+              "matched": 37673,
+              "agreement_percent": 89.69761904761904
+            },
+            "candidate": {
+              "matched": 36127,
+              "agreement_percent": 86.01666666666667
+            }
+          },
+          "practical_mid": {
+            "raw": {
+              "matched": 35032,
+              "agreement_percent": 83.4095238095238
+            },
+            "DURA_v1": {
+              "matched": 36767,
+              "agreement_percent": 87.54047619047618
+            },
+            "candidate": {
+              "matched": 35341,
+              "agreement_percent": 84.1452380952381
+            }
+          },
+          "practical_low_suburban": {
+            "raw": {
+              "matched": 33788,
+              "agreement_percent": 80.44761904761904
+            },
+            "DURA_v1": {
+              "matched": 35789,
+              "agreement_percent": 85.21190476190476
+            },
+            "candidate": {
+              "matched": 34498,
+              "agreement_percent": 82.13809523809523
+            }
+          },
+          "practical_high_urban": {
+            "raw": {
+              "matched": 34642,
+              "agreement_percent": 82.48095238095237
+            },
+            "DURA_v1": {
+              "matched": 36960,
+              "agreement_percent": 88.0
+            },
+            "candidate": {
+              "matched": 35463,
+              "agreement_percent": 84.43571428571428
+            }
+          },
+          "practical_mid_urban": {
+            "raw": {
+              "matched": 27723,
+              "agreement_percent": 66.00714285714285
+            },
+            "DURA_v1": {
+              "matched": 33266,
+              "agreement_percent": 79.20476190476191
+            },
+            "candidate": {
+              "matched": 32124,
+              "agreement_percent": 76.48571428571428
+            }
+          },
+          "practical_low_urban": {
+            "raw": {
+              "matched": 22630,
+              "agreement_percent": 53.88095238095238
+            },
+            "DURA_v1": {
+              "matched": 29651,
+              "agreement_percent": 70.59761904761905
+            },
+            "candidate": {
+              "matched": 28934,
+              "agreement_percent": 68.89047619047619
+            }
+          }
+        }
+      },
+      "combined": {
+        "count": 168000,
+        "views": {
+          "clean": {
+            "raw": {
+              "matched": 168000,
+              "agreement_percent": 100.0
+            },
+            "DURA_v1": {
+              "matched": 167400,
+              "agreement_percent": 99.64285714285714
+            },
+            "candidate": {
+              "matched": 167197,
+              "agreement_percent": 99.52202380952382
+            }
+          },
+          "practical_high": {
+            "raw": {
+              "matched": 143914,
+              "agreement_percent": 85.66309523809524
+            },
+            "DURA_v1": {
+              "matched": 150581,
+              "agreement_percent": 89.63154761904762
+            },
+            "candidate": {
+              "matched": 143903,
+              "agreement_percent": 85.65654761904761
+            }
+          },
+          "practical_mid": {
+            "raw": {
+              "matched": 138676,
+              "agreement_percent": 82.54523809523809
+            },
+            "DURA_v1": {
+              "matched": 146939,
+              "agreement_percent": 87.46369047619048
+            },
+            "candidate": {
+              "matched": 140423,
+              "agreement_percent": 83.58511904761905
+            }
+          },
+          "practical_low_suburban": {
+            "raw": {
+              "matched": 133902,
+              "agreement_percent": 79.70357142857142
+            },
+            "DURA_v1": {
+              "matched": 142722,
+              "agreement_percent": 84.95357142857142
+            },
+            "candidate": {
+              "matched": 136804,
+              "agreement_percent": 81.43095238095238
+            }
+          },
+          "practical_high_urban": {
+            "raw": {
+              "matched": 137352,
+              "agreement_percent": 81.75714285714285
+            },
+            "DURA_v1": {
+              "matched": 147638,
+              "agreement_percent": 87.8797619047619
+            },
+            "candidate": {
+              "matched": 141286,
+              "agreement_percent": 84.09880952380952
+            }
+          },
+          "practical_mid_urban": {
+            "raw": {
+              "matched": 110676,
+              "agreement_percent": 65.87857142857143
+            },
+            "DURA_v1": {
+              "matched": 131889,
+              "agreement_percent": 78.50535714285714
+            },
+            "candidate": {
+              "matched": 128071,
+              "agreement_percent": 76.23273809523809
+            }
+          },
+          "practical_low_urban": {
+            "raw": {
+              "matched": 90243,
+              "agreement_percent": 53.71607142857143
+            },
+            "DURA_v1": {
+              "matched": 117604,
+              "agreement_percent": 70.00238095238095
+            },
+            "candidate": {
+              "matched": 115943,
+              "agreement_percent": 69.01369047619048
+            }
+          }
+        }
+      }
+    },
+    "MSAT_VarF": {
+      "cross_rx": {
+        "count": 126000,
+        "views": {
+          "clean": {
+            "raw": {
+              "matched": 126000,
+              "agreement_percent": 100.0
+            },
+            "DURA_v1": {
+              "matched": 125562,
+              "agreement_percent": 99.65238095238095
+            },
+            "candidate": {
+              "matched": 125390,
+              "agreement_percent": 99.51587301587301
+            }
+          },
+          "practical_high": {
+            "raw": {
+              "matched": 107622,
+              "agreement_percent": 85.41428571428571
+            },
+            "DURA_v1": {
+              "matched": 112908,
+              "agreement_percent": 89.60952380952381
+            },
+            "candidate": {
+              "matched": 107531,
+              "agreement_percent": 85.34206349206349
+            }
+          },
+          "practical_mid": {
+            "raw": {
+              "matched": 103644,
+              "agreement_percent": 82.25714285714285
+            },
+            "DURA_v1": {
+              "matched": 110172,
+              "agreement_percent": 87.43809523809524
+            },
+            "candidate": {
+              "matched": 104988,
+              "agreement_percent": 83.32380952380953
+            }
+          },
+          "practical_low_suburban": {
+            "raw": {
+              "matched": 100114,
+              "agreement_percent": 79.45555555555555
+            },
+            "DURA_v1": {
+              "matched": 106933,
+              "agreement_percent": 84.86746031746031
+            },
+            "candidate": {
+              "matched": 101970,
+              "agreement_percent": 80.92857142857143
+            }
+          },
+          "practical_high_urban": {
+            "raw": {
+              "matched": 102710,
+              "agreement_percent": 81.51587301587301
+            },
+            "DURA_v1": {
+              "matched": 110678,
+              "agreement_percent": 87.83968253968254
+            },
+            "candidate": {
+              "matched": 105779,
+              "agreement_percent": 83.9515873015873
+            }
+          },
+          "practical_mid_urban": {
+            "raw": {
+              "matched": 82953,
+              "agreement_percent": 65.83571428571429
+            },
+            "DURA_v1": {
+              "matched": 98623,
+              "agreement_percent": 78.27222222222223
+            },
+            "candidate": {
+              "matched": 96194,
+              "agreement_percent": 76.34444444444445
+            }
+          },
+          "practical_low_urban": {
+            "raw": {
+              "matched": 67613,
+              "agreement_percent": 53.66111111111111
+            },
+            "DURA_v1": {
+              "matched": 87953,
+              "agreement_percent": 69.80396825396825
+            },
+            "candidate": {
+              "matched": 87229,
+              "agreement_percent": 69.22936507936508
+            }
+          }
+        }
+      },
+      "cross_both": {
+        "count": 42000,
+        "views": {
+          "clean": {
+            "raw": {
+              "matched": 42000,
+              "agreement_percent": 100.0
+            },
+            "DURA_v1": {
+              "matched": 41838,
+              "agreement_percent": 99.61428571428571
+            },
+            "candidate": {
+              "matched": 41746,
+              "agreement_percent": 99.3952380952381
+            }
+          },
+          "practical_high": {
+            "raw": {
+              "matched": 36292,
+              "agreement_percent": 86.4095238095238
+            },
+            "DURA_v1": {
+              "matched": 37673,
+              "agreement_percent": 89.69761904761904
+            },
+            "candidate": {
+              "matched": 36070,
+              "agreement_percent": 85.88095238095238
+            }
+          },
+          "practical_mid": {
+            "raw": {
+              "matched": 35032,
+              "agreement_percent": 83.4095238095238
+            },
+            "DURA_v1": {
+              "matched": 36767,
+              "agreement_percent": 87.54047619047618
+            },
+            "candidate": {
+              "matched": 35296,
+              "agreement_percent": 84.03809523809524
+            }
+          },
+          "practical_low_suburban": {
+            "raw": {
+              "matched": 33788,
+              "agreement_percent": 80.44761904761904
+            },
+            "DURA_v1": {
+              "matched": 35789,
+              "agreement_percent": 85.21190476190476
+            },
+            "candidate": {
+              "matched": 34386,
+              "agreement_percent": 81.87142857142857
+            }
+          },
+          "practical_high_urban": {
+            "raw": {
+              "matched": 34642,
+              "agreement_percent": 82.48095238095237
+            },
+            "DURA_v1": {
+              "matched": 36960,
+              "agreement_percent": 88.0
+            },
+            "candidate": {
+              "matched": 35419,
+              "agreement_percent": 84.33095238095238
+            }
+          },
+          "practical_mid_urban": {
+            "raw": {
+              "matched": 27723,
+              "agreement_percent": 66.00714285714285
+            },
+            "DURA_v1": {
+              "matched": 33266,
+              "agreement_percent": 79.20476190476191
+            },
+            "candidate": {
+              "matched": 32102,
+              "agreement_percent": 76.43333333333334
+            }
+          },
+          "practical_low_urban": {
+            "raw": {
+              "matched": 22630,
+              "agreement_percent": 53.88095238095238
+            },
+            "DURA_v1": {
+              "matched": 29651,
+              "agreement_percent": 70.59761904761905
+            },
+            "candidate": {
+              "matched": 28919,
+              "agreement_percent": 68.8547619047619
+            }
+          }
+        }
+      },
+      "combined": {
+        "count": 168000,
+        "views": {
+          "clean": {
+            "raw": {
+              "matched": 168000,
+              "agreement_percent": 100.0
+            },
+            "DURA_v1": {
+              "matched": 167400,
+              "agreement_percent": 99.64285714285714
+            },
+            "candidate": {
+              "matched": 167136,
+              "agreement_percent": 99.48571428571428
+            }
+          },
+          "practical_high": {
+            "raw": {
+              "matched": 143914,
+              "agreement_percent": 85.66309523809524
+            },
+            "DURA_v1": {
+              "matched": 150581,
+              "agreement_percent": 89.63154761904762
+            },
+            "candidate": {
+              "matched": 143601,
+              "agreement_percent": 85.47678571428571
+            }
+          },
+          "practical_mid": {
+            "raw": {
+              "matched": 138676,
+              "agreement_percent": 82.54523809523809
+            },
+            "DURA_v1": {
+              "matched": 146939,
+              "agreement_percent": 87.46369047619048
+            },
+            "candidate": {
+              "matched": 140284,
+              "agreement_percent": 83.50238095238095
+            }
+          },
+          "practical_low_suburban": {
+            "raw": {
+              "matched": 133902,
+              "agreement_percent": 79.70357142857142
+            },
+            "DURA_v1": {
+              "matched": 142722,
+              "agreement_percent": 84.95357142857142
+            },
+            "candidate": {
+              "matched": 136356,
+              "agreement_percent": 81.16428571428571
+            }
+          },
+          "practical_high_urban": {
+            "raw": {
+              "matched": 137352,
+              "agreement_percent": 81.75714285714285
+            },
+            "DURA_v1": {
+              "matched": 147638,
+              "agreement_percent": 87.8797619047619
+            },
+            "candidate": {
+              "matched": 141198,
+              "agreement_percent": 84.04642857142858
+            }
+          },
+          "practical_mid_urban": {
+            "raw": {
+              "matched": 110676,
+              "agreement_percent": 65.87857142857143
+            },
+            "DURA_v1": {
+              "matched": 131889,
+              "agreement_percent": 78.50535714285714
+            },
+            "candidate": {
+              "matched": 128296,
+              "agreement_percent": 76.36666666666666
+            }
+          },
+          "practical_low_urban": {
+            "raw": {
+              "matched": 90243,
+              "agreement_percent": 53.71607142857143
+            },
+            "DURA_v1": {
+              "matched": 117604,
+              "agreement_percent": 70.00238095238095
+            },
+            "candidate": {
+              "matched": 116148,
+              "agreement_percent": 69.13571428571429
+            }
+          }
+        }
+      }
+    },
+    "PHY_MSat": {
+      "cross_rx": {
+        "count": 126000,
+        "views": {
+          "clean": {
+            "raw": {
+              "matched": 126000,
+              "agreement_percent": 100.0
+            },
+            "DURA_v1": {
+              "matched": 125562,
+              "agreement_percent": 99.65238095238095
+            },
+            "candidate": {
+              "matched": 124081,
+              "agreement_percent": 98.47698412698412
+            }
+          },
+          "practical_high": {
+            "raw": {
+              "matched": 107622,
+              "agreement_percent": 85.41428571428571
+            },
+            "DURA_v1": {
+              "matched": 112908,
+              "agreement_percent": 89.60952380952381
+            },
+            "candidate": {
+              "matched": 109559,
+              "agreement_percent": 86.9515873015873
+            }
+          },
+          "practical_mid": {
+            "raw": {
+              "matched": 103644,
+              "agreement_percent": 82.25714285714285
+            },
+            "DURA_v1": {
+              "matched": 110172,
+              "agreement_percent": 87.43809523809524
+            },
+            "candidate": {
+              "matched": 105293,
+              "agreement_percent": 83.56587301587301
+            }
+          },
+          "practical_low_suburban": {
+            "raw": {
+              "matched": 100114,
+              "agreement_percent": 79.45555555555555
+            },
+            "DURA_v1": {
+              "matched": 106933,
+              "agreement_percent": 84.86746031746031
+            },
+            "candidate": {
+              "matched": 100991,
+              "agreement_percent": 80.1515873015873
+            }
+          },
+          "practical_high_urban": {
+            "raw": {
+              "matched": 102710,
+              "agreement_percent": 81.51587301587301
+            },
+            "DURA_v1": {
+              "matched": 110678,
+              "agreement_percent": 87.83968253968254
+            },
+            "candidate": {
+              "matched": 106998,
+              "agreement_percent": 84.91904761904762
+            }
+          },
+          "practical_mid_urban": {
+            "raw": {
+              "matched": 82953,
+              "agreement_percent": 65.83571428571429
+            },
+            "DURA_v1": {
+              "matched": 98623,
+              "agreement_percent": 78.27222222222223
+            },
+            "candidate": {
+              "matched": 94244,
+              "agreement_percent": 74.7968253968254
+            }
+          },
+          "practical_low_urban": {
+            "raw": {
+              "matched": 67613,
+              "agreement_percent": 53.66111111111111
+            },
+            "DURA_v1": {
+              "matched": 87953,
+              "agreement_percent": 69.80396825396825
+            },
+            "candidate": {
+              "matched": 84166,
+              "agreement_percent": 66.7984126984127
+            }
+          }
+        }
+      },
+      "cross_both": {
+        "count": 42000,
+        "views": {
+          "clean": {
+            "raw": {
+              "matched": 42000,
+              "agreement_percent": 100.0
+            },
+            "DURA_v1": {
+              "matched": 41838,
+              "agreement_percent": 99.61428571428571
+            },
+            "candidate": {
+              "matched": 41506,
+              "agreement_percent": 98.82380952380953
+            }
+          },
+          "practical_high": {
+            "raw": {
+              "matched": 36292,
+              "agreement_percent": 86.4095238095238
+            },
+            "DURA_v1": {
+              "matched": 37673,
+              "agreement_percent": 89.69761904761904
+            },
+            "candidate": {
+              "matched": 36746,
+              "agreement_percent": 87.49047619047619
+            }
+          },
+          "practical_mid": {
+            "raw": {
+              "matched": 35032,
+              "agreement_percent": 83.4095238095238
+            },
+            "DURA_v1": {
+              "matched": 36767,
+              "agreement_percent": 87.54047619047618
+            },
+            "candidate": {
+              "matched": 35293,
+              "agreement_percent": 84.03095238095239
+            }
+          },
+          "practical_low_suburban": {
+            "raw": {
+              "matched": 33788,
+              "agreement_percent": 80.44761904761904
+            },
+            "DURA_v1": {
+              "matched": 35789,
+              "agreement_percent": 85.21190476190476
+            },
+            "candidate": {
+              "matched": 33895,
+              "agreement_percent": 80.70238095238095
+            }
+          },
+          "practical_high_urban": {
+            "raw": {
+              "matched": 34642,
+              "agreement_percent": 82.48095238095237
+            },
+            "DURA_v1": {
+              "matched": 36960,
+              "agreement_percent": 88.0
+            },
+            "candidate": {
+              "matched": 35896,
+              "agreement_percent": 85.46666666666667
+            }
+          },
+          "practical_mid_urban": {
+            "raw": {
+              "matched": 27723,
+              "agreement_percent": 66.00714285714285
+            },
+            "DURA_v1": {
+              "matched": 33266,
+              "agreement_percent": 79.20476190476191
+            },
+            "candidate": {
+              "matched": 31598,
+              "agreement_percent": 75.23333333333333
+            }
+          },
+          "practical_low_urban": {
+            "raw": {
+              "matched": 22630,
+              "agreement_percent": 53.88095238095238
+            },
+            "DURA_v1": {
+              "matched": 29651,
+              "agreement_percent": 70.59761904761905
+            },
+            "candidate": {
+              "matched": 28075,
+              "agreement_percent": 66.8452380952381
+            }
+          }
+        }
+      },
+      "combined": {
+        "count": 168000,
+        "views": {
+          "clean": {
+            "raw": {
+              "matched": 168000,
+              "agreement_percent": 100.0
+            },
+            "DURA_v1": {
+              "matched": 167400,
+              "agreement_percent": 99.64285714285714
+            },
+            "candidate": {
+              "matched": 165587,
+              "agreement_percent": 98.56369047619047
+            }
+          },
+          "practical_high": {
+            "raw": {
+              "matched": 143914,
+              "agreement_percent": 85.66309523809524
+            },
+            "DURA_v1": {
+              "matched": 150581,
+              "agreement_percent": 89.63154761904762
+            },
+            "candidate": {
+              "matched": 146305,
+              "agreement_percent": 87.08630952380952
+            }
+          },
+          "practical_mid": {
+            "raw": {
+              "matched": 138676,
+              "agreement_percent": 82.54523809523809
+            },
+            "DURA_v1": {
+              "matched": 146939,
+              "agreement_percent": 87.46369047619048
+            },
+            "candidate": {
+              "matched": 140586,
+              "agreement_percent": 83.68214285714286
+            }
+          },
+          "practical_low_suburban": {
+            "raw": {
+              "matched": 133902,
+              "agreement_percent": 79.70357142857142
+            },
+            "DURA_v1": {
+              "matched": 142722,
+              "agreement_percent": 84.95357142857142
+            },
+            "candidate": {
+              "matched": 134886,
+              "agreement_percent": 80.28928571428571
+            }
+          },
+          "practical_high_urban": {
+            "raw": {
+              "matched": 137352,
+              "agreement_percent": 81.75714285714285
+            },
+            "DURA_v1": {
+              "matched": 147638,
+              "agreement_percent": 87.8797619047619
+            },
+            "candidate": {
+              "matched": 142894,
+              "agreement_percent": 85.05595238095238
+            }
+          },
+          "practical_mid_urban": {
+            "raw": {
+              "matched": 110676,
+              "agreement_percent": 65.87857142857143
+            },
+            "DURA_v1": {
+              "matched": 131889,
+              "agreement_percent": 78.50535714285714
+            },
+            "candidate": {
+              "matched": 125842,
+              "agreement_percent": 74.90595238095239
+            }
+          },
+          "practical_low_urban": {
+            "raw": {
+              "matched": 90243,
+              "agreement_percent": 53.71607142857143
+            },
+            "DURA_v1": {
+              "matched": 117604,
+              "agreement_percent": 70.00238095238095
+            },
+            "candidate": {
+              "matched": 112241,
+              "agreement_percent": 66.81011904761905
+            }
+          }
+        }
+      }
+    }
+  },
+  "existing_frozen_predictions_only": true,
+  "new_neural_forwards": 0,
+  "new_predictions": 0,
+  "optimizer_updates": 0,
+  "truth_reads": 0,
+  "new_target_IQ_reads": 0,
+  "primary_metric_changed": false,
+  "source_same_fixed_panel": {
+    "ALL": {
+      "count": 10240,
+      "MSAT_M20_Fclean_agreement_percent": 96.1328125,
+      "PHY_MSat_Fclean_agreement_percent": 97.509765625
+    },
+    "clean": {
+      "count": 1579,
+      "MSAT_M20_Fclean_agreement_percent": 100.0,
+      "PHY_MSat_Fclean_agreement_percent": 100.0
+    },
+    "practical_high": {
+      "count": 1427,
+      "MSAT_M20_Fclean_agreement_percent": 99.15907498248073,
+      "PHY_MSat_Fclean_agreement_percent": 100.0
+    },
+    "practical_mid": {
+      "count": 1484,
+      "MSAT_M20_Fclean_agreement_percent": 98.58490566037736,
+      "PHY_MSat_Fclean_agreement_percent": 99.12398921832884
+    },
+    "practical_low_suburban": {
+      "count": 1465,
+      "MSAT_M20_Fclean_agreement_percent": 97.95221843003414,
+      "PHY_MSat_Fclean_agreement_percent": 98.22525597269625
+    },
+    "practical_high_urban": {
+      "count": 1440,
+      "MSAT_M20_Fclean_agreement_percent": 97.77777777777777,
+      "PHY_MSat_Fclean_agreement_percent": 98.68055555555556
+    },
+    "practical_mid_urban": {
+      "count": 1409,
+      "MSAT_M20_Fclean_agreement_percent": 91.4833215046132,
+      "PHY_MSat_Fclean_agreement_percent": 95.95457771469127
+    },
+    "practical_low_urban": {
+      "count": 1436,
+      "MSAT_M20_Fclean_agreement_percent": 87.39554317548746,
+      "PHY_MSat_Fclean_agreement_percent": 90.25069637883009
+    }
+  },
+  "comparison_limits": "Source512packetsx20trainingdraws vsMain168000heldoutRX/datepacketsxonefixeddraw;cohort/sampling/channel-seed differ. Descriptivegap,notindependentcausalpartitionorTXaccuracy.",
+  "current_FullFGrad_plan_changed": false
+}
