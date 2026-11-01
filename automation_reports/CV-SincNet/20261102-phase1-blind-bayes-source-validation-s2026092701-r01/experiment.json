@@ -1,0 +1,151 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-blind-bayes-source-validation-s2026092701-r01",
+  "group_id": "phase1-blind-bayes-source-validation",
+  "display_name": "固定盲信道条件先验网络逐场景源域复核",
+  "description": "固定扩展训练最终盲信道估计器，重建源域条件先验并以盲保护门在RX4/6逐场景筛选，RX8作为留出观察。",
+  "kind": "comparison",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "blind_channel",
+    "conditional_prior",
+    "source_selection",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-blind-bayes-action-full-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "bcc0c56686ad57d0c101d7b0a7fc7822dd6e5ccb",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU0 single process; CPU 2 threads; TF32 disabled; fixed-checkpoint source action matrix reference smoke",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256]; inference from fixed blind action network, source prior and input gate only; DURA benchmark only",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels, U_s truth, V or test read; F clean pseudo targets for source evaluation",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "7840 RX4/6 source training-role heldout records for selection, 3921 RX8 exploratory heldout; physical IDs were observed in prior channel views",
+    "support_query_ref": null,
+    "leo_config_ref": "Source cache epoch19"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source-only pilot with RX8 source holdout; no target IQ, V, or truth",
+    "external_method_exception": null,
+    "claim_scope": "Single seed source-only diagnostic; no independent blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Exact fixed epoch10 blind estimator checkpoint SHA-256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338; source prior fit 8192 fixed IDs and source gate; F frozen; DURA benchmark only.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-action-full-s2026092701-r01/checkpoint_epoch10.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "Blind estimator code 94693a342bb2daa684c0f21415d7b949f9fb2107, fixed weights SHA256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338; conditional prior dependency dff683121e48ba8ab4ae7619ea895dad690bd77c.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "RX4/6: each receiver/scene pseudo correct drop <= max(1,ceil(.5% valid)); clean IQ <=DURA+.001; impaired IQ <=1.2*DURA+1e-6; aggregate impaired gain >=10; thresholds .8/.99; RX8 not used. Report separate accuracy-only audit without impaired IQ limit."
+  },
+  "execution": {
+    "host": "N607 GPU0",
+    "launch_owner": "Codex blind Bayesian source-validation single GPU0 owner",
+    "gpu_policy": "GPU0 only; preserve other owners; TF32 disabled",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-blind-bayes-source-validation-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-blind-bayes-source-validation-s2026092701-r01-release/experiments/phase1_blind_bayes_validation/blind_bayes_source_validation.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01 --commit bcc0c56686ad57d0c101d7b0a7fc7822dd6e5ccb --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "source_prior.pt",
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source pseudo target agreement",
+      "normalized aligned IQ MSE",
+      "gate activation",
+      "source net gains"
+    ],
+    "dimensions": [
+      "source RX4/6 by scene",
+      "heldout RX8 by scene"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_blind_bayes_validation/blind_bayes_source_validation.py",
+    "scientific_rule": "Pseudo targets not truth; source seen in other views; selected candidate requires separate fixed Phase1 predictions and truth-last scoring."
+  },
+  "rows": [
+    {
+      "row_id": "blind_bayes_source_validation_s2026092701",
+      "method": "fixed blind action CNN + conditional Gaussian posterior + input-only protection",
+      "purpose": "guarded source selection and RX8 heldout audit against frozen DURA",
+      "config_ref": "experiments/phase1_blind_bayes_validation/blind_bayes_source_validation.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120455,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "prior sample same as fixed estimator; source split 2026110551; no additional model updates",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "8192 source prior IDs; 7840 RX4/6 source selection and 3921 RX8 source holdout",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-blind-bayes-source-validation-s2026092701-r01-release/experiments/phase1_blind_bayes_validation/blind_bayes_source_validation.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01 --commit bcc0c56686ad57d0c101d7b0a7fc7822dd6e5ccb --device cuda:0",
+      "expected_artifacts": [
+        "source_prior.pt",
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed checkpoint trained source-only; F and DURA only loaded after model training.",
+    "Source evaluation records previously used in other simulated views; no independent blind claim.",
+    "Primary selection includes IQ guard; secondary accuracy-only audit reports IQ separately.",
+    "No TX, U_s truth, V, target IQ, or automatic Phase1 prediction."
+  ],
+  "registered_at": "2026-11-01T20:53:02+00:00"
+}
