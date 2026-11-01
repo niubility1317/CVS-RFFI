@@ -157,3 +157,9 @@ raw clean 86.538690%，每景门槛 83.538690%。VarF clean 86.585119%（保持�
 `20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01`，实际代码`8198a2e70c655f24ebaf321f232a676cfb46d916`，8613449参数；新信道/噪声估计器加两次不共享context-MSAT先验，每次8CG，共16CG/81complexFFT-IFFT。全部从零单阶段30/7410，不继承旧G或分阶段预训练。原LsUs、R07二十份模拟加十份复用、原冻结地面Tri-SIG-TIME SSL F0特征指导；新增真实模拟H(clean)与噪声log源监督，非TX标签。部署只输入received IQ。原VarF仅作冻结对照，不能声称纯结构单因素消融。
 
 13项聚焦检查和一次P0/P1审查PASS；实际源2条F0/新G/梯度/E0重载PASS。GPU4准入free22571MiB、已有2个计算进程，仅新增本任务1个。已完成首轮247更新（137.671秒），E01模型/优化器/RNG独立CPU检查PASS。仍需完整30轮及原Main两个总体七景固定预测后truth-last，不因源分数差取消。默认DURA不变，主性能目标ACTIVE/未达成。零target/TX/V/OE训练，未改其他owner。日志、权重与恢复文件保持PRIVATE，详见该run的report和launch_evidence。
+
+## PHY-MSAT 原 Main 七景全量完成（2026-11-01）
+
+`20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01`，实际代码`8198a2e70c655f24ebaf321f232a676cfb46d916`；8613449参数、两次不共享先验和16CG/81复数FFT-IFFT，额外源模拟监督，全部从零单阶段30/7410。原地面Tri-SIG-TIME SSL/default head，168000×七景完整预测后独立truth-last，4阶段均退出；与旧VarF84单元复算，2604评分组/1736raw配对/1302额外配对，最大误差1.24e-14，raw/DURA判决差0，全部30恢复文件和final30一致。
+
+raw clean86.538690%，各景门槛83.538690%。PHY-MSAT六景依次79.983929/76.972619/74.065476/78.251190/69.658333/62.831548%，达标0/6；相对VarF依次+2.491071/+1.003571/-0.038095/+1.777381/-1.139286/-2.420238个百分点；合并clean 87.216071%（保持）。完整性能目标仍未达到，继续保持ACTIVE，默认DURA不变。结构、容量、物理求解与额外监督共同变化，不作纯结构归因；source误差或效率不代替正式指标。每个子总体clean净变化为{"cross_rx": {"count": 126000, "raw_correct": 111019, "PHY_correct": 112017, "net_correct": 998, "accuracy_change_pp": 0.792063492063491}, "cross_both": {"count": 42000, "raw_correct": 34366, "PHY_correct": 34506, "net_correct": 140, "accuracy_change_pp": 0.3333333333333286}, "combined": {"count": 168000, "raw_correct": 145385, "PHY_correct": 146523, "net_correct": 1138, "accuracy_change_pp": 0.6773809523809433}}。完整分组、配对、成本和限制见该run analysis.md。

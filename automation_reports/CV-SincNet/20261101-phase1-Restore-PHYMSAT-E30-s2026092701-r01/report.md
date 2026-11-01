@@ -47,3 +47,9 @@ VERIFIED / RUNNING。实际源2条 F0/新G/物理与两先验梯度、无更新�
 ## 静态复杂度
 
 已用一次本地合成 CPU 前向核对：G 共8613449参数，Conv/Linear/注意力合计546791488 MAC/包（含QKV及注意力矩阵乘法），另有41次FFT、40次IFFT，长度均512，16次CG。该计数排除F0、归一化/激活/softmax/插值/逐点复数运算和内存，不是N607部署延迟或吞吐。没有真实IQ、checkpoint或优化器更新，详细口径见complexity.json。
+
+## 全量执行与独立复算完成
+
+VERIFIED / ANALYZED。新PHY-MSAT完整从零单阶段30轮/7410更新；原Main两总体168000条物理样本的七景全部固定预测后独立CPU truth-last。四个执行阶段均正常退出，本run控制器/worker已退出。与冻结既有VarF共84单元独立复算PASS：2604评分组、1736raw配对、1302额外配对，最大指标差1.24e-14；复用raw/DURA判决差0。全部新30轮/既有30轮日志与stdout、源顺序/draw、30份技术恢复文件及E30/final30状态一致性已核对。不同结构不要求初始参数相同；检查新网络scratch配置与零输出头。
+
+PHY-MSAT六景达标0/6，合并clean 87.216071%（保持）。完整性能目标仍未达到，继续保持ACTIVE，默认DURA不变。各子总体clean损伤、TX/RX/day与全部配对变化另列，不能被合并均值掩盖。额外真实模拟监督与结构共同变化，不当作单因素结构消融。统计、成本、完整限制见analysis.md/results.json和配套表图。
