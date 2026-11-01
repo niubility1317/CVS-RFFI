@@ -1,1 +1,2 @@
 {"at": "2026-11-01T20:22:34+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T20:26:22+00:00", "status": "FAILED", "note": "Source cache read during preflight only; corrected NumPy interop in new run.", "evidence": ["N607 source preflight traceback: numpy.core.umath ERR_IGNORE import error on PyTorch-exported ndarray.sum; no formal run or target read"], "row_id": null}

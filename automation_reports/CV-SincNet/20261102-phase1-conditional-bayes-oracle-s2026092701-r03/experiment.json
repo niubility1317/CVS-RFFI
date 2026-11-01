@@ -1,0 +1,149 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-conditional-bayes-oracle-s2026092701-r03",
+  "group_id": "phase1-conditional-bayes-oracle",
+  "display_name": "已知仿真信道下的条件高斯信号先验诊断",
+  "description": "使用源训练干净IQ和冻结 Tri-SIG-TIME SSL 高置信伪类别拟合类别条件高斯先验，在已知仿真信道和噪声协方差的不可部署假设下比较条件恢复与共享恢复。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "oracle_diagnostic",
+    "conditional_gaussian",
+    "nondeployable"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-adaptive-phase-factor-s2026092701-r01",
+    "20261102-phase1-blind-gate-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261102-phase1-conditional-bayes-oracle-s2026092701-r02",
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "8c30b2e9d3a7c933ef29af5cba5bb53d37ae190a",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI GPU0, one source-only diagnostic, float32 CUDA TF32 disabled; CPU 2 threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ float32 [2,256], cached simulation action and plug-in noise covariance; known action available only in diagnostic",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX labels, U_s truth, V or test read; clean Tri-SIG-TIME SSL predictions are pseudo categories",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "384 RX8 day3 source heldout IDs, 64 per impaired scene; previously seen in other source views, not independent blind",
+    "support_query_ref": null,
+    "leo_config_ref": "Source train clean records and fixed cache epoch19 known simulated actions"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source-only diagnostic, no V, test IQ, target truth, or target predictions",
+    "external_method_exception": null,
+    "claim_scope": "Oracle known action and conditional-on-clean class are not deployable, no independent-blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen Tri-SIG-TIME SSL; 8192 disjoint source train IQ examples fit global and six pseudo-class Gaussian priors; DURA loaded after prior fit only for same-record comparator.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-adaptive-phase-factor-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "Pinned r02 source dependency 284317bd819df974395d3388b1920a41300937cb; fixed phase checkpoint SHA256 8e9fd8f97a57263be320b8dd57e4dd615fb015d5aab2d276d43864ec8fe8e508; exact known-action operator f443942e33318b9f72733908dc2735203addaa96 SHA-256 e01efc635b4bbdc17d41014d72c9e6bbe3ad631553da9c3cdb6489a3058f1427",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "No checkpoint selection. Fixed diagnostic compares shared Gaussian, posterior mixture, marginal MAP, and oracle-clean-class, with same source records and exact simulated action."
+  },
+  "execution": {
+    "host": "N607 GPU0",
+    "launch_owner": "Codex conditional Gaussian diagnostic single GPU0 owner",
+    "gpu_policy": "physical GPU0 only, CUDA visible 0, TF32 off; verify free resources and preserve other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-conditional-bayes-oracle-s2026092701-r03",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-conditional-bayes-oracle-s2026092701-r03.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-conditional-bayes-oracle-s2026092701-r03",
+    "launch_command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-conditional-bayes-oracle-s2026092701-r03-release/experiments/phase1_conditional_bayes/conditional_bayes_oracle.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-conditional-bayes-oracle-s2026092701-r03 --commit 8c30b2e9d3a7c933ef29af5cba5bb53d37ae190a --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source clean-F pseudo-target agreement",
+      "normalized clean IQ MSE",
+      "marginal class selection"
+    ],
+    "dimensions": [
+      "RX8 source heldout, six impaired scenes"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_conditional_bayes/conditional_bayes_oracle.py",
+    "scientific_rule": "Known simulator action and oracle class are inaccessible at inference; pseudo targets are not true labels; no accuracy or upper bound claim."
+  },
+  "rows": [
+    {
+      "row_id": "conditional_gaussian_oracle_s2026092701",
+      "method": "six class-conditional Gaussian source IQ priors, exact simulated action likelihood and posterior reconstruction",
+      "purpose": "Determine if label-free mixture prior offers source signal and F agreement benefits under known-action diagnostic",
+      "config_ref": "experiments/phase1_conditional_bayes/conditional_bayes_oracle.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-conditional-bayes-oracle-s2026092701-r03/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120354,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "fixed train prior sample 8192 and RX8 heldout 64 per scene sampled by seed 2026120355",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "8192 source train prior-fit records; 384 RX8 source holdout records",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-conditional-bayes-oracle-s2026092701-r03",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-conditional-bayes-oracle-s2026092701-r03.log",
+      "command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-conditional-bayes-oracle-s2026092701-r03-release/experiments/phase1_conditional_bayes/conditional_bayes_oracle.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-conditional-bayes-oracle-s2026092701-r03 --commit 8c30b2e9d3a7c933ef29af5cba5bb53d37ae190a --device cuda:0",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Known action and clean-class oracle use simulation-only information; they are not deployable.",
+    "AGC depends on realized noise; Gaussian observation model is approximate, not a certified upper bound.",
+    "Source IDs were used in other source views; no independent blind claim.",
+    "No TX truth, U_s truth, V or test; F frozen; DURA is source comparator only.",
+    "r01 preflight failed before source access because source-action module import path was missing; exact operator release pinned in r02.",
+    "r02 preflight failed during source-fit counting due NumPy/PyTorch interop; r03 uses DLPack, core.tensor and Torch counts."
+  ],
+  "registered_at": "2026-11-01T20:27:00+00:00"
+}
