@@ -118,4 +118,8 @@
 
 后续 [nativeIQhint 从零单阶段30轮对照](../automation_reports/CV-SincNet/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01/analysis.md)也已完成，使用冻结 R17 最终 IQ 缓存指导紧凑266951参数学生，不复制教师权重。旧 F50/defaulthead 的 low urban 为67.375595%，相对匹配E30 physical提高0.668452个百分点，相对当时DURA低1.514286个百分点；六星地0/6超过当时DURA。教师IQ还带有自身误差，不能等同clean或认为权重更大必然更好。
 
-这些是旧F50证据，**不纳入上表原完整Tri-SIG-TIME SSL/Main的15个已完成候选计数，也不改标成本基座成绩**。source-only来源合规与方法有效性是两个问题；历史教师、源V/F选择、缓存和学生成本均须披露。当前CovarianceFeature继续自己的固定scratch30配方，只增加原Tri-SIG-TIME SSL对实际恢复IQ的连续源特征指导，没有R17教师输入，也没有因这次历史检索更改训练或新增候选。当前候选尚无完整Main成绩，不提前纳入完成表。
+这些是旧F50证据，**不纳入本次历史检索时原完整Tri-SIG-TIME SSL/Main的15个已完成候选计数，也不改标成本基座成绩**。source-only来源合规与方法有效性是两个问题；历史教师、源V/F选择、缓存和学生成本均须披露。当前CovarianceFeature继续自己的固定scratch30配方，只增加原Tri-SIG-TIME SSL对实际恢复IQ的连续源特征指导，没有R17教师输入，也没有因这次历史检索更改训练或新增候选。本次历史检索时该候选尚无完整Main成绩，没有提前纳入完成表。
+
+## 原始论文的条件核对
+
+[五篇原始论文核查](PAMF_RESTORATION_LITERATURE_CONDITIONS_20261102.md)区分编码特征分类、解码IQ接固定F0，以及需要目标接收机配对校准的不同问题。PSC-DAE使用TX监督，DRIFT训练新的TX/RX识别表示，TCNN采集目标校准响应，LTE-V2X使用完整协议参考结构；均不能直接继承为本任务的成绩或六景恢复上限。CDP理论的固定/最优分类器设定也不等价于当前六类未知信道数值上界。核查没有新增G/F/IQ/目标预测/真值读取或训练，没有更改CovarianceFeature固定配方。
