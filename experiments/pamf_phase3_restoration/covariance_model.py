@@ -3,6 +3,7 @@ import math
 import torch
 from torch import nn
 from .covariance_inverse import dense_action,gaussian_posterior
+from .factorized_action_loss import relative_action_mse
 
 
 class CovarianceMAP(nn.Module):
@@ -31,7 +32,7 @@ class CovarianceMAP(nn.Module):
         torch.linalg.cholesky(covariance.double())
         self.prior_mean.copy_(mean.to(self.prior_mean));self.prior_covariance.copy_(covariance)
 
-    def estimate(self,received):
+    def estimate(self,received,*,dense=True):
         if received.ndim!=3 or received.shape[1:]!=(2,256) or received.dtype!=torch.float32:
             raise ValueError('Current per-record FP32 received IQ2x256 required')
         n=len(received);mean=self.prior_mean.reshape(1,2,256).expand(n,-1,-1)
@@ -46,6 +47,8 @@ class CovarianceMAP(nn.Module):
         main=1+torch.complex(c[:,0],c[:,1]);image=torch.complex(c[:,2],c[:,3])
         log_variance=(math.log(.0005)+self.noise_head(pooled).squeeze(1)).clamp(math.log(1e-7),0.)
         variance=log_variance.exp()
+        if not dense:
+            return dict(kernel=kernel,main=main,image=image,variance=variance)
         action=dense_action(kernel.to(torch.complex128),main.to(torch.complex128),image.to(torch.complex128))
         return dict(action_matrix=action,variance=variance)
 
@@ -57,10 +60,14 @@ class CovarianceMAP(nn.Module):
 
 
 def source_action_loss(aux,kernel,coefficients,variance):
-    target=dense_action(torch.complex(kernel[:,0],kernel[:,1]).to(torch.complex128),
-        torch.complex(coefficients[:,0],coefficients[:,1]).to(torch.complex128),
-        torch.complex(coefficients[:,2],coefficients[:,3]).to(torch.complex128))
-    error=(aux['action_matrix']-target).square().sum((1,2))/target.square().sum((1,2)).clamp_min(1e-8)
+    h=torch.complex(kernel[:,0],kernel[:,1]).to(torch.complex128)
+    main=torch.complex(coefficients[:,0],coefficients[:,1]).to(torch.complex128)
+    image=torch.complex(coefficients[:,2],coefficients[:,3]).to(torch.complex128)
+    if 'action_matrix' in aux:
+        target=dense_action(h,main,image)
+        error=(aux['action_matrix']-target).square().sum((1,2))/target.square().sum((1,2)).clamp_min(1e-8)
+    else:
+        error=relative_action_mse(aux['kernel'],aux['main'],aux['image'],h,main,image)
     noise_error=(aux['variance'].log()-variance.clamp_min(1e-7).log()).square()
     return .1*error.float()+.001*noise_error,dict(action_matrix_relative_mse=error.float(),noise_log_mse=noise_error)
 
