@@ -1,0 +1,23 @@
+{
+  "status": "SOURCE_TRAINED",
+  "epoch": 30,
+  "updates": 14790,
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "F_frozen": true,
+  "DURA_frozen": true,
+  "DURA_sha256": "14200ac0f8eef01f57aa82e8fb5122ff855fc81208983d9234d6c5caef2e28ee",
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "source_roles": [
+    "L_s",
+    "U_s"
+  ],
+  "parameters": 187108,
+  "epsilon": 0.2,
+  "taps": 9,
+  "ridge": 0.0001,
+  "resumed_from": null,
+  "resumed_after_epoch": 0
+}
