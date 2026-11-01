@@ -1,0 +1,32 @@
+{
+  "G_parameters": 4670178,
+  "dense_real_MACs_per_record": 260546560,
+  "components": {
+    "conv": 190922752,
+    "linear": 33972224,
+    "attention": 35651584
+  },
+  "input_shape": [
+    1,
+    2,
+    256
+  ],
+  "torch": "2.10.0+cu128",
+  "device": "CPU/synthetic-only",
+  "trained_checkpoints_loaded": 0,
+  "source_or_target_IQ_read": 0,
+  "includes_MHA_QKV_output_QK_AV": true,
+  "complex_FFT_IFFT": 0,
+  "CG_iterations": 0,
+  "excludes": [
+    "F0",
+    "normalization",
+    "activation",
+    "softmax",
+    "interpolation",
+    "FiLM pointwise operations",
+    "unit-power projection",
+    "memory"
+  ],
+  "not_measured_N607_latency": true
+}
