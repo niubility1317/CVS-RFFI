@@ -41,3 +41,10 @@
 17项相关检查（新7+FeatureCond7/PowerAnchor3）及一次独立P0P1通过。真实Ls2 smoke为启动首步，检查训练梯度、无状态更新、四步部署E0及严格重载，PASS立即完整30；E01..30只技术恢复、final30固定，源质量不取消正式测试。随后自动原Main126000+42000各七景，42单元全部预测固定才独立CPU truth-last/原共享锁；raw/DURA同IQ-ID精确复用，新G完整四步推理。逐景至少140345/168000正确=83.538690%，距同一raw clean86.538690%≤3pp，clean两个总体保持。报告TX/RX/day/RXday、相对DURA/对照/clean修复与损伤，保留单seed和已曝光开发基准限制；默认DURA不更换。
 
 静态合计1043189760实数Conv/Linear/attention MAC/包（4×260797440）、0FFT/CG；训练每记录1core、部署4core且F0只在G之后读取1次。排除F0、归一化/激活/softmax/插值/FiLM逐点/单位投影/bridge更新/内存，不是实测时延。N607既有CVS-RFFI/Torch2.1+cu121/FP32-TF32off，GPU4/6 UUID准入free>=12000MiB/原compute<=2/只新增1条本任务NN/单卡总<=3，其他owner保持。不可覆盖root/命令/CWD/停止规则/产物见登记。
+
+
+## 四步直接迭代恢复器已运行（2026-11-01）
+
+`20261101-phase1-Restore-DirectBridge-E30-s2026092701-r01`，实际代码`84a063c9ba1f9974cfe361e293a9e11fa93920b4`，4677538参数，从零单阶段30/7410、训练每记录1次estimate、部署4次共享权重，始终条件同一received IQ，无额外观测或部署clean/F0。源IQ配对构造t1/.75/.5/.25状态，原F0连续160与rawRMS参考loss-only；0TX/V/OE/目标训练或选模，OE仅冻结诊断。结构/训练状态/执行共同变化的系统比较，不冒称单因素。
+
+VERIFIED / RUNNING：17重点相关检查/一次P0P1、真实源2训练梯度与完整四步E0/严格重载PASS。首轮247更新耗时59.003244秒，E01模型/AdamW/CPU-CUDA RNG独立CPU读回PASS，E0与固定seed factory逐张量一致；4个time实际计数和各项指标重组PASS，总loss确认原权重各加一次。GPU4准入free21865MiB/原2compute/仅新增1条，PID/CWD/命令/CUDA/GPU和日志核实，其他owner保持。固定final30后自动原Main168000×七景、全部预测后独立truth-last，当前性能PENDING；主验收仍六景各距raw clean≤3pp并保持clean，性能主线、效率支线和默认DURA不变。
