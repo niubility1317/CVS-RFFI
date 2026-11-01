@@ -1,0 +1,21 @@
+{
+  "G_parameters": 1614608,
+  "one_denoiser_real_MAC": 176971776,
+  "deployed_denoiser_calls": 15,
+  "deployed_real_MAC": 2654576640,
+  "one_denoiser_complex_FFT256": 3,
+  "deployed_complex_FFT256": 45,
+  "CG_steps": 0,
+  "derivation": "2patchConvs:262144+noiseMLP:24576+6x(conditionLinear65536+QKV/out8388608+QK/AV4194304+MLP16777216)+2outputheads131072",
+  "excludes": [
+    "FFT arithmetic listed separately",
+    "activation-softmax-normalization-pointwise-preconditioning-Heun-memory",
+    "F0",
+    "training STFT and F0 forward-backward"
+  ],
+  "measured_latency": false,
+  "measured_training_time": "PENDING",
+  "precision": "FP32 TF32off",
+  "source_training_core_calls": 1890000,
+  "deployed_static_MAC_not_latency": true
+}
