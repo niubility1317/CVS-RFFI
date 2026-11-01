@@ -1,0 +1,27 @@
+{
+  "status": "PREDICTIONS_COMPLETE",
+  "count": 168000,
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "commit": "3a7f72e591a90bc3f4cc14f031bf76e7fbe8b2db",
+  "TX_truth_reads": 0,
+  "model_updates": 0,
+  "accepted_by_view": {
+    "clean": 132,
+    "practical_high": 167867,
+    "practical_mid": 167807,
+    "practical_low_suburban": 167840,
+    "practical_high_urban": 167655,
+    "practical_mid_urban": 167421,
+    "practical_low_urban": 167539
+  }
+}

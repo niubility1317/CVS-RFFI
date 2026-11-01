@@ -1,0 +1,11 @@
+{
+  "status": "PHASE1_PREDICTIONS_AND_SCORE_COMPLETE",
+  "source_selection": {
+    "kind": "gated_direct_iq",
+    "epoch": 1,
+    "alpha": 0.5,
+    "threshold": 0.99,
+    "validation_net": 115
+  },
+  "target_predictions": true
+}
