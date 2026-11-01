@@ -1,0 +1,60 @@
+{
+  "status": "SOURCE_ONLY_CLEAN_ALIGNED_CYCLE_RESIDUAL_DIAGNOSTIC",
+  "source_ids": 280,
+  "receiver": 8,
+  "day": 3,
+  "results": {
+    "clean": {
+      "source_ids": 280,
+      "clean_residual_energy_fraction": 0.5711394450052236,
+      "dura_residual_relative_mse": 0.000247800860764121,
+      "optimistic_blend_residual_relative_mse": 3.0581194408808935e-32,
+      "oracle_relative_improvement": 1.0,
+      "samples_with_over_1pct_improvement": 280,
+      "mean_oracle_received_fraction": 0.9999999999999992,
+      "dura_clean_residual_correlation_median": 0.9999796989355645,
+      "dura_aligned_iq_mse": 4.0849299715068764e-05,
+      "received_aligned_iq_mse": 1.583316663785987e-32
+    },
+    "practical_low_suburban": {
+      "source_ids": 280,
+      "clean_residual_energy_fraction": 0.5711394450052236,
+      "dura_residual_relative_mse": 0.05880124977988934,
+      "optimistic_blend_residual_relative_mse": 0.058404858558614575,
+      "oracle_relative_improvement": 0.006741204017917538,
+      "samples_with_over_1pct_improvement": 39,
+      "mean_oracle_received_fraction": 0.008914306188223595,
+      "dura_clean_residual_correlation_median": 0.9872412470056381,
+      "dura_aligned_iq_mse": 0.027054156398699045,
+      "received_aligned_iq_mse": 0.7546588396380901
+    },
+    "practical_mid_urban": {
+      "source_ids": 280,
+      "clean_residual_energy_fraction": 0.5711394450052236,
+      "dura_residual_relative_mse": 0.11823924736889449,
+      "optimistic_blend_residual_relative_mse": 0.11697688881013635,
+      "oracle_relative_improvement": 0.010676307460074622,
+      "samples_with_over_1pct_improvement": 42,
+      "mean_oracle_received_fraction": 0.01595805935088936,
+      "dura_clean_residual_correlation_median": 0.9792995266269167,
+      "dura_aligned_iq_mse": 0.06029429377636587,
+      "received_aligned_iq_mse": 0.7954581462063929
+    },
+    "practical_low_urban": {
+      "source_ids": 280,
+      "clean_residual_energy_fraction": 0.5711394450052236,
+      "dura_residual_relative_mse": 0.18814284697037414,
+      "optimistic_blend_residual_relative_mse": 0.18665599142406167,
+      "oracle_relative_improvement": 0.007902801356814794,
+      "samples_with_over_1pct_improvement": 50,
+      "mean_oracle_received_fraction": 0.02341641650270667,
+      "dura_clean_residual_correlation_median": 0.9111231514373852,
+      "dura_aligned_iq_mse": 0.10211454221295799,
+      "received_aligned_iq_mse": 0.8379406485473353
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "caveat": "DURA and received IQ are separately aligned with paired clean IQ, and the blend coefficient is optimized per sample using the clean residual. Both are privileged source diagnostics, not deployable inference and not an upper bound on more general restorers. Clean source IQ was not available to the frozen DURA model; simulator is not validated real satellite data. Source IDs may overlap other prior probes."
+}
