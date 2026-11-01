@@ -245,3 +245,11 @@ CPU控制器已独立核实PID/CWD/命令/CUDA空、WAIT_PARENT_COMPLETE，当�
 ## 幅度约束对照已运行（2026-11-01）
 
 `20261101-phase1-Restore-PowerAnchor-E30-s2026092701-r01`，实际代码`42ea957db57d7d90df67dadbeffe11fc014909a0`。VERIFIED / RUNNING：真实源样本检查与新增幅度项通过，同 FeatureCond 实际 E0 逐张量一致，配置仅幅度项和版本身份变化；E01 模型/AdamW/CPU-CUDA RNG 独立 CPU 读回通过，总损失复算确认幅度项仅加权一次。首轮 247 更新耗时 49.944650 秒。GPU 4 准入剩余 24110 MiB、原有 0 条计算进程，仅新增本任务 1 条；PID、目录、命令、GPU 与日志增长核实，其他 owner 保持。4670178 参数及部署前向不变，固定 scratch 单阶段 30/7410 后自动原 Main 七景，当前性能 PENDING；六景各距 raw clean≤3pp、clean 保持仍是主验收，效率为支线，默认 DURA 不变。
+
+## 源幅度约束原 Main 七景完成（2026-11-01）
+
+`20261101-phase1-Restore-PowerAnchor-E30-s2026092701-r01`，实际代码42ea957db57d7d90df67dadbeffe11fc014909a0。与固定 FeatureCond/c865 唯一变化为 .1×(rawRMS/同条cleanRMS−1)²，投影前尺度受监督；结构、输出/latent指导、单位功率/globalclip1、实际E0/源顺序/draw/LR/预算一致。4670178 参数全部从零单阶段30/7410，0旧G/IQ教师祖先，原源F0 loss-only，不读TX/V/OE/目标训练或选模，OE仅冻结诊断。
+
+原地面完整 Tri-SIG-TIME SSL/defaulthead/Main168000×七景全部固定预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对复算PASS，误差1.25e-14、raw/DURA判决差0；完整60日志、同E0源顺序draw、仅新增幅度项/各轮加权loss/30恢复文件E30-final一致性核实。
+
+六景依次78.990476/77.714881/76.166667/77.799405/71.533929/65.433929%，达标0/6，相对FeatureCond依次+1.083929/+1.202976/+1.286310/+1.155357/+1.191071/+1.061310个百分点。合并clean 86.644643%（保持），cross_rx净变化+176、cross_both净变化+2，不以合并掩盖子总体损伤。完整TX/RX/day/净纠错/训练幅度与成本见analysis.md。完整目标未达到，保持 ACTIVE 和默认 DURA。性能主线、效率支线保持，源尺度约束改善不替代真实TX识别，也不是信息恢复极限。

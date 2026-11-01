@@ -1,9 +1,11 @@
 # 投影前源幅度约束恢复器：从零单阶段30轮
 
+**六景 0/6，合并 clean保持，clean 准确率 86.644643%。** cross_rx clean 净变化 +176 条，cross_both 净变化 +2 条。完整目标未达到，保持 ACTIVE 和默认 DURA。[完整性能与分组](analysis.md)。
+
 - run_id：`20261101-phase1-Restore-PowerAnchor-E30-s2026092701-r01`
 - group_id：`restoration-raw-amplitude-anchor-single30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（完整七景与独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原 Main168000×七景完整，六景 0/6、合并 clean保持。84单元与完整分组/配对独立复算 PASS，详见 analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -44,3 +46,7 @@
 ## 幅度约束对照已运行（2026-11-01）
 
 `20261101-phase1-Restore-PowerAnchor-E30-s2026092701-r01`，实际代码`42ea957db57d7d90df67dadbeffe11fc014909a0`。VERIFIED / RUNNING：真实源样本检查与新增幅度项通过，同 FeatureCond 实际 E0 逐张量一致，配置仅幅度项和版本身份变化；E01 模型/AdamW/CPU-CUDA RNG 独立 CPU 读回通过，总损失复算确认幅度项仅加权一次。首轮 247 更新耗时 49.944650 秒。GPU 4 准入剩余 24110 MiB、原有 0 条计算进程，仅新增本任务 1 条；PID、目录、命令、GPU 与日志增长核实，其他 owner 保持。4670178 参数及部署前向不变，固定 scratch 单阶段 30/7410 后自动原 Main 七景，当前性能 PENDING；六景各距 raw clean≤3pp、clean 保持仍是主验收，效率为支线，默认 DURA 不变。
+
+## 幅度约束对照七景完成
+
+VERIFIED / ANALYZED。全 G scratch 单阶段30/7410，全部 Main 预测后独立 truth-last；4阶段 exit0，本 run 进程退出。84单元/2604组/1736 raw 配对/1302额外配对复算 PASS，最大指标误差 1.25e-14，raw/DURA 判决差0。完整60轮日志、同E0/源顺序/draw、仅新增幅度项、逐轮总loss及30恢复文件/E30-final一致性核实。完整目标未达到，保持 ACTIVE 和默认 DURA。
