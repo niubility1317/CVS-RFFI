@@ -1192,6 +1192,86 @@
         "practical_mid_urban": 27070,
         "practical_low_urban": 42097
       }
+    },
+    {
+      "name": "Diffusion SigmaMix",
+      "run_id": "20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01",
+      "arm": "TF_DiffusionSigmaMix",
+      "code_commit": "3e5ecb4ffcc5658693bd9b6dc509711b4509a231",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145687,
+          "accuracy": 86.71845238095239,
+          "raw_clean_gap_pp": -0.17976190476190368,
+          "clean_accuracy_retention_percent": 100.20772431818963
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 123077,
+          "accuracy": 73.26011904761904,
+          "raw_clean_gap_pp": 13.27857142857144,
+          "clean_accuracy_retention_percent": 84.65591360869416
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 119786,
+          "accuracy": 71.30119047619047,
+          "raw_clean_gap_pp": 15.237500000000011,
+          "clean_accuracy_retention_percent": 82.39226880352169
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 116379,
+          "accuracy": 69.27321428571429,
+          "raw_clean_gap_pp": 17.265476190476193,
+          "clean_accuracy_retention_percent": 80.04883584964061
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 120404,
+          "accuracy": 71.66904761904762,
+          "raw_clean_gap_pp": 14.869642857142864,
+          "clean_accuracy_retention_percent": 82.81734704405544
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 107383,
+          "accuracy": 63.91845238095238,
+          "raw_clean_gap_pp": 22.6202380952381,
+          "clean_accuracy_retention_percent": 73.86112735151494
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 94925,
+          "accuracy": 56.50297619047619,
+          "raw_clean_gap_pp": 30.035714285714292,
+          "clean_accuracy_retention_percent": 65.29215531175844
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 293,
+        "cross_both": 9
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.20772431818963,
+        "practical_high": 84.65591360869415,
+        "practical_mid": 82.39226880352169,
+        "practical_low_suburban": 80.04883584964061,
+        "practical_high_urban": 82.81734704405544,
+        "practical_mid_urban": 73.86112735151494,
+        "practical_low_urban": 65.29215531175844
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 17268,
+        "practical_mid": 20559,
+        "practical_low_suburban": 23966,
+        "practical_high_urban": 19941,
+        "practical_mid_urban": 32962,
+        "practical_low_urban": 45420
+      }
     }
   ],
   "new_neural_forwards": 0,

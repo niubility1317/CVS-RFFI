@@ -1,6 +1,6 @@
 # 星地恢复器 Main 性能核对
 
-截至 2026-11-02，固定 DURA v1.0 为 1/6 景达标；本表 13 个已完成新候选中 0 个达到六景逐个距 raw clean ≤3 个百分点。完整验收还要求两个总体分别保持 clean。性能是主线，训练效率是支线；源域拟合、参数量和训练结束均不能替代正式验收。
+截至 2026-11-02，固定 DURA v1.0 为 1/6 景达标；本表 14 个已完成新候选中 0 个达到六景逐个距 raw clean ≤3 个百分点。完整验收还要求两个总体分别保持 clean。性能是主线，训练效率是支线；源域拟合、参数量和训练结束均不能替代正式验收。
 
 所有数值来自已完成独立评分的公开同 row 结果。表格按研发顺序排列，不按测试分数选择候选，不合成不同模型的最佳单项，也不更换默认 DURA。原地面完整 Tri-SIG-TIME SSL 的同一冻结默认头为基座，Main 包含跨接收机 126000 条和跨接收机且跨日期 42000 条。每个新 G 固定最终轮次，七景全部预测完成后独立 truth-last。主参照 raw clean 为 86.538690%（145385/168000），故每景至少需要 140345 条正确预测，即 83.538690%。
 
@@ -21,6 +21,7 @@
 |SoftPower|86.5351|78.9137|77.5744|76.1042|77.7054|71.5756|65.5268|0/6|
 |TF ResidualDiffusion|85.9137|73.6214|71.0083|68.4631|70.5935|58.0036|48.6881|0/6|
 |Diffusion Early4（冻结推理）|86.8768|79.1982|77.9565|76.4214|77.0315|67.4256|58.4810|0/6|
+|Diffusion SigmaMix|86.7185|73.2601|71.3012|69.2732|71.6690|63.9185|56.5030|0/6|
 
 准确率单位为 %。完整可复算值和正确数见同名 JSON/CSV。
 
@@ -43,6 +44,7 @@
 |SoftPower|+22|-28|否|
 |TF ResidualDiffusion|-821|-229|否|
 |Diffusion Early4（冻结推理）|+635|-67|否|
+|Diffusion SigmaMix|+293|+9|是|
 
 ## “恢复成 clean 的几成”需区分三个问题
 
@@ -64,6 +66,7 @@
 - SoftPower 保留同 E0/网络/源数据/优化器/软 RMS，只删除硬功率投影，六景相对 PowerAnchor 为4降2升，clean 合并净少6条，跨接收机且跨日期净少28条；源 IQ NMSE 更低并未带来整体主性能收益。这不是“放开幅度一定有效”的证据，也不能据此认定原本硬投影在所有任务最优。
 - 时频联合残差扩散已完成从零30及完整15调用部署，六景0/6、两个clean总体均损伤（合并净少1050条），低档城区48.688095%，低于同F0的received直接识别51.604762%。这条整体新架构尚未产生性能收益；较短训练不能抵消主性能退化。
 - 同权重的冻结第4读出（0新训练/7调用）使六景较完整八步提高5.576786至9.792857个百分点，仍全部低于DURA、0/6达标。合并clean净+568，但跨接收机且跨日期净−67；这证明该固定模型的后段采样确实降低Main表现，并未达到最终目标。
+- SigmaMix 仅改变训练噪声尺度分布，两个clean总体分别净+293、+9，低档城区较原完整扩散提高7.814881个百分点；六景仍0/6、全部较DURA低11.083333至12.298214个百分点。大噪声曝光增加解决了部分覆盖问题，但不足以支持继续扩大这条扩散路线。
 - 冻结源四步轨迹显示，DirectBridge 低档城区首末步 Fclean 一致率均为 84.749304%；StateBridge 则从 86.350975% 降到 81.615599%，净损伤 68/1436，IQ NMSE 从 .07612306 增至 .11645158。后续迭代的退化已在训练源面板出现，不能全部归为 Main 域差异。训练用 clean/received 插值，而部署使用网络自行生成的状态，二者不一致是可检验假设，尚不独立证明原因。[完整轨迹诊断](../automation_reports/CV-SincNet/20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01/analysis.md)保留全部 96 组和配对。DirectBridge 的代数捷径仍只是一种可能限制，不能认定实际网络使用了精确解析式。
 - 所有新 G 都在原 L_s/U_s 范围训练；冻结源 F0 提供连续特征指导，因此这些方法不是 F-free。TX 真标签、V/OE/novel/目标不进入 G 的更新、早停或选模。OE 仅用于冻结诊断。
 - 当前仅一个模型 seed，且该基准已有历史曝光。这些是固定矩阵的研究结果，不宣称全新盲测或已知恢复极限。下一方案仍须依据合法源端机制证据预先固定，不能借已揭示的 Main 错误逐条优化或按场景切换模型。
@@ -83,6 +86,7 @@
 - [SoftPower 完整分析](../automation_reports/CV-SincNet/20261101-phase1-Restore-SoftPower-E30-s2026092701-r01/analysis.md)，实际代码 `1dd40c07970b664f18c57149a0a2ab02f000b114`。
 - [TF ResidualDiffusion 完整分析](../automation_reports/CV-SincNet/20261102-phase1-Restore-TFResidualDiffusion-E30-s2026092701-r01/analysis.md)，实际代码 `5e5921c975678367a5d0a00ee72d4619e5f6927e`。
 - [Diffusion Early4（冻结推理） 完整分析](../automation_reports/CV-SincNet/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01/analysis.md)，实际代码 `3e5ecb4ffcc5658693bd9b6dc509711b4509a231`。
+- [Diffusion SigmaMix 完整分析](../automation_reports/CV-SincNet/20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01/analysis.md)，实际代码 `3e5ecb4ffcc5658693bd9b6dc509711b4509a231`。
 
 本核对只复用公开汇总，新增神经前向、原始训练/目标数据读取、真值读取均为 0。完整目标保持 ACTIVE，默认 DURA 不变。
 
@@ -93,7 +97,9 @@
 
 [冻结源采样轨迹](../automation_reports/CV-SincNet/20261102-diagnostic-Restore-diffusion-source-path-s2026092701-r01/analysis.md)完成92160行/108组/所有配对复算，误差0。整体第4内部读出Fclean一致90.869141%→末步87.294922%，低档城区69.428969%→62.465181%，对应同条判决净减少366/10240和100/1436；它是源内Fclean参考，不是TX准确率或Main成绩。源端已经出现后半段采样损伤，训练单步加噪残差误差不能代替真实完整sampler质量。
 
-基于该源诊断固定的[冻结第4读出完整结果](../automation_reports/CV-SincNet/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01/analysis.md)已纳入上表；它复用原source-only scratch30权重，0新训练/7核心调用，祖先G30/F0 E50和源尺度知识仍计成本，不能冒充另一个新从零模型。[训练sigma均衡](../automation_reports/CV-SincNet/20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01/report.md)则全部参数从零单阶段30，50%原lognormal加50%均匀8部署点，原15调用部署保持；其训练已完成并在执行Main，尚无完整性能结果，不计入已完成候选。两项独立固定完整七景，不按目标分组选择或组合方案。
+基于该源诊断固定的[冻结第4读出完整结果](../automation_reports/CV-SincNet/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01/analysis.md)已纳入上表；它复用原source-only scratch30权重，0新训练/7核心调用，祖先G30/F0 E50和源尺度知识仍计成本，不能冒充另一个新从零模型。[训练sigma均衡完整结果](../automation_reports/CV-SincNet/20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01/analysis.md)也已纳入上表，全部参数从零单阶段30，50%原lognormal加50%均匀8部署点，原15调用部署保持。两项均完整七景、0/6达标，不按目标分组选择或组合方案。SigmaMix全部84单元/2604组/60轮训练日志独立复核通过，raw/DURA缓存判决差0。
+
+[已有源RX/day特征几何诊断](../automation_reports/CV-SincNet/20261101-diagnostic-Restore-Fgeometry-RXday-s2026092701-r01/analysis.md)提供了另一项反证：接收机均值相关变异占比从原始特征的0.890638%降至源方差加权后的0.612513%。这些clean特征统计不支持“方差加权放大接收机均值”这一具体解释，不据此推出删均值或投影方案；它也不能排除协方差和非线性域差异。
 
 [源/主信道静态设置核对](PAMF_RESTORATION_SOURCE_MAIN_CONFIG_20261102.md)未发现三个核心模块的定义漂移。记录的载频差异及union中历史复制观测的来源边界单列，不能仅凭此项解释性能差距或重建数据。
 
