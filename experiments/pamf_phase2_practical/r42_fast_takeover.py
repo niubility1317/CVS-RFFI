@@ -32,6 +32,16 @@ def pending_tasks(tasks, finished, active, predecessor):
     return [t for t in tasks if t['key'] not in finished | active | predecessor]
 
 
+def gpu_worker_limit(rt, gpu):
+    limits = rt.get('max_workers_by_gpu')
+    if limits is None:
+        return 2
+    require(set(limits) == {str(g) for g in rt['allowed_gpus']}, 'GPU concurrency map differs from allowed GPUs')
+    limit = limits[str(gpu)]
+    require(type(limit) is int and 1 <= limit <= 3, 'Invalid GPU concurrency limit')
+    return limit
+
+
 def proc(pid):
     folder = Path('/proc') / str(pid)
     try:
@@ -390,7 +400,7 @@ def dispatch(rt):
             for gpu in rt['allowed_gpus']:
                 if not pending: break
                 used = sum(v['gpu'] == gpu for v in active.values()) + sum(v['gpu'] == gpu for v in predecessor.values())
-                if used >= 2: continue
+                if used >= gpu_worker_limit(rt, gpu): continue
                 free = int(subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip())
                 if free < rt['minimum_free_MiB']: continue
                 item = pending.pop(0); key = item['key']
