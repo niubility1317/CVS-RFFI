@@ -105,6 +105,13 @@ def _decisions(scores,classes):
     return order[scores[:,order].argmax(1)],old[scores[:,old].argmax(1)]
 
 
+def local_ridge_scorer(state, device, enabled):
+    if not enabled:
+        return state
+    from .milkr.cuda_local_ridge import CudaLocalRidge
+    return CudaLocalRidge(state, device)
+
+
 def run(rt,job):
     import torch
     started=time.perf_counter();require(rt['model_seeds']==[job['seed']],'Suite F seed mismatch')
@@ -155,7 +162,7 @@ def run(rt,job):
             states.append((arm,stage,k,n,sp,state));del task,features
             if arm=='R42':del mapped
         bank=np.load(cap/'received.npy',mmap_mode='r');allrows=np.load(cap/'stage_rows/N20.npy')
-        positions=np.full(len(bank),-1,np.int64);positions[allrows]=np.arange(len(allrows));raw_cache={}
+        positions=np.full(len(bank),-1,np.int64);positions[allrows]=np.arange(len(allrows));raw_cache={};local_heads={}
         def save(row,query,predicted,restricted=None):
             key=row_key(row)
             if key in rows:return
@@ -189,7 +196,12 @@ def run(rt,job):
                     spec=specs[k,n];query=split_rows(cap,spec);pos=positions[query];require((pos>=0).all(),'Suite query bank mapping differs')
                     row=dict(arm=arm,stage=stage,k=k,new_count=n,input_path=f'S{sp}Q{qp}')
                     if arm=='LocalRidge':
-                        (pred,restricted),elapsed=_timed(lambda:decide(state,subset(base_features,pos),spec['registered_classes'],decision_batch),device)
+                        def evaluate_local():
+                            key=(stage,k,n,sp)
+                            if key not in local_heads:
+                                local_heads[key]=local_ridge_scorer(state,device,rt.get('local_ridge_cuda',False))
+                            return decide(local_heads[key],subset(base_features,pos),spec['registered_classes'],decision_batch)
+                        (pred,restricted),elapsed=_timed(evaluate_local,device)
                         head_seconds+=elapsed;save(row,query,pred,restricted)
                     else:
                         def evaluate():
