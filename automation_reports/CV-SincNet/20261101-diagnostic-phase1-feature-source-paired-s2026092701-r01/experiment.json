@@ -1,0 +1,156 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-phase1-feature-source-paired-s2026092701-r01",
+  "group_id": "phase1-feature-source-paired-diagnostic",
+  "display_name": "Phase1 特征条件模型源域配对诊断",
+  "description": "比较固定 DURA 与已完成的特征条件网络，在同一源训练样本上的干净基座一致性和波形误差。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "DURA",
+    "feature-conditioned",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261101-phase1-feature-conditioned-E30-s2026092701-r02",
+    "20261101-diagnostic-phase1-dura-trisig-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发更强星地恢复网络并严格限定 Phase1 地面训练、测试与 Tri-SIG-TIME SSL 基座。",
+  "code": {
+    "commit": "6eabc15b11583c486fa23bf9094cb00a1eae8490",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch CPU only, original Phase1 frozen Tri-SIG-TIME release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-phase1-feature-source-paired-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/feature_source_diagnostic.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Phase1 R07 source IQ, fixed DURA and fixed feature-conditioned model",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "none",
+    "actual_training_labels": "Diagnostic reads no TX labels, V or test IQ; trained candidate used legitimate L_s labels only",
+    "augmentation": "Source views 01 and 20"
+  },
+  "permissions": {
+    "regime": "Phase1 L_s/U_s source IQ only; frozen Tri-SIG-TIME, DURA and feature model",
+    "query_use": "No test or V access",
+    "external_method_exception": null,
+    "claim_scope": "In-training source teacher agreement only, not accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Fixed feature-conditioned E30, original DURA and Tri-SIG-TIME SSL E50",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-feature-conditioned-E30-s2026092701-r02/flow/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Exact field metadata, DURA SHA256 and source ID/native IQ alignment",
+    "provenance_verdict": "Fixed source-trained feature correction and original frozen Phase1 models",
+    "selection_rule": "Fixed source records and views; no selection or update"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-feature-source-diagnostic",
+    "gpu_policy": "CPU2/0GPU",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-feature-source-paired-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-feature-source-paired-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-diagnostic-phase1-feature-source-paired-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.feature_source_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --commit 6eabc15b11583c486fa23bf9094cb00a1eae8490",
+    "stop_rule": "On mismatched source IQ/checkpoint or nonfinite output stop and preserve log; no automatic retry"
+  },
+  "expected_artifacts": [
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean-teacher agreement",
+      "paired repair/damage counts",
+      "IQ NMSE",
+      "clean-to-output KL"
+    ],
+    "dimensions": [
+      "source views 01/20; same 512 IDs",
+      "source scene, state, role"
+    ],
+    "prediction_ref": "aggregate source diagnostic only",
+    "scorer_ref": "feature_source_diagnostic.py",
+    "targets_ref": "in-training source diagnostic, not TX accuracy"
+  },
+  "notes": [
+    "固定 512 个源训练 ID（L128/U384），视图 01/20；同一 ID 重复不视为独立样本。",
+    "原 DURA 现场输出须与已保存的 native 源输出匹配；特征条件模型须满足 E30、14790 更新、基座身份与 DURA SHA。",
+    "比较 clean teacher 一致性的逐样本修复/损伤、KL 和 IQ NMSE；诊断本身不读取 TX 标签、V、测试 IQ，不更新模型。",
+    "原候选训练使用合法 6300 条 L_s 标签和 U_s 干净教师伪目标，未读取 U_s 标签；源诊断不是真实准确率或独立泛化。"
+  ],
+  "rows": [
+    {
+      "row_id": "paired_source",
+      "method": "DURA vs fixed feature-conditioned model with frozen Tri-SIG-TIME",
+      "purpose": "Assess whether source consistency improves or damages DURA decisions",
+      "config_ref": "experiments/pamf_phase1_flow/feature_source_diagnostic.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/feature_source_diagnostic.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed source rows and views; deterministic fixed model",
+      "k": null,
+      "scenario": "Phase1 source views 01 and 20",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512 source IDs x 2 views, frozen inference only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-feature-source-paired-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-feature-source-paired-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.feature_source_diagnostic --root /home/szu2070436088/2510044040/CV-SincNet --commit 6eabc15b11583c486fa23bf9094cb00a1eae8490",
+      "expected_artifacts": [
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "registered_at": "2026-11-01T06:16:32+00:00"
+}

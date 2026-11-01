@@ -1,0 +1,2 @@
+{"at": "2026-11-01T06:16:32+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T06:18:24+00:00", "status": "ANALYZED", "note": "完成 512 个固定 L_s/U_s 源训练 ID、两个源视图的 DURA 与 E30 特征模型逐条配对；独立核对场景/状态/角色分组和修复损伤恒等式。视图 01 全样本与 clean teacher 一致 491→483，修复14、损伤22；视图20为492→492，修复13、损伤13。不读取 TX 标签、V、测试 IQ，不更新网络；源教师一致性不是真实准确率或独立泛化。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-feature-source-paired-s2026092701-r01/complete.json"], "row_id": null}
