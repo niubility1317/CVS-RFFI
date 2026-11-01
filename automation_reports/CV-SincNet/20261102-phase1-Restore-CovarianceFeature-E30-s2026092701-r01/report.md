@@ -50,3 +50,8 @@ VERIFIED / RUNNING。source2 实际完整 FP64 后验、原 F0/defaulthead、联
 E01 独立 CPU 检查 PASS：实际全部 E0 张量（包括源 mu/C）与固定 CovarianceMAP 控制相同，全部源顺序/draw 相同；TF 骨干和三个估计头均更新、optimizer 有限、prior 不变。第一轮 247 次更新、全 63000 条物理监督，额外后验/F0 7896 条（L_s 792、U_s 7104），步损失权重归一化误差 1.08e-09。首轮 94.052696 秒；没有据此宣称同质量提速或识别性能提升。
 
 原 L_s/U_s 的单阶段 30 轮联合训练继续，随后自动原 Main 双总体七景、全部预测完成后独立 CPU truth-last。当前没有本版正式识别结果，主验收仍未达成。TX/V/OE/novel/目标训练和选模均为 0；本版明确使用冻结源 F0 特征指导，默认 DURA 保持。
+
+
+## 固定单阶段30轮训练已核实
+
+VERIFIED / TRAINING_COMPLETE。独立CPU核实全部30轮/7410更新，原训练进程exit0，固定最终权重已产生，Main预测已自动启动。训练2813.737786秒，峰值allocated显存1549.052MiB；额外后验/F0累计236880条，实际不同包覆盖61862/63000。源顺序/draw/LR、完整日志/stdout、采样角色曝光/覆盖、步归一化、prior不变与E30-final核实PASS，复用E01控制初值/顺序证据。详见[source训练结案](source_training_completion.md)。当前正式七景尚未完成，不以源拟合代替性能结论；默认DURA保持。
