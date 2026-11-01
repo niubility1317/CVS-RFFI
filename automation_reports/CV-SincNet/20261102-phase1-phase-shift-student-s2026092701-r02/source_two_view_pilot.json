@@ -1,0 +1,86 @@
+{
+  "source_train_only": true,
+  "train_ids": 2048,
+  "heldout_from_train": 256,
+  "two_view_epochs": [
+    11,
+    12
+  ],
+  "same_clean_physical_id": true,
+  "F_frozen": true,
+  "phase_factor_prior": "source-trained previously with frozen DURA, not used at inference",
+  "DURA_loaded_only_after_training": true,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "objective": "paired clean F feature + output IQ losses, with cross-view feature consistency for paired model",
+  "train": [
+    {
+      "mode": "single",
+      "updates": 64,
+      "active_pairs": 2043,
+      "loss_mean": 1.4563352577388287,
+      "last16_loss_mean": 1.3958572521805763
+    },
+    {
+      "mode": "paired",
+      "updates": 64,
+      "active_pairs": 2043,
+      "loss_mean": 1.4944021478295326,
+      "last16_loss_mean": 1.4973357245326042
+    }
+  ],
+  "results": {
+    "practical_high": {
+      "valid": 39,
+      "raw": 38,
+      "DURA": 39,
+      "single_view": 39,
+      "paired_consistency": 39
+    },
+    "practical_mid": {
+      "valid": 43,
+      "raw": 38,
+      "DURA": 42,
+      "single_view": 39,
+      "paired_consistency": 40
+    },
+    "practical_low_suburban": {
+      "valid": 44,
+      "raw": 38,
+      "DURA": 43,
+      "single_view": 40,
+      "paired_consistency": 39
+    },
+    "practical_high_urban": {
+      "valid": 42,
+      "raw": 40,
+      "DURA": 42,
+      "single_view": 38,
+      "paired_consistency": 38
+    },
+    "practical_mid_urban": {
+      "valid": 39,
+      "raw": 26,
+      "DURA": 33,
+      "single_view": 29,
+      "paired_consistency": 28
+    },
+    "practical_low_urban": {
+      "valid": 41,
+      "raw": 24,
+      "DURA": 37,
+      "single_view": 27,
+      "paired_consistency": 27
+    },
+    "all": {
+      "valid": 248,
+      "raw": 204,
+      "DURA": 236,
+      "single_view": 212,
+      "paired_consistency": 211
+    }
+  },
+  "limitations": "small exploratory source pilot, reused source identities, pseudo targets not true labels; paired model processes twice as many training views; not Phase1 test"
+}
