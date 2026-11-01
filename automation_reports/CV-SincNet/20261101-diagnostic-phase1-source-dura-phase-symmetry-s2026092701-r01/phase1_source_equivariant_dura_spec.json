@@ -1,0 +1,31 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_FIXED_BEFORE_EXECUTION",
+  "created_utc": "2026-11-01T14:33:58.694Z",
+  "script": "phase1_source_equivariant_dura.py",
+  "script_sha256": "8a3a383b4b831fb0a23541629f533f99f487eed7862c828e936ce9805fc4f80a",
+  "phase_count": 8,
+  "alphas": [
+    0.25,
+    0.5,
+    1
+  ],
+  "blind_snr_gate_db": 10,
+  "source_sample_seed": 2026110471,
+  "excluded_source_sample_seeds": [
+    2026110411,
+    2026110451,
+    2026110461
+  ],
+  "channel_seed": 2026110472,
+  "hardware_seed": 2026110473,
+  "validation_receivers": [
+    4,
+    6
+  ],
+  "heldout_receiver": 8,
+  "day": 3,
+  "source_clean_iq_used_for_inference": false,
+  "simulator_snr_used_for_inference": false,
+  "test_iq_reads": 0,
+  "caveat": "The blind threshold follows earlier source observations. Excluded source samples are reconstructed exactly; other source probes may overlap and frozen DURA/base saw source records."
+}

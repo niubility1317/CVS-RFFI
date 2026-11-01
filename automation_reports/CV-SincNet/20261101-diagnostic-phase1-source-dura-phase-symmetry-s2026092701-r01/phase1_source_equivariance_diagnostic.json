@@ -1,0 +1,287 @@
+{
+  "status": "SOURCE_ONLY_EQUIVARIANCE_DIAGNOSTIC",
+  "source_ids": 795,
+  "validation_ids": 514,
+  "results": {
+    "clean": {
+      "gated_count": 0,
+      "orbit_variation_quantiles": null,
+      "candidates": [
+        {
+          "alpha": 0.25,
+          "valid_count": 504,
+          "baseline": 503,
+          "candidate": 503,
+          "repairs": 0,
+          "damages": 0,
+          "L_s_count": 139,
+          "L_s_baseline": 138,
+          "L_s_candidate": 138,
+          "quality_on_gate": null
+        },
+        {
+          "alpha": 0.5,
+          "valid_count": 504,
+          "baseline": 503,
+          "candidate": 503,
+          "repairs": 0,
+          "damages": 0,
+          "L_s_count": 139,
+          "L_s_baseline": 138,
+          "L_s_candidate": 138,
+          "quality_on_gate": null
+        },
+        {
+          "alpha": 1.0,
+          "valid_count": 504,
+          "baseline": 503,
+          "candidate": 503,
+          "repairs": 0,
+          "damages": 0,
+          "L_s_count": 139,
+          "L_s_baseline": 138,
+          "L_s_candidate": 138,
+          "quality_on_gate": null
+        }
+      ]
+    },
+    "practical_low_suburban": {
+      "gated_count": 58,
+      "orbit_variation_quantiles": [
+        27.338374137878418,
+        43.14043045043945,
+        76.9533256530762
+      ],
+      "candidates": [
+        {
+          "alpha": 0.25,
+          "valid_count": 504,
+          "baseline": 493,
+          "candidate": 493,
+          "repairs": 2,
+          "damages": 2,
+          "L_s_count": 139,
+          "L_s_baseline": 136,
+          "L_s_candidate": 136,
+          "quality_on_gate": {
+            "aligned_mse_before": 0.04865576674362595,
+            "aligned_mse_after": 0.048859156975564304,
+            "improved": 24,
+            "worsened": 34,
+            "median_output_rms_ratio": 0.7501176728301951,
+            "median_relative_change": 0.24997243844587064
+          }
+        },
+        {
+          "alpha": 0.5,
+          "valid_count": 504,
+          "baseline": 493,
+          "candidate": 487,
+          "repairs": 1,
+          "damages": 7,
+          "L_s_count": 139,
+          "L_s_baseline": 136,
+          "L_s_candidate": 134,
+          "quality_on_gate": {
+            "aligned_mse_before": 0.04865576674362595,
+            "aligned_mse_after": 0.04961815187893018,
+            "improved": 18,
+            "worsened": 40,
+            "median_output_rms_ratio": 0.5002577694896997,
+            "median_relative_change": 0.4999448768917413
+          }
+        },
+        {
+          "alpha": 1.0,
+          "valid_count": 504,
+          "baseline": 493,
+          "candidate": 459,
+          "repairs": 1,
+          "damages": 35,
+          "L_s_count": 139,
+          "L_s_baseline": 136,
+          "L_s_candidate": 123,
+          "quality_on_gate": {
+            "aligned_mse_before": 0.04865576674362595,
+            "aligned_mse_after": 0.8191361731964248,
+            "improved": 0,
+            "worsened": 58,
+            "median_output_rms_ratio": 0.0232066717924813,
+            "median_relative_change": 0.9998897537834825
+          }
+        }
+      ]
+    },
+    "practical_mid_urban": {
+      "gated_count": 194,
+      "orbit_variation_quantiles": [
+        31.611837959289552,
+        64.69837951660156,
+        84.02429885864258
+      ],
+      "candidates": [
+        {
+          "alpha": 0.25,
+          "valid_count": 504,
+          "baseline": 476,
+          "candidate": 477,
+          "repairs": 7,
+          "damages": 6,
+          "L_s_count": 139,
+          "L_s_baseline": 130,
+          "L_s_candidate": 130,
+          "quality_on_gate": {
+            "aligned_mse_before": 0.04723009466747114,
+            "aligned_mse_after": 0.04729822195574163,
+            "improved": 44,
+            "worsened": 150,
+            "median_output_rms_ratio": 0.7500526202037214,
+            "median_relative_change": 0.2500104211767866
+          }
+        },
+        {
+          "alpha": 0.5,
+          "valid_count": 504,
+          "baseline": 476,
+          "candidate": 464,
+          "repairs": 8,
+          "damages": 20,
+          "L_s_count": 139,
+          "L_s_baseline": 130,
+          "L_s_candidate": 129,
+          "quality_on_gate": {
+            "aligned_mse_before": 0.04723009466747114,
+            "aligned_mse_after": 0.047514531195232655,
+            "improved": 27,
+            "worsened": 167,
+            "median_output_rms_ratio": 0.5001491417181969,
+            "median_relative_change": 0.5000208423535732
+          }
+        },
+        {
+          "alpha": 1.0,
+          "valid_count": 504,
+          "baseline": 476,
+          "candidate": 361,
+          "repairs": 4,
+          "damages": 119,
+          "L_s_count": 139,
+          "L_s_baseline": 130,
+          "L_s_candidate": 95,
+          "quality_on_gate": {
+            "aligned_mse_before": 0.04723009466747114,
+            "aligned_mse_after": 0.87719242506569,
+            "improved": 2,
+            "worsened": 192,
+            "median_output_rms_ratio": 0.015380760884460961,
+            "median_relative_change": 1.0000416847071465
+          }
+        }
+      ]
+    },
+    "practical_low_urban": {
+      "gated_count": 310,
+      "orbit_variation_quantiles": [
+        32.25668029785157,
+        59.76718521118164,
+        82.86146774291994
+      ],
+      "candidates": [
+        {
+          "alpha": 0.25,
+          "valid_count": 504,
+          "baseline": 437,
+          "candidate": 435,
+          "repairs": 8,
+          "damages": 10,
+          "L_s_count": 139,
+          "L_s_baseline": 119,
+          "L_s_candidate": 120,
+          "quality_on_gate": {
+            "aligned_mse_before": 0.05689990489634633,
+            "aligned_mse_after": 0.057270044246914543,
+            "improved": 96,
+            "worsened": 214,
+            "median_output_rms_ratio": 0.750026588804861,
+            "median_relative_change": 0.2500176772432549
+          }
+        },
+        {
+          "alpha": 0.5,
+          "valid_count": 504,
+          "baseline": 437,
+          "candidate": 424,
+          "repairs": 8,
+          "damages": 21,
+          "L_s_count": 139,
+          "L_s_baseline": 119,
+          "L_s_candidate": 113,
+          "quality_on_gate": {
+            "aligned_mse_before": 0.05689990489634633,
+            "aligned_mse_after": 0.05816395932401062,
+            "improved": 68,
+            "worsened": 242,
+            "median_output_rms_ratio": 0.5000886046108826,
+            "median_relative_change": 0.5000353544865098
+          }
+        },
+        {
+          "alpha": 1.0,
+          "valid_count": 504,
+          "baseline": 437,
+          "candidate": 279,
+          "repairs": 11,
+          "damages": 169,
+          "L_s_count": 139,
+          "L_s_baseline": 119,
+          "L_s_candidate": 78,
+          "quality_on_gate": {
+            "aligned_mse_before": 0.05689990489634633,
+            "aligned_mse_after": 0.8904910010408084,
+            "improved": 2,
+            "worsened": 308,
+            "median_output_rms_ratio": 0.016690919358523716,
+            "median_relative_change": 1.0000707089730196
+          }
+        }
+      ]
+    }
+  },
+  "validation": [
+    {
+      "candidate": 0,
+      "alpha": 0.25,
+      "net": -1,
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": 1,
+        "practical_low_urban": -2
+      }
+    },
+    {
+      "candidate": 1,
+      "alpha": 0.5,
+      "net": -31,
+      "per_view": {
+        "practical_low_suburban": -6,
+        "practical_mid_urban": -12,
+        "practical_low_urban": -13
+      }
+    },
+    {
+      "candidate": 2,
+      "alpha": 1.0,
+      "net": -307,
+      "per_view": {
+        "practical_low_suburban": -34,
+        "practical_mid_urban": -115,
+        "practical_low_urban": -158
+      }
+    }
+  ],
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "candidates_before_source_tx_labels": true,
+  "caveat": "The 8-way phase-orbit average uses received IQ and DURA only; source clean IQ and mixed source targets are used solely for post-hoc diagnostics. IQ MSE allows source-only ±16 shift and complex gain. Orbit variation measures disagreement among inverse-rotated DURA outputs, not necessarily physical restoration error. Source validation was previously inspected; experts saw source records and simulator is not validated real satellite data."
+}

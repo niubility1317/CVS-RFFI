@@ -1,0 +1,165 @@
+{
+  "status": "SOURCE_ONLY_LABEL_ASSISTED_DURA_ORBIT_ORACLE",
+  "source_ids": 795,
+  "validation_ids": 514,
+  "heldout_ids": 281,
+  "results": {
+    "clean": {
+      "1": {
+        "count": 514,
+        "valid_count": 504,
+        "L_s_count": 139,
+        "baseline_correct": 503,
+        "L_s_baseline_correct": 138,
+        "orbit_oracle_correct": 503,
+        "L_s_orbit_oracle_correct": 138,
+        "fidelity_orbit_oracle_correct": 503,
+        "L_s_fidelity_orbit_oracle_correct": 138,
+        "gated_count": 0,
+        "phase_oracle_mean_mse": 2.5545248206794968e-05,
+        "baseline_mean_mse": 2.5545248206794968e-05
+      },
+      "2": {
+        "count": 281,
+        "valid_count": 271,
+        "L_s_count": 69,
+        "baseline_correct": 271,
+        "L_s_baseline_correct": 69,
+        "orbit_oracle_correct": 271,
+        "L_s_orbit_oracle_correct": 69,
+        "fidelity_orbit_oracle_correct": 271,
+        "L_s_fidelity_orbit_oracle_correct": 69,
+        "gated_count": 0,
+        "phase_oracle_mean_mse": 5.105281616561012e-05,
+        "baseline_mean_mse": 5.105281616561012e-05
+      }
+    },
+    "practical_low_suburban": {
+      "1": {
+        "count": 514,
+        "valid_count": 504,
+        "L_s_count": 139,
+        "baseline_correct": 493,
+        "L_s_baseline_correct": 136,
+        "orbit_oracle_correct": 494,
+        "L_s_orbit_oracle_correct": 136,
+        "fidelity_orbit_oracle_correct": 494,
+        "L_s_fidelity_orbit_oracle_correct": 136,
+        "gated_count": 58,
+        "phase_oracle_mean_mse": 0.010670326474942475,
+        "baseline_mean_mse": 0.011044042324248333
+      },
+      "2": {
+        "count": 281,
+        "valid_count": 271,
+        "L_s_count": 69,
+        "baseline_correct": 267,
+        "L_s_baseline_correct": 67,
+        "orbit_oracle_correct": 269,
+        "L_s_orbit_oracle_correct": 68,
+        "fidelity_orbit_oracle_correct": 267,
+        "L_s_fidelity_orbit_oracle_correct": 67,
+        "gated_count": 26,
+        "phase_oracle_mean_mse": 0.02272551022177817,
+        "baseline_mean_mse": 0.023566586345784544
+      }
+    },
+    "practical_mid_urban": {
+      "1": {
+        "count": 514,
+        "valid_count": 504,
+        "L_s_count": 139,
+        "baseline_correct": 476,
+        "L_s_baseline_correct": 130,
+        "orbit_oracle_correct": 489,
+        "L_s_orbit_oracle_correct": 134,
+        "fidelity_orbit_oracle_correct": 484,
+        "L_s_fidelity_orbit_oracle_correct": 133,
+        "gated_count": 194,
+        "phase_oracle_mean_mse": 0.019300258838740363,
+        "baseline_mean_mse": 0.021174698820542168
+      },
+      "2": {
+        "count": 281,
+        "valid_count": 271,
+        "L_s_count": 69,
+        "baseline_correct": 255,
+        "L_s_baseline_correct": 66,
+        "orbit_oracle_correct": 268,
+        "L_s_orbit_oracle_correct": 68,
+        "fidelity_orbit_oracle_correct": 265,
+        "L_s_fidelity_orbit_oracle_correct": 67,
+        "gated_count": 111,
+        "phase_oracle_mean_mse": 0.05399392995790216,
+        "baseline_mean_mse": 0.05636307148511077
+      }
+    },
+    "practical_low_urban": {
+      "1": {
+        "count": 514,
+        "valid_count": 504,
+        "L_s_count": 139,
+        "baseline_correct": 437,
+        "L_s_baseline_correct": 119,
+        "orbit_oracle_correct": 473,
+        "L_s_orbit_oracle_correct": 131,
+        "fidelity_orbit_oracle_correct": 459,
+        "L_s_fidelity_orbit_oracle_correct": 126,
+        "gated_count": 310,
+        "phase_oracle_mean_mse": 0.03425138181809464,
+        "baseline_mean_mse": 0.03711824587417493
+      },
+      "2": {
+        "count": 281,
+        "valid_count": 271,
+        "L_s_count": 69,
+        "baseline_correct": 242,
+        "L_s_baseline_correct": 63,
+        "orbit_oracle_correct": 259,
+        "L_s_orbit_oracle_correct": 65,
+        "fidelity_orbit_oracle_correct": 255,
+        "L_s_fidelity_orbit_oracle_correct": 65,
+        "gated_count": 169,
+        "phase_oracle_mean_mse": 0.09721520350554293,
+        "baseline_mean_mse": 0.10350725779214129
+      }
+    }
+  },
+  "validation": [
+    {
+      "candidate": 0,
+      "alpha": 0.25,
+      "net": -1,
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": 1,
+        "practical_low_urban": -2
+      }
+    },
+    {
+      "candidate": 1,
+      "alpha": 0.5,
+      "net": -31,
+      "per_view": {
+        "practical_low_suburban": -6,
+        "practical_mid_urban": -12,
+        "practical_low_urban": -13
+      }
+    },
+    {
+      "candidate": 2,
+      "alpha": 1.0,
+      "net": -307,
+      "per_view": {
+        "practical_low_suburban": -34,
+        "practical_mid_urban": -115,
+        "practical_low_urban": -158
+      }
+    }
+  ],
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "predictions_before_source_tx_labels": true,
+  "caveat": "Each of eight waveforms is DURA applied to a globally rotated received signal and inverse-rotated. Oracle selection uses source targets and optionally paired clean IQ, so it cannot run at inference and bounds only these fixed candidates. Source sample and validation were previously inspected; frozen experts saw source records. Simulated satellite is not validated real satellite data."
+}

@@ -1,0 +1,19 @@
+{
+  "status": "POSTHOC_SOURCE_DIAGNOSTIC_FIXED_BEFORE_EXECUTION",
+  "created_utc": "2026-11-01T14:46:23.343Z",
+  "script": "phase1_source_invariant_dura.py",
+  "script_sha256": "3c1fdd7e40a65c1195716e24b0bd7cbd6feff56d2c7a5e876e81ca314e06dbbb",
+  "parent": "phase1_source_equivariant_dura.py",
+  "parent_sha256": "8a3a383b4b831fb0a23541629f533f99f487eed7862c828e936ce9805fc4f80a",
+  "phase_count": 8,
+  "alphas": [
+    0.25,
+    0.5,
+    1
+  ],
+  "blind_snr_gate_db": 10,
+  "source_sample_seed": 2026110471,
+  "channel_seed": 2026110472,
+  "hardware_seed": 2026110473,
+  "caveat": "Output-frame correction was designed after inspecting the same source validation and phase-response data; this is not an independent evaluation."
+}

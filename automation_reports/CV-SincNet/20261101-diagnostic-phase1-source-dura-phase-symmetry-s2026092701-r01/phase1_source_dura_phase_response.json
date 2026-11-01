@@ -1,0 +1,198 @@
+{
+  "status": "SOURCE_ONLY_DURA_PHASE_RESPONSE",
+  "source_ids": 795,
+  "validation_ids": 514,
+  "results": {
+    "clean": {
+      "gated_source_validation_count": 0,
+      "phase_responses": []
+    },
+    "practical_low_suburban": {
+      "gated_source_validation_count": 58,
+      "phase_responses": [
+        {
+          "input_phase_deg": 0.0,
+          "direct_nmse_median": 0.0,
+          "equivariant_nmse_median": 0.0,
+          "normalized_complex_correlation_mean_real": 1.0,
+          "normalized_complex_correlation_mean_imag": 0.0
+        },
+        {
+          "input_phase_deg": 45.0,
+          "direct_nmse_median": 0.002042719372452105,
+          "equivariant_nmse_median": 0.5857850325622649,
+          "normalized_complex_correlation_mean_real": 0.9984990060841619,
+          "normalized_complex_correlation_mean_imag": 0.004253852555827158
+        },
+        {
+          "input_phase_deg": 90.0,
+          "direct_nmse_median": 0.0049188071150398464,
+          "equivariant_nmse_median": 2.004599532133903,
+          "normalized_complex_correlation_mean_real": 0.9960729296182945,
+          "normalized_complex_correlation_mean_imag": 0.0008567547017504196
+        },
+        {
+          "input_phase_deg": 135.0,
+          "direct_nmse_median": 0.006037573728506244,
+          "equivariant_nmse_median": 3.41042008499098,
+          "normalized_complex_correlation_mean_real": 0.9956137249007067,
+          "normalized_complex_correlation_mean_imag": 0.0003143585385957792
+        },
+        {
+          "input_phase_deg": 180.0,
+          "direct_nmse_median": 0.005748655266502565,
+          "equivariant_nmse_median": 3.9908521915128015,
+          "normalized_complex_correlation_mean_real": 0.995816064334189,
+          "normalized_complex_correlation_mean_imag": 0.0014040486031945036
+        },
+        {
+          "input_phase_deg": 225.0,
+          "direct_nmse_median": 0.0053649557003481,
+          "equivariant_nmse_median": 3.41326293244598,
+          "normalized_complex_correlation_mean_real": 0.9957391929618362,
+          "normalized_complex_correlation_mean_imag": 0.0072488342992006035
+        },
+        {
+          "input_phase_deg": 270.0,
+          "direct_nmse_median": 0.004003505321146824,
+          "equivariant_nmse_median": 1.9993971437757232,
+          "normalized_complex_correlation_mean_real": 0.9962920963003081,
+          "normalized_complex_correlation_mean_imag": 0.0003036271704061586
+        },
+        {
+          "input_phase_deg": 315.0,
+          "direct_nmse_median": 0.0021467428084792884,
+          "equivariant_nmse_median": 0.5834225450166681,
+          "normalized_complex_correlation_mean_real": 0.9983120355489742,
+          "normalized_complex_correlation_mean_imag": -0.003577138422340791
+        }
+      ]
+    },
+    "practical_mid_urban": {
+      "gated_source_validation_count": 194,
+      "phase_responses": [
+        {
+          "input_phase_deg": 0.0,
+          "direct_nmse_median": 0.0,
+          "equivariant_nmse_median": 0.0,
+          "normalized_complex_correlation_mean_real": 1.0,
+          "normalized_complex_correlation_mean_imag": 0.0
+        },
+        {
+          "input_phase_deg": 45.0,
+          "direct_nmse_median": 0.0011677140083773065,
+          "equivariant_nmse_median": 0.5860544167262312,
+          "normalized_complex_correlation_mean_real": 0.9914261361622376,
+          "normalized_complex_correlation_mean_imag": 0.0010925134422800642
+        },
+        {
+          "input_phase_deg": 90.0,
+          "direct_nmse_median": 0.001984846135001277,
+          "equivariant_nmse_median": 2.000620105175087,
+          "normalized_complex_correlation_mean_real": 0.9868205097801522,
+          "normalized_complex_correlation_mean_imag": 0.0016434729127561367
+        },
+        {
+          "input_phase_deg": 135.0,
+          "direct_nmse_median": 0.0022287504119995506,
+          "equivariant_nmse_median": 3.4137471355446243,
+          "normalized_complex_correlation_mean_real": 0.9859962040294895,
+          "normalized_complex_correlation_mean_imag": -0.001093921138946746
+        },
+        {
+          "input_phase_deg": 180.0,
+          "direct_nmse_median": 0.002265958456997466,
+          "equivariant_nmse_median": 3.999194452931656,
+          "normalized_complex_correlation_mean_real": 0.9875653695513096,
+          "normalized_complex_correlation_mean_imag": -0.0026078666609237076
+        },
+        {
+          "input_phase_deg": 225.0,
+          "direct_nmse_median": 0.0024470833631862273,
+          "equivariant_nmse_median": 3.4137084083374813,
+          "normalized_complex_correlation_mean_real": 0.9906515632874819,
+          "normalized_complex_correlation_mean_imag": -0.0017632416975084375
+        },
+        {
+          "input_phase_deg": 270.0,
+          "direct_nmse_median": 0.002057010524493137,
+          "equivariant_nmse_median": 2.00172578100711,
+          "normalized_complex_correlation_mean_real": 0.993761736152337,
+          "normalized_complex_correlation_mean_imag": -0.005972319150097056
+        },
+        {
+          "input_phase_deg": 315.0,
+          "direct_nmse_median": 0.0011561358575564596,
+          "equivariant_nmse_median": 0.5865191140852271,
+          "normalized_complex_correlation_mean_real": 0.9970482457995372,
+          "normalized_complex_correlation_mean_imag": -0.0031424609674185018
+        }
+      ]
+    },
+    "practical_low_urban": {
+      "gated_source_validation_count": 310,
+      "phase_responses": [
+        {
+          "input_phase_deg": 0.0,
+          "direct_nmse_median": 0.0,
+          "equivariant_nmse_median": 0.0,
+          "normalized_complex_correlation_mean_real": 1.0,
+          "normalized_complex_correlation_mean_imag": 0.0
+        },
+        {
+          "input_phase_deg": 45.0,
+          "direct_nmse_median": 0.0011505041246971457,
+          "equivariant_nmse_median": 0.5868219061601745,
+          "normalized_complex_correlation_mean_real": 0.9977763447765607,
+          "normalized_complex_correlation_mean_imag": 0.0007230729580600679
+        },
+        {
+          "input_phase_deg": 90.0,
+          "direct_nmse_median": 0.0021589519945874316,
+          "equivariant_nmse_median": 1.999321280779152,
+          "normalized_complex_correlation_mean_real": 0.9963435186808083,
+          "normalized_complex_correlation_mean_imag": 0.0008667927456552676
+        },
+        {
+          "input_phase_deg": 135.0,
+          "direct_nmse_median": 0.002432963067147139,
+          "equivariant_nmse_median": 3.4168403509104364,
+          "normalized_complex_correlation_mean_real": 0.9953802793541617,
+          "normalized_complex_correlation_mean_imag": -6.747462652705011e-05
+        },
+        {
+          "input_phase_deg": 180.0,
+          "direct_nmse_median": 0.0025599472010542925,
+          "equivariant_nmse_median": 3.9991101418570603,
+          "normalized_complex_correlation_mean_real": 0.9941164078422374,
+          "normalized_complex_correlation_mean_imag": 0.00037746916530405106
+        },
+        {
+          "input_phase_deg": 225.0,
+          "direct_nmse_median": 0.0024424532217142475,
+          "equivariant_nmse_median": 3.4143915695750904,
+          "normalized_complex_correlation_mean_real": 0.9927751426422949,
+          "normalized_complex_correlation_mean_imag": 0.0004410446612743064
+        },
+        {
+          "input_phase_deg": 270.0,
+          "direct_nmse_median": 0.002129758846124076,
+          "equivariant_nmse_median": 1.9992079905303306,
+          "normalized_complex_correlation_mean_real": 0.9940314252748444,
+          "normalized_complex_correlation_mean_imag": 7.735261958925085e-05
+        },
+        {
+          "input_phase_deg": 315.0,
+          "direct_nmse_median": 0.0011920913465361472,
+          "equivariant_nmse_median": 0.5863396614359551,
+          "normalized_complex_correlation_mean_real": 0.9966804065374011,
+          "normalized_complex_correlation_mean_imag": 0.0005752016615471552
+        }
+      ]
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "caveat": "Raw model outputs are compared with the zero-phase DURA output and with its input-phase-rotated version without fitting a complex gain. This source-only response test uses no transmitter labels; source clean IQ is used only to simulate received signals. Frozen models saw source records. Simulated satellite is not validated real satellite data."
+}

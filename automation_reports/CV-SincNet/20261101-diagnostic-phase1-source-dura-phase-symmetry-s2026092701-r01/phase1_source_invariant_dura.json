@@ -1,0 +1,210 @@
+{
+  "status": "SOURCE_ONLY_INVARIANT_DURA",
+  "source_ids": 795,
+  "validation_ids": 514,
+  "heldout_ids": 281,
+  "phase_count": 8,
+  "gate_db": 10.0,
+  "alphas": [
+    0.25,
+    0.5,
+    1.0
+  ],
+  "validation": [
+    {
+      "candidate": 0,
+      "alpha": 0.25,
+      "net": 2,
+      "per_view": {
+        "practical_low_suburban": 0,
+        "practical_mid_urban": 1,
+        "practical_low_urban": 1
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 253,
+          "net": 0,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 0,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 261,
+          "net": 2,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 1,
+            "practical_low_urban": 1
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "candidate": 1,
+      "alpha": 0.5,
+      "net": 3,
+      "per_view": {
+        "practical_low_suburban": -2,
+        "practical_mid_urban": 4,
+        "practical_low_urban": 1
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 253,
+          "net": -1,
+          "per_view": {
+            "practical_low_suburban": -2,
+            "practical_mid_urban": 1,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 261,
+          "net": 4,
+          "per_view": {
+            "practical_low_suburban": 0,
+            "practical_mid_urban": 3,
+            "practical_low_urban": 1
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    },
+    {
+      "candidate": 2,
+      "alpha": 1.0,
+      "net": 3,
+      "per_view": {
+        "practical_low_suburban": -3,
+        "practical_mid_urban": 3,
+        "practical_low_urban": 3
+      },
+      "clean_teacher_net": 0,
+      "groups": {
+        "4": {
+          "n": 253,
+          "net": -1,
+          "per_view": {
+            "practical_low_suburban": -2,
+            "practical_mid_urban": 1,
+            "practical_low_urban": 0
+          },
+          "clean_teacher_net": 0
+        },
+        "6": {
+          "n": 261,
+          "net": 4,
+          "per_view": {
+            "practical_low_suburban": -1,
+            "practical_mid_urban": 2,
+            "practical_low_urban": 3
+          },
+          "clean_teacher_net": 0
+        }
+      }
+    }
+  ],
+  "selected": {
+    "kind": "phase_invariant_dura",
+    "candidate": 0,
+    "alpha": 0.25,
+    "validation_net": 2
+  },
+  "heldout": {
+    "clean": {
+      "valid_count": 271,
+      "L_s_count": 69,
+      "U_confident_count": 202,
+      "baseline": 271,
+      "student": 271,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_baseline": 69,
+      "L_s_student": 69,
+      "gate_enabled": 0,
+      "median_orbit_variation": 21.49921417236328
+    },
+    "practical_low_suburban": {
+      "valid_count": 271,
+      "L_s_count": 69,
+      "U_confident_count": 202,
+      "baseline": 267,
+      "student": 267,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_baseline": 67,
+      "L_s_student": 67,
+      "gate_enabled": 26,
+      "median_orbit_variation": 0.4610867202281952
+    },
+    "practical_mid_urban": {
+      "valid_count": 271,
+      "L_s_count": 69,
+      "U_confident_count": 202,
+      "baseline": 255,
+      "student": 256,
+      "repairs": 1,
+      "damages": 0,
+      "L_s_baseline": 66,
+      "L_s_student": 66,
+      "gate_enabled": 111,
+      "median_orbit_variation": 0.42349743843078613
+    },
+    "practical_low_urban": {
+      "valid_count": 271,
+      "L_s_count": 69,
+      "U_confident_count": 202,
+      "baseline": 242,
+      "student": 240,
+      "repairs": 0,
+      "damages": 2,
+      "L_s_baseline": 63,
+      "L_s_student": 62,
+      "gate_enabled": 169,
+      "median_orbit_variation": 0.06778035312891006
+    }
+  },
+  "heldout_clean_teacher_net": 0,
+  "quality": {
+    "clean": {
+      "count": 281,
+      "aligned_mse_before": 5.105281616561012e-05,
+      "aligned_mse_after": 5.105281616561012e-05,
+      "improved": 0,
+      "worsened": 0
+    },
+    "practical_low_suburban": {
+      "count": 281,
+      "aligned_mse_before": 0.023566586345784544,
+      "aligned_mse_after": 0.023623340026191684,
+      "improved": 13,
+      "worsened": 13
+    },
+    "practical_mid_urban": {
+      "count": 281,
+      "aligned_mse_before": 0.05636307148511077,
+      "aligned_mse_after": 0.05606249403679563,
+      "improved": 83,
+      "worsened": 28
+    },
+    "practical_low_urban": {
+      "count": 281,
+      "aligned_mse_before": 0.10350725779214129,
+      "aligned_mse_after": 0.10253503027467382,
+      "improved": 133,
+      "worsened": 36
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "candidates_before_source_tx_labels": true,
+  "caveat": "Every candidate averages DURA outputs in the observed common output frame without inverse rotation; this design follows inspection of these same source records and is post-hoc; inference uses only received IQ and frozen DURA, not source clean IQ or simulator SNR. The blind gate threshold was chosen on earlier source data. Fresh IDs exclude the earlier cycle-network, noise-proxy, and gated-evaluation samples but may overlap other diagnostics; frozen experts saw source records. Simulated satellite is not a validated real link."
+}
