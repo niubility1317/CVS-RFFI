@@ -35,3 +35,7 @@
 固定raw、defaultDURA、原MSAT、VarFr03、PHY、未限幅FullFGrad及PHY真实H七路，共88200条F0特征行；只报IQ NMSE、F0特征误差和F(raw clean)判决一致率，不读真实TX，不是Main准确率或理论恢复上限。四G严格原source-only final30/7410配置与commit，F0原Tri-SIG-TIME SSL/defaulthead冻结，f57源特征尺度不在V重拟合。真实H会同时改变学习先验context，不能拆成独立因果份额。
 
 控制器CUDA为空，等FullFGrad整个Main ARTIFACTS_COMPLETE（不论科学成绩）后才申请GPU和加载模型；父技术失败即保留并结束，不自动重试。第一神经工作为原Ls前2条真实checkpoint无query smoke，PASS立即继续全部V七景。随后仅GPU4/6 UUID，剩余>=12GB/已有compute<=2/只新增1个本任务GPUworker/单卡总<=3，其他owner和当前FullFGrad不改。环境原N607 CVS-RFFI Python/Torch2.1+cu121/FP32/TF32off，CWD/commit/命令/路径/停止规则/产物见登记表。4针对性检查和一次P0/P1已通过，当前仅排队准备，真实源smoke尚待父完整测试结束。
+
+## 排队后独立核实
+
+VERIFIED / QUEUED。独立核实本run CPU控制器PID/CWD/命令和CUDA为空，waiting状态为WAIT_PARENT_COMPLETE，尚无GPU worker、模型加载或源V神经前向；真实源2条smoke尚未执行。只依赖FullFGrad全部Main工序技术完成，不读取或依据其分数启动。单archive SHA与remote compile已通过，父健康训练未改。
