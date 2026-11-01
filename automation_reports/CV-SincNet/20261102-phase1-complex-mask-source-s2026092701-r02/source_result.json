@@ -1,0 +1,181 @@
+{
+  "status": "SOURCE_ONLY_COMPLEX_MULTIRES_MASK",
+  "commit": "9160406b331bad9495e005afc898335d3c14214e",
+  "source_ids": 2482,
+  "train_ids": 1643,
+  "validation_ids": 560,
+  "heldout_ids": 279,
+  "training_gated_views": 1803,
+  "training_loss": [
+    0.12529383694801605,
+    0.11896668579295087,
+    0.11799895048918356,
+    0.11623494966958736,
+    0.11562677872425572,
+    0.11436806236514103,
+    0.11446885124915054,
+    0.1136875393151146,
+    0.11379672301787505,
+    0.11217067931188324
+  ],
+  "selected": {
+    "kind": "complex_multires_mask",
+    "epoch": 10,
+    "alpha": 0.5,
+    "validation_improvement": 0.01829848811030388
+  },
+  "evaluation": {
+    "1": {
+      "clean": {
+        "valid_count": 553,
+        "L_s_count": 144,
+        "baseline": 553,
+        "student": 553,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_baseline": 144,
+        "L_s_student": 144
+      },
+      "practical_low_suburban": {
+        "valid_count": 553,
+        "L_s_count": 144,
+        "baseline": 538,
+        "student": 536,
+        "repairs": 1,
+        "damages": 3,
+        "L_s_baseline": 142,
+        "L_s_student": 142
+      },
+      "practical_mid_urban": {
+        "valid_count": 553,
+        "L_s_count": 144,
+        "baseline": 519,
+        "student": 518,
+        "repairs": 3,
+        "damages": 4,
+        "L_s_baseline": 133,
+        "L_s_student": 131
+      },
+      "practical_low_urban": {
+        "valid_count": 553,
+        "L_s_count": 144,
+        "baseline": 493,
+        "student": 491,
+        "repairs": 6,
+        "damages": 8,
+        "L_s_baseline": 122,
+        "L_s_student": 123
+      }
+    },
+    "2": {
+      "clean": {
+        "valid_count": 273,
+        "L_s_count": 69,
+        "baseline": 273,
+        "student": 273,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_baseline": 69,
+        "L_s_student": 69
+      },
+      "practical_low_suburban": {
+        "valid_count": 273,
+        "L_s_count": 69,
+        "baseline": 262,
+        "student": 262,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_baseline": 65,
+        "L_s_student": 65
+      },
+      "practical_mid_urban": {
+        "valid_count": 273,
+        "L_s_count": 69,
+        "baseline": 260,
+        "student": 260,
+        "repairs": 2,
+        "damages": 2,
+        "L_s_baseline": 64,
+        "L_s_student": 64
+      },
+      "practical_low_urban": {
+        "valid_count": 273,
+        "L_s_count": 69,
+        "baseline": 237,
+        "student": 238,
+        "repairs": 3,
+        "damages": 2,
+        "L_s_baseline": 60,
+        "L_s_student": 58
+      }
+    }
+  },
+  "quality": {
+    "1": {
+      "clean": {
+        "count": 560,
+        "aligned_mse_before": 2.2646025480950266e-05,
+        "aligned_mse_after": 2.2646025480950266e-05,
+        "improved": 0,
+        "worsened": 0
+      },
+      "practical_low_suburban": {
+        "count": 560,
+        "aligned_mse_before": 0.008731138386997602,
+        "aligned_mse_after": 0.00878553199883885,
+        "improved": 19,
+        "worsened": 52
+      },
+      "practical_mid_urban": {
+        "count": 560,
+        "aligned_mse_before": 0.015232274709576757,
+        "aligned_mse_after": 0.015408672364333765,
+        "improved": 50,
+        "worsened": 167
+      },
+      "practical_low_urban": {
+        "count": 560,
+        "aligned_mse_before": 0.02597487647091327,
+        "aligned_mse_after": 0.02619457867701893,
+        "improved": 95,
+        "worsened": 251
+      }
+    },
+    "2": {
+      "clean": {
+        "count": 279,
+        "aligned_mse_before": 3.593529652406729e-05,
+        "aligned_mse_after": 3.593529652406729e-05,
+        "improved": 0,
+        "worsened": 0
+      },
+      "practical_low_suburban": {
+        "count": 279,
+        "aligned_mse_before": 0.01713698929567334,
+        "aligned_mse_after": 0.017155869766920184,
+        "improved": 10,
+        "worsened": 16
+      },
+      "practical_mid_urban": {
+        "count": 279,
+        "aligned_mse_before": 0.049804905177620935,
+        "aligned_mse_after": 0.049972887377243855,
+        "improved": 35,
+        "worsened": 78
+      },
+      "practical_low_urban": {
+        "count": 279,
+        "aligned_mse_before": 0.07989467547292892,
+        "aligned_mse_after": 0.07994230978806825,
+        "improved": 62,
+        "worsened": 104
+      }
+    }
+  },
+  "F_loaded_only_after_selection": true,
+  "training_TX_labels_read": 0,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "predictions_before_source_labels": true
+}
