@@ -1,0 +1,153 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01",
+  "group_id": "phase1-source-multicandidate-complementarity",
+  "display_name": "Phase1 多候选源域留出互补性诊断",
+  "description": "固定 DURA、盲保护识别指导恢复和盲保护困难样本恢复，先封存 RX8/day3 同记录源预测，再读取合法 L_s 标签并计算候选修复损伤。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "diagnostic",
+    "source_only",
+    "multicandidate",
+    "paired",
+    "truth_last",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-blind-gate-s2026092701-r01",
+    "20261102-phase1-curriculum-blind-gate-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发新的 Phase1 星地恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "5aafeacfea6f83638a5e5967a527416f7e9c98e5",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python GPU2 if free; two CPU threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256]; source L_s/U_s paired clean and simulated post_sync residual channel",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six registered Phase1 TX; no TX labels used in training or source IQ selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "3921 fixed RX8/day3 source L_s/U_s IDs, excluded gate/student training; identities and other channel views previously inspected; no V",
+    "support_query_ref": null,
+    "leo_config_ref": "Source cache epoch18 seven simulated scenes"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "No target IQ or target labels; no V or Phase3. Source L_s labels read only after all predictions sealed.",
+    "external_method_exception": null,
+    "claim_scope": "Exploratory single-seed source-only comparison; source identities seen by historical ground F and previous views"
+  },
+  "checkpoint": {
+    "initialization": "Frozen matched DURA, source-selected semantic blind gate, source-selected labeled-curriculum blind gate, frozen Tri-SIG-TIME SSL; no training",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-curriculum-blind-gate-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "core.data matches source IDs to exact Tri-SIG-TIME SSL source contract",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "No model selection or training; report fixed candidate repair/damage and nondeployable label-aided union only"
+  },
+  "execution": {
+    "host": "N607 GPU2",
+    "launch_owner": "Codex source multicandidate diagnostic single owner",
+    "gpu_policy": "GPU2 only if idle; one worker and two CPU threads",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01-release/experiments/phase1_source_multicandidate/phase1_source_multicandidate.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01 --commit 5aafeacfea6f83638a5e5967a527416f7e9c98e5 --device cuda:0",
+    "stop_rule": "Only provenance/role violation, output collision, nonfinite or technical execution failure; preserve all partial outputs; no stop for low performance"
+  },
+  "expected_artifacts": [
+    "predictions.npz",
+    "predictions_manifest.json",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source valid classification counts",
+      "L_s true counts",
+      "repair/damage vs DURA",
+      "label-aided fixed candidate oracle union"
+    ],
+    "dimensions": [
+      "seven source scenes",
+      "L_s true labels",
+      "U_s clean-teacher pseudo labels"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01/predictions.npz",
+    "scorer_ref": "experiments/phase1_source_multicandidate/phase1_source_multicandidate.py",
+    "scientific_rule": "Oracle union uses true or pseudo targets unavailable at inference; limited to fixed candidates and source records."
+  },
+  "rows": [
+    {
+      "row_id": "fixed_multicandidate_source",
+      "method": "fixed IQ restorers with frozen ground classifier, no fitting or routing",
+      "purpose": "source paired complementarity diagnosis",
+      "config_ref": "experiments/phase1_source_multicandidate/phase1_source_multicandidate.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01/predictions_manifest.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026111055
+      },
+      "seed_notes": "No new random sampling, training, or hyperparameter search; fixed source RX8/day3 IDs and cache epoch18",
+      "k": null,
+      "scenario": "seven Phase1 source simulated views",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "3921 same-record source heldout IQ; labels only after fixed predictions",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01-release/experiments/phase1_source_multicandidate/phase1_source_multicandidate.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-phase1-multicandidate-source-s2026092701-r01 --commit 5aafeacfea6f83638a5e5967a527416f7e9c98e5 --device cuda:0",
+      "expected_artifacts": [
+        "predictions.npz",
+        "predictions_manifest.json",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Predictions sealed before legitimate L_s labels are read; U_s truth never opened.",
+    "The oracle union requires source target values and is not a deployable selector.",
+    "Source IDs and other cached views were previously inspected, so no independent blind claim."
+  ],
+  "registered_at": "2026-11-01T17:43:29+00:00"
+}
