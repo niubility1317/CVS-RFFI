@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01",
+  "group_id": "restoration-source-paired-transform-stability",
+  "display_name": "冻结恢复器源域成对变换稳定性",
+  "description": "原Ls128Us384×20draw×5固定变换，冻结DURA/PHY/FullFGrad，比较G(Ty)与T G(y)对Tclean的保真；0更新/TX/V/OE/target，不作native或Main因果声明。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "frozen-models",
+    "paired-transforms",
+    "zero-updates"
+  ],
+  "comparison_group_id": "source-paired-IQ-transform-GTy-versus-TGy",
+  "parent_run_ids": [
+    "20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01",
+    "20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Useractivegoal:performanceprimary/groundTriSIGSSLsixeach3pp+clean;originalLsUs-only/source-simulation-and-F0-guidanceallowed/OEonlyfrozendiagnostic/majorarchitecturefreedom. This source-only mechanism diagnostic uses no optimizer or target.",
+  "code": {
+    "commit": "ac8015d9dcdcd9c5d1f05d7c09882a0591825d7d",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "ExistingN607CVS-RFFI Torch2.1/NumPy2;FP32 TF32off CPUthreads2;actual3ff8F0/defaulthead andfixed47cDURA runtime",
+    "cwd": "releases/20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005 Ls6300Us56700;existingR07twentytrainrealizations",
+    "representation": "OriginalR07 sourceFP32clean/received. Fixed512packets(128Ls384Us)x20draws x5pairedtransforms=51200cases. No newnativeobservations.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "R07cache/train/physical_ids.npy roles.npy;existing20261101LUcache IDs/roles forminimumcontractmatch",
+    "label_map_ref": "No labels read; F0 clean argmax agreement is not TX accuracy",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE sourcehandles. R07complete20/63000/0TX-target. Inputaudit same63000uniqueIDset (orderdiffers),roles/RX/day samebyID;clean maxabs4.76837158203125e-7 NMSE1.7667841088968941e-15. No repeateddatahash/revalidation.",
+    "support_query_ref": "None. Originaltraining-sourcein-sample diagnostic;noV orquery. Canonical63000IDs-role compatibility only;f57sourceF0scale reused.",
+    "leo_config_ref": "ExistingR07sourcecache20/clean15%+sixsceneuniform85%;no new simulator observations;2.462GHz retains own identity",
+    "actual_training_labels": "No training/TXlabels/V/OE/novel/target. FrozenF0features andheaddecisions diagnostics only;notTXtruth/pseudo-labeltraining.",
+    "augmentation": "Diagnostic transforms bothsourcecleanandreceived:identity;phase+j;gain.7;gain1.4;reflectone-lagFIR beta.25exp(jpi/3)/sqrt(1+.25²). NoRMS/clip/nativeenginechange. OriginalR07source2.462GHz20draws retained."
+  },
+  "permissions": {
+    "regime": "source-only-frozen-paired-transform-diagnostic",
+    "query_use": "OnlyoriginalLsUs/sourceF0;0TX/V/OE/novel/target/updates/statisticsfit. Headpredictions onlyfrozenagreementdiagnosis,notGtraining/selection. ReferenceT G(y)notneuralIQteacherfortraining.",
+    "external_method_exception": null,
+    "claim_scope": "Fixedsourcecounterfactualstability,notnativechannel,Maincausalexplanation,TXaccuracyorinformationlimit. Non-equivariancealoneisnotfailureofBayesoptimalityundernoninvariantpriors. All5Tretained/nohead-basedselection."
+  },
+  "checkpoint": {
+    "initialization": "No newG. FrozenPHY/FullFGradstrictsource-onlyfinal30-7410 anddefaultDURA/originalF0. No IQteacher ornewoptimizer.",
+    "sources": [
+      "OriginalTriSIGSSL3ff8/E50-11100/232993/main3view-s2026092701/defaulthead/source-only392005",
+      "PHY/8198a2e70c655f24ebaf321f232a676cfb46d916;FullFGrad/940fa78ba450b686b1b03c7530c47af4360faafc strictfinal30-7410/originalLsUs/noV-OE-targettraining",
+      "DefaultDURA R69/266951/source-only/runtime47c benchmark;notnewGancestor",
+      "Existingf57source-only63000F0cleanfeaturegeometry;noT-specificfit. R07originalsource512x20/IDrolehandles"
+    ],
+    "contract_check_ref": "Existingsourcehandles/strictF0identity/parentconfiguration-commit-final30-sourceflags. source_validation module reusedONLYstrictloader/SPECS;VworkerandVdata nevercalled.",
+    "provenance_verdict": "Allfrozenparentsoriginalsource-onlymatching392005. PHYandFullFGradF-guidedexplicit/notF-free. ParentallMaincompletebeforediagnostic. NoPCD/targetmodelornewtraining.",
+    "selection_rule": "FivefixedT/allthreeG/bothpaths/all10240sourcecases eachT,fullmatrix. Noqualitycancellation/selection/newtraining. Metricsourcevariancefixedf57/no transformed/V/targetfit."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-paired-style-stability",
+    "gpu_policy": "GPU4/6UUID/free>=12GB/existingcompute<=2/addONEtotal<=3/own1card/thisoneNN/globalown<=2/othersuntouched",
+    "remote_run_root": "runs/20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01",
+    "remote_log_root": "runs/20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_style run --root /home/szu2070436088/2510044040/CV-SincNet --commit ac8015d9dcdcd9c5d1f05d7c09882a0591825d7d --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrongsource/F0/G/config/shape/collision/nonfinite/statechange/technicalfailure:preserveroot/noautoretry. SourceLs2actualcheckpointsmokefirst/PASSimmediatelycontinuesallcases. No scientificqualitygate."
+  },
+  "expected_artifacts": [
+    "submitted.json",
+    "smoke.json",
+    "source_records.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "G(Ty)actual vsT G(y)reference bothrelativeTclean:IQNMSE/Fcos/sourcevarMSE/Fcleanagreement(notTXaccuracy)",
+      "EquivarianceNMSE||G(Ty)-T G(y)||²/||Tclean||²;pairedactual-refFcleanrepairs/damage/net",
+      "F0(Tclean) vsF0(clean)featureandheadshift separately;0training/state/TX-V-OE-target"
+    ],
+    "dimensions": [
+      "512sourcepacketsx20R07drawsx5T=51200correlatedcases",
+      "3frozenGx2paths/identityreuse",
+      "7source-scenes+ALL",
+      "phase/gain/reflectionFIR stressonly"
+    ],
+    "prediction_ref": "Privatefullsource_records.npz;no Mainpredictions/newG",
+    "scorer_ref": "NoTXtruth. IndependentNumPyallcasecoverage/aggregate/predictions/pairs/identityandphase-gainreferenceIQinvarianceaftercomplete"
+  },
+  "rows": [
+    {
+      "row_id": "source-style-512x20x5",
+      "method": "frozen-paired-transform-stability",
+      "purpose": "source-onlymechanismdiagnosis",
+      "config_ref": "experiments/pamf_phase3_restoration/source_style.py",
+      "resolved_config_ref": "fixedSTYLESandparentconfigs/releaseinputs PRIVATE",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101911
+      },
+      "seed_notes": "No newRNG/modeltraining/channelgeneration. OriginalR07storedobservations andfixedsourcepanel;Tdeterministic.",
+      "k": null,
+      "scenario": "source-R07clean+six/paired-synthetic-T",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0updates;Ls2smokeextra6F0rows. Grequest153600;F0readout276480+cleanTrefs2560=279040source rows. Identityactual/refreuse;referenceT G(y)noGforward. Requestrowsnotinternalcalls/capturewarmups.",
+      "output_root": "runs/20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01",
+      "log_path": "runs/20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_style worker --root /home/szu2070436088/2510044040/CV-SincNet --commit ac8015d9dcdcd9c5d1f05d7c09882a0591825d7d --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "submitted.json",
+        "smoke.json",
+        "source_records.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "CorrectgroundTriSIGSSLMain sixeach3pp+cleanstillunmet/defaultDURAunchanged. LastgoalturnPROGRESScompletedFullGandV;allownoldjobsendedbeforethislaunch.",
+    "GoodsourceVPHY91.17% vsMainFclean66.81%doesnotisolatecause;thisnewsource-onlydiagnosticexaminestestablestabilitywithouttargetfeedback.",
+    "PairedFIRreflectlagfirst=x1/notwrap;invertiblemildlinearTbutgenerallydoesnotcommutewithnativeH. SynthetictransformedpairsnotnewnativeLEOdraws/notproofTXpreservation.",
+    "F0(Tclean)feature/headshift reportedsoF0stylesensitivityisvisible. Headisdiagnosticonly/no newGfit/CE/prototype/head-basedcandidatechoice.",
+    "FourfocusedtestsPASSandoneP0P1beforelaunch. OneGitidentity/archiveSHA/compile/preflight/realLs2smoke/poststate. Allsampletransformskept/regardlessquality,notMainretest."
+  ],
+  "registered_at": "2026-11-01T09:22:35+00:00"
+}
