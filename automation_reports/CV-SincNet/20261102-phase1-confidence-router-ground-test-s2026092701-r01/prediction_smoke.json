@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "records": 1047,
+  "source_prediction_sha256": "7786c063c05cd50109d858587b0c490d6d1979b7f48b27831b8aad434d859817",
+  "tests": [
+    {
+      "batch": 32,
+      "records": 1047,
+      "record_mismatches": 0,
+      "seconds": 4.346
+    }
+  ],
+  "batch": 32,
+  "F_frozen": true,
+  "DURA_inference": false,
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "commit": "4adb130ef615d99eb72f1048b9fe0328b17dc0ec"
+}
