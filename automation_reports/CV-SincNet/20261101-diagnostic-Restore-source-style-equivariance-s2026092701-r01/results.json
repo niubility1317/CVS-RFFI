@@ -1,0 +1,2987 @@
+{
+  "status": "SOURCE_STYLE_COMPLETE",
+  "run_id": "20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01",
+  "code_commit": "ac8015d9dcdcd9c5d1f05d7c09882a0591825d7d",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "source_packets": 512,
+  "source_Ls": 128,
+  "source_Us": 384,
+  "source_draws": 20,
+  "styles": [
+    "identity",
+    "phase90",
+    "gain070",
+    "gain140",
+    "reflect_fir025"
+  ],
+  "methods": [
+    "DURA_v1",
+    "PHY_MSat",
+    "MSAT_FullFGrad"
+  ],
+  "count": 51200,
+  "summary": {
+    "identity": {
+      "ALL": {
+        "count": 10240,
+        "clean_feature_shift": 1.2689270079135895e-08,
+        "clean_decision_preservation": 1.0,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.022287005297337625,
+                "feature_cosine_distance": 0.00838818894699216,
+                "feature_standardized_mse": 0.09627196360019141,
+                "clean_decision_agreement": 0.95146484375
+              },
+              "reference": {
+                "nmse": 0.022287005297337625,
+                "feature_cosine_distance": 0.00838818894699216,
+                "feature_standardized_mse": 0.09627196360019141,
+                "clean_decision_agreement": 0.95146484375
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.015780623542045548,
+                "feature_cosine_distance": 0.0045434287865646185,
+                "feature_standardized_mse": 0.05202436644548527,
+                "clean_decision_agreement": 0.97509765625
+              },
+              "reference": {
+                "nmse": 0.015780623542045548,
+                "feature_cosine_distance": 0.0045434287865646185,
+                "feature_standardized_mse": 0.05202436644548527,
+                "clean_decision_agreement": 0.97509765625
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.020882440396640157,
+                "feature_cosine_distance": 0.004868574085412547,
+                "feature_standardized_mse": 0.05718490039653279,
+                "clean_decision_agreement": 0.97158203125
+              },
+              "reference": {
+                "nmse": 0.020882440396640157,
+                "feature_cosine_distance": 0.004868574085412547,
+                "feature_standardized_mse": 0.05718490039653279,
+                "clean_decision_agreement": 0.97158203125
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          }
+        }
+      },
+      "clean": {
+        "count": 1579,
+        "clean_feature_shift": 1.253245222636459e-08,
+        "clean_decision_preservation": 1.0,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 2.4255140467358398e-05,
+                "feature_cosine_distance": 2.6390739752568348e-05,
+                "feature_standardized_mse": 0.0002813281107620847,
+                "clean_decision_agreement": 1.0
+              },
+              "reference": {
+                "nmse": 2.4255140467358398e-05,
+                "feature_cosine_distance": 2.6390739752568348e-05,
+                "feature_standardized_mse": 0.0002813281107620847,
+                "clean_decision_agreement": 1.0
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.00029917922260604596,
+                "feature_cosine_distance": 0.00019445730357928092,
+                "feature_standardized_mse": 0.0019749382286392415,
+                "clean_decision_agreement": 1.0
+              },
+              "reference": {
+                "nmse": 0.00029917922260604596,
+                "feature_cosine_distance": 0.00019445730357928092,
+                "feature_standardized_mse": 0.0019749382286392415,
+                "clean_decision_agreement": 1.0
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 5.7118173128719346e-05,
+                "feature_cosine_distance": 3.261385724995996e-05,
+                "feature_standardized_mse": 0.0002597678074373471,
+                "clean_decision_agreement": 1.0
+              },
+              "reference": {
+                "nmse": 5.7118173128719346e-05,
+                "feature_cosine_distance": 3.261385724995996e-05,
+                "feature_standardized_mse": 0.0002597678074373471,
+                "clean_decision_agreement": 1.0
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          }
+        }
+      },
+      "practical_high": {
+        "count": 1427,
+        "clean_feature_shift": 1.1778913683714195e-08,
+        "clean_decision_preservation": 1.0,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.008581076889109916,
+                "feature_cosine_distance": 0.002860022451631991,
+                "feature_standardized_mse": 0.034241037459514734,
+                "clean_decision_agreement": 0.9901892081289418
+              },
+              "reference": {
+                "nmse": 0.008581076889109916,
+                "feature_cosine_distance": 0.002860022451631991,
+                "feature_standardized_mse": 0.034241037459514734,
+                "clean_decision_agreement": 0.9901892081289418
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.005195818031975215,
+                "feature_cosine_distance": 0.001305537075117575,
+                "feature_standardized_mse": 0.014844596703711717,
+                "clean_decision_agreement": 1.0
+              },
+              "reference": {
+                "nmse": 0.005195818031975215,
+                "feature_cosine_distance": 0.001305537075117575,
+                "feature_standardized_mse": 0.014844596703711717,
+                "clean_decision_agreement": 1.0
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.00702382063104157,
+                "feature_cosine_distance": 0.0015669500986512258,
+                "feature_standardized_mse": 0.018792318141615878,
+                "clean_decision_agreement": 0.9957953749124037
+              },
+              "reference": {
+                "nmse": 0.00702382063104157,
+                "feature_cosine_distance": 0.0015669500986512258,
+                "feature_standardized_mse": 0.018792318141615878,
+                "clean_decision_agreement": 0.9957953749124037
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          }
+        }
+      },
+      "practical_mid": {
+        "count": 1484,
+        "clean_feature_shift": 1.6427425682705368e-08,
+        "clean_decision_preservation": 1.0,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.014064614812832834,
+                "feature_cosine_distance": 0.005097983781539526,
+                "feature_standardized_mse": 0.060172723810347876,
+                "clean_decision_agreement": 0.9750673854447439
+              },
+              "reference": {
+                "nmse": 0.014064614812832834,
+                "feature_cosine_distance": 0.005097983781539526,
+                "feature_standardized_mse": 0.060172723810347876,
+                "clean_decision_agreement": 0.9750673854447439
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.00953056864357915,
+                "feature_cosine_distance": 0.0023259051405194633,
+                "feature_standardized_mse": 0.029095622336769957,
+                "clean_decision_agreement": 0.9912398921832885
+              },
+              "reference": {
+                "nmse": 0.00953056864357915,
+                "feature_cosine_distance": 0.0023259051405194633,
+                "feature_standardized_mse": 0.029095622336769957,
+                "clean_decision_agreement": 0.9912398921832885
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.01193848887234556,
+                "feature_cosine_distance": 0.00238670468973021,
+                "feature_standardized_mse": 0.029438785040475594,
+                "clean_decision_agreement": 0.9898921832884097
+              },
+              "reference": {
+                "nmse": 0.01193848887234556,
+                "feature_cosine_distance": 0.00238670468973021,
+                "feature_standardized_mse": 0.029438785040475594,
+                "clean_decision_agreement": 0.9898921832884097
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "count": 1465,
+        "clean_feature_shift": 1.1310642489801088e-08,
+        "clean_decision_preservation": 1.0,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.017814612267745514,
+                "feature_cosine_distance": 0.007971718815813293,
+                "feature_standardized_mse": 0.08913515795931322,
+                "clean_decision_agreement": 0.967235494880546
+              },
+              "reference": {
+                "nmse": 0.017814612267745514,
+                "feature_cosine_distance": 0.007971718815813293,
+                "feature_standardized_mse": 0.08913515795931322,
+                "clean_decision_agreement": 0.967235494880546
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.011884308311692519,
+                "feature_cosine_distance": 0.0038068242854225757,
+                "feature_standardized_mse": 0.04532031870070438,
+                "clean_decision_agreement": 0.9822525597269625
+              },
+              "reference": {
+                "nmse": 0.011884308311692519,
+                "feature_cosine_distance": 0.0038068242854225757,
+                "feature_standardized_mse": 0.04532031870070438,
+                "clean_decision_agreement": 0.9822525597269625
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.014484824545152243,
+                "feature_cosine_distance": 0.0041665638266163065,
+                "feature_standardized_mse": 0.04540684396645798,
+                "clean_decision_agreement": 0.9815699658703072
+              },
+              "reference": {
+                "nmse": 0.014484824545152243,
+                "feature_cosine_distance": 0.0041665638266163065,
+                "feature_standardized_mse": 0.04540684396645798,
+                "clean_decision_agreement": 0.9815699658703072
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "count": 1440,
+        "clean_feature_shift": 1.1838144726223415e-08,
+        "clean_decision_preservation": 1.0,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.013861965830599527,
+                "feature_cosine_distance": 0.004591827094554901,
+                "feature_standardized_mse": 0.056721192168980555,
+                "clean_decision_agreement": 0.975
+              },
+              "reference": {
+                "nmse": 0.013861965830599527,
+                "feature_cosine_distance": 0.004591827094554901,
+                "feature_standardized_mse": 0.056721192168980555,
+                "clean_decision_agreement": 0.975
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.009646357191640063,
+                "feature_cosine_distance": 0.002287012669775221,
+                "feature_standardized_mse": 0.02982771472201825,
+                "clean_decision_agreement": 0.9868055555555556
+              },
+              "reference": {
+                "nmse": 0.009646357191640063,
+                "feature_cosine_distance": 0.002287012669775221,
+                "feature_standardized_mse": 0.02982771472201825,
+                "clean_decision_agreement": 0.9868055555555556
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.012824124151625762,
+                "feature_cosine_distance": 0.002712634826699893,
+                "feature_standardized_mse": 0.03552725010724518,
+                "clean_decision_agreement": 0.9826388888888888
+              },
+              "reference": {
+                "nmse": 0.012824124151625762,
+                "feature_cosine_distance": 0.002712634826699893,
+                "feature_standardized_mse": 0.03552725010724518,
+                "clean_decision_agreement": 0.9826388888888888
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "count": 1409,
+        "clean_feature_shift": 1.1675572716825984e-08,
+        "clean_decision_preservation": 1.0,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.04150064053657386,
+                "feature_cosine_distance": 0.014198879259879747,
+                "feature_standardized_mse": 0.17182806110098123,
+                "clean_decision_agreement": 0.9070262597586941
+              },
+              "reference": {
+                "nmse": 0.04150064053657386,
+                "feature_cosine_distance": 0.014198879259879747,
+                "feature_standardized_mse": 0.17182806110098123,
+                "clean_decision_agreement": 0.9070262597586941
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.029367582191492717,
+                "feature_cosine_distance": 0.0069079561128609565,
+                "feature_standardized_mse": 0.08564636243505283,
+                "clean_decision_agreement": 0.9595457771469127
+              },
+              "reference": {
+                "nmse": 0.029367582191492717,
+                "feature_cosine_distance": 0.0069079561128609565,
+                "feature_standardized_mse": 0.08564636243505283,
+                "clean_decision_agreement": 0.9595457771469127
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.04104689191211368,
+                "feature_cosine_distance": 0.00826767380987185,
+                "feature_standardized_mse": 0.10236558978359239,
+                "clean_decision_agreement": 0.9481902058197303
+              },
+              "reference": {
+                "nmse": 0.04104689191211368,
+                "feature_cosine_distance": 0.00826767380987185,
+                "feature_standardized_mse": 0.10236558978359239,
+                "clean_decision_agreement": 0.9481902058197303
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "count": 1436,
+        "clean_feature_shift": 1.3157849856405869e-08,
+        "clean_decision_preservation": 1.0,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.06304283425528724,
+                "feature_cosine_distance": 0.025006757597737326,
+                "feature_standardized_mse": 0.27357600721780956,
+                "clean_decision_agreement": 0.8391364902506964
+              },
+              "reference": {
+                "nmse": 0.06304283425528724,
+                "feature_cosine_distance": 0.025006757597737326,
+                "feature_standardized_mse": 0.27357600721780956,
+                "clean_decision_agreement": 0.8391364902506964
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.04657604146166218,
+                "feature_cosine_distance": 0.01552883849004517,
+                "feature_standardized_mse": 0.16380782808325692,
+                "clean_decision_agreement": 0.9025069637883009
+              },
+              "reference": {
+                "nmse": 0.04657604146166218,
+                "feature_cosine_distance": 0.01552883849004517,
+                "feature_standardized_mse": 0.16380782808325692,
+                "clean_decision_agreement": 0.9025069637883009
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0,
+            "paths": {
+              "actual": {
+                "nmse": 0.061618532798057464,
+                "feature_cosine_distance": 0.015574812847591709,
+                "feature_standardized_mse": 0.176006984076619,
+                "clean_decision_agreement": 0.899025069637883
+              },
+              "reference": {
+                "nmse": 0.061618532798057464,
+                "feature_cosine_distance": 0.015574812847591709,
+                "feature_standardized_mse": 0.176006984076619,
+                "clean_decision_agreement": 0.899025069637883
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          }
+        }
+      }
+    },
+    "phase90": {
+      "ALL": {
+        "count": 10240,
+        "clean_feature_shift": 0.14308801444713026,
+        "clean_decision_preservation": 0.7890625,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.8686307638238873,
+            "paths": {
+              "actual": {
+                "nmse": 0.8869975242439125,
+                "feature_cosine_distance": 0.06417716232826934,
+                "feature_standardized_mse": 0.4052905185352074,
+                "clean_decision_agreement": 0.5697265625
+              },
+              "reference": {
+                "nmse": 0.02228700535179833,
+                "feature_cosine_distance": 0.0025139284902252258,
+                "feature_standardized_mse": 0.028707281540477858,
+                "clean_decision_agreement": 0.8146484375
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 700,
+              "damage": 3208,
+              "net": -2508
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.7789051254346475,
+            "paths": {
+              "actual": {
+                "nmse": 0.7925457756779167,
+                "feature_cosine_distance": 0.055487224756507206,
+                "feature_standardized_mse": 0.3503216929538553,
+                "clean_decision_agreement": 0.65361328125
+              },
+              "reference": {
+                "nmse": 0.015780623601970235,
+                "feature_cosine_distance": 0.0015036698838230222,
+                "feature_standardized_mse": 0.016554302220208685,
+                "clean_decision_agreement": 0.8943359375
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 327,
+              "damage": 2792,
+              "net": -2465
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 1.4869333800135933,
+            "paths": {
+              "actual": {
+                "nmse": 1.5108417469977398,
+                "feature_cosine_distance": 0.11066686649573967,
+                "feature_standardized_mse": 0.6777334258549701,
+                "clean_decision_agreement": 0.79560546875
+              },
+              "reference": {
+                "nmse": 0.020882440424874017,
+                "feature_cosine_distance": 0.0018286443199031055,
+                "feature_standardized_mse": 0.020477308902876867,
+                "clean_decision_agreement": 0.8837890625
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 475,
+              "damage": 1378,
+              "net": -903
+            }
+          }
+        }
+      },
+      "clean": {
+        "count": 1579,
+        "clean_feature_shift": 0.14657344117505858,
+        "clean_decision_preservation": 0.8062064597846739,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.13009620568574365,
+            "paths": {
+              "actual": {
+                "nmse": 0.13002998374484065,
+                "feature_cosine_distance": 0.011701065803948198,
+                "feature_standardized_mse": 0.12788219776498821,
+                "clean_decision_agreement": 0.5921469284357188
+              },
+              "reference": {
+                "nmse": 2.425514057161333e-05,
+                "feature_cosine_distance": 2.4727207712918767e-05,
+                "feature_standardized_mse": 0.0002454298374387973,
+                "clean_decision_agreement": 0.9835338822039266
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 2,
+              "damage": 620,
+              "net": -618
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.002906638105699829,
+            "paths": {
+              "actual": {
+                "nmse": 0.0032132257006049717,
+                "feature_cosine_distance": 0.0014558108718127974,
+                "feature_standardized_mse": 0.01694574149228465,
+                "clean_decision_agreement": 0.9037365421152628
+              },
+              "reference": {
+                "nmse": 0.0002991792235668041,
+                "feature_cosine_distance": 8.805727490599658e-05,
+                "feature_standardized_mse": 0.0008355406318446757,
+                "clean_decision_agreement": 0.9797340088663711
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 18,
+              "damage": 138,
+              "net": -120
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0004938376055061027,
+            "paths": {
+              "actual": {
+                "nmse": 0.0004910099450481862,
+                "feature_cosine_distance": 0.00015094081686598505,
+                "feature_standardized_mse": 0.0013701819400283896,
+                "clean_decision_agreement": 0.980367321089297
+              },
+              "reference": {
+                "nmse": 5.711817332974129e-05,
+                "feature_cosine_distance": 1.204568725209058e-05,
+                "feature_standardized_mse": 9.88566384441446e-05,
+                "clean_decision_agreement": 0.9974667511082964
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 27,
+              "net": -27
+            }
+          }
+        }
+      },
+      "practical_high": {
+        "count": 1427,
+        "clean_feature_shift": 0.1463193400973779,
+        "clean_decision_preservation": 0.7967764540995095,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.44800393741718836,
+            "paths": {
+              "actual": {
+                "nmse": 0.45238141953741534,
+                "feature_cosine_distance": 0.024628004037005633,
+                "feature_standardized_mse": 0.18469963795012717,
+                "clean_decision_agreement": 0.5255781359495445
+              },
+              "reference": {
+                "nmse": 0.00858107691284983,
+                "feature_cosine_distance": 0.0013402390914441157,
+                "feature_standardized_mse": 0.014448830450623288,
+                "clean_decision_agreement": 0.8675543097407148
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 39,
+              "damage": 527,
+              "net": -488
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.34297823576425013,
+            "paths": {
+              "actual": {
+                "nmse": 0.3495700030033519,
+                "feature_cosine_distance": 0.01793930183028373,
+                "feature_standardized_mse": 0.13375020709042792,
+                "clean_decision_agreement": 0.5949544498948843
+              },
+              "reference": {
+                "nmse": 0.005195818031485732,
+                "feature_cosine_distance": 0.0006718555779914883,
+                "feature_standardized_mse": 0.0072811131277735084,
+                "clean_decision_agreement": 0.9257182901191311
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 24,
+              "damage": 496,
+              "net": -472
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 1.6945762981562116,
+            "paths": {
+              "actual": {
+                "nmse": 1.7100421807688897,
+                "feature_cosine_distance": 0.12866628362151736,
+                "feature_standardized_mse": 0.7816383023096931,
+                "clean_decision_agreement": 0.7855641205325858
+              },
+              "reference": {
+                "nmse": 0.007023820647194501,
+                "feature_cosine_distance": 0.000826643326939113,
+                "feature_standardized_mse": 0.00900825125866223,
+                "clean_decision_agreement": 0.9306236860546602
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 30,
+              "damage": 237,
+              "net": -207
+            }
+          }
+        }
+      },
+      "practical_mid": {
+        "count": 1484,
+        "clean_feature_shift": 0.1287158870231109,
+        "clean_decision_preservation": 0.7789757412398922,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.8827632999030692,
+            "paths": {
+              "actual": {
+                "nmse": 0.8899208778186608,
+                "feature_cosine_distance": 0.057048041102378516,
+                "feature_standardized_mse": 0.3710153049242123,
+                "clean_decision_agreement": 0.5215633423180593
+              },
+              "reference": {
+                "nmse": 0.01406461482899291,
+                "feature_cosine_distance": 0.001923299743480117,
+                "feature_standardized_mse": 0.021217887965407512,
+                "clean_decision_agreement": 0.8234501347708895
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 78,
+              "damage": 526,
+              "net": -448
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.7701944417333999,
+            "paths": {
+              "actual": {
+                "nmse": 0.7797955963534687,
+                "feature_cosine_distance": 0.045543004319352924,
+                "feature_standardized_mse": 0.3130856487018902,
+                "clean_decision_agreement": 0.5626684636118598
+              },
+              "reference": {
+                "nmse": 0.009530568641539528,
+                "feature_cosine_distance": 0.0011282043877958931,
+                "feature_standardized_mse": 0.01243661137225892,
+                "clean_decision_agreement": 0.9171159029649596
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 32,
+              "damage": 558,
+              "net": -526
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 1.7479220886734839,
+            "paths": {
+              "actual": {
+                "nmse": 1.764139156776036,
+                "feature_cosine_distance": 0.11702082324220807,
+                "feature_standardized_mse": 0.7729007062261216,
+                "clean_decision_agreement": 0.7735849056603774
+              },
+              "reference": {
+                "nmse": 0.011938489067403982,
+                "feature_cosine_distance": 0.001275259248329944,
+                "feature_standardized_mse": 0.013931197496482505,
+                "clean_decision_agreement": 0.9204851752021563
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 43,
+              "damage": 261,
+              "net": -218
+            }
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "count": 1465,
+        "clean_feature_shift": 0.13495923370224625,
+        "clean_decision_preservation": 0.7986348122866894,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 1.2976168920813644,
+            "paths": {
+              "actual": {
+                "nmse": 1.3103501347818574,
+                "feature_cosine_distance": 0.09961559349359506,
+                "feature_standardized_mse": 0.5929221661971189,
+                "clean_decision_agreement": 0.5959044368600682
+              },
+              "reference": {
+                "nmse": 0.01781461233910453,
+                "feature_cosine_distance": 0.002487401994828885,
+                "feature_standardized_mse": 0.028147712228152228,
+                "clean_decision_agreement": 0.7986348122866894
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 122,
+              "damage": 419,
+              "net": -297
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 1.16344533029041,
+            "paths": {
+              "actual": {
+                "nmse": 1.1713684199727539,
+                "feature_cosine_distance": 0.08280989977280027,
+                "feature_standardized_mse": 0.5193302833001565,
+                "clean_decision_agreement": 0.6
+              },
+              "reference": {
+                "nmse": 0.01188430838642877,
+                "feature_cosine_distance": 0.0014193012039002298,
+                "feature_standardized_mse": 0.015864526464702378,
+                "clean_decision_agreement": 0.9064846416382253
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 33,
+              "damage": 482,
+              "net": -449
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 1.8011418891905364,
+            "paths": {
+              "actual": {
+                "nmse": 1.8207865627628748,
+                "feature_cosine_distance": 0.12765148353251174,
+                "feature_standardized_mse": 0.8048780101125761,
+                "clean_decision_agreement": 0.7877133105802048
+              },
+              "reference": {
+                "nmse": 0.014484824635463515,
+                "feature_cosine_distance": 0.0015791457260834886,
+                "feature_standardized_mse": 0.017826414094449565,
+                "clean_decision_agreement": 0.8976109215017065
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 53,
+              "damage": 214,
+              "net": -161
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "count": 1440,
+        "clean_feature_shift": 0.14303254584471384,
+        "clean_decision_preservation": 0.7722222222222223,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.5832279301655945,
+            "paths": {
+              "actual": {
+                "nmse": 0.5942687341270761,
+                "feature_cosine_distance": 0.031697125277585454,
+                "feature_standardized_mse": 0.2395947084322365,
+                "clean_decision_agreement": 0.5333333333333333
+              },
+              "reference": {
+                "nmse": 0.013861965816370987,
+                "feature_cosine_distance": 0.001726743620302942,
+                "feature_standardized_mse": 0.01911648757320816,
+                "clean_decision_agreement": 0.8513888888888889
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 54,
+              "damage": 512,
+              "net": -458
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.4992056974455611,
+            "paths": {
+              "actual": {
+                "nmse": 0.5095405612658296,
+                "feature_cosine_distance": 0.027495464185873668,
+                "feature_standardized_mse": 0.20191026790093425,
+                "clean_decision_agreement": 0.6111111111111112
+              },
+              "reference": {
+                "nmse": 0.009646357247826623,
+                "feature_cosine_distance": 0.0009856487727827497,
+                "feature_standardized_mse": 0.0107282494780116,
+                "clean_decision_agreement": 0.9069444444444444
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 38,
+              "damage": 464,
+              "net": -426
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 1.7146753652163573,
+            "paths": {
+              "actual": {
+                "nmse": 1.736361487238254,
+                "feature_cosine_distance": 0.12595045756962564,
+                "feature_standardized_mse": 0.7807077421172935,
+                "clean_decision_agreement": 0.7583333333333333
+              },
+              "reference": {
+                "nmse": 0.01282412412294636,
+                "feature_cosine_distance": 0.0012336396094825533,
+                "feature_standardized_mse": 0.013730384486229418,
+                "clean_decision_agreement": 0.9041666666666667
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 54,
+              "damage": 264,
+              "net": -210
+            }
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "count": 1409,
+        "clean_feature_shift": 0.15376555830811336,
+        "clean_decision_preservation": 0.7821149751596878,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 1.2397691158292257,
+            "paths": {
+              "actual": {
+                "nmse": 1.2778973840666186,
+                "feature_cosine_distance": 0.0983892205423121,
+                "feature_standardized_mse": 0.5817486217790439,
+                "clean_decision_agreement": 0.5947480482611781
+              },
+              "reference": {
+                "nmse": 0.04150064067769336,
+                "feature_cosine_distance": 0.0042096035881529804,
+                "feature_standardized_mse": 0.04839686362778092,
+                "clean_decision_agreement": 0.716820440028389
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 174,
+              "damage": 346,
+              "net": -172
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 1.198000631566147,
+            "paths": {
+              "actual": {
+                "nmse": 1.2225310058961574,
+                "feature_cosine_distance": 0.09279628579205364,
+                "feature_standardized_mse": 0.5531482725302412,
+                "clean_decision_agreement": 0.6188786373314408
+              },
+              "reference": {
+                "nmse": 0.02936758238449924,
+                "feature_cosine_distance": 0.002616498933945081,
+                "feature_standardized_mse": 0.028405421371178435,
+                "clean_decision_agreement": 0.8353442157558553
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 72,
+              "damage": 377,
+              "net": -305
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 1.7819569462433067,
+            "paths": {
+              "actual": {
+                "nmse": 1.8227879178437296,
+                "feature_cosine_distance": 0.142619338587212,
+                "feature_standardized_mse": 0.8277009310791728,
+                "clean_decision_agreement": 0.730305180979418
+              },
+              "reference": {
+                "nmse": 0.04104689206298265,
+                "feature_cosine_distance": 0.0033435453921873744,
+                "feature_standardized_mse": 0.037128490509202264,
+                "clean_decision_agreement": 0.794180269694819
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 123,
+              "damage": 213,
+              "net": -90
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "count": 1436,
+        "clean_feature_shift": 0.14876874276854535,
+        "clean_decision_preservation": 0.786908077994429,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 1.5684840574424097,
+            "paths": {
+              "actual": {
+                "nmse": 1.626308563240599,
+                "feature_cosine_distance": 0.1313952562453687,
+                "feature_standardized_mse": 0.7665492074925992,
+                "clean_decision_agreement": 0.6239554317548747
+              },
+              "reference": {
+                "nmse": 0.06304283440623804,
+                "feature_cosine_distance": 0.00618036161890269,
+                "feature_standardized_mse": 0.07278125424531139,
+                "clean_decision_agreement": 0.6427576601671309
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 231,
+              "damage": 258,
+              "net": -27
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 1.5513328035098752,
+            "paths": {
+              "actual": {
+                "nmse": 1.5892776249970173,
+                "feature_cosine_distance": 0.12607612516886677,
+                "feature_standardized_mse": 0.7479809157606759,
+                "clean_decision_agreement": 0.6622562674094707
+              },
+              "reference": {
+                "nmse": 0.04657604156855188,
+                "feature_cosine_distance": 0.003788500318620198,
+                "feature_standardized_mse": 0.04222646736516228,
+                "clean_decision_agreement": 0.7785515320334262
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 110,
+              "damage": 277,
+              "net": -167
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 1.8069349260913847,
+            "paths": {
+              "actual": {
+                "nmse": 1.8634473897132784,
+                "feature_cosine_distance": 0.14372977618553512,
+                "feature_standardized_mse": 0.8397271676056481,
+                "clean_decision_agreement": 0.7346796657381616
+              },
+              "reference": {
+                "nmse": 0.0616185325701315,
+                "feature_cosine_distance": 0.004758529219786769,
+                "feature_standardized_mse": 0.054179236397256136,
+                "clean_decision_agreement": 0.7277158774373259
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 172,
+              "damage": 162,
+              "net": 10
+            }
+          }
+        }
+      }
+    },
+    "gain070": {
+      "ALL": {
+        "count": 10240,
+        "clean_feature_shift": 0.011570834089070559,
+        "clean_decision_preservation": 0.984375,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.042212792185963986,
+            "paths": {
+              "actual": {
+                "nmse": 0.06413170652647793,
+                "feature_cosine_distance": 0.013114944985136389,
+                "feature_standardized_mse": 0.1559326995426769,
+                "clean_decision_agreement": 0.880078125
+              },
+              "reference": {
+                "nmse": 0.02228700494738396,
+                "feature_cosine_distance": 0.007112882664659992,
+                "feature_standardized_mse": 0.07311941492707641,
+                "clean_decision_agreement": 0.93203125
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 191,
+              "damage": 723,
+              "net": -532
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.03957387750676276,
+            "paths": {
+              "actual": {
+                "nmse": 0.05550407774033772,
+                "feature_cosine_distance": 0.007931050535989925,
+                "feature_standardized_mse": 0.09325590968650772,
+                "clean_decision_agreement": 0.9572265625
+              },
+              "reference": {
+                "nmse": 0.015780623293428064,
+                "feature_cosine_distance": 0.003977926581865176,
+                "feature_standardized_mse": 0.04066024706196174,
+                "clean_decision_agreement": 0.9625
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 147,
+              "damage": 201,
+              "net": -54
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.13547305823268657,
+            "paths": {
+              "actual": {
+                "nmse": 0.156749509199733,
+                "feature_cosine_distance": 0.012908365245675669,
+                "feature_standardized_mse": 0.15650424635314408,
+                "clean_decision_agreement": 0.94453125
+              },
+              "reference": {
+                "nmse": 0.020882440072153542,
+                "feature_cosine_distance": 0.004406856873538345,
+                "feature_standardized_mse": 0.04688923800691373,
+                "clean_decision_agreement": 0.96201171875
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 116,
+              "damage": 295,
+              "net": -179
+            }
+          }
+        }
+      },
+      "clean": {
+        "count": 1579,
+        "clean_feature_shift": 0.01146688893144836,
+        "clean_decision_preservation": 0.9848005066497784,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.00016552542310496705,
+            "paths": {
+              "actual": {
+                "nmse": 0.00019019436341543913,
+                "feature_cosine_distance": 0.00022504120555537046,
+                "feature_standardized_mse": 0.002539233006257442,
+                "clean_decision_agreement": 0.9943001899936669
+              },
+              "reference": {
+                "nmse": 2.4255140080290355e-05,
+                "feature_cosine_distance": 2.537334622122805e-05,
+                "feature_standardized_mse": 0.0002509923577263543,
+                "clean_decision_agreement": 0.9968334388853705
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 3,
+              "damage": 7,
+              "net": -4
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.0002767636945799696,
+            "paths": {
+              "actual": {
+                "nmse": 0.0005701449111909408,
+                "feature_cosine_distance": 0.00044888401424076984,
+                "feature_standardized_mse": 0.004834594125359568,
+                "clean_decision_agreement": 0.9987333755541482
+              },
+              "reference": {
+                "nmse": 0.0002991792145236966,
+                "feature_cosine_distance": 0.00021026317947948182,
+                "feature_standardized_mse": 0.0020200214083868294,
+                "clean_decision_agreement": 0.9962001266624446
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 4,
+              "damage": 0,
+              "net": 4
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.00030036841835946076,
+            "paths": {
+              "actual": {
+                "nmse": 0.00033591043413749427,
+                "feature_cosine_distance": 0.00021774882829362943,
+                "feature_standardized_mse": 0.0023032402055945685,
+                "clean_decision_agreement": 0.9943001899936669
+              },
+              "reference": {
+                "nmse": 5.711817580910794e-05,
+                "feature_cosine_distance": 2.752911674591316e-05,
+                "feature_standardized_mse": 0.0002179070902523409,
+                "clean_decision_agreement": 0.9987333755541482
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 7,
+              "net": -7
+            }
+          }
+        }
+      },
+      "practical_high": {
+        "count": 1427,
+        "clean_feature_shift": 0.011361746831464868,
+        "clean_decision_preservation": 0.9859845830413455,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.029238578648885325,
+            "paths": {
+              "actual": {
+                "nmse": 0.037836541582261796,
+                "feature_cosine_distance": 0.009074280541011647,
+                "feature_standardized_mse": 0.12363763338544868,
+                "clean_decision_agreement": 0.9173090399439383
+              },
+              "reference": {
+                "nmse": 0.008581076716689605,
+                "feature_cosine_distance": 0.0027135990680141222,
+                "feature_standardized_mse": 0.029863714493146086,
+                "clean_decision_agreement": 0.9810791871058164
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 11,
+              "damage": 102,
+              "net": -91
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.018598991558614913,
+            "paths": {
+              "actual": {
+                "nmse": 0.02376277408789068,
+                "feature_cosine_distance": 0.004543852246384063,
+                "feature_standardized_mse": 0.0606402802101931,
+                "clean_decision_agreement": 0.9859845830413455
+              },
+              "reference": {
+                "nmse": 0.005195817942563027,
+                "feature_cosine_distance": 0.0013577370018748528,
+                "feature_standardized_mse": 0.014274191696339724,
+                "clean_decision_agreement": 0.9922915206727401
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 6,
+              "damage": 15,
+              "net": -9
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.15612790261061774,
+            "paths": {
+              "actual": {
+                "nmse": 0.16342132389754285,
+                "feature_cosine_distance": 0.010509566569044278,
+                "feature_standardized_mse": 0.13835769904922293,
+                "clean_decision_agreement": 0.9810791871058164
+              },
+              "reference": {
+                "nmse": 0.007023820533879237,
+                "feature_cosine_distance": 0.0015530620075725724,
+                "feature_standardized_mse": 0.017065271258068004,
+                "clean_decision_agreement": 0.9950946040644709
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 2,
+              "damage": 22,
+              "net": -20
+            }
+          }
+        }
+      },
+      "practical_mid": {
+        "count": 1484,
+        "clean_feature_shift": 0.011846970114103867,
+        "clean_decision_preservation": 0.9824797843665768,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.03441939401891236,
+            "paths": {
+              "actual": {
+                "nmse": 0.04801745140470685,
+                "feature_cosine_distance": 0.011159661042722408,
+                "feature_standardized_mse": 0.14536288325992386,
+                "clean_decision_agreement": 0.8672506738544474
+              },
+              "reference": {
+                "nmse": 0.01406461464742737,
+                "feature_cosine_distance": 0.004485143484131024,
+                "feature_standardized_mse": 0.048040195837735535,
+                "clean_decision_agreement": 0.9433962264150944
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 33,
+              "damage": 146,
+              "net": -113
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.030013906180474535,
+            "paths": {
+              "actual": {
+                "nmse": 0.03929134796629597,
+                "feature_cosine_distance": 0.005584946098032023,
+                "feature_standardized_mse": 0.07537252327453627,
+                "clean_decision_agreement": 0.967654986522911
+              },
+              "reference": {
+                "nmse": 0.009530568428242183,
+                "feature_cosine_distance": 0.0020679822668553684,
+                "feature_standardized_mse": 0.02457339763189503,
+                "clean_decision_agreement": 0.977088948787062
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 15,
+              "damage": 29,
+              "net": -14
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.15767007278130363,
+            "paths": {
+              "actual": {
+                "nmse": 0.1704809288029883,
+                "feature_cosine_distance": 0.012077037978043775,
+                "feature_standardized_mse": 0.15351175909266981,
+                "clean_decision_agreement": 0.965633423180593
+              },
+              "reference": {
+                "nmse": 0.011938488803782897,
+                "feature_cosine_distance": 0.002248402594556063,
+                "feature_standardized_mse": 0.026050556774048456,
+                "clean_decision_agreement": 0.9845013477088949
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 5,
+              "damage": 33,
+              "net": -28
+            }
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "count": 1465,
+        "clean_feature_shift": 0.011952321561937039,
+        "clean_decision_preservation": 0.9863481228668942,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.04144043875127115,
+            "paths": {
+              "actual": {
+                "nmse": 0.058767281840126265,
+                "feature_cosine_distance": 0.013607793944687566,
+                "feature_standardized_mse": 0.16670959455917872,
+                "clean_decision_agreement": 0.8716723549488055
+              },
+              "reference": {
+                "nmse": 0.017814611973727294,
+                "feature_cosine_distance": 0.006965966192121799,
+                "feature_standardized_mse": 0.06949368292178144,
+                "clean_decision_agreement": 0.9426621160409556
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 23,
+              "damage": 127,
+              "net": -104
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.04184398599566555,
+            "paths": {
+              "actual": {
+                "nmse": 0.05342831735343453,
+                "feature_cosine_distance": 0.00755530465584973,
+                "feature_standardized_mse": 0.09615532697540781,
+                "clean_decision_agreement": 0.962457337883959
+              },
+              "reference": {
+                "nmse": 0.011884308174219135,
+                "feature_cosine_distance": 0.0035692357365995544,
+                "feature_standardized_mse": 0.03725022323693406,
+                "clean_decision_agreement": 0.9720136518771331
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 15,
+              "damage": 29,
+              "net": -14
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.15956998006329448,
+            "paths": {
+              "actual": {
+                "nmse": 0.1749901050186808,
+                "feature_cosine_distance": 0.013816525464171843,
+                "feature_standardized_mse": 0.169284875200165,
+                "clean_decision_agreement": 0.9631399317406143
+              },
+              "reference": {
+                "nmse": 0.014484824307315344,
+                "feature_cosine_distance": 0.0039588878586023744,
+                "feature_standardized_mse": 0.03905220122852143,
+                "clean_decision_agreement": 0.9761092150170648
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 9,
+              "damage": 28,
+              "net": -19
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "count": 1440,
+        "clean_feature_shift": 0.01142032001581457,
+        "clean_decision_preservation": 0.9840277777777777,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.0370610767580931,
+            "paths": {
+              "actual": {
+                "nmse": 0.05104391325989531,
+                "feature_cosine_distance": 0.010762855783104897,
+                "feature_standardized_mse": 0.14157810857577716,
+                "clean_decision_agreement": 0.8888888888888888
+              },
+              "reference": {
+                "nmse": 0.013861965609774214,
+                "feature_cosine_distance": 0.0038220327347517013,
+                "feature_standardized_mse": 0.044765382946692016,
+                "clean_decision_agreement": 0.9548611111111112
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 22,
+              "damage": 117,
+              "net": -95
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.027332766119959866,
+            "paths": {
+              "actual": {
+                "nmse": 0.03739205916645005,
+                "feature_cosine_distance": 0.005630693212151527,
+                "feature_standardized_mse": 0.07570430925406982,
+                "clean_decision_agreement": 0.9729166666666667
+              },
+              "reference": {
+                "nmse": 0.009646357017097923,
+                "feature_cosine_distance": 0.0019797562725014156,
+                "feature_standardized_mse": 0.024500058378544055,
+                "clean_decision_agreement": 0.9770833333333333
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 14,
+              "damage": 20,
+              "net": -6
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.157052541363454,
+            "paths": {
+              "actual": {
+                "nmse": 0.16994249552695287,
+                "feature_cosine_distance": 0.011529552274280125,
+                "feature_standardized_mse": 0.15338809432513598,
+                "clean_decision_agreement": 0.9625
+              },
+              "reference": {
+                "nmse": 0.012824123940865522,
+                "feature_cosine_distance": 0.0025040263103114236,
+                "feature_standardized_mse": 0.03050328809169716,
+                "clean_decision_agreement": 0.9743055555555555
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 15,
+              "damage": 32,
+              "net": -17
+            }
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "count": 1409,
+        "clean_feature_shift": 0.011504536744463605,
+        "clean_decision_preservation": 0.9815471965933286,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.06934289551299393,
+            "paths": {
+              "actual": {
+                "nmse": 0.11077079390796302,
+                "feature_cosine_distance": 0.02014218517192464,
+                "feature_standardized_mse": 0.23204323052903908,
+                "clean_decision_agreement": 0.8197303051809794
+              },
+              "reference": {
+                "nmse": 0.041500639813088575,
+                "feature_cosine_distance": 0.011819982587910442,
+                "feature_standardized_mse": 0.12852274452077028,
+                "clean_decision_agreement": 0.872959545777147
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 43,
+              "damage": 118,
+              "net": -75
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.06877792447394274,
+            "paths": {
+              "actual": {
+                "nmse": 0.09854761834108952,
+                "feature_cosine_distance": 0.011085693086606547,
+                "feature_standardized_mse": 0.13709229361986366,
+                "clean_decision_agreement": 0.9268985095812633
+              },
+              "reference": {
+                "nmse": 0.029367582057272214,
+                "feature_cosine_distance": 0.00586443136904238,
+                "feature_standardized_mse": 0.06400553127388867,
+                "clean_decision_agreement": 0.9389638041163946
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 39,
+              "damage": 56,
+              "net": -17
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.16247756820439108,
+            "paths": {
+              "actual": {
+                "nmse": 0.20418406493110466,
+                "feature_cosine_distance": 0.01739226367306083,
+                "feature_standardized_mse": 0.21552276022129443,
+                "clean_decision_agreement": 0.8977998580553584
+              },
+              "reference": {
+                "nmse": 0.041046891223412534,
+                "feature_cosine_distance": 0.007605423565195163,
+                "feature_standardized_mse": 0.08303106835870783,
+                "clean_decision_agreement": 0.9240596167494677
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 35,
+              "damage": 72,
+              "net": -37
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "count": 1436,
+        "clean_feature_shift": 0.011434333487141431,
+        "clean_decision_preservation": 0.9853760445682451,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.08872803746872454,
+            "paths": {
+              "actual": {
+                "nmse": 0.1500587490267927,
+                "feature_cosine_distance": 0.02828516149089197,
+                "feature_standardized_mse": 0.2963377636543431,
+                "clean_decision_agreement": 0.7896935933147632
+              },
+              "reference": {
+                "nmse": 0.06304283333377404,
+                "feature_cosine_distance": 0.02082477165463907,
+                "feature_standardized_mse": 0.19991669690952776,
+                "clean_decision_agreement": 0.8245125348189415
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 56,
+              "damage": 106,
+              "net": -50
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.09481154581432005,
+            "paths": {
+              "actual": {
+                "nmse": 0.14225140242048728,
+                "feature_cosine_distance": 0.021543573370218942,
+                "feature_standardized_mse": 0.2130051431833691,
+                "clean_decision_agreement": 0.8809192200557103
+              },
+              "reference": {
+                "nmse": 0.04657604045603972,
+                "feature_cosine_distance": 0.013267982636985672,
+                "feature_standardized_mse": 0.12277135640815838,
+                "clean_decision_agreement": 0.8795264623955432
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 54,
+              "damage": 52,
+              "net": 2
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.16792225319027,
+            "paths": {
+              "actual": {
+                "nmse": 0.22953732533790275,
+                "feature_cosine_distance": 0.026162182637243882,
+                "feature_standardized_mse": 0.27936351823576394,
+                "clean_decision_agreement": 0.8405292479108635
+              },
+              "reference": {
+                "nmse": 0.0616185317783695,
+                "feature_cosine_distance": 0.013515519896589613,
+                "feature_standardized_mse": 0.13834510347360038,
+                "clean_decision_agreement": 0.8760445682451253
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 50,
+              "damage": 101,
+              "net": -51
+            }
+          }
+        }
+      }
+    },
+    "gain140": {
+      "ALL": {
+        "count": 10240,
+        "clean_feature_shift": 0.014344111667014658,
+        "clean_decision_preservation": 0.98828125,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.020452797915492392,
+            "paths": {
+              "actual": {
+                "nmse": 0.04289272191845175,
+                "feature_cosine_distance": 0.015745427674846723,
+                "feature_standardized_mse": 0.19932317396491187,
+                "clean_decision_agreement": 0.9296875
+              },
+              "reference": {
+                "nmse": 0.02228700494738396,
+                "feature_cosine_distance": 0.008412010123720393,
+                "feature_standardized_mse": 0.10360457493685579,
+                "clean_decision_agreement": 0.95048828125
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 120,
+              "damage": 333,
+              "net": -213
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.022313250373051118,
+            "paths": {
+              "actual": {
+                "nmse": 0.03809870050257018,
+                "feature_cosine_distance": 0.010754512588027865,
+                "feature_standardized_mse": 0.14712588149434397,
+                "clean_decision_agreement": 0.9626953125
+              },
+              "reference": {
+                "nmse": 0.015780623293428064,
+                "feature_cosine_distance": 0.004701535397907719,
+                "feature_standardized_mse": 0.05784317861515831,
+                "clean_decision_agreement": 0.96953125
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 70,
+              "damage": 140,
+              "net": -70
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.06920950974475773,
+            "paths": {
+              "actual": {
+                "nmse": 0.08977687284632338,
+                "feature_cosine_distance": 0.019477189029566945,
+                "feature_standardized_mse": 0.2569143586371297,
+                "clean_decision_agreement": 0.9568359375
+              },
+              "reference": {
+                "nmse": 0.020882440072153542,
+                "feature_cosine_distance": 0.00521999517804943,
+                "feature_standardized_mse": 0.06639652800863036,
+                "clean_decision_agreement": 0.96630859375
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 92,
+              "damage": 189,
+              "net": -97
+            }
+          }
+        }
+      },
+      "clean": {
+        "count": 1579,
+        "clean_feature_shift": 0.014040693140543285,
+        "clean_decision_preservation": 0.9892336922102597,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 6.607538458748532e-05,
+            "paths": {
+              "actual": {
+                "nmse": 8.22905809680187e-05,
+                "feature_cosine_distance": 4.644047391044708e-05,
+                "feature_standardized_mse": 0.0006421924058759781,
+                "clean_decision_agreement": 1.0
+              },
+              "reference": {
+                "nmse": 2.4255140080290355e-05,
+                "feature_cosine_distance": 2.683307491879889e-05,
+                "feature_standardized_mse": 0.00031083433147681807,
+                "clean_decision_agreement": 1.0
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.0005655880740637572,
+            "paths": {
+              "actual": {
+                "nmse": 0.0008706651064225174,
+                "feature_cosine_distance": 0.0008181237661060916,
+                "feature_standardized_mse": 0.010902288914678773,
+                "clean_decision_agreement": 0.9955668144395187
+              },
+              "reference": {
+                "nmse": 0.0002991792145236966,
+                "feature_cosine_distance": 0.00021470887816503427,
+                "feature_standardized_mse": 0.0023109398669192535,
+                "clean_decision_agreement": 0.9974667511082964
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 3,
+              "net": -3
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0025802008932848015,
+            "paths": {
+              "actual": {
+                "nmse": 0.0026597614577623997,
+                "feature_cosine_distance": 0.0007459796479112215,
+                "feature_standardized_mse": 0.009942769359822601,
+                "clean_decision_agreement": 0.9955668144395187
+              },
+              "reference": {
+                "nmse": 5.711817580910794e-05,
+                "feature_cosine_distance": 3.8803340967430804e-05,
+                "feature_standardized_mse": 0.0003683052979851192,
+                "clean_decision_agreement": 1.0
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 7,
+              "net": -7
+            }
+          }
+        }
+      },
+      "practical_high": {
+        "count": 1427,
+        "clean_feature_shift": 0.014202251831968932,
+        "clean_decision_preservation": 0.9824807288016818,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.013980499850621952,
+            "paths": {
+              "actual": {
+                "nmse": 0.02252615846630862,
+                "feature_cosine_distance": 0.009092649297440228,
+                "feature_standardized_mse": 0.12797369727096047,
+                "clean_decision_agreement": 0.9754730203223546
+              },
+              "reference": {
+                "nmse": 0.008581076716689605,
+                "feature_cosine_distance": 0.003048430311153548,
+                "feature_standardized_mse": 0.04069372943045144,
+                "clean_decision_agreement": 0.9929922915206727
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 3,
+              "damage": 28,
+              "net": -25
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.010501240989759162,
+            "paths": {
+              "actual": {
+                "nmse": 0.015808867790541116,
+                "feature_cosine_distance": 0.006023419053719941,
+                "feature_standardized_mse": 0.09013881424498062,
+                "clean_decision_agreement": 0.9880868955851436
+              },
+              "reference": {
+                "nmse": 0.005195817942563027,
+                "feature_cosine_distance": 0.0015846709730580042,
+                "feature_standardized_mse": 0.021074521638904636,
+                "clean_decision_agreement": 0.9908899789768746
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 8,
+              "damage": 12,
+              "net": -4
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.0795570947151545,
+            "paths": {
+              "actual": {
+                "nmse": 0.08638394399485391,
+                "feature_cosine_distance": 0.016720861509786925,
+                "feature_standardized_mse": 0.2368005623854305,
+                "clean_decision_agreement": 0.98458304134548
+              },
+              "reference": {
+                "nmse": 0.007023820533879237,
+                "feature_cosine_distance": 0.001923873529788407,
+                "feature_standardized_mse": 0.025957144279383414,
+                "clean_decision_agreement": 0.9915907498248073
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 4,
+              "damage": 14,
+              "net": -10
+            }
+          }
+        }
+      },
+      "practical_mid": {
+        "count": 1484,
+        "clean_feature_shift": 0.014687491435246326,
+        "clean_decision_preservation": 0.9892183288409704,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.016916437644694714,
+            "paths": {
+              "actual": {
+                "nmse": 0.030997453308275164,
+                "feature_cosine_distance": 0.012415303695555324,
+                "feature_standardized_mse": 0.16896122764962954,
+                "clean_decision_agreement": 0.9501347708894878
+              },
+              "reference": {
+                "nmse": 0.01406461464742737,
+                "feature_cosine_distance": 0.005728020500943989,
+                "feature_standardized_mse": 0.07488327613877034,
+                "clean_decision_agreement": 0.9690026954177897
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 10,
+              "damage": 38,
+              "net": -28
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.01668463608840257,
+            "paths": {
+              "actual": {
+                "nmse": 0.02621415579400334,
+                "feature_cosine_distance": 0.008556284512470995,
+                "feature_standardized_mse": 0.12406514513631405,
+                "clean_decision_agreement": 0.9757412398921833
+              },
+              "reference": {
+                "nmse": 0.009530568428242183,
+                "feature_cosine_distance": 0.0029152462263955584,
+                "feature_standardized_mse": 0.0394534888693616,
+                "clean_decision_agreement": 0.9824797843665768
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 9,
+              "damage": 19,
+              "net": -10
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.07980275010022353,
+            "paths": {
+              "actual": {
+                "nmse": 0.09123560471957264,
+                "feature_cosine_distance": 0.018476486085560122,
+                "feature_standardized_mse": 0.25339507705198144,
+                "clean_decision_agreement": 0.9784366576819407
+              },
+              "reference": {
+                "nmse": 0.011938488803782897,
+                "feature_cosine_distance": 0.0030699825752777553,
+                "feature_standardized_mse": 0.04120366292835572,
+                "clean_decision_agreement": 0.9831536388140162
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 9,
+              "damage": 16,
+              "net": -7
+            }
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "count": 1465,
+        "clean_feature_shift": 0.014684058659719525,
+        "clean_decision_preservation": 0.9897610921501706,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.02026735406306194,
+            "paths": {
+              "actual": {
+                "nmse": 0.037934900636533625,
+                "feature_cosine_distance": 0.01574994240197712,
+                "feature_standardized_mse": 0.2047211569579757,
+                "clean_decision_agreement": 0.9344709897610921
+              },
+              "reference": {
+                "nmse": 0.017814611973727294,
+                "feature_cosine_distance": 0.008057532497640355,
+                "feature_standardized_mse": 0.09859851720399596,
+                "clean_decision_agreement": 0.9617747440273038
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 12,
+              "damage": 52,
+              "net": -40
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.023693352834791986,
+            "paths": {
+              "actual": {
+                "nmse": 0.03544791599945404,
+                "feature_cosine_distance": 0.01111556149180025,
+                "feature_standardized_mse": 0.1546855695466209,
+                "clean_decision_agreement": 0.9713310580204778
+              },
+              "reference": {
+                "nmse": 0.011884308174219135,
+                "feature_cosine_distance": 0.004149727365669537,
+                "feature_standardized_mse": 0.05077967438560755,
+                "clean_decision_agreement": 0.9795221843003413
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 5,
+              "damage": 17,
+              "net": -12
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.08061835892918065,
+            "paths": {
+              "actual": {
+                "nmse": 0.0945587058675574,
+                "feature_cosine_distance": 0.02100077672216266,
+                "feature_standardized_mse": 0.2751085098642131,
+                "clean_decision_agreement": 0.9720136518771331
+              },
+              "reference": {
+                "nmse": 0.014484824307315344,
+                "feature_cosine_distance": 0.00467086285861279,
+                "feature_standardized_mse": 0.054989929091178974,
+                "clean_decision_agreement": 0.9802047781569966
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 5,
+              "damage": 17,
+              "net": -12
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "count": 1440,
+        "clean_feature_shift": 0.014393045090966755,
+        "clean_decision_preservation": 0.9881944444444445,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.0177823953737162,
+            "paths": {
+              "actual": {
+                "nmse": 0.031712375078091604,
+                "feature_cosine_distance": 0.011559211255775557,
+                "feature_standardized_mse": 0.15815802221914055,
+                "clean_decision_agreement": 0.9548611111111112
+              },
+              "reference": {
+                "nmse": 0.013861965609774214,
+                "feature_cosine_distance": 0.00482018929388788,
+                "feature_standardized_mse": 0.06360121145553421,
+                "clean_decision_agreement": 0.9756944444444444
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 11,
+              "damage": 41,
+              "net": -30
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.015595203381397166,
+            "paths": {
+              "actual": {
+                "nmse": 0.02525291327393562,
+                "feature_cosine_distance": 0.0075900213999880685,
+                "feature_standardized_mse": 0.11184923121408145,
+                "clean_decision_agreement": 0.98125
+              },
+              "reference": {
+                "nmse": 0.009646357017097923,
+                "feature_cosine_distance": 0.0024147502664062714,
+                "feature_standardized_mse": 0.0335719097359591,
+                "clean_decision_agreement": 0.9833333333333333
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 8,
+              "damage": 11,
+              "net": -3
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.07991900974625929,
+            "paths": {
+              "actual": {
+                "nmse": 0.09274120733348859,
+                "feature_cosine_distance": 0.018277867262562118,
+                "feature_standardized_mse": 0.25172133076703174,
+                "clean_decision_agreement": 0.9805555555555555
+              },
+              "reference": {
+                "nmse": 0.012824123940865522,
+                "feature_cosine_distance": 0.0029576288743151558,
+                "feature_standardized_mse": 0.04135027766460553,
+                "clean_decision_agreement": 0.98125
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 10,
+              "damage": 11,
+              "net": -1
+            }
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "count": 1409,
+        "clean_feature_shift": 0.01380960289005526,
+        "clean_decision_preservation": 0.9872249822569198,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.03284905737979309,
+            "paths": {
+              "actual": {
+                "nmse": 0.0746363868349945,
+                "feature_cosine_distance": 0.024169337081096965,
+                "feature_standardized_mse": 0.3105725336299695,
+                "clean_decision_agreement": 0.8743789921930447
+              },
+              "reference": {
+                "nmse": 0.041500639813088575,
+                "feature_cosine_distance": 0.014072430988336134,
+                "feature_standardized_mse": 0.17904276762410834,
+                "clean_decision_agreement": 0.9091554293825408
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 36,
+              "damage": 85,
+              "net": -49
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.038383623413415065,
+            "paths": {
+              "actual": {
+                "nmse": 0.06781953306653192,
+                "feature_cosine_distance": 0.015903697570559823,
+                "feature_standardized_mse": 0.2229341545579803,
+                "clean_decision_agreement": 0.9332860184528035
+              },
+              "reference": {
+                "nmse": 0.029367582057272214,
+                "feature_cosine_distance": 0.007226970239765176,
+                "feature_standardized_mse": 0.09590875202356298,
+                "clean_decision_agreement": 0.9467707594038325
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 19,
+              "damage": 38,
+              "net": -19
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.08226509825121599,
+            "paths": {
+              "actual": {
+                "nmse": 0.1227057758398814,
+                "feature_cosine_distance": 0.02558650033028943,
+                "feature_standardized_mse": 0.3419557184422477,
+                "clean_decision_agreement": 0.921930447125621
+              },
+              "reference": {
+                "nmse": 0.041046891223412534,
+                "feature_cosine_distance": 0.00893065052052776,
+                "feature_standardized_mse": 0.11757840483989421,
+                "clean_decision_agreement": 0.936124911284599
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 23,
+              "damage": 43,
+              "net": -20
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "count": 1436,
+        "clean_feature_shift": 0.014592435242073782,
+        "clean_decision_preservation": 0.9916434540389972,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.04365982310734572,
+            "paths": {
+              "actual": {
+                "nmse": 0.10762072993120733,
+                "feature_cosine_distance": 0.03898802428690504,
+                "feature_standardized_mse": 0.4466835688930952,
+                "clean_decision_agreement": 0.8098885793871866
+              },
+              "reference": {
+                "nmse": 0.06304283333377404,
+                "feature_cosine_distance": 0.02414534039650123,
+                "feature_standardized_mse": 0.28058459225252097,
+                "clean_decision_agreement": 0.8384401114206128
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 48,
+              "damage": 89,
+              "net": -41
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.053341900586237494,
+            "paths": {
+              "actual": {
+                "nmse": 0.09988978918068485,
+                "feature_cosine_distance": 0.02640613369788964,
+                "feature_standardized_mse": 0.330656039616752,
+                "clean_decision_agreement": 0.8892757660167131
+              },
+              "reference": {
+                "nmse": 0.04657604045603972,
+                "feature_cosine_distance": 0.014956653367178021,
+                "feature_standardized_mse": 0.16864321066337717,
+                "clean_decision_agreement": 0.9025069637883009
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 21,
+              "damage": 40,
+              "net": -19
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.08605514900190729,
+            "paths": {
+              "actual": {
+                "nmse": 0.14727270773360324,
+                "feature_cosine_distance": 0.037500761387075886,
+                "feature_standardized_mse": 0.455308086500817,
+                "clean_decision_agreement": 0.8593314763231198
+              },
+              "reference": {
+                "nmse": 0.0616185317783695,
+                "feature_cosine_distance": 0.015602487624521707,
+                "feature_standardized_mse": 0.19175431315840966,
+                "clean_decision_agreement": 0.8871866295264624
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 41,
+              "damage": 81,
+              "net": -40
+            }
+          }
+        }
+      }
+    },
+    "reflect_fir025": {
+      "ALL": {
+        "count": 10240,
+        "clean_feature_shift": 0.01825181324966252,
+        "clean_decision_preservation": 0.96484375,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.013628840754737758,
+            "paths": {
+              "actual": {
+                "nmse": 0.031932918151249455,
+                "feature_cosine_distance": 0.012638660066295415,
+                "feature_standardized_mse": 0.13097039462378018,
+                "clean_decision_agreement": 0.928515625
+              },
+              "reference": {
+                "nmse": 0.01865095076919703,
+                "feature_cosine_distance": 0.00914173927740194,
+                "feature_standardized_mse": 0.09129112564402533,
+                "clean_decision_agreement": 0.90830078125
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 527,
+              "damage": 320,
+              "net": 207
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.015560309634630797,
+            "paths": {
+              "actual": {
+                "nmse": 0.028224921624979516,
+                "feature_cosine_distance": 0.011555873707402497,
+                "feature_standardized_mse": 0.11795094055396191,
+                "clean_decision_agreement": 0.9423828125
+              },
+              "reference": {
+                "nmse": 0.01277104971213312,
+                "feature_cosine_distance": 0.005465084972092882,
+                "feature_standardized_mse": 0.053789896813874805,
+                "clean_decision_agreement": 0.9484375
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 211,
+              "damage": 273,
+              "net": -62
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.015998954039329938,
+            "paths": {
+              "actual": {
+                "nmse": 0.03359849174240566,
+                "feature_cosine_distance": 0.013533460983308033,
+                "feature_standardized_mse": 0.13399583748549873,
+                "clean_decision_agreement": 0.9392578125
+              },
+              "reference": {
+                "nmse": 0.017413152344947846,
+                "feature_cosine_distance": 0.006668160506524146,
+                "feature_standardized_mse": 0.06620945011665,
+                "clean_decision_agreement": 0.93544921875
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 247,
+              "damage": 208,
+              "net": 39
+            }
+          }
+        }
+      },
+      "clean": {
+        "count": 1579,
+        "clean_feature_shift": 0.01861066135747135,
+        "clean_decision_preservation": 0.9632678910702976,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 8.832758282538119e-06,
+            "paths": {
+              "actual": {
+                "nmse": 2.8446960906837317e-05,
+                "feature_cosine_distance": 2.8679686456333618e-05,
+                "feature_standardized_mse": 0.00029166489478359446,
+                "clean_decision_agreement": 0.999366687777074
+              },
+              "reference": {
+                "nmse": 2.325276617485278e-05,
+                "feature_cosine_distance": 2.0417478584352366e-05,
+                "feature_standardized_mse": 0.00019060774248679056,
+                "clean_decision_agreement": 0.999366687777074
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 8.578748347852518e-05,
+            "paths": {
+              "actual": {
+                "nmse": 0.00034089100272427156,
+                "feature_cosine_distance": 0.0003849090164865853,
+                "feature_standardized_mse": 0.003256623692759074,
+                "clean_decision_agreement": 0.9974667511082964
+              },
+              "reference": {
+                "nmse": 0.0002862109711799103,
+                "feature_cosine_distance": 0.0003419833669487323,
+                "feature_standardized_mse": 0.002864810199830448,
+                "clean_decision_agreement": 0.999366687777074
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 3,
+              "net": -3
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 6.738476373268413e-05,
+            "paths": {
+              "actual": {
+                "nmse": 0.00011912442542613438,
+                "feature_cosine_distance": 0.00011488744320183936,
+                "feature_standardized_mse": 0.0007953392751011355,
+                "clean_decision_agreement": 1.0
+              },
+              "reference": {
+                "nmse": 5.2833981757755455e-05,
+                "feature_cosine_distance": 9.059275608413049e-05,
+                "feature_standardized_mse": 0.0006265043232460126,
+                "clean_decision_agreement": 1.0
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 0,
+              "damage": 0,
+              "net": 0
+            }
+          }
+        }
+      },
+      "practical_high": {
+        "count": 1427,
+        "clean_feature_shift": 0.01755214622994779,
+        "clean_decision_preservation": 0.9677645409950946,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.010575918351448863,
+            "paths": {
+              "actual": {
+                "nmse": 0.017534184344661093,
+                "feature_cosine_distance": 0.006609775465355107,
+                "feature_standardized_mse": 0.07166268478246235,
+                "clean_decision_agreement": 0.9628591450595655
+              },
+              "reference": {
+                "nmse": 0.007378538183870542,
+                "feature_cosine_distance": 0.003998433908717818,
+                "feature_standardized_mse": 0.03758922861641,
+                "clean_decision_agreement": 0.9474421864050455
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 47,
+              "damage": 25,
+              "net": 22
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.01057886622985466,
+            "paths": {
+              "actual": {
+                "nmse": 0.015124484035822797,
+                "feature_cosine_distance": 0.007340006253563948,
+                "feature_standardized_mse": 0.0774262510406502,
+                "clean_decision_agreement": 0.9579537491240364
+              },
+              "reference": {
+                "nmse": 0.004360229082083488,
+                "feature_cosine_distance": 0.002338944654324377,
+                "feature_standardized_mse": 0.021251963883799584,
+                "clean_decision_agreement": 0.9705676243868255
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 13,
+              "damage": 31,
+              "net": -18
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.012413158043944907,
+            "paths": {
+              "actual": {
+                "nmse": 0.018749537198336372,
+                "feature_cosine_distance": 0.009842526478289555,
+                "feature_standardized_mse": 0.1001522447404823,
+                "clean_decision_agreement": 0.9593552908199019
+              },
+              "reference": {
+                "nmse": 0.006022384780984973,
+                "feature_cosine_distance": 0.002879855803200308,
+                "feature_standardized_mse": 0.02799758753328458,
+                "clean_decision_agreement": 0.9656622284512965
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 8,
+              "damage": 17,
+              "net": -9
+            }
+          }
+        }
+      },
+      "practical_mid": {
+        "count": 1484,
+        "clean_feature_shift": 0.018464094263845376,
+        "clean_decision_preservation": 0.9602425876010782,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.01224282341706441,
+            "paths": {
+              "actual": {
+                "nmse": 0.02395341894840395,
+                "feature_cosine_distance": 0.009413100276995863,
+                "feature_standardized_mse": 0.10040471481311203,
+                "clean_decision_agreement": 0.9366576819407008
+              },
+              "reference": {
+                "nmse": 0.012212804115108764,
+                "feature_cosine_distance": 0.006489706328615666,
+                "feature_standardized_mse": 0.06422670025455657,
+                "clean_decision_agreement": 0.9184636118598383
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 67,
+              "damage": 40,
+              "net": 27
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.014267615404581234,
+            "paths": {
+              "actual": {
+                "nmse": 0.022354145731395388,
+                "feature_cosine_distance": 0.009924751247035847,
+                "feature_standardized_mse": 0.10646790067660258,
+                "clean_decision_agreement": 0.944743935309973
+              },
+              "reference": {
+                "nmse": 0.008151730106469818,
+                "feature_cosine_distance": 0.003487740967151611,
+                "feature_standardized_mse": 0.03659322599632819,
+                "clean_decision_agreement": 0.9555256064690026
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 20,
+              "damage": 36,
+              "net": -16
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.014533744913756827,
+            "paths": {
+              "actual": {
+                "nmse": 0.024899857038396065,
+                "feature_cosine_distance": 0.011934767836187727,
+                "feature_standardized_mse": 0.12143791113029964,
+                "clean_decision_agreement": 0.9474393530997305
+              },
+              "reference": {
+                "nmse": 0.01035016733185624,
+                "feature_cosine_distance": 0.0042970818731020086,
+                "feature_standardized_mse": 0.04305469482020673,
+                "clean_decision_agreement": 0.9481132075471698
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 20,
+              "damage": 21,
+              "net": -1
+            }
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "count": 1465,
+        "clean_feature_shift": 0.0182790655731748,
+        "clean_decision_preservation": 0.9699658703071672,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.014112830544272025,
+            "paths": {
+              "actual": {
+                "nmse": 0.028496026412389994,
+                "feature_cosine_distance": 0.012405641941487178,
+                "feature_standardized_mse": 0.1269640091325096,
+                "clean_decision_agreement": 0.9392491467576792
+              },
+              "reference": {
+                "nmse": 0.015293380840675136,
+                "feature_cosine_distance": 0.008880658564714034,
+                "feature_standardized_mse": 0.08458996066734602,
+                "clean_decision_agreement": 0.9085324232081912
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 83,
+              "damage": 38,
+              "net": 45
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.017976777997811933,
+            "paths": {
+              "actual": {
+                "nmse": 0.02736778876874532,
+                "feature_cosine_distance": 0.012017322318952644,
+                "feature_standardized_mse": 0.12392027524773527,
+                "clean_decision_agreement": 0.9453924914675768
+              },
+              "reference": {
+                "nmse": 0.00998843181747212,
+                "feature_cosine_distance": 0.004653206782943153,
+                "feature_standardized_mse": 0.04745112951183787,
+                "clean_decision_agreement": 0.9460750853242321
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 35,
+              "damage": 36,
+              "net": -1
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.01686022951865232,
+            "paths": {
+              "actual": {
+                "nmse": 0.028998138203759242,
+                "feature_cosine_distance": 0.014760544967325881,
+                "feature_standardized_mse": 0.13866004103813764,
+                "clean_decision_agreement": 0.9440273037542662
+              },
+              "reference": {
+                "nmse": 0.012318454369220806,
+                "feature_cosine_distance": 0.00589136666405323,
+                "feature_standardized_mse": 0.055018520622304404,
+                "clean_decision_agreement": 0.9474402730375426
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 19,
+              "damage": 24,
+              "net": -5
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "count": 1440,
+        "clean_feature_shift": 0.018519939275251494,
+        "clean_decision_preservation": 0.9652777777777778,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.01258780578395494,
+            "paths": {
+              "actual": {
+                "nmse": 0.0240586372014756,
+                "feature_cosine_distance": 0.008761560834116406,
+                "feature_standardized_mse": 0.09777946788558943,
+                "clean_decision_agreement": 0.9444444444444444
+              },
+              "reference": {
+                "nmse": 0.0116655473000315,
+                "feature_cosine_distance": 0.005477994307875633,
+                "feature_standardized_mse": 0.059294945528462345,
+                "clean_decision_agreement": 0.925
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 68,
+              "damage": 40,
+              "net": 28
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.013213615781246012,
+            "paths": {
+              "actual": {
+                "nmse": 0.021291181312861025,
+                "feature_cosine_distance": 0.009762676101591853,
+                "feature_standardized_mse": 0.10214361702286018,
+                "clean_decision_agreement": 0.9472222222222222
+              },
+              "reference": {
+                "nmse": 0.007952369298921742,
+                "feature_cosine_distance": 0.0032968968980842165,
+                "feature_standardized_mse": 0.03475614644323489,
+                "clean_decision_agreement": 0.9597222222222223
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 23,
+              "damage": 41,
+              "net": -18
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.014738933775354074,
+            "paths": {
+              "actual": {
+                "nmse": 0.025903313958163685,
+                "feature_cosine_distance": 0.012426962041192584,
+                "feature_standardized_mse": 0.12526781518374466,
+                "clean_decision_agreement": 0.9493055555555555
+              },
+              "reference": {
+                "nmse": 0.010705823900954986,
+                "feature_cosine_distance": 0.0043680910021066666,
+                "feature_standardized_mse": 0.047740153094653376,
+                "clean_decision_agreement": 0.9465277777777777
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 25,
+              "damage": 21,
+              "net": 4
+            }
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "count": 1409,
+        "clean_feature_shift": 0.018458472193345014,
+        "clean_decision_preservation": 0.9659332860184529,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.02088175593965242,
+            "paths": {
+              "actual": {
+                "nmse": 0.05569715356828368,
+                "feature_cosine_distance": 0.020392681538762565,
+                "feature_standardized_mse": 0.21372741902302594,
+                "clean_decision_agreement": 0.8828956706884316
+              },
+              "reference": {
+                "nmse": 0.034624815794529896,
+                "feature_cosine_distance": 0.014924919503728408,
+                "feature_standardized_mse": 0.1571999653346633,
+                "clean_decision_agreement": 0.8594748048261178
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 104,
+              "damage": 71,
+              "net": 33
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.023799929067124317,
+            "paths": {
+              "actual": {
+                "nmse": 0.047559164985987924,
+                "feature_cosine_distance": 0.016593613296303027,
+                "feature_standardized_mse": 0.17489225064180236,
+                "clean_decision_agreement": 0.9233498935415189
+              },
+              "reference": {
+                "nmse": 0.02363541727697059,
+                "feature_cosine_distance": 0.008630983705974116,
+                "feature_standardized_mse": 0.09072306996767955,
+                "clean_decision_agreement": 0.9254790631653655
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 51,
+              "damage": 54,
+              "net": -3
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.023820384060851622,
+            "paths": {
+              "actual": {
+                "nmse": 0.05861221903087697,
+                "feature_cosine_distance": 0.019613006040506788,
+                "feature_standardized_mse": 0.19712408417419414,
+                "clean_decision_agreement": 0.9105748757984387
+              },
+              "reference": {
+                "nmse": 0.034300926674088475,
+                "feature_cosine_distance": 0.010280324094595006,
+                "feature_standardized_mse": 0.11490088653269193,
+                "clean_decision_agreement": 0.8836053938963804
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 85,
+              "damage": 47,
+              "net": 38
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "count": 1436,
+        "clean_feature_shift": 0.017833686555660536,
+        "clean_decision_preservation": 0.9616991643454039,
+        "methods": {
+          "DURA_v1": {
+            "equivariance_nmse": 0.026504920452313036,
+            "paths": {
+              "actual": {
+                "nmse": 0.07765432012275193,
+                "feature_cosine_distance": 0.03234624103085244,
+                "feature_standardized_mse": 0.3213554412072387,
+                "clean_decision_agreement": 0.8259052924791086
+              },
+              "reference": {
+                "nmse": 0.05174546515700261,
+                "feature_cosine_distance": 0.025288992647008974,
+                "feature_standardized_mse": 0.24705023639336032,
+                "clean_decision_agreement": 0.7896935933147632
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 158,
+              "damage": 106,
+              "net": 52
+            }
+          },
+          "PHY_MSat": {
+            "equivariance_nmse": 0.030665210518411368,
+            "paths": {
+              "actual": {
+                "nmse": 0.06682783040389273,
+                "feature_cosine_distance": 0.02609876304615839,
+                "feature_standardized_mse": 0.25009512863333355,
+                "clean_decision_agreement": 0.8746518105849582
+              },
+              "reference": {
+                "nmse": 0.03664181072724248,
+                "feature_cosine_distance": 0.016144471621779014,
+                "feature_standardized_mse": 0.14920650907399127,
+                "clean_decision_agreement": 0.8767409470752089
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 69,
+              "damage": 72,
+              "net": -3
+            }
+          },
+          "MSAT_FullFGrad": {
+            "equivariance_nmse": 0.031305022853067334,
+            "paths": {
+              "actual": {
+                "nmse": 0.08202355108963207,
+                "feature_cosine_distance": 0.02750069861790596,
+                "feature_standardized_mse": 0.2691225440022185,
+                "clean_decision_agreement": 0.8572423398328691
+              },
+              "reference": {
+                "nmse": 0.050474050139314705,
+                "feature_cosine_distance": 0.019670344038262007,
+                "feature_standardized_mse": 0.18238613652671792,
+                "clean_decision_agreement": 0.8488857938718662
+              }
+            },
+            "actual_against_transformed_baseline": {
+              "repairs": 90,
+              "damage": 78,
+              "net": 12
+            }
+          }
+        }
+      }
+    }
+  },
+  "G_request_rows": 153600,
+  "F0_readout_rows": 276480,
+  "F0_clean_reference_rows": 2560,
+  "F0_total_source_rows": 279040,
+  "source2_smoke_F0_rows": 6,
+  "counts_are_request_rows_not_internal_calls": true,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "source_only": true,
+  "paired_transform_is_native_channel": false,
+  "agreement_is_TX_accuracy": false,
+  "claim_Main_causal_explanation": false,
+  "claim_theoretical_ceiling": false,
+  "default_DURA_changed": false,
+  "seconds": 148.373495748001,
+  "goal_complete": false
+}

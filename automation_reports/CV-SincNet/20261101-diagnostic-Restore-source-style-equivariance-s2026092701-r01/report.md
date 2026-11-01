@@ -35,3 +35,7 @@
 这是合成源端稳定性检查，不是native信道重模拟，不证明TX身份保持、Main因果解释或信息恢复极限。FIR一般不与原H交换；若先验分布不具变换对称性，非等变性本身也不是Bayes最优性反例。不根据head判决选择T或训练候选。F0原源尺度只读，变换前后参考分别计算，避免混淆恢复器与F0敏感性。
 
 153600条G请求行；F0读出276480+clean参考2560=279040条，Ls2真实smoke另6条F0行。按请求行数计，内部三视图/图捕获工作另在worker耗时内。第一神经工作为实际Ls2 checkpoint smoke，PASS立即全矩阵。原N607 CVS-RFFI Torch2.1+cu121、FP32/TF32off；独占CWD/路径/commit/命令/停止规则见登记，GPU4/6 UUID余量>=12GB/原compute<=2/只新增1个本任务NN/单卡总<=3，其他owner不改。4针对性检查和一次独立P0/P1通过；实际源smoke和结果待运行，完整Main性能目标及默认DURA保持。
+
+## 完整执行与独立复算
+
+VERIFIED / ANALYZED。Ls2实际checkpoint smoke及512包×20draw×5T/三G/两路径全部完成，0更新/TX/V/OE/目标。独立汇总差0、所有判决/配对与完整源面板核对，identity差异精确0、phase/gain参考IQ不变性误差≤2.39e-7；全状态保持、所有进程退出。T改变clean先验/F0表现，不能直接据等变差异推出模型缺陷、Main因果解释或硬等变改造收益。详见analysis.md。

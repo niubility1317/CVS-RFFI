@@ -195,3 +195,9 @@ CPU控制器已独立核实PID/CWD/命令/CUDA空、WAIT_PARENT_COMPLETE，当�
 `20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01`，实际代码27197d5a45c720dabd624425eb30cf586263a171。全部父模型Main完成后，原V1800×七景/七读出完成，原Ls2条真实smoke与4项测试/一次P0P1通过，独立49单元/88200F0行/索引/RXday/日志及全部保存判决一致率复算PASS，汇总差0；0更新/TX/OE/novel/目标，所有状态保持、进程退出，登记ANALYZED。
 
 低档城区Fclean判决一致率：received 60.611111%；DURA_v1 86.111111%；MSAT_M20 88.055556%；MSAT_VarF 86.388889%；PHY_MSat 91.166667%；MSAT_FullFGrad 89.555556%；PHY_true_H 91.833333%。这是原源V验证，不是TX准确率或Main。V历史曝光、原F0/DURA验证知识、1800包七次相关复用，以及训练/V物理包与receiverseed1911/1902差异均披露，不能单因称过拟合或理论恢复上限。默认DURA与六景逐个3pp+clean主目标不因源验证收益自动改变；完整方法/分场景/源面板对比见analysis.md。
+
+## 源端成对变换稳定性完成（2026-11-01）
+
+`20261101-diagnostic-Restore-source-style-equivariance-s2026092701-r01`，实际代码ac8015d9dcdcd9c5d1f05d7c09882a0591825d7d。原Ls128Us384固定512包×20draw×五T，冻结DURA/PHY/FullFGrad与原F0，比较G(Ty)与T G(y)，均对T clean评分。4项检查/一次P0P1/实际Ls2smoke通过；51200行/全部源面板/20日志/保存判决配对独立复算差0，identity差异0、phase/gain参考IQ不变性误差≤2.39e-7；0更新/TX/V/OE/目标，全状态保持、进程结束，ANALYZED。
+
+低档城区对应1436源实例中，+90°使F0(clean)判决本身仅78.690808%保持；gain.7/1.4则将原clean单位功率变为.49/1.96。源等变差异不能直接解释Main下降或认定恢复器缺陷，结果不自动支持相位群平均/硬相位或增益等变结构。反射FIR也非native新信道，语义一致率与波形差异不单调。下一步改造需尊重原clean约定和冻结F0特征语义，仍仅原LsUs/单阶段30，所有新G完整Main七景；默认DURA和六景3pp+clean目标ACTIVE不变。
