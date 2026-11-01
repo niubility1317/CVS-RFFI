@@ -3,7 +3,7 @@
 - run_id：`20261102-phase1-Restore-TFResidualDiffusion-E30-s2026092701-r01`
 - group_id：`restoration-time-frequency-residual-diffusion-single30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（真实源训练已开始，完整性能待原Main七景）
 
 ## 目的与对照
 
@@ -55,3 +55,8 @@ CPU队列仅等待健康SoftPower整个Main技术ARTIFACTS_COMPLETE且terminal�
 [DiT](https://arxiv.org/abs/2212.09748)研究图像latent patch的Transformer扩散骨干，不能把其图像指标移作IQ身份保真证据。[RFdiffusion](https://arxiv.org/abs/2503.05514)给出低SNR Wi-Fi指纹恢复研究动机；其6设备实验不证明本项目星地复合信道、跨RX、冻结原F0或未知设备有效。没有采用其性能数值作为本实验预期或晋级标准。
 
 扩散先验可能合成源域常见但不属于当前发射机的细节；源F(clean)一致率、波形误差、真实TX准确率和未知设备保真分别解释。有限观测下不能保证逐样本无损重建，也不能从准确率保留比例推出“恢复了几成发射机信息”或理论上限。是否让IQ更易识别由原Main真实TX与clean双向损伤测试判断，不靠生成外观或源损失宣布成功。
+
+
+## 时频残差扩散源训练已核实
+
+VERIFIED / RUNNING。源Ls2真实G/F0无更新smoke通过，固定15调用sampler有限、实际output-head梯度与严格E0重载PASS；不是恒等E0。E01模型/优化器/CPU-CUDA RNG独立CPU读回，全部E0 tensor等于scratch factory，源顺序draw同原FullFGrad；E01时/频输入与attention骨干及双输出head确已更新，固定latent/schedule/坐标不变，加权loss和63000条sigma histogram复算PASS。首轮247步19.601430秒。GPU4准入free24110MiB/原0compute/新增1个，PID/CWD/CUDA/GPU/日志核实。SoftPower完整Main技术完成后才启动，0TX/V/OE/target更新或选模；固定final30自动原Main七景后truth-last，性能PENDING，默认DURA不变，目标ACTIVE。
