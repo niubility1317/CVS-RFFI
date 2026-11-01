@@ -1,0 +1,541 @@
+{
+  "status": "SOURCE_ONLY_CONTRASTIVE_MEMORY",
+  "source_ids": 2454,
+  "train_ids": 1612,
+  "validation_ids": 546,
+  "heldout_ids": 296,
+  "bank_ids": 1577,
+  "losses": [
+    1.453143116485944,
+    0.8845077262094071,
+    0.3662273398232596,
+    0.28636640185559936,
+    0.2712964011886563,
+    0.2915479009409985,
+    0.2748627988367649,
+    0.26261347803460244,
+    0.26213286364464045,
+    0.2558648752009634,
+    0.2853689125975855,
+    0.24979122425267117,
+    0.27003742685481275,
+    0.2616005457120374,
+    0.2750639048798899,
+    0.25766331477110793,
+    0.2596938481569744,
+    0.2408531720530934,
+    0.22601899737108336,
+    0.24992994114652645
+  ],
+  "validation": [
+    {
+      "epoch": 2,
+      "method": "1",
+      "net": -11,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -3,
+        "practical_mid_urban": -2,
+        "practical_low_urban": -6
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": 0,
+          "practical_low_urban": -1
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": -2,
+          "practical_low_urban": -5
+        }
+      }
+    },
+    {
+      "epoch": 2,
+      "method": "5",
+      "net": -9,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -5,
+        "practical_mid_urban": -2,
+        "practical_low_urban": -2
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": -1,
+          "practical_low_urban": -1
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": -3,
+          "practical_mid_urban": -1,
+          "practical_low_urban": -1
+        }
+      }
+    },
+    {
+      "epoch": 2,
+      "method": "15",
+      "net": -5,
+      "per_view": {
+        "clean": -3,
+        "practical_low_suburban": -4,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 0
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": 0,
+          "practical_low_urban": 1
+        },
+        "6": {
+          "clean": -2,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": -1,
+          "practical_low_urban": -1
+        }
+      }
+    },
+    {
+      "epoch": 2,
+      "method": "30",
+      "net": -5,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -4,
+        "practical_mid_urban": 0,
+        "practical_low_urban": -1
+      },
+      "groups": {
+        "4": {
+          "clean": 0,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": 0,
+          "practical_low_urban": 2
+        },
+        "6": {
+          "clean": -2,
+          "practical_low_suburban": -3,
+          "practical_mid_urban": 0,
+          "practical_low_urban": -3
+        }
+      }
+    },
+    {
+      "epoch": 2,
+      "method": "centroid",
+      "net": -2,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -2,
+        "practical_mid_urban": 1,
+        "practical_low_urban": -1
+      },
+      "groups": {
+        "4": {
+          "clean": 0,
+          "practical_low_suburban": 0,
+          "practical_mid_urban": 1,
+          "practical_low_urban": 1
+        },
+        "6": {
+          "clean": -2,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": 0,
+          "practical_low_urban": -2
+        }
+      }
+    },
+    {
+      "epoch": 5,
+      "method": "1",
+      "net": -1,
+      "per_view": {
+        "clean": -1,
+        "practical_low_suburban": 0,
+        "practical_mid_urban": -2,
+        "practical_low_urban": 1
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": -2,
+          "practical_low_urban": 1
+        },
+        "6": {
+          "clean": 0,
+          "practical_low_suburban": 1,
+          "practical_mid_urban": 0,
+          "practical_low_urban": 0
+        }
+      }
+    },
+    {
+      "epoch": 5,
+      "method": "5",
+      "net": -5,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -3,
+        "practical_mid_urban": -3,
+        "practical_low_urban": 1
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": -2,
+          "practical_low_urban": 1
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": -1,
+          "practical_low_urban": 0
+        }
+      }
+    },
+    {
+      "epoch": 5,
+      "method": "15",
+      "net": -3,
+      "per_view": {
+        "clean": -3,
+        "practical_low_suburban": -5,
+        "practical_mid_urban": -2,
+        "practical_low_urban": 4
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -3,
+          "practical_mid_urban": 0,
+          "practical_low_urban": 2
+        },
+        "6": {
+          "clean": -2,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": -2,
+          "practical_low_urban": 2
+        }
+      }
+    },
+    {
+      "epoch": 5,
+      "method": "30",
+      "net": -1,
+      "per_view": {
+        "clean": -3,
+        "practical_low_suburban": -4,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 4
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": 0,
+          "practical_low_urban": 2
+        },
+        "6": {
+          "clean": -2,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": -1,
+          "practical_low_urban": 2
+        }
+      }
+    },
+    {
+      "epoch": 5,
+      "method": "centroid",
+      "net": -2,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -5,
+        "practical_mid_urban": 1,
+        "practical_low_urban": 2
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": 1,
+          "practical_low_urban": 4
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": -3,
+          "practical_mid_urban": 0,
+          "practical_low_urban": -2
+        }
+      }
+    },
+    {
+      "epoch": 10,
+      "method": "1",
+      "net": 0,
+      "per_view": {
+        "clean": -1,
+        "practical_low_suburban": 1,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 0
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": -2,
+          "practical_low_urban": 2
+        },
+        "6": {
+          "clean": 0,
+          "practical_low_suburban": 2,
+          "practical_mid_urban": 1,
+          "practical_low_urban": -2
+        }
+      }
+    },
+    {
+      "epoch": 10,
+      "method": "5",
+      "net": -3,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -4,
+        "practical_mid_urban": -2,
+        "practical_low_urban": 3
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -3,
+          "practical_mid_urban": 0,
+          "practical_low_urban": 3
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": -2,
+          "practical_low_urban": 0
+        }
+      }
+    },
+    {
+      "epoch": 10,
+      "method": "15",
+      "net": -2,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -3,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 2
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": 1,
+          "practical_low_urban": 3
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": -2,
+          "practical_low_urban": -1
+        }
+      }
+    },
+    {
+      "epoch": 10,
+      "method": "30",
+      "net": -3,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -5,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 3
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": 1,
+          "practical_low_urban": 4
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": -3,
+          "practical_mid_urban": -2,
+          "practical_low_urban": -1
+        }
+      }
+    },
+    {
+      "epoch": 10,
+      "method": "centroid",
+      "net": 1,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -2,
+        "practical_mid_urban": 1,
+        "practical_low_urban": 2
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": 1,
+          "practical_mid_urban": 2,
+          "practical_low_urban": 6
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": -3,
+          "practical_mid_urban": -1,
+          "practical_low_urban": -4
+        }
+      }
+    },
+    {
+      "epoch": 20,
+      "method": "1",
+      "net": -4,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": 2,
+        "practical_mid_urban": -3,
+        "practical_low_urban": -3
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": -3,
+          "practical_low_urban": 0
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": 3,
+          "practical_mid_urban": 0,
+          "practical_low_urban": -3
+        }
+      }
+    },
+    {
+      "epoch": 20,
+      "method": "5",
+      "net": -3,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -1,
+        "practical_mid_urban": -3,
+        "practical_low_urban": 1
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": -2,
+          "practical_low_urban": -1
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": 0,
+          "practical_mid_urban": -1,
+          "practical_low_urban": 2
+        }
+      }
+    },
+    {
+      "epoch": 20,
+      "method": "15",
+      "net": -2,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -2,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 1
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": 0,
+          "practical_low_urban": 0
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": 0,
+          "practical_mid_urban": -1,
+          "practical_low_urban": 1
+        }
+      }
+    },
+    {
+      "epoch": 20,
+      "method": "30",
+      "net": -1,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -3,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 3
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -2,
+          "practical_mid_urban": 0,
+          "practical_low_urban": 2
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": -1,
+          "practical_low_urban": 1
+        }
+      }
+    },
+    {
+      "epoch": 20,
+      "method": "centroid",
+      "net": 0,
+      "per_view": {
+        "clean": -2,
+        "practical_low_suburban": -1,
+        "practical_mid_urban": -1,
+        "practical_low_urban": 2
+      },
+      "groups": {
+        "4": {
+          "clean": -1,
+          "practical_low_suburban": -1,
+          "practical_mid_urban": 1,
+          "practical_low_urban": 3
+        },
+        "6": {
+          "clean": -1,
+          "practical_low_suburban": 0,
+          "practical_mid_urban": -2,
+          "practical_low_urban": -1
+        }
+      }
+    }
+  ],
+  "selected": {
+    "kind": "dura",
+    "validation_net": 0
+  },
+  "heldout": null,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "caveat": "Only source training IDs and L_s/confident-teacher pseudo-targets fit this embedding. Source validation selects epoch and retrieval rule; receiver-8 source holdout is evaluated after selection. This is class retrieval, not a signal restoration result. Frozen teacher and DURA saw source records; simulator is not validated real satellite data."
+}

@@ -1,0 +1,399 @@
+{
+  "status": "SOURCE_ONLY_GROUND_MEMORY_FEASIBILITY",
+  "source_ids": 2454,
+  "train_ids": 1612,
+  "validation_ids": 546,
+  "heldout_ids": 296,
+  "bank_ids": 1577,
+  "bank_class_counts": [
+    295,
+    253,
+    245,
+    263,
+    273,
+    248
+  ],
+  "results": {
+    "clean": {
+      "1": {
+        "valid_count": 533,
+        "L_s_count": 132,
+        "baseline": 533,
+        "L_s_baseline": 132,
+        "memory": {
+          "centroid": {
+            "correct": 531,
+            "L_s_correct": 130,
+            "repairs": 0,
+            "damages": 2
+          },
+          "1": {
+            "correct": 532,
+            "L_s_correct": 131,
+            "repairs": 0,
+            "damages": 1,
+            "class_covered": 532,
+            "baseline_errors_covered": 0
+          },
+          "5": {
+            "correct": 530,
+            "L_s_correct": 129,
+            "repairs": 0,
+            "damages": 3,
+            "class_covered": 533,
+            "baseline_errors_covered": 0
+          },
+          "15": {
+            "correct": 531,
+            "L_s_correct": 130,
+            "repairs": 0,
+            "damages": 2,
+            "class_covered": 533,
+            "baseline_errors_covered": 0
+          },
+          "30": {
+            "correct": 531,
+            "L_s_correct": 130,
+            "repairs": 0,
+            "damages": 2,
+            "class_covered": 533,
+            "baseline_errors_covered": 0
+          }
+        }
+      },
+      "2": {
+        "valid_count": 287,
+        "L_s_count": 68,
+        "baseline": 287,
+        "L_s_baseline": 68,
+        "memory": {
+          "centroid": {
+            "correct": 287,
+            "L_s_correct": 68,
+            "repairs": 0,
+            "damages": 0
+          },
+          "1": {
+            "correct": 286,
+            "L_s_correct": 67,
+            "repairs": 0,
+            "damages": 1,
+            "class_covered": 286,
+            "baseline_errors_covered": 0
+          },
+          "5": {
+            "correct": 287,
+            "L_s_correct": 68,
+            "repairs": 0,
+            "damages": 0,
+            "class_covered": 287,
+            "baseline_errors_covered": 0
+          },
+          "15": {
+            "correct": 287,
+            "L_s_correct": 68,
+            "repairs": 0,
+            "damages": 0,
+            "class_covered": 287,
+            "baseline_errors_covered": 0
+          },
+          "30": {
+            "correct": 287,
+            "L_s_correct": 68,
+            "repairs": 0,
+            "damages": 0,
+            "class_covered": 287,
+            "baseline_errors_covered": 0
+          }
+        }
+      }
+    },
+    "practical_low_suburban": {
+      "1": {
+        "valid_count": 533,
+        "L_s_count": 132,
+        "baseline": 519,
+        "L_s_baseline": 131,
+        "memory": {
+          "centroid": {
+            "correct": 517,
+            "L_s_correct": 129,
+            "repairs": 1,
+            "damages": 3
+          },
+          "1": {
+            "correct": 518,
+            "L_s_correct": 128,
+            "repairs": 4,
+            "damages": 5,
+            "class_covered": 518,
+            "baseline_errors_covered": 4
+          },
+          "5": {
+            "correct": 517,
+            "L_s_correct": 129,
+            "repairs": 3,
+            "damages": 5,
+            "class_covered": 523,
+            "baseline_errors_covered": 5
+          },
+          "15": {
+            "correct": 516,
+            "L_s_correct": 129,
+            "repairs": 1,
+            "damages": 4,
+            "class_covered": 527,
+            "baseline_errors_covered": 8
+          },
+          "30": {
+            "correct": 517,
+            "L_s_correct": 130,
+            "repairs": 2,
+            "damages": 4,
+            "class_covered": 527,
+            "baseline_errors_covered": 8
+          }
+        }
+      },
+      "2": {
+        "valid_count": 287,
+        "L_s_count": 68,
+        "baseline": 280,
+        "L_s_baseline": 67,
+        "memory": {
+          "centroid": {
+            "correct": 280,
+            "L_s_correct": 68,
+            "repairs": 1,
+            "damages": 1
+          },
+          "1": {
+            "correct": 277,
+            "L_s_correct": 66,
+            "repairs": 0,
+            "damages": 3,
+            "class_covered": 277,
+            "baseline_errors_covered": 0
+          },
+          "5": {
+            "correct": 277,
+            "L_s_correct": 65,
+            "repairs": 0,
+            "damages": 3,
+            "class_covered": 281,
+            "baseline_errors_covered": 2
+          },
+          "15": {
+            "correct": 279,
+            "L_s_correct": 67,
+            "repairs": 0,
+            "damages": 1,
+            "class_covered": 282,
+            "baseline_errors_covered": 3
+          },
+          "30": {
+            "correct": 280,
+            "L_s_correct": 68,
+            "repairs": 1,
+            "damages": 1,
+            "class_covered": 282,
+            "baseline_errors_covered": 3
+          }
+        }
+      }
+    },
+    "practical_mid_urban": {
+      "1": {
+        "valid_count": 533,
+        "L_s_count": 132,
+        "baseline": 492,
+        "L_s_baseline": 123,
+        "memory": {
+          "centroid": {
+            "correct": 492,
+            "L_s_correct": 121,
+            "repairs": 2,
+            "damages": 2
+          },
+          "1": {
+            "correct": 487,
+            "L_s_correct": 119,
+            "repairs": 3,
+            "damages": 8,
+            "class_covered": 487,
+            "baseline_errors_covered": 3
+          },
+          "5": {
+            "correct": 493,
+            "L_s_correct": 121,
+            "repairs": 3,
+            "damages": 2,
+            "class_covered": 499,
+            "baseline_errors_covered": 7
+          },
+          "15": {
+            "correct": 492,
+            "L_s_correct": 120,
+            "repairs": 3,
+            "damages": 3,
+            "class_covered": 503,
+            "baseline_errors_covered": 11
+          },
+          "30": {
+            "correct": 491,
+            "L_s_correct": 120,
+            "repairs": 2,
+            "damages": 3,
+            "class_covered": 504,
+            "baseline_errors_covered": 12
+          }
+        }
+      },
+      "2": {
+        "valid_count": 287,
+        "L_s_count": 68,
+        "baseline": 267,
+        "L_s_baseline": 65,
+        "memory": {
+          "centroid": {
+            "correct": 267,
+            "L_s_correct": 65,
+            "repairs": 0,
+            "damages": 0
+          },
+          "1": {
+            "correct": 266,
+            "L_s_correct": 64,
+            "repairs": 1,
+            "damages": 2,
+            "class_covered": 266,
+            "baseline_errors_covered": 1
+          },
+          "5": {
+            "correct": 269,
+            "L_s_correct": 65,
+            "repairs": 2,
+            "damages": 0,
+            "class_covered": 270,
+            "baseline_errors_covered": 3
+          },
+          "15": {
+            "correct": 266,
+            "L_s_correct": 65,
+            "repairs": 0,
+            "damages": 1,
+            "class_covered": 273,
+            "baseline_errors_covered": 6
+          },
+          "30": {
+            "correct": 266,
+            "L_s_correct": 65,
+            "repairs": 0,
+            "damages": 1,
+            "class_covered": 277,
+            "baseline_errors_covered": 10
+          }
+        }
+      }
+    },
+    "practical_low_urban": {
+      "1": {
+        "valid_count": 533,
+        "L_s_count": 132,
+        "baseline": 450,
+        "L_s_baseline": 109,
+        "memory": {
+          "centroid": {
+            "correct": 449,
+            "L_s_correct": 108,
+            "repairs": 4,
+            "damages": 5
+          },
+          "1": {
+            "correct": 442,
+            "L_s_correct": 107,
+            "repairs": 6,
+            "damages": 14,
+            "class_covered": 442,
+            "baseline_errors_covered": 6
+          },
+          "5": {
+            "correct": 448,
+            "L_s_correct": 110,
+            "repairs": 4,
+            "damages": 6,
+            "class_covered": 462,
+            "baseline_errors_covered": 14
+          },
+          "15": {
+            "correct": 448,
+            "L_s_correct": 109,
+            "repairs": 3,
+            "damages": 5,
+            "class_covered": 468,
+            "baseline_errors_covered": 18
+          },
+          "30": {
+            "correct": 450,
+            "L_s_correct": 109,
+            "repairs": 3,
+            "damages": 3,
+            "class_covered": 472,
+            "baseline_errors_covered": 22
+          }
+        }
+      },
+      "2": {
+        "valid_count": 287,
+        "L_s_count": 68,
+        "baseline": 255,
+        "L_s_baseline": 60,
+        "memory": {
+          "centroid": {
+            "correct": 252,
+            "L_s_correct": 58,
+            "repairs": 0,
+            "damages": 3
+          },
+          "1": {
+            "correct": 251,
+            "L_s_correct": 59,
+            "repairs": 1,
+            "damages": 5,
+            "class_covered": 251,
+            "baseline_errors_covered": 1
+          },
+          "5": {
+            "correct": 252,
+            "L_s_correct": 59,
+            "repairs": 1,
+            "damages": 4,
+            "class_covered": 256,
+            "baseline_errors_covered": 3
+          },
+          "15": {
+            "correct": 252,
+            "L_s_correct": 60,
+            "repairs": 1,
+            "damages": 4,
+            "class_covered": 260,
+            "baseline_errors_covered": 6
+          },
+          "30": {
+            "correct": 251,
+            "L_s_correct": 58,
+            "repairs": 0,
+            "damages": 4,
+            "class_covered": 260,
+            "baseline_errors_covered": 6
+          }
+        }
+      }
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "decisions_fixed_before_evaluation_label_use": true,
+  "caveat": "Ground memory stores source training embeddings and true L_s / confident clean-teacher U_s pseudo-labels. Retrieval is a classification diagnostic, not a waveform restorer. The source label helper loads L_s labels but evaluation labels are discarded before retrieval decisions. Frozen teacher and DURA saw source records. Simulated satellite is not validated real satellite."
+}

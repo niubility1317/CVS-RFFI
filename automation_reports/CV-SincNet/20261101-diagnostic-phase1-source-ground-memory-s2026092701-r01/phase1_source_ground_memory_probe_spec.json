@@ -1,0 +1,35 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_FIXED_BEFORE_FULL_RUN",
+  "script": "phase1_source_ground_memory_probe.py",
+  "script_sha256": "855c920b0a42852ade911962ae2c72f578e89d0f3110a2a2f475e3e2d66b58b0",
+  "source_sample_seed": 2026110501,
+  "channel_seed": 2026110502,
+  "hardware_seed": 2026110503,
+  "ground_feature_memory": "normalized Tri-SIG-TIME SSL features of DURA(clean source) from training split",
+  "memory_targets": "true L_s plus U_s clean-teacher pseudo-label if confidence >= .95",
+  "bank_training_rx": [
+    1,
+    3,
+    4
+  ],
+  "bank_training_days": [
+    1,
+    2
+  ],
+  "validation_rx": [
+    4,
+    6
+  ],
+  "holdout_rx": [
+    8
+  ],
+  "evaluation_day": 3,
+  "neighbors": [
+    1,
+    5,
+    15,
+    30
+  ],
+  "method": "cosine nearest-neighbor voting and class centroids; direct classification diagnostic, no waveform reconstruction",
+  "caveat": "Source target helper loads all L_s labels but evaluation labels are discarded before decisions; no U_s labels or Phase1 test data. Models saw source IDs; exploratory IDs may overlap other studies."
+}
