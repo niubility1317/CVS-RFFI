@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
+  "group_id": "restoration-source-full-covariance-gaussian-inverse",
+  "display_name": "源端完整 IQ 协方差与真实信道后验诊断",
+  "description": "原LsUs拟合统一512维实IQ均值/协方差，只在原固定512x20源面板比较全协方差与同trace各向同性Gaussian真Action后验。无G训练或目标访问。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "known-action-oracle",
+    "full-IQ-covariance",
+    "no-TX-target",
+    "zero-optimizer-update",
+    "performance-diagnostic"
+  ],
+  "comparison_group_id": "source-true-action-isotropic-vs-full-covariance",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User restoration performance goal/originalgroundTriSIGSSLMain/originalLsUs only;sourceIQmean-covariancefit/trueActionoracle/frozenF0diagnostic;0TX-V-OE-novel-target/optimizer/selection/defaultDURAchange.",
+  "code": {
+    "commit": "a3a90b55a73702954c453eec9c1ad17fec24d87f",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP64denseCholesky FP32F0 TF32off CPUthreads2;actual3ff8F0/defaulthead",
+    "cwd": "releases/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005 Ls6300Us56700;existingR07twentytrainrealizations",
+    "representation": "OriginalR07FP32clean63000LsUs/sourcepriorfit;fixed128Ls384Us panel/20storedtrain-draws and true FIR/main-image/variance. Existing source-inverse scalar baseline reused.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "R07cache/train/physical_ids.npy roles.npy;existing20261101LUcache IDs/roles forminimumcontractmatch",
+    "label_map_ref": "FrozenoriginalF0defaulthead references only;0TXtruth/notTXaccuracy/noheadfit",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE sourcehandles. R07complete20/63000/0TX-target. Inputaudit same63000uniqueIDset (orderdiffers),roles/RX/day samebyID;clean maxabs4.76837158203125e-7 NMSE1.7667841088968941e-15. No repeateddatahash/revalidation.",
+    "support_query_ref": "None. OriginalR07LsUs in-sample;canonical63000ID-role compatibility/f57sourcevariance reused.",
+    "leo_config_ref": "ExistingR07sourcecache20/clean15%+sixsceneuniform85%;no new simulator observations;2.462GHz retains own identity",
+    "actual_training_labels": "No optimizer/G training. Source IQ statistics fitted on original63000LsUs only;TX/V/OE/novel/target hidden.",
+    "augmentation": "No new signals or RNG;existing20R07draws;no sourcecase omit/selection."
+  },
+  "permissions": {
+    "regime": "source-only-covariance-fit-frozen-F0-known-Action-diagnostic",
+    "query_use": "0targetIQ-truth-prediction-score. OriginalLsUs/sourceActiononly;F0features/defaulthead diagnostics;0TX/V/OE/novel/optimizer/modelupdate/newhead.",
+    "external_method_exception": null,
+    "claim_scope": "In-sample source linearGaussian prior diagnostic with inaccessible trueAction and variance;not deployable/notTXaccuracy/notunseenRXproof/nottheoreticalbound. Mainstillprimary/defaultDURAunchanged."
+  },
+  "checkpoint": {
+    "initialization": "No G load/train. Only originalgroundfullTriSIGTIMESSL3ff8 F0/defaulthead frozen. Data-fitIQmean/C not pretrainedG.",
+    "sources": [
+      "OriginalTriSIGTIME_SSLF0/3ff8f4b7e85b5608f5b45350aa18081499a7ef1d/sourceonlyE50-11100/232993/defaulthead",
+      "DATAONLYR07original63000LsUs/trainonly/20draws/0TX-target",
+      "REUSED_SCALARONLY20261101-diagnostic-Restore-source-inverse-s2026092701-r01/source_records.npz/sameF0-panel-draws/receivedandDURAagreement-NMSE-cos"
+    ],
+    "contract_check_ref": "Original3ff8F0sourceonlyE50/defaulthead/Main392005;original63000LsUs/R07/datahandlesVALIDATED_ONCE;oldsource-inverseF0identity+casealignment. No Gcheckpoint load,extra datahash orrevalidation.",
+    "provenance_verdict": "Existing validatedmatchingLsUs/F0 contract. DURA scalar records reused only,notmodelweightteacher or initialization. No G checkpoint ancestor.",
+    "selection_rule": "Fixed fullCshrinkage.001 vs same-mean/tauI;all512x20 cases/all2paths reported. No tuning/earlystop/testselection. Scalaroldbaselineexactcasealignment."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-covariance-inverse",
+    "gpu_policy": "GPU6only/free>=12000MiB/existingcompute<=2/addONEtotal<=3;oneownNNworker;priorSigmaMixARTIFACTS_COMPLETErequired. Othersuntouched.",
+    "remote_run_root": "runs/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
+    "remote_log_root": "runs/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_inverse run --root /home/szu2070436088/2510044040/CV-SincNet --commit 1a7434baa2c579e78fc1119cb09c24a0ae6512b4 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrongsource/F0/controlidentity/pairalignment/nonfinite/nonpositivecovariance-noise/Choleskyfailure/relativeposteriorresidual>1e-8/statechange/collision/workererror:preserve/noautoretry. Source2actualdenseA-vs-nativeAction/F0smoke thenfull10240x2. Noqualityskip."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted.json",
+    "smoke.json",
+    "source_records.npz PRIVATE",
+    "source_prior.npz PRIVATE",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Eachpath-scene-lock IQNMSE/F0cos/Fcleanagreement/relativeFP64solveResidual",
+      "SamecaseFcleanagreement repairs-damage-net vsisotropic/DURA/received;notTXaccuracy",
+      "Covarianceeigenspectrum/trace/positivefloor/sameisotropictrace/all10240casealignment/frozenF0state"
+    ],
+    "dimensions": [
+      "isotropic/full_covariance",
+      "overall/scene/lock",
+      "sourcein-sample128Ls384Us/20storeddraws"
+    ],
+    "prediction_ref": "PRIVATEsource_records.npz/Fcleanandoutputpredictions/sourcecases;0Mainartifacts",
+    "scorer_ref": "IndependentCPUallscalar-pairsummarycheckaftercomplete;0truth"
+  },
+  "rows": [
+    {
+      "row_id": "source-covariance-512x20",
+      "method": "source-Gaussian-full-IQ-covariance-known-action",
+      "purpose": "Test sourcecorrelationprior before defining anynewdeployableG",
+      "config_ref": "experiments/pamf_phase3_restoration/covariance_inverse.py",
+      "resolved_config_ref": "SHRINKAGE=.001/populationC/tauI/FP64denseCholesky/sourcepanel512x20",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101911
+      },
+      "seed_notes": "Deterministicfullsourceprior/no new RNG. Fixedoriginal512panel/all20R07draws. Sameoldreceived-DURAscalarreferences. No TX orfittedclassifier.",
+      "k": null,
+      "scenario": "sourceR07actualtrueFIR-main-image-noise/F0cleanreferences/all20draws",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Fitmean/Cfrom63000originalLsUs. 0optimizerupdates/0Gforwards. 512x20=10240sourcecases x2posteriors=20480F0outputrows;512cleanF0refs;source2smokeextra2F0. No target test.",
+      "output_root": "runs/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
+      "log_path": "runs/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_inverse worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 1a7434baa2c579e78fc1119cb09c24a0ae6512b4 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted.json",
+        "smoke.json",
+        "source_records.npz PRIVATE",
+        "source_prior.npz PRIVATE",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "SourcefitC=populationcov(original63000clean);Cshrink=(1-.001)C+.001tauI,tau=trace(C)/512. Isotropiccontrol=tauI/samemean/traceno perTXstatistics.",
+    "Real512order=[Re256,Im256],causalreflectwidelylinearAexactfromsourcekernel/main/image. Posterior=mu+C A^T(A C A^T+noise I)^-1(y-A mu),FP64Cholesky,noCGapprox/fallback/jitter.",
+    "Sourcebasis:existingmeanexplains68.516percentenergy,oldGaussianisotropicknownHfarbelowlearnedDURA/sourceRFdetailattenuation. Checkcorrelationsbeforeaddingnewnetwork. MeanRXvarianceamplificationhypothesisalreadyunsupported;notthisexperiment.",
+    "Allrecordsreportedregardlessquality. Advancementhypothesisonly:lowurbanFclean>=existingDURA and>=isotropic+3pp,andallsourceFclean>=existingDURA. Ifnotsatisfied,no automaticcovarianceGlaunch orshrinkageretuning. EvenPASSnotMainqualityproof.",
+    "NoGweights,training,TX/V/OE/novel/targetIQ-truth-prediction-score,adaptivehead orselection. FullCisdatafitandusesallsourceclean/in-samplediagnostic;notzeropriorlearning,notTXaccuracy/theoryceiling/unknownidentityproof.",
+    "3targetedchecksPASS/oneindependentP0P1PASS/onearchiveSHA/remotecompile/firstsource2smoke. KeepprivateC/mean/caserecordsoutofGit. OriginalMain6each3pp+bothcleanunmet/defaultDURAunchanged."
+  ],
+  "registered_at": "2026-11-01T18:55:09+00:00"
+}
