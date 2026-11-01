@@ -3,7 +3,7 @@
   "run_id": "20261101-phase2-native-score-recovery-m4-r01",
   "group_id": "phase2-native-score-only-recovery",
   "display_name": "原生外部对比冻结预测的独立评分补全",
-  "description": "Frozen R42 plus matched original LocalRidge: all8MIX full16KN/672units; LS/MU/LU five episodes each/1260units K5N20. 1932units and167496 desired rows including A0; exact old results reused. Native external existing predictions/scoring remain under original owner.",
+  "description": "九个固定原生外部方法已冻结预测的独立 CPU 补评分；17397 个任务，复用原评分并仅补齐缺项，保持原 source、prediction 与 owner 不变。",
   "kind": "analysis",
   "stage": "Phase2-independent-scoring",
   "aliases": [
@@ -164,7 +164,7 @@
   "rows": [
     {
       "row_id": "protonet_cda-s2026092701",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "protonet_cda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -198,15 +198,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "protonet_cda-s2026092702",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "protonet_cda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -240,15 +238,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "protonet_cda-s2026092703",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "protonet_cda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -282,15 +278,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "protonet_cda-s2026092704",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "protonet_cda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -324,15 +318,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "mrior_sda-s2026092701",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "mrior_sda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -366,15 +358,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "mrior_sda-s2026092702",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "mrior_sda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -408,15 +398,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "mrior_sda-s2026092703",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "mrior_sda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -450,15 +438,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "mrior_sda-s2026092704",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "mrior_sda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -492,15 +478,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "dadda_sda-s2026092701",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "dadda_sda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -534,15 +518,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "dadda_sda-s2026092702",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "dadda_sda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -576,15 +558,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "dadda_sda-s2026092703",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "dadda_sda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -618,15 +598,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "dadda_sda-s2026092704",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "dadda_sda original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -660,15 +638,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "twostage-s2026092701",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "twostage original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -702,15 +678,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "twostage-s2026092702",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "twostage original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -744,15 +718,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "twostage-s2026092703",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "twostage original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -786,15 +758,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "twostage-s2026092704",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "twostage original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -828,15 +798,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "feature_separation_hu2024-s2026092701",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "feature_separation_hu2024 original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -870,15 +838,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "feature_separation_hu2024-s2026092702",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "feature_separation_hu2024 original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -912,15 +878,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "feature_separation_hu2024-s2026092703",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "feature_separation_hu2024 original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -954,15 +918,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "feature_separation_hu2024-s2026092704",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "feature_separation_hu2024 original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -996,15 +958,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "poster_ft-s2026092701",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "poster_ft original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1038,15 +998,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "poster_ft-s2026092702",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "poster_ft original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1080,15 +1038,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "poster_ft-s2026092703",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "poster_ft original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1122,15 +1078,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "poster_ft-s2026092704",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "poster_ft original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1164,15 +1118,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "radionet_ada_knn-s2026092701",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "radionet_ada_knn original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1206,15 +1158,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "radionet_ada_knn-s2026092702",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "radionet_ada_knn original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1248,15 +1198,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "radionet_ada_knn-s2026092703",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "radionet_ada_knn original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1290,15 +1238,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "radionet_ada_knn-s2026092704",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "radionet_ada_knn original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1332,15 +1278,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "orthogonal-s2026092701",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "orthogonal original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1374,15 +1318,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "orthogonal-s2026092702",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "orthogonal original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1416,15 +1358,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "orthogonal-s2026092703",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "orthogonal original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1458,15 +1398,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "orthogonal-s2026092704",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "orthogonal original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1500,15 +1438,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "lora_triplet_knn-s2026092701",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "lora_triplet_knn original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1542,15 +1478,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "lora_triplet_knn-s2026092702",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "lora_triplet_knn original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1584,15 +1518,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "lora_triplet_knn-s2026092703",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "lora_triplet_knn original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1626,15 +1558,13 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     },
     {
       "row_id": "lora_triplet_knn-s2026092704",
-      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "method": "lora_triplet_knn original frozen prediction independent CPU scoring",
       "purpose": "independent_score_only_completion",
       "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
       "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
@@ -1668,10 +1598,8 @@
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
       "expected_artifacts": [
-        "predictions.json",
-        "complete.json",
-        "B/C prediction npz",
-        "fit.json"
+        "metrics.json",
+        "complete.json"
       ]
     }
   ],
@@ -1681,5 +1609,46 @@
     "Scorerconsumes noNNcheckpoint, soNNsmoke/sourcefit do not apply. PureCPUnegativeinput checks andoneP0/P1 concern only correctfrozenpredictionbinding/outputs/queue, no report-onlyextra gate.",
     "ISSL userstop retained; Tweak/CSIL N/A; currentTriSSL PAMF baseline scores alreadycomplete andnotresubmitted; MoPCseparate recovery owner."
   ],
-  "registered_at": "2026-11-01T05:17:09+00:00"
+  "registered_at": "2026-11-01T05:17:09+00:00",
+  "scoring_result": {
+    "status": "VERIFIED_SCORED_COMPLETE",
+    "score_jobs": 17397,
+    "profile_jobs": {
+      "protonet_cda": 1933,
+      "mrior_sda": 1933,
+      "dadda_sda": 1933,
+      "twostage": 1933,
+      "feature_separation_hu2024": 1933,
+      "poster_ft": 1933,
+      "radionet_ada_knn": 1933,
+      "orthogonal": 1933,
+      "lora_triplet_knn": 1933
+    },
+    "profile_rows": {
+      "protonet_cda": 4368,
+      "mrior_sda": 4368,
+      "dadda_sda": 4368,
+      "twostage": 4368,
+      "feature_separation_hu2024": 4368,
+      "poster_ft": 4368,
+      "radionet_ada_knn": 4368,
+      "orthogonal": 5376,
+      "lora_triplet_knn": 5376
+    },
+    "scored_rows": 41328,
+    "stage_rows": {
+      "A0": 19656,
+      "B": 15288,
+      "C": 6384
+    },
+    "independent_full_metric_prediction_binding_check": true,
+    "new_prediction_jobs": 0,
+    "new_training_jobs": 0,
+    "new_truth_or_IQ_reads": false,
+    "observed_at_HKT": "2026-11-01T15:29:03.424094+08:00",
+    "reused_score_jobs": 13219,
+    "new_score_jobs": 4178,
+    "group1_comparison_status": "WAITING_FOR_R42_AND_MOPC",
+    "source_and_prediction_owner_unchanged": true
+  }
 }
