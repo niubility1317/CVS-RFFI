@@ -27,3 +27,7 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 启动读回
+
+N607 CPU owner PID 698077，源训练子进程 PID 698572；真实源信号 smoke 已通过。固定代码提交 65ed307c6ea9741fba94a7af0f7edac08a6de1cc；发布包 SHA-256 f8b07c54d45b420e2870b1722025104d011915af61c5aa01b916dc3af9e0dbe6。训练使用两个 CPU 线程，不占用 GPU。原七视图测试保留运行。
