@@ -1,0 +1,617 @@
+{
+  "status": "SOURCE_ONLY_RESIDUAL_CROSSFIT_SWEEP",
+  "source_records": 512,
+  "views": [
+    1,
+    20
+  ],
+  "taps": [
+    3,
+    9,
+    17
+  ],
+  "ridges": [
+    0.0001,
+    0.001,
+    0.01,
+    0.1,
+    1.0
+  ],
+  "source_code_sha256": "68291090ed1eab9c64e77d1e1962f8263b77f73a9edc6bd82483bf08050a4a6c",
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "halfwise_radius": 0.2,
+  "clean_half_used_to_fit_other_half": true,
+  "caveat": "Cross-fit remains privileged and noncausal; source training records, shared raw input across half boundary; teacher match is not TX accuracy.",
+  "results": [
+    {
+      "view": 1,
+      "groups": [
+        {
+          "group": "all",
+          "method": "dura",
+          "count": 512,
+          "teacher_matches": 491,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.020212827250361443
+        },
+        {
+          "group": "all",
+          "method": "residual3_r0001",
+          "count": 512,
+          "teacher_matches": 484,
+          "repairs": 2,
+          "damages": 9,
+          "mean_iq_nmse": 0.019522620365023613
+        },
+        {
+          "group": "all",
+          "method": "residual3_r001",
+          "count": 512,
+          "teacher_matches": 484,
+          "repairs": 2,
+          "damages": 9,
+          "mean_iq_nmse": 0.01951693743467331
+        },
+        {
+          "group": "all",
+          "method": "residual3_r01",
+          "count": 512,
+          "teacher_matches": 484,
+          "repairs": 2,
+          "damages": 9,
+          "mean_iq_nmse": 0.019465385004878044
+        },
+        {
+          "group": "all",
+          "method": "residual3_r1",
+          "count": 512,
+          "teacher_matches": 484,
+          "repairs": 2,
+          "damages": 9,
+          "mean_iq_nmse": 0.019177433103322983
+        },
+        {
+          "group": "all",
+          "method": "residual3_r10",
+          "count": 512,
+          "teacher_matches": 484,
+          "repairs": 1,
+          "damages": 8,
+          "mean_iq_nmse": 0.018905935809016228
+        },
+        {
+          "group": "all",
+          "method": "residual9_r0001",
+          "count": 512,
+          "teacher_matches": 488,
+          "repairs": 7,
+          "damages": 10,
+          "mean_iq_nmse": 0.021411677822470665
+        },
+        {
+          "group": "all",
+          "method": "residual9_r001",
+          "count": 512,
+          "teacher_matches": 487,
+          "repairs": 6,
+          "damages": 10,
+          "mean_iq_nmse": 0.021049227565526962
+        },
+        {
+          "group": "all",
+          "method": "residual9_r01",
+          "count": 512,
+          "teacher_matches": 486,
+          "repairs": 5,
+          "damages": 10,
+          "mean_iq_nmse": 0.02050161547958851
+        },
+        {
+          "group": "all",
+          "method": "residual9_r1",
+          "count": 512,
+          "teacher_matches": 490,
+          "repairs": 5,
+          "damages": 6,
+          "mean_iq_nmse": 0.019612260162830353
+        },
+        {
+          "group": "all",
+          "method": "residual9_r10",
+          "count": 512,
+          "teacher_matches": 490,
+          "repairs": 4,
+          "damages": 5,
+          "mean_iq_nmse": 0.018756400793790817
+        },
+        {
+          "group": "all",
+          "method": "residual17_r0001",
+          "count": 512,
+          "teacher_matches": 484,
+          "repairs": 5,
+          "damages": 12,
+          "mean_iq_nmse": 0.023873228579759598
+        },
+        {
+          "group": "all",
+          "method": "residual17_r001",
+          "count": 512,
+          "teacher_matches": 483,
+          "repairs": 5,
+          "damages": 13,
+          "mean_iq_nmse": 0.023174550384283066
+        },
+        {
+          "group": "all",
+          "method": "residual17_r01",
+          "count": 512,
+          "teacher_matches": 485,
+          "repairs": 7,
+          "damages": 13,
+          "mean_iq_nmse": 0.02217964269220829
+        },
+        {
+          "group": "all",
+          "method": "residual17_r1",
+          "count": 512,
+          "teacher_matches": 491,
+          "repairs": 8,
+          "damages": 8,
+          "mean_iq_nmse": 0.020497746765613556
+        },
+        {
+          "group": "all",
+          "method": "residual17_r10",
+          "count": 512,
+          "teacher_matches": 489,
+          "repairs": 4,
+          "damages": 6,
+          "mean_iq_nmse": 0.018777796998620033
+        },
+        {
+          "group": "blocked",
+          "method": "dura",
+          "count": 83,
+          "teacher_matches": 65,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.0799190029501915
+        },
+        {
+          "group": "blocked",
+          "method": "residual3_r0001",
+          "count": 83,
+          "teacher_matches": 63,
+          "repairs": 2,
+          "damages": 4,
+          "mean_iq_nmse": 0.08010903000831604
+        },
+        {
+          "group": "blocked",
+          "method": "residual3_r001",
+          "count": 83,
+          "teacher_matches": 63,
+          "repairs": 2,
+          "damages": 4,
+          "mean_iq_nmse": 0.0800870805978775
+        },
+        {
+          "group": "blocked",
+          "method": "residual3_r01",
+          "count": 83,
+          "teacher_matches": 63,
+          "repairs": 2,
+          "damages": 4,
+          "mean_iq_nmse": 0.07988356053829193
+        },
+        {
+          "group": "blocked",
+          "method": "residual3_r1",
+          "count": 83,
+          "teacher_matches": 63,
+          "repairs": 2,
+          "damages": 4,
+          "mean_iq_nmse": 0.07868824899196625
+        },
+        {
+          "group": "blocked",
+          "method": "residual3_r10",
+          "count": 83,
+          "teacher_matches": 62,
+          "repairs": 1,
+          "damages": 4,
+          "mean_iq_nmse": 0.07679158449172974
+        },
+        {
+          "group": "blocked",
+          "method": "residual9_r0001",
+          "count": 83,
+          "teacher_matches": 68,
+          "repairs": 7,
+          "damages": 4,
+          "mean_iq_nmse": 0.08626823127269745
+        },
+        {
+          "group": "blocked",
+          "method": "residual9_r001",
+          "count": 83,
+          "teacher_matches": 67,
+          "repairs": 6,
+          "damages": 4,
+          "mean_iq_nmse": 0.08534372597932816
+        },
+        {
+          "group": "blocked",
+          "method": "residual9_r01",
+          "count": 83,
+          "teacher_matches": 65,
+          "repairs": 5,
+          "damages": 5,
+          "mean_iq_nmse": 0.08349209278821945
+        },
+        {
+          "group": "blocked",
+          "method": "residual9_r1",
+          "count": 83,
+          "teacher_matches": 68,
+          "repairs": 5,
+          "damages": 2,
+          "mean_iq_nmse": 0.08029758930206299
+        },
+        {
+          "group": "blocked",
+          "method": "residual9_r10",
+          "count": 83,
+          "teacher_matches": 67,
+          "repairs": 4,
+          "damages": 2,
+          "mean_iq_nmse": 0.07652689516544342
+        },
+        {
+          "group": "blocked",
+          "method": "residual17_r0001",
+          "count": 83,
+          "teacher_matches": 65,
+          "repairs": 4,
+          "damages": 4,
+          "mean_iq_nmse": 0.09127947688102722
+        },
+        {
+          "group": "blocked",
+          "method": "residual17_r001",
+          "count": 83,
+          "teacher_matches": 63,
+          "repairs": 4,
+          "damages": 6,
+          "mean_iq_nmse": 0.08997410535812378
+        },
+        {
+          "group": "blocked",
+          "method": "residual17_r01",
+          "count": 83,
+          "teacher_matches": 65,
+          "repairs": 5,
+          "damages": 5,
+          "mean_iq_nmse": 0.08751589059829712
+        },
+        {
+          "group": "blocked",
+          "method": "residual17_r1",
+          "count": 83,
+          "teacher_matches": 71,
+          "repairs": 8,
+          "damages": 2,
+          "mean_iq_nmse": 0.0829043760895729
+        },
+        {
+          "group": "blocked",
+          "method": "residual17_r10",
+          "count": 83,
+          "teacher_matches": 66,
+          "repairs": 4,
+          "damages": 3,
+          "mean_iq_nmse": 0.0767955332994461
+        }
+      ]
+    },
+    {
+      "view": 20,
+      "groups": [
+        {
+          "group": "all",
+          "method": "dura",
+          "count": 512,
+          "teacher_matches": 492,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.019439708441495895
+        },
+        {
+          "group": "all",
+          "method": "residual3_r0001",
+          "count": 512,
+          "teacher_matches": 493,
+          "repairs": 4,
+          "damages": 3,
+          "mean_iq_nmse": 0.019025200977921486
+        },
+        {
+          "group": "all",
+          "method": "residual3_r001",
+          "count": 512,
+          "teacher_matches": 493,
+          "repairs": 4,
+          "damages": 3,
+          "mean_iq_nmse": 0.019019626080989838
+        },
+        {
+          "group": "all",
+          "method": "residual3_r01",
+          "count": 512,
+          "teacher_matches": 492,
+          "repairs": 4,
+          "damages": 4,
+          "mean_iq_nmse": 0.018968436866998672
+        },
+        {
+          "group": "all",
+          "method": "residual3_r1",
+          "count": 512,
+          "teacher_matches": 492,
+          "repairs": 4,
+          "damages": 4,
+          "mean_iq_nmse": 0.018676672130823135
+        },
+        {
+          "group": "all",
+          "method": "residual3_r10",
+          "count": 512,
+          "teacher_matches": 491,
+          "repairs": 2,
+          "damages": 3,
+          "mean_iq_nmse": 0.018363075330853462
+        },
+        {
+          "group": "all",
+          "method": "residual9_r0001",
+          "count": 512,
+          "teacher_matches": 493,
+          "repairs": 10,
+          "damages": 9,
+          "mean_iq_nmse": 0.02050672098994255
+        },
+        {
+          "group": "all",
+          "method": "residual9_r001",
+          "count": 512,
+          "teacher_matches": 493,
+          "repairs": 10,
+          "damages": 9,
+          "mean_iq_nmse": 0.02020944282412529
+        },
+        {
+          "group": "all",
+          "method": "residual9_r01",
+          "count": 512,
+          "teacher_matches": 492,
+          "repairs": 9,
+          "damages": 9,
+          "mean_iq_nmse": 0.01979905553162098
+        },
+        {
+          "group": "all",
+          "method": "residual9_r1",
+          "count": 512,
+          "teacher_matches": 495,
+          "repairs": 9,
+          "damages": 6,
+          "mean_iq_nmse": 0.019067026674747467
+        },
+        {
+          "group": "all",
+          "method": "residual9_r10",
+          "count": 512,
+          "teacher_matches": 495,
+          "repairs": 6,
+          "damages": 3,
+          "mean_iq_nmse": 0.01828646846115589
+        },
+        {
+          "group": "all",
+          "method": "residual17_r0001",
+          "count": 512,
+          "teacher_matches": 494,
+          "repairs": 8,
+          "damages": 6,
+          "mean_iq_nmse": 0.022576510906219482
+        },
+        {
+          "group": "all",
+          "method": "residual17_r001",
+          "count": 512,
+          "teacher_matches": 494,
+          "repairs": 8,
+          "damages": 6,
+          "mean_iq_nmse": 0.022007841616868973
+        },
+        {
+          "group": "all",
+          "method": "residual17_r01",
+          "count": 512,
+          "teacher_matches": 496,
+          "repairs": 9,
+          "damages": 5,
+          "mean_iq_nmse": 0.021214164793491364
+        },
+        {
+          "group": "all",
+          "method": "residual17_r1",
+          "count": 512,
+          "teacher_matches": 497,
+          "repairs": 9,
+          "damages": 4,
+          "mean_iq_nmse": 0.019873179495334625
+        },
+        {
+          "group": "all",
+          "method": "residual17_r10",
+          "count": 512,
+          "teacher_matches": 495,
+          "repairs": 5,
+          "damages": 2,
+          "mean_iq_nmse": 0.018363893032073975
+        },
+        {
+          "group": "blocked",
+          "method": "dura",
+          "count": 62,
+          "teacher_matches": 48,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.10088487714529037
+        },
+        {
+          "group": "blocked",
+          "method": "residual3_r0001",
+          "count": 62,
+          "teacher_matches": 50,
+          "repairs": 3,
+          "damages": 1,
+          "mean_iq_nmse": 0.10333596169948578
+        },
+        {
+          "group": "blocked",
+          "method": "residual3_r001",
+          "count": 62,
+          "teacher_matches": 50,
+          "repairs": 3,
+          "damages": 1,
+          "mean_iq_nmse": 0.10330939292907715
+        },
+        {
+          "group": "blocked",
+          "method": "residual3_r01",
+          "count": 62,
+          "teacher_matches": 50,
+          "repairs": 3,
+          "damages": 1,
+          "mean_iq_nmse": 0.10305841267108917
+        },
+        {
+          "group": "blocked",
+          "method": "residual3_r1",
+          "count": 62,
+          "teacher_matches": 50,
+          "repairs": 3,
+          "damages": 1,
+          "mean_iq_nmse": 0.10147697478532791
+        },
+        {
+          "group": "blocked",
+          "method": "residual3_r10",
+          "count": 62,
+          "teacher_matches": 49,
+          "repairs": 2,
+          "damages": 1,
+          "mean_iq_nmse": 0.09863271564245224
+        },
+        {
+          "group": "blocked",
+          "method": "residual9_r0001",
+          "count": 62,
+          "teacher_matches": 48,
+          "repairs": 7,
+          "damages": 7,
+          "mean_iq_nmse": 0.1088518500328064
+        },
+        {
+          "group": "blocked",
+          "method": "residual9_r001",
+          "count": 62,
+          "teacher_matches": 48,
+          "repairs": 7,
+          "damages": 7,
+          "mean_iq_nmse": 0.10799767076969147
+        },
+        {
+          "group": "blocked",
+          "method": "residual9_r01",
+          "count": 62,
+          "teacher_matches": 48,
+          "repairs": 7,
+          "damages": 7,
+          "mean_iq_nmse": 0.10641919076442719
+        },
+        {
+          "group": "blocked",
+          "method": "residual9_r1",
+          "count": 62,
+          "teacher_matches": 52,
+          "repairs": 7,
+          "damages": 3,
+          "mean_iq_nmse": 0.10325934737920761
+        },
+        {
+          "group": "blocked",
+          "method": "residual9_r10",
+          "count": 62,
+          "teacher_matches": 53,
+          "repairs": 6,
+          "damages": 1,
+          "mean_iq_nmse": 0.09881792962551117
+        },
+        {
+          "group": "blocked",
+          "method": "residual17_r0001",
+          "count": 62,
+          "teacher_matches": 53,
+          "repairs": 6,
+          "damages": 1,
+          "mean_iq_nmse": 0.11423239856958389
+        },
+        {
+          "group": "blocked",
+          "method": "residual17_r001",
+          "count": 62,
+          "teacher_matches": 53,
+          "repairs": 6,
+          "damages": 1,
+          "mean_iq_nmse": 0.11327379941940308
+        },
+        {
+          "group": "blocked",
+          "method": "residual17_r01",
+          "count": 62,
+          "teacher_matches": 52,
+          "repairs": 6,
+          "damages": 2,
+          "mean_iq_nmse": 0.11137118935585022
+        },
+        {
+          "group": "blocked",
+          "method": "residual17_r1",
+          "count": 62,
+          "teacher_matches": 54,
+          "repairs": 7,
+          "damages": 1,
+          "mean_iq_nmse": 0.10714465379714966
+        },
+        {
+          "group": "blocked",
+          "method": "residual17_r10",
+          "count": 62,
+          "teacher_matches": 52,
+          "repairs": 5,
+          "damages": 1,
+          "mean_iq_nmse": 0.09978480637073517
+        }
+      ]
+    }
+  ]
+}

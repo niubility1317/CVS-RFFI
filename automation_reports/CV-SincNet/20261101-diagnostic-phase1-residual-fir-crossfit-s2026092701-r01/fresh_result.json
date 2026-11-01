@@ -1,0 +1,633 @@
+{
+  "status": "SOURCE_ONLY_FRESH_RESIDUAL_SWEEP",
+  "source_records": 1024,
+  "views": [
+    1,
+    20
+  ],
+  "taps": [
+    9
+  ],
+  "ridges": [
+    0.0001,
+    0.001,
+    0.01,
+    0.1,
+    1.0
+  ],
+  "source_code_sha256": "68291090ed1eab9c64e77d1e1962f8263b77f73a9edc6bd82483bf08050a4a6c",
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "halfwise_radius": 0.2,
+  "clean_half_used_to_fit_other_half": true,
+  "caveat": "Cross-fit remains privileged and noncausal; source training records, shared raw input across half boundary; teacher match is not TX accuracy.",
+  "results": [
+    {
+      "view": 1,
+      "groups": [
+        {
+          "group": "all",
+          "method": "dura",
+          "count": 1024,
+          "teacher_matches": 978,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.024633504450321198
+        },
+        {
+          "group": "all",
+          "method": "cross9_r0001",
+          "count": 1024,
+          "teacher_matches": 981,
+          "repairs": 13,
+          "damages": 10,
+          "mean_iq_nmse": 0.025129547342658043
+        },
+        {
+          "group": "all",
+          "method": "cross9_r001",
+          "count": 1024,
+          "teacher_matches": 980,
+          "repairs": 14,
+          "damages": 12,
+          "mean_iq_nmse": 0.02476579323410988
+        },
+        {
+          "group": "all",
+          "method": "cross9_r01",
+          "count": 1024,
+          "teacher_matches": 979,
+          "repairs": 13,
+          "damages": 12,
+          "mean_iq_nmse": 0.02425144985318184
+        },
+        {
+          "group": "all",
+          "method": "cross9_r1",
+          "count": 1024,
+          "teacher_matches": 981,
+          "repairs": 9,
+          "damages": 6,
+          "mean_iq_nmse": 0.02338450215756893
+        },
+        {
+          "group": "all",
+          "method": "cross9_r10",
+          "count": 1024,
+          "teacher_matches": 983,
+          "repairs": 8,
+          "damages": 3,
+          "mean_iq_nmse": 0.022547107189893723
+        },
+        {
+          "group": "all",
+          "method": "full9_r0001",
+          "count": 1024,
+          "teacher_matches": 998,
+          "repairs": 22,
+          "damages": 2,
+          "mean_iq_nmse": 0.018793532624840736
+        },
+        {
+          "group": "all",
+          "method": "full9_r001",
+          "count": 1024,
+          "teacher_matches": 999,
+          "repairs": 23,
+          "damages": 2,
+          "mean_iq_nmse": 0.018817637115716934
+        },
+        {
+          "group": "all",
+          "method": "full9_r01",
+          "count": 1024,
+          "teacher_matches": 998,
+          "repairs": 22,
+          "damages": 2,
+          "mean_iq_nmse": 0.018954820930957794
+        },
+        {
+          "group": "all",
+          "method": "full9_r1",
+          "count": 1024,
+          "teacher_matches": 997,
+          "repairs": 21,
+          "damages": 2,
+          "mean_iq_nmse": 0.019254758954048157
+        },
+        {
+          "group": "all",
+          "method": "full9_r10",
+          "count": 1024,
+          "teacher_matches": 992,
+          "repairs": 15,
+          "damages": 1,
+          "mean_iq_nmse": 0.020355846732854843
+        },
+        {
+          "group": "L_s",
+          "method": "dura",
+          "count": 256,
+          "teacher_matches": 247,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.023524828255176544
+        },
+        {
+          "group": "L_s",
+          "method": "cross9_r0001",
+          "count": 256,
+          "teacher_matches": 245,
+          "repairs": 0,
+          "damages": 2,
+          "mean_iq_nmse": 0.025004694238305092
+        },
+        {
+          "group": "L_s",
+          "method": "cross9_r001",
+          "count": 256,
+          "teacher_matches": 246,
+          "repairs": 1,
+          "damages": 2,
+          "mean_iq_nmse": 0.024576064199209213
+        },
+        {
+          "group": "L_s",
+          "method": "cross9_r01",
+          "count": 256,
+          "teacher_matches": 245,
+          "repairs": 0,
+          "damages": 2,
+          "mean_iq_nmse": 0.02395542897284031
+        },
+        {
+          "group": "L_s",
+          "method": "cross9_r1",
+          "count": 256,
+          "teacher_matches": 247,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.02292986586689949
+        },
+        {
+          "group": "L_s",
+          "method": "cross9_r10",
+          "count": 256,
+          "teacher_matches": 248,
+          "repairs": 1,
+          "damages": 0,
+          "mean_iq_nmse": 0.022016722708940506
+        },
+        {
+          "group": "L_s",
+          "method": "full9_r0001",
+          "count": 256,
+          "teacher_matches": 250,
+          "repairs": 4,
+          "damages": 1,
+          "mean_iq_nmse": 0.01847212389111519
+        },
+        {
+          "group": "L_s",
+          "method": "full9_r001",
+          "count": 256,
+          "teacher_matches": 250,
+          "repairs": 4,
+          "damages": 1,
+          "mean_iq_nmse": 0.01850018836557865
+        },
+        {
+          "group": "L_s",
+          "method": "full9_r01",
+          "count": 256,
+          "teacher_matches": 250,
+          "repairs": 4,
+          "damages": 1,
+          "mean_iq_nmse": 0.01863652467727661
+        },
+        {
+          "group": "L_s",
+          "method": "full9_r1",
+          "count": 256,
+          "teacher_matches": 250,
+          "repairs": 4,
+          "damages": 1,
+          "mean_iq_nmse": 0.018919270485639572
+        },
+        {
+          "group": "L_s",
+          "method": "full9_r10",
+          "count": 256,
+          "teacher_matches": 250,
+          "repairs": 3,
+          "damages": 0,
+          "mean_iq_nmse": 0.0199930127710104
+        },
+        {
+          "group": "U_s",
+          "method": "dura",
+          "count": 768,
+          "teacher_matches": 731,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.025003068149089813
+        },
+        {
+          "group": "U_s",
+          "method": "cross9_r0001",
+          "count": 768,
+          "teacher_matches": 736,
+          "repairs": 13,
+          "damages": 8,
+          "mean_iq_nmse": 0.02517116628587246
+        },
+        {
+          "group": "U_s",
+          "method": "cross9_r001",
+          "count": 768,
+          "teacher_matches": 734,
+          "repairs": 13,
+          "damages": 10,
+          "mean_iq_nmse": 0.024829039350152016
+        },
+        {
+          "group": "U_s",
+          "method": "cross9_r01",
+          "count": 768,
+          "teacher_matches": 734,
+          "repairs": 13,
+          "damages": 10,
+          "mean_iq_nmse": 0.02435012347996235
+        },
+        {
+          "group": "U_s",
+          "method": "cross9_r1",
+          "count": 768,
+          "teacher_matches": 734,
+          "repairs": 9,
+          "damages": 6,
+          "mean_iq_nmse": 0.02353604882955551
+        },
+        {
+          "group": "U_s",
+          "method": "cross9_r10",
+          "count": 768,
+          "teacher_matches": 735,
+          "repairs": 7,
+          "damages": 3,
+          "mean_iq_nmse": 0.022723903879523277
+        },
+        {
+          "group": "U_s",
+          "method": "full9_r0001",
+          "count": 768,
+          "teacher_matches": 748,
+          "repairs": 18,
+          "damages": 1,
+          "mean_iq_nmse": 0.018900664523243904
+        },
+        {
+          "group": "U_s",
+          "method": "full9_r001",
+          "count": 768,
+          "teacher_matches": 749,
+          "repairs": 19,
+          "damages": 1,
+          "mean_iq_nmse": 0.018923452123999596
+        },
+        {
+          "group": "U_s",
+          "method": "full9_r01",
+          "count": 768,
+          "teacher_matches": 748,
+          "repairs": 18,
+          "damages": 1,
+          "mean_iq_nmse": 0.019060920923948288
+        },
+        {
+          "group": "U_s",
+          "method": "full9_r1",
+          "count": 768,
+          "teacher_matches": 747,
+          "repairs": 17,
+          "damages": 1,
+          "mean_iq_nmse": 0.019366586580872536
+        },
+        {
+          "group": "U_s",
+          "method": "full9_r10",
+          "count": 768,
+          "teacher_matches": 742,
+          "repairs": 12,
+          "damages": 1,
+          "mean_iq_nmse": 0.020476792007684708
+        }
+      ]
+    },
+    {
+      "view": 20,
+      "groups": [
+        {
+          "group": "all",
+          "method": "dura",
+          "count": 1024,
+          "teacher_matches": 985,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.02143525332212448
+        },
+        {
+          "group": "all",
+          "method": "cross9_r0001",
+          "count": 1024,
+          "teacher_matches": 979,
+          "repairs": 5,
+          "damages": 11,
+          "mean_iq_nmse": 0.022560609504580498
+        },
+        {
+          "group": "all",
+          "method": "cross9_r001",
+          "count": 1024,
+          "teacher_matches": 977,
+          "repairs": 4,
+          "damages": 12,
+          "mean_iq_nmse": 0.022225812077522278
+        },
+        {
+          "group": "all",
+          "method": "cross9_r01",
+          "count": 1024,
+          "teacher_matches": 976,
+          "repairs": 4,
+          "damages": 13,
+          "mean_iq_nmse": 0.021709676831960678
+        },
+        {
+          "group": "all",
+          "method": "cross9_r1",
+          "count": 1024,
+          "teacher_matches": 983,
+          "repairs": 5,
+          "damages": 7,
+          "mean_iq_nmse": 0.02085309475660324
+        },
+        {
+          "group": "all",
+          "method": "cross9_r10",
+          "count": 1024,
+          "teacher_matches": 984,
+          "repairs": 4,
+          "damages": 5,
+          "mean_iq_nmse": 0.019945915788412094
+        },
+        {
+          "group": "all",
+          "method": "full9_r0001",
+          "count": 1024,
+          "teacher_matches": 1000,
+          "repairs": 20,
+          "damages": 5,
+          "mean_iq_nmse": 0.01650848239660263
+        },
+        {
+          "group": "all",
+          "method": "full9_r001",
+          "count": 1024,
+          "teacher_matches": 999,
+          "repairs": 20,
+          "damages": 6,
+          "mean_iq_nmse": 0.01653153821825981
+        },
+        {
+          "group": "all",
+          "method": "full9_r01",
+          "count": 1024,
+          "teacher_matches": 1001,
+          "repairs": 21,
+          "damages": 5,
+          "mean_iq_nmse": 0.016660606488585472
+        },
+        {
+          "group": "all",
+          "method": "full9_r1",
+          "count": 1024,
+          "teacher_matches": 1002,
+          "repairs": 20,
+          "damages": 3,
+          "mean_iq_nmse": 0.01695294864475727
+        },
+        {
+          "group": "all",
+          "method": "full9_r10",
+          "count": 1024,
+          "teacher_matches": 993,
+          "repairs": 12,
+          "damages": 4,
+          "mean_iq_nmse": 0.017949573695659637
+        },
+        {
+          "group": "L_s",
+          "method": "dura",
+          "count": 256,
+          "teacher_matches": 241,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.021514849737286568
+        },
+        {
+          "group": "L_s",
+          "method": "cross9_r0001",
+          "count": 256,
+          "teacher_matches": 241,
+          "repairs": 2,
+          "damages": 2,
+          "mean_iq_nmse": 0.022384457290172577
+        },
+        {
+          "group": "L_s",
+          "method": "cross9_r001",
+          "count": 256,
+          "teacher_matches": 241,
+          "repairs": 2,
+          "damages": 2,
+          "mean_iq_nmse": 0.02205246314406395
+        },
+        {
+          "group": "L_s",
+          "method": "cross9_r01",
+          "count": 256,
+          "teacher_matches": 241,
+          "repairs": 2,
+          "damages": 2,
+          "mean_iq_nmse": 0.02155664563179016
+        },
+        {
+          "group": "L_s",
+          "method": "cross9_r1",
+          "count": 256,
+          "teacher_matches": 243,
+          "repairs": 4,
+          "damages": 2,
+          "mean_iq_nmse": 0.020746612921357155
+        },
+        {
+          "group": "L_s",
+          "method": "cross9_r10",
+          "count": 256,
+          "teacher_matches": 243,
+          "repairs": 3,
+          "damages": 1,
+          "mean_iq_nmse": 0.019886860623955727
+        },
+        {
+          "group": "L_s",
+          "method": "full9_r0001",
+          "count": 256,
+          "teacher_matches": 249,
+          "repairs": 9,
+          "damages": 1,
+          "mean_iq_nmse": 0.016769539564847946
+        },
+        {
+          "group": "L_s",
+          "method": "full9_r001",
+          "count": 256,
+          "teacher_matches": 249,
+          "repairs": 9,
+          "damages": 1,
+          "mean_iq_nmse": 0.016794666647911072
+        },
+        {
+          "group": "L_s",
+          "method": "full9_r01",
+          "count": 256,
+          "teacher_matches": 249,
+          "repairs": 9,
+          "damages": 1,
+          "mean_iq_nmse": 0.01692107692360878
+        },
+        {
+          "group": "L_s",
+          "method": "full9_r1",
+          "count": 256,
+          "teacher_matches": 250,
+          "repairs": 9,
+          "damages": 0,
+          "mean_iq_nmse": 0.017183393239974976
+        },
+        {
+          "group": "L_s",
+          "method": "full9_r10",
+          "count": 256,
+          "teacher_matches": 248,
+          "repairs": 7,
+          "damages": 0,
+          "mean_iq_nmse": 0.018105121329426765
+        },
+        {
+          "group": "U_s",
+          "method": "dura",
+          "count": 768,
+          "teacher_matches": 744,
+          "repairs": 0,
+          "damages": 0,
+          "mean_iq_nmse": 0.021408719941973686
+        },
+        {
+          "group": "U_s",
+          "method": "cross9_r0001",
+          "count": 768,
+          "teacher_matches": 738,
+          "repairs": 3,
+          "damages": 9,
+          "mean_iq_nmse": 0.022619327530264854
+        },
+        {
+          "group": "U_s",
+          "method": "cross9_r001",
+          "count": 768,
+          "teacher_matches": 736,
+          "repairs": 2,
+          "damages": 10,
+          "mean_iq_nmse": 0.02228359319269657
+        },
+        {
+          "group": "U_s",
+          "method": "cross9_r01",
+          "count": 768,
+          "teacher_matches": 735,
+          "repairs": 2,
+          "damages": 11,
+          "mean_iq_nmse": 0.021760687232017517
+        },
+        {
+          "group": "U_s",
+          "method": "cross9_r1",
+          "count": 768,
+          "teacher_matches": 740,
+          "repairs": 1,
+          "damages": 5,
+          "mean_iq_nmse": 0.020888589322566986
+        },
+        {
+          "group": "U_s",
+          "method": "cross9_r10",
+          "count": 768,
+          "teacher_matches": 741,
+          "repairs": 1,
+          "damages": 4,
+          "mean_iq_nmse": 0.019965603947639465
+        },
+        {
+          "group": "U_s",
+          "method": "full9_r0001",
+          "count": 768,
+          "teacher_matches": 751,
+          "repairs": 11,
+          "damages": 4,
+          "mean_iq_nmse": 0.01642146147787571
+        },
+        {
+          "group": "U_s",
+          "method": "full9_r001",
+          "count": 768,
+          "teacher_matches": 750,
+          "repairs": 11,
+          "damages": 5,
+          "mean_iq_nmse": 0.016443828120827675
+        },
+        {
+          "group": "U_s",
+          "method": "full9_r01",
+          "count": 768,
+          "teacher_matches": 752,
+          "repairs": 12,
+          "damages": 4,
+          "mean_iq_nmse": 0.01657378114759922
+        },
+        {
+          "group": "U_s",
+          "method": "full9_r1",
+          "count": 768,
+          "teacher_matches": 752,
+          "repairs": 11,
+          "damages": 3,
+          "mean_iq_nmse": 0.016876135021448135
+        },
+        {
+          "group": "U_s",
+          "method": "full9_r10",
+          "count": 768,
+          "teacher_matches": 745,
+          "repairs": 5,
+          "damages": 4,
+          "mean_iq_nmse": 0.017897723242640495
+        }
+      ]
+    }
+  ]
+}
