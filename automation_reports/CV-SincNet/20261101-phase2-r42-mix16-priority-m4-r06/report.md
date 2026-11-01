@@ -29,3 +29,5 @@ User-directed pause of unfinished single-scene tasks; preserve prior work and pr
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 2026-11-01 用户优先级调整：VERIFIED TRANSFERRED: four real-source no-query smokes PASS, 168 completed MIX units indexed for reuse, remaining old single-scene results preserved; MIX-only 672 units 139776 rows, independent scoring after all MIX predictions fixed.
+
+2026-11-01 用户并发调整：User requested higher GPU concurrency except GPU7; controller transferred, all completed predictions and in-flight worker outputs preserved.
