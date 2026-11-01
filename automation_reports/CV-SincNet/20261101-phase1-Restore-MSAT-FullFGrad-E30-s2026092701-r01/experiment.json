@@ -1,0 +1,203 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01",
+  "group_id": "restoration-full-feature-gradient-single-factor",
+  "display_name": "MSAT 未限幅源特征指导：从零单阶段30轮",
+  "description": "仅移除每记录F特征输入梯度相对IQ的.5限幅；保留VarF网络/同初值/源数据/顺序/损失系数/全局clip1/30轮。源证据驱动的可证伪对照，不保证Main收益。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-F0-features",
+    "single-stage-scratch30",
+    "single-factor-gradient-cap",
+    "automatic-full-Main7"
+  ],
+  "comparison_group_id": "VarF-cap0p5-vs-FullFGrad",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Latestuser:performanceprimary/efficiencysecondary/groundTriSIGTIME SSL sameFrawclean6eachgap<=3pp+cleanpreserved;majorGarchitecturefreedom/scratchsingle30/sourceFfeatureguidanceallowed/originalLsUs-only/OEonlyfrozendiagnostic. DefaultDURAunchanged.",
+  "code": {
+    "commit": "940fa78ba450b686b1b03c7530c47af4360faafc",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607existingCVS-RFFI Torch2.1/NumPy2/FP32 TF32off/CPUthreads2;actualoriginalTriSSL F0 3ff8 defaulthead",
+    "cwd": "releases/20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original392005 Ls6300Us56700 training;originalMain cross_rx126000+cross_both42000 test",
+    "representation": "TrainingR07originalFP32clean/received2x256,20savednativeactiontrain-draws;epochs21..30reuse1..10;no kernel/noiseaction supervision usedinthistrial. TestexactofficialMain manifests/IDs/positions/received.",
+    "contract_ref": "OriginalTriSSLsource_contract/392005/rolecounts6300-56700-27000;R07train63000sameIDset androles/RX/day byID",
+    "physical_ids_ref": "R07train/physical_ids.npy roles.npy;validatedoriginalsourceLUcache IDs foralignment;officialMain source-disjoint viewindexes",
+    "label_map_ref": "Gtrainnone;frozenF0originalsixclassorder,truthonly originalCPUscorerafterallrow21cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "VALIDATED_ONCE handles reused. R07 complete20/63000/0TX-target;roles andIDs compatible. This cachecapsule isminimaloriginalsourceIDcheck,notincorrectclaimR07 IQisG10. F0targets recomputedfromactualR07clean eacharm.",
+    "support_query_ref": "No targettraining/support/PCD/unknownrole. OriginalMain two populations168000,all7perrowfixedbefore independenttruth.",
+    "leo_config_ref": "R07sourcecache20trainrealizations/2026101912augmentation;officialMain frozen7observations",
+    "actual_training_labels": "OriginalLs6300Us56700 IQonly/noTXlabels. FrozenactualsourceF0clean features. Additional160dimvariancefromsame63000sourcecleanonly (notGoutputs),0V-OE-novel-targetoptimization orselection. No logits/CE/prototype/newhead.",
+    "augmentation": "OriginalR07fs25MHz/fc2.462GHz/post_sync/noEQ/reflect/refSNR30/receiver2026101911/sixuniform85%+clean15%,20independentstoredtrainviews,then10repeats;notG10MIX01. Newshuffle RNG2026110102,matchedbotharms. Mainobservationsunchanged/no RMS."
+  },
+  "permissions": {
+    "regime": "source-only-scratch-G-variance-normalized-F-features",
+    "query_use": "No targetU-Q/clean orOE/V/novel optimization/earlystop/selection. EveryactualtrainedG fixedfinal30 thenallMain7x2pop,regardlesssourcequality. No targetfeedback/ranking/selectiveretry.",
+    "external_method_exception": null,
+    "claim_scope": "Primaryperformance groundTriSSLMain6eachrawcleangap<=3pp+clean. Single controllednewvariant;currentMSATbaselineexactreuseforanalysis,notparentGweights. SourceAUCassociationdoesnotproveMainbenefit;allactualtrainedGfulltest."
+  },
+  "checkpoint": {
+    "initialization": "NewG scratch sameMSAT4.25m/randomseed asoriginalcontrol;no pretrainedGweights/IQteacher/singlejoint30. Featuremetric calibration DATAONLY fromsourceF0clean.",
+    "sources": [
+      "Originalsource-onlyTriSSL F0/3ff8/main3view-s2026092701/E50-11100/232993/defaulthead",
+      "DATAONLYR07originalsource63000train/20savedviews;noGweights/noV",
+      "DATAONLY20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01/feature_geometry.json:63000sourcecleanF0-onlymoments/f57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9;computedbeforeGcaseevaluation/notGoutputs",
+      "EVALONLY originalr03raw/DURA exactsameIQ-ID baseline andcompletedVarFr03/9fdb final30/predictions;noGinitializationorIQteacher"
+    ],
+    "contract_check_ref": "OriginalsourceIDrolecheck/strict3ff8F0 reused;variancecalibrationrequiresoriginalF0identity/63000/sourceonly/0TX-V-OE-target-updates/positivefiniteflooredscale. Ownnewarm-config-commit-final30-7410 strictstate. No datarehash.",
+    "provenance_verdict": "G remainsrandom/no neuralGancestor. ExistingF0sourceknowledge andsourceonlyvariance calibrationexplicit/notF-free. CalibrationproduceralsoevaluatesMSAT/DURA butvarianceusesonly F0(originalsourceclean),nottheirIQ/features.",
+    "selection_rule": "Fixedfinal30only/same20+10draws/modelseed/shuffle/LR/30-7410. No V/OE/targetearlystop/selection. NewrowfullMain2pop7evenifsourceworse."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/restoration-full-feature-gradient",
+    "gpu_policy": "GPU4/6UUID/free>=12000MiB/existingcompute<=2/addONEtotal<=3/own1percard/globalown<=2;thisoneNN/oneCPUtruthscoreroriginalsharedlock/othersuntouched",
+    "remote_run_root": "runs/20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01",
+    "remote_log_root": "runs/20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.full_feature_trial run --root /home/szu2070436088/2510044040/CV-SincNet --commit 940fa78ba450b686b1b03c7530c47af4360faafc --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrongsource/F0/config/role/nonfinite/collision/unlaunchable/systemictechnicalfailure:preserveroot/recovery/noautoretry. No scientificqualityearlystop. Source2actualsmokePASScontinuestraining;allMain7automaticafterfixedfinal30."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "submitted-*.json",
+    "terminal-*.json",
+    "rows/<arm>/training/config.json",
+    "rows/<arm>/training/smoke.json",
+    "rows/<arm>/training/smoke_E0.pt PRIVATE",
+    "rows/<arm>/training/data_schedule.npz PRIVATE",
+    "rows/<arm>/training/training.jsonl PRIVATE",
+    "rows/<arm>/training/final.pt PRIVATE",
+    "rows/<arm>/training/complete.json",
+    "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+    "rows/<arm>/prediction/<task>/smoke.json",
+    "rows/<arm>/prediction/<task>/complete.json",
+    "rows/<arm>/prediction/complete.json",
+    "rows/<arm>/score/scores.json",
+    "rows/<arm>/score/complete.json",
+    "rows/<arm>/results.json",
+    "complete.json",
+    "logs/*.log PRIVATE",
+    "rows/MSAT_FullFGrad/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "PrimaryoriginalgroundTriSIGSSLMain sixeachrawcleangap<=3pp+cleanpreservation;required140345/168000correct83.538690476%",
+      "Per-populationandcombinedaccuracy/MacroF1/confusion/repair-damage-net/TX-RX-day-RXday fromoriginalindependenttruthlast",
+      "All30sourceepochs/7410updates/IQNMSE-STFT-Fcos-sourcevarianceMSE/guideweightones/roleexposure/sourceorders",
+      "4249922parameters/sameMSATarchitecture/noFFT-CG;F0sourceknowledge/cache/fulltrainingwallclock/peakmemory;efficiencysecondary",
+      "FrozencompletedVarFr03control sameE0/source/LR/budget;onlyper-recordcapremoved/globalparameterclip1kept. Nohead/logit/TXguidance"
+    ],
+    "dimensions": [
+      "one actualnewGseed2026092701",
+      "completedVarFr03exactcontrol/noinit",
+      "Maincross_rx126000/cross_both42000/clean+six",
+      "raw/DURAexactbaseline+freshnewcandidate"
+    ],
+    "prediction_ref": "Eachrow newcandidateactualG+sameF0 onallofficialIQ;raw/DURA exactr03predreusewithsameIDs. Completebothpop beforeCPUtruth.",
+    "scorer_ref": "Originalpamf_repl_view_shuffle.evaluation.score independentCUDAemptyCPU/allreadoutsalltasks preflightbeforetruth;sharedoriginalTFscore.lock;no sourcecandidatefeedback"
+  },
+  "rows": [
+    {
+      "row_id": "MSAT_FullFGrad",
+      "method": "MSAT_FullFGrad",
+      "purpose": "Single-factor feature-inputgradient-cap removal",
+      "config_ref": "experiments/pamf_phase3_restoration/full_feature_trial.py::configuration",
+      "resolved_config_ref": "runs/20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01/rows/MSAT_FullFGrad/training/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026110102,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "2026110102 controlsnewmatchedshuffle only;sourceR07databuilder2026101901/receiver2026101911/augmentation2026101912unchanged. Testoriginalreceived2027. No supportsampling.",
+      "k": null,
+      "scenario": "TrainexistingR07clean+six;testoriginalMainclean+six",
+      "optimizer": "AdamW(weight_decay1e-4,clip1)",
+      "lr": 0.001,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Scratchsingle30/7410/B256tail24/247steps;MSAT4249922sameE0;sourceLs189000Us1701000/F0clean63000+online1890000;IQ+.05STFT+.1(cos+sourcevarMSE) withoutper-recordcap,globalparameterclip1unchanged",
+      "output_root": "runs/20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01/rows/MSAT_FullFGrad",
+      "log_path": "runs/20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01/logs/MSAT_FullFGrad-train.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.full_feature_trial train --root /home/szu2070436088/2510044040/CV-SincNet --commit 940fa78ba450b686b1b03c7530c47af4360faafc --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache --arm MSAT_FullFGrad",
+      "expected_artifacts": [
+        "launch.json",
+        "submitted-*.json",
+        "terminal-*.json",
+        "rows/<arm>/training/config.json",
+        "rows/<arm>/training/smoke.json",
+        "rows/<arm>/training/smoke_E0.pt PRIVATE",
+        "rows/<arm>/training/data_schedule.npz PRIVATE",
+        "rows/<arm>/training/training.jsonl PRIVATE",
+        "rows/<arm>/training/final.pt PRIVATE",
+        "rows/<arm>/training/complete.json",
+        "rows/<arm>/prediction/<task>/predictions.npz PRIVATE",
+        "rows/<arm>/prediction/<task>/smoke.json",
+        "rows/<arm>/prediction/<task>/complete.json",
+        "rows/<arm>/prediction/complete.json",
+        "rows/<arm>/score/scores.json",
+        "rows/<arm>/score/complete.json",
+        "rows/<arm>/results.json",
+        "complete.json",
+        "logs/*.log PRIVATE",
+        "rows/MSAT_FullFGrad/training/recovery/E01..E30.pt PRIVATE model+optimizer+RNG/technical_recovery_only"
+      ]
+    }
+  ],
+  "notes": [
+    "Scientificmotivation issourceonly:oldfeaturegradientmeanweight~.23 impliesmanycapped,notproofunderweight. SourcejointknownH intervention haslimitedFagreementgains;featurefidelityheadroomremains. No targeterrorgroupsusedtoselectcap/weight/checkpoint.",
+    "One predefinedcandidate/no cap sweep. ComparecompletedVarFr03/9fdb onlyafternewfinal30;4.249922M/sameE0/data/order/LR/30 budget. No PHY-MSATinitializationorphysicsloss/structurechanges.",
+    "F0onlysourcefused160features;noTX,CE,logits,identityprototype,newhead,OE/V/novel/targettrainingorselection. Existingf57sourceF0geometrydata-onlynotGoutput. ThisisnotF-free.",
+    "RemovalcanincreasefeaturefaithfulnessbutmayharmIQorgeneralization;no performancepromise. AllnewGcompleteoriginalMainsevenviewsregardlesssource. Targetfrozenpredictionbeforeindependenttruth/sharedlock.",
+    "Source2actualG/F0gradientandstrictE0reloadfirst/PASScontinues. ThreefocusedchecksPASSandoneindependentP0P1beforelaunch. EpochstatesmodeloptimizerRNGtechnicalonly/final30fixed.",
+    "DefaultDURAunchanged. PerformancegoalACTIVE/sixscene3ppnotmet. Efficiencylowerpriority;nofailurecosterasure/otherownerchanges."
+  ],
+  "registered_at": "2026-11-01T08:20:19+00:00"
+}
