@@ -1,0 +1,168 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01",
+  "group_id": "restoration-fixed-sourceV-frozen-validation",
+  "display_name": "恢复器固定源V验证：四个冻结G与默认DURA",
+  "description": "仅原固定V1800×七景，四冻结G/defaultDURA/raw/PHY真实H路径共七读出。0训练/TX/OE/novel/target；等待FullFGrad完整Main结束才运行，不参与checkpoint或候选选择。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-V-validation-only",
+    "frozen-models",
+    "zero-updates",
+    "after-parent-Main-complete"
+  ],
+  "comparison_group_id": "frozen-MSAT-VarF-PHY-FullFGrad-sourceV",
+  "parent_run_ids": [
+    "20261101-phase1-Restore-MSAT-M20-F0-E30-s2026092701-r01",
+    "20261101-phase1-Restore-MSAT-VarF-E30-s2026092701-r03",
+    "20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01",
+    "20261101-phase1-Restore-MSAT-FullFGrad-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Useractivegoal:performanceprimary/groundTriSIGSSLsixeach3pp+clean;originalLsUs-only/source-simulation-and-F0-guidanceallowed/OEonlyfrozendiagnostic/majorarchitecturefreedom. This source-only mechanism diagnostic uses no optimizer or target.",
+  "code": {
+    "commit": "27197d5a45c720dabd624425eb30cf586263a171",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "ExistingN607CVS-RFFI Torch2.1/NumPy2;FP32 TF32off CPUthreads2;actual3ff8F0/defaulthead andfixed47cDURA runtime",
+    "cwd": "releases/20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005 Ls6300Us56700;existingR07twentytrainrealizations",
+    "representation": "Existing originalR07sourceV1800 FP32clean/received +validation_actions simulatortraces;5sourceRXx3source-daysx120. All7views/12600instances/readouts7.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "R07cache/train/physical_ids.npy roles.npy;existing20261101LUcache IDs/roles forminimumcontractmatch",
+    "label_map_ref": "No labels read; F0 clean argmax agreement is not TX accuracy",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "ExistingVALIDATED_ONCE R07family/sourceV1800 metadata verified:rolesV/unique1800/train63000IDoverlap0/sourceRX1,3,4,6,8/days1,2,3/everycell120/7actiongroupscount1800/0TXtarget. No newdatahash.",
+    "support_query_ref": "None. FixedsourceV onlyvalidation;no fit/calibration/earlystop/checkpointchoice/targetquery.",
+    "leo_config_ref": "ExistingR07sourcecache20/clean15%+sixsceneuniform85%;no new simulator observations;2.462GHz retains own identity",
+    "actual_training_labels": "No newtraining orTXlabels. V onlyfrozenvalidation/0persistentstateupdates. NoOE/novel/target. Fcleanargmaxreference only/notTXaccuracy.",
+    "augmentation": "No newIQ orchannel. R07sourceV existing2.462GHz25MHz/post_sync/noEQ/reflect/refSNR30/receiver2026101902/fixeddraw0;trainreceiverseed2026101911differs. CleanoriginalterrestrialRX/notidealTX."
+  },
+  "permissions": {
+    "regime": "source-V-frozen-validation-only",
+    "query_use": "OriginalVonlyfrozenvalidation,perPROJECT_PROTOCOL37/436anduserVonlyvalidation. NoTX/OE/novel/target/optimizer/statisticsfit. All4G/defaultDURA/F0statefrozen. TrueHonlysourcecounterfactual.",
+    "external_method_exception": null,
+    "claim_scope": "Comparetraining-sourcefitwithunseenphysicalsourceV;sourcecohorts/channeldrawsandreceiverseedsdiffer,notsoleoverfittingcause. Vhistoricallyexposed/notnewblindtest/notMainTXaccuracy/theoryceiling. No modelorcheckpointselection."
+  },
+  "checkpoint": {
+    "initialization": "No newG. Strictall4source-onlyscratchfinal30/7410 +frozenoriginalF0/defaultDURA. LoadfutureFullFGradonlyafterallMaincomplete.",
+    "sources": [
+      "OriginalgroundTriSIGSSL F0/3ff8/E50-11100/232993/defaulthead/matchingoriginal392005/sourceonly",
+      "MSAT_M20/8720a8584803366d42d2879fb99502b8d220ac26;VarFr03/9fdb1f5b164484f2bc438cb1e45d1ee805d2473a;PHY/8198a2e70c655f24ebaf321f232a676cfb46d916;FullFGrad/940fa78ba450b686b1b03c7530c47af4360faafc:fixedfinal30-7410,originalLsUs,noV/OE/targettraining",
+      "DefaultDURA R69/266951/sourceonly/runtime47c benchmark;historicalVexposureexplicit",
+      "Existingf57sourceF0clean63000geometry/data-onlymetricnormalizer/notVfit"
+    ],
+    "contract_check_ref": "Strictparentconfiguration/actualcommit/final30/source-onlycompleteflags;originalsourceVdisjointrole/RX/dayhandles. ExistingVALIDATED_ONCE sourcefamily reused/no rehash.",
+    "provenance_verdict": "Alloriginalsourceonlymatching392005;learnedGmodelsF-guidedexplicit/notF-free. V notnewGancestor/teacher. ParentMaintestfixedaftertraining,notcheckpointselection. NoPCD/targetmodel.",
+    "selection_rule": "All4fixedG/all7sourceVviews/all7readouts,onlyafterFullFGradcompleteMainregardlessscientificresult. No V earlystop/ranking/newtraining/checkpointorhyperparameterchoice."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/fixed-sourceV-validation",
+    "gpu_policy": "CUDA-emptyCPUqueuewaitFullFGradMaincomplete;thenGPU4/6UUID/free>=12GB/existingcompute<=2/addONEtotal<=3/own1card/oneNN/globalown<=2/othersuntouched",
+    "remote_run_root": "runs/20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01",
+    "remote_log_root": "runs/20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_validation run --root /home/szu2070436088/2510044040/CV-SincNet --commit 27197d5a45c720dabd624425eb30cf586263a171 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01-release/inputs.json",
+    "stop_rule": "Parenttechnicalfail/wrongsourceVroles/checkpoint/shape/collision/nonfinite/statechange/unlaunchable:preserveroot/noautoretry. No scientificqualitygate. FirstNNsource2Lsactualsmoke/PASSimmediatelycontinuesallV7."
+  },
+  "expected_artifacts": [
+    "waiting.json",
+    "submitted.json",
+    "smoke.json",
+    "validation_records.npz PRIVATE",
+    "results.json",
+    "terminal.json",
+    "complete.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "SourceV eachview IQNMSE/F0cos/source-scale-featureMSE/Fcleanargmaxagreement(notTXaccuracy)",
+      "Frozenraw/DURA/MSAT/VarF/PHY/FullFGrad/PHYtrueH;0training/modelstate/labels/target",
+      "Per-recordFcleanpredictions andrestoredpredictions/private/fullsourceVcoverage/RXday;fixedsourcefeature-scale/noVfit"
+    ],
+    "dimensions": [
+      "1800sourceVphysicalpacketsx7views=12600cases",
+      "7fixedreadouts=88200F0feature-rows",
+      "15sourceRX-daycells120each",
+      "historicallyexposedV/fixeddraw/differentreceiverseed"
+    ],
+    "prediction_ref": "Privatevalidation_records.npz onlysourceV;no newMainpredictions",
+    "scorer_ref": "NoTXtruth. IndependentNumPyallsceneaggregate/Fcleanagreementfromsaveddecisions/coverageaftercomplete"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-sourceV1800x7",
+      "method": "frozen-sourceV-MSAT-VarF-PHY-FullFGrad-DURA",
+      "purpose": "source-validation-only-mechanism-diagnosis",
+      "config_ref": "experiments/pamf_phase3_restoration/source_validation.py",
+      "resolved_config_ref": "strictparentconfigs/releaseinputs PRIVATE/originalVhandles",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101902
+      },
+      "seed_notes": "No new RNG/observations/training. OriginalfixedV sourceRX-dayseeds;receiverseeddiffersfromtrain2026101911. Parentmodelseed2026092701.",
+      "k": null,
+      "scenario": "source-V1800-clean+six-R07",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0updates. ActualLs2checkpointsmoke beforeV NN;1800Vclean F0refs;12600Vcasesx7readouts/F0=88200rows;all4G/defaultDURA frozen;sourcef57scale reused.",
+      "output_root": "runs/20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01",
+      "log_path": "runs/20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.source_validation worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 27197d5a45c720dabd624425eb30cf586263a171 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-fixed-sourceV-s2026092701-r01-release/inputs.json",
+      "expected_artifacts": [
+        "waiting.json",
+        "submitted.json",
+        "smoke.json",
+        "validation_records.npz PRIVATE",
+        "results.json",
+        "terminal.json",
+        "complete.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Performanceprimary remainsoriginalMain sixeach3pp+clean. V only frozenhealth/mechanismvalidation;doesnotreplaceMainortrainanynetwork.",
+    "CurrentFullFGradplanalreadyfixedandhealthybeforeVrun. ThiscontrollerCPUwaitsallitsMainartifacts;nogpu/modelworkbeforethen,technicalfailureterminatesqueue,scientificscoresneverconditionexecution.",
+    "All4Gfinal30parentsmustbecompleteandstrictsourceonlybeforeload. No newG/state/statistics/prototype/thresholdfit/checkpointchoice. Vhistoricallyexposed/F0anddefaultDURAearlierVknowledgeexplicit.",
+    "SourceVhasdifferentphysicalpacketsandchanneldraws/receiverseed1902vstrain1911. Cannotisolateoverfit/RX/date/channelcausalfactorsorclaimindependentblindgeneralization.",
+    "FourfocusedtestsPASS/oneP0P1beforelaunch. OneactualGitcommit/archiveSHA/compile/preflight/source2smoke/poststateonly. DefaultDURA/healthyFullFGrad/otherownersunchanged."
+  ],
+  "registered_at": "2026-11-01T08:42:55+00:00"
+}
