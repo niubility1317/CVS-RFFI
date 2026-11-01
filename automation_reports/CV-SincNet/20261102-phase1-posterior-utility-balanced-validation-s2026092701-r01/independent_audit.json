@@ -1,0 +1,326 @@
+{
+  "status": "PASS",
+  "scope": "Independently recomputed all 3 thresholds, 2 gates, 4 source selection criteria from stored receiver/scene cells; no raw per-record predictions.",
+  "selection": {
+    "0.5": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "primary_parent": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_parent": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    },
+    "0.75": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "primary_parent": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_parent": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    },
+    "0.9": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "primary_parent": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_parent": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    }
+  },
+  "details": {
+    "0.5": {
+      "0.8": {
+        "valid": 6606,
+        "parent": 6181,
+        "candidate": 6035,
+        "dura": 6326,
+        "cls_parent_violations": 8,
+        "cls_dura_violations": 10,
+        "iq_parent_violations": 0,
+        "iq_dura_violations": 8,
+        "low4": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 582,
+          "baseline_correct": 496,
+          "parent_correct": 419,
+          "candidate_correct": 410,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.03858456388115883,
+          "candidate_iq": 0.03925499692559242
+        },
+        "low6": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 570,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 436,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.043288704007864,
+          "candidate_iq": 0.04411305859684944
+        },
+        "low8": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 531,
+          "baseline_correct": 462,
+          "parent_correct": 455,
+          "candidate_correct": 402,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.07835507392883301,
+          "candidate_iq": 0.08284623175859451
+        }
+      },
+      "0.99": {
+        "valid": 6606,
+        "parent": 6182,
+        "candidate": 6035,
+        "dura": 6326,
+        "cls_parent_violations": 8,
+        "cls_dura_violations": 10,
+        "iq_parent_violations": 0,
+        "iq_dura_violations": 9,
+        "low4": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 579,
+          "baseline_correct": 496,
+          "parent_correct": 420,
+          "candidate_correct": 410,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.04063192009925842,
+          "candidate_iq": 0.041182223707437515
+        },
+        "low6": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 568,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 436,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.043289560824632645,
+          "candidate_iq": 0.044113922864198685
+        },
+        "low8": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 525,
+          "baseline_correct": 462,
+          "parent_correct": 454,
+          "candidate_correct": 402,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.08080288767814636,
+          "candidate_iq": 0.08521561324596405
+        }
+      }
+    },
+    "0.75": {
+      "0.8": {
+        "valid": 6606,
+        "parent": 6181,
+        "candidate": 6154,
+        "dura": 6326,
+        "cls_parent_violations": 3,
+        "cls_dura_violations": 8,
+        "iq_parent_violations": 0,
+        "iq_dura_violations": 8,
+        "low4": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 582,
+          "baseline_correct": 496,
+          "parent_correct": 419,
+          "candidate_correct": 428,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.03858456388115883,
+          "candidate_iq": 0.038685377687215805
+        },
+        "low6": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 570,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 471,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.043288704007864,
+          "candidate_iq": 0.04374082386493683
+        },
+        "low8": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 531,
+          "baseline_correct": 462,
+          "parent_correct": 455,
+          "candidate_correct": 444,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.07835507392883301,
+          "candidate_iq": 0.08035702258348465
+        }
+      },
+      "0.99": {
+        "valid": 6606,
+        "parent": 6182,
+        "candidate": 6155,
+        "dura": 6326,
+        "cls_parent_violations": 3,
+        "cls_dura_violations": 8,
+        "iq_parent_violations": 0,
+        "iq_dura_violations": 9,
+        "low4": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 579,
+          "baseline_correct": 496,
+          "parent_correct": 420,
+          "candidate_correct": 429,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.04063192009925842,
+          "candidate_iq": 0.0407327376306057
+        },
+        "low6": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 568,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 471,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.043289560824632645,
+          "candidate_iq": 0.043741680681705475
+        },
+        "low8": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 525,
+          "baseline_correct": 462,
+          "parent_correct": 454,
+          "candidate_correct": 443,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.08080288767814636,
+          "candidate_iq": 0.08273796737194061
+        }
+      }
+    },
+    "0.9": {
+      "0.8": {
+        "valid": 6606,
+        "parent": 6181,
+        "candidate": 6188,
+        "dura": 6326,
+        "cls_parent_violations": 0,
+        "cls_dura_violations": 5,
+        "iq_parent_violations": 0,
+        "iq_dura_violations": 8,
+        "low4": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 582,
+          "baseline_correct": 496,
+          "parent_correct": 419,
+          "candidate_correct": 422,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.03858456388115883,
+          "candidate_iq": 0.03852301836013794
+        },
+        "low6": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 570,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 490,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.043288704007864,
+          "candidate_iq": 0.04345568269491196
+        },
+        "low8": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 531,
+          "baseline_correct": 462,
+          "parent_correct": 455,
+          "candidate_correct": 455,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.07835507392883301,
+          "candidate_iq": 0.07883436232805252
+        }
+      },
+      "0.99": {
+        "valid": 6606,
+        "parent": 6182,
+        "candidate": 6189,
+        "dura": 6326,
+        "cls_parent_violations": 0,
+        "cls_dura_violations": 5,
+        "iq_parent_violations": 0,
+        "iq_dura_violations": 9,
+        "low4": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 579,
+          "baseline_correct": 496,
+          "parent_correct": 420,
+          "candidate_correct": 423,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.04063192009925842,
+          "candidate_iq": 0.04057038202881813
+        },
+        "low6": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 568,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 490,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.043289560824632645,
+          "candidate_iq": 0.0434565432369709
+        },
+        "low8": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 525,
+          "baseline_correct": 462,
+          "parent_correct": 454,
+          "candidate_correct": 454,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.08080288767814636,
+          "candidate_iq": 0.08128216862678528
+        }
+      }
+    }
+  }
+}
