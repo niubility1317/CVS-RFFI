@@ -1,0 +1,149 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-posterior-utility-pilot-s2026092701-r01",
+  "group_id": "phase1-posterior-utility",
+  "display_name": "六种条件后验的源监督切换效用网络",
+  "description": "固定盲信道及类别条件后验，训练输入证据效用网络辨别切换修复与损伤，并用配对源波形误差保护。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "conditional_posterior",
+    "pairwise_utility",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-posterior-hypotheses-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "37c4e63a97c0f48efed56fc0d8764f0c554654e1",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2 source-only training, CPU 2 threads TF32 disabled; mixed L_s and U_s gradient preflight",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], six frozen class-conditional posterior waveform hypotheses; candidate F feature/probability, predicted noise and forward residual",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Only L_s fit labels enter training; U_s uses high-confidence frozen clean F pseudo labels, no U_s truth, V or test",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "384 fixed RX8 source heldout IDs, 64 per impaired view; previously explored, no true-label evaluation",
+    "support_query_ref": null,
+    "leo_config_ref": "Fresh source cache epoch21/22/23 training; source cache epoch19 evaluation"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Only source fit L_s truth and U_s high-confidence clean F pseudo targets; no U_s truth/V/test",
+    "external_method_exception": null,
+    "claim_scope": "Source source IDs used by F and seen in other channel views, pseudo targets not independent test; bounded correction may exploit classifier"
+  },
+  "checkpoint": {
+    "initialization": "Random pairwise utility MLP; fixed blind source model, six class source priors and frozen F. DURA comparison after training only.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-action-full-s2026092701-r01/checkpoint_epoch10.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01/source_prior.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Blind action SHA256 0ef60a205f785bda45f9936d519e925179dbbddeef2fd6cd285a83b02a284338 and source prior SHA256 5e35516d54d3e3d1d1749933861f290c1f87c8ffdb4b863d2f9819914135ceb9",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fixed 4096 source fit IDs, views21/22/23; minimum 100 source pairs with >=10 positives and negatives, 10 MLP epochs, final weight; source RX8 diagnostic thresholds .5/.75/.9. No target selection or automatic test."
+  },
+  "execution": {
+    "host": "N607 GPU2",
+    "launch_owner": "Codex source posterior utility pilot GPU2 owner",
+    "gpu_policy": "GPU2 single owner, TF32 disabled, source-only training; real L_s/U_s gradient preflight",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-posterior-utility-pilot-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-posterior-utility-pilot-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-posterior-utility-pilot-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-posterior-utility-pilot-s2026092701-r01-release/experiments/phase1_posterior_utility/train_utility.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-posterior-utility-pilot-s2026092701-r01 --commit 37c4e63a97c0f48efed56fc0d8764f0c554654e1 --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "checkpoint_epoch10.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source pair positive and negative counts",
+      "source clean-F pseudo target agreement",
+      "repairs and harms vs parent",
+      "direct normalized IQ MSE"
+    ],
+    "dimensions": [
+      "six source RX8 heldout scenarios"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_posterior_utility/train_utility.py",
+    "scientific_rule": "Source fit L_s truth or U_s pseudo targets; positive repair also requires paired source IQ error <=1.2x parent; no target labels at inference."
+  },
+  "rows": [
+    {
+      "row_id": "posterior_utility_pilot_s2026092701",
+      "method": "input-only pairwise utility selector over six fixed class-conditional posterior IQ waveforms",
+      "purpose": "learn when switching conditional IQ hypothesis repairs vs harms parent while protecting source waveform",
+      "config_ref": "experiments/phase1_posterior_utility/train_utility.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-posterior-utility-pilot-s2026092701-r01/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026121354,
+        "split": 392005,
+        "data": 2026121355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "4096 source fit IDs disjoint from 8192 prior IDs, source fit/order seed 2026121355, MLP seed 2026121356",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.001,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "4096 source fit IDs x 3 views to extract valid repair/harm pairs; 10 MLP epochs; 384 RX8 source probe",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-posterior-utility-pilot-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-posterior-utility-pilot-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-posterior-utility-pilot-s2026092701-r01-release/experiments/phase1_posterior_utility/train_utility.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-posterior-utility-pilot-s2026092701-r01 --commit 37c4e63a97c0f48efed56fc0d8764f0c554654e1 --device cuda:0",
+      "expected_artifacts": [
+        "checkpoint_epoch10.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Only L_s fit-ID truth, U_s high-confidence clean-F pseudo labels; no U_s truth, V or target.",
+    "Training positive repair requires paired source IQ error <=1.2*parent; model never sees clean IQ at inference.",
+    "At least 100 source pairs with both >=10 positive and negative required before training.",
+    "Class conditional hypotheses can hallucinate identity; source sample explored and pseudo target is not true test accuracy."
+  ],
+  "registered_at": "2026-11-01T23:18:34+00:00"
+}
