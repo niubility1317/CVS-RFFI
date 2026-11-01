@@ -1,0 +1,70 @@
+{
+  "schema": "phase2_CUDA_technical_recovery_v1",
+  "R42": {
+    "run_id": "20261101-phase2-r42-group1-m4-r02",
+    "method": "frozenR42",
+    "base": "Tri-SIG-TIME-SSL",
+    "restorer": "DURA-v1",
+    "K": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "N": [
+      2,
+      5,
+      10,
+      20
+    ],
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703,
+      2026092704
+    ],
+    "units": 1932,
+    "rows": 167496,
+    "reused_complete_units": 37,
+    "source_new_updates": 0,
+    "allowed_gpus": [
+      0,
+      2,
+      3,
+      7,
+      6
+    ]
+  },
+  "MoPC": {
+    "run_id": "20261101-phase2-mopc-author-group1-m4-r04",
+    "method": "author-attentionResNet-WiSig256",
+    "source_reused_seeds": 4,
+    "source_new_updates": 0,
+    "complete_predictions": 398,
+    "complete_scores": 397,
+    "C_epochs_per5classsession": 20,
+    "allowed_gpus": [
+      1,
+      5
+    ]
+  },
+  "native_scores": {
+    "run_id": "20261101-phase2-native-score-recovery-m4-r01",
+    "profiles": [
+      "protonet_cda",
+      "mrior_sda",
+      "dadda_sda",
+      "twostage",
+      "feature_separation_hu2024",
+      "poster_ft",
+      "radionet_ada_knn",
+      "orthogonal",
+      "lora_triplet_knn"
+    ],
+    "jobs": 17397,
+    "new_training": 0,
+    "new_predictions": 0,
+    "CPU_scorers": 1
+  },
+  "query_fit": false
+}

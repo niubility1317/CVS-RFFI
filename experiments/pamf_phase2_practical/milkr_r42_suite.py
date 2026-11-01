@@ -52,7 +52,8 @@ def normal_key(row):
 
 def reuse_entries(rt,task):
     wanted={row_key(r) for r in desired_rows(task['points'])};found={}
-    # Fixed identity order, independent of scores: pilot full KN, main, then original LocalRidge.
+    # Preserve old scored references even when a recovered suite prediction has
+    # a different filename. Selection is fixed by identity, never metric values.
     candidates=[]
     if task['seed']==2026092701 and task['capsule']=='capsules/P01/MIX01/1-1':
         candidates.append(dict(prediction=rt['pilot_run_root']+'/predictions/1-1',metrics=rt['pilot_run_root']+'/scores/1-1/metrics.json'))
@@ -69,7 +70,30 @@ def reuse_entries(rt,task):
         for row in index['rows']:
             key=normal_key(row)
             if key in wanted and key not in found:
-                found[key]=dict(key=list(key),prediction_dir=str(directory),row=row,metrics_file=ref['metrics'])
+                found[key]=dict(key=list(key),prediction_dir=str(directory),row=row,metrics_file=ref['metrics'],
+                                metric_prediction=row['prediction'],metric_key=list(key))
+    if rt.get('prediction_reuse_refs_file'):
+        refs=read(rt['prediction_reuse_refs_file'])
+        matches=[r for r in refs if r['seed']==task['seed'] and r['capsule']==task['capsule']]
+        require(len(matches)<=1,'Duplicate completed suite prediction reference')
+        for ref in matches:
+            directory=Path(ref['prediction']);index=read(directory/'predictions.json');done=read(directory/'complete.json')
+            require(index['capsule']==task['capsule'] and index['model_seed']==task['seed'],'Wrong recovered prediction identity')
+            require(done['status']=='PREDICTIONS_COMPLETE' and done['truth_read'] is False and done['query_fit'] is False,'Recovered prediction not frozen')
+            require(done['capsule_id']==index['capsule_id'] and done['rows']==len(index['rows']),'Recovered prediction completion differs')
+            seen=set()
+            for row in index['rows']:
+                key=normal_key(row);require(key in wanted and key not in seen,'Unexpected or duplicate recovered row');seen.add(key)
+                previous=found.get(key);metric_file=previous['metrics_file'] if previous else ref.get('metrics')
+                entry=dict(key=list(key),prediction_dir=str(directory),row=row,metrics_file=metric_file)
+                if previous:
+                    require(previous['row']['split_id']==row['split_id'] and previous['row']['registered_classes']==row['registered_classes'],'Recovered/scored split differs')
+                    entry.update(metric_prediction=previous['metric_prediction'],metric_key=previous['metric_key'])
+                elif metric_file:
+                    require(Path(metric_file).is_file(),'Recovered metric reference missing')
+                    entry.update(metric_prediction=row['prediction'],metric_key=list(key))
+                found[key]=entry
+            require(seen==wanted,'Recovered suite prediction matrix incomplete')
     return list(found.values())
 
 
@@ -98,15 +122,20 @@ def score(rt,task):
     local=task_runtime(rt,task);root=Path(local['run_root']);rx=task['capsule'].split('/')[-1]
     prediction=root/'predictions'/rx;index=read(prediction/'predictions.json');done=read(prediction/'complete.json')
     entries=read(root/'reuse.json');cache={};reused={}
+    current={row_key(r):r for r in index['rows']}
     for entry in entries:
         path=entry['metrics_file']
+        if path is None:continue  # Fixed predictions without scores need only independent scoring.
         if path not in cache:
             parent=read(Path(path).parent/'complete.json');require(parent['status']=='SCORED_COMPLETE','Reused scores not complete')
             cache[path]=read(path)
         payload=cache[path];require(payload['capsule_id']==index['capsule_id'] and payload['model_seed']==task['seed'],'Reused metric binding mismatch')
-        original=entry['row'];matches=[r for r in payload['rows'] if r['prediction']==original['prediction']]
-        require(len(matches)==1 and normal_key(matches[0])==tuple(entry['key']),'Reused score row mismatch')
-        reused[tuple(entry['key'])]=matches[0]
+        key=tuple(entry['key']);original=entry['row'];metric_prediction=entry.get('metric_prediction',original['prediction'])
+        matches=[r for r in payload['rows'] if r['prediction']==metric_prediction]
+        require(key in current and key not in reused,'Unexpected or duplicate reused score key')
+        require(len(matches)==1 and normal_key(matches[0])==key==tuple(entry.get('metric_key',key)),'Reused score row mismatch')
+        require(all(matches[0][k]==current[key][k] for k in ('split_id','registered_classes')),'Reused score split/classes mismatch')
+        reused[key]=matches[0]
     missing=[r for r in index['rows'] if row_key(r) not in reused];new={}
     if missing:
         subset=root/'new_predictions_for_scoring';subset.mkdir()
