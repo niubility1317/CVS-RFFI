@@ -331,11 +331,50 @@ def score_queue(rt, tasks, limit):
 
 
 def selected_tasks(rt, all_tasks):
+    require(not (rt.get('mix_only') is True and rt.get('scene_only') is True), 'Conflicting requested scopes')
+    if rt.get('scene_only') is True:
+        selected = [item for item in all_tasks if '/MIX' not in item['capsule']]
+        require(len(selected) == 1260 and all(item['points'] == [[5,20]] for item in selected), 'Wrong scene-only matrix')
+        return selected
     if rt.get('mix_only') is not True:
         return all_tasks
     selected = [item for item in all_tasks if '/MIX' in item['capsule']]
     require(len(selected) == 672, 'Wrong MIX-only matrix')
     return selected
+
+
+def conflicting_prior_command(argv, runtime_files):
+    return (any(runtime in argv for runtime in runtime_files) and '-m' in argv and
+            any(module in argv for module in (suite.__package__+'.r42_fast_takeover',
+                                              suite.__package__+'.milkr_r42_suite')))
+
+
+def resume_stopped_scenes(rt, output):
+    """Use only closed prior predictions; never compete with a prior owner."""
+    require(rt.get('scene_only') is True, 'Stopped-owner resume requires scene-only scope')
+    runtimes=rt['prior_runtime_files']
+    require(isinstance(runtimes,list) and rt['predecessor_runtime_file'] in runtimes and len(set(runtimes))==len(runtimes), 'Bad predecessor runtime list')
+    for folder in Path('/proc').iterdir():
+        if not folder.name.isdigit(): continue
+        try:
+            if folder.stat().st_uid != os.getuid(): continue
+            argv=(folder/'cmdline').read_bytes().decode().rstrip('\0').split('\0')
+        except (FileNotFoundError,ProcessLookupError):
+            continue
+        require(not conflicting_prior_command(argv,runtimes), 'Prior R42 owner or worker still running')
+    available=[gpu for gpu in rt['allowed_gpus'] if int(subprocess.check_output(
+        ['nvidia-smi','-i',str(gpu),'--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip()) >= rt['minimum_free_MiB']]
+    require(available, 'No authorized GPU has enough free memory for source smoke')
+    smoke_dir=output.parent/'smoke';smoke_dir.mkdir()
+    for seed in rt['model_seeds']:
+        destination=smoke_dir/f'cuda-{seed}.json'
+        env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(available[0]),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
+        subprocess.run([sys.executable,'-u','-m',__package__+'.r42_fast_takeover','--runtime',rt['runtime_file'],
+                        '--smoke-seed',str(seed),'--smoke-output',str(destination)],env=env,stdin=subprocess.DEVNULL,check=True)
+        smoke=read(destination)
+        require(smoke['status']=='PASS' and smoke['seed']==seed and smoke['query_rows']==0, 'Source smoke failed')
+    write(output,dict(status='SCENE_RESUME_READY', prior_runtime_files=runtimes, inherited_workers={}))
+    return {}
 
 
 def dispatch(rt):
@@ -353,7 +392,9 @@ def dispatch(rt):
         require(done['model_seed'] == seed and done['source_new_optimizer_updates'] == 0, 'Wrong frozen source')
         for name in ('source_orbit_cca.npz','source_selection.json','suite_source_complete.json'):
             os.link(parent/name, src/name)
-    if rt.get('failed_takeover_file'):
+    if rt.get('scene_only') is True:
+        predecessor=resume_stopped_scenes(rt,root/'takeover.json')
+    elif rt.get('failed_takeover_file'):
         predecessor=adopt_orphans(rt,old,by_key)
         predecessor=smoke_adopted(rt,old,predecessor,by_key,root/'takeover.json')
     else:
@@ -414,10 +455,11 @@ def dispatch(rt):
     require(not predecessor and not active and not failed, 'Takeover predictions not closed')
     for task in tasks: suite.prediction_closed(rt,task)
     rows = sum(len(suite.desired_rows(t['points'])) for t in tasks)
-    require(rows == (139776 if rt.get('mix_only') is True else 167496), 'Wrong total prediction rows')
-    write(root/'predictions_complete.json',dict(status='ALL_PREDICTIONS_FIXED',tasks=len(tasks),rows=rows,scope='MIX_ONLY' if rt.get('mix_only') is True else 'GROUP1_FULL',truth_read=False,query_fit=False))
+    scope='SCENE_ONLY' if rt.get('scene_only') is True else 'MIX_ONLY' if rt.get('mix_only') is True else 'GROUP1_FULL'
+    require(rows == {'SCENE_ONLY':27720,'MIX_ONLY':139776,'GROUP1_FULL':167496}[scope], 'Wrong total prediction rows')
+    write(root/'predictions_complete.json',dict(status='ALL_PREDICTIONS_FIXED',tasks=len(tasks),rows=rows,scope=scope,truth_read=False,query_fit=False))
     score_queue(rt,tasks,rt.get('max_cpu_scorers',1))
-    write(root/'complete.json',dict(status='SCORED_COMPLETE',tasks=len(tasks),rows=rows,scope='MIX_ONLY' if rt.get('mix_only') is True else 'GROUP1_FULL',truth_last=True,target_feedback=False))
+    write(root/'complete.json',dict(status='SCORED_COMPLETE',tasks=len(tasks),rows=rows,scope=scope,truth_last=True,target_feedback=False))
 
 
 if __name__ == '__main__':

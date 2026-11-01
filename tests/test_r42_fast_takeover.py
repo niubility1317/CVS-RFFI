@@ -52,8 +52,24 @@ def test_mix_only_keeps_original_keys_and_complete_kn_matrix():
     assert sum(len(suite.desired_rows(t['points'])) for t in selected)==139776
     assert all(len(t['points'])==16 for t in selected)
     assert selected_tasks(rt,all_tasks)==all_tasks
+    scenes=selected_tasks(dict(rt,scene_only=True),all_tasks)
+    assert len(scenes)==1260 and all(t['points']==[[5,20]] for t in scenes)
+    assert sum(len(suite.desired_rows(t['points'])) for t in scenes)==27720
+    assert {t['key'] for t in selected}.isdisjoint(t['key'] for t in scenes)
+    with pytest.raises(ValueError,match='Conflicting'):
+        selected_tasks(dict(rt,mix_only=True,scene_only=True),all_tasks)
     with pytest.raises(ValueError,match='MIX-only'):
         selected_tasks(dict(rt,mix_only=True),all_tasks[:-1-315])
+
+
+def test_stopped_resume_detects_prior_owner_and_worker_without_blocking_other_runs():
+    from experiments.pamf_phase2_practical.r42_fast_takeover import conflicting_prior_command
+    prior='/old/runtime.json';others='/other/runtime.json'
+    owner=['python','-m','experiments.pamf_phase2_practical.r42_fast_takeover','--runtime',prior]
+    worker=['python','-m','experiments.pamf_phase2_practical.milkr_r42_suite','worker','--runtime',prior]
+    assert conflicting_prior_command(owner,[prior]) and conflicting_prior_command(worker,[prior])
+    assert not conflicting_prior_command(owner,[others])
+    assert not conflicting_prior_command(['python','other.py',prior],[prior])
 
 
 def test_controller_identity_accepts_existing_takeover_only_not_smoke():
