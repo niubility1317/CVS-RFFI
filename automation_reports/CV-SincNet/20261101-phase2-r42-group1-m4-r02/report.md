@@ -18,4 +18,8 @@ CUDAoutage recovery only: current8GPUs listed and freshCUDAallocation/synchroniz
 
 All37complete unscoredsuiteunits/7696rows are reused; knownoriginalmetrics keep separate originalfilename/key; unscoredrows get independenttruthlast only afterglobalpredictionclosure.
 
-精确命令、环境、逐行/分组矩阵、数据/源模型来源、输出、GPU与停止规则见experiment.json。实际运行先执行当前阶段所需smoke，再自动补齐预测与独立评分，最后分析/资源表/登记与Git交付。当前PREPARED，尚未发布；不宣称性能或完成。
+精确命令、环境、逐行/分组矩阵、数据/源模型来源、输出、GPU与停止规则见experiment.json。实际运行先执行当前阶段所需smoke，再自动补齐预测与独立评分，最后分析/资源表/登记与Git交付。当前RUNNING，独立读回已验证；不宣称性能或完成。
+
+启动后独立核实（2026-11-01T13:21:44.188663+08:00）：VERIFIED RUNNING: all4 actualsource checkpointsmokesPASS, newNN/F/Gupdates0. Exactly37closedunits/7696predictions reused withnew_prediction_rows0; 10remainingGPUworkers actualfit/prediction artifactsgrowing; globaltruthbarrier unchanged.
+
+控制器实际PID/CWD/argv与子进程、GPU、日志/预测/拟合产物增长已核实。源代码/config commit b4903b6928d88f755b6609a6160a0dde0acf22b0，双仓库push和remoteOID VERIFIED；单一归档传输SHA比对、远端compile通过。25项定向测试和每个恢复入口唯一一次P0/P1均通过，无额外审查/签名/成员hash。全部矩阵仍在执行，宏H与+5pp逐格结论待最终独立评分。
