@@ -79,5 +79,8 @@ stdout=proc.stdout.decode('utf8',errors='replace');print(stdout);print(proc.stde
 if proc.returncode==0:
  line=next(s[len('ROUTER_REPLAY '):] for s in stdout.splitlines() if s.startswith('ROUTER_REPLAY '))
  path=Path(__file__).parent/'phase1_source_expert_router_replay.json'
- with path.open('x',encoding='utf8') as f:f.write(line+'\n')
+ if path.exists():
+  assert json.loads(path.read_text(encoding='utf8')) == json.loads(line), 'saved replay differs'
+ else:
+  with path.open('x',encoding='utf8') as f:f.write(line+'\n')
 raise SystemExit(proc.returncode)
