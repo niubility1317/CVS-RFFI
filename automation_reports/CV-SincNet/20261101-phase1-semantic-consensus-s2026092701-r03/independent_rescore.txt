@@ -1,0 +1,10 @@
+VERIFIED_VIEW clean raw 86.5387 restored 86.519 gap_pp 0.0196 relative_loss_percent 0.0227 macro_f1 86.2842
+VERIFIED_VIEW practical_high raw 80.6155 restored 84.8589 gap_pp 1.6798 relative_loss_percent 1.9411 macro_f1 84.5605
+VERIFIED_VIEW practical_mid raw 78.1077 restored 83.5482 gap_pp 2.9905 relative_loss_percent 3.4557 macro_f1 83.2726
+VERIFIED_VIEW practical_low_suburban raw 75.7446 restored 81.8554 gap_pp 4.6833 relative_loss_percent 5.4118 macro_f1 81.633
+VERIFIED_VIEW practical_high_urban raw 77.05 restored 83.5381 gap_pp 3.0006 relative_loss_percent 3.4673 macro_f1 83.3087
+VERIFIED_VIEW practical_mid_urban raw 62.7958 restored 76.0369 gap_pp 10.5018 relative_loss_percent 12.1354 macro_f1 76.1286
+VERIFIED_VIEW practical_low_urban raw 51.6048 restored 68.8524 gap_pp 17.6863 relative_loss_percent 20.4375 macro_f1 69.1643
+VERIFIED_INDEPENDENT_PHASE1_RESCORE 168000 raw_clean 86.5387 six_scene_goal_3pp False six_scene_relative_loss_at_most_3percent False clean_guard True
+
+
