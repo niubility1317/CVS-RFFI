@@ -1,0 +1,28 @@
+CAND 1 0.5 0.8 net -1010 classification_violations 12 IQ_violations 12 cls_example [('1:4:practical_high', -87)] IQ_example [('1:4:practical_high', 0.354775607585907, 0.0028660398366153242)]
+CAND 1 0.5 0.99 net -1008 classification_violations 12 IQ_violations 12 cls_example [('1:4:practical_high', -87)] IQ_example [('1:4:practical_high', 0.354775607585907, 0.0028660398366153242)]
+CAND 1 1.0 0.8 net -992 classification_violations 12 IQ_violations 14 cls_example [('1:4:practical_high', -86)] IQ_example [('1:4:clean', 0.0015307761495932937, 0.0010212570921576116)]
+CAND 1 1.0 0.99 net -991 classification_violations 12 IQ_violations 13 cls_example [('1:4:practical_high', -86)] IQ_example [('1:4:clean', 0.0015307761495932937, 0.0010212570921576116)]
+CAND 3 0.5 0.8 net -881 classification_violations 12 IQ_violations 12 cls_example [('1:4:practical_high', -59)] IQ_example [('1:4:practical_high', 0.43011313676834106, 0.0028660398366153242)]
+CAND 3 0.5 0.99 net -881 classification_violations 12 IQ_violations 12 cls_example [('1:4:practical_high', -59)] IQ_example [('1:4:practical_high', 0.43011313676834106, 0.0028660398366153242)]
+CAND 3 1.0 0.8 net -734 classification_violations 12 IQ_violations 14 cls_example [('1:4:practical_high', -39)] IQ_example [('1:4:clean', 0.0016516392352059484, 0.0010212570921576116)]
+CAND 3 1.0 0.99 net -734 classification_violations 12 IQ_violations 13 cls_example [('1:4:practical_high', -39)] IQ_example [('1:4:clean', 0.0016516392352059484, 0.0010212570921576116)]
+CAND 5 0.5 0.8 net -1038 classification_violations 12 IQ_violations 12 cls_example [('1:4:practical_high', -84)] IQ_example [('1:4:practical_high', 0.46368280053138733, 0.0028660398366153242)]
+CAND 5 0.5 0.99 net -1037 classification_violations 12 IQ_violations 12 cls_example [('1:4:practical_high', -84)] IQ_example [('1:4:practical_high', 0.46368280053138733, 0.0028660398366153242)]
+CAND 5 1.0 0.8 net -749 classification_violations 12 IQ_violations 14 cls_example [('1:4:practical_high', -46)] IQ_example [('1:4:clean', 0.0022891692351549864, 0.0010212570921576116)]
+CAND 5 1.0 0.99 net -749 classification_violations 12 IQ_violations 13 cls_example [('1:4:practical_high', -46)] IQ_example [('1:4:clean', 0.0022891692351549864, 0.0010212570921576116)]
+INDEPENDENT_SELECTION_RECOMPUTED None selected {'kind': 'dura', 'validation_net': 0}
+
+GROUP 1 clean n 1164 valid 1138 dura 1138 student 1138 duraIQ 2.14e-05 studentIQ 0.0008428
+GROUP 1 practical_high n 1078 valid 1057 dura 1055 student 1011 duraIQ 0.0026975 studentIQ 0.1436084
+GROUP 1 practical_mid n 1117 valid 1093 dura 1082 student 1015 duraIQ 0.0055579 studentIQ 0.1605262
+GROUP 1 practical_low_suburban n 1147 valid 1120 dura 1090 student 1011 duraIQ 0.0089551 studentIQ 0.1818268
+GROUP 1 practical_high_urban n 1047 valid 1027 dura 1016 student 924 duraIQ 0.0047812 studentIQ 0.1829478
+GROUP 1 practical_mid_urban n 1170 valid 1145 dura 1066 student 861 duraIQ 0.018333 studentIQ 0.3272749
+GROUP 1 practical_low_urban n 1117 valid 1100 dura 959 student 712 duraIQ 0.0287753 studentIQ 0.422253
+GROUP 2 clean n 594 valid 578 dura 578 student 578 duraIQ 4.09e-05 studentIQ 0.0
+GROUP 2 practical_high n 560 valid 539 dura 537 student 528 duraIQ 0.0048108 studentIQ 0.345911
+GROUP 2 practical_mid n 565 valid 543 dura 539 student 524 duraIQ 0.0103601 studentIQ 0.3489122
+GROUP 2 practical_low_suburban n 559 valid 533 dura 518 student 501 duraIQ 0.0175905 studentIQ 0.3735579
+GROUP 2 practical_high_urban n 555 valid 539 dura 531 student 498 duraIQ 0.0102121 studentIQ 0.375459
+GROUP 2 practical_mid_urban n 504 valid 484 dura 456 student 371 duraIQ 0.0417637 studentIQ 0.4646788
+GROUP 2 practical_low_urban n 584 valid 559 dura 505 student 374 duraIQ 0.0778627 studentIQ 0.5465381
