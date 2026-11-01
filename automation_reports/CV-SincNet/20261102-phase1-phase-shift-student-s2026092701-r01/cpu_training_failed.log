@@ -1,0 +1,17 @@
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-phase-shift-student-s2026092701-r01-release/experiments/phase1_phase_shift_restorer/phase_shift_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-phase-shift-student-s2026092701-r01/source_smoke", "--commit", "6f042d472a827985a254fd0951d878bf312688b2", "--device", "cpu", "--smoke"]
+PHASE_SHIFT_STUDENT_SOURCE_SMOKE {"status": "PASS", "count": 16, "active": 16, "DURA_teacher_frozen": true, "F_frozen": true, "gate_frozen": true, "TX_labels_read": 0, "U_s_labels_read": 0, "V_reads": 0, "test_reads": 0}
+PIPELINE_EXEC ["/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python", "-X", "utf8", "-u", "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-phase-shift-student-s2026092701-r01-release/experiments/phase1_phase_shift_restorer/phase_shift_source.py", "--root", "/home/szu2070436088/2510044040/CV-SincNet", "--out", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-phase-shift-student-s2026092701-r01/source", "--commit", "6f042d472a827985a254fd0951d878bf312688b2", "--device", "cpu"]
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-phase-shift-student-s2026092701-r01-release/experiments/phase1_phase_shift_restorer/phase_shift_source.py", line 140, in <module>
+    if __name__=='__main__':main()
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-phase-shift-student-s2026092701-r01-release/experiments/phase1_phase_shift_restorer/phase_shift_source.py", line 122, in main
+    opt.zero_grad(set_to_none=True);loss.backward();torch.nn.utils.clip_grad_norm_(model.parameters(),1.,error_if_nonfinite=True);opt.step();total+=float(loss.detach())*len(x);count+=len(x)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/site-packages/torch/nn/utils/clip_grad.py", line 64, in clip_grad_norm_
+    raise RuntimeError(
+RuntimeError: The total norm of order 2.0 for gradients from `parameters` is non-finite, so it cannot be clipped. To disable this error and scale the gradients by the non-finite norm anyway, set `error_if_nonfinite=False`
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-phase-shift-student-s2026092701-r01-release/experiments/phase1_phase_shift_restorer/phase_shift_pipeline.py", line 12, in <module>
+    print('PIPELINE_EXEC',json.dumps(cmd),flush=True);subprocess.run(cmd,check=True)
+  File "/home/szu2070436088/.conda/envs/CVS-RFFI/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python', '-X', 'utf8', '-u', '/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-phase-shift-student-s2026092701-r01-release/experiments/phase1_phase_shift_restorer/phase_shift_source.py', '--root', '/home/szu2070436088/2510044040/CV-SincNet', '--out', '/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-phase-shift-student-s2026092701-r01/source', '--commit', '6f042d472a827985a254fd0951d878bf312688b2', '--device', 'cpu']' returned non-zero exit status 1.
