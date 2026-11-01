@@ -29,3 +29,5 @@ One technical recovery after controller exit race; preserve original predictions
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 退出竞态已本地复现并修复，57 项定向测试、一次直接 P0/P1 修复定向复核通过。原 r03 312 个预测完成，交接记录中的9个旧 worker 均已自然闭合；旧 controller 和失败 controller 均已退出，r04 无预测输出。新运行逐项验证旧完成结果及进程，不重算、覆盖或根据目标分数调整。
+
+2026-11-01 恢复后独立核验：VERIFIED RUNNING: four current real-checkpoint source-only smokes PASS, including baseline/orbit/DURA exact fast-transfer comparison and CPU/CUDA score comparison; 312 prior closed units reconciled and indexed, completed new-root units entirely reused, zero query truth read. Original r03 and failed r04 remain preserved; both predecessor controllers verified stopped. Global scoring barrier remains. 最大分数差 6.94e-17；实际 source 训练、F/G 更新为0。正式目标预测耗时待新算单元闭合后测量。
