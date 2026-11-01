@@ -382,3 +382,11 @@ SigmaMix E01模型/优化器/RNG独立CPU读回：全部E0 tensor同原full8实�
 完整C整体Fclean一致96.601563%、低档城区87.743733%，相对DURA净+149/10240、+55/1436；相对各向同性净+871/10240、+341/1436。预固定三个支持条件全满足，支持另立学习未知信道/相关性先验的部署网络，但当前真实Action是oracle、先验拟合与诊断源包重叠，不是TX准确率、Main泛化、未知设备证明或理论上界。不会在Main使用真实A/噪声。
 
 24组/所有病例配对独立复算差0，FP64协方差PSD/对称/谱/tau核实；同各向同性较旧FP32 FFT CG128的Fclean事件差0，完整C最大相对求解残差8.80e-14。实际source2/PID-CWD-CUDA-GPU6/loggrowth捕获，worker48.113852秒、exit0/liveempty，私有均值/C/逐病例不提交Git。源证据和完整分组见analysis.md。原Main六景3pp+两个clean保持仍未达到，目标ACTIVE、默认DURA保持。
+
+## 新相关性先验物理恢复器已固定（2026-11-02）
+
+`20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01`，实际实现`bf29554a03e28a012eaaa134f5c7b3f7856f2268`。依已完成源fullC支持证据定义新结构：1230341参数时频Transformer只估计FIR64/主镜像调制/噪声，保存原LsUs统一mu/full512C，以FP64 Gaussian后验输出IQ，不含学习IQ解码器、DURA或旧G祖先。原源均值/C为数据拟合的额外知识与buffer，不冒充零先验知识。
+
+从零单阶段30/7410，原Ls6300Us56700/R07/sourceorder-draw-LR，逻辑256/micro32。更新仅算完整Action矩阵相对误差(.1)+噪声logMSE(.001)，真实源模拟参数仅loss；G.estimate实际不执行后验或F0，0F0训练前向，不冒充F指导实验。部署只读单条received/state，不读真实Action或噪声/F0/clean。0TX/V/OE/novel/目标训练或选模，OE仅冻结诊断。5针对性检查、唯一独立P0/P1通过，源2实际smoke后立即完整30与原地面Tri-SIG-TIME SSL/defaulthead/Main2pop×7自动truth-last。
+
+GPU4/6按实际free12GB/existingcompute≤2/新增1总≤3准入，一row一NN，不改其他owner。训练/部署实际耗时显存和每景性能待运行；静态176636032估计器MAC+269221888后验MAC、FP64 Cholesky约44739243FLOPs及2FFT不是实测延迟。矩阵、停止规则和产物见预登记report.md。主性能六景3pp+两个clean保持仍未达到，目标ACTIVE、默认DURA不变。

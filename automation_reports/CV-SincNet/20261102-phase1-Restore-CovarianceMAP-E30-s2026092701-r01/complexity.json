@@ -1,0 +1,16 @@
+{
+  "G_parameters": 1230341,
+  "state_bytes": 5973268,
+  "source_prior_buffer_bytes": 1050624,
+  "estimator_real_MAC": 176636032,
+  "dense_posterior_real_MAC": 269221888,
+  "posterior_real_dimension": 512,
+  "Cholesky_approx_FLOPs": 44739242.666666664,
+  "additional_triangular_solve_approx_FLOPs": 524288,
+  "complex_FFT_count": 2,
+  "complex_FFT_length": 256,
+  "CG_iterations": 0,
+  "measured_latency": false,
+  "training_posterior_calls": 0,
+  "training_F0_forward_rows": 0
+}
