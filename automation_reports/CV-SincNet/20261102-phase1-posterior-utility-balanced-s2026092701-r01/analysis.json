@@ -1,0 +1,29 @@
+{
+  "source": "result.json",
+  "audit": "Per-view accounting and threshold totals independently recomputed from result fields; no per-record predictions available.",
+  "summary": {
+    "count": 384,
+    "valid": 369,
+    "parent": 357,
+    "dura": 361,
+    "oracle": 367,
+    "0.5": {
+      "correct": 353,
+      "repairs": 7,
+      "damages": 11,
+      "selected": 22
+    },
+    "0.75": {
+      "correct": 359,
+      "repairs": 5,
+      "damages": 3,
+      "selected": 9
+    },
+    "0.9": {
+      "correct": 357,
+      "repairs": 0,
+      "damages": 0,
+      "selected": 0
+    }
+  }
+}
