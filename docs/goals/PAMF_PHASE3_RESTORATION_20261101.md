@@ -241,3 +241,7 @@ CPU控制器已独立核实PID/CWD/命令/CUDA空、WAIT_PARENT_COMPLETE，当�
 `20261101-diagnostic-Restore-source-gradient-geometry-s2026092701-r01`，实际代码96db4e5a0446c713cd2d36c2977703590c26d523。FeatureCond/c865与FeatureStrong/3e541固定final30/7410，原F0/3ff8冻结；原Ls128/Us384固定512×20draw/B256×2G=80批，仅autograd.grad，0TX/V/OE/target/更新或.grad积累，G最终导数标志恢复False/state逐值保持。3测试/一次P0P1/真实Ls2导数smokePASS，全部20draw/Gram分组/globalclip/点积cos/summary独立复算PASS，最大差2.78e-17，worker/controller结束0。
 
 末轮encoder主/aux平均cos .547769/.599657，负cos批数0/40与1/40；所有80批在w.1/1均无globalclip，main·total/physical·total负值0。该末轮源几何不支持据此启动PCGrad/分组裁剪，不代表早期无冲突，也不预测AdamW真实更新。sourceworker耗时27.118665秒，在两次读取间完成；中途GPU快照未捕获，如实记缺项、不补跑，完整产物/控制器初始存活/准入UUID和退出状态已独立核实。下一源端假设针对既有raw功率75.83的未约束尺度方向，单独检验单位clean幅度约束；不是已验证改进。Main0/6和子总体clean损伤事实保持，完整目标ACTIVE、效率次级、默认DURA不改。
+
+## 幅度约束对照已运行（2026-11-01）
+
+`20261101-phase1-Restore-PowerAnchor-E30-s2026092701-r01`，实际代码`42ea957db57d7d90df67dadbeffe11fc014909a0`。VERIFIED / RUNNING：真实源样本检查与新增幅度项通过，同 FeatureCond 实际 E0 逐张量一致，配置仅幅度项和版本身份变化；E01 模型/AdamW/CPU-CUDA RNG 独立 CPU 读回通过，总损失复算确认幅度项仅加权一次。首轮 247 更新耗时 49.944650 秒。GPU 4 准入剩余 24110 MiB、原有 0 条计算进程，仅新增本任务 1 条；PID、目录、命令、GPU 与日志增长核实，其他 owner 保持。4670178 参数及部署前向不变，固定 scratch 单阶段 30/7410 后自动原 Main 七景，当前性能 PENDING；六景各距 raw clean≤3pp、clean 保持仍是主验收，效率为支线，默认 DURA 不变。

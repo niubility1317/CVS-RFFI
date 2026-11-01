@@ -39,3 +39,8 @@
 固定final30后自动原Main126000+42000两个总体各七景，全42单元预测固定后独立CPU truth-last/原共享锁。raw/DURA同IQ-ID判决精确复用，新G全量推理。逐景至少140345/168000正确=83.538690%，距raw clean86.538690%≤3pp且保持clean，两个子总体clean损伤单列。源幅度约束满足不替代性能，也不取消测试；默认DURA保持。
 
 13项相关检查（新3+原FeatureCond7/FeatureStrong3）与一次P0P1通过。真实Ls2 smoke包含新项，PASS立即完整训练；E01..30只技术恢复/final30固定。推理结构完全相同，静态260546560实数MAC/0FFT-CG复用原profile，排除F0/norm/activation/FiLM逐点/softmax/插值/投影/内存，不是实测时延。原N607 CVS-RFFI/Torch2.1+cu121/FP32-TF32off，GPU4/6 UUID准入free>=12GB/原compute<=2/只新增1条本任务NN/单卡总<=3，其他owner保持。不可覆盖run-root/CWD/代码/命令/停止规则/产物见登记。
+
+
+## 幅度约束对照已运行（2026-11-01）
+
+`20261101-phase1-Restore-PowerAnchor-E30-s2026092701-r01`，实际代码`42ea957db57d7d90df67dadbeffe11fc014909a0`。VERIFIED / RUNNING：真实源样本检查与新增幅度项通过，同 FeatureCond 实际 E0 逐张量一致，配置仅幅度项和版本身份变化；E01 模型/AdamW/CPU-CUDA RNG 独立 CPU 读回通过，总损失复算确认幅度项仅加权一次。首轮 247 更新耗时 49.944650 秒。GPU 4 准入剩余 24110 MiB、原有 0 条计算进程，仅新增本任务 1 条；PID、目录、命令、GPU 与日志增长核实，其他 owner 保持。4670178 参数及部署前向不变，固定 scratch 单阶段 30/7410 后自动原 Main 七景，当前性能 PENDING；六景各距 raw clean≤3pp、clean 保持仍是主验收，效率为支线，默认 DURA 不变。
