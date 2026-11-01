@@ -1,0 +1,15 @@
+{
+  "status": "VERIFIED_CPU_QUEUE_ONLY",
+  "code_commit": "33cb43c2d4d387ab18498b451ddc1444070e997c",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "controller_PID": 1065879,
+  "actual_PID_CWD_command_CUDA_empty_verified": true,
+  "parent_complete": false,
+  "new_GPU_worker_started": false,
+  "neural_checkpoint_smoke_pending": true,
+  "latency_results_available": false,
+  "default_DURA_changed": false,
+  "goal_complete": false,
+  "preflight_scope": "Duplicate scan checked thisnewlatencymodule only;existingparenttrainingGPUworker remainedlive as expected. Caller status text NO_LIVE_OWN_GPU_WORKERS did not mean allparentNNworkers absent."
+}

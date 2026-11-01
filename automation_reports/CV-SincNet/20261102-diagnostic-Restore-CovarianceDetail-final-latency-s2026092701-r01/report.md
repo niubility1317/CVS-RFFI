@@ -36,3 +36,7 @@
 同步wall与CUDA event分别记录。模型加载、输入IO/上传、病例选择、首次图capture/预热及输出有限性检查在计时外；实际部署内部检查与DURA图输入拷贝在计时内。增量显存从当前路径前的resident基线算起；三模型、512输入及所有graph均驻留，不能把总allocated当作单模型独立进程显存。GPU型号、Torch/CUDA和实际执行路径一并报告；不是专卡测量，不将MAC换算为时延。
 
 4项针对性检查及唯一P0/P1审查通过。真实source2全部路径是worker第一步，PASS继续全部计时；一次release archive SHA/远端compile，父CPU观察实际子PID/CWD/命令/CUDA/GPU和日志增长。权重和buffer逐值不变，无新训练/分类头/选模/恢复性能评分。旧DURA＋F50的4.531972ms不属于本版；本次会测同一原Tri-SIG-TIME SSL下的实际组合。默认DURA不变。
+
+## 实际 CPU 等待队列
+
+VERIFIED_CPU_QUEUE_ONLY：controller 1065879 的实际PID/CWD/命令及CUDA空环境已核实，尚未新增GPU worker，父Main仍未完成。archive SHA与远端compile通过，实际代码 `33cb43c2d4d387ab18498b451ddc1444070e997c`。真实最终checkpoint source2与全部测量仍待父实验完成，当前无时延结果。发布前重复进程扫描仅针对本延迟module；旧调用器状态文字NO_LIVE_OWN_GPU_WORKERS不能解释为父训练进程不存在，父GPU训练仍健康继续。
