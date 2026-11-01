@@ -1,7 +1,9 @@
 """Phase1 source-supervised frozen-feature correction and truth-last scoring."""
 import argparse
 import json
+import os
 from pathlib import Path
+import re
 import time
 
 import numpy as np
@@ -12,8 +14,11 @@ from . import anchor_balanced as prior, experiment as core
 from .dura_source_trisig_diagnostic import PARENT
 from .feature_conditioned import FeatureConditionedCorrector, source_targets, weighted_margin
 from .labeled_source_probe import align_labeled_positions
+from .resume_state import load_state, save_state
 
-RUN='20261101-phase1-feature-conditioned-E30-s2026092701-r01'
+RUN=os.environ.get('PHASE1_FEATURE_RUN','20261101-phase1-feature-conditioned-E30-s2026092701-r02')
+if not re.fullmatch(r'\d{8}-phase1-feature-conditioned-E30-s2026092701-r\d{2}',RUN):
+    raise ValueError('Valid registered feature-conditioned run ID required')
 EPSILON=0.1
 THRESHOLD=0.95
 HARD_WEIGHT=8.0
@@ -145,16 +150,23 @@ def smoke(root,out,commit):return smoke_impl(root,out,commit,device='cpu',n=2,fi
 def gpu_smoke(root,out,commit):return smoke_impl(root,out,commit,device='cuda:0',n=128,filename='gpu_smoke')
 
 
-def train(root,out,commit,*,device='cuda:0'):
+def train(root,out,commit,*,device='cuda:0',resume_checkpoint=None):
     teacher,contract=core.teacher(root,device);cache,clean,roles=core.data(root,contract);dura=prior.frozen_dura(root,device)
     labels=source_labels(root,cache,clean,roles,contract)
     before_f=prior.snapshot(teacher);before_d=prior.snapshot(dura);digest=prior.sha(root/prior.DURA)
     model=make_model(device).train();optimizer=torch.optim.AdamW(model.parameters(),lr=.0003,weight_decay=.0001)
     rng=np.random.default_rng(2026110104);torch.manual_seed(2026110105)
     if device.startswith('cuda'):torch.cuda.manual_seed_all(2026110105)
-    row=out/'flow';row.mkdir();updates=0;started=time.perf_counter()
+    row=out/'flow';row.mkdir();(row/'checkpoints').mkdir();updates=0;start_epoch=0;started=time.perf_counter()
+    contract=dict(method='phase1_feature_conditioned',commit=commit,F_run=core.F_RUN,F_row=core.F_ROW,
+        DURA_sha256=digest,count=core.COUNT,batch=core.BATCH,epochs=core.EPOCHS,epsilon=EPSILON,
+        threshold=THRESHOLD,hard_weight=HARD_WEIGHT,margin_weight=MARGIN_WEIGHT,iq_weight=IQ_WEIGHT,preserve_weight=PRESERVE_WEIGHT)
+    if resume_checkpoint is not None:
+        start_epoch,updates=load_state(resume_checkpoint,model,optimizer,rng,contract=contract,device=device)
+        if start_epoch>core.EPOCHS or updates!=start_epoch*((core.COUNT+core.BATCH-1)//core.BATCH):
+            raise ValueError('Fixed-budget epoch-boundary checkpoint required')
     with (row/'training.jsonl').open('x',encoding='utf8') as log:
-        for epoch in range(1,core.EPOCHS+1):
+        for epoch in range(start_epoch+1,core.EPOCHS+1):
             view=(epoch-1)%20+1;received=np.load(cache/'epochs'/f'{view:02d}'/'received.npy',mmap_mode='r',allow_pickle=False)
             if received.shape!=clean.shape or received.dtype!=np.float32:raise ValueError('Phase1 received source view required')
             order=rng.permutation(core.COUNT);clean_count=core.COUNT//4
@@ -169,16 +181,21 @@ def train(root,out,commit,*,device='cuda:0'):
                 for key in sums:sums[key]+=stats[key]*len(ix)
                 for key in counts:counts[key]+=stats[key]
             if counts['labeled']!=6300:raise ValueError('Every legal L_s label must appear exactly once per epoch')
+            if not prior.unchanged(teacher,before_f) or not prior.unchanged(dura,before_d) or prior.sha(root/prior.DURA)!=digest:
+                raise ValueError('Frozen networks must be unchanged before checkpointing')
             record=dict(epoch=epoch,view=view,updates=updates,losses={k:v/core.COUNT for k,v in sums.items()},
                         **counts,seconds=time.perf_counter()-started)
-            log.write(json.dumps(record,allow_nan=False)+'\n');log.flush();print(json.dumps(record),flush=True)
+            log.write(json.dumps(record,allow_nan=False)+'\n');log.flush();os.fsync(log.fileno())
+            save_state(row/'checkpoints'/f'epoch-{epoch:02d}.pt',model,optimizer,rng,epoch=epoch,updates=updates,contract=contract,device=device)
+            print(json.dumps(record),flush=True)
     if updates!=core.STEPS or not prior.unchanged(teacher,before_f) or not prior.unchanged(dura,before_d) or prior.sha(root/prior.DURA)!=digest:
         raise ValueError('Fixed budget or frozen model identity changed')
     save(row/'final.pt',model,commit,core.EPOCHS,digest)
     write(row/'training_complete.json',dict(status='SOURCE_TRAINED',epoch=core.EPOCHS,updates=updates,
         F_run=core.F_RUN,F_row=core.F_ROW,F_frozen=True,DURA_frozen=True,DURA_sha256=digest,
         L_s_labels_read=6300,U_s_labels_read=0,V_reads=0,test_IQ_reads=0,source_roles=['L_s','U_s'],
-        parameters=sum(p.numel() for p in model.parameters()),epsilon=EPSILON,threshold=THRESHOLD))
+        parameters=sum(p.numel() for p in model.parameters()),epsilon=EPSILON,threshold=THRESHOLD,
+        resumed_from=str(resume_checkpoint) if resume_checkpoint else None,resumed_after_epoch=start_epoch))
 
 
 @torch.no_grad()

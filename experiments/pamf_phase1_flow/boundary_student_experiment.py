@@ -1,7 +1,9 @@
 """Phase1 source-only amortized boundary student and truth-last evaluation."""
 import argparse
 import json
+import os
 from pathlib import Path
+import re
 import time
 
 import numpy as np
@@ -10,8 +12,11 @@ import torch
 from . import anchor_balanced as prior, experiment as core
 from .boundary_student import BoundedBoundaryStudent, distillation_loss, make_source_oracle
 from .dura_source_trisig_diagnostic import PARENT
+from .resume_state import load_state, save_state
 
-RUN = '20261101-phase1-boundary-student-E30-s2026092701-r01'
+RUN = os.environ.get('PHASE1_STUDENT_RUN','20261101-phase1-boundary-student-E30-s2026092701-r02')
+if not re.fullmatch(r'\d{8}-phase1-boundary-student-E30-s2026092701-r\d{2}',RUN):
+    raise ValueError('Valid registered boundary-student run ID required')
 EPSILON, ORACLE_STEPS, HARD_WEIGHT = 0.05, 12, 8.0
 read, write = core.read, core.write
 
@@ -110,15 +115,22 @@ def smoke(root,out,commit):return smoke_impl(root,out,commit,device='cpu',n=2,fi
 def gpu_smoke(root,out,commit):return smoke_impl(root,out,commit,device='cuda:0',n=128,filename='gpu_smoke')
 
 
-def train(root,out,commit,*,device='cuda:0'):
+def train(root,out,commit,*,device='cuda:0',resume_checkpoint=None):
     teacher,contract=core.teacher(root,device);cache,clean,roles=core.data(root,contract);dura=prior.frozen_dura(root,device)
     before_f=prior.snapshot(teacher);before_d=prior.snapshot(dura);digest=prior.sha(root/prior.DURA)
     student=make_student(device).train();optimizer=torch.optim.AdamW(student.parameters(),lr=.0003,weight_decay=.0001)
     rng=np.random.default_rng(2026110104);torch.manual_seed(2026110105)
     if device.startswith('cuda'):torch.cuda.manual_seed_all(2026110105)
-    row=out/'flow';row.mkdir();updates=0;started=time.perf_counter()
+    row=out/'flow';row.mkdir();(row/'checkpoints').mkdir();updates=0;start_epoch=0;started=time.perf_counter()
+    contract=dict(method='phase1_boundary_student',commit=commit,F_run=core.F_RUN,F_row=core.F_ROW,
+        DURA_sha256=digest,count=core.COUNT,batch=core.BATCH,epochs=core.EPOCHS,epsilon=EPSILON,
+        oracle_steps=ORACLE_STEPS,hard_weight=HARD_WEIGHT)
+    if resume_checkpoint is not None:
+        start_epoch,updates=load_state(resume_checkpoint,student,optimizer,rng,contract=contract,device=device)
+        if start_epoch>core.EPOCHS or updates!=start_epoch*((core.COUNT+core.BATCH-1)//core.BATCH):
+            raise ValueError('Fixed-budget epoch-boundary checkpoint required')
     with (row/'training.jsonl').open('x',encoding='utf8') as log:
-        for epoch in range(1,core.EPOCHS+1):
+        for epoch in range(start_epoch+1,core.EPOCHS+1):
             view=(epoch-1)%20+1;received=np.load(cache/'epochs'/f'{view:02d}'/'received.npy',mmap_mode='r',allow_pickle=False)
             if received.shape!=clean.shape or received.dtype!=np.float32:raise ValueError('Phase1 received source view required')
             order=rng.permutation(core.COUNT);clean_count=core.COUNT//4;loss_sum=0.;wrong_count=0;reached_count=0
@@ -129,16 +141,21 @@ def train(root,out,commit,*,device='cuda:0'):
                 for group in optimizer.param_groups:group['lr']=core.lr(updates)
                 stats=step(student,teacher,dura,x,target,optimizer);updates+=1
                 loss_sum+=stats['loss']*len(ix);wrong_count+=stats['wrong'];reached_count+=stats['oracle_reached']
+            if not prior.unchanged(teacher,before_f) or not prior.unchanged(dura,before_d) or prior.sha(root/prior.DURA)!=digest:
+                raise ValueError('Frozen networks must be unchanged before checkpointing')
             record=dict(epoch=epoch,view=view,updates=updates,mean_batch_weighted_loss=loss_sum/core.COUNT,
                         teacher_disagreements=wrong_count,oracle_reached=reached_count,seconds=time.perf_counter()-started)
-            log.write(json.dumps(record,allow_nan=False)+'\n');log.flush();print(json.dumps(record),flush=True)
+            log.write(json.dumps(record,allow_nan=False)+'\n');log.flush();os.fsync(log.fileno())
+            save_state(row/'checkpoints'/f'epoch-{epoch:02d}.pt',student,optimizer,rng,epoch=epoch,updates=updates,contract=contract,device=device)
+            print(json.dumps(record),flush=True)
     if updates!=core.STEPS or not prior.unchanged(teacher,before_f) or not prior.unchanged(dura,before_d) or prior.sha(root/prior.DURA)!=digest:
         raise ValueError('Fixed budget or frozen model identity changed')
     save(row/'final.pt',student,commit,core.EPOCHS,digest)
     write(row/'training_complete.json',dict(status='SOURCE_TRAINED',epoch=core.EPOCHS,updates=updates,
         F_run=core.F_RUN,F_row=core.F_ROW,F_frozen=True,DURA_frozen=True,DURA_sha256=digest,
         TX_labels_read=0,V_reads=0,test_IQ_reads=0,source_roles=['L_s','U_s'],parameters=sum(p.numel() for p in student.parameters()),
-        epsilon=EPSILON,oracle_steps=ORACLE_STEPS,hard_weight=HARD_WEIGHT))
+        epsilon=EPSILON,oracle_steps=ORACLE_STEPS,hard_weight=HARD_WEIGHT,
+        resumed_from=str(resume_checkpoint) if resume_checkpoint else None,resumed_after_epoch=start_epoch))
 
 
 @torch.no_grad()

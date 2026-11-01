@@ -10,6 +10,7 @@ import time
 import traceback
 
 from .boundary_student_experiment import RUN, read, write
+from .resume_state import claim_resume_source
 
 
 def capacity():
@@ -54,11 +55,13 @@ def active_restoration_workers(rows):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--commit',required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--commit',required=True);p.add_argument('--resume-checkpoint',type=Path);a=p.parse_args()
     root=a.root;out=root/'runs'/RUN;release=Path.cwd()
     if os.environ.get('CUDA_VISIBLE_DEVICES')!='' or (release/'release_commit.txt').read_text().strip()!=a.commit or out.exists():
         raise ValueError('Unique registered output, CPU controller and pinned code required')
+    if a.resume_checkpoint is not None:source,lineage=claim_resume_source(root,a.resume_checkpoint,RUN)
     out.mkdir();(out/'logs').mkdir()
+    if a.resume_checkpoint is not None:write(out/'resume_parent.json',dict(lineage_root=lineage,checkpoint=str(source)))
     common=['--root',str(root),'--commit',a.commit]
     def run(mode,env):
         cmd=[sys.executable,'-u','-m','experiments.pamf_phase1_flow.boundary_student_experiment',mode,*common]
@@ -82,6 +85,7 @@ def main():
                 if selected is not None:
                     env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(selected['index']))
                     cmd=[sys.executable,'-u','-m','experiments.pamf_phase1_flow.boundary_student_worker',*common,'--capacity-marker','pamf_dura_direct_train.f_guided worker']
+                    if a.resume_checkpoint is not None:cmd.extend(['--resume-checkpoint',str(source)])
                     with (out/'logs/worker.log').open('xb') as log:
                         child=subprocess.Popen(cmd,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
                     # Keep the shared admission lock until the child actually
