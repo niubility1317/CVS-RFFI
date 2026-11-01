@@ -1272,6 +1272,86 @@
         "practical_mid_urban": 32962,
         "practical_low_urban": 45420
       }
+    },
+    {
+      "name": "CovarianceMAP",
+      "run_id": "20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01",
+      "arm": "TF_CovarianceMAP",
+      "code_commit": "bf29554a03e28a012eaaa134f5c7b3f7856f2268",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145442,
+          "accuracy": 86.57261904761904,
+          "raw_clean_gap_pp": -0.03392857142856087,
+          "clean_accuracy_retention_percent": 100.03920624548613
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 140281,
+          "accuracy": 83.50059523809524,
+          "raw_clean_gap_pp": 3.038095238095238,
+          "clean_accuracy_retention_percent": 96.48932145682154
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 137994,
+          "accuracy": 82.13928571428572,
+          "raw_clean_gap_pp": 4.399404761904762,
+          "clean_accuracy_retention_percent": 94.91625683529938
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 135306,
+          "accuracy": 80.53928571428571,
+          "raw_clean_gap_pp": 5.999404761904771,
+          "clean_accuracy_retention_percent": 93.06737283763799
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 138068,
+          "accuracy": 82.18333333333334,
+          "raw_clean_gap_pp": 4.3553571428571445,
+          "clean_accuracy_retention_percent": 94.96715617154452
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 126080,
+          "accuracy": 75.04761904761905,
+          "raw_clean_gap_pp": 11.49107142857143,
+          "clean_accuracy_retention_percent": 86.72146369983149
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 112893,
+          "accuracy": 67.19821428571429,
+          "raw_clean_gap_pp": 19.340476190476195,
+          "clean_accuracy_retention_percent": 77.65106441517351
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 82,
+        "cross_both": -25
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 0,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.03920624548613,
+        "practical_high": 96.48932145682154,
+        "practical_mid": 94.91625683529938,
+        "practical_low_suburban": 93.06737283763799,
+        "practical_high_urban": 94.96715617154452,
+        "practical_mid_urban": 86.72146369983147,
+        "practical_low_urban": 77.65106441517351
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 64,
+        "practical_mid": 2351,
+        "practical_low_suburban": 5039,
+        "practical_high_urban": 2277,
+        "practical_mid_urban": 14265,
+        "practical_low_urban": 27452
+      }
     }
   ],
   "new_neural_forwards": 0,
