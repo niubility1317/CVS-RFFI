@@ -27,3 +27,5 @@ After the user-prioritized MIX completion, resume original preregistered fixed L
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+2026-11-02 运行核实：VERIFIED RUNNING: original fixed single-scene K5/N20 scope; four actual-source no-query smokes PASS, 222 closed scene predictions indexed for exact reuse, no new source updates, single-scene scoring only after all 1260 predictions fixed. MIX outcome not used for method selection.
