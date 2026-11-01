@@ -1,0 +1,7 @@
+# Direct spectral-temporal Phase1 source pilot
+
+This is an independent input-only IQ-to-IQ network, not a DURA modification and not a Bayesian posterior. It predicts a complex frequency response from the current IQ, applies it to the full spectrum, then jointly refines the waveform with dilated temporal convolutions. The frozen Tri-SIG-TIME SSL classifier evaluates restored IQ. Initial spectral filter and correction reproduce input. A protection gate is required for a future clean-input deployment; the current source pilot measures impaired inputs only.
+
+Predeclared pilot: 4096 Phase1 source training IDs, three fresh source channel views 21/22/23, fixed third-epoch checkpoint, 16-record minibatch, AdamW 0.0003, frozen ground classifier, paired source IQ plus classifier features/soft target and legal labeled-source cross-entropy. Source label metadata contains 6300 L_s labels but only fit labels may enter loss; never read U_s truth, V or test. DURA is loaded solely after training for comparison. No simulator truth enters inference.
+
+Evaluate 64 already explored RX8 source records in each of six impaired scenes; report correct counts relative to the frozen ground classifier's high-confidence clean pseudo targets and direct waveform NMSE. This is a source-only pilot, not true-label accuracy, independent blind evaluation, or evidence of meeting 3%. Full source selection and gated clean handling are required before considering a fixed Phase1 true-label test.
