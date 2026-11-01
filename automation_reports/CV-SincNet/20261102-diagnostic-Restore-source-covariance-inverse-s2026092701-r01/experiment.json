@@ -85,7 +85,7 @@
     "remote_run_root": "runs/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
     "remote_log_root": "runs/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_inverse run --root /home/szu2070436088/2510044040/CV-SincNet --commit 1a7434baa2c579e78fc1119cb09c24a0ae6512b4 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_inverse run --root /home/szu2070436088/2510044040/CV-SincNet --commit a3a90b55a73702954c453eec9c1ad17fec24d87f --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
     "stop_rule": "Wrongsource/F0/controlidentity/pairalignment/nonfinite/nonpositivecovariance-noise/Choleskyfailure/relativeposteriorresidual>1e-8/statechange/collision/workererror:preserve/noautoretry. Source2actualdenseA-vs-nativeAction/F0smoke thenfull10240x2. Noqualityskip."
   },
   "expected_artifacts": [
@@ -139,7 +139,7 @@
       "budget_ref": "Fitmean/Cfrom63000originalLsUs. 0optimizerupdates/0Gforwards. 512x20=10240sourcecases x2posteriors=20480F0outputrows;512cleanF0refs;source2smokeextra2F0. No target test.",
       "output_root": "runs/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
       "log_path": "runs/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01/logs/worker.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_inverse worker --root /home/szu2070436088/2510044040/CV-SincNet --commit 1a7434baa2c579e78fc1119cb09c24a0ae6512b4 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.covariance_inverse worker --root /home/szu2070436088/2510044040/CV-SincNet --commit a3a90b55a73702954c453eec9c1ad17fec24d87f --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
       "expected_artifacts": [
         "launch.json",
         "submitted.json",
