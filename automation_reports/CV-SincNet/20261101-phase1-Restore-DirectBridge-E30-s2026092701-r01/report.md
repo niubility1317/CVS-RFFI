@@ -1,9 +1,11 @@
 # 四步共享权重IQ恢复：从零单阶段30轮
 
+**六景0/6，合并clean保持，clean准确率86.603571%。** cross_rx clean净变化+163，cross_both净变化-54。完整目标未达到，保持 ACTIVE 和默认 DURA。[完整性能与分组](analysis.md)。
+
 - run_id：`20261101-phase1-Restore-DirectBridge-E30-s2026092701-r01`
 - group_id：`restoration-paired-direct-iteration-single30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（完整七景与独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原 Main168000×七景完整，六景0/6、合并clean保持。84单元与完整分组/配对复算PASS，详见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -52,3 +54,7 @@ VERIFIED / RUNNING：17重点相关检查/一次P0P1、真实源2训练梯度与
 ## 源端方法限制补充（Main预测前）
 
 [配对状态的代数捷径说明](paired_state_shortcut.md)记录同时输入state/received/time时可直接解出训练clean的恒等式及四步固定点。它不证明实际模型一定使用捷径；当前84a063c9已固定训练和完整Main矩阵保持。独立StateBridge只去除原received条件，不回流修改本版或取消测试。
+
+## DirectBridge完整七景完成
+
+VERIFIED / ANALYZED。全G从零单阶段30/7410，部署固定4次共享权重，两个Main总体各七景全部预测后独立truth-last；4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对复算PASS，误差1.25e-14、raw/DURA判决差0。完整60轮/stdout/源顺序draw/固定时间协议/从零E0/总loss与每t重组/30快照E30-final核实。完整目标未达到，保持 ACTIVE 和默认 DURA。

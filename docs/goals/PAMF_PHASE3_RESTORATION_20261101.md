@@ -265,3 +265,11 @@ VERIFIED / RUNNING：17重点相关检查/一次P0P1、真实源2训练梯度与
 `20261101-phase1-Restore-StateBridge-E30-s2026092701-r01`，实际代码`c50a9159b1fb891c6f1a6f8ad4bfa2d7eb66222e`，4676898参数，从零单阶段30/7410、训练每记录1次estimate、部署4次共享权重，received仅初始化state，估计器不读取原received条件，无额外观测或部署clean/F0。源IQ配对构造t1/.75/.5/.25状态，原F0连续160与rawRMS参考loss-only；0TX/V/OE/目标训练或选模，OE仅冻结诊断。结构/训练状态/执行共同变化的系统比较，不冒称单因素。
 
 VERIFIED / RUNNING：12重点相关检查/一次P0P1、真实源2训练梯度与完整四步E0/严格重载PASS。首轮247更新耗时78.104723秒，E01模型/AdamW/CPU-CUDA RNG独立CPU读回PASS，E0与固定seed factory逐张量一致；4个time实际计数和各项指标重组PASS，总loss确认原权重各加一次。GPU6准入free20513MiB/原2compute/仅新增1条，PID/CWD/命令/CUDA/GPU和日志核实，其他owner保持。固定final30后自动原Main168000×七景、全部预测后独立truth-last，当前性能PENDING；主验收仍六景各距raw clean≤3pp并保持clean，性能主线、效率支线和默认DURA不变。
+
+## DirectBridge原 Main 七景完成（2026-11-01）
+
+`20261101-phase1-Restore-DirectBridge-E30-s2026092701-r01`，实际代码`84a063c9ba1f9974cfe361e293a9e11fa93920b4`。paired-state/原received-time条件/四步执行共同变化的系统比较，全部G从零单阶段30/7410，训练每记录1core、部署4core共享权重；sourceclean仅构造授权源中间训练state/参考，部署无clean/F0/额外观测，0TX/V/OE/目标训练或选模，OE仅冻结诊断。
+
+原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景固定预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对复算PASS，最大指标差1.25e-14、raw/DURA判决差0；60完整日志/源顺序draw/从零E0/固定4步与time协议/各轮与各t总loss重组/30快照E30-final一致性核实。
+
+六景依次77.663690/76.391071/74.903571/76.459524/70.286905/64.206548%，达标0/6，相对PowerAnchor依次-1.326786/-1.323810/-1.263095/-1.339881/-1.247024/-1.227381个百分点。合并clean 86.603571%（保持），cross_rx净变化+163、cross_both净变化-54，不掩盖子总体损伤。完整TX/RX/day/净纠错/相对clean/各time训练与成本见analysis.md。完整目标未达到，保持 ACTIVE 和默认 DURA。配对代数捷径是源端解析限制，不以其预判实际模型或取消测试；性能主线、效率支线保持。
