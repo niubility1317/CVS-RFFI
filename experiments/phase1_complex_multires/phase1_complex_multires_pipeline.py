@@ -9,9 +9,11 @@ import sys
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--root',type=Path,required=True);ap.add_argument('--run-root',type=Path,required=True);ap.add_argument('--commit',required=True);ap.add_argument('--device',default='cuda:0');args=ap.parse_args()
+    scripts=Path(__file__).resolve().parent
+    marker=scripts.parent.parent/'release_commit.txt'
+    if marker.read_text(encoding='ascii').strip()!=args.commit:raise ValueError('Exact immutable release required')
     if args.run_root.exists():raise FileExistsError('Immutable experiment root already exists')
     args.run_root.mkdir(parents=True)
-    scripts=Path(__file__).resolve().parent
     base=[sys.executable,'-X','utf8','-u']
     def execute(script,*extra,environment=None):
         command=base+[str(scripts/script),*map(str,extra)]
