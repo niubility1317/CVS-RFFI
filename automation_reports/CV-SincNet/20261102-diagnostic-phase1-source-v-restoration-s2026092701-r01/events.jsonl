@@ -1,1 +1,2 @@
 {"at": "2026-11-01T16:23:16+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T16:31:08+00:00", "status": "FAILED", "note": "发布前编译与随后启动均出现本机路径混入；独立读回确认未启动子进程、run 目录不存在、日志为空。保留现场并停止自动重试。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-diagnostic-phase1-source-v-restoration-s2026092701-r01.log"], "row_id": null}

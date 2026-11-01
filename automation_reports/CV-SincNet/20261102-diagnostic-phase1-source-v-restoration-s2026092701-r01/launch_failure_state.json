@@ -1,0 +1,10 @@
+{
+  "status": "FAILED_BEFORE_PROCESS_START",
+  "run_root_exists": false,
+  "log_exists": true,
+  "log_size": 0,
+  "matching_processes": 0,
+  "layer": "N607 launcher cwd",
+  "cause": "Windows Python path was substituted as remote working directory; Popen did not create a child",
+  "source_V_reads": 0
+}
