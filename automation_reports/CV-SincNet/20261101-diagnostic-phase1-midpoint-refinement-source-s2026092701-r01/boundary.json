@@ -1,0 +1,341 @@
+{
+  "status": "SOURCE_ONLY_INTERMEDIATE_CHECKPOINT",
+  "epoch": 27,
+  "updates": 13311,
+  "checkpoint_sha256": "7712b989bc5de26028ebedbb8aac0aaad367e427de634c52ed7c34ee137295dc",
+  "source_records": 512,
+  "views": [
+    "clean",
+    1,
+    20
+  ],
+  "source_L_s_labels_materialized": 6300,
+  "source_L_s_labels_scored": 128,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "clean_target_used_only_for_source_oracle_and_scoring": true,
+  "final_model_selection": "fixed epoch 30",
+  "results": [
+    {
+      "view": "clean",
+      "groups": [
+        {
+          "group": "all",
+          "kind": "candidate",
+          "teacher": {
+            "count": 512,
+            "before": 512,
+            "after": 512,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 128,
+            "repairs": 0,
+            "damages": 0
+          },
+          "delta_ratio_p50": 0.0008496376103721559,
+          "delta_ratio_p95": 0.001141718472354114
+        },
+        {
+          "group": "all",
+          "kind": "oracle",
+          "teacher": {
+            "count": 512,
+            "before": 512,
+            "after": 512,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 128,
+            "repairs": 0,
+            "damages": 0
+          }
+        },
+        {
+          "group": "L_s",
+          "kind": "candidate",
+          "teacher": {
+            "count": 128,
+            "before": 128,
+            "after": 128,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 128,
+            "repairs": 0,
+            "damages": 0
+          },
+          "delta_ratio_p50": 0.0008478120435029268,
+          "delta_ratio_p95": 0.001193564385175705
+        },
+        {
+          "group": "L_s",
+          "kind": "oracle",
+          "teacher": {
+            "count": 128,
+            "before": 128,
+            "after": 128,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 128,
+            "after": 128,
+            "repairs": 0,
+            "damages": 0
+          }
+        }
+      ]
+    },
+    {
+      "view": "01",
+      "groups": [
+        {
+          "group": "all",
+          "kind": "candidate",
+          "teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 491,
+            "repairs": 5,
+            "damages": 5
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 122,
+            "repairs": 3,
+            "damages": 2
+          },
+          "delta_ratio_p50": 0.001213740324601531,
+          "delta_ratio_p95": 0.011097816750407219
+        },
+        {
+          "group": "all",
+          "kind": "oracle",
+          "teacher": {
+            "count": 512,
+            "before": 491,
+            "after": 512,
+            "repairs": 21,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 128,
+            "repairs": 7,
+            "damages": 0
+          }
+        },
+        {
+          "group": "L_s",
+          "kind": "candidate",
+          "teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 122,
+            "repairs": 3,
+            "damages": 2
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 122,
+            "repairs": 3,
+            "damages": 2
+          },
+          "delta_ratio_p50": 0.0011480090906843543,
+          "delta_ratio_p95": 0.009550427086651325
+        },
+        {
+          "group": "L_s",
+          "kind": "oracle",
+          "teacher": {
+            "count": 128,
+            "before": 121,
+            "after": 128,
+            "repairs": 7,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 121,
+            "after": 128,
+            "repairs": 7,
+            "damages": 0
+          }
+        },
+        {
+          "group": "blocked",
+          "kind": "candidate",
+          "teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 66,
+            "repairs": 5,
+            "damages": 4
+          },
+          "L_s_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 16,
+            "repairs": 3,
+            "damages": 2
+          },
+          "delta_ratio_p50": 0.004103246610611677,
+          "delta_ratio_p95": 0.022692391648888588
+        },
+        {
+          "group": "blocked",
+          "kind": "oracle",
+          "teacher": {
+            "count": 83,
+            "before": 65,
+            "after": 83,
+            "repairs": 18,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 21,
+            "before": 15,
+            "after": 21,
+            "repairs": 6,
+            "damages": 0
+          }
+        }
+      ]
+    },
+    {
+      "view": "20",
+      "groups": [
+        {
+          "group": "all",
+          "kind": "candidate",
+          "teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 490,
+            "repairs": 1,
+            "damages": 3
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 0,
+            "damages": 0
+          },
+          "delta_ratio_p50": 0.0011734280269593,
+          "delta_ratio_p95": 0.008548720739781857
+        },
+        {
+          "group": "all",
+          "kind": "oracle",
+          "teacher": {
+            "count": 512,
+            "before": 492,
+            "after": 512,
+            "repairs": 20,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 128,
+            "repairs": 3,
+            "damages": 0
+          }
+        },
+        {
+          "group": "L_s",
+          "kind": "candidate",
+          "teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 0,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 125,
+            "repairs": 0,
+            "damages": 0
+          },
+          "delta_ratio_p50": 0.0011630388908088207,
+          "delta_ratio_p95": 0.008016268722712994
+        },
+        {
+          "group": "L_s",
+          "kind": "oracle",
+          "teacher": {
+            "count": 128,
+            "before": 125,
+            "after": 128,
+            "repairs": 3,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 128,
+            "before": 125,
+            "after": 128,
+            "repairs": 3,
+            "damages": 0
+          }
+        },
+        {
+          "group": "blocked",
+          "kind": "candidate",
+          "teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 45,
+            "repairs": 0,
+            "damages": 3
+          },
+          "L_s_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 13,
+            "repairs": 0,
+            "damages": 0
+          },
+          "delta_ratio_p50": 0.006439408753067255,
+          "delta_ratio_p95": 0.0238129124045372
+        },
+        {
+          "group": "blocked",
+          "kind": "oracle",
+          "teacher": {
+            "count": 62,
+            "before": 48,
+            "after": 62,
+            "repairs": 14,
+            "damages": 0
+          },
+          "L_s_truth": {
+            "count": 16,
+            "before": 13,
+            "after": 16,
+            "repairs": 3,
+            "damages": 0
+          }
+        }
+      ]
+    }
+  ],
+  "caveat": "Same source training records and observed views; oracle uses privileged clean target and is not deployable. Teacher agreement is not TX accuracy."
+}
