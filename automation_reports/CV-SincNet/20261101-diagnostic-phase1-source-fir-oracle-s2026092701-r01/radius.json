@@ -1,0 +1,165 @@
+{
+  "status": "SOURCE_ONLY_RADIUS_DIAGNOSTIC",
+  "taps": 9,
+  "source_records": 512,
+  "source_views": [
+    1,
+    20
+  ],
+  "clean_per_record_used": true,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "results": [
+    {
+      "view": 1,
+      "groups": [
+        {
+          "group": "all",
+          "count": 512,
+          "ratio_p50": 0.04498077556490898,
+          "ratio_p90": 0.11321903765201569,
+          "ratio_p95": 0.1529700756072998,
+          "ratio_max": 0.6036949753761292,
+          "methods": {
+            "p05": {
+              "matches": 495,
+              "repairs": 6,
+              "damages": 2
+            },
+            "p10": {
+              "matches": 497,
+              "repairs": 9,
+              "damages": 3
+            },
+            "p20": {
+              "matches": 498,
+              "repairs": 10,
+              "damages": 3
+            },
+            "p50": {
+              "matches": 498,
+              "repairs": 10,
+              "damages": 3
+            },
+            "full": {
+              "matches": 498,
+              "repairs": 10,
+              "damages": 3
+            }
+          }
+        },
+        {
+          "group": "blocked",
+          "count": 83,
+          "ratio_p50": 0.1136462390422821,
+          "ratio_p90": 0.2311399132013321,
+          "ratio_p95": 0.2620721757411957,
+          "ratio_max": 0.6036949753761292,
+          "methods": {
+            "p05": {
+              "matches": 69,
+              "repairs": 5,
+              "damages": 1
+            },
+            "p10": {
+              "matches": 72,
+              "repairs": 8,
+              "damages": 1
+            },
+            "p20": {
+              "matches": 73,
+              "repairs": 9,
+              "damages": 1
+            },
+            "p50": {
+              "matches": 73,
+              "repairs": 9,
+              "damages": 1
+            },
+            "full": {
+              "matches": 73,
+              "repairs": 9,
+              "damages": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "view": 20,
+      "groups": [
+        {
+          "group": "all",
+          "count": 512,
+          "ratio_p50": 0.040365833789110184,
+          "ratio_p90": 0.10636879503726959,
+          "ratio_p95": 0.14121007919311523,
+          "ratio_max": 4.805409908294678,
+          "methods": {
+            "p05": {
+              "matches": 497,
+              "repairs": 7,
+              "damages": 2
+            },
+            "p10": {
+              "matches": 500,
+              "repairs": 10,
+              "damages": 2
+            },
+            "p20": {
+              "matches": 501,
+              "repairs": 11,
+              "damages": 2
+            },
+            "p50": {
+              "matches": 501,
+              "repairs": 11,
+              "damages": 2
+            },
+            "full": {
+              "matches": 501,
+              "repairs": 11,
+              "damages": 2
+            }
+          }
+        },
+        {
+          "group": "blocked",
+          "count": 62,
+          "ratio_p50": 0.12593063712120056,
+          "ratio_p90": 0.23050440847873688,
+          "ratio_p95": 0.2866145670413971,
+          "ratio_max": 4.805409908294678,
+          "methods": {
+            "p05": {
+              "matches": 55,
+              "repairs": 7,
+              "damages": 0
+            },
+            "p10": {
+              "matches": 55,
+              "repairs": 7,
+              "damages": 0
+            },
+            "p20": {
+              "matches": 56,
+              "repairs": 8,
+              "damages": 0
+            },
+            "p50": {
+              "matches": 56,
+              "repairs": 8,
+              "damages": 0
+            },
+            "full": {
+              "matches": 56,
+              "repairs": 8,
+              "damages": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
