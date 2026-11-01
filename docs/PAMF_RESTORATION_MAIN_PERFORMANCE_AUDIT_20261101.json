@@ -1352,6 +1352,86 @@
         "practical_mid_urban": 14265,
         "practical_low_urban": 27452
       }
+    },
+    {
+      "name": "CovarianceFeature",
+      "run_id": "20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01",
+      "arm": "TF_CovarianceFeature",
+      "code_commit": "5359a1b82b1fa5d640a394c3e3a77ce3b945fe1e",
+      "metrics": {
+        "clean": {
+          "count": 168000,
+          "correct": 145728,
+          "accuracy": 86.74285714285715,
+          "raw_clean_gap_pp": -0.20416666666666572,
+          "clean_accuracy_retention_percent": 100.23592530178492
+        },
+        "practical_high": {
+          "count": 168000,
+          "correct": 141073,
+          "accuracy": 83.9720238095238,
+          "raw_clean_gap_pp": 2.566666666666677,
+          "clean_accuracy_retention_percent": 97.0340819204182
+        },
+        "practical_mid": {
+          "count": 168000,
+          "correct": 138541,
+          "accuracy": 82.46488095238095,
+          "raw_clean_gap_pp": 4.07380952380953,
+          "clean_accuracy_retention_percent": 95.29249922619252
+        },
+        "practical_low_suburban": {
+          "count": 168000,
+          "correct": 135376,
+          "accuracy": 80.58095238095238,
+          "raw_clean_gap_pp": 5.957738095238099,
+          "clean_accuracy_retention_percent": 93.11552085841043
+        },
+        "practical_high_urban": {
+          "count": 168000,
+          "correct": 138782,
+          "accuracy": 82.60833333333333,
+          "raw_clean_gap_pp": 3.9303571428571473,
+          "clean_accuracy_retention_percent": 95.45826598342333
+        },
+        "practical_mid_urban": {
+          "count": 168000,
+          "correct": 125824,
+          "accuracy": 74.8952380952381,
+          "raw_clean_gap_pp": 11.643452380952382,
+          "clean_accuracy_retention_percent": 86.54537950957801
+        },
+        "practical_low_urban": {
+          "count": 168000,
+          "correct": 112497,
+          "accuracy": 66.9625,
+          "raw_clean_gap_pp": 19.576190476190476,
+          "clean_accuracy_retention_percent": 77.37868418337517
+        }
+      },
+      "clean_correct_changes": {
+        "cross_rx": 377,
+        "cross_both": -34
+      },
+      "source_report": "../automation_reports/CV-SincNet/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01/analysis.md",
+      "scenes_passed": 1,
+      "clean_accuracy_retention_percent": {
+        "clean": 100.23592530178492,
+        "practical_high": 97.0340819204182,
+        "practical_mid": 95.29249922619253,
+        "practical_low_suburban": 93.11552085841043,
+        "practical_high_urban": 95.45826598342333,
+        "practical_mid_urban": 86.54537950957801,
+        "practical_low_urban": 77.37868418337519
+      },
+      "scene_shortfall_correct": {
+        "practical_high": 0,
+        "practical_mid": 1804,
+        "practical_low_suburban": 4969,
+        "practical_high_urban": 1563,
+        "practical_mid_urban": 14521,
+        "practical_low_urban": 27848
+      }
     }
   ],
   "new_neural_forwards": 0,

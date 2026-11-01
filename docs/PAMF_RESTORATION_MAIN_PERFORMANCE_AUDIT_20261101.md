@@ -1,6 +1,6 @@
 # 星地恢复器 Main 性能核对
 
-截至 2026-11-02，固定 DURA v1.0 为 1/6 景达标；本表 15 个已完成新候选中 0 个达到六景逐个距 raw clean ≤3 个百分点。完整验收还要求两个总体分别保持 clean。性能是主线，训练效率是支线；源域拟合、参数量和训练结束均不能替代正式验收。
+截至 2026-11-02，固定 DURA v1.0 为 1/6 景达标；本表 16 个已完成新候选中 0 个达到六景逐个距 raw clean ≤3 个百分点。完整验收还要求两个总体分别保持 clean。性能是主线，训练效率是支线；源域拟合、参数量和训练结束均不能替代正式验收。
 
 所有数值来自已完成独立评分的公开同 row 结果。表格按研发顺序排列，不按测试分数选择候选，不合成不同模型的最佳单项，也不更换默认 DURA。原地面完整 Tri-SIG-TIME SSL 的同一冻结默认头为基座，Main 包含跨接收机 126000 条和跨接收机且跨日期 42000 条。每个新 G 固定最终轮次，七景全部预测完成后独立 truth-last。主参照 raw clean 为 86.538690%（145385/168000），故每景至少需要 140345 条正确预测，即 83.538690%。
 
@@ -23,6 +23,7 @@
 |Diffusion Early4（冻结推理）|86.8768|79.1982|77.9565|76.4214|77.0315|67.4256|58.4810|0/6|
 |Diffusion SigmaMix|86.7185|73.2601|71.3012|69.2732|71.6690|63.9185|56.5030|0/6|
 |CovarianceMAP|86.5726|83.5006|82.1393|80.5393|82.1833|75.0476|67.1982|0/6|
+|CovarianceFeature|86.7429|83.9720|82.4649|80.5810|82.6083|74.8952|66.9625|1/6|
 
 准确率单位为 %。完整可复算值和正确数见同名 JSON/CSV。
 
@@ -47,6 +48,7 @@
 |Diffusion Early4（冻结推理）|+635|-67|否|
 |Diffusion SigmaMix|+293|+9|是|
 |CovarianceMAP|+82|-25|否|
+|CovarianceFeature|+377|-34|否|
 
 ## “恢复成 clean 的几成”需区分三个问题
 
@@ -70,8 +72,9 @@
 - 同权重的冻结第4读出（0新训练/7调用）使六景较完整八步提高5.576786至9.792857个百分点，仍全部低于DURA、0/6达标。合并clean净+568，但跨接收机且跨日期净−67；这证明该固定模型的后段采样确实降低Main表现，并未达到最终目标。
 - SigmaMix 仅改变训练噪声尺度分布，两个clean总体分别净+293、+9，低档城区较原完整扩散提高7.814881个百分点；六景仍0/6、全部较DURA低11.083333至12.298214个百分点。大噪声曝光增加解决了部分覆盖问题，但不足以支持继续扩大这条扩散路线。
 - CovarianceMAP 用时频Transformer估计物理Action/噪声，并以全512维源IQ协方差求后验；G更新不执行F0或后验。六景较received直接识别均有收益，但仍全部低于DURA 0.658333至1.602976个百分点、0/6达标；clean合并净+57、跨日期净−25。高档郊区距raw clean3.038095个百分点也未达标，不能放宽3pp或选择性重跑。
+- CovarianceFeature与物理估计对照保持同实际E0、原source mu/C、数据顺序/draw/LR、单阶段30/7410和部署路径，新增实际后验IQ的冻结F0连续特征指导。六景1/6达标、仍全部低于DURA；相对物理对照四个较温和场景提高0.041667至0.471429个百分点，中/低档城区下降0.152381/0.235714个百分点，后者同条净少396条正确。clean合并净+343，cross_rx净+377而cross_both净−34。训练源特征误差下降不能认定域差异是唯一起因，还需同源同病例冻结对照区分目标作用和泛化。
 - 冻结源四步轨迹显示，DirectBridge 低档城区首末步 Fclean 一致率均为 84.749304%；StateBridge 则从 86.350975% 降到 81.615599%，净损伤 68/1436，IQ NMSE 从 .07612306 增至 .11645158。后续迭代的退化已在训练源面板出现，不能全部归为 Main 域差异。训练用 clean/received 插值，而部署使用网络自行生成的状态，二者不一致是可检验假设，尚不独立证明原因。[完整轨迹诊断](../automation_reports/CV-SincNet/20261101-diagnostic-Restore-bridge-trajectory-source-s2026092701-r01/analysis.md)保留全部 96 组和配对。DirectBridge 的代数捷径仍只是一种可能限制，不能认定实际网络使用了精确解析式。
-- 所有新 G 都在原 L_s/U_s 范围训练；冻结源 F0 提供连续特征指导，因此这些方法不是 F-free。TX 真标签、V/OE/novel/目标不进入 G 的更新、早停或选模。OE 仅用于冻结诊断。
+- 所有新 G 都在原 L_s/U_s 范围训练。包含冻结源 F0 连续特征指导的行明确不是 F-free；CovarianceMAP 的 G 更新只回归源物理量、无 F0 梯度，但方法设计参考过冻结源 F0 诊断，知识边界单列。TX 真标签、V/OE/novel/目标不进入 G 的更新、早停或选模。OE 仅用于冻结诊断。
 - 当前仅一个模型 seed，且该基准已有历史曝光。这些是固定矩阵的研究结果，不宣称全新盲测或已知恢复极限。下一方案仍须依据合法源端机制证据预先固定，不能借已揭示的 Main 错误逐条优化或按场景切换模型。
 
 ## 可追溯来源
@@ -91,11 +94,12 @@
 - [Diffusion Early4（冻结推理） 完整分析](../automation_reports/CV-SincNet/20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01/analysis.md)，实际代码 `3e5ecb4ffcc5658693bd9b6dc509711b4509a231`。
 - [Diffusion SigmaMix 完整分析](../automation_reports/CV-SincNet/20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01/analysis.md)，实际代码 `3e5ecb4ffcc5658693bd9b6dc509711b4509a231`。
 - [CovarianceMAP 完整分析](../automation_reports/CV-SincNet/20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01/analysis.md)，实际代码 `bf29554a03e28a012eaaa134f5c7b3f7856f2268`。
+- [CovarianceFeature 完整分析](../automation_reports/CV-SincNet/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01/analysis.md)，实际代码 `5359a1b82b1fa5d640a394c3e3a77ce3b945fe1e`。
 
 本核对只复用公开汇总，新增神经前向、原始训练/目标数据读取、真值读取均为 0。完整目标保持 ACTIVE，默认 DURA 不变。
 
 
-## 大幅改造已进入实际训练
+## 大幅改造与源端机制证据
 
 独立的[时频联合 Transformer 条件残差扩散完整结果](../automation_reports/CV-SincNet/20261102-phase1-Restore-TFResidualDiffusion-E30-s2026092701-r01/analysis.md)已纳入上表。1614608参数，从零单阶段30/7410；训练1次denoiser/记录，部署固定8步Heun共15次，DURA结构和历史G均无继承。它未达到主性能门槛，完整84单元/2604组/所有配对复算PASS，raw/DURA判决差0；训练loss不与Main准确率混作同一指标。
 
@@ -118,8 +122,16 @@
 
 后续 [nativeIQhint 从零单阶段30轮对照](../automation_reports/CV-SincNet/20261031-phase1-DURA-nativeIQhint-E30-s2026092701-r01/analysis.md)也已完成，使用冻结 R17 最终 IQ 缓存指导紧凑266951参数学生，不复制教师权重。旧 F50/defaulthead 的 low urban 为67.375595%，相对匹配E30 physical提高0.668452个百分点，相对当时DURA低1.514286个百分点；六星地0/6超过当时DURA。教师IQ还带有自身误差，不能等同clean或认为权重更大必然更好。
 
-这些是旧F50证据，**不纳入本次历史检索时原完整Tri-SIG-TIME SSL/Main的15个已完成候选计数，也不改标成本基座成绩**。source-only来源合规与方法有效性是两个问题；历史教师、源V/F选择、缓存和学生成本均须披露。当前CovarianceFeature继续自己的固定scratch30配方，只增加原Tri-SIG-TIME SSL对实际恢复IQ的连续源特征指导，没有R17教师输入，也没有因这次历史检索更改训练或新增候选。本次历史检索时该候选尚无完整Main成绩，没有提前纳入完成表。
+这些是旧F50证据，**不纳入本次历史检索时原完整Tri-SIG-TIME SSL/Main的15个已完成候选计数，也不改标成本基座成绩**。source-only来源合规与方法有效性是两个问题；历史教师、源V/F选择、缓存和学生成本均须披露。CovarianceFeature本次固定scratch30配方，只增加原Tri-SIG-TIME SSL对实际恢复IQ的连续源特征指导，没有R17教师输入，也没有因这次历史检索更改训练或新增候选。本次历史检索时该候选尚无完整Main成绩，没有提前纳入完成表。
+
 
 ## 原始论文的条件核对
 
 [五篇原始论文核查](PAMF_RESTORATION_LITERATURE_CONDITIONS_20261102.md)区分编码特征分类、解码IQ接固定F0，以及需要目标接收机配对校准的不同问题。PSC-DAE使用TX监督，DRIFT训练新的TX/RX识别表示，TCNN采集目标校准响应，LTE-V2X使用完整协议参考结构；均不能直接继承为本任务的成绩或六景恢复上限。CDP理论的固定/最优分类器设定也不等价于当前六类未知信道数值上界。核查没有新增G/F/IQ/目标预测/真值读取或训练，没有更改CovarianceFeature固定配方。
+
+
+## 实际后验源特征指导与训练计算优化
+
+[CovarianceFeature完整结果](../automation_reports/CV-SincNet/20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01/analysis.md)已纳入上表，42单元/1302组及raw、DURA、固定物理对照和clean的全部同条配对独立复算，最大差1.24e-14、baseline判决差0。原模型全部权重从零、原LsUs和单阶段30保持；当前16个已完成候选仍没有达到完整六景及两个clean保持要求，不将1/6或合并clean上涨当成目标完成。
+
+[冻结源端计时](../automation_reports/CV-SincNet/20261102-diagnostic-Restore-factorized-source-cost-s2026092701-r01/analysis.md)验证另一条计算路径在同权重、同源批次的loss及全部参数梯度一致，0optimizer/新训练。前向-反向-clip区域中位wall382.360001→353.696042ms（减少7.496589%），10对7快3慢，allocated峰值减少4.008942%；不包含optimizer、全量IO、epoch日志，也不代表完整30轮同质量加速。它没有改变当前5359的训练/Main路径或产生另一个可计数的新恢复模型。默认DURA保持，目标ACTIVE。
