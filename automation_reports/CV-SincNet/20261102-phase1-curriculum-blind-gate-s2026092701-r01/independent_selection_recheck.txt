@@ -1,0 +1,15 @@
+INDEPENDENT_SELECTION_VERIFIED {"kind": "gated_direct_iq", "epoch": 1, "alpha": 0.5, "threshold": 0.99, "validation_net": 115}
+GROUP 1 clean n 1092 valid 1074 gate 0 raw_correct 1074 candidate_correct 1074 iq 0.0
+GROUP 1 practical_high n 1206 valid 1176 gate 1205 raw_correct 1159 candidate_correct 1164 iq 0.011051214
+GROUP 1 practical_mid n 1091 valid 1078 gate 1088 raw_correct 1025 candidate_correct 1042 iq 0.023790063
+GROUP 1 practical_low_suburban n 1105 valid 1082 gate 1100 raw_correct 985 candidate_correct 1005 iq 0.04340203
+GROUP 1 practical_high_urban n 1092 valid 1066 gate 1088 raw_correct 999 candidate_correct 1014 iq 0.029636313
+GROUP 1 practical_mid_urban n 1102 valid 1074 gate 1094 raw_correct 781 candidate_correct 826 iq 0.124176942
+GROUP 1 practical_low_urban n 1152 valid 1130 gate 1147 raw_correct 706 candidate_correct 719 iq 0.217633207
+GROUP 2 clean n 608 valid 592 gate 0 raw_correct 592 candidate_correct 592 iq 0.0
+GROUP 2 practical_high n 537 valid 516 gate 531 raw_correct 502 candidate_correct 502 iq 0.017005321
+GROUP 2 practical_mid n 541 valid 516 gate 539 raw_correct 489 candidate_correct 497 iq 0.029628638
+GROUP 2 practical_low_suburban n 568 valid 544 gate 564 raw_correct 505 candidate_correct 508 iq 0.046884753
+GROUP 2 practical_high_urban n 568 valid 547 gate 566 raw_correct 507 candidate_correct 508 iq 0.038578562
+GROUP 2 practical_mid_urban n 568 valid 548 gate 559 raw_correct 423 candidate_correct 433 iq 0.145127282
+GROUP 2 practical_low_urban n 531 valid 512 gate 525 raw_correct 326 candidate_correct 349 iq 0.229229718
