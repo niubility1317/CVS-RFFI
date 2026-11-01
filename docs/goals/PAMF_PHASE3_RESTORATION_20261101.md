@@ -366,3 +366,11 @@ SigmaMix E01模型/优化器/RNG独立CPU读回：全部E0 tensor同原full8实�
 原Main168000×七景/四路56单元全预测后独立CPU truth-last，3阶段exit0/liveempty，56单元/1736组/1302raw配对/868额外配对/868相对clean配对独立复算PASS，最大差1.24e-14、raw/DURA/full8复用判决差0。六景依次79.198214/77.956548/76.421429/77.031548/67.425595/58.480952%，0/6；相对同权重full8提高5.576786至9.792857个百分点，但六景仍低于DURA。clean86.876786%/合并净+568，cross_rx+635、cross_both−67，两个clean未同时保持。完整TX/RX/day/净纠错见analysis.md。
 
 这是源端后段采样损伤与真实Main任务表现之间的受控推理对照证据，不证明所有扩散均应缩短、真实RF细节完整恢复或理论上限。1614608参数/1238802432静态实数MAC/21complexFFT，不冒充实测时延；祖先G30、F0 E50/源尺度成本保留。独立SigmaMix从零30及完整15调用Main自动继续，不按本项结果取消或组合。完整六景3pp+两个clean目标ACTIVE，默认DURA保持。
+
+## 噪声尺度均衡扩散原 Main 七景完成（2026-11-02）
+
+`20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01`，实际代码`3e5ecb4ffcc5658693bd9b6dc509711b4509a231`。同一时频Transformer/条件残差扩散架构，训练仅改为50%原lognormal+50%均匀8部署sigma，从零单阶段30/7410，1614608参数，训练1denoiser/记录、部署固定8步Heun共15调用，无DURA/旧G祖先。原Ls6300Us56700/R07/源顺序draw/LR保持，F0仅连续特征指导，0TX/V/OE/target更新或选模，OE仅冻结诊断。
+
+原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景全部预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对/868相对clean配对复算PASS，最大差1.24e-14、raw/DURA判决差0，60完整日志及源顺序/LR/加权loss/5sigma-9mixture统计/同原full8实际E0/E01-E30全局CPU-CUDA Gaussian RNG/30快照与E30-final核实。
+
+六景依次73.260119/71.301190/69.273214/71.669048/63.918452/56.502976%，达标0/6，相对DURA依次-11.083333/-11.714881/-12.048810/-11.380357/-11.787500/-12.298214个百分点；clean86.718452%，cross_rx净变化+293、cross_both净变化+9。完整分组与双向纠错见analysis.md。新训练曲线是加噪residual单步输出，含clean信息，与完整部署sampler不同，不能把低训练误差视作恢复性能。sigma抽样改变期望训练风险，不做importance correction；损失系数/架构/E0/源顺序draw/LR/完整15调用部署保持，静态MAC与FFT不冒充实测时延。完整目标未达到，保持 ACTIVE 和默认 DURA。

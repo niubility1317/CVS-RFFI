@@ -1,5 +1,7 @@
 # 部署噪声尺度均衡训练：同初值从零单阶段30轮
 
+**六景0/6，clean86.718452%。** cross_rx clean净变化+293，cross_both净变化+9。完整目标未达到，保持 ACTIVE 和默认 DURA。[完整结果](analysis.md)。
+
 - run_id：`20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01`
 - group_id：`restoration-diffusion-source-motivated-fixes`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原Main168000×七景完整，六景0/6，两个clean总体均保持。详见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -50,3 +52,8 @@
 ## 源驱动对照实际运行已核实
 
 VERIFIED / RUNNING。源2真实G/F0、CUDA mixture不改变全局RNG与严格E0重载PASS。E01独立CPU读回模型/优化器/RNG，实际E0逐tensor同原full8工厂/真实初值，全部30轮sourceorder/draw相同，E01全局CPU/CUDA RNG状态同原full8，配置仅sigma抽样与版本差异；9项mixture计数/5项sigma区间/加权loss复算PASS。 实际PID/CWD/commit/CUDA/GPU及日志增长核实；GPU6准入free24110MiB/原0compute/新增1，两项分别在4/6同时运行。archive单次SHA和远端编译通过，其他owner保持。原Main完整矩阵自动继续，全prediction固定后独立truth-last，正式性能PENDING，默认DURA与目标ACTIVE保持。
+
+
+## 噪声尺度均衡扩散完整七景完成
+
+VERIFIED / ANALYZED。全G从零单阶段30/7410，训练每记录1denoiser，部署固定15调用，两个Main总体各七景全部预测后独立truth-last；4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对/868相对clean配对复算PASS，最大指标差1.24e-14、raw/DURA判决差0。60完整训练日志/stdout/源顺序draw/LR/加权loss/每轮5sigma与9mixture统计、同原full8实际E0/同Gaussian随机流的E01和E30CPU-CUDA RNG/15调用配置/骨干更新、30技术快照存在与E30-final一致性核实。完整目标未达到，保持 ACTIVE 和默认 DURA。

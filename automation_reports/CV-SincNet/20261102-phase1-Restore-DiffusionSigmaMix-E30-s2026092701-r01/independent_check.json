@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "run_id": "20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01",
+  "coverage": {
+    "TF_ResidualDiffusion": {
+      "cross_rx": 126000,
+      "cross_both": 42000
+    },
+    "TF_DiffusionSigmaMix": {
+      "cross_rx": 126000,
+      "cross_both": 42000
+    }
+  },
+  "prediction_cells_checked": 84,
+  "score_groups": 2604,
+  "raw_pairs": 1736,
+  "baseline_decision_differences": 0,
+  "max_abs_metric_error": 1.2434497875801753e-14,
+  "epoch_recovery_files": 30,
+  "final_matches_E30_recovery": true,
+  "matched_source_orders_and_draws": true,
+  "same_actual_E0_source_orders_Gaussian_RNG_and_sigma_mixture_checked": true,
+  "control_is_exact_existing_ResidualDiffusion_not_new_training": true,
+  "deployment_sigma_points": [
+    80.0,
+    34.9921875,
+    13.698575019836426,
+    4.637074947357178,
+    1.2866142988204956,
+    0.2674753665924072,
+    0.03518665209412575,
+    0.0020000000949949026
+  ],
+  "all_epoch_weighted_loss_max_abs_error": 5.304435113373529e-09,
+  "source_epochs_checked": 60,
+  "source_update_budget_each": 7410,
+  "neural_forwards": 0,
+  "optimizer_updates": 0,
+  "all_predictions_checked_before_truth": true
+}
