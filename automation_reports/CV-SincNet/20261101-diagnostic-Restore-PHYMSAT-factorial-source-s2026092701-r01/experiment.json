@@ -1,0 +1,161 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01",
+  "group_id": "restoration-source-joint-physical-factorial",
+  "display_name": "PHY-MSAT源端信道与噪声四路冻结诊断",
+  "description": "原LsUs512包×20draw，冻结原F0与PHY-MSAT fixedfinal30，分别替换真实模拟H和noise；0更新/TX/V/OE/target，区分共适应系统的误差来源。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "frozen-PHYMSAT",
+    "known-action-noise-factorial",
+    "no-updates"
+  ],
+  "comparison_group_id": "PHYMSAT-blind-trueH-trueNoise-both-source-only",
+  "parent_run_ids": [
+    "20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Useractivegoal:performanceprimary/groundTriSIGSSLsixeach3pp+clean;originalLsUs-only/source-simulation-and-F0-guidanceallowed/OEonlyfrozendiagnostic/majorarchitecturefreedom. This source-only mechanism diagnostic uses no optimizer or target.",
+  "code": {
+    "commit": "ca5cf38aff632f4f037b15f056a320a5a0b88509",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "ExistingN607CVS-RFFI Torch2.1/NumPy2;FP32 TF32off CPUthreads2;actual3ff8F0/defaulthead andfixed47cDURA runtime",
+    "cwd": "releases/20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005 Ls6300Us56700;existingR07twentytrainrealizations",
+    "representation": "Existing originalR07 sourceFP32clean/received/simulatorFIR-main-image/noise. Fixed128Ls384Us x20draws=10240. No newobservations/target.",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "R07cache/train/physical_ids.npy roles.npy;existing20261101LUcache IDs/roles forminimumcontractmatch",
+    "label_map_ref": "No labels read; F0 clean argmax agreement is not TX accuracy",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE sourcehandles. R07complete20/63000/0TX-target. Inputaudit same63000uniqueIDset (orderdiffers),roles/RX/day samebyID;clean maxabs4.76837158203125e-7 NMSE1.7667841088968941e-15. No repeateddatahash/revalidation.",
+    "support_query_ref": "None. Source-onlyin-samplemechanismtest usingoriginaltrainingdraws;canonicalIDs/roles compatibility checkonly. Frozenf57sourceF0scale reused.",
+    "leo_config_ref": "ExistingR07sourcecache20/clean15%+sixsceneuniform85%;no new simulator observations;2.462GHz retains own identity",
+    "actual_training_labels": "No newtraining. TX labels remainhidden. NoV/OE/novel/target. FrozenF0 cleanargmax is only diagnosticagreement reference,notTXtruth/trainingpseudo-label.",
+    "augmentation": "No newaugmentation. OriginalR07 2.462GHz25MHz/post_sync/noEQ/reflect/refSNR30/15percentclean+sixuniform85percent,20storeddraws;notG10MIX01."
+  },
+  "permissions": {
+    "regime": "source-only-zero-update-joint-physical-factorial",
+    "query_use": "No target/Utarget/query/OE/V/novel/TX. BothG/F0frozen. TrueH/noise replacesonlysourceoraclefactors. Nooptimizer/prototype/CE/newhead/targetselection.",
+    "external_method_exception": null,
+    "claim_scope": "In-samplecounterfactual oncoadaptedjointnetwork. ChangingH/noisealsochangespriorcontext. NotprimaryMainperformance,newG,deployableoracle,TXaccuracy,causalerrorpartitionortheoreticalceiling."
+  },
+  "checkpoint": {
+    "initialization": "No newG. FrozenPHY-MSATsource-onlyscratchfinal30 andoriginalgroundTriSIGSSL F0/defaulthead.",
+    "sources": [
+      "OriginalTriSIGSSL3ff8/main3view-s2026092701/E50-11100/232993/sourceonlyoriginal392005/defaulthead",
+      "PHYMSAT 20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01/rows/PHY_MSat/training/final.pt/8198a2e70c655f24ebaf321f232a676cfb46d916/fixed30-7410/8613449/sourceonlyLsUs",
+      "Frozenf57source-only63000F0featuregeometry,codef57c54cad7491e3e8a36f7ea51a9caa13a3a0ab9;metricnormalizationonly",
+      "R07original63000LsUs/20train-draws andcanonical63000sourcecache minimumID-rolecheck;no validationfolder orG10receivedtraining"
+    ],
+    "contract_check_ref": "ExistingVALIDATED_ONCE original392005/p2_min_v1 handles plusstrictparentconfiguration/commit/30-7410. ParentfullMain alreadycomplete;onlysource-onlyfinal30weights inherited. No newhash/datarevalidation.",
+    "provenance_verdict": "OriginalF0andGsourceonly,matchingroles/IDs. G usedsourceF0features/simulatortraces,notF-free. NoPCD/targetteacher/modelupdates. Parenttargettestwasfrozenaftertraining,notcheckpointselection.",
+    "selection_rule": "Fourfixedpaths/all10240cases. Same2priors/8CG-each/realpriorvariance.01. Trueσ<1e-7floor only. No gridsearch,checkpointselection,newtrainingortargetfeedback."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/PHYMSAT-source-factorial",
+    "gpu_policy": "GPU4or6UUID/free>=16000MiB/existingcompute<=2/addONEtotal<=3/own1card/oneNN/globalown<=2/othersuntouched",
+    "remote_run_root": "runs/20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01",
+    "remote_log_root": "runs/20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.physical_diagnostic run --root /home/szu2070436088/2510044040/CV-SincNet --commit ca5cf38aff632f4f037b15f056a320a5a0b88509 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+    "stop_rule": "Wrongsource/F0/G/config/role/collision/nonfinite/stateupdate/smokereplaymismatch/unlaunchable:preservefailedroot/noautoretry. No scientificqualityearlystop. Actualsource2smokefirst/PASSimmediatelycontinues."
+  },
+  "expected_artifacts": [
+    "submitted.json",
+    "smoke.json",
+    "source_records.npz PRIVATE",
+    "results.json",
+    "terminal.json",
+    "complete.json",
+    "logs/worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Per-sceneIQNMSE,F0cosdistance,source-scale-featureMSE,Fcleanargmaxagreement(notTXaccuracy)",
+      "TrueH/noise/both vsblind pairedrepair-damage-net;estimatedActionforwardNMSE andnoiselogMSE",
+      "0TX-V-OE-target/optimizer/modelupdates;fixedtwolearnedpriors8CG-each/.01priorvar"
+    ],
+    "dimensions": [
+      "fixed512sourcepacketsx20draws",
+      "clean+sixpractical",
+      "blind/trueH/trueNoise/both"
+    ],
+    "prediction_ref": "Privatefullsource_records.npz;no targetprediction ornewG",
+    "scorer_ref": "Sourceonly/notruth;independentNumPyfullaggregate/pairedrecomputeaftercomplete"
+  },
+  "rows": [
+    {
+      "row_id": "source-factorial-512x20",
+      "method": "frozenPHYMSAT-trueH-noise-factorial",
+      "purpose": "source-onlymechanismdiagnosis",
+      "config_ref": "experiments/pamf_phase3_restoration/physical_diagnostic.py",
+      "resolved_config_ref": "releaseinputs PRIVATE andstrictparentconfiguration",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101911
+      },
+      "seed_notes": "No new RNG/modeltraining. Fixedsame512sourcepanel/20R07draws. OriginalG/F0seed disclosed.",
+      "k": null,
+      "scenario": "source-clean+sixpractical-R07",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0updates. Source2smoke baseline+fourpaths;512F0cleanreference rows;10240casesx4paths. Existing63000sourceF0scale reused.",
+      "output_root": "runs/20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01",
+      "log_path": "runs/20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.physical_diagnostic worker --root /home/szu2070436088/2510044040/CV-SincNet --commit ca5cf38aff632f4f037b15f056a320a5a0b88509 --inputs /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-Restore-PHYMSAT-factorial-source-s2026092701-r01-release/inputs.json --cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache",
+      "expected_artifacts": [
+        "submitted.json",
+        "smoke.json",
+        "source_records.npz PRIVATE",
+        "results.json",
+        "terminal.json",
+        "complete.json",
+        "logs/worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Performanceprimary isgroundTriSIGSSLMain sixeach3pp+clean,stillunmet. ParentallMaincomplete/ANALYZED andliveempty;no newGtraining.",
+    "OnlyoriginalLsUs trainingdraws. OE/V/targetexcluded. Samepacketrepeated20draws,not10240independentpackets;no statisticalgeneralizationclaim.",
+    "TrueH/noisealsochangespriorcontext andcoadaptation. Worseoraclepathdoesnotproveestimatorunimportant. Fixedvariancefloorincludesclean1e-8sentinel;cacheunchanged.",
+    "ThreefocusedchecksPASS;oneindependentP0P1beforelaunch. Onecodecommit/archiveSHA/compile/preflight/actualsource2smoke/poststateonly. DefaultDURAandgoalstatusunchanged."
+  ],
+  "registered_at": "2026-11-01T08:09:32+00:00"
+}
