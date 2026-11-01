@@ -1,0 +1,1685 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-phase2-native-score-recovery-m4-r01",
+  "group_id": "phase2-native-score-only-recovery",
+  "display_name": "原生外部对比冻结预测的独立评分补全",
+  "description": "Frozen R42 plus matched original LocalRidge: all8MIX full16KN/672units; LS/MU/LU five episodes each/1260units K5N20. 1932units and167496 desired rows including A0; exact old results reused. Native external existing predictions/scoring remain under original owner.",
+  "kind": "analysis",
+  "stage": "Phase2-independent-scoring",
+  "aliases": [
+    "native-score-CUDA-recovery"
+  ],
+  "tags": [
+    "phase2",
+    "score-only",
+    "frozen-predictions",
+    "exact-reuse",
+    "truth-last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261031-phase2-threegpu-takeover-m4-r10"
+  ],
+  "authorization": "User2026-11-01 complete remainingcomparison and reusecompleted; independentCPUscore-onlyroot for alreadyfrozen originalnine nativeprofile predictions; originalowner/root read-only, no takeover/restart, no training/prediction",
+  "code": {
+    "commit": "COMMIT_AT_RELEASE",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/data/raw_full_wisig_eq_20261029",
+    "version": "FullWiSig-eq-4dates-8767867records-local-full-validation-20261029",
+    "representation": "eq1 first256 float64 raw -> original FP32 unit-RMS -> fixed practical residual/post_sync/no additional EQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/F0/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/builder_only/partition/*/partition.npz",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/score_only/label_map.json",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "configs/pamf_phase2_threepool_episodes_r10_20261029.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": null,
+    "capsule_id": "483 existing Group1 capsules, p2_min_v1 VALIDATED_ONCE",
+    "split_id": "read exact existing K/N split IDs",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-milkr-threepool-m4-r01/data_audit.json",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261029-phase2-threepool-episodes-s2026102901-r01/capsules/P0{1,2,3}/{MIX01..08,LS01..05,MU01..05,LU01..05}/*",
+    "leo_config_ref": "configs/pamf_phase2_practical_mixture_20261028.json",
+    "source_target_overlap_policy": "same source physical roles;target opens only B/C current support;query never fit",
+    "matrix": {
+      "profiles": [
+        "protonet_cda",
+        "mrior_sda",
+        "dadda_sda",
+        "twostage",
+        "feature_separation_hu2024",
+        "poster_ft",
+        "radionet_ada_knn",
+        "orthogonal",
+        "lora_triplet_knn"
+      ],
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703,
+        2026092704
+      ],
+      "capsules": 483,
+      "prediction_dirs_per_profile": 1933,
+      "score_jobs": 17397,
+      "new_predictions": 0,
+      "query": "fixedparentpredictions only; no IQread"
+    }
+  },
+  "permissions": {
+    "regime": "fixed_source_complete_Tri_SIG_TIME_SSL_then_current_labeled_support_only",
+    "query_use": "per_sample_test_only",
+    "external_method_exception": null,
+    "claim_scope": "Independenttruthside metrics for alreadyclosed originalnativepredictions; not newmethod/training or targetadaptation; originalowner/output read-only; completedmetrics reused."
+  },
+  "checkpoint": {
+    "initialization": "No model/checkpoint loaded; frozenpredictionindexes only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092702/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092703/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092704/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "existing validated Group1 source contract + trisig_source.validate_done rechecks complete original source recipe",
+    "provenance_verdict": "FROZEN_PARENT_PREDICTIONS_ONLY",
+    "selection_rule": "Allnine originalnative profiles fixed, no scoreselection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/01a18faf-native-score-recovery",
+    "gpu_policy": "NoGPU; oneCPUscorer subprocess; same-prediction active originalscorer waited,neverstopped",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\phase2_cuda_recovery_20261101",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+    "stop_rule": "First unclosedprediction/metricbinding/scorertechnicalerror stops newtasks; preserveoutputs, no retry. If originalsame-prediction scorerlive, wait; reuse originalscore ifcomplete immediatelybefore scoring"
+  },
+  "expected_artifacts": [
+    "17397sameprediction-bound score outputs,oldcomplete metrics hardlinked withreuse metadata",
+    "external_score_overrides.json fornewreadoutmanifest",
+    "score_state/progressactualPIDandlogs",
+    "complete.json andsame-rowanalysis"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "old_macro_accuracy",
+      "new_macro_accuracy",
+      "H_macro",
+      "macro_f1",
+      "class_floor"
+    ],
+    "dimensions": [
+      "K",
+      "N",
+      "pool",
+      "RX",
+      "model_seed",
+      "MIX/scene_episode",
+      "stage",
+      "strict_support_path",
+      "query_path"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+    "scorer_ref": "experiments.pamf_phase2_practical.episodic_score",
+    "primary": "Originalindependent episodicmetrics from fixedpredictions; reusecompletedold scores; no newdecision oraccuracy selection",
+    "success": "17397score jobs closed with explicit reuse/new counts",
+    "secondary": "B_old/A0->B/B->C drops, macroF1/floor, perpool/RX/TX/day/episode/scene, actual SUPfit/query resource telemetry; natural query complement and true common-K intersection scores.",
+    "scientific_source_rule": "Frozen R42 currentSUP physicalOOF600candidates K>1, source-fixedK1; zero new neural fitting; allpredictions fixed before independenttruth",
+    "promotion_rule": "No methodpromotion or scorefeedback"
+  },
+  "rows": [
+    {
+      "row_id": "protonet_cda-s2026092701",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "protonet_cda",
+        "seed": 2026092701,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/protonet_cda/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092702",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "protonet_cda",
+        "seed": 2026092702,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/protonet_cda/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092703",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "protonet_cda",
+        "seed": 2026092703,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/protonet_cda/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "protonet_cda-s2026092704",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "protonet_cda",
+        "seed": 2026092704,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/protonet_cda/s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092701",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "mrior_sda",
+        "seed": 2026092701,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/mrior_sda/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092702",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "mrior_sda",
+        "seed": 2026092702,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/mrior_sda/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092703",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "mrior_sda",
+        "seed": 2026092703,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/mrior_sda/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "mrior_sda-s2026092704",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "mrior_sda",
+        "seed": 2026092704,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/mrior_sda/s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092701",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "dadda_sda",
+        "seed": 2026092701,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/dadda_sda/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092702",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "dadda_sda",
+        "seed": 2026092702,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/dadda_sda/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092703",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "dadda_sda",
+        "seed": 2026092703,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/dadda_sda/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "dadda_sda-s2026092704",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "dadda_sda",
+        "seed": 2026092704,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/dadda_sda/s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092701",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "twostage",
+        "seed": 2026092701,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/twostage/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092702",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "twostage",
+        "seed": 2026092702,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/twostage/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092703",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "twostage",
+        "seed": 2026092703,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/twostage/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "twostage-s2026092704",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "twostage",
+        "seed": 2026092704,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/twostage/s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092701",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "feature_separation_hu2024",
+        "seed": 2026092701,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/feature_separation_hu2024/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092702",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "feature_separation_hu2024",
+        "seed": 2026092702,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/feature_separation_hu2024/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092703",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "feature_separation_hu2024",
+        "seed": 2026092703,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/feature_separation_hu2024/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "feature_separation_hu2024-s2026092704",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "feature_separation_hu2024",
+        "seed": 2026092704,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/feature_separation_hu2024/s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092701",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "poster_ft",
+        "seed": 2026092701,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/poster_ft/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092702",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "poster_ft",
+        "seed": 2026092702,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/poster_ft/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092703",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "poster_ft",
+        "seed": 2026092703,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/poster_ft/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "poster_ft-s2026092704",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "poster_ft",
+        "seed": 2026092704,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/poster_ft/s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092701",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "radionet_ada_knn",
+        "seed": 2026092701,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/radionet_ada_knn/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092702",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "radionet_ada_knn",
+        "seed": 2026092702,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/radionet_ada_knn/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092703",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "radionet_ada_knn",
+        "seed": 2026092703,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/radionet_ada_knn/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "radionet_ada_knn-s2026092704",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "radionet_ada_knn",
+        "seed": 2026092704,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/radionet_ada_knn/s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092701",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "orthogonal",
+        "seed": 2026092701,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/orthogonal/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092702",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "orthogonal",
+        "seed": 2026092702,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/orthogonal/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092703",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "orthogonal",
+        "seed": 2026092703,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/orthogonal/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "orthogonal-s2026092704",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "orthogonal",
+        "seed": 2026092704,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/orthogonal/s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092701",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "lora_triplet_knn",
+        "seed": 2026092701,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/lora_triplet_knn/s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092702",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "lora_triplet_knn",
+        "seed": 2026092702,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/lora_triplet_knn/s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092703",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "lora_triplet_knn",
+        "seed": 2026092703,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/lora_triplet_knn/s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    },
+    {
+      "row_id": "lora_triplet_knn-s2026092704",
+      "method": "R42 physicalSUP OOF residual shrinkage selector",
+      "purpose": "independent_score_only_completion",
+      "config_ref": "configs/pamf_phase2_cuda_recovery_20261101.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "data_overrides": {
+        "profile": "lora_triplet_knn",
+        "seed": 2026092704,
+        "parent_jobs": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261031-phase2-threegpu-takeover-m4-r10/jobs.json",
+        "original_owner_read_only": true
+      },
+      "seeds": {
+        "model": 2026092704,
+        "split": null,
+        "data": 2026102901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original fixed capsule/split/physical complement and four original F seeds; no redraw or seed selection",
+      "k": [
+        1,
+        5,
+        10,
+        20
+      ],
+      "scenario": "originalGroup1 main/curves/diagnostics",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "budget_ref": "oneCPU independent episodic_score; noF/G/sourceNN/source/queryIQ, no training/prediction",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/scores/lora_triplet_knn/s2026092704",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase2-native-score-recovery-m4-r01/logs",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase2_practical.native_score_recovery dispatch --runtime /home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase2-native-score-recovery-m4-r01-release/runtime.json",
+      "expected_artifacts": [
+        "predictions.json",
+        "complete.json",
+        "B/C prediction npz",
+        "fit.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Originalr10 controller is verifieddead; this independentnewroot does notmodify,restart or take over itsowner. Source andprediction handles remainoriginal; no duplicatedprediction orsourcefit.",
+    "Beforeeachmissing score, recheck oldcomplete; ifsameprediction haslive oldscorer waitwithoutkill. Oldcompletepayload capsule/seed/rows matchfrozenprediction; otherwise independentoriginalscorer afterpredictionclosure.",
+    "Scorerconsumes noNNcheckpoint, soNNsmoke/sourcefit do not apply. PureCPUnegativeinput checks andoneP0/P1 concern only correctfrozenpredictionbinding/outputs/queue, no report-onlyextra gate.",
+    "ISSL userstop retained; Tweak/CSIL N/A; currentTriSSL PAMF baseline scores alreadycomplete andnotresubmitted; MoPCseparate recovery owner."
+  ],
+  "registered_at": "2026-11-01T05:17:09+00:00"
+}
