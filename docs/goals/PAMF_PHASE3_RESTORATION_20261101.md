@@ -416,3 +416,12 @@ GPU4/6按实际free12GB/existingcompute≤2/新增1总≤3准入，一row一NN�
 `20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01`，代码 `5359a1b82b1fa5d640a394c3e3a77ce3b945fe1e`。沿新时频 Transformer/源完整协方差后验架构，与已完成 CovarianceMAP 物理估计对照保持 scratch 初值、原 L_s/U_s、源统计、顺序、draw、LR、单阶段 30/7410 和部署路径。新增原冻结 Tri-SIG-TIME SSL 的连续源特征约束，梯度通过实际恢复 IQ 后验回到信道与噪声估计，明确不是 F-free；不加载旧 G 权重，不使用 TX/logits/CE/原型/新分类头或 V/OE/novel/目标训练与选模。
 
 全源物理监督保留；每逻辑 batch 首微批 32（末批 24）执行额外后验与 F0，固定 .01×(cos+源方差 MSE)，每轮 7896、累计 236880 条，另 63000 clean 源特征缓存。单阶段联合启用，采样项按所选记录均值计算，不额外缩小 1/8。3 项针对性检查和唯一独立 P0/P1 通过，实际 source2/full-posterior/F0/梯度/E0 重载通过后自动训练与原 Main 双总体七景，全部预测固定后独立 CPU truth-last。主性能目标仍未达成；训练速度是支线，默认 DURA 保持。
+
+
+## 等价信道损失的冻结源端成本验证完成（2026-11-02）
+
+`20261102-diagnostic-Restore-factorized-source-cost-s2026092701-r01`，执行代码`5ce71890e780ea3bfd8dc5c33389b30b70dacee4`，固定CovarianceFeature final30/5359、原3ff8 F0、保存E30首256源包/draw10。全矩阵与等价反射FIR因子路径保持同物理损失、首微批实际后验F0指导和clip，0新训练、optimizer、权重更新、TX/V/OE/novel/目标读取。实际loss相同，全部裁剪前梯度最大绝对差1.86264515e-09、相对L2差1.3145415e-07，G/F0全部state不变。
+
+每路2预热/10计时/1梯度检查，共26逻辑反向。区域wall中位382.360001→353.696042ms，减少7.496589%；10配对中7快3慢，峰值allocated减少4.008942%。只含前向/反向/检查/clip，不含optimizer、全量数据IO和epoch日志，单batch短测不外推30轮同质量加速或识别收益。
+
+实际source2/3新聚焦检查/一次独立P0P1通过，12项既有等价损失检查沿用；24记录与全部统计独立CPU复算差0。父最后GPU阶段在4时使用6，实际运行中快照与终态exit0已核实；辅助观察器外层回执失败和真实NN快照成功分开，没有重跑。本次仅测成本，当前5359原Main部署/矩阵保持，性能主线和默认DURA不变。详见analysis.md。

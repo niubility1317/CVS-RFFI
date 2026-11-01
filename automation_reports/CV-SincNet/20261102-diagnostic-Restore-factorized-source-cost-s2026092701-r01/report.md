@@ -3,7 +3,7 @@
 - run_id：`20261102-diagnostic-Restore-factorized-source-cost-s2026092701-r01`
 - group_id：`restoration-exact-action-factor-source-backward-cost`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（源计时、状态不变和独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源端两路同损失/梯度与计时完整，详见analysis.md；不是新模型训练或正式识别成绩。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -42,3 +42,8 @@ source2实际最终G/F0后立即核对两次完整逻辑反向：损失rtol2e-6/
 
 
 源随机性角色说明：登记的model2026092701来自冻结父G；data2026101901/augmentation2026101912及旧evaluation字段2026101911只追溯R07的builder/augmentation/receiver实例化。实际本次不新生成观测、不运行目标evaluation，batch来自父已保存order2026110102的E30首256条、draw10，不重置或抽取新的训练随机数。
+
+
+## 固定源端计时已完成并独立复算
+
+VERIFIED / ANALYZED。source2真实最终G/F0、两路全部裁剪前梯度及冻结状态检查PASS；26次逻辑反向访问、24预热/计时记录、20timed/10配对、分位数和显存独立复算，最大误差0。区域中位wall减少7.496589%，10对中7对更快、3对更慢，区域峰值allocated减少4.008942%；不含optimizer/全量数据IO/epoch指标，不代表完整训练或识别收益。实际GPU6 source worker运行中PID-CWD-CUDA-GPU/日志快照已保存，最终exit0/controller-worker自然结束，0权重更新/TX/目标。辅助观察器的外层存活回执FAILED与实际NN快照VERIFIED单独记录，未重复启动。当前父Main按原矩阵继续，默认DURA保持。
