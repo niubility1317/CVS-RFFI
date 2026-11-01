@@ -358,3 +358,11 @@ VERIFIED / RUNNING。源Ls2真实G/F0无更新smoke通过，固定15调用sample
 代码`3e5ecb4ffcc5658693bd9b6dc509711b4509a231`，根据已完成原source92160行/108组轨迹固定两个独立研究点，不依据Main错例/分组选择或组合方案。`20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01`：复用原5e5921c9/source-only scratch30-7410权重，0新训练，固定第4denoised读出/7core，原Main两总体七景自动评测，四路raw-DURA-full8-early4全预测后truth-last。`20261102-phase1-Restore-DiffusionSigmaMix-E30-s2026092701-r01`：全G同架构/实际E0从零单阶段30/7410，训练50%原lognormal+50%均匀8部署sigma，15core部署保持，固定GPU6。两项5聚焦检查/每候选唯一P0P1 PASS，实际source2/G-F0/early精确读出/CUDA mixture-RNG/E0重载和PID-CWD-CUDA-GPU/日志增长核实，GPU4/6各新增1/原0compute/free24110MiB，总ownNN2，其他owner保持。
 
 SigmaMix E01模型/优化器/RNG独立CPU读回：全部E0 tensor同原full8实际E0与scratch factory、全30sourceorders/draws相同、配置仅sigma抽样/版本差异、E01全局CPU/CUDA RNG同原模型，9mixbins/5sigmabins及加权loss复算PASS。私有Generator seed2026110205+update不推进原Gaussian sigma/epsilon全局流，无额外技术恢复状态。两run当前均RUNNING、正式Main性能PENDING；不以更少调用或更低训练loss宣布达标。默认DURA与六景3pp+两个clean保持目标ACTIVE。
+
+## 冻结扩散第4读出原Main完成（2026-11-02）
+
+`20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01`，执行代码`3e5ecb4ffcc5658693bd9b6dc509711b4509a231`，G权重原`5e5921c975678367a5d0a00ee72d4619e5f6927e`/source-only scratch30-7410，0新训练。根据已完成合法source轨迹全局固定第4denoised读出，前三次Heun+第四次denoiser共7core，原网络/F0/数据不变，不按query或目标场景选择，非新从零网络。
+
+原Main168000×七景/四路56单元全预测后独立CPU truth-last，3阶段exit0/liveempty，56单元/1736组/1302raw配对/868额外配对/868相对clean配对独立复算PASS，最大差1.24e-14、raw/DURA/full8复用判决差0。六景依次79.198214/77.956548/76.421429/77.031548/67.425595/58.480952%，0/6；相对同权重full8提高5.576786至9.792857个百分点，但六景仍低于DURA。clean86.876786%/合并净+568，cross_rx+635、cross_both−67，两个clean未同时保持。完整TX/RX/day/净纠错见analysis.md。
+
+这是源端后段采样损伤与真实Main任务表现之间的受控推理对照证据，不证明所有扩散均应缩短、真实RF细节完整恢复或理论上限。1614608参数/1238802432静态实数MAC/21complexFFT，不冒充实测时延；祖先G30、F0 E50/源尺度成本保留。独立SigmaMix从零30及完整15调用Main自动继续，不按本项结果取消或组合。完整六景3pp+两个clean目标ACTIVE，默认DURA保持。

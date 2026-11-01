@@ -1,9 +1,11 @@
 # 冻结扩散第4去噪读出：原Main七景独立推理对照
 
+**六景0/6，clean86.876786%。** cross_rx clean净变化+635，cross_both净变化-67。六景均高于同权重full8、仍低于DURA，完整目标未达到。[完整结果](analysis.md)。
+
 - run_id：`20261102-evaluation-Restore-DiffusionEarly4-main-s2026092701-r01`
 - group_id：`restoration-diffusion-source-motivated-fixes`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（真实源模型检查及实际worker已核实）
+- 当前登记状态：ANALYZED（两个Main总体七景与独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原Main168000×七景、四路56单元完整并独立复算，六景0/6且两个clean未同时保持；详见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -48,3 +50,8 @@
 ## 源驱动对照实际运行已核实
 
 VERIFIED / RUNNING。源2实际冻结parentG/F0检查PASS，输出逐值等于固定第4内部读出、每记录7core、0新G训练；当前原Main跨接收机预测已产生首景完成日志。 实际PID/CWD/commit/CUDA/GPU及日志增长核实；GPU4准入free24110MiB/原0compute/新增1，两项分别在4/6同时运行。archive单次SHA和远端编译通过，其他owner保持。原Main完整矩阵自动继续，全prediction固定后独立truth-last，正式性能PENDING，默认DURA与目标ACTIVE保持。
+
+
+## 固定第4读出完整Main完成
+
+VERIFIED / ANALYZED。同原G source-only scratch30权重，0新训练/更新，固定第4denoised读出/7core。两个总体七景56单元全部预测固定后独立truth-last，3阶段exit0/liveempty；1736组/1302raw配对/868额外配对/868相对clean配对复算PASS，最大差1.24e-14、raw/DURA/full8复用判决差0。源内后段损伤在此固定模型Main中对应实际收益，但仍0/6且cross_both clean损伤，不替换DURA或宣称目标完成。
