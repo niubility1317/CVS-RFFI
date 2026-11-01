@@ -1,0 +1,160 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-Restore-Fgeometry-RXday-s2026092701-r01",
+  "group_id": "restoration-source-Fgeometry-RXday-association",
+  "display_name": "恢复性能源端诊断：冻结F特征的接收机与日期相关变异",
+  "description": "仅复用原63000条LsUs的冻结F0特征与RX/day元数据，分解组间变异并比较VarF固定尺度；不读取IQ/TX/V/OE/target，不加载神经网络或拟合分类头。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "performance-primary",
+    "source-only",
+    "frozen-features",
+    "RX-day-association",
+    "CPU-only",
+    "no-updates"
+  ],
+  "comparison_group_id": "raw-vs-fixed-VarF-scaled-source-feature-energy",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Activeusergoal:groundTriSIGSSLsixeach3pp+clean/performanceprimary. OriginalLs6300Us56700sourceonly/Ffeaturesallowed/OEdiagnosticonly. This zero-updateCPUdiagnostic reusesexistingauthorizedfeaturedata only.",
+  "code": {
+    "commit": "afd4af77ed637fd8a5a0908c264c1d8b0b90c72e",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 originalCVS-RFFI Python/NumPy CPU;CUDA_VISIBLE_DEVICES empty;OMP/MKL/OpenBLAS2;no Torch import/model load",
+    "cwd": "releases/20261101-diagnostic-Restore-Fgeometry-RXday-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Originalsource392005/Ls6300Us56700;completedcanonicalLUcache",
+    "representation": "ExistingfrozenF0_features.npy FP32[63000,160] plusRX/day/roles metadata;previoussource-onlyVarF scale andfourvariancebands;noIQarrays",
+    "contract_ref": "OriginalTriSIGSSL F0 source_contract andsource_pair metadata;R07 original63000source physicalset/roles matchbyID",
+    "physical_ids_ref": "20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache: reuseVALIDATED_ONCE original63000role/IDhandle;no newIDreadorhash",
+    "label_map_ref": "No per-recordTX/y read;RX/day associations do not condition onTX oridentifycausalnuisance",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Originalsource sixTX values only;labels hidden",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "p3restore-LU392005-G10MIX01-clean-pairs-20261101-r01",
+    "split_id": "392005-LsUs-source5rx-3day-eq1",
+    "validation_ref": "Reuse VALIDATED_ONCE sourcehandles. R07complete20/63000/0TX-target. Inputaudit same63000uniqueIDset (orderdiffers),roles/RX/day samebyID;clean maxabs4.76837158203125e-7 NMSE1.7667841088968941e-15. No repeateddatahash/revalidation.",
+    "support_query_ref": "None. Sourcecleanfeaturegeometryonly;noquery,validation,OE ormodelprediction.",
+    "leo_config_ref": "Nonewchannelobservation. Canonicalsourcecleanfeatures;R07 prior geometry usedonlyfixed160scale/bands,notreceivedIQ.",
+    "actual_training_labels": "No model training orlabels. rolesLs6300Us56700andpublicRX/day only.",
+    "augmentation": "None;allsourcefeature rows fixed existingproducer output."
+  },
+  "permissions": {
+    "regime": "source-only-zero-update-CPU-descriptive-feature-statistics",
+    "query_use": "No IQ/TX/y/V/OE/novel/target/modelweights,classificationheadorNN reads. Only cachedoriginalsourcefeatures/metadataandexistingdata-onlyscale.",
+    "external_method_exception": null,
+    "claim_scope": "Descriptiveassociationin63000sourcecleanfeatures;fixedscalechangesfeatureenergyweighting. Notrestorationerror/gradientenergy,identitydecomposition,causalRXnuisance,Mainperformance orinformationceiling."
+  },
+  "checkpoint": {
+    "initialization": "No model loaded or updated;existingfeatureproducer identity only.",
+    "sources": [
+      "20261101-data-P3Restore-LU-G10-pairs-s2026092701-r01/cache/F0_features.npy;original3ff8/sourceonlyfullTriSIGSSL50-11100/defaulthead;producerANALYZED/VALIDATED_ONCE",
+      "20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01/feature_geometry.json andresults.json;fixedscaleandbands63000source-onlyF0moments/0updates"
+    ],
+    "contract_check_ref": "Reuseexistingcapsule_id/split_id/status/countandoriginalF0identity;no datarehashor revalidation.",
+    "provenance_verdict": "Matchingoriginalsource392005/F0. No newcheckpointcapabilityneeded. Referencedupstreamsourcecacheproducerrealcheckpointsource2smokePASS;firststepcurrentdatahandlecheckscontinueimmediately.",
+    "selection_rule": "No checkpoint/hyperparameter selection;all160dimensions/all63000source rows/fixedfour40dim variancebands. ReportfullallRX/day/cellcounts. No targetscores consumed."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-feature-RXday",
+    "gpu_policy": "CPUonly/CUDAempty;0NN/GPUprocesses;BLASthreads2;no truthreads ortruthscorer",
+    "remote_run_root": "runs/20261101-diagnostic-Restore-Fgeometry-RXday-s2026092701-r01",
+    "remote_log_root": "logs/20261101-diagnostic-Restore-Fgeometry-RXday-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase3_restoration/20261101-diagnostic-Restore-Fgeometry-RXday-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_domains --root /home/szu2070436088/2510044040/CV-SincNet --commit afd4af77ed637fd8a5a0908c264c1d8b0b90c72e",
+    "stop_rule": "Wrongsource/F0/geometryhandle,nonfinite/wrongshape,outputcollision,unlaunchable:preservefailedroot/noautoretry/nootherowneraction. No scientificassociationthresholdstop;no model selection ornewtrain triggered."
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json(data-onlyhandles;referenceupstreamactualsourcecheckpointsmoke)",
+    "results.json",
+    "complete.json",
+    "terminal.json",
+    "worker.log PRIVATE"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Perdimtotal/RX/day/jointbetweenvarianceandconditionalincrements(includeinteractions)",
+      "RawvsfixedVarFscaledfeatureenergyfractions/ALLandfourvariancebands",
+      "All63000sourcecounts/RX/day/jointcells/zero-variance-dimensions"
+    ],
+    "dimensions": [
+      "oneCPUrow",
+      "sourceLs6300Us56700",
+      "160F0features",
+      "5sourceRX/3sourceDays/15cells",
+      "fixedfour40dimvariancebands"
+    ],
+    "prediction_ref": "No predictions/model orquery;descriptiveJSONonly",
+    "scorer_ref": "No truth. IndependentCPUNumPygroupmaskrecomputationaftercomplete."
+  },
+  "rows": [
+    {
+      "row_id": "source-feature-domains",
+      "method": "source-F0-RXday-between-variance",
+      "purpose": "source-onlymechanismdiagnosis",
+      "config_ref": "experiments/pamf_phase3_restoration/feature_domains.py",
+      "resolved_config_ref": "cachemanifestandfixedgeometry/actualrelease_commit",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "NoRNG ornewmodels;seedmodelidentifiesoriginalF0,splitoriginal392005;allsource rows used.",
+      "k": null,
+      "scenario": "sourceclean-F0features-only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "0epochs/0updates/0NN:all63000x160cachedsourceF0featurestatsandRX/day/cellmeans;noidentityheadorregressionfit",
+      "output_root": "runs/20261101-diagnostic-Restore-Fgeometry-RXday-s2026092701-r01",
+      "log_path": "logs/20261101-diagnostic-Restore-Fgeometry-RXday-s2026092701-r01/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_phase3_restoration.feature_domains --root /home/szu2070436088/2510044040/CV-SincNet --commit afd4af77ed637fd8a5a0908c264c1d8b0b90c72e",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json(data-onlyhandles;referenceupstreamactualsourcecheckpointsmoke)",
+        "results.json",
+        "complete.json",
+        "terminal.json",
+        "worker.log PRIVATE"
+      ]
+    }
+  ],
+  "notes": [
+    "Hypothesisfromsourcegeometry:compare whetherfixedVarFweighting increases RX/day-associatedSOURCECLEANFEATUREenergyshare, especiallylower-variancebands. Reportdifferencescontinuously;notfixedsignificanceornewGpromotionthreshold.",
+    "Nestedjointminusday/RX increments includeinteractions;notpureadditivemain effects. MarginalRX/dayfractionsmustnotbeadded ifcorrelated. Constantdimsundefined->JSONnull,notfalsezero.",
+    "NoTXconditioning:associationcannotidentifycausalnuisanceorcleanidentitycomponents. Datecancontainmeaningfuldevice drift;nofeaturedeletion/projectionornewtrainselectedautomatically.",
+    "CanonicalLUfeaturecache differs fromR07cleanpreparation/batchsize atsmallFP32level;reportvariance-difference asdescriptivecomparison,notclaimbitwiseequivalence or addparitygate.",
+    "3focusedtestsPASS;oneindependentP0P1PASS(existingdura_diagnostic_review). No NNcheckpointloadedinthisG0stage;reuseproduceractualsourcecheckpointsmoke pluscurrentdatahandlefirststep,notextramodel/smokeartifacts.",
+    "No G newversion,training,targetprediction ortruth. Therefore no newMainseven test triggered bythisstatisticsonlyrun. OverallgoalACTIVE/notmet/defaultDURAunchanged."
+  ],
+  "registered_at": "2026-11-01T05:56:06+00:00"
+}
