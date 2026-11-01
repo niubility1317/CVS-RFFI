@@ -1,0 +1,30 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_FIXED_BEFORE_EXECUTION",
+  "created_utc": "2026-11-01T14:29:04.494Z",
+  "script": "phase1_source_gated_low_snr_probe.py",
+  "script_sha256": "2c2dbbe4ddccc1783c66b4d9b50b0ec29023a6823d689bf3a86bb2b698d26230",
+  "model_source": "phase1_source_cycle_low_snr_net.json",
+  "model_source_sha256": "a434cafc92a3a1f75224b0e0b232588dc85556c339546a2320851c7021d71077",
+  "network_epoch": 2,
+  "network_alpha": 0.25,
+  "blind_snr_threshold_db": 10,
+  "blind_alignment_max_shift": 64,
+  "blind_alignment_center_samples": 128,
+  "excluded_sample_seeds": [
+    2026110411,
+    2026110451
+  ],
+  "fresh_sample_seed": 2026110461,
+  "channel_seed": 2026110462,
+  "hardware_seed": 2026110463,
+  "validation_receivers": [
+    4,
+    6
+  ],
+  "heldout_receiver": 8,
+  "day": 3,
+  "source_target_labels_used_for_inference": false,
+  "simulator_snr_used_for_inference": false,
+  "test_iq_reads": 0,
+  "caveat": "Model and threshold were selected after earlier source observations. The fresh IDs exclude the two named source samples but may overlap other diagnostics; frozen experts saw source data."
+}

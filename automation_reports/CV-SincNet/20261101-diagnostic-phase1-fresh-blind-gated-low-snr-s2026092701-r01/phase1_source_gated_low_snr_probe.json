@@ -1,0 +1,531 @@
+{
+  "status": "SOURCE_ONLY_FRESH_GATED_LOW_SNR",
+  "source_ids": 1622,
+  "validation_ids": 1117,
+  "heldout_ids": 505,
+  "gate_db": 10.0,
+  "alpha": 0.25,
+  "validation": {
+    "clean": {
+      "count": 1117,
+      "valid_count": 1102,
+      "L_s_count": 283,
+      "U_confident_count": 819,
+      "baseline": 1102,
+      "L_s_baseline": 283,
+      "gate_enabled": 0,
+      "ungated": {
+        "correct": 1102,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_correct": 283
+      },
+      "gated": {
+        "correct": 1102,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_correct": 283
+      },
+      "blind_snr_confusion": {
+        "true_low": 0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 1117
+      }
+    },
+    "practical_low_suburban": {
+      "count": 1117,
+      "valid_count": 1102,
+      "L_s_count": 283,
+      "U_confident_count": 819,
+      "baseline": 1080,
+      "L_s_baseline": 273,
+      "gate_enabled": 118,
+      "ungated": {
+        "correct": 1077,
+        "repairs": 0,
+        "damages": 3,
+        "L_s_correct": 273
+      },
+      "gated": {
+        "correct": 1077,
+        "repairs": 0,
+        "damages": 3,
+        "L_s_correct": 273
+      },
+      "blind_snr_confusion": {
+        "true_low": 81,
+        "true_positive": 81,
+        "false_positive": 37,
+        "false_negative": 0,
+        "true_negative": 999
+      }
+    },
+    "practical_mid_urban": {
+      "count": 1117,
+      "valid_count": 1102,
+      "L_s_count": 283,
+      "U_confident_count": 819,
+      "baseline": 1034,
+      "L_s_baseline": 266,
+      "gate_enabled": 463,
+      "ungated": {
+        "correct": 1034,
+        "repairs": 3,
+        "damages": 3,
+        "L_s_correct": 267
+      },
+      "gated": {
+        "correct": 1034,
+        "repairs": 3,
+        "damages": 3,
+        "L_s_correct": 267
+      },
+      "blind_snr_confusion": {
+        "true_low": 427,
+        "true_positive": 427,
+        "false_positive": 36,
+        "false_negative": 0,
+        "true_negative": 654
+      }
+    },
+    "practical_low_urban": {
+      "count": 1117,
+      "valid_count": 1102,
+      "L_s_count": 283,
+      "U_confident_count": 819,
+      "baseline": 967,
+      "L_s_baseline": 250,
+      "gate_enabled": 656,
+      "ungated": {
+        "correct": 959,
+        "repairs": 4,
+        "damages": 12,
+        "L_s_correct": 244
+      },
+      "gated": {
+        "correct": 961,
+        "repairs": 4,
+        "damages": 10,
+        "L_s_correct": 245
+      },
+      "blind_snr_confusion": {
+        "true_low": 624,
+        "true_positive": 624,
+        "false_positive": 32,
+        "false_negative": 0,
+        "true_negative": 461
+      }
+    }
+  },
+  "validation_groups": {
+    "4": {
+      "clean": {
+        "count": 565,
+        "valid_count": 553,
+        "L_s_count": 150,
+        "U_confident_count": 403,
+        "baseline": 553,
+        "L_s_baseline": 150,
+        "gate_enabled": 0,
+        "ungated": {
+          "correct": 553,
+          "repairs": 0,
+          "damages": 0,
+          "L_s_correct": 150
+        },
+        "gated": {
+          "correct": 553,
+          "repairs": 0,
+          "damages": 0,
+          "L_s_correct": 150
+        },
+        "blind_snr_confusion": {
+          "true_low": 0,
+          "true_positive": 0,
+          "false_positive": 0,
+          "false_negative": 0,
+          "true_negative": 565
+        }
+      },
+      "practical_low_suburban": {
+        "count": 565,
+        "valid_count": 553,
+        "L_s_count": 150,
+        "U_confident_count": 403,
+        "baseline": 542,
+        "L_s_baseline": 144,
+        "gate_enabled": 58,
+        "ungated": {
+          "correct": 542,
+          "repairs": 0,
+          "damages": 0,
+          "L_s_correct": 144
+        },
+        "gated": {
+          "correct": 542,
+          "repairs": 0,
+          "damages": 0,
+          "L_s_correct": 144
+        },
+        "blind_snr_confusion": {
+          "true_low": 41,
+          "true_positive": 41,
+          "false_positive": 17,
+          "false_negative": 0,
+          "true_negative": 507
+        }
+      },
+      "practical_mid_urban": {
+        "count": 565,
+        "valid_count": 553,
+        "L_s_count": 150,
+        "U_confident_count": 403,
+        "baseline": 519,
+        "L_s_baseline": 143,
+        "gate_enabled": 227,
+        "ungated": {
+          "correct": 519,
+          "repairs": 1,
+          "damages": 1,
+          "L_s_correct": 144
+        },
+        "gated": {
+          "correct": 519,
+          "repairs": 1,
+          "damages": 1,
+          "L_s_correct": 144
+        },
+        "blind_snr_confusion": {
+          "true_low": 214,
+          "true_positive": 214,
+          "false_positive": 13,
+          "false_negative": 0,
+          "true_negative": 338
+        }
+      },
+      "practical_low_urban": {
+        "count": 565,
+        "valid_count": 553,
+        "L_s_count": 150,
+        "U_confident_count": 403,
+        "baseline": 484,
+        "L_s_baseline": 131,
+        "gate_enabled": 340,
+        "ungated": {
+          "correct": 483,
+          "repairs": 4,
+          "damages": 5,
+          "L_s_correct": 129
+        },
+        "gated": {
+          "correct": 483,
+          "repairs": 4,
+          "damages": 5,
+          "L_s_correct": 129
+        },
+        "blind_snr_confusion": {
+          "true_low": 325,
+          "true_positive": 325,
+          "false_positive": 15,
+          "false_negative": 0,
+          "true_negative": 225
+        }
+      }
+    },
+    "6": {
+      "clean": {
+        "count": 552,
+        "valid_count": 549,
+        "L_s_count": 133,
+        "U_confident_count": 416,
+        "baseline": 549,
+        "L_s_baseline": 133,
+        "gate_enabled": 0,
+        "ungated": {
+          "correct": 549,
+          "repairs": 0,
+          "damages": 0,
+          "L_s_correct": 133
+        },
+        "gated": {
+          "correct": 549,
+          "repairs": 0,
+          "damages": 0,
+          "L_s_correct": 133
+        },
+        "blind_snr_confusion": {
+          "true_low": 0,
+          "true_positive": 0,
+          "false_positive": 0,
+          "false_negative": 0,
+          "true_negative": 552
+        }
+      },
+      "practical_low_suburban": {
+        "count": 552,
+        "valid_count": 549,
+        "L_s_count": 133,
+        "U_confident_count": 416,
+        "baseline": 538,
+        "L_s_baseline": 129,
+        "gate_enabled": 60,
+        "ungated": {
+          "correct": 535,
+          "repairs": 0,
+          "damages": 3,
+          "L_s_correct": 129
+        },
+        "gated": {
+          "correct": 535,
+          "repairs": 0,
+          "damages": 3,
+          "L_s_correct": 129
+        },
+        "blind_snr_confusion": {
+          "true_low": 40,
+          "true_positive": 40,
+          "false_positive": 20,
+          "false_negative": 0,
+          "true_negative": 492
+        }
+      },
+      "practical_mid_urban": {
+        "count": 552,
+        "valid_count": 549,
+        "L_s_count": 133,
+        "U_confident_count": 416,
+        "baseline": 515,
+        "L_s_baseline": 123,
+        "gate_enabled": 236,
+        "ungated": {
+          "correct": 515,
+          "repairs": 2,
+          "damages": 2,
+          "L_s_correct": 123
+        },
+        "gated": {
+          "correct": 515,
+          "repairs": 2,
+          "damages": 2,
+          "L_s_correct": 123
+        },
+        "blind_snr_confusion": {
+          "true_low": 213,
+          "true_positive": 213,
+          "false_positive": 23,
+          "false_negative": 0,
+          "true_negative": 316
+        }
+      },
+      "practical_low_urban": {
+        "count": 552,
+        "valid_count": 549,
+        "L_s_count": 133,
+        "U_confident_count": 416,
+        "baseline": 483,
+        "L_s_baseline": 119,
+        "gate_enabled": 316,
+        "ungated": {
+          "correct": 476,
+          "repairs": 0,
+          "damages": 7,
+          "L_s_correct": 115
+        },
+        "gated": {
+          "correct": 478,
+          "repairs": 0,
+          "damages": 5,
+          "L_s_correct": 116
+        },
+        "blind_snr_confusion": {
+          "true_low": 299,
+          "true_positive": 299,
+          "false_positive": 17,
+          "false_negative": 0,
+          "true_negative": 236
+        }
+      }
+    }
+  },
+  "heldout": {
+    "clean": {
+      "count": 505,
+      "valid_count": 490,
+      "L_s_count": 125,
+      "U_confident_count": 365,
+      "baseline": 489,
+      "L_s_baseline": 124,
+      "gate_enabled": 0,
+      "ungated": {
+        "correct": 489,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_correct": 124
+      },
+      "gated": {
+        "correct": 489,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_correct": 124
+      },
+      "blind_snr_confusion": {
+        "true_low": 0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 0,
+        "true_negative": 505
+      }
+    },
+    "practical_low_suburban": {
+      "count": 505,
+      "valid_count": 490,
+      "L_s_count": 125,
+      "U_confident_count": 365,
+      "baseline": 475,
+      "L_s_baseline": 121,
+      "gate_enabled": 54,
+      "ungated": {
+        "correct": 475,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_correct": 121
+      },
+      "gated": {
+        "correct": 475,
+        "repairs": 0,
+        "damages": 0,
+        "L_s_correct": 121
+      },
+      "blind_snr_confusion": {
+        "true_low": 40,
+        "true_positive": 40,
+        "false_positive": 14,
+        "false_negative": 0,
+        "true_negative": 451
+      }
+    },
+    "practical_mid_urban": {
+      "count": 505,
+      "valid_count": 490,
+      "L_s_count": 125,
+      "U_confident_count": 365,
+      "baseline": 459,
+      "L_s_baseline": 112,
+      "gate_enabled": 197,
+      "ungated": {
+        "correct": 461,
+        "repairs": 2,
+        "damages": 0,
+        "L_s_correct": 113
+      },
+      "gated": {
+        "correct": 461,
+        "repairs": 2,
+        "damages": 0,
+        "L_s_correct": 113
+      },
+      "blind_snr_confusion": {
+        "true_low": 180,
+        "true_positive": 179,
+        "false_positive": 18,
+        "false_negative": 1,
+        "true_negative": 307
+      }
+    },
+    "practical_low_urban": {
+      "count": 505,
+      "valid_count": 490,
+      "L_s_count": 125,
+      "U_confident_count": 365,
+      "baseline": 431,
+      "L_s_baseline": 110,
+      "gate_enabled": 303,
+      "ungated": {
+        "correct": 431,
+        "repairs": 4,
+        "damages": 4,
+        "L_s_correct": 109
+      },
+      "gated": {
+        "correct": 431,
+        "repairs": 4,
+        "damages": 4,
+        "L_s_correct": 109
+      },
+      "blind_snr_confusion": {
+        "true_low": 297,
+        "true_positive": 297,
+        "false_positive": 6,
+        "false_negative": 0,
+        "true_negative": 202
+      }
+    }
+  },
+  "quality": {
+    "clean": {
+      "count": 505,
+      "baseline": 5.298729189041226e-05,
+      "ungated": {
+        "aligned_mse": 5.298729189041226e-05,
+        "improved": 0,
+        "worsened": 0
+      },
+      "gated": {
+        "aligned_mse": 5.298729189041226e-05,
+        "improved": 0,
+        "worsened": 0
+      }
+    },
+    "practical_low_suburban": {
+      "count": 505,
+      "baseline": 0.027093726113670263,
+      "ungated": {
+        "aligned_mse": 0.027101690540245225,
+        "improved": 191,
+        "worsened": 314
+      },
+      "gated": {
+        "aligned_mse": 0.027093717714568942,
+        "improved": 26,
+        "worsened": 28
+      }
+    },
+    "practical_mid_urban": {
+      "count": 505,
+      "baseline": 0.06086725381100811,
+      "ungated": {
+        "aligned_mse": 0.06087668542324317,
+        "improved": 195,
+        "worsened": 310
+      },
+      "gated": {
+        "aligned_mse": 0.060870537422063054,
+        "improved": 87,
+        "worsened": 110
+      }
+    },
+    "practical_low_urban": {
+      "count": 505,
+      "baseline": 0.09955234664976649,
+      "ungated": {
+        "aligned_mse": 0.09956203449929123,
+        "improved": 209,
+        "worsened": 296
+      },
+      "gated": {
+        "aligned_mse": 0.0995575632310212,
+        "improved": 129,
+        "worsened": 174
+      }
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "predictions_before_source_tx_labels": true,
+  "clean_target_used_for_inference": false,
+  "simulated_snr_used_for_inference": false,
+  "caveat": "This fixed model and gate were chosen after earlier source results. Fresh IDs exclude the complete 4096-record cycle-network sample and 8192-record SNR/proxy sample, but may overlap other source diagnostics. New channel and hardware seeds are used. Only source simulator uses source clean IQ and simulator SNR; inference uses received IQ, DURA and the fixed network, with blind SNR computed from received/DURA. Receiver/day holdout is disjoint for this network, not for frozen experts. Simulated satellite is not a validated real link."
+}

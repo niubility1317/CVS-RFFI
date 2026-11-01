@@ -1,0 +1,12 @@
+{
+  "status": "VERIFIED_FRESH_SOURCE_GATED_LOW_SNR_ISOLATION",
+  "source_ids": 1622,
+  "validation_ids": 1117,
+  "heldout_ids": 505,
+  "script_sha256": "2c2dbbe4ddccc1783c66b4d9b50b0ec29023a6823d689bf3a86bb2b698d26230",
+  "model_sha256": "a434cafc92a3a1f75224b0e0b232588dc85556c339546a2320851c7021d71077",
+  "all_nonreference_results_identical": true,
+  "simulator_snr_replaced_by_zero_in_replay": true,
+  "paired_clean_target_removed_from_inference": true,
+  "test_IQ_reads": 0
+}
