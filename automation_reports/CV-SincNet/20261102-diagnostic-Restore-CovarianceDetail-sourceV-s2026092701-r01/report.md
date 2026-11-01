@@ -36,3 +36,7 @@
 源V已有研发曝光，同属五源RX，验证接收机实例seed2026101902、训练实例2026101911；不能单独证明Main的域原因、未知设备保真或理论上限。Main未缓存全量restoredIQ，所以本源V波形误差不能改标Main波形恢复率，IQNMSE也不是“发射机信息恢复几成”。这项诊断补充波形与识别收益的对应关系，不替代原Main六景3pp＋两个clean保持。
 
 3新检查与4原检查、唯一P0/P1通过；实际source2为worker第一NN步骤，PASS继续全部矩阵。严格final30/config/state、冻结状态保持、缓存基线身份/ID绑定、一次archiveSHA/compile与独立子进程PID/CWD/CUDA/GPU/log增长核实。原source数据与权限验证沿用，不新增签名或重验流程。失败保留，不自动重试；默认DURA及原训练测试保持。
+
+## 实际 CPU 等待队列
+
+VERIFIED_CPU_QUEUE_ONLY：controller 1086539 的实际PID/CWD/命令与CUDA空环境已核实，未新增GPU worker。一次archive SHA一致、远端compile通过；实际代码 `f29b31417ce98a280eac25ea2fa78e0c49a5f0ff`。按Main完整预测评分→最终延迟→本源V验证串行执行，真实source2与结果仍pending。原模型训练保持，无新训练、目标访问或基线NN重算。

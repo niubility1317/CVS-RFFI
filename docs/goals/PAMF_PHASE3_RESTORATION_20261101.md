@@ -460,3 +460,9 @@ run `20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01`，实际代�
 ## 2026-11-02 最终权重延迟测量已排队
 
 独立run `20261102-diagnostic-Restore-CovarianceDetail-final-latency-s2026092701-r01`，代码 `33cb43c2d4d387ab18498b451ddc1444070e997c`，CPU controller 1065879 实际live／CUDA空／0新GPU worker已核实；必须等双分支父实验完整Main预测和独立评分完成后，才测固定final30的新G与默认DURA G、rawF以及同原3ff8 F0的两种G+F组合。B1/B128各3次预热，随后每路径100／20次计时，病例与路径均衡交错；只源512面板，不读取TX或target，不看父分数控制开始，不改父训练测试。4项检查和唯一P0/P1通过；实际最终checkpoint source2及性能测量仍待执行，当前无时延结果。
+
+## 2026-11-02 最终源 V 波形与真实 TX 验证已排队
+
+独立run `20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01`，代码 `f29b31417ce98a280eac25ea2fa78e0c49a5f0ff`；CPU controller 1086539实际PID/CWD/命令/CUDA空/0新GPU已核实。3新＋4原检查及唯一P0/P1通过，一次archive SHA/compile通过。等待Main与随后延迟任务技术完成后，只新算最终G的12600条源V输出与source2；旧4178三基线及1800clean参考按ID/F0身份复用，全部四方法七景输出后独立CPU才接V真值。0训练/选模/target/OE/novel，源V结果不改标Main，默认DURA不变。
+
+为保持本任务最多一个活跃CPU真值评分器，人工Main独立产物复算与本源V的CPU评分错开，安排在其评分进程退出后；若源V在评分前技术失败，则确认无活跃评分进程后即可复算Main。不以源V分数或成功作为Main质量门槛；原Main自动正式评分始终先完成。
