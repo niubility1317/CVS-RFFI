@@ -25,3 +25,5 @@ All37complete unscoredsuiteunits/7696rows are reused; knownoriginalmetrics keep 
 控制器实际PID/CWD/argv与子进程、GPU、日志/预测/拟合产物增长已核实。源代码/config commit b4903b6928d88f755b6609a6160a0dde0acf22b0，双仓库push和remoteOID VERIFIED；单一归档传输SHA比对、远端compile通过。25项定向测试和每个恢复入口唯一一次P0/P1均通过，无额外审查/签名/成员hash。全部矩阵仍在执行，宏H与+5pp逐格结论待最终独立评分。
 
 已评分阶段性汇总：[interim_scored_summary_20261101_135844](interim_scored_summary_20261101_135844.md)。完整主点672单元与全KN单单元先导分开，新增37完整预测尚未在本run提前评分；未改变任何健康任务或选择规则。
+
+2026-11-01 交接核验：原控制器完成精确无中断交接至 r03；9 个已启动的 r02 worker 在交接时仍运行，继续自然完成，原预测保留并由 r03 复用。原 controller 已退出；REPLACED 仅表示调度所有权转移。 代码版本 4b2fcc7600f45ffbe810d51c734a900d47ba2cae；归档传输校验与远端编译通过。
