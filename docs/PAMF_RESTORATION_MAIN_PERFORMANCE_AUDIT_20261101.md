@@ -69,3 +69,5 @@
 - [StateBridge 完整分析](../automation_reports/CV-SincNet/20261101-phase1-Restore-StateBridge-E30-s2026092701-r01/analysis.md)，实际代码 `c50a9159b1fb891c6f1a6f8ad4bfa2d7eb66222e`。
 
 本核对只复用公开汇总，新增神经前向、原始训练/目标数据读取、真值读取均为 0。完整目标保持 ACTIVE，默认 DURA 不变。
+
+补充分析：[射频细节保留与可观察性边界](PAMF_RESTORATION_RF_DETAIL_ANALYSIS_20261101.md)整理历史源R31结果，区分局部响应、真实身份和理论恢复率；不增加当前模型性能证据或改变训练。
