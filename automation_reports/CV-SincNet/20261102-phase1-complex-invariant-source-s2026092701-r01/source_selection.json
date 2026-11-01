@@ -1,0 +1,568 @@
+{
+  "selected": {
+    "kind": "dura",
+    "validation_improvement": 0.0
+  },
+  "validation": [
+    {
+      "epoch": 2,
+      "alpha": 0.25,
+      "improvement": 3.277463795614034e-05,
+      "per_view": {
+        "clean": {
+          "baseline": 2.2646025480950266e-05,
+          "candidate": 2.2646025480950266e-05
+        },
+        "practical_low_suburban": {
+          "baseline": 0.008731138386997602,
+          "candidate": 0.008724690563199125
+        },
+        "practical_mid_urban": {
+          "baseline": 0.015232274709576757,
+          "candidate": 0.01521988105837694
+        },
+        "practical_low_urban": {
+          "baseline": 0.02597487647091327,
+          "candidate": 0.025960943307955425
+        }
+      },
+      "groups": {
+        "4": {
+          "clean": {
+            "baseline": 2.8661496255474894e-05,
+            "candidate": 2.8661496255474894e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.007601303496421076,
+            "candidate": 0.007587779847310071
+          },
+          "practical_mid_urban": {
+            "baseline": 0.013537389273697622,
+            "candidate": 0.013527584971414507
+          },
+          "practical_low_urban": {
+            "baseline": 0.02432200145968337,
+            "candidate": 0.024297696847511104
+          }
+        },
+        "6": {
+          "clean": {
+            "baseline": 1.7085332565668045e-05,
+            "candidate": 1.7085332565668045e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.009775556206808894,
+            "candidate": 0.009775649266203093
+          },
+          "practical_mid_urban": {
+            "baseline": 0.016799024476764,
+            "candidate": 0.016784237234984827
+          },
+          "practical_low_urban": {
+            "baseline": 0.02750279185930105,
+            "candidate": 0.027498446049740735
+          }
+        }
+      },
+      "guards": false
+    },
+    {
+      "epoch": 2,
+      "alpha": 0.5,
+      "improvement": 4.964611265787129e-05,
+      "per_view": {
+        "clean": {
+          "baseline": 2.2646025480950266e-05,
+          "candidate": 2.2646025480950266e-05
+        },
+        "practical_low_suburban": {
+          "baseline": 0.008731138386997602,
+          "candidate": 0.00871985205993244
+        },
+        "practical_mid_urban": {
+          "baseline": 0.015232274709576757,
+          "candidate": 0.015213467240070933
+        },
+        "practical_low_urban": {
+          "baseline": 0.02597487647091327,
+          "candidate": 0.025955324154826386
+        }
+      },
+      "groups": {
+        "4": {
+          "clean": {
+            "baseline": 2.8661496255474894e-05,
+            "candidate": 2.8661496255474894e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.007601303496421076,
+            "candidate": 0.007576444488599419
+          },
+          "practical_mid_urban": {
+            "baseline": 0.013537389273697622,
+            "candidate": 0.013524854597048127
+          },
+          "practical_low_urban": {
+            "baseline": 0.02432200145968337,
+            "candidate": 0.02428369865126031
+          }
+        },
+        "6": {
+          "clean": {
+            "baseline": 1.7085332565668045e-05,
+            "candidate": 1.7085332565668045e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.009775556206808894,
+            "candidate": 0.00977681644717843
+          },
+          "practical_mid_urban": {
+            "baseline": 0.016799024476764,
+            "candidate": 0.016774418446164178
+          },
+          "practical_low_urban": {
+            "baseline": 0.02750279185930105,
+            "candidate": 0.027500572472555853
+          }
+        }
+      },
+      "guards": false
+    },
+    {
+      "epoch": 2,
+      "alpha": 1.0,
+      "improvement": 3.6071006461720415e-05,
+      "per_view": {
+        "clean": {
+          "baseline": 2.2646025480950266e-05,
+          "candidate": 2.2646025480950266e-05
+        },
+        "practical_low_suburban": {
+          "baseline": 0.008731138386997602,
+          "candidate": 0.008714976747259743
+        },
+        "practical_mid_urban": {
+          "baseline": 0.015232274709576757,
+          "candidate": 0.01521842408753298
+        },
+        "practical_low_urban": {
+          "baseline": 0.02597487647091327,
+          "candidate": 0.025968817726233186
+        }
+      },
+      "groups": {
+        "4": {
+          "clean": {
+            "baseline": 2.8661496255474894e-05,
+            "candidate": 2.8661496255474894e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.007601303496421076,
+            "candidate": 0.007560293355310095
+          },
+          "practical_mid_urban": {
+            "baseline": 0.013537389273697622,
+            "candidate": 0.013540355429830266
+          },
+          "practical_low_urban": {
+            "baseline": 0.02432200145968337,
+            "candidate": 0.024286294394059757
+          }
+        },
+        "6": {
+          "clean": {
+            "baseline": 1.7085332565668045e-05,
+            "candidate": 1.7085332565668045e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.009775556206808894,
+            "candidate": 0.009782364487584334
+          },
+          "practical_mid_urban": {
+            "baseline": 0.016799024476764,
+            "candidate": 0.016769628448089786
+          },
+          "practical_low_urban": {
+            "baseline": 0.02750279185930105,
+            "candidate": 0.02752413998174745
+          }
+        }
+      },
+      "guards": false
+    },
+    {
+      "epoch": 5,
+      "alpha": 0.25,
+      "improvement": 5.3703520678530237e-05,
+      "per_view": {
+        "clean": {
+          "baseline": 2.2646025480950266e-05,
+          "candidate": 2.2646025480950266e-05
+        },
+        "practical_low_suburban": {
+          "baseline": 0.008731138386997602,
+          "candidate": 0.008721394934666175
+        },
+        "practical_mid_urban": {
+          "baseline": 0.015232274709576757,
+          "candidate": 0.015212783474133972
+        },
+        "practical_low_urban": {
+          "baseline": 0.02597487647091327,
+          "candidate": 0.025950407638008953
+        }
+      },
+      "groups": {
+        "4": {
+          "clean": {
+            "baseline": 2.8661496255474894e-05,
+            "candidate": 2.8661496255474894e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.007601303496421076,
+            "candidate": 0.007577853635573766
+          },
+          "practical_mid_urban": {
+            "baseline": 0.013537389273697622,
+            "candidate": 0.013517219507646302
+          },
+          "practical_low_urban": {
+            "baseline": 0.02432200145968337,
+            "candidate": 0.02427809095213222
+          }
+        },
+        "6": {
+          "clean": {
+            "baseline": 1.7085332565668045e-05,
+            "candidate": 1.7085332565668045e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.009775556206808894,
+            "candidate": 0.00977848293966912
+          },
+          "practical_mid_urban": {
+            "baseline": 0.016799024476764,
+            "candidate": 0.016780160474083056
+          },
+          "practical_low_urban": {
+            "baseline": 0.02750279185930105,
+            "candidate": 0.02749629488371631
+          }
+        }
+      },
+      "guards": false
+    },
+    {
+      "epoch": 5,
+      "alpha": 0.5,
+      "improvement": 5.363372496812978e-05,
+      "per_view": {
+        "clean": {
+          "baseline": 2.2646025480950266e-05,
+          "candidate": 2.2646025480950266e-05
+        },
+        "practical_low_suburban": {
+          "baseline": 0.008731138386997602,
+          "candidate": 0.008717309403020467
+        },
+        "practical_mid_urban": {
+          "baseline": 0.015232274709576757,
+          "candidate": 0.015213207720801395
+        },
+        "practical_low_urban": {
+          "baseline": 0.02597487647091327,
+          "candidate": 0.025954138718697638
+        }
+      },
+      "groups": {
+        "4": {
+          "clean": {
+            "baseline": 2.8661496255474894e-05,
+            "candidate": 2.8661496255474894e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.007601303496421076,
+            "candidate": 0.007561744402231103
+          },
+          "practical_mid_urban": {
+            "baseline": 0.013537389273697622,
+            "candidate": 0.01351926423566639
+          },
+          "practical_low_urban": {
+            "baseline": 0.02432200145968337,
+            "candidate": 0.024267311804825872
+          }
+        },
+        "6": {
+          "clean": {
+            "baseline": 1.7085332565668045e-05,
+            "candidate": 1.7085332565668045e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.009775556206808894,
+            "candidate": 0.009785512101344658
+          },
+          "practical_mid_urban": {
+            "baseline": 0.016799024476764,
+            "candidate": 0.016779086750015534
+          },
+          "practical_low_urban": {
+            "baseline": 0.02750279185930105,
+            "candidate": 0.027513439199218268
+          }
+        }
+      },
+      "guards": false
+    },
+    {
+      "epoch": 5,
+      "alpha": 1.0,
+      "improvement": -0.00010407143692677326,
+      "per_view": {
+        "clean": {
+          "baseline": 2.2646025480950266e-05,
+          "candidate": 2.2646025480950266e-05
+        },
+        "practical_low_suburban": {
+          "baseline": 0.008731138386997602,
+          "candidate": 0.008725778893629039
+        },
+        "practical_mid_urban": {
+          "baseline": 0.015232274709576757,
+          "candidate": 0.01527239670694169
+        },
+        "practical_low_urban": {
+          "baseline": 0.02597487647091327,
+          "candidate": 0.026044185403843675
+        }
+      },
+      "groups": {
+        "4": {
+          "clean": {
+            "baseline": 2.8661496255474894e-05,
+            "candidate": 2.8661496255474894e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.007601303496421076,
+            "candidate": 0.007551085107930818
+          },
+          "practical_mid_urban": {
+            "baseline": 0.013537389273697622,
+            "candidate": 0.013588110308347457
+          },
+          "practical_low_urban": {
+            "baseline": 0.02432200145968337,
+            "candidate": 0.02434259936112408
+          }
+        },
+        "6": {
+          "clean": {
+            "baseline": 1.7085332565668045e-05,
+            "candidate": 1.7085332565668045e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.009775556206808894,
+            "candidate": 0.009811664214429113
+          },
+          "practical_mid_urban": {
+            "baseline": 0.016799024476764,
+            "candidate": 0.016829348738631886
+          },
+          "practical_low_urban": {
+            "baseline": 0.02750279185930105,
+            "candidate": 0.027617129202783787
+          }
+        }
+      },
+      "guards": false
+    },
+    {
+      "epoch": 10,
+      "alpha": 0.25,
+      "improvement": 1.631407983207836e-05,
+      "per_view": {
+        "clean": {
+          "baseline": 2.2646025480950266e-05,
+          "candidate": 2.2646025480950266e-05
+        },
+        "practical_low_suburban": {
+          "baseline": 0.008731138386997602,
+          "candidate": 0.008727394854824062
+        },
+        "practical_mid_urban": {
+          "baseline": 0.015232274709576757,
+          "candidate": 0.015221417337518316
+        },
+        "practical_low_urban": {
+          "baseline": 0.02597487647091327,
+          "candidate": 0.025973163295313174
+        }
+      },
+      "groups": {
+        "4": {
+          "clean": {
+            "baseline": 2.8661496255474894e-05,
+            "candidate": 2.8661496255474894e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.007601303496421076,
+            "candidate": 0.00759160178731488
+          },
+          "practical_mid_urban": {
+            "baseline": 0.013537389273697622,
+            "candidate": 0.01352289655630165
+          },
+          "practical_low_urban": {
+            "baseline": 0.02432200145968337,
+            "candidate": 0.024324535730638544
+          }
+        },
+        "6": {
+          "clean": {
+            "baseline": 1.7085332565668045e-05,
+            "candidate": 1.7085332565668045e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.009775556206808894,
+            "candidate": 0.009777320405201967
+          },
+          "practical_mid_urban": {
+            "baseline": 0.016799024476764,
+            "candidate": 0.016791527612938534
+          },
+          "practical_low_urban": {
+            "baseline": 0.02750279185930105,
+            "candidate": 0.027497152349943675
+          }
+        }
+      },
+      "guards": false
+    },
+    {
+      "epoch": 10,
+      "alpha": 0.5,
+      "improvement": -5.861059031547419e-05,
+      "per_view": {
+        "clean": {
+          "baseline": 2.2646025480950266e-05,
+          "candidate": 2.2646025480950266e-05
+        },
+        "practical_low_suburban": {
+          "baseline": 0.008731138386997602,
+          "candidate": 0.008733219856390077
+        },
+        "practical_mid_urban": {
+          "baseline": 0.015232274709576757,
+          "candidate": 0.015243904271726883
+        },
+        "practical_low_urban": {
+          "baseline": 0.02597487647091327,
+          "candidate": 0.026019776029686144
+        }
+      },
+      "groups": {
+        "4": {
+          "clean": {
+            "baseline": 2.8661496255474894e-05,
+            "candidate": 2.8661496255474894e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.007601303496421076,
+            "candidate": 0.00759381923678931
+          },
+          "practical_mid_urban": {
+            "baseline": 0.013537389273697622,
+            "candidate": 0.013547446983440941
+          },
+          "practical_low_urban": {
+            "baseline": 0.02432200145968337,
+            "candidate": 0.02438780835942142
+          }
+        },
+        "6": {
+          "clean": {
+            "baseline": 1.7085332565668045e-05,
+            "candidate": 1.7085332565668045e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.009775556206808894,
+            "candidate": 0.009786480222962609
+          },
+          "practical_mid_urban": {
+            "baseline": 0.016799024476764,
+            "candidate": 0.01681210705711836
+          },
+          "practical_low_urban": {
+            "baseline": 0.02750279185930105,
+            "candidate": 0.02752836470082433
+          }
+        }
+      },
+      "guards": false
+    },
+    {
+      "epoch": 10,
+      "alpha": 1.0,
+      "improvement": -0.000489395743720129,
+      "per_view": {
+        "clean": {
+          "baseline": 2.2646025480950266e-05,
+          "candidate": 2.2646025480950266e-05
+        },
+        "practical_low_suburban": {
+          "baseline": 0.008731138386997602,
+          "candidate": 0.008774445833313676
+        },
+        "practical_mid_urban": {
+          "baseline": 0.015232274709576757,
+          "candidate": 0.015391787102694551
+        },
+        "practical_low_urban": {
+          "baseline": 0.02597487647091327,
+          "candidate": 0.026261452375199532
+        }
+      },
+      "groups": {
+        "4": {
+          "clean": {
+            "baseline": 2.8661496255474894e-05,
+            "candidate": 2.8661496255474894e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.007601303496421076,
+            "candidate": 0.0076352045503034335
+          },
+          "practical_mid_urban": {
+            "baseline": 0.013537389273697622,
+            "candidate": 0.013717463896188963
+          },
+          "practical_low_urban": {
+            "baseline": 0.02432200145968337,
+            "candidate": 0.024701441875542227
+          }
+        },
+        "6": {
+          "clean": {
+            "baseline": 1.7085332565668045e-05,
+            "candidate": 1.7085332565668045e-05
+          },
+          "practical_low_suburban": {
+            "baseline": 0.009775556206808894,
+            "candidate": 0.009827558909360943
+          },
+          "practical_mid_urban": {
+            "baseline": 0.016799024476764,
+            "candidate": 0.016939529173313116
+          },
+          "practical_low_urban": {
+            "baseline": 0.02750279185930105,
+            "candidate": 0.02770352393673842
+          }
+        }
+      },
+      "guards": false
+    }
+  ],
+  "F_loaded": false,
+  "TX_labels_read": 0
+}
