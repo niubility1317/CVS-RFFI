@@ -1,9 +1,11 @@
 # 相关性先验物理恢复：时频Transformer估计信道与噪声、单阶段30轮
 
+**六景0/6，clean 86.572619%。** cross_rx clean净变化+82，cross_both净变化-25。本版未达到完整性能目标，目标ACTIVE、默认DURA保持。[完整结果](analysis.md)。
+
 - run_id：`20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01`
 - group_id：`restoration-physical-full-covariance-source-operator-learning`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING（真实源2 smoke与训练进程已核实）
+- 当前登记状态：ANALYZED（完整Main预测、评分与复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原Main168000×七景完整，六景0/6，两个clean总体存在损伤，详见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -59,3 +61,8 @@ E01 CPU独立检查PASS：实际E0全部学习状态等于新factory，mu/C等�
 ## 完整源训练与自动Main接续已核实
 
 VERIFIED / SOURCE_TRAINED。固定30/7410、全30日志/stdout/sourceorder-draw-LR/加权loss/实际scratch E0/固定mu-C/E01-E30状态与E30-final独立复核PASS，0新NN或truth读取。训练1932.094824秒，轮时中位数64.442973秒，峰值1003.646MiB。父训练已exit0，Main cross_rx预测worker已真实启动；全实验仍RUNNING，尚无正式性能。详见[source完整核实](source_training_completion.md)。
+
+
+## 原Main完整七景结果已核实
+
+VERIFIED / ANALYZED。42单元/1302组/868raw配对/434DURA配对/434相对clean配对独立复算PASS，最大指标差1.2e-14、raw/DURA判决差0，各预期分组key全覆盖无重复。固定30/7410、完整源日志/stdout/sourceorder-draw-LR/加权loss/实际scratch E0与原FP32mu-C/E01-E30骨干-head-optimizer/30快照与E30-final核实，复用已完成源审计，不重复神经前向。4阶段exit0/liveempty、全部prediction先于CPU truth-last。本版未达到完整性能目标，目标ACTIVE、默认DURA保持。

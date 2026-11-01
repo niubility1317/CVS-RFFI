@@ -402,3 +402,11 @@ GPU4/6按实际free12GB/existingcompute≤2/新增1总≤3准入，一row一NN�
 `20261102-diagnostic-Restore-covariance-parameter-source-s2026092701-r01`，代码`5d7d9a2c4dd8e5d58b2843e47b1769d93d434c29`，父G固定bf29554a/final30/7410，F0原3ff8/defaulthead。原512源包×20draw，同mu/fullC/FP64求解，盲/仅真实噪声/仅真实Action/二者真实四路。整体Fclean一致依次95.029297/95.058594/96.523438/96.601562%，低档城区依次82.242340/82.660167/87.325905/87.743733%；完整配对修复/损伤与参数误差见analysis.md，不把Fclean一致当TX准确率、Main泛化或恢复上界。
 
 10240实例/48组/所有配对独立复算PASS，最大差0，旧source-DURA/received标量与Fclean参考差0；source2盲==实际G.forward、全G/F0不变、20draw/exit0/liveempty核实，实际运行65.861080秒、worker live快照捕获True。0训练、新统计拟合、TX/V/OE/novel/目标IQ-预测-评分或选模；真实源物理参数不进入Main，父固定部署/正式矩阵及其他owner保持。主验收仍是原Main六景3pp与两个clean保持，目标ACTIVE、默认DURA不变。
+
+## 相关性先验物理恢复器原Main完整七景完成（2026-11-02）
+
+`20261102-phase1-Restore-CovarianceMAP-E30-s2026092701-r01`，实际代码`bf29554a03e28a012eaaa134f5c7b3f7856f2268`。1230341参数时频Transformer估计FIR64/主镜像/噪声，原63000LsUs拟合的统一mu/full512C作为额外1050624字节FP32 buffer，FP64 Gaussian后验输出IQ。无学习IQ解码器、DURA或G checkpoint祖先，全部学习参数从零单阶段30/7410；训练只算源全Action矩阵与噪声监督，G更新0F0前向/后验求解，源F0只作为方法诊断和smoke依据，不扩大成全流程无F知识主张。
+
+原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景全部固定后独立CPU truth-last。六景依次83.500595/82.139286/80.539286/82.183333/75.047619/67.198214%，0/6，相对DURA依次-0.842857/-0.876786/-0.782738/-0.866071/-0.658333/-1.602976个百分点；clean86.572619%，cross_rx净+82、cross_both净-25。全部TX/RX/day/RX×day及真实TX修复/损伤、Fclean一致分别报告，不将源算子误差或Fclean参考当Main准确率。
+
+42单元/1302组/868raw配对/434DURA配对/434clean配对复算PASS，最大差1.2e-14、raw/DURA判决差0；分组key覆盖、source30日志/顺序/LR/loss/E0-prior-E01-E30-final核实，4阶段exit0/liveempty。源审计按既有证据复用，0新增NN或训练。静态MAC/FP64Cholesky不是实测时延，详见analysis.md。本版未达到完整性能目标，目标ACTIVE、默认DURA保持。
