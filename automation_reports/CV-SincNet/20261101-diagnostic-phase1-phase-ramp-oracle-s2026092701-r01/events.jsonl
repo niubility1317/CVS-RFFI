@@ -1,0 +1,2 @@
+{"at": "2026-11-01T06:10:57+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T06:12:48+00:00", "status": "ANALYZED", "note": "真实冻结基座、512 个 L_s/U_s 源训练记录、源视图 01/20；每条用 clean IQ 在 4096 点无约束相位斜率网格及复增益中最小化波形误差。独立核对分组计数及加权均值。BLOCKED 的 clean teacher 一致率：视图 01，DURA 65/83、标量 22/83、斜率 18/83；视图 20，DURA 48/62、标量 15/62、斜率 13/62。无 TX 标签、V、测试 IQ 或模型更新；特权反事实非准确率或可部署性能。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-phase-ramp-oracle-s2026092701-r01/complete.json"], "row_id": null}

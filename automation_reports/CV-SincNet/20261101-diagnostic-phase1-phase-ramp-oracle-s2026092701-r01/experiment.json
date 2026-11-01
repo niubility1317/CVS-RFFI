@@ -1,0 +1,155 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261101-diagnostic-phase1-phase-ramp-oracle-s2026092701-r01",
+  "group_id": "phase1-privileged-phase-ramp-source",
+  "display_name": "Phase1 线性相位漂移反事实源域诊断",
+  "description": "利用配对 clean IQ，诊断复数增益加线性相位漂移的拟合与冻结基座一致性。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "source-only",
+    "phase-ramp",
+    "privileged-oracle"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "20261101-diagnostic-phase1-complex-scalar-oracle-s2026092701-r01",
+    "20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发更强星地恢复网络并严格限定 Phase1 地面训练、测试与 Tri-SIG-TIME SSL 基座。",
+  "code": {
+    "commit": "e12b3cb9a5e72acb8f16dd28f01acfeffda987a1",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python/Torch CPU only, original Phase1 frozen Tri-SIG-TIME release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-diagnostic-phase1-phase-ramp-oracle-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/pamf_phase1_flow/phase_ramp_source_oracle.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "Paired Phase1 source clean and received IQ, fixed frozen DURA native outputs",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train/physical_ids.npy and R05 formal reference/physical_ids.npy",
+    "label_map_ref": "Phase1 six TX classes; hidden throughout restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six original classes; no TX labels in restorer training",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing complete R07 source cache, IDs compared with Tri-SIG-TIME source contract",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "none",
+    "actual_training_labels": "No TX labels, V or test IQ",
+    "augmentation": "Fixed source views 01 and 20"
+  },
+  "permissions": {
+    "regime": "Phase1 L_s/U_s source IQ only, no labels, frozen original teacher and DURA",
+    "query_use": "No target/query data",
+    "external_method_exception": null,
+    "claim_scope": "Privileged paired source counterfactual, not test accuracy or other-model ceiling"
+  },
+  "checkpoint": {
+    "initialization": "Frozen Tri-SIG-TIME SSL E50 and original DURA E20 source native predictions",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261030-diagnostic-DURA-source-phase-oracle-s2026092701-m2-r01/DURA_default-{1,20}.npz"
+    ],
+    "contract_check_ref": "Pinned source producer launch, exact 128 L +384 U deterministic positions, role IDs and clean arrays",
+    "provenance_verdict": "Phase1-only source outputs; no old classifier decisions consumed",
+    "selection_rule": "Fixed 512 source IDs, views 01/20 and 4096 phase grid; no target outcomes"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/phase1-phase-ramp-source-oracle",
+    "gpu_policy": "CPU2/0GPU; frozen checkpoint only",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-phase-ramp-oracle-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-phase-ramp-oracle-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_phase1_flow/20261101-diagnostic-phase1-phase-ramp-oracle-s2026092701-r01",
+    "launch_command": "python -u -m experiments.pamf_phase1_flow.phase_ramp_source_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit e12b3cb9a5e72acb8f16dd28f01acfeffda987a1",
+    "stop_rule": "Source ID mismatch, zero energy, nonfinite outputs, changed teacher or output collision stops and preserves evidence"
+  },
+  "expected_artifacts": [
+    "complete.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean teacher agreement",
+      "mean per-record IQ NMSE",
+      "phase-ramp versus DURA repairs/damages"
+    ],
+    "dimensions": [
+      "512 source records, views 01/20",
+      "source state, scenario and role"
+    ],
+    "prediction_ref": "aggregate source-only counts",
+    "scorer_ref": "phase_ramp_source_oracle.py",
+    "targets_ref": "paired clean source IQ and teacher predictions only"
+  },
+  "notes": [
+    "固定相同 512 条源训练物理记录、两个源视图；不读取 TX 标签、V 或测试 IQ。",
+    "每条用不可部署的配对 clean IQ，在覆盖整个离散频率范围的 4096 点相位斜率网格上最小化 IQ 误差，并解析求复数增益。无物理频率范围限制，非真实信道参数估计。",
+    "比较 raw、DURA、特权标量和特权相位斜率输出的 clean teacher 一致率与 IQ NMSE。teacher 一致性不是 TX 准确率，反事实不是可部署性能或其他方法上界。"
+  ],
+  "rows": [
+    {
+      "row_id": "phase_ramp_oracle_source",
+      "method": "Privileged clean-paired phase-ramp and complex gain grid least squares",
+      "purpose": "Test whether a per-window linear phase drift explains remaining source mismatch",
+      "config_ref": "experiments/pamf_phase1_flow/phase_ramp_source_oracle.py",
+      "resolved_config_ref": "experiments/pamf_phase1_flow/phase_ramp_source_oracle.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed existing source positions and views; no stochastic sampling",
+      "k": null,
+      "scenario": "Phase1 source views 01 and 20",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "512 fixed source records x two views; frozen teacher, no updates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-diagnostic-phase1-phase-ramp-oracle-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261101-diagnostic-phase1-phase-ramp-oracle-s2026092701-r01/stdout.log",
+      "command": "python -u -m experiments.pamf_phase1_flow.phase_ramp_source_oracle --root /home/szu2070436088/2510044040/CV-SincNet --commit e12b3cb9a5e72acb8f16dd28f01acfeffda987a1",
+      "expected_artifacts": [
+        "complete.json",
+        "stdout.log"
+      ]
+    }
+  ],
+  "registered_at": "2026-11-01T06:10:57+00:00"
+}
