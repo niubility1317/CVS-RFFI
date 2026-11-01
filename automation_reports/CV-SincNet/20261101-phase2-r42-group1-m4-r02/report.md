@@ -23,3 +23,5 @@ All37complete unscoredsuiteunits/7696rows are reused; knownoriginalmetrics keep 
 启动后独立核实（2026-11-01T13:21:44.188663+08:00）：VERIFIED RUNNING: all4 actualsource checkpointsmokesPASS, newNN/F/Gupdates0. Exactly37closedunits/7696predictions reused withnew_prediction_rows0; 10remainingGPUworkers actualfit/prediction artifactsgrowing; globaltruthbarrier unchanged.
 
 控制器实际PID/CWD/argv与子进程、GPU、日志/预测/拟合产物增长已核实。源代码/config commit b4903b6928d88f755b6609a6160a0dde0acf22b0，双仓库push和remoteOID VERIFIED；单一归档传输SHA比对、远端compile通过。25项定向测试和每个恢复入口唯一一次P0/P1均通过，无额外审查/签名/成员hash。全部矩阵仍在执行，宏H与+5pp逐格结论待最终独立评分。
+
+已评分阶段性汇总：[interim_scored_summary_20261101_135844](interim_scored_summary_20261101_135844.md)。完整主点672单元与全KN单单元先导分开，新增37完整预测尚未在本run提前评分；未改变任何健康任务或选择规则。
