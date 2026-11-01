@@ -41,3 +41,11 @@
 ## 启动后独立读回
 
 VERIFIED / RUNNING。已核对 controller/worker 的实际命令、CWD、CUDA UUID、GPU 计算进程和日志从零增长；真实源2条 checkpoint/输入梯度检查及 E0 严格重载 PASS。至少完成首轮247步，E01 技术恢复文件经独立 CPU 加载核实，模型/优化器及 CPU/CUDA RNG 均存在且状态有限。尚无正式性能结果，不把启动或源日志当作验收完成。
+
+## 全量训练、预测与独立评分完成
+
+VERIFIED / ANALYZED。新 VarF 从零单阶段 30 轮、7410 更新完成；原 Main split 两总体共 168000 物理样本的七景全部预测固定后，独立 CPU truth-last 评分。新 run 四个 GPU/CPU 阶段均正常退出，本任务 controller/worker 已退出。与冻结原 MSAT 的 84 单元复算通过：2604 评分组、1736 raw 配对、1302 额外配对，最大指标差 1.24e-14；raw/DURA 复用判决差 0；初值和源顺序一致，全部 30 份恢复文件存在且 E30 模型等于 final30。
+
+VarF 六景达标 0/6，clean 86.585119%（保持）。完整性能目标仍未达成，保持 ACTIVE；本版不能替换默认 DURA。全部场景、分 TX/RX/day、配对修复/损伤、训练成本和环境限制见 analysis.md/results.json 及配套表图。此前失败尝试不作为性能负结果；已知 29 轮耗时和本次成功成本同时报告，不隐去故障重试成本。
+
+分总体补充：合并 clean 多对78条，cross_rx多对79条，cross_both少对1条；不宣称所有子总体clean均保持。已知失败加本次训练累计至少45.499分钟，部分失败轮次/启动等另计。详见analysis.md和results.json的scope/cost字段。
