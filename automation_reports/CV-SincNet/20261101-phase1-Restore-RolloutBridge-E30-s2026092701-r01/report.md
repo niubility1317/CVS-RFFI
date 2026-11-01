@@ -1,9 +1,11 @@
 # 实际四步端到端训练的星地IQ恢复器
 
+**六景0/6，合并clean保持，clean准确率86.575000%。** cross_rx clean净变化+41，cross_both净变化+20。完整目标未达到，保持 ACTIVE 和默认 DURA。[完整性能与分组](analysis.md)。
+
 - run_id：`20261101-phase1-Restore-RolloutBridge-E30-s2026092701-r01`
 - group_id：`restoration-actual-rollout-single30`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：ANALYZED（完整七景与独立复算已核实）
 
 ## 目的与对照
 
@@ -21,7 +23,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+原 Main168000×七景完整，六景0/6、合并clean保持。84单元与完整分组/配对复算PASS，详见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -51,3 +53,7 @@ VERIFIED/RUNNING：9重点检查/一次P0P1、真实Ls2四步训练部署精确�
 ## 固定30轮源训练完成，正式预测已接续（2026-11-02）
 
 VERIFIED。30/7410完整源训练、189000L/1701000U、7560000 Gcore行、训练进程exit0并退出、final与E30文件存在已核实。全部训练状态/真实source2与实际E0的完整核对仍按既有证据及最终复算，当前不把源末轮指标当性能验收。实际Main预测进程已存活，跨接收机clean126000完成日志已观察；这不是准确率结果。全部两总体七景prediction完成后才独立CPU评分。SoftPower继续只在CPU等整个Main技术完成，原训练计划/默认DURA/源权限和完整性能目标ACTIVE保持。
+
+## RolloutBridge完整七景完成
+
+VERIFIED / ANALYZED。全G从零单阶段30/7410，部署固定4次共享权重，两个Main总体各七景全部预测后独立truth-last；4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对复算PASS，误差1.2e-14、raw/DURA判决差0。完整60轮/stdout/源顺序draw/实际四步训练/从零E0/最终加权loss复算/30快照E30-final核实。完整目标未达到，保持 ACTIVE 和默认 DURA。

@@ -316,3 +316,11 @@ VERIFIED。30/7410完整源训练、189000L/1701000U、7560000 Gcore行、训练
 ## 可学习功率源训练已核实
 
 VERIFIED / RUNNING。源2真实G/F0梯度/raw恒等E0与严格重载PASS，首轮247更新耗时45.930482秒。E01模型/优化器/CPU-CUDA RNG独立CPU读回，同PowerAnchor实际E0全部tensor/sourceorders/draws一致，配置仅投影/版本定义差异及加权loss复算PASS。GPU4准入free24110MiB/原0compute/新增1个，PID-CWD-CUDA-GPU与日志核实。原Rollout完整Main技术完成后才启动，0TX/V/OE/target更新或选模；固定final30自动原Main七景后truth-last，性能PENDING，默认DURA及完整目标ACTIVE保持。
+
+## RolloutBridge原 Main 七景完成（2026-11-02）
+
+`20261101-phase1-Restore-RolloutBridge-E30-s2026092701-r01`，实际代码`7250d0a88160d6ab949dafbdc73edb7f302e290f`。改为实际四步可微训练与最终损失，结构/E0/源顺序draw/LR/30轮/部署函数保持，训练core计算4倍的系统比较，全部G从零单阶段30/7410，训练和部署每记录均4core共享权重；sourceclean仅作最终loss参考，不构造clean混合输入state，部署无clean/F0/额外观测，0TX/V/OE/目标训练或选模，OE仅冻结诊断。
+
+原地面完整Tri-SIG-TIME SSL/defaulthead/Main168000×七景固定预测后独立CPU truth-last，4阶段exit0/liveempty。84单元/2604组/1736raw配对/1302额外配对复算PASS，最大指标差1.2e-14、raw/DURA判决差0；60完整日志/源顺序draw/从零E0/实际4步训练与最终loss协议/各轮加权loss复算/30快照E30-final一致性核实。
+
+六景依次75.960119/73.929762/71.875595/74.461905/67.470238/61.549405%，达标0/6，相对StateBridge依次+4.207143/+2.987500/+1.989881/+3.770238/+2.148810/+1.914286个百分点。合并clean 86.575000%（保持），cross_rx净变化+41、cross_both净变化+20，不掩盖子总体损伤。完整TX/RX/day/净纠错/相对clean/各time训练与成本见analysis.md。完整目标未达到，保持 ACTIVE 和默认 DURA。源端逐步退化是本项依据，不据Main错例热改模型或取消测试；性能主线、效率支线保持。
