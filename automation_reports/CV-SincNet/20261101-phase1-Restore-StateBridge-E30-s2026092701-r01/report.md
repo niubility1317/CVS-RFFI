@@ -39,3 +39,10 @@
 12项重点检查（新5+Direct7）及一次独立P0P1通过。真实源2训练梯度、完整4步E0与严格重载为launcher首步，PASS立即30；E01..30只技术恢复/final30固定，源质量不取消Main。每版按既定原Main126000+42000各七景全部预测固定后独立CPU truth-last/原共享锁，raw/DURA同IQ-ID精确复用，新G全4步推理；逐景至少140345正确=83.538690%，距原地面TriSIGTIME SSL/defaulthead raw clean86.538690%≤3pp并保持两个总体clean，完整TX/RX/day/净纠错及相对clean变化报告。对照的目标分数不回流、单seed与已曝光Main限制保持，默认DURA不变。
 
 静态4×260633600=1042534400实数Conv/Linear/attention MAC/包、0FFT/CG，训练每记录1core/部署4core后F0一次；排除F0/norm/activation/softmax/FiLM逐点/插值/投影/bridge更新/内存，不是实测时延。当前两个独立run各最多1条NN，本任务合计最多2条；GPU4/6实时free>=12000MiB/原compute<=2/add1总<=3，其他owner/健康Direct计划不改。环境仍N607 CVS-RFFI Torch2.1+cu121/FP32-TF32off。独占run-root/精确命令/停止规则/产物见登记。
+
+
+## 仅状态时间四步恢复器已运行（2026-11-01）
+
+`20261101-phase1-Restore-StateBridge-E30-s2026092701-r01`，实际代码`c50a9159b1fb891c6f1a6f8ad4bfa2d7eb66222e`，4676898参数，从零单阶段30/7410、训练每记录1次estimate、部署4次共享权重，received仅初始化state，估计器不读取原received条件，无额外观测或部署clean/F0。源IQ配对构造t1/.75/.5/.25状态，原F0连续160与rawRMS参考loss-only；0TX/V/OE/目标训练或选模，OE仅冻结诊断。结构/训练状态/执行共同变化的系统比较，不冒称单因素。
+
+VERIFIED / RUNNING：12重点相关检查/一次P0P1、真实源2训练梯度与完整四步E0/严格重载PASS。首轮247更新耗时78.104723秒，E01模型/AdamW/CPU-CUDA RNG独立CPU读回PASS，E0与固定seed factory逐张量一致；4个time实际计数和各项指标重组PASS，总loss确认原权重各加一次。GPU6准入free20513MiB/原2compute/仅新增1条，PID/CWD/命令/CUDA/GPU和日志核实，其他owner保持。固定final30后自动原Main168000×七景、全部预测后独立truth-last，当前性能PENDING；主验收仍六景各距raw clean≤3pp并保持clean，性能主线、效率支线和默认DURA不变。
