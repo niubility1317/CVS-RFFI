@@ -1,0 +1,84 @@
+{
+  "source_ids": 280,
+  "heldout": {
+    "clean": {
+      "valid_count": 272,
+      "L_s_count": 72,
+      "U_confident_count": 200,
+      "baseline": 272,
+      "student": 272,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_baseline": 72,
+      "L_s_student": 72
+    },
+    "practical_low_suburban": {
+      "valid_count": 272,
+      "L_s_count": 72,
+      "U_confident_count": 200,
+      "baseline": 266,
+      "student": 266,
+      "repairs": 0,
+      "damages": 0,
+      "L_s_baseline": 72,
+      "L_s_student": 72
+    },
+    "practical_mid_urban": {
+      "valid_count": 272,
+      "L_s_count": 72,
+      "U_confident_count": 200,
+      "baseline": 256,
+      "student": 255,
+      "repairs": 2,
+      "damages": 3,
+      "L_s_baseline": 64,
+      "L_s_student": 64
+    },
+    "practical_low_urban": {
+      "valid_count": 272,
+      "L_s_count": 72,
+      "U_confident_count": 200,
+      "baseline": 229,
+      "student": 232,
+      "repairs": 3,
+      "damages": 0,
+      "L_s_baseline": 56,
+      "L_s_student": 56
+    }
+  },
+  "heldout_clean_teacher_net": 0,
+  "quality": {
+    "clean": {
+      "count": 280,
+      "aligned_mse_before": 4.0849299715068764e-05,
+      "aligned_mse_after": 4.0849299715068764e-05,
+      "improved": 0,
+      "worsened": 0
+    },
+    "practical_low_suburban": {
+      "count": 280,
+      "aligned_mse_before": 0.027054156398699045,
+      "aligned_mse_after": 0.027061278340497177,
+      "improved": 110,
+      "worsened": 170
+    },
+    "practical_mid_urban": {
+      "count": 280,
+      "aligned_mse_before": 0.06029429377636587,
+      "aligned_mse_after": 0.060303502604912754,
+      "improved": 108,
+      "worsened": 172
+    },
+    "practical_low_urban": {
+      "count": 280,
+      "aligned_mse_before": 0.10211454221295799,
+      "aligned_mse_after": 0.10212276666968344,
+      "improved": 119,
+      "worsened": 161
+    }
+  },
+  "paired_clean_targets_used_for_inference": false,
+  "simulator_snr_used_for_inference": false,
+  "predictions_before_source_tx_labels": true,
+  "test_IQ_reads": 0
+}

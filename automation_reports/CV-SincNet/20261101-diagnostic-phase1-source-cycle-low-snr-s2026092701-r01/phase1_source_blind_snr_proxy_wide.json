@@ -1,0 +1,268 @@
+{
+  "status": "SOURCE_ONLY_BLIND_SNR_PROXY_WIDE",
+  "source_ids": 538,
+  "receiver": 8,
+  "day": 3,
+  "clean_proxy_quantiles_db": [
+    41.86057354116626,
+    44.23361667134871,
+    45.797385866947664,
+    48.217683152488476,
+    50.554889549774565
+  ],
+  "results": {
+    "practical_low_suburban": {
+      "count": 538,
+      "simulated_snr_quantiles_db": [
+        3.751038428933284,
+        18.9925079443858,
+        22.51592684977542,
+        24.308674317567114,
+        26.217397813862924
+      ],
+      "blind_proxy_quantiles_db": [
+        2.6736336617049137,
+        17.150040984520004,
+        21.924330233720962,
+        24.362081409698735,
+        27.39468849394419
+      ],
+      "spearman": 0.7538452492659051,
+      "gates": [
+        {
+          "threshold_db": -10.0,
+          "true_low": 41,
+          "selected": 1,
+          "true_positive": 1,
+          "false_positive": 0,
+          "false_negative": 40,
+          "true_negative": 497
+        },
+        {
+          "threshold_db": -5.0,
+          "true_low": 41,
+          "selected": 4,
+          "true_positive": 4,
+          "false_positive": 0,
+          "false_negative": 37,
+          "true_negative": 497
+        },
+        {
+          "threshold_db": 0.0,
+          "true_low": 41,
+          "selected": 18,
+          "true_positive": 18,
+          "false_positive": 0,
+          "false_negative": 23,
+          "true_negative": 497
+        },
+        {
+          "threshold_db": 5.0,
+          "true_low": 41,
+          "selected": 35,
+          "true_positive": 35,
+          "false_positive": 0,
+          "false_negative": 6,
+          "true_negative": 497
+        },
+        {
+          "threshold_db": 10.0,
+          "true_low": 41,
+          "selected": 54,
+          "true_positive": 40,
+          "false_positive": 14,
+          "false_negative": 1,
+          "true_negative": 483
+        },
+        {
+          "threshold_db": 15.0,
+          "true_low": 41,
+          "selected": 110,
+          "true_positive": 41,
+          "false_positive": 69,
+          "false_negative": 0,
+          "true_negative": 428
+        },
+        {
+          "threshold_db": 20.0,
+          "true_low": 41,
+          "selected": 186,
+          "true_positive": 41,
+          "false_positive": 145,
+          "false_negative": 0,
+          "true_negative": 352
+        }
+      ]
+    },
+    "practical_mid_urban": {
+      "count": 538,
+      "simulated_snr_quantiles_db": [
+        0.6187888839781721,
+        6.4867885349606,
+        23.99580074054274,
+        26.932679669182544,
+        28.91532588529322
+      ],
+      "blind_proxy_quantiles_db": [
+        -3.2631540736530154,
+        2.672851762641415,
+        20.70902428012375,
+        24.410585407563012,
+        27.93856638344545
+      ],
+      "spearman": 0.8604371860646021,
+      "gates": [
+        {
+          "threshold_db": -10.0,
+          "true_low": 188,
+          "selected": 2,
+          "true_positive": 2,
+          "false_positive": 0,
+          "false_negative": 186,
+          "true_negative": 350
+        },
+        {
+          "threshold_db": -5.0,
+          "true_low": 188,
+          "selected": 8,
+          "true_positive": 8,
+          "false_positive": 0,
+          "false_negative": 180,
+          "true_negative": 350
+        },
+        {
+          "threshold_db": 0.0,
+          "true_low": 188,
+          "selected": 89,
+          "true_positive": 89,
+          "false_positive": 0,
+          "false_negative": 99,
+          "true_negative": 350
+        },
+        {
+          "threshold_db": 5.0,
+          "true_low": 188,
+          "selected": 170,
+          "true_positive": 170,
+          "false_positive": 0,
+          "false_negative": 18,
+          "true_negative": 350
+        },
+        {
+          "threshold_db": 10.0,
+          "true_low": 188,
+          "selected": 199,
+          "true_positive": 187,
+          "false_positive": 12,
+          "false_negative": 1,
+          "true_negative": 338
+        },
+        {
+          "threshold_db": 15.0,
+          "true_low": 188,
+          "selected": 216,
+          "true_positive": 188,
+          "false_positive": 28,
+          "false_negative": 0,
+          "true_negative": 322
+        },
+        {
+          "threshold_db": 20.0,
+          "true_low": 188,
+          "selected": 252,
+          "true_positive": 188,
+          "false_positive": 64,
+          "false_negative": 0,
+          "true_negative": 286
+        }
+      ]
+    },
+    "practical_low_urban": {
+      "count": 538,
+      "simulated_snr_quantiles_db": [
+        -3.085060040541336,
+        1.5430659980734727,
+        6.80872059533207,
+        22.913582861853953,
+        26.131163874967463
+      ],
+      "blind_proxy_quantiles_db": [
+        -6.816083913540227,
+        -1.5414286946343985,
+        4.000796384841239,
+        21.960639041440732,
+        26.27073560238291
+      ],
+      "spearman": 0.943709856157899,
+      "gates": [
+        {
+          "threshold_db": -10.0,
+          "true_low": 300,
+          "selected": 12,
+          "true_positive": 12,
+          "false_positive": 0,
+          "false_negative": 288,
+          "true_negative": 238
+        },
+        {
+          "threshold_db": -5.0,
+          "true_low": 300,
+          "selected": 46,
+          "true_positive": 46,
+          "false_positive": 0,
+          "false_negative": 254,
+          "true_negative": 238
+        },
+        {
+          "threshold_db": 0.0,
+          "true_low": 300,
+          "selected": 177,
+          "true_positive": 177,
+          "false_positive": 0,
+          "false_negative": 123,
+          "true_negative": 238
+        },
+        {
+          "threshold_db": 5.0,
+          "true_low": 300,
+          "selected": 280,
+          "true_positive": 279,
+          "false_positive": 1,
+          "false_negative": 21,
+          "true_negative": 237
+        },
+        {
+          "threshold_db": 10.0,
+          "true_low": 300,
+          "selected": 307,
+          "true_positive": 300,
+          "false_positive": 7,
+          "false_negative": 0,
+          "true_negative": 231
+        },
+        {
+          "threshold_db": 15.0,
+          "true_low": 300,
+          "selected": 324,
+          "true_positive": 300,
+          "false_positive": 24,
+          "false_negative": 0,
+          "true_negative": 214
+        },
+        {
+          "threshold_db": 20.0,
+          "true_low": 300,
+          "selected": 365,
+          "true_positive": 300,
+          "false_positive": 65,
+          "false_negative": 0,
+          "true_negative": 173
+        }
+      ]
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "caveat": "The proxy uses only received IQ and DURA, with a best-fit complex gain and shift within ±64 over the central 128 samples; no clean source or simulator SNR is used in the proxy. Simulated added-noise SNR is a privileged post-hoc reference, not total or real satellite SNR. This source receiver/day was observed in previous diagnostics; frozen models saw source records."
+}

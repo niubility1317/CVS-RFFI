@@ -1,0 +1,214 @@
+{
+  "status": "SOURCE_ONLY_BLIND_SNR_PROXY",
+  "source_ids": 538,
+  "receiver": 8,
+  "day": 3,
+  "clean_proxy_quantiles_db": [
+    41.11675347759821,
+    43.77823945380109,
+    45.34925545763818,
+    47.58906293084506,
+    49.616403694927406
+  ],
+  "results": {
+    "practical_low_suburban": {
+      "count": 538,
+      "simulated_snr_quantiles_db": [
+        3.751038428933284,
+        18.9925079443858,
+        22.51592684977542,
+        24.308674317567114,
+        26.217397813862924
+      ],
+      "blind_proxy_quantiles_db": [
+        -9.433470833658733,
+        -6.5831071190984165,
+        -4.284412936147302,
+        -2.4821102522117253,
+        -1.1005577729805052
+      ],
+      "spearman": 0.07918653706458141,
+      "gates": [
+        {
+          "threshold_db": 0.0,
+          "true_low": 41,
+          "selected": 529,
+          "true_positive": 41,
+          "false_positive": 488,
+          "false_negative": 0,
+          "true_negative": 9
+        },
+        {
+          "threshold_db": 5.0,
+          "true_low": 41,
+          "selected": 538,
+          "true_positive": 41,
+          "false_positive": 497,
+          "false_negative": 0,
+          "true_negative": 0
+        },
+        {
+          "threshold_db": 10.0,
+          "true_low": 41,
+          "selected": 538,
+          "true_positive": 41,
+          "false_positive": 497,
+          "false_negative": 0,
+          "true_negative": 0
+        },
+        {
+          "threshold_db": 15.0,
+          "true_low": 41,
+          "selected": 538,
+          "true_positive": 41,
+          "false_positive": 497,
+          "false_negative": 0,
+          "true_negative": 0
+        },
+        {
+          "threshold_db": 20.0,
+          "true_low": 41,
+          "selected": 538,
+          "true_positive": 41,
+          "false_positive": 497,
+          "false_negative": 0,
+          "true_negative": 0
+        }
+      ]
+    },
+    "practical_mid_urban": {
+      "count": 538,
+      "simulated_snr_quantiles_db": [
+        0.6187888839781721,
+        6.4867885349606,
+        23.99580074054274,
+        26.932679669182544,
+        28.91532588529322
+      ],
+      "blind_proxy_quantiles_db": [
+        -10.146499733815201,
+        -7.482506325364336,
+        -4.965028489897593,
+        -3.0561488362720617,
+        -1.4362896506211242
+      ],
+      "spearman": 0.4695235369839368,
+      "gates": [
+        {
+          "threshold_db": 0.0,
+          "true_low": 188,
+          "selected": 531,
+          "true_positive": 188,
+          "false_positive": 343,
+          "false_negative": 0,
+          "true_negative": 7
+        },
+        {
+          "threshold_db": 5.0,
+          "true_low": 188,
+          "selected": 538,
+          "true_positive": 188,
+          "false_positive": 350,
+          "false_negative": 0,
+          "true_negative": 0
+        },
+        {
+          "threshold_db": 10.0,
+          "true_low": 188,
+          "selected": 538,
+          "true_positive": 188,
+          "false_positive": 350,
+          "false_negative": 0,
+          "true_negative": 0
+        },
+        {
+          "threshold_db": 15.0,
+          "true_low": 188,
+          "selected": 538,
+          "true_positive": 188,
+          "false_positive": 350,
+          "false_negative": 0,
+          "true_negative": 0
+        },
+        {
+          "threshold_db": 20.0,
+          "true_low": 188,
+          "selected": 538,
+          "true_positive": 188,
+          "false_positive": 350,
+          "false_negative": 0,
+          "true_negative": 0
+        }
+      ]
+    },
+    "practical_low_urban": {
+      "count": 538,
+      "simulated_snr_quantiles_db": [
+        -3.085060040541336,
+        1.5430659980734727,
+        6.80872059533207,
+        22.913582861853953,
+        26.131163874967463
+      ],
+      "blind_proxy_quantiles_db": [
+        -12.99222840072778,
+        -9.002576892175918,
+        -6.344505943933255,
+        -4.000676925822743,
+        -1.5482489415232312
+      ],
+      "spearman": 0.6938963924903987,
+      "gates": [
+        {
+          "threshold_db": 0.0,
+          "true_low": 300,
+          "selected": 534,
+          "true_positive": 300,
+          "false_positive": 234,
+          "false_negative": 0,
+          "true_negative": 4
+        },
+        {
+          "threshold_db": 5.0,
+          "true_low": 300,
+          "selected": 538,
+          "true_positive": 300,
+          "false_positive": 238,
+          "false_negative": 0,
+          "true_negative": 0
+        },
+        {
+          "threshold_db": 10.0,
+          "true_low": 300,
+          "selected": 538,
+          "true_positive": 300,
+          "false_positive": 238,
+          "false_negative": 0,
+          "true_negative": 0
+        },
+        {
+          "threshold_db": 15.0,
+          "true_low": 300,
+          "selected": 538,
+          "true_positive": 300,
+          "false_positive": 238,
+          "false_negative": 0,
+          "true_negative": 0
+        },
+        {
+          "threshold_db": 20.0,
+          "true_low": 300,
+          "selected": 538,
+          "true_positive": 300,
+          "false_positive": 238,
+          "false_negative": 0,
+          "true_negative": 0
+        }
+      ]
+    }
+  },
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "caveat": "The proxy uses only received IQ and DURA, with a best-fit complex gain and shift within ±16; no clean source or simulator SNR is used in the proxy. Simulated added-noise SNR is a privileged post-hoc reference, not total or real satellite SNR. This source receiver/day was observed in previous diagnostics; frozen models saw source records."
+}
