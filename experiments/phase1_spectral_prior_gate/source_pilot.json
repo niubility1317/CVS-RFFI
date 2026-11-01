@@ -1,0 +1,234 @@
+{
+  "smoke": false,
+  "source_only": true,
+  "train_ids": 2048,
+  "heldout_from_train": 256,
+  "dictionary_ids": 8192,
+  "neighbors": 16,
+  "training_cache": 11,
+  "evaluation_cache": 14,
+  "updates": 64,
+  "active_records": 2047,
+  "loss_mean": 1.5584887946024537,
+  "F_frozen": true,
+  "phase_prior": "previously source-trained with DURA, no DURA inference",
+  "DURA_loaded_after_training": true,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "target": "high-confidence F(clean) pseudo label, not true accuracy",
+  "limitations": "small exploratory IQ-restoration pilot; disjoint physical-ID dictionary can introduce other transmitters fingerprints; no checkpoint saved, not Phase1 test",
+  "results": {
+    "practical_high": {
+      "count": 35,
+      "valid": 35,
+      "methods": {
+        "raw": {
+          "correct": 34,
+          "aligned_nmse": 0.0067818658426404
+        },
+        "DURA": {
+          "correct": 35,
+          "aligned_nmse": 0.002168644219636917
+        },
+        "anchor": {
+          "correct": 29,
+          "aligned_nmse": 0.006781865376979113
+        },
+        "blend05": {
+          "correct": 29,
+          "aligned_nmse": 0.006311019882559776
+        },
+        "blend25": {
+          "correct": 29,
+          "aligned_nmse": 0.006250881589949131
+        },
+        "spectral_gate": {
+          "correct": 32,
+          "aligned_nmse": 0.007089305203408003
+        }
+      }
+    },
+    "practical_mid": {
+      "count": 47,
+      "valid": 45,
+      "methods": {
+        "raw": {
+          "correct": 44,
+          "aligned_nmse": 0.011485724709928036
+        },
+        "DURA": {
+          "correct": 45,
+          "aligned_nmse": 0.003647137898951769
+        },
+        "anchor": {
+          "correct": 44,
+          "aligned_nmse": 0.011485724709928036
+        },
+        "blend05": {
+          "correct": 44,
+          "aligned_nmse": 0.010631606914103031
+        },
+        "blend25": {
+          "correct": 43,
+          "aligned_nmse": 0.009630565531551838
+        },
+        "spectral_gate": {
+          "correct": 44,
+          "aligned_nmse": 0.011713716201484203
+        }
+      }
+    },
+    "practical_low_suburban": {
+      "count": 50,
+      "valid": 49,
+      "methods": {
+        "raw": {
+          "correct": 46,
+          "aligned_nmse": 0.02945285104215145
+        },
+        "DURA": {
+          "correct": 49,
+          "aligned_nmse": 0.008382816798985004
+        },
+        "anchor": {
+          "correct": 44,
+          "aligned_nmse": 0.02945285104215145
+        },
+        "blend05": {
+          "correct": 44,
+          "aligned_nmse": 0.027437780052423477
+        },
+        "blend25": {
+          "correct": 45,
+          "aligned_nmse": 0.021364163607358932
+        },
+        "spectral_gate": {
+          "correct": 45,
+          "aligned_nmse": 0.026836810633540154
+        }
+      }
+    },
+    "practical_high_urban": {
+      "count": 48,
+      "valid": 48,
+      "methods": {
+        "raw": {
+          "correct": 41,
+          "aligned_nmse": 0.06686506420373917
+        },
+        "DURA": {
+          "correct": 47,
+          "aligned_nmse": 0.009101931005716324
+        },
+        "anchor": {
+          "correct": 43,
+          "aligned_nmse": 0.06686506420373917
+        },
+        "blend05": {
+          "correct": 43,
+          "aligned_nmse": 0.06329358369112015
+        },
+        "blend25": {
+          "correct": 42,
+          "aligned_nmse": 0.05045049265027046
+        },
+        "spectral_gate": {
+          "correct": 43,
+          "aligned_nmse": 0.06034325435757637
+        }
+      }
+    },
+    "practical_mid_urban": {
+      "count": 34,
+      "valid": 33,
+      "methods": {
+        "raw": {
+          "correct": 25,
+          "aligned_nmse": 0.1977909356355667
+        },
+        "DURA": {
+          "correct": 31,
+          "aligned_nmse": 0.018898537382483482
+        },
+        "anchor": {
+          "correct": 22,
+          "aligned_nmse": 0.1977909356355667
+        },
+        "blend05": {
+          "correct": 23,
+          "aligned_nmse": 0.19247552752494812
+        },
+        "blend25": {
+          "correct": 25,
+          "aligned_nmse": 0.16962209343910217
+        },
+        "spectral_gate": {
+          "correct": 24,
+          "aligned_nmse": 0.18777276575565338
+        }
+      }
+    },
+    "practical_low_urban": {
+      "count": 42,
+      "valid": 41,
+      "methods": {
+        "raw": {
+          "correct": 23,
+          "aligned_nmse": 0.4248470962047577
+        },
+        "DURA": {
+          "correct": 33,
+          "aligned_nmse": 0.04682580754160881
+        },
+        "anchor": {
+          "correct": 21,
+          "aligned_nmse": 0.4249018728733063
+        },
+        "blend05": {
+          "correct": 21,
+          "aligned_nmse": 0.416319340467453
+        },
+        "blend25": {
+          "correct": 22,
+          "aligned_nmse": 0.37261492013931274
+        },
+        "spectral_gate": {
+          "correct": 23,
+          "aligned_nmse": 0.40782198309898376
+        }
+      }
+    },
+    "all": {
+      "count": 256,
+      "valid": 251,
+      "methods": {
+        "raw": {
+          "correct": 213,
+          "aligned_nmse": 0.11729621142148972
+        },
+        "DURA": {
+          "correct": 240,
+          "aligned_nmse": 0.014502288773655891
+        },
+        "anchor": {
+          "correct": 203,
+          "aligned_nmse": 0.1173052042722702
+        },
+        "blend05": {
+          "correct": 204,
+          "aligned_nmse": 0.11390677094459534
+        },
+        "blend25": {
+          "correct": 206,
+          "aligned_nmse": 0.09991495311260223
+        },
+        "spectral_gate": {
+          "correct": 211,
+          "aligned_nmse": 0.11152258515357971
+        }
+      }
+    }
+  }
+}
