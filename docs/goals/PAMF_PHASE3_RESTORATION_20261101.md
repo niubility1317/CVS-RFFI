@@ -126,3 +126,11 @@ MSAT源NMSE0.018428/F一致率96.133%，真实Action后0.017164/96.172%；低档
 r01在第30轮CUDA launch failure，GPU7随后独立查询不可用。29完整epoch合计1378.407422秒，未保存已训练状态，无final30/正式预测，不当科学负结果。独立r02实际代码88daaef5db065f88203da98d777f6711b999b97e，仅恢复资源准入/UUID/逐轮恢复快照，科学配方不变；source smoke前CUDA初始化仍失败，0epoch/0update/0预测。三个fresh-process微探针（4编号、4 UUID、6编号）均失败，故障在已授权GPU的CUDA执行层，具体驱动硬件原因UNKNOWN。两run登记FAILED/NO_PERFORMANCE_RESULT，无本任务活进程。
 
 不再盲目第三次发布，不重置设备或改动其他owner。本机5070Ti/Torch2.10+cu128无模型CUDA探针PASS，但源缓存/原F0运行包未迁入、环境不同；已询问等待N607恢复还是迁移本机并重核基准，尚无选择，不能开始依赖该选择的正式训练。性能目标ACTIVE、六景逐个3pp+clean保持/原LsUs/OE仅冻结诊断/默认DURA不变。
+
+## 2026-11-01 N607 CUDA 恢复：VarF r03 同配方继续
+
+N607 GPU 7 的设备查询已恢复，GPU 4 在原 Torch 2.1.0+cu121/CUDA 12.1 中实际 CUDA 分配、同步和计算 PASS（驱动 580.173.02）。本任务未重置设备、改驱动或干预其他 owner。此前平台阻塞已解除，原 r01/r02 失败及成本记录保留，不视为性能负结果。
+
+新独立 `20261101-phase1-Restore-MSAT-VarF-E30-s2026092701-r03`，实际代码 `9fdb1f5b164484f2bc438cb1e45d1ee805d2473a`。仅改 run ID，沿用已审查结构、原 L_s/U_s、原 F0 特征指导、初值/顺序/损失/学习率，重新从零单阶段 30 轮、7410 更新。9 项聚焦检查通过；真实源 smoke、严格 E0 重载、GPU 4 实际训练及 E01 模型/优化器/RNG 技术恢复文件独立读回 PASS。默认 DURA 不变，性能目标未完成。
+
+每轮恢复文件不参与选模，固定 final30 后自动原 Main split 168000×七景完整预测和独立 truth-last；六景逐个距 raw clean ≤3 个百分点并保持 clean。训练效率仍为支线，失败重试及逐轮保存成本如实披露。详见该 run 的 report/launch_evidence；本次不迁移本机。

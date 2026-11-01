@@ -1,0 +1,32 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "actual_code_commit": "9fdb1f5b164484f2bc438cb1e45d1ee805d2473a",
+  "live_controller_and_worker_identity_verified": true,
+  "worker_observed_in_GPU_compute_list": true,
+  "physical_GPU": 4,
+  "GPU_free_MiB_at_admission": 24110,
+  "existing_compute_processes_at_admission": 0,
+  "source_real_checkpoint_smoke": "PASS",
+  "strict_E0_reload": "PASS",
+  "source_TX_labels_read": 0,
+  "target_training_reads": 0,
+  "training_epochs_observed": 1,
+  "training_updates_observed": 247,
+  "worker_log_bytes_observed": 458,
+  "log_growth_from_zero": true,
+  "first_epoch_technical_recovery_checkpoint": {
+    "status": "PASS",
+    "epoch": 1,
+    "updates": 247,
+    "bytes": 51190244,
+    "model_tensor_count": 162,
+    "optimizer_preserved": true,
+    "CPU_and_CUDA_RNG_preserved": true,
+    "new_neural_forwards": 0,
+    "TX_labels_read": 0,
+    "target_inputs": 0
+  },
+  "archive_SHA_match": true,
+  "remote_compile": "PASS",
+  "formal_performance_result": "PENDING"
+}
