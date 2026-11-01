@@ -1,0 +1,151 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-diagnostic-direct-source-paired-s2026092701-r01",
+  "group_id": "phase1-direct-axial-source-paired-diagnostic",
+  "display_name": "直接 IQ 网络与 DURA 源域留出配对比较",
+  "description": "固定源选模型，在 279 条接收机 8 第 3 天 L_s/U_s 源留出记录比较波形与分类，预测固定后读取 L_s 标签。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "diagnostic",
+    "source_only",
+    "direct_iq",
+    "paired_DURA",
+    "predictions_before_labels"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-direct-axial-iq-s2026092701-r01",
+    "20261101-phase1-dura-trisigtime-baseline-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发新的 Phase1 星地恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "2d21b5f947e1866a41313a147d10a8612c8b4ed2",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python CPU, two threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256]; source L_s/U_s paired clean and simulated post_sync residual channel",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six registered Phase1 TX; no TX labels used in training or source IQ selection",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Fixed 279 receiver 8 day3 L_s/U_s source heldout records from pre-selected direct IQ model; no V, no target",
+    "support_query_ref": null,
+    "leo_config_ref": "Fixed source cache epoch20 seven scenes; no simulator regeneration"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "No Phase1 test IQ or labels; no Phase3; source L_s labels only after all heldout predictions sealed",
+    "external_method_exception": null,
+    "claim_scope": "Post-selection single-seed Phase1 source-only diagnostic; historical frozen F and DURA may have seen source records"
+  },
+  "checkpoint": {
+    "initialization": "Fixed axial direct IQ selected epoch 10 alpha 0.25; frozen DURA and frozen Tri-SIG-TIME SSL",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-axial-iq-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "core.data matches source IDs to exact Tri-SIG-TIME SSL source contract",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "No selection or fitting in diagnostic; models and alpha were fixed in parent before this comparison"
+  },
+  "execution": {
+    "host": "N607 CPU",
+    "launch_owner": "Codex direct IQ source paired diagnostic single owner",
+    "gpu_policy": "CPU only, 2 threads, CUDA_VISIBLE_DEVICES empty",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-direct-source-paired-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-diagnostic-direct-source-paired-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-diagnostic-direct-source-paired-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-direct-source-paired-s2026092701-r01-release/experiments/phase1_direct_source_paired/phase1_direct_source_paired.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-direct-source-paired-s2026092701-r01 --commit 2d21b5f947e1866a41313a147d10a8612c8b4ed2",
+    "stop_rule": "Only provenance/role violation, output collision, nonfinite or technical execution failure; preserve all partial outputs; no stop for low performance"
+  },
+  "expected_artifacts": [
+    "predictions.npz",
+    "predictions_manifest.json",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "normalized aligned IQ MSE",
+      "classification accuracy counts",
+      "repair/damage/net"
+    ],
+    "dimensions": [
+      "seven source scenes",
+      "L_s true labels",
+      "U_s clean-teacher pseudo labels"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-direct-source-paired-s2026092701-r01/predictions.npz",
+    "scorer_ref": "experiments/phase1_direct_source_paired/phase1_direct_source_paired.py",
+    "scientific_rule": "Fixed model comparison only; no generalization or full Phase1 claim; target goal all six scenes <=3% relative or 3 pp"
+  },
+  "rows": [
+    {
+      "row_id": "direct_vs_dura_source_holdout",
+      "method": "frozen direct temporal-spectral IQ network vs frozen DURA",
+      "purpose": "post-selection source-only paired comparison",
+      "config_ref": "experiments/phase1_direct_source_paired/phase1_direct_source_paired.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-direct-source-paired-s2026092701-r01/predictions_manifest.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110754,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026110755
+      },
+      "seed_notes": "No new random sampling, fitting or tuning; exact parent source heldout IDs and epoch20 cache",
+      "k": null,
+      "scenario": "seven source scenes as fixed by cache epoch20",
+      "optimizer": "none; no training",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "279 fixed source heldout records, CPU two threads",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-direct-source-paired-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-diagnostic-direct-source-paired-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-diagnostic-direct-source-paired-s2026092701-r01-release/experiments/phase1_direct_source_paired/phase1_direct_source_paired.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-diagnostic-direct-source-paired-s2026092701-r01 --commit 2d21b5f947e1866a41313a147d10a8612c8b4ed2",
+      "expected_artifacts": [
+        "predictions.npz",
+        "predictions_manifest.json",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Post-hoc diagnostic does not change fixed model or full Phase1 test.",
+    "All source predictions fixed before legitimate L_s labels opened; U_s true labels never opened.",
+    "The previously failed source V diagnostic is unrelated and remains untouched."
+  ],
+  "registered_at": "2026-11-01T16:54:44+00:00"
+}
