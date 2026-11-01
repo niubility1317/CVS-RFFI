@@ -1,0 +1,2 @@
+{"at": "2026-11-01T05:18:14+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T05:19:49+00:00", "status": "QUEUED", "note": "真实 F/DURA 的 CPU 2 条 L_s 源记录检查通过，冻结模型未变；源档案物化 L128/U384 IQ，不读 TX 标签、V 或测试 IQ。控制器遵循共享容量限制等待 GPU，正式训练尚未开始。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-boundary-student-E30-s2026092701-r02/smoke.json"], "row_id": null}

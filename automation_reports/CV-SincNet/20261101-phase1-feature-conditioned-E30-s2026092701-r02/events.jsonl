@@ -1,0 +1,2 @@
+{"at": "2026-11-01T05:18:07+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-01T05:19:42+00:00", "status": "RUNNING", "note": "真实 F/DURA 的 CPU 2 条和 GPU 128 条合法 L_s 检查通过，GPU 检查中 7 条基座错误，冻结模型未变；正式学生重新初始化，已进入源训练。物化 6300 条 L_s 标签、源档案 L128/U384 IQ，未读 U_s 标签、V、测试 IQ。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261101-phase1-feature-conditioned-E30-s2026092701-r02/gpu_smoke.json"], "row_id": null}
