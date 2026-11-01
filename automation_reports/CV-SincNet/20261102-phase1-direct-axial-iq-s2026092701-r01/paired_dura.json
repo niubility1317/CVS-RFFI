@@ -1,0 +1,1249 @@
+{
+  "status": "PAIRED_COMPLETE",
+  "count": 168000,
+  "views": {
+    "clean": {
+      "count": 168000,
+      "baseline_correct": 145514,
+      "candidate_correct": 145375,
+      "repairs": 544,
+      "damages": 683
+    },
+    "practical_high": {
+      "count": 168000,
+      "baseline_correct": 141697,
+      "candidate_correct": 135202,
+      "repairs": 8255,
+      "damages": 14750
+    },
+    "practical_mid": {
+      "count": 168000,
+      "baseline_correct": 139467,
+      "candidate_correct": 131217,
+      "repairs": 9434,
+      "damages": 17684
+    },
+    "practical_low_suburban": {
+      "count": 168000,
+      "baseline_correct": 136621,
+      "candidate_correct": 127399,
+      "repairs": 10880,
+      "damages": 20102
+    },
+    "practical_high_urban": {
+      "count": 168000,
+      "baseline_correct": 139523,
+      "candidate_correct": 129467,
+      "repairs": 9093,
+      "damages": 19149
+    },
+    "practical_mid_urban": {
+      "count": 168000,
+      "baseline_correct": 127186,
+      "candidate_correct": 105559,
+      "repairs": 13589,
+      "damages": 35216
+    },
+    "practical_low_urban": {
+      "count": 168000,
+      "baseline_correct": 115586,
+      "candidate_correct": 86583,
+      "repairs": 16450,
+      "damages": 45453
+    }
+  },
+  "groups": [
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "baseline_correct": 27398,
+      "candidate_correct": 27423,
+      "repairs": 39,
+      "damages": 14
+    },
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "baseline_correct": 19632,
+      "candidate_correct": 19763,
+      "repairs": 295,
+      "damages": 164
+    },
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "baseline_correct": 22985,
+      "candidate_correct": 22920,
+      "repairs": 90,
+      "damages": 155
+    },
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "baseline_correct": 20391,
+      "candidate_correct": 20262,
+      "repairs": 98,
+      "damages": 227
+    },
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "baseline_correct": 27955,
+      "candidate_correct": 27954,
+      "repairs": 2,
+      "damages": 3
+    },
+    {
+      "view": "clean",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "baseline_correct": 27153,
+      "candidate_correct": 27053,
+      "repairs": 20,
+      "damages": 120
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "baseline_correct": 19466,
+      "candidate_correct": 19383,
+      "repairs": 44,
+      "damages": 127
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "baseline_correct": 19033,
+      "candidate_correct": 18979,
+      "repairs": 182,
+      "damages": 236
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "baseline_correct": 22259,
+      "candidate_correct": 22287,
+      "repairs": 77,
+      "damages": 49
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "baseline_correct": 20126,
+      "candidate_correct": 20169,
+      "repairs": 83,
+      "damages": 40
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "baseline_correct": 22853,
+      "candidate_correct": 22841,
+      "repairs": 46,
+      "damages": 58
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "baseline_correct": 20545,
+      "candidate_correct": 20463,
+      "repairs": 50,
+      "damages": 132
+    },
+    {
+      "view": "clean",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "baseline_correct": 21232,
+      "candidate_correct": 21253,
+      "repairs": 62,
+      "damages": 41
+    },
+    {
+      "view": "clean",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "baseline_correct": 34440,
+      "candidate_correct": 34283,
+      "repairs": 79,
+      "damages": 236
+    },
+    {
+      "view": "clean",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "baseline_correct": 37206,
+      "candidate_correct": 37222,
+      "repairs": 191,
+      "damages": 175
+    },
+    {
+      "view": "clean",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "baseline_correct": 36133,
+      "candidate_correct": 36083,
+      "repairs": 129,
+      "damages": 179
+    },
+    {
+      "view": "clean",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "baseline_correct": 37735,
+      "candidate_correct": 37787,
+      "repairs": 145,
+      "damages": 93
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "baseline_correct": 26906,
+      "candidate_correct": 24049,
+      "repairs": 215,
+      "damages": 3072
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "baseline_correct": 16333,
+      "candidate_correct": 15986,
+      "repairs": 4093,
+      "damages": 4440
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "baseline_correct": 24123,
+      "candidate_correct": 21377,
+      "repairs": 652,
+      "damages": 3398
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "baseline_correct": 18862,
+      "candidate_correct": 20220,
+      "repairs": 3131,
+      "damages": 1773
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "baseline_correct": 27959,
+      "candidate_correct": 27545,
+      "repairs": 3,
+      "damages": 417
+    },
+    {
+      "view": "practical_high",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "baseline_correct": 27514,
+      "candidate_correct": 26025,
+      "repairs": 161,
+      "damages": 1650
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "baseline_correct": 18335,
+      "candidate_correct": 18380,
+      "repairs": 1192,
+      "damages": 1147
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "baseline_correct": 20930,
+      "candidate_correct": 16308,
+      "repairs": 487,
+      "damages": 5109
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "baseline_correct": 21003,
+      "candidate_correct": 20558,
+      "repairs": 1347,
+      "damages": 1792
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "baseline_correct": 17986,
+      "candidate_correct": 19433,
+      "repairs": 2541,
+      "damages": 1094
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "baseline_correct": 22523,
+      "candidate_correct": 20776,
+      "repairs": 558,
+      "damages": 2305
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "baseline_correct": 19498,
+      "candidate_correct": 20424,
+      "repairs": 1718,
+      "damages": 792
+    },
+    {
+      "view": "practical_high",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "baseline_correct": 21422,
+      "candidate_correct": 19323,
+      "repairs": 412,
+      "damages": 2511
+    },
+    {
+      "view": "practical_high",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "baseline_correct": 33969,
+      "candidate_correct": 33299,
+      "repairs": 2481,
+      "damages": 3151
+    },
+    {
+      "view": "practical_high",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "baseline_correct": 36055,
+      "candidate_correct": 34315,
+      "repairs": 1673,
+      "damages": 3413
+    },
+    {
+      "view": "practical_high",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "baseline_correct": 35355,
+      "candidate_correct": 33824,
+      "repairs": 2213,
+      "damages": 3744
+    },
+    {
+      "view": "practical_high",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "baseline_correct": 36318,
+      "candidate_correct": 33764,
+      "repairs": 1888,
+      "damages": 4442
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "baseline_correct": 26662,
+      "candidate_correct": 23334,
+      "repairs": 329,
+      "damages": 3657
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "baseline_correct": 16224,
+      "candidate_correct": 15824,
+      "repairs": 4062,
+      "damages": 4462
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "baseline_correct": 23870,
+      "candidate_correct": 20840,
+      "repairs": 869,
+      "damages": 3899
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "baseline_correct": 18044,
+      "candidate_correct": 18945,
+      "repairs": 3473,
+      "damages": 2572
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "baseline_correct": 27931,
+      "candidate_correct": 26578,
+      "repairs": 5,
+      "damages": 1358
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "baseline_correct": 26736,
+      "candidate_correct": 25696,
+      "repairs": 696,
+      "damages": 1736
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "baseline_correct": 18139,
+      "candidate_correct": 17861,
+      "repairs": 1421,
+      "damages": 1699
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "baseline_correct": 20501,
+      "candidate_correct": 16021,
+      "repairs": 665,
+      "damages": 5145
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "baseline_correct": 20375,
+      "candidate_correct": 19932,
+      "repairs": 1727,
+      "damages": 2170
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "baseline_correct": 17809,
+      "candidate_correct": 18727,
+      "repairs": 2514,
+      "damages": 1596
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "baseline_correct": 21992,
+      "candidate_correct": 20135,
+      "repairs": 841,
+      "damages": 2698
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "baseline_correct": 19250,
+      "candidate_correct": 19655,
+      "repairs": 1764,
+      "damages": 1359
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "baseline_correct": 21401,
+      "candidate_correct": 18886,
+      "repairs": 502,
+      "damages": 3017
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "baseline_correct": 33508,
+      "candidate_correct": 32346,
+      "repairs": 2805,
+      "damages": 3967
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "baseline_correct": 35622,
+      "candidate_correct": 33405,
+      "repairs": 1880,
+      "damages": 4097
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "baseline_correct": 34694,
+      "candidate_correct": 32791,
+      "repairs": 2420,
+      "damages": 4323
+    },
+    {
+      "view": "practical_mid",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "baseline_correct": 35643,
+      "candidate_correct": 32675,
+      "repairs": 2329,
+      "damages": 5297
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "baseline_correct": 26113,
+      "candidate_correct": 22684,
+      "repairs": 553,
+      "damages": 3982
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "baseline_correct": 16041,
+      "candidate_correct": 15667,
+      "repairs": 4249,
+      "damages": 4623
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "baseline_correct": 23553,
+      "candidate_correct": 20252,
+      "repairs": 1091,
+      "damages": 4392
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "baseline_correct": 17144,
+      "candidate_correct": 17645,
+      "repairs": 3734,
+      "damages": 3233
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "baseline_correct": 27826,
+      "candidate_correct": 25792,
+      "repairs": 18,
+      "damages": 2052
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "baseline_correct": 25944,
+      "candidate_correct": 25359,
+      "repairs": 1235,
+      "damages": 1820
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "baseline_correct": 17932,
+      "candidate_correct": 17408,
+      "repairs": 1639,
+      "damages": 2163
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "baseline_correct": 19969,
+      "candidate_correct": 15531,
+      "repairs": 821,
+      "damages": 5259
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "baseline_correct": 19703,
+      "candidate_correct": 19335,
+      "repairs": 2091,
+      "damages": 2459
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "baseline_correct": 17532,
+      "candidate_correct": 18142,
+      "repairs": 2647,
+      "damages": 2037
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "baseline_correct": 21292,
+      "candidate_correct": 19464,
+      "repairs": 1190,
+      "damages": 3018
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "baseline_correct": 18973,
+      "candidate_correct": 19008,
+      "repairs": 1851,
+      "damages": 1816
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "baseline_correct": 21220,
+      "candidate_correct": 18511,
+      "repairs": 641,
+      "damages": 3350
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "baseline_correct": 32910,
+      "candidate_correct": 31325,
+      "repairs": 3084,
+      "damages": 4669
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "baseline_correct": 34905,
+      "candidate_correct": 32413,
+      "repairs": 2173,
+      "damages": 4665
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "baseline_correct": 34029,
+      "candidate_correct": 31875,
+      "repairs": 2829,
+      "damages": 4983
+    },
+    {
+      "view": "practical_low_suburban",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "baseline_correct": 34777,
+      "candidate_correct": 31786,
+      "repairs": 2794,
+      "damages": 5785
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "baseline_correct": 26592,
+      "candidate_correct": 22835,
+      "repairs": 333,
+      "damages": 4090
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "baseline_correct": 15991,
+      "candidate_correct": 15495,
+      "repairs": 4147,
+      "damages": 4643
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "baseline_correct": 23778,
+      "candidate_correct": 20619,
+      "repairs": 840,
+      "damages": 3999
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "baseline_correct": 18673,
+      "candidate_correct": 18900,
+      "repairs": 2940,
+      "damages": 2713
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "baseline_correct": 27935,
+      "candidate_correct": 25897,
+      "repairs": 4,
+      "damages": 2042
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "baseline_correct": 26554,
+      "candidate_correct": 25721,
+      "repairs": 829,
+      "damages": 1662
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "baseline_correct": 18145,
+      "candidate_correct": 17638,
+      "repairs": 1317,
+      "damages": 1824
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "baseline_correct": 20532,
+      "candidate_correct": 15712,
+      "repairs": 653,
+      "damages": 5473
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "baseline_correct": 20578,
+      "candidate_correct": 19708,
+      "repairs": 1542,
+      "damages": 2412
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "baseline_correct": 17784,
+      "candidate_correct": 18481,
+      "repairs": 2490,
+      "damages": 1793
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "baseline_correct": 22030,
+      "candidate_correct": 19980,
+      "repairs": 815,
+      "damages": 2865
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "baseline_correct": 19200,
+      "candidate_correct": 19378,
+      "repairs": 1775,
+      "damages": 1597
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "baseline_correct": 21254,
+      "candidate_correct": 18570,
+      "repairs": 501,
+      "damages": 3185
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "baseline_correct": 33477,
+      "candidate_correct": 31855,
+      "repairs": 2682,
+      "damages": 4304
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "baseline_correct": 35619,
+      "candidate_correct": 32913,
+      "repairs": 1816,
+      "damages": 4522
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "baseline_correct": 34793,
+      "candidate_correct": 32347,
+      "repairs": 2379,
+      "damages": 4825
+    },
+    {
+      "view": "practical_high_urban",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "baseline_correct": 35634,
+      "candidate_correct": 32352,
+      "repairs": 2216,
+      "damages": 5498
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "baseline_correct": 24470,
+      "candidate_correct": 18177,
+      "repairs": 950,
+      "damages": 7243
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "baseline_correct": 13818,
+      "candidate_correct": 13566,
+      "repairs": 4700,
+      "damages": 4952
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "baseline_correct": 21788,
+      "candidate_correct": 17228,
+      "repairs": 1723,
+      "damages": 6283
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "baseline_correct": 17182,
+      "candidate_correct": 13495,
+      "repairs": 2683,
+      "damages": 6370
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "baseline_correct": 27565,
+      "candidate_correct": 19332,
+      "repairs": 80,
+      "damages": 8313
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "baseline_correct": 22363,
+      "candidate_correct": 23761,
+      "repairs": 3453,
+      "damages": 2055
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "baseline_correct": 17254,
+      "candidate_correct": 14489,
+      "repairs": 1790,
+      "damages": 4555
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "baseline_correct": 18051,
+      "candidate_correct": 13016,
+      "repairs": 1543,
+      "damages": 6578
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "baseline_correct": 18662,
+      "candidate_correct": 16117,
+      "repairs": 2243,
+      "damages": 4788
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "baseline_correct": 16445,
+      "candidate_correct": 14758,
+      "repairs": 2687,
+      "damages": 4374
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "baseline_correct": 19155,
+      "candidate_correct": 16340,
+      "repairs": 2113,
+      "damages": 4928
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "baseline_correct": 17648,
+      "candidate_correct": 15621,
+      "repairs": 2207,
+      "damages": 4234
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "baseline_correct": 19971,
+      "candidate_correct": 15218,
+      "repairs": 1006,
+      "damages": 5759
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "baseline_correct": 31016,
+      "candidate_correct": 25906,
+      "repairs": 3645,
+      "damages": 8755
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "baseline_correct": 32895,
+      "candidate_correct": 27187,
+      "repairs": 2822,
+      "damages": 8530
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "baseline_correct": 31317,
+      "candidate_correct": 26301,
+      "repairs": 3578,
+      "damages": 8594
+    },
+    {
+      "view": "practical_mid_urban",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "baseline_correct": 31958,
+      "candidate_correct": 26165,
+      "repairs": 3544,
+      "damages": 9337
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "0",
+      "count": 28000,
+      "baseline_correct": 22175,
+      "candidate_correct": 14554,
+      "repairs": 1395,
+      "damages": 9016
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "1",
+      "count": 28000,
+      "baseline_correct": 11903,
+      "candidate_correct": 11820,
+      "repairs": 5033,
+      "damages": 5116
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "2",
+      "count": 28000,
+      "baseline_correct": 19834,
+      "candidate_correct": 14585,
+      "repairs": 2340,
+      "damages": 7589
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "3",
+      "count": 28000,
+      "baseline_correct": 16259,
+      "candidate_correct": 9741,
+      "repairs": 2324,
+      "damages": 8842
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "4",
+      "count": 28000,
+      "baseline_correct": 26699,
+      "candidate_correct": 14797,
+      "repairs": 188,
+      "damages": 12090
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "TX",
+      "value": "5",
+      "count": 28000,
+      "baseline_correct": 18716,
+      "candidate_correct": 21086,
+      "repairs": 5170,
+      "damages": 2800
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "1-1",
+      "count": 24000,
+      "baseline_correct": 16064,
+      "candidate_correct": 12019,
+      "repairs": 2191,
+      "damages": 6236
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "14-7",
+      "count": 24000,
+      "baseline_correct": 16123,
+      "candidate_correct": 10730,
+      "repairs": 2053,
+      "damages": 7446
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "2-1",
+      "count": 24000,
+      "baseline_correct": 16912,
+      "candidate_correct": 13254,
+      "repairs": 2633,
+      "damages": 6291
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "20-1",
+      "count": 24000,
+      "baseline_correct": 14953,
+      "candidate_correct": 11993,
+      "repairs": 2826,
+      "damages": 5786
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "7-14",
+      "count": 24000,
+      "baseline_correct": 16893,
+      "candidate_correct": 13378,
+      "repairs": 2944,
+      "damages": 6459
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "7-7",
+      "count": 24000,
+      "baseline_correct": 16090,
+      "candidate_correct": 12579,
+      "repairs": 2474,
+      "damages": 5985
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "RX",
+      "value": "8-8",
+      "count": 24000,
+      "baseline_correct": 18551,
+      "candidate_correct": 12630,
+      "repairs": 1329,
+      "damages": 7250
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "day",
+      "value": "2021_03_01",
+      "count": 42000,
+      "baseline_correct": 28414,
+      "candidate_correct": 21198,
+      "repairs": 4211,
+      "damages": 11427
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "day",
+      "value": "2021_03_08",
+      "count": 42000,
+      "baseline_correct": 30210,
+      "candidate_correct": 22464,
+      "repairs": 3481,
+      "damages": 11227
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "day",
+      "value": "2021_03_15",
+      "count": 42000,
+      "baseline_correct": 28325,
+      "candidate_correct": 21647,
+      "repairs": 4381,
+      "damages": 11059
+    },
+    {
+      "view": "practical_low_urban",
+      "dimension": "day",
+      "value": "2021_03_23",
+      "count": 42000,
+      "baseline_correct": 28637,
+      "candidate_correct": 21274,
+      "repairs": 4377,
+      "damages": 11740
+    }
+  ],
+  "all_predictions_before_truth": true,
+  "target_feedback": false
+}
