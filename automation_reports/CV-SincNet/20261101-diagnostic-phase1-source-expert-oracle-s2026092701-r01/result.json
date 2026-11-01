@@ -1,0 +1,285 @@
+{
+  "status": "SOURCE_ONLY_PRIVILEGED_EXPERT_ORACLE",
+  "source_records": 512,
+  "views": [
+    "clean",
+    1,
+    20
+  ],
+  "experts": [
+    "raw",
+    "dura",
+    "boundary",
+    "feature"
+  ],
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "DURA_sha256": "14200ac0f8eef01f57aa82e8fb5122ff855fc81208983d9234d6c5caef2e28ee",
+  "boundary_checkpoint_sha256": "951bd2dc49753db8b21af0cba6afcf0124ea05f43d59203957a0dd603b8eb0a7",
+  "feature_checkpoint_sha256": "4b66b90ced7ba4bc31bf7bad1b49483473d9b42b139a4faef2676bbbeaa4b8f9",
+  "source_L_s_labels_materialized": 6300,
+  "source_L_s_labels_scored": 128,
+  "U_s_labels_read": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "all_predictions_before_source_labels": true,
+  "models_updated": 0,
+  "results": [
+    {
+      "view": "clean",
+      "groups": [
+        {
+          "group": "all",
+          "reference": "clean_teacher",
+          "count": 512,
+          "experts": {
+            "raw": 512,
+            "dura": 512,
+            "boundary": 512,
+            "feature": 511
+          },
+          "three_oracle": 512,
+          "all_four_oracle": 512,
+          "available_rescues": 0,
+          "raw_unique_rescues": 0
+        },
+        {
+          "group": "all",
+          "reference": "L_s_truth",
+          "count": 128,
+          "experts": {
+            "raw": 128,
+            "dura": 128,
+            "boundary": 128,
+            "feature": 127
+          },
+          "three_oracle": 128,
+          "all_four_oracle": 128,
+          "available_rescues": 0,
+          "raw_unique_rescues": 0
+        },
+        {
+          "group": "L_s",
+          "reference": "clean_teacher",
+          "count": 128,
+          "experts": {
+            "raw": 128,
+            "dura": 128,
+            "boundary": 128,
+            "feature": 127
+          },
+          "three_oracle": 128,
+          "all_four_oracle": 128,
+          "available_rescues": 0,
+          "raw_unique_rescues": 0
+        },
+        {
+          "group": "L_s",
+          "reference": "L_s_truth",
+          "count": 128,
+          "experts": {
+            "raw": 128,
+            "dura": 128,
+            "boundary": 128,
+            "feature": 127
+          },
+          "three_oracle": 128,
+          "all_four_oracle": 128,
+          "available_rescues": 0,
+          "raw_unique_rescues": 0
+        }
+      ]
+    },
+    {
+      "view": "01",
+      "groups": [
+        {
+          "group": "all",
+          "reference": "clean_teacher",
+          "count": 512,
+          "experts": {
+            "raw": 444,
+            "dura": 491,
+            "boundary": 488,
+            "feature": 483
+          },
+          "three_oracle": 506,
+          "all_four_oracle": 508,
+          "available_rescues": 17,
+          "raw_unique_rescues": 2
+        },
+        {
+          "group": "all",
+          "reference": "L_s_truth",
+          "count": 128,
+          "experts": {
+            "raw": 112,
+            "dura": 121,
+            "boundary": 122,
+            "feature": 121
+          },
+          "three_oracle": 126,
+          "all_four_oracle": 126,
+          "available_rescues": 5,
+          "raw_unique_rescues": 0
+        },
+        {
+          "group": "L_s",
+          "reference": "clean_teacher",
+          "count": 128,
+          "experts": {
+            "raw": 112,
+            "dura": 121,
+            "boundary": 122,
+            "feature": 121
+          },
+          "three_oracle": 126,
+          "all_four_oracle": 126,
+          "available_rescues": 5,
+          "raw_unique_rescues": 0
+        },
+        {
+          "group": "L_s",
+          "reference": "L_s_truth",
+          "count": 128,
+          "experts": {
+            "raw": 112,
+            "dura": 121,
+            "boundary": 122,
+            "feature": 121
+          },
+          "three_oracle": 126,
+          "all_four_oracle": 126,
+          "available_rescues": 5,
+          "raw_unique_rescues": 0
+        },
+        {
+          "group": "blocked",
+          "reference": "clean_teacher",
+          "count": 83,
+          "experts": {
+            "raw": 35,
+            "dura": 65,
+            "boundary": 66,
+            "feature": 59
+          },
+          "three_oracle": 77,
+          "all_four_oracle": 79,
+          "available_rescues": 14,
+          "raw_unique_rescues": 2
+        },
+        {
+          "group": "blocked",
+          "reference": "L_s_truth",
+          "count": 21,
+          "experts": {
+            "raw": 9,
+            "dura": 15,
+            "boundary": 16,
+            "feature": 14
+          },
+          "three_oracle": 19,
+          "all_four_oracle": 19,
+          "available_rescues": 4,
+          "raw_unique_rescues": 0
+        }
+      ]
+    },
+    {
+      "view": "20",
+      "groups": [
+        {
+          "group": "all",
+          "reference": "clean_teacher",
+          "count": 512,
+          "experts": {
+            "raw": 456,
+            "dura": 492,
+            "boundary": 490,
+            "feature": 492
+          },
+          "three_oracle": 505,
+          "all_four_oracle": 506,
+          "available_rescues": 14,
+          "raw_unique_rescues": 1
+        },
+        {
+          "group": "all",
+          "reference": "L_s_truth",
+          "count": 128,
+          "experts": {
+            "raw": 115,
+            "dura": 125,
+            "boundary": 125,
+            "feature": 124
+          },
+          "three_oracle": 127,
+          "all_four_oracle": 127,
+          "available_rescues": 2,
+          "raw_unique_rescues": 0
+        },
+        {
+          "group": "L_s",
+          "reference": "clean_teacher",
+          "count": 128,
+          "experts": {
+            "raw": 115,
+            "dura": 125,
+            "boundary": 125,
+            "feature": 124
+          },
+          "three_oracle": 127,
+          "all_four_oracle": 127,
+          "available_rescues": 2,
+          "raw_unique_rescues": 0
+        },
+        {
+          "group": "L_s",
+          "reference": "L_s_truth",
+          "count": 128,
+          "experts": {
+            "raw": 115,
+            "dura": 125,
+            "boundary": 125,
+            "feature": 124
+          },
+          "three_oracle": 127,
+          "all_four_oracle": 127,
+          "available_rescues": 2,
+          "raw_unique_rescues": 0
+        },
+        {
+          "group": "blocked",
+          "reference": "clean_teacher",
+          "count": 62,
+          "experts": {
+            "raw": 23,
+            "dura": 48,
+            "boundary": 45,
+            "feature": 46
+          },
+          "three_oracle": 56,
+          "all_four_oracle": 57,
+          "available_rescues": 9,
+          "raw_unique_rescues": 1
+        },
+        {
+          "group": "blocked",
+          "reference": "L_s_truth",
+          "count": 16,
+          "experts": {
+            "raw": 4,
+            "dura": 13,
+            "boundary": 13,
+            "feature": 12
+          },
+          "three_oracle": 15,
+          "all_four_oracle": 15,
+          "available_rescues": 2,
+          "raw_unique_rescues": 0
+        }
+      ]
+    }
+  ],
+  "caveat": "Per-record clean teacher or L_s truth is used only for privileged upper bound; not a deployable selector. Experts trained on source records; clean teacher agreement is not TX accuracy."
+}
