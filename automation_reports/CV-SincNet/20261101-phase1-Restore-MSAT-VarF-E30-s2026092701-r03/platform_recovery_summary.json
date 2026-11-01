@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED_CUDA_PLATFORM_RECOVERY",
+  "observed_utc": "2026-11-01T05:11:21.759187+00:00",
+  "physical_GPU": 4,
+  "device_probe": "PASS",
+  "allocation_and_synchronization": true,
+  "arithmetic_result": 2.0,
+  "Torch": "2.1.0+cu121",
+  "CUDA": "12.1",
+  "driver_version": "580.173.02",
+  "GPU7_NVML_query_now": "PASS",
+  "prior_failures_preserved": true,
+  "device_resets": 0,
+  "other_owner_changes": 0,
+  "scientific_recipe_changed": false,
+  "model_initialization": "scratch",
+  "epochs": 30,
+  "updates": 7410,
+  "focused_checks_passed": 9
+}
