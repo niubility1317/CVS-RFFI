@@ -1,0 +1,172 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-direct-curriculum-s2026092701-r01",
+  "group_id": "phase1-direct-labeled-hard-curriculum",
+  "display_name": "有标签困难样本指导的独立 IQ 恢复",
+  "description": "固定 Tri-SIG-TIME SSL，直接恢复网络采用合法训练划分 L_s 真值和高置信干净教师伪标签，并加权当前受损信号识别错误的训练样本；不依赖 DURA。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "direct_iq",
+    "labeled_source",
+    "hard_curriculum",
+    "frozen_trisigtime",
+    "source_only_selection",
+    "truth_last",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-direct-axial-iq-s2026092701-r01",
+    "20261102-diagnostic-direct-source-paired-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "d850c782a2ca1982688b4ec07fa52a0353e864ad",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python GPU 2 if idle; two CPU threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "float32 IQ [2,256]; source L_s/U_s paired clean and simulated post_sync residual channel",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Six Phase1 TX; actual L_s metadata read and validated; only L_s labels in training split used; no U_s labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "4096 fixed sampled L_s/U_s IDs; rx4/6 day3 validation and rx8 day3 exploratory heldout; all three receiver/day groups excluded from training. L_s metadata includes all source IDs but nontraining labels discarded before optimization; no V",
+    "support_query_ref": null,
+    "leo_config_ref": "Fixed source cache epochs 16–19 training, epoch20 validation, seven Phase1 practical scenes"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "No target data until all source selection fixed; then seven-view predictions before truth; no Phase3",
+    "external_method_exception": null,
+    "claim_scope": "Single seed, source heldout and Phase1 development previously observed, no independent-blind or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed direct IQ source parent epoch10; Tri-SIG-TIME SSL frozen; DURA never used during training or inference",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-axial-iq-s2026092701-r01/source/checkpoint_epoch10.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "core.data checks physical IDs against Tri-SIG-TIME roles; parent commit exact",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "RX4/6 day3 source clean F high-confidence pseudo targets and paired IQ, epochs1/2/4 alpha .25/.5/1; per-cell classification and IQ guard, >=2 impaired net gain; raw fallback; RX8 excluded from selection"
+  },
+  "execution": {
+    "host": "N607 GPU 2",
+    "launch_owner": "Codex labeled source hard-example IQ single owner",
+    "gpu_policy": "GPU2 only if idle; one worker, two CPU threads",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-direct-curriculum-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-direct-curriculum-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-curriculum-s2026092701-r01-release/experiments/phase1_direct_curriculum/phase1_axial_spectral_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01 --commit d850c782a2ca1982688b4ec07fa52a0353e864ad --device cuda:0",
+    "stop_rule": "Only provenance/role violation, output collision, nonfinite or technical execution failure; preserve all partial outputs; no stop for low performance"
+  },
+  "expected_artifacts": [
+    "source_smoke/result.json",
+    "source/checkpoint_epoch01.pt",
+    "source/checkpoint_epoch02.pt",
+    "source/checkpoint_epoch04.pt",
+    "source/source_selection.json",
+    "source/selected.pt if selected",
+    "source/prediction_smoke.json if selected",
+    "source/flow/test_prediction/complete.json if selected",
+    "source/flow/test_summary.json and paired_dura.json if selected",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "repair/damage/net",
+      "raw clean gap pp",
+      "relative clean decline",
+      "aligned IQ MSE"
+    ],
+    "dimensions": [
+      "seven source scenes",
+      "receiver day heldout source teacher agreement",
+      "seven Phase1 development views",
+      "TX RX day on post-prediction scorer"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01/source/flow/test_prediction",
+    "scorer_ref": "experiments/pamf_phase1_flow/experiment.py#score and phase1_complex_multires_compare.py",
+    "scientific_rule": "Goal six scenario accuracies versus clean ground SSL <=3 pp and also <=3% relative, clean protection, no blind claim."
+  },
+  "rows": [
+    {
+      "row_id": "direct_curriculum_s2026092701",
+      "method": "direct IQ temporal-spectral attention with frozen F, legitimate L_s supervised labels, clean F pseudo labels and threefold raw-error curriculum; no DURA",
+      "purpose": "source-selected direct IQ improvement then Phase1 test",
+      "config_ref": "experiments/phase1_direct_curriculum/phase1_axial_spectral_source.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01/source/source_selection.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110954,
+        "split": 392005,
+        "data": 2026110551,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026110955
+      },
+      "seed_notes": "Fixed source split; training cache epochs 16–19 and source selection epoch20; model seed 2026110954 and shuffle seed 2026110955",
+      "k": null,
+      "scenario": "seven source scenes and seven final Phase1 views if selected",
+      "optimizer": "AdamW weight_decay .001",
+      "lr": 0.0001,
+      "epochs": 4,
+      "fl_rounds": null,
+      "budget_ref": "47143 training IDs, only legitimate L_s labels among them, batch32, four source epochs",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-direct-curriculum-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-direct-curriculum-s2026092701-r01-release/experiments/phase1_direct_curriculum/phase1_axial_spectral_pipeline.py --root /home/szu2070436088/2510044040/CV-SincNet --run-root /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-direct-curriculum-s2026092701-r01 --commit d850c782a2ca1982688b4ec07fa52a0353e864ad --device cuda:0",
+      "expected_artifacts": [
+        "source_smoke/result.json",
+        "source/checkpoint_epoch01.pt",
+        "source/checkpoint_epoch02.pt",
+        "source/checkpoint_epoch04.pt",
+        "source/source_selection.json",
+        "source/selected.pt if selected",
+        "source/prediction_smoke.json if selected",
+        "source/flow/test_prediction/complete.json if selected",
+        "source/flow/test_summary.json and paired_dura.json if selected",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All 6300 L_s metadata records loaded only to validate provenance; labels retained for training IDs only. No U_s ground truth, V or target IQ/labels.",
+    "Frozen clean F pseudo targets used for source selection; no TX truth used for source selection.",
+    "DURA is not a model input or architecture; optional post-freeze matched comparator only.",
+    "RX8 source holdout and target development results previously observed, so all results exploratory nonblind."
+  ],
+  "registered_at": "2026-11-01T17:11:39+00:00"
+}
