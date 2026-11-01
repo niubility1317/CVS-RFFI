@@ -1,0 +1,387 @@
+{
+  "status": "SOURCE_LS_IDENTITY_ORACLE_COMPLETE",
+  "commit": "51f286771d382bc0d6fdcb153b0fc03956d0a6c6",
+  "base_sha256": "b7c759e77d0344bed7b129aefd220f37ff8d282550f42ffecb5a0a04b30dfc44",
+  "oracle_predictions_sha256": "266bf26143884a7e51d7f194ca8fdacd769a00703f66d5a83513f2581cb5fb7f",
+  "source_counts": {
+    "1:practical_high": {
+      "count": 97,
+      "raw_correct": 96,
+      "dura_correct": 96,
+      "parent_correct": 96,
+      "parent_mean_iq_nmse": 0.010656502097845078,
+      "0.02": {
+        "correct": 96,
+        "repairs": 0,
+        "damages": 0,
+        "oracle_retain_correct": 96,
+        "mean_iq_nmse": 0.010859761387109756,
+        "mean_relative_perturbation": 0.019999997690320015
+      },
+      "0.05": {
+        "correct": 97,
+        "repairs": 1,
+        "damages": 0,
+        "oracle_retain_correct": 97,
+        "mean_iq_nmse": 0.012710404582321644,
+        "mean_relative_perturbation": 0.05000000447034836
+      },
+      "0.1": {
+        "correct": 97,
+        "repairs": 1,
+        "damages": 0,
+        "oracle_retain_correct": 97,
+        "mean_iq_nmse": 0.0198344849050045,
+        "mean_relative_perturbation": 0.10000000894069672
+      }
+    },
+    "1:practical_mid": {
+      "count": 91,
+      "raw_correct": 87,
+      "dura_correct": 89,
+      "parent_correct": 90,
+      "parent_mean_iq_nmse": 0.017501382157206535,
+      "0.02": {
+        "correct": 91,
+        "repairs": 1,
+        "damages": 0,
+        "oracle_retain_correct": 91,
+        "mean_iq_nmse": 0.017593257129192352,
+        "mean_relative_perturbation": 0.019999995827674866
+      },
+      "0.05": {
+        "correct": 91,
+        "repairs": 1,
+        "damages": 0,
+        "oracle_retain_correct": 91,
+        "mean_iq_nmse": 0.019208738580346107,
+        "mean_relative_perturbation": 0.050000011920928955
+      },
+      "0.1": {
+        "correct": 91,
+        "repairs": 1,
+        "damages": 0,
+        "oracle_retain_correct": 91,
+        "mean_iq_nmse": 0.026080388575792313,
+        "mean_relative_perturbation": 0.10000002384185791
+      }
+    },
+    "1:practical_low_suburban": {
+      "count": 107,
+      "raw_correct": 97,
+      "dura_correct": 103,
+      "parent_correct": 103,
+      "parent_mean_iq_nmse": 0.023440837860107422,
+      "0.02": {
+        "correct": 107,
+        "repairs": 4,
+        "damages": 0,
+        "oracle_retain_correct": 107,
+        "mean_iq_nmse": 0.023489348590373993,
+        "mean_relative_perturbation": 0.019999999552965164
+      },
+      "0.05": {
+        "correct": 107,
+        "repairs": 4,
+        "damages": 0,
+        "oracle_retain_correct": 107,
+        "mean_iq_nmse": 0.025042928755283356,
+        "mean_relative_perturbation": 0.050000011920928955
+      },
+      "0.1": {
+        "correct": 107,
+        "repairs": 4,
+        "damages": 0,
+        "oracle_retain_correct": 107,
+        "mean_iq_nmse": 0.03173279017210007,
+        "mean_relative_perturbation": 0.10000002384185791
+      }
+    },
+    "1:practical_high_urban": {
+      "count": 108,
+      "raw_correct": 101,
+      "dura_correct": 107,
+      "parent_correct": 105,
+      "parent_mean_iq_nmse": 0.016650399193167686,
+      "0.02": {
+        "correct": 108,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 108,
+        "mean_iq_nmse": 0.01681244559586048,
+        "mean_relative_perturbation": 0.019999997690320015
+      },
+      "0.05": {
+        "correct": 108,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 108,
+        "mean_iq_nmse": 0.018647335469722748,
+        "mean_relative_perturbation": 0.050000015646219254
+      },
+      "0.1": {
+        "correct": 108,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 108,
+        "mean_iq_nmse": 0.025813046842813492,
+        "mean_relative_perturbation": 0.10000003129243851
+      }
+    },
+    "1:practical_mid_urban": {
+      "count": 108,
+      "raw_correct": 84,
+      "dura_correct": 98,
+      "parent_correct": 93,
+      "parent_mean_iq_nmse": 0.06250403821468353,
+      "0.02": {
+        "correct": 104,
+        "repairs": 11,
+        "damages": 0,
+        "oracle_retain_correct": 104,
+        "mean_iq_nmse": 0.062410857528448105,
+        "mean_relative_perturbation": 0.019999997690320015
+      },
+      "0.05": {
+        "correct": 107,
+        "repairs": 14,
+        "damages": 0,
+        "oracle_retain_correct": 107,
+        "mean_iq_nmse": 0.06381205469369888,
+        "mean_relative_perturbation": 0.050000015646219254
+      },
+      "0.1": {
+        "correct": 108,
+        "repairs": 15,
+        "damages": 0,
+        "oracle_retain_correct": 108,
+        "mean_iq_nmse": 0.07025259733200073,
+        "mean_relative_perturbation": 0.0999758318066597
+      }
+    },
+    "1:practical_low_urban": {
+      "count": 102,
+      "raw_correct": 57,
+      "dura_correct": 92,
+      "parent_correct": 80,
+      "parent_mean_iq_nmse": 0.07583842426538467,
+      "0.02": {
+        "correct": 96,
+        "repairs": 16,
+        "damages": 0,
+        "oracle_retain_correct": 96,
+        "mean_iq_nmse": 0.07555139064788818,
+        "mean_relative_perturbation": 0.019999997690320015
+      },
+      "0.05": {
+        "correct": 102,
+        "repairs": 22,
+        "damages": 0,
+        "oracle_retain_correct": 102,
+        "mean_iq_nmse": 0.07644028961658478,
+        "mean_relative_perturbation": 0.050000011920928955
+      },
+      "0.1": {
+        "correct": 102,
+        "repairs": 22,
+        "damages": 0,
+        "oracle_retain_correct": 102,
+        "mean_iq_nmse": 0.08181578665971756,
+        "mean_relative_perturbation": 0.10000002384185791
+      }
+    },
+    "2:practical_high": {
+      "count": 51,
+      "raw_correct": 50,
+      "dura_correct": 51,
+      "parent_correct": 51,
+      "parent_mean_iq_nmse": 0.02088019624352455,
+      "0.02": {
+        "correct": 51,
+        "repairs": 0,
+        "damages": 0,
+        "oracle_retain_correct": 51,
+        "mean_iq_nmse": 0.02117389254271984,
+        "mean_relative_perturbation": 0.019999999552965164
+      },
+      "0.05": {
+        "correct": 51,
+        "repairs": 0,
+        "damages": 0,
+        "oracle_retain_correct": 51,
+        "mean_iq_nmse": 0.023068832233548164,
+        "mean_relative_perturbation": 0.05000000074505806
+      },
+      "0.1": {
+        "correct": 51,
+        "repairs": 0,
+        "damages": 0,
+        "oracle_retain_correct": 51,
+        "mean_iq_nmse": 0.02990562468767166,
+        "mean_relative_perturbation": 0.10000000149011612
+      }
+    },
+    "2:practical_mid": {
+      "count": 37,
+      "raw_correct": 33,
+      "dura_correct": 34,
+      "parent_correct": 36,
+      "parent_mean_iq_nmse": 0.025566166266798973,
+      "0.02": {
+        "correct": 37,
+        "repairs": 1,
+        "damages": 0,
+        "oracle_retain_correct": 37,
+        "mean_iq_nmse": 0.025879591703414917,
+        "mean_relative_perturbation": 0.019999997690320015
+      },
+      "0.05": {
+        "correct": 37,
+        "repairs": 1,
+        "damages": 0,
+        "oracle_retain_correct": 37,
+        "mean_iq_nmse": 0.02796921133995056,
+        "mean_relative_perturbation": 0.04999999329447746
+      },
+      "0.1": {
+        "correct": 37,
+        "repairs": 1,
+        "damages": 0,
+        "oracle_retain_correct": 37,
+        "mean_iq_nmse": 0.03536652401089668,
+        "mean_relative_perturbation": 0.09999998658895493
+      }
+    },
+    "2:practical_low_suburban": {
+      "count": 44,
+      "raw_correct": 41,
+      "dura_correct": 42,
+      "parent_correct": 41,
+      "parent_mean_iq_nmse": 0.0329819917678833,
+      "0.02": {
+        "correct": 44,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 44,
+        "mean_iq_nmse": 0.03322434052824974,
+        "mean_relative_perturbation": 0.019999997690320015
+      },
+      "0.05": {
+        "correct": 44,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 44,
+        "mean_iq_nmse": 0.03501099720597267,
+        "mean_relative_perturbation": 0.04999999701976776
+      },
+      "0.1": {
+        "correct": 44,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 44,
+        "mean_iq_nmse": 0.04205331578850746,
+        "mean_relative_perturbation": 0.09999999403953552
+      }
+    },
+    "2:practical_high_urban": {
+      "count": 58,
+      "raw_correct": 54,
+      "dura_correct": 58,
+      "parent_correct": 55,
+      "parent_mean_iq_nmse": 0.030332766473293304,
+      "0.02": {
+        "correct": 58,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 58,
+        "mean_iq_nmse": 0.030553726479411125,
+        "mean_relative_perturbation": 0.019987842068076134
+      },
+      "0.05": {
+        "correct": 58,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 58,
+        "mean_iq_nmse": 0.03238556534051895,
+        "mean_relative_perturbation": 0.05000000074505806
+      },
+      "0.1": {
+        "correct": 58,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 58,
+        "mean_iq_nmse": 0.039359286427497864,
+        "mean_relative_perturbation": 0.10000000149011612
+      }
+    },
+    "2:practical_mid_urban": {
+      "count": 51,
+      "raw_correct": 40,
+      "dura_correct": 50,
+      "parent_correct": 48,
+      "parent_mean_iq_nmse": 0.04859355092048645,
+      "0.02": {
+        "correct": 51,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 51,
+        "mean_iq_nmse": 0.04888107627630234,
+        "mean_relative_perturbation": 0.019999997690320015
+      },
+      "0.05": {
+        "correct": 51,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 51,
+        "mean_iq_nmse": 0.05078979581594467,
+        "mean_relative_perturbation": 0.05000000074505806
+      },
+      "0.1": {
+        "correct": 51,
+        "repairs": 3,
+        "damages": 0,
+        "oracle_retain_correct": 51,
+        "mean_iq_nmse": 0.05770158767700195,
+        "mean_relative_perturbation": 0.10000000149011612
+      }
+    },
+    "2:practical_low_urban": {
+      "count": 56,
+      "raw_correct": 34,
+      "dura_correct": 50,
+      "parent_correct": 50,
+      "parent_mean_iq_nmse": 0.10024760663509369,
+      "0.02": {
+        "correct": 56,
+        "repairs": 6,
+        "damages": 0,
+        "oracle_retain_correct": 56,
+        "mean_iq_nmse": 0.10036107152700424,
+        "mean_relative_perturbation": 0.019999997690320015
+      },
+      "0.05": {
+        "correct": 56,
+        "repairs": 6,
+        "damages": 0,
+        "oracle_retain_correct": 56,
+        "mean_iq_nmse": 0.1019284576177597,
+        "mean_relative_perturbation": 0.05000000447034836
+      },
+      "0.1": {
+        "correct": 56,
+        "repairs": 6,
+        "damages": 0,
+        "oracle_retain_correct": 56,
+        "mean_iq_nmse": 0.10845957696437836,
+        "mean_relative_perturbation": 0.10000000149011612
+      }
+    }
+  },
+  "source_only": true,
+  "uses_source_true_label_for_optimization": true,
+  "oracle_not_deployable": true,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Oracle uses true source L_s device labels and F gradients; perturbations may be adversarial rather than physically faithful; F trained on source records, no independent target claim."
+}
