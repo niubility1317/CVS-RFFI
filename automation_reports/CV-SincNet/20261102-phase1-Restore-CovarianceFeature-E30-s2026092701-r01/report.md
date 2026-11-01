@@ -3,7 +3,7 @@
 - run_id：`20261102-phase1-Restore-CovarianceFeature-E30-s2026092701-r01`
 - group_id：`restoration-covariance-actual-IQ-feature-guidance`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（真实源2与E01训练已核实）
 
 ## 目的与对照
 
@@ -41,3 +41,12 @@ F0只提供连续源特征，参数/状态全冻结；不以logits、TX交叉熵
 同一地面完整Tri-SIG-TIME SSL/defaulthead/Main cross_rx126000+cross_both42000×clean+六景全部预测固定后独立CPU truth-last，raw/DURA只精确复用旧r03同ID预测。固定CovarianceMAP既有预测仅在完成后作配对分析，不成为训练teacher。每景距同raw clean≤3个百分点且两个总体各自保持clean；combined门槛140345/168000。source质量不取消正式测试，既有基准曝光如实披露，不声称新盲测。
 
 GPU4/6按实际UUID/free≥12000MiB/existing compute≤2/新增1总≤3准入，一row一条NN、训练/两预测/CPU评分依次自动串联。其他owner保持。技术失败保存、不自动重试或迁移/复位。一次archive SHA与远端compile、实际PID/CWD/CUDA/GPU/log增长核实。1230341参数与1050624字节源prior buffer不变，静态FP64后验成本不冒充实测时延；采样减少额外分支曝光，实际总训练耗时和正式性能仍需实测。完整命令/环境/路径/矩阵/预算/停止规则/产物见登记。
+
+
+## 实际源特征指导训练已核实
+
+VERIFIED / RUNNING。source2 实际完整 FP64 后验、原 F0/defaulthead、联合物理与输出 IQ 特征梯度、三个估计头梯度、冻结 F0 和严格 E0 重载通过。控制器和训练进程的 PID/CWD/commit/CUDA/GPU 与日志增长独立核实；GPU 4 准入时空余 24110 MiB、原 0 个 compute、新增 1 个本任务 worker。单次 archive SHA 一致，远端编译通过。
+
+E01 独立 CPU 检查 PASS：实际全部 E0 张量（包括源 mu/C）与固定 CovarianceMAP 控制相同，全部源顺序/draw 相同；TF 骨干和三个估计头均更新、optimizer 有限、prior 不变。第一轮 247 次更新、全 63000 条物理监督，额外后验/F0 7896 条（L_s 792、U_s 7104），步损失权重归一化误差 1.08e-09。首轮 94.052696 秒；没有据此宣称同质量提速或识别性能提升。
+
+原 L_s/U_s 的单阶段 30 轮联合训练继续，随后自动原 Main 双总体七景、全部预测完成后独立 CPU truth-last。当前没有本版正式识别结果，主验收仍未达成。TX/V/OE/novel/目标训练和选模均为 0；本版明确使用冻结源 F0 特征指导，默认 DURA 保持。
