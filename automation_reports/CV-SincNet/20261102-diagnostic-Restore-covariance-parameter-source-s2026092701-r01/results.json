@@ -1,0 +1,1786 @@
+{
+  "status": "COVARIANCE_PARAMETER_SOURCE_COMPLETE",
+  "run_id": "20261102-diagnostic-Restore-covariance-parameter-source-s2026092701-r01",
+  "code_commit": "5d7d9a2c4dd8e5d58b2843e47b1769d93d434c29",
+  "parent_G_commit": "bf29554a03e28a012eaaa134f5c7b3f7856f2268",
+  "F0_identity": {
+    "model": "original_F0_E50",
+    "parameters": 232993,
+    "epoch": 50,
+    "updates": 11100,
+    "model_seed": 2026092701,
+    "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+    "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+    "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+    "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+  },
+  "source_packets": 512,
+  "source_draws": 20,
+  "source_cases": 10240,
+  "methods": [
+    "blind",
+    "true_noise",
+    "true_action",
+    "true_both"
+  ],
+  "summary": [
+    {
+      "method": "blind",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.02639694634617138,
+        "feature_cosine_distance": 0.010553991375491022,
+        "clean_decision_agreement": 0.95029296875,
+        "relative_solve_residual": 2.2258730677128886e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.009826113508642051,
+        "noise_log_mse": 0.04787989181694359,
+        "predicted_noise": 0.02875602047322373,
+        "true_noise": 0.029429791010189676
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 218,
+          "damage": 230,
+          "net": -12
+        },
+        "received": {
+          "repairs": 1053,
+          "damage": 113,
+          "net": 940
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 2.569966397676361e-05,
+        "feature_cosine_distance": 1.2726629739173082e-05,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 8.530664947993221e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 2.842865671736443e-05,
+        "noise_log_mse": 1.1512643095528196e-05,
+        "predicted_noise": 1.0001541006407676e-07,
+        "true_noise": 9.99999993922529e-09
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.008394374713435777,
+        "feature_cosine_distance": 0.002483267673847971,
+        "clean_decision_agreement": 0.9915907498248073,
+        "relative_solve_residual": 3.728558887411817e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0027870317407188735,
+        "noise_log_mse": 0.06435118701113227,
+        "predicted_noise": 0.001711302993083425,
+        "true_noise": 0.0016718419922921043
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 8,
+          "damage": 6,
+          "net": 2
+        },
+        "received": {
+          "repairs": 51,
+          "damage": 5,
+          "net": 46
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.016672371349058166,
+        "feature_cosine_distance": 0.004930848918027348,
+        "clean_decision_agreement": 0.9784722222222222,
+        "relative_solve_residual": 3.368720670559215e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0061626033034722204,
+        "noise_log_mse": 0.06826337777203884,
+        "predicted_noise": 0.00902877050826242,
+        "true_noise": 0.008373665915931068
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 25,
+          "damage": 20,
+          "net": 5
+        },
+        "received": {
+          "repairs": 113,
+          "damage": 5,
+          "net": 108
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.0191701670846371,
+        "feature_cosine_distance": 0.008405733840864266,
+        "clean_decision_agreement": 0.962457337883959,
+        "relative_solve_residual": 2.0839276365345966e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.006865471363004846,
+        "noise_log_mse": 0.05353739290577609,
+        "predicted_noise": 0.016608421446369332,
+        "true_noise": 0.016826954885598894
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 20,
+          "damage": 27,
+          "net": -7
+        },
+        "received": {
+          "repairs": 92,
+          "damage": 18,
+          "net": 74
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.07755664944007323,
+        "feature_cosine_distance": 0.035686238354959196,
+        "clean_decision_agreement": 0.8224233983286908,
+        "relative_solve_residual": 1.0622049136415629e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.029866791030458802,
+        "noise_log_mse": 0.045354291254035596,
+        "predicted_noise": 0.1125578871286047,
+        "true_noise": 0.11660327811562164
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 78,
+          "damage": 102,
+          "net": -24
+        },
+        "received": {
+          "repairs": 385,
+          "damage": 52,
+          "net": 333
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.015591104840765634,
+        "feature_cosine_distance": 0.00512361333697954,
+        "clean_decision_agreement": 0.9757412398921833,
+        "relative_solve_residual": 2.7697288879998482e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0055742744531437054,
+        "noise_log_mse": 0.05793925890422832,
+        "predicted_noise": 0.007774070500870168,
+        "true_noise": 0.0077494914427776495
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 18,
+          "damage": 17,
+          "net": 1
+        },
+        "received": {
+          "repairs": 90,
+          "damage": 9,
+          "net": 81
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.050876025832522556,
+        "feature_cosine_distance": 0.018627005235957627,
+        "clean_decision_agreement": 0.914833215046132,
+        "relative_solve_residual": 1.835187371785433e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0188108017555187,
+        "noise_log_mse": 0.05010688631923422,
+        "predicted_noise": 0.05785439947448675,
+        "true_noise": 0.059136412441365305
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 69,
+          "damage": 58,
+          "net": 11
+        },
+        "received": {
+          "repairs": 322,
+          "damage": 24,
+          "net": 298
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.07240154774859547,
+        "feature_cosine_distance": 0.024182727776075663,
+        "clean_decision_agreement": 0.8536842105263158,
+        "relative_solve_residual": 5.162575755155312e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.027211853880602266,
+        "noise_log_mse": 0.04437484324727285,
+        "predicted_noise": 0.06369967964820956,
+        "true_noise": 0.06146024478697463
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 62,
+          "damage": 69,
+          "net": -7
+        },
+        "received": {
+          "repairs": 336,
+          "damage": 42,
+          "net": 294
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.009276992512409668,
+        "feature_cosine_distance": 0.0029579181802401903,
+        "clean_decision_agreement": 0.9914259927797834,
+        "relative_solve_residual": 3.1284215658768274e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0029480490778956135,
+        "noise_log_mse": 0.06264086078977193,
+        "predicted_noise": 0.001795356453810663,
+        "true_noise": 0.001830265142652868
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 55,
+          "damage": 35,
+          "net": 20
+        },
+        "received": {
+          "repairs": 244,
+          "damage": 14,
+          "net": 230
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 2.569966397676361e-05,
+        "feature_cosine_distance": 1.2726629739173082e-05,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 8.530664947993221e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 2.842865671736443e-05,
+        "noise_log_mse": 1.1512643095528196e-05,
+        "predicted_noise": 1.0001541006407676e-07,
+        "true_noise": 9.99999993922529e-09
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "blind",
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.13152326832710295,
+        "feature_cosine_distance": 0.06153804787127117,
+        "clean_decision_agreement": 0.7055503292568204,
+        "relative_solve_residual": 1.4840729200653454e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.05185759362475606,
+        "noise_log_mse": 0.029801853364761554,
+        "predicted_noise": 0.20885349609665677,
+        "true_noise": 0.21712719561463803
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 101,
+          "damage": 126,
+          "net": -25
+        },
+        "received": {
+          "repairs": 473,
+          "damage": 57,
+          "net": 416
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.02624603699655941,
+        "feature_cosine_distance": 0.010549582971725613,
+        "clean_decision_agreement": 0.9505859375,
+        "relative_solve_residual": 2.2370887369600426e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.009826113508642051,
+        "noise_log_mse": 0.04787989181694359,
+        "predicted_noise": 0.02875602047322373,
+        "true_noise": 0.029429791010189676
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 14,
+          "damage": 11,
+          "net": 3
+        },
+        "DURA_v1": {
+          "repairs": 219,
+          "damage": 228,
+          "net": -9
+        },
+        "received": {
+          "repairs": 1057,
+          "damage": 114,
+          "net": 943
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 2.5701409205513248e-05,
+        "feature_cosine_distance": 1.272998934233015e-05,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 8.622444941661903e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 2.842865671736443e-05,
+        "noise_log_mse": 1.1512643095528196e-05,
+        "predicted_noise": 1.0001541006407676e-07,
+        "true_noise": 9.99999993922529e-09
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.008383480639817923,
+        "feature_cosine_distance": 0.00249039980608346,
+        "clean_decision_agreement": 0.9915907498248073,
+        "relative_solve_residual": 4.0068734442461745e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0027870317407188735,
+        "noise_log_mse": 0.06435118701113227,
+        "predicted_noise": 0.001711302993083425,
+        "true_noise": 0.0016718419922921043
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 8,
+          "damage": 6,
+          "net": 2
+        },
+        "received": {
+          "repairs": 51,
+          "damage": 5,
+          "net": 46
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.016864367158228158,
+        "feature_cosine_distance": 0.004912467963165707,
+        "clean_decision_agreement": 0.9791666666666666,
+        "relative_solve_residual": 3.6235811064036954e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0061626033034722204,
+        "noise_log_mse": 0.06826337777203884,
+        "predicted_noise": 0.00902877050826242,
+        "true_noise": 0.008373665915931068
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 2,
+          "damage": 1,
+          "net": 1
+        },
+        "DURA_v1": {
+          "repairs": 25,
+          "damage": 19,
+          "net": 6
+        },
+        "received": {
+          "repairs": 114,
+          "damage": 5,
+          "net": 109
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.01916097091787428,
+        "feature_cosine_distance": 0.00842508639085008,
+        "clean_decision_agreement": 0.9617747440273038,
+        "relative_solve_residual": 1.953907231386761e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.006865471363004846,
+        "noise_log_mse": 0.05353739290577609,
+        "predicted_noise": 0.016608421446369332,
+        "true_noise": 0.016826954885598894
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 2,
+          "damage": 3,
+          "net": -1
+        },
+        "DURA_v1": {
+          "repairs": 20,
+          "damage": 28,
+          "net": -8
+        },
+        "received": {
+          "repairs": 91,
+          "damage": 18,
+          "net": 73
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.07631383866037976,
+        "feature_cosine_distance": 0.03590948767648766,
+        "clean_decision_agreement": 0.8266016713091922,
+        "relative_solve_residual": 9.853181371200203e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.029866791030458802,
+        "noise_log_mse": 0.045354291254035596,
+        "predicted_noise": 0.1125578871286047,
+        "true_noise": 0.11660327811562164
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 9,
+          "damage": 3,
+          "net": 6
+        },
+        "DURA_v1": {
+          "repairs": 80,
+          "damage": 98,
+          "net": -18
+        },
+        "received": {
+          "repairs": 391,
+          "damage": 52,
+          "net": 339
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.015527624839124824,
+        "feature_cosine_distance": 0.0050894135654454605,
+        "clean_decision_agreement": 0.9757412398921833,
+        "relative_solve_residual": 2.6188821363009947e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0055742744531437054,
+        "noise_log_mse": 0.05793925890422832,
+        "predicted_noise": 0.007774070500870168,
+        "true_noise": 0.0077494914427776495
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 18,
+          "damage": 17,
+          "net": 1
+        },
+        "received": {
+          "repairs": 90,
+          "damage": 9,
+          "net": 81
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.050937140359483116,
+        "feature_cosine_distance": 0.018394896373247913,
+        "clean_decision_agreement": 0.9127040454222853,
+        "relative_solve_residual": 1.7364992071434903e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0188108017555187,
+        "noise_log_mse": 0.05010688631923422,
+        "predicted_noise": 0.05785439947448675,
+        "true_noise": 0.059136412441365305
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 1,
+          "damage": 4,
+          "net": -3
+        },
+        "DURA_v1": {
+          "repairs": 68,
+          "damage": 60,
+          "net": 8
+        },
+        "received": {
+          "repairs": 320,
+          "damage": 25,
+          "net": 295
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.07304889707777061,
+        "feature_cosine_distance": 0.023566736861279136,
+        "clean_decision_agreement": 0.8547368421052631,
+        "relative_solve_residual": 5.085847612876583e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.027211853880602266,
+        "noise_log_mse": 0.04437484324727285,
+        "predicted_noise": 0.06369967964820956,
+        "true_noise": 0.06146024478697463
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 3,
+          "damage": 2,
+          "net": 1
+        },
+        "DURA_v1": {
+          "repairs": 61,
+          "damage": 67,
+          "net": -6
+        },
+        "received": {
+          "repairs": 338,
+          "damage": 43,
+          "net": 295
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.009260889841944078,
+        "feature_cosine_distance": 0.0029561049635516462,
+        "clean_decision_agreement": 0.9911251504211793,
+        "relative_solve_residual": 3.146004483211443e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0029480490778956135,
+        "noise_log_mse": 0.06264086078977193,
+        "predicted_noise": 0.001795356453810663,
+        "true_noise": 0.001830265142652868
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 1,
+          "damage": 3,
+          "net": -2
+        },
+        "DURA_v1": {
+          "repairs": 54,
+          "damage": 36,
+          "net": 18
+        },
+        "received": {
+          "repairs": 243,
+          "damage": 15,
+          "net": 228
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 2.5701409205513248e-05,
+        "feature_cosine_distance": 1.272998934233015e-05,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 8.622444941661903e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 2.842865671736443e-05,
+        "noise_log_mse": 1.1512643095528196e-05,
+        "predicted_noise": 1.0001541006407676e-07,
+        "true_noise": 9.99999993922529e-09
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "true_noise",
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.1295917106552272,
+        "feature_cosine_distance": 0.0620574253634922,
+        "clean_decision_agreement": 0.70931326434619,
+        "relative_solve_residual": 1.3970957908699262e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.05185759362475606,
+        "noise_log_mse": 0.029801853364761554,
+        "predicted_noise": 0.20885349609665677,
+        "true_noise": 0.21712719561463803
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 10,
+          "damage": 6,
+          "net": 4
+        },
+        "DURA_v1": {
+          "repairs": 104,
+          "damage": 125,
+          "net": -21
+        },
+        "received": {
+          "repairs": 476,
+          "damage": 56,
+          "net": 420
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.019815989704473097,
+        "feature_cosine_distance": 0.006548212200868875,
+        "clean_decision_agreement": 0.965234375,
+        "relative_solve_residual": 2.016125166179468e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.009826113508642051,
+        "noise_log_mse": 0.04787989181694359,
+        "predicted_noise": 0.02875602047322373,
+        "true_noise": 0.029429791010189676
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 207,
+          "damage": 54,
+          "net": 153
+        },
+        "DURA_v1": {
+          "repairs": 290,
+          "damage": 149,
+          "net": 141
+        },
+        "received": {
+          "repairs": 1170,
+          "damage": 77,
+          "net": 1093
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 1.2986031861560734e-12,
+        "feature_cosine_distance": 1.1098014923346955e-08,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 5.362806329551962e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 2.842865671736443e-05,
+        "noise_log_mse": 1.1512643095528196e-05,
+        "predicted_noise": 1.0001541006407676e-07,
+        "true_noise": 9.99999993922529e-09
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.005907380643139835,
+        "feature_cosine_distance": 0.0012806382894348914,
+        "clean_decision_agreement": 0.9936930623686054,
+        "relative_solve_residual": 3.364203812445006e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0027870317407188735,
+        "noise_log_mse": 0.06435118701113227,
+        "predicted_noise": 0.001711302993083425,
+        "true_noise": 0.0016718419922921043
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 4,
+          "damage": 1,
+          "net": 3
+        },
+        "DURA_v1": {
+          "repairs": 10,
+          "damage": 5,
+          "net": 5
+        },
+        "received": {
+          "repairs": 53,
+          "damage": 4,
+          "net": 49
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.010028800020275714,
+        "feature_cosine_distance": 0.0027234306352006063,
+        "clean_decision_agreement": 0.9895833333333334,
+        "relative_solve_residual": 3.0574636850141e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0061626033034722204,
+        "noise_log_mse": 0.06826337777203884,
+        "predicted_noise": 0.00902877050826242,
+        "true_noise": 0.008373665915931068
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 18,
+          "damage": 2,
+          "net": 16
+        },
+        "DURA_v1": {
+          "repairs": 30,
+          "damage": 9,
+          "net": 21
+        },
+        "received": {
+          "repairs": 129,
+          "damage": 5,
+          "net": 124
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.014871259854149721,
+        "feature_cosine_distance": 0.005370037018642491,
+        "clean_decision_agreement": 0.9733788395904437,
+        "relative_solve_residual": 1.967555755260818e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.006865471363004846,
+        "noise_log_mse": 0.05353739290577609,
+        "predicted_noise": 0.016608421446369332,
+        "true_noise": 0.016826954885598894
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 22,
+          "damage": 6,
+          "net": 16
+        },
+        "DURA_v1": {
+          "repairs": 28,
+          "damage": 19,
+          "net": 9
+        },
+        "received": {
+          "repairs": 99,
+          "damage": 9,
+          "net": 90
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.06209630917063473,
+        "feature_cosine_distance": 0.021987132333779403,
+        "clean_decision_agreement": 0.8732590529247911,
+        "relative_solve_residual": 1.013743268056621e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.029866791030458802,
+        "noise_log_mse": 0.045354291254035596,
+        "predicted_noise": 0.1125578871286047,
+        "true_noise": 0.11660327811562164
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 100,
+          "damage": 27,
+          "net": 73
+        },
+        "DURA_v1": {
+          "repairs": 114,
+          "damage": 65,
+          "net": 49
+        },
+        "received": {
+          "repairs": 441,
+          "damage": 35,
+          "net": 406
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.011022986867833779,
+        "feature_cosine_distance": 0.0034640060280853847,
+        "clean_decision_agreement": 0.9845013477088949,
+        "relative_solve_residual": 2.5903805975143332e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0055742744531437054,
+        "noise_log_mse": 0.05793925890422832,
+        "predicted_noise": 0.007774070500870168,
+        "true_noise": 0.0077494914427776495
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 14,
+          "damage": 1,
+          "net": 13
+        },
+        "DURA_v1": {
+          "repairs": 25,
+          "damage": 11,
+          "net": 14
+        },
+        "received": {
+          "repairs": 99,
+          "damage": 5,
+          "net": 94
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.0374234366199931,
+        "feature_cosine_distance": 0.011868880944018502,
+        "clean_decision_agreement": 0.9375443577004968,
+        "relative_solve_residual": 1.7122347156596823e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0188108017555187,
+        "noise_log_mse": 0.05010688631923422,
+        "predicted_noise": 0.05785439947448675,
+        "true_noise": 0.059136412441365305
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 49,
+          "damage": 17,
+          "net": 32
+        },
+        "DURA_v1": {
+          "repairs": 83,
+          "damage": 40,
+          "net": 43
+        },
+        "received": {
+          "repairs": 349,
+          "damage": 19,
+          "net": 330
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.04678827545458549,
+        "feature_cosine_distance": 0.01517222379383288,
+        "clean_decision_agreement": 0.9063157894736842,
+        "relative_solve_residual": 5.019317650319214e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.027211853880602266,
+        "noise_log_mse": 0.04437484324727285,
+        "predicted_noise": 0.06369967964820956,
+        "true_noise": 0.06146024478697463
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 59,
+          "damage": 9,
+          "net": 50
+        },
+        "DURA_v1": {
+          "repairs": 84,
+          "damage": 41,
+          "net": 43
+        },
+        "received": {
+          "repairs": 370,
+          "damage": 26,
+          "net": 344
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.00669780242761917,
+        "feature_cosine_distance": 0.0019310540760610652,
+        "clean_decision_agreement": 0.99338146811071,
+        "relative_solve_residual": 2.882836664386754e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0029480490778956135,
+        "noise_log_mse": 0.06264086078977193,
+        "predicted_noise": 0.001795356453810663,
+        "true_noise": 0.001830265142652868
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 22,
+          "damage": 9,
+          "net": 13
+        },
+        "DURA_v1": {
+          "repairs": 59,
+          "damage": 26,
+          "net": 33
+        },
+        "received": {
+          "repairs": 254,
+          "damage": 11,
+          "net": 243
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 1.2986031861560734e-12,
+        "feature_cosine_distance": 1.1098014923346955e-08,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 5.362806329551962e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 2.842865671736443e-05,
+        "noise_log_mse": 1.1512643095528196e-05,
+        "predicted_noise": 1.0001541006407676e-07,
+        "true_noise": 9.99999993922529e-09
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "true_action",
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.10718709534438904,
+        "feature_cosine_distance": 0.03744347630417358,
+        "clean_decision_agreement": 0.7902163687676388,
+        "relative_solve_residual": 1.4713194790031462e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.05185759362475606,
+        "noise_log_mse": 0.029801853364761554,
+        "predicted_noise": 0.20885349609665677,
+        "true_noise": 0.21712719561463803
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 126,
+          "damage": 36,
+          "net": 90
+        },
+        "DURA_v1": {
+          "repairs": 147,
+          "damage": 82,
+          "net": 65
+        },
+        "received": {
+          "repairs": 546,
+          "damage": 40,
+          "net": 506
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 10240,
+      "metrics": {
+        "iq_nmse": 0.01951989901985688,
+        "feature_cosine_distance": 0.0065061920380685475,
+        "clean_decision_agreement": 0.966015625,
+        "relative_solve_residual": 2.0139601422584897e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.009826113508642051,
+        "noise_log_mse": 0.04787989181694359,
+        "predicted_noise": 0.02875602047322373,
+        "true_noise": 0.029429791010189676
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 213,
+          "damage": 52,
+          "net": 161
+        },
+        "DURA_v1": {
+          "repairs": 293,
+          "damage": 144,
+          "net": 149
+        },
+        "received": {
+          "repairs": 1180,
+          "damage": 79,
+          "net": 1101
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "scene",
+      "stratum": "clean",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 1.3166539010420986e-14,
+        "feature_cosine_distance": 7.927153516676398e-09,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 5.357202636978494e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 2.842865671736443e-05,
+        "noise_log_mse": 1.1512643095528196e-05,
+        "predicted_noise": 1.0001541006407676e-07,
+        "true_noise": 9.99999993922529e-09
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "scene",
+      "stratum": "practical_high",
+      "count": 1427,
+      "metrics": {
+        "iq_nmse": 0.005890826585594259,
+        "feature_cosine_distance": 0.0012722131499228314,
+        "clean_decision_agreement": 0.9943938332165382,
+        "relative_solve_residual": 3.5836623501922915e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0027870317407188735,
+        "noise_log_mse": 0.06435118701113227,
+        "predicted_noise": 0.001711302993083425,
+        "true_noise": 0.0016718419922921043
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 5,
+          "damage": 1,
+          "net": 4
+        },
+        "DURA_v1": {
+          "repairs": 10,
+          "damage": 4,
+          "net": 6
+        },
+        "received": {
+          "repairs": 54,
+          "damage": 4,
+          "net": 50
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "scene",
+      "stratum": "practical_high_urban",
+      "count": 1440,
+      "metrics": {
+        "iq_nmse": 0.009988426999471913,
+        "feature_cosine_distance": 0.0027246412717633777,
+        "clean_decision_agreement": 0.9888888888888889,
+        "relative_solve_residual": 3.2651501332027964e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0061626033034722204,
+        "noise_log_mse": 0.06826337777203884,
+        "predicted_noise": 0.00902877050826242,
+        "true_noise": 0.008373665915931068
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 17,
+          "damage": 2,
+          "net": 15
+        },
+        "DURA_v1": {
+          "repairs": 29,
+          "damage": 9,
+          "net": 20
+        },
+        "received": {
+          "repairs": 128,
+          "damage": 5,
+          "net": 123
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "scene",
+      "stratum": "practical_low_suburban",
+      "count": 1465,
+      "metrics": {
+        "iq_nmse": 0.01469566866718932,
+        "feature_cosine_distance": 0.005354250046987176,
+        "clean_decision_agreement": 0.9726962457337884,
+        "relative_solve_residual": 1.8400589398873144e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.006865471363004846,
+        "noise_log_mse": 0.05353739290577609,
+        "predicted_noise": 0.016608421446369332,
+        "true_noise": 0.016826954885598894
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 22,
+          "damage": 7,
+          "net": 15
+        },
+        "DURA_v1": {
+          "repairs": 27,
+          "damage": 19,
+          "net": 8
+        },
+        "received": {
+          "repairs": 99,
+          "damage": 10,
+          "net": 89
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "scene",
+      "stratum": "practical_low_urban",
+      "count": 1436,
+      "metrics": {
+        "iq_nmse": 0.06096768423961605,
+        "feature_cosine_distance": 0.021845125222272527,
+        "clean_decision_agreement": 0.8774373259052924,
+        "relative_solve_residual": 9.390132056314677e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.029866791030458802,
+        "noise_log_mse": 0.045354291254035596,
+        "predicted_noise": 0.1125578871286047,
+        "true_noise": 0.11660327811562164
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 104,
+          "damage": 25,
+          "net": 79
+        },
+        "DURA_v1": {
+          "repairs": 117,
+          "damage": 62,
+          "net": 55
+        },
+        "received": {
+          "repairs": 449,
+          "damage": 37,
+          "net": 412
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "scene",
+      "stratum": "practical_mid",
+      "count": 1484,
+      "metrics": {
+        "iq_nmse": 0.010932951229103562,
+        "feature_cosine_distance": 0.003448003948216811,
+        "clean_decision_agreement": 0.9845013477088949,
+        "relative_solve_residual": 2.4481524725494934e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0055742744531437054,
+        "noise_log_mse": 0.05793925890422832,
+        "predicted_noise": 0.007774070500870168,
+        "true_noise": 0.0077494914427776495
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 14,
+          "damage": 1,
+          "net": 13
+        },
+        "DURA_v1": {
+          "repairs": 24,
+          "damage": 10,
+          "net": 14
+        },
+        "received": {
+          "repairs": 99,
+          "damage": 5,
+          "net": 94
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "scene",
+      "stratum": "practical_mid_urban",
+      "count": 1409,
+      "metrics": {
+        "iq_nmse": 0.036757255327835615,
+        "feature_cosine_distance": 0.011748792306170385,
+        "clean_decision_agreement": 0.9396735273243435,
+        "relative_solve_residual": 1.6211352841209744e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0188108017555187,
+        "noise_log_mse": 0.05010688631923422,
+        "predicted_noise": 0.05785439947448675,
+        "true_noise": 0.059136412441365305
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 51,
+          "damage": 16,
+          "net": 35
+        },
+        "DURA_v1": {
+          "repairs": 86,
+          "damage": 40,
+          "net": 46
+        },
+        "received": {
+          "repairs": 351,
+          "damage": 18,
+          "net": 333
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "lock",
+      "stratum": "degraded",
+      "count": 950,
+      "metrics": {
+        "iq_nmse": 0.04568409285557113,
+        "feature_cosine_distance": 0.015044617088217485,
+        "clean_decision_agreement": 0.9073684210526316,
+        "relative_solve_residual": 4.955276070521201e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.027211853880602266,
+        "noise_log_mse": 0.04437484324727285,
+        "predicted_noise": 0.06369967964820956,
+        "true_noise": 0.06146024478697463
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 59,
+          "damage": 8,
+          "net": 51
+        },
+        "DURA_v1": {
+          "repairs": 84,
+          "damage": 40,
+          "net": 44
+        },
+        "received": {
+          "repairs": 370,
+          "damage": 25,
+          "net": 345
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "lock",
+      "stratum": "locked",
+      "count": 6648,
+      "metrics": {
+        "iq_nmse": 0.006690157288870011,
+        "feature_cosine_distance": 0.0019199023769650649,
+        "clean_decision_agreement": 0.9936823104693141,
+        "relative_solve_residual": 2.881813729387068e-14
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.0029480490778956135,
+        "noise_log_mse": 0.06264086078977193,
+        "predicted_noise": 0.001795356453810663,
+        "true_noise": 0.001830265142652868
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 24,
+          "damage": 9,
+          "net": 15
+        },
+        "DURA_v1": {
+          "repairs": 59,
+          "damage": 24,
+          "net": 35
+        },
+        "received": {
+          "repairs": 256,
+          "damage": 11,
+          "net": 245
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "lock",
+      "stratum": "not_applicable",
+      "count": 1579,
+      "metrics": {
+        "iq_nmse": 1.3166539010420986e-14,
+        "feature_cosine_distance": 7.927153516676398e-09,
+        "clean_decision_agreement": 1.0,
+        "relative_solve_residual": 5.357202636978494e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 2.842865671736443e-05,
+        "noise_log_mse": 1.1512643095528196e-05,
+        "predicted_noise": 1.0001541006407676e-07,
+        "true_noise": 9.99999993922529e-09
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "DURA_v1": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        },
+        "received": {
+          "repairs": 0,
+          "damage": 0,
+          "net": 0
+        }
+      }
+    },
+    {
+      "method": "true_both",
+      "dimension": "lock",
+      "stratum": "unlocked",
+      "count": 1063,
+      "metrics": {
+        "iq_nmse": 0.10536943752973964,
+        "feature_cosine_distance": 0.03722248044870759,
+        "clean_decision_agreement": 0.7949200376293509,
+        "relative_solve_residual": 1.3922921983375997e-15
+      },
+      "parameter_errors": {
+        "action_matrix_relative_mse": 0.05185759362475606,
+        "noise_log_mse": 0.029801853364761554,
+        "predicted_noise": 0.20885349609665677,
+        "true_noise": 0.21712719561463803
+      },
+      "pairs": {
+        "blind": {
+          "repairs": 130,
+          "damage": 35,
+          "net": 95
+        },
+        "DURA_v1": {
+          "repairs": 150,
+          "damage": 80,
+          "net": 70
+        },
+        "received": {
+          "repairs": 554,
+          "damage": 43,
+          "net": 511
+        }
+      }
+    }
+  ],
+  "G_estimator_rows": 10240,
+  "posterior_rows": 40960,
+  "F0_output_feature_rows": 40960,
+  "F0_clean_feature_rows": 512,
+  "smoke_extra_G_estimator_rows": 4,
+  "smoke_extra_posterior_rows": 4,
+  "smoke_extra_F0_feature_rows": 2,
+  "TX_labels_read": 0,
+  "V_reads": 0,
+  "OE_reads": 0,
+  "novel_reads": 0,
+  "target_inputs": 0,
+  "optimizer_updates": 0,
+  "model_state_updates": 0,
+  "source_in_sample": true,
+  "physical_oracle_deployable": false,
+  "agreement_is_TX_accuracy": false,
+  "theoretical_ceiling": false,
+  "checkpoint_selection": false,
+  "default_DURA_changed": false,
+  "seconds": 65.86107980499946,
+  "goal_complete": false,
+  "artifact_status": "ANALYZED",
+  "independent_check": {
+    "status": "PASS",
+    "run_id": "20261102-diagnostic-Restore-covariance-parameter-source-s2026092701-r01",
+    "all_source_cases": 10240,
+    "posterior_paths": 4,
+    "groups": 48,
+    "all_scalar_and_paired_groups_checked": true,
+    "max_abs_scalar_error": 0.0,
+    "original_source_panel_and_draw_alignment": true,
+    "old_DURA_received_metric_differences": 0,
+    "prior_clean_reference_prediction_differences": 0,
+    "max_relative_solve_residual": {
+      "blind": 9.639782159295916e-14,
+      "true_noise": 1.4643776993041595e-13,
+      "true_action": 8.353174014222621e-14,
+      "true_both": 8.897042973058062e-14
+    },
+    "true_both_vs_original_FP64_prior": {
+      "iq_nmse": 2.2351741790771484e-07,
+      "feature_cosine_distance": 6.556510925292969e-07,
+      "clean_decision_agreement": 0.0
+    },
+    "true_both_vs_original_FP64_prior_agreement_changes": 0,
+    "actual_blind_equals_deployment_smoke": true,
+    "frozen_G_F0_states_unchanged_reported": true,
+    "source_draws_log_complete": true,
+    "live_worker_postlaunch_snapshot_captured": true,
+    "new_neural_forwards": 0,
+    "new_IQ_or_truth_reads": 0,
+    "optimizer_updates": 0
+  },
+  "source_parameter_conclusions": {
+    "ALL": {
+      "count": 10240,
+      "only_true_action_change_pp": 1.4941406249999956,
+      "only_true_noise_change_pp": 0.02929687499999556,
+      "both_true_change_pp": 1.5722656250000022,
+      "only_true_action_net": 153,
+      "only_true_noise_net": 3,
+      "both_true_net": 161,
+      "actual_blind_vs_DURA_net": -12
+    },
+    "practical_low_urban": {
+      "count": 1436,
+      "only_true_action_change_pp": 5.083565459610028,
+      "only_true_noise_change_pp": 0.41782729805013297,
+      "both_true_change_pp": 5.501392757660161,
+      "only_true_action_net": 73,
+      "only_true_noise_net": 6,
+      "both_true_net": 79,
+      "actual_blind_vs_DURA_net": -24
+    }
+  }
+}

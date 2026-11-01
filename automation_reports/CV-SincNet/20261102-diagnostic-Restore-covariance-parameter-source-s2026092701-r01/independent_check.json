@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "run_id": "20261102-diagnostic-Restore-covariance-parameter-source-s2026092701-r01",
+  "all_source_cases": 10240,
+  "posterior_paths": 4,
+  "groups": 48,
+  "all_scalar_and_paired_groups_checked": true,
+  "max_abs_scalar_error": 0.0,
+  "original_source_panel_and_draw_alignment": true,
+  "old_DURA_received_metric_differences": 0,
+  "prior_clean_reference_prediction_differences": 0,
+  "max_relative_solve_residual": {
+    "blind": 9.639782159295916e-14,
+    "true_noise": 1.4643776993041595e-13,
+    "true_action": 8.353174014222621e-14,
+    "true_both": 8.897042973058062e-14
+  },
+  "true_both_vs_original_FP64_prior": {
+    "iq_nmse": 2.2351741790771484e-07,
+    "feature_cosine_distance": 6.556510925292969e-07,
+    "clean_decision_agreement": 0.0
+  },
+  "true_both_vs_original_FP64_prior_agreement_changes": 0,
+  "actual_blind_equals_deployment_smoke": true,
+  "frozen_G_F0_states_unchanged_reported": true,
+  "source_draws_log_complete": true,
+  "live_worker_postlaunch_snapshot_captured": true,
+  "new_neural_forwards": 0,
+  "new_IQ_or_truth_reads": 0,
+  "optimizer_updates": 0
+}

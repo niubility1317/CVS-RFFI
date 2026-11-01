@@ -3,7 +3,7 @@
 - run_id：`20261102-diagnostic-Restore-covariance-parameter-source-s2026092701-r01`
 - group_id：`restoration-covariance-frozen-source-parameter-attribution`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：QUEUED（等待父最后GPU阶段，诊断worker未启动）
+- 当前登记状态：ANALYZED（四路源病例及独立复算完整）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+固定10240实例×4路径、48组与所有配对完整；source2盲路径等于实际部署，详见analysis.md。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -42,3 +42,8 @@
 ## 实际等待控制器已核实
 
 VERIFIED / QUEUED。实际CPU控制器PID/CWD/cmdline/CUDA空与等待日志已核实，尚无submitted子worker或源smoke/结果；不以发布返回值冒充诊断已运行。代码`5d7d9a2c4dd8e5d58b2843e47b1769d93d434c29`，一次archive SHA比对和远端compile通过。父仍按既定30轮和完整Main运行；到最后GPU阶段才在另一卡按预算准入，未知源结果不影响父。
+
+
+## 四路源端参数归因完整完成
+
+VERIFIED / ANALYZED。盲/真实噪声/真实Action/两者真实，整体Fclean一致依次95.029297/95.058594/96.523438/96.601562%，低档城区依次82.242340/82.660167/87.325905/87.743733%。全10240实例/48组/所有配对独立复算PASS，最大差0，旧source-DURA/received标量与Fclean参考差0；source2盲==G.forward及F0有限、全G/F0状态不变、完整20draw/exit0/liveempty核实。运行中postlaunch worker快照捕获True；源oracle不是部署版本或Main成绩，父矩阵保持。
