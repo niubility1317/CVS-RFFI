@@ -33,3 +33,5 @@ One technical recovery after controller exit race; preserve original predictions
 2026-11-01 恢复后独立核验：VERIFIED RUNNING: four current real-checkpoint source-only smokes PASS, including baseline/orbit/DURA exact fast-transfer comparison and CPU/CUDA score comparison; 312 prior closed units reconciled and indexed, completed new-root units entirely reused, zero query truth read. Original r03 and failed r04 remain preserved; both predecessor controllers verified stopped. Global scoring barrier remains. 最大分数差 6.94e-17；实际 source 训练、F/G 更新为0。正式目标预测耗时待新算单元闭合后测量。
 
 二轮优化首批实际耗时：同为P02/LU/K5N20，r03 25个已完成单元中位140.75秒，r05 10个已完成单元中位96.34秒；非配对、共享GPU且单seed，详见 [耗时观测](performance_observation_20261101.md)。
+
+2026-11-01 用户优先级调整：User requested priority of MIX-only complete KN comparison. Old controller transferred; completed and single-scene results remain intact; unfinished single-scene suspended.
