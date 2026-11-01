@@ -48,3 +48,7 @@
 `20261101-phase1-Restore-DirectBridge-E30-s2026092701-r01`，实际代码`84a063c9ba1f9974cfe361e293a9e11fa93920b4`，4677538参数，从零单阶段30/7410、训练每记录1次estimate、部署4次共享权重，始终条件同一received IQ，无额外观测或部署clean/F0。源IQ配对构造t1/.75/.5/.25状态，原F0连续160与rawRMS参考loss-only；0TX/V/OE/目标训练或选模，OE仅冻结诊断。结构/训练状态/执行共同变化的系统比较，不冒称单因素。
 
 VERIFIED / RUNNING：17重点相关检查/一次P0P1、真实源2训练梯度与完整四步E0/严格重载PASS。首轮247更新耗时59.003244秒，E01模型/AdamW/CPU-CUDA RNG独立CPU读回PASS，E0与固定seed factory逐张量一致；4个time实际计数和各项指标重组PASS，总loss确认原权重各加一次。GPU4准入free21865MiB/原2compute/仅新增1条，PID/CWD/命令/CUDA/GPU和日志核实，其他owner保持。固定final30后自动原Main168000×七景、全部预测后独立truth-last，当前性能PENDING；主验收仍六景各距raw clean≤3pp并保持clean，性能主线、效率支线和默认DURA不变。
+
+## 源端方法限制补充（Main预测前）
+
+[配对状态的代数捷径说明](paired_state_shortcut.md)记录同时输入state/received/time时可直接解出训练clean的恒等式及四步固定点。它不证明实际模型一定使用捷径；当前84a063c9已固定训练和完整Main矩阵保持。独立StateBridge只去除原received条件，不回流修改本版或取消测试。
