@@ -9,7 +9,7 @@ from . import multiview_trial as trial
 from .source_pair import read
 from .main_split_eval import valid_identity
 
-RUN='20261101-phase1-Restore-MSAT-VarF-E30-s2026092701-r02'
+RUN='20261101-phase1-Restore-MSAT-VarF-E30-s2026092701-r03'
 MODULE='experiments.pamf_phase3_restoration.variance_trial'
 ARM='MSAT_VarF'
 GEOMETRY_RUN='20261101-diagnostic-Restore-learned-prior-physics-s2026092701-r01'
