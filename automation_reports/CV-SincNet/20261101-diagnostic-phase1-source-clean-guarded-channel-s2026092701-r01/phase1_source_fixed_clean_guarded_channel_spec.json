@@ -1,0 +1,24 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_FIXED_BEFORE_EXECUTION",
+  "created_utc": "2026-11-01T12:59:29.529396+00:00",
+  "model_source": "phase1_source_channel_estimator_probe.json",
+  "model_source_sha256": "4fa1df8e335e5db91b826217eff7a7c053a65768bb7c1ffd192c5ac8d734e0f4",
+  "script_sha256": "fb9413e3da616439841d9a6b76874522225eb5685e9d8019de3a737e5140ed68",
+  "factor": 10.0,
+  "blend": 0.5,
+  "guard_scale": 0.2,
+  "estimator_sample_seed": 2026110351,
+  "previous_sample_seed": 2026110361,
+  "fresh_sample_seed": 2026110364,
+  "channel_seed": 2026110365,
+  "hardware_seed": 2026110366,
+  "validation_receivers": [
+    4,
+    6
+  ],
+  "heldout_receiver": 8,
+  "validation_and_heldout_day": 3,
+  "TX_labels_used_for_inference": false,
+  "test_IQ_reads": 0,
+  "caveat": "A prior source test informed this fixed design; fresh IDs exclude the two named source samples but may overlap other diagnostics and fixed experts saw source data."
+}
