@@ -302,3 +302,9 @@ VERIFIED/RUNNING：9重点检查/一次P0P1、真实Ls2四步训练部署精确�
 ## 射频细节保留的历史源证据补充
 
 只整理原R31/c333e666历史R17源V1800公开聚合，不增加G/F0/IQ/真值读取。10个低档城区单元与原CSV逐值相同，1%微扰时四物理方向仅134至183/1800满足旧可观察条件，可观察子集PA幅度/相位/IQ镜像响应增益中位数约.74至.76，随机方向也衰减。方向是合成探针而非真实TX导数，条件包含已知A/有限MAP，不是Main恢复上限或当前新G保真证明；不能对全部弱方向强制放大。详见[射频细节分析](../PAMF_RESTORATION_RF_DETAIL_ANALYSIS_20261101.md)。当前RolloutBridge训练、原LsUs权限、Main七景与六景3pp+clean验收保持，不将旧F50/R17分析改标当前性能。完整目标ACTIVE。
+
+## 可学习功率对照已排队（2026-11-01）
+
+`20261101-phase1-Restore-SoftPower-E30-s2026092701-r01`，代码`1dd40c07970b664f18c57149a0a2ab02f000b114`。解析动机是单位范数clean的条件均值不必仍单位范数，合成双点反例中硬投影增加IQ风险；不据此预判真实F0性能。相对固定PowerAnchor/42ea只取消末级硬单位功率投影，保留同4670178参数/随机初值/原LsUs-R07/损失权重与.1软RMS/order/LR/scratch单阶段30-7410，vector_norm使同一RMS数学式在零点选取有限的次梯度。部署1core/rawIQ，无旧G祖先，源F0/3ff8冻结features-only，0TX/V/OE/目标更新或选模，OE只冻结诊断。
+
+8针对性检查/一次P0P1通过；VERIFIED CPU等待进程PID-CWD-命令-CUDA空与日志增长，当前0GPU/模型加载/训练。源2及实际E0尚待首GPU步骤，不能把排队当训练完成。只等待当前Rollout整个Main技术ARTIFACTS_COMPLETE/terminal0，不读分数或预测，父任务与其他owner保持；此后按原4/6资源准入自动30及Main两总体七景/全部预测后truth-last。六景各3pp+两个clean总体仍主验收，性能主线/效率支线、默认DURA和完整目标ACTIVE保持。

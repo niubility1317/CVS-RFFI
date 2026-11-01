@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED_WAITING_FOR_PARENT_TECHNICAL_COMPLETION",
+  "code_commit": "1dd40c07970b664f18c57149a0a2ab02f000b114",
+  "CPU_controller_PID_CWD_cmdline_CUDA_empty_verified": true,
+  "CPU_controller_GPU_allocation": false,
+  "queue_log_bytes": 59,
+  "additional_GPU_workers": 0,
+  "model_loads_before_parent_complete": 0,
+  "actual_source2_checkpoint_smoke": "PENDING_FIRST_GPU_WORK",
+  "actual_E0_check": "PENDING",
+  "local_focused_checks": 8,
+  "one_P0P1": "PASS",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "parent_run": "20261101-phase1-Restore-RolloutBridge-E30-s2026092701-r01",
+  "parent_condition": "entire Main ARTIFACTS_COMPLETE/no nonzero terminal;no scores or predictions read",
+  "parent_changes": 0,
+  "other_owner_changes": 0,
+  "formal_performance": "PENDING",
+  "goal_complete": false
+}
