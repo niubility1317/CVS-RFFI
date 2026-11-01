@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED_STATIC_ARCHITECTURE_COUNT",
+  "run_id": "20261101-phase1-Restore-PHYMSAT-E30-s2026092701-r01",
+  "code_commit": "8198a2e70c655f24ebaf321f232a676cfb46d916",
+  "G_parameters": 8613449,
+  "real_dense_MAC_per_record": 546791488,
+  "MAC_by_operation": {
+    "Conv1d": 408371200,
+    "Linear": 67117120,
+    "MultiheadAttention": 71303168
+  },
+  "complex_FFT_IFFT_calls": {
+    "fft": 41,
+    "ifft": 40
+  },
+  "complex_transforms_per_record": 81,
+  "complex_transform_length": 512,
+  "CG_iterations": 16,
+  "measurement": "one synthetic CPU G-only forward/static shape arithmetic;not deployment latency or device throughput",
+  "excludes": [
+    "F0 recognition cost",
+    "normalization",
+    "activation",
+    "softmax",
+    "interpolation",
+    "elementwise real/complex operations",
+    "memory traffic",
+    "FFT arithmetic from dense MAC total"
+  ],
+  "counted_MHA_qkv_and_output_projections": true,
+  "counted_attention_QK_and_AV": true,
+  "Torch": "2.10.0+cu128",
+  "real_IQ_rows": 0,
+  "source_or_target_inputs": 0,
+  "checkpoint_loads": 0,
+  "optimizer_updates": 0
+}
