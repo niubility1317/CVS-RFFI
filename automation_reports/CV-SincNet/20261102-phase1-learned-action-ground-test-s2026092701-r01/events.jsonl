@@ -1,1 +1,2 @@
 {"at": "2026-11-02T05:36:14+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T05:39:03+00:00", "status": "QUEUED", "note": "Fixed source-trained channel correction and unroll, full seven-view CPU test always required, per-batch raw baseline match before truth.", "evidence": ["N607 CPU PID 1305702 eight-thread source replay smoke running; release SHA256 325a36b5aeaef34ce6a4794f904067eb486509fe2084ee5ab260ab79e7213abe; zero learned-channel correction exact replay on 32 real source records"], "row_id": null}

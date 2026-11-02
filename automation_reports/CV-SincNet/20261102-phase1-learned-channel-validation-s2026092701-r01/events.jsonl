@@ -1,1 +1,2 @@
 {"at": "2026-11-02T05:31:44+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T05:38:29+00:00", "status": "RUNNING", "note": "Fixed source-only validation; predictor uses received and blind-parent inputs, no DURA in candidate, no TX truth or target test.", "evidence": ["N607 CPU PID 1305501, two threads, 32 source samples smoke PASS; release SHA256 f7bad4a1e08ac943c6eef72ee61ff5a23a8ab2a465aab3f36dddf495a76e477f"], "row_id": null}
