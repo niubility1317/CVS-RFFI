@@ -1,7 +1,8 @@
 """Source posterior sampling, fixed selection and truth-last audit."""
-import json,os,subprocess,time,traceback
+import argparse,json,os,subprocess,time,traceback
 from pathlib import Path
-R=Path('/home/szu2070436088/2510044040/CV-SincNet');N='20261102-phase1-posterior-sampling-source-s2026092701-r01';SMOKE='20261102-phase1-posterior-sampling-smoke-s2026092701-r01';SCORE='20261102-phase1-posterior-sampling-score-s2026092701-r01';C='f6072ab0935cd6d4a40cb4e50a230f8e463f466b';P=R/'runs'/(N+'-controller');REL=R/'releases'/(N+'-release')/'experiments/phase1_posterior_sampling'
+ap=argparse.ArgumentParser();ap.add_argument('--commit',required=True);C=ap.parse_args().commit
+R=Path('/home/szu2070436088/2510044040/CV-SincNet');N='20261102-phase1-posterior-sampling-source-s2026092701-r02';SMOKE='20261102-phase1-posterior-sampling-smoke-s2026092701-r02';SCORE='20261102-phase1-posterior-sampling-score-s2026092701-r02';P=R/'runs'/(N+'-controller');REL=R/'releases'/(N+'-release')/'experiments/phase1_posterior_sampling'
 def status(state,**kw):
  q=P/'status.tmp';q.write_text(json.dumps(dict(state=state,**kw),indent=2),encoding='utf8');os.replace(q,P/'status.json')
 def wait_capacity():
@@ -19,7 +20,7 @@ try:
  out=R/'runs'/SCORE;out.mkdir(exist_ok=False);source=R/'runs'/N
  for label,entry,args in [('SCORE','score_sample_source.py',['--root',str(R),'--source',str(source),'--out',str(out/'source_score.json')]),('AUDIT','audit_sample_source.py',['--root',str(R),'--source',str(source),'--score',str(out/'source_score.json'),'--out',str(out/'independent_audit.json')])]:
   status('RUNNING_'+label)
-  with (out/(label.lower()+'.log')).open('x') as f:q=subprocess.run([py,str(REL/entry)]+args,stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,env=env)
+  with (out/(label.lower()+'.log')).open('x') as f:q=subprocess.run([py,str(REL/entry)]+args+['--commit',C],stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,env=env)
   if q.returncode:raise RuntimeError(label+' exited '+str(q.returncode))
  audit=json.loads((out/'independent_audit.json').read_text())
  if audit.get('status')!='PASS' or audit.get('records')!=672 or audit.get('selected_iq_predictions_replayed')!=1344 or audit.get('fields_recomputed')!=544:raise ValueError('Independent source sampling audit failed')

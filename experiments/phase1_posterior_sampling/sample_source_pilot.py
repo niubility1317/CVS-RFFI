@@ -6,16 +6,11 @@ import torch
 from torch.nn import functional as F
 from posterior_sampling import conditional_gaussian_draws
 from posterior_selection import choose_consensus,select_waveforms
+from sampling_noise import source_noise
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'phase1_joint_mixture'))
 from source_pilot import s,core,BlindActionNet,action_matrix,posterior,SOURCE,PRIOR_RUN
 
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
-def source_noise(ids,components,dim):
- z=[];e=[]
- for i in ids:
-  rng=np.random.default_rng(2026165054+int(i));z.append(rng.standard_normal((components,dim)).astype(np.float32));e.append(rng.standard_normal((components,dim)).astype(np.float32))
- return torch.from_numpy(np.stack(z)),torch.from_numpy(np.stack(e))
-
 @torch.no_grad()
 def batch(x,y,indices,blind,stats,factors,gate,teacher,check_reference=False):
  means,cov,priors=stats;n=len(x);raw_logits=teacher.classify_features(teacher.features(x));raw_prob=F.softmax(raw_logits,dim=1);raw=raw_prob.argmax(1);active=gate(x).sigmoid()>.8;parent=x.clone();waves=x[:,None].expand(-1,6,-1,-1).clone();logweights=x.new_zeros((n,6));
