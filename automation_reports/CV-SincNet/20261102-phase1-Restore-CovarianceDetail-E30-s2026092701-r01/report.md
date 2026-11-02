@@ -1,5 +1,7 @@
 # 物理估计与IQ细节双分支：全源特征指导、单阶段30轮
 
+**六景 0/6；cross_rx clean +151，cross_both clean +12。** 合并六景逐个 3pp 与两个 clean 保持的完整主目标仍未达到。 [完整结果](analysis.md)。
+
 - run_id：`20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01`
 - group_id：`restoration-independent-physical-and-IQ-detail-gradients`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
@@ -101,3 +103,8 @@ VERIFIED：实际执行 `1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6`，30 轮／74
 完整30轮加权record目标复算最大绝对误差 4.00251431998e-09；所有源metric有限。在线训练IQ／特征误差不是Main真实TX准确率或理论上限。0V/OE/novel/target训练、选模或早停，默认DURA不变。
 
 训练冻结后由原控制器自动接续原Main cross_rx126000与cross_both42000的完整七景；全部预测固定后独立truth-last。该文只确认源训练完成，不宣称六景3pp或两个clean保持已通过。完整目标仍待正式Main与交付核验。
+
+
+## 原 Main 独立双分支完整结果
+
+VERIFIED / ANALYZED。同原地面完整 Tri-SIG-TIME SSL 默认头，168000×七景固定后独立 CPU truth-last。42 单元、1302 评分组、868 raw 配对、434 DURA 配对、434 纯物理配对、434 原特征指导配对、434 clean 配对复算，最大指标差 1.24e-14，复用基线判决差 0。全部源 30/7410、完整曝光与 final=E30 另有独立源审计；没有按源结果取消测试。四阶段 exit0，原 run 进程已结束。合并六景逐个 3pp 与两个 clean 保持的完整主目标仍未达到。 默认 DURA 保持，目标状态由主执行器据完整实际交付判断。

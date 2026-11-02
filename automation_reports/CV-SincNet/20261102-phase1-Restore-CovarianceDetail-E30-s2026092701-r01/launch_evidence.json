@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED",
+  "status": "VERIFIED_ARTIFACTS_COMPLETE",
   "actual_code_commit": "1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6",
   "archive_SHA_match": true,
   "remote_compile": true,
@@ -29,5 +29,12 @@
   "source_epochs_observed": 0,
   "source_results_complete": false,
   "Main_results_available": false,
-  "goal_complete": false
+  "goal_complete": false,
+  "Main_scoring_complete": true,
+  "all_owned_run_processes_ended": true,
+  "independent_Main_check": "PASS",
+  "independent_source_check": "PASS",
+  "scenes_passing_3pp": 0,
+  "clean_preserved_each_population": true,
+  "primary_combined6_and_bothclean_passed": false
 }

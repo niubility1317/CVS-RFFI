@@ -1,0 +1,1657 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01",
+  "code_commit": "1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6",
+  "rows": {
+    "TF_CovarianceDetail": {
+      "status": "ANALYZED",
+      "run_id": "20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01",
+      "arm": "TF_CovarianceDetail",
+      "code_commit": "1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6",
+      "results": {
+        "cross_rx": {
+          "metrics": {
+            "raw": {
+              "clean": {
+                "count": 126000,
+                "correct": 111019,
+                "accuracy": 88.11031746031746,
+                "raw_clean_gap_pp": 0.0,
+                "clean_accuracy_retention_percent": 100.0
+              },
+              "practical_high": {
+                "count": 126000,
+                "correct": 102127,
+                "accuracy": 81.0531746031746,
+                "raw_clean_gap_pp": 7.057142857142864,
+                "clean_accuracy_retention_percent": 91.99056017438457
+              },
+              "practical_mid": {
+                "count": 126000,
+                "correct": 98920,
+                "accuracy": 78.5079365079365,
+                "raw_clean_gap_pp": 9.602380952380955,
+                "clean_accuracy_retention_percent": 89.10186544645511
+              },
+              "practical_low_suburban": {
+                "count": 126000,
+                "correct": 95972,
+                "accuracy": 76.16825396825396,
+                "raw_clean_gap_pp": 11.942063492063497,
+                "clean_accuracy_retention_percent": 86.44646411875445
+              },
+              "practical_high_urban": {
+                "count": 126000,
+                "correct": 97610,
+                "accuracy": 77.46825396825396,
+                "raw_clean_gap_pp": 10.6420634920635,
+                "clean_accuracy_retention_percent": 87.9218872445257
+              },
+              "practical_mid_urban": {
+                "count": 126000,
+                "correct": 79638,
+                "accuracy": 63.2047619047619,
+                "raw_clean_gap_pp": 24.90555555555556,
+                "clean_accuracy_retention_percent": 71.73366721011719
+              },
+              "practical_low_urban": {
+                "count": 126000,
+                "correct": 65457,
+                "accuracy": 51.95,
+                "raw_clean_gap_pp": 36.16031746031746,
+                "clean_accuracy_retention_percent": 58.96017798755168
+              }
+            },
+            "DURA_v1": {
+              "clean": {
+                "count": 126000,
+                "correct": 111074,
+                "accuracy": 88.15396825396826,
+                "raw_clean_gap_pp": -0.04365079365079794,
+                "clean_accuracy_retention_percent": 100.04954106954665
+              },
+              "practical_high": {
+                "count": 126000,
+                "correct": 107728,
+                "accuracy": 85.4984126984127,
+                "raw_clean_gap_pp": 2.6119047619047677,
+                "clean_accuracy_retention_percent": 97.03564254767203
+              },
+              "practical_mid": {
+                "count": 126000,
+                "correct": 105959,
+                "accuracy": 84.09444444444445,
+                "raw_clean_gap_pp": 4.015873015873012,
+                "clean_accuracy_retention_percent": 95.44222160170781
+              },
+              "practical_low_suburban": {
+                "count": 126000,
+                "correct": 103711,
+                "accuracy": 82.31031746031746,
+                "raw_clean_gap_pp": 5.799999999999997,
+                "clean_accuracy_retention_percent": 93.4173429773282
+              },
+              "practical_high_urban": {
+                "count": 126000,
+                "correct": 106046,
+                "accuracy": 84.16349206349206,
+                "raw_clean_gap_pp": 3.9468253968254032,
+                "clean_accuracy_retention_percent": 95.52058656626343
+              },
+              "practical_mid_urban": {
+                "count": 126000,
+                "correct": 96170,
+                "accuracy": 76.32539682539682,
+                "raw_clean_gap_pp": 11.784920634920638,
+                "clean_accuracy_retention_percent": 86.6248119691224
+              },
+              "practical_low_urban": {
+                "count": 126000,
+                "correct": 87172,
+                "accuracy": 69.18412698412699,
+                "raw_clean_gap_pp": 18.92619047619047,
+                "clean_accuracy_retention_percent": 78.51989299128978
+              }
+            },
+            "candidate": {
+              "clean": {
+                "count": 126000,
+                "correct": 111170,
+                "accuracy": 88.23015873015873,
+                "raw_clean_gap_pp": -0.11984126984127386,
+                "clean_accuracy_retention_percent": 100.13601275457354
+              },
+              "practical_high": {
+                "count": 126000,
+                "correct": 102002,
+                "accuracy": 80.95396825396826,
+                "raw_clean_gap_pp": 7.156349206349205,
+                "clean_accuracy_retention_percent": 91.8779668345058
+              },
+              "practical_mid": {
+                "count": 126000,
+                "correct": 99121,
+                "accuracy": 78.66746031746031,
+                "raw_clean_gap_pp": 9.44285714285715,
+                "clean_accuracy_retention_percent": 89.28291553698016
+              },
+              "practical_low_suburban": {
+                "count": 126000,
+                "correct": 96193,
+                "accuracy": 76.3436507936508,
+                "raw_clean_gap_pp": 11.766666666666666,
+                "clean_accuracy_retention_percent": 86.6455291436601
+              },
+              "practical_high_urban": {
+                "count": 126000,
+                "correct": 99445,
+                "accuracy": 78.92460317460318,
+                "raw_clean_gap_pp": 9.185714285714283,
+                "clean_accuracy_retention_percent": 89.5747574739459
+              },
+              "practical_mid_urban": {
+                "count": 126000,
+                "correct": 87925,
+                "accuracy": 69.78174603174604,
+                "raw_clean_gap_pp": 18.328571428571422,
+                "clean_accuracy_retention_percent": 79.19815527071943
+              },
+              "practical_low_urban": {
+                "count": 126000,
+                "correct": 78872,
+                "accuracy": 62.596825396825395,
+                "raw_clean_gap_pp": 25.513492063492066,
+                "clean_accuracy_retention_percent": 71.04369522334015
+              }
+            }
+          },
+          "acceptance": {
+            "raw": {
+              "scenes_passing_3pp": 0,
+              "all_six_passed": false,
+              "clean_preserved": true,
+              "performance_passed": false
+            },
+            "DURA_v1": {
+              "scenes_passing_3pp": 1,
+              "all_six_passed": false,
+              "clean_preserved": true,
+              "performance_passed": false
+            },
+            "candidate": {
+              "scenes_passing_3pp": 0,
+              "all_six_passed": false,
+              "clean_preserved": true,
+              "performance_passed": false
+            }
+          }
+        },
+        "cross_both": {
+          "metrics": {
+            "raw": {
+              "clean": {
+                "count": 42000,
+                "correct": 34366,
+                "accuracy": 81.82380952380953,
+                "raw_clean_gap_pp": 0.0,
+                "clean_accuracy_retention_percent": 100.0
+              },
+              "practical_high": {
+                "count": 42000,
+                "correct": 33307,
+                "accuracy": 79.30238095238096,
+                "raw_clean_gap_pp": 2.5214285714285722,
+                "clean_accuracy_retention_percent": 96.91846592562416
+              },
+              "practical_mid": {
+                "count": 42000,
+                "correct": 32301,
+                "accuracy": 76.90714285714286,
+                "raw_clean_gap_pp": 4.916666666666671,
+                "clean_accuracy_retention_percent": 93.99115404760519
+              },
+              "practical_low_suburban": {
+                "count": 42000,
+                "correct": 31279,
+                "accuracy": 74.47380952380952,
+                "raw_clean_gap_pp": 7.3500000000000085,
+                "clean_accuracy_retention_percent": 91.01728452540301
+              },
+              "practical_high_urban": {
+                "count": 42000,
+                "correct": 31834,
+                "accuracy": 75.79523809523809,
+                "raw_clean_gap_pp": 6.028571428571439,
+                "clean_accuracy_retention_percent": 92.63225280800792
+              },
+              "practical_mid_urban": {
+                "count": 42000,
+                "correct": 25859,
+                "accuracy": 61.569047619047616,
+                "raw_clean_gap_pp": 20.254761904761914,
+                "clean_accuracy_retention_percent": 75.24588255834254
+              },
+              "practical_low_urban": {
+                "count": 42000,
+                "correct": 21239,
+                "accuracy": 50.569047619047616,
+                "raw_clean_gap_pp": 31.254761904761914,
+                "clean_accuracy_retention_percent": 61.802362800442296
+              }
+            },
+            "DURA_v1": {
+              "clean": {
+                "count": 42000,
+                "correct": 34440,
+                "accuracy": 82.0,
+                "raw_clean_gap_pp": -0.17619047619047024,
+                "clean_accuracy_retention_percent": 100.21532910434732
+              },
+              "practical_high": {
+                "count": 42000,
+                "correct": 33969,
+                "accuracy": 80.87857142857143,
+                "raw_clean_gap_pp": 0.9452380952380963,
+                "clean_accuracy_retention_percent": 98.84478845370424
+              },
+              "practical_mid": {
+                "count": 42000,
+                "correct": 33508,
+                "accuracy": 79.78095238095239,
+                "raw_clean_gap_pp": 2.0428571428571445,
+                "clean_accuracy_retention_percent": 97.50334633067567
+              },
+              "practical_low_suburban": {
+                "count": 42000,
+                "correct": 32910,
+                "accuracy": 78.35714285714286,
+                "raw_clean_gap_pp": 3.4666666666666686,
+                "clean_accuracy_retention_percent": 95.7632543793284
+              },
+              "practical_high_urban": {
+                "count": 42000,
+                "correct": 33477,
+                "accuracy": 79.70714285714286,
+                "raw_clean_gap_pp": 2.1166666666666742,
+                "clean_accuracy_retention_percent": 97.41314089507071
+              },
+              "practical_mid_urban": {
+                "count": 42000,
+                "correct": 31016,
+                "accuracy": 73.84761904761905,
+                "raw_clean_gap_pp": 7.976190476190482,
+                "clean_accuracy_retention_percent": 90.25199324914159
+              },
+              "practical_low_urban": {
+                "count": 42000,
+                "correct": 28414,
+                "accuracy": 67.65238095238095,
+                "raw_clean_gap_pp": 14.171428571428578,
+                "clean_accuracy_retention_percent": 82.68055636384798
+              }
+            },
+            "candidate": {
+              "clean": {
+                "count": 42000,
+                "correct": 34378,
+                "accuracy": 81.85238095238095,
+                "raw_clean_gap_pp": -0.028571428571424917,
+                "clean_accuracy_retention_percent": 100.0349182331374
+              },
+              "practical_high": {
+                "count": 42000,
+                "correct": 32634,
+                "accuracy": 77.7,
+                "raw_clean_gap_pp": 4.123809523809527,
+                "clean_accuracy_retention_percent": 94.96013501716813
+              },
+              "practical_mid": {
+                "count": 42000,
+                "correct": 31596,
+                "accuracy": 75.22857142857143,
+                "raw_clean_gap_pp": 6.595238095238102,
+                "clean_accuracy_retention_percent": 91.93970785078275
+              },
+              "practical_low_suburban": {
+                "count": 42000,
+                "correct": 30639,
+                "accuracy": 72.95,
+                "raw_clean_gap_pp": 8.873809523809527,
+                "clean_accuracy_retention_percent": 89.15497875807485
+              },
+              "practical_high_urban": {
+                "count": 42000,
+                "correct": 31954,
+                "accuracy": 76.08095238095238,
+                "raw_clean_gap_pp": 5.742857142857147,
+                "clean_accuracy_retention_percent": 92.98143513938194
+              },
+              "practical_mid_urban": {
+                "count": 42000,
+                "correct": 28746,
+                "accuracy": 68.44285714285714,
+                "raw_clean_gap_pp": 13.380952380952394,
+                "clean_accuracy_retention_percent": 83.64662748064949
+              },
+              "practical_low_urban": {
+                "count": 42000,
+                "correct": 25962,
+                "accuracy": 61.81428571428572,
+                "raw_clean_gap_pp": 20.009523809523813,
+                "clean_accuracy_retention_percent": 75.54559739277192
+              }
+            }
+          },
+          "acceptance": {
+            "raw": {
+              "scenes_passing_3pp": 1,
+              "all_six_passed": false,
+              "clean_preserved": true,
+              "performance_passed": false
+            },
+            "DURA_v1": {
+              "scenes_passing_3pp": 3,
+              "all_six_passed": false,
+              "clean_preserved": true,
+              "performance_passed": false
+            },
+            "candidate": {
+              "scenes_passing_3pp": 0,
+              "all_six_passed": false,
+              "clean_preserved": true,
+              "performance_passed": false
+            }
+          }
+        },
+        "combined": {
+          "metrics": {
+            "raw": {
+              "clean": {
+                "count": 168000,
+                "correct": 145385,
+                "accuracy": 86.53869047619048,
+                "raw_clean_gap_pp": 0.0,
+                "clean_accuracy_retention_percent": 100.0
+              },
+              "practical_high": {
+                "count": 168000,
+                "correct": 135434,
+                "accuracy": 80.61547619047619,
+                "raw_clean_gap_pp": 5.923214285714295,
+                "clean_accuracy_retention_percent": 93.15541493276473
+              },
+              "practical_mid": {
+                "count": 168000,
+                "correct": 131221,
+                "accuracy": 78.10773809523809,
+                "raw_clean_gap_pp": 8.430952380952391,
+                "clean_accuracy_retention_percent": 90.25759191113251
+              },
+              "practical_low_suburban": {
+                "count": 168000,
+                "correct": 127251,
+                "accuracy": 75.74464285714286,
+                "raw_clean_gap_pp": 10.794047619047618,
+                "clean_accuracy_retention_percent": 87.52691130446745
+              },
+              "practical_high_urban": {
+                "count": 168000,
+                "correct": 129444,
+                "accuracy": 77.05,
+                "raw_clean_gap_pp": 9.488690476190484,
+                "clean_accuracy_retention_percent": 89.03532001238092
+              },
+              "practical_mid_urban": {
+                "count": 168000,
+                "correct": 105497,
+                "accuracy": 62.795833333333334,
+                "raw_clean_gap_pp": 23.742857142857147,
+                "clean_accuracy_retention_percent": 72.563882106132
+              },
+              "practical_low_urban": {
+                "count": 168000,
+                "correct": 86696,
+                "accuracy": 51.60476190476191,
+                "raw_clean_gap_pp": 34.933928571428574,
+                "clean_accuracy_retention_percent": 59.63201155552498
+              }
+            },
+            "DURA_v1": {
+              "clean": {
+                "count": 168000,
+                "correct": 145514,
+                "accuracy": 86.61547619047619,
+                "raw_clean_gap_pp": -0.07678571428570535,
+                "clean_accuracy_retention_percent": 100.0887299239949
+              },
+              "practical_high": {
+                "count": 168000,
+                "correct": 141697,
+                "accuracy": 84.34345238095239,
+                "raw_clean_gap_pp": 2.1952380952380963,
+                "clean_accuracy_retention_percent": 97.46328713416102
+              },
+              "practical_mid": {
+                "count": 168000,
+                "correct": 139467,
+                "accuracy": 83.01607142857142,
+                "raw_clean_gap_pp": 3.5226190476190595,
+                "clean_accuracy_retention_percent": 95.92942875812498
+              },
+              "practical_low_suburban": {
+                "count": 168000,
+                "correct": 136621,
+                "accuracy": 81.32202380952381,
+                "raw_clean_gap_pp": 5.216666666666669,
+                "clean_accuracy_retention_percent": 93.97186779929153
+              },
+              "practical_high_urban": {
+                "count": 168000,
+                "correct": 139523,
+                "accuracy": 83.04940476190477,
+                "raw_clean_gap_pp": 3.489285714285714,
+                "clean_accuracy_retention_percent": 95.96794717474292
+              },
+              "practical_mid_urban": {
+                "count": 168000,
+                "correct": 127186,
+                "accuracy": 75.70595238095238,
+                "raw_clean_gap_pp": 10.8327380952381,
+                "clean_accuracy_retention_percent": 87.4822024280359
+              },
+              "practical_low_urban": {
+                "count": 168000,
+                "correct": 115586,
+                "accuracy": 68.80119047619047,
+                "raw_clean_gap_pp": 17.73750000000001,
+                "clean_accuracy_retention_percent": 79.50338755717577
+              }
+            },
+            "candidate": {
+              "clean": {
+                "count": 168000,
+                "correct": 145548,
+                "accuracy": 86.63571428571429,
+                "raw_clean_gap_pp": -0.09702380952380452,
+                "clean_accuracy_retention_percent": 100.11211610551295
+              },
+              "practical_high": {
+                "count": 168000,
+                "correct": 134636,
+                "accuracy": 80.14047619047619,
+                "raw_clean_gap_pp": 6.398214285714289,
+                "clean_accuracy_retention_percent": 92.606527495959
+              },
+              "practical_mid": {
+                "count": 168000,
+                "correct": 130717,
+                "accuracy": 77.8077380952381,
+                "raw_clean_gap_pp": 8.730952380952388,
+                "clean_accuracy_retention_percent": 89.910926161571
+              },
+              "practical_low_suburban": {
+                "count": 168000,
+                "correct": 126832,
+                "accuracy": 75.4952380952381,
+                "raw_clean_gap_pp": 11.043452380952388,
+                "clean_accuracy_retention_percent": 87.23871100870103
+              },
+              "practical_high_urban": {
+                "count": 168000,
+                "correct": 131399,
+                "accuracy": 78.21369047619048,
+                "raw_clean_gap_pp": 8.325000000000003,
+                "clean_accuracy_retention_percent": 90.38002544966812
+              },
+              "practical_mid_urban": {
+                "count": 168000,
+                "correct": 116671,
+                "accuracy": 69.44702380952381,
+                "raw_clean_gap_pp": 17.09166666666667,
+                "clean_accuracy_retention_percent": 80.24968187914847
+              },
+              "practical_low_urban": {
+                "count": 168000,
+                "correct": 104834,
+                "accuracy": 62.40119047619048,
+                "raw_clean_gap_pp": 24.137500000000003,
+                "clean_accuracy_retention_percent": 72.10785156653024
+              }
+            }
+          },
+          "acceptance": {
+            "raw": {
+              "scenes_passing_3pp": 0,
+              "all_six_passed": false,
+              "clean_preserved": true,
+              "performance_passed": false
+            },
+            "DURA_v1": {
+              "scenes_passing_3pp": 1,
+              "all_six_passed": false,
+              "clean_preserved": true,
+              "performance_passed": false
+            },
+            "candidate": {
+              "scenes_passing_3pp": 0,
+              "all_six_passed": false,
+              "clean_preserved": true,
+              "performance_passed": false
+            }
+          }
+        }
+      },
+      "truth_last": true,
+      "default_DURA_changed": false,
+      "goal_complete": false
+    }
+  },
+  "primary_base": "Original ground full Tri-SIG-TIME SSL/3ff8/defaulthead/Main168000",
+  "actual_new_training_rows": 1,
+  "CovarianceDetail_minus_DURA_pp": {
+    "clean": 0.020238095238099163,
+    "practical_high": -4.202976190476193,
+    "practical_mid": -5.208333333333329,
+    "practical_low_suburban": -5.82678571428572,
+    "practical_high_urban": -4.835714285714289,
+    "practical_mid_urban": -6.258928571428569,
+    "practical_low_urban": -6.3999999999999915
+  },
+  "CovarianceDetail_minus_CovarianceMAP_pp": {
+    "clean": 0.06309523809524364,
+    "practical_high": -3.360119047619051,
+    "practical_mid": -4.331547619047626,
+    "practical_low_suburban": -5.044047619047618,
+    "practical_high_urban": -3.9696428571428584,
+    "practical_mid_urban": -5.600595238095238,
+    "practical_low_urban": -4.797023809523807
+  },
+  "CovarianceDetail_minus_CovarianceFeature_pp": {
+    "clean": -0.1071428571428612,
+    "practical_high": -3.831547619047612,
+    "practical_mid": -4.657142857142858,
+    "practical_low_suburban": -5.085714285714289,
+    "practical_high_urban": -4.3946428571428555,
+    "practical_mid_urban": -5.448214285714286,
+    "practical_low_urban": -4.561309523809527
+  },
+  "clean_preservation_scope": {
+    "cross_rx": {
+      "count": 126000,
+      "raw_correct": 111019,
+      "new_correct": 111170,
+      "net_correct": 151,
+      "accuracy_change_pp": 0.11984126984127386
+    },
+    "cross_both": {
+      "count": 42000,
+      "raw_correct": 34366,
+      "new_correct": 34378,
+      "net_correct": 12,
+      "accuracy_change_pp": 0.028571428571424917
+    },
+    "combined": {
+      "count": 168000,
+      "raw_correct": 145385,
+      "new_correct": 145548,
+      "net_correct": 163,
+      "accuracy_change_pp": 0.09702380952380452
+    }
+  },
+  "clean_preserved_each_population": true,
+  "combined_scenes_passing_3pp": 0,
+  "primary_combined6_and_bothclean_passed": false,
+  "original_Main_all_three_scopes_criterion": false,
+  "complexity": {
+    "actual_training_code": "1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6",
+    "kind": "static_dense_MAC_accounting_not_latency",
+    "G_parameters": 5481223,
+    "physical_parameters": 1230341,
+    "detail_parameters": 4250882,
+    "FP32_state_bytes": 22977820,
+    "source_prior_buffer_bytes": 1050624,
+    "estimator_FP32_MAC": 176636032,
+    "detail_FP32_MAC": 260374528,
+    "learned_FP32_MAC": 437010560,
+    "dense_posterior_FP64_MAC": 269221888,
+    "core_mixed_precision_MAC_subtotal": 706232448,
+    "Cholesky_approx_FP64_FLOPs": 44739242.666666664,
+    "triangular_solve_approx_FP64_FLOPs": 524288,
+    "FFT_count": 2,
+    "FFT_length": 256,
+    "CG_steps": 0,
+    "prior_calls": 1,
+    "neural_module_calls": [
+      {
+        "module": "physical.time_patch",
+        "kind": "Conv1d",
+        "real_MAC": 163840,
+        "input_shape": [
+          1,
+          5,
+          256
+        ]
+      },
+      {
+        "module": "physical.frequency_patch",
+        "kind": "Conv1d",
+        "real_MAC": 163840,
+        "input_shape": [
+          1,
+          5,
+          256
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.0.self_attn",
+        "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+        "real_MAC": 12582912,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.0.linear1",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.0.linear2",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          512
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.1.self_attn",
+        "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+        "real_MAC": 12582912,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.1.linear1",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.1.linear2",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          512
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.2.self_attn",
+        "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+        "real_MAC": 12582912,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.2.linear1",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.2.linear2",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          512
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.3.self_attn",
+        "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+        "real_MAC": 12582912,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.3.linear1",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.3.linear2",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          512
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.4.self_attn",
+        "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+        "real_MAC": 12582912,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.4.linear1",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.4.linear2",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          512
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.5.self_attn",
+        "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+        "real_MAC": 12582912,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.5.linear1",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "physical.encoder.layers.5.linear2",
+        "kind": "Linear",
+        "real_MAC": 8388608,
+        "input_shape": [
+          1,
+          128,
+          512
+        ]
+      },
+      {
+        "module": "physical.kernel_head",
+        "kind": "Linear",
+        "real_MAC": 16384,
+        "input_shape": [
+          1,
+          128
+        ]
+      },
+      {
+        "module": "physical.coefficient_head",
+        "kind": "ConvTranspose1d",
+        "real_MAC": 131072,
+        "input_shape": [
+          1,
+          128,
+          64
+        ]
+      },
+      {
+        "module": "physical.noise_head",
+        "kind": "Linear",
+        "real_MAC": 128,
+        "input_shape": [
+          1,
+          128
+        ]
+      },
+      {
+        "module": "detail.stem",
+        "kind": "Conv1d",
+        "real_MAC": 491520,
+        "input_shape": [
+          1,
+          6,
+          256
+        ]
+      },
+      {
+        "module": "detail.encoders.0.0.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 3145728,
+        "input_shape": [
+          1,
+          64,
+          256
+        ]
+      },
+      {
+        "module": "detail.encoders.0.0.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 3145728,
+        "input_shape": [
+          1,
+          64,
+          256
+        ]
+      },
+      {
+        "module": "detail.encoders.0.1.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 3145728,
+        "input_shape": [
+          1,
+          64,
+          256
+        ]
+      },
+      {
+        "module": "detail.encoders.0.1.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 3145728,
+        "input_shape": [
+          1,
+          64,
+          256
+        ]
+      },
+      {
+        "module": "detail.down.0",
+        "kind": "Conv1d",
+        "real_MAC": 4194304,
+        "input_shape": [
+          1,
+          64,
+          256
+        ]
+      },
+      {
+        "module": "detail.encoders.1.0.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 6291456,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "detail.encoders.1.0.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 6291456,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "detail.encoders.1.1.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 6291456,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "detail.encoders.1.1.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 6291456,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "detail.down.1",
+        "kind": "Conv1d",
+        "real_MAC": 6291456,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "detail.encoders.2.0.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 7077888,
+        "input_shape": [
+          1,
+          192,
+          64
+        ]
+      },
+      {
+        "module": "detail.encoders.2.0.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 7077888,
+        "input_shape": [
+          1,
+          192,
+          64
+        ]
+      },
+      {
+        "module": "detail.encoders.2.1.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 7077888,
+        "input_shape": [
+          1,
+          192,
+          64
+        ]
+      },
+      {
+        "module": "detail.encoders.2.1.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 7077888,
+        "input_shape": [
+          1,
+          192,
+          64
+        ]
+      },
+      {
+        "module": "detail.down.2",
+        "kind": "Conv1d",
+        "real_MAC": 6291456,
+        "input_shape": [
+          1,
+          192,
+          64
+        ]
+      },
+      {
+        "module": "detail.bottleneck.0.attention",
+        "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+        "real_MAC": 8912896,
+        "input_shape": [
+          1,
+          32,
+          256
+        ]
+      },
+      {
+        "module": "detail.bottleneck.0.ff.1",
+        "kind": "Linear",
+        "real_MAC": 4194304,
+        "input_shape": [
+          1,
+          32,
+          256
+        ]
+      },
+      {
+        "module": "detail.bottleneck.0.ff.3",
+        "kind": "Linear",
+        "real_MAC": 4194304,
+        "input_shape": [
+          1,
+          32,
+          512
+        ]
+      },
+      {
+        "module": "detail.bottleneck.1.attention",
+        "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+        "real_MAC": 8912896,
+        "input_shape": [
+          1,
+          32,
+          256
+        ]
+      },
+      {
+        "module": "detail.bottleneck.1.ff.1",
+        "kind": "Linear",
+        "real_MAC": 4194304,
+        "input_shape": [
+          1,
+          32,
+          256
+        ]
+      },
+      {
+        "module": "detail.bottleneck.1.ff.3",
+        "kind": "Linear",
+        "real_MAC": 4194304,
+        "input_shape": [
+          1,
+          32,
+          512
+        ]
+      },
+      {
+        "module": "detail.bottleneck.2.attention",
+        "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+        "real_MAC": 8912896,
+        "input_shape": [
+          1,
+          32,
+          256
+        ]
+      },
+      {
+        "module": "detail.bottleneck.2.ff.1",
+        "kind": "Linear",
+        "real_MAC": 4194304,
+        "input_shape": [
+          1,
+          32,
+          256
+        ]
+      },
+      {
+        "module": "detail.bottleneck.2.ff.3",
+        "kind": "Linear",
+        "real_MAC": 4194304,
+        "input_shape": [
+          1,
+          32,
+          512
+        ]
+      },
+      {
+        "module": "detail.bottleneck.3.attention",
+        "kind": "MultiheadAttention_QKV_out_and_two_attention_products",
+        "real_MAC": 8912896,
+        "input_shape": [
+          1,
+          32,
+          256
+        ]
+      },
+      {
+        "module": "detail.bottleneck.3.ff.1",
+        "kind": "Linear",
+        "real_MAC": 4194304,
+        "input_shape": [
+          1,
+          32,
+          256
+        ]
+      },
+      {
+        "module": "detail.bottleneck.3.ff.3",
+        "kind": "Linear",
+        "real_MAC": 4194304,
+        "input_shape": [
+          1,
+          32,
+          512
+        ]
+      },
+      {
+        "module": "detail.up.0",
+        "kind": "Conv1d",
+        "real_MAC": 16515072,
+        "input_shape": [
+          1,
+          448,
+          64
+        ]
+      },
+      {
+        "module": "detail.decoders.0.0.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 7077888,
+        "input_shape": [
+          1,
+          192,
+          64
+        ]
+      },
+      {
+        "module": "detail.decoders.0.0.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 7077888,
+        "input_shape": [
+          1,
+          192,
+          64
+        ]
+      },
+      {
+        "module": "detail.decoders.0.1.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 7077888,
+        "input_shape": [
+          1,
+          192,
+          64
+        ]
+      },
+      {
+        "module": "detail.decoders.0.1.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 7077888,
+        "input_shape": [
+          1,
+          192,
+          64
+        ]
+      },
+      {
+        "module": "detail.up.1",
+        "kind": "Conv1d",
+        "real_MAC": 15728640,
+        "input_shape": [
+          1,
+          320,
+          128
+        ]
+      },
+      {
+        "module": "detail.decoders.1.0.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 6291456,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "detail.decoders.1.0.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 6291456,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "detail.decoders.1.1.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 6291456,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "detail.decoders.1.1.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 6291456,
+        "input_shape": [
+          1,
+          128,
+          128
+        ]
+      },
+      {
+        "module": "detail.up.2",
+        "kind": "Conv1d",
+        "real_MAC": 9437184,
+        "input_shape": [
+          1,
+          192,
+          256
+        ]
+      },
+      {
+        "module": "detail.decoders.2.0.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 3145728,
+        "input_shape": [
+          1,
+          64,
+          256
+        ]
+      },
+      {
+        "module": "detail.decoders.2.0.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 3145728,
+        "input_shape": [
+          1,
+          64,
+          256
+        ]
+      },
+      {
+        "module": "detail.decoders.2.1.core.2",
+        "kind": "Conv1d",
+        "real_MAC": 3145728,
+        "input_shape": [
+          1,
+          64,
+          256
+        ]
+      },
+      {
+        "module": "detail.decoders.2.1.core.5",
+        "kind": "Conv1d",
+        "real_MAC": 3145728,
+        "input_shape": [
+          1,
+          64,
+          256
+        ]
+      },
+      {
+        "module": "detail.output",
+        "kind": "Conv1d",
+        "real_MAC": 98304,
+        "input_shape": [
+          1,
+          64,
+          256
+        ]
+      }
+    ],
+    "exclusions": [
+      "bias-add",
+      "GroupNorm/LayerNorm reductions andaffine",
+      "SiLU/GELU/softmax/attention-scaling",
+      "interpolation",
+      "FFT arithmetic",
+      "dense_action_build andpointwise IQ operations",
+      "sourceF0notdeployed"
+    ],
+    "counting_convention": "One realmultiply-accumulate=1MAC;densepaddedConv1d convention;ConvTranspose uses input elements x outchannels xkernel (no overlap doublecount). Attentionincludes QKV/outprojection andQK/AV;childoutprojection excluded fromLinear hooks.",
+    "counting_input": "SyntheticzeroIQ B1/2x256,zero3channelcontext;no source/target data ortrainedcheckpoint loaded. BackendMHAfastpath disabledonlyin thislocalcounter toobserve modules;runningN607release unchanged.",
+    "measurement_environment_torch": "2.10.0+cu128",
+    "latency_measured": false,
+    "quality_evaluation": false,
+    "training_or_model_updates": 0,
+    "source_IQ_reads": 0,
+    "target_IQ_reads": 0,
+    "truth_reads": 0,
+    "state_unchanged": true,
+    "static_MAC_not_full_FLOPs": true,
+    "actual_final30_latency_pending": true
+  },
+  "training": {
+    "TF_CovarianceDetail": {
+      "complete": {
+        "status": "SOURCE_TRAINED",
+        "code_commit": "1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6",
+        "arm": "TF_CovarianceDetail",
+        "epoch": 30,
+        "updates": 7410,
+        "source_Ls_exposures": 189000,
+        "source_Us_exposures": 1701000,
+        "online_F0_feature_rows": 1890000,
+        "F0_clean_target_rows": 63000,
+        "F0_feature_L_s_exposures": 189000,
+        "F0_feature_U_s_exposures": 1701000,
+        "source_F0_feature_cache_seconds": 2.121575016004499,
+        "F0_identity": {
+          "model": "original_F0_E50",
+          "parameters": 232993,
+          "epoch": 50,
+          "updates": 11100,
+          "model_seed": 2026092701,
+          "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+          "base_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release",
+          "source_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+          "source_row": "main_split-repl-shuffled_time-3view-s2026092701",
+          "source_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d"
+        },
+        "source_prior_identity": {
+          "source_run": "20261102-diagnostic-Restore-source-covariance-inverse-s2026092701-r01",
+          "source_prior_code": "a3a90b55a73702954c453eec9c1ad17fec24d87f",
+          "source_fit_packets": 63000,
+          "source_mean_FP32_rounding_max": 5.807088498954727e-08,
+          "source_covariance_FP32_rounding_max": 2.3745440835831744e-08
+        },
+        "G_parameters": 5481223,
+        "physical_parameters": 1230341,
+        "detail_parameters": 4250882,
+        "training_seconds": 6951.032337888995,
+        "worker_seconds": 6956.7112466519975,
+        "peak_allocated_bytes": 1518080512,
+        "G_initialization_checkpoint_loads": 0,
+        "TX_labels_read": 0,
+        "V_reads": 0,
+        "OE_reads": 0,
+        "target_training_reads": 0,
+        "checkpoint_selection": "final30_only",
+        "model_state_F0_updates": 0,
+        "training_stages": 1,
+        "training_posterior_calls": 59070,
+        "training_posterior_rows": 1890000,
+        "source_operator_full_matrix_supervision": true,
+        "source_prior_buffers_unchanged": true,
+        "source_actual_IQ_F0_guidance": true,
+        "feature_weight": 0.01,
+        "physical_detail_gradient_isolation": true,
+        "independent_branch_clipping": true
+      },
+      "epoch_seconds_sum": 6950.963038500035,
+      "median_epoch_seconds": 230.76854631150127,
+      "final_source_metrics": {
+        "loss": 0.019251873604125447,
+        "physical_loss": 0.000972866566075633,
+        "detail_loss": 0.018279007032986672,
+        "action_matrix_relative_mse": 0.009263262890929741,
+        "noise_log_mse": 0.04654025913514788,
+        "iq_nmse": 0.01560481581470323,
+        "spectral_error": 0.04255949295323992,
+        "feature_error": 0.004584905890245287,
+        "feature_standardized_error": 0.0500367500531295,
+        "base_iq_nmse": 0.02554732931227911,
+        "predicted_noise": 0.028842093372628802,
+        "relative_solve_residual": 2.2329961144110485e-14
+      },
+      "source_feature_coverage": {
+        "total_exposures": 1890000,
+        "unique_packets": 63000,
+        "unexposed_packets": 0,
+        "unique_L_s": 6300,
+        "unique_U_s": 56700,
+        "visits_per_packet": 30
+      },
+      "physical_final_max_abs_difference_from_BF": 0.44416457414627075,
+      "stdout_diagnostics": {
+        "full_stdout_scanned": true,
+        "bytes": 29021,
+        "epoch_records": 30,
+        "error_markers": [],
+        "warnings": []
+      }
+    }
+  },
+  "independent_check": {
+    "status": "PASS",
+    "run_id": "20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01",
+    "coverage": {
+      "TF_CovarianceDetail": {
+        "cross_rx": 126000,
+        "cross_both": 42000
+      }
+    },
+    "prediction_cells_checked": 42,
+    "score_groups": 1302,
+    "raw_pairs": 868,
+    "baseline_decision_differences": 0,
+    "max_abs_metric_error": 1.2434497875801753e-14,
+    "epoch_recovery_files": 30,
+    "E01_E30_states_checked": true,
+    "final_matches_E30_recovery": true,
+    "matched_CovarianceMAP_source_orders_and_draws": true,
+    "actual_scratch_E0_source_prior_FP32_buffers_and_operator_training_checked": true,
+    "actual_posterior_F0_guided_training_checked": true,
+    "all_epoch_weighted_loss_max_abs_error": 4.002514319978445e-09,
+    "source_epochs_checked": 30,
+    "source_update_budget": 7410,
+    "all_score_group_key_coverage_checked": true,
+    "neural_forwards": 0,
+    "optimizer_updates": 0,
+    "all_predictions_checked_before_truth": true
+  },
+  "source_prior_IQ_fit_rows": 63000,
+  "F0_guidance_for_G_updates": true,
+  "source_F0_continuous_guidance": true,
+  "not_F_free": true,
+  "no_TX_logits_CE_prototypes_or_head_guidance": true,
+  "target_feedback": false,
+  "default_DURA_changed": false,
+  "goal_complete": false,
+  "caveat": "Composite architecture/routing/full-feature-exposure change;samephysicalE0 doesnot imply identicalphysicaltrajectory;sourceonline metrics not MainIQfidelity orTXaccuracy.",
+  "combined_paired_changes": [
+    {
+      "view": "clean",
+      "count": 168000,
+      "repairs": 489,
+      "damage": 455,
+      "net": 34
+    },
+    {
+      "view": "practical_high",
+      "count": 168000,
+      "repairs": 3999,
+      "damage": 11060,
+      "net": -7061
+    },
+    {
+      "view": "practical_mid",
+      "count": 168000,
+      "repairs": 4908,
+      "damage": 13658,
+      "net": -8750
+    },
+    {
+      "view": "practical_low_suburban",
+      "count": 168000,
+      "repairs": 5905,
+      "damage": 15694,
+      "net": -9789
+    },
+    {
+      "view": "practical_high_urban",
+      "count": 168000,
+      "repairs": 4593,
+      "damage": 12717,
+      "net": -8124
+    },
+    {
+      "view": "practical_mid_urban",
+      "count": 168000,
+      "repairs": 7700,
+      "damage": 18215,
+      "net": -10515
+    },
+    {
+      "view": "practical_low_urban",
+      "count": 168000,
+      "repairs": 10470,
+      "damage": 21222,
+      "net": -10752
+    }
+  ],
+  "combined_control_paired_changes": [
+    {
+      "view": "clean",
+      "count": 168000,
+      "repairs": 384,
+      "damage": 278,
+      "net": 106
+    },
+    {
+      "view": "practical_high",
+      "count": 168000,
+      "repairs": 4246,
+      "damage": 9891,
+      "net": -5645
+    },
+    {
+      "view": "practical_mid",
+      "count": 168000,
+      "repairs": 5157,
+      "damage": 12434,
+      "net": -7277
+    },
+    {
+      "view": "practical_low_suburban",
+      "count": 168000,
+      "repairs": 6177,
+      "damage": 14651,
+      "net": -8474
+    },
+    {
+      "view": "practical_high_urban",
+      "count": 168000,
+      "repairs": 5079,
+      "damage": 11748,
+      "net": -6669
+    },
+    {
+      "view": "practical_mid_urban",
+      "count": 168000,
+      "repairs": 9455,
+      "damage": 18864,
+      "net": -9409
+    },
+    {
+      "view": "practical_low_urban",
+      "count": 168000,
+      "repairs": 13889,
+      "damage": 21948,
+      "net": -8059
+    }
+  ],
+  "combined_guided_paired_changes": [
+    {
+      "view": "clean",
+      "count": 168000,
+      "repairs": 539,
+      "damage": 719,
+      "net": -180
+    },
+    {
+      "view": "practical_high",
+      "count": 168000,
+      "repairs": 4463,
+      "damage": 10900,
+      "net": -6437
+    },
+    {
+      "view": "practical_mid",
+      "count": 168000,
+      "repairs": 5414,
+      "damage": 13238,
+      "net": -7824
+    },
+    {
+      "view": "practical_low_suburban",
+      "count": 168000,
+      "repairs": 6535,
+      "damage": 15079,
+      "net": -8544
+    },
+    {
+      "view": "practical_high_urban",
+      "count": 168000,
+      "repairs": 5413,
+      "damage": 12796,
+      "net": -7383
+    },
+    {
+      "view": "practical_mid_urban",
+      "count": 168000,
+      "repairs": 10152,
+      "damage": 19305,
+      "net": -9153
+    },
+    {
+      "view": "practical_low_urban",
+      "count": 168000,
+      "repairs": 14745,
+      "damage": 22408,
+      "net": -7663
+    }
+  ],
+  "combined_clean_paired_changes": [
+    {
+      "view": "clean",
+      "count": 168000,
+      "repairs": 422,
+      "damage": 259,
+      "net": 163,
+      "Fclean_decision_agreement": 0.9954880952380952
+    },
+    {
+      "view": "practical_high",
+      "count": 168000,
+      "repairs": 4138,
+      "damage": 14887,
+      "net": -10749,
+      "Fclean_decision_agreement": 0.8815892857142857
+    },
+    {
+      "view": "practical_mid",
+      "count": 168000,
+      "repairs": 4483,
+      "damage": 19151,
+      "net": -14668,
+      "Fclean_decision_agreement": 0.8526964285714286
+    },
+    {
+      "view": "practical_low_suburban",
+      "count": 168000,
+      "repairs": 4757,
+      "damage": 23310,
+      "net": -18553,
+      "Fclean_decision_agreement": 0.8241309523809524
+    },
+    {
+      "view": "practical_high_urban",
+      "count": 168000,
+      "repairs": 4270,
+      "damage": 18256,
+      "net": -13986,
+      "Fclean_decision_agreement": 0.8591666666666666
+    },
+    {
+      "view": "practical_mid_urban",
+      "count": 168000,
+      "repairs": 5112,
+      "damage": 33826,
+      "net": -28714,
+      "Fclean_decision_agreement": 0.7535535714285714
+    },
+    {
+      "view": "practical_low_urban",
+      "count": 168000,
+      "repairs": 5566,
+      "damage": 46117,
+      "net": -40551,
+      "Fclean_decision_agreement": 0.6695833333333333
+    }
+  ],
+  "combined_group_count": 336
+}
