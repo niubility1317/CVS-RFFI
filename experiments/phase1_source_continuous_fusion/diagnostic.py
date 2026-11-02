@@ -80,8 +80,8 @@ def predict(root, out, commit, smoke):
     out.mkdir(parents=True)
     with (out/'source_predictions.npz').open('xb') as f:
         np.savez(f, indices=ids[selected], split=split[selected], rx=rx[ids[selected]],
-                 scene=scene[ids[selected]], classes=torch.cat(classifications).numpy(),
-                 aligned_error=torch.cat(errors).numpy())
+                 scene=scene[ids[selected]], classes=np.from_dlpack(torch.cat(classifications).contiguous()),
+                 aligned_error=np.from_dlpack(torch.cat(errors).contiguous()))
     core.write(out/'prediction_complete.json', dict(status='SOURCE_PREDICTIONS_FIXED', commit=commit,
                count=len(selected), alphas=ALPHAS, smoke=smoke, F_frozen=True, DURA_frozen=True,
                TX_truth_reads=0, U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates=0))
@@ -107,7 +107,8 @@ def score(root, source, out, commit):
             y = core.tensor(clean[ids[start:start+8]], 'cpu')
             conf, pred = F.softmax(reader.classify_features(reader.features(y)), 1).max(1)
             confidence.append(conf.cpu()); pseudo.append(pred.cpu())
-    confidence = torch.cat(confidence).numpy(); pseudo = torch.cat(pseudo).numpy()
+    confidence = np.from_dlpack(torch.cat(confidence).contiguous())
+    pseudo = np.from_dlpack(torch.cat(pseudo).contiguous())
     results = {}
     for group in ('RX4_6', 'RX8'):
         results[group] = {}
