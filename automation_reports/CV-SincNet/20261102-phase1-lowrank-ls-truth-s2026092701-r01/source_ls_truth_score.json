@@ -1,0 +1,142 @@
+{
+  "status": "SOURCE_LS_TRUTH_LAST_COMPLETE",
+  "commit": "a42563b2236751aa8475fcdcf750e5aa590b43b7",
+  "prediction_sha256": "f8ff66d749edc1efc0bf90d919e4ab17ee89d8a1f055e2e15f4e40a726457c1e",
+  "truth_role": "L_s only",
+  "L_s_metadata_labels_read": 6300,
+  "L_s_scored": 160,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "results": {
+    "full": {
+      "correct": 140,
+      "count": 160,
+      "repairs_vs_full": 0,
+      "damages_vs_full": 0,
+      "by_scene": {
+        "practical_high": {
+          "count": 22,
+          "correct": 22
+        },
+        "practical_high_urban": {
+          "count": 26,
+          "correct": 25
+        },
+        "practical_low_suburban": {
+          "count": 34,
+          "correct": 33
+        },
+        "practical_low_urban": {
+          "count": 24,
+          "correct": 14
+        },
+        "practical_mid": {
+          "count": 26,
+          "correct": 25
+        },
+        "practical_mid_urban": {
+          "count": 28,
+          "correct": 21
+        }
+      }
+    },
+    "64": {
+      "correct": 132,
+      "count": 160,
+      "repairs_vs_full": 1,
+      "damages_vs_full": 9,
+      "by_scene": {
+        "practical_high": {
+          "count": 22,
+          "correct": 22
+        },
+        "practical_high_urban": {
+          "count": 26,
+          "correct": 22
+        },
+        "practical_low_suburban": {
+          "count": 34,
+          "correct": 31
+        },
+        "practical_low_urban": {
+          "count": 24,
+          "correct": 14
+        },
+        "practical_mid": {
+          "count": 26,
+          "correct": 23
+        },
+        "practical_mid_urban": {
+          "count": 28,
+          "correct": 20
+        }
+      }
+    },
+    "128": {
+      "correct": 140,
+      "count": 160,
+      "repairs_vs_full": 1,
+      "damages_vs_full": 1,
+      "by_scene": {
+        "practical_high": {
+          "count": 22,
+          "correct": 22
+        },
+        "practical_high_urban": {
+          "count": 26,
+          "correct": 24
+        },
+        "practical_low_suburban": {
+          "count": 34,
+          "correct": 33
+        },
+        "practical_low_urban": {
+          "count": 24,
+          "correct": 15
+        },
+        "practical_mid": {
+          "count": 26,
+          "correct": 25
+        },
+        "practical_mid_urban": {
+          "count": 28,
+          "correct": 21
+        }
+      }
+    },
+    "256": {
+      "correct": 140,
+      "count": 160,
+      "repairs_vs_full": 0,
+      "damages_vs_full": 0,
+      "by_scene": {
+        "practical_high": {
+          "count": 22,
+          "correct": 22
+        },
+        "practical_high_urban": {
+          "count": 26,
+          "correct": 25
+        },
+        "practical_low_suburban": {
+          "count": 34,
+          "correct": 33
+        },
+        "practical_low_urban": {
+          "count": 24,
+          "correct": 14
+        },
+        "practical_mid": {
+          "count": 26,
+          "correct": 25
+        },
+        "practical_mid_urban": {
+          "count": 28,
+          "correct": 21
+        }
+      }
+    }
+  },
+  "caveat": "Post-hoc source L_s truth; previously explored IDs and views; 160 records, not ground accuracy or proof of generalization."
+}

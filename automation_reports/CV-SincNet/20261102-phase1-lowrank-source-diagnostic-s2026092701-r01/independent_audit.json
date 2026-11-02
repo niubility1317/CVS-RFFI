@@ -1,0 +1,153 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "records": 160,
+  "predictions_sha256": "f8ff66d749edc1efc0bf90d919e4ab17ee89d8a1f055e2e15f4e40a726457c1e",
+  "comparisons": {
+    "64": {
+      "timed_rate": 101.9214005043265,
+      "raw_changes": 0,
+      "restored_changes": 11,
+      "gate_changes": 0,
+      "relative_wave_mse_mean": 0.01981940747768593,
+      "relative_wave_mse_median": 0.004310952417757662,
+      "relative_wave_mse_max": 0.3980057516886424,
+      "by_scene": {
+        "practical_high": {
+          "count": 22,
+          "restored_changes": 0
+        },
+        "practical_high_urban": {
+          "count": 26,
+          "restored_changes": 3
+        },
+        "practical_low_suburban": {
+          "count": 34,
+          "restored_changes": 2
+        },
+        "practical_low_urban": {
+          "count": 24,
+          "restored_changes": 2
+        },
+        "practical_mid": {
+          "count": 26,
+          "restored_changes": 2
+        },
+        "practical_mid_urban": {
+          "count": 28,
+          "restored_changes": 2
+        }
+      }
+    },
+    "128": {
+      "timed_rate": 86.23070767931617,
+      "raw_changes": 0,
+      "restored_changes": 4,
+      "gate_changes": 0,
+      "relative_wave_mse_mean": 0.02890561245730689,
+      "relative_wave_mse_median": 0.002782142320353241,
+      "relative_wave_mse_max": 0.4440677585943006,
+      "by_scene": {
+        "practical_high": {
+          "count": 22,
+          "restored_changes": 0
+        },
+        "practical_high_urban": {
+          "count": 26,
+          "restored_changes": 1
+        },
+        "practical_low_suburban": {
+          "count": 34,
+          "restored_changes": 0
+        },
+        "practical_low_urban": {
+          "count": 24,
+          "restored_changes": 1
+        },
+        "practical_mid": {
+          "count": 26,
+          "restored_changes": 0
+        },
+        "practical_mid_urban": {
+          "count": 28,
+          "restored_changes": 2
+        }
+      }
+    },
+    "256": {
+      "timed_rate": 63.972475011188,
+      "raw_changes": 0,
+      "restored_changes": 1,
+      "gate_changes": 0,
+      "relative_wave_mse_mean": 0.0064511735163110175,
+      "relative_wave_mse_median": 0.0004859082116858545,
+      "relative_wave_mse_max": 0.462393976712701,
+      "by_scene": {
+        "practical_high": {
+          "count": 22,
+          "restored_changes": 0
+        },
+        "practical_high_urban": {
+          "count": 26,
+          "restored_changes": 0
+        },
+        "practical_low_suburban": {
+          "count": 34,
+          "restored_changes": 0
+        },
+        "practical_low_urban": {
+          "count": 24,
+          "restored_changes": 0
+        },
+        "practical_mid": {
+          "count": 26,
+          "restored_changes": 0
+        },
+        "practical_mid_urban": {
+          "count": 28,
+          "restored_changes": 1
+        }
+      }
+    },
+    "full": {
+      "timed_rate": 30.873816944894955,
+      "raw_changes": 0,
+      "restored_changes": 0,
+      "gate_changes": 0,
+      "relative_wave_mse_mean": 0,
+      "relative_wave_mse_median": 0,
+      "relative_wave_mse_max": 0,
+      "by_scene": {
+        "practical_high": {
+          "count": 22,
+          "restored_changes": 0
+        },
+        "practical_high_urban": {
+          "count": 26,
+          "restored_changes": 0
+        },
+        "practical_low_suburban": {
+          "count": 34,
+          "restored_changes": 0
+        },
+        "practical_low_urban": {
+          "count": 24,
+          "restored_changes": 0
+        },
+        "practical_mid": {
+          "count": 26,
+          "restored_changes": 0
+        },
+        "practical_mid_urban": {
+          "count": 28,
+          "restored_changes": 0
+        }
+      }
+    }
+  },
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Previously explored source records; decisions changes versus exact full rank are not accuracy changes; shared-host one-pass timings."
+}
