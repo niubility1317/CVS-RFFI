@@ -32,7 +32,7 @@ def main():
   print('CHANNEL_LEARNING_SOURCE',epoch,'count',len(positions),'remaining',int(np.count_nonzero(wanted&(assignment<0))),'seconds',round(time.monotonic()-tick,1),flush=True)
   if np.all(assignment[wanted]>0):break
  if np.any(assignment[wanted]<0) or not np.isfinite(features[wanted]).all() or not np.isfinite(targets[wanted]).all():raise ValueError('Complete finite source targets required')
- x=torch.from_numpy(features[wanted]).to(a.device);y=torch.from_numpy(targets[wanted]).to(a.device);groups=rx[fit[wanted]];model.mean.copy_(x.mean(0));model.std.copy_(x.std(0,unbiased=False).clamp_min(1e-4));opt=torch.optim.AdamW(model.parameters(),lr=.0005,weight_decay=.0001);rng=np.random.default_rng(2026128055);losses=[]
+ x=core.tensor(features[wanted],a.device);target_array=np.array(targets[wanted],dtype=np.complex64,copy=True,order='C');y=torch.frombuffer(memoryview(target_array),dtype=torch.complex64).reshape(target_array.shape).to(a.device);groups=rx[fit[wanted]];model.mean.copy_(x.mean(0));model.std.copy_(x.std(0,unbiased=False).clamp_min(1e-4));opt=torch.optim.AdamW(model.parameters(),lr=.0005,weight_decay=.0001);rng=np.random.default_rng(2026128055);losses=[]
  for epoch in range(1,(2 if a.smoke else 31)):
   order=rng.permutation(len(x));total=0.
   for start in range(0,len(order),256):
