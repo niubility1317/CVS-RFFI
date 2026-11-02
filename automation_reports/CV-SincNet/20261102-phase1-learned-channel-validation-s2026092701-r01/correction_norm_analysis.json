@@ -1,0 +1,112 @@
+{
+  "status": "SOURCE_ONLY_POSTHOC",
+  "fixed_cohort_sha256": "865896d53260dc6b24039bac86db2a86ea7eb23408aec93b92f26e7782052125",
+  "thresholds": "Post-hoc descriptive bins based on .25 coefficient norm bound; no candidate or target selection.",
+  "caveat": "Previously explored source records, clean source IQ only for error scoring; overall means and per-bin means do not establish causality or TX accuracy.",
+  "groups": {
+    "RX4_6": [
+      {
+        "norm_min": 0,
+        "norm_max_exclusive": 0.025,
+        "count": 711,
+        "base_residual": 0.006807734091463597,
+        "learned_residual": 0.0066969127439449735,
+        "change_percent": -1.6278742093876142,
+        "improved": 451,
+        "harmed": 260
+      },
+      {
+        "norm_min": 0.025,
+        "norm_max_exclusive": 0.05,
+        "count": 110,
+        "base_residual": 0.03617868693651293,
+        "learned_residual": 0.03531506763644178,
+        "change_percent": -2.387094096550957,
+        "improved": 79,
+        "harmed": 31
+      },
+      {
+        "norm_min": 0.05,
+        "norm_max_exclusive": 0.1,
+        "count": 79,
+        "base_residual": 0.1697046422647147,
+        "learned_residual": 0.16543200628572627,
+        "change_percent": -2.517689511594945,
+        "improved": 62,
+        "harmed": 17
+      },
+      {
+        "norm_min": 0.1,
+        "norm_max_exclusive": 0.15,
+        "count": 71,
+        "base_residual": 0.316396155407731,
+        "learned_residual": 0.3063761684781229,
+        "change_percent": -3.1669117207494546,
+        "improved": 67,
+        "harmed": 4
+      },
+      {
+        "norm_min": 0.15,
+        "norm_max_exclusive": 0.25001,
+        "count": 53,
+        "base_residual": 0.5220117411523495,
+        "learned_residual": 0.5099418447265085,
+        "change_percent": -2.3121886874031827,
+        "improved": 45,
+        "harmed": 8
+      }
+    ],
+    "RX8": [
+      {
+        "norm_min": 0,
+        "norm_max_exclusive": 0.025,
+        "count": 634,
+        "base_residual": 0.006416520866020421,
+        "learned_residual": 0.006117155909654317,
+        "change_percent": -4.665533902514573,
+        "improved": 407,
+        "harmed": 227
+      },
+      {
+        "norm_min": 0.025,
+        "norm_max_exclusive": 0.05,
+        "count": 161,
+        "base_residual": 0.01944590219938607,
+        "learned_residual": 0.018732939173629427,
+        "change_percent": -3.666392119256634,
+        "improved": 101,
+        "harmed": 60
+      },
+      {
+        "norm_min": 0.05,
+        "norm_max_exclusive": 0.1,
+        "count": 79,
+        "base_residual": 0.18163262170303282,
+        "learned_residual": 0.1786247775889933,
+        "change_percent": -1.6560043486887,
+        "improved": 57,
+        "harmed": 22
+      },
+      {
+        "norm_min": 0.1,
+        "norm_max_exclusive": 0.15,
+        "count": 86,
+        "base_residual": 0.30238688157243265,
+        "learned_residual": 0.2925150536412243,
+        "change_percent": -3.264634986767334,
+        "improved": 75,
+        "harmed": 11
+      },
+      {
+        "norm_min": 0.15,
+        "norm_max_exclusive": 0.25001,
+        "count": 64,
+        "base_residual": 0.5569911687634885,
+        "learned_residual": 0.533971770433709,
+        "change_percent": -4.132812084055515,
+        "improved": 57,
+        "harmed": 7
+      }
+    ]
+  }
+}
