@@ -1,0 +1,25 @@
+CELL 0.25 0.8 part 1 scenes 6 N 6606 parent 6181 white 6180 structured 6180 dura 6326
+CELL 0.25 0.8 part 1 scenes 1 N 1130 parent 907 white 907 structured 909 dura 984
+CELL 0.25 0.8 part 2 scenes 6 N 3183 parent 3057 white 3054 structured 3064 dura 3060
+CELL 0.25 0.8 part 2 scenes 1 N 512 parent 455 white 456 structured 459 dura 462
+CELL 0.25 0.99 part 1 scenes 6 N 6606 parent 6182 white 6181 structured 6181 dura 6326
+CELL 0.25 0.99 part 1 scenes 1 N 1130 parent 908 white 908 structured 910 dura 984
+CELL 0.25 0.99 part 2 scenes 6 N 3183 parent 3054 white 3051 structured 3061 dura 3060
+CELL 0.25 0.99 part 2 scenes 1 N 512 parent 454 white 455 structured 458 dura 462
+CELL 0.5 0.8 part 1 scenes 6 N 6606 parent 6181 white 6164 structured 6179 dura 6326
+CELL 0.5 0.8 part 1 scenes 1 N 1130 parent 907 white 904 structured 920 dura 984
+CELL 0.5 0.8 part 2 scenes 6 N 3183 parent 3057 white 3052 structured 3067 dura 3060
+CELL 0.5 0.8 part 2 scenes 1 N 512 parent 455 white 460 structured 459 dura 462
+CELL 0.5 0.99 part 1 scenes 6 N 6606 parent 6182 white 6165 structured 6180 dura 6326
+CELL 0.5 0.99 part 1 scenes 1 N 1130 parent 908 white 905 structured 921 dura 984
+CELL 0.5 0.99 part 2 scenes 6 N 3183 parent 3054 white 3049 structured 3063 dura 3060
+CELL 0.5 0.99 part 2 scenes 1 N 512 parent 454 white 459 structured 458 dura 462
+CELL 1.0 0.8 part 1 scenes 6 N 6606 parent 6181 white 6066 structured 6156 dura 6326
+CELL 1.0 0.8 part 1 scenes 1 N 1130 parent 907 white 887 structured 914 dura 984
+CELL 1.0 0.8 part 2 scenes 6 N 3183 parent 3057 white 3020 structured 3055 dura 3060
+CELL 1.0 0.8 part 2 scenes 1 N 512 parent 455 white 455 structured 456 dura 462
+CELL 1.0 0.99 part 1 scenes 6 N 6606 parent 6182 white 6067 structured 6156 dura 6326
+CELL 1.0 0.99 part 1 scenes 1 N 1130 parent 908 white 888 structured 915 dura 984
+CELL 1.0 0.99 part 2 scenes 6 N 3183 parent 3054 white 3016 structured 3051 dura 3060
+CELL 1.0 0.99 part 2 scenes 1 N 512 parent 454 white 454 structured 455 dura 462
+CONTROL_CELL_CHECKS 126 SELECTION {"0.25": {"primary_dura": {"kind": "none", "validation_net": 0}, "accuracy_dura": {"kind": "none", "validation_net": 0}, "primary_parent": {"kind": "none", "validation_net": 0}, "accuracy_parent": {"kind": "none", "validation_net": 0}}, "0.5": {"primary_dura": {"kind": "none", "validation_net": 0}, "accuracy_dura": {"kind": "none", "validation_net": 0}, "primary_parent": {"kind": "none", "validation_net": 0}, "accuracy_parent": {"kind": "none", "validation_net": 0}}, "1.0": {"primary_dura": {"kind": "none", "validation_net": 0}, "accuracy_dura": {"kind": "none", "validation_net": 0}, "primary_parent": {"kind": "none", "validation_net": 0}, "accuracy_parent": {"kind": "none", "validation_net": 0}}}
