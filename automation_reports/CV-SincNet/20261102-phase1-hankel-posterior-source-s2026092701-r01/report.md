@@ -7,3 +7,8 @@
 
 ## 执行
 代码/config 以本报告所在 Git commit 为准。N607 普通用户，项目 Python、CPU 2 线程、CUDA 禁用，CPU 负载超过 72 等待。入口 `python -X utf8 -u -m experiments.phase1_hankel_posterior.source_controller --commit <本报告所在 commit>`；先 28 条实际源模型检查，再固定 672 条源预测、truth-last 评分与独立复核。不可覆盖 run 根分别为 `20261102-phase1-hankel-posterior-smoke-s2026092701-r01`、`20261102-phase1-hankel-posterior-source-s2026092701-r01`、`20261102-phase1-hankel-posterior-score-s2026092701-r01`；预期结果为 fixed predictions、score 与 audit。仅协议越界、数值非有限、无法完成或输出冲突时停止并保留产物；低性能不停止。
+
+
+## 真实源域结果
+
+VERIFIED：28 条真实源记录预检通过；672 条预测固定后连接 64 条 L_s，独立排序连接与集合计数复核 16 组、736 字段 PASS。六受损视图 RX4/6 的 28 条 L_s 中物理后验／Hankel／DURA 分别 26／27／26 条正确，RX8 的 25 条分别 22／22／25 条正确。高置信 clean-F 伪目标分别为 258→260／284 与 269→268／279；它们不是身份真值。对齐波形误差分别为 0.015400→0.015305 与 0.024979→0.025047。raw-F CPU/GPU 对比在本源样本中为 0 次不一致，但不证明 DURA 输出的 CPU/GPU 决策一致。样本已探索且规模小，没有此方法的地面性能。
