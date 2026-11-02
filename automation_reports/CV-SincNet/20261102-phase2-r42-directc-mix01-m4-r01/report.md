@@ -31,3 +31,5 @@ MIX01 16 KN; two old-class sources, raw/DURA support and query; direct C with no
 ## 启动读回（2026-11-02）
 
 N607 controller 1508816，四个 seed 真实源模型无 query smoke 和源 L_s 原型准备完成；首批 8 个预测 worker 运行中。预测全部固定后独立评分，再由独立 readout PID 1511884 聚合。当前尚无评分结果。预测代码 commit 74906ce48061439df59327d0af6d20124241acfd；readout commit 1ee70003958197064c437d918747e414fc23bf81。详细运行证据见本地私有 r42_direct_c_launch.json。
+
+用户明确指定 DURA 四格仅用于 PAMF 两种派生变体；MoPC、Orthogonal、LoRa 复用已完成的 raw/raw 结果，不补跑 DURA。结果如实报告；R42 的非 raw/raw 与原生 raw/raw 属于跨输入比较。
