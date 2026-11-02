@@ -1,0 +1,26 @@
+{
+  "status": "TRAINING_COMPLETE",
+  "commit": "4066269354c6192e4592cafaad1cb77ac12babf7",
+  "counts": {
+    "exposures": 99248,
+    "labeled": 8973,
+    "eligible": 95946
+  },
+  "losses": [
+    1.270936845858674,
+    0.7574503669503541,
+    0.6210185711746655,
+    0.5460550438035559,
+    0.49707564254662656,
+    0.45448191887464096,
+    0.4282547544802694,
+    0.39672274003533536
+  ],
+  "F_frozen": true,
+  "DURA_used_for_source_teacher": true,
+  "DURA_used_in_network": false,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "fit_ids": 38951
+}
