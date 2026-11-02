@@ -1,0 +1,138 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-shift-gain-oracle-s2026092701-r01",
+  "group_id": "phase1-attention-waveform",
+  "display_name": "Phase1 paired source time-shift and gain oracle diagnostic",
+  "description": "Clean-paired integer shift ±64 and complex gain minimizing center-window IQ error; source-only diagnostic, nondeployable.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "attention",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-phase-gain-oracle-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "baac73aedcc6dd7145fb002591a256f023636d5a",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU0 source-only fixed attention model evaluation; TF32 disabled",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "IQ [2,256], clean-paired optimal shift and complex scalar from source pair",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No source true identity labels, U_s truth, V or test; frozen F pseudo labels only",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "1024 source RX4/6 validation and 1024 source RX8 holdout, randomly sampled impaired epoch19 records",
+    "support_query_ref": null,
+    "leo_config_ref": "Existing fixed source cache epoch19"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source received and paired clean IQ used to calculate oracle coefficients; no identity truth, U_s truth, V or test",
+    "external_method_exception": null,
+    "claim_scope": "Nondeployable clean-pair oracle for global phase/gain only, source pseudo targets previously explored."
+  },
+  "checkpoint": {
+    "initialization": "No learned restorer; clean F and DURA comparator only; paired clean IQ directly determines oracle coefficients.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Frozen Tri-SIG-TIME SSL and fixed source IQ pairs.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fixed seed 2026130155; same 1024 source records per RX cohort as phase-gain oracle; shift -64..64, complex gain on central 128 samples; no target or training."
+  },
+  "execution": {
+    "host": "N607 GPU0",
+    "launch_owner": "Codex hierarchical prior fixed source validation owner",
+    "gpu_policy": "GPU0 single owner; fixed model source inference; TF32 disabled",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-shift-gain-oracle-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-shift-gain-oracle-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-shift-gain-oracle-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-shift-gain-oracle-s2026092701-r01-release/experiments/phase1_joint_mixture/diagnose_shift_gain_oracle.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-shift-gain-oracle-s2026092701-r01 --commit baac73aedcc6dd7145fb002591a256f023636d5a --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean-F pseudo-label agreement",
+      "direct IQ normalized MSE"
+    ],
+    "dimensions": [
+      "1024 RX4/6 source validation",
+      "1024 RX8 source holdout"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_joint_mixture/diagnose_shift_gain_oracle.py",
+    "scientific_rule": "Clean-paired optimal integer shift and complex gain minimize source central-window IQ error; pseudo targets not truth; not deployable."
+  },
+  "rows": [
+    {
+      "row_id": "free_full_hard_validation_s2026092701",
+      "method": "nondeployable clean-paired integer shift and complex gain oracle",
+      "purpose": "diagnose whether timing plus gain changes F pseudo-label agreement",
+      "config_ref": "experiments/phase1_joint_mixture/diagnose_shift_gain_oracle.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-shift-gain-oracle-s2026092701-r01/source_validation.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Fixed source draw seed 2026130155; no model training.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none (fixed checkpoint)",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2048 source-only impaired records across RX4/6 and RX8",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-shift-gain-oracle-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-shift-gain-oracle-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-shift-gain-oracle-s2026092701-r01-release/experiments/phase1_joint_mixture/diagnose_shift_gain_oracle.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-shift-gain-oracle-s2026092701-r01 --commit baac73aedcc6dd7145fb002591a256f023636d5a --device cuda:0",
+      "expected_artifacts": [
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": "Oracle requires paired clean IQ at inference. Previously explored source IDs, no device truth, U_s truth, V or test.",
+  "registered_at": "2026-11-02T03:08:06+00:00"
+}
