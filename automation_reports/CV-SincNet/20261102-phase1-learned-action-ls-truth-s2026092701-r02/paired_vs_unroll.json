@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "truth_role": "L_s only",
+  "U_s_truth_reads": 0,
+  "test_reads": 0,
+  "caveat": "Post-hoc source paired comparison; F and source views previously explored; not target accuracy.",
+  "groups": {
+    "RX4_6:all_impaired": {
+      "count": 613,
+      "unroll_correct": 573,
+      "joint_correct": 574,
+      "repairs": 1,
+      "damages": 0
+    },
+    "RX4_6:practical_low_urban": {
+      "count": 102,
+      "unroll_correct": 83,
+      "joint_correct": 84,
+      "repairs": 1,
+      "damages": 0
+    },
+    "RX8:all_impaired": {
+      "count": 297,
+      "unroll_correct": 284,
+      "joint_correct": 283,
+      "repairs": 0,
+      "damages": 1
+    },
+    "RX8:practical_low_urban": {
+      "count": 56,
+      "unroll_correct": 49,
+      "joint_correct": 49,
+      "repairs": 0,
+      "damages": 0
+    }
+  }
+}
