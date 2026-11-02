@@ -1,0 +1,742 @@
+{
+  "status": "SOURCE_LS_TRUTH_LAST_COMPLETE",
+  "candidate": "unroll",
+  "commit": "ceab9838d8d0488638f6552729cb7be05d93d70a",
+  "prediction_run": "20261102-phase1-unroll-source-replay-s2026092701-r01",
+  "prediction_sha256": "fa90fd400bed527ca6f0409ccd09a0f3ad6a979492f77e8fcf35fdf7d0b6d6a5",
+  "fixed_predictions_before_truth": true,
+  "truth_role": "L_s only",
+  "L_s_count": 1047,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "gate": 0.8,
+  "scale": 1,
+  "caveat": "Post-hoc source L_s truth scoring; F was trained on source IDs and these source views were previously explored. No target adaptation or ground score.",
+  "results": {
+    "RX4_6": {
+      "all_impaired": {
+        "count": 613,
+        "active": 613,
+        "clean_f_pseudo_wrong": 1,
+        "clean": {
+          "correct": 612,
+          "accuracy_percent": 99.836867862969,
+          "repairs_vs_parent": 46,
+          "damages_vs_parent": 1,
+          "repairs_vs_dura": 28,
+          "damages_vs_dura": 1
+        },
+        "raw": {
+          "correct": 522,
+          "accuracy_percent": 85.15497553017944,
+          "repairs_vs_parent": 13,
+          "damages_vs_parent": 58,
+          "repairs_vs_dura": 9,
+          "damages_vs_dura": 72
+        },
+        "dura": {
+          "correct": 585,
+          "accuracy_percent": 95.43230016313214,
+          "repairs_vs_parent": 30,
+          "damages_vs_parent": 12,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 567,
+          "accuracy_percent": 92.49592169657423,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 12,
+          "damages_vs_dura": 30
+        },
+        "candidate": {
+          "correct": 573,
+          "accuracy_percent": 93.4747145187602,
+          "repairs_vs_parent": 8,
+          "damages_vs_parent": 2,
+          "repairs_vs_dura": 12,
+          "damages_vs_dura": 24
+        }
+      },
+      "clean": {
+        "count": 83,
+        "active": 0,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 83,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 83,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "dura": {
+          "correct": 83,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 83,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "candidate": {
+          "correct": 83,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        }
+      },
+      "practical_high": {
+        "count": 97,
+        "active": 97,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 97,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 1,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 96,
+          "accuracy_percent": 98.96907216494846,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "dura": {
+          "correct": 96,
+          "accuracy_percent": 98.96907216494846,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 96,
+          "accuracy_percent": 98.96907216494846,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "candidate": {
+          "correct": 96,
+          "accuracy_percent": 98.96907216494846,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        }
+      },
+      "practical_mid": {
+        "count": 91,
+        "active": 91,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 91,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 1,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 87,
+          "accuracy_percent": 95.6043956043956,
+          "repairs_vs_parent": 1,
+          "damages_vs_parent": 4,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 4
+        },
+        "dura": {
+          "correct": 89,
+          "accuracy_percent": 97.8021978021978,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 1,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 90,
+          "accuracy_percent": 98.9010989010989,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 0
+        },
+        "candidate": {
+          "correct": 90,
+          "accuracy_percent": 98.9010989010989,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 0
+        }
+      },
+      "practical_low_suburban": {
+        "count": 107,
+        "active": 107,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 107,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 4,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 4,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 97,
+          "accuracy_percent": 90.65420560747664,
+          "repairs_vs_parent": 1,
+          "damages_vs_parent": 7,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 7
+        },
+        "dura": {
+          "correct": 103,
+          "accuracy_percent": 96.26168224299066,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 3,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 103,
+          "accuracy_percent": 96.26168224299066,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 3,
+          "damages_vs_dura": 3
+        },
+        "candidate": {
+          "correct": 104,
+          "accuracy_percent": 97.19626168224299,
+          "repairs_vs_parent": 1,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 3,
+          "damages_vs_dura": 2
+        }
+      },
+      "practical_high_urban": {
+        "count": 108,
+        "active": 108,
+        "clean_f_pseudo_wrong": 1,
+        "clean": {
+          "correct": 107,
+          "accuracy_percent": 99.07407407407408,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 1,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 1
+        },
+        "raw": {
+          "correct": 101,
+          "accuracy_percent": 93.51851851851852,
+          "repairs_vs_parent": 1,
+          "damages_vs_parent": 5,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 6
+        },
+        "dura": {
+          "correct": 107,
+          "accuracy_percent": 99.07407407407408,
+          "repairs_vs_parent": 2,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 105,
+          "accuracy_percent": 97.22222222222221,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 2
+        },
+        "candidate": {
+          "correct": 105,
+          "accuracy_percent": 97.22222222222221,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 2
+        }
+      },
+      "practical_mid_urban": {
+        "count": 108,
+        "active": 108,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 108,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 15,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 10,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 84,
+          "accuracy_percent": 77.77777777777779,
+          "repairs_vs_parent": 5,
+          "damages_vs_parent": 14,
+          "repairs_vs_dura": 4,
+          "damages_vs_dura": 18
+        },
+        "dura": {
+          "correct": 98,
+          "accuracy_percent": 90.74074074074075,
+          "repairs_vs_parent": 9,
+          "damages_vs_parent": 4,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 93,
+          "accuracy_percent": 86.11111111111111,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 4,
+          "damages_vs_dura": 9
+        },
+        "candidate": {
+          "correct": 95,
+          "accuracy_percent": 87.96296296296296,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 1,
+          "repairs_vs_dura": 4,
+          "damages_vs_dura": 7
+        }
+      },
+      "practical_low_urban": {
+        "count": 102,
+        "active": 102,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 102,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 22,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 10,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 57,
+          "accuracy_percent": 55.88235294117647,
+          "repairs_vs_parent": 5,
+          "damages_vs_parent": 28,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 37
+        },
+        "dura": {
+          "correct": 92,
+          "accuracy_percent": 90.19607843137256,
+          "repairs_vs_parent": 16,
+          "damages_vs_parent": 4,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 80,
+          "accuracy_percent": 78.43137254901961,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 4,
+          "damages_vs_dura": 16
+        },
+        "candidate": {
+          "correct": 83,
+          "accuracy_percent": 81.37254901960785,
+          "repairs_vs_parent": 4,
+          "damages_vs_parent": 1,
+          "repairs_vs_dura": 4,
+          "damages_vs_dura": 13
+        }
+      }
+    },
+    "RX8": {
+      "all_impaired": {
+        "count": 297,
+        "active": 297,
+        "clean_f_pseudo_wrong": 1,
+        "clean": {
+          "correct": 296,
+          "accuracy_percent": 99.66329966329967,
+          "repairs_vs_parent": 15,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 11,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 252,
+          "accuracy_percent": 84.84848484848484,
+          "repairs_vs_parent": 6,
+          "damages_vs_parent": 35,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 35
+        },
+        "dura": {
+          "correct": 285,
+          "accuracy_percent": 95.95959595959596,
+          "repairs_vs_parent": 15,
+          "damages_vs_parent": 11,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 281,
+          "accuracy_percent": 94.61279461279462,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 11,
+          "damages_vs_dura": 15
+        },
+        "candidate": {
+          "correct": 284,
+          "accuracy_percent": 95.62289562289563,
+          "repairs_vs_parent": 5,
+          "damages_vs_parent": 2,
+          "repairs_vs_dura": 9,
+          "damages_vs_dura": 10
+        }
+      },
+      "clean": {
+        "count": 54,
+        "active": 1,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 54,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 54,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "dura": {
+          "correct": 54,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 54,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "candidate": {
+          "correct": 54,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        }
+      },
+      "practical_high": {
+        "count": 51,
+        "active": 51,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 51,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 50,
+          "accuracy_percent": 98.0392156862745,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 1,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 1
+        },
+        "dura": {
+          "correct": 51,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 51,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "candidate": {
+          "correct": 51,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        }
+      },
+      "practical_mid": {
+        "count": 37,
+        "active": 37,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 37,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 1,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 3,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 33,
+          "accuracy_percent": 89.1891891891892,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 3,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 1
+        },
+        "dura": {
+          "correct": 34,
+          "accuracy_percent": 91.8918918918919,
+          "repairs_vs_parent": 1,
+          "damages_vs_parent": 3,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 36,
+          "accuracy_percent": 97.2972972972973,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 3,
+          "damages_vs_dura": 1
+        },
+        "candidate": {
+          "correct": 35,
+          "accuracy_percent": 94.5945945945946,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 1,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 1
+        }
+      },
+      "practical_low_suburban": {
+        "count": 44,
+        "active": 44,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 44,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 41,
+          "accuracy_percent": 93.18181818181817,
+          "repairs_vs_parent": 2,
+          "damages_vs_parent": 2,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 3
+        },
+        "dura": {
+          "correct": 42,
+          "accuracy_percent": 95.45454545454545,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 2,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 41,
+          "accuracy_percent": 93.18181818181817,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 3
+        },
+        "candidate": {
+          "correct": 43,
+          "accuracy_percent": 97.72727272727273,
+          "repairs_vs_parent": 2,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 1
+        }
+      },
+      "practical_high_urban": {
+        "count": 58,
+        "active": 58,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 58,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 54,
+          "accuracy_percent": 93.10344827586206,
+          "repairs_vs_parent": 2,
+          "damages_vs_parent": 3,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 4
+        },
+        "dura": {
+          "correct": 58,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 55,
+          "accuracy_percent": 94.82758620689656,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 3
+        },
+        "candidate": {
+          "correct": 57,
+          "accuracy_percent": 98.27586206896551,
+          "repairs_vs_parent": 2,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 1
+        }
+      },
+      "practical_mid_urban": {
+        "count": 51,
+        "active": 51,
+        "clean_f_pseudo_wrong": 0,
+        "clean": {
+          "correct": 51,
+          "accuracy_percent": 100,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 40,
+          "accuracy_percent": 78.43137254901961,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 8,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 10
+        },
+        "dura": {
+          "correct": 50,
+          "accuracy_percent": 98.0392156862745,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 1,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 48,
+          "accuracy_percent": 94.11764705882352,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 3
+        },
+        "candidate": {
+          "correct": 49,
+          "accuracy_percent": 96.07843137254902,
+          "repairs_vs_parent": 1,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 1,
+          "damages_vs_dura": 2
+        }
+      },
+      "practical_low_urban": {
+        "count": 56,
+        "active": 56,
+        "clean_f_pseudo_wrong": 1,
+        "clean": {
+          "correct": 55,
+          "accuracy_percent": 98.21428571428571,
+          "repairs_vs_parent": 5,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 5,
+          "damages_vs_dura": 0
+        },
+        "raw": {
+          "correct": 34,
+          "accuracy_percent": 60.71428571428571,
+          "repairs_vs_parent": 2,
+          "damages_vs_parent": 18,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 16
+        },
+        "dura": {
+          "correct": 50,
+          "accuracy_percent": 89.28571428571429,
+          "repairs_vs_parent": 5,
+          "damages_vs_parent": 5,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0
+        },
+        "parent": {
+          "correct": 50,
+          "accuracy_percent": 89.28571428571429,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "repairs_vs_dura": 5,
+          "damages_vs_dura": 5
+        },
+        "candidate": {
+          "correct": 49,
+          "accuracy_percent": 87.5,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 1,
+          "repairs_vs_dura": 4,
+          "damages_vs_dura": 5
+        }
+      }
+    }
+  }
+}
