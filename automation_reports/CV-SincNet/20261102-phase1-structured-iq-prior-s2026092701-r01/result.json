@@ -1,0 +1,42 @@
+{
+  "status": "SOURCE_TRAINING_COMPLETE",
+  "commit": "6656dc7d4965b315253124903ebfbfbe1731e32a",
+  "counts": {
+    "exposures": 8192,
+    "L_s": 700,
+    "U_s": 7492
+  },
+  "losses": [
+    0.07350079237949103,
+    0.07504951619193889,
+    0.0718940387814655,
+    0.07136613869079156,
+    0.0731639433579403,
+    0.07368444074381841,
+    0.0690747818298405,
+    0.07080224090168485
+  ],
+  "scene_counts": {
+    "practical_high": 1368,
+    "practical_high_urban": 1316,
+    "practical_low_suburban": 1372,
+    "practical_low_urban": 1405,
+    "practical_mid": 1368,
+    "practical_mid_urban": 1363
+  },
+  "assignment_counts": {
+    "11": 18,
+    "12": 5,
+    "13": 1,
+    "21": 6943,
+    "22": 1058,
+    "23": 167
+  },
+  "F_frozen": true,
+  "DURA_loaded": false,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "fit_ids": 8192
+}
