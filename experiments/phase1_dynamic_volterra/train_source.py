@@ -52,6 +52,10 @@ def auxiliary_source_objective(received, output, groups):
     return output.new_zeros(())
 
 
+def combine_source_objectives(main_loss, auxiliary_loss, model):
+    return main_loss + auxiliary_loss
+
+
 def load_components(root, device, deps):
     blind_state = torch.load(root/'runs'/deps.SOURCE/'checkpoint_epoch10.pt', map_location='cpu', weights_only=False)
     fixed = torch.load(root/'runs'/deps.s.GATE_RUN/'source/selected.pt', map_location='cpu', weights_only=False)
@@ -182,7 +186,7 @@ def main():
             x, base, lv, target, features, groups = [t[chosen].to(args.device) for t in data]
             output = model(x, base, lv)
             loss, _ = source_objective(reader, output, base, target, features, groups)
-            loss = loss + auxiliary_source_objective(x, output, groups)
+            loss = combine_source_objectives(loss, auxiliary_source_objective(x, output, groups), model)
             if not torch.isfinite(loss):
                 raise FloatingPointError('Finite source training loss is required')
             optimizer.zero_grad(set_to_none=True)
