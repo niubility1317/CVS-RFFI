@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "checked_cells_methods": 70,
+  "source_only": true,
+  "summary": {
+    "1": {
+      "parent": 567,
+      "candidate": 569,
+      "dura": 585,
+      "count": 613,
+      "repairs_vs_parent": 6,
+      "damages_vs_parent": 4,
+      "low_urban": {
+        "count": 102,
+        "active": 102,
+        "routed": 102,
+        "clean": {
+          "correct": 102,
+          "repairs_vs_dura": 10,
+          "damages_vs_dura": 0,
+          "repairs_vs_parent": 22,
+          "damages_vs_parent": 0
+        },
+        "raw": {
+          "correct": 57,
+          "repairs_vs_dura": 2,
+          "damages_vs_dura": 37,
+          "repairs_vs_parent": 5,
+          "damages_vs_parent": 28
+        },
+        "dura": {
+          "correct": 92,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0,
+          "repairs_vs_parent": 16,
+          "damages_vs_parent": 4
+        },
+        "parent": {
+          "correct": 80,
+          "repairs_vs_dura": 4,
+          "damages_vs_dura": 16,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0
+        },
+        "candidate": {
+          "correct": 81,
+          "repairs_vs_dura": 4,
+          "damages_vs_dura": 15,
+          "repairs_vs_parent": 4,
+          "damages_vs_parent": 3
+        }
+      }
+    },
+    "2": {
+      "parent": 281,
+      "candidate": 281,
+      "dura": 285,
+      "count": 297,
+      "repairs_vs_parent": 1,
+      "damages_vs_parent": 1,
+      "low_urban": {
+        "count": 56,
+        "active": 56,
+        "routed": 56,
+        "clean": {
+          "correct": 55,
+          "repairs_vs_dura": 5,
+          "damages_vs_dura": 0,
+          "repairs_vs_parent": 5,
+          "damages_vs_parent": 0
+        },
+        "raw": {
+          "correct": 34,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 16,
+          "repairs_vs_parent": 2,
+          "damages_vs_parent": 18
+        },
+        "dura": {
+          "correct": 50,
+          "repairs_vs_dura": 0,
+          "damages_vs_dura": 0,
+          "repairs_vs_parent": 5,
+          "damages_vs_parent": 5
+        },
+        "parent": {
+          "correct": 50,
+          "repairs_vs_dura": 5,
+          "damages_vs_dura": 5,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0
+        },
+        "candidate": {
+          "correct": 49,
+          "repairs_vs_dura": 5,
+          "damages_vs_dura": 6,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 1
+        }
+      }
+    }
+  }
+}
