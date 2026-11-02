@@ -62,9 +62,12 @@ class GatedPosteriorDura(nn.Module):
 
     def forward(self, received):
         with torch.no_grad():
-            probabilities = self.gate(received).sigmoid().reshape(-1)
-            if probabilities.shape != (len(received),) or not torch.isfinite(probabilities).all():
-                raise ValueError('Finite per-window gate probabilities are required')
+            logits = self.gate(received).reshape(-1)
+            if not torch.isfinite(received).all() or not torch.isfinite(logits).all():
+                raise FloatingPointError('Finite input IQ and gate scores are required')
+            if logits.shape != (len(received),):
+                raise ValueError('One gate score per window is required')
+            probabilities = logits.sigmoid()
             active = probabilities > self.threshold
             base = self.integrated.dura(received)
         if not active.any():

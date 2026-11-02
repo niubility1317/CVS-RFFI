@@ -66,6 +66,14 @@ class PipelineTest(unittest.TestCase):
         self.assertEqual(physical.count, 0)
         torch.testing.assert_close(out, x*0.5, rtol=0, atol=0)
 
+    def test_nonfinite_gate_logits_are_not_treated_as_valid_probability(self):
+        class BadGate(nn.Module):
+            def forward(self, x): return torch.full((len(x),), float('inf'))
+
+        model = GatedPosteriorDura(Integrated(), BadGate(), Physical())
+        with self.assertRaises(FloatingPointError):
+            model(torch.zeros(3, 2, 256))
+
     def test_physical_posterior_uses_weighted_conditional_means(self):
         x = torch.randn(2, 2, 256)
         means = torch.zeros(2, 512)

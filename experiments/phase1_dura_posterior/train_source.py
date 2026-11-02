@@ -12,6 +12,7 @@ from torch.nn import functional as F
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
 from experiments.phase1_dura_posterior.integrated import PosteriorInDura
+from experiments.phase1_dura_posterior.numerics import checked_logits
 from experiments.phase1_dura_posterior.pipeline import GatedPosteriorDura
 from experiments.phase1_dura_posterior.source_objective import source_objective
 from experiments.phase1_spectral_synthesis.fit_sampling import select_fit
@@ -49,7 +50,10 @@ def prepare_source(root, source_cache, fit, clean, rx, gate, physical, dura, rea
         for start in range(0, len(fit), BATCH):
             ids = fit[start:start+BATCH]
             x = core.tensor(received[ids], device)
-            active = gate(x).sigmoid().reshape(-1) > 0.8
+            logits = gate(x).reshape(-1)
+            if logits.shape != (len(x),) or not torch.isfinite(x).all() or not torch.isfinite(logits).all():
+                raise FloatingPointError('Finite source IQ and gate scores are required')
+            active = logits.sigmoid() > 0.8
             if not active.any():
                 continue
             chosen = ids[np.asarray(active.cpu().tolist(), dtype=bool)]
@@ -59,7 +63,9 @@ def prepare_source(root, source_cache, fit, clean, rx, gate, physical, dura, rea
             base = dura(x)
             features = reader.features(y)
             clean_logits = reader.classify_features(features)
-            base_logits = reader.classify_features(reader.features(base))
+            if not torch.isfinite(x).all() or not torch.isfinite(y).all() or not torch.isfinite(features).all() or not torch.isfinite(clean_logits).all():
+                raise FloatingPointError('Finite source IQ and clean-reader scores are required')
+            base_logits = checked_logits(reader, base)
             groups = torch.tensor(rx[chosen].tolist(), dtype=torch.long, device=device)
             chunks.append(tuple(t.detach().cpu() for t in (x, y, posterior, logvar, base,
                                                             features, clean_logits, base_logits, groups)))
@@ -97,12 +103,12 @@ def fixed_source_predictions(root, cache, clean, rx, validation, heldout, fit, p
         output, active = pipe(x)
         if not torch.equal(output[~active], base[~active]):
             raise ValueError('Closed gates must return the original DURA waveform')
-        clean_logits = reader.classify_features(reader.features(y))
+        clean_logits = checked_logits(reader, y)
         confidence, pseudo = F.softmax(clean_logits, dim=1).max(1)
         energy = y.square().mean((1, 2)).clamp_min(1e-8)
         columns = [confidence, pseudo.float(), active.float()]
         for signal in (x, base, output):
-            pred = reader.classify_features(reader.features(signal)).argmax(1)
+            pred = checked_logits(reader, signal).argmax(1)
             error = (signal-y).square().mean((1, 2))/energy
             columns.extend((pred.float(), error))
         row = torch.stack(columns, dim=1).cpu().contiguous()

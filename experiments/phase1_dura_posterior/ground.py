@@ -10,6 +10,7 @@ import torch
 from experiments.pamf_phase1_flow import experiment as core
 from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
 from experiments.phase1_dura_posterior.integrated import PosteriorInDura
+from experiments.phase1_dura_posterior.numerics import checked_logits
 from experiments.phase1_dura_posterior.physical_source_smoke import load_source_models, s
 from experiments.phase1_dura_posterior.pipeline import GatedPosteriorDura
 
@@ -72,7 +73,7 @@ def source_smoke(root, out, commit, device, source_run):
         x = core.tensor(received[indices[start:start+BATCH]], device)
         dura = pipe.integrated.dura(x)
         output, active = pipe(x)
-        classes = [reader.classify_features(reader.features(v)).argmax(1) for v in (x, dura, output)]
+        classes = [checked_logits(reader, v).argmax(1) for v in (x, dura, output)]
         rows.append(torch.stack((active.long(), *classes), 1).cpu())
     actual = np.from_dlpack(torch.cat(rows).contiguous())
     expected = saved['values'][positions][:, [2, 3, 5, 7]].astype(np.int64)
@@ -113,8 +114,8 @@ def predict(root, out, commit, device, source_run):
         for start in range(0, len(ids), BATCH):
             x = core.tensor(values[start:start+BATCH], device)
             output, active = pipe(x)
-            a = reader.classify_features(reader.features(x)).argmax(1).cpu().contiguous()
-            b = reader.classify_features(reader.features(output)).argmax(1).cpu().contiguous()
+            a = checked_logits(reader, x).argmax(1).cpu().contiguous()
+            b = checked_logits(reader, output).argmax(1).cpu().contiguous()
             a = np.from_dlpack(a)
             b = np.from_dlpack(b)
             end = start+len(x)

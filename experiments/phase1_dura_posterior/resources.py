@@ -3,6 +3,7 @@
 import os
 import subprocess
 import time
+from contextlib import contextmanager
 
 
 def select_gpu(inventory, processes, *, minimum_free_mb=12288, max_visible_processes=2):
@@ -53,3 +54,20 @@ def wait_for_cpu(status):
     while os.getloadavg()[0] > os.cpu_count()-24:
         status('WAITING_CPU_CAPACITY', load=os.getloadavg()[0])
         time.sleep(60)
+
+
+@contextmanager
+def gpu_lease(path, status):
+    """Serialize this matrix's GPU workers; the OS releases the lock on exit."""
+    import fcntl
+    with path.open('a', encoding='ascii') as stream:
+        while True:
+            try:
+                fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                status('WAITING_OTHER_MATRIX_GPU_WORKER')
+                time.sleep(60)
+        # Closing the controller's descriptor leaves an inherited worker
+        # descriptor holding the lock until the last holder exits.
+        yield wait_for_gpu(status), stream.fileno()

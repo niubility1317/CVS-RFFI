@@ -8,8 +8,8 @@ import subprocess
 import time
 import traceback
 
-from experiments.phase1_dura_posterior.resources import wait_for_gpu
-from experiments.phase1_dura_posterior.source_controller import ARMS, ROOT, RELEASE, RUN, PYTHON, environment
+from experiments.phase1_dura_posterior.resources import gpu_lease
+from experiments.phase1_dura_posterior.source_controller import ARMS, ROOT, RELEASE, RUN, PYTHON, GPU_LOCK, environment
 
 
 GROUND = {
@@ -50,17 +50,27 @@ def main():
                 raise RuntimeError('Source controller stopped before this arm completed')
             status('WAITING_FIXED_SOURCE', source_pid=args.source_pid)
             time.sleep(60)
-        gpu = wait_for_gpu(lambda state, **extra: status(state, **extra))
+        # Both source arms finish before either long ground run acquires the shared GPU lease.
+        while True:
+            data = json.loads(source_controller.read_text(encoding='utf8')) if source_controller.exists() else {}
+            if data.get('state') in ('BOTH_SOURCE_ARMS_SCORED', 'PARTIAL_TECHNICAL_FAILURE', 'FAILED'):
+                break
+            proc = Path('/proc')/str(args.source_pid)/'cmdline'
+            if not proc.is_file() or 'phase1_dura_posterior.source_controller' not in proc.read_bytes().decode(errors='replace'):
+                raise RuntimeError('Source controller stopped without a terminal status')
+            status('WAITING_OTHER_SOURCE_ARM', source_pid=args.source_pid)
+            time.sleep(60)
         common = ['--root', str(ROOT), '--out', str(ground), '--commit', args.commit,
                   '--device', 'cuda:0', '--source-run', ARMS[args.arm]]
-        for mode in ('smoke', 'predict'):
-            status('RUNNING_SOURCE_REPLAY' if mode == 'smoke' else 'RUNNING_SEVEN_VIEW_PREDICTION', gpu=gpu)
-            command = [PYTHON, '-X', 'utf8', '-u', '-m', 'experiments.phase1_dura_posterior.ground', mode, *common]
-            with (controller/(mode+'.log')).open('x', encoding='utf8') as log:
-                result = subprocess.run(command, cwd=RELEASE, env=environment(gpu), stdin=subprocess.DEVNULL,
-                                        stdout=log, stderr=subprocess.STDOUT)
-            if result.returncode:
-                raise RuntimeError('Ground '+mode+' exited '+str(result.returncode))
+        with gpu_lease(GPU_LOCK, status) as (gpu, lock_fd):
+            for mode in ('smoke', 'predict'):
+                status('RUNNING_SOURCE_REPLAY' if mode == 'smoke' else 'RUNNING_SEVEN_VIEW_PREDICTION', gpu=gpu)
+                command = [PYTHON, '-X', 'utf8', '-u', '-m', 'experiments.phase1_dura_posterior.ground', mode, *common]
+                with (controller/(mode+'.log')).open('x', encoding='utf8') as log:
+                    result = subprocess.run(command, cwd=RELEASE, env=environment(gpu), stdin=subprocess.DEVNULL,
+                                            stdout=log, stderr=subprocess.STDOUT, pass_fds=(lock_fd,))
+                if result.returncode:
+                    raise RuntimeError('Ground '+mode+' exited '+str(result.returncode))
         manifest = json.loads((ground/'flow/test_prediction/complete.json').read_text(encoding='utf8'))
         if (manifest.get('status') != 'PREDICTIONS_COMPLETE' or manifest.get('count') != 168000
                 or manifest.get('commit') != args.commit or manifest.get('TX_truth_reads') != 0

@@ -8,13 +8,14 @@ import subprocess
 import time
 import traceback
 
-from experiments.phase1_dura_posterior.resources import wait_for_cpu, wait_for_gpu
+from experiments.phase1_dura_posterior.resources import wait_for_cpu, gpu_lease
 
 
 ROOT = Path('/home/szu2070436088/2510044040/CV-SincNet')
 RUN = '20261102-phase1-dura-posterior-twoarm-s2026092701-r01'
 RELEASE = ROOT/'releases'/(RUN+'-release')
 OUTPUT = ROOT/'runs'/(RUN+'-source-controller')
+GPU_LOCK = ROOT/'runs'/(RUN+'-gpu.lock')
 REAL_SMOKE = ROOT/'runs/20261102-phase1-dura-posterior-internal-smoke-s2026092701-r01/status.json'
 REAL_SMOKE_PID = 1524603
 PYTHON = '/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
@@ -41,11 +42,12 @@ def environment(gpu):
     return env
 
 
-def run_module(module, args, log_path, gpu):
+def run_module(module, args, log_path, gpu, lock_fd=None):
     command = [PYTHON, '-X', 'utf8', '-u', '-m', module, *args]
     with log_path.open('x', encoding='utf8') as log:
         result = subprocess.run(command, cwd=RELEASE, env=environment(gpu), stdin=subprocess.DEVNULL,
-                                stdout=log, stderr=subprocess.STDOUT)
+                                stdout=log, stderr=subprocess.STDOUT,
+                                pass_fds=() if lock_fd is None else (lock_fd,))
     if result.returncode:
         raise RuntimeError(module+' exited '+str(result.returncode))
 
@@ -69,6 +71,14 @@ def wait_for_real_smoke():
         time.sleep(60)
 
 
+def verify_gpu_lock():
+    wait_for_cpu(lambda state, **extra: status(state, phase='gpu_lock_check', **extra))
+    status('CHECKING_GPU_LOCK_INHERITANCE')
+    run_module('unittest',
+               ['experiments.phase1_dura_posterior.test_resources.ResourceTest.test_worker_inherits_lock_after_controller_closes_its_descriptor'],
+               OUTPUT/'gpu-lock-test.log', None)
+
+
 def run_arm(kind, name, commit):
     smoke = ROOT/'runs'/(name+'-training-smoke')
     source = ROOT/'runs'/name
@@ -77,20 +87,20 @@ def run_arm(kind, name, commit):
         if path.exists():
             raise FileExistsError('Existing arm output requires reconciliation: '+str(path))
     common = ['--root', str(ROOT), '--commit', commit, '--device', 'cuda:0', '--posterior-kind', kind]
-    gpu = wait_for_gpu(lambda state, **extra: status(state, arm=kind, phase='training_smoke', **extra))
-    status('RUNNING_TRAINING_SMOKE', arm=kind, gpu=gpu)
-    run_module('experiments.phase1_dura_posterior.train_source', [*common, '--out', str(smoke), '--smoke'],
-               OUTPUT/(kind+'.smoke.log'), gpu)
+    with gpu_lease(GPU_LOCK, lambda state, **extra: status(state, arm=kind, phase='training_smoke', **extra)) as (gpu, lock_fd):
+        status('RUNNING_TRAINING_SMOKE', arm=kind, gpu=gpu)
+        run_module('experiments.phase1_dura_posterior.train_source', [*common, '--out', str(smoke), '--smoke'],
+                   OUTPUT/(kind+'.smoke.log'), gpu, lock_fd)
     result = json.loads((smoke/'smoke.json').read_text(encoding='utf8'))
     expected = dict(status='SOURCE_TRAINING_SMOKE_PASS', fit_ids=64, eval_records=28,
                     posterior_kind=kind, F_frozen=True, DURA_frozen=True,
                     U_s_truth_reads=0, TX_labels_read=0, V_reads=0, test_reads=0)
     if any(result.get(k) != v for k, v in expected.items()) or result.get('active_exposures', 0) < 8:
         raise ValueError('The actual source training smoke did not pass')
-    gpu = wait_for_gpu(lambda state, **extra: status(state, arm=kind, phase='source_train', **extra))
-    status('RUNNING_SOURCE_TRAIN', arm=kind, gpu=gpu)
-    run_module('experiments.phase1_dura_posterior.train_source', [*common, '--out', str(source)],
-               OUTPUT/(kind+'.train.log'), gpu)
+    with gpu_lease(GPU_LOCK, lambda state, **extra: status(state, arm=kind, phase='source_train', **extra)) as (gpu, lock_fd):
+        status('RUNNING_SOURCE_TRAIN', arm=kind, gpu=gpu)
+        run_module('experiments.phase1_dura_posterior.train_source', [*common, '--out', str(source)],
+                   OUTPUT/(kind+'.train.log'), gpu, lock_fd)
     result = json.loads((source/'prediction_complete.json').read_text(encoding='utf8'))
     expected = dict(status='SOURCE_PREDICTIONS_FIXED', commit=commit, count=672, fit_ids=8192,
                     posterior_kind=kind, F_frozen=True, DURA_frozen=True, gate_frozen=True,
@@ -119,6 +129,7 @@ def main():
         raise ValueError('The registered release commit is required')
     try:
         wait_for_real_smoke()
+        verify_gpu_lock()
         results, failures = {}, {}
         for kind, name in ARMS.items():
             try:

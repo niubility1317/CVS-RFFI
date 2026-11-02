@@ -22,7 +22,8 @@
 ## 运行、资源及失败处理
 
 - 代码身份：包含本登记、两个候选和控制器的 Git 提交；N607 使用同一不可覆盖 release。
-- N607 环境：项目 CVS-RFFI Python，TF32 关闭，GPU worker 每次仅一条，CPU 2 线程；等待全机 CPU 负载不超过核心数减 24、至少一张卡剩余显存不少于 12,288 MiB 且可见计算进程少于 2 条。不得停止或修改其他任务。
+- N607 环境：项目 CVS-RFFI Python，TF32 关闭，GPU worker 每次仅一条，CPU 2 线程；所有本矩阵 GPU 进程共享操作系统锁，在获得锁后再次核对全机 CPU 负载不超过核心数减 24、至少一张卡剩余显存不少于 12,288 MiB 且可见计算进程少于 2 条。锁随子进程继承，直到最后一个持有者退出才释放。两条源域工作结束后，再依次运行地面预测。不得停止或修改其他任务。
+- 针对审查发现的共享 GPU 竞态，在真实训练前于 N607 对子进程继承锁和最后持有者退出后的释放执行一次定向测试；非有限输入、波形、门控值或识别器分数在写出类别前立即停止。
 - 真实权重预检与源训练：`python -m experiments.phase1_dura_posterior.train_source --root ROOT --out RUN --commit COMMIT --device cuda:0 --posterior-kind mean|nonlocal`，预检另加 `--smoke`。
 - 地面预测：`python -m experiments.phase1_dura_posterior.ground smoke|predict --root ROOT --out RUN --commit COMMIT --device cuda:0 --source-run SOURCE`；独立评分使用 `score --device cpu`。
 - launch owner：本对话主 agent；其他对话不接管或重启本矩阵。

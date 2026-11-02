@@ -1,4 +1,5 @@
 import tempfile
+from contextlib import nullcontext
 from pathlib import Path
 import unittest
 from unittest.mock import patch
@@ -27,6 +28,7 @@ class SourceControllerTest(unittest.TestCase):
             with (patch.object(controller, 'RELEASE', release),
                   patch.object(controller, 'OUTPUT', output),
                   patch.object(controller, 'wait_for_real_smoke'),
+                  patch.object(controller, 'verify_gpu_lock'),
                   patch.object(controller, 'run_arm', side_effect=arm),
                   patch.object(controller, 'status', side_effect=lambda state, **kw: states.append((state, kw))),
                   patch('sys.argv', ['source_controller', '--commit', 'fixed'])):
@@ -43,7 +45,7 @@ class SourceControllerTest(unittest.TestCase):
             output.mkdir()
             with (patch.object(controller, 'ROOT', root),
                   patch.object(controller, 'OUTPUT', output),
-                  patch.object(controller, 'wait_for_gpu', return_value=0),
+                  patch.object(controller, 'gpu_lease', return_value=nullcontext((0, 10))),
                   patch.object(controller, 'status'),
                   patch.object(controller, 'run_module', side_effect=RuntimeError('smoke failed')) as run):
                 with self.assertRaisesRegex(RuntimeError, 'smoke failed'):
