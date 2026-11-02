@@ -61,6 +61,32 @@ class DirectState:
         return value
 
 
+class DirectPair:
+    """Two independently fitted states sharing the same support kernel."""
+    def __init__(self, head, proto):
+        if head.prototypes is not None or proto.prototypes is None:
+            raise ValueError('Expected frozen-head and source-prototype states')
+        if head.config != proto.config or head.tau != proto.tau or set(head.support) != set(proto.support):
+            raise ValueError('Different kernel configurations')
+        if not all(np.array_equal(head.support[key], proto.support[key]) for key in head.support):
+            raise ValueError('Different support feature banks')
+        self.head, self.proto = head, proto
+
+    def score(self, features):
+        x = orbit.normalize(features)
+        geometry, _, mix, scales = self.head.config
+        sims = orbit.similarities(x, self.head.support, geometry)
+        kernel = orbit.make_kernel(sims, self.head.tau, mix, scales)
+        result = []
+        for state in (self.head, self.proto):
+            value = _prior(x, state.alpha.shape[1], state.prototypes, geometry, state.tau)
+            value += kernel @ state.alpha + state.intercept
+            if not np.isfinite(value).all():
+                raise FloatingPointError('Nonfinite direct-C scores')
+            result.append(value)
+        return tuple(result)
+
+
 def fit_direct_c(features, labels, ids, *, rule, source_prototypes=None):
     x = orbit.normalize(features)
     y = np.asarray(labels, dtype=np.int64)

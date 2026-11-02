@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from experiments.pamf_phase2_practical.milkr.r42_direct_c import fit_direct_c, source_prototypes
+from experiments.pamf_phase2_practical.milkr.r42_direct_c import fit_direct_c, source_prototypes, DirectPair
 from experiments.pamf_phase2_practical.milkr import orbit_ensemble as orbit
 
 
@@ -61,3 +61,17 @@ def test_source_prototypes_are_six_source_class_aggregates():
     np.testing.assert_allclose(prototypes['z_id'][0], expected)
     with pytest.raises(ValueError, match='source classes'):
         source_prototypes(source, np.zeros(12, dtype=np.int64))
+
+
+def test_shared_kernel_scores_equal_both_independent_direct_states():
+    support = features(10, 451)
+    labels = np.repeat([6, 7], 5)
+    ids = [str(i) for i in range(10)]
+    head = fit_direct_c(support, labels, ids, rule=RULE)
+    proto = fit_direct_c(support, labels, ids, rule=RULE, source_prototypes=features(6, 452))
+    query = features(53, 453)
+    actual_head, actual_proto = DirectPair(head, proto).score(query)
+    np.testing.assert_allclose(actual_head, head.score(query), rtol=1e-13, atol=1e-13)
+    np.testing.assert_allclose(actual_proto, proto.score(query), rtol=1e-13, atol=1e-13)
+    np.testing.assert_array_equal(actual_head.argmax(1), head.score(query).argmax(1))
+    np.testing.assert_array_equal(actual_proto.argmax(1), proto.score(query).argmax(1))
