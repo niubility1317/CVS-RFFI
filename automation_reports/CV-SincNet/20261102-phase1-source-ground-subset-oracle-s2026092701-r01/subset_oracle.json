@@ -1,0 +1,371 @@
+{
+  "status": "POSTHOC_SUBSET_ORACLE_COMPLETE",
+  "commit": "0302a553f773615c52647e62f9e0fa7e245cf593",
+  "candidate_runs": {
+    "confidence_router": [
+      "20261102-phase1-confidence-router-labeled-source-s2026092701-r01",
+      "20261102-phase1-confidence-router-ground-test-s2026092701-r01"
+    ],
+    "full_hard": [
+      "20261102-phase1-free-full-hard-labeled-source-s2026092701-r01",
+      "20261102-phase1-free-full-hard-ground-test-s2026092701-r01"
+    ],
+    "free_mixture": [
+      "20261102-phase1-free-mixture-labeled-source-s2026092701-r01",
+      "20261102-phase1-free-mixture-ground-test-s2026092701-r01"
+    ],
+    "hierarchical": [
+      "20261102-phase1-hierarchical-prior-labeled-source-s2026092701-r01",
+      "20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01"
+    ],
+    "joint_mixture": [
+      "20261102-phase1-joint-mixture-labeled-source-s2026092701-r01",
+      "20261102-phase1-joint-mixture-ground-test-s2026092701-r01"
+    ]
+  },
+  "source_prediction_sha256": {
+    "confidence_router": "7786c063c05cd50109d858587b0c490d6d1979b7f48b27831b8aad434d859817",
+    "full_hard": "593b682986c86f238ee4c5bd6b9996a635cc33cf7c9a0ec61e24f40bee67c88e",
+    "free_mixture": "f63336f65fb396a090be84a4764cedc7671a0beed055d7919314650eeda75253",
+    "hierarchical": "97c89fe0bf1805af23394743b9bef7297e4f25c145f2408fc490018023266cd5",
+    "joint_mixture": "e62cd6403e60c30a30a9fc5aa57e64387c4a2d62fec400491153910cfef41ce8"
+  },
+  "source_L_s_count": 1047,
+  "ground_count": 168000,
+  "ground_predictions_fixed_before_truth": true,
+  "L_s_metadata_labels_read": 6300,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "model_updates": 0,
+  "source": {
+    "RX4_6": {
+      "clean": {
+        "count": 83,
+        "oracle_correct": 83,
+        "oracle_accuracy": 100.0,
+        "all_wrong": 0,
+        "per_candidate_correct": {
+          "raw": 83,
+          "confidence_router": 83,
+          "full_hard": 83,
+          "free_mixture": 83,
+          "hierarchical": 83,
+          "joint_mixture": 83
+        }
+      },
+      "practical_high": {
+        "count": 97,
+        "oracle_correct": 96,
+        "oracle_accuracy": 98.96907216494846,
+        "all_wrong": 1,
+        "per_candidate_correct": {
+          "raw": 96,
+          "confidence_router": 96,
+          "full_hard": 96,
+          "free_mixture": 96,
+          "hierarchical": 96,
+          "joint_mixture": 96
+        }
+      },
+      "practical_mid": {
+        "count": 91,
+        "oracle_correct": 91,
+        "oracle_accuracy": 100.0,
+        "all_wrong": 0,
+        "per_candidate_correct": {
+          "raw": 87,
+          "confidence_router": 89,
+          "full_hard": 90,
+          "free_mixture": 90,
+          "hierarchical": 90,
+          "joint_mixture": 90
+        }
+      },
+      "practical_low_suburban": {
+        "count": 107,
+        "oracle_correct": 105,
+        "oracle_accuracy": 98.13084112149532,
+        "all_wrong": 2,
+        "per_candidate_correct": {
+          "raw": 97,
+          "confidence_router": 104,
+          "full_hard": 101,
+          "free_mixture": 102,
+          "hierarchical": 102,
+          "joint_mixture": 103
+        }
+      },
+      "practical_high_urban": {
+        "count": 108,
+        "oracle_correct": 107,
+        "oracle_accuracy": 99.07407407407408,
+        "all_wrong": 1,
+        "per_candidate_correct": {
+          "raw": 101,
+          "confidence_router": 105,
+          "full_hard": 105,
+          "free_mixture": 106,
+          "hierarchical": 106,
+          "joint_mixture": 105
+        }
+      },
+      "practical_mid_urban": {
+        "count": 108,
+        "oracle_correct": 99,
+        "oracle_accuracy": 91.66666666666666,
+        "all_wrong": 9,
+        "per_candidate_correct": {
+          "raw": 84,
+          "confidence_router": 91,
+          "full_hard": 93,
+          "free_mixture": 94,
+          "hierarchical": 93,
+          "joint_mixture": 94
+        }
+      },
+      "practical_low_urban": {
+        "count": 102,
+        "oracle_correct": 89,
+        "oracle_accuracy": 87.25490196078431,
+        "all_wrong": 13,
+        "per_candidate_correct": {
+          "raw": 57,
+          "confidence_router": 83,
+          "full_hard": 81,
+          "free_mixture": 80,
+          "hierarchical": 83,
+          "joint_mixture": 81
+        }
+      },
+      "all_impaired": {
+        "count": 613,
+        "oracle_correct": 587,
+        "oracle_accuracy": 95.75856443719412,
+        "all_wrong": 26,
+        "per_candidate_correct": {
+          "raw": 522,
+          "confidence_router": 568,
+          "full_hard": 566,
+          "free_mixture": 568,
+          "hierarchical": 570,
+          "joint_mixture": 569
+        }
+      }
+    },
+    "RX8": {
+      "clean": {
+        "count": 54,
+        "oracle_correct": 54,
+        "oracle_accuracy": 100.0,
+        "all_wrong": 0,
+        "per_candidate_correct": {
+          "raw": 54,
+          "confidence_router": 54,
+          "full_hard": 54,
+          "free_mixture": 54,
+          "hierarchical": 54,
+          "joint_mixture": 54
+        }
+      },
+      "practical_high": {
+        "count": 51,
+        "oracle_correct": 51,
+        "oracle_accuracy": 100.0,
+        "all_wrong": 0,
+        "per_candidate_correct": {
+          "raw": 50,
+          "confidence_router": 51,
+          "full_hard": 51,
+          "free_mixture": 51,
+          "hierarchical": 51,
+          "joint_mixture": 51
+        }
+      },
+      "practical_mid": {
+        "count": 37,
+        "oracle_correct": 36,
+        "oracle_accuracy": 97.2972972972973,
+        "all_wrong": 1,
+        "per_candidate_correct": {
+          "raw": 33,
+          "confidence_router": 35,
+          "full_hard": 36,
+          "free_mixture": 36,
+          "hierarchical": 36,
+          "joint_mixture": 36
+        }
+      },
+      "practical_low_suburban": {
+        "count": 44,
+        "oracle_correct": 44,
+        "oracle_accuracy": 100.0,
+        "all_wrong": 0,
+        "per_candidate_correct": {
+          "raw": 41,
+          "confidence_router": 41,
+          "full_hard": 42,
+          "free_mixture": 42,
+          "hierarchical": 42,
+          "joint_mixture": 42
+        }
+      },
+      "practical_high_urban": {
+        "count": 58,
+        "oracle_correct": 57,
+        "oracle_accuracy": 98.27586206896551,
+        "all_wrong": 1,
+        "per_candidate_correct": {
+          "raw": 54,
+          "confidence_router": 57,
+          "full_hard": 55,
+          "free_mixture": 56,
+          "hierarchical": 55,
+          "joint_mixture": 55
+        }
+      },
+      "practical_mid_urban": {
+        "count": 51,
+        "oracle_correct": 50,
+        "oracle_accuracy": 98.0392156862745,
+        "all_wrong": 1,
+        "per_candidate_correct": {
+          "raw": 40,
+          "confidence_router": 48,
+          "full_hard": 48,
+          "free_mixture": 50,
+          "hierarchical": 48,
+          "joint_mixture": 48
+        }
+      },
+      "practical_low_urban": {
+        "count": 56,
+        "oracle_correct": 52,
+        "oracle_accuracy": 92.85714285714286,
+        "all_wrong": 4,
+        "per_candidate_correct": {
+          "raw": 34,
+          "confidence_router": 50,
+          "full_hard": 49,
+          "free_mixture": 48,
+          "hierarchical": 50,
+          "joint_mixture": 49
+        }
+      },
+      "all_impaired": {
+        "count": 297,
+        "oracle_correct": 290,
+        "oracle_accuracy": 97.64309764309765,
+        "all_wrong": 7,
+        "per_candidate_correct": {
+          "raw": 252,
+          "confidence_router": 282,
+          "full_hard": 281,
+          "free_mixture": 283,
+          "hierarchical": 282,
+          "joint_mixture": 281
+        }
+      }
+    }
+  },
+  "ground": {
+    "clean": {
+      "count": 168000,
+      "oracle_correct": 145447,
+      "oracle_accuracy": 86.57559523809523,
+      "all_wrong": 22553,
+      "per_candidate_correct": {
+        "raw": 145385,
+        "confidence_router": 145217,
+        "full_hard": 145250,
+        "free_mixture": 145235,
+        "hierarchical": 145227,
+        "joint_mixture": 145243
+      }
+    },
+    "practical_high": {
+      "count": 168000,
+      "oracle_correct": 151680,
+      "oracle_accuracy": 90.28571428571428,
+      "all_wrong": 16320,
+      "per_candidate_correct": {
+        "raw": 135434,
+        "confidence_router": 141570,
+        "full_hard": 142633,
+        "free_mixture": 143218,
+        "hierarchical": 142102,
+        "joint_mixture": 142322
+      }
+    },
+    "practical_mid": {
+      "count": 168000,
+      "oracle_correct": 150516,
+      "oracle_accuracy": 89.59285714285714,
+      "all_wrong": 17484,
+      "per_candidate_correct": {
+        "raw": 131221,
+        "confidence_router": 138765,
+        "full_hard": 139911,
+        "free_mixture": 140567,
+        "hierarchical": 139161,
+        "joint_mixture": 139589
+      }
+    },
+    "practical_low_suburban": {
+      "count": 168000,
+      "oracle_correct": 149042,
+      "oracle_accuracy": 88.7154761904762,
+      "all_wrong": 18958,
+      "per_candidate_correct": {
+        "raw": 127251,
+        "confidence_router": 135376,
+        "full_hard": 136159,
+        "free_mixture": 136874,
+        "hierarchical": 135284,
+        "joint_mixture": 135987
+      }
+    },
+    "practical_high_urban": {
+      "count": 168000,
+      "oracle_correct": 150061,
+      "oracle_accuracy": 89.32202380952381,
+      "all_wrong": 17939,
+      "per_candidate_correct": {
+        "raw": 129444,
+        "confidence_router": 138041,
+        "full_hard": 139087,
+        "free_mixture": 139986,
+        "hierarchical": 138364,
+        "joint_mixture": 138775
+      }
+    },
+    "practical_mid_urban": {
+      "count": 168000,
+      "oracle_correct": 142292,
+      "oracle_accuracy": 84.69761904761904,
+      "all_wrong": 25708,
+      "per_candidate_correct": {
+        "raw": 105497,
+        "confidence_router": 121226,
+        "full_hard": 122321,
+        "free_mixture": 124641,
+        "hierarchical": 120634,
+        "joint_mixture": 122671
+      }
+    },
+    "practical_low_urban": {
+      "count": 168000,
+      "oracle_correct": 134902,
+      "oracle_accuracy": 80.29880952380952,
+      "all_wrong": 33098,
+      "per_candidate_correct": {
+        "raw": 86696,
+        "confidence_router": 106282,
+        "full_hard": 107519,
+        "free_mixture": 110367,
+        "hierarchical": 105454,
+        "joint_mixture": 108805
+      }
+    }
+  },
+  "caveat": "True-label ideal selection is not deployable; candidate subset chosen after exploratory analysis of previously observed development results; only these outputs are bounded."
+}

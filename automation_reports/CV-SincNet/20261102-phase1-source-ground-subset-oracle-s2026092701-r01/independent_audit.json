@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "source_records": 1047,
+  "ground_records": 168000,
+  "independent_fields": 207,
+  "source_join": "independent sorted physical ID lookup",
+  "ground_truth_reused": true,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "model_updates": 0,
+  "caveat": "Truth-guided oracle cannot be deployed; subset selected after exploratory results."
+}
