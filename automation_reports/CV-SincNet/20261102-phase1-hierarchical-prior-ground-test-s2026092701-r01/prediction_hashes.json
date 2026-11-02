@@ -1,0 +1,33 @@
+{
+  "status": "FIXED_PREDICTION_HASHES",
+  "hashes": {
+    "physical_ids.npy": "c7ab2af197a32bfacf05a3524393188103df14d9731da02e76a91b240b224b22",
+    "clean.raw.npy": "af63efb8b7ece72c71daf7bbae0ce64dc9d5f07f4e3bd9328e95681c013f0b43",
+    "clean.restored.npy": "58dfe0454cf4999bd557c624f68d001b403b2e7b50f382bbdfb33368dd0562d0",
+    "practical_high.raw.npy": "dc1378cb1d92f3e22bf74ce05cd77b45f37df2af3b00e0fde54d91e94f7c3b72",
+    "practical_high.restored.npy": "a948ebe393240d9095501f78ab012e29f40fe5e320b03042283b7958ee0a4e0c",
+    "practical_mid.raw.npy": "ea642c9e529d47ea6a49feb524b3b1e8ce9a7c222b6d3b7e74407a8c0f5d38da",
+    "practical_mid.restored.npy": "d165143ec74163ede03ef58e8461933ec1667eb8b7cf09ca942688b8dfb0fcef",
+    "practical_low_suburban.raw.npy": "32e0bb48871888b2203674bfee5f94bb93d78457c88d1845c3e4d0613812bebb",
+    "practical_low_suburban.restored.npy": "4f91b54794569d5a6ffa807670ec1ea4d760a0d607e39b01822e440b76b9228f",
+    "practical_high_urban.raw.npy": "de61f7844facf5eb9e47f3cfae7f6a177ab537a7a95608aec468a38a99628a36",
+    "practical_high_urban.restored.npy": "e57a7a092c7da605b7b3fe0126a37bfcb429e241de73c2b3c9dadd40fe1520b1",
+    "practical_mid_urban.raw.npy": "32bf553d4de88b7c3dc82a1f9144cf035f6df7b29da6905544f6e652947a18ac",
+    "practical_mid_urban.restored.npy": "77fa5561c17af8a4343dae7665f4243c96b50979514504888af515daeaae64a0",
+    "practical_low_urban.raw.npy": "8d1792e836e14da408dffa17fd75c6bc9f16aad861dc9bbf7597a827fcc5bd5b",
+    "practical_low_urban.restored.npy": "5d58ac228a62b8a30ca6464a5c158aa9ff761b70a8ed3025295443d7e1d56820"
+  },
+  "selected_by_view": {
+    "clean": 486,
+    "practical_high": 167985,
+    "practical_mid": 167988,
+    "practical_low_suburban": 167989,
+    "practical_high_urban": 167978,
+    "practical_mid_urban": 167973,
+    "practical_low_urban": 167987
+  },
+  "batch": 32,
+  "source_selection_sha256": "74e329da45c5edd29d18deda181d442bdad9e44b41f8326584d34bbfe5fc13e4",
+  "source_truth_reads_during_prediction": 0,
+  "TX_truth_reads": 0
+}
