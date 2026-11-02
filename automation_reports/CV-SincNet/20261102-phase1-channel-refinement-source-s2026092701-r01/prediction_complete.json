@@ -1,0 +1,13 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_FIXED",
+  "commit": "2f34086cb36e4371cc4729f044363ca6f149509c",
+  "count": 2048,
+  "sha256": "edf02af9b4ff1a9b124ad1685adbf313213c833211fd2f6dd562e50ba518d1bc",
+  "source_only": true,
+  "DURA_loaded": false,
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "notes": "Oracle uses source clean IQ only for diagnosis; blind coefficient fit uses received and estimated parent only; both tested on held-out alternating time samples."
+}
