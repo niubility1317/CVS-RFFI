@@ -1,1 +1,2 @@
 {"at": "2026-11-02T04:11:03+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T04:11:56+00:00", "status": "REPLACED", "note": "Use idle GPU6 for identical frozen diagnostic; no model or data changes.", "evidence": ["GPU4 has another active owner; original r01 was not launched."], "row_id": null}
