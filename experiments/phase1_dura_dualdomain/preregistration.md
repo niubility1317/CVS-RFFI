@@ -1,0 +1,7 @@
+# Phase1 DURA dual-domain correction
+
+- Candidate: independent time and complex-frequency residual branches operate on the same received IQ and frozen DURA output. Invariant magnitude and cross-product features predict bounded complex coefficients that multiply the received and DURA signals; their sum is phase-equivariant. Zero output-layer initialization exactly returns DURA. Each prediction uses one input only.
+- Training and comparison: the same fixed 8192 source IDs, view epochs 21/22/23 and five epochs as the source-protected DURA context. Paired source IQ and frozen Tri-SIG-TIME SSL features, soft predictions and pseudo-margin guide training, with a group-balanced DURA-relative source IQ penalty. This method is F-guided. No direct TX identity, U_s truth, V, ground data or ground feedback is used in training.
+- Freeze the final checkpoint and 672 source holdout predictions before source truth-last scoring. A real-source smoke and frozen-module checks precede training; weak source metrics alone never stop the registered ground evaluation.
+- Run source replay and all seven Phase1 Main views, 168000 records each, then independent pre-truth ID/raw checks, truth-last score and 119-group DURA comparison. A ground test result cannot change this candidate or other registered runs.
+- Source run: 20261103-phase1-dura-dualdomain-source-s2026092701-r01. Ground run: 20261103-phase1-dura-dualdomain-ground-test-s2026092701-r01. Reused source and ground data have been explored; results are development evaluation, not blind or real satellite validation.
