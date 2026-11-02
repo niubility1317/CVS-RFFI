@@ -1,1 +1,2 @@
 {"at": "2026-11-02T02:01:50+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T02:03:13+00:00", "status": "RUNNING", "note": "Full eligible source pool excluding prior IDs, three fixed views, eight epochs; no U_s truth, V or test. DURA comparison after training.", "evidence": ["N607 PID 1170744 CWD/cmdline/GPU2 verified; mixed source 32 L_s plus 32 U_s including 3 hard examples gradient smoke PASS; log first writes after full source view."], "row_id": null}
