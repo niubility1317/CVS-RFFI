@@ -157,3 +157,8 @@ Main六景为80.140476/77.807738/75.495238/78.213690/69.447024/62.401190%，0/6�
 ## 新版接收机均值偏差的源端检验
 
 [同源V冻结特征分析](../automation_reports/CV-SincNet/20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/receiver_geometry_analysis.md)完成52200条保存特征、87个汇总及667个RX/day/RX×day组统计。低档城区新细节网络相对各自clean的RX均值误差0.000825112，较纯物理0.004257533低80.619941%；均值模式对齐增益0.952200（clean自身1），RX均值误差只占总特征误差0.575860%。这不支持“新版放大RX均值偏差”的具体解释，不据此删均值、投影或添加RX对抗目标。源V只有已见5RX/3day，不能排除未见RX的其他域因素；没有读取TX标签作条件因果控制。分析0新NN/IQ/TX/目标读取，5项针对性检查通过，分解恒等式误差4.44e-16；17候选计数和全部Main分数不变，目标ACTIVE。
+
+
+## 新版的缓存 Action 一致性检验
+
+[冻结源V缓存Action报告](../automation_reports/CV-SincNet/20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01/measurement_consistency_analysis.md)完成840分组/168条件组，复用保存IQ与Action代理，0新NN/TX/目标/训练。低档城区1731/1800条新版IQ更接近clean，其中1247条观测残差反而增加；相对同条clean的残差能量绝对差距均值从0.344762降至0.232462（−32.573363%）。更小观测残差不等于更好去噪，这项源证据不支持直接加强带噪观测拟合。5项针对性检查通过，252个已公开IQ/Fclean分组差0。缓存Action不是完整硬件Jacobian、标量方差不是完整噪声协方差；没有以此解释全部Main差距或估计信息上限。17候选、各Main结果、默认DURA和完整主目标均保持。
