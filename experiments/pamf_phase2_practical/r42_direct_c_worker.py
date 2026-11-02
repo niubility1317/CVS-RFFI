@@ -7,12 +7,16 @@ from .io import read, write, require
 from .milkr_screen import initialize, subset
 from .milkr.prior_fusion import head_columns
 from .milkr.adaptive_residual import blend
-from .milkr.r42_direct_c import fit_direct_c
+from .milkr.r42_direct_c import fit_direct_c, DirectPair
 from .milkr import orbit_ensemble
 from .teacher_features import AdaptiveResidualBridge
 from .r42_direct_c_support import load_new_support
 from .r42_suite_worker import _restore, orbit_features, _decisions
 from .episodic_experiment import split_rows
+
+
+def cuda_for_support(rt, count):
+    return bool(rt.get('direct_c_cuda', False) and count >= rt.get('direct_c_cuda_min_support', 256))
 
 
 def source(rt, seed, root):
@@ -106,6 +110,7 @@ def predict(rt, job):
                     write(root / f'{mode}-K{k}-N{n}-S{sp}-fit.json', state.audit)
     bank = np.load(cap / 'received.npy', mmap_mode='r', allow_pickle=False)
     rows = []
+    scorers = {}
     # K-specific query banks exclude the allocated old/new support for that K.
     # The same physical record can be query at another K under the fixed split.
     for k in sorted({p[0] for p in points}):
@@ -122,25 +127,44 @@ def predict(rt, job):
             raw = _restore(engine, raw, 'cuda:0', batch, fast_transfer=True)
         features, _ = orbit_features(reader, raw, 'cuda:0', batch, True)
         mapped = blend(bridge.transform(features, restored=bool(qp), old_columns=columns), 1.)
-        for mode, _, n, sp, state in selected:
+        groups = sorted({(n, sp) for _, _, n, sp, _ in selected})
+        for n, sp in groups:
             spec = specs[k, n]
             query = query_by_n[n]
             pos = positions[query]
             require((pos >= 0).all(), 'Missing query positions')
-            pieces = []
-            restricted = []
+            pair_states = {mode: state for mode, _, nn, ss, state in selected if nn == n and ss == sp}
+            require(set(pair_states) == {'head', 'source_prototype'}, 'Missing paired states')
+            pieces = {mode: [] for mode in pair_states}
+            restricted = {mode: [] for mode in pair_states}
+            use_cuda = cuda_for_support(rt, len(pair_states['head'].support['z_id']))
+            if use_cuda:
+                from .milkr.r42_direct_c_cuda import CudaDirectC
+                for mode, state in pair_states.items():
+                    key = (mode, k, n, sp)
+                    if key not in scorers:
+                        scorers[key] = CudaDirectC(state, 'cuda:0', pair_budget=rt.get('direct_c_pair_budget', 262144))
+            else:
+                pair = DirectPair(pair_states['head'], pair_states['source_prototype'])
             for start in range(0, len(pos), int(rt.get('decision_batch', 512))):
-                scores = state.score(subset(mapped, pos[start:start + int(rt.get('decision_batch', 512))]))
-                pred, old = _decisions(scores, spec['registered_classes'])
-                pieces.append(pred)
-                restricted.append(old)
-            predicted = np.concatenate(pieces).astype(np.int16)
-            old_restricted = np.concatenate(restricted).astype(np.int16)
-            name = f'{mode}-C-K{k}-N{n}-S{sp}Q{qp}.npz'
-            np.savez_compressed(root / name, query_indices=query, predicted_indices=predicted, old_restricted_indices=old_restricted)
-            rows.append(dict(arm='R42_direct_' + mode, stage='C', k=k, new_count=n,
-                input_path=f'S{sp}Q{qp}', split_id=spec['split_id'], registered_classes=spec['registered_classes'],
-                prediction=name, actual_target_old_labels=0, actual_target_new_labels=n*k))
+                sample = subset(mapped, pos[start:start + int(rt.get('decision_batch', 512))])
+                if use_cuda:
+                    values = [scorers[(mode, k, n, sp)].score(sample) for mode in ('head', 'source_prototype')]
+                else:
+                    values = pair.score(sample)
+                for mode, scores in zip(('head', 'source_prototype'), values):
+                    pred, old = _decisions(scores, spec['registered_classes'])
+                    pieces[mode].append(pred)
+                    restricted[mode].append(old)
+            for mode in ('head', 'source_prototype'):
+                predicted = np.concatenate(pieces[mode]).astype(np.int16)
+                old_restricted = np.concatenate(restricted[mode]).astype(np.int16)
+                name = f'{mode}-C-K{k}-N{n}-S{sp}Q{qp}.npz'
+                np.savez_compressed(root / name, query_indices=query, predicted_indices=predicted, old_restricted_indices=old_restricted)
+                rows.append(dict(arm='R42_direct_' + mode, stage='C', k=k, new_count=n,
+                    input_path=f'S{sp}Q{qp}', split_id=spec['split_id'], registered_classes=spec['registered_classes'],
+                    prediction=name, actual_target_old_labels=0, actual_target_new_labels=n*k,
+                    execution_backend='cuda_fp64' if use_cuda else 'cpu_fp64_shared_kernel'))
     require(len(rows) == len(points) * 8, 'Incomplete direct-C prediction matrix')
     write(root / 'predictions.json', dict(capsule=job['capsule'], capsule_id=manifest['capsule_id'], model_seed=seed, rows=rows))
     write(root / 'complete.json', dict(status='PREDICTIONS_COMPLETE', capsule_id=manifest['capsule_id'],
