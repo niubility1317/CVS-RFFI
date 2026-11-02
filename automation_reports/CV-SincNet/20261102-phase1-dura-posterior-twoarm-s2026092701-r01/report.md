@@ -1,0 +1,33 @@
+# DURA 内部后验双候选：Phase1 源训练与地面测试
+
+## 固定候选和数据
+
+两个独立候选均保留冻结 DURA v1.0 的粗恢复、信道估计、两阶段 prior 与每阶段两次 CG，分别在两个 prior 内插入零初始化的相位等变修正。门关闭时完整输出为原 DURA；门开启时分别使用：
+
+1. `mean`：既有源训练盲信道估计与源高斯混合先验的后验均值。
+2. `nonlocal`：相同后验经既有独立非局部波形合成网络输出。该上游网络使用 8,192 条源训练记录，其中 716 条使用合法 L_s 身份标签；该继承来源不得称为完全无标签或 F-free。
+
+两候选的 DURA、Tri-SIG-TIME SSL、0.8 源域保护门、盲信道模型、先验及非局部上游均固定；仅训练各自新增的两个修正模块。使用相同 8,192 条源训练物理记录、已有模拟视图 21/22/23、保护门开启样本、五轮、batch 8、AdamW 3e-4、weight decay 1e-4、梯度裁剪 1；种子为代码固定值。配对波形误差、干净 F 特征与软判断、以及与高置信干净 F 判断一致时的 DURA 决策保护共同参与损失，并对源接收机均衡。新修正模块不读取 L_s 身份标签；不读 U_s 身份真值、V 或地面测试训练或选模。父 DURA 权重、F 和源缓存不覆盖。
+
+本研发已经观察过 Phase1 相关源记录与开发测试，不能称为独立盲测。上游 F、恢复器及独立模型各自的历史训练成本和数据接触不得抹去。
+
+## 预先固定的验证矩阵
+
+先等待此前已登记的真实 DURA／物理后验接口检查通过。每候选各执行一次 64 条源记录、一个训练轮次及 28 条源预测的真权重训练预检；随后两候选分别完整训练、固定最终五轮 checkpoint 并对 672 条源留出记录预测。源预测全部固定后由 CPU 程序仅连接合法 L_s 身份，报告每场景、RX4/6 与 RX8 的 DURA 对照、修复／损伤、干净 F 伪标签一致与波形误差；伪标签不是真实身份。
+
+两个候选均预先固定 clean 和六种模拟星地视图的完整地面测试，每景 168,000 条；不能根据源域或另一候选成绩取消、重排、选择 checkpoint 或调参。测试前固定 112 条源预测重放；七视图完整固定后再由独立 truth-side 程序评分并复核共同原始基座、物理记录编号、119 个 TX／RX／day 分组及 cross-RX、cross-RX+day。报告 DURA 同基座逐场景对照、净修复／损伤、clean 损伤和实际资源成本。
+
+主要目标为六个受损场景相对原始 clean Tri-SIG-TIME SSL 86.538690% 的下降均不超过 3%，即各场景至少 83.942530%；同时报告下降不超过 3 个百分点的 83.538690% 门槛。当前不更换默认 DURA。
+
+## 运行、资源及失败处理
+
+- 代码身份：包含本登记、两个候选和控制器的 Git 提交；N607 使用同一不可覆盖 release。
+- N607 环境：项目 CVS-RFFI Python，TF32 关闭，GPU worker 每次仅一条，CPU 2 线程；等待全机 CPU 负载不超过核心数减 24、至少一张卡剩余显存不少于 12,288 MiB 且可见计算进程少于 2 条。不得停止或修改其他任务。
+- 真实权重预检与源训练：`python -m experiments.phase1_dura_posterior.train_source --root ROOT --out RUN --commit COMMIT --device cuda:0 --posterior-kind mean|nonlocal`，预检另加 `--smoke`。
+- 地面预测：`python -m experiments.phase1_dura_posterior.ground smoke|predict --root ROOT --out RUN --commit COMMIT --device cuda:0 --source-run SOURCE`；独立评分使用 `score --device cpu`。
+- launch owner：本对话主 agent；其他对话不接管或重启本矩阵。
+- 源训练根：`runs/20261102-phase1-dura-posterior-internal-source-s2026092701-r01`、`runs/20261102-phase1-dura-nonlocal-internal-source-s2026092701-r01`；预检分别使用对应源根加 `-training-smoke`，源评分使用对应源根加 `-score`。
+- 地面根：`runs/20261102-phase1-dura-posterior-internal-ground-test-s2026092701-r01`、`runs/20261102-phase1-dura-nonlocal-internal-ground-test-s2026092701-r01`；每行控制器为对应地面根加 `-controller`，独立评分为对应地面根加 `-auto-audit`。全部路径唯一，不覆盖。
+- 只因协议越界、非有限值、输出碰撞、无合法预测、源重放不一致或运行故障停止相应实验，保留 partial；准确率低不触发停止。发布前完成焦点协议负测、真实权重无 query 检查、一次独立 P0/P1 审查、单归档传输校验和远端编译。
+
+当前为代码和试验登记准备；不得将登记、合成检查或排队写成源训练／地面测试已经完成。
