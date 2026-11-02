@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "prediction_sha256": "97c89fe0bf1805af23394743b9bef7297e4f25c145f2408fc490018023266cd5",
+  "records": 1047,
+  "cell_method_checks": 70,
+  "impaired_totals": {
+    "1": {
+      "count": 613,
+      "dura": 585,
+      "parent": 567,
+      "candidate": 570,
+      "repairs": 5,
+      "damages": 2
+    },
+    "2": {
+      "count": 297,
+      "dura": 285,
+      "parent": 281,
+      "candidate": 282,
+      "repairs": 1,
+      "damages": 0
+    }
+  },
+  "scope": "Independently recomputed from fixed L_s predictions and source labels; F trained on source IDs; not an independent test."
+}
