@@ -1,0 +1,151 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-agreement-router-crossfit-s2026092701-r01",
+  "group_id": "phase1-agreement-router",
+  "display_name": "Phase1 source L_s receiver-crossfit agreement router",
+  "description": "Train candidate selector on source L_s receiver folds using class-permutation-invariant predicted agreement, then score heldout receiver decisions.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "hierarchical_prior",
+    "truth_last",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-source-physical-union-audit-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "89b173c787ebf30d513ecfb3b4747348784d6d3d",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU fixed predictor; separate CPU source L_s truth-last scorer",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Five fixed candidate predicted classes per source L_s record, equality pattern only; no new IQ inference",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Only legitimate source L_s truth after all predictions fixed; no U_s truth, V or test read",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "L_s source RX4 trained on RX6, RX6 trained on RX4, RX8 trained on RX4/6; all F previously saw source physical IDs",
+    "support_query_ref": null,
+    "leo_config_ref": "Source cache epoch19"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Legal source L_s labels are loaded together; each fold fits only other receivers labels, heldout receiver labels do not enter that fold fit or decision. No U_s truth, V, or target data.",
+    "external_method_exception": null,
+    "claim_scope": "Source L_s data previously used by ground F and/or prior views; not independent blind or target test"
+  },
+  "checkpoint": {
+    "initialization": "No neural IQ inference; fit agreement-pattern empirical candidate correctness from source train-fold L_s labels; DURA fixed candidate.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-hierarchical-prior-labeled-source-s2026092701-r01/predictions.npz",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-joint-mixture-labeled-source-s2026092701-r01/predictions.npz",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-free-mixture-labeled-source-s2026092701-r01/predictions.npz"
+    ],
+    "contract_check_ref": "All 1047 source prediction cohorts and common clean/raw/DURA/parent decisions must match before source truth",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fixed prior strength16, minimum pattern count8, margins 0/.03/.1; all three evaluated per heldout source receiver; no automatic target test or holdout-based model selection."
+  },
+  "execution": {
+    "host": "N607 CPU",
+    "launch_owner": "Codex source agreement crossfit diagnostic owner",
+    "gpu_policy": "CPU only, no new IQ inference",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-agreement-router-crossfit-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-agreement-router-crossfit-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-agreement-router-crossfit-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-agreement-router-crossfit-s2026092701-r01-release/experiments/phase1_joint_mixture/agreement_source_crossfit.py predict --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-agreement-router-crossfit-s2026092701-r01 --commit 89b173c787ebf30d513ecfb3b4747348784d6d3d",
+    "stop_rule": "Stop for source provenance/role violations, output collision, nonfinite values or technical failures; do not retry without state reconciliation."
+  },
+  "expected_artifacts": [
+    "predictions.npz",
+    "prediction_complete.json",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source L_s heldout accuracy",
+      "DURA repairs and damages",
+      "source L_s per-scene selection count",
+      "truth-assisted fixed candidate union"
+    ],
+    "dimensions": [
+      "RX4/6 combined by scenario",
+      "RX8 by scenario"
+    ],
+    "prediction_ref": "Three existing 1047-record source L_s fixed prediction artifacts",
+    "scorer_ref": "experiments/phase1_joint_mixture/agreement_source_crossfit.py",
+    "scientific_rule": "Each receiver fold fits only other receivers L_s labels, even though legal L_s metadata are loaded together; heldout decisions are fixed before scoring. Router uses equality patterns, invariant to class renaming; oracle unavailable at deployment."
+  },
+  "rows": [
+    {
+      "row_id": "agreement_router_source_crossfit",
+      "method": "class-permutation-invariant fixed-candidate agreement router",
+      "purpose": "measure deployable-style source receiver generalization from candidate agreement only",
+      "config_ref": "experiments/phase1_joint_mixture/agreement_source_crossfit.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-agreement-router-crossfit-s2026092701-r01/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120455,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Frozen direct mixture trained using 4096 other IDs, F previously used these source IDs; no updates.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "1047 source L_s records, three receiver folds, three fixed margins",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-agreement-router-crossfit-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-agreement-router-crossfit-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-agreement-router-crossfit-s2026092701-r01-release/experiments/phase1_joint_mixture/agreement_source_crossfit.py predict --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-agreement-router-crossfit-s2026092701-r01 --commit 89b173c787ebf30d513ecfb3b4747348784d6d3d",
+      "expected_artifacts": [
+        "predictions.npz",
+        "prediction_complete.json",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Three separate models use disjoint receiver folds; all legal L_s labels are loaded together but no heldout receiver label enters its own model fit or decision.",
+    "Same source L_s records and views previously explored and F was trained on source; not an independent test.",
+    "DURA is one fixed candidate; selector depends only on predicted-class equality, not class names or true labels at inference.",
+    "No U_s truth, V or target data."
+  ],
+  "registered_at": "2026-11-02T02:17:18+00:00"
+}
