@@ -17,6 +17,9 @@ PRIOR='20261102-phase1-unroll-source-replay-s2026092701-r01'
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def gate_numpy(active):
+    return np.from_dlpack(active.to(dtype=torch.int64).contiguous())
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('--root',type=Path,required=True);ap.add_argument('--out',type=Path,required=True)
@@ -77,7 +80,7 @@ def main():
             v=old[start:stop]
             if (not np.array_equal(np.from_dlpack(base.contiguous()),v[:,2].astype(np.int64))
                     or not np.array_equal(np.from_dlpack(raw.contiguous()),v[:,5].astype(np.int64))
-                    or not np.array_equal(np.from_dlpack(active.contiguous()),v[:,3]>.8)):
+                    or not np.array_equal(gate_numpy(active),v[:,3]>.8)):
                 raise ValueError('DURA, raw and gate must match fixed source comparator')
             outputs=[anchor.clone(),anchor.clone()]
             if active.any():

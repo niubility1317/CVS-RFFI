@@ -1,5 +1,7 @@
 import unittest
 import numpy as np
+import torch
+from experiments.phase1_dura_fullsource_pair.replay import gate_numpy
 from experiments.phase1_dura_fullsource_pair.logic import match_ids, pair_counts
 from experiments.phase1_dura_fullsource_pair.audit import count_sets
 
@@ -24,5 +26,10 @@ class SourcePairTest(unittest.TestCase):
         second=rng.integers(0,6,200)
         mask=rng.random(200)>.45
         self.assertEqual(count_sets(target,first,second,mask),pair_counts(target,first,second,mask))
+
+
+    def test_boolean_gate_crosses_numpy_boundary(self):
+        active=torch.tensor([True,False,True])
+        np.testing.assert_array_equal(gate_numpy(active),np.array([1,0,1]))
 
 if __name__=='__main__':unittest.main()
