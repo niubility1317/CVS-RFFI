@@ -1,0 +1,923 @@
+{
+  "status": "POSTHOC_ORACLE_UNION_COMPLETE",
+  "commit": "3b25f634312affdc869b9f2673c83ccfa53b0489",
+  "candidate_runs": {
+    "direct_axial": "20261102-phase1-direct-axial-iq-s2026092701-r01/source",
+    "blind_gate": "20261102-phase1-blind-gate-s2026092701-r01/source",
+    "curriculum_gate": "20261102-phase1-curriculum-blind-gate-s2026092701-r01/source",
+    "attention": "20261102-phase1-attention-waveform-ground-test-s2026092701-r01",
+    "full_hard": "20261102-phase1-free-full-hard-ground-test-s2026092701-r01",
+    "free_mixture": "20261102-phase1-free-mixture-ground-test-s2026092701-r01",
+    "hierarchical": "20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01",
+    "white_prior": "20261102-phase1-independent-prior-pnp-ground-test-s2026092701-r02",
+    "structured_prior": "20261102-phase1-structured-prior-ground-test-s2026092701-r01",
+    "joint_mixture": "20261102-phase1-joint-mixture-ground-test-s2026092701-r01",
+    "confidence_router": "20261102-phase1-confidence-router-ground-test-s2026092701-r01"
+  },
+  "count": 168000,
+  "raw_clean_accuracy": 86.53869047619047,
+  "baseline": "Frozen Tri-SIG-TIME SSL",
+  "ground_truth_used_after_predictions_fixed": true,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "model_updates": 0,
+  "results": {
+    "clean": {
+      "count": 168000,
+      "oracle_correct": 146105,
+      "oracle_accuracy": 86.96726190476191,
+      "oracle_gap_pp": -0.4285714285714448,
+      "all_candidates_wrong": 21895,
+      "raw_free_union_correct": 145425,
+      "per_candidate": {
+        "raw": {
+          "correct": 145385,
+          "accuracy": 86.53869047619047,
+          "exclusive_correct": 0,
+          "unique_vs_raw_free": 0
+        },
+        "direct_axial": {
+          "correct": 145375,
+          "accuracy": 86.53273809523809,
+          "exclusive_correct": 596,
+          "unique_vs_raw_free": 597
+        },
+        "blind_gate": {
+          "correct": 145370,
+          "accuracy": 86.5297619047619,
+          "exclusive_correct": 1,
+          "unique_vs_raw_free": 3
+        },
+        "curriculum_gate": {
+          "correct": 145384,
+          "accuracy": 86.53809523809524,
+          "exclusive_correct": 2,
+          "unique_vs_raw_free": 4
+        },
+        "attention": {
+          "correct": 145412,
+          "accuracy": 86.5547619047619,
+          "exclusive_correct": 30,
+          "unique_vs_raw_free": 38
+        },
+        "full_hard": {
+          "correct": 145250,
+          "accuracy": 86.45833333333334,
+          "exclusive_correct": 3,
+          "unique_vs_raw_free": 13
+        },
+        "free_mixture": {
+          "correct": 145235,
+          "accuracy": 86.44940476190476,
+          "exclusive_correct": 2,
+          "unique_vs_raw_free": 0
+        },
+        "hierarchical": {
+          "correct": 145227,
+          "accuracy": 86.44464285714287,
+          "exclusive_correct": 3,
+          "unique_vs_raw_free": 15
+        },
+        "white_prior": {
+          "correct": 145255,
+          "accuracy": 86.46130952380953,
+          "exclusive_correct": 14,
+          "unique_vs_raw_free": 30
+        },
+        "structured_prior": {
+          "correct": 145220,
+          "accuracy": 86.44047619047619,
+          "exclusive_correct": 7,
+          "unique_vs_raw_free": 15
+        },
+        "joint_mixture": {
+          "correct": 145243,
+          "accuracy": 86.45416666666667,
+          "exclusive_correct": 0,
+          "unique_vs_raw_free": 10
+        },
+        "confidence_router": {
+          "correct": 145217,
+          "accuracy": 86.43869047619047,
+          "exclusive_correct": 0,
+          "unique_vs_raw_free": 9
+        }
+      },
+      "cross_domain": {
+        "cross_rx_source_dates": {
+          "count": 126000,
+          "oracle_correct": 111609,
+          "oracle_accuracy": 88.57857142857142,
+          "raw_clean_accuracy": 88.11031746031746
+        },
+        "cross_rx_and_new_day": {
+          "count": 42000,
+          "oracle_correct": 34496,
+          "oracle_accuracy": 82.13333333333334,
+          "raw_clean_accuracy": 81.82380952380952
+        }
+      },
+      "classes": {
+        "0": {
+          "count": 28000,
+          "oracle_correct": 27443,
+          "oracle_accuracy": 98.01071428571429
+        },
+        "1": {
+          "count": 28000,
+          "oracle_correct": 19876,
+          "oracle_accuracy": 70.98571428571428
+        },
+        "2": {
+          "count": 28000,
+          "oracle_correct": 23167,
+          "oracle_accuracy": 82.73928571428571
+        },
+        "3": {
+          "count": 28000,
+          "oracle_correct": 20501,
+          "oracle_accuracy": 73.21785714285714
+        },
+        "4": {
+          "count": 28000,
+          "oracle_correct": 27962,
+          "oracle_accuracy": 99.86428571428571
+        },
+        "5": {
+          "count": 28000,
+          "oracle_correct": 27156,
+          "oracle_accuracy": 96.98571428571428
+        }
+      }
+    },
+    "practical_high": {
+      "count": 168000,
+      "oracle_correct": 159504,
+      "oracle_accuracy": 94.94285714285714,
+      "oracle_gap_pp": -8.404166666666669,
+      "all_candidates_wrong": 8496,
+      "raw_free_union_correct": 150527,
+      "per_candidate": {
+        "raw": {
+          "correct": 135434,
+          "accuracy": 80.61547619047619,
+          "exclusive_correct": 58,
+          "unique_vs_raw_free": 0
+        },
+        "direct_axial": {
+          "correct": 135202,
+          "accuracy": 80.47738095238095,
+          "exclusive_correct": 36,
+          "unique_vs_raw_free": 272
+        },
+        "blind_gate": {
+          "correct": 134925,
+          "accuracy": 80.3125,
+          "exclusive_correct": 53,
+          "unique_vs_raw_free": 1108
+        },
+        "curriculum_gate": {
+          "correct": 138018,
+          "accuracy": 82.15357142857142,
+          "exclusive_correct": 1213,
+          "unique_vs_raw_free": 3094
+        },
+        "attention": {
+          "correct": 119598,
+          "accuracy": 71.18928571428572,
+          "exclusive_correct": 1641,
+          "unique_vs_raw_free": 4578
+        },
+        "full_hard": {
+          "correct": 142633,
+          "accuracy": 84.90059523809524,
+          "exclusive_correct": 17,
+          "unique_vs_raw_free": 378
+        },
+        "free_mixture": {
+          "correct": 143218,
+          "accuracy": 85.24880952380953,
+          "exclusive_correct": 75,
+          "unique_vs_raw_free": 0
+        },
+        "hierarchical": {
+          "correct": 142102,
+          "accuracy": 84.58452380952382,
+          "exclusive_correct": 58,
+          "unique_vs_raw_free": 634
+        },
+        "white_prior": {
+          "correct": 129289,
+          "accuracy": 76.9577380952381,
+          "exclusive_correct": 1177,
+          "unique_vs_raw_free": 3519
+        },
+        "structured_prior": {
+          "correct": 138885,
+          "accuracy": 82.66964285714286,
+          "exclusive_correct": 504,
+          "unique_vs_raw_free": 2319
+        },
+        "joint_mixture": {
+          "correct": 142322,
+          "accuracy": 84.7154761904762,
+          "exclusive_correct": 14,
+          "unique_vs_raw_free": 442
+        },
+        "confidence_router": {
+          "correct": 141570,
+          "accuracy": 84.26785714285714,
+          "exclusive_correct": 17,
+          "unique_vs_raw_free": 685
+        }
+      },
+      "cross_domain": {
+        "cross_rx_source_dates": {
+          "count": 126000,
+          "oracle_correct": 120617,
+          "oracle_accuracy": 95.72777777777777,
+          "raw_clean_accuracy": 88.11031746031746
+        },
+        "cross_rx_and_new_day": {
+          "count": 42000,
+          "oracle_correct": 38887,
+          "oracle_accuracy": 92.58809523809524,
+          "raw_clean_accuracy": 81.82380952380952
+        }
+      },
+      "classes": {
+        "0": {
+          "count": 28000,
+          "oracle_correct": 27608,
+          "oracle_accuracy": 98.6
+        },
+        "1": {
+          "count": 28000,
+          "oracle_correct": 23792,
+          "oracle_accuracy": 84.97142857142858
+        },
+        "2": {
+          "count": 28000,
+          "oracle_correct": 26903,
+          "oracle_accuracy": 96.08214285714286
+        },
+        "3": {
+          "count": 28000,
+          "oracle_correct": 25312,
+          "oracle_accuracy": 90.4
+        },
+        "4": {
+          "count": 28000,
+          "oracle_correct": 27967,
+          "oracle_accuracy": 99.88214285714285
+        },
+        "5": {
+          "count": 28000,
+          "oracle_correct": 27922,
+          "oracle_accuracy": 99.72142857142858
+        }
+      }
+    },
+    "practical_mid": {
+      "count": 168000,
+      "oracle_correct": 158709,
+      "oracle_accuracy": 94.46964285714286,
+      "oracle_gap_pp": -7.930952380952391,
+      "all_candidates_wrong": 9291,
+      "raw_free_union_correct": 148818,
+      "per_candidate": {
+        "raw": {
+          "correct": 131221,
+          "accuracy": 78.1077380952381,
+          "exclusive_correct": 104,
+          "unique_vs_raw_free": 0
+        },
+        "direct_axial": {
+          "correct": 131217,
+          "accuracy": 78.10535714285714,
+          "exclusive_correct": 77,
+          "unique_vs_raw_free": 481
+        },
+        "blind_gate": {
+          "correct": 131982,
+          "accuracy": 78.56071428571428,
+          "exclusive_correct": 110,
+          "unique_vs_raw_free": 1503
+        },
+        "curriculum_gate": {
+          "correct": 133846,
+          "accuracy": 79.6702380952381,
+          "exclusive_correct": 1117,
+          "unique_vs_raw_free": 3182
+        },
+        "attention": {
+          "correct": 117187,
+          "accuracy": 69.75416666666666,
+          "exclusive_correct": 1831,
+          "unique_vs_raw_free": 4986
+        },
+        "full_hard": {
+          "correct": 139911,
+          "accuracy": 83.28035714285714,
+          "exclusive_correct": 40,
+          "unique_vs_raw_free": 583
+        },
+        "free_mixture": {
+          "correct": 140567,
+          "accuracy": 83.67083333333333,
+          "exclusive_correct": 112,
+          "unique_vs_raw_free": 0
+        },
+        "hierarchical": {
+          "correct": 139161,
+          "accuracy": 82.83392857142857,
+          "exclusive_correct": 57,
+          "unique_vs_raw_free": 865
+        },
+        "white_prior": {
+          "correct": 126255,
+          "accuracy": 75.15178571428571,
+          "exclusive_correct": 1080,
+          "unique_vs_raw_free": 3680
+        },
+        "structured_prior": {
+          "correct": 136273,
+          "accuracy": 81.11488095238096,
+          "exclusive_correct": 663,
+          "unique_vs_raw_free": 2613
+        },
+        "joint_mixture": {
+          "correct": 139589,
+          "accuracy": 83.08869047619048,
+          "exclusive_correct": 33,
+          "unique_vs_raw_free": 676
+        },
+        "confidence_router": {
+          "correct": 138765,
+          "accuracy": 82.59821428571429,
+          "exclusive_correct": 40,
+          "unique_vs_raw_free": 1014
+        }
+      },
+      "cross_domain": {
+        "cross_rx_source_dates": {
+          "count": 126000,
+          "oracle_correct": 119958,
+          "oracle_accuracy": 95.20476190476191,
+          "raw_clean_accuracy": 88.11031746031746
+        },
+        "cross_rx_and_new_day": {
+          "count": 42000,
+          "oracle_correct": 38751,
+          "oracle_accuracy": 92.2642857142857,
+          "raw_clean_accuracy": 81.82380952380952
+        }
+      },
+      "classes": {
+        "0": {
+          "count": 28000,
+          "oracle_correct": 27546,
+          "oracle_accuracy": 98.37857142857143
+        },
+        "1": {
+          "count": 28000,
+          "oracle_correct": 23483,
+          "oracle_accuracy": 83.86785714285713
+        },
+        "2": {
+          "count": 28000,
+          "oracle_correct": 26738,
+          "oracle_accuracy": 95.49285714285715
+        },
+        "3": {
+          "count": 28000,
+          "oracle_correct": 25127,
+          "oracle_accuracy": 89.73928571428571
+        },
+        "4": {
+          "count": 28000,
+          "oracle_correct": 27933,
+          "oracle_accuracy": 99.76071428571429
+        },
+        "5": {
+          "count": 28000,
+          "oracle_correct": 27882,
+          "oracle_accuracy": 99.57857142857142
+        }
+      }
+    },
+    "practical_low_suburban": {
+      "count": 168000,
+      "oracle_correct": 157864,
+      "oracle_accuracy": 93.96666666666667,
+      "oracle_gap_pp": -7.427976190476201,
+      "all_candidates_wrong": 10136,
+      "raw_free_union_correct": 146758,
+      "per_candidate": {
+        "raw": {
+          "correct": 127251,
+          "accuracy": 75.74464285714285,
+          "exclusive_correct": 153,
+          "unique_vs_raw_free": 0
+        },
+        "direct_axial": {
+          "correct": 127399,
+          "accuracy": 75.8327380952381,
+          "exclusive_correct": 102,
+          "unique_vs_raw_free": 712
+        },
+        "blind_gate": {
+          "correct": 129238,
+          "accuracy": 76.92738095238096,
+          "exclusive_correct": 166,
+          "unique_vs_raw_free": 1815
+        },
+        "curriculum_gate": {
+          "correct": 129614,
+          "accuracy": 77.15119047619048,
+          "exclusive_correct": 1050,
+          "unique_vs_raw_free": 3423
+        },
+        "attention": {
+          "correct": 115152,
+          "accuracy": 68.54285714285714,
+          "exclusive_correct": 1983,
+          "unique_vs_raw_free": 5608
+        },
+        "full_hard": {
+          "correct": 136159,
+          "accuracy": 81.04702380952381,
+          "exclusive_correct": 49,
+          "unique_vs_raw_free": 837
+        },
+        "free_mixture": {
+          "correct": 136874,
+          "accuracy": 81.47261904761905,
+          "exclusive_correct": 162,
+          "unique_vs_raw_free": 0
+        },
+        "hierarchical": {
+          "correct": 135284,
+          "accuracy": 80.52619047619048,
+          "exclusive_correct": 73,
+          "unique_vs_raw_free": 1174
+        },
+        "white_prior": {
+          "correct": 122976,
+          "accuracy": 73.2,
+          "exclusive_correct": 1049,
+          "unique_vs_raw_free": 3988
+        },
+        "structured_prior": {
+          "correct": 133068,
+          "accuracy": 79.20714285714286,
+          "exclusive_correct": 770,
+          "unique_vs_raw_free": 2936
+        },
+        "joint_mixture": {
+          "correct": 135987,
+          "accuracy": 80.94464285714285,
+          "exclusive_correct": 70,
+          "unique_vs_raw_free": 979
+        },
+        "confidence_router": {
+          "correct": 135376,
+          "accuracy": 80.58095238095238,
+          "exclusive_correct": 36,
+          "unique_vs_raw_free": 1344
+        }
+      },
+      "cross_domain": {
+        "cross_rx_source_dates": {
+          "count": 126000,
+          "oracle_correct": 119272,
+          "oracle_accuracy": 94.66031746031746,
+          "raw_clean_accuracy": 88.11031746031746
+        },
+        "cross_rx_and_new_day": {
+          "count": 42000,
+          "oracle_correct": 38592,
+          "oracle_accuracy": 91.88571428571429,
+          "raw_clean_accuracy": 81.82380952380952
+        }
+      },
+      "classes": {
+        "0": {
+          "count": 28000,
+          "oracle_correct": 27416,
+          "oracle_accuracy": 97.91428571428571
+        },
+        "1": {
+          "count": 28000,
+          "oracle_correct": 23189,
+          "oracle_accuracy": 82.81785714285715
+        },
+        "2": {
+          "count": 28000,
+          "oracle_correct": 26578,
+          "oracle_accuracy": 94.92142857142856
+        },
+        "3": {
+          "count": 28000,
+          "oracle_correct": 25000,
+          "oracle_accuracy": 89.28571428571429
+        },
+        "4": {
+          "count": 28000,
+          "oracle_correct": 27859,
+          "oracle_accuracy": 99.49642857142858
+        },
+        "5": {
+          "count": 28000,
+          "oracle_correct": 27822,
+          "oracle_accuracy": 99.36428571428571
+        }
+      }
+    },
+    "practical_high_urban": {
+      "count": 168000,
+      "oracle_correct": 158809,
+      "oracle_accuracy": 94.52916666666667,
+      "oracle_gap_pp": -7.990476190476201,
+      "all_candidates_wrong": 9191,
+      "raw_free_union_correct": 148403,
+      "per_candidate": {
+        "raw": {
+          "correct": 129444,
+          "accuracy": 77.05,
+          "exclusive_correct": 90,
+          "unique_vs_raw_free": 0
+        },
+        "direct_axial": {
+          "correct": 129467,
+          "accuracy": 77.06369047619047,
+          "exclusive_correct": 82,
+          "unique_vs_raw_free": 566
+        },
+        "blind_gate": {
+          "correct": 129661,
+          "accuracy": 77.17916666666666,
+          "exclusive_correct": 143,
+          "unique_vs_raw_free": 1591
+        },
+        "curriculum_gate": {
+          "correct": 132236,
+          "accuracy": 78.71190476190476,
+          "exclusive_correct": 1240,
+          "unique_vs_raw_free": 3408
+        },
+        "attention": {
+          "correct": 114582,
+          "accuracy": 68.20357142857144,
+          "exclusive_correct": 1855,
+          "unique_vs_raw_free": 5053
+        },
+        "full_hard": {
+          "correct": 139087,
+          "accuracy": 82.78988095238095,
+          "exclusive_correct": 34,
+          "unique_vs_raw_free": 539
+        },
+        "free_mixture": {
+          "correct": 139986,
+          "accuracy": 83.325,
+          "exclusive_correct": 154,
+          "unique_vs_raw_free": 0
+        },
+        "hierarchical": {
+          "correct": 138364,
+          "accuracy": 82.35952380952381,
+          "exclusive_correct": 57,
+          "unique_vs_raw_free": 829
+        },
+        "white_prior": {
+          "correct": 125432,
+          "accuracy": 74.66190476190476,
+          "exclusive_correct": 1167,
+          "unique_vs_raw_free": 3690
+        },
+        "structured_prior": {
+          "correct": 135796,
+          "accuracy": 80.83095238095238,
+          "exclusive_correct": 693,
+          "unique_vs_raw_free": 2860
+        },
+        "joint_mixture": {
+          "correct": 138775,
+          "accuracy": 82.60416666666667,
+          "exclusive_correct": 31,
+          "unique_vs_raw_free": 666
+        },
+        "confidence_router": {
+          "correct": 138041,
+          "accuracy": 82.1672619047619,
+          "exclusive_correct": 41,
+          "unique_vs_raw_free": 978
+        }
+      },
+      "cross_domain": {
+        "cross_rx_source_dates": {
+          "count": 126000,
+          "oracle_correct": 120049,
+          "oracle_accuracy": 95.27698412698413,
+          "raw_clean_accuracy": 88.11031746031746
+        },
+        "cross_rx_and_new_day": {
+          "count": 42000,
+          "oracle_correct": 38760,
+          "oracle_accuracy": 92.28571428571428,
+          "raw_clean_accuracy": 81.82380952380952
+        }
+      },
+      "classes": {
+        "0": {
+          "count": 28000,
+          "oracle_correct": 27504,
+          "oracle_accuracy": 98.22857142857143
+        },
+        "1": {
+          "count": 28000,
+          "oracle_correct": 23589,
+          "oracle_accuracy": 84.24642857142857
+        },
+        "2": {
+          "count": 28000,
+          "oracle_correct": 26694,
+          "oracle_accuracy": 95.33571428571429
+        },
+        "3": {
+          "count": 28000,
+          "oracle_correct": 25211,
+          "oracle_accuracy": 90.03928571428571
+        },
+        "4": {
+          "count": 28000,
+          "oracle_correct": 27926,
+          "oracle_accuracy": 99.73571428571428
+        },
+        "5": {
+          "count": 28000,
+          "oracle_correct": 27885,
+          "oracle_accuracy": 99.58928571428571
+        }
+      }
+    },
+    "practical_mid_urban": {
+      "count": 168000,
+      "oracle_correct": 155231,
+      "oracle_accuracy": 92.39940476190476,
+      "oracle_gap_pp": -5.860714285714295,
+      "all_candidates_wrong": 12769,
+      "raw_free_union_correct": 138084,
+      "per_candidate": {
+        "raw": {
+          "correct": 105497,
+          "accuracy": 62.79583333333333,
+          "exclusive_correct": 256,
+          "unique_vs_raw_free": 0
+        },
+        "direct_axial": {
+          "correct": 105559,
+          "accuracy": 62.83273809523809,
+          "exclusive_correct": 342,
+          "unique_vs_raw_free": 1709
+        },
+        "blind_gate": {
+          "correct": 108767,
+          "accuracy": 64.7422619047619,
+          "exclusive_correct": 509,
+          "unique_vs_raw_free": 3446
+        },
+        "curriculum_gate": {
+          "correct": 108492,
+          "accuracy": 64.57857142857144,
+          "exclusive_correct": 1414,
+          "unique_vs_raw_free": 4956
+        },
+        "attention": {
+          "correct": 96225,
+          "accuracy": 57.276785714285715,
+          "exclusive_correct": 2664,
+          "unique_vs_raw_free": 6788
+        },
+        "full_hard": {
+          "correct": 122321,
+          "accuracy": 72.81011904761905,
+          "exclusive_correct": 91,
+          "unique_vs_raw_free": 1485
+        },
+        "free_mixture": {
+          "correct": 124641,
+          "accuracy": 74.19107142857143,
+          "exclusive_correct": 381,
+          "unique_vs_raw_free": 0
+        },
+        "hierarchical": {
+          "correct": 120634,
+          "accuracy": 71.80595238095238,
+          "exclusive_correct": 102,
+          "unique_vs_raw_free": 2009
+        },
+        "white_prior": {
+          "correct": 109849,
+          "accuracy": 65.38630952380953,
+          "exclusive_correct": 1371,
+          "unique_vs_raw_free": 4965
+        },
+        "structured_prior": {
+          "correct": 121305,
+          "accuracy": 72.20535714285714,
+          "exclusive_correct": 1578,
+          "unique_vs_raw_free": 5175
+        },
+        "joint_mixture": {
+          "correct": 122671,
+          "accuracy": 73.01845238095238,
+          "exclusive_correct": 252,
+          "unique_vs_raw_free": 1941
+        },
+        "confidence_router": {
+          "correct": 121226,
+          "accuracy": 72.15833333333333,
+          "exclusive_correct": 94,
+          "unique_vs_raw_free": 2302
+        }
+      },
+      "cross_domain": {
+        "cross_rx_source_dates": {
+          "count": 126000,
+          "oracle_correct": 117014,
+          "oracle_accuracy": 92.86825396825397,
+          "raw_clean_accuracy": 88.11031746031746
+        },
+        "cross_rx_and_new_day": {
+          "count": 42000,
+          "oracle_correct": 38217,
+          "oracle_accuracy": 90.99285714285715,
+          "raw_clean_accuracy": 81.82380952380952
+        }
+      },
+      "classes": {
+        "0": {
+          "count": 28000,
+          "oracle_correct": 26946,
+          "oracle_accuracy": 96.2357142857143
+        },
+        "1": {
+          "count": 28000,
+          "oracle_correct": 22647,
+          "oracle_accuracy": 80.88214285714285
+        },
+        "2": {
+          "count": 28000,
+          "oracle_correct": 25617,
+          "oracle_accuracy": 91.48928571428571
+        },
+        "3": {
+          "count": 28000,
+          "oracle_correct": 24857,
+          "oracle_accuracy": 88.775
+        },
+        "4": {
+          "count": 28000,
+          "oracle_correct": 27523,
+          "oracle_accuracy": 98.29642857142858
+        },
+        "5": {
+          "count": 28000,
+          "oracle_correct": 27641,
+          "oracle_accuracy": 98.71785714285714
+        }
+      }
+    },
+    "practical_low_urban": {
+      "count": 168000,
+      "oracle_correct": 151352,
+      "oracle_accuracy": 90.09047619047618,
+      "oracle_gap_pp": -3.551785714285714,
+      "all_candidates_wrong": 16648,
+      "raw_free_union_correct": 127649,
+      "per_candidate": {
+        "raw": {
+          "correct": 86696,
+          "accuracy": 51.60476190476191,
+          "exclusive_correct": 469,
+          "unique_vs_raw_free": 0
+        },
+        "direct_axial": {
+          "correct": 86583,
+          "accuracy": 51.5375,
+          "exclusive_correct": 506,
+          "unique_vs_raw_free": 2656
+        },
+        "blind_gate": {
+          "correct": 91863,
+          "accuracy": 54.68035714285714,
+          "exclusive_correct": 747,
+          "unique_vs_raw_free": 4910
+        },
+        "curriculum_gate": {
+          "correct": 90170,
+          "accuracy": 53.67261904761905,
+          "exclusive_correct": 1666,
+          "unique_vs_raw_free": 6480
+        },
+        "attention": {
+          "correct": 82232,
+          "accuracy": 48.94761904761904,
+          "exclusive_correct": 3545,
+          "unique_vs_raw_free": 8815
+        },
+        "full_hard": {
+          "correct": 107519,
+          "accuracy": 63.99940476190476,
+          "exclusive_correct": 153,
+          "unique_vs_raw_free": 2968
+        },
+        "free_mixture": {
+          "correct": 110367,
+          "accuracy": 65.69464285714287,
+          "exclusive_correct": 615,
+          "unique_vs_raw_free": 0
+        },
+        "hierarchical": {
+          "correct": 105454,
+          "accuracy": 62.7702380952381,
+          "exclusive_correct": 133,
+          "unique_vs_raw_free": 3649
+        },
+        "white_prior": {
+          "correct": 97232,
+          "accuracy": 57.87619047619048,
+          "exclusive_correct": 1420,
+          "unique_vs_raw_free": 6389
+        },
+        "structured_prior": {
+          "correct": 107915,
+          "accuracy": 64.23511904761905,
+          "exclusive_correct": 2097,
+          "unique_vs_raw_free": 7107
+        },
+        "joint_mixture": {
+          "correct": 108805,
+          "accuracy": 64.76488095238095,
+          "exclusive_correct": 549,
+          "unique_vs_raw_free": 3624
+        },
+        "confidence_router": {
+          "correct": 106282,
+          "accuracy": 63.26309523809523,
+          "exclusive_correct": 114,
+          "unique_vs_raw_free": 3826
+        }
+      },
+      "cross_domain": {
+        "cross_rx_source_dates": {
+          "count": 126000,
+          "oracle_correct": 113956,
+          "oracle_accuracy": 90.44126984126984,
+          "raw_clean_accuracy": 88.11031746031746
+        },
+        "cross_rx_and_new_day": {
+          "count": 42000,
+          "oracle_correct": 37396,
+          "oracle_accuracy": 89.03809523809524,
+          "raw_clean_accuracy": 81.82380952380952
+        }
+      },
+      "classes": {
+        "0": {
+          "count": 28000,
+          "oracle_correct": 26307,
+          "oracle_accuracy": 93.95357142857142
+        },
+        "1": {
+          "count": 28000,
+          "oracle_correct": 22246,
+          "oracle_accuracy": 79.45
+        },
+        "2": {
+          "count": 28000,
+          "oracle_correct": 24475,
+          "oracle_accuracy": 87.41071428571429
+        },
+        "3": {
+          "count": 28000,
+          "oracle_correct": 24439,
+          "oracle_accuracy": 87.28214285714286
+        },
+        "4": {
+          "count": 28000,
+          "oracle_correct": 26789,
+          "oracle_accuracy": 95.675
+        },
+        "5": {
+          "count": 28000,
+          "oracle_correct": 27096,
+          "oracle_accuracy": 96.77142857142857
+        }
+      }
+    }
+  },
+  "caveat": "Oracle selects per record using true ground labels and cannot be deployed; only upper bound for these fixed candidates on a reused single-seed simulated Phase1 development set. No DURA outputs or teacher-derived candidates included."
+}

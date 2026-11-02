@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "views": 7,
+  "candidates": 12,
+  "ground_records": 168000,
+  "independent_counts_recomputed": 392,
+  "method": "Per-record boolean vote count, compared with original leave-one-candidate-out union method",
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "model_updates": 0,
+  "caveat": "Previously observed development predictions and truth; oracle is not deployable."
+}
