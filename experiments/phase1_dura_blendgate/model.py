@@ -13,7 +13,7 @@ EXPERT_COMMIT = 'b326a21a54ae7b9b198e3d077c01a3919d8bd135'
 
 
 @torch.no_grad()
-def align_to_anchor(wave, anchor):
+def align_to_anchor(wave, anchor, preserve_edges=False):
     padded = F.pad(wave, (64, 64), mode='reflect')
     windows = torch.complex(padded[:, 0], padded[:, 1]).unfold(-1, 256, 1)
     center = windows[:, :, 64:-64]
@@ -23,13 +23,19 @@ def align_to_anchor(wave, anchor):
     choice = error.argmin(1)
     row = torch.arange(len(wave), device=wave.device)
     value = gain[row, choice, None] * windows[row, choice]
-    return torch.stack((value.real, value.imag), 1)
+    aligned = torch.stack((value.real, value.imag), 1)
+    if preserve_edges:
+        indices = torch.arange(256, device=wave.device)[None, :] + (choice - 64)[:, None]
+        valid = (indices >= 0) & (indices < 256)
+        aligned = torch.where(valid[:, None, :], aligned, anchor)
+    return aligned
 
 
 class AlignedBlend(nn.Module):
-    def __init__(self, expert):
+    def __init__(self, expert, preserve_edges=False):
         super().__init__()
         self.expert = expert.eval().requires_grad_(False)
+        self.preserve_edges = preserve_edges
         self.entry = nn.Conv1d(6, 24, 7, padding=3)
         self.layers = nn.ModuleList(nn.Conv1d(24, 24, 5, dilation=d, padding=2*d) for d in (1, 2, 4))
         self.gate_output = nn.Conv1d(24, 1, 1)
@@ -50,7 +56,7 @@ class AlignedBlend(nn.Module):
             raise FloatingPointError('Finite waveform evidence is required')
         with torch.no_grad():
             candidate = self.expert(received, received, log_variance)
-            aligned = align_to_anchor(candidate, initial)
+            aligned = align_to_anchor(candidate, initial, preserve_edges=self.preserve_edges)
         if not torch.isfinite(aligned).all():
             raise FloatingPointError('Finite aligned expert output is required')
         power = received.square().mean((1, 2), keepdim=True).clamp_min(1e-8)
