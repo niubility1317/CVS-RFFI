@@ -16,6 +16,7 @@ SOURCE = '20261102-phase1-dynamic-volterra-source-s2026092701-r01'
 BATCH = 8
 SCHEMA = 'phase1_dynamic_volterra_v1'
 LOG_PREFIX = 'DYNAMIC_VOLTERRA'
+USES_DURA = False
 
 
 def dependencies():
@@ -28,8 +29,9 @@ def load_fixed(root, commit, device, deps):
     folder = root/'runs'/SOURCE
     done = deps.core.read(folder/'prediction_complete.json')
     expected = dict(status='SOURCE_PREDICTIONS_FIXED', commit=commit, count=672, fit_ids=8192,
-                    F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=False,
+                    F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=USES_DURA,
                     TX_labels_read=0, U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates_after_prediction=0)
+    if USES_DURA: expected['DURA_frozen'] = True
     if any(done.get(key) != value for key, value in expected.items()):
         raise ValueError('Complete fixed source predictions and frozen components are required')
     state = torch.load(folder/'checkpoint.pt', map_location='cpu', weights_only=False)

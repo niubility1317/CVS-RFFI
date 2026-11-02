@@ -11,6 +11,7 @@ import numpy as np
 VIEWS = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',
          'practical_high_urban', 'practical_mid_urban', 'practical_low_urban')
 SCHEMA = 'phase1_dynamic_volterra_v1'
+USES_DURA = False
 
 
 def read(path):
@@ -35,8 +36,9 @@ def main():
         raise ValueError('Independent CPU scorer and unique score output required')
     manifest = read(args.source/'prediction_complete.json')
     expected = dict(status='SOURCE_PREDICTIONS_FIXED', commit=args.commit, count=672, fit_ids=8192,
-                    F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=False,
+                    F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=USES_DURA,
                     TX_labels_read=0, U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates_after_prediction=0)
+    if USES_DURA: expected['DURA_frozen'] = True
     if any(manifest.get(key) != value for key, value in expected.items()):
         raise ValueError('Complete fixed source predictions are required before identity truth')
     with np.load(args.source/'source_predictions.npz', allow_pickle=False) as z:
@@ -86,11 +88,11 @@ def main():
         raise ValueError('Each candidate source ID needs a fixed DURA comparator')
     selected = order[positions]
     old = ref_values[selected]
-    parent_expected = old[:, 5]
+    parent_expected = old[:, 2] if USES_DURA else old[:, 5]
     if (not np.array_equal(ref_rx[selected], rx) or not np.array_equal(ref_scene[selected], scene)
             or not np.array_equal(old[:, 5], values[:, 3]) or not np.array_equal(parent_expected, values[:, 5])
             or not np.array_equal(old[:, 3] > .8, values[:, 2] == 1)):
-        raise ValueError('Common raw predictions, input parent and gate must match')
+        raise ValueError('Common raw predictions, parent and gate must match')
     known, unlabeled = roles[ids] == 'L_s', roles[ids] == 'U_s'
     if not np.all(known | unlabeled):
         raise ValueError('Only Phase1 source roles are authorized')

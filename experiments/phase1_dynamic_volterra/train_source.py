@@ -20,6 +20,7 @@ BATCH = 8
 SCHEMA = 'phase1_dynamic_volterra_v1'
 LOG_PREFIX = 'DYNAMIC_VOLTERRA'
 PAIRED_VIEWS = False
+USES_DURA = False
 VIEWS = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',
          'practical_high_urban', 'practical_mid_urban', 'practical_low_urban')
 
@@ -37,6 +38,10 @@ def training_indices(chosen, records_per_view, paired):
     if paired:
         return torch.cat([chosen+i*records_per_view for i in range(3)])
     return chosen
+
+
+def extra_frozen_components(stats, eye):
+    return ()
 
 
 def load_components(root, device, deps):
@@ -117,7 +122,7 @@ def main():
     blind, gate, stats, eye = load_components(args.root, args.device, deps)
     reader.eval().requires_grad_(False)
     model = DynamicVolterra().to(args.device)
-    frozen = (reader, blind, gate)
+    frozen = (reader, blind, gate, *extra_frozen_components(stats, eye))
     before = [snapshot(module) for module in frozen]
     fresh = args.root/'runs/20261031-phase1-DURA-freshViews-E30-s2026092701-r01/source_cache'
     if (fresh/'train/physical_ids.npy').resolve() != (cache/'train/physical_ids.npy').resolve():
@@ -223,9 +228,11 @@ def main():
         raise ValueError('Finite complete fixed source predictions are required')
     summary = dict(commit=args.commit, fit_ids=len(selected), active_exposures=len(data[0]),
                    source_view_counts=scene_counts, losses=losses, adaptive_gradient_batches=adaptive_gradient_batches,
-                   F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=False, paired_views=PAIRED_VIEWS,
+                   F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=USES_DURA, paired_views=PAIRED_VIEWS,
                    TX_labels_read=0,
                    U_s_truth_reads=0, V_reads=0, test_reads=0)
+    if USES_DURA:
+        summary['DURA_frozen'] = True
     if args.smoke:
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', eval_records=len(ids), **summary))
         return
@@ -236,7 +243,7 @@ def main():
         np.savez(stream, indices=ids, split=np.asarray(splits), rx=rx[ids], scene=scene[ids], values=values)
     core.write(args.out/'prediction_complete.json', dict(status='SOURCE_PREDICTIONS_FIXED', count=len(ids),
                model_updates_after_prediction=0,
-               columns='clean_confidence,clean_pseudoclass,gate,raw_class,raw_aligned_iq,input_class,input_aligned_iq,restored_class,restored_aligned_iq',
+               columns='clean_confidence,clean_pseudoclass,gate,raw_class,raw_aligned_iq,parent_class,parent_aligned_iq,restored_class,restored_aligned_iq',
                caveat='Source records have previously been explored; pseudo labels are not identity truth.', **summary))
     print(LOG_PREFIX+'_SOURCE_PREDICTIONS_FIXED', len(ids), flush=True)
 
