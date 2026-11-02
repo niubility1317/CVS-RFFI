@@ -42,11 +42,14 @@ def analyze(rt, native_index, output):
             files[row['metrics_file']].append(row)
     for path, entries in files.items():
         payload = read(path)
+        require(read(Path(path).parent / 'complete.json')['status'] == 'SCORED_COMPLETE', 'Native score not closed')
         for row in entries:
             key = (row['profile'], row['capsule'], int(row['model_seed']), row['split_id'])
             require(payload['model_seed'] == key[2], 'Wrong native score seed')
+            capsule = read(Path(rt['data_root']) / row['capsule'] / 'manifest.json')
+            require(payload['capsule_id'] == capsule['capsule_id'], 'Wrong native capsule')
             matches = [r for r in payload['rows'] if r['split_id'] == row['split_id']
-                       and r['stage'] == 'C' and r['input_path'] == 'P0']
+                       and r['stage'] == 'C' and r['input_path'] == 'P0' and r['arm'] == row['profile']]
             require(len(matches) == 1, 'Native score row missing or ambiguous')
             require(key not in native, 'Duplicate native score index')
             native[key] = matches[0]['metrics']
