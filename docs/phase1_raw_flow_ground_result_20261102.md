@@ -16,4 +16,4 @@
 
 证据位于 N607 `runs/20261102-phase1-raw-conditioned-flow-ground-test-s2026092701-r01/flow/test_summary.json`，评分前检查和独立复算位于 `runs/20261102-phase1-raw-conditioned-flow-ground-test-s2026092701-r01-auto-audit/{pretruth_audit,independent_audit}.json`。两项审计状态 PASS，源物理编号与基座预测一致。
 
-该地面数据及模拟信道测试此前反复用于研发，单种子结果不构成独立盲测或真实卫星性能。身份保持条件流是独立 checkpoint，仍在独立测试；不得将首版结论套用到该版本。
+该地面数据及模拟信道测试此前反复用于研发，单种子结果不构成独立盲测或真实卫星性能。身份保持条件流是独立 checkpoint，其独立地面结果见 `phase1_identity_flow_ground_result_20261102.md`；不得将首版结论套用到该版本。
