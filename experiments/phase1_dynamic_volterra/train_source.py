@@ -48,6 +48,11 @@ def extra_frozen_model_components(model):
     return ()
 
 
+def prepare_training_input(received):
+    """Optional source-only augmentation; default preserves cached source views."""
+    return received
+
+
 def source_objective(reader, output, anchor, clean, clean_features, groups):
     return source_loss(reader, output, clean, clean_features, groups)
 
@@ -158,7 +163,7 @@ def main():
         received, scene = s.epoch_data(fresh, epoch)
         for start in range(0, len(selected), BATCH):
             idx = selected[start:start+BATCH]
-            x = core.tensor(received[idx], args.device)
+            x = prepare_training_input(core.tensor(received[idx], args.device))
             target = core.tensor(clean[idx], args.device)
             base, logvar = input_noise(x, blind, stats, eye, deps)
             with torch.no_grad():
