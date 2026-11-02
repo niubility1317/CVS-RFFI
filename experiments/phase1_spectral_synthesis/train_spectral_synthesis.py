@@ -5,6 +5,7 @@ import numpy as np
 import torch
 from torch.nn import functional as F
 from spectral_synthesis import SpectralSynthesis
+from fit_sampling import select_fit
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'phase1_joint_mixture'))
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'phase1_prior_pnp'))
 from source_pilot import s,core,BlindActionNet,action_matrix,posterior,SOURCE,PRIOR_RUN
@@ -15,9 +16,9 @@ def hypotheses(x,blind,prior,eye):
  h,lv=blind(x);A=action_matrix(h);states,lp=posterior(x.reshape(len(x),512),A,eye[None]*lv.exp()[:,None,None],*prior);base=(states*lp.exp().unsqueeze(-1)).sum(1).reshape_as(x);candidates=torch.cat((x[:,None],states.reshape(-1,6,2,256)),1);return base,candidates,lv
 
 def main():
- ap=argparse.ArgumentParser();ap.add_argument('--root',type=Path,required=True);ap.add_argument('--out',type=Path,required=True);ap.add_argument('--commit',required=True);ap.add_argument('--smoke',action='store_true');a=ap.parse_args()
+ ap=argparse.ArgumentParser();ap.add_argument('--root',type=Path,required=True);ap.add_argument('--out',type=Path,required=True);ap.add_argument('--commit',required=True);ap.add_argument('--smoke',action='store_true');ap.add_argument('--fit-size',type=int,choices=(1024,8192),default=1024);a=ap.parse_args()
  if a.out.exists():raise FileExistsError('Immutable output required')
- a.out.mkdir(parents=True);torch.set_num_threads(2);torch.manual_seed(2026135054);cache,clean,rx,training,pv,ph=s.source_contract(a.root);validation,heldout=s.new_splits(cache,rx,training,pv,ph);prior_ids=np.sort(np.random.default_rng(2026120355).choice(training,size=8192,replace=False));pool=np.setdiff1d(training,prior_ids,assume_unique=True);fit=np.sort(np.random.default_rng(2026135055).choice(pool,size=1024,replace=False));roles=np.load(cache/'train/roles.npy',allow_pickle=False)
+ a.out.mkdir(parents=True);torch.set_num_threads(2);torch.manual_seed(2026135054);cache,clean,rx,training,pv,ph=s.source_contract(a.root);validation,heldout=s.new_splits(cache,rx,training,pv,ph);prior_ids=np.sort(np.random.default_rng(2026120355).choice(training,size=8192,replace=False));fit=select_fit(training,prior_ids,a.fit_size);roles=np.load(cache/'train/roles.npy',allow_pickle=False)
  if np.intersect1d(fit,np.r_[prior_ids,validation,heldout]).size:raise ValueError('Independent source fit IDs required')
  teacher,contract=core.teacher(a.root,'cpu');teacher.eval().requires_grad_(False);labels=allowed_fit_labels(a.root,cache,clean,roles,contract,fit,validation,heldout)
  b=torch.load(a.root/'runs'/SOURCE/'checkpoint_epoch10.pt',map_location='cpu',weights_only=False);p=torch.load(a.root/'runs'/PRIOR_RUN/'source_prior.pt',map_location='cpu',weights_only=False)
