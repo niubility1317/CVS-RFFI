@@ -15,7 +15,10 @@
     "zero-target-old-labels",
     "MIX01",
     "DURA",
-    "truth-last"
+    "truth-last",
+    "shelved",
+    "negative-result",
+    "do-not-promote"
   ],
   "comparison_group_id": null,
   "parent_run_ids": [
@@ -9598,7 +9601,8 @@
     "Each existing prediction unit is reused from r01; predecessor workers finish naturally and count against GPU caps.",
     "CPU states share a mathematically identical kernel; support size >=256 uses FP64 CUDA with pair budget 262144 and CPU fallback for close ties.",
     "Four actual-checkpoint source-only smoke checks compare scores and predictions before controller handoff; no target or query access.",
-    "All 84 units and 10752 predictions freeze globally before independent four-process CPU truth-last scoring."
+    "All 84 units and 10752 predictions freeze globally before independent four-process CPU truth-last scoring.",
+    "2026-11-02 用户要求将本次零目标旧类 support 的两种 R42 派生直接注册实验搁置；仅保留为已完成负结果，不作为当前候选或自动启动后续实验。该处置不适用于原 R42。"
   ],
   "replaces_run_id": "20261102-phase2-r42-directc-mix01-m4-r01",
   "registered_at": "2026-11-02T12:00:12+00:00"

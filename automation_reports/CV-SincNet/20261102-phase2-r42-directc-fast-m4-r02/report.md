@@ -1,5 +1,8 @@
 # R42 直接注册：共享核与 CUDA 加速无中断接管
 
+> **科学处置：搁置。** 按用户要求，此次零目标旧类 support 的直接注册变体不再作为当前候选或自动继续；结果保留为已完成的负结果。此前使用目标旧类 support 的原 R42 不受此处置影响。
+
+
 - run_id：`20261102-phase2-r42-directc-fast-m4-r02`
 - group_id：`phase2-r42-direct-c-zero-target-old`；类别：`cvs`；阶段：`Phase2-C`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
@@ -21,7 +24,7 @@ Fixed direct-C MIX01 16 KN; identical source and task definitions; inherit finis
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+结果与覆盖见下方独立评分记录及完整结果报告。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
