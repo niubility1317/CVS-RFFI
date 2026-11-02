@@ -1,0 +1,26 @@
+{
+  "status": "SOURCE_TRAINING_COMPLETE",
+  "commit": "aad511295e734e616770609ab96c2ff5ab008aa7",
+  "counts": {
+    "exposures": 8192,
+    "L_s": 700,
+    "U_s": 7492
+  },
+  "losses": [
+    0.06515142234275118,
+    0.05487135465227766,
+    0.052986333961598575,
+    0.05053850133845117,
+    0.04962278260063613,
+    0.05001618969254196,
+    0.0481126714948914,
+    0.04621707485785009
+  ],
+  "F_frozen": true,
+  "DURA_loaded": false,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "fit_ids": 8192
+}

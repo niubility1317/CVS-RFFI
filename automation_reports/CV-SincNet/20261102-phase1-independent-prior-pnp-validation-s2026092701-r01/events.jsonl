@@ -1,1 +1,2 @@
 {"at": "2026-11-02T03:52:44+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T03:55:50+00:00", "status": "REPLACED", "note": "Replaced by r02 direct gate loader to strictly avoid unrelated prior model dependency.", "evidence": ["Source inspection found initial_models instantiated unrelated phase checkpoint; run not launched."], "row_id": null}
