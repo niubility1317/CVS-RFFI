@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "checked_receiver_scene_margin_cells": 72,
+  "fixed_choices": 1047,
+  "switches": [
+    0,
+    0,
+    0
+  ],
+  "reasons": {
+    "4": {
+      "test_count": 345,
+      "candidate_disagreement": 33,
+      "unseen_pattern": 8,
+      "sparse_pattern": 6,
+      "adequate_pattern": 19,
+      "nonbaseline_better": 0,
+      "prior_correctness": [
+        0.9629629629629629,
+        0.9572649572649573,
+        0.9686609686609686,
+        0.9572649572649573,
+        0.9629629629629629
+      ]
+    },
+    "6": {
+      "test_count": 351,
+      "candidate_disagreement": 23,
+      "unseen_pattern": 6,
+      "sparse_pattern": 4,
+      "adequate_pattern": 13,
+      "nonbaseline_better": 0,
+      "prior_correctness": [
+        0.9565217391304348,
+        0.9101449275362319,
+        0.9072463768115943,
+        0.9159420289855073,
+        0.9072463768115943
+      ]
+    },
+    "8": {
+      "test_count": 351,
+      "candidate_disagreement": 27,
+      "unseen_pattern": 2,
+      "sparse_pattern": 9,
+      "adequate_pattern": 16,
+      "nonbaseline_better": 0,
+      "prior_correctness": [
+        0.9597701149425287,
+        0.9339080459770115,
+        0.9382183908045977,
+        0.9367816091954023,
+        0.9353448275862069
+      ]
+    }
+  },
+  "source_only": true
+}
