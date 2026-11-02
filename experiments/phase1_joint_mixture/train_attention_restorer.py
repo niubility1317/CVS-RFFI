@@ -33,7 +33,7 @@ def main():
   for start in range(0,len(order),32):
    part=pairs[order[start:start+32]];ids=part[:,1];xx=np.stack([views[j][0][i] for j,i in part]);sc=[str(views[j][1][i]) for j,i in part];x=core.tensor(xx,a.device);y=core.tensor(clean[ids],a.device)
    with torch.no_grad():
-    fy=teacher.features(y);logits=teacher.classify_features(fy);conf,pseudo=F.softmax(logits,1).max(1);lab=torch.as_tensor(labels[ids],device=a.device);known=lab>=0;target=torch.where(known,lab,pseudo);eligible=known|(conf>=.95)
+    fy=teacher.features(y);logits=teacher.classify_features(fy);conf,pseudo=F.softmax(logits,1).max(1);lab=torch.tensor(labels[ids].tolist(),device=a.device,dtype=torch.long);known=lab>=0;target=torch.where(known,lab,pseudo);eligible=known|(conf>=.95)
    out=net(x);feature=teacher.features(out);pred=teacher.classify_features(feature);ce=F.cross_entropy(pred,target,reduction='none')*eligible.float();den=y.flatten(1).square().sum(1).clamp_min(1e-8);wave=(out-y).flatten(1).square().sum(1)/den;semantic=(F.normalize(feature,dim=1)-F.normalize(fy,dim=1)).square().sum(1);clean_output=net(y);identity=(clean_output-y).flatten(1).square().sum(1)/den
    per=ce+wave+0.5*semantic+0.2*identity;groups=[(int(rx[i]),v) for i,v in zip(ids,sc)];unique=sorted(set(groups));loss=torch.stack([per[torch.as_tensor([g==u for g in groups],device=a.device)].mean() for u in unique]).mean()
    opt.zero_grad(set_to_none=True);loss.backward()
