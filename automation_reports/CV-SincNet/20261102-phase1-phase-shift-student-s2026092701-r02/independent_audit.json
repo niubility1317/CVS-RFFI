@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "scope": "Recomputed 12 candidate source selection rules from receiver/scene cells; no per-record predictions.",
+  "best_by_net": {
+    "ep": "5",
+    "key": "1.0:0.99",
+    "net": -325,
+    "cls": 10,
+    "iq": 12,
+    "low4": {
+      "count": 582,
+      "valid_count": 566,
+      "active": 579,
+      "baseline_correct": 496,
+      "candidate_correct": 418,
+      "baseline_iq": 0.020665397867560387,
+      "candidate_iq": 0.26516038179397583
+    },
+    "low6": {
+      "count": 570,
+      "valid_count": 564,
+      "active": 568,
+      "baseline_correct": 488,
+      "candidate_correct": 419,
+      "baseline_iq": 0.035013314336538315,
+      "candidate_iq": 0.27495166659355164
+    },
+    "low8": {
+      "count": 531,
+      "valid_count": 512,
+      "active": 525,
+      "baseline_correct": 462,
+      "candidate_correct": 394,
+      "baseline_iq": 0.07721950113773346,
+      "candidate_iq": 0.27092936635017395
+    }
+  },
+  "combination_count": 12,
+  "selected": {
+    "kind": "dura",
+    "validation_net": 0
+  }
+}
