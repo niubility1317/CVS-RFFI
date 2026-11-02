@@ -1,0 +1,214 @@
+{
+  "status": "COMPLETE_SOURCE_ONLY_UNCERTAINTY_CHANNEL",
+  "commit": "9cd7d05a5ff3bf131f3ad4f506f7ed579fa9824a",
+  "prediction_sha256": "249e6ca848f0bebc48193d76f5576834cf3ebf3a8558840da31ea0e5a89e97f2",
+  "source_only": true,
+  "probe_ids": 384,
+  "scene": {
+    "practical_high": {
+      "count": 64,
+      "valid_count": 60,
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.015550384297966957
+      },
+      "parent": {
+        "correct": 60,
+        "mean_iq_nmse": 0.024205170571804047,
+        "mean_channel_nmse": 0.004794047214090824,
+        "mean_forward_residual": 0.00435516145080328
+      },
+      "ridge_0.1": {
+        "correct": 60,
+        "mean_iq_nmse": 0.024883657693862915,
+        "mean_channel_nmse": 0.009868256747722626,
+        "mean_forward_residual": 0.00226863962598145
+      },
+      "ridge_1": {
+        "correct": 60,
+        "mean_iq_nmse": 0.023943938314914703,
+        "mean_channel_nmse": 0.00543604139238596,
+        "mean_forward_residual": 0.0029890656005591154
+      },
+      "ridge_10": {
+        "correct": 60,
+        "mean_iq_nmse": 0.023807479068636894,
+        "mean_channel_nmse": 0.004748156294226646,
+        "mean_forward_residual": 0.003961571026593447
+      }
+    },
+    "practical_mid": {
+      "count": 64,
+      "valid_count": 61,
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.021471306681632996
+      },
+      "parent": {
+        "correct": 61,
+        "mean_iq_nmse": 0.019013410434126854,
+        "mean_channel_nmse": 0.006327858194708824,
+        "mean_forward_residual": 0.01225588470697403
+      },
+      "ridge_0.1": {
+        "correct": 60,
+        "mean_iq_nmse": 0.019107162952423096,
+        "mean_channel_nmse": 0.010505851358175278,
+        "mean_forward_residual": 0.009693942964076996
+      },
+      "ridge_1": {
+        "correct": 60,
+        "mean_iq_nmse": 0.018766939640045166,
+        "mean_channel_nmse": 0.006319933105260134,
+        "mean_forward_residual": 0.010664399713277817
+      },
+      "ridge_10": {
+        "correct": 61,
+        "mean_iq_nmse": 0.01885426789522171,
+        "mean_channel_nmse": 0.006200000643730164,
+        "mean_forward_residual": 0.011738965287804604
+      }
+    },
+    "practical_low_suburban": {
+      "count": 64,
+      "valid_count": 61,
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.032062217593193054
+      },
+      "parent": {
+        "correct": 59,
+        "mean_iq_nmse": 0.04254826530814171,
+        "mean_channel_nmse": 0.014373409561812878,
+        "mean_forward_residual": 0.047882311046123505
+      },
+      "ridge_0.1": {
+        "correct": 58,
+        "mean_iq_nmse": 0.04811175540089607,
+        "mean_channel_nmse": 0.046870157122612,
+        "mean_forward_residual": 0.032440826296806335
+      },
+      "ridge_1": {
+        "correct": 58,
+        "mean_iq_nmse": 0.04475545883178711,
+        "mean_channel_nmse": 0.017690742388367653,
+        "mean_forward_residual": 0.03833885118365288
+      },
+      "ridge_10": {
+        "correct": 59,
+        "mean_iq_nmse": 0.04242326691746712,
+        "mean_channel_nmse": 0.014093886129558086,
+        "mean_forward_residual": 0.04499322175979614
+      }
+    },
+    "practical_high_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "dura": {
+        "correct": 61,
+        "mean_iq_nmse": 0.02210512012243271
+      },
+      "parent": {
+        "correct": 61,
+        "mean_iq_nmse": 0.026452260091900826,
+        "mean_channel_nmse": 0.008967190980911255,
+        "mean_forward_residual": 0.018068546429276466
+      },
+      "ridge_0.1": {
+        "correct": 62,
+        "mean_iq_nmse": 0.02777751535177231,
+        "mean_channel_nmse": 0.02009817585349083,
+        "mean_forward_residual": 0.011974385008215904
+      },
+      "ridge_1": {
+        "correct": 61,
+        "mean_iq_nmse": 0.026149019598960876,
+        "mean_channel_nmse": 0.009725043550133705,
+        "mean_forward_residual": 0.014117805287241936
+      },
+      "ridge_10": {
+        "correct": 61,
+        "mean_iq_nmse": 0.02602916583418846,
+        "mean_channel_nmse": 0.008779739961028099,
+        "mean_forward_residual": 0.016896069049835205
+      }
+    },
+    "practical_mid_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.050538405776023865
+      },
+      "parent": {
+        "correct": 57,
+        "mean_iq_nmse": 0.05285662040114403,
+        "mean_channel_nmse": 0.019428886473178864,
+        "mean_forward_residual": 0.1062118262052536
+      },
+      "ridge_0.1": {
+        "correct": 58,
+        "mean_iq_nmse": 0.05843678116798401,
+        "mean_channel_nmse": 0.06994859874248505,
+        "mean_forward_residual": 0.0834653377532959
+      },
+      "ridge_1": {
+        "correct": 58,
+        "mean_iq_nmse": 0.05379079282283783,
+        "mean_channel_nmse": 0.023486215621232986,
+        "mean_forward_residual": 0.09302406013011932
+      },
+      "ridge_10": {
+        "correct": 58,
+        "mean_iq_nmse": 0.05277416855096817,
+        "mean_channel_nmse": 0.018986988812685013,
+        "mean_forward_residual": 0.10236991941928864
+      }
+    },
+    "practical_low_urban": {
+      "count": 64,
+      "valid_count": 63,
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.0826321616768837
+      },
+      "parent": {
+        "correct": 59,
+        "mean_iq_nmse": 0.08946343511343002,
+        "mean_channel_nmse": 0.039242327213287354,
+        "mean_forward_residual": 0.18163888156414032
+      },
+      "ridge_0.1": {
+        "correct": 58,
+        "mean_iq_nmse": 0.09656314551830292,
+        "mean_channel_nmse": 0.13222584128379822,
+        "mean_forward_residual": 0.13898760080337524
+      },
+      "ridge_1": {
+        "correct": 58,
+        "mean_iq_nmse": 0.08882074058055878,
+        "mean_channel_nmse": 0.04630338400602341,
+        "mean_forward_residual": 0.15580883622169495
+      },
+      "ridge_10": {
+        "correct": 59,
+        "mean_iq_nmse": 0.08836029469966888,
+        "mean_channel_nmse": 0.03780755400657654,
+        "mean_forward_residual": 0.1742175966501236
+      }
+    }
+  },
+  "regularization": [
+    0.1,
+    1.0,
+    10.0
+  ],
+  "iterations": 3,
+  "posterior_covariance_in_channel_update": true,
+  "source_channel_truth_after_predictions": true,
+  "source_channel_truth_in_inference": false,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Fixed source-only predictions; source channel metadata is accessed only afterward. Clean F pseudo labels and previously explored source IDs are not independent true-label test accuracy. Midpoint channel truth is an approximate effective operator; posterior covariance is exact under frozen Gaussian-mixture model but physical model may be misspecified."
+}

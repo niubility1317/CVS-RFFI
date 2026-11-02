@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "prediction_sha256": "249e6ca848f0bebc48193d76f5576834cf3ebf3a8558840da31ea0e5a89e97f2",
+  "source_records": 384,
+  "scene_method_counts_verified": 30,
+  "totals": {
+    "dura": 361,
+    "parent": 357,
+    "ridge_0.1": 356,
+    "ridge_1": 355,
+    "ridge_10": 358
+  },
+  "source_channel_metadata_used_after_prediction_hash": true,
+  "scope": "Independent arithmetic from fixed source prediction arrays; not an independent inference rerun."
+}
