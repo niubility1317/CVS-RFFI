@@ -1,1 +1,2 @@
 {"at": "2026-11-02T03:15:51+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T03:18:34+00:00", "status": "RUNNING", "note": "Source teacher waveform generation and matched attention training; frozen DURA source teacher only, no DURA student inference, no U_s truth, V or test.", "evidence": ["N607 PID 1216355 GPU3, mixed 32 L_s and 32 U_s source smoke PASS, matched RNG and frozen F check PASS, release SHA256 a251b5db54a551cf3e16a88dc1bc03370034db4a65fa0bf133694933c1c7f9ca"], "row_id": null}
