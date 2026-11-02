@@ -1,0 +1,147 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-independent-prior-pnp-validation-s2026092701-r01",
+  "group_id": "phase1-independent-iq-prior",
+  "display_name": "Phase1 independent prior-guided blind inverse source validation",
+  "description": "Source-only fixed validation of learned clean IQ prior with blind independent channel, multi-step observation consistency, and frozen F.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "hierarchical_prior",
+    "blind_channel",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-independent-iq-prior-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "6587e25884faeb785d18815943723d306598f6ee",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU4 source-only fixed model evaluation; TF32 disabled",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Blind action posterior plus three observation/learned prior updates; no DURA in candidate",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No source true identity labels, simulated channel truth, U_s truth, V or test in this validation; clean-F pseudo labels only",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "7840 RX4/6 source validation and 3921 RX8 source holdout IDs, all physical IDs previously observed in other views; frozen clean F pseudo labels only",
+    "support_query_ref": null,
+    "leo_config_ref": "Existing fixed source cache epoch19"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source clean F high-confidence pseudo targets only; no TX labels, U_s truth, V or test.",
+    "external_method_exception": null,
+    "claim_scope": "Source source IDs used by F and seen in other channel views, pseudo targets not independent test; bounded correction may exploit classifier"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-trained SignalPrior, source-only blind channel and six-class Gaussian source prior, gate .8; DURA comparator only.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-iq-prior-s2026092701-r01/checkpoint.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-action-full-s2026092701-r01/checkpoint_epoch10.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01/source_prior.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Independent prior training commit aad511295e734e616770609ab96c2ff5ab008aa7; independent blind source estimator 94693a342bb2daa684c0f21415d7b949f9fb2107 and frozen source prior.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Before prior training completes, fixed 3 prior-correction strengths and 2 gates; RX4/6 classification and IQ guard vs parent and DURA, net gain >=10; RX8 heldout. Ground test always for full model."
+  },
+  "execution": {
+    "host": "N607 GPU4",
+    "launch_owner": "Codex hierarchical prior fixed source validation owner",
+    "gpu_policy": "GPU4 single owner; fixed model source inference; TF32 disabled",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-prior-pnp-validation-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-independent-prior-pnp-validation-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-independent-prior-pnp-validation-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=4 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-independent-prior-pnp-validation-s2026092701-r01-release/experiments/phase1_prior_pnp/validate_pnp.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-prior-pnp-validation-s2026092701-r01 --commit 6587e25884faeb785d18815943723d306598f6ee --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per receiver and scenario clean-F pseudo target agreement",
+      "aligned IQ normalized MSE",
+      "violations and fixed selection rule"
+    ],
+    "dimensions": [
+      "RX4/6 validation and RX8 source heldout across seven scenarios; two input gates"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_prior_pnp/validate_pnp.py",
+    "scientific_rule": "Frozen clean F pseudo targets, per-cell classification and aligned IQ guard, no TX identity truth or target."
+  },
+  "rows": [
+    {
+      "row_id": "free_full_hard_validation_s2026092701",
+      "method": "independent prior-guided blind inverse multi-step recovery",
+      "purpose": "test unconditional source IQ prior as alternative to single Gaussian restoration",
+      "config_ref": "experiments/phase1_prior_pnp/validate_pnp.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-prior-pnp-validation-s2026092701-r01/source_validation.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Prior model seed 2026125054; fixed final epoch8; no source validation training.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none (fixed checkpoint)",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "7840 RX4/6 plus 3921 RX8 source records; three blends and two gates",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-prior-pnp-validation-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-independent-prior-pnp-validation-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=4 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-independent-prior-pnp-validation-s2026092701-r01-release/experiments/phase1_prior_pnp/validate_pnp.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-prior-pnp-validation-s2026092701-r01 --commit 6587e25884faeb785d18815943723d306598f6ee --device cuda:0",
+      "expected_artifacts": [
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Predeclared before IQ prior training completes.",
+    "Candidate uses no DURA architecture, weights or training output; DURA is source comparator only.",
+    "Three observation/prior updates; fixed full candidate seven-view ground test regardless of source result.",
+    "Previously explored source IDs, no TX labels, U_s truth, V or target."
+  ],
+  "registered_at": "2026-11-02T03:52:44+00:00"
+}
