@@ -1,5 +1,7 @@
 # Phase1 物理信道丰富特征四专家恢复网络
 
+> 协议更正：该输出选择器训练使用源 L_s 真实 TX 身份，且原源诊断说明设计参考过已观察的 Phase1 测试理想上限；它不符合当前恢复器 TX 标签隐藏与目标测试不反馈要求。七景数值仅为历史计数，不得用于合规恢复器或独立泛化比较。来源：`automation_reports/CV-SincNet/20261101-diagnostic-phase1-source-rich-physical-router-s2026092701-r01/phase1_source_rich_physical_router_probe.py`。
+
 - run_id：`20261101-phase1-physical-rich-router-s2026092701-r01`
 - group_id：`phase1-physical-rich-router`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
