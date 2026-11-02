@@ -1,0 +1,147 @@
+{
+  "status": "SOURCE_SCENE_BREAKDOWN",
+  "source_only": true,
+  "pseudo_target_not_truth": true,
+  "DURA_comparator_only": true,
+  "scale": 1,
+  "gate": 0.8,
+  "iq_metric": "count-weighted mean of per-cell aligned IQ normalized error, not a pooled waveform estimate",
+  "groups": {
+    "RX4_6": {
+      "practical_high": {
+        "count": 1206,
+        "trusted": 1176,
+        "parent": 1170,
+        "candidate": 1172,
+        "dura": 1174,
+        "gain_vs_parent": 2,
+        "parent_iq": 0.004298332669142059,
+        "candidate_iq": 0.0036485061058342135,
+        "iq_change_percent": -15.118107725188
+      },
+      "practical_mid": {
+        "count": 1091,
+        "trusted": 1078,
+        "parent": 1058,
+        "candidate": 1057,
+        "dura": 1064,
+        "gain_vs_parent": -1,
+        "parent_iq": 0.0068003452027867025,
+        "candidate_iq": 0.0071889977534254626,
+        "iq_change_percent": 5.715188553656003
+      },
+      "practical_low_suburban": {
+        "count": 1105,
+        "trusted": 1082,
+        "parent": 1038,
+        "candidate": 1045,
+        "dura": 1054,
+        "gain_vs_parent": 7,
+        "parent_iq": 0.010752446753103538,
+        "candidate_iq": 0.012133332718652568,
+        "iq_change_percent": 12.842527819544491
+      },
+      "practical_high_urban": {
+        "count": 1092,
+        "trusted": 1066,
+        "parent": 1050,
+        "candidate": 1048,
+        "dura": 1052,
+        "gain_vs_parent": -2,
+        "parent_iq": 0.00749269817979672,
+        "candidate_iq": 0.006881302043509025,
+        "iq_change_percent": -8.159892759810628
+      },
+      "practical_mid_urban": {
+        "count": 1102,
+        "trusted": 1074,
+        "parent": 958,
+        "candidate": 972,
+        "dura": 998,
+        "gain_vs_parent": 14,
+        "parent_iq": 0.02420186935611299,
+        "candidate_iq": 0.02625860106842271,
+        "iq_change_percent": 8.498234917503279
+      },
+      "practical_low_urban": {
+        "count": 1152,
+        "trusted": 1130,
+        "parent": 907,
+        "candidate": 921,
+        "dura": 984,
+        "gain_vs_parent": 14,
+        "parent_iq": 0.04091212207761904,
+        "candidate_iq": 0.0473208668990992,
+        "iq_change_percent": 15.66465999813309
+      }
+    },
+    "RX8": {
+      "practical_high": {
+        "count": 537,
+        "trusted": 516,
+        "parent": 514,
+        "candidate": 513,
+        "dura": 512,
+        "gain_vs_parent": -1,
+        "parent_iq": 0.0038325742352753878,
+        "candidate_iq": 0.0037852656096220016,
+        "iq_change_percent": -1.234382499833997
+      },
+      "practical_mid": {
+        "count": 541,
+        "trusted": 516,
+        "parent": 510,
+        "candidate": 508,
+        "dura": 508,
+        "gain_vs_parent": -2,
+        "parent_iq": 0.010435231029987335,
+        "candidate_iq": 0.010669255629181862,
+        "iq_change_percent": 2.2426393677535073
+      },
+      "practical_low_suburban": {
+        "count": 568,
+        "trusted": 544,
+        "parent": 532,
+        "candidate": 535,
+        "dura": 530,
+        "gain_vs_parent": 3,
+        "parent_iq": 0.01647169142961502,
+        "candidate_iq": 0.0170357096940279,
+        "iq_change_percent": 3.424167255821775
+      },
+      "practical_high_urban": {
+        "count": 568,
+        "trusted": 547,
+        "parent": 535,
+        "candidate": 536,
+        "dura": 536,
+        "gain_vs_parent": 1,
+        "parent_iq": 0.010520263575017452,
+        "candidate_iq": 0.009759470820426941,
+        "iq_change_percent": -7.231689103276572
+      },
+      "practical_mid_urban": {
+        "count": 568,
+        "trusted": 548,
+        "parent": 511,
+        "candidate": 511,
+        "dura": 512,
+        "gain_vs_parent": 0,
+        "parent_iq": 0.038812074810266495,
+        "candidate_iq": 0.04046599194407463,
+        "iq_change_percent": 4.261346866647409
+      },
+      "practical_low_urban": {
+        "count": 531,
+        "trusted": 512,
+        "parent": 455,
+        "candidate": 462,
+        "dura": 462,
+        "gain_vs_parent": 7,
+        "parent_iq": 0.07835507392883301,
+        "candidate_iq": 0.07985580712556839,
+        "iq_change_percent": 1.9152980419601784
+      }
+    }
+  }
+}
