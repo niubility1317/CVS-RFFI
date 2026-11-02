@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "checks": [
+    "scene and pseudo-label counts",
+    "finite IQ values",
+    "least-squares mean error monotonicity",
+    "synthetic known rotation and gain"
+  ],
+  "limitation": "Aggregate validation and synthetic algebra check; not a prediction replay."
+}
