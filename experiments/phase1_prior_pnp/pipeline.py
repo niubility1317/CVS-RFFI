@@ -9,7 +9,9 @@ from source_pilot import s,core,BlindActionNet,action_matrix,posterior,SOURCE,PR
 def load_fixed(root,device):
  blindstate=torch.load(root/'runs'/SOURCE/'checkpoint_epoch10.pt',map_location='cpu',weights_only=False);p=torch.load(root/'runs'/PRIOR_RUN/'source_prior.pt',map_location='cpu',weights_only=False);run=root/'runs/20261102-phase1-independent-iq-prior-s2026092701-r01';result=core.read(run/'result.json');state=torch.load(run/'checkpoint.pt',map_location='cpu',weights_only=False)
  if blindstate.get('commit')!='94693a342bb2daa684c0f21415d7b949f9fb2107' or blindstate.get('epoch')!=10 or p.get('source_ids')!=8192 or state.get('commit')!='aad511295e734e616770609ab96c2ff5ab008aa7' or result.get('status')!='SOURCE_TRAINING_COMPLETE':raise ValueError('Exact independent source models required')
- blind=BlindActionNet().to(device);blind.load_state_dict(blindstate['model']);blind.eval().requires_grad_(False);prior=SignalPrior().to(device);prior.load_state_dict(state['model']);prior.eval().requires_grad_(False);stats=(p['means'].to(device),p['covariances'].to(device),p['priors'].to(device));_,gate=s.initial_models(root,device);gate.eval().requires_grad_(False)
+ blind=BlindActionNet().to(device);blind.load_state_dict(blindstate['model']);blind.eval().requires_grad_(False);prior=SignalPrior().to(device);prior.load_state_dict(state['model']);prior.eval().requires_grad_(False);stats=(p['means'].to(device),p['covariances'].to(device),p['priors'].to(device));fixed=torch.load(root/'runs'/s.GATE_RUN/'source/selected.pt',map_location='cpu',weights_only=False)
+ if fixed.get('commit')!=s.GATE_COMMIT or fixed.get('selected',{}).get('kind')!='gated_direct_iq':raise ValueError('Exact source-only corruption gate required')
+ gate=s.BlindGate().to(device);gate.load_state_dict(fixed['gate'],strict=True);gate.eval().requires_grad_(False)
  return blind,prior,stats,gate,torch.eye(512,device=device)
 
 @torch.no_grad()
