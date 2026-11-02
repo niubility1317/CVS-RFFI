@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "host": "N607",
+  "checks": [
+    "zero coefficients yield exact identity",
+    "zero-padded edge avoids circular wrap",
+    "paired filter is complex linear",
+    "coefficients are per record"
+  ],
+  "method": "Independent direct assertions on training environment; real source preflight saved separately."
+}
