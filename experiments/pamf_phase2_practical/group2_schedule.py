@@ -29,6 +29,8 @@ def validate_runtime(rt):
     require(bool(rt['gpu_limits']) and set(rt['gpu_limits']) <= set(caps) and
             all(0 < value <= caps[gpu] for gpu,value in rt['gpu_limits'].items()), 'GPU configuration invalid')
     require(1 <= rt['score_processes'] <= 4 and rt['minimum_free_MiB'] >= 6000, 'Resource configuration invalid')
+    require(set(rt.get('frozen_sources',{}))=={'F','AF','BASE','FOLD','G'} and
+            all(rt['frozen_sources'].values()), 'Missing frozen source release handles')
 
 
 def tasks(rt):
