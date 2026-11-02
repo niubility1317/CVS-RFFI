@@ -1,0 +1,15 @@
+VERIFIED_VIEW clean raw 86.5387 restored 86.5333 gap_pp 0.0054 relative_loss_percent 0.0062 macro_f1 86.3112
+VERIFIED_VIEW practical_high raw 80.6155 restored 68.7565 gap_pp 17.7821 relative_loss_percent 20.5482 macro_f1 67.9253
+VERIFIED_VIEW practical_mid raw 78.1077 restored 68.3673 gap_pp 18.1714 relative_loss_percent 20.998 macro_f1 67.501
+VERIFIED_VIEW practical_low_suburban raw 75.7446 restored 67.5851 gap_pp 18.9536 relative_loss_percent 21.9018 macro_f1 66.715
+VERIFIED_VIEW practical_high_urban raw 77.05 restored 68.0202 gap_pp 18.5185 relative_loss_percent 21.399 macro_f1 67.2186
+VERIFIED_VIEW practical_mid_urban raw 62.7958 restored 63.706 gap_pp 22.8327 relative_loss_percent 26.3844 macro_f1 62.9605
+VERIFIED_VIEW practical_low_urban raw 51.6048 restored 58.9571 gap_pp 27.5815 relative_loss_percent 31.8719 macro_f1 58.0327
+VERIFIED_INDEPENDENT_PHASE1_RESCORE 168000 raw_clean 86.5387 six_scene_goal_3pp False six_scene_relative_loss_at_most_3percent False clean_guard True
+PAIRED clean dura 86.6155 repairs 224 damages 362
+PAIRED practical_high dura 84.3435 repairs 5742 damages 31928
+PAIRED practical_mid dura 83.0161 repairs 7119 damages 31729
+PAIRED practical_low_suburban dura 81.322 repairs 8487 damages 31565
+PAIRED practical_high_urban dura 83.0494 repairs 7099 damages 32348
+PAIRED practical_mid_urban dura 75.706 repairs 13498 damages 33658
+PAIRED practical_low_urban dura 68.8012 repairs 18470 damages 35008
