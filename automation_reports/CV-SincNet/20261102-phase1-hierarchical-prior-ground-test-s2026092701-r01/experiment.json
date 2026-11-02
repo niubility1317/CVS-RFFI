@@ -1,0 +1,177 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01",
+  "group_id": "phase1-hierarchical-prior",
+  "display_name": "Phase1 hierarchical prior fixed ground test",
+  "description": "Evaluate frozen source-selected 12-component prior with blind channel estimator and input gate on seven Phase1 ground views; truth last.",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "Phase1",
+    "Tri-SIG-TIME-SSL",
+    "frozen-model",
+    "ground-test",
+    "truth-last",
+    "nonblind-development"
+  ],
+  "comparison_group_id": "phase1-trisigtime-frozen-raw-clean",
+  "parent_run_ids": [
+    "20261102-phase1-hierarchical-prior-labeled-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求研发不同路线的星地恢复网络，只看 Phase1 地面训练测试、使用 Tri-SIG-TIME SSL；六场景下降不超过 3%，同时核对百分点和相对百分比口径。",
+  "code": {
+    "commit": "8c678db14af86a61517843e60a0eca47e6c1f69c",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU2 fixed inference, frozen Tri-SIG-TIME SSL ground base, TF32 disabled; independent CPU truth-last score",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release",
+    "entrypoints": [
+      "experiments/phase1_hierarchical_prior/phase1_predict.py"
+    ],
+    "configs": []
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "IQ [2,256], fixed input-only blind action posterior plus three noise adaptive candidates, frozen F confidence router",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference/physical_ids.npy",
+    "label_map_ref": "Six Phase1 transmitter classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No test truth, clean pair, U_s truth or V during inference; fixed ground test truth after all seven views",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "7840 RX4/6 source validation and 3921 RX8 source holdout, previously seen in other source views",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Ground denoiser trained on clean source IQ and frozen F outputs, no TX labels; blind parent pre-trained source only",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Source-trained frozen candidate, fixed Phase1 ground test inference then truth-last scoring",
+    "query_use": "Per-record received IQ and frozen F predictions only; no clean pair, labels or adaptation at inference",
+    "external_method_exception": null,
+    "claim_scope": "Repeatedly observed single-seed Phase1 ground development test, not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Fixed 12-component source prior, blind source channel estimator, original prior, input gate .8; no DURA inference.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-hierarchical-prior-pilot-s2026092701-r01/source_hierarchical_prior.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-action-full-s2026092701-r01/checkpoint_epoch10.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-bayes-source-validation-s2026092701-r01/source_prior.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-blind-gate-s2026092701-r01/source/selected.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-hierarchical-prior-validation-s2026092701-r01/source_validation.json",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-hierarchical-prior-labeled-source-s2026092701-r01/source_truth_score.json"
+    ],
+    "contract_check_ref": "Source selection SHA256 74e329da45c5edd29d18deda181d442bdad9e44b41f8326584d34bbfe5fc13e4; hierarchical prior SHA256 ce2c44b4336245e32f85ed510b7f640f586e6c8d277fe3aff6438fe92547c848; fixed source predictions SHA256 97c89fe0bf1805af23394743b9bef7297e4f25c145f2408fc490018023266cd5; independent audit SHA256 208d261b8eaf0770f3c0fe5c1ba3be45eed007c6f40a5a357f8f49971b5c5810.",
+    "provenance_verdict": "Passes source parent-protected selection but not DURA-protected selection; +3 true L_s source records on RX4/6, not independent blind.",
+    "selection_rule": "Source pseudo-target primary parent criterion selects gate .8. All candidate parameters fixed; seven Phase1 ground views fully predicted and hashed before truth."
+  },
+  "execution": {
+    "host": "N607 GPU2",
+    "launch_owner": "Codex fixed hierarchical prior Phase1 ground test GPU2 owner",
+    "gpu_policy": "GPU2 only after idle check; source audit exact prediction replay before test; preserve all other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01-release/experiments/phase1_hierarchical_prior/phase1_predict.py predict --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01 --commit 8c678db14af86a61517843e60a0eca47e6c1f69c --device cuda:0",
+    "stop_rule": "Stop only for provenance/role violation, output collision, nonfinite output or technical failure; preserve partial artifacts and never stop for low performance."
+  },
+  "expected_artifacts": [
+    "prediction_smoke.json",
+    "flow/prediction_hashes.json",
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "per-view frozen F raw and restored accuracy",
+      "per-view clean-relative percentage point and relative percent gap",
+      "macro F1",
+      "TX/RX/day accuracy"
+    ],
+    "dimensions": [
+      "168000 Phase1 ground test physical records x seven views",
+      "TX/RX/day and six practical scenes"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "experiments/phase1_hierarchical_prior/phase1_predict.py score (CPU, after independently verified full prediction hashes)",
+    "targets_ref": "All six simulated satellite views at most 3 percentage points and 3% relative below F clean; clean output degradation <=1 percentage point"
+  },
+  "notes": [
+    "No test labels or training during prediction; candidate never calls DURA.",
+    "Gate fixed from source; F saw source L_s IDs and Phase1 ground test results have been observed repeatedly.",
+    "1047 fixed source predictions, gate and choices must reproduce exactly before ground test; batch fixed by that source check.",
+    "All seven x 168000 predictions hashed before independent CPU truth scoring; no U_s truth or V."
+  ],
+  "rows": [
+    {
+      "row_id": "flow",
+      "method": "fixed input-only blind channel plus 12-component hierarchical source prior",
+      "purpose": "Evaluate fixed source-selected DURA-free IQ restoration with frozen Tri-SIG-TIME SSL",
+      "config_ref": "experiments/phase1_hierarchical_prior/phase1_predict.py",
+      "resolved_config_ref": "experiments/phase1_hierarchical_prior/phase1_predict.py",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Frozen blind model seed 2026120454, original prior and RX8 source sample seed 2026120355, hierarchical clustering seed 2026121654 plus class index; fixed Phase1 test views.",
+      "k": null,
+      "scenario": "Phase1 clean and six simulated practical ground test views",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 1,
+      "fl_rounds": null,
+      "budget_ref": "168000 ground test IDs x 7 fixed views, no model updates; fixed gate .8",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01/flow",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01-release/experiments/phase1_hierarchical_prior/phase1_predict.py predict --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01 --commit 8c678db14af86a61517843e60a0eca47e6c1f69c --device cuda:0",
+      "expected_artifacts": [
+        "prediction_smoke.json",
+        "flow/prediction_hashes.json",
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json"
+      ]
+    }
+  ],
+  "registered_at": "2026-11-02T00:53:38+00:00"
+}
