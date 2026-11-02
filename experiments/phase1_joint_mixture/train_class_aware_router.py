@@ -15,6 +15,8 @@ def load_predictions(root):
  for name,run,commit in [('complementary',COMPLEMENT,'5d39fc51d7b93aca9f846238c26836e10fe0b1a4'),('free',FREE,'a69b3755b72be7fd23ae78e00ff05283b191d6b1')]:
   folder=runs/run;m=core.read(folder/'prediction_complete.json');path=folder/'source_predictions.npz';h=hashlib.sha256(path.read_bytes()).hexdigest()
   if m.get('status')!='SOURCE_PREDICTIONS_FIXED' or m.get('commit')!=commit or m.get('count')!=11761 or m.get('sha256')!=h or m.get('prior_sha256')!=PRIOR_SHA or m.get('DURA_in_candidate') is not False or any(m.get(k)!=0 for k in ('TX_truth_reads','U_s_truth_reads','V_reads','test_reads','model_updates')):raise ValueError('Exact full source candidate predictions required: '+name)
+  audit=core.read(runs/'20261102-phase1-router-full-source-audit-s2026092701-r01'/(name+'.json'))
+  if audit.get('status')!='PASS' or audit.get('kind')!=name or audit.get('prediction_sha256')!=h:raise ValueError('Independent full source prediction audit required: '+name)
   with np.load(path,allow_pickle=False) as z:items.append({k:z[k].copy() for k in z.files})
   hashes[name]=h
  comp,free=items
