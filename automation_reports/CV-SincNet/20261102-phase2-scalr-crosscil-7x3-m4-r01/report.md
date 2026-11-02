@@ -27,3 +27,7 @@ Seven Group1 external B methods each feed three CIL cores, 21 named DA-backbone 
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 启动故障
+
+真实源模型检查在目标预测前失败：发布 runtime 缺少 frozen_sources。已独立核实 controller 和 smoke 进程均退出，没有启动目标预测或独立评分；原产物保留。修复配置后使用独立 r02。

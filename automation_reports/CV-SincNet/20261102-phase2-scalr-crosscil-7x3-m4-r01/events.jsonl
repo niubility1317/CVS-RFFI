@@ -1,1 +1,2 @@
 {"at": "2026-11-02T14:23:23+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T14:26:04+00:00", "status": "FAILED", "note": "真实源检查在目标预测前因 runtime 缺少 frozen_sources 退出；controller 与 smoke 均已退出，零目标预测；保留输出，新 run 修复。", "evidence": ["N607:r01/logs/smoke.log"], "row_id": null}
