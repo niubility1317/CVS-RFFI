@@ -1,0 +1,7 @@
+{
+  "status": "FAILED",
+  "stage": "source smoke only, full training not started",
+  "failure": "TypeError: expected np.ndarray (got numpy.ndarray) at torch.from_numpy(features[wanted])",
+  "cause": "PyTorch/NumPy array API incompatibility on N607; frombuffer complex64 conversion independently tested",
+  "preserved_remote": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-learned-channel-source-s2026092701-r01-smoke"
+}

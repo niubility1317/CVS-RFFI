@@ -1,0 +1,147 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-learned-channel-validation-s2026092701-r01",
+  "group_id": "phase1-learned-channel",
+  "display_name": "Fixed source validation of learned blind channel correction",
+  "description": "Evaluate source-trained correction on fixed previously explored, disjoint impaired source records; no DURA or target.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "hierarchical_prior",
+    "blind_channel",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-learned-channel-source-s2026092701-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "f354f789c98543d962760250bbf327f1dead804e",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CPU two threads, CUDA disabled, fixed source-only blind action",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Fixed source IQ, independent posterior initial state and three alternative three-step paths",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No source true identity labels, simulated channel truth, U_s truth, V or test in this validation; clean-F pseudo labels only",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "1024 RX4/6 source validation and 1024 RX8 source heldout impaired records, selected with fixed seed",
+    "support_query_ref": null,
+    "leo_config_ref": "Existing fixed source cache epoch19"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Received source and blind parent to infer g; paired clean source IQ only for diagnostic evaluation and oracle comparator; no TX labels, U_s truth, V or ground test.",
+    "external_method_exception": null,
+    "claim_scope": "Source forward residual diagnostic only; predictor uses full received waveform and source records previously explored; not restoration or identification accuracy."
+  },
+  "checkpoint": {
+    "initialization": "Frozen learned channel predictor, frozen source blind action and source Gaussian prior; no DURA and no F network.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-learned-channel-source-s2026092701-r03/checkpoint.pt",
+      "Frozen source-only blind action 94693a342bb2daa684c0f21415d7b949f9fb2107",
+      "Fixed source Gaussian prior",
+      "Fixed source cohort diagnostic c600e6331b6ffef2820e4117b7eef9a946401dc314012a85c06dba73bb209c08"
+    ],
+    "contract_check_ref": "Channel predictor training commit 0831bcec99be5d2e3d20aa093a674a5eed6eb68d; disjoint 8192 source fit IDs vs 2048 source validation/heldout records.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Before source training completes, fixed full waveform operator diagnostic on 1024 RX4/6 and 1024 RX8: flag promising if RX4/6 aggregate mean clean-forward residual decreases >=1%, each of six RX4/6 scene means increases <=1%, and RX8 overall mean increases <=1%; this does not establish restoration or accuracy and no test is consulted."
+  },
+  "execution": {
+    "host": "N607 CPU",
+    "launch_owner": "Codex learned channel fixed source validator",
+    "gpu_policy": "CPU two threads, CUDA disabled, fixed model after 32 source sample smoke",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-learned-channel-validation-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-learned-channel-validation-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-learned-channel-validation-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-learned-channel-validation-s2026092701-r01-release/experiments/phase1_prior_pnp/validate_learned_channel.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-learned-channel-validation-s2026092701-r01 --commit f354f789c98543d962760250bbf327f1dead804e --device cpu",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "source_predictions.npz",
+    "prediction_complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source normalized forward residual using fixed blind A, learned correction, naive blind and source clean oracle",
+      "bounded correction norms and oracle coefficient prediction error"
+    ],
+    "dimensions": [
+      "RX4/6 source validation and RX8 source heldout, all and six scenes"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-learned-channel-validation-s2026092701-r01/source_predictions.npz",
+    "scorer_ref": "independent source-only aggregate from fixed source predictions",
+    "scientific_rule": "Predict g from received and blind-parent forward only, evaluate against true source clean IQ; whole waveform used for prediction, so no held-out-time guarantee. Predeclared aggregate and scene guards; no TX or target."
+  },
+  "rows": [
+    {
+      "row_id": "free_full_hard_validation_s2026092701",
+      "method": "learned source-supervised bounded blind channel",
+      "purpose": "evaluate whether supervised source-only channel prediction improves forward model over fixed blind action",
+      "config_ref": "experiments/phase1_prior_pnp/validate_learned_channel.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-learned-channel-validation-s2026092701-r01/prediction_complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Prior model seed 2026125054; fixed final epoch8; no source validation training.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none (fixed checkpoint)",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "2 x 1024 previously fixed source impaired records, no updates, all time samples",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-learned-channel-validation-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-learned-channel-validation-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-learned-channel-validation-s2026092701-r01-release/experiments/phase1_prior_pnp/validate_learned_channel.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-learned-channel-validation-s2026092701-r01 --commit f354f789c98543d962760250bbf327f1dead804e --device cpu",
+      "expected_artifacts": [
+        "source_predictions.npz",
+        "prediction_complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Registered while 8192-record source training was running; no learned-model validation or ground results available.",
+    "Predictor input is received and blind parent only; clean source IQ is evaluation and oracle comparator only.",
+    "Source observations were explored before, full waveform used for prediction; source forward residual is not TX identification accuracy.",
+    "Model is only an operator correction, not yet a deployable standalone waveform restoration; a new end-to-end restoration requires separate fixed evaluation."
+  ],
+  "registered_at": "2026-11-02T05:31:44+00:00"
+}

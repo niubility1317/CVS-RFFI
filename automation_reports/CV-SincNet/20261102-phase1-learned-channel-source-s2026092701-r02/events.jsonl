@@ -1,0 +1,3 @@
+{"at": "2026-11-02T05:27:55+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T05:29:11+00:00", "status": "FAILED", "note": "Source smoke failed on NumPy index conversion; training did not start and partial smoke is preserved.", "evidence": ["E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-learned-channel-source-s2026092701-r02/smoke_failure.json"], "row_id": null}
+{"at": "2026-11-02T05:29:18+00:00", "status": "REPLACED", "note": "Replace prelaunch failure with r03 explicit tensor index; same source protocol and model.", "evidence": ["Explicit Python-int torch.long index independently PASS on N607"], "row_id": null}

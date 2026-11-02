@@ -1,0 +1,7 @@
+{
+  "status": "FAILED",
+  "stage": "source smoke only, full training not started",
+  "failure": "RuntimeError: Could not infer dtype of numpy.int64 at tensor indexing with NumPy batch indices",
+  "cause": "N607 PyTorch/NumPy index conversion boundary; explicit Python-int tensor index independently tested",
+  "preserved_remote": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-learned-channel-source-s2026092701-r02-smoke"
+}
