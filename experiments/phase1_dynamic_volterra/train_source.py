@@ -44,6 +44,10 @@ def extra_frozen_components(stats, eye):
     return ()
 
 
+def source_objective(reader, output, anchor, clean, clean_features, groups):
+    return source_loss(reader, output, clean, clean_features, groups)
+
+
 def load_components(root, device, deps):
     blind_state = torch.load(root/'runs'/deps.SOURCE/'checkpoint_epoch10.pt', map_location='cpu', weights_only=False)
     fixed = torch.load(root/'runs'/deps.s.GATE_RUN/'source/selected.pt', map_location='cpu', weights_only=False)
@@ -173,7 +177,7 @@ def main():
             chosen = training_indices(order[start:start+batch_size], len(selected), PAIRED_VIEWS)
             x, base, lv, target, features, groups = [t[chosen].to(args.device) for t in data]
             output = model(x, base, lv)
-            loss, _ = source_loss(reader, output, target, features, groups)
+            loss, _ = source_objective(reader, output, base, target, features, groups)
             if not torch.isfinite(loss):
                 raise FloatingPointError('Finite source training loss is required')
             optimizer.zero_grad(set_to_none=True)
