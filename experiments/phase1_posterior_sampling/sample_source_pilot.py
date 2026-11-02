@@ -15,7 +15,7 @@ def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def batch(x,y,indices,blind,stats,factors,gate,teacher,check_reference=False):
  means,cov,priors=stats;n=len(x);raw_logits=teacher.classify_features(teacher.features(x));raw_prob=F.softmax(raw_logits,dim=1);raw=raw_prob.argmax(1);active=gate(x).sigmoid()>.8;parent=x.clone();waves=x[:,None].expand(-1,6,-1,-1).clone();logweights=x.new_zeros((n,6));
  if active.any():
-  signal=x[active];h,lv=blind(signal);A=action_matrix(h);var=lv.exp();selected=np.asarray(indices)[np.from_dlpack(active.to(torch.uint8).cpu().contiguous()).astype(bool)];z,e=source_noise(selected,6,512);draw,states,lp=conditional_gaussian_draws(signal.reshape(len(signal),512),A,var,means,factors,priors,z,e)
+  signal=x[active];h,lv=blind(signal);A=action_matrix(h);var=lv.exp();selected=np.asarray(indices)[np.from_dlpack(active.to(torch.uint8).cpu().contiguous()).astype(bool)];z,e=source_noise(selected,6,512);draw,states,lp=conditional_gaussian_draws(signal.reshape(len(signal),512),A,var,means,factors,priors,z,e,covariance=cov)
   if check_reference:
    reference,rlp=posterior(signal.reshape(len(signal),512),A,torch.eye(512)[None]*var[:,None,None],*stats)
    if not torch.allclose(states,reference,rtol=1e-4,atol=1e-5) or not torch.allclose(lp.exp(),rlp.exp(),rtol=1e-3,atol=1e-4):raise ValueError('Conditional posterior means and mixture weights must match fixed posterior')
