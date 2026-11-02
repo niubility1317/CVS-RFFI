@@ -46,7 +46,7 @@ def main():
   for start in range(0,len(order),16):
    ix=order[start:start+16];out=net(base[ix],candidate[ix],lv[ix]);feat=teacher.features(out);logits=teacher.classify_features(feat);den=y[ix].flatten(1).square().sum(1).clamp_min(1e-8);wave=(out-y[ix]).flatten(1).square().sum(1)/den;semantic=1-F.cosine_similarity(feat,yf[ix],dim=1,eps=1e-8);kl=F.kl_div(F.log_softmax(logits/2,dim=1),soft[ix],reduction='none').sum(1)*4;per=wave+.2*semantic+.1*kl;loss=torch.stack([per[groups[ix]==g].mean() for g in groups[ix].unique()]).mean();known=lab[ix]>=0
    if known.any():loss=loss+.2*F.cross_entropy(logits[known],lab[ix][known].long())
-   opt.zero_grad(set_to_none=True);loss.backward();grad=net.output.weight.grad
+   opt.zero_grad(set_to_none=True);loss.backward();grad=net.coefficients.weight.grad
    if grad is None or not torch.isfinite(grad).all() or (epoch==1 and start==0 and grad.abs().sum()==0) or not torch.isfinite(loss):raise ValueError('Finite nonzero synthesis gradient required')
    if any(p.requires_grad or p.grad is not None for p in list(teacher.parameters())+list(blind.parameters())):raise ValueError('Frozen teacher and blind estimator required')
    torch.nn.utils.clip_grad_norm_(net.parameters(),1.,error_if_nonfinite=True);opt.step();total+=float(loss.detach())*len(ix)
