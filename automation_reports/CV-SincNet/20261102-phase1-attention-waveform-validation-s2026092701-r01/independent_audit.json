@@ -1,0 +1,282 @@
+{
+  "status": "PASS",
+  "cells_checked": 126,
+  "selection": {
+    "0.25": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    },
+    "0.5": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    },
+    "1.0": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    }
+  },
+  "summaries": {
+    "0.25:0.8:RX4+6 six": {
+      "valid_count": 6606,
+      "baseline_correct": 6326,
+      "candidate_correct": 5369
+    },
+    "0.25:0.8:RX4+6 low urban": {
+      "valid_count": 1130,
+      "baseline_correct": 984,
+      "candidate_correct": 632
+    },
+    "0.25:0.8:RX8 six": {
+      "valid_count": 3183,
+      "baseline_correct": 3060,
+      "candidate_correct": 2625
+    },
+    "0.25:0.8:RX8 low urban": {
+      "valid_count": 512,
+      "baseline_correct": 462,
+      "candidate_correct": 302
+    },
+    "0.25:0.99:RX4+6 six": {
+      "valid_count": 6606,
+      "baseline_correct": 6326,
+      "candidate_correct": 5373
+    },
+    "0.25:0.99:RX4+6 low urban": {
+      "valid_count": 1130,
+      "baseline_correct": 984,
+      "candidate_correct": 633
+    },
+    "0.25:0.99:RX8 six": {
+      "valid_count": 3183,
+      "baseline_correct": 3060,
+      "candidate_correct": 2626
+    },
+    "0.25:0.99:RX8 low urban": {
+      "valid_count": 512,
+      "baseline_correct": 462,
+      "candidate_correct": 303
+    },
+    "0.5:0.8:RX4+6 six": {
+      "valid_count": 6606,
+      "baseline_correct": 6326,
+      "candidate_correct": 5030
+    },
+    "0.5:0.8:RX4+6 low urban": {
+      "valid_count": 1130,
+      "baseline_correct": 984,
+      "candidate_correct": 603
+    },
+    "0.5:0.8:RX8 six": {
+      "valid_count": 3183,
+      "baseline_correct": 3060,
+      "candidate_correct": 2481
+    },
+    "0.5:0.8:RX8 low urban": {
+      "valid_count": 512,
+      "baseline_correct": 462,
+      "candidate_correct": 284
+    },
+    "0.5:0.99:RX4+6 six": {
+      "valid_count": 6606,
+      "baseline_correct": 6326,
+      "candidate_correct": 5034
+    },
+    "0.5:0.99:RX4+6 low urban": {
+      "valid_count": 1130,
+      "baseline_correct": 984,
+      "candidate_correct": 603
+    },
+    "0.5:0.99:RX8 six": {
+      "valid_count": 3183,
+      "baseline_correct": 3060,
+      "candidate_correct": 2484
+    },
+    "0.5:0.99:RX8 low urban": {
+      "valid_count": 512,
+      "baseline_correct": 462,
+      "candidate_correct": 285
+    },
+    "1.0:0.8:RX4+6 six": {
+      "valid_count": 6606,
+      "baseline_correct": 6326,
+      "candidate_correct": 5362
+    },
+    "1.0:0.8:RX4+6 low urban": {
+      "valid_count": 1130,
+      "baseline_correct": 984,
+      "candidate_correct": 661
+    },
+    "1.0:0.8:RX8 six": {
+      "valid_count": 3183,
+      "baseline_correct": 3060,
+      "candidate_correct": 2705
+    },
+    "1.0:0.8:RX8 low urban": {
+      "valid_count": 512,
+      "baseline_correct": 462,
+      "candidate_correct": 322
+    },
+    "1.0:0.99:RX4+6 six": {
+      "valid_count": 6606,
+      "baseline_correct": 6326,
+      "candidate_correct": 5366
+    },
+    "1.0:0.99:RX4+6 low urban": {
+      "valid_count": 1130,
+      "baseline_correct": 984,
+      "candidate_correct": 662
+    },
+    "1.0:0.99:RX8 six": {
+      "valid_count": 3183,
+      "baseline_correct": 3060,
+      "candidate_correct": 2708
+    },
+    "1.0:0.99:RX8 low urban": {
+      "valid_count": 512,
+      "baseline_correct": 462,
+      "candidate_correct": 322
+    }
+  },
+  "diagnostics": {
+    "0.25": {
+      "0.8": {
+        "net": -957,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": true,
+        "impaired_iq_guard": false
+      },
+      "0.99": {
+        "net": -953,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": true,
+        "impaired_iq_guard": false
+      }
+    },
+    "0.5": {
+      "0.8": {
+        "net": -1296,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": false,
+        "impaired_iq_guard": false
+      },
+      "0.99": {
+        "net": -1292,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": true,
+        "impaired_iq_guard": false
+      }
+    },
+    "1.0": {
+      "0.8": {
+        "net": -964,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": false,
+        "impaired_iq_guard": false
+      },
+      "0.99": {
+        "net": -960,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": true,
+        "impaired_iq_guard": false
+      }
+    }
+  },
+  "prior_validation_common_dura_mismatches": [],
+  "common_dura_cells_checked": 21
+}
