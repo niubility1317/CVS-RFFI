@@ -1,1 +1,2 @@
 {"at": "2026-11-02T01:30:43+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T01:32:34+00:00", "status": "RUNNING", "note": "Fixed seven Phase1 ground views, 168000 records per view; no model updates, test truth or DURA inference. Independent truth-last score after all views.", "evidence": ["N607 PID 1152681, GPU0 and growing prediction log verified; 1047 source predictions and gates replay exactly at batch32."], "row_id": null}
