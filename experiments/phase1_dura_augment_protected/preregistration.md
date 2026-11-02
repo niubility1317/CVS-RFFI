@@ -1,0 +1,9 @@
+# DURA source augmentation with matched waveform protection
+
+Test whether soft paired-IQ protection can reduce the source degradation observed with the already-fixed source augmentation experiment. Use the same ContextRecovery architecture, initialization and training order, same 8192 fit IDs and source views, same five epochs, same frozen DURA, blind noise and gate, and the identical seeded SourceChannelAugment transform (75% extra echo, phase drift and noise). The only intended difference from phase1_dura_augment is the established 5x positive aligned-IQ degradation penalty relative to frozen DURA for the same source input. The loss uses legal paired source clean IQ; no TX identity, U_s truth, V, ground data or ground feedback is read by G.
+
+This protects the augmented-input DURA output relative to clean source IQ only through a soft training loss; it does not guarantee improvement on unaugmented source or ground signals. The augmentation may alter already received noise and has not been shown to model satellite channels faithfully. Comparing different trained models on explored source records does not establish generalization.
+
+Run two-thread CPU training under the established load cap. First complete a 64-ID actual source training smoke and freeze all 672 source predictions before legal L_s source scoring. Without selecting on source metrics, run fixed source replay and all seven Phase1 Main views of 168000 records before truth-last ground scoring and independent 119-group audit. Preserve all registered experiments.
+
+Source run: 20261103-phase1-dura-augment-protected-source-s2026092701-r01. Ground run: 20261103-phase1-dura-augment-protected-ground-test-s2026092701-r01. This is a previously explored simulated development setting, not blind testing or real satellite validation.
