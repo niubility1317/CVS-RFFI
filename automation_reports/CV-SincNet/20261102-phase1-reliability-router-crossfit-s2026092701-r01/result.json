@@ -1,0 +1,637 @@
+{
+  "status": "SOURCE_CROSSFIT_SCORE_COMPLETE",
+  "commit": "fc9d60abcd9e2c1eab1b47f63006de1dcf8fab21",
+  "count": 1047,
+  "cells": {
+    "4:all_impaired": {
+      "count": 308,
+      "clean_correct": 308,
+      "dura_correct": 293,
+      "oracle_correct": 299,
+      "margins": {
+        "0.0": {
+          "correct": 283,
+          "repairs": 3,
+          "damages": 13,
+          "switched": 19
+        },
+        "0.05": {
+          "correct": 284,
+          "repairs": 3,
+          "damages": 12,
+          "switched": 18
+        },
+        "0.1": {
+          "correct": 286,
+          "repairs": 3,
+          "damages": 10,
+          "switched": 15
+        }
+      }
+    },
+    "4:clean": {
+      "count": 37,
+      "clean_correct": 37,
+      "dura_correct": 37,
+      "oracle_correct": 37,
+      "margins": {
+        "0.0": {
+          "correct": 37,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.05": {
+          "correct": 37,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.1": {
+          "correct": 37,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        }
+      }
+    },
+    "4:practical_high": {
+      "count": 47,
+      "clean_correct": 47,
+      "dura_correct": 47,
+      "oracle_correct": 47,
+      "margins": {
+        "0.0": {
+          "correct": 47,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.05": {
+          "correct": 47,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.1": {
+          "correct": 47,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        }
+      }
+    },
+    "4:practical_mid": {
+      "count": 43,
+      "clean_correct": 43,
+      "dura_correct": 41,
+      "oracle_correct": 42,
+      "margins": {
+        "0.0": {
+          "correct": 42,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 1
+        },
+        "0.05": {
+          "correct": 42,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 1
+        },
+        "0.1": {
+          "correct": 42,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 1
+        }
+      }
+    },
+    "4:practical_low_suburban": {
+      "count": 58,
+      "clean_correct": 58,
+      "dura_correct": 55,
+      "oracle_correct": 57,
+      "margins": {
+        "0.0": {
+          "correct": 55,
+          "repairs": 1,
+          "damages": 1,
+          "switched": 2
+        },
+        "0.05": {
+          "correct": 55,
+          "repairs": 1,
+          "damages": 1,
+          "switched": 2
+        },
+        "0.1": {
+          "correct": 55,
+          "repairs": 1,
+          "damages": 1,
+          "switched": 2
+        }
+      }
+    },
+    "4:practical_high_urban": {
+      "count": 53,
+      "clean_correct": 53,
+      "dura_correct": 52,
+      "oracle_correct": 52,
+      "margins": {
+        "0.0": {
+          "correct": 51,
+          "repairs": 0,
+          "damages": 1,
+          "switched": 2
+        },
+        "0.05": {
+          "correct": 51,
+          "repairs": 0,
+          "damages": 1,
+          "switched": 2
+        },
+        "0.1": {
+          "correct": 51,
+          "repairs": 0,
+          "damages": 1,
+          "switched": 1
+        }
+      }
+    },
+    "4:practical_mid_urban": {
+      "count": 54,
+      "clean_correct": 54,
+      "dura_correct": 50,
+      "oracle_correct": 51,
+      "margins": {
+        "0.0": {
+          "correct": 45,
+          "repairs": 1,
+          "damages": 6,
+          "switched": 8
+        },
+        "0.05": {
+          "correct": 46,
+          "repairs": 1,
+          "damages": 5,
+          "switched": 7
+        },
+        "0.1": {
+          "correct": 48,
+          "repairs": 1,
+          "damages": 3,
+          "switched": 5
+        }
+      }
+    },
+    "4:practical_low_urban": {
+      "count": 53,
+      "clean_correct": 53,
+      "dura_correct": 48,
+      "oracle_correct": 50,
+      "margins": {
+        "0.0": {
+          "correct": 43,
+          "repairs": 0,
+          "damages": 5,
+          "switched": 6
+        },
+        "0.05": {
+          "correct": 43,
+          "repairs": 0,
+          "damages": 5,
+          "switched": 6
+        },
+        "0.1": {
+          "correct": 43,
+          "repairs": 0,
+          "damages": 5,
+          "switched": 6
+        }
+      }
+    },
+    "6:all_impaired": {
+      "count": 305,
+      "clean_correct": 304,
+      "dura_correct": 292,
+      "oracle_correct": 302,
+      "margins": {
+        "0.0": {
+          "correct": 292,
+          "repairs": 2,
+          "damages": 2,
+          "switched": 7
+        },
+        "0.05": {
+          "correct": 293,
+          "repairs": 2,
+          "damages": 1,
+          "switched": 6
+        },
+        "0.1": {
+          "correct": 293,
+          "repairs": 2,
+          "damages": 1,
+          "switched": 6
+        }
+      }
+    },
+    "6:clean": {
+      "count": 46,
+      "clean_correct": 46,
+      "dura_correct": 46,
+      "oracle_correct": 46,
+      "margins": {
+        "0.0": {
+          "correct": 46,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.05": {
+          "correct": 46,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.1": {
+          "correct": 46,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        }
+      }
+    },
+    "6:practical_high": {
+      "count": 50,
+      "clean_correct": 50,
+      "dura_correct": 49,
+      "oracle_correct": 49,
+      "margins": {
+        "0.0": {
+          "correct": 49,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 1
+        },
+        "0.05": {
+          "correct": 49,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 1
+        },
+        "0.1": {
+          "correct": 49,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 1
+        }
+      }
+    },
+    "6:practical_mid": {
+      "count": 48,
+      "clean_correct": 48,
+      "dura_correct": 48,
+      "oracle_correct": 48,
+      "margins": {
+        "0.0": {
+          "correct": 48,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.05": {
+          "correct": 48,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.1": {
+          "correct": 48,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        }
+      }
+    },
+    "6:practical_low_suburban": {
+      "count": 49,
+      "clean_correct": 49,
+      "dura_correct": 48,
+      "oracle_correct": 49,
+      "margins": {
+        "0.0": {
+          "correct": 47,
+          "repairs": 0,
+          "damages": 1,
+          "switched": 1
+        },
+        "0.05": {
+          "correct": 47,
+          "repairs": 0,
+          "damages": 1,
+          "switched": 1
+        },
+        "0.1": {
+          "correct": 47,
+          "repairs": 0,
+          "damages": 1,
+          "switched": 1
+        }
+      }
+    },
+    "6:practical_high_urban": {
+      "count": 55,
+      "clean_correct": 54,
+      "dura_correct": 55,
+      "oracle_correct": 55,
+      "margins": {
+        "0.0": {
+          "correct": 55,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.05": {
+          "correct": 55,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.1": {
+          "correct": 55,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        }
+      }
+    },
+    "6:practical_mid_urban": {
+      "count": 54,
+      "clean_correct": 54,
+      "dura_correct": 48,
+      "oracle_correct": 53,
+      "margins": {
+        "0.0": {
+          "correct": 49,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 2
+        },
+        "0.05": {
+          "correct": 49,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 2
+        },
+        "0.1": {
+          "correct": 49,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 2
+        }
+      }
+    },
+    "6:practical_low_urban": {
+      "count": 49,
+      "clean_correct": 49,
+      "dura_correct": 44,
+      "oracle_correct": 48,
+      "margins": {
+        "0.0": {
+          "correct": 44,
+          "repairs": 1,
+          "damages": 1,
+          "switched": 3
+        },
+        "0.05": {
+          "correct": 45,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 2
+        },
+        "0.1": {
+          "correct": 45,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 2
+        }
+      }
+    },
+    "8:all_impaired": {
+      "count": 297,
+      "clean_correct": 296,
+      "dura_correct": 285,
+      "oracle_correct": 296,
+      "margins": {
+        "0.0": {
+          "correct": 284,
+          "repairs": 5,
+          "damages": 6,
+          "switched": 11
+        },
+        "0.05": {
+          "correct": 284,
+          "repairs": 4,
+          "damages": 5,
+          "switched": 9
+        },
+        "0.1": {
+          "correct": 284,
+          "repairs": 4,
+          "damages": 5,
+          "switched": 9
+        }
+      }
+    },
+    "8:clean": {
+      "count": 54,
+      "clean_correct": 54,
+      "dura_correct": 54,
+      "oracle_correct": 54,
+      "margins": {
+        "0.0": {
+          "correct": 54,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.05": {
+          "correct": 54,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.1": {
+          "correct": 54,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        }
+      }
+    },
+    "8:practical_high": {
+      "count": 51,
+      "clean_correct": 51,
+      "dura_correct": 51,
+      "oracle_correct": 51,
+      "margins": {
+        "0.0": {
+          "correct": 51,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.05": {
+          "correct": 51,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        },
+        "0.1": {
+          "correct": 51,
+          "repairs": 0,
+          "damages": 0,
+          "switched": 0
+        }
+      }
+    },
+    "8:practical_mid": {
+      "count": 37,
+      "clean_correct": 37,
+      "dura_correct": 34,
+      "oracle_correct": 37,
+      "margins": {
+        "0.0": {
+          "correct": 35,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 1
+        },
+        "0.05": {
+          "correct": 35,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 1
+        },
+        "0.1": {
+          "correct": 35,
+          "repairs": 1,
+          "damages": 0,
+          "switched": 1
+        }
+      }
+    },
+    "8:practical_low_suburban": {
+      "count": 44,
+      "clean_correct": 44,
+      "dura_correct": 42,
+      "oracle_correct": 44,
+      "margins": {
+        "0.0": {
+          "correct": 42,
+          "repairs": 1,
+          "damages": 1,
+          "switched": 2
+        },
+        "0.05": {
+          "correct": 42,
+          "repairs": 1,
+          "damages": 1,
+          "switched": 2
+        },
+        "0.1": {
+          "correct": 42,
+          "repairs": 1,
+          "damages": 1,
+          "switched": 2
+        }
+      }
+    },
+    "8:practical_high_urban": {
+      "count": 58,
+      "clean_correct": 58,
+      "dura_correct": 58,
+      "oracle_correct": 58,
+      "margins": {
+        "0.0": {
+          "correct": 56,
+          "repairs": 0,
+          "damages": 2,
+          "switched": 2
+        },
+        "0.05": {
+          "correct": 56,
+          "repairs": 0,
+          "damages": 2,
+          "switched": 2
+        },
+        "0.1": {
+          "correct": 56,
+          "repairs": 0,
+          "damages": 2,
+          "switched": 2
+        }
+      }
+    },
+    "8:practical_mid_urban": {
+      "count": 51,
+      "clean_correct": 51,
+      "dura_correct": 50,
+      "oracle_correct": 51,
+      "margins": {
+        "0.0": {
+          "correct": 48,
+          "repairs": 0,
+          "damages": 2,
+          "switched": 2
+        },
+        "0.05": {
+          "correct": 48,
+          "repairs": 0,
+          "damages": 2,
+          "switched": 2
+        },
+        "0.1": {
+          "correct": 48,
+          "repairs": 0,
+          "damages": 2,
+          "switched": 2
+        }
+      }
+    },
+    "8:practical_low_urban": {
+      "count": 56,
+      "clean_correct": 55,
+      "dura_correct": 50,
+      "oracle_correct": 55,
+      "margins": {
+        "0.0": {
+          "correct": 52,
+          "repairs": 3,
+          "damages": 1,
+          "switched": 4
+        },
+        "0.05": {
+          "correct": 52,
+          "repairs": 2,
+          "damages": 0,
+          "switched": 2
+        },
+        "0.1": {
+          "correct": 52,
+          "repairs": 2,
+          "damages": 0,
+          "switched": 2
+        }
+      }
+    }
+  },
+  "source_only": true,
+  "training_truth": "L_s only disjoint receiver per fold",
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Source identities and other channel views were previously used by F/development; logistic scores are not guaranteed calibrated on unseen receivers. Oracle uses true labels and is not deployable."
+}

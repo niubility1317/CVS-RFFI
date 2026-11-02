@@ -1,0 +1,39 @@
+{
+  "status": "SOURCE_CROSSFIT_PREDICTIONS_FIXED",
+  "commit": "fc9d60abcd9e2c1eab1b47f63006de1dcf8fab21",
+  "count": 1047,
+  "folds": {
+    "4": {
+      "train_receivers": [
+        6
+      ],
+      "train_count": 351,
+      "test_count": 345
+    },
+    "6": {
+      "train_receivers": [
+        4
+      ],
+      "train_count": 345,
+      "test_count": 351
+    },
+    "8": {
+      "train_receivers": [
+        4,
+        6
+      ],
+      "train_count": 696,
+      "test_count": 351
+    }
+  },
+  "margins": [
+    0.0,
+    0.05,
+    0.1
+  ],
+  "training_truth": "L_s only, disjoint receiver per fold",
+  "holdout_labels_used_for_that_fold_fit": false,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0
+}
