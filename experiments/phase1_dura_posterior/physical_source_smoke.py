@@ -18,7 +18,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'phase1_joint_mixture
 from source_pilot import s, BlindActionNet, action_matrix, posterior, SOURCE, PRIOR_RUN
 
 
-def load_source_models(root):
+def load_source_models(root, posterior_kind='mean'):
+    if posterior_kind not in ('mean', 'nonlocal'):
+        raise ValueError('A registered source posterior kind is required')
     blind_state = torch.load(root/'runs'/SOURCE/'checkpoint_epoch10.pt', map_location='cpu', weights_only=False)
     prior = torch.load(root/'runs'/PRIOR_RUN/'source_prior.pt', map_location='cpu', weights_only=False)
     gate_state = torch.load(root/'runs'/s.GATE_RUN/'source/selected.pt', map_location='cpu', weights_only=False)
@@ -29,8 +31,23 @@ def load_source_models(root):
         raise ValueError('The fixed source-only physical estimator, prior and gate are required')
     blind = BlindActionNet()
     blind.load_state_dict(blind_state['model'], strict=True)
+    synthesis = None
+    if posterior_kind == 'nonlocal':
+        from experiments.phase1_posterior_flow.posterior_nonlocal_synthesis import PosteriorNonlocalSynthesis
+        folder = root/'runs/20261102-phase1-posterior-nonlocal-source-s2026092701-r02'
+        metadata = core.read(folder/'prediction_complete.json')
+        state = torch.load(folder/'checkpoint.pt', map_location='cpu', weights_only=False)
+        commit = 'b1170e6ad3620c2c821bbcbcdca2f5a3482e3285'
+        if (metadata.get('status') != 'SOURCE_PREDICTIONS_FIXED' or metadata.get('commit') != commit
+                or metadata.get('source_fit_ids') != 8192 or state.get('commit') != commit
+                or len(state.get('fit_ids', [])) != 8192 or metadata.get('DURA_loaded') is not False
+                or metadata.get('F_frozen') is not True
+                or any(metadata.get(k) != 0 for k in ('U_s_truth_reads', 'V_reads', 'test_reads'))):
+            raise ValueError('Fixed independently trained source nonlocal model is required')
+        synthesis = PosteriorNonlocalSynthesis()
+        synthesis.load_state_dict(state['model'], strict=True)
     physical = PhysicalPosterior(blind, prior['means'], prior['covariances'], prior['priors'],
-                                 action_matrix=action_matrix, posterior=posterior)
+                                 action_matrix=action_matrix, posterior=posterior, synthesizer=synthesis)
     gate = s.BlindGate()
     gate.load_state_dict(gate_state['gate'], strict=True)
     return physical, gate

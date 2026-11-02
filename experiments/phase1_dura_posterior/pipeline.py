@@ -7,7 +7,7 @@ from torch import nn
 class PhysicalPosterior(nn.Module):
     """Posterior mixture mean under a frozen estimated action and source prior."""
 
-    def __init__(self, blind, means, covariances, priors, *, action_matrix, posterior):
+    def __init__(self, blind, means, covariances, priors, *, action_matrix, posterior, synthesizer=None):
         super().__init__()
         self.blind = blind.eval().requires_grad_(False)
         self.register_buffer('means', means)
@@ -16,10 +16,13 @@ class PhysicalPosterior(nn.Module):
         self.register_buffer('eye', torch.eye(512, dtype=means.dtype, device=means.device))
         self.action_matrix = action_matrix
         self.posterior = posterior
+        self.synthesizer = None if synthesizer is None else synthesizer.eval().requires_grad_(False)
 
     def train(self, mode=True):
         super().train(mode)
         self.blind.eval()
+        if self.synthesizer is not None:
+            self.synthesizer.eval()
         return self
 
     @torch.no_grad()
@@ -30,6 +33,9 @@ class PhysicalPosterior(nn.Module):
         states, logweights = self.posterior(x.reshape(len(x), 512), action, noise,
                                             self.means, self.covariances, self.priors)
         wave = (states*logweights.exp().unsqueeze(-1)).sum(1).reshape_as(x)
+        if self.synthesizer is not None:
+            candidates = torch.cat((x[:, None], states.reshape(len(x), -1, 2, 256)), dim=1)
+            wave = self.synthesizer(wave, candidates, logvar)
         if not torch.isfinite(wave).all() or not torch.isfinite(logvar).all():
             raise ValueError('Finite posterior waveform and estimated noise are required')
         return wave, logvar

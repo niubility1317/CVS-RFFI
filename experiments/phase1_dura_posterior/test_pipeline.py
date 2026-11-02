@@ -86,6 +86,30 @@ class PipelineTest(unittest.TestCase):
         torch.testing.assert_close(logvar, torch.zeros(2))
         self.assertFalse(model.blind.training)
 
+    def test_nonlocal_prior_receives_observed_and_conditional_waveforms(self):
+        x = torch.randn(2, 2, 256)
+        means = torch.zeros(2, 512)
+        covariances = torch.eye(512).repeat(2, 1, 1)
+        priors = torch.tensor([0.25, 0.75])
+
+        def posterior(y, action, noise, actual_means, actual_covariances, actual_priors):
+            return torch.stack((y, y+4), dim=1), priors.log().expand(len(y), -1)
+
+        class Synthesis(nn.Module):
+            def forward(self, base, candidates, logvar):
+                self_shape = candidates.shape
+                if self_shape != (len(base), 3, 2, 256):
+                    raise AssertionError('Observed waveform and two conditional waveforms required')
+                torch.testing.assert_close(candidates[:, 0], x)
+                return base+2
+
+        model = PhysicalPosterior(Blind(), means, covariances, priors,
+                                  action_matrix=lambda value: value, posterior=posterior,
+                                  synthesizer=Synthesis()).train()
+        waveform, _ = model(x)
+        torch.testing.assert_close(waveform, x+5)
+        self.assertFalse(model.synthesizer.training)
+
 
 if __name__ == '__main__':
     unittest.main()
