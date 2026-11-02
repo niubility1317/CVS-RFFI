@@ -1,1 +1,2 @@
 {"at": "2026-11-02T02:23:46+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T02:26:23+00:00", "status": "ARTIFACTS_COMPLETE", "note": "Five source candidate features fixed; no source true labels, U_s truth, V or test read.", "evidence": ["result.json and N607 features.npz; independently checked all 1047x5 predicted classes match prior fixed source predictions and finite 19 features."], "row_id": null}
