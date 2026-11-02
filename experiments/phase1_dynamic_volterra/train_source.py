@@ -19,6 +19,7 @@ FIT_SIZE = 8192
 BATCH = 8
 SCHEMA = 'phase1_dynamic_volterra_v1'
 LOG_PREFIX = 'DYNAMIC_VOLTERRA'
+PAIRED_VIEWS = False
 VIEWS = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',
          'practical_high_urban', 'practical_mid_urban', 'practical_low_urban')
 
@@ -30,6 +31,12 @@ def snapshot(module):
 def unchanged(module, before):
     return (not any(p.requires_grad or p.grad is not None for p in module.parameters())
             and all(torch.equal(value.detach().cpu(), before[key]) for key, value in module.state_dict().items()))
+
+
+def training_indices(chosen, records_per_view, paired):
+    if paired:
+        return torch.cat([chosen+i*records_per_view for i in range(3)])
+    return chosen
 
 
 def load_components(root, device, deps):
@@ -141,16 +148,24 @@ def main():
         raise ValueError('Paired source training data required')
     data = tuple(torch.cat(items, 0) for items in zip(*chunks))
     del chunks
+    if PAIRED_VIEWS:
+        size = len(selected)
+        if (len(data[0]) != 3*size or not torch.equal(data[3][:size], data[3][size:2*size])
+                or not torch.equal(data[3][:size], data[3][2*size:])
+                or not torch.equal(data[5][:size], data[5][size:2*size])
+                or not torch.equal(data[5][:size], data[5][2*size:])):
+            raise ValueError('Three source views must preserve the same physical-record order')
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.0003, weight_decay=0.0001)
     generator = torch.Generator().manual_seed(2026110318)
     losses = []
     adaptive_gradient_batches = 0
     for epoch in range(1, 2 if args.smoke else EPOCHS+1):
-        order = torch.randperm(len(data[0]), generator=generator)
+        order = torch.randperm(len(selected) if PAIRED_VIEWS else len(data[0]), generator=generator)
         total = 0.
         model.train()
-        for start in range(0, len(order), 16):
-            chosen = order[start:start+16]
+        batch_size = 8 if PAIRED_VIEWS else 16
+        for start in range(0, len(order), batch_size):
+            chosen = training_indices(order[start:start+batch_size], len(selected), PAIRED_VIEWS)
             x, base, lv, target, features, groups = [t[chosen].to(args.device) for t in data]
             output = model(x, base, lv)
             loss, _ = source_loss(reader, output, target, features, groups)
@@ -166,7 +181,7 @@ def main():
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1., error_if_nonfinite=True)
             optimizer.step()
             total += float(loss.detach())*len(chosen)
-        losses.append(total/len(order))
+        losses.append(total/len(data[0]))
         print(LOG_PREFIX+'_EPOCH', epoch, 'loss', losses[-1], 'seconds', round(time.monotonic()-started, 1), flush=True)
     if adaptive_gradient_batches < 1 or not all(unchanged(module, state) for module, state in zip(frozen, before)):
         raise ValueError('Dynamic memory network must learn while reader, blind action and gate remain frozen')
@@ -208,7 +223,7 @@ def main():
         raise ValueError('Finite complete fixed source predictions are required')
     summary = dict(commit=args.commit, fit_ids=len(selected), active_exposures=len(data[0]),
                    source_view_counts=scene_counts, losses=losses, adaptive_gradient_batches=adaptive_gradient_batches,
-                   F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=False,
+                   F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=False, paired_views=PAIRED_VIEWS,
                    TX_labels_read=0,
                    U_s_truth_reads=0, V_reads=0, test_reads=0)
     if args.smoke:
