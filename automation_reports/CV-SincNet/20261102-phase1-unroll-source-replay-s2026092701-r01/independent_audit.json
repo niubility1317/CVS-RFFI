@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "source_prediction_sha256": "fa90fd400bed527ca6f0409ccd09a0f3ad6a979492f77e8fcf35fdf7d0b6d6a5",
+  "fixed_predictions": 11761,
+  "cell_checks": 126,
+  "field_checks": 1134,
+  "selection_checks": 12,
+  "source_pseudo_targets_only": true,
+  "DURA_comparator_only": true,
+  "TX_truth_reads": 0,
+  "test_reads": 0,
+  "groups": {
+    "RX4_6:all": {
+      "trusted": 6606,
+      "parent_correct": 6181,
+      "candidate_correct": 6215,
+      "dura_correct": 6326,
+      "repairs_vs_parent": 78,
+      "damages_vs_parent": 44
+    },
+    "RX4_6:low_urban": {
+      "trusted": 1130,
+      "parent_correct": 907,
+      "candidate_correct": 921,
+      "dura_correct": 984,
+      "repairs_vs_parent": 33,
+      "damages_vs_parent": 19
+    },
+    "RX8:all": {
+      "trusted": 3183,
+      "parent_correct": 3057,
+      "candidate_correct": 3065,
+      "dura_correct": 3060,
+      "repairs_vs_parent": 24,
+      "damages_vs_parent": 16
+    },
+    "RX8:low_urban": {
+      "trusted": 512,
+      "parent_correct": 455,
+      "candidate_correct": 462,
+      "dura_correct": 462,
+      "repairs_vs_parent": 11,
+      "damages_vs_parent": 4
+    }
+  }
+}

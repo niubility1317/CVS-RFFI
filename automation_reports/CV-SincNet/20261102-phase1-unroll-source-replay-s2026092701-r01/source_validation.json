@@ -1,0 +1,1485 @@
+{
+  "status": "SOURCE_VALIDATION_COMPLETE",
+  "commit": "134e34b6489ba3ca7f7a0da06449456558f99923",
+  "validation_ids": 7840,
+  "heldout_ids": 3921,
+  "validation": {
+    "0.25": {
+      "0.8": {
+        "1:4:clean": {
+          "count": 536,
+          "valid_count": 524,
+          "active": 1,
+          "baseline_correct": 524,
+          "parent_correct": 524,
+          "candidate_correct": 524,
+          "baseline_iq": 0.000016298186892527156,
+          "parent_iq": 0.0006901417509652674,
+          "candidate_iq": 0.000598990241996944
+        },
+        "1:4:practical_high": {
+          "count": 605,
+          "valid_count": 583,
+          "active": 605,
+          "baseline_correct": 583,
+          "parent_correct": 580,
+          "candidate_correct": 580,
+          "baseline_iq": 0.0025074444711208344,
+          "parent_iq": 0.00524921715259552,
+          "candidate_iq": 0.004734128713607788
+        },
+        "1:4:practical_mid": {
+          "count": 537,
+          "valid_count": 530,
+          "active": 537,
+          "baseline_correct": 521,
+          "parent_correct": 513,
+          "candidate_correct": 513,
+          "baseline_iq": 0.004749916028231382,
+          "parent_iq": 0.0070377555675804615,
+          "candidate_iq": 0.006873533595353365
+        },
+        "1:4:practical_low_suburban": {
+          "count": 579,
+          "valid_count": 567,
+          "active": 579,
+          "baseline_correct": 550,
+          "parent_correct": 534,
+          "candidate_correct": 536,
+          "baseline_iq": 0.006313166581094265,
+          "parent_iq": 0.010136743076145649,
+          "candidate_iq": 0.010115714743733406
+        },
+        "1:4:practical_high_urban": {
+          "count": 532,
+          "valid_count": 512,
+          "active": 532,
+          "baseline_correct": 501,
+          "parent_correct": 501,
+          "candidate_correct": 501,
+          "baseline_iq": 0.0033722035586833954,
+          "parent_iq": 0.007406190969049931,
+          "candidate_iq": 0.006882069632411003
+        },
+        "1:4:practical_mid_urban": {
+          "count": 560,
+          "valid_count": 536,
+          "active": 559,
+          "baseline_correct": 493,
+          "parent_correct": 459,
+          "candidate_correct": 460,
+          "baseline_iq": 0.0141453193500638,
+          "parent_iq": 0.025408754125237465,
+          "candidate_iq": 0.02519434317946434
+        },
+        "1:4:practical_low_urban": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 582,
+          "baseline_correct": 496,
+          "parent_correct": 419,
+          "candidate_correct": 422,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.03858455643057823,
+          "candidate_iq": 0.03877444565296173
+        },
+        "1:6:clean": {
+          "count": 556,
+          "valid_count": 550,
+          "active": 2,
+          "baseline_correct": 550,
+          "parent_correct": 550,
+          "candidate_correct": 550,
+          "baseline_iq": 0.000023926722860778682,
+          "parent_iq": 0.0006197656621225178,
+          "candidate_iq": 0.0005062492564320564
+        },
+        "1:6:practical_high": {
+          "count": 601,
+          "valid_count": 593,
+          "active": 601,
+          "baseline_correct": 591,
+          "parent_correct": 590,
+          "candidate_correct": 590,
+          "baseline_iq": 0.0033672840800136328,
+          "parent_iq": 0.0033411195036023855,
+          "candidate_iq": 0.0031519271433353424
+        },
+        "1:6:practical_mid": {
+          "count": 554,
+          "valid_count": 548,
+          "active": 554,
+          "baseline_correct": 543,
+          "parent_correct": 545,
+          "candidate_correct": 544,
+          "baseline_iq": 0.005936245433986187,
+          "parent_iq": 0.006570219993591309,
+          "candidate_iq": 0.0063810874707996845
+        },
+        "1:6:practical_low_suburban": {
+          "count": 526,
+          "valid_count": 515,
+          "active": 526,
+          "baseline_correct": 504,
+          "parent_correct": 504,
+          "candidate_correct": 504,
+          "baseline_iq": 0.010024373419582844,
+          "parent_iq": 0.01143018901348114,
+          "candidate_iq": 0.011209524236619473
+        },
+        "1:6:practical_high_urban": {
+          "count": 560,
+          "valid_count": 554,
+          "active": 560,
+          "baseline_correct": 551,
+          "parent_correct": 549,
+          "candidate_correct": 549,
+          "baseline_iq": 0.006160602439194918,
+          "parent_iq": 0.00757488003000617,
+          "candidate_iq": 0.007284465711563826
+        },
+        "1:6:practical_mid_urban": {
+          "count": 542,
+          "valid_count": 538,
+          "active": 542,
+          "baseline_correct": 505,
+          "parent_correct": 499,
+          "candidate_correct": 499,
+          "baseline_iq": 0.020036673173308372,
+          "parent_iq": 0.022954903542995453,
+          "candidate_iq": 0.022855615243315697
+        },
+        "1:6:practical_low_urban": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 570,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 488,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.043288689106702805,
+          "candidate_iq": 0.043492622673511505
+        },
+        "2:8:clean": {
+          "count": 608,
+          "valid_count": 592,
+          "active": 2,
+          "baseline_correct": 592,
+          "parent_correct": 592,
+          "candidate_correct": 592,
+          "baseline_iq": 0.00004033638469991274,
+          "parent_iq": 0.00014745854423381388,
+          "candidate_iq": 0.00010977534839184955
+        },
+        "2:8:practical_high": {
+          "count": 537,
+          "valid_count": 516,
+          "active": 536,
+          "baseline_correct": 512,
+          "parent_correct": 514,
+          "candidate_correct": 514,
+          "baseline_iq": 0.004132034722715616,
+          "parent_iq": 0.0038325742352753878,
+          "candidate_iq": 0.0036536252591758966
+        },
+        "2:8:practical_mid": {
+          "count": 541,
+          "valid_count": 516,
+          "active": 541,
+          "baseline_correct": 508,
+          "parent_correct": 510,
+          "candidate_correct": 507,
+          "baseline_iq": 0.011551246978342533,
+          "parent_iq": 0.010435231029987335,
+          "candidate_iq": 0.010209409520030022
+        },
+        "2:8:practical_low_suburban": {
+          "count": 568,
+          "valid_count": 544,
+          "active": 566,
+          "baseline_correct": 530,
+          "parent_correct": 532,
+          "candidate_correct": 533,
+          "baseline_iq": 0.016746439039707184,
+          "parent_iq": 0.01647169142961502,
+          "candidate_iq": 0.016062602400779724
+        },
+        "2:8:practical_high_urban": {
+          "count": 568,
+          "valid_count": 547,
+          "active": 568,
+          "baseline_correct": 536,
+          "parent_correct": 535,
+          "candidate_correct": 537,
+          "baseline_iq": 0.009234379976987839,
+          "parent_iq": 0.010520263575017452,
+          "candidate_iq": 0.010055871680378914
+        },
+        "2:8:practical_mid_urban": {
+          "count": 568,
+          "valid_count": 548,
+          "active": 568,
+          "baseline_correct": 512,
+          "parent_correct": 511,
+          "candidate_correct": 512,
+          "baseline_iq": 0.04232887178659439,
+          "parent_iq": 0.038812074810266495,
+          "candidate_iq": 0.03850465267896652
+        },
+        "2:8:practical_low_urban": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 531,
+          "baseline_correct": 462,
+          "parent_correct": 455,
+          "candidate_correct": 458,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.07835507392883301,
+          "candidate_iq": 0.07713327556848526
+        }
+      },
+      "0.99": {
+        "1:4:clean": {
+          "count": 536,
+          "valid_count": 524,
+          "active": 0,
+          "baseline_correct": 524,
+          "parent_correct": 524,
+          "candidate_correct": 524,
+          "baseline_iq": 0.000016298186892527156,
+          "parent_iq": 6.2528615911352364e-15,
+          "candidate_iq": 6.2528615911352364e-15
+        },
+        "1:4:practical_high": {
+          "count": 605,
+          "valid_count": 583,
+          "active": 604,
+          "baseline_correct": 583,
+          "parent_correct": 580,
+          "candidate_correct": 580,
+          "baseline_iq": 0.0025074444711208344,
+          "parent_iq": 0.005135983694344759,
+          "candidate_iq": 0.004649326670914888
+        },
+        "1:4:practical_mid": {
+          "count": 537,
+          "valid_count": 530,
+          "active": 537,
+          "baseline_correct": 521,
+          "parent_correct": 513,
+          "candidate_correct": 513,
+          "baseline_iq": 0.004749916028231382,
+          "parent_iq": 0.0070377555675804615,
+          "candidate_iq": 0.006873533595353365
+        },
+        "1:4:practical_low_suburban": {
+          "count": 579,
+          "valid_count": 567,
+          "active": 579,
+          "baseline_correct": 550,
+          "parent_correct": 534,
+          "candidate_correct": 536,
+          "baseline_iq": 0.006313166581094265,
+          "parent_iq": 0.010136743076145649,
+          "candidate_iq": 0.010115714743733406
+        },
+        "1:4:practical_high_urban": {
+          "count": 532,
+          "valid_count": 512,
+          "active": 529,
+          "baseline_correct": 501,
+          "parent_correct": 501,
+          "candidate_correct": 501,
+          "baseline_iq": 0.0033722035586833954,
+          "parent_iq": 0.008268770761787891,
+          "candidate_iq": 0.007782410830259323
+        },
+        "1:4:practical_mid_urban": {
+          "count": 560,
+          "valid_count": 536,
+          "active": 556,
+          "baseline_correct": 493,
+          "parent_correct": 459,
+          "candidate_correct": 460,
+          "baseline_iq": 0.0141453193500638,
+          "parent_iq": 0.028061771765351295,
+          "candidate_iq": 0.027853572741150856
+        },
+        "1:4:practical_low_urban": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 579,
+          "baseline_correct": 496,
+          "parent_correct": 420,
+          "candidate_correct": 423,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.040631912648677826,
+          "candidate_iq": 0.04082992300391197
+        },
+        "1:6:clean": {
+          "count": 556,
+          "valid_count": 550,
+          "active": 0,
+          "baseline_correct": 550,
+          "parent_correct": 550,
+          "candidate_correct": 550,
+          "baseline_iq": 0.000023926722860778682,
+          "parent_iq": 6.242194058197516e-15,
+          "candidate_iq": 6.242194058197516e-15
+        },
+        "1:6:practical_high": {
+          "count": 601,
+          "valid_count": 593,
+          "active": 601,
+          "baseline_correct": 591,
+          "parent_correct": 590,
+          "candidate_correct": 590,
+          "baseline_iq": 0.0033672840800136328,
+          "parent_iq": 0.0033411195036023855,
+          "candidate_iq": 0.0031519271433353424
+        },
+        "1:6:practical_mid": {
+          "count": 554,
+          "valid_count": 548,
+          "active": 551,
+          "baseline_correct": 543,
+          "parent_correct": 545,
+          "candidate_correct": 544,
+          "baseline_iq": 0.005936245433986187,
+          "parent_iq": 0.006657746154814959,
+          "candidate_iq": 0.006475762464106083
+        },
+        "1:6:practical_low_suburban": {
+          "count": 526,
+          "valid_count": 515,
+          "active": 521,
+          "baseline_correct": 504,
+          "parent_correct": 504,
+          "candidate_correct": 504,
+          "baseline_iq": 0.010024373419582844,
+          "parent_iq": 0.011052608489990234,
+          "candidate_iq": 0.010914863087236881
+        },
+        "1:6:practical_high_urban": {
+          "count": 560,
+          "valid_count": 554,
+          "active": 559,
+          "baseline_correct": 551,
+          "parent_correct": 549,
+          "candidate_correct": 549,
+          "baseline_iq": 0.006160602439194918,
+          "parent_iq": 0.007586832623928785,
+          "candidate_iq": 0.007298406679183245
+        },
+        "1:6:practical_mid_urban": {
+          "count": 542,
+          "valid_count": 538,
+          "active": 538,
+          "baseline_correct": 505,
+          "parent_correct": 499,
+          "candidate_correct": 499,
+          "baseline_iq": 0.020036673173308372,
+          "parent_iq": 0.024824252352118492,
+          "candidate_iq": 0.02477743662893772
+        },
+        "1:6:practical_low_urban": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 568,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 488,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.04328954592347145,
+          "candidate_iq": 0.043496545404195786
+        },
+        "2:8:clean": {
+          "count": 608,
+          "valid_count": 592,
+          "active": 0,
+          "baseline_correct": 592,
+          "parent_correct": 592,
+          "candidate_correct": 592,
+          "baseline_iq": 0.00004033638469991274,
+          "parent_iq": 5.515158574514838e-15,
+          "candidate_iq": 5.515158574514838e-15
+        },
+        "2:8:practical_high": {
+          "count": 537,
+          "valid_count": 516,
+          "active": 531,
+          "baseline_correct": 512,
+          "parent_correct": 514,
+          "candidate_correct": 514,
+          "baseline_iq": 0.004132034722715616,
+          "parent_iq": 0.0048300703056156635,
+          "candidate_iq": 0.0046842023730278015
+        },
+        "2:8:practical_mid": {
+          "count": 541,
+          "valid_count": 516,
+          "active": 539,
+          "baseline_correct": 508,
+          "parent_correct": 510,
+          "candidate_correct": 507,
+          "baseline_iq": 0.011551246978342533,
+          "parent_iq": 0.010459349490702152,
+          "candidate_iq": 0.010233111679553986
+        },
+        "2:8:practical_low_suburban": {
+          "count": 568,
+          "valid_count": 544,
+          "active": 564,
+          "baseline_correct": 530,
+          "parent_correct": 532,
+          "candidate_correct": 533,
+          "baseline_iq": 0.016746439039707184,
+          "parent_iq": 0.0157930850982666,
+          "candidate_iq": 0.01553958561271429
+        },
+        "2:8:practical_high_urban": {
+          "count": 568,
+          "valid_count": 547,
+          "active": 566,
+          "baseline_correct": 536,
+          "parent_correct": 535,
+          "candidate_correct": 537,
+          "baseline_iq": 0.009234379976987839,
+          "parent_iq": 0.011402885429561138,
+          "candidate_iq": 0.010937840677797794
+        },
+        "2:8:practical_mid_urban": {
+          "count": 568,
+          "valid_count": 548,
+          "active": 559,
+          "baseline_correct": 512,
+          "parent_correct": 509,
+          "candidate_correct": 510,
+          "baseline_iq": 0.04232887178659439,
+          "parent_iq": 0.04318736121058464,
+          "candidate_iq": 0.042969994246959686
+        },
+        "2:8:practical_low_urban": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 525,
+          "baseline_correct": 462,
+          "parent_correct": 454,
+          "candidate_correct": 457,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.08080288767814636,
+          "candidate_iq": 0.07962166517972946
+        }
+      }
+    },
+    "0.5": {
+      "0.8": {
+        "1:4:clean": {
+          "count": 536,
+          "valid_count": 524,
+          "active": 1,
+          "baseline_correct": 524,
+          "parent_correct": 524,
+          "candidate_correct": 524,
+          "baseline_iq": 0.000016298186892527156,
+          "parent_iq": 0.0006901417509652674,
+          "candidate_iq": 0.0005157755222171545
+        },
+        "1:4:practical_high": {
+          "count": 605,
+          "valid_count": 583,
+          "active": 605,
+          "baseline_correct": 583,
+          "parent_correct": 580,
+          "candidate_correct": 580,
+          "baseline_iq": 0.0025074444711208344,
+          "parent_iq": 0.00524921715259552,
+          "candidate_iq": 0.004365280270576477
+        },
+        "1:4:practical_mid": {
+          "count": 537,
+          "valid_count": 530,
+          "active": 537,
+          "baseline_correct": 521,
+          "parent_correct": 513,
+          "candidate_correct": 513,
+          "baseline_iq": 0.004749916028231382,
+          "parent_iq": 0.0070377555675804615,
+          "candidate_iq": 0.006879308260977268
+        },
+        "1:4:practical_low_suburban": {
+          "count": 579,
+          "valid_count": 567,
+          "active": 579,
+          "baseline_correct": 550,
+          "parent_correct": 534,
+          "candidate_correct": 537,
+          "baseline_iq": 0.006313166581094265,
+          "parent_iq": 0.010136743076145649,
+          "candidate_iq": 0.0103805772960186
+        },
+        "1:4:practical_high_urban": {
+          "count": 532,
+          "valid_count": 512,
+          "active": 532,
+          "baseline_correct": 501,
+          "parent_correct": 501,
+          "candidate_correct": 501,
+          "baseline_iq": 0.0033722035586833954,
+          "parent_iq": 0.007406190969049931,
+          "candidate_iq": 0.006530312821269035
+        },
+        "1:4:practical_mid_urban": {
+          "count": 560,
+          "valid_count": 536,
+          "active": 559,
+          "baseline_correct": 493,
+          "parent_correct": 459,
+          "candidate_correct": 470,
+          "baseline_iq": 0.0141453193500638,
+          "parent_iq": 0.025408754125237465,
+          "candidate_iq": 0.025449508801102638
+        },
+        "1:4:practical_low_urban": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 582,
+          "baseline_correct": 496,
+          "parent_correct": 419,
+          "candidate_correct": 426,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.03858455643057823,
+          "candidate_iq": 0.03989394009113312
+        },
+        "1:6:clean": {
+          "count": 556,
+          "valid_count": 550,
+          "active": 2,
+          "baseline_correct": 550,
+          "parent_correct": 550,
+          "candidate_correct": 550,
+          "baseline_iq": 0.000023926722860778682,
+          "parent_iq": 0.0006197656621225178,
+          "candidate_iq": 0.00040908652590587735
+        },
+        "1:6:practical_high": {
+          "count": 601,
+          "valid_count": 593,
+          "active": 601,
+          "baseline_correct": 591,
+          "parent_correct": 590,
+          "candidate_correct": 590,
+          "baseline_iq": 0.0033672840800136328,
+          "parent_iq": 0.0033411195036023855,
+          "candidate_iq": 0.003071268554776907
+        },
+        "1:6:practical_mid": {
+          "count": 554,
+          "valid_count": 548,
+          "active": 554,
+          "baseline_correct": 543,
+          "parent_correct": 545,
+          "candidate_correct": 543,
+          "baseline_iq": 0.005936245433986187,
+          "parent_iq": 0.006570219993591309,
+          "candidate_iq": 0.006388559006154537
+        },
+        "1:6:practical_low_suburban": {
+          "count": 526,
+          "valid_count": 515,
+          "active": 526,
+          "baseline_correct": 504,
+          "parent_correct": 504,
+          "candidate_correct": 505,
+          "baseline_iq": 0.010024373419582844,
+          "parent_iq": 0.01143018901348114,
+          "candidate_iq": 0.011327806860208511
+        },
+        "1:6:practical_high_urban": {
+          "count": 560,
+          "valid_count": 554,
+          "active": 560,
+          "baseline_correct": 551,
+          "parent_correct": 549,
+          "candidate_correct": 549,
+          "baseline_iq": 0.006160602439194918,
+          "parent_iq": 0.00757488003000617,
+          "candidate_iq": 0.007159911561757326
+        },
+        "1:6:practical_mid_urban": {
+          "count": 542,
+          "valid_count": 538,
+          "active": 542,
+          "baseline_correct": 505,
+          "parent_correct": 499,
+          "candidate_correct": 500,
+          "baseline_iq": 0.020036673173308372,
+          "parent_iq": 0.022954903542995453,
+          "candidate_iq": 0.023199571296572685
+        },
+        "1:6:practical_low_urban": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 570,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 491,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.043288689106702805,
+          "candidate_iq": 0.044673461467027664
+        },
+        "2:8:clean": {
+          "count": 608,
+          "valid_count": 592,
+          "active": 2,
+          "baseline_correct": 592,
+          "parent_correct": 592,
+          "candidate_correct": 592,
+          "baseline_iq": 0.00004033638469991274,
+          "parent_iq": 0.00014745854423381388,
+          "candidate_iq": 0.00007810968236299232
+        },
+        "2:8:practical_high": {
+          "count": 537,
+          "valid_count": 516,
+          "active": 536,
+          "baseline_correct": 512,
+          "parent_correct": 514,
+          "candidate_correct": 514,
+          "baseline_iq": 0.004132034722715616,
+          "parent_iq": 0.0038325742352753878,
+          "candidate_iq": 0.0035857080947607756
+        },
+        "2:8:practical_mid": {
+          "count": 541,
+          "valid_count": 516,
+          "active": 541,
+          "baseline_correct": 508,
+          "parent_correct": 510,
+          "candidate_correct": 508,
+          "baseline_iq": 0.011551246978342533,
+          "parent_iq": 0.010435231029987335,
+          "candidate_iq": 0.010174374096095562
+        },
+        "2:8:practical_low_suburban": {
+          "count": 568,
+          "valid_count": 544,
+          "active": 566,
+          "baseline_correct": 530,
+          "parent_correct": 532,
+          "candidate_correct": 534,
+          "baseline_iq": 0.016746439039707184,
+          "parent_iq": 0.01647169142961502,
+          "candidate_iq": 0.01602025143802166
+        },
+        "2:8:practical_high_urban": {
+          "count": 568,
+          "valid_count": 547,
+          "active": 568,
+          "baseline_correct": 536,
+          "parent_correct": 535,
+          "candidate_correct": 537,
+          "baseline_iq": 0.009234379976987839,
+          "parent_iq": 0.010520263575017452,
+          "candidate_iq": 0.00977187231183052
+        },
+        "2:8:practical_mid_urban": {
+          "count": 568,
+          "valid_count": 548,
+          "active": 568,
+          "baseline_correct": 512,
+          "parent_correct": 511,
+          "candidate_correct": 510,
+          "baseline_iq": 0.04232887178659439,
+          "parent_iq": 0.038812074810266495,
+          "candidate_iq": 0.03868050128221512
+        },
+        "2:8:practical_low_urban": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 531,
+          "baseline_correct": 462,
+          "parent_correct": 455,
+          "candidate_correct": 463,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.07835507392883301,
+          "candidate_iq": 0.07695575058460236
+        }
+      },
+      "0.99": {
+        "1:4:clean": {
+          "count": 536,
+          "valid_count": 524,
+          "active": 0,
+          "baseline_correct": 524,
+          "parent_correct": 524,
+          "candidate_correct": 524,
+          "baseline_iq": 0.000016298186892527156,
+          "parent_iq": 6.2528615911352364e-15,
+          "candidate_iq": 6.2528615911352364e-15
+        },
+        "1:4:practical_high": {
+          "count": 605,
+          "valid_count": 583,
+          "active": 604,
+          "baseline_correct": 583,
+          "parent_correct": 580,
+          "candidate_correct": 580,
+          "baseline_iq": 0.0025074444711208344,
+          "parent_iq": 0.005135983694344759,
+          "candidate_iq": 0.004304131027311087
+        },
+        "1:4:practical_mid": {
+          "count": 537,
+          "valid_count": 530,
+          "active": 537,
+          "baseline_correct": 521,
+          "parent_correct": 513,
+          "candidate_correct": 513,
+          "baseline_iq": 0.004749916028231382,
+          "parent_iq": 0.0070377555675804615,
+          "candidate_iq": 0.006879308260977268
+        },
+        "1:4:practical_low_suburban": {
+          "count": 579,
+          "valid_count": 567,
+          "active": 579,
+          "baseline_correct": 550,
+          "parent_correct": 534,
+          "candidate_correct": 537,
+          "baseline_iq": 0.006313166581094265,
+          "parent_iq": 0.010136743076145649,
+          "candidate_iq": 0.0103805772960186
+        },
+        "1:4:practical_high_urban": {
+          "count": 532,
+          "valid_count": 512,
+          "active": 529,
+          "baseline_correct": 501,
+          "parent_correct": 501,
+          "candidate_correct": 501,
+          "baseline_iq": 0.0033722035586833954,
+          "parent_iq": 0.008268770761787891,
+          "candidate_iq": 0.007462381850928068
+        },
+        "1:4:practical_mid_urban": {
+          "count": 560,
+          "valid_count": 536,
+          "active": 556,
+          "baseline_correct": 493,
+          "parent_correct": 459,
+          "candidate_correct": 470,
+          "baseline_iq": 0.0141453193500638,
+          "parent_iq": 0.028061771765351295,
+          "candidate_iq": 0.028108661994338036
+        },
+        "1:4:practical_low_urban": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 579,
+          "baseline_correct": 496,
+          "parent_correct": 420,
+          "candidate_correct": 427,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.040631912648677826,
+          "candidate_iq": 0.0419546514749527
+        },
+        "1:6:clean": {
+          "count": 556,
+          "valid_count": 550,
+          "active": 0,
+          "baseline_correct": 550,
+          "parent_correct": 550,
+          "candidate_correct": 550,
+          "baseline_iq": 0.000023926722860778682,
+          "parent_iq": 6.242194058197516e-15,
+          "candidate_iq": 6.242194058197516e-15
+        },
+        "1:6:practical_high": {
+          "count": 601,
+          "valid_count": 593,
+          "active": 601,
+          "baseline_correct": 591,
+          "parent_correct": 590,
+          "candidate_correct": 590,
+          "baseline_iq": 0.0033672840800136328,
+          "parent_iq": 0.0033411195036023855,
+          "candidate_iq": 0.003071268554776907
+        },
+        "1:6:practical_mid": {
+          "count": 554,
+          "valid_count": 548,
+          "active": 551,
+          "baseline_correct": 543,
+          "parent_correct": 545,
+          "candidate_correct": 543,
+          "baseline_iq": 0.005936245433986187,
+          "parent_iq": 0.006657746154814959,
+          "candidate_iq": 0.006488663610070944
+        },
+        "1:6:practical_low_suburban": {
+          "count": 526,
+          "valid_count": 515,
+          "active": 521,
+          "baseline_correct": 504,
+          "parent_correct": 504,
+          "candidate_correct": 505,
+          "baseline_iq": 0.010024373419582844,
+          "parent_iq": 0.011052608489990234,
+          "candidate_iq": 0.011103925295174122
+        },
+        "1:6:practical_high_urban": {
+          "count": 560,
+          "valid_count": 554,
+          "active": 559,
+          "baseline_correct": 551,
+          "parent_correct": 549,
+          "candidate_correct": 549,
+          "baseline_iq": 0.006160602439194918,
+          "parent_iq": 0.007586832623928785,
+          "candidate_iq": 0.007175353821367025
+        },
+        "1:6:practical_mid_urban": {
+          "count": 542,
+          "valid_count": 538,
+          "active": 538,
+          "baseline_correct": 505,
+          "parent_correct": 499,
+          "candidate_correct": 500,
+          "baseline_iq": 0.020036673173308372,
+          "parent_iq": 0.024824252352118492,
+          "candidate_iq": 0.02516377717256546
+        },
+        "1:6:practical_low_urban": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 568,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 491,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.04328954592347145,
+          "candidate_iq": 0.04467938095331192
+        },
+        "2:8:clean": {
+          "count": 608,
+          "valid_count": 592,
+          "active": 0,
+          "baseline_correct": 592,
+          "parent_correct": 592,
+          "candidate_correct": 592,
+          "baseline_iq": 0.00004033638469991274,
+          "parent_iq": 5.515158574514838e-15,
+          "candidate_iq": 5.515158574514838e-15
+        },
+        "2:8:practical_high": {
+          "count": 537,
+          "valid_count": 516,
+          "active": 531,
+          "baseline_correct": 512,
+          "parent_correct": 514,
+          "candidate_correct": 514,
+          "baseline_iq": 0.004132034722715616,
+          "parent_iq": 0.0048300703056156635,
+          "candidate_iq": 0.004643041640520096
+        },
+        "2:8:practical_mid": {
+          "count": 541,
+          "valid_count": 516,
+          "active": 539,
+          "baseline_correct": 508,
+          "parent_correct": 510,
+          "candidate_correct": 508,
+          "baseline_iq": 0.011551246978342533,
+          "parent_iq": 0.010459349490702152,
+          "candidate_iq": 0.010197147727012634
+        },
+        "2:8:practical_low_suburban": {
+          "count": 568,
+          "valid_count": 544,
+          "active": 564,
+          "baseline_correct": 530,
+          "parent_correct": 532,
+          "candidate_correct": 534,
+          "baseline_iq": 0.016746439039707184,
+          "parent_iq": 0.0157930850982666,
+          "candidate_iq": 0.01563326269388199
+        },
+        "2:8:practical_high_urban": {
+          "count": 568,
+          "valid_count": 547,
+          "active": 566,
+          "baseline_correct": 536,
+          "parent_correct": 535,
+          "candidate_correct": 537,
+          "baseline_iq": 0.009234379976987839,
+          "parent_iq": 0.011402885429561138,
+          "candidate_iq": 0.010652618482708931
+        },
+        "2:8:practical_mid_urban": {
+          "count": 568,
+          "valid_count": 548,
+          "active": 559,
+          "baseline_correct": 512,
+          "parent_correct": 509,
+          "candidate_correct": 508,
+          "baseline_iq": 0.04232887178659439,
+          "parent_iq": 0.04318736121058464,
+          "candidate_iq": 0.04321902245283127
+        },
+        "2:8:practical_low_urban": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 525,
+          "baseline_correct": 462,
+          "parent_correct": 454,
+          "candidate_correct": 462,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.08080288767814636,
+          "candidate_iq": 0.07947475463151932
+        }
+      }
+    },
+    "1.0": {
+      "0.8": {
+        "1:4:clean": {
+          "count": 536,
+          "valid_count": 524,
+          "active": 1,
+          "baseline_correct": 524,
+          "parent_correct": 524,
+          "candidate_correct": 524,
+          "baseline_iq": 0.000016298186892527156,
+          "parent_iq": 0.0006901417509652674,
+          "candidate_iq": 0.00037509785033762455
+        },
+        "1:4:practical_high": {
+          "count": 605,
+          "valid_count": 583,
+          "active": 605,
+          "baseline_correct": 583,
+          "parent_correct": 580,
+          "candidate_correct": 582,
+          "baseline_iq": 0.0025074444711208344,
+          "parent_iq": 0.00524921715259552,
+          "candidate_iq": 0.0040582879446446896
+        },
+        "1:4:practical_mid": {
+          "count": 537,
+          "valid_count": 530,
+          "active": 537,
+          "baseline_correct": 521,
+          "parent_correct": 513,
+          "candidate_correct": 515,
+          "baseline_iq": 0.004749916028231382,
+          "parent_iq": 0.0070377555675804615,
+          "candidate_iq": 0.007396710570901632
+        },
+        "1:4:practical_low_suburban": {
+          "count": 579,
+          "valid_count": 567,
+          "active": 579,
+          "baseline_correct": 550,
+          "parent_correct": 534,
+          "candidate_correct": 541,
+          "baseline_iq": 0.006313166581094265,
+          "parent_iq": 0.010136743076145649,
+          "candidate_iq": 0.011750726960599422
+        },
+        "1:4:practical_high_urban": {
+          "count": 532,
+          "valid_count": 512,
+          "active": 532,
+          "baseline_correct": 501,
+          "parent_correct": 501,
+          "candidate_correct": 499,
+          "baseline_iq": 0.0033722035586833954,
+          "parent_iq": 0.007406190969049931,
+          "candidate_iq": 0.00633080443367362
+        },
+        "1:4:practical_mid_urban": {
+          "count": 560,
+          "valid_count": 536,
+          "active": 559,
+          "baseline_correct": 493,
+          "parent_correct": 459,
+          "candidate_correct": 474,
+          "baseline_iq": 0.0141453193500638,
+          "parent_iq": 0.025408754125237465,
+          "candidate_iq": 0.027296265587210655
+        },
+        "1:4:practical_low_urban": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 582,
+          "baseline_correct": 496,
+          "parent_correct": 419,
+          "candidate_correct": 435,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.03858455643057823,
+          "candidate_iq": 0.044780902564525604
+        },
+        "1:6:clean": {
+          "count": 556,
+          "valid_count": 550,
+          "active": 2,
+          "baseline_correct": 550,
+          "parent_correct": 550,
+          "candidate_correct": 550,
+          "baseline_iq": 0.000023926722860778682,
+          "parent_iq": 0.0006197656621225178,
+          "candidate_iq": 0.0002609418297652155
+        },
+        "1:6:practical_high": {
+          "count": 601,
+          "valid_count": 593,
+          "active": 601,
+          "baseline_correct": 591,
+          "parent_correct": 590,
+          "candidate_correct": 590,
+          "baseline_iq": 0.0033672840800136328,
+          "parent_iq": 0.0033411195036023855,
+          "candidate_iq": 0.0032359969336539507
+        },
+        "1:6:practical_mid": {
+          "count": 554,
+          "valid_count": 548,
+          "active": 554,
+          "baseline_correct": 543,
+          "parent_correct": 545,
+          "candidate_correct": 542,
+          "baseline_iq": 0.005936245433986187,
+          "parent_iq": 0.006570219993591309,
+          "candidate_iq": 0.00698765879496932
+        },
+        "1:6:practical_low_suburban": {
+          "count": 526,
+          "valid_count": 515,
+          "active": 526,
+          "baseline_correct": 504,
+          "parent_correct": 504,
+          "candidate_correct": 504,
+          "baseline_iq": 0.010024373419582844,
+          "parent_iq": 0.01143018901348114,
+          "candidate_iq": 0.012554490007460117
+        },
+        "1:6:practical_high_urban": {
+          "count": 560,
+          "valid_count": 554,
+          "active": 560,
+          "baseline_correct": 551,
+          "parent_correct": 549,
+          "candidate_correct": 549,
+          "baseline_iq": 0.006160602439194918,
+          "parent_iq": 0.00757488003000617,
+          "candidate_iq": 0.007404274772852659
+        },
+        "1:6:practical_mid_urban": {
+          "count": 542,
+          "valid_count": 538,
+          "active": 542,
+          "baseline_correct": 505,
+          "parent_correct": 499,
+          "candidate_correct": 498,
+          "baseline_iq": 0.020036673173308372,
+          "parent_iq": 0.022954903542995453,
+          "candidate_iq": 0.02518647536635399
+        },
+        "1:6:practical_low_urban": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 570,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 486,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.043288689106702805,
+          "candidate_iq": 0.04991430416703224
+        },
+        "2:8:clean": {
+          "count": 608,
+          "valid_count": 592,
+          "active": 2,
+          "baseline_correct": 592,
+          "parent_correct": 592,
+          "candidate_correct": 592,
+          "baseline_iq": 0.00004033638469991274,
+          "parent_iq": 0.00014745854423381388,
+          "candidate_iq": 0.000033508538763271645
+        },
+        "2:8:practical_high": {
+          "count": 537,
+          "valid_count": 516,
+          "active": 536,
+          "baseline_correct": 512,
+          "parent_correct": 514,
+          "candidate_correct": 513,
+          "baseline_iq": 0.004132034722715616,
+          "parent_iq": 0.0038325742352753878,
+          "candidate_iq": 0.0037852656096220016
+        },
+        "2:8:practical_mid": {
+          "count": 541,
+          "valid_count": 516,
+          "active": 541,
+          "baseline_correct": 508,
+          "parent_correct": 510,
+          "candidate_correct": 508,
+          "baseline_iq": 0.011551246978342533,
+          "parent_iq": 0.010435231029987335,
+          "candidate_iq": 0.010669255629181862
+        },
+        "2:8:practical_low_suburban": {
+          "count": 568,
+          "valid_count": 544,
+          "active": 566,
+          "baseline_correct": 530,
+          "parent_correct": 532,
+          "candidate_correct": 535,
+          "baseline_iq": 0.016746439039707184,
+          "parent_iq": 0.01647169142961502,
+          "candidate_iq": 0.0170357096940279
+        },
+        "2:8:practical_high_urban": {
+          "count": 568,
+          "valid_count": 547,
+          "active": 568,
+          "baseline_correct": 536,
+          "parent_correct": 535,
+          "candidate_correct": 536,
+          "baseline_iq": 0.009234379976987839,
+          "parent_iq": 0.010520263575017452,
+          "candidate_iq": 0.009759470820426941
+        },
+        "2:8:practical_mid_urban": {
+          "count": 568,
+          "valid_count": 548,
+          "active": 568,
+          "baseline_correct": 512,
+          "parent_correct": 511,
+          "candidate_correct": 511,
+          "baseline_iq": 0.04232887178659439,
+          "parent_iq": 0.038812074810266495,
+          "candidate_iq": 0.04046599194407463
+        },
+        "2:8:practical_low_urban": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 531,
+          "baseline_correct": 462,
+          "parent_correct": 455,
+          "candidate_correct": 462,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.07835507392883301,
+          "candidate_iq": 0.07985580712556839
+        }
+      },
+      "0.99": {
+        "1:4:clean": {
+          "count": 536,
+          "valid_count": 524,
+          "active": 0,
+          "baseline_correct": 524,
+          "parent_correct": 524,
+          "candidate_correct": 524,
+          "baseline_iq": 0.000016298186892527156,
+          "parent_iq": 6.2528615911352364e-15,
+          "candidate_iq": 6.2528615911352364e-15
+        },
+        "1:4:practical_high": {
+          "count": 605,
+          "valid_count": 583,
+          "active": 604,
+          "baseline_correct": 583,
+          "parent_correct": 580,
+          "candidate_correct": 582,
+          "baseline_iq": 0.0025074444711208344,
+          "parent_iq": 0.005135983694344759,
+          "candidate_iq": 0.004031028598546982
+        },
+        "1:4:practical_mid": {
+          "count": 537,
+          "valid_count": 530,
+          "active": 537,
+          "baseline_correct": 521,
+          "parent_correct": 513,
+          "candidate_correct": 515,
+          "baseline_iq": 0.004749916028231382,
+          "parent_iq": 0.0070377555675804615,
+          "candidate_iq": 0.007396710570901632
+        },
+        "1:4:practical_low_suburban": {
+          "count": 579,
+          "valid_count": 567,
+          "active": 579,
+          "baseline_correct": 550,
+          "parent_correct": 534,
+          "candidate_correct": 541,
+          "baseline_iq": 0.006313166581094265,
+          "parent_iq": 0.010136743076145649,
+          "candidate_iq": 0.011750726960599422
+        },
+        "1:4:practical_high_urban": {
+          "count": 532,
+          "valid_count": 512,
+          "active": 529,
+          "baseline_correct": 501,
+          "parent_correct": 501,
+          "candidate_correct": 499,
+          "baseline_iq": 0.0033722035586833954,
+          "parent_iq": 0.008268770761787891,
+          "candidate_iq": 0.007309263106435537
+        },
+        "1:4:practical_mid_urban": {
+          "count": 560,
+          "valid_count": 536,
+          "active": 556,
+          "baseline_correct": 493,
+          "parent_correct": 459,
+          "candidate_correct": 474,
+          "baseline_iq": 0.0141453193500638,
+          "parent_iq": 0.028061771765351295,
+          "candidate_iq": 0.029936503618955612
+        },
+        "1:4:practical_low_urban": {
+          "count": 582,
+          "valid_count": 566,
+          "active": 579,
+          "baseline_correct": 496,
+          "parent_correct": 420,
+          "candidate_correct": 436,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.040631912648677826,
+          "candidate_iq": 0.04684343561530113
+        },
+        "1:6:clean": {
+          "count": 556,
+          "valid_count": 550,
+          "active": 0,
+          "baseline_correct": 550,
+          "parent_correct": 550,
+          "candidate_correct": 550,
+          "baseline_iq": 0.000023926722860778682,
+          "parent_iq": 6.242194058197516e-15,
+          "candidate_iq": 6.242194058197516e-15
+        },
+        "1:6:practical_high": {
+          "count": 601,
+          "valid_count": 593,
+          "active": 601,
+          "baseline_correct": 591,
+          "parent_correct": 590,
+          "candidate_correct": 590,
+          "baseline_iq": 0.0033672840800136328,
+          "parent_iq": 0.0033411195036023855,
+          "candidate_iq": 0.0032359969336539507
+        },
+        "1:6:practical_mid": {
+          "count": 554,
+          "valid_count": 548,
+          "active": 551,
+          "baseline_correct": 543,
+          "parent_correct": 545,
+          "candidate_correct": 542,
+          "baseline_iq": 0.005936245433986187,
+          "parent_iq": 0.006657746154814959,
+          "candidate_iq": 0.00709343608468771
+        },
+        "1:6:practical_low_suburban": {
+          "count": 526,
+          "valid_count": 515,
+          "active": 521,
+          "baseline_correct": 504,
+          "parent_correct": 504,
+          "candidate_correct": 504,
+          "baseline_iq": 0.010024373419582844,
+          "parent_iq": 0.011052608489990234,
+          "candidate_iq": 0.012436514720320702
+        },
+        "1:6:practical_high_urban": {
+          "count": 560,
+          "valid_count": 554,
+          "active": 559,
+          "baseline_correct": 551,
+          "parent_correct": 549,
+          "candidate_correct": 549,
+          "baseline_iq": 0.006160602439194918,
+          "parent_iq": 0.007586832623928785,
+          "candidate_iq": 0.0074212574400007725
+        },
+        "1:6:practical_mid_urban": {
+          "count": 542,
+          "valid_count": 538,
+          "active": 538,
+          "baseline_correct": 505,
+          "parent_correct": 499,
+          "candidate_correct": 497,
+          "baseline_iq": 0.020036673173308372,
+          "parent_iq": 0.024824252352118492,
+          "candidate_iq": 0.027207516133785248
+        },
+        "1:6:practical_low_urban": {
+          "count": 570,
+          "valid_count": 564,
+          "active": 568,
+          "baseline_correct": 488,
+          "parent_correct": 488,
+          "candidate_correct": 486,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.04328954592347145,
+          "candidate_iq": 0.04992098733782768
+        },
+        "2:8:clean": {
+          "count": 608,
+          "valid_count": 592,
+          "active": 0,
+          "baseline_correct": 592,
+          "parent_correct": 592,
+          "candidate_correct": 592,
+          "baseline_iq": 0.00004033638469991274,
+          "parent_iq": 5.515158574514838e-15,
+          "candidate_iq": 5.515158574514838e-15
+        },
+        "2:8:practical_high": {
+          "count": 537,
+          "valid_count": 516,
+          "active": 531,
+          "baseline_correct": 512,
+          "parent_correct": 514,
+          "candidate_correct": 513,
+          "baseline_iq": 0.004132034722715616,
+          "parent_iq": 0.0048300703056156635,
+          "candidate_iq": 0.004877193830907345
+        },
+        "2:8:practical_mid": {
+          "count": 541,
+          "valid_count": 516,
+          "active": 539,
+          "baseline_correct": 508,
+          "parent_correct": 510,
+          "candidate_correct": 508,
+          "baseline_iq": 0.011551246978342533,
+          "parent_iq": 0.010459349490702152,
+          "candidate_iq": 0.010688588954508305
+        },
+        "2:8:practical_low_suburban": {
+          "count": 568,
+          "valid_count": 544,
+          "active": 564,
+          "baseline_correct": 530,
+          "parent_correct": 532,
+          "candidate_correct": 535,
+          "baseline_iq": 0.016746439039707184,
+          "parent_iq": 0.0157930850982666,
+          "candidate_iq": 0.0168499406427145
+        },
+        "2:8:practical_high_urban": {
+          "count": 568,
+          "valid_count": 547,
+          "active": 566,
+          "baseline_correct": 536,
+          "parent_correct": 535,
+          "candidate_correct": 536,
+          "baseline_iq": 0.009234379976987839,
+          "parent_iq": 0.011402885429561138,
+          "candidate_iq": 0.010636038146913052
+        },
+        "2:8:practical_mid_urban": {
+          "count": 568,
+          "valid_count": 548,
+          "active": 559,
+          "baseline_correct": 512,
+          "parent_correct": 509,
+          "candidate_correct": 508,
+          "baseline_iq": 0.04232887178659439,
+          "parent_iq": 0.04318736121058464,
+          "candidate_iq": 0.045099735260009766
+        },
+        "2:8:practical_low_urban": {
+          "count": 531,
+          "valid_count": 512,
+          "active": 525,
+          "baseline_correct": 462,
+          "parent_correct": 454,
+          "candidate_correct": 461,
+          "baseline_iq": 0.07721950113773346,
+          "parent_iq": 0.08080288767814636,
+          "candidate_iq": 0.08240631222724915
+        }
+      }
+    }
+  },
+  "selection": {
+    "0.25": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "primary_parent": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_parent": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    },
+    "0.5": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "primary_parent": {
+        "kind": "residual",
+        "threshold": 0.8,
+        "validation_net": 24,
+        "reference": "parent"
+      },
+      "accuracy_parent": {
+        "kind": "residual",
+        "threshold": 0.8,
+        "validation_net": 24,
+        "reference": "parent"
+      }
+    },
+    "1.0": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "primary_parent": {
+        "kind": "residual",
+        "threshold": 0.8,
+        "validation_net": 34,
+        "reference": "parent"
+      },
+      "accuracy_parent": {
+        "kind": "residual",
+        "threshold": 0.8,
+        "validation_net": 34,
+        "reference": "parent"
+      }
+    }
+  },
+  "source_only": true,
+  "F_frozen": true,
+  "DURA_comparator_inference": true,
+  "DURA_in_candidate": false,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Source IDs previously explored; clean F pseudo-targets not truth; no ground test."
+}
