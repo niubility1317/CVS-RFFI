@@ -36,7 +36,7 @@ def main():
  for epoch in range(1,(2 if a.smoke else 31)):
   order=rng.permutation(len(x));total=0.
   for start in range(0,len(order),256):
-   ix=order[start:start+256];prediction=model.forward_features(x[ix]);per=(prediction-y[ix]).abs().square().mean(1);g=groups[ix];loss=torch.stack([per[torch.tensor((g==r).tolist(),device=a.device)].mean() for r in np.unique(g)]).mean();opt.zero_grad(set_to_none=True);loss.backward()
+   ix=order[start:start+256];ix_t=torch.tensor(ix.tolist(),dtype=torch.long,device=a.device);prediction=model.forward_features(x[ix_t]);per=(prediction-y[ix_t]).abs().square().mean(1);g=groups[ix];loss=torch.stack([per[torch.tensor((g==r).tolist(),device=a.device)].mean() for r in np.unique(g)]).mean();opt.zero_grad(set_to_none=True);loss.backward()
    if model.net[-1].weight.grad is None or not torch.isfinite(model.net[-1].weight.grad).all() or (epoch==1 and start==0 and model.net[-1].weight.grad.abs().sum()==0):raise ValueError('Finite nonzero source regressor gradient required')
    torch.nn.utils.clip_grad_norm_(model.parameters(),1.,error_if_nonfinite=True)
    if not torch.isfinite(loss) or any(p.grad is not None or p.requires_grad for p in blind.parameters()):raise ValueError('Finite loss and frozen action required')
