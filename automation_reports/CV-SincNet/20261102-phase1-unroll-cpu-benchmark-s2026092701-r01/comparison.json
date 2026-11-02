@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "records": 160,
+  "timed_records": 128,
+  "comparisons": {
+    "1": {
+      "records_per_second": 7.933659640053108,
+      "mismatch_by_field": [
+        0,
+        0,
+        0
+      ],
+      "active": 128,
+      "decision_sha256": "72547e8a8bd36f0c8f8fa4611fe3ec5ed518984c7f734249e02d7816edaa30bc"
+    },
+    "2": {
+      "records_per_second": 13.080866365032682,
+      "mismatch_by_field": [
+        0,
+        0,
+        0
+      ],
+      "active": 128,
+      "decision_sha256": "72547e8a8bd36f0c8f8fa4611fe3ec5ed518984c7f734249e02d7816edaa30bc"
+    },
+    "4": {
+      "records_per_second": 24.403783654480687,
+      "mismatch_by_field": [
+        0,
+        0,
+        0
+      ],
+      "active": 128,
+      "decision_sha256": "72547e8a8bd36f0c8f8fa4611fe3ec5ed518984c7f734249e02d7816edaa30bc"
+    },
+    "8": {
+      "records_per_second": 27.05360264467674,
+      "mismatch_by_field": [
+        0,
+        0,
+        0
+      ],
+      "active": 128,
+      "decision_sha256": "72547e8a8bd36f0c8f8fa4611fe3ec5ed518984c7f734249e02d7816edaa30bc"
+    }
+  },
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Timing is shared host and not formal prediction equivalence; repeated source samples."
+}

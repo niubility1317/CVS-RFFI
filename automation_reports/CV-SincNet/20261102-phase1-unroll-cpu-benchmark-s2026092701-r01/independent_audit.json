@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "unique_source_ids": 160,
+  "independently_recomputed": {
+    "1": {
+      "rate": 7.933659640053108,
+      "differences": [
+        0,
+        0,
+        0
+      ],
+      "active": 128
+    },
+    "2": {
+      "rate": 13.080866365032682,
+      "differences": [
+        0,
+        0,
+        0
+      ],
+      "active": 128
+    },
+    "4": {
+      "rate": 24.403783654480687,
+      "differences": [
+        0,
+        0,
+        0
+      ],
+      "active": 128
+    },
+    "8": {
+      "rate": 27.05360264467674,
+      "differences": [
+        0,
+        0,
+        0
+      ],
+      "active": 128
+    }
+  },
+  "source_only": true,
+  "test_reads": 0,
+  "truth_reads": 0,
+  "scope": "Recomputed from persisted arrays and timings; does not independently replay inference."
+}

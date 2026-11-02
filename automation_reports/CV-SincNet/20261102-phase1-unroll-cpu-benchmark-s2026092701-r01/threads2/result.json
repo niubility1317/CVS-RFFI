@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "threads": 2,
+  "batch_size": 32,
+  "warmup_records": 32,
+  "timed_records": 128,
+  "seconds": [
+    2.420819956998457,
+    2.5989498879935127,
+    2.36946081899805,
+    2.3960539209947456
+  ],
+  "records_per_second": 13.080866365032682,
+  "active": 128,
+  "decision_sha256": "72547e8a8bd36f0c8f8fa4611fe3ec5ed518984c7f734249e02d7816edaa30bc",
+  "source_only": true,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Shared host timing, previously explored source records, source decisions only."
+}
