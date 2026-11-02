@@ -1,1 +1,2 @@
 {"at": "2026-11-02T04:31:48+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T04:42:39+00:00", "status": "REPLACED", "note": "Move fixed source validation to CPU-only r02 with identical checkpoint and decision rule; preserve other owner.", "evidence": ["N607 GPU3 occupied by MATLAB PID 1266871; original source evaluation and smoke did not start"], "row_id": null}
