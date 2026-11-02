@@ -1,0 +1,43 @@
+{
+  "status": "POSTHOC_SOURCE_DIAGNOSTIC",
+  "source_only": true,
+  "caveat": "Held-out even/odd time samples are correlated; fitted parent is not clean target; true forward requires paired source clean IQ and is not available at inference.",
+  "groups": {
+    "RX4_6:all": {
+      "count": 1024,
+      "observation_improves": 177,
+      "true_forward_improves": 198,
+      "both_improve": 69,
+      "observation_improves_true_harms": 108,
+      "observation_harms_true_improves": 129,
+      "both_harm": 718
+    },
+    "RX4_6:practical_low_urban": {
+      "count": 166,
+      "observation_improves": 24,
+      "true_forward_improves": 26,
+      "both_improve": 8,
+      "observation_improves_true_harms": 16,
+      "observation_harms_true_improves": 18,
+      "both_harm": 124
+    },
+    "RX8:all": {
+      "count": 1024,
+      "observation_improves": 241,
+      "true_forward_improves": 310,
+      "both_improve": 88,
+      "observation_improves_true_harms": 153,
+      "observation_harms_true_improves": 222,
+      "both_harm": 561
+    },
+    "RX8:practical_low_urban": {
+      "count": 180,
+      "observation_improves": 86,
+      "true_forward_improves": 38,
+      "both_improve": 25,
+      "observation_improves_true_harms": 61,
+      "observation_harms_true_improves": 13,
+      "both_harm": 81
+    }
+  }
+}
