@@ -48,6 +48,10 @@ def source_objective(reader, output, anchor, clean, clean_features, groups):
     return source_loss(reader, output, clean, clean_features, groups)
 
 
+def training_source_objective(reader, output, anchor, clean, clean_features, groups, received, log_variance):
+    return source_objective(reader, output, anchor, clean, clean_features, groups)
+
+
 def auxiliary_source_objective(received, output, groups):
     return output.new_zeros(())
 
@@ -185,7 +189,7 @@ def main():
             chosen = training_indices(order[start:start+batch_size], len(selected), PAIRED_VIEWS)
             x, base, lv, target, features, groups = [t[chosen].to(args.device) for t in data]
             output = model(x, base, lv)
-            loss, _ = source_objective(reader, output, base, target, features, groups)
+            loss, _ = training_source_objective(reader, output, base, target, features, groups, x, lv)
             loss = combine_source_objectives(loss, auxiliary_source_objective(x, output, groups), model)
             if not torch.isfinite(loss):
                 raise FloatingPointError('Finite source training loss is required')
