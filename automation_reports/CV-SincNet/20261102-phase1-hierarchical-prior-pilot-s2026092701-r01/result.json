@@ -1,0 +1,167 @@
+{
+  "status": "COMPLETE_SOURCE_ONLY_HIERARCHICAL_PRIOR",
+  "commit": "d0fc2bb36992ac4d4d20637be75921917c785343",
+  "scenes": {
+    "practical_high": {
+      "count": 64,
+      "valid_count": 60,
+      "raw": {
+        "correct": 59,
+        "mean_iq_nmse": 2.064181327819824
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.015550384297966957
+      },
+      "parent": {
+        "correct": 60,
+        "mean_iq_nmse": 0.024205170571804047
+      },
+      "hierarchical": {
+        "correct": 60,
+        "mean_iq_nmse": 0.02768915332853794
+      }
+    },
+    "practical_mid": {
+      "count": 64,
+      "valid_count": 61,
+      "raw": {
+        "correct": 59,
+        "mean_iq_nmse": 2.0491256713867188
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.021471306681632996
+      },
+      "parent": {
+        "correct": 61,
+        "mean_iq_nmse": 0.0190134197473526
+      },
+      "hierarchical": {
+        "correct": 61,
+        "mean_iq_nmse": 0.01882590726017952
+      }
+    },
+    "practical_low_suburban": {
+      "count": 64,
+      "valid_count": 61,
+      "raw": {
+        "correct": 57,
+        "mean_iq_nmse": 2.0858490467071533
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.032062217593193054
+      },
+      "parent": {
+        "correct": 59,
+        "mean_iq_nmse": 0.042548276484012604
+      },
+      "hierarchical": {
+        "correct": 59,
+        "mean_iq_nmse": 0.041853830218315125
+      }
+    },
+    "practical_high_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "raw": {
+        "correct": 58,
+        "mean_iq_nmse": 2.0927858352661133
+      },
+      "dura": {
+        "correct": 61,
+        "mean_iq_nmse": 0.02210512012243271
+      },
+      "parent": {
+        "correct": 61,
+        "mean_iq_nmse": 0.02645229920744896
+      },
+      "hierarchical": {
+        "correct": 61,
+        "mean_iq_nmse": 0.026008810847997665
+      }
+    },
+    "practical_mid_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "raw": {
+        "correct": 48,
+        "mean_iq_nmse": 2.0597095489501953
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.050538405776023865
+      },
+      "parent": {
+        "correct": 57,
+        "mean_iq_nmse": 0.052856605499982834
+      },
+      "hierarchical": {
+        "correct": 58,
+        "mean_iq_nmse": 0.05118102580308914
+      }
+    },
+    "practical_low_urban": {
+      "count": 64,
+      "valid_count": 63,
+      "raw": {
+        "correct": 46,
+        "mean_iq_nmse": 2.0336341857910156
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.0826321616768837
+      },
+      "parent": {
+        "correct": 59,
+        "mean_iq_nmse": 0.08946343511343002
+      },
+      "hierarchical": {
+        "correct": 59,
+        "mean_iq_nmse": 0.08668701350688934
+      }
+    }
+  },
+  "fit_ids": 8192,
+  "high_conf_fit": 7870,
+  "subcluster_counts": [
+    786,
+    486,
+    801,
+    565,
+    808,
+    565,
+    769,
+    478,
+    801,
+    511,
+    770,
+    530
+  ],
+  "classes": [
+    0,
+    0,
+    1,
+    1,
+    2,
+    2,
+    3,
+    3,
+    4,
+    4,
+    5,
+    5
+  ],
+  "ridge": 1.444142102903146e-05,
+  "components": 12,
+  "probe_ids": 384,
+  "source_only": true,
+  "F_frozen": true,
+  "DURA_loaded_after_fit": true,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Prior clusters use only frozen F high-confidence source predictions and clean source IQ; source IDs previously explored; pseudo targets are not true test accuracy. More components can hallucinate identity."
+}
