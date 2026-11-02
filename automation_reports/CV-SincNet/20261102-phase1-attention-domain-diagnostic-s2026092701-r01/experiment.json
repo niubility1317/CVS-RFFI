@@ -1,0 +1,138 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-attention-domain-diagnostic-s2026092701-r01",
+  "group_id": "phase1-attention-waveform",
+  "display_name": "Phase1 attention trained and heldout source diagnostic",
+  "description": "After source failure, compare frozen attention on paired source fit IDs in trained and different views, versus source RX4/6 and RX8 holdouts.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "attention",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-attention-waveform-validation-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "ba2cfb41a3fc9a9f1a480ef26b2de64d54cec5fd",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU0 source-only fixed attention model evaluation; TF32 disabled",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Direct IQ attention restoration, three blends to input and two protective gate thresholds",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No source true identity labels, U_s truth, V or test; frozen F pseudo labels only",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "1024 fixed fit physical IDs under trained epoch21 and other epoch19; 1024 RX4/6 and 1024 RX8 on epoch19, impaired views only",
+    "support_query_ref": null,
+    "leo_config_ref": "Existing fixed source cache epoch19"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Frozen clean F pseudo targets only; no source true identity, U_s truth, V or test",
+    "external_method_exception": null,
+    "claim_scope": "Post-hoc source pseudo-label diagnosis; not independent test and not proof of causal mechanism."
+  },
+  "checkpoint": {
+    "initialization": "Final epoch8 direct attention waveform restorer, frozen F and input protection gate; DURA comparator only.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-attention-waveform-pilot-s2026092701-r02/checkpoint.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Attention training commit 52df24a8215001bbd3e2e3bba158396ac33e270d and fixed final epoch8.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Fixed diagnostic draw seed 2026123155, source-only, gate .8, input blends .25 and 1; no adaptation or target test."
+  },
+  "execution": {
+    "host": "N607 GPU0",
+    "launch_owner": "Codex hierarchical prior fixed source validation owner",
+    "gpu_policy": "GPU0 single owner; fixed model source inference; TF32 disabled",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-attention-domain-diagnostic-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-attention-domain-diagnostic-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-attention-domain-diagnostic-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-attention-domain-diagnostic-s2026092701-r01-release/experiments/phase1_joint_mixture/diagnose_attention_domains.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-attention-domain-diagnostic-s2026092701-r01 --commit ba2cfb41a3fc9a9f1a480ef26b2de64d54cec5fd --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "source_validation.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean F pseudo-target agreement",
+      "direct IQ normalized MSE"
+    ],
+    "dimensions": [
+      "1024 paired fit IDs in trained and other view, 1024 RX4/6 validation, 1024 RX8 holdout"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_joint_mixture/diagnose_attention_domains.py",
+    "scientific_rule": "Compare raw, DURA, attention blend .25 and 1 using high-confidence clean F pseudo targets; source-only post-hoc diagnosis."
+  },
+  "rows": [
+    {
+      "row_id": "free_full_hard_validation_s2026092701",
+      "method": "fixed attention waveform source-domain diagnosis",
+      "purpose": "source-only receiver/scenario validation before any ground test",
+      "config_ref": "experiments/phase1_joint_mixture/diagnose_attention_domains.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-attention-domain-diagnostic-s2026092701-r01/source_validation.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026120454,
+        "split": 392005,
+        "data": 2026120355,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Fixed sample seed 2026123155, pretrained source attention model unchanged.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "none (fixed checkpoint)",
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "4 source cohorts of 1024 impaired records; first two share same fit physical IDs",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-attention-domain-diagnostic-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-attention-domain-diagnostic-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-attention-domain-diagnostic-s2026092701-r01-release/experiments/phase1_joint_mixture/diagnose_attention_domains.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-attention-domain-diagnostic-s2026092701-r01 --commit ba2cfb41a3fc9a9f1a480ef26b2de64d54cec5fd --device cuda:0",
+      "expected_artifacts": [
+        "source_validation.json"
+      ]
+    }
+  ],
+  "notes": "Post-hoc diagnostic after source validation failure. Source IDs and views previously explored, no identity truth or model updates, no U_s truth, V or test.",
+  "registered_at": "2026-11-02T03:02:40+00:00"
+}
