@@ -1,0 +1,78 @@
+{
+  "status": "SOURCE_ORACLE_DIAGNOSTIC_COMPLETE",
+  "commit": "baac73aedcc6dd7145fb002591a256f023636d5a",
+  "results": {
+    "validation_RX4_6": {
+      "count": 1024,
+      "valid_count": 1003,
+      "scene_counts": {
+        "practical_high": 185,
+        "practical_mid": 156,
+        "practical_low_suburban": 177,
+        "practical_high_urban": 157,
+        "practical_mid_urban": 174,
+        "practical_low_urban": 175
+      },
+      "raw": {
+        "pseudo_correct": 850,
+        "direct_iq_nmse": 1.9597852230072021
+      },
+      "oracle_phase": {
+        "pseudo_correct": 610,
+        "direct_iq_nmse": 1.9104247093200684
+      },
+      "oracle_gain_phase": {
+        "pseudo_correct": 317,
+        "direct_iq_nmse": 0.9966838955879211
+      },
+      "oracle_shift_gain": {
+        "pseudo_correct": 854,
+        "direct_iq_nmse": 0.2994460165500641
+      },
+      "dura": {
+        "pseudo_correct": 956,
+        "direct_iq_nmse": 0.01637471839785576
+      }
+    },
+    "heldout_RX8": {
+      "count": 1024,
+      "valid_count": 990,
+      "scene_counts": {
+        "practical_high": 157,
+        "practical_mid": 175,
+        "practical_low_suburban": 173,
+        "practical_high_urban": 169,
+        "practical_mid_urban": 191,
+        "practical_low_urban": 159
+      },
+      "raw": {
+        "pseudo_correct": 858,
+        "direct_iq_nmse": 2.0632777214050293
+      },
+      "oracle_phase": {
+        "pseudo_correct": 594,
+        "direct_iq_nmse": 1.8427374362945557
+      },
+      "oracle_gain_phase": {
+        "pseudo_correct": 375,
+        "direct_iq_nmse": 0.9921994209289551
+      },
+      "oracle_shift_gain": {
+        "pseudo_correct": 847,
+        "direct_iq_nmse": 0.27409669756889343
+      },
+      "dura": {
+        "pseudo_correct": 952,
+        "direct_iq_nmse": 0.04244364798069
+      }
+    }
+  },
+  "source_only": true,
+  "clean_pair_used_at_diagnostic": true,
+  "deployable": false,
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Per-record clean-paired least-squares shifts and coefficients are unavailable at deployment. Pseudo targets are not actual accuracy; source views previously explored."
+}

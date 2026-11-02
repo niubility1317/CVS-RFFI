@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "checks": [
+    "same sampled source cohorts and raw/phase/gain/DURA replay exactly",
+    "finite shift output metrics"
+  ],
+  "limitation": "Oracle uses clean IQ to choose shift and gain; central-window fit and full-window IQ metric differ."
+}
