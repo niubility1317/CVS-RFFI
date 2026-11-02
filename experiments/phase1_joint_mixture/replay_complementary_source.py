@@ -37,8 +37,8 @@ def main():
  with np.load(path,allow_pickle=False) as z:ref={k:z[k].copy() for k in ('indices','physical_ids','rx','scene','part','predictions','active')}
  ids=ref['indices'];cache,clean,rx,training,pv,ph=s.source_contract(a.root);validation,heldout=s.new_splits(cache,rx,training,pv,ph);roles=np.load(cache/'train/roles.npy',allow_pickle=False);physical=np.load(cache/'train/physical_ids.npy',allow_pickle=False);received,scene=s.epoch_data(cache,19)
  if len(ids)!=1047 or np.any(roles[ids]!='L_s') or not np.array_equal(physical[ids],ref['physical_ids']) or not np.array_equal(rx[ids],ref['rx']) or not np.array_equal(scene[ids],ref['scene']) or np.intersect1d(ids,training).size or not np.all(np.isin(ids,np.r_[validation,heldout])):raise ValueError('Exact source heldout L_s binding required')
- for run in ('20261102-phase1-attention-waveform-pilot-s2026092701-r02','20261102-phase1-structured-iq-prior-s2026092701-r01','20261102-phase1-independent-iq-prior-s2026092701-r01'):
-  state=torch.load(a.root/'runs'/run/'checkpoint.pt',map_location='cpu',weights_only=False)
+ for training_run in ('20261102-phase1-attention-waveform-pilot-s2026092701-r02','20261102-phase1-structured-iq-prior-s2026092701-r01','20261102-phase1-independent-iq-prior-s2026092701-r01'):
+  state=torch.load(a.root/'runs'/training_run/'checkpoint.pt',map_location='cpu',weights_only=False)
   if np.intersect1d(ids,state['fit_ids']).size:raise ValueError('Source replay must be disjoint from each restoration fit')
  names=['attention','structured_prior','white_prior'];target=ids[:64] if a.smoke else ids;out=[];tick=time.monotonic()
  for name in names:
