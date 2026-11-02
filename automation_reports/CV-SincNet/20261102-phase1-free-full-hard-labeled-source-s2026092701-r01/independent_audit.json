@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "fixed_predictions": 1047,
+  "cells_checked": 70,
+  "matching_four_comparators_and_cohort": true,
+  "summary": {
+    "1:six": {
+      "count": 613,
+      "clean": 612,
+      "raw": 522,
+      "dura": 585,
+      "parent": 567,
+      "candidate": 566,
+      "candidate_repairs_parent": 3,
+      "candidate_damages_parent": 4
+    },
+    "1:low_urban": {
+      "count": 102,
+      "clean": 102,
+      "raw": 57,
+      "dura": 92,
+      "parent": 80,
+      "candidate": 81,
+      "candidate_repairs_parent": 3,
+      "candidate_damages_parent": 2
+    },
+    "2:six": {
+      "count": 297,
+      "clean": 296,
+      "raw": 252,
+      "dura": 285,
+      "parent": 281,
+      "candidate": 281,
+      "candidate_repairs_parent": 1,
+      "candidate_damages_parent": 1
+    },
+    "2:low_urban": {
+      "count": 56,
+      "clean": 55,
+      "raw": 34,
+      "dura": 50,
+      "parent": 50,
+      "candidate": 49,
+      "candidate_repairs_parent": 0,
+      "candidate_damages_parent": 1
+    }
+  },
+  "truth_role": "L_s",
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0
+}

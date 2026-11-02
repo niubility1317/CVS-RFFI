@@ -1,0 +1,574 @@
+{
+  "status": "SOURCE_LS_TRUTH_LAST_COMPLETE",
+  "commit": "3c6b7087a8e101aaa465ec8d615d962fee067bc4",
+  "predictions_sha256": "593b682986c86f238ee4c5bd6b9996a635cc33cf7c9a0ec61e24f40bee67c88e",
+  "source_counts": {
+    "1:clean": {
+      "count": 83,
+      "active": 0,
+      "routed": 0,
+      "clean": {
+        "correct": 83,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 83,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "dura": {
+        "correct": 83,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "parent": {
+        "correct": 83,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 83,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      }
+    },
+    "1:practical_high": {
+      "count": 97,
+      "active": 97,
+      "routed": 97,
+      "clean": {
+        "correct": 97,
+        "repairs_vs_dura": 1,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 1,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 96,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "dura": {
+        "correct": 96,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "parent": {
+        "correct": 96,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 96,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      }
+    },
+    "1:practical_mid": {
+      "count": 91,
+      "active": 91,
+      "routed": 91,
+      "clean": {
+        "correct": 91,
+        "repairs_vs_dura": 2,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 1,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 87,
+        "repairs_vs_dura": 2,
+        "damages_vs_dura": 4,
+        "repairs_vs_parent": 1,
+        "damages_vs_parent": 4
+      },
+      "dura": {
+        "correct": 89,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 1
+      },
+      "parent": {
+        "correct": 90,
+        "repairs_vs_dura": 1,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 90,
+        "repairs_vs_dura": 1,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      }
+    },
+    "1:practical_low_suburban": {
+      "count": 107,
+      "active": 107,
+      "routed": 107,
+      "clean": {
+        "correct": 107,
+        "repairs_vs_dura": 4,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 4,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 97,
+        "repairs_vs_dura": 1,
+        "damages_vs_dura": 7,
+        "repairs_vs_parent": 1,
+        "damages_vs_parent": 7
+      },
+      "dura": {
+        "correct": 103,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 3,
+        "damages_vs_parent": 3
+      },
+      "parent": {
+        "correct": 103,
+        "repairs_vs_dura": 3,
+        "damages_vs_dura": 3,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 101,
+        "repairs_vs_dura": 2,
+        "damages_vs_dura": 4,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 2
+      }
+    },
+    "1:practical_high_urban": {
+      "count": 108,
+      "active": 108,
+      "routed": 108,
+      "clean": {
+        "correct": 107,
+        "repairs_vs_dura": 1,
+        "damages_vs_dura": 1,
+        "repairs_vs_parent": 3,
+        "damages_vs_parent": 1
+      },
+      "raw": {
+        "correct": 101,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 6,
+        "repairs_vs_parent": 1,
+        "damages_vs_parent": 5
+      },
+      "dura": {
+        "correct": 107,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 2,
+        "damages_vs_parent": 0
+      },
+      "parent": {
+        "correct": 105,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 2,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 105,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 2,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      }
+    },
+    "1:practical_mid_urban": {
+      "count": 108,
+      "active": 108,
+      "routed": 108,
+      "clean": {
+        "correct": 108,
+        "repairs_vs_dura": 10,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 15,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 84,
+        "repairs_vs_dura": 4,
+        "damages_vs_dura": 18,
+        "repairs_vs_parent": 5,
+        "damages_vs_parent": 14
+      },
+      "dura": {
+        "correct": 98,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 9,
+        "damages_vs_parent": 4
+      },
+      "parent": {
+        "correct": 93,
+        "repairs_vs_dura": 4,
+        "damages_vs_dura": 9,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 93,
+        "repairs_vs_dura": 4,
+        "damages_vs_dura": 9,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      }
+    },
+    "1:practical_low_urban": {
+      "count": 102,
+      "active": 102,
+      "routed": 102,
+      "clean": {
+        "correct": 102,
+        "repairs_vs_dura": 10,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 22,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 57,
+        "repairs_vs_dura": 2,
+        "damages_vs_dura": 37,
+        "repairs_vs_parent": 5,
+        "damages_vs_parent": 28
+      },
+      "dura": {
+        "correct": 92,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 16,
+        "damages_vs_parent": 4
+      },
+      "parent": {
+        "correct": 80,
+        "repairs_vs_dura": 4,
+        "damages_vs_dura": 16,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 81,
+        "repairs_vs_dura": 4,
+        "damages_vs_dura": 15,
+        "repairs_vs_parent": 3,
+        "damages_vs_parent": 2
+      }
+    },
+    "2:clean": {
+      "count": 54,
+      "active": 1,
+      "routed": 1,
+      "clean": {
+        "correct": 54,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 54,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "dura": {
+        "correct": 54,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "parent": {
+        "correct": 54,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 54,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      }
+    },
+    "2:practical_high": {
+      "count": 51,
+      "active": 51,
+      "routed": 51,
+      "clean": {
+        "correct": 51,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 50,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 1,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 1
+      },
+      "dura": {
+        "correct": 51,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "parent": {
+        "correct": 51,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 51,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      }
+    },
+    "2:practical_mid": {
+      "count": 37,
+      "active": 37,
+      "routed": 37,
+      "clean": {
+        "correct": 37,
+        "repairs_vs_dura": 3,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 1,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 33,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 1,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 3
+      },
+      "dura": {
+        "correct": 34,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 1,
+        "damages_vs_parent": 3
+      },
+      "parent": {
+        "correct": 36,
+        "repairs_vs_dura": 3,
+        "damages_vs_dura": 1,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 36,
+        "repairs_vs_dura": 3,
+        "damages_vs_dura": 1,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      }
+    },
+    "2:practical_low_suburban": {
+      "count": 44,
+      "active": 44,
+      "routed": 44,
+      "clean": {
+        "correct": 44,
+        "repairs_vs_dura": 2,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 3,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 41,
+        "repairs_vs_dura": 2,
+        "damages_vs_dura": 3,
+        "repairs_vs_parent": 2,
+        "damages_vs_parent": 2
+      },
+      "dura": {
+        "correct": 42,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 3,
+        "damages_vs_parent": 2
+      },
+      "parent": {
+        "correct": 41,
+        "repairs_vs_dura": 2,
+        "damages_vs_dura": 3,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 42,
+        "repairs_vs_dura": 2,
+        "damages_vs_dura": 2,
+        "repairs_vs_parent": 1,
+        "damages_vs_parent": 0
+      }
+    },
+    "2:practical_high_urban": {
+      "count": 58,
+      "active": 58,
+      "routed": 58,
+      "clean": {
+        "correct": 58,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 3,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 54,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 4,
+        "repairs_vs_parent": 2,
+        "damages_vs_parent": 3
+      },
+      "dura": {
+        "correct": 58,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 3,
+        "damages_vs_parent": 0
+      },
+      "parent": {
+        "correct": 55,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 3,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 55,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 3,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      }
+    },
+    "2:practical_mid_urban": {
+      "count": 51,
+      "active": 51,
+      "routed": 51,
+      "clean": {
+        "correct": 51,
+        "repairs_vs_dura": 1,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 3,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 40,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 10,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 8
+      },
+      "dura": {
+        "correct": 50,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 3,
+        "damages_vs_parent": 1
+      },
+      "parent": {
+        "correct": 48,
+        "repairs_vs_dura": 1,
+        "damages_vs_dura": 3,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 48,
+        "repairs_vs_dura": 1,
+        "damages_vs_dura": 3,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      }
+    },
+    "2:practical_low_urban": {
+      "count": 56,
+      "active": 56,
+      "routed": 56,
+      "clean": {
+        "correct": 55,
+        "repairs_vs_dura": 5,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 5,
+        "damages_vs_parent": 0
+      },
+      "raw": {
+        "correct": 34,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 16,
+        "repairs_vs_parent": 2,
+        "damages_vs_parent": 18
+      },
+      "dura": {
+        "correct": 50,
+        "repairs_vs_dura": 0,
+        "damages_vs_dura": 0,
+        "repairs_vs_parent": 5,
+        "damages_vs_parent": 5
+      },
+      "parent": {
+        "correct": 50,
+        "repairs_vs_dura": 5,
+        "damages_vs_dura": 5,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 0
+      },
+      "candidate": {
+        "correct": 49,
+        "repairs_vs_dura": 5,
+        "damages_vs_dura": 6,
+        "repairs_vs_parent": 0,
+        "damages_vs_parent": 1
+      }
+    }
+  },
+  "source_only": true,
+  "gate": 0.8,
+  "truth_role": "L_s",
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Frozen F trained on source IDs; these source IDs and views have been explored; no independent blind or target test."
+}
