@@ -170,5 +170,7 @@ def register(anchor: RegistrationState, new_x: torch.Tensor, new_y: torch.Tensor
                 torch.cuda.manual_seed(int(seed))
         state = register_new_classes(anchor, new_x, new_y, ids, config=cfg)
     state.protocol_metadata.update(claim_boundary='DA_backbone_with_CIL_core_transplant_not_native_source_architecture',
-        source_pseudo_targets_preserved=False, old_bias_retained=state.method != 'orthogonal')
+        source_pseudo_targets_preserved=False, old_bias_retained=state.method != 'orthogonal',
+        C_entry_decision='cosine_weight_normalization_discards_B_affine_bias_and_scale' if state.method=='orthogonal'
+                         else 'B_affine_old_logits_before_incremental_training')
     return state
