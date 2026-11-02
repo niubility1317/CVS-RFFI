@@ -1,0 +1,9 @@
+# Independent multiscale spectral token restoration
+
+An input-only network restores one received IQ window without loading DURA. It partitions the 256 samples into non-overlapping 8-, 16- and 32-point frames, takes complex FFTs, and predicts bounded complex spectral multipliers from phase-invariant magnitudes, a blind noise estimate and shared frequency/time axial attention. The three inverse-FFT corrections are averaged and added to the input. A zero-initialized output layer returns the input exactly, and a global rotation of input IQ rotates the output by the same amount. Its non-overlapping frame boundaries and multiplicative spectral correction may limit performance. The network is a continuous waveform restorer, not a classifier or device lookup.
+
+Train five epochs on the established 8192 source physical records, source view epochs 21/22/23 and seed using paired clean source IQ plus frozen Tri-SIG-TIME SSL feature, soft-output and pseudo-margin guidance, and frozen blind noise estimator and gate. F-guided; no direct TX identity, U_s truth, V, target IQ or target feedback is used. Inference takes one received IQ only; no source target or identity is available. Compare this direct architecture with other fixed independent and DURA networks; different architectures and loss functions prevent treating every comparison as a one-factor ablation.
+
+First complete a 64-ID real-source smoke, then fix the 672 source predictions before source truth-last scoring. Source score does not stop the registered ground evaluation. Fix all seven Phase1 ground views of 168000 records, then truth-last score and independently audit 119 groups. Use two CPU threads and established load limit. These previously explored simulated data are not an independent blind or real-satellite evaluation.
+
+Source: 20261103-phase1-multiscale-token-source-s2026092701-r01. Ground: 20261103-phase1-multiscale-token-ground-test-s2026092701-r01.
