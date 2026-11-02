@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "count": 168000,
+  "views_checked": 7,
+  "groups_checked": 119,
+  "clean_raw_accuracy": 86.53869047619047,
+  "dura_physical_ids_and_seven_raw_predictions_pretruth_match": true,
+  "views": {
+    "clean": {
+      "correct": 145250,
+      "accuracy": 86.45833333333333,
+      "gap_pp": 0.0803571428571388,
+      "relative_gap_percent": 0.09285689720397096,
+      "macro_f1": 86.23987454663778,
+      "dura_correct": 145514,
+      "dura_accuracy": 86.61547619047619,
+      "repairs_vs_dura": 240,
+      "damages_vs_dura": 504
+    },
+    "practical_high": {
+      "correct": 142633,
+      "accuracy": 84.90059523809524,
+      "gap_pp": 1.6380952380952323,
+      "relative_gap_percent": 1.8929050452247416,
+      "macro_f1": 84.66494132048172,
+      "dura_correct": 141697,
+      "dura_accuracy": 84.34345238095237,
+      "repairs_vs_dura": 6912,
+      "damages_vs_dura": 5976
+    },
+    "practical_mid": {
+      "correct": 139911,
+      "accuracy": 83.28035714285714,
+      "gap_pp": 3.2583333333333258,
+      "relative_gap_percent": 3.7651752244041594,
+      "macro_f1": 83.09542614800377,
+      "dura_correct": 139467,
+      "dura_accuracy": 83.01607142857142,
+      "repairs_vs_dura": 8182,
+      "damages_vs_dura": 7738
+    },
+    "practical_low_suburban": {
+      "correct": 136159,
+      "accuracy": 81.04702380952381,
+      "gap_pp": 5.49166666666666,
+      "relative_gap_percent": 6.3459091378065065,
+      "macro_f1": 80.93037541693927,
+      "dura_correct": 136621,
+      "dura_accuracy": 81.32202380952381,
+      "repairs_vs_dura": 9432,
+      "damages_vs_dura": 9894
+    },
+    "practical_high_urban": {
+      "correct": 139087,
+      "accuracy": 82.78988095238095,
+      "gap_pp": 3.7488095238095127,
+      "relative_gap_percent": 4.331946211782496,
+      "macro_f1": 82.65751848591842,
+      "dura_correct": 139523,
+      "dura_accuracy": 83.04940476190477,
+      "repairs_vs_dura": 7617,
+      "damages_vs_dura": 8053
+    },
+    "practical_mid_urban": {
+      "correct": 122321,
+      "accuracy": 72.81011904761905,
+      "gap_pp": 13.728571428571414,
+      "relative_gap_percent": 15.864085015648092,
+      "macro_f1": 73.2917999307218,
+      "dura_correct": 127186,
+      "dura_accuracy": 75.70595238095238,
+      "repairs_vs_dura": 11786,
+      "damages_vs_dura": 16651
+    },
+    "practical_low_urban": {
+      "correct": 107519,
+      "accuracy": 63.99940476190476,
+      "gap_pp": 22.539285714285704,
+      "relative_gap_percent": 26.04532792241289,
+      "macro_f1": 65.02698547737425,
+      "dura_correct": 115586,
+      "dura_accuracy": 68.80119047619047,
+      "repairs_vs_dura": 14854,
+      "damages_vs_dura": 22921
+    }
+  }
+}
