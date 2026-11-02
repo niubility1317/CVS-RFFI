@@ -1,0 +1,363 @@
+{
+  "status": "SOURCE_TEMPERATURE_DIAGNOSTIC_COMPLETE",
+  "commit": "3f9c6277a67d176f04a8ad46c59763e3c79b1e44",
+  "count": 384,
+  "scenes": {
+    "practical_high": {
+      "count": 64,
+      "valid_count": 60,
+      "candidates": {
+        "0.01:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.024387937039136887,
+          "max_weight_median": 0.48633506894111633
+        },
+        "0.01:1.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.025067999958992004,
+          "max_weight_median": 0.4729205071926117
+        },
+        "0.03:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.02410438098013401,
+          "max_weight_median": 0.8854466676712036
+        },
+        "0.03:1.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.024522248655557632,
+          "max_weight_median": 0.7588536739349365
+        },
+        "0.1:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.02410539612174034,
+          "max_weight_median": 0.9996774196624756
+        },
+        "0.1:1.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.02418804168701172,
+          "max_weight_median": 0.9991049766540527
+        },
+        "0.3:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.024172723293304443,
+          "max_weight_median": 1.0
+        },
+        "0.3:1.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.02415511943399906,
+          "max_weight_median": 1.0
+        },
+        "1.0:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.024205170571804047,
+          "max_weight_median": 1.0
+        },
+        "1.0:1.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.024211764335632324,
+          "max_weight_median": 1.0
+        }
+      }
+    },
+    "practical_mid": {
+      "count": 64,
+      "valid_count": 61,
+      "candidates": {
+        "0.01:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.019029170274734497,
+          "max_weight_median": 0.3689630627632141
+        },
+        "0.01:1.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.019768860191106796,
+          "max_weight_median": 0.41316646337509155
+        },
+        "0.03:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.01869499310851097,
+          "max_weight_median": 0.7149341106414795
+        },
+        "0.03:1.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.019002070650458336,
+          "max_weight_median": 0.6644532084465027
+        },
+        "0.1:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.01887216418981552,
+          "max_weight_median": 0.9952812194824219
+        },
+        "0.1:1.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.018927913159132004,
+          "max_weight_median": 0.9818118810653687
+        },
+        "0.3:0.0": {
+          "correct": 61,
+          "mean_iq_nmse": 0.01894567161798477,
+          "max_weight_median": 1.0
+        },
+        "0.3:1.0": {
+          "correct": 61,
+          "mean_iq_nmse": 0.018950432538986206,
+          "max_weight_median": 0.9999998807907104
+        },
+        "1.0:0.0": {
+          "correct": 61,
+          "mean_iq_nmse": 0.019013410434126854,
+          "max_weight_median": 1.0
+        },
+        "1.0:1.0": {
+          "correct": 61,
+          "mean_iq_nmse": 0.019029483199119568,
+          "max_weight_median": 1.0
+        }
+      }
+    },
+    "practical_low_suburban": {
+      "count": 64,
+      "valid_count": 61,
+      "candidates": {
+        "0.01:0.0": {
+          "correct": 59,
+          "mean_iq_nmse": 0.04327535629272461,
+          "max_weight_median": 0.38336503505706787
+        },
+        "0.01:1.0": {
+          "correct": 59,
+          "mean_iq_nmse": 0.04411899670958519,
+          "max_weight_median": 0.4136035740375519
+        },
+        "0.03:0.0": {
+          "correct": 59,
+          "mean_iq_nmse": 0.04275832325220108,
+          "max_weight_median": 0.7096349000930786
+        },
+        "0.03:1.0": {
+          "correct": 59,
+          "mean_iq_nmse": 0.043280571699142456,
+          "max_weight_median": 0.6440764665603638
+        },
+        "0.1:0.0": {
+          "correct": 59,
+          "mean_iq_nmse": 0.04239943251013756,
+          "max_weight_median": 0.9968897104263306
+        },
+        "0.1:1.0": {
+          "correct": 58,
+          "mean_iq_nmse": 0.042705126106739044,
+          "max_weight_median": 0.9893870949745178
+        },
+        "0.3:0.0": {
+          "correct": 58,
+          "mean_iq_nmse": 0.0424550399184227,
+          "max_weight_median": 1.0
+        },
+        "0.3:1.0": {
+          "correct": 58,
+          "mean_iq_nmse": 0.042669590562582016,
+          "max_weight_median": 1.0
+        },
+        "1.0:0.0": {
+          "correct": 59,
+          "mean_iq_nmse": 0.04254826530814171,
+          "max_weight_median": 1.0
+        },
+        "1.0:1.0": {
+          "correct": 59,
+          "mean_iq_nmse": 0.04261164367198944,
+          "max_weight_median": 1.0
+        }
+      }
+    },
+    "practical_high_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "candidates": {
+        "0.01:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.027359699830412865,
+          "max_weight_median": 0.40050020813941956
+        },
+        "0.01:1.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.028013858944177628,
+          "max_weight_median": 0.4080180525779724
+        },
+        "0.03:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.02648097649216652,
+          "max_weight_median": 0.7808537483215332
+        },
+        "0.03:1.0": {
+          "correct": 61,
+          "mean_iq_nmse": 0.026955237612128258,
+          "max_weight_median": 0.6782861948013306
+        },
+        "0.1:0.0": {
+          "correct": 60,
+          "mean_iq_nmse": 0.02636370249092579,
+          "max_weight_median": 0.9971680641174316
+        },
+        "0.1:1.0": {
+          "correct": 61,
+          "mean_iq_nmse": 0.026514772325754166,
+          "max_weight_median": 0.996322512626648
+        },
+        "0.3:0.0": {
+          "correct": 61,
+          "mean_iq_nmse": 0.026434792205691338,
+          "max_weight_median": 1.0
+        },
+        "0.3:1.0": {
+          "correct": 61,
+          "mean_iq_nmse": 0.02658538892865181,
+          "max_weight_median": 0.9999999403953552
+        },
+        "1.0:0.0": {
+          "correct": 61,
+          "mean_iq_nmse": 0.026452260091900826,
+          "max_weight_median": 1.0
+        },
+        "1.0:1.0": {
+          "correct": 62,
+          "mean_iq_nmse": 0.026614438742399216,
+          "max_weight_median": 1.0
+        }
+      }
+    },
+    "practical_mid_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "candidates": {
+        "0.01:0.0": {
+          "correct": 55,
+          "mean_iq_nmse": 0.05747762694954872,
+          "max_weight_median": 0.30567753314971924
+        },
+        "0.01:1.0": {
+          "correct": 54,
+          "mean_iq_nmse": 0.058941204100847244,
+          "max_weight_median": 0.37972962856292725
+        },
+        "0.03:0.0": {
+          "correct": 56,
+          "mean_iq_nmse": 0.05590490996837616,
+          "max_weight_median": 0.5873289704322815
+        },
+        "0.03:1.0": {
+          "correct": 55,
+          "mean_iq_nmse": 0.057428907603025436,
+          "max_weight_median": 0.5034515857696533
+        },
+        "0.1:0.0": {
+          "correct": 59,
+          "mean_iq_nmse": 0.05353932827711105,
+          "max_weight_median": 0.9672953486442566
+        },
+        "0.1:1.0": {
+          "correct": 56,
+          "mean_iq_nmse": 0.05493214726448059,
+          "max_weight_median": 0.9601480960845947
+        },
+        "0.3:0.0": {
+          "correct": 58,
+          "mean_iq_nmse": 0.05287078022956848,
+          "max_weight_median": 0.9999877214431763
+        },
+        "0.3:1.0": {
+          "correct": 58,
+          "mean_iq_nmse": 0.05344400554895401,
+          "max_weight_median": 0.9999158978462219
+        },
+        "1.0:0.0": {
+          "correct": 57,
+          "mean_iq_nmse": 0.05285662040114403,
+          "max_weight_median": 1.0
+        },
+        "1.0:1.0": {
+          "correct": 56,
+          "mean_iq_nmse": 0.053265172988176346,
+          "max_weight_median": 1.0
+        }
+      }
+    },
+    "practical_low_urban": {
+      "count": 64,
+      "valid_count": 63,
+      "candidates": {
+        "0.01:0.0": {
+          "correct": 55,
+          "mean_iq_nmse": 0.10382723063230515,
+          "max_weight_median": 0.2653476595878601
+        },
+        "0.01:1.0": {
+          "correct": 55,
+          "mean_iq_nmse": 0.10639096796512604,
+          "max_weight_median": 0.3446531891822815
+        },
+        "0.03:0.0": {
+          "correct": 56,
+          "mean_iq_nmse": 0.09854353964328766,
+          "max_weight_median": 0.5028330087661743
+        },
+        "0.03:1.0": {
+          "correct": 55,
+          "mean_iq_nmse": 0.10120886564254761,
+          "max_weight_median": 0.45124220848083496
+        },
+        "0.1:0.0": {
+          "correct": 57,
+          "mean_iq_nmse": 0.09210825711488724,
+          "max_weight_median": 0.9401694536209106
+        },
+        "0.1:1.0": {
+          "correct": 57,
+          "mean_iq_nmse": 0.09467720240354538,
+          "max_weight_median": 0.8823261260986328
+        },
+        "0.3:0.0": {
+          "correct": 58,
+          "mean_iq_nmse": 0.09015670418739319,
+          "max_weight_median": 0.9999017119407654
+        },
+        "0.3:1.0": {
+          "correct": 58,
+          "mean_iq_nmse": 0.09212510287761688,
+          "max_weight_median": 0.9998074769973755
+        },
+        "1.0:0.0": {
+          "correct": 59,
+          "mean_iq_nmse": 0.08946343511343002,
+          "max_weight_median": 1.0
+        },
+        "1.0:1.0": {
+          "correct": 59,
+          "mean_iq_nmse": 0.08974915742874146,
+          "max_weight_median": 1.0
+        }
+      }
+    }
+  },
+  "alpha_values": [
+    0.01,
+    0.03,
+    0.1,
+    0.3,
+    1.0
+  ],
+  "learned_correction_scales": [
+    0.0,
+    1.0
+  ],
+  "source_only": true,
+  "ungated": true,
+  "F_frozen": true,
+  "DURA_used": false,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Temperatures proposed after examining same source records. Pseudo labels are not test truth; softening may harm physical fidelity. No target test or model selection."
+}

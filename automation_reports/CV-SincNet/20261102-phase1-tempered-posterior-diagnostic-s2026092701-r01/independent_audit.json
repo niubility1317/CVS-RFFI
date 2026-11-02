@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "scope": "Per-scene alpha=1 anchors compared to fixed source pilot; six-scene pseudo counts independently summed; individual predictions unavailable.",
+  "valid_count": 369,
+  "totals": {
+    "0.01:0.0": 349,
+    "0.01:1.0": 348,
+    "0.03:0.0": 351,
+    "0.03:1.0": 350,
+    "0.1:0.0": 355,
+    "0.1:1.0": 352,
+    "0.3:0.0": 356,
+    "0.3:1.0": 356,
+    "1.0:0.0": 357,
+    "1.0:1.0": 357
+  }
+}
