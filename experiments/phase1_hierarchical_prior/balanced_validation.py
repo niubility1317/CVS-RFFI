@@ -56,7 +56,7 @@ def main():
  selection={}
  for k,result in results.items():
   selection[k]={name:choose(result,require_iq,ref) for name,require_iq,ref in (('primary_dura',True,'baseline'),('accuracy_dura',False,'baseline'),('primary_parent',True,'parent'),('accuracy_parent',False,'parent'))}
- summary=dict(status='SOURCE_VALIDATION_COMPLETE',commit=a.commit,blind_model_sha256=SHA,source_prior_sha256=prior12_sha,hierarchical_prior_sha256=sub_sha,validation_ids=len(validation),heldout_ids=len(heldout),validation=results,selection=selection,source_only=True,F_frozen=True,DURA_inference=False,TX_labels_read=0,U_s_truth_reads=0,V_reads=0,test_reads=0,caveat='Source IDs previously used in other views; clean F pseudo targets not truth; no target prediction.')
+ summary=dict(status='SOURCE_VALIDATION_COMPLETE',commit=a.commit,blind_model_sha256=SHA,source_prior_sha256=prior12_sha,hierarchical_prior_sha256=sub_sha,validation_ids=len(validation),heldout_ids=len(heldout),validation=results,selection=selection,source_only=True,F_frozen=True,DURA_comparator_inference=True,candidate_uses_DURA=False,TX_labels_read=0,U_s_truth_reads=0,V_reads=0,test_reads=0,caveat='Source IDs previously used in other views; clean F pseudo targets not truth; no target prediction.')
  with (a.out/'source_validation.json').open('x',encoding='utf8') as f:json.dump(summary,f,indent=2,allow_nan=False);f.write('\n')
  print('BALANCED_DEEP_PRIOR_VALIDATION_COMPLETE',json.dumps(selection),flush=True)
 if __name__=='__main__':main()
