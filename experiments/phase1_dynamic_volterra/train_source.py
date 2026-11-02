@@ -44,6 +44,10 @@ def extra_frozen_components(stats, eye):
     return ()
 
 
+def extra_frozen_model_components(model):
+    return ()
+
+
 def source_objective(reader, output, anchor, clean, clean_features, groups):
     return source_loss(reader, output, clean, clean_features, groups)
 
@@ -138,7 +142,8 @@ def main():
     blind, gate, stats, eye = load_components(args.root, args.device, deps)
     reader.eval().requires_grad_(False)
     model = DynamicVolterra().to(args.device)
-    frozen = (reader, blind, gate, *extra_frozen_components(stats, eye))
+    model_frozen = extra_frozen_model_components(model)
+    frozen = (reader, blind, gate, *extra_frozen_components(stats, eye), *model_frozen)
     before = [snapshot(module) for module in frozen]
     fresh = args.root/'runs/20261031-phase1-DURA-freshViews-E30-s2026092701-r01/source_cache'
     if (fresh/'train/physical_ids.npy').resolve() != (cache/'train/physical_ids.npy').resolve():
@@ -246,6 +251,7 @@ def main():
     summary = dict(commit=args.commit, fit_ids=len(selected), active_exposures=len(data[0]),
                    source_view_counts=scene_counts, losses=losses, adaptive_gradient_batches=adaptive_gradient_batches,
                    F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=USES_DURA, paired_views=PAIRED_VIEWS,
+                   extra_frozen_model_count=len(model_frozen),
                    TX_labels_read=0,
                    U_s_truth_reads=0, V_reads=0, test_reads=0)
     if USES_DURA:
