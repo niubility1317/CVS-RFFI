@@ -1,0 +1,305 @@
+{
+  "status": "PASS",
+  "cells_checked": 126,
+  "common_dura_cells_checked": 126,
+  "selection": {
+    "0.25": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    },
+    "0.5": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    },
+    "1.0": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    }
+  },
+  "summaries": {
+    "0.25:0.8:RX4+6 six": {
+      "valid_count": 6606,
+      "dura": 6326,
+      "original_attention": 5369,
+      "teacher_guided": 5390
+    },
+    "0.25:0.8:RX4+6 low urban": {
+      "valid_count": 1130,
+      "dura": 984,
+      "original_attention": 632,
+      "teacher_guided": 647
+    },
+    "0.25:0.8:RX8 six": {
+      "valid_count": 3183,
+      "dura": 3060,
+      "original_attention": 2625,
+      "teacher_guided": 2648
+    },
+    "0.25:0.8:RX8 low urban": {
+      "valid_count": 512,
+      "dura": 462,
+      "original_attention": 302,
+      "teacher_guided": 299
+    },
+    "0.25:0.99:RX4+6 six": {
+      "valid_count": 6606,
+      "dura": 6326,
+      "original_attention": 5373,
+      "teacher_guided": 5394
+    },
+    "0.25:0.99:RX4+6 low urban": {
+      "valid_count": 1130,
+      "dura": 984,
+      "original_attention": 633,
+      "teacher_guided": 648
+    },
+    "0.25:0.99:RX8 six": {
+      "valid_count": 3183,
+      "dura": 3060,
+      "original_attention": 2626,
+      "teacher_guided": 2649
+    },
+    "0.25:0.99:RX8 low urban": {
+      "valid_count": 512,
+      "dura": 462,
+      "original_attention": 303,
+      "teacher_guided": 300
+    },
+    "0.5:0.8:RX4+6 six": {
+      "valid_count": 6606,
+      "dura": 6326,
+      "original_attention": 5030,
+      "teacher_guided": 5091
+    },
+    "0.5:0.8:RX4+6 low urban": {
+      "valid_count": 1130,
+      "dura": 984,
+      "original_attention": 603,
+      "teacher_guided": 588
+    },
+    "0.5:0.8:RX8 six": {
+      "valid_count": 3183,
+      "dura": 3060,
+      "original_attention": 2481,
+      "teacher_guided": 2503
+    },
+    "0.5:0.8:RX8 low urban": {
+      "valid_count": 512,
+      "dura": 462,
+      "original_attention": 284,
+      "teacher_guided": 291
+    },
+    "0.5:0.99:RX4+6 six": {
+      "valid_count": 6606,
+      "dura": 6326,
+      "original_attention": 5034,
+      "teacher_guided": 5094
+    },
+    "0.5:0.99:RX4+6 low urban": {
+      "valid_count": 1130,
+      "dura": 984,
+      "original_attention": 603,
+      "teacher_guided": 588
+    },
+    "0.5:0.99:RX8 six": {
+      "valid_count": 3183,
+      "dura": 3060,
+      "original_attention": 2484,
+      "teacher_guided": 2506
+    },
+    "0.5:0.99:RX8 low urban": {
+      "valid_count": 512,
+      "dura": 462,
+      "original_attention": 285,
+      "teacher_guided": 291
+    },
+    "1.0:0.8:RX4+6 six": {
+      "valid_count": 6606,
+      "dura": 6326,
+      "original_attention": 5362,
+      "teacher_guided": 5095
+    },
+    "1.0:0.8:RX4+6 low urban": {
+      "valid_count": 1130,
+      "dura": 984,
+      "original_attention": 661,
+      "teacher_guided": 662
+    },
+    "1.0:0.8:RX8 six": {
+      "valid_count": 3183,
+      "dura": 3060,
+      "original_attention": 2705,
+      "teacher_guided": 2426
+    },
+    "1.0:0.8:RX8 low urban": {
+      "valid_count": 512,
+      "dura": 462,
+      "original_attention": 322,
+      "teacher_guided": 296
+    },
+    "1.0:0.99:RX4+6 six": {
+      "valid_count": 6606,
+      "dura": 6326,
+      "original_attention": 5366,
+      "teacher_guided": 5099
+    },
+    "1.0:0.99:RX4+6 low urban": {
+      "valid_count": 1130,
+      "dura": 984,
+      "original_attention": 662,
+      "teacher_guided": 662
+    },
+    "1.0:0.99:RX8 six": {
+      "valid_count": 3183,
+      "dura": 3060,
+      "original_attention": 2708,
+      "teacher_guided": 2431
+    },
+    "1.0:0.99:RX8 low urban": {
+      "valid_count": 512,
+      "dura": 462,
+      "original_attention": 322,
+      "teacher_guided": 297
+    }
+  },
+  "diagnostics": {
+    "0.25": {
+      "0.8": {
+        "net": -936,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": true,
+        "impaired_iq_guard": false
+      },
+      "0.99": {
+        "net": -932,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": true,
+        "impaired_iq_guard": false
+      }
+    },
+    "0.5": {
+      "0.8": {
+        "net": -1235,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": true,
+        "impaired_iq_guard": false
+      },
+      "0.99": {
+        "net": -1232,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": true,
+        "impaired_iq_guard": false
+      }
+    },
+    "1.0": {
+      "0.8": {
+        "net": -1231,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": false,
+        "impaired_iq_guard": false
+      },
+      "0.99": {
+        "net": -1227,
+        "classification_guard_failures": [
+          "1:4:practical_high",
+          "1:4:practical_mid",
+          "1:4:practical_low_suburban",
+          "1:4:practical_high_urban",
+          "1:4:practical_mid_urban",
+          "1:4:practical_low_urban",
+          "1:6:practical_high",
+          "1:6:practical_mid",
+          "1:6:practical_low_suburban",
+          "1:6:practical_high_urban",
+          "1:6:practical_mid_urban",
+          "1:6:practical_low_urban"
+        ],
+        "clean_iq_guard": true,
+        "impaired_iq_guard": false
+      }
+    }
+  }
+}
