@@ -1,5 +1,7 @@
 # Phase1 类别一致性恢复网络
 
+> 协议更正：该路由器训练直接使用源 L_s TX 身份标签，且源设计记录明确参考过已观察 Phase1 测试结果；不符合当前恢复器 TX 标签隐藏及目标测试不反馈要求。历史七景分数保留为事实记录，不再作为合规恢复器的成绩或泛化证据。原始证据见 `automation_reports/CV-SincNet/20261101-diagnostic-phase1-source-semantic-consensus-s2026092701-r01/phase1_source_semantic_consensus_probe.py` 中标签读取与交叉熵训练，以及同目录 report 的实验背景。
+
 - run_id：`20261101-phase1-semantic-consensus-s2026092701-r03`
 - group_id：`phase1-semantic-consensus`；类别：`cvs`；阶段：`Phase1-restoration`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
