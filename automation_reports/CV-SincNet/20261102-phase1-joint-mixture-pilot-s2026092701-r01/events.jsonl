@@ -1,1 +1,2 @@
 {"at": "2026-11-02T01:14:10+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T01:16:16+00:00", "status": "RUNNING", "note": "Physical-posterior mixture controller trains on source only; F and blind model frozen; no U_s truth, V or test. DURA used only for final comparison.", "evidence": ["N607 PID 1143608 CWD/cmdline/GPU and growing source log verified; real L_s and U_s gradient checks pass; archive transfer verified."], "row_id": null}
