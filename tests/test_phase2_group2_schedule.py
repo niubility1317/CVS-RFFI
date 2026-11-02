@@ -26,3 +26,11 @@ def test_full_dispatch_rejects_incomplete_or_changed_comparison_matrix():
         validate_runtime({'profiles':['dadda_sda'], 'methods':['mopc_hr','orthogonal','lora'],
                           'model_seeds':[2026092701], 'K':[1,5,10,20], 'N':[2,5,10,20],
                           'target_receivers':['1-1'], 'capsules':[]})
+
+
+def test_smoke_uses_only_allowed_gpu_with_enough_free_memory(monkeypatch):
+    from experiments.pamf_phase2_practical import group2_schedule
+    free = {'1':1000, '2':7000, '3':12000}
+    monkeypatch.setattr(group2_schedule, '_gpu_free', lambda gpu: free[gpu])
+    assert group2_schedule._smoke_gpu({'gpu_limits':{'1':2, '2':2}, 'minimum_free_MiB':6000}) == '2'
+    assert group2_schedule._smoke_gpu({'gpu_limits':{'1':2}, 'minimum_free_MiB':6000}) is None

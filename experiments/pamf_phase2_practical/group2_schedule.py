@@ -25,7 +25,7 @@ def validate_runtime(rt):
     expected={f'capsules/{pool}/{episode}/{receiver}' for pool in ('P01','P02','P03')
               for episode in episodes for receiver in receivers}
     require(len(rt['capsules'])==len(expected)==483 and set(rt['capsules'])==expected, 'Incomplete episode matrix')
-    caps={'0':3,'1':2,'2':3,'3':3,'4':2,'5':2,'6':3,'7':2}
+    caps={str(i):2 for i in range(8)}
     require(bool(rt['gpu_limits']) and set(rt['gpu_limits']) <= set(caps) and
             all(0 < value <= caps[gpu] for gpu,value in rt['gpu_limits'].items()), 'GPU configuration invalid')
     require(1 <= rt['score_processes'] <= 4 and rt['minimum_free_MiB'] >= 6000, 'Resource configuration invalid')
@@ -62,6 +62,10 @@ def _gpu_free(gpu):
     value = subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=memory.free',
                                      '--format=csv,noheader,nounits'], text=True)
     return int(value.strip())
+
+
+def _smoke_gpu(rt):
+    return next((gpu for gpu in rt['gpu_limits'] if _gpu_free(gpu) >= int(rt['minimum_free_MiB'])), None)
 
 
 def _queue(rt, jobs, action):
@@ -170,7 +174,15 @@ def dispatch(rt):
     write(root/'owner.json',dict(pid=os.getpid(),cwd=str(Path.cwd()),argv=sys.argv))
     # A real-checkpoint source-only smoke is the first computational step and
     # continues immediately on PASS. Its record is not an authorization token.
-    result=smoke(rt); write(root/'source_smoke.json',result)
+    gpu = _smoke_gpu(rt)
+    while gpu is None:
+        time.sleep(rt['poll_seconds']); gpu = _smoke_gpu(rt)
+    cmd=[sys.executable,'-u','-m',__package__+'.group2_schedule','smoke','--runtime',rt['runtime_file']]
+    env=dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1')
+    with (root/'logs'/'smoke.log').open('x',encoding='utf-8') as log:
+        proc=subprocess.Popen(cmd,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)
+        write(root/'launches'/'smoke.json',dict(pid=proc.pid,gpu=gpu,cwd=str(Path.cwd()),argv=cmd))
+        require(proc.wait()==0, 'Real-source no-query smoke failed; see smoke log')
     _queue(rt,jobs,'worker')
     for job in jobs: closed_prediction(job,len(job['points'])*len(job['methods']))
     rows=sum(len(job['points'])*len(job['methods']) for job in jobs)
@@ -181,10 +193,11 @@ def dispatch(rt):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('action',choices=['dispatch','worker','score'])
+    parser.add_argument('action',choices=['dispatch','smoke','worker','score'])
     parser.add_argument('--runtime',required=True); parser.add_argument('--index',type=int)
     args=parser.parse_args(); runtime=read(args.runtime)
     if args.action=='dispatch': dispatch(runtime)
+    elif args.action=='smoke': write(Path(runtime['run_root'])/'source_smoke.json',smoke(runtime))
     else:
         require(args.index is not None and args.index >= 0, 'Invalid task index')
         job=read(Path(runtime['run_root'])/'jobs'/f'{args.index:05d}.json')
