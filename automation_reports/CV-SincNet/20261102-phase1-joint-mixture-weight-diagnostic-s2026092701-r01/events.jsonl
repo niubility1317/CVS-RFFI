@@ -1,1 +1,2 @@
 {"at": "2026-11-02T01:34:58+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T01:38:19+00:00", "status": "ANALYZED", "note": "Ungated source RX8 384 records: 366 maximum posterior weight >0.95; learned controller changes top component 9; 12 pseudo-target errors and inaccessible six-hypothesis oracle covers 10.", "evidence": ["result.json and independent_audit.json; per-scene source counts match prior fixed pilot."], "row_id": null}
