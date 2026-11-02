@@ -1,0 +1,120 @@
+{
+  "status": "PREDICTIONS_COMPLETE",
+  "count": 168000,
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "F_run": "20261027-phase1-pamf-repl-shuffled-views-m16-r02",
+  "F_row": "main_split-repl-shuffled_time-3view-s2026092701",
+  "commit": "8c20a392dcd6347db5f1d135b689711fd4c00e42",
+  "TX_truth_reads": 0,
+  "model_updates": 0,
+  "candidate_names": [
+    "raw",
+    "free_mixture",
+    "full_hard",
+    "hierarchical",
+    "joint_mixture",
+    "confidence_router",
+    "attention",
+    "structured_prior",
+    "white_prior"
+  ],
+  "candidate_runs": [
+    "20261102-phase1-free-mixture-ground-test-s2026092701-r01",
+    "20261102-phase1-free-full-hard-ground-test-s2026092701-r01",
+    "20261102-phase1-hierarchical-prior-ground-test-s2026092701-r01",
+    "20261102-phase1-joint-mixture-ground-test-s2026092701-r01",
+    "20261102-phase1-confidence-router-ground-test-s2026092701-r01",
+    "20261102-phase1-attention-waveform-ground-test-s2026092701-r01",
+    "20261102-phase1-structured-prior-ground-test-s2026092701-r01",
+    "20261102-phase1-independent-prior-pnp-ground-test-s2026092701-r02"
+  ],
+  "router_checkpoint_sha256": "eca0337dfd65ab63ccfe28c691f7cde480a18509bd4f5e2d31045f34164c5a6b",
+  "routes_by_view": {
+    "clean": {
+      "raw": 59,
+      "free_mixture": 167815,
+      "full_hard": 26,
+      "hierarchical": 44,
+      "joint_mixture": 4,
+      "confidence_router": 5,
+      "attention": 2,
+      "structured_prior": 14,
+      "white_prior": 31
+    },
+    "practical_high": {
+      "raw": 4267,
+      "free_mixture": 156936,
+      "full_hard": 433,
+      "hierarchical": 950,
+      "joint_mixture": 177,
+      "confidence_router": 436,
+      "attention": 3402,
+      "structured_prior": 753,
+      "white_prior": 646
+    },
+    "practical_mid": {
+      "raw": 4960,
+      "free_mixture": 155118,
+      "full_hard": 550,
+      "hierarchical": 1337,
+      "joint_mixture": 259,
+      "confidence_router": 528,
+      "attention": 3358,
+      "structured_prior": 946,
+      "white_prior": 944
+    },
+    "practical_low_suburban": {
+      "raw": 5589,
+      "free_mixture": 153333,
+      "full_hard": 824,
+      "hierarchical": 1766,
+      "joint_mixture": 374,
+      "confidence_router": 680,
+      "attention": 3179,
+      "structured_prior": 991,
+      "white_prior": 1264
+    },
+    "practical_high_urban": {
+      "raw": 5372,
+      "free_mixture": 154147,
+      "full_hard": 585,
+      "hierarchical": 1441,
+      "joint_mixture": 284,
+      "confidence_router": 522,
+      "attention": 3412,
+      "structured_prior": 1052,
+      "white_prior": 1185
+    },
+    "practical_mid_urban": {
+      "raw": 10263,
+      "free_mixture": 142524,
+      "full_hard": 1646,
+      "hierarchical": 3640,
+      "joint_mixture": 866,
+      "confidence_router": 903,
+      "attention": 3223,
+      "structured_prior": 1861,
+      "white_prior": 3074
+    },
+    "practical_low_urban": {
+      "raw": 14914,
+      "free_mixture": 132082,
+      "full_hard": 2824,
+      "hierarchical": 5592,
+      "joint_mixture": 1735,
+      "confidence_router": 1140,
+      "attention": 3293,
+      "structured_prior": 2435,
+      "white_prior": 3985
+    }
+  },
+  "derived_from_fixed_candidate_predictions": true
+}

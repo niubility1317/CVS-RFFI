@@ -1,0 +1,80 @@
+{
+  "status": "SOURCE_ROUTER_TRAINING_COMPLETE",
+  "commit": "4f065676bc23c5b1adaa9e7eab2c7dfd299e849f",
+  "count": 1047,
+  "candidate_names": [
+    "raw",
+    "free_mixture",
+    "full_hard",
+    "hierarchical",
+    "joint_mixture",
+    "confidence_router",
+    "attention",
+    "structured_prior",
+    "white_prior"
+  ],
+  "source_prediction_sha256": {
+    "free_mixture": "f63336f65fb396a090be84a4764cedc7671a0beed055d7919314650eeda75253",
+    "full_hard": "593b682986c86f238ee4c5bd6b9996a635cc33cf7c9a0ec61e24f40bee67c88e",
+    "hierarchical": "97c89fe0bf1805af23394743b9bef7297e4f25c145f2408fc490018023266cd5",
+    "joint_mixture": "e62cd6403e60c30a30a9fc5aa57e64387c4a2d62fec400491153910cfef41ce8",
+    "confidence_router": "7786c063c05cd50109d858587b0c490d6d1979b7f48b27831b8aad434d859817",
+    "complementary": "cf9d04b1ae7a4bcaa1114054b4c75fc71ee4fae861863173b3fa86285e60910c"
+  },
+  "source_output_sha256": "a65efa39b7ae5761cd07c10c6e697cd9a269c22a07342a822648316f7f87c91a",
+  "checkpoint_sha256": "eca0337dfd65ab63ccfe28c691f7cde480a18509bd4f5e2d31045f34164c5a6b",
+  "fold_training": {
+    "train4_eval6": {
+      "training_disagreements": 67,
+      "train_counts": [
+        15,
+        15,
+        9,
+        13,
+        11,
+        4
+      ],
+      "loss_start": 0.9093263745307922,
+      "loss_end": 0.19619637727737427,
+      "uncovered": 12,
+      "unanimous": 268
+    },
+    "train6_eval4": {
+      "training_disagreements": 66,
+      "train_counts": [
+        22,
+        14,
+        7,
+        9,
+        11,
+        3
+      ],
+      "loss_start": 0.8704248070716858,
+      "loss_end": 0.03659801557660103,
+      "uncovered": 5,
+      "unanimous": 281
+    },
+    "train46_eval8": {
+      "training_disagreements": 133,
+      "train_counts": [
+        37,
+        29,
+        16,
+        22,
+        22,
+        7
+      ],
+      "loss_start": 0.8917833566665649,
+      "loss_end": 0.16669446229934692,
+      "uncovered": 17,
+      "unanimous": 549
+    }
+  },
+  "L_s_metadata_labels_read": 6300,
+  "L_s_role": "fit RX4 or RX6 and heldout other receiver; final fit RX4/6, source holdout RX8",
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "DURA_in_candidate": false,
+  "caveat": "Source-only fit; base F and candidate models previously saw source IDs; ground development test has been observed."
+}

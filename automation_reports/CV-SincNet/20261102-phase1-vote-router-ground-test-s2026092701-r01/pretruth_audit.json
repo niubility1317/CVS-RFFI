@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "count": 168000,
+  "views": {
+    "clean": {
+      "count": 168000,
+      "router_mismatches": 0,
+      "raw_sha256": "af63efb8b7ece72c71daf7bbae0ce64dc9d5f07f4e3bd9328e95681c013f0b43",
+      "restored_sha256": "846564890d71d7f353cc335b2b92cb82488a30f11f33c8406d17b221f28fe2fb",
+      "route_sha256": "c8f2e3ef15c175d4bb9649365648636946faf5f7346b502dd6eb456ff8a7d9fb"
+    },
+    "practical_high": {
+      "count": 168000,
+      "router_mismatches": 0,
+      "raw_sha256": "dc1378cb1d92f3e22bf74ce05cd77b45f37df2af3b00e0fde54d91e94f7c3b72",
+      "restored_sha256": "f29e0c716c92a41650f291c3c82e1773d02097f3fdb6807cecc3e7d89f1b2c94",
+      "route_sha256": "625ca3c636af390f4d122453701bf828c62802cb81b0113f13b3066309313542"
+    },
+    "practical_mid": {
+      "count": 168000,
+      "router_mismatches": 0,
+      "raw_sha256": "ea642c9e529d47ea6a49feb524b3b1e8ce9a7c222b6d3b7e74407a8c0f5d38da",
+      "restored_sha256": "309c794b15f83a3f866c4c7c118a49fddeae8349875f750db88f4d2b25e7563d",
+      "route_sha256": "3b5fb85a0a078332b8b0ab6774dbe3aa13003525f8065f82e55261b1e21ad048"
+    },
+    "practical_low_suburban": {
+      "count": 168000,
+      "router_mismatches": 0,
+      "raw_sha256": "32e0bb48871888b2203674bfee5f94bb93d78457c88d1845c3e4d0613812bebb",
+      "restored_sha256": "762c1224a9cc5ff4c51f9574acc9a245f65a1a03bf4170b91fe6432f206f40df",
+      "route_sha256": "4b5d407b179cccbe5e553a9adf82ef83bcf353fb55247d162d3d39d765f22f34"
+    },
+    "practical_high_urban": {
+      "count": 168000,
+      "router_mismatches": 0,
+      "raw_sha256": "de61f7844facf5eb9e47f3cfae7f6a177ab537a7a95608aec468a38a99628a36",
+      "restored_sha256": "95dc213932c663d5023ef6a5a00996b12d240e45f1a4faac77c2d37f3ca16da7",
+      "route_sha256": "8e784bd318415cb3a7fd5df5040534bbbe19d4b9fb575cb0f6e3c1f4e17cce39"
+    },
+    "practical_mid_urban": {
+      "count": 168000,
+      "router_mismatches": 0,
+      "raw_sha256": "32bf553d4de88b7c3dc82a1f9144cf035f6df7b29da6905544f6e652947a18ac",
+      "restored_sha256": "9d1ab274bed3aace5b6eba91a2e615a48f5e60a5ad2471c09a9caba8a9ba6115",
+      "route_sha256": "62544c49d0e2c91be86114f20ace716b0785c867e68d090074355308a99a7b1e"
+    },
+    "practical_low_urban": {
+      "count": 168000,
+      "router_mismatches": 0,
+      "raw_sha256": "8d1792e836e14da408dffa17fd75c6bc9f16aad861dc9bbf7597a827fcc5bd5b",
+      "restored_sha256": "4dea4ebf54375b5fbd749720cf84c255b8cd84574e7ccaf48fe89f51dadda4c7",
+      "route_sha256": "8d6f2ee46fbb1b000b43a517f8848d21b65ceb85b4261680bdd540744ce28d15"
+    }
+  },
+  "common_raw_and_ids_match": true,
+  "all_routes_recomputed_from_frozen_model": true,
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "model_updates": 0
+}

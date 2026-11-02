@@ -1,0 +1,71 @@
+{
+  "status": "PAIRED_COMPLETE",
+  "reference": "free_mixture",
+  "count": 168000,
+  "views": {
+    "clean": {
+      "count": 168000,
+      "free_correct": 145235,
+      "router_correct": 145246,
+      "repairs": 36,
+      "damages": 25,
+      "prediction_changes": 185,
+      "selected_nonfree": 185
+    },
+    "practical_high": {
+      "count": 168000,
+      "free_correct": 143218,
+      "router_correct": 139502,
+      "repairs": 3104,
+      "damages": 6820,
+      "prediction_changes": 11064,
+      "selected_nonfree": 11064
+    },
+    "practical_mid": {
+      "count": 168000,
+      "free_correct": 140567,
+      "router_correct": 136657,
+      "repairs": 3610,
+      "damages": 7520,
+      "prediction_changes": 12882,
+      "selected_nonfree": 12882
+    },
+    "practical_low_suburban": {
+      "count": 168000,
+      "free_correct": 136874,
+      "router_correct": 133357,
+      "repairs": 4330,
+      "damages": 7847,
+      "prediction_changes": 14667,
+      "selected_nonfree": 14667
+    },
+    "practical_high_urban": {
+      "count": 168000,
+      "free_correct": 139986,
+      "router_correct": 135485,
+      "repairs": 3674,
+      "damages": 8175,
+      "prediction_changes": 13853,
+      "selected_nonfree": 13853
+    },
+    "practical_mid_urban": {
+      "count": 168000,
+      "free_correct": 124641,
+      "router_correct": 118499,
+      "repairs": 6343,
+      "damages": 12485,
+      "prediction_changes": 25476,
+      "selected_nonfree": 25476
+    },
+    "practical_low_urban": {
+      "count": 168000,
+      "free_correct": 110367,
+      "router_correct": 103914,
+      "repairs": 8904,
+      "damages": 15357,
+      "prediction_changes": 35918,
+      "selected_nonfree": 35918
+    }
+  },
+  "caveat": "Both predictions fixed before label scoring; reused Phase1 ground test, model chosen after candidate oracle exploration."
+}

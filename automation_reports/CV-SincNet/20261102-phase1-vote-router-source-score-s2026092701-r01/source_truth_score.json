@@ -1,0 +1,161 @@
+{
+  "status": "SOURCE_ROUTER_TRUTH_SCORE_COMPLETE",
+  "commit": "47cf3b4effc9fe848d26abea5aa9e395222c7fbc",
+  "source_prediction_sha256": "a65efa39b7ae5761cd07c10c6e697cd9a269c22a07342a822648316f7f87c91a",
+  "source_L_s_count": 1047,
+  "L_s_metadata_labels_read": 6300,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "results": {
+    "RX4_6_crossfit": {
+      "clean": {
+        "count": 83,
+        "raw_correct": 83,
+        "free_correct": 83,
+        "router_correct": 83,
+        "repairs_vs_free": 0,
+        "damages_vs_free": 0,
+        "selected_nonfree": 0
+      },
+      "practical_high": {
+        "count": 97,
+        "raw_correct": 96,
+        "free_correct": 96,
+        "router_correct": 96,
+        "repairs_vs_free": 0,
+        "damages_vs_free": 0,
+        "selected_nonfree": 0
+      },
+      "practical_mid": {
+        "count": 91,
+        "raw_correct": 87,
+        "free_correct": 90,
+        "router_correct": 90,
+        "repairs_vs_free": 0,
+        "damages_vs_free": 0,
+        "selected_nonfree": 0
+      },
+      "practical_low_suburban": {
+        "count": 107,
+        "raw_correct": 97,
+        "free_correct": 102,
+        "router_correct": 102,
+        "repairs_vs_free": 2,
+        "damages_vs_free": 2,
+        "selected_nonfree": 4
+      },
+      "practical_high_urban": {
+        "count": 108,
+        "raw_correct": 101,
+        "free_correct": 106,
+        "router_correct": 105,
+        "repairs_vs_free": 0,
+        "damages_vs_free": 1,
+        "selected_nonfree": 1
+      },
+      "practical_mid_urban": {
+        "count": 108,
+        "raw_correct": 84,
+        "free_correct": 94,
+        "router_correct": 94,
+        "repairs_vs_free": 1,
+        "damages_vs_free": 1,
+        "selected_nonfree": 3
+      },
+      "practical_low_urban": {
+        "count": 102,
+        "raw_correct": 57,
+        "free_correct": 80,
+        "router_correct": 76,
+        "repairs_vs_free": 2,
+        "damages_vs_free": 6,
+        "selected_nonfree": 10
+      },
+      "all_impaired": {
+        "count": 613,
+        "raw_correct": 522,
+        "free_correct": 568,
+        "router_correct": 563,
+        "repairs_vs_free": 5,
+        "damages_vs_free": 10,
+        "selected_nonfree": 18
+      }
+    },
+    "RX8_holdout": {
+      "clean": {
+        "count": 54,
+        "raw_correct": 54,
+        "free_correct": 54,
+        "router_correct": 54,
+        "repairs_vs_free": 0,
+        "damages_vs_free": 0,
+        "selected_nonfree": 0
+      },
+      "practical_high": {
+        "count": 51,
+        "raw_correct": 50,
+        "free_correct": 51,
+        "router_correct": 51,
+        "repairs_vs_free": 0,
+        "damages_vs_free": 0,
+        "selected_nonfree": 0
+      },
+      "practical_mid": {
+        "count": 37,
+        "raw_correct": 33,
+        "free_correct": 36,
+        "router_correct": 37,
+        "repairs_vs_free": 1,
+        "damages_vs_free": 0,
+        "selected_nonfree": 1
+      },
+      "practical_low_suburban": {
+        "count": 44,
+        "raw_correct": 41,
+        "free_correct": 42,
+        "router_correct": 41,
+        "repairs_vs_free": 0,
+        "damages_vs_free": 1,
+        "selected_nonfree": 1
+      },
+      "practical_high_urban": {
+        "count": 58,
+        "raw_correct": 54,
+        "free_correct": 56,
+        "router_correct": 55,
+        "repairs_vs_free": 1,
+        "damages_vs_free": 2,
+        "selected_nonfree": 3
+      },
+      "practical_mid_urban": {
+        "count": 51,
+        "raw_correct": 40,
+        "free_correct": 50,
+        "router_correct": 49,
+        "repairs_vs_free": 0,
+        "damages_vs_free": 1,
+        "selected_nonfree": 2
+      },
+      "practical_low_urban": {
+        "count": 56,
+        "raw_correct": 34,
+        "free_correct": 48,
+        "router_correct": 49,
+        "repairs_vs_free": 1,
+        "damages_vs_free": 0,
+        "selected_nonfree": 3
+      },
+      "all_impaired": {
+        "count": 297,
+        "raw_correct": 252,
+        "free_correct": 283,
+        "router_correct": 282,
+        "repairs_vs_free": 3,
+        "damages_vs_free": 4,
+        "selected_nonfree": 10
+      }
+    }
+  },
+  "caveat": "RX4/6 are cross-fitted receiver folds and RX8 is held out from router fitting; base models saw source IDs, source views explored, ground candidate set chosen after ground results."
+}

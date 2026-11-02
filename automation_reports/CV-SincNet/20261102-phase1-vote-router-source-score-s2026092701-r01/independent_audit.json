@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "source_records": 1047,
+  "fold_replay_matches": 1047,
+  "recomputed_fields": 112,
+  "final_checkpoint_bitwise_equal": true,
+  "source_join": "independent sorted physical ID lookup",
+  "L_s_metadata_labels_read": 6300,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Independent deterministic retraining and recount; F and source views previously observed."
+}
