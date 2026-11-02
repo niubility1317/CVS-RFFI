@@ -10,6 +10,7 @@ import numpy as np
 
 VIEWS = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',
          'practical_high_urban', 'practical_mid_urban', 'practical_low_urban')
+SCHEMA = 'phase1_dynamic_volterra_v1'
 
 
 def read(path):
@@ -47,7 +48,7 @@ def main():
         raise ValueError('Complete finite source prediction arrays are required')
     import torch
     state = torch.load(args.source/'checkpoint.pt', map_location='cpu', weights_only=False)
-    if (state.get('schema') != 'phase1_dynamic_volterra_v1' or state.get('commit') != args.commit
+    if (state.get('schema') != SCHEMA or state.get('commit') != args.commit
             or state.get('epochs') != 5 or len(state.get('fit_ids', [])) != 8192
             or np.intersect1d(ids, state['fit_ids']).size):
         raise ValueError('Fixed source checkpoint and disjoint holdout IDs are required')

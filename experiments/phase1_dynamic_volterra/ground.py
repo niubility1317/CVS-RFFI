@@ -14,6 +14,8 @@ from experiments.phase1_dynamic_volterra.train_source import load_components, pr
 
 SOURCE = '20261102-phase1-dynamic-volterra-source-s2026092701-r01'
 BATCH = 8
+SCHEMA = 'phase1_dynamic_volterra_v1'
+LOG_PREFIX = 'DYNAMIC_VOLTERRA'
 
 
 def dependencies():
@@ -31,7 +33,7 @@ def load_fixed(root, commit, device, deps):
     if any(done.get(key) != value for key, value in expected.items()):
         raise ValueError('Complete fixed source predictions and frozen components are required')
     state = torch.load(folder/'checkpoint.pt', map_location='cpu', weights_only=False)
-    if (state.get('schema') != 'phase1_dynamic_volterra_v1' or state.get('commit') != commit
+    if (state.get('schema') != SCHEMA or state.get('commit') != commit
             or state.get('epochs') != 5 or len(state.get('fit_ids', [])) != 8192):
         raise ValueError('Exact fixed source-trained dynamic Volterra checkpoint is required')
     model = DynamicVolterra().to(device)
@@ -78,7 +80,7 @@ def smoke(root, out, commit, device, deps):
     deps.core.write(out/'prediction_smoke.json', dict(status='PASS', commit=commit, source_only=True,
                     records=len(ids), mismatches=mismatch, TX_truth_reads=0, U_s_truth_reads=0,
                     V_reads=0, test_IQ_reads=0))
-    print('DYNAMIC_VOLTERRA_SOURCE_REPLAY_PASS', len(ids), flush=True)
+    print(LOG_PREFIX+'_SOURCE_REPLAY_PASS', len(ids), flush=True)
 
 
 @torch.no_grad()
@@ -115,15 +117,15 @@ def predict(root, out, commit, device, deps):
             raw[start:end], restored[start:end] = a, b
             count += int(active.sum())
             if end % 16384 == 0:
-                print('DYNAMIC_VOLTERRA_GROUND_PROGRESS', view, end, round(time.monotonic()-started, 1), flush=True)
+                print(LOG_PREFIX+'_GROUND_PROGRESS', view, end, round(time.monotonic()-started, 1), flush=True)
         raw.flush()
         restored.flush()
         accepted[view] = count
-        print('DYNAMIC_VOLTERRA_GROUND_VIEW_COMPLETE', view, len(ids), flush=True)
+        print(LOG_PREFIX+'_GROUND_VIEW_COMPLETE', view, len(ids), flush=True)
     deps.core.write(destination/'complete.json', dict(status='PREDICTIONS_COMPLETE', count=len(ids),
                     views=list(deps.core.VIEWS), F_run=deps.core.F_RUN, F_row=deps.core.F_ROW,
                     commit=commit, TX_truth_reads=0, model_updates=0, accepted_by_view=accepted))
-    print('DYNAMIC_VOLTERRA_GROUND_PREDICTIONS_COMPLETE', flush=True)
+    print(LOG_PREFIX+'_GROUND_PREDICTIONS_COMPLETE', flush=True)
 
 
 def main():

@@ -17,6 +17,8 @@ from experiments.phase1_spectral_synthesis.fit_sampling import select_fit
 EPOCHS = 5
 FIT_SIZE = 8192
 BATCH = 8
+SCHEMA = 'phase1_dynamic_volterra_v1'
+LOG_PREFIX = 'DYNAMIC_VOLTERRA'
 VIEWS = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',
          'practical_high_urban', 'practical_mid_urban', 'practical_low_urban')
 
@@ -134,7 +136,7 @@ def main():
             chunks.append(tuple(t.detach().cpu() for t in (x, base, logvar, target, features, groups)))
             for view in np.unique(scene[idx]):
                 scene_counts[str(view)] = scene_counts.get(str(view), 0)+int(np.count_nonzero(scene[idx] == view))
-        print('DYNAMIC_VOLTERRA_SOURCE_PREP', epoch, json.dumps(scene_counts), 'seconds', round(time.monotonic()-started, 1), flush=True)
+        print(LOG_PREFIX+'_SOURCE_PREP', epoch, json.dumps(scene_counts), 'seconds', round(time.monotonic()-started, 1), flush=True)
     if not chunks:
         raise ValueError('Paired source training data required')
     data = tuple(torch.cat(items, 0) for items in zip(*chunks))
@@ -165,7 +167,7 @@ def main():
             optimizer.step()
             total += float(loss.detach())*len(chosen)
         losses.append(total/len(order))
-        print('DYNAMIC_VOLTERRA_EPOCH', epoch, 'loss', losses[-1], 'seconds', round(time.monotonic()-started, 1), flush=True)
+        print(LOG_PREFIX+'_EPOCH', epoch, 'loss', losses[-1], 'seconds', round(time.monotonic()-started, 1), flush=True)
     if adaptive_gradient_batches < 1 or not all(unchanged(module, state) for module, state in zip(frozen, before)):
         raise ValueError('Dynamic memory network must learn while reader, blind action and gate remain frozen')
     model.eval().requires_grad_(False)
@@ -213,15 +215,15 @@ def main():
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', eval_records=len(ids), **summary))
         return
     with (args.out/'checkpoint.pt').open('xb') as stream:
-        torch.save(dict(schema='phase1_dynamic_volterra_v1', commit=args.commit, fit_ids=fit,
+        torch.save(dict(schema=SCHEMA, commit=args.commit, fit_ids=fit,
                         epochs=EPOCHS, model=model.state_dict(), losses=losses), stream)
     with (args.out/'source_predictions.npz').open('xb') as stream:
         np.savez(stream, indices=ids, split=np.asarray(splits), rx=rx[ids], scene=scene[ids], values=values)
     core.write(args.out/'prediction_complete.json', dict(status='SOURCE_PREDICTIONS_FIXED', count=len(ids),
                model_updates_after_prediction=0,
-               columns='clean_confidence,clean_pseudoclass,gate,raw_class,raw_aligned_iq,input_class,input_aligned_iq,volterra_class,volterra_aligned_iq',
+               columns='clean_confidence,clean_pseudoclass,gate,raw_class,raw_aligned_iq,input_class,input_aligned_iq,restored_class,restored_aligned_iq',
                caveat='Source records have previously been explored; pseudo labels are not identity truth.', **summary))
-    print('DYNAMIC_VOLTERRA_SOURCE_PREDICTIONS_FIXED', len(ids), flush=True)
+    print(LOG_PREFIX+'_SOURCE_PREDICTIONS_FIXED', len(ids), flush=True)
 
 
 if __name__ == '__main__':
