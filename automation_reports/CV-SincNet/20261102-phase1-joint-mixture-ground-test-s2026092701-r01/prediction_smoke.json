@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "records": 1047,
+  "tests": [
+    {
+      "batch": 32,
+      "records": 1047,
+      "record_mismatches": 0,
+      "seconds": 3.677
+    }
+  ],
+  "batch": 32,
+  "F_frozen": true,
+  "DURA_inference": false,
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_IQ_reads": 0,
+  "commit": "b38f617825562ca8fd120322d9874ca789fafbc3"
+}

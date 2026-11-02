@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "views": {
+    "clean": {
+      "raw": 86.53869047619048,
+      "restored": 86.45416666666667,
+      "gap_pp": 0.08452380952381588,
+      "relative_drop_percent": 0.09767169928122618,
+      "macro_f1": 86.23622142923693,
+      "correct": 145243
+    },
+    "practical_high": {
+      "raw": 80.61547619047619,
+      "restored": 84.7154761904762,
+      "gap_pp": 1.8232142857142861,
+      "relative_drop_percent": 2.106819823227981,
+      "macro_f1": 84.46814620359763,
+      "correct": 142322
+    },
+    "practical_mid": {
+      "raw": 78.10773809523809,
+      "restored": 83.08869047619048,
+      "gap_pp": 3.450000000000003,
+      "relative_drop_percent": 3.986656119957358,
+      "macro_f1": 82.873791040712,
+      "correct": 139589
+    },
+    "practical_low_suburban": {
+      "raw": 75.74464285714286,
+      "restored": 80.94464285714285,
+      "gap_pp": 5.594047619047629,
+      "relative_drop_percent": 6.464215703133071,
+      "macro_f1": 80.7724313249171,
+      "correct": 135987
+    },
+    "practical_high_urban": {
+      "raw": 77.05,
+      "restored": 82.60416666666667,
+      "gap_pp": 3.93452380952381,
+      "relative_drop_percent": 4.546548818653919,
+      "macro_f1": 82.45156537928432,
+      "correct": 138775
+    },
+    "practical_mid_urban": {
+      "raw": 62.795833333333334,
+      "restored": 73.01845238095238,
+      "gap_pp": 13.5202380952381,
+      "relative_drop_percent": 15.623344911785951,
+      "macro_f1": 73.38262577672415,
+      "correct": 122671
+    },
+    "practical_low_urban": {
+      "raw": 51.60476190476191,
+      "restored": 64.76488095238095,
+      "gap_pp": 21.773809523809533,
+      "relative_drop_percent": 25.160779997936523,
+      "macro_f1": 65.56129021602203,
+      "correct": 108805
+    }
+  },
+  "groups_verified": 119,
+  "arrays_fixed_before_truth": true,
+  "all_six_within_3pp": false,
+  "all_six_within_3pct_relative": false
+}
