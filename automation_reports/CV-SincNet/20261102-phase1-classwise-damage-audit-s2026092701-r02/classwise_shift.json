@@ -1,0 +1,6222 @@
+{
+  "status": "POSTHOC_CLASSWISE_COMPLETE",
+  "commit": "62be1566bf21cc329cd211d212c4e95bb75a102d",
+  "source_prediction_sha256": "f63336f65fb396a090be84a4764cedc7671a0beed055d7919314650eeda75253",
+  "ground_count": 168000,
+  "source_L_s_count": 1047,
+  "L_s_metadata_labels_read": 6300,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "predictions_fixed_before_ground_truth": true,
+  "source": {
+    "RX4_6": {
+      "clean": {
+        "0": {
+          "count": 14,
+          "clean_correct": 14,
+          "raw_correct": 14,
+          "restored_correct": 14,
+          "dura_correct": 14,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            14,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            14,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 14,
+          "clean_correct": 14,
+          "raw_correct": 14,
+          "restored_correct": 14,
+          "dura_correct": 14,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            14,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            14,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 17,
+          "clean_correct": 17,
+          "raw_correct": 17,
+          "restored_correct": 17,
+          "dura_correct": 17,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            17,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            17,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 6,
+          "clean_correct": 6,
+          "raw_correct": 6,
+          "restored_correct": 6,
+          "dura_correct": 6,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            6,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            6,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 14,
+          "clean_correct": 14,
+          "raw_correct": 14,
+          "restored_correct": 14,
+          "dura_correct": 14,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            14,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            14,
+            0
+          ]
+        },
+        "5": {
+          "count": 18,
+          "clean_correct": 18,
+          "raw_correct": 18,
+          "restored_correct": 18,
+          "dura_correct": 18,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            18
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            18
+          ]
+        }
+      },
+      "practical_high": {
+        "0": {
+          "count": 24,
+          "clean_correct": 24,
+          "raw_correct": 24,
+          "restored_correct": 24,
+          "dura_correct": 24,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            24,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            24,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 14,
+          "clean_correct": 14,
+          "raw_correct": 13,
+          "restored_correct": 13,
+          "dura_correct": 13,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            13,
+            0,
+            0,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            13,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        "2": {
+          "count": 12,
+          "clean_correct": 12,
+          "raw_correct": 12,
+          "restored_correct": 12,
+          "dura_correct": 12,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            12,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            12,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 16,
+          "clean_correct": 16,
+          "raw_correct": 16,
+          "restored_correct": 16,
+          "dura_correct": 16,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            16,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            16,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 12,
+          "clean_correct": 12,
+          "raw_correct": 12,
+          "restored_correct": 12,
+          "dura_correct": 12,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            12,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            12,
+            0
+          ]
+        },
+        "5": {
+          "count": 19,
+          "clean_correct": 19,
+          "raw_correct": 19,
+          "restored_correct": 19,
+          "dura_correct": 19,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            19
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            19
+          ]
+        }
+      },
+      "practical_mid": {
+        "0": {
+          "count": 14,
+          "clean_correct": 14,
+          "raw_correct": 13,
+          "restored_correct": 13,
+          "dura_correct": 13,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            13,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            13,
+            1,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 17,
+          "clean_correct": 17,
+          "raw_correct": 16,
+          "restored_correct": 17,
+          "dura_correct": 17,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            16,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            17,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 17,
+          "clean_correct": 17,
+          "raw_correct": 17,
+          "restored_correct": 17,
+          "dura_correct": 17,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            17,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            17,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 16,
+          "clean_correct": 16,
+          "raw_correct": 16,
+          "restored_correct": 16,
+          "dura_correct": 15,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            16,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            16,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 18,
+          "clean_correct": 18,
+          "raw_correct": 17,
+          "restored_correct": 18,
+          "dura_correct": 18,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            18,
+            0
+          ]
+        },
+        "5": {
+          "count": 9,
+          "clean_correct": 9,
+          "raw_correct": 8,
+          "restored_correct": 9,
+          "dura_correct": 9,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            8
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            9
+          ]
+        }
+      },
+      "practical_low_suburban": {
+        "0": {
+          "count": 15,
+          "clean_correct": 15,
+          "raw_correct": 12,
+          "restored_correct": 13,
+          "dura_correct": 14,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            12,
+            1,
+            0,
+            2,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            13,
+            1,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 15,
+          "clean_correct": 15,
+          "raw_correct": 15,
+          "restored_correct": 13,
+          "dura_correct": 14,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 2,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            15,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            13,
+            0,
+            2,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 21,
+          "clean_correct": 21,
+          "raw_correct": 17,
+          "restored_correct": 20,
+          "dura_correct": 20,
+          "restored_repairs_vs_raw": 3,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            2,
+            17,
+            2,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            20,
+            0,
+            1,
+            0
+          ]
+        },
+        "3": {
+          "count": 15,
+          "clean_correct": 15,
+          "raw_correct": 12,
+          "restored_correct": 15,
+          "dura_correct": 14,
+          "restored_repairs_vs_raw": 3,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            2,
+            1,
+            0,
+            12,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            15,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 26,
+          "clean_correct": 26,
+          "raw_correct": 26,
+          "restored_correct": 26,
+          "dura_correct": 26,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            26,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            26,
+            0
+          ]
+        },
+        "5": {
+          "count": 15,
+          "clean_correct": 15,
+          "raw_correct": 15,
+          "restored_correct": 15,
+          "dura_correct": 15,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            15
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            15
+          ]
+        }
+      },
+      "practical_high_urban": {
+        "0": {
+          "count": 22,
+          "clean_correct": 21,
+          "raw_correct": 20,
+          "restored_correct": 22,
+          "dura_correct": 22,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            20,
+            0,
+            0,
+            1,
+            0,
+            1
+          ],
+          "restored_prediction_distribution": [
+            22,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 15,
+          "clean_correct": 15,
+          "raw_correct": 14,
+          "restored_correct": 14,
+          "dura_correct": 14,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            14,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            14,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 16,
+          "clean_correct": 16,
+          "raw_correct": 15,
+          "restored_correct": 16,
+          "dura_correct": 16,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            15,
+            0,
+            0,
+            1
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            16,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 23,
+          "clean_correct": 23,
+          "raw_correct": 20,
+          "restored_correct": 22,
+          "dura_correct": 23,
+          "restored_repairs_vs_raw": 3,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            0,
+            1,
+            20,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            22,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 12,
+          "clean_correct": 12,
+          "raw_correct": 12,
+          "restored_correct": 12,
+          "dura_correct": 12,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            12,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            12,
+            0
+          ]
+        },
+        "5": {
+          "count": 20,
+          "clean_correct": 20,
+          "raw_correct": 20,
+          "restored_correct": 20,
+          "dura_correct": 20,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            20
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            20
+          ]
+        }
+      },
+      "practical_mid_urban": {
+        "0": {
+          "count": 18,
+          "clean_correct": 18,
+          "raw_correct": 12,
+          "restored_correct": 17,
+          "dura_correct": 17,
+          "restored_repairs_vs_raw": 5,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            12,
+            2,
+            0,
+            2,
+            2,
+            0
+          ],
+          "restored_prediction_distribution": [
+            17,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 17,
+          "clean_correct": 17,
+          "raw_correct": 14,
+          "restored_correct": 14,
+          "dura_correct": 12,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            1,
+            0,
+            1,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            3,
+            14,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            1,
+            14,
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 18,
+          "clean_correct": 18,
+          "raw_correct": 14,
+          "restored_correct": 13,
+          "dura_correct": 17,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            4
+          ],
+          "raw_prediction_distribution": [
+            1,
+            1,
+            14,
+            0,
+            0,
+            2
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            13,
+            0,
+            1,
+            4
+          ]
+        },
+        "3": {
+          "count": 22,
+          "clean_correct": 22,
+          "raw_correct": 15,
+          "restored_correct": 21,
+          "dura_correct": 20,
+          "restored_repairs_vs_raw": 6,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            3,
+            1,
+            2,
+            15,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            21,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 14,
+          "clean_correct": 14,
+          "raw_correct": 12,
+          "restored_correct": 11,
+          "dura_correct": 13,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 2,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            1
+          ],
+          "raw_prediction_distribution": [
+            1,
+            0,
+            0,
+            1,
+            12,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            1,
+            11,
+            1
+          ]
+        },
+        "5": {
+          "count": 19,
+          "clean_correct": 19,
+          "raw_correct": 17,
+          "restored_correct": 18,
+          "dura_correct": 19,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            0,
+            1,
+            0,
+            0,
+            17
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            18
+          ]
+        }
+      },
+      "practical_low_urban": {
+        "0": {
+          "count": 13,
+          "clean_correct": 13,
+          "raw_correct": 5,
+          "restored_correct": 11,
+          "dura_correct": 12,
+          "restored_repairs_vs_raw": 6,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            5,
+            3,
+            0,
+            3,
+            1,
+            1
+          ],
+          "restored_prediction_distribution": [
+            11,
+            1,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 18,
+          "clean_correct": 18,
+          "raw_correct": 9,
+          "restored_correct": 11,
+          "dura_correct": 14,
+          "restored_repairs_vs_raw": 3,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            6,
+            1,
+            0
+          ],
+          "raw_prediction_distribution": [
+            2,
+            9,
+            3,
+            0,
+            2,
+            2
+          ],
+          "restored_prediction_distribution": [
+            0,
+            11,
+            0,
+            6,
+            1,
+            0
+          ]
+        },
+        "2": {
+          "count": 17,
+          "clean_correct": 17,
+          "raw_correct": 10,
+          "restored_correct": 11,
+          "dura_correct": 15,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            2,
+            0,
+            1,
+            0,
+            3
+          ],
+          "raw_prediction_distribution": [
+            2,
+            1,
+            10,
+            1,
+            1,
+            2
+          ],
+          "restored_prediction_distribution": [
+            0,
+            2,
+            11,
+            1,
+            0,
+            3
+          ]
+        },
+        "3": {
+          "count": 16,
+          "clean_correct": 16,
+          "raw_correct": 11,
+          "restored_correct": 15,
+          "dura_correct": 13,
+          "restored_repairs_vs_raw": 4,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            3,
+            1,
+            11,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            1,
+            0,
+            0,
+            15,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 22,
+          "clean_correct": 22,
+          "raw_correct": 8,
+          "restored_correct": 17,
+          "dura_correct": 22,
+          "restored_repairs_vs_raw": 11,
+          "restored_damages_vs_raw": 2,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            3,
+            0,
+            1
+          ],
+          "raw_prediction_distribution": [
+            8,
+            3,
+            1,
+            1,
+            8,
+            1
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            3,
+            17,
+            1
+          ]
+        },
+        "5": {
+          "count": 16,
+          "clean_correct": 16,
+          "raw_correct": 14,
+          "restored_correct": 15,
+          "dura_correct": 16,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            14
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            15
+          ]
+        }
+      },
+      "all_impaired": {
+        "0": {
+          "count": 106,
+          "clean_correct": 105,
+          "raw_correct": 86,
+          "restored_correct": 100,
+          "dura_correct": 102,
+          "restored_repairs_vs_raw": 15,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            3,
+            0,
+            3,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            86,
+            6,
+            0,
+            9,
+            3,
+            2
+          ],
+          "restored_prediction_distribution": [
+            100,
+            3,
+            0,
+            3,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 96,
+          "clean_correct": 96,
+          "raw_correct": 81,
+          "restored_correct": 82,
+          "dura_correct": 84,
+          "restored_repairs_vs_raw": 5,
+          "restored_damages_vs_raw": 4,
+          "wrong_restored_predictions": [
+            1,
+            0,
+            1,
+            10,
+            2,
+            0
+          ],
+          "raw_prediction_distribution": [
+            7,
+            81,
+            3,
+            0,
+            3,
+            2
+          ],
+          "restored_prediction_distribution": [
+            1,
+            82,
+            1,
+            10,
+            2,
+            0
+          ]
+        },
+        "2": {
+          "count": 101,
+          "clean_correct": 101,
+          "raw_correct": 85,
+          "restored_correct": 89,
+          "dura_correct": 97,
+          "restored_repairs_vs_raw": 6,
+          "restored_damages_vs_raw": 2,
+          "wrong_restored_predictions": [
+            0,
+            2,
+            0,
+            1,
+            2,
+            7
+          ],
+          "raw_prediction_distribution": [
+            3,
+            4,
+            85,
+            3,
+            1,
+            5
+          ],
+          "restored_prediction_distribution": [
+            0,
+            2,
+            89,
+            1,
+            2,
+            7
+          ]
+        },
+        "3": {
+          "count": 108,
+          "clean_correct": 108,
+          "raw_correct": 90,
+          "restored_correct": 105,
+          "dura_correct": 101,
+          "restored_repairs_vs_raw": 16,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            1,
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            7,
+            5,
+            4,
+            90,
+            2,
+            0
+          ],
+          "restored_prediction_distribution": [
+            1,
+            2,
+            0,
+            105,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 104,
+          "clean_correct": 104,
+          "raw_correct": 87,
+          "restored_correct": 96,
+          "dura_correct": 103,
+          "restored_repairs_vs_raw": 13,
+          "restored_damages_vs_raw": 4,
+          "wrong_restored_predictions": [
+            0,
+            2,
+            0,
+            4,
+            0,
+            2
+          ],
+          "raw_prediction_distribution": [
+            9,
+            3,
+            1,
+            3,
+            87,
+            1
+          ],
+          "restored_prediction_distribution": [
+            0,
+            2,
+            0,
+            4,
+            96,
+            2
+          ]
+        },
+        "5": {
+          "count": 98,
+          "clean_correct": 98,
+          "raw_correct": 93,
+          "restored_correct": 96,
+          "dura_correct": 98,
+          "restored_repairs_vs_raw": 4,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            1,
+            2,
+            1,
+            0,
+            93
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            2,
+            0,
+            0,
+            96
+          ]
+        }
+      }
+    },
+    "RX8": {
+      "clean": {
+        "0": {
+          "count": 13,
+          "clean_correct": 13,
+          "raw_correct": 13,
+          "restored_correct": 13,
+          "dura_correct": 13,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            13,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            13,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 8,
+          "clean_correct": 8,
+          "raw_correct": 8,
+          "restored_correct": 8,
+          "dura_correct": 8,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            8,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            8,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 8,
+          "clean_correct": 8,
+          "raw_correct": 8,
+          "restored_correct": 8,
+          "dura_correct": 8,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            8,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            8,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 9,
+          "clean_correct": 9,
+          "raw_correct": 9,
+          "restored_correct": 9,
+          "dura_correct": 9,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            9,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            9,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 9,
+          "clean_correct": 9,
+          "raw_correct": 9,
+          "restored_correct": 9,
+          "dura_correct": 9,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            9,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            9,
+            0
+          ]
+        },
+        "5": {
+          "count": 7,
+          "clean_correct": 7,
+          "raw_correct": 7,
+          "restored_correct": 7,
+          "dura_correct": 7,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            7
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        }
+      },
+      "practical_high": {
+        "0": {
+          "count": 5,
+          "clean_correct": 5,
+          "raw_correct": 5,
+          "restored_correct": 5,
+          "dura_correct": 5,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            5,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            5,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 10,
+          "clean_correct": 10,
+          "raw_correct": 10,
+          "restored_correct": 10,
+          "dura_correct": 10,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            10,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            10,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 9,
+          "clean_correct": 9,
+          "raw_correct": 9,
+          "restored_correct": 9,
+          "dura_correct": 9,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            9,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            9,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 9,
+          "clean_correct": 9,
+          "raw_correct": 8,
+          "restored_correct": 9,
+          "dura_correct": 9,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            1,
+            0,
+            8,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            9,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 10,
+          "clean_correct": 10,
+          "raw_correct": 10,
+          "restored_correct": 10,
+          "dura_correct": 10,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            10,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            10,
+            0
+          ]
+        },
+        "5": {
+          "count": 8,
+          "clean_correct": 8,
+          "raw_correct": 8,
+          "restored_correct": 8,
+          "dura_correct": 8,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            8
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            8
+          ]
+        }
+      },
+      "practical_mid": {
+        "0": {
+          "count": 6,
+          "clean_correct": 6,
+          "raw_correct": 4,
+          "restored_correct": 5,
+          "dura_correct": 5,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            4,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            5,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 6,
+          "clean_correct": 6,
+          "raw_correct": 6,
+          "restored_correct": 6,
+          "dura_correct": 6,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            6,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            6,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 6,
+          "clean_correct": 6,
+          "raw_correct": 6,
+          "restored_correct": 6,
+          "dura_correct": 6,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            6,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            6,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 5,
+          "clean_correct": 5,
+          "raw_correct": 3,
+          "restored_correct": 5,
+          "dura_correct": 3,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            2,
+            0,
+            3,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            5,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 4,
+          "clean_correct": 4,
+          "raw_correct": 4,
+          "restored_correct": 4,
+          "dura_correct": 4,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            4,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            4,
+            0
+          ]
+        },
+        "5": {
+          "count": 10,
+          "clean_correct": 10,
+          "raw_correct": 10,
+          "restored_correct": 10,
+          "dura_correct": 10,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            10
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            10
+          ]
+        }
+      },
+      "practical_low_suburban": {
+        "0": {
+          "count": 9,
+          "clean_correct": 9,
+          "raw_correct": 8,
+          "restored_correct": 9,
+          "dura_correct": 9,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            8,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            9,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 6,
+          "clean_correct": 6,
+          "raw_correct": 6,
+          "restored_correct": 5,
+          "dura_correct": 5,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            6,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            1,
+            5,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 7,
+          "clean_correct": 7,
+          "raw_correct": 7,
+          "restored_correct": 7,
+          "dura_correct": 7,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            7,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 12,
+          "clean_correct": 12,
+          "raw_correct": 10,
+          "restored_correct": 11,
+          "dura_correct": 11,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            2,
+            0,
+            10,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            11,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 5,
+          "clean_correct": 5,
+          "raw_correct": 5,
+          "restored_correct": 5,
+          "dura_correct": 5,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            5,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            5,
+            0
+          ]
+        },
+        "5": {
+          "count": 5,
+          "clean_correct": 5,
+          "raw_correct": 5,
+          "restored_correct": 5,
+          "dura_correct": 5,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            5
+          ]
+        }
+      },
+      "practical_high_urban": {
+        "0": {
+          "count": 11,
+          "clean_correct": 11,
+          "raw_correct": 11,
+          "restored_correct": 11,
+          "dura_correct": 11,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            11,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            11,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 8,
+          "clean_correct": 8,
+          "raw_correct": 7,
+          "restored_correct": 7,
+          "dura_correct": 8,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            7,
+            0,
+            0,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            7,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 10,
+          "clean_correct": 10,
+          "raw_correct": 10,
+          "restored_correct": 10,
+          "dura_correct": 10,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            10,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            10,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 10,
+          "clean_correct": 10,
+          "raw_correct": 9,
+          "restored_correct": 10,
+          "dura_correct": 10,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            9,
+            0,
+            1
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            10,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 8,
+          "clean_correct": 8,
+          "raw_correct": 8,
+          "restored_correct": 7,
+          "dura_correct": 8,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            8,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            0,
+            7,
+            0
+          ]
+        },
+        "5": {
+          "count": 11,
+          "clean_correct": 11,
+          "raw_correct": 9,
+          "restored_correct": 11,
+          "dura_correct": 11,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            9
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            11
+          ]
+        }
+      },
+      "practical_mid_urban": {
+        "0": {
+          "count": 7,
+          "clean_correct": 7,
+          "raw_correct": 5,
+          "restored_correct": 7,
+          "dura_correct": 7,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            5,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "restored_prediction_distribution": [
+            7,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 6,
+          "clean_correct": 6,
+          "raw_correct": 4,
+          "restored_correct": 5,
+          "dura_correct": 5,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            4,
+            0,
+            1,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            5,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 11,
+          "clean_correct": 11,
+          "raw_correct": 11,
+          "restored_correct": 11,
+          "dura_correct": 11,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            11,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            11,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 7,
+          "clean_correct": 7,
+          "raw_correct": 4,
+          "restored_correct": 7,
+          "dura_correct": 7,
+          "restored_repairs_vs_raw": 3,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            2,
+            0,
+            4,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            7,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 10,
+          "clean_correct": 10,
+          "raw_correct": 8,
+          "restored_correct": 10,
+          "dura_correct": 10,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            2,
+            8,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            10,
+            0
+          ]
+        },
+        "5": {
+          "count": 10,
+          "clean_correct": 10,
+          "raw_correct": 8,
+          "restored_correct": 10,
+          "dura_correct": 10,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            1,
+            0,
+            1,
+            8
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            10
+          ]
+        }
+      },
+      "practical_low_urban": {
+        "0": {
+          "count": 10,
+          "clean_correct": 10,
+          "raw_correct": 8,
+          "restored_correct": 9,
+          "dura_correct": 10,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            8,
+            1,
+            0,
+            0,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            9,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 12,
+          "clean_correct": 11,
+          "raw_correct": 5,
+          "restored_correct": 9,
+          "dura_correct": 7,
+          "restored_repairs_vs_raw": 4,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            1,
+            1,
+            1,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            5,
+            1,
+            2,
+            0,
+            3
+          ],
+          "restored_prediction_distribution": [
+            0,
+            9,
+            1,
+            1,
+            1,
+            0
+          ]
+        },
+        "2": {
+          "count": 6,
+          "clean_correct": 6,
+          "raw_correct": 3,
+          "restored_correct": 6,
+          "dura_correct": 6,
+          "restored_repairs_vs_raw": 3,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            0,
+            3,
+            0,
+            0,
+            2
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            6,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 7,
+          "clean_correct": 7,
+          "raw_correct": 4,
+          "restored_correct": 3,
+          "dura_correct": 6,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 2,
+          "wrong_restored_predictions": [
+            1,
+            3,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            1,
+            0,
+            4,
+            0,
+            2
+          ],
+          "restored_prediction_distribution": [
+            1,
+            3,
+            0,
+            3,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 11,
+          "clean_correct": 11,
+          "raw_correct": 6,
+          "restored_correct": 11,
+          "dura_correct": 11,
+          "restored_repairs_vs_raw": 5,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            3,
+            1,
+            1,
+            6,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            11,
+            0
+          ]
+        },
+        "5": {
+          "count": 10,
+          "clean_correct": 10,
+          "raw_correct": 8,
+          "restored_correct": 10,
+          "dura_correct": 10,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            1,
+            0,
+            0,
+            1,
+            8
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            10
+          ]
+        }
+      },
+      "all_impaired": {
+        "0": {
+          "count": 48,
+          "clean_correct": 48,
+          "raw_correct": 41,
+          "restored_correct": 46,
+          "dura_correct": 47,
+          "restored_repairs_vs_raw": 6,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            41,
+            2,
+            0,
+            1,
+            3,
+            1
+          ],
+          "restored_prediction_distribution": [
+            46,
+            0,
+            0,
+            2,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 48,
+          "clean_correct": 47,
+          "raw_correct": 38,
+          "restored_correct": 42,
+          "dura_correct": 41,
+          "restored_repairs_vs_raw": 5,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            1,
+            0,
+            1,
+            3,
+            1,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            38,
+            1,
+            3,
+            2,
+            3
+          ],
+          "restored_prediction_distribution": [
+            1,
+            42,
+            1,
+            3,
+            1,
+            0
+          ]
+        },
+        "2": {
+          "count": 49,
+          "clean_correct": 49,
+          "raw_correct": 46,
+          "restored_correct": 49,
+          "dura_correct": 49,
+          "restored_repairs_vs_raw": 3,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            0,
+            46,
+            0,
+            0,
+            2
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            49,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 50,
+          "clean_correct": 50,
+          "raw_correct": 38,
+          "restored_correct": 45,
+          "dura_correct": 46,
+          "restored_repairs_vs_raw": 10,
+          "restored_damages_vs_raw": 3,
+          "wrong_restored_predictions": [
+            1,
+            4,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            8,
+            0,
+            38,
+            0,
+            3
+          ],
+          "restored_prediction_distribution": [
+            1,
+            4,
+            0,
+            45,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 48,
+          "clean_correct": 48,
+          "raw_correct": 41,
+          "restored_correct": 47,
+          "dura_correct": 48,
+          "restored_repairs_vs_raw": 7,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            3,
+            1,
+            3,
+            41,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            0,
+            47,
+            0
+          ]
+        },
+        "5": {
+          "count": 54,
+          "clean_correct": 54,
+          "raw_correct": 48,
+          "restored_correct": 54,
+          "dura_correct": 54,
+          "restored_repairs_vs_raw": 6,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            1,
+            1,
+            0,
+            3,
+            48
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            54
+          ]
+        }
+      }
+    },
+    "all": {
+      "clean": {
+        "0": {
+          "count": 27,
+          "clean_correct": 27,
+          "raw_correct": 27,
+          "restored_correct": 27,
+          "dura_correct": 27,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            27,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            27,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 22,
+          "clean_correct": 22,
+          "raw_correct": 22,
+          "restored_correct": 22,
+          "dura_correct": 22,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            22,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            22,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 25,
+          "clean_correct": 25,
+          "raw_correct": 25,
+          "restored_correct": 25,
+          "dura_correct": 25,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            25,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            25,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 15,
+          "clean_correct": 15,
+          "raw_correct": 15,
+          "restored_correct": 15,
+          "dura_correct": 15,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            15,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            15,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 23,
+          "clean_correct": 23,
+          "raw_correct": 23,
+          "restored_correct": 23,
+          "dura_correct": 23,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            23,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            23,
+            0
+          ]
+        },
+        "5": {
+          "count": 25,
+          "clean_correct": 25,
+          "raw_correct": 25,
+          "restored_correct": 25,
+          "dura_correct": 25,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            25
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            25
+          ]
+        }
+      },
+      "practical_high": {
+        "0": {
+          "count": 29,
+          "clean_correct": 29,
+          "raw_correct": 29,
+          "restored_correct": 29,
+          "dura_correct": 29,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            29,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            29,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 24,
+          "clean_correct": 24,
+          "raw_correct": 23,
+          "restored_correct": 23,
+          "dura_correct": 23,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            23,
+            0,
+            0,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            23,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        "2": {
+          "count": 21,
+          "clean_correct": 21,
+          "raw_correct": 21,
+          "restored_correct": 21,
+          "dura_correct": 21,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            21,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            21,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 25,
+          "clean_correct": 25,
+          "raw_correct": 24,
+          "restored_correct": 25,
+          "dura_correct": 25,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            1,
+            0,
+            24,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            25,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 22,
+          "clean_correct": 22,
+          "raw_correct": 22,
+          "restored_correct": 22,
+          "dura_correct": 22,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            22,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            22,
+            0
+          ]
+        },
+        "5": {
+          "count": 27,
+          "clean_correct": 27,
+          "raw_correct": 27,
+          "restored_correct": 27,
+          "dura_correct": 27,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            27
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            27
+          ]
+        }
+      },
+      "practical_mid": {
+        "0": {
+          "count": 20,
+          "clean_correct": 20,
+          "raw_correct": 17,
+          "restored_correct": 18,
+          "dura_correct": 18,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            17,
+            1,
+            0,
+            2,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            18,
+            1,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 23,
+          "clean_correct": 23,
+          "raw_correct": 22,
+          "restored_correct": 23,
+          "dura_correct": 23,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            22,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            23,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 23,
+          "clean_correct": 23,
+          "raw_correct": 23,
+          "restored_correct": 23,
+          "dura_correct": 23,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            23,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            23,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 21,
+          "clean_correct": 21,
+          "raw_correct": 19,
+          "restored_correct": 21,
+          "dura_correct": 18,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            2,
+            0,
+            19,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            21,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 22,
+          "clean_correct": 22,
+          "raw_correct": 21,
+          "restored_correct": 22,
+          "dura_correct": 22,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            1,
+            21,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            22,
+            0
+          ]
+        },
+        "5": {
+          "count": 19,
+          "clean_correct": 19,
+          "raw_correct": 18,
+          "restored_correct": 19,
+          "dura_correct": 19,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            18
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            19
+          ]
+        }
+      },
+      "practical_low_suburban": {
+        "0": {
+          "count": 24,
+          "clean_correct": 24,
+          "raw_correct": 20,
+          "restored_correct": 22,
+          "dura_correct": 23,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            20,
+            1,
+            0,
+            2,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            22,
+            1,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 21,
+          "clean_correct": 21,
+          "raw_correct": 21,
+          "restored_correct": 18,
+          "dura_correct": 19,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 3,
+          "wrong_restored_predictions": [
+            1,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            21,
+            0,
+            0,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            1,
+            18,
+            0,
+            2,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 28,
+          "clean_correct": 28,
+          "raw_correct": 24,
+          "restored_correct": 27,
+          "dura_correct": 27,
+          "restored_repairs_vs_raw": 3,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            2,
+            24,
+            2,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            27,
+            0,
+            1,
+            0
+          ]
+        },
+        "3": {
+          "count": 27,
+          "clean_correct": 27,
+          "raw_correct": 22,
+          "restored_correct": 26,
+          "dura_correct": 25,
+          "restored_repairs_vs_raw": 5,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            2,
+            3,
+            0,
+            22,
+            0,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            26,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 31,
+          "clean_correct": 31,
+          "raw_correct": 31,
+          "restored_correct": 31,
+          "dura_correct": 31,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            31,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            31,
+            0
+          ]
+        },
+        "5": {
+          "count": 20,
+          "clean_correct": 20,
+          "raw_correct": 20,
+          "restored_correct": 20,
+          "dura_correct": 20,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            20
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            20
+          ]
+        }
+      },
+      "practical_high_urban": {
+        "0": {
+          "count": 33,
+          "clean_correct": 32,
+          "raw_correct": 31,
+          "restored_correct": 33,
+          "dura_correct": 33,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            31,
+            0,
+            0,
+            1,
+            0,
+            1
+          ],
+          "restored_prediction_distribution": [
+            33,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 23,
+          "clean_correct": 23,
+          "raw_correct": 21,
+          "restored_correct": 21,
+          "dura_correct": 22,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            21,
+            0,
+            0,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            21,
+            0,
+            2,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 26,
+          "clean_correct": 26,
+          "raw_correct": 25,
+          "restored_correct": 26,
+          "dura_correct": 26,
+          "restored_repairs_vs_raw": 1,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            25,
+            0,
+            0,
+            1
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            26,
+            0,
+            0,
+            0
+          ]
+        },
+        "3": {
+          "count": 33,
+          "clean_correct": 33,
+          "raw_correct": 29,
+          "restored_correct": 32,
+          "dura_correct": 33,
+          "restored_repairs_vs_raw": 4,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            0,
+            1,
+            29,
+            1,
+            1
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            32,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 20,
+          "clean_correct": 20,
+          "raw_correct": 20,
+          "restored_correct": 19,
+          "dura_correct": 20,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            20,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            0,
+            19,
+            0
+          ]
+        },
+        "5": {
+          "count": 31,
+          "clean_correct": 31,
+          "raw_correct": 29,
+          "restored_correct": 31,
+          "dura_correct": 31,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            29
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            31
+          ]
+        }
+      },
+      "practical_mid_urban": {
+        "0": {
+          "count": 25,
+          "clean_correct": 25,
+          "raw_correct": 17,
+          "restored_correct": 24,
+          "dura_correct": 24,
+          "restored_repairs_vs_raw": 7,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            17,
+            2,
+            0,
+            2,
+            3,
+            1
+          ],
+          "restored_prediction_distribution": [
+            24,
+            0,
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 23,
+          "clean_correct": 23,
+          "raw_correct": 18,
+          "restored_correct": 19,
+          "dura_correct": 17,
+          "restored_repairs_vs_raw": 2,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            1,
+            0,
+            1,
+            2,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            3,
+            18,
+            0,
+            1,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            1,
+            19,
+            1,
+            2,
+            0,
+            0
+          ]
+        },
+        "2": {
+          "count": 29,
+          "clean_correct": 29,
+          "raw_correct": 25,
+          "restored_correct": 24,
+          "dura_correct": 28,
+          "restored_repairs_vs_raw": 0,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            4
+          ],
+          "raw_prediction_distribution": [
+            1,
+            1,
+            25,
+            0,
+            0,
+            2
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            24,
+            0,
+            1,
+            4
+          ]
+        },
+        "3": {
+          "count": 29,
+          "clean_correct": 29,
+          "raw_correct": 19,
+          "restored_correct": 28,
+          "dura_correct": 27,
+          "restored_repairs_vs_raw": 9,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            4,
+            3,
+            2,
+            19,
+            1,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            28,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 24,
+          "clean_correct": 24,
+          "raw_correct": 20,
+          "restored_correct": 21,
+          "dura_correct": 23,
+          "restored_repairs_vs_raw": 3,
+          "restored_damages_vs_raw": 2,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            1
+          ],
+          "raw_prediction_distribution": [
+            1,
+            0,
+            0,
+            3,
+            20,
+            0
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            1,
+            21,
+            1
+          ]
+        },
+        "5": {
+          "count": 29,
+          "clean_correct": 29,
+          "raw_correct": 25,
+          "restored_correct": 28,
+          "dura_correct": 29,
+          "restored_repairs_vs_raw": 4,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            0,
+            2,
+            0,
+            1,
+            25
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            28
+          ]
+        }
+      },
+      "practical_low_urban": {
+        "0": {
+          "count": 23,
+          "clean_correct": 23,
+          "raw_correct": 13,
+          "restored_correct": 20,
+          "dura_correct": 22,
+          "restored_repairs_vs_raw": 8,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            2,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            13,
+            4,
+            0,
+            3,
+            2,
+            1
+          ],
+          "restored_prediction_distribution": [
+            20,
+            1,
+            0,
+            2,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 30,
+          "clean_correct": 29,
+          "raw_correct": 14,
+          "restored_correct": 20,
+          "dura_correct": 21,
+          "restored_repairs_vs_raw": 7,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            1,
+            7,
+            2,
+            0
+          ],
+          "raw_prediction_distribution": [
+            3,
+            14,
+            4,
+            2,
+            2,
+            5
+          ],
+          "restored_prediction_distribution": [
+            0,
+            20,
+            1,
+            7,
+            2,
+            0
+          ]
+        },
+        "2": {
+          "count": 23,
+          "clean_correct": 23,
+          "raw_correct": 13,
+          "restored_correct": 17,
+          "dura_correct": 21,
+          "restored_repairs_vs_raw": 5,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            2,
+            0,
+            1,
+            0,
+            3
+          ],
+          "raw_prediction_distribution": [
+            3,
+            1,
+            13,
+            1,
+            1,
+            4
+          ],
+          "restored_prediction_distribution": [
+            0,
+            2,
+            17,
+            1,
+            0,
+            3
+          ]
+        },
+        "3": {
+          "count": 23,
+          "clean_correct": 23,
+          "raw_correct": 15,
+          "restored_correct": 18,
+          "dura_correct": 19,
+          "restored_repairs_vs_raw": 5,
+          "restored_damages_vs_raw": 2,
+          "wrong_restored_predictions": [
+            2,
+            3,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            1,
+            4,
+            1,
+            15,
+            0,
+            2
+          ],
+          "restored_prediction_distribution": [
+            2,
+            3,
+            0,
+            18,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 33,
+          "clean_correct": 33,
+          "raw_correct": 14,
+          "restored_correct": 28,
+          "dura_correct": 33,
+          "restored_repairs_vs_raw": 16,
+          "restored_damages_vs_raw": 2,
+          "wrong_restored_predictions": [
+            0,
+            1,
+            0,
+            3,
+            0,
+            1
+          ],
+          "raw_prediction_distribution": [
+            8,
+            6,
+            2,
+            2,
+            14,
+            1
+          ],
+          "restored_prediction_distribution": [
+            0,
+            1,
+            0,
+            3,
+            28,
+            1
+          ]
+        },
+        "5": {
+          "count": 26,
+          "clean_correct": 26,
+          "raw_correct": 22,
+          "restored_correct": 25,
+          "dura_correct": 26,
+          "restored_repairs_vs_raw": 3,
+          "restored_damages_vs_raw": 0,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            0,
+            2,
+            0,
+            1,
+            1,
+            22
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            25
+          ]
+        }
+      },
+      "all_impaired": {
+        "0": {
+          "count": 154,
+          "clean_correct": 153,
+          "raw_correct": 127,
+          "restored_correct": 146,
+          "dura_correct": 149,
+          "restored_repairs_vs_raw": 21,
+          "restored_damages_vs_raw": 2,
+          "wrong_restored_predictions": [
+            0,
+            3,
+            0,
+            5,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            127,
+            8,
+            0,
+            10,
+            6,
+            3
+          ],
+          "restored_prediction_distribution": [
+            146,
+            3,
+            0,
+            5,
+            0,
+            0
+          ]
+        },
+        "1": {
+          "count": 144,
+          "clean_correct": 143,
+          "raw_correct": 119,
+          "restored_correct": 124,
+          "dura_correct": 125,
+          "restored_repairs_vs_raw": 10,
+          "restored_damages_vs_raw": 5,
+          "wrong_restored_predictions": [
+            2,
+            0,
+            2,
+            13,
+            3,
+            0
+          ],
+          "raw_prediction_distribution": [
+            8,
+            119,
+            4,
+            3,
+            5,
+            5
+          ],
+          "restored_prediction_distribution": [
+            2,
+            124,
+            2,
+            13,
+            3,
+            0
+          ]
+        },
+        "2": {
+          "count": 150,
+          "clean_correct": 150,
+          "raw_correct": 131,
+          "restored_correct": 138,
+          "dura_correct": 146,
+          "restored_repairs_vs_raw": 9,
+          "restored_damages_vs_raw": 2,
+          "wrong_restored_predictions": [
+            0,
+            2,
+            0,
+            1,
+            2,
+            7
+          ],
+          "raw_prediction_distribution": [
+            4,
+            4,
+            131,
+            3,
+            1,
+            7
+          ],
+          "restored_prediction_distribution": [
+            0,
+            2,
+            138,
+            1,
+            2,
+            7
+          ]
+        },
+        "3": {
+          "count": 158,
+          "clean_correct": 158,
+          "raw_correct": 128,
+          "restored_correct": 150,
+          "dura_correct": 147,
+          "restored_repairs_vs_raw": 26,
+          "restored_damages_vs_raw": 4,
+          "wrong_restored_predictions": [
+            2,
+            6,
+            0,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            8,
+            13,
+            4,
+            128,
+            2,
+            3
+          ],
+          "restored_prediction_distribution": [
+            2,
+            6,
+            0,
+            150,
+            0,
+            0
+          ]
+        },
+        "4": {
+          "count": 152,
+          "clean_correct": 152,
+          "raw_correct": 128,
+          "restored_correct": 143,
+          "dura_correct": 151,
+          "restored_repairs_vs_raw": 20,
+          "restored_damages_vs_raw": 5,
+          "wrong_restored_predictions": [
+            0,
+            3,
+            0,
+            4,
+            0,
+            2
+          ],
+          "raw_prediction_distribution": [
+            9,
+            6,
+            2,
+            6,
+            128,
+            1
+          ],
+          "restored_prediction_distribution": [
+            0,
+            3,
+            0,
+            4,
+            143,
+            2
+          ]
+        },
+        "5": {
+          "count": 152,
+          "clean_correct": 152,
+          "raw_correct": 141,
+          "restored_correct": 150,
+          "dura_correct": 152,
+          "restored_repairs_vs_raw": 10,
+          "restored_damages_vs_raw": 1,
+          "wrong_restored_predictions": [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          "raw_prediction_distribution": [
+            2,
+            2,
+            3,
+            1,
+            3,
+            141
+          ],
+          "restored_prediction_distribution": [
+            0,
+            0,
+            2,
+            0,
+            0,
+            150
+          ]
+        }
+      }
+    }
+  },
+  "ground": {
+    "clean": {
+      "0": {
+        "count": 28000,
+        "clean_correct": 27380,
+        "raw_correct": 27380,
+        "restored_correct": 27380,
+        "dura_correct": 27398,
+        "restored_repairs_vs_raw": 5,
+        "restored_damages_vs_raw": 5,
+        "wrong_restored_predictions": [
+          0,
+          65,
+          266,
+          190,
+          25,
+          74
+        ],
+        "raw_prediction_distribution": [
+          27380,
+          62,
+          258,
+          193,
+          31,
+          76
+        ],
+        "restored_prediction_distribution": [
+          27380,
+          65,
+          266,
+          190,
+          25,
+          74
+        ]
+      },
+      "1": {
+        "count": 28000,
+        "clean_correct": 19475,
+        "raw_correct": 19475,
+        "restored_correct": 19479,
+        "dura_correct": 19632,
+        "restored_repairs_vs_raw": 4,
+        "restored_damages_vs_raw": 0,
+        "wrong_restored_predictions": [
+          565,
+          0,
+          63,
+          7811,
+          32,
+          50
+        ],
+        "raw_prediction_distribution": [
+          566,
+          19475,
+          64,
+          7812,
+          32,
+          51
+        ],
+        "restored_prediction_distribution": [
+          565,
+          19479,
+          63,
+          7811,
+          32,
+          50
+        ]
+      },
+      "2": {
+        "count": 28000,
+        "clean_correct": 23022,
+        "raw_correct": 23022,
+        "restored_correct": 23025,
+        "dura_correct": 22985,
+        "restored_repairs_vs_raw": 28,
+        "restored_damages_vs_raw": 25,
+        "wrong_restored_predictions": [
+          611,
+          119,
+          0,
+          63,
+          71,
+          4111
+        ],
+        "raw_prediction_distribution": [
+          573,
+          117,
+          23022,
+          63,
+          81,
+          4144
+        ],
+        "restored_prediction_distribution": [
+          611,
+          119,
+          23025,
+          63,
+          71,
+          4111
+        ]
+      },
+      "3": {
+        "count": 28000,
+        "clean_correct": 20424,
+        "raw_correct": 20424,
+        "restored_correct": 20405,
+        "dura_correct": 20391,
+        "restored_repairs_vs_raw": 1,
+        "restored_damages_vs_raw": 20,
+        "wrong_restored_predictions": [
+          2398,
+          4551,
+          571,
+          0,
+          17,
+          58
+        ],
+        "raw_prediction_distribution": [
+          2408,
+          4556,
+          530,
+          20424,
+          18,
+          64
+        ],
+        "restored_prediction_distribution": [
+          2398,
+          4551,
+          571,
+          20405,
+          17,
+          58
+        ]
+      },
+      "4": {
+        "count": 28000,
+        "clean_correct": 27954,
+        "raw_correct": 27954,
+        "restored_correct": 27950,
+        "dura_correct": 27955,
+        "restored_repairs_vs_raw": 0,
+        "restored_damages_vs_raw": 4,
+        "wrong_restored_predictions": [
+          5,
+          20,
+          10,
+          11,
+          0,
+          4
+        ],
+        "raw_prediction_distribution": [
+          5,
+          13,
+          10,
+          14,
+          27954,
+          4
+        ],
+        "restored_prediction_distribution": [
+          5,
+          20,
+          10,
+          11,
+          27950,
+          4
+        ]
+      },
+      "5": {
+        "count": 28000,
+        "clean_correct": 27130,
+        "raw_correct": 27130,
+        "restored_correct": 26996,
+        "dura_correct": 27153,
+        "restored_repairs_vs_raw": 2,
+        "restored_damages_vs_raw": 136,
+        "wrong_restored_predictions": [
+          17,
+          110,
+          140,
+          21,
+          716,
+          0
+        ],
+        "raw_prediction_distribution": [
+          11,
+          20,
+          100,
+          17,
+          722,
+          27130
+        ],
+        "restored_prediction_distribution": [
+          17,
+          110,
+          140,
+          21,
+          716,
+          26996
+        ]
+      }
+    },
+    "practical_high": {
+      "0": {
+        "count": 28000,
+        "clean_correct": 27380,
+        "raw_correct": 24087,
+        "restored_correct": 26725,
+        "dura_correct": 26906,
+        "restored_repairs_vs_raw": 2830,
+        "restored_damages_vs_raw": 192,
+        "wrong_restored_predictions": [
+          0,
+          104,
+          417,
+          687,
+          28,
+          39
+        ],
+        "raw_prediction_distribution": [
+          24087,
+          409,
+          991,
+          2266,
+          215,
+          32
+        ],
+        "restored_prediction_distribution": [
+          26725,
+          104,
+          417,
+          687,
+          28,
+          39
+        ]
+      },
+      "1": {
+        "count": 28000,
+        "clean_correct": 19475,
+        "raw_correct": 16367,
+        "restored_correct": 17853,
+        "dura_correct": 16333,
+        "restored_repairs_vs_raw": 4630,
+        "restored_damages_vs_raw": 3144,
+        "wrong_restored_predictions": [
+          1057,
+          0,
+          30,
+          8987,
+          43,
+          30
+        ],
+        "raw_prediction_distribution": [
+          1166,
+          16367,
+          79,
+          10139,
+          216,
+          33
+        ],
+        "restored_prediction_distribution": [
+          1057,
+          17853,
+          30,
+          8987,
+          43,
+          30
+        ]
+      },
+      "2": {
+        "count": 28000,
+        "clean_correct": 23022,
+        "raw_correct": 21179,
+        "restored_correct": 24601,
+        "dura_correct": 24123,
+        "restored_repairs_vs_raw": 4101,
+        "restored_damages_vs_raw": 679,
+        "wrong_restored_predictions": [
+          452,
+          218,
+          0,
+          109,
+          222,
+          2398
+        ],
+        "raw_prediction_distribution": [
+          273,
+          671,
+          21179,
+          84,
+          915,
+          4878
+        ],
+        "restored_prediction_distribution": [
+          452,
+          218,
+          24601,
+          109,
+          222,
+          2398
+        ]
+      },
+      "3": {
+        "count": 28000,
+        "clean_correct": 20424,
+        "raw_correct": 20056,
+        "restored_correct": 19515,
+        "dura_correct": 18862,
+        "restored_repairs_vs_raw": 2162,
+        "restored_damages_vs_raw": 2703,
+        "wrong_restored_predictions": [
+          3080,
+          4785,
+          545,
+          0,
+          26,
+          49
+        ],
+        "raw_prediction_distribution": [
+          3101,
+          4293,
+          422,
+          20056,
+          89,
+          39
+        ],
+        "restored_prediction_distribution": [
+          3080,
+          4785,
+          545,
+          19515,
+          26,
+          49
+        ]
+      },
+      "4": {
+        "count": 28000,
+        "clean_correct": 27954,
+        "raw_correct": 27537,
+        "restored_correct": 27934,
+        "dura_correct": 27959,
+        "restored_repairs_vs_raw": 400,
+        "restored_damages_vs_raw": 3,
+        "wrong_restored_predictions": [
+          10,
+          13,
+          10,
+          26,
+          0,
+          7
+        ],
+        "raw_prediction_distribution": [
+          90,
+          186,
+          33,
+          140,
+          27537,
+          14
+        ],
+        "restored_prediction_distribution": [
+          10,
+          13,
+          10,
+          26,
+          27934,
+          7
+        ]
+      },
+      "5": {
+        "count": 28000,
+        "clean_correct": 27130,
+        "raw_correct": 26208,
+        "restored_correct": 26590,
+        "dura_correct": 27514,
+        "restored_repairs_vs_raw": 970,
+        "restored_damages_vs_raw": 588,
+        "wrong_restored_predictions": [
+          19,
+          25,
+          154,
+          17,
+          1195,
+          0
+        ],
+        "raw_prediction_distribution": [
+          25,
+          34,
+          58,
+          12,
+          1663,
+          26208
+        ],
+        "restored_prediction_distribution": [
+          19,
+          25,
+          154,
+          17,
+          1195,
+          26590
+        ]
+      }
+    },
+    "practical_mid": {
+      "0": {
+        "count": 28000,
+        "clean_correct": 27380,
+        "raw_correct": 23386,
+        "restored_correct": 26379,
+        "dura_correct": 26662,
+        "restored_repairs_vs_raw": 3316,
+        "restored_damages_vs_raw": 323,
+        "wrong_restored_predictions": [
+          0,
+          143,
+          389,
+          1027,
+          26,
+          36
+        ],
+        "raw_prediction_distribution": [
+          23386,
+          663,
+          1062,
+          2458,
+          356,
+          75
+        ],
+        "restored_prediction_distribution": [
+          26379,
+          143,
+          389,
+          1027,
+          26,
+          36
+        ]
+      },
+      "1": {
+        "count": 28000,
+        "clean_correct": 19475,
+        "raw_correct": 16128,
+        "restored_correct": 17321,
+        "dura_correct": 16224,
+        "restored_repairs_vs_raw": 4475,
+        "restored_damages_vs_raw": 3282,
+        "wrong_restored_predictions": [
+          1230,
+          0,
+          53,
+          9321,
+          57,
+          18
+        ],
+        "raw_prediction_distribution": [
+          1840,
+          16128,
+          165,
+          9395,
+          418,
+          54
+        ],
+        "restored_prediction_distribution": [
+          1230,
+          17321,
+          53,
+          9321,
+          57,
+          18
+        ]
+      },
+      "2": {
+        "count": 28000,
+        "clean_correct": 23022,
+        "raw_correct": 20439,
+        "restored_correct": 23917,
+        "dura_correct": 23870,
+        "restored_repairs_vs_raw": 4435,
+        "restored_damages_vs_raw": 957,
+        "wrong_restored_predictions": [
+          580,
+          412,
+          0,
+          327,
+          322,
+          2442
+        ],
+        "raw_prediction_distribution": [
+          526,
+          899,
+          20439,
+          160,
+          1028,
+          4948
+        ],
+        "restored_prediction_distribution": [
+          580,
+          412,
+          23917,
+          327,
+          322,
+          2442
+        ]
+      },
+      "3": {
+        "count": 28000,
+        "clean_correct": 20424,
+        "raw_correct": 18702,
+        "restored_correct": 19133,
+        "dura_correct": 18044,
+        "restored_repairs_vs_raw": 3033,
+        "restored_damages_vs_raw": 2602,
+        "wrong_restored_predictions": [
+          3161,
+          5046,
+          576,
+          0,
+          40,
+          44
+        ],
+        "raw_prediction_distribution": [
+          3784,
+          4636,
+          521,
+          18702,
+          275,
+          82
+        ],
+        "restored_prediction_distribution": [
+          3161,
+          5046,
+          576,
+          19133,
+          40,
+          44
+        ]
+      },
+      "4": {
+        "count": 28000,
+        "clean_correct": 27954,
+        "raw_correct": 26559,
+        "restored_correct": 27819,
+        "dura_correct": 27931,
+        "restored_repairs_vs_raw": 1293,
+        "restored_damages_vs_raw": 33,
+        "wrong_restored_predictions": [
+          11,
+          61,
+          17,
+          84,
+          0,
+          8
+        ],
+        "raw_prediction_distribution": [
+          305,
+          520,
+          145,
+          393,
+          26559,
+          78
+        ],
+        "restored_prediction_distribution": [
+          11,
+          61,
+          17,
+          84,
+          27819,
+          8
+        ]
+      },
+      "5": {
+        "count": 28000,
+        "clean_correct": 27130,
+        "raw_correct": 26007,
+        "restored_correct": 25998,
+        "dura_correct": 26736,
+        "restored_repairs_vs_raw": 1045,
+        "restored_damages_vs_raw": 1054,
+        "wrong_restored_predictions": [
+          23,
+          92,
+          370,
+          30,
+          1487,
+          0
+        ],
+        "raw_prediction_distribution": [
+          89,
+          120,
+          90,
+          23,
+          1671,
+          26007
+        ],
+        "restored_prediction_distribution": [
+          23,
+          92,
+          370,
+          30,
+          1487,
+          25998
+        ]
+      }
+    },
+    "practical_low_suburban": {
+      "0": {
+        "count": 28000,
+        "clean_correct": 27380,
+        "raw_correct": 22772,
+        "restored_correct": 25880,
+        "dura_correct": 26113,
+        "restored_repairs_vs_raw": 3590,
+        "restored_damages_vs_raw": 482,
+        "wrong_restored_predictions": [
+          0,
+          281,
+          375,
+          1404,
+          28,
+          32
+        ],
+        "raw_prediction_distribution": [
+          22772,
+          977,
+          1132,
+          2457,
+          521,
+          141
+        ],
+        "restored_prediction_distribution": [
+          25880,
+          281,
+          375,
+          1404,
+          28,
+          32
+        ]
+      },
+      "1": {
+        "count": 28000,
+        "clean_correct": 19475,
+        "raw_correct": 15952,
+        "restored_correct": 16419,
+        "dura_correct": 16041,
+        "restored_repairs_vs_raw": 4266,
+        "restored_damages_vs_raw": 3799,
+        "wrong_restored_predictions": [
+          1369,
+          0,
+          76,
+          10027,
+          81,
+          28
+        ],
+        "raw_prediction_distribution": [
+          2364,
+          15952,
+          277,
+          8718,
+          578,
+          111
+        ],
+        "restored_prediction_distribution": [
+          1369,
+          16419,
+          76,
+          10027,
+          81,
+          28
+        ]
+      },
+      "2": {
+        "count": 28000,
+        "clean_correct": 23022,
+        "raw_correct": 19684,
+        "restored_correct": 23158,
+        "dura_correct": 23553,
+        "restored_repairs_vs_raw": 4760,
+        "restored_damages_vs_raw": 1286,
+        "wrong_restored_predictions": [
+          758,
+          683,
+          0,
+          539,
+          428,
+          2434
+        ],
+        "raw_prediction_distribution": [
+          776,
+          1184,
+          19684,
+          256,
+          1106,
+          4994
+        ],
+        "restored_prediction_distribution": [
+          758,
+          683,
+          23158,
+          539,
+          428,
+          2434
+        ]
+      },
+      "3": {
+        "count": 28000,
+        "clean_correct": 20424,
+        "raw_correct": 17290,
+        "restored_correct": 18464,
+        "dura_correct": 17144,
+        "restored_repairs_vs_raw": 3862,
+        "restored_damages_vs_raw": 2688,
+        "wrong_restored_predictions": [
+          3349,
+          5416,
+          646,
+          0,
+          80,
+          45
+        ],
+        "raw_prediction_distribution": [
+          4320,
+          5109,
+          665,
+          17290,
+          464,
+          152
+        ],
+        "restored_prediction_distribution": [
+          3349,
+          5416,
+          646,
+          18464,
+          80,
+          45
+        ]
+      },
+      "4": {
+        "count": 28000,
+        "clean_correct": 27954,
+        "raw_correct": 25727,
+        "restored_correct": 27594,
+        "dura_correct": 27826,
+        "restored_repairs_vs_raw": 1937,
+        "restored_damages_vs_raw": 70,
+        "wrong_restored_predictions": [
+          9,
+          167,
+          42,
+          177,
+          0,
+          11
+        ],
+        "raw_prediction_distribution": [
+          470,
+          811,
+          244,
+          603,
+          25727,
+          145
+        ],
+        "restored_prediction_distribution": [
+          9,
+          167,
+          42,
+          177,
+          27594,
+          11
+        ]
+      },
+      "5": {
+        "count": 28000,
+        "clean_correct": 27130,
+        "raw_correct": 25826,
+        "restored_correct": 25359,
+        "dura_correct": 25944,
+        "restored_repairs_vs_raw": 1092,
+        "restored_damages_vs_raw": 1559,
+        "wrong_restored_predictions": [
+          41,
+          173,
+          645,
+          64,
+          1718,
+          0
+        ],
+        "raw_prediction_distribution": [
+          136,
+          192,
+          144,
+          43,
+          1659,
+          25826
+        ],
+        "restored_prediction_distribution": [
+          41,
+          173,
+          645,
+          64,
+          1718,
+          25359
+        ]
+      }
+    },
+    "practical_high_urban": {
+      "0": {
+        "count": 28000,
+        "clean_correct": 27380,
+        "raw_correct": 22829,
+        "restored_correct": 26076,
+        "dura_correct": 26592,
+        "restored_repairs_vs_raw": 3653,
+        "restored_damages_vs_raw": 406,
+        "wrong_restored_predictions": [
+          0,
+          162,
+          394,
+          1310,
+          28,
+          30
+        ],
+        "raw_prediction_distribution": [
+          22829,
+          868,
+          1086,
+          2545,
+          593,
+          79
+        ],
+        "restored_prediction_distribution": [
+          26076,
+          162,
+          394,
+          1310,
+          28,
+          30
+        ]
+      },
+      "1": {
+        "count": 28000,
+        "clean_correct": 19475,
+        "raw_correct": 15808,
+        "restored_correct": 17090,
+        "dura_correct": 15991,
+        "restored_repairs_vs_raw": 4675,
+        "restored_damages_vs_raw": 3393,
+        "wrong_restored_predictions": [
+          1162,
+          0,
+          58,
+          9610,
+          56,
+          24
+        ],
+        "raw_prediction_distribution": [
+          1624,
+          15808,
+          183,
+          9790,
+          526,
+          69
+        ],
+        "restored_prediction_distribution": [
+          1162,
+          17090,
+          58,
+          9610,
+          56,
+          24
+        ]
+      },
+      "2": {
+        "count": 28000,
+        "clean_correct": 23022,
+        "raw_correct": 20156,
+        "restored_correct": 23977,
+        "dura_correct": 23778,
+        "restored_repairs_vs_raw": 4683,
+        "restored_damages_vs_raw": 862,
+        "wrong_restored_predictions": [
+          527,
+          505,
+          0,
+          353,
+          294,
+          2344
+        ],
+        "raw_prediction_distribution": [
+          651,
+          1018,
+          20156,
+          217,
+          1198,
+          4760
+        ],
+        "restored_prediction_distribution": [
+          527,
+          505,
+          23977,
+          353,
+          294,
+          2344
+        ]
+      },
+      "3": {
+        "count": 28000,
+        "clean_correct": 20424,
+        "raw_correct": 18766,
+        "restored_correct": 19233,
+        "dura_correct": 18673,
+        "restored_repairs_vs_raw": 3034,
+        "restored_damages_vs_raw": 2567,
+        "wrong_restored_predictions": [
+          3138,
+          4969,
+          576,
+          0,
+          37,
+          47
+        ],
+        "raw_prediction_distribution": [
+          3523,
+          4557,
+          580,
+          18766,
+          474,
+          100
+        ],
+        "restored_prediction_distribution": [
+          3138,
+          4969,
+          576,
+          19233,
+          37,
+          47
+        ]
+      },
+      "4": {
+        "count": 28000,
+        "clean_correct": 27954,
+        "raw_correct": 25945,
+        "restored_correct": 27742,
+        "dura_correct": 27935,
+        "restored_repairs_vs_raw": 1844,
+        "restored_damages_vs_raw": 47,
+        "wrong_restored_predictions": [
+          11,
+          80,
+          24,
+          135,
+          0,
+          8
+        ],
+        "raw_prediction_distribution": [
+          566,
+          691,
+          207,
+          498,
+          25945,
+          93
+        ],
+        "restored_prediction_distribution": [
+          11,
+          80,
+          24,
+          135,
+          27742,
+          8
+        ]
+      },
+      "5": {
+        "count": 28000,
+        "clean_correct": 27130,
+        "raw_correct": 25940,
+        "restored_correct": 25868,
+        "dura_correct": 26554,
+        "restored_repairs_vs_raw": 1070,
+        "restored_damages_vs_raw": 1142,
+        "wrong_restored_predictions": [
+          29,
+          114,
+          369,
+          34,
+          1586,
+          0
+        ],
+        "raw_prediction_distribution": [
+          109,
+          144,
+          123,
+          17,
+          1667,
+          25940
+        ],
+        "restored_prediction_distribution": [
+          29,
+          114,
+          369,
+          34,
+          1586,
+          25868
+        ]
+      }
+    },
+    "practical_mid_urban": {
+      "0": {
+        "count": 28000,
+        "clean_correct": 27380,
+        "raw_correct": 18293,
+        "restored_correct": 22993,
+        "dura_correct": 24470,
+        "restored_repairs_vs_raw": 5981,
+        "restored_damages_vs_raw": 1281,
+        "wrong_restored_predictions": [
+          0,
+          785,
+          366,
+          3781,
+          40,
+          35
+        ],
+        "raw_prediction_distribution": [
+          18293,
+          2609,
+          1766,
+          3046,
+          1813,
+          473
+        ],
+        "restored_prediction_distribution": [
+          22993,
+          785,
+          366,
+          3781,
+          40,
+          35
+        ]
+      },
+      "1": {
+        "count": 28000,
+        "clean_correct": 19475,
+        "raw_correct": 13399,
+        "restored_correct": 14019,
+        "dura_correct": 13818,
+        "restored_repairs_vs_raw": 4759,
+        "restored_damages_vs_raw": 4139,
+        "wrong_restored_predictions": [
+          1871,
+          0,
+          179,
+          11705,
+          198,
+          28
+        ],
+        "raw_prediction_distribution": [
+          3645,
+          13399,
+          932,
+          7744,
+          1890,
+          390
+        ],
+        "restored_prediction_distribution": [
+          1871,
+          14019,
+          179,
+          11705,
+          198,
+          28
+        ]
+      },
+      "2": {
+        "count": 28000,
+        "clean_correct": 23022,
+        "raw_correct": 15899,
+        "restored_correct": 21066,
+        "dura_correct": 21788,
+        "restored_repairs_vs_raw": 6774,
+        "restored_damages_vs_raw": 1607,
+        "wrong_restored_predictions": [
+          815,
+          1801,
+          0,
+          1607,
+          624,
+          2087
+        ],
+        "raw_prediction_distribution": [
+          2004,
+          2411,
+          15899,
+          776,
+          1936,
+          4974
+        ],
+        "restored_prediction_distribution": [
+          815,
+          1801,
+          21066,
+          1607,
+          624,
+          2087
+        ]
+      },
+      "3": {
+        "count": 28000,
+        "clean_correct": 20424,
+        "raw_correct": 13712,
+        "restored_correct": 17789,
+        "dura_correct": 17182,
+        "restored_repairs_vs_raw": 6395,
+        "restored_damages_vs_raw": 2318,
+        "wrong_restored_predictions": [
+          3555,
+          5818,
+          619,
+          0,
+          173,
+          46
+        ],
+        "raw_prediction_distribution": [
+          4994,
+          5540,
+          1481,
+          13712,
+          1771,
+          502
+        ],
+        "restored_prediction_distribution": [
+          3555,
+          5818,
+          619,
+          17789,
+          173,
+          46
+        ]
+      },
+      "4": {
+        "count": 28000,
+        "clean_correct": 27954,
+        "raw_correct": 19707,
+        "restored_correct": 26495,
+        "dura_correct": 27565,
+        "restored_repairs_vs_raw": 7104,
+        "restored_damages_vs_raw": 316,
+        "wrong_restored_predictions": [
+          14,
+          584,
+          131,
+          767,
+          0,
+          9
+        ],
+        "raw_prediction_distribution": [
+          2427,
+          2530,
+          1067,
+          1658,
+          19707,
+          611
+        ],
+        "restored_prediction_distribution": [
+          14,
+          584,
+          131,
+          767,
+          26495,
+          9
+        ]
+      },
+      "5": {
+        "count": 28000,
+        "clean_correct": 27130,
+        "raw_correct": 24487,
+        "restored_correct": 22279,
+        "dura_correct": 22363,
+        "restored_repairs_vs_raw": 1574,
+        "restored_damages_vs_raw": 3782,
+        "wrong_restored_predictions": [
+          75,
+          676,
+          1672,
+          138,
+          3160,
+          0
+        ],
+        "raw_prediction_distribution": [
+          464,
+          708,
+          403,
+          143,
+          1795,
+          24487
+        ],
+        "restored_prediction_distribution": [
+          75,
+          676,
+          1672,
+          138,
+          3160,
+          22279
+        ]
+      }
+    },
+    "practical_low_urban": {
+      "0": {
+        "count": 28000,
+        "clean_correct": 27380,
+        "raw_correct": 14760,
+        "restored_correct": 20441,
+        "dura_correct": 22175,
+        "restored_repairs_vs_raw": 7476,
+        "restored_damages_vs_raw": 1795,
+        "wrong_restored_predictions": [
+          0,
+          1469,
+          453,
+          5546,
+          60,
+          31
+        ],
+        "raw_prediction_distribution": [
+          14760,
+          3910,
+          2492,
+          3333,
+          2450,
+          1055
+        ],
+        "restored_prediction_distribution": [
+          20441,
+          1469,
+          453,
+          5546,
+          60,
+          31
+        ]
+      },
+      "1": {
+        "count": 28000,
+        "clean_correct": 19475,
+        "raw_correct": 11437,
+        "restored_correct": 11922,
+        "dura_correct": 11903,
+        "restored_repairs_vs_raw": 5210,
+        "restored_damages_vs_raw": 4725,
+        "wrong_restored_predictions": [
+          2575,
+          0,
+          385,
+          12662,
+          424,
+          32
+        ],
+        "raw_prediction_distribution": [
+          4716,
+          11437,
+          1837,
+          6442,
+          2620,
+          948
+        ],
+        "restored_prediction_distribution": [
+          2575,
+          11922,
+          385,
+          12662,
+          424,
+          32
+        ]
+      },
+      "2": {
+        "count": 28000,
+        "clean_correct": 23022,
+        "raw_correct": 12746,
+        "restored_correct": 18356,
+        "dura_correct": 19834,
+        "restored_repairs_vs_raw": 7769,
+        "restored_damages_vs_raw": 2159,
+        "wrong_restored_predictions": [
+          1017,
+          2949,
+          0,
+          3026,
+          912,
+          1740
+        ],
+        "raw_prediction_distribution": [
+          2986,
+          3394,
+          12746,
+          1230,
+          2368,
+          5276
+        ],
+        "restored_prediction_distribution": [
+          1017,
+          2949,
+          18356,
+          3026,
+          912,
+          1740
+        ]
+      },
+      "3": {
+        "count": 28000,
+        "clean_correct": 20424,
+        "raw_correct": 9994,
+        "restored_correct": 16222,
+        "dura_correct": 16259,
+        "restored_repairs_vs_raw": 8311,
+        "restored_damages_vs_raw": 2083,
+        "wrong_restored_predictions": [
+          4032,
+          6468,
+          928,
+          0,
+          304,
+          46
+        ],
+        "raw_prediction_distribution": [
+          5572,
+          6443,
+          2380,
+          9994,
+          2534,
+          1077
+        ],
+        "restored_prediction_distribution": [
+          4032,
+          6468,
+          928,
+          16222,
+          304,
+          46
+        ]
+      },
+      "4": {
+        "count": 28000,
+        "clean_correct": 27954,
+        "raw_correct": 15332,
+        "restored_correct": 24687,
+        "dura_correct": 26699,
+        "restored_repairs_vs_raw": 9959,
+        "restored_damages_vs_raw": 604,
+        "wrong_restored_predictions": [
+          15,
+          1485,
+          341,
+          1453,
+          0,
+          19
+        ],
+        "raw_prediction_distribution": [
+          3463,
+          3679,
+          1990,
+          2306,
+          15332,
+          1230
+        ],
+        "restored_prediction_distribution": [
+          15,
+          1485,
+          341,
+          1453,
+          24687,
+          19
+        ]
+      },
+      "5": {
+        "count": 28000,
+        "clean_correct": 27130,
+        "raw_correct": 22427,
+        "restored_correct": 18739,
+        "dura_correct": 18716,
+        "restored_repairs_vs_raw": 2228,
+        "restored_damages_vs_raw": 5916,
+        "wrong_restored_predictions": [
+          172,
+          1229,
+          3458,
+          399,
+          4003,
+          0
+        ],
+        "raw_prediction_distribution": [
+          1056,
+          1392,
+          838,
+          346,
+          1941,
+          22427
+        ],
+        "restored_prediction_distribution": [
+          172,
+          1229,
+          3458,
+          399,
+          4003,
+          18739
+        ]
+      }
+    }
+  },
+  "caveat": "Post-hoc analysis of repeatedly observed development ground test and explored source records. No target-based model fitting and no blind or real-satellite claim."
+}
