@@ -27,3 +27,7 @@ r01 source-only smoke failed before target predictions due missing frozen_source
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 启动读回
+
+2026-11-02：源代码 commit 411ffe929db5f5527e81748cb9a104c730f83bbf。独立 P0/P1 审查及资源并发修复的定向复核通过；23 项本地针对性测试通过。r01 的配置缺键已修复且保留失败产物。r02 发布包传输校验、远端编译通过；七种方法各取第一个实际源 checkpoint 的 source-only no-query smoke PASS，未读目标或 query。controller 1615082；独立读回 16 个 worker 分布在 8 张 GPU，首个 worker 的预测文件增长。13524 任务、252252 预测行；全部冻结后才独立评分。当前无完成的第二组指标，不宣称全部组合完成。ISSL 保持停止，CSIL 作者版本 N/A；外部 CIL 不接 DURA。
