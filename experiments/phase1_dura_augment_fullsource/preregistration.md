@@ -1,0 +1,7 @@
+# Fixed context and augmented-source DURA model: expanded source replay
+
+Replay the already-frozen ordinary DURA context and source-channel-augmented checkpoints on the established 11,761 source-only holdout records. Both use the same architecture and source fit IDs but differ in source augmentation and source objective, so differences cannot be attributed solely to the augmentation. Compare both to the frozen DURA prediction. This is a source diagnostic, not target training, validation-set selection or model adaptation.
+
+Use the original epoch-19 source view as is, without additional augmentation. Before any truth access, verify source cohort and fit disjointness, exact frozen checkpoint identities, exact reference raw/DURA/gate decisions and all 672 already-fixed pilot predictions for both models. First perform a 64-record actual source smoke. Freeze all 11,761 predictions with a SHA-256 manifest before connecting the 1,047 legitimate L_s identities. Separately report high-confidence clean-F pseudo targets, which are not identity truth. Independently recount all 16 groups and 96 comparisons by sets.
+
+Read no U_s identity truth, source V, ground records or ground feedback. Source cohort, models and reader have been explored or exposed during development and all source channels are simulated; this is neither independent blind evidence nor a real satellite test. Do not change or stop either registered ground experiment based on this result.
