@@ -1,0 +1,140 @@
+{
+  "status": "PASS",
+  "scope": "Independent recomputation from 21 receiver/view cells at each gate; source F pseudo targets only.",
+  "results": {
+    "0.8": {
+      "n": 6606,
+      "parent": 6214,
+      "candidate": 6222,
+      "dura": 6326,
+      "parent_net": 8,
+      "dura_net": -104,
+      "rules": {
+        "parent": {
+          "classification_violations": [],
+          "clean_iq_violations": [],
+          "impaired_iq_violations": []
+        },
+        "baseline": {
+          "classification_violations": [
+            "1:4:practical_mid",
+            "1:4:practical_low_suburban",
+            "1:4:practical_mid_urban",
+            "1:4:practical_low_urban"
+          ],
+          "clean_iq_violations": [],
+          "impaired_iq_violations": [
+            "1:4:practical_high",
+            "1:4:practical_mid",
+            "1:4:practical_low_suburban",
+            "1:4:practical_high_urban",
+            "1:4:practical_mid_urban",
+            "1:4:practical_low_urban"
+          ]
+        }
+      },
+      "low_rx46": [
+        {
+          "count": 582,
+          "valid_count": 566,
+          "active": 582,
+          "baseline_correct": 496,
+          "parent_correct": 429,
+          "candidate_correct": 429,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.03470341116189957,
+          "candidate_iq": 0.03463400900363922
+        },
+        {
+          "count": 570,
+          "valid_count": 564,
+          "active": 570,
+          "baseline_correct": 488,
+          "parent_correct": 497,
+          "candidate_correct": 496,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.04055128991603851,
+          "candidate_iq": 0.039522841572761536
+        }
+      ],
+      "low_rx8": {
+        "count": 531,
+        "valid_count": 512,
+        "active": 531,
+        "baseline_correct": 462,
+        "parent_correct": 462,
+        "candidate_correct": 461,
+        "baseline_iq": 0.07721950113773346,
+        "parent_iq": 0.07385145872831345,
+        "candidate_iq": 0.07120666652917862
+      }
+    },
+    "0.99": {
+      "n": 6606,
+      "parent": 6215,
+      "candidate": 6223,
+      "dura": 6326,
+      "parent_net": 8,
+      "dura_net": -103,
+      "rules": {
+        "parent": {
+          "classification_violations": [],
+          "clean_iq_violations": [],
+          "impaired_iq_violations": []
+        },
+        "baseline": {
+          "classification_violations": [
+            "1:4:practical_mid",
+            "1:4:practical_low_suburban",
+            "1:4:practical_mid_urban",
+            "1:4:practical_low_urban"
+          ],
+          "clean_iq_violations": [],
+          "impaired_iq_violations": [
+            "1:4:practical_high",
+            "1:4:practical_mid",
+            "1:4:practical_low_suburban",
+            "1:4:practical_high_urban",
+            "1:4:practical_mid_urban",
+            "1:4:practical_low_urban"
+          ]
+        }
+      },
+      "low_rx46": [
+        {
+          "count": 582,
+          "valid_count": 566,
+          "active": 579,
+          "baseline_correct": 496,
+          "parent_correct": 430,
+          "candidate_correct": 430,
+          "baseline_iq": 0.020665397867560387,
+          "parent_iq": 0.03678331896662712,
+          "candidate_iq": 0.03671623021364212
+        },
+        {
+          "count": 570,
+          "valid_count": 564,
+          "active": 568,
+          "baseline_correct": 488,
+          "parent_correct": 497,
+          "candidate_correct": 496,
+          "baseline_iq": 0.035013314336538315,
+          "parent_iq": 0.04055209085345268,
+          "candidate_iq": 0.039524853229522705
+        }
+      ],
+      "low_rx8": {
+        "count": 531,
+        "valid_count": 512,
+        "active": 525,
+        "baseline_correct": 462,
+        "parent_correct": 461,
+        "candidate_correct": 460,
+        "baseline_iq": 0.07721950113773346,
+        "parent_iq": 0.07635660469532013,
+        "candidate_iq": 0.07375045120716095
+      }
+    }
+  }
+}
