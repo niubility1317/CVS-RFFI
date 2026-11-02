@@ -1,0 +1,9 @@
+# DURA-anchored axial time-frequency token recovery
+
+Candidate: independently initialized continuous complex IQ correction around frozen DURA. Each single received 256-sample window and its DURA output are normalized by received power and global phase; 16 contiguous time blocks receive 16-point complex FFTs. Axial frequency attention within each block and temporal attention across corresponding frequency bins communicate long-range evidence. A learned complex residual spectrum is inverse transformed and added to DURA; zero initialized head initially returns DURA exactly. Fixed block boundaries are an inductive bias and may cause artifacts. The model processes one record at a time, without a clean reference, labels or target feedback during inference.
+
+Training: fixed 8192 source fit IDs, epochs 21/22/23, five passes, aligned paired IQ and frozen Tri-SIG-TIME SSL guidance, the same soft DURA-relative protection objective and frozen blind gate as ordinary context. G never reads TX identities, U_s truth, V, ground data or ground feedback; F is frozen. The architectural differences preclude a clean causal claim about any one layer. CPU inference cost and latency are not established.
+
+Run a 64-ID real-source training smoke then freeze the final checkpoint and all 672 source predictions before source identity scoring. Regardless of source metrics, run fixed source replay and all seven Phase1 Main views of 168000 physical records, then pretruth validation, truth-last scoring and independent 119-group audit. Technical failures may stop a run. No observed ground labels may change any previously registered experiment.
+
+Source: 20261103-phase1-dura-spectral-token-source-s2026092701-r01. Ground: 20261103-phase1-dura-spectral-token-ground-test-s2026092701-r01. All are previously explored simulated development records, not a blind test or real satellite validation.
