@@ -1,0 +1,141 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-independent-iq-prior-s2026092701-r01",
+  "group_id": "phase1-independent-iq-prior",
+  "display_name": "Phase1 independent clean IQ denoising prior",
+  "description": "Train from scratch a clean-signal denoising prior using source IQ and frozen Tri-SIG-TIME features; no DURA architecture, weights or teacher.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "attention",
+    "waveform",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "aad511295e734e616770609ab96c2ff5ab008aa7",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU0, source-only training, CPU 2 threads, TF32 disabled",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Clean source IQ plus synthetic Gaussian perturbation; network conditioned on noise level",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "No TX source labels or U_s truth; only clean source IQ and frozen F soft outputs",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "RX4/6 source validation and RX8 source holdout excluded from training; later fixed restoration validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Clean source L_s/U_s IQ, synthetic Gaussian noise levels .03/.08/.16/.32"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "L_s/U_s clean IQ and frozen F soft outputs only; no TX labels, U_s truth, V or test.",
+    "external_method_exception": null,
+    "claim_scope": "Prior training only, not a full restoration result or blind ground performance."
+  },
+  "checkpoint": {
+    "initialization": "Fresh zero-residual denoiser; frozen Tri-SIG-TIME SSL; no DURA.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source"
+    ],
+    "contract_check_ref": "Source L_s/U_s training physical IDs, fixed F, no DURA or other restoration checkpoint.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "8192 randomly sampled source fit IDs disjoint from original prior IDs and source validation/holdout, 8 fixed epochs, final checkpoint."
+  },
+  "execution": {
+    "host": "N607 GPU0",
+    "launch_owner": "Codex source direct mixture pilot owner",
+    "gpu_policy": "GPU0 after idle check; real source smoke with 32 L_s and 32 U_s; TF32 off",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-iq-prior-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-independent-iq-prior-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-independent-iq-prior-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-independent-iq-prior-s2026092701-r01-release/experiments/phase1_prior_pnp/train_signal_prior.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-iq-prior-s2026092701-r01 --commit aad511295e734e616770609ab96c2ff5ab008aa7 --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "checkpoint.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source prior training loss",
+      "L_s/U_s IQ exposure counts"
+    ],
+    "dimensions": [
+      "fixed source fit only; no TX label or validation scoring"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_prior_pnp/train_signal_prior.py",
+    "scientific_rule": "Random-noise denoising MSE plus frozen F feature cosine and soft-distribution preservation; no TX labels, U_s truth, V or test."
+  },
+  "rows": [
+    {
+      "row_id": "free_mixture_pilot_s2026092701",
+      "method": "independent clean IQ denoising prior for multi-step blind inverse recovery",
+      "purpose": "learn source IQ prior without DURA teacher or architecture",
+      "config_ref": "experiments/phase1_prior_pnp/train_signal_prior.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-iq-prior-s2026092701-r01/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026125054,
+        "split": 392005,
+        "data": 2026125055,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Model/noise seed 2026125054, source fit seed 2026125055, order seed 2026125056.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay 0.0001",
+      "lr": 0.0003,
+      "epochs": 8,
+      "fl_rounds": null,
+      "budget_ref": "8192 source fit clean records, Gaussian perturbations, 8 epochs",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-iq-prior-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-independent-iq-prior-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-independent-iq-prior-s2026092701-r01-release/experiments/phase1_prior_pnp/train_signal_prior.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-independent-iq-prior-s2026092701-r01 --commit aad511295e734e616770609ab96c2ff5ab008aa7 --device cuda:0",
+      "expected_artifacts": [
+        "checkpoint.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "DURA architecture, weights and teacher absent from signal prior training and intended student inference.",
+    "Source-only clean L_s/U_s IQ and frozen F soft targets; no TX labels or U_s truth, V or test.",
+    "After prior is fixed, combine with previously source-trained independent blind channel and run fixed source and seven-view tests."
+  ],
+  "registered_at": "2026-11-02T03:50:11+00:00"
+}
