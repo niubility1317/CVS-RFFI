@@ -1,0 +1,171 @@
+{
+  "status": "SOURCE_ORACLE_ANALYSIS",
+  "origin_sha256": "c600e6331b6ffef2820e4117b7eef9a946401dc314012a85c06dba73bb209c08",
+  "source_only": true,
+  "target": "high-confidence clean-F pseudo-label, not true identity",
+  "union_rule": "label oracle across five already fixed independent candidate predictions, not deployable and not a trained router",
+  "DURA_in_union": false,
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "groups": {
+    "RX4_6:all": {
+      "trusted_count": 1008,
+      "union_oracle_correct": 985,
+      "union_extra_vs_parent": 33,
+      "all_correct": 831,
+      "none_correct": 23,
+      "methods": {
+        "raw": {
+          "pseudo_correct": 873,
+          "repairs_vs_parent": 18,
+          "damages_vs_parent": 97,
+          "uniquely_correct": 13
+        },
+        "parent": {
+          "pseudo_correct": 952,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "uniquely_correct": 2
+        },
+        "observation": {
+          "pseudo_correct": 957,
+          "repairs_vs_parent": 12,
+          "damages_vs_parent": 7,
+          "uniquely_correct": 4
+        },
+        "prior": {
+          "pseudo_correct": 920,
+          "repairs_vs_parent": 10,
+          "damages_vs_parent": 42,
+          "uniquely_correct": 0
+        },
+        "alternating": {
+          "pseudo_correct": 934,
+          "repairs_vs_parent": 13,
+          "damages_vs_parent": 31,
+          "uniquely_correct": 2
+        }
+      }
+    },
+    "RX4_6:practical_low_urban": {
+      "trusted_count": 164,
+      "union_oracle_correct": 152,
+      "union_extra_vs_parent": 16,
+      "all_correct": 90,
+      "none_correct": 12,
+      "methods": {
+        "raw": {
+          "pseudo_correct": 102,
+          "repairs_vs_parent": 9,
+          "damages_vs_parent": 43,
+          "uniquely_correct": 8
+        },
+        "parent": {
+          "pseudo_correct": 136,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "uniquely_correct": 1
+        },
+        "observation": {
+          "pseudo_correct": 136,
+          "repairs_vs_parent": 4,
+          "damages_vs_parent": 4,
+          "uniquely_correct": 2
+        },
+        "prior": {
+          "pseudo_correct": 126,
+          "repairs_vs_parent": 2,
+          "damages_vs_parent": 12,
+          "uniquely_correct": 0
+        },
+        "alternating": {
+          "pseudo_correct": 130,
+          "repairs_vs_parent": 5,
+          "damages_vs_parent": 11,
+          "uniquely_correct": 2
+        }
+      }
+    },
+    "RX8:all": {
+      "trusted_count": 976,
+      "union_oracle_correct": 955,
+      "union_extra_vs_parent": 18,
+      "all_correct": 800,
+      "none_correct": 21,
+      "methods": {
+        "raw": {
+          "pseudo_correct": 846,
+          "repairs_vs_parent": 13,
+          "damages_vs_parent": 104,
+          "uniquely_correct": 6
+        },
+        "parent": {
+          "pseudo_correct": 937,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "uniquely_correct": 1
+        },
+        "observation": {
+          "pseudo_correct": 940,
+          "repairs_vs_parent": 6,
+          "damages_vs_parent": 3,
+          "uniquely_correct": 1
+        },
+        "prior": {
+          "pseudo_correct": 903,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 37,
+          "uniquely_correct": 0
+        },
+        "alternating": {
+          "pseudo_correct": 922,
+          "repairs_vs_parent": 9,
+          "damages_vs_parent": 24,
+          "uniquely_correct": 1
+        }
+      }
+    },
+    "RX8:practical_low_urban": {
+      "trusted_count": 174,
+      "union_oracle_correct": 165,
+      "union_extra_vs_parent": 11,
+      "all_correct": 100,
+      "none_correct": 9,
+      "methods": {
+        "raw": {
+          "pseudo_correct": 113,
+          "repairs_vs_parent": 7,
+          "damages_vs_parent": 48,
+          "uniquely_correct": 4
+        },
+        "parent": {
+          "pseudo_correct": 154,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "uniquely_correct": 0
+        },
+        "observation": {
+          "pseudo_correct": 156,
+          "repairs_vs_parent": 4,
+          "damages_vs_parent": 2,
+          "uniquely_correct": 1
+        },
+        "prior": {
+          "pseudo_correct": 151,
+          "repairs_vs_parent": 1,
+          "damages_vs_parent": 4,
+          "uniquely_correct": 0
+        },
+        "alternating": {
+          "pseudo_correct": 154,
+          "repairs_vs_parent": 5,
+          "damages_vs_parent": 5,
+          "uniquely_correct": 1
+        }
+      }
+    }
+  },
+  "caveat": "Post-hoc oracle over previously explored source records; clean F pseudo-label is not true identity, union requires unknown answer and is not deployable. Fixed candidates are not the complete set of possible models."
+}
