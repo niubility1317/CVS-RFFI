@@ -1,0 +1,215 @@
+{
+  "status": "COMPLETE_SOURCE_ONLY_BALANCED_DEEP_PRIOR",
+  "commit": "fff98ab788593742c5b3f7601a89730aa24ef539",
+  "scenes": {
+    "practical_high": {
+      "count": 64,
+      "valid_count": 60,
+      "raw": {
+        "correct": 59,
+        "mean_iq_nmse": 2.064181327819824
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.015550384297966957
+      },
+      "prior6": {
+        "correct": 60,
+        "mean_iq_nmse": 0.024205170571804047
+      },
+      "prior12": {
+        "correct": 60,
+        "mean_iq_nmse": 0.02768915332853794
+      },
+      "prior24": {
+        "correct": 60,
+        "mean_iq_nmse": 0.023537680506706238
+      }
+    },
+    "practical_mid": {
+      "count": 64,
+      "valid_count": 61,
+      "raw": {
+        "correct": 59,
+        "mean_iq_nmse": 2.0491256713867188
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.021471306681632996
+      },
+      "prior6": {
+        "correct": 61,
+        "mean_iq_nmse": 0.0190134197473526
+      },
+      "prior12": {
+        "correct": 61,
+        "mean_iq_nmse": 0.01882590726017952
+      },
+      "prior24": {
+        "correct": 61,
+        "mean_iq_nmse": 0.018776778131723404
+      }
+    },
+    "practical_low_suburban": {
+      "count": 64,
+      "valid_count": 61,
+      "raw": {
+        "correct": 57,
+        "mean_iq_nmse": 2.0858490467071533
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.032062217593193054
+      },
+      "prior6": {
+        "correct": 59,
+        "mean_iq_nmse": 0.042548276484012604
+      },
+      "prior12": {
+        "correct": 59,
+        "mean_iq_nmse": 0.041853830218315125
+      },
+      "prior24": {
+        "correct": 59,
+        "mean_iq_nmse": 0.04168083891272545
+      }
+    },
+    "practical_high_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "raw": {
+        "correct": 58,
+        "mean_iq_nmse": 2.0927858352661133
+      },
+      "dura": {
+        "correct": 61,
+        "mean_iq_nmse": 0.02210512012243271
+      },
+      "prior6": {
+        "correct": 61,
+        "mean_iq_nmse": 0.02645229920744896
+      },
+      "prior12": {
+        "correct": 61,
+        "mean_iq_nmse": 0.026008810847997665
+      },
+      "prior24": {
+        "correct": 61,
+        "mean_iq_nmse": 0.0249225664883852
+      }
+    },
+    "practical_mid_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "raw": {
+        "correct": 48,
+        "mean_iq_nmse": 2.0597095489501953
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.050538405776023865
+      },
+      "prior6": {
+        "correct": 57,
+        "mean_iq_nmse": 0.052856605499982834
+      },
+      "prior12": {
+        "correct": 58,
+        "mean_iq_nmse": 0.05118102580308914
+      },
+      "prior24": {
+        "correct": 58,
+        "mean_iq_nmse": 0.0494752936065197
+      }
+    },
+    "practical_low_urban": {
+      "count": 64,
+      "valid_count": 63,
+      "raw": {
+        "correct": 46,
+        "mean_iq_nmse": 2.0336341857910156
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.0826321616768837
+      },
+      "prior6": {
+        "correct": 59,
+        "mean_iq_nmse": 0.08946343511343002
+      },
+      "prior12": {
+        "correct": 59,
+        "mean_iq_nmse": 0.08668701350688934
+      },
+      "prior24": {
+        "correct": 59,
+        "mean_iq_nmse": 0.08097295463085175
+      }
+    }
+  },
+  "fit_ids": 8192,
+  "high_conf_fit": 7870,
+  "subcluster_counts": [
+    393,
+    393,
+    243,
+    243,
+    401,
+    400,
+    283,
+    282,
+    404,
+    404,
+    283,
+    282,
+    385,
+    384,
+    239,
+    239,
+    401,
+    400,
+    256,
+    255,
+    385,
+    385,
+    265,
+    265
+  ],
+  "classes": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    5,
+    5,
+    5,
+    5
+  ],
+  "ridge": 1.444142102903146e-05,
+  "components": 24,
+  "probe_ids": 384,
+  "source_only": true,
+  "F_frozen": true,
+  "DURA_loaded_after_fit": true,
+  "TX_labels_read": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Prior 24 subclusters use only frozen F high-confidence source predictions and clean source IQ; source IDs previously explored; pseudo targets are not true test accuracy. More components can hallucinate identity."
+}
