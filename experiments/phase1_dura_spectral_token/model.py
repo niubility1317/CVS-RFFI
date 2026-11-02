@@ -7,7 +7,7 @@ class SpectralTokenRecovery(nn.Module):
     def __init__(self):
         super().__init__()
         width = 48
-        self.input = nn.Linear(5, width)
+        self.entry = nn.Linear(5, width)
         self.time_position = nn.Parameter(torch.zeros(1, 16, 1, width))
         self.frequency_position = nn.Parameter(torch.zeros(1, 1, 16, width))
         self.freq_norm = nn.LayerNorm(width)
@@ -16,9 +16,9 @@ class SpectralTokenRecovery(nn.Module):
         self.time_attention = nn.MultiheadAttention(width, 4, dropout=0.0, batch_first=True)
         self.feed_norm = nn.LayerNorm(width)
         self.feed = nn.Sequential(nn.Linear(width, 96), nn.SiLU(), nn.Linear(96, width))
-        self.output = nn.Linear(width, 2)
-        nn.init.zeros_(self.output.weight)
-        nn.init.zeros_(self.output.bias)
+        self.gate_output = nn.Linear(width, 2)
+        nn.init.zeros_(self.gate_output.weight)
+        nn.init.zeros_(self.gate_output.bias)
 
     def forward(self, received, initial, log_variance):
         shape = received.shape
@@ -38,7 +38,7 @@ class SpectralTokenRecovery(nn.Module):
         aa = torch.fft.fft((a * unit.conj()).reshape(batch, 16, 16), dim=-1, norm='ortho')
         noise = ((log_variance - power[:, 0, 0].log()).clamp(-16, 8) / 8)[:, None, None].expand(-1, 16, 16)
         evidence = torch.stack((zs.real, zs.imag, aa.real, aa.imag, noise), dim=-1)
-        h = self.input(evidence) + self.time_position + self.frequency_position
+        h = self.entry(evidence) + self.time_position + self.frequency_position
         f = self.freq_norm(h).reshape(batch * 16, 16, -1)
         f, _ = self.freq_attention(f, f, f, need_weights=False)
         h = h + f.reshape(batch, 16, 16, -1)
@@ -46,7 +46,7 @@ class SpectralTokenRecovery(nn.Module):
         t, _ = self.time_attention(t, t, t, need_weights=False)
         h = h + t.reshape(batch, 16, 16, -1).transpose(1, 2)
         h = h + self.feed(self.feed_norm(h))
-        delta = self.output(h).tanh()
+        delta = self.gate_output(h).tanh()
         spectrum = torch.complex(delta[..., 0], delta[..., 1])
         waveform = torch.fft.ifft(spectrum, dim=-1, norm='ortho').reshape(batch, 256) * unit
         correction = torch.stack((waveform.real, waveform.imag), dim=1) * scale

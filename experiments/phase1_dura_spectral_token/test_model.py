@@ -21,31 +21,47 @@ class SpectralTokenTests(unittest.TestCase):
         torch.testing.assert_close(self.net(self.x, self.anchor, self.logvar), self.anchor, rtol=0, atol=0)
 
     def test_phase_equivariance_with_nonzero_head(self):
-        torch.nn.init.normal_(self.net.output.weight, std=.04)
-        torch.nn.init.normal_(self.net.output.bias, std=.02)
+        torch.nn.init.normal_(self.net.gate_output.weight, std=.04)
+        torch.nn.init.normal_(self.net.gate_output.bias, std=.02)
         angle = torch.tensor(.713)
         expected = rotate(self.net(self.x, self.anchor, self.logvar), angle)
         actual = self.net(rotate(self.x, angle), rotate(self.anchor, angle), self.logvar)
         torch.testing.assert_close(actual, expected, rtol=3e-5, atol=3e-5)
 
     def test_global_amplitude_equivariance(self):
-        torch.nn.init.normal_(self.net.output.weight, std=.04)
-        torch.nn.init.normal_(self.net.output.bias, std=.02)
+        torch.nn.init.normal_(self.net.gate_output.weight, std=.04)
+        torch.nn.init.normal_(self.net.gate_output.bias, std=.02)
         scale = 1.9
         y = self.net(self.x, self.anchor, self.logvar)
         scaled = self.net(self.x * scale, self.anchor * scale, self.logvar + 2 * torch.log(torch.tensor(scale)))
         torch.testing.assert_close(scaled, y * scale, rtol=3e-5, atol=3e-5)
 
     def test_backpropagates_and_does_not_mix_records(self):
-        torch.nn.init.normal_(self.net.output.weight, std=.04)
+        torch.nn.init.normal_(self.net.gate_output.weight, std=.04)
         y = self.net(self.x, self.anchor, self.logvar)
         y.square().mean().backward()
-        self.assertTrue(torch.isfinite(self.net.input.weight.grad).all())
-        self.assertGreater(self.net.input.weight.grad.abs().sum().item(), 0)
+        self.assertTrue(torch.isfinite(self.net.entry.weight.grad).all())
+        self.assertGreater(self.net.entry.weight.grad.abs().sum().item(), 0)
         with torch.no_grad():
             a = self.net(self.x[:1], self.anchor[:1], self.logvar[:1])
             b = self.net(self.x, self.anchor, self.logvar)[:1]
             torch.testing.assert_close(a, b, rtol=1e-5, atol=1e-5)
+
+    def test_training_adapter_gradient_contract(self):
+        optimizer = torch.optim.Adam(self.net.parameters(), lr=1e-3)
+        target = self.anchor + 0.1 * self.x
+        for step in range(2):
+            optimizer.zero_grad(set_to_none=True)
+            loss = (self.net(self.x, self.anchor, self.logvar) - target).square().mean()
+            loss.backward()
+            grad = self.net.gate_output.weight.grad
+            self.assertIsNotNone(grad)
+            self.assertTrue(torch.isfinite(grad).all())
+            self.assertGreater(grad.abs().sum().item(), 0)
+            if step == 1:
+                self.assertIsNotNone(self.net.entry.weight.grad)
+                self.assertGreater(self.net.entry.weight.grad.abs().sum().item(), 0)
+            optimizer.step()
 
     def test_rejects_invalid_and_nonfinite(self):
         with self.assertRaises(ValueError): self.net(self.x[:, :, :-1], self.anchor, self.logvar)

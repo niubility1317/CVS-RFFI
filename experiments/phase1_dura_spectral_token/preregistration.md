@@ -6,4 +6,4 @@ Training: fixed 8192 source fit IDs, epochs 21/22/23, five passes, aligned paire
 
 Run a 64-ID real-source training smoke then freeze the final checkpoint and all 672 source predictions before source identity scoring. Regardless of source metrics, run fixed source replay and all seven Phase1 Main views of 168000 physical records, then pretruth validation, truth-last scoring and independent 119-group audit. Technical failures may stop a run. No observed ground labels may change any previously registered experiment.
 
-Source: 20261103-phase1-dura-spectral-token-source-s2026092701-r01. Ground: 20261103-phase1-dura-spectral-token-ground-test-s2026092701-r01. All are previously explored simulated development records, not a blind test or real satellite validation.
+Source: 20261103-phase1-dura-spectral-token-source-s2026092701-r02. Ground: 20261103-phase1-dura-spectral-token-ground-test-s2026092701-r02. All are previously explored simulated development records, not a blind test or real satellite validation.
