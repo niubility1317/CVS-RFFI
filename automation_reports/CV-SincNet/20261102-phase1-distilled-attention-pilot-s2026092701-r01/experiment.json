@@ -1,0 +1,145 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261102-phase1-distilled-attention-pilot-s2026092701-r01",
+  "group_id": "phase1-attention-waveform",
+  "display_name": "Phase1 direct attention source-teacher matched pilot",
+  "description": "Train same direct IQ attention network with frozen DURA source waveform targets instead of paired clean waveform targets; no DURA inference dependency.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "attention",
+    "waveform",
+    "nonblind_development"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261102-phase1-attention-waveform-pilot-s2026092701-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求大胆研发 Phase1 恢复网络，不拘泥 DURA，地面基座 Tri-SIG-TIME SSL；不使用 Phase3。",
+  "code": {
+    "commit": "9e07e6b076cb2fbcd081e043d9881c378a668004",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU3, source-only training, CPU 2 threads, TF32 disabled",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig/WiSig Phase1 ground proxy",
+    "version": "original7/63/30 Phase1 source physical ID contract",
+    "representation": "Direct IQ multiscale attention network; teacher used to generate source waveform targets only",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/complete.json#config.source_contract",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/physical_ids.npy",
+    "label_map_ref": "Frozen Tri-SIG-TIME SSL source contract, six classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Only L_s fit labels enter training; U_s uses high-confidence frozen clean F pseudo labels, no U_s truth, V or test",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Source validation RX4/6 and source heldout RX8 excluded from fit; evaluation planned separately",
+    "support_query_ref": null,
+    "leo_config_ref": "Fresh source cache epoch21/22/23 training; source cache epoch19 evaluation"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Source L_s labels and U_s high-confidence clean F pseudo-targets, paired source IQ, frozen DURA teacher; no U_s truth, V or test.",
+    "external_method_exception": null,
+    "claim_scope": "Matched seed and source data with preceding attention network; source IDs previously explored, no blind claim."
+  },
+  "checkpoint": {
+    "initialization": "Attention restorer initialized exactly as paired original attention; frozen F and source DURA teacher; DURA not called during student inference.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Fixed original Phase1 DURA source checkpoint 47c264286ca689f060a3f36aafb763fe209a6f06; original attention seed and source IDs.",
+    "provenance_verdict": "Frozen designated Phase1 source contract; previous Phase1 development results observed, no clean-blind claim",
+    "selection_rule": "Same 8192 fit IDs, initialization seed, optimizer, three views and eight epochs as direct attention; final checkpoint; no test-based selection."
+  },
+  "execution": {
+    "host": "N607 GPU3",
+    "launch_owner": "Codex source direct mixture pilot owner",
+    "gpu_policy": "GPU3 single owner, TF32 disabled; real mixed L_s/U_s source gradient preflight",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-distilled-attention-pilot-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-distilled-attention-pilot-s2026092701-r01.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261102-phase1-distilled-attention-pilot-s2026092701-r01",
+    "launch_command": "CUDA_VISIBLE_DEVICES=3 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-distilled-attention-pilot-s2026092701-r01-release/experiments/phase1_joint_mixture/train_distilled_attention.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-distilled-attention-pilot-s2026092701-r01 --commit 9e07e6b076cb2fbcd081e043d9881c378a668004 --device cuda:0",
+    "stop_rule": "Stop only for provenance or role violation, output collision, nonfinite values or technical failure; preserve partial output; never stop for low performance"
+  },
+  "expected_artifacts": [
+    "checkpoint.pt",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source train loss",
+      "eligible source and L_s exposures"
+    ],
+    "dimensions": [
+      "source training only; no validation scores"
+    ],
+    "prediction_ref": "none; temporary source-only diagnostic",
+    "scorer_ref": "experiments/phase1_joint_mixture/train_distilled_attention.py",
+    "scientific_rule": "Waveform MSE to frozen DURA source output replaces MSE to clean only; all other CE, feature, identity and per-group training terms remain matched."
+  },
+  "rows": [
+    {
+      "row_id": "free_mixture_pilot_s2026092701",
+      "method": "direct attention waveform student with source DURA output supervision",
+      "purpose": "test whether matched source teacher waveform target improves training and receiver transfer",
+      "config_ref": "experiments/phase1_joint_mixture/train_distilled_attention.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-distilled-attention-pilot-s2026092701-r01/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026123054,
+        "split": 392005,
+        "data": 2026123055,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 2026120355
+      },
+      "seed_notes": "Matched attention seed 2026123054, source ID seed 2026123055, order seed 2026123056; RNG restored after teacher loading.",
+      "k": null,
+      "scenario": "source clean and six simulated impaired scenes",
+      "optimizer": "AdamW weight_decay 0.0001",
+      "lr": 0.0002,
+      "epochs": 8,
+      "fl_rounds": null,
+      "budget_ref": "8192 fit IDs, 3 source views, 8 epochs; fixed final checkpoint",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-distilled-attention-pilot-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/20261102-phase1-distilled-attention-pilot-s2026092701-r01.log",
+      "command": "CUDA_VISIBLE_DEVICES=3 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/releases/20261101-phase1-physical-rich-router-s2026092701-r01-release:/home/szu2070436088/2510044040/CV-SincNet/releases/20261027-phase1-pamf-repl-shuffled-views-m16-r02-release /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u /home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-distilled-attention-pilot-s2026092701-r01-release/experiments/phase1_joint_mixture/train_distilled_attention.py --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261102-phase1-distilled-attention-pilot-s2026092701-r01 --commit 9e07e6b076cb2fbcd081e043d9881c378a668004 --device cuda:0",
+      "expected_artifacts": [
+        "checkpoint.pt",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Frozen DURA used for source training targets only, not student inference.",
+    "Identical attention model, seeds, source IDs, optimizer, weight and training budget to original attention; waveform target replaced.",
+    "Uses legal L_s labels and high-confidence U_s clean F pseudo-labels; no U_s truth, V or target.",
+    "Ground test required for each new restoration version irrespective of source results."
+  ],
+  "registered_at": "2026-11-02T03:15:51+00:00"
+}
