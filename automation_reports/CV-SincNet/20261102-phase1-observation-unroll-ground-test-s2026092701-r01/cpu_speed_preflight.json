@@ -1,0 +1,38 @@
+{
+  "status": "SOURCE_ONLY_CPU_BENCHMARK",
+  "source_records": 128,
+  "source_epoch": 19,
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "prediction_sha256": "cc3cd1ec95303012b490ad7373758c5fc1098782a15094904b03075c90d901eb",
+  "rates": [
+    {
+      "threads": 2,
+      "batch": 8,
+      "samples_per_second": 16.991
+    },
+    {
+      "threads": 4,
+      "batch": 8,
+      "samples_per_second": 22.143
+    },
+    {
+      "threads": 8,
+      "batch": 8,
+      "samples_per_second": 32.232
+    },
+    {
+      "threads": 8,
+      "batch": 32,
+      "samples_per_second": 35.655
+    },
+    {
+      "threads": 16,
+      "batch": 32,
+      "samples_per_second": 54.427
+    }
+  ],
+  "caveat": "Single short source sample, shared machine under load; not a runtime guarantee. Identical class/gate hash only for these 128 records; current ground entry explicitly sets two CPU threads, and the GPU baseline match must be checked for all seven views before reading truth."
+}
