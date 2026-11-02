@@ -1,0 +1,465 @@
+{
+  "status": "SOURCE_PSEUDO_SCORE_COMPLETE",
+  "prediction_sha256": "bb47cb5315ee6b0677cf86c41d282f49b15ed3f8030dbf0f718a36c6f6592f46",
+  "records": 11761,
+  "source_only": true,
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "results": {
+    "RX4_6": {
+      "clean": {
+        "count": 1092,
+        "trusted_count": 1074,
+        "active_count": 3,
+        "full": {
+          "pseudo_correct": 1074,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.0003169744450133294
+        },
+        "rank128": {
+          "pseudo_correct": 1074,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.0008288001408800483
+        },
+        "rank256": {
+          "pseudo_correct": 1074,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.0004095398762729019
+        },
+        "DURA": {
+          "pseudo_correct": 1074,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        }
+      },
+      "practical_high": {
+        "count": 1206,
+        "trusted_count": 1176,
+        "active_count": 1206,
+        "full": {
+          "pseudo_correct": 1172,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.003648506011813879
+        },
+        "rank128": {
+          "pseudo_correct": 1158,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 15,
+          "aligned_iq_error_mean": 0.008162349462509155
+        },
+        "rank256": {
+          "pseudo_correct": 1172,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.004102750215679407
+        },
+        "DURA": {
+          "pseudo_correct": 1174,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 0
+        }
+      },
+      "practical_mid": {
+        "count": 1091,
+        "trusted_count": 1078,
+        "active_count": 1091,
+        "full": {
+          "pseudo_correct": 1057,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.0071889981627464294
+        },
+        "rank128": {
+          "pseudo_correct": 1042,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 16,
+          "aligned_iq_error_mean": 0.010004445910453796
+        },
+        "rank256": {
+          "pseudo_correct": 1056,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1,
+          "aligned_iq_error_mean": 0.0072744763456285
+        },
+        "DURA": {
+          "pseudo_correct": 1064,
+          "repairs_vs_full": 12,
+          "damages_vs_full": 5
+        }
+      },
+      "practical_low_suburban": {
+        "count": 1105,
+        "trusted_count": 1082,
+        "active_count": 1105,
+        "full": {
+          "pseudo_correct": 1045,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.012133331969380379
+        },
+        "rank128": {
+          "pseudo_correct": 1030,
+          "repairs_vs_full": 3,
+          "damages_vs_full": 18,
+          "aligned_iq_error_mean": 0.014654685743153095
+        },
+        "rank256": {
+          "pseudo_correct": 1046,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 1,
+          "aligned_iq_error_mean": 0.012235124595463276
+        },
+        "DURA": {
+          "pseudo_correct": 1054,
+          "repairs_vs_full": 21,
+          "damages_vs_full": 12
+        }
+      },
+      "practical_high_urban": {
+        "count": 1092,
+        "trusted_count": 1066,
+        "active_count": 1092,
+        "full": {
+          "pseudo_correct": 1048,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.006881301756948233
+        },
+        "rank128": {
+          "pseudo_correct": 1034,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 16,
+          "aligned_iq_error_mean": 0.01157678198069334
+        },
+        "rank256": {
+          "pseudo_correct": 1049,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.0075646983459591866
+        },
+        "DURA": {
+          "pseudo_correct": 1052,
+          "repairs_vs_full": 9,
+          "damages_vs_full": 5
+        }
+      },
+      "practical_mid_urban": {
+        "count": 1102,
+        "trusted_count": 1074,
+        "active_count": 1101,
+        "full": {
+          "pseudo_correct": 972,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.026258602738380432
+        },
+        "rank128": {
+          "pseudo_correct": 965,
+          "repairs_vs_full": 10,
+          "damages_vs_full": 17,
+          "aligned_iq_error_mean": 0.028835412114858627
+        },
+        "rank256": {
+          "pseudo_correct": 970,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 3,
+          "aligned_iq_error_mean": 0.02649547904729843
+        },
+        "DURA": {
+          "pseudo_correct": 998,
+          "repairs_vs_full": 49,
+          "damages_vs_full": 23
+        }
+      },
+      "practical_low_urban": {
+        "count": 1152,
+        "trusted_count": 1130,
+        "active_count": 1152,
+        "full": {
+          "pseudo_correct": 921,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.047320861369371414
+        },
+        "rank128": {
+          "pseudo_correct": 916,
+          "repairs_vs_full": 6,
+          "damages_vs_full": 11,
+          "aligned_iq_error_mean": 0.04823319613933563
+        },
+        "rank256": {
+          "pseudo_correct": 920,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1,
+          "aligned_iq_error_mean": 0.04727219417691231
+        },
+        "DURA": {
+          "pseudo_correct": 984,
+          "repairs_vs_full": 112,
+          "damages_vs_full": 49
+        }
+      },
+      "all_impaired": {
+        "count": 6748,
+        "trusted_count": 6606,
+        "active_count": 6747,
+        "full": {
+          "pseudo_correct": 6215,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.017281509935855865
+        },
+        "rank128": {
+          "pseudo_correct": 6145,
+          "repairs_vs_full": 23,
+          "damages_vs_full": 93,
+          "aligned_iq_error_mean": 0.02029270865023136
+        },
+        "rank256": {
+          "pseudo_correct": 6213,
+          "repairs_vs_full": 4,
+          "damages_vs_full": 6,
+          "aligned_iq_error_mean": 0.017534146085381508
+        },
+        "DURA": {
+          "pseudo_correct": 6326,
+          "repairs_vs_full": 205,
+          "damages_vs_full": 94
+        }
+      }
+    },
+    "RX8": {
+      "clean": {
+        "count": 608,
+        "trusted_count": 592,
+        "active_count": 2,
+        "full": {
+          "pseudo_correct": 592,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 3.3508538763271645e-05
+        },
+        "rank128": {
+          "pseudo_correct": 592,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.00011979663395322859
+        },
+        "rank256": {
+          "pseudo_correct": 592,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 6.66549094603397e-05
+        },
+        "DURA": {
+          "pseudo_correct": 592,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        }
+      },
+      "practical_high": {
+        "count": 537,
+        "trusted_count": 516,
+        "active_count": 536,
+        "full": {
+          "pseudo_correct": 513,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.0037852656096220016
+        },
+        "rank128": {
+          "pseudo_correct": 510,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 4,
+          "aligned_iq_error_mean": 0.006786087062209845
+        },
+        "rank256": {
+          "pseudo_correct": 511,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 2,
+          "aligned_iq_error_mean": 0.004257941618561745
+        },
+        "DURA": {
+          "pseudo_correct": 512,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 2
+        }
+      },
+      "practical_mid": {
+        "count": 541,
+        "trusted_count": 516,
+        "active_count": 541,
+        "full": {
+          "pseudo_correct": 508,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.010669255629181862
+        },
+        "rank128": {
+          "pseudo_correct": 505,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 5,
+          "aligned_iq_error_mean": 0.013750452548265457
+        },
+        "rank256": {
+          "pseudo_correct": 507,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1,
+          "aligned_iq_error_mean": 0.011103099212050438
+        },
+        "DURA": {
+          "pseudo_correct": 508,
+          "repairs_vs_full": 4,
+          "damages_vs_full": 4
+        }
+      },
+      "practical_low_suburban": {
+        "count": 568,
+        "trusted_count": 544,
+        "active_count": 566,
+        "full": {
+          "pseudo_correct": 535,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.0170357096940279
+        },
+        "rank128": {
+          "pseudo_correct": 533,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 3,
+          "aligned_iq_error_mean": 0.019122080877423286
+        },
+        "rank256": {
+          "pseudo_correct": 535,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 1,
+          "aligned_iq_error_mean": 0.017155848443508148
+        },
+        "DURA": {
+          "pseudo_correct": 530,
+          "repairs_vs_full": 5,
+          "damages_vs_full": 10
+        }
+      },
+      "practical_high_urban": {
+        "count": 568,
+        "trusted_count": 547,
+        "active_count": 568,
+        "full": {
+          "pseudo_correct": 536,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.009759470820426941
+        },
+        "rank128": {
+          "pseudo_correct": 533,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 4,
+          "aligned_iq_error_mean": 0.01379865501075983
+        },
+        "rank256": {
+          "pseudo_correct": 536,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 1,
+          "aligned_iq_error_mean": 0.010460874997079372
+        },
+        "DURA": {
+          "pseudo_correct": 536,
+          "repairs_vs_full": 4,
+          "damages_vs_full": 4
+        }
+      },
+      "practical_mid_urban": {
+        "count": 568,
+        "trusted_count": 548,
+        "active_count": 568,
+        "full": {
+          "pseudo_correct": 511,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.04046599194407463
+        },
+        "rank128": {
+          "pseudo_correct": 510,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 3,
+          "aligned_iq_error_mean": 0.042036447674036026
+        },
+        "rank256": {
+          "pseudo_correct": 511,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.04058219864964485
+        },
+        "DURA": {
+          "pseudo_correct": 512,
+          "repairs_vs_full": 19,
+          "damages_vs_full": 18
+        }
+      },
+      "practical_low_urban": {
+        "count": 531,
+        "trusted_count": 512,
+        "active_count": 531,
+        "full": {
+          "pseudo_correct": 462,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.07985580712556839
+        },
+        "rank128": {
+          "pseudo_correct": 461,
+          "repairs_vs_full": 4,
+          "damages_vs_full": 5,
+          "aligned_iq_error_mean": 0.08159696310758591
+        },
+        "rank256": {
+          "pseudo_correct": 462,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.08028499037027359
+        },
+        "DURA": {
+          "pseudo_correct": 462,
+          "repairs_vs_full": 26,
+          "damages_vs_full": 26
+        }
+      },
+      "all_impaired": {
+        "count": 3313,
+        "trusted_count": 3183,
+        "active_count": 3310,
+        "full": {
+          "pseudo_correct": 3065,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0,
+          "aligned_iq_error_mean": 0.026686549186706543
+        },
+        "rank128": {
+          "pseudo_correct": 3052,
+          "repairs_vs_full": 11,
+          "damages_vs_full": 24,
+          "aligned_iq_error_mean": 0.02927461266517639
+        },
+        "rank256": {
+          "pseudo_correct": 3062,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 5,
+          "aligned_iq_error_mean": 0.02706356905400753
+        },
+        "DURA": {
+          "pseudo_correct": 3060,
+          "repairs_vs_full": 59,
+          "damages_vs_full": 64
+        }
+      }
+    }
+  },
+  "caveat": "Post-hoc source pseudo-label agreement; clean F predictions are not identity truth; previously explored source records."
+}
