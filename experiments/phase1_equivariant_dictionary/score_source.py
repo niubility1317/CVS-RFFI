@@ -35,7 +35,7 @@ def main():
     manifest = read(args.source/'prediction_complete.json')
     expected = dict(status='SOURCE_PREDICTIONS_FIXED', commit=args.commit, count=672, fit_ids=8192,
                     F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=False,
-                    U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates_after_prediction=0)
+                    TX_labels_read=0, U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates_after_prediction=0)
     if any(manifest.get(key) != value for key, value in expected.items()):
         raise ValueError('Complete fixed source predictions are required before identity truth')
     with np.load(args.source/'source_predictions.npz', allow_pickle=False) as z:

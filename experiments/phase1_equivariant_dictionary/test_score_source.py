@@ -58,6 +58,15 @@ class DictionaryScoreTest(unittest.TestCase):
         self.assertEqual(result['results']['RX4_6']['clean']['L_s']['damages'], 1)
         self.assertEqual(result['results']['RX8']['all_impaired']['L_s']['count'], 0)
 
+    def test_training_with_tx_labels_is_rejected_before_scoring(self):
+        path = self.source/'prediction_complete.json'
+        manifest = json.loads(path.read_text(encoding='utf8'))
+        manifest['TX_labels_read'] = 1
+        path.write_text(json.dumps(manifest), encoding='utf8')
+        (self.root/'source_metadata/L_s_metadata.npz').unlink()
+        with self.assertRaisesRegex(ValueError, 'fixed source predictions'):
+            self.run_score()
+
     def test_truth_is_not_opened_when_predictions_are_incomplete(self):
         (self.source/'prediction_complete.json').unlink()
         (self.root/'source_metadata/L_s_metadata.npz').unlink()

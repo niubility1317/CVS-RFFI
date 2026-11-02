@@ -12,7 +12,7 @@ from experiments.phase1_equivariant_dictionary.model import EquivariantPatchDict
 from experiments.phase1_equivariant_dictionary.train_source import load_physics, predict_batch
 
 
-SOURCE = '20261102-phase1-equivariant-dictionary-source-s2026092701-r01'
+SOURCE = '20261102-phase1-equivariant-dictionary-source-s2026092701-r02'
 BATCH = 8
 
 
@@ -27,7 +27,7 @@ def load_fixed(root, commit, device, deps):
     done = deps.core.read(folder/'prediction_complete.json')
     expected = dict(status='SOURCE_PREDICTIONS_FIXED', commit=commit, count=672, fit_ids=8192,
                     F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=False,
-                    U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates_after_prediction=0)
+                    TX_labels_read=0, U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates_after_prediction=0)
     if any(done.get(key) != value for key, value in expected.items()):
         raise ValueError('Complete fixed source predictions and frozen components are required')
     state = torch.load(folder/'checkpoint.pt', map_location='cpu', weights_only=False)

@@ -12,7 +12,7 @@ from experiments.phase1_dura_posterior.resources import gpu_lease
 from experiments.phase1_equivariant_dictionary.source_controller import ROOT, RUN, RELEASE, GPU_LOCK, PYTHON, environment
 
 
-GROUND = '20261102-phase1-equivariant-dictionary-ground-test-s2026092701-r01'
+GROUND = '20261102-phase1-equivariant-dictionary-ground-test-s2026092701-r02'
 
 
 def main():

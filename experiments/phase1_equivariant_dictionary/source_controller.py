@@ -11,7 +11,7 @@ from experiments.phase1_dura_posterior.resources import gpu_lease, wait_for_cpu
 
 
 ROOT = Path('/home/szu2070436088/2510044040/CV-SincNet')
-RUN = '20261102-phase1-equivariant-dictionary-source-s2026092701-r01'
+RUN = '20261102-phase1-equivariant-dictionary-source-s2026092701-r02'
 RELEASE = ROOT/'releases'/(RUN+'-release')
 CONTROLLER = ROOT/'runs'/(RUN+'-controller')
 GPU_LOCK = ROOT/'runs/20261102-phase1-dura-posterior-twoarm-s2026092701-r01-gpu.lock'
@@ -71,7 +71,7 @@ def main():
         result = json.loads((smoke/'smoke.json').read_text(encoding='utf8'))
         expected = dict(status='SOURCE_TRAINING_SMOKE_PASS', fit_ids=64, eval_records=28,
                         F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=False,
-                        U_s_truth_reads=0, V_reads=0, test_reads=0)
+                        TX_labels_read=0, U_s_truth_reads=0, V_reads=0, test_reads=0)
         if any(result.get(key) != value for key, value in expected.items()) or result.get('dictionary_gradient_batches', 0) < 1:
             raise ValueError('Real-source dictionary training smoke did not pass')
         with gpu_lease(GPU_LOCK, lambda state, **extra: status(state, phase='source_train', **extra)) as (gpu, lock_fd):
@@ -81,7 +81,7 @@ def main():
         result = json.loads((source/'prediction_complete.json').read_text(encoding='utf8'))
         expected = dict(status='SOURCE_PREDICTIONS_FIXED', commit=args.commit, count=672, fit_ids=8192,
                         F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=False,
-                        U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates_after_prediction=0)
+                        TX_labels_read=0, U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates_after_prediction=0)
         if any(result.get(key) != value for key, value in expected.items()) or not (source/'checkpoint.pt').is_file():
             raise ValueError('Complete frozen source model and predictions required')
         wait_for_cpu(lambda state, **extra: status(state, phase='source_score', **extra))

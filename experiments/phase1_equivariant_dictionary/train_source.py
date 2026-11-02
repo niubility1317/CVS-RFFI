@@ -83,9 +83,7 @@ def predict_batch(x, model, blind, gate, stats, eye, reader, deps):
 
 def main():
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'phase1_joint_mixture'))
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'phase1_prior_pnp'))
     import source_pilot as deps
-    from train_multiview_unroll import allowed_fit_labels
     core, s = deps.core, deps.s
     if tuple(core.VIEWS) != VIEWS:
         raise ValueError('The established seven Phase1 views are required')
@@ -110,8 +108,7 @@ def main():
     if np.intersect1d(fit, np.r_[prior_ids, validation, heldout]).size:
         raise ValueError('Disjoint source fit, physical-prior fit and source holdouts are required')
     roles = np.load(cache/'train/roles.npy', allow_pickle=False)
-    reader, contract = core.teacher(args.root, args.device)
-    labels = allowed_fit_labels(args.root, cache, clean, roles, contract, fit, validation, heldout)
+    reader, _ = core.teacher(args.root, args.device)
     if args.smoke:
         selected = np.sort(np.r_[fit[roles[fit] == 'L_s'][:32], fit[roles[fit] == 'U_s'][:32]])
         if len(selected) != 64:
@@ -141,13 +138,10 @@ def main():
             base, logvar = initial_posterior(x, blind, stats, eye, deps)
             with torch.no_grad():
                 features = reader.features(target)
-                clean_logits = reader.classify_features(features)
-                soft = F.softmax(clean_logits/2, dim=1)
-            if not all(torch.isfinite(t).all() for t in (x, target, features, clean_logits, soft)):
+            if not all(torch.isfinite(t).all() for t in (x, target, features)):
                 raise FloatingPointError('Finite paired source data and frozen-reader scores are required')
-            row_labels = torch.tensor(labels[idx].tolist(), dtype=torch.long, device=args.device)
             groups = torch.tensor(rx[idx].tolist(), dtype=torch.long, device=args.device)
-            chunks.append(tuple(t.detach().cpu() for t in (x, base, logvar, target, features, soft, row_labels, groups)))
+            chunks.append(tuple(t.detach().cpu() for t in (x, base, logvar, target, features, groups)))
             for view in np.unique(scene[idx]):
                 scene_counts[str(view)] = scene_counts.get(str(view), 0)+int(np.count_nonzero(scene[idx] == view))
         print('EQ_DICTIONARY_SOURCE_PREP', epoch, json.dumps(scene_counts), 'seconds', round(time.monotonic()-started, 1), flush=True)
@@ -165,9 +159,9 @@ def main():
         model.train()
         for start in range(0, len(order), 16):
             chosen = order[start:start+16]
-            x, base, lv, target, features, soft, lab, groups = [t[chosen].to(args.device) for t in data]
+            x, base, lv, target, features, groups = [t[chosen].to(args.device) for t in data]
             output = model(x, base, lv)
-            loss, _ = source_loss(reader, output, target, features, soft, lab, groups)
+            loss, _ = source_loss(reader, output, target, features, groups)
             if not torch.isfinite(loss):
                 raise FloatingPointError('Finite source training loss is required')
             optimizer.zero_grad(set_to_none=True)
@@ -223,7 +217,7 @@ def main():
     summary = dict(commit=args.commit, fit_ids=len(selected), active_exposures=len(data[0]),
                    source_view_counts=scene_counts, losses=losses, dictionary_gradient_batches=dictionary_gradient_batches,
                    F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=False,
-                   L_s_metadata_labels_read=6300, L_s_fit_labels_used=int(np.count_nonzero(labels[selected] >= 0)),
+                   TX_labels_read=0,
                    U_s_truth_reads=0, V_reads=0, test_reads=0)
     if args.smoke:
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', eval_records=len(ids), **summary))
