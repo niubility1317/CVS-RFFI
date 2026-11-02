@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "checks": [
+    "cohort, scene and pseudo-label counts",
+    "finite direct IQ errors",
+    "same source physical IDs declared for two fit views"
+  ],
+  "limitation": "Aggregate consistency checks only; not an independent prediction replay."
+}

@@ -1,0 +1,126 @@
+{
+  "status": "SOURCE_DOMAIN_DIAGNOSTIC_COMPLETE",
+  "commit": "ba2cfb41a3fc9a9f1a480ef26b2de64d54cec5fd",
+  "results": {
+    "fit_trained_view": {
+      "count": 1024,
+      "valid_count": 994,
+      "raw": {
+        "pseudo_correct": 842,
+        "direct_iq_nmse": 2.020289897918701
+      },
+      "dura": {
+        "pseudo_correct": 955,
+        "direct_iq_nmse": 0.02538554184138775
+      },
+      "attention_025": {
+        "pseudo_correct": 822,
+        "direct_iq_nmse": 1.254953384399414
+      },
+      "attention_1": {
+        "pseudo_correct": 892,
+        "direct_iq_nmse": 0.3336928188800812
+      },
+      "scene_counts": {
+        "practical_high": 164,
+        "practical_mid": 208,
+        "practical_low_suburban": 189,
+        "practical_high_urban": 164,
+        "practical_mid_urban": 134,
+        "practical_low_urban": 165
+      }
+    },
+    "fit_other_view": {
+      "count": 1024,
+      "valid_count": 994,
+      "raw": {
+        "pseudo_correct": 857,
+        "direct_iq_nmse": 2.0202465057373047
+      },
+      "dura": {
+        "pseudo_correct": 945,
+        "direct_iq_nmse": 0.025195665657520294
+      },
+      "attention_025": {
+        "pseudo_correct": 822,
+        "direct_iq_nmse": 1.2551226615905762
+      },
+      "attention_1": {
+        "pseudo_correct": 864,
+        "direct_iq_nmse": 0.33468836545944214
+      },
+      "scene_counts": {
+        "practical_high": 193,
+        "practical_mid": 170,
+        "practical_low_suburban": 157,
+        "practical_high_urban": 164,
+        "practical_mid_urban": 161,
+        "practical_low_urban": 179
+      }
+    },
+    "validation_other_view": {
+      "count": 1024,
+      "valid_count": 996,
+      "raw": {
+        "pseudo_correct": 851,
+        "direct_iq_nmse": 1.96272873878479
+      },
+      "dura": {
+        "pseudo_correct": 954,
+        "direct_iq_nmse": 0.01578589901328087
+      },
+      "attention_025": {
+        "pseudo_correct": 794,
+        "direct_iq_nmse": 1.1959505081176758
+      },
+      "attention_1": {
+        "pseudo_correct": 797,
+        "direct_iq_nmse": 0.2725674510002136
+      },
+      "scene_counts": {
+        "practical_high": 176,
+        "practical_mid": 161,
+        "practical_low_suburban": 173,
+        "practical_high_urban": 180,
+        "practical_mid_urban": 159,
+        "practical_low_urban": 175
+      }
+    },
+    "holdout_other_view": {
+      "count": 1024,
+      "valid_count": 985,
+      "raw": {
+        "pseudo_correct": 866,
+        "direct_iq_nmse": 2.065993547439575
+      },
+      "dura": {
+        "pseudo_correct": 948,
+        "direct_iq_nmse": 0.039392486214637756
+      },
+      "attention_025": {
+        "pseudo_correct": 833,
+        "direct_iq_nmse": 1.3485121726989746
+      },
+      "attention_1": {
+        "pseudo_correct": 858,
+        "direct_iq_nmse": 0.524131715297699
+      },
+      "scene_counts": {
+        "practical_high": 172,
+        "practical_mid": 191,
+        "practical_low_suburban": 191,
+        "practical_high_urban": 172,
+        "practical_mid_urban": 157,
+        "practical_low_urban": 141
+      }
+    }
+  },
+  "paired_fit_ids": true,
+  "source_only": true,
+  "F_frozen": true,
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Fit physical IDs were trained in views 21/22/23; clean F pseudo labels are not truth; source IDs have been explored."
+}
