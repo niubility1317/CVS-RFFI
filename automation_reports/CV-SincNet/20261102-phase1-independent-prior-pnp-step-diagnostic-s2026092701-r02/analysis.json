@@ -1,0 +1,247 @@
+{
+  "status": "SOURCE_STEP_DIAGNOSTIC_COMPLETE",
+  "source_count": 2048,
+  "source_only": true,
+  "TX_truth_reads": 0,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "fixed_prediction_sha256": "c600e6331b6ffef2820e4117b7eef9a946401dc314012a85c06dba73bb209c08",
+  "white_noise_reference": {
+    "count": 2048,
+    "seed": 2026126056,
+    "lag1_mean": -4.5008449200038955e-05,
+    "lag1_abs_95pct": 0.08900863861341377,
+    "iq_correlation_mean": 0.0008872044841267764,
+    "iq_abs_95pct": 0.1196192395665039
+  },
+  "results": {
+    "RX4_6": {
+      "count": 1024,
+      "trusted": 1008,
+      "active": 1024,
+      "posterior_residual_lag1_mean": 0.36933478713035583,
+      "posterior_residual_iq_correlation_mean": 0.052224092185497284,
+      "methods": {
+        "raw": {
+          "pseudo_correct": 873,
+          "repairs_vs_parent": 18,
+          "damages_vs_parent": 97,
+          "direct_iq_nmse": 1.959424376487732,
+          "aligned_iq_nmse": 0.11071537435054779
+        },
+        "dura": {
+          "pseudo_correct": 971,
+          "repairs_vs_parent": 34,
+          "damages_vs_parent": 15,
+          "direct_iq_nmse": 0.015524735674262047,
+          "aligned_iq_nmse": 0.010564342141151428
+        },
+        "parent": {
+          "pseudo_correct": 952,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "direct_iq_nmse": 0.02758747711777687,
+          "aligned_iq_nmse": 0.01468750461935997
+        },
+        "observation_only": {
+          "pseudo_correct": 957,
+          "repairs_vs_parent": 12,
+          "damages_vs_parent": 7,
+          "direct_iq_nmse": 0.02925068885087967,
+          "aligned_iq_nmse": 0.016720298677682877
+        },
+        "prior_only": {
+          "pseudo_correct": 920,
+          "repairs_vs_parent": 10,
+          "damages_vs_parent": 42,
+          "direct_iq_nmse": 0.041936926543712616,
+          "aligned_iq_nmse": 0.026641517877578735
+        },
+        "alternating": {
+          "pseudo_correct": 934,
+          "repairs_vs_parent": 13,
+          "damages_vs_parent": 31,
+          "direct_iq_nmse": 0.03767577186226845,
+          "aligned_iq_nmse": 0.023367267102003098
+        }
+      },
+      "scenes": {
+        "practical_high": {
+          "count": 193,
+          "trusted": 190,
+          "raw": 188,
+          "dura": 189,
+          "parent": 189,
+          "observation_only": 189,
+          "prior_only": 185,
+          "alternating": 185
+        },
+        "practical_high_urban": {
+          "count": 158,
+          "trusted": 155,
+          "raw": 148,
+          "dura": 153,
+          "parent": 153,
+          "observation_only": 153,
+          "prior_only": 150,
+          "alternating": 152
+        },
+        "practical_low_suburban": {
+          "count": 175,
+          "trusted": 170,
+          "raw": 157,
+          "dura": 167,
+          "parent": 163,
+          "observation_only": 167,
+          "prior_only": 159,
+          "alternating": 162
+        },
+        "practical_low_urban": {
+          "count": 166,
+          "trusted": 164,
+          "raw": 102,
+          "dura": 144,
+          "parent": 136,
+          "observation_only": 136,
+          "prior_only": 126,
+          "alternating": 130
+        },
+        "practical_mid": {
+          "count": 166,
+          "trusted": 165,
+          "raw": 158,
+          "dura": 164,
+          "parent": 162,
+          "observation_only": 163,
+          "prior_only": 159,
+          "alternating": 161
+        },
+        "practical_mid_urban": {
+          "count": 166,
+          "trusted": 164,
+          "raw": 120,
+          "dura": 154,
+          "parent": 149,
+          "observation_only": 149,
+          "prior_only": 141,
+          "alternating": 144
+        }
+      }
+    },
+    "RX8": {
+      "count": 1024,
+      "trusted": 976,
+      "active": 1021,
+      "posterior_residual_lag1_mean": 0.2725580632686615,
+      "posterior_residual_iq_correlation_mean": -0.004749579355120659,
+      "methods": {
+        "raw": {
+          "pseudo_correct": 846,
+          "repairs_vs_parent": 13,
+          "damages_vs_parent": 104,
+          "direct_iq_nmse": 2.0542848110198975,
+          "aligned_iq_nmse": 0.1130596250295639
+        },
+        "dura": {
+          "pseudo_correct": 941,
+          "repairs_vs_parent": 22,
+          "damages_vs_parent": 18,
+          "direct_iq_nmse": 0.04420500248670578,
+          "aligned_iq_nmse": 0.02757909521460533
+        },
+        "parent": {
+          "pseudo_correct": 937,
+          "repairs_vs_parent": 0,
+          "damages_vs_parent": 0,
+          "direct_iq_nmse": 0.05643276870250702,
+          "aligned_iq_nmse": 0.026770707219839096
+        },
+        "observation_only": {
+          "pseudo_correct": 940,
+          "repairs_vs_parent": 6,
+          "damages_vs_parent": 3,
+          "direct_iq_nmse": 0.05956362932920456,
+          "aligned_iq_nmse": 0.02670758217573166
+        },
+        "prior_only": {
+          "pseudo_correct": 903,
+          "repairs_vs_parent": 3,
+          "damages_vs_parent": 37,
+          "direct_iq_nmse": 0.07850458472967148,
+          "aligned_iq_nmse": 0.0444173738360405
+        },
+        "alternating": {
+          "pseudo_correct": 922,
+          "repairs_vs_parent": 9,
+          "damages_vs_parent": 24,
+          "direct_iq_nmse": 0.07313644886016846,
+          "aligned_iq_nmse": 0.03767271339893341
+        }
+      },
+      "scenes": {
+        "practical_high": {
+          "count": 166,
+          "trusted": 158,
+          "raw": 156,
+          "dura": 157,
+          "parent": 157,
+          "observation_only": 157,
+          "prior_only": 153,
+          "alternating": 155
+        },
+        "practical_high_urban": {
+          "count": 185,
+          "trusted": 176,
+          "raw": 166,
+          "dura": 175,
+          "parent": 174,
+          "observation_only": 174,
+          "prior_only": 170,
+          "alternating": 172
+        },
+        "practical_low_suburban": {
+          "count": 163,
+          "trusted": 152,
+          "raw": 144,
+          "dura": 150,
+          "parent": 149,
+          "observation_only": 151,
+          "prior_only": 138,
+          "alternating": 145
+        },
+        "practical_low_urban": {
+          "count": 180,
+          "trusted": 174,
+          "raw": 113,
+          "dura": 159,
+          "parent": 154,
+          "observation_only": 156,
+          "prior_only": 151,
+          "alternating": 154
+        },
+        "practical_mid": {
+          "count": 160,
+          "trusted": 153,
+          "raw": 145,
+          "dura": 151,
+          "parent": 153,
+          "observation_only": 152,
+          "prior_only": 145,
+          "alternating": 147
+        },
+        "practical_mid_urban": {
+          "count": 170,
+          "trusted": 163,
+          "raw": 122,
+          "dura": 149,
+          "parent": 150,
+          "observation_only": 150,
+          "prior_only": 146,
+          "alternating": 149
+        }
+      }
+    }
+  },
+  "caveat": "Clean F pseudo target is not true accuracy. Source records and views previously explored; raw posterior error unaligned; IID noise is illustrative, not a formal null for structured source signals."
+}
