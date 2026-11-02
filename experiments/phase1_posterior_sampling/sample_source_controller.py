@@ -2,7 +2,7 @@
 import argparse,json,os,subprocess,time,traceback
 from pathlib import Path
 ap=argparse.ArgumentParser();ap.add_argument('--commit',required=True);C=ap.parse_args().commit
-R=Path('/home/szu2070436088/2510044040/CV-SincNet');N='20261102-phase1-posterior-sampling-source-s2026092701-r03';SMOKE='20261102-phase1-posterior-sampling-smoke-s2026092701-r03';SCORE='20261102-phase1-posterior-sampling-score-s2026092701-r03';P=R/'runs'/(N+'-controller');REL=R/'releases'/(N+'-release')/'experiments/phase1_posterior_sampling'
+R=Path('/home/szu2070436088/2510044040/CV-SincNet');N='20261102-phase1-posterior-sampling-source-s2026092701-r04';SMOKE='20261102-phase1-posterior-sampling-smoke-s2026092701-r04';SCORE='20261102-phase1-posterior-sampling-score-s2026092701-r04';P=R/'runs'/(N+'-controller');REL=R/'releases'/(N+'-release')/'experiments/phase1_posterior_sampling'
 def status(state,**kw):
  q=P/'status.tmp';q.write_text(json.dumps(dict(state=state,**kw),indent=2),encoding='utf8');os.replace(q,P/'status.json')
 def wait_capacity():

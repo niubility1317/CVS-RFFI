@@ -11,3 +11,9 @@ def source_noise(ids, components, dim):
  z=np.stack(z); e=np.stack(e)
  return (torch.frombuffer(memoryview(z),dtype=torch.float32).reshape(z.shape),
          torch.frombuffer(memoryview(e),dtype=torch.float32).reshape(e.shape))
+
+
+def tensor_array(value):
+ value=value.detach().cpu().contiguous()
+ if value.dtype==torch.bool:return np.from_dlpack(value.to(torch.uint8)).astype(np.bool_)
+ return np.from_dlpack(value)

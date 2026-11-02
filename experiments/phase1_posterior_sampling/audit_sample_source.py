@@ -2,6 +2,7 @@
 import argparse,hashlib,json,math,sys
 from pathlib import Path
 import numpy as np
+from sampling_noise import tensor_array
 
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def verify_routes(prob,logweights,choices,pred):
@@ -33,7 +34,7 @@ def main():
   for j in range(2):
    chunks=[]
    for start in range(0,len(ids),8):
-    x=core.tensor(waves[start:start+8,j],'cpu');chunks.append(teacher.classify_features(teacher.features(x)).argmax(1).cpu().numpy())
+    x=core.tensor(waves[start:start+8,j],'cpu');chunks.append(tensor_array(teacher.classify_features(teacher.features(x)).argmax(1)))
    actual.append(np.concatenate(chunks))
  if not np.array_equal(actual[0],pred[:,2]) or not np.array_equal(actual[1],pred[:,3]):raise ValueError('Replayed selected IQ classification differs')
  cache,clean,allrx,training,pv,ph=s.source_contract(a.root);received,allscene=s.epoch_data(cache,19)

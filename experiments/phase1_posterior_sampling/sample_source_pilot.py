@@ -6,7 +6,7 @@ import torch
 from torch.nn import functional as F
 from posterior_sampling import conditional_gaussian_draws
 from posterior_selection import choose_consensus,select_waveforms
-from sampling_noise import source_noise
+from sampling_noise import source_noise,tensor_array
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'phase1_joint_mixture'))
 from source_pilot import s,core,BlindActionNet,action_matrix,posterior,SOURCE,PRIOR_RUN
 
@@ -61,12 +61,12 @@ def main():
  with torch.no_grad():
   for start in range(0,len(select),8):
    pos=select[start:start+8];idx=ids[pos];x=core.tensor(received[idx],'cpu');y=core.tensor(clean[idx],'cpu');vals=batch(x,y,idx,blind,stats,factors,gate,teacher,a.smoke);raw,physical,cons,conf=vals[0].unbind(1)
-   if not np.array_equal(raw.numpy(),old[pos,5]) or not np.array_equal(physical.numpy(),old[pos,7]) or not np.array_equal(vals[5].numpy(),old[pos,3]>.8):raise ValueError('Source raw, physical and fixed gate must match')
+   if not np.array_equal(tensor_array(raw),old[pos,5]) or not np.array_equal(tensor_array(physical),old[pos,7]) or not np.array_equal(tensor_array(vals[5]),old[pos,3]>.8):raise ValueError('Source raw, physical and fixed gate must match')
    for j,v in enumerate(vals):chunks[j].append(v.cpu())
    if (start+len(pos))%128==0:print('POSTERIOR_SAMPLE_SOURCE_PROGRESS',start+len(pos),'seconds',round(time.monotonic()-tick,1),flush=True)
  if a.smoke:
   a.out.mkdir(parents=True);core.write(a.out/'result.json',dict(status='PASS',records=len(select),source_only=True,posterior_mean_and_weights_match=True,selected_waveform_predictions_match=True,DURA_loaded=False,TX_truth_reads=0,U_s_truth_reads=0,V_reads=0,test_reads=0));print('POSTERIOR_SAMPLE_SOURCE_SMOKE_PASS',len(select),flush=True);return
- arr=[torch.cat(v).numpy() for v in chunks];path=a.out/'source_predictions.npz';a.out.mkdir(parents=True)
+ arr=[tensor_array(torch.cat(v)) for v in chunks];path=a.out/'source_predictions.npz';a.out.mkdir(parents=True)
  with path.open('xb') as f:np.savez(f,indices=ids,rx=rx,scene=scene,split=split,prior_values=old,predictions=arr[0],aligned_errors=arr[1],probabilities=arr[2],logweights=arr[3],choices=arr[4],active=arr[5],selected_waveforms=arr[6])
  m=dict(status='SOURCE_PREDICTIONS_FIXED',commit=a.commit,count=len(ids),sha256=sha(path),prior_sha256=expected,reference_sha256=rm['prediction_sha256'],blind_checkpoint_sha256=sha(a.root/'runs'/SOURCE/'checkpoint_epoch10.pt'),source_prior_sha256=sha(a.root/'runs'/PRIOR_RUN/'source_prior.pt'),sampling_seed_base=2026165054,draws_per_component=1,selection=['weighted_consensus','max_confidence'],source_only=True,DURA_loaded=False,TX_truth_reads=0,U_s_truth_reads=0,V_reads=0,test_reads=0,model_updates=0,caveat='Approximate posterior under fixed blind channel and Gaussian source prior; source records previously explored; no ground claim.')
  core.write(a.out/'prediction_complete.json',m);print('POSTERIOR_SAMPLE_SOURCE_FIXED',sha(path),flush=True)
