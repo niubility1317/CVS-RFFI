@@ -19,7 +19,7 @@ def main():
  n=64 if a.smoke else len(ids);blind,prior,stats,gate,eye=models;means,cov,priors=stats;factors={k:factors_from_covariance(cov,k) for k in (128,256)};outputs=[];tick=time.monotonic()
  with torch.no_grad():
   for start in range(0,n,32):
-   ix=ids[start:start+32];x=p.core.tensor(received[ix],'cpu');y=p.core.tensor(clean[ix],'cpu');raw=teacher.classify_features(teacher.features(x)).argmax(1);active=gate(x).sigmoid()>.8;raw_np=raw.cpu().numpy();active_np=active.cpu().numpy();ref=old_values[start:start+len(ix)]
+   ix=ids[start:start+32];x=p.core.tensor(received[ix],'cpu');y=p.core.tensor(clean[ix],'cpu');raw=teacher.classify_features(teacher.features(x)).argmax(1);active=gate(x).sigmoid()>.8;raw_np=np.from_dlpack(raw.cpu().contiguous());active_np=np.from_dlpack(active.cpu().contiguous());ref=old_values[start:start+len(ix)]
    if not np.array_equal(raw_np,ref[:,5]) or not np.array_equal(active_np,ref[:,3]>.8):raise ValueError('CPU source raw F and gate must match saved GPU source replay')
    den=y[:,:,64:-64].square().sum(1).mean(1).clamp_min(1e-12);batch=[]
    for rank in (128,256):
@@ -27,7 +27,7 @@ def main():
     if active.any():
      signal=x[active];h,lv=blind(signal);A=p.action_matrix(h);states,lp=lowrank_posterior(signal.reshape(len(signal),512),A,lv.exp(),means,factors[rank],priors);z=(states*lp.exp().unsqueeze(-1)).sum(1).reshape_as(signal);wave[active]=p.restore_observation_conditioned(prior,signal,z,A,lv)
     pred=teacher.classify_features(teacher.features(wave)).argmax(1);_,err=p.s.align(wave,y);batch.extend((pred.float(),err/den))
-   values=torch.stack(batch,1).cpu().numpy()
+   values=np.from_dlpack(torch.stack(batch,1).cpu().contiguous())
    if not np.isfinite(values).all():raise ValueError('Finite source output required')
    outputs.append(values)
    if (start+len(ix))%512==0:print('LOWRANK_SOURCE_PROGRESS',start+len(ix),'seconds',round(time.monotonic()-tick,1),flush=True)
