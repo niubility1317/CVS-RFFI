@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "counts": {
+    "exposures": 64,
+    "L_s": 32,
+    "U_s": 32
+  },
+  "scene_counts": {
+    "practical_high": 33,
+    "practical_high_urban": 33,
+    "practical_low_suburban": 31,
+    "practical_low_urban": 30,
+    "practical_mid": 35,
+    "practical_mid_urban": 30
+  },
+  "views_per_source_per_epoch": 2,
+  "contrast_weight": 0.05,
+  "contrast_temperature": 0.2,
+  "F_frozen": true,
+  "blind_frozen": true,
+  "DURA_loaded": false,
+  "L_s_metadata_labels_read": 6300,
+  "L_s_fit_labels_used": 32,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0
+}

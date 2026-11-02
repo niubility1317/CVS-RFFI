@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "host": "N607",
+  "manual_loss": 1.225312767234,
+  "computed_loss": 1.225312767234,
+  "gradient_abs_sum": 0.077409,
+  "unknown_class_mask_checked": true,
+  "single_pair_loss": 0,
+  "pytest_unavailable": true,
+  "method": "Manual independent finite sums, gradients and unknown-label check; real source gradient checked separately in smoke."
+}
