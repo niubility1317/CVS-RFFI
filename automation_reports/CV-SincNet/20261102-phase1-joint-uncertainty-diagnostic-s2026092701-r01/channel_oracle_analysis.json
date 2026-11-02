@@ -1,0 +1,36 @@
+{
+  "status": "POSTHOC_SOURCE_DIAGNOSTIC",
+  "selection": "Uses unavailable source simulation effective channel truth to choose per record; non-deployable, not a general performance bound.",
+  "input_prediction_sha256": [
+    "2021190418b9b9348d13264cad7a01b1fa8786bfc163e00162ffdc135707855d",
+    "249e6ca848f0bebc48193d76f5576834cf3ebf3a8558840da31ea0e5a89e97f2"
+  ],
+  "results": {
+    "all": {
+      "records": 384,
+      "valid": 369,
+      "parent_channel_nmse": 0.015522287227213383,
+      "oracle_channel_nmse": 0.014636263251304626,
+      "oracle_select_nonparent": 367,
+      "parent_iq_nmse": 0.042423199862241745,
+      "oracle_iq_nmse": 0.041648704558610916,
+      "parent_correct": 357,
+      "oracle_correct": 358,
+      "repairs": 1,
+      "damages": 0
+    },
+    "low_urban": {
+      "records": 64,
+      "valid": 63,
+      "parent_channel_nmse": 0.039242327213287354,
+      "oracle_channel_nmse": 0.03670286014676094,
+      "oracle_select_nonparent": 58,
+      "parent_iq_nmse": 0.08946343511343002,
+      "oracle_iq_nmse": 0.08678044378757477,
+      "parent_correct": 59,
+      "oracle_correct": 59,
+      "repairs": 0,
+      "damages": 0
+    }
+  }
+}
