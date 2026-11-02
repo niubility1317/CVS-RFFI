@@ -1,0 +1,26 @@
+CELL 0.25 0.8 part 1 scenes 6 N 6606 parent 6181 structured 6180 unroll 6186 dura 6326
+CELL 0.25 0.8 part 1 scenes 1 N 1130 parent 907 structured 909 unroll 910 dura 984
+CELL 0.25 0.8 part 2 scenes 6 N 3183 parent 3057 structured 3064 unroll 3061 dura 3060
+CELL 0.25 0.8 part 2 scenes 1 N 512 parent 455 structured 459 unroll 458 dura 462
+CELL 0.25 0.99 part 1 scenes 6 N 6606 parent 6182 structured 6181 unroll 6187 dura 6326
+CELL 0.25 0.99 part 1 scenes 1 N 1130 parent 908 structured 910 unroll 911 dura 984
+CELL 0.25 0.99 part 2 scenes 6 N 3183 parent 3054 structured 3061 unroll 3058 dura 3060
+CELL 0.25 0.99 part 2 scenes 1 N 512 parent 454 structured 458 unroll 457 dura 462
+CELL 0.5 0.8 part 1 scenes 6 N 6606 parent 6181 structured 6179 unroll 6205 dura 6326
+CELL 0.5 0.8 part 1 scenes 1 N 1130 parent 907 structured 920 unroll 917 dura 984
+CELL 0.5 0.8 part 2 scenes 6 N 3183 parent 3057 structured 3067 unroll 3066 dura 3060
+CELL 0.5 0.8 part 2 scenes 1 N 512 parent 455 structured 459 unroll 463 dura 462
+CELL 0.5 0.99 part 1 scenes 6 N 6606 parent 6182 structured 6180 unroll 6206 dura 6326
+CELL 0.5 0.99 part 1 scenes 1 N 1130 parent 908 structured 921 unroll 918 dura 984
+CELL 0.5 0.99 part 2 scenes 6 N 3183 parent 3054 structured 3063 unroll 3063 dura 3060
+CELL 0.5 0.99 part 2 scenes 1 N 512 parent 454 structured 458 unroll 462 dura 462
+CELL 1.0 0.8 part 1 scenes 6 N 6606 parent 6181 structured 6156 unroll 6215 dura 6326
+CELL 1.0 0.8 part 1 scenes 1 N 1130 parent 907 structured 914 unroll 921 dura 984
+CELL 1.0 0.8 part 2 scenes 6 N 3183 parent 3057 structured 3055 unroll 3065 dura 3060
+CELL 1.0 0.8 part 2 scenes 1 N 512 parent 455 structured 456 unroll 462 dura 462
+CELL 1.0 0.99 part 1 scenes 6 N 6606 parent 6182 structured 6156 unroll 6215 dura 6326
+CELL 1.0 0.99 part 1 scenes 1 N 1130 parent 908 structured 915 unroll 922 dura 984
+CELL 1.0 0.99 part 2 scenes 6 N 3183 parent 3054 structured 3051 unroll 3061 dura 3060
+CELL 1.0 0.99 part 2 scenes 1 N 512 parent 454 structured 455 unroll 461 dura 462
+CONTROL_CELL_CHECKS 126 CONTROL_DIFFERENCES []
+SELECTION {"0.25": {"primary_dura": {"kind": "none", "validation_net": 0}, "accuracy_dura": {"kind": "none", "validation_net": 0}, "primary_parent": {"kind": "none", "validation_net": 0}, "accuracy_parent": {"kind": "none", "validation_net": 0}}, "0.5": {"primary_dura": {"kind": "none", "validation_net": 0}, "accuracy_dura": {"kind": "none", "validation_net": 0}, "primary_parent": {"kind": "residual", "threshold": 0.8, "validation_net": 24, "reference": "parent"}, "accuracy_parent": {"kind": "residual", "threshold": 0.8, "validation_net": 24, "reference": "parent"}}, "1.0": {"primary_dura": {"kind": "none", "validation_net": 0}, "accuracy_dura": {"kind": "none", "validation_net": 0}, "primary_parent": {"kind": "residual", "threshold": 0.8, "validation_net": 34, "reference": "parent"}, "accuracy_parent": {"kind": "residual", "threshold": 0.8, "validation_net": 34, "reference": "parent"}}}
