@@ -19,7 +19,7 @@ def main():
  n=64 if a.smoke else len(ids);blind,prior,stats,gate,eye=models;means,cov,priors=stats;factors={k:factors_from_covariance(cov,k) for k in (128,256)};outputs=[];tick=time.monotonic()
  with torch.no_grad():
   for start in range(0,n,32):
-   ix=ids[start:start+32];x=p.core.tensor(received[ix],'cpu');y=p.core.tensor(clean[ix],'cpu');raw=teacher.classify_features(teacher.features(x)).argmax(1);active=gate(x).sigmoid()>.8;raw_np=np.from_dlpack(raw.cpu().contiguous());active_np=np.from_dlpack(active.cpu().contiguous());ref=old_values[start:start+len(ix)]
+   ix=ids[start:start+32];x=p.core.tensor(received[ix],'cpu');y=p.core.tensor(clean[ix],'cpu');raw=teacher.classify_features(teacher.features(x)).argmax(1);active=gate(x).sigmoid()>.8;raw_np=np.from_dlpack(raw.cpu().contiguous());active_np=np.from_dlpack(active.to(torch.uint8).cpu().contiguous());ref=old_values[start:start+len(ix)]
    if not np.array_equal(raw_np,ref[:,5]) or not np.array_equal(active_np,ref[:,3]>.8):raise ValueError('CPU source raw F and gate must match saved GPU source replay')
    den=y[:,:,64:-64].square().sum(1).mean(1).clamp_min(1e-12);batch=[]
    for rank in (128,256):
