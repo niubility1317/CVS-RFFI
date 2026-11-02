@@ -1,1 +1,2 @@
 {"at": "2026-11-02T14:39:12+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-02T14:41:44+00:00", "status": "RUNNING", "note": "确认15个完整任务复用、1个已知非有限任务延后且部分预测保留；13508个未开始任务续跑，实际controller 1623650，source-only smoke PASS。缺口未解决前独立评分屏障保持关闭。", "evidence": ["N607:r03/resume_manifest.json", "N607:r03/source_smoke.json", "N607:r03/worker_state.json"], "row_id": null}
