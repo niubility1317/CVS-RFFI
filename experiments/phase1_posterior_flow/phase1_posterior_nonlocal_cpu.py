@@ -6,8 +6,8 @@ import torch
 from posterior_nonlocal_synthesis import PosteriorNonlocalSynthesis
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'phase1_joint_mixture'))
 from source_pilot import s,core,BlindActionNet,action_matrix,posterior,SOURCE,PRIOR_RUN
-TRAIN='20261102-phase1-posterior-nonlocal-source-s2026092701-r01'
-TRAIN_COMMIT='8c97af0696c0e143158f8d6bf7cc53a996a8cf09'
+TRAIN='20261102-phase1-posterior-nonlocal-source-s2026092701-r02'
+TRAIN_COMMIT='b1170e6ad3620c2c821bbcbcdca2f5a3482e3285'
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 
 def load_fixed(root):
