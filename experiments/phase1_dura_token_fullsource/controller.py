@@ -8,7 +8,7 @@ import traceback
 from experiments.phase1_dura_posterior.resources import wait_for_cpu
 
 ROOT=Path('/home/szu2070436088/2510044040/CV-SincNet')
-RUN='20261103-phase1-dura-token-fullsource-s2026092701-r01'
+RUN='20261103-phase1-dura-token-fullsource-s2026092701-r02'
 RELEASE=ROOT/'releases'/(RUN+'-release')
 CONTROL=ROOT/'runs'/(RUN+'-controller')
 PYTHON='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'

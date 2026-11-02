@@ -8,6 +8,8 @@ import time
 import numpy as np
 import torch
 from experiments.phase1_dura_token_fullsource.logic import match_ids
+from experiments.phase1_dura_context.model import ContextRecovery
+from experiments.phase1_dura_spectral_token.model import SpectralTokenRecovery
 
 SOURCES=(
  ('20261103-phase1-dura-context-source-s2026092701-r01','2d37010cec9a298cd7e80057e9116c7d1ddd3a15','phase1_dura_context_v1'),
@@ -16,10 +18,8 @@ PRIOR='20261102-phase1-unroll-source-replay-s2026092701-r01'
 
 def model_for_schema(schema):
     if schema == 'phase1_dura_context_v1':
-        from experiments.phase1_dura_context.model import ContextRecovery
         return ContextRecovery()
     if schema == 'phase1_dura_spectral_token_v1':
-        from experiments.phase1_dura_spectral_token.model import SpectralTokenRecovery
         return SpectralTokenRecovery()
     raise ValueError('Only the two registered source models are allowed')
 
