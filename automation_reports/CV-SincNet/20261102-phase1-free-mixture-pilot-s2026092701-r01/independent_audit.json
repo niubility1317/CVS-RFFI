@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "scope": "Independently sum stored per-scene source pseudo-label counts; no individual predictions available.",
+  "valid_count": 369,
+  "correct": {
+    "raw": 327,
+    "dura": 361,
+    "parent": 357,
+    "free_0.25": 357,
+    "free_0.5": 356,
+    "free_1": 356
+  }
+}

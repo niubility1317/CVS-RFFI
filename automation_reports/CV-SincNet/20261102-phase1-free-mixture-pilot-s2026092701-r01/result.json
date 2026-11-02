@@ -1,0 +1,197 @@
+{
+  "status": "SOURCE_PILOT_COMPLETE",
+  "commit": "25fe47b9101033b4343ee7b7825c0f7ad79885bc",
+  "training_counts": {
+    "exposures": 10396,
+    "eligible": 10077,
+    "labeled": 934
+  },
+  "losses": [
+    0.3388372275250422,
+    0.2023155203911107,
+    0.1903963665364901,
+    0.18445556330085805,
+    0.17509041857161053,
+    0.17296942232134702,
+    0.16770286668434708,
+    0.164642270608969
+  ],
+  "scenes": {
+    "practical_high": {
+      "count": 64,
+      "valid_count": 60,
+      "raw": {
+        "correct": 59,
+        "mean_iq_nmse": 2.064181327819824
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.015550384297966957
+      },
+      "parent": {
+        "correct": 60,
+        "mean_iq_nmse": 0.024205170571804047
+      },
+      "free_0.25": {
+        "correct": 60,
+        "mean_iq_nmse": 0.023992884904146194
+      },
+      "free_0.5": {
+        "correct": 60,
+        "mean_iq_nmse": 0.02385808154940605
+      },
+      "free_1": {
+        "correct": 60,
+        "mean_iq_nmse": 0.023820918053388596
+      }
+    },
+    "practical_mid": {
+      "count": 64,
+      "valid_count": 61,
+      "raw": {
+        "correct": 59,
+        "mean_iq_nmse": 2.0491256713867188
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.021471306681632996
+      },
+      "parent": {
+        "correct": 61,
+        "mean_iq_nmse": 0.0190134197473526
+      },
+      "free_0.25": {
+        "correct": 61,
+        "mean_iq_nmse": 0.018925011157989502
+      },
+      "free_0.5": {
+        "correct": 61,
+        "mean_iq_nmse": 0.01895098388195038
+      },
+      "free_1": {
+        "correct": 61,
+        "mean_iq_nmse": 0.019346069544553757
+      }
+    },
+    "practical_low_suburban": {
+      "count": 64,
+      "valid_count": 61,
+      "raw": {
+        "correct": 57,
+        "mean_iq_nmse": 2.0858490467071533
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.032062217593193054
+      },
+      "parent": {
+        "correct": 59,
+        "mean_iq_nmse": 0.042548276484012604
+      },
+      "free_0.25": {
+        "correct": 59,
+        "mean_iq_nmse": 0.04238899052143097
+      },
+      "free_0.5": {
+        "correct": 59,
+        "mean_iq_nmse": 0.04242251068353653
+      },
+      "free_1": {
+        "correct": 59,
+        "mean_iq_nmse": 0.04306800663471222
+      }
+    },
+    "practical_high_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "raw": {
+        "correct": 58,
+        "mean_iq_nmse": 2.0927858352661133
+      },
+      "dura": {
+        "correct": 61,
+        "mean_iq_nmse": 0.02210512012243271
+      },
+      "parent": {
+        "correct": 61,
+        "mean_iq_nmse": 0.02645229920744896
+      },
+      "free_0.25": {
+        "correct": 61,
+        "mean_iq_nmse": 0.026347707957029343
+      },
+      "free_0.5": {
+        "correct": 60,
+        "mean_iq_nmse": 0.026368025690317154
+      },
+      "free_1": {
+        "correct": 61,
+        "mean_iq_nmse": 0.02678336575627327
+      }
+    },
+    "practical_mid_urban": {
+      "count": 64,
+      "valid_count": 62,
+      "raw": {
+        "correct": 48,
+        "mean_iq_nmse": 2.0597095489501953
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.050538405776023865
+      },
+      "parent": {
+        "correct": 57,
+        "mean_iq_nmse": 0.052856605499982834
+      },
+      "free_0.25": {
+        "correct": 57,
+        "mean_iq_nmse": 0.0527227446436882
+      },
+      "free_0.5": {
+        "correct": 58,
+        "mean_iq_nmse": 0.05269403010606766
+      },
+      "free_1": {
+        "correct": 58,
+        "mean_iq_nmse": 0.052952032536268234
+      }
+    },
+    "practical_low_urban": {
+      "count": 64,
+      "valid_count": 63,
+      "raw": {
+        "correct": 46,
+        "mean_iq_nmse": 2.0336341857910156
+      },
+      "dura": {
+        "correct": 60,
+        "mean_iq_nmse": 0.0826321616768837
+      },
+      "parent": {
+        "correct": 59,
+        "mean_iq_nmse": 0.08946343511343002
+      },
+      "free_0.25": {
+        "correct": 59,
+        "mean_iq_nmse": 0.0895712599158287
+      },
+      "free_0.5": {
+        "correct": 58,
+        "mean_iq_nmse": 0.0898822471499443
+      },
+      "free_1": {
+        "correct": 57,
+        "mean_iq_nmse": 0.09111373871564865
+      }
+    }
+  },
+  "source_only": true,
+  "F_frozen": true,
+  "DURA_used_in_training": false,
+  "DURA_used_in_candidate": false,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Previously observed source IDs; clean F pseudo labels are not actual test accuracy."
+}
