@@ -1,0 +1,237 @@
+{
+  "status": "SOURCE_LS_UNION_AUDIT_COMPLETE",
+  "commit": "3cedfaf46c600a4fddb8fa4f5efc5aca8e2c16ee",
+  "count": 1047,
+  "cells": {
+    "1:clean": {
+      "count": 83,
+      "correct": {
+        "clean": 83,
+        "raw": 83,
+        "dura": 83,
+        "parent": 83,
+        "hierarchical": 83,
+        "joint": 83,
+        "free": 83
+      },
+      "physical_union_oracle": 83,
+      "physical_plus_dura_union_oracle": 83,
+      "physical_extra_over_dura": 0,
+      "physical_misses_recovered_by_dura": 0
+    },
+    "1:practical_high": {
+      "count": 97,
+      "correct": {
+        "clean": 97,
+        "raw": 96,
+        "dura": 96,
+        "parent": 96,
+        "hierarchical": 96,
+        "joint": 96,
+        "free": 96
+      },
+      "physical_union_oracle": 96,
+      "physical_plus_dura_union_oracle": 96,
+      "physical_extra_over_dura": 0,
+      "physical_misses_recovered_by_dura": 0
+    },
+    "1:practical_mid": {
+      "count": 91,
+      "correct": {
+        "clean": 91,
+        "raw": 87,
+        "dura": 89,
+        "parent": 90,
+        "hierarchical": 90,
+        "joint": 90,
+        "free": 90
+      },
+      "physical_union_oracle": 90,
+      "physical_plus_dura_union_oracle": 90,
+      "physical_extra_over_dura": 1,
+      "physical_misses_recovered_by_dura": 0
+    },
+    "1:practical_low_suburban": {
+      "count": 107,
+      "correct": {
+        "clean": 107,
+        "raw": 97,
+        "dura": 103,
+        "parent": 103,
+        "hierarchical": 102,
+        "joint": 103,
+        "free": 102
+      },
+      "physical_union_oracle": 105,
+      "physical_plus_dura_union_oracle": 106,
+      "physical_extra_over_dura": 3,
+      "physical_misses_recovered_by_dura": 1
+    },
+    "1:practical_high_urban": {
+      "count": 108,
+      "correct": {
+        "clean": 107,
+        "raw": 101,
+        "dura": 107,
+        "parent": 105,
+        "hierarchical": 106,
+        "joint": 105,
+        "free": 106
+      },
+      "physical_union_oracle": 106,
+      "physical_plus_dura_union_oracle": 107,
+      "physical_extra_over_dura": 0,
+      "physical_misses_recovered_by_dura": 1
+    },
+    "1:practical_mid_urban": {
+      "count": 108,
+      "correct": {
+        "clean": 108,
+        "raw": 84,
+        "dura": 98,
+        "parent": 93,
+        "hierarchical": 93,
+        "joint": 94,
+        "free": 94
+      },
+      "physical_union_oracle": 95,
+      "physical_plus_dura_union_oracle": 104,
+      "physical_extra_over_dura": 6,
+      "physical_misses_recovered_by_dura": 9
+    },
+    "1:practical_low_urban": {
+      "count": 102,
+      "correct": {
+        "clean": 102,
+        "raw": 57,
+        "dura": 92,
+        "parent": 80,
+        "hierarchical": 83,
+        "joint": 81,
+        "free": 80
+      },
+      "physical_union_oracle": 85,
+      "physical_plus_dura_union_oracle": 98,
+      "physical_extra_over_dura": 6,
+      "physical_misses_recovered_by_dura": 13
+    },
+    "2:clean": {
+      "count": 54,
+      "correct": {
+        "clean": 54,
+        "raw": 54,
+        "dura": 54,
+        "parent": 54,
+        "hierarchical": 54,
+        "joint": 54,
+        "free": 54
+      },
+      "physical_union_oracle": 54,
+      "physical_plus_dura_union_oracle": 54,
+      "physical_extra_over_dura": 0,
+      "physical_misses_recovered_by_dura": 0
+    },
+    "2:practical_high": {
+      "count": 51,
+      "correct": {
+        "clean": 51,
+        "raw": 50,
+        "dura": 51,
+        "parent": 51,
+        "hierarchical": 51,
+        "joint": 51,
+        "free": 51
+      },
+      "physical_union_oracle": 51,
+      "physical_plus_dura_union_oracle": 51,
+      "physical_extra_over_dura": 0,
+      "physical_misses_recovered_by_dura": 0
+    },
+    "2:practical_mid": {
+      "count": 37,
+      "correct": {
+        "clean": 37,
+        "raw": 33,
+        "dura": 34,
+        "parent": 36,
+        "hierarchical": 36,
+        "joint": 36,
+        "free": 36
+      },
+      "physical_union_oracle": 36,
+      "physical_plus_dura_union_oracle": 37,
+      "physical_extra_over_dura": 3,
+      "physical_misses_recovered_by_dura": 1
+    },
+    "2:practical_low_suburban": {
+      "count": 44,
+      "correct": {
+        "clean": 44,
+        "raw": 41,
+        "dura": 42,
+        "parent": 41,
+        "hierarchical": 42,
+        "joint": 42,
+        "free": 42
+      },
+      "physical_union_oracle": 43,
+      "physical_plus_dura_union_oracle": 44,
+      "physical_extra_over_dura": 2,
+      "physical_misses_recovered_by_dura": 1
+    },
+    "2:practical_high_urban": {
+      "count": 58,
+      "correct": {
+        "clean": 58,
+        "raw": 54,
+        "dura": 58,
+        "parent": 55,
+        "hierarchical": 55,
+        "joint": 55,
+        "free": 56
+      },
+      "physical_union_oracle": 56,
+      "physical_plus_dura_union_oracle": 58,
+      "physical_extra_over_dura": 0,
+      "physical_misses_recovered_by_dura": 2
+    },
+    "2:practical_mid_urban": {
+      "count": 51,
+      "correct": {
+        "clean": 51,
+        "raw": 40,
+        "dura": 50,
+        "parent": 48,
+        "hierarchical": 48,
+        "joint": 48,
+        "free": 50
+      },
+      "physical_union_oracle": 50,
+      "physical_plus_dura_union_oracle": 51,
+      "physical_extra_over_dura": 1,
+      "physical_misses_recovered_by_dura": 1
+    },
+    "2:practical_low_urban": {
+      "count": 56,
+      "correct": {
+        "clean": 55,
+        "raw": 34,
+        "dura": 50,
+        "parent": 50,
+        "hierarchical": 50,
+        "joint": 49,
+        "free": 48
+      },
+      "physical_union_oracle": 50,
+      "physical_plus_dura_union_oracle": 55,
+      "physical_extra_over_dura": 5,
+      "physical_misses_recovered_by_dura": 5
+    }
+  },
+  "truth_role": "L_s",
+  "source_only": true,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "caveat": "Per-record oracle uses source true labels and is not deployable; applies only to these fixed outputs and explored source IDs; no test generalization or other-model upper bound."
+}
