@@ -8,6 +8,23 @@ from unittest.mock import patch
 import numpy as np
 
 from experiments.phase1_hankel_posterior import audit_full, score_full
+from experiments.phase1_hankel_posterior.replay_full import merge_fixed_pilot
+
+
+class PilotMergeTest(unittest.TestCase):
+    def test_reorders_only_matching_pilot_rows(self):
+        ids = np.array([7, 3, 9, 1])
+        original = np.array([[70, 71], [30, 31], [90, 91], [10, 11]])
+        pilot = np.array([[11, 12], [91, 92]])
+        merged = merge_fixed_pilot(ids, original, np.array([1, 9]), pilot)
+        np.testing.assert_array_equal(merged, [[70, 71], [30, 31], [91, 92], [11, 12]])
+        np.testing.assert_array_equal(original[3], [10, 11])
+
+    def test_rejects_duplicate_or_missing_pilot_rows(self):
+        ids = np.array([1, 2, 3]); values = np.zeros((3, 2))
+        for pilot in (np.array([2, 2]), np.array([2, 4])):
+            with self.assertRaisesRegex(ValueError, 'Unique pilot rows'):
+                merge_fixed_pilot(ids, values, pilot, np.zeros((2, 2)))
 
 
 class FullSourceScoreTest(unittest.TestCase):

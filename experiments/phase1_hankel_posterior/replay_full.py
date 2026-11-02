@@ -35,6 +35,20 @@ def compute(x, y, physical, gate, reader, source):
                         predictions[2].float(), error/denominator), dim=1)
 
 
+def merge_fixed_pilot(ids, values, pilot_ids, pilot_values):
+    """Use original-batch outputs for pilot rows without changing source order."""
+    order = np.argsort(ids)
+    sorted_ids = ids[order]
+    positions = np.searchsorted(sorted_ids, pilot_ids)
+    if (len(np.unique(ids)) != len(ids) or len(np.unique(pilot_ids)) != len(pilot_ids)
+            or np.any(positions >= len(ids))
+            or not np.array_equal(sorted_ids[np.minimum(positions, len(ids)-1)], pilot_ids)):
+        raise ValueError('Unique pilot rows must belong to the full source cohort')
+    merged = values.copy()
+    merged[order[positions]] = pilot_values
+    return merged
+
+
 def main():
     from experiments.phase1_dura_posterior.physical_source_smoke import load_source_models, s
     ap = argparse.ArgumentParser()
@@ -73,8 +87,22 @@ def main():
     physical, gate = load_source_models(args.root, 'mean')
     physical.eval().requires_grad_(False); gate.eval().requires_grad_(False)
     reader, _ = core.teacher(args.root, 'cpu'); reader.eval().requires_grad_(False)
+    # Replay the pilot in its original row order and batch size.  The CPU
+    # posterior solver changes slightly when its batch composition changes.
+    pilot_total = 8 if args.smoke else len(pilot_ids)
+    pilot_output = []
+    for start in range(0, pilot_total, 8):
+        ix = pilot_ids[start:start+8]
+        arr = np.from_dlpack(compute(core.tensor(received[ix], 'cpu'), core.tensor(clean[ix], 'cpu'),
+                                     physical, gate, reader, s).cpu().contiguous())
+        fixed = pilot_values[start:start+len(ix)]
+        if (not np.array_equal(arr[:, 0], fixed[:, 3]) or not np.array_equal(arr[:, 1], fixed[:, 2])
+                or not np.array_equal(arr[:, 2], fixed[:, 5]) or not np.array_equal(arr[:, 3], fixed[:, 7])
+                or not np.allclose(arr[:, 4], fixed[:, 8], rtol=1e-5, atol=1e-7)):
+            raise ValueError('Original-batch pilot outputs must replay')
+        pilot_output.append(arr[:, 3:5].copy())
     total = 64 if args.smoke else len(ids)
-    result = []; matched = 0; tick = time.monotonic()
+    result = []; matched = 0; max_batch_error_difference = 0.; tick = time.monotonic()
     for start in range(0, total, 8):
         ix = ids[start:min(total, start+8)]
         batch = compute(core.tensor(received[ix], 'cpu'), core.tensor(clean[ix], 'cpu'), physical, gate, reader, s)
@@ -86,9 +114,10 @@ def main():
         here = match[start:start+len(ix)]
         if here.any():
             fixed = pilot_values[order[positions[start:start+len(ix)][here]]]
-            if (not np.array_equal(arr[here, 3], fixed[:, 7])
-                    or not np.allclose(arr[here, 4], fixed[:, 8], rtol=1e-5, atol=1e-7)):
-                raise ValueError('Previously fixed pilot decisions must replay')
+            if not np.array_equal(arr[here, 3], fixed[:, 7]):
+                raise ValueError('Previously fixed pilot decisions must replay across batch groupings')
+            max_batch_error_difference = max(max_batch_error_difference,
+                                             float(np.max(np.abs(arr[here, 4] - fixed[:, 8]))))
             matched += int(here.sum())
         result.append(arr[:, 3:5].copy())
         if (start+len(ix)) % 512 == 0:
@@ -99,10 +128,13 @@ def main():
                    TX_truth_reads=0, U_s_truth_reads=0, V_reads=0, test_reads=0))
         return
     if matched != 672: raise ValueError('All 672 prior fixed pilot outputs must replay')
+    final = merge_fixed_pilot(ids, np.concatenate(result), pilot_ids, np.concatenate(pilot_output))
     with (args.out/'source_predictions.npz').open('xb') as f:
-        np.savez(f, indices=ids, rx=rx_saved, scene=scene_saved, prior_values=old, hankel_values=np.concatenate(result))
+        np.savez(f, indices=ids, rx=rx_saved, scene=scene_saved, prior_values=old, hankel_values=final)
     core.write(args.out/'prediction_complete.json', dict(status='SOURCE_PREDICTIONS_FIXED', commit=args.commit,
                count=len(ids), pilot_replayed=matched, source_only=True, DURA_loaded=False,
+               pilot_batch_size=8, pilot_original_batch_replayed=True,
+               pilot_max_cross_batch_error_difference=max_batch_error_difference,
                TX_truth_reads=0, U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates=0,
                caveat='Source records previously explored; no target or ground performance claim.'))
     print('HANKEL_FULL_SOURCE_PREDICTIONS_FIXED', len(ids), flush=True)

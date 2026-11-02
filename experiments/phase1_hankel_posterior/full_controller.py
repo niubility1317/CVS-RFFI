@@ -9,9 +9,9 @@ import time
 import traceback
 
 ROOT = Path('/home/szu2070436088/2510044040/CV-SincNet')
-RUN = '20261102-phase1-hankel-posterior-full-source-s2026092701-r01'
-SMOKE = '20261102-phase1-hankel-posterior-full-smoke-s2026092701-r01'
-SCORE = '20261102-phase1-hankel-posterior-full-score-s2026092701-r01'
+RUN = '20261102-phase1-hankel-posterior-full-source-s2026092701-r02'
+SMOKE = '20261102-phase1-hankel-posterior-full-smoke-s2026092701-r02'
+SCORE = '20261102-phase1-hankel-posterior-full-score-s2026092701-r02'
 RELEASE = ROOT/'releases'/(RUN+'-release')
 CONTROL = ROOT/'runs'/(RUN+'-controller')
 PYTHON = '/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
