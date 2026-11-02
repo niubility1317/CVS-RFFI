@@ -466,3 +466,7 @@ run `20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01`，实际代�
 独立run `20261102-diagnostic-Restore-CovarianceDetail-sourceV-s2026092701-r01`，代码 `f29b31417ce98a280eac25ea2fa78e0c49a5f0ff`；CPU controller 1086539实际PID/CWD/命令/CUDA空/0新GPU已核实。3新＋4原检查及唯一P0/P1通过，一次archive SHA/compile通过。等待Main与随后延迟任务技术完成后，只新算最终G的12600条源V输出与source2；旧4178三基线及1800clean参考按ID/F0身份复用，全部四方法七景输出后独立CPU才接V真值。0训练/选模/target/OE/novel，源V结果不改标Main，默认DURA不变。
 
 为保持本任务最多一个活跃CPU真值评分器，人工Main独立产物复算与本源V的CPU评分错开，安排在其评分进程退出后；若源V在评分前技术失败，则确认无活跃评分进程后即可复算Main。不以源V分数或成功作为Main质量门槛；原Main自动正式评分始终先完成。
+
+## 2026-11-02 双分支完整源训练已核实
+
+run `20261102-phase1-Restore-CovarianceDetail-E30-s2026092701-r01`，源30/7410、1890000全源F0与后验曝光、30recovery、源先验不变及final等于E30全部核对PASS，weighted loss误差4.002514319978445e-09。训练6951.032337888995秒、worker6956.7112466519975秒、peak allocated 1518080512B。物理E30相对BF最大张量差0.44416457414627075，不声称同轨迹。原Main双总体七景由既有控制器自动接续；源结果不当性能验收，不据其取消测试。默认DURA、source权限与完整目标ACTIVE保持。
