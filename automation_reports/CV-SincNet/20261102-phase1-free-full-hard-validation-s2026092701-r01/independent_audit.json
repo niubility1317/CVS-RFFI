@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "cells_checked": 126,
+  "selection": {
+    "0.25": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "primary_parent": {
+        "kind": "residual",
+        "threshold": 0.8,
+        "validation_net": 19,
+        "reference": "parent"
+      },
+      "accuracy_parent": {
+        "kind": "residual",
+        "threshold": 0.8,
+        "validation_net": 19,
+        "reference": "parent"
+      }
+    },
+    "0.5": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "primary_parent": {
+        "kind": "residual",
+        "threshold": 0.8,
+        "validation_net": 31,
+        "reference": "parent"
+      },
+      "accuracy_parent": {
+        "kind": "residual",
+        "threshold": 0.8,
+        "validation_net": 31,
+        "reference": "parent"
+      }
+    },
+    "1.0": {
+      "primary_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_dura": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "primary_parent": {
+        "kind": "none",
+        "validation_net": 0
+      },
+      "accuracy_parent": {
+        "kind": "none",
+        "validation_net": 0
+      }
+    }
+  },
+  "summaries": {
+    "RX4+6 six": {
+      "valid_count": 6606,
+      "baseline_correct": 6326,
+      "parent_correct": 6181,
+      "candidate_correct": 6212
+    },
+    "RX4+6 low urban": {
+      "valid_count": 1130,
+      "baseline_correct": 984,
+      "parent_correct": 907,
+      "candidate_correct": 914
+    },
+    "RX8 six": {
+      "valid_count": 3183,
+      "baseline_correct": 3060,
+      "parent_correct": 3057,
+      "candidate_correct": 3066
+    },
+    "RX8 low urban": {
+      "valid_count": 512,
+      "baseline_correct": 462,
+      "parent_correct": 455,
+      "candidate_correct": 461
+    }
+  }
+}
