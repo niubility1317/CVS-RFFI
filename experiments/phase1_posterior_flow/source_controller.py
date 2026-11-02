@@ -1,7 +1,7 @@
 """Run source smoke and fixed nonlocal posterior synthesis training."""
 import json,os,subprocess,time,traceback
 from pathlib import Path
-R=Path('/home/szu2070436088/2510044040/CV-SincNet');N='20261102-phase1-posterior-nonlocal-source-s2026092701-r01';SMOKE='20261102-phase1-posterior-nonlocal-smoke-s2026092701-r01';C='8c97af0696c0e143158f8d6bf7cc53a996a8cf09';P=R/'runs'/(N+'-controller');REL=R/'releases/20261102-phase1-posterior-nonlocal-s2026092701-r01-release'
+R=Path('/home/szu2070436088/2510044040/CV-SincNet');N='20261102-phase1-posterior-nonlocal-source-s2026092701-r02';SMOKE='20261102-phase1-posterior-nonlocal-smoke-s2026092701-r02';C='b1170e6ad3620c2c821bbcbcdca2f5a3482e3285';P=R/'runs'/(N+'-controller');REL=R/'releases/20261102-phase1-posterior-nonlocal-s2026092701-r02-release'
 def status(state,**kw):
  q=P/'status.tmp';q.write_text(json.dumps(dict(state=state,**kw),indent=2),encoding='utf8');os.replace(q,P/'status.json')
 def wait_capacity():

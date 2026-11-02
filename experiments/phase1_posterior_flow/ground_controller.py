@@ -1,13 +1,13 @@
 """Queue fixed source-replayed seven-view posterior synthesis predictions."""
 import argparse,json,os,subprocess,time,traceback
 from pathlib import Path
-R=Path('/home/szu2070436088/2510044040/CV-SincNet');N='20261102-phase1-posterior-nonlocal-ground-test-s2026092701-r01';C='95e8ec3d06740c21d273fefd1d44cfc52f3a34a2';P=R/'runs'/(N+'-controller');REL=R/'releases/20261102-phase1-posterior-nonlocal-s2026092701-r01-release'
+R=Path('/home/szu2070436088/2510044040/CV-SincNet');N='20261102-phase1-posterior-nonlocal-ground-test-s2026092701-r02';C='a61315a748f705fb2e1d4c8df42f726f4f1c7441';P=R/'runs'/(N+'-controller');REL=R/'releases/20261102-phase1-posterior-nonlocal-s2026092701-r02-release'
 def status(state,**kw):
  q=P/'status.tmp';q.write_text(json.dumps(dict(state=state,**kw),indent=2),encoding='utf8');os.replace(q,P/'status.json')
 def wait_capacity():
  while os.getloadavg()[0]>os.cpu_count()-24:status('WAITING_CPU_CAPACITY',load=os.getloadavg()[0]);time.sleep(60)
 try:
- ap=argparse.ArgumentParser();ap.add_argument('--source-pid',type=int,required=True);a=ap.parse_args();up=R/'runs/20261102-phase1-posterior-nonlocal-source-s2026092701-r01-controller/status.json'
+ ap=argparse.ArgumentParser();ap.add_argument('--source-pid',type=int,required=True);a=ap.parse_args();up=R/'runs/20261102-phase1-posterior-nonlocal-source-s2026092701-r02-controller/status.json'
  while True:
   state=json.loads(up.read_text()) if up.exists() else {}
   if state.get('state')=='SOURCE_TRAINING_COMPLETE':break
