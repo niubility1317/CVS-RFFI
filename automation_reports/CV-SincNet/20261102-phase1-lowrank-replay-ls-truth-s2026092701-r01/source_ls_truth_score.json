@@ -1,0 +1,402 @@
+{
+  "status": "SOURCE_LS_TRUTH_LAST_COMPLETE",
+  "commit": "fb2820d1d0568f52bbc1a6f603c7b10d3e55ec1f",
+  "prediction_sha256": "bb47cb5315ee6b0677cf86c41d282f49b15ed3f8030dbf0f718a36c6f6592f46",
+  "fixed_predictions_before_truth": true,
+  "L_s_scored": 1047,
+  "L_s_metadata_labels_read": 6300,
+  "U_s_truth_reads": 0,
+  "V_reads": 0,
+  "test_reads": 0,
+  "results": {
+    "RX4_6": {
+      "all_impaired": {
+        "count": 613,
+        "active": 613,
+        "full": {
+          "correct": 573,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 570,
+          "repairs_vs_full": 3,
+          "damages_vs_full": 6
+        },
+        "rank256": {
+          "correct": 572,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1
+        },
+        "DURA": {
+          "correct": 585,
+          "repairs_vs_full": 24,
+          "damages_vs_full": 12
+        }
+      },
+      "clean": {
+        "count": 83,
+        "active": 0,
+        "full": {
+          "correct": 83,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 83,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank256": {
+          "correct": 83,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 83,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        }
+      },
+      "practical_high": {
+        "count": 97,
+        "active": 97,
+        "full": {
+          "correct": 96,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 96,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank256": {
+          "correct": 96,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 96,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        }
+      },
+      "practical_mid": {
+        "count": 91,
+        "active": 91,
+        "full": {
+          "correct": 90,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 88,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 2
+        },
+        "rank256": {
+          "correct": 90,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 89,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1
+        }
+      },
+      "practical_low_suburban": {
+        "count": 107,
+        "active": 107,
+        "full": {
+          "correct": 104,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 102,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 2
+        },
+        "rank256": {
+          "correct": 104,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 103,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 3
+        }
+      },
+      "practical_high_urban": {
+        "count": 108,
+        "active": 108,
+        "full": {
+          "correct": 105,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 104,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1
+        },
+        "rank256": {
+          "correct": 105,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 107,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 0
+        }
+      },
+      "practical_mid_urban": {
+        "count": 108,
+        "active": 108,
+        "full": {
+          "correct": 95,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 96,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 1
+        },
+        "rank256": {
+          "correct": 94,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1
+        },
+        "DURA": {
+          "correct": 98,
+          "repairs_vs_full": 7,
+          "damages_vs_full": 4
+        }
+      },
+      "practical_low_urban": {
+        "count": 102,
+        "active": 102,
+        "full": {
+          "correct": 83,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 84,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 0
+        },
+        "rank256": {
+          "correct": 83,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 92,
+          "repairs_vs_full": 13,
+          "damages_vs_full": 4
+        }
+      }
+    },
+    "RX8": {
+      "all_impaired": {
+        "count": 297,
+        "active": 297,
+        "full": {
+          "correct": 284,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 283,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 3
+        },
+        "rank256": {
+          "correct": 283,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1
+        },
+        "DURA": {
+          "correct": 285,
+          "repairs_vs_full": 10,
+          "damages_vs_full": 9
+        }
+      },
+      "clean": {
+        "count": 54,
+        "active": 1,
+        "full": {
+          "correct": 54,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 54,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank256": {
+          "correct": 54,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 54,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        }
+      },
+      "practical_high": {
+        "count": 51,
+        "active": 51,
+        "full": {
+          "correct": 51,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 50,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1
+        },
+        "rank256": {
+          "correct": 51,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 51,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        }
+      },
+      "practical_mid": {
+        "count": 37,
+        "active": 37,
+        "full": {
+          "correct": 35,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 35,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank256": {
+          "correct": 35,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 34,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 2
+        }
+      },
+      "practical_low_suburban": {
+        "count": 44,
+        "active": 44,
+        "full": {
+          "correct": 43,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 43,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank256": {
+          "correct": 43,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 42,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 2
+        }
+      },
+      "practical_high_urban": {
+        "count": 58,
+        "active": 58,
+        "full": {
+          "correct": 57,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 56,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1
+        },
+        "rank256": {
+          "correct": 56,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 1
+        },
+        "DURA": {
+          "correct": 58,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 0
+        }
+      },
+      "practical_mid_urban": {
+        "count": 51,
+        "active": 51,
+        "full": {
+          "correct": 49,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 50,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 0
+        },
+        "rank256": {
+          "correct": 49,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 50,
+          "repairs_vs_full": 2,
+          "damages_vs_full": 1
+        }
+      },
+      "practical_low_urban": {
+        "count": 56,
+        "active": 56,
+        "full": {
+          "correct": 49,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "rank128": {
+          "correct": 49,
+          "repairs_vs_full": 1,
+          "damages_vs_full": 1
+        },
+        "rank256": {
+          "correct": 49,
+          "repairs_vs_full": 0,
+          "damages_vs_full": 0
+        },
+        "DURA": {
+          "correct": 50,
+          "repairs_vs_full": 5,
+          "damages_vs_full": 4
+        }
+      }
+    }
+  },
+  "caveat": "Post-hoc source L_s identity truth on previously explored IDs; not independent ground performance."
+}
