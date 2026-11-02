@@ -1,0 +1,5 @@
+# Matched augmented versus unaugmented DURA: expanded source replay
+
+Replay the frozen matched unaugmented control and source-channel-augmented models on the established 11,761 source-only holdout records. They share architecture, objective, ordered 8,192 training IDs and training schedule; their intended difference is random source augmentation. Compare each to frozen DURA and to one another. The source cohort was explored previously, and this is a diagnostic rather than target adaptation or independent testing.
+
+Use original epoch-19 source views without added augmentation. Before identity truth is accessed, verify exact checkpoints and ordered fit IDs, holdout disjointness, reference raw/DURA/gate decisions, and all 672 fixed pilot predictions for both models. First run a 64-record actual source smoke. Freeze all 11,761 predictions with SHA-256 before connecting the 1,047 permitted L_s identities. Report clean-F pseudo targets separately, and independently recount all 16 groups and 96 comparisons using sets. Never read U_s identity truth, V or target data. Both seven-view ground runs remain independent and unchanged.
