@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from torch.nn import functional as F
-from channel_update import update_channel
+from channel_update import update_channel,write_fixed_predictions
 DEP=Path('/home/szu2070436088/2510044040/CV-SincNet/releases/20261102-phase1-bayes-residual-full-s2026092701-r01-release')
 if (DEP/'release_commit.txt').read_text().strip()!='848c4b4c47b054f43c8303638e5aa549154ebfd4':raise ValueError('Exact source interface release required')
 sys.path.insert(0,str(DEP/'experiments/phase1_bayes_residual_full'))
@@ -35,7 +35,10 @@ def main():
   x=core.tensor(received[ids[:8]],a.device)
   with torch.no_grad():signals,kernels=predictions(x,blind,means,covs,priors,eye)
   if not all(torch.isfinite(v).all() for v in signals+kernels):raise ValueError('Finite source channel and signal output required')
-  result=dict(status='PASS',records=len(x),candidate_count=len(signals),source_only=True,F_loaded=False,DURA_loaded=False,source_channel_truth_reads=0,U_s_truth_reads=0,V_reads=0,test_reads=0)
+  smoke_values=torch.stack([q.mean((1,2)) for q in signals],1);smoke_kernels=torch.stack(kernels,1);saved_values,saved_kernels,digest=write_fixed_predictions(a.out/'source_smoke_predictions.npz',ids[:8],smoke_values,smoke_kernels)
+  with np.load(a.out/'source_smoke_predictions.npz',allow_pickle=False) as f:
+   if not np.array_equal(f['indices'],ids[:8]) or not np.array_equal(f['values'],saved_values) or not np.array_equal(f['kernels'],saved_kernels):raise ValueError('Source prediction serialization roundtrip required')
+  result=dict(status='PASS',records=len(x),candidate_count=len(signals),prediction_roundtrip=True,prediction_sha256=digest,source_only=True,F_loaded=False,DURA_loaded=False,source_channel_truth_reads=0,U_s_truth_reads=0,V_reads=0,test_reads=0)
   with (a.out/'result.json').open('x',encoding='utf8') as f:json.dump(result,f,indent=2)
   print('JOINT_CHANNEL_SMOKE',json.dumps(result),flush=True);return
  teacher,_=core.teacher(a.root,a.device);teacher.eval().requires_grad_(False);dura=source_prior.frozen_dura(a.root,a.device);values=[];kernel_values=[];tick=time.monotonic()
@@ -50,9 +53,7 @@ def main():
     A=action_matrix(h);forward=torch.bmm(A,z.reshape(len(z),512,1)).reshape_as(x);cols.append((forward-x).square().sum((1,2))/xden)
    values.append(torch.stack(cols,1).cpu());kernel_values.append(torch.stack(kernels,1).cpu())
    if (start+len(idx))%64==0:print('JOINT_CHANNEL_PREDICTED',start+len(idx),'seconds',round(time.monotonic()-tick,1),flush=True)
- values=torch.cat(values).numpy();kernels=torch.cat(kernel_values).numpy();fixed=a.out/'source_predictions.npz'
- with fixed.open('xb') as f:np.savez_compressed(f,indices=ids,values=values,kernels=kernels)
- digest=hashlib.sha256(fixed.read_bytes()).hexdigest();print('JOINT_CHANNEL_PREDICTIONS_FIXED',digest,flush=True)
+ fixed=a.out/'source_predictions.npz';values,kernels,digest=write_fixed_predictions(fixed,ids,torch.cat(values),torch.cat(kernel_values));print('JOINT_CHANNEL_PREDICTIONS_FIXED',digest,flush=True)
  epochdir=cache/'epochs'/'19';true_kernel=np.load(epochdir/'kernel.npy',mmap_mode='r',allow_pickle=False);coeff=np.load(epochdir/'coefficients.npy',mmap_mode='r',allow_pickle=False);raw=true_kernel[ids];c=coeff[ids];hr=raw[:,0];hi=raw[:,1];ar=c[:,0,128,None];ai=c[:,1,128,None];truth=np.stack((ar*hr-ai*hi,ar*hi+ai*hr),1);den=np.maximum(np.square(truth).sum((1,2)),1e-12);herr=np.square(kernels-truth[:,None]).sum((2,3))/den[:,None]
  result={};names=('dura','parent','ridge_0.1','ridge_1','ridge_10')
  for j,view in enumerate(SCENES):
