@@ -31,3 +31,7 @@ r01 source-only smoke failed before target predictions due missing frozen_source
 ## 启动读回
 
 2026-11-02：源代码 commit 411ffe929db5f5527e81748cb9a104c730f83bbf。独立 P0/P1 审查及资源并发修复的定向复核通过；23 项本地针对性测试通过。r01 的配置缺键已修复且保留失败产物。r02 发布包传输校验、远端编译通过；七种方法各取第一个实际源 checkpoint 的 source-only no-query smoke PASS，未读目标或 query。controller 1615082；独立读回 16 个 worker 分布在 8 张 GPU，首个 worker 的预测文件增长。13524 任务、252252 预测行；全部冻结后才独立评分。当前无完成的第二组指标，不宣称全部组合完成。ISSL 保持停止，CSIL 作者版本 N/A；外部 CIL 不接 DURA。
+
+## 数值故障与保留结果
+
+r02 在 ProtoNet→MoPC 的 K10/N20 训练出现非有限数值，停止派发并自然排空。独立回读 controller 和全部 worker 已退出；15 个完整预测任务和失败任务已生成的部分预测行保留，未通过全局预测冻结屏障，尚未连接真值评分。同一合法 support、相同 seed 与预算、无 query 诊断两次均未复现；原因仍未确定，不盲重启、不按目标结果改算法。
