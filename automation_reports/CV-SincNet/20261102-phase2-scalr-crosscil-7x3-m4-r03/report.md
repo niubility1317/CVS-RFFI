@@ -27,3 +27,7 @@ Continue only unstarted tasks, reuse 15 closed r02 jobs, defer failed job and it
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 启动与限制
+
+2026-11-02：源代码 commit 26f04394f4a4a4c3d07d4c68ebdc25755471a17d，独立关键缺陷审查及定向复核通过，25 项本地测试通过；发布包传输校验及远端编译通过。七个真实源检查点无 query smoke PASS。controller 1623650 已核实运行，15 个 r02 完整预测任务已绑定复用；故障任务及其 33 个 partial 预测文件保留并延后，不重试。13508 个未启动任务派发中。全局预测和独立评分屏障保持关闭，不能将本运行称为第二组实验完成；目标数值故障尚未复现。
