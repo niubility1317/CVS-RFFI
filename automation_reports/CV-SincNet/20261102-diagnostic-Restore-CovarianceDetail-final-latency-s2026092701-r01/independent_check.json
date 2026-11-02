@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "run_id": "20261102-diagnostic-Restore-CovarianceDetail-final-latency-s2026092701-r01",
+  "code_commit": "33cb43c2d4d387ab18498b451ddc1444070e997c",
+  "timed_route_calls": 600,
+  "warmup_route_calls": 30,
+  "source_smoke_route_calls": 5,
+  "all_schedule_source_counts_order_and_medians_checked": true,
+  "max_abs_statistic_error": 0.0,
+  "independent_live_worker_snapshot_verified": true,
+  "parent_full_Main_completed_before_NN_start": true,
+  "new_neural_forwards": 0,
+  "new_IQ_or_truth_reads": 0,
+  "goal_complete": false
+}

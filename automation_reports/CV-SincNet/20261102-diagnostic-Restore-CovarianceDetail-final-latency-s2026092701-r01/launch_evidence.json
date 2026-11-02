@@ -1,0 +1,33 @@
+{
+  "status": "VERIFIED_ARTIFACTS_COMPLETE",
+  "code_commit": "33cb43c2d4d387ab18498b451ddc1444070e997c",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "queue_evidence_ref": "queue_evidence.json",
+  "worker_PID": 1140255,
+  "GPU": 4,
+  "admission_free_MiB": 24110,
+  "admission_existing_compute": 0,
+  "source_smoke": {
+    "status": "PASS",
+    "real_source_Ls": 2,
+    "all_five_routes": true,
+    "actual_final30": true,
+    "actual_original_F0": true,
+    "default_DURA_R69": true,
+    "DURA_reuse": true,
+    "DURA_graph": true,
+    "DURA_native": false,
+    "optimizer_updates": 0,
+    "TX_labels_read": 0,
+    "target_inputs": 0
+  },
+  "independent_check": "PASS",
+  "all_run_owned_processes_ended": true,
+  "actual_GPU_worker_PID_CWD_command_CUDA_GPU_log_growth_verified": true,
+  "parent_Main_completed_before_GPU_start": true,
+  "all_terminal_exit_codes_zero": true,
+  "optimizer_updates": 0,
+  "target_inputs": 0,
+  "default_DURA_changed": false
+}

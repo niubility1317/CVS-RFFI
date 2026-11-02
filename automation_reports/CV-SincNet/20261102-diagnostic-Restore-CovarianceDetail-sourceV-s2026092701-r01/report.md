@@ -40,3 +40,7 @@
 ## 实际 CPU 等待队列
 
 VERIFIED_CPU_QUEUE_ONLY：controller 1086539 的实际PID/CWD/命令与CUDA空环境已核实，未新增GPU worker。一次archive SHA一致、远端compile通过；实际代码 `f29b31417ce98a280eac25ea2fa78e0c49a5f0ff`。按Main完整预测评分→最终延迟→本源V验证串行执行，真实source2与结果仍pending。原模型训练保持，无新训练、目标访问或基线NN重算。
+
+## 冻结诊断完成并独立复算
+
+VERIFIED / ANALYZED。28 单元／420 分组／105 条件分组独立复算；缓存基线判决变化 0，最大指标差 1.42e-14。全部预测固定后独立源 V 真值评分；本次独立检查使用 1800 条源 V 标签及保存预测/参考 IQ，0 新 NN，0 原始 IQ 数据集读取，0 目标真值。特征类间/类内分析仅描述固定面板，没有新分类器或类别质心部署。 [完整分析](source_analysis.md)。0 优化／模型更新／目标输入，未改变父 G、默认 DURA 或主验收条件。

@@ -1,3 +1,5 @@
 {"at": "2026-11-01T23:21:56+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-01T23:25:52+00:00", "status": "QUEUED", "note": "VERIFIED CUDA-emptyCPUcontroller;waitparentfullMaintechnicalcompletion,0newGPUworker,actualsource-smoke/latency pending.", "evidence": ["queue_evidence.json"], "row_id": "final_inference_cost"}
 {"at": "2026-11-01T23:25:59+00:00", "status": "QUEUED", "note": "VERIFIED CUDA-emptyCPUcontroller;waitparentfullMaintechnicalcompletion,0newGPUworker,actualsource-smoke/latency pending.", "evidence": ["queue_evidence.json"], "row_id": null}
+{"at": "2026-11-02T01:16:08+00:00", "status": "ANALYZED", "note": "VERIFIED complete frozen finalG diagnostic and independent arithmetic/labels-side check;0training/target;parentMain and defaultDURA unchanged.", "evidence": ["analysis.md"], "row_id": "final_inference_cost"}
+{"at": "2026-11-02T01:16:15+00:00", "status": "ANALYZED", "note": "VERIFIED complete frozen finalG diagnostic and independent arithmetic/labels-side check;0training/target;parentMain and defaultDURA unchanged.", "evidence": ["analysis.md"], "row_id": null}

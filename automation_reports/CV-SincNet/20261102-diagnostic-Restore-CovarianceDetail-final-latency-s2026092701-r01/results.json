@@ -1,0 +1,154 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261102-diagnostic-Restore-CovarianceDetail-final-latency-s2026092701-r01",
+  "code_commit": "33cb43c2d4d387ab18498b451ddc1444070e997c",
+  "parent_G_code_commit": "1fcbc3eb3cc16e7577ecc3cbedda99174b4c5cc6",
+  "F0_code_commit": "3ff8f4b7e85b5608f5b45350aa18081499a7ef1d",
+  "G_parameters": 5481223,
+  "DURA_parameters": 266951,
+  "F0_parameters": 232993,
+  "GPU_model": "NVIDIA GeForce RTX 3090",
+  "torch_version": "2.1.0+cu121",
+  "CUDA_version": "12.1",
+  "CPU_threads": 2,
+  "TF32": false,
+  "shared_GPU": true,
+  "summary": {
+    "1": {
+      "raw_F0": {
+        "timed_calls": 100,
+        "median_wall_ms": 8.404874,
+        "p90_wall_ms": 9.472845600000001,
+        "median_CUDA_event_ms": 8.322976112365723,
+        "throughput_records_per_second": 118.9785831411631,
+        "max_resident_allocated_bytes": 78731264,
+        "max_incremental_bytes": 1199104
+      },
+      "DURA_G": {
+        "timed_calls": 100,
+        "median_wall_ms": 4.0467655,
+        "p90_wall_ms": 4.4252373,
+        "median_CUDA_event_ms": 3.9938080310821533,
+        "throughput_records_per_second": 247.1109334108932,
+        "max_resident_allocated_bytes": 77534720,
+        "max_incremental_bytes": 2560
+      },
+      "new_G": {
+        "timed_calls": 100,
+        "median_wall_ms": 14.0260165,
+        "p90_wall_ms": 15.236997,
+        "median_CUDA_event_ms": 13.951087951660156,
+        "throughput_records_per_second": 71.29608039460099,
+        "max_resident_allocated_bytes": 90132992,
+        "max_incremental_bytes": 12600832
+      },
+      "DURA_G_F0": {
+        "timed_calls": 100,
+        "median_wall_ms": 12.7341625,
+        "p90_wall_ms": 13.990279,
+        "median_CUDA_event_ms": 12.653279781341553,
+        "throughput_records_per_second": 78.52891778316791,
+        "max_resident_allocated_bytes": 78733312,
+        "max_incremental_bytes": 1201152
+      },
+      "new_G_F0": {
+        "timed_calls": 100,
+        "median_wall_ms": 22.3803805,
+        "p90_wall_ms": 24.478506000000003,
+        "median_CUDA_event_ms": 22.26438331604004,
+        "throughput_records_per_second": 44.681992783813484,
+        "max_resident_allocated_bytes": 90132992,
+        "max_incremental_bytes": 12600832
+      }
+    },
+    "128": {
+      "raw_F0": {
+        "timed_calls": 20,
+        "median_wall_ms": 8.2570285,
+        "p90_wall_ms": 9.2486801,
+        "median_CUDA_event_ms": 8.184127807617188,
+        "throughput_records_per_second": 15501.944797695684,
+        "max_resident_allocated_bytes": 125522432,
+        "max_incremental_bytes": 38944768
+      },
+      "DURA_G": {
+        "timed_calls": 20,
+        "median_wall_ms": 13.2384255,
+        "p90_wall_ms": 13.2843005,
+        "median_CUDA_event_ms": 13.175568103790283,
+        "throughput_records_per_second": 9668.823531922282,
+        "max_resident_allocated_bytes": 86840320,
+        "max_incremental_bytes": 262656
+      },
+      "new_G": {
+        "timed_calls": 20,
+        "median_wall_ms": 187.456081,
+        "p90_wall_ms": 187.7310826,
+        "median_CUDA_event_ms": 187.4215850830078,
+        "throughput_records_per_second": 682.8266083296598,
+        "max_resident_allocated_bytes": 1432430592,
+        "max_incremental_bytes": 1345852928
+      },
+      "DURA_G_F0": {
+        "timed_calls": 20,
+        "median_wall_ms": 22.0292795,
+        "p90_wall_ms": 22.5561989,
+        "median_CUDA_event_ms": 21.948287963867188,
+        "throughput_records_per_second": 5810.448771145692,
+        "max_resident_allocated_bytes": 125784576,
+        "max_incremental_bytes": 39206912
+      },
+      "new_G_F0": {
+        "timed_calls": 20,
+        "median_wall_ms": 189.174147,
+        "p90_wall_ms": 189.36962069999998,
+        "median_CUDA_event_ms": 189.13445281982422,
+        "throughput_records_per_second": 676.6252261732149,
+        "max_resident_allocated_bytes": 1432430592,
+        "max_incremental_bytes": 1345852928
+      }
+    }
+  },
+  "latency_ratios": {
+    "1": {
+      "new_G_over_DURA_G_wall_median": 3.4659820293515895,
+      "new_G_F0_over_DURA_G_F0_wall_median": 1.7575070602405145,
+      "new_G_F0_over_raw_F0_wall_median": 2.6627859620501155
+    },
+    "128": {
+      "new_G_over_DURA_G_wall_median": 14.159998181052574,
+      "new_G_F0_over_DURA_G_F0_wall_median": 8.587396015380348,
+      "new_G_F0_over_raw_F0_wall_median": 22.910681124571628
+    }
+  },
+  "timed_route_calls": 600,
+  "warmup_route_calls": 30,
+  "source_smoke_route_calls": 5,
+  "source_packets": 512,
+  "source_draw": 1,
+  "logical_route_rows": {
+    "raw_F0": 3049,
+    "DURA_G": 3049,
+    "new_G": 3049,
+    "DURA_G_F0": 3049,
+    "new_G_F0": 3049
+  },
+  "new_G_actual_rows": 6098,
+  "DURA_logical_rows": 6098,
+  "F0_actual_rows": 9147,
+  "DURA_graph_startup_extra_forwards_not_instrumented": true,
+  "wall_includes": "G/F0 forward and synchronization;actualinternaldeploymentchecks/graphinputcopy included",
+  "wall_excludes": "model-load,sourceIO/device-transfer,case-selection,graph-first-capture/warmups,post-outputfinitecheck",
+  "memory_scope": "Allthreefrozenmodels+512sourceinputs+allDURAgraphsresident;incrementalcurrentroutepeak. Notstandalonepermodelprocessmemory.",
+  "G_execution": "EagerFP32physical-TF+FP64posterior+FP32detail",
+  "DURA_execution": "fixed47c264/R69/FP32/InferenceEngine(reuse=True,graph=True,native=False)",
+  "F0_execution": "sameoriginal3ff8fullTriSIGTIME_SSL/FP32/defaultjointhead",
+  "model_states_unchanged": true,
+  "independent_count_arithmetic_and_live_snapshot_check": "PASS",
+  "max_abs_statistic_error": 0.0,
+  "optimizer_updates": 0,
+  "TX_labels_read": 0,
+  "target_inputs": 0,
+  "quality_evaluation": false,
+  "goal_complete": false
+}

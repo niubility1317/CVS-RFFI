@@ -40,3 +40,7 @@
 ## 实际 CPU 等待队列
 
 VERIFIED_CPU_QUEUE_ONLY：controller 1065879 的实际PID/CWD/命令及CUDA空环境已核实，尚未新增GPU worker，父Main仍未完成。archive SHA与远端compile通过，实际代码 `33cb43c2d4d387ab18498b451ddc1444070e997c`。真实最终checkpoint source2与全部测量仍待父实验完成，当前无时延结果。发布前重复进程扫描仅针对本延迟module；旧调用器状态文字NO_LIVE_OWN_GPU_WORKERS不能解释为父训练进程不存在，父GPU训练仍健康继续。
+
+## 冻结诊断完成并独立复算
+
+VERIFIED / ANALYZED。同实际 final30 与原完整 Tri-SIG-TIME SSL，600 次计时／30 次预热／5 次 source2 路径检查全部核对；最大统计复算差 0。共享 GPU、实际执行路径、预热及内存范围见分析；0 质量评估，0 IQ/真值侧复算读取。 [完整分析](analysis.md)。0 优化／模型更新／目标输入，未改变父 G、默认 DURA 或主验收条件。
