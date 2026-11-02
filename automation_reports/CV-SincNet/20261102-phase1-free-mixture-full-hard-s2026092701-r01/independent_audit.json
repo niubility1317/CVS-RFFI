@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "scope": "Independently sum stored per-scene source pseudo-label counts and check source training scope; no individual predictions available.",
+  "valid_count": 369,
+  "correct": {
+    "raw": 327,
+    "dura": 361,
+    "parent": 357,
+    "free_0.25": 358,
+    "free_0.5": 360,
+    "free_1": 359
+  },
+  "training_counts": {
+    "exposures": 99248,
+    "eligible": 95946,
+    "labeled": 8973,
+    "hard": 3628
+  }
+}
