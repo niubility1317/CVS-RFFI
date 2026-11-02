@@ -1,0 +1,126 @@
+{
+  "status": "PASS",
+  "date_index_source": "ManySig.pkl capture_date_list header; source contract source_days=[1,2,3]",
+  "split_rule": "cross_rx uses source days 1,2,3; cross_both uses held-out day 0; all records target RX",
+  "test_records": 168000,
+  "results": {
+    "cross_rx": {
+      "count": 126000,
+      "base_clean_accuracy": 88.11031746031746,
+      "views": {
+        "clean": {
+          "raw_accuracy": 88.11031746031746,
+          "restored_accuracy": 88.09523809523809,
+          "gap_pp": 0.01507936507937302,
+          "relative_gap_percent": 0.017114187661580453
+        },
+        "practical_high": {
+          "raw_accuracy": 81.05317460317461,
+          "restored_accuracy": 78.1547619047619,
+          "gap_pp": 9.955555555555563,
+          "relative_gap_percent": 11.29896684351328
+        },
+        "practical_mid": {
+          "raw_accuracy": 78.5079365079365,
+          "restored_accuracy": 76.23650793650793,
+          "gap_pp": 11.873809523809527,
+          "relative_gap_percent": 13.47607166340897
+        },
+        "practical_low_suburban": {
+          "raw_accuracy": 76.16825396825396,
+          "restored_accuracy": 74.16904761904762,
+          "gap_pp": 13.941269841269843,
+          "relative_gap_percent": 15.822516866482317
+        },
+        "practical_high_urban": {
+          "raw_accuracy": 77.46825396825396,
+          "restored_accuracy": 75.80238095238096,
+          "gap_pp": 12.307936507936503,
+          "relative_gap_percent": 13.968780118718414
+        },
+        "practical_mid_urban": {
+          "raw_accuracy": 63.20476190476191,
+          "restored_accuracy": 66.09920634920636,
+          "gap_pp": 22.011111111111106,
+          "relative_gap_percent": 24.98130950558012
+        },
+        "practical_low_urban": {
+          "raw_accuracy": 51.949999999999996,
+          "restored_accuracy": 58.387301587301586,
+          "gap_pp": 29.723015873015875,
+          "relative_gap_percent": 33.73386537439538
+        }
+      }
+    },
+    "cross_both": {
+      "count": 42000,
+      "base_clean_accuracy": 81.82380952380952,
+      "views": {
+        "clean": {
+          "raw_accuracy": 81.82380952380952,
+          "restored_accuracy": 81.55952380952381,
+          "gap_pp": 0.26428571428570535,
+          "relative_gap_percent": 0.3229936565209692
+        },
+        "practical_high": {
+          "raw_accuracy": 79.30238095238096,
+          "restored_accuracy": 73.36666666666667,
+          "gap_pp": 8.457142857142841,
+          "relative_gap_percent": 10.335797008671344
+        },
+        "practical_mid": {
+          "raw_accuracy": 76.90714285714286,
+          "restored_accuracy": 71.89761904761905,
+          "gap_pp": 9.92619047619047,
+          "relative_gap_percent": 12.131176162486172
+        },
+        "practical_low_suburban": {
+          "raw_accuracy": 74.47380952380952,
+          "restored_accuracy": 70.29285714285714,
+          "gap_pp": 11.530952380952371,
+          "relative_gap_percent": 14.092416923703649
+        },
+        "practical_high_urban": {
+          "raw_accuracy": 75.79523809523809,
+          "restored_accuracy": 71.24047619047619,
+          "gap_pp": 10.583333333333329,
+          "relative_gap_percent": 12.93429552464645
+        },
+        "practical_mid_urban": {
+          "raw_accuracy": 61.56904761904762,
+          "restored_accuracy": 63.247619047619054,
+          "gap_pp": 18.57619047619046,
+          "relative_gap_percent": 22.702671244834995
+        },
+        "practical_low_urban": {
+          "raw_accuracy": 50.56904761904762,
+          "restored_accuracy": 56.34285714285714,
+          "gap_pp": 25.480952380952374,
+          "relative_gap_percent": 31.14124425304079
+        }
+      }
+    }
+  },
+  "receiver_partition": {
+    "status": "PASS",
+    "source_receivers": [
+      "1-19",
+      "18-2",
+      "19-2",
+      "2-19",
+      "3-19"
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "data_header": "ManySig.pkl rx_list",
+    "source_index_contract": "source_contract.json source_rxs",
+    "records": 168000
+  }
+}
