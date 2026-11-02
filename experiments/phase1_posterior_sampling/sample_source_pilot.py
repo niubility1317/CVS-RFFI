@@ -30,7 +30,7 @@ def batch(x,y,indices,blind,stats,factors,gate,teacher,check_reference=False):
  den=y[:,:,64:-64].square().sum(1).mean(1).clamp_min(1e-12);errors=[]
  for wave in (x,parent,cwave,fwave):
   _,err=s.align(wave,y);errors.append(err/den)
- return (torch.stack((raw,pp,cp,fp),1),torch.stack(errors,1),prob,logweights,torch.stack((consensus,confidence),1),active)
+ return (torch.stack((raw,pp,cp,fp),1),torch.stack(errors,1),prob,logweights,torch.stack((consensus,confidence),1),active,torch.stack((cwave,fwave),1))
 
 def main():
  ap=argparse.ArgumentParser();ap.add_argument('--root',type=Path,required=True);ap.add_argument('--out',type=Path,required=True);ap.add_argument('--commit',required=True);ap.add_argument('--smoke',action='store_true');a=ap.parse_args()
@@ -62,7 +62,7 @@ def main():
     chosen.extend(ix[:2].tolist())
   select=np.array(chosen,dtype=np.int64)
  else:select=np.arange(len(ids))
- chunks=[[] for _ in range(6)];tick=time.monotonic()
+ chunks=[[] for _ in range(7)];tick=time.monotonic()
  with torch.no_grad():
   for start in range(0,len(select),8):
    pos=select[start:start+8];idx=ids[pos];x=core.tensor(received[idx],'cpu');y=core.tensor(clean[idx],'cpu');vals=batch(x,y,idx,blind,stats,factors,gate,teacher,a.smoke);raw,physical,cons,conf=vals[0].unbind(1)
@@ -72,7 +72,7 @@ def main():
  if a.smoke:
   a.out.mkdir(parents=True);core.write(a.out/'result.json',dict(status='PASS',records=len(select),source_only=True,posterior_mean_and_weights_match=True,selected_waveform_predictions_match=True,DURA_loaded=False,TX_truth_reads=0,U_s_truth_reads=0,V_reads=0,test_reads=0));print('POSTERIOR_SAMPLE_SOURCE_SMOKE_PASS',len(select),flush=True);return
  arr=[torch.cat(v).numpy() for v in chunks];path=a.out/'source_predictions.npz';a.out.mkdir(parents=True)
- with path.open('xb') as f:np.savez(f,indices=ids,rx=rx,scene=scene,split=split,prior_values=old,predictions=arr[0],aligned_errors=arr[1],probabilities=arr[2],logweights=arr[3],choices=arr[4],active=arr[5])
+ with path.open('xb') as f:np.savez(f,indices=ids,rx=rx,scene=scene,split=split,prior_values=old,predictions=arr[0],aligned_errors=arr[1],probabilities=arr[2],logweights=arr[3],choices=arr[4],active=arr[5],selected_waveforms=arr[6])
  m=dict(status='SOURCE_PREDICTIONS_FIXED',commit=a.commit,count=len(ids),sha256=sha(path),prior_sha256=expected,reference_sha256=rm['prediction_sha256'],blind_checkpoint_sha256=sha(a.root/'runs'/SOURCE/'checkpoint_epoch10.pt'),source_prior_sha256=sha(a.root/'runs'/PRIOR_RUN/'source_prior.pt'),sampling_seed_base=2026165054,draws_per_component=1,selection=['weighted_consensus','max_confidence'],source_only=True,DURA_loaded=False,TX_truth_reads=0,U_s_truth_reads=0,V_reads=0,test_reads=0,model_updates=0,caveat='Approximate posterior under fixed blind channel and Gaussian source prior; source records previously explored; no ground claim.')
  core.write(a.out/'prediction_complete.json',m);print('POSTERIOR_SAMPLE_SOURCE_FIXED',sha(path),flush=True)
 if __name__=='__main__':main()
