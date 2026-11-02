@@ -1,0 +1,7 @@
+# Fixed real and complex edge-protected fusion: expanded source comparison
+
+Replay the two already-frozen DURA-anchored, edge-protected spectral fusion models on the established 11,761 source-only holdout records. Both use the same ordered 8192 source fit IDs, five epochs, protected paired-source objective and frozen spectral expert, while the complex model adds a phase-changing fusion component. Compare each to DURA and to each other. The models were trained separately, so this is an exploratory fixed-model comparison, not a strict isolated gate ablation. Source and ground development results were observed before this diagnostic; no model is trained or modified by it.
+
+Verify exact checkpoints, matching ordered fit IDs, no holdout overlap and exact frozen expert tensors. Require a 64-record real-source smoke, replay all 672 previously fixed source decisions, and check matching raw, DURA and gate decisions. Fix all 11,761 predictions and their SHA-256 before connecting 1047 permitted L_s identities. U_s clean-F pseudo targets are not true identity labels. Independently recount all 16 groups and 96 comparisons. Do not read U_s truth, V, target IQ or ground feedback. Previously explored simulated records are not blind or real-satellite validation.
+
+Source replay: 20261103-phase1-dura-complex-fullsource-s2026092701-r01. Ground evaluations continue independently, regardless of source scores.
