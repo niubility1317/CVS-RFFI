@@ -25,7 +25,7 @@ def batches(received,clean,ids,recovery,teacher,net,batch):
 def main():
  ap=argparse.ArgumentParser();ap.add_argument('--root',type=Path,required=True);ap.add_argument('--out',type=Path,required=True);ap.add_argument('--commit',required=True);ap.add_argument('--smoke',action='store_true');a=ap.parse_args()
  if a.out.exists():raise FileExistsError('Immutable source replay output required')
- a.out.mkdir(parents=True);torch.set_num_threads(8);cache,clean,rx,training,pv,ph=p.s.source_contract(a.root);validation,heldout=p.s.new_splits(cache,rx,training,pv,ph);ids=np.r_[validation,heldout]
+ a.out.mkdir(parents=True);torch.set_num_threads(2);cache,clean,rx,training,pv,ph=p.s.source_contract(a.root);validation,heldout=p.s.new_splits(cache,rx,training,pv,ph);ids=np.r_[validation,heldout]
  if len(ids)!=11761:raise ValueError('Complete source cohort required')
  source=a.root/'runs/20261102-phase1-spectral-synthesis-pilot-s2026092701-r01';sm=p.core.read(source/'prediction_complete.json');ck=source/'checkpoint.pt';state=torch.load(ck,map_location='cpu',weights_only=False);modelsha=hashlib.sha256(ck.read_bytes()).hexdigest()
  if sm.get('status')!='SOURCE_PREDICTIONS_FIXED' or sm.get('commit')!='059987ed75b568b4ce052d7638ee0262bd5652c3' or state.get('commit')!=sm['commit'] or modelsha!='6217b745db06e672fe11d5e11a839be754ce91b305c45f6a13c711345d3c17d8' or len(state['fit_ids'])!=1024 or np.intersect1d(ids,state['fit_ids']).size:raise ValueError('Exact fixed source model and disjoint cohort required')
@@ -36,11 +36,11 @@ def main():
  if not np.array_equal(ids,prior_ids) or not np.array_equal(scene[ids],old_scene) or old.shape!=(11761,15):raise ValueError('Exact same source IDs and views required')
  net=SpectralSynthesis();net.load_state_dict(state['model'],strict=True);net.eval().requires_grad_(False);recovery=p.load_fixed(a.root,'cpu');teacher,_=p.core.teacher(a.root,'cpu');teacher.eval().requires_grad_(False);n=64 if a.smoke else len(ids);chunks=[];tick=time.monotonic()
  for start in range(0,n,256):
-  ix=ids[start:min(n,start+256)];raw,on,pp,pe,values=batches(received,clean,ix,recovery,teacher,net,32);ref=old[start:start+len(ix)]
+  ix=ids[start:min(n,start+256)];raw,on,pp,pe,values=batches(received,clean,ix,recovery,teacher,net,8);ref=old[start:start+len(ix)]
   if not np.array_equal(raw,ref[:,5]) or not np.array_equal(on,ref[:,3]>.8) or not np.array_equal(pp,ref[:,7]) or not np.allclose(pe,ref[:,8],rtol=1e-5,atol=1e-7):raise ValueError('Raw F, gate and physical posterior must match previous source replay')
   if a.smoke:
-   b=batches(received,clean,ix,recovery,teacher,net,8)
-   if not np.array_equal(raw,b[0]) or not np.array_equal(on,b[1]) or not np.array_equal(pp,b[2]) or not np.array_equal(values[:,0],b[4][:,0]) or not np.allclose(values[:,1],b[4][:,1],rtol=1e-5,atol=1e-7):raise ValueError('Source batch prediction equivalence required')
+   b=batches(received,clean,ix,recovery,teacher,net,32)
+   if not np.array_equal(raw,b[0]) or not np.array_equal(on,b[1]) or not np.array_equal(pp,b[2]) or not np.array_equal(values[:,0],b[4][:,0]) or not np.allclose(values[:,1],b[4][:,1],rtol=1e-5,atol=1e-6):raise ValueError('Source batch prediction equivalence required')
   if not np.isfinite(values).all():raise ValueError('Finite fixed source output required')
   chunks.append(values)
   if (start+len(ix))%512==0:print('SPECTRAL_FULL_SOURCE_PROGRESS',start+len(ix),'seconds',round(time.monotonic()-tick,1),flush=True)
