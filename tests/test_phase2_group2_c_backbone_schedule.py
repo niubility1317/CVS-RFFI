@@ -1,3 +1,4 @@
+from pathlib import Path
 import pytest
 
 from experiments.pamf_phase2_practical.group2_c_backbone_schedule import tasks, validate_runtime
@@ -64,3 +65,32 @@ def test_hu_pilot_requires_source_auxiliary_checkpoint_root():
     rt['hu_aux_run_root'] = '/source/aux'
     validate_runtime(rt)
     assert len(tasks(rt)) == 3
+
+
+def test_full_seven_b_matrix_selects_seed_bound_aux_and_pilot_reuse():
+    rt = runtime()
+    rt.update(scope='full7', b_methods=rt['b_methods']+['poster_ft', 'feature_separation_hu2024'],
+        hu_aux_roots_by_seed={str(seed): '/aux/one' if seed == 2026092701 else '/aux/more'
+            for seed in rt['model_seeds']},
+        pilot_roots={'base': '/pilot/base', 'poster_ft': '/pilot/poster',
+                     'feature_separation_hu2024': '/pilot/hu'})
+    validate_runtime(rt)
+    rows = tasks(rt)
+    assert len(rows) == 7*3*4*483
+    selected = [job for job in rows if 'reuse_prediction' in job]
+    assert len(selected) == 21
+    assert all(job['seed'] == 2026092701 and job['capsule'] == 'capsules/P01/MIX01/1-1'
+               and (5, 20) in job['points'] for job in selected)
+    assert all(Path('/pilot/hu') in Path(job['reuse_prediction']).parents for job in selected
+               if job['b_method'] == 'feature_separation_hu2024')
+    del rt['hu_aux_roots_by_seed']['2026092704']
+    with pytest.raises(ValueError, match='Hu source'):
+        validate_runtime(rt)
+
+
+def test_full_seven_b_rejects_missing_pilot_results_plan():
+    rt = runtime()
+    rt.update(scope='full7', b_methods=rt['b_methods']+['poster_ft', 'feature_separation_hu2024'],
+        hu_aux_roots_by_seed={str(seed): '/aux' for seed in rt['model_seeds']})
+    with pytest.raises(ValueError, match='pilot'):
+        validate_runtime(rt)

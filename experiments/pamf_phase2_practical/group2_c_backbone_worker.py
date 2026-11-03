@@ -64,6 +64,7 @@ def predict(rt, job):
     from .external_native import _source_L
     from .episodic_experiment import split_rows
     from .group2_c_backbone_fit import REPLAY_B, fit_b_from_c_source, register_native_c
+    from .group2_c_backbone_reuse import hu_aux_folder, reuse_pilot_prediction
 
     activate(rt)
     torch.set_num_threads(1)
@@ -78,7 +79,7 @@ def predict(rt, job):
     source_x = source_y = None
     source_aux = None
     if job['b_method'] == 'feature_separation_hu2024':
-        folder = Path(rt['hu_aux_run_root'])/'source'/f'{job["c_method"]}-s{job["seed"]}'
+        folder = hu_aux_folder(rt, job['c_method'], job['seed'])
         require(read(folder/'complete.json')['status'] == 'SOURCE_AUX_COMPLETE', 'Hu source auxiliary incomplete')
         source_aux = torch.load(folder/'hu_aux.pt', map_location='cpu', weights_only=False)
     if job['b_method'] in REPLAY_B:
@@ -93,10 +94,17 @@ def predict(rt, job):
     out = Path(job['output'])
     out.mkdir(parents=True, exist_ok=False)
     rows = []
+    reused = set()
+    if job.get('reuse_prediction'):
+        require((5, 20) in points and job.get('reuse_score'), 'Wrong fixed pilot reuse plan')
+        spec = specs[5, 20]
+        rows.append(reuse_pilot_prediction(rt, job, manifest, spec, split_rows(cap, spec), out))
+        reused.add((5, 20))
+    pending = [point for point in points if point not in reused]
     def sync():
         if str(device).startswith('cuda'):
             torch.cuda.synchronize()
-    for k in sorted({k for k, _ in points}):
+    for k in sorted({k for k, _ in pending}):
         x, y, old_ids, _ = support_only(cap, specs[k, 0]['split_id'])
         old_x, old_y = to_tensor(x, device, np.float32), to_tensor(y, device, np.int64).long()
         sync(); start = time.perf_counter()
@@ -104,7 +112,7 @@ def predict(rt, job):
             seed=seed_for(job['seed'], job['capsule'], k, job['b_method'], job['c_method'], 'B'),
             model_seed=job['seed'], source_x=source_x, source_y=source_y, source_aux=source_aux)
         sync(); b_seconds = time.perf_counter()-start
-        for _, n in [p for p in points if p[0] == k]:
+        for _, n in [p for p in pending if p[0] == k]:
             x, y, ids, spec = support_only(cap, specs[k, n]['split_id'])
             old = y < 6
             require(np.array_equal(ids[old], old_ids), 'B/C old physical support differs')
@@ -122,21 +130,26 @@ def predict(rt, job):
             sync(); q_seconds = time.perf_counter()-start
             name = f'C-K{k}-N{n}-{job["c_method"]}.npz'
             np.savez_compressed(out/name, query_indices=query, predicted_indices=pred, old_restricted_indices=restricted)
+            resources = dict(B_seconds=b_seconds, C_seconds=c_seconds, query_seconds=q_seconds,
+                    B_fit_shared_across_N=True, target_old_labels=6*k, target_new_labels=n*k,
+                    query_fit=False, B_and_C=plain(fitted['metadata']),
+                    C_native=plain(getattr(state, 'resource', {})),
+                    C_protocol=plain(getattr(state, 'protocol_metadata', {})))
+            if k == 5 and reused:
+                resources['B_state_relation_to_reused_pilot'] = 'not_verified_against_pilot_B'
+                resources['B_state_scope'] = 'newly_predicted_N_only'
             rows.append(dict(split_id=spec['split_id'], stage='C',
                 arm=job['b_method']+'__'+job['c_method']+'__C_SOURCE', input_path='P0', prediction=name,
                 k=k, new_count=n, registered_classes=spec['registered_classes'], query_count=len(pred),
                 claim='C_source_backbone_with_B_core_then_native_C_transplant',
-                resources=dict(B_seconds=b_seconds, C_seconds=c_seconds, query_seconds=q_seconds,
-                    B_fit_shared_across_N=True, target_old_labels=6*k, target_new_labels=n*k,
-                    query_fit=False, B_and_C=plain(fitted['metadata']),
-                    C_native=plain(getattr(state, 'resource', {})),
-                    C_protocol=plain(getattr(state, 'protocol_metadata', {})))))
+                resources=resources))
             print('C_SOURCE_PREDICTED', job['b_method'], job['c_method'], k, n, len(pred), flush=True)
         del fitted, old_x, old_y
     require(len(rows) == len(points) and {(r['k'], r['new_count']) for r in rows} == set(points),
             'Incomplete prediction matrix')
     require(all(torch.equal(source_before[k], v) for k, v in bundle['model'].state_dict().items()),
             'C source checkpoint was mutated')
+    rows.sort(key=lambda row: (row['k'], row['new_count']))
     write(out/'predictions.json', dict(capsule=job['capsule'], capsule_id=manifest['capsule_id'],
         profile=job['b_method'], c_method=job['c_method'], model_seed=job['seed'], rows=rows))
     write(out/'complete.json', dict(status='PREDICTIONS_COMPLETE', capsule_id=manifest['capsule_id'],
