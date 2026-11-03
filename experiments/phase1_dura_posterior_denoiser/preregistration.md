@@ -1,0 +1,7 @@
+# DURA-conditioned two-trajectory denoising
+
+Fit a single-window conditional denoiser using paired source IQ with a frozen Tri-SIG-TIME SSL reader, DURA and blind noise estimator. Its source-only objective combines the existing protected reader-guided loss and a noise-corrupted clean-IQ denoising loss. Use 8192 permitted source fit records, three already-approved views and five epochs. Never read TX identity, U_s truth, V or ground data during fitting.
+
+At inference start from the frozen DURA waveform and use two deterministic, opposite perturbations aligned to the same input phase. Apply three shared denoising steps, then average the two resulting waveforms and pass the resulting single IQ window to the same frozen reader. No clean IQ, true identity, target feedback, batch statistics, persistent adaptation or independent random generator is used at inference. This is a heuristic denoising construction, not a claim of calibrated posterior sampling or an exact diffusion model.
+
+Fix 672 source predictions before source-only L_s scoring; independently replay and evaluate all seven Phase1 ground views after fixed model construction. Fix all 168000 predictions per view before truth-last scoring and independent audit. Continue other registered runs irrespective of source outcomes. Source data and Phase1 ground data are previously explored simulated development sets, not blind or in-orbit validation.
