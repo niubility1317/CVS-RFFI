@@ -18,10 +18,11 @@ BOUND_C = {'mopc_hr', 'orthogonal', 'lora_triplet_knn'}
 def validate_runtime(rt):
     require(len(rt['c_methods']) == 3 and set(rt['c_methods']) == BOUND_C, 'Wrong C source methods')
     scope = rt.get('scope', 'full')
-    require(scope in ('full', 'pilot', 'poster_pilot'), 'Unknown matrix scope')
-    expected_b = {'poster_ft'} if scope == 'poster_pilot' else BOUND_B
+    require(scope in ('full', 'pilot', 'poster_pilot', 'hu_pilot'), 'Unknown matrix scope')
+    expected_b = ({'poster_ft'} if scope == 'poster_pilot' else
+                  {'feature_separation_hu2024'} if scope == 'hu_pilot' else BOUND_B)
     require(len(rt['b_methods']) == len(expected_b) and set(rt['b_methods']) == expected_b, 'Wrong bound B subset')
-    seeds = [2026092701] if scope in ('pilot', 'poster_pilot') else [2026092701, 2026092702, 2026092703, 2026092704]
+    seeds = [2026092701] if scope in ('pilot', 'poster_pilot', 'hu_pilot') else [2026092701, 2026092702, 2026092703, 2026092704]
     require(rt['model_seeds'] == seeds, 'Wrong source seeds')
     require(rt['K'] == [1, 5, 10, 20] and rt['N'] == [2, 5, 10, 20], 'Wrong K/N')
     rx = rt['target_receivers']
@@ -29,12 +30,14 @@ def validate_runtime(rt):
     episodes = [f'MIX{i:02d}' for i in range(1, 9)] + [f'{scene}{i:02d}' for scene in ('LS', 'MU', 'LU') for i in range(1, 6)]
     expected = {f'capsules/{pool}/{episode}/{receiver}' for pool in ('P01', 'P02', 'P03')
                 for episode in episodes for receiver in rx}
-    if scope in ('pilot', 'poster_pilot'):
+    if scope in ('pilot', 'poster_pilot', 'hu_pilot'):
         require(rt['capsules'] == ['capsules/P01/MIX01/1-1'] and rt['capsules'][0] in expected,
                 'Wrong fixed pilot capsule')
     else:
         require(len(rt['capsules']) == len(expected) == 483 and set(rt['capsules']) == expected, 'Wrong capsule matrix')
     require(set(rt['c_source_roots']) == BOUND_C and all(rt['c_source_roots'].values()), 'Missing source roots')
+    if scope == 'hu_pilot':
+        require(bool(rt.get('hu_aux_run_root')), 'Missing Hu source auxiliary root')
     require(rt['gpu_limits'] and set(rt['gpu_limits']) <= set(str(i) for i in range(8)) and
             all(0 < int(value) <= 2 for value in rt['gpu_limits'].values()), 'Invalid GPU limits')
     require(rt['minimum_free_MiB'] >= 6000 and 1 <= rt['score_processes'] <= 4, 'Invalid resource budget')
@@ -49,7 +52,7 @@ def tasks(rt):
             for seed in rt['model_seeds']:
                 for index, capsule in enumerate(rt['capsules']):
                     require(capsule.startswith('capsules/') and '..' not in Path(capsule).parts, 'Invalid capsule')
-                    points = ([(5, 20)] if rt.get('scope', 'full') in ('pilot', 'poster_pilot') else
+                    points = ([(5, 20)] if rt.get('scope', 'full') in ('pilot', 'poster_pilot', 'hu_pilot') else
                               [(k, n) for k in rt['K'] for n in rt['N']] if '/MIX' in capsule else [(5, 20)])
                     key = f'{b}__{c}-s{seed}-c{index:04d}'
                     jobs.append(dict(key=key, b_method=b, c_method=c, seed=seed, capsule=capsule,
@@ -168,9 +171,15 @@ def smoke(rt):
     for c in rt['c_methods']:
         source['run_root'] = rt['c_source_roots'][c]
         bundle = load_source(source, c, rt['model_seeds'][0], 'cuda:0')
+        bundle['source_model_seed'] = int(rt['model_seeds'][0])
         for b in rt['b_methods']:
+            source_aux = None
+            if b == 'feature_separation_hu2024':
+                folder = Path(rt['hu_aux_run_root'])/'source'/f'{c}-s{rt["model_seeds"][0]}'
+                require(read(folder/'complete.json')['status'] == 'SOURCE_AUX_COMPLETE', 'Hu source auxiliary incomplete')
+                source_aux = torch.load(folder/'hu_aux.pt', map_location='cpu', weights_only=False)
             fitted = fit_b_from_c_source(test_rt, bundle, b, x, y, seed=123, model_seed=rt['model_seeds'][0],
-                                          source_x=x, source_y=y)
+                                          source_x=x, source_y=y, source_aux=source_aux)
             new_y = torch.tensor([6, 6, 7, 7], device='cuda:0')
             state = register_native_c(test_rt, fitted['c_state'], x[:4], new_y, [6, 7], seed=456)
             with torch.no_grad():

@@ -73,8 +73,14 @@ def predict(rt, job):
     source_rt = source_scope(rt)
     source_rt['run_root'] = rt['c_source_roots'][job['c_method']]
     bundle = load_source(source_rt, job['c_method'], job['seed'], device)
+    bundle['source_model_seed'] = int(job['seed'])
     source_before = {key: value.detach().clone() for key, value in bundle['model'].state_dict().items()}
     source_x = source_y = None
+    source_aux = None
+    if job['b_method'] == 'feature_separation_hu2024':
+        folder = Path(rt['hu_aux_run_root'])/'source'/f'{job["c_method"]}-s{job["seed"]}'
+        require(read(folder/'complete.json')['status'] == 'SOURCE_AUX_COMPLETE', 'Hu source auxiliary incomplete')
+        source_aux = torch.load(folder/'hu_aux.pt', map_location='cpu', weights_only=False)
     if job['b_method'] in REPLAY_B:
         source_x, source_y = _source_L(rt, bundle)
         source_x = source_x.to(device=device, dtype=torch.float32)
@@ -96,7 +102,7 @@ def predict(rt, job):
         sync(); start = time.perf_counter()
         fitted = fit_b_from_c_source(rt, bundle, job['b_method'], old_x, old_y,
             seed=seed_for(job['seed'], job['capsule'], k, job['b_method'], job['c_method'], 'B'),
-            model_seed=job['seed'], source_x=source_x, source_y=source_y)
+            model_seed=job['seed'], source_x=source_x, source_y=source_y, source_aux=source_aux)
         sync(); b_seconds = time.perf_counter()-start
         for _, n in [p for p in points if p[0] == k]:
             x, y, ids, spec = support_only(cap, specs[k, n]['split_id'])

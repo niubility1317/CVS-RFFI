@@ -46,4 +46,6 @@ def test_unsupported_b_and_unverified_source_fail_closed():
         fit_b_from_c_source({}, bundle, 'protonet_cda', x, y, seed=1)
     bundle['provenance']['source_only'] = True
     with pytest.raises(ValueError, match='unbound'):
+        fit_b_from_c_source({}, bundle, 'issl_author_behavior', x, y, seed=1)
+    with pytest.raises(ValueError, match='source-only auxiliary'):
         fit_b_from_c_source({}, bundle, 'feature_separation_hu2024', x, y, seed=1)

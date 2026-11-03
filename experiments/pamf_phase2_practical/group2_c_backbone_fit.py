@@ -16,12 +16,13 @@ from .vendor_native.comparison_suite.adaptation import fit_adaptation
 from .vendor_native.comparison_suite.registration import register_new_classes
 
 
-BOUND_B = frozenset({'protonet_cda', 'mrior_sda', 'dadda_sda', 'twostage_sda', 'radionet_ada_knn', 'poster_ft'})
+BOUND_B = frozenset({'protonet_cda', 'mrior_sda', 'dadda_sda', 'twostage_sda', 'radionet_ada_knn',
+                     'poster_ft', 'feature_separation_hu2024'})
 REPLAY_B = frozenset({'mrior_sda', 'dadda_sda', 'twostage_sda', 'radionet_ada_knn'})
 
 
 def fit_b_from_c_source(rt, bundle, b_method, old_x, old_y, *, seed, model_seed=None,
-                        source_x=None, source_y=None, spec=None, logger=None):
+                        source_x=None, source_y=None, source_aux=None, spec=None, logger=None):
     """Fit one old-only B state; caller reuses it for all N at fixed K."""
     provenance = bundle.get('provenance') or {}
     if provenance.get('source_only') is not True:
@@ -29,6 +30,14 @@ def fit_b_from_c_source(rt, bundle, b_method, old_x, old_y, *, seed, model_seed=
     c_method = bundle['method']
     if b_method not in BOUND_B or c_method not in C_SOURCE_SPECS:
         raise ValueError('unbound B/C transplant')
+    if b_method == 'feature_separation_hu2024':
+        if source_aux is None or model_seed is None:
+            raise ValueError('Hu transplant requires its source-only auxiliary checkpoint')
+        from .group2_c_backbone_hu import fit_hu_b
+        selected = C_SOURCE_SPECS[c_method] if spec is None else spec
+        epochs = rt.get('native_adaptation_overrides', {}).get(b_method, {}).get('epochs', 100)
+        return fit_hu_b(bundle, source_aux, old_x, old_y, seed=seed, model_seed=model_seed, epochs=epochs,
+                        embedding_dim=int(selected['embedding_dim']))
     if b_method == 'poster_ft':
         from .group2_c_backbone_poster import fit_poster_b
         selected = C_SOURCE_SPECS[c_method] if spec is None else spec
