@@ -3,7 +3,7 @@
 - run_id：`20261103-phase1-shared-physical-full-replay-s2026092701-r01`
 - group_id：`phase1-shared-physical-full-prediction-replay`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：QUEUED（实际状态按 events.jsonl 及独立证据更新）
+- 当前登记状态：STOPPED（实际状态按 events.jsonl 及独立证据更新）
 
 ## 目的与对照
 
@@ -28,3 +28,7 @@ N607 实际 source smoke：112 条源记录的波形、门控、类别与原程�
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 用户停止
+
+2026-11-03 22:34（香港时间）按用户要求停止全量复核等待进程。独立读回确认 PID 已退出；源检查已完成，目标七景全量重放未开始，原输出和日志保留。
