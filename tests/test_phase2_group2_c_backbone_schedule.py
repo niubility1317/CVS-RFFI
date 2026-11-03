@@ -53,3 +53,14 @@ def test_poster_pilot_is_separate_and_has_only_three_pairs():
               capsules=['capsules/P01/MIX01/1-1'])
     validate_runtime(rt)
     assert len(tasks(rt)) == 3
+
+
+def test_hu_pilot_requires_source_auxiliary_checkpoint_root():
+    rt = runtime()
+    rt.update(scope='hu_pilot', b_methods=['feature_separation_hu2024'], model_seeds=[2026092701],
+              capsules=['capsules/P01/MIX01/1-1'])
+    with pytest.raises(ValueError, match='Hu source'):
+        validate_runtime(rt)
+    rt['hu_aux_run_root'] = '/source/aux'
+    validate_runtime(rt)
+    assert len(tasks(rt)) == 3
