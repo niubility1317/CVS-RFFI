@@ -55,10 +55,15 @@ def _proc(pid):
 
 
 def _owner_matches(info, old, start_ticks):
-    return bool(info and info['start_ticks'] == start_ticks and info['cwd'] == old['release_root'] and
-        'experiments.pamf_phase2_practical.group2_c_backbone_schedule' in info['argv'] and
-        'dispatch' in info['argv'] and '--runtime' in info['argv'] and
-        info['argv'][info['argv'].index('--runtime')+1] == old['runtime_file'])
+    if not info or info['start_ticks'] != start_ticks or info['cwd'] != old['release_root']:
+        return False
+    argv=info['argv']
+    valid_entry = (('experiments.pamf_phase2_practical.group2_c_backbone_schedule' in argv and 'dispatch' in argv) or
+                   'experiments.pamf_phase2_practical.group2_c_backbone_fast_takeover' in argv)
+    try:
+        return valid_entry and argv[argv.index('--runtime')+1] == old['runtime_file']
+    except (ValueError,IndexError):
+        return False
 
 
 def _children(old, pid):
@@ -197,7 +202,11 @@ def dispatch(rt):
         count=sum(len(job['points']) for job in jobs)
         write(root/'predictions_complete.json',dict(status='ALL_PREDICTIONS_FIXED',tasks=len(jobs),rows=count,
                                                     truth_read=False,query_fit=False))
-        _queue(rt,jobs,'score')
+        if rt.get('persistent_score_workers'):
+            from .group2_c_backbone_score_pool import score_pool
+            score_pool(rt,jobs)
+        else:
+            _queue(rt,jobs,'score')
         write(root/'complete.json',dict(status='SCORED_COMPLETE',tasks=len(jobs),rows=count,
                                          truth_last=True,target_feedback=False,reused_prediction_tasks=len(reused)))
     finally:
