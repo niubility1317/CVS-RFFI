@@ -31,3 +31,21 @@ Three fixed Hu/C transplant pairs, one exposed-development capsule and seed, K5/
 ## 2026-11-03 启动读回
 
 controller PID 2116882，3 种真实 C 源 checkpoint 与 Hu 源辅助权重的无 query smoke 3/3 PASS，GPU0/1/2 的 3 个 worker 实际 PID、CWD、命令已读回。预测和独立评分以实际后续产物为准；预测全部冻结后才进行独立评分。
+
+## 2026-11-03 试运行独立评分
+
+三组固定预测和独立评分均已完成；P01/MIX01/1-1、单模型 seed、K=5、N=20。所有 26 类的 query 数均非零；自然 query 每组 26471 条。该单元已曝光，不能代表完整矩阵。
+
+| C 地面主干与注册核心 | 自然 H | 旧类宏准确率 | 新类宏准确率 | 宏 F1 | 共同 query H |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| mopc_hr | 0.02% | 0.01% | 5.67% | 0.55% | 0.02% |
+| orthogonal | 0.00% | 0.00% | 16.56% | 7.55% | 0.00% |
+| lora_triplet_knn | 8.03% | 26.24% | 4.74% | 8.86% | 7.93% |
+
+| C 地面主干 | B 时间（秒） | C 时间（秒） | query 时间（秒） | B 判决迁移 |
+| --- | ---: | ---: | ---: | --- |
+| mopc_hr | 12.130 | 17.760 | 5.039 | Hu_TX_classifier_and_projection_inherited_by_MoPC |
+| orthogonal | 3.007 | 5.412 | 1.003 | Hu_TX_weights_as_cosine_old_weights_bias_discarded |
+| lora_triplet_knn | 3.276 | 0.054 | 1.747 | Hu_TX_classifier_replaced_by_native_LoRa_kNN_TX_projection_retained |
+
+三个任务均使用旧类目标标签 30 个、新类目标标签 100 个。时间来自真实运行，可能与其他任务共享 GPU；未测 MAC、FLOPs、能耗均保留缺项。结果未用于调整方法或筛选对照；与原版完整矩阵的平均值不可直接相减。
