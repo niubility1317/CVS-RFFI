@@ -27,3 +27,9 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-03 启动读回
+
+真实 controller PID 2101622；release/runtime、CWD 与命令见 experiment.json。15 个实际源 checkpoint/方法组合的 source-only、无 query/truth smoke 已通过；worker PID、GPU、CWD/argv 和预测产物增长已独立读回。启动时已观察至少 6/15 个完整预测任务；最终状态以远端产物为准。
+
+本试运行仅覆盖已绑定的 5 个 B × 3 个 C；POSTER、Hu 跨主干绑定仍待实现，ISSL 保持停止、CSIL 作者版本未绑定。LoRa 辅助旧类分类头由冻结源 gallery 的类别均值解析构造，不冒充原生 kNN 分类器；ProtoNet/RadioNet 到 C 的判决迁移差异按结果元数据记录。15 个预测固定前不进行独立评分，实验属于已曝光开发评估。
