@@ -1,0 +1,9 @@
+# Independent frozen-feature IQ projector
+
+Train an independent source-only recovery network without DURA. A small feature network predicts the direction of paired clean-source Tri-SIG-TIME SSL features using only frozen-reader features of the received record. A local IQ correction network and a single normalized gradient step of the frozen reader's feature discrepancy produce one IQ output. The feature target is inferred from the current received signal at inference, never from clean or target truth. Frozen-reader parameters are never optimized or updated; IQ input gradients are local computations, not feedback from a target label.
+
+Training uses 8192 permitted source records and three paired source-only views for five epochs. The loss combines paired IQ and frozen-reader feature guidance with a separate objective matching the predicted feature target to the clean-source reader feature. The gradient step is treated as a detached direction when optimizing the network, so it is a straight-through approximation rather than full second-order training. No TX identity, U_s truth, V or ground data may enter training.
+
+At inference the gate and network see a single received IQ record and fixed weights, with no other record, clean IQ, scene identity, target feedback or persistent adaptation. A zero-initialized network returns the input. Fix 672 source predictions before legal L_s scoring and independent audit. Fix all seven sets of 168000 Phase1 ground predictions before truth-last score and audit. Source and ground data are explored simulated development sets, not blind or in-orbit evidence. Existing independent and DURA routes continue independently.
+
+Source experiment: 20261103-phase1-frozen-feature-projector-source-s2026092701-r01. Ground experiment: 20261103-phase1-frozen-feature-projector-ground-test-s2026092701-r01.
