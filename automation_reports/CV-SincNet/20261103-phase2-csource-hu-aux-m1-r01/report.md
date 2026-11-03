@@ -31,3 +31,13 @@ Train Hu TX/RX auxiliary state on frozen C-source L_s features; no target handle
 ## 2026-11-03 源辅助启动读回
 
 controller PID 2114101；实际 source-only 无 query smoke 3/3 PASS，GPU0/1/2 各一条 worker，PID/CWD/命令与日志增长已读回。仅使用源域 L_s，固定 200 轮训练新辅助分支并冻结 C 源主干；不含目标数据或评分。完整状态以远端输出为准，目标 pilot 在源辅助完成后另行登记。
+
+## 2026-11-03 源辅助训练完成
+
+三个源辅助模型均完成固定 200 轮、5000 步，各自的 C 方法、源 checkpoint、模型 seed、L_s 输入角色及无目标接触独立核验通过。训练结果为辅助权重，不代表目标预测或独立评分。
+
+| C 主干 | 源数据量 | 源训练秒 |
+| --- | ---: | ---: |
+| mopc_hr | 6300 | 60.91 |
+| orthogonal | 6300 | 46.57 |
+| lora_triplet_knn | 6300 | 43.76 |
