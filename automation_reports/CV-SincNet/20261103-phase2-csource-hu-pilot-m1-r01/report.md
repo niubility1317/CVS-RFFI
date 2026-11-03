@@ -27,3 +27,7 @@ Three fixed Hu/C transplant pairs, one exposed-development capsule and seed, K5/
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-03 启动读回
+
+controller PID 2116882，3 种真实 C 源 checkpoint 与 Hu 源辅助权重的无 query smoke 3/3 PASS，GPU0/1/2 的 3 个 worker 实际 PID、CWD、命令已读回。预测和独立评分以实际后续产物为准；预测全部冻结后才进行独立评分。
