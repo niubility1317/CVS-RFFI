@@ -1,0 +1,142 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261103-phase1-shared-physical-parallel-source-perf-s2026092701-r02",
+  "group_id": "phase1-shared-physical-equivalence-performance",
+  "display_name": "三个独立预测并行与共享预测的源域等价和速度验证",
+  "description": "相同112条Phase1源样本，三个原预测进程并行对比共享进程；预热8条，逐项检查104条波形门控和分类，不读目标与真值。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "performance",
+    "physical-fusion"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261103-phase1-dura-physical-fusion-source-s2026092701-r02",
+    "20261103-phase1-dura-physical-wide-source-s2026092701-r01",
+    "20261103-phase1-dura-physical-local-teacher-source-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261103-phase1-shared-physical-parallel-source-perf-s2026092701-r01",
+  "authorization": "用户要求优化现有预测速度并保持结果不变；只读源域验证，不改变现有运行。",
+  "code": {
+    "commit": "ecff622df48ddc27a9d34c5ff8ff67c419859bc5",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI conda; CPU FP32 TF32 off; three independent 2-thread workers versus one 2-thread shared worker",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261103-phase1-shared-physical-parallel-source-perf-s2026092701-r02-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "existing source epoch 19",
+    "representation": "IQ [2,256]",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "existing 672 frozen source pilot; 112 records, two RX groups x seven views x eight",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "IQ only; TX identity not read",
+      "U_s": "IQ only; TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "pre-existing fixed 672 source pilots",
+    "support_query_ref": null,
+    "leo_config_ref": "existing source epoch 19"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "source-only numerical equality and observed timing, not a full target prediction guarantee"
+  },
+  "checkpoint": {
+    "initialization": "three fixed source-trained physical fusion checkpoints",
+    "sources": [
+      "20261103-phase1-dura-physical-fusion-source-s2026092701-r02",
+      "20261103-phase1-dura-physical-wide-source-s2026092701-r01",
+      "20261103-phase1-dura-physical-local-teacher-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "frozen source prediction manifests and established source contract",
+    "provenance_verdict": "previously verified; strict metadata and model load",
+    "selection_rule": "all three registered variants, no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "CPU only; three 2-thread workers concurrent, then one 2-thread shared process",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261103-phase1-shared-physical-parallel-source-perf-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261103-phase1-shared-physical-parallel-source-perf-s2026092701-r02-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261103-phase1-shared-physical-parallel-source-perf-s2026092701-r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_shared_physical_predict.parallel_benchmark --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261103-phase1-shared-physical-parallel-source-perf-s2026092701-r02",
+    "stop_rule": "Any source pilot mismatch, nonfinite output, incorrect model provenance or illegal data access aborts; preserve existing jobs."
+  },
+  "expected_artifacts": [
+    "result.json: 104 source records exact equality and concurrent versus shared wall time"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "exact waveform equality",
+      "exact class equality",
+      "concurrent inference wall time",
+      "shared inference wall time"
+    ],
+    "dimensions": [
+      "source receiver group",
+      "seven source views"
+    ],
+    "prediction_ref": "existing frozen source predictions",
+    "scorer_ref": "none; no TX identity or target scoring"
+  },
+  "rows": [
+    {
+      "row_id": "shared-vs-independent-source-112",
+      "method": "three independent predictors run simultaneously vs shared same-record inference",
+      "purpose": "technical equivalence and performance",
+      "config_ref": "experiments/phase1_shared_physical_predict/parallel_benchmark.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Existing pretrained source runs and fixed source pilots; no stochastic training, support or augmentation in this benchmark.",
+      "k": null,
+      "scenario": "clean and six practical source views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "112 source records; first 8 warmup, 104 timed",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261103-phase1-shared-physical-parallel-source-perf-s2026092701-r02",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261103-phase1-shared-physical-parallel-source-perf-s2026092701-r02-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_shared_physical_predict.parallel_benchmark --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261103-phase1-shared-physical-parallel-source-perf-s2026092701-r02",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No changes to current production tasks or outputs.",
+    "Original three processes run concurrently before shared timing; one ordering and shared load limit interpretation.",
+    "No claim of full test equivalence or overall ETA speedup.",
+    "Technical retry after unsupported DLPack bool conversion in r01; frozen source inputs and timing plan unchanged."
+  ],
+  "registered_at": "2026-11-03T11:44:59+00:00"
+}
