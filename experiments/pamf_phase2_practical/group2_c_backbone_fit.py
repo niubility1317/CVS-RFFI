@@ -16,7 +16,7 @@ from .vendor_native.comparison_suite.adaptation import fit_adaptation
 from .vendor_native.comparison_suite.registration import register_new_classes
 
 
-BOUND_B = frozenset({'protonet_cda', 'mrior_sda', 'dadda_sda', 'twostage_sda', 'radionet_ada_knn'})
+BOUND_B = frozenset({'protonet_cda', 'mrior_sda', 'dadda_sda', 'twostage_sda', 'radionet_ada_knn', 'poster_ft'})
 REPLAY_B = frozenset({'mrior_sda', 'dadda_sda', 'twostage_sda', 'radionet_ada_knn'})
 
 
@@ -29,6 +29,10 @@ def fit_b_from_c_source(rt, bundle, b_method, old_x, old_y, *, seed, model_seed=
     c_method = bundle['method']
     if b_method not in BOUND_B or c_method not in C_SOURCE_SPECS:
         raise ValueError('unbound B/C transplant')
+    if b_method == 'poster_ft':
+        from .group2_c_backbone_poster import fit_poster_b
+        selected = C_SOURCE_SPECS[c_method] if spec is None else spec
+        return fit_poster_b(bundle, old_x, old_y, seed=seed, embedding_dim=int(selected['embedding_dim']))
     if b_method in REPLAY_B and (source_x is None or source_y is None):
         raise ValueError('this native B core requires authorized L_s replay')
     selected = dict(C_SOURCE_SPECS[c_method] if spec is None else spec)
