@@ -132,13 +132,24 @@ def hierarchical_regularization(
     if [name for name, _ in current] != [name for name, _ in previous]:
         raise ValueError("current and previous parameter names must match in order")
 
-    total = current[0][1].new_zeros(())
-    layer_count = len(current)
-    for index, ((_, current_value), (_, previous_value)) in enumerate(zip(current, previous)):
+    for (_, current_value), (_, previous_value) in zip(current, previous):
         if current_value.shape != previous_value.shape:
             raise ValueError("current and previous parameter shapes must match")
+    total = current[0][1].new_zeros(())
+    layer_count = len(current)
+    tensors = [value for _, value in current]
+    parents = [value.detach() for _, value in previous]
+    # MoPC's CUDA parameters are homogeneous dense FP32. Batch only the
+    # elementwise operations; preserve each layer reduction and scalar
+    # accumulation order, as well as the original autograd expression.
+    use_foreach = all(value.device == tensors[0].device and value.device.type == 'cuda' and
+                      value.dtype == torch.float32 and value.layout == torch.strided
+                      for value in tensors + parents)
+    squares = (torch._foreach_pow(torch._foreach_sub(tensors, parents), 2) if use_foreach else None)
+    for index, ((_, current_value), (_, previous_value)) in enumerate(zip(current, previous)):
         layer_lambda = lambda_max * (1.0 - index / layer_count)
-        total = total + layer_lambda * torch.sum((current_value - previous_value.detach()) ** 2)
+        square = squares[index] if squares is not None else (current_value - previous_value.detach()) ** 2
+        total = total + layer_lambda * torch.sum(square)
     return total
 
 
