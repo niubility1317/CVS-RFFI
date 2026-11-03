@@ -96,8 +96,12 @@ def _gpu_free(gpu):
                                         '--format=csv,noheader,nounits'], text=True).strip())
 
 
-def _queue(rt, jobs, action):
-    root = Path(rt['run_root']); pending = list(enumerate(jobs)); active = []; completed = 0; failed = []
+def _queue(rt, jobs, action, *, reused_indices=()):
+    reused = set(reused_indices)
+    require((action == 'worker' or not reused) and all(isinstance(i, int) and 0 <= i < len(jobs) for i in reused),
+            'Invalid reused job indices')
+    root = Path(rt['run_root']); pending = [(i, job) for i, job in enumerate(jobs) if i not in reused]
+    active = []; completed = len(reused); failed = []
     while pending or active:
         for record in list(active):
             index, gpu, proc, log = record
@@ -186,11 +190,14 @@ def smoke(rt):
         iterations=1, dann_epochs=1, lmmd_epochs=1, finetune_epochs=1, batch_size=6) for p in rt['b_methods']}
     test_rt['native_registration_overrides'] = {'mopc_hr': {'mopc_epochs': 1, 'mopc_batch_size': 4},
                                                 'orthogonal': {'orthogonal_epochs': 1}}
-    results = []
+    results = []; regularization_check = None
     for c in rt['c_methods']:
         source['run_root'] = rt['c_source_roots'][c]
         bundle = load_source(source, c, rt['model_seeds'][0], 'cuda:0')
         bundle['source_model_seed'] = int(rt['model_seeds'][0])
+        if c == 'mopc_hr' and rt.get('verify_fast_regularization'):
+            from .group2_c_backbone_fast_math import verify_regularization
+            regularization_check = verify_regularization(bundle['model'])
         for b in rt['b_methods']:
             source_aux = None
             if b == 'feature_separation_hu2024':
@@ -208,7 +215,10 @@ def smoke(rt):
             del fitted, state
         del bundle
     torch.cuda.synchronize()
-    return dict(status='PASS', pairs=results, source_role='L_s', target_rows=0, query_rows=0, truth_read=False)
+    require(not rt.get('verify_fast_regularization') or regularization_check is not None,
+            'Missing accelerated penalty equivalence check')
+    return dict(status='PASS', pairs=results, source_role='L_s', target_rows=0, query_rows=0, truth_read=False,
+                regularization_check=regularization_check)
 
 
 def dispatch(rt):
