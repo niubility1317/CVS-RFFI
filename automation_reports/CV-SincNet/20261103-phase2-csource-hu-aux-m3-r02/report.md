@@ -31,3 +31,19 @@ Train Hu source auxiliaries for remaining three model seeds, reusing existing se
 ## 2026-11-03 启动读回
 
 controller PID 2119880；实际 3 个 C 源 checkpoint 的source-only 无 query smoke 3/3 PASS，GPU0/1/2 真实 worker PID/CWD/命令及日志增长已核实。本 run 只补 seed 02/03/04 共 9 项，seed01 复用已完成权重；均不访问目标数据，最终状态以产物为准。
+
+## 2026-11-03 源辅助训练完成
+
+9 项源辅助模型全部完成，逐项核验 C checkpoint、模型 seed、L_s 权限、200 轮/5000 步和无目标接触。seed01 已由上一个 run 复用。这是源端辅助训练，目标预测及评分尚须独立完成。
+
+| C 主干 | 模型 seed | 源训练秒 |
+| --- | ---: | ---: |
+| mopc_hr | 2026092702 | 58.49 |
+| mopc_hr | 2026092703 | 44.95 |
+| mopc_hr | 2026092704 | 45.57 |
+| orthogonal | 2026092702 | 44.37 |
+| orthogonal | 2026092703 | 41.69 |
+| orthogonal | 2026092704 | 57.83 |
+| lora_triplet_knn | 2026092702 | 42.67 |
+| lora_triplet_knn | 2026092703 | 41.38 |
+| lora_triplet_knn | 2026092704 | 58.53 |
