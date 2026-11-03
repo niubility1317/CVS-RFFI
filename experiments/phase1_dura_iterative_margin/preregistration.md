@@ -1,0 +1,7 @@
+# DURA iterative recognition-margin source experiment
+
+Train the same DURA-anchored three-step time/frequency network and source protocol as the independently trained DURA iterative comparison, adding a 0.1-weight confidence-gated recognition-margin penalty. A frozen clean-source reader supplies a pseudo-class only during training; for confident records the penalty protects a correct DURA anchor's margin up to 2.0 and asks for margin 0.5 when DURA disagrees with the pseudo-class. Receiver groups are balanced. Both candidates train independently for five epochs on the same ordered 8,192 source records and three cached views; optimization trajectory changes, so the contrast estimates this training recipe rather than an isolated mechanistic causal effect.
+
+The reader, DURA, blind estimator, and gate remain frozen. Model training uses paired source IQ and reader features/pseudo output but no TX identities, U_s truth, V or ground data. Fixed single-record inference needs only received IQ and frozen model components. Fix source predictions before permitted L_s scoring; perform independent source audit, then seven-view fixed prediction and independent ground audit. No selection uses ground labels. Existing source and simulated ground development data have been explored and are not blind or in-orbit evidence.
+
+Source 20261103-phase1-dura-iterative-margin-source-s2026092701-r01. Ground 20261103-phase1-dura-iterative-margin-ground-test-s2026092701-r01.
