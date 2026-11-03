@@ -19,6 +19,19 @@ def test_source_only_matrix_and_fixed_budget():
     assert {r['c_method'] for r in rows} == set(rt['c_methods'])
 
 
+def test_source_missing_seeds_are_disjoint_and_fixed():
+    rt = runtime()
+    rt['model_seeds'] = [2026092702, 2026092703, 2026092704]
+    validate_runtime(rt)
+    rows = tasks(rt)
+    assert len(rows) == 9 and {row['seed'] for row in rows} == set(rt['model_seeds'])
+    assert len({row['key'] for row in rows}) == 9
+    for invalid in ([2026092702, 2026092702], [2026092705], []):
+        rt['model_seeds'] = invalid
+        with pytest.raises(ValueError, match='matrix'):
+            validate_runtime(rt)
+
+
 def test_source_training_rejects_target_handles_and_changed_budget():
     rt = runtime()
     rt['data_root'] = '/target'

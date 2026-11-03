@@ -17,8 +17,10 @@ C_METHODS = {'mopc_hr', 'orthogonal', 'lora_triplet_knn'}
 def validate_runtime(rt):
     forbidden = {'data_root', 'target_root', 'target_truth', 'truth', 'capsules', 'query', 'target_support'}
     require(not (forbidden & set(rt)), 'Source run contains target/query handles')
+    seeds = rt['model_seeds']
     require(len(rt['c_methods']) == 3 and set(rt['c_methods']) == C_METHODS and
-            rt['model_seeds'] == [2026092701], 'Wrong source pilot matrix')
+            seeds and len(set(seeds)) == len(seeds) and
+            set(seeds) <= {2026092701, 2026092702, 2026092703, 2026092704}, 'Wrong source pilot matrix')
     require(rt['source_epochs'] == 200 and rt['source_batch'] == 256, 'Wrong source auxiliary budget')
     require(set(rt['c_source_roots']) == C_METHODS and all(rt['c_source_roots'].values()) and
             rt['source_cache'] and rt['source_contract'], 'Missing source input')
