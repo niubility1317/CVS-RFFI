@@ -5,7 +5,7 @@ import pytest
 import signal
 
 from experiments.pamf_phase2_practical.group2_c_backbone_fast_takeover import (
-    check_parent_runtime, link_closed_predictions, worker_index)
+    check_parent_runtime, link_closed_predictions, worker_index, _owner_matches)
 from experiments.pamf_phase2_practical.group2_c_backbone_schedule import _queue
 
 
@@ -30,6 +30,17 @@ def test_worker_index_requires_exact_module_and_old_runtime():
     assert worker_index(cmd, '/old/runtime.json') == 42
     assert worker_index(cmd, '/other/runtime.json') is None
     assert worker_index(cmd[:-1]+['x'], '/old/runtime.json') is None
+
+
+def test_verified_parent_may_be_prior_takeover_controller():
+    old={'release_root':'/old/release','runtime_file':'/old/release/runtime.json'}
+    info={'start_ticks':19,'cwd':'/old/release','argv':['python','-m',
+        'experiments.pamf_phase2_practical.group2_c_backbone_fast_takeover',
+        '--runtime','/old/release/runtime.json']}
+    assert _owner_matches(info,old,19)
+    assert not _owner_matches(info,old,20)
+    info['argv'][-1]='/different/runtime.json'
+    assert not _owner_matches(info,old,19)
 
 
 def test_reuse_closed_prediction_without_recomputing(tmp_path):
