@@ -1,11 +1,21 @@
 """Frozen physical posterior and DURA packed for single-record fusion."""
 import torch
 from experiments.pamf_phase1_flow.anchor_source_smoke import frozen_dura
+from experiments.phase1_dura_posterior.pipeline import PhysicalPosterior
 
 
 def load_components(root,device,deps):
- from experiments.phase1_dura_posterior.physical_source_smoke import load_source_models
- physical,gate=load_source_models(root,'mean')
+ blind_state=torch.load(root/'runs'/deps.SOURCE/'checkpoint_epoch10.pt',map_location='cpu',weights_only=False)
+ prior=torch.load(root/'runs'/deps.PRIOR_RUN/'source_prior.pt',map_location='cpu',weights_only=False)
+ gate_state=torch.load(root/'runs'/deps.s.GATE_RUN/'source/selected.pt',map_location='cpu',weights_only=False)
+ if (blind_state.get('commit')!='94693a342bb2daa684c0f21415d7b949f9fb2107' or blind_state.get('epoch')!=10
+     or prior.get('source_ids')!=8192 or gate_state.get('commit')!=deps.s.GATE_COMMIT
+     or gate_state.get('selected',{}).get('kind')!='gated_direct_iq'):
+  raise ValueError('The fixed source-only physical estimator, prior and gate are required')
+ blind=deps.BlindActionNet();blind.load_state_dict(blind_state['model'],strict=True)
+ gate=deps.s.BlindGate();gate.load_state_dict(gate_state['gate'],strict=True)
+ physical=PhysicalPosterior(blind,prior['means'],prior['covariances'],prior['priors'],
+                            action_matrix=deps.action_matrix,posterior=deps.posterior)
  physical=physical.to(device).eval().requires_grad_(False)
  gate=gate.to(device).eval().requires_grad_(False)
  dura=frozen_dura(root,device).eval().requires_grad_(False)

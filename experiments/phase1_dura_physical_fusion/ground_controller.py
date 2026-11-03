@@ -10,7 +10,7 @@ import traceback
 from experiments.phase1_dura_posterior.resources import wait_for_cpu
 from experiments.phase1_dura_physical_fusion.source_controller import ROOT, RUN, RELEASE, PYTHON, environment
 
-GROUND = '20261103-phase1-dura-physical-fusion-ground-test-s2026092701-r01'
+GROUND = '20261103-phase1-dura-physical-fusion-ground-test-s2026092701-r02'
 
 
 def main():

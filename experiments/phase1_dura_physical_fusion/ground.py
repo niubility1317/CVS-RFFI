@@ -3,7 +3,7 @@ from experiments.phase1_dynamic_volterra import ground as base
 from experiments.phase1_dura_physical_fusion.model import PhysicalFusion as DynamicVolterra
 from experiments.phase1_dura_physical_fusion.pipeline import load_components, predict_batch
 
-SOURCE = '20261103-phase1-dura-physical-fusion-source-s2026092701-r01'
+SOURCE = '20261103-phase1-dura-physical-fusion-source-s2026092701-r02'
 
 
 def main():

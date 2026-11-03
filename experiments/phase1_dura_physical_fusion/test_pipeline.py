@@ -1,4 +1,7 @@
 import unittest
+from unittest.mock import patch
+from types import SimpleNamespace
+import experiments
 import torch
 from torch import nn
 from experiments.phase1_dura_physical_fusion.pipeline import input_noise,predict_batch
@@ -23,5 +26,17 @@ class PipelineTest(unittest.TestCase):
   a,out,active,classes=predict_batch(x,Model(),None,Gate(),dura,physical,Reader(),None)
   self.assertEqual(active.tolist(),[False,True]);self.assertEqual(physical.calls,[2,1])
   self.assertTrue(torch.equal(out[0],a[0]));self.assertTrue(torch.equal(out[1],x[1]*.5));self.assertEqual(len(classes),3)
+
+ def test_loader_survives_reader_package_path_reset(self):
+  from experiments.phase1_dura_physical_fusion.pipeline import load_components
+  deps=SimpleNamespace(SOURCE='blind',PRIOR_RUN='prior',BlindActionNet=nn.Identity,action_matrix=lambda x:x,posterior=lambda *x:x,
+   s=SimpleNamespace(GATE_RUN='gate',GATE_COMMIT='g',BlindGate=nn.Identity))
+  states=[dict(commit='94693a342bb2daa684c0f21415d7b949f9fb2107',epoch=10,model={}),
+          dict(source_ids=8192,means=torch.zeros(1,2),covariances=torch.eye(2)[None],priors=torch.ones(1)),
+          dict(commit='g',selected=dict(kind='gated_direct_iq'),gate={})]
+  with patch.object(experiments,'__path__',[]), patch('torch.load',side_effect=states), \
+       patch('experiments.phase1_dura_physical_fusion.pipeline.frozen_dura',return_value=nn.Identity()):
+   blind,gate,dura,physical=load_components(__import__('pathlib').Path('.'),'cpu',deps)
+  self.assertIs(physical.blind,blind);self.assertFalse(physical.training);self.assertFalse(gate.training)
 
 if __name__=='__main__':unittest.main()
