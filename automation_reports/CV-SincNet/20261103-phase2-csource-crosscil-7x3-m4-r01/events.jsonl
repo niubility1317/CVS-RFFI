@@ -1,2 +1,3 @@
 {"at": "2026-11-03T03:57:56+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-03T03:59:56+00:00", "status": "RUNNING", "note": "21 source-only smoke pairs PASS; controller and 16 GPU workers verified, new and reused predictions observed; truth-last barrier pending.", "evidence": ["E:/type10-7/local_artifacts/phase2_group2_cbackbone_20261102/full7_monitor_latest.json"], "row_id": null}
+{"at": "2026-11-03T04:54:55+00:00", "status": "REPLACED", "note": "Dispatcher transferred after owned workers finished; all 370 completed predictions retained and linked into fast r02.", "evidence": ["E:/type10-7/local_artifacts/phase2_group2_cbackbone_20261102/fast_takeover_reuse_verified.json"], "row_id": null}

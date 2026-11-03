@@ -31,3 +31,7 @@ All fixed 7 B by 3 native C-source/C-core transplants; matched four seeds and or
 ## 2026-11-03 启动读回
 
 controller PID 2128146，真实源 checkpoint 无 query smoke 21/21 PASS；GPU0 至 GPU7 各两条本任务 worker 的 PID/CWD/命令已读回，多个新预测文件增长，首个任务已链接既有 pilot 预测。全部 40572 任务预测固定后才进入独立评分；当前尚未评分。
+
+## 2026-11-03 加速接管完成
+
+旧 controller 仅在 16 条自有 worker 自然结束后退出，新 controller 2180731 接管。真实 source-only 无 query smoke 21/21 PASS；在真实 MoPC 源模型的 151 组参数上，新旧正则损失和梯度逐位一致。旧 run 370 个闭合任务、2770 行预测已逐行核实并硬链接复用；先导预测及评分引用保留。目标 truth 仍待全部预测冻结后独立使用。服务器端的实际速度需在新任务完成后按相同 K/N、seed 与 GPU 共享情况比较，不能引用本机合成倍数替代。

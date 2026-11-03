@@ -31,3 +31,7 @@ Safe single-owner continuation with identical matrix and batched MoPC elementwis
 ## 2026-11-03 接管启动读回
 
 新 controller PID 2180731 已运行；旧 controller PID 2128146 已精准暂停派发，等待 16 条旧 worker 自然完成，并核对所有已启动索引闭合；此状态不代表接管成功。实际转移、旧预测复用、源 checkpoint 无 query smoke 和服务器实测加速以随后产物为准。
+
+## 2026-11-03 加速接管完成
+
+旧 controller 仅在 16 条自有 worker 自然结束后退出，新 controller 2180731 接管。真实 source-only 无 query smoke 21/21 PASS；在真实 MoPC 源模型的 151 组参数上，新旧正则损失和梯度逐位一致。旧 run 370 个闭合任务、2770 行预测已逐行核实并硬链接复用；先导预测及评分引用保留。目标 truth 仍待全部预测冻结后独立使用。服务器端的实际速度需在新任务完成后按相同 K/N、seed 与 GPU 共享情况比较，不能引用本机合成倍数替代。
