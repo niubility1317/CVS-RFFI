@@ -27,3 +27,7 @@ Train Hu TX/RX auxiliary state on frozen C-source L_s features; no target handle
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-03 源辅助启动读回
+
+controller PID 2114101；实际 source-only 无 query smoke 3/3 PASS，GPU0/1/2 各一条 worker，PID/CWD/命令与日志增长已读回。仅使用源域 L_s，固定 200 轮训练新辅助分支并冻结 C 源主干；不含目标数据或评分。完整状态以远端输出为准，目标 pilot 在源辅助完成后另行登记。
