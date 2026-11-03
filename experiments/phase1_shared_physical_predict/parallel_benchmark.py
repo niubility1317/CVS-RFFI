@@ -51,7 +51,15 @@ def flatten_batches(batches):
     for anchor, output, active, classes in batches:
         for field, value in zip(fields, (anchor, output, active, *classes)):
             field.append(value.detach().cpu())
-    return [np.from_dlpack(torch.cat(field).contiguous()).copy() for field in fields]
+    arrays = []
+    for field in fields:
+        value = torch.cat(field).contiguous()
+        is_bool = value.dtype == torch.bool
+        if is_bool:
+            value = value.to(torch.uint8)
+        array = np.from_dlpack(value).copy()
+        arrays.append(array.astype(np.bool_, copy=False) if is_bool else array)
+    return arrays
 
 
 def worker(root, index, values, ready, start, results):
