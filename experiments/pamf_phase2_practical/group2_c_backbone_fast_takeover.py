@@ -28,7 +28,10 @@ def check_parent_runtime(old, current):
     require(all(key in old and key in current and old[key] == current[key] for key in SCIENCE_KEYS) and
             all(old.get(key) == current.get(key) for key in OPTIONAL_SCIENCE_KEYS),
             'Parent scientific matrix or input differs')
-    require(old.get('gpu_limits') == current.get('gpu_limits') and
+    previous, updated = old.get('gpu_limits'), current.get('gpu_limits')
+    require((previous == updated or (isinstance(previous, dict) and isinstance(updated, dict) and
+            set(previous) == set(updated) and all(0 < int(previous[g]) <= int(updated[g]) <=
+            (2 if g == '7' else 3) for g in previous))) and
             old.get('minimum_free_MiB') == current.get('minimum_free_MiB'), 'Parent GPU policy differs')
 
 

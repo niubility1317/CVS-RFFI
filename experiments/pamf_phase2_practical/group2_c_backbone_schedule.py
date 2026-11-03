@@ -47,7 +47,8 @@ def validate_runtime(rt):
         require(set(pilots) == {'base', 'poster_ft', 'feature_separation_hu2024'} and all(pilots.values()),
                 'Missing fixed pilot prediction reuse plan')
     require(rt['gpu_limits'] and set(rt['gpu_limits']) <= set(str(i) for i in range(8)) and
-            all(0 < int(value) <= 2 for value in rt['gpu_limits'].values()), 'Invalid GPU limits')
+            all(0 < int(value) <= (2 if gpu == '7' else 3)
+                for gpu, value in rt['gpu_limits'].items()), 'Invalid GPU limits')
     require(rt['minimum_free_MiB'] >= 6000 and 1 <= rt['score_processes'] <= 4, 'Invalid resource budget')
     require(not rt.get('native_adaptation_overrides') and not rt.get('native_registration_overrides'),
             'Formal release cannot change fixed native budgets')
