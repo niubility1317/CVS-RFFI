@@ -27,3 +27,7 @@ Train Hu source auxiliaries for remaining three model seeds, reusing existing se
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-03 启动读回
+
+controller PID 2119880；实际 3 个 C 源 checkpoint 的source-only 无 query smoke 3/3 PASS，GPU0/1/2 真实 worker PID/CWD/命令及日志增长已核实。本 run 只补 seed 02/03/04 共 9 项，seed01 复用已完成权重；均不访问目标数据，最终状态以产物为准。
