@@ -27,3 +27,7 @@ All fixed 7 B by 3 native C-source/C-core transplants; matched four seeds and or
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-03 启动读回
+
+controller PID 2128146，真实源 checkpoint 无 query smoke 21/21 PASS；GPU0 至 GPU7 各两条本任务 worker 的 PID/CWD/命令已读回，多个新预测文件增长，首个任务已链接既有 pilot 预测。全部 40572 任务预测固定后才进入独立评分；当前尚未评分。
