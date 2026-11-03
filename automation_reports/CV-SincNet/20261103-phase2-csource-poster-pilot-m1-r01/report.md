@@ -27,3 +27,9 @@ Three fixed POSTER/C transplant pairs, one exposed-development capsule and seed,
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-03 启动读回
+
+真实 controller PID 2107069；CWD、命令和 runtime 见 experiment.json。三种 C 地面权重的 POSTER source-only/no-query smoke 3/3 通过；实际 worker PID、GPU、CWD/argv 和至少 2/3 个闭合预测已读回。全部预测固定后自动独立评分，当前未宣称评分完成。
+
+POSTER 适配保留冻结的 C 源编码器，重置并训练两层稠密投影与六类头 10 个 epoch；投影维度按 C 编码器匹配，投影进入 C 注册。该项目移植与作者原 POSTER 架构不同。Hu 跨主干绑定仍待实现；ISSL 保持停止、CSIL 作者绑定缺失。
