@@ -1,0 +1,7 @@
+# Source-only DURA and physical-posterior continuous fusion
+
+Train a same-record complex, time-varying fusion of frozen DURA and independent frozen physical posterior waveforms, aligned to DURA with protected edges. Output is one IQ window; initialization returns DURA exactly. Frozen Tri-SIG-TIME SSL supplies paired-clean source features and pseudo labels only during training. In addition to the existing DURA-relative waveform protection, activate a reader loss when the high-confidence clean-F pseudo class is wrong on DURA and right on the aligned posterior. The latter is not a true identity label. Training must not read TX identities, U_s truth, V or ground data.
+
+Use 8192 fit records, existing three source-only simulated views and five epochs. At inference use only the received IQ, frozen DURA, physical posterior, blind gate, fusion network and reader; no clean IQ, labels, scene IDs, batch statistics or online feedback. Fix all 672 source predictions before legal L_s scoring and independent audit. Fix all seven sets of 168000 Phase1 ground predictions before truth-last scoring and independent audit. Both the source and ground development data have been explored and are not independent blind or in-orbit validation.
+
+Source experiment: 20261103-phase1-dura-physical-fusion-source-s2026092701-r01. Ground experiment: 20261103-phase1-dura-physical-fusion-ground-test-s2026092701-r01. Existing runs continue irrespective of source outcomes.
