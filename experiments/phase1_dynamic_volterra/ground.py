@@ -17,6 +17,7 @@ BATCH = 8
 SCHEMA = 'phase1_dynamic_volterra_v1'
 LOG_PREFIX = 'DYNAMIC_VOLTERRA'
 USES_DURA = False
+FIT_SIZE = 8192
 
 
 def dependencies():
@@ -28,7 +29,7 @@ def dependencies():
 def load_fixed(root, commit, device, deps):
     folder = root/'runs'/SOURCE
     done = deps.core.read(folder/'prediction_complete.json')
-    expected = dict(status='SOURCE_PREDICTIONS_FIXED', commit=commit, count=672, fit_ids=8192,
+    expected = dict(status='SOURCE_PREDICTIONS_FIXED', commit=commit, count=672, fit_ids=FIT_SIZE,
                     F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=USES_DURA,
                     TX_labels_read=0, U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates_after_prediction=0)
     if USES_DURA: expected['DURA_frozen'] = True
@@ -36,7 +37,7 @@ def load_fixed(root, commit, device, deps):
         raise ValueError('Complete fixed source predictions and frozen components are required')
     state = torch.load(folder/'checkpoint.pt', map_location='cpu', weights_only=False)
     if (state.get('schema') != SCHEMA or state.get('commit') != commit
-            or state.get('epochs') != 5 or len(state.get('fit_ids', [])) != 8192):
+            or state.get('epochs') != 5 or len(state.get('fit_ids', [])) != FIT_SIZE):
         raise ValueError('Exact fixed source-trained dynamic Volterra checkpoint is required')
     model = DynamicVolterra().to(device)
     model.load_state_dict(state['model'], strict=True)

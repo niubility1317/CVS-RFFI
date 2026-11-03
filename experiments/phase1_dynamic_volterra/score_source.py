@@ -12,6 +12,7 @@ VIEWS = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',
          'practical_high_urban', 'practical_mid_urban', 'practical_low_urban')
 SCHEMA = 'phase1_dynamic_volterra_v1'
 USES_DURA = False
+FIT_SIZE = 8192
 
 
 def read(path):
@@ -35,7 +36,7 @@ def main():
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '' or args.out.exists():
         raise ValueError('Independent CPU scorer and unique score output required')
     manifest = read(args.source/'prediction_complete.json')
-    expected = dict(status='SOURCE_PREDICTIONS_FIXED', commit=args.commit, count=672, fit_ids=8192,
+    expected = dict(status='SOURCE_PREDICTIONS_FIXED', commit=args.commit, count=672, fit_ids=FIT_SIZE,
                     F_frozen=True, blind_frozen=True, gate_frozen=True, DURA_loaded=USES_DURA,
                     TX_labels_read=0, U_s_truth_reads=0, V_reads=0, test_reads=0, model_updates_after_prediction=0)
     if USES_DURA: expected['DURA_frozen'] = True
@@ -51,7 +52,7 @@ def main():
     import torch
     state = torch.load(args.source/'checkpoint.pt', map_location='cpu', weights_only=False)
     if (state.get('schema') != SCHEMA or state.get('commit') != args.commit
-            or state.get('epochs') != 5 or len(state.get('fit_ids', [])) != 8192
+            or state.get('epochs') != 5 or len(state.get('fit_ids', [])) != FIT_SIZE
             or np.intersect1d(ids, state['fit_ids']).size):
         raise ValueError('Fixed source checkpoint and disjoint holdout IDs are required')
     cache = args.root/'runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache'
