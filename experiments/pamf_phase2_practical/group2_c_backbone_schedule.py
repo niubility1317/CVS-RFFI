@@ -16,11 +16,12 @@ BOUND_C = {'mopc_hr', 'orthogonal', 'lora_triplet_knn'}
 
 
 def validate_runtime(rt):
-    require(len(rt['b_methods']) == 5 and set(rt['b_methods']) == BOUND_B, 'Wrong bound B subset')
     require(len(rt['c_methods']) == 3 and set(rt['c_methods']) == BOUND_C, 'Wrong C source methods')
     scope = rt.get('scope', 'full')
-    require(scope in ('full', 'pilot'), 'Unknown matrix scope')
-    seeds = [2026092701] if scope == 'pilot' else [2026092701, 2026092702, 2026092703, 2026092704]
+    require(scope in ('full', 'pilot', 'poster_pilot'), 'Unknown matrix scope')
+    expected_b = {'poster_ft'} if scope == 'poster_pilot' else BOUND_B
+    require(len(rt['b_methods']) == len(expected_b) and set(rt['b_methods']) == expected_b, 'Wrong bound B subset')
+    seeds = [2026092701] if scope in ('pilot', 'poster_pilot') else [2026092701, 2026092702, 2026092703, 2026092704]
     require(rt['model_seeds'] == seeds, 'Wrong source seeds')
     require(rt['K'] == [1, 5, 10, 20] and rt['N'] == [2, 5, 10, 20], 'Wrong K/N')
     rx = rt['target_receivers']
@@ -28,7 +29,7 @@ def validate_runtime(rt):
     episodes = [f'MIX{i:02d}' for i in range(1, 9)] + [f'{scene}{i:02d}' for scene in ('LS', 'MU', 'LU') for i in range(1, 6)]
     expected = {f'capsules/{pool}/{episode}/{receiver}' for pool in ('P01', 'P02', 'P03')
                 for episode in episodes for receiver in rx}
-    if scope == 'pilot':
+    if scope in ('pilot', 'poster_pilot'):
         require(rt['capsules'] == ['capsules/P01/MIX01/1-1'] and rt['capsules'][0] in expected,
                 'Wrong fixed pilot capsule')
     else:
@@ -48,7 +49,7 @@ def tasks(rt):
             for seed in rt['model_seeds']:
                 for index, capsule in enumerate(rt['capsules']):
                     require(capsule.startswith('capsules/') and '..' not in Path(capsule).parts, 'Invalid capsule')
-                    points = ([(5, 20)] if rt.get('scope', 'full') == 'pilot' else
+                    points = ([(5, 20)] if rt.get('scope', 'full') in ('pilot', 'poster_pilot') else
                               [(k, n) for k in rt['K'] for n in rt['N']] if '/MIX' in capsule else [(5, 20)])
                     key = f'{b}__{c}-s{seed}-c{index:04d}'
                     jobs.append(dict(key=key, b_method=b, c_method=c, seed=seed, capsule=capsule,

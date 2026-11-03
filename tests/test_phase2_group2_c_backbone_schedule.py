@@ -45,3 +45,11 @@ def test_fixed_single_seed_pilot_is_explicit_and_does_not_expand():
     rows = tasks(rt)
     assert len(rows) == 15
     assert all(row['points'] == [(5, 20)] for row in rows)
+
+
+def test_poster_pilot_is_separate_and_has_only_three_pairs():
+    rt = runtime()
+    rt.update(scope='poster_pilot', b_methods=['poster_ft'], model_seeds=[2026092701],
+              capsules=['capsules/P01/MIX01/1-1'])
+    validate_runtime(rt)
+    assert len(tasks(rt)) == 3
