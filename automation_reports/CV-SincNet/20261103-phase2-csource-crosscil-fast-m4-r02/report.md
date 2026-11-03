@@ -27,3 +27,7 @@ Safe single-owner continuation with identical matrix and batched MoPC elementwis
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-03 接管启动读回
+
+新 controller PID 2180731 已运行；旧 controller PID 2128146 已精准暂停派发，等待 16 条旧 worker 自然完成，并核对所有已启动索引闭合；此状态不代表接管成功。实际转移、旧预测复用、源 checkpoint 无 query smoke 和服务器实测加速以随后产物为准。
