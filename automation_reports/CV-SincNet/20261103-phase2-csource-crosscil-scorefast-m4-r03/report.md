@@ -33,3 +33,7 @@ Continue the fixed full matrix with MoPC regularization and persistent CPU truth
 父 controller 2180731 等待 16 个自有 worker 自然完成后退出，新 controller 2199356 已接管。源 checkpoint 无 query smoke 21/21 PASS；MoPC 源模型 151 组参数的优化前后正则损失及梯度逐位相等。父 run 515 个闭合任务、3515 行预测均已独立核实并硬链接复用，所有预测固定后才由最多 4 个常驻 CPU 进程执行原独立评分。
 
 N607 共享 CPU 的一次 8 任务合成评分测试中，逐任务独立进程为 7.13 秒，常驻进程为 4.21 秒；两组 4 个并行评分进程，所有合成指标一致。该测试不涉及实验目标数据，不能代替正式全量评分耗时。另在相同 B/C/seed/scene/K5N20、不同数据池且共享 GPU 的首批样本中，MoPC 注册旧版70项中位17.92秒、新版35项18.08秒，尚无服务器端注册加速证据。
+
+## 2026-11-03 GPU 并发接管
+
+原 controller 2199356 等待 16 个自有 worker 自然完成后退出；新 controller 2336987 完成接管。源 checkpoint 无 query smoke 21/21 PASS；独立核实复用 1626 个闭合任务、10266 个预测文件，先导评分引用保留。实际 GPU 0 至 6 各 3 个本任务进程、GPU 7 两个；启动前剩余显存至少 6000 MiB。新进程的预测产物增长；全部预测冻结后才独立评分。实际吞吐待统计，增加进程数不等于相同比例加速。

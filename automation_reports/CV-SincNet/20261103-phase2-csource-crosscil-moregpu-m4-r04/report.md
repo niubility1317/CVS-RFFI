@@ -27,3 +27,7 @@ Continue the fixed full matrix with increased GPU concurrency.
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-03 GPU 并发接管
+
+原 controller 2199356 等待 16 个自有 worker 自然完成后退出；新 controller 2336987 完成接管。源 checkpoint 无 query smoke 21/21 PASS；独立核实复用 1626 个闭合任务、10266 个预测文件，先导评分引用保留。实际 GPU 0 至 6 各 3 个本任务进程、GPU 7 两个；启动前剩余显存至少 6000 MiB。新进程的预测产物增长；全部预测冻结后才独立评分。实际吞吐待统计，增加进程数不等于相同比例加速。
