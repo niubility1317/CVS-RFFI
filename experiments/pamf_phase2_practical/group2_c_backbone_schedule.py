@@ -18,9 +18,10 @@ BOUND_C = {'mopc_hr', 'orthogonal', 'lora_triplet_knn'}
 def validate_runtime(rt):
     require(len(rt['c_methods']) == 3 and set(rt['c_methods']) == BOUND_C, 'Wrong C source methods')
     scope = rt.get('scope', 'full')
-    require(scope in ('full', 'pilot', 'poster_pilot', 'hu_pilot'), 'Unknown matrix scope')
+    require(scope in ('full', 'full7', 'pilot', 'poster_pilot', 'hu_pilot'), 'Unknown matrix scope')
     expected_b = ({'poster_ft'} if scope == 'poster_pilot' else
-                  {'feature_separation_hu2024'} if scope == 'hu_pilot' else BOUND_B)
+                  {'feature_separation_hu2024'} if scope == 'hu_pilot' else
+                  BOUND_B | {'poster_ft', 'feature_separation_hu2024'} if scope == 'full7' else BOUND_B)
     require(len(rt['b_methods']) == len(expected_b) and set(rt['b_methods']) == expected_b, 'Wrong bound B subset')
     seeds = [2026092701] if scope in ('pilot', 'poster_pilot', 'hu_pilot') else [2026092701, 2026092702, 2026092703, 2026092704]
     require(rt['model_seeds'] == seeds, 'Wrong source seeds')
@@ -38,6 +39,13 @@ def validate_runtime(rt):
     require(set(rt['c_source_roots']) == BOUND_C and all(rt['c_source_roots'].values()), 'Missing source roots')
     if scope == 'hu_pilot':
         require(bool(rt.get('hu_aux_run_root')), 'Missing Hu source auxiliary root')
+    if scope == 'full7':
+        roots = rt.get('hu_aux_roots_by_seed') or {}
+        require(set(roots) == {str(seed) for seed in seeds} and all(roots.values()),
+                'Missing seed-bound Hu source auxiliary root')
+        pilots = rt.get('pilot_roots') or {}
+        require(set(pilots) == {'base', 'poster_ft', 'feature_separation_hu2024'} and all(pilots.values()),
+                'Missing fixed pilot prediction reuse plan')
     require(rt['gpu_limits'] and set(rt['gpu_limits']) <= set(str(i) for i in range(8)) and
             all(0 < int(value) <= 2 for value in rt['gpu_limits'].values()), 'Invalid GPU limits')
     require(rt['minimum_free_MiB'] >= 6000 and 1 <= rt['score_processes'] <= 4, 'Invalid resource budget')
@@ -55,8 +63,14 @@ def tasks(rt):
                     points = ([(5, 20)] if rt.get('scope', 'full') in ('pilot', 'poster_pilot', 'hu_pilot') else
                               [(k, n) for k in rt['K'] for n in rt['N']] if '/MIX' in capsule else [(5, 20)])
                     key = f'{b}__{c}-s{seed}-c{index:04d}'
-                    jobs.append(dict(key=key, b_method=b, c_method=c, seed=seed, capsule=capsule,
-                                     points=points, output=str(Path(rt['run_root'])/'predictions'/key)))
+                    job = dict(key=key, b_method=b, c_method=c, seed=seed, capsule=capsule,
+                               points=points, output=str(Path(rt['run_root'])/'predictions'/key))
+                    if rt.get('scope') == 'full7' and seed == 2026092701 and capsule == 'capsules/P01/MIX01/1-1':
+                        old_key = f'{b}__{c}-s{seed}-c0000'
+                        pilot = Path(rt['pilot_roots'].get(b, rt['pilot_roots']['base']))
+                        job.update(reuse_prediction=str(pilot/'predictions'/old_key),
+                                   reuse_score=str(pilot/'scores'/old_key))
+                    jobs.append(job)
     require(len({job['key'] for job in jobs}) == len(jobs), 'Duplicate task key')
     return jobs
 
@@ -140,6 +154,10 @@ def _score(rt, job):
     from .milkr_r42_suite import common_query_score
     root = Path(rt['run_root'])
     require(read(root/'predictions_complete.json')['status'] == 'ALL_PREDICTIONS_FIXED', 'Truth barrier not closed')
+    if job.get('reuse_score'):
+        from .group2_c_backbone_reuse import score_with_pilot_reuse
+        score_with_pilot_reuse(rt, job)
+        return
     output = root/'scores'/job['key']
     run(rt, dict(prediction=job['output'], output=str(output)))
     if '/MIX' in job['capsule']:
@@ -154,6 +172,7 @@ def smoke(rt):
     from .group1 import source_scope
     from .group1_source import load_source, source_data
     from .group2_c_backbone_fit import fit_b_from_c_source, register_native_c
+    from .group2_c_backbone_reuse import hu_aux_folder
 
     activate(rt); torch.set_num_threads(1)
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
@@ -175,7 +194,7 @@ def smoke(rt):
         for b in rt['b_methods']:
             source_aux = None
             if b == 'feature_separation_hu2024':
-                folder = Path(rt['hu_aux_run_root'])/'source'/f'{c}-s{rt["model_seeds"][0]}'
+                folder = hu_aux_folder(rt, c, rt['model_seeds'][0])
                 require(read(folder/'complete.json')['status'] == 'SOURCE_AUX_COMPLETE', 'Hu source auxiliary incomplete')
                 source_aux = torch.load(folder/'hu_aux.pt', map_location='cpu', weights_only=False)
             fitted = fit_b_from_c_source(test_rt, bundle, b, x, y, seed=123, model_seed=rt['model_seeds'][0],
