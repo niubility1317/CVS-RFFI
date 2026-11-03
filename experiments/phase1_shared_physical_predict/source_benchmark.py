@@ -24,6 +24,11 @@ SOURCES = (
 )
 
 
+def tensor_to_reference_array(tensor):
+    """Use this module's NumPy implementation instead of Torch's NumPy bridge."""
+    return np.from_dlpack(tensor.detach().cpu().contiguous()).copy()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', type=Path, required=True)
@@ -102,7 +107,7 @@ def main():
                     raise ValueError('Original and shared waveforms/gates differ')
                 if not all(torch.equal(left, right) for left, right in zip(a[3], b[3])):
                     raise ValueError('Original and shared classifications differ')
-                actual = torch.stack((b[2].long(), *b[3]), 1).cpu().numpy()
+                actual = tensor_to_reference_array(torch.stack((b[2].long(), *b[3]), 1))
                 expected = pilots[column]['values'][positions[start:start+len(x)]][:, [2, 3, 5, 7]].astype(np.int64)
                 if not np.array_equal(actual, expected):
                     raise ValueError('Source decisions must reproduce each fixed pilot')
