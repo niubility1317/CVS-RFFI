@@ -32,6 +32,17 @@ def test_worker_index_requires_exact_module_and_old_runtime():
     assert worker_index(cmd[:-1]+['x'], '/old/runtime.json') is None
 
 
+def test_takeover_accepts_only_authorized_gpu_increase():
+    old = {k: {'k': k} for k in ('data_root','K','N','capsules','model_seeds','b_methods','c_methods',
+        'c_source_roots','hu_aux_roots_by_seed','pilot_roots','source_cache','source_contract','batch_size')}
+    old.update(gpu_limits={str(i): 2 for i in range(8)}, minimum_free_MiB=6000)
+    current = dict(old, gpu_limits={str(i): 3 if i < 7 else 2 for i in range(8)})
+    check_parent_runtime(old, current)
+    current['minimum_free_MiB'] = 5999
+    with pytest.raises(ValueError, match='GPU policy'):
+        check_parent_runtime(old, current)
+
+
 def test_verified_parent_may_be_prior_takeover_controller():
     old={'release_root':'/old/release','runtime_file':'/old/release/runtime.json'}
     info={'start_ticks':19,'cwd':'/old/release','argv':['python','-m',

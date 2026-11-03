@@ -31,6 +31,15 @@ def test_matrix_and_gpu_limits_fail_closed():
     rt['b_methods'].append('issl_author_behavior')
     with pytest.raises(ValueError):
         validate_runtime(rt)
+
+
+def test_gpu_concurrency_allows_three_except_gpu7():
+    rt = runtime()
+    rt['gpu_limits'] = {str(i): 3 if i < 7 else 2 for i in range(8)}
+    validate_runtime(rt)
+    rt['gpu_limits']['0'] = 4
+    with pytest.raises(ValueError, match='GPU limits'):
+        validate_runtime(rt)
     rt = runtime()
     rt['gpu_limits']['7'] = 3
     with pytest.raises(ValueError):
