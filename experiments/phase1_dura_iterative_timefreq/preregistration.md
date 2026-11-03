@@ -1,0 +1,7 @@
+# DURA-anchored iterative time/frequency recovery
+
+Use the same three-step shared-weight time/frequency architecture as the separately trained standalone iterative model, with the frozen DURA waveform as the initial estimate. Each step sees one received IQ and the current estimate; phase-canonical time/frequency branches generate additive corrections, with pooled temporal attention. The pre-existing blind gate returns DURA directly when inactive; zero-initialized branches reproduce DURA. Train independently from initialization with the existing DURA-protected source objective and the matched 8,192 source records, three cached views, fixed seed and five-epoch budget. The standalone model uses a different initial signal and objective, so a comparison does not isolate one factor.
+
+Frozen DURA, blind estimator, gate and Tri-SIG-TIME SSL remain fixed. Training uses paired Phase1 source IQ and frozen-reader features/pseudo output without TX identities, U_s truth, V or ground data. Inference takes a single received IQ with fixed components and no clean reference or online target feedback. Fix all predictions before truth-last source and seven-view ground scoring with independent audits. Explored source and simulated development test data are not blind or in-orbit evidence.
+
+Source 20261103-phase1-dura-iterative-timefreq-source-s2026092701-r01. Ground 20261103-phase1-dura-iterative-timefreq-ground-test-s2026092701-r01.
