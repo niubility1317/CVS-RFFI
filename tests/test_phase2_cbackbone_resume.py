@@ -83,3 +83,54 @@ def test_existing_successor_claim_blocks_later_resume(tmp_path, monkeypatch):
                          'run_root': str(tmp_path/'other'), 'runtime_file': '/new/runtime',
                          'excluded_failed_indices': [0]})
     assert not (tmp_path/'other').exists()
+
+
+def test_cuda_retry_inherits_quarantine_without_recomputing_partial(tmp_path, monkeypatch):
+    ancestor, parent, root = tmp_path/'ancestor', tmp_path/'parent', tmp_path/'new'
+    put(tmp_path/'ancestor.json', {'run_root': str(ancestor)})
+    put(tmp_path/'parent.json', {'run_root': str(parent), 'runtime_file': '/parent/runtime',
+        'parent_runtime_file': str(tmp_path/'ancestor.json'), 'excluded_failed_indices': [0],
+        'deferred_b_methods': ['radio']})
+    put(parent/'worker_state.json', {'status': 'FAILED', 'completed': 1, 'active': [],
+                                    'excluded': 1, 'failed': [{'index': 1}]})
+    put(parent/'resume.json', {'parent_root': str(ancestor), 'excluded': [0]})
+    partial = ancestor/'predictions'/'partial'; partial.mkdir(parents=True)
+    (partial/'fixed.npz').write_bytes(b'keep')
+    log = parent/'logs'/'worker-00001.log'; log.parent.mkdir(); log.write_text('CUDA driver initialization failed')
+    jobs = [{'key': 'partial'}, {'key': 'failed'}, {'key': 'closed'}]
+    monkeypatch.setattr(resume, 'validate_runtime', lambda x: None)
+    monkeypatch.setattr(resume, 'check_parent_runtime', lambda x, y: None)
+    monkeypatch.setattr(resume, '_old_processes', lambda x: [])
+    monkeypatch.setattr(resume, 'tasks', lambda x: jobs)
+    monkeypatch.setattr(resume, '_smoke', lambda x, y: None)
+    monkeypatch.setattr(resume, 'link_closed_predictions', lambda *a, **k: {2})
+    calls = []
+    monkeypatch.setattr(resume, '_queue', lambda *a, **k: calls.append((a[2], k)))
+    resume.dispatch({'parent_runtime_file': str(tmp_path/'parent.json'), 'run_root': str(root),
+                     'runtime_file': '/new/runtime', 'excluded_failed_indices': [0],
+                     'retry_cuda_init_indices': [1], 'deferred_b_methods': ['radio']})
+    assert calls == [('worker', {'reused_indices': {2}, 'excluded_indices': {0}})]
+    assert (partial/'fixed.npz').read_bytes() == b'keep'
+    assert not (root/'predictions_complete.json').exists()
+
+
+def test_cuda_retry_refuses_started_prediction(tmp_path, monkeypatch):
+    ancestor, parent = tmp_path/'ancestor', tmp_path/'parent'
+    put(tmp_path/'ancestor.json', {'run_root': str(ancestor)})
+    put(tmp_path/'parent.json', {'run_root': str(parent), 'runtime_file': '/parent/runtime',
+        'parent_runtime_file': str(tmp_path/'ancestor.json'), 'excluded_failed_indices': [0]})
+    put(parent/'worker_state.json', {'status': 'FAILED', 'completed': 0, 'active': [],
+                                    'excluded': 1, 'failed': [{'index': 1}]})
+    put(parent/'resume.json', {'parent_root': str(ancestor), 'excluded': [0]})
+    partial = ancestor/'predictions'/'partial'; partial.mkdir(parents=True)
+    (partial/'fixed.npz').write_bytes(b'keep')
+    (parent/'predictions'/'failed').mkdir(parents=True)
+    log = parent/'logs'/'worker-00001.log'; log.parent.mkdir(); log.write_text('CUDA driver initialization failed')
+    monkeypatch.setattr(resume, 'validate_runtime', lambda x: None)
+    monkeypatch.setattr(resume, 'check_parent_runtime', lambda x, y: None)
+    monkeypatch.setattr(resume, '_old_processes', lambda x: [])
+    monkeypatch.setattr(resume, 'tasks', lambda x: [{'key': 'partial'}, {'key': 'failed'}])
+    with pytest.raises(ValueError, match='pre-prediction'):
+        resume.dispatch({'parent_runtime_file': str(tmp_path/'parent.json'), 'run_root': str(tmp_path/'new'),
+                         'runtime_file': '/new/runtime', 'excluded_failed_indices': [0],
+                         'retry_cuda_init_indices': [1]})
