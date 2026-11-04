@@ -1,2 +1,3 @@
 {"at": "2026-11-03T07:08:07+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-11-03T07:12:14+00:00", "status": "RUNNING", "note": "Verified transferred and running: GPU0-6 three workers each, GPU7 two; 1626 completed tasks reused and source-only smoke passed.", "evidence": ["E:/type10-7/local_artifacts/phase2_group2_cbackbone_20261102/moregpu_monitor_latest.json"], "row_id": null}
+{"at": "2026-11-04T09:50:51+00:00", "status": "REPLACED", "note": "调度器迁移；原结果保留，23 个旧 worker 自然完成。", "evidence": "E:\\type10-7\\local_artifacts\\phase2_group2_cbackbone_20261102\\priority_reuse_verified.json", "row_id": null}
