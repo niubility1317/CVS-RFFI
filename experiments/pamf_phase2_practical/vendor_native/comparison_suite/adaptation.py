@@ -211,7 +211,7 @@ def radionet_ada_batch_step(model, discriminator, source_x, source_y, support_x,
     # the full combined batch, giving ns/(ns+nt) rather than a full source mean.
     combined_loss = class_weight * source_ce * ns / len(xs) + domain_weight * domain_ec
     combined_loss.backward()
-    ec_grad = _radionet_grad_norm(model)
+    ec_grad = _grad_norm(model)
     optimizer_ec.step()
     with torch.no_grad():
         for name, value in discriminator.named_buffers():
@@ -228,7 +228,7 @@ def radionet_ada_batch_step(model, discriminator, source_x, source_y, support_x,
             value.copy_(frozen_encoder_buffers[name])
     domain_d = F.binary_cross_entropy_with_logits(discriminator(z).flatten(), 1 - labels)
     domain_d.backward()
-    d_grad = _radionet_grad_norm(discriminator)
+    d_grad = _grad_norm(discriminator)
     optimizer_d.step()
     return {"loss": combined_loss.detach(), "source_ce": source_ce.detach(),
             "domain_ec": domain_ec.detach(), "domain_discriminator": domain_d.detach(),

@@ -97,11 +97,29 @@ def _gpu_free(gpu):
                                         '--format=csv,noheader,nounits'], text=True).strip())
 
 
+def _worker_pending(rt, jobs, reused):
+    deferred = rt.get('deferred_b_methods', [])
+    pending = [(i, job) for i, job in enumerate(jobs) if i not in reused]
+    if deferred == []:
+        return pending
+    require(isinstance(deferred, list) and len(set(deferred)) == len(deferred) and
+            set(deferred) <= set(rt['b_methods']), 'Invalid deferred B methods')
+    pending.sort(key=lambda item: item[1]['b_method'] in deferred)
+    return pending
+
+
+def _priority_wait(rt, jobs, pending, active):
+    deferred = rt.get('deferred_b_methods', [])
+    return bool(deferred and pending and pending[0][1]['b_method'] in deferred and
+                any(jobs[index]['b_method'] not in deferred for index, _, _, _ in active))
+
+
 def _queue(rt, jobs, action, *, reused_indices=()):
     reused = set(reused_indices)
     require((action == 'worker' or not reused) and all(isinstance(i, int) and 0 <= i < len(jobs) for i in reused),
             'Invalid reused job indices')
-    root = Path(rt['run_root']); pending = [(i, job) for i, job in enumerate(jobs) if i not in reused]
+    root = Path(rt['run_root'])
+    pending = (_worker_pending(rt, jobs, reused) if action == 'worker' else list(enumerate(jobs)))
     active = []; completed = len(reused); failed = []
     while pending or active:
         for record in list(active):
@@ -132,6 +150,8 @@ def _queue(rt, jobs, action, *, reused_indices=()):
         slots = list(rt['gpu_limits'].items()) if action == 'worker' else [(None, rt['score_processes'])]
         for gpu, limit in slots:
             if not pending or failed:
+                break
+            if action == 'worker' and _priority_wait(rt, jobs, pending, active):
                 break
             if sum(g == gpu for _, g, _, _ in active) >= int(limit):
                 continue
