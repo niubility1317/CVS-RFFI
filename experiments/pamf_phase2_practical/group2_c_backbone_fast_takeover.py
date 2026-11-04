@@ -6,6 +6,7 @@ pre-transfer restores the verified parent; no healthy worker is stopped.
 from __future__ import annotations
 
 import argparse
+import math
 import os
 from pathlib import Path
 import shutil
@@ -147,6 +148,45 @@ def _smoke(rt, root):
             'Source-only accelerated penalty check did not close')
 
 
+def _benchmark_free_gpu(rt, children, assigned):
+    for gpu, limit in rt['gpu_limits'].items():
+        live = 0
+        for index, child in children.items():
+            proc = _proc(child['pid'])
+            if proc and proc['start_ticks'] == child['start_ticks'] and proc['state'] != 'Z':
+                require(index in assigned, 'Parent worker has no verified GPU assignment')
+                live += assigned[index] == gpu
+        if live < int(limit) and _gpu_free(gpu) >= int(rt['minimum_free_MiB']):
+            return gpu
+    return None
+
+
+def _require_radionet_gain(result):
+    old, new = float(result.get('old_seconds', 0)), float(result.get('new_seconds', 0))
+    require(result.get('status') == 'PASS' and result.get('same_gradient') is True and
+            result.get('rng_unchanged') is True and result.get('source_only') is True and
+            result.get('query_read') is False and math.isfinite(old) and math.isfinite(new) and
+            old > 0 and 0 < new <= old * .95, 'RadioNet equivalence or measured speedup did not pass')
+
+
+def _radionet_benchmark(rt, root, gpu):
+    cmd = [sys.executable, '-u', '-m', __package__+'.group2_radionet_source_benchmark',
+           '--runtime', rt['runtime_file']]
+    env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu), OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1')
+    with (root/'logs'/'radionet_benchmark.log').open('x', encoding='utf-8') as log:
+        proc = subprocess.Popen(cmd, env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)
+        write(root/'launches'/'radionet_benchmark.json', dict(pid=proc.pid,gpu=gpu,cwd=str(Path.cwd()),argv=cmd))
+        try:
+            code = proc.wait(timeout=600)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait()
+            raise ValueError('RadioNet source-only benchmark timed out; resume parent')
+        require(code == 0, 'RadioNet source-only benchmark failed')
+    result = read(root/'radionet_benchmark.json')
+    _require_radionet_gain(result)
+
+
 def dispatch(rt):
     validate_runtime(rt)
     old = read(rt['parent_runtime_file']); check_parent_runtime(old,rt)
@@ -180,12 +220,22 @@ def dispatch(rt):
         launched = _launched_indices(old)
         write(root/'takeover.json',dict(status='DRAINING_PARENT',parent_pid=pid,parent_start_ticks=ticks,
                                        parent_workers=children),exclusive=False)
+        benchmark_pending = bool(rt.get('benchmark_radionet'))
+        benchmark_deadline = time.monotonic() + 1800
+        assigned = ({index: str(read(oldroot/'launches'/f'worker-{index:05d}.json')['gpu']) for index in children}
+                    if benchmark_pending else {})
         while True:
             active = []
             for index,child in children.items():
                 proc = _proc(child['pid'])
                 if proc and proc['start_ticks'] == child['start_ticks'] and proc['state'] != 'Z': active.append(index)
-            if not active: break
+            if benchmark_pending:
+                require(time.monotonic() < benchmark_deadline, 'No benchmark slot; resume parent')
+                gpu = _benchmark_free_gpu(rt, children, assigned)
+                if gpu is not None:
+                    _radionet_benchmark(rt, root, gpu)
+                    benchmark_pending = False
+            if not active and not benchmark_pending: break
             time.sleep(rt['poll_seconds'])
         for index in set(children) | previously_active | launched:
             require(index < len(jobs), 'Parent worker index out of bounds')

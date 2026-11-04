@@ -157,6 +157,34 @@ def test_source_smoke_failure_resumes_verified_parent(tmp_path, monkeypatch):
     assert json.loads((newroot/'takeover.json').read_text())['status']=='FAILED_PARENT_RESUMED'
 
 
+def test_no_available_benchmark_slot_resumes_parent_after_timeout(tmp_path, monkeypatch):
+    from experiments.pamf_phase2_practical import group2_c_backbone_fast_takeover as transfer
+    monkeypatch.setattr(transfer.signal,'SIGSTOP',19,raising=False)
+    monkeypatch.setattr(transfer.signal,'SIGCONT',18,raising=False)
+    oldroot,newroot=tmp_path/'old',tmp_path/'new'
+    old={k:{'v':k} for k in transfer.SCIENCE_KEYS}
+    old.update(gpu_limits={'0':1},minimum_free_MiB=6000,run_root=str(oldroot),
+               release_root='/old/release',runtime_file='/old/release/runtime.json')
+    rt=dict(old,run_root=str(newroot),parent_runtime_file=str(tmp_path/'parent.json'),
+            parent_controller_pid=123,benchmark_radionet=True,poll_seconds=0)
+    put(tmp_path/'parent.json',old);put(oldroot/'owner.json',{'pid':123})
+    put(oldroot/'worker_state.json',{'status':'RUNNING','completed':0,'active':[]})
+    parent={'pid':123,'state':'S','start_ticks':99,'cwd':'/old/release','argv':['python','-m',
+        'experiments.pamf_phase2_practical.group2_c_backbone_schedule','dispatch','--runtime','/old/release/runtime.json']}
+    signals=[]
+    def kill(pid,sig):
+        signals.append(sig); parent['state']='T' if sig==signal.SIGSTOP else 'S'
+    ticks=iter((0,1801))
+    monkeypatch.setattr(transfer,'validate_runtime',lambda rt:None)
+    monkeypatch.setattr(transfer,'tasks',lambda rt:[])
+    monkeypatch.setattr(transfer,'_proc',lambda pid:parent)
+    monkeypatch.setattr(transfer.os,'kill',kill)
+    monkeypatch.setattr(transfer,'_children',lambda old,pid:{})
+    monkeypatch.setattr(transfer.time,'monotonic',lambda:next(ticks))
+    with pytest.raises(ValueError,match='No benchmark slot'): transfer.dispatch(rt)
+    assert signals == [signal.SIGSTOP,signal.SIGCONT]
+
+
 def test_stale_active_worker_without_closed_output_resumes_parent(tmp_path, monkeypatch):
     from experiments.pamf_phase2_practical import group2_c_backbone_fast_takeover as transfer
     monkeypatch.setattr(transfer.signal,'SIGSTOP',19,raising=False)
