@@ -114,12 +114,14 @@ def _priority_wait(rt, jobs, pending, active):
                 any(jobs[index]['b_method'] not in deferred for index, _, _, _ in active))
 
 
-def _queue(rt, jobs, action, *, reused_indices=()):
+def _queue(rt, jobs, action, *, reused_indices=(), excluded_indices=()):
     reused = set(reused_indices)
-    require((action == 'worker' or not reused) and all(isinstance(i, int) and 0 <= i < len(jobs) for i in reused),
+    excluded = set(excluded_indices)
+    require((action == 'worker' or not reused and not excluded) and not (reused & excluded) and
+            all(isinstance(i, int) and 0 <= i < len(jobs) for i in reused | excluded),
             'Invalid reused job indices')
     root = Path(rt['run_root'])
-    pending = (_worker_pending(rt, jobs, reused) if action == 'worker' else list(enumerate(jobs)))
+    pending = (_worker_pending(rt, jobs, reused | excluded) if action == 'worker' else list(enumerate(jobs)))
     active = []; completed = len(reused); failed = []
     while pending or active:
         for record in list(active):
@@ -144,7 +146,7 @@ def _queue(rt, jobs, action, *, reused_indices=()):
                     failed.append(dict(index=index, key=jobs[index]['key'], error=str(exc)))
         write(root/f'{action}_state.json', dict(status='FAILED' if failed else 'RUNNING', completed=completed,
             total=len(jobs), active=[dict(index=i, gpu=g, pid=p.pid) for i, g, p, _ in active],
-            pending=len(pending), failed=failed), exclusive=False)
+            pending=len(pending), excluded=len(excluded), failed=failed), exclusive=False)
         if failed:
             pending.clear()
         slots = list(rt['gpu_limits'].items()) if action == 'worker' else [(None, rt['score_processes'])]
@@ -170,8 +172,9 @@ def _queue(rt, jobs, action, *, reused_indices=()):
         if pending or active:
             time.sleep(rt['poll_seconds'])
     require(not failed, 'Technical failure; retained output: '+str(failed))
-    write(root/f'{action}_state.json', dict(status='COMPLETE', completed=completed, total=len(jobs),
-          active=[], pending=0, failed=[]), exclusive=False)
+    write(root/f'{action}_state.json', dict(status='PARTIAL' if excluded else 'COMPLETE',
+          completed=completed, total=len(jobs), active=[], pending=0, excluded=len(excluded),
+          failed=[]), exclusive=False)
 
 
 def _score(rt, job):

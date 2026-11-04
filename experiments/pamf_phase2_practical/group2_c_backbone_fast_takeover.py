@@ -112,13 +112,22 @@ def _copy_or_link(source, target):
     return target
 
 
-def link_closed_predictions(parent_root, jobs):
+def link_closed_predictions(parent_root, jobs, *, excluded_indices=()):
     lookup = {job['key']: (index, job) for index,job in enumerate(jobs)}
+    excluded = set(excluded_indices)
+    require(all(isinstance(index, int) and 0 <= index < len(jobs) for index in excluded),
+            'Invalid excluded parent job')
     reused = set()
+    seen_excluded = set()
     directory = Path(parent_root)/'predictions'
     for source in directory.iterdir() if directory.exists() else ():
         require(source.is_dir() and source.name in lookup, 'Unexpected parent prediction output')
         index, job = lookup[source.name]
+        if index in excluded:
+            require(not (source/'complete.json').exists() and any(source.glob('*.npz')),
+                    'Excluded parent output must be incomplete and retain predictions')
+            seen_excluded.add(index)
+            continue
         old_job = dict(job, output=str(source))
         prediction_closed(old_job)
         target = Path(job['output'])
@@ -126,6 +135,7 @@ def link_closed_predictions(parent_root, jobs):
         shutil.copytree(source, target, copy_function=_copy_or_link)
         prediction_closed(job)
         reused.add(index)
+    require(seen_excluded == excluded, 'Missing excluded parent outputs')
     return reused
 
 
