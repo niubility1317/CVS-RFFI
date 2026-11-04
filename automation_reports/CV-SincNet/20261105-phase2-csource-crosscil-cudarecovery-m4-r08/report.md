@@ -27,3 +27,7 @@ Retain inherited quarantines and resume fixed tasks after one pre-prediction CUD
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 2026-11-05 CUDA 初始化恢复运行
+
+控制器 1364637 已运行，source-only/no-query smoke 21/21 通过。独立核实复用 32632 个完整任务和 203317 个硬链接预测文件，18条先导评分引用保留。预测前 CUDA 初始化失败的任务 38331 按原配置在 GPU0 单次恢复，16条预测已闭合；观察时 32661/40572 完成，失败列表为空。两处非有限单元及其20条部分预测保留祖先 run，仍不计完成；这些隔离任务未解决前不打开全部预测完成标记或独立评分。
