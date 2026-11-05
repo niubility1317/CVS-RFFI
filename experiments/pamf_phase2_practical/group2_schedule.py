@@ -25,7 +25,7 @@ def validate_runtime(rt):
     expected={f'capsules/{pool}/{episode}/{receiver}' for pool in ('P01','P02','P03')
               for episode in episodes for receiver in receivers}
     require(len(rt['capsules'])==len(expected)==483 and set(rt['capsules'])==expected, 'Incomplete episode matrix')
-    caps={str(i):2 for i in range(8)}
+    caps={str(i):(2 if i == 7 else 3) for i in range(8)}
     require(bool(rt['gpu_limits']) and set(rt['gpu_limits']) <= set(caps) and
             all(0 < value <= caps[gpu] for gpu,value in rt['gpu_limits'].items()), 'GPU configuration invalid')
     require(1 <= rt['score_processes'] <= 4 and rt['minimum_free_MiB'] >= 6000, 'Resource configuration invalid')
