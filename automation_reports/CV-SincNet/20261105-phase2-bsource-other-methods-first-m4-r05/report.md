@@ -37,3 +37,7 @@
 ## 启动核实
 
 已独立读回协调器 PID 1878069/start_ticks 35415026 和 watcher PID 1878078/start_ticks 35415211 的 CWD 与命令行。C r08 原调度器 PID 1364637/start_ticks 31022133 只暂停派发，23 个旧 worker 自然排空。状态为 DRAINING_C_WORKERS，B 组仅源 smoke 和新预测尚未开始。单份发布归档 SHA 与远端 compile 已核实。
+
+## 实际派发与复用核实
+
+源 checkpoint 的仅源 smoke 7/7 通过，target/query 均为 0。独立核对三代祖先 341 个闭合任务和 6,918 份预测按引用复用，四处隔离的 129 份部分预测保留在原目录。核对 13,179 个调度文件，MRIOR、DADDA、Two-stage、Hu、POSTER、ProtoNet-CDA、RadioNet 依次进入队列。观测时已新闭合 MRIOR 506 项及 10,113 份预测，共 23 个活跃 GPU worker，GPU0–6 各 3、GPU7 共 2。C 调度器仍处于预期暂停状态，C 在途 worker 为 0。两个组的预测屏障及评分保持关闭，六处隔离故障待定位。
