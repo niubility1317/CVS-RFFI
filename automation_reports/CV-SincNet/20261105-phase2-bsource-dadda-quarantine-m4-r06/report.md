@@ -37,3 +37,7 @@
 ## 启动核实
 
 独立读回协调器 PID 2218530/start_ticks 37233441 和 watcher PID 2218944/start_ticks 37233621 的 CWD 与命令行。C r08 调度器 PID 1364637/start_ticks 31022133 只暂停派发，23 个旧 worker 自然排空。状态 DRAINING_C_WORKERS，B 组仅源检查、产物复用和新预测尚未开始。单份归档 SHA 与远端编译已核实。
+
+## 派发与复用核实
+
+真实源 checkpoint 的仅源检查 7/7 通过，target/query 均为 0。独立核对四代祖先的 3,281 个完整任务及 62,988 份预测按引用复用。五处隔离仍在原目录，保留 129 份部分预测，DADDA 故障任务仍为零预测。逐项比对 10,238 个派发描述及两代后继声明。队列先 Two-stage、Hu、POSTER，随后 DADDA、ProtoNet-CDA、RadioNet。观测时 Two-stage 新闭合 322 项及 6,006 份预测，活跃 GPU worker 23 个。GPU0–6 各 3、GPU7 共 2。C 原调度器仍按计划暂停派发，C worker 已全部排空。两组预测屏障和独立评分仍关闭。
