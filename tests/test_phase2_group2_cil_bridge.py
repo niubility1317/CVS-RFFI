@@ -1,8 +1,24 @@
+import time
+
 import torch
 import pytest
 from torch import nn
 
 from experiments.pamf_phase2_practical.group2_cil_bridge import from_adapted_model, from_protonet, from_radionet, make_anchor, register
+from experiments.pamf_phase2_practical.vendor_native.comparison_suite.registration import _record
+
+
+@pytest.mark.parametrize(("gradient", "names"), [(1e30, "[]"), (float("nan"), "['weight']")])
+def test_record_identifies_nonfinite_gradient_norm(gradient, names):
+    model = nn.Linear(2, 1)
+    model.weight.grad = torch.full_like(model.weight, gradient)
+    trace = []
+    with pytest.raises(FloatingPointError, match="training term: gradient_norm") as failure:
+        _record(trace, model, {"loss": torch.tensor(1.0)}, None, time.perf_counter(),
+                method="mopc_hr", stage="hierarchical", iteration=7)
+    assert f"'nonfinite_gradient_tensors': {names}" in str(failure.value)
+    assert "'iteration': 7" in str(failure.value)
+    assert not trace
 
 
 class DaddaLike(nn.Module):

@@ -1,7 +1,7 @@
-"""Continue only unstarted Group2 jobs while preserving one known failure.
+"""Continue only unstarted Group2 jobs while preserving known failures.
 
 No failed job is retried, no closed prediction is recalculated, and the global
-truth-last barrier stays closed until the deferred job is resolved separately.
+truth-last barrier stays closed until the deferred jobs are resolved separately.
 """
 from __future__ import annotations
 
@@ -22,10 +22,20 @@ def require_same_method(previous, current):
     # remain identical; this compares semantic configuration, not file hashes.
     allowed={'run_id','run_root','release_root','runtime_file','code_commit','authorization','stop_rule',
              'launch_owner','previous_run_root','previous_runtime_file','deferred_failure_keys',
-             'gpu_limits','minimum_free_MiB','score_processes','poll_seconds','priority_peer'}
+             'gpu_limits','minimum_free_MiB','score_processes','poll_seconds','priority_peer',
+             'last_profiles'}
     old={key:value for key,value in previous.items() if key not in allowed}
     new={key:value for key,value in current.items() if key not in allowed}
     require(old==new,'Previous experiment identity differs')
+
+
+def prioritize_pending(rt, pending):
+    last_profiles = rt.get('last_profiles', [])
+    require(isinstance(last_profiles, list) and
+            all(isinstance(profile, str) and profile in rt['profiles'] for profile in last_profiles) and
+            len(set(last_profiles)) == len(last_profiles), 'Invalid last profiles')
+    rank = {profile: index for index, profile in enumerate(last_profiles, 1)}
+    return sorted(pending, key=lambda job: rank.get(job['profile'], 0)) if rank else pending
 
 
 def verify_reuse_binding(rt, job):
@@ -140,6 +150,7 @@ def dispatch(rt):
     deferred_keys=set(rt['deferred_failure_keys'])
     require(deferred_keys==failures, 'Deferred set differs from recorded failures')
     reused,deferred,pending=classify_chain(rt,[root for root,_,_ in chain],deferred_keys)
+    pending = prioritize_pending(rt, pending)
     root=Path(rt['run_root']);root.mkdir(parents=True,exist_ok=False)
     if rt.get('priority_peer'):
         # All ancestor/configuration/prediction checks passed and the successor

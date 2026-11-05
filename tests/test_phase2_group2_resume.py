@@ -26,10 +26,23 @@ def test_reuses_closed_jobs_skips_exact_failed_job_and_refuses_other_partial(tmp
 
 def test_resume_rejects_changed_scientific_overrides():
     old={'data_root':'d', 'native_adaptation_overrides':{'dadda_sda':{'epochs':100}}, 'run_root':'old'}
-    group2_resume.require_same_method(old, dict(old,run_root='new',previous_run_root='old'))
+    group2_resume.require_same_method(old, dict(old,run_root='new',previous_run_root='old',
+                                                last_profiles=['radionet_ada_knn']))
     changed=dict(old,run_root='new',native_adaptation_overrides={'dadda_sda':{'epochs':1}})
     with pytest.raises(ValueError,match='identity differs'):
         group2_resume.require_same_method(old, changed)
+
+
+def test_priority_only_reorders_unstarted_jobs():
+    rt = {'profiles': ['proto', 'mrior', 'hu', 'radio'], 'last_profiles': ['proto', 'radio']}
+    pending = [{'key': key, 'profile': profile} for key, profile in (
+        ('proto-1', 'proto'), ('radio-1', 'radio'), ('mrior-1', 'mrior'),
+        ('hu-1', 'hu'), ('mrior-2', 'mrior'), ('proto-2', 'proto'))]
+    ordered = group2_resume.prioritize_pending(rt, pending)
+    assert ordered == [pending[i] for i in (2, 3, 4, 0, 5, 1)]
+    assert group2_resume.prioritize_pending({}, pending) == pending
+    with pytest.raises(ValueError, match='Invalid last profiles'):
+        group2_resume.prioritize_pending(dict(rt, last_profiles=['missing']), pending)
 
 
 def test_chain_inventory_preserves_both_ancestors_and_quarantines_partials(tmp_path, monkeypatch):

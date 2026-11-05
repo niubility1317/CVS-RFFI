@@ -183,8 +183,17 @@ def _record(trace: list[dict[str, Any]], model: nn.Module, terms: Mapping[str, A
                             (float(torch.stack(gradients).sum().sqrt()) if gradients else 0.0),
            "elapsed_seconds": time.perf_counter() - start,
            "source_validation": None, "source_validation_reason": "Phase2 does not select on validation"}
-    if not all(torch.isfinite(torch.tensor(v)) for v in row.values() if isinstance(v, float)):
-        raise FloatingPointError("nonfinite registration training term")
+    nonfinite = [key for key, value in row.items()
+                 if isinstance(value, float) and not torch.isfinite(torch.tensor(value))]
+    if nonfinite:
+        context = {key: fields[key] for key in ("phase", "method", "stage", "epoch", "iteration")
+                   if key in fields}
+        if "gradient_norm" in nonfinite and "gradient_norm" not in terms:
+            context["nonfinite_gradient_tensors"] = [
+                name for name, param in model.named_parameters()
+                if param.grad is not None and not torch.isfinite(param.grad).all()
+            ]
+        raise FloatingPointError(f"nonfinite registration training term: {', '.join(nonfinite)}; {context}")
     trace.append(row)
     if callback:
         callback(dict(row))
