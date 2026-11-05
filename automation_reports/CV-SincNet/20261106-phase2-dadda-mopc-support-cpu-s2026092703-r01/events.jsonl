@@ -1,1 +1,2 @@
 {"at": "2026-11-05T21:40:26+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-05T21:43:41+00:00", "status": "RUNNING", "note": "独立读回确认 CPU 诊断的进程、CWD、完整命令和 GPU 隔离。真实 DADDA 源权重的无目标、无 query 检查通过，开始原 B 适应。", "evidence": ["/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase2-dadda-mopc-support-cpu-s2026092703-r01/owner.json", "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase2-dadda-mopc-support-cpu-s2026092703-r01/diagnostic.jsonl"], "row_id": null}

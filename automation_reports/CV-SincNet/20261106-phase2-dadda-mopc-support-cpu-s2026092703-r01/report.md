@@ -3,7 +3,7 @@
 - run_id：`20261106-phase2-dadda-mopc-support-cpu-s2026092703-r01`
 - group_id：`phase2-group2-dadda-mopc-nonfinite`；类别：`diagnostic`；阶段：`Phase2-B-C`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按events.jsonl及独立证据更新）
 
 ## 目的与对照
 
@@ -33,3 +33,7 @@
 固定 B r06 任务 5944 的 K1/N20 和原始源权重。检查 B 终态、MoPC 当前支持集与原型分支 logits、损失、梯度、SGD 后参数与动量，以及阶段之间的原型校正。单个 CPU 进程执行一次。CPU 结果仅用于定位，不能判定 GPU2 故障是否已解决。预测文件、查询样本和真值均不读取，正式队列与旧产物由原运行保留。
 
 本机 7 项定向测试通过。独立 P0/P1 核查通过，N607 实际 checkpoint smoke 在启动时先行验证。
+
+## 实际运行
+
+真实 DADDA 源权重检查通过，检查期间目标样本与 query 均为 0。独立读回核实 CPU 诊断进程的工作目录、命令、设备隔离与日志。正式 C r08 同一调度器继续运行，检查时 35,133/40,572 项闭合、23 个真实工作进程，未见新故障。两组评分屏障仍关闭，GPU2 原故障根因仍待确定。
