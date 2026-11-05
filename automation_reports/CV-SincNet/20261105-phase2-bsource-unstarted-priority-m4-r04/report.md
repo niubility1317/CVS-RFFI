@@ -33,3 +33,7 @@ Pause only verified C dispatcher admission, drain C workers naturally, retain 74
 精确复用 r02 的15项和 r03 的59项完整任务；两处各33条partial仍在祖先root隔离，不重跑。其余13448项按原7B×3C×4seed×483 capsule矩阵与预算运行。C组 r08 仅暂停派发，旧worker自然完成。B组结束或技术失败排空后恢复同一C控制器，独立watcher处理协调器意外退出。GPU0–6各3、GPU7各2，两组合计；启动前显存≥6000MiB。C排空超时4小时自动恢复，不占额外GPU验证。全部隔离解决及预测固定后才评分。
 
 23项定向测试通过。独立P0/P1指出旧C回收窗口和过早后继claim风险，已修复：暂停后核对所有launch闭合，B的完整输入检查和真实新root创建后才写后继claim；补充故障恢复测试。尚未启动。
+
+## 实际启动核实
+
+VERIFIED：优先协调器 PID1793346/start_ticks34568895，真实release CWD/argv已核实；独立恢复watcher PID1793355/start_ticks34569083。C r08调度器1364637/start_ticks31022133已处于T，仅暂停新派发，23个旧worker仍按原任务自然运行。当前DRAINING_C_WORKERS，B组source-only smoke、完整结果复用和新worker尚未开始，不能称已运行其他组合或提速。全部旧worker闭合后自动继续；4小时超时/准备失败自动恢复同一C调度器。唯一归档SHA和远端compile VERIFIED。证据保存在私有drain_verified.json。
