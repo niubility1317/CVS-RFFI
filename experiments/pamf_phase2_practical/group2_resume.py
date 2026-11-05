@@ -60,6 +60,40 @@ def classify(rt, previous_root, deferred_keys):
     return reused,deferred,pending
 
 
+def classify_chain(rt, previous_roots, deferred_keys):
+    """Inventory closed and quarantined outputs across the actual ancestors."""
+    jobs = tasks(rt)
+    by_key = {job['key']: job for job in jobs}
+    require(len(by_key) == len(jobs), 'Duplicate task keys')
+    found = {}
+    for root in previous_roots:
+        directory = Path(root)/'predictions'
+        require(directory.is_dir(), 'Ancestor predictions directory missing')
+        for output in directory.iterdir():
+            require(output.is_dir() and output.name in by_key, 'Unexpected ancestor output')
+            require(output.name not in found, 'Multiple ancestor outputs for '+output.name)
+            found[output.name] = output
+    reused = []; deferred = []; pending = []
+    for job in jobs:
+        output = found.get(job['key'])
+        if output is None:
+            require(job['key'] not in deferred_keys, 'Known failure output is missing')
+            pending.append(job)
+            continue
+        previous = dict(job, output=str(output))
+        if job['key'] in deferred_keys:
+            require(not (output/'complete.json').exists(), 'Known failure is already closed')
+            deferred.append(previous)
+        elif (output/'complete.json').is_file():
+            closed_prediction(previous, len(job['points'])*len(job['methods']))
+            verify_reuse_binding(rt, previous)
+            reused.append(previous)
+        else:
+            raise ValueError('Unreconciled partial prediction directory: '+str(output))
+    require({job['key'] for job in deferred} == set(deferred_keys), 'Deferred job key mismatch')
+    return reused, deferred, pending
+
+
 def dispatch(rt):
     validate_runtime(rt)
     previous=Path(rt['previous_run_root'])
@@ -67,23 +101,45 @@ def dispatch(rt):
     require(str(previous)==previous_rt['run_root'] and rt['previous_runtime_file']==previous_rt['runtime_file'],
             'Previous owner or runtime path differs')
     require_same_method(previous_rt,rt)
-    prior_state=read(previous/'worker_state.json')
-    require(prior_state['status']=='FAILED' and not prior_state['active'], 'Previous owner has not drained')
+    chain=[]; seen=set(); ancestor=previous_rt
+    while True:
+        root=Path(ancestor['run_root'])
+        require(str(root) not in seen, 'Repeated ancestor root')
+        seen.add(str(root))
+        state=read(root/'worker_state.json')
+        require(state['status']=='FAILED' and not state['active'], 'Previous owner has not drained')
+        require_same_method(ancestor,rt)
+        chain.append((root,ancestor,state))
+        if not ancestor.get('previous_run_root'):
+            break
+        parent=read(ancestor['previous_runtime_file'])
+        require(parent['run_root']==ancestor['previous_run_root'] and
+                parent['runtime_file']==ancestor['previous_runtime_file'], 'Ancestor runtime path differs')
+        ancestor=parent
+    chain.reverse()
+    failures=set()
+    for _,ancestor,state in chain:
+        require(set(ancestor.get('deferred_failure_keys', []))==failures,
+                'Ancestor deferred failures differ')
+        current_failures={entry['key'] for entry in state['failed']}
+        require(current_failures and not (failures & current_failures), 'Ancestor failures overlap or are missing')
+        failures.update(current_failures)
     # State files can be stale; reject a still-live predecessor controller or
     # worker only when PID, cwd and exact prior runtime all identify this run.
-    launches=[previous/'owner.json']+list((previous/'launches').glob('*.json'))
-    for path in launches:
-        launch=read(path); pid=launch.get('pid'); proc=Path('/proc')/str(pid)
-        if not pid or not proc.exists(): continue
-        try:
-            cwd=os.readlink(proc/'cwd'); argv=(proc/'cmdline').read_bytes().replace(b'\0',b' ').decode()
-        except FileNotFoundError:
-            continue
-        require(not (cwd==previous_rt['release_root'] and previous_rt['runtime_file'] in argv),
-                'Previous run still has an owned controller or worker')
+    for root,ancestor,_ in chain:
+        launches=[root/'owner.json']+list((root/'launches').glob('*.json'))
+        for path in launches:
+            launch=read(path); pid=launch.get('pid'); proc=Path('/proc')/str(pid)
+            if not pid or not proc.exists(): continue
+            try:
+                cwd=os.readlink(proc/'cwd'); argv=(proc/'cmdline').read_bytes().replace(b'\0',b' ').decode()
+            except FileNotFoundError:
+                continue
+            require(not (cwd==ancestor['release_root'] and ancestor['runtime_file'] in argv),
+                    'Previous run still has an owned controller or worker')
     deferred_keys=set(rt['deferred_failure_keys'])
-    require(deferred_keys=={entry['key'] for entry in prior_state['failed']}, 'Deferred set differs from recorded failure')
-    reused,deferred,pending=classify(rt,previous,deferred_keys)
+    require(deferred_keys==failures, 'Deferred set differs from recorded failures')
+    reused,deferred,pending=classify_chain(rt,[root for root,_,_ in chain],deferred_keys)
     root=Path(rt['run_root']);root.mkdir(parents=True,exist_ok=False)
     for name in ('logs','launches','jobs'): (root/name).mkdir()
     for index,job in enumerate(pending): write(root/'jobs'/f'{index:05d}.json',job)
