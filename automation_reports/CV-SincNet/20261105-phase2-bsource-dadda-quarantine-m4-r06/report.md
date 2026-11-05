@@ -1,0 +1,35 @@
+# Phase2 B 主干隔离 DADDA 注册故障后继续其他方法
+
+- run_id：`20261105-phase2-bsource-dadda-quarantine-m4-r06`
+- group_id：`phase2-scalr-group2-da-native-cil-cross`；类别：`comparison`；阶段：`Phase2-B-C`
+- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
+- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+
+## 目的与对照
+
+沿 r02 至 r05 复用 3,281 个完整任务及 62,988 份预测。原四处隔离保留 129 份部分预测，新增 DADDA 故障目录保留 fit 日志和零预测。10,238 个未开始任务先排 Two-stage、Hu、POSTER，再排剩余 DADDA 和 ProtoNet-CDA，RadioNet 最后。保留原科学配置和停止规则。
+
+## 数据、seed与模型来源
+
+实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
+逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+
+## 执行与存储
+
+命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
+实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+## 结果与覆盖
+
+尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+
+## 交接
+
+记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 恢复核对与并发
+
+已用 r05 同一版本入口清点 r02 至 r05 四代产物。3,281 个完整任务按引用复用，五处隔离原样保留。10,238 项未启动任务先安排 Two-stage、Hu、POSTER 共 5,796 项，再安排 DADDA 923 项、ProtoNet-CDA 1,587 项，最后 RadioNet 1,932 项。C r08 仅暂停派发，旧 worker 自然结束后开始 B 的仅源检查。B 排空后自动恢复同一 C 调度器，异常退出由独立 watcher 恢复。未解决隔离前保持两组预测屏障及评分关闭。
+
+代码沿用 r05 的既有提交。20 项调度和恢复测试通过，配置独立 P0/P1 审查通过。此前故障的非有限损失及梯度已有证据，首个非有限中间量待仅源与 support 诊断。
