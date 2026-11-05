@@ -37,3 +37,11 @@ Pause only verified C dispatcher admission, drain C workers naturally, retain 74
 ## 实际启动核实
 
 VERIFIED：优先协调器 PID1793346/start_ticks34568895，真实release CWD/argv已核实；独立恢复watcher PID1793355/start_ticks34569083。C r08调度器1364637/start_ticks31022133已处于T，仅暂停新派发，23个旧worker仍按原任务自然运行。当前DRAINING_C_WORKERS，B组source-only smoke、完整结果复用和新worker尚未开始，不能称已运行其他组合或提速。全部旧worker闭合后自动继续；4小时超时/准备失败自动恢复同一C调度器。唯一归档SHA和远端compile VERIFIED。证据保存在私有drain_verified.json。
+
+## 接管后技术失败与产物保全
+
+2026-11-05 14:05 香港时间，核实 C 旧进程排空后 B 已实际派发 ProtoNet-CDA。七个真实源 checkpoint 的仅源检查通过，目标和 query 行数均为零。恢复清单引用祖先 r02/r03 的 74 个完整任务，保留两处各 33 行部分预测。r04 新闭合 267 个任务，共有 341 个完整任务可供后继复用。
+
+两个新任务在 GPU0 的 MoPC 注册中报 `FloatingPointError: nonfinite registration training term`。`c0322`（P03/MIX01/1-1，K10/N20）保留 33 个部分预测，`c0330`（P03/MIX02/14-7，K10/N10）保留 30 个。K/N 由首个缺失文件与任务执行顺序核对。异常未区分损失项与梯度范数，根因待定位。该运行停止派发，在途进程自然排空，协调器已退出。独立检查确认 267 个完整标记且无 B 残留进程。C r08 同一控制器恢复派发，核实 23 个实际活跃进程、35,038 项闭合、两处已隔离。两组全预测完成屏障均未打开。
+
+后继须从 r04 的实际接管记录和全部祖先清点产物，保留全部四处 B 部分预测。优先考虑其余未运行方法，诊断限 source/support 并保持既定方法、预算与评分边界。只读证据见私有 `failure_retained_verified.json`。
