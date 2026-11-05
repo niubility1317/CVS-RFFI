@@ -22,7 +22,7 @@ def require_same_method(previous, current):
     # remain identical; this compares semantic configuration, not file hashes.
     allowed={'run_id','run_root','release_root','runtime_file','code_commit','authorization','stop_rule',
              'launch_owner','previous_run_root','previous_runtime_file','deferred_failure_keys',
-             'gpu_limits','minimum_free_MiB','score_processes','poll_seconds'}
+             'gpu_limits','minimum_free_MiB','score_processes','poll_seconds','priority_peer'}
     old={key:value for key,value in previous.items() if key not in allowed}
     new={key:value for key,value in current.items() if key not in allowed}
     require(old==new,'Previous experiment identity differs')
@@ -141,6 +141,11 @@ def dispatch(rt):
     require(deferred_keys==failures, 'Deferred set differs from recorded failures')
     reused,deferred,pending=classify_chain(rt,[root for root,_,_ in chain],deferred_keys)
     root=Path(rt['run_root']);root.mkdir(parents=True,exist_ok=False)
+    if rt.get('priority_peer'):
+        # All ancestor/configuration/prediction checks passed and the successor
+        # now has a real immutable root. Failed preparation leaves no claim.
+        write(previous.parent/'.resume_successors'/(previous.name+'.json'),
+              dict(successor_runtime=rt['runtime_file'],successor_root=str(root)))
     for name in ('logs','launches','jobs'): (root/name).mkdir()
     for index,job in enumerate(pending): write(root/'jobs'/f'{index:05d}.json',job)
     write(root/'resume_manifest.json',dict(reused=reused,deferred=deferred,pending_count=len(pending),
