@@ -53,7 +53,7 @@ def run(rt):
         optimizer_d = torch.optim.Adam(disc.parameters(), lr=.00001)
         torch.manual_seed(seed)
         torch.cuda.manual_seed(seed)
-        adaptation._radionet_grad_norm = norm
+        adaptation._grad_norm = norm
         torch.cuda.synchronize()
         start = time.perf_counter()
         for _ in range(10):
@@ -77,7 +77,7 @@ def run(rt):
                     source_batch=128, support_batch=30, steps_per_trial=10, raw_seconds=durations,
                     old_seconds=old, new_seconds=new, device=torch.cuda.get_device_name(0))
     finally:
-        adaptation._radionet_grad_norm = candidate
+        adaptation._grad_norm = original
 
 
 if __name__ == '__main__':
