@@ -1,0 +1,169 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261107-phase1-dura-masked-prior-ground-test-s2026092701-r01",
+  "group_id": "phase1-dura-masked-prior",
+  "display_name": "遮挡先验约束 DURA 七景测试",
+  "description": "冻结 DURA 和源 clean 遮挡 IQ 先验，使用随机缺口的先验预测一致性约束独立初始化多尺度修正，推理不调用先验。",
+  "kind": "cvs",
+  "stage": "Phase1-restoration",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "dura",
+    "F-free-training",
+    "masked-source-prior",
+    "deterministic-gpu"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261107-phase1-masked-iq-prior-source-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests continued novel and DURA-combinable Phase1 restoration research, F-free/TX-label-free source training, automatic seven-view test and truth-last score.",
+  "code": {
+    "commit": "ddbece9a0f052d440f649a50910a416da25ebcdd",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 physical GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off; source prepare batch 32, train batch 32, ground/scoring CPU 2 threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261107-phase1-dura-masked-prior-source-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Phase1 original7/63/30",
+    "representation": "frozen candidate + frozen Tri-SIG-TIME SSL on fixed Phase1 seven-view ground IQ",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261027-phase1-pamf-repl-shuffled-views-m16-r02/F/main_split-repl-shuffled_time-3view-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "32768 source fit IDs randomly sampled without replacement after excluding RX4/6/8 day3 and the 672 fixed source pilot IDs",
+    "label_map_ref": "Six Phase1 transmitter classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "No target labels, clean pair, or target fitting during inference; labels only after all seven predictions",
+    "roles": {
+      "L_s": "source IQ training only, TX hidden",
+      "U_s": "source IQ training only, TX hidden",
+      "V": "not used for G training",
+      "test": "fixed Phase1 ground IQ, truth last"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "7840 RX4/6 source validation and 3921 RX8 source holdout, previously seen in other source views",
+    "support_query_ref": "Phase1 original fixed cross_rx126000 and cross_both42000; no support",
+    "leo_config_ref": "R07 2.462 GHz source views and Phase1 six fixed practical test views",
+    "target_panel": "168000 Phase1 physical records x seven views",
+    "actual_training_labels": "Recovery training uses paired source IQ only; no F outputs, F weights, TX labels, V or target. Frozen Tri-SIG-TIME SSL only after recovery checkpoint frozen.",
+    "augmentation": "Fixed pre-existing Phase1 ground test simulated seven views"
+  },
+  "permissions": {
+    "regime": "Phase1 frozen ground evaluation",
+    "query_use": "Fixed per-record Phase1 IQ only after source training; no target fit, truth only after seven-view predictions",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed repeatedly observed Phase1 simulated ground test; not independent blind or real satellite"
+  },
+  "checkpoint": {
+    "initialization": "Fixed source-only DURA and source-only masked IQ prior; fresh zero-head multiscale correction",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261107-phase1-masked-iq-prior-source-s2026092701-r01"
+    ],
+    "contract_check_ref": "Prior status and no F/TX/V/target, commit and exact ordered 32768 source fit IDs; original DURA source-only provenance",
+    "provenance_verdict": "DURA and masked prior source-only with matching data roles and no target ancestry",
+    "selection_rule": "Fixed final epoch 5; no target or pilot score selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, at most one this-run worker and at most 3 total compute workers including others; check capacity; preserve all other owners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-masked-prior-ground-test-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-masked-prior-source-s2026092701-r01-controller/ground_predict.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261107-phase1-dura-masked-prior-ground-test-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.controller --root /home/szu2070436088/2510044040/CV-SincNet --source 20261107-phase1-dura-masked-prior-source-s2026092701-r01 --ground 20261107-phase1-dura-masked-prior-ground-test-s2026092701-r01 --commit ddbece9a0f052d440f649a50910a416da25ebcdd --device cuda:0 --prepare-batch 32 --objective wide_masked_prior_guard --deterministic --source-context-cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --architecture dura_multiscale",
+    "stop_rule": "Stop exact owner only for source contract/role mismatch, nonfinite computation, incorrect checkpoint, target leakage or unrecoverable technical failure. Preserve all artifacts."
+  },
+  "expected_artifacts": [
+    "flow/test_prediction/complete.json",
+    "flow/test_summary.json",
+    "flow/paired_dura.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "ground accuracy",
+      "raw clean gap in pp and relative percent",
+      "macro F1",
+      "DURA paired repairs and damages",
+      "TX/RX/day groups"
+    ],
+    "dimensions": [
+      "168000 physical records",
+      "clean and six practical views"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-masked-prior-ground-test-s2026092701-r01/flow/test_prediction",
+    "scorer_ref": "independent CPU subprocess ground score after seven complete predictions"
+  },
+  "rows": [
+    {
+      "row_id": "dura-masked-prior-final",
+      "method": "Fresh multiscale correction with IQ DURA guard and 0.05 fixed source masked-prior consistency loss",
+      "purpose": "Complete mandatory seven-view Phase1 test and paired DURA comparison",
+      "config_ref": "experiments/phase1_dura_orthogonal/ground.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026110612,
+        "split": 392005,
+        "data": 2026110611,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Correction 2026110612; source IDs 2026110611; order 2026110613; random masks 2026110711; source prior 2026110707",
+      "k": null,
+      "scenario": "clean and six practical Phase1 Main split views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "168000 physical records x seven views batch8; independent truth-last",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-masked-prior-ground-test-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261107-phase1-dura-masked-prior-source-s2026092701-r01-controller/ground_predict.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.controller --root /home/szu2070436088/2510044040/CV-SincNet --source 20261107-phase1-dura-masked-prior-source-s2026092701-r01 --ground 20261107-phase1-dura-masked-prior-ground-test-s2026092701-r01 --commit ddbece9a0f052d440f649a50910a416da25ebcdd --device cuda:0 --prepare-batch 32 --objective wide_masked_prior_guard --deterministic --source-context-cache /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-wide-source-source-s2026092701-r01/source_context.pt --architecture dura_multiscale",
+      "expected_artifacts": [
+        "flow/test_prediction/complete.json",
+        "flow/test_summary.json",
+        "flow/paired_dura.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original DURA and pretrained source masked IQ prior are frozen; no F, TX labels, V or target used in training.",
+    "One random interior 32-sample mask per source record; frozen prior predictions from output and paired clean are compared on masked region with weight 0.05.",
+    "Prior fit and candidate fit share exact 32768 source IDs; prior source-pilot diagnostic was previously explored and is not identity evidence.",
+    "Final epoch fixed; evaluation runs all seven 168000-record Phase1 Main split views with frozen Tri-SIG-TIME SSL then independent truth-last.",
+    "Inference uses DURA and correction only; the masked prior is training-only."
+  ],
+  "registered_at": "2026-11-06T17:26:17+00:00"
+}

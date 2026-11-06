@@ -207,3 +207,9 @@ raw clean 为 86.538690%；每版只有高郊区达到下降不超过 3 个百�
 ## 遮挡先验与 DURA 的源域互补
 
 固定先验从 DURA 的 8 个遮挡窗口重建并拼接，逐条借助部署时不可用的源 clean 计算理想混合步长。低城区 RX4/6 的正向理想 IQ NMSE 从 0.03740450 到 0.03694360（相对下降 1.23%），RX8 从 0.10067829 到 0.09992722（相对下降 0.75%）；两组均有 25/48 条的最优系数为负。简单固定正向混合缺乏依据；该源诊断不是身份成绩或一般上界。[完整结果](../automation_reports/CV-SincNet/20261107-phase1-masked-prior-dura-oracle-source-s2026092701-r01/analysis.md)。
+
+## 训练期遮挡先验约束
+
+固定原 DURA 和先前只用合法源 clean IQ 训练的遮挡先验；独立初始化 117062 参数多尺度修正。源训练每条随机遮挡连续 32 点，比较冻结先验对恢复输出与同条 clean IQ 的遮挡区域预测，以 0.05 权重加入原 IQ 与 DURA guard 损失；先验只参与训练，推理不调用。训练不读取 F、TX 标签、V 或目标，训练样本和先验的 32768 个源 fit ID 一致，复用相同确定性源上下文。
+
+N607 GPU 7 真实 checkpoint 的 64 条源训练 smoke 已通过；固定五轮训练正在运行，完成后自动冻结、执行七景每景 168000 条预测并独立 truth-last。当前未有正式识别结果；该候选不同于前述不可部署的逐记录理想混合。[训练登记](../automation_reports/CV-SincNet/20261107-phase1-dura-masked-prior-source-s2026092701-r01/report.md)、[七景登记](../automation_reports/CV-SincNet/20261107-phase1-dura-masked-prior-ground-test-s2026092701-r01/report.md)。
