@@ -25,10 +25,10 @@ def main():
     p.add_argument('--commit', required=True)
     p.add_argument('--cache', type=Path, required=True)
     p.add_argument('--gpu', type=int, required=True)
-    p.add_argument('--objective', required=True, choices=('wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard'))
-    p.add_argument('--architecture', choices=('dura_multiscale', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible'), default='dura_multiscale')
+    p.add_argument('--objective', required=True, choices=('wide_temporal_prior_guard', 'wide_student_fir_guard', 'wide_frequency_regression', 'wide_reversible_guard', 'wide_multiview_distill'))
+    p.add_argument('--architecture', choices=('dura_multiscale', 'direct_student_fir', 'dura_frequency_regression', 'dura_reversible', 'direct_spectral_student'), default='dura_multiscale')
     args = p.parse_args()
-    if (args.objective, args.architecture) not in (('wide_temporal_prior_guard', 'dura_multiscale'), ('wide_student_fir_guard', 'direct_student_fir'), ('wide_frequency_regression', 'dura_frequency_regression'), ('wide_reversible_guard', 'dura_reversible')):
+    if (args.objective, args.architecture) not in (('wide_temporal_prior_guard', 'dura_multiscale'), ('wide_student_fir_guard', 'direct_student_fir'), ('wide_frequency_regression', 'dura_frequency_regression'), ('wide_reversible_guard', 'dura_reversible'), ('wide_multiview_distill', 'direct_spectral_student')):
         raise ValueError('Registered objective and architecture pair required')
     runs = args.root/'runs'
     outputs = [runs/args.source, runs/(args.source+'-controller'), runs/(args.source+'-training-smoke'), runs/args.ground]
