@@ -19,6 +19,7 @@ from experiments.phase1_dura_orthogonal.dura_timevarying import DuraTimeVaryingR
 from experiments.phase1_dura_orthogonal.noise_gated_dura import NoiseGatedDuraTimeVarying, GATE_LOG10_LOW, GATE_LOG10_HIGH
 from experiments.phase1_dura_orthogonal.moment_relational import moment_relational_loss, MOMENT_WEIGHT, LAGS
 from experiments.phase1_dura_orthogonal.iq_geometry import iq_geometry_loss, GEOMETRY_WEIGHT, GEOMETRY_TEMPERATURE
+from experiments.phase1_dura_orthogonal.joint_ssl_iq import SourceIQEncoder, cross_view_ssl_loss, frozen_feature_loss, SSL_FEATURE_WEIGHT, SSL_OFFDIAGONAL_WEIGHT, SSL_FEATURE_DIM
 from experiments.phase1_dura_orthogonal.multiscale_spectral import DuraMultiscaleSpectral
 
 FIT_SIZE = 8192
@@ -202,13 +203,17 @@ def main():
     parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--prepare-batch', type=int, default=32)
     parser.add_argument('--smoke-fit', type=int, default=64)
-    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard'), default='iq')
+    parser.add_argument('--objective', choices=('iq', 'dura_guard', 'band_guard', 'nonlinear_guard', 'crossview_guard', 'sim_action_guard', 'sim_action_fixed_prior', 'moment_guard', 'geometry_guard', 'ssl_joint_guard'), default='iq')
     parser.add_argument('--architecture', choices=('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate', 'dura_multiscale'), default='orthogonal')
     args = parser.parse_args()
     if args.architecture in DIRECT_ARCHITECTURES and args.objective != 'iq':
         raise ValueError('Direct dual-domain model uses received-IQ regularization only')
-    if args.architecture in ('dura_timevarying', 'dura_multiscale') and args.objective != 'dura_guard':
+    if args.architecture == 'dura_timevarying' and args.objective != 'dura_guard':
         raise ValueError('DURA time-varying correction requires DURA guard')
+    if args.architecture == 'dura_multiscale' and args.objective not in ('dura_guard', 'ssl_joint_guard'):
+        raise ValueError('Multiscale correction requires a registered DURA guard')
+    if args.objective == 'ssl_joint_guard' and args.architecture != 'dura_multiscale':
+        raise ValueError('Source IQ SSL is registered only for multiscale correction')
     if args.architecture == 'dura_timevarying_gate' and args.objective not in ('dura_guard', 'moment_guard', 'geometry_guard'):
         raise ValueError('Gated correction requires a registered DURA guard')
     if args.objective in ('moment_guard', 'geometry_guard') and args.architecture != 'dura_timevarying_gate':
@@ -272,6 +277,11 @@ def main():
     optimizer = torch.optim.AdamW(model.parameters(),
         lr=1e-5 if args.architecture == 'dura_internal' else .0003,
         weight_decay=0. if args.architecture == 'dura_internal' else .001)
+    aux = None
+    if args.objective == 'ssl_joint_guard':
+        torch.manual_seed(2026110615)
+        aux = SourceIQEncoder().to(device)
+        aux_optimizer = torch.optim.AdamW(aux.parameters(), lr=.0003, weight_decay=.001)
     generator = torch.Generator().manual_seed(2026110613)
     if args.objective in ACTION_OBJECTIVES:
         probe_generator = torch.Generator().manual_seed(2026110614)
@@ -281,6 +291,7 @@ def main():
     action_losses = []
     moment_losses = []
     geometry_losses = []
+    ssl_crossview_losses, ssl_feature_losses = [], []
     initial_batch = min(args.prepare_batch, len(fit)) if args.architecture == 'dura_internal' else 8
     with torch.no_grad():
         initial = model(*(value[:initial_batch] for value in data[:4]))
@@ -300,11 +311,25 @@ def main():
         action_total = torch.zeros((), device=device)
         moment_total = torch.zeros((), device=device)
         geometry_total = torch.zeros((), device=device)
+        ssl_crossview_total = torch.zeros((), device=device)
+        ssl_feature_total = torch.zeros((), device=device)
         for start in range(0, len(order), 10 if crossview else 32):
             base = order[start:start+(10 if crossview else 32)]
             indices = grouped_view_indices(base, len(fit)) if crossview else base
             fields = tuple(v[indices] for v in data)
             x, anchor, direction, variance, y = fields[:5]
+            if aux is not None:
+                aux.train().requires_grad_(True)
+                aux_optimizer.zero_grad(set_to_none=True)
+                ssl_crossview = cross_view_ssl_loss(aux(x), aux(y))
+                if not torch.isfinite(ssl_crossview):
+                    raise FloatingPointError('Finite source SSL loss required')
+                ssl_crossview.backward()
+                torch.nn.utils.clip_grad_norm_(aux.parameters(), 1., error_if_nonfinite=True)
+                aux_optimizer.step()
+                aux_optimizer.zero_grad(set_to_none=True)
+                aux.eval().requires_grad_(False)
+                ssl_crossview_total += ssl_crossview.detach()*len(indices)
             if args.objective in ACTION_OBJECTIVES:
                 from experiments.phase1_dura_orthogonal.oracle_action_source_probe import true_action
                 context = model.dura.estimate_context(x)
@@ -313,8 +338,12 @@ def main():
                 action_loss = action_response_loss(context[1], reference, probe.expand(len(x), -1))
             else:
                 output = model(x, anchor, direction, variance, validate=False)
-            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard') else args.objective
+            base_objective = 'dura_guard' if crossview or args.objective in ACTION_OBJECTIVES or args.objective in ('moment_guard', 'geometry_guard', 'ssl_joint_guard') else args.objective
             loss = source_loss(output, anchor, y, objective=base_objective)
+            if aux is not None:
+                ssl_feature = frozen_feature_loss(aux, output, y)
+                loss = loss + SSL_FEATURE_WEIGHT*ssl_feature
+                ssl_feature_total += ssl_feature.detach()*len(indices)
             if crossview:
                 loss = loss + .1*crossview_dispersion(output, y)
             if args.objective == 'geometry_guard':
@@ -356,9 +385,16 @@ def main():
             moment_losses.append(float(moment_total.cpu())/len(order))
         if args.objective == 'geometry_guard':
             geometry_losses.append(float(geometry_total.cpu())/len(order))
+        if aux is not None:
+            ssl_crossview_losses.append(float(ssl_crossview_total.cpu())/len(order))
+            ssl_feature_losses.append(float(ssl_feature_total.cpu())/len(order))
         print('ORTHOGONAL_SOURCE_EPOCH', epoch, 'loss', losses[-1], 'elapsed', round(time.monotonic()-started, 1), flush=True)
     if dura is not None and any(p.requires_grad or p.grad is not None for p in dura.parameters()):
         raise ValueError('DURA must stay frozen')
+    ssl_metadata = dict(source_ssl_feature_weight=SSL_FEATURE_WEIGHT,
+        source_ssl_offdiagonal_weight=SSL_OFFDIAGONAL_WEIGHT, source_ssl_feature_dim=SSL_FEATURE_DIM,
+        source_ssl_seed=2026110615, source_ssl_parameters=sum(p.numel() for p in aux.parameters()),
+        source_ssl_crossview_losses=ssl_crossview_losses, source_ssl_feature_losses=ssl_feature_losses) if aux is not None else {}
     if args.smoke:
         core.write(args.out/'smoke.json', dict(status='SOURCE_TRAINING_SMOKE_PASS', commit=args.commit,
             fit_ids=len(fit), exposure=len(data[0]), losses=losses, device=str(device),
@@ -385,7 +421,7 @@ def main():
             DURA_training_reads=int(dura is not None), preparation_seconds=preparation_seconds,
             transfer_seconds=transfer_seconds, training_seconds=time.monotonic()-started,
             end_to_end_seconds=time.monotonic()-process_started, TX_labels_read=0, F_weights_read=0,
-            F_outputs_read=0, V_reads=0, target_reads=0, DURA_frozen=True))
+            F_outputs_read=0, V_reads=0, target_reads=0, DURA_frozen=True, **ssl_metadata))
         return
     checkpoint = dict(schema=SCHEMA, commit=args.commit, model=model.state_dict(), width=32,
                       epochs=epochs, fit_ids=fit, counts=counts, losses=losses, architecture=args.architecture,
@@ -411,7 +447,9 @@ def main():
                       device=str(device), objective=args.objective, prepare_batch=args.prepare_batch,
                       DURA_training_reads=int(dura is not None),
                       TX_labels_read=0, F_weights_read=0, F_outputs_read=0, V_reads=0,
-                      target_reads=0, DURA_frozen=True)
+                      target_reads=0, DURA_frozen=True, **ssl_metadata)
+    if aux is not None:
+        checkpoint['source_ssl_aux_state'] = aux.state_dict()
     with (args.out/'final.pt').open('xb') as f:
         torch.save(checkpoint, f)
     if dura is None:
@@ -445,7 +483,7 @@ def main():
         preparation_seconds=preparation_seconds,
         transfer_seconds=transfer_seconds,
         source_groups=groups, TX_labels_read=0, F_weights_read=0, F_outputs_read=0,
-        V_reads=0, target_reads=0, DURA_frozen=True, source_IQ_metrics_not_identity_accuracy=True))
+        V_reads=0, target_reads=0, DURA_frozen=True, source_IQ_metrics_not_identity_accuracy=True, **ssl_metadata))
     print('ORTHOGONAL_SOURCE_TRAINED', args.commit, flush=True)
 
 
