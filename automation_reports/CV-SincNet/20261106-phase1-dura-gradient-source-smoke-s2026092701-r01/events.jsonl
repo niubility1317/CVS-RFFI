@@ -1,0 +1,2 @@
+{"at": "2026-11-06T06:43:24+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-11-06T06:45:03+00:00", "status": "ANALYZED", "note": "Four source IQ records, one transient GPU step, no saved model; peak allocated 143802368 bytes and one-step elapsed 2.435s include loading-resident memory.", "evidence": ["N607 PID 3205528 DURA_TRAINABILITY_SOURCE_PASS, result.json; finite nonzero gradients for all 266951 parameters"], "row_id": null}

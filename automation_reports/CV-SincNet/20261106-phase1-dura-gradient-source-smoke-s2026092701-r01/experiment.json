@@ -1,0 +1,136 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261106-phase1-dura-gradient-source-smoke-s2026092701-r01",
+  "group_id": "phase1-dura-gradient-source-smoke",
+  "display_name": "原 DURA 源 IQ 梯度与显存可行性检查",
+  "description": "原 DURA 临时解冻，在 4 条源 IQ 上做一次反向传播和内存更新；不保存新权重，不访问 F、TX、V、目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "source-only",
+    "F-free",
+    "frequency-diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户继续授权研发星地恢复网络；仅源域合法 IQ 诊断，不重启已停止任务。",
+  "code": {
+    "commit": "e34c00d595fc24f61c4ce60784621af25647bebc",
+    "checkout": "E:/type10-7/github_publish/CVS-RFFI-repo",
+    "environment": "N607 GPU7, CUDA_VISIBLE_DEVICES=7, FP32 TF32 off, batch 4",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261106-phase1-dura-gradient-source-smoke-s2026092701-r01-release"
+  },
+  "data": {
+    "dataset": "Phase1 Main split source",
+    "version": "source cache R07 epoch19",
+    "representation": "received and clean IQ [2,256]",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md: 恢复器主测试口径及源数据权限",
+    "physical_ids_ref": "One source RX4/6 record per clean and first three practical views, 4 records total",
+    "label_map_ref": null,
+    "source_receivers": [
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "source IQ pair, no TX identity",
+      "U_s": "source IQ pair, TX identity hidden",
+      "V": "not read"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Previously explored fixed source pilot; RX8 is source held group, not independent to DURA",
+    "support_query_ref": null,
+    "leo_config_ref": "fixed simulated source epoch19 views"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "One transient source-only technical gradient step; no new recovery version or identity evaluation"
+  },
+  "checkpoint": {
+    "initialization": "Original source-only DURA stage2 E20/4940, copied into memory, no write to original",
+    "sources": [
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Runtime verifies direct source-only checkpoint commit and permission fields, frozen_dura verifies DURA provenance",
+    "provenance_verdict": "Both fixed Phase1 models, no F or target ancestry",
+    "selection_rule": "Fixed original DURA, no target score selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "this conversation",
+    "gpu_policy": "Physical GPU7, one this-run worker, at most three total compute workers; preserve others",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-source-smoke-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-source-smoke-s2026092701-r01-launcher.log",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261106-phase1-dura-gradient-source-smoke-s2026092701-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.dura_trainability_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-source-smoke-s2026092701-r01 --commit e34c00d595fc24f61c4ce60784621af25647bebc",
+    "stop_rule": "Stop on source role mismatch, source smoke failure, nonfinite output or any target/F/TX read; preserve stopped group and other owners."
+  },
+  "expected_artifacts": [
+    "result.json gradient coverage, finite step, peak allocated memory and timing; no checkpoint"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source IQ loss",
+      "per-module finite/nonzero gradient coverage",
+      "GPU peak allocated bytes",
+      "one-step elapsed seconds"
+    ],
+    "dimensions": [
+      "four source IQ pairs"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "none; source IQ only"
+  },
+  "rows": [
+    {
+      "row_id": "dura-one-step-source-gradients",
+      "method": "Original DURA full physical and prior graph, in-memory AdamW source IQ step",
+      "purpose": "Check whether a future DURA-internal refinement is computationally viable",
+      "config_ref": "experiments/phase1_dura_orthogonal/dura_trainability_probe.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026092701
+      },
+      "seed_notes": "Original fixed DURA; no stochastic training or sampling; one fixed transient update.",
+      "k": null,
+      "scenario": "One each clean, high, mid and low suburban fixed source view, RX4/6",
+      "optimizer": "AdamW",
+      "lr": 1e-05,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "4 source pairs, batch4, 1 optimizer step, no saved model",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-source-smoke-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-source-smoke-s2026092701-r01-launcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 -u -m experiments.phase1_dura_orthogonal.dura_trainability_probe --root /home/szu2070436088/2510044040/CV-SincNet --out /home/szu2070436088/2510044040/CV-SincNet/runs/20261106-phase1-dura-gradient-source-smoke-s2026092701-r01 --commit e34c00d595fc24f61c4ce60784621af25647bebc",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only technical test, not a new trained model; original checkpoint unchanged.",
+    "F/TX labels/V/target are never read; finite gradients and GPU memory are reported.",
+    "Any later recovery candidate requires its own fixed training and seven-view evaluation."
+  ],
+  "registered_at": "2026-11-06T06:43:24+00:00"
+}
