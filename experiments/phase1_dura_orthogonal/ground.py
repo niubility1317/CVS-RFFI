@@ -13,6 +13,7 @@ from experiments.phase1_dura_orthogonal.model import OrthogonalRecovery, DualDom
 from experiments.phase1_dura_orthogonal.adaptive_inverse import AdaptiveInverseRecovery
 from experiments.phase1_dura_orthogonal.timevarying_inverse import TimeVaryingInverseRecovery
 from experiments.phase1_dura_orthogonal.dura_timevarying import DuraTimeVaryingRecovery
+from experiments.phase1_dura_orthogonal.noise_gated_dura import NoiseGatedDuraTimeVarying, GATE_LOG10_LOW, GATE_LOG10_HIGH
 from experiments.phase1_dura_orthogonal.train_source import SCHEMA, TRAIN_EPOCHS, DUAL_DOMAIN_EPOCHS, FIT_SIZE, extract_context
 
 
@@ -20,7 +21,7 @@ def load_fixed(root, source, commit):
     folder = root/'runs'/source
     summary = core.read(folder/'source_summary.json')
     architecture = summary.get('architecture', 'orthogonal')
-    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying'):
+    if architecture not in ('orthogonal', 'dual_domain', 'dura_internal', 'adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate'):
         raise ValueError('Registered recovery architecture required')
     epochs = DUAL_DOMAIN_EPOCHS if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse') else TRAIN_EPOCHS
     expected = dict(status='SOURCE_TRAINED', commit=commit, fit_ids=FIT_SIZE, epochs=epochs,
@@ -45,7 +46,7 @@ def load_fixed(root, source, commit):
     if architecture in ('dual_domain', 'adaptive_inverse', 'timevarying_inverse') and (objective != 'iq' or state.get('DURA_training_reads') != 0
                                           or summary.get('DURA_training_reads') != 0):
         raise ValueError('Direct recovery must be trained without DURA')
-    if architecture == 'dura_timevarying' and (objective != 'dura_guard' or any(
+    if architecture in ('dura_timevarying', 'dura_timevarying_gate') and (objective != 'dura_guard' or any(
             obj.get('DURA_training_reads') != 1 for obj in (summary, state))):
         raise ValueError('Matching DURA-guarded source checkpoint required')
     if architecture == 'dura_internal' and (objective not in ('dura_guard', 'sim_action_guard', 'sim_action_fixed_prior')
@@ -56,10 +57,14 @@ def load_fixed(root, source, commit):
             obj.get('source_simulator_action_used') is not True or obj.get('source_simulator_action_weight') != .01
             or obj.get('source_probe_seed') != 2026110614 for obj in (summary, state))):
         raise ValueError('Matching simulator-supervised DURA checkpoint required')
-    if architecture in ('adaptive_inverse', 'timevarying_inverse', 'dura_timevarying'):
+    if architecture in ('adaptive_inverse', 'timevarying_inverse', 'dura_timevarying', 'dura_timevarying_gate'):
         expected_taps = 33 if architecture == 'adaptive_inverse' else 9
         if any(obj.get('adaptive_filter_taps') != expected_taps for obj in (summary, state)):
             raise ValueError('Matching adaptive inverse filter metadata required')
+    if architecture == 'dura_timevarying_gate' and any(
+            obj.get('noise_gate_low') != GATE_LOG10_LOW or obj.get('noise_gate_high') != GATE_LOG10_HIGH
+            for obj in (summary, state)):
+        raise ValueError('Matching source-calibrated noise gate required')
     if architecture == 'orthogonal':
         model = OrthogonalRecovery(width=state['width'])
     elif architecture == 'dual_domain':
@@ -70,6 +75,8 @@ def load_fixed(root, source, commit):
         model = TimeVaryingInverseRecovery(width=state['width'], taps=9)
     elif architecture == 'dura_timevarying':
         model = DuraTimeVaryingRecovery(width=state['width'], taps=9)
+    elif architecture == 'dura_timevarying_gate':
+        model = NoiseGatedDuraTimeVarying(width=state['width'], taps=9)
     else:
         model = InternalDuraRecovery(frozen_dura(root, 'cpu'))
     model.load_state_dict(state['model'], strict=True)
